@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_title">Screenlate</string>
+
+    <string name="onboarding_service_title">Accessibility service</string>
+    <string name="onboarding_service_enabled">Enabled</string>
+    <string name="onboarding_service_disabled">Not enabled</string>
+    <string name="onboarding_service_explanation">Screenlate needs its accessibility service to draw the bubble over other apps and to take screenshots for text recognition. Open the settings, find Screenlate under installed services and turn it on.</string>
+    <string name="onboarding_open_accessibility_settings">Open accessibility settings</string>
+
+    <string name="onboarding_device_title">Device setup</string>
+    <string name="onboarding_device_app_launch">Honor / MagicOS: Settings → Apps → App launch → Screenlate → Manage manually, and allow all three options. Otherwise the system may stop the service in the background.</string>
+    <string name="onboarding_device_restricted_settings">If the Screenlate switch is greyed out (the app was installed from a file), open App info → ⋮ → Allow restricted settings, then try again.</string>
+
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+</resources>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="onboarding_service_title">Служба специальных возможностей</string>
+    <string name="onboarding_service_enabled">Включена</string>
+    <string name="onboarding_service_disabled">Не включена</string>
+    <string name="onboarding_service_explanation">Screenlate нужна служба специальных возможностей, чтобы показывать кружок поверх других приложений и делать скриншоты для распознавания текста. Откройте настройки, найдите Screenlate среди установленных служб и включите её.</string>
+    <string name="onboarding_open_accessibility_settings">Открыть настройки спецвозможностей</string>
+
+    <string name="onboarding_device_title">Настройка устройства</string>
+    <string name="onboarding_device_app_launch">Honor / MagicOS: Настройки → Приложения → Запуск приложений → Screenlate → Управлять вручную и включить все три пункта. Иначе система может остановить службу в фоне.</string>
+    <string name="onboarding_device_restricted_settings">Если переключатель Screenlate неактивен (приложение установлено из файла), откройте Сведения о приложении → ⋮ → Разрешить ограниченные настройки и попробуйте снова.</string>
+
+    <string name="settings_theme_title">Тема</string>
+    <string name="settings_theme_system">Системная</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Тёмная</string>
+</resources>

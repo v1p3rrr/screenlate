@@ -1,0 +1,4 @@
+<resources>
+    <string name="overlay_service_label">Screenlate</string>
+    <string name="overlay_service_description">Shows a floating bubble that reads text on the screen and looks words up in your dictionaries. Screenlate takes screenshots only when you pull the bubble out or tap it, and sends them to Google Lens for text recognition.</string>
+</resources>

@@ -1,0 +1,71 @@
+# Screenlate
+
+Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it. Inspired by Poe: Language Lens, with the parts that matter done differently:
+
+- text recognition through Google Lens, with ML Kit as an on-device draft;
+- user-supplied Yomitan dictionaries, rendered the way Yomitan renders them;
+- Anki export through AnkiDroid with a configurable deck, note type and field templates.
+
+Japanese is the only supported language for now.
+
+## Status
+
+Early development. See [ai/status.md](ai/status.md) for progress and [ai/plans](ai/plans) for the plan.
+
+## Requirements
+
+- Android 11 (API 30) or newer. Developed against Android 15.
+- AnkiDroid for Anki export.
+- Network access for Google Lens.
+
+## Building
+
+- JDK 17 or newer for Gradle (the daemon JVM is provisioned automatically).
+- Android SDK with platform 37.
+
+```
+./gradlew assembleDebug
+./gradlew testDebugUnitTest
+```
+
+Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build.
+
+### Release signing
+
+Release builds are signed only if `keystore.properties` exists in the project root:
+
+```
+storeFile=path/to/screenlate.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+Both files are ignored by git.
+
+## After installing
+
+1. Enable the Screenlate accessibility service. The app's start screen links to the settings.
+2. On Honor / MagicOS, set the app to "Manage manually" under App launch, or the system may stop the service.
+3. If the service switch is greyed out after installing from an APK file, use App info → ⋮ → Allow restricted settings.
+
+## Project layout
+
+| Module | Purpose |
+|---|---|
+| `app` | Application, Compose screens |
+| `overlay` | Accessibility service, bubble, popup window |
+| `core:common` | Shared models and settings |
+| `core:ocr` | Google Lens and ML Kit OCR, hit testing |
+| `core:anki` | AnkiDroid integration, note templates, audio sources |
+| `dictionary:api` | Dictionary engine interface, dictionary registry |
+| `dictionary:engine-hoshidicts` | Engine based on hoshidicts (GPL-3.0) |
+| `dictionary:render-yomitan` | Yomitan-style entry renderer (GPL-3.0) |
+
+GPL-licensed third-party code is kept in the last two modules so it can be replaced without touching the rest of the app.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for third-party components and dictionary attributions.
+
+Google Lens is used through an unofficial endpoint and may stop working at any time.

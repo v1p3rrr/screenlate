@@ -1,0 +1,167 @@
+# Screenlate — initial plan (approved 2026-09-26)
+
+Source of truth for scope and decisions. Small changes are edited in place and listed under "Changelog" at the bottom; a major re-plan goes into a new dated file in this folder.
+
+## Context
+
+Poe (`com.slimecreative.poe`) is a pop-up dictionary: a bubble is pulled out of a dock at the screen edge, aimed at a word, and a dictionary entry appears. Its drawbacks: one built-in dictionary; Anki export and usable OCR require a $10/month subscription.
+
+Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
+- Poe-like bubble mechanics;
+- OCR through Google Lens (the same protobuf endpoint Manatan uses: `lensfrontend-pa.googleapis.com/v1/crupload`, schema from `KolbyML/chrome-lens-ocr/src/proto.rs`);
+- Yomitan dictionaries, looked up and displayed the way Yomitan does it;
+- free AnkiDroid export with a configurable deck, note type and field templates.
+
+## Decisions
+
+| Topic | Decision |
+|---|---|
+| Git | Separate repo (`github.com/v1p3rrr/screenlate`), commit and push after each phase |
+| Languages | Code, docs, commits in English. UI: English default + `values-ru` |
+| Testing | Emulator (Pixel, API 35/36, x86_64, Google Play) + the owner's phone over USB |
+| DI / storage | Hilt (KSP) / Room for app data / DataStore for preferences |
+| Modules | Multi-module; GPL code confined to replaceable modules |
+| Lens protobuf | Hand-written codec (~100 lines), no codegen plugin |
+| Dictionary engine | hoshidicts (C++, `main` branch, GPL-3.0) via our own JNI bridge, git submodule |
+| Rendering | One pre-warmed WebView; Poe-like card design; entry renderer derived from Hoshi Reader Android in a separate GPL module |
+| Grouping | Yomitan `group` mode: one card per term + reading, dictionaries inside in user priority order |
+| Frequencies | Jiten Global (CC BY-SA) bundled and used for sorting. Importing other frequency dictionaries and picking the sort dictionary — phase 4 |
+| Bundled dictionaries | Jitendex (enabled), Jiten Global (frequency), Kanjium (pitch). Kolobok and others via a download catalog. Catalog is extensible and tagged with language pairs (ja-en, ja-ru, ja-ja) |
+| Kanji dictionaries | Phase 4, own `kanji_bank` import into Room |
+| Cross-references | Lookup inside the popup with a back stack; external links open in the browser |
+| OCR | One image ≤1500 px, JPEG. ML Kit Japanese (bundled model) runs in parallel as a draft; the Lens result replaces it immediately, a small spinner shows until then |
+| When to OCR | Only when the bubble is pulled out of the dock and on a single tap on the bubble. Further aiming reuses the result even if the screen changed |
+| Proxy | None, system network (and VPN if on) |
+| Slow network | Lens timeout 15 s, then the ML Kit result becomes final. Anki ➕ waits for Lens |
+| Popup timing | Shown immediately while hovering, updated live |
+| Bubble gestures | Double tap toggles the aim point (dot ~48dp above the finger ↔ bubble center), remembered. Single tap rescans and highlights all recognized words; the highlight fades after 2–3 s |
+| Closing | Bubble back into the dock, or ✕ (closes the popup and docks the bubble). Touches elsewhere pass through to the app |
+| Dock | Right edge by default, can be moved to the left, height remembered |
+| Visibility | Quick Settings tile (phase 1). Hide in selected apps (phase 4) |
+| Popup placement | On the side of the word with more space, never covering the bubble. Fixed size ~85% width (≤420dp) × ~35% height, scrollable |
+| Misc | Word highlight on. Haptics off (configurable). Theme follows system with an override |
+| Anki | Official AnkiDroid API (LGPL-3.0, JitPack). Duplicate settings as in Yomitan: check on, scope collection/deck/deck-root (default collection), check all models off, behavior prevent/overwrite/new (default new) |
+| Anki picture | Short tap ➕: note without a picture. Long tap: crop editor (clean screenshot, frame around the paragraph, "whole screen" button) → note with the picture |
+| Audio | In the Anki phase: 🔊 and `{audio}`. Sources as in Yomitan: JapanesePod101 by default, custom URL templates and custom JSON, several in priority order. Auto-play of new words off |
+| Text without OCR | Phase 4 (accessibility node tree) |
+| Languages | Japanese only, but language is a parameter in every layer |
+| Extra features (phase 4) | Search screen, "Look up in Screenlate" in the text selection menu (`PROCESS_TEXT`), dictionary update check via `indexUrl` |
+| Builds | Debug (`applicationIdSuffix ".debug"`) + release signed with an own key (`keystore.properties`, not in git); installable side by side |
+| Phase order | Overlay + OCR → dictionaries → Anki → polish |
+| UI rule | Everything that may not fit (popup, screens, lists, crop editor) scrolls; long text wraps |
+| License | GPL-3.0 for now. GPL code lives only in `:dictionary:engine-hoshidicts` and `:dictionary:render-yomitan`; replacing them (e.g. hoshidicts MIT branch and an own renderer) removes GPL without touching the rest |
+
+## Architecture
+
+### Modules
+
+```
+:app                          Application (Hilt), MainActivity, Compose screens (onboarding, dictionaries, settings, Anki, OCR debug), navigation
+:overlay                      AccessibilityService, dock/bubble/aim/highlight, gesture controller, popup window (WebView shell), crop editor, QS tile
+:core:common                  Shared models (TextBox, OcrPage, Language), errors, settings (DataStore)
+:core:ocr                     OcrEngine interface, LensOcrEngine (OkHttp + hand-written protobuf), MlKitOcrEngine, CompositeOcr (draft → final), TextHitTester
+:core:anki                    AnkiRepository (AddContentApi), NoteBuilder (markers), duplicate settings, AudioSources
+:dictionary:api               DictionaryEngine interface, LookupResult/TermEntry/Glossary/Frequency/Pitch models, YomitanSorter, registry (Room), catalog, import (WorkManager)
+:dictionary:engine-hoshidicts GPL: hoshidicts submodule + own JNI (CMake, C++23) + DictionaryEngine implementation
+:dictionary:render-yomitan    GPL: renderer JS/CSS assets (from Hoshi Reader Android) exposing window.YomitanRender
+```
+
+Build configuration is shared through convention plugins in `build-logic/`.
+
+### Android APIs
+
+- AccessibilityService:
+  - `takeScreenshotOfWindow` (API 34+) captures the app window below our overlays, so the bubble and popup never appear in the image;
+  - fallback: `takeScreenshot` with overlays made transparent for one frame;
+  - `TYPE_ACCESSIBILITY_OVERLAY` windows (no SYSTEM_ALERT_WINDOW);
+  - `layoutInDisplayCutoutMode = ALWAYS`.
+- Also: `TileService`, `FileProvider` + `grantUriPermission("com.ichi2.anki")`, `<queries>` for `com.ichi2.anki`, SAF import, WorkManager (foreground, `dataSync`) for import and downloads, `ConnectivityManager`.
+
+### 1. Overlay and gestures (`:overlay`)
+
+States: `Docked → Dragging → Floating(+Popup)`.
+
+- Pulling out of the dock: capture the window, run ML Kit and Lens in parallel; aiming works on the ML Kit draft right away and switches to Lens when it arrives.
+- Dragging the floating bubble: reuses the same OCR result, no new requests.
+- Single tap (after a ~300 ms double-tap window): new capture + OCR and a highlight of all recognized words that fades after 2–3 s.
+- Double tap: toggles the aim mode.
+- The popup stays after the finger is lifted. Moving the bubble into the dock zone or tapping ✕ closes the popup and docks the bubble.
+- Touches outside the bubble and popup pass through: windows use `FLAG_NOT_TOUCH_MODAL`, the highlight layer `FLAG_NOT_TOUCHABLE`.
+- Hit testing runs on every `ACTION_MOVE` (~60 ms debounce); matched characters are highlighted.
+
+### 2. OCR (`:core:ocr`)
+
+- Lens:
+  - downscale to ≤1500 px, JPEG (~q85);
+  - `LensOverlayServerRequest` (platform WEB = 3, surface CHROMIUM = 4, language `ja`);
+  - parse `paragraphs → lines → words` with normalized boxes;
+  - 15 s timeout;
+  - phase 1 experiment: does Lens accept full resolution? If not and small text suffers, add a refinement request with a crop around the aim point.
+- ML Kit (`com.google.mlkit:text-recognition-japanese`, bundled model) produces the draft. `CompositeOcr` emits `Draft → Final`.
+- TextHitTester:
+  - splits word boxes into character boxes along the main axis; vertical text is detected by `rotation_z ≈ ±π/2` or height > width;
+  - picks the character under the aim point or the nearest one within a tolerance;
+  - lookup text is up to 16 characters along the line and paragraph (Yomitan's `scanLength`);
+  - the Anki sentence is the paragraph cut at `。！？`, respecting `「」`.
+
+### 3. Dictionaries (`:dictionary:*`)
+
+- `DictionaryEngine`: `import(zip) / lookup(text, options) / styles() / media(dict, path) / rebuildQuery(enabled, ordered)`.
+- hoshidicts:
+  - groups by (expression, reading) and sorts by primary reading → match length → preprocessing steps → deinflection chain → frequency;
+  - `YomitanSorter` (Kotlin) adds the missing Yomitan tie-breakers: exact match, dictionary order;
+  - our JNI exposes options: frequency dictionary and order, `primary_reading`, `scanLength`, `maxResults`.
+- Registry (Room): `dictionaries(id, title, revision, kind term|freq|pitch|kanji, sourceLanguage, targetLanguage, enabled, priority, path, indexUrl, downloadUrl, bundled, importedAt)`, plus the "sort dictionary" setting.
+- First run: import bundled Jitendex, Jiten Global and Kanjium from assets with progress. Bundled dictionaries are downloaded at build time, not committed to git.
+- Catalog of recommended dictionaries: `assets/catalog.json` with `indexUrl`, `downloadUrl` and language pair. Starts with Kolobok (ja-ru); new entries are one record each.
+- Dictionaries screen: import from file, download from catalog, drag to reorder, enable/disable, delete.
+
+### 4. Rendering and popup (`:dictionary:render-yomitan`, `:overlay`)
+
+- Extracted from Hoshi Reader Android `popup.js` (GPL, with copyright headers): `renderStructuredContent`, `createDefinitionImage` (AVIF/SVG, `sizeUnits`, monochrome glyphs, collapsible), `constructDictCss` (per-dictionary `styles.css` scoping), furigana segmentation, pitch accent graph.
+- Module API: `YomitanRender.renderGlossary / dictCss / furigana / pitchGraph`.
+- Our shell `assets/popup/`: Poe-like card — header (ruby, frequencies, pitch, deinflection, tags), dictionary blocks, ➕ / 🔊 / copy buttons, back stack for links, Lens loading indicator. Yomitan CSS variables `--font-size-no-units`, `--text-color`, `--fg` are defined for both themes.
+- The WebView is created ahead of time; media is served through `WebViewAssetLoader`; Kotlin bridge through `@JavascriptInterface`.
+
+### 5. Anki and audio (`:core:anki`)
+
+- Settings: deck, note type, a template per field with markers `{expression} {reading} {furigana} {furigana-plain} {glossary} {glossary-first} {glossary-<dict>} {sentence} {cloze-prefix} {cloze-body} {cloze-suffix} {pitch-accents} {frequencies} {part-of-speech} {tags} {dictionary} {screenshot} {audio}`, tags, duplicate settings.
+- ➕: short tap — note without a picture; long tap — crop editor, then note with the picture; if Lens is still pending, wait for the final OCR.
+- Audio: list of sources (JapanesePod101 with the placeholder filtered by hash, URL templates with `{term}` / `{reading}`, custom JSON), 🔊 in the popup, auto-play (off by default).
+
+## Phases
+
+0. **Infrastructure**: separate repo, `.gitignore`, module skeleton, convention plugins, Hilt, Room, KSP, DataStore, en/ru, debug/release signing, onboarding (service status, accessibility settings, MagicOS tips), LICENSE (GPL-3.0), NOTICE, README, CLAUDE.md, `ai/` notes.
+1. **Overlay + OCR**: service, dock, bubble, aim, gestures, window capture; Lens (codec, client, resolution experiment) + ML Kit + `CompositeOcr`; hit testing, highlight; popup shell showing the recognized line and the word under the aim (no dictionaries yet); QS tile; OcrTest debug screen.
+2. **Dictionaries**: hoshidicts (submodule, CMake, JNI; ABIs arm64-v8a + x86_64); `DictionaryEngine`, `YomitanSorter`, Room registry, bundled + file import, catalog (Kolobok); dictionaries screen; renderer module and full cards in the popup, links with back navigation. Result: the full Poe scenario.
+3. **Anki + audio**: field mapping settings, ➕ short/long, crop editor, duplicates, audio sources.
+4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps.
+
+## Documentation tasks
+
+- README: keep build steps, requirements and module table current; add a short usage section once phase 2 lands.
+- NOTICE: add every third-party code component and bundled dictionary with its license when it is added.
+- `docs/architecture.md` (phase 2): module graph, OCR → hit test → lookup → render flow, threading.
+- `docs/usage.md` (phase 4): gestures, settings, Anki setup, troubleshooting on MagicOS.
+- `ai/status.md`: updated at the end of every work session.
+- KDoc: public APIs of `:dictionary:api`, `:core:ocr`, `:core:anki` and non-obvious behavior; no restating of names.
+
+## Risks
+
+- Lens is an unofficial endpoint and may break or get rate-limited; ML Kit and the `OcrEngine` interface mitigate it.
+- Hilt with AGP 9: 2.59 had a build bug; using the latest version (2.60.1 works), Koin as a fallback.
+- C++23 build through the NDK (hoshidicts with nested submodules): build time, native crash debugging, may need a newer NDK than r26.
+- OS limits: `FLAG_SECURE` windows are black on screenshots; MagicOS needs "App launch → Manage manually"; APKs installed from files need "Allow restricted settings".
+- Licenses: GPL-3.0 (hoshidicts, Yomitan rules, Hoshi renderer); CC BY-SA 4.0 (Jitendex, Kolobok, Jiten, Kanjium) — attribution in NOTICE and an About screen.
+
+## Verification
+
+- `./gradlew assembleDebug testDebugUnitTest` (JDK 21 at `C:\Program Files\Java\jdk-21`, SDK at `D:\Android\Sdk`).
+- Unit tests: Lens protobuf codec (encode, parse a saved response), `TextHitTester` (horizontal and vertical), `YomitanSorter`, `NoteBuilder`, catalog parsing.
+- Instrumented tests: JNI import of a mini dictionary; lookup 食べさせられなかった → 食べる; rendering Jitendex and Kolobok fixtures.
+- Emulator via adb: `adb install -r`, `adb logcat`, `adb exec-out screencap -p`, enabling the service, gestures via `adb shell input swipe/tap`, OCR on test images.
+- Phone: X, Chrome, NHK, vertical novel, manga, paused video; targets: draft ≤0.5 s, Lens ≤1.5–3 s; AnkiDroid note with correct fields, picture and audio.
+
+## Changelog
+
+- 2026-09-26: plan approved. Phase 0 added README/CLAUDE.md/`ai/` docs and the documentation tasks section at the owner's request.
