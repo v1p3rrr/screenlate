@@ -18,3 +18,7 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Local OCR test images (third-party content, not redistributable).
+/testdata/ocr/*
+!/testdata/ocr/README.md

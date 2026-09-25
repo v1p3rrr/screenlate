@@ -1,9 +1,15 @@
 package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
-import android.util.Log
+import android.content.res.Configuration
 import android.view.accessibility.AccessibilityEvent
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.ocr.CompositeOcr
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 
 /**
  * Hosts the floating bubble and popup overlays.
@@ -14,16 +20,33 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ScreenlateAccessibilityService : AccessibilityService() {
 
+    @Inject lateinit var ocr: CompositeOcr
+
+    @Inject lateinit var overlaySettings: OverlaySettingsRepository
+
+    @Inject lateinit var appSettings: AppSettingsRepository
+
+    private val scope = MainScope()
+    private var controller: OverlayController? = null
+
     override fun onServiceConnected() {
         super.onServiceConnected()
-        Log.i(TAG, "Service connected")
+        controller = OverlayController(this, ocr, overlaySettings, appSettings, scope).also { it.start() }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        controller?.onConfigurationChanged()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) = Unit
 
     override fun onInterrupt() = Unit
 
-    private companion object {
-        const val TAG = "ScreenlateService"
+    override fun onDestroy() {
+        controller?.stop()
+        controller = null
+        scope.cancel()
+        super.onDestroy()
     }
 }

@@ -9,5 +9,8 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:ocr"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.webkit)
 }

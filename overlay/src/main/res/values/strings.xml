@@ -1,4 +1,17 @@
 <resources>
-    <string name="overlay_service_label">Screenlate</string>
+    <string name="overlay_service_label" translatable="false">Screenlate</string>
     <string name="overlay_service_description">Shows a floating bubble that reads text on the screen and looks words up in your dictionaries. Screenlate takes screenshots only when you pull the bubble out or tap it, and sends them to Google Lens for text recognition.</string>
+    <string name="overlay_tile_label">Screenlate bubble</string>
+
+    <string name="overlay_label_lookup">Lookup text</string>
+    <string name="overlay_label_line">Line</string>
+    <string name="overlay_engine_lens" translatable="false">Lens</string>
+    <string name="overlay_engine_draft">On-device draft</string>
+    <string name="overlay_engine_device">On-device (Lens unavailable)</string>
+    <string name="overlay_engine_offline">On-device (offline)</string>
+
+    <string name="overlay_no_text">No text found on the screen.</string>
+    <string name="overlay_error_secure">This app does not allow screenshots.</string>
+    <string name="overlay_error_capture">Could not take a screenshot.</string>
+    <string name="overlay_error_ocr">Text recognition failed.</string>
 </resources>

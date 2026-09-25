@@ -1,4 +1,4 @@
-package com.vpr.screenlate.onboarding
+package com.vpr.screenlate.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -30,12 +30,14 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.overlay.OverlayServiceStatus
+import com.vpr.screenlate.ui.components.SectionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OnboardingScreen(
+fun HomeScreen(
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
+    onOpenOcrTest: () -> Unit,
 ) {
     val context = LocalContext.current
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
@@ -79,19 +81,12 @@ fun OnboardingScreen(
             SectionCard(title = stringResource(R.string.settings_theme_title)) {
                 ThemeModeSelector(selected = themeMode, onSelect = onThemeModeChange)
             }
-        }
-    }
-}
 
-@Composable
-private fun SectionCard(title: String, content: @Composable () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            content()
+            SectionCard(title = stringResource(R.string.home_tools_title)) {
+                OutlinedButton(onClick = onOpenOcrTest, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.ocr_test_title))
+                }
+            }
         }
     }
 }

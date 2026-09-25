@@ -13,4 +13,11 @@
     <string name="settings_theme_system">Системная</string>
     <string name="settings_theme_light">Светлая</string>
     <string name="settings_theme_dark">Тёмная</string>
+
+    <string name="action_back">Назад</string>
+    <string name="home_tools_title">Инструменты</string>
+    <string name="ocr_test_title">Проверка OCR</string>
+    <string name="ocr_test_pick_image">Выбрать картинку</string>
+    <string name="ocr_test_running">Распознаю…</string>
+    <string name="ocr_test_hit">Под пальцем: %1$s</string>
 </resources>

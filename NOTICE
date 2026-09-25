@@ -9,7 +9,10 @@ version. See LICENSE.
 Third-party code
 ----------------
 
-(Entries are added as third-party code is included.)
+chrome-lens-ocr (https://github.com/KolbyML/chrome-lens-ocr), MIT License,
+Copyright (c) Kolby Moroz Liebl.
+  The Google Lens request/response layout in core/ocr/.../lens/LensProtocol.kt
+  follows this project's protobuf definitions.
 
 Third-party data
 ----------------

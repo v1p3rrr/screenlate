@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_title">Screenlate</string>
+    <string name="app_title" translatable="false">Screenlate</string>
 
     <string name="onboarding_service_title">Accessibility service</string>
     <string name="onboarding_service_enabled">Enabled</string>
@@ -15,4 +15,11 @@
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
+
+    <string name="action_back">Back</string>
+    <string name="home_tools_title">Tools</string>
+    <string name="ocr_test_title">OCR test</string>
+    <string name="ocr_test_pick_image">Pick an image</string>
+    <string name="ocr_test_running">Recognizing…</string>
+    <string name="ocr_test_hit">Under the tap: %1$s</string>
 </resources>

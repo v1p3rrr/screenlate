@@ -60,3 +60,15 @@ Geometry
 ```
 
 Line text = words joined with their separators. For Japanese, Manatan strips whitespace. Vertical lines: `|rotation_z| ≈ π/2`, or height > width of the axis-aligned box.
+
+## Measurements (2026-09-26, from a desktop connection)
+
+| Image | Sent | JPEG size | Latency | Result |
+|---|---|---|---|---|
+| Synthetic 1344×2992, 48/26/18 px glyphs + vertical column | 674×1500 | 45 KB | 0.66 s | All lines correct, including 18 px text (9 px after downscale) |
+| Same | full 1344×2992 | 133 KB | 0.90 s | Identical to the downscaled result |
+| Same, PNG | 674×1500 | 76 KB | 0.56 s | Identical |
+| Manga page 1351×1920 (`testdata/ocr/manga-page.webp`) | 1055×1500 | 388 KB (screentones compress poorly) | 0.96 s | All vertical balloons correct; rotated "Win or Lose" returned with rotation π/2 |
+| X thread 377×948 (`testdata/ocr/x-thread.png`) | as is | 70 KB | 0.62 s | All text correct |
+
+Conclusion: downscaling to 1500 px costs nothing in quality; full resolution is accepted if ever needed. Words are morphological segments (e.g. `吾輩は猫である`, `。`, `名前`), separators are empty for Japanese. Vertical lines come with rotation ≈ 0 and a tall box; 90°-rotated horizontal text comes with rotation ≈ ±π/2.

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.screenlate.android.application)
     alias(libs.plugins.screenlate.android.compose)
     alias(libs.plugins.screenlate.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 // Release signing is optional: create keystore.properties (see README) to enable it.
@@ -62,4 +63,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 }

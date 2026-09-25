@@ -1,9 +1,9 @@
 # Screenlate
 
-Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it. Inspired by Poe: Language Lens, with the parts that matter done differently:
+Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it.
 
-- text recognition through Google Lens, with ML Kit as an on-device draft;
-- user-supplied Yomitan dictionaries, rendered the way Yomitan renders them;
+- Text recognition through Google Lens, with ML Kit as an on-device draft.
+- User-supplied Yomitan dictionaries, rendered the way Yomitan renders them.
 - Anki export through AnkiDroid with a configurable deck, note type and field templates.
 
 Japanese is the only supported language for now.
@@ -14,7 +14,7 @@ Early development. See [ai/status.md](ai/status.md) for progress and [ai/plans](
 
 ## Requirements
 
-- Android 11 (API 30) or newer. Developed against Android 15.
+- Android 11 (API 30) or newer.
 - AnkiDroid for Anki export.
 - Network access for Google Lens.
 
@@ -28,7 +28,7 @@ Early development. See [ai/status.md](ai/status.md) for progress and [ai/plans](
 ./gradlew testDebugUnitTest
 ```
 
-Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build.
+Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh` installs a debug build on a connected device and enables the accessibility service.
 
 ### Release signing
 
@@ -46,7 +46,7 @@ Both files are ignored by git.
 ## After installing
 
 1. Enable the Screenlate accessibility service. The app's start screen links to the settings.
-2. On Honor / MagicOS, set the app to "Manage manually" under App launch, or the system may stop the service.
+2. On devices with aggressive battery management, allow the app to run in the background, or the system may stop the service.
 3. If the service switch is greyed out after installing from an APK file, use App info → ⋮ → Allow restricted settings.
 
 ## Project layout

@@ -18,7 +18,8 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
 - The decision table in the plan is binding. Changing a decision needs the owner's confirmation; record it in the plan's changelog.
 - Plans: small updates are edited in place with a changelog line; a major re-plan is a new dated file in `ai/plans/`.
 - Update `ai/status.md` at the end of each work session. Add notes to `ai/notes/` when you learn something a future session would otherwise rediscover (and link it here if it is a new file).
-- Commit after each finished phase or a coherent milestone and push to `origin main` (github.com/v1p3rrr/screenlate).
+- Commit after each finished phase or a coherent milestone and push to `origin main` (github.com/v1p3rrr/screenlate). Commit messages describe the change itself; never mention plan phases.
+- Human-facing docs (README, `docs/`, NOTICE) stay generic: no mentions of specific devices, vendors, or the apps that inspired the project. Such context belongs in `ai/`.
 
 ## Architecture rules
 

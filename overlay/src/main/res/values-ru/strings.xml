@@ -1,3 +1,15 @@
 <resources>
     <string name="overlay_service_description">Показывает плавающий кружок, который распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот только когда вы вытаскиваете кружок или нажимаете на него, и отправляет его в Google Lens для распознавания текста.</string>
+    <string name="overlay_tile_label">Кружок Screenlate</string>
+
+    <string name="overlay_label_lookup">Текст для поиска</string>
+    <string name="overlay_label_line">Строка</string>
+    <string name="overlay_engine_draft">Черновик с устройства</string>
+    <string name="overlay_engine_device">На устройстве (Lens недоступен)</string>
+    <string name="overlay_engine_offline">На устройстве (нет сети)</string>
+
+    <string name="overlay_no_text">Текст на экране не найден.</string>
+    <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
+    <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
+    <string name="overlay_error_ocr">Не удалось распознать текст.</string>
 </resources>
