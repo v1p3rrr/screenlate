@@ -9,7 +9,8 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
    - `build-environment.md` — JDK/SDK paths, AGP 9 specifics, tooling gotchas;
    - `lens-protocol.md` — Lens request/response field map;
    - `yomitan-behavior.md` — lookup, grouping, sorting, Anki duplicate defaults, structured content;
-   - `references.md` — upstream projects, licenses, dictionary URLs.
+   - `references.md` — upstream projects, licenses, dictionary URLs;
+   - `dictionary-engine.md` — hoshidicts API, JNI design, bundled dictionary URLs.
 
 ## Working rules
 
