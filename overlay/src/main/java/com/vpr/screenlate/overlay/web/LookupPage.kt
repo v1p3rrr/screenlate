@@ -44,11 +44,6 @@ class LookupPage(
 
         fun onOpenUrl(url: String)
 
-        /** ➕ on entry [index]; [noteData] is the JSON from the page's NoteData.build. */
-        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean)
-
-        fun onPlayAudio(expression: String, reading: String)
-
         /** A kanji in an entry's headword was tapped. */
         fun onKanji(character: String)
 
@@ -58,6 +53,30 @@ class LookupPage(
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
     }
+
+    /** The note and audio buttons of entries; entries are identified by their [index] in the current view. */
+    interface NoteActions {
+        /**
+         * ➕ on an entry; [noteData] is the JSON from the page's NoteData.build.
+         *
+         * @param force add even if the note is a duplicate that the settings would prevent.
+         */
+        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean)
+
+        /** 📖 on an entry: the note added for it, or its duplicate, should open in AnkiDroid. */
+        fun onOpenNote(index: Int)
+
+        fun onPlayAudio(index: Int, expression: String, reading: String)
+
+        /** 🔊 was held: the page waits for [showAudioMenu]. */
+        fun onAudioMenu(index: Int, expression: String, reading: String)
+
+        /** A clip from the audio menu was chosen. */
+        fun onPlayClip(index: Int, clipId: String)
+    }
+
+    /** Receives the note and audio buttons; without it they do nothing. */
+    var noteActions: NoteActions? = null
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var pageReady = false
@@ -107,6 +126,13 @@ class LookupPage(
 
     /** Shows or hides the ➕ and 🔊 buttons of entries. */
     fun setActions(anki: Boolean, audio: Boolean) = setPersistent("actions", "Popup.setActions({anki: $anki, audio: $audio})")
+
+    /** Markers used by the note fields and frequency dictionary modes (see `Popup.setNoteConfig`). */
+    fun setNoteConfig(config: JsonElement) = setPersistent("noteConfig", "Popup.setNoteConfig($config)")
+
+    /** Fills the menu opened by holding 🔊 (see `Popup.showAudioMenu`); [items] is a JSON array. */
+    fun showAudioMenu(index: Int, items: JsonElement, loading: Boolean) =
+        run("Popup.showAudioMenu($index, $items, $loading)")
 
     /** Sets ➕ button states by entry index (see `Popup.setNoteStates`). */
     fun setNoteStates(states: Map<Int, String>) {
@@ -201,11 +227,22 @@ class LookupPage(
         fun onOpenUrl(url: String) = post { callbacks.onOpenUrl(url) }
 
         @JavascriptInterface
-        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
-            post { callbacks.onAddNote(index, noteData, withScreenshot) }
+        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) =
+            post { noteActions?.onAddNote(index, noteData, withScreenshot, force) }
 
         @JavascriptInterface
-        fun onPlayAudio(expression: String, reading: String) = post { callbacks.onPlayAudio(expression, reading) }
+        fun onOpenNote(index: Int) = post { noteActions?.onOpenNote(index) }
+
+        @JavascriptInterface
+        fun onPlayAudio(index: Int, expression: String, reading: String) =
+            post { noteActions?.onPlayAudio(index, expression, reading) }
+
+        @JavascriptInterface
+        fun onAudioMenu(index: Int, expression: String, reading: String) =
+            post { noteActions?.onAudioMenu(index, expression, reading) }
+
+        @JavascriptInterface
+        fun onPlayClip(index: Int, clipId: String) = post { noteActions?.onPlayClip(index, clipId) }
 
         @JavascriptInterface
         fun onKanji(character: String) = post { callbacks.onKanji(character) }

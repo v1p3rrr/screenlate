@@ -45,6 +45,11 @@ object PageState {
                 "addNote" to context.getString(R.string.overlay_add_note),
                 "playAudio" to context.getString(R.string.overlay_play_audio),
                 "copy" to context.getString(R.string.overlay_copy),
+                "openNote" to context.getString(R.string.overlay_open_note),
+                "addAnyway" to context.getString(R.string.overlay_add_anyway),
+                "addAnywayWithPicture" to context.getString(R.string.overlay_add_anyway_picture),
+                "audioLoading" to context.getString(R.string.overlay_audio_loading),
+                "audioNone" to context.getString(R.string.audio_not_found),
             ),
         ),
     )

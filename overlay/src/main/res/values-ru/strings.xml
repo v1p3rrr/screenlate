@@ -12,8 +12,8 @@
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
     <string name="overlay_no_results">В словарях ничего не найдено.</string>
     <string name="overlay_no_dictionaries">Словари ещё устанавливаются. Попробуйте чуть позже.</string>
-    <string name="overlay_add_note">Добавить в Anki (удерживайте для скриншота)</string>
-    <string name="overlay_play_audio">Воспроизвести аудио</string>
+    <string name="overlay_add_note">Добавить в Anki (удерживайте — с картинкой)</string>
+    <string name="overlay_play_audio">Воспроизвести аудио (удерживайте — выбрать)</string>
     <string name="anki_error">Не удалось добавить карточку: %1$s</string>
     <string name="anki_not_configured">Сначала настройте экспорт в Anki в Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid не установлен.</string>
@@ -30,4 +30,10 @@
     <string name="overlay_kanji_frequency">Частота</string>
     <string name="overlay_engine_app_text">Текст приложения</string>
     <string name="overlay_copy">Копировать</string>
+    <string name="overlay_open_note">Открыть в AnkiDroid (удерживайте — добавить всё равно)</string>
+    <string name="overlay_add_anyway">Добавить всё равно</string>
+    <string name="overlay_add_anyway_picture">Добавить всё равно, с картинкой</string>
+    <string name="overlay_audio_loading">Ищу аудио…</string>
+    <string name="overlay_audio_source_url">Свой URL</string>
+    <string name="overlay_audio_source_json">Свой URL (JSON)</string>
 </resources>

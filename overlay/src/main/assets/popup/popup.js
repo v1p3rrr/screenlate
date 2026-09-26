@@ -14,6 +14,9 @@
  * }
  *
  * Glossary rendering comes from window.YomitanRender (yomitan-render/render.js) when it is present.
+ *
+ * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
+ * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
  */
 const Popup = (() => {
     const backButton = document.getElementById('back');
@@ -28,6 +31,7 @@ const Popup = (() => {
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+        open: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 6.5C10.3 5.2 8 4.5 5 4.5H3.5v13H5c3 0 5.3.7 7 2 1.7-1.3 4-2 7-2h1.5v-13H19c-3 0-5.3.7-7 2zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     };
 
@@ -36,6 +40,8 @@ const Popup = (() => {
     let drawnKey = null;
     let styles = [];
     let actions = { anki: false, audio: false };
+    let noteConfig = { markers: null, frequencyModes: {} };
+    let menu = null;
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
     backButton.addEventListener('click', back);
@@ -163,23 +169,110 @@ const Popup = (() => {
         const copy = iconButton('copy', ICONS.copy, labelOf('copy'));
         copy.addEventListener('click', () => ScreenlateBridge.onCopy(result.term.expression));
         container.append(copy);
+        const expression = result.term.expression;
+        const reading = result.term.reading || '';
         if (actions.audio) {
             const play = iconButton('play', ICONS.audio, labelOf('playAudio'));
-            play.addEventListener('click', () => ScreenlateBridge.onPlayAudio(result.term.expression, result.term.reading || ''));
+            play.dataset.index = String(index);
+            onTapOrHold(play, held => {
+                if (held) ScreenlateBridge.onAudioMenu(index, expression, reading);
+                else ScreenlateBridge.onPlayAudio(index, expression, reading);
+            });
             container.append(play);
         }
         if (actions.anki) {
             const add = iconButton('add', ICONS.add, labelOf('addNote'));
             add.dataset.index = String(index);
-            onTapOrHold(add, withScreenshot => {
-                if (add.dataset.state === 'busy' || add.dataset.state === 'blocked') return;
+            const addNote = (withScreenshot, force) => {
                 setButtonState(add, 'busy');
-                ScreenlateBridge.onAddNote(index, JSON.stringify(NoteData.build(result, styles)), withScreenshot);
+                const data = NoteData.build(result, noteContext(), noteConfig.markers);
+                ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
+            };
+            onTapOrHold(add, held => {
+                const state = add.dataset.state;
+                if (state === 'busy') return;
+                if (state === 'added' || state === 'open') {
+                    if (!held) {
+                        ScreenlateBridge.onOpenNote(index);
+                    } else {
+                        showMenu(add, [
+                            { label: labelOf('addAnyway'), action: () => addNote(false, true) },
+                            { label: labelOf('addAnywayWithPicture'), action: () => addNote(true, true) },
+                        ]);
+                    }
+                    return;
+                }
+                addNote(held, false);
             });
             container.append(add);
         }
         return container;
     }
+
+    function noteContext() {
+        return { styles, frequencyModes: noteConfig.frequencyModes || {}, query: current?.source?.text || '' };
+    }
+
+    // region Menu
+
+    /** A small menu under (or above) [anchor]; items: [{ label, detail?, action?, disabled? }]. */
+    function showMenu(anchor, items) {
+        closeMenu();
+        menu = element('div', 'menu');
+        for (const item of items) {
+            const row = element('button', 'menu-item');
+            row.append(element('span', 'menu-label', item.label));
+            if (item.detail) row.append(element('span', 'menu-detail', item.detail));
+            if (item.disabled || !item.action) {
+                row.disabled = true;
+            } else {
+                row.addEventListener('click', event => {
+                    event.stopPropagation();
+                    closeMenu();
+                    item.action();
+                });
+            }
+            menu.append(row);
+        }
+        document.body.append(menu);
+        const rect = anchor.getBoundingClientRect();
+        const height = menu.offsetHeight;
+        const width = menu.offsetWidth;
+        const below = rect.bottom + 4 + height <= window.innerHeight;
+        menu.style.top = `${Math.max(4, below ? rect.bottom + 4 : rect.top - 4 - height)}px`;
+        menu.style.left = `${Math.max(4, Math.min(rect.right - width, window.innerWidth - width - 4))}px`;
+        menu.dataset.anchor = anchor.dataset.index || '';
+        menu.dataset.kind = anchor.classList.contains('action-play') ? 'audio' : 'note';
+    }
+
+    function closeMenu() {
+        if (menu) menu.remove();
+        menu = null;
+    }
+
+    document.addEventListener('pointerdown', event => {
+        if (menu && !menu.contains(event.target)) closeMenu();
+    }, true);
+
+    /**
+     * Audio clips of entry [index] for the menu opened by holding 🔊. items: [{ id, label, detail }];
+     * loading: true while sources are still being asked.
+     */
+    function showAudioMenu(index, items, loading) {
+        const button = content.querySelector(`.action-play[data-index="${index}"]`);
+        if (!button) return;
+        if (menu && (menu.dataset.kind !== 'audio' || menu.dataset.anchor !== String(index)) && !loading) return;
+        const rows = (items || []).map(item => ({
+            label: item.label,
+            detail: item.detail,
+            action: () => ScreenlateBridge.onPlayClip(index, item.id),
+        }));
+        if (loading) rows.push({ label: labelOf('audioLoading'), disabled: true });
+        else if (!rows.length) rows.push({ label: labelOf('audioNone'), disabled: true });
+        showMenu(button, rows);
+    }
+
+    // endregion
 
     function labelOf(key) {
         return current?.labels?.[key] || key;
@@ -216,6 +309,14 @@ const Popup = (() => {
     function setButtonState(button, state) {
         if (state) button.dataset.state = state;
         else delete button.dataset.state;
+        if (!button.classList.contains('action-add')) return;
+        const open = state === 'added' || state === 'open';
+        const kind = open ? 'open' : 'add';
+        if (button.dataset.icon !== kind) {
+            button.dataset.icon = kind;
+            button.innerHTML = open ? ICONS.open : ICONS.add;
+            button.setAttribute('aria-label', labelOf(open ? 'openNote' : 'addNote'));
+        }
     }
 
     /** A kanji dictionary entry: the character, readings, meanings and a few statistics per dictionary. */
@@ -391,8 +492,8 @@ const Popup = (() => {
     }
 
     /**
-     * Marks the ➕ buttons of the current view. states: { index: 'duplicate' | 'blocked' | 'added' | 'busy' | 'error' | '' }.
-     * 'blocked' is a duplicate that may not be added again.
+     * Marks the ➕ buttons of the current view. states: { index: 'duplicate' | 'open' | 'added' | 'busy' | 'error' | '' }.
+     * 'duplicate' may be added again; 'open' is a duplicate that may not, 'added' was added during this scan: both show 📖.
      */
     function setNoteStates(states) {
         for (const [index, state] of Object.entries(states)) {
@@ -401,14 +502,39 @@ const Popup = (() => {
         }
     }
 
-    /** Marker values of every entry in the current view, for the duplicate check. */
-    function allNoteData() {
-        return (current?.results || []).map(result => NoteData.build(result, styles).values);
+    /**
+     * Which markers the note fields use and how frequency dictionaries count:
+     * { markers: [name], frequencyModes: { dictionary: 'rank-based' | 'occurrence-based' } }.
+     */
+    function setNoteConfig(config) {
+        noteConfig = config || { markers: null, frequencyModes: {} };
+    }
+
+    /** Values of [markers] for every entry in the current view, for the duplicate check. */
+    function allNoteData(markers) {
+        return (current?.results || []).map(result => NoteData.build(result, noteContext(), markers).values);
+    }
+
+    /** Terms of the current view as [expression, reading] pairs. */
+    function terms() {
+        return (current?.results || []).map(result => [result.term.expression, result.term.reading || '']);
     }
 
     // endregion
 
-    return { configure, render, update, push, setStyles, setActions, setNoteStates, allNoteData };
+    return {
+        configure,
+        render,
+        update,
+        push,
+        setStyles,
+        setActions,
+        setNoteStates,
+        setNoteConfig,
+        allNoteData,
+        terms,
+        showAudioMenu,
+    };
 })();
 
 ScreenlateBridge.onReady();

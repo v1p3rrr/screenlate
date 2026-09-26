@@ -14,8 +14,8 @@
     <string name="overlay_error_ocr">Text recognition failed.</string>
     <string name="overlay_no_results">No dictionary entries found.</string>
     <string name="overlay_no_dictionaries">Dictionaries are still being installed. Try again in a moment.</string>
-    <string name="overlay_add_note">Add to Anki (hold for a screenshot)</string>
-    <string name="overlay_play_audio">Play audio</string>
+    <string name="overlay_add_note">Add to Anki (hold for a picture)</string>
+    <string name="overlay_play_audio">Play audio (hold to choose)</string>
     <string name="anki_error">Could not add the note: %1$s</string>
     <string name="anki_not_configured">Set up Anki export in Screenlate first.</string>
     <string name="anki_not_installed">AnkiDroid is not installed.</string>
@@ -33,4 +33,11 @@
     <string name="overlay_kanji_frequency">Frequency</string>
     <string name="overlay_engine_app_text">App text</string>
     <string name="overlay_copy">Copy</string>
+    <string name="overlay_open_note">Open in AnkiDroid (hold to add anyway)</string>
+    <string name="overlay_add_anyway">Add anyway</string>
+    <string name="overlay_add_anyway_picture">Add anyway, with a picture</string>
+    <string name="overlay_audio_loading">Looking for audio…</string>
+    <string name="overlay_audio_source_jpod" translatable="false">JapanesePod101</string>
+    <string name="overlay_audio_source_url">Custom URL</string>
+    <string name="overlay_audio_source_json">Custom URL (JSON)</string>
 </resources>

@@ -117,6 +117,9 @@ class OverlayController(
     private val popup = PopupController(service, windowManager, PopupCallbacks())
     private val capturer = ScreenCapturer(service, service.mainExecutor)
     private val accessibilityText = AccessibilityText(service)
+    // Only Japanese is supported for now; this becomes a setting with more languages.
+    private val language = Language.JAPANESE
+
     private val popupNotes = PopupNotes(
         context = service,
         scope = scope,
@@ -126,8 +129,10 @@ class OverlayController(
         audio = anki.audio,
         audioSettings = anki.audioSettings,
         lookup = lookup,
+        language = language,
         noteContext = ::noteContext,
         cropEditor = CropEditor(service, windowManager),
+        onAnkiOpened = { dock() },
     )
 
     private var settings = OverlaySettings()
@@ -151,8 +156,6 @@ class OverlayController(
     private val bandJobs = mutableListOf<Job>()
     private val requestedBands = mutableSetOf<Int>()
 
-    // Only Japanese is supported for now; this becomes a setting with more languages.
-    private val language = Language.JAPANESE
     private val json = Json
 
     fun start() {
@@ -738,8 +741,14 @@ class OverlayController(
             screenshotLeft = shot?.left?.toFloat() ?: 0f,
             screenshotTop = shot?.top?.toFloat() ?: 0f,
             focus = focus,
+            documentTitle = foregroundPackage?.let(::appLabel).orEmpty(),
         )
     }
+
+    private fun appLabel(packageName: String): String? = runCatching {
+        val packageManager = service.packageManager
+        packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString()
+    }.getOrNull()
 
     private fun loadDictionaryStyles() {
         scope.launch {
@@ -817,11 +826,6 @@ class OverlayController(
             runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open $url", it) }
             dock()
         }
-
-        override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
-            popupNotes.add(index, noteData, withScreenshot)
-
-        override fun onPlayAudio(expression: String, reading: String) = popupNotes.play(expression, reading)
 
         override fun onCopy(text: String) = PageState.copy(service, text)
 

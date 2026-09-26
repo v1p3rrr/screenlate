@@ -160,7 +160,9 @@ States: `Docked → Dragging → Floating(+Popup)`.
    - Yomitan settings import; real Yomitan database export verified and import sped up;
    - catalog: free dictionaries from the owner's collection;
    - review of screen-size and device assumptions (density, font scale, landscape, tablets, cutouts, navigation modes).
+   - tests: unit tests for new logic as it lands; afterwards coverage of older untested parts (AnkiNotes with a fake AnkiDroid, AudioFinder with a mock server, CompositeOcr with fake engines, the page scripts note.js/anki.js/popup.js) and integration tests (popup WebView on a device, AnkiDroid round trip on the emulator).
 6. **Later** (interview first): APK publishing pipeline on GitHub, per-ABI builds, dock glyph per language.
+7. **Before a release** (not decided yet, interview first): About screen with licenses and dictionary attribution (CC BY-SA requires it in the app), release key and versioning, distribution channel (Google Play is unlikely to accept an accessibility service used this way plus the unofficial Lens endpoint; GitHub Releases or F-Droid-style channels), more target languages.
 
 ## Documentation tasks
 

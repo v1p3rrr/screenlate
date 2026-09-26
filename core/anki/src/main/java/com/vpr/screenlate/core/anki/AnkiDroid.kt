@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.ichi2.anki.FlashCardsContract
@@ -41,15 +42,19 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         else -> AnkiAvailability.READY
     }
 
-    suspend fun decks(): List<AnkiDeck> = io {
+    // Queries return empty results instead of throwing: AnkiDroid's provider throws for ids that no longer exist,
+    // e.g. after the user switched collections or deleted a note type.
+
+    suspend fun decks(): List<AnkiDeck> = query {
         api.deckList.orEmpty().map { (id, name) -> AnkiDeck(id, name) }.sortedBy { it.name.lowercase() }
     }
 
-    suspend fun models(): List<AnkiModel> = io {
+    suspend fun models(): List<AnkiModel> = query {
         api.modelList.orEmpty().map { (id, name) -> AnkiModel(id, name) }.sortedBy { it.name.lowercase() }
     }
 
-    suspend fun fields(modelId: Long): List<String> = io { api.getFieldList(modelId)?.toList().orEmpty() }
+    /** Field names of a note type; empty when it does not exist. */
+    suspend fun fields(modelId: Long): List<String> = query { api.getFieldList(modelId)?.toList().orEmpty() }
 
     /** Adds a note; returns its id, or null if AnkiDroid refused it. */
     suspend fun addNote(modelId: Long, deckId: Long, fields: List<String>, tags: Set<String>): Long? =
@@ -68,11 +73,11 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         modelIds: List<Long>,
         scope: DuplicateScope,
         deckId: Long,
-    ): List<ExistingNote> = io {
+    ): List<ExistingNote> = query {
         val candidates = modelIds.flatMap { modelId ->
             api.findDuplicateNotes(modelId, firstField).orEmpty().map { ExistingNote(it.id, modelId, it.fields.toList()) }
         }
-        if (candidates.isEmpty() || scope == DuplicateScope.COLLECTION) return@io candidates
+        if (candidates.isEmpty() || scope == DuplicateScope.COLLECTION) return@query candidates
         val decks = scopeDecks(scope, deckId)
         candidates.filter { note -> noteDecks(note.id).any { it in decks } }
     }
@@ -90,6 +95,26 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         } finally {
             context.revokeUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
+    }
+
+    /**
+     * Opens AnkiDroid's card browser on these notes through its `anki://x-callback-url/browser` link; older
+     * AnkiDroid versions without the link just open. Returns false when AnkiDroid cannot be opened at all.
+     */
+    fun browseNotes(noteIds: List<Long>): Boolean {
+        val uri = Uri.Builder()
+            .scheme("anki")
+            .authority("x-callback-url")
+            .path("browser")
+            .appendQueryParameter("search", "nid:" + noteIds.joinToString(","))
+            .build()
+        val browse = Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (runCatching { context.startActivity(browse) }.isSuccess) return true
+        val packageName = AddContentApi.getAnkiDroidPackageName(context) ?: return false
+        val launch = context.packageManager.getLaunchIntentForPackage(packageName)
+            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ?: return false
+        return runCatching { context.startActivity(launch) }.isSuccess
     }
 
     /** Directory for files handed to [addMedia]; shared with AnkiDroid through a FileProvider. */
@@ -116,10 +141,20 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
 
     private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 
+    private suspend fun <T> query(block: () -> List<T>): List<T> = withContext(Dispatchers.IO) {
+        try {
+            block()
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "AnkiDroid query failed", e)
+            emptyList()
+        }
+    }
+
     enum class MediaKind(val mimeType: String) { IMAGE("image"), AUDIO("audio") }
 
     companion object {
         const val PERMISSION = AddContentApi.READ_WRITE_PERMISSION
+        private const val TAG = "AnkiDroid"
         const val AUTHORITY_SUFFIX = ".anki.media"
         private const val MEDIA_DIR = "anki-media"
         private const val DECK_SEPARATOR = "::"

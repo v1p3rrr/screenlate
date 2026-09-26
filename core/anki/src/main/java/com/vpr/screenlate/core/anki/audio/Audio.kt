@@ -22,6 +22,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
+import java.io.IOException
 import java.net.URLEncoder
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -41,11 +42,16 @@ enum class AudioSourceType {
 @Serializable
 data class AudioSource(val type: AudioSourceType, val url: String = "")
 
-/** Audio sources in priority order, as in Yomitan. */
+/**
+ * Audio sources in priority order, as in Yomitan.
+ *
+ * @property volume playback volume in percent.
+ */
 @Serializable
 data class AudioSettings(
     val sources: List<AudioSource> = listOf(AudioSource(AudioSourceType.JAPANESE_POD_101)),
     val autoPlay: Boolean = false,
+    val volume: Int = 100,
 )
 
 @Singleton
@@ -71,6 +77,19 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
 /** A downloaded pronunciation. */
 data class AudioClip(val file: File, val url: String, val extension: String)
 
+/**
+ * A pronunciation a source offers, not downloaded yet. [id] is stable for the same sources and term.
+ *
+ * @property name the clip's name in a custom JSON list (often the speaker), otherwise empty.
+ */
+data class AudioCandidate(
+    val id: String,
+    val sourceIndex: Int,
+    val source: AudioSource,
+    val url: String,
+    val name: String,
+)
+
 /** Finds word audio by trying the configured sources in order. Results are cached for the process lifetime. */
 @Singleton
 class AudioFinder @Inject constructor(
@@ -82,13 +101,14 @@ class AudioFinder @Inject constructor(
     private val cache = mutableMapOf<Pair<String, String>, AudioClip?>()
     private val json = Json { ignoreUnknownKeys = true }
 
+    /** The first clip of the sources in priority order. */
     suspend fun find(term: String, reading: String): AudioClip? {
         val key = term to reading
         synchronized(cache) { if (key in cache) return cache[key] }
         var failed = false
         val clip = withContext(Dispatchers.IO) {
-            settings.current().sources.firstNotNullOfOrNull { source ->
-                runCatching { fromSource(source, term, reading) }
+            settings.current().sources.withIndex().firstNotNullOfOrNull { (index, source) ->
+                runCatching { candidatesOf(index, source, term, reading).firstNotNullOfOrNull { download(it, term, reading) } }
                     .onFailure {
                         failed = true
                         Log.i(TAG, "Audio source ${source.type} failed: ${it.message}")
@@ -101,30 +121,57 @@ class AudioFinder @Inject constructor(
         return clip
     }
 
-    private fun fromSource(source: AudioSource, term: String, reading: String): AudioClip? = when (source.type) {
-        AudioSourceType.JAPANESE_POD_101 -> {
-            val kana = reading.ifEmpty { term }
-            val url = buildString {
-                append("https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kana=")
-                append(encode(kana))
-                if (term != kana) append("&kanji=").append(encode(term))
-            }
-            download(url, term, reading)?.takeUnless { sha256(it.file) == JPOD_PLACEHOLDER_SHA256 }
-        }
-        AudioSourceType.URL -> download(expand(source.url, term, reading), term, reading)
-        AudioSourceType.CUSTOM_JSON -> {
-            val listUrl = expand(source.url, term, reading)
-            val body = httpClient.newCall(Request.Builder().url(listUrl).build()).execute().use { response ->
-                if (!response.isSuccessful) return null
-                response.body.string()
-            }
-            val sources = json.parseToJsonElement(body).jsonObject["audioSources"]?.jsonArray.orEmpty()
-            sources.firstNotNullOfOrNull { item ->
-                val url = item.jsonObject["url"]?.jsonPrimitive?.contentOrNull ?: return@firstNotNullOfOrNull null
-                download(listUrl.toHttpUrl().resolve(url)?.toString() ?: url, term, reading)
+    /**
+     * Everything the sources offer for a term, in priority order, for choosing a clip. Custom JSON sources are
+     * asked for their lists; clips are downloaded only by [download]. Sources that fail are skipped.
+     */
+    suspend fun candidates(term: String, reading: String, sources: List<AudioSource>? = null): List<AudioCandidate> =
+        withContext(Dispatchers.IO) {
+            (sources ?: settings.current().sources).withIndex().flatMap { (index, source) ->
+                runCatching { candidatesOf(index, source, term, reading) }
+                    .onFailure { Log.i(TAG, "Audio source ${source.type} failed: ${it.message}") }
+                    .getOrDefault(emptyList())
             }
         }
-    }
+
+    /** Downloads a candidate; null when it is missing or JapanesePod101's "not available" clip. */
+    suspend fun download(candidate: AudioCandidate, term: String, reading: String): AudioClip? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                download(candidate.url, term, reading)?.takeUnless {
+                    candidate.source.type == AudioSourceType.JAPANESE_POD_101 && sha256(it.file) == JPOD_PLACEHOLDER_SHA256
+                }
+            }.onFailure { Log.i(TAG, "Audio ${candidate.url} failed: ${it.message}") }.getOrNull()
+        }
+
+    private fun candidatesOf(index: Int, source: AudioSource, term: String, reading: String): List<AudioCandidate> =
+        when (source.type) {
+            AudioSourceType.JAPANESE_POD_101 -> {
+                val kana = reading.ifEmpty { term }
+                val url = buildString {
+                    append("https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kana=")
+                    append(encode(kana))
+                    if (term != kana) append("&kanji=").append(encode(term))
+                }
+                listOf(AudioCandidate("$index:0", index, source, url, ""))
+            }
+            AudioSourceType.URL ->
+                listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading), ""))
+            AudioSourceType.CUSTOM_JSON -> {
+                val listUrl = expand(source.url, term, reading)
+                val body = httpClient.newCall(Request.Builder().url(listUrl).build()).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+                    response.body.string()
+                }
+                json.parseToJsonElement(body).jsonObject["audioSources"]?.jsonArray.orEmpty()
+                    .mapNotNull { item ->
+                        val url = item.jsonObject["url"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
+                        val name = item.jsonObject["name"]?.jsonPrimitive?.contentOrNull.orEmpty()
+                        (listUrl.toHttpUrl().resolve(url)?.toString() ?: url) to name
+                    }
+                    .mapIndexed { n, (url, name) -> AudioCandidate("$index:$n", index, source, url, name) }
+            }
+        }
 
     private fun download(url: String, term: String, reading: String): AudioClip? =
         httpClient.newCall(Request.Builder().url(url).build()).execute().use { response ->

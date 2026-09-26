@@ -23,7 +23,7 @@ enum class DuplicateScope {
 
 /** What happens when the note being added already exists, as in Yomitan. */
 enum class DuplicateBehavior {
-    /** The ➕ button is disabled for duplicates. */
+    /** The ➕ button becomes 📖, which opens the existing note; holding it adds anyway. */
     PREVENT,
 
     /** The existing note's fields are replaced. */
@@ -33,10 +33,42 @@ enum class DuplicateBehavior {
     NEW,
 }
 
+/** How a field of an existing note changes when a duplicate overwrites it (Yomitan's per-field overwrite modes). */
+enum class OverwriteMode {
+    /** Keep the existing value unless it is empty. */
+    COALESCE,
+
+    /** Take the new value unless it is empty. */
+    COALESCE_NEW,
+    OVERWRITE,
+    SKIP,
+    APPEND,
+    PREPEND,
+    ;
+
+    fun apply(existing: String, new: String): String = when (this) {
+        COALESCE -> existing.ifEmpty { new }
+        COALESCE_NEW -> new.ifEmpty { existing }
+        OVERWRITE -> new
+        SKIP -> existing
+        APPEND -> existing + new
+        PREPEND -> new + existing
+    }
+}
+
+/** Field templates and overwrite modes of one note type, kept while another note type is selected. */
+@Serializable
+data class NoteTemplate(
+    val fields: Map<String, String> = emptyMap(),
+    val overwriteModes: Map<String, OverwriteMode> = emptyMap(),
+)
+
 /**
  * Note export settings. Field templates are keyed by field name and use `{marker}` placeholders
  * (see `FieldTemplate`); fields without a template stay empty.
  *
+ * @property overwriteModes per field, used by [DuplicateBehavior.OVERWRITE]; missing fields use [OverwriteMode.COALESCE].
+ * @property savedTemplates templates of note types used before, by note type name.
  * @property duplicateAllModels search every note type, not just [modelId].
  */
 @Serializable
@@ -46,11 +78,13 @@ data class AnkiSettings(
     val modelId: Long? = null,
     val modelName: String? = null,
     val fields: Map<String, String> = emptyMap(),
+    val overwriteModes: Map<String, OverwriteMode> = emptyMap(),
+    val savedTemplates: Map<String, NoteTemplate> = emptyMap(),
     val tags: String = DEFAULT_TAGS,
     val duplicateCheck: Boolean = true,
     val duplicateScope: DuplicateScope = DuplicateScope.COLLECTION,
     val duplicateAllModels: Boolean = false,
-    val duplicateBehavior: DuplicateBehavior = DuplicateBehavior.NEW,
+    val duplicateBehavior: DuplicateBehavior = DuplicateBehavior.PREVENT,
 ) {
     val configured: Boolean get() = deckId != null && modelId != null && fields.values.any { it.isNotBlank() }
 

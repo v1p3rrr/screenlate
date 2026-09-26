@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -36,6 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -50,7 +55,10 @@ import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
+import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.doneClearsFocus
+import com.vpr.screenlate.ui.components.formContent
 
 /** Deck, note type, field templates, duplicate handling and audio sources. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,6 +66,7 @@ import com.vpr.screenlate.ui.components.SectionCard
 fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { viewModel.refresh() }
+    val focusManager = LocalFocusManager.current
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
         onPauseOrDispose { }
@@ -78,7 +87,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .formContent(padding, focusManager)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -134,6 +143,10 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            OutlinedButton(onClick = viewModel::suggestTemplates, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.anki_suggest_templates))
+            }
+            val overwrite = settings.duplicateCheck && settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
             state.fieldNames.forEach { field ->
                 TemplateField(
                     field = field,
@@ -141,6 +154,12 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     markers = state.markers,
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
+                if (overwrite) {
+                    OverwriteModePicker(
+                        mode = settings.overwriteModes[field] ?: OverwriteMode.COALESCE,
+                        onSelect = { viewModel.setOverwriteMode(field, it) },
+                    )
+                }
             }
         }
     }
@@ -187,6 +206,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
 private fun AudioSettingsCard(state: AnkiScreenState, viewModel: AnkiSettingsViewModel) {
     SectionCard(title = stringResource(R.string.audio_title)) {
         SwitchRow(stringResource(R.string.audio_auto_play), state.audio.autoPlay, viewModel::setAutoPlay)
+        VolumeRow(state.audio.volume, viewModel::setVolume)
         Text(
             stringResource(R.string.audio_sources_hint),
             style = MaterialTheme.typography.bodySmall,
@@ -239,6 +259,55 @@ private fun AudioSettingsCard(state: AnkiScreenState, viewModel: AnkiSettingsVie
     }
 }
 
+/** The slider moves freely; the setting is written when the finger is lifted. */
+@Composable
+private fun VolumeRow(volume: Int, onChange: (Int) -> Unit) {
+    var value by remember(volume) { mutableStateOf(volume.toFloat()) }
+    Column {
+        Text(stringResource(R.string.audio_volume, value.toInt()), style = MaterialTheme.typography.labelLarge)
+        Slider(
+            value = value,
+            onValueChange = { value = it },
+            onValueChangeFinished = { onChange(value.toInt()) },
+            valueRange = 0f..100f,
+        )
+    }
+}
+
+/** How this field changes when a duplicate overwrites an existing note. */
+@Composable
+private fun OverwriteModePicker(mode: OverwriteMode, onSelect: (OverwriteMode) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        TextButton(onClick = { expanded = true }) {
+            Text(
+                stringResource(R.string.anki_overwrite_mode, stringResource(overwriteModeLabel(mode))),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            OverwriteMode.entries.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(overwriteModeLabel(option))) },
+                    onClick = {
+                        expanded = false
+                        onSelect(option)
+                    },
+                )
+            }
+        }
+    }
+}
+
+private fun overwriteModeLabel(mode: OverwriteMode): Int = when (mode) {
+    OverwriteMode.COALESCE -> R.string.anki_overwrite_coalesce
+    OverwriteMode.COALESCE_NEW -> R.string.anki_overwrite_coalesce_new
+    OverwriteMode.OVERWRITE -> R.string.anki_overwrite_overwrite
+    OverwriteMode.SKIP -> R.string.anki_overwrite_skip
+    OverwriteMode.APPEND -> R.string.anki_overwrite_append
+    OverwriteMode.PREPEND -> R.string.anki_overwrite_prepend
+}
+
 private fun audioSourceLabel(type: AudioSourceType): Int = when (type) {
     AudioSourceType.JAPANESE_POD_101 -> R.string.audio_source_jpod
     AudioSourceType.URL -> R.string.audio_source_url
@@ -277,9 +346,10 @@ private fun <T> Picker(label: String, value: String?, options: List<T>, name: (T
 private fun TemplateField(field: String, template: String, markers: List<String>, onChange: (String) -> Unit) {
     var text by remember(field) { mutableStateOf(template) }
     var menu by remember { mutableStateOf(false) }
-    // Templates guessed for a newly selected note type may arrive after the field is shown.
+    var focused by remember { mutableStateOf(false) }
+    // Suggested templates or a note type switch change the template from outside; typing must not be overwritten.
     LaunchedEffect(template) {
-        if (text.isEmpty() && template.isNotEmpty()) text = template
+        if (!focused && template != text) text = template
     }
     OutlinedTextField(
         value = text,
@@ -289,7 +359,9 @@ private fun TemplateField(field: String, template: String, markers: List<String>
         },
         label = { Text(field) },
         textStyle = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { focused = it.isFocused },
         trailingIcon = {
             Box {
                 IconButton(onClick = { menu = true }) {
@@ -323,6 +395,8 @@ private fun EditableText(key: String, initial: String, label: String, onChange: 
         },
         label = { Text(label) },
         singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = doneClearsFocus(),
         modifier = Modifier.fillMaxWidth(),
     )
 }

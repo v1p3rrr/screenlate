@@ -16,6 +16,8 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
+import com.vpr.screenlate.core.anki.settings.NoteTemplate
+import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -34,8 +36,8 @@ data class AnkiScreenState(
     val fieldNames: List<String> = emptyList(),
     val settings: AnkiSettings = AnkiSettings(),
     val audio: AudioSettings = AudioSettings(),
-    /** Markers offered for templates, including one glossary marker per installed term dictionary. */
-    val markers: List<String> = FieldTemplate.MARKERS,
+    /** Markers offered for templates, including Yomitan's per-dictionary markers for installed dictionaries. */
+    val markers: List<String> = FieldTemplate.MARKERS + FieldTemplate.JAPANESE_MARKERS,
     val error: String? = null,
 )
 
@@ -50,7 +52,9 @@ class AnkiSettingsViewModel @Inject constructor(
     private val connection = MutableStateFlow(AnkiScreenState())
 
     private val dictionaryMarkers = dictionaries.dictionaries.map { list ->
-        list.filter { it.termCount > 0 }.map { FieldTemplate.glossaryMarker(it.title) }.distinct()
+        val glossaries = list.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
+        val frequencies = list.filter { it.frequencyCount > 0 }.map { FieldTemplate.singleFrequencyNumberMarker(it.title) }
+        (glossaries + frequencies).distinct()
     }
 
     val state: StateFlow<AnkiScreenState> = combine(
@@ -58,8 +62,12 @@ class AnkiSettingsViewModel @Inject constructor(
         settingsRepository.settings,
         audioRepository.settings,
         dictionaryMarkers,
-    ) { connection, settings, audio, glossaryMarkers ->
-        connection.copy(settings = settings, audio = audio, markers = FieldTemplate.MARKERS + glossaryMarkers)
+    ) { connection, settings, audio, dynamicMarkers ->
+        connection.copy(
+            settings = settings,
+            audio = audio,
+            markers = FieldTemplate.MARKERS + FieldTemplate.JAPANESE_MARKERS + dynamicMarkers,
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AnkiScreenState())
 
     init {
@@ -90,22 +98,46 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun selectDeck(deck: AnkiDeck) = updateSettings { it.copy(deckId = deck.id, deckName = deck.name) }
 
-    /** Switches the note type and pre-fills templates for its fields from their names. */
+    /**
+     * Switches the note type. The templates of the previous note type are kept for when it is selected again; a
+     * note type used before gets its templates back, a new one gets suggested templates.
+     */
     fun selectModel(model: AnkiModel) {
         viewModelScope.launch {
             val fields = runCatching { anki.fields(model.id) }.getOrDefault(emptyList())
             settingsRepository.update { settings ->
-                val templates = fields.mapIndexed { index, name ->
-                    name to (settings.fields[name] ?: FieldTemplate.guess(name, index))
-                }.toMap()
-                settings.copy(modelId = model.id, modelName = model.name, fields = templates)
+                val saved = settings.modelName
+                    ?.let { settings.savedTemplates + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }
+                    ?: settings.savedTemplates
+                val restored = saved[model.name]
+                val suggested = FieldTemplate.guess(model.name, fields)
+                settings.copy(
+                    modelId = model.id,
+                    modelName = model.name,
+                    fields = fields.associateWith { restored?.fields?.get(it) ?: suggested[it].orEmpty() },
+                    overwriteModes = restored?.overwriteModes.orEmpty(),
+                    savedTemplates = saved - model.name,
+                )
             }
             connection.value = connection.value.copy(fieldNames = fields)
         }
     }
 
+    /** Replaces all field templates of the current note type with the suggested ones. */
+    fun suggestTemplates() {
+        val fields = connection.value.fieldNames
+        updateSettings { settings ->
+            settings.copy(fields = FieldTemplate.guess(settings.modelName.orEmpty(), fields))
+        }
+    }
+
     fun setFieldTemplate(field: String, template: String) =
         updateSettings { it.copy(fields = it.fields + (field to template)) }
+
+    fun setOverwriteMode(field: String, mode: OverwriteMode) =
+        updateSettings { it.copy(overwriteModes = it.overwriteModes + (field to mode)) }
+
+    fun setVolume(volume: Int) = updateAudio { it.copy(volume = volume.coerceIn(0, 100)) }
 
     fun setTags(tags: String) = updateSettings { it.copy(tags = tags) }
 

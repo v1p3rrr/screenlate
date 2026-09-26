@@ -40,6 +40,12 @@ class DictionaryLookup @Inject constructor(
         return engine.kanji(character)
     }
 
+    /** `rank-based` or `occurrence-based` for each enabled frequency dictionary that declares it, by title. */
+    suspend fun frequencyModes(): Map<String, String> = repository.getAll()
+        .filter { it.enabled }
+        .mapNotNull { entity -> entity.frequencyMode?.let { entity.title to it } }
+        .toMap()
+
     /** Whether any enabled dictionary with definitions is installed. */
     suspend fun hasTermDictionaries(): Boolean = repository.getAll().any { it.enabled && it.termCount > 0 }
 

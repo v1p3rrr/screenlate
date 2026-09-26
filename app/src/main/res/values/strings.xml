@@ -146,4 +146,13 @@
     <string name="settings_language_ru">Русский</string>
     <string name="settings_language_hint">Also available in the system settings: Apps → Screenlate → Language.</string>
     <string name="action_clear">Clear</string>
+    <string name="anki_suggest_templates">Fill in suggested templates</string>
+    <string name="anki_overwrite_mode">When overwriting: %1$s</string>
+    <string name="anki_overwrite_coalesce">keep the existing value unless empty</string>
+    <string name="anki_overwrite_coalesce_new">take the new value unless empty</string>
+    <string name="anki_overwrite_overwrite">replace</string>
+    <string name="anki_overwrite_skip">keep</string>
+    <string name="anki_overwrite_append">append</string>
+    <string name="anki_overwrite_prepend">prepend</string>
+    <string name="audio_volume">Volume: %1$d%%</string>
 </resources>

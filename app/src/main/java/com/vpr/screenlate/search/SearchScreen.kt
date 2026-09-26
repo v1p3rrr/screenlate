@@ -111,11 +111,6 @@ fun SearchScreen(
                     runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
                 }
 
-                override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
-                    holder.notes.add(index, noteData, withScreenshot = false)
-
-                override fun onPlayAudio(expression: String, reading: String) = holder.notes.play(expression, reading)
-
                 override fun onCopy(text: String) = PageState.copy(context, text)
 
                 override fun onKanji(character: String) {
@@ -143,9 +138,11 @@ fun SearchScreen(
             audio = viewModel.audio,
             audioSettings = viewModel.audioSettings,
             lookup = viewModel.dictionaryLookup,
+            language = SearchViewModel.LANGUAGE,
             // The search text is the sentence; there is no screenshot.
             noteContext = { NoteContext(Sentence("", viewModel.query.value.trim(), ""), null) },
             cropEditor = null,
+            onAnkiOpened = {},
         ).also { holder.notes = it }
     }
     DisposableEffect(Unit) {

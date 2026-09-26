@@ -15,6 +15,8 @@
  *   pitchElement(reading, position, nasal, devoice)        mora-level pitch accent markup
  *   pitchCategory(reading, position, rules)                heiban / atamadaka / nakadaka / odaka / kifuku
  *   downsteps(position)                                    downstep positions of a numeric or HL pattern
+ *   scopeCss(css, prefix)                                  prefixes every selector of a stylesheet
+ *   undakuten(character)                                   が → か, for nasal pitch markup
  *
  * options: { mediaUrl(dictionary, path) -> url, onLookup(query, primaryReading), onExternalLink(url),
  *            exporting: true for Anki markup (plain images, no popup styles) }
@@ -514,11 +516,18 @@ window.YomitanRender = (() => {
         return result;
     }
 
+    /** The same rule as Yomitan's isNonNounVerbOrAdjective: a suru verb that is also a noun counts as a noun. */
+    function isVerbOrAdjective(rules) {
+        const classes = (rules || '').split(' ');
+        const suru = classes.includes('vs');
+        const verbOrAdjective = suru || classes.some(rule => ['v1', 'v5', 'vk', 'vz', 'adj-i'].includes(rule));
+        return verbOrAdjective && !(suru && classes.includes('n'));
+    }
+
     function pitchCategory(reading, position, rules) {
         const downstep = downsteps(position)[0];
         if (downstep === 0) return 'heiban';
-        const verbOrAdjective = (rules || '').split(' ').some(rule => rule.startsWith('v') || rule.startsWith('adj-i'));
-        if (verbOrAdjective) return downstep > 0 ? 'kifuku' : null;
+        if (isVerbOrAdjective(rules)) return downstep > 0 ? 'kifuku' : null;
         if (downstep === 1) return 'atamadaka';
         if (downstep > 1) return downstep >= morae(reading).length ? 'odaka' : 'nakadaka';
         return null;
@@ -568,9 +577,16 @@ window.YomitanRender = (() => {
 
     // endregion
 
+    /** The base character of a voiced kana (が → か), or null. */
+    function undakuten(character) {
+        return DIACRITICS.get(character) || null;
+    }
+
     return {
         renderGlossary,
         dictionaryCss,
+        scopeCss,
+        undakuten,
         furigana,
         furiganaSegments,
         pitchElement,

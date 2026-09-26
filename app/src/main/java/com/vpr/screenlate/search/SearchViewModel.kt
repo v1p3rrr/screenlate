@@ -61,7 +61,7 @@ class SearchViewModel @Inject constructor(
 
     suspend fun styles(): List<DictionaryStyle> = runCatching { lookup.styles(LANGUAGE) }.getOrDefault(emptyList())
 
-    private companion object {
+    companion object {
         const val SEARCH_DELAY_MS = 150L
         val LANGUAGE = Language.JAPANESE
     }

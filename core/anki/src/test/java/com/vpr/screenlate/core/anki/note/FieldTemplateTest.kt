@@ -15,29 +15,73 @@ class FieldTemplateTest {
 
     @Test
     fun findsMarkers() {
-        assertThat(FieldTemplate.markersIn("{sentence}<br>{glossary-jitendex-org}"))
-            .containsExactly("sentence", "glossary-jitendex-org")
+        assertThat(FieldTemplate.markersIn("{sentence}<br>{single-glossary-jitendexorg-2026-08-11}"))
+            .containsExactly("sentence", "single-glossary-jitendexorg-2026-08-11")
     }
 
     @Test
-    fun glossaryMarkerIgnoresRevision() {
-        assertThat(FieldTemplate.glossaryMarker("Jitendex.org [2026-08-11]")).isEqualTo("glossary-jitendex-org")
-        assertThat(FieldTemplate.glossaryMarker("Колобок 400k")).isEqualTo("glossary-колобок-400k")
+    fun dynamicMarkersUseYomitanNames() {
+        assertThat(FieldTemplate.singleGlossaryMarker("Jitendex.org [2026-08-11]"))
+            .isEqualTo("single-glossary-jitendexorg-2026-08-11")
+        assertThat(FieldTemplate.singleGlossaryMarker("大辞林 第三版（画像のみ）")).isEqualTo("single-glossary-大辞林-第三版画像のみ")
+        assertThat(FieldTemplate.singleFrequencyNumberMarker("JPDB")).isEqualTo("single-frequency-number-jpdb")
+        assertThat(FieldTemplate.isKnown("single-glossary-jpdb")).isTrue()
+        assertThat(FieldTemplate.isKnown("frequency-harmonic-rank")).isTrue()
+        assertThat(FieldTemplate.isKnown("nope")).isFalse()
     }
 
     @Test
-    fun guessesTemplatesFromFieldNames() {
-        assertThat(FieldTemplate.guess("Expression", 0)).isEqualTo("{expression}")
-        assertThat(FieldTemplate.guess("ExpressionReading", 1)).isEqualTo("{reading}")
-        assertThat(FieldTemplate.guess("ExpressionFurigana", 2)).isEqualTo("{furigana}")
-        assertThat(FieldTemplate.guess("Sentence", 3)).isEqualTo("{sentence}")
-        assertThat(FieldTemplate.guess("SentenceFurigana", 4)).isEqualTo("")
-        assertThat(FieldTemplate.guess("MainDefinition", 5)).isEqualTo("{glossary}")
-        assertThat(FieldTemplate.guess("Picture", 6)).isEqualTo("{screenshot}")
-        assertThat(FieldTemplate.guess("ExpressionAudio", 7)).isEqualTo("{audio}")
-        assertThat(FieldTemplate.guess("PitchPosition", 8)).isEqualTo("{pitch-accent-positions}")
-        assertThat(FieldTemplate.guess("Front", 0)).isEqualTo("{expression}")
-        assertThat(FieldTemplate.guess("Back", 1)).isEqualTo("{glossary}")
-        assertThat(FieldTemplate.guess("Notes", 9)).isEqualTo("")
+    fun guessesLikeYomitanByWholeFieldNames() {
+        val fields = listOf(
+            "Front", "Reading", "Sentence", "SentenceFurigana", "Meaning", "Word Audio", "Pitch Position",
+            "FreqSort", "IsSentenceCard", "Notes",
+        )
+        assertThat(FieldTemplate.guess("Custom", fields)).containsExactlyEntriesIn(
+            mapOf(
+                "Front" to "{expression}",
+                "Reading" to "{reading}",
+                "Sentence" to "{sentence}",
+                "SentenceFurigana" to "{sentence-furigana}",
+                "Meaning" to "{glossary}",
+                "Word Audio" to "{audio}",
+                "Pitch Position" to "{pitch-accent-positions}",
+                "FreqSort" to "{frequency-harmonic-rank}",
+                "IsSentenceCard" to "",
+                "Notes" to "",
+            ),
+        )
+    }
+
+    @Test
+    fun senrenPresetKeepsCardSwitchesEmpty() {
+        // The owner's Senren version, with the older field names.
+        val fields = listOf(
+            "word", "reading", "sentence", "sentenceFurigana", "sentenceEng", "picture", "definition", "glossary",
+            "wordAudio", "sentenceAudio", "pitchPosition", "pitch", "notes", "hint", "frequency", "freqSort",
+            "miscInfo", "sentenceCard", "selectionText", "audioCard", "dictionaryPreference", "wordFuriganaUnused",
+        )
+        val templates = FieldTemplate.guess("Senren", fields)
+
+        assertThat(templates["word"]).isEqualTo("{expression}")
+        assertThat(templates["sentence"]).contains("<span class=\"highlight\">{cloze-body}</span>")
+        assertThat(templates["pitch"]).isEqualTo("{pitch-accent-categories}")
+        assertThat(templates["pitchPosition"]).isEqualTo("{pitch-accent-positions}")
+        assertThat(templates["frequency"]).isEqualTo("{frequencies}")
+        assertThat(templates["freqSort"]).isEqualTo("{frequency-harmonic-rank}")
+        assertThat(templates["picture"]).isEqualTo("{screenshot}")
+        for (flag in listOf("sentenceCard", "audioCard", "sentenceEng", "definition", "wordFuriganaUnused")) {
+            assertThat(templates[flag]).isEmpty()
+        }
+    }
+
+    @Test
+    fun lapisPresetUsesPlainFurigana() {
+        val fields = listOf("Expression", "ExpressionFurigana", "ExpressionReading", "MainDefinition", "Sentence", "IsClickCard")
+        val templates = FieldTemplate.guess("Lapis", fields)
+
+        assertThat(templates["ExpressionFurigana"]).isEqualTo("{furigana-plain}")
+        assertThat(templates["MainDefinition"]).isEqualTo("{glossary-first}")
+        assertThat(templates["Sentence"]).isEqualTo("{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}")
+        assertThat(templates["IsClickCard"]).isEmpty()
     }
 }

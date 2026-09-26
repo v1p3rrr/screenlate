@@ -216,13 +216,13 @@ a {
     color: var(--muted);
 }
 
-.action-add[data-state="blocked"],
 .action-add[data-state="busy"] {
     color: var(--muted);
     opacity: 0.45;
 }
 
-.action-add[data-state="added"] {
+.action-add[data-state="added"],
+.action-add[data-state="open"] {
     color: var(--frequency-fg);
     background: var(--frequency-bg);
 }
@@ -381,4 +381,48 @@ a {
 
 .definition-body {
     display: inline;
+}
+
+/* Menu (hold ➕/📖 or 🔊) */
+
+.menu {
+    position: fixed;
+    z-index: 10;
+    min-width: 180px;
+    max-width: calc(100vw - 8px);
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 4px 0;
+    border-radius: 10px;
+    background: var(--menu-bg, var(--bg));
+    color: var(--fg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--divider);
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+.menu-item:active:not(:disabled) {
+    background: var(--chip-bg);
+}
+
+.menu-item:disabled {
+    color: var(--muted);
+}
+
+.menu-detail {
+    color: var(--muted);
+    font-size: 0.8em;
+    overflow-wrap: anywhere;
 }
