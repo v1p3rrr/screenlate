@@ -133,6 +133,7 @@ class OverlayController(
     private var hit: TextPosition? = null
     private var aim: Pair<Float, Float>? = null
     private var pendingSingleTap: Runnable? = null
+    private var foregroundPackage: String? = null
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
     private var screenshot: CapturedScreen? = null
@@ -165,13 +166,23 @@ class OverlayController(
         if (attached) dock()
     }
 
+    /** The app in the foreground changed; the bubble hides in apps the user excluded. */
+    fun onForegroundApp(packageName: String) {
+        if (packageName == foregroundPackage) return
+        foregroundPackage = packageName
+        applySettings(settings)
+    }
+
+    private fun shouldShowBubble(): Boolean = settings.bubbleVisible && foregroundPackage !in settings.hiddenPackages
+
     // region Settings and windows
 
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
-        if (new.bubbleVisible && !attached) attachWindows()
-        if (!new.bubbleVisible && attached) {
+        val show = shouldShowBubble()
+        if (show && !attached) attachWindows()
+        if (!show && attached) {
             resetScan()
             popup.hide()
             detachWindows()

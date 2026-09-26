@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.anki.AnkiSettingsScreen
+import com.vpr.screenlate.bubble.BubbleSettingsScreen
 import com.vpr.screenlate.debug.ImageViewerScreen
 import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.debug.OcrTestScreen
@@ -25,6 +26,9 @@ private object DictionariesRoute
 
 @Serializable
 private object AnkiRoute
+
+@Serializable
+private object BubbleRoute
 
 @Serializable
 private data class SearchRoute(val query: String = "")
@@ -52,7 +56,11 @@ fun ScreenlateNavHost(
                 onOpenDictionaries = { navController.navigate(DictionariesRoute) },
                 onOpenAnki = { navController.navigate(AnkiRoute) },
                 onOpenSearch = { navController.navigate(SearchRoute()) },
+                onOpenBubble = { navController.navigate(BubbleRoute) },
             )
+        }
+        composable<BubbleRoute> {
+            BubbleSettingsScreen(onBack = { navController.popBackStack() })
         }
         composable<SearchRoute> { entry ->
             SearchScreen(

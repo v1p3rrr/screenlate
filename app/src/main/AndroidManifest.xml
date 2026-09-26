@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Lists launcher apps for "hide the bubble in these apps". -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <!-- tools:replace: the AnkiDroid API library declares its own allowBackup and label. -->
     <application
         android:name=".ScreenlateApplication"

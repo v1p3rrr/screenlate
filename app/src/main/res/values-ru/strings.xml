@@ -107,4 +107,18 @@
     <string name="dictionaries_update">Обновить</string>
     <string name="dictionaries_update_all">Обновить все</string>
     <string name="dictionaries_sort_by">Сортировать результаты по этому словарю</string>
+    <string name="bubble_title">Кружок</string>
+    <string name="home_bubble_open">Настройки кружка</string>
+    <string name="bubble_aim">Прицел</string>
+    <string name="bubble_aim_above">Над пальцем</string>
+    <string name="bubble_aim_center">Центр кружка</string>
+    <string name="bubble_aim_hint">Двойной тап по кружку переключает режим.</string>
+    <string name="bubble_dock_side">Док</string>
+    <string name="bubble_dock_left">Слева</string>
+    <string name="bubble_dock_right">Справа</string>
+    <string name="bubble_highlight">Подсвечивать слово под прицелом</string>
+    <string name="bubble_haptics">Вибрация на новом слове</string>
+    <string name="bubble_hidden_apps">Скрывать кружок в приложениях</string>
+    <string name="bubble_hidden_apps_hint">Кружок пропадает, пока открыто одно из отмеченных приложений.</string>
+    <string name="bubble_filter_apps">Фильтр приложений</string>
 </resources>

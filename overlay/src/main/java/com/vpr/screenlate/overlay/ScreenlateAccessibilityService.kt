@@ -2,7 +2,10 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.res.Configuration
+import android.os.Handler
+import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityWindowInfo
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
@@ -62,14 +65,36 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         controller?.onConfigurationChanged()
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent) = Unit
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
+        // Window focus moves shortly after the event; read it once things settle.
+        handler.removeCallbacks(foregroundCheck)
+        handler.postDelayed(foregroundCheck, FOREGROUND_CHECK_DELAY_MS)
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val foregroundCheck = Runnable {
+        focusedAppPackage()?.let { controller?.onForegroundApp(it) }
+    }
+
+    /** Package of the focused application window; system UI, keyboards and our overlays are not applications. */
+    private fun focusedAppPackage(): String? = windows
+        .firstOrNull { it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isFocused }
+        ?.root
+        ?.packageName
+        ?.toString()
 
     override fun onInterrupt() = Unit
 
     override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
         controller?.stop()
         controller = null
         scope.cancel()
         super.onDestroy()
+    }
+
+    private companion object {
+        const val FOREGROUND_CHECK_DELAY_MS = 250L
     }
 }

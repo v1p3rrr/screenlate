@@ -112,4 +112,18 @@
     <string name="dictionaries_update">Update</string>
     <string name="dictionaries_update_all">Update all</string>
     <string name="dictionaries_sort_by">Sort results by this dictionary</string>
+    <string name="bubble_title">Bubble</string>
+    <string name="home_bubble_open">Bubble settings</string>
+    <string name="bubble_aim">Aim point</string>
+    <string name="bubble_aim_above">Above the finger</string>
+    <string name="bubble_aim_center">Bubble center</string>
+    <string name="bubble_aim_hint">A double tap on the floating bubble switches between the two.</string>
+    <string name="bubble_dock_side">Dock</string>
+    <string name="bubble_dock_left">Left edge</string>
+    <string name="bubble_dock_right">Right edge</string>
+    <string name="bubble_highlight">Highlight the word under the aim</string>
+    <string name="bubble_haptics">Vibrate on a new word</string>
+    <string name="bubble_hidden_apps">Hide the bubble in apps</string>
+    <string name="bubble_hidden_apps_hint">The bubble disappears while one of the checked apps is open.</string>
+    <string name="bubble_filter_apps">Filter apps</string>
 </resources>

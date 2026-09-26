@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,7 @@ enum class AimMode {
 
 /**
  * @property dockY vertical position of the docked bubble as a fraction of the screen height.
+ * @property hiddenPackages apps in which the bubble is hidden.
  */
 data class OverlaySettings(
     val bubbleVisible: Boolean = true,
@@ -31,6 +33,7 @@ data class OverlaySettings(
     val aimMode: AimMode = AimMode.ABOVE_FINGER,
     val highlightWord: Boolean = true,
     val haptics: Boolean = false,
+    val hiddenPackages: Set<String> = emptySet(),
 )
 
 @Singleton
@@ -48,21 +51,43 @@ class OverlaySettingsRepository @Inject constructor(
                 ?: defaults.aimMode,
             highlightWord = prefs[HIGHLIGHT_WORD] ?: defaults.highlightWord,
             haptics = prefs[HAPTICS] ?: defaults.haptics,
+            hiddenPackages = prefs[HIDDEN_PACKAGES] ?: defaults.hiddenPackages,
         )
     }
 
-    suspend fun setBubbleVisible(visible: Boolean) = dataStore.edit { it[BUBBLE_VISIBLE] = visible }
-
-    suspend fun setDock(side: DockSide, y: Float) = dataStore.edit {
-        it[DOCK_SIDE] = side.name
-        it[DOCK_Y] = y.coerceIn(0f, 1f)
+    suspend fun setBubbleVisible(visible: Boolean) {
+        dataStore.edit { it[BUBBLE_VISIBLE] = visible }
     }
 
-    suspend fun setAimMode(mode: AimMode) = dataStore.edit { it[AIM_MODE] = mode.name }
+    suspend fun setDock(side: DockSide, y: Float) {
+        dataStore.edit {
+            it[DOCK_SIDE] = side.name
+            it[DOCK_Y] = y.coerceIn(0f, 1f)
+        }
+    }
 
-    suspend fun setHighlightWord(enabled: Boolean) = dataStore.edit { it[HIGHLIGHT_WORD] = enabled }
+    suspend fun setAimMode(mode: AimMode) {
+        dataStore.edit { it[AIM_MODE] = mode.name }
+    }
 
-    suspend fun setHaptics(enabled: Boolean) = dataStore.edit { it[HAPTICS] = enabled }
+    suspend fun setHighlightWord(enabled: Boolean) {
+        dataStore.edit { it[HIGHLIGHT_WORD] = enabled }
+    }
+
+    suspend fun setHaptics(enabled: Boolean) {
+        dataStore.edit { it[HAPTICS] = enabled }
+    }
+
+    suspend fun setDockSide(side: DockSide) {
+        dataStore.edit { it[DOCK_SIDE] = side.name }
+    }
+
+    suspend fun setHidden(packageName: String, hidden: Boolean) {
+        dataStore.edit { prefs ->
+            val current = prefs[HIDDEN_PACKAGES].orEmpty()
+            prefs[HIDDEN_PACKAGES] = if (hidden) current + packageName else current - packageName
+        }
+    }
 
     private companion object {
         val BUBBLE_VISIBLE = booleanPreferencesKey("overlay_bubble_visible")
@@ -71,5 +96,6 @@ class OverlaySettingsRepository @Inject constructor(
         val AIM_MODE = stringPreferencesKey("overlay_aim_mode")
         val HIGHLIGHT_WORD = booleanPreferencesKey("overlay_highlight_word")
         val HAPTICS = booleanPreferencesKey("overlay_haptics")
+        val HIDDEN_PACKAGES = stringSetPreferencesKey("overlay_hidden_packages")
     }
 }

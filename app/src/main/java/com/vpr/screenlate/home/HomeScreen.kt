@@ -43,6 +43,7 @@ fun HomeScreen(
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
     onOpenSearch: () -> Unit,
+    onOpenBubble: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -113,6 +114,12 @@ fun HomeScreen(
             SectionCard(title = stringResource(R.string.onboarding_device_title)) {
                 Text(stringResource(R.string.onboarding_device_app_launch))
                 Text(stringResource(R.string.onboarding_device_restricted_settings))
+            }
+
+            SectionCard(title = stringResource(R.string.bubble_title)) {
+                OutlinedButton(onClick = onOpenBubble, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.home_bubble_open))
+                }
             }
 
             SectionCard(title = stringResource(R.string.settings_theme_title)) {
