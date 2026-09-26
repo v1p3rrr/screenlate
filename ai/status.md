@@ -34,7 +34,20 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next
 
-- Continue phase 5 with the remaining items listed in the plan (warnings, Settings screen, audio dialog and sources, lookup settings and language audit, Yomitan settings import, collection import checklist and speed, catalog, orientation review, log cleanup, tests), then phases 6–7.
+- Continue phase 5 in this order (details in the plan's phase 5 list and decision table):
+  1. Log cleanup: no user text in logs; redact URLs with terms (Audio.kt candidate/source failures, PopupNotes "Cannot play", OverlayController "Cannot open", LookupPage media path, DictionaryImportWorker/DictionaryUpdates are fine).
+  2. Wording pass: no "Lens" in UI strings (popup chip → "Cloud"/"Облако", OCR boost and text source hints → cloud recognition), README, docs/, NOTICE (neutral MIT attribution of chrome-lens-ocr only).
+  3. Lookup settings + `LanguageSupport` (Japanese: lookup-worthiness, romaji via Mozc table (BSD, NOTICE), sentence rules): scan length, max results (32, warning), text replacements (empty default, source mapping for highlight), romaji switch, single kanji entries (on).
+  4. One Settings screen (Bubble, Lookup, Dictionaries, Anki and audio, Appearance, Import from Yomitan, About); home keeps search, service status, warnings.
+  5. Broken-setup warnings: grey ➕ + short reason + "Open Screenlate"; home shows problems; missing dictionaries restored/re-downloaded.
+  6. Audio: source dialog (Save/Test), test panel (読む), sources LanguagePod101, Jisho, Lingua Libre, Wiktionary, Android TTS (own implementations, not Yomitan code); defaults JapanesePod101, LanguagePod101, Jisho.
+  7. Yomitan settings import (profile picker, summary; localhost audio sources imported as they are).
+  8. Collection import: checklist; test with `testdata/dictionaries/yomitan-dictionaries-2026-01-22-22-46-44.json` (2.7 GB) and speed it up.
+  9. Catalog: free dictionaries + author-published frequency lists from `testdata/dictionaries/`.
+  10. Orientation/device review (landscape popup sizes and insets).
+  11. Tests (Kotlin + page JS, instrumented with fake OCR; Anki tests with a note type created through the API).
+  12. docs/usage.md, docs/architecture.md, README, status; then phases 6 and 7.
+- Emulator: AnkiDroid is a fresh local collection without an account; importing `testdata/anki-backup/3 Mining.apkg` (owner's Senren) did not work through a `file://` VIEW intent yet — try a MediaStore content URI or AnkiDroid's own import menu. Screenlate Dev on the emulator still points at the old Default/Basic note type (now missing), which exercises the broken-setup warning.
 
 - Yomitan settings backup: interview the owner about what to import (dictionary order, Anki templates, audio sources, scan settings) before planning.
 - Verify the Yomitan collection import with a real export from the owner.
