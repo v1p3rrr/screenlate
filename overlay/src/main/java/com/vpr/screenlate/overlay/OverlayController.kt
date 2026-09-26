@@ -31,6 +31,7 @@ import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.anki.NoteContext
 import com.vpr.screenlate.overlay.anki.PopupNotes
@@ -680,6 +681,13 @@ class OverlayController(
             popupNotes.add(index, noteData, withScreenshot)
 
         override fun onPlayAudio(expression: String, reading: String) = popupNotes.play(expression, reading)
+
+        override fun onKanji(character: String) {
+            scope.launch {
+                val result = runCatching { lookup.kanji(character, language) }.getOrElse { KanjiResult(character) }
+                popup.push(PageState.kanji(service, isDarkTheme(), result, service.getString(R.string.overlay_no_kanji)))
+            }
+        }
 
         override fun media(dictionary: String, path: String): ByteArray? =
             runBlocking { lookup.media(dictionary, path) }

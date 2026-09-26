@@ -10,7 +10,7 @@
  * Public API (window.YomitanRender):
  *   renderGlossary(parent, content, dictionary, options)  structured content, text and images
  *   dictionaryCss(css, dictionary)                         a dictionary's styles.css scoped to its glossaries
- *   furigana(parent, expression, reading)                  ruby markup for a term
+ *   furigana(parent, expression, reading, kanjiClass)      ruby markup for a term
  *   furiganaSegments(expression, reading)                  [[text, reading], ...]
  *   pitchElement(reading, position, nasal, devoice)        mora-level pitch accent markup
  *   pitchCategory(reading, position, rules)                heiban / atamadaka / nakadaka / odaka / kifuku
@@ -436,17 +436,34 @@ window.YomitanRender = (() => {
         return segments !== null ? segments.map(s => [s.text, s.reading]) : [[expression, reading]];
     }
 
-    function furigana(parent, expression, reading) {
+    /** @param kanjiClass when set, every kanji is wrapped in a span with this class (to make it tappable). */
+    function furigana(parent, expression, reading, kanjiClass = null) {
+        const appendText = (target, text) => {
+            if (!kanjiClass) {
+                target.appendChild(document.createTextNode(text));
+                return;
+            }
+            for (const character of text) {
+                if (KANJI_PATTERN.test(character)) {
+                    const span = document.createElement('span');
+                    span.className = kanjiClass;
+                    span.textContent = character;
+                    target.appendChild(span);
+                } else {
+                    target.appendChild(document.createTextNode(character));
+                }
+            }
+        };
         for (const [text, ruby] of furiganaSegments(expression, reading)) {
             if (ruby) {
                 const element = document.createElement('ruby');
-                element.appendChild(document.createTextNode(text));
+                appendText(element, text);
                 const rt = document.createElement('rt');
                 rt.textContent = ruby;
                 element.appendChild(rt);
                 parent.appendChild(element);
             } else {
-                parent.appendChild(document.createTextNode(text));
+                appendText(parent, text);
             }
         }
     }

@@ -11,6 +11,7 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -54,6 +55,9 @@ class SearchViewModel @Inject constructor(
         }.getOrDefault(emptyList())
         return SearchResults(trimmed, found, noDictionaries = found.isEmpty() && !lookup.hasTermDictionaries())
     }
+
+    suspend fun kanji(character: String): KanjiResult =
+        runCatching { lookup.kanji(character, LANGUAGE) }.getOrElse { KanjiResult(character) }
 
     suspend fun styles(): List<DictionaryStyle> = runCatching { lookup.styles(LANGUAGE) }.getOrDefault(emptyList())
 

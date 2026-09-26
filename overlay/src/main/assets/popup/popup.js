@@ -24,6 +24,7 @@ const Popup = (() => {
     const dictionaryStyles = document.getElementById('dictionary-styles');
     const renderer = window.YomitanRender || null;
     const HOLD_MS = 450;
+    const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
@@ -74,11 +75,20 @@ const Popup = (() => {
     // region Entries
 
     function resultsKey(state) {
-        return JSON.stringify([state.message, state.source, (state.results || []).map(r => r.term.expression + r.term.reading)]);
+        return JSON.stringify([
+            state.message,
+            state.source,
+            state.kanji?.character,
+            (state.results || []).map(r => r.term.expression + r.term.reading),
+        ]);
     }
 
     function drawResults(state) {
         drawnKey = resultsKey(state);
+        if (state.kanji) {
+            content.replaceChildren(kanjiView(state.kanji, state.labels || {}));
+            return;
+        }
         const results = state.results || [];
         if (state.message || results.length === 0) {
             content.replaceChildren(element('div', 'message', state.message || state.labels?.noResults || ''));
@@ -98,7 +108,11 @@ const Popup = (() => {
         const expression = element('span', 'expression');
         expression.lang = 'ja';
         if (renderer) {
-            renderer.furigana(expression, term.expression, term.reading);
+            renderer.furigana(expression, term.expression, term.reading, 'kanji-char');
+            expression.addEventListener('click', event => {
+                const target = event.target.closest('.kanji-char');
+                if (target) ScreenlateBridge.onKanji(target.textContent);
+            });
         } else {
             expression.textContent = term.reading && term.reading !== term.expression
                 ? `${term.expression}【${term.reading}】`
@@ -199,6 +213,44 @@ const Popup = (() => {
     function setButtonState(button, state) {
         if (state) button.dataset.state = state;
         else delete button.dataset.state;
+    }
+
+    /** A kanji dictionary entry: the character, readings, meanings and a few statistics per dictionary. */
+    function kanjiView(kanji, labels) {
+        const view = element('article', 'entry kanji-entry');
+        view.append(element('div', 'kanji-character', kanji.character));
+        for (const entry of kanji.entries || []) {
+            const section = element('section', 'dictionary');
+            section.append(element('div', 'dictionary-name', entry.dictionary));
+            const readings = [
+                [labels.onyomi || 'On', entry.onyomi],
+                [labels.kunyomi || 'Kun', entry.kunyomi],
+            ];
+            for (const [label, value] of readings) {
+                if (!value) continue;
+                const row = element('div', 'kanji-row');
+                row.append(element('span', 'kanji-label', label));
+                row.append(element('span', 'kanji-readings', value.split(' ').filter(Boolean).join('、')));
+                section.append(row);
+            }
+            if ((entry.definitions || []).length) {
+                const list = element('ol', 'definitions');
+                entry.definitions.forEach(definition => list.append(element('li', 'definition', definition)));
+                section.append(list);
+            }
+            const stats = element('div', 'entry-meta');
+            for (const key of KANJI_STATS) {
+                const value = entry.stats?.[key];
+                if (!value) continue;
+                const chip = element('span', 'frequency');
+                chip.append(element('span', 'frequency-dictionary', labels[`stat_${key}`] || key));
+                chip.append(element('span', 'frequency-value', value));
+                stats.append(chip);
+            }
+            if (stats.childNodes.length) section.append(stats);
+            view.append(section);
+        }
+        return view;
     }
 
     function pitchBlock(term) {

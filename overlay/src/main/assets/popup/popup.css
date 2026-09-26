@@ -242,6 +242,30 @@ a {
     line-height: 1.3;
 }
 
+.kanji-char {
+    cursor: pointer;
+}
+
+.kanji-entry .kanji-character {
+    font-size: 4.5em;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.kanji-row {
+    display: flex;
+    gap: 8px;
+    margin: 2px 0;
+}
+
+.kanji-label {
+    flex: none;
+    min-width: 2.5em;
+    color: var(--muted);
+    font-size: 0.85em;
+    padding-top: 0.1em;
+}
+
 .expression rt {
     font-size: 0.45em;
     color: var(--muted);

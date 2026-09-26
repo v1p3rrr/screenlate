@@ -24,4 +24,11 @@
     <string name="crop_whole_screen">Whole screen</string>
     <string name="crop_cancel">Cancel</string>
     <string name="crop_add">Add</string>
+    <string name="overlay_no_kanji">No kanji dictionary has this character. Kanji dictionaries can be downloaded on the Dictionaries screen.</string>
+    <string name="overlay_kanji_onyomi">On</string>
+    <string name="overlay_kanji_kunyomi">Kun</string>
+    <string name="overlay_kanji_strokes">Strokes</string>
+    <string name="overlay_kanji_grade">Grade</string>
+    <string name="overlay_kanji_jlpt" translatable="false">JLPT</string>
+    <string name="overlay_kanji_frequency">Frequency</string>
 </resources>

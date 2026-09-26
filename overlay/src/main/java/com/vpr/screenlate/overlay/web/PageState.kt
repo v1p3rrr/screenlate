@@ -1,6 +1,7 @@
 package com.vpr.screenlate.overlay.web
 
 import android.content.Context
+import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
 import kotlinx.serialization.builtins.ListSerializer
@@ -40,6 +41,28 @@ object PageState {
             put("noResults", context.getString(R.string.overlay_no_results))
             put("addNote", context.getString(R.string.overlay_add_note))
             put("playAudio", context.getString(R.string.overlay_play_audio))
+        }
+    }
+
+    /** A kanji view; [kanji] without entries shows [message] instead. */
+    fun kanji(context: Context, dark: Boolean, kanji: KanjiResult, message: String?): JsonObject = buildJsonObject {
+        put("theme", if (dark) "dark" else "light")
+        putJsonObject("source") {
+            put("text", kanji.character)
+            put("matched", 1)
+        }
+        if (kanji.entries.isEmpty()) {
+            message?.let { put("message", it) }
+        } else {
+            put("kanji", Json.encodeToJsonElement(KanjiResult.serializer(), kanji))
+        }
+        putJsonObject("labels") {
+            put("onyomi", context.getString(R.string.overlay_kanji_onyomi))
+            put("kunyomi", context.getString(R.string.overlay_kanji_kunyomi))
+            put("stat_strokes", context.getString(R.string.overlay_kanji_strokes))
+            put("stat_grade", context.getString(R.string.overlay_kanji_grade))
+            put("stat_jlpt", context.getString(R.string.overlay_kanji_jlpt))
+            put("stat_freq", context.getString(R.string.overlay_kanji_frequency))
         }
     }
 

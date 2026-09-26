@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api
 
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import javax.inject.Inject
@@ -32,6 +33,12 @@ class DictionaryLookup @Inject constructor(
     }
 
     suspend fun media(dictionary: String, path: String): ByteArray? = engine.media(dictionary, path)
+
+    /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
+    suspend fun kanji(character: String, language: Language): KanjiResult {
+        repository.prepareLookup(language)
+        return engine.kanji(character)
+    }
 
     /** Whether any enabled dictionary with definitions is installed. */
     suspend fun hasTermDictionaries(): Boolean = repository.getAll().any { it.enabled && it.termCount > 0 }

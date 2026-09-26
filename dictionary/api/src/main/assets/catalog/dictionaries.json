@@ -69,6 +69,24 @@
       "sizeMb": 1,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary"
+    },
+    {
+      "id": "kanjidic-english",
+      "title": "KANJIDIC",
+      "installedTitle": "KANJIDIC",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "en",
+      "description": {
+        "en": "Readings, meanings, stroke count, grade and JLPT level of about 13,000 kanji. Tap a kanji in an entry's headword to see it.",
+        "ru": "Чтения, значения, число черт, класс и уровень JLPT примерно для 13 000 кандзи. Нажмите на кандзи в заголовке статьи, чтобы открыть его."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_english.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_english.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
     }
   ]
 }

@@ -49,6 +49,9 @@ class LookupPage(
 
         fun onPlayAudio(expression: String, reading: String)
 
+        /** A kanji in an entry's headword was tapped. */
+        fun onKanji(character: String)
+
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
     }
@@ -200,6 +203,9 @@ class LookupPage(
 
         @JavascriptInterface
         fun onPlayAudio(expression: String, reading: String) = post { callbacks.onPlayAudio(expression, reading) }
+
+        @JavascriptInterface
+        fun onKanji(character: String) = post { callbacks.onKanji(character) }
 
         private fun post(action: () -> Unit) {
             mainHandler.post(action)

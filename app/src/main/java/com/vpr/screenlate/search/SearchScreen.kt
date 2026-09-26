@@ -103,6 +103,15 @@ fun SearchScreen(
 
                 override fun onPlayAudio(expression: String, reading: String) = holder.notes.play(expression, reading)
 
+                override fun onKanji(character: String) {
+                    scope.launch {
+                        val result = viewModel.kanji(character)
+                        holder.page.push(
+                            PageState.kanji(context, currentDark, result, context.getString(OverlayR.string.overlay_no_kanji)),
+                        )
+                    }
+                }
+
                 override fun media(dictionary: String, path: String): ByteArray? =
                     runBlocking { viewModel.dictionaryLookup.media(dictionary, path) }
             },
