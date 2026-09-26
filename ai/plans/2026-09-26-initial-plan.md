@@ -30,7 +30,7 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Catalog | `catalog.json` in this repo, fetched by the app from its raw GitHub URL; a copy in the APK is the offline fallback. New dictionaries are added by editing the JSON, no app release needed. Entries carry source and target language |
 | Language grouping | Catalog: source language → target language (ja→ru, ja→en, ja→ja; later en→ru, en→en, …) for term dictionaries; frequency, pitch and kanji dictionaries as separate subsections of their source language. Installed list: sections by type (dictionaries, frequency, pitch, kanji), drag order within a section, language pair label on each dictionary. No switch for active target languages: enable/disable dictionaries instead |
 | Own dictionaries | Import of Yomitan zip archives from a file (done). Import of a Yomitan database export (the dictionaries themselves) — phase 4. Yomitan settings backup — separate phase 4 item, to be discussed with the owner before planning |
-| Kanji dictionaries | Phase 4, own `kanji_bank` import into Room |
+| Kanji dictionaries | Phase 4. hoshidicts imports and queries kanji banks, so no own Room import (changed 2026-09-26, see changelog) |
 | Cross-references | Lookup inside the popup with a back stack; external links open in the browser |
 | OCR | One image ≤1500 px, JPEG. ML Kit Japanese (bundled model) runs in parallel as a draft; the Lens result replaces it immediately, a small spinner shows until then |
 | When to OCR | Only when the bubble is pulled out of the dock and on a single tap on the bubble. Further aiming reuses the result even if the screen changed |
@@ -46,7 +46,7 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Anki | Official AnkiDroid API (LGPL-3.0, JitPack). Duplicate settings as in Yomitan: check on, scope collection/deck/deck-root (default collection), check all models off, behavior prevent/overwrite/new (default new) |
 | Anki picture | Short tap ➕: note without a picture. Long tap: crop editor (clean screenshot, frame around the paragraph, "whole screen" button) → note with the picture |
 | Audio | In the Anki phase: 🔊 and `{audio}`. Sources as in Yomitan: JapanesePod101 by default, custom URL templates and custom JSON, several in priority order. Auto-play of new words off |
-| Text without OCR | Phase 4 (accessibility node tree) |
+| Text without OCR | Phase 4 (accessibility node tree): a "text source" setting, OCR by default, "app text first" falls back to OCR |
 | Languages | Japanese only, but language is a parameter in every layer |
 | Extra features (phase 4) | Search screen, "Look up in Screenlate" in the text selection menu (`PROCESS_TEXT`), dictionary update check via `indexUrl` |
 | Builds | Debug (`applicationIdSuffix ".debug"`) + release signed with an own key (`keystore.properties`, not in git); installable side by side |
@@ -169,3 +169,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 
 - 2026-09-26: plan approved. Phase 0 added README/CLAUDE.md/`ai/` docs and the documentation tasks section at the owner's request.
 - 2026-09-26: owner decisions during the dictionaries work — catalog fetched from the repo with a bundled fallback; catalog grouped by source → target language, installed dictionaries in sections by type; no active-language switch; Yomitan database export import and settings backup added to phase 4. Bundled set unchanged (all three stay in the APK).
+- 2026-09-26: implementation notes, no change of intent — kanji dictionaries use hoshidicts' kanji support instead of an own Room import (the earlier finding that hoshidicts had no kanji support was wrong); text without OCR is a bubble setting with OCR as the default. The owner may still want to confirm the default.

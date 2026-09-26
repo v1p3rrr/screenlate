@@ -6,6 +6,7 @@ Implemented: submodule at `dictionary/engine-hoshidicts/src/main/cpp/hoshidicts`
 
 - NDK `29.0.14206865` (clang 21) is installed in `D:\Android\Sdk\ndk`; Hoshi Reader Android uses the same version. Set `ndkVersion` in `:dictionary:engine-hoshidicts`. It also gives 16 KB page alignment by default (the emulator uses 16 KB pages).
 - CMake 3.31.6 (glaze needs >= 3.31). hoshidicts itself is C++23/C99.
+- hoshidicts supports kanji banks (`add_kanji_dict`, `query_kanji`); the old note saying otherwise was wrong.
 - ABIs: `arm64-v8a` (phone) and `x86_64` (emulator).
 - hoshidicts goes in as a git submodule (it has nested submodules under `external/`: glaze, zstd, unordered_dense, libdeflate, utf8proc, utfcpp, xxHash, kanji-processor). Clone with `--recursive`.
 

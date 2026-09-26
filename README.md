@@ -2,15 +2,17 @@
 
 Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it.
 
-- Text recognition through Google Lens, with ML Kit as an on-device draft.
-- User-supplied Yomitan dictionaries, rendered the way Yomitan renders them.
-- Anki export through AnkiDroid with a configurable deck, note type and field templates.
+- Text recognition through Google Lens, with ML Kit as an on-device draft, or the app's own text when it is available.
+- Yomitan dictionaries, looked up, sorted and rendered the way Yomitan does it: structured content, images, frequencies, pitch accent, deinflection, kanji entries.
+- Jitendex, a frequency list and pitch accents are bundled; more dictionaries come from a download catalog, from `.zip` files or from a Yomitan dictionary collection export.
+- Anki export through AnkiDroid with a configurable deck, note type and field templates, duplicate handling, audio and cropped screenshots.
+- A search screen and a "Look up in Screenlate" entry in the text selection menu.
 
 Japanese is the only supported language for now.
 
 ## Status
 
-Early development. See [ai/status.md](ai/status.md) for progress and [ai/plans](ai/plans) for the plan.
+Usable, still in development. [docs/usage.md](docs/usage.md) explains gestures and settings, [docs/architecture.md](docs/architecture.md) the internals. Progress and plans are in [ai/](ai).
 
 ## Requirements
 
@@ -24,9 +26,12 @@ Early development. See [ai/status.md](ai/status.md) for progress and [ai/plans](
 - Android SDK with platform 37.
 
 ```
+git submodule update --init --recursive
 ./gradlew assembleDebug
 ./gradlew testDebugUnitTest
 ```
+
+The dictionary engine is native code: the build needs NDK 29.0.14206865 and CMake 3.31.6 from the SDK manager. The first build downloads the bundled dictionaries (about 48 MB) into `dicts/bundled/`.
 
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh` installs a debug build on a connected device and enables the accessibility service.
 

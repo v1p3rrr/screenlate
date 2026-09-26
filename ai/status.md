@@ -22,16 +22,21 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 - Phase 3: `core:anki` (AnkiDroid API from JitPack, `AnkiNotes` with duplicate scope/behavior, `FieldTemplate` markers, `Sentence` extraction, `AudioFinder` with JapanesePod101/URL/custom JSON); Anki and audio settings screen; popup ➕ (tap: note, hold: crop editor with the paragraph pre-selected) and 🔊, duplicate marks, auto-play setting; glossary images copied into AnkiDroid media. Verified on the emulator with AnkiDroid 2.24.1: Basic note with glossary (two dictionaries), sentence, JapanesePod101 audio and a cropped screenshot; duplicate mark after adding.
 
+- Phase 4 (most of it): `LookupPage` shared by the popup and the search screen; `ProcessTextActivity`; update check via `indexUrl` with in-place replacement; sort dictionary choice; KANJIDIC in the catalog and kanji entries on tapping a headword kanji; bubble settings (aim, dock side, highlight, haptics, text source, hidden apps); app text from the accessibility tree (`AccessibilityText`); Yomitan dictionary collection import (`YomitanBackup`, tested with a synthetic export only); release build verified with R8 (keep rules for ML Kit registrars and the JS bridge); `docs/architecture.md`, `docs/usage.md`.
+
 ## Next
 
-- Polish (phase 4), in plan order: search screen, `PROCESS_TEXT`, dictionary update check, sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, Yomitan database export import. The Yomitan settings backup needs an interview with the owner first.
+- Yomitan settings backup: interview the owner about what to import (dictionary order, Anki templates, audio sources, scan settings) before planning.
+- Verify the Yomitan collection import with a real export from the owner.
+- The owner is going to send a list of dictionaries for the catalog (`dictionary/api/src/main/assets/catalog/dictionaries.json`; the app fetches it from the repository).
+- Phone testing: everything so far was verified on the emulator only.
 
 ## Open items
 
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release builds are not measured yet.
 - Lookup latency on the phone is not measured; on the emulator the popup follows the bubble without visible lag.
 - AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
-- Kanji dictionaries import fine (hoshidicts supports them) but nothing displays kanji entries yet (phase 4).
+- Default text source is OCR; "app text first" is opt-in (not confirmed with the owner).
 
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).

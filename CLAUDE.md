@@ -11,6 +11,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
    - `yomitan-behavior.md` — lookup, grouping, sorting, Anki duplicate defaults, structured content;
    - `references.md` — upstream projects, licenses, dictionary URLs;
    - `dictionary-engine.md` — hoshidicts API, JNI design, bundled dictionary URLs.
+3. Human-facing docs: `docs/architecture.md` (modules and data flow) and `docs/usage.md`; keep them current when behavior changes.
 
 ## Working rules
 
