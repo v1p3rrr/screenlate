@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.popup
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
@@ -53,6 +54,13 @@ class PopupController(
 
     var bounds: Box? = null
         private set
+
+    init {
+        // Debug builds expose the popup to DevTools (chrome://inspect, scripts/popup-eval.mjs).
+        if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+    }
 
     private val assetLoader = WebViewAssetLoader.Builder()
         .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
