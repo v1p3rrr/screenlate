@@ -90,14 +90,14 @@ class LookupPage(
         container.addView(this, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
-    /** Shows [state], replacing the current view and its back stack. */
-    fun render(state: JsonElement) = run("Popup.render($state)")
+    /** Shows [state] (JSON from [PageState]), replacing the current view and its back stack. */
+    fun render(state: String) = run("Popup.render($state)")
 
     /** Re-renders the current view in place (theme, OCR status). */
-    fun update(state: JsonElement) = run("Popup.update($state)")
+    fun update(state: String) = run("Popup.update($state)")
 
     /** Shows [state] on top of the current view; the back button returns to it. */
-    fun push(state: JsonElement) = run("Popup.push($state)")
+    fun push(state: String) = run("Popup.push($state)")
 
     /** Sets the scoped `styles.css` of the loaded dictionaries (a JSON array of {dictionary, css}). */
     fun setStyles(styles: JsonElement) = setPersistent("styles", "Popup.setStyles($styles)")

@@ -5,7 +5,6 @@ import android.view.WindowManager
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import com.vpr.screenlate.overlay.web.LookupPage
-import kotlinx.serialization.json.JsonElement
 import kotlin.math.roundToInt
 
 /** The popup window: a pre-warmed [LookupPage] placed next to the word under the aim. */
@@ -32,7 +31,7 @@ class PopupController(
     val isShowing: Boolean get() = attached
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
-    fun show(state: JsonElement, word: Box, vertical: Boolean, bubble: Box?, screen: Box, maxWidth: Float) {
+    fun show(state: String, word: Box, vertical: Boolean, bubble: Box?, screen: Box, maxWidth: Float) {
         val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
         val width = minOf(screen.width * WIDTH_FRACTION, maxWidth)
         val height = screen.height * HEIGHT_FRACTION
@@ -52,12 +51,12 @@ class PopupController(
     }
 
     /** Re-renders the current view in place, if the popup is showing. */
-    fun update(state: JsonElement) {
+    fun update(state: String) {
         if (attached) page.update(state)
     }
 
     /** Shows [state] on top of the current view; the popup's back button returns to it. */
-    fun push(state: JsonElement) {
+    fun push(state: String) {
         if (attached) page.push(state)
     }
 

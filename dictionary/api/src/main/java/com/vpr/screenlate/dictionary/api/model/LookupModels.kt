@@ -1,7 +1,6 @@
 package com.vpr.screenlate.dictionary.api.model
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 /**
  * One term found for a lookup string. Terms are grouped by expression and reading; [TermEntry.glossaries]
@@ -42,12 +41,13 @@ data class TermEntry(
 /**
  * Definitions of one dictionary for a term.
  *
- * @property content Yomitan glossary array: strings, structured content or image objects.
+ * @property content Yomitan glossary array (strings, structured content or image objects) as JSON text. It is
+ * kept as text because only the renderer needs its structure.
  */
 @Serializable
 data class Glossary(
     val dictionary: String,
-    val content: JsonElement,
+    val content: String,
     val definitionTags: String = "",
     val termTags: String = "",
 )

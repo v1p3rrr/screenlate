@@ -182,7 +182,7 @@ fun SearchScreen(
     }
 }
 
-private fun state(context: android.content.Context, dark: Boolean, results: SearchResults) = PageState.build(
+private fun state(context: android.content.Context, dark: Boolean, results: SearchResults): String = PageState.build(
     context = context,
     dark = dark,
     text = results.text,

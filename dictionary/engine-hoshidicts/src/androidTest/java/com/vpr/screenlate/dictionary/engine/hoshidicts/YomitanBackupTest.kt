@@ -76,7 +76,7 @@ class YomitanBackupTest {
         engine.load(DictionarySet(terms = listOf(terms.directory), frequencies = listOf(freq.directory)))
         val result = engine.lookup("食べなかった", LookupOptions(frequencyDictionary = "Backup Freq")).first()
         assertThat(result.term.expression).isEqualTo("食べる")
-        assertThat(result.term.glossaries.single().content.toString()).contains("to eat")
+        assertThat(result.term.glossaries.single().content).contains("to eat")
         assertThat(result.term.frequencies.single().values.single().value).isEqualTo(120)
         assertThat(engine.styles().single().css).contains("color:red")
         assertThat(engine.media("Backup Terms", "img/dot.png")).hasLength(6)

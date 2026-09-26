@@ -66,7 +66,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -565,8 +564,9 @@ class OverlayController(
             val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
             shownLookup = view
             popupNotes.refreshActions()
+            val state = popupStateOffMain(view)
             popup.show(
-                popupState(view),
+                state,
                 anchor,
                 layout.characterAt(position).vertical,
                 bubbleBox(),
@@ -596,7 +596,7 @@ class OverlayController(
             val results = lookupResults(query, primaryReading)
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val message = if (results.isEmpty()) noResultsMessage() else null
-            popup.push(popupState(LookupView(query, matched, results, message)))
+            popup.push(popupStateOffMain(LookupView(query, matched, results, message)))
             popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
@@ -658,15 +658,27 @@ class OverlayController(
         }
     }
 
-    private fun popupState(view: LookupView): JsonObject {
-        val engineLabel = when {
-            ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
-            ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
-            ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
-            ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
-            ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
-            else -> ""
+    /** [popupState] for large result sets: the OCR status is read here, the JSON is written on a worker thread. */
+    private suspend fun popupStateOffMain(view: LookupView): String {
+        val dark = isDarkTheme()
+        val pending = scanJob?.isActive == true && !ocrFinal
+        val engine = engineLabel()
+        return withContext(Dispatchers.Default) {
+            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine)
         }
+    }
+
+    private fun engineLabel(): String = when {
+        ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
+        ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
+        ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
+        ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
+        ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
+        else -> ""
+    }
+
+    private fun popupState(view: LookupView): String {
+        val engineLabel = engineLabel()
         return PageState.build(
             context = service,
             dark = isDarkTheme(),

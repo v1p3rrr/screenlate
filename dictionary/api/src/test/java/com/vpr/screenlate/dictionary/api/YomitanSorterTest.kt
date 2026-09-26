@@ -7,7 +7,6 @@ import com.vpr.screenlate.dictionary.api.model.Glossary
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import com.vpr.screenlate.dictionary.api.model.Transform
-import kotlinx.serialization.json.JsonArray
 import org.junit.Test
 
 class YomitanSorterTest {
@@ -81,7 +80,7 @@ class YomitanSorterTest {
             expression = expression,
             reading = reading,
             score = score,
-            glossaries = listOf(Glossary(dictionary, JsonArray(emptyList()))),
+            glossaries = listOf(Glossary(dictionary, "[]")),
             frequencies = frequency?.let { listOf(FrequencyGroup("Freq", listOf(FrequencyValue(it)))) }.orEmpty(),
         ),
     )

@@ -4,15 +4,18 @@ import android.content.Context
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
-import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonObject
 
-/** Builds the JSON state that `Popup.render` expects (see the comment at the top of popup.js). */
+/**
+ * Builds the JSON state that `Popup.render` expects (see the comment at the top of popup.js).
+ *
+ * The result can be large (Jitendex entries), so it is written in one pass from data classes; call it off the
+ * main thread where possible.
+ */
 object PageState {
+    private val json = Json { encodeDefaults = true }
+
     /**
      * @param matched length of the matched prefix of [text] in code points.
      * @param pending OCR is still refining the text; shows a spinner.
@@ -27,46 +30,58 @@ object PageState {
         message: String?,
         pending: Boolean = false,
         engine: String = "",
-    ): JsonObject = buildJsonObject {
-        put("theme", if (dark) "dark" else "light")
-        put("pending", pending)
-        put("engine", engine)
-        putJsonObject("source") {
-            put("text", text)
-            put("matched", matched)
-        }
-        put("results", Json.encodeToJsonElement(ListSerializer(LookupResult.serializer()), results))
-        message?.let { put("message", it) }
-        putJsonObject("labels") {
-            put("noResults", context.getString(R.string.overlay_no_results))
-            put("addNote", context.getString(R.string.overlay_add_note))
-            put("playAudio", context.getString(R.string.overlay_play_audio))
-        }
-    }
+    ): String = json.encodeToString(
+        StateDto(
+            theme = theme(dark),
+            pending = pending,
+            engine = engine,
+            source = SourceDto(text, matched),
+            results = results,
+            message = message,
+            labels = mapOf(
+                "noResults" to context.getString(R.string.overlay_no_results),
+                "addNote" to context.getString(R.string.overlay_add_note),
+                "playAudio" to context.getString(R.string.overlay_play_audio),
+            ),
+        ),
+    )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
-    fun kanji(context: Context, dark: Boolean, kanji: KanjiResult, message: String?): JsonObject = buildJsonObject {
-        put("theme", if (dark) "dark" else "light")
-        putJsonObject("source") {
-            put("text", kanji.character)
-            put("matched", 1)
-        }
-        if (kanji.entries.isEmpty()) {
-            message?.let { put("message", it) }
-        } else {
-            put("kanji", Json.encodeToJsonElement(KanjiResult.serializer(), kanji))
-        }
-        putJsonObject("labels") {
-            put("onyomi", context.getString(R.string.overlay_kanji_onyomi))
-            put("kunyomi", context.getString(R.string.overlay_kanji_kunyomi))
-            put("stat_strokes", context.getString(R.string.overlay_kanji_strokes))
-            put("stat_grade", context.getString(R.string.overlay_kanji_grade))
-            put("stat_jlpt", context.getString(R.string.overlay_kanji_jlpt))
-            put("stat_freq", context.getString(R.string.overlay_kanji_frequency))
-        }
-    }
+    fun kanji(context: Context, dark: Boolean, kanji: KanjiResult, message: String?): String = json.encodeToString(
+        StateDto(
+            theme = theme(dark),
+            source = SourceDto(kanji.character, 1),
+            kanji = kanji.takeIf { it.entries.isNotEmpty() },
+            message = message.takeIf { kanji.entries.isEmpty() },
+            labels = mapOf(
+                "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
+                "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
+                "stat_strokes" to context.getString(R.string.overlay_kanji_strokes),
+                "stat_grade" to context.getString(R.string.overlay_kanji_grade),
+                "stat_jlpt" to context.getString(R.string.overlay_kanji_jlpt),
+                "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
+            ),
+        ),
+    )
 
     /** Length of the first result's match in code points, for highlighting. */
     fun matchedLength(results: List<LookupResult>): Int =
         results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
+
+    private fun theme(dark: Boolean) = if (dark) "dark" else "light"
+
+    @Serializable
+    private data class StateDto(
+        val theme: String,
+        val pending: Boolean = false,
+        val engine: String = "",
+        val source: SourceDto,
+        val results: List<LookupResult> = emptyList(),
+        val kanji: KanjiResult? = null,
+        val message: String? = null,
+        val labels: Map<String, String> = emptyMap(),
+    )
+
+    @Serializable
+    private data class SourceDto(val text: String, val matched: Int)
 }

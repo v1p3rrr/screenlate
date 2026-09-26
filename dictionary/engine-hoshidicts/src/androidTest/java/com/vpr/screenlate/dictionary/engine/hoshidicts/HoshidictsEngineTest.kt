@@ -7,7 +7,8 @@ import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.After
 import org.junit.Before
@@ -52,7 +53,7 @@ class HoshidictsEngineTest {
         assertThat(first.term.expression).isEqualTo("食べる")
         assertThat(first.matched).isEqualTo("食べさせられなかった")
         assertThat(first.trace).isNotEmpty()
-        assertThat((first.term.glossaries.single().content as JsonArray).first().jsonPrimitive.content)
+        assertThat(Json.parseToJsonElement(first.term.glossaries.single().content).jsonArray.first().jsonPrimitive.content)
             .isEqualTo("to eat")
         assertThat(first.term.frequencies.single().values.single().value).isEqualTo(100)
 

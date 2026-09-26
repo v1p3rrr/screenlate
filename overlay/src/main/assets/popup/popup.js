@@ -295,16 +295,27 @@ const Popup = (() => {
                 definition.append(tagRow);
             }
             const body = element('div', 'definition-body');
+            const content = glossaryContent(glossary);
             if (renderer) {
-                renderer.renderGlossary(body, glossary.content, dictionary, renderOptions);
+                renderer.renderGlossary(body, content, dictionary, renderOptions);
             } else {
-                body.textContent = plainText(glossary.content);
+                body.textContent = plainText(content);
             }
             definition.append(body);
             container.append(definition);
         }
         if (container !== section) section.append(container);
         return section;
+    }
+
+    /** Glossaries arrive as JSON text (see dictionary.api.model.Glossary). */
+    function glossaryContent(glossary) {
+        if (typeof glossary.content !== 'string') return glossary.content;
+        try {
+            return JSON.parse(glossary.content);
+        } catch (e) {
+            return [glossary.content];
+        }
     }
 
     function plainText(content) {

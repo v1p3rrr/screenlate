@@ -41,6 +41,14 @@ const NoteData = (() => {
             .join('');
     }
 
+    function parseContent(text) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return [text];
+        }
+    }
+
     function glossaryHtml(glossaries, styles, media) {
         const options = {
             exporting: true,
@@ -69,8 +77,9 @@ const NoteData = (() => {
                 label.textContent = `(${[...tags, shortName(dictionary)].join(', ')}) `;
                 li.append(label);
                 const body = document.createElement('span');
-                if (renderer) renderer.renderGlossary(body, glossary.content, dictionary, options);
-                else body.textContent = JSON.stringify(glossary.content);
+                const content = typeof glossary.content === 'string' ? parseContent(glossary.content) : glossary.content;
+                if (renderer) renderer.renderGlossary(body, content, dictionary, options);
+                else body.textContent = JSON.stringify(content);
                 li.append(body);
                 list.append(li);
             }

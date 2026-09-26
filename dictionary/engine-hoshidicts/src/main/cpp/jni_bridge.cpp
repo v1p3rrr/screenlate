@@ -33,9 +33,11 @@ struct TransformDto {
   std::string description;
 };
 
+// The glossary stays JSON text inside a string: parsing it into a tree in Kotlin and writing it back for the
+// page costs far more than letting the page's JSON.parse handle it.
 struct GlossaryDto {
   std::string dictionary;
-  glz::raw_json content;
+  std::string content;
   std::string definitionTags;
   std::string termTags;
 };
