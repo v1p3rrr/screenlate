@@ -22,6 +22,15 @@ enum class AimMode {
     BUBBLE_CENTER,
 }
 
+/** Where the text under the bubble comes from. */
+enum class TextSource {
+    /** Text recognition on a screenshot. */
+    SCREEN,
+
+    /** The app's own text when it exposes character positions, text recognition otherwise. */
+    APP_TEXT,
+}
+
 /**
  * @property dockY vertical position of the docked bubble as a fraction of the screen height.
  * @property hiddenPackages apps in which the bubble is hidden.
@@ -34,6 +43,7 @@ data class OverlaySettings(
     val highlightWord: Boolean = true,
     val haptics: Boolean = false,
     val hiddenPackages: Set<String> = emptySet(),
+    val textSource: TextSource = TextSource.SCREEN,
 )
 
 @Singleton
@@ -52,6 +62,8 @@ class OverlaySettingsRepository @Inject constructor(
             highlightWord = prefs[HIGHLIGHT_WORD] ?: defaults.highlightWord,
             haptics = prefs[HAPTICS] ?: defaults.haptics,
             hiddenPackages = prefs[HIDDEN_PACKAGES] ?: defaults.hiddenPackages,
+            textSource = prefs[TEXT_SOURCE]?.let { stored -> TextSource.entries.firstOrNull { it.name == stored } }
+                ?: defaults.textSource,
         )
     }
 
@@ -78,6 +90,10 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[HAPTICS] = enabled }
     }
 
+    suspend fun setTextSource(source: TextSource) {
+        dataStore.edit { it[TEXT_SOURCE] = source.name }
+    }
+
     suspend fun setDockSide(side: DockSide) {
         dataStore.edit { it[DOCK_SIDE] = side.name }
     }
@@ -97,5 +113,6 @@ class OverlaySettingsRepository @Inject constructor(
         val HIGHLIGHT_WORD = booleanPreferencesKey("overlay_highlight_word")
         val HAPTICS = booleanPreferencesKey("overlay_haptics")
         val HIDDEN_PACKAGES = stringSetPreferencesKey("overlay_hidden_packages")
+        val TEXT_SOURCE = stringPreferencesKey("overlay_text_source")
     }
 }

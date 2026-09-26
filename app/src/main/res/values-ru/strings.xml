@@ -121,4 +121,8 @@
     <string name="bubble_hidden_apps">Скрывать кружок в приложениях</string>
     <string name="bubble_hidden_apps_hint">Кружок пропадает, пока открыто одно из отмеченных приложений.</string>
     <string name="bubble_filter_apps">Фильтр приложений</string>
+    <string name="bubble_text_source">Источник текста</string>
+    <string name="bubble_text_screen">Экран (OCR)</string>
+    <string name="bubble_text_app">Сначала текст приложения</string>
+    <string name="bubble_text_source_hint">Текст приложения точный и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.</string>
 </resources>

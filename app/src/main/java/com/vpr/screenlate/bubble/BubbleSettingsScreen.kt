@@ -53,6 +53,7 @@ import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.settings.TextSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -74,6 +75,8 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     fun setHighlight(enabled: Boolean) = launch { repository.setHighlightWord(enabled) }
 
     fun setHaptics(enabled: Boolean) = launch { repository.setHaptics(enabled) }
+
+    fun setTextSource(source: TextSource) = launch { repository.setTextSource(source) }
 
     fun setHidden(packageName: String, hidden: Boolean) = launch { repository.setHidden(packageName, hidden) }
 
@@ -138,6 +141,22 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                             stringResource(if (it == DockSide.LEFT) R.string.bubble_dock_left else R.string.bubble_dock_right)
                         },
                         onSelect = viewModel::setDockSide,
+                    )
+                    Text(stringResource(R.string.bubble_text_source), style = MaterialTheme.typography.titleMedium)
+                    Segments(
+                        options = TextSource.entries,
+                        selected = settings.textSource,
+                        label = {
+                            stringResource(
+                                if (it == TextSource.SCREEN) R.string.bubble_text_screen else R.string.bubble_text_app,
+                            )
+                        },
+                        onSelect = viewModel::setTextSource,
+                    )
+                    Text(
+                        stringResource(R.string.bubble_text_source_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
                     SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)

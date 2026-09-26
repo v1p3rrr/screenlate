@@ -35,6 +35,7 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.anki.NoteContext
 import com.vpr.screenlate.overlay.anki.PopupNotes
+import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
@@ -45,6 +46,7 @@ import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.settings.TextSource
 import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.LayerView
@@ -55,6 +57,8 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -108,6 +112,7 @@ class OverlayController(
     private val layerParams = OverlayWindows.layerParams()
     private val popup = PopupController(service, windowManager, PopupCallbacks())
     private val capturer = ScreenCapturer(service, service.mainExecutor)
+    private val accessibilityText = AccessibilityText(service)
     private val popupNotes = PopupNotes(
         context = service,
         scope = scope,
@@ -449,13 +454,32 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
+            var captureError: CaptureException? = null
             val captured = try {
                 capture()
             } catch (e: CaptureException) {
+                captureError = e
+                null
+            }
+            if (settings.textSource == TextSource.APP_TEXT) {
+                // App text works even in windows that forbid screenshots.
+                val screen = screenBounds()
+                val page = withContext(Dispatchers.Default) {
+                    runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
+                        .onFailure { Log.w(TAG, "Reading app text failed", it) }
+                        .getOrNull()
+                }
+                if (page != null) {
+                    screenshot = captured
+                    onOcrUpdate(OcrUpdate.Final(page), 0f, 0f, flashLines)
+                    return@launch
+                }
+            }
+            if (captured == null) {
                 bubbleView.loading = false
                 showMessage(
                     service.getString(
-                        if (e is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
+                        if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
                     ),
                 )
                 return@launch
@@ -467,7 +491,7 @@ class OverlayController(
                         bubbleView.loading = false
                         showMessage(service.getString(R.string.overlay_error_ocr))
                     }
-                    .collect { update -> onOcrUpdate(update, captured, flashLines) }
+                    .collect { update -> onOcrUpdate(update, captured.left.toFloat(), captured.top.toFloat(), flashLines) }
             } catch (e: CancellationException) {
                 captured.bitmap.recycle()
                 throw e
@@ -494,8 +518,9 @@ class OverlayController(
         layerView.alpha = alpha
     }
 
-    private fun onOcrUpdate(update: OcrUpdate, captured: CapturedScreen, flashLines: Boolean) {
-        val page = update.page.offset(captured.left.toFloat(), captured.top.toFloat())
+    /** [offsetX] and [offsetY] move the page from image to screen coordinates. */
+    private fun onOcrUpdate(update: OcrUpdate, offsetX: Float, offsetY: Float, flashLines: Boolean) {
+        val page = update.page.offset(offsetX, offsetY)
         val newLayout = TextLayout(page)
         layout = newLayout
         ocrEngine = page.engine
@@ -636,6 +661,7 @@ class OverlayController(
     private fun popupState(view: LookupView): JsonObject {
         val engineLabel = when {
             ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
+            ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
             ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
             ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
             ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)

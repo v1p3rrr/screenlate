@@ -5,6 +5,9 @@ import com.vpr.screenlate.core.common.geometry.Box
 enum class OcrEngineType {
     LENS,
     ML_KIT,
+
+    /** Not OCR: text read from the app's accessibility node tree. */
+    ACCESSIBILITY,
 }
 
 /** Text recognized on one image. All coordinates are in pixels of that image. */

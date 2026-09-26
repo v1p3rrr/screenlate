@@ -28,4 +28,5 @@
     <string name="overlay_kanji_strokes">Черт</string>
     <string name="overlay_kanji_grade">Класс</string>
     <string name="overlay_kanji_frequency">Частота</string>
+    <string name="overlay_engine_app_text">Текст приложения</string>
 </resources>
