@@ -25,7 +25,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
 - Update `ai/status.md` at the end of each work session. Add notes to `ai/notes/` when you learn something a future session would otherwise rediscover (and link it here if it is a new file).
 - Commit after each finished phase or a coherent milestone and push to `origin main` (github.com/v1p3rrr/screenlate). Commit messages describe the change itself; never mention plan phases.
 - Human-facing docs (README, `docs/`, NOTICE) stay generic: no mentions of specific devices, vendors, or the apps that inspired the project. Such context belongs in `ai/`.
-- Do not mention Google Lens in user-facing texts or human docs (UI labels, README, `docs/`, About): call it cloud recognition. Code and `ai/` notes keep technical names; NOTICE keeps only the license attribution it needs.
+- Do not mention Google Lens in human docs and descriptive texts (README, `docs/`, About, settings hints, the service description): call it cloud recognition. The popup's OCR source chip may say "Lens". Code and `ai/` notes keep technical names; NOTICE keeps only the license attribution it needs.
 - Privacy: logs never contain recognized text, looked-up words, note contents, or URLs carrying terms (redact them).
 - The owner's Anki data is off limits: never sync, and never add to or change their AnkiWeb collection. The emulator's AnkiDroid is a local collection without an account; the owner's backup is in `testdata/anki-backup/`.
 - `testdata/` holds local test material (OCR screenshots, dictionaries, the Anki backup). It stays out of git; check `.gitignore` before adding a new folder there.

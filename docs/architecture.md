@@ -15,7 +15,7 @@ app ──────────────┬──> overlay ──┬──
 | `app` | Application (Hilt, WorkManager factory), Compose screens: home, dictionaries, search, Anki and audio, bubble settings, OCR test. `ProcessTextActivity` for the text selection menu. |
 | `overlay` | Accessibility service, bubble state machine (`OverlayController`), window screenshots, app text from the accessibility tree, the lookup page (`web/LookupPage`, `assets/popup/`), popup placement, crop editor, Anki buttons (`anki/PopupNotes`), Quick Settings tile. |
 | `core:common` | `Language`, geometry, app settings, shared OkHttp client. |
-| `core:ocr` | `OcrEngine` with Google Lens (hand-written protobuf) and ML Kit, `CompositeOcr` (draft, then final), `TextLayout` for hit testing. |
+| `core:ocr` | `OcrEngine` with a cloud engine (hand-written protobuf) and ML Kit, `CompositeOcr` (draft, then final), `TextLayout` for hit testing. |
 | `core:anki` | AnkiDroid API wrapper, note settings, field templates, sentence extraction, audio sources. |
 | `dictionary:api` | `DictionaryEngine` interface and lookup models, registry (Room), import queue (WorkManager), bundled dictionaries, download catalog, update check, `YomitanSorter`, Yomitan collection export converter. |
 | `dictionary:engine-hoshidicts` | `DictionaryEngine` on top of hoshidicts (C++, JNI). GPL-3.0. |
@@ -26,7 +26,7 @@ The two GPL modules implement interfaces or asset contracts defined elsewhere, s
 ## From the bubble to a dictionary entry
 
 1. **Scan.** Pulling the bubble out of the dock (or tapping it) takes a screenshot of the app window under the overlays (`takeScreenshotOfWindow`, API 34+). With the "app text" source, the accessibility tree is read first and OCR is skipped if it yields text with character positions.
-2. **OCR.** `CompositeOcr` runs ML Kit on the device and Google Lens in parallel. ML Kit's result arrives first and is shown as a draft; the Lens result replaces it. Lens gets a JPEG of at most 1500 px; its coordinates are normalized to the image and mapped back to the screen.
+2. **OCR.** `CompositeOcr` runs ML Kit on the device and the cloud engine in parallel. ML Kit's result arrives first and is shown as a draft; the cloud result replaces it. The cloud engine gets a JPEG of at most 1500 px; its coordinates are normalized to the image and mapped back to the screen.
 3. **Hit test.** `TextLayout` splits every recognized word into characters (per-character boxes when the engine has them, otherwise even splits along the reading direction) and finds the character under the aim point. The text from that character to the end of its paragraph, up to 16 characters, is the lookup text.
 4. **Lookup.** `DictionaryLookup` loads the enabled dictionaries into the engine on first use. hoshidicts deinflects every prefix of the lookup text, groups results by expression and reading, and sorts them; `YomitanSorter` applies Yomitan's full order including dictionary priority.
 5. **Render.** The overlay sends the results as JSON to the lookup page in a pre-warmed WebView. The page builds the cards; glossaries go through `YomitanRender` (structured content, images served from the engine, each dictionary's `styles.css` scoped to its own entries).

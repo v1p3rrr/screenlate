@@ -71,6 +71,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.redactUrl
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -583,7 +585,7 @@ class OverlayController(
         val screen = screenBounds()
         return withContext(Dispatchers.Default) {
             runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
-                .onFailure { Log.w(TAG, "Reading app text failed", it) }
+                .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
                 .getOrNull()
         }
     }
@@ -682,7 +684,7 @@ class OverlayController(
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        Log.w(TAG, "Lookup failed", e)
+        Log.w(TAG, "Lookup failed", e.redacted())
         emptyList()
     }
 
@@ -823,7 +825,7 @@ class OverlayController(
 
         override fun onOpenUrl(url: String) {
             val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open $url", it) }
+            runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open ${redactUrl(url)}", it.redacted()) }
             dock()
         }
 

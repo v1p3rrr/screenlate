@@ -38,6 +38,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
+import com.vpr.screenlate.core.common.redacted
 
 /**
  * Where the looked-up word came from: its sentence and a clean screenshot.
@@ -249,7 +250,7 @@ class PopupNotes(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Log.w(TAG, "Adding a note failed", e)
+                Log.w(TAG, "Adding a note failed", e.redacted())
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
             }
@@ -329,7 +330,7 @@ class PopupNotes(
                 setOnPreparedListener { it.start() }
                 setOnCompletionListener { it.reset() }
                 prepareAsync()
-            }.onFailure { Log.w(TAG, "Cannot play ${clip.url}", it) }
+            }.onFailure { Log.w(TAG, "Cannot play an audio clip", it.redacted()) }
         }
     }
 
@@ -415,7 +416,7 @@ class PopupNotes(
             "error"
         }
         is AddResult.Failed -> {
-            Log.w(TAG, "AnkiDroid rejected the note: ${result.message}")
+            Log.w(TAG, "AnkiDroid rejected the note")
             toast(context.getString(R.string.anki_error, result.message))
             "error"
         }

@@ -27,6 +27,7 @@ import java.net.URLEncoder
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.vpr.screenlate.core.common.redacted
 
 enum class AudioSourceType {
     /** JapanesePod101 word audio. */
@@ -111,7 +112,7 @@ class AudioFinder @Inject constructor(
                 runCatching { candidatesOf(index, source, term, reading).firstNotNullOfOrNull { download(it, term, reading) } }
                     .onFailure {
                         failed = true
-                        Log.i(TAG, "Audio source ${source.type} failed: ${it.message}")
+                        Log.i(TAG, "Audio source ${source.type} failed", it.redacted())
                     }
                     .getOrNull()
             }
@@ -129,7 +130,7 @@ class AudioFinder @Inject constructor(
         withContext(Dispatchers.IO) {
             (sources ?: settings.current().sources).withIndex().flatMap { (index, source) ->
                 runCatching { candidatesOf(index, source, term, reading) }
-                    .onFailure { Log.i(TAG, "Audio source ${source.type} failed: ${it.message}") }
+                    .onFailure { Log.i(TAG, "Audio source ${source.type} failed", it.redacted()) }
                     .getOrDefault(emptyList())
             }
         }
@@ -141,7 +142,7 @@ class AudioFinder @Inject constructor(
                 download(candidate.url, term, reading)?.takeUnless {
                     candidate.source.type == AudioSourceType.JAPANESE_POD_101 && sha256(it.file) == JPOD_PLACEHOLDER_SHA256
                 }
-            }.onFailure { Log.i(TAG, "Audio ${candidate.url} failed: ${it.message}") }.getOrNull()
+            }.onFailure { Log.i(TAG, "Audio clip of ${candidate.source.type} failed", it.redacted()) }.getOrNull()
         }
 
     private fun candidatesOf(index: Int, source: AudioSource, term: String, reading: String): List<AudioCandidate> =

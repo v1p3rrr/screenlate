@@ -19,7 +19,7 @@
 
 The Quick Settings tile hides and shows the bubble. The bubble settings let you hide it in chosen apps, pick the dock side and choose the text source:
 
-- **Screen (OCR)**: a screenshot is recognized with Google Lens (an on-device draft appears first).
+- **Screen (OCR)**: a screenshot is recognized in the cloud (an on-device draft appears first).
 - **App text first**: the app's own text is used when it exposes character positions, which is exact and works offline; other screens are recognized as usual.
 
 ## Entries
@@ -46,5 +46,5 @@ Text selected in any app can also be looked up through the "Look up in Screenlat
 ## Troubleshooting
 
 - **"This app does not allow screenshots."** The app protects its windows. Try the "App text first" source.
-- **Only the on-device result appears.** Google Lens was unreachable or took longer than 15 seconds; the on-device result is used instead.
+- **Only the on-device result appears.** Cloud recognition was unreachable or took longer than 15 seconds; the on-device result is used instead.
 - **The bubble disappears after a while.** The system stopped the service; see the background settings above.

@@ -2,7 +2,7 @@
 
 Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it.
 
-- Text recognition through Google Lens, with ML Kit as an on-device draft, or the app's own text when it is available.
+- Cloud text recognition with an on-device draft (ML Kit), or the app's own text when it is available.
 - Yomitan dictionaries, looked up, sorted and rendered the way Yomitan does it: structured content, images, frequencies, pitch accent, deinflection, kanji entries.
 - Jitendex, a frequency list and pitch accents are bundled; more dictionaries come from a download catalog, from `.zip` files or from a Yomitan dictionary collection export.
 - Anki export through AnkiDroid with a configurable deck, note type and field templates, duplicate handling, audio and cropped screenshots.
@@ -18,7 +18,7 @@ Usable, still in development. [docs/usage.md](docs/usage.md) explains gestures a
 
 - Android 11 (API 30) or newer.
 - AnkiDroid for Anki export.
-- Network access for Google Lens.
+- Network access for cloud text recognition (on-device recognition works offline).
 
 ## Building
 
@@ -61,7 +61,7 @@ Both files are ignored by git.
 | `app` | Application, Compose screens |
 | `overlay` | Accessibility service, bubble, popup window |
 | `core:common` | Shared models and settings |
-| `core:ocr` | Google Lens and ML Kit OCR, hit testing |
+| `core:ocr` | Cloud and on-device OCR, hit testing |
 | `core:anki` | AnkiDroid integration, note templates, audio sources |
 | `dictionary:api` | Dictionary engine interface, dictionary registry |
 | `dictionary:engine-hoshidicts` | Engine based on hoshidicts (GPL-3.0) |
@@ -73,4 +73,4 @@ GPL-licensed third-party code is kept in the last two modules so it can be repla
 
 GPL-3.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for third-party components and dictionary attributions.
 
-Google Lens is used through an unofficial endpoint and may stop working at any time.
+Cloud text recognition uses an unofficial endpoint and may stop working at any time; on-device recognition is the fallback.

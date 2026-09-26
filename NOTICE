@@ -11,8 +11,8 @@ Third-party code
 
 chrome-lens-ocr (https://github.com/KolbyML/chrome-lens-ocr), MIT License,
 Copyright (c) Kolby Moroz Liebl.
-  The Google Lens request/response layout in core/ocr/.../lens/LensProtocol.kt
-  follows this project's protobuf definitions.
+  The request/response layout in core/ocr/.../lens/LensProtocol.kt follows
+  this project's protobuf definitions.
 
 hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
   Dictionary import, deinflection and lookup; linked into
