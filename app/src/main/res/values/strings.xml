@@ -130,4 +130,6 @@
     <string name="bubble_text_screen">Screen (OCR)</string>
     <string name="bubble_text_app">App text first</string>
     <string name="bubble_text_source_hint">App text is exact and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.</string>
+    <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
+    <string name="dictionaries_task_converting">Unpacking %1$s</string>
 </resources>

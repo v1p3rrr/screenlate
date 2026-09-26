@@ -94,6 +94,13 @@ class DictionariesViewModel @Inject constructor(
         }
     }
 
+    fun importYomitanBackup(uri: Uri) {
+        viewModelScope.launch {
+            runCatching { imports.importYomitanBackup(uri) }
+                .onFailure { copyError.value = it.message ?: it.javaClass.simpleName }
+        }
+    }
+
     fun dismissImportError() {
         copyError.value = null
     }

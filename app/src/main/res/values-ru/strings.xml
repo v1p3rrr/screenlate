@@ -125,4 +125,6 @@
     <string name="bubble_text_screen">Экран (OCR)</string>
     <string name="bubble_text_app">Сначала текст приложения</string>
     <string name="bubble_text_source_hint">Текст приложения точный и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.</string>
+    <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
+    <string name="dictionaries_task_converting">Распаковка: %1$s</string>
 </resources>

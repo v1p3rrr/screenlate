@@ -52,6 +52,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             val titles = when (inputData.getString(KEY_SOURCE)) {
                 SOURCE_BUNDLED -> installBundled()
                 SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
+                SOURCE_YOMITAN_BACKUP -> importBackup(File(requireNotNull(inputData.getString(KEY_PATH))))
                 SOURCE_URL -> {
                     val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
                         ?: requireNotNull(inputData.getString(KEY_URL))
@@ -95,6 +96,26 @@ class DictionaryImportWorker @AssistedInject constructor(
             return repository.import(archive).title
         } finally {
             if (inputData.getBoolean(KEY_DELETE_FILE, false)) archive.delete()
+        }
+    }
+
+    /** Splits a Yomitan database export into archives and imports them one by one. */
+    private suspend fun importBackup(backup: File): List<String> {
+        val staging = storage.newStagingDirectory()
+        try {
+            setProgress(workDataOf(KEY_STAGE to STAGE_CONVERT))
+            val archives = backup.inputStream().use { YomitanBackup(staging).convert(it) }
+            return archives.map { archive ->
+                setProgress(workDataOf(KEY_STAGE to STAGE_IMPORT))
+                try {
+                    repository.import(archive).title
+                } finally {
+                    archive.delete()
+                }
+            }
+        } finally {
+            staging.deleteRecursively()
+            backup.delete()
         }
     }
 
@@ -179,9 +200,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val SOURCE_BUNDLED = "bundled"
         const val SOURCE_FILE = "file"
         const val SOURCE_URL = "url"
+        const val SOURCE_YOMITAN_BACKUP = "yomitan_backup"
 
         const val STAGE_DOWNLOAD = "download"
         const val STAGE_IMPORT = "import"
+        const val STAGE_CONVERT = "convert"
 
         private const val TAG = "DictionaryImport"
         private const val CHANNEL_ID = "dictionary_imports"

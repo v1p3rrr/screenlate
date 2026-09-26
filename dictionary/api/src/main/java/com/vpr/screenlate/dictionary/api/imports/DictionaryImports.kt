@@ -24,6 +24,8 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_BUNDLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_YOMITAN_BACKUP
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_CONVERT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -46,7 +48,7 @@ data class ImportTask(
     val titles: List<String>,
     val error: String?,
 ) {
-    enum class State { QUEUED, DOWNLOADING, IMPORTING, SUCCEEDED, FAILED }
+    enum class State { QUEUED, DOWNLOADING, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
     val finished: Boolean get() = state == State.SUCCEEDED || state == State.FAILED
 }
@@ -69,12 +71,23 @@ class DictionaryImports @Inject constructor(
     /** Copies the archive behind [uri] into app storage and queues its import. */
     suspend fun importFrom(uri: Uri) {
         val name = displayName(uri)
-        val archive = storage.newArchiveFile()
+        importFile(copy(uri), name, deleteAfter = true)
+    }
+
+    /** Copies a Yomitan database export ("Export dictionary collection") and queues its conversion and import. */
+    suspend fun importYomitanBackup(uri: Uri) {
+        val name = displayName(uri)
+        val backup = copy(uri)
+        enqueue(workDataOf(KEY_SOURCE to SOURCE_YOMITAN_BACKUP, KEY_PATH to backup.absolutePath, KEY_NAME to name), name = name)
+    }
+
+    private suspend fun copy(uri: Uri): File {
+        val target = storage.newArchiveFile()
         withContext(Dispatchers.IO) {
             val input = context.contentResolver.openInputStream(uri) ?: error("Cannot open $uri")
-            input.use { archive.outputStream().use(it::copyTo) }
+            input.use { target.outputStream().use(it::copyTo) }
         }
-        importFile(archive, name, deleteAfter = true)
+        return target
     }
 
     fun importFile(archive: File, name: String, deleteAfter: Boolean) = enqueue(
@@ -131,9 +144,11 @@ class DictionaryImports @Inject constructor(
         val taskState = when (state) {
             WorkInfo.State.SUCCEEDED -> ImportTask.State.SUCCEEDED
             WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
-            WorkInfo.State.RUNNING ->
-                if (progress.getString(KEY_STAGE) == STAGE_DOWNLOAD) ImportTask.State.DOWNLOADING
-                else ImportTask.State.IMPORTING
+            WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
+                STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
+                STAGE_CONVERT -> ImportTask.State.CONVERTING
+                else -> ImportTask.State.IMPORTING
+            }
             else -> ImportTask.State.QUEUED
         }
         return ImportTask(

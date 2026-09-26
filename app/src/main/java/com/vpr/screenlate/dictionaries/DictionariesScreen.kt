@@ -62,6 +62,9 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.importFrom(uri)
     }
+    val backupPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) viewModel.importYomitanBackup(uri)
+    }
 
     Scaffold(
         topBar = {
@@ -89,6 +92,9 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
                 Text(stringResource(R.string.dictionaries_import_file))
             }
 
+            OutlinedButton(onClick = { backupPicker.launch(BACKUP_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.dictionaries_import_yomitan_backup))
+            }
             OutlinedButton(
                 onClick = viewModel::checkUpdates,
                 enabled = updateCheck?.updates != null || updateCheck == null,
@@ -343,6 +349,7 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
             val status = when (task.state) {
                 ImportTask.State.QUEUED -> stringResource(R.string.dictionaries_task_queued, name)
                 ImportTask.State.DOWNLOADING -> stringResource(R.string.dictionaries_task_downloading, name)
+                ImportTask.State.CONVERTING -> stringResource(R.string.dictionaries_task_converting, name)
                 else -> stringResource(R.string.dictionaries_task_importing, name)
             }
             Text(status, style = MaterialTheme.typography.bodyMedium)
@@ -414,3 +421,4 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
 }
 
 private val ARCHIVE_TYPES = arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")
+private val BACKUP_TYPES = arrayOf("application/json", "text/plain", "application/octet-stream")
