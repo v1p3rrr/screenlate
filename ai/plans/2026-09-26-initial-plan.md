@@ -29,23 +29,31 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Bundled dictionaries | Jitendex (enabled), Jiten Global (frequency), Kanjium (pitch), all three in the APK so everything works offline from the first launch. Kolobok and others via a download catalog |
 | Catalog | `catalog.json` in this repo, fetched by the app from its raw GitHub URL; a copy in the APK is the offline fallback. New dictionaries are added by editing the JSON, no app release needed. Entries carry source and target language |
 | Language grouping | Catalog: source language → target language (ja→ru, ja→en, ja→ja; later en→ru, en→en, …) for term dictionaries; frequency, pitch and kanji dictionaries as separate subsections of their source language. Installed list: sections by type (dictionaries, frequency, pitch, kanji), drag order within a section, language pair label on each dictionary. No switch for active target languages: enable/disable dictionaries instead |
-| Own dictionaries | Import of Yomitan zip archives from a file (done). Import of a Yomitan database export (the dictionaries themselves) — phase 4. Yomitan settings backup — separate phase 4 item, to be discussed with the owner before planning |
+| Own dictionaries | Import of Yomitan zip archives from a file (done). Import of a Yomitan database export (the dictionaries themselves) — phase 4, verified and optimized with a real 2.7 GB export in phase 5 |
+| Catalog content | Only dictionaries with a free license and an official, stable download URL. Scrapes of commercial dictionaries are not linked; users import them from files |
+| Yomitan settings import | Phase 5. Imports from one profile (chosen at import, the current one preselected): dictionary order, enabled state and sort dictionary (matched by title); Anki deck, note type, field templates with per-field overwrite modes, tags, duplicate settings; audio sources (localhost sources skipped), auto-play, volume; scan length, max results, text replacements. Every imported setting is also editable in the app |
 | Kanji dictionaries | Phase 4. hoshidicts imports and queries kanji banks, so no own Room import (changed 2026-09-26, see changelog) |
 | Cross-references | Lookup inside the popup with a back stack; external links open in the browser |
 | OCR | One image ≤1500 px, JPEG. ML Kit Japanese (bundled model) runs in parallel as a draft; the Lens result replaces it immediately, a small spinner shows until then |
+| Small text | Lens skips small text in a full-screen image but reads it in a crop. The screen is split into overlapping full-width bands; when the aim rests ~0.3 s where nothing was recognized, that band goes to Lens once per scan and its lines fill the gaps. Bubble setting: off / on demand (default) / all bands with every scan |
 | When to OCR | Only when the bubble is pulled out of the dock and on a single tap on the bubble. Further aiming reuses the result even if the screen changed |
 | Proxy | None, system network (and VPN if on) |
 | Slow network | Lens timeout 15 s, then the ML Kit result becomes final. Anki ➕ waits for Lens |
 | Popup timing | Shown immediately while hovering, updated live |
 | Bubble gestures | Double tap toggles the aim point (dot ~48dp above the finger ↔ bubble center), remembered. Single tap rescans and highlights all recognized words; the highlight fades after 2–3 s |
 | Closing | Bubble back into the dock, or ✕ (closes the popup and docks the bubble). Touches elsewhere pass through to the app |
-| Dock | Right edge by default, can be moved to the left, height remembered |
+| Dock | Right edge by default, can be moved to the left, height remembered. The bubble docks only when dragged to the very edge (a few dp), so words at the edge stay reachable. Bubble 48dp by default with a size setting; the docked handle sticks out less |
 | Visibility | Quick Settings tile (phase 1). Hide in selected apps (phase 4) |
-| Popup placement | On the side of the word with more space, never covering the bubble. Fixed size ~85% width (≤420dp) × ~35% height, scrollable |
+| Popup placement | As in Poe: above the word, or below the bubble, never covering it; the bubble window always stays above the popup. ~85% width (≤420dp) × up to ~35% height, shrinking to the free space down to a minimum, scrollable |
 | Misc | Word highlight on. Haptics off (configurable). Theme follows system with an override |
-| Anki | Official AnkiDroid API (LGPL-3.0, JitPack). Duplicate settings as in Yomitan: check on, scope collection/deck/deck-root (default collection), check all models off, behavior prevent/overwrite/new (default new) |
+| Anki | Official AnkiDroid API (LGPL-3.0, JitPack). Duplicate settings as in Yomitan: check on, scope collection/deck/deck-root (default collection), check all models off, behavior prevent/overwrite/new (default prevent, changed in phase 5). With prevent a duplicate shows 📖 instead of ➕: tap opens the existing note in AnkiDroid, long press adds anyway. A word added during the current scan shows 📖 until the bubble is docked. Overwrite uses Yomitan's per-field overwrite modes |
+| Anki fields | Yomitan's full marker set with Yomitan's output format (pitch categories, harmonic/average frequency, sentence furigana, dynamic `single-glossary-*` / `single-frequency-number-*`, …). Auto-mapping: Yomitan's whole-name + alias rule plus presets for known note types (Senren, Lapis, Kaishi, JPMN). One active note type; field templates are remembered per note type |
 | Anki picture | Short tap ➕: note without a picture. Long tap: crop editor (clean screenshot, frame around the paragraph, "whole screen" button) → note with the picture |
-| Audio | In the Anki phase: 🔊 and `{audio}`. Sources as in Yomitan: JapanesePod101 by default, custom URL templates and custom JSON, several in priority order. Auto-play of new words off |
+| Audio | In the Anki phase: 🔊 and `{audio}`. Sources as in Yomitan: JapanesePod101 by default, custom URL templates and custom JSON, several in priority order. Auto-play of new words off. Phase 5: sources edited in a dialog with Save and Test; a test panel in the settings (test word, play per source); long press on 🔊 lists sources and their clips, the chosen clip goes into `{audio}`; auto-play waits until the aim rests ~0.5 s on a word or the finger is lifted; volume setting |
+| Search settings | Scan length, max results and Yomitan-style text replacements (regex groups, original text searched too), editable in the app |
+| UI language | In-app picker (system / English / Russian) and Android's per-app language setting (`localeConfig`) |
+| Search screen | Called "Look up words"; an empty state with a hint instead of a blank page |
+| Later, not scheduled | GitHub Actions pipeline that publishes APKs, per-ABI/device builds, a glyph on the docked handle showing the target language. Interview before starting |
 | Text without OCR | Phase 4 (accessibility node tree): a "text source" setting, OCR by default, "app text first" falls back to OCR |
 | Languages | Japanese only, but language is a parameter in every layer |
 | Extra features (phase 4) | Search screen, "Look up in Screenlate" in the text selection menu (`PROCESS_TEXT`), dictionary update check via `indexUrl` |
@@ -139,6 +147,17 @@ States: `Docked → Dragging → Floating(+Popup)`.
 2. **Dictionaries**: hoshidicts (submodule, CMake, JNI; ABIs arm64-v8a + x86_64); `DictionaryEngine`, `YomitanSorter`, Room registry, bundled + file import, catalog (Kolobok); dictionaries screen; renderer module and full cards in the popup, links with back navigation. Result: the full Poe scenario.
 3. **Anki + audio**: field mapping settings, ➕ short/long, crop editor, duplicates, audio sources.
 4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, import of a Yomitan database export, Yomitan settings backup (interview first).
+5. **Phone feedback** (first test on the owner's phone):
+   - bubble: small dock zone, smaller bubble with a size setting, smaller docked handle, Poe-like popup placement, bubble above the popup;
+   - OCR: on-demand band refinement for small text;
+   - Anki: Yomitan marker set and formats (fixes broken Senren cards), Yomitan auto-mapping + note type presets, templates per note type, 📖 after adding and for prevented duplicates (default prevent), per-field overwrite modes;
+   - audio: source dialog, test panel, source/clip choice on long press, auto-play debounce, volume;
+   - settings screens: tap outside clears focus, fields stay above the keyboard; search settings (scan length, max results, text replacements);
+   - UI language picker; search screen name and empty state;
+   - Yomitan settings import; real Yomitan database export verified and import sped up;
+   - catalog: free dictionaries from the owner's collection;
+   - review of screen-size and device assumptions (density, font scale, landscape, tablets, cutouts, navigation modes).
+6. **Later** (interview first): APK publishing pipeline on GitHub, per-ABI builds, dock glyph per language.
 
 ## Documentation tasks
 
@@ -170,3 +189,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-26: plan approved. Phase 0 added README/CLAUDE.md/`ai/` docs and the documentation tasks section at the owner's request.
 - 2026-09-26: owner decisions during the dictionaries work — catalog fetched from the repo with a bundled fallback; catalog grouped by source → target language, installed dictionaries in sections by type; no active-language switch; Yomitan database export import and settings backup added to phase 4. Bundled set unchanged (all three stay in the APK).
 - 2026-09-26: implementation notes, no change of intent — kanji dictionaries use hoshidicts' kanji support instead of an own Room import (the earlier finding that hoshidicts had no kanji support was wrong); text without OCR is a bubble setting with OCR as the default. The owner may still want to confirm the default.
+- 2026-09-27: phase 5 from the first phone test. Owner decisions: small text via on-demand bands (setting off/on demand/all); duplicate behavior default changed from new to prevent, with 📖 opening the note; one active note type with field templates remembered per note type (no Yomitan-style multiple card formats); catalog limited to freely licensed dictionaries, the rest imported from files; Yomitan settings import covers dictionaries, Anki, audio and search settings, all editable by hand as well. CI publishing and per-device builds moved to a later phase.
