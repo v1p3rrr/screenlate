@@ -3,7 +3,6 @@ package com.vpr.screenlate.overlay
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.graphics.RectF
-import android.net.Uri
 import android.util.Log
 import android.content.res.Configuration
 import android.os.Handler
@@ -14,6 +13,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
@@ -698,7 +698,7 @@ class OverlayController(
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
         override fun onOpenUrl(url: String) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open $url", it) }
             dock()
         }

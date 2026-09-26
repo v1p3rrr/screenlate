@@ -1,3 +1,4 @@
+import com.vpr.screenlate.buildlogic.disableAnkiDroidLintChecks
 plugins {
     alias(libs.plugins.screenlate.android.library)
     alias(libs.plugins.screenlate.hilt)
@@ -16,3 +17,5 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
 }
+
+disableAnkiDroidLintChecks()

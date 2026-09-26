@@ -6,6 +6,7 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
+import androidx.core.os.BundleCompat
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
@@ -52,7 +53,8 @@ class AccessibilityText(private val service: AccessibilityService) {
             putInt(AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_ARG_LENGTH, length)
         }
         if (!node.refreshWithExtraData(AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY, arguments)) return null
-        val locations = node.extras.getParcelableArray(
+        val locations = BundleCompat.getParcelableArray(
+            node.extras,
             AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY,
             RectF::class.java,
         ) ?: return null
@@ -64,7 +66,7 @@ class AccessibilityText(private val service: AccessibilityService) {
         while (index < length) {
             val next = text.offsetByCodePoints(index, 1).coerceAtMost(text.length)
             val character = text.substring(index, next)
-            val rect = locations.getOrNull(index)
+            val rect = locations.getOrNull(index) as? RectF
             index = next
             if (rect == null || rect.isEmpty || !screen.contains(rect.centerX().toInt(), rect.centerY().toInt())) {
                 if (current.isNotEmpty()) lines += current.also { current = mutableListOf() }

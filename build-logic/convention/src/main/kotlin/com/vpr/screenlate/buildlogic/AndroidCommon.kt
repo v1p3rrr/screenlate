@@ -20,8 +20,6 @@ object ScreenlateSdk {
 internal fun Project.configureAndroidCommon(extension: CommonExtension) {
     extension.compileSdk = ScreenlateSdk.COMPILE
     extension.ndkVersion = ScreenlateSdk.NDK
-    // The AnkiDroid API library ships a lint check for AnkiDroid's own CrowdIn translations.
-    extension.lint.disable += "DuplicateCrowdInStrings"
     extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
     extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
 

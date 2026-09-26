@@ -1,8 +1,8 @@
 package com.vpr.screenlate.search
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.core.net.toUri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,6 +72,7 @@ fun SearchScreen(
     }
     val focus = remember { FocusRequester() }
     val currentDark by rememberUpdatedState(dark)
+    val noKanji by rememberUpdatedState(stringResource(OverlayR.string.overlay_no_kanji))
 
     // The page and its buttons live as long as the screen; the view model only does lookups.
     val holder = remember {
@@ -95,7 +96,7 @@ fun SearchScreen(
                 }
 
                 override fun onOpenUrl(url: String) {
-                    runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
+                    runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
                 }
 
                 override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
@@ -107,7 +108,7 @@ fun SearchScreen(
                     scope.launch {
                         val result = viewModel.kanji(character)
                         holder.page.push(
-                            PageState.kanji(context, currentDark, result, context.getString(OverlayR.string.overlay_no_kanji)),
+                            PageState.kanji(context, currentDark, result, noKanji),
                         )
                     }
                 }

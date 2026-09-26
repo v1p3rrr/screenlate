@@ -150,7 +150,7 @@ class AudioFinder @Inject constructor(
     private fun expand(template: String, term: String, reading: String): String =
         template.replace("{term}", encode(term)).replace("{reading}", encode(reading.ifEmpty { term }))
 
-    private fun encode(value: String): String = URLEncoder.encode(value, Charsets.UTF_8).replace("+", "%20")
+    private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 
     private fun sha256(file: File): String = sha256(file.readBytes())
 

@@ -207,6 +207,8 @@ private fun sectionLabel(kind: DictionaryKind): Int = when (kind) {
     DictionaryKind.KANJI -> R.string.dictionaries_kind_kanji
 }
 
+// `handle` goes on the drag handle, not on the card, so it is not the conventional `modifier` parameter.
+@Suppress("ModifierParameter")
 @Composable
 private fun DictionaryCard(
     dictionary: DictionaryEntity,

@@ -1,4 +1,5 @@
 import com.vpr.screenlate.buildlogic.DownloadAssetsTask
+import com.vpr.screenlate.buildlogic.disableAnkiDroidLintChecks
 import java.util.Properties
 
 plugins {
@@ -92,3 +93,5 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 }
+
+disableAnkiDroidLintChecks()
