@@ -208,6 +208,10 @@ a {
     touch-action: manipulation;
 }
 
+.entry-actions .action-copy {
+    color: var(--muted);
+}
+
 .action-add[data-state="duplicate"] {
     color: var(--muted);
 }

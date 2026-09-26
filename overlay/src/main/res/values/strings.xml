@@ -32,4 +32,5 @@
     <string name="overlay_kanji_jlpt" translatable="false">JLPT</string>
     <string name="overlay_kanji_frequency">Frequency</string>
     <string name="overlay_engine_app_text">App text</string>
+    <string name="overlay_copy">Copy</string>
 </resources>

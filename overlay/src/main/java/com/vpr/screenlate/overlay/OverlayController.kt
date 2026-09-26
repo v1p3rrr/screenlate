@@ -720,6 +720,8 @@ class OverlayController(
 
         override fun onPlayAudio(expression: String, reading: String) = popupNotes.play(expression, reading)
 
+        override fun onCopy(text: String) = PageState.copy(service, text)
+
         override fun onKanji(character: String) {
             scope.launch {
                 val result = runCatching { lookup.kanji(character, language) }.getOrElse { KanjiResult(character) }

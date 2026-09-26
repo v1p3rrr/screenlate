@@ -104,6 +104,8 @@ fun SearchScreen(
 
                 override fun onPlayAudio(expression: String, reading: String) = holder.notes.play(expression, reading)
 
+                override fun onCopy(text: String) = PageState.copy(context, text)
+
                 override fun onKanji(character: String) {
                     scope.launch {
                         val result = viewModel.kanji(character)

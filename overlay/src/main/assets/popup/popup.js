@@ -27,6 +27,7 @@ const Popup = (() => {
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     };
 
@@ -158,8 +159,10 @@ const Popup = (() => {
     }
 
     function actionButtons(result, index) {
-        if (!actions.anki && !actions.audio) return null;
         const container = element('div', 'entry-actions');
+        const copy = iconButton('copy', ICONS.copy, labelOf('copy'));
+        copy.addEventListener('click', () => ScreenlateBridge.onCopy(result.term.expression));
+        container.append(copy);
         if (actions.audio) {
             const play = iconButton('play', ICONS.audio, labelOf('playAudio'));
             play.addEventListener('click', () => ScreenlateBridge.onPlayAudio(result.term.expression, result.term.reading || ''));

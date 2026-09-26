@@ -1,5 +1,7 @@
 package com.vpr.screenlate.overlay.web
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -42,6 +44,7 @@ object PageState {
                 "noResults" to context.getString(R.string.overlay_no_results),
                 "addNote" to context.getString(R.string.overlay_add_note),
                 "playAudio" to context.getString(R.string.overlay_play_audio),
+                "copy" to context.getString(R.string.overlay_copy),
             ),
         ),
     )
@@ -69,6 +72,12 @@ object PageState {
         results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
 
     private fun theme(dark: Boolean) = if (dark) "dark" else "light"
+
+    /** Puts [text] on the clipboard; Android shows its own confirmation. */
+    fun copy(context: Context, text: String) {
+        context.getSystemService(ClipboardManager::class.java)
+            ?.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.overlay_copy), text))
+    }
 
     @Serializable
     private data class StateDto(
