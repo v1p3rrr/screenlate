@@ -1,5 +1,9 @@
 package com.vpr.screenlate.home
 
+import android.app.LocaleManager
+import android.os.Build
+import android.os.LocaleList
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -124,6 +129,7 @@ fun HomeScreen(
 
             SectionCard(title = stringResource(R.string.settings_theme_title)) {
                 ThemeModeSelector(selected = themeMode, onSelect = onThemeModeChange)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) LanguageSelector()
             }
 
             SectionCard(title = stringResource(R.string.home_tools_title)) {
@@ -133,6 +139,43 @@ fun HomeScreen(
             }
         }
     }
+}
+
+/** The app's own UI language (Android 13+), the same setting as the system's per-app language. */
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LanguageSelector() {
+    val context = LocalContext.current
+    val manager = remember { context.getSystemService(LocaleManager::class.java) }
+    var selected by remember { mutableStateOf(manager.applicationLocales.toLanguageTags().substringBefore('-')) }
+    val options = listOf(
+        "" to stringResource(R.string.settings_language_system),
+        "en" to stringResource(R.string.settings_language_en),
+        "ru" to stringResource(R.string.settings_language_ru),
+    )
+    Text(stringResource(R.string.settings_language), style = MaterialTheme.typography.labelLarge)
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        options.forEachIndexed { index, (tag, label) ->
+            SegmentedButton(
+                selected = tag == selected,
+                onClick = {
+                    selected = tag
+                    // The system recreates the activity with the new locale.
+                    manager.applicationLocales =
+                        if (tag.isEmpty()) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(tag)
+                },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+            ) {
+                Text(label, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+    Text(
+        stringResource(R.string.settings_language_hint),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,7 +193,7 @@ private fun ThemeModeSelector(selected: ThemeMode, onSelect: (ThemeMode) -> Unit
                 onClick = { onSelect(mode) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = ThemeMode.entries.size),
             ) {
-                Text(labels.getValue(mode))
+                Text(labels.getValue(mode), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }

@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.RectF
 import android.util.Log
 import android.content.res.Configuration
@@ -25,7 +26,10 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.OcrEngineType
+import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrUpdate
+import com.vpr.screenlate.core.ocr.ScreenBands
+import com.vpr.screenlate.core.ocr.withMissingFrom
 import com.vpr.screenlate.core.ocr.OfflineException
 import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
@@ -46,6 +50,7 @@ import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
 import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
@@ -142,6 +147,9 @@ class OverlayController(
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
     private var screenshot: CapturedScreen? = null
+    private var bandTimer: Job? = null
+    private val bandJobs = mutableListOf<Job>()
+    private val requestedBands = mutableSetOf<Int>()
 
     // Only Japanese is supported for now; this becomes a setting with more languages.
     private val language = Language.JAPANESE
@@ -449,6 +457,10 @@ class OverlayController(
     private fun resetScan() {
         scanJob?.cancel()
         scanJob = null
+        bandTimer?.cancel()
+        bandJobs.forEach { it.cancel() }
+        bandJobs.clear()
+        requestedBands.clear()
         layout = null
         ocrFinal = false
         ocrEngine = null
@@ -476,27 +488,19 @@ class OverlayController(
                 captureError = e
                 null
             }
-            if (settings.textSource == TextSource.APP_TEXT) {
-                // App text works even in windows that forbid screenshots.
-                val screen = screenBounds()
-                val page = withContext(Dispatchers.Default) {
-                    runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
-                        .onFailure { Log.w(TAG, "Reading app text failed", it) }
-                        .getOrNull()
-                }
-                if (page != null) {
-                    screenshot = captured
-                    onOcrUpdate(OcrUpdate.Final(page), 0f, 0f, flashLines)
-                    return@launch
-                }
-            }
+            // App text is exact and works in windows that forbid screenshots. OCR still runs to add the text the app
+            // does not expose, such as text in images.
+            val appText = if (settings.textSource == TextSource.APP_TEXT) readAppText() else null
+            if (appText != null) onPage(appText, final = captured == null, lensError = null, flashLines = flashLines)
             if (captured == null) {
                 bubbleView.loading = false
-                showMessage(
-                    service.getString(
-                        if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
-                    ),
-                )
+                if (appText == null) {
+                    showMessage(
+                        service.getString(
+                            if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
+                        ),
+                    )
+                }
                 return@launch
             }
             try {
@@ -504,15 +508,80 @@ class OverlayController(
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
-                        showMessage(service.getString(R.string.overlay_error_ocr))
+                        if (appText != null) {
+                            onPage(appText, final = true, lensError = error, flashLines = false)
+                        } else {
+                            showMessage(service.getString(R.string.overlay_error_ocr))
+                        }
                     }
-                    .collect { update -> onOcrUpdate(update, captured.left.toFloat(), captured.top.toFloat(), flashLines) }
+                    .collect { update ->
+                        val page = update.page.offset(captured.left.toFloat(), captured.top.toFloat())
+                        onPage(
+                            page = appText?.withMissingFrom(page) ?: page,
+                            final = update is OcrUpdate.Final,
+                            lensError = (update as? OcrUpdate.Final)?.lensError,
+                            // App text already flashed its lines.
+                            flashLines = flashLines && appText == null,
+                        )
+                    }
             } catch (e: CancellationException) {
                 captured.bitmap.recycle()
                 throw e
             }
-            // Kept for {screenshot} until the next scan or docking.
+            // Kept for {screenshot} and small-text bands until the next scan or docking.
             screenshot = captured
+            if (settings.smallText == SmallTextMode.ALWAYS) {
+                ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
+            }
+        }
+    }
+
+    /** On-demand small text: the aim rests where nothing was recognized, so its band goes to Lens once. */
+    private fun scheduleBandAt(y: Float) {
+        if (settings.smallText != SmallTextMode.ON_DEMAND || !ocrFinal) return
+        val shot = screenshot ?: return
+        bandTimer?.cancel()
+        bandTimer = scope.launch {
+            delay(BAND_DELAY_MS)
+            val bands = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)
+            refineBand(shot, ScreenBands.nearest(bands, y - shot.top))
+        }
+    }
+
+    /** Recognizes one band of [shot] again and adds the lines found where the page had no text. */
+    private fun refineBand(shot: CapturedScreen, index: Int) {
+        if (!requestedBands.add(index)) return
+        val band = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)[index]
+        // Cropped here, on the main thread, where resetScan recycles the screenshot.
+        val crop = Bitmap.createBitmap(
+            shot.bitmap,
+            band.left.toInt(),
+            band.top.toInt(),
+            band.width.toInt(),
+            band.height.toInt(),
+        )
+        bandJobs += scope.launch {
+            val found = try {
+                ocr.recognizeRegion(crop, language)
+            } finally {
+                crop.recycle()
+            }
+            val current = layout ?: return@launch
+            val added = found?.offset(shot.left.toFloat(), shot.top + band.top) ?: return@launch
+            val merged = current.page.withMissingFrom(added)
+            if (merged === current.page) return@launch
+            layout = TextLayout(merged)
+            hit = null
+            if (state != State.DOCKED) aim?.let { (x, y) -> onAim(x, y) }
+        }
+    }
+
+    private suspend fun readAppText(): OcrPage? {
+        val screen = screenBounds()
+        return withContext(Dispatchers.Default) {
+            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
+                .onFailure { Log.w(TAG, "Reading app text failed", it) }
+                .getOrNull()
         }
     }
 
@@ -533,14 +602,13 @@ class OverlayController(
         layerView.alpha = alpha
     }
 
-    /** [offsetX] and [offsetY] move the page from image to screen coordinates. */
-    private fun onOcrUpdate(update: OcrUpdate, offsetX: Float, offsetY: Float, flashLines: Boolean) {
-        val page = update.page.offset(offsetX, offsetY)
+    /** A new text layout in screen coordinates: the OCR draft or the final result. */
+    private fun onPage(page: OcrPage, final: Boolean, lensError: Throwable?, flashLines: Boolean) {
         val newLayout = TextLayout(page)
         layout = newLayout
         ocrEngine = page.engine
-        ocrFinal = update is OcrUpdate.Final
-        ocrOffline = (update as? OcrUpdate.Final)?.lensError is OfflineException
+        ocrFinal = final
+        ocrOffline = lensError is OfflineException
         if (ocrFinal) bubbleView.loading = false
         if (flashLines) layerView.flashLines(newLayout.lineBoxes(), FLASH_HOLD_MS)
         hit = null
@@ -555,7 +623,12 @@ class OverlayController(
     private fun onAim(x: Float, y: Float) {
         aim = x to y
         val layout = layout ?: return
-        val position = layout.hitTest(x, y, HIT_TOLERANCE_DP * density) ?: return
+        val position = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+        if (position == null) {
+            scheduleBandAt(y)
+            return
+        }
+        bandTimer?.cancel()
         if (position == hit) return
         hit = position
         haptic()
@@ -684,7 +757,13 @@ class OverlayController(
         }
     }
 
-    private fun engineLabel(): String = when {
+    /** Where the word under the aim came from: text added around app text keeps its own engine. */
+    private fun engineLabel(): String {
+        val paragraphEngine = hit?.let { position -> layout?.page?.paragraphs?.getOrNull(position.paragraphIndex)?.engine }
+        return engineLabel(paragraphEngine ?: ocrEngine)
+    }
+
+    private fun engineLabel(ocrEngine: OcrEngineType?): String = when {
         ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
         ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
         ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
@@ -760,5 +839,6 @@ class OverlayController(
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
         const val FOCUS_PADDING_DP = 16f
+        const val BAND_DELAY_MS = 300L
     }
 }

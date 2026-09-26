@@ -37,6 +37,10 @@ AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
 Copyright (c) AnkiDroid contributors.
   Used as a library in core/anki to add notes through AnkiDroid's content provider.
 
+Material Icons (https://github.com/google/material-design-icons), Apache License 2.0,
+Copyright (c) Google LLC.
+  Vector icon paths in app/src/main/res/drawable/ic_*.xml.
+
 Third-party data
 ----------------
 

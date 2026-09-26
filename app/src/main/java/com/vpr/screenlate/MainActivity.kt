@@ -17,7 +17,10 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    /** Debug builds only: `--es debug_image <file>` opens a file from the app's internal files directory. */
+    /**
+     * Debug builds only: `--es debug_image <file>` opens a file from the app's internal files directory,
+     * `--es debug_caption <text>` adds a line of text above it.
+     */
     private fun debugImagePath(): String? {
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return null
         val name = intent.getStringExtra(EXTRA_DEBUG_IMAGE) ?: return null
@@ -34,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     themeMode = themeMode,
                     onThemeModeChange = viewModel::setThemeMode,
                     debugImagePath = debugImagePath(),
+                    debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
                 )
             }
         }
@@ -41,5 +45,6 @@ class MainActivity : ComponentActivity() {
 
     private companion object {
         const val EXTRA_DEBUG_IMAGE = "debug_image"
+        const val EXTRA_DEBUG_CAPTION = "debug_caption"
     }
 }

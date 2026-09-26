@@ -55,7 +55,7 @@ class LensOcrEngine @Inject constructor(
             .post(body.toRequestBody(PROTOBUF))
             .build()
         val bytes = client.newCall(request).await().use { response ->
-            if (!response.isSuccessful) throw IOException("Lens HTTP ${response.code}")
+            if (!response.isSuccessful) throw LensHttpException(response.code)
             response.body.bytes()
         }
         return withContext(Dispatchers.Default) { LensProtocol.parseResponse(bytes, image.width, image.height) }
@@ -87,6 +87,11 @@ class LensOcrEngine @Inject constructor(
         const val JPEG_QUALITY = 85
         val PROTOBUF = "application/x-protobuf".toMediaType()
     }
+}
+
+/** Lens answered with an HTTP error; 429 and 403 mean it refuses requests for now. */
+class LensHttpException(val code: Int) : IOException("Lens HTTP $code") {
+    val refused: Boolean get() = code == 429 || code == 403
 }
 
 private suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->

@@ -57,7 +57,7 @@ data class OverlaySettings(
     val hiddenPackages: Set<String> = emptySet(),
     val textSource: TextSource = TextSource.SCREEN,
     val bubbleSizeDp: Int = DEFAULT_BUBBLE_DP,
-    val smallText: SmallTextMode = SmallTextMode.ON_DEMAND,
+    val smallText: SmallTextMode = SmallTextMode.OFF,
 ) {
     companion object {
         const val DEFAULT_BUBBLE_DP = 48

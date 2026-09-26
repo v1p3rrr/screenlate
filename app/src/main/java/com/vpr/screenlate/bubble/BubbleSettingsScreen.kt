@@ -41,6 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardOptions
+import com.vpr.screenlate.ui.components.doneClearsFocus
+import com.vpr.screenlate.ui.components.formContent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -102,6 +107,7 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
     val context = LocalContext.current
     val apps by produceState<List<LaunchableApp>?>(null) { value = launchableApps(context) }
     var filter by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -118,7 +124,7 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .formContent(padding, focusManager),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -200,6 +206,8 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         onValueChange = { filter = it },
                         placeholder = { Text(stringResource(R.string.bubble_filter_apps)) },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = doneClearsFocus(),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

@@ -9,7 +9,7 @@
     <string name="onboarding_device_app_launch">Honor / MagicOS: Настройки → Приложения → Запуск приложений → Screenlate → Управлять вручную и включить все три пункта. Иначе система может остановить службу в фоне.</string>
     <string name="onboarding_device_restricted_settings">Если переключатель Screenlate неактивен (приложение установлено из файла), откройте Сведения о приложении → ⋮ → Разрешить ограниченные настройки и попробуйте снова.</string>
 
-    <string name="settings_theme_title">Тема</string>
+    <string name="settings_theme_title">Оформление</string>
     <string name="settings_theme_system">Системная</string>
     <string name="settings_theme_light">Светлая</string>
     <string name="settings_theme_dark">Тёмная</string>
@@ -96,10 +96,10 @@
     <string name="audio_source_json">Свой URL (JSON)</string>
     <string name="audio_url_template">Шаблон URL</string>
     <string name="audio_add_source">Добавить источник аудио</string>
-    <string name="search_title">Поиск</string>
+    <string name="search_title">Поиск слов</string>
     <string name="search_hint">Слово или текст</string>
-    <string name="home_search_title">Поиск</string>
-    <string name="home_search_open">Искать в словарях</string>
+    <string name="home_search_title">Поиск слов</string>
+    <string name="home_search_open">Найти слово</string>
     <string name="process_text_label">Найти в Screenlate</string>
     <string name="dictionaries_check_updates">Проверить обновления</string>
     <string name="dictionaries_checking_updates">Проверяю обновления…</string>
@@ -127,10 +127,18 @@
     <string name="bubble_text_source_hint">Текст приложения точный и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
-    <string name="bubble_small_text">Мелкий текст</string>
+    <string name="bubble_small_text">Усиление OCR</string>
     <string name="bubble_small_text_off">Выкл</string>
     <string name="bubble_small_text_on_demand">По требованию</string>
     <string name="bubble_small_text_always">Всегда</string>
-    <string name="bubble_small_text_hint">Google Lens пропускает мелкий текст на снимке всего экрана. «По требованию» — полоса экрана под прицелом распознаётся ещё раз, когда прицел задержался там, где ничего не найдено; «Всегда» — весь экран полосами при каждом скане (больше трафика).</string>
+    <string name="bubble_small_text_hint">Отправляет части экрана в Google Lens отдельно, в большем разрешении относительно всего снимка, чтобы распознать мелкий текст, который скан всего экрана пропускает. «По требованию» — часть под прицелом, когда прицел задержался там, где ничего не найдено. «Всегда» — весь экран частями при каждом скане (больше трафика).</string>
     <string name="bubble_size">Размер кружка: %1$d dp</string>
+    <string name="search_empty_title">Введите слово или вставьте текст</string>
+    <string name="search_empty_hint">Статьи появляются по мере ввода. В других приложениях выделите текст и выберите «Найти в Screenlate» в меню выделения.</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_system">Системный</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_ru">Русский</string>
+    <string name="settings_language_hint">Также доступно в настройках системы: Приложения → Screenlate → Язык.</string>
+    <string name="action_clear">Очистить</string>
 </resources>

@@ -24,6 +24,11 @@ android {
         versionName = "0.1.0"
     }
 
+    // Lists English and Russian in the system's per-app language settings.
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     signingConfigs {
         if (keystoreProperties.isNotEmpty()) {
             create("release") {

@@ -3,7 +3,18 @@ package com.vpr.screenlate.search
 import android.content.Intent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.net.toUri
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -71,6 +82,7 @@ fun SearchScreen(
         ThemeMode.SYSTEM -> systemDark
     }
     val focus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     val currentDark by rememberUpdatedState(dark)
     val noKanji by rememberUpdatedState(stringResource(OverlayR.string.overlay_no_kanji))
 
@@ -167,20 +179,69 @@ fun SearchScreen(
             )
         },
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding()) {
             OutlinedTextField(
                 value = query,
                 onValueChange = { viewModel.query.value = it },
                 placeholder = { Text(stringResource(R.string.search_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                trailingIcon = {
+                    if (query.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.query.value = "" }) {
+                            Icon(painterResource(R.drawable.ic_close), stringResource(R.string.action_clear))
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .focusRequester(focus),
             )
-            AndroidView(factory = { page.container }, modifier = Modifier.fillMaxSize())
+            Box(modifier = Modifier.fillMaxSize()) {
+                // The page stays alive while hidden so the next search renders without a reload.
+                AndroidView(
+                    factory = { page.container },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(if (query.isBlank()) 0f else 1f),
+                )
+                if (query.isBlank()) EmptySearch()
+            }
         }
+    }
+}
+
+/** Shown instead of an empty page before anything is typed. */
+@Composable
+private fun EmptySearch() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            painterResource(R.drawable.ic_search),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .padding(top = 48.dp)
+                .size(48.dp),
+        )
+        Text(
+            stringResource(R.string.search_empty_title),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            stringResource(R.string.search_empty_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

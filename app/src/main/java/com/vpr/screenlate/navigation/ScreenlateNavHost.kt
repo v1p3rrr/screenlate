@@ -34,19 +34,21 @@ private object BubbleRoute
 private data class SearchRoute(val query: String = "")
 
 @Serializable
-private data class ImageViewerRoute(val path: String)
+private data class ImageViewerRoute(val path: String, val caption: String = "")
 
 /**
  * @param debugImagePath when set, starts on the debug image viewer instead of the home screen.
+ * @param debugImageCaption text shown above the debug image, to test app text next to text in an image.
  */
 @Composable
 fun ScreenlateNavHost(
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     debugImagePath: String? = null,
+    debugImageCaption: String = "",
 ) {
     val navController = rememberNavController()
-    val start: Any = debugImagePath?.let(::ImageViewerRoute) ?: HomeRoute
+    val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: HomeRoute
     NavHost(navController = navController, startDestination = start) {
         composable<HomeRoute> {
             HomeScreen(
@@ -78,7 +80,7 @@ fun ScreenlateNavHost(
             OcrTestScreen(onBack = { navController.popBackStack() })
         }
         composable<ImageViewerRoute> { entry ->
-            ImageViewerScreen(entry.toRoute<ImageViewerRoute>().path)
+            entry.toRoute<ImageViewerRoute>().let { ImageViewerScreen(it.path, it.caption) }
         }
     }
 }

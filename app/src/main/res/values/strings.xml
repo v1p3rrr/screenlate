@@ -11,7 +11,7 @@
     <string name="onboarding_device_app_launch">Honor / MagicOS: Settings → Apps → App launch → Screenlate → Manage manually, and allow all three options. Otherwise the system may stop the service in the background.</string>
     <string name="onboarding_device_restricted_settings">If the Screenlate switch is greyed out (the app was installed from a file), open App info → ⋮ → Allow restricted settings, then try again.</string>
 
-    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_title">Appearance</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
@@ -101,10 +101,10 @@
     <string name="audio_source_json">Custom URL (JSON)</string>
     <string name="audio_url_template">URL template</string>
     <string name="audio_add_source">Add audio source</string>
-    <string name="search_title">Search</string>
+    <string name="search_title">Look up words</string>
     <string name="search_hint">Word or text</string>
-    <string name="home_search_title">Search</string>
-    <string name="home_search_open">Search dictionaries</string>
+    <string name="home_search_title">Look up words</string>
+    <string name="home_search_open">Look up a word</string>
     <string name="process_text_label">Look up in Screenlate</string>
     <string name="dictionaries_check_updates">Check for updates</string>
     <string name="dictionaries_checking_updates">Checking for updates…</string>
@@ -132,10 +132,18 @@
     <string name="bubble_text_source_hint">App text is exact and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
-    <string name="bubble_small_text">Small text</string>
+    <string name="bubble_small_text">OCR boost</string>
     <string name="bubble_small_text_off">Off</string>
     <string name="bubble_small_text_on_demand">On demand</string>
     <string name="bubble_small_text_always">Always</string>
-    <string name="bubble_small_text_hint">Google Lens skips small text on a full-screen image. On demand, the band of the screen under the aim is recognized again when the aim rests where nothing was found; Always does it for the whole screen with every scan (more traffic).</string>
+    <string name="bubble_small_text_hint">Sends parts of the screen to Google Lens separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized. On demand: the part under the aim, once the aim rests where nothing was found. Always: the whole screen in parts with every scan (more traffic).</string>
     <string name="bubble_size">Bubble size: %1$d dp</string>
+    <string name="search_empty_title">Type a word or paste text</string>
+    <string name="search_empty_hint">Entries appear as you type. In other apps, select text and choose “Look up in Screenlate” in the selection menu.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">System</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_ru">Русский</string>
+    <string name="settings_language_hint">Also available in the system settings: Apps → Screenlate → Language.</string>
+    <string name="action_clear">Clear</string>
 </resources>
