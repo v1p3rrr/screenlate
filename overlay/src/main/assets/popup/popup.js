@@ -312,6 +312,11 @@ const Popup = (() => {
             .join('\n');
     }
 
+    /** Page options: { embedded: true } drops the card frame and the close button (app screens). */
+    function configure(options) {
+        document.documentElement.dataset.embedded = String(Boolean(options.embedded));
+    }
+
     /** Which entry buttons to show: { anki: boolean, audio: boolean }. */
     function setActions(newActions) {
         const changed = JSON.stringify(newActions) !== JSON.stringify(actions);
@@ -337,7 +342,7 @@ const Popup = (() => {
 
     // endregion
 
-    return { render, update, push, setStyles, setActions, setNoteStates, allNoteData };
+    return { configure, render, update, push, setStyles, setActions, setNoteStates, allNoteData };
 })();
 
 ScreenlateBridge.onReady();

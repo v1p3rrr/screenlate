@@ -11,6 +11,7 @@ import com.vpr.screenlate.debug.ImageViewerScreen
 import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.debug.OcrTestScreen
 import com.vpr.screenlate.home.HomeScreen
+import com.vpr.screenlate.search.SearchScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,6 +25,9 @@ private object DictionariesRoute
 
 @Serializable
 private object AnkiRoute
+
+@Serializable
+private data class SearchRoute(val query: String = "")
 
 @Serializable
 private data class ImageViewerRoute(val path: String)
@@ -47,6 +51,13 @@ fun ScreenlateNavHost(
                 onOpenOcrTest = { navController.navigate(OcrTestRoute) },
                 onOpenDictionaries = { navController.navigate(DictionariesRoute) },
                 onOpenAnki = { navController.navigate(AnkiRoute) },
+                onOpenSearch = { navController.navigate(SearchRoute()) },
+            )
+        }
+        composable<SearchRoute> { entry ->
+            SearchScreen(
+                onBack = { navController.popBackStack() },
+                initialQuery = entry.toRoute<SearchRoute>().query,
             )
         }
         composable<AnkiRoute> {

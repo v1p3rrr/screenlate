@@ -42,6 +42,7 @@ fun HomeScreen(
     onOpenOcrTest: () -> Unit,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
+    onOpenSearch: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -64,6 +65,12 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            SectionCard(title = stringResource(R.string.home_search_title)) {
+                Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.home_search_open))
+                }
+            }
+
             SectionCard(title = stringResource(R.string.onboarding_service_title)) {
                 Text(
                     text = stringResource(

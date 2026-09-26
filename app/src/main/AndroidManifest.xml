@@ -26,6 +26,19 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".search.ProcessTextActivity"
+            android:exported="true"
+            android:label="@string/process_text_label"
+            android:theme="@style/Theme.Screenlate"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
         <!-- WorkManager is initialized on demand with the Hilt worker factory (ScreenlateApplication). -->
         <provider
             android:name="androidx.startup.InitializationProvider"

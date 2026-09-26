@@ -38,6 +38,8 @@ import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
 import com.vpr.screenlate.overlay.popup.PopupController
+import com.vpr.screenlate.overlay.web.LookupPage
+import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
@@ -60,9 +62,6 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonObject
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -111,7 +110,7 @@ class OverlayController(
     private val popupNotes = PopupNotes(
         context = service,
         scope = scope,
-        popup = popup,
+        page = popup.page,
         anki = anki.ankiDroid,
         notes = anki.notes,
         audio = anki.audio,
@@ -618,7 +617,7 @@ class OverlayController(
                 Log.w(TAG, "Loading dictionary styles failed", e)
                 return@launch
             }
-            popup.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
+            popup.page.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
         }
     }
 
@@ -630,22 +629,16 @@ class OverlayController(
             ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
             else -> ""
         }
-        return buildJsonObject {
-            put("theme", if (isDarkTheme()) "dark" else "light")
-            put("pending", scanJob?.isActive == true && !ocrFinal)
-            put("engine", engineLabel)
-            putJsonObject("source") {
-                put("text", view.text)
-                put("matched", view.matched)
-            }
-            put("results", json.encodeToJsonElement(ListSerializer(LookupResult.serializer()), view.results))
-            view.message?.let { put("message", it) }
-            putJsonObject("labels") {
-                put("noResults", service.getString(R.string.overlay_no_results))
-                put("addNote", service.getString(R.string.overlay_add_note))
-                put("playAudio", service.getString(R.string.overlay_play_audio))
-            }
-        }
+        return PageState.build(
+            context = service,
+            dark = isDarkTheme(),
+            text = view.text,
+            matched = view.matched,
+            results = view.results,
+            message = view.message,
+            pending = scanJob?.isActive == true && !ocrFinal,
+            engine = engineLabel,
+        )
     }
 
     private fun isDarkTheme(): Boolean = when (themeMode) {
@@ -661,7 +654,7 @@ class OverlayController(
 
     // endregion
 
-    private inner class PopupCallbacks : PopupController.Callbacks {
+    private inner class PopupCallbacks : LookupPage.Callbacks {
         override fun onClose() = dock()
 
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)

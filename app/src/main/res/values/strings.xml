@@ -101,4 +101,9 @@
     <string name="audio_source_json">Custom URL (JSON)</string>
     <string name="audio_url_template">URL template</string>
     <string name="audio_add_source">Add audio source</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Word or text</string>
+    <string name="home_search_title">Search</string>
+    <string name="home_search_open">Search dictionaries</string>
+    <string name="process_text_label">Look up in Screenlate</string>
 </resources>

@@ -1,90 +1,33 @@
 package com.vpr.screenlate.overlay.popup
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.graphics.Color
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.WindowManager
-import android.webkit.JavascriptInterface
-import android.webkit.MimeTypeMap
-import android.webkit.RenderProcessGoneDetail
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.webkit.WebViewAssetLoader
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.ui.OverlayWindows
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.vpr.screenlate.overlay.web.LookupPage
 import kotlinx.serialization.json.JsonElement
-import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 
-/**
- * The popup window: a pre-warmed WebView rendering `assets/popup/popup.html`.
- *
- * Pages and dictionary media are served from `https://appassets.androidplatform.net/`: assets under `/assets/`,
- * media from `/media?d=<dictionary>&p=<path>` through [Callbacks.media].
- */
+/** The popup window: a pre-warmed [LookupPage] placed next to the word under the aim. */
 class PopupController(
     context: Context,
     private val windowManager: WindowManager,
-    private val callbacks: Callbacks,
+    callbacks: LookupPage.Callbacks,
 ) {
-    interface Callbacks {
-        fun onClose()
-
-        /** A link inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
-        fun onLookup(query: String, primaryReading: String?)
-
-        fun onOpenUrl(url: String)
-
-        /** ➕ on entry [index]; [noteData] is the JSON from the page's NoteData.build. */
-        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean)
-
-        fun onPlayAudio(expression: String, reading: String)
-
-        /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
-        fun media(dictionary: String, path: String): ByteArray?
-    }
-
-    private val mainHandler = Handler(Looper.getMainLooper())
     private val edgeMargin = EDGE_MARGIN_DP * context.resources.displayMetrics.density
     private val params = OverlayWindows.popupParams()
     private var attached = false
-    private var pageReady = false
-    private val pendingScripts = mutableListOf<String>()
-    private var styles: String? = null
-    private var actions: String? = null
+
+    val page = LookupPage(context, object : LookupPage.Callbacks by callbacks {
+        override fun onClose() {
+            // Also called when the renderer died: the window must go before the page is reused.
+            hide()
+            callbacks.onClose()
+        }
+    })
 
     var bounds: Box? = null
         private set
-
-    init {
-        // Debug builds expose the popup to DevTools (chrome://inspect, scripts/popup-eval.mjs).
-        if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
-            WebView.setWebContentsDebuggingEnabled(true)
-        }
-    }
-
-    private val assetLoader = WebViewAssetLoader.Builder()
-        .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
-        .build()
-    private var webView = createWebView(context)
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun createWebView(context: Context): WebView = WebView(context).apply {
-        setBackgroundColor(Color.TRANSPARENT)
-        settings.javaScriptEnabled = true
-        settings.allowFileAccess = false
-        settings.allowContentAccess = false
-        webViewClient = PopupWebViewClient()
-        addJavascriptInterface(Bridge(), "ScreenlateBridge")
-        loadUrl(PAGE_URL)
-    }
 
     val isShowing: Boolean get() = attached
 
@@ -100,153 +43,37 @@ class PopupController(
         params.width = placed.width.roundToInt()
         params.height = placed.height.roundToInt()
         if (attached) {
-            windowManager.updateViewLayout(webView, params)
+            windowManager.updateViewLayout(page.container, params)
         } else {
-            windowManager.addView(webView, params)
+            windowManager.addView(page.container, params)
             attached = true
         }
-        run("Popup.render($state)")
+        page.render(state)
     }
 
     /** Re-renders the current view in place, if the popup is showing. */
     fun update(state: JsonElement) {
-        if (attached) run("Popup.update($state)")
+        if (attached) page.update(state)
     }
 
     /** Shows [state] on top of the current view; the popup's back button returns to it. */
     fun push(state: JsonElement) {
-        if (attached) run("Popup.push($state)")
-    }
-
-    /** Sets the scoped `styles.css` of the loaded dictionaries (a JSON array of {dictionary, css}). */
-    fun setStyles(styles: JsonElement) {
-        val script = "Popup.setStyles($styles)"
-        if (script == this.styles) return
-        this.styles = script
-        run(script)
-    }
-
-    /** Shows or hides the ➕ and 🔊 buttons of entries. */
-    fun setActions(anki: Boolean, audio: Boolean) {
-        val script = "Popup.setActions({anki: $anki, audio: $audio})"
-        if (script == actions) return
-        actions = script
-        run(script)
-    }
-
-    /** Sets ➕ button states by entry index (see `Popup.setNoteStates`). */
-    fun setNoteStates(states: Map<Int, String>) {
-        if (!attached || states.isEmpty()) return
-        val json = states.entries.joinToString(",", "{", "}") { (index, state) -> "\"$index\":\"$state\"" }
-        run("Popup.setNoteStates($json)")
-    }
-
-    /** Evaluates [script] in the page and returns its JSON-encoded result, or null if the page is not ready. */
-    suspend fun evaluate(script: String): String? {
-        if (!pageReady) return null
-        return suspendCancellableCoroutine { continuation ->
-            webView.evaluateJavascript(script) { result -> if (continuation.isActive) continuation.resume(result) }
-        }
+        if (attached) page.push(state)
     }
 
     fun hide() {
         if (!attached) return
-        windowManager.removeView(webView)
+        windowManager.removeView(page.container)
         attached = false
         bounds = null
     }
 
     fun release() {
         hide()
-        webView.destroy()
-    }
-
-    private fun run(script: String) {
-        if (pageReady) {
-            webView.evaluateJavascript(script, null)
-        } else {
-            // Only the latest view matters, but styles and actions must survive.
-            pendingScripts.removeAll { !it.startsWith("Popup.setStyles") && !it.startsWith("Popup.setActions") }
-            pendingScripts += script
-        }
-    }
-
-    private fun mediaResponse(dictionary: String, path: String): WebResourceResponse {
-        val bytes = runCatching { callbacks.media(dictionary, path) }
-            .onFailure { Log.w(TAG, "Media $path of $dictionary failed", it) }
-            .getOrNull()
-            ?: return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
-        return WebResourceResponse(mimeType(path), null, bytes.inputStream())
-    }
-
-    private fun mimeType(path: String): String = when (val extension = path.substringAfterLast('.', "").lowercase()) {
-        "svg" -> "image/svg+xml"
-        "avif" -> "image/avif"
-        else -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "application/octet-stream"
-    }
-
-    // Lint does not see the override below in an inner class and reports MissingOnRenderProcessGone.
-    @SuppressLint("MissingOnRenderProcessGone")
-    private inner class PopupWebViewClient : WebViewClient() {
-        override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
-            val url = request.url
-            if (url.host == HOST && url.path == MEDIA_PATH) {
-                return mediaResponse(url.getQueryParameter("d").orEmpty(), url.getQueryParameter("p").orEmpty())
-            }
-            return assetLoader.shouldInterceptRequest(url)
-        }
-
-        // A crashed or killed renderer must not take the accessibility service down with it.
-        override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
-            Log.w(TAG, "Popup renderer gone (crashed: ${detail.didCrash()}), recreating")
-            val wasShowing = attached
-            hide()
-            view.destroy()
-            pageReady = false
-            pendingScripts.clear()
-            styles?.let { pendingScripts += it }
-            actions?.let { pendingScripts += it }
-            webView = createWebView(view.context)
-            if (wasShowing) callbacks.onClose()
-            return true
-        }
-    }
-
-    private inner class Bridge {
-        @JavascriptInterface
-        fun onReady() = post {
-            pageReady = true
-            pendingScripts.forEach { webView.evaluateJavascript(it, null) }
-            pendingScripts.clear()
-        }
-
-        @JavascriptInterface
-        fun onClose() = post { callbacks.onClose() }
-
-        @JavascriptInterface
-        fun onLookup(query: String, primaryReading: String) =
-            post { callbacks.onLookup(query, primaryReading.ifEmpty { null }) }
-
-        @JavascriptInterface
-        fun onOpenUrl(url: String) = post { callbacks.onOpenUrl(url) }
-
-        @JavascriptInterface
-        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
-            post { callbacks.onAddNote(index, noteData, withScreenshot) }
-
-        @JavascriptInterface
-        fun onPlayAudio(expression: String, reading: String) = post { callbacks.onPlayAudio(expression, reading) }
-
-        private fun post(action: () -> Unit) {
-            mainHandler.post(action)
-        }
+        page.destroy()
     }
 
     private companion object {
-        const val TAG = "PopupController"
-        const val HOST = "appassets.androidplatform.net"
-        const val PAGE_URL = "https://$HOST/assets/popup/popup.html"
-        const val MEDIA_PATH = "/media"
         const val WIDTH_FRACTION = 0.85f
         const val HEIGHT_FRACTION = 0.35f
         const val EDGE_MARGIN_DP = 8f

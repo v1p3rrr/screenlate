@@ -18,7 +18,7 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
-import com.vpr.screenlate.overlay.popup.PopupController
+import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.ui.CropEditor
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -46,21 +46,21 @@ data class NoteContext(
 )
 
 /**
- * The popup's ➕ and 🔊 buttons: duplicate marks, adding notes to AnkiDroid, playing and auto-playing audio.
+ * The ➕ and 🔊 buttons of a [LookupPage]: duplicate marks, adding notes to AnkiDroid, playing and auto-playing audio.
  *
  * @param noteContext waits for the final OCR result and describes where the word came from.
  */
 class PopupNotes(
     private val context: Context,
     private val scope: CoroutineScope,
-    private val popup: PopupController,
+    private val page: LookupPage,
     private val anki: AnkiDroid,
     private val notes: AnkiNotes,
     private val audio: AudioFinder,
     private val audioSettings: AudioSettingsRepository,
     private val lookup: DictionaryLookup,
     private val noteContext: suspend () -> NoteContext,
-    private val cropEditor: CropEditor,
+    private val cropEditor: CropEditor?,
 ) {
     private val json = Json { ignoreUnknownKeys = true }
     private var duplicateJob: Job? = null
@@ -72,7 +72,7 @@ class PopupNotes(
         val settings = notes.settings()
         val ankiReady = settings.configured && anki.availability() == AnkiAvailability.READY
         val audioEnabled = audioSettings.current().sources.isNotEmpty()
-        popup.setActions(anki = ankiReady, audio = audioEnabled)
+        page.setActions(anki = ankiReady, audio = audioEnabled)
     }
 
     /** Called after a view with results is shown: schedules the duplicate check and auto-play. */
@@ -98,7 +98,7 @@ class PopupNotes(
     private suspend fun markDuplicates() {
         val settings = notes.settings()
         if (!settings.configured || !settings.duplicateCheck) return
-        val raw = popup.evaluate("JSON.stringify(Popup.allNoteData())") ?: return
+        val raw = page.evaluate("JSON.stringify(Popup.allNoteData())") ?: return
         val entries = runCatching {
             // evaluateJavascript returns the string result JSON-encoded once more.
             json.decodeFromString<List<Map<String, String>>>(json.decodeFromString<String>(raw))
@@ -111,7 +111,7 @@ class PopupNotes(
                 else -> "duplicate"
             }
         }
-        popup.setNoteStates(states.filterValues { it.isNotEmpty() })
+        page.setNoteStates(states.filterValues { it.isNotEmpty() })
     }
 
     fun add(index: Int, noteDataJson: String, withScreenshot: Boolean) {
@@ -130,10 +130,10 @@ class PopupNotes(
                 resolveGlossaryMedia(data.media, values, used)
                 val picture = if (withScreenshot && "screenshot" in used) {
                     val image = context.screenshot?.takeUnless { it.isRecycled }
-                    if (image != null) {
+                    if (image != null && cropEditor != null) {
                         // Cancelling the editor cancels the note.
                         cropEditor.edit(image, context.screenshotLeft, context.screenshotTop, context.focus)
-                            ?: return@launch popup.setNoteStates(mapOf(index to ""))
+                            ?: return@launch page.setNoteStates(mapOf(index to ""))
                     } else {
                         null
                     }
@@ -156,7 +156,7 @@ class PopupNotes(
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
             }
-            popup.setNoteStates(mapOf(index to state))
+            page.setNoteStates(mapOf(index to state))
         }
     }
 
@@ -186,7 +186,7 @@ class PopupNotes(
     }
 
     fun release() {
-        cropEditor.dismiss()
+        cropEditor?.dismiss()
         duplicateJob?.cancel()
         player?.release()
         player = null

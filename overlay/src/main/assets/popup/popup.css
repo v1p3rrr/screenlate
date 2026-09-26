@@ -71,6 +71,15 @@ a {
     overflow: hidden;
 }
 
+:root[data-embedded="true"] .card {
+    border: none;
+    border-radius: 0;
+}
+
+:root[data-embedded="true"] #close {
+    display: none;
+}
+
 /* Header */
 
 .header {
