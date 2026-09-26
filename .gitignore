@@ -25,3 +25,6 @@ keystore.properties
 
 # Local dictionary collection for import tests (large, third-party).
 /testdata/dictionaries/
+
+# Backup of the AnkiDroid collection from the test emulator (personal data).
+/testdata/anki-backup/
