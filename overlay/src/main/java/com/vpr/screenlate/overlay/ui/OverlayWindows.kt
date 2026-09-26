@@ -25,6 +25,12 @@ object OverlayWindows {
         LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCH_MODAL,
     )
 
+    /** Full-screen, touchable, without keyboard focus: the crop editor. */
+    fun editorParams(): LayoutParams = base(LayoutParams.FLAG_NOT_FOCUSABLE).apply {
+        width = LayoutParams.MATCH_PARENT
+        height = LayoutParams.MATCH_PARENT
+    }
+
     private fun base(flags: Int): LayoutParams = LayoutParams(
         LayoutParams.WRAP_CONTENT,
         LayoutParams.WRAP_CONTENT,

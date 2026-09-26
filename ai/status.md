@@ -7,7 +7,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - [x] Phase 0 — infrastructure
 - [x] Phase 1 — overlay + OCR
 - [x] Phase 2 — dictionaries
-- [ ] Phase 3 — Anki + audio
+- [x] Phase 3 — Anki + audio
 - [ ] Phase 4 — polish
 
 ## Log
@@ -20,14 +20,17 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 - Phase 2: hoshidicts submodule + own JNI (`jni_bridge.cpp`, UTF-8 byte arrays in, JSON out); `DictionaryEngine` in `dictionary:api` with Room registry (`DictionaryRepository`, `DictionaryStorage`), WorkManager import queue (`DictionaryImports`, foreground `dataSync`), bundled Jitendex/Jiten/Kanjium downloaded at build time (`DownloadAssetsTask`) and installed on first launch (~5 s on the emulator), download catalog fetched from the repo (`catalog/dictionaries.json` in `dictionary:api` assets) grouped by language pair; `YomitanSorter` adds dictionary priority; renderer module `render-yomitan` (structured content, images, scoped styles.css, furigana, pitch); popup cards with frequency/pitch/deinflection chips, glossary links with a back stack; dictionaries screen with sections by type and drag reordering. Verified on the emulator: X screenshot, vertical manga text, Kolobok download and priority, link navigation (`scripts/popup-eval.mjs`).
 
+- Phase 3: `core:anki` (AnkiDroid API from JitPack, `AnkiNotes` with duplicate scope/behavior, `FieldTemplate` markers, `Sentence` extraction, `AudioFinder` with JapanesePod101/URL/custom JSON); Anki and audio settings screen; popup ➕ (tap: note, hold: crop editor with the paragraph pre-selected) and 🔊, duplicate marks, auto-play setting; glossary images copied into AnkiDroid media. Verified on the emulator with AnkiDroid 2.24.1: Basic note with glossary (two dictionaries), sentence, JapanesePod101 audio and a cropped screenshot; duplicate mark after adding.
+
 ## Next
 
-- Anki + audio (phase 3): decisions are in the plan's table; start with the AnkiDroid API (JitPack) in `core:anki`, field templates and ➕ in the popup.
+- Polish (phase 4), in plan order: search screen, `PROCESS_TEXT`, dictionary update check, sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, Yomitan database export import. The Yomitan settings backup needs an interview with the owner first.
 
 ## Open items
 
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release builds are not measured yet.
 - Lookup latency on the phone is not measured; on the emulator the popup follows the bubble without visible lag.
+- AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
 - Kanji dictionaries import fine (hoshidicts supports them) but nothing displays kanji entries yet (phase 4).
 
 - Not yet verified on the physical phone.

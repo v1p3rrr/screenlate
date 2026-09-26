@@ -19,4 +19,7 @@
     <string name="anki_not_installed">AnkiDroid не установлен.</string>
     <string name="anki_no_permission">Разрешите Screenlate доступ к AnkiDroid в настройках Anki.</string>
     <string name="audio_not_found">Для этого слова аудио не найдено.</string>
+    <string name="crop_whole_screen">Весь экран</string>
+    <string name="crop_cancel">Отмена</string>
+    <string name="crop_add">Добавить</string>
 </resources>

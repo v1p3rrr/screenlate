@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.anki
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
@@ -18,6 +19,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.popup.PopupController
+import com.vpr.screenlate.overlay.ui.CropEditor
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +31,19 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
-/** Where the looked-up word came from: its sentence and a clean screenshot of the screen. */
-data class NoteContext(val sentence: Sentence?, val screenshot: Bitmap?)
+/**
+ * Where the looked-up word came from: its sentence and a clean screenshot.
+ *
+ * @property screenshotLeft screen position of the screenshot's left edge.
+ * @property focus the word's paragraph in screen coordinates, the initial crop frame.
+ */
+data class NoteContext(
+    val sentence: Sentence?,
+    val screenshot: Bitmap?,
+    val screenshotLeft: Float = 0f,
+    val screenshotTop: Float = 0f,
+    val focus: RectF? = null,
+)
 
 /**
  * The popup's ➕ and 🔊 buttons: duplicate marks, adding notes to AnkiDroid, playing and auto-playing audio.
@@ -47,6 +60,7 @@ class PopupNotes(
     private val audioSettings: AudioSettingsRepository,
     private val lookup: DictionaryLookup,
     private val noteContext: suspend () -> NoteContext,
+    private val cropEditor: CropEditor,
 ) {
     private val json = Json { ignoreUnknownKeys = true }
     private var duplicateJob: Job? = null
@@ -114,7 +128,19 @@ class PopupNotes(
                     values["cloze-suffix"] = sentence.suffix
                 }
                 resolveGlossaryMedia(data.media, values, used)
-                val screenshot = if (withScreenshot && "screenshot" in used) context.screenshot?.takeUnless { it.isRecycled }?.let { saveScreenshot(it) } else null
+                val picture = if (withScreenshot && "screenshot" in used) {
+                    val image = context.screenshot?.takeUnless { it.isRecycled }
+                    if (image != null) {
+                        // Cancelling the editor cancels the note.
+                        cropEditor.edit(image, context.screenshotLeft, context.screenshotTop, context.focus)
+                            ?: return@launch popup.setNoteStates(mapOf(index to ""))
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+                val screenshot = picture?.let { saveScreenshot(it).also { _ -> it.recycle() } }
                 val clip = if ("audio" in used) {
                     audio.find(values["expression"].orEmpty(), values["reading"].orEmpty())
                 } else {
@@ -160,6 +186,7 @@ class PopupNotes(
     }
 
     fun release() {
+        cropEditor.dismiss()
         duplicateJob?.cancel()
         player?.release()
         player = null

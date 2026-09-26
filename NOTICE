@@ -33,6 +33,10 @@ Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Author
   The structured content renderer, furigana segmentation, pitch accent markup and
   dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
 
+AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
+Copyright (c) AnkiDroid contributors.
+  Used as a library in core/anki to add notes through AnkiDroid's content provider.
+
 Third-party data
 ----------------
 

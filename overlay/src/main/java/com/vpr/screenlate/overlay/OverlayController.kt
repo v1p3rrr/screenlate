@@ -2,7 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import android.util.Log
 import android.content.res.Configuration
@@ -43,6 +43,7 @@ import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.ui.BubbleView
+import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import kotlin.math.abs
@@ -117,6 +118,7 @@ class OverlayController(
         audioSettings = anki.audioSettings,
         lookup = lookup,
         noteContext = ::noteContext,
+        cropEditor = CropEditor(service, windowManager),
     )
 
     private var settings = OverlaySettings()
@@ -134,7 +136,7 @@ class OverlayController(
     private var pendingSingleTap: Runnable? = null
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
-    private var screenshot: Bitmap? = null
+    private var screenshot: CapturedScreen? = null
 
     // Only Japanese is supported for now; this becomes a setting with more languages.
     private val language = Language.JAPANESE
@@ -424,7 +426,7 @@ class OverlayController(
         lookupJob?.cancel()
         lookupJob = null
         shownLookup = null
-        screenshot?.recycle()
+        screenshot?.bitmap?.recycle()
         screenshot = null
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
@@ -460,7 +462,7 @@ class OverlayController(
                 throw e
             }
             // Kept for {screenshot} until the next scan or docking.
-            screenshot = captured.bitmap
+            screenshot = captured
         }
     }
 
@@ -589,7 +591,21 @@ class OverlayController(
         } else {
             null
         }
-        return NoteContext(sentence, screenshot)
+        val focus = if (layout != null && position != null) {
+            val padding = FOCUS_PADDING_DP * density
+            Box.unionOf(layout.page.paragraphs[position.paragraphIndex].lines.map { it.box })
+                ?.let { RectF(it.left - padding, it.top - padding, it.right + padding, it.bottom + padding) }
+        } else {
+            null
+        }
+        val shot = screenshot
+        return NoteContext(
+            sentence = sentence,
+            screenshot = shot?.bitmap,
+            screenshotLeft = shot?.left?.toFloat() ?: 0f,
+            screenshotTop = shot?.top?.toFloat() ?: 0f,
+            focus = focus,
+        )
     }
 
     private fun loadDictionaryStyles() {
@@ -676,5 +692,6 @@ class OverlayController(
         const val MAX_POPUP_DP = 420f
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
+        const val FOCUS_PADDING_DP = 16f
     }
 }

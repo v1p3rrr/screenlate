@@ -21,4 +21,7 @@
     <string name="anki_not_installed">AnkiDroid is not installed.</string>
     <string name="anki_no_permission">Allow Screenlate to access AnkiDroid in its Anki settings.</string>
     <string name="audio_not_found">No audio found for this word.</string>
+    <string name="crop_whole_screen">Whole screen</string>
+    <string name="crop_cancel">Cancel</string>
+    <string name="crop_add">Add</string>
 </resources>
