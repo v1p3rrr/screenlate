@@ -154,6 +154,8 @@ States: `Docked → Dragging → Floating(+Popup)`.
    - audio: source dialog, test panel, source/clip choice on long press, auto-play debounce, volume;
    - settings screens: tap outside clears focus, fields stay above the keyboard; search settings (scan length, max results, text replacements);
    - UI language picker; search screen name and empty state;
+   - no popup when the lookup finds nothing (like Yomitan's auto-hide); text that is not worth looking up in the language is skipped (for Japanese: Latin text unless Japanese follows it, so "Tシャツ" works and "ayataka" does not); a per-language "look up romaji" switch, off by default;
+   - language audit: everything language-specific behind one `LanguageSupport` per language (lookup-worthiness, romanization, sentence rules, OCR recognizer, default audio sources, language-only Anki markers), with no Japanese assumptions elsewhere;
    - not planned: Poe's dot that pops out of the handle when undocking (cosmetic, owner agreed to skip);
    - Yomitan settings import; real Yomitan database export verified and import sped up;
    - catalog: free dictionaries from the owner's collection;

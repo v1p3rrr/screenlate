@@ -95,6 +95,13 @@ class PopupNotes(
         }
     }
 
+    /** The popup went away without closing the scan, e.g. the aim moved to text without results. */
+    fun onResultsHidden() {
+        duplicateJob?.cancel()
+        autoPlayJob?.cancel()
+        pendingAutoPlay = null
+    }
+
     /** The finger was lifted: a pending auto-play starts without waiting. */
     fun onAimSettled() {
         if (pendingAutoPlay == null) return

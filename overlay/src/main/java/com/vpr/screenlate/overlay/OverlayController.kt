@@ -646,6 +646,14 @@ class OverlayController(
             } else {
                 lookupResults(text)
             }
+            // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
+            if (results.isEmpty() && lookup.hasTermDictionaries()) {
+                layerView.setWordBoxes(emptyList())
+                shownLookup = null
+                popup.hide()
+                popupNotes.onResultsHidden()
+                return@launch
+            }
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
