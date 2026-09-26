@@ -22,5 +22,7 @@ internal fun Project.configureAndroidCommon(extension: CommonExtension) {
         add("testImplementation", libs.library("kotlinx-coroutines-test"))
         add("androidTestImplementation", libs.library("androidx-test-ext-junit"))
         add("androidTestImplementation", libs.library("androidx-test-runner"))
+        add("androidTestImplementation", libs.library("truth"))
+        add("androidTestImplementation", libs.library("kotlinx-coroutines-test"))
     }
 }

@@ -4,7 +4,7 @@
 
 - Windows 11. Shells available to the agent: Git Bash and PowerShell.
 - JDK for Gradle: `C:\Program Files\Java\jdk-21` (also `jdk-17`). The JBR inside `C:\Program Files\Android\Android Studio\jbr` is broken (missing `lib/jvm.cfg`), do not use it.
-- Android SDK: `D:\Android\Sdk` (platform `android-37.0`, build-tools up to 36.0.0, NDK 25.1 and 26.1, CMake 3.22.1). `local.properties` points there.
+- Android SDK: `D:\Android\Sdk` (platform `android-37.0`, build-tools up to 36.0.0, NDK 25.1, 26.1 and 29.0.14206865, CMake 3.22.1 and 3.31.6). `local.properties` points there.
 - `gradle/gradle-daemon-jvm.properties` asks for JDK 25; Gradle provisions it through foojay automatically.
 
 ```bash
@@ -21,6 +21,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - `compileSdk = 37` (plain int) resolves the `android-37.0` platform fine.
 - Release minification uses the AGP 9 DSL `optimization { enable = true }`; keep rules go to `src/main/keepRules/*.keep`.
 - Hilt 2.60.1 + KSP 2.3.12 + Room 2.8.5 build cleanly with AGP 9.4.1. Hilt 2.59 had an AGP 9 bug (dagger#5099).
+- Native code (`:dictionary:engine-hoshidicts`) needs CMake 3.31.6: glaze requires CMake >= 3.31. Install SDK packages with `sdkmanager --package_file=<file>` from PowerShell, a `;` in a package id on the command line gets split.
+- glaze reflection does not work on types in an anonymous namespace ("type does not have linkage"); keep JSON DTOs in a named namespace.
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
 
 ## Agent tooling gotchas
