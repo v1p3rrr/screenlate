@@ -34,7 +34,7 @@ const Popup = (() => {
     const renderOptions = {
         mediaUrl: (dictionary, path) =>
             `/media?d=${encodeURIComponent(dictionary)}&p=${encodeURIComponent(path)}`,
-        onLookup: query => ScreenlateBridge.onLookup(query),
+        onLookup: (query, primaryReading) => ScreenlateBridge.onLookup(query, primaryReading || ''),
         onExternalLink: url => ScreenlateBridge.onOpenUrl(url),
     };
 

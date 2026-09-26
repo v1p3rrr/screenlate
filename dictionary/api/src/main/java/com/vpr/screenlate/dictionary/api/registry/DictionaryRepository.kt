@@ -25,6 +25,7 @@ class DictionaryRepository @Inject constructor(
     private val mutex = Mutex()
     private var loadedLanguage: Language? = null
     private var sortDictionary: DictionaryEntity? = null
+    private var termOrder: List<String> = emptyList()
 
     val dictionaries: Flow<List<DictionaryEntity>> = dao.observeAll()
 
@@ -103,17 +104,20 @@ class DictionaryRepository @Inject constructor(
         storage.directoryOf(dictionary).deleteRecursively()
     }
 
-    /** Loads the engine for [language] unless it is already loaded; returns options for lookups. */
-    suspend fun prepareLookup(language: Language): LookupOptions = mutex.withLock {
+    /** Loads the engine for [language] unless it is already loaded; returns what lookups need to know. */
+    suspend fun prepareLookup(language: Language): PreparedLookup = mutex.withLock {
         if (loadedLanguage != language) load(language)
         val sort = sortDictionary
-        LookupOptions(
-            frequencyDictionary = sort?.title,
-            frequencyOrder = when {
-                sort == null -> FrequencyOrder.DISABLED
-                sort.frequencyMode == "occurrence-based" -> FrequencyOrder.DESCENDING
-                else -> FrequencyOrder.ASCENDING
-            },
+        PreparedLookup(
+            options = LookupOptions(
+                frequencyDictionary = sort?.title,
+                frequencyOrder = when {
+                    sort == null -> FrequencyOrder.DISABLED
+                    sort.frequencyMode == "occurrence-based" -> FrequencyOrder.DESCENDING
+                    else -> FrequencyOrder.ASCENDING
+                },
+            ),
+            termDictionaries = termOrder,
         )
     }
 
@@ -141,6 +145,15 @@ class DictionaryRepository @Inject constructor(
         )
         // Choosing the sort dictionary is not configurable yet: the first enabled frequency dictionary wins.
         sortDictionary = enabled.firstOrNull { it.frequencyCount > 0 }
+        termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
         loadedLanguage = language
     }
 }
+
+/**
+ * @property termDictionaries titles of the loaded term dictionaries, highest priority first.
+ */
+data class PreparedLookup(
+    val options: LookupOptions,
+    val termDictionaries: List<String>,
+)

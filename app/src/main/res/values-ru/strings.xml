@@ -40,7 +40,6 @@
     <string name="dictionaries_delete_title">Удалить словарь?</string>
     <string name="dictionaries_delete_message">%1$s будет удалён с устройства.</string>
     <string name="dictionaries_reorder">Изменить порядок</string>
-    <string name="dictionaries_revision">Версия</string>
     <string name="dictionaries_author">Автор</string>
     <string name="dictionaries_counts">Содержимое</string>
     <string name="dictionaries_count_terms">терминов: %1$d</string>
@@ -58,4 +57,7 @@
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
     <string name="dictionaries_installed_mark">Установлен</string>
     <string name="dictionaries_download">Скачать</string>
+    <string name="dictionaries_section_terms">Словари</string>
+    <string name="dictionaries_catalog_translations">→ %1$s</string>
+    <string name="dictionaries_version">Версия</string>
 </resources>

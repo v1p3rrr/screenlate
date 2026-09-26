@@ -501,8 +501,8 @@ class OverlayController(
         }
     }
 
-    private suspend fun lookupResults(text: String): List<LookupResult> = try {
-        lookup.lookup(text, language)
+    private suspend fun lookupResults(text: String, primaryReading: String? = null): List<LookupResult> = try {
+        lookup.lookup(text, language, primaryReading = primaryReading)
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
@@ -515,9 +515,9 @@ class OverlayController(
     )
 
     /** Looks up a link target from inside the popup and shows it on top of the current view. */
-    private fun lookupLink(query: String) {
+    private fun lookupLink(query: String, primaryReading: String?) {
         scope.launch {
-            val results = lookupResults(query)
+            val results = lookupResults(query, primaryReading)
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val message = if (results.isEmpty()) noResultsMessage() else null
             popup.push(popupState(LookupView(query, matched, results, message)))
@@ -592,7 +592,7 @@ class OverlayController(
     private inner class PopupCallbacks : PopupController.Callbacks {
         override fun onClose() = dock()
 
-        override fun onLookup(query: String) = lookupLink(query)
+        override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
         override fun onOpenUrl(url: String) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

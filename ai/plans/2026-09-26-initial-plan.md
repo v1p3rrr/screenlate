@@ -26,7 +26,10 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Rendering | One pre-warmed WebView; Poe-like card design; entry renderer derived from Hoshi Reader Android in a separate GPL module |
 | Grouping | Yomitan `group` mode: one card per term + reading, dictionaries inside in user priority order |
 | Frequencies | Jiten Global (CC BY-SA) bundled and used for sorting. Importing other frequency dictionaries and picking the sort dictionary — phase 4 |
-| Bundled dictionaries | Jitendex (enabled), Jiten Global (frequency), Kanjium (pitch). Kolobok and others via a download catalog. Catalog is extensible and tagged with language pairs (ja-en, ja-ru, ja-ja) |
+| Bundled dictionaries | Jitendex (enabled), Jiten Global (frequency), Kanjium (pitch), all three in the APK so everything works offline from the first launch. Kolobok and others via a download catalog |
+| Catalog | `catalog.json` in this repo, fetched by the app from its raw GitHub URL; a copy in the APK is the offline fallback. New dictionaries are added by editing the JSON, no app release needed. Entries carry source and target language |
+| Language grouping | Catalog: source language → target language (ja→ru, ja→en, ja→ja; later en→ru, en→en, …) for term dictionaries; frequency, pitch and kanji dictionaries as separate subsections of their source language. Installed list: sections by type (dictionaries, frequency, pitch, kanji), drag order within a section, language pair label on each dictionary. No switch for active target languages: enable/disable dictionaries instead |
+| Own dictionaries | Import of Yomitan zip archives from a file (done). Import of a Yomitan database export (the dictionaries themselves) — phase 4. Yomitan settings backup — separate phase 4 item, to be discussed with the owner before planning |
 | Kanji dictionaries | Phase 4, own `kanji_bank` import into Room |
 | Cross-references | Lookup inside the popup with a back stack; external links open in the browser |
 | OCR | One image ≤1500 px, JPEG. ML Kit Japanese (bundled model) runs in parallel as a draft; the Lens result replaces it immediately, a small spinner shows until then |
@@ -113,8 +116,8 @@ States: `Docked → Dragging → Floating(+Popup)`.
   - our JNI exposes options: frequency dictionary and order, `primary_reading`, `scanLength`, `maxResults`.
 - Registry (Room): `dictionaries(id, title, revision, kind term|freq|pitch|kanji, sourceLanguage, targetLanguage, enabled, priority, path, indexUrl, downloadUrl, bundled, importedAt)`, plus the "sort dictionary" setting.
 - First run: import bundled Jitendex, Jiten Global and Kanjium from assets with progress. Bundled dictionaries are downloaded at build time, not committed to git.
-- Catalog of recommended dictionaries: `assets/catalog.json` with `indexUrl`, `downloadUrl` and language pair. Starts with Kolobok (ja-ru); new entries are one record each.
-- Dictionaries screen: import from file, download from catalog, drag to reorder, enable/disable, delete.
+- Catalog of recommended dictionaries: `catalog/dictionaries.json` in the repo (fetched from GitHub, bundled copy as fallback) with `indexUrl`, `downloadUrl`, kind and language pair. Starts with Kolobok (ja-ru) and the bundled dictionaries; new entries are one record each.
+- Dictionaries screen: import from file, download from the catalog grouped by language pair, installed dictionaries in sections by type with drag to reorder inside a section, enable/disable, delete.
 
 ### 4. Rendering and popup (`:dictionary:render-yomitan`, `:overlay`)
 
@@ -135,7 +138,7 @@ States: `Docked → Dragging → Floating(+Popup)`.
 1. **Overlay + OCR**: service, dock, bubble, aim, gestures, window capture; Lens (codec, client, resolution experiment) + ML Kit + `CompositeOcr`; hit testing, highlight; popup shell showing the recognized line and the word under the aim (no dictionaries yet); QS tile; OcrTest debug screen.
 2. **Dictionaries**: hoshidicts (submodule, CMake, JNI; ABIs arm64-v8a + x86_64); `DictionaryEngine`, `YomitanSorter`, Room registry, bundled + file import, catalog (Kolobok); dictionaries screen; renderer module and full cards in the popup, links with back navigation. Result: the full Poe scenario.
 3. **Anki + audio**: field mapping settings, ➕ short/long, crop editor, duplicates, audio sources.
-4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps.
+4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, import of a Yomitan database export, Yomitan settings backup (interview first).
 
 ## Documentation tasks
 
@@ -165,3 +168,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 ## Changelog
 
 - 2026-09-26: plan approved. Phase 0 added README/CLAUDE.md/`ai/` docs and the documentation tasks section at the owner's request.
+- 2026-09-26: owner decisions during the dictionaries work — catalog fetched from the repo with a bundled fallback; catalog grouped by source → target language, installed dictionaries in sections by type; no active-language switch; Yomitan database export import and settings backup added to phase 4. Bundled set unchanged (all three stay in the APK).

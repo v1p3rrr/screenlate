@@ -34,8 +34,8 @@ class PopupController(
     interface Callbacks {
         fun onClose()
 
-        /** A link inside a glossary asks to look up [query]. */
-        fun onLookup(query: String)
+        /** A link inside a glossary asks to look up [query], preferring terms read as [primaryReading]. */
+        fun onLookup(query: String, primaryReading: String?)
 
         fun onOpenUrl(url: String)
 
@@ -184,7 +184,8 @@ class PopupController(
         fun onClose() = post { callbacks.onClose() }
 
         @JavascriptInterface
-        fun onLookup(query: String) = post { callbacks.onLookup(query) }
+        fun onLookup(query: String, primaryReading: String) =
+            post { callbacks.onLookup(query, primaryReading.ifEmpty { null }) }
 
         @JavascriptInterface
         fun onOpenUrl(url: String) = post { callbacks.onOpenUrl(url) }

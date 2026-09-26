@@ -16,7 +16,7 @@
  *   pitchCategory(reading, position, rules)                heiban / atamadaka / nakadaka / odaka / kifuku
  *   downsteps(position)                                    downstep positions of a numeric or HL pattern
  *
- * options: { mediaUrl(dictionary, path) -> url, onLookup(query), onExternalLink(url) }
+ * options: { mediaUrl(dictionary, path) -> url, onLookup(query, primaryReading), onExternalLink(url) }
  */
 'use strict';
 
@@ -172,8 +172,10 @@ window.YomitanRender = (() => {
                 return;
             }
             const queryStart = href.indexOf('?');
-            const query = queryStart < 0 ? null : new URLSearchParams(href.slice(queryStart + 1)).get('query');
-            if (query) options.onLookup?.(query);
+            if (queryStart < 0) return;
+            const params = new URLSearchParams(href.slice(queryStart + 1));
+            const query = params.get('query');
+            if (query) options.onLookup?.(query, params.get('primary_reading'));
         });
     }
 

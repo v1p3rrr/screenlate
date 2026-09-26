@@ -13,10 +13,17 @@ class DictionaryLookup @Inject constructor(
     private val repository: DictionaryRepository,
     private val engine: DictionaryEngine,
 ) {
-    suspend fun lookup(text: String, language: Language, scanLength: Int = DEFAULT_SCAN_LENGTH): List<LookupResult> {
+    /** @param primaryReading terms with this reading come first, as for Yomitan's `primary_reading` links. */
+    suspend fun lookup(
+        text: String,
+        language: Language,
+        scanLength: Int = DEFAULT_SCAN_LENGTH,
+        primaryReading: String? = null,
+    ): List<LookupResult> {
         if (text.isBlank()) return emptyList()
-        val options = repository.prepareLookup(language)
-        return engine.lookup(text, options.copy(scanLength = scanLength))
+        val prepared = repository.prepareLookup(language)
+        val options = prepared.options.copy(scanLength = scanLength, primaryReading = primaryReading)
+        return YomitanSorter.sort(engine.lookup(text, options), options, prepared.termDictionaries)
     }
 
     suspend fun styles(language: Language): List<DictionaryStyle> {

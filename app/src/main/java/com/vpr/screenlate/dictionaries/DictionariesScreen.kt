@@ -46,6 +46,7 @@ import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.ui.components.ReorderableColumn
+import java.util.Locale
 
 /** Installed dictionaries (order, enable, delete), running imports and the download catalog. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +93,7 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
             }
 
             SectionTitle(stringResource(R.string.dictionaries_installed))
-            if (state.loaded && state.dictionaries.isEmpty()) {
+            if (state.loaded && state.installed.isEmpty()) {
                 Text(stringResource(R.string.dictionaries_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Text(
@@ -101,24 +102,37 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            ReorderableColumn(
-                items = state.dictionaries,
-                key = { it.id },
-                onReorder = viewModel::reorder,
-                spacing = 8.dp,
-            ) { dictionary, handle, dragging ->
-                DictionaryCard(
-                    dictionary = dictionary,
-                    handle = handle,
-                    dragging = dragging,
-                    onEnabledChange = { viewModel.setEnabled(dictionary, it) },
-                    onDelete = { pendingDelete = dictionary },
-                )
+            state.installed.forEach { section ->
+                SubsectionTitle(stringResource(sectionLabel(section.kind)))
+                ReorderableColumn(
+                    items = section.dictionaries,
+                    key = { it.id },
+                    onReorder = { viewModel.reorder(section.kind, it) },
+                    spacing = 8.dp,
+                ) { dictionary, handle, dragging ->
+                    DictionaryCard(
+                        dictionary = dictionary,
+                        handle = handle,
+                        dragging = dragging,
+                        onEnabledChange = { viewModel.setEnabled(dictionary, it) },
+                        onDelete = { pendingDelete = dictionary },
+                    )
+                }
             }
 
             SectionTitle(stringResource(R.string.dictionaries_catalog))
-            state.catalog.forEach { item ->
-                CatalogCard(item, onDownload = { viewModel.download(item.entry) })
+            state.catalog.forEach { group ->
+                SubsectionTitle(languageName(group.sourceLanguage))
+                group.sections.forEach { section ->
+                    Text(
+                        catalogSectionLabel(section),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    section.items.forEach { item ->
+                        CatalogCard(item, onDownload = { viewModel.download(item.entry) })
+                    }
+                }
             }
         }
     }
@@ -143,7 +157,30 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
 
 @Composable
 private fun SectionTitle(text: String) {
-    Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+    Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 8.dp))
+}
+
+@Composable
+private fun SubsectionTitle(text: String) {
+    Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp))
+}
+
+private fun languageName(code: String): String =
+    Locale.forLanguageTag(code).getDisplayLanguage(Locale.getDefault()).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+
+@Composable
+private fun catalogSectionLabel(section: CatalogSection): String = when (section.kind) {
+    DictionaryKind.TERM -> section.targetLanguage
+        ?.let { stringResource(R.string.dictionaries_catalog_translations, languageName(it)) }
+        ?: stringResource(R.string.dictionaries_kind_term)
+    else -> stringResource(kindLabel(section.kind))
+}
+
+private fun sectionLabel(kind: DictionaryKind): Int = when (kind) {
+    DictionaryKind.TERM -> R.string.dictionaries_section_terms
+    DictionaryKind.FREQUENCY -> R.string.dictionaries_kind_frequency
+    DictionaryKind.PITCH -> R.string.dictionaries_kind_pitch
+    DictionaryKind.KANJI -> R.string.dictionaries_kind_kanji
 }
 
 @Composable
@@ -189,7 +226,7 @@ private fun DictionaryCard(
                 modifier = Modifier.padding(start = 48.dp, end = 16.dp, bottom = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                DetailLine(R.string.dictionaries_revision, dictionary.revision)
+                DetailLine(R.string.dictionaries_version, dictionary.revision)
                 DetailLine(R.string.dictionaries_author, dictionary.author)
                 DetailLine(R.string.dictionaries_counts, counts(dictionary))
                 dictionary.description?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
@@ -207,11 +244,9 @@ private fun DetailLine(label: Int, value: String?) {
     Text("${stringResource(label)}: $value", style = MaterialTheme.typography.bodySmall)
 }
 
-@Composable
 private fun subtitle(dictionary: DictionaryEntity): String {
-    val kind = stringResource(kindLabel(dictionary.kind))
     val languages = listOfNotNull(dictionary.sourceLanguage, dictionary.targetLanguage).joinToString(" → ")
-    return listOf(kind, languages).filter { it.isNotEmpty() }.joinToString(" · ")
+    return languages
 }
 
 @Composable
@@ -288,7 +323,7 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
                 Text(entry.title, style = MaterialTheme.typography.bodyLarge)
                 val languages = listOfNotNull(entry.sourceLanguage, entry.targetLanguage).joinToString(" → ")
                 Text(
-                    listOf(stringResource(kindLabel(entry.kind)), languages, "${entry.sizeMb} MB", entry.license)
+                    listOf(languages, "${entry.sizeMb} MB", entry.license)
                         .filter { it.isNotEmpty() }
                         .joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall,
