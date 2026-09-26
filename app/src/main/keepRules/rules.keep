@@ -1,12 +1,9 @@
-# Add project specific R8 rules here.
-# AGP will combine all keep rule files in src/main/keepRules to pass to R8
-#
-# For more details, see
-#   https://d.android.com/r/tools/r8/keep-rules
+# R8 rules for the app. AGP combines all files in src/main/keepRules.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ML Kit and Firebase discover their component registrars by reflection from manifest metadata.
+-keep class * implements com.google.firebase.components.ComponentRegistrar { <init>(); }
+
+# Methods called from the lookup page's JavaScript (overlay.web.LookupPage.Bridge).
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
