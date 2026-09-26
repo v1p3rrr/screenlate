@@ -12,6 +12,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INDEX_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
@@ -85,8 +86,11 @@ class DictionaryImports @Inject constructor(
         name = name,
     )
 
-    fun download(url: String, name: String) =
-        enqueue(workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to url, KEY_NAME to name), name = name)
+    /** Downloads and imports an archive; with [indexUrl], the index's current `downloadUrl` is preferred. */
+    fun download(url: String, name: String, indexUrl: String? = null) = enqueue(
+        workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to url, KEY_INDEX_URL to indexUrl, KEY_NAME to name),
+        name = name,
+    )
 
     /** Removes finished tasks from [tasks]. */
     fun clearFinished() {

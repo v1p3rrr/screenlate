@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.debug.ImageViewerScreen
+import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.debug.OcrTestScreen
 import com.vpr.screenlate.home.HomeScreen
 import kotlinx.serialization.Serializable
@@ -16,6 +17,9 @@ private object HomeRoute
 
 @Serializable
 private object OcrTestRoute
+
+@Serializable
+private object DictionariesRoute
 
 @Serializable
 private data class ImageViewerRoute(val path: String)
@@ -37,7 +41,11 @@ fun ScreenlateNavHost(
                 themeMode = themeMode,
                 onThemeModeChange = onThemeModeChange,
                 onOpenOcrTest = { navController.navigate(OcrTestRoute) },
+                onOpenDictionaries = { navController.navigate(DictionariesRoute) },
             )
+        }
+        composable<DictionariesRoute> {
+            DictionariesScreen(onBack = { navController.popBackStack() })
         }
         composable<OcrTestRoute> {
             OcrTestScreen(onBack = { navController.popBackStack() })

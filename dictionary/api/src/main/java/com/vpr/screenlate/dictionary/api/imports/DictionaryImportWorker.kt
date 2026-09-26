@@ -18,6 +18,12 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -39,14 +45,18 @@ class DictionaryImportWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
 
-    override suspend fun doWork(): Result {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val name = inputData.getString(KEY_NAME).orEmpty()
         runCatching { setForeground(foregroundInfo(name)) }
-        return try {
+        try {
             val titles = when (inputData.getString(KEY_SOURCE)) {
                 SOURCE_BUNDLED -> installBundled()
                 SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
-                SOURCE_URL -> listOf(download(requireNotNull(inputData.getString(KEY_URL)), name))
+                SOURCE_URL -> {
+                    val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
+                        ?: requireNotNull(inputData.getString(KEY_URL))
+                    listOf(download(url, name))
+                }
                 else -> error("Unknown import source")
             }
             Result.success(workDataOf(KEY_TITLES to titles.toTypedArray()))
@@ -64,7 +74,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private suspend fun installBundled(): List<String> {
         repository.cleanUp()
         return bundled.pending().map { asset ->
-            setProgress(workDataOf(KEY_NAME to asset.name, KEY_STAGE to STAGE_IMPORT))
+            setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
             try {
                 bundled.copy(asset, archive)
@@ -87,6 +97,14 @@ class DictionaryImportWorker @AssistedInject constructor(
             if (inputData.getBoolean(KEY_DELETE_FILE, false)) archive.delete()
         }
     }
+
+    /** `downloadUrl` from a Yomitan index file, or null if it cannot be read. */
+    private fun latestDownloadUrl(indexUrl: String): String? = runCatching {
+        downloadClient.newCall(Request.Builder().url(indexUrl).build()).execute().use { response ->
+            if (!response.isSuccessful) return null
+            Json.parseToJsonElement(response.body.string()).jsonObject["downloadUrl"]?.jsonPrimitive?.contentOrNull
+        }
+    }.onFailure { Log.w(TAG, "Cannot read $indexUrl", it) }.getOrNull()
 
     private suspend fun download(url: String, name: String): String {
         val archive = storage.newArchiveFile()
@@ -149,6 +167,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_NAME = "name"
         const val KEY_PATH = "path"
         const val KEY_URL = "url"
+        const val KEY_INDEX_URL = "index_url"
         const val KEY_DELETE_FILE = "delete_file"
         const val KEY_TITLES = "titles"
         const val KEY_ERROR = "error"

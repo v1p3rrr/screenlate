@@ -26,6 +26,9 @@ class BundledDictionaries @Inject constructor(
 ) {
     data class Asset(val name: String, val size: Long) {
         val key: String get() = "$name:$size"
+
+        /** File name without the ordering prefix and extension, e.g. `jitendex`. */
+        val displayName: String get() = name.removeSuffix(".zip").substringAfter('-')
     }
 
     suspend fun pending(): List<Asset> = withContext(Dispatchers.IO) {

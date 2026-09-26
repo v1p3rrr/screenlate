@@ -20,4 +20,42 @@
     <string name="ocr_test_pick_image">Выбрать картинку</string>
     <string name="ocr_test_running">Распознаю…</string>
     <string name="ocr_test_hit">Под пальцем: %1$s</string>
+
+    <string name="action_delete">Удалить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_dismiss">Скрыть</string>
+
+    <string name="home_dictionaries_title">Словари</string>
+    <string name="home_dictionaries_summary">Установлено: %1$d, включено: %2$d.</string>
+    <string name="home_dictionaries_installing">Устанавливаю словари…</string>
+    <string name="home_dictionaries_open">Управление словарями</string>
+
+    <string name="dictionaries_title">Словари</string>
+    <string name="dictionaries_import_file">Импорт из файла</string>
+    <string name="dictionaries_import_failed">Не удалось импортировать: %1$s</string>
+    <string name="dictionaries_installed">Установленные</string>
+    <string name="dictionaries_none">Словари не установлены.</string>
+    <string name="dictionaries_order_hint">Перетащите за ручку, чтобы изменить порядок: статьи словарей выше по списку показываются первыми. Нажмите на словарь, чтобы увидеть подробности.</string>
+    <string name="dictionaries_catalog">Доступны для загрузки</string>
+    <string name="dictionaries_delete_title">Удалить словарь?</string>
+    <string name="dictionaries_delete_message">%1$s будет удалён с устройства.</string>
+    <string name="dictionaries_reorder">Изменить порядок</string>
+    <string name="dictionaries_revision">Версия</string>
+    <string name="dictionaries_author">Автор</string>
+    <string name="dictionaries_counts">Содержимое</string>
+    <string name="dictionaries_count_terms">терминов: %1$d</string>
+    <string name="dictionaries_count_frequencies">частот: %1$d</string>
+    <string name="dictionaries_count_pitches">ударений: %1$d</string>
+    <string name="dictionaries_count_kanji">кандзи: %1$d</string>
+    <string name="dictionaries_count_media">медиафайлов: %1$d</string>
+    <string name="dictionaries_kind_term">Термины</string>
+    <string name="dictionaries_kind_frequency">Частотность</string>
+    <string name="dictionaries_kind_pitch">Питч-акцент</string>
+    <string name="dictionaries_kind_kanji">Кандзи</string>
+    <string name="dictionaries_bundled">встроенные словари</string>
+    <string name="dictionaries_task_queued">В очереди: %1$s</string>
+    <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
+    <string name="dictionaries_task_importing">Импорт: %1$s</string>
+    <string name="dictionaries_installed_mark">Установлен</string>
+    <string name="dictionaries_download">Скачать</string>
 </resources>

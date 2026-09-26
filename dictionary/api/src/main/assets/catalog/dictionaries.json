@@ -1,0 +1,71 @@
+[
+  {
+    "id": "jitendex",
+    "title": "Jitendex",
+    "installedTitle": "Jitendex.org",
+    "kind": "TERM",
+    "sourceLanguage": "ja",
+    "targetLanguage": "en",
+    "description": {
+      "en": "Japanese–English dictionary based on JMdict, with examples, notes and kanji forms.",
+      "ru": "Японско-английский словарь на основе JMdict с примерами, пометами и формами записи."
+    },
+    "indexUrl": "https://jitendex.org/static/yomitan.json",
+    "downloadUrl": "https://github.com/stephenmk/stephenmk.github.io/releases/latest/download/jitendex-yomitan.zip",
+    "resolveLatest": true,
+    "sizeMb": 39,
+    "license": "CC BY-SA 4.0",
+    "homepage": "https://jitendex.org"
+  },
+  {
+    "id": "kolobok-400k",
+    "title": "Колобок 400k",
+    "installedTitle": "Колобок 400k",
+    "kind": "TERM",
+    "sourceLanguage": "ja",
+    "targetLanguage": "ru",
+    "description": {
+      "en": "Japanese–Russian dictionary derived from Jitendex.",
+      "ru": "Японско-русский словарь на основе Jitendex."
+    },
+    "indexUrl": "https://ganqqwerty.github.io/jp-ru-kolobok-dictionary/yomitan.json",
+    "downloadUrl": "https://github.com/ganqqwerty/jp-ru-kolobok-dictionary/releases/download/v1.0.1/jp-ru-kolobok-400k-v1.0.1-yomitan.zip",
+    "resolveLatest": true,
+    "sizeMb": 42,
+    "license": "CC BY-SA 4.0",
+    "homepage": "https://ganqqwerty.github.io/jp-ru-kolobok-dictionary/"
+  },
+  {
+    "id": "jiten-global",
+    "title": "Jiten",
+    "installedTitle": "Jiten",
+    "kind": "FREQUENCY",
+    "sourceLanguage": "ja",
+    "description": {
+      "en": "Word frequencies across all media on jiten.moe. Used to sort results.",
+      "ru": "Частотность слов по всем материалам jiten.moe. Используется для сортировки результатов."
+    },
+    "indexUrl": "https://api.jiten.moe/api/frequency-list/index",
+    "downloadUrl": "https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan",
+    "resolveLatest": false,
+    "sizeMb": 8,
+    "license": "CC BY-SA 4.0",
+    "homepage": "https://jiten.moe"
+  },
+  {
+    "id": "kanjium-pitch",
+    "title": "Kanjium Pitch Accents",
+    "installedTitle": "Kanjium Pitch Accents",
+    "kind": "PITCH",
+    "sourceLanguage": "ja",
+    "description": {
+      "en": "Pitch accent positions for a large set of words and expressions.",
+      "ru": "Ударение (питч-акцент) для большого числа слов и выражений."
+    },
+    "downloadUrl": "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary/releases/download/1.0.0/kanjium_pitch_accents.zip",
+    "resolveLatest": false,
+    "sizeMb": 1,
+    "license": "CC BY-SA 4.0",
+    "homepage": "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary"
+  }
+]

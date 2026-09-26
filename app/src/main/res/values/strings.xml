@@ -22,4 +22,42 @@
     <string name="ocr_test_pick_image">Pick an image</string>
     <string name="ocr_test_running">Recognizing…</string>
     <string name="ocr_test_hit">Under the tap: %1$s</string>
+
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_dismiss">Dismiss</string>
+
+    <string name="home_dictionaries_title">Dictionaries</string>
+    <string name="home_dictionaries_summary">Installed: %1$d, enabled: %2$d.</string>
+    <string name="home_dictionaries_installing">Installing dictionaries…</string>
+    <string name="home_dictionaries_open">Manage dictionaries</string>
+
+    <string name="dictionaries_title">Dictionaries</string>
+    <string name="dictionaries_import_file">Import from file</string>
+    <string name="dictionaries_import_failed">Import failed: %1$s</string>
+    <string name="dictionaries_installed">Installed</string>
+    <string name="dictionaries_none">No dictionaries installed.</string>
+    <string name="dictionaries_order_hint">Drag the handle to change the order: entries from dictionaries higher in the list come first. Tap a dictionary for details.</string>
+    <string name="dictionaries_catalog">Available for download</string>
+    <string name="dictionaries_delete_title">Delete dictionary?</string>
+    <string name="dictionaries_delete_message">%1$s will be removed from this device.</string>
+    <string name="dictionaries_reorder">Reorder</string>
+    <string name="dictionaries_revision">Revision</string>
+    <string name="dictionaries_author">Author</string>
+    <string name="dictionaries_counts">Contents</string>
+    <string name="dictionaries_count_terms">terms: %1$d</string>
+    <string name="dictionaries_count_frequencies">frequencies: %1$d</string>
+    <string name="dictionaries_count_pitches">pitch accents: %1$d</string>
+    <string name="dictionaries_count_kanji">kanji: %1$d</string>
+    <string name="dictionaries_count_media">media files: %1$d</string>
+    <string name="dictionaries_kind_term">Terms</string>
+    <string name="dictionaries_kind_frequency">Frequency</string>
+    <string name="dictionaries_kind_pitch">Pitch accent</string>
+    <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_bundled">bundled dictionaries</string>
+    <string name="dictionaries_task_queued">Waiting: %1$s</string>
+    <string name="dictionaries_task_downloading">Downloading %1$s</string>
+    <string name="dictionaries_task_importing">Importing %1$s</string>
+    <string name="dictionaries_installed_mark">Installed</string>
+    <string name="dictionaries_download">Download</string>
 </resources>

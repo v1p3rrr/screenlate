@@ -26,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.overlay.OverlayServiceStatus
@@ -38,8 +40,11 @@ fun HomeScreen(
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     onOpenOcrTest: () -> Unit,
+    onOpenDictionaries: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
@@ -70,6 +75,19 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(stringResource(R.string.onboarding_open_accessibility_settings))
+                }
+            }
+
+            SectionCard(title = stringResource(R.string.home_dictionaries_title)) {
+                Text(
+                    if (dictionaries.importing) {
+                        stringResource(R.string.home_dictionaries_installing)
+                    } else {
+                        stringResource(R.string.home_dictionaries_summary, dictionaries.installed, dictionaries.enabled)
+                    },
+                )
+                Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.home_dictionaries_open))
                 }
             }
 
