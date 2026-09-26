@@ -1,6 +1,9 @@
 package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +23,9 @@ import com.vpr.screenlate.core.ocr.OcrUpdate
 import com.vpr.screenlate.core.ocr.OfflineException
 import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
+import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
@@ -40,7 +46,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -52,9 +65,18 @@ class OverlayController(
     private val ocr: CompositeOcr,
     private val overlaySettings: OverlaySettingsRepository,
     private val appSettings: AppSettingsRepository,
+    private val lookup: DictionaryLookup,
     private val scope: CoroutineScope,
 ) {
     private enum class State { DOCKED, DRAGGING, FLOATING }
+
+    /** What the popup shows for one lookup; kept to re-render on theme or OCR status changes. */
+    private data class LookupView(
+        val text: String,
+        val matched: Int,
+        val results: List<LookupResult>,
+        val message: String?,
+    )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val density = service.resources.displayMetrics.density
@@ -66,7 +88,7 @@ class OverlayController(
     private val bubbleParams = OverlayWindows.bubbleParams(bubbleSize)
     private val layerView = LayerView(service)
     private val layerParams = OverlayWindows.layerParams()
-    private val popup = PopupController(service, windowManager, onClose = { dock() })
+    private val popup = PopupController(service, windowManager, PopupCallbacks())
     private val capturer = ScreenCapturer(service, service.mainExecutor)
 
     private var settings = OverlaySettings()
@@ -82,6 +104,12 @@ class OverlayController(
     private var hit: TextPosition? = null
     private var aim: Pair<Float, Float>? = null
     private var pendingSingleTap: Runnable? = null
+    private var lookupJob: Job? = null
+    private var shownLookup: LookupView? = null
+
+    // Only Japanese is supported for now; this becomes a setting with more languages.
+    private val language = Language.JAPANESE
+    private val json = Json
 
     fun start() {
         bubbleView.setOnTouchListener(BubbleTouchListener())
@@ -96,6 +124,7 @@ class OverlayController(
 
     fun stop() {
         scanJob?.cancel()
+        lookupJob?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
         popup.release()
@@ -361,6 +390,9 @@ class OverlayController(
         ocrEngine = null
         ocrOffline = false
         hit = null
+        lookupJob?.cancel()
+        lookupJob = null
+        shownLookup = null
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
         pendingSingleTap = null
@@ -368,6 +400,7 @@ class OverlayController(
 
     private fun startScan(flashLines: Boolean) {
         resetScan()
+        loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
             val captured = try {
@@ -382,7 +415,7 @@ class OverlayController(
                 return@launch
             }
             try {
-                ocr.recognize(captured.bitmap, Language.JAPANESE)
+                ocr.recognize(captured.bitmap, language)
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
@@ -441,30 +474,85 @@ class OverlayController(
     }
 
     private fun showLookup(layout: TextLayout, position: TextPosition) {
-        val wordLength = layout.remainingInWord(position)
-        val boxes = layout.boxesFor(position, wordLength)
-        layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
-        val anchor = Box.unionOf(boxes) ?: return
-        val state = baseState()
-            .put("title", layout.textFrom(position, wordLength))
-            .put("lookup", layout.textFrom(position, LOOKUP_LENGTH))
-            .put("line", layout.lineText(position))
-        popup.show(state, anchor, layout.characterAt(position).vertical, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
+        val text = layout.textFrom(position, DictionaryLookup.DEFAULT_SCAN_LENGTH)
+        val previous = lookupJob
+        lookupJob = scope.launch {
+            previous?.cancelAndJoin()
+            val shown = shownLookup
+            val results = if (shown != null && shown.text == text && popup.isShowing) {
+                shown.results
+            } else {
+                lookupResults(text)
+            }
+            val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
+            val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
+            layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
+            val anchor = Box.unionOf(boxes) ?: return@launch
+            val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
+            shownLookup = view
+            popup.show(
+                popupState(view),
+                anchor,
+                layout.characterAt(position).vertical,
+                bubbleBox(),
+                usableBounds(),
+                MAX_POPUP_DP * density,
+            )
+        }
+    }
+
+    private suspend fun lookupResults(text: String): List<LookupResult> = try {
+        lookup.lookup(text, language)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Log.w(TAG, "Lookup failed", e)
+        emptyList()
+    }
+
+    private suspend fun noResultsMessage(): String = service.getString(
+        if (lookup.hasTermDictionaries()) R.string.overlay_no_results else R.string.overlay_no_dictionaries,
+    )
+
+    /** Looks up a link target from inside the popup and shows it on top of the current view. */
+    private fun lookupLink(query: String) {
+        scope.launch {
+            val results = lookupResults(query)
+            val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
+            val message = if (results.isEmpty()) noResultsMessage() else null
+            popup.push(popupState(LookupView(query, matched, results, message)))
+        }
     }
 
     private fun showMessage(message: String) {
         val (x, y) = aim ?: aimPoint()
         val anchor = Box.fromCenter(x, y, 1f, 1f)
-        popup.show(baseState().put("message", message), anchor, false, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
+        val view = LookupView("", 0, emptyList(), message)
+        shownLookup = null
+        popup.show(popupState(view), anchor, false, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
+    /** Pushes OCR status and theme changes into the popup without a new lookup. */
     private fun refreshPopup() {
-        val layout = layout ?: return
-        val position = hit ?: return
-        if (popup.isShowing) showLookup(layout, position)
+        val view = shownLookup ?: return
+        if (popup.isShowing) popup.update(popupState(view))
     }
 
-    private fun baseState(): JSONObject {
+    private fun loadDictionaryStyles() {
+        scope.launch {
+            val styles = try {
+                lookup.styles(language)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Loading dictionary styles failed", e)
+                return@launch
+            }
+            popup.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
+        }
+    }
+
+    private fun popupState(view: LookupView): JsonObject {
         val engineLabel = when {
             ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
             ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
@@ -472,16 +560,20 @@ class OverlayController(
             ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
             else -> ""
         }
-        return JSONObject()
-            .put("theme", if (isDarkTheme()) "dark" else "light")
-            .put("pending", scanJob?.isActive == true && !ocrFinal)
-            .put("engine", engineLabel)
-            .put(
-                "labels",
-                JSONObject()
-                    .put("lookup", service.getString(R.string.overlay_label_lookup))
-                    .put("line", service.getString(R.string.overlay_label_line)),
-            )
+        return buildJsonObject {
+            put("theme", if (isDarkTheme()) "dark" else "light")
+            put("pending", scanJob?.isActive == true && !ocrFinal)
+            put("engine", engineLabel)
+            putJsonObject("source") {
+                put("text", view.text)
+                put("matched", view.matched)
+            }
+            put("results", json.encodeToJsonElement(ListSerializer(LookupResult.serializer()), view.results))
+            view.message?.let { put("message", it) }
+            putJsonObject("labels") {
+                put("noResults", service.getString(R.string.overlay_no_results))
+            }
+        }
     }
 
     private fun isDarkTheme(): Boolean = when (themeMode) {
@@ -497,7 +589,23 @@ class OverlayController(
 
     // endregion
 
+    private inner class PopupCallbacks : PopupController.Callbacks {
+        override fun onClose() = dock()
+
+        override fun onLookup(query: String) = lookupLink(query)
+
+        override fun onOpenUrl(url: String) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open $url", it) }
+            dock()
+        }
+
+        override fun media(dictionary: String, path: String): ByteArray? =
+            runBlocking { lookup.media(dictionary, path) }
+    }
+
     private companion object {
+        const val TAG = "OverlayController"
         const val BUBBLE_DP = 56f
         const val AIM_GAP_DP = 20f
         const val DOCK_VISIBLE_FRACTION = 0.6f
@@ -505,7 +613,6 @@ class OverlayController(
         const val UNDOCK_DISTANCE_DP = 64f
         const val HIT_TOLERANCE_DP = 12f
         const val MAX_POPUP_DP = 420f
-        const val LOOKUP_LENGTH = 16
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
     }

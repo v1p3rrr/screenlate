@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.view.accessibility.AccessibilityEvent
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.CompositeOcr
+import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,12 +27,14 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var appSettings: AppSettingsRepository
 
+    @Inject lateinit var dictionaryLookup: DictionaryLookup
+
     private val scope = MainScope()
     private var controller: OverlayController? = null
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        controller = OverlayController(this, ocr, overlaySettings, appSettings, scope).also { it.start() }
+        controller = OverlayController(this, ocr, overlaySettings, appSettings, dictionaryLookup, scope).also { it.start() }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

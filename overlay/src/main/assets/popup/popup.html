@@ -3,12 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../yomitan-render/render.css">
     <link rel="stylesheet" href="popup.css">
+    <style id="dictionary-styles"></style>
 </head>
 <body>
 <div id="card" class="card">
     <header class="header">
-        <div id="title" class="title"></div>
+        <button id="back" class="icon-button" aria-label="Back" hidden>
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="source" class="source"></div>
+        <span id="engine" class="chip" hidden></span>
         <div id="spinner" class="spinner" hidden></div>
         <button id="close" class="icon-button" aria-label="Close">
             <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -16,6 +22,7 @@
     </header>
     <main id="content" class="content"></main>
 </div>
+<script src="../yomitan-render/render.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

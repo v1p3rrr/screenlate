@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">Импорт словарей</string>
+    <string name="dictionary_import_notification">Импорт словарей</string>
+</resources>

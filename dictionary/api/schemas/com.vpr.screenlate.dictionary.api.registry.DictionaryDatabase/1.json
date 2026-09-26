@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "183ef4ec939356b04941813dfd01d385",
+    "identityHash": "d4f6041ec2d999e4d9d402a641ac106e",
     "entities": [
       {
         "tableName": "dictionaries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `revision` TEXT NOT NULL, `kind` TEXT NOT NULL, `sourceLanguage` TEXT, `targetLanguage` TEXT, `enabled` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `path` TEXT NOT NULL, `indexUrl` TEXT, `downloadUrl` TEXT, `bundled` INTEGER NOT NULL, `importedAt` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `revision` TEXT NOT NULL, `kind` TEXT NOT NULL, `sourceLanguage` TEXT, `targetLanguage` TEXT, `frequencyMode` TEXT, `enabled` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `directory` TEXT NOT NULL, `termCount` INTEGER NOT NULL, `frequencyCount` INTEGER NOT NULL, `pitchCount` INTEGER NOT NULL, `kanjiCount` INTEGER NOT NULL, `mediaCount` INTEGER NOT NULL, `isUpdatable` INTEGER NOT NULL, `indexUrl` TEXT, `downloadUrl` TEXT, `author` TEXT, `url` TEXT, `description` TEXT, `attribution` TEXT, `bundled` INTEGER NOT NULL, `importedAt` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,11 @@
             "affinity": "TEXT"
           },
           {
+            "fieldPath": "frequencyMode",
+            "columnName": "frequencyMode",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "enabled",
             "columnName": "enabled",
             "affinity": "INTEGER",
@@ -55,9 +60,45 @@
             "notNull": true
           },
           {
-            "fieldPath": "path",
-            "columnName": "path",
+            "fieldPath": "directory",
+            "columnName": "directory",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "termCount",
+            "columnName": "termCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "frequencyCount",
+            "columnName": "frequencyCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pitchCount",
+            "columnName": "pitchCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kanjiCount",
+            "columnName": "kanjiCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mediaCount",
+            "columnName": "mediaCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isUpdatable",
+            "columnName": "isUpdatable",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -68,6 +109,26 @@
           {
             "fieldPath": "downloadUrl",
             "columnName": "downloadUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "attribution",
+            "columnName": "attribution",
             "affinity": "TEXT"
           },
           {
@@ -104,7 +165,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '183ef4ec939356b04941813dfd01d385')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4f6041ec2d999e4d9d402a641ac106e')"
     ]
   }
 }

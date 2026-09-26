@@ -14,7 +14,36 @@ Copyright (c) Kolby Moroz Liebl.
   The Google Lens request/response layout in core/ocr/.../lens/LensProtocol.kt
   follows this project's protobuf definitions.
 
+hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
+  Dictionary import, deinflection and lookup; linked into
+  dictionary/engine-hoshidicts. Bundled dependencies:
+  - glaze, MIT License, Copyright (c) 2019 - present, Stephen Berry
+  - zstd, BSD License (dual-licensed with GPL-2.0), Copyright (c) Meta Platforms, Inc.
+  - libdeflate, MIT License, Copyright 2016 Eric Biggers, Copyright 2024 Google LLC
+  - unordered_dense, MIT License, Copyright (c) 2022 Martin Leitner-Ankerl
+  - utf8proc, MIT License, Copyright (c) Steven G. Johnson, Jiahao Chen, Tony Kelman,
+    Jonas Fonseca, and other contributors
+  - utfcpp, Boost Software License 1.0, Copyright 2006 Nemanja Trifunovic
+  - xxHash, BSD 2-Clause License, Copyright (c) 2012-2021 Yann Collet
+  - kanji-processor, MIT License, Copyright (c) 2024-2025 Lyroxide, Yomitan Authors
+
+Hoshi Reader (https://github.com/HuangAntimony/Hoshi-Reader-Android), GPL-3.0-or-later,
+Copyright (c) 2026 Manhhao; Yomitan (https://github.com/yomidevs/yomitan), GPL-3.0,
+Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Authors.
+  The structured content renderer, furigana segmentation, pitch accent markup and
+  dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
+
 Third-party data
 ----------------
 
-(Entries are added as bundled dictionaries are included.)
+The APK bundles these dictionaries unmodified. They are imported on first launch.
+
+Jitendex (https://jitendex.org), CC BY-SA 4.0, by Stephen Kraus.
+  Based on JMdict by the Electronic Dictionary Research and Development Group,
+  used in conformance with the Group's licence.
+
+Jiten frequency list (https://jiten.moe), CC BY-SA 4.0.
+
+Kanjium pitch accents (https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary),
+  data from Kanjium (https://github.com/mifunetoshiro/kanjium), CC BY-SA 4.0;
+  conversion by toasted-nutbread, MIT License.

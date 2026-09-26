@@ -1,0 +1,230 @@
+/*
+ * Styles for Yomitan structured content, dictionary images and pitch accent markup.
+ *
+ * Derived from Hoshi Reader's popup.css (Copyright (c) 2026 Manhhao), which copies from Yomitan's
+ * structured-content.css and display-pronunciation.css (Copyright (c) 2023-2025 Yomitan Authors,
+ * Copyright (c) 2021-2022 Yomichan Authors). Modified for Screenlate.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * The host page defines --text-color, --font-size-no-units, --background-color-dark1, --text-color-light2
+ * and --gloss-image-background-color.
+ */
+
+.yomitan-glossary {
+    --line-height: 1.4;
+    line-height: var(--line-height);
+}
+
+.yomitan-glossary ul,
+.yomitan-glossary ol {
+    margin: 2px 0;
+    padding-left: 1.2em;
+}
+
+.yomitan-glossary li {
+    margin: 1px 0;
+}
+
+.glossary-list {
+    padding-left: 1.2em;
+}
+
+.structured-content ruby rt {
+    font-size: 0.6em;
+}
+
+.gloss-sc-table-container {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.gloss-sc-table {
+    table-layout: auto;
+    border-collapse: collapse;
+}
+
+.gloss-sc-thead,
+.gloss-sc-tfoot,
+.gloss-sc-th {
+    font-weight: bold;
+    background-color: var(--background-color-dark1);
+}
+
+.gloss-sc-th,
+.gloss-sc-td {
+    border-width: calc(1em / var(--font-size-no-units));
+    border-style: solid;
+    border-color: var(--text-color-light2);
+    padding: 0.25em;
+    vertical-align: top;
+}
+
+.gloss-sc-a[data-external="true"]::after {
+    content: "\2197";
+    font-size: 0.8em;
+    margin-left: 0.1em;
+}
+
+/* Images */
+
+.gloss-image-link {
+    display: inline-block;
+    position: relative;
+    line-height: 1;
+    max-width: 100%;
+}
+
+.gloss-image-container {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+    max-height: 100vh;
+    position: relative;
+    vertical-align: top;
+    line-height: 0;
+    font-size: calc(1em / var(--font-size-no-units));
+    overflow: hidden;
+}
+
+.gloss-image-link[data-size-units="em"] .gloss-image-container {
+    font-size: 1em;
+}
+
+.gloss-image-link[data-background="true"] > .gloss-image-container {
+    background-color: var(--gloss-image-background-color);
+}
+
+.gloss-image-link[data-appearance="monochrome"] > .gloss-image-container {
+    background-color: transparent;
+}
+
+.gloss-image-link[data-vertical-align="baseline"] { vertical-align: baseline; }
+.gloss-image-link[data-vertical-align="sub"] { vertical-align: sub; }
+.gloss-image-link[data-vertical-align="super"] { vertical-align: super; }
+.gloss-image-link[data-vertical-align="text-top"] { vertical-align: text-top; }
+.gloss-image-link[data-vertical-align="text-bottom"] { vertical-align: text-bottom; }
+.gloss-image-link[data-vertical-align="middle"] { vertical-align: middle; }
+.gloss-image-link[data-vertical-align="top"] { vertical-align: top; }
+.gloss-image-link[data-vertical-align="bottom"] { vertical-align: bottom; }
+
+.gloss-image-sizer {
+    display: inline-block;
+    width: 0;
+    vertical-align: top;
+    font-size: 0;
+}
+
+.gloss-image {
+    display: inline-block;
+    vertical-align: top;
+    object-fit: contain;
+    border: none;
+    outline: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gloss-image-link[data-image-rendering="pixelated"] .gloss-image {
+    image-rendering: pixelated;
+}
+
+.gloss-image-link[data-image-rendering="crisp-edges"] .gloss-image {
+    image-rendering: crisp-edges;
+}
+
+.gloss-image-background {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Monochrome images (glyphs) take the text color through a mask, which works in both themes. */
+.gloss-image-link[data-appearance="monochrome"] .gloss-image-background {
+    display: block;
+    background-color: currentColor;
+    -webkit-mask-image: var(--image);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+    -webkit-mask-size: contain;
+    mask-image: var(--image);
+    mask-repeat: no-repeat;
+    mask-position: center center;
+    mask-size: contain;
+}
+
+.gloss-image-link[data-appearance="monochrome"] .gloss-image {
+    opacity: 0;
+}
+
+/* Pitch accent */
+
+.pronunciation-text {
+    display: inline-block;
+    padding-top: 3px;
+}
+
+.pronunciation-mora {
+    position: relative;
+}
+
+.pronunciation-mora[data-pitch="high"] > .pronunciation-mora-line {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    border-top: 1px solid currentColor;
+}
+
+.pronunciation-mora[data-pitch="high"][data-pitch-next="low"] > .pronunciation-mora-line {
+    right: -1px;
+    height: 0.4em;
+    border-right: 1px solid currentColor;
+}
+
+.pronunciation-mora[data-pitch="high"][data-pitch-next="low"] {
+    padding-right: 1px;
+    margin-right: 1px;
+}
+
+.pronunciation-devoice-indicator {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.125em;
+    height: 1.125em;
+    border: 1px dotted #c83c28;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pronunciation-nasal-indicator {
+    display: block;
+    position: absolute;
+    right: -0.125em;
+    top: 0.125em;
+    width: 0.375em;
+    height: 0.375em;
+    border: 1px solid #c83c28;
+    border-radius: 50%;
+}
+
+.pronunciation-nasal-diacritic {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.pronunciation-character-group {
+    display: inline-block;
+    position: relative;
+}

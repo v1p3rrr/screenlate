@@ -1,3 +1,5 @@
+import com.vpr.screenlate.buildlogic.ScreenlateSdk
+
 // This module links the GPL-3.0 hoshidicts library. Keep GPL code confined here so it can be swapped out.
 plugins {
     alias(libs.plugins.screenlate.android.library)
@@ -7,11 +9,10 @@ plugins {
 
 android {
     namespace = "com.vpr.screenlate.dictionary.engine.hoshidicts"
-    ndkVersion = "29.0.14206865"
 
     defaultConfig {
         ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += ScreenlateSdk.ABIS
         }
         externalNativeBuild {
             cmake {

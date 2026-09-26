@@ -15,7 +15,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     minSdk = ScreenlateSdk.MIN
                     targetSdk = ScreenlateSdk.TARGET
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                    ndk { abiFilters += ScreenlateSdk.ABIS }
                 }
+                // Yomitan archives are already compressed; stored entries can also be opened as file descriptors.
+                androidResources { noCompress += "zip" }
             }
         }
     }

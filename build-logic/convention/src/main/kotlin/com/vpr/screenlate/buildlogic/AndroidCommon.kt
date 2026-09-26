@@ -9,10 +9,17 @@ object ScreenlateSdk {
     const val COMPILE = 37
     const val MIN = 30
     const val TARGET = 37
+
+    /** Used to build native code and to strip native libraries when packaging. */
+    const val NDK = "29.0.14206865"
+
+    /** Phones and the x86_64 emulator; other ABIs are dropped from dependencies too. */
+    val ABIS = listOf("arm64-v8a", "x86_64")
 }
 
 internal fun Project.configureAndroidCommon(extension: CommonExtension) {
     extension.compileSdk = ScreenlateSdk.COMPILE
+    extension.ndkVersion = ScreenlateSdk.NDK
     extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
     extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
 

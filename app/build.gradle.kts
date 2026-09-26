@@ -1,3 +1,4 @@
+import com.vpr.screenlate.buildlogic.DownloadAssetsTask
 import java.util.Properties
 
 plugins {
@@ -48,6 +49,30 @@ android {
     }
 }
 
+// Dictionaries installed on first launch. Numeric prefixes set their initial priority. Versions are pinned where
+// the publisher offers stable URLs; see NOTICE for licenses.
+val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDictionaries") {
+    assetPath.set("dictionaries")
+    files.putAll(
+        mapOf(
+            "10-jitendex.zip" to
+                "https://github.com/stephenmk/stephenmk.github.io/releases/download/2026.08.11.0/jitendex-yomitan.zip",
+            "20-jiten-global-frequency.zip" to
+                "https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan",
+            "30-kanjium-pitch-accents.zip" to
+                "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary/releases/download/1.0.0/" +
+                "kanjium_pitch_accents.zip",
+        ),
+    )
+    cacheDir.set(rootProject.layout.projectDirectory.dir("dicts/bundled"))
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(bundledDictionaries, DownloadAssetsTask::outputDir)
+    }
+}
+
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ocr"))
@@ -63,6 +88,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 }
