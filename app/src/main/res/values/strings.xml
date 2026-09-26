@@ -106,4 +106,10 @@
     <string name="home_search_title">Search</string>
     <string name="home_search_open">Search dictionaries</string>
     <string name="process_text_label">Look up in Screenlate</string>
+    <string name="dictionaries_check_updates">Check for updates</string>
+    <string name="dictionaries_checking_updates">Checking for updates…</string>
+    <string name="dictionaries_up_to_date">All dictionaries are up to date.</string>
+    <string name="dictionaries_update">Update</string>
+    <string name="dictionaries_update_all">Update all</string>
+    <string name="dictionaries_sort_by">Sort results by this dictionary</string>
 </resources>

@@ -10,6 +10,8 @@ import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
+import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
@@ -38,22 +40,33 @@ data class DictionariesState(
     val installed: List<InstalledSection> = emptyList(),
     val tasks: List<ImportTask> = emptyList(),
     val catalog: List<CatalogGroup> = emptyList(),
+    /** The frequency dictionary used for sorting. */
+    val sortDictionaryId: Long? = null,
     val loaded: Boolean = false,
 )
+
+/** Result of the last update check; [updates] is null while checking. */
+data class UpdateCheck(val updates: List<DictionaryUpdate>?)
 
 @HiltViewModel
 class DictionariesViewModel @Inject constructor(
     private val repository: DictionaryRepository,
     private val imports: DictionaryImports,
+    private val dictionaryUpdates: DictionaryUpdates,
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
+    private val updateCheck = MutableStateFlow<UpdateCheck?>(null)
+
+    /** Null until the user checks for updates. */
+    val updateState: StateFlow<UpdateCheck?> = updateCheck
 
     val state: StateFlow<DictionariesState> = combine(
         repository.dictionaries,
         imports.tasks,
         catalog.entries(),
-    ) { dictionaries, tasks, entries ->
+        repository.sortDictionaryId,
+    ) { dictionaries, tasks, entries, sortId ->
         val running = tasks.filter { !it.finished }.map { it.name }.toSet()
         val items = entries.map { entry ->
             CatalogItem(entry, installed = dictionaries.any(entry::matches), inProgress = entry.title in running)
@@ -64,6 +77,10 @@ class DictionariesViewModel @Inject constructor(
             },
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             catalog = groupCatalog(items),
+            sortDictionaryId = dictionaries
+                .filter { it.enabled && it.frequencyCount > 0 }
+                .let { frequencies -> frequencies.firstOrNull { it.id == sortId } ?: frequencies.firstOrNull() }
+                ?.id,
             loaded = true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionariesState())
@@ -95,6 +112,20 @@ class DictionariesViewModel @Inject constructor(
             if (section.kind == kind) ordered else section.dictionaries
         }
         viewModelScope.launch { repository.reorder(all.map { it.id }) }
+    }
+
+    fun setSortDictionary(dictionary: DictionaryEntity) {
+        viewModelScope.launch { repository.setSortDictionary(dictionary.id) }
+    }
+
+    fun checkUpdates() {
+        updateCheck.value = UpdateCheck(null)
+        viewModelScope.launch { updateCheck.value = UpdateCheck(dictionaryUpdates.check()) }
+    }
+
+    fun update(items: List<DictionaryUpdate>) {
+        items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
+        updateCheck.value = UpdateCheck(updateCheck.value?.updates.orEmpty() - items.toSet())
     }
 
     fun delete(dictionary: DictionaryEntity) {

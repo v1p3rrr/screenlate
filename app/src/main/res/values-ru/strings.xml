@@ -101,4 +101,10 @@
     <string name="home_search_title">Поиск</string>
     <string name="home_search_open">Искать в словарях</string>
     <string name="process_text_label">Найти в Screenlate</string>
+    <string name="dictionaries_check_updates">Проверить обновления</string>
+    <string name="dictionaries_checking_updates">Проверяю обновления…</string>
+    <string name="dictionaries_up_to_date">Все словари актуальны.</string>
+    <string name="dictionaries_update">Обновить</string>
+    <string name="dictionaries_update_all">Обновить все</string>
+    <string name="dictionaries_sort_by">Сортировать результаты по этому словарю</string>
 </resources>

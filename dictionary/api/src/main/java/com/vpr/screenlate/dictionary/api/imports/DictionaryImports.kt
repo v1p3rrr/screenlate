@@ -16,6 +16,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
@@ -86,9 +87,18 @@ class DictionaryImports @Inject constructor(
         name = name,
     )
 
-    /** Downloads and imports an archive; with [indexUrl], the index's current `downloadUrl` is preferred. */
-    fun download(url: String, name: String, indexUrl: String? = null) = enqueue(
-        workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to url, KEY_INDEX_URL to indexUrl, KEY_NAME to name),
+    /**
+     * Downloads and imports an archive; with [indexUrl], the index's current `downloadUrl` is preferred.
+     * [replaces] is the id of the installed dictionary this download updates.
+     */
+    fun download(url: String, name: String, indexUrl: String? = null, replaces: Long? = null) = enqueue(
+        workDataOf(
+            KEY_SOURCE to SOURCE_URL,
+            KEY_URL to url,
+            KEY_INDEX_URL to indexUrl,
+            KEY_NAME to name,
+            KEY_REPLACE_ID to (replaces ?: -1L),
+        ),
         name = name,
     )
 

@@ -134,7 +134,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                 }
             }
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
-            return repository.import(archive).title
+            val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
+            return repository.import(archive, replaces = replaces).title
         } finally {
             archive.delete()
         }
@@ -168,6 +169,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_PATH = "path"
         const val KEY_URL = "url"
         const val KEY_INDEX_URL = "index_url"
+        const val KEY_REPLACE_ID = "replace_id"
         const val KEY_DELETE_FILE = "delete_file"
         const val KEY_TITLES = "titles"
         const val KEY_ERROR = "error"

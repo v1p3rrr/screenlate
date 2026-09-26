@@ -5,7 +5,13 @@ import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
@@ -21,6 +27,7 @@ class DictionaryRepository @Inject constructor(
     private val dao: DictionaryDao,
     private val engine: DictionaryEngine,
     private val storage: DictionaryStorage,
+    private val preferences: DataStore<Preferences>,
 ) {
     private val mutex = Mutex()
     private var loadedLanguage: Language? = null
@@ -29,19 +36,26 @@ class DictionaryRepository @Inject constructor(
 
     val dictionaries: Flow<List<DictionaryEntity>> = dao.observeAll()
 
+    /** The frequency dictionary chosen for sorting; null means the first enabled one. */
+    val sortDictionaryId: Flow<Long?> = preferences.data.map { it[SORT_DICTIONARY] }
+
     suspend fun getAll(): List<DictionaryEntity> = dao.getAll()
 
     /**
-     * Imports a Yomitan archive. A dictionary with the same title is replaced and keeps its position and
-     * enabled state.
+     * Imports a Yomitan archive. The dictionary [replaces] (an update, whose title may differ) or else one with
+     * the same title is replaced and keeps its position and enabled state.
      */
-    suspend fun import(archive: File, bundled: Boolean = false): DictionaryEntity {
+    suspend fun import(archive: File, bundled: Boolean = false, replaces: Long? = null): DictionaryEntity {
         val staging = storage.newStagingDirectory()
         try {
             val imported = engine.import(archive, staging)
             return mutex.withLock {
                 val metadata = imported.metadata
-                val existing = dao.findByTitle(metadata.title)
+                val existing = replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title)
+                // An update must not collide with another dictionary that already has the new title.
+                if (replaces != null) {
+                    dao.findByTitle(metadata.title)?.takeIf { it.id != replaces }?.let { dao.delete(it) }
+                }
                 val entity = DictionaryEntity(
                     id = existing?.id ?: 0,
                     title = metadata.title,
@@ -121,6 +135,11 @@ class DictionaryRepository @Inject constructor(
         )
     }
 
+    suspend fun setSortDictionary(id: Long) = mutex.withLock {
+        preferences.edit { it[SORT_DICTIONARY] = id }
+        reloadLocked()
+    }
+
     /** Deletes storage leftovers. Call once at startup. */
     suspend fun cleanUp() = mutex.withLock {
         storage.cleanUp(dao.getAll().map { it.directory })
@@ -143,8 +162,9 @@ class DictionaryRepository @Inject constructor(
                 kanji = enabled.filter { it.kanjiCount > 0 }.directories(),
             ),
         )
-        // Choosing the sort dictionary is not configurable yet: the first enabled frequency dictionary wins.
-        sortDictionary = enabled.firstOrNull { it.frequencyCount > 0 }
+        val frequencies = enabled.filter { it.frequencyCount > 0 }
+        val preferred = preferences.data.first()[SORT_DICTIONARY]
+        sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
         termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
         loadedLanguage = language
     }
@@ -157,3 +177,5 @@ data class PreparedLookup(
     val options: LookupOptions,
     val termDictionaries: List<String>,
 )
+
+private val SORT_DICTIONARY = longPreferencesKey("sort_dictionary_id")

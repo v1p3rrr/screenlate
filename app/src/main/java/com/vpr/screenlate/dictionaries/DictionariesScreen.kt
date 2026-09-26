@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +47,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import java.util.Locale
 
@@ -54,6 +57,7 @@ import java.util.Locale
 fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val importError by viewModel.importError.collectAsStateWithLifecycle()
+    val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.importFrom(uri)
@@ -84,6 +88,15 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.dictionaries_import_file))
             }
+
+            OutlinedButton(
+                onClick = viewModel::checkUpdates,
+                enabled = updateCheck?.updates != null || updateCheck == null,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.dictionaries_check_updates))
+            }
+            updateCheck?.let { check -> UpdatesCard(check, onUpdate = viewModel::update) }
 
             importError?.let { error ->
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
@@ -116,6 +129,11 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
                         dragging = dragging,
                         onEnabledChange = { viewModel.setEnabled(dictionary, it) },
                         onDelete = { pendingDelete = dictionary },
+                        sort = if (section.kind == DictionaryKind.FREQUENCY) {
+                            SortChoice(dictionary.id == state.sortDictionaryId) { viewModel.setSortDictionary(dictionary) }
+                        } else {
+                            null
+                        },
                     )
                 }
             }
@@ -190,6 +208,7 @@ private fun DictionaryCard(
     dragging: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     onDelete: () -> Unit,
+    sort: SortChoice? = null,
 ) {
     var expanded by rememberSaveable(dictionary.id) { mutableStateOf(false) }
     Card(
@@ -215,6 +234,12 @@ private fun DictionaryCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (sort != null && dictionary.enabled) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = sort.selected, onClick = sort.onSelect)
+                        Text(stringResource(R.string.dictionaries_sort_by), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
             }
             Switch(checked = dictionary.enabled, onCheckedChange = onEnabledChange)
             IconButton(onClick = onDelete) {
@@ -232,6 +257,47 @@ private fun DictionaryCard(
                 dictionary.description?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
                 dictionary.attribution?.let {
                     Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+    }
+}
+
+/** The "sort by this dictionary" radio of a frequency dictionary. */
+private class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
+
+@Composable
+private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            val updates = check.updates
+            when {
+                updates == null -> {
+                    Text(stringResource(R.string.dictionaries_checking_updates))
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+                updates.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
+                else -> {
+                    updates.forEach { update ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(update.dictionary.title, style = MaterialTheme.typography.bodyLarge)
+                                Text(
+                                    "${update.dictionary.revision} → ${update.revision}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            TextButton(onClick = { onUpdate(listOf(update)) }) {
+                                Text(stringResource(R.string.dictionaries_update))
+                            }
+                        }
+                    }
+                    if (updates.size > 1) {
+                        Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.dictionaries_update_all))
+                        }
+                    }
                 }
             }
         }
