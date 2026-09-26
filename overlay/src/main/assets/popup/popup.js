@@ -23,10 +23,17 @@ const Popup = (() => {
     const content = document.getElementById('content');
     const dictionaryStyles = document.getElementById('dictionary-styles');
     const renderer = window.YomitanRender || null;
+    const HOLD_MS = 450;
+    const ICONS = {
+        add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    };
 
     const history = [];
     let current = null;
     let drawnKey = null;
+    let styles = [];
+    let actions = { anki: false, audio: false };
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
     backButton.addEventListener('click', back);
@@ -98,6 +105,8 @@ const Popup = (() => {
                 : term.expression;
         }
         head.append(expression);
+        const buttons = actionButtons(result, index);
+        if (buttons) head.append(buttons);
         article.append(head);
 
         const meta = element('div', 'entry-meta');
@@ -132,6 +141,64 @@ const Popup = (() => {
         }
         article.append(glossary);
         return article;
+    }
+
+    function actionButtons(result, index) {
+        if (!actions.anki && !actions.audio) return null;
+        const container = element('div', 'entry-actions');
+        if (actions.audio) {
+            const play = iconButton('play', ICONS.audio, labelOf('playAudio'));
+            play.addEventListener('click', () => ScreenlateBridge.onPlayAudio(result.term.expression, result.term.reading || ''));
+            container.append(play);
+        }
+        if (actions.anki) {
+            const add = iconButton('add', ICONS.add, labelOf('addNote'));
+            add.dataset.index = String(index);
+            onTapOrHold(add, withScreenshot => {
+                if (add.dataset.state === 'busy' || add.dataset.state === 'blocked') return;
+                setButtonState(add, 'busy');
+                ScreenlateBridge.onAddNote(index, JSON.stringify(NoteData.build(result, styles)), withScreenshot);
+            });
+            container.append(add);
+        }
+        return container;
+    }
+
+    function labelOf(key) {
+        return current?.labels?.[key] || key;
+    }
+
+    function iconButton(kind, svg, label) {
+        const button = element('button', `icon-button action-${kind}`);
+        button.innerHTML = svg;
+        button.setAttribute('aria-label', label);
+        return button;
+    }
+
+    /** A short tap calls action(false), holding for HOLD_MS calls action(true). */
+    function onTapOrHold(button, action) {
+        let timer = null;
+        let held = false;
+        button.addEventListener('pointerdown', () => {
+            held = false;
+            timer = setTimeout(() => {
+                held = true;
+                action(true);
+            }, HOLD_MS);
+        });
+        const cancel = () => clearTimeout(timer);
+        button.addEventListener('pointerup', () => {
+            cancel();
+            if (!held) action(false);
+        });
+        button.addEventListener('pointerleave', cancel);
+        button.addEventListener('pointercancel', cancel);
+        button.addEventListener('contextmenu', event => event.preventDefault());
+    }
+
+    function setButtonState(button, state) {
+        if (state) button.dataset.state = state;
+        else delete button.dataset.state;
     }
 
     function pitchBlock(term) {
@@ -237,16 +304,40 @@ const Popup = (() => {
         content.scrollTop = previous.scroll;
     }
 
-    function setStyles(styles) {
+    function setStyles(newStyles) {
+        styles = newStyles || [];
         if (!renderer) return;
-        dictionaryStyles.textContent = (styles || [])
+        dictionaryStyles.textContent = styles
             .map(style => renderer.dictionaryCss(style.css, style.dictionary))
             .join('\n');
     }
 
+    /** Which entry buttons to show: { anki: boolean, audio: boolean }. */
+    function setActions(newActions) {
+        const changed = JSON.stringify(newActions) !== JSON.stringify(actions);
+        actions = newActions;
+        if (changed && current) drawResults(current);
+    }
+
+    /**
+     * Marks the ➕ buttons of the current view. states: { index: 'duplicate' | 'blocked' | 'added' | 'busy' | 'error' | '' }.
+     * 'blocked' is a duplicate that may not be added again.
+     */
+    function setNoteStates(states) {
+        for (const [index, state] of Object.entries(states)) {
+            const button = content.querySelector(`.action-add[data-index="${index}"]`);
+            if (button) setButtonState(button, state);
+        }
+    }
+
+    /** Marker values of every entry in the current view, for the duplicate check. */
+    function allNoteData() {
+        return (current?.results || []).map(result => NoteData.build(result, styles).values);
+    }
+
     // endregion
 
-    return { render, update, push, setStyles };
+    return { render, update, push, setStyles, setActions, setNoteStates, allNoteData };
 })();
 
 ScreenlateBridge.onReady();

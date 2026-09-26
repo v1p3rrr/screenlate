@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.content.res.Configuration
@@ -13,6 +14,11 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.AnkiNotes
+import com.vpr.screenlate.core.anki.audio.AudioFinder
+import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -26,6 +32,8 @@ import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.overlay.anki.NoteContext
+import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
@@ -66,8 +74,17 @@ class OverlayController(
     private val overlaySettings: OverlaySettingsRepository,
     private val appSettings: AppSettingsRepository,
     private val lookup: DictionaryLookup,
+    private val anki: AnkiServices,
     private val scope: CoroutineScope,
 ) {
+    /** Anki and audio dependencies, grouped to keep the constructor short. */
+    class AnkiServices(
+        val ankiDroid: AnkiDroid,
+        val notes: AnkiNotes,
+        val audio: AudioFinder,
+        val audioSettings: AudioSettingsRepository,
+    )
+
     private enum class State { DOCKED, DRAGGING, FLOATING }
 
     /** What the popup shows for one lookup; kept to re-render on theme or OCR status changes. */
@@ -90,6 +107,17 @@ class OverlayController(
     private val layerParams = OverlayWindows.layerParams()
     private val popup = PopupController(service, windowManager, PopupCallbacks())
     private val capturer = ScreenCapturer(service, service.mainExecutor)
+    private val popupNotes = PopupNotes(
+        context = service,
+        scope = scope,
+        popup = popup,
+        anki = anki.ankiDroid,
+        notes = anki.notes,
+        audio = anki.audio,
+        audioSettings = anki.audioSettings,
+        lookup = lookup,
+        noteContext = ::noteContext,
+    )
 
     private var settings = OverlaySettings()
     private var themeMode = ThemeMode.SYSTEM
@@ -106,6 +134,7 @@ class OverlayController(
     private var pendingSingleTap: Runnable? = null
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
+    private var screenshot: Bitmap? = null
 
     // Only Japanese is supported for now; this becomes a setting with more languages.
     private val language = Language.JAPANESE
@@ -125,6 +154,7 @@ class OverlayController(
     fun stop() {
         scanJob?.cancel()
         lookupJob?.cancel()
+        popupNotes.release()
         mainHandler.removeCallbacksAndMessages(null)
         detachWindows()
         popup.release()
@@ -224,6 +254,7 @@ class OverlayController(
         state = State.DOCKED
         resetScan()
         popup.hide()
+        popupNotes.onClosed()
         layerView.clearAll()
         bubbleView.showCenterDot = false
         haptic()
@@ -393,6 +424,8 @@ class OverlayController(
         lookupJob?.cancel()
         lookupJob = null
         shownLookup = null
+        screenshot?.recycle()
+        screenshot = null
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
         pendingSingleTap = null
@@ -422,9 +455,12 @@ class OverlayController(
                         showMessage(service.getString(R.string.overlay_error_ocr))
                     }
                     .collect { update -> onOcrUpdate(update, captured, flashLines) }
-            } finally {
+            } catch (e: CancellationException) {
                 captured.bitmap.recycle()
+                throw e
             }
+            // Kept for {screenshot} until the next scan or docking.
+            screenshot = captured.bitmap
         }
     }
 
@@ -490,6 +526,7 @@ class OverlayController(
             val anchor = Box.unionOf(boxes) ?: return@launch
             val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
             shownLookup = view
+            popupNotes.refreshActions()
             popup.show(
                 popupState(view),
                 anchor,
@@ -498,6 +535,7 @@ class OverlayController(
                 usableBounds(),
                 MAX_POPUP_DP * density,
             )
+            popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
 
@@ -521,6 +559,7 @@ class OverlayController(
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val message = if (results.isEmpty()) noResultsMessage() else null
             popup.push(popupState(LookupView(query, matched, results, message)))
+            popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
 
@@ -536,6 +575,21 @@ class OverlayController(
     private fun refreshPopup() {
         val view = shownLookup ?: return
         if (popup.isShowing) popup.update(popupState(view))
+    }
+
+    /** Sentence and screenshot for a note; waits for the final OCR result first, as Lens may still refine the text. */
+    private suspend fun noteContext(): NoteContext {
+        scanJob?.join()
+        val layout = layout
+        val position = hit
+        val sentence = if (layout != null && position != null) {
+            val (paragraph, index) = layout.paragraphText(position)
+            val length = layout.textFrom(position, shownLookup?.matched?.coerceAtLeast(1) ?: 1).length
+            Sentence.extract(paragraph, index, length, language)
+        } else {
+            null
+        }
+        return NoteContext(sentence, screenshot)
     }
 
     private fun loadDictionaryStyles() {
@@ -572,6 +626,8 @@ class OverlayController(
             view.message?.let { put("message", it) }
             putJsonObject("labels") {
                 put("noResults", service.getString(R.string.overlay_no_results))
+                put("addNote", service.getString(R.string.overlay_add_note))
+                put("playAudio", service.getString(R.string.overlay_play_audio))
             }
         }
     }
@@ -599,6 +655,11 @@ class OverlayController(
             runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open $url", it) }
             dock()
         }
+
+        override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
+            popupNotes.add(index, noteData, withScreenshot)
+
+        override fun onPlayAudio(expression: String, reading: String) = popupNotes.play(expression, reading)
 
         override fun media(dictionary: String, path: String): ByteArray? =
             runBlocking { lookup.media(dictionary, path) }

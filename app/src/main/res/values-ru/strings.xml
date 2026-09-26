@@ -60,4 +60,40 @@
     <string name="dictionaries_section_terms">Словари</string>
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Версия</string>
+
+    <string name="home_anki_ready">Карточки идут в %1$s (%2$s).</string>
+    <string name="home_anki_not_configured">Выберите колоду, тип записи и шаблоны полей.</string>
+    <string name="home_anki_open">Настройки Anki и аудио</string>
+
+    <string name="anki_title">Anki и аудио</string>
+    <string name="anki_not_installed">AnkiDroid не установлен. Установите его, чтобы добавлять карточки из попапа.</string>
+    <string name="anki_permission_explanation">Screenlate нужен доступ к базе AnkiDroid, чтобы видеть колоды и добавлять карточки.</string>
+    <string name="anki_grant_permission">Разрешить доступ к AnkiDroid</string>
+    <string name="anki_note">Карточка</string>
+    <string name="anki_deck">Колода</string>
+    <string name="anki_model">Тип записи</string>
+    <string name="anki_choose">Выбрать…</string>
+    <string name="anki_tags">Метки (через пробел)</string>
+    <string name="anki_fields">Поля</string>
+    <string name="anki_fields_hint">В шаблонах используются маркеры вроде {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Кнопка + вставляет маркер. По первому полю проверяются дубли.</string>
+    <string name="anki_insert_marker">Вставить маркер</string>
+    <string name="anki_duplicates">Дубли</string>
+    <string name="anki_duplicate_check">Проверять дубли</string>
+    <string name="anki_duplicate_scope">Искать в</string>
+    <string name="anki_scope_collection">Коллекции</string>
+    <string name="anki_scope_deck">Колоде</string>
+    <string name="anki_scope_deck_root">Корне колоды</string>
+    <string name="anki_duplicate_all_models">Во всех типах записей</string>
+    <string name="anki_duplicate_behavior">Если дубль найден</string>
+    <string name="anki_behavior_prevent">Запретить</string>
+    <string name="anki_behavior_overwrite">Перезаписать</string>
+    <string name="anki_behavior_new">Добавить</string>
+
+    <string name="audio_title">Аудио</string>
+    <string name="audio_auto_play">Проигрывать аудио нового слова</string>
+    <string name="audio_sources_hint">Источники перебираются сверху вниз. В URL-шаблонах можно использовать {term} и {reading}.</string>
+    <string name="audio_source_url">Свой URL</string>
+    <string name="audio_source_json">Свой URL (JSON)</string>
+    <string name="audio_url_template">Шаблон URL</string>
+    <string name="audio_add_source">Добавить источник аудио</string>
 </resources>

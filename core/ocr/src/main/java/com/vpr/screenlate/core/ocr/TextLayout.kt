@@ -92,6 +92,16 @@ class TextLayout(val page: OcrPage) {
         return characters.filter { it.lineIndex == lineIndex }.joinToString("") { it.text }
     }
 
+    /**
+     * Text of the paragraph containing [position], and the UTF-16 index of that character in it
+     * (characters are code points, so the two can differ).
+     */
+    fun paragraphText(position: TextPosition): Pair<String, Int> {
+        val characters = paragraphs[position.paragraphIndex]
+        val index = characters.take(position.offset).sumOf { it.text.length }
+        return characters.joinToString("") { it.text } to index
+    }
+
     /** Boxes covering [length] characters from [position], merged into one box per line. */
     fun boxesFor(position: TextPosition, length: Int): List<Box> =
         paragraphs[position.paragraphIndex]

@@ -62,4 +62,43 @@
     <string name="dictionaries_section_terms">Dictionaries</string>
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Version</string>
+
+    <string name="home_anki_title" translatable="false">Anki</string>
+    <string name="home_anki_ready">Notes go to %1$s (%2$s).</string>
+    <string name="home_anki_not_configured">Choose a deck, a note type and field templates.</string>
+    <string name="home_anki_open">Anki and audio settings</string>
+
+    <string name="anki_title">Anki and audio</string>
+    <string name="anki_connection" translatable="false">AnkiDroid</string>
+    <string name="anki_not_installed">AnkiDroid is not installed. Install it to add notes from the popup.</string>
+    <string name="anki_permission_explanation">Screenlate needs access to the AnkiDroid database to list decks and add notes.</string>
+    <string name="anki_grant_permission">Allow access to AnkiDroid</string>
+    <string name="anki_note">Note</string>
+    <string name="anki_deck">Deck</string>
+    <string name="anki_model">Note type</string>
+    <string name="anki_choose">Choose…</string>
+    <string name="anki_tags">Tags (space-separated)</string>
+    <string name="anki_fields">Fields</string>
+    <string name="anki_fields_hint">Templates use markers such as {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Use the + button to insert one. The first field is used for the duplicate check.</string>
+    <string name="anki_insert_marker">Insert marker</string>
+    <string name="anki_duplicates">Duplicates</string>
+    <string name="anki_duplicate_check">Check for duplicates</string>
+    <string name="anki_duplicate_scope">Search in</string>
+    <string name="anki_scope_collection">Collection</string>
+    <string name="anki_scope_deck">Deck</string>
+    <string name="anki_scope_deck_root">Deck root</string>
+    <string name="anki_duplicate_all_models">Check all note types</string>
+    <string name="anki_duplicate_behavior">When a duplicate exists</string>
+    <string name="anki_behavior_prevent">Prevent</string>
+    <string name="anki_behavior_overwrite">Overwrite</string>
+    <string name="anki_behavior_new">Add new</string>
+
+    <string name="audio_title">Audio</string>
+    <string name="audio_auto_play">Play audio when a new word is shown</string>
+    <string name="audio_sources_hint">Sources are tried from top to bottom. URL templates may use {term} and {reading}.</string>
+    <string name="audio_source_jpod" translatable="false">JapanesePod101</string>
+    <string name="audio_source_url">Custom URL</string>
+    <string name="audio_source_json">Custom URL (JSON)</string>
+    <string name="audio_url_template">URL template</string>
+    <string name="audio_add_source">Add audio source</string>
 </resources>

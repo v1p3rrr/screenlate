@@ -41,10 +41,12 @@ fun HomeScreen(
     onThemeModeChange: (ThemeMode) -> Unit,
     onOpenOcrTest: () -> Unit,
     onOpenDictionaries: () -> Unit,
+    onOpenAnki: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
+    val anki by viewModel.anki.collectAsStateWithLifecycle()
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
@@ -88,6 +90,16 @@ fun HomeScreen(
                 )
                 Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.home_dictionaries_open))
+                }
+            }
+
+            SectionCard(title = stringResource(R.string.home_anki_title)) {
+                Text(
+                    anki?.let { stringResource(R.string.home_anki_ready, it.deck, it.model) }
+                        ?: stringResource(R.string.home_anki_not_configured),
+                )
+                OutlinedButton(onClick = onOpenAnki, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.home_anki_open))
                 }
             }
 

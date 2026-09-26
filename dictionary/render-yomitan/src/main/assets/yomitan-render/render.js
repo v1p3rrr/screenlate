@@ -16,7 +16,8 @@
  *   pitchCategory(reading, position, rules)                heiban / atamadaka / nakadaka / odaka / kifuku
  *   downsteps(position)                                    downstep positions of a numeric or HL pattern
  *
- * options: { mediaUrl(dictionary, path) -> url, onLookup(query, primaryReading), onExternalLink(url) }
+ * options: { mediaUrl(dictionary, path) -> url, onLookup(query, primaryReading), onExternalLink(url),
+ *            exporting: true for Anki markup (plain images, no popup styles) }
  */
 'use strict';
 
@@ -211,6 +212,8 @@ window.YomitanRender = (() => {
             ? preferredWidth
             : (hasPreferredHeight ? preferredHeight / invAspectRatio : width);
 
+        if (options.exporting) return createExportImage(data, dictionary, options, usedWidth, sizeUnits);
+
         const link = document.createElement('span');
         link.className = 'gloss-image-link';
         link.dataset.hasAspectRatio = 'true';
@@ -255,6 +258,21 @@ window.YomitanRender = (() => {
         image.src = url;
         container.appendChild(image);
         return link;
+    }
+
+    /** Plain markup for Anki cards, which do not have the popup's stylesheet. */
+    function createExportImage(data, dictionary, options, usedWidth, sizeUnits) {
+        const image = document.createElement('img');
+        image.src = options.mediaUrl ? options.mediaUrl(dictionary, data.path) : '';
+        image.alt = (data.data && data.data.alt) || data.alt || data.title || '';
+        const unit = sizeUnits === 'em' ? 'em' : 'px';
+        image.style.width = `${usedWidth}${unit}`;
+        image.style.maxWidth = '100%';
+        image.style.height = 'auto';
+        image.style.verticalAlign = typeof data.verticalAlign === 'string' ? data.verticalAlign : 'middle';
+        if (typeof data.border === 'string') image.style.border = data.border;
+        if (typeof data.borderRadius === 'string') image.style.borderRadius = data.borderRadius;
+        return image;
     }
 
     // endregion

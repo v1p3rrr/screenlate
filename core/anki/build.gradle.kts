@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.screenlate.android.library)
     alias(libs.plugins.screenlate.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -8,5 +9,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
+    api(project(":core:common"))
+    // LGPL-3.0; a thin client of AnkiDroid's content provider.
+    implementation(libs.ankidroid.api)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.serialization.json)
 }

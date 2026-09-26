@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.core.common.settings.ThemeMode
+import com.vpr.screenlate.anki.AnkiSettingsScreen
 import com.vpr.screenlate.debug.ImageViewerScreen
 import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.debug.OcrTestScreen
@@ -20,6 +21,9 @@ private object OcrTestRoute
 
 @Serializable
 private object DictionariesRoute
+
+@Serializable
+private object AnkiRoute
 
 @Serializable
 private data class ImageViewerRoute(val path: String)
@@ -42,7 +46,11 @@ fun ScreenlateNavHost(
                 onThemeModeChange = onThemeModeChange,
                 onOpenOcrTest = { navController.navigate(OcrTestRoute) },
                 onOpenDictionaries = { navController.navigate(DictionariesRoute) },
+                onOpenAnki = { navController.navigate(AnkiRoute) },
             )
+        }
+        composable<AnkiRoute> {
+            AnkiSettingsScreen(onBack = { navController.popBackStack() })
         }
         composable<DictionariesRoute> {
             DictionariesScreen(onBack = { navController.popBackStack() })

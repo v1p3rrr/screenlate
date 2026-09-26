@@ -12,4 +12,11 @@
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
     <string name="overlay_no_results">В словарях ничего не найдено.</string>
     <string name="overlay_no_dictionaries">Словари ещё устанавливаются. Попробуйте чуть позже.</string>
+    <string name="overlay_add_note">Добавить в Anki (удерживайте для скриншота)</string>
+    <string name="overlay_play_audio">Воспроизвести аудио</string>
+    <string name="anki_error">Не удалось добавить карточку: %1$s</string>
+    <string name="anki_not_configured">Сначала настройте экспорт в Anki в Screenlate.</string>
+    <string name="anki_not_installed">AnkiDroid не установлен.</string>
+    <string name="anki_no_permission">Разрешите Screenlate доступ к AnkiDroid в настройках Anki.</string>
+    <string name="audio_not_found">Для этого слова аудио не найдено.</string>
 </resources>

@@ -14,4 +14,11 @@
     <string name="overlay_error_ocr">Text recognition failed.</string>
     <string name="overlay_no_results">No dictionary entries found.</string>
     <string name="overlay_no_dictionaries">Dictionaries are still being installed. Try again in a moment.</string>
+    <string name="overlay_add_note">Add to Anki (hold for a screenshot)</string>
+    <string name="overlay_play_audio">Play audio</string>
+    <string name="anki_error">Could not add the note: %1$s</string>
+    <string name="anki_not_configured">Set up Anki export in Screenlate first.</string>
+    <string name="anki_not_installed">AnkiDroid is not installed.</string>
+    <string name="anki_no_permission">Allow Screenlate to access AnkiDroid in its Anki settings.</string>
+    <string name="audio_not_found">No audio found for this word.</string>
 </resources>

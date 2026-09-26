@@ -185,6 +185,49 @@ a {
     gap: 8px;
 }
 
+.entry-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 2px;
+    align-self: center;
+}
+
+.entry-actions .icon-button {
+    color: var(--accent);
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.action-add[data-state="duplicate"] {
+    color: var(--muted);
+}
+
+.action-add[data-state="blocked"],
+.action-add[data-state="busy"] {
+    color: var(--muted);
+    opacity: 0.45;
+}
+
+.action-add[data-state="added"] {
+    color: var(--frequency-fg);
+    background: var(--frequency-bg);
+}
+
+.action-add[data-state="error"] {
+    color: #c62828;
+}
+
+.action-add[data-state="busy"] svg {
+    animation: pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.3;
+    }
+}
+
 .expression {
     font-size: 1.75em;
     line-height: 1.3;

@@ -18,7 +18,9 @@ import android.webkit.WebViewClient
 import androidx.webkit.WebViewAssetLoader
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.overlay.ui.OverlayWindows
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
+import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 
 /**
@@ -40,6 +42,11 @@ class PopupController(
 
         fun onOpenUrl(url: String)
 
+        /** ➕ on entry [index]; [noteData] is the JSON from the page's NoteData.build. */
+        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean)
+
+        fun onPlayAudio(expression: String, reading: String)
+
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
     }
@@ -51,6 +58,7 @@ class PopupController(
     private var pageReady = false
     private val pendingScripts = mutableListOf<String>()
     private var styles: String? = null
+    private var actions: String? = null
 
     var bounds: Box? = null
         private set
@@ -118,6 +126,29 @@ class PopupController(
         run(script)
     }
 
+    /** Shows or hides the ➕ and 🔊 buttons of entries. */
+    fun setActions(anki: Boolean, audio: Boolean) {
+        val script = "Popup.setActions({anki: $anki, audio: $audio})"
+        if (script == actions) return
+        actions = script
+        run(script)
+    }
+
+    /** Sets ➕ button states by entry index (see `Popup.setNoteStates`). */
+    fun setNoteStates(states: Map<Int, String>) {
+        if (!attached || states.isEmpty()) return
+        val json = states.entries.joinToString(",", "{", "}") { (index, state) -> "\"$index\":\"$state\"" }
+        run("Popup.setNoteStates($json)")
+    }
+
+    /** Evaluates [script] in the page and returns its JSON-encoded result, or null if the page is not ready. */
+    suspend fun evaluate(script: String): String? {
+        if (!pageReady) return null
+        return suspendCancellableCoroutine { continuation ->
+            webView.evaluateJavascript(script) { result -> if (continuation.isActive) continuation.resume(result) }
+        }
+    }
+
     fun hide() {
         if (!attached) return
         windowManager.removeView(webView)
@@ -134,8 +165,8 @@ class PopupController(
         if (pageReady) {
             webView.evaluateJavascript(script, null)
         } else {
-            // Only the latest view matters, but styles must survive.
-            pendingScripts.removeAll { !it.startsWith("Popup.setStyles") }
+            // Only the latest view matters, but styles and actions must survive.
+            pendingScripts.removeAll { !it.startsWith("Popup.setStyles") && !it.startsWith("Popup.setActions") }
             pendingScripts += script
         }
     }
@@ -174,6 +205,7 @@ class PopupController(
             pageReady = false
             pendingScripts.clear()
             styles?.let { pendingScripts += it }
+            actions?.let { pendingScripts += it }
             webView = createWebView(view.context)
             if (wasShowing) callbacks.onClose()
             return true
@@ -197,6 +229,13 @@ class PopupController(
 
         @JavascriptInterface
         fun onOpenUrl(url: String) = post { callbacks.onOpenUrl(url) }
+
+        @JavascriptInterface
+        fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean) =
+            post { callbacks.onAddNote(index, noteData, withScreenshot) }
+
+        @JavascriptInterface
+        fun onPlayAudio(expression: String, reading: String) = post { callbacks.onPlayAudio(expression, reading) }
 
         private fun post(action: () -> Unit) {
             mainHandler.post(action)
