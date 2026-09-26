@@ -60,8 +60,20 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Collection import | A Yomitan dictionary collection export is scanned first and shown as a checklist with sizes; already installed dictionaries start unchecked; only checked ones are imported |
 | Orientation | Phones in both orientations; no separate tablet layouts. Rotation closes the popup and docks the bubble; the dock keeps its side and relative height |
 | Tests environment | Instrumented tests use a fake OCR engine and small test dictionaries so they need no network. Anki tests need AnkiDroid and are skipped without it; they create their note types through the AnkiDroid API. On the emulator AnkiDroid is reset to an empty collection without an account, after backing up the owner's collection (the customized Senren note type) to `testdata/` (not in git). CI runs them in phase 6 (GitHub Actions emulator runner, AnkiDroid installed from its releases) |
+| Single kanji entries | As in Poe: below the results, the other kanji of the longest match (not the first one, which the results already cover) get their own entries when a term dictionary has them as words; duplicates of shown entries are skipped. Lookup setting, on by default |
 | Kanji notes | Not planned (no ➕ on kanji entries); owner confirmed |
-| Later, not scheduled | GitHub Actions pipeline that publishes APKs, per-ABI/device builds, a glyph on the docked handle showing the target language. Interview before starting |
+| Anki templates after updates | No automatic migration of saved templates; "Fill in suggested templates" re-applies the defaults |
+| Max results | 32 by default (Yomitan's default), a setting with a performance warning for large values or no limit; measure rendering time before settling |
+| Missing dictionary files | Bundled dictionaries are reinstalled from the APK automatically, catalog dictionaries offer a one-tap re-download, file imports only warn; always with a warning |
+| Wording about the cloud OCR | User-facing texts and human docs (UI labels, README, docs/, About) do not mention Google Lens: the popup chip says "Cloud", hints say "cloud recognition". Code and ai/ notes keep technical names; NOTICE keeps the MIT attribution of chrome-lens-ocr in neutral wording |
+| CI (phase 6) | GitHub Actions. Every push to main: build, unit tests, lint, debug APK artifact (only the last two or three kept). Tag vX.Y.Z: release APKs per ABI (arm64-v8a, x86_64, armeabi-v7a if the native engine builds and tests pass for 32-bit) plus a universal APK, a full source archive including submodules, changelog, published to GitHub Releases. Instrumented emulator tests (AnkiDroid installed from its releases) on tags and on manual runs |
+| Signing | Debug key until the rest is done; then the owner creates a release key and stores it in GitHub Secrets |
+| Dock glyph (phase 6) | A characteristic letter of the target language on the docked handle: あ for Japanese, Я for Russian, and so on; none on the floating bubble |
+| About screen (phase 7) | Version, GitHub link (sources, bug reports), GPL-3.0, generated list of libraries with licenses, attribution of every installed dictionary from its index.json; no mention of the cloud OCR provider. "Share logs" button: a log file of this app only, with app version and device model, shared through the system share sheet |
+| Logs | Logs never contain recognized text, looked-up words, note contents or URLs with terms (redacted); only events, errors, timings, engine states |
+| Versioning | Semantic version from the git tag vX.Y.Z; versionCode = X·10000 + Y·100 + Z; 0.x until the first stable release; debug builds append the short commit hash |
+| Distribution | GitHub Releases, plus an in-app daily update check that offers the new release (can be turned off; works with Obtainium) |
+| More languages (phase 8) | English, Chinese, Korean, and a generic approach for alphabetic languages (Yomitan covers ~60 languages, 20 with deinflection rules). Needs per-language text processing and deinflection outside hoshidicts' Japanese rules, OCR script support (ML Kit covers Latin, Chinese, Devanagari, Japanese, Korean; the cloud OCR more), right-to-left hit testing for Arabic and Hebrew. Details per language in an interview before the phase |
 | Text without OCR | Phase 4 (accessibility node tree): a "text source" setting, OCR by default, "app text first" falls back to OCR |
 | Languages | Japanese only, but language is a parameter in every layer |
 | Extra features (phase 4) | Search screen, "Look up in Screenlate" in the text selection menu (`PROCESS_TEXT`), dictionary update check via `indexUrl` |
@@ -155,22 +167,21 @@ States: `Docked → Dragging → Floating(+Popup)`.
 2. **Dictionaries**: hoshidicts (submodule, CMake, JNI; ABIs arm64-v8a + x86_64); `DictionaryEngine`, `YomitanSorter`, Room registry, bundled + file import, catalog (Kolobok); dictionaries screen; renderer module and full cards in the popup, links with back navigation. Result: the full Poe scenario.
 3. **Anki + audio**: field mapping settings, ➕ short/long, crop editor, duplicates, audio sources.
 4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, import of a Yomitan database export, Yomitan settings backup (interview first).
-5. **Phone feedback** (first test on the owner's phone):
-   - bubble: small dock zone, smaller bubble with a size setting, smaller docked handle, Poe-like popup placement, bubble above the popup;
-   - OCR: on-demand band refinement for small text; after HTTP 429 or other refusals Lens pauses for a few minutes and ML Kit takes over; "app text first" also runs OCR and fills the areas the app text does not cover (images), instead of skipping OCR whenever the app exposes any text;
-   - Anki: Yomitan marker set and formats (fixes broken Senren cards), Yomitan auto-mapping + note type presets, templates per note type, 📖 after adding and for prevented duplicates (default prevent), per-field overwrite modes;
-   - audio: source dialog, test panel, source/clip choice on long press, auto-play debounce, volume;
-   - settings screens: tap outside clears focus, fields stay above the keyboard; search settings (scan length, max results, text replacements);
-   - UI language picker; search screen name and empty state;
-   - no popup when the lookup finds nothing (like Yomitan's auto-hide); text that is not worth looking up in the language is skipped (for Japanese: Latin text unless Japanese follows it, so "Tシャツ" works and "ayataka" does not); a per-language "look up romaji" switch, off by default;
+5. **Phone feedback** (first test on the owner's phone). Done: bubble and popup placement, bubble size, dock zone; OCR boost bands (off by default), app text + OCR, Lens pause after refusals; UI language picker; search screen name and empty state; no popup without results; Yomitan marker set, presets, templates per note type, 📖, overwrite modes, clip menu, volume. Remaining:
+   - broken-setup warnings: grey ➕ with a short reason and "Open Screenlate"; the same problems on the home screen; missing dictionaries restored or re-downloaded;
+   - one Settings screen (Bubble, Lookup, Dictionaries, Anki and audio, Appearance, Import from Yomitan, About); home keeps search, service status and warnings;
+   - Anki screen: source dialog with Save/Test, audio test panel; Yomitan's full audio source set (LanguagePod101, Jisho, Lingua Libre, Wiktionary, Android TTS) with Yomitan's defaults;
+   - lookup settings: scan length, max results (32, warning for more), text replacements (empty by default), romaji switch, single kanji entries (on); lookup-worthiness (Latin text skipped unless Japanese follows);
    - language audit: everything language-specific behind one `LanguageSupport` per language (lookup-worthiness, romanization, sentence rules, OCR recognizer, default audio sources, language-only Anki markers), with no Japanese assumptions elsewhere;
-   - not planned: Poe's dot that pops out of the handle when undocking (cosmetic, owner agreed to skip);
-   - Yomitan settings import; real Yomitan database export verified and import sped up;
-   - catalog: free dictionaries from the owner's collection;
-   - review of screen-size and device assumptions (density, font scale, landscape, tablets, cutouts, navigation modes).
-   - tests: unit tests for new logic as it lands; afterwards coverage of older untested parts (AnkiNotes with a fake AnkiDroid, AudioFinder with a mock server, CompositeOcr with fake engines, the page scripts note.js/anki.js/popup.js) and integration tests (popup WebView on a device, AnkiDroid round trip on the emulator).
-6. **Later** (interview first): APK publishing pipeline on GitHub, per-ABI builds, dock glyph per language.
-7. **Before a release** (not decided yet, interview first): About screen with licenses and dictionary attribution (CC BY-SA requires it in the app), release key and versioning, distribution channel (Google Play is unlikely to accept an accessibility service used this way plus the unofficial Lens endpoint; GitHub Releases or F-Droid-style channels), more target languages.
+   - Yomitan settings import (profile picker, summary); dictionary collection import with a checklist, verified with the owner's 2.7 GB export and sped up;
+   - catalog: free dictionaries and author-published frequency lists from the owner's collection;
+   - both orientations on phones: check popup sizes and insets in landscape; review density, font scale, cutouts, navigation modes;
+   - logs without user text (existing logs cleaned up);
+   - tests: unit tests for new logic as it lands; then coverage of older untested parts (AnkiNotes with a fake AnkiDroid, AudioFinder with a mock server, CompositeOcr with fake engines, the page scripts note.js/anki.js/popup.js) and instrumented tests (popup WebView, AnkiDroid round trip with a note type created through the API) with a fake OCR engine and small test dictionaries;
+   - not planned: Poe's dot that pops out of the handle when undocking (cosmetic, owner agreed to skip); kanji notes.
+6. **Build and publishing** (after phase 5): GitHub Actions per the CI row, per-ABI and universal APKs, source archive with submodules, dock glyph per language; release key set up with the owner at the end.
+7. **Release readiness**: About screen with licenses, dictionary attribution and "Share logs"; versioning from tags; in-app update check against GitHub Releases; wording pass that removes the cloud OCR provider from user-facing texts and docs (may be done earlier).
+8. **More languages** (interview per language first): English, Chinese, Korean, generic alphabetic languages.
 
 ## Documentation tasks
 
@@ -206,3 +217,5 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: small-text bands default to off (owner's call after the full-resolution screenshots showed Lens reads most small text; the real cause was "app text first" skipping OCR).
 - 2026-09-27: owner decisions for the rest of phase 5 — broken-setup warnings (grey ➕ with a short reason and an "Open Screenlate" button); AnkiDroid on the emulator reset after a backup of the owner's collection; frequency lists in the catalog when published by their authors; localhost audio sources imported as they are. Settings placement, test environment and kanji notes decided by the agent (see the decision table).
 - 2026-09-27: owner answers on the remaining points — one Settings screen; romaji for lookups everywhere (off by default); Yomitan's full audio source set; text replacements empty by default; checklist for collection imports; both orientations without per-orientation memory (rotation docks); no kanji notes.
+- 2026-09-27: owner request — single kanji entries of the matched word below the results, as in Poe (setting, on by default).
+- 2026-09-27: owner answers for phases 5–8 — templates re-applied by the button only; max results 32 with a setting; missing dictionaries restored or re-downloaded with a warning; no mention of Google Lens in user-facing texts and docs; CI, signing, ABIs, dock glyph, About screen, logs, versioning, distribution and languages as in the decision table.

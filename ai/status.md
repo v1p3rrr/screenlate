@@ -26,7 +26,15 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 - Later on 2026-09-26: copy button on entries; glossaries passed as JSON text (3–4× faster lookups for long entries); lint clean (API 30 fixes); dark theme, audio playback and clipboard checked on the emulator.
 
+### 2026-09-27
+
+- First test on the owner's phone produced phase 5 (see the plan). Done so far: bubble/popup placement (bubble above the popup, dock only at the edge, size setting), OCR boost bands (off by default), app text + OCR merge with per-paragraph source labels, Lens pause after 429/403, UI language picker with generated locale config, search screen rename and empty state, no popup without results, Anki export in Yomitan's marker format with Senren/Lapis presets, templates per note type, 📖 for added notes and prevented duplicates (default prevent), per-field overwrite modes, audio clip menu on long press and volume, crash fix for missing AnkiDroid note types.
+- Owner interview for the rest of phases 5–8 is complete; decisions are in the plan's table and changelog. CLAUDE.md got the working rules agreed in this session.
+- The emulator's AnkiDroid was reset to a local collection without an account after backing up the owner's collection.
+
 ## Next
+
+- Continue phase 5 with the remaining items listed in the plan (warnings, Settings screen, audio dialog and sources, lookup settings and language audit, Yomitan settings import, collection import checklist and speed, catalog, orientation review, log cleanup, tests), then phases 6–7.
 
 - Yomitan settings backup: interview the owner about what to import (dictionary order, Anki templates, audio sources, scan settings) before planning.
 - Verify the Yomitan collection import with a real export from the owner.
