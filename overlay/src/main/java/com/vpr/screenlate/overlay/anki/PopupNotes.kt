@@ -66,6 +66,8 @@ class PopupNotes(
     private var duplicateJob: Job? = null
     private var player: MediaPlayer? = null
     private var lastAutoPlayed: Pair<String, String>? = null
+    private var autoPlayJob: Job? = null
+    private var pendingAutoPlay: Pair<String, String>? = null
 
     /** Shows or hides the entry buttons according to the current settings. Call before showing results. */
     suspend fun refreshActions() {
@@ -82,16 +84,35 @@ class PopupNotes(
             delay(DUPLICATE_CHECK_DELAY_MS)
             markDuplicates()
         }
-        if (firstTerm != null && firstTerm != lastAutoPlayed) {
-            lastAutoPlayed = firstTerm
-            scope.launch {
-                if (audioSettings.current().autoPlay) play(firstTerm.first, firstTerm.second)
+        // Auto-play waits until the aim rests on a word, so words passed on the way stay silent.
+        autoPlayJob?.cancel()
+        pendingAutoPlay = firstTerm?.takeIf { it != lastAutoPlayed }
+        if (pendingAutoPlay != null) {
+            autoPlayJob = scope.launch {
+                delay(AUTO_PLAY_DELAY_MS)
+                autoPlayNow()
             }
         }
     }
 
+    /** The finger was lifted: a pending auto-play starts without waiting. */
+    fun onAimSettled() {
+        if (pendingAutoPlay == null) return
+        autoPlayJob?.cancel()
+        autoPlayJob = scope.launch { autoPlayNow() }
+    }
+
+    private suspend fun autoPlayNow() {
+        val term = pendingAutoPlay ?: return
+        pendingAutoPlay = null
+        lastAutoPlayed = term
+        if (audioSettings.current().autoPlay) play(term.first, term.second)
+    }
+
     fun onClosed() {
         duplicateJob?.cancel()
+        autoPlayJob?.cancel()
+        pendingAutoPlay = null
         lastAutoPlayed = null
     }
 
@@ -251,6 +272,7 @@ class PopupNotes(
     private companion object {
         const val TAG = "PopupNotes"
         const val DUPLICATE_CHECK_DELAY_MS = 300L
+        const val AUTO_PLAY_DELAY_MS = 500L
         const val SCREENSHOT_QUALITY = 85
         val IMG_SRC = Regex("""src="([^"]+)"""")
     }

@@ -149,11 +149,12 @@ States: `Docked → Dragging → Floating(+Popup)`.
 4. **Polish**: search screen, `PROCESS_TEXT`, dictionary update check, frequency dictionary import and sort dictionary choice, kanji dictionaries, accessibility-text mode, hide in selected apps, import of a Yomitan database export, Yomitan settings backup (interview first).
 5. **Phone feedback** (first test on the owner's phone):
    - bubble: small dock zone, smaller bubble with a size setting, smaller docked handle, Poe-like popup placement, bubble above the popup;
-   - OCR: on-demand band refinement for small text;
+   - OCR: on-demand band refinement for small text; after HTTP 429 or other refusals Lens pauses for a few minutes and ML Kit takes over;
    - Anki: Yomitan marker set and formats (fixes broken Senren cards), Yomitan auto-mapping + note type presets, templates per note type, 📖 after adding and for prevented duplicates (default prevent), per-field overwrite modes;
    - audio: source dialog, test panel, source/clip choice on long press, auto-play debounce, volume;
    - settings screens: tap outside clears focus, fields stay above the keyboard; search settings (scan length, max results, text replacements);
    - UI language picker; search screen name and empty state;
+   - not planned: Poe's dot that pops out of the handle when undocking (cosmetic, owner agreed to skip);
    - Yomitan settings import; real Yomitan database export verified and import sped up;
    - catalog: free dictionaries from the owner's collection;
    - review of screen-size and device assumptions (density, font scale, landscape, tablets, cutouts, navigation modes).

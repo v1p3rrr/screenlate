@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import javax.inject.Inject
@@ -31,6 +32,17 @@ enum class TextSource {
     APP_TEXT,
 }
 
+/** Extra Lens requests for small text, which Lens skips in a full-screen image but reads in a crop. */
+enum class SmallTextMode {
+    OFF,
+
+    /** A band of the screen is recognized again when the aim rests where nothing was found. */
+    ON_DEMAND,
+
+    /** All bands are recognized with every scan. */
+    ALWAYS,
+}
+
 /**
  * @property dockY vertical position of the docked bubble as a fraction of the screen height.
  * @property hiddenPackages apps in which the bubble is hidden.
@@ -44,7 +56,15 @@ data class OverlaySettings(
     val haptics: Boolean = false,
     val hiddenPackages: Set<String> = emptySet(),
     val textSource: TextSource = TextSource.SCREEN,
-)
+    val bubbleSizeDp: Int = DEFAULT_BUBBLE_DP,
+    val smallText: SmallTextMode = SmallTextMode.ON_DEMAND,
+) {
+    companion object {
+        const val DEFAULT_BUBBLE_DP = 48
+        const val MIN_BUBBLE_DP = 36
+        const val MAX_BUBBLE_DP = 64
+    }
+}
 
 @Singleton
 class OverlaySettingsRepository @Inject constructor(
@@ -64,6 +84,10 @@ class OverlaySettingsRepository @Inject constructor(
             hiddenPackages = prefs[HIDDEN_PACKAGES] ?: defaults.hiddenPackages,
             textSource = prefs[TEXT_SOURCE]?.let { stored -> TextSource.entries.firstOrNull { it.name == stored } }
                 ?: defaults.textSource,
+            bubbleSizeDp = (prefs[BUBBLE_SIZE] ?: defaults.bubbleSizeDp)
+                .coerceIn(OverlaySettings.MIN_BUBBLE_DP, OverlaySettings.MAX_BUBBLE_DP),
+            smallText = prefs[SMALL_TEXT]?.let { stored -> SmallTextMode.entries.firstOrNull { it.name == stored } }
+                ?: defaults.smallText,
         )
     }
 
@@ -94,6 +118,14 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[TEXT_SOURCE] = source.name }
     }
 
+    suspend fun setBubbleSize(dp: Int) {
+        dataStore.edit { it[BUBBLE_SIZE] = dp.coerceIn(OverlaySettings.MIN_BUBBLE_DP, OverlaySettings.MAX_BUBBLE_DP) }
+    }
+
+    suspend fun setSmallText(mode: SmallTextMode) {
+        dataStore.edit { it[SMALL_TEXT] = mode.name }
+    }
+
     suspend fun setDockSide(side: DockSide) {
         dataStore.edit { it[DOCK_SIDE] = side.name }
     }
@@ -114,5 +146,7 @@ class OverlaySettingsRepository @Inject constructor(
         val HAPTICS = booleanPreferencesKey("overlay_haptics")
         val HIDDEN_PACKAGES = stringSetPreferencesKey("overlay_hidden_packages")
         val TEXT_SOURCE = stringPreferencesKey("overlay_text_source")
+        val BUBBLE_SIZE = intPreferencesKey("overlay_bubble_size_dp")
+        val SMALL_TEXT = stringPreferencesKey("overlay_small_text")
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -53,6 +55,7 @@ import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -79,6 +82,10 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     fun setTextSource(source: TextSource) = launch { repository.setTextSource(source) }
 
     fun setHidden(packageName: String, hidden: Boolean) = launch { repository.setHidden(packageName, hidden) }
+
+    fun setBubbleSize(dp: Int) = launch { repository.setBubbleSize(dp) }
+
+    fun setSmallText(mode: SmallTextMode) = launch { repository.setSmallText(mode) }
 
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
@@ -158,6 +165,27 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    Text(stringResource(R.string.bubble_small_text), style = MaterialTheme.typography.titleMedium)
+                    Segments(
+                        options = SmallTextMode.entries,
+                        selected = settings.smallText,
+                        label = {
+                            stringResource(
+                                when (it) {
+                                    SmallTextMode.OFF -> R.string.bubble_small_text_off
+                                    SmallTextMode.ON_DEMAND -> R.string.bubble_small_text_on_demand
+                                    SmallTextMode.ALWAYS -> R.string.bubble_small_text_always
+                                },
+                            )
+                        },
+                        onSelect = viewModel::setSmallText,
+                    )
+                    Text(
+                        stringResource(R.string.bubble_small_text_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
                     SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -217,6 +245,25 @@ private suspend fun launchableApps(context: Context): List<LaunchableApp> = with
 
 private const val ICON_PX = 96
 
+/** The slider moves in steps; the setting is written only when the finger is lifted. */
+@Composable
+private fun BubbleSizeRow(sizeDp: Int, onChange: (Int) -> Unit) {
+    var value by remember(sizeDp) { mutableStateOf(sizeDp.toFloat()) }
+    Column {
+        Text(
+            stringResource(R.string.bubble_size, value.toInt()),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Slider(
+            value = value,
+            onValueChange = { value = it },
+            onValueChangeFinished = { onChange(value.toInt()) },
+            valueRange = OverlaySettings.MIN_BUBBLE_DP.toFloat()..OverlaySettings.MAX_BUBBLE_DP.toFloat(),
+            steps = (OverlaySettings.MAX_BUBBLE_DP - OverlaySettings.MIN_BUBBLE_DP) / 4 - 1,
+        )
+    }
+}
+
 @Composable
 private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -234,7 +281,7 @@ private fun <T> Segments(options: List<T>, selected: T, label: @Composable (T) -
                 selected = option == selected,
                 onClick = { onSelect(option) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-            ) { Text(label(option)) }
+            ) { Text(label(option), maxLines = 1, overflow = TextOverflow.Ellipsis) }
         }
     }
 }

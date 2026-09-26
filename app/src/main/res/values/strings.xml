@@ -132,4 +132,10 @@
     <string name="bubble_text_source_hint">App text is exact and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
+    <string name="bubble_small_text">Small text</string>
+    <string name="bubble_small_text_off">Off</string>
+    <string name="bubble_small_text_on_demand">On demand</string>
+    <string name="bubble_small_text_always">Always</string>
+    <string name="bubble_small_text_hint">Google Lens skips small text on a full-screen image. On demand, the band of the screen under the aim is recognized again when the aim rests where nothing was found; Always does it for the whole screen with every scan (more traffic).</string>
+    <string name="bubble_size">Bubble size: %1$d dp</string>
 </resources>

@@ -101,7 +101,7 @@ class OverlayController(
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val density = service.resources.displayMetrics.density
-    private val bubbleSize = (BUBBLE_DP * density).roundToInt()
+    private var bubbleSize = (OverlaySettings.DEFAULT_BUBBLE_DP * density).roundToInt()
     private val touchSlop = ViewConfiguration.get(service).scaledTouchSlop
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -186,6 +186,8 @@ class OverlayController(
         val previous = settings
         settings = new
         val show = shouldShowBubble()
+        val size = (new.bubbleSizeDp * density).roundToInt()
+        if (size != bubbleSize) resizeBubble(size)
         if (show && !attached) attachWindows()
         if (!show && attached) {
             resetScan()
@@ -200,8 +202,10 @@ class OverlayController(
         updateAimVisuals()
     }
 
+    /** Window order from bottom to top: highlight layer, popup, bubble; the bubble must never go under the popup. */
     private fun attachWindows() {
         windowManager.addView(layerView, layerParams)
+        popup.attach()
         placeDocked()
         windowManager.addView(bubbleView, bubbleParams)
         attached = true
@@ -210,8 +214,17 @@ class OverlayController(
     private fun detachWindows() {
         if (!attached) return
         windowManager.removeView(bubbleView)
+        popup.detach()
         windowManager.removeView(layerView)
         attached = false
+    }
+
+    private fun resizeBubble(size: Int) {
+        val (cx, cy) = bubbleCenter()
+        bubbleSize = size
+        bubbleParams.width = size
+        bubbleParams.height = size
+        if (state == State.DOCKED) placeDocked() else moveBubbleTo(cx, cy)
     }
 
     private fun screenBounds(): Box {
@@ -324,14 +337,17 @@ class OverlayController(
         onAim(x, y)
     }
 
-    private fun endDrag() {
-        val (cx, _) = bubbleCenter()
+    /** Docks only when the finger is lifted at the very edge, so words next to the edge stay reachable. */
+    private fun endDrag(fingerX: Float) {
         val screen = screenBounds()
         val dockZone = DOCK_ZONE_DP * density
         when {
-            cx >= screen.right - dockZone -> dock(DockSide.RIGHT, atCurrentHeight = true)
-            cx <= screen.left + dockZone -> dock(DockSide.LEFT, atCurrentHeight = true)
-            else -> state = State.FLOATING
+            fingerX >= screen.right - dockZone -> dock(DockSide.RIGHT, atCurrentHeight = true)
+            fingerX <= screen.left + dockZone -> dock(DockSide.LEFT, atCurrentHeight = true)
+            else -> {
+                state = State.FLOATING
+                popupNotes.onAimSettled()
+            }
         }
     }
 
@@ -419,7 +435,7 @@ class OverlayController(
                         val (_, cy) = bubbleCenter()
                         scope.launch { overlaySettings.setDock(settings.dockSide, cy / screenBounds().height) }
                     }
-                    else -> endDrag()
+                    else -> endDrag(event.rawX)
                 }
             }
             return true
@@ -735,10 +751,9 @@ class OverlayController(
 
     private companion object {
         const val TAG = "OverlayController"
-        const val BUBBLE_DP = 56f
         const val AIM_GAP_DP = 20f
-        const val DOCK_VISIBLE_FRACTION = 0.6f
-        const val DOCK_ZONE_DP = 32f
+        const val DOCK_VISIBLE_FRACTION = 0.4f
+        const val DOCK_ZONE_DP = 12f
         const val UNDOCK_DISTANCE_DP = 64f
         const val HIT_TOLERANCE_DP = 12f
         const val MAX_POPUP_DP = 420f

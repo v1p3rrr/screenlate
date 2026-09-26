@@ -127,4 +127,10 @@
     <string name="bubble_text_source_hint">Текст приложения точный и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
+    <string name="bubble_small_text">Мелкий текст</string>
+    <string name="bubble_small_text_off">Выкл</string>
+    <string name="bubble_small_text_on_demand">По требованию</string>
+    <string name="bubble_small_text_always">Всегда</string>
+    <string name="bubble_small_text_hint">Google Lens пропускает мелкий текст на снимке всего экрана. «По требованию» — полоса экрана под прицелом распознаётся ещё раз, когда прицел задержался там, где ничего не найдено; «Всегда» — весь экран полосами при каждом скане (больше трафика).</string>
+    <string name="bubble_size">Размер кружка: %1$d dp</string>
 </resources>
