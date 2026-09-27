@@ -125,6 +125,8 @@ const Popup = (() => {
         const fragment = document.createDocumentFragment();
         results.forEach((result, index) => fragment.append(entry(result, index, state.labels || {})));
         content.replaceChildren(fragment);
+        // Layout is known only once the entries are in the document.
+        content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
     }
 
     function entry(result, index, labels) {
@@ -491,7 +493,7 @@ const Popup = (() => {
     function dictionarySection(dictionary, glossaries) {
         const section = element('section', 'dictionary');
         section.dataset.dictionary = dictionary;
-        // A chip at the start of the first definition, as in Yomitan, instead of a line of its own.
+        // A chip in the first definition, as in Yomitan, instead of a line of its own; placed after drawing.
         const name = element('span', 'dictionary-name', shortName(dictionary));
         name.title = dictionary;
         const container = glossaries.length > 1 ? element('ol', 'definitions') : section;
@@ -516,6 +518,44 @@ const Popup = (() => {
         }
         if (container !== section) section.append(container);
         return section;
+    }
+
+    const BLOCK_DISPLAYS = new Set(['block', 'list-item', 'flow-root']);
+    const INLINE_DISPLAYS = new Set(['inline', 'contents', '']);
+
+    /**
+     * Moves a dictionary chip to where the definition's first line of text starts: down through blocks, list items
+     * and inline wrappers of blocks, so a list that opens the definition keeps its marker in front of the chip
+     * instead of under it. The chip stays outside inline elements that start with text, such as a tag.
+     */
+    function placeDictionaryName(name) {
+        let container = name.parentElement;
+        name.remove();
+        for (;;) {
+            const first = firstVisibleChild(container);
+            if (opensBlock(first)) {
+                container = first;
+                continue;
+            }
+            container.insertBefore(name, first);
+            return;
+        }
+    }
+
+    function opensBlock(node) {
+        if (node?.nodeType !== Node.ELEMENT_NODE) return false;
+        const display = getComputedStyle(node).display;
+        if (BLOCK_DISPLAYS.has(display)) return true;
+        return INLINE_DISPLAYS.has(display) && opensBlock(firstVisibleChild(node));
+    }
+
+    function firstVisibleChild(node) {
+        for (const child of node.childNodes) {
+            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) return child;
+            if (child.nodeType !== Node.ELEMENT_NODE || child.tagName === 'STYLE' || child.tagName === 'SCRIPT') continue;
+            if (getComputedStyle(child).display !== 'none') return child;
+        }
+        return null;
     }
 
     /** Glossaries arrive as JSON text (see dictionary.api.model.Glossary). */

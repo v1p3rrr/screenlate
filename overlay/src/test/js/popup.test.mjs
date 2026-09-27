@@ -50,8 +50,9 @@ test('renders the header and one card per result', () => {
     const name = content.querySelector('.dictionary-name');
     assert.equal(name.textContent, 'Dict');
     assert.equal(name.title, 'Dict [1]');
-    // The dictionary chip opens the first definition instead of taking a line of its own.
-    assert.equal(name.parentElement.className, 'definition');
+    // The dictionary chip opens the first line of the definition instead of taking a line of its own.
+    assert.equal(name.parentElement.className, 'definition-body');
+    assert.equal(name.parentElement.firstChild, name);
     assert.match(content.querySelector('.definition-body').textContent, /meaning/);
     assert.equal(content.querySelectorAll('.action-close').length, 0);
 });
@@ -255,4 +256,20 @@ test('a label replaces the rule name and a new view closes the panel', () => {
     assert.equal(page.document.getElementById('info').hidden, false);
     Popup.render(state());
     assert.equal(page.document.getElementById('info').hidden, true);
+});
+
+test('the dictionary chip goes after a list marker and before tags, never inside a tag', () => {
+    const list = {
+        type: 'structured-content',
+        content: { tag: 'ul', content: [{ tag: 'li', content: [{ tag: 'span', content: 'aux' }, ' will not'] }] },
+    };
+    const glossary = (dictionary, content, definitionTags = '') =>
+        ({ matched: 'a', term: { expression: 'a', reading: 'a', glossaries: [{ dictionary, definitionTags, content: JSON.stringify(content) }] } });
+    Popup.render(state({ results: [glossary('List', [list]), glossary('Tagged', ['one'], 'n')] }));
+    const [listed, tagged] = content.querySelectorAll('.dictionary-name');
+    // Inside the first list item, so the item's marker stays in front of it.
+    assert.equal(listed.closest('li').textContent, 'Listaux will not');
+    assert.equal(listed.nextElementSibling.textContent, 'aux');
+    // Definition tags already start a line of text: the chip goes in front of them.
+    assert.equal(tagged.nextElementSibling.className, 'tags');
 });

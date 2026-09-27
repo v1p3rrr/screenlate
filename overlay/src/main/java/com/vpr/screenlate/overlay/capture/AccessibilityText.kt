@@ -81,7 +81,7 @@ class AccessibilityText(private val service: AccessibilityService) {
             current += character to box
         }
         if (current.isNotEmpty()) lines += current
-        if (lines.isEmpty()) return null
+        if (lines.isEmpty() || sharesBoxes(lines.flatten().map { it.second })) return null
         return OcrParagraph(
             lines.map { characters ->
                 val box = Box.unionOf(characters.map { it.second })!!
@@ -100,4 +100,15 @@ class AccessibilityText(private val service: AccessibilityService) {
         const val MAX_DEPTH = 64
         const val MAX_CHARACTERS = 2000
     }
+}
+
+/**
+ * True when most characters report the same box as the one before them. Some views (a WebView without laid-out text
+ * runs, for one) answer with the whole node's bounds for every character, which cannot place the aim on a character;
+ * such text is left to OCR.
+ */
+internal fun sharesBoxes(boxes: List<Box>): Boolean {
+    if (boxes.size < 2) return false
+    val repeated = boxes.zipWithNext().count { (previous, box) -> previous == box }
+    return repeated * 2 >= boxes.size - 1
 }

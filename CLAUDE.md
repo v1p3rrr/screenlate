@@ -12,7 +12,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
    - `references.md` — upstream projects, licenses, dictionary URLs;
    - `dictionary-engine.md` — hoshidicts API, JNI design, bundled dictionary URLs;
    - `webview-fonts.md` — CJK glyph forms, `local()` font names and checks in the lookup page.
-3. Human-facing docs: `docs/architecture.md` (modules and data flow) and `docs/usage.md`; keep them current when behavior changes.
+3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
 
 ## Working rules
 
@@ -34,7 +34,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
 
 ## Architecture rules
 
-- Modules and responsibilities are listed in the README and the plan. Keep dependencies pointing inward: `app`/`overlay` → `core:*` / `dictionary:api`; engine and renderer modules implement interfaces from `dictionary:api`.
+- Modules and responsibilities are listed in `docs/development.md`, `docs/architecture.md` and the plan. Keep dependencies pointing inward: `app`/`overlay` → `core:*` / `dictionary:api`; engine and renderer modules implement interfaces from `dictionary:api`.
 - GPL-3.0 third-party code lives only in `dictionary:engine-hoshidicts` and `dictionary:render-yomitan`. Nothing outside them may depend on their internals. Porting Yomitan (GPL) logic into other modules counts as GPL code: put derived code in those two modules, or write an own implementation from the behavior or from permissively licensed sources (e.g. Mozc's romaji table, BSD).
 - Shared Gradle configuration goes into convention plugins in `build-logic/`, not copied between modules.
 - DI: Hilt. App data: Room. Preferences: DataStore. No annotation processors besides KSP.

@@ -424,10 +424,10 @@ button.inflection-step {
     margin-top: 8px;
 }
 
-/* Floats at the start of the first definition, so the text runs on beside it. */
+/* Starts the first line of the first definition (see placeDictionaryName), so it takes no line of its own. */
 .dictionary-name {
-    float: left;
-    margin: 0.2em 6px 0 0;
+    display: inline-block;
+    margin: 0 6px 0 0;
     padding: 0 5px;
     border-radius: 4px;
     background: var(--tag-dictionary-background-color, var(--dictionary-bg));
@@ -435,12 +435,6 @@ button.inflection-step {
     font-size: 0.72em;
     font-weight: 600;
     line-height: 1.6;
-}
-
-.dictionary::after {
-    content: '';
-    display: block;
-    clear: both;
 }
 
 .definitions {
