@@ -61,12 +61,21 @@ private class HttpStatusException(val code: Int) : IOException("HTTP $code")
 
 /** Finds word audio by trying the configured sources in order. Results are cached for the process lifetime. */
 @Singleton
-class AudioFinder @Inject constructor(
-    @ApplicationContext context: Context,
+class AudioFinder internal constructor(
+    private val directory: File,
     private val httpClient: OkHttpClient,
     private val settings: AudioSettingsRepository,
 ) {
-    private val directory = File(context.cacheDir, "audio").apply { mkdirs() }
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        httpClient: OkHttpClient,
+        settings: AudioSettingsRepository,
+    ) : this(File(context.cacheDir, "audio"), httpClient, settings)
+
+    init {
+        directory.mkdirs()
+    }
     private val clipCache = mutableMapOf<Pair<String, String>, AudioClip?>()
     private val failures = ConcurrentHashMap<AudioSource, AudioSourceFailure>()
     private val json = Json { ignoreUnknownKeys = true }

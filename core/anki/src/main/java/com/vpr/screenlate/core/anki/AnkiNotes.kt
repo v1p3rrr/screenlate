@@ -50,7 +50,7 @@ sealed interface AnkiStatus {
 /** Builds notes from field templates and adds them to AnkiDroid with the configured duplicate handling. */
 @Singleton
 class AnkiNotes @Inject constructor(
-    private val anki: AnkiDroid,
+    private val anki: AnkiBackend,
     private val settingsRepository: AnkiSettingsRepository,
 ) {
     private val fieldCache = mutableMapOf<Long, List<String>>()
@@ -163,7 +163,10 @@ class AnkiNotes @Inject constructor(
         val modelId = settings.modelId ?: return emptyList()
         val deckId = settings.deckId ?: return emptyList()
         val firstFieldName = fieldNames(modelId).firstOrNull() ?: return emptyList()
-        val firstField = FieldTemplate.render(settings.fields[firstFieldName].orEmpty(), values)
+        val template = settings.fields[firstFieldName].orEmpty()
+        // As when adding: a known marker without a value is empty, not a literal "{marker}" to search for.
+        val missing = FieldTemplate.markersIn(template).filter { FieldTemplate.isKnown(it) && it !in values }
+        val firstField = FieldTemplate.render(template, values + missing.associateWith { "" })
         if (firstField.isBlank()) return emptyList()
         val models = if (settings.duplicateAllModels) anki.models().map { it.id } else listOf(modelId)
         return anki.findDuplicates(firstField, models, settings.duplicateScope, deckId)

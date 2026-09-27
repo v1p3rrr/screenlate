@@ -43,16 +43,21 @@ class LensPausedException : IOException("Lens refused recent requests")
  * page as the [OcrUpdate.Final]. Without network or after a Lens failure the ML Kit page becomes final.
  */
 @Singleton
-class CompositeOcr @Inject constructor(
-    private val lens: LensOcrEngine,
-    private val mlKit: MlKitOcrEngine,
-    private val networkStatus: NetworkStatus,
+class CompositeOcr internal constructor(
+    private val lens: OcrEngine,
+    private val mlKit: OcrEngine,
+    private val isOnline: () -> Boolean,
+    private val clock: () -> Long = System::currentTimeMillis,
 ) {
+    @Inject
+    constructor(lens: LensOcrEngine, mlKit: MlKitOcrEngine, networkStatus: NetworkStatus) :
+        this(lens, mlKit, networkStatus::isOnline)
+
     fun recognize(image: Bitmap, language: Language): Flow<OcrUpdate> = channelFlow {
         val emitter = UpdateEmitter(this)
         val draft = async { runCatching { mlKit.recognize(image, language) } }
 
-        if (!networkStatus.isOnline()) {
+        if (!isOnline()) {
             emitter.emitFinal(OcrUpdate.Final(draft.await().getOrThrow(), OfflineException()))
             return@channelFlow
         }
@@ -78,7 +83,7 @@ class CompositeOcr @Inject constructor(
      * the crop only adds to a result the caller already has.
      */
     suspend fun recognizeRegion(image: Bitmap, language: Language): OcrPage? {
-        if (!networkStatus.isOnline() || lensPaused()) return null
+        if (!isOnline() || lensPaused()) return null
         return runCatching { withTimeout(LENS_TIMEOUT) { lens.recognize(image, language) } }
             .onFailure(::noteLensFailure)
             .getOrNull()
@@ -87,12 +92,12 @@ class CompositeOcr @Inject constructor(
     @Volatile
     private var lensPausedUntil = 0L
 
-    private fun lensPaused(): Boolean = System.currentTimeMillis() < lensPausedUntil
+    private fun lensPaused(): Boolean = clock() < lensPausedUntil
 
     private fun noteLensFailure(error: Throwable) {
         if (error is CancellationException) return
         if (error is LensHttpException && error.refused) {
-            lensPausedUntil = System.currentTimeMillis() + LENS_PAUSE.inWholeMilliseconds
+            lensPausedUntil = clock() + LENS_PAUSE.inWholeMilliseconds
             Log.w(TAG, "Lens refused a request (HTTP ${error.code}); using on-device OCR for $LENS_PAUSE")
         }
     }

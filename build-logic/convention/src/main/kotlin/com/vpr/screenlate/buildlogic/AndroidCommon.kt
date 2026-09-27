@@ -22,6 +22,8 @@ internal fun Project.configureAndroidCommon(extension: CommonExtension) {
     extension.ndkVersion = ScreenlateSdk.NDK
     extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
     extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+    // android.util.Log and similar stubs return defaults in unit tests instead of throwing.
+    extension.testOptions.unitTests.isReturnDefaultValues = true
 
     dependencies {
         add("testImplementation", libs.library("junit"))

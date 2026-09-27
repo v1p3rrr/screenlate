@@ -32,10 +32,10 @@ data class ExistingNote(val id: Long, val modelId: Long, val fields: List<String
  * Needs the `com.ichi2.anki.permission.READ_WRITE_DATABASE` runtime permission, which only an activity can request.
  */
 @Singleton
-class AnkiDroid @Inject constructor(@ApplicationContext private val context: Context) {
+class AnkiDroid @Inject constructor(@ApplicationContext private val context: Context) : AnkiBackend {
     private val api by lazy { AddContentApi(context) }
 
-    fun availability(): AnkiAvailability = when {
+    override fun availability(): AnkiAvailability = when {
         AddContentApi.getAnkiDroidPackageName(context) == null -> AnkiAvailability.NOT_INSTALLED
         ContextCompat.checkSelfPermission(context, PERMISSION) != PackageManager.PERMISSION_GRANTED ->
             AnkiAvailability.NO_PERMISSION
@@ -45,22 +45,20 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
     // Queries return empty results instead of throwing: AnkiDroid's provider throws for ids that no longer exist,
     // e.g. after the user switched collections or deleted a note type.
 
-    suspend fun decks(): List<AnkiDeck> = query {
+    override suspend fun decks(): List<AnkiDeck> = query {
         api.deckList.orEmpty().map { (id, name) -> AnkiDeck(id, name) }.sortedBy { it.name.lowercase() }
     }
 
-    suspend fun models(): List<AnkiModel> = query {
+    override suspend fun models(): List<AnkiModel> = query {
         api.modelList.orEmpty().map { (id, name) -> AnkiModel(id, name) }.sortedBy { it.name.lowercase() }
     }
 
-    /** Field names of a note type; empty when it does not exist. */
-    suspend fun fields(modelId: Long): List<String> = query { api.getFieldList(modelId)?.toList().orEmpty() }
+    override suspend fun fields(modelId: Long): List<String> = query { api.getFieldList(modelId)?.toList().orEmpty() }
 
-    /** Adds a note; returns its id, or null if AnkiDroid refused it. */
-    suspend fun addNote(modelId: Long, deckId: Long, fields: List<String>, tags: Set<String>): Long? =
+    override suspend fun addNote(modelId: Long, deckId: Long, fields: List<String>, tags: Set<String>): Long? =
         io { api.addNote(modelId, deckId, fields.toTypedArray(), tags) }
 
-    suspend fun updateNote(noteId: Long, fields: List<String>, tags: Set<String>): Boolean = io {
+    override suspend fun updateNote(noteId: Long, fields: List<String>, tags: Set<String>): Boolean = io {
         api.updateNoteFields(noteId, fields.toTypedArray()) && api.updateNoteTags(noteId, tags)
     }
 
@@ -68,7 +66,7 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
      * Notes whose first field equals [firstField] (AnkiDroid compares the field checksum, so HTML must match
      * exactly), limited to [modelIds] and to the decks of [scope] relative to [deckId].
      */
-    suspend fun findDuplicates(
+    override suspend fun findDuplicates(
         firstField: String,
         modelIds: List<Long>,
         scope: DuplicateScope,
@@ -86,7 +84,7 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
      * Copies [file] into AnkiDroid's media folder. Returns the markup AnkiDroid produced for it
      * (`<img src="…">` or `[sound:…]`), or null on failure.
      */
-    suspend fun addMedia(file: File, preferredName: String, kind: MediaKind): String? = io {
+    override suspend fun addMedia(file: File, preferredName: String, kind: MediaKind): String? = io {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}$AUTHORITY_SUFFIX", file)
         val ankiPackage = AddContentApi.getAnkiDroidPackageName(context) ?: return@io null
         context.grantUriPermission(ankiPackage, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
