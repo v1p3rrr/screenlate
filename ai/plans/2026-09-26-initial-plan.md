@@ -241,3 +241,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: owner picked X2 (lifted word with the aim dot, W1 style) as the final icon, on the white background, with more contrast in the grey rows; contrast steps Y1–Y3 shown for the exact level.
 - 2026-09-27: owner decisions for the final icon — grey rows at 32%; the debug build gets a badge on the icon, large enough to notice at small sizes; README shows the icon without a wordmark. The Quick Settings tile and import notification icons need a simpler explanation with pictures (asked again).
 - 2026-09-27: owner decisions — the Quick Settings tile and import notification icons both become the icon's silhouette; the debug badge (dark circle with an amber bug, a third of the icon wide) confirmed.
+- 2026-09-27: owner decision — the app icon stays on the same branch as the faster collection import (`claude/elegant-allen-xmu3fx`); both are checked and merged together.
