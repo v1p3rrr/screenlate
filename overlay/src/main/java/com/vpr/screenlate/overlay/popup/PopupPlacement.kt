@@ -10,8 +10,9 @@ object PopupPlacement {
     private class Candidate(val side: Side, val space: Float, val box: Box?, val full: Boolean)
 
     /**
-     * Preferred popup size. Above or below the word the height may shrink to the free space, down to [minHeight];
-     * beside it the width may shrink, down to [minWidth]. [besideFirst] tries the sides for horizontal text too.
+     * Preferred popup size. Above or below the word the popup is [height] tall and may shrink to the free space, down
+     * to [minHeight]; beside it the popup is [besideHeight] tall and its width may shrink, down to [minWidth].
+     * [besideFirst] tries the sides for horizontal text too.
      */
     data class Size(
         val width: Float,
@@ -19,12 +20,14 @@ object PopupPlacement {
         val minHeight: Float,
         val minWidth: Float = width,
         val besideFirst: Boolean = false,
+        val besideHeight: Float = height,
     )
 
     /**
-     * About a third of a portrait screen, above or below the word. A landscape screen is so low that a strip above or
-     * below holds hardly one entry, so there the popup goes beside the word, up to half the width and nearly the
-     * whole height.
+     * About a third of a portrait screen, above or below the word. Vertical text in portrait goes beside its column
+     * when a side has room for at least a narrow popup, which is taller to make up for the width. A landscape screen
+     * is so low that a strip above or below holds hardly one entry, so there the popup goes beside the word, up to
+     * half the width and nearly the whole height.
      *
      * @param screen usable screen area in pixels; [density] converts dp to pixels.
      */
@@ -43,11 +46,19 @@ object PopupPlacement {
         }
         val width = minOf(screen.width * WIDTH_FRACTION, maxWidth)
         val height = screen.height * HEIGHT_FRACTION
-        return Size(width, height, minHeight.coerceAtMost(height))
+        return Size(
+            width = width,
+            height = height,
+            minHeight = minHeight.coerceAtMost(height),
+            minWidth = minOf(PORTRAIT_MIN_WIDTH_DP * density, width),
+            besideHeight = screen.height * PORTRAIT_BESIDE_HEIGHT_FRACTION,
+        )
     }
 
     private const val WIDTH_FRACTION = 0.85f
     private const val HEIGHT_FRACTION = 0.35f
+    private const val PORTRAIT_MIN_WIDTH_DP = 200f
+    private const val PORTRAIT_BESIDE_HEIGHT_FRACTION = 0.6f
     private const val LANDSCAPE_WIDTH_FRACTION = 0.5f
     private const val LANDSCAPE_HEIGHT_FRACTION = 0.9f
     private const val LANDSCAPE_MIN_WIDTH_DP = 260f
@@ -76,12 +87,12 @@ object PopupPlacement {
         }
         // Nothing fits beside the word and the bubble: use the roomiest side and let the popup cover what it must.
         val side = candidates.filter { it.side in primary }.maxBy { it.space }.side
-        return clampInto(overlapping(side, word, size.width, size.height, size.minHeight, screen, margin), screen)
+        return clampInto(overlapping(side, word, size, screen, margin), screen)
     }
 
     private fun candidate(side: Side, word: Box, keepOut: Box, size: Size, screen: Box, margin: Float): Candidate {
         val w = size.width
-        val h = size.height
+        val h = if (side == Side.LEFT || side == Side.RIGHT) size.besideHeight else size.height
         val minHeight = size.minHeight
         val centeredX = (word.centerX - w / 2f).coerceIn(screen.left, (screen.right - w).coerceAtLeast(screen.left))
         val centeredY = (word.centerY - h / 2f).coerceIn(screen.top, (screen.bottom - h).coerceAtLeast(screen.top))
@@ -117,7 +128,10 @@ object PopupPlacement {
     }
 
     /** A popup on [side] of the word alone, for when the bubble cannot be avoided. */
-    private fun overlapping(side: Side, word: Box, w: Float, h: Float, minHeight: Float, screen: Box, margin: Float): Box {
+    private fun overlapping(side: Side, word: Box, size: Size, screen: Box, margin: Float): Box {
+        val w = size.width
+        val h = if (side == Side.LEFT || side == Side.RIGHT) size.besideHeight else size.height
+        val minHeight = size.minHeight
         val x = word.centerX - w / 2f
         val y = word.centerY - h / 2f
         return when (side) {

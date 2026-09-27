@@ -82,6 +82,32 @@ class PopupPlacementTest {
     }
 
     @Test
+    fun `portrait vertical text gets a narrower, taller popup beside the column`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        assertThat(size.minWidth).isEqualTo(600f)
+        assertThat(size.besideHeight).isWithin(0.5f).of(2240f * 0.6f)
+
+        // A column 750 px from the left edge, the bubble below the word: 740 px free on the left.
+        val word = Box(750f, 900f, 800f, 1400f)
+        val popup = PopupPlacement.place(word, true, Box(725f, 1410f, 875f, 1560f), size, phone, margin = 10f)
+        assertThat(popup.right).isEqualTo(715f)
+        assertThat(popup.width).isEqualTo(715f)
+        assertThat(popup.height).isWithin(0.5f).of(2240f * 0.6f)
+    }
+
+    @Test
+    fun `portrait vertical text in the middle of the screen goes above or below at the usual height`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        // Less than 200 dp on either side of the column.
+        val word = Box(500f, 1500f, 560f, 2000f)
+        val popup = PopupPlacement.place(word, true, null, size, phone, margin = 10f)
+        assertThat(popup.bottom).isEqualTo(1490f)
+        assertThat(popup.height).isWithin(0.5f).of(2240f * 0.35f)
+    }
+
+    @Test
     fun `falls back to a clamped box when nothing fits`() {
         val tinyScreen = Box(0f, 0f, 500f, 500f)
         val popup = PopupPlacement.place(Box(200f, 200f, 300f, 250f), false, null, PopupPlacement.Size(800f, 600f, 300f), tinyScreen, 10f)

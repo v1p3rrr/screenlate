@@ -18,6 +18,8 @@
 | Drag the bubble to the left or right edge | Close the entry and dock the bubble. |
 | Drag the docked bubble along the edge | Move the dock. |
 
+The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; when neither side has room, it goes above or below.
+
 The Quick Settings tile hides and shows the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 
 ## Settings

@@ -69,5 +69,5 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
 - A focused Compose text field (the app's own search field) reports character positions shifted up and left by roughly its padding, so "App text first" aims at the wrong character there; other apps' Compose fields probably too. Not investigated.
-- In portrait, vertical text gets a popup beside the column only when a side has the full popup width; otherwise it goes above or below and covers part of the column.
+- Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27); columns in the middle of a narrow screen still get it above or below.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
