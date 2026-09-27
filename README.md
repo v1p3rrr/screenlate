@@ -1,5 +1,7 @@
 # Screenlate
 
+<img src="docs/images/icon.svg" width="96" height="96" alt="">
+
 Android pop-up dictionary that works over any app. Pull a bubble out from the screen edge, point it at a word, and get a dictionary entry next to it.
 
 - Cloud text recognition with an on-device draft (ML Kit), or the app's own text when it is available.
