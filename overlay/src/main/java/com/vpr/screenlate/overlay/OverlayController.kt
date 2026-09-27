@@ -23,6 +23,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.ocr.CompositeOcr
@@ -178,6 +179,8 @@ class OverlayController(
     fun start() {
         lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
+        bubbleView.glyphLanguage = language.support.languageTag
+        bubbleView.glyph = language.support.glyph
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
@@ -306,10 +309,11 @@ class OverlayController(
 
     private fun placeDocked() {
         val screen = screenBounds()
-        val visibleOffset = bubbleSize * DOCK_VISIBLE_FRACTION - bubbleSize / 2f
+        val visibleOffset = bubbleSize * BubbleView.DOCK_VISIBLE_FRACTION - bubbleSize / 2f
         val x = if (settings.dockSide == DockSide.RIGHT) screen.right - visibleOffset else screen.left + visibleOffset
         val usable = usableBounds()
         val y = (settings.dockY * screen.height).coerceIn(usable.top + bubbleSize, usable.bottom - bubbleSize)
+        bubbleView.dockSide = settings.dockSide
         bubbleView.docked = true
         moveBubbleTo(x, y)
     }
@@ -876,7 +880,6 @@ class OverlayController(
     private companion object {
         const val TAG = "OverlayController"
         const val AIM_GAP_DP = 20f
-        const val DOCK_VISIBLE_FRACTION = 0.4f
         const val DOCK_ZONE_DP = 12f
         const val UNDOCK_DISTANCE_DP = 64f
         const val HIT_TOLERANCE_DP = 12f

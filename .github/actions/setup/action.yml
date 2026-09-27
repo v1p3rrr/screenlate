@@ -4,22 +4,22 @@ description: JDK, Gradle, the SDK packages the build needs and the cached bundle
 runs:
   using: composite
   steps:
-    - uses: actions/setup-java@v4
+    - uses: actions/setup-java@v6
       with:
         distribution: temurin
         java-version: 21
 
-    - uses: gradle/actions/setup-gradle@v4
+    - uses: gradle/actions/setup-gradle@v6
 
     - name: Install SDK packages
       shell: bash
       run: |
         yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
         "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
-          "platforms;android-37" "ndk;29.0.14206865" "cmake;3.31.6" > /dev/null
+          "platforms;android-37.0" "ndk;29.0.14206865" "cmake;3.31.6" > /dev/null
 
     # Downloaded by the build (about 48 MB); see downloadBundledDictionaries in app/build.gradle.kts.
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       with:
         path: dicts/bundled
         key: bundled-dictionaries-${{ hashFiles('app/build.gradle.kts') }}
