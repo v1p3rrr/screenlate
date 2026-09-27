@@ -42,7 +42,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next
 
-- Verify branch `claude/elegant-allen-xmu3fx` locally (build, unit and page tests, lint, collection import of the owner's export on the emulator and the phone with timings, the not-enough-space message), then merge into main.
+- Verify branch `claude/elegant-allen-xmu3fx` locally (build, unit and page tests, lint, collection import of the owner's export on the emulator and the phone with timings, the not-enough-space message), then merge into main. Steps: `handoffs/2026-09-27-collection-import.md`.
 
 - Phase 6: CI per the decision table (build, unit tests, page tests and lint on every push to main with a debug APK artifact, keeping the last few; tag vX.Y.Z → per-ABI and universal release APKs, armeabi-v7a if the engine builds, source archive with submodules, changelog, GitHub Release; instrumented tests on tags and manual runs), dock glyph from `LanguageSupport.glyph`.
 - Phase 7: About with generated library licenses and installed dictionaries' attributions (no mention of the cloud OCR provider), "Share logs", versioning from tags, daily update check against GitHub Releases (can be turned off); signing at the end with the owner.
