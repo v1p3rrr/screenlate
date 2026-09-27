@@ -1,0 +1,164 @@
+package com.vpr.screenlate.yomitan
+
+import com.vpr.screenlate.core.anki.AnkiAvailability
+import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.AnkiNotes
+import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
+import com.vpr.screenlate.core.anki.settings.NoteTemplate
+import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
+import javax.inject.Inject
+
+enum class YomitanSection { DICTIONARIES, ANKI, AUDIO, LOOKUP }
+
+/** What an import applied and what it had to skip, per section. */
+data class ImportSummary(
+    val dictionaries: DictionaryOutcome? = null,
+    val anki: AnkiOutcome? = null,
+    val audio: AudioOutcome? = null,
+    val lookup: LookupOutcome? = null,
+)
+
+/**
+ * @property missing dictionaries of the profile that are not installed here.
+ * @property sortMissing the sort frequency dictionary when it is not installed.
+ */
+data class DictionaryOutcome(val matched: Int, val missing: List<String>, val sortDictionary: String?, val sortMissing: String?)
+
+/**
+ * @property unavailable AnkiDroid could not be asked; the templates were kept for when the note type is chosen.
+ * @property droppedFields fields of the Yomitan template that the note type does not have.
+ * @property savedModels other card formats, kept as templates of their note types.
+ */
+data class AnkiOutcome(
+    val deck: String?,
+    val deckMissing: String?,
+    val model: String?,
+    val modelMissing: String?,
+    val unavailable: Boolean,
+    val droppedFields: List<String>,
+    val savedModels: List<String>,
+)
+
+data class AudioOutcome(val sources: Int, val unknown: List<String>, val disabledInYomitan: Boolean)
+
+data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val replacementGroups: Int)
+
+/** Applies one profile of a Yomitan settings export; every applied setting stays editable in the app. */
+class YomitanSettingsImporter @Inject constructor(
+    private val dictionaries: DictionaryRepository,
+    private val lookupSettings: LookupSettingsRepository,
+    private val ankiSettings: AnkiSettingsRepository,
+    private val ankiDroid: AnkiDroid,
+    private val notes: AnkiNotes,
+    private val audioSettings: AudioSettingsRepository,
+) {
+    suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary = ImportSummary(
+        dictionaries = if (YomitanSection.DICTIONARIES in sections) applyDictionaries(profile) else null,
+        anki = if (YomitanSection.ANKI in sections) profile.anki?.let { applyAnki(it) } else null,
+        audio = if (YomitanSection.AUDIO in sections) profile.audio?.let { applyAudio(it) } else null,
+        lookup = if (YomitanSection.LOOKUP in sections) applyLookup(profile) else null,
+    )
+
+    /** Yomitan's order first for the dictionaries installed here, the others after them in their current order. */
+    private suspend fun applyDictionaries(profile: YomitanSettings.Profile): DictionaryOutcome {
+        val installed = dictionaries.getAll().sortedBy { it.priority }
+        val byKey = installed.groupBy { dictionaryKey(it.title) }
+        val matched = profile.dictionaries.mapNotNull { preference ->
+            val dictionary = installed.firstOrNull { it.title == preference.name }
+                ?: byKey[dictionaryKey(preference.name)]?.firstOrNull()
+            dictionary?.let { it to preference }
+        }.distinctBy { it.first.id }
+        val missing = profile.dictionaries.map { it.name }.filter { name -> matched.none { it.second.name == name } }
+        val ordered = matched.map { it.first } + installed.filter { dictionary -> matched.none { it.first.id == dictionary.id } }
+        dictionaries.reorder(ordered.map { it.id })
+        matched.forEach { (dictionary, preference) ->
+            if (dictionary.enabled != preference.enabled) dictionaries.setEnabled(dictionary.id, preference.enabled)
+        }
+        val sortName = profile.sortFrequencyDictionary
+        val sort = sortName?.let { name ->
+            installed.filter { it.frequencyCount > 0 }
+                .firstOrNull { it.title == name || dictionaryKey(it.title) == dictionaryKey(name) }
+        }
+        sort?.let { dictionaries.setSortDictionary(it.id) }
+        return DictionaryOutcome(
+            matched = matched.size,
+            missing = missing,
+            sortDictionary = sort?.title,
+            sortMissing = sortName.takeIf { sort == null },
+        )
+    }
+
+    private suspend fun applyAnki(anki: YomitanSettings.Anki): AnkiOutcome {
+        val main = anki.main
+        val available = ankiDroid.availability() == AnkiAvailability.READY
+        val deck = if (available) ankiDroid.decks().firstOrNull { it.name == main?.deck } else null
+        val model = if (available) ankiDroid.models().firstOrNull { it.name == main?.model } else null
+        val modelFields = model?.let { ankiDroid.fields(it.id) }.orEmpty()
+        ankiSettings.update { settings ->
+            var saved = settings.savedTemplates
+            settings.modelName?.let { saved = saved + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }
+            anki.others.forEach { format ->
+                format.model?.let { saved = saved + (it to NoteTemplate(format.fields, format.overwriteModes)) }
+            }
+            var next = settings.copy(
+                tags = anki.tags.joinToString(" ").ifBlank { settings.tags },
+                duplicateCheck = anki.duplicateCheck ?: settings.duplicateCheck,
+                duplicateScope = anki.duplicateScope ?: settings.duplicateScope,
+                duplicateAllModels = anki.duplicateAllModels ?: settings.duplicateAllModels,
+                duplicateBehavior = anki.duplicateBehavior ?: settings.duplicateBehavior,
+            )
+            if (main?.model != null) {
+                if (model != null && modelFields.isNotEmpty()) {
+                    next = next.copy(
+                        modelId = model.id,
+                        modelName = model.name,
+                        fields = modelFields.associateWith { main.fields[it].orEmpty() },
+                        overwriteModes = main.overwriteModes.filterKeys { it in modelFields },
+                    )
+                    saved = saved - model.name
+                } else {
+                    // Chosen later in the Anki settings, the note type gets these templates back.
+                    saved = saved + (main.model to NoteTemplate(main.fields, main.overwriteModes))
+                }
+            }
+            if (deck != null) next = next.copy(deckId = deck.id, deckName = deck.name)
+            next.copy(savedTemplates = saved)
+        }
+        notes.invalidate()
+        return AnkiOutcome(
+            deck = deck?.name,
+            deckMissing = main?.deck.takeIf { deck == null },
+            model = model?.name,
+            modelMissing = main?.model.takeIf { model == null },
+            unavailable = !available,
+            droppedFields = if (model != null) main?.fields.orEmpty().keys.filter { it !in modelFields } else emptyList(),
+            savedModels = anki.others.mapNotNull { it.model },
+        )
+    }
+
+    private suspend fun applyAudio(audio: YomitanSettings.Audio): AudioOutcome {
+        audioSettings.update { settings ->
+            settings.copy(
+                sources = if (audio.enabled) audio.sources else emptyList(),
+                volume = audio.volume?.coerceIn(0, 100) ?: settings.volume,
+                autoPlay = audio.autoPlay ?: settings.autoPlay,
+            )
+        }
+        return AudioOutcome(audio.sources.size, audio.unknown, disabledInYomitan = !audio.enabled)
+    }
+
+    private suspend fun applyLookup(profile: YomitanSettings.Profile): LookupOutcome {
+        profile.scanLength?.let { lookupSettings.setScanLength(it) }
+        profile.maxResults?.let { lookupSettings.setMaxResults(it.coerceAtLeast(1)) }
+        lookupSettings.setReplacementGroups(profile.replacementGroups)
+        lookupSettings.setSearchOriginal(profile.searchOriginal)
+        return LookupOutcome(
+            scanLength = profile.scanLength?.coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
+            maxResults = profile.maxResults,
+            replacementGroups = profile.replacementGroups.size,
+        )
+    }
+}
