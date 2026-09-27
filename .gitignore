@@ -28,3 +28,4 @@ keystore.properties
 
 # Backup of the AnkiDroid collection from the test emulator (personal data).
 /testdata/anki-backup/
+node_modules/

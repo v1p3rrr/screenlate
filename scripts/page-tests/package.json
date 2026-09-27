@@ -1,0 +1,12 @@
+{
+  "name": "screenlate-page-tests",
+  "private": true,
+  "description": "Tests of the popup page scripts (note.js, anki.js, popup.js) in a simulated DOM.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../../overlay/src/test/js/ ../../dictionary/render-yomitan/src/test/js/"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

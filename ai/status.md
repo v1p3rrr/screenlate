@@ -31,28 +31,16 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - First test on the owner's phone produced phase 5 (see the plan). Done so far: bubble/popup placement (bubble above the popup, dock only at the edge, size setting), OCR boost bands (off by default), app text + OCR merge with per-paragraph source labels, Lens pause after 429/403, UI language picker with generated locale config, search screen rename and empty state, no popup without results, Anki export in Yomitan's marker format with Senren/Lapis presets, templates per note type, 📖 for added notes and prevented duplicates (default prevent), per-field overwrite modes, audio clip menu on long press and volume, crash fix for missing AnkiDroid note types.
 - Owner interview for the rest of phases 5–8 is complete; decisions are in the plan's table and changelog. CLAUDE.md got the working rules agreed in this session.
 - The emulator's AnkiDroid was reset to a local collection without an account after backing up the owner's collection.
+- Later on 2026-09-27 (steps 1–10 of the list below done, all committed and pushed): logs without user text (`redacted()`, `redactUrl`); docs and descriptive texts say "cloud recognition" (popup chip keeps "Lens"); `LanguageSupport`/`JapaneseSupport` (lookup start rule, Mozc romaji, sentence rules, kanji, OCR script, Anki markers, audio defaults); lookup settings (scan length, entries per lookup 32, text replacement groups with `MappedText` source mapping, romaji, kanji of the word); one Settings screen, home with problems; broken Anki setup (grey ➕ with reason → Anki settings; field list update), dictionary repair (bundled reinstall, catalog re-download, remove); audio sources LanguagePod101/Jisho/Lingua Libre/Wiktionary/TTS, source dialog with Test, test panel, `AudioPlayer`; Yomitan settings import (profiles, sections, summary; tested with the owner's export on the emulator); collection import rewritten (`RawJsonScanner`, keyless `{"$":[key,row]}` rows were lost before, checklist, read by URI, 2.7 GB: 32 s on desktop JVM, ~5.5 min on the emulator); catalog +19 entries (JMdict languages, JMnedict, KANJIDIC variants, Wiktionary, JPDB v2.2, BCCWJ, Aozora); popup header setting (owner request); landscape popup size, dock only on screen size change.
+- Emulator state: 20 dictionaries (owner's collection imported), romaji on, text replacements and audio sources from the owner's Yomitan profile (localhost sources fail there, expected), Anki still points at the missing Basic note type, popup header off, OCR boost on demand, text source app text first. Portrait fixed (accelerometer_rotation 0).
+
 
 ## Next
 
-- Continue phase 5 in this order (details in the plan's phase 5 list and decision table):
-  1. Log cleanup: no user text in logs; redact URLs with terms (Audio.kt candidate/source failures, PopupNotes "Cannot play", OverlayController "Cannot open", LookupPage media path, DictionaryImportWorker/DictionaryUpdates are fine).
-  2. Wording pass: no "Lens" in UI strings (popup chip → "Cloud"/"Облако", OCR boost and text source hints → cloud recognition), README, docs/, NOTICE (neutral MIT attribution of chrome-lens-ocr only).
-  3. Lookup settings + `LanguageSupport` (Japanese: lookup-worthiness, romaji via Mozc table (BSD, NOTICE), sentence rules): scan length, max results (32, warning), text replacements (empty default, source mapping for highlight), romaji switch, single kanji entries (on).
-  4. One Settings screen (Bubble, Lookup, Dictionaries, Anki and audio, Appearance, Import from Yomitan, About); home keeps search, service status, warnings.
-  5. Broken-setup warnings: grey ➕ + short reason + "Open Screenlate"; home shows problems; missing dictionaries restored/re-downloaded.
-  6. Audio: source dialog (Save/Test), test panel (読む), sources LanguagePod101, Jisho, Lingua Libre, Wiktionary, Android TTS (own implementations, not Yomitan code); defaults JapanesePod101, LanguagePod101, Jisho.
-  7. Yomitan settings import (profile picker, summary; localhost audio sources imported as they are).
-  8. Collection import: checklist; test with `testdata/dictionaries/yomitan-dictionaries-2026-01-22-22-46-44.json` (2.7 GB) and speed it up.
-  9. Catalog: free dictionaries + author-published frequency lists from `testdata/dictionaries/`.
-  10. Orientation/device review (landscape popup sizes and insets).
-  11. Tests (Kotlin + page JS, instrumented with fake OCR; Anki tests with a note type created through the API).
-  12. docs/usage.md, docs/architecture.md, README, status; then phases 6 and 7.
-- Emulator: AnkiDroid is a fresh local collection without an account; importing `testdata/anki-backup/3 Mining.apkg` (owner's Senren) did not work through a `file://` VIEW intent yet — try a MediaStore content URI or AnkiDroid's own import menu. Screenlate Dev on the emulator still points at the old Default/Basic note type (now missing), which exercises the broken-setup warning.
-
-- Yomitan settings backup: interview the owner about what to import (dictionary order, Anki templates, audio sources, scan settings) before planning.
-- Verify the Yomitan collection import with a real export from the owner.
-- The owner is going to send a list of dictionaries for the catalog (`dictionary/api/src/main/assets/catalog/dictionaries.json`; the app fetches it from the repository).
-- Phone testing: everything so far was verified on the emulator only.
+- Step 11 (tests), in progress: `scripts/page-tests/` has package.json with jsdom (npm installed, node_modules ignored); write node:test suites in `overlay/src/test/js/` (note.js, popup.js: compact header, grey ➕, actions) and `dictionary/render-yomitan/src/test/js/` (anki.js: pitch formats/categories, furigana, glossary) loading render.js/anki.js/note.js/popup.html into jsdom. Then Kotlin: `AnkiNotes` with a fake AnkiDroid (extract an interface), `AudioFinder` with MockWebServer (needs the cache dir injectable), `CompositeOcr` with fake engines; instrumented: lookup pipeline on hoshidicts with a small test dictionary (romaji, replacements, single kanji), LookupPage rendering, AnkiDroid round trip creating its note type through the API (skipped without AnkiDroid).
+- Step 12: docs/usage.md, docs/architecture.md, README, this file; then phase 6 (CI per the decision table, per-ABI + universal + armeabi-v7a if it builds, source archive with submodules, dock glyph あ/Я) and phase 7 (About with libraries/dictionary attributions/share logs, versioning from tags, update check, signing at the end with the owner).
+- Later items and open questions for the owner are listed under phase 7 in the plan: faster collection conversion, e-ink mode, backup/restore (Yomitan-compatible dictionary export?).
+- Phase 8 (languages) waits for an interview.
 
 ## Open items
 
