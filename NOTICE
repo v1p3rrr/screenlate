@@ -55,9 +55,10 @@ Third-party data
 
 The APK bundles these dictionaries unmodified. They are imported on first launch.
 
-Jitendex (https://jitendex.org), CC BY-SA 4.0, by Stephen Kraus.
-  Based on JMdict by the Electronic Dictionary Research and Development Group,
-  used in conformance with the Group's licence.
+JMdict (English) (https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project), CC BY-SA 4.0,
+  by the Electronic Dictionary Research and Development Group, used in conformance with the Group's
+  licence (https://www.edrdg.org/edrdg/licence.html). Yomitan conversion by jmdict-yomitan
+  (https://github.com/yomidevs/jmdict-yomitan), MIT License.
 
 Jiten frequency list (https://jiten.moe), CC BY-SA 4.0.
 

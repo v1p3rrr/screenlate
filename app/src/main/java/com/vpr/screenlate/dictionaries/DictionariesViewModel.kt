@@ -139,13 +139,14 @@ class DictionariesViewModel @Inject constructor(
 
 /** Source language, then term dictionaries by target language, then the other kinds. */
 private fun groupCatalog(items: List<CatalogItem>): List<CatalogGroup> {
-    val userLanguage = Locale.getDefault().language
+    val locale = Locale.getDefault()
+    val userLanguage = locale.language
     return items.groupBy { it.entry.sourceLanguage }
         .toSortedMap(compareBy<String> { it != userLanguage && it != "ja" }.thenBy { it })
         .map { (source, sourceItems) ->
             val terms = sourceItems.filter { it.entry.kind == DictionaryKind.TERM }
                 .groupBy { it.entry.targetLanguage }
-                .toSortedMap(compareBy<String?> { it != userLanguage }.thenBy { it.orEmpty() })
+                .toSortedMap(catalogTargetOrder(source, locale))
                 .map { (target, targetItems) -> CatalogSection(DictionaryKind.TERM, target, targetItems) }
             val others = DictionaryKind.entries.filter { it != DictionaryKind.TERM }.mapNotNull { kind ->
                 sourceItems.filter { it.entry.kind == kind }.takeIf { it.isNotEmpty() }?.let { CatalogSection(kind, null, it) }

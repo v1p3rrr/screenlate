@@ -45,8 +45,11 @@ data class CatalogEntry(
         description[locale.language] ?: description["en"].orEmpty()
 
     /** Whether [dictionary] is an installed copy of this entry, whatever its revision. */
-    fun matches(dictionary: DictionaryEntity): Boolean =
-        (indexUrl != null && dictionary.indexUrl == indexUrl) || dictionary.title.startsWith(installedTitle)
+    fun matches(dictionary: DictionaryEntity): Boolean = matches(dictionary.indexUrl, dictionary.title)
+
+    /** Whether a dictionary with this index URL and title is a copy of this entry, whatever its revision. */
+    fun matches(indexUrl: String?, title: String): Boolean =
+        (this.indexUrl != null && indexUrl == this.indexUrl) || title.startsWith(installedTitle)
 }
 
 @Serializable
@@ -70,11 +73,14 @@ class DictionaryCatalog @Inject constructor(
 
     /** Emits the cached or bundled catalog at once, then the fetched one if it differs. */
     fun entries(): Flow<List<CatalogEntry>> = flow {
-        val local = withContext(Dispatchers.IO) { cached() ?: bundled() }
+        val local = withContext(Dispatchers.IO) { local() }
         emit(local)
         val remote = withContext(Dispatchers.IO) { fetch() }
         if (remote != null && remote != local) emit(remote)
     }
+
+    /** The last fetched or the bundled catalog, without network access. */
+    fun local(): List<CatalogEntry> = cached() ?: bundled()
 
     private fun bundled(): List<CatalogEntry> =
         context.assets.open(ASSET).use { parse(it.readBytes().decodeToString()) } ?: emptyList()

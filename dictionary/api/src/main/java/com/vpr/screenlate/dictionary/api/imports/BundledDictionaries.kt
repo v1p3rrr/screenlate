@@ -22,6 +22,8 @@ import javax.inject.Singleton
  *
  * Each archive is installed once, identified by name and size, so a dictionary the user deleted does not come
  * back, while a different archive shipped by a later app version is installed (replacing the same title).
+ * The numeric prefix is a slot: when a later version ships another dictionary in a slot whose earlier archive the
+ * user already installed, the user keeps the earlier dictionary and the new one is not installed.
  */
 @Singleton
 class BundledDictionaries @Inject constructor(
@@ -35,10 +37,7 @@ class BundledDictionaries @Inject constructor(
         val displayName: String get() = name.removeSuffix(".zip").substringAfter('-')
     }
 
-    suspend fun pending(): List<Asset> {
-        val installed = dataStore.data.first()[INSTALLED].orEmpty()
-        return all().filter { it.key !in installed }
-    }
+    suspend fun pending(): List<Asset> = pending(all(), dataStore.data.first()[INSTALLED].orEmpty())
 
     suspend fun copy(asset: Asset, target: File) = withContext(Dispatchers.IO) {
         context.assets.open("$ASSET_DIR/${asset.name}").use { input ->
@@ -80,8 +79,20 @@ class BundledDictionaries @Inject constructor(
         }.getOrNull()
     }
 
-    private companion object {
-        const val ASSET_DIR = "dictionaries"
-        val INSTALLED = stringSetPreferencesKey("bundled_dictionaries_installed")
+    internal companion object {
+        private const val ASSET_DIR = "dictionaries"
+        private val INSTALLED = stringSetPreferencesKey("bundled_dictionaries_installed")
+
+        /** [shipped] archives to install, given the `name:size` keys of the archives installed before. */
+        fun pending(shipped: List<Asset>, installed: Set<String>): List<Asset> {
+            val shippedNames = shipped.map { it.name }.toSet()
+            val installedNames = installed.map { it.substringBeforeLast(':') }
+            val replacedSlots = installedNames.filter { it !in shippedNames }.map(::slot).toSet()
+            return shipped.filter { asset ->
+                asset.key !in installed && (asset.name in installedNames || slot(asset.name) !in replacedSlots)
+            }
+        }
+
+        private fun slot(name: String): String = name.substringBefore('-')
     }
 }

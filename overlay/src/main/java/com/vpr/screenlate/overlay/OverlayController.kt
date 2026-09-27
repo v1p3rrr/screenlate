@@ -6,9 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import android.util.Log
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.view.HapticFeedbackConstants
+import android.os.VibrationAttributes
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -117,6 +120,7 @@ class OverlayController(
     private var bubbleSize = (OverlaySettings.DEFAULT_BUBBLE_DP * density).roundToInt()
     private val touchSlop = ViewConfiguration.get(service).scaledTouchSlop
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val vibrator = service.getSystemService(Vibrator::class.java)?.takeIf { it.hasVibrator() }
 
     private val bubbleView = BubbleView(service)
     private val bubbleParams = OverlayWindows.bubbleParams(bubbleSize)
@@ -169,6 +173,9 @@ class OverlayController(
     private var foregroundPackage: String? = null
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
+
+    /** Expression and reading of the word the last vibration was for. */
+    private var hapticWord: Pair<String, String>? = null
     private var screenshot: CapturedScreen? = null
     private var bandTimer: Job? = null
     private val bandJobs = mutableListOf<Job>()
@@ -504,6 +511,7 @@ class OverlayController(
         lookupJob?.cancel()
         lookupJob = null
         shownLookup = null
+        hapticWord = null
         screenshot?.bitmap?.recycle()
         screenshot = null
         bubbleView.loading = false
@@ -666,7 +674,6 @@ class OverlayController(
         bandTimer?.cancel()
         if (position == hit) return
         hit = position
-        haptic()
         showLookup(layout, position)
     }
 
@@ -685,6 +692,7 @@ class OverlayController(
             if (results.isEmpty() && lookup.hasTermDictionaries()) {
                 layerView.setWordBoxes(emptyList())
                 shownLookup = null
+                hapticWord = null
                 popup.hide()
                 popupNotes.onResultsHidden()
                 return@launch
@@ -695,6 +703,9 @@ class OverlayController(
             val anchor = Box.unionOf(boxes) ?: return@launch
             val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
             shownLookup = view
+            val word = results.firstOrNull()?.term?.let { it.expression to it.reading }
+            if (word != null && word != hapticWord) haptic()
+            hapticWord = word
             popupNotes.refreshActions()
             val state = popupStateOffMain(view)
             popup.show(
@@ -847,8 +858,18 @@ class OverlayController(
             service.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
+    /**
+     * A short click from the vibrator. View haptic feedback, and plain vibrations this short, follow the system's
+     * touch feedback switch, which many users turn off; the media usage keeps the click that the user enabled here.
+     */
     private fun haptic() {
-        if (settings.haptics) bubbleView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+        val vibrator = vibrator?.takeIf { settings.haptics } ?: return
+        val click = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            vibrator.vibrate(click, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_MEDIA))
+        } else {
+            vibrator.vibrate(click)
+        }
     }
 
     // endregion

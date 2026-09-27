@@ -15,6 +15,8 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.assisted.Assisted
@@ -43,9 +45,13 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val repository: DictionaryRepository,
     private val storage: DictionaryStorage,
     private val bundled: BundledDictionaries,
+    private val catalog: DictionaryCatalog,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
+
+    /** Languages for dictionaries whose index.json names none. */
+    private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val name = inputData.getString(KEY_NAME).orEmpty()
@@ -82,7 +88,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             try {
                 bundled.copy(asset, archive)
                 val started = System.currentTimeMillis()
-                val title = repository.import(archive, bundled = true).title
+                val title = repository.import(archive, bundled = true, catalog = catalogEntries).title
                 bundled.markInstalled(asset)
                 Log.i(TAG, "Installed $title in ${System.currentTimeMillis() - started} ms")
                 title
@@ -95,7 +101,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private suspend fun importFile(archive: File): String {
         setProgress(workDataOf(KEY_STAGE to STAGE_IMPORT))
         try {
-            return repository.import(archive).title
+            return repository.import(archive, catalog = catalogEntries).title
         } finally {
             if (inputData.getBoolean(KEY_DELETE_FILE, false)) archive.delete()
         }
@@ -127,7 +133,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             return archives.mapIndexed { index, archive ->
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
                 try {
-                    repository.import(archive).title
+                    repository.import(archive, catalog = catalogEntries).title
                 } finally {
                     archive.delete()
                 }
@@ -180,7 +186,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             }
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
             val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
-            return repository.import(archive, replaces = replaces).title
+            return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
         } finally {
             archive.delete()
         }

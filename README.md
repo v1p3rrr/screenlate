@@ -4,7 +4,7 @@ Android pop-up dictionary that works over any app. Pull a bubble out from the sc
 
 - Cloud text recognition with an on-device draft (ML Kit), or the app's own text when it is available.
 - Yomitan dictionaries, looked up, sorted and rendered the way Yomitan does it: structured content, images, frequencies, pitch accent, deinflection, kanji entries.
-- Jitendex, a frequency list and pitch accents are bundled; more dictionaries come from a download catalog, from `.zip` files or from a Yomitan dictionary collection export.
+- JMdict (English), a frequency list and pitch accents are bundled; Jitendex and more dictionaries come from a download catalog, from `.zip` files or from a Yomitan dictionary collection export.
 - Anki export through AnkiDroid with a configurable deck, note type and field templates, duplicate handling, audio from Yomitan's set of sources and cropped screenshots.
 - A search screen and a "Look up in Screenlate" entry in the text selection menu.
 - Settings from a Yomitan settings export: dictionary order, Anki, audio, lookup and popup appearance.

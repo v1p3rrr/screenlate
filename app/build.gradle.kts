@@ -78,8 +78,8 @@ val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDic
     assetPath.set("dictionaries")
     files.putAll(
         mapOf(
-            "10-jitendex.zip" to
-                "https://github.com/stephenmk/stephenmk.github.io/releases/download/2026.08.11.0/jitendex-yomitan.zip",
+            "10-jmdict-english.zip" to
+                "https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/JMdict_english.zip",
             "20-jiten-global-frequency.zip" to
                 "https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan",
             "30-kanjium-pitch-accents.zip" to
