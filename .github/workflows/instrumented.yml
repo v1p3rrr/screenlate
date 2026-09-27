@@ -1,0 +1,60 @@
+name: Instrumented tests
+
+# On an x86_64 emulator with AnkiDroid from its latest release. The AnkiDroid test uses the emulator's fresh local
+# collection and skips itself if AnkiDroid has not created one.
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  instrumented:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download AnkiDroid
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download --repo ankidroid/Anki-Android --pattern 'AnkiDroid-*-full-universal.apk' --output ankidroid.apk
+
+      - name: Build test APKs
+        run: ./gradlew assembleDebugAndroidTest
+
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb install -r ankidroid.apk
+            adb shell monkey -p com.ichi2.anki -c android.intent.category.LAUNCHER 1 || true
+            sleep 15
+            ./gradlew connectedDebugAndroidTest
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrumented-reports-${{ github.run_id }}
+          path: |
+            **/build/reports/androidTests/
+            **/build/outputs/androidTest-results/
+          retention-days: 14

@@ -14,7 +14,7 @@ object ScreenlateSdk {
     const val NDK = "29.0.14206865"
 
     /** Phones and the x86_64 emulator; other ABIs are dropped from dependencies too. */
-    val ABIS = listOf("arm64-v8a", "x86_64")
+    val ABIS = listOf("arm64-v8a", "x86_64", "armeabi-v7a")
 }
 
 internal fun Project.configureAndroidCommon(extension: CommonExtension) {

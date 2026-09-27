@@ -40,16 +40,21 @@ class AnkiDroidRoundTripTest {
         settings = AnkiSettingsRepository(PreferenceDataStoreFactory.create { File(root, "anki.preferences_pb") })
         notes = AnkiNotes(AnkiDroid(context), settings)
 
+        // A freshly installed AnkiDroid (as on CI) may not have opened its collection yet.
         val api = AddContentApi(context)
-        val modelId = api.modelList.orEmpty().entries.firstOrNull { it.value == NAME }?.key
-            ?: api.addNewCustomModel(NAME, arrayOf("Word", "Meaning"), arrayOf("Card 1"), arrayOf("{{Word}}"), arrayOf("{{Meaning}}"), null, null, null)
-        val deckId = api.deckList.orEmpty().entries.firstOrNull { it.value == NAME }?.key ?: api.addNewDeck(NAME)
+        val modelId = runCatching {
+            api.modelList.orEmpty().entries.firstOrNull { it.value == NAME }?.key
+                ?: api.addNewCustomModel(NAME, arrayOf("Word", "Meaning"), arrayOf("Card 1"), arrayOf("{{Word}}"), arrayOf("{{Meaning}}"), null, null, null)
+        }.getOrNull()
+        val deckId = runCatching { api.deckList.orEmpty().entries.firstOrNull { it.value == NAME }?.key ?: api.addNewDeck(NAME) }
+            .getOrNull()
+        assumeTrue("AnkiDroid has no collection yet", modelId != null && deckId != null)
         runBlocking {
             settings.update {
                 it.copy(
-                    deckId = deckId,
+                    deckId = deckId!!,
                     deckName = NAME,
-                    modelId = modelId,
+                    modelId = modelId!!,
                     modelName = NAME,
                     fields = mapOf("Word" to "{expression}", "Meaning" to "{glossary}"),
                     tags = "screenlate-test",

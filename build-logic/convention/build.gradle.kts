@@ -7,6 +7,7 @@ group = "com.vpr.screenlate.buildlogic"
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.room.gradlePlugin)
+    testImplementation(libs.junit)
 }
 
 gradlePlugin {

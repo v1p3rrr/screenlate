@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  # Old debug APKs are deleted so that only the last few are kept.
+  actions: write
+
+env:
+  KEPT_DEBUG_APKS: 3
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          # Tags give the version (see ScreenlateVersion).
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: Build, unit tests and lint
+        run: ./gradlew assembleDebug testDebugUnitTest lintDebug :build-logic:convention:test
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/page-tests/package-lock.json
+
+      - name: Page script tests
+        run: |
+          npm --prefix scripts/page-tests ci
+          npm --prefix scripts/page-tests test
+
+      - name: Name the debug APK
+        id: apk
+        run: |
+          name="screenlate-debug-${GITHUB_SHA::7}"
+          cp app/build/outputs/apk/debug/app-debug.apk "$name.apk"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.name }}.apk
+          retention-days: 30
+          compression-level: 0
+
+      - name: Keep only the last debug APKs
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const keep = Number(process.env.KEPT_DEBUG_APKS);
+            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+            const debug = artifacts
+              .filter(artifact => artifact.name.startsWith('screenlate-debug-') && !artifact.expired)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            for (const artifact of debug.slice(keep)) {
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
+
+      - name: Upload reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ github.run_id }}
+          path: |
+            **/build/reports/
+            **/build/test-results/
+          retention-days: 7

@@ -29,3 +29,6 @@ keystore.properties
 # Backup of the AnkiDroid collection from the test emulator (personal data).
 /testdata/anki-backup/
 node_modules/
+
+# Written into source archives by the release workflow; builds from git read the version from tags.
+/version.txt

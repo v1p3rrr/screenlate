@@ -1,5 +1,6 @@
 import com.vpr.screenlate.buildlogic.DownloadAssetsTask
 import com.vpr.screenlate.buildlogic.disableAnkiDroidLintChecks
+import com.vpr.screenlate.buildlogic.screenlateVersion
 import java.util.Properties
 
 plugins {
@@ -18,10 +19,12 @@ val keystoreProperties = Properties().apply {
 android {
     namespace = "com.vpr.screenlate"
 
+    // From the latest vX.Y.Z tag; see ScreenlateVersion.
+    val version = screenlateVersion()
     defaultConfig {
         applicationId = "com.vpr.screenlate"
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = version.code
+        versionName = version.name
     }
 
     // Lists English and Russian in the system's per-app language settings.
@@ -43,11 +46,14 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            versionNameSuffix = version.commit?.let { "-$it" }
             manifestPlaceholders["appLabel"] = "Screenlate Dev"
         }
         release {
             manifestPlaceholders["appLabel"] = "Screenlate"
+            // Without keystore.properties, CI signs test builds of releases with the debug key and does not publish them.
             signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug").takeIf { providers.gradleProperty("screenlate.debugSignedRelease").isPresent }
             optimization {
                 enable = true
             }
