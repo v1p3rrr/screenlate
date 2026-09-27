@@ -107,7 +107,9 @@ fun ScreenlateNavHost(
         composable<BubbleRoute> { BubbleSettingsScreen(onBack = back) }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
-        composable<YomitanImportRoute> { YomitanImportScreen(onBack = back) }
+        composable<YomitanImportRoute> {
+            YomitanImportScreen(onBack = back, onOpenDictionaries = { navController.navigate(DictionariesRoute) })
+        }
         composable<AboutRoute> { AboutScreen(onBack = back, onOpenOcrTest = { navController.navigate(OcrTestRoute) }) }
         composable<SearchRoute> { entry ->
             SearchScreen(
@@ -117,7 +119,9 @@ fun ScreenlateNavHost(
             )
         }
         composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
-        composable<DictionariesRoute> { DictionariesScreen(onBack = back) }
+        composable<DictionariesRoute> {
+            DictionariesScreen(onBack = back, onOpenYomitanImport = { navController.navigate(YomitanImportRoute) })
+        }
         composable<OcrTestRoute> { OcrTestScreen(onBack = back) }
         composable<ImageViewerRoute> { entry ->
             entry.toRoute<ImageViewerRoute>().let { ImageViewerScreen(it.path, it.caption) }

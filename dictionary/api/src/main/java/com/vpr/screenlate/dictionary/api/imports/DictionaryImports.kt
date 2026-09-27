@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.work.Data
@@ -17,9 +18,12 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SELECTED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SIZE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URI
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_BUNDLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_FILE
@@ -34,6 +38,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,8 +48,8 @@ data class ImportTask(
     val id: UUID,
     val name: String,
     val state: State,
-    /** Download progress in percent, or null when unknown or not downloading. */
-    val downloadPercent: Int?,
+    /** Progress of a download, conversion or multi-dictionary import in percent; null when unknown. */
+    val percent: Int?,
     val titles: List<String>,
     val error: String?,
 ) {
@@ -74,12 +79,39 @@ class DictionaryImports @Inject constructor(
         importFile(copy(uri), name, deleteAfter = true)
     }
 
-    /** Copies a Yomitan database export ("Export dictionary collection") and queues its conversion and import. */
-    suspend fun importYomitanBackup(uri: Uri) {
-        val name = displayName(uri)
-        val backup = copy(uri)
-        enqueue(workDataOf(KEY_SOURCE to SOURCE_YOMITAN_BACKUP, KEY_PATH to backup.absolutePath, KEY_NAME to name), name = name)
+    /** Dictionaries listed in a Yomitan collection export ("Export dictionary collection"); reads its start only. */
+    suspend fun scanCollection(uri: Uri): List<CollectionDictionary> = withContext(Dispatchers.IO) {
+        val input = context.contentResolver.openInputStream(uri) ?: throw IOException("Cannot open the file")
+        input.use { YomitanBackup.scan(it) }
     }
+
+    /**
+     * Queues the conversion and import of the chosen dictionaries of a collection export. The file is read where
+     * it is when the app may keep access to it, which saves copying gigabytes; otherwise it is copied first.
+     */
+    suspend fun importCollection(uri: Uri, titles: Set<String>) {
+        val name = displayName(uri)
+        val size = withContext(Dispatchers.IO) { size(uri) }
+        val kept = runCatching {
+            context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }.isSuccess
+        val source = if (kept) KEY_URI to uri.toString() else KEY_PATH to copy(uri).absolutePath
+        enqueue(
+            workDataOf(
+                KEY_SOURCE to SOURCE_YOMITAN_BACKUP,
+                source,
+                KEY_NAME to name,
+                KEY_SELECTED to titles.toTypedArray(),
+                KEY_SIZE to size,
+            ),
+            name = name,
+        )
+    }
+
+    private fun size(uri: Uri): Long =
+        context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst() && !cursor.isNull(0)) cursor.getLong(0) else -1L
+        } ?: -1L
 
     private suspend fun copy(uri: Uri): File {
         val target = storage.newArchiveFile()
@@ -155,7 +187,7 @@ class DictionaryImports @Inject constructor(
             id = id,
             name = name,
             state = taskState,
-            downloadPercent = progress.getInt(KEY_PERCENT, -1).takeIf { taskState == ImportTask.State.DOWNLOADING && it >= 0 },
+            percent = progress.getInt(KEY_PERCENT, -1).takeIf { !state.isFinished && it >= 0 },
             titles = data.getStringArray(KEY_TITLES)?.toList().orEmpty(),
             error = outputData.getString(KEY_ERROR),
         )

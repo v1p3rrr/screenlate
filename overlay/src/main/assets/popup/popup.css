@@ -91,6 +91,10 @@ a {
     border-bottom: 1px solid var(--divider);
 }
 
+:root[data-compact="true"] .header {
+    display: none;
+}
+
 .header #back:not([hidden]) {
     margin-left: -8px;
 }
@@ -206,6 +210,11 @@ a {
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
+}
+
+.entry-actions .action-close {
+    order: 1;
+    color: var(--muted);
 }
 
 .entry-actions .action-copy {

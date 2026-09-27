@@ -46,6 +46,7 @@ enum class SmallTextMode {
 /**
  * @property dockY vertical position of the docked bubble as a fraction of the screen height.
  * @property hiddenPackages apps in which the bubble is hidden.
+ * @property showSourceText the popup starts with the recognized text; off, it starts with the first entry.
  */
 data class OverlaySettings(
     val bubbleVisible: Boolean = true,
@@ -58,6 +59,7 @@ data class OverlaySettings(
     val textSource: TextSource = TextSource.SCREEN,
     val bubbleSizeDp: Int = DEFAULT_BUBBLE_DP,
     val smallText: SmallTextMode = SmallTextMode.OFF,
+    val showSourceText: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_BUBBLE_DP = 48
@@ -88,6 +90,7 @@ class OverlaySettingsRepository @Inject constructor(
                 .coerceIn(OverlaySettings.MIN_BUBBLE_DP, OverlaySettings.MAX_BUBBLE_DP),
             smallText = prefs[SMALL_TEXT]?.let { stored -> SmallTextMode.entries.firstOrNull { it.name == stored } }
                 ?: defaults.smallText,
+            showSourceText = prefs[SHOW_SOURCE_TEXT] ?: defaults.showSourceText,
         )
     }
 
@@ -126,6 +129,10 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[SMALL_TEXT] = mode.name }
     }
 
+    suspend fun setShowSourceText(enabled: Boolean) {
+        dataStore.edit { it[SHOW_SOURCE_TEXT] = enabled }
+    }
+
     suspend fun setDockSide(side: DockSide) {
         dataStore.edit { it[DOCK_SIDE] = side.name }
     }
@@ -148,5 +155,6 @@ class OverlaySettingsRepository @Inject constructor(
         val TEXT_SOURCE = stringPreferencesKey("overlay_text_source")
         val BUBBLE_SIZE = intPreferencesKey("overlay_bubble_size_dp")
         val SMALL_TEXT = stringPreferencesKey("overlay_small_text")
+        val SHOW_SOURCE_TEXT = booleanPreferencesKey("overlay_show_source_text")
     }
 }

@@ -94,6 +94,8 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
 
     fun setSmallText(mode: SmallTextMode) = launch { repository.setSmallText(mode) }
 
+    fun setShowSourceText(enabled: Boolean) = launch { repository.setShowSourceText(enabled) }
+
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
     }
@@ -195,6 +197,12 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                     )
                     BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
+                    SwitchRow(
+                        stringResource(R.string.bubble_show_source),
+                        settings.showSourceText,
+                        viewModel::setShowSourceText,
+                        hint = stringResource(R.string.bubble_show_source_hint),
+                    )
                     SwitchRow(stringResource(R.string.bubble_haptics), settings.haptics, viewModel::setHaptics)
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     Text(stringResource(R.string.bubble_hidden_apps), style = MaterialTheme.typography.titleMedium)

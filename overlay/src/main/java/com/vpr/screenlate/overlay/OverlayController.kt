@@ -787,8 +787,9 @@ class OverlayController(
         val dark = isDarkTheme()
         val pending = scanJob?.isActive == true && !ocrFinal
         val engine = engineLabel()
+        val hideSource = !settings.showSourceText
         return withContext(Dispatchers.Default) {
-            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine)
+            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine, hideSource)
         }
     }
 
@@ -818,6 +819,7 @@ class OverlayController(
             message = view.message,
             pending = scanJob?.isActive == true && !ocrFinal,
             engine = engineLabel,
+            hideSource = !settings.showSourceText,
         )
     }
 

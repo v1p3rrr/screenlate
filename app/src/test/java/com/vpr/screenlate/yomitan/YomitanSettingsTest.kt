@@ -1,5 +1,6 @@
 package com.vpr.screenlate.yomitan
 
+import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceType

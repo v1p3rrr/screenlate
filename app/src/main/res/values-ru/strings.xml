@@ -253,4 +253,14 @@
     <string name="yomitan_summary_audio_off">Аудио в Yomitan выключено; источники не заданы</string>
     <string name="yomitan_summary_audio_unknown">Неподдерживаемые источники аудио: %1$s</string>
     <string name="yomitan_summary_lookup">Длина скана %1$s, статей на поиск %2$s, групп замен текста: %3$d</string>
+    <string name="yomitan_collection_not_collection">Это не экспорт коллекции словарей Yomitan.</string>
+    <string name="yomitan_collection_choose">Словари в файле</string>
+    <string name="yomitan_collection_entries">записей: %1$d</string>
+    <string name="yomitan_collection_media">картинок: %1$d</string>
+    <string name="yomitan_collection_installed">уже установлен</string>
+    <string name="yomitan_collection_hint">Установленные словари не отмечены; отмеченный заменит установленную копию. Большие файлы обрабатываются несколько минут.</string>
+    <string name="yomitan_collection_import">Импортировать: %1$d</string>
+    <string name="yomitan_collection_queued">Импорт словарей (%1$d) идёт в фоне; прогресс — на экране «Словари».</string>
+    <string name="bubble_show_source">Показывать распознанный текст над статьями</string>
+    <string name="bubble_show_source_hint">Если выключено, попап начинается сразу со статьи, а ✕ стоит рядом с её кнопками.</string>
 </resources>

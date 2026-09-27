@@ -3,9 +3,11 @@ package com.vpr.screenlate.dictionary.api.imports
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -52,7 +54,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             val titles = when (inputData.getString(KEY_SOURCE)) {
                 SOURCE_BUNDLED -> installBundled()
                 SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
-                SOURCE_YOMITAN_BACKUP -> importBackup(File(requireNotNull(inputData.getString(KEY_PATH))))
+                SOURCE_YOMITAN_BACKUP -> importCollection(name)
                 SOURCE_URL -> {
                     val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
                         ?: requireNotNull(inputData.getString(KEY_URL))
@@ -99,14 +101,31 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }
 
-    /** Splits a Yomitan database export into archives and imports them one by one. */
-    private suspend fun importBackup(backup: File): List<String> {
+    /**
+     * Splits a Yomitan collection export into archives of the chosen dictionaries and imports them one by one.
+     * The export is read from the picked document when the app kept access to it, otherwise from a copy.
+     */
+    private suspend fun importCollection(name: String): List<String> {
+        val uri = inputData.getString(KEY_URI)?.toUri()
+        val copy = inputData.getString(KEY_PATH)?.let(::File)
+        val selected = inputData.getStringArray(KEY_SELECTED)?.toSet()
+        val size = inputData.getLong(KEY_SIZE, -1)
         val staging = storage.newStagingDirectory()
         try {
-            setProgress(workDataOf(KEY_STAGE to STAGE_CONVERT))
-            val archives = backup.inputStream().use { YomitanBackup(staging).convert(it) }
-            return archives.map { archive ->
-                setProgress(workDataOf(KEY_STAGE to STAGE_IMPORT))
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
+            val input = uri?.let { applicationContext.contentResolver.openInputStream(it) }
+                ?: copy?.inputStream()
+                ?: throw IOException("Cannot open the file")
+            val archives = input.use {
+                YomitanBackup(staging).convert(it, selected) { read ->
+                    if (size > 0) {
+                        val percent = (read * 100 / size).toInt().coerceIn(0, 100)
+                        setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to percent))
+                    }
+                }
+            }
+            return archives.mapIndexed { index, archive ->
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
                 try {
                     repository.import(archive).title
                 } finally {
@@ -115,7 +134,12 @@ class DictionaryImportWorker @AssistedInject constructor(
             }
         } finally {
             staging.deleteRecursively()
-            backup.delete()
+            copy?.delete()
+            uri?.let {
+                runCatching {
+                    applicationContext.contentResolver.releasePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+            }
         }
     }
 
@@ -196,6 +220,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_ERROR = "error"
         const val KEY_STAGE = "stage"
         const val KEY_PERCENT = "percent"
+        const val KEY_URI = "uri"
+        const val KEY_SELECTED = "selected"
+        const val KEY_SIZE = "size"
 
         const val SOURCE_BUNDLED = "bundled"
         const val SOURCE_FILE = "file"

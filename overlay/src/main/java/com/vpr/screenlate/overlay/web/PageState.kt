@@ -32,11 +32,13 @@ object PageState {
         message: String?,
         pending: Boolean = false,
         engine: String = "",
+        hideSource: Boolean = false,
     ): String = json.encodeToString(
         StateDto(
             theme = theme(dark),
             pending = pending,
             engine = engine,
+            hideSource = hideSource,
             source = SourceDto(text, matched),
             results = results,
             message = message,
@@ -51,6 +53,7 @@ object PageState {
                 "addAnywayWithPicture" to context.getString(R.string.overlay_add_anyway_picture),
                 "audioLoading" to context.getString(R.string.overlay_audio_loading),
                 "audioNone" to context.getString(R.string.audio_not_found),
+                "close" to context.getString(R.string.overlay_close),
             ),
         ),
     )
@@ -90,6 +93,8 @@ object PageState {
         val theme: String,
         val pending: Boolean = false,
         val engine: String = "",
+        /** The popup starts with the first entry instead of the recognized text (see `Popup` in popup.js). */
+        val hideSource: Boolean = false,
         val source: SourceDto,
         val results: List<LookupResult> = emptyList(),
         val kanji: KanjiResult? = null,

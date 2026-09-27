@@ -44,6 +44,7 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Closing | Bubble back into the dock, or ✕ (closes the popup and docks the bubble). Touches elsewhere pass through to the app |
 | Dock | Right edge by default, can be moved to the left, height remembered. The bubble docks only when dragged to the very edge (a few dp), so words at the edge stay reachable. Bubble 48dp by default with a size setting; the docked handle sticks out less |
 | Visibility | Quick Settings tile (phase 1). Hide in selected apps (phase 4) |
+| Popup header | Setting "Show the recognized text above the entries" (Bubble settings), on by default. Off: the popup starts with the first entry; ✕ moves into the first entry's button row. The header still appears after following a link, since it holds the back button (owner request 2026-09-27; placement and the link case decided by the agent) |
 | Popup placement | As in Poe: above the word, or below the bubble, never covering it; the bubble window always stays above the popup. ~85% width (≤420dp) × up to ~35% height, shrinking to the free space down to a minimum, scrollable |
 | Misc | Word highlight on. Haptics off (configurable). Theme follows system with an override |
 | Anki | Official AnkiDroid API (LGPL-3.0, JitPack). Duplicate settings as in Yomitan: check on, scope collection/deck/deck-root (default collection), check all models off, behavior prevent/overwrite/new (default prevent, changed in phase 5). With prevent a duplicate shows 📖 instead of ➕: tap opens the existing note in AnkiDroid, long press adds anyway. A word added during the current scan shows 📖 until the bubble is docked. Overwrite uses Yomitan's per-field overwrite modes |
@@ -181,6 +182,7 @@ States: `Docked → Dragging → Floating(+Popup)`.
    - not planned: Poe's dot that pops out of the handle when undocking (cosmetic, owner agreed to skip); kanji notes.
 6. **Build and publishing** (after phase 5): GitHub Actions per the CI row, per-ABI and universal APKs, source archive with submodules, dock glyph per language; release key set up with the owner at the end.
 7. **Release readiness**: About screen with licenses, dictionary attribution and "Share logs"; versioning from tags; in-app update check against GitHub Releases; wording pass that removes the cloud OCR provider from user-facing texts and docs (may be done earlier).
+   - later (owner's questions of 2026-09-27): faster collection conversion (byte-level parsing without decoding everything, uncompressed intermediate archives; compare output with the current converter on the owner's export before switching); e-ink readers on Android — likely to work (Android 11+, no Google services needed; 32-bit build from the CI row), an "e-ink mode" (grayscale high-contrast theme, no animations or fading) is an open question for the owner.
 8. **More languages** (interview per language first): English, Chinese, Korean, generic alphabetic languages.
 
 ## Documentation tasks
@@ -218,5 +220,7 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: owner decisions for the rest of phase 5 — broken-setup warnings (grey ➕ with a short reason and an "Open Screenlate" button); AnkiDroid on the emulator reset after a backup of the owner's collection; frequency lists in the catalog when published by their authors; localhost audio sources imported as they are. Settings placement, test environment and kanji notes decided by the agent (see the decision table).
 - 2026-09-27: owner answers on the remaining points — one Settings screen; romaji for lookups everywhere (off by default); Yomitan's full audio source set; text replacements empty by default; checklist for collection imports; both orientations without per-orientation memory (rotation docks); no kanji notes.
 - 2026-09-27: owner request — single kanji entries of the matched word below the results, as in Poe (setting, on by default).
+- 2026-09-27: owner questions — speeding up dictionary imports further and running on Android e-ink readers; recorded under phase 7 as later items, the e-ink mode needs the owner's answer.
+- 2026-09-27: owner request — a setting to hide the popup's recognized-text header (on by default); ✕ moves down to the first entry.
 - 2026-09-27: owner correction — the popup's source chip may keep saying "Lens"; only docs and descriptive texts avoid the name.
 - 2026-09-27: owner answers for phases 5–8 — templates re-applied by the button only; max results 32 with a setting; missing dictionaries restored or re-downloaded with a warning; no mention of Google Lens in user-facing texts and docs; CI, signing, ABIs, dock glyph, About screen, logs, versioning, distribution and languages as in the decision table.

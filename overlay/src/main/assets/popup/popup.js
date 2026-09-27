@@ -10,6 +10,7 @@
  *   source: { text, matched },     lookup text and the length of its matched prefix (code points)
  *   results: [LookupResult],       see dictionary.api.model.LookupResult
  *   message: string,               shown instead of results
+ *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
  *   labels: { ... }                localized strings
  * }
  *
@@ -32,6 +33,7 @@ const Popup = (() => {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
         open: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 6.5C10.3 5.2 8 4.5 5 4.5H3.5v13H5c3 0 5.3.7 7 2 1.7-1.3 4-2 7-2h1.5v-13H19c-3 0-5.3.7-7 2zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+        close: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     };
 
@@ -62,8 +64,15 @@ const Popup = (() => {
 
     // region Header
 
+    /** The header holds the back button, so it stays after following a link; messages keep it for ✕. */
+    function compact(state) {
+        return Boolean(state.hideSource) && history.length === 0 && !state.message && !state.kanji &&
+            (state.results || []).length > 0;
+    }
+
     function drawHeader(state) {
         document.documentElement.dataset.theme = state.theme || 'light';
+        document.documentElement.dataset.compact = String(compact(state));
         backButton.hidden = history.length === 0;
         spinner.hidden = !state.pending;
         engine.hidden = !state.engine;
@@ -83,6 +92,7 @@ const Popup = (() => {
 
     function resultsKey(state) {
         return JSON.stringify([
+            compact(state),
             state.message,
             state.source,
             state.kanji?.character,
@@ -166,6 +176,11 @@ const Popup = (() => {
 
     function actionButtons(result, index) {
         const container = element('div', 'entry-actions');
+        if (index === 0 && document.documentElement.dataset.compact === 'true') {
+            const close = iconButton('close', ICONS.close, labelOf('close'));
+            close.addEventListener('click', () => ScreenlateBridge.onClose());
+            container.append(close);
+        }
         const copy = iconButton('copy', ICONS.copy, labelOf('copy'));
         copy.addEventListener('click', () => ScreenlateBridge.onCopy(result.term.expression));
         container.append(copy);

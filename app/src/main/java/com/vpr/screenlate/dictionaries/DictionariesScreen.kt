@@ -54,16 +54,17 @@ import java.util.Locale
 /** Installed dictionaries (order, enable, delete), running imports and the download catalog. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hiltViewModel()) {
+fun DictionariesScreen(
+    onBack: () -> Unit,
+    onOpenYomitanImport: () -> Unit,
+    viewModel: DictionariesViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.importFrom(uri)
-    }
-    val backupPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) viewModel.importYomitanBackup(uri)
     }
 
     Scaffold(
@@ -92,7 +93,7 @@ fun DictionariesScreen(onBack: () -> Unit, viewModel: DictionariesViewModel = hi
                 Text(stringResource(R.string.dictionaries_import_file))
             }
 
-            OutlinedButton(onClick = { backupPicker.launch(BACKUP_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = onOpenYomitanImport, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.dictionaries_import_yomitan_backup))
             }
             OutlinedButton(
@@ -355,7 +356,7 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
                 else -> stringResource(R.string.dictionaries_task_importing, name)
             }
             Text(status, style = MaterialTheme.typography.bodyMedium)
-            val percent = task.downloadPercent
+            val percent = task.percent
             if (percent != null) {
                 LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth())
             } else {
@@ -423,4 +424,3 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
 }
 
 private val ARCHIVE_TYPES = arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")
-private val BACKUP_TYPES = arrayOf("application/json", "text/plain", "application/octet-stream")

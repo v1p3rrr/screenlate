@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
-import com.vpr.screenlate.dictionaries.DictionariesViewModel
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -39,15 +39,17 @@ private val JSON_TYPES = arrayOf("application/json", "application/octet-stream",
 @Composable
 fun YomitanImportScreen(
     onBack: () -> Unit,
+    onOpenDictionaries: () -> Unit,
     viewModel: YomitanImportViewModel = hiltViewModel(),
-    dictionaries: DictionariesViewModel = hiltViewModel(),
+    collection: CollectionImportViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val settingsPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.load(uri)
     }
+    val collectionState by collection.state.collectAsStateWithLifecycle()
     val collectionPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) dictionaries.importYomitanBackup(uri)
+        if (uri != null) collection.load(uri)
     }
     SettingsScaffold(stringResource(R.string.yomitan_import_title), onBack) { padding ->
         Column(
@@ -80,13 +82,61 @@ fun YomitanImportScreen(
                 }
             }
             SectionCard(title = stringResource(R.string.yomitan_import_dictionaries)) {
-                Text(stringResource(R.string.yomitan_import_dictionaries_hint))
-                OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.dictionaries_import_yomitan_backup))
+                when (val current = collectionState) {
+                    CollectionState.Idle, CollectionState.NotCollection -> {
+                        Text(stringResource(R.string.yomitan_import_dictionaries_hint))
+                        if (current == CollectionState.NotCollection) {
+                            Text(stringResource(R.string.yomitan_collection_not_collection), color = MaterialTheme.colorScheme.error)
+                        }
+                        OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.dictionaries_import_yomitan_backup))
+                        }
+                    }
+                    CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    is CollectionState.Listed -> CollectionChecklist(current, collection)
+                    is CollectionState.Queued -> {
+                        Text(stringResource(R.string.yomitan_collection_queued, current.count))
+                        Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.home_dictionaries_open))
+                        }
+                        TextButton(onClick = collection::reset) { Text(stringResource(R.string.yomitan_import_another)) }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun CollectionChecklist(state: CollectionState.Listed, viewModel: CollectionImportViewModel) {
+    Text(stringResource(R.string.yomitan_collection_choose), style = MaterialTheme.typography.labelLarge)
+    state.items.forEach { item ->
+        val dictionary = item.dictionary
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { viewModel.toggle(dictionary.title) },
+        ) {
+            Checkbox(checked = item.checked, onCheckedChange = { viewModel.toggle(dictionary.title) })
+            Column {
+                Text(dictionary.title)
+                Hint(
+                    listOfNotNull(
+                        stringResource(R.string.yomitan_collection_entries, dictionary.entries),
+                        stringResource(R.string.yomitan_collection_media, dictionary.media).takeIf { dictionary.media > 0 },
+                        stringResource(R.string.yomitan_collection_installed).takeIf { item.installed },
+                    ).joinToString(" · "),
+                )
+            }
+        }
+    }
+    Hint(stringResource(R.string.yomitan_collection_hint))
+    Button(
+        onClick = viewModel::import,
+        enabled = state.items.any { it.checked },
+        modifier = Modifier.fillMaxWidth(),
+    ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked })) }
 }
 
 @Composable

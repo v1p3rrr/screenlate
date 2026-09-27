@@ -257,4 +257,14 @@
     <string name="yomitan_summary_audio_off">Audio is off in Yomitan; no sources were set</string>
     <string name="yomitan_summary_audio_unknown">Unsupported audio sources: %1$s</string>
     <string name="yomitan_summary_lookup">Scan length %1$s, entries per lookup %2$s, text replacement groups: %3$d</string>
+    <string name="yomitan_collection_not_collection">This file is not a Yomitan dictionary collection export.</string>
+    <string name="yomitan_collection_choose">Dictionaries in the file</string>
+    <string name="yomitan_collection_entries">%1$d entries</string>
+    <string name="yomitan_collection_media">%1$d images</string>
+    <string name="yomitan_collection_installed">already installed</string>
+    <string name="yomitan_collection_hint">Installed dictionaries start unchecked; a checked one replaces the installed copy. Large files take a few minutes.</string>
+    <string name="yomitan_collection_import">Import %1$d</string>
+    <string name="yomitan_collection_queued">Importing %1$d dictionaries in the background; the Dictionaries screen shows the progress.</string>
+    <string name="bubble_show_source">Show the recognized text above the entries</string>
+    <string name="bubble_show_source_hint">Off: the popup starts right with the entry, and ✕ sits next to its buttons.</string>
 </resources>

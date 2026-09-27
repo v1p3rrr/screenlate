@@ -73,7 +73,7 @@
     {
       "id": "kanjidic-english",
       "title": "KANJIDIC",
-      "installedTitle": "KANJIDIC",
+      "installedTitle": "KANJIDIC [",
       "kind": "KANJI",
       "sourceLanguage": "ja",
       "targetLanguage": "en",
@@ -87,6 +87,342 @@
       "sizeMb": 1,
       "license": "CC BY-SA 4.0",
       "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+    },
+    {
+      "id": "jmdict-english",
+      "title": "JMdict",
+      "installedTitle": "JMdict [",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "en",
+      "description": {
+        "en": "The Japanese–English dictionary of the EDRDG, the source of most Japanese–English dictionaries.",
+        "ru": "Японско-английский словарь EDRDG — основа большинства японско-английских словарей."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_english.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_english.zip",
+      "resolveLatest": true,
+      "sizeMb": 14,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-russian",
+      "title": "JMdict (Russian)",
+      "installedTitle": "JMdict (Russian)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ru",
+      "description": {
+        "en": "Russian glosses of JMdict: shorter than Kolobok, a good second opinion.",
+        "ru": "Русские переводы JMdict: короче Колобка, полезен как второй словарь."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_russian.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_russian.zip",
+      "resolveLatest": true,
+      "sizeMb": 3,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmnedict",
+      "title": "JMnedict",
+      "installedTitle": "JMnedict",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "en",
+      "description": {
+        "en": "Readings of Japanese names of people and places.",
+        "ru": "Чтения японских имён людей и географических названий."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMnedict.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMnedict.zip",
+      "resolveLatest": true,
+      "sizeMb": 10,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-german",
+      "title": "JMdict (German)",
+      "installedTitle": "JMdict (German)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "de",
+      "description": {
+        "en": "German glosses of JMdict.",
+        "ru": "Переводы JMdict на немецкий язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_german.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_german.zip",
+      "resolveLatest": true,
+      "sizeMb": 6,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-french",
+      "title": "JMdict (French)",
+      "installedTitle": "JMdict (French)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "fr",
+      "description": {
+        "en": "French glosses of JMdict.",
+        "ru": "Переводы JMdict на французский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_french.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_french.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-spanish",
+      "title": "JMdict (Spanish)",
+      "installedTitle": "JMdict (Spanish)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "es",
+      "description": {
+        "en": "Spanish glosses of JMdict.",
+        "ru": "Переводы JMdict на испанский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_spanish.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_spanish.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-dutch",
+      "title": "JMdict (Dutch)",
+      "installedTitle": "JMdict (Dutch)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "nl",
+      "description": {
+        "en": "Dutch glosses of JMdict.",
+        "ru": "Переводы JMdict на нидерландский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_dutch.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_dutch.zip",
+      "resolveLatest": true,
+      "sizeMb": 2,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-hungarian",
+      "title": "JMdict (Hungarian)",
+      "installedTitle": "JMdict (Hungarian)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "hu",
+      "description": {
+        "en": "Hungarian glosses of JMdict.",
+        "ru": "Переводы JMdict на венгерский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_hungarian.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_hungarian.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-swedish",
+      "title": "JMdict (Swedish)",
+      "installedTitle": "JMdict (Swedish)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "sv",
+      "description": {
+        "en": "Swedish glosses of JMdict.",
+        "ru": "Переводы JMdict на шведский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_swedish.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_swedish.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "jmdict-slovenian",
+      "title": "JMdict (Slovenian)",
+      "installedTitle": "JMdict (Slovenian)",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "sl",
+      "description": {
+        "en": "Slovenian glosses of JMdict.",
+        "ru": "Переводы JMdict на словенский язык."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_slovenian.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/JMdict_slovenian.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project"
+    },
+    {
+      "id": "wiktionary-ja-en",
+      "title": "Wiktionary (ja–en)",
+      "installedTitle": "kty-ja-en",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "en",
+      "description": {
+        "en": "Japanese entries of the English Wiktionary, with etymology and usage notes.",
+        "ru": "Японские статьи английского Викисловаря, с этимологией и пометами."
+      },
+      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-en-index.json",
+      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-en.zip",
+      "resolveLatest": true,
+      "sizeMb": 22,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ja-ru",
+      "title": "Wiktionary (ja–ru)",
+      "installedTitle": "kty-ja-ru",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ru",
+      "description": {
+        "en": "Japanese entries of the Russian Wiktionary.",
+        "ru": "Японские статьи русского Викисловаря."
+      },
+      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ru-index.json",
+      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ru.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ja-ja",
+      "title": "Wiktionary (ja–ja)",
+      "installedTitle": "kty-ja-ja",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ja",
+      "description": {
+        "en": "Japanese entries of the Japanese Wiktionary (monolingual).",
+        "ru": "Статьи японского Викисловаря (толковый японский)."
+      },
+      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ja-index.json",
+      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ja.zip",
+      "resolveLatest": true,
+      "sizeMb": 13,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+    },
+    {
+      "id": "kanjidic-french",
+      "title": "KANJIDIC (French)",
+      "installedTitle": "KANJIDIC (French)",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "fr",
+      "description": {
+        "en": "Kanji readings and French meanings.",
+        "ru": "Чтения кандзи и значения на французском."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_french.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_french.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+    },
+    {
+      "id": "kanjidic-spanish",
+      "title": "KANJIDIC (Spanish)",
+      "installedTitle": "KANJIDIC (Spanish)",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "es",
+      "description": {
+        "en": "Kanji readings and Spanish meanings.",
+        "ru": "Чтения кандзи и значения на испанском."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_spanish.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_spanish.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+    },
+    {
+      "id": "kanjidic-portuguese",
+      "title": "KANJIDIC (Portuguese)",
+      "installedTitle": "KANJIDIC (Portuguese)",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "pt",
+      "description": {
+        "en": "Kanji readings and Portuguese meanings.",
+        "ru": "Чтения кандзи и значения на португальском."
+      },
+      "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_portuguese.json",
+      "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_portuguese.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+    },
+    {
+      "id": "jpdb-v2",
+      "title": "JPDB v2.2",
+      "installedTitle": "JPDBv2",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies from the jpdb.io corpus of anime, dramas, novels and visual novels; kana readings are ranked separately.",
+        "ru": "Частотность по корпусу jpdb.io (аниме, дорамы, романы, визуальные новеллы); чтения каной ранжируются отдельно."
+      },
+      "downloadUrl": "https://github.com/Kuuuube/yomitan-dictionaries/releases/download/yomitan-permalink/JPDB_v2.2_Frequency_Kana.zip",
+      "resolveLatest": false,
+      "sizeMb": 6,
+      "license": "Published by the authors",
+      "homepage": "https://github.com/Kuuuube/yomitan-dictionaries"
+    },
+    {
+      "id": "bccwj",
+      "title": "BCCWJ",
+      "installedTitle": "BCCWJ",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies from the Balanced Corpus of Contemporary Written Japanese (books, press, web).",
+        "ru": "Частотность по сбалансированному корпусу современного письменного японского (книги, пресса, веб)."
+      },
+      "downloadUrl": "https://github.com/Kuuuube/yomitan-dictionaries/releases/download/yomitan-permalink/BCCWJ_SUW_LUW_combined.zip",
+      "resolveLatest": false,
+      "sizeMb": 18,
+      "license": "NINJAL frequency list",
+      "homepage": "https://github.com/toasted-nutbread/yomichan-bccwj-frequency-dictionary"
+    },
+    {
+      "id": "aozora-jukugo",
+      "title": "青空文庫熟語",
+      "installedTitle": "青空文庫熟語",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies of kanji compounds in Aozora Bunko literature, including rare ones other lists lack.",
+        "ru": "Частотность канго (слов из кандзи) в литературе «Аодзора бунко», включая редкие."
+      },
+      "downloadUrl": "https://github.com/MarvNC/yomitan-dictionaries/raw/master/dl/%5BFreq%5D%20Aozora%20Bunko.zip",
+      "resolveLatest": false,
+      "sizeMb": 1,
+      "license": "Published by the authors",
+      "homepage": "https://vtrm.net/japanese/kanji-jukugo-frequency/en"
     }
   ]
 }
