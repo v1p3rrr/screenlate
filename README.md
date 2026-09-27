@@ -57,7 +57,9 @@ keyAlias=...
 keyPassword=...
 ```
 
-Both files are ignored by git.
+Both files are ignored by git. Write the path with forward slashes, also on Windows: a backslash in this file is an escape character, so a password should not contain one either.
+
+For releases from CI, the same values go into the repository secrets `SIGNING_KEYSTORE_BASE64` (the key file in Base64), `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`. A tag `vX.Y.Z` then builds, signs and publishes the release; notes come from `.github/release-notes/vX.Y.Z.md` if it exists, otherwise from the commits since the previous tag.
 
 ## After installing
 
