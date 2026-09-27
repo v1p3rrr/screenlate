@@ -3,8 +3,6 @@ package com.vpr.screenlate.overlay.anki
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.util.Log
 import android.widget.Toast
 import com.vpr.screenlate.core.anki.AddResult
@@ -15,8 +13,12 @@ import com.vpr.screenlate.core.anki.NoteRequest
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
 import com.vpr.screenlate.core.anki.audio.AudioClip
 import com.vpr.screenlate.core.anki.audio.AudioFinder
+import com.vpr.screenlate.core.anki.audio.AudioPlayer
+import com.vpr.screenlate.core.anki.audio.Pronunciation
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
-import com.vpr.screenlate.core.anki.audio.AudioSourceType
+import com.vpr.screenlate.core.anki.AnkiStatus
+import com.vpr.screenlate.core.anki.label
+import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
@@ -65,6 +67,7 @@ data class NoteContext(
  *
  * @param noteContext waits for the final OCR result and describes where the word came from.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
+ * @param onOpenAnkiSettings shows Screenlate's Anki settings, where a broken setup is explained.
  */
 class PopupNotes(
     private val context: Context,
@@ -74,15 +77,18 @@ class PopupNotes(
     private val notes: AnkiNotes,
     private val audio: AudioFinder,
     private val audioSettings: AudioSettingsRepository,
+    private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
     private val language: Language,
     private val noteContext: suspend () -> NoteContext,
     private val cropEditor: CropEditor?,
     private val onAnkiOpened: () -> Unit,
+    private val onOpenAnkiSettings: () -> Unit,
 ) : LookupPage.NoteActions {
     private val json = Json { ignoreUnknownKeys = true }
     private var duplicateJob: Job? = null
-    private var player: MediaPlayer? = null
+    private var ankiStatus: AnkiStatus? = null
+    private var ankiStatusAt = 0L
     private var lastAutoPlayed: Pair<String, String>? = null
     private var autoPlayJob: Job? = null
     private var pendingAutoPlay: Pair<String, String>? = null
@@ -104,15 +110,27 @@ class PopupNotes(
 
     /** Shows or hides the entry buttons according to the current settings. Call before showing results. */
     suspend fun refreshActions() {
-        val ankiReady = notes.ready()
+        val status = ankiStatus()
+        val ankiReady = status == AnkiStatus.Ready
         val audioEnabled = audioSettings.current().sources.isNotEmpty()
-        page.setActions(anki = ankiReady, audio = audioEnabled)
+        val problem = (status as? AnkiStatus.Broken)?.problem?.let { context.getString(it.message) }
+        page.setActions(anki = ankiReady, audio = audioEnabled, ankiProblem = problem)
         if (ankiReady) {
             val config = buildJsonObject {
                 put("markers", buildJsonArray { notes.usedMarkers().forEach { add(JsonPrimitive(it)) } })
                 put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
             }
             page.setNoteConfig(config)
+        }
+    }
+
+    /** The Anki setup is checked against AnkiDroid at most every few seconds, not for every word. */
+    private suspend fun ankiStatus(): AnkiStatus {
+        val now = System.currentTimeMillis()
+        ankiStatus?.takeIf { now - ankiStatusAt < ANKI_STATUS_TTL_MS }?.let { return it }
+        return notes.status().also {
+            ankiStatus = it
+            ankiStatusAt = now
         }
     }
 
@@ -160,6 +178,7 @@ class PopupNotes(
     /** The scan ended (bubble docked or screen left): forget notes added and clips chosen during it. */
     fun onClosed() {
         onResultsHidden()
+        ankiStatus = null
         lastAutoPlayed = null
         addedThisScan.clear()
         openableNotes.clear()
@@ -169,7 +188,7 @@ class PopupNotes(
     /** Words added during this scan get 📖; duplicates get 📖 or a mark, depending on the duplicate behavior. */
     private suspend fun markNotes() {
         val settings = notes.settings()
-        if (!notes.ready()) return
+        if (ankiStatus() != AnkiStatus.Ready) return
         val terms = currentTerms() ?: return
         val states = mutableMapOf<Int, String>()
         terms.forEachIndexed { index, term ->
@@ -243,7 +262,7 @@ class PopupNotes(
                     null
                 }
                 val screenshot = picture?.let { saveScreenshot(it).also { _ -> it.recycle() } }
-                val clip = if ("audio" in used) chosenClips[term] ?: audio.find(term.first, term.second) else null
+                val clip = if ("audio" in used) chosenClips[term] ?: audio.find(term.first, term.second, language) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
                 screenshot?.delete()
                 report(index, term, result)
@@ -265,11 +284,13 @@ class PopupNotes(
 
     override fun onPlayAudio(index: Int, expression: String, reading: String) = play(expression, reading)
 
+    override fun onOpenApp() = onOpenAnkiSettings()
+
     override fun onAudioMenu(index: Int, expression: String, reading: String) {
         audioMenuJob?.cancel()
         page.showAudioMenu(index, buildJsonArray { }, loading = true)
         audioMenuJob = scope.launch {
-            val candidates = audio.candidates(expression, reading)
+            val candidates = audio.candidates(expression, reading, language)
             menuCandidates = candidates
             val sources = audioSettings.current().sources
             val items = buildJsonArray {
@@ -292,45 +313,34 @@ class PopupNotes(
         scope.launch {
             val terms = currentTerms() ?: return@launch
             val term = terms.getOrNull(index) ?: return@launch
+            if (candidate.isSpeech) {
+                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, language))) {
+                    toast(context.getString(R.string.audio_no_voice))
+                }
+                return@launch
+            }
             val clip = audio.download(candidate, term.first, term.second)
             if (clip == null) {
                 toast(context.getString(R.string.audio_not_found))
                 return@launch
             }
             chosenClips[term] = clip
-            playClip(clip)
+            player.play(Pronunciation.Clip(clip))
         }
     }
 
     /** Plays the clip chosen for this term in the menu, or the first one the sources have. */
     fun play(expression: String, reading: String) {
         scope.launch {
-            val clip = chosenClips[expression to reading] ?: audio.find(expression, reading)
-            if (clip == null) {
+            val pronunciation = chosenClips[expression to reading]?.let { Pronunciation.Clip(it) }
+                ?: audio.pronunciation(expression, reading, language)
+            if (pronunciation == null) {
                 toast(context.getString(R.string.audio_not_found))
                 return@launch
             }
-            playClip(clip)
-        }
-    }
-
-    private suspend fun playClip(clip: AudioClip) {
-        val volume = audioSettings.current().volume.coerceIn(0, 100) / 100f
-        player?.release()
-        player = MediaPlayer().apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .build(),
-            )
-            runCatching {
-                setDataSource(clip.file.absolutePath)
-                setVolume(volume, volume)
-                setOnPreparedListener { it.start() }
-                setOnCompletionListener { it.reset() }
-                prepareAsync()
-            }.onFailure { Log.w(TAG, "Cannot play an audio clip", it.redacted()) }
+            if (!player.play(pronunciation) && pronunciation is Pronunciation.Speech) {
+                toast(context.getString(R.string.audio_no_voice))
+            }
         }
     }
 
@@ -338,8 +348,6 @@ class PopupNotes(
         cropEditor?.dismiss()
         duplicateJob?.cancel()
         audioMenuJob?.cancel()
-        player?.release()
-        player = null
         page.noteActions = null
     }
 
@@ -351,7 +359,8 @@ class PopupNotes(
         val parts = mutableListOf<SentencePart>()
         var offset = 0
         while (offset < sentence.length) {
-            val result = runCatching { lookup.lookup(sentence.substring(offset), language) }.getOrDefault(emptyList())
+            val result = runCatching { lookup.lookup(sentence.substring(offset), language, extraEntries = false) }
+                .getOrDefault(emptyList())
                 .firstOrNull()
             val matched = result?.matched?.takeIf { it.isNotEmpty() && sentence.startsWith(it, offset) }
             if (result != null && matched != null) {
@@ -429,13 +438,7 @@ class PopupNotes(
     }
 
     private fun sourceLabel(candidate: AudioCandidate, sourceCount: Int): String {
-        val name = context.getString(
-            when (candidate.source.type) {
-                AudioSourceType.JAPANESE_POD_101 -> R.string.overlay_audio_source_jpod
-                AudioSourceType.URL -> R.string.overlay_audio_source_url
-                AudioSourceType.CUSTOM_JSON -> R.string.overlay_audio_source_json
-            },
-        )
+        val name = context.getString(candidate.source.type.label)
         return if (sourceCount > 1) "${candidate.sourceIndex + 1}. $name" else name
     }
 
@@ -467,6 +470,7 @@ class PopupNotes(
     private companion object {
         const val TAG = "PopupNotes"
         const val DUPLICATE_CHECK_DELAY_MS = 300L
+        const val ANKI_STATUS_TTL_MS = 5_000L
         const val AUTO_PLAY_DELAY_MS = 500L
         const val SCREENSHOT_QUALITY = 85
         val IMG_SRC = Regex("""src="([^"]+)"""")

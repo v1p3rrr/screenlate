@@ -36,7 +36,6 @@
     <string name="overlay_add_anyway">Add anyway</string>
     <string name="overlay_add_anyway_picture">Add anyway, with a picture</string>
     <string name="overlay_audio_loading">Looking for audio…</string>
-    <string name="overlay_audio_source_jpod" translatable="false">JapanesePod101</string>
-    <string name="overlay_audio_source_url">Custom URL</string>
-    <string name="overlay_audio_source_json">Custom URL (JSON)</string>
+    <string name="overlay_open_app">Open Anki settings</string>
+    <string name="audio_no_voice">No text-to-speech voice for this language is installed.</string>
 </resources>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="audio_source_jpod" translatable="false">JapanesePod101</string>
+    <string name="audio_source_languagepod" translatable="false">LanguagePod101</string>
+    <string name="audio_source_jisho" translatable="false">Jisho</string>
+    <string name="audio_source_lingualibre" translatable="false">Lingua Libre</string>
+    <string name="audio_source_wiktionary" translatable="false">Wiktionary</string>
+    <string name="audio_source_tts">Text-to-speech</string>
+    <string name="audio_source_url">Custom URL</string>
+    <string name="audio_source_json">Custom URL (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid is not installed.</string>
+    <string name="anki_problem_no_permission">Screenlate lost access to AnkiDroid.</string>
+    <string name="anki_problem_model_missing">The note type is gone from AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">The deck is gone from AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">The fields of the note type changed.</string>
+</resources>

@@ -10,6 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.zip.ZipInputStream
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,13 +35,9 @@ class BundledDictionaries @Inject constructor(
         val displayName: String get() = name.removeSuffix(".zip").substringAfter('-')
     }
 
-    suspend fun pending(): List<Asset> = withContext(Dispatchers.IO) {
+    suspend fun pending(): List<Asset> {
         val installed = dataStore.data.first()[INSTALLED].orEmpty()
-        context.assets.list(ASSET_DIR).orEmpty()
-            .filter { it.endsWith(".zip") }
-            .sorted()
-            .map { name -> Asset(name, context.assets.openFd("$ASSET_DIR/$name").use { it.length }) }
-            .filter { it.key !in installed }
+        return all().filter { it.key !in installed }
     }
 
     suspend fun copy(asset: Asset, target: File) = withContext(Dispatchers.IO) {
@@ -51,6 +51,33 @@ class BundledDictionaries @Inject constructor(
             val others = prefs[INSTALLED].orEmpty().filterNot { it.substringBeforeLast(':') == asset.name }
             prefs[INSTALLED] = others.toSet() + asset.key
         }
+    }
+
+    /** Marks every archive as not installed, so the next bundled install imports them again. */
+    suspend fun forgetAll(assets: Collection<Asset>) {
+        val names = assets.map { it.name }.toSet()
+        dataStore.edit { prefs ->
+            prefs[INSTALLED] = prefs[INSTALLED].orEmpty().filterNot { it.substringBeforeLast(':') in names }.toSet()
+        }
+    }
+
+    /** Every shipped archive. */
+    suspend fun all(): List<Asset> = withContext(Dispatchers.IO) {
+        context.assets.list(ASSET_DIR).orEmpty()
+            .filter { it.endsWith(".zip") }
+            .sorted()
+            .map { name -> Asset(name, context.assets.openFd("$ASSET_DIR/$name").use { it.length }) }
+    }
+
+    /** The dictionary title in an archive's `index.json`. */
+    suspend fun titleOf(asset: Asset): String? = withContext(Dispatchers.IO) {
+        runCatching {
+            ZipInputStream(context.assets.open("$ASSET_DIR/${asset.name}").buffered()).use { zip ->
+                generateSequence { zip.nextEntry }
+                    .firstOrNull { it.name == "index.json" }
+                    ?.let { Json.parseToJsonElement(zip.readBytes().decodeToString()).jsonObject["title"]?.jsonPrimitive?.content }
+            }
+        }.getOrNull()
     }
 
     private companion object {

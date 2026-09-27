@@ -227,6 +227,38 @@ a {
     background: var(--frequency-bg);
 }
 
+.action-add.unavailable {
+    color: var(--muted);
+    opacity: 0.5;
+}
+
+.note-problem {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 6px 0 2px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--tag-bg);
+    color: var(--fg);
+    font-size: 0.9em;
+}
+
+.note-problem span {
+    flex: 1 1 12em;
+}
+
+.note-problem-open {
+    border: none;
+    border-radius: 16px;
+    padding: 6px 12px;
+    background: var(--accent);
+    color: var(--bg);
+    font: inherit;
+    font-weight: 600;
+}
+
 .action-add[data-state="error"] {
     color: #c62828;
 }

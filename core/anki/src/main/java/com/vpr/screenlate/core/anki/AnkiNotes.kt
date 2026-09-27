@@ -35,6 +35,18 @@ sealed interface AddResult {
     data class Failed(val message: String) : AddResult
 }
 
+/** Something that broke in the Anki setup without the user changing Screenlate's settings. */
+enum class AnkiProblem { NOT_INSTALLED, NO_PERMISSION, MODEL_MISSING, DECK_MISSING, FIELDS_CHANGED }
+
+sealed interface AnkiStatus {
+    data object Ready : AnkiStatus
+
+    /** Anki export was never set up; nothing to warn about. */
+    data object NotConfigured : AnkiStatus
+
+    data class Broken(val problem: AnkiProblem) : AnkiStatus
+}
+
 /** Builds notes from field templates and adds them to AnkiDroid with the configured duplicate handling. */
 @Singleton
 class AnkiNotes @Inject constructor(
@@ -50,6 +62,29 @@ class AnkiNotes @Inject constructor(
         val settings = settings()
         val modelId = settings.modelId ?: return false
         return settings.configured && anki.availability() == AnkiAvailability.READY && fieldNames(modelId).isNotEmpty()
+    }
+
+    /**
+     * Checks the configured deck, note type and fields against AnkiDroid. Asks AnkiDroid every time, so it is meant
+     * for occasional checks (screen resume, popup opening), not for every note.
+     */
+    suspend fun status(): AnkiStatus {
+        val settings = settings()
+        val modelId = settings.modelId
+        if (!settings.configured || modelId == null) return AnkiStatus.NotConfigured
+        when (anki.availability()) {
+            AnkiAvailability.NOT_INSTALLED -> return AnkiStatus.Broken(AnkiProblem.NOT_INSTALLED)
+            AnkiAvailability.NO_PERMISSION -> return AnkiStatus.Broken(AnkiProblem.NO_PERMISSION)
+            AnkiAvailability.READY -> Unit
+        }
+        val fields = anki.fields(modelId)
+        synchronized(fieldCache) { if (fields.isEmpty()) fieldCache.remove(modelId) else fieldCache[modelId] = fields }
+        if (fields.isEmpty()) return AnkiStatus.Broken(AnkiProblem.MODEL_MISSING)
+        val decks = anki.decks()
+        // An empty list means AnkiDroid did not answer, not that every deck is gone.
+        if (decks.isNotEmpty() && decks.none { it.id == settings.deckId }) return AnkiStatus.Broken(AnkiProblem.DECK_MISSING)
+        if (settings.fields.keys != fields.toSet()) return AnkiStatus.Broken(AnkiProblem.FIELDS_CHANGED)
+        return AnkiStatus.Ready
     }
 
     /** Markers used by any field template; callers skip expensive markers (audio, screenshot) that are unused. */

@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import androidx.webkit.WebViewAssetLoader
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.resume
 
 /**
@@ -73,6 +74,9 @@ class LookupPage(
 
         /** A clip from the audio menu was chosen. */
         fun onPlayClip(index: Int, clipId: String)
+
+        /** The button under an unavailable ➕ asks for the Anki settings, where the problem is explained. */
+        fun onOpenApp()
     }
 
     /** Receives the note and audio buttons; without it they do nothing. */
@@ -125,7 +129,11 @@ class LookupPage(
     fun setStyles(styles: JsonElement) = setPersistent("styles", "Popup.setStyles($styles)")
 
     /** Shows or hides the ➕ and 🔊 buttons of entries. */
-    fun setActions(anki: Boolean, audio: Boolean) = setPersistent("actions", "Popup.setActions({anki: $anki, audio: $audio})")
+    /** @param ankiProblem a short reason shown by a grey ➕ when Anki export is set up but broken. */
+    fun setActions(anki: Boolean, audio: Boolean, ankiProblem: String? = null) = setPersistent(
+        "actions",
+        "Popup.setActions({anki: $anki, audio: $audio, ankiProblem: ${ankiProblem?.let { JsonPrimitive(it) } ?: "null"}})",
+    )
 
     /** Markers used by the note fields and frequency dictionary modes (see `Popup.setNoteConfig`). */
     fun setNoteConfig(config: JsonElement) = setPersistent("noteConfig", "Popup.setNoteConfig($config)")
@@ -243,6 +251,9 @@ class LookupPage(
 
         @JavascriptInterface
         fun onPlayClip(index: Int, clipId: String) = post { noteActions?.onPlayClip(index, clipId) }
+
+        @JavascriptInterface
+        fun onOpenApp() = post { noteActions?.onOpenApp() }
 
         @JavascriptInterface
         fun onKanji(character: String) = post { callbacks.onKanji(character) }

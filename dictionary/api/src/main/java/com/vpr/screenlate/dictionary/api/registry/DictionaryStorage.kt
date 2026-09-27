@@ -19,6 +19,8 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
 
     fun directoryOf(dictionary: DictionaryEntity): File = File(root, dictionary.directory)
 
+    fun hasFiles(dictionary: DictionaryEntity): Boolean = directoryOf(dictionary).list()?.isNotEmpty() == true
+
     /** A fresh empty directory for one import; delete it when done. */
     fun newStagingDirectory(): File = File(staging, UUID.randomUUID().toString()).apply { mkdirs() }
 

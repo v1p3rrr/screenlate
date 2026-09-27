@@ -34,6 +34,6 @@
     <string name="overlay_add_anyway">Добавить всё равно</string>
     <string name="overlay_add_anyway_picture">Добавить всё равно, с картинкой</string>
     <string name="overlay_audio_loading">Ищу аудио…</string>
-    <string name="overlay_audio_source_url">Свой URL</string>
-    <string name="overlay_audio_source_json">Свой URL (JSON)</string>
+    <string name="overlay_open_app">Открыть настройки Anki</string>
+    <string name="audio_no_voice">Нет голоса синтеза речи для этого языка.</string>
 </resources>

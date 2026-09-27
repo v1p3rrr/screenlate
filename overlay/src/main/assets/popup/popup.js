@@ -180,7 +180,12 @@ const Popup = (() => {
             });
             container.append(play);
         }
-        if (actions.anki) {
+        if (actions.ankiProblem) {
+            const add = iconButton('add', ICONS.add, actions.ankiProblem);
+            add.classList.add('unavailable');
+            add.addEventListener('click', () => toggleNoteProblem(container));
+            container.append(add);
+        } else if (actions.anki) {
             const add = iconButton('add', ICONS.add, labelOf('addNote'));
             add.dataset.index = String(index);
             const addNote = (withScreenshot, force) => {
@@ -207,6 +212,22 @@ const Popup = (() => {
             container.append(add);
         }
         return container;
+    }
+
+    /** The reason why ➕ is grey, with a button that opens the app, below the entry's buttons. */
+    function toggleNoteProblem(container) {
+        const head = container.parentElement;
+        const next = head.nextElementSibling;
+        if (next && next.classList.contains('note-problem')) {
+            next.remove();
+            return;
+        }
+        const box = element('div', 'note-problem');
+        box.append(element('span', null, actions.ankiProblem));
+        const open = element('button', 'note-problem-open', labelOf('openApp'));
+        open.addEventListener('click', () => ScreenlateBridge.onOpenApp());
+        box.append(open);
+        head.after(box);
     }
 
     function noteContext() {
@@ -450,6 +471,15 @@ const Popup = (() => {
         content.scrollTop = 0;
     }
 
+    /** Development aid (scripts/popup-eval.mjs): redraws the current results and returns the time with layout. */
+    function measureRender() {
+        if (!current) return null;
+        const started = performance.now();
+        drawResults(current);
+        void content.scrollHeight;
+        return { entries: (current.results || []).length, ms: Math.round(performance.now() - started) };
+    }
+
     function update(state) {
         current = state;
         drawHeader(state);
@@ -484,7 +514,7 @@ const Popup = (() => {
         document.documentElement.dataset.embedded = String(Boolean(options.embedded));
     }
 
-    /** Which entry buttons to show: { anki: boolean, audio: boolean }. */
+    /** Which entry buttons to show: { anki: boolean, audio: boolean, ankiProblem: string | null }. */
     function setActions(newActions) {
         const changed = JSON.stringify(newActions) !== JSON.stringify(actions);
         actions = newActions;
@@ -534,6 +564,7 @@ const Popup = (() => {
         allNoteData,
         terms,
         showAudioMenu,
+        measureRender,
     };
 })();
 

@@ -1,5 +1,8 @@
 package com.vpr.screenlate.core.anki.note
 
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
+
 /**
  * Field templates with `{marker}` placeholders, using Yomitan's marker names and output formats, so settings and
  * note types made for Yomitan work unchanged.
@@ -53,15 +56,11 @@ object FieldTemplate {
         "url-plain",
     )
 
-    /** Markers Yomitan offers for Japanese only. */
-    val JAPANESE_MARKERS = listOf(
-        "cloze-body-kana",
-        "pitch-accents",
-        "pitch-accent-graphs",
-        "pitch-accent-graphs-jj",
-        "pitch-accent-positions",
-        "pitch-accent-categories",
-    )
+    /** Markers that exist only for some languages (Yomitan offers pitch accents for Japanese only). */
+    private val LANGUAGE_MARKERS = Language.entries.flatMap { it.support.ankiMarkers }.distinct()
+
+    /** The standard markers plus those of [language]. */
+    fun markersFor(language: Language): List<String> = MARKERS + language.support.ankiMarkers
 
     const val SINGLE_GLOSSARY_PREFIX = "single-glossary-"
     const val SINGLE_FREQUENCY_NUMBER_PREFIX = "single-frequency-number-"
@@ -78,7 +77,7 @@ object FieldTemplate {
     /** Whether [marker] is one this app fills (possibly with an empty value), as opposed to a typo. */
     fun isKnown(marker: String): Boolean =
         marker in MARKERS ||
-            marker in JAPANESE_MARKERS ||
+            marker in LANGUAGE_MARKERS ||
             marker.startsWith(SINGLE_GLOSSARY_PREFIX) ||
             marker.startsWith(SINGLE_FREQUENCY_PREFIX) ||
             marker.startsWith(LEGACY_GLOSSARY_PREFIX)
@@ -115,7 +114,7 @@ object FieldTemplate {
     fun guessField(fieldName: String, index: Int): String {
         if (index == 0) return "{expression}"
         val name = fieldName.normalizedFieldName()
-        for (marker in MARKERS + JAPANESE_MARKERS) {
+        for (marker in MARKERS + LANGUAGE_MARKERS) {
             val names = listOf(marker) + ALIASES[marker].orEmpty()
             if (names.any { it.normalizedFieldName() == name }) return "{$marker}"
         }

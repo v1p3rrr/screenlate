@@ -1,15 +1,13 @@
 package com.vpr.screenlate.core.anki.note
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 
 /** A sentence split around the looked-up word, for `{sentence}` and the cloze markers. */
 data class Sentence(val prefix: String, val body: String, val suffix: String) {
     val text: String get() = prefix + body + suffix
 
     companion object {
-        private val JAPANESE_TERMINATORS = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
-        private val JAPANESE_QUOTES = mapOf('「' to '」', '『' to '』', '（' to '）', '(' to ')')
-
         /**
          * Extracts the sentence containing `paragraph[start, start + length)`. A terminator inside quotes opened
          * before the word does not end the sentence, and a closing quote right after a terminator stays in it.
@@ -17,9 +15,8 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
         fun extract(paragraph: String, start: Int, length: Int, language: Language): Sentence {
             val safeStart = start.coerceIn(0, paragraph.length)
             val end = (safeStart + length).coerceIn(safeStart, paragraph.length)
-            val (terminators, quotes) = when (language) {
-                Language.JAPANESE -> JAPANESE_TERMINATORS to JAPANESE_QUOTES
-            }
+            val terminators = language.support.sentenceTerminators
+            val quotes = language.support.quotePairs
             val closing = quotes.values.toSet()
 
             // Walk back to the previous terminator that is not inside an open quote.

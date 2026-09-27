@@ -67,6 +67,7 @@ import com.vpr.screenlate.overlay.R as OverlayR
 @Composable
 fun SearchScreen(
     onBack: () -> Unit,
+    onOpenAnkiSettings: () -> Unit,
     initialQuery: String = "",
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -137,12 +138,14 @@ fun SearchScreen(
             notes = viewModel.notes,
             audio = viewModel.audio,
             audioSettings = viewModel.audioSettings,
+            player = viewModel.audioPlayer,
             lookup = viewModel.dictionaryLookup,
             language = SearchViewModel.LANGUAGE,
             // The search text is the sentence; there is no screenshot.
             noteContext = { NoteContext(Sentence("", viewModel.query.value.trim(), ""), null) },
             cropEditor = null,
             onAnkiOpened = {},
+            onOpenAnkiSettings = onOpenAnkiSettings,
         ).also { holder.notes = it }
     }
     DisposableEffect(Unit) {

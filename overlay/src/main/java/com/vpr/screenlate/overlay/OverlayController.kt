@@ -18,6 +18,7 @@ import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
+import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
@@ -37,6 +38,7 @@ import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.anki.NoteContext
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.capture.AccessibilityText
@@ -94,6 +96,7 @@ class OverlayController(
         val notes: AnkiNotes,
         val audio: AudioFinder,
         val audioSettings: AudioSettingsRepository,
+        val player: AudioPlayer,
     )
 
     private enum class State { DOCKED, DRAGGING, FLOATING }
@@ -130,14 +133,23 @@ class OverlayController(
         notes = anki.notes,
         audio = anki.audio,
         audioSettings = anki.audioSettings,
+        player = anki.player,
         lookup = lookup,
         language = language,
         noteContext = ::noteContext,
         cropEditor = CropEditor(service, windowManager),
         onAnkiOpened = { dock() },
+        onOpenAnkiSettings = {
+            service.packageManager.getLaunchIntentForPackage(service.packageName)
+                ?.putExtra(OverlayIntents.EXTRA_OPEN, OverlayIntents.OPEN_ANKI_SETTINGS)
+                ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                ?.let { runCatching { service.startActivity(it) } }
+            dock()
+        },
     )
 
     private var settings = OverlaySettings()
+    private var scanLength = LookupSettings.DEFAULT_SCAN_LENGTH
     private var themeMode = ThemeMode.SYSTEM
     private var state = State.DOCKED
     private var attached = false
@@ -163,6 +175,7 @@ class OverlayController(
     fun start() {
         bubbleView.setOnTouchListener(BubbleTouchListener())
         scope.launch { overlaySettings.settings.collect(::applySettings) }
+        scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch {
             appSettings.themeMode.collect {
                 themeMode = it
@@ -641,7 +654,7 @@ class OverlayController(
     }
 
     private fun showLookup(layout: TextLayout, position: TextPosition) {
-        val text = layout.textFrom(position, DictionaryLookup.DEFAULT_SCAN_LENGTH)
+        val text = layout.textFrom(position, scanLength)
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
@@ -680,7 +693,10 @@ class OverlayController(
     }
 
     private suspend fun lookupResults(text: String, primaryReading: String? = null): List<LookupResult> = try {
-        lookup.lookup(text, language, primaryReading = primaryReading)
+        val started = System.currentTimeMillis()
+        lookup.lookup(text, language, primaryReading = primaryReading).also {
+            Log.d(TAG, "Lookup found ${it.size} entries in ${System.currentTimeMillis() - started} ms")
+        }
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {

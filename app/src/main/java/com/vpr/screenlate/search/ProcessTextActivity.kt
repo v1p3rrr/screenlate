@@ -8,7 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpr.screenlate.MainActivity
 import com.vpr.screenlate.MainViewModel
+import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.ui.theme.ScreenlateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,8 +26,17 @@ class ProcessTextActivity : ComponentActivity() {
         setContent {
             val themeMode by mainViewModel.themeMode.collectAsStateWithLifecycle()
             ScreenlateTheme(themeMode = themeMode) {
-                SearchScreen(onBack = ::finish, initialQuery = text)
+                SearchScreen(onBack = ::finish, onOpenAnkiSettings = ::openAnkiSettings, initialQuery = text)
             }
         }
+    }
+
+    private fun openAnkiSettings() {
+        startActivity(
+            Intent(this, MainActivity::class.java)
+                .putExtra(OverlayIntents.EXTRA_OPEN, OverlayIntents.OPEN_ANKI_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
+        )
+        finish()
     }
 }

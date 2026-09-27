@@ -7,10 +7,7 @@ import com.vpr.screenlate.core.anki.AnkiDeck
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiModel
 import com.vpr.screenlate.core.anki.AnkiNotes
-import com.vpr.screenlate.core.anki.audio.AudioSettings
-import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
-import com.vpr.screenlate.core.anki.audio.AudioSource
-import com.vpr.screenlate.core.anki.audio.AudioSourceType
+import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
@@ -18,6 +15,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,9 +33,10 @@ data class AnkiScreenState(
     val models: List<AnkiModel> = emptyList(),
     val fieldNames: List<String> = emptyList(),
     val settings: AnkiSettings = AnkiSettings(),
-    val audio: AudioSettings = AudioSettings(),
+    /** The saved setup checked against AnkiDroid. */
+    val status: AnkiStatus? = null,
     /** Markers offered for templates, including Yomitan's per-dictionary markers for installed dictionaries. */
-    val markers: List<String> = FieldTemplate.MARKERS + FieldTemplate.JAPANESE_MARKERS,
+    val markers: List<String> = FieldTemplate.markersFor(Language.JAPANESE),
     val error: String? = null,
 )
 
@@ -46,7 +45,6 @@ class AnkiSettingsViewModel @Inject constructor(
     private val anki: AnkiDroid,
     private val notes: AnkiNotes,
     private val settingsRepository: AnkiSettingsRepository,
-    private val audioRepository: AudioSettingsRepository,
     dictionaries: DictionaryRepository,
 ) : ViewModel() {
     private val connection = MutableStateFlow(AnkiScreenState())
@@ -60,13 +58,11 @@ class AnkiSettingsViewModel @Inject constructor(
     val state: StateFlow<AnkiScreenState> = combine(
         connection,
         settingsRepository.settings,
-        audioRepository.settings,
         dictionaryMarkers,
-    ) { connection, settings, audio, dynamicMarkers ->
+    ) { connection, settings, dynamicMarkers ->
         connection.copy(
             settings = settings,
-            audio = audio,
-            markers = FieldTemplate.MARKERS + FieldTemplate.JAPANESE_MARKERS + dynamicMarkers,
+            markers = FieldTemplate.markersFor(Language.JAPANESE) + dynamicMarkers,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AnkiScreenState())
 
@@ -90,13 +86,19 @@ class AnkiSettingsViewModel @Inject constructor(
                     decks = anki.decks(),
                     models = anki.models(),
                     fieldNames = modelId?.let { anki.fields(it) }.orEmpty(),
+                    status = notes.status(),
                 )
             }.onSuccess { connection.value = it }
                 .onFailure { connection.value = AnkiScreenState(availability = availability, error = it.message) }
         }
     }
 
-    fun selectDeck(deck: AnkiDeck) = updateSettings { it.copy(deckId = deck.id, deckName = deck.name) }
+    fun selectDeck(deck: AnkiDeck) {
+        viewModelScope.launch {
+            settingsRepository.update { it.copy(deckId = deck.id, deckName = deck.name) }
+            refresh()
+        }
+    }
 
     /**
      * Switches the note type. The templates of the previous note type are kept for when it is selected again; a
@@ -120,6 +122,28 @@ class AnkiSettingsViewModel @Inject constructor(
                 )
             }
             connection.value = connection.value.copy(fieldNames = fields)
+            refresh()
+        }
+    }
+
+    /**
+     * Follows fields renamed, added or removed in AnkiDroid: templates of fields that still exist stay, new fields
+     * get suggested templates.
+     */
+    fun updateFieldList() {
+        viewModelScope.launch {
+            val current = settingsRepository.current()
+            val modelId = current.modelId ?: return@launch
+            val fields = anki.fields(modelId)
+            if (fields.isEmpty()) return@launch
+            val suggested = FieldTemplate.guess(current.modelName.orEmpty(), fields)
+            settingsRepository.update { settings ->
+                settings.copy(
+                    fields = fields.associateWith { settings.fields[it] ?: suggested[it].orEmpty() },
+                    overwriteModes = settings.overwriteModes.filterKeys { it in fields },
+                )
+            }
+            refresh()
         }
     }
 
@@ -137,8 +161,6 @@ class AnkiSettingsViewModel @Inject constructor(
     fun setOverwriteMode(field: String, mode: OverwriteMode) =
         updateSettings { it.copy(overwriteModes = it.overwriteModes + (field to mode)) }
 
-    fun setVolume(volume: Int) = updateAudio { it.copy(volume = volume.coerceIn(0, 100)) }
-
     fun setTags(tags: String) = updateSettings { it.copy(tags = tags) }
 
     fun setDuplicateCheck(enabled: Boolean) = updateSettings { it.copy(duplicateCheck = enabled) }
@@ -149,29 +171,7 @@ class AnkiSettingsViewModel @Inject constructor(
 
     fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { it.copy(duplicateBehavior = behavior) }
 
-    fun setAutoPlay(enabled: Boolean) = updateAudio { it.copy(autoPlay = enabled) }
-
-    fun addAudioSource(type: AudioSourceType) = updateAudio { it.copy(sources = it.sources + AudioSource(type)) }
-
-    fun setAudioSourceUrl(index: Int, url: String) = updateAudio { audio ->
-        audio.copy(sources = audio.sources.mapIndexed { i, source -> if (i == index) source.copy(url = url) else source })
-    }
-
-    fun removeAudioSource(index: Int) = updateAudio { audio ->
-        audio.copy(sources = audio.sources.filterIndexed { i, _ -> i != index })
-    }
-
-    fun moveAudioSource(index: Int, delta: Int) = updateAudio { audio ->
-        val target = index + delta
-        if (target !in audio.sources.indices) return@updateAudio audio
-        audio.copy(sources = audio.sources.toMutableList().apply { add(target, removeAt(index)) })
-    }
-
     private fun updateSettings(transform: (AnkiSettings) -> AnkiSettings) {
         viewModelScope.launch { settingsRepository.update(transform) }
-    }
-
-    private fun updateAudio(transform: (AudioSettings) -> AudioSettings) {
-        viewModelScope.launch { audioRepository.update(transform) }
     }
 }

@@ -41,6 +41,9 @@ class DictionaryRepository @Inject constructor(
 
     suspend fun getAll(): List<DictionaryEntity> = dao.getAll()
 
+    /** Reloads the engine, e.g. after missing files were restored. */
+    suspend fun reload() = mutex.withLock { reloadLocked() }
+
     /**
      * Imports a Yomitan archive. The dictionary [replaces] (an update, whose title may differ) or else one with
      * the same title is replaced and keeps its position and enabled state.
@@ -149,9 +152,14 @@ class DictionaryRepository @Inject constructor(
         loadedLanguage?.let { load(it) }
     }
 
+    /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
+    suspend fun missingFiles(): List<DictionaryEntity> = dao.getAll().filter { !storage.hasFiles(it) }
+
     private suspend fun load(language: Language) {
         val enabled = dao.getAll().filter { dictionary ->
-            dictionary.enabled && (dictionary.sourceLanguage == null || dictionary.sourceLanguage == language.code)
+            dictionary.enabled &&
+                (dictionary.sourceLanguage == null || dictionary.sourceLanguage == language.code) &&
+                storage.hasFiles(dictionary)
         }
         fun List<DictionaryEntity>.directories() = map { storage.directoryOf(it) }
         engine.load(

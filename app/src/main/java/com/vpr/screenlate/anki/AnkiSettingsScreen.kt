@@ -50,13 +50,19 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.audio.AudioSettingsSection
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
+import com.vpr.screenlate.core.anki.AnkiProblem
+import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
+import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
 
@@ -105,7 +111,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 AnkiAvailability.READY -> NoteSettings(state, viewModel)
             }
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            AudioSettingsCard(state, viewModel)
+            AudioSettingsSection()
         }
     }
 }
@@ -113,6 +119,26 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
 @Composable
 private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewModel) {
     val settings = state.settings
+    (state.status as? AnkiStatus.Broken)?.problem?.let { problem ->
+        SectionCard(title = stringResource(R.string.anki_problem_title)) {
+            Text(stringResource(problem.message), color = MaterialTheme.colorScheme.error)
+            Text(
+                stringResource(
+                    when (problem) {
+                        AnkiProblem.MODEL_MISSING -> R.string.anki_problem_fix_model
+                        AnkiProblem.DECK_MISSING -> R.string.anki_problem_fix_deck
+                        else -> R.string.anki_problem_fix_fields
+                    },
+                ),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            if (problem == AnkiProblem.FIELDS_CHANGED) {
+                Button(onClick = viewModel::updateFieldList, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.anki_update_fields))
+                }
+            }
+        }
+    }
     SectionCard(title = stringResource(R.string.anki_note)) {
         Picker(
             label = stringResource(R.string.anki_deck),
@@ -202,78 +228,6 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
     }
 }
 
-@Composable
-private fun AudioSettingsCard(state: AnkiScreenState, viewModel: AnkiSettingsViewModel) {
-    SectionCard(title = stringResource(R.string.audio_title)) {
-        SwitchRow(stringResource(R.string.audio_auto_play), state.audio.autoPlay, viewModel::setAutoPlay)
-        VolumeRow(state.audio.volume, viewModel::setVolume)
-        Text(
-            stringResource(R.string.audio_sources_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        state.audio.sources.forEachIndexed { index, source ->
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        "${index + 1}. ${stringResource(audioSourceLabel(source.type))}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = { viewModel.moveAudioSource(index, -1) }, enabled = index > 0) { Text("↑") }
-                    TextButton(
-                        onClick = { viewModel.moveAudioSource(index, 1) },
-                        enabled = index < state.audio.sources.lastIndex,
-                    ) { Text("↓") }
-                    IconButton(onClick = { viewModel.removeAudioSource(index) }) {
-                        Icon(painterResource(R.drawable.ic_delete), stringResource(R.string.action_delete))
-                    }
-                }
-                if (source.type != AudioSourceType.JAPANESE_POD_101) {
-                    EditableText(
-                        key = "audio-$index-${source.type}",
-                        initial = source.url,
-                        label = stringResource(R.string.audio_url_template),
-                        onChange = { viewModel.setAudioSourceUrl(index, it) },
-                    )
-                }
-            }
-        }
-        var menu by remember { mutableStateOf(false) }
-        Box {
-            OutlinedButton(onClick = { menu = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.audio_add_source))
-            }
-            DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                AudioSourceType.entries.forEach { type ->
-                    DropdownMenuItem(
-                        text = { Text(stringResource(audioSourceLabel(type))) },
-                        onClick = {
-                            menu = false
-                            viewModel.addAudioSource(type)
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** The slider moves freely; the setting is written when the finger is lifted. */
-@Composable
-private fun VolumeRow(volume: Int, onChange: (Int) -> Unit) {
-    var value by remember(volume) { mutableStateOf(volume.toFloat()) }
-    Column {
-        Text(stringResource(R.string.audio_volume, value.toInt()), style = MaterialTheme.typography.labelLarge)
-        Slider(
-            value = value,
-            onValueChange = { value = it },
-            onValueChangeFinished = { onChange(value.toInt()) },
-            valueRange = 0f..100f,
-        )
-    }
-}
-
 /** How this field changes when a duplicate overwrites an existing note. */
 @Composable
 private fun OverwriteModePicker(mode: OverwriteMode, onSelect: (OverwriteMode) -> Unit) {
@@ -306,12 +260,6 @@ private fun overwriteModeLabel(mode: OverwriteMode): Int = when (mode) {
     OverwriteMode.SKIP -> R.string.anki_overwrite_skip
     OverwriteMode.APPEND -> R.string.anki_overwrite_append
     OverwriteMode.PREPEND -> R.string.anki_overwrite_prepend
-}
-
-private fun audioSourceLabel(type: AudioSourceType): Int = when (type) {
-    AudioSourceType.JAPANESE_POD_101 -> R.string.audio_source_jpod
-    AudioSourceType.URL -> R.string.audio_source_url
-    AudioSourceType.CUSTOM_JSON -> R.string.audio_source_json
 }
 
 @Composable
@@ -399,28 +347,4 @@ private fun EditableText(key: String, initial: String, label: String, onChange: 
         keyboardActions = doneClearsFocus(),
         modifier = Modifier.fillMaxWidth(),
     )
-}
-
-@Composable
-private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onChange)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun <T> Segments(options: List<T>, selected: T, label: @Composable (T) -> String, onSelect: (T) -> Unit) {
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-        options.forEachIndexed { index, option ->
-            SegmentedButton(
-                selected = option == selected,
-                onClick = { onSelect(option) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-            ) {
-                Text(label(option), maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
-        }
-    }
 }

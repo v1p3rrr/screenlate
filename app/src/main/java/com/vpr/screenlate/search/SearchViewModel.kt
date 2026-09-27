@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
+import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -34,6 +35,7 @@ class SearchViewModel @Inject constructor(
     val notes: AnkiNotes,
     val audio: AudioFinder,
     val audioSettings: AudioSettingsRepository,
+    val audioPlayer: AudioPlayer,
     appSettings: AppSettingsRepository,
 ) : ViewModel() {
     val query = MutableStateFlow("")

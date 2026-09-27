@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":dictionary:engine-hoshidicts"))
     implementation(project(":dictionary:render-yomitan"))
     implementation(project(":overlay"))
+    implementation(libs.androidx.compose.foundation.layout)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

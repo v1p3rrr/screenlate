@@ -6,9 +6,12 @@ import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.OcrScript
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
@@ -22,17 +25,30 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-/** On-device OCR with the bundled ML Kit Japanese model. Fast but weaker on vertical text and manga. */
+/**
+ * On-device OCR with ML Kit. Only the Japanese model is bundled for now; it also reads Latin text. Fast but weaker
+ * on vertical text and manga.
+ */
 @Singleton
 class MlKitOcrEngine @Inject constructor() : OcrEngine {
 
     override val type = OcrEngineType.ML_KIT
 
-    private val recognizer by lazy { TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build()) }
+    private val recognizers = mutableMapOf<OcrScript, TextRecognizer>()
+
+    private fun recognizer(script: OcrScript): TextRecognizer = synchronized(recognizers) {
+        recognizers.getOrPut(script) {
+            when (script) {
+                OcrScript.JAPANESE, OcrScript.LATIN, OcrScript.CHINESE, OcrScript.DEVANAGARI, OcrScript.KOREAN ->
+                    TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
+            }
+        }
+    }
 
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
-        val text = recognizer.process(InputImage.fromBitmap(image, 0)).await()
-        val separator = if (language == Language.JAPANESE) "" else " "
+        val support = language.support
+        val text = recognizer(support.ocrScript).process(InputImage.fromBitmap(image, 0)).await()
+        val separator = support.wordSeparator
         val paragraphs = text.textBlocks.map { block ->
             OcrParagraph(block.lines.mapNotNull { line -> line.toOcrLine(separator) })
         }.filter { it.lines.isNotEmpty() }
