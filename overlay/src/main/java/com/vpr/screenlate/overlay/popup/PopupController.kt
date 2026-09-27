@@ -59,10 +59,8 @@ class PopupController(
     fun show(state: String, word: Box, vertical: Boolean, bubble: Box?, screen: Box, maxWidth: Float) {
         if (!attached) attach()
         val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
-        val width = minOf(screen.width * WIDTH_FRACTION, maxWidth)
-        val height = screen.height * HEIGHT_FRACTION
-        val minHeight = maxOf(screen.height * MIN_HEIGHT_FRACTION, MIN_HEIGHT_DP * density).coerceAtMost(height)
-        val placed = PopupPlacement.place(word, vertical, bubble, width, height, minHeight, area, margin = edgeMargin * 2)
+        val size = PopupPlacement.size(screen, density, maxWidth)
+        val placed = PopupPlacement.place(word, vertical, bubble, size.width, size.height, size.minHeight, area, margin = edgeMargin * 2)
         bounds = placed
         params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
         params.x = placed.left.roundToInt()
@@ -109,10 +107,6 @@ class PopupController(
     }
 
     private companion object {
-        const val WIDTH_FRACTION = 0.85f
-        const val HEIGHT_FRACTION = 0.35f
-        const val MIN_HEIGHT_FRACTION = 0.2f
-        const val MIN_HEIGHT_DP = 160f
         const val EDGE_MARGIN_DP = 8f
     }
 }

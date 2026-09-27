@@ -99,4 +99,20 @@ class PopupPlacementTest {
         assertThat(popup.top).isEqualTo(200f)
         assertThat(popup.height).isEqualTo(300f)
     }
+
+    @Test
+    fun `portrait popups take about a third of the height`() {
+        val size = PopupPlacement.size(Box(0f, 0f, 1080f, 2340f), density = 3f, maxWidth = 1260f)
+        assertThat(size.width).isWithin(0.5f).of(1080f * 0.85f)
+        assertThat(size.height).isWithin(0.5f).of(2340f * 0.35f)
+        assertThat(size.minHeight).isWithin(0.5f).of(480f)
+    }
+
+    @Test
+    fun `landscape popups get more of the low screen`() {
+        val size = PopupPlacement.size(Box(0f, 0f, 2340f, 1000f), density = 3f, maxWidth = 1260f)
+        assertThat(size.width).isEqualTo(1260f)
+        assertThat(size.height).isWithin(0.5f).of(600f)
+        assertThat(size.minHeight).isAtMost(size.height)
+    }
 }

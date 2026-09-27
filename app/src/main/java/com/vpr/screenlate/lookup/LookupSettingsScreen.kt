@@ -66,9 +66,12 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
             SectionCard(title = stringResource(R.string.lookup_scanning)) {
                 ScanLengthRow(settings.scanLength, viewModel::setScanLength)
                 Text(stringResource(R.string.lookup_max_results), style = MaterialTheme.typography.labelLarge)
+                // An imported value (Yomitan's own setting, e.g. 8) is offered next to the usual ones.
                 Segments(
-                    options = MAX_RESULT_OPTIONS,
-                    selected = settings.maxResults.takeIf { it in MAX_RESULT_OPTIONS } ?: LookupSettings.DEFAULT_MAX_RESULTS,
+                    options = (MAX_RESULT_OPTIONS + settings.maxResults)
+                        .distinct()
+                        .sortedBy { if (it == 0) Int.MAX_VALUE else it },
+                    selected = settings.maxResults,
                     label = { if (it == 0) stringResource(R.string.lookup_max_results_unlimited) else it.toString() },
                     onSelect = viewModel::setMaxResults,
                 )

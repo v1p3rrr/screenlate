@@ -149,6 +149,7 @@ class OverlayController(
     )
 
     private var settings = OverlaySettings()
+    private var lastScreen: Box? = null
     private var scanLength = LookupSettings.DEFAULT_SCAN_LENGTH
     private var themeMode = ThemeMode.SYSTEM
     private var state = State.DOCKED
@@ -173,6 +174,7 @@ class OverlayController(
     private val json = Json
 
     fun start() {
+        lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
@@ -193,8 +195,16 @@ class OverlayController(
         popup.release()
     }
 
+    /**
+     * Rotation or a resized window closes the popup and docks the bubble (the dock keeps its side and relative
+     * height); other changes such as the system theme only redraw the popup.
+     */
     fun onConfigurationChanged() {
-        if (attached) dock()
+        val screen = screenBounds()
+        val resized = screen != lastScreen
+        lastScreen = screen
+        if (!attached) return
+        if (resized) dock() else refreshPopup()
     }
 
     /** The app in the foreground changed; the bubble hides in apps the user excluded. */

@@ -9,6 +9,32 @@ object PopupPlacement {
 
     private class Candidate(val side: Side, val space: Float, val box: Box?, val full: Boolean)
 
+    /** Preferred popup size; the height may shrink to the free space, down to [minHeight]. */
+    data class Size(val width: Float, val height: Float, val minHeight: Float)
+
+    /**
+     * About a third of a portrait screen. A landscape phone screen is so low that a third of it holds hardly one
+     * entry, so the popup takes up to 60% of the height there, but no more than it would need anyway.
+     *
+     * @param screen usable screen area in pixels; [density] converts dp to pixels.
+     */
+    fun size(screen: Box, density: Float, maxWidth: Float): Size {
+        val width = minOf(screen.width * WIDTH_FRACTION, maxWidth)
+        val height = maxOf(
+            screen.height * HEIGHT_FRACTION,
+            minOf(screen.height * LOW_SCREEN_HEIGHT_FRACTION, LOW_SCREEN_HEIGHT_DP * density),
+        )
+        val minHeight = maxOf(screen.height * MIN_HEIGHT_FRACTION, MIN_HEIGHT_DP * density).coerceAtMost(height)
+        return Size(width, height, minHeight)
+    }
+
+    private const val WIDTH_FRACTION = 0.85f
+    private const val HEIGHT_FRACTION = 0.35f
+    private const val LOW_SCREEN_HEIGHT_FRACTION = 0.6f
+    private const val LOW_SCREEN_HEIGHT_DP = 260f
+    private const val MIN_HEIGHT_FRACTION = 0.2f
+    private const val MIN_HEIGHT_DP = 160f
+
     /**
      * Returns the popup bounds next to [word], never covering [bubble]: the word and the bubble are kept out together,
      * so a popup below the word goes below the bubble when the bubble is there (as in Poe). Vertical text prefers the

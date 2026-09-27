@@ -183,6 +183,7 @@ States: `Docked → Dragging → Floating(+Popup)`.
 6. **Build and publishing** (after phase 5): GitHub Actions per the CI row, per-ABI and universal APKs, source archive with submodules, dock glyph per language; release key set up with the owner at the end.
 7. **Release readiness**: About screen with licenses, dictionary attribution and "Share logs"; versioning from tags; in-app update check against GitHub Releases; wording pass that removes the cloud OCR provider from user-facing texts and docs (may be done earlier).
    - later (owner's questions of 2026-09-27): faster collection conversion (byte-level parsing without decoding everything, uncompressed intermediate archives; compare output with the current converter on the owner's export before switching); e-ink readers on Android — likely to work (Android 11+, no Google services needed; 32-bit build from the CI row), an "e-ink mode" (grayscale high-contrast theme, no animations or fading) is an open question for the owner.
+   - later (owner request 2026-09-27): backup and restore — settings exported in Screenlate's own versioned format (not Yomitan-compatible: Yomitan validates its settings schema and ours has more), restored in Screenlate; dictionaries as a Screenlate backup of the converted files (fast, Screenlate only) — recommended. A Yomitan-compatible dictionary export would need the original archives kept (about twice the storage): open question for the owner.
 8. **More languages** (interview per language first): English, Chinese, Korean, generic alphabetic languages.
 
 ## Documentation tasks
@@ -220,6 +221,7 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: owner decisions for the rest of phase 5 — broken-setup warnings (grey ➕ with a short reason and an "Open Screenlate" button); AnkiDroid on the emulator reset after a backup of the owner's collection; frequency lists in the catalog when published by their authors; localhost audio sources imported as they are. Settings placement, test environment and kanji notes decided by the agent (see the decision table).
 - 2026-09-27: owner answers on the remaining points — one Settings screen; romaji for lookups everywhere (off by default); Yomitan's full audio source set; text replacements empty by default; checklist for collection imports; both orientations without per-orientation memory (rotation docks); no kanji notes.
 - 2026-09-27: owner request — single kanji entries of the matched word below the results, as in Poe (setting, on by default).
+- 2026-09-27: owner request — export of dictionaries and settings (backup/restore); recorded under phase 7 with a recommendation, Yomitan-compatible dictionary export is an open question.
 - 2026-09-27: owner questions — speeding up dictionary imports further and running on Android e-ink readers; recorded under phase 7 as later items, the e-ink mode needs the owner's answer.
 - 2026-09-27: owner request — a setting to hide the popup's recognized-text header (on by default); ✕ moves down to the first entry.
 - 2026-09-27: owner correction — the popup's source chip may keep saying "Lens"; only docs and descriptive texts avoid the name.
