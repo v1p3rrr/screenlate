@@ -33,4 +33,7 @@ android {
 dependencies {
     implementation(project(":dictionary:api"))
     implementation(libs.kotlinx.serialization.json)
+    // The lookup pipeline test uses the registry with an in-memory database.
+    androidTestImplementation(libs.androidx.room.runtime)
+    androidTestImplementation(libs.androidx.datastore.preferences)
 }
