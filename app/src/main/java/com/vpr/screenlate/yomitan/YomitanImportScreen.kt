@@ -224,9 +224,11 @@ private fun Summary(done: SettingsImportState.Done) {
                 R.string.yomitan_summary_lookup,
                 outcome.scanLength?.toString() ?: "–",
                 outcome.maxResults?.toString() ?: "–",
-                outcome.replacementGroups,
             ),
         )
+        if (outcome.skippedReplacements > 0) {
+            SummaryLine(stringResource(R.string.yomitan_summary_replacements_skipped, outcome.skippedReplacements))
+        }
     }
 }
 

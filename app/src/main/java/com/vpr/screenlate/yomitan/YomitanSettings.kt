@@ -5,7 +5,6 @@ import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
-import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -27,8 +26,8 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
         val audio: Audio?,
         val scanLength: Int?,
         val maxResults: Int?,
-        val replacementGroups: List<List<TextReplacement>>,
-        val searchOriginal: Boolean,
+        /** Text replacement rules of the profile; not imported, Japanese lookups have the common ones built in. */
+        val replacementRules: Int,
     )
 
     data class Dictionary(val name: String, val enabled: Boolean)
@@ -94,18 +93,7 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
                 audio = options.obj("audio")?.let(::audio),
                 scanLength = options.obj("scanning")?.int("length"),
                 maxResults = general?.int("maxResults"),
-                replacementGroups = replacements?.array("groups").orEmpty().mapNotNull { group ->
-                    (group as? JsonArray)?.mapNotNull { rule ->
-                        val entry = rule as? JsonObject ?: return@mapNotNull null
-                        TextReplacement(
-                            pattern = entry.string("pattern") ?: return@mapNotNull null,
-                            replacement = entry.string("replacement").orEmpty(),
-                            ignoreCase = entry.boolean("ignoreCase") ?: false,
-                            enabled = entry.boolean("isEnabled") ?: true,
-                        )
-                    }?.takeIf { it.isNotEmpty() }
-                },
-                searchOriginal = replacements?.boolean("searchOriginal") ?: true,
+                replacementRules = replacements?.array("groups").orEmpty().sumOf { (it as? JsonArray)?.size ?: 0 },
             )
         }
 

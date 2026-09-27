@@ -43,6 +43,9 @@ interface LanguageSupport {
      */
     fun isLookupStart(text: String, latinAsNative: Boolean): Boolean
 
+    /** Other spellings of [text] that are looked up as well; the original is always looked up. */
+    fun spellingVariants(text: MappedText): List<MappedText>
+
     /** Converts a transliteration in Latin letters into the language's script; null if there is nothing to convert. */
     fun fromLatin(text: MappedText): MappedText?
 

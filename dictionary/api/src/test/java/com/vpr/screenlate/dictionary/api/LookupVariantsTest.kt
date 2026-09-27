@@ -6,7 +6,6 @@ import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
-import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import org.junit.Test
 
 class LookupVariantsTest {
@@ -15,31 +14,19 @@ class LookupVariantsTest {
         LookupVariants.of(text, settings, JapaneseSupport).map { it.text }
 
     @Test
-    fun `only the original text by default`() {
+    fun `only the original text when no rule applies`() {
         assertThat(variants("食べる", LookupSettings())).containsExactly("食べる")
     }
 
     @Test
-    fun `each replacement group adds a text`() {
-        val settings = LookupSettings(
-            replacementGroups = listOf(
-                listOf(TextReplacement("《[^》]*》")),
-                listOf(TextReplacement("ｶﾞｯｺｳ", "学校"), TextReplacement("学校", "がっこう")),
-                listOf(TextReplacement("[", enabled = true)),
-            ),
-        )
-        assertThat(variants("ｶﾞｯｺｳ《がっこう》", settings))
-            .containsExactly("ｶﾞｯｺｳ《がっこう》", "ｶﾞｯｺｳ", "がっこう《がっこう》").inOrder()
+    fun `the spelling variant follows the original`() {
+        assertThat(variants("1人で", LookupSettings())).containsExactly("1人で", "一人で").inOrder()
     }
 
     @Test
-    fun `the original can be left out`() {
-        val settings = LookupSettings(
-            searchOriginal = false,
-            replacementGroups = listOf(listOf(TextReplacement("x", "y"))),
-        )
-        assertThat(variants("xa", settings)).containsExactly("ya")
-        assertThat(variants("za", settings)).containsExactly("za")
+    fun `romaji applies to the original and the spelling variant`() {
+        assertThat(variants("ta be ru", LookupSettings(romaji = true)))
+            .containsExactly("ta be ru", "た べ る", "taberu", "たべる").inOrder()
     }
 
     @Test

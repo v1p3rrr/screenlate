@@ -7,7 +7,6 @@ import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
-import com.vpr.screenlate.dictionary.api.settings.TextReplacement
 import java.io.File
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -77,10 +76,7 @@ class YomitanSettingsTest {
         assertThat(profile.scanLength).isEqualTo(12)
         assertThat(profile.maxResults).isEqualTo(8)
         assertThat(profile.sortFrequencyDictionary).isEqualTo("JPDB")
-        assertThat(profile.searchOriginal).isFalse()
-        assertThat(profile.replacementGroups).containsExactly(
-            listOf(TextReplacement("(.)々", "$1$1"), TextReplacement("ッ", "っ")),
-        )
+        assertThat(profile.replacementRules).isEqualTo(2)
         assertThat(profile.dictionaries).containsExactly(
             YomitanSettings.Dictionary("Jitendex.org [2026-01-04]", true),
             YomitanSettings.Dictionary("Wikipedia", false),

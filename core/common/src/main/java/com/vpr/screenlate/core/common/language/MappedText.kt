@@ -1,7 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 /**
- * Text derived from a source string (by text replacements or transliteration) that remembers where each character
+ * Text derived from a source string (by spelling rules or transliteration) that remembers where each character
  * came from, so the length of a match in [text] can be mapped back to the source, e.g. to highlight the right
  * characters on the screen.
  *

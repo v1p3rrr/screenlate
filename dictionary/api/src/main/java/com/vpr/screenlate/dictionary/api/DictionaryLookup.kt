@@ -14,8 +14,8 @@ import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Entry point for lookups: loads the enabled dictionaries on first use and applies the lookup settings (text
- * replacements, romaji, result limit, single kanji entries) and the sort settings.
+ * Entry point for lookups: loads the enabled dictionaries on first use and applies the language's spelling variants,
+ * the lookup settings (romaji, result limit, single kanji entries) and the sort settings.
  */
 @Singleton
 class DictionaryLookup @Inject constructor(

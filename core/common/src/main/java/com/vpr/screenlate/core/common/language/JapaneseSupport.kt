@@ -90,6 +90,23 @@ object JapaneseSupport : LanguageSupport {
         return text.then(MappedText(out.toString(), ends.toIntArray()))
     }
 
+    /**
+     * One variant with all rules applied in order, a common set of Yomitan text replacements: digits 1–9 (ASCII and
+     * full-width) to kanji numerals, a character followed by 々 doubled, ッ to っ, and ・、-. and whitespace removed.
+     */
+    override fun spellingVariants(text: MappedText): List<MappedText> {
+        val replaced = SPELLING_RULES.fold(text) { current, (regex, replacement) -> current.replace(regex, replacement) }
+        return if (replaced.text != text.text && replaced.text.isNotEmpty()) listOf(replaced) else emptyList()
+    }
+
+    private val SPELLING_RULES: List<Pair<Regex, String>> =
+        "一二三四五六七八九".mapIndexed { index, numeral -> Regex("[${'1' + index}${'１' + index}]") to numeral.toString() } +
+            listOf(
+                Regex("(.)々") to "$1$1",
+                Regex("ッ") to "っ",
+                Regex("[・、\\-.\\s]") to "",
+            )
+
     override fun singleCharacterEntries(matched: String): List<String> {
         val result = mutableListOf<String>()
         var index = 0

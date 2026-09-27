@@ -45,7 +45,8 @@ data class AnkiOutcome(
 
 data class AudioOutcome(val sources: Int, val unknown: List<String>, val disabledInYomitan: Boolean)
 
-data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val replacementGroups: Int)
+/** @property skippedReplacements text replacement rules of the profile that were not imported. */
+data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val skippedReplacements: Int)
 
 /** Applies one profile of a Yomitan settings export; every applied setting stays editable in the app. */
 class YomitanSettingsImporter @Inject constructor(
@@ -154,12 +155,10 @@ class YomitanSettingsImporter @Inject constructor(
     private suspend fun applyLookup(profile: YomitanSettings.Profile): LookupOutcome {
         profile.scanLength?.let { lookupSettings.setScanLength(it) }
         profile.maxResults?.let { lookupSettings.setMaxResults(it.coerceAtLeast(1)) }
-        lookupSettings.setReplacementGroups(profile.replacementGroups)
-        lookupSettings.setSearchOriginal(profile.searchOriginal)
         return LookupOutcome(
             scanLength = profile.scanLength?.coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
             maxResults = profile.maxResults,
-            replacementGroups = profile.replacementGroups.size,
+            skippedReplacements = profile.replacementRules,
         )
     }
 }

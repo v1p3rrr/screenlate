@@ -62,6 +62,27 @@ class JapaneseSupportTest {
     }
 
     @Test
+    fun `spelling variant applies all rules in order`() {
+        fun variants(text: String) = JapaneseSupport.spellingVariants(MappedText.identity(text)).map { it.text }
+        assertThat(variants("1人")).containsExactly("一人")
+        assertThat(variants("３日")).containsExactly("三日")
+        assertThat(variants("色々")).containsExactly("色色")
+        assertThat(variants("ロボッ・ト、 だ-.")).containsExactly("ロボっトだ")
+        assertThat(variants("食べる")).isEmpty()
+        assertThat(variants("・ 、")).isEmpty()
+    }
+
+    @Test
+    fun `spelling variant maps back to the source`() {
+        val variant = JapaneseSupport.spellingVariants(MappedText.identity("ス・マホ"))[0]
+        assertThat(variant.text).isEqualTo("スマホ")
+        assertThat(variant.sourceLength(2)).isEqualTo(3)
+        val doubled = JapaneseSupport.spellingVariants(MappedText.identity("時々だ"))[0]
+        assertThat(doubled.text).isEqualTo("時時だ")
+        assertThat(doubled.sourceLength(2)).isEqualTo(2)
+    }
+
+    @Test
     fun `single character entries are the kanji after the first character`() {
         assertThat(JapaneseSupport.singleCharacterEntries("食べ物")).containsExactly("物")
         assertThat(JapaneseSupport.singleCharacterEntries("お茶")).containsExactly("茶")
