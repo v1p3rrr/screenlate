@@ -52,6 +52,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
 ```bash
 export JAVA_HOME="/c/Program Files/Java/jdk-21"
 ./gradlew assembleDebug testDebugUnitTest
+npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test   # page scripts (node:test + jsdom)
 ```
 
 Devices: `D:\Android\Sdk\platform-tools\adb.exe`. Verify UI and overlay changes on an emulator or the phone, not only with unit tests.
