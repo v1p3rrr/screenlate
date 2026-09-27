@@ -331,6 +331,21 @@ class OverlayController(
     }
 
     /**
+     * Closes the popup only, as in Poe: the bubble stays where it is and keeps the OCR result, so aiming again looks up
+     * at once, the same word included.
+     */
+    private fun closePopup() {
+        lookupJob?.cancel()
+        lookupJob = null
+        popup.hide()
+        popupNotes.onClosed()
+        layerView.setWordBoxes(emptyList())
+        shownLookup = null
+        hapticWord = null
+        hit = null
+    }
+
+    /**
      * Returns the bubble to the dock, closing the popup and dropping the OCR result.
      *
      * @param atCurrentHeight dock at the bubble's current height (when dragged into the dock) instead of the saved one.
@@ -462,13 +477,16 @@ class OverlayController(
                         moved = true
                         if (state == State.DOCKED) {
                             val awayFromEdge = if (settings.dockSide == DockSide.RIGHT) dx < 0 else dx > 0
-                            if (abs(dx) > abs(dy) && awayFromEdge) startDrag(fromDock = true) else alongDock = true
+                            // Pulling out is the main gesture: only a clearly vertical move moves the dock instead.
+                            val alongEdge = abs(dy) > abs(dx) * ALONG_DOCK_RATIO || !awayFromEdge
+                            if (alongEdge) alongDock = true else startDrag(fromDock = true)
                         } else {
                             startDrag(fromDock = false)
                         }
                     }
                     // Moving along the edge repositions the dock; pulling away from the edge undocks, even mid-gesture.
-                    if (moved && alongDock && distanceFromDockEdge(event.rawX) > UNDOCK_DISTANCE_DP * density) {
+                    val pulledAway = distanceFromDockEdge(event.rawX) - distanceFromDockEdge(downX)
+                    if (moved && alongDock && pulledAway > UNDOCK_DISTANCE_DP * density) {
                         alongDock = false
                         startDrag(fromDock = true)
                     }
@@ -890,7 +908,7 @@ class OverlayController(
     // endregion
 
     private inner class PopupCallbacks : LookupPage.Callbacks {
-        override fun onClose() = dock()
+        override fun onClose() = closePopup()
 
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
@@ -917,7 +935,11 @@ class OverlayController(
         const val TAG = "OverlayController"
         const val AIM_GAP_DP = 20f
         const val DOCK_ZONE_DP = 12f
-        const val UNDOCK_DISTANCE_DP = 64f
+        /** How far a finger moving the dock must then pull away from the edge to take the bubble out. */
+        const val UNDOCK_DISTANCE_DP = 24f
+
+        /** A move from the dock this much more vertical than horizontal (about 60°) moves the dock. */
+        const val ALONG_DOCK_RATIO = 1.7f
         const val HIT_TOLERANCE_DP = 12f
 
         /** Characters before the aim that may belong to the aimed word. */

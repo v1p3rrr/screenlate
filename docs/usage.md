@@ -14,7 +14,8 @@
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
 | Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
-| Drag the bubble to the left or right edge, or press ✕ | Close the entry and dock the bubble. |
+| Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
+| Drag the bubble to the left or right edge | Close the entry and dock the bubble. |
 | Drag the docked bubble along the edge | Move the dock. |
 
 The Quick Settings tile hides and shows the bubble. Turning the screen closes the entry and docks the bubble on the same side.

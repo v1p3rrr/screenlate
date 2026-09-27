@@ -54,6 +54,7 @@ object PageState {
                 "audioLoading" to context.getString(R.string.overlay_audio_loading),
                 "audioNone" to context.getString(R.string.audio_not_found),
                 "close" to context.getString(R.string.overlay_close),
+                "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
             ),
         ),
     )

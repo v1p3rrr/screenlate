@@ -37,4 +37,5 @@
     <string name="overlay_open_app">Открыть настройки Anki</string>
     <string name="audio_no_voice">Нет голоса синтеза речи для этого языка.</string>
     <string name="overlay_close">Закрыть</string>
+    <string name="overlay_pitch_dictionaries">Ударение из словарей</string>
 </resources>

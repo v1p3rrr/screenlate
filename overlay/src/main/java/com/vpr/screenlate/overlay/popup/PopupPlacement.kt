@@ -9,54 +9,65 @@ object PopupPlacement {
 
     private class Candidate(val side: Side, val space: Float, val box: Box?, val full: Boolean)
 
-    /** Preferred popup size; the height may shrink to the free space, down to [minHeight]. */
-    data class Size(val width: Float, val height: Float, val minHeight: Float)
+    /**
+     * Preferred popup size. Above or below the word the height may shrink to the free space, down to [minHeight];
+     * beside it the width may shrink, down to [minWidth]. [besideFirst] tries the sides for horizontal text too.
+     */
+    data class Size(
+        val width: Float,
+        val height: Float,
+        val minHeight: Float,
+        val minWidth: Float = width,
+        val besideFirst: Boolean = false,
+    )
 
     /**
-     * About a third of a portrait screen. A landscape phone screen is so low that a third of it holds hardly one
-     * entry, so the popup takes up to 60% of the height there, but no more than it would need anyway.
+     * About a third of a portrait screen, above or below the word. A landscape screen is so low that a strip above or
+     * below holds hardly one entry, so there the popup goes beside the word, up to half the width and nearly the
+     * whole height.
      *
      * @param screen usable screen area in pixels; [density] converts dp to pixels.
      */
     fun size(screen: Box, density: Float, maxWidth: Float): Size {
+        val minHeight = maxOf(screen.height * MIN_HEIGHT_FRACTION, MIN_HEIGHT_DP * density)
+        if (screen.width > screen.height) {
+            val width = minOf(screen.width * LANDSCAPE_WIDTH_FRACTION, maxWidth)
+            val height = screen.height * LANDSCAPE_HEIGHT_FRACTION
+            return Size(
+                width = width,
+                height = height,
+                minHeight = minHeight.coerceAtMost(height),
+                minWidth = minOf(LANDSCAPE_MIN_WIDTH_DP * density, width),
+                besideFirst = true,
+            )
+        }
         val width = minOf(screen.width * WIDTH_FRACTION, maxWidth)
-        val height = maxOf(
-            screen.height * HEIGHT_FRACTION,
-            minOf(screen.height * LOW_SCREEN_HEIGHT_FRACTION, LOW_SCREEN_HEIGHT_DP * density),
-        )
-        val minHeight = maxOf(screen.height * MIN_HEIGHT_FRACTION, MIN_HEIGHT_DP * density).coerceAtMost(height)
-        return Size(width, height, minHeight)
+        val height = screen.height * HEIGHT_FRACTION
+        return Size(width, height, minHeight.coerceAtMost(height))
     }
 
     private const val WIDTH_FRACTION = 0.85f
     private const val HEIGHT_FRACTION = 0.35f
-    private const val LOW_SCREEN_HEIGHT_FRACTION = 0.6f
-    private const val LOW_SCREEN_HEIGHT_DP = 260f
+    private const val LANDSCAPE_WIDTH_FRACTION = 0.5f
+    private const val LANDSCAPE_HEIGHT_FRACTION = 0.9f
+    private const val LANDSCAPE_MIN_WIDTH_DP = 260f
     private const val MIN_HEIGHT_FRACTION = 0.2f
     private const val MIN_HEIGHT_DP = 160f
 
     /**
      * Returns the popup bounds next to [word], never covering [bubble]: the word and the bubble are kept out together,
-     * so a popup below the word goes below the bubble when the bubble is there (as in Poe). Vertical text prefers the
-     * left/right sides so the column stays visible; horizontal text uses above/below. A popup placed above or below
-     * shrinks to the free space, but not below [minHeight].
+     * so a popup below the word goes below the bubble when the bubble is there (as in Poe). Vertical text, and any
+     * text with [Size.besideFirst], prefers the left/right sides so the text stays visible; horizontal text otherwise
+     * uses above/below. A popup above or below shrinks to the free height, one beside the word to the free width.
      *
      * @param screen usable screen area, excluding system bars.
      */
-    fun place(
-        word: Box,
-        vertical: Boolean,
-        bubble: Box?,
-        popupWidth: Float,
-        popupHeight: Float,
-        minHeight: Float,
-        screen: Box,
-        margin: Float,
-    ): Box {
+    fun place(word: Box, vertical: Boolean, bubble: Box?, size: Size, screen: Box, margin: Float): Box {
         val keepOut = bubble?.let(word::union) ?: word
-        val primary = if (vertical) listOf(Side.LEFT, Side.RIGHT) else listOf(Side.ABOVE, Side.BELOW)
-        val secondary = if (vertical) listOf(Side.ABOVE, Side.BELOW) else emptyList()
-        val candidates = (primary + secondary).map { candidate(it, word, keepOut, popupWidth, popupHeight, minHeight, screen, margin) }
+        val beside = vertical || size.besideFirst
+        val primary = if (beside) listOf(Side.LEFT, Side.RIGHT) else listOf(Side.ABOVE, Side.BELOW)
+        val secondary = if (beside) listOf(Side.ABOVE, Side.BELOW) else emptyList()
+        val candidates = (primary + secondary).map { candidate(it, word, keepOut, size, screen, margin) }
 
         for (group in listOf(primary, secondary)) {
             val fitting = candidates.filter { it.side in group && it.box != null }
@@ -65,19 +76,13 @@ object PopupPlacement {
         }
         // Nothing fits beside the word and the bubble: use the roomiest side and let the popup cover what it must.
         val side = candidates.filter { it.side in primary }.maxBy { it.space }.side
-        return clampInto(overlapping(side, word, popupWidth, popupHeight, minHeight, screen, margin), screen)
+        return clampInto(overlapping(side, word, size.width, size.height, size.minHeight, screen, margin), screen)
     }
 
-    private fun candidate(
-        side: Side,
-        word: Box,
-        keepOut: Box,
-        w: Float,
-        h: Float,
-        minHeight: Float,
-        screen: Box,
-        margin: Float,
-    ): Candidate {
+    private fun candidate(side: Side, word: Box, keepOut: Box, size: Size, screen: Box, margin: Float): Candidate {
+        val w = size.width
+        val h = size.height
+        val minHeight = size.minHeight
         val centeredX = (word.centerX - w / 2f).coerceIn(screen.left, (screen.right - w).coerceAtLeast(screen.left))
         val centeredY = (word.centerY - h / 2f).coerceIn(screen.top, (screen.bottom - h).coerceAtLeast(screen.top))
         return when (side) {
@@ -96,13 +101,17 @@ object PopupPlacement {
             }
             Side.LEFT -> {
                 val space = keepOut.left - margin - screen.left
-                val left = keepOut.left - margin - w
-                Candidate(side, space, if (space >= w) Box(left, centeredY, left + w, centeredY + h) else null, true)
+                val width = minOf(w, space)
+                val right = keepOut.left - margin
+                val box = if (width >= size.minWidth) Box(right - width, centeredY, right, centeredY + h) else null
+                Candidate(side, space, box, space >= w)
             }
             Side.RIGHT -> {
                 val space = screen.right - keepOut.right - margin
+                val width = minOf(w, space)
                 val left = keepOut.right + margin
-                Candidate(side, space, if (space >= w) Box(left, centeredY, left + w, centeredY + h) else null, true)
+                val box = if (width >= size.minWidth) Box(left, centeredY, left + width, centeredY + h) else null
+                Candidate(side, space, box, space >= w)
             }
         }
     }

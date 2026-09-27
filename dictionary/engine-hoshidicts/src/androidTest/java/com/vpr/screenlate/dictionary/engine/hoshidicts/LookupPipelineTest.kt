@@ -38,7 +38,7 @@ class LookupPipelineTest {
         root = File(context.cacheDir, "pipeline-${UUID.randomUUID()}").apply { mkdirs() }
         database = Room.inMemoryDatabaseBuilder(context, DictionaryDatabase::class.java).build()
         storage = DictionaryStorage(context)
-        val engine = HoshidictsEngine()
+        val engine = HoshidictsEngine(InstrumentationRegistry.getInstrumentation().targetContext)
         repository = DictionaryRepository(
             database.dictionaryDao(),
             engine,
@@ -100,6 +100,13 @@ class LookupPipelineTest {
         assertThat(results.map { it.term.expression }).containsExactly("面影", "影").inOrder()
         settings.setSingleKanji(false)
         assertThat(lookUp("食べる").map { it.term.expression }).hasSize(1)
+    }
+
+    @Test
+    fun inflectionStepsCarryTheirDescriptions() = runTest {
+        val step = lookUp("食べた").first().trace.single()
+        assertThat(step.name).isEqualTo("-た")
+        assertThat(step.description).startsWith("1. Indicates a reality that has happened in the past.")
     }
 
     @Test

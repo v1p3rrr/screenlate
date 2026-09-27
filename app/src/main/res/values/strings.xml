@@ -133,14 +133,12 @@
     <string name="bubble_small_text_off">Off</string>
     <string name="bubble_small_text_on_demand">On demand</string>
     <string name="bubble_small_text_always">Always</string>
-    <string name="bubble_small_text_hint">Sends parts of the screen to cloud recognition separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized. On demand: the part under the aim, once the aim rests where nothing was found. Always: the whole screen in parts with every scan (more traffic).</string>
+    <string name="bubble_small_text_hint">Sends parts of the screen to cloud recognition separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized.\n\nOn demand: the part under the aim, once the aim rests where nothing was found.\n\nAlways: the whole screen in parts with every scan (more traffic).</string>
     <string name="bubble_size">Bubble size: %1$d dp</string>
     <string name="search_empty_title">Type a word or paste text</string>
     <string name="search_empty_hint">Entries appear as you type. In other apps, select text and choose “Look up in Screenlate” in the selection menu.</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System</string>
-    <string name="settings_language_en">English</string>
-    <string name="settings_language_ru">Русский</string>
     <string name="settings_language_hint">Also available in the system settings: Apps → Screenlate → Language.</string>
     <string name="action_clear">Clear</string>
     <string name="anki_suggest_templates">Fill in suggested templates</string>

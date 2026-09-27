@@ -54,6 +54,7 @@ class DictionaryLookup @Inject constructor(
             .filter { start !is LookupStart.Whole || it.matched.length == start.length }
             .distinctBy { it.term.expression to it.term.reading }
             .take(limit)
+            .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
         if (!extraEntries || !settings.singleKanji) return results
         return results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
     }
@@ -104,6 +105,13 @@ class DictionaryLookup @Inject constructor(
 
     /** Whether any enabled dictionary with definitions is installed. */
     suspend fun hasTermDictionaries(): Boolean = repository.getAll().any { it.enabled && it.termCount > 0 }
+}
+
+/** The popup shows the first frequency of an entry: the one the results are sorted by. */
+internal fun LookupResult.withSortFrequencyFirst(dictionary: String?): LookupResult {
+    val frequencies = term.frequencies
+    if (dictionary == null || frequencies.size < 2 || frequencies.first().dictionary == dictionary) return this
+    return copy(term = term.copy(frequencies = frequencies.sortedBy { it.dictionary != dictionary }))
 }
 
 /**

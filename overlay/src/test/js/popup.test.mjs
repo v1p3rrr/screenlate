@@ -47,7 +47,11 @@ test('renders the header and one card per result', () => {
     assert.equal(page.document.querySelector('#source .matched').textContent, '猫');
     assert.equal(page.document.getElementById('source').textContent, '猫が好き');
     assert.equal(content.querySelectorAll('article.entry').length, 2);
-    assert.equal(content.querySelector('.dictionary-name').textContent, 'Dict [1]');
+    const name = content.querySelector('.dictionary-name');
+    assert.equal(name.textContent, 'Dict');
+    assert.equal(name.title, 'Dict [1]');
+    // The dictionary chip opens the first definition instead of taking a line of its own.
+    assert.equal(name.parentElement.className, 'definition');
     assert.match(content.querySelector('.definition-body').textContent, /meaning/);
     assert.equal(content.querySelectorAll('.action-close').length, 0);
 });
@@ -178,4 +182,77 @@ test('note data for the duplicate check', () => {
     const values = JSON.parse(JSON.stringify(Popup.allNoteData(['expression', 'reading'])));
     assert.deepEqual(values, [{ expression: '猫', reading: 'ねこ' }, { expression: '猫舌', reading: 'ねこじた' }]);
     assert.deepEqual(JSON.parse(JSON.stringify(Popup.terms())), [['猫', 'ねこ'], ['猫舌', 'ねこじた']]);
+});
+
+function detailed() {
+    return {
+        matched: '食べた',
+        deinflected: '食べる',
+        trace: [
+            { name: '-た', label: '', description: 'Past tense.' },
+            { name: 'n-slang', label: '', description: '' },
+        ],
+        term: {
+            expression: '食べる',
+            reading: 'たべる',
+            frequencies: [
+                { dictionary: 'Jiten', values: [{ value: 500, displayValue: '' }] },
+                { dictionary: 'JPDB [2]', values: [{ value: 700, displayValue: '700㋕' }] },
+            ],
+            pitches: [
+                { dictionary: 'Kanjium', pitches: [{ position: 2 }] },
+                { dictionary: 'NHK', pitches: [{ position: 2 }, { position: 0 }] },
+            ],
+            glossaries: [{ dictionary: 'Dict [1]', content: JSON.stringify(['to eat']) }],
+        },
+    };
+}
+
+test('details sit in one row: inflection, the first frequency and distinct accents', () => {
+    Popup.render(state({ results: [detailed()], labels: { ...labels, pitchDictionaries: 'Pitch from' } }));
+    const head = content.querySelector('.entry-head');
+    const row = head.querySelector('.entry-info');
+    assert.ok(row);
+    assert.equal(row.querySelectorAll('.frequency').length, 1);
+    assert.equal(row.querySelector('.frequency').textContent, 'Jiten500');
+    assert.equal(row.querySelectorAll('.pitch-item').length, 2);
+    assert.equal(row.querySelector('.pitch-dictionary'), null);
+
+    row.querySelector('.frequency-more').click();
+    assert.deepEqual([...row.querySelectorAll('.frequency')].map(chip => chip.textContent), ['Jiten500', 'JPDB700㋕']);
+    assert.equal(row.querySelector('.frequency-more'), null);
+});
+
+test('an inflection step or an accent opens the info panel', () => {
+    Popup.render(state({ results: [detailed()], labels: { ...labels, pitchDictionaries: 'Pitch from' } }));
+    const info = page.document.getElementById('info');
+    assert.equal(info.hidden, true);
+    const steps = content.querySelectorAll('.inflection-step');
+    assert.equal(steps.length, 2);
+    assert.ok(content.querySelector('.inflection-icon svg'));
+    // A rule without a description is plain text.
+    assert.equal(steps[1].tagName, 'SPAN');
+    steps[0].click();
+    assert.equal(info.hidden, false);
+    assert.equal(page.document.getElementById('info-title').textContent, '-た');
+    assert.equal(page.document.getElementById('info-text').textContent, 'Past tense.');
+
+    content.querySelector('.pitch-item').click();
+    assert.equal(page.document.getElementById('info-title').textContent, 'Pitch from');
+    assert.equal(page.document.getElementById('info-text').textContent, 'Kanjium\nNHK');
+
+    page.document.getElementById('info-close').click();
+    assert.equal(info.hidden, true);
+});
+
+test('a label replaces the rule name and a new view closes the panel', () => {
+    const result = detailed();
+    result.trace = [{ name: 'passive', label: 'страдательная', description: 'Описание.' }];
+    Popup.render(state({ results: [result] }));
+    const step = content.querySelector('.inflection-step');
+    assert.equal(step.textContent, 'страдательная');
+    step.click();
+    assert.equal(page.document.getElementById('info').hidden, false);
+    Popup.render(state());
+    assert.equal(page.document.getElementById('info').hidden, true);
 });
