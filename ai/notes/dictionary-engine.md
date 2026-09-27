@@ -48,3 +48,26 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
 - The sort frequency dictionary is the first enabled frequency dictionary (rank-based → ascending, occurrence-based → descending) until phase 4 adds a setting.
 - Glossary media is served to the popup at `https://appassets.androidplatform.net/media?d=<dictionary>&p=<path>`.
 - Jitendex titles contain the date (`Jitendex.org [2026-08-11]`), so catalog entries match installed dictionaries by `indexUrl` or a title prefix.
+
+## Import speed: what Manabitan does and what applies here
+
+Checked 2026-09-27 after the owner mentioned a Yomitan fork with much faster imports. It is Manabitan (github.com/ManabiIO/manabitan, GPL-3.0, a Yomitan browser extension fork by the author of Manabi Reader). The import work landed in March–May 2026; the September 14 commits are README, Anki presets and worker reliability.
+
+Where Yomitan loses time and what Manabitan replaced:
+
+- `JSON.parse` of every term bank into objects plus schema validation → a one-pass C parser compiled to WASM over the raw bytes (`ext/js/dictionary/wasm/term-bank-parser.c`, `term-bank-wasm-parser.js`); glossaries stay raw JSON bytes (`raw-term-content.js`) and are not re-serialized; only `index.json` is validated.
+- IndexedDB with several indexes per row → SQLite WASM on OPFS for metadata plus own binary shard files for term records and content (`term-record-opfs-store.js`, `term-content-opfs-store.js`), string interning, zstd with a shared glossary dictionary, content dedup by hash.
+- Eager work → reverse (suffix) indexes built lazily on first use, image dimensions and media reads deferred, next term bank prefetched while the current one is written.
+- Optional pre-converted archives ("artifacts": `manabitan-import-artifact.json`, `term_bank_N.mbtb`) that skip parsing; ordinary Yomitan zips still work.
+- Installed dictionaries stay usable while an import or update runs.
+
+hoshidicts already does the equivalent natively: glaze reads glossaries as `raw_json`, term banks are processed on a thread pool, glossaries are zstd-compressed with a dictionary trained per import (`train_zstd_dict`), offsets are radix-sorted, the store is its own binary format, and imports do not block lookups. Bundled Jitendex + Jiten + Kanjium install in ~5 s on the emulator. Nothing from Manabitan's zip import path needs porting.
+
+The slow path in Screenlate is our own Yomitan collection export converter (`YomitanBackup` + `RawJsonScanner`). Today it decodes the whole file from UTF-8 into chars, builds a `String` per value, re-encodes it and deflates it (`BEST_SPEED`) into intermediate zips that hoshidicts then inflates. Transferable ideas, in order of expected gain:
+
+1. Byte-level scanning: work on `ByteArray` buffers, find value boundaries without decoding, copy raw row slices straight into the output; decode only keys, table names and dictionary titles.
+2. Store intermediate archives uncompressed (`ZipEntry.STORED`; hoshidicts' `zip.cpp` reads method 0), saving deflate and inflate. Needs a temporary file per dictionary about as large as its data in the export.
+3. Parallelism: rows arrive table by table (all terms of all dictionaries first), so no dictionary is complete before the end of the file; parallelize the conversion of separate dictionaries or the writing, not the import of finished ones.
+4. Going further, skipping the intermediate zip would need an import entry point in hoshidicts that takes banks from a directory or memory (a change in the GPL module or upstream).
+
+The ~5.5 min on the emulator for the owner's 2.7 GB export was not split into conversion and hoshidicts import; measure both before choosing. The plan's later item (phase 7) covers this work.

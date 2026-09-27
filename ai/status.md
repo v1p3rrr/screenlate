@@ -36,6 +36,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Step 11 (tests) done: page scripts under node:test + jsdom (31 tests); `AnkiBackend` interface with `AnkiNotes` tests (found and fixed: the duplicate check searched for a literal `{marker}` when a value was missing); `AudioFinder` against MockWebServer; `CompositeOcr` with fake engines and virtual time; instrumented: lookup pipeline on hoshidicts, `LookupPage` in a WebView (font serving refuses `..`), AnkiDroid round trip on the emulator's local collection ("Screenlate Test" deck and note type, one note per run).
 - Step 12 done: README, `docs/usage.md` (settings, audio sources, Yomitan import, warnings, appearance), `docs/architecture.md` (languages, privacy, tests).
 - Emulator state: 20 dictionaries (owner's collection imported), romaji on, audio sources from the owner's Yomitan profile (localhost sources fail there, expected), Anki still points at the missing Basic note type, popup header off, OCR boost on demand, text source app text first, M PLUS 1p downloaded and selected, the owner's desktop-profile CSS imported (text size 14). AnkiDroid has a "Screenlate Test" deck and note type from the round-trip test. Portrait fixed (accelerometer_rotation 0).
+- Research (owner question): the Yomitan fork with faster imports is Manabitan. hoshidicts already does what it does for zip imports; only our collection export converter can gain. Findings in `notes/dictionary-engine.md`, the phase 7 later item refined. No code changed.
 
 
 ## Next
