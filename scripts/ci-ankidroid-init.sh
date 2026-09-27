@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Opens a freshly installed AnkiDroid on the CI emulator and taps "Get started" so it creates its local
-# collection (no account, no sync). Prints what the screen shows at each step; never fails the job.
+# collection (no account, no sync). Only for the throwaway CI emulator: it grants AnkiDroid storage access.
+# Prints what the screen shows at each step; never fails the job.
 set -uo pipefail
 ADB="${ADB:-adb}"
 PACKAGE=com.ichi2.anki
@@ -28,6 +29,8 @@ tap() {
 }
 
 "$ADB" shell pm grant "$PACKAGE" android.permission.POST_NOTIFICATIONS 2>/dev/null || true
+# The full build keeps its collection in shared storage and asks for "All files access" before it creates one.
+"$ADB" shell appops set --uid "$PACKAGE" MANAGE_EXTERNAL_STORAGE allow 2>/dev/null || true
 "$ADB" shell monkey -p "$PACKAGE" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1 || true
 for step in 1 2 3 4 5 6; do
   sleep 8
