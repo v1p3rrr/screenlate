@@ -10,8 +10,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - [x] Phase 3 — Anki + audio
 - [x] Phase 4 — polish (except the Yomitan settings backup, which needs an interview)
 - [x] Phase 5 — first phone test feedback
-- [x] Phase 6 — build and publishing (release key pending, see Next)
-- [x] Phase 7 — release readiness (signing and the owner's open questions pending)
+- [x] Phase 6 — build and publishing (first release v0.1.0 published 2026-09-27)
+- [x] Phase 7 — release readiness (the owner's open questions pending)
 
 ## Log
 
@@ -39,19 +39,21 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Step 11 (tests) done: page scripts under node:test + jsdom (31 tests); `AnkiBackend` interface with `AnkiNotes` tests (found and fixed: the duplicate check searched for a literal `{marker}` when a value was missing); `AudioFinder` against MockWebServer; `CompositeOcr` with fake engines and virtual time; instrumented: lookup pipeline on hoshidicts, `LookupPage` in a WebView (font serving refuses `..`), AnkiDroid round trip on the emulator's local collection ("Screenlate Test" deck and note type, one note per run).
 - Step 12 done: README, `docs/usage.md` (settings, audio sources, Yomitan import, warnings, appearance), `docs/architecture.md` (languages, privacy, tests).
 - Phase 6: GitHub Actions (`ci.yml` green on every push: build, unit/page/build-logic tests, lint, debug APK artifact, last three kept; `release.yml` by tag or by hand: per-ABI + universal APKs, source archive, changelog, publishes only with the signing secrets; `instrumented.yml` by tag or by hand on an API 34 emulator with AnkiDroid; `scripts/ci-ankidroid-init.sh` grants AnkiDroid's storage access and taps "Get started", so the AnkiDroid round trip runs there too — 19 instrumented tests, none skipped). Release notes: `.github/release-notes/<tag>.md` if present, else commits since the previous tag. armeabi-v7a added after the engine tests passed under ARM translation on a local API 30 x86 image (AVD `Screenlate_API30_x86`). Versions from tags (`ScreenlateVersion`, `version.txt` in source archives). Dock glyph あ.
-- Phase 7: About (updates, AboutLibraries list, NOTICE, dictionary attributions behind ⓘ, share logs via `LogExport`), in-app updates (`update/AppUpdates`, PackageInstaller, owner's rules: announced once per version, skippable, no system notifications, manual check, setting), plain HTTP for 127.0.0.1/localhost (local audio servers), owner's rule "details behind ⓘ" applied to About, release notes, bubble, Anki, home and appearance texts. Self-update tested on the emulator up to the install permission (check, notes, permission page); the install itself needs "Install unknown apps" for the test app, which the owner turns on (security setting). Test builds 0.1.0–0.1.2 (debug-signed, feed at http://127.0.0.1:8767/latest.json) are in the scratchpad; 0.1.0 is installed on the emulator as `com.vpr.screenlate`.
+- Phase 7: About (updates, AboutLibraries list, NOTICE, dictionary attributions behind ⓘ, share logs via `LogExport`), in-app updates (`update/AppUpdates`, PackageInstaller, owner's rules: announced once per version, skippable, no system notifications, manual check, setting), plain HTTP for 127.0.0.1/localhost (local audio servers), owner's rule "details behind ⓘ" applied to About, release notes, bubble, Anki, home and appearance texts. Self-update tested on the emulator up to the install permission (check, notes, permission page); the install itself needs "Install unknown apps" for the test app, which the owner turns on (security setting). The emulator now has the published v0.1.0 as `com.vpr.screenlate` (release-signed; the debug-signed test builds were removed).
+- First release v0.1.0 published 2026-09-27 (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.0): release key made by the owner (PKCS12, alias `screenlate`, `CN=Screenlate`, RSA 4096; kept outside the repo, `keystore.properties` in the repo root; never read its values), four repository secrets set by the owner. Certificate SHA-256 `20b7d9c9d1320be02226842591e05afa4e8486036c76304d5a56a7b8cb720343`: the same in the local build and in all four published APKs (versionCode 100). The published x86_64 APK starts on the emulator, installs the bundled dictionaries, and its update check against GitHub reports 0.1.0 as the latest version.
 - Emulator state: 20 dictionaries (owner's collection imported), romaji on, audio sources from the owner's Yomitan profile (localhost sources fail there, expected), Anki still points at the missing Basic note type, popup header off, OCR boost on demand, text source app text first, M PLUS 1p downloaded and selected, the owner's desktop-profile CSS imported (text size 14). AnkiDroid has a "Screenlate Test" deck and note type from the round-trip test. Portrait fixed (accelerometer_rotation 0).
 
 
 ## Next
 
-- First release v0.1.0 (owner's decisions in the plan): the owner creates the key from step-by-step instructions (keytool, PKCS12, alias `screenlate`, `CN=Screenlate`, key in `D:\Documents\Keys\screenlate\`, `keystore.properties` in the repo root) and uploads the four secrets. Then: check the secret names, build a signed release locally and check the certificate, tag v0.1.0, check the published assets and the in-app update check. Until then tag runs keep debug-signed APKs as artifacts and publish nothing. Updating from a debug-signed or differently signed build needs a reinstall.
+- Self-update end to end: with the next release (v0.1.1), update the emulator's v0.1.0 from the app (needs "Install unknown apps" for Screenlate, which the owner turns on) or check it on the phone. Updating from a debug-signed or differently signed build needs a reinstall.
+- The owner installs v0.1.0 on the phone (a separate app next to the debug build; dictionaries and settings come back through the Yomitan import).
 - Later items and open questions for the owner are listed under phase 7 in the plan: faster collection conversion, e-ink mode, backup/restore (Yomitan-compatible dictionary export?).
 - Phase 8 (languages) waits for an interview.
 
 ## Open items
 
-- The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release builds are not measured yet.
+- The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release APKs: arm64-v8a 69 MB, armeabi-v7a 65 MB, x86_64 70 MB, universal 93 MB.
 - Lookup-to-render latency on the emulator (measured with `popup-eval.mjs`): 30–45 ms for typical words, ~100–180 ms for する (16 long Jitendex entries). The native lookup takes a few ms; the rest is JSON and rendering. Not measured on the phone.
 - AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
 - Default text source is OCR; "app text first" is opt-in (not confirmed with the owner).
@@ -59,4 +61,3 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
-- Release keystore not created yet (owner is creating it); see README.
