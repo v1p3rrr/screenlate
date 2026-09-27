@@ -36,6 +36,15 @@ interface LanguageSupport {
     /** Wikidata item of the language, used by Lingua Libre recordings. */
     val wikidataId: String
 
+    /** BCP 47 tag of the language, for `lang` attributes and locale-dependent glyph forms. */
+    val languageTag: String
+
+    /** The phone's fonts for the language, used by the lookup page unless the user picks another font. */
+    val systemFonts: SystemFonts
+
+    /** Sample text for font previews, with characters whose forms differ between fonts or regions. */
+    val fontSample: String
+
     /**
      * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on).
      *
@@ -52,6 +61,22 @@ interface LanguageSupport {
     /** Characters of a matched word that get entries of their own below the results (kanji for Japanese). */
     fun singleCharacterEntries(matched: String): List<String>
 }
+
+enum class FontStyle { SANS, SERIF }
+
+/**
+ * @property sans names of the phone's sans-serif font for the language as CSS `local()` takes them (PostScript or
+ * full names), most specific first.
+ * @property serif the same for the serif font.
+ * @property unicodeRange CSS `unicode-range` of the language's script, so other text keeps the default font.
+ * @property aliases font names common on other systems (e.g. Windows) that stand for these fonts in user CSS.
+ */
+data class SystemFonts(
+    val sans: List<String>,
+    val serif: List<String>,
+    val unicodeRange: String,
+    val aliases: Map<String, FontStyle>,
+)
 
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript { LATIN, CHINESE, DEVANAGARI, JAPANESE, KOREAN }

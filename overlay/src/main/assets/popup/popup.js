@@ -26,6 +26,8 @@ const Popup = (() => {
     const spinner = document.getElementById('spinner');
     const content = document.getElementById('content');
     const dictionaryStyles = document.getElementById('dictionary-styles');
+    const fontFaces = document.getElementById('font-faces');
+    const customCss = document.getElementById('custom-css');
     const renderer = window.YomitanRender || null;
     const HOLD_MS = 450;
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
@@ -524,6 +526,22 @@ const Popup = (() => {
             .join('\n');
     }
 
+    /**
+     * Language, fonts and the user's CSS: { lang, fontFaces, fontFamily, fontSize, customCss, preload }. The custom
+     * CSS comes after the dictionaries' styles; preload names a font to load before it is first needed.
+     */
+    function setAppearance(appearance) {
+        const root = document.documentElement;
+        root.lang = appearance.lang || '';
+        fontFaces.textContent = appearance.fontFaces || '';
+        root.style.setProperty('--font-family', appearance.fontFamily || 'sans-serif');
+        if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
+        customCss.textContent = appearance.customCss || '';
+        if (appearance.preload && document.fonts) {
+            document.fonts.load(`1em "${appearance.preload.replace(/"/g, '\\"')}"`).catch(() => {});
+        }
+    }
+
     /** Page options: { embedded: true } drops the card frame and the close button (app screens). */
     function configure(options) {
         document.documentElement.dataset.embedded = String(Boolean(options.embedded));
@@ -573,6 +591,7 @@ const Popup = (() => {
         update,
         push,
         setStyles,
+        setAppearance,
         setActions,
         setNoteStates,
         setNoteConfig,

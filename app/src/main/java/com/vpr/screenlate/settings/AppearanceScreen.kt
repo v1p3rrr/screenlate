@@ -26,7 +26,7 @@ import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
 
-/** Theme and, on Android 13+, the app's own UI language. */
+/** Theme, on Android 13+ the app's own UI language, and the popup's font and custom CSS. */
 @Composable
 fun AppearanceScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit, onBack: () -> Unit) {
     SettingsScaffold(stringResource(R.string.appearance_title), onBack) { padding ->
@@ -57,6 +57,7 @@ fun AppearanceScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Uni
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 SectionCard(title = stringResource(R.string.settings_language)) { LanguageSelector() }
             }
+            PopupTextSections()
         }
     }
 }

@@ -28,6 +28,9 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
         val maxResults: Int?,
         /** Text replacement rules of the profile; not imported, Japanese lookups have the common ones built in. */
         val replacementRules: Int,
+        val fontSize: Int?,
+        val fontFamily: String?,
+        val customPopupCss: String?,
     )
 
     data class Dictionary(val name: String, val enabled: Boolean)
@@ -94,6 +97,9 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
                 scanLength = options.obj("scanning")?.int("length"),
                 maxResults = general?.int("maxResults"),
                 replacementRules = replacements?.array("groups").orEmpty().sumOf { (it as? JsonArray)?.size ?: 0 },
+                fontSize = general?.int("fontSize"),
+                fontFamily = general?.string("fontFamily")?.trim()?.takeIf { it.isNotEmpty() },
+                customPopupCss = general?.string("customPopupCss")?.takeIf { it.isNotBlank() },
             )
         }
 

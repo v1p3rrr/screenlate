@@ -17,6 +17,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.webkit.WebViewAssetLoader
+import com.vpr.screenlate.overlay.fonts.FontFiles
+import com.vpr.screenlate.overlay.fonts.PageFonts
+import java.io.File
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
@@ -27,7 +30,7 @@ import kotlin.coroutines.resume
  * screen. Hosts add [container] to their layout; the WebView inside is replaced if its renderer dies.
  *
  * Pages and dictionary media are served from `https://appassets.androidplatform.net/`: assets under `/assets/`,
- * media from `/media?d=<dictionary>&p=<path>` through [Callbacks.media].
+ * media from `/media?d=<dictionary>&p=<path>` through [Callbacks.media], installed fonts from `/fonts/<file>`.
  *
  * @param embedded the page is part of an app screen: no card frame and no close button.
  */
@@ -97,6 +100,8 @@ class LookupPage(
         if (embedded) setPersistent("configure", "Popup.configure({embedded: true})")
     }
 
+    private val fontDirectory = File(context.filesDir, PageFonts.DIRECTORY)
+
     private val assetLoader = WebViewAssetLoader.Builder()
         .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
         .build()
@@ -124,6 +129,9 @@ class LookupPage(
 
     /** Shows [state] on top of the current view; the back button returns to it. */
     fun push(state: String) = run("Popup.push($state)")
+
+    /** Language, fonts and custom CSS of the page (JSON from [com.vpr.screenlate.overlay.fonts.PageAppearance]). */
+    fun setAppearance(appearance: JsonElement) = setPersistent("appearance", "Popup.setAppearance($appearance)")
 
     /** Sets the scoped `styles.css` of the loaded dictionaries (a JSON array of {dictionary, css}). */
     fun setStyles(styles: JsonElement) = setPersistent("styles", "Popup.setStyles($styles)")
@@ -186,6 +194,15 @@ class LookupPage(
         return WebResourceResponse(mimeType(path), null, bytes.inputStream())
     }
 
+    private fun fontResponse(name: String): WebResourceResponse {
+        val file = File(fontDirectory, name)
+        val format = FontFiles.formatOf(name)
+        if (!FONT_NAME.matches(name) || format == null || !file.isFile) {
+            return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
+        }
+        return WebResourceResponse(format.mimeType, null, file.inputStream())
+    }
+
     private fun mimeType(path: String): String = when (val extension = path.substringAfterLast('.', "").lowercase()) {
         "svg" -> "image/svg+xml"
         "avif" -> "image/avif"
@@ -200,6 +217,8 @@ class LookupPage(
             if (url.host == HOST && url.path == MEDIA_PATH) {
                 return mediaResponse(url.getQueryParameter("d").orEmpty(), url.getQueryParameter("p").orEmpty())
             }
+            val path = url.path.orEmpty()
+            if (url.host == HOST && path.startsWith(FONTS_PATH)) return fontResponse(path.removePrefix(FONTS_PATH))
             return assetLoader.shouldInterceptRequest(url)
         }
 
@@ -271,5 +290,7 @@ class LookupPage(
         const val HOST = "appassets.androidplatform.net"
         const val PAGE_URL = "https://$HOST/assets/popup/popup.html"
         const val MEDIA_PATH = "/media"
+        const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"
+        val FONT_NAME = Regex("[A-Za-z0-9_-]+\\.[a-z0-9]+")
     }
 }

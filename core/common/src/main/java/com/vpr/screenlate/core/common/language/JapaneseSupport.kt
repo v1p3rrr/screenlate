@@ -22,6 +22,28 @@ object JapaneseSupport : LanguageSupport {
     override val defaultAudioSources = listOf("JAPANESE_POD_101", "LANGUAGE_POD_101", "JISHO")
     override val iso639Part3 = "jpn"
     override val wikidataId = "Q5287"
+    override val languageTag = "ja"
+    override val fontSample = "置く・直す・骨 — あいうえお アイウエオ"
+
+    /**
+     * Noto Sans/Serif CJK JP, which Android ships; asking for the Japanese face by name keeps Japanese glyph forms
+     * even where the phone's main font covers Chinese. Windows and macOS Japanese fonts map to them.
+     */
+    override val systemFonts = SystemFonts(
+        sans = listOf("NotoSansCJKjp-Regular", "Noto Sans CJK JP Regular", "NotoSansJP-Regular", "Noto Sans JP Regular"),
+        serif = listOf("NotoSerifCJKjp-Regular", "Noto Serif CJK JP", "NotoSerifJP-Regular", "Noto Serif JP Regular"),
+        unicodeRange = "U+2E80-2FDF, U+3000-30FF, U+31F0-31FF, U+3200-9FFF, U+F900-FAFF, U+FF00-FFEF, U+20000-2FA1F",
+        aliases = listOf(
+            "Meiryo", "メイリオ", "Meiryo UI", "Yu Gothic", "YuGothic", "游ゴシック", "Yu Gothic UI", "MS Gothic",
+            "ＭＳ ゴシック", "MS PGothic", "ＭＳ Ｐゴシック", "MS UI Gothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+            "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ ProN", "Osaka", "Noto Sans JP", "Noto Sans CJK JP",
+            "Source Han Sans", "Source Han Sans JP", "IPAGothic", "IPAPGothic", "TakaoGothic",
+        ).associateWith { FontStyle.SANS } + listOf(
+            "Yu Mincho", "YuMincho", "游明朝", "MS Mincho", "ＭＳ 明朝", "MS PMincho", "ＭＳ Ｐ明朝", "Hiragino Mincho ProN",
+            "Hiragino Mincho Pro", "ヒラギノ明朝 ProN", "Noto Serif JP", "Noto Serif CJK JP", "Source Han Serif",
+            "Source Han Serif JP", "IPAMincho", "IPAPMincho",
+        ).associateWith { FontStyle.SERIF },
+    )
 
     /**
      * Japanese text starts a word. Latin letters and digits count only when Japanese follows them directly, as in

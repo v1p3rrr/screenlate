@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -47,6 +48,8 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var audioPlayer: AudioPlayer
 
+    @Inject lateinit var pageAppearance: PageAppearance
+
     private val scope = MainScope()
     private var controller: OverlayController? = null
 
@@ -58,6 +61,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             overlaySettings = overlaySettings,
             appSettings = appSettings,
             lookup = dictionaryLookup,
+            pageAppearance = pageAppearance,
             anki = OverlayController.AnkiServices(ankiDroid, ankiNotes, audioFinder, audioSettings, audioPlayer),
             scope = scope,
         ).also { it.start() }

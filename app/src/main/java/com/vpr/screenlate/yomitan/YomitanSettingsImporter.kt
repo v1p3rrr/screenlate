@@ -10,9 +10,13 @@ import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
+import com.vpr.screenlate.overlay.fonts.PopupFonts
+import com.vpr.screenlate.overlay.settings.PopupAppearance
+import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
+import com.vpr.screenlate.settings.PopupAppearanceViewModel
 import javax.inject.Inject
 
-enum class YomitanSection { DICTIONARIES, ANKI, AUDIO, LOOKUP }
+enum class YomitanSection { DICTIONARIES, ANKI, AUDIO, LOOKUP, APPEARANCE }
 
 /** What an import applied and what it had to skip, per section. */
 data class ImportSummary(
@@ -20,6 +24,7 @@ data class ImportSummary(
     val anki: AnkiOutcome? = null,
     val audio: AudioOutcome? = null,
     val lookup: LookupOutcome? = null,
+    val appearance: AppearanceOutcome? = null,
 )
 
 /**
@@ -48,6 +53,13 @@ data class AudioOutcome(val sources: Int, val unknown: List<String>, val disable
 /** @property skippedReplacements text replacement rules of the profile that were not imported. */
 data class LookupOutcome(val scanLength: Int?, val maxResults: Int?, val skippedReplacements: Int)
 
+/**
+ * @property cssLines lines of the imported custom popup CSS; 0 when the profile has none.
+ * @property cssIssues syntax problems and missing fonts in that CSS.
+ * @property fontFamily Yomitan's font family, which is not imported (desktop fonts are not on the phone).
+ */
+data class AppearanceOutcome(val fontSize: Int?, val cssLines: Int, val cssIssues: Int, val fontFamily: String?)
+
 /** Applies one profile of a Yomitan settings export; every applied setting stays editable in the app. */
 class YomitanSettingsImporter @Inject constructor(
     private val dictionaries: DictionaryRepository,
@@ -56,13 +68,29 @@ class YomitanSettingsImporter @Inject constructor(
     private val ankiDroid: AnkiDroid,
     private val notes: AnkiNotes,
     private val audioSettings: AudioSettingsRepository,
+    private val appearance: PopupAppearanceRepository,
+    private val fonts: PopupFonts,
 ) {
     suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary = ImportSummary(
         dictionaries = if (YomitanSection.DICTIONARIES in sections) applyDictionaries(profile) else null,
         anki = if (YomitanSection.ANKI in sections) profile.anki?.let { applyAnki(it) } else null,
         audio = if (YomitanSection.AUDIO in sections) profile.audio?.let { applyAudio(it) } else null,
         lookup = if (YomitanSection.LOOKUP in sections) applyLookup(profile) else null,
+        appearance = if (YomitanSection.APPEARANCE in sections) applyAppearance(profile) else null,
     )
+
+    /** Text size and custom CSS; an empty custom CSS in the profile keeps the current one. */
+    private suspend fun applyAppearance(profile: YomitanSettings.Profile): AppearanceOutcome {
+        profile.fontSize?.let { appearance.setFontSize(it) }
+        val css = profile.customPopupCss
+        css?.let { appearance.setCustomCss(it) }
+        return AppearanceOutcome(
+            fontSize = profile.fontSize?.coerceIn(PopupAppearance.MIN_FONT_SIZE, PopupAppearance.MAX_FONT_SIZE),
+            cssLines = css?.lines()?.count { it.isNotBlank() } ?: 0,
+            cssIssues = css?.let { PopupAppearanceViewModel.cssIssues(it, fonts.installed.value).size } ?: 0,
+            fontFamily = profile.fontFamily,
+        )
+    }
 
     /** Yomitan's order first for the dictionaries installed here, the others after them in their current order. */
     private suspend fun applyDictionaries(profile: YomitanSettings.Profile): DictionaryOutcome {

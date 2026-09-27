@@ -1,0 +1,114 @@
+{
+  "fonts": [
+    {
+      "id": "noto-sans-jp",
+      "family": "Noto Sans JP",
+      "language": "ja",
+      "description": {
+        "en": "Clean gothic (sans-serif) in every weight, the web version of the phone's Japanese font.",
+        "ru": "Аккуратная готика (без засечек) во всех начертаниях, веб-версия японского шрифта телефона."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 9.6,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+JP"
+    },
+    {
+      "id": "noto-serif-jp",
+      "family": "Noto Serif JP",
+      "language": "ja",
+      "description": {
+        "en": "Mincho (serif) to match Noto Sans JP, close to Yu Mincho.",
+        "ru": "Минтё (с засечками) в пару к Noto Sans JP, близок к Yu Mincho."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp/NotoSerifJP%5Bwght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 13.6,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Serif+JP"
+    },
+    {
+      "id": "biz-udpgothic",
+      "family": "BIZ UDPGothic",
+      "language": "ja",
+      "description": {
+        "en": "Proportional gothic by Morisawa designed for readability, close to Meiryo.",
+        "ru": "Пропорциональная готика Morisawa, сделанная для удобного чтения, близка к Meiryo."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpgothic/BIZUDPGothic-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpgothic/BIZUDPGothic-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 9.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/BIZ+UDPGothic"
+    },
+    {
+      "id": "biz-udpmincho",
+      "family": "BIZ UDPMincho",
+      "language": "ja",
+      "description": {
+        "en": "Proportional mincho by Morisawa, easy to read at small sizes.",
+        "ru": "Пропорциональный минтё Morisawa, хорошо читается мелким кеглем."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpmincho/BIZUDPMincho-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpmincho/BIZUDPMincho-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 13.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/BIZ+UDPMincho"
+    },
+    {
+      "id": "klee-one",
+      "family": "Klee One",
+      "language": "ja",
+      "description": {
+        "en": "Handwritten textbook style: kanji look the way they are taught to be written.",
+        "ru": "Рукописный учебный стиль: кандзи выглядят так, как их учат писать."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-SemiBold.ttf", "weight": "600"}
+      ],
+      "sizeMb": 17.6,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Klee+One"
+    },
+    {
+      "id": "zen-maru-gothic",
+      "family": "Zen Maru Gothic",
+      "language": "ja",
+      "description": {
+        "en": "Rounded gothic, soft and easy on the eyes.",
+        "ru": "Скруглённая готика, мягкая и спокойная."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenmarugothic/ZenMaruGothic-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenmarugothic/ZenMaruGothic-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 7.6,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Zen+Maru+Gothic"
+    },
+    {
+      "id": "m-plus-1p",
+      "family": "M PLUS 1p",
+      "language": "ja",
+      "description": {
+        "en": "Light modern gothic, the smallest download.",
+        "ru": "Лёгкая современная готика, самая маленькая загрузка."
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 3.5,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/M+PLUS+1p"
+    }
+  ]
+}

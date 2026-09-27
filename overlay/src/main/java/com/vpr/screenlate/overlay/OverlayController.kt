@@ -45,6 +45,7 @@ import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
+import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.popup.PopupController
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
@@ -87,6 +88,7 @@ class OverlayController(
     private val overlaySettings: OverlaySettingsRepository,
     private val appSettings: AppSettingsRepository,
     private val lookup: DictionaryLookup,
+    private val pageAppearance: PageAppearance,
     private val anki: AnkiServices,
     private val scope: CoroutineScope,
 ) {
@@ -178,6 +180,7 @@ class OverlayController(
         bubbleView.setOnTouchListener(BubbleTouchListener())
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
+        scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
         scope.launch {
             appSettings.themeMode.collect {
                 themeMode = it

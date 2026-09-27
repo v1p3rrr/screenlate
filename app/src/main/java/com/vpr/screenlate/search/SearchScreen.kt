@@ -2,6 +2,8 @@ package com.vpr.screenlate.search
 
 import android.content.Intent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.core.net.toUri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +48,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.note.Sentence
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.overlay.anki.NoteContext
@@ -160,6 +163,7 @@ fun SearchScreen(
         page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles()))
         focus.requestFocus()
     }
+    LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
     LaunchedEffect(results, dark) {
         val current = results ?: return@LaunchedEffect
         holder.notes.refreshActions()
@@ -185,6 +189,8 @@ fun SearchScreen(
                 onValueChange = { viewModel.query.value = it },
                 placeholder = { Text(stringResource(R.string.search_hint)) },
                 singleLine = true,
+                // Japanese glyph forms for the typed text, whatever the UI language.
+                textStyle = LocalTextStyle.current.copy(localeList = LocaleList(SearchViewModel.LANGUAGE.support.languageTag)),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
                 trailingIcon = {

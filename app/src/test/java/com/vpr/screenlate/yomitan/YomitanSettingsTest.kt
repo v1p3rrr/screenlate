@@ -24,7 +24,7 @@ class YomitanSettingsTest {
               {
                 "name": "Mining",
                 "options": {
-                  "general": {"maxResults": 8, "sortFrequencyDictionary": "JPDB"},
+                  "general": {"maxResults": 8, "sortFrequencyDictionary": "JPDB", "fontSize": 14, "fontFamily": "\"Meiryo\"", "customPopupCss": ".gloss-content { font-size: 16px }"},
                   "scanning": {"length": 12},
                   "translation": {"textReplacements": {"searchOriginal": false, "groups": [
                     [{"pattern": "(.)々", "ignoreCase": false, "replacement": "${'$'}1${'$'}1"}, {"pattern": "ッ", "replacement": "っ"}]
@@ -77,6 +77,9 @@ class YomitanSettingsTest {
         assertThat(profile.maxResults).isEqualTo(8)
         assertThat(profile.sortFrequencyDictionary).isEqualTo("JPDB")
         assertThat(profile.replacementRules).isEqualTo(2)
+        assertThat(profile.fontSize).isEqualTo(14)
+        assertThat(profile.fontFamily).isEqualTo("\"Meiryo\"")
+        assertThat(profile.customPopupCss).isEqualTo(".gloss-content { font-size: 16px }")
         assertThat(profile.dictionaries).containsExactly(
             YomitanSettings.Dictionary("Jitendex.org [2026-01-04]", true),
             YomitanSettings.Dictionary("Wikipedia", false),

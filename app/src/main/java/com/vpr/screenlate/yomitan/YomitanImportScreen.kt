@@ -218,6 +218,16 @@ private fun Summary(done: SettingsImportState.Done) {
             SummaryLine(stringResource(R.string.yomitan_summary_audio_unknown, outcome.unknown.joinToString(", ")), warning = true)
         }
     }
+    summary.appearance?.let { outcome ->
+        outcome.fontSize?.let { SummaryLine(stringResource(R.string.yomitan_summary_font_size, it)) }
+        if (outcome.cssLines > 0) SummaryLine(stringResource(R.string.yomitan_summary_css, outcome.cssLines))
+        if (outcome.cssIssues > 0) {
+            SummaryLine(stringResource(R.string.yomitan_summary_css_issues, outcome.cssIssues), warning = true)
+        }
+        outcome.fontFamily?.let {
+            SummaryLine(stringResource(R.string.yomitan_summary_font_family, it.trim('"', '\'')), warning = true)
+        }
+    }
     summary.lookup?.let { outcome ->
         SummaryLine(
             stringResource(
@@ -246,6 +256,7 @@ private fun sectionTitle(section: YomitanSection): Int = when (section) {
     YomitanSection.ANKI -> R.string.yomitan_section_anki
     YomitanSection.AUDIO -> R.string.yomitan_section_audio
     YomitanSection.LOOKUP -> R.string.yomitan_section_lookup
+    YomitanSection.APPEARANCE -> R.string.yomitan_section_appearance
 }
 
 private fun sectionHint(section: YomitanSection): Int = when (section) {
@@ -253,4 +264,5 @@ private fun sectionHint(section: YomitanSection): Int = when (section) {
     YomitanSection.ANKI -> R.string.yomitan_section_anki_hint
     YomitanSection.AUDIO -> R.string.yomitan_section_audio_hint
     YomitanSection.LOOKUP -> R.string.yomitan_section_lookup_hint
+    YomitanSection.APPEARANCE -> R.string.yomitan_section_appearance_hint
 }

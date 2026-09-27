@@ -31,6 +31,14 @@ The Quick Settings tile hides and shows the bubble. The bubble settings let you 
 
 Text selected in any app can also be looked up through the "Look up in Screenlate" entry of the selection menu, and the Search screen accepts typed text.
 
+Lookups also try a common respelling of the text: digits as kanji numerals (1人 → 一人), a character before 々 written twice, ッ as っ, and middle dots, commas, hyphens, periods and spaces removed. The text as it is on the screen is always looked up too.
+
+## Appearance
+
+- **Popup font.** By default the popup and the search page use the phone's own Japanese font, so kanji keep their Japanese forms (compare 直 or 骨) even where the phone's main font is Chinese. Free Japanese fonts can be downloaded from the list, or a font file (`.ttf`, `.otf`, `.ttc`) added; the text size applies to all of them.
+- **Custom CSS.** Applied to the popup and the search page after the dictionaries' own styles, like Yomitan's custom popup CSS. Entries use Yomitan's class names, and badges follow Yomitan's tag color variables such as `--tag-frequency-background-color`. Warnings above the field point to lines the browser would skip and to fonts the phone does not have; such fonts fall back to the popup font. Names of common Windows and macOS Japanese fonts (Meiryo, Yu Gothic, Yu Mincho, MS Mincho, Hiragino) stand for the phone's Japanese sans-serif or serif font.
+- Importing a Yomitan settings export can bring over the text size and the custom popup CSS.
+
 ## Dictionaries
 
 - The Dictionaries screen lists installed dictionaries by type. Drag the handle to change the order: entries from dictionaries higher in the list come first. Among frequency dictionaries, pick the one used for sorting.

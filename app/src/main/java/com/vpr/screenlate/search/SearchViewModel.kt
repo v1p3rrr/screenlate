@@ -14,15 +14,18 @@ import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.overlay.fonts.PageAppearance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.json.JsonObject
 
 /** Results for one search text. */
 data class SearchResults(val text: String, val results: List<LookupResult>, val noDictionaries: Boolean)
@@ -37,7 +40,11 @@ class SearchViewModel @Inject constructor(
     val audioSettings: AudioSettingsRepository,
     val audioPlayer: AudioPlayer,
     appSettings: AppSettingsRepository,
+    pageAppearance: PageAppearance,
 ) : ViewModel() {
+    /** Fonts and custom CSS of the result page. */
+    val appearance: Flow<JsonObject> = pageAppearance.json(LANGUAGE)
+
     val query = MutableStateFlow("")
 
     val themeMode: StateFlow<ThemeMode> =
