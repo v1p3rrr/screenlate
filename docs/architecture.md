@@ -12,11 +12,11 @@ app ──────────────┬──> overlay ──┬──
 
 | Module | Contents |
 |---|---|
-| `app` | Application (Hilt, WorkManager factory), Compose screens: home, dictionaries, search, Anki and audio, bubble settings, OCR test. `ProcessTextActivity` for the text selection menu. |
-| `overlay` | Accessibility service, bubble state machine (`OverlayController`), window screenshots, app text from the accessibility tree, the lookup page (`web/LookupPage`, `assets/popup/`), popup placement, crop editor, Anki buttons (`anki/PopupNotes`), Quick Settings tile. |
-| `core:common` | `Language`, geometry, app settings, shared OkHttp client. |
+| `app` | Application (Hilt, WorkManager factory), Compose screens: home with setup warnings, search, one Settings screen leading to bubble, lookup, dictionaries, Anki and audio, appearance (theme, language, popup font and CSS), Yomitan import and About; OCR test. `ProcessTextActivity` for the text selection menu. |
+| `overlay` | Accessibility service, bubble state machine (`OverlayController`), window screenshots, app text from the accessibility tree, the lookup page (`web/LookupPage`, `assets/popup/`), popup placement, crop editor, Anki buttons (`anki/PopupNotes`), page fonts and custom CSS (`fonts/`), Quick Settings tile. |
+| `core:common` | `Language` and `LanguageSupport` (everything language-specific: lookup start, spelling variants, romaji, sentence rules, fonts, audio defaults), `MappedText`, geometry, app settings, shared OkHttp client, log redaction. |
 | `core:ocr` | `OcrEngine` with a cloud engine (hand-written protobuf) and ML Kit, `CompositeOcr` (draft, then final), `TextLayout` for hit testing. |
-| `core:anki` | AnkiDroid API wrapper, note settings, field templates, sentence extraction, audio sources. |
+| `core:anki` | AnkiDroid API wrapper behind `AnkiBackend`, note settings, field templates, sentence extraction, setup status, audio sources and playback. |
 | `dictionary:api` | `DictionaryEngine` interface and lookup models, registry (Room), import queue (WorkManager), bundled dictionaries, download catalog, update check, `YomitanSorter`, Yomitan collection export converter. |
 | `dictionary:engine-hoshidicts` | `DictionaryEngine` on top of hoshidicts (C++, JNI). GPL-3.0. |
 | `dictionary:render-yomitan` | JavaScript and CSS that render Yomitan structured content, images, furigana and pitch accent. GPL-3.0. |
@@ -41,6 +41,20 @@ The page builds the dictionary markers of an entry (glossary HTML with scoped CS
 ## Dictionaries
 
 `DictionaryRepository` is the only writer of the registry. Imports (bundled archives, files, downloads, Yomitan collection exports) run one at a time as a foreground WorkManager job: the archive is converted into a staging directory, moved into `files/dictionaries/<uuid>/`, registered, and the engine is reloaded. A dictionary with the same title, or the one an update was started for, is replaced in place.
+
+## Languages
+
+Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; only Japanese is implemented so far.
+
+## Privacy
+
+Logs never contain recognized text, looked-up words, note contents or URLs with terms: exceptions are logged through `redacted()`, which keeps the type and stack but drops messages, and URLs through `redactUrl()`.
+
+## Tests
+
+- JVM unit tests next to each module: OCR protocol and layout, `CompositeOcr` with fake engines, sorting, spelling variants and romaji, collection conversion, notes with a fake `AnkiBackend`, audio sources against MockWebServer, fonts and the CSS checker.
+- Page scripts: `scripts/page-tests` runs `note.js`, `anki.js` and `popup.js` in jsdom under `node:test`.
+- Instrumented tests: the engine with small dictionaries and the whole lookup pipeline, the dictionary registry, the lookup page in a WebView, and an AnkiDroid round trip that skips itself without AnkiDroid.
 
 ## Threading
 
