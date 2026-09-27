@@ -103,9 +103,21 @@ class LookupPipelineTest {
     }
 
     @Test
-    fun latinTextAloneIsNotLookedUp() = runTest {
+    fun latinWordsAreFoundOnlyAsWholeWords() = runTest {
+        // The dictionary writes them in full-width letters, as JMdict does; the screen has ASCII.
+        assertThat(lookUp("OL").map { it.term.expression }).containsExactly("ＯＬ")
+        assertThat(lookUp("OL").first().matched).isEqualTo("OL")
+        assertThat(lookUp("CD-ROM!").map { it.term.expression }).containsExactly("ＣＤ-ＲＯＭ")
+        // Office starts with Ｏ, a dictionary word, but only whole words count, and single letters never.
+        assertThat(lookUp("Office")).isEmpty()
+        assertThat(lookUp("O")).isEmpty()
         assertThat(lookUp("Tokyo")).isEmpty()
         assertThat(lookUp("  ")).isEmpty()
+    }
+
+    @Test
+    fun latinThatJapaneseFollowsTakesAnyMatch() = runTest {
+        assertThat(lookUp("OLになった").first().term.expression).isEqualTo("ＯＬ")
     }
 
     private fun termDictionary(): File {
@@ -121,7 +133,10 @@ class LookupPipelineTest {
                   ["スマホ","","","",0,["smartphone"],5,""],
                   ["面影","おもかげ","","",0,["trace"],6,""],
                   ["影","かげ","","",0,["shadow"],7,""],
-                  ["面","めん","","",0,["face"],8,""]
+                  ["面","めん","","",0,["face"],8,""],
+                  ["ＯＬ","オーエル","","",0,["office lady"],9,""],
+                  ["Ｏ","オー","","",0,["the letter O"],10,""],
+                  ["ＣＤ-ＲＯＭ","シーディーロム","","",0,["CD-ROM"],11,""]
                 ]
             """.trimIndent(),
         )

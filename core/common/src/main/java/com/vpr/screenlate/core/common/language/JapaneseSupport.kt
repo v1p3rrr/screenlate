@@ -46,22 +46,54 @@ object JapaneseSupport : LanguageSupport {
     )
 
     /**
-     * Japanese text starts a word. Latin letters and digits count only when Japanese follows them directly, as in
-     * Tシャツ or ３月, so English words and romanized names in Japanese text are not looked up, unless romaji is
-     * converted.
+     * Japanese text starts a word, and so do Latin letters and digits that Japanese follows directly (Tシャツ, ３月,
+     * ＣＤ-ＲＯＭドライブ). A Latin word on its own (ＯＬ, ＤＮＡ, Ｗｉ-Ｆｉ) counts only as a whole and with at least two
+     * characters, one of them a letter: dictionaries list single letters, and English text should not bring up
+     * entries for its first letters. Converted romaji takes any match.
      */
-    override fun isLookupStart(text: String, latinAsNative: Boolean): Boolean {
-        if (text.isEmpty()) return false
+    override fun lookupStart(text: String, latinAsNative: Boolean): LookupStart? {
+        if (text.isEmpty()) return null
         val first = text.codePointAt(0)
-        if (isJapaneseLetter(first)) return true
-        if (!isLatinOrDigit(first)) return false
-        if (latinAsNative && isLatinLetter(first)) return true
-        var index = 0
-        while (index < text.length && isLatinOrDigit(text.codePointAt(index))) {
-            index += Character.charCount(text.codePointAt(index))
-        }
-        return index < text.length && isJapaneseLetter(text.codePointAt(index))
+        if (isJapaneseLetter(first)) return LookupStart.Any
+        if (!isLatinOrDigit(first)) return null
+        if (latinAsNative && isLatinLetter(first)) return LookupStart.Any
+        val word = latinWordLength(text)
+        if (word < text.length && isJapaneseLetter(text.codePointAt(word))) return LookupStart.Any
+        val letters = text.substring(0, word).count { isLatinLetter(it.code) }
+        return if (letters > 0 && word >= 2) LookupStart.Whole(word) else null
     }
+
+    /** A Latin word is looked up from its first character wherever the aim is inside it. */
+    override fun wordStartOffset(before: String, aimed: String): Int {
+        if (aimed.isEmpty() || !isLatinLetter(aimed.codePointAt(0))) return 0
+        var index = before.length
+        var count = 0
+        while (index > 0) {
+            val c = before[index - 1]
+            val inWord = isLatinOrDigit(c.code) ||
+                (c in WORD_CONNECTORS && index > 1 && isLatinOrDigit(before[index - 2].code))
+            if (!inWord) break
+            index--
+            count++
+        }
+        return count
+    }
+
+    /** Length of the Latin word at the start of [text]: letters and digits, joined by [WORD_CONNECTORS]. */
+    private fun latinWordLength(text: String): Int {
+        var index = 0
+        while (index < text.length) {
+            val c = text[index]
+            val inWord = isLatinOrDigit(c.code) ||
+                (c in WORD_CONNECTORS && index > 0 && index + 1 < text.length && isLatinOrDigit(text[index + 1].code))
+            if (!inWord) break
+            index++
+        }
+        return index
+    }
+
+    /** Characters that join the parts of one Latin term: ＣＤ-ＲＯＭ, Ｍ＆Ａ, Ｉ／Ｏ. */
+    private const val WORD_CONNECTORS = "-－.．&＆/／"
 
     /**
      * Romaji to hiragana with Mozc's input rules, longest rule first. `nn` before a vowel is read as ん + n

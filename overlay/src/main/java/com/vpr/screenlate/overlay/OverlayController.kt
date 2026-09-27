@@ -65,6 +65,7 @@ import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import kotlin.math.abs
 import kotlin.math.hypot
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -107,12 +108,16 @@ class OverlayController(
 
     private enum class State { DOCKED, DRAGGING, FLOATING }
 
-    /** What the popup shows for one lookup; kept to re-render on theme or OCR status changes. */
+    /**
+     * What the popup shows for one lookup; kept to re-render on theme or OCR status changes. [start] is where the
+     * looked-up text begins on screen, which is before the aimed character inside a Latin word.
+     */
     private data class LookupView(
         val text: String,
         val matched: Int,
         val results: List<LookupResult>,
         val message: String?,
+        val start: TextPosition? = null,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -677,7 +682,8 @@ class OverlayController(
         showLookup(layout, position)
     }
 
-    private fun showLookup(layout: TextLayout, position: TextPosition) {
+    private fun showLookup(layout: TextLayout, aimed: TextPosition) {
+        val position = wordStart(layout, aimed)
         val text = layout.textFrom(position, scanLength)
         val previous = lookupJob
         lookupJob = scope.launch {
@@ -701,7 +707,8 @@ class OverlayController(
             val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
-            val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
+            val message = if (results.isEmpty()) noResultsMessage() else null
+            val view = LookupView(text, matched, results, message, start = position)
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading }
             if (word != null && word != hapticWord) haptic()
@@ -755,6 +762,14 @@ class OverlayController(
         popup.show(popupState(view), anchor, false, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
+    /** Where the lookup aimed at [aimed] starts: the first character of a word the language reads as a whole. */
+    private fun wordStart(layout: TextLayout, aimed: TextPosition): TextPosition {
+        val characters = layout.paragraphs[aimed.paragraphIndex]
+        val before = characters.subList(max(0, aimed.offset - WORD_LOOKBACK), aimed.offset).joinToString("") { it.text }
+        val back = language.support.wordStartOffset(before, characters[aimed.offset].text)
+        return if (back == 0) aimed else aimed.copy(offset = aimed.offset - back)
+    }
+
     /** Pushes OCR status and theme changes into the popup without a new lookup. */
     private fun refreshPopup() {
         val view = shownLookup ?: return
@@ -765,7 +780,7 @@ class OverlayController(
     private suspend fun noteContext(): NoteContext {
         scanJob?.join()
         val layout = layout
-        val position = hit
+        val position = shownLookup?.start ?: hit
         val sentence = if (layout != null && position != null) {
             val (paragraph, index) = layout.paragraphText(position)
             val length = layout.textFrom(position, shownLookup?.matched?.coerceAtLeast(1) ?: 1).length
@@ -904,6 +919,9 @@ class OverlayController(
         const val DOCK_ZONE_DP = 12f
         const val UNDOCK_DISTANCE_DP = 64f
         const val HIT_TOLERANCE_DP = 12f
+
+        /** Characters before the aim that may belong to the aimed word. */
+        const val WORD_LOOKBACK = 32
         const val MAX_POPUP_DP = 420f
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
