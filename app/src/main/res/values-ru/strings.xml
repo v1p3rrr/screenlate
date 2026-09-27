@@ -33,6 +33,7 @@
     <string name="dictionaries_title">Словари</string>
     <string name="dictionaries_import_file">Импорт из файла</string>
     <string name="dictionaries_import_failed">Не удалось импортировать: %1$s</string>
+    <string name="dictionaries_import_no_space">Не хватает места для импорта %1$s: нужно около %2$s, свободно %3$s. Освободите место и попробуйте снова.</string>
     <string name="dictionaries_installed">Установленные</string>
     <string name="dictionaries_none">Словари не установлены.</string>
     <string name="dictionaries_order_hint">Перетащите за ручку, чтобы изменить порядок: статьи словарей выше по списку показываются первыми. Нажмите на словарь, чтобы увидеть подробности.</string>
@@ -125,6 +126,7 @@
     <string name="bubble_text_source_hint">Текст приложения точный и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
+    <string name="dictionaries_task_checking_space">Проверка свободного места: %1$s</string>
     <string name="bubble_small_text">Усиление OCR</string>
     <string name="bubble_small_text_off">Выкл</string>
     <string name="bubble_small_text_on_demand">По требованию</string>

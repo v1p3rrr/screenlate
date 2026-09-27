@@ -63,11 +63,35 @@ Where Yomitan loses time and what Manabitan replaced:
 
 hoshidicts already does the equivalent natively: glaze reads glossaries as `raw_json`, term banks are processed on a thread pool, glossaries are zstd-compressed with a dictionary trained per import (`train_zstd_dict`), offsets are radix-sorted, the store is its own binary format, and imports do not block lookups. Bundled Jitendex + Jiten + Kanjium install in ~5 s on the emulator. Nothing from Manabitan's zip import path needs porting.
 
-The slow path in Screenlate is our own Yomitan collection export converter (`YomitanBackup` + `RawJsonScanner`). Today it decodes the whole file from UTF-8 into chars, builds a `String` per value, re-encodes it and deflates it (`BEST_SPEED`) into intermediate zips that hoshidicts then inflates. Transferable ideas, in order of expected gain:
+The slow path in Screenlate was our own Yomitan collection export converter (`YomitanBackup` + `RawJsonScanner`).
 
-1. Byte-level scanning: work on `ByteArray` buffers, find value boundaries without decoding, copy raw row slices straight into the output; decode only keys, table names and dictionary titles.
-2. Store intermediate archives uncompressed (`ZipEntry.STORED`; hoshidicts' `zip.cpp` reads method 0), saving deflate and inflate. Needs a temporary file per dictionary about as large as its data in the export.
-3. Parallelism: rows arrive table by table (all terms of all dictionaries first), so no dictionary is complete before the end of the file; parallelize the conversion of separate dictionaries or the writing, not the import of finished ones.
-4. Going further, skipping the intermediate zip would need an import entry point in hoshidicts that takes banks from a directory or memory (a change in the GPL module or upstream).
+### Measurements on the owner's export (2026-09-27, cloud container: 4 cores, JDK 21, hoshidicts built with gcc 14 at -O2)
 
-The ~5.5 min on the emulator for the owner's 2.7 GB export was not split into conversion and hoshidicts import; measure both before choosing. The plan's later item (phase 7) covers this work.
+The owner's `yomitan-dictionaries-2026-01-22-22-46-44.json` (2.73 GB, 16 dictionaries, ~4.1 M bank rows, 18 k media files) was downloaded from the owner's Google Drive into the session scratchpad only.
+
+| Step | Before | After |
+|---|---|---|
+| Read the bytes | 0.75 s | |
+| Decode UTF-8 only | 8.2 s | not done any more |
+| Scan everything, copy nothing | 11.8 s | ~3 s |
+| Convert, deflate level 1 | 45.8 s, 597 MB of archives | 21.5 s |
+| Convert, uncompressed | 34.9 s (old code, level 0), 1742 MB | 9.6–10.5 s (disk-bound: CPU ~3.7 s) |
+| Measure pass (new) | | ~4 s |
+| hoshidicts import of all archives | 5.4 s (deflated) | 4.3 s (stored), 4.9 s (deflated) |
+
+The conversion was ~90% of the collection import. The old converter decoded the file into chars, built a `String` per value, re-encoded and deflated it. Now `RawJsonScanner` works on bytes (quotes, backslashes and brackets never occur inside multi-byte UTF-8 sequences), copies values in whole buffer runs (`capture`: `fill()` flushes the pending part of a value before refilling; copying string by string cost half the CPU time), and `YomitanBackup` keeps a row as offsets into one byte buffer, matches field names as bytes, remembers the last dictionary name, and presizes bank buffers from the previous bank.
+
+Output check: all 16 archives of the new converter (stored and deflated) have the same entries with byte-identical contents as the old converter's; `index.json` is equal as JSON (key order differed before because it came from a `HashMap`). The converter tests pass against both the old and the new implementation. One dictionary has 8 rows fewer than its Yomitan summary count in both versions (rows whose dictionary name is damaged in the export are skipped on purpose).
+
+### Space check (owner decisions 2026-09-27)
+
+- Temporary archives are uncompressed when they fit, deflated when only that fits; the import stops before writing anything when even that does not fit and says how much is needed and free (Dictionaries screen error card).
+- The check is exact about the export: a first pass (`YomitanBackup.measure`) counts bank rows, value bytes and media bytes per chosen dictionary. `CollectionSpace` estimates archives (text, or 40% of it deflated, plus media) and installed size (text/2 + 120 B per row + media + 1 MB), and the peak for the import order (all archives exist first; each is deleted after its dictionary is installed), plus a 128 MB reserve.
+- Ratios measured per dictionary on the owner's export: deflated banks 5–38% of their text; installed size 12–140% of the text (highest for frequency and kanji dictionaries with small rows). With the chosen coefficients no dictionary exceeded its estimate (lowest estimate/actual 1.03); the peak estimate was 2.2 GB for 1.83 GB actual uncompressed and 1.8 GB for 1.25 GB actual deflated.
+- The installed dictionaries of this export take 921 MB.
+
+### Harness
+
+- hoshidicts builds on Linux with gcc 14 (`std::ranges::to`); clang 18 with libstdc++ 13 fails on `std::expected`. CMake >= 3.31 from pip. `-DHOSHIDICTS_BENCHMARK=ON -DHOSHIDICTS_CLI=ON` gives `benchmark-import <zip> <n>` and `hoshidicts-cli import <zip>` (imports next to the zip).
+- The converter compiles on a plain JVM (kotlinx-serialization only), so `dictionary:api`'s converter tests and the `BENCHMARK_COLLECTION=1` test can run without the Android SDK in a small Gradle project that points at the source files.
+- Still open: timings on the phone (ART, flash storage); going further would mean an import entry point in hoshidicts that reads banks without a zip.

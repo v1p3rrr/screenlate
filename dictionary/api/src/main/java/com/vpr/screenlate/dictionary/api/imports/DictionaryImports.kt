@@ -13,8 +13,10 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INDEX_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
@@ -29,6 +31,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_YOMITAN_BACKUP
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_CHECK
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_CONVERT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
@@ -52,8 +55,10 @@ data class ImportTask(
     val percent: Int?,
     val titles: List<String>,
     val error: String?,
+    /** Set when a collection import did not start because the storage cannot hold it. */
+    val shortage: CollectionSpacePlan.NotEnough? = null,
 ) {
-    enum class State { QUEUED, DOWNLOADING, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
+    enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
     val finished: Boolean get() = state == State.SUCCEEDED || state == State.FAILED
 }
@@ -178,6 +183,7 @@ class DictionaryImports @Inject constructor(
             WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
             WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
                 STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
+                STAGE_CHECK -> ImportTask.State.CHECKING_SPACE
                 STAGE_CONVERT -> ImportTask.State.CONVERTING
                 else -> ImportTask.State.IMPORTING
             }
@@ -190,6 +196,9 @@ class DictionaryImports @Inject constructor(
             percent = progress.getInt(KEY_PERCENT, -1).takeIf { !state.isFinished && it >= 0 },
             titles = data.getStringArray(KEY_TITLES)?.toList().orEmpty(),
             error = outputData.getString(KEY_ERROR),
+            shortage = outputData.getLong(KEY_NEEDED_BYTES, -1).takeIf { it >= 0 }?.let { needed ->
+                CollectionSpacePlan.NotEnough(needed, outputData.getLong(KEY_FREE_BYTES, 0))
+            },
         )
     }
 
