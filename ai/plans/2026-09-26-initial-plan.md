@@ -238,3 +238,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: owner request — icon variants in the app's own colors (the bubble and aim are #7C5CFF, the all-lines highlight #FFC83D); added as group V (violet gradient, dark violet, light lavender) on the forms of A, B, E and F.
 - 2026-09-27: owner shared screenshots of the docked bubble (あ on the visible part) and the free bubble with its aim dot; added group W that reuses the app's bubble (translucent #7C5CFF disc, white ring), aim dot (white outline) and word highlight.
 - 2026-09-27: owner likes V8 (lifted word) and V7 (card over the screen) and asked for them in W1's colors and style; added group X (X1, X2 lifted word; X3, X4 card over the screen, X2 and X4 with the app's aim dot).
+- 2026-09-27: owner picked X2 (lifted word with the aim dot, W1 style) as the final icon, on the white background, with more contrast in the grey rows; contrast steps Y1–Y3 shown for the exact level.
