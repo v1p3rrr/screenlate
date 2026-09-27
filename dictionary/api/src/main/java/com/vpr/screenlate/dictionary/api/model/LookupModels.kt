@@ -20,10 +20,15 @@ data class LookupResult(
     val preprocessorSteps: Int = 0,
 )
 
+/**
+ * One deinflection step. [name] is the engine's rule name (Anki's `{conjugation}` uses it); [label] and
+ * [description] are for display, in the interface language when the engine provides them.
+ */
 @Serializable
 data class Transform(
     val name: String,
     val description: String = "",
+    val label: String = "",
 )
 
 /** @property rules part-of-speech rules of the term, space-separated (Yomitan `rules`). */

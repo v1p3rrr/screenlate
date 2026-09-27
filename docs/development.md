@@ -1,0 +1,65 @@
+# Development
+
+[architecture.md](architecture.md) describes the modules and how a lookup flows through them. The development plan, decisions and working notes live in [ai/](../ai).
+
+## Building
+
+- JDK 17 or newer for Gradle (the daemon JVM is provisioned automatically).
+- Android SDK with platform 37, NDK 29.0.14206865 and CMake 3.31.6 (the dictionary engine is native code).
+- Node 22 or newer for the page script tests.
+
+```
+git submodule update --init --recursive
+./gradlew assembleDebug
+./gradlew testDebugUnitTest
+```
+
+The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bundled/`.
+
+Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
+
+## Tests
+
+- `./gradlew testDebugUnitTest`: JVM unit tests of every module.
+- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`) in a simulated DOM.
+- `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
+
+## Project layout
+
+| Module | Purpose |
+|---|---|
+| `app` | Application, Compose screens |
+| `overlay` | Accessibility service, bubble, popup window |
+| `core:common` | Shared models and settings, per-language behavior |
+| `core:ocr` | Cloud and on-device OCR, hit testing |
+| `core:anki` | AnkiDroid integration, note templates, audio sources |
+| `dictionary:api` | Dictionary engine interface, dictionary registry |
+| `dictionary:engine-hoshidicts` | Engine based on hoshidicts (GPL-3.0) |
+| `dictionary:render-yomitan` | Yomitan-style entry renderer (GPL-3.0) |
+
+GPL-licensed third-party code is kept in the last two modules so it can be replaced without touching the rest of the app. Every third-party addition gets an entry in [NOTICE](../NOTICE).
+
+## Versions and releases
+
+The version comes from git tags: `vX.Y.Z` gives the version name X.Y.Z and the version code X·10000 + Y·100 + Z.
+
+GitHub Actions:
+
+- `ci.yml` builds and tests every push and keeps the debug APKs of the last three runs.
+- `release.yml` runs for a tag `vX.Y.Z` (or by hand): per-ABI and universal APKs, a source archive with submodules, and the GitHub Release. The notes come from `.github/release-notes/vX.Y.Z.md` if it exists, otherwise from the commits since the previous tag.
+- `instrumented.yml` runs the instrumented tests on an emulator with AnkiDroid, for tags or by hand.
+
+### Release signing
+
+Release builds are signed only if `keystore.properties` exists in the project root:
+
+```
+storeFile=path/to/screenlate.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+Both files are ignored by git. Write the path with forward slashes, also on Windows: a backslash in this file is an escape character, so a password should not contain one either.
+
+For releases from CI, the same values go into the repository secrets `SIGNING_KEYSTORE_BASE64` (the key file in Base64), `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`. Without them the release workflow builds but does not publish. Keep a backup of the key file and its passwords: updates must be signed with the same key, or users have to uninstall the app first.

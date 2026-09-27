@@ -1,5 +1,6 @@
 package com.vpr.screenlate.settings
 
+import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.os.Build
 import android.os.LocaleList
@@ -7,9 +8,17 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,28 +71,56 @@ fun AppearanceScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Uni
     }
 }
 
-/** The same setting as the system's per-app language. */
+/**
+ * The same setting as the system's per-app language, as a drop-down: the phone's language, then every language the
+ * app has strings for (the locale config generated from the resources), so a new translation shows up by itself.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 private fun LanguageSelector() {
     val context = LocalContext.current
     val manager = remember { context.getSystemService(LocaleManager::class.java) }
-    var selected by remember { mutableStateOf(manager.applicationLocales.toLanguageTags().substringBefore('-')) }
-    val labels = mapOf(
-        "" to stringResource(R.string.settings_language_system),
-        "en" to stringResource(R.string.settings_language_en),
-        "ru" to stringResource(R.string.settings_language_ru),
-    )
-    Segments(
-        options = labels.keys.toList(),
-        selected = selected,
-        label = { labels.getValue(it) },
-        onSelect = { tag ->
-            selected = tag
-            // The system recreates the activity with the new locale.
-            manager.applicationLocales =
-                if (tag.isEmpty()) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(tag)
-        },
-    )
+    val system = LanguageOption("", stringResource(R.string.settings_language_system), flag = null)
+    val options = remember {
+        val config = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            LocaleConfig.fromContextIgnoringOverride(context)
+        } else {
+            LocaleConfig(context)
+        }
+        val locales = config.supportedLocales ?: LocaleList.getEmptyLocaleList()
+        LanguageOptions.of((0 until locales.size()).map(locales::get))
+    }
+    var selected by remember { mutableStateOf(manager.applicationLocales.toLanguageTags().substringBefore(',')) }
+    var expanded by remember { mutableStateOf(false) }
+    val current = options.firstOrNull { it.tag.equals(selected, ignoreCase = true) } ?: system
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+        OutlinedTextField(
+            value = current.label(),
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            (listOf(system) + options).forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option.label()) },
+                    onClick = {
+                        expanded = false
+                        selected = option.tag
+                        // The system recreates the activity with the new locale.
+                        manager.applicationLocales = LocaleList.forLanguageTags(option.tag)
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
     Hint(stringResource(R.string.settings_language_hint))
 }
+
+private fun LanguageOption.label(): String = listOfNotNull(flag, name).joinToString("  ")

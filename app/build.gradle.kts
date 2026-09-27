@@ -1,3 +1,4 @@
+import com.vpr.screenlate.buildlogic.CopyAssetTask
 import com.vpr.screenlate.buildlogic.DownloadAssetsTask
 import com.vpr.screenlate.buildlogic.disableAnkiDroidLintChecks
 import com.vpr.screenlate.buildlogic.screenlateVersion
@@ -8,6 +9,8 @@ plugins {
     alias(libs.plugins.screenlate.android.compose)
     alias(libs.plugins.screenlate.hilt)
     alias(libs.plugins.kotlin.serialization)
+    // Generates the list of libraries and their licenses for the About screen (R.raw.aboutlibraries).
+    alias(libs.plugins.aboutlibraries)
 }
 
 // Release signing is optional: create keystore.properties (see README) to enable it.
@@ -25,6 +28,14 @@ android {
         applicationId = "com.vpr.screenlate"
         versionCode = version.code
         versionName = version.name
+        // The latest stable release; -Pscreenlate.updateFeed points test builds at another server.
+        val updateFeed = providers.gradleProperty("screenlate.updateFeed")
+            .getOrElse("https://api.github.com/repos/v1p3rrr/screenlate/releases/latest")
+        buildConfigField("String", "UPDATE_FEED", "\"$updateFeed\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     // Lists English and Russian in the system's per-app language settings.
@@ -67,8 +78,8 @@ val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDic
     assetPath.set("dictionaries")
     files.putAll(
         mapOf(
-            "10-jitendex.zip" to
-                "https://github.com/stephenmk/stephenmk.github.io/releases/download/2026.08.11.0/jitendex-yomitan.zip",
+            "10-jmdict-english.zip" to
+                "https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/JMdict_english.zip",
             "20-jiten-global-frequency.zip" to
                 "https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan",
             "30-kanjium-pitch-accents.zip" to
@@ -79,9 +90,16 @@ val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDic
     cacheDir.set(rootProject.layout.projectDirectory.dir("dicts/bundled"))
 }
 
+// The About screen shows NOTICE as it is in the repository.
+val noticeAsset = tasks.register<CopyAssetTask>("copyNoticeAsset") {
+    source.set(rootProject.layout.projectDirectory.file("NOTICE"))
+    assetName.set("NOTICE.txt")
+}
+
 androidComponents {
     onVariants { variant ->
         variant.sources.assets?.addGeneratedSourceDirectory(bundledDictionaries, DownloadAssetsTask::outputDir)
+        variant.sources.assets?.addGeneratedSourceDirectory(noticeAsset, CopyAssetTask::outputDir)
     }
 }
 
@@ -104,6 +122,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.aboutlibraries.compose.m3)
+    implementation(libs.androidx.datastore.preferences)
 }
 
 disableAnkiDroidLintChecks()

@@ -6,9 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import android.util.Log
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.view.HapticFeedbackConstants
+import android.os.VibrationAttributes
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -62,6 +65,7 @@ import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import kotlin.math.abs
 import kotlin.math.hypot
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -104,12 +108,16 @@ class OverlayController(
 
     private enum class State { DOCKED, DRAGGING, FLOATING }
 
-    /** What the popup shows for one lookup; kept to re-render on theme or OCR status changes. */
+    /**
+     * What the popup shows for one lookup; kept to re-render on theme or OCR status changes. [start] is where the
+     * looked-up text begins on screen, which is before the aimed character inside a Latin word.
+     */
     private data class LookupView(
         val text: String,
         val matched: Int,
         val results: List<LookupResult>,
         val message: String?,
+        val start: TextPosition? = null,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -117,6 +125,7 @@ class OverlayController(
     private var bubbleSize = (OverlaySettings.DEFAULT_BUBBLE_DP * density).roundToInt()
     private val touchSlop = ViewConfiguration.get(service).scaledTouchSlop
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val vibrator = service.getSystemService(Vibrator::class.java)?.takeIf { it.hasVibrator() }
 
     private val bubbleView = BubbleView(service)
     private val bubbleParams = OverlayWindows.bubbleParams(bubbleSize)
@@ -169,6 +178,9 @@ class OverlayController(
     private var foregroundPackage: String? = null
     private var lookupJob: Job? = null
     private var shownLookup: LookupView? = null
+
+    /** Expression and reading of the word the last vibration was for. */
+    private var hapticWord: Pair<String, String>? = null
     private var screenshot: CapturedScreen? = null
     private var bandTimer: Job? = null
     private val bandJobs = mutableListOf<Job>()
@@ -319,6 +331,21 @@ class OverlayController(
     }
 
     /**
+     * Closes the popup only, as in Poe: the bubble stays where it is and keeps the OCR result, so aiming again looks up
+     * at once, the same word included.
+     */
+    private fun closePopup() {
+        lookupJob?.cancel()
+        lookupJob = null
+        popup.hide()
+        popupNotes.onClosed()
+        layerView.setWordBoxes(emptyList())
+        shownLookup = null
+        hapticWord = null
+        hit = null
+    }
+
+    /**
      * Returns the bubble to the dock, closing the popup and dropping the OCR result.
      *
      * @param atCurrentHeight dock at the bubble's current height (when dragged into the dock) instead of the saved one.
@@ -450,13 +477,16 @@ class OverlayController(
                         moved = true
                         if (state == State.DOCKED) {
                             val awayFromEdge = if (settings.dockSide == DockSide.RIGHT) dx < 0 else dx > 0
-                            if (abs(dx) > abs(dy) && awayFromEdge) startDrag(fromDock = true) else alongDock = true
+                            // Pulling out is the main gesture: only a clearly vertical move moves the dock instead.
+                            val alongEdge = abs(dy) > abs(dx) * ALONG_DOCK_RATIO || !awayFromEdge
+                            if (alongEdge) alongDock = true else startDrag(fromDock = true)
                         } else {
                             startDrag(fromDock = false)
                         }
                     }
                     // Moving along the edge repositions the dock; pulling away from the edge undocks, even mid-gesture.
-                    if (moved && alongDock && distanceFromDockEdge(event.rawX) > UNDOCK_DISTANCE_DP * density) {
+                    val pulledAway = distanceFromDockEdge(event.rawX) - distanceFromDockEdge(downX)
+                    if (moved && alongDock && pulledAway > UNDOCK_DISTANCE_DP * density) {
                         alongDock = false
                         startDrag(fromDock = true)
                     }
@@ -504,6 +534,7 @@ class OverlayController(
         lookupJob?.cancel()
         lookupJob = null
         shownLookup = null
+        hapticWord = null
         screenshot?.bitmap?.recycle()
         screenshot = null
         bubbleView.loading = false
@@ -666,11 +697,11 @@ class OverlayController(
         bandTimer?.cancel()
         if (position == hit) return
         hit = position
-        haptic()
         showLookup(layout, position)
     }
 
-    private fun showLookup(layout: TextLayout, position: TextPosition) {
+    private fun showLookup(layout: TextLayout, aimed: TextPosition) {
+        val position = wordStart(layout, aimed)
         val text = layout.textFrom(position, scanLength)
         val previous = lookupJob
         lookupJob = scope.launch {
@@ -685,6 +716,7 @@ class OverlayController(
             if (results.isEmpty() && lookup.hasTermDictionaries()) {
                 layerView.setWordBoxes(emptyList())
                 shownLookup = null
+                hapticWord = null
                 popup.hide()
                 popupNotes.onResultsHidden()
                 return@launch
@@ -693,8 +725,12 @@ class OverlayController(
             val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
-            val view = LookupView(text, matched, results, message = if (results.isEmpty()) noResultsMessage() else null)
+            val message = if (results.isEmpty()) noResultsMessage() else null
+            val view = LookupView(text, matched, results, message, start = position)
             shownLookup = view
+            val word = results.firstOrNull()?.term?.let { it.expression to it.reading }
+            if (word != null && word != hapticWord) haptic()
+            hapticWord = word
             popupNotes.refreshActions()
             val state = popupStateOffMain(view)
             popup.show(
@@ -744,6 +780,14 @@ class OverlayController(
         popup.show(popupState(view), anchor, false, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
+    /** Where the lookup aimed at [aimed] starts: the first character of a word the language reads as a whole. */
+    private fun wordStart(layout: TextLayout, aimed: TextPosition): TextPosition {
+        val characters = layout.paragraphs[aimed.paragraphIndex]
+        val before = characters.subList(max(0, aimed.offset - WORD_LOOKBACK), aimed.offset).joinToString("") { it.text }
+        val back = language.support.wordStartOffset(before, characters[aimed.offset].text)
+        return if (back == 0) aimed else aimed.copy(offset = aimed.offset - back)
+    }
+
     /** Pushes OCR status and theme changes into the popup without a new lookup. */
     private fun refreshPopup() {
         val view = shownLookup ?: return
@@ -754,7 +798,7 @@ class OverlayController(
     private suspend fun noteContext(): NoteContext {
         scanJob?.join()
         val layout = layout
-        val position = hit
+        val position = shownLookup?.start ?: hit
         val sentence = if (layout != null && position != null) {
             val (paragraph, index) = layout.paragraphText(position)
             val length = layout.textFrom(position, shownLookup?.matched?.coerceAtLeast(1) ?: 1).length
@@ -847,14 +891,24 @@ class OverlayController(
             service.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
+    /**
+     * A short click from the vibrator. View haptic feedback, and plain vibrations this short, follow the system's
+     * touch feedback switch, which many users turn off; the media usage keeps the click that the user enabled here.
+     */
     private fun haptic() {
-        if (settings.haptics) bubbleView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+        val vibrator = vibrator?.takeIf { settings.haptics } ?: return
+        val click = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            vibrator.vibrate(click, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_MEDIA))
+        } else {
+            vibrator.vibrate(click)
+        }
     }
 
     // endregion
 
     private inner class PopupCallbacks : LookupPage.Callbacks {
-        override fun onClose() = dock()
+        override fun onClose() = closePopup()
 
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
@@ -881,8 +935,15 @@ class OverlayController(
         const val TAG = "OverlayController"
         const val AIM_GAP_DP = 20f
         const val DOCK_ZONE_DP = 12f
-        const val UNDOCK_DISTANCE_DP = 64f
+        /** How far a finger moving the dock must then pull away from the edge to take the bubble out. */
+        const val UNDOCK_DISTANCE_DP = 24f
+
+        /** A move from the dock this much more vertical than horizontal (about 60°) moves the dock. */
+        const val ALONG_DOCK_RATIO = 1.7f
         const val HIT_TOLERANCE_DP = 12f
+
+        /** Characters before the aim that may belong to the aimed word. */
+        const val WORD_LOOKBACK = 32
         const val MAX_POPUP_DP = 420f
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L

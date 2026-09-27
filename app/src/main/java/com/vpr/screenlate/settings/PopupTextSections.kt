@@ -47,6 +47,8 @@ import com.vpr.screenlate.overlay.fonts.FontImport
 import com.vpr.screenlate.overlay.fonts.InstalledFont
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.ui.components.Hint
+import com.vpr.screenlate.ui.components.InfoButton
+import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 
 private val FONT_TYPES = arrayOf(
@@ -106,12 +108,11 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
             size = appearance.fontSize,
         )
         HorizontalDivider()
-        Text(stringResource(R.string.popup_font_catalog), style = MaterialTheme.typography.labelLarge)
+        LabelWithInfo(stringResource(R.string.popup_font_catalog), stringResource(R.string.popup_font_proprietary))
         val installedIds = installed.mapNotNull { it.catalogId }.toSet()
         viewModel.catalog.filter { it.id !in installedIds }.forEach { font ->
             CatalogRow(font, downloads[font.id]) { viewModel.download(font) }
         }
-        Hint(stringResource(R.string.popup_font_proprietary))
         OutlinedButton(onClick = { picker.launch(FONT_TYPES) }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.popup_font_add_file))
         }
@@ -185,9 +186,14 @@ private fun Preview(typeface: Typeface?, size: Int) {
 private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: () -> Unit) {
     val locale = LocalConfiguration.current.locales[0]
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(font.family, style = MaterialTheme.typography.bodyLarge)
-        Hint(font.description(locale.language))
-        Hint(stringResource(R.string.popup_font_license, font.license))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(font.family, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+            InfoButton(font.family) {
+                Text(font.description(locale.language))
+                Text(stringResource(R.string.popup_font_license, font.license), style = MaterialTheme.typography.bodySmall)
+                Text(font.homepage, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+            }
+        }
         when (download) {
             is FontDownload.Running -> LinearProgressIndicator(progress = { download.fraction }, modifier = Modifier.fillMaxWidth())
             else -> {
@@ -205,7 +211,7 @@ private fun CssCard(saved: String, installed: List<InstalledFont>, viewModel: Po
     var css by remember { mutableStateOf(saved) }
     val issues = remember(css, installed) { PopupAppearanceViewModel.cssIssues(css, installed) }
     SectionCard(title = stringResource(R.string.popup_css_title)) {
-        Hint(stringResource(R.string.popup_css_hint))
+        LabelWithInfo(stringResource(R.string.popup_css_short), stringResource(R.string.popup_css_hint))
         issues.forEach { issue -> ErrorText("⚠ " + issueText(issue)) }
         OutlinedTextField(
             value = css,

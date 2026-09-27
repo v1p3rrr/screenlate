@@ -13,6 +13,7 @@ import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.ImportedDictionary
 import com.vpr.screenlate.dictionary.api.LookupOptions
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -115,6 +116,28 @@ class DictionaryRepositoryTest {
         assertThat(engine.loaded.terms.map { it.name })
             .containsExactly(repository.getAll()[0].directory, repository.getAll()[1].directory)
             .inOrder()
+    }
+
+    @Test
+    fun languagesMissingFromTheIndexComeFromTheCatalog() = runTest {
+        val catalog = listOf(
+            CatalogEntry(
+                id = "jmdict-english",
+                title = "JMdict",
+                installedTitle = "JMdict [",
+                kind = DictionaryKind.TERM,
+                sourceLanguage = "ja",
+                targetLanguage = "en",
+                downloadUrl = "https://example.com/JMdict_english.zip",
+            ),
+        )
+        val listed = repository.import(archive("JMdict [2026-09-27]", terms = 1), catalog = catalog)
+        val unlisted = repository.import(archive("Other", terms = 1), catalog = catalog)
+
+        assertThat(listed.sourceLanguage).isEqualTo("ja")
+        assertThat(listed.targetLanguage).isEqualTo("en")
+        assertThat(unlisted.sourceLanguage).isNull()
+        assertThat(unlisted.targetLanguage).isNull()
     }
 
     private fun archive(

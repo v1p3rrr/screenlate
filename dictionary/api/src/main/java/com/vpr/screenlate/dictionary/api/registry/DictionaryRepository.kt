@@ -5,6 +5,7 @@ import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -46,14 +47,22 @@ class DictionaryRepository @Inject constructor(
 
     /**
      * Imports a Yomitan archive. The dictionary [replaces] (an update, whose title may differ) or else one with
-     * the same title is replaced and keeps its position and enabled state.
+     * the same title is replaced and keeps its position and enabled state. Languages missing from index.json are
+     * taken from the matching [catalog] entry (JMdict names none), so the dictionary is used for its language only.
      */
-    suspend fun import(archive: File, bundled: Boolean = false, replaces: Long? = null): DictionaryEntity {
+    suspend fun import(
+        archive: File,
+        bundled: Boolean = false,
+        replaces: Long? = null,
+        catalog: List<CatalogEntry> = emptyList(),
+    ): DictionaryEntity {
         val staging = storage.newStagingDirectory()
         try {
             val imported = engine.import(archive, staging)
             return mutex.withLock {
                 val metadata = imported.metadata
+                val kind = DictionaryKind.of(metadata)
+                val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
                 val existing = replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title)
                 // An update must not collide with another dictionary that already has the new title.
                 if (replaces != null) {
@@ -63,9 +72,9 @@ class DictionaryRepository @Inject constructor(
                     id = existing?.id ?: 0,
                     title = metadata.title,
                     revision = metadata.revision,
-                    kind = DictionaryKind.of(metadata),
-                    sourceLanguage = metadata.sourceLanguage,
-                    targetLanguage = metadata.targetLanguage,
+                    kind = kind,
+                    sourceLanguage = metadata.sourceLanguage ?: listed?.sourceLanguage,
+                    targetLanguage = metadata.targetLanguage ?: listed?.targetLanguage,
                     frequencyMode = metadata.frequencyMode,
                     enabled = existing?.enabled ?: true,
                     priority = existing?.priority ?: (dao.maxPriority() + 1),

@@ -14,6 +14,9 @@
  *   labels: { ... }                localized strings
  * }
  *
+ * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents) and
+ * the buttons. Tapping an inflection step or an accent opens the info panel at the bottom of the card.
+ *
  * Glossary rendering comes from window.YomitanRender (yomitan-render/render.js) when it is present.
  *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
@@ -25,6 +28,9 @@ const Popup = (() => {
     const engine = document.getElementById('engine');
     const spinner = document.getElementById('spinner');
     const content = document.getElementById('content');
+    const info = document.getElementById('info');
+    const infoTitle = document.getElementById('info-title');
+    const infoText = document.getElementById('info-text');
     const dictionaryStyles = document.getElementById('dictionary-styles');
     const fontFaces = document.getElementById('font-faces');
     const customCss = document.getElementById('custom-css');
@@ -36,6 +42,7 @@ const Popup = (() => {
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
         open: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 6.5C10.3 5.2 8 4.5 5 4.5H3.5v13H5c3 0 5.3.7 7 2 1.7-1.3 4-2 7-2h1.5v-13H19c-3 0-5.3.7-7 2zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
         close: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        puzzle: '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M10 3.5a2 2 0 0 1 4 0V5h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 0 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V19H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z" fill="currentColor"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     };
 
@@ -48,6 +55,7 @@ const Popup = (() => {
     let menu = null;
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
+    document.getElementById('info-close').addEventListener('click', hideInfo);
     backButton.addEventListener('click', back);
 
     const renderOptions = {
@@ -104,6 +112,7 @@ const Popup = (() => {
 
     function drawResults(state) {
         drawnKey = resultsKey(state);
+        hideInfo();
         if (state.kanji) {
             content.replaceChildren(kanjiView(state.kanji, state.labels || {}));
             return;
@@ -116,6 +125,8 @@ const Popup = (() => {
         const fragment = document.createDocumentFragment();
         results.forEach((result, index) => fragment.append(entry(result, index, state.labels || {})));
         content.replaceChildren(fragment);
+        // Layout is known only once the entries are in the document.
+        content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
     }
 
     function entry(result, index, labels) {
@@ -138,35 +149,11 @@ const Popup = (() => {
                 : term.expression;
         }
         head.append(expression);
+        const details = entryInfo(result, labels);
+        if (details) head.append(details);
         const buttons = actionButtons(result, index);
         if (buttons) head.append(buttons);
         article.append(head);
-
-        const meta = element('div', 'entry-meta');
-        const trace = (result.trace || []).filter(step => step.name);
-        if (trace.length) {
-            const inflection = element('span', 'inflection');
-            inflection.append(element('span', 'inflection-arrow', '«'));
-            trace.forEach((step, i) => {
-                if (i > 0) inflection.append(element('span', 'inflection-arrow', '«'));
-                const chip = element('span', 'inflection-step', step.name);
-                if (step.description) chip.title = step.description;
-                inflection.append(chip);
-            });
-            meta.append(inflection);
-        }
-        for (const group of term.frequencies || []) {
-            const values = (group.values || []).map(v => v.displayValue || String(v.value)).join(', ');
-            if (!values) continue;
-            const chip = element('span', 'frequency');
-            chip.append(element('span', 'frequency-dictionary', shortName(group.dictionary)));
-            chip.append(element('span', 'frequency-value', values));
-            meta.append(chip);
-        }
-        if (meta.childNodes.length) article.append(meta);
-
-        const pitches = pitchBlock(term);
-        if (pitches) article.append(pitches);
 
         const glossary = element('div', 'yomitan-glossary');
         for (const [dictionary, glossaries] of groupByDictionary(term.glossaries || [])) {
@@ -380,7 +367,7 @@ const Popup = (() => {
                 entry.definitions.forEach(definition => list.append(element('li', 'definition', definition)));
                 section.append(list);
             }
-            const stats = element('div', 'entry-meta');
+            const stats = element('div', 'kanji-stats');
             for (const key of KANJI_STATS) {
                 const value = entry.stats?.[key];
                 if (!value) continue;
@@ -395,23 +382,103 @@ const Popup = (() => {
         return view;
     }
 
-    function pitchBlock(term) {
-        const groups = (term.pitches || []).filter(group => (group.pitches || []).length);
-        if (!groups.length || !renderer) return null;
-        const block = element('div', 'pitch');
-        for (const group of groups) {
-            const row = element('div', 'pitch-row');
-            row.append(element('span', 'pitch-dictionary', shortName(group.dictionary)));
-            for (const accent of group.pitches) {
-                const position = accent.pattern || accent.position;
-                const item = element('span', 'pitch-item');
-                item.append(renderer.pitchElement(term.reading || term.expression, position, accent.nasal, accent.devoice));
-                item.append(element('span', 'pitch-position', `[${renderer.downsteps(position).join(', ')}]`));
-                row.append(item);
+    /**
+     * Inflection, frequency and pitch accent in one row: beside the word when the popup is wide, below it when not.
+     * One frequency is shown (the first group: the lookup puts the sort dictionary first), "+N" reveals the rest.
+     */
+    function entryInfo(result, labels) {
+        const row = element('div', 'entry-info');
+        const trace = (result.trace || []).filter(step => step.name);
+        if (trace.length) row.append(inflectionChain(trace));
+
+        const frequencies = (result.term.frequencies || [])
+            .map(group => ({ dictionary: group.dictionary, values: frequencyValues(group) }))
+            .filter(group => group.values);
+        if (frequencies.length) {
+            const chips = frequencies.map(frequencyChip);
+            row.append(chips[0]);
+            if (chips.length > 1) {
+                const more = element('button', 'frequency-more', `+${chips.length - 1}`);
+                more.type = 'button';
+                more.addEventListener('click', () => more.replaceWith(...chips.slice(1)));
+                row.append(more);
             }
-            block.append(row);
         }
-        return block;
+
+        for (const pitch of pitchAccents(result.term)) {
+            const item = element('button', 'pitch-item');
+            item.type = 'button';
+            item.append(pitch.graph);
+            item.append(element('span', 'pitch-position', `[${pitch.downsteps}]`));
+            item.addEventListener('click', () => showInfo(labels.pitchDictionaries || '', pitch.dictionaries.join('\n')));
+            row.append(item);
+        }
+        return row.childNodes.length ? row : null;
+    }
+
+    /** 🧩 and the rule chain; a rule with a description opens it in the panel below the entries. */
+    function inflectionChain(trace) {
+        const chain = element('span', 'inflection');
+        const icon = element('span', 'inflection-icon');
+        icon.innerHTML = ICONS.puzzle;
+        chain.append(icon);
+        trace.forEach((step, i) => {
+            if (i > 0) chain.append(element('span', 'inflection-arrow', '«'));
+            const name = step.label || step.name;
+            if (step.description) {
+                const chip = element('button', 'inflection-step', name);
+                chip.type = 'button';
+                chip.addEventListener('click', () => showInfo(name, step.description));
+                chain.append(chip);
+            } else {
+                chain.append(element('span', 'inflection-step', name));
+            }
+        });
+        return chain;
+    }
+
+    function frequencyValues(group) {
+        return (group.values || []).map(v => v.displayValue || String(v.value)).join(', ');
+    }
+
+    function frequencyChip(group) {
+        const chip = element('span', 'frequency');
+        chip.append(element('span', 'frequency-dictionary', shortName(group.dictionary)));
+        chip.append(element('span', 'frequency-value', group.values));
+        return chip;
+    }
+
+    /** Distinct accents of the word; the dictionaries that list each one open from it. */
+    function pitchAccents(term) {
+        if (!renderer) return [];
+        const accents = new Map();
+        for (const group of term.pitches || []) {
+            for (const accent of group.pitches || []) {
+                const position = accent.pattern || accent.position;
+                const key = JSON.stringify([position, accent.nasal || [], accent.devoice || []]);
+                if (!accents.has(key)) {
+                    accents.set(key, {
+                        graph: renderer.pitchElement(term.reading || term.expression, position, accent.nasal, accent.devoice),
+                        downsteps: renderer.downsteps(position).join(', '),
+                        dictionaries: [],
+                    });
+                }
+                const dictionaries = accents.get(key).dictionaries;
+                if (!dictionaries.includes(group.dictionary)) dictionaries.push(group.dictionary);
+            }
+        }
+        return [...accents.values()];
+    }
+
+    function showInfo(title, text) {
+        infoTitle.textContent = title;
+        infoText.textContent = text;
+        info.hidden = false;
+        info.scrollTop = 0;
+    }
+
+    function hideInfo() {
+        info.hidden = true;
     }
 
     function groupByDictionary(glossaries) {
@@ -426,10 +493,13 @@ const Popup = (() => {
     function dictionarySection(dictionary, glossaries) {
         const section = element('section', 'dictionary');
         section.dataset.dictionary = dictionary;
-        section.append(element('div', 'dictionary-name', dictionary));
+        // A chip in the first definition, as in Yomitan, instead of a line of its own; placed after drawing.
+        const name = element('span', 'dictionary-name', shortName(dictionary));
+        name.title = dictionary;
         const container = glossaries.length > 1 ? element('ol', 'definitions') : section;
         for (const glossary of glossaries) {
             const definition = glossaries.length > 1 ? element('li', 'definition') : element('div', 'definition');
+            if (glossary === glossaries[0]) definition.append(name);
             const tags = (glossary.definitionTags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('span', 'tags');
@@ -448,6 +518,44 @@ const Popup = (() => {
         }
         if (container !== section) section.append(container);
         return section;
+    }
+
+    const BLOCK_DISPLAYS = new Set(['block', 'list-item', 'flow-root']);
+    const INLINE_DISPLAYS = new Set(['inline', 'contents', '']);
+
+    /**
+     * Moves a dictionary chip to where the definition's first line of text starts: down through blocks, list items
+     * and inline wrappers of blocks, so a list that opens the definition keeps its marker in front of the chip
+     * instead of under it. The chip stays outside inline elements that start with text, such as a tag.
+     */
+    function placeDictionaryName(name) {
+        let container = name.parentElement;
+        name.remove();
+        for (;;) {
+            const first = firstVisibleChild(container);
+            if (opensBlock(first)) {
+                container = first;
+                continue;
+            }
+            container.insertBefore(name, first);
+            return;
+        }
+    }
+
+    function opensBlock(node) {
+        if (node?.nodeType !== Node.ELEMENT_NODE) return false;
+        const display = getComputedStyle(node).display;
+        if (BLOCK_DISPLAYS.has(display)) return true;
+        return INLINE_DISPLAYS.has(display) && opensBlock(firstVisibleChild(node));
+    }
+
+    function firstVisibleChild(node) {
+        for (const child of node.childNodes) {
+            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) return child;
+            if (child.nodeType !== Node.ELEMENT_NODE || child.tagName === 'STYLE' || child.tagName === 'SCRIPT') continue;
+            if (getComputedStyle(child).display !== 'none') return child;
+        }
+        return null;
     }
 
     /** Glossaries arrive as JSON text (see dictionary.api.model.Glossary). */

@@ -7,28 +7,58 @@ class JapaneseSupportTest {
 
     private fun romaji(text: String) = JapaneseSupport.fromLatin(MappedText.identity(text))?.text
 
+    private fun start(text: String, romaji: Boolean = false) = JapaneseSupport.lookupStart(text, latinAsNative = romaji)
+
     @Test
     fun `japanese text starts a lookup`() {
-        assertThat(JapaneseSupport.isLookupStart("食べる", latinAsNative = false)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("ラーメン", latinAsNative = false)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("々", latinAsNative = false)).isTrue()
+        assertThat(start("食べる")).isEqualTo(LookupStart.Any)
+        assertThat(start("ラーメン")).isEqualTo(LookupStart.Any)
+        assertThat(start("々")).isEqualTo(LookupStart.Any)
     }
 
     @Test
-    fun `latin text counts only when japanese follows`() {
-        assertThat(JapaneseSupport.isLookupStart("Tシャツを", latinAsNative = false)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("ＣＤプレーヤー", latinAsNative = false)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("3月に", latinAsNative = false)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("ayataka", latinAsNative = false)).isFalse()
-        assertThat(JapaneseSupport.isLookupStart("OK です", latinAsNative = false)).isFalse()
-        assertThat(JapaneseSupport.isLookupStart("「食べる", latinAsNative = false)).isFalse()
-        assertThat(JapaneseSupport.isLookupStart("", latinAsNative = false)).isFalse()
+    fun `latin text that japanese follows takes any match`() {
+        assertThat(start("Tシャツを")).isEqualTo(LookupStart.Any)
+        assertThat(start("ＣＤプレーヤー")).isEqualTo(LookupStart.Any)
+        assertThat(start("3月に")).isEqualTo(LookupStart.Any)
+        assertThat(start("CD-ROMドライブ")).isEqualTo(LookupStart.Any)
     }
 
     @Test
-    fun `latin text counts when romaji is converted`() {
-        assertThat(JapaneseSupport.isLookupStart("taberu", latinAsNative = true)).isTrue()
-        assertThat(JapaneseSupport.isLookupStart("123", latinAsNative = true)).isFalse()
+    fun `a latin word on its own counts only as a whole`() {
+        assertThat(start("OL")).isEqualTo(LookupStart.Whole(2))
+        assertThat(start("OK です")).isEqualTo(LookupStart.Whole(2))
+        assertThat(start("ＤＮＡ、")).isEqualTo(LookupStart.Whole(3))
+        assertThat(start("Wi-Fi is on")).isEqualTo(LookupStart.Whole(5))
+        assertThat(start("M&A.")).isEqualTo(LookupStart.Whole(3))
+        assertThat(start("3D")).isEqualTo(LookupStart.Whole(2))
+        assertThat(start("ayataka")).isEqualTo(LookupStart.Whole(7))
+    }
+
+    @Test
+    fun `single letters, numbers and punctuation start no lookup`() {
+        assertThat(start("W")).isNull()
+        assertThat(start("I think")).isNull()
+        assertThat(start("123")).isNull()
+        assertThat(start("「食べる")).isNull()
+        assertThat(start("")).isNull()
+    }
+
+    @Test
+    fun `latin text takes any match when romaji is converted`() {
+        assertThat(start("taberu", romaji = true)).isEqualTo(LookupStart.Any)
+        assertThat(start("123", romaji = true)).isNull()
+    }
+
+    @Test
+    fun `a latin word is looked up from its first letter`() {
+        assertThat(JapaneseSupport.wordStartOffset("これは", "O")).isEqualTo(0)
+        assertThat(JapaneseSupport.wordStartOffset("これはO", "L")).isEqualTo(1)
+        assertThat(JapaneseSupport.wordStartOffset("the CD-", "R")).isEqualTo(3)
+        assertThat(JapaneseSupport.wordStartOffset("Base6", "4")).isEqualTo(0)
+        assertThat(JapaneseSupport.wordStartOffset("3", "D")).isEqualTo(1)
+        assertThat(JapaneseSupport.wordStartOffset("食べ", "る")).isEqualTo(0)
+        assertThat(JapaneseSupport.wordStartOffset("end. ", "N")).isEqualTo(0)
     }
 
     @Test

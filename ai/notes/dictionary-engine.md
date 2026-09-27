@@ -29,9 +29,11 @@ Implemented: submodule at `dictionary/engine-hoshidicts/src/main/cpp/hoshidicts`
 
 | Dictionary | URL | Size | License |
 |---|---|---|---|
-| Jitendex 2026.08.11.0 (pinned) | https://github.com/stephenmk/stephenmk.github.io/releases/download/2026.08.11.0/jitendex-yomitan.zip | 38.7 MB | CC BY-SA 4.0 |
+| JMdict (English) 2026-09-27 (pinned; jmdict-yomitan keeps its daily releases) | https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/JMdict_english.zip | 15.6 MB | CC BY-SA 4.0 (EDRDG licence), converter MIT |
 | Jiten Global frequency | https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan (index: https://api.jiten.moe/api/frequency-list/index) | 7.8 MB | CC BY-SA 4.0 |
 | Kanjium pitch accents | https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary/releases/download/1.0.0/kanjium_pitch_accents.zip | 1.1 MB | data CC BY-SA 4.0 (Kanjium), script MIT |
+
+Jitendex (38.7 MB) was bundled in v0.1.0 and moved to the catalog afterwards to shrink the APK. The numeric prefix is a slot (`BundledDictionaries.pending`): installs that got Jitendex in slot 10 keep it and do not get JMdict on top; `DictionaryRepair` reports a formerly bundled dictionary with missing files as one to download again. JMdict's index.json names no languages; imports fill missing languages from the matching catalog entry.
 
 Jiten Global uses `frequencyMode: rank-based` (lower is more frequent → Ascending).
 

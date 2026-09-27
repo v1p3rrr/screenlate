@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.engine.hoshidicts
 
+import android.content.Context
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
@@ -10,6 +11,7 @@ import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -20,9 +22,12 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** [DictionaryEngine] backed by hoshidicts. One native session holds the loaded dictionaries. */
+/**
+ * [DictionaryEngine] backed by hoshidicts. One native session holds the loaded dictionaries. Inflection names and
+ * descriptions come in the interface language from [context]'s resources.
+ */
 @Singleton
-class HoshidictsEngine @Inject constructor() : DictionaryEngine {
+class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val context: Context) : DictionaryEngine {
     private val json = Json { ignoreUnknownKeys = true }
     private val mutex = Mutex()
     private var handle = 0L
@@ -68,7 +73,13 @@ class HoshidictsEngine @Inject constructor() : DictionaryEngine {
             frequencyOrder = if (frequencyDictionary == null) ORDER_DISABLED else options.frequencyOrder.toNative(),
             primaryReading = options.primaryReading?.encodeToByteArray(),
         )
-        json.decodeFromString<List<LookupResult>>(raw.decodeToString())
+        json.decodeFromString<List<LookupResult>>(raw.decodeToString()).map { result ->
+            if (result.trace.isEmpty()) {
+                result
+            } else {
+                result.copy(trace = result.trace.map { JapaneseInflections.localize(context.resources, it) })
+            }
+        }
     }
 
     override suspend fun styles(): List<DictionaryStyle> = session { handle ->

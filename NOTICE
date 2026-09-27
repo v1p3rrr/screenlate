@@ -11,8 +11,8 @@ Third-party code
 
 chrome-lens-ocr (https://github.com/KolbyML/chrome-lens-ocr), MIT License,
 Copyright (c) Kolby Moroz Liebl.
-  The request/response layout in core/ocr/.../lens/LensProtocol.kt follows
-  this project's protobuf definitions.
+  The request/response layout of the cloud recognition client in core/ocr
+  follows this project's protobuf definitions.
 
 hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
   Dictionary import, deinflection and lookup; linked into
@@ -32,6 +32,8 @@ Copyright (c) 2026 Manhhao; Yomitan (https://github.com/yomidevs/yomitan), GPL-3
 Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Authors.
   The structured content renderer, furigana segmentation, pitch accent markup and
   dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
+  The Japanese inflection names and descriptions in dictionary/engine-hoshidicts come from
+  Yomitan's japanese-transforms.js through hoshidicts; their Russian translation is under the same license.
 
 AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
 Copyright (c) AnkiDroid contributors.
@@ -48,14 +50,19 @@ Copyright (c) Google LLC.
   ic_launcher_*.xml) and the bug glyph on the debug build's launcher icon
   (app/src/debug/res/drawable/ic_launcher_*.xml).
 
+Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
+licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
+(https://github.com/mikepenz/AboutLibraries), Apache License 2.0.
+
 Third-party data
 ----------------
 
 The APK bundles these dictionaries unmodified. They are imported on first launch.
 
-Jitendex (https://jitendex.org), CC BY-SA 4.0, by Stephen Kraus.
-  Based on JMdict by the Electronic Dictionary Research and Development Group,
-  used in conformance with the Group's licence.
+JMdict (English) (https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project), CC BY-SA 4.0,
+  by the Electronic Dictionary Research and Development Group, used in conformance with the Group's
+  licence (https://www.edrdg.org/edrdg/licence.html). Yomitan conversion by jmdict-yomitan
+  (https://github.com/yomidevs/jmdict-yomitan), MIT License.
 
 Jiten frequency list (https://jiten.moe), CC BY-SA 4.0.
 

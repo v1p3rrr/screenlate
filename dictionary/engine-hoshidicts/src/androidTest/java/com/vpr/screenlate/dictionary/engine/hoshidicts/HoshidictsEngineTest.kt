@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream
 @RunWith(AndroidJUnit4::class)
 class HoshidictsEngineTest {
     private lateinit var root: File
-    private val engine = HoshidictsEngine()
+    private val engine = HoshidictsEngine(InstrumentationRegistry.getInstrumentation().targetContext)
 
     @Before
     fun setUp() {

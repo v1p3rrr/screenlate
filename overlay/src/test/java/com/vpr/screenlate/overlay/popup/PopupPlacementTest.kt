@@ -9,16 +9,7 @@ class PopupPlacementTest {
     private val screen = Box(0f, 100f, 1000f, 2000f)
 
     private fun place(word: Box, vertical: Boolean = false, bubble: Box? = null, minHeight: Float = 300f) =
-        PopupPlacement.place(
-            word,
-            vertical,
-            bubble,
-            popupWidth = 800f,
-            popupHeight = 600f,
-            minHeight = minHeight,
-            screen = screen,
-            margin = 10f,
-        )
+        PopupPlacement.place(word, vertical, bubble, PopupPlacement.Size(800f, 600f, minHeight), screen, margin = 10f)
 
     @Test
     fun `horizontal word near the bottom gets the popup above`() {
@@ -91,9 +82,35 @@ class PopupPlacementTest {
     }
 
     @Test
+    fun `portrait vertical text gets a narrower, taller popup beside the column`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        assertThat(size.minWidth).isEqualTo(600f)
+        assertThat(size.besideHeight).isWithin(0.5f).of(2240f * 0.6f)
+
+        // A column 750 px from the left edge, the bubble below the word: 740 px free on the left.
+        val word = Box(750f, 900f, 800f, 1400f)
+        val popup = PopupPlacement.place(word, true, Box(725f, 1410f, 875f, 1560f), size, phone, margin = 10f)
+        assertThat(popup.right).isEqualTo(715f)
+        assertThat(popup.width).isEqualTo(715f)
+        assertThat(popup.height).isWithin(0.5f).of(2240f * 0.6f)
+    }
+
+    @Test
+    fun `portrait vertical text in the middle of the screen goes above or below at the usual height`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        // Less than 200 dp on either side of the column.
+        val word = Box(500f, 1500f, 560f, 2000f)
+        val popup = PopupPlacement.place(word, true, null, size, phone, margin = 10f)
+        assertThat(popup.bottom).isEqualTo(1490f)
+        assertThat(popup.height).isWithin(0.5f).of(2240f * 0.35f)
+    }
+
+    @Test
     fun `falls back to a clamped box when nothing fits`() {
         val tinyScreen = Box(0f, 0f, 500f, 500f)
-        val popup = PopupPlacement.place(Box(200f, 200f, 300f, 250f), false, null, 800f, 600f, 300f, tinyScreen, 10f)
+        val popup = PopupPlacement.place(Box(200f, 200f, 300f, 250f), false, null, PopupPlacement.Size(800f, 600f, 300f), tinyScreen, 10f)
 
         assertThat(popup.left).isEqualTo(0f)
         assertThat(popup.top).isEqualTo(200f)
@@ -109,10 +126,40 @@ class PopupPlacementTest {
     }
 
     @Test
-    fun `landscape popups get more of the low screen`() {
+    fun `landscape popups go beside the word with nearly the whole height`() {
         val size = PopupPlacement.size(Box(0f, 0f, 2340f, 1000f), density = 3f, maxWidth = 1260f)
-        assertThat(size.width).isEqualTo(1260f)
-        assertThat(size.height).isWithin(0.5f).of(600f)
+        assertThat(size.width).isEqualTo(1170f)
+        assertThat(size.height).isWithin(0.5f).of(900f)
+        assertThat(size.minWidth).isEqualTo(780f)
         assertThat(size.minHeight).isAtMost(size.height)
+        assertThat(size.besideFirst).isTrue()
+    }
+
+    private val landscape = Box(0f, 0f, 2340f, 1000f)
+    private val landscapeSize = PopupPlacement.Size(1170f, 900f, 300f, minWidth = 780f, besideFirst = true)
+
+    @Test
+    fun `landscape horizontal text gets the popup on the roomier side, shrunk to fit`() {
+        // Word and bubble around x 1300..1500: 1290 px free on the left, 830 on the right.
+        val popup = PopupPlacement.place(
+            Box(1300f, 450f, 1500f, 500f), false, Box(1350f, 520f, 1450f, 620f), landscapeSize, landscape, margin = 10f,
+        )
+        assertThat(popup.right).isEqualTo(1290f)
+        assertThat(popup.width).isEqualTo(1170f)
+        assertThat(popup.height).isEqualTo(900f)
+        assertThat(popup.top).isAtLeast(0f)
+        assertThat(popup.bottom).isAtMost(1000f)
+
+        // In the middle both sides are narrower than the popup, which shrinks to the side with more room.
+        val middle = PopupPlacement.place(Box(1000f, 450f, 1340f, 500f), false, null, landscapeSize, landscape, 10f)
+        assertThat(middle.width).isEqualTo(990f)
+        assertThat(middle.right).isEqualTo(990f)
+    }
+
+    @Test
+    fun `landscape falls back to above or below when no side is wide enough`() {
+        val wide = Box(500f, 800f, 1840f, 850f)
+        val popup = PopupPlacement.place(wide, false, null, landscapeSize, landscape, margin = 10f)
+        assertThat(popup.bottom).isAtMost(wide.top)
     }
 }

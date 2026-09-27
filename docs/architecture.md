@@ -44,6 +44,10 @@ The page builds the dictionary markers of an entry (glossary HTML with scoped CS
 
 A Yomitan collection export is one JSON file with the rows of all dictionaries, table by table. `YomitanBackup` reads it twice as UTF-8 bytes without decoding row values: first to measure the chosen dictionaries (`measure`), then to copy their rows into one Yomitan archive per dictionary (`convert`). `CollectionSpace` turns the measurement into the peak storage of the import (all archives exist before the first one is imported, each is deleted after its dictionary is installed) and decides whether the archives are stored uncompressed (fastest), deflated (when only that fits), or not written at all (the task fails with the needed and free space).
 
+## Updates and releases
+
+`update/AppUpdates` reads the latest stable GitHub release, picks the APK for the device's ABI, checks that it is a newer Screenlate signed with the same certificates and installs it through `PackageInstaller` (`UpdateReceiver` gets the session status). The version comes from git tags: `vX.Y.Z` gives the name X.Y.Z and the code X·10000 + Y·100 + Z (`build-logic`'s `ScreenlateVersion`). CI (`.github/workflows`) builds and tests every push, and a tag builds per-ABI and universal APKs, a source archive with submodules and a changelog for the GitHub Release.
+
 ## Languages
 
 Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; only Japanese is implemented so far.

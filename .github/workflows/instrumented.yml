@@ -1,7 +1,7 @@
 name: Instrumented tests
 
-# On an x86_64 emulator with AnkiDroid from its latest release. The AnkiDroid test uses the emulator's fresh local
-# collection and skips itself if AnkiDroid has not created one.
+# On an x86_64 emulator with AnkiDroid from its latest release. AnkiDroid is opened once to create its local collection
+# (no account); the AnkiDroid test skips itself if there is still none.
 
 on:
   push:
@@ -45,8 +45,7 @@ jobs:
           disable-animations: true
           script: |
             adb install -r ankidroid.apk
-            adb shell monkey -p com.ichi2.anki -c android.intent.category.LAUNCHER 1 || true
-            sleep 15
+            scripts/ci-ankidroid-init.sh
             ./gradlew connectedDebugAndroidTest
 
       - name: Upload reports

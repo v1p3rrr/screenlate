@@ -46,11 +46,18 @@ interface LanguageSupport {
     val fontSample: String
 
     /**
-     * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on).
+     * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on), and which
+     * matches count; null when there is nothing to look up.
      *
      * @param latinAsNative Latin text is converted by [fromLatin] before the lookup.
      */
-    fun isLookupStart(text: String, latinAsNative: Boolean): Boolean
+    fun lookupStart(text: String, latinAsNative: Boolean): LookupStart?
+
+    /**
+     * How many characters (code points) before the aimed one the lookup starts, so a word the language reads as a
+     * whole is looked up from its beginning; [before] is the text before the aimed character, [aimed] that character.
+     */
+    fun wordStartOffset(before: String, aimed: String): Int
 
     /** Other spellings of [text] that are looked up as well; the original is always looked up. */
     fun spellingVariants(text: MappedText): List<MappedText>
@@ -60,6 +67,15 @@ interface LanguageSupport {
 
     /** Characters of a matched word that get entries of their own below the results (kanji for Japanese). */
     fun singleCharacterEntries(matched: String): List<String>
+}
+
+/** Which matches a lookup accepts. */
+sealed interface LookupStart {
+    /** Any match from the start of the text, the longest first. */
+    data object Any : LookupStart
+
+    /** Only matches of exactly [length] UTF-16 characters: a word that counts only as a whole. */
+    data class Whole(val length: Int) : LookupStart
 }
 
 enum class FontStyle { SANS, SERIF }

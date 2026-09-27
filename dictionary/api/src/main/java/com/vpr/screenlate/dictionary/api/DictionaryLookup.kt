@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -38,7 +39,7 @@ class DictionaryLookup @Inject constructor(
         if (text.isBlank()) return emptyList()
         val settings = lookupSettings.current()
         val support = language.support
-        if (!support.isLookupStart(text, latinAsNative = settings.romaji)) return emptyList()
+        val start = support.lookupStart(text, latinAsNative = settings.romaji) ?: return emptyList()
         val prepared = repository.prepareLookup(language)
         val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
         val options = prepared.options.copy(
@@ -50,8 +51,10 @@ class DictionaryLookup @Inject constructor(
             engine.lookup(variant.text, options).map { it.inSource(text, variant) }
         }
         val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
+            .filter { start !is LookupStart.Whole || it.matched.length == start.length }
             .distinctBy { it.term.expression to it.term.reading }
             .take(limit)
+            .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
         if (!extraEntries || !settings.singleKanji) return results
         return results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
     }
@@ -102,6 +105,13 @@ class DictionaryLookup @Inject constructor(
 
     /** Whether any enabled dictionary with definitions is installed. */
     suspend fun hasTermDictionaries(): Boolean = repository.getAll().any { it.enabled && it.termCount > 0 }
+}
+
+/** The popup shows the first frequency of an entry: the one the results are sorted by. */
+internal fun LookupResult.withSortFrequencyFirst(dictionary: String?): LookupResult {
+    val frequencies = term.frequencies
+    if (dictionary == null || frequencies.size < 2 || frequencies.first().dictionary == dictionary) return this
+    return copy(term = term.copy(frequencies = frequencies.sortedBy { it.dictionary != dictionary }))
 }
 
 /**

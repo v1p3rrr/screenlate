@@ -14,8 +14,11 @@
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
 | Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
-| Drag the bubble to the left or right edge, or press ✕ | Close the entry and dock the bubble. |
+| Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
+| Drag the bubble to the left or right edge | Close the entry and dock the bubble. |
 | Drag the docked bubble along the edge | Move the dock. |
+
+The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; when neither side has room, it goes above or below.
 
 The Quick Settings tile hides and shows the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 
@@ -27,7 +30,7 @@ The start screen keeps the search, the service status and warnings; everything e
   - **Screen (OCR)**: a screenshot is recognized in the cloud (an on-device draft appears first).
   - **App text first**: the app's own text is used when it exposes character positions, which is exact and works offline; other screens are recognized as usual.
   - **OCR boost** sends parts of the screen to cloud recognition separately, so small text that a full-screen scan misses is read: on demand (the part under the aim, when nothing was found there) or always.
-- **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results.
+- **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results. Without romaji, Latin text is looked up when Japanese follows it (Tシャツ) or when the whole word is a dictionary entry (OL, DNA, CD-ROM), wherever the aim is inside it; single letters are skipped, and letter case counts.
 - **Dictionaries**, **Anki and audio**, **Appearance**: see below.
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too.
 
@@ -68,6 +71,12 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 ### Audio sources
 
 Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}` and `{reading}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; the settings also show sources that failed recently.
+
+## Updates and About
+
+- Release builds look for a new version on GitHub at most once a day when the app is opened, and announce each new version once on the start screen with its changes. "Skip this version" hides it until the next release; About → Updates can still install it and has a "Check for updates" button. The announcements can be turned off there.
+- "Update" downloads the APK for the device and installs it. Android asks once to allow installs from Screenlate, and asks to confirm the first update; later updates install without a prompt where Android allows it (Android 12 and newer).
+- About also lists the open-source libraries, the third-party notices and the installed dictionaries with their authors and licenses, and "Share logs" sends the app's log (with the app version and device model, but no looked-up text) through the share sheet.
 
 ## Troubleshooting
 

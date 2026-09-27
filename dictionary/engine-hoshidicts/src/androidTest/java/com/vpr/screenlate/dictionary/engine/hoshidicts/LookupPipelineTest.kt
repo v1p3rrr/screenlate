@@ -38,7 +38,7 @@ class LookupPipelineTest {
         root = File(context.cacheDir, "pipeline-${UUID.randomUUID()}").apply { mkdirs() }
         database = Room.inMemoryDatabaseBuilder(context, DictionaryDatabase::class.java).build()
         storage = DictionaryStorage(context)
-        val engine = HoshidictsEngine()
+        val engine = HoshidictsEngine(InstrumentationRegistry.getInstrumentation().targetContext)
         repository = DictionaryRepository(
             database.dictionaryDao(),
             engine,
@@ -103,9 +103,28 @@ class LookupPipelineTest {
     }
 
     @Test
-    fun latinTextAloneIsNotLookedUp() = runTest {
+    fun inflectionStepsCarryTheirDescriptions() = runTest {
+        val step = lookUp("食べた").first().trace.single()
+        assertThat(step.name).isEqualTo("-た")
+        assertThat(step.description).startsWith("1. Indicates a reality that has happened in the past.")
+    }
+
+    @Test
+    fun latinWordsAreFoundOnlyAsWholeWords() = runTest {
+        // The dictionary writes them in full-width letters, as JMdict does; the screen has ASCII.
+        assertThat(lookUp("OL").map { it.term.expression }).containsExactly("ＯＬ")
+        assertThat(lookUp("OL").first().matched).isEqualTo("OL")
+        assertThat(lookUp("CD-ROM!").map { it.term.expression }).containsExactly("ＣＤ-ＲＯＭ")
+        // Office starts with Ｏ, a dictionary word, but only whole words count, and single letters never.
+        assertThat(lookUp("Office")).isEmpty()
+        assertThat(lookUp("O")).isEmpty()
         assertThat(lookUp("Tokyo")).isEmpty()
         assertThat(lookUp("  ")).isEmpty()
+    }
+
+    @Test
+    fun latinThatJapaneseFollowsTakesAnyMatch() = runTest {
+        assertThat(lookUp("OLになった").first().term.expression).isEqualTo("ＯＬ")
     }
 
     private fun termDictionary(): File {
@@ -121,7 +140,10 @@ class LookupPipelineTest {
                   ["スマホ","","","",0,["smartphone"],5,""],
                   ["面影","おもかげ","","",0,["trace"],6,""],
                   ["影","かげ","","",0,["shadow"],7,""],
-                  ["面","めん","","",0,["face"],8,""]
+                  ["面","めん","","",0,["face"],8,""],
+                  ["ＯＬ","オーエル","","",0,["office lady"],9,""],
+                  ["Ｏ","オー","","",0,["the letter O"],10,""],
+                  ["ＣＤ-ＲＯＭ","シーディーロム","","",0,["CD-ROM"],11,""]
                 ]
             """.trimIndent(),
         )

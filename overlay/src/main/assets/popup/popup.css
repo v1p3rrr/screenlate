@@ -7,6 +7,8 @@
     --chip-bg: #ece6ff;
     --tag-bg: rgba(0, 0, 0, 0.06);
     --pitch-bg: #e3ebff;
+    --dictionary-bg: #ece3fa;
+    --dictionary-fg: #5a3d8a;
     --pitch-fg: #3453b8;
     --frequency-bg: #e6f4ea;
     --frequency-fg: #1e6b35;
@@ -28,6 +30,8 @@
     --chip-bg: #3a3350;
     --tag-bg: rgba(255, 255, 255, 0.1);
     --pitch-bg: #2b3350;
+    --dictionary-bg: #3a2f52;
+    --dictionary-fg: #d6c6f5;
     --pitch-fg: #b5c5ff;
     --frequency-bg: #233a2b;
     --frequency-fg: #a6dcb4;
@@ -192,17 +196,37 @@ a {
     border-top: 1px solid var(--divider);
 }
 
+/* Word, details and buttons. Narrow popups put the details on a line of their own below the word. */
 .entry-head {
     display: flex;
-    align-items: flex-end;
-    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
 }
 
 .entry-actions {
+    order: 2;
     margin-left: auto;
     display: flex;
     gap: 2px;
-    align-self: center;
+}
+
+.entry-info {
+    order: 3;
+    flex: 1 0 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+    font-size: 0.8em;
+}
+
+@media (min-width: 420px) {
+    .entry-info {
+        order: 1;
+        flex: 1 1 0;
+        min-width: 10em;
+    }
 }
 
 .entry-actions .icon-button {
@@ -316,7 +340,7 @@ a {
     color: var(--muted);
 }
 
-.entry-meta {
+.kanji-stats {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -326,7 +350,16 @@ a {
 }
 
 .inflection {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
     color: var(--muted);
+}
+
+.inflection-icon {
+    display: inline-flex;
+    margin-right: 3px;
+    opacity: 0.8;
 }
 
 .inflection-arrow {
@@ -334,7 +367,18 @@ a {
     opacity: 0.7;
 }
 
-.inflection-step {
+.inflection-step,
+.pitch-item,
+.frequency-more {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+button.inflection-step {
     border-bottom: 1px dotted currentColor;
 }
 
@@ -356,25 +400,18 @@ a {
     border-left: 1px solid rgba(128, 128, 128, 0.25);
 }
 
-.pitch {
-    margin-top: 4px;
-    font-size: 0.9em;
-}
-
-.pitch-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 10px;
-}
-
-.pitch-dictionary {
+.frequency-more {
     padding: 0 5px;
     border-radius: 4px;
-    background: var(--tag-pitch-accent-dictionary-background-color, var(--pitch-bg));
-    color: var(--tag-text-color, var(--pitch-fg));
-    font-size: 0.8em;
+    background: var(--tag-frequency-background-color, var(--frequency-bg));
+    color: var(--tag-text-color, var(--frequency-fg));
     font-weight: 600;
+}
+
+.pitch-item {
+    display: inline-flex;
+    align-items: baseline;
+    font-size: 1.15em;
 }
 
 .pitch-position {
@@ -387,12 +424,17 @@ a {
     margin-top: 8px;
 }
 
+/* Starts the first line of the first definition (see placeDictionaryName), so it takes no line of its own. */
 .dictionary-name {
-    color: var(--muted);
+    display: inline-block;
+    margin: 0 6px 0 0;
+    padding: 0 5px;
+    border-radius: 4px;
+    background: var(--tag-dictionary-background-color, var(--dictionary-bg));
+    color: var(--tag-text-color, var(--dictionary-fg));
     font-size: 0.72em;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    margin-bottom: 2px;
+    line-height: 1.6;
 }
 
 .definitions {
@@ -467,4 +509,37 @@ a {
     color: var(--muted);
     font-size: 0.8em;
     overflow-wrap: anywhere;
+}
+
+/* Panel for a tapped inflection or pitch accent */
+
+.info {
+    flex: none;
+    max-height: 45%;
+    overflow-y: auto;
+    padding: 4px 6px 10px 14px;
+    border-top: 1px solid var(--divider);
+    background: var(--bg);
+    font-size: 0.9em;
+    line-height: 1.45;
+}
+
+.info[hidden] {
+    display: none;
+}
+
+.info-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-title {
+    flex: 1;
+    font-weight: 600;
+}
+
+.info-text {
+    padding-right: 8px;
+    white-space: pre-line;
 }
