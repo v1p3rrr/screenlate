@@ -42,6 +42,10 @@ The page builds the dictionary markers of an entry (glossary HTML with scoped CS
 
 `DictionaryRepository` is the only writer of the registry. Imports (bundled archives, files, downloads, Yomitan collection exports) run one at a time as a foreground WorkManager job: the archive is converted into a staging directory, moved into `files/dictionaries/<uuid>/`, registered, and the engine is reloaded. A dictionary with the same title, or the one an update was started for, is replaced in place.
 
+## Updates and releases
+
+`update/AppUpdates` reads the latest stable GitHub release, picks the APK for the device's ABI, checks that it is a newer Screenlate signed with the same certificates and installs it through `PackageInstaller` (`UpdateReceiver` gets the session status). The version comes from git tags: `vX.Y.Z` gives the name X.Y.Z and the code X·10000 + Y·100 + Z (`build-logic`'s `ScreenlateVersion`). CI (`.github/workflows`) builds and tests every push, and a tag builds per-ABI and universal APKs, a source archive with submodules and a changelog for the GitHub Release.
+
 ## Languages
 
 Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; only Japanese is implemented so far.

@@ -23,11 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -44,13 +40,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
+import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -159,7 +155,11 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         },
                         onSelect = viewModel::setDockSide,
                     )
-                    Text(stringResource(R.string.bubble_text_source), style = MaterialTheme.typography.titleMedium)
+                    LabelWithInfo(
+                        stringResource(R.string.bubble_text_source),
+                        stringResource(R.string.bubble_text_source_hint),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                     Segments(
                         options = TextSource.entries,
                         selected = settings.textSource,
@@ -170,12 +170,11 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         },
                         onSelect = viewModel::setTextSource,
                     )
-                    Text(
-                        stringResource(R.string.bubble_text_source_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    LabelWithInfo(
+                        stringResource(R.string.bubble_small_text),
+                        stringResource(R.string.bubble_small_text_hint),
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                    Text(stringResource(R.string.bubble_small_text), style = MaterialTheme.typography.titleMedium)
                     Segments(
                         options = SmallTextMode.entries,
                         selected = settings.smallText,
@@ -189,11 +188,6 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                             )
                         },
                         onSelect = viewModel::setSmallText,
-                    )
-                    Text(
-                        stringResource(R.string.bubble_small_text_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)

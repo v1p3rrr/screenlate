@@ -16,6 +16,10 @@ Japanese is the only supported language for now.
 
 Usable, still in development. [docs/usage.md](docs/usage.md) explains gestures and settings, [docs/architecture.md](docs/architecture.md) the internals. Progress and plans are in [ai/](ai).
 
+## Download
+
+Releases on GitHub have one APK per processor type (`arm64-v8a` for most phones, `armeabi-v7a` for older 32-bit devices, `x86_64` for emulators) and a universal APK. The app can update itself from there, and the releases also work with Obtainium.
+
 ## Requirements
 
 - Android 11 (API 30) or newer.

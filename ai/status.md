@@ -9,6 +9,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - [x] Phase 2 — dictionaries
 - [x] Phase 3 — Anki + audio
 - [x] Phase 4 — polish (except the Yomitan settings backup, which needs an interview)
+- [x] Phase 5 — first phone test feedback
+- [x] Phase 6 — build and publishing (release key pending, see Next)
+- [x] Phase 7 — release readiness (signing and the owner's open questions pending)
 
 ## Log
 
@@ -40,8 +43,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next
 
-- Phase 6: CI per the decision table (build, unit tests, page tests and lint on every push to main with a debug APK artifact, keeping the last few; tag vX.Y.Z → per-ABI and universal release APKs, armeabi-v7a if the engine builds, source archive with submodules, changelog, GitHub Release; instrumented tests on tags and manual runs), dock glyph from `LanguageSupport.glyph`.
-- Phase 7: About with generated library licenses and installed dictionaries' attributions (no mention of the cloud OCR provider), "Share logs", versioning from tags, daily update check against GitHub Releases (can be turned off); signing at the end with the owner.
+- With the owner: create the release key and put it into the repository secrets (`SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`), then tag the first release (v0.1.0 or later). Until then tag runs keep debug-signed APKs as artifacts and publish nothing. Updating from a debug-signed or differently signed build needs a reinstall.
+- Run the release and instrumented workflows once by hand (workflow_dispatch) and fix what the CI emulator shows (AnkiDroid's collection on a fresh install is the unknown part).
 - Later items and open questions for the owner are listed under phase 7 in the plan: faster collection conversion, e-ink mode, backup/restore (Yomitan-compatible dictionary export?).
 - Phase 8 (languages) waits for an interview.
 

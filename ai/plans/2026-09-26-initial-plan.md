@@ -81,7 +81,7 @@ Goal: a Kotlin app for the owner's phone (Honor, Android 15, MagicOS 9):
 | Extra features (phase 4) | Search screen, "Look up in Screenlate" in the text selection menu (`PROCESS_TEXT`), dictionary update check via `indexUrl` |
 | Builds | Debug (`applicationIdSuffix ".debug"`) + release signed with an own key (`keystore.properties`, not in git); installable side by side |
 | Phase order | Overlay + OCR → dictionaries → Anki → polish |
-| UI rule | Everything that may not fit (popup, screens, lists, crop editor) scrolls; long text wraps |
+| UI rule | Everything that may not fit (popup, screens, lists, crop editor) scrolls; long text wraps. Details the user does not need by default (dictionary licenses and descriptions, release notes, long explanations of a setting) sit behind an ⓘ icon or a separate button and open in a dialog; screens show a short line at most (owner, 2026-09-27) |
 | License | GPL-3.0 for now. GPL code lives only in `:dictionary:engine-hoshidicts` and `:dictionary:render-yomitan`; replacing them (e.g. hoshidicts MIT branch and an own renderer) removes GPL without touching the rest |
 
 ## Architecture
@@ -229,3 +229,4 @@ States: `Docked → Dragging → Floating(+Popup)`.
 - 2026-09-27: owner answers for phases 5–8 — templates re-applied by the button only; max results 32 with a setting; missing dictionaries restored or re-downloaded with a warning; no mention of Google Lens in user-facing texts and docs; CI, signing, ABIs, dock glyph, About screen, logs, versioning, distribution and languages as in the decision table.
 - 2026-09-27: owner decisions — text replacement settings removed, the owner's Yomitan rules are built into Japanese lookups instead; popup font (system Japanese by default, downloadable free fonts, own files, size) and one custom CSS field with warnings for broken CSS and missing fonts; the Yomitan import brings the custom popup CSS and font size, not the font family or replacements.
 - 2026-09-27: owner request — in-app updates from GitHub Releases: announcement card once per version (skippable, no system notifications, setting to turn off), download on "Update", silent install where Android allows, manual check in About; stable releases only, checked at most daily.
+- 2026-09-27: owner request — no walls of text: dictionary licenses in About, release notes ("What's new") and long setting explanations open from an ⓘ icon or a separate button.

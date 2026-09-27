@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,10 @@ import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.overlay.OverlayServiceStatus
 import com.vpr.screenlate.ui.components.Hint
+import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.update.UpdateAnnouncementCard
+import com.vpr.screenlate.update.UpdateViewModel
 
 /** Search, the accessibility service, and whatever broke; everything else is under Settings. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,11 +53,13 @@ fun HomeScreen(
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    updates: UpdateViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val problems by viewModel.problems.collectAsStateWithLifecycle()
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
+    LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
         viewModel.refresh()
@@ -80,6 +86,7 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            UpdateAnnouncementCard(updates)
             if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
 
             SectionCard(title = stringResource(R.string.home_search_title)) {
@@ -109,9 +116,11 @@ fun HomeScreen(
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings)) }
                 }
                 HorizontalDivider()
-                Text(stringResource(R.string.onboarding_device_title), style = MaterialTheme.typography.labelLarge)
-                Hint(stringResource(R.string.onboarding_device_app_launch))
-                Hint(stringResource(R.string.onboarding_device_restricted_settings))
+                LabelWithInfo(
+                    stringResource(R.string.onboarding_device_title),
+                    stringResource(R.string.onboarding_device_app_launch) + "\n\n" +
+                        stringResource(R.string.onboarding_device_restricted_settings),
+                )
             }
 
             OutlinedButton(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {

@@ -68,6 +68,12 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 
 Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}` and `{reading}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; the settings also show sources that failed recently.
 
+## Updates and About
+
+- Release builds look for a new version on GitHub at most once a day when the app is opened, and announce each new version once on the start screen with its changes. "Skip this version" hides it until the next release; About → Updates can still install it and has a "Check for updates" button. The announcements can be turned off there.
+- "Update" downloads the APK for the device and installs it. Android asks once to allow installs from Screenlate, and asks to confirm the first update; later updates install without a prompt where Android allows it (Android 12 and newer).
+- About also lists the open-source libraries, the third-party notices and the installed dictionaries with their authors and licenses, and "Share logs" sends the app's log (with the app version and device model, but no looked-up text) through the share sheet.
+
 ## Troubleshooting
 
 - **"This app does not allow screenshots."** The app protects its windows. Try the "App text first" source.

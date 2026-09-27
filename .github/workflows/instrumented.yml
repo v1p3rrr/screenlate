@@ -45,8 +45,8 @@ jobs:
           disable-animations: true
           script: |
             adb install -r ankidroid.apk
-            adb shell monkey -p com.ichi2.anki -c android.intent.category.LAUNCHER 1 || true
-            sleep 15
+            adb shell am start -n com.ichi2.anki/com.ichi2.anki.DeckPicker || true
+            sleep 20
             ./gradlew connectedDebugAndroidTest
 
       - name: Upload reports

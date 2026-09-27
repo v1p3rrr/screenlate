@@ -11,8 +11,8 @@ Third-party code
 
 chrome-lens-ocr (https://github.com/KolbyML/chrome-lens-ocr), MIT License,
 Copyright (c) Kolby Moroz Liebl.
-  The request/response layout in core/ocr/.../lens/LensProtocol.kt follows
-  this project's protobuf definitions.
+  The request/response layout of the cloud recognition client in core/ocr
+  follows this project's protobuf definitions.
 
 hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
   Dictionary import, deinflection and lookup; linked into
@@ -45,6 +45,10 @@ Copyright 2010-2018, Google Inc. All rights reserved.
 Material Icons (https://github.com/google/material-design-icons), Apache License 2.0,
 Copyright (c) Google LLC.
   Vector icon paths in app/src/main/res/drawable/ic_*.xml.
+
+Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
+licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
+(https://github.com/mikepenz/AboutLibraries), Apache License 2.0.
 
 Third-party data
 ----------------

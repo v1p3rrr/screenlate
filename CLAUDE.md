@@ -39,7 +39,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
 - Shared Gradle configuration goes into convention plugins in `build-logic/`, not copied between modules.
 - DI: Hilt. App data: Room. Preferences: DataStore. No annotation processors besides KSP.
 - Language is a parameter (`core.common.Language`) in OCR, lookup and rendering; do not hard-code Japanese outside Japanese-specific classes. Language-specific behavior belongs behind the per-language support class (see the plan's language audit).
-- UI: anything that may not fit must scroll; long text wraps.
+- UI: anything that may not fit must scroll; long text wraps. Details not needed by default (licenses, release notes, long explanations) go behind an ⓘ icon or a button that opens a dialog.
 
 ## Code style
 

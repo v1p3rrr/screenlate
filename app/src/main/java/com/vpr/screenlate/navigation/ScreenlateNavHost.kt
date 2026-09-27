@@ -17,6 +17,8 @@ import com.vpr.screenlate.lookup.LookupSettingsScreen
 import com.vpr.screenlate.search.SearchScreen
 import com.vpr.screenlate.settings.AboutScreen
 import com.vpr.screenlate.settings.AppearanceScreen
+import com.vpr.screenlate.settings.LibrariesScreen
+import com.vpr.screenlate.settings.NoticesScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
 import com.vpr.screenlate.yomitan.YomitanImportScreen
@@ -51,6 +53,12 @@ private object YomitanImportRoute
 
 @Serializable
 private object AboutRoute
+
+@Serializable
+private object LibrariesRoute
+
+@Serializable
+private object NoticesRoute
 
 @Serializable
 private data class SearchRoute(val query: String = "")
@@ -110,7 +118,16 @@ fun ScreenlateNavHost(
         composable<YomitanImportRoute> {
             YomitanImportScreen(onBack = back, onOpenDictionaries = { navController.navigate(DictionariesRoute) })
         }
-        composable<AboutRoute> { AboutScreen(onBack = back, onOpenOcrTest = { navController.navigate(OcrTestRoute) }) }
+        composable<AboutRoute> {
+            AboutScreen(
+                onBack = back,
+                onOpenOcrTest = { navController.navigate(OcrTestRoute) },
+                onOpenLibraries = { navController.navigate(LibrariesRoute) },
+                onOpenNotices = { navController.navigate(NoticesRoute) },
+            )
+        }
+        composable<LibrariesRoute> { LibrariesScreen(onBack = back) }
+        composable<NoticesRoute> { NoticesScreen(onBack = back) }
         composable<SearchRoute> { entry ->
             SearchScreen(
                 onBack = back,
