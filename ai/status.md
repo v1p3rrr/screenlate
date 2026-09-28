@@ -63,10 +63,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Dictionary languages: index.json → catalog → content (`LanguageGuess`, `DictionarySample`, Android's TextClassifier for Latin/Cyrillic); installed ones filled once from sample lookups (`InstalledLanguages`), all of the owner's dictionaries came out right; manual edit in the details.
 - Fixes: raw JSON escapes in index texts (decoded at import, stored ones once); another revision of an installed dictionary replaces it.
 - Logs can be saved to `Download/Screenlate`; catalog +8 entries from MarvNC's list (JLPT, NWJC, CSJ, CEJC, Wiktionary kanji, mozc variants, jitai, JA Wikipedia); grammar dictionaries need no special support.
+- v0.1.1 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.1, APKs: arm64-v8a 44 MB, armeabi-v7a 39 MB, x86_64 45 MB, universal 66 MB) from 7e70b42 with CI green.
+- After the release (on main, not released): text in the popup can be selected and copied (`SelectionHost` gives Chromium a toolbar-less action mode, the window takes focus while selecting so the handles show, the page's own Copy button, furigana left out); pasted into AnkiDroid's note editor on the emulator as plain lines (note discarded). "Look up in Screenlate" (`PROCESS_TEXT`) is registered and found by the system; the emulator's Android 17 selection toolbar in WebView shows only its first four actions without an overflow, so it was not seen in a menu there.
 
 ## Next
 
-- Release v0.1.1 (notes in `.github/release-notes/v0.1.1.md`) once CI on main is green; the owner updates to it from the app on the phone and checks there: the icon (launcher masks, themed icon), a collection import with timings, the import notification, the on-device draft timings (scan logs: "OCR draft/final … ms", "ML Kit band … ms"), vertical text across columns.
+- v0.1.1 is out; the owner updates to it from the app on the phone and checks there: the icon (launcher masks, themed icon), a collection import with timings, the import notification, the on-device draft timings (scan logs: "OCR draft/final … ms", "ML Kit band … ms"), vertical text across columns.
 - After the release (owner, 2026-09-28): a logging pass over the code, without filling the phone's storage.
 - Emulator state after the README screenshots: `com.vpr.screenlate` is a local release build of the current code (versionName 0.1.0, code 100, release key), with Jitendex downloaded and above JMdict, "App text first", text header off; it still works for the self-update test to v0.1.1. The accessibility service is set back to the debug app.
 
