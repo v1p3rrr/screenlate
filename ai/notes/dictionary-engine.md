@@ -60,6 +60,7 @@ Where Yomitan loses time and what Manabitan replaced:
 - Eager work → reverse (suffix) indexes built lazily on first use, image dimensions and media reads deferred, next term bank prefetched while the current one is written.
 - Optional pre-converted archives ("artifacts": `manabitan-import-artifact.json`, `term_bank_N.mbtb`) that skip parsing; ordinary Yomitan zips still work.
 - Installed dictionaries stay usable while an import or update runs.
+- The collection export is a binary SQLite image (`yomitan-dictionaries-<date>.sqlite3`, `exportDictionaryDatabase` / `importDictionaryDatabase`), restored by copying it back; Yomitan's JSON collection export is not read at all (no Dexie import; checked at commit 81b149f4). So Manabitan has no faster JSON collection import to learn from.
 
 hoshidicts already does the equivalent natively: glaze reads glossaries as `raw_json`, term banks are processed on a thread pool, glossaries are zstd-compressed with a dictionary trained per import (`train_zstd_dict`), offsets are radix-sorted, the store is its own binary format, and imports do not block lookups. Bundled Jitendex + Jiten + Kanjium install in ~5 s on the emulator. Nothing from Manabitan's zip import path needs porting.
 
