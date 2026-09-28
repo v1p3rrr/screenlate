@@ -1,6 +1,8 @@
 package com.vpr.screenlate.core.ocr.lens
 
 import android.graphics.Bitmap
+import android.os.SystemClock
+import android.util.Log
 import androidx.core.graphics.scale
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.OcrEngine
@@ -40,6 +42,7 @@ class LensOcrEngine @Inject constructor(
     override val type = OcrEngineType.LENS
 
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
+        val started = SystemClock.elapsedRealtime()
         val (jpeg, sentWidth, sentHeight) = withContext(Dispatchers.Default) { encode(image) }
         val body = LensProtocol.buildRequest(
             image = jpeg,
@@ -55,6 +58,11 @@ class LensOcrEngine @Inject constructor(
             .post(body.toRequestBody(PROTOBUF))
             .build()
         val bytes = client.newCall(request).await().use { response ->
+            Log.d(
+                TAG,
+                "Lens: HTTP ${response.code} for ${jpeg.size shr 10} KB (${sentWidth}x$sentHeight) " +
+                    "in ${SystemClock.elapsedRealtime() - started} ms",
+            )
             if (!response.isSuccessful) throw LensHttpException(response.code)
             response.body.bytes()
         }
@@ -77,6 +85,7 @@ class LensOcrEngine @Inject constructor(
     }
 
     private companion object {
+        const val TAG = "LensOcr"
         const val ENDPOINT = "https://lensfrontend-pa.googleapis.com/v1/crupload"
 
         // Public key embedded in Chrome, taken from chrome-lens-ocr.

@@ -264,6 +264,8 @@ class PopupNotes(
                 val screenshot = picture?.let { saveScreenshot(it).also { _ -> it.recycle() } }
                 val clip = if ("audio" in used) chosenClips[term] ?: audio.find(term.first, term.second, language) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
+                // The kind of result only: messages and fields may carry the note's text.
+                Log.i(TAG, "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, forced $force")
                 screenshot?.delete()
                 report(index, term, result)
             } catch (e: CancellationException) {

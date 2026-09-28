@@ -6,6 +6,7 @@ import android.accessibilityservice.AccessibilityService.TakeScreenshotCallback
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import android.view.Display
 import android.view.accessibility.AccessibilityWindowInfo
@@ -40,16 +41,26 @@ class ScreenCapturer(
     val needsOverlayHiding: Boolean get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
     suspend fun capture(pointX: Int, pointY: Int): CapturedScreen {
+        val started = SystemClock.elapsedRealtime()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             val window = findAppWindow(pointX, pointY)
             if (window != null) {
                 val bounds = Rect().also(window::getBoundsInScreen)
-                runCatching { return captureWindow(window.id, bounds) }
-                    .onFailure { if (it is CaptureException.SecureWindow) throw it }
+                runCatching { return captureWindow(window.id, bounds).also { log("window", it, started) } }
+                    .onFailure {
+                        if (it is CaptureException.SecureWindow) {
+                            Log.i(TAG, "The window forbids screenshots")
+                            throw it
+                        }
+                    }
                     .onFailure { Log.w(TAG, "Window capture failed, falling back to display capture", it) }
             }
         }
-        return captureDisplay()
+        return captureDisplay().also { log("display", it, started) }
+    }
+
+    private fun log(kind: String, shot: CapturedScreen, started: Long) {
+        Log.d(TAG, "Captured the $kind, ${shot.bitmap.width}x${shot.bitmap.height}, in ${SystemClock.elapsedRealtime() - started} ms")
     }
 
     private fun findAppWindow(x: Int, y: Int): AccessibilityWindowInfo? {

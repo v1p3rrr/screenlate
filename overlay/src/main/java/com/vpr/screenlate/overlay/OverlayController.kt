@@ -84,6 +84,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.cancelAndJoin
@@ -363,6 +364,7 @@ class OverlayController(
      * @param atCurrentHeight dock at the bubble's current height (when dragged into the dock) instead of the saved one.
      */
     private fun dock(side: DockSide = settings.dockSide, atCurrentHeight: Boolean = false) {
+        if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
         resetScan()
         popup.hide()
@@ -402,6 +404,7 @@ class OverlayController(
     // region Gestures
 
     private fun startDrag(fromDock: Boolean) {
+        if (fromDock) Log.d(TAG, "Bubble pulled out")
         state = State.DRAGGING
         bubbleView.docked = false
         if (fromDock) {
@@ -482,6 +485,7 @@ class OverlayController(
     }
 
     private fun copyText(text: String) {
+        Log.d(TAG, "Copied ${text.length} characters from the bubble menu")
         PageState.copy(service, text)
         // Android 13 and later show what was copied themselves.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -602,11 +606,16 @@ class OverlayController(
     }
 
     private fun startScan(flashLines: Boolean) {
+        Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         resetScan()
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
             val started = SystemClock.elapsedRealtime()
+            // App text is exact and works in windows that forbid screenshots. It needs no screenshot, so it is read
+            // while the screen is captured and shown as soon as it is there. OCR still runs to add the text the app
+            // does not expose, such as text in images.
+            val appTextRead = async { if (settings.textSource == TextSource.APP_TEXT) readAppText() else null }
             var captureError: CaptureException? = null
             val captured = try {
                 capture()
@@ -614,11 +623,14 @@ class OverlayController(
                 captureError = e
                 null
             }
-            // App text is exact and works in windows that forbid screenshots. OCR still runs to add the text the app
-            // does not expose, such as text in images.
-            val appText = if (settings.textSource == TextSource.APP_TEXT) readAppText() else null
-            if (appText != null) onPage(appText, final = captured == null, lensError = null, flashLines = flashLines)
+            // Once recognition has shown a page (which holds the app text), the app text alone must not replace it.
+            var recognized = false
+            launch {
+                val appText = appTextRead.await() ?: return@launch
+                if (!recognized) onPage(appText, final = captured == null, lensError = null, flashLines = flashLines)
+            }
             if (captured == null) {
+                val appText = appTextRead.await()
                 bubbleView.loading = false
                 if (appText == null) {
                     showMessage(
@@ -634,7 +646,9 @@ class OverlayController(
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
+                        val appText = appTextRead.await()
                         if (appText != null) {
+                            recognized = true
                             onPage(appText, final = true, lensError = error, flashLines = false)
                         } else {
                             showMessage(service.getString(R.string.overlay_error_ocr))
@@ -642,6 +656,8 @@ class OverlayController(
                     }
                     .collect { update ->
                         logUpdate(update, SystemClock.elapsedRealtime() - started)
+                        val appText = appTextRead.await()
+                        recognized = true
                         val page = update.page.offset(captured.left.toFloat(), captured.top.toFloat())
                         onPage(
                             page = appText?.withMissingFrom(page) ?: page,
@@ -709,6 +725,7 @@ class OverlayController(
             val current = layout ?: return@launch
             val added = found?.offset(shot.left.toFloat(), shot.top + band.top) ?: return@launch
             val merged = current.page.withMissingFrom(added)
+            Log.d(TAG, "Band $index added ${merged.paragraphs.size - current.page.paragraphs.size} paragraphs")
             if (merged === current.page) return@launch
             layout = TextLayout(merged)
             hit = null

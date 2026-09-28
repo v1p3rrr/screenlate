@@ -54,7 +54,7 @@ Language is a parameter of OCR, lookup and rendering (`core.common.Language`). W
 
 ## Privacy
 
-Logs never contain recognized text, looked-up words, note contents or URLs with terms: exceptions are logged through `redacted()`, which keeps the type and stack but drops messages, and URLs through `redactUrl()`.
+Logs never contain recognized text, looked-up words, note contents or URLs with terms: exceptions are logged through `redacted()`, which keeps the type and stack but drops messages, and URLs through `redactUrl()`. The app logs only to logcat, the system's fixed-size ring buffer, so nothing piles up on the device; files are written only when the user shares or saves the log. A scan logs its stages with timings (capture, app text, cloud request, on-device bands, draft and final), and events such as docking, note results and audio lookups are logged as outcomes and counts, never per aim movement.
 
 ## Tests
 

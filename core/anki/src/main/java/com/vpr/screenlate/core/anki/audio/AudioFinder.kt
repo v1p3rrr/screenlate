@@ -85,11 +85,15 @@ class AudioFinder internal constructor(
         val key = term to reading
         synchronized(clipCache) { if (key in clipCache) return clipCache[key] }
         var failed = false
+        val started = System.currentTimeMillis()
+        var asked = 0
         val clip = settings.current().sources.withIndex()
             .filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
             .firstNotNullOfOrNull { (index, source) ->
+                asked++
                 firstClip(index, source, term, reading, language).also { if (it == null && failures.containsKey(source)) failed = true }
             }
+        Log.d(TAG, "Audio: ${if (clip != null) "found" else "none"} after $asked sources in ${System.currentTimeMillis() - started} ms")
         // A network error is worth retrying later; "no audio for this word" is not.
         if (clip != null || !failed) synchronized(clipCache) { clipCache[key] = clip }
         return clip

@@ -4,6 +4,8 @@ import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.os.BundleCompat
@@ -24,21 +26,40 @@ class AccessibilityText(private val service: AccessibilityService) {
 
     /** The visible text of application windows, or null when none of it has character positions. */
     fun read(screenWidth: Int, screenHeight: Int): OcrPage? {
+        val started = SystemClock.elapsedRealtime()
         val paragraphs = mutableListOf<OcrParagraph>()
         val screen = Rect(0, 0, screenWidth, screenHeight)
+        stats = Stats()
         for (window in service.windows) {
             if (window.type != AccessibilityWindowInfo.TYPE_APPLICATION) continue
             val root = window.root ?: continue
             collect(root, screen, paragraphs, depth = 0)
         }
+        Log.d(
+            TAG,
+            "App text: ${paragraphs.size} of ${stats.withText} text nodes in ${SystemClock.elapsedRealtime() - started} ms; " +
+                "${stats.withoutPositions} without character positions, ${stats.sharedBoxes} with one box for all",
+        )
         if (paragraphs.isEmpty()) return null
         return OcrPage(screenWidth, screenHeight, paragraphs, OcrEngineType.ACCESSIBILITY)
     }
 
+    /** What the last [read] found, for the log. */
+    private class Stats {
+        var withText = 0
+        var withoutPositions = 0
+        var sharedBoxes = 0
+    }
+
+    private var stats = Stats()
+
     private fun collect(node: AccessibilityNodeInfo, screen: Rect, out: MutableList<OcrParagraph>, depth: Int) {
         if (depth > MAX_DEPTH || !node.isVisibleToUser) return
         val text = node.text?.toString()
-        if (!text.isNullOrBlank()) paragraph(node, text, screen)?.let(out::add)
+        if (!text.isNullOrBlank()) {
+            stats.withText++
+            paragraph(node, text, screen)?.let(out::add)
+        }
         for (index in 0 until node.childCount) {
             val child = node.getChild(index) ?: continue
             collect(child, screen, out, depth + 1)
@@ -46,7 +67,10 @@ class AccessibilityText(private val service: AccessibilityService) {
     }
 
     private fun paragraph(node: AccessibilityNodeInfo, text: String, screen: Rect): OcrParagraph? {
-        if (AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY !in node.availableExtraData) return null
+        if (AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY !in node.availableExtraData) {
+            stats.withoutPositions++
+            return null
+        }
         val length = minOf(text.length, MAX_CHARACTERS)
         val arguments = Bundle().apply {
             putInt(AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_ARG_START_INDEX, 0)
@@ -81,7 +105,11 @@ class AccessibilityText(private val service: AccessibilityService) {
             current += character to box
         }
         if (current.isNotEmpty()) lines += current
-        if (lines.isEmpty() || sharesBoxes(lines.flatten().map { it.second })) return null
+        if (lines.isEmpty()) return null
+        if (sharesBoxes(lines.flatten().map { it.second })) {
+            stats.sharedBoxes++
+            return null
+        }
         return OcrParagraph(
             lines.map { characters ->
                 val box = Box.unionOf(characters.map { it.second })!!
@@ -97,6 +125,7 @@ class AccessibilityText(private val service: AccessibilityService) {
     }
 
     private companion object {
+        const val TAG = "AccessibilityText"
         const val MAX_DEPTH = 64
         const val MAX_CHARACTERS = 2000
     }

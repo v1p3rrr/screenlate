@@ -1,5 +1,6 @@
 package com.vpr.screenlate.yomitan
 
+import android.util.Log
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -77,7 +78,13 @@ class YomitanSettingsImporter @Inject constructor(
         audio = if (YomitanSection.AUDIO in sections) profile.audio?.let { applyAudio(it) } else null,
         lookup = if (YomitanSection.LOOKUP in sections) applyLookup(profile) else null,
         appearance = if (YomitanSection.APPEARANCE in sections) applyAppearance(profile) else null,
-    )
+    ).also { summary ->
+        Log.i(
+            TAG,
+            "Yomitan settings imported: ${sections.joinToString()}; dictionaries ${summary.dictionaries?.matched ?: "-"} matched, " +
+                "${summary.dictionaries?.missing?.size ?: "-"} missing",
+        )
+    }
 
     /** Text size and custom CSS; an empty custom CSS in the profile keeps the current one. */
     private suspend fun applyAppearance(profile: YomitanSettings.Profile): AppearanceOutcome {
@@ -190,3 +197,5 @@ class YomitanSettingsImporter @Inject constructor(
         )
     }
 }
+
+private const val TAG = "YomitanImport"

@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -55,6 +56,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        Log.i(TAG, "Service connected")
         controller = OverlayController(
             service = this,
             ocr = ocr,
@@ -94,6 +96,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     override fun onInterrupt() = Unit
 
     override fun onDestroy() {
+        Log.i(TAG, "Service stopped")
         handler.removeCallbacksAndMessages(null)
         controller?.stop()
         controller = null
@@ -102,6 +105,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     }
 
     private companion object {
+        const val TAG = "ScreenlateService"
         const val FOREGROUND_CHECK_DELAY_MS = 250L
     }
 }
