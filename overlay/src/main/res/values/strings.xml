@@ -17,6 +17,9 @@
     <string name="overlay_ocr_error_timeout">Cloud recognition did not answer within 15 seconds.</string>
     <string name="overlay_ocr_error_http">Cloud recognition answered with error %1$d.</string>
     <string name="overlay_ocr_error_network">Cloud recognition could not be reached.</string>
+    <string name="overlay_ocr_error_too_many">Cloud recognition got too many requests, so it rests for a few minutes.</string>
+    <string name="overlay_ocr_error_refused">Cloud recognition refused the request, so it rests for a few minutes.</string>
+    <string name="overlay_ocr_error_server">Cloud recognition has a problem on its side (error %1$d).</string>
     <string name="overlay_ocr_error_other">Cloud recognition failed.</string>
     <string name="overlay_ocr_error_fallback">The text was recognized on the device, which is less accurate.</string>
     <string name="overlay_no_results">No dictionary entries found.</string>

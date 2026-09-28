@@ -68,6 +68,7 @@ import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -884,10 +885,12 @@ class OverlayController(
         }
     }
 
+    private fun engineLabel(): String = engineLabel(aimedEngine())
+
     /** Where the word under the aim came from: text added around app text keeps its own engine. */
-    private fun engineLabel(): String {
+    private fun aimedEngine(): OcrEngineType? {
         val paragraphEngine = hit?.let { position -> layout?.readingParagraphs?.getOrNull(position.paragraphIndex)?.engine }
-        return engineLabel(paragraphEngine ?: ocrEngine)
+        return paragraphEngine ?: ocrEngine
     }
 
     private fun engineLabel(ocrEngine: OcrEngineType?): String = when {
@@ -918,11 +921,18 @@ class OverlayController(
     /** Why cloud recognition failed for this scan, for the ⚠ next to the engine label; empty when it did not. */
     private fun ocrErrorText(): String {
         val error = lensError ?: return ""
+        // A word read from the app's own text does not depend on recognition.
+        if (aimedEngine() == OcrEngineType.ACCESSIBILITY) return ""
         val reason = when (error) {
             is OfflineException -> service.getString(R.string.overlay_ocr_error_offline)
             is LensPausedException -> service.getString(R.string.overlay_ocr_error_paused)
-            is TimeoutCancellationException -> service.getString(R.string.overlay_ocr_error_timeout)
-            is LensHttpException -> service.getString(R.string.overlay_ocr_error_http, error.code)
+            is TimeoutCancellationException, is SocketTimeoutException -> service.getString(R.string.overlay_ocr_error_timeout)
+            is LensHttpException -> when {
+                error.code == HTTP_TOO_MANY_REQUESTS -> service.getString(R.string.overlay_ocr_error_too_many)
+                error.code == HTTP_FORBIDDEN -> service.getString(R.string.overlay_ocr_error_refused)
+                error.code >= HTTP_SERVER_ERROR -> service.getString(R.string.overlay_ocr_error_server, error.code)
+                else -> service.getString(R.string.overlay_ocr_error_http, error.code)
+            }
             is IOException -> service.getString(R.string.overlay_ocr_error_network)
             else -> service.getString(R.string.overlay_ocr_error_other)
         }
@@ -977,6 +987,9 @@ class OverlayController(
     }
 
     private companion object {
+        const val HTTP_FORBIDDEN = 403
+        const val HTTP_TOO_MANY_REQUESTS = 429
+        const val HTTP_SERVER_ERROR = 500
         const val TAG = "OverlayController"
         const val AIM_GAP_DP = 20f
         const val DOCK_ZONE_DP = 12f

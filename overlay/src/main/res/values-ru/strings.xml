@@ -16,6 +16,9 @@
     <string name="overlay_ocr_error_timeout">Облачное распознавание не ответило за 15 секунд.</string>
     <string name="overlay_ocr_error_http">Облачное распознавание вернуло ошибку %1$d.</string>
     <string name="overlay_ocr_error_network">Не удалось связаться с облачным распознаванием.</string>
+    <string name="overlay_ocr_error_too_many">Облачному распознаванию пришло слишком много запросов, поэтому несколько минут к нему не обращаемся.</string>
+    <string name="overlay_ocr_error_refused">Облачное распознавание отклонило запрос, поэтому несколько минут к нему не обращаемся.</string>
+    <string name="overlay_ocr_error_server">У облачного распознавания проблема на его стороне (ошибка %1$d).</string>
     <string name="overlay_ocr_error_other">Облачное распознавание не сработало.</string>
     <string name="overlay_ocr_error_fallback">Текст распознан на устройстве, это менее точно.</string>
     <string name="overlay_no_results">В словарях ничего не найдено.</string>
