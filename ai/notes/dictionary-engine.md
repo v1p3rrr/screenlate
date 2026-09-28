@@ -97,3 +97,20 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - hoshidicts builds on Linux with gcc 14 (`std::ranges::to`); clang 18 with libstdc++ 13 fails on `std::expected`. CMake >= 3.31 from pip. `-DHOSHIDICTS_BENCHMARK=ON -DHOSHIDICTS_CLI=ON` gives `benchmark-import <zip> <n>` and `hoshidicts-cli import <zip>` (imports next to the zip).
 - The converter compiles on a plain JVM (kotlinx-serialization only), so `dictionary:api`'s converter tests and the `BENCHMARK_COLLECTION=1` test can run without the Android SDK in a small Gradle project that points at the source files.
 - Still open: timings on the phone (ART, flash storage); going further would mean an import entry point in hoshidicts that reads banks without a zip.
+
+### Checked locally (2026-09-28)
+
+- Desktop (Windows, JDK 21), `BENCHMARK_COLLECTION=1`: measure 4.3 s, convert 7.1 s for 1661 MB of archives (32 s before); estimated peak 2110 MB uncompressed, 1719 MB compressed.
+- Emulator (Pixel 10 Pro AVD, API 36, x86_64), all 16 dictionaries of the owner's export replacing installed copies, read from Downloads through the picked URI:
+
+| Free space | Plan | Measure | Write | Install | Total |
+|---|---|---|---|---|---|
+| ~2.4 GB | uncompressed | 31.6 s | 43.1 s | 26.7 s | 1 min 41 s |
+| 1.9 GB | compressed | 34.1 s | 53.7 s | 13.9 s | 1 min 43 s |
+| 1.7 GB | not enough (1.9 GB needed) | 33.2 s | | | card in en/ru, staging empty |
+
+  The same import took ~5.5 min before. Reading the 2.7 GB file through the document provider takes ~30 s per pass on the emulator, so the measure pass costs as much as a third of the import; one small dictionary took 60 s, half of it measuring. Owner decision: skip measuring when the free space is at least four times the file (`CollectionSpace.clearlyEnough`).
+- `File.usableSpace` reports ~240 MB more than `df` shows as available on the emulator.
+- Replaced dictionaries keep their id, position and enabled state; entry and media counts equal the previous import. Missing languages now come from the catalog on replacement (JMdict (Russian) became ja → ru).
+- Found on the way, not caused by this change: a collection dictionary whose title differs only by revision from an installed one (Jitendex.org [2026-01-04] vs [2026-08-11]) is shown as "already installed" but imported as a second dictionary; dictionary descriptions and attributions keep JSON escapes (`
+`) because hoshidicts returns index strings raw.

@@ -56,6 +56,17 @@ object CollectionSpace {
         return peak
     }
 
+    /**
+     * True when [freeBytes] certainly covers an import from an export of [fileBytes], so measuring it can be skipped.
+     * Every row of an export spends at least ~60 bytes on field names and the dictionary name besides its values, and
+     * media are Base64 there (4/3 of their size), so the peak stays under twice the file; four times leaves room for
+     * the estimates being off.
+     */
+    fun clearlyEnough(fileBytes: Long, freeBytes: Long): Boolean =
+        fileBytes > 0 && freeBytes >= fileBytes * CLEARLY_ENOUGH_FACTOR + RESERVE_BYTES
+
+    private const val CLEARLY_ENOUGH_FACTOR = 4
+
     /** Uncompressed archives when they fit, compressed ones when only those fit, otherwise how much is missing. */
     fun plan(sizes: List<CollectionSize>, freeBytes: Long): CollectionSpacePlan {
         if (peakBytes(sizes, compressed = false) + RESERVE_BYTES <= freeBytes) return CollectionSpacePlan.Uncompressed

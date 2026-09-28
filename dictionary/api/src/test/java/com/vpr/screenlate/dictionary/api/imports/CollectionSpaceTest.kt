@@ -23,6 +23,15 @@ class CollectionSpaceTest {
         assertThat(CollectionSpace.installedBytes(size(textMb = 10, mediaMb = 5))).isEqualTo(base + 5 * mb)
     }
 
+    @Test
+    fun `measuring is skipped only with four times the file free`() {
+        val file = 2700 * mb
+        assertThat(CollectionSpace.clearlyEnough(file, 4 * file + CollectionSpace.RESERVE_BYTES)).isTrue()
+        assertThat(CollectionSpace.clearlyEnough(file, 4 * file)).isFalse()
+        // Unknown file size: always measure.
+        assertThat(CollectionSpace.clearlyEnough(-1, Long.MAX_VALUE)).isFalse()
+    }
+
     /** All archives exist before the first import; each is deleted after its dictionary is installed. */
     @Test
     fun `peak follows the import order`() {

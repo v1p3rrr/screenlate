@@ -118,7 +118,8 @@ class DictionaryImportWorker @AssistedInject constructor(
      * The export is read from the picked document when the app kept access to it, otherwise from a copy.
      *
      * A first pass measures the chosen dictionaries: the archives are written uncompressed when there is room
-     * for that, compressed when only that fits, and nothing is written when even that does not fit. Free space leaves
+     * for that, compressed when only that fits, and nothing is written when even that does not fit. With plenty of
+     * room ([CollectionSpace.clearlyEnough]) the pass is skipped and the archives are uncompressed. Free space leaves
      * out the cache the system could clear: counting it would need `StorageManager.allocateBytes` before writing.
      */
     @SuppressLint("UsableSpace")
@@ -139,16 +140,23 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
         try {
             var started = System.currentTimeMillis()
-            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CHECK, KEY_PERCENT to 0))
-            val sizes = open().use { YomitanBackup.measure(it, selected, progress(STAGE_CHECK)) }
             val free = staging.usableSpace
-            val plan = CollectionSpace.plan(sizes, free)
-            Log.i(
-                TAG,
-                "Measured ${sizes.size} dictionaries in ${System.currentTimeMillis() - started} ms: $plan; " +
-                    "peak ${CollectionSpace.peakBytes(sizes, compressed = false) shr 20} MB uncompressed, " +
-                    "${CollectionSpace.peakBytes(sizes, compressed = true) shr 20} MB compressed, ${free shr 20} MB free",
-            )
+            val plan = if (CollectionSpace.clearlyEnough(size, free)) {
+                Log.i(TAG, "Skipped measuring: ${free shr 20} MB free for a ${size shr 20} MB file")
+                CollectionSpacePlan.Uncompressed
+            } else {
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CHECK, KEY_PERCENT to 0))
+                val sizes = open().use { YomitanBackup.measure(it, selected, progress(STAGE_CHECK)) }
+                CollectionSpace.plan(sizes, free).also { plan ->
+                    Log.i(
+                        TAG,
+                        "Measured ${sizes.size} dictionaries in ${System.currentTimeMillis() - started} ms: $plan; " +
+                            "peak ${CollectionSpace.peakBytes(sizes, compressed = false) shr 20} MB uncompressed, " +
+                            "${CollectionSpace.peakBytes(sizes, compressed = true) shr 20} MB compressed, " +
+                            "${free shr 20} MB free",
+                    )
+                }
+            }
             if (plan is CollectionSpacePlan.NotEnough) throw NotEnoughSpaceException(plan.neededBytes, plan.freeBytes)
             started = System.currentTimeMillis()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
