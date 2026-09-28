@@ -343,3 +343,40 @@ test('a structured-content label with a title opens the title in the panel', () 
     content.querySelector('.dictionary-name').click();
     assert.equal(page.document.getElementById('info').hidden, true);
 });
+
+test('a selection in the entries offers Copy, which sends the text without furigana', () => {
+    const ruby = {
+        type: 'structured-content',
+        content: [{ tag: 'ruby', content: ['猫', { tag: 'rt', content: 'ねこ' }] }, ' is a cat'],
+    };
+    Popup.render(state({ results: [{ matched: '猫', term: { expression: '猫', reading: 'ねこ', glossaries: [{ dictionary: 'Dict', content: JSON.stringify([ruby]) }] } }] }));
+    const copy = page.document.querySelector('.selection-copy');
+    assert.equal(copy.hidden, true);
+    // jsdom has no layout: a rect for placing the button.
+    page.window.Range.prototype.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 10, width: 50 });
+
+    const range = page.document.createRange();
+    range.selectNodeContents(content.querySelector('.definition-body'));
+    const selection = page.window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    page.document.dispatchEvent(new page.window.Event('selectionchange'));
+    assert.equal(copy.hidden, false);
+
+    copy.click();
+    const [name, text] = page.calls.at(-1);
+    assert.equal(name, 'onCopy');
+    assert.match(text, /is a cat/);
+    assert.equal(copy.hidden, true);
+    assert.equal(page.window.getSelection().rangeCount, 0);
+});
+
+test('inside the app the system toolbar copies, so no Copy button appears', () => {
+    Popup.configure({ embedded: true });
+    Popup.render(state());
+    const range = page.document.createRange();
+    range.selectNodeContents(content.querySelector('.definition-body'));
+    page.window.getSelection().addRange(range);
+    page.document.dispatchEvent(new page.window.Event('selectionchange'));
+    assert.equal(page.document.querySelector('.selection-copy').hidden, true);
+});

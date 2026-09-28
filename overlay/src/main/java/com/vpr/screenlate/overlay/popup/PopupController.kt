@@ -33,6 +33,10 @@ class PopupController(
         }
     })
 
+    init {
+        page.setOnSelecting(::setFocusable)
+    }
+
     var bounds: Box? = null
         private set
 
@@ -99,9 +103,22 @@ class PopupController(
         page.destroy()
     }
 
+    /** The popup takes focus only while text in it is selected, as selection handles need a focused window. */
+    private fun setFocusable(focusable: Boolean) {
+        val flags = if (focusable) {
+            params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+        } else {
+            params.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        }
+        if (flags == params.flags) return
+        params.flags = flags
+        if (attached) windowManager.updateViewLayout(page.container, params)
+    }
+
     /** A hidden window must not take touches meant for the app below. */
     private fun setHiddenParams() {
-        params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         params.width = 1
         params.height = 1
     }

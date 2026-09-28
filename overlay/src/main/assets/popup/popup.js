@@ -22,6 +22,9 @@
  *
  * Glossary rendering comes from window.YomitanRender (yomitan-render/render.js) when it is present.
  *
+ * Text can be selected with a long press; in the popup, whose overlay window has no system toolbar, a Copy button
+ * appears above the selection.
+ *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
  * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
  */
@@ -40,6 +43,7 @@ const Popup = (() => {
     const customCss = document.getElementById('custom-css');
     const renderer = window.YomitanRender || null;
     const HOLD_MS = 450;
+    const SELECTION_GAP = 8;
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -338,6 +342,60 @@ const Popup = (() => {
     document.addEventListener('pointerdown', event => {
         if (menu && !menu.contains(event.target)) closeMenu();
     }, true);
+
+    // region Selection
+
+    const selectionCopy = element('button', 'selection-copy');
+    selectionCopy.hidden = true;
+    document.body.append(selectionCopy);
+    // Pressing the button must not clear the selection it copies.
+    selectionCopy.addEventListener('pointerdown', event => event.preventDefault());
+    selectionCopy.addEventListener('mousedown', event => event.preventDefault());
+    selectionCopy.addEventListener('click', () => {
+        const text = selectedText(true);
+        if (text) ScreenlateBridge.onCopy(text);
+        window.getSelection()?.removeAllRanges();
+        selectionCopy.hidden = true;
+    });
+    document.addEventListener('selectionchange', placeSelectionCopy);
+    content.addEventListener('scroll', placeSelectionCopy);
+
+    /**
+     * The selected text inside the entries, or '' when nothing there is selected. [withoutReadings] leaves out
+     * furigana: the selection's text skips what is not rendered, so readings are hidden while it is taken.
+     */
+    function selectedText(withoutReadings = false) {
+        const selection = window.getSelection();
+        if (!selection || selection.isCollapsed || selection.rangeCount === 0) return '';
+        if (!content.contains(selection.getRangeAt(0).commonAncestorContainer)) return '';
+        if (!withoutReadings) return selection.toString().trim();
+        document.documentElement.classList.add('copying');
+        try {
+            return selection.toString().trim();
+        } finally {
+            document.documentElement.classList.remove('copying');
+        }
+    }
+
+    /** Shows Copy above the selection (below when there is no room above); inside the app the system toolbar does it. */
+    function placeSelectionCopy() {
+        if (document.documentElement.dataset.embedded === 'true' || !selectedText()) {
+            selectionCopy.hidden = true;
+            return;
+        }
+        selectionCopy.textContent = labelOf('copy');
+        const rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+        selectionCopy.hidden = false;
+        const width = selectionCopy.offsetWidth;
+        const height = selectionCopy.offsetHeight;
+        const above = rect.top - height - SELECTION_GAP;
+        const top = above >= 0 ? above : Math.min(rect.bottom + SELECTION_GAP, window.innerHeight - height);
+        const left = Math.max(4, Math.min(rect.left + rect.width / 2 - width / 2, window.innerWidth - width - 4));
+        selectionCopy.style.top = `${top}px`;
+        selectionCopy.style.left = `${left}px`;
+    }
+
+    // endregion
 
     /**
      * Audio clips of entry [index] for the menu opened by holding 🔊. items: [{ id, label, detail }];

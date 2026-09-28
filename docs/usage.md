@@ -45,6 +45,7 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 - Tap an inflection step 🧩, a pitch accent or a tag with a description (dotted underline, or a label such as "noun" in dictionaries that describe their labels) to read the explanation at the bottom of the popup. Tag descriptions come from the dictionary's tag list and are kept for dictionaries imported from this version on; import an older dictionary again to get them.
 - 🔊 plays the pronunciation from the configured audio sources; hold it to choose among all recordings found.
 - ➕ adds a note to Anki; hold it to attach a picture: a crop editor opens with the word's paragraph selected.
+- Hold text in an entry to select it, drag the handles to widen the selection, and tap Copy above it; furigana are left out. Back or a tap outside the popup ends the selection.
 
 Text selected in any app can also be looked up through the "Look up in Screenlate" entry of the selection menu, and the Search screen accepts typed text.
 

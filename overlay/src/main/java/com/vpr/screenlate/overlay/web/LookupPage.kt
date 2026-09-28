@@ -106,7 +106,16 @@ class LookupPage(
         .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
         .build()
 
-    val container = FrameLayout(context)
+    private val selectionHost = SelectionHost(context)
+    val container: FrameLayout = selectionHost
+
+    /**
+     * Called with true when a text selection starts in a window without the system's toolbar (an overlay), and with
+     * false when it ends; the host makes its window focusable meanwhile, so the selection handles show.
+     */
+    fun setOnSelecting(listener: (Boolean) -> Unit) {
+        selectionHost.onSelecting = listener
+    }
     private var webView = createWebView(context)
 
     @SuppressLint("SetJavaScriptEnabled")

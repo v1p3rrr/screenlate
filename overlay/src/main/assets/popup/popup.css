@@ -489,6 +489,32 @@ button.inflection-step {
     display: inline;
 }
 
+/* Copy for a text selection (the popup's window has no system toolbar) */
+
+.selection-copy {
+    position: fixed;
+    z-index: 11;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 16px;
+    background: var(--accent);
+    color: var(--bg);
+    font: inherit;
+    font-size: 0.9em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.selection-copy[hidden] {
+    display: none;
+}
+
+/* While a selection is copied: without furigana. */
+.copying rt,
+.copying rp {
+    display: none;
+}
+
 /* Menu (hold ➕/📖 or 🔊) */
 
 .menu {
