@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.common.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
@@ -22,7 +23,15 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[THEME_MODE] = mode.name }
     }
 
+    /** Whether the notification permission was asked for when an import or download started (asked once). */
+    val notificationPermissionAsked: Flow<Boolean> = dataStore.data.map { it[NOTIFICATIONS_ASKED] ?: false }
+
+    suspend fun setNotificationPermissionAsked() {
+        dataStore.edit { it[NOTIFICATIONS_ASKED] = true }
+    }
+
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
+        val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
     }
 }

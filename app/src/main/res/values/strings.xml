@@ -327,4 +327,7 @@
     <string name="about_dictionaries_hint">Authors and licenses of each dictionary are behind its ⓘ.</string>
     <string name="about_dictionaries_show">Show all (%1$d)</string>
     <string name="about_dictionaries_hide">Hide</string>
+    <string name="dictionaries_notifications_title">Progress notifications</string>
+    <string name="dictionaries_notifications_text">Allow notifications to follow imports and downloads outside the app.</string>
+    <string name="dictionaries_notifications_allow">Allow</string>
 </resources>

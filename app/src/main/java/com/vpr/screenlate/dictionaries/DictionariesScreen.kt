@@ -65,8 +65,12 @@ fun DictionariesScreen(
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
+    val askNotifications = rememberImportNotificationsAsk()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) viewModel.importFrom(uri)
+        if (uri != null) {
+            askNotifications()
+            viewModel.importFrom(uri)
+        }
     }
 
     Scaffold(
@@ -105,7 +109,15 @@ fun DictionariesScreen(
             ) {
                 Text(stringResource(R.string.dictionaries_check_updates))
             }
-            updateCheck?.let { check -> UpdatesCard(check, onUpdate = viewModel::update) }
+            updateCheck?.let { check ->
+                UpdatesCard(
+                    check,
+                    onUpdate = { items ->
+                        askNotifications()
+                        viewModel.update(items)
+                    },
+                )
+            }
 
             importError?.let { error ->
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
@@ -113,6 +125,7 @@ fun DictionariesScreen(
             state.tasks.forEach { task ->
                 TaskCard(task, onDismiss = viewModel::clearFinishedTasks)
             }
+            ImportNotificationsCard()
 
             SectionTitle(stringResource(R.string.dictionaries_installed))
             if (state.loaded && state.installed.isEmpty()) {
@@ -157,7 +170,13 @@ fun DictionariesScreen(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     section.items.forEach { item ->
-                        CatalogCard(item, onDownload = { viewModel.download(item.entry) })
+                        CatalogCard(
+                            item,
+                            onDownload = {
+                                askNotifications()
+                                viewModel.download(item.entry)
+                            },
+                        )
                     }
                 }
             }

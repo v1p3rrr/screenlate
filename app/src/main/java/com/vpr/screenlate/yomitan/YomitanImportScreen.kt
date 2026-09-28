@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -109,6 +110,7 @@ fun YomitanImportScreen(
 
 @Composable
 private fun CollectionChecklist(state: CollectionState.Listed, viewModel: CollectionImportViewModel) {
+    val askNotifications = rememberImportNotificationsAsk()
     Text(stringResource(R.string.yomitan_collection_choose), style = MaterialTheme.typography.labelLarge)
     state.items.forEach { item ->
         val dictionary = item.dictionary
@@ -133,7 +135,10 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
     }
     Hint(stringResource(R.string.yomitan_collection_hint))
     Button(
-        onClick = viewModel::import,
+        onClick = {
+            askNotifications()
+            viewModel.import()
+        },
         enabled = state.items.any { it.checked },
         modifier = Modifier.fillMaxWidth(),
     ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked })) }

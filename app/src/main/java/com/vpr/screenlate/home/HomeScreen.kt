@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
+import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.overlay.OverlayServiceStatus
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
@@ -138,6 +139,7 @@ private fun ProblemsCard(
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
 ) {
+    val askNotifications = rememberImportNotificationsAsk()
     SectionCard(title = stringResource(R.string.problems_title)) {
         problems.forEachIndexed { index, problem ->
             if (index > 0) HorizontalDivider()
@@ -158,7 +160,10 @@ private fun ProblemsCard(
                             Text(stringResource(R.string.problems_dictionary_missing, problem.dictionary.title))
                             Row {
                                 if (problem.catalogEntry != null) {
-                                    TextButton(onClick = { viewModel.downloadAgain(problem) }) {
+                                    TextButton(onClick = {
+                                        askNotifications()
+                                        viewModel.downloadAgain(problem)
+                                    }) {
                                         Text(stringResource(R.string.problems_download_again))
                                     }
                                 } else {

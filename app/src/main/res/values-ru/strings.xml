@@ -323,4 +323,7 @@
     <string name="about_dictionaries_hint">Авторы и лицензии словаря — за его ⓘ.</string>
     <string name="about_dictionaries_show">Показать все (%1$d)</string>
     <string name="about_dictionaries_hide">Скрыть</string>
+    <string name="dictionaries_notifications_title">Уведомления о прогрессе</string>
+    <string name="dictionaries_notifications_text">Разрешите уведомления, чтобы следить за импортом и скачиванием вне приложения.</string>
+    <string name="dictionaries_notifications_allow">Разрешить</string>
 </resources>
