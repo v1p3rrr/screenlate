@@ -4,7 +4,7 @@
 
 1. Open Screenlate and enable its accessibility service (the start screen links to the settings). The bundled dictionaries install in the background; the start screen shows when they are ready.
 2. If the switch in the accessibility settings is greyed out after installing from an APK file: App info → ⋮ → Allow restricted settings.
-3. On devices with aggressive battery management, allow Screenlate to run in the background (often called "app launch" or "battery optimization" in the system settings), or the system may stop the service.
+3. On devices with aggressive battery management, allow Screenlate to run in the background, or the system may stop the service. Settings → Background work shows whether battery optimization is on for Screenlate, asks the system to turn it off, and opens the maker's startup settings on phones that have them.
 
 ## The bubble
 
@@ -31,10 +31,13 @@ The start screen keeps the search, the service status and warnings; everything e
 
 - **Bubble**: aim point, dock side, bubble size, word highlight, vibration, apps where the bubble hides, whether the popup starts with the recognized text, and the text source:
   - **Screen (OCR)**: a screenshot is recognized in the cloud; an on-device draft of the lines around the aim appears first. When cloud recognition fails (no network, no answer within 15 seconds, an error), the on-device result stays and ⚠ appears next to the text source; tap it for the reason.
-  - **App text first**: the app's own text is used when it exposes character positions, which is exact and works offline; other screens are recognized as usual.
+  - **App text first** (experimental): the app's own text is used where the app exposes character positions. It is exact, ready almost at once and works offline. The screen is still recognized alongside for everything else, such as text in images; whichever is ready first is shown. Some apps report wrong character positions, so the highlight can be off or a neighboring word found; switch back to Screen (OCR) then.
   - **OCR boost** sends parts of the screen to cloud recognition separately, so small text that a full-screen scan misses is read: on demand (the part under the aim, when nothing was found there) or always.
+  - **Screen recognition → Engines**: both (the default), cloud only or device only. Turning one off is a last resort for weak or busy devices: cloud only recognizes nothing without network and shows words only once the server answers; device only works offline but reads vertical text and manga worse, and OCR boost is off.
+  - **Screen recognition → Reduce load on the device** (off by default): the device reads the lines around the aim at once, but the whole screen only when cloud recognition has not answered within 3 seconds. Less load and battery use; words away from the aim show up later.
 - **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results. Without romaji, Latin text is looked up when Japanese follows it (Tシャツ) or when the whole word is a dictionary entry (OL, DNA, CD-ROM), wherever the aim is inside it; single letters are skipped, and letter case counts.
 - **Dictionaries**, **Anki and audio**, **Appearance**: see below.
+- **Background work**: battery optimization for Screenlate and the maker's startup settings, the two things that can stop the bubble in the background.
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too.
 
 When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing), the start screen says what and links to the fix. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
@@ -83,12 +86,14 @@ Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePo
 
 - Release builds look for a new version on GitHub at most once a day when the app is opened, and announce each new version once on the start screen with its changes. "Skip this version" hides it until the next release; About → Updates can still install it and has a "Check for updates" button. The announcements can be turned off there.
 - "Update" downloads the APK for the device and installs it. Android asks once to allow installs from Screenlate, and asks to confirm the first update; later updates install without a prompt where Android allows it (Android 12 and newer).
-- About also lists the open-source libraries, the third-party notices and the installed dictionaries with their authors and licenses, "Share logs" sends the app's log (with the app version and device model, but no looked-up text) through the share sheet, and "Save to Downloads" writes the same file to `Download/Screenlate/`, where any file manager can open it.
+- About also lists the open-source libraries, the third-party notices and the installed dictionaries with their authors and licenses, "Share logs" sends the app's log (with the app version and device model, but no looked-up text) through the share sheet, and "Save to Downloads" writes the same file to `Download/Screenlate/`, where any file manager can open it. "Report a problem" opens a short issue form on GitHub.
 
 ## Troubleshooting
 
 - **"This app does not allow screenshots."** The app protects its windows. Try the "App text first" source.
 - **Only the on-device result appears.** Cloud recognition was unreachable or took longer than 15 seconds; the on-device result is used instead.
-- **The bubble disappears after a while.** The system stopped the service; see the background settings above.
+- **The bubble disappears after a while.** The system stopped the service; see Settings → Background work.
+- **The device gets warm or slow while scanning.** Most of a scan's work is the on-device recognition of the whole screen. Turn on "Reduce load on the device" in the bubble settings; as a last resort, choose one engine.
+- **The highlight is off or the wrong word is found with "App text first".** The app reports wrong character positions; switch the text source back to Screen (OCR).
 - **Kanji look Chinese.** The popup uses the phone's Japanese font; if the phone has none, Appearance offers to download Noto Sans JP.
 - **Text-to-speech says nothing.** No Japanese voice is installed; install one in the system's text-to-speech settings.

@@ -13,6 +13,7 @@ Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionari
    - `dictionary-engine.md` — hoshidicts API, JNI design, bundled dictionary URLs;
    - `webview-fonts.md` — CJK glyph forms, `local()` font names and checks in the lookup page.
    - `app-icon.md` — the icon design, its generator and checks (`scripts/icon/`).
+   - `ocr-engines.md` — OCR and app text costs, ML Kit quirks, trusted character boxes, popup renderer priority.
 3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
 
 ## Working rules

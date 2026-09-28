@@ -74,14 +74,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Russian UI calls the bubble «плавающая кнопка» (owner decision; English keeps "bubble").
 - App text read time: 68–144 ms in other apps (Settings, photo picker, HTML viewer; one 1.5 s outlier), ~6.7 s on Screenlate's own screens (cause unknown; OCR waits for it).
 
-## Resume here (2026-09-28, owner paused the session)
+### 2026-09-28 (later session)
 
-All work is committed and pushed; unit tests, lint and page tests pass. Next steps in order:
-1. Ask the owner (AskUserQuestion) whether "App text first" becomes the default text source. Facts: exact and ~0.1 s in native apps; WebViews and Compose fields fall back to OCR; unknown apps might report wrong character boxes (only Compose fields known and handled); not tried on the phone in X/Chrome yet. Recommended: keep OCR default for v0.1.2, owner tries App text on the phone first.
-2. Optionally: why app text takes ~6.7 s on Screenlate's own screens, and stop OCR results waiting for app text (`OverlayController.startScan`, `appTextRead.await()` in `collect`).
-3. Docs: `docs/usage.md` (Background work, Screen recognition: Engines, Reduce load, troubleshooting), `docs/architecture.md` (CompositeOcr options, deferred on-device pass, reclaimable renderer, `SymbolLag`, Compose field rule). New note `ai/notes/ocr-engines.md` (ML Kit symbol lag, renderer priority, `am crash` for tests, non-cancellable ML Kit task), linked from CLAUDE.md.
-4. Release v0.1.2: `.github/release-notes/v0.1.2.md`, tag, CI.
-Emulator: bubble docked on the right at y≈752, text source App text first, engines Both, locale ru; test pages via the HTML viewer (`content://media/external/file/20142` = sl-cafe.html, see the README screenshot entry above).
+- Owner decisions: "App text first" stays off by default and is marked experimental in its ⓘ (with the speed benefit named); OCR results no longer wait for app text (`OverlayController.startScan`: whichever source is ready is shown, merged with the other; checked on the emulator with an artificial 5 s app text delay: ML Kit draft at 1 s, Lens final at 2 s, app text merged at 5 s).
+- The 6.7 s app text read on Screenlate's own screens did not reproduce (170–620 ms on home, search and settings, with and without the popup); unrelated to the reclaimable popup renderer. Findings in `notes/ocr-engines.md` (new, linked from CLAUDE.md).
+- Owner question answered: the popup is never scanned (window screenshots on API 34+, overlays hidden on older versions, app text reads application windows only), and text under it is recognized.
+- Docs: `docs/usage.md` (Background work, Screen recognition, experimental app text, troubleshooting), `docs/architecture.md` (parallel app text, trusted boxes, `OcrOptions`, `SymbolLag`, renderer priority). Release notes `.github/release-notes/v0.1.2.md`.
 
 ## Next
 
@@ -102,10 +100,9 @@ Emulator: bubble docked on the right at y≈752, text source App text first, eng
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release APKs: arm64-v8a 69 MB, armeabi-v7a 65 MB, x86_64 70 MB, universal 93 MB.
 - Lookup-to-render latency on the emulator (measured with `popup-eval.mjs`): 30–45 ms for typical words, ~100–180 ms for する (16 long Jitendex entries). The native lookup takes a few ms; the rest is JSON and rendering. Not measured on the phone.
 - AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
-- Default text source is OCR; making "App text first" the default is an open question for the owner (Compose fix, wrap check and cost measurement done).
+- Default text source is OCR; "App text first" is experimental (owner, 2026-09-28) until it is tried on the phone.
 
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
-- App text on Screenlate's own screens takes ~6.7 s (other apps ~0.1 s) and the OCR result waits for it; not investigated.
 - Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27); columns in the middle of a narrow screen still get it above or below.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
