@@ -1052,7 +1052,7 @@ class OverlayController(
         /** Characters before the aim that may belong to the aimed word. */
         const val WORD_LOOKBACK = 32
         const val MAX_POPUP_DP = 420f
-        const val FLASH_HOLD_MS = 5000L
+        const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
         const val FOCUS_PADDING_DP = 16f
         const val BAND_DELAY_MS = 300L

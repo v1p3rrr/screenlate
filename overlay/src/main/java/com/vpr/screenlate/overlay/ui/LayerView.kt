@@ -100,9 +100,8 @@ class LayerView(context: Context) : View(context) {
     private companion object {
         const val AIM_COLOR = 0xFF7C5CFF.toInt()
         const val WORD_COLOR = 0x557C5CFF
-        /** The bubble's violet, lighter than the word under the aim ([WORD_COLOR]) so that one stands out. */
-        const val ALL_LINES_COLOR = 0xFF7C5CFF.toInt()
-        const val ALL_LINES_ALPHA = 56
+        const val ALL_LINES_COLOR = 0xFFFFC83D.toInt()
+        const val ALL_LINES_ALPHA = 90
         const val AIM_RADIUS_DP = 5f
         const val FADE_MILLIS = 400L
     }
