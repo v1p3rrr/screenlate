@@ -26,10 +26,14 @@ data class TextPosition(val paragraphIndex: Int, val offset: Int)
  *
  * Engines report boxes per word; when per-character boxes are missing the word box is split evenly along the
  * reading direction. Lines inside a paragraph are concatenated without separators, which is correct for Japanese.
+ * Paragraphs are taken in reading order ([ReadingOrder]), so text runs on across a broken line.
  */
 class TextLayout(val page: OcrPage) {
 
-    val paragraphs: List<List<OcrCharacter>> = page.paragraphs.mapIndexed { paragraphIndex, paragraph ->
+    /** The page's paragraphs in reading order; [TextPosition.paragraphIndex] and [paragraphs] follow this list. */
+    val readingParagraphs: List<OcrParagraph> = ReadingOrder.paragraphs(page)
+
+    val paragraphs: List<List<OcrCharacter>> = readingParagraphs.mapIndexed { paragraphIndex, paragraph ->
         buildList {
             var wordIndex = 0
             paragraph.lines.forEachIndexed { lineIndex, line ->

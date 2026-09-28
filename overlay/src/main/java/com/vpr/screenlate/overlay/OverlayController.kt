@@ -808,7 +808,7 @@ class OverlayController(
         }
         val focus = if (layout != null && position != null) {
             val padding = FOCUS_PADDING_DP * density
-            Box.unionOf(layout.page.paragraphs[position.paragraphIndex].lines.map { it.box })
+            Box.unionOf(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box })
                 ?.let { RectF(it.left - padding, it.top - padding, it.right + padding, it.bottom + padding) }
         } else {
             null
@@ -856,7 +856,7 @@ class OverlayController(
 
     /** Where the word under the aim came from: text added around app text keeps its own engine. */
     private fun engineLabel(): String {
-        val paragraphEngine = hit?.let { position -> layout?.page?.paragraphs?.getOrNull(position.paragraphIndex)?.engine }
+        val paragraphEngine = hit?.let { position -> layout?.readingParagraphs?.getOrNull(position.paragraphIndex)?.engine }
         return engineLabel(paragraphEngine ?: ocrEngine)
     }
 

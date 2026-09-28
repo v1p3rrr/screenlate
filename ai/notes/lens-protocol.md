@@ -72,3 +72,15 @@ Line text = words joined with their separators. For Japanese, Manatan strips whi
 | X thread 377×948 (`testdata/ocr/x-thread.png`) | as is | 70 KB | 0.62 s | All text correct |
 
 Conclusion: downscaling to 1500 px costs nothing in quality; full resolution is accepted if ever needed. Words are morphological segments (e.g. `吾輩は猫である`, `。`, `名前`), separators are empty for Japanese. Vertical lines come with rotation ≈ 0 and a tall box; 90°-rotated horizontal text comes with rotation ≈ ±π/2.
+
+## Paragraph grouping (2026-09-28, `scratchpad` probe of a synthetic 1280×2856 page with 64 px text)
+
+- Horizontal lines of one wrapped paragraph come as one paragraph at 1.25× and at 2.3× line pitch, in reading order.
+  Separate horizontal paragraphs are different things: a post's header and its text, a score table's labels.
+- Vertical columns come as one paragraph at 1.3× column pitch, but listed **left to right** (the column read second
+  comes first). At 2.2× pitch every column is its own paragraph. On the manga page the columns of one balloon came as
+  four paragraphs (`商品のクオリティは高く / 上位商品は必ず手に / 入れたい代物が多い`, with 手に|入れたい broken
+  across columns).
+- `ReadingOrder` (core:ocr) sorts vertical columns right to left and joins a vertical paragraph whose last column runs
+  to the bottom with the one starting right after it (same top margin and width, gap ≤ 1.5 columns). Horizontal
+  paragraphs are left as they are.
