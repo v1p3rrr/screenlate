@@ -297,7 +297,7 @@
     <string name="about_dictionary_revision">Revision %1$s</string>
     <string name="about_dictionary_author">By %1$s</string>
     <string name="about_logs">Logs</string>
-    <string name="about_logs_hint">A log of this app with its version and the device model, to attach to a bug report. It holds events and errors, never the text you look up.</string>
+    <string name="about_logs_hint">A log of this app with its version and the device model, to attach to a bug report or read yourself: "Save to Downloads" puts it in Download/Screenlate. It holds events and errors, never the text you look up.</string>
     <string name="about_logs_share">Share logs</string>
     <string name="update_title">Updates</string>
     <string name="update_debug_build">This is a development build; it is not updated from releases.</string>
@@ -336,4 +336,8 @@
     <string name="dictionaries_language_source">Language of the words</string>
     <string name="dictionaries_language_target">Language of the explanations</string>
     <string name="dictionaries_language_none">Not set</string>
+    <string name="about_logs_save">Save to Downloads</string>
+    <string name="about_logs_saved">Saved to %1$s</string>
+    <string name="about_logs_open">Open</string>
+    <string name="about_logs_save_failed">Could not save the log.</string>
 </resources>

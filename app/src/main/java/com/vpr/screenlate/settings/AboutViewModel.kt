@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.logs.LogExport
+import com.vpr.screenlate.logs.SavedLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -27,4 +28,7 @@ class AboutViewModel @Inject constructor(
 
     /** A share intent for a fresh log file. */
     suspend fun logShareIntent(): Intent = LogExport.shareIntent(context, LogExport.write(context))
+
+    /** Saves a fresh log to Downloads. */
+    suspend fun saveLog(): SavedLog = LogExport.saveToDownloads(context)
 }

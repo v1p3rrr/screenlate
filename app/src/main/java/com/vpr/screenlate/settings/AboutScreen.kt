@@ -32,6 +32,8 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.logs.LogExport
+import com.vpr.screenlate.logs.SavedLog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
@@ -57,6 +59,8 @@ fun AboutScreen(
     val scope = rememberCoroutineScope()
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     var sharing by remember { mutableStateOf(false) }
+    var savedLog by remember { mutableStateOf<SavedLog?>(null) }
+    var saveFailed by remember { mutableStateOf(false) }
     var showDictionaries by rememberSaveable { mutableStateOf(false) }
     val shareTitle = stringResource(R.string.about_logs_share)
     SettingsScaffold(stringResource(R.string.about_title), onBack) { padding ->
@@ -123,6 +127,28 @@ fun AboutScreen(
                     enabled = !sharing,
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.about_logs_share)) }
+                OutlinedButton(
+                    onClick = {
+                        sharing = true
+                        scope.launch {
+                            val result = runCatching { viewModel.saveLog() }
+                            savedLog = result.getOrNull()
+                            saveFailed = result.isFailure
+                            sharing = false
+                        }
+                    },
+                    enabled = !sharing,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.about_logs_save)) }
+                savedLog?.let { log ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Hint(stringResource(R.string.about_logs_saved, log.path), modifier = Modifier.weight(1f))
+                        TextButton(onClick = { runCatching { context.startActivity(LogExport.viewIntent(log)) } }) {
+                            Text(stringResource(R.string.about_logs_open))
+                        }
+                    }
+                }
+                if (saveFailed) Hint(stringResource(R.string.about_logs_save_failed))
             }
             SectionCard(title = stringResource(R.string.home_tools_title)) {
                 OutlinedButton(onClick = onOpenOcrTest, modifier = Modifier.fillMaxWidth()) {

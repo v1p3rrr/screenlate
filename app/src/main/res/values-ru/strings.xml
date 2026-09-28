@@ -293,7 +293,7 @@
     <string name="about_dictionary_revision">Версия %1$s</string>
     <string name="about_dictionary_author">Автор: %1$s</string>
     <string name="about_logs">Логи</string>
-    <string name="about_logs_hint">Лог приложения с версией и моделью устройства — приложить к сообщению об ошибке. В нём события и ошибки, но никогда нет текста, который вы ищете.</string>
+    <string name="about_logs_hint">Лог приложения с версией и моделью устройства — приложить к сообщению об ошибке или прочитать самому: кнопка «Сохранить в Загрузки» кладёт его в Download/Screenlate. В нём события и ошибки, но никогда нет текста, который вы ищете.</string>
     <string name="about_logs_share">Поделиться логами</string>
     <string name="update_title">Обновления</string>
     <string name="update_debug_build">Это сборка для разработки; она не обновляется из релизов.</string>
@@ -332,4 +332,8 @@
     <string name="dictionaries_language_source">Язык слов</string>
     <string name="dictionaries_language_target">Язык объяснений</string>
     <string name="dictionaries_language_none">Не указан</string>
+    <string name="about_logs_save">Сохранить в Загрузки</string>
+    <string name="about_logs_saved">Сохранено: %1$s</string>
+    <string name="about_logs_open">Открыть</string>
+    <string name="about_logs_save_failed">Не удалось сохранить лог.</string>
 </resources>
