@@ -114,6 +114,10 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { repository.reorder(all.map { it.id }) }
     }
 
+    fun setLanguages(dictionary: DictionaryEntity, source: String?, target: String?) {
+        viewModelScope.launch { repository.setLanguages(dictionary.id, source, target) }
+    }
+
     fun setSortDictionary(dictionary: DictionaryEntity) {
         viewModelScope.launch { repository.setSortDictionary(dictionary.id) }
     }

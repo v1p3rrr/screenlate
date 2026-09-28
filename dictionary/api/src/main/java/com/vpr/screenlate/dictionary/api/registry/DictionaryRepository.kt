@@ -7,6 +7,8 @@ import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.TagBanks
+import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
+import com.vpr.screenlate.dictionary.api.languages.DictionarySample
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -34,6 +36,7 @@ class DictionaryRepository @Inject constructor(
     private val engine: DictionaryEngine,
     private val storage: DictionaryStorage,
     private val preferences: DataStore<Preferences>,
+    private val languageDetector: DictionaryLanguageDetector,
 ) {
     private val mutex = Mutex()
     private var loadedLanguage: Language? = null
@@ -53,7 +56,9 @@ class DictionaryRepository @Inject constructor(
     /**
      * Imports a Yomitan archive. The dictionary [replaces] (an update, whose title may differ) or else one with
      * the same title is replaced and keeps its position and enabled state. Languages missing from index.json are
-     * taken from the matching [catalog] entry (JMdict names none), so the dictionary is used for its language only.
+     * taken from the matching [catalog] entry (JMdict names none), then from the replaced dictionary, then from the
+     * archive's content ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency
+     * and pitch dictionaries keep only a source language.
      */
     suspend fun import(
         archive: File,
@@ -68,10 +73,20 @@ class DictionaryRepository @Inject constructor(
                 .onFailure { Log.w(TAG, "Reading tag descriptions failed", it) }
                 .getOrDefault(emptyMap())
             storage.writeTagNotes(imported.directory, tagNotes)
+            val metadata = imported.metadata
+            val kind = DictionaryKind.of(metadata)
+            val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
+            val known = (replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title))
+            val source = metadata.sourceLanguage ?: listed?.sourceLanguage ?: known?.sourceLanguage
+            val target = (metadata.targetLanguage ?: listed?.targetLanguage ?: known?.targetLanguage).takeIf { kind.hasTarget }
+            val detected = if (source == null || (target == null && kind.hasTarget)) {
+                runCatching { languageDetector.detect(DictionarySample.of(archive)) }
+                    .onFailure { Log.w(TAG, "Detecting the languages failed", it) }
+                    .getOrNull()
+            } else {
+                null
+            }
             return mutex.withLock {
-                val metadata = imported.metadata
-                val kind = DictionaryKind.of(metadata)
-                val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
                 val existing = replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title)
                 // An update must not collide with another dictionary that already has the new title.
                 if (replaces != null) {
@@ -82,8 +97,8 @@ class DictionaryRepository @Inject constructor(
                     title = metadata.title,
                     revision = metadata.revision,
                     kind = kind,
-                    sourceLanguage = metadata.sourceLanguage ?: listed?.sourceLanguage,
-                    targetLanguage = metadata.targetLanguage ?: listed?.targetLanguage,
+                    sourceLanguage = source ?: detected?.source,
+                    targetLanguage = (target ?: detected?.target).takeIf { kind.hasTarget },
                     frequencyMode = metadata.frequencyMode,
                     enabled = existing?.enabled ?: true,
                     priority = existing?.priority ?: (dao.maxPriority() + 1),
@@ -117,6 +132,25 @@ class DictionaryRepository @Inject constructor(
         } finally {
             staging.deleteRecursively()
         }
+    }
+
+    /** Sets the languages of a dictionary by hand; null clears one. */
+    suspend fun setLanguages(id: Long, source: String?, target: String?) = mutex.withLock {
+        val dictionary = dao.get(id) ?: return@withLock
+        dao.update(dictionary.copy(sourceLanguage = source, targetLanguage = target.takeIf { dictionary.kind.hasTarget }))
+        reloadLocked()
+    }
+
+    /** Fills in languages that a dictionary does not have yet, keeping the ones it has. */
+    suspend fun fillLanguages(id: Long, source: String?, target: String?) = mutex.withLock {
+        val dictionary = dao.get(id) ?: return@withLock
+        val filled = dictionary.copy(
+            sourceLanguage = dictionary.sourceLanguage ?: source,
+            targetLanguage = (dictionary.targetLanguage ?: target).takeIf { dictionary.kind.hasTarget },
+        )
+        if (filled == dictionary) return@withLock
+        dao.update(filled)
+        if (filled.sourceLanguage != dictionary.sourceLanguage) reloadLocked()
     }
 
     suspend fun setEnabled(id: Long, enabled: Boolean) = mutex.withLock {

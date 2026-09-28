@@ -16,6 +16,9 @@ enum class DictionaryKind {
     KANJI,
     ;
 
+    /** Whether the dictionary explains in a language of its own; frequency and pitch data have only a source. */
+    val hasTarget: Boolean get() = this == TERM || this == KANJI
+
     companion object {
         fun of(metadata: DictionaryMetadata): DictionaryKind = when {
             metadata.termCount > 0 -> TERM

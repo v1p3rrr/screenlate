@@ -65,6 +65,7 @@ fun DictionariesScreen(
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
+    var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
     val askNotifications = rememberImportNotificationsAsk()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -151,6 +152,7 @@ fun DictionariesScreen(
                         dragging = dragging,
                         onEnabledChange = { viewModel.setEnabled(dictionary, it) },
                         onDelete = { pendingDelete = dictionary },
+                        onEditLanguages = { editingLanguages = dictionary },
                         sort = if (section.kind == DictionaryKind.FREQUENCY) {
                             SortChoice(dictionary.id == state.sortDictionaryId) { viewModel.setSortDictionary(dictionary) }
                         } else {
@@ -181,6 +183,17 @@ fun DictionariesScreen(
                 }
             }
         }
+    }
+
+    editingLanguages?.let { dictionary ->
+        DictionaryLanguagesDialog(
+            dictionary = dictionary,
+            onSave = { source, target ->
+                viewModel.setLanguages(dictionary, source, target)
+                editingLanguages = null
+            },
+            onDismiss = { editingLanguages = null },
+        )
     }
 
     pendingDelete?.let { dictionary ->
@@ -238,6 +251,7 @@ private fun DictionaryCard(
     dragging: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     onDelete: () -> Unit,
+    onEditLanguages: () -> Unit,
     sort: SortChoice? = null,
 ) {
     var expanded by rememberSaveable(dictionary.id) { mutableStateOf(false) }
@@ -281,6 +295,15 @@ private fun DictionaryCard(
                 modifier = Modifier.padding(start = 48.dp, end = 16.dp, bottom = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        "${stringResource(R.string.dictionaries_languages)}: " +
+                            subtitle(dictionary).ifEmpty { stringResource(R.string.dictionaries_language_none) },
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onEditLanguages) { Text(stringResource(R.string.dictionaries_languages_edit)) }
+                }
                 DetailLine(R.string.dictionaries_version, dictionary.revision)
                 DetailLine(R.string.dictionaries_author, dictionary.author)
                 DetailLine(R.string.dictionaries_counts, counts(dictionary))

@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.engine.hoshidicts
 
+import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.room.Room
@@ -44,6 +45,7 @@ class LookupPipelineTest {
             engine,
             storage,
             PreferenceDataStoreFactory.create { File(root, "registry.preferences_pb") },
+            DictionaryLanguageDetector(InstrumentationRegistry.getInstrumentation().targetContext),
         )
         settings = LookupSettingsRepository(PreferenceDataStoreFactory.create { File(root, "lookup.preferences_pb") })
         lookup = DictionaryLookup(repository, engine, settings)

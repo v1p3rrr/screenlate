@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.registry
 
+import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
 import android.content.Context
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.room.Room
@@ -41,7 +42,7 @@ class DictionaryRepositoryTest {
         engine = FakeEngine()
         storage = DictionaryStorage(context)
         val preferences = PreferenceDataStoreFactory.create { File(root, "prefs.preferences_pb") }
-        repository = DictionaryRepository(database.dictionaryDao(), engine, storage, preferences)
+        repository = DictionaryRepository(database.dictionaryDao(), engine, storage, preferences, DictionaryLanguageDetector(context))
     }
 
     @After

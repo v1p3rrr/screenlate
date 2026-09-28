@@ -326,4 +326,10 @@
     <string name="dictionaries_notifications_title">Уведомления о прогрессе</string>
     <string name="dictionaries_notifications_text">Разрешите уведомления, чтобы следить за импортом и скачиванием вне приложения.</string>
     <string name="dictionaries_notifications_allow">Разрешить</string>
+    <string name="dictionaries_languages">Языки</string>
+    <string name="dictionaries_languages_edit">Изменить</string>
+    <string name="dictionaries_languages_title">Языки словаря</string>
+    <string name="dictionaries_language_source">Язык слов</string>
+    <string name="dictionaries_language_target">Язык объяснений</string>
+    <string name="dictionaries_language_none">Не указан</string>
 </resources>

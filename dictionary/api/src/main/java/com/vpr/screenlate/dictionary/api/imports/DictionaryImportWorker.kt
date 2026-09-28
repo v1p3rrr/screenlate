@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import com.vpr.screenlate.dictionary.api.languages.InstalledLanguages
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -47,6 +48,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val storage: DictionaryStorage,
     private val bundled: BundledDictionaries,
     private val catalog: DictionaryCatalog,
+    private val installedLanguages: InstalledLanguages,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
@@ -101,7 +103,14 @@ class DictionaryImportWorker @AssistedInject constructor(
             } finally {
                 archive.delete()
             }
-        }.also { repository.fillBundledTagNotes(bundled::tagNotesOf) }
+        }.also {
+            repository.fillBundledTagNotes(bundled::tagNotesOf)
+            try {
+                installedLanguages.fillOnce()
+            } catch (e: IOException) {
+                Log.w(TAG, "Filling in languages failed", e)
+            }
+        }
     }
 
     private suspend fun importFile(archive: File): String {

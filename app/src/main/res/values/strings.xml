@@ -330,4 +330,10 @@
     <string name="dictionaries_notifications_title">Progress notifications</string>
     <string name="dictionaries_notifications_text">Allow notifications to follow imports and downloads outside the app.</string>
     <string name="dictionaries_notifications_allow">Allow</string>
+    <string name="dictionaries_languages">Languages</string>
+    <string name="dictionaries_languages_edit">Change</string>
+    <string name="dictionaries_languages_title">Dictionary languages</string>
+    <string name="dictionaries_language_source">Language of the words</string>
+    <string name="dictionaries_language_target">Language of the explanations</string>
+    <string name="dictionaries_language_none">Not set</string>
 </resources>
