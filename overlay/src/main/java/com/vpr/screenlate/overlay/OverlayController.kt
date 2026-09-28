@@ -5,6 +5,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.util.Log
+import android.widget.Toast
+import android.widget.PopupMenu
+import android.view.ContextThemeWrapper
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Handler
@@ -452,6 +455,40 @@ class OverlayController(
         mainHandler.postDelayed(single, ViewConfiguration.getDoubleTapTimeout().toLong())
     }
 
+    /** Holding the floating bubble: copy the paragraph under the aim, or everything recognized, as whole text. */
+    private fun showCopyMenu() {
+        val layout = layout ?: return
+        val (x, y) = aim ?: aimPoint()
+        val aimed = hit ?: layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+        val paragraph = aimed?.let { layout.paragraphText(it).first.trim() }.orEmpty()
+        val all = layout.paragraphs
+            .map { characters -> characters.joinToString("") { it.text }.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(separator = System.lineSeparator())
+        if (paragraph.isEmpty() && all.isEmpty()) return
+        haptic()
+        val themed = ContextThemeWrapper(service, android.R.style.Theme_DeviceDefault_DayNight)
+        PopupMenu(themed, bubbleView).apply {
+            if (paragraph.isNotEmpty()) menu.add(service.getString(R.string.overlay_copy_paragraph)).setOnMenuItemClickListener {
+                copyText(paragraph)
+                true
+            }
+            if (all.isNotEmpty()) menu.add(service.getString(R.string.overlay_copy_all)).setOnMenuItemClickListener {
+                copyText(all)
+                true
+            }
+            show()
+        }
+    }
+
+    private fun copyText(text: String) {
+        PageState.copy(service, text)
+        // Android 13 and later show what was copied themselves.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(service, R.string.overlay_copied, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun toggleAimMode() {
         val next = if (settings.aimMode == AimMode.ABOVE_FINGER) AimMode.BUBBLE_CENTER else AimMode.ABOVE_FINGER
         settings = settings.copy(aimMode = next)
@@ -467,6 +504,11 @@ class OverlayController(
         private var grabDy = 0f
         private var moved = false
         private var alongDock = false
+        private var held = false
+        private val hold = Runnable {
+            held = true
+            showCopyMenu()
+        }
 
         override fun onTouch(view: View, event: MotionEvent): Boolean {
             when (event.actionMasked) {
@@ -478,11 +520,16 @@ class OverlayController(
                     grabDy = event.rawY - cy
                     moved = false
                     alongDock = false
+                    held = false
+                    if (state == State.FLOATING) {
+                        mainHandler.postDelayed(hold, ViewConfiguration.getLongPressTimeout().toLong())
+                    }
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val dx = event.rawX - downX
                     val dy = event.rawY - downY
-                    if (!moved && hypot(dx, dy) > touchSlop) {
+                    if (!moved && !held && hypot(dx, dy) > touchSlop) {
+                        mainHandler.removeCallbacks(hold)
                         moved = true
                         if (state == State.DOCKED) {
                             val awayFromEdge = if (settings.dockSide == DockSide.RIGHT) dx < 0 else dx > 0
@@ -509,7 +556,9 @@ class OverlayController(
                     }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> when {
+                    held -> Unit
                     !moved -> if (event.actionMasked == MotionEvent.ACTION_UP) {
+                        mainHandler.removeCallbacks(hold)
                         view.performClick()
                         onTap()
                     }
@@ -598,8 +647,8 @@ class OverlayController(
                             page = appText?.withMissingFrom(page) ?: page,
                             final = update is OcrUpdate.Final,
                             lensError = (update as? OcrUpdate.Final)?.lensError,
-                            // App text already flashed its lines.
-                            flashLines = flashLines && appText == null,
+                            // Around app text, the lines OCR adds (text in images) flash as well.
+                            flashLines = flashLines,
                         )
                     }
             } catch (e: CancellationException) {
@@ -1003,7 +1052,7 @@ class OverlayController(
         /** Characters before the aim that may belong to the aimed word. */
         const val WORD_LOOKBACK = 32
         const val MAX_POPUP_DP = 420f
-        const val FLASH_HOLD_MS = 2500L
+        const val FLASH_HOLD_MS = 5000L
         const val HIDE_FRAME_MS = 48L
         const val FOCUS_PADDING_DP = 16f
         const val BAND_DELAY_MS = 300L

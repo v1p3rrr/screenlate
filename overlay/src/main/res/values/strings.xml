@@ -51,4 +51,7 @@
     <string name="audio_no_voice">No text-to-speech voice for this language is installed.</string>
     <string name="overlay_close">Close</string>
     <string name="overlay_pitch_dictionaries">Pitch accent from</string>
+    <string name="overlay_copy_paragraph">Copy this paragraph</string>
+    <string name="overlay_copy_all">Copy all recognized text</string>
+    <string name="overlay_copied">Copied</string>
 </resources>

@@ -12,7 +12,8 @@
 |---|---|
 | Pull the bubble away from the screen edge | The screen is scanned; aim at a word to see its entry. |
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
-| Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
+| Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines are highlighted for a few seconds. |
+| Hold the floating bubble | Copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
 | Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
 | Drag the bubble to the left or right edge | Close the entry and dock the bubble. |
