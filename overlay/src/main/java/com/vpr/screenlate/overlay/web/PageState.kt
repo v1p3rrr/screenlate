@@ -33,11 +33,13 @@ object PageState {
         pending: Boolean = false,
         engine: String = "",
         hideSource: Boolean = false,
+        ocrError: String = "",
     ): String = json.encodeToString(
         StateDto(
             theme = theme(dark),
             pending = pending,
             engine = engine,
+            ocrError = ocrError,
             hideSource = hideSource,
             source = SourceDto(text, matched),
             results = results,
@@ -55,6 +57,7 @@ object PageState {
                 "audioNone" to context.getString(R.string.audio_not_found),
                 "close" to context.getString(R.string.overlay_close),
                 "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
+                "ocrError" to context.getString(R.string.overlay_ocr_error_title),
             ),
         ),
     )
@@ -94,6 +97,8 @@ object PageState {
         val theme: String,
         val pending: Boolean = false,
         val engine: String = "",
+        /** Why cloud recognition failed for this scan, shown behind ⚠; empty without a failure. */
+        val ocrError: String = "",
         /** The popup starts with the first entry instead of the recognized text (see `Popup` in popup.js). */
         val hideSource: Boolean = false,
         val source: SourceDto,

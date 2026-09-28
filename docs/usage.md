@@ -29,7 +29,7 @@ The Quick Settings tile hides and shows the bubble. Turning the screen closes th
 The start screen keeps the search, the service status and warnings; everything else is under Settings:
 
 - **Bubble**: aim point, dock side, bubble size, word highlight, vibration, apps where the bubble hides, whether the popup starts with the recognized text, and the text source:
-  - **Screen (OCR)**: a screenshot is recognized in the cloud (an on-device draft appears first).
+  - **Screen (OCR)**: a screenshot is recognized in the cloud; an on-device draft of the lines around the aim appears first. When cloud recognition fails (no network, no answer within 15 seconds, an error), the on-device result stays and ⚠ appears next to the text source; tap it for the reason.
   - **App text first**: the app's own text is used when it exposes character positions, which is exact and works offline; other screens are recognized as usual.
   - **OCR boost** sends parts of the screen to cloud recognition separately, so small text that a full-screen scan misses is read: on demand (the part under the aim, when nothing was found there) or always.
 - **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results. Without romaji, Latin text is looked up when Japanese follows it (Tシャツ) or when the whole word is a dictionary entry (OL, DNA, CD-ROM), wherever the aim is inside it; single letters are skipped, and letter case counts.

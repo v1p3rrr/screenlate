@@ -10,6 +10,14 @@
     <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
+    <string name="overlay_ocr_error_title">Облачное распознавание</string>
+    <string name="overlay_ocr_error_offline">Нет подключения к сети.</string>
+    <string name="overlay_ocr_error_paused">Облачное распознавание отклонило последние запросы, поэтому несколько минут к нему не обращаемся.</string>
+    <string name="overlay_ocr_error_timeout">Облачное распознавание не ответило за 15 секунд.</string>
+    <string name="overlay_ocr_error_http">Облачное распознавание вернуло ошибку %1$d.</string>
+    <string name="overlay_ocr_error_network">Не удалось связаться с облачным распознаванием.</string>
+    <string name="overlay_ocr_error_other">Облачное распознавание не сработало.</string>
+    <string name="overlay_ocr_error_fallback">Текст распознан на устройстве, это менее точно.</string>
     <string name="overlay_no_results">В словарях ничего не найдено.</string>
     <string name="overlay_no_dictionaries">Словари ещё устанавливаются. Попробуйте чуть позже.</string>
     <string name="overlay_add_note">Добавить в Anki (удерживайте — с картинкой)</string>

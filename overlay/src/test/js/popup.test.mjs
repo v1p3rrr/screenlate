@@ -273,3 +273,34 @@ test('the dictionary chip goes after a list marker and before tags, never inside
     // Definition tags already start a line of text: the chip goes in front of them.
     assert.equal(tagged.nextElementSibling.className, 'tags');
 });
+
+test('a cloud recognition failure shows ⚠, which opens its reason in the panel', () => {
+    const failed = { ocrError: 'Cloud recognition did not answer.', labels: { ...labels, ocrError: 'Cloud recognition' } };
+    Popup.render(state());
+    const warning = page.document.getElementById('ocr-error');
+    assert.equal(warning.hidden, true);
+
+    Popup.update(state(failed));
+    assert.equal(warning.hidden, false);
+    warning.click();
+    assert.equal(page.document.getElementById('info').hidden, false);
+    assert.equal(page.document.getElementById('info-title').textContent, 'Cloud recognition');
+    assert.equal(page.document.getElementById('info-text').textContent, 'Cloud recognition did not answer.');
+});
+
+test('without the header ⚠ sits before the close button of the first entry', () => {
+    const failed = { hideSource: true, ocrError: 'Offline.', labels: { ...labels, ocrError: 'Cloud recognition' } };
+    Popup.render(state({ hideSource: true }));
+    assert.equal(content.querySelector('.ocr-warning'), null);
+
+    // The final result may only update the header: the entry still gets its ⚠.
+    Popup.update(state(failed));
+    const actions = content.querySelector('article.entry .entry-actions');
+    assert.ok(actions.firstChild.classList.contains('ocr-warning'));
+    assert.ok(actions.firstChild.nextSibling.classList.contains('action-close'));
+    actions.firstChild.click();
+    assert.equal(page.document.getElementById('info-text').textContent, 'Offline.');
+
+    Popup.update(state({ hideSource: true }));
+    assert.equal(content.querySelector('.ocr-warning'), null);
+});

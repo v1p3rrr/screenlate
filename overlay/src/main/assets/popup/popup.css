@@ -1,10 +1,12 @@
 :root {
-    --bg: #ffffff;
+    /* Slightly off white with the card's violet border, so the popup stands out on white pages. */
+    --bg: #f8f6fd;
     --fg: #1d1b20;
     --text-color: var(--fg);
     --muted: #6b6475;
     --accent: #7c5cff;
-    --chip-bg: #ece6ff;
+    --warning: #b26a00;
+    --chip-bg: #e7dfff;
     --tag-bg: rgba(0, 0, 0, 0.06);
     --pitch-bg: #e3ebff;
     --dictionary-bg: #ece3fa;
@@ -13,10 +15,10 @@
     --frequency-bg: #e6f4ea;
     --frequency-fg: #1e6b35;
     --matched-bg: rgba(124, 92, 255, 0.18);
-    --border: rgba(0, 0, 0, 0.08);
+    --border: rgba(124, 92, 255, 0.55);
     --divider: rgba(0, 0, 0, 0.08);
     --font-size-no-units: 15;
-    --background-color-dark1: #eeeeee;
+    --background-color-dark1: #ebe8f1;
     --text-color-light2: #666666;
     --gloss-image-background-color: rgba(0, 0, 0, 0.04);
     color-scheme: light;
@@ -27,6 +29,7 @@
     --fg: #ece8f2;
     --muted: #a59eb0;
     --accent: #b3a1ff;
+    --warning: #ffb74d;
     --chip-bg: #3a3350;
     --tag-bg: rgba(255, 255, 255, 0.1);
     --pitch-bg: #2b3350;
@@ -36,7 +39,7 @@
     --frequency-bg: #233a2b;
     --frequency-fg: #a6dcb4;
     --matched-bg: rgba(179, 161, 255, 0.25);
-    --border: rgba(255, 255, 255, 0.1);
+    --border: rgba(179, 161, 255, 0.5);
     --divider: rgba(255, 255, 255, 0.1);
     --background-color-dark1: #2e2b35;
     --text-color-light2: #9a93a6;
@@ -70,7 +73,7 @@ a {
     display: flex;
     flex-direction: column;
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
 }
@@ -82,6 +85,11 @@ a {
 
 :root[data-embedded="true"] #close {
     display: none;
+}
+
+/* Inside the app the page sits on the screen's own background. */
+:root[data-embedded="true"]:not([data-theme="dark"]) {
+    --bg: #ffffff;
 }
 
 /* Header */
@@ -160,6 +168,14 @@ a {
     to {
         transform: rotate(360deg);
     }
+}
+
+.icon-button.ocr-warning {
+    color: var(--warning);
+}
+
+.icon-button.ocr-warning[hidden] {
+    display: none;
 }
 
 .chip {

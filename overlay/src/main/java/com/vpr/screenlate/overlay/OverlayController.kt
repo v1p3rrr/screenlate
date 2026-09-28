@@ -36,7 +36,9 @@ import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrUpdate
 import com.vpr.screenlate.core.ocr.ScreenBands
 import com.vpr.screenlate.core.ocr.withMissingFrom
+import com.vpr.screenlate.core.ocr.LensPausedException
 import com.vpr.screenlate.core.ocr.OfflineException
+import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
@@ -64,6 +66,7 @@ import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
+import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -71,6 +74,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -173,6 +177,7 @@ class OverlayController(
     private var ocrFinal = false
     private var ocrEngine: OcrEngineType? = null
     private var ocrOffline = false
+    private var lensError: Throwable? = null
     private var hit: TextPosition? = null
     private var aim: Pair<Float, Float>? = null
     private var pendingSingleTap: Runnable? = null
@@ -532,6 +537,7 @@ class OverlayController(
         ocrFinal = false
         ocrEngine = null
         ocrOffline = false
+        lensError = null
         hit = null
         lookupJob?.cancel()
         lookupJob = null
@@ -692,6 +698,7 @@ class OverlayController(
         ocrEngine = page.engine
         ocrFinal = final
         ocrOffline = lensError is OfflineException
+        if (final) this.lensError = lensError
         if (ocrFinal) bubbleView.loading = false
         if (flashLines) layerView.flashLines(newLayout.lineBoxes(), FLASH_HOLD_MS)
         hit = null
@@ -866,8 +873,9 @@ class OverlayController(
         val pending = scanJob?.isActive == true && !ocrFinal
         val engine = engineLabel()
         val hideSource = !settings.showSourceText
+        val ocrError = ocrErrorText()
         return withContext(Dispatchers.Default) {
-            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine, hideSource)
+            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError)
         }
     }
 
@@ -898,7 +906,22 @@ class OverlayController(
             pending = scanJob?.isActive == true && !ocrFinal,
             engine = engineLabel,
             hideSource = !settings.showSourceText,
+            ocrError = ocrErrorText(),
         )
+    }
+
+    /** Why cloud recognition failed for this scan, for the ⚠ next to the engine label; empty when it did not. */
+    private fun ocrErrorText(): String {
+        val error = lensError ?: return ""
+        val reason = when (error) {
+            is OfflineException -> service.getString(R.string.overlay_ocr_error_offline)
+            is LensPausedException -> service.getString(R.string.overlay_ocr_error_paused)
+            is TimeoutCancellationException -> service.getString(R.string.overlay_ocr_error_timeout)
+            is LensHttpException -> service.getString(R.string.overlay_ocr_error_http, error.code)
+            is IOException -> service.getString(R.string.overlay_ocr_error_network)
+            else -> service.getString(R.string.overlay_ocr_error_other)
+        }
+        return "$reason ${service.getString(R.string.overlay_ocr_error_fallback)}"
     }
 
     private fun isDarkTheme(): Boolean = when (themeMode) {

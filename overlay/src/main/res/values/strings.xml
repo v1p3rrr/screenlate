@@ -11,6 +11,14 @@
     <string name="overlay_error_secure">This app does not allow screenshots.</string>
     <string name="overlay_error_capture">Could not take a screenshot.</string>
     <string name="overlay_error_ocr">Text recognition failed.</string>
+    <string name="overlay_ocr_error_title">Cloud recognition</string>
+    <string name="overlay_ocr_error_offline">There is no network connection.</string>
+    <string name="overlay_ocr_error_paused">Cloud recognition refused recent requests, so it rests for a few minutes.</string>
+    <string name="overlay_ocr_error_timeout">Cloud recognition did not answer within 15 seconds.</string>
+    <string name="overlay_ocr_error_http">Cloud recognition answered with error %1$d.</string>
+    <string name="overlay_ocr_error_network">Cloud recognition could not be reached.</string>
+    <string name="overlay_ocr_error_other">Cloud recognition failed.</string>
+    <string name="overlay_ocr_error_fallback">The text was recognized on the device, which is less accurate.</string>
     <string name="overlay_no_results">No dictionary entries found.</string>
     <string name="overlay_no_dictionaries">Dictionaries are still being installed. Try again in a moment.</string>
     <string name="overlay_add_note">Add to Anki (hold for a picture)</string>

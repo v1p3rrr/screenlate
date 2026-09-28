@@ -7,6 +7,7 @@
  *   theme: 'light' | 'dark',
  *   pending: boolean,              OCR is still refining the text
  *   engine: string,                OCR engine label, empty to hide
+ *   ocrError: string,              why cloud recognition failed, empty without a failure; ⚠ opens it in the panel
  *   source: { text, matched },     lookup text and the length of its matched prefix (code points)
  *   results: [LookupResult],       see dictionary.api.model.LookupResult
  *   message: string,               shown instead of results
@@ -26,6 +27,7 @@ const Popup = (() => {
     const backButton = document.getElementById('back');
     const source = document.getElementById('source');
     const engine = document.getElementById('engine');
+    const ocrErrorButton = document.getElementById('ocr-error');
     const spinner = document.getElementById('spinner');
     const content = document.getElementById('content');
     const info = document.getElementById('info');
@@ -44,6 +46,7 @@ const Popup = (() => {
         close: '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         puzzle: '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M10 3.5a2 2 0 0 1 4 0V5h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 0 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V19H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z" fill="currentColor"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3.5 2.5 20h19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor"/></svg>',
     };
 
     const history = [];
@@ -56,6 +59,8 @@ const Popup = (() => {
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
     document.getElementById('info-close').addEventListener('click', hideInfo);
+    ocrErrorButton.innerHTML = ICONS.warning;
+    ocrErrorButton.addEventListener('click', showOcrError);
     backButton.addEventListener('click', back);
 
     const renderOptions = {
@@ -87,6 +92,9 @@ const Popup = (() => {
         spinner.hidden = !state.pending;
         engine.hidden = !state.engine;
         engine.textContent = state.engine || '';
+        ocrErrorButton.hidden = !state.ocrError;
+        ocrErrorButton.title = state.labels?.ocrError || '';
+        placeInlineOcrWarning(state);
 
         source.replaceChildren();
         const text = state.source?.text || '';
@@ -127,6 +135,27 @@ const Popup = (() => {
         content.replaceChildren(fragment);
         // Layout is known only once the entries are in the document.
         content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
+        placeInlineOcrWarning(state);
+    }
+
+    function showOcrError() {
+        if (current?.ocrError) showInfo(current.labels?.ocrError || '', current.ocrError);
+    }
+
+    /** Without the header, ⚠ goes to the first entry's buttons, before ✕. */
+    function placeInlineOcrWarning(state) {
+        const actions = content.querySelector('.entry .entry-actions');
+        const inline = content.querySelector('.entry-actions > .ocr-warning');
+        const wanted = Boolean(state.ocrError) && compact(state) && actions;
+        if (!wanted) {
+            inline?.remove();
+            return;
+        }
+        if (inline) return;
+        const button = iconButton('ocr-warning', ICONS.warning, state.labels?.ocrError || '');
+        button.classList.add('ocr-warning');
+        button.addEventListener('click', showOcrError);
+        actions.prepend(button);
     }
 
     function entry(result, index, labels) {
