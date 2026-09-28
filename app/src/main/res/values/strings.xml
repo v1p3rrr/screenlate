@@ -35,6 +35,7 @@
     <string name="dictionaries_title">Dictionaries</string>
     <string name="dictionaries_import_file">Import from file</string>
     <string name="dictionaries_import_failed">Import failed: %1$s</string>
+    <string name="dictionaries_import_no_space">Not enough free space to import %1$s: about %2$s needed, %3$s free. Free up space and try again.</string>
     <string name="dictionaries_installed">Installed</string>
     <string name="dictionaries_none">No dictionaries installed.</string>
     <string name="dictionaries_order_hint">Drag the handle to change the order: entries from dictionaries higher in the list come first. Tap a dictionary for details.</string>
@@ -129,6 +130,7 @@
     <string name="bubble_text_source_hint">App text is exact and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
+    <string name="dictionaries_task_checking_space">Checking free space for %1$s</string>
     <string name="bubble_small_text">OCR boost</string>
     <string name="bubble_small_text_off">Off</string>
     <string name="bubble_small_text_on_demand">On demand</string>

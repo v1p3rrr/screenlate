@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionaries
 
+import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -343,7 +345,19 @@ private fun kindLabel(kind: DictionaryKind): Int = when (kind) {
 @Composable
 private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
     if (task.state == ImportTask.State.FAILED) {
-        ErrorCard(stringResource(R.string.dictionaries_import_failed, task.error ?: task.name), onDismiss)
+        val shortage = task.shortage
+        val message = if (shortage != null) {
+            val context = LocalContext.current
+            stringResource(
+                R.string.dictionaries_import_no_space,
+                task.name,
+                Formatter.formatShortFileSize(context, shortage.neededBytes),
+                Formatter.formatShortFileSize(context, shortage.freeBytes),
+            )
+        } else {
+            stringResource(R.string.dictionaries_import_failed, task.error ?: task.name)
+        }
+        ErrorCard(message, onDismiss)
         return
     }
     val name = task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
@@ -352,6 +366,7 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
             val status = when (task.state) {
                 ImportTask.State.QUEUED -> stringResource(R.string.dictionaries_task_queued, name)
                 ImportTask.State.DOWNLOADING -> stringResource(R.string.dictionaries_task_downloading, name)
+                ImportTask.State.CHECKING_SPACE -> stringResource(R.string.dictionaries_task_checking_space, name)
                 ImportTask.State.CONVERTING -> stringResource(R.string.dictionaries_task_converting, name)
                 else -> stringResource(R.string.dictionaries_task_importing, name)
             }

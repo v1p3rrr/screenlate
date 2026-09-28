@@ -1,5 +1,7 @@
 # Screenlate
 
+<img src="docs/images/icon.svg" width="96" height="96" alt="">
+
 A pop-up Japanese dictionary for Android that works over any app. Pull the bubble out from the edge of the screen, point it at a word, and the dictionary entry appears next to it: in a browser, a game, a manga reader or a video on pause.
 
 <p>

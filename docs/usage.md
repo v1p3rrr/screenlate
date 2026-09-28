@@ -59,6 +59,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 - Import Yomitan archives (`.zip`) from a file, download dictionaries from the catalog, or import a Yomitan "dictionary collection" export (`.json`) to bring over everything installed in Yomitan at once.
 - "Check for updates" asks each dictionary's index whether a newer revision exists.
 - A Yomitan collection export is listed first; check the dictionaries to import (those already installed start unchecked). Large exports are read in place, without a copy.
+- Before a collection import writes anything, it checks the free space for the chosen dictionaries. The fastest import needs roughly as much free space as those dictionaries take in the export; with less, the import packs its temporary files more tightly and takes longer. If even that does not fit, the import stops with a message saying how much space is needed. With at least four times the file size free, the check is skipped.
 - Missing dictionary files are restored automatically for bundled dictionaries; catalog dictionaries can be downloaded again in one tap.
 
 ## Anki

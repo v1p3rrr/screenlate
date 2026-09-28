@@ -19,3 +19,4 @@
 | JPDB v2.2 frequency | github.com/Kuuuube/yomitan-dictionaries (no license) | Not bundled; importable by the user |
 | Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Bundled |
 | Yomitan API | github.com/yomidevs/yomitan-api | Desktop-only native messaging bridge; not usable on Android |
+| Manabitan | github.com/ManabiIO/manabitan (GPL-3.0) | Yomitan fork with a rewritten storage and import path (WASM term-bank parser, SQLite/OPFS, raw glossaries, zstd); see `dictionary-engine.md` → import speed |

@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -74,6 +75,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         } catch (e: DictionaryImportException) {
             Log.w(TAG, "Import failed", e)
             Result.failure(workDataOf(KEY_ERROR to e.message))
+        } catch (e: NotEnoughSpaceException) {
+            Log.w(TAG, "Not enough space: ${e.neededBytes shr 20} MB needed, ${e.freeBytes shr 20} MB free")
+            Result.failure(
+                workDataOf(KEY_ERROR to e.message, KEY_NEEDED_BYTES to e.neededBytes, KEY_FREE_BYTES to e.freeBytes),
+            )
         } catch (e: IOException) {
             Log.w(TAG, "Import failed", e)
             Result.failure(workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName)))
@@ -110,27 +116,55 @@ class DictionaryImportWorker @AssistedInject constructor(
     /**
      * Splits a Yomitan collection export into archives of the chosen dictionaries and imports them one by one.
      * The export is read from the picked document when the app kept access to it, otherwise from a copy.
+     *
+     * A first pass measures the chosen dictionaries: the archives are written uncompressed when there is room
+     * for that, compressed when only that fits, and nothing is written when even that does not fit. With plenty of
+     * room ([CollectionSpace.clearlyEnough]) the pass is skipped and the archives are uncompressed. Free space leaves
+     * out the cache the system could clear: counting it would need `StorageManager.allocateBytes` before writing.
      */
+    @SuppressLint("UsableSpace")
     private suspend fun importCollection(name: String): List<String> {
         val uri = inputData.getString(KEY_URI)?.toUri()
         val copy = inputData.getString(KEY_PATH)?.let(::File)
         val selected = inputData.getStringArray(KEY_SELECTED)?.toSet()
         val size = inputData.getLong(KEY_SIZE, -1)
         val staging = storage.newStagingDirectory()
+        fun open() = uri?.let { applicationContext.contentResolver.openInputStream(it) }
+            ?: copy?.inputStream()
+            ?: throw IOException("Cannot open the file")
+        fun progress(stage: String): (Long) -> Unit = { read ->
+            if (size > 0) {
+                val percent = (read * 100 / size).toInt().coerceIn(0, 100)
+                setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to stage, KEY_PERCENT to percent))
+            }
+        }
         try {
-            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
-            val input = uri?.let { applicationContext.contentResolver.openInputStream(it) }
-                ?: copy?.inputStream()
-                ?: throw IOException("Cannot open the file")
-            val archives = input.use {
-                YomitanBackup(staging).convert(it, selected) { read ->
-                    if (size > 0) {
-                        val percent = (read * 100 / size).toInt().coerceIn(0, 100)
-                        setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to percent))
-                    }
+            var started = System.currentTimeMillis()
+            val free = staging.usableSpace
+            val plan = if (CollectionSpace.clearlyEnough(size, free)) {
+                Log.i(TAG, "Skipped measuring: ${free shr 20} MB free for a ${size shr 20} MB file")
+                CollectionSpacePlan.Uncompressed
+            } else {
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CHECK, KEY_PERCENT to 0))
+                val sizes = open().use { YomitanBackup.measure(it, selected, progress(STAGE_CHECK)) }
+                CollectionSpace.plan(sizes, free).also { plan ->
+                    Log.i(
+                        TAG,
+                        "Measured ${sizes.size} dictionaries in ${System.currentTimeMillis() - started} ms: $plan; " +
+                            "peak ${CollectionSpace.peakBytes(sizes, compressed = false) shr 20} MB uncompressed, " +
+                            "${CollectionSpace.peakBytes(sizes, compressed = true) shr 20} MB compressed, " +
+                            "${free shr 20} MB free",
+                    )
                 }
             }
-            return archives.mapIndexed { index, archive ->
+            if (plan is CollectionSpacePlan.NotEnough) throw NotEnoughSpaceException(plan.neededBytes, plan.freeBytes)
+            started = System.currentTimeMillis()
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
+            val compress = plan == CollectionSpacePlan.Compressed
+            val archives = open().use { YomitanBackup(staging, compress).convert(it, selected, progress(STAGE_CONVERT)) }
+            Log.i(TAG, "Wrote ${archives.size} archives in ${System.currentTimeMillis() - started} ms")
+            started = System.currentTimeMillis()
+            val titles = archives.mapIndexed { index, archive ->
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
                 try {
                     repository.import(archive, catalog = catalogEntries).title
@@ -138,6 +172,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                     archive.delete()
                 }
             }
+            Log.i(TAG, "Imported ${titles.size} dictionaries in ${System.currentTimeMillis() - started} ms")
+            return titles
         } finally {
             staging.deleteRecursively()
             copy?.delete()
@@ -229,6 +265,8 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_URI = "uri"
         const val KEY_SELECTED = "selected"
         const val KEY_SIZE = "size"
+        const val KEY_NEEDED_BYTES = "needed_bytes"
+        const val KEY_FREE_BYTES = "free_bytes"
 
         const val SOURCE_BUNDLED = "bundled"
         const val SOURCE_FILE = "file"
@@ -238,6 +276,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val STAGE_DOWNLOAD = "download"
         const val STAGE_IMPORT = "import"
         const val STAGE_CONVERT = "convert"
+        const val STAGE_CHECK = "check"
 
         private const val TAG = "DictionaryImport"
         private const val CHANNEL_ID = "dictionary_imports"
