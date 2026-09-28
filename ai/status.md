@@ -53,10 +53,21 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - README for users (2026-09-27): features, screenshots, install, requirements, limitations, privacy, license; developer parts moved to `docs/development.md`. Screenshots (`docs/images/*.webp`) were taken on the emulator with a local release build over the published v0.1.0 (clean settings, JMdict + Jitendex from the catalog, "App text first", text header off so no OCR source chip shows) and own test pages (`scratchpad/readme/*.html`, opened in the system HTML viewer through a MediaStore content URI with `--grant-read-uri-permission`; the viewer has no network, and Chrome's first-run terms are not accepted). Landscape popup checked on the emulator: beside the word, 420 dp wide, ~90% of the height.
 - Found while taking them: a WebView answered character-location requests with the node's bounds for every character (whole paragraph highlighted, lookup from its first character); `sharesBoxes` now leaves such nodes to OCR. The floating dictionary chip covered a list marker when a definition opened with a list (Jitendex "＊", JMdict's glossary list); `placeDictionaryName` now puts the chip inline where the first line of text starts.
 
+### 2026-09-28
+
+- Branch `claude/elegant-allen-xmu3fx` (faster collection import, app icon) checked on the emulator and merged through https://github.com/v1p3rrr/screenlate/pull/1 with CI green; collection import skips the counting pass with four times the export free.
+- Words broken across lines: horizontal text was already fine (Lens groups wrapped lines); vertical columns are now read right to left and split columns joined (`ReadingOrder`), checked with a synthetic page and the manga page (手に|入れたい).
+- On-device draft: a band around the aim first (`FocusBand`), then the whole screen; ML Kit warm-up at start; scan logs with timings.
+- Popup: ⚠ with the cloud recognition failure (common causes named, only for recognized words), violet border, #F8F6FD background; tag descriptions on tap (tag banks saved at import as `tag_notes.json`, bundled ones filled from the APK; structured-content titles).
+- Notification permission asked at the first import or download, card on the Dictionaries screen; self-update ABI choice checked.
+- Dictionary languages: index.json → catalog → content (`LanguageGuess`, `DictionarySample`, Android's TextClassifier for Latin/Cyrillic); installed ones filled once from sample lookups (`InstalledLanguages`), all of the owner's dictionaries came out right; manual edit in the details.
+- Fixes: raw JSON escapes in index texts (decoded at import, stored ones once); another revision of an installed dictionary replaces it.
+- Logs can be saved to `Download/Screenlate`; catalog +8 entries from MarvNC's list (JLPT, NWJC, CSJ, CEJC, Wiktionary kanji, mozc variants, jitai, JA Wikipedia); grammar dictionaries need no special support.
+
 ## Next
 
-- Branch `claude/elegant-allen-xmu3fx` (collection import, app icon) checked on the emulator (timings in `notes/dictionary-engine.md`, icon in `notes/app-icon.md`); it goes into main through a pull request with CI green. On the phone the owner checks the icon and an import after v0.1.1.
-- Then, owner's order (2026-09-28): words broken across lines, dictionary languages, the known bugs (a collection dictionary that differs only by revision is imported twice; JSON escapes in index strings), then release v0.1.1 with hand-written notes in `.github/release-notes/v0.1.1.md`. The owner updates to it from the app on the phone.
+- Release v0.1.1 (notes in `.github/release-notes/v0.1.1.md`) once CI on main is green; the owner updates to it from the app on the phone and checks there: the icon (launcher masks, themed icon), a collection import with timings, the import notification, the on-device draft timings (scan logs: "OCR draft/final … ms", "ML Kit band … ms"), vertical text across columns.
+- After the release (owner, 2026-09-28): a logging pass over the code, without filling the phone's storage.
 - Emulator state after the README screenshots: `com.vpr.screenlate` is a local release build of the current code (versionName 0.1.0, code 100, release key), with Jitendex downloaded and above JMdict, "App text first", text header off; it still works for the self-update test to v0.1.1. The accessibility service is set back to the debug app.
 
 - Self-update end to end: with the next release (v0.1.1), update the emulator's v0.1.0 from the app (needs "Install unknown apps" for Screenlate, which the owner turns on) or check it on the phone. Updating from a debug-signed or differently signed build needs a reinstall.
@@ -65,6 +76,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Phase 8 (languages) waits for an interview.
 
 ## Open items
+
+- ML Kit is slow on the emulator (x86 without acceleration): ~5 s for a full screenshot, 1.6–2.4 s for a focus band; its time follows the amount of text, not the image size (a screen at 2/3 scale took as long). Phone timings unknown until the owner shares logs.
+- The emulator's debug app has both Jitendex.org [2026-01-04] and [2026-08-11] from before the revision fix; imports no longer add such copies.
 
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release APKs: arm64-v8a 69 MB, armeabi-v7a 65 MB, x86_64 70 MB, universal 93 MB.
 - Lookup-to-render latency on the emulator (measured with `popup-eval.mjs`): 30–45 ms for typical words, ~100–180 ms for する (16 long Jitendex entries). The native lookup takes a few ms; the rest is JSON and rendering. Not measured on the phone.

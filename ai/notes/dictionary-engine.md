@@ -115,3 +115,16 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Replaced dictionaries keep their id, position and enabled state; entry and media counts equal the previous import. Missing languages now come from the catalog on replacement (JMdict (Russian) became ja → ru).
 - Found on the way, not caused by this change: a collection dictionary whose title differs only by revision from an installed one (Jitendex.org [2026-01-04] vs [2026-08-11]) is shown as "already installed" but imported as a second dictionary; dictionary descriptions and attributions keep JSON escapes (`
 `) because hoshidicts returns index strings raw.
+
+## What hoshidicts leaves out (2026-09-28)
+
+- Tag banks are only counted at import; tag names reach lookups, their descriptions (`notes`) do not. `TagBanks`
+  reads them from the archive at import into `tag_notes.json` next to the engine's files (the engine ignores other
+  files in its directory); bundled dictionaries get theirs from the APK once (`fillBundledTagNotes`).
+- Index strings come back as their raw JSON (`glz::raw_string`): a line break is a backslash and `n`. Author, URLs,
+  description and attribution are decoded (`decodeIndexText`); the title stays raw because lookups name
+  dictionaries by the engine's title.
+- Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
+  it whole; `LanguageGuess` decides by script shares (Latin or Cyrillic ≥ 15% of letters is the target language even
+  with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese), with Android's `TextClassifier`
+  naming Latin and Cyrillic languages. Installed dictionaries were sampled once through lookups of ~80 common words.
