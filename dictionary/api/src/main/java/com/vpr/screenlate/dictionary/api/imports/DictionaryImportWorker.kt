@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -117,8 +118,10 @@ class DictionaryImportWorker @AssistedInject constructor(
      * The export is read from the picked document when the app kept access to it, otherwise from a copy.
      *
      * A first pass measures the chosen dictionaries: the archives are written uncompressed when there is room
-     * for that, compressed when only that fits, and nothing is written when even that does not fit.
+     * for that, compressed when only that fits, and nothing is written when even that does not fit. Free space leaves
+     * out the cache the system could clear: counting it would need `StorageManager.allocateBytes` before writing.
      */
+    @SuppressLint("UsableSpace")
     private suspend fun importCollection(name: String): List<String> {
         val uri = inputData.getString(KEY_URI)?.toUri()
         val copy = inputData.getString(KEY_PATH)?.let(::File)
@@ -135,14 +138,25 @@ class DictionaryImportWorker @AssistedInject constructor(
             }
         }
         try {
+            var started = System.currentTimeMillis()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CHECK, KEY_PERCENT to 0))
             val sizes = open().use { YomitanBackup.measure(it, selected, progress(STAGE_CHECK)) }
-            val plan = CollectionSpace.plan(sizes, staging.usableSpace)
+            val free = staging.usableSpace
+            val plan = CollectionSpace.plan(sizes, free)
+            Log.i(
+                TAG,
+                "Measured ${sizes.size} dictionaries in ${System.currentTimeMillis() - started} ms: $plan; " +
+                    "peak ${CollectionSpace.peakBytes(sizes, compressed = false) shr 20} MB uncompressed, " +
+                    "${CollectionSpace.peakBytes(sizes, compressed = true) shr 20} MB compressed, ${free shr 20} MB free",
+            )
             if (plan is CollectionSpacePlan.NotEnough) throw NotEnoughSpaceException(plan.neededBytes, plan.freeBytes)
+            started = System.currentTimeMillis()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
             val compress = plan == CollectionSpacePlan.Compressed
             val archives = open().use { YomitanBackup(staging, compress).convert(it, selected, progress(STAGE_CONVERT)) }
-            return archives.mapIndexed { index, archive ->
+            Log.i(TAG, "Wrote ${archives.size} archives in ${System.currentTimeMillis() - started} ms")
+            started = System.currentTimeMillis()
+            val titles = archives.mapIndexed { index, archive ->
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
                 try {
                     repository.import(archive, catalog = catalogEntries).title
@@ -150,6 +164,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                     archive.delete()
                 }
             }
+            Log.i(TAG, "Imported ${titles.size} dictionaries in ${System.currentTimeMillis() - started} ms")
+            return titles
         } finally {
             staging.deleteRecursively()
             copy?.delete()
