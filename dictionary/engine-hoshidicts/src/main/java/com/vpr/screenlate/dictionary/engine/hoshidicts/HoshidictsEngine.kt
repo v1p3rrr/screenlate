@@ -4,6 +4,7 @@ import android.content.Context
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
+import com.vpr.screenlate.dictionary.api.registry.decodeIndexText
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.ImportedDictionary
@@ -147,12 +148,13 @@ private data class NativeSummary(
         targetLanguage = targetLanguage,
         frequencyMode = frequencyMode,
         isUpdatable = isUpdatable == true,
-        indexUrl = indexUrl,
-        downloadUrl = downloadUrl,
-        author = author,
-        url = url,
-        description = description,
-        attribution = attribution,
+        // The engine returns index strings as raw JSON; the title stays raw, as lookups name dictionaries by it.
+        indexUrl = decodeIndexText(indexUrl),
+        downloadUrl = decodeIndexText(downloadUrl),
+        author = decodeIndexText(author),
+        url = decodeIndexText(url),
+        description = decodeIndexText(description),
+        attribution = decodeIndexText(attribution),
         termCount = counts.terms.total,
         frequencyCount = counts.termMeta["freq"] ?: 0,
         pitchCount = (counts.termMeta["pitch"] ?: 0) + (counts.termMeta["ipa"] ?: 0),

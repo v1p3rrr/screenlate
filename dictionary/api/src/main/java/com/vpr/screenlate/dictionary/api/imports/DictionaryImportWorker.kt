@@ -105,6 +105,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             }
         }.also {
             repository.fillBundledTagNotes(bundled::tagNotesOf)
+            repository.decodeStoredTexts()
             try {
                 installedLanguages.fillOnce()
             } catch (e: IOException) {

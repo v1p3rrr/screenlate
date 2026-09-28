@@ -141,6 +141,39 @@ class DictionaryRepositoryTest {
         assertThat(unlisted.targetLanguage).isNull()
     }
 
+    @Test
+    fun anotherRevisionOfTheSameDictionaryReplacesIt() = runTest {
+        val old = repository.import(archive("Dict [2026-01-04]", terms = 1))
+        repository.import(archive("Freq [2026-01-04]", frequencies = 1))
+
+        val newer = repository.import(archive("Dict [2026-08-11]", terms = 2))
+
+        assertThat(newer.id).isEqualTo(old.id)
+        assertThat(repository.getAll().map { it.title }).containsExactly("Dict [2026-08-11]", "Freq [2026-01-04]").inOrder()
+        // A frequency dictionary of the same name stays: only the same kind is another revision.
+        val frequency = repository.import(archive("Dict [2026-09-01]", frequencies = 1))
+        assertThat(frequency.id).isNotEqualTo(newer.id)
+        assertThat(repository.getAll()).hasSize(3)
+    }
+
+    @Test
+    fun languagesAreFilledInOrSetByHand() = runTest {
+        val terms = repository.import(archive("Terms", terms = 1))
+        val frequency = repository.import(archive("Freq", frequencies = 1))
+
+        repository.fillLanguages(terms.id, source = "ja", target = "en")
+        repository.fillLanguages(terms.id, source = "ko", target = "ru")
+        repository.fillLanguages(frequency.id, source = "ja", target = "en")
+        assertThat(repository.getAll().first { it.id == terms.id }.let { it.sourceLanguage to it.targetLanguage })
+            .isEqualTo("ja" to "en")
+        // Frequency data explains nothing: only the language of its words.
+        assertThat(repository.getAll().first { it.id == frequency.id }.let { it.sourceLanguage to it.targetLanguage })
+            .isEqualTo("ja" to null)
+
+        repository.setLanguages(terms.id, source = "ja", target = null)
+        assertThat(repository.getAll().first { it.id == terms.id }.targetLanguage).isNull()
+    }
+
     private fun archive(
         title: String,
         terms: Long = 0,

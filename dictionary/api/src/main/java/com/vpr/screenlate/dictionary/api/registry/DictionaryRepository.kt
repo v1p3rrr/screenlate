@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +77,7 @@ class DictionaryRepository @Inject constructor(
             val metadata = imported.metadata
             val kind = DictionaryKind.of(metadata)
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
-            val known = (replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title))
+            val known = replaced(replaces, metadata.title, kind)
             val source = metadata.sourceLanguage ?: listed?.sourceLanguage ?: known?.sourceLanguage
             val target = (metadata.targetLanguage ?: listed?.targetLanguage ?: known?.targetLanguage).takeIf { kind.hasTarget }
             val detected = if (source == null || (target == null && kind.hasTarget)) {
@@ -87,7 +88,7 @@ class DictionaryRepository @Inject constructor(
                 null
             }
             return mutex.withLock {
-                val existing = replaces?.let { dao.get(it) } ?: dao.findByTitle(metadata.title)
+                val existing = replaced(replaces, metadata.title, kind)
                 // An update must not collide with another dictionary that already has the new title.
                 if (replaces != null) {
                     dao.findByTitle(metadata.title)?.takeIf { it.id != replaces }?.let { dao.delete(it) }
@@ -132,6 +133,36 @@ class DictionaryRepository @Inject constructor(
         } finally {
             staging.deleteRecursively()
         }
+    }
+
+    /**
+     * The dictionary an import replaces: [replaces], else one with the same title, else the only one of the same
+     * [kind] whose title differs just by its revision mark (`Jitendex.org [2026-01-04]` for `[2026-08-11]`), as the
+     * collection import lists it as installed.
+     */
+    private suspend fun replaced(replaces: Long?, title: String, kind: DictionaryKind): DictionaryEntity? =
+        replaces?.let { dao.get(it) }
+            ?: dao.findByTitle(title)
+            ?: dao.getAll().filter { it.kind == kind && dictionaryKey(it.title) == dictionaryKey(title) }.singleOrNull()
+
+    /**
+     * Decodes index texts stored raw by earlier versions (a line break as a backslash and `n`), once; see
+     * [decodeIndexText].
+     */
+    suspend fun decodeStoredTexts() = mutex.withLock {
+        if (preferences.data.first()[TEXTS_DECODED] == true) return@withLock
+        for (dictionary in dao.getAll()) {
+            val decoded = dictionary.copy(
+                author = decodeIndexText(dictionary.author),
+                url = decodeIndexText(dictionary.url),
+                description = decodeIndexText(dictionary.description),
+                attribution = decodeIndexText(dictionary.attribution),
+                indexUrl = decodeIndexText(dictionary.indexUrl),
+                downloadUrl = decodeIndexText(dictionary.downloadUrl),
+            )
+            if (decoded != dictionary) dao.update(decoded)
+        }
+        preferences.edit { it[TEXTS_DECODED] = true }
     }
 
     /** Sets the languages of a dictionary by hand; null clears one. */
@@ -258,4 +289,5 @@ data class PreparedLookup(
 )
 
 private val SORT_DICTIONARY = longPreferencesKey("sort_dictionary_id")
+private val TEXTS_DECODED = booleanPreferencesKey("index_texts_decoded")
 private const val TAG = "DictionaryRepository"
