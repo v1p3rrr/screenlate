@@ -45,6 +45,11 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         }
     }
 
+    override fun release() = synchronized(recognizers) {
+        recognizers.values.forEach { it.close() }
+        recognizers.clear()
+    }
+
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
         val support = language.support
         val text = recognizer(support.ocrScript).process(InputImage.fromBitmap(image, 0)).await()

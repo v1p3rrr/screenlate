@@ -1,6 +1,7 @@
 package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
+import android.content.ComponentCallbacks2
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
@@ -215,6 +216,19 @@ class OverlayController(
                 refreshPopup()
             }
         }
+    }
+
+    /**
+     * Memory runs low: while the bubble is docked nothing needs the on-device model, so it goes, which makes the
+     * system less likely to stop the service. The app's own screens going to the background (UI_HIDDEN) do not count.
+     */
+    @Suppress("DEPRECATION") // The RUNNING_* levels are still delivered to running services.
+    fun onTrimMemory(level: Int) {
+        val low = level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW ||
+            level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL ||
+            level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND
+        Log.i(TAG, "Memory trim level $level, bubble ${state.name.lowercase()}")
+        if (low && state == State.DOCKED) ocr.releaseOnDevice()
     }
 
     fun stop() {

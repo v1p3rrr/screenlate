@@ -124,6 +124,12 @@ class CompositeOcr internal constructor(
         }
     }
 
+    /** Unloads the on-device model when memory runs low; the next scan loads it again. */
+    fun releaseOnDevice() {
+        mlKit.release()
+        Log.i(TAG, "Released the on-device model")
+    }
+
     /** Loads the on-device model, which would otherwise delay the first draft. */
     suspend fun warmUp() {
         val image = Bitmap.createBitmap(WARM_UP_SIZE, WARM_UP_SIZE, Bitmap.Config.ARGB_8888)

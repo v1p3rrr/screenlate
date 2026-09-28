@@ -8,4 +8,7 @@ interface OcrEngine {
 
     /** Recognizes text on [image]. The result uses the image's pixel coordinates. */
     suspend fun recognize(image: Bitmap, language: Language): OcrPage
+
+    /** Frees models or caches that the next [recognize] can load again; called when memory runs low. */
+    fun release() = Unit
 }
