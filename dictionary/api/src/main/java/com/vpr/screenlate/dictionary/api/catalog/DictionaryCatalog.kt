@@ -68,7 +68,6 @@ class DictionaryCatalog @Inject constructor(
     @ApplicationContext private val context: Context,
     private val httpClient: OkHttpClient,
 ) {
-    private val json = Json { ignoreUnknownKeys = true }
     private val cacheFile = File(context.filesDir, "catalog.json")
 
     /** Emits the cached or bundled catalog at once, then the fetched one if it differs. */
@@ -96,16 +95,18 @@ class DictionaryCatalog @Inject constructor(
         }
     }.onFailure { Log.i(TAG, "Catalog fetch failed: ${it.message}") }.getOrNull()
 
-    /** Null when the document is malformed or uses a format this app version does not understand. */
-    private fun parse(text: String): List<CatalogEntry>? = runCatching {
-        json.decodeFromString<CatalogDocument>(text).takeIf { it.format == FORMAT }?.dictionaries
-    }.getOrNull()
+    internal companion object {
+        private val json = Json { ignoreUnknownKeys = true }
 
-    private companion object {
-        const val TAG = "DictionaryCatalog"
-        const val ASSET = "catalog/dictionaries.json"
-        const val FORMAT = 1
-        const val REMOTE_URL =
+        /** Null when the document is malformed or uses a format this app version does not understand. */
+        fun parse(text: String): List<CatalogEntry>? = runCatching {
+            json.decodeFromString<CatalogDocument>(text).takeIf { it.format == FORMAT }?.dictionaries
+        }.getOrNull()
+
+        private const val TAG = "DictionaryCatalog"
+        private const val ASSET = "catalog/dictionaries.json"
+        private const val FORMAT = 1
+        private const val REMOTE_URL =
             "https://raw.githubusercontent.com/v1p3rrr/screenlate/main/dictionary/api/src/main/assets/$ASSET"
     }
 }

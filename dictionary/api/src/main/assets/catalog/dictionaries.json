@@ -423,6 +423,139 @@
       "sizeMb": 1,
       "license": "Published by the authors",
       "homepage": "https://vtrm.net/japanese/kanji-jukugo-frequency/en"
+    },
+    {
+      "id": "jlpt",
+      "title": "JLPT",
+      "installedTitle": "JLPT",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "The JLPT level (N5–N1) of about 8,000 words from Jonathan Waller's unofficial lists, shown with the frequencies.",
+        "ru": "Уровень JLPT (N5–N1) примерно 8000 слов по неофициальным спискам Джонатана Уоллера; показывается рядом с частотами."
+      },
+      "indexUrl": "https://raw.githubusercontent.com/stephenmk/yomitan-jlpt-vocab/refs/heads/main/yomitan-jlpt-vocab/index.json",
+      "downloadUrl": "https://github.com/stephenmk/yomichan-jlpt-vocab/releases/latest/download/jlpt.zip",
+      "resolveLatest": true,
+      "sizeMb": 1,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/stephenmk/yomitan-jlpt-vocab"
+    },
+    {
+      "id": "nwjc",
+      "title": "NWJC",
+      "installedTitle": "ウェブ NWJC",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies from NINJAL's web corpus of Japanese: everyday written language of the internet.",
+        "ru": "Частотность по веб-корпусу японского NINJAL: повседневный письменный язык интернета."
+      },
+      "downloadUrl": "https://raw.githubusercontent.com/Maltesaa/CSJ_and_NWJC_yomitan_freq_dict/main/NWJC%20releases/NINJAL%20Web%20Japanese%20Corpus%20-%20NWJC.zip",
+      "resolveLatest": false,
+      "sizeMb": 8,
+      "license": "NINJAL frequency list",
+      "homepage": "https://github.com/Maltesaa/CSJ_and_NWJC_yomitan_freq_dict"
+    },
+    {
+      "id": "csj",
+      "title": "CSJ",
+      "installedTitle": "話し言葉 CSJ",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies from the Corpus of Spontaneous Japanese: lectures, talks and dialogues.",
+        "ru": "Частотность по корпусу спонтанной японской речи: лекции, выступления и диалоги."
+      },
+      "downloadUrl": "https://raw.githubusercontent.com/Maltesaa/CSJ_and_NWJC_yomitan_freq_dict/main/CSJ%20releases/Corpus%20of%20Spontaneous%20Japanese%20-%20CSJ.zip",
+      "resolveLatest": false,
+      "sizeMb": 3,
+      "license": "NINJAL frequency list",
+      "homepage": "https://github.com/Maltesaa/CSJ_and_NWJC_yomitan_freq_dict"
+    },
+    {
+      "id": "cejc",
+      "title": "CEJC",
+      "installedTitle": "Conversation Corpus",
+      "kind": "FREQUENCY",
+      "sourceLanguage": "ja",
+      "description": {
+        "en": "Frequencies from the Corpus of Everyday Japanese Conversation, about 20,000 words of everyday speech.",
+        "ru": "Частотность по корпусу повседневных разговоров на японском, около 20 000 слов живой речи."
+      },
+      "downloadUrl": "https://raw.githubusercontent.com/forsakeninfinity/CEJC_yomichan_freq_dict/main/releases/Corpus%20of%20Everyday%20Japanese%20Conversation.zip",
+      "resolveLatest": false,
+      "sizeMb": 2,
+      "license": "NINJAL frequency list",
+      "homepage": "https://github.com/forsakeninfinity/CEJC_yomichan_freq_dict"
+    },
+    {
+      "id": "wiktionary-kanji",
+      "title": "Wiktionary漢字",
+      "installedTitle": "Wiktionary漢字",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ja",
+      "description": {
+        "en": "About 18,000 kanji from the Japanese Wiktionary: go-on, kan-on and other readings, origin, meaning and variants, in Japanese.",
+        "ru": "Около 18 000 кандзи из японского Викисловаря: чтения го-он, кан-он и другие, происхождение, значение и варианты, на японском."
+      },
+      "downloadUrl": "https://github.com/MarvNC/yomitan-dictionaries/raw/master/dl/%5BKanji%5D%20Wiktionary.zip",
+      "resolveLatest": false,
+      "sizeMb": 1,
+      "license": "CC BY-SA 3.0",
+      "homepage": "https://github.com/MarvNC/yomitan-dictionaries"
+    },
+    {
+      "id": "mozc-kanji-variants",
+      "title": "mozc Kanji Variants",
+      "installedTitle": "mozc Kanji Variants",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ja",
+      "description": {
+        "en": "Variant forms of kanji (old, simplified, standard print forms) from Google's mozc input method.",
+        "ru": "Варианты написания кандзи (старые, упрощённые, стандартные печатные формы) из японского метода ввода mozc."
+      },
+      "downloadUrl": "https://github.com/MarvNC/yomitan-dictionaries/raw/master/dl/%5BKanji%5D%20mozc%20Kanji%20Variants.zip",
+      "resolveLatest": false,
+      "sizeMb": 1,
+      "license": "BSD-3-Clause",
+      "homepage": "https://github.com/MarvNC/yomitan-dictionaries"
+    },
+    {
+      "id": "jitai",
+      "title": "jitai",
+      "installedTitle": "jitai",
+      "kind": "KANJI",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ja",
+      "description": {
+        "en": "New and old kanji forms (新字体/旧字体) and standard and accepted forms side by side.",
+        "ru": "Новые и старые формы кандзи (新字体/旧字体), стандартные и допустимые формы рядом."
+      },
+      "downloadUrl": "https://github.com/MarvNC/yomitan-dictionaries/raw/master/dl/%5BKanji%5D%20jitai.zip",
+      "resolveLatest": false,
+      "sizeMb": 1,
+      "license": "Published by the authors",
+      "homepage": "https://github.com/epistularum/jitai"
+    },
+    {
+      "id": "ja-wikipedia",
+      "title": "Wikipedia (ja)",
+      "installedTitle": "JA Wikipedia",
+      "kind": "TERM",
+      "sourceLanguage": "ja",
+      "targetLanguage": "ja",
+      "description": {
+        "en": "Short abstracts of 1.2 million Japanese Wikipedia articles (December 2022): names, places, works and terms that dictionaries lack.",
+        "ru": "Краткие выдержки из 1,2 млн статей японской Википедии (декабрь 2022): имена, места, произведения и термины, которых нет в словарях."
+      },
+      "downloadUrl": "https://github.com/MarvNC/wikipedia-yomitan/releases/download/v1.6.1/ja.Wikipedia.2022-12-01.v1.6.1.zip",
+      "resolveLatest": false,
+      "sizeMb": 202,
+      "license": "CC BY-SA 3.0",
+      "homepage": "https://github.com/MarvNC/wikipedia-yomitan"
     }
   ]
 }
