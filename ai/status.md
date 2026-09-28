@@ -55,9 +55,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next
 
-- Check the app icon on the emulator and the phone (launchers, themed icon, splash, tile, notification, debug next to release), then merge the branch. Steps: `handoffs/2026-09-27-app-icon.md`.
-- Verify branch `claude/elegant-allen-xmu3fx` locally (build, unit and page tests, lint, collection import of the owner's export on the emulator and the phone with timings, the not-enough-space message), then merge into main. Steps: `handoffs/2026-09-27-collection-import.md`.
-- Next up: offer v0.1.1 to the owner (hand-written notes in `.github/release-notes/v0.1.1.md`).
+- Branch `claude/elegant-allen-xmu3fx` (collection import, app icon) checked on the emulator (timings in `notes/dictionary-engine.md`, icon in `notes/app-icon.md`); it goes into main through a pull request with CI green. On the phone the owner checks the icon and an import after v0.1.1.
+- Then, owner's order (2026-09-28): words broken across lines, dictionary languages, the known bugs (a collection dictionary that differs only by revision is imported twice; JSON escapes in index strings), then release v0.1.1 with hand-written notes in `.github/release-notes/v0.1.1.md`. The owner updates to it from the app on the phone.
 - Emulator state after the README screenshots: `com.vpr.screenlate` is a local release build of the current code (versionName 0.1.0, code 100, release key), with Jitendex downloaded and above JMdict, "App text first", text header off; it still works for the self-update test to v0.1.1. The accessibility service is set back to the debug app.
 
 - Self-update end to end: with the next release (v0.1.1), update the emulator's v0.1.0 from the app (needs "Install unknown apps" for Screenlate, which the owner turns on) or check it on the phone. Updating from a debug-signed or differently signed build needs a reinstall.

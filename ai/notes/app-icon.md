@@ -48,3 +48,16 @@ Without the Android SDK, aapt2 validates the resources: take `com.android.tools.
 Launcher masks of real launchers (Pixel, MagicOS), the themed icon, the splash screen (Android 12+ shows the adaptive
 icon on the window background, which is white too), app info and recents, the tile in the shade, the notification
 icon in the status bar, debug and release side by side. The handoff prompt lists the steps.
+
+Emulator, 2026-09-28 (Pixel 10 Pro AVD, API 36, Pixel launcher with circle masks only; debug build and a local
+release build side by side):
+
+- Home screen and app drawer: the word, the aim dot and the rows read at drawer size, nothing is cut; the debug
+  badge tells "Screenlate Dev" apart at a glance.
+- Splash on a cold start (captured with `screenrecord`): the icon in the circle on the white window, not cut.
+- App info (release and debug) and the recents card header: correct icons, the badge visible in both.
+- Quick Settings tile, on and off: the silhouette reads in both states.
+- Not seen: the themed icon (the owner skipped it: it needs a system setting), the import notification (the debug app
+  has no notification permission on the emulator, so its foreground-service notification is not shown; permissions
+  stay the owner's to change), other mask shapes, and the phone (MagicOS), which the owner checks with v0.1.1.
+- `lintDebug` reports nothing for the icon files (no VectorPath, MonochromeLauncherIcon or IconLauncherShape).
