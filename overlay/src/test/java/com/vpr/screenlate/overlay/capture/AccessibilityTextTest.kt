@@ -27,4 +27,13 @@ class AccessibilityTextTest {
         val boxes = row(10).toMutableList().apply { add(3, this[3]) }
         assertThat(sharesBoxes(boxes)).isFalse()
     }
+
+    @Test
+    fun `a field whose first character sits at its corner is misplaced`() {
+        val field = Box(48f, 372f, 1232f, 540f)
+        // The glyph starts inside the padding, at about (96, 426); the box reports the field's corner instead.
+        assertThat(startsAtCorner(field, Box(48f, 372f, 64.75f, 444f))).isTrue()
+        assertThat(startsAtCorner(field, Box(96f, 426f, 112.75f, 498f))).isFalse()
+        assertThat(startsAtCorner(field, Box(48f, 426f, 64.75f, 498f))).isFalse()
+    }
 }

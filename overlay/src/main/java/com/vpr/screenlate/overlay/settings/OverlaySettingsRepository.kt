@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.ocr.OcrEngines
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -47,6 +48,7 @@ enum class SmallTextMode {
  * @property dockY vertical position of the docked bubble as a fraction of the screen height.
  * @property hiddenPackages apps in which the bubble is hidden.
  * @property showSourceText the popup starts with the recognized text; off, it starts with the first entry.
+ * @property ocrSaving the device reads the whole screen only when cloud recognition is late or fails.
  */
 data class OverlaySettings(
     val bubbleVisible: Boolean = true,
@@ -60,6 +62,8 @@ data class OverlaySettings(
     val bubbleSizeDp: Int = DEFAULT_BUBBLE_DP,
     val smallText: SmallTextMode = SmallTextMode.OFF,
     val showSourceText: Boolean = true,
+    val ocrEngines: OcrEngines = OcrEngines.BOTH,
+    val ocrSaving: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_BUBBLE_DP = 48
@@ -91,6 +95,9 @@ class OverlaySettingsRepository @Inject constructor(
             smallText = prefs[SMALL_TEXT]?.let { stored -> SmallTextMode.entries.firstOrNull { it.name == stored } }
                 ?: defaults.smallText,
             showSourceText = prefs[SHOW_SOURCE_TEXT] ?: defaults.showSourceText,
+            ocrEngines = prefs[OCR_ENGINES]?.let { stored -> OcrEngines.entries.firstOrNull { it.name == stored } }
+                ?: defaults.ocrEngines,
+            ocrSaving = prefs[OCR_SAVING] ?: defaults.ocrSaving,
         )
     }
 
@@ -133,6 +140,14 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[SHOW_SOURCE_TEXT] = enabled }
     }
 
+    suspend fun setOcrEngines(engines: OcrEngines) {
+        dataStore.edit { it[OCR_ENGINES] = engines.name }
+    }
+
+    suspend fun setOcrSaving(enabled: Boolean) {
+        dataStore.edit { it[OCR_SAVING] = enabled }
+    }
+
     suspend fun setDockSide(side: DockSide) {
         dataStore.edit { it[DOCK_SIDE] = side.name }
     }
@@ -156,5 +171,7 @@ class OverlaySettingsRepository @Inject constructor(
         val BUBBLE_SIZE = intPreferencesKey("overlay_bubble_size_dp")
         val SMALL_TEXT = stringPreferencesKey("overlay_small_text")
         val SHOW_SOURCE_TEXT = booleanPreferencesKey("overlay_show_source_text")
+        val OCR_ENGINES = stringPreferencesKey("overlay_ocr_engines")
+        val OCR_SAVING = booleanPreferencesKey("overlay_ocr_saving")
     }
 }

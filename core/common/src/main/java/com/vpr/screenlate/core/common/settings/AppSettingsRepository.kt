@@ -30,8 +30,16 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[NOTIFICATIONS_ASKED] = true }
     }
 
+    /** Whether the user has seen the background work tip, which is badged in the settings until then. */
+    val backgroundTipSeen: Flow<Boolean> = dataStore.data.map { it[BACKGROUND_TIP_SEEN] ?: false }
+
+    suspend fun setBackgroundTipSeen() {
+        dataStore.edit { it[BACKGROUND_TIP_SEEN] = true }
+    }
+
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
+        val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
     }
 }

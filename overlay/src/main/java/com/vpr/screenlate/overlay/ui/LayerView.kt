@@ -12,6 +12,9 @@ import com.vpr.screenlate.core.common.geometry.Box
 /**
  * Full-screen, non-touchable layer drawn in screen coordinates: the aim dot, the highlight of the word under the aim
  * and the temporary highlight of everything that was recognized.
+ *
+ * While there is nothing to draw (the bubble is docked) the view is GONE, which takes its window off the screen: the
+ * system then neither composes an empty full-screen layer into every frame of every app nor keeps its buffers.
  */
 class LayerView(context: Context) : View(context) {
 
@@ -33,20 +36,25 @@ class LayerView(context: Context) : View(context) {
     private var allLineBoxes: List<Box> = emptyList()
     private var allLinesAlpha = 0f
     private var fade: ValueAnimator? = null
+    private val hide = Runnable { visibility = GONE }
+
+    init {
+        visibility = GONE
+    }
 
     fun setAim(x: Float, y: Float) {
         aim = x to y
-        invalidate()
+        contentChanged()
     }
 
     fun clearAim() {
         aim = null
-        invalidate()
+        contentChanged()
     }
 
     fun setWordBoxes(boxes: List<Box>) {
         wordBoxes = boxes
-        invalidate()
+        contentChanged()
     }
 
     /** Shows [boxes] and fades them out after [holdMillis]. */
@@ -59,11 +67,11 @@ class LayerView(context: Context) : View(context) {
             duration = FADE_MILLIS
             addUpdateListener {
                 allLinesAlpha = it.animatedValue as Float
-                invalidate()
+                contentChanged()
             }
             start()
         }
-        invalidate()
+        contentChanged()
     }
 
     fun clearAll() {
@@ -71,6 +79,14 @@ class LayerView(context: Context) : View(context) {
         aim = null
         wordBoxes = emptyList()
         allLineBoxes = emptyList()
+        contentChanged()
+    }
+
+    /** Shows the window at once; hides it a moment after it empties, so a gap while dragging keeps its surface. */
+    private fun contentChanged() {
+        val empty = aim == null && wordBoxes.isEmpty() && (allLineBoxes.isEmpty() || allLinesAlpha <= 0f)
+        removeCallbacks(hide)
+        if (empty) postDelayed(hide, HIDE_DELAY_MS) else visibility = VISIBLE
         invalidate()
     }
 
@@ -87,6 +103,7 @@ class LayerView(context: Context) : View(context) {
     }
 
     override fun onDetachedFromWindow() {
+        removeCallbacks(hide)
         fade?.cancel()
         super.onDetachedFromWindow()
     }
@@ -104,5 +121,6 @@ class LayerView(context: Context) : View(context) {
         const val ALL_LINES_ALPHA = 90
         const val AIM_RADIUS_DP = 5f
         const val FADE_MILLIS = 400L
+        const val HIDE_DELAY_MS = 1000L
     }
 }

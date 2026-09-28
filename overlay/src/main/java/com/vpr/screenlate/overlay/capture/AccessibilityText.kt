@@ -15,6 +15,7 @@ import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
+import kotlin.math.abs
 
 /**
  * Reads the text of the app windows on screen from the accessibility node tree, with per-character positions
@@ -38,7 +39,8 @@ class AccessibilityText(private val service: AccessibilityService) {
         Log.d(
             TAG,
             "App text: ${paragraphs.size} of ${stats.withText} text nodes in ${SystemClock.elapsedRealtime() - started} ms; " +
-                "${stats.withoutPositions} without character positions, ${stats.sharedBoxes} with one box for all",
+                "${stats.withoutPositions} without character positions, ${stats.sharedBoxes} with one box for all, " +
+                "${stats.fieldsAtCorner} fields with boxes at the corner",
         )
         if (paragraphs.isEmpty()) return null
         return OcrPage(screenWidth, screenHeight, paragraphs, OcrEngineType.ACCESSIBILITY)
@@ -49,6 +51,7 @@ class AccessibilityText(private val service: AccessibilityService) {
         var withText = 0
         var withoutPositions = 0
         var sharedBoxes = 0
+        var fieldsAtCorner = 0
     }
 
     private var stats = Stats()
@@ -106,6 +109,14 @@ class AccessibilityText(private val service: AccessibilityService) {
         }
         if (current.isNotEmpty()) lines += current
         if (lines.isEmpty()) return null
+        if (node.isEditable) {
+            val bounds = Rect().also(node::getBoundsInScreen)
+            val field = Box(bounds.left.toFloat(), bounds.top.toFloat(), bounds.right.toFloat(), bounds.bottom.toFloat())
+            if (startsAtCorner(field, lines.first().first().second)) {
+                stats.fieldsAtCorner++
+                return null
+            }
+        }
         if (sharesBoxes(lines.flatten().map { it.second })) {
             stats.sharedBoxes++
             return null
@@ -141,3 +152,14 @@ internal fun sharesBoxes(boxes: List<Box>): Boolean {
     val repeated = boxes.zipWithNext().count { (previous, box) -> previous == box }
     return repeated * 2 >= boxes.size - 1
 }
+
+/**
+ * True when a text field's first character box sits exactly at the field's top-left corner. Compose text fields place
+ * the character boxes relative to the whole field, padding included, so every box lands up and left of its glyph by
+ * the padding; such text is left to OCR. A field without padding matches too and is read by OCR as well, which only
+ * costs the exactness of app text.
+ */
+internal fun startsAtCorner(field: Box, first: Box): Boolean =
+    abs(first.left - field.left) < CORNER_TOLERANCE && abs(first.top - field.top) < CORNER_TOLERANCE
+
+private const val CORNER_TOLERANCE = 1f

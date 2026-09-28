@@ -40,7 +40,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
+import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.ui.components.LabelWithInfo
+import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.doneClearsFocus
@@ -91,6 +93,10 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     fun setSmallText(mode: SmallTextMode) = launch { repository.setSmallText(mode) }
 
     fun setShowSourceText(enabled: Boolean) = launch { repository.setShowSourceText(enabled) }
+
+    fun setOcrEngines(engines: OcrEngines) = launch { repository.setOcrEngines(engines) }
+
+    fun setOcrSaving(enabled: Boolean) = launch { repository.setOcrSaving(enabled) }
 
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
@@ -170,6 +176,12 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         },
                         onSelect = viewModel::setTextSource,
                     )
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Text(
+                        stringResource(R.string.bubble_recognition),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
                     LabelWithInfo(
                         stringResource(R.string.bubble_small_text),
                         stringResource(R.string.bubble_small_text_hint),
@@ -188,7 +200,36 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                             )
                         },
                         onSelect = viewModel::setSmallText,
+                        enabled = settings.ocrEngines != OcrEngines.DEVICE,
                     )
+                    LabelWithInfo(
+                        stringResource(R.string.bubble_ocr_engines),
+                        stringResource(R.string.bubble_ocr_engines_info),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Segments(
+                        options = OcrEngines.entries,
+                        selected = settings.ocrEngines,
+                        label = {
+                            stringResource(
+                                when (it) {
+                                    OcrEngines.BOTH -> R.string.bubble_ocr_engines_both
+                                    OcrEngines.CLOUD -> R.string.bubble_ocr_engines_cloud
+                                    OcrEngines.DEVICE -> R.string.bubble_ocr_engines_device
+                                },
+                            )
+                        },
+                        onSelect = viewModel::setOcrEngines,
+                    )
+                    Hint(stringResource(R.string.bubble_ocr_engines_hint))
+                    SwitchRow(
+                        stringResource(R.string.bubble_ocr_saving),
+                        settings.ocrSaving,
+                        viewModel::setOcrSaving,
+                        hint = stringResource(R.string.bubble_ocr_saving_hint),
+                        enabled = settings.ocrEngines == OcrEngines.BOTH,
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
                     SwitchRow(

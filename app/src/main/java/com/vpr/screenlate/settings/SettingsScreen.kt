@@ -1,5 +1,6 @@
 package com.vpr.screenlate.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,22 +26,34 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.background.BackgroundTipViewModel
+import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.home.HomeViewModel
 import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
-enum class SettingsPage { BUBBLE, LOOKUP, DICTIONARIES, ANKI, APPEARANCE, YOMITAN_IMPORT, ABOUT }
+enum class SettingsPage { BUBBLE, BACKGROUND, LOOKUP, DICTIONARIES, ANKI, APPEARANCE, YOMITAN_IMPORT, ABOUT }
 
-/** One list of every settings section; each opens its own screen. */
+/**
+ * One list of every settings section; each opens its own screen. Leaving the list while Background work is badged
+ * counts as having seen the tip.
+ */
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
     onOpen: (SettingsPage) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    tip: BackgroundTipViewModel = hiltViewModel(),
 ) {
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val anki by viewModel.anki.collectAsStateWithLifecycle()
-    SettingsScaffold(stringResource(R.string.settings_title), onBack) { padding ->
+    val backgroundBadge = rememberBackgroundTipBadge(tip)
+    val leave = {
+        if (backgroundBadge) tip.markSeen()
+        onBack()
+    }
+    BackHandler(enabled = backgroundBadge, onBack = leave)
+    SettingsScaffold(stringResource(R.string.settings_title), leave) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,6 +64,12 @@ fun SettingsScreen(
             SettingsEntry(R.drawable.ic_touch_app, stringResource(R.string.bubble_title), stringResource(R.string.settings_bubble_summary)) {
                 onOpen(SettingsPage.BUBBLE)
             }
+            SettingsEntry(
+                R.drawable.ic_battery,
+                stringResource(R.string.background_title),
+                stringResource(R.string.background_summary),
+                badge = backgroundBadge,
+            ) { onOpen(SettingsPage.BACKGROUND) }
             SettingsEntry(R.drawable.ic_manage_search, stringResource(R.string.lookup_title), stringResource(R.string.settings_lookup_summary)) {
                 onOpen(SettingsPage.LOOKUP)
             }
@@ -81,7 +102,13 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsEntry(@DrawableRes icon: Int, title: String, summary: String, onClick: () -> Unit) {
+private fun SettingsEntry(
+    @DrawableRes icon: Int,
+    title: String,
+    summary: String,
+    badge: Boolean = false,
+    onClick: () -> Unit,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -89,12 +116,14 @@ private fun SettingsEntry(@DrawableRes icon: Int, title: String, summary: String
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Icon(
-            painterResource(icon),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp),
-        )
+        BadgedBox(badge = { if (badge) Badge() }) {
+            Icon(
+                painterResource(icon),
+                contentDescription = if (badge) stringResource(R.string.settings_badge) else null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp),
+            )
+        }
         Column(
             modifier = Modifier
                 .weight(1f)

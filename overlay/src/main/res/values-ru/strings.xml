@@ -1,6 +1,6 @@
 <resources>
-    <string name="overlay_service_description">Показывает плавающий кружок, который распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот только когда вы вытаскиваете кружок или нажимаете на него, и отправляет его в облачный сервис распознавания текста.</string>
-    <string name="overlay_tile_label">Кружок Screenlate</string>
+    <string name="overlay_service_description">Показывает плавающую кнопку, которая распознаёт текст на экране и ищет слова в ваших словарях. Screenlate делает скриншот только когда вы вытаскиваете кнопку или нажимаете на неё, и отправляет его в облачный сервис распознавания текста.</string>
+    <string name="overlay_tile_label">Кнопка Screenlate</string>
 
     <string name="overlay_engine_draft">Черновик с устройства</string>
     <string name="overlay_engine_device">На устройстве (Lens недоступен)</string>
@@ -10,6 +10,7 @@
     <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
+    <string name="overlay_error_offline">Нет сети, а распознавание на устройстве выключено в настройках.</string>
     <string name="overlay_ocr_error_title">Облачное распознавание</string>
     <string name="overlay_ocr_error_offline">Нет подключения к сети.</string>
     <string name="overlay_ocr_error_paused">Облачное распознавание отклонило последние запросы, поэтому несколько минут к нему не обращаемся.</string>

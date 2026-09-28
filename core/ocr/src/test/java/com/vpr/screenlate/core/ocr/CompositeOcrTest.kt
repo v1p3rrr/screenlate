@@ -9,9 +9,12 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -33,7 +36,7 @@ class CompositeOcrTest {
     private val mlKit = FakeEngine(OcrEngineType.ML_KIT, 200.milliseconds)
     private var online = true
     private var now = 0L
-    private val ocr = CompositeOcr(lens, mlKit, { online }, { now })
+    private val ocr = CompositeOcr(lens, mlKit, { online }, { now }, copyOf = { it }, release = {})
 
     /** The engines are fakes and never look at the image; the Android stub cannot be constructed normally. */
     private val image: Bitmap = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
@@ -118,7 +121,16 @@ class CompositeOcrTest {
     }
 
     /** A 2000-row image whose bands the fake engines read as the whole image. */
-    private val focused = CompositeOcr(lens, mlKit, { online }, { now }, heightOf = { 2000 }, cropRows = { image, _ -> image })
+    private val focused = CompositeOcr(
+        lens,
+        mlKit,
+        { online },
+        { now },
+        heightOf = { 2000 },
+        cropRows = { image, _ -> image },
+        copyOf = { it },
+        release = {},
+    )
 
     @Test
     fun `the band around the aim comes before the whole image`() = runTest {
@@ -164,5 +176,114 @@ class CompositeOcrTest {
         assertThat(mlKit.calls).isEqualTo(0)
         lens.error = IOException("down")
         assertThat(ocr.recognizeRegion(image, Language.JAPANESE)).isNull()
+    }
+
+    @Test
+    fun `the device reads a copy that is freed only once it is done, after lens`() = runTest {
+        val copy = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
+        val read = mutableListOf<Bitmap>()
+        var freedAt: Long? = null
+        // Like ML Kit, which keeps reading after its caller is cancelled.
+        val stubborn = object : OcrEngine {
+            override val type = OcrEngineType.ML_KIT
+
+            override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
+                read += image
+                withContext(NonCancellable) { delay(2.seconds) }
+                return OcrPage(100, 100, emptyList(), type)
+            }
+        }
+        lens.latency = 300.milliseconds
+        val ocr = CompositeOcr(
+            lens,
+            stubborn,
+            { online },
+            { now },
+            copyOf = { copy },
+            release = { if (it === copy) freedAt = testScheduler.currentTime },
+        )
+
+        val updates = ocr.recognize(image, Language.JAPANESE).toList()
+        assertThat(updates.engines).containsExactly(true to OcrEngineType.LENS)
+        assertThat(testScheduler.currentTime).isEqualTo(300)
+        assertThat(freedAt).isNull()
+
+        advanceUntilIdle()
+        assertThat(freedAt).isEqualTo(2000)
+        assertThat(read).containsExactly(copy)
+    }
+
+    private val saving = OcrOptions(deferWholeImage = true)
+
+    @Test
+    fun `saving, lens in time leaves the whole image unread`() = runTest {
+        lens.latency = 2.seconds
+        val updates = focused.recognize(image, Language.JAPANESE, saving, focus = { 1000f }).toList()
+        assertThat(updates.engines).containsExactly(false to OcrEngineType.ML_KIT, true to OcrEngineType.LENS).inOrder()
+        assertThat(mlKit.calls).isEqualTo(1)
+    }
+
+    @Test
+    fun `saving, the whole image is read when lens is late`() = runTest {
+        lens.latency = 5.seconds
+        val updates = focused.recognize(image, Language.JAPANESE, saving, focus = { 1000f }).toList()
+        // Band, whole image after three seconds, then Lens.
+        assertThat(updates.engines).containsExactly(
+            false to OcrEngineType.ML_KIT,
+            false to OcrEngineType.ML_KIT,
+            true to OcrEngineType.LENS,
+        ).inOrder()
+        assertThat(mlKit.calls).isEqualTo(2)
+    }
+
+    @Test
+    fun `saving, a lens failure starts the whole image at once`() = runTest {
+        lens.latency = 1.seconds
+        lens.error = IOException("down")
+        val updates = focused.recognize(image, Language.JAPANESE, saving, focus = { 1000f }).toList()
+        assertThat(updates.last().page.engine).isEqualTo(OcrEngineType.ML_KIT)
+        assertThat(testScheduler.currentTime).isEqualTo(1200)
+    }
+
+    @Test
+    fun `saving, an aim that moves while waiting gets its band`() = runTest {
+        lens.latency = 2.seconds
+        focused.recognize(
+            image,
+            Language.JAPANESE,
+            saving,
+            focus = { if (testScheduler.currentTime < 500) 100f else 1500f },
+        ).toList()
+        assertThat(mlKit.calls).isEqualTo(2)
+    }
+
+    @Test
+    fun `cloud only never uses the device`() = runTest {
+        val updates = ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD)).toList()
+        assertThat(updates.engines).containsExactly(true to OcrEngineType.LENS)
+        assertThat(mlKit.calls).isEqualTo(0)
+    }
+
+    @Test
+    fun `cloud only fails without network`() = runTest {
+        online = false
+        val error = runCatching { ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD)).toList() }
+        assertThat(error.exceptionOrNull()).isInstanceOf(OfflineException::class.java)
+        assertThat(lens.calls).isEqualTo(0)
+    }
+
+    @Test
+    fun `cloud only reports a timeout as a failure, not a cancellation`() = runTest {
+        lens.latency = 20.seconds
+        val error = runCatching { ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD)).toList() }
+        assertThat(error.exceptionOrNull()).isInstanceOf(IOException::class.java)
+    }
+
+    @Test
+    fun `device only never asks lens`() = runTest {
+        val final = ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.DEVICE)).toList().single()
+        assertThat(final.page.engine).isEqualTo(OcrEngineType.ML_KIT)
+        assertThat((final as OcrUpdate.Final).lensError).isNull()
+        assertThat(lens.calls).isEqualTo(0)
     }
 }

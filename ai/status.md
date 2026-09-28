@@ -68,6 +68,20 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Also after the release: holding the floating bubble opens a menu to copy the paragraph under the aim (lines joined) or all recognized text (checked: pasted text is the whole paragraph); the rescan highlight stays amber and about 3 s long (owner, after trying violet and 5 s); with "App text first" OCR lines around the app's text flash too. Not released yet: offer v0.1.2.
 - Logging pass (owner, after v0.1.1): scan stages with timings (capture, app text, Lens status/size/time, bands, draft/final), service start/stop, dock/pull-out, note results by kind, audio lookups, Yomitan settings import summary, why the app thinks it is offline (Android reports no network when the system blocks the app's traffic). Logs showed app text read only after the screenshot; now both run in parallel (Files app: app text 128 ms, ready before the 432 ms capture). "App text first" checked on the emulator in the Files app: exact lookups, immediate flash of app lines, bubble copy menu (paragraph and all text), no ⚠ for app text words. Unused drawables and strings removed (lint).
 - The owner's phone (v0.1.1) showed "On-device (offline)" with ⚠ on a screenshot of the emulator: either no internet at that moment or the system blocking the app's traffic (MagicOS per-app network switches, background data); the next build logs which.
+- Background work screen (Settings → Background work): battery optimization state with a request and the system list, the vendor launch-management hint; GitHub issue templates for the About report button (`ProblemReport`).
+- Load and battery measured on the emulator (details in the plan's changelog): docked ~0.2% of a core, no alarms or jobs; a scan costs 4.5–10 s of CPU, most of it ML Kit. Changes: "Engines" setting (Both / Cloud / Device) and "Reduce load on the device" (whole-screen on-device pass waits 3 s for the cloud) in a "Screen recognition" block of the bubble settings; the highlight layer no longer stays composited; a recycled-bitmap fix; the popup's WebView renderer can be reclaimed while docked.
+- Highlight shift (owner report): ML Kit's symbol boxes lag ~0.4 character behind the glyphs in some words; `SymbolLag` moves the inner boundaries onto the gaps when the pixels clearly say so (checked on five screenshots, exact words untouched). Compose text fields report character boxes offset by the field's padding; such fields (first box at the node's corner) are left to OCR. Both fixes also correct which character the aim finds, not only the highlight.
+- Russian UI calls the bubble «плавающая кнопка» (owner decision; English keeps "bubble").
+- App text read time: 68–144 ms in other apps (Settings, photo picker, HTML viewer; one 1.5 s outlier), ~6.7 s on Screenlate's own screens (cause unknown; OCR waits for it).
+
+## Resume here (2026-09-28, owner paused the session)
+
+All work is committed and pushed; unit tests, lint and page tests pass. Next steps in order:
+1. Ask the owner (AskUserQuestion) whether "App text first" becomes the default text source. Facts: exact and ~0.1 s in native apps; WebViews and Compose fields fall back to OCR; unknown apps might report wrong character boxes (only Compose fields known and handled); not tried on the phone in X/Chrome yet. Recommended: keep OCR default for v0.1.2, owner tries App text on the phone first.
+2. Optionally: why app text takes ~6.7 s on Screenlate's own screens, and stop OCR results waiting for app text (`OverlayController.startScan`, `appTextRead.await()` in `collect`).
+3. Docs: `docs/usage.md` (Background work, Screen recognition: Engines, Reduce load, troubleshooting), `docs/architecture.md` (CompositeOcr options, deferred on-device pass, reclaimable renderer, `SymbolLag`, Compose field rule). New note `ai/notes/ocr-engines.md` (ML Kit symbol lag, renderer priority, `am crash` for tests, non-cancellable ML Kit task), linked from CLAUDE.md.
+4. Release v0.1.2: `.github/release-notes/v0.1.2.md`, tag, CI.
+Emulator: bubble docked on the right at y≈752, text source App text first, engines Both, locale ru; test pages via the HTML viewer (`content://media/external/file/20142` = sl-cafe.html, see the README screenshot entry above).
 
 ## Next
 
@@ -88,10 +102,10 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release APKs: arm64-v8a 69 MB, armeabi-v7a 65 MB, x86_64 70 MB, universal 93 MB.
 - Lookup-to-render latency on the emulator (measured with `popup-eval.mjs`): 30–45 ms for typical words, ~100–180 ms for する (16 long Jitendex entries). The native lookup takes a few ms; the rest is JSON and rendering. Not measured on the phone.
 - AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
-- Default text source is OCR; "app text first" is opt-in (not confirmed with the owner).
+- Default text source is OCR; making "App text first" the default is an open question for the owner (Compose fix, wrap check and cost measurement done).
 
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
-- A focused Compose text field (the app's own search field) reports character positions shifted up and left by roughly its padding, so "App text first" aims at the wrong character there; other apps' Compose fields probably too. Not investigated.
+- App text on Screenlate's own screens takes ~6.7 s (other apps ~0.1 s) and the OCR result waits for it; not investigated.
 - Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27); columns in the middle of a narrow screen still get it above or below.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).

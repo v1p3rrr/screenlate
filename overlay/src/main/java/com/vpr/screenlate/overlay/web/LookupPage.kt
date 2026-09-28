@@ -29,6 +29,9 @@ import kotlin.coroutines.resume
  * The lookup results page (`assets/popup/popup.html`) in a WebView, shared by the overlay popup and the search
  * screen. Hosts add [container] to their layout; the WebView inside is replaced if its renderer dies.
  *
+ * The overlay's page gives up its renderer first when memory runs short while the popup is hidden, and loads again
+ * on [prepare]. An embedded page is on screen whenever its app screen is, so its renderer keeps the default priority.
+ *
  * Pages and dictionary media are served from `https://appassets.androidplatform.net/`: assets under `/assets/`,
  * media from `/media?d=<dictionary>&p=<path>` through [Callbacks.media], installed fonts from `/fonts/<file>`.
  *
@@ -116,7 +119,8 @@ class LookupPage(
     fun setOnSelecting(listener: (Boolean) -> Unit) {
         selectionHost.onSelecting = listener
     }
-    private var webView = createWebView(context)
+    private val reclaimable = !embedded
+    private var webView: WebView? = createWebView(context)
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun createWebView(context: Context): WebView = WebView(context).apply {
@@ -125,6 +129,7 @@ class LookupPage(
         settings.allowFileAccess = false
         settings.allowContentAccess = false
         webViewClient = PageClient()
+        if (reclaimable) setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, true)
         addJavascriptInterface(Bridge(), "ScreenlateBridge")
         loadUrl(PAGE_URL)
         container.addView(this, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -171,30 +176,40 @@ class LookupPage(
 
     /** Evaluates [script] in the page and returns its JSON-encoded result, or null if the page is not ready. */
     suspend fun evaluate(script: String): String? {
-        if (!pageReady) return null
+        val view = webView
+        if (!pageReady || view == null) return null
         return suspendCancellableCoroutine { continuation ->
-            webView.evaluateJavascript(script) { result -> if (continuation.isActive) continuation.resume(result) }
+            view.evaluateJavascript(script) { result -> if (continuation.isActive) continuation.resume(result) }
         }
+    }
+
+    /** Loads the page again if the system reclaimed its renderer; called when a scan starts, so it loads meanwhile. */
+    fun prepare() {
+        if (webView == null) webView = createWebView(container.context)
     }
 
     fun destroy() {
         container.removeAllViews()
-        webView.destroy()
+        webView?.destroy()
+        webView = null
     }
 
+    /** Configuration waits for the page to be ready, which replays it; it does not bring back a reclaimed page. */
     private fun setPersistent(key: String, script: String) {
         if (persistent[key] == script) return
         persistent[key] = script
-        run(script)
+        if (pageReady) webView?.evaluateJavascript(script, null)
     }
 
     private fun run(script: String) {
-        if (pageReady) {
-            webView.evaluateJavascript(script, null)
+        val view = webView
+        if (pageReady && view != null) {
+            view.evaluateJavascript(script, null)
         } else {
             // Only the latest view matters; configuration is replayed from `persistent`.
             pendingScripts.clear()
             pendingScripts += script
+            prepare()
         }
     }
 
@@ -236,13 +251,18 @@ class LookupPage(
 
         // A crashed or killed renderer must not take the app or the accessibility service down with it.
         override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
-            Log.w(TAG, "Lookup page renderer gone (crashed: ${detail.didCrash()}), recreating")
+            val shown = view.isShown
+            Log.w(TAG, "Lookup page renderer gone (crashed: ${detail.didCrash()}, shown: $shown)")
             container.removeView(view)
             view.destroy()
             pageReady = false
             pendingScripts.clear()
-            webView = createWebView(view.context)
-            callbacks.onClose()
+            webView = null
+            // A renderer the system reclaimed from a hidden popup comes back with the next scan.
+            if (shown || !reclaimable) {
+                prepare()
+                callbacks.onClose()
+            }
             return true
         }
     }
@@ -251,7 +271,7 @@ class LookupPage(
         @JavascriptInterface
         fun onReady() = post {
             pageReady = true
-            (persistent.values + pendingScripts).forEach { webView.evaluateJavascript(it, null) }
+            (persistent.values + pendingScripts).forEach { webView?.evaluateJavascript(it, null) }
             pendingScripts.clear()
         }
 

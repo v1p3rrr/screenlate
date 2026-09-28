@@ -1,0 +1,44 @@
+name: Problem
+description: Something does not work as expected.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What went wrong, and in which app or screen.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to repeat it
+      placeholder: |
+        1. Open …
+        2. Pull the bubble to …
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Settings → About.
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version
+  - type: input
+    id: device
+    attributes:
+      label: Device
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Log and screenshots
+      description: >-
+        Settings → About → Save to Downloads writes the app's log to Download/Screenlate; drag the file here.
+        The log holds events and errors, never the text you look up. A screenshot or a screen recording helps too.

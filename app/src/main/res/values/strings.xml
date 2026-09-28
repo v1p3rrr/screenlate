@@ -8,7 +8,6 @@
     <string name="onboarding_open_accessibility_settings">Open accessibility settings</string>
 
     <string name="onboarding_device_title">Device setup</string>
-    <string name="onboarding_device_app_launch">Honor / MagicOS: Settings → Apps → App launch → Screenlate → Manage manually, and allow all three options. Otherwise the system may stop the service in the background.</string>
     <string name="onboarding_device_restricted_settings">If the Screenlate switch is greyed out (the app was installed from a file), open App info → ⋮ → Allow restricted settings, then try again.</string>
 
     <string name="settings_theme_title">Theme</string>
@@ -132,6 +131,15 @@
     <string name="bubble_small_text_on_demand">On demand</string>
     <string name="bubble_small_text_always">Always</string>
     <string name="bubble_small_text_hint">Sends parts of the screen to cloud recognition separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized.\n\nOn demand: the part under the aim, once the aim rests where nothing was found.\n\nAlways: the whole screen in parts with every scan (more traffic).</string>
+    <string name="bubble_recognition">Screen recognition</string>
+    <string name="bubble_ocr_engines">Engines</string>
+    <string name="bubble_ocr_engines_both">Both</string>
+    <string name="bubble_ocr_engines_cloud">Cloud</string>
+    <string name="bubble_ocr_engines_device">Device</string>
+    <string name="bubble_ocr_engines_hint">Keep both. Turning one off is a last resort for weak or busy devices.</string>
+    <string name="bubble_ocr_engines_info">Cloud only: nothing is recognized without network, and words appear only once the server answers.\n\nDevice only: works offline but reads vertical text and manga worse; OCR boost is off.</string>
+    <string name="bubble_ocr_saving">Reduce load on the device</string>
+    <string name="bubble_ocr_saving_hint">The device reads the whole screen itself only if cloud recognition has not answered in 3 s. Less load and battery use, but words away from the aim show up later. Leave off if speed matters most.</string>
     <string name="bubble_size">Bubble size: %1$d dp</string>
     <string name="search_empty_title">Type a word or paste text</string>
     <string name="search_empty_hint">Entries appear as you type. In other apps, select text and choose “Look up in Screenlate” in the selection menu.</string>
@@ -293,7 +301,7 @@
     <string name="about_dictionary_revision">Revision %1$s</string>
     <string name="about_dictionary_author">By %1$s</string>
     <string name="about_logs">Logs</string>
-    <string name="about_logs_hint">A log of this app with its version and the device model, to attach to a bug report or read yourself: "Save to Downloads" puts it in Download/Screenlate. It holds events and errors, never the text you look up.</string>
+    <string name="about_logs_hint">A log of this app with its version and the device model, to attach to a bug report or read yourself: \"Save to Downloads\" puts it in Download/Screenlate. It holds events and errors, never the text you look up.</string>
     <string name="about_logs_share">Share logs</string>
     <string name="update_title">Updates</string>
     <string name="update_debug_build">This is a development build; it is not updated from releases.</string>
@@ -336,4 +344,19 @@
     <string name="about_logs_saved">Saved to %1$s</string>
     <string name="about_logs_open">Open</string>
     <string name="about_logs_save_failed">Could not save the log.</string>
+    <string name="background_title">Background work</string>
+    <string name="background_summary">Keep the system from stopping the bubble</string>
+    <string name="background_intro">The system restarts the bubble\'s service on its own, unless one of these settings stops it to save power. Both are the system\'s own settings: Screenlate only opens them.</string>
+    <string name="background_battery_title">Battery optimization</string>
+    <string name="background_battery_on">On for Screenlate: the system may stop the bubble in the background.</string>
+    <string name="background_battery_off">Off for Screenlate: the system leaves the bubble running.</string>
+    <string name="background_battery_allow">Allow background work</string>
+    <string name="background_battery_list">Open the battery optimization list</string>
+    <string name="background_battery_list_hint">In the list, find Screenlate and turn optimization off for it (\"Don\'t optimize\", \"Unrestricted\" or similar). Apps missing from the list at first are often under \"All apps\".</string>
+    <string name="background_launch_title">App launch</string>
+    <string name="background_launch_text">Some phones also stop background apps through the maker\'s own settings, apart from battery optimization. There, allow Screenlate to start on its own and to run in the background. Honor / MagicOS: App launch → Screenlate → Manage manually, with all three options on.</string>
+    <string name="background_launch_open">Open the startup settings</string>
+    <string name="background_launch_app_info">Open app info</string>
+    <string name="background_launch_app_info_hint">This phone has none of the known startup screens. App info usually leads to battery and background settings.</string>
+    <string name="settings_badge">New tip</string>
 </resources>

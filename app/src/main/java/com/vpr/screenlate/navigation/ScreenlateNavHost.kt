@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.anki.AnkiSettingsScreen
+import com.vpr.screenlate.background.BackgroundWorkScreen
 import com.vpr.screenlate.bubble.BubbleSettingsScreen
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.debug.ImageViewerScreen
@@ -44,6 +45,9 @@ private object BubbleRoute
 
 @Serializable
 private object LookupRoute
+
+@Serializable
+private object BackgroundRoute
 
 @Serializable
 private object AppearanceRoute
@@ -101,6 +105,7 @@ fun ScreenlateNavHost(
                     navController.navigate(
                         when (page) {
                             SettingsPage.BUBBLE -> BubbleRoute
+                            SettingsPage.BACKGROUND -> BackgroundRoute
                             SettingsPage.LOOKUP -> LookupRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
                             SettingsPage.ANKI -> AnkiRoute
@@ -114,6 +119,7 @@ fun ScreenlateNavHost(
         }
         composable<BubbleRoute> { BubbleSettingsScreen(onBack = back) }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
+        composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
         composable<YomitanImportRoute> {
             YomitanImportScreen(onBack = back, onOpenDictionaries = { navController.navigate(DictionariesRoute) })

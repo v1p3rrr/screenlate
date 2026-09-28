@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -35,6 +37,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
@@ -60,6 +63,7 @@ fun HomeScreen(
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val problems by viewModel.problems.collectAsStateWithLifecycle()
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
+    val settingsBadge = rememberBackgroundTipBadge()
     LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
@@ -73,7 +77,13 @@ fun HomeScreen(
                 title = { Text(stringResource(R.string.app_title)) },
                 actions = {
                     IconButton(onClick = onOpenSettings) {
-                        Icon(painterResource(R.drawable.ic_settings), stringResource(R.string.settings_title))
+                        BadgedBox(badge = { if (settingsBadge) Badge() }) {
+                            Icon(
+                                painterResource(R.drawable.ic_settings),
+                                stringResource(R.string.settings_title) +
+                                    if (settingsBadge) ", " + stringResource(R.string.settings_badge) else "",
+                            )
+                        }
                     }
                 },
             )
@@ -119,13 +129,14 @@ fun HomeScreen(
                 HorizontalDivider()
                 LabelWithInfo(
                     stringResource(R.string.onboarding_device_title),
-                    stringResource(R.string.onboarding_device_app_launch) + "\n\n" +
-                        stringResource(R.string.onboarding_device_restricted_settings),
+                    stringResource(R.string.onboarding_device_restricted_settings),
                 )
             }
 
             OutlinedButton(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
-                Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
+                BadgedBox(badge = { if (settingsBadge) Badge() }) {
+                    Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
+                }
                 Text(stringResource(R.string.settings_title), modifier = Modifier.padding(start = 8.dp))
             }
         }

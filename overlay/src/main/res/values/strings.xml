@@ -11,6 +11,7 @@
     <string name="overlay_error_secure">This app does not allow screenshots.</string>
     <string name="overlay_error_capture">Could not take a screenshot.</string>
     <string name="overlay_error_ocr">Text recognition failed.</string>
+    <string name="overlay_error_offline">No network, and on-device recognition is turned off in the settings.</string>
     <string name="overlay_ocr_error_title">Cloud recognition</string>
     <string name="overlay_ocr_error_offline">There is no network connection.</string>
     <string name="overlay_ocr_error_paused">Cloud recognition refused recent requests, so it rests for a few minutes.</string>

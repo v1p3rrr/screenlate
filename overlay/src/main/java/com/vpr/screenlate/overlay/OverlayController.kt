@@ -1,7 +1,6 @@
 package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
-import android.content.ComponentCallbacks2
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
@@ -36,6 +35,8 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.OcrEngineType
+import com.vpr.screenlate.core.ocr.OcrEngines
+import com.vpr.screenlate.core.ocr.OcrOptions
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrUpdate
 import com.vpr.screenlate.core.ocr.ScreenBands
@@ -195,6 +196,7 @@ class OverlayController(
     /** Expression and reading of the word the last vibration was for. */
     private var hapticWord: Pair<String, String>? = null
     private var screenshot: CapturedScreen? = null
+    private var onDeviceLoaded = false
     private var bandTimer: Job? = null
     private val bandJobs = mutableListOf<Job>()
     private val requestedBands = mutableSetOf<Int>()
@@ -207,7 +209,6 @@ class OverlayController(
         bubbleView.glyphLanguage = language.support.languageTag
         bubbleView.glyph = language.support.glyph
         scope.launch { overlaySettings.settings.collect(::applySettings) }
-        scope.launch { ocr.warmUp() }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
         scope.launch {
@@ -216,19 +217,6 @@ class OverlayController(
                 refreshPopup()
             }
         }
-    }
-
-    /**
-     * Memory runs low: while the bubble is docked nothing needs the on-device model, so it goes, which makes the
-     * system less likely to stop the service. The app's own screens going to the background (UI_HIDDEN) do not count.
-     */
-    @Suppress("DEPRECATION") // The RUNNING_* levels are still delivered to running services.
-    fun onTrimMemory(level: Int) {
-        val low = level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW ||
-            level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL ||
-            level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND
-        Log.i(TAG, "Memory trim level $level, bubble ${state.name.lowercase()}")
-        if (low && state == State.DOCKED) ocr.releaseOnDevice()
     }
 
     fun stop() {
@@ -266,6 +254,7 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
+        applyOcrEngines(new.ocrEngines)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()
         if (size != bubbleSize) resizeBubble(size)
@@ -281,6 +270,14 @@ class OverlayController(
             placeDocked()
         }
         updateAimVisuals()
+    }
+
+    /** Loads the on-device model ahead of the first scan, or frees it while only cloud recognition is used. */
+    private fun applyOcrEngines(engines: OcrEngines) {
+        val needed = engines != OcrEngines.CLOUD
+        if (needed == onDeviceLoaded) return
+        onDeviceLoaded = needed
+        if (needed) scope.launch { ocr.warmUp() } else ocr.releaseOnDevice()
     }
 
     /** Window order from bottom to top: highlight layer, popup, bubble; the bubble must never go under the popup. */
@@ -622,6 +619,7 @@ class OverlayController(
     private fun startScan(flashLines: Boolean) {
         Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         resetScan()
+        popup.page.prepare()
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
@@ -656,7 +654,7 @@ class OverlayController(
                 return@launch
             }
             try {
-                ocr.recognize(captured.bitmap, language, focus = { scanFocus(captured) })
+                ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
@@ -665,7 +663,10 @@ class OverlayController(
                             recognized = true
                             onPage(appText, final = true, lensError = error, flashLines = false)
                         } else {
-                            showMessage(service.getString(R.string.overlay_error_ocr))
+                            // Offline fails the scan only while the device does not recognize.
+                            val message =
+                                if (error is OfflineException) R.string.overlay_error_offline else R.string.overlay_error_ocr
+                            showMessage(service.getString(message))
                         }
                     }
                     .collect { update ->
@@ -687,11 +688,16 @@ class OverlayController(
             }
             // Kept for {screenshot} and small-text bands until the next scan or docking.
             screenshot = captured
-            if (settings.smallText == SmallTextMode.ALWAYS) {
+            if (smallText() == SmallTextMode.ALWAYS) {
                 ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
             }
         }
     }
+
+    private fun ocrOptions() = OcrOptions(settings.ocrEngines, deferWholeImage = settings.ocrSaving)
+
+    /** OCR boost asks cloud recognition, so it is off while only the device recognizes. */
+    private fun smallText() = if (settings.ocrEngines == OcrEngines.DEVICE) SmallTextMode.OFF else settings.smallText
 
     /** The aim's row in [captured], so the on-device draft reads the text there first. */
     private fun scanFocus(captured: CapturedScreen): Float? {
@@ -708,7 +714,7 @@ class OverlayController(
 
     /** On-demand small text: the aim rests where nothing was recognized, so its band goes to Lens once. */
     private fun scheduleBandAt(y: Float) {
-        if (settings.smallText != SmallTextMode.ON_DEMAND || !ocrFinal) return
+        if (smallText() != SmallTextMode.ON_DEMAND || !ocrFinal) return
         val shot = screenshot ?: return
         bandTimer?.cancel()
         bandTimer = scope.launch {

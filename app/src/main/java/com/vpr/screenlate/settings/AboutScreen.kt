@@ -78,7 +78,7 @@ fun AboutScreen(
                 OutlinedButton(onClick = { openUrl(context, SOURCE_URL) }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.about_source))
                 }
-                OutlinedButton(onClick = { openUrl(context, "$SOURCE_URL/issues") }, modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = { openUrl(context, ProblemReport.url(versionName(context))) }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.about_report_bug))
                 }
             }

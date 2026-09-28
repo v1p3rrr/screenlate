@@ -95,11 +95,6 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     override fun onInterrupt() = Unit
 
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        controller?.onTrimMemory(level)
-    }
-
     override fun onDestroy() {
         Log.i(TAG, "Service stopped")
         handler.removeCallbacksAndMessages(null)

@@ -2,11 +2,10 @@
     <string name="onboarding_service_title">Служба специальных возможностей</string>
     <string name="onboarding_service_enabled">Включена</string>
     <string name="onboarding_service_disabled">Не включена</string>
-    <string name="onboarding_service_explanation">Screenlate нужна служба специальных возможностей, чтобы показывать кружок поверх других приложений и делать скриншоты для распознавания текста. Откройте настройки, найдите Screenlate среди установленных служб и включите её.</string>
+    <string name="onboarding_service_explanation">Screenlate нужна служба специальных возможностей, чтобы показывать плавающую кнопку поверх других приложений и делать скриншоты для распознавания текста. Откройте настройки, найдите Screenlate среди установленных служб и включите её.</string>
     <string name="onboarding_open_accessibility_settings">Открыть настройки спецвозможностей</string>
 
     <string name="onboarding_device_title">Настройка устройства</string>
-    <string name="onboarding_device_app_launch">Honor / MagicOS: Настройки → Приложения → Запуск приложений → Screenlate → Управлять вручную и включить все три пункта. Иначе система может остановить службу в фоне.</string>
     <string name="onboarding_device_restricted_settings">Если переключатель Screenlate неактивен (приложение установлено из файла), откройте Сведения о приложении → ⋮ → Разрешить ограниченные настройки и попробуйте снова.</string>
 
     <string name="settings_theme_title">Тема</string>
@@ -105,18 +104,18 @@
     <string name="dictionaries_update">Обновить</string>
     <string name="dictionaries_update_all">Обновить все</string>
     <string name="dictionaries_sort_by">Сортировать результаты по этому словарю</string>
-    <string name="bubble_title">Кружок</string>
+    <string name="bubble_title">Плавающая кнопка</string>
     <string name="bubble_aim">Прицел</string>
     <string name="bubble_aim_above">Над пальцем</string>
-    <string name="bubble_aim_center">Центр кружка</string>
-    <string name="bubble_aim_hint">Двойной тап по кружку переключает режим.</string>
+    <string name="bubble_aim_center">Центр кнопки</string>
+    <string name="bubble_aim_hint">Двойной тап по кнопке переключает режим.</string>
     <string name="bubble_dock_side">Док</string>
     <string name="bubble_dock_left">Слева</string>
     <string name="bubble_dock_right">Справа</string>
     <string name="bubble_highlight">Подсвечивать слово под прицелом</string>
     <string name="bubble_haptics">Вибрация на новом слове</string>
-    <string name="bubble_hidden_apps">Скрывать кружок в приложениях</string>
-    <string name="bubble_hidden_apps_hint">Кружок пропадает, пока открыто одно из отмеченных приложений.</string>
+    <string name="bubble_hidden_apps">Скрывать кнопку в приложениях</string>
+    <string name="bubble_hidden_apps_hint">Кнопка пропадает, пока открыто одно из отмеченных приложений.</string>
     <string name="bubble_filter_apps">Фильтр приложений</string>
     <string name="bubble_text_source">Источник текста</string>
     <string name="bubble_text_screen">Экран (OCR)</string>
@@ -130,7 +129,16 @@
     <string name="bubble_small_text_on_demand">По требованию</string>
     <string name="bubble_small_text_always">Всегда</string>
     <string name="bubble_small_text_hint">Отправляет части экрана на облачное распознавание отдельно, в большем разрешении относительно всего снимка, чтобы распознать мелкий текст, который скан всего экрана пропускает.\n\n«По требованию» — часть под прицелом, когда прицел задержался там, где ничего не найдено.\n\n«Всегда» — весь экран частями при каждом скане (больше трафика).</string>
-    <string name="bubble_size">Размер кружка: %1$d dp</string>
+    <string name="bubble_recognition">Распознавание экрана</string>
+    <string name="bubble_ocr_engines">Движки</string>
+    <string name="bubble_ocr_engines_both">Оба</string>
+    <string name="bubble_ocr_engines_cloud">Облако</string>
+    <string name="bubble_ocr_engines_device">Устройство</string>
+    <string name="bubble_ocr_engines_hint">Оставьте оба. Отключение одного — крайняя мера для слабых или загруженных устройств.</string>
+    <string name="bubble_ocr_engines_info">Только облако: без сети ничего не распознаётся, слова появляются только после ответа сервера.\n\nТолько устройство: работает без сети, но хуже читает вертикальный текст и мангу; усиление OCR не работает.</string>
+    <string name="bubble_ocr_saving">Меньше нагружать устройство</string>
+    <string name="bubble_ocr_saving_hint">Весь экран устройство распознаёт само, только если облако не ответило за 3 с. Устройство меньше нагружается и тратит меньше заряда, но слова вдали от прицела появляются позже. Если важна скорость, не включайте.</string>
+    <string name="bubble_size">Размер кнопки: %1$d dp</string>
     <string name="search_empty_title">Введите слово или вставьте текст</string>
     <string name="search_empty_hint">Статьи появляются по мере ввода. В других приложениях выделите текст и выберите «Найти в Screenlate» в меню выделения.</string>
     <string name="settings_language">Язык</string>
@@ -334,4 +342,19 @@
     <string name="about_logs_saved">Сохранено: %1$s</string>
     <string name="about_logs_open">Открыть</string>
     <string name="about_logs_save_failed">Не удалось сохранить лог.</string>
+    <string name="background_title">Работа в фоне</string>
+    <string name="background_summary">Чтобы система не останавливала плавающую кнопку</string>
+    <string name="background_intro">Система сама перезапускает службу плавающей кнопки, если её не останавливает ради экономии заряда одна из этих настроек. Обе настройки системные: Screenlate только открывает их.</string>
+    <string name="background_battery_title">Оптимизация батареи</string>
+    <string name="background_battery_on">Включена для Screenlate: система может остановить плавающую кнопку в фоне.</string>
+    <string name="background_battery_off">Выключена для Screenlate: система не останавливает плавающую кнопку.</string>
+    <string name="background_battery_allow">Разрешить работу в фоне</string>
+    <string name="background_battery_list">Открыть список оптимизации батареи</string>
+    <string name="background_battery_list_hint">Найдите в списке Screenlate и отключите для него оптимизацию («Не оптимизировать», «Без ограничений» или похоже). Если его не видно, он часто в разделе «Все приложения».</string>
+    <string name="background_launch_title">Запуск приложений</string>
+    <string name="background_launch_text">Некоторые телефоны останавливают фоновые приложения ещё и через настройки производителя, отдельно от оптимизации батареи. Там нужно разрешить Screenlate запускаться самому и работать в фоне. Honor / MagicOS: Запуск приложений → Screenlate → Управлять вручную и включить все три пункта.</string>
+    <string name="background_launch_open">Открыть настройки запуска</string>
+    <string name="background_launch_app_info">Открыть сведения о приложении</string>
+    <string name="background_launch_app_info_hint">На этом телефоне нет известных экранов запуска. Обычно из сведений о приложении можно перейти к настройкам батареи и работы в фоне.</string>
+    <string name="settings_badge">Новый совет</string>
 </resources>
