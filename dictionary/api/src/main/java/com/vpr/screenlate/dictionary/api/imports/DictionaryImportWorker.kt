@@ -101,7 +101,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             } finally {
                 archive.delete()
             }
-        }
+        }.also { repository.fillBundledTagNotes(bundled::tagNotesOf) }
     }
 
     private suspend fun importFile(archive: File): String {

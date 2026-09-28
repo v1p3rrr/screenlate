@@ -79,6 +79,12 @@ class BundledDictionaries @Inject constructor(
         }.getOrNull()
     }
 
+    /** Tag descriptions from the shipped archive whose title is [title]; null when none has it. */
+    suspend fun tagNotesOf(title: String): Map<String, String>? = withContext(Dispatchers.IO) {
+        val asset = all().firstOrNull { titleOf(it) == title } ?: return@withContext null
+        ZipInputStream(context.assets.open("$ASSET_DIR/${asset.name}").buffered()).use(TagBanks::read)
+    }
+
     internal companion object {
         private const val ASSET_DIR = "dictionaries"
         private val INSTALLED = stringSetPreferencesKey("bundled_dictionaries_installed")

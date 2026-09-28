@@ -94,6 +94,13 @@ data class DictionaryStyle(
     val css: String,
 )
 
+/** Descriptions of a dictionary's tags by tag name, from its tag banks (Yomitan's `notes`). */
+@Serializable
+data class DictionaryTagNotes(
+    val dictionary: String,
+    val notes: Map<String, String>,
+)
+
 @Serializable
 data class KanjiResult(
     val character: String,

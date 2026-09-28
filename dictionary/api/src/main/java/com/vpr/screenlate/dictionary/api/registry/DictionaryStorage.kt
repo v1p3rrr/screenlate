@@ -6,6 +6,9 @@ import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
 /**
  * File layout of imported dictionaries: `filesDir/dictionaries/<uuid>/` per dictionary, and a staging area on
@@ -20,6 +23,21 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     fun directoryOf(dictionary: DictionaryEntity): File = File(root, dictionary.directory)
 
     fun hasFiles(dictionary: DictionaryEntity): Boolean = directoryOf(dictionary).list()?.isNotEmpty() == true
+
+    /** Whether the tag descriptions of [dictionary] were saved, possibly as none (see `TagBanks`). */
+    fun hasTagNotes(dictionary: DictionaryEntity): Boolean = File(directoryOf(dictionary), TAG_NOTES).exists()
+
+    /** Tag name to description; empty when the dictionary has none or was imported before they were kept. */
+    fun tagNotes(dictionary: DictionaryEntity): Map<String, String> {
+        val file = File(directoryOf(dictionary), TAG_NOTES)
+        if (!file.exists()) return emptyMap()
+        return runCatching { Json.decodeFromString(NOTES, file.readText()) }.getOrDefault(emptyMap())
+    }
+
+    /** Saves tag descriptions into a dictionary [directory], also when there are none. */
+    fun writeTagNotes(directory: File, notes: Map<String, String>) {
+        File(directory, TAG_NOTES).writeText(Json.encodeToString(NOTES, notes))
+    }
 
     /** A fresh empty directory for one import; delete it when done. */
     fun newStagingDirectory(): File = File(staging, UUID.randomUUID().toString()).apply { mkdirs() }
@@ -55,5 +73,9 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
 
     private companion object {
         const val STALE_MS = 6 * 60 * 60 * 1000L
+
+        /** Next to the engine's files, which it does not look at. */
+        const val TAG_NOTES = "tag_notes.json"
+        val NOTES = MapSerializer(String.serializer(), String.serializer())
     }
 }

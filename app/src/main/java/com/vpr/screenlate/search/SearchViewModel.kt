@@ -12,6 +12,7 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.fonts.PageAppearance
@@ -69,6 +70,8 @@ class SearchViewModel @Inject constructor(
         runCatching { lookup.kanji(character, LANGUAGE) }.getOrElse { KanjiResult(character) }
 
     suspend fun styles(): List<DictionaryStyle> = runCatching { lookup.styles(LANGUAGE) }.getOrDefault(emptyList())
+
+    suspend fun tagNotes(): List<DictionaryTagNotes> = runCatching { lookup.tagNotes() }.getOrDefault(emptyList())
 
     companion object {
         const val SEARCH_DELAY_MS = 150L

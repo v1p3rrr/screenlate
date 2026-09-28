@@ -16,7 +16,9 @@
  * }
  *
  * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents) and
- * the buttons. Tapping an inflection step or an accent opens the info panel at the bottom of the card.
+ * the buttons. Tapping an inflection step or an accent opens the info panel at the bottom of the card, and so does a
+ * tag with a description: a dictionary's tag (its tag bank's notes, see setTagNotes) or a structured-content element
+ * with a title, such as Jitendex's part-of-speech labels.
  *
  * Glossary rendering comes from window.YomitanRender (yomitan-render/render.js) when it is present.
  *
@@ -53,6 +55,7 @@ const Popup = (() => {
     let current = null;
     let drawnKey = null;
     let styles = [];
+    let tagNotes = new Map();
     let actions = { anki: false, audio: false };
     let noteConfig = { markers: null, frequencyModes: {} };
     let menu = null;
@@ -62,6 +65,7 @@ const Popup = (() => {
     ocrErrorButton.innerHTML = ICONS.warning;
     ocrErrorButton.addEventListener('click', showOcrError);
     backButton.addEventListener('click', back);
+    content.addEventListener('click', explainTag);
 
     const renderOptions = {
         mediaUrl: (dictionary, path) =>
@@ -136,6 +140,33 @@ const Popup = (() => {
         // Layout is known only once the entries are in the document.
         content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
         placeInlineOcrWarning(state);
+    }
+
+    function tagNote(chip) {
+        return tagNotes.get(chip.dataset.dictionary)?.get(chip.textContent) || '';
+    }
+
+    function markTag(chip) {
+        chip.classList.toggle('described', Boolean(tagNote(chip)));
+    }
+
+    /**
+     * A tap on a tag with a description opens it in the panel: a dictionary's tag with notes, or a structured-content
+     * element whose title says more than its text. Links, images and the dictionary chip keep their own behavior.
+     */
+    function explainTag(event) {
+        const target = event.target instanceof Element ? event.target : event.target.parentElement;
+        const chip = target?.closest('.tag');
+        if (chip && content.contains(chip)) {
+            const note = tagNote(chip);
+            if (note) showInfo(chip.textContent, note);
+            return;
+        }
+        const titled = target?.closest('.definition-body [title]');
+        if (!titled || titled.closest('a, summary, button, .gloss-image-link, .dictionary-name')) return;
+        const title = titled.title.trim();
+        const text = titled.textContent.trim();
+        if (title && title !== text) showInfo(text || title, title);
     }
 
     function showOcrError() {
@@ -532,7 +563,12 @@ const Popup = (() => {
             const tags = (glossary.definitionTags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('span', 'tags');
-                tags.forEach(tag => tagRow.append(element('span', 'tag', tag)));
+                tags.forEach(tag => {
+                    const chip = element('span', 'tag', tag);
+                    chip.dataset.dictionary = dictionary;
+                    markTag(chip);
+                    tagRow.append(chip);
+                });
                 definition.append(tagRow);
             }
             const body = element('div', 'definition-body');
@@ -655,6 +691,12 @@ const Popup = (() => {
         content.scrollTop = previous.scroll;
     }
 
+    /** Tag descriptions by dictionary: [{ dictionary, notes: { tag: description } }]. */
+    function setTagNotes(list) {
+        tagNotes = new Map((list || []).map(item => [item.dictionary, new Map(Object.entries(item.notes || {}))]));
+        content.querySelectorAll('.tag').forEach(markTag);
+    }
+
     function setStyles(newStyles) {
         styles = newStyles || [];
         if (!renderer) return;
@@ -728,6 +770,7 @@ const Popup = (() => {
         update,
         push,
         setStyles,
+        setTagNotes,
         setAppearance,
         setActions,
         setNoteStates,

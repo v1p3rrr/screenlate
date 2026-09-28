@@ -479,6 +479,12 @@ button.inflection-step {
     line-height: 1.5;
 }
 
+/* A tag with a description, which a tap opens in the panel. */
+.tag.described {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+}
+
 .definition-body {
     display: inline;
 }

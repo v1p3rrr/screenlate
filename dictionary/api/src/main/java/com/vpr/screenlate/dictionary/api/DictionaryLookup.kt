@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
@@ -90,6 +91,9 @@ class DictionaryLookup @Inject constructor(
     }
 
     suspend fun media(dictionary: String, path: String): ByteArray? = engine.media(dictionary, path)
+
+    /** Tag descriptions of the enabled dictionaries, shown when a tag in the popup is tapped. */
+    suspend fun tagNotes(): List<DictionaryTagNotes> = repository.tagNotes()
 
     /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
     suspend fun kanji(character: String, language: Language): KanjiResult {

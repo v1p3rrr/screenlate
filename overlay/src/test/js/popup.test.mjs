@@ -304,3 +304,42 @@ test('without the header ⚠ sits before the close button of the first entry', (
     Popup.update(state({ hideSource: true }));
     assert.equal(content.querySelector('.ocr-warning'), null);
 });
+
+test('a tag with a description opens it in the panel, one without stays plain', () => {
+    const glossary = (dictionary, content, definitionTags) =>
+        ({ matched: 'a', term: { expression: 'a', reading: 'a', glossaries: [{ dictionary, definitionTags, content: JSON.stringify(content) }] } });
+    Popup.render(state({ results: [glossary('JMdict', ['one'], 'n vs')] }));
+    Popup.setTagNotes([{ dictionary: 'JMdict', notes: { n: 'noun (common) (futsuumeishi)' } }]);
+    const [noun, suru] = content.querySelectorAll('.tag');
+    assert.ok(noun.classList.contains('described'));
+    assert.equal(suru.classList.contains('described'), false);
+
+    suru.click();
+    assert.equal(page.document.getElementById('info').hidden, true);
+    noun.click();
+    assert.equal(page.document.getElementById('info').hidden, false);
+    assert.equal(page.document.getElementById('info-title').textContent, 'n');
+    assert.equal(page.document.getElementById('info-text').textContent, 'noun (common) (futsuumeishi)');
+});
+
+test('a structured-content label with a title opens the title in the panel', () => {
+    const content_ = {
+        type: 'structured-content',
+        content: [
+            { tag: 'span', title: 'noun (common) (futsuumeishi)', content: 'noun' },
+            { tag: 'span', title: 'same', content: 'same' },
+            ' library',
+        ],
+    };
+    Popup.render(state({ results: [{ matched: 'a', term: { expression: 'a', reading: 'a', glossaries: [{ dictionary: 'Jitendex', content: JSON.stringify([content_]) }] } }] }));
+    const [label, plain] = content.querySelectorAll('.definition-body .gloss-sc-span[title]');
+    plain.click();
+    assert.equal(page.document.getElementById('info').hidden, true);
+    label.click();
+    assert.equal(page.document.getElementById('info-title').textContent, 'noun');
+    assert.equal(page.document.getElementById('info-text').textContent, 'noun (common) (futsuumeishi)');
+    // The dictionary chip's title is its full name, not a description.
+    page.document.getElementById('info').hidden = true;
+    content.querySelector('.dictionary-name').click();
+    assert.equal(page.document.getElementById('info').hidden, true);
+});

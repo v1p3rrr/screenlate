@@ -51,6 +51,7 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.overlay.anki.NoteContext
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.web.LookupPage
@@ -161,6 +162,7 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         if (initialQuery.isNotBlank() && viewModel.query.value.isBlank()) viewModel.query.value = initialQuery
         page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles()))
+        page.setTagNotes(Json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), viewModel.tagNotes()))
         focus.requestFocus()
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }

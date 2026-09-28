@@ -43,6 +43,7 @@ import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
+import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
@@ -864,6 +865,10 @@ class OverlayController(
                 return@launch
             }
             popup.page.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
+            val tagNotes = runCatching { lookup.tagNotes() }
+                .onFailure { if (it is CancellationException) throw it else Log.w(TAG, "Loading tag descriptions failed", it) }
+                .getOrDefault(emptyList())
+            popup.page.setTagNotes(json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), tagNotes))
         }
     }
 

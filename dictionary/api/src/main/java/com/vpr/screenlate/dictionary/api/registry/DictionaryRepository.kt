@@ -6,15 +6,20 @@ import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import com.vpr.screenlate.dictionary.api.imports.TagBanks
+import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,6 +64,10 @@ class DictionaryRepository @Inject constructor(
         val staging = storage.newStagingDirectory()
         try {
             val imported = engine.import(archive, staging)
+            val tagNotes = runCatching { TagBanks.read(archive) }
+                .onFailure { Log.w(TAG, "Reading tag descriptions failed", it) }
+                .getOrDefault(emptyMap())
+            storage.writeTagNotes(imported.directory, tagNotes)
             return mutex.withLock {
                 val metadata = imported.metadata
                 val kind = DictionaryKind.of(metadata)
@@ -161,6 +170,25 @@ class DictionaryRepository @Inject constructor(
         loadedLanguage?.let { load(it) }
     }
 
+    /** Tag descriptions of the enabled dictionaries that have any, for the popup. */
+    suspend fun tagNotes(): List<DictionaryTagNotes> = withContext(Dispatchers.IO) {
+        dao.getAll().filter { it.enabled }.mapNotNull { dictionary ->
+            storage.tagNotes(dictionary).takeIf { it.isNotEmpty() }?.let { DictionaryTagNotes(dictionary.title, it) }
+        }
+    }
+
+    /**
+     * Saves tag descriptions for bundled dictionaries imported before they were kept, reading them from [source]
+     * by title; bundled dictionaries it has nothing for are marked as having none, so this runs once.
+     */
+    suspend fun fillBundledTagNotes(source: suspend (title: String) -> Map<String, String>?) = withContext(Dispatchers.IO) {
+        val missing = dao.getAll().filter { it.bundled && storage.hasFiles(it) && !storage.hasTagNotes(it) }
+        for (dictionary in missing) {
+            val notes = runCatching { source(dictionary.title) }.getOrNull().orEmpty()
+            storage.writeTagNotes(storage.directoryOf(dictionary), notes)
+        }
+    }
+
     /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
     suspend fun missingFiles(): List<DictionaryEntity> = dao.getAll().filter { !storage.hasFiles(it) }
 
@@ -196,3 +224,4 @@ data class PreparedLookup(
 )
 
 private val SORT_DICTIONARY = longPreferencesKey("sort_dictionary_id")
+private const val TAG = "DictionaryRepository"

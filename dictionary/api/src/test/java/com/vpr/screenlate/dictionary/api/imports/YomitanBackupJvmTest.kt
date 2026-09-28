@@ -81,6 +81,7 @@ class YomitanBackupJvmTest {
         assertThat(termBank[0].jsonArray[5].toString()).contains("to \\\"eat\\\"")
         assertThat(Json.parseToJsonElement(terms.getValue("kanji_bank_1.json")).jsonArray).hasSize(1)
         assertThat(Json.parseToJsonElement(terms.getValue("tag_bank_1.json")).jsonArray).hasSize(1)
+        assertThat(TagBanks.read(archives[0])).containsExactly("n", "noun")
         assertThat(terms.keys).contains("img/dot.png")
 
         val freq = entries(archives[1])

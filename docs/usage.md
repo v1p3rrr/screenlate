@@ -42,6 +42,7 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 
 - Tap a link inside a definition to look it up; the back arrow returns.
 - Tap a kanji in the headword to see its kanji dictionary entry (install KANJIDIC from the catalog first).
+- Tap an inflection step 🧩, a pitch accent or a tag with a description (dotted underline, or a label such as "noun" in dictionaries that describe their labels) to read the explanation at the bottom of the popup. Tag descriptions come from the dictionary's tag list and are kept for dictionaries imported from this version on; import an older dictionary again to get them.
 - 🔊 plays the pronunciation from the configured audio sources; hold it to choose among all recordings found.
 - ➕ adds a note to Anki; hold it to attach a picture: a crop editor opens with the word's paragraph selected.
 

@@ -136,6 +136,9 @@ class LookupPage(
     /** Sets the scoped `styles.css` of the loaded dictionaries (a JSON array of {dictionary, css}). */
     fun setStyles(styles: JsonElement) = setPersistent("styles", "Popup.setStyles($styles)")
 
+    /** Tag descriptions of the enabled dictionaries (a JSON array of {dictionary, notes}). */
+    fun setTagNotes(notes: JsonElement) = setPersistent("tagNotes", "Popup.setTagNotes($notes)")
+
     /** Shows or hides the ➕ and 🔊 buttons of entries. */
     /** @param ankiProblem a short reason shown by a grey ➕ when Anki export is set up but broken. */
     fun setActions(anki: Boolean, audio: Boolean, ankiProblem: String? = null) = setPersistent(
