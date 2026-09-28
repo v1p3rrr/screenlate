@@ -39,8 +39,12 @@ class OfflineException : IOException("No network connection")
 class LensPausedException : IOException("Lens refused recent requests")
 
 /**
- * Runs ML Kit and Lens in parallel: the ML Kit page is emitted as a [OcrUpdate.Draft] if it arrives first, the Lens
- * page as the [OcrUpdate.Final]. Without network or after a Lens failure the ML Kit page becomes final.
+ * Runs ML Kit and Lens in parallel: ML Kit pages are emitted as [OcrUpdate.Draft]s while Lens is pending, the Lens
+ * page as the [OcrUpdate.Final]. Without network or after a Lens failure the ML Kit page of the whole image becomes
+ * final.
+ *
+ * ML Kit first reads a band around the aim ([FocusBand]), and another one when the aim has moved out of it meanwhile,
+ * so the word under the aim has a draft long before the whole screen is read.
  */
 @Singleton
 class CompositeOcr internal constructor(
@@ -48,14 +52,22 @@ class CompositeOcr internal constructor(
     private val mlKit: OcrEngine,
     private val isOnline: () -> Boolean,
     private val clock: () -> Long = System::currentTimeMillis,
+    private val heightOf: (Bitmap) -> Int = Bitmap::getHeight,
+    private val cropRows: (Bitmap, IntRange) -> Bitmap = { image, rows ->
+        Bitmap.createBitmap(image, 0, rows.first, image.width, rows.last - rows.first + 1)
+    },
 ) {
     @Inject
     constructor(lens: LensOcrEngine, mlKit: MlKitOcrEngine, networkStatus: NetworkStatus) :
         this(lens, mlKit, networkStatus::isOnline)
 
-    fun recognize(image: Bitmap, language: Language): Flow<OcrUpdate> = channelFlow {
+    /** @param focus the aim's row in [image] at the moment, or null without an aim. */
+    fun recognize(image: Bitmap, language: Language, focus: () -> Float? = { null }): Flow<OcrUpdate> = channelFlow {
         val emitter = UpdateEmitter(this)
-        val draft = async { runCatching { mlKit.recognize(image, language) } }
+        val draft = async {
+            runCatching { recognizeOnDevice(image, language, focus, emitter) }
+                .onFailure { if (it !is CancellationException) Log.w(TAG, "ML Kit failed", it) }
+        }
 
         if (!isOnline()) {
             emitter.emitFinal(OcrUpdate.Final(draft.await().getOrThrow(), OfflineException()))
@@ -71,11 +83,59 @@ class CompositeOcr internal constructor(
         val lensResult = runCatching { withTimeout(LENS_TIMEOUT) { lens.recognize(image, language) } }
             .onFailure(::noteLensFailure)
         lensResult
-            .onSuccess { emitter.emitFinal(OcrUpdate.Final(it)) }
+            .onSuccess {
+                emitter.emitFinal(OcrUpdate.Final(it))
+                draft.cancel()
+            }
             .onFailure { lensError ->
                 val fallback = draft.await().getOrElse { throw lensError }
                 emitter.emitFinal(OcrUpdate.Final(fallback, lensError))
             }
+    }
+
+    /** Focus bands around the aim as drafts, then the whole image, which is returned. */
+    private suspend fun recognizeOnDevice(
+        image: Bitmap,
+        language: Language,
+        focus: () -> Float?,
+        emitter: UpdateEmitter,
+    ): OcrPage {
+        val height = heightOf(image)
+        val done = mutableListOf<IntRange>()
+        var draft: OcrPage? = null
+        while (done.size < MAX_FOCUS_BANDS) {
+            val rows = FocusBand.next(height, focus(), done) ?: break
+            val started = clock()
+            val crop = cropRows(image, rows)
+            val band = try {
+                mlKit.recognize(crop, language)
+            } finally {
+                if (crop !== image) crop.recycle()
+            }
+            Log.d(TAG, "ML Kit band: ${band.paragraphs.size} paragraphs in ${clock() - started} ms")
+            val placed = band.offset(0f, rows.first.toFloat()).copy(height = height)
+            draft = draft?.let(placed::withMissingFrom) ?: placed
+            done += rows
+            emitter.emitDraft(OcrUpdate.Draft(draft))
+        }
+        val started = clock()
+        return mlKit.recognize(image, language).also {
+            Log.d(TAG, "ML Kit: ${it.paragraphs.size} paragraphs in ${clock() - started} ms")
+        }
+    }
+
+    /** Loads the on-device model, which would otherwise delay the first draft. */
+    suspend fun warmUp() {
+        val image = Bitmap.createBitmap(WARM_UP_SIZE, WARM_UP_SIZE, Bitmap.Config.ARGB_8888)
+        try {
+            mlKit.recognize(image, Language.JAPANESE)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "ML Kit warm-up failed", e)
+        } finally {
+            image.recycle()
+        }
     }
 
     /**
@@ -120,6 +180,8 @@ class CompositeOcr internal constructor(
     private companion object {
         const val TAG = "CompositeOcr"
         val LENS_TIMEOUT = 15.seconds
+        const val MAX_FOCUS_BANDS = 3
+        const val WARM_UP_SIZE = 32
         val LENS_PAUSE = 5.minutes
     }
 }

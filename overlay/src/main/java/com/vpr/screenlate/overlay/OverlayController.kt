@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -194,6 +195,7 @@ class OverlayController(
         bubbleView.glyphLanguage = language.support.languageTag
         bubbleView.glyph = language.support.glyph
         scope.launch { overlaySettings.settings.collect(::applySettings) }
+        scope.launch { ocr.warmUp() }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
         scope.launch {
@@ -547,6 +549,7 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
+            val started = SystemClock.elapsedRealtime()
             var captureError: CaptureException? = null
             val captured = try {
                 capture()
@@ -570,7 +573,7 @@ class OverlayController(
                 return@launch
             }
             try {
-                ocr.recognize(captured.bitmap, language)
+                ocr.recognize(captured.bitmap, language, focus = { scanFocus(captured) })
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
@@ -581,6 +584,7 @@ class OverlayController(
                         }
                     }
                     .collect { update ->
+                        logUpdate(update, SystemClock.elapsedRealtime() - started)
                         val page = update.page.offset(captured.left.toFloat(), captured.top.toFloat())
                         onPage(
                             page = appText?.withMissingFrom(page) ?: page,
@@ -600,6 +604,19 @@ class OverlayController(
                 ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
             }
         }
+    }
+
+    /** The aim's row in [captured], so the on-device draft reads the text there first. */
+    private fun scanFocus(captured: CapturedScreen): Float? {
+        if (state == State.DOCKED) return null
+        val (_, y) = aim ?: aimPoint()
+        return y - captured.top
+    }
+
+    private fun logUpdate(update: OcrUpdate, millis: Long) {
+        val kind = if (update is OcrUpdate.Final) "final" else "draft"
+        val error = (update as? OcrUpdate.Final)?.lensError?.let { ", Lens: ${it::class.simpleName}" }.orEmpty()
+        Log.i(TAG, "OCR $kind from ${update.page.engine}: ${update.page.paragraphs.size} paragraphs in $millis ms$error")
     }
 
     /** On-demand small text: the aim rests where nothing was recognized, so its band goes to Lens once. */

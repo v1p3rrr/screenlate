@@ -117,6 +117,47 @@ class CompositeOcrTest {
         assertThat(updates().last().page.engine).isEqualTo(OcrEngineType.LENS)
     }
 
+    /** A 2000-row image whose bands the fake engines read as the whole image. */
+    private val focused = CompositeOcr(lens, mlKit, { online }, { now }, heightOf = { 2000 }, cropRows = { image, _ -> image })
+
+    @Test
+    fun `the band around the aim comes before the whole image`() = runTest {
+        lens.latency = 2.seconds
+        val updates = focused.recognize(image, Language.JAPANESE, focus = { 1000f }).toList()
+        // Band, whole image, then Lens.
+        assertThat(updates.engines).containsExactly(
+            false to OcrEngineType.ML_KIT,
+            false to OcrEngineType.ML_KIT,
+            true to OcrEngineType.LENS,
+        ).inOrder()
+        assertThat(mlKit.calls).isEqualTo(2)
+        assertThat(updates.first().page.height).isEqualTo(2000)
+    }
+
+    @Test
+    fun `an aim that moved away gets its own band`() = runTest {
+        lens.latency = 2.seconds
+        val aims = ArrayDeque(listOf(100f, 1500f, 1500f))
+        focused.recognize(image, Language.JAPANESE, focus = { aims.removeFirstOrNull() ?: 1500f }).toList()
+        // Two bands, then the whole image.
+        assertThat(mlKit.calls).isEqualTo(3)
+    }
+
+    @Test
+    fun `lens stops the on-device reading`() = runTest {
+        lens.latency = 300.milliseconds
+        val updates = focused.recognize(image, Language.JAPANESE, focus = { 1000f }).toList()
+        assertThat(updates.engines).containsExactly(false to OcrEngineType.ML_KIT, true to OcrEngineType.LENS).inOrder()
+        assertThat(testScheduler.currentTime).isEqualTo(300)
+    }
+
+    @Test
+    fun `offline shows the band first and ends with the whole image`() = runTest {
+        online = false
+        val updates = focused.recognize(image, Language.JAPANESE, focus = { 1000f }).toList()
+        assertThat(updates.engines).containsExactly(false to OcrEngineType.ML_KIT, true to OcrEngineType.ML_KIT).inOrder()
+    }
+
     @Test
     fun `regions go to lens only`() = runTest {
         assertThat(ocr.recognizeRegion(image, Language.JAPANESE)?.engine).isEqualTo(OcrEngineType.LENS)
