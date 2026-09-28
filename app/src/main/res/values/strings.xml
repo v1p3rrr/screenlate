@@ -63,11 +63,8 @@
     <string name="dictionaries_section_terms">Dictionaries</string>
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Version</string>
-
-    <string name="home_anki_title" translatable="false">Anki</string>
     <string name="home_anki_ready">Notes go to %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Choose a deck, a note type and field templates.</string>
-    <string name="home_anki_open">Anki and audio settings</string>
 
     <string name="anki_title">Anki and audio</string>
     <string name="anki_connection" translatable="false">AnkiDroid</string>
@@ -111,7 +108,6 @@
     <string name="dictionaries_update_all">Update all</string>
     <string name="dictionaries_sort_by">Sort results by this dictionary</string>
     <string name="bubble_title">Bubble</string>
-    <string name="home_bubble_open">Bubble settings</string>
     <string name="bubble_aim">Aim point</string>
     <string name="bubble_aim_above">Above the finger</string>
     <string name="bubble_aim_center">Bubble center</string>

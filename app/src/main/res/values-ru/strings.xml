@@ -64,7 +64,6 @@
 
     <string name="home_anki_ready">Карточки идут в %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Выберите колоду, тип записи и шаблоны полей.</string>
-    <string name="home_anki_open">Настройки Anki и аудио</string>
 
     <string name="anki_title">Anki и аудио</string>
     <string name="anki_not_installed">AnkiDroid не установлен. Установите его, чтобы добавлять карточки из попапа.</string>
@@ -107,7 +106,6 @@
     <string name="dictionaries_update_all">Обновить все</string>
     <string name="dictionaries_sort_by">Сортировать результаты по этому словарю</string>
     <string name="bubble_title">Кружок</string>
-    <string name="home_bubble_open">Настройки кружка</string>
     <string name="bubble_aim">Прицел</string>
     <string name="bubble_aim_above">Над пальцем</string>
     <string name="bubble_aim_center">Центр кружка</string>
