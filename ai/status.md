@@ -80,17 +80,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The 6.7 s app text read on Screenlate's own screens did not reproduce (170–620 ms on home, search and settings, with and without the popup); unrelated to the reclaimable popup renderer. Findings in `notes/ocr-engines.md` (new, linked from CLAUDE.md).
 - Owner question answered: the popup is never scanned (window screenshots on API 34+, overlays hidden on older versions, app text reads application windows only), and text under it is recognized.
 - Docs: `docs/usage.md` (Background work, Screen recognition, experimental app text, troubleshooting), `docs/architecture.md` (parallel app text, trusted boxes, `OcrOptions`, `SymbolLag`, renderer priority). Release notes `.github/release-notes/v0.1.2.md`.
+- v0.1.2 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.2, APKs: arm64-v8a 44 MB, armeabi-v7a 39 MB, x86_64 45 MB, universal 66 MB) from aff0905; CI, release and instrumented runs green.
 
 ## Next
 
-- v0.1.1 is out; the owner updates to it from the app on the phone and checks there: the icon (launcher masks, themed icon), a collection import with timings, the import notification, the on-device draft timings (scan logs: "OCR draft/final … ms", "ML Kit band … ms"), vertical text across columns.
-- After the release (owner, 2026-09-28): a logging pass over the code, without filling the phone's storage.
-- Emulator state after the README screenshots: `com.vpr.screenlate` is a local release build of the current code (versionName 0.1.0, code 100, release key), with Jitendex downloaded and above JMdict, "App text first", text header off; it still works for the self-update test to v0.1.1. The accessibility service is set back to the debug app.
-
-- Self-update end to end: with the next release (v0.1.1), update the emulator's v0.1.0 from the app (needs "Install unknown apps" for Screenlate, which the owner turns on) or check it on the phone. Updating from a debug-signed or differently signed build needs a reinstall.
-- The owner installs v0.1.0 on the phone (a separate app next to the debug build; dictionaries and settings come back through the Yomitan import).
-- Later items and open questions for the owner are listed under phase 7 in the plan: faster collection conversion, e-ink mode, backup/restore (Yomitan-compatible dictionary export?).
-- Phase 8 (languages) waits for an interview.
+- Waiting for the owner's phone feedback on v0.1.2 (owner, 2026-09-28): the icon, a collection import with timings, the import notification, scan timings from the logs, vertical text across columns, "App text first" in X and Chrome, self-update from v0.1.1.
+- Topics not started, each needs an interview first: backup and restore (Yomitan-compatible dictionary export is open), e-ink mode, phase 8 (more languages).
 
 ## Open items
 
