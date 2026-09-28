@@ -635,16 +635,27 @@ class OverlayController(
                 captureError = e
                 null
             }
-            // Once recognition has shown a page (which holds the app text), the app text alone must not replace it.
-            var recognized = false
+            // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
+            var appText: OcrPage? = null
+            var recognized: Recognized? = null
+            fun show(flash: Boolean) {
+                val ocrPage = recognized?.page
+                val page = if (ocrPage == null) appText ?: return else appText?.withMissingFrom(ocrPage) ?: ocrPage
+                onPage(
+                    page = page,
+                    final = recognized?.final ?: (captured == null),
+                    lensError = recognized?.lensError,
+                    flashLines = flash,
+                )
+            }
             launch {
-                val appText = appTextRead.await() ?: return@launch
-                if (!recognized) onPage(appText, final = captured == null, lensError = null, flashLines = flashLines)
+                appText = appTextRead.await() ?: return@launch
+                show(flashLines)
             }
             if (captured == null) {
-                val appText = appTextRead.await()
+                val read = appTextRead.await()
                 bubbleView.loading = false
-                if (appText == null) {
+                if (read == null) {
                     showMessage(
                         service.getString(
                             if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
@@ -658,10 +669,9 @@ class OverlayController(
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
-                        val appText = appTextRead.await()
-                        if (appText != null) {
-                            recognized = true
-                            onPage(appText, final = true, lensError = error, flashLines = false)
+                        recognized = Recognized(page = null, final = true, lensError = error)
+                        if (appTextRead.await() != null) {
+                            show(flash = false)
                         } else {
                             // Offline fails the scan only while the device does not recognize.
                             val message =
@@ -671,16 +681,13 @@ class OverlayController(
                     }
                     .collect { update ->
                         logUpdate(update, SystemClock.elapsedRealtime() - started)
-                        val appText = appTextRead.await()
-                        recognized = true
-                        val page = update.page.offset(captured.left.toFloat(), captured.top.toFloat())
-                        onPage(
-                            page = appText?.withMissingFrom(page) ?: page,
+                        recognized = Recognized(
+                            page = update.page.offset(captured.left.toFloat(), captured.top.toFloat()),
                             final = update is OcrUpdate.Final,
                             lensError = (update as? OcrUpdate.Final)?.lensError,
-                            // Around app text, the lines OCR adds (text in images) flash as well.
-                            flashLines = flashLines,
                         )
+                        // Around app text, the lines OCR adds (text in images) flash as well.
+                        show(flashLines)
                     }
             } catch (e: CancellationException) {
                 captured.bitmap.recycle()
@@ -1094,4 +1101,7 @@ class OverlayController(
         const val FOCUS_PADDING_DP = 16f
         const val BAND_DELAY_MS = 300L
     }
+
+    /** The latest recognition result of a scan in screen coordinates; [page] is null when recognition failed. */
+    private class Recognized(val page: OcrPage?, val final: Boolean, val lensError: Throwable?)
 }

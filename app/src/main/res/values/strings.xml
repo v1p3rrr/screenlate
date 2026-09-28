@@ -122,7 +122,7 @@
     <string name="bubble_text_source">Text source</string>
     <string name="bubble_text_screen">Screen (OCR)</string>
     <string name="bubble_text_app">App text first</string>
-    <string name="bubble_text_source_hint">App text is exact and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.</string>
+    <string name="bubble_text_source_hint">App text is exact, ready almost at once without waiting for recognition, and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.\n\nApp text first is experimental: some apps report wrong character positions, so the highlight can be off or a neighboring word can be found. If that happens, switch back to Screen (OCR).</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
     <string name="dictionaries_task_checking_space">Checking free space for %1$s</string>
