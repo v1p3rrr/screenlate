@@ -5,6 +5,7 @@
     <string name="overlay_engine_lens" translatable="false">Lens</string>
     <string name="overlay_engine_draft">On-device draft</string>
     <string name="overlay_engine_device">On-device (Lens unavailable)</string>
+    <string name="overlay_engine_device_only">On-device</string>
     <string name="overlay_engine_offline">On-device (offline)</string>
 
     <string name="overlay_no_text">No text found on the screen.</string>
@@ -34,6 +35,7 @@
     <string name="anki_no_permission">Allow Screenlate to access AnkiDroid in its Anki settings.</string>
     <string name="audio_not_found">No audio found for this word.</string>
     <string name="crop_whole_screen">Whole screen</string>
+    <string name="crop_frame">Frame</string>
     <string name="crop_cancel">Cancel</string>
     <string name="crop_add">Add</string>
     <string name="overlay_no_kanji">No kanji dictionary has this character. Kanji dictionaries can be downloaded on the Dictionaries screen.</string>

@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -12,6 +13,7 @@ import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
@@ -53,6 +55,14 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     private val scope = MainScope()
     private var controller: OverlayController? = null
+    private var languageResources: AppLanguageResources? = null
+
+    // The bubble, popup and crop editor use the app's language, which the system applies to activities only.
+    override fun getResources(): Resources {
+        val base = baseContext ?: return super.getResources()
+        val language = languageResources ?: AppLanguageResources(base).also { languageResources = it }
+        return language.resources(super.getResources())
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()

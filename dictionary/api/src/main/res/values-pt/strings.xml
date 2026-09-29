@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">Importação de dicionários</string>
+    <string name="dictionary_import_notification">Importando dicionários</string>
+</resources>

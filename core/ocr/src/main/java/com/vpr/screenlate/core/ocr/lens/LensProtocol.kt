@@ -111,7 +111,7 @@ internal object LensProtocol {
         return OcrWord(text, separator, wordBox)
     }
 
-    /** Converts a normalized center-rotated box into an axis-aligned box in pixels. */
+    /** Converts a normalized center-rotated box into an axis-aligned box in pixels; null without a size. */
     private fun parseGeometry(reader: ProtoReader, width: Int, height: Int): Box? {
         var result: Box? = null
         reader.forEachField { geometry ->
@@ -130,7 +130,8 @@ internal object LensProtocol {
                         5 -> rotation = box.float()
                     }
                 }
-                result = rotatedToAxisAligned(cx * width, cy * height, w * width, h * height, rotation)
+                // Proto3 omits zero fields: an element without geometry would otherwise sit at the image's corner.
+                if (w > 0f && h > 0f) result = rotatedToAxisAligned(cx * width, cy * height, w * width, h * height, rotation)
             }
         }
         return result

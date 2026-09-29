@@ -17,7 +17,8 @@ import kotlin.coroutines.resume
 
 /**
  * Full-screen editor for the picture attached to an Anki note: a clean screenshot with a crop frame that starts
- * around the paragraph of the looked-up word, and buttons for the whole screen, cancel and add.
+ * around the paragraph of the looked-up word, and buttons for switching between the frame and the whole screen, cancel
+ * and add.
  */
 class CropEditor(private val context: Context, private val windowManager: WindowManager) {
     private var window: View? = null
@@ -30,7 +31,10 @@ class CropEditor(private val context: Context, private val windowManager: Window
     suspend fun edit(image: Bitmap, left: Float, top: Float, focus: RectF?): Bitmap? =
         suspendCancellableCoroutine { continuation ->
             val cropView = CropView(context, image, left, top)
-            if (focus != null) cropView.setFrame(focus) else cropView.selectAll()
+            // The frame to return to from the whole screen: the paragraph, or the middle of the screenshot.
+            val frame = RectF(focus ?: middleOf(image, left, top))
+            var wholeScreen = focus == null
+            if (wholeScreen) cropView.selectAll() else cropView.setFrame(frame)
 
             fun finish(result: Bitmap?) {
                 dismiss()
@@ -43,7 +47,18 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 gravity = Gravity.CENTER
                 val padding = (12 * density).toInt()
                 setPadding(padding, padding, padding, padding + navigationBarHeight())
-                addView(button(R.string.crop_whole_screen, primary = false) { cropView.selectAll() })
+                addView(
+                    button(if (wholeScreen) R.string.crop_frame else R.string.crop_whole_screen, primary = false) {
+                        if (wholeScreen) {
+                            cropView.setFrame(frame)
+                        } else {
+                            frame.set(cropView.frame)
+                            cropView.selectAll()
+                        }
+                        wholeScreen = !wholeScreen
+                        setText(if (wholeScreen) R.string.crop_frame else R.string.crop_whole_screen)
+                    },
+                )
                 addView(button(R.string.crop_cancel, primary = false) { finish(null) })
                 addView(button(R.string.crop_add, primary = true) { finish(cropView.cropped()) })
             }
@@ -68,11 +83,19 @@ class CropEditor(private val context: Context, private val windowManager: Window
         window = null
     }
 
-    private fun button(text: Int, primary: Boolean, onClick: () -> Unit): TextView {
+    private fun middleOf(image: Bitmap, left: Float, top: Float): RectF {
+        val insetX = image.width / 4f
+        val insetY = image.height / 4f
+        return RectF(left + insetX, top + insetY, left + image.width - insetX, top + image.height - insetY)
+    }
+
+    private fun button(text: Int, primary: Boolean, onClick: TextView.() -> Unit): TextView {
         val density = context.resources.displayMetrics.density
         return TextView(context).apply {
             setText(text)
             textSize = 15f
+            gravity = Gravity.CENTER
+            maxLines = 2
             setTextColor(if (primary) Color.WHITE else Color.rgb(0xEC, 0xE8, 0xF2))
             val horizontal = (18 * density).toInt()
             val vertical = (10 * density).toInt()
@@ -81,10 +104,10 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 cornerRadius = 24 * density
                 setColor(if (primary) ACCENT else Color.argb(200, 0x2E, 0x2B, 0x35))
             }
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ).apply { marginStart = (6 * density).toInt(); marginEnd = (6 * density).toInt() }
+            // Equal shares of the bar, so long labels wrap instead of pushing buttons off the screen;
+            // all buttons take the height of the tallest one.
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+                .apply { marginStart = (6 * density).toInt(); marginEnd = (6 * density).toInt() }
             setOnClickListener { onClick() }
         }
     }

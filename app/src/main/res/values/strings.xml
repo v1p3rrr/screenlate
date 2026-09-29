@@ -153,6 +153,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System</string>
     <string name="settings_language_hint">Also available in the system settings: Apps → Screenlate → Language.</string>
+    <string name="settings_language_translations">Translations other than English and Russian were made with AI and have not been reviewed by native speakers. Corrections are welcome on GitHub.</string>
     <string name="action_clear">Clear</string>
     <string name="anki_suggest_templates">Fill in suggested templates</string>
     <string name="anki_overwrite_mode">When overwriting: %1$s</string>

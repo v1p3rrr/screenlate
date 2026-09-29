@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">Wörterbuchimporte</string>
+    <string name="dictionary_import_notification">Wörterbücher werden importiert</string>
+</resources>

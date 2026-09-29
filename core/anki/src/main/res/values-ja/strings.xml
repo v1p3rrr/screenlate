@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">読み上げ</string>
+    <string name="audio_source_url">カスタム URL</string>
+    <string name="audio_source_json">カスタム URL（JSON）</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid がインストールされていません。</string>
+    <string name="anki_problem_no_permission">Screenlate が AnkiDroid へのアクセス権を失いました。</string>
+    <string name="anki_problem_model_missing">ノートタイプが AnkiDroid からなくなりました。</string>
+    <string name="anki_problem_deck_missing">デッキが AnkiDroid からなくなりました。</string>
+    <string name="anki_problem_fields_changed">ノートタイプのフィールドが変わりました。</string>
+</resources>

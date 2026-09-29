@@ -94,7 +94,7 @@ private fun LanguageSelector() {
     }
     var selected by remember { mutableStateOf(manager.applicationLocales.toLanguageTags().substringBefore(',')) }
     var expanded by remember { mutableStateOf(false) }
-    val current = options.firstOrNull { it.tag.equals(selected, ignoreCase = true) } ?: system
+    val current = LanguageOptions.selected(options, selected) ?: system
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
         OutlinedTextField(
             value = current.label(),
@@ -122,6 +122,7 @@ private fun LanguageSelector() {
         }
     }
     Hint(stringResource(R.string.settings_language_hint))
+    Hint(stringResource(R.string.settings_language_translations))
 }
 
 private fun LanguageOption.label(): String = listOfNotNull(flag, name).joinToString("  ")

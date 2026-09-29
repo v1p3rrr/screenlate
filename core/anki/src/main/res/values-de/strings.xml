@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Sprachausgabe</string>
+    <string name="audio_source_url">Eigene URL</string>
+    <string name="audio_source_json">Eigene URL (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid ist nicht installiert.</string>
+    <string name="anki_problem_no_permission">Screenlate hat den Zugriff auf AnkiDroid verloren.</string>
+    <string name="anki_problem_model_missing">Der Notiztyp ist aus AnkiDroid verschwunden.</string>
+    <string name="anki_problem_deck_missing">Der Stapel ist aus AnkiDroid verschwunden.</string>
+    <string name="anki_problem_fields_changed">Die Felder des Notiztyps haben sich geändert.</string>
+</resources>

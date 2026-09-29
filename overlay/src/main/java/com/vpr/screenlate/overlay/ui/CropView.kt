@@ -51,7 +51,8 @@ class CropView(
 
     fun setFrame(rect: RectF) {
         frame.set(rect)
-        frame.intersect(imageBounds)
+        // A frame outside the screenshot is kept as is by intersect(); the whole screenshot is the safe choice.
+        if (!frame.intersect(imageBounds)) frame.set(imageBounds)
         invalidate()
     }
 

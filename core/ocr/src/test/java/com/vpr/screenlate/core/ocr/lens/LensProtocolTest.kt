@@ -81,4 +81,42 @@ class LensProtocolTest {
         assertThat(vertical.vertical).isTrue()
         assertThat(vertical.box.centerX).isGreaterThan(1200f)
     }
+
+    @Test
+    fun `elements without a size are dropped instead of placed at the corner`() {
+        fun ProtoWriter.geometry(field: Int, cx: Float, cy: Float, w: Float, h: Float) = message(field) {
+            message(1) {
+                float(1, cx)
+                float(2, cy)
+                float(3, w)
+                float(4, h)
+            }
+        }
+        val response = ProtoWriter().message(2) {
+            message(3) {
+                message(1) {
+                    message(1) {
+                        message(2) {
+                            message(1) {
+                                string(2, "猫")
+                                geometry(4, 0.5f, 0.5f, 0.1f, 0.05f)
+                            }
+                            message(1) {
+                                string(2, "犬")
+                                message(4) { message(1) {} }
+                            }
+                            // A line geometry without a size falls back to its words.
+                            message(2) { message(1) {} }
+                        }
+                    }
+                }
+            }
+        }.toByteArray()
+
+        val line = LensProtocol.parseResponse(response, width = 1000, height = 2000).paragraphs.single().lines.single()
+
+        assertThat(line.text).isEqualTo("猫")
+        assertThat(line.box.left).isWithin(0.5f).of(450f)
+        assertThat(line.box.top).isWithin(0.5f).of(950f)
+    }
 }

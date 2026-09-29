@@ -3,7 +3,7 @@ package com.vpr.screenlate.core.ocr.lens
 import java.io.ByteArrayOutputStream
 
 /**
- * Minimal protobuf wire-format writer. Covers only what the Lens request needs: varints and length-delimited fields.
+ * Minimal protobuf wire-format writer: varints, fixed32 floats and length-delimited fields.
  */
 internal class ProtoWriter {
     private val out = ByteArrayOutputStream()
@@ -11,6 +11,12 @@ internal class ProtoWriter {
     fun varint(field: Int, value: Long): ProtoWriter = apply {
         writeTag(field, WIRE_VARINT)
         writeRawVarint(value)
+    }
+
+    fun float(field: Int, value: Float): ProtoWriter = apply {
+        writeTag(field, WIRE_FIXED32)
+        val bits = value.toRawBits()
+        for (shift in 0 until 32 step 8) out.write((bits ushr shift) and 0xFF)
     }
 
     fun bytes(field: Int, value: ByteArray): ProtoWriter = apply {

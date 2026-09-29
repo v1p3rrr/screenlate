@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">詞典匯入</string>
+    <string name="dictionary_import_notification">正在匯入詞典</string>
+</resources>

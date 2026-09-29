@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">Nhập từ điển</string>
+    <string name="dictionary_import_notification">Đang nhập từ điển</string>
+</resources>

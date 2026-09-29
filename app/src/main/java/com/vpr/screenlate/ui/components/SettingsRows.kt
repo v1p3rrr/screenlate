@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.vpr.screenlate.R
 
 /** A settings screen with a title and a back button. */
@@ -101,7 +104,20 @@ fun <T> Segments(
                 onClick = { onSelect(option) },
                 enabled = enabled,
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-            ) { Text(label(option), maxLines = 1, overflow = TextOverflow.Ellipsis) }
+            ) {
+                // Long translations shrink before they get cut.
+                Text(
+                    label(option),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    autoSize = TextAutoSize.StepBased(
+                        minFontSize = SEGMENT_MIN_FONT_SIZE,
+                        maxFontSize = LocalTextStyle.current.fontSize,
+                    ),
+                )
+            }
         }
     }
 }
+
+private val SEGMENT_MIN_FONT_SIZE = 10.sp

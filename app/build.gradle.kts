@@ -38,7 +38,7 @@ android {
         buildConfig = true
     }
 
-    // Lists English and Russian in the system's per-app language settings.
+    // Lists every translated language in the system's per-app language settings.
     androidResources {
         generateLocaleConfig = true
     }

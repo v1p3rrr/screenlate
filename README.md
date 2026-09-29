@@ -25,11 +25,13 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 - **Pronunciation** from the same audio sources as Yomitan, or the phone's text-to-speech.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
 - **Import from Yomitan**: dictionary order, Anki setup, audio sources, lookup and popup settings.
-- **Your look**: popup font and text size, custom CSS, light and dark theme, an e-ink mode; the interface is in English and Russian.
+- **Your look**: popup font and text size, custom CSS, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
 - **Backup and restore** of all settings and, if you like, the dictionaries, in one file.
 - **Updates** from GitHub Releases inside the app.
 
 Only Japanese is supported for now.
+
+Translations of the interface other than English and Russian were made with AI and have not been reviewed by native speakers. Corrections are welcome: open an issue or a pull request with the fixed `strings.xml`.
 
 ## Install
 

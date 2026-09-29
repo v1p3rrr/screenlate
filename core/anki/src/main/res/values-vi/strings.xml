@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Đọc văn bản</string>
+    <string name="audio_source_url">URL tùy chỉnh</string>
+    <string name="audio_source_json">URL tùy chỉnh (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid chưa được cài.</string>
+    <string name="anki_problem_no_permission">Screenlate đã mất quyền truy cập AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Loại ghi chú không còn trong AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Bộ thẻ không còn trong AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Các trường của loại ghi chú đã thay đổi.</string>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">文字轉語音</string>
+    <string name="audio_source_url">自訂 URL</string>
+    <string name="audio_source_json">自訂 URL（JSON）</string>
+
+    <string name="anki_problem_not_installed">未安裝 AnkiDroid。</string>
+    <string name="anki_problem_no_permission">Screenlate 失去了 AnkiDroid 的存取權限。</string>
+    <string name="anki_problem_model_missing">筆記類型已從 AnkiDroid 中消失。</string>
+    <string name="anki_problem_deck_missing">牌組已從 AnkiDroid 中消失。</string>
+    <string name="anki_problem_fields_changed">筆記類型的欄位已更改。</string>
+</resources>

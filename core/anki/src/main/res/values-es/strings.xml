@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Texto a voz</string>
+    <string name="audio_source_url">URL personalizada</string>
+    <string name="audio_source_json">URL personalizada (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid no está instalado.</string>
+    <string name="anki_problem_no_permission">Screenlate perdió el acceso a AnkiDroid.</string>
+    <string name="anki_problem_model_missing">El tipo de nota ya no existe en AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">El mazo ya no existe en AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Los campos del tipo de nota cambiaron.</string>
+</resources>

@@ -151,6 +151,7 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_system">Системный</string>
     <string name="settings_language_hint">Также доступно в настройках системы: Приложения → Screenlate → Язык.</string>
+    <string name="settings_language_translations">Переводы, кроме английского и русского, сделаны с помощью ИИ и не проверены носителями языка. Исправления приветствуются на GitHub.</string>
     <string name="action_clear">Очистить</string>
     <string name="anki_suggest_templates">Подставить рекомендуемые шаблоны</string>
     <string name="anki_overwrite_mode">При перезаписи: %1$s</string>

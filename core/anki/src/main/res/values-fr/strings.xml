@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Synthèse vocale</string>
+    <string name="audio_source_url">URL personnalisée</string>
+    <string name="audio_source_json">URL personnalisée (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid n’est pas installé.</string>
+    <string name="anki_problem_no_permission">Screenlate a perdu l’accès à AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Le type de note n’existe plus dans AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Le paquet n’existe plus dans AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Les champs du type de note ont changé.</string>
+</resources>

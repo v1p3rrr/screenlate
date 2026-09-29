@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">辞書のインポート</string>
+    <string name="dictionary_import_notification">辞書をインポート中</string>
+</resources>

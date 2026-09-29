@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Synteza mowy</string>
+    <string name="audio_source_url">Własny URL</string>
+    <string name="audio_source_json">Własny URL (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid nie jest zainstalowany.</string>
+    <string name="anki_problem_no_permission">Screenlate utracił dostęp do AnkiDroid.</string>
+    <string name="anki_problem_model_missing">Typu notatki nie ma już w AnkiDroid.</string>
+    <string name="anki_problem_deck_missing">Talii nie ma już w AnkiDroid.</string>
+    <string name="anki_problem_fields_changed">Pola typu notatki się zmieniły.</string>
+</resources>

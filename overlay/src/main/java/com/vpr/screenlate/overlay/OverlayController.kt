@@ -71,6 +71,7 @@ import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
 import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
+import com.vpr.screenlate.overlay.ui.CropFocus
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import java.io.IOException
@@ -956,13 +957,6 @@ class OverlayController(
         } else {
             null
         }
-        val focus = if (layout != null && position != null) {
-            val padding = FOCUS_PADDING_DP * density
-            Box.unionOf(layout.readingParagraphs[position.paragraphIndex].lines.map { it.box })
-                ?.let { RectF(it.left - padding, it.top - padding, it.right + padding, it.bottom + padding) }
-        } else {
-            null
-        }
         // Without recognition no screenshot is taken during the scan, so the note takes one now.
         if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
             screenshot = try {
@@ -973,6 +967,18 @@ class OverlayController(
             }
         }
         val shot = screenshot
+        val focus = if (layout != null && position != null && shot != null) {
+            val image = Box(
+                shot.left.toFloat(),
+                shot.top.toFloat(),
+                (shot.left + shot.bitmap.width).toFloat(),
+                (shot.top + shot.bitmap.height).toFloat(),
+            )
+            val lines = layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }
+            CropFocus.of(lines, FOCUS_PADDING_DP * density, image)?.let { RectF(it.left, it.top, it.right, it.bottom) }
+        } else {
+            null
+        }
         return NoteContext(
             sentence = sentence,
             screenshot = shot?.bitmap,
@@ -1029,6 +1035,9 @@ class OverlayController(
     private fun engineLabel(ocrEngine: OcrEngineType?): String = when {
         ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
         ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
+        // Only the device recognizes by choice: nothing is unavailable.
+        ocrEngine == OcrEngineType.ML_KIT && ocrFinal && settings.ocrEngines == OcrEngines.DEVICE ->
+            service.getString(R.string.overlay_engine_device_only)
         ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
         ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
         ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
@@ -1054,6 +1063,7 @@ class OverlayController(
     /** Why cloud recognition failed for this scan, for the ⚠ next to the engine label; empty when it did not. */
     private fun ocrErrorText(): String {
         val error = lensError ?: return ""
+        if (settings.ocrEngines == OcrEngines.DEVICE) return ""
         // A word read from the app's own text does not depend on recognition.
         if (aimedEngine() == OcrEngineType.ACCESSIBILITY) return ""
         val reason = when (error) {
@@ -1144,7 +1154,7 @@ class OverlayController(
         const val MAX_POPUP_DP = 420f
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L
-        const val FOCUS_PADDING_DP = 16f
+        const val FOCUS_PADDING_DP = 48f
         const val BAND_DELAY_MS = 300L
     }
 

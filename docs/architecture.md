@@ -56,6 +56,8 @@ A Yomitan collection export is one JSON file with the rows of all dictionaries, 
 
 Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; only Japanese is implemented so far.
 
+The interface language is separate: string resources in 14 locales, chosen in Appearance or in the system's app language settings (Android 13 and newer). The system applies a per-app language to activities only, so the application object and the accessibility service return resources in that language themselves (`AppLanguageResources`); the bubble, popup, crop editor and notifications follow it.
+
 ## Privacy
 
 Logs never contain recognized text, looked-up words, note contents or URLs with terms: exceptions are logged through `redacted()`, which keeps the type and stack but drops messages, and URLs through `redactUrl()`. The app logs only to logcat, the system's fixed-size ring buffer, so nothing piles up on the device; files are written only when the user shares or saves the log. A scan logs its stages with timings (capture, app text, cloud request, on-device bands, draft and final), and events such as docking, note results and audio lookups are logged as outcomes and counts, never per aim movement.

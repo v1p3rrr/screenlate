@@ -1,0 +1,11 @@
+<resources>
+    <string name="audio_source_tts">Metin okuma</string>
+    <string name="audio_source_url">Özel URL</string>
+    <string name="audio_source_json">Özel URL (JSON)</string>
+
+    <string name="anki_problem_not_installed">AnkiDroid yüklü değil.</string>
+    <string name="anki_problem_no_permission">Screenlate AnkiDroid erişimini kaybetti.</string>
+    <string name="anki_problem_model_missing">Not türü artık AnkiDroid’de yok.</string>
+    <string name="anki_problem_deck_missing">Deste artık AnkiDroid’de yok.</string>
+    <string name="anki_problem_fields_changed">Not türünün alanları değişti.</string>
+</resources>

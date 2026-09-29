@@ -1,0 +1,4 @@
+<resources>
+    <string name="dictionary_import_channel">사전 가져오기</string>
+    <string name="dictionary_import_notification">사전을 가져오는 중</string>
+</resources>

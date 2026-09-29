@@ -106,10 +106,18 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The owner's audio server (see `notes/references.md` → audio server) works through its https domain: 5 clips found and played on the emulator. Why the phone got nothing is not proven; the proxy's URL rewrite dates from 2026-09-27 20:37 UTC, and before it the list named files as `http://0.0.0.0:5050/...` (the phone itself). The proxy logs show no file download from a phone ever.
 - Audio source changes (owner decisions): plain HTTP allowed for any address; a list's local file URLs (`0.0.0.0`, localhost, loopback) are fetched from the list's server when the list came from elsewhere; errors read as a phrase plus the error type (`AudioError`); on Android 17 the local network permission (`ACCESS_LOCAL_NETWORK`) is asked when a source on the home network appears (added, imported, restored, or on start) and offered again in a failed test and the home card. Checked on the emulator (Android 17) with a mock list server at `10.0.2.2`: denied → "No access to the local network" with an Allow button; allowed → list over http, `0.0.0.0` rewritten, clip played.
 
+### 2026-09-29 (interface translations)
+
+- Interface in 12 more locales (de, fr, es, it, pt, pl, tr, vi, ja, ko, zh-Hans, zh-Hant) in all four string modules; `TranslationsTest` checks that every string exists with the same format arguments, plurals have the CLDR categories of their locale, and quotes are escaped. Disclaimer about AI translations in README and under the language picker.
+- Every locale checked on the emulator (home, search, all settings screens, the language picker; montages in the session scratchpad). Found and fixed: the picker showed "System" for system-set tags like pt-BR, zh-TW, zh-Hans-CN (`LanguageOptions.selected`); long segment labels were cut (they shrink to 10 sp now); the language chosen in the app reached activities only, so the bubble, popup, crop editor and notifications kept the system language (`AppLanguageResources` in the application and the accessibility service; instrumented test in core:common).
+- Owner requests on the way: no offline error with only on-device recognition (the chip says "On-device"); the crop frame starts around the paragraph with 48 dp (`CropFocus`), never at the corner for Lens elements without a size (dropped in `LensProtocol`); "Whole screen" toggles back to "Frame". Checked on the emulator in German with network off, and the crop frame in app-text-only mode (Settings app in Japanese).
+- Module map for the pending full code review: `notes/module-map.md`.
+- Emulator state: the debug app has AnkiDroid access and Anki set to the "Screenlate Test" deck with Basic (Back = `{screenshot}`); app language back to system.
+
 ## Next
 
 - Waiting for the owner's phone feedback on v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
-- Interface translations into 12 more locales (`plans/2026-09-29-ui-translations.md`), then v0.1.4.
+- Full code review of the whole project, one run per functional module with its integration paths (`notes/module-map.md`); starts on the owner's command.
 - Phase 8 (more languages) needs an interview per language first.
 
 ## Open items
