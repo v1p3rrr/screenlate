@@ -101,8 +101,9 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     private fun Rect.toBox() = Box(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
 }
 
+/** A cancelled task fails the call: cancelling the coroutine would pass for a cancellation of the caller. */
 private suspend fun <T> Task<T>.await(): T = suspendCancellableCoroutine { continuation ->
     addOnSuccessListener { continuation.resume(it) }
     addOnFailureListener { continuation.resumeWithException(it) }
-    addOnCanceledListener { continuation.cancel() }
+    addOnCanceledListener { continuation.resumeWithException(IllegalStateException("ML Kit task cancelled")) }
 }

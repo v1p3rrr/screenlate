@@ -31,6 +31,12 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   line building (pixel reads for `SymbolLag`) on Default, `CompositeOcr`'s screenshot copy and band crops on its
   `worker` (Default), the Lens JPEG on Default and the whole HTTP exchange including the body on IO. `withContext`
   waits for its block even when cancelled, so a bitmap freed after the call returns is no longer read.
+- But `withContext` to another dispatcher drops its result when the caller was cancelled meanwhile: a bitmap created
+  inside it must be freed in a `catch (CancellationException)` (`CompositeOcr.copyOnWorker`). A coroutine cancelled
+  before it starts skips its body and its `finally`; the on-device draft therefore starts undispatched.
+- No `CancellationException` may leave the scan flow unless the scan itself was cancelled: the overlay rethrows it
+  from `.catch`, so the scan ends silently with the spinner on. Lens timeouts become `SocketTimeoutException`
+  (`askLens`), a cancelled ML Kit task fails with an ordinary exception.
 
 ## Screenshot lifetime (overlay)
 

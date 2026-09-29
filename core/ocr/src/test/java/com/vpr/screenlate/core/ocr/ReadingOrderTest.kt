@@ -99,4 +99,15 @@ class ReadingOrderTest {
 
         assertThat(layout.readingParagraphs.single().engine).isEqualTo(OcrEngineType.LENS)
     }
+
+    @Test
+    fun `a paragraph without an engine has the page's`() {
+        val first = OcrParagraph(listOf(line("駅の近くに新しい自転", Box(558f, 1007f, 619f, 1633f))))
+        // Added later from the same engine, e.g. a band recognized again for small text.
+        val added = OcrParagraph(listOf(line("車屋ができました。", Box(476f, 1003f, 536f, 1572f))), OcrEngineType.LENS)
+        val device = added.copy(engine = OcrEngineType.ML_KIT)
+
+        assertThat(layout(first, added).textAt(588f, 1540f, length = 4)).isEqualTo("自転車屋")
+        assertThat(layout(first, device).textAt(588f, 1540f, length = 4)).isEqualTo("自転")
+    }
 }

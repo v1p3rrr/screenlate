@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 2 done (three runs), committing and pushing; next: module 3 (OCR), run 1 — read core/ocr in full (and the deferred CompositeOcrTest opt-in) and follow its integration paths.
+Updated after every step so the work survives a context reset or a paused session: module 3 (OCR) done in 4 runs, committing; next: module 4 (dictionaries: api, engine, import), run 1 — read ai/notes/module-map.md for its files, apply the deferred getNullableStringArray item.
 
 ## Progress
 
@@ -40,7 +40,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 |---|---|---|---|---|---|---|
 | 1 | Build, CI and release | 9 found, 9 fixed | 3 found: 1 fixed, 1 question (Q3), 1 deferred | 1 found (test), fixed | not needed | see git log |
 | 2 | Common and language support | 4 found: 3 fixed, 1 deferred | 1 found (test), deferred | 1 found (validation), fixed | not needed | see git log |
-| 3 | OCR | | | | | |
+| 3 | OCR | 7 found, fixed | 4 found, fixed | 3 found, fixed | nothing found | see git log |
 | 4 | Dictionary registry, imports and catalog | | | | | |
 | 5 | Lookup and engine | | | | | |
 | 6 | Lookup page and rendering | | | | | |
@@ -121,11 +121,58 @@ through DataStore edits and never write the file; the IPv4-mapped check). One fi
 first group of the mapped address → fixed (both groups must be hex; test). No 4th run: that was a one-line
 validation.
 
+### Module 3, run 1
+
+`core/ocr` in full, the overlay's scan (`startScan`, `refineBand`, `ocrErrorText`) and the OCR test screen. Seven
+findings, all fixed:
+
+- A Lens timeout came out as `TimeoutCancellationException`. With a failed ML Kit run it failed the flow, and the
+  overlay rethrows cancellations, so the scan ended with no error and the spinner on. The cloud-only path made it a
+  plain `IOException`, shown as a network error. All three Lens paths now turn it into `SocketTimeoutException`
+  (tests).
+- `recognizeRegion` turned the caller's cancellation into a null result → rethrown (test).
+- A cancelled ML Kit task cancelled the waiting coroutine, with the same silent end → fails the call instead (the
+  Tasks adapter has no JVM test: its listeners run on the main looper).
+- The Lens response was not closed when the call was cancelled while it arrived → closed in the resume handler.
+- The protobuf reader took negative and Int-overflowing lengths, which move backwards (an endless loop on a garbled
+  response), and read fixed32 without a bounds check → one bounds-checked `advance` (test).
+- The deferred opt-in for `advanceUntilIdle` in `CompositeOcrTest`.
+
+### Module 3, run 2
+
+The module again (reading order, layout, bands, symbol alignment, protobuf, network status) with the run 1 fixes, and
+the callers: the overlay's scan, warm-up and band refinement, the OCR test screen, the shared HTTP client. Four
+findings, all fixed:
+
+- Reading order matched continuations on the paragraphs' own engine field, so a paragraph without one (the page's
+  engine) was never joined with one that names it, as lines added by `withMissingFrom` do → effective engines (test).
+- The screenshot copy for ML Kit was lost when the scan was cancelled while it was made (withContext drops its
+  result) → freed then (test).
+- `warmUp` hard-coded Japanese → takes the language; the overlay passes its own.
+- Unused `TextLayout.remainingInWord`, `lineText` and `OcrCharacter.wordIndex` → removed.
+
+### Module 3, run 3
+
+Over the diff of runs 1–2. Three findings, all fixed:
+
+- The ML Kit draft started with the default start, so a scan cancelled before it ran skipped its `finally` and never
+  freed the copy → started undispatched (test).
+- `askLens` also turned a timeout of the caller's own into a `SocketTimeoutException` → stays a cancellation (test).
+- The test scheduler's clock needs the opt-in in seven more places → one opt-in on the test class.
+
+### Module 3, run 4
+
+Over run 3's changes (the undispatched start runs only cheap code before ML Kit's first suspension; emissions and
+their order stay; the caller check only fires when the caller is cancelled): nothing found. Emulator: a scan with the
+cloud result and a lookup; on a slow network the cloud request timed out after 16 s, the device result became final
+and the ⚠ said the timeout.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
 
-- Module 3: `CompositeOcrTest` uses `ExperimentalCoroutinesApi` without an opt-in (compiler warnings on CI).
+- Module 3 (done in run 1): `CompositeOcrTest` uses `ExperimentalCoroutinesApi` without an opt-in (compiler
+  warnings on CI).
 - Module 4: `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
   `Data.getStringArray` (use `getNullableStringArray`).
 - Module 8: a test that every name in `LanguageSupport.defaultAudioSources` maps to an `AudioSourceType`
@@ -133,6 +180,10 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
 - Modules 9–11 (at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
   `search/SearchScreen.kt:87`, `OverlayController.isDarkTheme`); one helper next to `ThemeMode` in core:common.
+- Module 9: `OverlayController.ocrErrorText` still matches `TimeoutCancellationException`, which OCR no longer
+  reports (a timeout is a `SocketTimeoutException` now); drop that branch and its import.
+- Module 9: a cloud-only scan that fails without app text shows the generic OCR error for every reason but offline,
+  although `ocrErrorText` knows paused, timeout and HTTP errors; show that reason instead.
 
 ## Changelog
 

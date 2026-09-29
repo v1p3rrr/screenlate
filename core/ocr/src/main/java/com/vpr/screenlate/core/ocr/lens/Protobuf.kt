@@ -74,11 +74,11 @@ internal class ProtoReader(private val buffer: ByteArray, private var position: 
         fun float(): Float {
             check(wireType == WIRE_FIXED32) { "Field $number is not fixed32" }
             consumed = true
-            val bits = (buffer[position].toInt() and 0xFF) or
-                ((buffer[position + 1].toInt() and 0xFF) shl 8) or
-                ((buffer[position + 2].toInt() and 0xFF) shl 16) or
-                ((buffer[position + 3].toInt() and 0xFF) shl 24)
-            position += 4
+            val start = advance(4)
+            val bits = (buffer[start].toInt() and 0xFF) or
+                ((buffer[start + 1].toInt() and 0xFF) shl 8) or
+                ((buffer[start + 2].toInt() and 0xFF) shl 16) or
+                ((buffer[start + 3].toInt() and 0xFF) shl 24)
             return Float.fromBits(bits)
         }
 
@@ -100,10 +100,7 @@ internal class ProtoReader(private val buffer: ByteArray, private var position: 
         private fun lengthDelimited(): Pair<Int, Int> {
             check(wireType == WIRE_LENGTH_DELIMITED) { "Field $number is not length-delimited" }
             consumed = true
-            val length = readRawVarint().toInt()
-            val start = position
-            position += length
-            check(position <= limit) { "Truncated field $number" }
+            val start = advance(readRawVarint())
             return start to position
         }
     }
@@ -124,16 +121,22 @@ internal class ProtoReader(private val buffer: ByteArray, private var position: 
     private fun skip(wireType: Int) {
         when (wireType) {
             WIRE_VARINT -> readRawVarint()
-            WIRE_FIXED64 -> position += 8
-            WIRE_LENGTH_DELIMITED -> {
-                // Read the length first: `position += readRawVarint()` would use the position before the varint.
-                val length = readRawVarint().toInt()
-                position += length
-            }
-            WIRE_FIXED32 -> position += 4
+            WIRE_FIXED64 -> advance(8)
+            WIRE_LENGTH_DELIMITED -> advance(readRawVarint())
+            WIRE_FIXED32 -> advance(4)
             else -> error("Unsupported wire type $wireType")
         }
-        check(position <= limit) { "Truncated message" }
+    }
+
+    /**
+     * Moves past [length] bytes and returns where they start. A length from a garbled response may be negative or
+     * overflow an Int; either would move the position backwards.
+     */
+    private fun advance(length: Long): Int {
+        check(length in 0..(limit - position).toLong()) { "Truncated message" }
+        val start = position
+        position += length.toInt()
+        return start
     }
 }
 

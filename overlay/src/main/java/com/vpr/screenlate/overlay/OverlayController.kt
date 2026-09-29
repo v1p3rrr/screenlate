@@ -307,7 +307,7 @@ class OverlayController(
     private fun loadOnDevice(needed: Boolean) {
         if (needed == onDeviceLoaded) return
         onDeviceLoaded = needed
-        if (needed) scope.launch { ocr.warmUp() } else ocr.releaseOnDevice()
+        if (needed) scope.launch { ocr.warmUp(language) } else ocr.releaseOnDevice()
     }
 
     /** Window order from bottom to top: highlight layer, popup, bubble; the bubble must never go under the popup. */

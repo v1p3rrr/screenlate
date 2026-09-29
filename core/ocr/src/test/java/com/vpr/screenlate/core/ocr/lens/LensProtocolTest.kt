@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.ocr.lens
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class LensProtocolTest {
@@ -58,6 +59,26 @@ class LensProtocolTest {
     fun `writer encodes multi-byte varints`() {
         val bytes = ProtoWriter().varint(1, 300).toByteArray()
         assertThat(bytes.toList()).containsExactly(0x08.toByte(), 0xAC.toByte(), 0x02.toByte()).inOrder()
+    }
+
+    @Test
+    fun `reader rejects lengths that leave the message`() {
+        fun bytes(vararg values: Int) = ByteArray(values.size) { values[it].toByte() }
+        val garbled = listOf(
+            // Field 1 with the length 2^32 - 6, -6 as an Int: back to the tag, which skipping read forever.
+            bytes(0x0A, 0xFA, 0xFF, 0xFF, 0xFF, 0x0F, 0x41),
+            // 2^32 + 1, 1 as an Int.
+            bytes(0x0A, 0x81, 0x80, 0x80, 0x80, 0x10, 0x41),
+            bytes(0x0A, 0x05, 0x41),
+            // A fixed32 float with two of its bytes.
+            bytes(0x0D, 0x00, 0x00),
+        )
+        for (message in garbled) {
+            assertThrows(IllegalStateException::class.java) { ProtoReader(message).forEachField {} }
+            assertThrows(IllegalStateException::class.java) {
+                ProtoReader(message).forEachField { if (it.wireType == 5) it.float() else it.bytes() }
+            }
+        }
     }
 
     @Test

@@ -110,7 +110,9 @@ private suspend fun Call.await(): Response = suspendCancellableCoroutine { conti
     continuation.invokeOnCancellation { cancel() }
     enqueue(
         object : Callback {
-            override fun onResponse(call: Call, response: Response) = continuation.resume(response)
+            // A call cancelled meanwhile drops the response, which must still be closed to free the connection.
+            override fun onResponse(call: Call, response: Response) =
+                continuation.resume(response) { _, value, _ -> value.close() }
 
             override fun onFailure(call: Call, e: IOException) {
                 if (!continuation.isCancelled) continuation.resumeWithException(e)

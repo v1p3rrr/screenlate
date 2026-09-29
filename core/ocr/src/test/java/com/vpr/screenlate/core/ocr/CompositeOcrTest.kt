@@ -5,22 +5,32 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import java.io.IOException
+import java.net.SocketTimeoutException
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
+// The test scheduler's clock is experimental API.
+@OptIn(ExperimentalCoroutinesApi::class)
 class CompositeOcrTest {
 
     /** Answers after [latency] with a one-line page, or fails with [error]. */
@@ -80,8 +90,17 @@ class CompositeOcrTest {
         lens.latency = 20.seconds
         val final = updates().last() as OcrUpdate.Final
         assertThat(final.page.engine).isEqualTo(OcrEngineType.ML_KIT)
-        assertThat(final.lensError).isInstanceOf(kotlinx.coroutines.TimeoutCancellationException::class.java)
+        // Not a TimeoutCancellationException, which the caller would take for its own cancellation.
+        assertThat(final.lensError).isInstanceOf(SocketTimeoutException::class.java)
         assertThat(testScheduler.currentTime).isEqualTo(15_000)
+    }
+
+    @Test
+    fun `a lens timeout with a failed device fails the scan with the timeout`() = runTest {
+        lens.latency = 20.seconds
+        mlKit.error = IllegalStateException("device")
+        val error = runCatching { updates() }.exceptionOrNull()
+        assertThat(error).isInstanceOf(SocketTimeoutException::class.java)
     }
 
     @Test
@@ -183,6 +202,16 @@ class CompositeOcrTest {
     }
 
     @Test
+    fun `a cancelled region request is not taken for a failure`() = runTest {
+        lens.latency = 2.seconds
+        var result: Result<OcrPage?>? = null
+        val job = launch { result = runCatching { ocr.recognizeRegion(image, Language.JAPANESE) } }
+        delay(500)
+        job.cancelAndJoin()
+        assertThat(result?.exceptionOrNull()).isInstanceOf(CancellationException::class.java)
+    }
+
+    @Test
     fun `the device reads a copy that is freed only once it is done, after lens`() = runTest {
         val copy = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
         val read = mutableListOf<Bitmap>()
@@ -216,6 +245,62 @@ class CompositeOcrTest {
         advanceUntilIdle()
         assertThat(freedAt).isEqualTo(2000)
         assertThat(read).containsExactly(copy)
+    }
+
+    @Test
+    fun `a copy made as the scan is cancelled is freed`() = runTest {
+        val copy = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
+        val freed = mutableListOf<Bitmap>()
+        lateinit var scan: Job
+        val ocr = CompositeOcr(
+            lens,
+            mlKit,
+            { online },
+            { now },
+            copyOf = {
+                scan.cancel()
+                copy
+            },
+            release = { freed += it },
+            // Another dispatcher, so withContext drops its result once the scan is cancelled.
+            worker = StandardTestDispatcher(testScheduler),
+        )
+
+        scan = launch { ocr.recognize(image, Language.JAPANESE).toList() }
+        scan.join()
+        assertThat(freed).containsExactly(copy)
+        assertThat(mlKit.calls).isEqualTo(0)
+    }
+
+    @Test
+    fun `a scan cancelled before the device started still frees the copy`() = runTest {
+        val copy = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
+        val freed = mutableListOf<Bitmap>()
+        lateinit var scan: Job
+        // Cancels the scan as soon as the flow asks Lens, before a queued draft would have run.
+        val cancelling = object : OcrEngine {
+            override val type = OcrEngineType.LENS
+
+            override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
+                scan.cancel()
+                delay(1.seconds)
+                error("not reached")
+            }
+        }
+        val ocr = CompositeOcr(
+            cancelling,
+            mlKit,
+            { online },
+            { now },
+            copyOf = { copy },
+            release = { freed += it },
+            worker = EmptyCoroutineContext,
+        )
+
+        scan = launch { ocr.recognize(image, Language.JAPANESE).toList() }
+        scan.join()
+        testScheduler.advanceUntilIdle()
+        assertThat(freed).containsExactly(copy)
     }
 
     private val saving = OcrOptions(deferWholeImage = true)
@@ -281,7 +366,16 @@ class CompositeOcrTest {
     fun `cloud only reports a timeout as a failure, not a cancellation`() = runTest {
         lens.latency = 20.seconds
         val error = runCatching { ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD)).toList() }
-        assertThat(error.exceptionOrNull()).isInstanceOf(IOException::class.java)
+        assertThat(error.exceptionOrNull()).isInstanceOf(SocketTimeoutException::class.java)
+    }
+
+    @Test
+    fun `a timeout of the caller stays a cancellation`() = runTest {
+        lens.latency = 20.seconds
+        val error = runCatching {
+            withTimeout(1.seconds) { ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD)).toList() }
+        }
+        assertThat(error.exceptionOrNull()).isInstanceOf(TimeoutCancellationException::class.java)
     }
 
     @Test

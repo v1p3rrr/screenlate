@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import java.io.IOException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 import android.util.Log
@@ -15,6 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +26,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.job
@@ -115,9 +119,10 @@ class CompositeOcr internal constructor(
 
         val emitter = UpdateEmitter(this)
         // ML Kit cannot be stopped once it runs, so it reads its own copy outside this flow: the flow ends with the
-        // Lens result while ML Kit finishes, and the copy is freed once ML Kit no longer reads it.
-        val copy = withContext(worker) { copyOf(image) }
-        val draft = CoroutineScope(coroutineContext.minusKey(Job)).async {
+        // Lens result while ML Kit finishes, and the copy is freed once ML Kit no longer reads it. Started at once, so
+        // a scan cancelled before the draft would have run still frees the copy.
+        val copy = copyOnWorker(image)
+        val draft = CoroutineScope(coroutineContext.minusKey(Job)).async(start = CoroutineStart.UNDISPATCHED) {
             try {
                 runCatching { recognizeOnDevice(copy, language, focus, emitter, wholeImage) }
                     .onFailure { if (it !is CancellationException) Log.w(TAG, "ML Kit failed", it) }
@@ -137,7 +142,8 @@ class CompositeOcr internal constructor(
                     wholeImage.complete(Unit)
                 }
             }
-            runCatching { withTimeout(LENS_TIMEOUT) { untilStopped(stopCloud) { lens.recognize(image, language) } } }
+            runCatching { askLens { untilStopped(stopCloud) { lens.recognize(image, language) } } }
+                .onFailure { if (it is CancellationException) throw it }
                 .onFailure(::noteLensFailure)
                 .onSuccess { page ->
                     if (page != null) {
@@ -160,19 +166,39 @@ class CompositeOcr internal constructor(
         }
     }
 
+    /** [image] copied on [worker]. A scan cancelled meanwhile drops what withContext returns, so the copy is freed here. */
+    private suspend fun copyOnWorker(image: Bitmap): Bitmap {
+        var copy: Bitmap? = null
+        try {
+            return withContext(worker) { copyOf(image).also { copy = it } }
+        } catch (e: CancellationException) {
+            copy?.let(release)
+            throw e
+        }
+    }
+
     /** Null when [stop] withdrew the request. */
     private suspend fun recognizeWithLens(image: Bitmap, language: Language, stop: Deferred<Unit>?): OcrPage? {
         if (!isOnline()) throw OfflineException()
         if (lensPaused()) throw LensPausedException()
         return try {
-            withTimeout(LENS_TIMEOUT) { untilStopped(stop) { lens.recognize(image, language) } }
-        } catch (e: TimeoutCancellationException) {
-            // Not a cancellation of the caller.
-            throw IOException("Lens timed out", e)
+            askLens { untilStopped(stop) { lens.recognize(image, language) } }
         } catch (e: Exception) {
             noteLensFailure(e)
             throw e
         }
+    }
+
+    /**
+     * Runs a Lens request with the timeout. The timeout becomes a [SocketTimeoutException]: as a
+     * [TimeoutCancellationException] it would pass for a cancellation of the caller and end the scan without an error.
+     */
+    private suspend fun <T> askLens(block: suspend () -> T): T = try {
+        withTimeout(LENS_TIMEOUT) { block() }
+    } catch (e: TimeoutCancellationException) {
+        // A timeout of the caller's own stays a cancellation.
+        currentCoroutineContext().ensureActive()
+        throw SocketTimeoutException("Lens timed out").apply { initCause(e) }
     }
 
     /** Runs [block] until it ends or [stop] completes, which cancels it and returns null. */
@@ -237,11 +263,11 @@ class CompositeOcr internal constructor(
         Log.i(TAG, "Released the on-device model")
     }
 
-    /** Loads the on-device model, which would otherwise delay the first draft. */
-    suspend fun warmUp() {
+    /** Loads the on-device model for [language], which would otherwise delay the first draft. */
+    suspend fun warmUp(language: Language) {
         val image = Bitmap.createBitmap(WARM_UP_SIZE, WARM_UP_SIZE, Bitmap.Config.ARGB_8888)
         try {
-            mlKit.recognize(image, Language.JAPANESE)
+            mlKit.recognize(image, language)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -257,7 +283,8 @@ class CompositeOcr internal constructor(
      */
     suspend fun recognizeRegion(image: Bitmap, language: Language): OcrPage? {
         if (!isOnline() || lensPaused()) return null
-        return runCatching { withTimeout(LENS_TIMEOUT) { lens.recognize(image, language) } }
+        return runCatching { askLens { lens.recognize(image, language) } }
+            .onFailure { if (it is CancellationException) throw it }
             .onFailure(::noteLensFailure)
             .getOrNull()
     }
@@ -268,7 +295,6 @@ class CompositeOcr internal constructor(
     private fun lensPaused(): Boolean = clock() < lensPausedUntil
 
     private fun noteLensFailure(error: Throwable) {
-        if (error is CancellationException) return
         if (error is LensHttpException && error.refused) {
             lensPausedUntil = clock() + LENS_PAUSE.inWholeMilliseconds
             Log.w(TAG, "Lens refused a request (HTTP ${error.code}); using on-device OCR for $LENS_PAUSE")

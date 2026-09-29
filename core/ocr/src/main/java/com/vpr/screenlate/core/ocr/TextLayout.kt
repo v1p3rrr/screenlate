@@ -6,14 +6,12 @@ import com.vpr.screenlate.core.common.geometry.Box
  * One character of recognized text.
  *
  * @property offset index of the character inside its paragraph.
- * @property wordIndex index of the engine's word inside the paragraph.
  */
 data class OcrCharacter(
     val text: String,
     val box: Box,
     val paragraphIndex: Int,
     val lineIndex: Int,
-    val wordIndex: Int,
     val offset: Int,
     val vertical: Boolean,
 )
@@ -35,13 +33,11 @@ class TextLayout(val page: OcrPage) {
 
     val paragraphs: List<List<OcrCharacter>> = readingParagraphs.mapIndexed { paragraphIndex, paragraph ->
         buildList {
-            var wordIndex = 0
             paragraph.lines.forEachIndexed { lineIndex, line ->
                 line.words.forEach { word ->
                     splitWord(word, line.vertical).forEach { (text, box) ->
-                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, wordIndex, size, line.vertical))
+                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, size, line.vertical))
                     }
-                    wordIndex++
                 }
             }
         }
@@ -81,20 +77,6 @@ class TextLayout(val page: OcrPage) {
             .joinToString("") { it.text }
 
     fun characterAt(position: TextPosition): OcrCharacter = paragraphs[position.paragraphIndex][position.offset]
-
-    /** Number of characters from [position] to the end of the engine's word that contains it. */
-    fun remainingInWord(position: TextPosition): Int {
-        val characters = paragraphs[position.paragraphIndex]
-        val wordIndex = characters[position.offset].wordIndex
-        return characters.drop(position.offset).takeWhile { it.wordIndex == wordIndex }.size
-    }
-
-    /** Text of the line containing [position]. */
-    fun lineText(position: TextPosition): String {
-        val characters = paragraphs[position.paragraphIndex]
-        val lineIndex = characters[position.offset].lineIndex
-        return characters.filter { it.lineIndex == lineIndex }.joinToString("") { it.text }
-    }
 
     /**
      * Text of the paragraph containing [position], and the UTF-16 index of that character in it

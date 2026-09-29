@@ -18,16 +18,14 @@ internal object ReadingOrder {
 
     fun paragraphs(page: OcrPage): List<OcrParagraph> {
         val paragraphs = page.paragraphs.map(::withColumnsInOrder)
-        val joinable = paragraphs.map { (it.engine ?: page.engine) != OcrEngineType.ACCESSIBILITY }
+        // A paragraph without its own engine has the page's: lines added to a page carry the engine of their source.
+        val engines = paragraphs.map { it.engine ?: page.engine }
         val next = IntArray(paragraphs.size) { -1 }
         val continued = BooleanArray(paragraphs.size)
         for (index in paragraphs.indices) {
-            if (!joinable[index]) continue
+            if (engines[index] == OcrEngineType.ACCESSIBILITY) continue
             next[index] = paragraphs.indices
-                .filter { other ->
-                    other != index && joinable[other] && !continued[other] &&
-                        paragraphs[other].engine == paragraphs[index].engine
-                }
+                .filter { other -> other != index && !continued[other] && engines[other] == engines[index] }
                 .mapNotNull { other -> gapToContinuation(paragraphs[index], paragraphs[other])?.let { other to it } }
                 .minByOrNull { (_, gap) -> gap }
                 ?.first
