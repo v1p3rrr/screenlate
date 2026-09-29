@@ -74,7 +74,7 @@ private val WEIGHT_NAMES = listOf(
     R.string.popup_text_weight_bold,
 )
 
-/** The lookup page's font and custom CSS, as two cards of the Appearance screen. */
+/** The lookup page's font and custom CSS, as two cards of the Popup screen. */
 @Composable
 fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()

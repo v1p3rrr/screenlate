@@ -269,6 +269,24 @@ test('heavier text for all text or none drops the marks', async () => {
     assert.equal(page.document.querySelectorAll('.script-run').length, 0);
 });
 
+test('the definition copy button shows when copying is on and copies its dictionary', () => {
+    const entry = result('猫', 'ねこ', 'cat');
+    entry.term.glossaries.push({ dictionary: 'Other', content: JSON.stringify(['kitty']) });
+    Popup.render(state({ results: [entry] }));
+    const buttons = content.querySelectorAll('.copy-definition');
+    assert.equal(buttons.length, 2);
+    assert.equal(buttons[0].previousElementSibling.className, 'dictionary-name');
+    buttons[0].click();
+    assert.equal(page.calls.filter(call => call[0] === 'onCopyDefinition').length, 0);
+    Popup.setAppearance({ definitionCopy: 'meanings' });
+    assert.equal(page.document.documentElement.dataset.definitionCopy, 'meanings');
+    buttons[1].click();
+    assert.deepEqual(page.calls.at(-1), ['onCopyDefinition', 'kitty', '']);
+    Popup.setAppearance({ definitionCopy: 'all' });
+    buttons[0].click();
+    assert.deepEqual(page.calls.at(-1), ['onCopyDefinition', 'cat', 'cat']);
+});
+
 test('dictionary styles are scoped to their dictionary', () => {
     Popup.setStyles([{ dictionary: 'Dict [1]', css: '.x { color: blue }' }]);
     assert.match(page.document.getElementById('dictionary-styles').textContent, /Dict \[1\]/);
@@ -365,9 +383,11 @@ test('the dictionary chip goes after a list marker and before tags, never inside
     const [listed, tagged] = content.querySelectorAll('.dictionary-name');
     // Inside the first list item, so the item's marker stays in front of it.
     assert.equal(listed.closest('li').textContent, 'Listaux will not');
-    assert.equal(listed.nextElementSibling.textContent, 'aux');
+    // The copy button moves with the chip.
+    assert.equal(listed.nextElementSibling.className, 'copy-definition');
+    assert.equal(listed.nextElementSibling.nextElementSibling.textContent, 'aux');
     // Definition tags already start a line of text: the chip goes in front of them.
-    assert.equal(tagged.nextElementSibling.className, 'tags');
+    assert.equal(tagged.nextElementSibling.nextElementSibling.className, 'tags');
 });
 
 test('a cloud recognition failure shows ⚠, which opens its reason in the panel', () => {

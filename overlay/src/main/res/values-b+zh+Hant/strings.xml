@@ -44,6 +44,7 @@
     <string name="overlay_kanji_frequency">頻率</string>
     <string name="overlay_engine_app_text">應用程式文字</string>
     <string name="overlay_copy">複製</string>
+    <string name="overlay_copy_definition">複製釋義</string>
     <string name="overlay_open_note">在 AnkiDroid 中開啟（長按仍然新增）</string>
     <string name="overlay_add_anyway">仍然新增</string>
     <string name="overlay_add_anyway_picture">仍然新增並附帶圖片</string>

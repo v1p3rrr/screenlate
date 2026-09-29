@@ -16,6 +16,7 @@ import com.vpr.screenlate.overlay.fonts.InstalledFont
 import com.vpr.screenlate.overlay.fonts.PageFonts
 import com.vpr.screenlate.overlay.fonts.PopupFonts
 import com.vpr.screenlate.overlay.fonts.SystemFontFiles
+import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +37,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Font, text size and weight, and custom CSS of the lookup page. */
+/** Font, text size and weight, custom CSS, and definition copying of the lookup page. */
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class PopupAppearanceViewModel @Inject constructor(
@@ -96,6 +97,10 @@ class PopupAppearanceViewModel @Inject constructor(
     fun setTextWeight(weight: Int) = launch { repository.setTextWeight(weight) }
 
     fun setLetterThickness(thickness: Int) = launch { repository.setLetterThickness(thickness) }
+
+    fun setCopyDefinitions(enabled: Boolean) = launch { repository.setCopyDefinitions(enabled) }
+
+    fun setCopyMode(mode: DefinitionCopyMode) = launch { repository.setCopyMode(mode) }
 
     fun download(font: CatalogFont) = fonts.download(font)
 

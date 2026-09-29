@@ -166,7 +166,8 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="lookup_title">Búsqueda</string>
     <string name="settings_lookup_summary">Longitud de análisis, resultados, romaji, kanji de la palabra</string>
     <string name="appearance_title">Apariencia</string>
-    <string name="settings_appearance_summary">Tema, idioma, fuente y CSS de la ventana emergente</string>
+    <string name="settings_appearance_summary">Tema, e-ink, idioma</string>
+    <string name="settings_popup_summary">Fuente, tamaño y grosor del texto, CSS, copia de definiciones</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
     <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
     <string name="about_title">Acerca de</string>
@@ -305,6 +306,14 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="popup_font_too_large">El archivo es demasiado grande para una fuente (más de 64 MB).</string>
     <string name="popup_font_web_font">Es una fuente web (.woff o .woff2) y no se puede añadir. Conviértela antes a .ttf u .otf.</string>
     <string name="popup_font_import_failed">No se pudo añadir el archivo. Vuelve a intentarlo o comprueba que el teléfono tenga espacio libre.</string>
+    <string name="popup_settings_title">Ventana emergente</string>
+    <string name="popup_copy_title">Copia de definiciones</string>
+    <string name="popup_copy_switch">Botón de copiar junto a los nombres de diccionarios</string>
+    <string name="popup_copy_switch_hint">En la ventana emergente y en la búsqueda, un botón junto al nombre de cada diccionario copia sus definiciones de la entrada.</string>
+    <string name="popup_copy_mode_all">Todo</string>
+    <string name="popup_copy_mode_meanings">Solo acepciones</string>
+    <string name="popup_copy_mode_all_hint">Todo lo que muestra el diccionario. Las apps que admiten formato lo reciben con formato; las demás, como texto sin formato.</string>
+    <string name="popup_copy_mode_meanings_hint">Las acepciones numeradas como texto sin formato, sin ejemplos, notas ni referencias. No está garantizado en todos los diccionarios: si no se pueden distinguir las acepciones, se copia todo el texto.</string>
     <string name="popup_css_title">CSS personalizado</string>
     <string name="popup_css_hint">Se aplica a la ventana emergente y a la página de búsqueda después de los estilos de los diccionarios, como el CSS personalizado de la ventana de Yomitan. Las entradas usan los nombres de clase de Yomitan, y los colores de las etiquetas siguen las variables de Yomitan (--tag-frequency-background-color y otras). Una fuente que el teléfono no tiene se sustituye por la de la ventana emergente.</string>
     <string name="css_problem_unclosed_comment">Línea %1$d: un comentario no está cerrado (falta */), todo lo que sigue se ignora</string>
@@ -321,8 +330,8 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="yomitan_section_appearance_hint">Tamaño del texto y CSS personalizado de la ventana</string>
     <string name="yomitan_summary_font_size">Tamaño del texto %1$d</string>
     <string name="yomitan_summary_css">CSS personalizado de la ventana: %1$d líneas</string>
-    <string name="yomitan_summary_css_issues">El CSS tiene problemas (%1$d), consulta Apariencia</string>
-    <string name="yomitan_summary_font_family">La fuente «%1$s» no se importa: elige una fuente en Apariencia</string>
+    <string name="yomitan_summary_css_issues">El CSS tiene problemas (%1$d), consulta «Ventana emergente»</string>
+    <string name="yomitan_summary_font_family">La fuente «%1$s» no se importa: elige una fuente en «Ventana emergente»</string>
     <string name="popup_font_system_missing">Este teléfono no tiene una fuente japonesa del sistema, así que los kanji pueden verse con formas chinas. Descarga Noto Sans JP más abajo.</string>
     <string name="about_licenses">Licencias</string>
     <string name="about_licenses_hint">Screenlate está hecho con bibliotecas y código de código abierto; los diccionarios conservan sus propias licencias.</string>

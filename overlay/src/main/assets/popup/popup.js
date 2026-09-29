@@ -616,10 +616,15 @@ const Popup = (() => {
         // A chip in the first definition, as in Yomitan, instead of a line of its own; placed after drawing.
         const name = element('span', 'dictionary-name', shortName(dictionary));
         name.title = dictionary;
+        const copy = element('button', 'copy-definition');
+        copy.type = 'button';
+        copy.innerHTML = ICONS.copy;
+        copy.setAttribute('aria-label', labelOf('copyDefinition'));
+        copy.addEventListener('click', () => copyDefinition(glossaries));
         const container = glossaries.length > 1 ? element('ol', 'definitions') : section;
         for (const glossary of glossaries) {
             const definition = glossaries.length > 1 ? element('li', 'definition') : element('div', 'definition');
-            if (glossary === glossaries[0]) definition.append(name);
+            if (glossary === glossaries[0]) definition.append(name, copy);
             const tags = (glossary.definitionTags || '').split(' ').filter(Boolean);
             if (tags.length) {
                 const tagRow = element('span', 'tags');
@@ -645,6 +650,14 @@ const Popup = (() => {
         return section;
     }
 
+    /** One dictionary's definitions, in the mode the settings chose; the button shows only when copying is on. */
+    function copyDefinition(glossaries) {
+        const mode = document.documentElement.dataset.definitionCopy;
+        if (!mode || typeof DefinitionCopy === 'undefined') return;
+        const { text, html } = DefinitionCopy.copy(glossaries, mode);
+        if (text) ScreenlateBridge.onCopyDefinition(text, html);
+    }
+
     const BLOCK_DISPLAYS = new Set(['block', 'list-item', 'flow-root']);
     const INLINE_DISPLAYS = new Set(['inline', 'contents', '']);
 
@@ -655,7 +668,9 @@ const Popup = (() => {
      */
     function placeDictionaryName(name) {
         let container = name.parentElement;
+        const copy = name.nextElementSibling?.classList.contains('copy-definition') ? name.nextElementSibling : null;
         name.remove();
+        copy?.remove();
         for (;;) {
             const first = firstVisibleChild(container);
             if (opensBlock(first)) {
@@ -663,6 +678,7 @@ const Popup = (() => {
                 continue;
             }
             container.insertBefore(name, first);
+            if (copy) name.after(copy);
             return;
         }
     }
@@ -892,13 +908,15 @@ const Popup = (() => {
 
     /**
      * Language, fonts, text weight and the user's CSS: { lang, fontFaces, fontFamily, fontSize, textWeight, textStroke,
-     * textScope, scriptPattern, customCss, preload, preloadText }. The custom CSS comes after the dictionaries' styles;
-     * preload names a font to load before it is first needed, for the characters of preloadText (a face limited to the
-     * language's script loads only for them). See setHeavierText for the weight.
+     * textScope, scriptPattern, customCss, preload, preloadText, definitionCopy }. The custom CSS comes after the
+     * dictionaries' styles; preload names a font to load before it is first needed, for the characters of preloadText
+     * (a face limited to the language's script loads only for them). See setHeavierText for the weight.
+     * definitionCopy is the mode of the copy button next to each dictionary's name ('all' or 'meanings'); empty hides it.
      */
     function setAppearance(appearance) {
         const root = document.documentElement;
         root.lang = appearance.lang || '';
+        root.dataset.definitionCopy = appearance.definitionCopy || '';
         fontFaces.textContent = appearance.fontFaces || '';
         root.style.setProperty('--font-family', appearance.fontFamily || 'sans-serif');
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));

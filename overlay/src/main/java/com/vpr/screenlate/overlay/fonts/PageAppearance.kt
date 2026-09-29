@@ -61,6 +61,7 @@ class PageAppearance @Inject constructor(
                 put("textScope", if (allText) "all" else "script")
                 put("scriptPattern", scriptPattern(support.systemFonts.unicodeRange))
                 put("customCss", customCss)
+                put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
                 if (chosen != null) {
                     put("preload", PageFonts.CHOSEN)
                     put("preloadText", support.fontSample)

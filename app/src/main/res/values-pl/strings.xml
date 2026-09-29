@@ -166,7 +166,8 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="lookup_title">Wyszukiwanie</string>
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, kanji słowa</string>
     <string name="appearance_title">Wygląd</string>
-    <string name="settings_appearance_summary">Motyw, język, czcionka i CSS okienka</string>
+    <string name="settings_appearance_summary">Motyw, e-ink, język</string>
+    <string name="settings_popup_summary">Czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
     <string name="yomitan_import_title">Import z Yomitan</string>
     <string name="settings_yomitan_summary">Ustawienia i słowniki z Yomitan</string>
     <string name="about_title">O aplikacji</string>
@@ -305,6 +306,14 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="popup_font_too_large">Plik jest za duży jak na czcionkę (ponad 64 MB).</string>
     <string name="popup_font_web_font">To czcionka internetowa (.woff lub .woff2), której nie można dodać. Najpierw przekonwertuj ją na .ttf lub .otf.</string>
     <string name="popup_font_import_failed">Nie udało się dodać pliku. Spróbuj ponownie lub sprawdź, czy w telefonie jest wolne miejsce.</string>
+    <string name="popup_settings_title">Okienko</string>
+    <string name="popup_copy_title">Kopiowanie definicji</string>
+    <string name="popup_copy_switch">Przycisk kopiowania przy nazwach słowników</string>
+    <string name="popup_copy_switch_hint">W okienku i wyszukiwaniu przycisk przy nazwie każdego słownika kopiuje jego definicje z hasła.</string>
+    <string name="popup_copy_mode_all">Wszystko</string>
+    <string name="popup_copy_mode_meanings">Tylko znaczenia</string>
+    <string name="popup_copy_mode_all_hint">Wszystko, co pokazuje słownik. Aplikacje obsługujące formatowanie dostają je sformatowane, pozostałe jako zwykły tekst.</string>
+    <string name="popup_copy_mode_meanings_hint">Ponumerowane znaczenia jako zwykły tekst, bez przykładów, uwag i odsyłaczy. Nie jest to gwarantowane dla każdego słownika: jeśli znaczeń nie da się wyodrębnić, kopiowany jest cały tekst.</string>
     <string name="popup_css_title">Własny CSS</string>
     <string name="popup_css_hint">Stosowany do okienka i strony wyszukiwania po stylach słowników, jak własny CSS okienka w Yomitan. Hasła używają nazw klas Yomitan, a kolory tagów wynikają ze zmiennych Yomitan (--tag-frequency-background-color i innych). Czcionka, której telefon nie ma, jest zastępowana czcionką okienka.</string>
     <string name="css_problem_unclosed_comment">Wiersz %1$d: komentarz nie jest zamknięty (brak */), wszystko dalej jest pomijane</string>
@@ -321,8 +330,8 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="yomitan_section_appearance_hint">Rozmiar tekstu i własny CSS okienka</string>
     <string name="yomitan_summary_font_size">Rozmiar tekstu %1$d</string>
     <string name="yomitan_summary_css">Własny CSS okienka: wiersze: %1$d</string>
-    <string name="yomitan_summary_css_issues">CSS ma problemy (%1$d), zobacz Wygląd</string>
-    <string name="yomitan_summary_font_family">Czcionka „%1$s” nie jest importowana: wybierz czcionkę w Wyglądzie</string>
+    <string name="yomitan_summary_css_issues">CSS ma problemy (%1$d), zobacz ekran „Okienko”</string>
+    <string name="yomitan_summary_font_family">Czcionka „%1$s” nie jest importowana: wybierz czcionkę na ekranie „Okienko”</string>
     <string name="popup_font_system_missing">Ten telefon nie ma japońskiej czcionki systemowej, więc kanji mogą mieć chińskie formy. Pobierz Noto Sans JP poniżej.</string>
     <string name="about_licenses">Licencje</string>
     <string name="about_licenses_hint">Screenlate powstał z użyciem otwartych bibliotek i kodu; słowniki mają własne licencje.</string>

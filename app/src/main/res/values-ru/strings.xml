@@ -167,7 +167,8 @@
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, кандзи слова</string>
     <string name="appearance_title">Оформление</string>
-    <string name="settings_appearance_summary">Тема, язык, шрифт и CSS попапа</string>
+    <string name="settings_appearance_summary">Тема, e-ink, язык</string>
+    <string name="settings_popup_summary">Шрифт, размер и толщина текста, CSS, копирование определений</string>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
     <string name="settings_yomitan_summary">Настройки и словари из Yomitan</string>
     <string name="about_title">О приложении</string>
@@ -306,6 +307,14 @@
     <string name="popup_font_too_large">Файл слишком большой для шрифта (больше 64 МБ).</string>
     <string name="popup_font_web_font">Это веб-шрифт (.woff или .woff2), такие не добавляются. Сначала преобразуйте его в .ttf или .otf.</string>
     <string name="popup_font_import_failed">Не удалось добавить файл. Попробуйте ещё раз или проверьте, есть ли свободное место на телефоне.</string>
+    <string name="popup_settings_title">Попап</string>
+    <string name="popup_copy_title">Копирование определений</string>
+    <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
+    <string name="popup_copy_switch_hint">В попапе и поиске кнопка у названия каждого словаря копирует его определения из статьи.</string>
+    <string name="popup_copy_mode_all">Всё</string>
+    <string name="popup_copy_mode_meanings">Только значения</string>
+    <string name="popup_copy_mode_all_hint">Всё, что показывает словарь. Приложения с поддержкой форматирования получат его с оформлением, остальные — обычным текстом.</string>
+    <string name="popup_copy_mode_meanings_hint">Пронумерованные значения обычным текстом, без примеров, пометок и ссылок. Не гарантируется для всех словарей: если значения не удаётся выделить, копируется весь текст.</string>
     <string name="popup_css_title">Свой CSS</string>
     <string name="popup_css_hint">Применяется к попапу и странице поиска после стилей словарей, как Custom popup CSS в Yomitan. Статьи используют классы Yomitan, цвета тегов — переменные Yomitan (--tag-frequency-background-color и другие). Шрифт, которого нет на телефоне, заменяется шрифтом попапа.</string>
     <string name="css_problem_unclosed_comment">Строка %1$d: комментарий не закрыт (нет */), всё после него игнорируется</string>
@@ -322,8 +331,8 @@
     <string name="yomitan_section_appearance_hint">Размер текста и свой CSS попапа</string>
     <string name="yomitan_summary_font_size">Размер текста %1$d</string>
     <string name="yomitan_summary_css">Свой CSS попапа: строк — %1$d</string>
-    <string name="yomitan_summary_css_issues">В CSS есть проблемы (%1$d), подробности в «Оформлении»</string>
-    <string name="yomitan_summary_font_family">Шрифт «%1$s» не переносится: выберите шрифт в «Оформлении»</string>
+    <string name="yomitan_summary_css_issues">В CSS есть проблемы (%1$d), подробности в разделе «Попап»</string>
+    <string name="yomitan_summary_font_family">Шрифт «%1$s» не переносится: выберите шрифт в разделе «Попап»</string>
     <string name="popup_font_system_missing">На телефоне нет японского системного шрифта, поэтому кандзи могут выглядеть по-китайски. Скачайте Noto Sans JP ниже.</string>
     <string name="about_licenses">Лицензии</string>
     <string name="about_licenses_hint">Screenlate построен на открытых библиотеках и коде; у словарей свои лицензии.</string>

@@ -166,7 +166,8 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="lookup_title">Tra cứu</string>
     <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, kanji của từ</string>
     <string name="appearance_title">Hiển thị</string>
-    <string name="settings_appearance_summary">Giao diện, ngôn ngữ, phông chữ và CSS của cửa sổ bật lên</string>
+    <string name="settings_appearance_summary">Giao diện, e-ink, ngôn ngữ</string>
+    <string name="settings_popup_summary">Phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
     <string name="yomitan_import_title">Nhập từ Yomitan</string>
     <string name="settings_yomitan_summary">Cài đặt và từ điển từ Yomitan</string>
     <string name="about_title">Giới thiệu</string>
@@ -305,6 +306,14 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="popup_font_too_large">Tệp quá lớn đối với một phông chữ (trên 64 MB).</string>
     <string name="popup_font_web_font">Đây là phông web (.woff hoặc .woff2) nên không thể thêm. Hãy chuyển nó sang .ttf hoặc .otf trước.</string>
     <string name="popup_font_import_failed">Không thể thêm tệp. Hãy thử lại hoặc kiểm tra dung lượng trống trên điện thoại.</string>
+    <string name="popup_settings_title">Cửa sổ bật lên</string>
+    <string name="popup_copy_title">Sao chép định nghĩa</string>
+    <string name="popup_copy_switch">Nút sao chép cạnh tên từ điển</string>
+    <string name="popup_copy_switch_hint">Trong cửa sổ bật lên và tìm kiếm, nút cạnh tên mỗi từ điển sẽ sao chép định nghĩa của từ điển đó cho mục từ.</string>
+    <string name="popup_copy_mode_all">Tất cả</string>
+    <string name="popup_copy_mode_meanings">Chỉ nghĩa</string>
+    <string name="popup_copy_mode_all_hint">Mọi thứ từ điển hiển thị. Ứng dụng hỗ trợ định dạng sẽ nhận bản có định dạng, các ứng dụng khác nhận văn bản thuần.</string>
+    <string name="popup_copy_mode_meanings_hint">Các nghĩa được đánh số dưới dạng văn bản thuần, không có ví dụ, ghi chú và tham chiếu. Không đảm bảo với mọi từ điển: nếu không tách được các nghĩa, toàn bộ văn bản sẽ được sao chép.</string>
     <string name="popup_css_title">CSS tùy chỉnh</string>
     <string name="popup_css_hint">Áp dụng cho cửa sổ bật lên và trang tìm kiếm sau kiểu dáng của từ điển, giống CSS tùy chỉnh cho cửa sổ bật lên của Yomitan. Mục từ dùng tên lớp của Yomitan, và màu nhãn theo các biến của Yomitan (--tag-frequency-background-color và các biến khác). Phông chữ mà điện thoại không có sẽ được thay bằng phông chữ của cửa sổ bật lên.</string>
     <string name="css_problem_unclosed_comment">Dòng %1$d: một chú thích chưa được đóng (thiếu */), mọi thứ sau đó bị bỏ qua</string>
@@ -321,8 +330,8 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="yomitan_section_appearance_hint">Cỡ chữ và CSS tùy chỉnh của cửa sổ bật lên</string>
     <string name="yomitan_summary_font_size">Cỡ chữ %1$d</string>
     <string name="yomitan_summary_css">CSS tùy chỉnh của cửa sổ bật lên: %1$d dòng</string>
-    <string name="yomitan_summary_css_issues">CSS có vấn đề (%1$d), xem mục Hiển thị</string>
-    <string name="yomitan_summary_font_family">Phông chữ “%1$s” không được nhập: hãy chọn phông chữ trong mục Hiển thị</string>
+    <string name="yomitan_summary_css_issues">CSS có vấn đề (%1$d), xem mục Cửa sổ bật lên</string>
+    <string name="yomitan_summary_font_family">Phông chữ “%1$s” không được nhập: hãy chọn phông chữ trong mục Cửa sổ bật lên</string>
     <string name="popup_font_system_missing">Điện thoại này không có phông chữ tiếng Nhật của hệ thống, nên kanji có thể hiển thị theo dạng chữ Trung Quốc. Hãy tải Noto Sans JP ở bên dưới.</string>
     <string name="about_licenses">Giấy phép</string>
     <string name="about_licenses_hint">Screenlate được xây dựng bằng thư viện và mã nguồn mở; các từ điển giữ giấy phép riêng của chúng.</string>

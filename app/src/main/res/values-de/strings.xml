@@ -166,7 +166,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="lookup_title">Nachschlagen</string>
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Kanji des Wortes</string>
     <string name="appearance_title">Darstellung</string>
-    <string name="settings_appearance_summary">Design, Sprache, Popup-Schrift und CSS</string>
+    <string name="settings_appearance_summary">Design, E-Ink, Sprache</string>
+    <string name="settings_popup_summary">Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
     <string name="yomitan_import_title">Aus Yomitan importieren</string>
     <string name="settings_yomitan_summary">Einstellungen und Wörterbücher aus Yomitan</string>
     <string name="about_title">Über</string>
@@ -305,6 +306,14 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="popup_font_too_large">Die Datei ist zu groß für eine Schrift (über 64 MB).</string>
     <string name="popup_font_web_font">Das ist eine Webschrift (.woff oder .woff2), die nicht hinzugefügt werden kann. Wandle sie zuerst in .ttf oder .otf um.</string>
     <string name="popup_font_import_failed">Die Datei konnte nicht hinzugefügt werden. Versuche es erneut oder prüfe, ob auf dem Telefon genug Speicher frei ist.</string>
+    <string name="popup_settings_title">Popup</string>
+    <string name="popup_copy_title">Definitionen kopieren</string>
+    <string name="popup_copy_switch">Kopierknopf neben Wörterbuchnamen</string>
+    <string name="popup_copy_switch_hint">Im Popup und in der Suche kopiert ein Knopf neben jedem Wörterbuchnamen dessen Definitionen des Eintrags.</string>
+    <string name="popup_copy_mode_all">Alles</string>
+    <string name="popup_copy_mode_meanings">Nur Bedeutungen</string>
+    <string name="popup_copy_mode_all_hint">Alles, was das Wörterbuch zeigt. Apps mit Formatierung erhalten es formatiert, andere als reinen Text.</string>
+    <string name="popup_copy_mode_meanings_hint">Die nummerierten Bedeutungen als reiner Text, ohne Beispiele, Hinweise und Verweise. Nicht bei jedem Wörterbuch garantiert: Lassen sich die Bedeutungen nicht erkennen, wird der ganze Text kopiert.</string>
     <string name="popup_css_title">Eigenes CSS</string>
     <string name="popup_css_hint">Wird nach den Stilen der Wörterbücher auf das Popup und die Suchseite angewendet, wie das eigene Popup-CSS von Yomitan. Einträge nutzen die Klassennamen von Yomitan, und Tag-Farben folgen den Variablen von Yomitan (--tag-frequency-background-color und andere). Eine Schrift, die das Telefon nicht hat, wird durch die Popup-Schrift ersetzt.</string>
     <string name="css_problem_unclosed_comment">Zeile %1$d: Ein Kommentar ist nicht geschlossen (kein */), alles danach wird ignoriert</string>
@@ -321,8 +330,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="yomitan_section_appearance_hint">Textgröße und eigenes Popup-CSS</string>
     <string name="yomitan_summary_font_size">Textgröße %1$d</string>
     <string name="yomitan_summary_css">Eigenes Popup-CSS: %1$d Zeilen</string>
-    <string name="yomitan_summary_css_issues">Das CSS hat Probleme (%1$d), siehe Darstellung</string>
-    <string name="yomitan_summary_font_family">Die Schrift „%1$s“ wird nicht importiert: Wähle unter Darstellung eine Schrift</string>
+    <string name="yomitan_summary_css_issues">Das CSS hat Probleme (%1$d), siehe „Popup“</string>
+    <string name="yomitan_summary_font_family">Die Schrift „%1$s“ wird nicht importiert: Wähle unter „Popup“ eine Schrift</string>
     <string name="popup_font_system_missing">Dieses Telefon hat keine japanische Systemschrift, daher können Kanji chinesische Formen annehmen. Lade unten Noto Sans JP herunter.</string>
     <string name="about_licenses">Lizenzen</string>
     <string name="about_licenses_hint">Screenlate baut auf Open-Source-Bibliotheken und -Code auf; Wörterbücher behalten ihre eigenen Lizenzen.</string>

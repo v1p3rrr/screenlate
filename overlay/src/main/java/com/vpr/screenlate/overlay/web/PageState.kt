@@ -52,6 +52,7 @@ object PageState {
                 "addNote" to context.getString(R.string.overlay_add_note),
                 "playAudio" to context.getString(R.string.overlay_play_audio),
                 "copy" to context.getString(R.string.overlay_copy),
+                "copyDefinition" to context.getString(R.string.overlay_copy_definition),
                 "openNote" to context.getString(R.string.overlay_open_note),
                 "openApp" to context.getString(R.string.overlay_open_app),
                 "addAnyway" to context.getString(R.string.overlay_add_anyway),
@@ -87,10 +88,14 @@ object PageState {
     fun matchedLength(results: List<LookupResult>): Int =
         results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
 
-    /** Puts [text] on the clipboard; Android shows its own confirmation. */
-    fun copy(context: Context, text: String) {
-        context.getSystemService(ClipboardManager::class.java)
-            ?.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.overlay_copy), text))
+    /**
+     * Puts [text] on the clipboard, with [html] for apps that paste formatted text (others take the text); Android
+     * shows its own confirmation.
+     */
+    fun copy(context: Context, text: String, html: String? = null) {
+        val label = context.getString(R.string.overlay_copy)
+        val clip = if (html.isNullOrEmpty()) ClipData.newPlainText(label, text) else ClipData.newHtmlText(label, text, html)
+        context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(clip)
     }
 
     @Serializable

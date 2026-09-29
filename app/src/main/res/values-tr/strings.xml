@@ -166,7 +166,8 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="lookup_title">Arama</string>
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
     <string name="appearance_title">Görünüm</string>
-    <string name="settings_appearance_summary">Tema, dil, açılır pencere yazı tipi ve CSS</string>
+    <string name="settings_appearance_summary">Tema, e-ink, dil</string>
+    <string name="settings_popup_summary">Yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
     <string name="about_title">Hakkında</string>
@@ -305,6 +306,14 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="popup_font_too_large">Dosya bir yazı tipi için çok büyük (64 MB’den fazla).</string>
     <string name="popup_font_web_font">Bu bir web yazı tipi (.woff veya .woff2) ve eklenemez. Önce .ttf veya .otf biçimine dönüştürün.</string>
     <string name="popup_font_import_failed">Dosya eklenemedi. Yeniden deneyin veya telefonda boş alan olup olmadığını kontrol edin.</string>
+    <string name="popup_settings_title">Açılır pencere</string>
+    <string name="popup_copy_title">Tanım kopyalama</string>
+    <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
+    <string name="popup_copy_switch_hint">Açılır pencerede ve aramada her sözlük adının yanındaki düğme, o sözlüğün girişteki tanımlarını kopyalar.</string>
+    <string name="popup_copy_mode_all">Tümü</string>
+    <string name="popup_copy_mode_meanings">Yalnızca anlamlar</string>
+    <string name="popup_copy_mode_all_hint">Sözlüğün gösterdiği her şey. Biçimlendirmeyi destekleyen uygulamalar biçimli, diğerleri düz metin olarak alır.</string>
+    <string name="popup_copy_mode_meanings_hint">Numaralı anlamlar düz metin olarak; örnekler, notlar ve göndermeler olmadan. Her sözlükte garanti edilmez: anlamlar ayırt edilemezse metnin tamamı kopyalanır.</string>
     <string name="popup_css_title">Özel CSS</string>
     <string name="popup_css_hint">Yomitan’ın özel açılır pencere CSS’i gibi, sözlük stillerinden sonra açılır pencereye ve arama sayfasına uygulanır. Maddeler Yomitan’ın sınıf adlarını kullanır, etiket renkleri Yomitan’ın değişkenlerini izler (--tag-frequency-background-color ve diğerleri). Telefonda olmayan bir yazı tipinin yerine açılır pencere yazı tipi kullanılır.</string>
     <string name="css_problem_unclosed_comment">Satır %1$d: bir yorum kapatılmamış (*/ yok), sonrasındaki her şey yok sayılır</string>
@@ -321,8 +330,8 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="yomitan_section_appearance_hint">Metin boyutu ve özel açılır pencere CSS’i</string>
     <string name="yomitan_summary_font_size">Metin boyutu %1$d</string>
     <string name="yomitan_summary_css">Özel açılır pencere CSS’i: %1$d satır</string>
-    <string name="yomitan_summary_css_issues">CSS’te sorunlar var (%1$d), Görünüm’e bakın</string>
-    <string name="yomitan_summary_font_family">“%1$s” yazı tipi içe aktarılmadı: Görünüm’de bir yazı tipi seçin</string>
+    <string name="yomitan_summary_css_issues">CSS’te sorunlar var (%1$d), “Açılır pencere” ekranına bakın</string>
+    <string name="yomitan_summary_font_family">“%1$s” yazı tipi içe aktarılmadı: “Açılır pencere” ekranında bir yazı tipi seçin</string>
     <string name="popup_font_system_missing">Bu telefonda Japonca sistem yazı tipi yok, bu yüzden kanjiler Çince biçim alabilir. Aşağıdan Noto Sans JP’yi indirin.</string>
     <string name="about_licenses">Lisanslar</string>
     <string name="about_licenses_hint">Screenlate açık kaynak kütüphaneler ve kodla yapılmıştır; sözlükler kendi lisanslarını korur.</string>

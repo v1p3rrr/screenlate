@@ -54,8 +54,11 @@ class LookupPage(
         /** A kanji in an entry's headword was tapped. */
         fun onKanji(character: String)
 
-        /** The copy button of an entry: [text] is its headword. */
-        fun onCopy(text: String)
+        /**
+         * A copy button: an entry's headword, a selection, or a dictionary's definitions, which also come as [html]
+         * for apps that paste formatted text.
+         */
+        fun onCopy(text: String, html: String? = null)
 
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
@@ -314,6 +317,9 @@ class LookupPage(
 
         @JavascriptInterface
         fun onCopy(text: String) = post { callbacks.onCopy(text) }
+
+        @JavascriptInterface
+        fun onCopyDefinition(text: String, html: String) = post { callbacks.onCopy(text, html.ifEmpty { null }) }
 
         private fun post(action: () -> Unit) {
             mainHandler.post(action)

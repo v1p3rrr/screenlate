@@ -50,8 +50,8 @@ class LookupPageTest {
             events += "kanji:$character"
         }
 
-        override fun onCopy(text: String) {
-            events += "copy:$text"
+        override fun onCopy(text: String, html: String?) {
+            events += if (html == null) "copy:$text" else "copy:$text|$html"
         }
 
         override fun media(dictionary: String, path: String): ByteArray? = null

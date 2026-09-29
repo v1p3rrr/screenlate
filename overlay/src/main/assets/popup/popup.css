@@ -512,6 +512,36 @@ button.inflection-step {
     line-height: 1.6;
 }
 
+/* Copies the dictionary's definitions; shown when definition copying is on. */
+.copy-definition {
+    display: none;
+    vertical-align: middle;
+    width: 1.6em;
+    height: 1.4em;
+    margin: -0.2em 6px 0 -3px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+}
+
+:root[data-definition-copy="all"] .copy-definition,
+:root[data-definition-copy="meanings"] .copy-definition {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-definition:active {
+    background: var(--chip-bg);
+}
+
+.copy-definition svg {
+    width: 1.05em;
+    height: 1.05em;
+}
+
 .definitions {
     margin: 0;
     padding-left: 1.4em;

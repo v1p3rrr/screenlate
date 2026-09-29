@@ -12,6 +12,7 @@ export const SCRIPTS = {
     render: path.join(RENDER, 'render.js'),
     anki: path.join(RENDER, 'anki.js'),
     note: path.join(POPUP, 'note.js'),
+    definition: path.join(POPUP, 'definition.js'),
     popup: path.join(POPUP, 'popup.js'),
 };
 
@@ -46,8 +47,13 @@ export function notePage() {
     return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note] });
 }
 
+/** The definition copier with the renderer, on an empty page. */
+export function definitionPage() {
+    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.definition] });
+}
+
 /** popup.html with all its scripts; the page's own script tags are dropped. */
 export function popupPage() {
     const html = readFileSync(path.join(POPUP, 'popup.html'), 'utf8').replace(/<script[^>]*><\/script>\s*/g, '');
-    return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.popup] });
+    return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.popup] });
 }

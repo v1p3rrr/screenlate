@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.map
  * @property letterThickness an outline that thickens letters, 0 (none) to [MAX_THICKNESS] steps of [STROKE_PER_STEP];
  *   the same scope as [textWeight].
  * @property customCss the user's CSS, applied after the dictionaries' styles.
+ * @property copyDefinitions a copy button next to each dictionary's name in an entry copies its definitions.
+ * @property copyMode what that button copies.
  */
 data class PopupAppearance(
     val fontId: String? = null,
@@ -32,6 +34,8 @@ data class PopupAppearance(
     val textWeight: Int = NORMAL_WEIGHT,
     val letterThickness: Int = 0,
     val customCss: String = "",
+    val copyDefinitions: Boolean = false,
+    val copyMode: DefinitionCopyMode = DefinitionCopyMode.ALL,
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -53,6 +57,20 @@ data class PopupAppearance(
     }
 }
 
+/** What a dictionary's copy button puts on the clipboard; [id] is the page's name for it (`definition.js`). */
+enum class DefinitionCopyMode(val id: String) {
+    /** Everything the dictionary shows, formatted, with plain text for apps that paste only text. */
+    ALL("all"),
+
+    /** The numbered meanings as plain text, without examples, notes and references where they can be told apart. */
+    MEANINGS("meanings"),
+    ;
+
+    companion object {
+        fun of(id: String?): DefinitionCopyMode = entries.firstOrNull { it.id == id } ?: ALL
+    }
+}
+
 @Singleton
 class PopupAppearanceRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
@@ -67,7 +85,17 @@ class PopupAppearanceRepository @Inject constructor(
             textWeight = PopupAppearance.textWeight(prefs[TEXT_WEIGHT] ?: PopupAppearance.NORMAL_WEIGHT),
             letterThickness = PopupAppearance.letterThickness(prefs[LETTER_THICKNESS] ?: 0),
             customCss = prefs[CUSTOM_CSS].orEmpty(),
+            copyDefinitions = prefs[COPY_DEFINITIONS] ?: false,
+            copyMode = DefinitionCopyMode.of(prefs[COPY_MODE]),
         )
+    }
+
+    suspend fun setCopyDefinitions(enabled: Boolean) {
+        dataStore.edit { it[COPY_DEFINITIONS] = enabled }
+    }
+
+    suspend fun setCopyMode(mode: DefinitionCopyMode) {
+        dataStore.edit { it[COPY_MODE] = mode.id }
     }
 
     suspend fun setFont(id: String?) {
@@ -103,5 +131,7 @@ class PopupAppearanceRepository @Inject constructor(
         val TEXT_WEIGHT = intPreferencesKey("popup_text_weight")
         val LETTER_THICKNESS = intPreferencesKey("popup_letter_thickness")
         val CUSTOM_CSS = stringPreferencesKey("popup_custom_css")
+        val COPY_DEFINITIONS = booleanPreferencesKey("popup_copy_definitions")
+        val COPY_MODE = stringPreferencesKey("popup_copy_mode")
     }
 }

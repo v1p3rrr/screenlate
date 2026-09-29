@@ -44,6 +44,7 @@
     <string name="overlay_kanji_frequency">Frecuencia</string>
     <string name="overlay_engine_app_text">Texto de la app</string>
     <string name="overlay_copy">Copiar</string>
+    <string name="overlay_copy_definition">Copiar definición</string>
     <string name="overlay_open_note">Abrir en AnkiDroid (mantén pulsado para añadir igualmente)</string>
     <string name="overlay_add_anyway">Añadir igualmente</string>
     <string name="overlay_add_anyway_picture">Añadir igualmente, con una imagen</string>

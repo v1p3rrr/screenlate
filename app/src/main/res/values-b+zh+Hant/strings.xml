@@ -166,7 +166,8 @@
     <string name="lookup_title">查詞</string>
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
     <string name="appearance_title">外觀</string>
-    <string name="settings_appearance_summary">主題、語言、彈出視窗字型和 CSS</string>
+    <string name="settings_appearance_summary">主題、電子紙、語言</string>
+    <string name="settings_popup_summary">字型、文字大小與粗細、CSS、釋義複製</string>
     <string name="yomitan_import_title">從 Yomitan 匯入</string>
     <string name="settings_yomitan_summary">Yomitan 的設定和詞典</string>
     <string name="about_title">關於</string>
@@ -305,6 +306,14 @@
     <string name="popup_font_too_large">檔案太大，不像是字型（超過 64 MB）。</string>
     <string name="popup_font_web_font">這是網頁字型（.woff 或 .woff2），無法新增。請先將其轉換為 .ttf 或 .otf。</string>
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
+    <string name="popup_settings_title">彈出視窗</string>
+    <string name="popup_copy_title">釋義複製</string>
+    <string name="popup_copy_switch">字典名稱旁的複製按鈕</string>
+    <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個字典名稱旁的按鈕會複製該字典的釋義。</string>
+    <string name="popup_copy_mode_all">全部</string>
+    <string name="popup_copy_mode_meanings">僅釋義</string>
+    <string name="popup_copy_mode_all_hint">字典顯示的全部內容。支援格式的應用程式會取得帶格式的內容，其他則取得純文字。</string>
+    <string name="popup_copy_mode_meanings_hint">以純文字複製編號釋義，不含例句、註解和參見。並非對所有字典都有效：無法區分釋義時會複製全文。</string>
     <string name="popup_css_title">自訂 CSS</string>
     <string name="popup_css_hint">與 Yomitan 的彈出視窗自訂 CSS 一樣，在詞典樣式之後應用於彈出視窗和搜尋頁面。詞條使用 Yomitan 的類別名稱，標籤顏色遵循 Yomitan 的變數（--tag-frequency-background-color 等）。手機上沒有的字型會改用彈出視窗字型。</string>
     <string name="css_problem_unclosed_comment">第 %1$d 行：註解未閉合（缺少 */），其後的內容全部被忽略</string>
@@ -321,8 +330,8 @@
     <string name="yomitan_section_appearance_hint">文字大小和彈出視窗自訂 CSS</string>
     <string name="yomitan_summary_font_size">文字大小 %1$d</string>
     <string name="yomitan_summary_css">彈出視窗自訂 CSS：%1$d 行</string>
-    <string name="yomitan_summary_css_issues">CSS 存在問題（%1$d 個），請檢視外觀</string>
-    <string name="yomitan_summary_font_family">字型「%1$s」未匯入：請在外觀中選擇字型</string>
+    <string name="yomitan_summary_css_issues">CSS 存在問題（%1$d 個），請檢視「彈出視窗」設定</string>
+    <string name="yomitan_summary_font_family">字型「%1$s」未匯入：請在「彈出視窗」設定中選擇字型</string>
     <string name="popup_font_system_missing">這部手機沒有日文系統字型，因此漢字可能顯示為中文字形。請在下方下載 Noto Sans JP。</string>
     <string name="about_licenses">授權條款</string>
     <string name="about_licenses_hint">Screenlate 使用開源程式庫和程式碼構建；各詞典保留其各自的授權條款。</string>

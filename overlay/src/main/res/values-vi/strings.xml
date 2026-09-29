@@ -44,6 +44,7 @@
     <string name="overlay_kanji_frequency">Tần suất</string>
     <string name="overlay_engine_app_text">Văn bản ứng dụng</string>
     <string name="overlay_copy">Sao chép</string>
+    <string name="overlay_copy_definition">Sao chép định nghĩa</string>
     <string name="overlay_open_note">Mở trong AnkiDroid (giữ để vẫn thêm)</string>
     <string name="overlay_add_anyway">Vẫn thêm</string>
     <string name="overlay_add_anyway_picture">Vẫn thêm, kèm ảnh</string>

@@ -26,6 +26,7 @@ import com.vpr.screenlate.settings.AboutScreen
 import com.vpr.screenlate.settings.AppearanceScreen
 import com.vpr.screenlate.settings.LibrariesScreen
 import com.vpr.screenlate.settings.NoticesScreen
+import com.vpr.screenlate.settings.PopupSettingsScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
 import com.vpr.screenlate.ui.theme.LocalEInk
@@ -53,6 +54,9 @@ private data class BubbleRoute(val showAppText: Boolean = false)
 
 @Serializable
 private object LookupRoute
+
+@Serializable
+private object PopupRoute
 
 @Serializable
 private object BackgroundRoute
@@ -126,6 +130,7 @@ fun ScreenlateNavHost(
                             SettingsPage.BUBBLE -> BubbleRoute()
                             SettingsPage.BACKGROUND -> BackgroundRoute
                             SettingsPage.LOOKUP -> LookupRoute
+                            SettingsPage.POPUP -> PopupRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
                             SettingsPage.ANKI -> AnkiRoute
                             SettingsPage.APPEARANCE -> AppearanceRoute
@@ -141,6 +146,7 @@ fun ScreenlateNavHost(
             BubbleSettingsScreen(onBack = back, showAppText = entry.toRoute<BubbleRoute>().showAppText)
         }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
+        composable<PopupRoute> { PopupSettingsScreen(onBack = back) }
         composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
         composable<YomitanImportRoute> {

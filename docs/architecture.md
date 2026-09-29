@@ -65,7 +65,7 @@ Logs never contain recognized text, looked-up words, note contents or URLs with 
 ## Tests
 
 - JVM unit tests next to each module: OCR protocol and layout, `CompositeOcr` with fake engines, sorting, spelling variants and romaji, collection conversion, notes with a fake `AnkiBackend`, audio sources against MockWebServer, fonts and the CSS checker, the backup format and archive, popup placement.
-- Page scripts: `scripts/page-tests` runs `note.js`, `anki.js` and `popup.js` in jsdom under `node:test`.
+- Page scripts: `scripts/page-tests` runs `note.js`, `anki.js`, `definition.js` and `popup.js` in jsdom under `node:test`.
 - Instrumented tests: the engine with small dictionaries and the whole lookup pipeline, the dictionary registry, the lookup page in a WebView, the text selection menu entry (`ProcessTextTest`), and an AnkiDroid round trip that skips itself without AnkiDroid.
 
 ## Threading

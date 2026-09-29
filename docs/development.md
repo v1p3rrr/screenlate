@@ -21,7 +21,7 @@ Debug builds install as `com.vpr.screenlate.debug` and can live next to a releas
 ## Tests
 
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
-- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`) in a simulated DOM.
+- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`) in a simulated DOM.
 - `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
 
 ## Project layout

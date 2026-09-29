@@ -44,6 +44,7 @@
     <string name="overlay_kanji_frequency">빈도</string>
     <string name="overlay_engine_app_text">앱 텍스트</string>
     <string name="overlay_copy">복사</string>
+    <string name="overlay_copy_definition">뜻풀이 복사</string>
     <string name="overlay_open_note">AnkiDroid에서 열기(길게 누르면 그래도 추가)</string>
     <string name="overlay_add_anyway">그래도 추가</string>
     <string name="overlay_add_anyway_picture">그래도 이미지와 함께 추가</string>

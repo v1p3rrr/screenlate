@@ -44,6 +44,7 @@
     <string name="overlay_kanji_frequency">頻度</string>
     <string name="overlay_engine_app_text">アプリのテキスト</string>
     <string name="overlay_copy">コピー</string>
+    <string name="overlay_copy_definition">定義をコピー</string>
     <string name="overlay_open_note">AnkiDroid で開く（長押しでそれでも追加）</string>
     <string name="overlay_add_anyway">それでも追加</string>
     <string name="overlay_add_anyway_picture">それでも画像付きで追加</string>

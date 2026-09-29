@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.fonts
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.JapaneseSupport
+import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.int
@@ -159,5 +160,18 @@ class PageFontsTest {
         assertThat(json["fontFamily"]?.jsonPrimitive?.content).isEqualTo("\"Screenlate Sans\", sans-serif")
         assertThat(json.containsKey("preload")).isFalse()
         assertThat(json["customCss"]?.jsonPrimitive?.content).isEmpty()
+    }
+
+    @Test
+    fun `definition copying passes its mode only when it is on`() {
+        fun mode(appearance: PopupAppearance) =
+            PageAppearance.build(JapaneseSupport, appearance, emptyList())["definitionCopy"]?.jsonPrimitive?.content
+        assertThat(mode(PopupAppearance())).isEmpty()
+        assertThat(mode(PopupAppearance(copyDefinitions = true))).isEqualTo("all")
+        assertThat(mode(PopupAppearance(copyDefinitions = true, copyMode = DefinitionCopyMode.MEANINGS))).isEqualTo("meanings")
+        assertThat(mode(PopupAppearance(copyMode = DefinitionCopyMode.MEANINGS))).isEmpty()
+        assertThat(DefinitionCopyMode.of("meanings")).isEqualTo(DefinitionCopyMode.MEANINGS)
+        assertThat(DefinitionCopyMode.of("unknown")).isEqualTo(DefinitionCopyMode.ALL)
+        assertThat(DefinitionCopyMode.of(null)).isEqualTo(DefinitionCopyMode.ALL)
     }
 }

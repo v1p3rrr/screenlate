@@ -1125,7 +1125,7 @@ class OverlayController(
             dock()
         }
 
-        override fun onCopy(text: String) = PageState.copy(service, text)
+        override fun onCopy(text: String, html: String?) = PageState.copy(service, text, html)
 
         override fun onKanji(character: String) {
             scope.launch {

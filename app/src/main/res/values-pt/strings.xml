@@ -166,7 +166,8 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="lookup_title">Pesquisa</string>
     <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, kanji da palavra</string>
     <string name="appearance_title">Aparência</string>
-    <string name="settings_appearance_summary">Tema, idioma, fonte e CSS do pop-up</string>
+    <string name="settings_appearance_summary">Tema, e-ink, idioma</string>
+    <string name="settings_popup_summary">Fonte, tamanho e peso do texto, CSS, cópia de definições</string>
     <string name="yomitan_import_title">Importar do Yomitan</string>
     <string name="settings_yomitan_summary">Configurações e dicionários do Yomitan</string>
     <string name="about_title">Sobre</string>
@@ -305,6 +306,14 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="popup_font_too_large">O arquivo é grande demais para uma fonte (mais de 64 MB).</string>
     <string name="popup_font_web_font">Esta é uma fonte web (.woff ou .woff2), que não pode ser adicionada. Converta-a antes para .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Não foi possível adicionar o arquivo. Tente de novo ou verifique se há espaço livre no celular.</string>
+    <string name="popup_settings_title">Pop-up</string>
+    <string name="popup_copy_title">Cópia de definições</string>
+    <string name="popup_copy_switch">Botão de copiar junto aos nomes dos dicionários</string>
+    <string name="popup_copy_switch_hint">No pop-up e na busca, um botão junto ao nome de cada dicionário copia as definições dele para a entrada.</string>
+    <string name="popup_copy_mode_all">Tudo</string>
+    <string name="popup_copy_mode_meanings">Só acepções</string>
+    <string name="popup_copy_mode_all_hint">Tudo o que o dicionário mostra. Apps que aceitam formatação recebem com formatação; os demais, texto simples.</string>
+    <string name="popup_copy_mode_meanings_hint">As acepções numeradas como texto simples, sem exemplos, notas e referências. Não é garantido para todos os dicionários: quando as acepções não podem ser separadas, o texto inteiro é copiado.</string>
     <string name="popup_css_title">CSS personalizado</string>
     <string name="popup_css_hint">Aplicado ao pop-up e à página de pesquisa depois dos estilos dos dicionários, como o CSS personalizado do pop-up do Yomitan. As entradas usam os nomes de classe do Yomitan, e as cores das etiquetas seguem as variáveis do Yomitan (--tag-frequency-background-color e outras). Uma fonte que o celular não tem é trocada pela fonte do pop-up.</string>
     <string name="css_problem_unclosed_comment">Linha %1$d: um comentário não foi fechado (sem */), tudo depois dele é ignorado</string>
@@ -321,8 +330,8 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="yomitan_section_appearance_hint">Tamanho do texto e CSS personalizado do pop-up</string>
     <string name="yomitan_summary_font_size">Tamanho do texto %1$d</string>
     <string name="yomitan_summary_css">CSS personalizado do pop-up: %1$d linhas</string>
-    <string name="yomitan_summary_css_issues">O CSS tem problemas (%1$d), veja Aparência</string>
-    <string name="yomitan_summary_font_family">A fonte “%1$s” não é importada: escolha uma fonte em Aparência</string>
+    <string name="yomitan_summary_css_issues">O CSS tem problemas (%1$d), veja “Pop-up”</string>
+    <string name="yomitan_summary_font_family">A fonte “%1$s” não é importada: escolha uma fonte em “Pop-up”</string>
     <string name="popup_font_system_missing">Este celular não tem uma fonte japonesa do sistema, então os kanji podem aparecer com formas chinesas. Baixe a Noto Sans JP abaixo.</string>
     <string name="about_licenses">Licenças</string>
     <string name="about_licenses_hint">O Screenlate é feito com bibliotecas e código de código aberto; os dicionários mantêm as próprias licenças.</string>

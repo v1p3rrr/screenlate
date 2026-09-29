@@ -166,7 +166,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="lookup_title">Recherche</string>
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, kanji du mot</string>
     <string name="appearance_title">Apparence</string>
-    <string name="settings_appearance_summary">Thème, langue, police et CSS de la fenêtre contextuelle</string>
+    <string name="settings_appearance_summary">Thème, e-ink, langue</string>
+    <string name="settings_popup_summary">Police, taille et graisse du texte, CSS, copie des définitions</string>
     <string name="yomitan_import_title">Importer depuis Yomitan</string>
     <string name="settings_yomitan_summary">Paramètres et dictionnaires de Yomitan</string>
     <string name="about_title">À propos</string>
@@ -305,6 +306,14 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="popup_font_too_large">Le fichier est trop gros pour une police (plus de 64 Mo).</string>
     <string name="popup_font_web_font">C’est une police web (.woff ou .woff2), qui ne peut pas être ajoutée. Convertissez-la d’abord en .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Impossible d’ajouter le fichier. Réessayez, ou vérifiez qu’il reste de l’espace sur le téléphone.</string>
+    <string name="popup_settings_title">Fenêtre contextuelle</string>
+    <string name="popup_copy_title">Copie des définitions</string>
+    <string name="popup_copy_switch">Bouton de copie près des noms de dictionnaires</string>
+    <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
+    <string name="popup_copy_mode_all">Tout</string>
+    <string name="popup_copy_mode_meanings">Sens seulement</string>
+    <string name="popup_copy_mode_all_hint">Tout ce qu’affiche le dictionnaire. Les applications qui gèrent la mise en forme la reçoivent, les autres reçoivent du texte brut.</string>
+    <string name="popup_copy_mode_meanings_hint">Les sens numérotés en texte brut, sans exemples, remarques ni renvois. Pas garanti pour tous les dictionnaires : si les sens ne peuvent pas être distingués, tout le texte est copié.</string>
     <string name="popup_css_title">CSS personnalisé</string>
     <string name="popup_css_hint">Appliqué à la fenêtre contextuelle et à la page de recherche après les styles des dictionnaires, comme le CSS personnalisé de la fenêtre de Yomitan. Les entrées utilisent les noms de classes de Yomitan, et les couleurs des étiquettes suivent les variables de Yomitan (--tag-frequency-background-color et d’autres). Une police absente du téléphone est remplacée par celle de la fenêtre contextuelle.</string>
     <string name="css_problem_unclosed_comment">Ligne %1$d : un commentaire n’est pas fermé (pas de */), tout ce qui suit est ignoré</string>
@@ -321,8 +330,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="yomitan_section_appearance_hint">Taille du texte et CSS personnalisé de la fenêtre</string>
     <string name="yomitan_summary_font_size">Taille du texte %1$d</string>
     <string name="yomitan_summary_css">CSS personnalisé de la fenêtre : %1$d lignes</string>
-    <string name="yomitan_summary_css_issues">Le CSS a des problèmes (%1$d), voir Apparence</string>
-    <string name="yomitan_summary_font_family">La police « %1$s » n’est pas importée : choisissez une police dans Apparence</string>
+    <string name="yomitan_summary_css_issues">Le CSS a des problèmes (%1$d), voir « Fenêtre contextuelle »</string>
+    <string name="yomitan_summary_font_family">La police « %1$s » n’est pas importée : choisissez une police dans « Fenêtre contextuelle »</string>
     <string name="popup_font_system_missing">Ce téléphone n’a pas de police japonaise système, les kanji peuvent donc prendre des formes chinoises. Téléchargez Noto Sans JP ci-dessous.</string>
     <string name="about_licenses">Licences</string>
     <string name="about_licenses_hint">Screenlate est construit avec des bibliothèques et du code open source ; les dictionnaires gardent leurs propres licences.</string>

@@ -124,7 +124,7 @@ fun SearchScreen(
                     runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
                 }
 
-                override fun onCopy(text: String) = PageState.copy(context, text)
+                override fun onCopy(text: String, html: String?) = PageState.copy(context, text, html)
 
                 override fun onKanji(character: String) {
                     scope.launch {

@@ -169,7 +169,8 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="lookup_title">Lookup</string>
     <string name="settings_lookup_summary">Scan length, results, romaji, kanji of the word</string>
     <string name="appearance_title">Appearance</string>
-    <string name="settings_appearance_summary">Theme, language, popup font and CSS</string>
+    <string name="settings_appearance_summary">Theme, e-ink, language</string>
+    <string name="settings_popup_summary">Font, text size and weight, CSS, definition copying</string>
     <string name="yomitan_import_title">Import from Yomitan</string>
     <string name="settings_yomitan_summary">Settings and dictionaries from Yomitan</string>
     <string name="about_title">About</string>
@@ -308,6 +309,14 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="popup_font_too_large">The file is too large for a font (over 64 MB).</string>
     <string name="popup_font_web_font">This is a web font (.woff or .woff2), which cannot be added. Convert it to .ttf or .otf first.</string>
     <string name="popup_font_import_failed">The file could not be added. Try again, or check that the phone has free space.</string>
+    <string name="popup_settings_title">Popup</string>
+    <string name="popup_copy_title">Definition copying</string>
+    <string name="popup_copy_switch">Copy button next to dictionary names</string>
+    <string name="popup_copy_switch_hint">In the popup and search, a button next to each dictionary’s name copies its definitions for the entry.</string>
+    <string name="popup_copy_mode_all">Everything</string>
+    <string name="popup_copy_mode_meanings">Only meanings</string>
+    <string name="popup_copy_mode_all_hint">Everything the dictionary shows. Apps that support formatting get it formatted, others get plain text.</string>
+    <string name="popup_copy_mode_meanings_hint">The numbered meanings as plain text, without examples, notes and references. Not guaranteed for every dictionary: where the meanings cannot be told apart, the whole text is copied.</string>
     <string name="popup_css_title">Custom CSS</string>
     <string name="popup_css_hint">Applied to the popup and the search page after the dictionaries\' styles, like Yomitan\'s custom popup CSS. Entries use Yomitan\'s class names, and tag colors follow Yomitan\'s variables (--tag-frequency-background-color and others). A font the phone lacks falls back to the popup font.</string>
     <string name="css_problem_unclosed_comment">Line %1$d: a comment is not closed (no */), everything after it is ignored</string>
@@ -324,8 +333,8 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="yomitan_section_appearance_hint">Text size and custom popup CSS</string>
     <string name="yomitan_summary_font_size">Text size %1$d</string>
     <string name="yomitan_summary_css">Custom popup CSS: %1$d lines</string>
-    <string name="yomitan_summary_css_issues">The CSS has problems (%1$d), see Appearance</string>
-    <string name="yomitan_summary_font_family">The font “%1$s” is not imported: choose a font under Appearance</string>
+    <string name="yomitan_summary_css_issues">The CSS has problems (%1$d), see Popup</string>
+    <string name="yomitan_summary_font_family">The font “%1$s” is not imported: choose a font under Popup</string>
     <string name="popup_font_system_missing">This phone has no Japanese system font, so kanji may take Chinese forms. Download Noto Sans JP below.</string>
     <string name="about_licenses">Licenses</string>
     <string name="about_licenses_hint">Screenlate is built with open-source libraries and code; dictionaries keep their own licenses.</string>

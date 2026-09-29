@@ -166,7 +166,8 @@
     <string name="lookup_title">検索</string>
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
-    <string name="settings_appearance_summary">テーマ、言語、ポップアップのフォントと CSS</string>
+    <string name="settings_appearance_summary">テーマ、E Ink、言語</string>
+    <string name="settings_popup_summary">フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="yomitan_import_title">Yomitan からインポート</string>
     <string name="settings_yomitan_summary">Yomitan の設定と辞書</string>
     <string name="about_title">アプリについて</string>
@@ -305,6 +306,14 @@
     <string name="popup_font_too_large">フォントとしてはファイルが大きすぎます（64 MB 超）。</string>
     <string name="popup_font_web_font">これは Web フォント（.woff または .woff2）なので追加できません。先に .ttf か .otf に変換してください。</string>
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
+    <string name="popup_settings_title">ポップアップ</string>
+    <string name="popup_copy_title">定義のコピー</string>
+    <string name="popup_copy_switch">辞書名の横にコピーボタン</string>
+    <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
+    <string name="popup_copy_mode_all">すべて</string>
+    <string name="popup_copy_mode_meanings">語義のみ</string>
+    <string name="popup_copy_mode_all_hint">辞書に表示されるすべて。書式に対応したアプリには書式付きで、それ以外にはプレーンテキストで渡されます。</string>
+    <string name="popup_copy_mode_meanings_hint">番号付きの語義をプレーンテキストで。用例・注記・参照は除きます。すべての辞書で保証されるわけではなく、語義を区別できない場合は全文をコピーします。</string>
     <string name="popup_css_title">カスタム CSS</string>
     <string name="popup_css_hint">Yomitan のポップアップ用カスタム CSS と同様に、辞書のスタイルのあとでポップアップと検索ページに適用されます。項目は Yomitan のクラス名を使い、タグの色は Yomitan の変数（--tag-frequency-background-color など）に従います。端末にないフォントはポップアップのフォントで代替されます。</string>
     <string name="css_problem_unclosed_comment">%1$d 行目：コメントが閉じられていません（*/ がありません）。以降はすべて無視されます</string>
@@ -321,8 +330,8 @@
     <string name="yomitan_section_appearance_hint">文字サイズとポップアップのカスタム CSS</string>
     <string name="yomitan_summary_font_size">文字サイズ %1$d</string>
     <string name="yomitan_summary_css">ポップアップのカスタム CSS：%1$d 行</string>
-    <string name="yomitan_summary_css_issues">CSS に問題があります（%1$d 件）。外観を確認してください</string>
-    <string name="yomitan_summary_font_family">フォント「%1$s」はインポートしません。外観でフォントを選んでください</string>
+    <string name="yomitan_summary_css_issues">CSS に問題があります（%1$d 件）。「ポップアップ」設定を確認してください</string>
+    <string name="yomitan_summary_font_family">フォント「%1$s」はインポートしません。「ポップアップ」設定でフォントを選んでください</string>
     <string name="popup_font_system_missing">この端末には日本語のシステムフォントがないため、漢字が中国語の字形で表示されることがあります。下から Noto Sans JP をダウンロードしてください。</string>
     <string name="about_licenses">ライセンス</string>
     <string name="about_licenses_hint">Screenlate はオープンソースのライブラリとコードで作られています。辞書にはそれぞれのライセンスがあります。</string>
