@@ -302,7 +302,9 @@ class CompositeOcrTest {
         }
         val updates = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList()
         assertThat(updates.engines).containsExactly(false to OcrEngineType.ML_KIT, true to OcrEngineType.ML_KIT).inOrder()
-        assertThat((updates.last() as OcrUpdate.Final).lensError).isNull()
+        val final = updates.last() as OcrUpdate.Final
+        assertThat(final.lensError).isNull()
+        assertThat(final.cloudWithdrawn).isTrue()
         assertThat(testScheduler.currentTime).isEqualTo(500)
     }
 
@@ -312,7 +314,36 @@ class CompositeOcrTest {
         val final = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList().last() as OcrUpdate.Final
         assertThat(final.page.engine).isEqualTo(OcrEngineType.ML_KIT)
         assertThat(final.lensError).isNull()
+        assertThat(final.cloudWithdrawn).isTrue()
         assertThat(lens.calls).isEqualTo(0)
+    }
+
+    @Test
+    fun `a lens result that came before the stop is not withdrawn`() = runTest {
+        val stop = CompletableDeferred<Unit>()
+        launch {
+            delay(1000)
+            stop.complete(Unit)
+        }
+        val final = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList().last() as OcrUpdate.Final
+        assertThat(final.page.engine).isEqualTo(OcrEngineType.LENS)
+        assertThat(final.cloudWithdrawn).isFalse()
+    }
+
+    @Test
+    fun `offline is reported even when the request was withdrawn`() = runTest {
+        online = false
+        val final = ocr.recognize(image, Language.JAPANESE, stopCloud = CompletableDeferred(Unit)).toList().single()
+            as OcrUpdate.Final
+        assertThat(final.lensError).isInstanceOf(OfflineException::class.java)
+        assertThat(final.cloudWithdrawn).isFalse()
+    }
+
+    @Test
+    fun `a withdrawn request ends without a result when the device fails`() = runTest {
+        mlKit.error = IllegalStateException("device")
+        val updates = ocr.recognize(image, Language.JAPANESE, stopCloud = CompletableDeferred(Unit)).toList()
+        assertThat(updates.filterIsInstance<OcrUpdate.Final>()).isEmpty()
     }
 
     @Test

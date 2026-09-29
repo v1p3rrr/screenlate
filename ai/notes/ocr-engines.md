@@ -44,11 +44,15 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
 - The screenshot callback copies the hardware buffer on `Dispatchers.Default` (the capturer's executor); a screenshot
   that arrives after the scan was cancelled is recycled in the continuation's `onCancellation`.
 
-- ➕ calls `noteSource()` synchronously: it fixes the shown view's layout and position (the sentence), completes the
-  scan's `cloudStop` (`CompositeOcr.recognize(stopCloud)`: the ML Kit page becomes final without a Lens error, a
-  cloud-only scan ends without a final and the controller marks it final itself) and cancels and disables OCR boost
-  bands for that scan (owner). A picture is taken only while the same scan is open (`scanId`), so the crop editor never
-  opens after a dock; the note itself goes on. Its result is shown on the entry of its term (`entryOf`), not by index.
+- ➕ calls `noteSource()` synchronously: it fixes the shown view's layout and position (the sentence) and, before the
+  scan's final result only, completes its `cloudStop` (`CompositeOcr.recognize(stopCloud)`: the ML Kit page becomes
+  final with `cloudWithdrawn`; a cloud-only scan, or one whose ML Kit run failed, ends without a final and the
+  controller marks it final itself). Only a withdrawal the final confirms turns OCR boost off for the scan and labels
+  the chip "On-device" (`ocrBoostMode`, `engineLabelOf` in `OcrStatus.kt`): a Lens result or failure that was already
+  on its way keeps its own label, and offline stays "offline" (owner: ➕ stops the pending cloud request). A picture is
+  taken only while the same scan is open (`scanId`), so the crop editor never opens after a dock; the note itself goes
+  on, but its result reaches neither the next scan's note memory (`ScanNotes`) nor its popup. It is shown on the entry
+  of its term (`entryOf`), not by index.
 - `CropEditor` removes its window through a main-thread Handler on coroutine cancellation (`View.post` never runs on
   a view that was not attached); `CropEditorTest` records windows through a `WindowManager` proxy.
 

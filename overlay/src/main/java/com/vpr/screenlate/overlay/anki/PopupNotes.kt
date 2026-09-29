@@ -103,8 +103,7 @@ class PopupNotes(
     private var pendingAutoPlay: Pair<String, String>? = null
     private var audioMenuJob: Job? = null
 
-    /** Notes added during this scan, by term. */
-    private val addedThisScan = mutableMapOf<Pair<String, String>, List<Long>>()
+    private val scanNotes = ScanNotes()
 
     /** Notes that the 📖 buttons of the current view open, by entry index. */
     private val openableNotes = mutableMapOf<Int, List<Long>>()
@@ -193,7 +192,7 @@ class PopupNotes(
         onResultsHidden()
         ankiStatus = null
         lastAutoPlayed = null
-        addedThisScan.clear()
+        scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
     }
@@ -205,7 +204,7 @@ class PopupNotes(
         val terms = currentTerms() ?: return
         val states = mutableMapOf<Int, String>()
         terms.forEachIndexed { index, term ->
-            addedThisScan[term]?.let { ids ->
+            scanNotes[term]?.let { ids ->
                 openableNotes[index] = ids
                 states[index] = "added"
             }
@@ -250,6 +249,7 @@ class PopupNotes(
 
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) {
         val source = noteSource()
+        val scan = scanNotes.scan
         scope.launch {
             var shared: SharedScreenshot? = null
             var picture: Bitmap? = null
@@ -267,7 +267,7 @@ class PopupNotes(
                 if (shot != null && cropEditor != null) {
                     // Cancelling the editor cancels the note.
                     picture = cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
-                        ?: return@launch showState(index, noteTerm, "", null)
+                        ?: return@launch showState(scan, index, noteTerm, "", null)
                 }
                 // The crop is a bitmap of its own.
                 shared?.release()
@@ -293,7 +293,7 @@ class PopupNotes(
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(TAG, "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, forced $force")
                 screenshot?.delete()
-                val (resultState, ids) = report(noteTerm, result)
+                val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
                 resultState
             } catch (e: CancellationException) {
@@ -306,15 +306,22 @@ class PopupNotes(
                 shared?.release()
                 picture?.recycle()
             }
-            showState(index, term, state, opens)
+            showState(scan, index, term, state, opens)
         }
     }
 
     /**
      * Shows a note's [state] on the entry of its [term]: the popup may show another word by now, or the same one at
-     * another index. [opens] are the notes that entry's 📖 opens.
+     * another index. [opens] are the notes that entry's 📖 opens. Nothing is shown once the note's [scan] has closed.
      */
-    private suspend fun showState(index: Int, term: Pair<String, String>?, state: String, opens: List<Long>?) {
+    private suspend fun showState(
+        scan: Int,
+        index: Int,
+        term: Pair<String, String>?,
+        state: String,
+        opens: List<Long>?,
+    ) {
+        if (scan != scanNotes.scan) return
         val entry = if (term == null) index else entryOf(currentTerms() ?: return, index, term) ?: return
         opens?.let { openableNotes[entry] = it }
         page.setNoteStates(mapOf(entry to state))
@@ -453,31 +460,32 @@ class PopupNotes(
     }
 
     /** The entry state after an add, and the notes its 📖 opens. */
-    private fun report(term: Pair<String, String>, result: AddResult): Pair<String, List<Long>?> = when (result) {
-        is AddResult.Added -> remember(term, listOf(result.noteId))
-        is AddResult.Updated -> remember(term, listOf(result.noteId))
-        is AddResult.Duplicate -> "open" to result.noteIds
-        AddResult.NotConfigured -> {
-            toast(context.getString(R.string.anki_not_configured))
-            "error" to null
+    private fun report(scan: Int, term: Pair<String, String>, result: AddResult): Pair<String, List<Long>?> =
+        when (result) {
+            is AddResult.Added -> remember(scan, term, listOf(result.noteId))
+            is AddResult.Updated -> remember(scan, term, listOf(result.noteId))
+            is AddResult.Duplicate -> "open" to result.noteIds
+            AddResult.NotConfigured -> {
+                toast(context.getString(R.string.anki_not_configured))
+                "error" to null
+            }
+            is AddResult.Unavailable -> {
+                toast(
+                    context.getString(
+                        if (result.availability == AnkiAvailability.NOT_INSTALLED) R.string.anki_not_installed else R.string.anki_no_permission,
+                    ),
+                )
+                "error" to null
+            }
+            is AddResult.Failed -> {
+                Log.w(TAG, "AnkiDroid rejected the note")
+                toast(context.getString(R.string.anki_error, result.message))
+                "error" to null
+            }
         }
-        is AddResult.Unavailable -> {
-            toast(
-                context.getString(
-                    if (result.availability == AnkiAvailability.NOT_INSTALLED) R.string.anki_not_installed else R.string.anki_no_permission,
-                ),
-            )
-            "error" to null
-        }
-        is AddResult.Failed -> {
-            Log.w(TAG, "AnkiDroid rejected the note")
-            toast(context.getString(R.string.anki_error, result.message))
-            "error" to null
-        }
-    }
 
-    private fun remember(term: Pair<String, String>, ids: List<Long>): Pair<String, List<Long>> {
-        addedThisScan[term] = ids
+    private fun remember(scan: Int, term: Pair<String, String>, ids: List<Long>): Pair<String, List<Long>> {
+        scanNotes.add(scan, term, ids)
         return "added" to ids
     }
 

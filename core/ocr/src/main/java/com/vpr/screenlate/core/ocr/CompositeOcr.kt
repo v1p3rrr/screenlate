@@ -43,9 +43,14 @@ sealed interface OcrUpdate {
     data class Draft(override val page: OcrPage) : OcrUpdate
 
     /**
-     * The result to keep. [lensError] is set when Lens failed or was skipped and [page] comes from ML Kit.
+     * The result to keep. [lensError] is set when Lens failed or was skipped and [page] comes from ML Kit;
+     * [cloudWithdrawn] when the caller withdrew the Lens request and [page] comes from ML Kit.
      */
-    data class Final(override val page: OcrPage, val lensError: Throwable? = null) : OcrUpdate
+    data class Final(
+        override val page: OcrPage,
+        val lensError: Throwable? = null,
+        val cloudWithdrawn: Boolean = false,
+    ) : OcrUpdate
 }
 
 class OfflineException : IOException("No network connection")
@@ -61,8 +66,8 @@ class LensPausedException : IOException("Lens refused recent requests")
  * ML Kit first reads a band around the aim ([FocusBand]), and another one when the aim has moved out of it meanwhile,
  * so the word under the aim has a draft long before the whole screen is read.
  *
- * Completing `stopCloud` withdraws the Lens request: the ML Kit page becomes final without a Lens error, and a
- * Lens-only scan ends without a final update.
+ * Completing `stopCloud` withdraws the Lens request: the ML Kit page becomes final with
+ * [OcrUpdate.Final.cloudWithdrawn]. A Lens-only scan, or one whose ML Kit run failed, then ends without a final update.
  */
 @Singleton
 class CompositeOcr internal constructor(
@@ -140,7 +145,8 @@ class CompositeOcr internal constructor(
                     } else {
                         Log.d(TAG, "Lens request withdrawn")
                         wholeImage.complete(Unit)
-                        emitter.emitFinal(OcrUpdate.Final(draft.await().getOrThrow()))
+                        // A failed ML Kit run was logged; the drafts already shown stay.
+                        draft.await().onSuccess { emitter.emitFinal(OcrUpdate.Final(it, cloudWithdrawn = true)) }
                     }
                 }
                 .onFailure { lensError ->

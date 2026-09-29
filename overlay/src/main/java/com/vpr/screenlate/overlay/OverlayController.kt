@@ -196,8 +196,11 @@ class OverlayController(
     /** Counts scans; a note compares it to tell whether the scan it was started in is still open. */
     private var scanId = 0
 
-    /** Completed when a note is added during the scan: the scan asks cloud recognition nothing more. */
+    /** Completed when a note is added before the scan's final result: its cloud request is withdrawn. */
     private var cloudStop: CompletableDeferred<Unit>? = null
+
+    /** The scan's cloud request was withdrawn and the final text is the device's. */
+    private var cloudWithdrawn = false
     private var layout: TextLayout? = null
     private var ocrFinal = false
     private var ocrEngine: OcrEngineType? = null
@@ -414,7 +417,10 @@ class OverlayController(
         placeDocked()
     }
 
-    /** Drops the scan and everything shown for it: popup, highlights, notes in progress and an open crop editor. */
+    /**
+     * Drops the scan and everything shown for it: popup, highlights and an open crop editor. A note already being added
+     * still finishes.
+     */
     private fun closeScan() {
         resetScan()
         popup.hide()
@@ -647,6 +653,7 @@ class OverlayController(
         ocrEngine = null
         ocrOffline = false
         lensError = null
+        cloudWithdrawn = false
         hit = null
         lookupJob?.cancel()
         lookupJob = null
@@ -693,6 +700,7 @@ class OverlayController(
                     page = page,
                     final = recognized?.final ?: (captured == null),
                     lensError = recognized?.lensError,
+                    cloudWithdrawn = recognized?.cloudWithdrawn ?: false,
                     flashLines = flash,
                 )
             }
@@ -732,6 +740,7 @@ class OverlayController(
                             page = update.page.offset(captured.left.toFloat(), captured.top.toFloat()),
                             final = update is OcrUpdate.Final,
                             lensError = (update as? OcrUpdate.Final)?.lensError,
+                            cloudWithdrawn = (update as? OcrUpdate.Final)?.cloudWithdrawn ?: false,
                         )
                         // Around app text, the lines OCR adds (text in images) flash as well.
                         show(flashLines)
@@ -740,8 +749,10 @@ class OverlayController(
                 shot.release()
             }
             if (!ocrFinal) {
-                // A note withdrew the cloud request of a cloud-only scan: what is shown stays.
+                // A note withdrew the cloud request and no final came (cloud only, or the device failed): what is shown
+                // stays.
                 ocrFinal = true
+                cloudWithdrawn = stop.isCompleted
                 bubbleView.loading = false
                 refreshPopup()
             }
@@ -764,29 +775,12 @@ class OverlayController(
 
     private fun ocrOptions() = OcrOptions(settings.ocrEngines, deferWholeImage = settings.ocrSaving)
 
-    /**
-     * OCR boost asks cloud recognition, so it is off while only the device recognizes, without recognition, and after a
-     * note stopped the scan's cloud requests.
-     */
-    private fun smallText() = when {
-        settings.ocrEngines == OcrEngines.DEVICE -> SmallTextMode.OFF
-        settings.textSource == TextSource.APP_TEXT_ONLY -> SmallTextMode.OFF
-        cloudStop?.isCompleted == true -> SmallTextMode.OFF
-        else -> settings.smallText
-    }
+    private fun smallText() = ocrBoostMode(settings.smallText, settings.ocrEngines, settings.textSource, cloudWithdrawn)
 
-    /**
-     * A note is added while the scan's cloud request is pending: the request and the scan's later OCR boost requests
-     * are dropped, so the text stays as shown. A scan with its final result keeps OCR boost.
-     */
+    /** A note is added while the scan's cloud request is pending: the request is withdrawn, so the text stays as shown. */
     private fun stopCloud() {
         if (ocrFinal) return
-        val stop = cloudStop ?: return
-        if (!stop.complete(Unit)) return
-        Log.d(TAG, "Cloud recognition stopped for a note")
-        bandTimer?.cancel()
-        bandJobs.forEach { it.cancel() }
-        bandJobs.clear()
+        if (cloudStop?.complete(Unit) == true) Log.d(TAG, "Cloud recognition stopped for a note")
     }
 
     /** The aim's row in [captured], so the on-device draft reads the text there first. */
@@ -880,13 +874,20 @@ class OverlayController(
     }
 
     /** A new text layout in screen coordinates: the OCR draft or the final result. */
-    private fun onPage(page: OcrPage, final: Boolean, lensError: Throwable?, flashLines: Boolean) {
+    private fun onPage(
+        page: OcrPage,
+        final: Boolean,
+        lensError: Throwable?,
+        flashLines: Boolean,
+        cloudWithdrawn: Boolean = false,
+    ) {
         val newLayout = TextLayout(page)
         layout = newLayout
         ocrEngine = page.engine
         ocrFinal = final
         ocrOffline = lensError is OfflineException
         if (final) this.lensError = lensError
+        if (final) this.cloudWithdrawn = cloudWithdrawn
         if (ocrFinal) bubbleView.loading = false
         if (flashLines) layerView.flashLines(newLayout.lineBoxes(), FLASH_HOLD_MS)
         hit = null
@@ -1122,18 +1123,16 @@ class OverlayController(
         return paragraphEngine ?: ocrEngine
     }
 
-    private fun engineLabel(ocrEngine: OcrEngineType?): String = when {
-        ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
-        ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
-        // Only the device recognizes by choice, or a note stopped the cloud request: nothing is unavailable.
-        ocrEngine == OcrEngineType.ML_KIT && ocrFinal &&
-            (settings.ocrEngines == OcrEngines.DEVICE || cloudStop?.isCompleted == true) ->
-            service.getString(R.string.overlay_engine_device_only)
-        ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
-        ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
-        ocrEngine == OcrEngineType.ML_KIT -> service.getString(R.string.overlay_engine_draft)
-        else -> ""
-    }
+    private fun engineLabel(ocrEngine: OcrEngineType?): String =
+        when (engineLabelOf(ocrEngine, ocrFinal, settings.ocrEngines, ocrOffline, cloudWithdrawn)) {
+            EngineLabel.NONE -> ""
+            EngineLabel.LENS -> service.getString(R.string.overlay_engine_lens)
+            EngineLabel.APP_TEXT -> service.getString(R.string.overlay_engine_app_text)
+            EngineLabel.DRAFT -> service.getString(R.string.overlay_engine_draft)
+            EngineLabel.DEVICE -> service.getString(R.string.overlay_engine_device_only)
+            EngineLabel.DEVICE_OFFLINE -> service.getString(R.string.overlay_engine_offline)
+            EngineLabel.DEVICE_LENS_UNAVAILABLE -> service.getString(R.string.overlay_engine_device)
+        }
 
     private fun popupState(view: LookupView): String {
         val engineLabel = engineLabel()
@@ -1250,5 +1249,10 @@ class OverlayController(
     }
 
     /** The latest recognition result of a scan in screen coordinates; [page] is null when recognition failed. */
-    private class Recognized(val page: OcrPage?, val final: Boolean, val lensError: Throwable?)
+    private class Recognized(
+        val page: OcrPage?,
+        val final: Boolean,
+        val lensError: Throwable?,
+        val cloudWithdrawn: Boolean = false,
+    )
 }
