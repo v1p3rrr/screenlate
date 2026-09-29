@@ -200,7 +200,6 @@ const Popup = (() => {
 
         const head = element('div', 'entry-head');
         const expression = element('span', 'expression');
-        expression.lang = 'ja';
         if (renderer) {
             renderer.furigana(expression, term.expression, term.reading, 'kanji-char');
             expression.addEventListener('click', event => {

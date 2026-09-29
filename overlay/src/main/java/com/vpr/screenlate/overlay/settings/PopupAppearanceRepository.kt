@@ -41,7 +41,9 @@ class PopupAppearanceRepository @Inject constructor(
         PopupAppearance(
             fontId = prefs[FONT]?.takeIf { it.isNotEmpty() },
             fontForAllText = prefs[FONT_ALL_TEXT] ?: false,
-            fontSize = prefs[FONT_SIZE] ?: PopupAppearance.DEFAULT_FONT_SIZE,
+            // A restored backup may hold a size outside this version's range.
+            fontSize = (prefs[FONT_SIZE] ?: PopupAppearance.DEFAULT_FONT_SIZE)
+                .coerceIn(PopupAppearance.MIN_FONT_SIZE, PopupAppearance.MAX_FONT_SIZE),
             customCss = prefs[CUSTOM_CSS].orEmpty(),
         )
     }

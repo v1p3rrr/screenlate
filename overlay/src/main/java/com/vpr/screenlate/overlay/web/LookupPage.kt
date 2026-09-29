@@ -224,7 +224,7 @@ class LookupPage(
     private fun fontResponse(name: String): WebResourceResponse {
         val file = File(fontDirectory, name)
         val format = FontFiles.formatOf(name)
-        if (!FONT_NAME.matches(name) || format == null || !file.isFile) {
+        if (!FontFiles.isFileName(name) || format == null || !file.isFile) {
             return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
         }
         return WebResourceResponse(format.mimeType, null, file.inputStream())
@@ -322,7 +322,5 @@ class LookupPage(
         const val HOST = "appassets.androidplatform.net"
         const val PAGE_URL = "https://$HOST/assets/popup/popup.html"
         const val MEDIA_PATH = "/media"
-        const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"
-        val FONT_NAME = Regex("[A-Za-z0-9_-]+\\.[a-z0-9]+")
-    }
+        const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"    }
 }

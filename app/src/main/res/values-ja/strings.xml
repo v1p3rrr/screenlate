@@ -292,7 +292,7 @@
     <string name="popup_font_download">ダウンロード（%1$s MB）</string>
     <string name="popup_font_download_failed">ダウンロードに失敗しました。接続を確認してもう一度お試しください。</string>
     <string name="popup_font_proprietary">メイリオや游ゴシックなど、Windows や macOS に付属するフォントは提供していません。ライセンスで再配布が認められていないためです。カスタム CSS では、これらの名前は端末の日本語フォントを指します。</string>
-    <string name="popup_font_add_file">フォントファイルを追加（.ttf、.otf、.ttc）</string>
+    <string name="popup_font_add_file">フォントファイルを追加（.ttf、.otf、.ttc、.woff、.woff2）</string>
     <string name="popup_font_not_a_font">このファイルはフォントではありません。</string>
     <string name="popup_font_too_large">フォントとしてはファイルが大きすぎます（64 MB 超）。</string>
     <string name="popup_css_title">カスタム CSS</string>
@@ -382,9 +382,9 @@
     <string name="settings_badge">新しいヒント</string>
     <string name="eink_title">電子ペーパー画面</string>
     <string name="eink_switch">E Ink モード</string>
-    <string name="eink_hint">電子書籍リーダーなど、電子ペーパー（E Ink）画面の端末向けです。 白黒、アニメーションなし、半透明のハイライトの代わりに枠線。テーマより優先されます。</string>
+    <string name="eink_hint">電子書籍リーダーなど、電子ペーパー（E Ink）画面の端末向けです。白黒、アニメーションなし、半透明のハイライトの代わりに枠線。テーマより優先されます。</string>
     <string name="eink_enlarge_title">バブルと文字を大きくしますか？</string>
-    <string name="eink_enlarge_message">フローティングバブルを %1$d dp に、ポップアップの文字を %2$d px 大きくしますか？ どちらもあとで調整できます。E Ink モードをオフにすると、その間に変更していなければ元の大きさに戻ります。</string>
+    <string name="eink_enlarge_message">フローティングバブルを（小さければ）%1$d dp に、ポップアップの文字を %2$d px 大きくしますか？　どちらもあとで調整できます。E Ink モードをオフにすると、その間に変更していなければ元の大きさに戻ります。</string>
     <string name="eink_enlarge_confirm">大きくする</string>
     <string name="eink_enlarge_keep">サイズを維持</string>
     <string name="eink_home_title">電子ペーパー画面ですか？</string>

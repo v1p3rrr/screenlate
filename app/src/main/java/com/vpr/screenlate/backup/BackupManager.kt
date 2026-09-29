@@ -10,9 +10,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import com.vpr.screenlate.overlay.fonts.PopupFonts
+import com.vpr.screenlate.settings.EInkSizes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FilterInputStream
@@ -82,6 +84,8 @@ class BackupManager @Inject constructor(
     private val dictionaries: DictionaryRepository,
     private val storage: DictionaryStorage,
     private val fonts: PopupFonts,
+    private val appSettings: AppSettingsRepository,
+    private val eInkSizes: EInkSizes,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mutableState = MutableStateFlow<BackupState>(BackupState.Idle)
@@ -244,6 +248,9 @@ class BackupManager @Inject constructor(
     private suspend fun restoreSettings(head: BackupArchive.Head, sections: Set<BackupSection>) {
         if (sections.none { it in PREFERENCE_SECTIONS }) return
         val backup = BackupPreferences.decode(head.settings)
+        // E-ink mode turned off by the backup brings back the sizes it enlarged, as the switch does; sizes the backup
+        // holds are written after that and win.
+        if (BackupSection.GENERAL in sections && !BackupPreferences.eInk(backup) && appSettings.eInk.first()) eInkSizes.restore()
         preferences.edit { BackupPreferences.restore(it, backup, sections) }
     }
 

@@ -293,7 +293,7 @@
     <string name="popup_font_download">Скачать (%1$s МБ)</string>
     <string name="popup_font_download_failed">Не удалось скачать. Проверьте подключение и попробуйте ещё раз.</string>
     <string name="popup_font_proprietary">Шрифты из Windows и macOS, например Meiryo или Yu Gothic, здесь не предлагаются: их лицензии не разрешают распространение. В своём CSS их имена означают японские шрифты телефона.</string>
-    <string name="popup_font_add_file">Добавить файл шрифта (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Добавить файл шрифта (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Этот файл не шрифт.</string>
     <string name="popup_font_too_large">Файл слишком большой для шрифта (больше 64 МБ).</string>
     <string name="popup_css_title">Свой CSS</string>
@@ -385,7 +385,7 @@
     <string name="eink_switch">Режим для электронных книг</string>
     <string name="eink_hint">Для электронных книг и других устройств с экраном на электронных чернилах (e-ink). Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
     <string name="eink_enlarge_title">Крупнее кнопка и текст?</string>
-    <string name="eink_enlarge_message">Сделать плавающую кнопку %1$d dp, а текст во всплывающем окне на %2$d px крупнее? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
+    <string name="eink_enlarge_message">Увеличить плавающую кнопку до %1$d dp (если она меньше), а текст во всплывающем окне — на %2$d px? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
     <string name="eink_enlarge_confirm">Увеличить</string>
     <string name="eink_enlarge_keep">Оставить как есть</string>
     <string name="eink_home_title">Экран e-ink?</string>

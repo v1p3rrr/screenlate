@@ -292,7 +292,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="popup_font_download">Télécharger (%1$s Mo)</string>
     <string name="popup_font_download_failed">Échec du téléchargement. Vérifiez la connexion et réessayez.</string>
     <string name="popup_font_proprietary">Les polices fournies avec Windows ou macOS, comme Meiryo ou Yu Gothic, ne sont pas proposées : leurs licences n’autorisent pas leur partage. Dans un CSS personnalisé, leurs noms désignent les polices japonaises du téléphone.</string>
-    <string name="popup_font_add_file">Ajouter un fichier de police (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Ajouter un fichier de police (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Ce fichier n’est pas une police.</string>
     <string name="popup_font_too_large">Le fichier est trop gros pour une police (plus de 64 Mo).</string>
     <string name="popup_css_title">CSS personnalisé</string>
@@ -384,7 +384,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="eink_switch">Mode e-ink</string>
     <string name="eink_hint">Pour les liseuses et autres appareils à écran d’encre électronique (e-ink). Noir et blanc, sans animations, des cadres au lieu des surlignages translucides. Prime sur le thème.</string>
     <string name="eink_enlarge_title">Bulle et texte plus grands ?</string>
-    <string name="eink_enlarge_message">Agrandir la bulle flottante à %1$d dp et le texte de la fenêtre contextuelle de %2$d px ? Les deux restent réglables. Désactiver le mode e-ink rétablit les tailles précédentes, sauf si vous les avez modifiées entre-temps.</string>
+    <string name="eink_enlarge_message">Agrandir la bulle flottante à %1$d dp (si elle est plus petite) et le texte de la fenêtre contextuelle de %2$d px ? Les deux restent réglables. Désactiver le mode e-ink rétablit les tailles précédentes, sauf si vous les avez modifiées entre-temps.</string>
     <string name="eink_enlarge_confirm">Agrandir</string>
     <string name="eink_enlarge_keep">Garder les tailles</string>
     <string name="eink_home_title">Écran à encre électronique ?</string>

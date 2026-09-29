@@ -91,4 +91,20 @@ class FontFilesTest {
     fun `damaged tables give no name`() {
         assertThat(FontFiles.family(font(listOf(Name(3, 0x409, 1, "Cut"))).copyOf(40))).isNull()
     }
+
+    @Test
+    fun `reads the family from a buffer and drops control characters`() {
+        val bytes = font(listOf(Name(3, 0x409, 1, "Line\nBreak Sans")))
+        assertThat(FontFiles.family(java.nio.ByteBuffer.wrap(bytes))).isEqualTo("LineBreak Sans")
+        assertThat(FontFiles.family(bytes.copyOf(bytes.size - 4))).isNull()
+    }
+
+    @Test
+    fun `only plain file names are font files`() {
+        assertThat(FontFiles.isFileName("file-1a2b3c4d-5e6f7a8b.ttf")).isTrue()
+        assertThat(FontFiles.isFileName("noto-sans-jp-0.ttf")).isTrue()
+        assertThat(FontFiles.isFileName("../databases/x.db")).isFalse()
+        assertThat(FontFiles.isFileName("fonts.json.tmp")).isFalse()
+        assertThat(FontFiles.isFileName("a b.ttf")).isFalse()
+    }
 }

@@ -21,7 +21,7 @@ data class EInkEnlargement(val bubble: Change?, val font: Change?) {
             val font = (fontNow + fontStep).coerceAtMost(maxFont)
             return EInkEnlargement(
                 bubble = Change(bubbleNow, minBubble).takeIf { bubbleNow < minBubble },
-                font = Change(fontNow, font).takeIf { font != fontNow },
+                font = Change(fontNow, font).takeIf { font > fontNow },
             )
         }
     }

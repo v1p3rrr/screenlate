@@ -295,7 +295,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="popup_font_download">Download (%1$s MB)</string>
     <string name="popup_font_download_failed">Download failed. Check the connection and try again.</string>
     <string name="popup_font_proprietary">Fonts that come with Windows or macOS, such as Meiryo or Yu Gothic, are not offered: their licenses do not allow sharing them. In custom CSS their names stand for the phone\'s Japanese fonts.</string>
-    <string name="popup_font_add_file">Add a font file (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Add a font file (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">This file is not a font.</string>
     <string name="popup_font_too_large">The file is too large for a font (over 64 MB).</string>
     <string name="popup_css_title">Custom CSS</string>
@@ -387,7 +387,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="eink_switch">E-ink mode</string>
     <string name="eink_hint">For e-book readers and other devices with e-paper (e-ink) screens. Black and white, no animations, frames instead of translucent highlights. Overrides the theme.</string>
     <string name="eink_enlarge_title">Larger bubble and text?</string>
-    <string name="eink_enlarge_message">Make the floating bubble %1$d dp and the popup text %2$d px larger? Both stay adjustable. Turning e-ink mode off brings back the previous sizes, unless you change them in the meantime.</string>
+    <string name="eink_enlarge_message">Enlarge the floating bubble to %1$d dp (if it is smaller) and the popup text by %2$d px? Both stay adjustable. Turning e-ink mode off brings back the previous sizes, unless you change them in the meantime.</string>
     <string name="eink_enlarge_confirm">Make larger</string>
     <string name="eink_enlarge_keep">Keep sizes</string>
     <string name="eink_home_title">E-ink screen?</string>

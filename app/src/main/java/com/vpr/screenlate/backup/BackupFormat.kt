@@ -89,7 +89,8 @@ data class BackupManifest(
 
 /** Settings kept in the shared preferences file, grouped by the section each key belongs to. */
 object BackupPreferences {
-    private val general = setOf("theme_mode", "e_ink", "update_announce")
+    private const val E_INK = "e_ink"
+    private val general = setOf("theme_mode", E_INK, "update_announce")
 
     /**
      * The section of a preference key; null for state the app keeps for itself (one-time hints, update checks,
@@ -147,6 +148,10 @@ object BackupPreferences {
 
     /** Replaces the keys of [sections]: the app's own values go, the backup's come in. */
     @Suppress("UNCHECKED_CAST")
+    /** Whether the decoded [backup] has e-ink mode on; a restored General section without the key turns it off. */
+    fun eInk(backup: Map<Preferences.Key<*>, Any>): Boolean =
+        backup.entries.firstOrNull { it.key.name == E_INK }?.value as? Boolean ?: false
+
     fun restore(preferences: MutablePreferences, backup: Map<Preferences.Key<*>, Any>, sections: Set<BackupSection>) {
         preferences.asMap().keys.filter { sectionOf(it.name) in sections }.toList().forEach { preferences.remove(it) }
         for ((key, value) in backup) {

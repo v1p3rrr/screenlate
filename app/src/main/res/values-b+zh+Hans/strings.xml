@@ -292,7 +292,7 @@
     <string name="popup_font_download">下载（%1$s MB）</string>
     <string name="popup_font_download_failed">下载失败。请检查网络连接后重试。</string>
     <string name="popup_font_proprietary">不提供 Windows 或 macOS 自带的字体（如 Meiryo 或 Yu Gothic）：其许可证不允许分发。在自定义 CSS 中，这些名称代表手机的日文字体。</string>
-    <string name="popup_font_add_file">添加字体文件（.ttf、.otf、.ttc）</string>
+    <string name="popup_font_add_file">添加字体文件（.ttf、.otf、.ttc、.woff、.woff2）</string>
     <string name="popup_font_not_a_font">此文件不是字体。</string>
     <string name="popup_font_too_large">文件太大，不像是字体（超过 64 MB）。</string>
     <string name="popup_css_title">自定义 CSS</string>
@@ -382,9 +382,9 @@
     <string name="settings_badge">新提示</string>
     <string name="eink_title">墨水屏</string>
     <string name="eink_switch">墨水屏模式</string>
-    <string name="eink_hint">适用于电子书阅读器等使用墨水屏（电子纸）的设备。 黑白显示，无动画，用边框代替半透明高亮。优先于主题。</string>
+    <string name="eink_hint">适用于电子书阅读器等使用墨水屏（电子纸）的设备。黑白显示，无动画，用边框代替半透明高亮。优先于主题。</string>
     <string name="eink_enlarge_title">放大悬浮球和文字？</string>
-    <string name="eink_enlarge_message">将悬浮球放大到 %1$d dp，弹窗文字放大 %2$d px？两者仍可调整。关闭墨水屏模式时会恢复原来的大小，除非你在此期间改过它们。</string>
+    <string name="eink_enlarge_message">将悬浮球放大到 %1$d dp（若原本更小），弹窗文字放大 %2$d px？两者仍可调整。关闭墨水屏模式时会恢复原来的大小，除非你在此期间改过它们。</string>
     <string name="eink_enlarge_confirm">放大</string>
     <string name="eink_enlarge_keep">保持大小</string>
     <string name="eink_home_title">是墨水屏吗？</string>

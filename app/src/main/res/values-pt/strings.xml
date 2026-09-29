@@ -292,7 +292,7 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="popup_font_download">Baixar (%1$s MB)</string>
     <string name="popup_font_download_failed">Falha no download. Verifique a conexão e tente de novo.</string>
     <string name="popup_font_proprietary">Fontes que vêm com o Windows ou o macOS, como Meiryo ou Yu Gothic, não são oferecidas: as licenças delas não permitem compartilhá-las. No CSS personalizado, os nomes delas representam as fontes japonesas do celular.</string>
-    <string name="popup_font_add_file">Adicionar um arquivo de fonte (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Adicionar um arquivo de fonte (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Este arquivo não é uma fonte.</string>
     <string name="popup_font_too_large">O arquivo é grande demais para uma fonte (mais de 64 MB).</string>
     <string name="popup_css_title">CSS personalizado</string>
@@ -384,7 +384,7 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="eink_switch">Modo e-ink</string>
     <string name="eink_hint">Para leitores de e-books e outros aparelhos com tela de papel eletrônico (e-ink). Preto e branco, sem animações, molduras em vez de destaques translúcidos. Tem prioridade sobre o tema.</string>
     <string name="eink_enlarge_title">Bolha e texto maiores?</string>
-    <string name="eink_enlarge_message">Aumentar a bolha flutuante para %1$d dp e o texto do pop-up em %2$d px? Os dois continuam ajustáveis. Ao desativar o modo e-ink, os tamanhos anteriores voltam, a menos que você os mude nesse meio-tempo.</string>
+    <string name="eink_enlarge_message">Aumentar a bolha flutuante para %1$d dp (se for menor) e o texto do pop-up em %2$d px? Os dois continuam ajustáveis. Ao desativar o modo e-ink, os tamanhos anteriores voltam, a menos que você os mude nesse meio-tempo.</string>
     <string name="eink_enlarge_confirm">Aumentar</string>
     <string name="eink_enlarge_keep">Manter tamanhos</string>
     <string name="eink_home_title">Tela de tinta eletrônica?</string>

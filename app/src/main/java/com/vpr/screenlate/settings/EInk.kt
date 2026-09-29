@@ -21,10 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
-import com.vpr.screenlate.core.common.settings.EInkEnlargement
-import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
-import com.vpr.screenlate.overlay.settings.PopupAppearance
-import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,15 +28,13 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class EInkViewModel @Inject constructor(
     private val settings: AppSettingsRepository,
-    private val overlay: OverlaySettingsRepository,
-    private val popup: PopupAppearanceRepository,
+    private val sizes: EInkSizes,
 ) : ViewModel() {
     val eInk: StateFlow<Boolean> = settings.eInk.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
@@ -53,12 +47,7 @@ class EInkViewModel @Inject constructor(
     fun setEInk(enabled: Boolean) {
         viewModelScope.launch {
             settings.setEInk(enabled)
-            if (enabled) return@launch
-            val enlargement = settings.eInkEnlargement.first() ?: return@launch
-            val restore = enlargement.restore(overlay.settings.first().bubbleSizeDp, popup.appearance.first().fontSize)
-            restore.bubble?.let { overlay.setBubbleSize(it) }
-            restore.font?.let { popup.setFontSize(it) }
-            settings.setEInkEnlargement(null)
+            if (enabled) sizes.forget() else sizes.restore()
         }
     }
 
@@ -68,23 +57,7 @@ class EInkViewModel @Inject constructor(
 
     /** Raises the bubble and popup text sizes to the e-ink suggestions; larger sizes stay. */
     fun enlarge() {
-        viewModelScope.launch {
-            val enlargement = EInkEnlargement.of(
-                bubbleNow = overlay.settings.first().bubbleSizeDp,
-                fontNow = popup.appearance.first().fontSize,
-                minBubble = E_INK_BUBBLE_DP,
-                fontStep = E_INK_FONT_STEP,
-                maxFont = PopupAppearance.MAX_FONT_SIZE,
-            )
-            enlargement.bubble?.let { overlay.setBubbleSize(it.after) }
-            enlargement.font?.let { popup.setFontSize(it.after) }
-            settings.setEInkEnlargement(enlargement)
-        }
-    }
-
-    companion object {
-        const val E_INK_BUBBLE_DP = 56
-        const val E_INK_FONT_STEP = 2
+        viewModelScope.launch { sizes.enlarge() }
     }
 }
 
@@ -157,7 +130,7 @@ private fun EnlargeDialog(viewModel: EInkViewModel, onDone: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDone,
         title = { Text(stringResource(R.string.eink_enlarge_title)) },
-        text = { Text(stringResource(R.string.eink_enlarge_message, EInkViewModel.E_INK_BUBBLE_DP, EInkViewModel.E_INK_FONT_STEP)) },
+        text = { Text(stringResource(R.string.eink_enlarge_message, EInkSizes.BUBBLE_DP, EInkSizes.FONT_STEP)) },
         confirmButton = {
             TextButton(onClick = {
                 viewModel.enlarge()

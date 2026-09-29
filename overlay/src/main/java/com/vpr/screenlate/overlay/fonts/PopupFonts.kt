@@ -6,9 +6,12 @@ import android.provider.OpenableColumns
 import android.util.Log
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.RandomAccessFile
+import java.nio.channels.FileChannel
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -80,32 +83,38 @@ class PopupFonts @Inject constructor(
         }
     }
 
-    /** Adds a font file chosen by the user; a font with the same family added before is replaced. */
+    /**
+     * Adds a font file chosen by the user; a font with the same family added before is replaced. The file is copied
+     * first and read in place, so a large font is never held in memory.
+     */
     suspend fun import(uri: Uri): FontImport = withContext(Dispatchers.IO) {
-        val bytes = context.contentResolver.openInputStream(uri)?.use { input ->
-            val out = ByteArrayOutputStream()
-            val buffer = ByteArray(BUFFER)
-            while (true) {
-                val read = input.read(buffer)
-                if (read < 0) break
-                out.write(buffer, 0, read)
-                if (out.size() > MAX_FILE_BYTES) return@withContext FontImport.TooLarge
+        directory.mkdirs()
+        val partial = File(directory, "import-${newId()}.part")
+        try {
+            val copied = context.contentResolver.openInputStream(uri)?.use { input ->
+                partial.outputStream().use { output -> copyAtMost(input, output, MAX_FILE_BYTES) }
+            } ?: return@withContext FontImport.NotAFont
+            if (!copied) return@withContext FontImport.TooLarge
+            val (format, fileFamily) = RandomAccessFile(partial, "r").use { file ->
+                val buffer = file.channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
+                val head = ByteArray(minOf(HEAD.toLong(), file.length()).toInt()) { buffer.get(it) }
+                FontFiles.format(head) to FontFiles.family(buffer)
             }
-            out.toByteArray()
-        } ?: return@withContext FontImport.NotAFont
-        val format = FontFiles.format(bytes) ?: return@withContext FontImport.NotAFont
-        val family = FontFiles.family(bytes) ?: displayName(uri)?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }
-            ?: DEFAULT_NAME
-        lock.withLock {
-            val existing = mutableInstalled.value.firstOrNull { it.catalogId == null && it.family == family }
-            val id = existing?.id ?: "file-${UUID.randomUUID().toString().take(ID_LENGTH)}"
-            existing?.files?.forEach { File(directory, it.name).delete() }
-            directory.mkdirs()
-            val name = "$id.${format.extension}"
-            File(directory, name).writeBytes(bytes)
-            val font = InstalledFont(id, family, listOf(FontFile(name)))
-            save(mutableInstalled.value.filter { it.id != id } + font)
-            FontImport.Added(font)
+            if (format == null) return@withContext FontImport.NotAFont
+            val family = fileFamily ?: displayName(uri)?.substringBeforeLast('.')?.takeIf { it.isNotBlank() } ?: DEFAULT_NAME
+            lock.withLock {
+                val existing = mutableInstalled.value.firstOrNull { it.catalogId == null && it.family == family }
+                val id = existing?.id ?: "file-${newId()}"
+                existing?.files?.forEach { File(directory, it.name).delete() }
+                // A new file name every time: a page that loaded the replaced file must not keep it from its cache.
+                val name = "$id-${newId()}.${format.extension}"
+                if (!partial.renameTo(File(directory, name))) throw IOException("Rename failed")
+                val font = InstalledFont(id, family, listOf(FontFile(name)))
+                save(mutableInstalled.value.filter { it.id != id } + font)
+                FontImport.Added(font)
+            }
+        } finally {
+            partial.delete()
         }
     }
 
@@ -177,18 +186,22 @@ class PopupFonts @Inject constructor(
         }
     }
 
+    /** The installed fonts; a font with a missing file, or a file name that is not plain (a restored list), is left out. */
     private fun readIndex(): List<InstalledFont> = runCatching {
         if (!index.exists()) return emptyList()
         json.decodeFromString<List<InstalledFont>>(index.readText())
-            .filter { font -> font.files.all { File(directory, it.name).exists() } }
+            .filter { font -> font.files.all { FontFiles.isFileName(it.name) && File(directory, it.name).exists() } }
     }.onFailure { Log.w(TAG, "Font list unreadable", it.redacted()) }.getOrDefault(emptyList())
 
     private fun save(fonts: List<InstalledFont>) {
         directory.mkdirs()
         val temporary = File(directory, "$INDEX.tmp")
         temporary.writeText(json.encodeToString(fonts))
-        index.delete()
-        temporary.renameTo(index)
+        // The rename replaces the old list in one step; deleting it first only where the rename cannot replace.
+        if (!temporary.renameTo(index)) {
+            index.delete()
+            temporary.renameTo(index)
+        }
         mutableInstalled.value = fonts
     }
 
@@ -198,7 +211,22 @@ class PopupFonts @Inject constructor(
         }
     }.getOrNull()
 
-    private fun java.io.InputStream.readNBytesCompat(count: Int): ByteArray {
+    /** Copies [input] into [output]; false as soon as more than [limit] bytes come. */
+    private fun copyAtMost(input: InputStream, output: OutputStream, limit: Int): Boolean {
+        val buffer = ByteArray(BUFFER)
+        var total = 0L
+        while (true) {
+            val read = input.read(buffer)
+            if (read < 0) return true
+            total += read
+            if (total > limit) return false
+            output.write(buffer, 0, read)
+        }
+    }
+
+    private fun newId(): String = UUID.randomUUID().toString().take(ID_LENGTH)
+
+    private fun InputStream.readNBytesCompat(count: Int): ByteArray {
         val buffer = ByteArray(count)
         var total = 0
         while (total < count) {

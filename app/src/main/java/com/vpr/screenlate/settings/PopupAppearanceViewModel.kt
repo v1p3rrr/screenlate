@@ -21,6 +21,7 @@ import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,6 +66,9 @@ class PopupAppearanceViewModel @Inject constructor(
 
     private val cssEdits = MutableStateFlow<String?>(null)
 
+    /** The CSS being edited, which may be ahead of the saved setting; null before the first edit. */
+    val cssDraft: String? get() = cssEdits.value
+
     init {
         // The field edits its own copy; the setting follows once typing pauses.
         viewModelScope.launch { cssEdits.filterNotNull().debounce(CSS_SAVE_DELAY_MS).collect { repository.setCustomCss(it) } }
@@ -91,6 +95,12 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun setCustomCss(css: String) {
         cssEdits.value = css
+    }
+
+    override fun onCleared() {
+        // An edit made within the save delay would go with the view model's scope.
+        val pending = cssEdits.value ?: return
+        if (pending != appearance.value?.customCss) CoroutineScope(Dispatchers.IO).launch { repository.setCustomCss(pending) }
     }
 
     private fun launch(block: suspend () -> Unit) {

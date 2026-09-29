@@ -40,12 +40,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if (savedInstanceState == null) handleOpenRequest(intent)
         setContent {
-            val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
-            val eInk by viewModel.eInk.collectAsStateWithLifecycle()
-            ScreenlateTheme(themeMode = themeMode, eInk = eInk) {
+            // An e-ink screen would flash the colour theme if a frame came before the settings.
+            val theme = viewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
+            ScreenlateTheme(themeMode = theme.mode, eInk = theme.eInk) {
                 LocalNetworkAskEffect()
                 ScreenlateNavHost(
-                    themeMode = themeMode,
+                    themeMode = theme.mode,
                     onThemeModeChange = viewModel::setThemeMode,
                     debugImagePath = debugImagePath(),
                     debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),

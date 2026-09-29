@@ -292,7 +292,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="popup_font_download">Pobierz (%1$s MB)</string>
     <string name="popup_font_download_failed">Pobieranie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="popup_font_proprietary">Czcionki dołączone do Windows lub macOS, takie jak Meiryo czy Yu Gothic, nie są oferowane: ich licencje nie pozwalają na udostępnianie. We własnym CSS ich nazwy oznaczają japońskie czcionki telefonu.</string>
-    <string name="popup_font_add_file">Dodaj plik czcionki (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Dodaj plik czcionki (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Ten plik nie jest czcionką.</string>
     <string name="popup_font_too_large">Plik jest za duży jak na czcionkę (ponad 64 MB).</string>
     <string name="popup_css_title">Własny CSS</string>
@@ -384,7 +384,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="eink_switch">Tryb e-ink</string>
     <string name="eink_hint">Dla czytników e-booków i innych urządzeń z ekranem z e-papieru (e-ink). Czerń i biel, bez animacji, ramki zamiast półprzezroczystych podświetleń. Ma pierwszeństwo przed motywem.</string>
     <string name="eink_enlarge_title">Większy dymek i tekst?</string>
-    <string name="eink_enlarge_message">Powiększyć pływający dymek do %1$d dp, a tekst okienka o %2$d px? Oba można dalej regulować. Wyłączenie trybu e-ink przywróci poprzednie rozmiary, jeśli w międzyczasie ich nie zmienisz.</string>
+    <string name="eink_enlarge_message">Powiększyć pływający dymek do %1$d dp (jeśli jest mniejszy), a tekst okienka o %2$d px? Oba można dalej regulować. Wyłączenie trybu e-ink przywróci poprzednie rozmiary, jeśli w międzyczasie ich nie zmienisz.</string>
     <string name="eink_enlarge_confirm">Powiększ</string>
     <string name="eink_enlarge_keep">Zachowaj rozmiary</string>
     <string name="eink_home_title">Ekran e-ink?</string>

@@ -292,7 +292,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="popup_font_download">Scarica (%1$s MB)</string>
     <string name="popup_font_download_failed">Download non riuscito. Controlla la connessione e riprova.</string>
     <string name="popup_font_proprietary">I caratteri inclusi in Windows o macOS, come Meiryo o Yu Gothic, non sono offerti: le loro licenze non ne consentono la condivisione. Nel CSS personalizzato i loro nomi indicano i caratteri giapponesi del telefono.</string>
-    <string name="popup_font_add_file">Aggiungi un file di carattere (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Aggiungi un file di carattere (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Questo file non è un carattere.</string>
     <string name="popup_font_too_large">Il file è troppo grande per un carattere (oltre 64 MB).</string>
     <string name="popup_css_title">CSS personalizzato</string>
@@ -384,7 +384,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="eink_switch">Modalità e-ink</string>
     <string name="eink_hint">Per e-reader e altri dispositivi con schermo a inchiostro elettronico (e-ink). Bianco e nero, niente animazioni, cornici al posto delle evidenziazioni traslucide. Ha la precedenza sul tema.</string>
     <string name="eink_enlarge_title">Bolla e testo più grandi?</string>
-    <string name="eink_enlarge_message">Ingrandire la bolla fluttuante a %1$d dp e il testo del popup di %2$d px? Entrambi restano regolabili. Disattivando la modalità e-ink tornano le dimensioni precedenti, a meno che tu non le abbia cambiate nel frattempo.</string>
+    <string name="eink_enlarge_message">Ingrandire la bolla fluttuante a %1$d dp (se è più piccola) e il testo del popup di %2$d px? Entrambi restano regolabili. Disattivando la modalità e-ink tornano le dimensioni precedenti, a meno che tu non le abbia cambiate nel frattempo.</string>
     <string name="eink_enlarge_confirm">Ingrandisci</string>
     <string name="eink_enlarge_keep">Mantieni le dimensioni</string>
     <string name="eink_home_title">Schermo e-ink?</string>

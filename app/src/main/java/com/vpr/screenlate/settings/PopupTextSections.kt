@@ -217,7 +217,8 @@ private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: (
 
 @Composable
 private fun CssCard(saved: String, installed: List<InstalledFont>, viewModel: PopupAppearanceViewModel) {
-    var css by remember { mutableStateOf(saved) }
+    // The view model keeps the latest edit across configuration changes; the setting follows after a delay.
+    var css by remember { mutableStateOf(viewModel.cssDraft ?: saved) }
     val issues = remember(css, installed) { PopupAppearanceViewModel.cssIssues(css, installed) }
     SectionCard(title = stringResource(R.string.popup_css_title)) {
         LabelWithInfo(stringResource(R.string.popup_css_short), stringResource(R.string.popup_css_hint))

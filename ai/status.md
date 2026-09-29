@@ -125,12 +125,14 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   - Bubble copy menu: the paragraph under the aim, else the paragraph of the word in the popup, else only "Copy all" (`CopyMenuText`); before, the last hit was kept after the aim left text.
   - Yomitan import names the single-dictionary import with a button to Dictionaries; "manufacturer's" instead of "maker's"; the AI translation note names no languages.
 - Emulator: the debug app's language is English (set for the checks); Noto Serif JP stays downloaded, the phone font is selected.
+- Full review of module 10, appearance and fonts (owner's command; findings in the plan). Fixed: `@font-face` in custom CSS is left alone and its family counts as known; the CSS draft survives rotation and is saved when the screen closes; a backup restore that turns e-ink off restores the sizes like the switch (`EInkSizes`); the popup text size is clamped when read; own fonts are copied to a file and read in place, get a new file name on every import, and a restored `fonts.json` with non-plain file names is ignored; `fonts.json` is replaced by rename; the app draws nothing until the theme and e-ink setting are read; `popup.js` no longer sets `lang="ja"`; the add-font button lists `.woff`/`.woff2` in all locales. Left as is (owner): the Japanese punctuation `unicode-range`.
+- Checked on the emulator: `@font-face` CSS without a warning and passed to the page untouched, the draft after two rotations and after leaving right after typing, import and re-import of a font file (same id, new file, old deleted, served to the page), e-ink on/off, restoring only "General" from a backup with e-ink off (e-ink off, text size back), 骨 in the Japanese form. Cold start shows the empty window until the settings are read (about 1–1.5 s on the emulator, AOT-compiled; question to the owner).
 
 ## Next
 
 - Next release on the owner's command (feedback after v0.1.4 is on main).
 - Waiting for the owner's phone feedback on v0.1.4 (interface languages, overlay in the chosen language, crop frame and toggle, "On-device" chip) and v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
-- Full code review of the whole project, one run per functional module with its integration paths (`notes/module-map.md`); starts on the owner's command.
+- Full code review of the whole project, one run per functional module with its integration paths (`notes/module-map.md`); module 10 (appearance and fonts) done, the others start on the owner's command.
 - Phase 8 (more languages) needs an interview per language first.
 
 ## Open items

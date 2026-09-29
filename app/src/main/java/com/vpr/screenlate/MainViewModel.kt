@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -16,12 +17,13 @@ class MainViewModel @Inject constructor(
     private val settings: AppSettingsRepository,
 ) : ViewModel() {
 
-    val themeMode: StateFlow<ThemeMode> =
-        settings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, ThemeMode.SYSTEM)
-
-    val eInk: StateFlow<Boolean> = settings.eInk.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    /** Null until the settings are read, so no frame is drawn in a theme the user did not choose. */
+    val theme: StateFlow<AppTheme?> =
+        combine(settings.themeMode, settings.eInk, ::AppTheme).stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { settings.setThemeMode(mode) }
     }
 }
+
+data class AppTheme(val mode: ThemeMode, val eInk: Boolean)

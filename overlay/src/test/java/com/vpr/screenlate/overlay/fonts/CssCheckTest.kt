@@ -69,4 +69,22 @@ class CssCheckTest {
         val unknown = CssCheck.unknownFonts(CssCheck.analyze(css)) { it == "Meiryo" || it == "serif" }
         assertThat(unknown).containsExactly(CssCheck.Issue(1, Problem.UNKNOWN_FONT, "Nope"))
     }
+
+    @Test
+    fun `leaves font-face rules alone and knows the fonts they define`() {
+        val css = "@font-face { font-family: \"My Font\"; src: local(\"X\") }\n" +
+            "@media (min-width: 1px) { @font-face { font-family: Other; src: url(o.woff2) } }\n" +
+            ".a { font-family: \"My Font\", Missing }\n.b { font-family: other }"
+        val result = CssCheck.analyze(css)
+        assertThat(result.issues).isEmpty()
+        assertThat(result.declaredFonts).containsExactly("My Font", "Other").inOrder()
+        assertThat(result.fontFamilies.map { it.names }).containsExactly(listOf("My Font", "Missing"), listOf("other")).inOrder()
+        assertThat(CssCheck.withFallback(css, result.fontFamilies, "sans-serif")).isEqualTo(
+            "@font-face { font-family: \"My Font\"; src: local(\"X\") }\n" +
+                "@media (min-width: 1px) { @font-face { font-family: Other; src: url(o.woff2) } }\n" +
+                ".a { font-family: \"My Font\", Missing, sans-serif }\n.b { font-family: other, sans-serif }",
+        )
+        val unknown = CssCheck.unknownFonts(result) { false }
+        assertThat(unknown).containsExactly(CssCheck.Issue(3, Problem.UNKNOWN_FONT, "Missing"))
+    }
 }

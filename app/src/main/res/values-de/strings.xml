@@ -292,7 +292,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="popup_font_download">Herunterladen (%1$s MB)</string>
     <string name="popup_font_download_failed">Download fehlgeschlagen. Prüfe die Verbindung und versuche es erneut.</string>
     <string name="popup_font_proprietary">Schriften, die mit Windows oder macOS kommen, etwa Meiryo oder Yu Gothic, werden nicht angeboten: Ihre Lizenzen erlauben keine Weitergabe. In eigenem CSS stehen ihre Namen für die japanischen Schriften des Telefons.</string>
-    <string name="popup_font_add_file">Schriftdatei hinzufügen (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Schriftdatei hinzufügen (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Diese Datei ist keine Schrift.</string>
     <string name="popup_font_too_large">Die Datei ist zu groß für eine Schrift (über 64 MB).</string>
     <string name="popup_css_title">Eigenes CSS</string>
@@ -384,7 +384,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="eink_switch">E-Ink-Modus</string>
     <string name="eink_hint">Für E-Book-Reader und andere Geräte mit E-Paper-Bildschirm (E-Ink). Schwarzweiß, keine Animationen, Rahmen statt durchscheinender Hervorhebungen. Hat Vorrang vor dem Design.</string>
     <string name="eink_enlarge_title">Größere Blase und größerer Text?</string>
-    <string name="eink_enlarge_message">Die schwebende Blase auf %1$d dp und den Popup-Text um %2$d px vergrößern? Beides bleibt einstellbar. Beim Ausschalten des E-Ink-Modus kehren die vorherigen Größen zurück, sofern du sie inzwischen nicht geändert hast.</string>
+    <string name="eink_enlarge_message">Die schwebende Blase auf %1$d dp (falls sie kleiner ist) und den Popup-Text um %2$d px vergrößern? Beides bleibt einstellbar. Beim Ausschalten des E-Ink-Modus kehren die vorherigen Größen zurück, sofern du sie inzwischen nicht geändert hast.</string>
     <string name="eink_enlarge_confirm">Vergrößern</string>
     <string name="eink_enlarge_keep">Größen behalten</string>
     <string name="eink_home_title">E-Ink-Bildschirm?</string>

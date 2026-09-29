@@ -292,7 +292,7 @@
     <string name="popup_font_download">下載（%1$s MB）</string>
     <string name="popup_font_download_failed">下載失敗。請檢查網路連線後重試。</string>
     <string name="popup_font_proprietary">不提供 Windows 或 macOS 自帶的字型（如 Meiryo 或 Yu Gothic）：其授權條款不允許分發。在自訂 CSS 中，這些名稱代表手機的日文字型。</string>
-    <string name="popup_font_add_file">新增字型檔案（.ttf、.otf、.ttc）</string>
+    <string name="popup_font_add_file">新增字型檔案（.ttf、.otf、.ttc、.woff、.woff2）</string>
     <string name="popup_font_not_a_font">此檔案不是字型。</string>
     <string name="popup_font_too_large">檔案太大，不像是字型（超過 64 MB）。</string>
     <string name="popup_css_title">自訂 CSS</string>
@@ -382,9 +382,9 @@
     <string name="settings_badge">新提示</string>
     <string name="eink_title">電子紙</string>
     <string name="eink_switch">電子紙模式</string>
-    <string name="eink_hint">適用於電子書閱讀器等使用電子紙螢幕的裝置。 黑白顯示，無動畫，用邊框代替半透明醒目標示。優先於主題。</string>
+    <string name="eink_hint">適用於電子書閱讀器等使用電子紙螢幕的裝置。黑白顯示，無動畫，用邊框代替半透明醒目標示。優先於主題。</string>
     <string name="eink_enlarge_title">放大懸浮球和文字？</string>
-    <string name="eink_enlarge_message">將懸浮球放大到 %1$d dp，彈出視窗文字放大 %2$d px？兩者仍可調整。關閉電子紙模式時會恢復原來的大小，除非你在此期間改過它們。</string>
+    <string name="eink_enlarge_message">將懸浮球放大到 %1$d dp（若原本更小），彈出視窗文字放大 %2$d px？兩者仍可調整。關閉電子紙模式時會恢復原來的大小，除非你在此期間改過它們。</string>
     <string name="eink_enlarge_confirm">放大</string>
     <string name="eink_enlarge_keep">保持大小</string>
     <string name="eink_home_title">是電子紙嗎？</string>

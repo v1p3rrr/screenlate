@@ -161,4 +161,11 @@ class BackupFormatTest {
             enabled = enabled,
             priority = priority,
         )
+
+    @Test
+    fun `a backup without e-ink mode turns it off`() {
+        val on = BackupPreferences.decode(BackupPreferences.encode(mutablePreferencesOf(booleanPreferencesKey("e_ink") to true)))
+        assertThat(BackupPreferences.eInk(on)).isTrue()
+        assertThat(BackupPreferences.eInk(emptyMap())).isFalse()
+    }
 }

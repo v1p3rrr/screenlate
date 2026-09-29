@@ -19,6 +19,8 @@ class EInkEnlargementTest {
     fun `leaves a larger bubble and text at the maximum as they are`() {
         assertThat(enlarge(bubble = 60, font = 24)).isEqualTo(EInkEnlargement(null, null))
         assertThat(enlarge(bubble = 60, font = 23).font).isEqualTo(EInkEnlargement.Change(23, 24))
+        // Above the maximum (a size from another version) the text is never made smaller.
+        assertThat(enlarge(bubble = 60, font = 30).font).isNull()
     }
 
     @Test

@@ -292,7 +292,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="popup_font_download">İndir (%1$s MB)</string>
     <string name="popup_font_download_failed">İndirme başarısız. Bağlantıyı kontrol edip yeniden deneyin.</string>
     <string name="popup_font_proprietary">Meiryo veya Yu Gothic gibi Windows ya da macOS ile gelen yazı tipleri sunulmaz: lisansları paylaşılmalarına izin vermez. Özel CSS’te bu adlar telefonun Japonca yazı tiplerini temsil eder.</string>
-    <string name="popup_font_add_file">Yazı tipi dosyası ekle (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Yazı tipi dosyası ekle (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Bu dosya bir yazı tipi değil.</string>
     <string name="popup_font_too_large">Dosya bir yazı tipi için çok büyük (64 MB’den fazla).</string>
     <string name="popup_css_title">Özel CSS</string>
@@ -384,7 +384,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="eink_switch">E-ink modu</string>
     <string name="eink_hint">E-kitap okuyucular ve e-mürekkep (e-ink) ekranlı diğer cihazlar için. Siyah beyaz, animasyonsuz, yarı saydam vurgular yerine çerçeveler. Temanın önüne geçer.</string>
     <string name="eink_enlarge_title">Baloncuk ve metin büyüsün mü?</string>
-    <string name="eink_enlarge_message">Yüzen baloncuk %1$d dp boyutuna, açılır pencere metni %2$d px büyütülsün mü? İkisi de ayarlanabilir kalır. E-ink modunu kapatınca, bu arada değiştirmediyseniz önceki boyutlar geri gelir.</string>
+    <string name="eink_enlarge_message">Yüzen baloncuk (daha küçükse) %1$d dp boyutuna, açılır pencere metni %2$d px büyütülsün mü? İkisi de ayarlanabilir kalır. E-ink modunu kapatınca, bu arada değiştirmediyseniz önceki boyutlar geri gelir.</string>
     <string name="eink_enlarge_confirm">Büyüt</string>
     <string name="eink_enlarge_keep">Boyutları koru</string>
     <string name="eink_home_title">E-ink ekran mı?</string>

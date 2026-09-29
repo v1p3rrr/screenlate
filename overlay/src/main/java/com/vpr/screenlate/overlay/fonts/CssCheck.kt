@@ -44,13 +44,21 @@ object CssCheck {
      */
     data class FontFamily(val line: Int, val names: List<String>, val end: Int, val appendable: Boolean)
 
-    data class Result(val issues: List<Issue>, val fontFamilies: List<FontFamily>)
+    /**
+     * @param fontFamilies the `font-family` properties of style rules; `@font-face` descriptors are not among them.
+     * @param declaredFonts families the CSS defines itself with `@font-face`.
+     */
+    data class Result(val issues: List<Issue>, val fontFamilies: List<FontFamily>, val declaredFonts: List<String> = emptyList())
 
     fun analyze(css: String): Result = Reader(css).read()
 
-    /** [Problem.UNKNOWN_FONT] issues for the families that [isKnown] rejects, each name reported once. */
+    /**
+     * [Problem.UNKNOWN_FONT] issues for the families that [isKnown] rejects and the CSS does not define itself, each
+     * name reported once.
+     */
     fun unknownFonts(result: Result, isKnown: (String) -> Boolean): List<Issue> {
-        val seen = HashSet<String>()
+        // Fonts the CSS defines count as seen, so they are never reported.
+        val seen = result.declaredFonts.mapTo(HashSet()) { it.lowercase() }
         return result.fontFamilies.flatMap { declaration ->
             declaration.names
                 .filter { !it.contains('(') && !isKnown(it) && seen.add(it.lowercase()) }
@@ -72,6 +80,7 @@ object CssCheck {
     private class Reader(private val css: String) {
         private val issues = mutableListOf<Issue>()
         private val families = mutableListOf<FontFamily>()
+        private val declared = mutableListOf<String>()
 
         /** The CSS with comments blanked out (newlines kept), so offsets and lines match the original. */
         private val text = blankComments()
@@ -79,31 +88,34 @@ object CssCheck {
         fun read(): Result {
             var pos = 0
             while (pos < text.length) {
-                val close = items(pos, depth = 0)
+                val close = items(pos, depth = 0, fontFace = false)
                 pos = if (close < 0) text.length else close + 1
             }
-            return Result(issues.sortedBy { it.line }, families)
+            return Result(issues.sortedBy { it.line }, families, declared)
         }
 
         /**
          * Reads declarations and nested rules from [start] up to the `}` that closes this level, whose index it
          * returns; -1 at the end of the text. At the top level a stray `}` is reported and skipped.
+         *
+         * @param fontFace the level is the body of an `@font-face` rule, whose `font-family` names a new font.
          */
-        private fun items(start: Int, depth: Int): Int {
+        private fun items(start: Int, depth: Int, fontFace: Boolean): Int {
             var pos = start
             while (true) {
                 val stop = nextSpecial(pos)
                 if (stop == text.length) {
-                    segment(pos, stop, depth)
+                    segment(pos, stop, depth, fontFace)
                     return -1
                 }
                 when (text[stop]) {
                     ';' -> {
-                        segment(pos, stop, depth)
+                        segment(pos, stop, depth, fontFace)
                         pos = stop + 1
                     }
                     '{' -> {
-                        val close = items(stop + 1, depth + 1)
+                        val prelude = text.substring(pos, stop).trim()
+                        val close = items(stop + 1, depth + 1, fontFace = prelude.startsWith("@font-face", ignoreCase = true))
                         if (close < 0) {
                             issues += Issue(lineOf(stop), Problem.UNCLOSED_BLOCK, text.substring(pos, stop).trim().take(DETAIL))
                             return -1
@@ -111,7 +123,7 @@ object CssCheck {
                         pos = close + 1
                     }
                     else -> {
-                        segment(pos, stop, depth)
+                        segment(pos, stop, depth, fontFace)
                         if (depth > 0) return stop
                         issues += Issue(lineOf(stop), Problem.UNEXPECTED_BRACE)
                         pos = stop + 1
@@ -120,16 +132,16 @@ object CssCheck {
             }
         }
 
-        private fun segment(from: Int, to: Int, depth: Int) {
+        private fun segment(from: Int, to: Int, depth: Int, fontFace: Boolean) {
             val first = (from until to).firstOrNull { !text[it].isWhitespace() } ?: return
             val content = text.substring(first, to).trimEnd()
             when {
-                depth > 0 -> declaration(first, content)
+                depth > 0 -> declaration(first, content, fontFace)
                 !content.startsWith('@') -> issues += Issue(lineOf(first), Problem.OUTSIDE_RULE, content.take(DETAIL))
             }
         }
 
-        private fun declaration(start: Int, content: String) {
+        private fun declaration(start: Int, content: String, fontFace: Boolean) {
             val line = lineOf(start)
             val colon = indexOutsideStrings(content, ':')
             if (colon < 0) {
@@ -148,7 +160,10 @@ object CssCheck {
                 if (!property.startsWith("--")) issues += Issue(line, Problem.EMPTY_VALUE, property)
                 return
             }
-            if (property.equals("font-family", ignoreCase = true)) {
+            if (property.equals("font-family", ignoreCase = true) && fontFace) {
+                // A descriptor: exactly one name, which the page must not extend with a fallback list.
+                splitOutsideStrings(value, ',').map { it.trim() }.firstOrNull { it.isNotEmpty() }?.let { declared += unquote(it) }
+            } else if (property.equals("font-family", ignoreCase = true)) {
                 val valueStart = start + colon + 1
                 val leading = rawValue.length - rawValue.trimStart().length
                 fontFamily(line, value.trimStart(), valueStart + leading)

@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.MainActivity
 import com.vpr.screenlate.MainViewModel
@@ -24,9 +23,8 @@ class ProcessTextActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString().orEmpty()
         setContent {
-            val themeMode by mainViewModel.themeMode.collectAsStateWithLifecycle()
-            val eInk by mainViewModel.eInk.collectAsStateWithLifecycle()
-            ScreenlateTheme(themeMode = themeMode, eInk = eInk) {
+            val theme = mainViewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
+            ScreenlateTheme(themeMode = theme.mode, eInk = theme.eInk) {
                 SearchScreen(onBack = ::finish, onOpenAnkiSettings = ::openAnkiSettings, initialQuery = text)
             }
         }

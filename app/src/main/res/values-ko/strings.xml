@@ -292,7 +292,7 @@
     <string name="popup_font_download">다운로드(%1$s MB)</string>
     <string name="popup_font_download_failed">다운로드에 실패했습니다. 연결을 확인하고 다시 시도하세요.</string>
     <string name="popup_font_proprietary">Meiryo나 Yu Gothic처럼 Windows나 macOS에 포함된 글꼴은 제공하지 않습니다. 라이선스상 공유가 허용되지 않기 때문입니다. 사용자 CSS에서 이 이름들은 휴대폰의 일본어 글꼴을 가리킵니다.</string>
-    <string name="popup_font_add_file">글꼴 파일 추가(.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">글꼴 파일 추가(.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">이 파일은 글꼴이 아닙니다.</string>
     <string name="popup_font_too_large">글꼴로 쓰기에는 파일이 너무 큽니다(64 MB 초과).</string>
     <string name="popup_css_title">사용자 CSS</string>
@@ -384,7 +384,7 @@
     <string name="eink_switch">E-ink 모드</string>
     <string name="eink_hint">전자책 리더기 등 전자 잉크(E-ink) 화면 기기용입니다. 흑백, 애니메이션 없음, 반투명 강조 대신 테두리. 테마보다 우선합니다.</string>
     <string name="eink_enlarge_title">버블과 글자를 크게 할까요?</string>
-    <string name="eink_enlarge_message">플로팅 버블을 %1$d dp로, 팝업 글자를 %2$d px 더 크게 할까요? 둘 다 계속 조절할 수 있습니다. E-ink 모드를 끄면, 그 사이에 바꾸지 않은 경우 이전 크기로 돌아갑니다.</string>
+    <string name="eink_enlarge_message">플로팅 버블을 (더 작으면) %1$d dp로, 팝업 글자를 %2$d px 더 크게 할까요? 둘 다 계속 조절할 수 있습니다. E-ink 모드를 끄면, 그 사이에 바꾸지 않은 경우 이전 크기로 돌아갑니다.</string>
     <string name="eink_enlarge_confirm">크게 하기</string>
     <string name="eink_enlarge_keep">크기 유지</string>
     <string name="eink_home_title">전자잉크 화면인가요?</string>

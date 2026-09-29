@@ -31,7 +31,7 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 
 Only Japanese is supported for now.
 
-Translations of the interface other than English and Russian were made with AI and have not been reviewed by native speakers. Corrections are welcome: open an issue or a pull request with the fixed `strings.xml`.
+Translations of the interface were made with AI and have not been reviewed by native speakers. Corrections are welcome: open an issue or a pull request with the fixed `strings.xml`.
 
 ## Install
 

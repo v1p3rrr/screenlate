@@ -292,7 +292,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="popup_font_download">Tải xuống (%1$s MB)</string>
     <string name="popup_font_download_failed">Tải xuống thất bại. Hãy kiểm tra kết nối và thử lại.</string>
     <string name="popup_font_proprietary">Các phông chữ đi kèm Windows hoặc macOS, như Meiryo hay Yu Gothic, không được cung cấp: giấy phép của chúng không cho phép chia sẻ. Trong CSS tùy chỉnh, tên của chúng đại diện cho phông chữ tiếng Nhật của điện thoại.</string>
-    <string name="popup_font_add_file">Thêm tệp phông chữ (.ttf, .otf, .ttc)</string>
+    <string name="popup_font_add_file">Thêm tệp phông chữ (.ttf, .otf, .ttc, .woff, .woff2)</string>
     <string name="popup_font_not_a_font">Tệp này không phải phông chữ.</string>
     <string name="popup_font_too_large">Tệp quá lớn đối với một phông chữ (trên 64 MB).</string>
     <string name="popup_css_title">CSS tùy chỉnh</string>
@@ -384,7 +384,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="eink_switch">Chế độ e-ink</string>
     <string name="eink_hint">Dành cho máy đọc sách điện tử và các thiết bị có màn hình mực điện tử (e-ink). Đen trắng, không hiệu ứng động, khung viền thay cho tô sáng trong mờ. Ưu tiên hơn giao diện.</string>
     <string name="eink_enlarge_title">Phóng to bong bóng và chữ?</string>
-    <string name="eink_enlarge_message">Làm bong bóng nổi lớn lên %1$d dp và chữ trong cửa sổ bật lên lớn thêm %2$d px? Cả hai vẫn chỉnh được. Khi tắt chế độ e-ink, kích thước cũ sẽ trở lại, trừ khi bạn đã đổi chúng trong lúc đó.</string>
+    <string name="eink_enlarge_message">Làm bong bóng nổi lớn lên %1$d dp (nếu đang nhỏ hơn) và chữ trong cửa sổ bật lên lớn thêm %2$d px? Cả hai vẫn chỉnh được. Khi tắt chế độ e-ink, kích thước cũ sẽ trở lại, trừ khi bạn đã đổi chúng trong lúc đó.</string>
     <string name="eink_enlarge_confirm">Phóng to</string>
     <string name="eink_enlarge_keep">Giữ kích thước</string>
     <string name="eink_home_title">Màn hình e-ink?</string>
