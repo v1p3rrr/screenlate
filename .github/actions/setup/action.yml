@@ -18,8 +18,9 @@ runs:
         "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
           "platforms;android-37.0" "ndk;29.0.14206865" "cmake;3.31.6" > /dev/null
 
-    # Downloaded by the build (about 48 MB); see downloadBundledDictionaries in app/build.gradle.kts.
+    # Downloaded by the build (about 25 MB); see downloadBundledDictionaries in app/build.gradle.kts. The key also
+    # follows the cache's own format.
     - uses: actions/cache@v6
       with:
         path: dicts/bundled
-        key: bundled-dictionaries-${{ hashFiles('app/build.gradle.kts') }}
+        key: bundled-dictionaries-${{ hashFiles('app/build.gradle.kts', 'build-logic/**/DownloadCache.kt') }}

@@ -14,7 +14,7 @@ git submodule update --init --recursive
 ./gradlew testDebugUnitTest
 ```
 
-The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bundled/`.
+The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bundled/`; a file is downloaded again when its URL in `app/build.gradle.kts` changes.
 
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
 

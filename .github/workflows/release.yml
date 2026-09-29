@@ -2,8 +2,9 @@ name: Release
 
 # A tag vX.Y.Z publishes a GitHub Release with one APK per ABI, a universal APK, the full source (with submodules)
 # and a changelog. Publishing needs the release key in the repository secrets: SIGNING_KEYSTORE_BASE64,
-# SIGNING_STORE_PASSWORD, SIGNING_KEY_ALIAS, SIGNING_KEY_PASSWORD. Without them, and on manual runs, the APKs are
-# signed with the runner's debug key and kept as workflow artifacts only.
+# SIGNING_STORE_PASSWORD, SIGNING_KEY_ALIAS, SIGNING_KEY_PASSWORD. Without them the APKs are signed with the runner's
+# debug key and kept as workflow artifacts only. A manual run on a branch keeps its APKs (signed with the release key
+# when it is there) as workflow artifacts; a manual run on a tag publishes like the tag push.
 
 on:
   push:
@@ -29,19 +30,20 @@ jobs:
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             tag="$GITHUB_REF_NAME"
           else
-            tag="$(git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null || echo v0.1.0)-${GITHUB_SHA::7}"
+            tag="$(git describe --tags --abbrev=0 --match 'v[0-9]*.[0-9]*.[0-9]*' --exclude 'v*[!0-9.]*' 2>/dev/null \
+              || echo v0.1.0)-${GITHUB_SHA::7}"
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          # The build and the source archive take the version from here, not from the nearest tag of the commit.
+          echo "${tag#v}" | cut -d- -f1 > version.txt
 
       # Made before building, so it holds sources only.
       - name: Source archive
         run: |
           tag="${{ steps.version.outputs.tag }}"
-          echo "${tag#v}" | cut -d- -f1 > version.txt
           mkdir -p "$RUNNER_TEMP/out"
           tar --exclude-vcs --exclude='./dicts' --exclude='*/node_modules' \
             --transform "s,^\.,screenlate-$tag," -czf "$RUNNER_TEMP/out/screenlate-$tag-source.tar.gz" .
-          rm version.txt
 
       - name: Changelog
         # Hand-written notes in .github/release-notes/<tag>.md win over the commit list.
@@ -51,7 +53,8 @@ jobs:
             cp "$notes" "$RUNNER_TEMP/changelog.md"
             exit 0
           fi
-          previous="$(git describe --tags --abbrev=0 --match 'v[0-9]*' HEAD^ 2>/dev/null || true)"
+          previous="$(git describe --tags --abbrev=0 --match 'v[0-9]*.[0-9]*.[0-9]*' --exclude 'v*[!0-9.]*' HEAD^ \
+            2>/dev/null || true)"
           {
             echo "## Changes"
             echo
@@ -104,8 +107,9 @@ jobs:
           gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP"/out/* \
             --title "Screenlate $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/changelog.md" --verify-tag
 
+      # Also when publishing failed, so the built APKs are not lost.
       - name: Keep as artifacts
-        if: ${{ !(startsWith(github.ref, 'refs/tags/v') && steps.signing.outputs.signed == 'true') }}
+        if: ${{ failure() || !(startsWith(github.ref, 'refs/tags/v') && steps.signing.outputs.signed == 'true') }}
         uses: actions/upload-artifact@v7
         with:
           name: screenlate-${{ steps.version.outputs.tag }}-unpublished

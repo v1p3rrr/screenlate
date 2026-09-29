@@ -32,7 +32,8 @@ fun Project.screenlateVersion(): ScreenlateVersion {
         }.standardOutput.asText.get().trim().ifEmpty { null }
     }.getOrNull()
     return ScreenlateVersion.parse(
-        tag = git("describe", "--tags", "--abbrev=0", "--match", "v[0-9]*"),
+        // Only vX.Y.Z tags: a tag such as v0.2.0-rc1 would not parse and give the default version.
+        tag = git("describe", "--tags", "--abbrev=0", "--match", "v[0-9]*.[0-9]*.[0-9]*", "--exclude", "v*[!0-9.]*"),
         commit = git("rev-parse", "--short", "HEAD"),
     )
 }

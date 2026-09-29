@@ -61,3 +61,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - The system file picker (backup create/restore) is driven with uiautomator: tap the file's name text, not its thumbnail, which opens a preview. Backups created on the emulator land in `Download/`.
 - The Quick Settings tile can be tested with `adb shell cmd statusbar add-tile|click-tile <pkg>/com.vpr.screenlate.overlay.BubbleTileService`.
 - Android 17 emulator with targetSdk 37: apps need `ACCESS_LOCAL_NETWORK` (runtime, "nearby devices" group) for private, link-local and `.local` addresses, and `10.0.2.2` counts as one. Without it a TCP connect just times out (`SocketTimeoutException`); `adb shell` (e.g. `nc 10.0.2.2 <port>`) is not affected, so it proves the host side works. Loopback stays allowed. A mock HTTP server on the desktop, reached at `http://10.0.2.2:<port>`, is the easiest way to test audio sources on the home network.
+- Bundled dictionaries are cached in `dicts/bundled/` with the URL of each file next to it (`<name>.url`); a file whose
+  URL changed is downloaded again, and a `.zip` must be a readable archive (`DownloadCache`). CI keys its copy of the
+  folder by `app/build.gradle.kts` and `DownloadCache.kt`. Release builds read the version from `version.txt`, which
+  the release workflow writes from the tag; other builds take the latest `vX.Y.Z` tag (pre-release tags are skipped).

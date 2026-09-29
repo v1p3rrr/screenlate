@@ -56,4 +56,29 @@ answered; answers go to the plan's changelog.
      aim on.
   4. Make it a setting.
 
+### Q3. A bundled dictionary from an unversioned URL comes back after the user deleted it (module 1 run 2, module 4)
+
+- **Feature:** dictionaries shipped in the APK (JMdict English, Jiten frequency list, Kanjium pitch accents) and
+  installed on first launch (`BundledDictionaries`, module 4), downloaded at build time (`downloadBundledDictionaries`
+  in `app/build.gradle.kts`, module 1).
+- **How it works now:** each shipped archive is remembered as installed by name and size. A deleted bundled dictionary
+  stays deleted while the same file ships; when a later app version ships a file of the same name with another size, it
+  is imported again (replacing the dictionary of the same title, or bringing it back if the user deleted it). This is
+  how a deliberate update of a bundled dictionary reaches existing users.
+- **The problem:** JMdict and Kanjium come from pinned release URLs, but the Jiten list comes from
+  `api.jiten.moe/.../download` without a version. The build caches the file; CI refreshes its cache whenever
+  `app/build.gradle.kts` (or, since this review, the download code) changes, so a release made after such a change
+  ships a slightly different Jiten file (7 817 828 bytes on 2026-09-26, 7 821 570 bytes on 2026-09-30). On update every
+  user gets Jiten imported again (a few seconds in the background), and users who deleted it get it back. The next
+  release will do this, because the CI cache key changed in this review.
+- **Options** (recommended first):
+  1. Remember deletions: a bundled dictionary the user deleted is never imported again, whatever size ships later; one
+     the user kept is still updated when the file changes. Keeps the Jiten list current.
+  2. Pin the Jiten file: download it once, attach it to a GitHub release of this repository (CC BY-SA allows it with
+     attribution) and bundle it from there; it changes only when we update it on purpose. Deleted dictionaries would
+     still come back after a deliberate update, unless combined with 1.
+  3. Treat the name alone as the identity: once installed or deleted, a bundled file name is never imported again;
+     updates of bundled dictionaries then come only through the dictionary update check (`indexUrl`) or a renamed file.
+  4. Keep as is.
+
 ## Answered

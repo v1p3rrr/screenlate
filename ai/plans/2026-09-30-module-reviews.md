@@ -30,11 +30,15 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
    ReportFindings list is re-sent with outcomes.
 5. After the module's last run: `ai/status.md`, commit, push, a short Russian progress message.
 
+## Current position
+
+Updated after every step so the work survives a context reset or a paused session: module 1 done and committed; next: module 2 (common and language support), run 1 — read core/common in full and follow its integration paths.
+
 ## Progress
 
 | # | Module | Run 1 | Run 2 | Run 3 | Run 4 | Commit |
 |---|---|---|---|---|---|---|
-| 1 | Build, CI and release | | | | | |
+| 1 | Build, CI and release | 9 found, 9 fixed | 3 found: 1 fixed, 1 question (Q3), 1 deferred | 1 found (test), fixed | not needed | see git log |
 | 2 | Common and language support | | | | | |
 | 3 | OCR | | | | | |
 | 4 | Dictionary registry, imports and catalog | | | | | |
@@ -51,9 +55,50 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 Per module and run: the findings, what was fixed, what went to questions.
 
+### Module 1, run 1
+
+1. `DownloadAssetsTask`: the cache is keyed by file name only, so a changed URL keeps the old archive (and a
+   re-download could not replace the file on Windows); the CI cache key ignores the task's code.
+2. `DownloadAssetsTask`: any HTTP 200 body is cached and bundled, also an error page instead of a zip.
+3. `DownloadAssetsTask`: no connect or read timeouts.
+4. `release.yml`: the APK version comes from `git describe`, not from the pushed tag (two tags on one commit).
+5. `ScreenlateVersion`: `--match v[0-9]*` also takes `v0.2.0-rc1`, which then falls back to 0.1.0.
+6. `DownloadAssetsTask`: a redirect without `Location` fails with a bare NPE.
+7. `release.yml` header misdescribes manual runs (they use the release key and publish when run on a tag).
+8. Setup action: stale "about 48 MB" for the bundled dictionaries (25 MB).
+9. `libs.versions.toml`: foundation-layout pinned outside the Compose BOM, filed under build-logic plugins.
+
+All fixed: `DownloadCache` (URL stored next to each file, zip check, 60 s timeouts, replacing move, named errors;
+`DownloadCacheTest`, 9 cases), the CI cache key follows `DownloadCache.kt`; `release.yml` writes `version.txt` from
+the tag before the build; tag patterns `v[0-9]*.[0-9]*.[0-9]*` minus `v*[!0-9.]*` in the build and the workflow
+(checked in a scratch repository); comments; foundation-layout from the BOM (resolves to 1.12.1 as before). Build
+and all unit tests pass; the bundled dictionaries were downloaded again through the new cache.
+
+### Module 1, run 2
+
+Also read: R8 keep rules and JNI lookups (nothing found), icon scripts, CI logs of the latest run (caches hit, no JDK
+download; compiler warnings of other modules went to Deferred).
+
+1. The bundled Jiten list comes from an unversioned URL; a CI cache refresh ships another size, which re-imports it on
+   update and brings it back after a deletion → question Q3.
+2. `release.yml`: a failed publish skipped "Keep as artifacts" and lost the built APKs → fixed (`failure() ||`).
+3. Compiler warnings in modules 3, 4 and 12 → Deferred.
+
+### Module 1, run 3
+
+Over the diff of runs 1–2 and its callers (the task's only user is `app/build.gradle.kts`; the CI cache key path, the
+workflow steps run locally in a scratch repository, the debug build's version on Windows: 0.1.4, code 104). One
+finding: `DownloadCacheTest` read its request log across threads without synchronization → fixed
+(`CopyOnWriteArrayList`). No 4th run: the only change was that test detail.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
+
+- Module 3: `CompositeOcrTest` uses `ExperimentalCoroutinesApi` without an opt-in (compiler warnings on CI).
+- Module 4: `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
+  `Data.getStringArray` (use `getNullableStringArray`).
+- Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
 
 ## Changelog
 
