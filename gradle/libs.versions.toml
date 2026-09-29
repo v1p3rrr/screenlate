@@ -7,6 +7,7 @@ androidxHilt = "1.4.0"
 room = "2.8.5"
 datastore = "1.2.1"
 coreKtx = "1.19.1"
+coreSplashscreen = "1.2.0"
 lifecycle = "2.11.0"
 activityCompose = "1.13.0"
 navigationCompose = "2.10.2"
@@ -29,6 +30,7 @@ aboutlibraries = "15.2.0"
 [libraries]
 aboutlibraries-compose-m3 = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycle" }

@@ -50,7 +50,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Screenlate"
+            android:theme="@style/Theme.Screenlate.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,7 +63,7 @@
             android:name=".search.ProcessTextActivity"
             android:exported="true"
             android:label="@string/process_text_label"
-            android:theme="@style/Theme.Screenlate"
+            android:theme="@style/Theme.Screenlate.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />

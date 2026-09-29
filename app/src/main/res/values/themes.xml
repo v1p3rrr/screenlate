@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.Screenlate" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Shown until the theme and e-ink setting are read (MainActivity, ProcessTextActivity). -->
+    <style name="Theme.Screenlate.Starting" parent="Theme.SplashScreen.IconBackground">
+        <!-- The launcher icon's layers; the background color is the one of ic_launcher_background (scripts/icon/icon.py). -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">#F8F6FD</item>
+        <item name="postSplashScreenTheme">@style/Theme.Screenlate</item>
+    </style>
 </resources>

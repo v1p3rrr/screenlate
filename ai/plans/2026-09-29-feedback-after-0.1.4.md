@@ -24,6 +24,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Review fixes (appearance and fonts) | All findings fixed except the Japanese punctuation range, which stays as is (owner) |
 | AI note in docs | README and `docs/usage.md` say the same as the app, without naming languages (owner) |
 | E-ink off through a backup | Restores the enlarged sizes like the switch does; sizes the backup restores win (owner) |
+| App start until the theme is read | The system splash screen with the icon stays until the theme and e-ink setting are read, instead of an empty window (owner) |
 | AI translation note | "Translations were made with AI and have not been reviewed by native speakers…", no languages named (owner) |
 
 ## Code review: appearance and fonts
@@ -54,3 +55,4 @@ Owner's command (2026-09-29): review one functional module in full with its inte
 - 2026-09-29: all eight requests done and checked on the emulator (e-ink sizes restored, and a hand-changed text size kept; font switch with a downloaded serif font; engines ⓘ; Yomitan import hint and button; copy menu with English text and no popup, and with a Japanese word in the popup). The e-ink dialog in 12 locales said "to 56 dp" in a way that read as a fixed text size; reworded with the restore note.
 - 2026-09-29: full review of the appearance and fonts module (owner's command); owner answers: fix all, leave the punctuation range, docs like the app, backup restore turns e-ink off with the same size restore.
 - 2026-09-29: review findings fixed (all but 8) with tests, and checked on the emulator. Found while checking: the add-font button listed only `.ttf, .otf, .ttc` although `.woff` and `.woff2` are imported; the label now names them in all locales. Open question: the empty window at a cold start until the theme is read (item 13).
+- 2026-09-29: owner answer — keep the splash screen with the icon until the theme is read. Done for the main screen and "Look up in Screenlate" (the launcher icon's layers on its light circle), checked on the emulator.

@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.navigation.ScreenlateNavHost
@@ -36,11 +37,12 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // The splash screen stays until the settings are read: an e-ink screen would flash a frame in the colour theme.
+        installSplashScreen().setKeepOnScreenCondition { viewModel.theme.value == null }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState == null) handleOpenRequest(intent)
         setContent {
-            // An e-ink screen would flash the colour theme if a frame came before the settings.
             val theme = viewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
             ScreenlateTheme(themeMode = theme.mode, eInk = theme.eInk) {
                 LocalNetworkAskEffect()

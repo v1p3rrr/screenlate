@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.MainActivity
 import com.vpr.screenlate.MainViewModel
@@ -19,6 +20,7 @@ class ProcessTextActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setKeepOnScreenCondition { mainViewModel.theme.value == null }
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString().orEmpty()
