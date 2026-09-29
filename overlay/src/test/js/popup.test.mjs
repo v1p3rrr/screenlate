@@ -57,6 +57,11 @@ test('renders the header and one card per result', () => {
     assert.equal(content.querySelectorAll('.action-close').length, 0);
 });
 
+test('the e-ink theme reaches the page root', () => {
+    Popup.render(state({ theme: 'eink' }));
+    assert.equal(page.document.documentElement.dataset.theme, 'eink');
+});
+
 test('without the header the first entry gets the close button', () => {
     Popup.render(state({ hideSource: true }));
     assert.equal(page.document.documentElement.dataset.compact, 'true');

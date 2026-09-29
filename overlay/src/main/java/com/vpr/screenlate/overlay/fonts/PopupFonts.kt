@@ -119,6 +119,23 @@ class PopupFonts @Inject constructor(
 
     fun file(font: InstalledFont): File? = font.files.firstOrNull()?.let { File(directory, it.name) }
 
+    /** The font files and their list, for a backup; empty when no font is installed. */
+    fun backupFiles(): List<File> {
+        val fonts = mutableInstalled.value
+        if (fonts.isEmpty()) return emptyList()
+        return listOf(index) + fonts.flatMap { font -> font.files.map { File(directory, it.name) } }.filter { it.exists() }
+    }
+
+    /** Replaces the installed fonts with the files in [source] (as [backupFiles] lists them). */
+    suspend fun restore(source: File) = withContext(Dispatchers.IO) {
+        lock.withLock {
+            directory.listFiles()?.forEach { it.deleteRecursively() }
+            directory.mkdirs()
+            source.listFiles()?.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
+            mutableInstalled.value = readIndex()
+        }
+    }
+
     private suspend fun fetch(font: CatalogFont) {
         directory.mkdirs()
         val files = font.files.mapIndexed { index, file ->

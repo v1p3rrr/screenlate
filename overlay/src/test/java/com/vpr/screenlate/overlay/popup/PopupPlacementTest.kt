@@ -97,14 +97,35 @@ class PopupPlacementTest {
     }
 
     @Test
-    fun `portrait vertical text in the middle of the screen goes above or below at the usual height`() {
+    fun `portrait vertical text in the middle of a narrow screen goes beside the column on the roomier side`() {
         val phone = Box(0f, 100f, 1080f, 2340f)
         val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
-        // Less than 200 dp on either side of the column.
+        // Less than 200 dp on either side of the column: 490 px on the left, 510 px on the right.
         val word = Box(500f, 1500f, 560f, 2000f)
         val popup = PopupPlacement.place(word, true, null, size, phone, margin = 10f)
+        assertThat(popup.left).isEqualTo(570f)
+        assertThat(popup.width).isEqualTo(510f)
+        assertThat(popup.height).isWithin(0.5f).of(2240f * 0.6f)
+    }
+
+    @Test
+    fun `portrait vertical text goes above or below when even a narrow popup does not fit beside`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        // A wide keep-out (the bubble off to the side) leaves under 140 dp on both sides.
+        val word = Box(500f, 1500f, 560f, 2000f)
+        val bubble = Box(380f, 2010f, 680f, 2150f)
+        val popup = PopupPlacement.place(word, true, bubble, size, phone, margin = 10f)
         assertThat(popup.bottom).isEqualTo(1490f)
         assertThat(popup.height).isWithin(0.5f).of(2240f * 0.35f)
+    }
+
+    @Test
+    fun `horizontal text never takes the narrow popup beside the word`() {
+        val phone = Box(0f, 100f, 1080f, 2340f)
+        val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
+        val popup = PopupPlacement.place(Box(500f, 1500f, 560f, 1550f), false, null, size, phone, margin = 10f)
+        assertThat(popup.bottom).isEqualTo(1490f)
     }
 
     @Test

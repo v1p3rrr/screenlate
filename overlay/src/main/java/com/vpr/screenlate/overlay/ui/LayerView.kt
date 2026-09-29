@@ -30,6 +30,24 @@ class LayerView(context: Context) : View(context) {
     private val wordPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = WORD_COLOR }
     private val allLinesPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = ALL_LINES_COLOR }
     private val rect = RectF()
+    private val endFlash = Runnable {
+        allLineBoxes = emptyList()
+        contentChanged()
+    }
+
+    /**
+     * Black frames instead of translucent fills, and the flash of all lines ends at once instead of fading: e-ink screens
+     * show few shades and refresh on every frame of a fade.
+     */
+    var eInk: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            aimPaint.color = if (value) Color.BLACK else AIM_COLOR
+            wordPaint.set(if (value) frame(E_INK_WORD_STROKE_DP) else fill(WORD_COLOR))
+            allLinesPaint.set(if (value) frame(E_INK_LINES_STROKE_DP) else fill(ALL_LINES_COLOR))
+            invalidate()
+        }
 
     private var aim: Pair<Float, Float>? = null
     private var wordBoxes: List<Box> = emptyList()
@@ -60,8 +78,14 @@ class LayerView(context: Context) : View(context) {
     /** Shows [boxes] and fades them out after [holdMillis]. */
     fun flashLines(boxes: List<Box>, holdMillis: Long) {
         fade?.cancel()
+        removeCallbacks(endFlash)
         allLineBoxes = boxes
         allLinesAlpha = 1f
+        if (eInk) {
+            postDelayed(endFlash, holdMillis)
+            contentChanged()
+            return
+        }
         fade = ValueAnimator.ofFloat(1f, 0f).apply {
             startDelay = holdMillis
             duration = FADE_MILLIS
@@ -76,6 +100,7 @@ class LayerView(context: Context) : View(context) {
 
     fun clearAll() {
         fade?.cancel()
+        removeCallbacks(endFlash)
         aim = null
         wordBoxes = emptyList()
         allLineBoxes = emptyList()
@@ -92,7 +117,7 @@ class LayerView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         if (allLinesAlpha > 0f) {
-            allLinesPaint.alpha = (ALL_LINES_ALPHA * allLinesAlpha).toInt()
+            allLinesPaint.alpha = if (eInk) 255 else (ALL_LINES_ALPHA * allLinesAlpha).toInt()
             allLineBoxes.forEach { drawBox(canvas, it, allLinesPaint) }
         }
         wordBoxes.forEach { drawBox(canvas, it, wordPaint) }
@@ -104,8 +129,17 @@ class LayerView(context: Context) : View(context) {
 
     override fun onDetachedFromWindow() {
         removeCallbacks(hide)
+        removeCallbacks(endFlash)
         fade?.cancel()
         super.onDetachedFromWindow()
+    }
+
+    private fun fill(color: Int) = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = color }
+
+    private fun frame(strokeDp: Float) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = strokeDp * density
+        color = Color.BLACK
     }
 
     private fun drawBox(canvas: Canvas, box: Box, paint: Paint) {
@@ -122,5 +156,7 @@ class LayerView(context: Context) : View(context) {
         const val AIM_RADIUS_DP = 5f
         const val FADE_MILLIS = 400L
         const val HIDE_DELAY_MS = 1000L
+        const val E_INK_WORD_STROKE_DP = 2.5f
+        const val E_INK_LINES_STROKE_DP = 1f
     }
 }

@@ -47,6 +47,47 @@
     color-scheme: dark;
 }
 
+:root[data-theme="eink"] {
+    --bg: #ffffff;
+    --fg: #000000;
+    --muted: #333333;
+    --accent: #000000;
+    --warning: #000000;
+    --chip-bg: #e0e0e0;
+    --tag-bg: #e0e0e0;
+    --pitch-bg: #e0e0e0;
+    --dictionary-bg: #e0e0e0;
+    --dictionary-fg: #000000;
+    --pitch-fg: #000000;
+    --frequency-bg: #e0e0e0;
+    --frequency-fg: #000000;
+    --matched-bg: #e0e0e0;
+    --border: #000000;
+    --divider: #000000;
+    --background-color-dark1: #e0e0e0;
+    --text-color-light2: #333333;
+    --gloss-image-background-color: #ffffff;
+    color-scheme: light;
+}
+
+/* E-ink: every frame of an animation is a screen refresh, and shades blur into ghosting. */
+:root[data-theme="eink"] *,
+:root[data-theme="eink"] *::before,
+:root[data-theme="eink"] *::after {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+:root[data-theme="eink"] .card {
+    border-width: 2px;
+}
+
+:root[data-theme="eink"] .matched {
+    text-decoration: underline 2px;
+}
+
 * {
     box-sizing: border-box;
 }

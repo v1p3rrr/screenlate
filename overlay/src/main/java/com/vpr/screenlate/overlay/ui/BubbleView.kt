@@ -56,9 +56,25 @@ class BubbleView(context: Context) : View(context) {
     var docked: Boolean = true
         set(value) {
             field = value
-            alpha = if (value) DOCKED_ALPHA else 1f
+            alpha = restingAlpha()
             invalidate()
         }
+
+    /** Solid black and a still loading arc: e-ink screens show translucency poorly and refresh on every frame. */
+    var eInk: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            fill.color = if (value) Color.BLACK else BUBBLE_COLOR
+            alpha = restingAlpha()
+            if (loading) {
+                if (value) spinner.cancel() else spinner.start()
+            }
+            invalidate()
+        }
+
+    /** The alpha when the bubble is shown (it is 0 while a screenshot is taken on older Android versions). */
+    fun restingAlpha(): Float = if (docked && !eInk) DOCKED_ALPHA else 1f
 
     /** The edge the docked bubble sits at; the glyph goes into the part that stays on screen. */
     var dockSide: DockSide = DockSide.RIGHT
@@ -92,7 +108,7 @@ class BubbleView(context: Context) : View(context) {
         set(value) {
             if (field == value) return
             field = value
-            if (value) spinner.start() else spinner.cancel()
+            if (value && !eInk) spinner.start() else spinner.cancel()
             invalidate()
         }
 
@@ -118,7 +134,11 @@ class BubbleView(context: Context) : View(context) {
         if (loading) {
             val inset = radius - 6f * density
             arcBounds.set(cx - inset, cy - inset, cx + inset, cy + inset)
-            canvas.drawArc(arcBounds, arcStart, 100f, false, arc)
+            if (eInk) {
+                canvas.drawArc(arcBounds, -90f, E_INK_ARC, false, arc)
+            } else {
+                canvas.drawArc(arcBounds, arcStart, 100f, false, arc)
+            }
         }
     }
 
@@ -143,6 +163,9 @@ class BubbleView(context: Context) : View(context) {
 
         private const val BUBBLE_COLOR = 0x737C5CFF
         private const val DOCKED_ALPHA = 0.55f
+
+        /** The still arc of the e-ink loading indicator, in degrees. */
+        private const val E_INK_ARC = 270f
 
         /** Glyph size relative to the visible part of the docked bubble. */
         private const val GLYPH_SIZE = 0.8f

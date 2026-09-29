@@ -40,7 +40,8 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) handleOpenRequest(intent)
         setContent {
             val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
-            ScreenlateTheme(themeMode = themeMode) {
+            val eInk by viewModel.eInk.collectAsStateWithLifecycle()
+            ScreenlateTheme(themeMode = themeMode, eInk = eInk) {
                 ScreenlateNavHost(
                     themeMode = themeMode,
                     onThemeModeChange = viewModel::setThemeMode,

@@ -42,6 +42,8 @@ data class DictionariesState(
     val catalog: List<CatalogGroup> = emptyList(),
     /** The frequency dictionary used for sorting. */
     val sortDictionaryId: Long? = null,
+    /** Website and download links by dictionary id. */
+    val links: Map<Long, DictionaryLinks> = emptyMap(),
     val loaded: Boolean = false,
 )
 
@@ -81,6 +83,9 @@ class DictionariesViewModel @Inject constructor(
                 .filter { it.enabled && it.frequencyCount > 0 }
                 .let { frequencies -> frequencies.firstOrNull { it.id == sortId } ?: frequencies.firstOrNull() }
                 ?.id,
+            links = dictionaries.associate { dictionary ->
+                dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
+            },
             loaded = true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionariesState())

@@ -19,6 +19,8 @@ class MainViewModel @Inject constructor(
     val themeMode: StateFlow<ThemeMode> =
         settings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, ThemeMode.SYSTEM)
 
+    val eInk: StateFlow<Boolean> = settings.eInk.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { settings.setThemeMode(mode) }
     }

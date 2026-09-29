@@ -25,7 +25,8 @@ class ProcessTextActivity : ComponentActivity() {
         val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString().orEmpty()
         setContent {
             val themeMode by mainViewModel.themeMode.collectAsStateWithLifecycle()
-            ScreenlateTheme(themeMode = themeMode) {
+            val eInk by mainViewModel.eInk.collectAsStateWithLifecycle()
+            ScreenlateTheme(themeMode = themeMode, eInk = eInk) {
                 SearchScreen(onBack = ::finish, onOpenAnkiSettings = ::openAnkiSettings, initialQuery = text)
             }
         }

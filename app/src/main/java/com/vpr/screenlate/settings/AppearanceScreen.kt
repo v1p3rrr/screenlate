@@ -63,6 +63,7 @@ fun AppearanceScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Uni
                     onSelect = onThemeModeChange,
                 )
             }
+            EInkSection()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 SectionCard(title = stringResource(R.string.settings_language)) { LanguageSelector() }
             }

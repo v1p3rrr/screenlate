@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -153,6 +155,7 @@ fun DictionariesScreen(
                         onEnabledChange = { viewModel.setEnabled(dictionary, it) },
                         onDelete = { pendingDelete = dictionary },
                         onEditLanguages = { editingLanguages = dictionary },
+                        links = state.links[dictionary.id],
                         sort = if (section.kind == DictionaryKind.FREQUENCY) {
                             SortChoice(dictionary.id == state.sortDictionaryId) { viewModel.setSortDictionary(dictionary) }
                         } else {
@@ -252,6 +255,7 @@ private fun DictionaryCard(
     onEnabledChange: (Boolean) -> Unit,
     onDelete: () -> Unit,
     onEditLanguages: () -> Unit,
+    links: DictionaryLinks?,
     sort: SortChoice? = null,
 ) {
     var expanded by rememberSaveable(dictionary.id) { mutableStateOf(false) }
@@ -311,6 +315,25 @@ private fun DictionaryCard(
                 dictionary.attribution?.let {
                     Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+                if (links != null && !links.isEmpty) LinkButtons(links)
+            }
+        }
+    }
+}
+
+/** Opens the dictionary's website or its download in the browser. */
+@Composable
+private fun LinkButtons(links: DictionaryLinks) {
+    val uriHandler = LocalUriHandler.current
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        links.website?.let { url ->
+            OutlinedButton(onClick = { runCatching { uriHandler.openUri(url) } }) {
+                Text(stringResource(R.string.dictionaries_website))
+            }
+        }
+        links.download?.let { url ->
+            OutlinedButton(onClick = { runCatching { uriHandler.openUri(url) } }) {
+                Text(stringResource(R.string.dictionaries_download_link))
             }
         }
     }

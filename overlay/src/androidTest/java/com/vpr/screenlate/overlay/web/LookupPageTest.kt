@@ -99,7 +99,7 @@ class LookupPageTest {
             emptyList(),
         )
         page.setAppearance(appearance)
-        page.render(PageState.build(context, dark = true, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat"), result("猫", "ねこ", "cat")), message = null))
+        page.render(PageState.build(context, theme = PageTheme.DARK, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat"), result("猫", "ねこ", "cat")), message = null))
 
         awaitValue("document.querySelectorAll('article.entry').length", "2")
         assertThat(evaluate("document.documentElement.lang")).isEqualTo("\"ja\"")
@@ -113,7 +113,7 @@ class LookupPageTest {
 
     @Test
     fun bridgeCallsReachTheHost() = onMain {
-        page.render(PageState.build(context, dark = false, text = "猫", matched = 1, results = listOf(result("猫", "ねこ", "cat")), message = null))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫", matched = 1, results = listOf(result("猫", "ねこ", "cat")), message = null))
         awaitValue("document.querySelectorAll('article.entry').length", "1")
         evaluate("document.querySelector('.action-copy').click(); document.getElementById('close').click(); true")
         withTimeout(TIMEOUT_MS) { while (events.size < 2) delay(POLL_MS) }
@@ -122,7 +122,7 @@ class LookupPageTest {
 
     @Test
     fun servesInstalledFontsOnly() = onMain {
-        page.render(PageState.build(context, dark = false, text = "", matched = 0, results = emptyList(), message = "-"))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "", matched = 0, results = emptyList(), message = "-"))
         evaluate(
             """
             window.fontStatus = null;

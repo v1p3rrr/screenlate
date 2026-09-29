@@ -1,5 +1,10 @@
 package com.vpr.screenlate.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
@@ -8,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.vpr.screenlate.anki.AnkiSettingsScreen
 import com.vpr.screenlate.background.BackgroundWorkScreen
+import com.vpr.screenlate.backup.BackupScreen
 import com.vpr.screenlate.bubble.BubbleSettingsScreen
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.debug.ImageViewerScreen
@@ -22,6 +28,7 @@ import com.vpr.screenlate.settings.LibrariesScreen
 import com.vpr.screenlate.settings.NoticesScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
+import com.vpr.screenlate.ui.theme.LocalEInk
 import com.vpr.screenlate.yomitan.YomitanImportScreen
 import kotlinx.serialization.Serializable
 
@@ -40,8 +47,9 @@ private object DictionariesRoute
 @Serializable
 private object AnkiRoute
 
+/** @property showAppText scrolls to the app text switches. */
 @Serializable
-private object BubbleRoute
+private data class BubbleRoute(val showAppText: Boolean = false)
 
 @Serializable
 private object LookupRoute
@@ -54,6 +62,9 @@ private object AppearanceRoute
 
 @Serializable
 private object YomitanImportRoute
+
+@Serializable
+private object BackupRoute
 
 @Serializable
 private object AboutRoute
@@ -89,13 +100,21 @@ fun ScreenlateNavHost(
     LaunchedEffect(ankiSettingsRequests) {
         if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
     }
-    NavHost(navController = navController, startDestination = start) {
+    // Navigation's default cross-fade; e-ink screens switch at once, since every frame of a fade costs a refresh.
+    val eInk = LocalEInk.current
+    NavHost(
+        navController = navController,
+        startDestination = start,
+        enterTransition = { if (eInk) EnterTransition.None else fadeIn(tween(FADE_MS)) },
+        exitTransition = { if (eInk) ExitTransition.None else fadeOut(tween(FADE_MS)) },
+    ) {
         composable<HomeRoute> {
             HomeScreen(
                 onOpenSearch = { navController.navigate(SearchRoute()) },
                 onOpenSettings = { navController.navigate(SettingsRoute) },
                 onOpenDictionaries = { navController.navigate(DictionariesRoute) },
                 onOpenAnki = { navController.navigate(AnkiRoute) },
+                onOpenAppText = { navController.navigate(BubbleRoute(showAppText = true)) },
             )
         }
         composable<SettingsRoute> {
@@ -104,26 +123,30 @@ fun ScreenlateNavHost(
                 onOpen = { page ->
                     navController.navigate(
                         when (page) {
-                            SettingsPage.BUBBLE -> BubbleRoute
+                            SettingsPage.BUBBLE -> BubbleRoute()
                             SettingsPage.BACKGROUND -> BackgroundRoute
                             SettingsPage.LOOKUP -> LookupRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
                             SettingsPage.ANKI -> AnkiRoute
                             SettingsPage.APPEARANCE -> AppearanceRoute
                             SettingsPage.YOMITAN_IMPORT -> YomitanImportRoute
+                            SettingsPage.BACKUP -> BackupRoute
                             SettingsPage.ABOUT -> AboutRoute
                         },
                     )
                 },
             )
         }
-        composable<BubbleRoute> { BubbleSettingsScreen(onBack = back) }
+        composable<BubbleRoute> { entry ->
+            BubbleSettingsScreen(onBack = back, showAppText = entry.toRoute<BubbleRoute>().showAppText)
+        }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
         composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
         composable<YomitanImportRoute> {
             YomitanImportScreen(onBack = back, onOpenDictionaries = { navController.navigate(DictionariesRoute) })
         }
+        composable<BackupRoute> { BackupScreen(onBack = back) }
         composable<AboutRoute> {
             AboutScreen(
                 onBack = back,
@@ -151,3 +174,5 @@ fun ScreenlateNavHost(
         }
     }
 }
+
+private const val FADE_MS = 700

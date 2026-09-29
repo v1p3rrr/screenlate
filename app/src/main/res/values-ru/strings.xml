@@ -117,10 +117,17 @@
     <string name="bubble_hidden_apps">Скрывать кнопку в приложениях</string>
     <string name="bubble_hidden_apps_hint">Кнопка пропадает, пока открыто одно из отмеченных приложений.</string>
     <string name="bubble_filter_apps">Фильтр приложений</string>
-    <string name="bubble_text_source">Источник текста</string>
-    <string name="bubble_text_screen">Экран (OCR)</string>
-    <string name="bubble_text_app">Сначала текст приложения</string>
-    <string name="bubble_text_source_hint">Текст приложения точный, готов почти сразу, без ожидания распознавания, и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.\n\nРежим «Сначала текст приложения» экспериментальный: некоторые приложения сообщают неверные позиции символов, и тогда подсветка может съехать или найдётся соседнее слово. В таком случае переключитесь обратно на «Экран (OCR)».</string>
+    <string name="bubble_read_app_text">Читать текст приложения (экспериментально)</string>
+    <string name="bubble_read_app_text_hint">Быстрее в приложениях, которые отдают свой текст.</string>
+    <string name="bubble_read_app_text_info">Текст приложения точный, готов почти сразу, без ожидания распознавания, и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.
+
+Чтение текста приложения — экспериментальная функция: некоторые приложения сообщают неверные позиции символов, и тогда подсветка может съехать или найдётся соседнее слово. В таком случае выключите её.</string>
+    <string name="bubble_app_text_only">Только текст приложения</string>
+    <string name="bubble_app_text_only_hint">Без скриншотов и распознавания. Текст на картинках не читается.</string>
+    <string name="bubble_app_text_only_info">Экран совсем не распознаётся: читается только текст, который приложения отдают службам специальных возможностей. Текст на картинках, манга, игры и приложения, которые не отдают свой текст, не читаются.
+
+Подходит для электронных книг, старых или слабых устройств, где распознавание не работает или работает медленно, и для медленного или лимитного интернета: заряд на распознавание не тратится, и ничего не отправляется в сеть.</string>
+    <string name="bubble_app_text_only_confirm">Включить</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
     <string name="dictionaries_task_checking_space">Проверка свободного места: %1$s</string>
@@ -134,7 +141,7 @@
     <string name="bubble_ocr_engines_both">Оба</string>
     <string name="bubble_ocr_engines_cloud">Облако</string>
     <string name="bubble_ocr_engines_device">Устройство</string>
-    <string name="bubble_ocr_engines_hint">Оставьте оба. Отключение одного — крайняя мера для слабых или загруженных устройств.</string>
+    <string name="bubble_ocr_engines_hint">Оставьте оба. Отключение одного — крайняя мера для слабых или загруженных устройств. Облачное распознавание тратит трафик (примерно 0,1–0,4 МБ за скан), распознавание на устройстве — нет.</string>
     <string name="bubble_ocr_engines_info">Только облако: без сети ничего не распознаётся, слова появляются только после ответа сервера.\n\nТолько устройство: работает без сети, но хуже читает вертикальный текст и мангу; усиление OCR не работает.</string>
     <string name="bubble_ocr_saving">Меньше нагружать устройство</string>
     <string name="bubble_ocr_saving_hint">Весь экран устройство распознаёт само, только если облако не ответило за 3 с. Устройство меньше нагружается и тратит меньше заряда, но слова вдали от прицела появляются позже. Если важна скорость, не включайте.</string>
@@ -357,4 +364,85 @@
     <string name="background_launch_app_info">Открыть сведения о приложении</string>
     <string name="background_launch_app_info_hint">На этом телефоне нет известных экранов запуска. Обычно из сведений о приложении можно перейти к настройкам батареи и работы в фоне.</string>
     <string name="settings_badge">Новый совет</string>
+    <string name="eink_title">Экран e-ink</string>
+    <string name="eink_switch">Режим для электронных книг</string>
+    <string name="eink_hint">Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
+    <string name="eink_enlarge_title">Крупнее кнопка и текст?</string>
+    <string name="eink_enlarge_message">Сделать плавающую кнопку %1$d dp, а текст во всплывающем окне на %2$d px крупнее? Оба размера можно менять, и выключение режима их не вернёт.</string>
+    <string name="eink_enlarge_confirm">Увеличить</string>
+    <string name="eink_enlarge_keep">Оставить как есть</string>
+    <string name="eink_home_title">Экран e-ink?</string>
+    <string name="eink_home_message">Похоже, это устройство с экраном e-ink. Режим для электронных книг делает Screenlate чёрно-белым и без анимаций. На медленных устройствах или без интернета плавающая кнопка может читать только текст приложений, не распознавая экран.</string>
+    <string name="eink_home_turn_on">Включить режим e-ink</string>
+    <string name="eink_home_app_text">Только текст приложения…</string>
+    <string name="dictionaries_website">Сайт</string>
+    <string name="dictionaries_download_link">Скачать</string>
+    <string name="backup_title">Резервная копия</string>
+    <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их</string>
+    <string name="backup_create">Создать копию</string>
+    <string name="backup_create_hint">Один файл со всеми настройками, порядком и переключателями словарей и установленными шрифтами. Храните его где угодно: в телефоне, на карте памяти или в облаке.</string>
+    <string name="backup_include_dictionaries">Включить словари</string>
+    <string name="backup_include_dictionaries_hint">Сами словари, готовые к работе без скачивания и импорта. Файл станет намного больше.</string>
+    <string name="backup_create_button">Создать копию…</string>
+    <string name="backup_creating">Создаётся копия…</string>
+    <string name="backup_created">Копия сохранена (%1$s).</string>
+    <plurals name="backup_created_dictionaries">
+        <item quantity="one">Копия сохранена (%1$s, %2$d словарь).</item>
+        <item quantity="few">Копия сохранена (%1$s, %2$d словаря).</item>
+        <item quantity="many">Копия сохранена (%1$s, %2$d словарей).</item>
+        <item quantity="other">Копия сохранена (%1$s, %2$d словаря).</item>
+    </plurals>
+    <string name="backup_write_failed">Не удалось записать копию. Проверьте свободное место или выберите другое место.</string>
+    <string name="backup_restore">Восстановление</string>
+    <string name="backup_restore_hint">Выберите файл копии, затем — что восстановить.</string>
+    <string name="backup_choose">Выбрать копию…</string>
+    <string name="backup_restoring">Восстановление…</string>
+    <string name="backup_not_backup">Это не резервная копия Screenlate.</string>
+    <string name="backup_newer">Копия сделана более новой версией Screenlate. Сначала обновите приложение.</string>
+    <string name="backup_read_failed">Не удалось прочитать копию.</string>
+    <string name="backup_loaded">Копия от %1$s, версия %2$s</string>
+    <string name="backup_sections">Что восстановить</string>
+    <string name="backup_replace_warning">Отмеченное заменит текущее. Словари из копии добавятся или заменят такие же; остальные установленные словари останутся.</string>
+    <string name="backup_restore_button">Восстановить отмеченное</string>
+    <string name="backup_restored">Восстановлено</string>
+    <string name="backup_section_general">Общие</string>
+    <string name="backup_section_general_hint">Тема, режим e-ink, уведомления об обновлениях</string>
+    <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
+    <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
+    <string name="backup_section_lookup">Поиск</string>
+    <string name="backup_section_lookup_hint">Длина сканирования, число результатов, ромадзи, отдельные кандзи</string>
+    <string name="backup_section_popup">Вид окна</string>
+    <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS и установленные шрифты</string>
+    <string name="backup_section_anki">Anki</string>
+    <string name="backup_section_anki_hint">Колода, тип записи, поля, дубликаты</string>
+    <string name="backup_section_audio">Аудио</string>
+    <string name="backup_section_audio_hint">Источники произношения</string>
+    <string name="backup_section_dictionary_list">Порядок и переключатели словарей</string>
+    <plurals name="backup_section_dictionary_list_hint">
+        <item quantity="one">%d словарь: порядок, вкл/выкл, языки и словарь для сортировки. Применяется к установленным.</item>
+        <item quantity="few">%d словаря: порядок, вкл/выкл, языки и словарь для сортировки. Применяется к установленным.</item>
+        <item quantity="many">%d словарей: порядок, вкл/выкл, языки и словарь для сортировки. Применяется к установленным.</item>
+        <item quantity="other">%d словаря: порядок, вкл/выкл, языки и словарь для сортировки. Применяется к установленным.</item>
+    </plurals>
+    <string name="backup_section_dictionary_files">Словари</string>
+    <plurals name="backup_section_dictionary_files_hint">
+        <item quantity="one">%d словарь, добавится или заменит такой же</item>
+        <item quantity="few">%d словаря, добавятся или заменят такие же</item>
+        <item quantity="many">%d словарей, добавятся или заменят такие же</item>
+        <item quantity="other">%d словаря, добавятся или заменят такие же</item>
+    </plurals>
+    <plurals name="backup_summary_fonts">
+        <item quantity="one">%d шрифт</item>
+        <item quantity="few">%d шрифта</item>
+        <item quantity="many">%d шрифтов</item>
+        <item quantity="other">%d шрифта</item>
+    </plurals>
+    <plurals name="backup_summary_dictionaries">
+        <item quantity="one">%d словарь добавлен или заменён</item>
+        <item quantity="few">%d словаря добавлены или заменены</item>
+        <item quantity="many">%d словарей добавлены или заменены</item>
+        <item quantity="other">%d словаря добавлены или заменены</item>
+    </plurals>
+    <string name="backup_summary_failed">Не восстановлены: %1$s</string>
+    <string name="backup_summary_missing">Не установлены, их настройки пропущены: %1$s</string>
 </resources>

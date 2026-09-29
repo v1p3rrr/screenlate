@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,8 +27,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -105,15 +109,29 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
 
 private data class LaunchableApp(val packageName: String, val label: String, val icon: ImageBitmap?)
 
-/** Aim point, dock side, highlight, haptics, and the apps where the bubble stays hidden. */
+/**
+ * Aim point, dock side, screen recognition and app text, highlight, haptics, and the apps where the bubble stays hidden.
+ *
+ * @param showAppText scrolls to the app text switches, for the e-ink hint.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel = hiltViewModel()) {
+fun BubbleSettingsScreen(
+    onBack: () -> Unit,
+    showAppText: Boolean = false,
+    viewModel: BubbleSettingsViewModel = hiltViewModel(),
+) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val apps by produceState<List<LaunchableApp>?>(null) { value = launchableApps(context) }
     var filter by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val recognizes = settings.textSource != TextSource.APP_TEXT_ONLY
+    var confirmAppTextOnly by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    LaunchedEffect(showAppText) {
+        if (showAppText) listState.animateScrollToItem(APP_TEXT_INDEX)
+    }
 
     Scaffold(
         topBar = {
@@ -128,6 +146,7 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
         },
     ) { padding ->
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .formContent(padding, focusManager),
@@ -161,21 +180,6 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         },
                         onSelect = viewModel::setDockSide,
                     )
-                    LabelWithInfo(
-                        stringResource(R.string.bubble_text_source),
-                        stringResource(R.string.bubble_text_source_hint),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Segments(
-                        options = TextSource.entries,
-                        selected = settings.textSource,
-                        label = {
-                            stringResource(
-                                if (it == TextSource.SCREEN) R.string.bubble_text_screen else R.string.bubble_text_app,
-                            )
-                        },
-                        onSelect = viewModel::setTextSource,
-                    )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     Text(
                         stringResource(R.string.bubble_recognition),
@@ -200,7 +204,7 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                             )
                         },
                         onSelect = viewModel::setSmallText,
-                        enabled = settings.ocrEngines != OcrEngines.DEVICE,
+                        enabled = recognizes && settings.ocrEngines != OcrEngines.DEVICE,
                     )
                     LabelWithInfo(
                         stringResource(R.string.bubble_ocr_engines),
@@ -220,6 +224,7 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                             )
                         },
                         onSelect = viewModel::setOcrEngines,
+                        enabled = recognizes,
                     )
                     Hint(stringResource(R.string.bubble_ocr_engines_hint))
                     SwitchRow(
@@ -227,8 +232,31 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
                         settings.ocrSaving,
                         viewModel::setOcrSaving,
                         hint = stringResource(R.string.bubble_ocr_saving_hint),
-                        enabled = settings.ocrEngines == OcrEngines.BOTH,
+                        enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH,
                     )
+                }
+            }
+            item(key = APP_TEXT_KEY) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SwitchRow(
+                        stringResource(R.string.bubble_read_app_text),
+                        settings.textSource != TextSource.SCREEN,
+                        { viewModel.setTextSource(if (it) TextSource.APP_TEXT else TextSource.SCREEN) },
+                        hint = stringResource(R.string.bubble_read_app_text_hint),
+                        enabled = recognizes,
+                        info = stringResource(R.string.bubble_read_app_text_info),
+                    )
+                    SwitchRow(
+                        stringResource(R.string.bubble_app_text_only),
+                        !recognizes,
+                        { if (it) confirmAppTextOnly = true else viewModel.setTextSource(TextSource.APP_TEXT) },
+                        hint = stringResource(R.string.bubble_app_text_only_hint),
+                        info = stringResource(R.string.bubble_app_text_only_info),
+                    )
+                }
+            }
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     BubbleSizeRow(settings.bubbleSizeDp, viewModel::setBubbleSize)
                     SwitchRow(stringResource(R.string.bubble_highlight), settings.highlightWord, viewModel::setHighlight)
@@ -280,7 +308,29 @@ fun BubbleSettingsScreen(onBack: () -> Unit, viewModel: BubbleSettingsViewModel 
             }
         }
     }
+
+    if (confirmAppTextOnly) {
+        AlertDialog(
+            onDismissRequest = { confirmAppTextOnly = false },
+            title = { Text(stringResource(R.string.bubble_app_text_only)) },
+            text = { Text(stringResource(R.string.bubble_app_text_only_info)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.setTextSource(TextSource.APP_TEXT_ONLY)
+                    confirmAppTextOnly = false
+                }) { Text(stringResource(R.string.bubble_app_text_only_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmAppTextOnly = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
 }
+
+private const val APP_TEXT_KEY = "app_text"
+
+/** Index of the app text item: the first item holds aim, dock and screen recognition. */
+private const val APP_TEXT_INDEX = 1
 
 private suspend fun launchableApps(context: Context): List<LaunchableApp> = withContext(Dispatchers.IO) {
     val pm = context.packageManager

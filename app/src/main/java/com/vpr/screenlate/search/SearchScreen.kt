@@ -56,6 +56,8 @@ import com.vpr.screenlate.overlay.anki.NoteContext
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
+import com.vpr.screenlate.overlay.web.PageTheme
+import com.vpr.screenlate.ui.theme.LocalEInk
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.builtins.ListSerializer
@@ -86,9 +88,15 @@ fun SearchScreen(
         ThemeMode.DARK -> true
         ThemeMode.SYSTEM -> systemDark
     }
+    val eInk = LocalEInk.current
+    val theme = when {
+        eInk -> PageTheme.E_INK
+        dark -> PageTheme.DARK
+        else -> PageTheme.LIGHT
+    }
     val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val currentDark by rememberUpdatedState(dark)
+    val currentTheme by rememberUpdatedState(theme)
     val noKanji by rememberUpdatedState(stringResource(OverlayR.string.overlay_no_kanji))
 
     // The page and its buttons live as long as the screen; the view model only does lookups.
@@ -107,7 +115,7 @@ fun SearchScreen(
                 override fun onLookup(query: String, primaryReading: String?) {
                     scope.launch {
                         val found = viewModel.search(query, primaryReading)
-                        holder.page.push(state(context, currentDark, found))
+                        holder.page.push(state(context, currentTheme, found))
                         holder.notes.onResultsShown(found.results.firstOrNull()?.term?.let { it.expression to it.reading })
                     }
                 }
@@ -122,7 +130,7 @@ fun SearchScreen(
                     scope.launch {
                         val result = viewModel.kanji(character)
                         holder.page.push(
-                            PageState.kanji(context, currentDark, result, noKanji),
+                            PageState.kanji(context, currentTheme, result, noKanji),
                         )
                     }
                 }
@@ -166,10 +174,10 @@ fun SearchScreen(
         focus.requestFocus()
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
-    LaunchedEffect(results, dark) {
+    LaunchedEffect(results, theme) {
         val current = results ?: return@LaunchedEffect
         holder.notes.refreshActions()
-        page.render(state(context, dark, current))
+        page.render(state(context, theme, current))
         holder.notes.onResultsShown(current.results.firstOrNull()?.term?.let { it.expression to it.reading })
     }
 
@@ -253,9 +261,9 @@ private fun EmptySearch() {
     }
 }
 
-private fun state(context: android.content.Context, dark: Boolean, results: SearchResults): String = PageState.build(
+private fun state(context: android.content.Context, theme: PageTheme, results: SearchResults): String = PageState.build(
     context = context,
-    dark = dark,
+    theme = theme,
     text = results.text,
     matched = PageState.matchedLength(results.results),
     results = results.results,

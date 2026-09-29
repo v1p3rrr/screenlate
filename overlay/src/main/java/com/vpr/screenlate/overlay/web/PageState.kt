@@ -15,6 +15,9 @@ import kotlinx.serialization.json.Json
  * The result can be large (Jitendex entries), so it is written in one pass from data classes; call it off the
  * main thread where possible.
  */
+/** Colors of the lookup page; e-ink also turns off its animations. */
+enum class PageTheme(val css: String) { LIGHT("light"), DARK("dark"), E_INK("eink") }
+
 object PageState {
     private val json = Json { encodeDefaults = true }
 
@@ -25,7 +28,7 @@ object PageState {
      */
     fun build(
         context: Context,
-        dark: Boolean,
+        theme: PageTheme,
         text: String,
         matched: Int,
         results: List<LookupResult>,
@@ -36,7 +39,7 @@ object PageState {
         ocrError: String = "",
     ): String = json.encodeToString(
         StateDto(
-            theme = theme(dark),
+            theme = theme.css,
             pending = pending,
             engine = engine,
             ocrError = ocrError,
@@ -63,9 +66,9 @@ object PageState {
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
-    fun kanji(context: Context, dark: Boolean, kanji: KanjiResult, message: String?): String = json.encodeToString(
+    fun kanji(context: Context, theme: PageTheme, kanji: KanjiResult, message: String?): String = json.encodeToString(
         StateDto(
-            theme = theme(dark),
+            theme = theme.css,
             source = SourceDto(kanji.character, 1),
             kanji = kanji.takeIf { it.entries.isNotEmpty() },
             message = message.takeIf { kanji.entries.isEmpty() },
@@ -83,8 +86,6 @@ object PageState {
     /** Length of the first result's match in code points, for highlighting. */
     fun matchedLength(results: List<LookupResult>): Int =
         results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
-
-    private fun theme(dark: Boolean) = if (dark) "dark" else "light"
 
     /** Puts [text] on the clipboard; Android shows its own confirmation. */
     fun copy(context: Context, text: String) {

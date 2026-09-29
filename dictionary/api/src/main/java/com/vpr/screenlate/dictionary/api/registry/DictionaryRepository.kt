@@ -197,6 +197,41 @@ class DictionaryRepository @Inject constructor(
         reloadLocked()
     }
 
+    /**
+     * Adds a dictionary from a backup: [files] is a directory in the engine's format (see
+     * [DictionaryStorage.newStagingDirectory]) that is moved into storage. One with the same title is replaced and
+     * keeps its position and switch; a new one goes last with the switch from [dictionary].
+     */
+    suspend fun restore(dictionary: DictionaryEntity, files: File): DictionaryEntity = mutex.withLock {
+        val existing = dao.findByTitle(dictionary.title)
+        val entity = dictionary.copy(
+            id = existing?.id ?: 0,
+            enabled = existing?.enabled ?: dictionary.enabled,
+            priority = existing?.priority ?: (dao.maxPriority() + 1),
+            directory = storage.adopt(files),
+        )
+        val saved = if (existing == null) {
+            entity.copy(id = dao.insert(entity))
+        } else {
+            dao.update(entity)
+            entity
+        }
+        reloadLocked()
+        existing?.let { storage.directoryOf(it).deleteRecursively() }
+        saved
+    }
+
+    /** Saves the order, switches and languages of [dictionaries] (full entries) and the sort dictionary. */
+    suspend fun applyStates(dictionaries: List<DictionaryEntity>, sortDictionaryId: Long?) = mutex.withLock {
+        dao.update(dictionaries)
+        if (sortDictionaryId != null) {
+            preferences.edit { it[SORT_DICTIONARY] = sortDictionaryId }
+        } else {
+            preferences.edit { it.remove(SORT_DICTIONARY) }
+        }
+        reloadLocked()
+    }
+
     suspend fun delete(id: Long) = mutex.withLock {
         val dictionary = dao.get(id) ?: return@withLock
         dao.delete(dictionary)

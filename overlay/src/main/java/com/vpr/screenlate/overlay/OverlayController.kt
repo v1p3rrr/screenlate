@@ -62,6 +62,7 @@ import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.popup.PopupController
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
+import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
@@ -177,6 +178,7 @@ class OverlayController(
     private var lastScreen: Box? = null
     private var scanLength = LookupSettings.DEFAULT_SCAN_LENGTH
     private var themeMode = ThemeMode.SYSTEM
+    private var eInk = false
     private var state = State.DOCKED
     private var attached = false
 
@@ -217,6 +219,14 @@ class OverlayController(
                 refreshPopup()
             }
         }
+        scope.launch {
+            appSettings.eInk.collect {
+                eInk = it
+                bubbleView.eInk = it
+                layerView.eInk = it
+                refreshPopup()
+            }
+        }
     }
 
     fun stop() {
@@ -254,7 +264,7 @@ class OverlayController(
     private fun applySettings(new: OverlaySettings) {
         val previous = settings
         settings = new
-        applyOcrEngines(new.ocrEngines)
+        loadOnDevice(new.textSource != TextSource.APP_TEXT_ONLY && new.ocrEngines != OcrEngines.CLOUD)
         val show = shouldShowBubble()
         val size = (new.bubbleSizeDp * density).roundToInt()
         if (size != bubbleSize) resizeBubble(size)
@@ -272,9 +282,8 @@ class OverlayController(
         updateAimVisuals()
     }
 
-    /** Loads the on-device model ahead of the first scan, or frees it while only cloud recognition is used. */
-    private fun applyOcrEngines(engines: OcrEngines) {
-        val needed = engines != OcrEngines.CLOUD
+    /** Loads the on-device model ahead of the first scan, or frees it while the device does not recognize. */
+    private fun loadOnDevice(needed: Boolean) {
         if (needed == onDeviceLoaded) return
         onDeviceLoaded = needed
         if (needed) scope.launch { ocr.warmUp() } else ocr.releaseOnDevice()
@@ -433,13 +442,18 @@ class OverlayController(
         onAim(x, y)
     }
 
-    /** Docks only when the finger is lifted at the very edge, so words next to the edge stay reachable. */
+    /**
+     * Docks when the bubble's center has crossed the edge or the finger is lifted at the very edge, so words next to the
+     * edge stay reachable. The center counts too because the finger may hold the bubble off-center, and curved screens
+     * often report no touches at the edge itself.
+     */
     private fun endDrag(fingerX: Float) {
         val screen = screenBounds()
         val dockZone = DOCK_ZONE_DP * density
+        val centerX = bubbleCenter().first
         when {
-            fingerX >= screen.right - dockZone -> dock(DockSide.RIGHT, atCurrentHeight = true)
-            fingerX <= screen.left + dockZone -> dock(DockSide.LEFT, atCurrentHeight = true)
+            fingerX >= screen.right - dockZone || centerX >= screen.right -> dock(DockSide.RIGHT, atCurrentHeight = true)
+            fingerX <= screen.left + dockZone || centerX <= screen.left -> dock(DockSide.LEFT, atCurrentHeight = true)
             else -> {
                 state = State.FLOATING
                 popupNotes.onAimSettled()
@@ -623,11 +637,15 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
+            if (settings.textSource == TextSource.APP_TEXT_ONLY) {
+                readAppTextOnly(flashLines)
+                return@launch
+            }
             val started = SystemClock.elapsedRealtime()
             // App text is exact and works in windows that forbid screenshots. It needs no screenshot, so it is read
             // while the screen is captured and shown as soon as it is there. OCR still runs to add the text the app
             // does not expose, such as text in images.
-            val appTextRead = async { if (settings.textSource == TextSource.APP_TEXT) readAppText() else null }
+            val appTextRead = async { if (settings.textSource != TextSource.SCREEN) readAppText() else null }
             var captureError: CaptureException? = null
             val captured = try {
                 capture()
@@ -699,6 +717,19 @@ class OverlayController(
                 ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
             }
         }
+    }
+
+    /** No screenshot and no recognition: only the app's own text, for weak devices and e-ink readers. */
+    private suspend fun readAppTextOnly(flashLines: Boolean) {
+        val page = readAppText()
+        bubbleView.loading = false
+        if (page == null || page.paragraphs.isEmpty()) {
+            // Nothing more will come: no spinner in the popup.
+            ocrFinal = true
+            showMessage(service.getString(R.string.overlay_no_app_text))
+            return
+        }
+        onPage(page = page, final = true, lensError = null, flashLines = flashLines)
     }
 
     private fun ocrOptions() = OcrOptions(settings.ocrEngines, deferWholeImage = settings.ocrSaving)
@@ -782,7 +813,7 @@ class OverlayController(
     }
 
     private fun setOverlaysAlpha(alpha: Float) {
-        bubbleView.alpha = if (alpha == 0f) 0f else if (bubbleView.docked) 0.55f else 1f
+        bubbleView.alpha = if (alpha == 0f) 0f else bubbleView.restingAlpha()
         layerView.alpha = alpha
     }
 
@@ -932,6 +963,15 @@ class OverlayController(
         } else {
             null
         }
+        // Without recognition no screenshot is taken during the scan, so the note takes one now.
+        if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
+            screenshot = try {
+                capture()
+            } catch (e: CaptureException) {
+                Log.w(TAG, "No screenshot for the note", e)
+                null
+            }
+        }
         val shot = screenshot
         return NoteContext(
             sentence = sentence,
@@ -968,13 +1008,13 @@ class OverlayController(
 
     /** [popupState] for large result sets: the OCR status is read here, the JSON is written on a worker thread. */
     private suspend fun popupStateOffMain(view: LookupView): String {
-        val dark = isDarkTheme()
+        val theme = pageTheme()
         val pending = scanJob?.isActive == true && !ocrFinal
         val engine = engineLabel()
         val hideSource = !settings.showSourceText
         val ocrError = ocrErrorText()
         return withContext(Dispatchers.Default) {
-            PageState.build(service, dark, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError)
+            PageState.build(service, theme, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError)
         }
     }
 
@@ -999,7 +1039,7 @@ class OverlayController(
         val engineLabel = engineLabel()
         return PageState.build(
             context = service,
-            dark = isDarkTheme(),
+            theme = pageTheme(),
             text = view.text,
             matched = view.matched,
             results = view.results,
@@ -1030,6 +1070,12 @@ class OverlayController(
             else -> service.getString(R.string.overlay_ocr_error_other)
         }
         return "$reason ${service.getString(R.string.overlay_ocr_error_fallback)}"
+    }
+
+    private fun pageTheme(): PageTheme = when {
+        eInk -> PageTheme.E_INK
+        isDarkTheme() -> PageTheme.DARK
+        else -> PageTheme.LIGHT
     }
 
     private fun isDarkTheme(): Boolean = when (themeMode) {
@@ -1071,7 +1117,7 @@ class OverlayController(
         override fun onKanji(character: String) {
             scope.launch {
                 val result = runCatching { lookup.kanji(character, language) }.getOrElse { KanjiResult(character) }
-                popup.push(PageState.kanji(service, isDarkTheme(), result, service.getString(R.string.overlay_no_kanji)))
+                popup.push(PageState.kanji(service, pageTheme(), result, service.getString(R.string.overlay_no_kanji)))
             }
         }
 

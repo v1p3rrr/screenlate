@@ -23,6 +23,26 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[THEME_MODE] = mode.name }
     }
 
+    /**
+     * E-ink mode: a black-and-white theme without animations or translucent fills, for screens that refresh slowly and
+     * show few shades. It overrides the theme mode.
+     */
+    val eInk: Flow<Boolean> = dataStore.data.map { it[E_INK] ?: false }
+
+    suspend fun setEInk(enabled: Boolean) {
+        dataStore.edit {
+            it[E_INK] = enabled
+            it[E_INK_HINT_SEEN] = true
+        }
+    }
+
+    /** Whether the home screen has offered e-ink mode on a device that looks like an e-ink reader (offered once). */
+    val eInkHintSeen: Flow<Boolean> = dataStore.data.map { it[E_INK_HINT_SEEN] ?: false }
+
+    suspend fun setEInkHintSeen() {
+        dataStore.edit { it[E_INK_HINT_SEEN] = true }
+    }
+
     /** Whether the notification permission was asked for when an import or download started (asked once). */
     val notificationPermissionAsked: Flow<Boolean> = dataStore.data.map { it[NOTIFICATIONS_ASKED] ?: false }
 
@@ -41,5 +61,7 @@ class AppSettingsRepository @Inject constructor(
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
+        val E_INK = booleanPreferencesKey("e_ink")
+        val E_INK_HINT_SEEN = booleanPreferencesKey("e_ink_hint_seen")
     }
 }

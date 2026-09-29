@@ -56,10 +56,18 @@ fun SwitchRow(
     onChange: (Boolean) -> Unit,
     hint: String? = null,
     enabled: Boolean = true,
+    info: String? = null,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-            Text(label, color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    label,
+                    color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                if (info != null) InfoButton(label, info)
+            }
             if (hint != null) Hint(hint)
         }
         Switch(checked = checked, onCheckedChange = onChange, enabled = enabled)

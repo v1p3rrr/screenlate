@@ -31,6 +31,9 @@ enum class TextSource {
 
     /** The app's own text when it exposes character positions, text recognition otherwise. */
     APP_TEXT,
+
+    /** Only the app's own text: no screenshot and no recognition, for weak devices and e-ink readers. */
+    APP_TEXT_ONLY,
 }
 
 /** Extra Lens requests for small text, which Lens skips in a full-screen image but reads in a crop. */

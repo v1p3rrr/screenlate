@@ -7,6 +7,7 @@
     <string name="overlay_engine_offline">На устройстве (нет сети)</string>
 
     <string name="overlay_no_text">Текст на экране не найден.</string>
+    <string name="overlay_no_app_text">Это приложение не отдаёт здесь свой текст. Распознавание экрана выключено («Только текст приложения» в настройках кнопки).</string>
     <string name="overlay_error_secure">Это приложение запрещает скриншоты.</string>
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>

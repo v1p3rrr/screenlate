@@ -44,6 +44,7 @@ import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.overlay.OverlayServiceStatus
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
+import com.vpr.screenlate.settings.EInkHint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.update.UpdateAnnouncementCard
 import com.vpr.screenlate.update.UpdateViewModel
@@ -56,6 +57,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
+    onOpenAppText: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     updates: UpdateViewModel = hiltViewModel(),
 ) {
@@ -98,6 +100,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             UpdateAnnouncementCard(updates)
+            EInkHint(onOpenAppText)
             if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
 
             SectionCard(title = stringResource(R.string.home_search_title)) {

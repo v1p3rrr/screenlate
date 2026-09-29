@@ -119,10 +119,17 @@
     <string name="bubble_hidden_apps">Hide the bubble in apps</string>
     <string name="bubble_hidden_apps_hint">The bubble disappears while one of the checked apps is open.</string>
     <string name="bubble_filter_apps">Filter apps</string>
-    <string name="bubble_text_source">Text source</string>
-    <string name="bubble_text_screen">Screen (OCR)</string>
-    <string name="bubble_text_app">App text first</string>
-    <string name="bubble_text_source_hint">App text is exact, ready almost at once without waiting for recognition, and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.\n\nApp text first is experimental: some apps report wrong character positions, so the highlight can be off or a neighboring word can be found. If that happens, switch back to Screen (OCR).</string>
+    <string name="bubble_read_app_text">Read app text (experimental)</string>
+    <string name="bubble_read_app_text_hint">Faster in apps that expose their text.</string>
+    <string name="bubble_read_app_text_info">App text is exact, ready almost at once without waiting for recognition, and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.
+
+Reading app text is experimental: some apps report wrong character positions, so the highlight can be off or a neighboring word can be found. If that happens, turn it off.</string>
+    <string name="bubble_app_text_only">App text only</string>
+    <string name="bubble_app_text_only_hint">No screenshots and no recognition. Text in images is not read.</string>
+    <string name="bubble_app_text_only_info">The screen is not recognized at all: only text that apps expose to accessibility services is read. Text in images, manga, games and apps that do not expose their text is not read.
+
+Suits e-ink readers, old or weak devices where recognition does not work or is slow, and slow or metered internet: no battery spent on recognition and no data sent.</string>
+    <string name="bubble_app_text_only_confirm">Turn on</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
     <string name="dictionaries_task_checking_space">Checking free space for %1$s</string>
@@ -136,7 +143,7 @@
     <string name="bubble_ocr_engines_both">Both</string>
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Device</string>
-    <string name="bubble_ocr_engines_hint">Keep both. Turning one off is a last resort for weak or busy devices.</string>
+    <string name="bubble_ocr_engines_hint">Keep both. Turning one off is a last resort for weak or busy devices. Cloud recognition uses mobile data (about 0.1–0.4 MB per scan); on-device recognition does not.</string>
     <string name="bubble_ocr_engines_info">Cloud only: nothing is recognized without network, and words appear only once the server answers.\n\nDevice only: works offline but reads vertical text and manga worse; OCR boost is off.</string>
     <string name="bubble_ocr_saving">Reduce load on the device</string>
     <string name="bubble_ocr_saving_hint">The device reads the whole screen itself only if cloud recognition has not answered in 3 s. Less load and battery use, but words away from the aim show up later. Leave off if speed matters most.</string>
@@ -359,4 +366,75 @@
     <string name="background_launch_app_info">Open app info</string>
     <string name="background_launch_app_info_hint">This phone has none of the known startup screens. App info usually leads to battery and background settings.</string>
     <string name="settings_badge">New tip</string>
+    <string name="eink_title">E-ink screen</string>
+    <string name="eink_switch">E-ink mode</string>
+    <string name="eink_hint">Black and white, no animations, frames instead of translucent highlights. Overrides the theme.</string>
+    <string name="eink_enlarge_title">Larger bubble and text?</string>
+    <string name="eink_enlarge_message">Make the floating bubble %1$d dp and the popup text %2$d px larger? Both stay adjustable, and turning e-ink mode off does not change them back.</string>
+    <string name="eink_enlarge_confirm">Make larger</string>
+    <string name="eink_enlarge_keep">Keep sizes</string>
+    <string name="eink_home_title">E-ink screen?</string>
+    <string name="eink_home_message">This device looks like an e-ink reader. E-ink mode makes Screenlate black and white, without animations. On slow devices or without internet, the bubble can also read only the text of apps, without recognizing the screen.</string>
+    <string name="eink_home_turn_on">Turn on e-ink mode</string>
+    <string name="eink_home_app_text">App text only…</string>
+    <string name="dictionaries_website">Website</string>
+    <string name="dictionaries_download_link">Download</string>
+    <string name="backup_title">Backup and restore</string>
+    <string name="settings_backup_summary">Save settings and dictionaries to a file, restore them</string>
+    <string name="backup_create">Create a backup</string>
+    <string name="backup_create_hint">One file with all settings, the dictionary order and switches, and installed fonts. Keep it anywhere: on the phone, a memory card or cloud storage.</string>
+    <string name="backup_include_dictionaries">Include dictionaries</string>
+    <string name="backup_include_dictionaries_hint">The dictionaries themselves, ready to use without downloading or importing. The file gets much larger.</string>
+    <string name="backup_create_button">Create backup…</string>
+    <string name="backup_creating">Creating the backup…</string>
+    <string name="backup_created">Backup saved (%1$s).</string>
+    <plurals name="backup_created_dictionaries">
+        <item quantity="one">Backup saved (%1$s, %2$d dictionary).</item>
+        <item quantity="other">Backup saved (%1$s, %2$d dictionaries).</item>
+    </plurals>
+    <string name="backup_write_failed">The backup could not be written. Check the free space or choose another place.</string>
+    <string name="backup_restore">Restore</string>
+    <string name="backup_restore_hint">Choose a backup file, then the parts to restore.</string>
+    <string name="backup_choose">Choose backup…</string>
+    <string name="backup_restoring">Restoring…</string>
+    <string name="backup_not_backup">This file is not a Screenlate backup.</string>
+    <string name="backup_newer">This backup was made by a newer version of Screenlate. Update the app first.</string>
+    <string name="backup_read_failed">The backup could not be read.</string>
+    <string name="backup_loaded">Backup from %1$s, version %2$s</string>
+    <string name="backup_sections">Parts to restore</string>
+    <string name="backup_replace_warning">Checked parts replace the current ones. Dictionaries from the backup are added or replace the same ones; other installed dictionaries stay.</string>
+    <string name="backup_restore_button">Restore checked</string>
+    <string name="backup_restored">Restored</string>
+    <string name="backup_section_general">General</string>
+    <string name="backup_section_general_hint">Theme, e-ink mode, update announcements</string>
+    <string name="backup_section_bubble">Floating bubble and recognition</string>
+    <string name="backup_section_bubble_hint">Size, aim, recognition engines, app text, apps where the bubble is hidden</string>
+    <string name="backup_section_lookup">Lookup</string>
+    <string name="backup_section_lookup_hint">Scan length, number of results, romaji, single kanji</string>
+    <string name="backup_section_popup">Popup appearance</string>
+    <string name="backup_section_popup_hint">Font, text size, custom CSS and installed fonts</string>
+    <string name="backup_section_anki">Anki</string>
+    <string name="backup_section_anki_hint">Deck, note type, fields, duplicate handling</string>
+    <string name="backup_section_audio">Audio</string>
+    <string name="backup_section_audio_hint">Pronunciation sources</string>
+    <string name="backup_section_dictionary_list">Dictionary order and switches</string>
+    <plurals name="backup_section_dictionary_list_hint">
+        <item quantity="one">%d dictionary: order, on or off, languages and the one used for sorting. Applies to the installed ones.</item>
+        <item quantity="other">%d dictionaries: order, on or off, languages and the one used for sorting. Applies to the installed ones.</item>
+    </plurals>
+    <string name="backup_section_dictionary_files">Dictionaries</string>
+    <plurals name="backup_section_dictionary_files_hint">
+        <item quantity="one">%d dictionary, added or replacing the same one</item>
+        <item quantity="other">%d dictionaries, added or replacing the same ones</item>
+    </plurals>
+    <plurals name="backup_summary_fonts">
+        <item quantity="one">%d font</item>
+        <item quantity="other">%d fonts</item>
+    </plurals>
+    <plurals name="backup_summary_dictionaries">
+        <item quantity="one">%d dictionary added or replaced</item>
+        <item quantity="other">%d dictionaries added or replaced</item>
+    </plurals>
+    <string name="backup_summary_failed">Not restored: %1$s</string>
+    <string name="backup_summary_missing">Not installed, so their settings were skipped: %1$s</string>
 </resources>
