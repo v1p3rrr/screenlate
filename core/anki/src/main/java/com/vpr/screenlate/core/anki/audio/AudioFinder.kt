@@ -7,7 +7,6 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
-import java.io.IOException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.security.MessageDigest
@@ -55,9 +54,7 @@ sealed interface Pronunciation {
 }
 
 /** A source that failed recently for another reason than having no audio for a word. */
-data class AudioSourceFailure(val source: AudioSource, val reason: String)
-
-private class HttpStatusException(val code: Int) : IOException("HTTP $code")
+data class AudioSourceFailure(val source: AudioSource, val error: AudioError)
 
 /** Finds word audio by trying the configured sources in order. Results are cached for the process lifetime. */
 @Singleton
@@ -171,7 +168,7 @@ class AudioFinder internal constructor(
         Log.i(TAG, "Audio source ${source.type} failed", error.redacted())
         // Without a network every source fails; that is not a setup problem.
         if (error is UnknownHostException) return
-        failures[source] = AudioSourceFailure(source, reason(error))
+        failures[source] = AudioSourceFailure(source, AudioError.of(error))
     }
 
     private fun candidatesOf(
@@ -220,12 +217,21 @@ class AudioFinder internal constructor(
             AudioSourceType.URL ->
                 listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading), ""))
             AudioSourceType.CUSTOM_JSON -> {
-                val listUrl = expand(source.url, term, reading)
-                json.parseToJsonElement(fetch(request(listUrl).build())).jsonObject["audioSources"]?.jsonArray.orEmpty()
-                    .mapNotNull { item ->
-                        val url = item.jsonObject["url"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
-                        val name = item.jsonObject["name"]?.jsonPrimitive?.contentOrNull.orEmpty()
-                        (listUrl.toHttpUrl().resolve(url)?.toString() ?: url) to name
+                val listUrl = expand(source.url, term, reading).toHttpUrl()
+                val body = fetch(request(listUrl).build())
+                val items = try {
+                    json.parseToJsonElement(body).jsonObject["audioSources"]?.jsonArray.orEmpty().map { item ->
+                        val url = item.jsonObject["url"]?.jsonPrimitive?.contentOrNull
+                        url to item.jsonObject["name"]?.jsonPrimitive?.contentOrNull.orEmpty()
+                    }
+                } catch (e: IllegalArgumentException) {
+                    // Also covers SerializationException: not JSON, or JSON of another shape.
+                    throw NotAudioListException(e)
+                }
+                items
+                    .mapNotNull { (url, name) ->
+                        url ?: return@mapNotNull null
+                        (listUrl.resolve(url)?.let { fromListHost(it, listUrl) }?.toString() ?: url) to name
                     }
                     .mapIndexed { n, (url, name) -> AudioCandidate("$index:$n", index, source, url, name) }
             }
@@ -303,9 +309,15 @@ class AudioFinder internal constructor(
         MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
     companion object {
-        /** A short description of a source error without URLs or terms. */
-        fun reason(error: Throwable): String =
-            (error as? HttpStatusException)?.let { "HTTP ${it.code}" } ?: error.javaClass.simpleName
+        private val LOCAL_HOSTS = setOf("0.0.0.0", "localhost", "127.0.0.1", "::1")
+
+        /**
+         * A list from another machine may name its files by a local address such as `0.0.0.0`, which on this device
+         * points to the device itself; such files are fetched from the list's scheme, host and port instead.
+         */
+        internal fun fromListHost(file: HttpUrl, list: HttpUrl): HttpUrl =
+            if (file.host !in LOCAL_HOSTS || list.host in LOCAL_HOSTS) file
+            else file.newBuilder().scheme(list.scheme).host(list.host).port(list.port).build()
 
         private const val TAG = "AudioFinder"
         private const val USER_AGENT = "Screenlate (https://github.com/v1p3rrr/screenlate)"

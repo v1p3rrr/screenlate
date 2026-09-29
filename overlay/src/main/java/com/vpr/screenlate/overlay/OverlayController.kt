@@ -364,7 +364,7 @@ class OverlayController(
     }
 
     /**
-     * Closes the popup only, as in Poe: the bubble stays where it is and keeps the OCR result, so aiming again looks up
+     * Closes the popup only: the bubble stays where it is and keeps the OCR result, so aiming again looks up
      * at once, the same word included.
      */
     private fun closePopup() {

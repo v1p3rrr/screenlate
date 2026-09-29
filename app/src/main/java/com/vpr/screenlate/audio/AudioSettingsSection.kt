@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -159,11 +160,14 @@ private fun TestPanel(viewModel: AudioSettingsViewModel) {
             )
             when {
                 test.loading -> CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                test.error != null -> Text(
-                    stringResource(R.string.audio_test_failed, test.error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+                test.error != null -> {
+                    Text(
+                        stringResource(R.string.audio_test_failed, audioErrorText(test.error, test.source)),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    if (localNetworkMissing(LocalContext.current, test.source.url)) LocalNetworkAllowButton()
+                }
                 test.candidates.isEmpty() -> Hint(stringResource(R.string.audio_test_none))
                 else -> test.candidates.forEach { candidate ->
                     CandidateRow(candidate, played.candidateId == candidate.id && played.sourceIndex == index, played.missing) {
@@ -210,6 +214,7 @@ private fun SourceDialog(
     onDismiss: () -> Unit,
     onSave: (AudioSource) -> Unit,
 ) {
+    val askLocalNetwork = rememberLocalNetworkAsk()
     var type by remember { mutableStateOf(initial.type) }
     var url by remember { mutableStateOf(initial.url) }
     var menu by remember { mutableStateOf(false) }
@@ -259,7 +264,7 @@ private fun SourceDialog(
                     Text(
                         when {
                             result.loading -> stringResource(R.string.audio_test_running)
-                            result.error != null -> stringResource(R.string.audio_test_failed, result.error)
+                            result.error != null -> stringResource(R.string.audio_test_failed, audioErrorText(result.error, result.source))
                             result.candidates.isEmpty() -> stringResource(R.string.audio_test_none)
                             played.sourceIndex == -1 && played.missing -> stringResource(
                                 if (type == AudioSourceType.TEXT_TO_SPEECH) R.string.audio_test_no_voice else R.string.audio_test_none,
@@ -279,7 +284,10 @@ private fun SourceDialog(
         },
         dismissButton = {
             Row {
-                TextButton(onClick = { viewModel.testInDialog(source) }, enabled = !type.hasUrl || url.isNotBlank()) {
+                TextButton(onClick = {
+                    askLocalNetwork(source.url)
+                    viewModel.testInDialog(source)
+                }, enabled = !type.hasUrl || url.isNotBlank()) {
                     Text(stringResource(R.string.audio_test))
                 }
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }

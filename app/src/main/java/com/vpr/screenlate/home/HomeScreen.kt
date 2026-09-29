@@ -37,6 +37,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.audio.LocalNetworkAllowButton
+import com.vpr.screenlate.audio.audioErrorText
+import com.vpr.screenlate.audio.localNetworkMissing
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
@@ -170,21 +173,24 @@ private fun ProblemsCard(
                             Text(stringResource(problem.problem.message))
                             TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_anki)) }
                         }
-                        is HomeProblem.MissingDictionary -> {
-                            Text(stringResource(R.string.problems_dictionary_missing, problem.dictionary.title))
-                            Row {
-                                if (problem.catalogEntry != null) {
-                                    TextButton(onClick = {
-                                        askNotifications()
-                                        viewModel.downloadAgain(problem)
-                                    }) {
-                                        Text(stringResource(R.string.problems_download_again))
+                        is HomeProblem.MissingDictionaries -> {
+                            Text(stringResource(R.string.problems_dictionaries_missing))
+                            problem.dictionaries.forEach { missing ->
+                                Text("• " + missing.dictionary.title, style = MaterialTheme.typography.bodyMedium)
+                                Row {
+                                    if (missing.catalogEntry != null) {
+                                        TextButton(onClick = {
+                                            askNotifications()
+                                            viewModel.downloadAgain(missing)
+                                        }) {
+                                            Text(stringResource(R.string.problems_download_again))
+                                        }
+                                    } else {
+                                        Hint(stringResource(R.string.problems_import_again), modifier = Modifier.weight(1f))
                                     }
-                                } else {
-                                    Hint(stringResource(R.string.problems_import_again), modifier = Modifier.weight(1f))
-                                }
-                                TextButton(onClick = { viewModel.remove(problem) }) {
-                                    Text(stringResource(R.string.problems_remove))
+                                    TextButton(onClick = { viewModel.remove(missing) }) {
+                                        Text(stringResource(R.string.problems_remove))
+                                    }
                                 }
                             }
                         }
@@ -192,14 +198,20 @@ private fun ProblemsCard(
                             Text(stringResource(R.string.problems_no_dictionaries))
                             TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                         }
-                        is HomeProblem.AudioSource -> {
-                            Text(
-                                stringResource(
-                                    R.string.problems_audio_source,
-                                    stringResource(problem.failure.source.type.label),
-                                    problem.failure.reason,
-                                ),
-                            )
+                        is HomeProblem.AudioSources -> {
+                            Text(stringResource(R.string.problems_audio_sources))
+                            problem.failures.forEach { failure ->
+                                val name = stringResource(failure.source.type.label)
+                                Text(
+                                    stringResource(
+                                        R.string.problems_audio_source_line,
+                                        failure.source.address?.let { "$name ($it)" } ?: name,
+                                        audioErrorText(failure.error, failure.source),
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+                            if (problem.failures.any { localNetworkMissing(LocalContext.current, it.source.url) }) LocalNetworkAllowButton()
                             Row {
                                 TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_audio)) }
                                 TextButton(onClick = viewModel::dismissAudioFailures) {

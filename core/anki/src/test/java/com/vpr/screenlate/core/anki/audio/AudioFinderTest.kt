@@ -92,7 +92,7 @@ class AudioFinderTest {
         assertThat(find("犬", "いぬ")).isNull()
         assertThat(find("犬", "いぬ")).isNull()
         assertThat(requests).hasSize(3)
-        assertThat(finder.recentFailures().single().reason).isEqualTo("HTTP 503")
+        assertThat(finder.recentFailures().single().error).isEqualTo(AudioError(AudioError.Kind.HTTP_STATUS, "HTTP 503"))
         finder.clearFailures()
         assertThat(finder.recentFailures()).isEmpty()
     }
@@ -123,6 +123,37 @@ class AudioFinderTest {
 
         routes["/a.mp3"] = { audio() }
         assertThat(finder.download(candidates[0], "猫", "ねこ")).isNotNull()
+    }
+
+    @Test
+    fun `custom json files named by a local address come from the list's host`() = runBlocking<Unit> {
+        val list = """{"audioSources": [{"url": "http://0.0.0.0:5050/a.opus"}, {"url": "http://localhost:5050/b.opus"}, {"url": "https://cdn.example/c.opus"}]}"""
+        routes["/list"] = { text(list, "application/json") }
+        val remote = AudioSource(AudioSourceType.CUSTOM_JSON, "https://audio.example:8443/list?term={term}")
+        assertThat(finder.candidates("猫", "ねこ", Language.JAPANESE, listOf(remote)).map { it.url }).containsExactly(
+            "https://audio.example:8443/a.opus",
+            "https://audio.example:8443/b.opus",
+            "https://cdn.example/c.opus",
+        ).inOrder()
+
+        val local = AudioSource(AudioSourceType.CUSTOM_JSON, "http://127.0.0.1:5050/list?term={term}")
+        assertThat(finder.candidates("猫", "ねこ", Language.JAPANESE, listOf(local)).map { it.url }).containsExactly(
+            "http://0.0.0.0:5050/a.opus",
+            "http://localhost:5050/b.opus",
+            "https://cdn.example/c.opus",
+        ).inOrder()
+    }
+
+    @Test
+    fun `custom json that is not a source list is reported as such`() = runBlocking<Unit> {
+        val source = AudioSource(AudioSourceType.CUSTOM_JSON, "https://audio.example/list?term={term}")
+        routes["/list"] = { text("<html>login</html>") }
+        val error = finder.test(source, "猫", "ねこ", Language.JAPANESE).exceptionOrNull()!!
+        assertThat(AudioError.of(error).kind).isEqualTo(AudioError.Kind.NOT_A_LIST)
+        routes["/list"] = { text("""["a.mp3"]""", "application/json") }
+        assertThat(finder.recentFailures()).isNotEmpty()
+        assertThat(finder.test(source, "猫", "ねこ", Language.JAPANESE).exceptionOrNull()).isNotNull()
+        assertThat(finder.recentFailures().single().error.kind).isEqualTo(AudioError.Kind.NOT_A_LIST)
     }
 
     @Test

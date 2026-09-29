@@ -51,20 +51,18 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
 - Glossary media is served to the popup at `https://appassets.androidplatform.net/media?d=<dictionary>&p=<path>`.
 - Jitendex titles contain the date (`Jitendex.org [2026-08-11]`), so catalog entries match installed dictionaries by `indexUrl` or a title prefix.
 
-## Import speed: what Manabitan does and what applies here
+## Import speed: what faster importers do and what applies here
 
-Checked 2026-09-27 after the owner mentioned a Yomitan fork with much faster imports. It is Manabitan (github.com/ManabiIO/manabitan, GPL-3.0, a Yomitan browser extension fork by the author of Manabi Reader). The import work landed in March–May 2026; the September 14 commits are README, Anki presets and worker reliability.
+Checked 2026-09-27 after the owner asked about a Yomitan fork with much faster imports. Where Yomitan loses time and what such a fork replaces:
 
-Where Yomitan loses time and what Manabitan replaced:
-
-- `JSON.parse` of every term bank into objects plus schema validation → a one-pass C parser compiled to WASM over the raw bytes (`ext/js/dictionary/wasm/term-bank-parser.c`, `term-bank-wasm-parser.js`); glossaries stay raw JSON bytes (`raw-term-content.js`) and are not re-serialized; only `index.json` is validated.
-- IndexedDB with several indexes per row → SQLite WASM on OPFS for metadata plus own binary shard files for term records and content (`term-record-opfs-store.js`, `term-content-opfs-store.js`), string interning, zstd with a shared glossary dictionary, content dedup by hash.
+- `JSON.parse` of every term bank into objects plus schema validation → a one-pass parser over the raw bytes; glossaries stay raw JSON bytes and are not re-serialized; only `index.json` is validated.
+- IndexedDB with several indexes per row → SQLite for metadata plus own binary shard files for term records and content, string interning, zstd with a shared glossary dictionary, content dedup by hash.
 - Eager work → reverse (suffix) indexes built lazily on first use, image dimensions and media reads deferred, next term bank prefetched while the current one is written.
-- Optional pre-converted archives ("artifacts": `manabitan-import-artifact.json`, `term_bank_N.mbtb`) that skip parsing; ordinary Yomitan zips still work.
+- Optional pre-converted archives that skip parsing; ordinary Yomitan zips still work.
 - Installed dictionaries stay usable while an import or update runs.
-- The collection export is a binary SQLite image (`yomitan-dictionaries-<date>.sqlite3`, `exportDictionaryDatabase` / `importDictionaryDatabase`), restored by copying it back; Yomitan's JSON collection export is not read at all (no Dexie import; checked at commit 81b149f4). So Manabitan has no faster JSON collection import to learn from.
+- Its collection export is a binary SQLite image restored by copying it back; Yomitan's JSON collection export is not read at all, so there is no faster JSON collection import to learn from.
 
-hoshidicts already does the equivalent natively: glaze reads glossaries as `raw_json`, term banks are processed on a thread pool, glossaries are zstd-compressed with a dictionary trained per import (`train_zstd_dict`), offsets are radix-sorted, the store is its own binary format, and imports do not block lookups. Bundled Jitendex + Jiten + Kanjium install in ~5 s on the emulator. Nothing from Manabitan's zip import path needs porting.
+hoshidicts already does the equivalent natively: glaze reads glossaries as `raw_json`, term banks are processed on a thread pool, glossaries are zstd-compressed with a dictionary trained per import (`train_zstd_dict`), offsets are radix-sorted, the store is its own binary format, and imports do not block lookups. Bundled Jitendex + Jiten + Kanjium install in ~5 s on the emulator. Nothing from such a zip import path needs porting.
 
 The slow path in Screenlate was our own Yomitan collection export converter (`YomitanBackup` + `RawJsonScanner`).
 

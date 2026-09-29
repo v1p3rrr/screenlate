@@ -3,6 +3,7 @@ package com.vpr.screenlate.audio
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
+import com.vpr.screenlate.core.anki.audio.AudioError
 import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettings
@@ -29,7 +30,7 @@ data class SourceTest(
     val source: AudioSource,
     val loading: Boolean = true,
     val candidates: List<AudioCandidate> = emptyList(),
-    val error: String? = null,
+    val error: AudioError? = null,
 )
 
 /** A played test clip: which candidate, and whether it turned out to have no audio. */
@@ -94,7 +95,7 @@ class AudioSettingsViewModel @Inject constructor(
                                 source = source,
                                 loading = false,
                                 candidates = result.getOrDefault(emptyList()),
-                                error = result.exceptionOrNull()?.let(AudioFinder::reason),
+                                error = result.exceptionOrNull()?.let(AudioError::of),
                             )
                         }
                     }
@@ -114,7 +115,7 @@ class AudioSettingsViewModel @Inject constructor(
                 source,
                 loading = false,
                 candidates = candidates,
-                error = result.exceptionOrNull()?.let(AudioFinder::reason),
+                error = result.exceptionOrNull()?.let(AudioError::of),
             )
             candidates.firstOrNull()?.let { play(it, -1) }
         }

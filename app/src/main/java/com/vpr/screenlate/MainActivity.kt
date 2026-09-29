@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpr.screenlate.audio.LocalNetworkAskEffect
 import com.vpr.screenlate.navigation.ScreenlateNavHost
 import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.ui.theme.ScreenlateTheme
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
             val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
             val eInk by viewModel.eInk.collectAsStateWithLifecycle()
             ScreenlateTheme(themeMode = themeMode, eInk = eInk) {
+                LocalNetworkAskEffect()
                 ScreenlateNavHost(
                     themeMode = themeMode,
                     onThemeModeChange = viewModel::setThemeMode,

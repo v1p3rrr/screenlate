@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Plain HTTP only for servers on the device itself, e.g. a local audio server used as an audio source. -->
+<!-- Plain HTTP is allowed so that audio sources can be servers on the local network, as on the desktop.
+     Every built-in address of the app is https. -->
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">127.0.0.1</domain>
-        <domain includeSubdomains="false">localhost</domain>
-    </domain-config>
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

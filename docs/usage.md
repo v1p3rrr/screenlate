@@ -42,7 +42,7 @@ The start screen keeps the search, the service status and warnings; everything e
 - **Background work**: battery optimization for Screenlate and the maker's startup settings, the two things that can stop the bubble in the background.
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too.
 
-When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing), the start screen says what and links to the fix. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
+When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing, audio sources failing), the start screen says what and links to the fix; several missing dictionaries or failed audio sources share one card. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
 
 ## Entries
 
@@ -90,7 +90,9 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 
 ### Audio sources
 
-Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}` and `{reading}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; the settings also show sources that failed recently.
+Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}` and `{reading}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; failures say what went wrong (for example "The server refused the connection or is not running (ConnectException)"), and sources that failed recently are listed together in one card on the start screen.
+
+A custom URL may point to a server on the home network over plain `http://`, as in Yomitan on a computer. When such a server's list names its files by a local address (`0.0.0.0`, `localhost`, `127.0.0.1`), the files are fetched from the list's server instead. On Android 17 and newer, a source on the home network needs the nearby devices (local network) permission: the app asks for it when such a source is added, imported from Yomitan or restored from a backup, and a failed test offers it again.
 
 ## Updates and About
 

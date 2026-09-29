@@ -59,7 +59,7 @@ Geometry
       5 rotation_z: float (radians)
 ```
 
-Line text = words joined with their separators. For Japanese, Manatan strips whitespace. Vertical lines: `|rotation_z| ≈ π/2`, or height > width of the axis-aligned box.
+Line text = words joined with their separators. For Japanese, whitespace is stripped. Vertical lines: `|rotation_z| ≈ π/2`, or height > width of the axis-aligned box.
 
 ## Measurements (2026-09-26, from a desktop connection)
 

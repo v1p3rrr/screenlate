@@ -6,6 +6,8 @@ import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.audio.AudioFinder
+import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceFailure
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -30,16 +32,27 @@ data class DictionarySummary(val installed: Int = 0, val enabled: Int = 0, val i
 /** Deck and note type when Anki export is configured, null otherwise. */
 data class AnkiSummary(val deck: String, val model: String)
 
+/** Files of a downloaded or imported dictionary are gone; [catalogEntry] allows downloading it again. */
+data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry: CatalogEntry?)
+
+/**
+ * Failures of the configured [sources] in their order; those of sources edited or removed since, or only tested in
+ * the source editor, are left out.
+ */
+internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<AudioSource>): List<AudioSourceFailure> =
+    failures.filter { it.source in sources }.sortedBy { sources.indexOf(it.source) }
+
 /** Something that broke without the user changing Screenlate's settings. */
 sealed interface HomeProblem {
     data class Anki(val problem: AnkiProblem) : HomeProblem
 
-    /** Files of a downloaded or imported dictionary are gone; [catalogEntry] allows downloading it again. */
-    data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry: CatalogEntry?) : HomeProblem
+    /** Downloaded or imported dictionaries whose files are gone, in one card. */
+    data class MissingDictionaries(val dictionaries: List<MissingDictionary>) : HomeProblem
 
     data object NoTermDictionaries : HomeProblem
 
-    data class AudioSource(val failure: AudioSourceFailure) : HomeProblem
+    /** Every audio source that failed recently, in one card. */
+    data class AudioSources(val failures: List<AudioSourceFailure>) : HomeProblem
 }
 
 @HiltViewModel
@@ -50,6 +63,7 @@ class HomeViewModel @Inject constructor(
     private val catalog: DictionaryCatalog,
     private val notes: AnkiNotes,
     private val audio: AudioFinder,
+    private val audioSettings: AudioSettingsRepository,
     ankiSettings: AnkiSettingsRepository,
 ) : ViewModel() {
     val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
@@ -81,35 +95,44 @@ class HomeViewModel @Inject constructor(
             val missing = repair.repair()
             if (missing.isNotEmpty()) {
                 val entries = runCatching { catalog.entries().first() }.getOrDefault(emptyList())
-                missing.forEach { dictionary ->
-                    found += HomeProblem.MissingDictionary(dictionary, entries.firstOrNull { it.matches(dictionary) })
-                }
+                found += HomeProblem.MissingDictionaries(
+                    missing.map { dictionary -> MissingDictionary(dictionary, entries.firstOrNull { it.matches(dictionary) }) },
+                )
             }
-            audio.recentFailures().forEach { found += HomeProblem.AudioSource(it) }
+            currentFailures(audio.recentFailures(), audioSettings.current().sources)
+                .takeIf { it.isNotEmpty() }
+                ?.let { found += HomeProblem.AudioSources(it) }
             checked.value = found
         }
     }
 
-    fun downloadAgain(problem: HomeProblem.MissingDictionary) {
-        val entry = problem.catalogEntry ?: return
+    fun downloadAgain(missing: MissingDictionary) {
+        val entry = missing.catalogEntry ?: return
         imports.download(
             entry.downloadUrl,
             entry.title,
             indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
-            replaces = problem.dictionary.id,
+            replaces = missing.dictionary.id,
         )
-        checked.value -= problem
+        resolved(missing)
     }
 
-    fun remove(problem: HomeProblem.MissingDictionary) {
+    fun remove(missing: MissingDictionary) {
         viewModelScope.launch {
-            repository.delete(problem.dictionary.id)
-            checked.value -= problem
+            repository.delete(missing.dictionary.id)
+            resolved(missing)
+        }
+    }
+
+    private fun resolved(missing: MissingDictionary) {
+        checked.value = checked.value.mapNotNull { problem ->
+            if (problem !is HomeProblem.MissingDictionaries) return@mapNotNull problem
+            HomeProblem.MissingDictionaries(problem.dictionaries - missing).takeIf { it.dictionaries.isNotEmpty() }
         }
     }
 
     fun dismissAudioFailures() {
         audio.clearFailures()
-        checked.value = checked.value.filterNot { it is HomeProblem.AudioSource }
+        checked.value = checked.value.filterNot { it is HomeProblem.AudioSources }
     }
 }

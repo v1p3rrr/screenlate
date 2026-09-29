@@ -43,7 +43,15 @@ enum class AudioSourceType(val hasUrl: Boolean = false) {
 }
 
 @Serializable
-data class AudioSource(val type: AudioSourceType, val url: String = "")
+data class AudioSource(val type: AudioSourceType, val url: String = "") {
+    /** Host and port of a URL source, to tell several of them apart; null for the built-in sources. */
+    val address: String?
+        get() = if (!type.hasUrl) null else ADDRESS.find(url.trim())?.groupValues?.get(1)?.substringAfterLast('@')
+
+    private companion object {
+        val ADDRESS = Regex("^[A-Za-z][A-Za-z0-9+.-]*://([^/?#]+)")
+    }
+}
 
 /**
  * Audio sources in priority order, as in Yomitan.

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Screenlate: Poe-like pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiDroid export). Personal project of the repo owner, developed for their phone (Honor, Android 15, MagicOS 9).
+Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiDroid export). Personal project of the repo owner, developed for their phone (Honor, Android 15, MagicOS 9).
 
 ## Start of every session
 

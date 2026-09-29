@@ -4,6 +4,8 @@
 
     <!-- Installs updates downloaded from GitHub Releases (release builds only). -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Android 17+: audio sources on the local network; asked only when such a source is set up. -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <!-- Lets the app show the system dialog that leaves it out of battery optimization; the user decides. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 

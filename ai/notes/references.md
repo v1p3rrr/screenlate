@@ -2,8 +2,6 @@
 
 | What | Where | Notes |
 |---|---|---|
-| Poe (the app being replicated) | play.google.com `com.slimecreative.poe`, get-poe.app (`assets/no-frame.mp4` demo) | Accessibility-based bubble; single dictionary; Anki and fast OCR paid |
-| Manatan | github.com/KolbyML/Manatan (MIT) | Lens OCR in `crates/ocr-server/src/logic.rs`; AnkiDroid ContentProvider bridge in `bin/manatan_android/java/com/mangatan/app/AnkiBridge.java` |
 | Lens client | github.com/KolbyML/chrome-lens-ocr (MIT) | `src/proto.rs`, `src/lib.rs`, `src/constants.rs`; see `lens-protocol.md` |
 | hoshidicts | github.com/Manhhao/hoshidicts (`main` GPL-3.0, `main-mit` MIT with a Jiten deconjugator) | Import/query/lookup/deinflect; zstd glossaries; term/freq/pitch dictionaries; no kanji dictionaries |
 | Kotlin JNI bridge example | github.com/Manhhao/hoshidicts-kotlin-bridge (no license file) | Reference only; we write our own JNI |
@@ -19,4 +17,7 @@
 | JPDB v2.2 frequency | github.com/Kuuuube/yomitan-dictionaries (no license) | Not bundled; importable by the user |
 | Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Bundled |
 | Yomitan API | github.com/yomidevs/yomitan-api | Desktop-only native messaging bridge; not usable on Android |
-| Manabitan | github.com/ManabiIO/manabitan (GPL-3.0) | Yomitan fork with a rewritten storage and import path (WASM term-bank parser, SQLite/OPFS, raw glossaries, zstd); see `dictionary-engine.md` → import speed |
+
+## Custom audio servers
+
+The Yomitan local audio server (a Python server on port 5050, often run in Docker) builds file URLs from its bind address, so its audio source list names files as `http://0.0.0.0:5050/...`. On a desktop that reaches the desktop itself; on a phone it reaches the phone. Behind a reverse proxy the list needs rewriting (nginx `sub_filter` on `application/json`, with `Accept-Encoding` cleared); the app now also rewrites such local file URLs to the list's scheme, host and port. The owner runs one behind an https domain; its address and server access are not recorded in the repository.

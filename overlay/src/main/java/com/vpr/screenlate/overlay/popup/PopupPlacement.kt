@@ -73,7 +73,7 @@ object PopupPlacement {
 
     /**
      * Returns the popup bounds next to [word], never covering [bubble]: the word and the bubble are kept out together,
-     * so a popup below the word goes below the bubble when the bubble is there (as in Poe). Vertical text, and any
+     * so a popup below the word goes below the bubble when the bubble is there. Vertical text, and any
      * text with [Size.besideFirst], prefers the left/right sides so the text stays visible; horizontal text otherwise
      * uses above/below. A popup above or below shrinks to the free height, one beside the word to the free width
      * (for vertical text down to [Size.narrowMinWidth] before it moves above or below).

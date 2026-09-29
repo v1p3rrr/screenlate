@@ -74,6 +74,8 @@ fun AboutScreen(
         ) {
             SectionCard(title = stringResource(R.string.app_title)) {
                 Text(stringResource(R.string.about_version, versionName(context)))
+                Text(stringResource(R.string.about_description))
+                Hint(stringResource(R.string.about_author))
                 Hint(stringResource(R.string.about_license))
                 OutlinedButton(onClick = { openUrl(context, SOURCE_URL) }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.about_source))
