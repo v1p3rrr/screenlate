@@ -56,7 +56,7 @@ Each entry lists the code of the unit, then the integration path the review must
 ## Progress
 
 - Module 10 (appearance and fonts): two runs and a final check, 2026-09-29.
-- Module 9 (overlay runtime): one run, 2026-09-29; findings and decisions in `plans/2026-09-29-feedback-after-0.1.4.md`.
+- Module 9 (overlay runtime): two runs, 2026-09-29; findings and decisions in `plans/2026-09-29-feedback-after-0.1.4.md`.
 - The others wait for the owner's command.
 
 ## How to run each review

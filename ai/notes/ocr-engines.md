@@ -36,12 +36,21 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
 
 - `Bitmap.createBitmap(src, 0, 0, w, h)` returns `src` itself for an immutable source and the full rectangle; code that
   recycles its crop must compare with the source (`CropView.cropped` copies instead, since the note frees it).
-- The scan's screenshot is a `SharedScreenshot`: the scan holds it until `resetScan`, a note being added retains it in
-  `noteContext` and releases it when done (the crop editor draws it meanwhile). The bitmap is freed by the last user,
+- The scan's screenshot is a `SharedScreenshot`, created right after the capture: the scan holds it until `resetScan`,
+  the recognition flow and each OCR boost band retain it while they read it, and a note retains it in `notePicture`
+  and releases it once the crop editor returns (the editor draws it meanwhile). The bitmap is freed by the last user,
   so a dock, rotation or hide while the editor is open no longer recycles what it draws; closing the scan also closes
   the editor as cancelled (owner). No timeout: the screenshot is needed as long as the bubble is out.
 - The screenshot callback copies the hardware buffer on `Dispatchers.Default` (the capturer's executor); a screenshot
   that arrives after the scan was cancelled is recycled in the continuation's `onCancellation`.
+
+- ➕ calls `noteSource()` synchronously: it fixes the shown view's layout and position (the sentence), completes the
+  scan's `cloudStop` (`CompositeOcr.recognize(stopCloud)`: the ML Kit page becomes final without a Lens error, a
+  cloud-only scan ends without a final and the controller marks it final itself) and cancels and disables OCR boost
+  bands for that scan (owner). A picture is taken only while the same scan is open (`scanId`), so the crop editor never
+  opens after a dock; the note itself goes on. Its result is shown on the entry of its term (`entryOf`), not by index.
+- `CropEditor` removes its window through a main-thread Handler on coroutine cancellation (`View.post` never runs on
+  a view that was not attached); `CropEditorTest` records windows through a `WindowManager` proxy.
 
 ## App text (accessibility tree)
 

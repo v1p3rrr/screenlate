@@ -42,6 +42,9 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Popup in display screenshots | Stays as is: on Android 13 and older, and in the API 34+ fallback to a display screenshot, the popup is not hidden before the capture (owner) |
 | Scan screenshot lifetime | Use-counted, no timeout: the scan and each note being added hold it, the last one frees it (owner: users must "know" its lifetime) |
 | Overlay performance (review) | ML Kit's line building, screenshot copies and crops off the main thread, the cloud response read on IO; dictionary styles, tag descriptions and frequency modes cached until the dictionaries change (owner) |
+| Adding a note during a scan | ➕ cancels the scan's cloud request; the note takes the sentence and picture from the view the button was pressed in, without waiting for recognition to finish (owner) |
+| Notes when the scan closes | A note already being prepared or saved is finished; docking, rotation or hiding the bubble does not cancel it (an open crop editor still closes as cancelled) (owner) |
+| Review findings that are plain bugs | Fixed without asking the owner (owner) |
 
 ## Code review: appearance and fonts
 
@@ -101,6 +104,20 @@ Owner's command (2026-09-29): the next module by importance and risk, with its i
 14. The shared screenshot had no owner: findings 1 and 2 came from recycling without knowing its users.
 15. The overlay fixes `Language.JAPANESE` (known; waits for the multi-language phase).
 
+## Code review: overlay runtime, second run
+
+Owner's command (2026-09-29): review the fixes of the first run and the module with its integrations again. Findings:
+
+1. A note waiting for the scan or the lookup went on after docking with the scan's context cleared; in app-text-only mode its late capture was kept as the screenshot of a closed scan and the crop editor opened over the docked bubble.
+2. OCR boost stayed active in app-text-only mode: after a note captured a screenshot, bands went to the cloud engine.
+3. A note's result ("added", 📖) was written by index into the popup's current view, which could show another word by then.
+4. ✕ cleared the scan's note memory (added notes, chosen clips, auto-play), although the scan goes on.
+5. The note's sentence came from the view after the cloud result's re-lookup, which could be another word than the note's.
+6. OCR boost bands were still copied on the main thread.
+7. A note kept the screenshot until the note was saved, although the editor's crop is a separate image.
+8. No tests for the crop editor's sessions.
+9. A redundant spinner reset and a band guard duplicating the timer's cancel.
+
 ## Changelog
 
 - 2026-09-29: plan created from the owner's feedback.
@@ -117,3 +134,5 @@ Owner's command (2026-09-29): the next module by importance and risk, with its i
 - 2026-09-29: request 10 done: per-dictionary copy button (`definition.js`, `ClipData.newHtmlText` for "Everything"), new "Popup" settings screen with font, text and CSS cards and the copy card; Yomitan import summaries now point to it. Checked on the emulator in the app's search: "Everything" and "Only meanings" for 食べる (JMdict). Owner question on wide app-text and ML Kit highlight boxes answered (the boxes come from the app or ML Kit; trimming to the glyphs would need pixel checks on the screenshot); the owner decided not to change them.
 - 2026-09-29: review of module 9, overlay runtime (owner's command), 15 findings. Owner answers: the crop editor closes as cancelled when the scan closes; the popup in display screenshots stays as is; the screenshot's users must "know" its lifetime, so it is use-counted rather than freed on a timeout; all three performance fixes.
 - 2026-09-29: findings 1–6 and 8–14 fixed (`SharedScreenshot`, `CropEditor.cancel`, `closeScan`, `PerGeneration` caches by `DictionaryRepository.generation`), 7 and 15 left. The fixes were reviewed again with their callers (search screen notes, service stop, the crop editor's window removal, OCR cancellation); nothing new found. Tests: `SharedScreenshotTest`, `PerGenerationTest`, instrumented `CropViewTest` and a `DictionaryRepositoryTest` case. The overlay was not run on the emulator (its accessibility service is off).
+- 2026-09-29: second review of the overlay runtime (owner's command), 9 findings. Owner answers: ➕ cancels the scan's cloud request and the note uses the view as shown; a note in progress is not cancelled by docking; plain bugs are fixed without questions.
+- 2026-09-29: all 9 findings of the second overlay review fixed: `NoteSource` fixes the note's view when ➕ is pressed and withdraws the scan's cloud request (`stopCloud`; OCR boost stops for that scan too); a picture only while the note's scan is open; results placed by term; ✕ keeps the note memory; no OCR boost in app-text-only mode; band crops off the main thread; the screenshot released after the editor. Tests: `CompositeOcrTest` (withdrawn requests), `NoteEntryTest`, instrumented `CropEditorTest`. The overlay was not run on the emulator (accessibility service off).

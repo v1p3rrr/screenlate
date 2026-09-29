@@ -36,7 +36,7 @@ Aiming again only repeats steps 3–6; the screen is not scanned again until the
 
 ## Anki export
 
-The page builds the dictionary markers of an entry (glossary HTML with scoped CSS, furigana, pitch, frequencies) because it already has the renderer. `PopupNotes` adds the sentence and cloze markers from the OCR paragraph, the audio clip and, on a long press, the cropped screenshot; `AnkiNotes` renders the field templates, handles duplicates and talks to AnkiDroid through its content provider. Media files go to AnkiDroid through a FileProvider.
+The page builds the dictionary markers of an entry (glossary HTML with scoped CSS, furigana, pitch, frequencies) because it already has the renderer. `PopupNotes` adds the sentence and cloze markers from the OCR paragraph, the audio clip and, on a long press, the cropped screenshot. The sentence and the crop frame come from the view shown when ➕ is pressed (`NoteSource`); pressing it withdraws the scan's pending cloud request (`CompositeOcr`'s `stopCloud`), so the on-device result becomes final and the note waits for nothing; `AnkiNotes` renders the field templates, handles duplicates and talks to AnkiDroid through its content provider. Media files go to AnkiDroid through a FileProvider.
 
 ## Dictionaries
 
@@ -76,5 +76,5 @@ Logs never contain recognized text, looked-up words, note contents or URLs with 
 - The popup's WebView renderer runs at a priority the system may lower while the popup is hidden (`setRendererPriorityPolicy(…, waivedWhenNotVisible = true)`); if the renderer is reclaimed, the page is recreated at the next scan. The search screen's embedded page keeps the default priority.
 - A cancelled ML Kit task cannot be stopped, so the on-device pass works on its own copy of the screenshot and frees it when the task ends.
 - Recognition is collected on the main thread, so the engines move their heavy work off it: screenshot copies and crops, ML Kit's line building and the cloud engine's image encoding on Default, the cloud request and its response on IO. Screenshot callbacks copy the image on a background executor.
-- The scan's screenshot is shared by the scan (with its small-text bands) and a note being added, whose crop editor draws it (`SharedScreenshot`): each note retains it and releases it when done, and the last user frees it. Closing the scan (docking, rotation, hiding the bubble) closes an open crop editor as cancelled.
+- The scan's screenshot is shared by the scan, its recognition, its small-text bands and a note being added, whose crop editor draws it (`SharedScreenshot`): each user retains it and releases it when done, and the last one frees it. A note releases it as soon as the editor returns its crop. Closing the scan (docking, rotation, hiding the bubble) closes an open crop editor as cancelled; a note already being added goes on, but a picture is no longer taken for it.
 - Values derived from the installed dictionaries (styles, tag descriptions, frequency modes) are kept until the registry changes (`DictionaryRepository.generation`).

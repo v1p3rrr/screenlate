@@ -57,6 +57,16 @@ data class NoteContext(
     val documentTitle: String = "",
 )
 
+/** The entry of [term] among the shown [terms]: [index] while it is still there, else where it moved; null when gone. */
+internal fun entryOf(terms: List<Pair<String, String>>, index: Int, term: Pair<String, String>): Int? =
+    if (terms.getOrNull(index) == term) index else terms.indexOf(term).takeIf { it >= 0 }
+
+/** Where a word came from, taken when its ➕ is pressed, so a view shown later does not change the note. */
+fun interface NoteSource {
+    /** Called once per note; [screenshot] asks for the screen picture. */
+    suspend fun context(screenshot: Boolean): NoteContext
+}
+
 /**
  * The ➕/📖 and 🔊 buttons of a [LookupPage]: duplicate marks, adding notes to AnkiDroid, opening added notes,
  * playing and auto-playing audio, and the clip menu.
@@ -64,8 +74,7 @@ data class NoteContext(
  * Words added during one scan remember their notes until [onClosed], so their button opens the note instead of
  * adding it again.
  *
- * @param noteContext waits for the final OCR result and describes where the word came from; the screenshot only when
- *   asked for.
+ * @param noteSource called when ➕ is pressed; describes where the shown word came from.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
  * @param onOpenAnkiSettings shows Screenlate's Anki settings, where a broken setup is explained.
  */
@@ -80,7 +89,7 @@ class PopupNotes(
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
     private val language: Language,
-    private val noteContext: suspend (screenshot: Boolean) -> NoteContext,
+    private val noteSource: () -> NoteSource,
     private val cropEditor: CropEditor?,
     private val onAnkiOpened: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -240,14 +249,29 @@ class PopupNotes(
     }
 
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) {
+        val source = noteSource()
         scope.launch {
             var shared: SharedScreenshot? = null
+            var picture: Bitmap? = null
+            var term: Pair<String, String>? = null
+            var opens: List<Long>? = null
             val state = try {
                 val data = json.decodeFromString<NoteDataDto>(noteData)
-                val term = data.term.expression to data.term.reading
+                val noteTerm = data.term.expression to data.term.reading
+                term = noteTerm
                 val used = notes.usedMarkers()
-                val context = noteContext(withScreenshot && "screenshot" in used)
+                val context = source.context(withScreenshot && "screenshot" in used)
                 shared = context.screenshot
+                // The editor opens first, while the scan it shows is still on the screen.
+                val shot = context.screenshot
+                if (shot != null && cropEditor != null) {
+                    // Cancelling the editor cancels the note.
+                    picture = cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
+                        ?: return@launch showState(index, noteTerm, "", null)
+                }
+                // The crop is a bitmap of its own.
+                shared?.release()
+                shared = null
                 val values = data.values.toMutableMap()
                 context.sentence?.let { sentence ->
                     values["sentence"] = escapeHtml(sentence.text)
@@ -263,21 +287,15 @@ class PopupNotes(
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
                 resolveGlossaryMedia(data.media, values, used)
-                val shot = context.screenshot
-                val picture = if (shot != null && cropEditor != null) {
-                    // Cancelling the editor cancels the note.
-                    cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
-                        ?: return@launch page.setNoteStates(mapOf(index to ""))
-                } else {
-                    null
-                }
-                val screenshot = picture?.let { saveScreenshot(it).also { _ -> it.recycle() } }
-                val clip = if ("audio" in used) chosenClips[term] ?: audio.find(term.first, term.second, language) else null
+                val screenshot = picture?.let { saveScreenshot(it) }
+                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(TAG, "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, forced $force")
                 screenshot?.delete()
-                report(index, term, result)
+                val (resultState, ids) = report(noteTerm, result)
+                opens = ids
+                resultState
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -286,9 +304,20 @@ class PopupNotes(
                 "error"
             } finally {
                 shared?.release()
+                picture?.recycle()
             }
-            page.setNoteStates(mapOf(index to state))
+            showState(index, term, state, opens)
         }
+    }
+
+    /**
+     * Shows a note's [state] on the entry of its [term]: the popup may show another word by now, or the same one at
+     * another index. [opens] are the notes that entry's 📖 opens.
+     */
+    private suspend fun showState(index: Int, term: Pair<String, String>?, state: String, opens: List<Long>?) {
+        val entry = if (term == null) index else entryOf(currentTerms() ?: return, index, term) ?: return
+        opens?.let { openableNotes[entry] = it }
+        page.setNoteStates(mapOf(entry to state))
     }
 
     override fun onOpenNote(index: Int) {
@@ -423,16 +452,14 @@ class PopupNotes(
         }
     }
 
-    private fun report(index: Int, term: Pair<String, String>, result: AddResult): String = when (result) {
-        is AddResult.Added -> remember(index, term, listOf(result.noteId))
-        is AddResult.Updated -> remember(index, term, listOf(result.noteId))
-        is AddResult.Duplicate -> {
-            openableNotes[index] = result.noteIds
-            "open"
-        }
+    /** The entry state after an add, and the notes its 📖 opens. */
+    private fun report(term: Pair<String, String>, result: AddResult): Pair<String, List<Long>?> = when (result) {
+        is AddResult.Added -> remember(term, listOf(result.noteId))
+        is AddResult.Updated -> remember(term, listOf(result.noteId))
+        is AddResult.Duplicate -> "open" to result.noteIds
         AddResult.NotConfigured -> {
             toast(context.getString(R.string.anki_not_configured))
-            "error"
+            "error" to null
         }
         is AddResult.Unavailable -> {
             toast(
@@ -440,19 +467,18 @@ class PopupNotes(
                     if (result.availability == AnkiAvailability.NOT_INSTALLED) R.string.anki_not_installed else R.string.anki_no_permission,
                 ),
             )
-            "error"
+            "error" to null
         }
         is AddResult.Failed -> {
             Log.w(TAG, "AnkiDroid rejected the note")
             toast(context.getString(R.string.anki_error, result.message))
-            "error"
+            "error" to null
         }
     }
 
-    private fun remember(index: Int, term: Pair<String, String>, ids: List<Long>): String {
+    private fun remember(term: Pair<String, String>, ids: List<Long>): Pair<String, List<Long>> {
         addedThisScan[term] = ids
-        openableNotes[index] = ids
-        return "added"
+        return "added" to ids
     }
 
     private fun sourceLabel(candidate: AudioCandidate, sourceCount: Int): String {

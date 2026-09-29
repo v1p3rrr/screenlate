@@ -53,6 +53,7 @@ import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.overlay.anki.NoteContext
+import com.vpr.screenlate.overlay.anki.NoteSource
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
@@ -154,7 +155,10 @@ fun SearchScreen(
             lookup = viewModel.dictionaryLookup,
             language = SearchViewModel.LANGUAGE,
             // The search text is the sentence; there is no screenshot.
-            noteContext = { NoteContext(Sentence("", viewModel.query.value.trim(), ""), null) },
+            noteSource = {
+                val query = viewModel.query.value.trim()
+                NoteSource { NoteContext(Sentence("", query, ""), null) }
+            },
             cropEditor = null,
             onAnkiOpened = {},
             onOpenAnkiSettings = onOpenAnkiSettings,

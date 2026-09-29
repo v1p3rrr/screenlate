@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -23,6 +25,7 @@ import kotlin.coroutines.resume
  */
 class CropEditor(private val context: Context, private val windowManager: WindowManager) {
     private var open: Session? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     /**
      * Shows the editor and returns the cropped picture, a new bitmap, or null if the user cancelled. [image] must
@@ -75,7 +78,8 @@ class CropEditor(private val context: Context, private val windowManager: Window
             session = Session(root, continuation)
             windowManager.addView(root, OverlayWindows.editorParams())
             open = session
-            continuation.invokeOnCancellation { root.post { session.finish(null) } }
+            // Cancellation may come from any thread; the window is removed on the main one.
+            continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }
         }
 
     /** Closes the open editor as if the user cancelled. */

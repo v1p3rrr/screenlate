@@ -53,6 +53,7 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.anki.NoteContext
+import com.vpr.screenlate.overlay.anki.NoteSource
 import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
@@ -82,6 +83,8 @@ import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -168,7 +171,7 @@ class OverlayController(
         player = anki.player,
         lookup = lookup,
         language = language,
-        noteContext = ::noteContext,
+        noteSource = ::noteSource,
         cropEditor = CropEditor(service, windowManager),
         onAnkiOpened = { dock() },
         onOpenAnkiSettings = {
@@ -189,6 +192,12 @@ class OverlayController(
     private var attached = false
 
     private var scanJob: Job? = null
+
+    /** Counts scans; a note compares it to tell whether the scan it was started in is still open. */
+    private var scanId = 0
+
+    /** Completed when a note is added during the scan: the scan asks cloud recognition nothing more. */
+    private var cloudStop: CompletableDeferred<Unit>? = null
     private var layout: TextLayout? = null
     private var ocrFinal = false
     private var ocrEngine: OcrEngineType? = null
@@ -380,7 +389,7 @@ class OverlayController(
         lookupJob?.cancel()
         lookupJob = null
         popup.hide()
-        popupNotes.onClosed()
+        popupNotes.onResultsHidden()
         layerView.setWordBoxes(emptyList())
         shownLookup = null
         hapticWord = null
@@ -625,8 +634,10 @@ class OverlayController(
     // region Scanning and lookup
 
     private fun resetScan() {
+        scanId++
         scanJob?.cancel()
         scanJob = null
+        cloudStop = null
         bandTimer?.cancel()
         bandJobs.forEach { it.cancel() }
         bandJobs.clear()
@@ -691,7 +702,6 @@ class OverlayController(
             }
             if (captured == null) {
                 val read = appTextRead.await()
-                bubbleView.loading = false
                 if (read == null) {
                     showScanError(
                         if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
@@ -699,8 +709,12 @@ class OverlayController(
                 }
                 return@launch
             }
+            // Kept for {screenshot} and small-text bands until the next scan or docking; recognition holds it as well.
+            val shot = SharedScreenshot(captured).also { screenshot = it }
+            shot.retain()
+            val stop = CompletableDeferred<Unit>().also { cloudStop = it }
             try {
-                ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
+                ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) }, stopCloud = stop)
                     .catch { error ->
                         if (error is CancellationException) throw error
                         bubbleView.loading = false
@@ -722,14 +736,17 @@ class OverlayController(
                         // Around app text, the lines OCR adds (text in images) flash as well.
                         show(flashLines)
                     }
-            } catch (e: CancellationException) {
-                captured.bitmap.recycle()
-                throw e
+            } finally {
+                shot.release()
             }
-            // Kept for {screenshot} and small-text bands until the next scan or docking.
-            screenshot = SharedScreenshot(captured)
+            if (!ocrFinal) {
+                // A note withdrew the cloud request of a cloud-only scan: what is shown stays.
+                ocrFinal = true
+                bubbleView.loading = false
+                refreshPopup()
+            }
             if (smallText() == SmallTextMode.ALWAYS) {
-                ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
+                ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(shot, it) }
             }
         }
     }
@@ -747,8 +764,26 @@ class OverlayController(
 
     private fun ocrOptions() = OcrOptions(settings.ocrEngines, deferWholeImage = settings.ocrSaving)
 
-    /** OCR boost asks cloud recognition, so it is off while only the device recognizes. */
-    private fun smallText() = if (settings.ocrEngines == OcrEngines.DEVICE) SmallTextMode.OFF else settings.smallText
+    /**
+     * OCR boost asks cloud recognition, so it is off while only the device recognizes, without recognition, and after a
+     * note stopped the scan's cloud requests.
+     */
+    private fun smallText() = when {
+        settings.ocrEngines == OcrEngines.DEVICE -> SmallTextMode.OFF
+        settings.textSource == TextSource.APP_TEXT_ONLY -> SmallTextMode.OFF
+        cloudStop?.isCompleted == true -> SmallTextMode.OFF
+        else -> settings.smallText
+    }
+
+    /** A note is being added: the scan's pending and later cloud requests are dropped, so its text stays as shown. */
+    private fun stopCloud() {
+        val stop = cloudStop ?: return
+        if (!stop.complete(Unit)) return
+        Log.d(TAG, "Cloud recognition stopped for a note")
+        bandTimer?.cancel()
+        bandJobs.forEach { it.cancel() }
+        bandJobs.clear()
+    }
 
     /** The aim's row in [captured], so the on-device draft reads the text there first. */
     private fun scanFocus(captured: CapturedScreen): Float? {
@@ -768,35 +803,43 @@ class OverlayController(
         if (smallText() != SmallTextMode.ON_DEMAND || !ocrFinal) return
         val shot = screenshot ?: return
         bandTimer?.cancel()
+        // Cancelled with the scan (resetScan), so the screenshot is still the scan's.
         bandTimer = scope.launch {
             delay(BAND_DELAY_MS)
-            if (screenshot !== shot) return@launch
             val bands = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)
-            refineBand(shot.screen, ScreenBands.nearest(bands, y - shot.screen.top))
+            refineBand(shot, ScreenBands.nearest(bands, y - shot.screen.top))
         }
     }
 
     /** Recognizes one band of [shot] again and adds the lines found where the page had no text. */
-    private fun refineBand(shot: CapturedScreen, index: Int) {
-        if (!requestedBands.add(index)) return
-        val band = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)[index]
-        // Cropped at once, while the scan still holds the screenshot.
-        val crop = Bitmap.createBitmap(
-            shot.bitmap,
-            band.left.toInt(),
-            band.top.toInt(),
-            band.width.toInt(),
-            band.height.toInt(),
-        )
-        bandJobs += scope.launch {
+    private fun refineBand(shot: SharedScreenshot, index: Int) {
+        if (!requestedBands.add(index) || !shot.retain()) return
+        val screen = shot.screen
+        val band = ScreenBands.of(screen.bitmap.width, screen.bitmap.height)[index]
+        // Started at once, so the band gives the screenshot back even when it is cancelled before it runs.
+        bandJobs += scope.launch(start = CoroutineStart.UNDISPATCHED) {
             val found = try {
-                ocr.recognizeRegion(crop, language)
+                // The crop is made and freed inside the block, which withContext waits for even when cancelled.
+                withContext(Dispatchers.Default) {
+                    val crop = Bitmap.createBitmap(
+                        screen.bitmap,
+                        band.left.toInt(),
+                        band.top.toInt(),
+                        band.width.toInt(),
+                        band.height.toInt(),
+                    )
+                    try {
+                        ocr.recognizeRegion(crop, language)
+                    } finally {
+                        // createBitmap returns the screenshot itself when the band is the whole of it.
+                        if (crop !== screen.bitmap) crop.recycle()
+                    }
+                }
             } finally {
-                // createBitmap returns the screenshot itself when the band is the whole of it.
-                if (crop !== shot.bitmap) crop.recycle()
+                shot.release()
             }
             val current = layout ?: return@launch
-            val added = found?.offset(shot.left.toFloat(), shot.top + band.top) ?: return@launch
+            val added = found?.offset(screen.left.toFloat(), screen.top + band.top) ?: return@launch
             val merged = current.page.withMissingFrom(added)
             Log.d(TAG, "Band $index added ${merged.paragraphs.size - current.page.paragraphs.size} paragraphs")
             if (merged === current.page) return@launch
@@ -967,12 +1010,11 @@ class OverlayController(
     }
 
     /**
-     * Sentence and screenshot for a note. Waits for the final OCR result and the lookup made on it first, as Lens may
-     * still refine the text. The screenshot, when [withScreenshot], is retained for the note, which releases it.
+     * What a note takes from the scan, fixed when its ➕ is pressed: the sentence around the word shown then, and the
+     * screenshot on request. The scan's cloud recognition stops, so the note does not wait for it.
      */
-    private suspend fun noteContext(withScreenshot: Boolean): NoteContext {
-        scanJob?.join()
-        lookupJob?.join()
+    private fun noteSource(): NoteSource {
+        stopCloud()
         // The shown word's position belongs to the layout it was found in, which a later OCR result may have replaced.
         val shown = shownLookup?.takeIf { it.layout != null }
         val layout = if (shown != null) shown.layout else layout
@@ -984,37 +1026,47 @@ class OverlayController(
         } else {
             null
         }
-        // Without recognition no screenshot is taken during the scan, so the note takes one now.
-        if (withScreenshot && screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
+        val scan = scanId
+        val documentTitle = foregroundPackage?.let(::appLabel).orEmpty()
+        return NoteSource { withScreenshot ->
+            val shot = if (withScreenshot) notePicture(scan) else null
+            val focus = if (layout != null && position != null && shot != null) cropFocus(layout, position, shot.screen) else null
+            NoteContext(sentence, shot, focus, documentTitle)
+        }
+    }
+
+    /**
+     * The scan's screenshot, retained for a note that releases it; in app-text-only mode it is taken now. Null once the
+     * scan [scan] was closed, as the crop editor must not open after it.
+     */
+    private suspend fun notePicture(scan: Int): SharedScreenshot? {
+        if (scan != scanId) return null
+        // Without recognition no screenshot is taken during the scan.
+        if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
             val captured = try {
                 capture()
             } catch (e: CaptureException) {
                 Log.w(TAG, "No screenshot for the note", e)
                 null
             }
-            // Another note may have taken one meanwhile.
-            if (screenshot == null) captured?.let { screenshot = SharedScreenshot(it) } else captured?.bitmap?.recycle()
+            // The scan may have closed meanwhile, or another note taken a screenshot.
+            if (captured != null) {
+                if (scan == scanId && screenshot == null) screenshot = SharedScreenshot(captured) else captured.bitmap.recycle()
+            }
         }
-        val shot = screenshot?.takeIf { withScreenshot }
-        val focus = if (layout != null && position != null && shot != null) {
-            val screen = shot.screen
-            val image = Box(
-                screen.left.toFloat(),
-                screen.top.toFloat(),
-                (screen.left + screen.bitmap.width).toFloat(),
-                (screen.top + screen.bitmap.height).toFloat(),
-            )
-            val lines = layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }
-            CropFocus.of(lines, FOCUS_PADDING_DP * density, image)?.let { RectF(it.left, it.top, it.right, it.bottom) }
-        } else {
-            null
-        }
-        return NoteContext(
-            sentence = sentence,
-            screenshot = shot?.takeIf { it.retain() },
-            focus = focus,
-            documentTitle = foregroundPackage?.let(::appLabel).orEmpty(),
+        return screenshot?.takeIf { scan == scanId && it.retain() }
+    }
+
+    /** The initial crop frame: the word's paragraph, in screen coordinates. */
+    private fun cropFocus(layout: TextLayout, position: TextPosition, screen: CapturedScreen): RectF? {
+        val image = Box(
+            screen.left.toFloat(),
+            screen.top.toFloat(),
+            (screen.left + screen.bitmap.width).toFloat(),
+            (screen.top + screen.bitmap.height).toFloat(),
         )
+        val lines = layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }
+        return CropFocus.of(lines, FOCUS_PADDING_DP * density, image)?.let { RectF(it.left, it.top, it.right, it.bottom) }
     }
 
     private fun appLabel(packageName: String): String? = runCatching {

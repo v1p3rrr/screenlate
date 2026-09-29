@@ -23,11 +23,13 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
@@ -58,6 +60,9 @@ class LensPausedException : IOException("Lens refused recent requests")
  *
  * ML Kit first reads a band around the aim ([FocusBand]), and another one when the aim has moved out of it meanwhile,
  * so the word under the aim has a draft long before the whole screen is read.
+ *
+ * Completing `stopCloud` withdraws the Lens request: the ML Kit page becomes final without a Lens error, and a
+ * Lens-only scan ends without a final update.
  */
 @Singleton
 class CompositeOcr internal constructor(
@@ -78,15 +83,19 @@ class CompositeOcr internal constructor(
     constructor(lens: LensOcrEngine, mlKit: MlKitOcrEngine, networkStatus: NetworkStatus) :
         this(lens, mlKit, networkStatus::isOnline)
 
-    /** @param focus the aim's row in [image] at the moment, or null without an aim. */
+    /**
+     * @param focus the aim's row in [image] at the moment, or null without an aim.
+     * @param stopCloud completed when the Lens result is no longer wanted.
+     */
     fun recognize(
         image: Bitmap,
         language: Language,
         options: OcrOptions = OcrOptions(),
         focus: () -> Float? = { null },
+        stopCloud: Deferred<Unit>? = null,
     ): Flow<OcrUpdate> = channelFlow {
         if (options.engines == OcrEngines.CLOUD) {
-            send(OcrUpdate.Final(recognizeWithLens(image, language)))
+            recognizeWithLens(image, language, stopCloud)?.let { send(OcrUpdate.Final(it)) }
             return@channelFlow
         }
         val lensSkipped = when {
@@ -123,9 +132,17 @@ class CompositeOcr internal constructor(
                     wholeImage.complete(Unit)
                 }
             }
-            runCatching { withTimeout(LENS_TIMEOUT) { lens.recognize(image, language) } }
+            runCatching { withTimeout(LENS_TIMEOUT) { untilStopped(stopCloud) { lens.recognize(image, language) } } }
                 .onFailure(::noteLensFailure)
-                .onSuccess { emitter.emitFinal(OcrUpdate.Final(it)) }
+                .onSuccess { page ->
+                    if (page != null) {
+                        emitter.emitFinal(OcrUpdate.Final(page))
+                    } else {
+                        Log.d(TAG, "Lens request withdrawn")
+                        wholeImage.complete(Unit)
+                        emitter.emitFinal(OcrUpdate.Final(draft.await().getOrThrow()))
+                    }
+                }
                 .onFailure { lensError ->
                     wholeImage.complete(Unit)
                     val fallback = draft.await().getOrElse { throw lensError }
@@ -137,17 +154,34 @@ class CompositeOcr internal constructor(
         }
     }
 
-    private suspend fun recognizeWithLens(image: Bitmap, language: Language): OcrPage {
+    /** Null when [stop] withdrew the request. */
+    private suspend fun recognizeWithLens(image: Bitmap, language: Language, stop: Deferred<Unit>?): OcrPage? {
         if (!isOnline()) throw OfflineException()
         if (lensPaused()) throw LensPausedException()
         return try {
-            withTimeout(LENS_TIMEOUT) { lens.recognize(image, language) }
+            withTimeout(LENS_TIMEOUT) { untilStopped(stop) { lens.recognize(image, language) } }
         } catch (e: TimeoutCancellationException) {
             // Not a cancellation of the caller.
             throw IOException("Lens timed out", e)
         } catch (e: Exception) {
             noteLensFailure(e)
             throw e
+        }
+    }
+
+    /** Runs [block] until it ends or [stop] completes, which cancels it and returns null. */
+    private suspend fun <T : Any> untilStopped(stop: Deferred<Unit>?, block: suspend () -> T): T? {
+        if (stop == null) return block()
+        if (stop.isCompleted) return null
+        return coroutineScope {
+            val work = async { block() }
+            select {
+                work.onAwait { it }
+                stop.onAwait {
+                    work.cancel()
+                    null
+                }
+            }
         }
     }
 
