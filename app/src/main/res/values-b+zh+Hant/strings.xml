@@ -134,7 +134,7 @@
     <string name="bubble_small_text_off">關閉</string>
     <string name="bubble_small_text_on_demand">按需</string>
     <string name="bubble_small_text_always">始終</string>
-    <string name="bubble_small_text_hint">將螢幕的各個部分分別傳送給雲端辨識，相對於整張圖片解析度更高，從而辨識出全螢幕掃描遺漏的小字。\n\n按需：當瞄準點停在未找到任何內容的地方時，辨識其下方的部分。\n\n始終：每次掃描都分塊辨識整個螢幕（流量更多）。</string>
+    <string name="bubble_small_text_hint">預設無需開啟：僅在小字無法辨識時開啟。它會向雲端辨識傳送額外請求，消耗更多行動數據。\n\n將螢幕的各個部分分別傳送給雲端辨識，相對於整張圖片解析度更高，從而辨識出全螢幕掃描遺漏的小字。\n\n按需：當瞄準點停在未找到任何內容的地方時，辨識其下方的部分。\n\n始終：每次掃描都分塊辨識整個螢幕（流量更多）。</string>
     <string name="bubble_recognition">螢幕辨識</string>
     <string name="bubble_ocr_engines">引擎</string>
     <string name="bubble_ocr_engines_both">兩者</string>

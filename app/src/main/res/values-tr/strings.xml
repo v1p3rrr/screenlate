@@ -134,7 +134,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="bubble_small_text_off">Kapalı</string>
     <string name="bubble_small_text_on_demand">İsteğe bağlı</string>
     <string name="bubble_small_text_always">Her zaman</string>
-    <string name="bubble_small_text_hint">Ekranın parçalarını bulut tanımaya ayrı ayrı, tüm görüntüye göre daha yüksek çözünürlükte gönderir; böylece tam ekran taramanın kaçırdığı küçük metin de tanınır.\n\nİsteğe bağlı: nişan hiçbir şey bulunamayan bir yerde durduğunda altındaki parça.\n\nHer zaman: her taramada tüm ekran parçalar hâlinde (daha fazla veri trafiği).</string>
+    <string name="bubble_small_text_hint">Varsayılan olarak gerekmez: Yalnızca küçük metin tanınmıyorsa açın. Bulut tanımaya ek istekler gönderir ve daha fazla mobil veri kullanır.\n\nEkranın parçalarını bulut tanımaya ayrı ayrı, tüm görüntüye göre daha yüksek çözünürlükte gönderir; böylece tam ekran taramanın kaçırdığı küçük metin de tanınır.\n\nİsteğe bağlı: nişan hiçbir şey bulunamayan bir yerde durduğunda altındaki parça.\n\nHer zaman: her taramada tüm ekran parçalar hâlinde (daha fazla veri trafiği).</string>
     <string name="bubble_recognition">Ekran tanıma</string>
     <string name="bubble_ocr_engines">Motorlar</string>
     <string name="bubble_ocr_engines_both">İkisi de</string>

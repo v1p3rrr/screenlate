@@ -134,7 +134,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="bubble_small_text_off">Desactivado</string>
     <string name="bubble_small_text_on_demand">Bajo demanda</string>
     <string name="bubble_small_text_always">Siempre</string>
-    <string name="bubble_small_text_hint">Envía partes de la pantalla por separado al reconocimiento en la nube, con mayor resolución respecto a la imagen completa, para reconocer el texto pequeño que un análisis de toda la pantalla pasa por alto.\n\nBajo demanda: la parte bajo el punto de mira, cuando este se detiene donde no se encontró nada.\n\nSiempre: toda la pantalla por partes en cada análisis (más tráfico).</string>
+    <string name="bubble_small_text_hint">No hace falta por defecto: actívalo solo si no se reconoce el texto pequeño. Envía solicitudes adicionales al reconocimiento en la nube y consume más datos móviles.\n\nEnvía partes de la pantalla por separado al reconocimiento en la nube, con mayor resolución respecto a la imagen completa, para reconocer el texto pequeño que un análisis de toda la pantalla pasa por alto.\n\nBajo demanda: la parte bajo el punto de mira, cuando este se detiene donde no se encontró nada.\n\nSiempre: toda la pantalla por partes en cada análisis (más tráfico).</string>
     <string name="bubble_recognition">Reconocimiento de pantalla</string>
     <string name="bubble_ocr_engines">Motores</string>
     <string name="bubble_ocr_engines_both">Ambos</string>

@@ -134,7 +134,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="bubble_small_text_off">Désactivé</string>
     <string name="bubble_small_text_on_demand">À la demande</string>
     <string name="bubble_small_text_always">Toujours</string>
-    <string name="bubble_small_text_hint">Envoie des parties de l’écran séparément à la reconnaissance dans le cloud, avec une résolution plus élevée par rapport à l’image entière, pour reconnaître le petit texte qu’une analyse de tout l’écran manque.\n\nÀ la demande : la zone sous le point de visée, dès que celui-ci s’arrête là où rien n’a été trouvé.\n\nToujours : tout l’écran, par parties, à chaque analyse (plus de trafic).</string>
+    <string name="bubble_small_text_hint">Inutile par défaut : activez-le seulement si le petit texte n’est pas reconnu. Il envoie des requêtes supplémentaires à la reconnaissance dans le cloud et consomme plus de données mobiles.\n\nEnvoie des parties de l’écran séparément à la reconnaissance dans le cloud, avec une résolution plus élevée par rapport à l’image entière, pour reconnaître le petit texte qu’une analyse de tout l’écran manque.\n\nÀ la demande : la zone sous le point de visée, dès que celui-ci s’arrête là où rien n’a été trouvé.\n\nToujours : tout l’écran, par parties, à chaque analyse (plus de trafic).</string>
     <string name="bubble_recognition">Reconnaissance de l’écran</string>
     <string name="bubble_ocr_engines">Moteurs</string>
     <string name="bubble_ocr_engines_both">Les deux</string>

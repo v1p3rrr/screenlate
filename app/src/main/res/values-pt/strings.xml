@@ -134,7 +134,7 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="bubble_small_text_off">Desativado</string>
     <string name="bubble_small_text_on_demand">Sob demanda</string>
     <string name="bubble_small_text_always">Sempre</string>
-    <string name="bubble_small_text_hint">Envia partes da tela separadamente para o reconhecimento na nuvem, com resolução maior em relação à imagem inteira, para reconhecer o texto pequeno que uma varredura da tela inteira deixa passar.\n\nSob demanda: a parte sob o ponto de mira, quando ele para onde nada foi encontrado.\n\nSempre: a tela inteira em partes a cada varredura (mais tráfego).</string>
+    <string name="bubble_small_text_hint">Não é necessário por padrão: ative só se o texto pequeno não for reconhecido. Envia solicitações extras ao reconhecimento na nuvem e gasta mais dados móveis.\n\nEnvia partes da tela separadamente para o reconhecimento na nuvem, com resolução maior em relação à imagem inteira, para reconhecer o texto pequeno que uma varredura da tela inteira deixa passar.\n\nSob demanda: a parte sob o ponto de mira, quando ele para onde nada foi encontrado.\n\nSempre: a tela inteira em partes a cada varredura (mais tráfego).</string>
     <string name="bubble_recognition">Reconhecimento de tela</string>
     <string name="bubble_ocr_engines">Mecanismos</string>
     <string name="bubble_ocr_engines_both">Ambos</string>

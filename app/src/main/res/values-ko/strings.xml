@@ -134,7 +134,7 @@
     <string name="bubble_small_text_off">끄기</string>
     <string name="bubble_small_text_on_demand">필요할 때</string>
     <string name="bubble_small_text_always">항상</string>
-    <string name="bubble_small_text_hint">화면의 일부를 따로 클라우드 인식에 보내 전체 화면보다 높은 해상도로 인식하게 하므로, 전체 화면 스캔에서 놓치는 작은 글자도 인식됩니다.\n\n필요할 때: 아무것도 찾지 못한 곳에 조준점이 멈추면 그 아래 부분.\n\n항상: 스캔할 때마다 화면 전체를 나누어서(데이터 사용량 증가).</string>
+    <string name="bubble_small_text_hint">기본적으로는 필요 없습니다. 작은 글자가 인식되지 않을 때만 켜세요. 클라우드 인식에 추가 요청을 보내므로 모바일 데이터를 더 많이 사용합니다.\n\n화면의 일부를 따로 클라우드 인식에 보내 전체 화면보다 높은 해상도로 인식하게 하므로, 전체 화면 스캔에서 놓치는 작은 글자도 인식됩니다.\n\n필요할 때: 아무것도 찾지 못한 곳에 조준점이 멈추면 그 아래 부분.\n\n항상: 스캔할 때마다 화면 전체를 나누어서(데이터 사용량 증가).</string>
     <string name="bubble_recognition">화면 인식</string>
     <string name="bubble_ocr_engines">엔진</string>
     <string name="bubble_ocr_engines_both">둘 다</string>

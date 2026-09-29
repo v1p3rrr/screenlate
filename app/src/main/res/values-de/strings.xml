@@ -134,7 +134,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="bubble_small_text_off">Aus</string>
     <string name="bubble_small_text_on_demand">Bei Bedarf</string>
     <string name="bubble_small_text_always">Immer</string>
-    <string name="bubble_small_text_hint">Sendet Teile des Bildschirms einzeln an die Cloud-Erkennung, in höherer Auflösung im Verhältnis zum Gesamtbild, damit kleiner Text erkannt wird, den ein Scan des ganzen Bildschirms übersieht.\n\nBei Bedarf: der Bereich unter dem Zielpunkt, sobald der Zielpunkt dort ruht, wo nichts gefunden wurde.\n\nImmer: der ganze Bildschirm in Teilen bei jedem Scan (mehr Datenverkehr).</string>
+    <string name="bubble_small_text_hint">Standardmäßig nicht nötig: Nur einschalten, wenn kleiner Text nicht erkannt wird. Sendet zusätzliche Anfragen an die Cloud-Erkennung und verbraucht mehr mobile Daten.\n\nSendet Teile des Bildschirms einzeln an die Cloud-Erkennung, in höherer Auflösung im Verhältnis zum Gesamtbild, damit kleiner Text erkannt wird, den ein Scan des ganzen Bildschirms übersieht.\n\nBei Bedarf: der Bereich unter dem Zielpunkt, sobald der Zielpunkt dort ruht, wo nichts gefunden wurde.\n\nImmer: der ganze Bildschirm in Teilen bei jedem Scan (mehr Datenverkehr).</string>
     <string name="bubble_recognition">Bildschirmerkennung</string>
     <string name="bubble_ocr_engines">Engines</string>
     <string name="bubble_ocr_engines_both">Beide</string>

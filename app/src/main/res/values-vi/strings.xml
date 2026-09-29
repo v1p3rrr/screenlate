@@ -134,7 +134,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="bubble_small_text_off">Tắt</string>
     <string name="bubble_small_text_on_demand">Khi cần</string>
     <string name="bubble_small_text_always">Luôn luôn</string>
-    <string name="bubble_small_text_hint">Gửi riêng từng phần màn hình đến nhận dạng đám mây, với độ phân giải cao hơn so với toàn bộ ảnh, để nhận dạng được chữ nhỏ mà lần quét toàn màn hình bỏ sót.\n\nKhi cần: phần dưới điểm ngắm, khi điểm ngắm dừng ở chỗ không tìm thấy gì.\n\nLuôn luôn: toàn màn hình theo từng phần ở mỗi lần quét (tốn thêm dữ liệu).</string>
+    <string name="bubble_small_text_hint">Mặc định không cần: chỉ bật khi chữ nhỏ không được nhận dạng. Tính năng này gửi thêm yêu cầu đến nhận dạng đám mây và tốn nhiều dữ liệu di động hơn.\n\nGửi riêng từng phần màn hình đến nhận dạng đám mây, với độ phân giải cao hơn so với toàn bộ ảnh, để nhận dạng được chữ nhỏ mà lần quét toàn màn hình bỏ sót.\n\nKhi cần: phần dưới điểm ngắm, khi điểm ngắm dừng ở chỗ không tìm thấy gì.\n\nLuôn luôn: toàn màn hình theo từng phần ở mỗi lần quét (tốn thêm dữ liệu).</string>
     <string name="bubble_recognition">Nhận dạng màn hình</string>
     <string name="bubble_ocr_engines">Công cụ nhận dạng</string>
     <string name="bubble_ocr_engines_both">Cả hai</string>

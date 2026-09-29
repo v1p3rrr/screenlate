@@ -14,6 +14,7 @@ Owner request (2026-09-29): interface in Spanish, French, German, Chinese (proba
 - Crop mode "Whole screen" becomes a toggle: "Whole screen" ⇄ "Frame", returning to the previous frame (owner).
 - Device-only mode: the source chip says just "On-device", with no ⚠ (owner).
 - Check the crop frame in the app-text-only mode as well.
+- OCR boost explanation (owner, 2026-09-29, in this release): say it is not needed by default, turn it on only if small text is not recognized, and it uses more traffic.
 
 ## Decisions
 
@@ -39,3 +40,4 @@ Owner request (2026-09-29): interface in Spanish, French, German, Chinese (proba
 - 2026-09-29: all 12 new locales checked on the emulator (home, search, every settings screen, the language picker); no other layout problems.
 - 2026-09-29: found on the emulator: a language chosen in the app reached activities only; the bubble, popup, crop editor, notifications and anything built from the application context stayed in the system language. The application and the accessibility service now return resources in the app's language (`AppLanguageResources`, re-read from the system at most every 2 s).
 - 2026-09-29: crop editor buttons take the height of the tallest one when a label wraps ("Ganzer Bildschirm").
+- 2026-09-29: owner request — the OCR boost ⓘ text starts with "not needed by default, only for small text that is not recognized, more traffic" in all 14 locales; part of v0.1.4.

@@ -134,7 +134,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="bubble_small_text_off">Wyłączone</string>
     <string name="bubble_small_text_on_demand">Na żądanie</string>
     <string name="bubble_small_text_always">Zawsze</string>
-    <string name="bubble_small_text_hint">Wysyła części ekranu osobno do rozpoznawania w chmurze, w wyższej rozdzielczości względem całego obrazu, aby rozpoznać drobny tekst, który skanowanie całego ekranu pomija.\n\nNa żądanie: fragment pod celownikiem, gdy celownik zatrzyma się tam, gdzie nic nie znaleziono.\n\nZawsze: cały ekran w częściach przy każdym skanowaniu (więcej danych).</string>
+    <string name="bubble_small_text_hint">Domyślnie niepotrzebne: włącz tylko wtedy, gdy drobny tekst nie jest rozpoznawany. Wysyła dodatkowe zapytania do rozpoznawania w chmurze i zużywa więcej danych komórkowych.\n\nWysyła części ekranu osobno do rozpoznawania w chmurze, w wyższej rozdzielczości względem całego obrazu, aby rozpoznać drobny tekst, który skanowanie całego ekranu pomija.\n\nNa żądanie: fragment pod celownikiem, gdy celownik zatrzyma się tam, gdzie nic nie znaleziono.\n\nZawsze: cały ekran w częściach przy każdym skanowaniu (więcej danych).</string>
     <string name="bubble_recognition">Rozpoznawanie ekranu</string>
     <string name="bubble_ocr_engines">Silniki</string>
     <string name="bubble_ocr_engines_both">Oba</string>

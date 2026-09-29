@@ -134,7 +134,7 @@
     <string name="bubble_small_text_off">关闭</string>
     <string name="bubble_small_text_on_demand">按需</string>
     <string name="bubble_small_text_always">始终</string>
-    <string name="bubble_small_text_hint">将屏幕的各个部分分别发送给云端识别，相对于整张图片分辨率更高，从而识别出全屏扫描遗漏的小字。\n\n按需：当瞄准点停在未找到任何内容的地方时，识别其下方的部分。\n\n始终：每次扫描都分块识别整个屏幕（流量更多）。</string>
+    <string name="bubble_small_text_hint">默认无需开启：仅在小字无法识别时开启。它会向云端识别发送额外请求，消耗更多移动数据。\n\n将屏幕的各个部分分别发送给云端识别，相对于整张图片分辨率更高，从而识别出全屏扫描遗漏的小字。\n\n按需：当瞄准点停在未找到任何内容的地方时，识别其下方的部分。\n\n始终：每次扫描都分块识别整个屏幕（流量更多）。</string>
     <string name="bubble_recognition">屏幕识别</string>
     <string name="bubble_ocr_engines">引擎</string>
     <string name="bubble_ocr_engines_both">两者</string>

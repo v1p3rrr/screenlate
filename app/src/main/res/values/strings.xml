@@ -137,7 +137,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="bubble_small_text_off">Off</string>
     <string name="bubble_small_text_on_demand">On demand</string>
     <string name="bubble_small_text_always">Always</string>
-    <string name="bubble_small_text_hint">Sends parts of the screen to cloud recognition separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized.\n\nOn demand: the part under the aim, once the aim rests where nothing was found.\n\nAlways: the whole screen in parts with every scan (more traffic).</string>
+    <string name="bubble_small_text_hint">Not needed by default: turn it on only if small text is not recognized. It sends extra requests to cloud recognition and uses more mobile data.\n\nSends parts of the screen to cloud recognition separately, at a higher resolution relative to the whole picture, so small text that a full-screen scan misses gets recognized.\n\nOn demand: the part under the aim, once the aim rests where nothing was found.\n\nAlways: the whole screen in parts with every scan (more traffic).</string>
     <string name="bubble_recognition">Screen recognition</string>
     <string name="bubble_ocr_engines">Engines</string>
     <string name="bubble_ocr_engines_both">Both</string>

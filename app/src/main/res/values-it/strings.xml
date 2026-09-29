@@ -134,7 +134,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="bubble_small_text_off">Disattivato</string>
     <string name="bubble_small_text_on_demand">Su richiesta</string>
     <string name="bubble_small_text_always">Sempre</string>
-    <string name="bubble_small_text_hint">Invia parti dello schermo separatamente al riconoscimento nel cloud, a una risoluzione più alta rispetto all’immagine intera, così viene riconosciuto il testo piccolo che una scansione di tutto lo schermo non vede.\n\nSu richiesta: la parte sotto il punto di mira, quando questo si ferma dove non è stato trovato nulla.\n\nSempre: tutto lo schermo a parti a ogni scansione (più traffico).</string>
+    <string name="bubble_small_text_hint">Di norma non serve: attivalo solo se il testo piccolo non viene riconosciuto. Invia richieste aggiuntive al riconoscimento nel cloud e consuma più dati mobili.\n\nInvia parti dello schermo separatamente al riconoscimento nel cloud, a una risoluzione più alta rispetto all’immagine intera, così viene riconosciuto il testo piccolo che una scansione di tutto lo schermo non vede.\n\nSu richiesta: la parte sotto il punto di mira, quando questo si ferma dove non è stato trovato nulla.\n\nSempre: tutto lo schermo a parti a ogni scansione (più traffico).</string>
     <string name="bubble_recognition">Riconoscimento dello schermo</string>
     <string name="bubble_ocr_engines">Motori</string>
     <string name="bubble_ocr_engines_both">Entrambi</string>

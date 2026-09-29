@@ -134,7 +134,7 @@
     <string name="bubble_small_text_off">オフ</string>
     <string name="bubble_small_text_on_demand">必要なとき</string>
     <string name="bubble_small_text_always">常に</string>
-    <string name="bubble_small_text_hint">画面の一部を個別にクラウド認識へ送り、画面全体に対して高い解像度で認識させます。全画面の読み取りでは見逃す小さな文字も認識できます。\n\n必要なとき：何も見つからない場所で照準が止まったとき、その下の部分。\n\n常に：読み取りのたびに画面全体を分割して（通信量が増えます）。</string>
+    <string name="bubble_small_text_hint">通常は不要です。小さな文字が認識されないときだけオンにしてください。クラウド認識へのリクエストが増え、モバイルデータを多く使います。\n\n画面の一部を個別にクラウド認識へ送り、画面全体に対して高い解像度で認識させます。全画面の読み取りでは見逃す小さな文字も認識できます。\n\n必要なとき：何も見つからない場所で照準が止まったとき、その下の部分。\n\n常に：読み取りのたびに画面全体を分割して（通信量が増えます）。</string>
     <string name="bubble_recognition">画面の認識</string>
     <string name="bubble_ocr_engines">エンジン</string>
     <string name="bubble_ocr_engines_both">両方</string>
