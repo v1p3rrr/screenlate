@@ -114,10 +114,11 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The OCR boost ⓘ now opens with "not needed by default, only when small text is not recognized, more mobile data" (owner request) in all locales.
 - Module map for the pending full code review: `notes/module-map.md`.
 - Emulator state: the debug app has AnkiDroid access and Anki set to the "Screenlate Test" deck with Basic (Back = `{screenshot}`); app language back to system.
+- v0.1.4 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.4, APKs: arm64-v8a 44 MB, armeabi-v7a 40 MB, x86_64 45 MB, universal 67 MB) from 3f0dc60; CI, release and instrumented runs (API 34, including the new `AppLanguageResourcesTest`) green.
 
 ## Next
 
-- Waiting for the owner's phone feedback on v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
+- Waiting for the owner's phone feedback on v0.1.4 (interface languages, overlay in the chosen language, crop frame and toggle, "On-device" chip) and v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
 - Full code review of the whole project, one run per functional module with its integration paths (`notes/module-map.md`); starts on the owner's command.
 - Phase 8 (more languages) needs an interview per language first.
 
