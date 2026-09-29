@@ -20,6 +20,16 @@ class LocalNetworkTest {
     }
 
     @Test
+    fun `ipv4-mapped addresses follow the ipv4 address`() {
+        listOf("::ffff:192.168.1.20", "[::ffff:10.0.0.5]", "::ffff:c0a8:114", "0:0:0:0:0:ffff:ac10:1").forEach {
+            assertWithMessage(it).that(LocalNetwork.isLocalHost(it)).isTrue()
+        }
+        listOf("::ffff:8.8.8.8", "::ffff:808:808", "::ffff:127.0.0.1", "::ffff:zz:1", "::ffff:c0a8:zz").forEach {
+            assertWithMessage(it).that(LocalNetwork.isLocalHost(it)).isFalse()
+        }
+    }
+
+    @Test
     fun `local names`() {
         listOf("nas", "nas.local", "server.lan", "box.home.arpa", "media.internal").forEach {
             assertWithMessage(it).that(LocalNetwork.isLocalHost(it)).isTrue()

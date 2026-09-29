@@ -32,14 +32,14 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 1 done and committed; next: module 2 (common and language support), run 1 — read core/common in full and follow its integration paths.
+Updated after every step so the work survives a context reset or a paused session: module 2 done (three runs), committing and pushing; next: module 3 (OCR), run 1 — read core/ocr in full (and the deferred CompositeOcrTest opt-in) and follow its integration paths.
 
 ## Progress
 
 | # | Module | Run 1 | Run 2 | Run 3 | Run 4 | Commit |
 |---|---|---|---|---|---|---|
 | 1 | Build, CI and release | 9 found, 9 fixed | 3 found: 1 fixed, 1 question (Q3), 1 deferred | 1 found (test), fixed | not needed | see git log |
-| 2 | Common and language support | | | | | |
+| 2 | Common and language support | 4 found: 3 fixed, 1 deferred | 1 found (test), deferred | 1 found (validation), fixed | not needed | see git log |
 | 3 | OCR | | | | | |
 | 4 | Dictionary registry, imports and catalog | | | | | |
 | 5 | Lookup and engine | | | | | |
@@ -91,6 +91,36 @@ workflow steps run locally in a scratch repository, the debug build's version on
 finding: `DownloadCacheTest` read its request log across threads without synchronization → fixed
 (`CopyOnWriteArrayList`). No 4th run: the only change was that test detail.
 
+### Module 2, run 1
+
+The whole of `core/common` with its tests, and the integration paths: lookup start, spelling variants and romaji in
+`DictionaryLookup`/`LookupVariants`/`inSource`, the ML Kit script choice, `Sentence` and the Anki markers, audio
+defaults, the overlay's word start, fonts, theme/e-ink settings in the app and the overlay, `AppLanguageResources` in
+the application and the accessibility service, the local network checks for audio sources, and every log call that
+passes an exception (none of the 14 calls without `.redacted()` can carry recognized text, words or term URLs: they
+log ML Kit, capture, dictionary import and AnkiDroid provider failures).
+
+1. `redacted()` recursed forever on a loop of causes → fixed (identity set of copied throwables; test).
+2. The shared settings DataStore had no corruption handler: a damaged file crashed every start → fixed (defaults
+   replace it; test, skipped on Windows, where DataStore's file storage cannot replace a file).
+3. IPv4-mapped IPv6 addresses of private hosts were not local → fixed (dotted and hex forms; test).
+4. The theme mode to dark mapping is written three times (app theme, search page, overlay) → Deferred.
+
+### Module 2, run 2
+
+The module again (the Mozc table and its pending rules, `MappedText` replacement mapping and its callers, word start
+against lookup start, sentence rules, fonts, audio and Anki marker defaults, app language resources below and above
+API 33, which app settings keys backups carry) and the run 1 fixes. One finding: the default audio sources are
+`AudioSourceType` names as strings that `AudioSettings.defaultSources` silently drops when they match no type, and no
+test ties them together → Deferred (module 8).
+
+### Module 2, run 3
+
+Over the diff of runs 1–2 (the redaction copy, the settings store and its callers, including backups, which restore
+through DataStore edits and never write the file; the IPv4-mapped check). One finding: the hex form checked only the
+first group of the mapped address → fixed (both groups must be hex; test). No 4th run: that was a one-line
+validation.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -98,7 +128,11 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - Module 3: `CompositeOcrTest` uses `ExperimentalCoroutinesApi` without an opt-in (compiler warnings on CI).
 - Module 4: `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
   `Data.getStringArray` (use `getNullableStringArray`).
+- Module 8: a test that every name in `LanguageSupport.defaultAudioSources` maps to an `AudioSourceType`
+  (`AudioSettings.defaultSources` drops unknown names silently).
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
+- Modules 9–11 (at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
+  `search/SearchScreen.kt:87`, `OverlayController.isDarkTheme`); one helper next to `ThemeMode` in core:common.
 
 ## Changelog
 

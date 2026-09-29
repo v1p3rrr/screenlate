@@ -24,6 +24,17 @@ class RedactionTest {
     }
 
     @Test
+    fun `a loop of causes ends at the first repeat`() {
+        val outer = RuntimeException("outer 読む")
+        val inner = IllegalStateException("inner 読む", outer)
+        outer.initCause(inner)
+        val redacted = outer.redacted()
+        assertThat(redacted.cause.toString()).isEqualTo("java.lang.IllegalStateException")
+        assertThat(redacted.cause?.cause).isNull()
+        assertThat(redacted.stackTraceToString()).doesNotContain("読む")
+    }
+
+    @Test
     fun `urls keep only scheme and host`() {
         assertThat(redactUrl("https://jisho.org/search/食べる")).isEqualTo("https://jisho.org/…")
         assertThat(redactUrl("not a url with spaces")).isEqualTo("<url>")

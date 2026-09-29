@@ -139,6 +139,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 ### 2026-09-30 (module reviews)
 
 - Module reviews (owner's command, `plans/2026-09-30-module-reviews.md`), module 1 build, CI and release (three runs): the bundled dictionary cache downloads a file again when its URL changes, checks that a `.zip` is an archive, has timeouts and names failed URLs (`DownloadCache`, `DownloadCacheTest`); release builds take the version from the tag (`version.txt`), and version lookups skip pre-release tags; a failed publish keeps the APKs as artifacts; foundation-layout comes from the Compose BOM. Question Q3 (a deleted bundled Jiten list comes back when the unversioned file changes) waits for the owner.
+- Module 2 common and language support (three runs): `redacted()` survives a loop of causes, a damaged settings file is replaced with the defaults instead of crashing every start, IPv4-mapped IPv6 addresses of private hosts count as local network. Two small items deferred to modules 8 and 9–11 (a test for the default audio source names, one helper for the theme mode's dark mapping).
 
 ## Next
 

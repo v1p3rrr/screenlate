@@ -65,3 +65,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   URL changed is downloaded again, and a `.zip` must be a readable archive (`DownloadCache`). CI keys its copy of the
   folder by `app/build.gradle.kts` and `DownloadCache.kt`. Release builds read the version from `version.txt`, which
   the release workflow writes from the tag; other builds take the latest `vX.Y.Z` tag (pre-release tags are skipped).
+- DataStore's file storage cannot rename its new file over an existing one on Windows (`Unable to rename …tmp`), so a
+  JVM test that writes a file-backed store twice, or replaces a damaged file, fails locally. Use an in-memory
+  `DataStore` in unit tests (`EInkSizesTest`), or skip the test on Windows when the file itself is under test
+  (`SettingsDataStoreTest`; CI runs it on Linux).
