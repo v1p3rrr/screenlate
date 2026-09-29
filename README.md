@@ -18,14 +18,15 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 ## Features
 
 - **Any app, any orientation.** Horizontal and vertical text, portrait and landscape. The popup opens where there is room and never covers the word.
-- **Text from the screen.** Cloud recognition with an instant on-device draft, or the app's own text where the app exposes it (exact and offline).
+- **Text from the screen.** Cloud recognition with an instant on-device draft, or the app's own text where the app exposes it (exact and offline), or only the app's text, without recognition, for e-ink readers and weak devices.
 - **Yomitan dictionaries**, looked up and shown the way Yomitan does it: rich entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries.
 - **Dictionaries included**: JMdict (English), a frequency list and pitch accents work right after installing. Jitendex, dictionaries for other languages, kanji and name dictionaries are one tap away in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
 - **Anki cards** through AnkiDroid: your deck, note type and field templates (Yomitan's markers), duplicate checks, pronunciation audio and a cropped screenshot of the scene.
 - **Pronunciation** from the same audio sources as Yomitan, or the phone's text-to-speech.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
 - **Import from Yomitan**: dictionary order, Anki setup, audio sources, lookup and popup settings.
-- **Your look**: popup font and text size, custom CSS, light and dark theme; the interface is in English and Russian.
+- **Your look**: popup font and text size, custom CSS, light and dark theme, an e-ink mode; the interface is in English and Russian.
+- **Backup and restore** of all settings and, if you like, the dictionaries, in one file.
 - **Updates** from GitHub Releases inside the app.
 
 Only Japanese is supported for now.
@@ -49,7 +50,7 @@ Only Japanese is supported for now.
 
 - Japanese only.
 - Cloud recognition uses an unofficial service that may change or stop working at any time; the app then falls back to on-device recognition, which is less accurate on small or stylized text.
-- Screens that block screenshots (some banking apps, protected video) cannot be scanned. "App text first" can still read apps that expose their text.
+- Screens that block screenshots (some banking apps, protected video) cannot be scanned. "Read app text" and "App text only" can still read apps that expose their text.
 - The bubble lives in an accessibility service; some phones stop such services in the background (see Install).
 - Developed and tested on a small number of devices.
 

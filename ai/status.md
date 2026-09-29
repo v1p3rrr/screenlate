@@ -82,10 +82,25 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Docs: `docs/usage.md` (Background work, Screen recognition, experimental app text, troubleshooting), `docs/architecture.md` (parallel app text, trusted boxes, `OcrOptions`, `SymbolLag`, renderer priority). Release notes `.github/release-notes/v0.1.2.md`.
 - v0.1.2 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.2, APKs: arm64-v8a 44 MB, armeabi-v7a 39 MB, x86_64 45 MB, universal 66 MB) from aff0905; CI, release and instrumented runs green.
 
+### 2026-09-29
+
+- Everything before phase 8 done (owner's instruction: autonomously, checked on the emulator, then released):
+  - Dock pull: the bubble docks when its center (the aim in center mode) crosses the edge, or as before when the finger is lifted within 12 dp of it.
+  - "App text only" (`TextSource.APP_TEXT_ONLY`): a second switch under "Read app text" (formerly "App text first") with a confirmation; engines, OCR boost and reduce load are disabled; no screenshot unless a note needs a picture; a message when the app exposes no text. The cloud engine hint names its mobile data use.
+  - E-ink mode (Appearance): black and white app theme, no ripples or animations, black bubble and aim, frames instead of fills, popup with a black border; turning it on offers a 56 dp bubble and larger popup text; a one-time home hint on known e-ink makers links to "App text only".
+  - Backup and restore (`app/backup/`): one zip with a manifest, typed preferences by section, the dictionary list, popup fonts and optionally the converted dictionaries; restore through a checklist that replaces checked sections, adds or replaces dictionaries (never removes), and ends with a summary. Checked on the emulator: 58 MB backup with three dictionaries, full restore, lookups work after it.
+  - Dictionary details link to the website and the download.
+  - Vertical text in the middle of a narrow screen: the popup goes beside the column down to 140 dp (`narrowMinWidth`), else above or below.
+  - "Look up in Screenlate": instrumented `ProcessTextTest` (the system offers our activity for `PROCESS_TEXT`, and it opens with the text).
+  - A rescan on the emulator draws frames only on the manga, never on the popup (the owner's question).
+- Fixes found while checking: switching e-ink mode returned the app to the home screen (the theme composed the content on separate paths; now one path, see `notes/build-environment.md`); the "no app text" message kept the popup spinner.
+- Not checked on the emulator (for the phone): the e-ink home hint and its link to the switch, a picture attached to a note in app text only mode, the restore of downloaded fonts.
+- v0.1.3 released (see the release section below).
+
 ## Next
 
-- Waiting for the owner's phone feedback on v0.1.2 (owner, 2026-09-28): the icon, a collection import with timings, the import notification, scan timings from the logs, vertical text across columns, "App text first" in X and Chrome, self-update from v0.1.1.
-- Topics not started, each needs an interview first: backup and restore (Yomitan-compatible dictionary export is open), e-ink mode, phase 8 (more languages).
+- Waiting for the owner's phone feedback on v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
+- Phase 8 (more languages) needs an interview per language first.
 
 ## Open items
 
@@ -95,9 +110,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The debug APK is ~120 MB (unminified dex, bundled dictionaries 48 MB, ML Kit). Release APKs: arm64-v8a 69 MB, armeabi-v7a 65 MB, x86_64 70 MB, universal 93 MB.
 - Lookup-to-render latency on the emulator (measured with `popup-eval.mjs`): 30–45 ms for typical words, ~100–180 ms for する (16 long Jitendex entries). The native lookup takes a few ms; the rest is JSON and rendering. Not measured on the phone.
 - AnkiDroid's editor on the emulator shows fields as HTML source; the card preview renders them. Dictionary CSS is included per glossary as a scoped `<style>`.
-- Default text source is OCR; "App text first" is experimental (owner, 2026-09-28) until it is tried on the phone.
+- Default text source is OCR; "Read app text" (formerly "App text first") is experimental (owner, 2026-09-28) until it is tried on the phone.
 
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
-- Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27); columns in the middle of a narrow screen still get it above or below.
+- Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27), and beside a column in the middle of a narrow screen down to 140 dp; above or below only when neither fits.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).

@@ -16,12 +16,12 @@
 | Hold the floating bubble | Copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
 | Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
-| Drag the bubble to the left or right edge | Close the entry and dock the bubble. |
+| Drag the bubble to the left or right edge | Close the entry and dock the bubble: once the bubble's center is past the edge, or when the finger is lifted at the edge. |
 | Drag the docked bubble along the edge | Move the dock. |
 
 A word broken at the end of a line or column is looked up as a whole, reading on in the next line or column.
 
-The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; when neither side has room, it goes above or below.
+The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; beside a column in the middle of a narrow screen it can get narrower still. When neither side has room, it goes above or below.
 
 The Quick Settings tile hides and shows the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 
@@ -30,13 +30,15 @@ The Quick Settings tile hides and shows the bubble. Turning the screen closes th
 The start screen keeps the search, the service status and warnings; everything else is under Settings:
 
 - **Bubble**: aim point, dock side, bubble size, word highlight, vibration, apps where the bubble hides, whether the popup starts with the recognized text, and the text source:
-  - **Screen (OCR)**: a screenshot is recognized in the cloud; an on-device draft of the lines around the aim appears first. When cloud recognition fails (no network, no answer within 15 seconds, an error), the on-device result stays and ⚠ appears next to the text source; tap it for the reason.
-  - **App text first** (experimental): the app's own text is used where the app exposes character positions. It is exact, ready almost at once and works offline. The screen is still recognized alongside for everything else, such as text in images; whichever is ready first is shown. Some apps report wrong character positions, so the highlight can be off or a neighboring word found; switch back to Screen (OCR) then.
+  - **Screen recognition** (the default): a screenshot is recognized in the cloud; an on-device draft of the lines around the aim appears first. When cloud recognition fails (no network, no answer within 15 seconds, an error), the on-device result stays and ⚠ appears next to the text source; tap it for the reason. Cloud recognition uses mobile data, about 0.1–0.4 MB per scan.
+  - **Read app text** (experimental): the app's own text is used where the app exposes character positions. It is exact, ready almost at once and works offline. The screen is still recognized alongside for everything else, such as text in images; whichever is ready first is shown. Some apps report wrong character positions, so the highlight can be off or a neighboring word found; turn it off then.
+  - **App text only**: no screenshots and no recognition, only the text apps expose. Text in images, manga and games is not read, and apps that do not expose their text show a message instead. Meant for e-ink readers, old or weak devices where recognition fails or is slow, and slow or metered internet. The recognition settings below are off while it is on; a picture for an Anki note is still taken when asked for.
   - **OCR boost** sends parts of the screen to cloud recognition separately, so small text that a full-screen scan misses is read: on demand (the part under the aim, when nothing was found there) or always.
   - **Screen recognition → Engines**: both (the default), cloud only or device only. Turning one off is a last resort for weak or busy devices: cloud only recognizes nothing without network and shows words only once the server answers; device only works offline but reads vertical text and manga worse, and OCR boost is off.
   - **Screen recognition → Reduce load on the device** (off by default): the device reads the lines around the aim at once, but the whole screen only when cloud recognition has not answered within 3 seconds. Less load and battery use; words away from the aim show up later.
 - **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results. Without romaji, Latin text is looked up when Japanese follows it (Tシャツ) or when the whole word is a dictionary entry (OL, DNA, CD-ROM), wherever the aim is inside it; single letters are skipped, and letter case counts.
 - **Dictionaries**, **Anki and audio**, **Appearance**: see below.
+- **Backup and restore**: see below.
 - **Background work**: battery optimization for Screenlate and the maker's startup settings, the two things that can stop the bubble in the background.
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too.
 
@@ -59,6 +61,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 
 - **Popup font.** By default the popup and the search page use the phone's own Japanese font, so kanji keep their Japanese forms (compare 直 or 骨) even where the phone's main font is Chinese. Free Japanese fonts can be downloaded from the list, or a font file (`.ttf`, `.otf`, `.ttc`) added; the text size applies to all of them.
 - **Custom CSS.** Applied to the popup and the search page after the dictionaries' own styles, like Yomitan's custom popup CSS. Entries use Yomitan's class names, and badges follow Yomitan's tag color variables such as `--tag-frequency-background-color`. Warnings above the field point to lines the browser would skip and to fonts the phone does not have; such fonts fall back to the popup font. Names of common Windows and macOS Japanese fonts (Meiryo, Yu Gothic, Yu Mincho, MS Mincho, Hiragino) stand for the phone's Japanese sans-serif or serif font.
+- **E-ink mode** (off by default): black and white, no animations, frames instead of translucent highlights, and a black bubble and aim; it overrides the theme. Turning it on offers a larger bubble and larger popup text, which stay when the mode is turned off. On devices that look like e-ink readers the start screen offers the mode once, with a link to "App text only".
 - Importing a Yomitan settings export can bring over the text size and the custom popup CSS.
 
 ## Dictionaries
@@ -70,7 +73,14 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 - Imports and downloads show their progress in a notification. On Android 13 and later the first import or download asks for the notification permission; while it is missing, the Dictionaries screen offers it again, and once Android stops asking, its button opens the app's notification settings.
 - A Yomitan collection export is listed first; check the dictionaries to import (those already installed start unchecked). Large exports are read in place, without a copy.
 - Before a collection import writes anything, it checks the free space for the chosen dictionaries. The fastest import needs roughly as much free space as those dictionaries take in the export; with less, the import packs its temporary files more tightly and takes longer. If even that does not fit, the import stops with a message saying how much space is needed. With at least four times the file size free, the check is skipped.
+- A dictionary's details link to its website and to where it can be downloaded, when the dictionary or the catalog names them.
 - Missing dictionary files are restored automatically for bundled dictionaries; catalog dictionaries can be downloaded again in one tap.
+
+## Backup and restore
+
+- **Create a backup** writes one `.zip` file wherever the file picker allows: the phone, a memory card or cloud storage. It holds all settings (bubble, lookup, Anki, audio, appearance with custom CSS, hidden apps), the order, switches and languages of the dictionaries, and the added fonts. With "Include dictionaries" the dictionaries themselves go in too, ready to use without downloading or importing; the file then gets much larger.
+- **Restore** opens a backup and lists its parts. Each checked part replaces what the app has; unchecked parts stay as they are. Dictionaries from the backup are added, or replace the same dictionary; installed dictionaries are never removed. The dictionary order applies to the dictionaries that are installed, so restore the dictionaries themselves in the same run or install them first. A summary lists what was restored.
+- A backup is for Screenlate only; Yomitan cannot read it.
 
 ## Anki
 
@@ -90,10 +100,11 @@ Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePo
 
 ## Troubleshooting
 
-- **"This app does not allow screenshots."** The app protects its windows. Try the "App text first" source.
+- **"This app does not allow screenshots."** The app protects its windows. Try "Read app text".
 - **Only the on-device result appears.** Cloud recognition was unreachable or took longer than 15 seconds; the on-device result is used instead.
 - **The bubble disappears after a while.** The system stopped the service; see Settings → Background work.
 - **The device gets warm or slow while scanning.** Most of a scan's work is the on-device recognition of the whole screen. Turn on "Reduce load on the device" in the bubble settings; as a last resort, choose one engine.
-- **The highlight is off or the wrong word is found with "App text first".** The app reports wrong character positions; switch the text source back to Screen (OCR).
+- **The highlight is off or the wrong word is found with "Read app text".** The app reports wrong character positions; turn "Read app text" off.
+- **"This app does not expose its text here."** "App text only" is on, and the app under the aim shows its text as an image or does not expose it. Turn "App text only" off to recognize the screen.
 - **Kanji look Chinese.** The popup uses the phone's Japanese font; if the phone has none, Appearance offers to download Noto Sans JP.
 - **Text-to-speech says nothing.** No Japanese voice is installed; install one in the system's text-to-speech settings.
