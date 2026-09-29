@@ -95,7 +95,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   - A rescan on the emulator draws frames only on the manga, never on the popup (the owner's question).
 - Fixes found while checking: switching e-ink mode returned the app to the home screen (the theme composed the content on separate paths; now one path, see `notes/build-environment.md`); the "no app text" message kept the popup spinner.
 - Not checked on the emulator (for the phone): the e-ink home hint and its link to the switch, a picture attached to a note in app text only mode, the restore of downloaded fonts.
-- v0.1.3 released (see the release section below).
+- v0.1.3 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.3, APKs: arm64-v8a 44 MB, armeabi-v7a 39 MB, x86_64 45 MB, universal 66 MB) from 092a8d6; CI, release and instrumented runs (with `ProcessTextTest`) green.
 
 ## Next
 
