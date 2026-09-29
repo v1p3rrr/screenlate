@@ -141,7 +141,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Dispositivo</string>
     <string name="bubble_ocr_engines_hint">Tienili entrambi. Disattivarne uno è l’ultima risorsa per dispositivi deboli o molto occupati. Il riconoscimento nel cloud usa dati mobili (circa 0,1–0,4 MB per scansione); quello sul dispositivo no.</string>
-    <string name="bubble_ocr_engines_info">Solo cloud: senza rete non viene riconosciuto nulla, e le parole appaiono solo quando il server risponde.\n\nSolo dispositivo: funziona offline ma legge peggio il testo verticale e i manga; il potenziamento OCR è disattivato.</string>
+    <string name="bubble_ocr_engines_info">Entrambi: il dispositivo e il cloud partono insieme. Il dispositivo legge in fretta il testo intorno al punto di mira, così le parole appaiono quasi subito; quando il cloud risponde, il suo risultato più preciso le sostituisce. Senza rete o se il cloud fallisce, resta il risultato del dispositivo.\n\nSolo cloud: senza rete non viene riconosciuto nulla, e le parole appaiono solo quando il server risponde.\n\nSolo dispositivo: funziona offline ma legge peggio il testo verticale e i manga; il potenziamento OCR è disattivato.</string>
     <string name="bubble_ocr_saving">Riduci il carico sul dispositivo</string>
     <string name="bubble_ocr_saving_hint">Il dispositivo legge da sé tutto lo schermo solo se il riconoscimento nel cloud non ha risposto entro 3 s. Meno carico e consumo di batteria, ma le parole lontane dal punto di mira appaiono più tardi. Lascia disattivato se conta soprattutto la velocità.</string>
     <string name="bubble_size">Dimensione della bolla: %1$d dp</string>
@@ -150,7 +150,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="settings_language">Lingua</string>
     <string name="settings_language_system">Sistema</string>
     <string name="settings_language_hint">Disponibile anche nelle impostazioni di sistema: App → Screenlate → Lingua.</string>
-    <string name="settings_language_translations">Le traduzioni diverse da inglese e russo sono state fatte con l’IA e non sono state riviste da madrelingua. Le correzioni sono benvenute su GitHub.</string>
+    <string name="settings_language_translations">Le traduzioni sono state fatte con l’IA e non sono state riviste da madrelingua. Le correzioni sono benvenute su GitHub.</string>
     <string name="action_clear">Cancella</string>
     <string name="anki_suggest_templates">Compila con i modelli suggeriti</string>
     <string name="anki_overwrite_mode">Durante la sovrascrittura: %1$s</string>
@@ -179,6 +179,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="about_report_bug">Segnala un problema</string>
     <string name="yomitan_import_dictionaries">Dizionari</string>
     <string name="yomitan_import_dictionaries_hint">In Yomitan: Impostazioni → Backup → Esporta raccolta di dizionari. Il file contiene tutti i dizionari installati.</string>
+    <string name="yomitan_import_single_hint">I singoli dizionari (un file .zip ciascuno) si aggiungono nella schermata «Dizionari» con «Importa da file».</string>
     <string name="lookup_scanning">Scansione</string>
     <string name="lookup_scan_length">Lunghezza di scansione: %1$d caratteri</string>
     <string name="lookup_scan_length_hint">Quanti caratteri dopo il punto di mira considera una ricerca. Valori più alti trovano frasi più lunghe.</string>
@@ -280,6 +281,8 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="popup_font_hint">Usato dal popup e dalla pagina di ricerca.</string>
     <string name="popup_font_system">Carattere giapponese del telefono</string>
     <string name="popup_font_system_hint">Già sul telefono, niente da scaricare</string>
+    <string name="popup_font_script_only">Solo per il testo giapponese</string>
+    <string name="popup_font_script_only_hint">Le lettere latine, cirilliche e le altre mantengono il carattere del telefono. Per i caratteri scaricati e aggiunti.</string>
     <string name="popup_font_downloaded">Scaricati</string>
     <string name="popup_font_own_file">Il tuo file</string>
     <string name="popup_font_delete">Elimina %1$s</string>
@@ -379,9 +382,9 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="settings_badge">Nuovo consiglio</string>
     <string name="eink_title">Schermo e-ink</string>
     <string name="eink_switch">Modalità e-ink</string>
-    <string name="eink_hint">Bianco e nero, niente animazioni, cornici al posto delle evidenziazioni traslucide. Ha la precedenza sul tema.</string>
+    <string name="eink_hint">Per e-reader e altri dispositivi con schermo a inchiostro elettronico (e-ink). Bianco e nero, niente animazioni, cornici al posto delle evidenziazioni traslucide. Ha la precedenza sul tema.</string>
     <string name="eink_enlarge_title">Bolla e testo più grandi?</string>
-    <string name="eink_enlarge_message">Ingrandire la bolla fluttuante di %1$d dp e il testo del popup di %2$d px? Entrambi restano regolabili, e disattivare la modalità e-ink non li riporta indietro.</string>
+    <string name="eink_enlarge_message">Ingrandire la bolla fluttuante a %1$d dp e il testo del popup di %2$d px? Entrambi restano regolabili. Disattivando la modalità e-ink tornano le dimensioni precedenti, a meno che tu non le abbia cambiate nel frattempo.</string>
     <string name="eink_enlarge_confirm">Ingrandisci</string>
     <string name="eink_enlarge_keep">Mantieni le dimensioni</string>
     <string name="eink_home_title">Schermo e-ink?</string>

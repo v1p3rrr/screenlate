@@ -6,11 +6,13 @@ import com.vpr.screenlate.core.common.language.SystemFonts
 /**
  * Font CSS of the lookup page. The phone's font for the language is declared under [SANS] and [SERIF] by its local
  * name and limited to the language's script, so Latin and Cyrillic text keeps the default font. Font names of other
- * systems become aliases of it, and installed fonts are declared under their own family names.
+ * systems become aliases of it, and installed fonts are declared under their own family names. A chosen font limited
+ * to the script is declared once more under [CHOSEN].
  */
 object PageFonts {
     const val SANS = "Screenlate Sans"
     const val SERIF = "Screenlate Serif"
+    const val CHOSEN = "Screenlate Chosen"
 
     /** Folder under the app's files where installed fonts live; the page loads them from `/fonts/<name>`. */
     const val DIRECTORY = "fonts"
@@ -26,7 +28,8 @@ object PageFonts {
         "palatino", "baskerville", "goudy", "itc stone serif", "courier", "courier new", "monaco",
     )
 
-    fun fontFaces(system: SystemFonts, installed: List<InstalledFont>): String = buildString {
+    /** @param scriptOnly the installed font chosen for the page only, and only for the language's script. */
+    fun fontFaces(system: SystemFonts, installed: List<InstalledFont>, scriptOnly: InstalledFont? = null): String = buildString {
         fontFace(SANS, localSources(system.sans), unicodeRange = system.unicodeRange)
         fontFace(SERIF, localSources(system.serif), unicodeRange = system.unicodeRange)
         val installedNames = installed.map { normalize(it.family) }.toSet()
@@ -37,14 +40,23 @@ object PageFonts {
         }
         installed.forEach { font ->
             font.files.forEach { file ->
-                fontFace(font.family, "url(\"/$DIRECTORY/${file.name}\")", weight = file.weight)
+                fontFace(font.family, fileSource(file), weight = file.weight)
             }
+        }
+        scriptOnly?.files?.forEach { file ->
+            fontFace(CHOSEN, fileSource(file), unicodeRange = system.unicodeRange, weight = file.weight)
         }
     }
 
-    /** The page's base font list: the chosen font, then the phone's font for the language. */
-    fun fontFamily(chosen: InstalledFont?): String =
-        listOfNotNull(chosen?.family?.let(::quote), quote(SANS), "sans-serif").joinToString(", ")
+    /**
+     * The page's base font list: the chosen font, then the phone's font for the language.
+     *
+     * @param scriptOnly whether the chosen font is limited to the language's script ([CHOSEN]).
+     */
+    fun fontFamily(chosen: InstalledFont?, scriptOnly: Boolean = false): String {
+        val first = chosen?.let { if (scriptOnly) CHOSEN else it.family }
+        return listOfNotNull(first?.let(::quote), quote(SANS), "sans-serif").joinToString(", ")
+    }
 
     /** Whether the page can show [name]: a generic or Android family, a system font alias, or an installed font. */
     fun isAvailable(name: String, system: SystemFonts, installed: List<InstalledFont>): Boolean {
@@ -52,6 +64,7 @@ object PageFonts {
         return normalized in BUILT_IN ||
             normalized == normalize(SANS) ||
             normalized == normalize(SERIF) ||
+            normalized == normalize(CHOSEN) ||
             system.aliases.keys.any { normalize(it) == normalized } ||
             (system.sans + system.serif).any { normalize(it) == normalized } ||
             installed.any { normalize(it.family) == normalized }
@@ -65,6 +78,8 @@ object PageFonts {
         if (unicodeRange != null) append(" unicode-range: ").append(unicodeRange).append(';')
         append(" font-display: swap; }\n")
     }
+
+    private fun fileSource(file: FontFile): String = "url(\"/$DIRECTORY/${file.name}\")"
 
     private fun localSources(names: List<String>): String = names.joinToString(", ") { "local(${quote(it)})" }
 

@@ -47,6 +47,7 @@ class PageFontsTest {
     fun `the page font list starts with the chosen font`() {
         assertThat(PageFonts.fontFamily(null)).isEqualTo("\"Screenlate Sans\", sans-serif")
         assertThat(PageFonts.fontFamily(klee)).isEqualTo("\"Klee One\", \"Screenlate Sans\", sans-serif")
+        assertThat(PageFonts.fontFamily(klee, scriptOnly = true)).isEqualTo("\"Screenlate Chosen\", \"Screenlate Sans\", sans-serif")
     }
 
     @Test
@@ -68,9 +69,26 @@ class PageFontsTest {
         val json = PageAppearance.build(JapaneseSupport, appearance, listOf(klee))
         assertThat(json["lang"]?.jsonPrimitive?.content).isEqualTo("ja")
         assertThat(json["fontSize"]?.jsonPrimitive?.int).isEqualTo(17)
-        assertThat(json["preload"]?.jsonPrimitive?.content).isEqualTo("Klee One")
+        assertThat(json["preload"]?.jsonPrimitive?.content).isEqualTo("Screenlate Chosen")
+        assertThat(json["preloadText"]?.jsonPrimitive?.content).isEqualTo(JapaneseSupport.fontSample)
         assertThat(json["customCss"]?.jsonPrimitive?.content)
-            .isEqualTo(".a { font-family: Meiryo, \"Klee One\", \"Screenlate Sans\", sans-serif }")
+            .isEqualTo(".a { font-family: Meiryo, \"Screenlate Chosen\", \"Screenlate Sans\", sans-serif }")
+    }
+
+    @Test
+    fun `a chosen font is limited to the script unless it is for all text`() {
+        val limited = PageAppearance.build(JapaneseSupport, PopupAppearance(fontId = "klee-one"), listOf(klee))
+        val faces = limited["fontFaces"]?.jsonPrimitive?.content.orEmpty()
+        assertThat(faces).contains(
+            "font-family: \"Screenlate Chosen\"; src: url(\"/fonts/klee-one-1.ttf\"); font-weight: 600; unicode-range: U+2E80-2FDF",
+        )
+        assertThat(faces).contains("font-family: \"Klee One\"; src: url(\"/fonts/klee-one-0.ttf\"); font-weight: 400; font-display")
+        assertThat(limited["fontFamily"]?.jsonPrimitive?.content).isEqualTo("\"Screenlate Chosen\", \"Screenlate Sans\", sans-serif")
+
+        val all = PageAppearance.build(JapaneseSupport, PopupAppearance(fontId = "klee-one", fontForAllText = true), listOf(klee))
+        assertThat(all["fontFaces"]?.jsonPrimitive?.content).doesNotContain("Screenlate Chosen")
+        assertThat(all["fontFamily"]?.jsonPrimitive?.content).isEqualTo("\"Klee One\", \"Screenlate Sans\", sans-serif")
+        assertThat(all["preload"]?.jsonPrimitive?.content).isEqualTo("Klee One")
     }
 
     @Test

@@ -72,6 +72,8 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun selectFont(id: String?) = launch { repository.setFont(id) }
 
+    fun setFontForAllText(enabled: Boolean) = launch { repository.setFontForAllText(enabled) }
+
     fun setFontSize(size: Int) = launch { repository.setFontSize(size) }
 
     fun download(font: CatalogFont) = fonts.download(font)

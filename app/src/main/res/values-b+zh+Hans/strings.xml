@@ -141,7 +141,7 @@
     <string name="bubble_ocr_engines_cloud">云端</string>
     <string name="bubble_ocr_engines_device">设备</string>
     <string name="bubble_ocr_engines_hint">请保留两者。关闭其中之一是性能较弱或负载较高的设备的最后手段。云端识别会使用移动数据（每次扫描约 0.1–0.4 MB）；设备端识别不会。</string>
-    <string name="bubble_ocr_engines_info">仅云端：没有网络时无法识别任何内容，且只有在服务器响应后才会显示词语。\n\n仅设备：可离线使用，但对竖排文字和漫画的识别较差；OCR 增强会关闭。</string>
+    <string name="bubble_ocr_engines_info">两者：设备和云端同时开始识别。设备先快速读取瞄准处周围的文字，词语几乎立即出现；云端响应后，其更准确的结果会替换它们。没有网络或云端出错时，保留设备的结果。\n\n仅云端：没有网络时无法识别任何内容，且只有在服务器响应后才会显示词语。\n\n仅设备：可离线使用，但对竖排文字和漫画的识别较差；OCR 增强会关闭。</string>
     <string name="bubble_ocr_saving">减轻设备负载</string>
     <string name="bubble_ocr_saving_hint">仅当云端识别 3 秒内没有响应时，设备才自行读取整个屏幕。负载和耗电更低，但远离瞄准点的词会较晚显示。如果最看重速度，请保持关闭。</string>
     <string name="bubble_size">悬浮球大小：%1$d dp</string>
@@ -150,7 +150,7 @@
     <string name="settings_language">语言</string>
     <string name="settings_language_system">跟随系统</string>
     <string name="settings_language_hint">也可以在系统设置中更改：应用 → Screenlate → 语言。</string>
-    <string name="settings_language_translations">除英语和俄语外，其他语言的翻译均由 AI 完成，未经母语者审校。欢迎在 GitHub 上提出修正。</string>
+    <string name="settings_language_translations">翻译由 AI 完成，未经母语者审校。欢迎在 GitHub 上提出修正。</string>
     <string name="action_clear">清除</string>
     <string name="anki_suggest_templates">填入推荐模板</string>
     <string name="anki_overwrite_mode">覆盖时：%1$s</string>
@@ -179,6 +179,7 @@
     <string name="about_report_bug">报告问题</string>
     <string name="yomitan_import_dictionaries">词典</string>
     <string name="yomitan_import_dictionaries_hint">在 Yomitan 中：设置 → 备份 → 导出词典合集。该文件包含所有已安装的词典。</string>
+    <string name="yomitan_import_single_hint">单个词典（每个一个 .zip 文件）请在“词典”页面用“从文件导入”添加。</string>
     <string name="lookup_scanning">扫描</string>
     <string name="lookup_scan_length">扫描长度：%1$d 个字符</string>
     <string name="lookup_scan_length_hint">查词时考虑瞄准点之后的多少个字符。数值越大，能找到的短语越长。</string>
@@ -280,6 +281,8 @@
     <string name="popup_font_hint">用于弹窗和搜索页面。</string>
     <string name="popup_font_system">手机自带的日文字体</string>
     <string name="popup_font_system_hint">手机上已有，无需下载</string>
+    <string name="popup_font_script_only">仅用于日文文字</string>
+    <string name="popup_font_script_only_hint">拉丁字母、西里尔字母等其他文字仍使用手机字体。适用于下载或添加的字体。</string>
     <string name="popup_font_downloaded">已下载</string>
     <string name="popup_font_own_file">你的文件</string>
     <string name="popup_font_delete">删除 %1$s</string>
@@ -379,9 +382,9 @@
     <string name="settings_badge">新提示</string>
     <string name="eink_title">墨水屏</string>
     <string name="eink_switch">墨水屏模式</string>
-    <string name="eink_hint">黑白显示，无动画，用边框代替半透明高亮。优先于主题。</string>
+    <string name="eink_hint">适用于电子书阅读器等使用墨水屏（电子纸）的设备。 黑白显示，无动画，用边框代替半透明高亮。优先于主题。</string>
     <string name="eink_enlarge_title">放大悬浮球和文字？</string>
-    <string name="eink_enlarge_message">将悬浮球放大 %1$d dp，弹窗文字放大 %2$d px？两者仍可调整，关闭墨水屏模式也不会恢复原来的大小。</string>
+    <string name="eink_enlarge_message">将悬浮球放大到 %1$d dp，弹窗文字放大 %2$d px？两者仍可调整。关闭墨水屏模式时会恢复原来的大小，除非你在此期间改过它们。</string>
     <string name="eink_enlarge_confirm">放大</string>
     <string name="eink_enlarge_keep">保持大小</string>
     <string name="eink_home_title">是墨水屏吗？</string>

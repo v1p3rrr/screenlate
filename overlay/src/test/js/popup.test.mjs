@@ -178,6 +178,13 @@ test('appearance sets the language, fonts and custom css', () => {
     assert.ok(styles.indexOf('custom-css') > styles.indexOf('dictionary-styles'));
 });
 
+test('the chosen font is loaded for the sample text', () => {
+    const loads = [];
+    page.window.document.fonts = { load: (font, text) => { loads.push([font, text]); return Promise.resolve([]); } };
+    Popup.setAppearance({ fontFamily: '"Screenlate Chosen", sans-serif', preload: 'Screenlate Chosen', preloadText: 'あ漢' });
+    assert.deepEqual(loads, [['1em "Screenlate Chosen"', 'あ漢']]);
+});
+
 test('dictionary styles are scoped to their dictionary', () => {
     Popup.setStyles([{ dictionary: 'Dict [1]', css: '.x { color: blue }' }]);
     assert.match(page.document.getElementById('dictionary-styles').textContent, /Dict \[1\]/);

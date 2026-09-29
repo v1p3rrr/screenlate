@@ -141,7 +141,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Appareil</string>
     <string name="bubble_ocr_engines_hint">Gardez les deux. En couper un est un dernier recours pour les appareils faibles ou très sollicités. La reconnaissance dans le cloud utilise des données mobiles (environ 0,1–0,4 Mo par analyse) ; celle sur l’appareil non.</string>
-    <string name="bubble_ocr_engines_info">Cloud seul : rien n’est reconnu sans réseau, et les mots n’apparaissent qu’une fois que le serveur a répondu.\n\nAppareil seul : fonctionne hors ligne mais lit moins bien le texte vertical et les mangas ; le renfort OCR est désactivé.</string>
+    <string name="bubble_ocr_engines_info">Les deux : l’appareil et le cloud démarrent ensemble. L’appareil lit vite le texte autour du point visé, donc les mots apparaissent presque aussitôt ; quand le cloud répond, son résultat plus précis les remplace. Sans réseau ou si le cloud échoue, le résultat de l’appareil reste.\n\nCloud seul : rien n’est reconnu sans réseau, et les mots n’apparaissent qu’une fois que le serveur a répondu.\n\nAppareil seul : fonctionne hors ligne mais lit moins bien le texte vertical et les mangas ; le renfort OCR est désactivé.</string>
     <string name="bubble_ocr_saving">Réduire la charge de l’appareil</string>
     <string name="bubble_ocr_saving_hint">L’appareil ne lit lui-même tout l’écran que si la reconnaissance dans le cloud n’a pas répondu en 3 s. Moins de charge et de batterie, mais les mots éloignés du point de visée apparaissent plus tard. Laissez désactivé si la vitesse compte le plus.</string>
     <string name="bubble_size">Taille de la bulle : %1$d dp</string>
@@ -150,7 +150,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="settings_language">Langue</string>
     <string name="settings_language_system">Système</string>
     <string name="settings_language_hint">Aussi disponible dans les paramètres du système : Applications → Screenlate → Langue.</string>
-    <string name="settings_language_translations">Les traductions autres que l’anglais et le russe ont été faites avec l’IA et n’ont pas été relues par des locuteurs natifs. Les corrections sont les bienvenues sur GitHub.</string>
+    <string name="settings_language_translations">Les traductions ont été faites avec l’IA et n’ont pas été relues par des locuteurs natifs. Les corrections sont les bienvenues sur GitHub.</string>
     <string name="action_clear">Effacer</string>
     <string name="anki_suggest_templates">Remplir avec les modèles suggérés</string>
     <string name="anki_overwrite_mode">En cas d’écrasement : %1$s</string>
@@ -179,6 +179,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="about_report_bug">Signaler un problème</string>
     <string name="yomitan_import_dictionaries">Dictionnaires</string>
     <string name="yomitan_import_dictionaries_hint">Dans Yomitan : Paramètres → Sauvegarde → Exporter la collection de dictionnaires. Le fichier contient tous les dictionnaires installés.</string>
+    <string name="yomitan_import_single_hint">Les dictionnaires séparés (un fichier .zip chacun) s’ajoutent dans l’écran « Dictionnaires » avec « Importer un fichier ».</string>
     <string name="lookup_scanning">Analyse</string>
     <string name="lookup_scan_length">Longueur d’analyse : %1$d caractères</string>
     <string name="lookup_scan_length_hint">Nombre de caractères après le point de visée pris en compte par une recherche. Des valeurs plus grandes trouvent des expressions plus longues.</string>
@@ -280,6 +281,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="popup_font_hint">Utilisée par la fenêtre contextuelle et la page de recherche.</string>
     <string name="popup_font_system">Police japonaise du téléphone</string>
     <string name="popup_font_system_hint">Déjà sur le téléphone, rien à télécharger</string>
+    <string name="popup_font_script_only">Seulement pour le texte japonais</string>
+    <string name="popup_font_script_only_hint">Les lettres latines, cyrilliques et autres gardent la police du téléphone. Pour les polices téléchargées et ajoutées.</string>
     <string name="popup_font_downloaded">Téléchargées</string>
     <string name="popup_font_own_file">Votre fichier</string>
     <string name="popup_font_delete">Supprimer %1$s</string>
@@ -379,9 +382,9 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="settings_badge">Nouveau conseil</string>
     <string name="eink_title">Écran à encre électronique</string>
     <string name="eink_switch">Mode e-ink</string>
-    <string name="eink_hint">Noir et blanc, sans animations, des cadres au lieu des surlignages translucides. Prime sur le thème.</string>
+    <string name="eink_hint">Pour les liseuses et autres appareils à écran d’encre électronique (e-ink). Noir et blanc, sans animations, des cadres au lieu des surlignages translucides. Prime sur le thème.</string>
     <string name="eink_enlarge_title">Bulle et texte plus grands ?</string>
-    <string name="eink_enlarge_message">Agrandir la bulle flottante de %1$d dp et le texte de la fenêtre contextuelle de %2$d px ? Les deux restent réglables, et désactiver le mode e-ink ne les rétablit pas.</string>
+    <string name="eink_enlarge_message">Agrandir la bulle flottante à %1$d dp et le texte de la fenêtre contextuelle de %2$d px ? Les deux restent réglables. Désactiver le mode e-ink rétablit les tailles précédentes, sauf si vous les avez modifiées entre-temps.</string>
     <string name="eink_enlarge_confirm">Agrandir</string>
     <string name="eink_enlarge_keep">Garder les tailles</string>
     <string name="eink_home_title">Écran à encre électronique ?</string>

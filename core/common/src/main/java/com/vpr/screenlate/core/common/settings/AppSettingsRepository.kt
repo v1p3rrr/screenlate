@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,6 +44,32 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[E_INK_HINT_SEEN] = true }
     }
 
+    /** What "Make larger" changed, kept until e-ink mode is turned off; not part of backups. */
+    val eInkEnlargement: Flow<EInkEnlargement?> = dataStore.data.map { prefs ->
+        fun change(before: Preferences.Key<Int>, after: Preferences.Key<Int>) =
+            prefs[before]?.let { b -> prefs[after]?.let { a -> EInkEnlargement.Change(b, a) } }
+        val bubble = change(E_INK_BUBBLE_BEFORE, E_INK_BUBBLE_AFTER)
+        val font = change(E_INK_FONT_BEFORE, E_INK_FONT_AFTER)
+        if (bubble == null && font == null) null else EInkEnlargement(bubble, font)
+    }
+
+    /** Stores [enlargement], or clears it when null. */
+    suspend fun setEInkEnlargement(enlargement: EInkEnlargement?) {
+        dataStore.edit { prefs ->
+            fun put(change: EInkEnlargement.Change?, before: Preferences.Key<Int>, after: Preferences.Key<Int>) {
+                if (change == null) {
+                    prefs.remove(before)
+                    prefs.remove(after)
+                } else {
+                    prefs[before] = change.before
+                    prefs[after] = change.after
+                }
+            }
+            put(enlargement?.bubble, E_INK_BUBBLE_BEFORE, E_INK_BUBBLE_AFTER)
+            put(enlargement?.font, E_INK_FONT_BEFORE, E_INK_FONT_AFTER)
+        }
+    }
+
     /** Whether the notification permission was asked for when an import or download started (asked once). */
     val notificationPermissionAsked: Flow<Boolean> = dataStore.data.map { it[NOTIFICATIONS_ASKED] ?: false }
 
@@ -63,5 +90,9 @@ class AppSettingsRepository @Inject constructor(
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
         val E_INK = booleanPreferencesKey("e_ink")
         val E_INK_HINT_SEEN = booleanPreferencesKey("e_ink_hint_seen")
+        val E_INK_BUBBLE_BEFORE = intPreferencesKey("e_ink_bubble_before")
+        val E_INK_BUBBLE_AFTER = intPreferencesKey("e_ink_bubble_after")
+        val E_INK_FONT_BEFORE = intPreferencesKey("e_ink_font_before")
+        val E_INK_FONT_AFTER = intPreferencesKey("e_ink_font_after")
     }
 }

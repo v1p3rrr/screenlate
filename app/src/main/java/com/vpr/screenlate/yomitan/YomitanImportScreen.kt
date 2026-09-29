@@ -92,6 +92,8 @@ fun YomitanImportScreen(
                         OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
                             Text(stringResource(R.string.dictionaries_import_yomitan_backup))
                         }
+                        Hint(stringResource(R.string.yomitan_import_single_hint))
+                        TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                     }
                     CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp))
                     is CollectionState.Listed -> CollectionChecklist(current, collection)

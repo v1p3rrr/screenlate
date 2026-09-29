@@ -13,6 +13,7 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
 - WebView resolves `local()` by PostScript name and full name through its own font index: `NotoSansCJKjp-Regular`, `NotoSansCJKJP-Regular` (case-insensitive) and `Noto Sans CJK JP Regular` load; the family name `Noto Sans CJK JP` does not (the serif one, `Noto Serif CJK JP`, does). Probe with `new FontFace('x', 'local("…")').load()`.
 - Family names in plain CSS (`font-family: "Noto Sans CJK JP"`) do not reach system fallback fonts; only the families and aliases of `fonts.xml` (sans-serif, serif, monospace, arial, times, courier, …) resolve by name.
 - The system face is declared with the script's `unicode-range`, so Latin and Cyrillic keep Roboto.
+- An installed font chosen "only for Japanese text" is declared a second time as `"Screenlate Chosen"` with the same `unicode-range`; its own family name stays unlimited for custom CSS. A range-limited face loads only for characters in its range, so `document.fonts.load` needs a sample text (`preloadText`, the language's `fontSample`); with the default single space nothing loads.
 
 ## Checking
 

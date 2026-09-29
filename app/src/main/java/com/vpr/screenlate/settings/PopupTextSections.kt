@@ -50,6 +50,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.SwitchRow
 
 private val FONT_TYPES = arrayOf(
     "font/*",
@@ -102,6 +103,14 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
                 onDelete = { viewModel.delete(font) },
             )
         }
+        // The phone's font is always limited to the script; the switch applies to installed fonts.
+        SwitchRow(
+            stringResource(R.string.popup_font_script_only),
+            checked = !appearance.fontForAllText,
+            onChange = { viewModel.setFontForAllText(!it) },
+            hint = stringResource(R.string.popup_font_script_only_hint),
+            enabled = selected != null,
+        )
         FontSize(appearance.fontSize, viewModel::setFontSize)
         Preview(
             typeface = typefaces[selected?.id ?: PopupAppearanceViewModel.SYSTEM],

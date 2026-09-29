@@ -141,7 +141,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="bubble_ocr_engines_cloud">Bulut</string>
     <string name="bubble_ocr_engines_device">Cihaz</string>
     <string name="bubble_ocr_engines_hint">İkisini de açık tutun. Birini kapatmak zayıf veya yoğun cihazlar için son çaredir. Bulut tanıma mobil veri kullanır (tarama başına yaklaşık 0,1–0,4 MB); cihaz üzerinde tanıma kullanmaz.</string>
-    <string name="bubble_ocr_engines_info">Yalnızca bulut: ağ olmadan hiçbir şey tanınmaz ve kelimeler ancak sunucu yanıt verince görünür.\n\nYalnızca cihaz: çevrimdışı çalışır ama dikey metni ve mangayı daha kötü okur; OCR güçlendirme kapalıdır.</string>
+    <string name="bubble_ocr_engines_info">İkisi de: cihaz ve bulut birlikte başlar. Cihaz nişanın çevresindeki metni hızla okur, böylece kelimeler neredeyse hemen görünür; bulut yanıt verince daha doğru sonucu onların yerini alır. Ağ yoksa veya bulut başarısız olursa cihazın sonucu kalır.\n\nYalnızca bulut: ağ olmadan hiçbir şey tanınmaz ve kelimeler ancak sunucu yanıt verince görünür.\n\nYalnızca cihaz: çevrimdışı çalışır ama dikey metni ve mangayı daha kötü okur; OCR güçlendirme kapalıdır.</string>
     <string name="bubble_ocr_saving">Cihaz yükünü azalt</string>
     <string name="bubble_ocr_saving_hint">Cihaz tüm ekranı ancak bulut tanıma 3 sn içinde yanıt vermezse kendisi okur. Daha az yük ve pil tüketimi, ancak nişandan uzak kelimeler daha geç görünür. Hız en önemlisiyse kapalı bırakın.</string>
     <string name="bubble_size">Baloncuk boyutu: %1$d dp</string>
@@ -150,7 +150,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="settings_language">Dil</string>
     <string name="settings_language_system">Sistem</string>
     <string name="settings_language_hint">Sistem ayarlarında da var: Uygulamalar → Screenlate → Dil.</string>
-    <string name="settings_language_translations">İngilizce ve Rusça dışındaki çeviriler yapay zekâ ile yapıldı ve anadili konuşurlarınca gözden geçirilmedi. Düzeltmeler GitHub’da memnuniyetle karşılanır.</string>
+    <string name="settings_language_translations">Çeviriler yapay zekâ ile yapıldı ve anadili konuşurlarınca gözden geçirilmedi. Düzeltmeler GitHub’da memnuniyetle karşılanır.</string>
     <string name="action_clear">Temizle</string>
     <string name="anki_suggest_templates">Önerilen şablonlarla doldur</string>
     <string name="anki_overwrite_mode">Üzerine yazarken: %1$s</string>
@@ -179,6 +179,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="about_report_bug">Sorun bildir</string>
     <string name="yomitan_import_dictionaries">Sözlükler</string>
     <string name="yomitan_import_dictionaries_hint">Yomitan’da: Ayarlar → Yedekleme → Sözlük koleksiyonunu dışa aktar. Dosya yüklü tüm sözlükleri içerir.</string>
+    <string name="yomitan_import_single_hint">Tek tek sözlükler (her biri bir .zip dosyası) “Sözlükler” ekranında “Dosyadan içe aktar” ile eklenir.</string>
     <string name="lookup_scanning">Tarama</string>
     <string name="lookup_scan_length">Tarama uzunluğu: %1$d karakter</string>
     <string name="lookup_scan_length_hint">Bir aramanın nişan noktasından sonra kaç karaktere baktığı. Daha büyük değerler daha uzun ifadeleri bulur.</string>
@@ -280,6 +281,8 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="popup_font_hint">Açılır pencere ve arama sayfası tarafından kullanılır.</string>
     <string name="popup_font_system">Telefonun Japonca yazı tipi</string>
     <string name="popup_font_system_hint">Zaten telefonda, indirilecek bir şey yok</string>
+    <string name="popup_font_script_only">Yalnızca Japonca metin için</string>
+    <string name="popup_font_script_only_hint">Latin, Kiril ve diğer harfler telefonun yazı tipinde kalır. İndirilen ve eklenen yazı tipleri için.</string>
     <string name="popup_font_downloaded">İndirilenler</string>
     <string name="popup_font_own_file">Kendi dosyanız</string>
     <string name="popup_font_delete">%1$s sil</string>
@@ -379,9 +382,9 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="settings_badge">Yeni ipucu</string>
     <string name="eink_title">E-ink ekran</string>
     <string name="eink_switch">E-ink modu</string>
-    <string name="eink_hint">Siyah beyaz, animasyonsuz, yarı saydam vurgular yerine çerçeveler. Temanın önüne geçer.</string>
+    <string name="eink_hint">E-kitap okuyucular ve e-mürekkep (e-ink) ekranlı diğer cihazlar için. Siyah beyaz, animasyonsuz, yarı saydam vurgular yerine çerçeveler. Temanın önüne geçer.</string>
     <string name="eink_enlarge_title">Baloncuk ve metin büyüsün mü?</string>
-    <string name="eink_enlarge_message">Yüzen baloncuk %1$d dp, açılır pencere metni %2$d px büyütülsün mü? İkisi de ayarlanabilir kalır ve e-ink modunu kapatmak onları eski hâline döndürmez.</string>
+    <string name="eink_enlarge_message">Yüzen baloncuk %1$d dp boyutuna, açılır pencere metni %2$d px büyütülsün mü? İkisi de ayarlanabilir kalır. E-ink modunu kapatınca, bu arada değiştirmediyseniz önceki boyutlar geri gelir.</string>
     <string name="eink_enlarge_confirm">Büyüt</string>
     <string name="eink_enlarge_keep">Boyutları koru</string>
     <string name="eink_home_title">E-ink ekran mı?</string>

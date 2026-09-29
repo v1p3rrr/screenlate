@@ -133,6 +133,8 @@ class OverlayController(
         val results: List<LookupResult>,
         val message: String?,
         val start: TextPosition? = null,
+        /** The layout [start] belongs to; a newer scan result may have replaced the current one since. */
+        val layout: TextLayout? = null,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -488,12 +490,13 @@ class OverlayController(
     private fun showCopyMenu() {
         val layout = layout ?: return
         val (x, y) = aim ?: aimPoint()
-        val aimed = hit ?: layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
-        val paragraph = aimed?.let { layout.paragraphText(it).first.trim() }.orEmpty()
-        val all = layout.paragraphs
-            .map { characters -> characters.joinToString("") { it.text }.trim() }
-            .filter { it.isNotEmpty() }
-            .joinToString(separator = System.lineSeparator())
+        val aimed = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+        val shown = shownLookup?.takeIf { popup.isShowing }?.let { view ->
+            val start = view.start ?: return@let null
+            (view.layout ?: return@let null) to start
+        }
+        val paragraph = CopyMenuText.paragraph(layout, aimed, shown)
+        val all = CopyMenuText.all(layout, System.lineSeparator())
         if (paragraph.isEmpty() && all.isEmpty()) return
         haptic()
         val themed = ContextThemeWrapper(service, android.R.style.Theme_DeviceDefault_DayNight)
@@ -877,7 +880,7 @@ class OverlayController(
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
             val message = if (results.isEmpty()) noResultsMessage() else null
-            val view = LookupView(text, matched, results, message, start = position)
+            val view = LookupView(text, matched, results, message, start = position, layout = layout)
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading }
             if (word != null && word != hapticWord) haptic()

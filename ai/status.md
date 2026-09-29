@@ -116,8 +116,19 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Emulator state: the debug app has AnkiDroid access and Anki set to the "Screenlate Test" deck with Basic (Back = `{screenshot}`); app language back to system.
 - v0.1.4 released (https://github.com/v1p3rrr/screenlate/releases/tag/v0.1.4, APKs: arm64-v8a 44 MB, armeabi-v7a 40 MB, x86_64 45 MB, universal 67 MB) from 3f0dc60; CI, release and instrumented runs (API 34, including the new `AppLanguageResourcesTest`) green.
 
+### 2026-09-29 (feedback after v0.1.4)
+
+- Owner feedback in `plans/2026-09-29-feedback-after-0.1.4.md`, all done on main, not released (owner: release on command):
+  - Engines ⓘ explains "Both".
+  - E-ink off restores the bubble and popup text sizes from before "Make larger", each only if unchanged since (`EInkEnlargement`, keys `e_ink_*` outside backups); the hint says it is for e-book readers and similar screens.
+  - Popup font: "Only for Japanese text" switch, on by default; the chosen font is declared again as "Screenlate Chosen" with the script's `unicode-range` (`notes/webview-fonts.md`).
+  - Bubble copy menu: the paragraph under the aim, else the paragraph of the word in the popup, else only "Copy all" (`CopyMenuText`); before, the last hit was kept after the aim left text.
+  - Yomitan import names the single-dictionary import with a button to Dictionaries; "manufacturer's" instead of "maker's"; the AI translation note names no languages.
+- Emulator: the debug app's language is English (set for the checks); Noto Serif JP stays downloaded, the phone font is selected.
+
 ## Next
 
+- Next release on the owner's command (feedback after v0.1.4 is on main).
 - Waiting for the owner's phone feedback on v0.1.4 (interface languages, overlay in the chosen language, crop frame and toggle, "On-device" chip) and v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
 - Full code review of the whole project, one run per functional module with its integration paths (`notes/module-map.md`); starts on the owner's command.
 - Phase 8 (more languages) needs an interview per language first.

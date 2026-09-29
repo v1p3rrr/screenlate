@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.settings.EInkEnlargement
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
@@ -48,8 +49,17 @@ class EInkViewModel @Inject constructor(
         !on && !seen && EInkDevices.isLikely(Build.MANUFACTURER, Build.BRAND, Build.MODEL)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
+    /** Turning the mode off brings back the sizes "Make larger" changed, unless they were changed by hand since. */
     fun setEInk(enabled: Boolean) {
-        viewModelScope.launch { settings.setEInk(enabled) }
+        viewModelScope.launch {
+            settings.setEInk(enabled)
+            if (enabled) return@launch
+            val enlargement = settings.eInkEnlargement.first() ?: return@launch
+            val restore = enlargement.restore(overlay.settings.first().bubbleSizeDp, popup.appearance.first().fontSize)
+            restore.bubble?.let { overlay.setBubbleSize(it) }
+            restore.font?.let { popup.setFontSize(it) }
+            settings.setEInkEnlargement(null)
+        }
     }
 
     fun dismissHint() {
@@ -59,10 +69,16 @@ class EInkViewModel @Inject constructor(
     /** Raises the bubble and popup text sizes to the e-ink suggestions; larger sizes stay. */
     fun enlarge() {
         viewModelScope.launch {
-            if (overlay.settings.first().bubbleSizeDp < E_INK_BUBBLE_DP) overlay.setBubbleSize(E_INK_BUBBLE_DP)
-            val fontSize = popup.appearance.first().fontSize
-            val larger = (fontSize + E_INK_FONT_STEP).coerceAtMost(PopupAppearance.MAX_FONT_SIZE)
-            popup.setFontSize(larger)
+            val enlargement = EInkEnlargement.of(
+                bubbleNow = overlay.settings.first().bubbleSizeDp,
+                fontNow = popup.appearance.first().fontSize,
+                minBubble = E_INK_BUBBLE_DP,
+                fontStep = E_INK_FONT_STEP,
+                maxFont = PopupAppearance.MAX_FONT_SIZE,
+            )
+            enlargement.bubble?.let { overlay.setBubbleSize(it.after) }
+            enlargement.font?.let { popup.setFontSize(it.after) }
+            settings.setEInkEnlargement(enlargement)
         }
     }
 

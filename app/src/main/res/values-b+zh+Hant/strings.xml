@@ -141,7 +141,7 @@
     <string name="bubble_ocr_engines_cloud">雲端</string>
     <string name="bubble_ocr_engines_device">裝置</string>
     <string name="bubble_ocr_engines_hint">請保留兩者。關閉其中之一是效能較弱或負載較高的裝置的最後手段。雲端辨識會使用行動數據（每次掃描約 0.1–0.4 MB）；裝置端辨識不會。</string>
-    <string name="bubble_ocr_engines_info">僅雲端：沒有網路時無法辨識任何內容，且只有在伺服器回應後才會顯示詞語。\n\n僅裝置：可離線使用，但對豎排文字和漫畫的辨識較差；OCR 增強會關閉。</string>
+    <string name="bubble_ocr_engines_info">兩者：裝置和雲端同時開始辨識。裝置先快速讀取瞄準處周圍的文字，詞語幾乎立即出現；雲端回應後，其更準確的結果會取代它們。沒有網路或雲端出錯時，保留裝置的結果。\n\n僅雲端：沒有網路時無法辨識任何內容，且只有在伺服器回應後才會顯示詞語。\n\n僅裝置：可離線使用，但對豎排文字和漫畫的辨識較差；OCR 增強會關閉。</string>
     <string name="bubble_ocr_saving">減輕裝置負載</string>
     <string name="bubble_ocr_saving_hint">僅當雲端辨識 3 秒內沒有回應時，裝置才自行讀取整個螢幕。負載和耗電更低，但遠離瞄準點的詞會較晚顯示。如果最看重速度，請保持關閉。</string>
     <string name="bubble_size">懸浮球大小：%1$d dp</string>
@@ -150,7 +150,7 @@
     <string name="settings_language">語言</string>
     <string name="settings_language_system">跟隨系統</string>
     <string name="settings_language_hint">也可以在系統設定中更改：應用程式 → Screenlate → 語言。</string>
-    <string name="settings_language_translations">除英語和俄語外，其他語言的翻譯均由 AI 完成，未經母語者審校。歡迎在 GitHub 上提出修正。</string>
+    <string name="settings_language_translations">翻譯由 AI 完成，未經母語者審校。歡迎在 GitHub 上提出修正。</string>
     <string name="action_clear">清除</string>
     <string name="anki_suggest_templates">填入推薦範本</string>
     <string name="anki_overwrite_mode">覆蓋時：%1$s</string>
@@ -179,6 +179,7 @@
     <string name="about_report_bug">報告問題</string>
     <string name="yomitan_import_dictionaries">詞典</string>
     <string name="yomitan_import_dictionaries_hint">在 Yomitan 中：設定 → 備份 → 匯出詞典合集。該檔案包含所有已安裝的詞典。</string>
+    <string name="yomitan_import_single_hint">單個詞典（每個一個 .zip 檔案）請在「詞典」頁面用「從檔案匯入」新增。</string>
     <string name="lookup_scanning">掃描</string>
     <string name="lookup_scan_length">掃描長度：%1$d 個字元</string>
     <string name="lookup_scan_length_hint">查詞時考慮瞄準點之後的多少個字元。數值越大，能找到的短語越長。</string>
@@ -280,6 +281,8 @@
     <string name="popup_font_hint">用於彈出視窗和搜尋頁面。</string>
     <string name="popup_font_system">手機自帶的日文字型</string>
     <string name="popup_font_system_hint">手機上已有，無需下載</string>
+    <string name="popup_font_script_only">僅用於日文文字</string>
+    <string name="popup_font_script_only_hint">拉丁字母、西里爾字母等其他文字仍使用手機字型。適用於下載或新增的字型。</string>
     <string name="popup_font_downloaded">已下載</string>
     <string name="popup_font_own_file">你的檔案</string>
     <string name="popup_font_delete">刪除 %1$s</string>
@@ -379,9 +382,9 @@
     <string name="settings_badge">新提示</string>
     <string name="eink_title">電子紙</string>
     <string name="eink_switch">電子紙模式</string>
-    <string name="eink_hint">黑白顯示，無動畫，用邊框代替半透明醒目標示。優先於主題。</string>
+    <string name="eink_hint">適用於電子書閱讀器等使用電子紙螢幕的裝置。 黑白顯示，無動畫，用邊框代替半透明醒目標示。優先於主題。</string>
     <string name="eink_enlarge_title">放大懸浮球和文字？</string>
-    <string name="eink_enlarge_message">將懸浮球放大 %1$d dp，彈出視窗文字放大 %2$d px？兩者仍可調整，關閉電子紙模式也不會恢復原來的大小。</string>
+    <string name="eink_enlarge_message">將懸浮球放大到 %1$d dp，彈出視窗文字放大 %2$d px？兩者仍可調整。關閉電子紙模式時會恢復原來的大小，除非你在此期間改過它們。</string>
     <string name="eink_enlarge_confirm">放大</string>
     <string name="eink_enlarge_keep">保持大小</string>
     <string name="eink_home_title">是電子紙嗎？</string>

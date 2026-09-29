@@ -141,7 +141,7 @@
     <string name="bubble_ocr_engines_cloud">클라우드</string>
     <string name="bubble_ocr_engines_device">기기</string>
     <string name="bubble_ocr_engines_hint">둘 다 켜 두세요. 하나를 끄는 것은 성능이 낮거나 바쁜 기기를 위한 최후의 수단입니다. 클라우드 인식은 모바일 데이터를 사용하며(스캔당 약 0.1–0.4 MB), 기기 내 인식은 사용하지 않습니다.</string>
-    <string name="bubble_ocr_engines_info">클라우드만: 네트워크가 없으면 아무것도 인식되지 않으며, 서버가 응답해야 단어가 나타납니다.\n\n기기만: 오프라인에서도 동작하지만 세로쓰기와 만화를 더 잘 못 읽고, OCR 부스트가 꺼집니다.</string>
+    <string name="bubble_ocr_engines_info">둘 다: 기기와 클라우드가 동시에 인식을 시작합니다. 기기가 조준점 주변 글자를 빠르게 읽어 단어가 거의 바로 나타나고, 클라우드가 응답하면 더 정확한 결과로 바뀝니다. 네트워크가 없거나 클라우드가 실패하면 기기의 결과가 그대로 남습니다.\n\n클라우드만: 네트워크가 없으면 아무것도 인식되지 않으며, 서버가 응답해야 단어가 나타납니다.\n\n기기만: 오프라인에서도 동작하지만 세로쓰기와 만화를 더 잘 못 읽고, OCR 부스트가 꺼집니다.</string>
     <string name="bubble_ocr_saving">기기 부하 줄이기</string>
     <string name="bubble_ocr_saving_hint">클라우드 인식이 3초 안에 응답하지 않을 때만 기기가 직접 화면 전체를 읽습니다. 부하와 배터리 사용은 줄지만, 조준점에서 먼 단어는 늦게 나타납니다. 속도가 가장 중요하다면 꺼 두세요.</string>
     <string name="bubble_size">버블 크기: %1$d dp</string>
@@ -150,7 +150,7 @@
     <string name="settings_language">언어</string>
     <string name="settings_language_system">시스템</string>
     <string name="settings_language_hint">시스템 설정에서도 바꿀 수 있습니다: 앱 → Screenlate → 언어</string>
-    <string name="settings_language_translations">영어와 러시아어를 제외한 번역은 AI로 만들었으며 원어민의 검토를 거치지 않았습니다. GitHub에서 수정 제안을 환영합니다.</string>
+    <string name="settings_language_translations">번역은 AI로 만들었으며 원어민의 검토를 거치지 않았습니다. GitHub에서 수정 제안을 환영합니다.</string>
     <string name="action_clear">지우기</string>
     <string name="anki_suggest_templates">추천 템플릿으로 채우기</string>
     <string name="anki_overwrite_mode">덮어쓸 때: %1$s</string>
@@ -179,6 +179,7 @@
     <string name="about_report_bug">문제 신고</string>
     <string name="yomitan_import_dictionaries">사전</string>
     <string name="yomitan_import_dictionaries_hint">Yomitan에서: 설정 → 백업 → 사전 컬렉션 내보내기. 파일에는 설치된 모든 사전이 들어 있습니다.</string>
+    <string name="yomitan_import_single_hint">개별 사전(각각 .zip 파일 하나)은 “사전” 화면의 “파일에서 가져오기”로 추가합니다.</string>
     <string name="lookup_scanning">스캔</string>
     <string name="lookup_scan_length">스캔 길이: %1$d자</string>
     <string name="lookup_scan_length_hint">검색할 때 조준점 뒤로 몇 글자까지 고려할지 정합니다. 값이 클수록 더 긴 표현을 찾습니다.</string>
@@ -280,6 +281,8 @@
     <string name="popup_font_hint">팝업과 검색 페이지에서 사용됩니다.</string>
     <string name="popup_font_system">휴대폰의 일본어 글꼴</string>
     <string name="popup_font_system_hint">이미 휴대폰에 있어 다운로드할 필요 없음</string>
+    <string name="popup_font_script_only">일본어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_hint">라틴 문자, 키릴 문자 등은 휴대폰 글꼴을 유지합니다. 다운로드하거나 추가한 글꼴에 적용됩니다.</string>
     <string name="popup_font_downloaded">다운로드됨</string>
     <string name="popup_font_own_file">내 파일</string>
     <string name="popup_font_delete">%1$s 삭제</string>
@@ -379,9 +382,9 @@
     <string name="settings_badge">새 팁</string>
     <string name="eink_title">전자잉크 화면</string>
     <string name="eink_switch">E-ink 모드</string>
-    <string name="eink_hint">흑백, 애니메이션 없음, 반투명 강조 대신 테두리. 테마보다 우선합니다.</string>
+    <string name="eink_hint">전자책 리더기 등 전자 잉크(E-ink) 화면 기기용입니다. 흑백, 애니메이션 없음, 반투명 강조 대신 테두리. 테마보다 우선합니다.</string>
     <string name="eink_enlarge_title">버블과 글자를 크게 할까요?</string>
-    <string name="eink_enlarge_message">플로팅 버블을 %1$d dp, 팝업 글자를 %2$d px 더 크게 할까요? 둘 다 계속 조절할 수 있으며, E-ink 모드를 꺼도 원래대로 돌아가지 않습니다.</string>
+    <string name="eink_enlarge_message">플로팅 버블을 %1$d dp로, 팝업 글자를 %2$d px 더 크게 할까요? 둘 다 계속 조절할 수 있습니다. E-ink 모드를 끄면, 그 사이에 바꾸지 않은 경우 이전 크기로 돌아갑니다.</string>
     <string name="eink_enlarge_confirm">크게 하기</string>
     <string name="eink_enlarge_keep">크기 유지</string>
     <string name="eink_home_title">전자잉크 화면인가요?</string>

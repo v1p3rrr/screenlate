@@ -141,7 +141,7 @@
     <string name="bubble_ocr_engines_cloud">クラウド</string>
     <string name="bubble_ocr_engines_device">端末</string>
     <string name="bubble_ocr_engines_hint">両方をオンのままにしてください。片方を切るのは、非力な端末や負荷の高い端末向けの最後の手段です。クラウド認識はモバイルデータを使います（1 回の読み取りで約 0.1〜0.4 MB）。端末上の認識は使いません。</string>
-    <string name="bubble_ocr_engines_info">クラウドのみ：ネットワークがないと何も認識されず、サーバーが応答するまで語は表示されません。\n\n端末のみ：オフラインでも動きますが、縦書きやマンガの読み取りが苦手になり、OCR ブーストはオフになります。</string>
+    <string name="bubble_ocr_engines_info">両方：端末とクラウドが同時に読み取りを始めます。端末が照準のまわりの文字をすばやく読むので、語はほぼすぐに表示され、クラウドが応答すると、より正確な結果に置き換わります。ネットワークがないときやクラウドが失敗したときは、端末の結果がそのまま残ります。\n\nクラウドのみ：ネットワークがないと何も認識されず、サーバーが応答するまで語は表示されません。\n\n端末のみ：オフラインでも動きますが、縦書きやマンガの読み取りが苦手になり、OCR ブーストはオフになります。</string>
     <string name="bubble_ocr_saving">端末の負荷を減らす</string>
     <string name="bubble_ocr_saving_hint">クラウド認識が 3 秒以内に応答しなかった場合にだけ、端末が自分で画面全体を読み取ります。負荷とバッテリー消費は減りますが、照準から離れた語は表示が遅れます。速さを最優先するならオフのままにしてください。</string>
     <string name="bubble_size">バブルのサイズ：%1$d dp</string>
@@ -150,7 +150,7 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_system">システム</string>
     <string name="settings_language_hint">システム設定でも変更できます：アプリ → Screenlate → 言語</string>
-    <string name="settings_language_translations">英語とロシア語以外の翻訳は AI で作成されたもので、ネイティブスピーカーによる確認は受けていません。修正は GitHub で歓迎します。</string>
+    <string name="settings_language_translations">翻訳は AI で作成されたもので、ネイティブスピーカーによる確認は受けていません。修正は GitHub で歓迎します。</string>
     <string name="action_clear">クリア</string>
     <string name="anki_suggest_templates">おすすめのテンプレートを入力</string>
     <string name="anki_overwrite_mode">上書き時：%1$s</string>
@@ -179,6 +179,7 @@
     <string name="about_report_bug">問題を報告</string>
     <string name="yomitan_import_dictionaries">辞書</string>
     <string name="yomitan_import_dictionaries_hint">Yomitan で：設定 → バックアップ → 辞書コレクションをエクスポート。ファイルにはインストール済みのすべての辞書が含まれます。</string>
+    <string name="yomitan_import_single_hint">個別の辞書（1 つずつ .zip ファイル）は「辞書」画面の「ファイルからインポート」で追加します。</string>
     <string name="lookup_scanning">スキャン</string>
     <string name="lookup_scan_length">スキャン長：%1$d 文字</string>
     <string name="lookup_scan_length_hint">照準から後ろの何文字までを検索の対象にするか。値を大きくすると長い表現も見つかります。</string>
@@ -280,6 +281,8 @@
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>
     <string name="popup_font_system_hint">端末に入っているので、ダウンロード不要</string>
+    <string name="popup_font_script_only">日本語の文字だけに使う</string>
+    <string name="popup_font_script_only_hint">ラテン文字やキリル文字などは端末のフォントのままです。ダウンロードまたは追加したフォントに適用されます。</string>
     <string name="popup_font_downloaded">ダウンロード済み</string>
     <string name="popup_font_own_file">自分のファイル</string>
     <string name="popup_font_delete">%1$s を削除</string>
@@ -379,9 +382,9 @@
     <string name="settings_badge">新しいヒント</string>
     <string name="eink_title">電子ペーパー画面</string>
     <string name="eink_switch">E Ink モード</string>
-    <string name="eink_hint">白黒、アニメーションなし、半透明のハイライトの代わりに枠線。テーマより優先されます。</string>
+    <string name="eink_hint">電子書籍リーダーなど、電子ペーパー（E Ink）画面の端末向けです。 白黒、アニメーションなし、半透明のハイライトの代わりに枠線。テーマより優先されます。</string>
     <string name="eink_enlarge_title">バブルと文字を大きくしますか？</string>
-    <string name="eink_enlarge_message">フローティングバブルを %1$d dp、ポップアップの文字を %2$d px 大きくしますか？ どちらもあとで調整でき、E Ink モードをオフにしても元に戻りません。</string>
+    <string name="eink_enlarge_message">フローティングバブルを %1$d dp に、ポップアップの文字を %2$d px 大きくしますか？ どちらもあとで調整できます。E Ink モードをオフにすると、その間に変更していなければ元の大きさに戻ります。</string>
     <string name="eink_enlarge_confirm">大きくする</string>
     <string name="eink_enlarge_keep">サイズを維持</string>
     <string name="eink_home_title">電子ペーパー画面ですか？</string>

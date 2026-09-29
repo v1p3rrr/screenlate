@@ -764,8 +764,9 @@ const Popup = (() => {
     }
 
     /**
-     * Language, fonts and the user's CSS: { lang, fontFaces, fontFamily, fontSize, customCss, preload }. The custom
-     * CSS comes after the dictionaries' styles; preload names a font to load before it is first needed.
+     * Language, fonts and the user's CSS: { lang, fontFaces, fontFamily, fontSize, customCss, preload, preloadText }.
+     * The custom CSS comes after the dictionaries' styles; preload names a font to load before it is first needed, for
+     * the characters of preloadText (a face limited to the language's script loads only for them).
      */
     function setAppearance(appearance) {
         const root = document.documentElement;
@@ -775,7 +776,8 @@ const Popup = (() => {
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
         customCss.textContent = appearance.customCss || '';
         if (appearance.preload && document.fonts) {
-            document.fonts.load(`1em "${appearance.preload.replace(/"/g, '\\"')}"`).catch(() => {});
+            const font = `1em "${appearance.preload.replace(/"/g, '\\"')}"`;
+            document.fonts.load(font, appearance.preloadText || undefined).catch(() => {});
         }
     }
 

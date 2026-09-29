@@ -32,16 +32,20 @@ class PageAppearance @Inject constructor(
          */
         fun build(support: LanguageSupport, appearance: PopupAppearance, installed: List<InstalledFont>): JsonObject {
             val chosen = installed.firstOrNull { it.id == appearance.fontId }
-            val family = PageFonts.fontFamily(chosen)
+            val scriptOnly = chosen != null && !appearance.fontForAllText
+            val family = PageFonts.fontFamily(chosen, scriptOnly)
             val css = appearance.customCss
             val customCss = if (css.isBlank()) "" else CssCheck.withFallback(css, CssCheck.analyze(css).fontFamilies, family)
             return buildJsonObject {
                 put("lang", support.languageTag)
-                put("fontFaces", PageFonts.fontFaces(support.systemFonts, installed))
+                put("fontFaces", PageFonts.fontFaces(support.systemFonts, installed, chosen.takeIf { scriptOnly }))
                 put("fontFamily", family)
                 put("fontSize", appearance.fontSize)
                 put("customCss", customCss)
-                chosen?.let { put("preload", it.family) }
+                chosen?.let {
+                    put("preload", if (scriptOnly) PageFonts.CHOSEN else it.family)
+                    put("preloadText", support.fontSample)
+                }
             }
         }
     }

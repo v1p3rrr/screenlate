@@ -141,7 +141,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="bubble_ocr_engines_cloud">Đám mây</string>
     <string name="bubble_ocr_engines_device">Thiết bị</string>
     <string name="bubble_ocr_engines_hint">Hãy giữ cả hai. Tắt một cái là giải pháp cuối cùng cho thiết bị yếu hoặc đang bận. Nhận dạng đám mây dùng dữ liệu di động (khoảng 0,1–0,4 MB mỗi lần quét); nhận dạng trên thiết bị thì không.</string>
-    <string name="bubble_ocr_engines_info">Chỉ đám mây: không có mạng thì không nhận dạng được gì, và từ chỉ hiện khi máy chủ trả lời.\n\nChỉ thiết bị: chạy ngoại tuyến nhưng đọc chữ dọc và manga kém hơn; tăng cường OCR bị tắt.</string>
+    <string name="bubble_ocr_engines_info">Cả hai: thiết bị và đám mây bắt đầu cùng lúc. Thiết bị đọc nhanh chữ quanh điểm ngắm nên từ hiện ra gần như ngay lập tức; khi đám mây trả lời, kết quả chính xác hơn của nó sẽ thay thế. Khi không có mạng hoặc đám mây lỗi, kết quả của thiết bị được giữ lại.\n\nChỉ đám mây: không có mạng thì không nhận dạng được gì, và từ chỉ hiện khi máy chủ trả lời.\n\nChỉ thiết bị: chạy ngoại tuyến nhưng đọc chữ dọc và manga kém hơn; tăng cường OCR bị tắt.</string>
     <string name="bubble_ocr_saving">Giảm tải cho thiết bị</string>
     <string name="bubble_ocr_saving_hint">Thiết bị chỉ tự đọc toàn màn hình nếu nhận dạng đám mây chưa trả lời sau 3 giây. Ít tải và tốn pin hơn, nhưng các từ xa điểm ngắm hiện muộn hơn. Hãy để tắt nếu tốc độ quan trọng nhất.</string>
     <string name="bubble_size">Kích thước bong bóng: %1$d dp</string>
@@ -150,7 +150,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_system">Hệ thống</string>
     <string name="settings_language_hint">Cũng có trong cài đặt hệ thống: Ứng dụng → Screenlate → Ngôn ngữ.</string>
-    <string name="settings_language_translations">Các bản dịch ngoài tiếng Anh và tiếng Nga được làm bằng AI và chưa được người bản ngữ kiểm tra. Rất hoan nghênh các góp ý sửa lỗi trên GitHub.</string>
+    <string name="settings_language_translations">Các bản dịch được làm bằng AI và chưa được người bản ngữ kiểm tra. Rất hoan nghênh các góp ý sửa lỗi trên GitHub.</string>
     <string name="action_clear">Xóa</string>
     <string name="anki_suggest_templates">Điền các mẫu gợi ý</string>
     <string name="anki_overwrite_mode">Khi ghi đè: %1$s</string>
@@ -179,6 +179,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="about_report_bug">Báo lỗi</string>
     <string name="yomitan_import_dictionaries">Từ điển</string>
     <string name="yomitan_import_dictionaries_hint">Trong Yomitan: Cài đặt → Sao lưu → Xuất bộ sưu tập từ điển. Tệp chứa mọi từ điển đã cài.</string>
+    <string name="yomitan_import_single_hint">Từ điển riêng lẻ (mỗi cái một tệp .zip) được thêm ở màn hình “Từ điển” bằng “Nhập từ tệp”.</string>
     <string name="lookup_scanning">Quét</string>
     <string name="lookup_scan_length">Độ dài quét: %1$d ký tự</string>
     <string name="lookup_scan_length_hint">Số ký tự sau điểm ngắm mà một lần tra xét tới. Giá trị lớn hơn tìm được cụm từ dài hơn.</string>
@@ -280,6 +281,8 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="popup_font_hint">Dùng cho cửa sổ bật lên và trang tìm kiếm.</string>
     <string name="popup_font_system">Phông chữ tiếng Nhật của điện thoại</string>
     <string name="popup_font_system_hint">Đã có trên điện thoại, không cần tải</string>
+    <string name="popup_font_script_only">Chỉ cho chữ tiếng Nhật</string>
+    <string name="popup_font_script_only_hint">Chữ Latinh, Kirin và các chữ khác giữ phông của điện thoại. Áp dụng cho phông đã tải về hoặc đã thêm.</string>
     <string name="popup_font_downloaded">Đã tải</string>
     <string name="popup_font_own_file">Tệp của bạn</string>
     <string name="popup_font_delete">Xóa %1$s</string>
@@ -379,9 +382,9 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="settings_badge">Mẹo mới</string>
     <string name="eink_title">Màn hình e-ink</string>
     <string name="eink_switch">Chế độ e-ink</string>
-    <string name="eink_hint">Đen trắng, không hiệu ứng động, khung viền thay cho tô sáng trong mờ. Ưu tiên hơn giao diện.</string>
+    <string name="eink_hint">Dành cho máy đọc sách điện tử và các thiết bị có màn hình mực điện tử (e-ink). Đen trắng, không hiệu ứng động, khung viền thay cho tô sáng trong mờ. Ưu tiên hơn giao diện.</string>
     <string name="eink_enlarge_title">Phóng to bong bóng và chữ?</string>
-    <string name="eink_enlarge_message">Làm bong bóng nổi lớn thêm %1$d dp và chữ trong cửa sổ bật lên lớn thêm %2$d px? Cả hai vẫn chỉnh được, và tắt chế độ e-ink không trả chúng về như cũ.</string>
+    <string name="eink_enlarge_message">Làm bong bóng nổi lớn lên %1$d dp và chữ trong cửa sổ bật lên lớn thêm %2$d px? Cả hai vẫn chỉnh được. Khi tắt chế độ e-ink, kích thước cũ sẽ trở lại, trừ khi bạn đã đổi chúng trong lúc đó.</string>
     <string name="eink_enlarge_confirm">Phóng to</string>
     <string name="eink_enlarge_keep">Giữ kích thước</string>
     <string name="eink_home_title">Màn hình e-ink?</string>

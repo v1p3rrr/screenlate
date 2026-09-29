@@ -142,7 +142,7 @@
     <string name="bubble_ocr_engines_cloud">Облако</string>
     <string name="bubble_ocr_engines_device">Устройство</string>
     <string name="bubble_ocr_engines_hint">Оставьте оба. Отключение одного — крайняя мера для слабых или загруженных устройств. Облачное распознавание тратит трафик (примерно 0,1–0,4 МБ за скан), распознавание на устройстве — нет.</string>
-    <string name="bubble_ocr_engines_info">Только облако: без сети ничего не распознаётся, слова появляются только после ответа сервера.\n\nТолько устройство: работает без сети, но хуже читает вертикальный текст и мангу; усиление OCR не работает.</string>
+    <string name="bubble_ocr_engines_info">Оба: устройство и облако начинают вместе. Устройство быстро читает текст вокруг прицела, поэтому слова появляются почти сразу; когда облако ответит, его более точный результат заменит их. Без сети или при ошибке облака остаётся результат устройства.\n\nТолько облако: без сети ничего не распознаётся, слова появляются только после ответа сервера.\n\nТолько устройство: работает без сети, но хуже читает вертикальный текст и мангу; усиление OCR не работает.</string>
     <string name="bubble_ocr_saving">Меньше нагружать устройство</string>
     <string name="bubble_ocr_saving_hint">Весь экран устройство распознаёт само, только если облако не ответило за 3 с. Устройство меньше нагружается и тратит меньше заряда, но слова вдали от прицела появляются позже. Если важна скорость, не включайте.</string>
     <string name="bubble_size">Размер кнопки: %1$d dp</string>
@@ -151,7 +151,7 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_system">Системный</string>
     <string name="settings_language_hint">Также доступно в настройках системы: Приложения → Screenlate → Язык.</string>
-    <string name="settings_language_translations">Переводы, кроме английского и русского, сделаны с помощью ИИ и не проверены носителями языка. Исправления приветствуются на GitHub.</string>
+    <string name="settings_language_translations">Переводы сделаны с помощью ИИ и не проверены носителями языка. Исправления приветствуются на GitHub.</string>
     <string name="action_clear">Очистить</string>
     <string name="anki_suggest_templates">Подставить рекомендуемые шаблоны</string>
     <string name="anki_overwrite_mode">При перезаписи: %1$s</string>
@@ -180,6 +180,7 @@
     <string name="about_report_bug">Сообщить о проблеме</string>
     <string name="yomitan_import_dictionaries">Словари</string>
     <string name="yomitan_import_dictionaries_hint">В Yomitan: Настройки → Резервная копия → Экспорт коллекции словарей. В файле все установленные словари.</string>
+    <string name="yomitan_import_single_hint">Отдельные словари (каждый — один .zip-файл) добавляются на экране «Словари» кнопкой «Импорт из файла».</string>
     <string name="lookup_scanning">Сканирование</string>
     <string name="lookup_scan_length">Длина скана: %1$d симв.</string>
     <string name="lookup_scan_length_hint">Сколько символов после прицела учитывает поиск. Чем больше, тем более длинные фразы находятся.</string>
@@ -281,6 +282,8 @@
     <string name="popup_font_hint">Используется в попапе и на странице поиска.</string>
     <string name="popup_font_system">Японский шрифт телефона</string>
     <string name="popup_font_system_hint">Уже есть на телефоне, скачивать не нужно</string>
+    <string name="popup_font_script_only">Только для японского текста</string>
+    <string name="popup_font_script_only_hint">Латиница, кириллица и другие буквы остаются шрифтом телефона. Для скачанных и добавленных шрифтов.</string>
     <string name="popup_font_downloaded">Скачан</string>
     <string name="popup_font_own_file">Ваш файл</string>
     <string name="popup_font_delete">Удалить %1$s</string>
@@ -380,9 +383,9 @@
     <string name="settings_badge">Новый совет</string>
     <string name="eink_title">Экран e-ink</string>
     <string name="eink_switch">Режим для электронных книг</string>
-    <string name="eink_hint">Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
+    <string name="eink_hint">Для электронных книг и других устройств с экраном на электронных чернилах (e-ink). Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
     <string name="eink_enlarge_title">Крупнее кнопка и текст?</string>
-    <string name="eink_enlarge_message">Сделать плавающую кнопку %1$d dp, а текст во всплывающем окне на %2$d px крупнее? Оба размера можно менять, и выключение режима их не вернёт.</string>
+    <string name="eink_enlarge_message">Сделать плавающую кнопку %1$d dp, а текст во всплывающем окне на %2$d px крупнее? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
     <string name="eink_enlarge_confirm">Увеличить</string>
     <string name="eink_enlarge_keep">Оставить как есть</string>
     <string name="eink_home_title">Экран e-ink?</string>

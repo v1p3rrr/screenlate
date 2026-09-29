@@ -141,7 +141,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="bubble_ocr_engines_cloud">Cloud</string>
     <string name="bubble_ocr_engines_device">Gerät</string>
     <string name="bubble_ocr_engines_hint">Behalte beide. Eine abzuschalten ist der letzte Ausweg für schwache oder ausgelastete Geräte. Die Cloud-Erkennung verbraucht mobile Daten (etwa 0,1–0,4 MB pro Scan), die Erkennung auf dem Gerät nicht.</string>
-    <string name="bubble_ocr_engines_info">Nur Cloud: Ohne Netz wird nichts erkannt, und Wörter erscheinen erst, wenn der Server antwortet.\n\nNur Gerät: funktioniert offline, liest aber vertikalen Text und Manga schlechter; der OCR-Boost ist aus.</string>
+    <string name="bubble_ocr_engines_info">Beide: Gerät und Cloud beginnen gleichzeitig. Das Gerät liest schnell den Text um den Zielpunkt, sodass Wörter fast sofort erscheinen; sobald die Cloud antwortet, ersetzt ihr genaueres Ergebnis sie. Ohne Netz oder wenn die Cloud scheitert, bleibt das Ergebnis des Geräts.\n\nNur Cloud: Ohne Netz wird nichts erkannt, und Wörter erscheinen erst, wenn der Server antwortet.\n\nNur Gerät: funktioniert offline, liest aber vertikalen Text und Manga schlechter; der OCR-Boost ist aus.</string>
     <string name="bubble_ocr_saving">Gerät entlasten</string>
     <string name="bubble_ocr_saving_hint">Das Gerät liest den ganzen Bildschirm nur dann selbst, wenn die Cloud-Erkennung nicht innerhalb von 3 s antwortet. Weniger Last und Akkuverbrauch, aber Wörter abseits des Zielpunkts erscheinen später. Aus lassen, wenn Geschwindigkeit am wichtigsten ist.</string>
     <string name="bubble_size">Größe der Blase: %1$d dp</string>
@@ -150,7 +150,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="settings_language">Sprache</string>
     <string name="settings_language_system">System</string>
     <string name="settings_language_hint">Auch in den Systemeinstellungen verfügbar: Apps → Screenlate → Sprache.</string>
-    <string name="settings_language_translations">Übersetzungen außer Englisch und Russisch wurden mit KI erstellt und nicht von Muttersprachlern geprüft. Korrekturen sind auf GitHub willkommen.</string>
+    <string name="settings_language_translations">Die Übersetzungen wurden mit KI erstellt und nicht von Muttersprachlern geprüft. Korrekturen sind auf GitHub willkommen.</string>
     <string name="action_clear">Leeren</string>
     <string name="anki_suggest_templates">Vorgeschlagene Vorlagen einsetzen</string>
     <string name="anki_overwrite_mode">Beim Überschreiben: %1$s</string>
@@ -179,6 +179,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="about_report_bug">Problem melden</string>
     <string name="yomitan_import_dictionaries">Wörterbücher</string>
     <string name="yomitan_import_dictionaries_hint">In Yomitan: Einstellungen → Backup → Wörterbuchsammlung exportieren. Die Datei enthält alle installierten Wörterbücher.</string>
+    <string name="yomitan_import_single_hint">Einzelne Wörterbücher (je eine .zip-Datei) fügst du auf dem Bildschirm „Wörterbücher“ mit „Aus Datei importieren“ hinzu.</string>
     <string name="lookup_scanning">Scannen</string>
     <string name="lookup_scan_length">Scanlänge: %1$d Zeichen</string>
     <string name="lookup_scan_length_hint">Wie viele Zeichen nach dem Zielpunkt beim Nachschlagen berücksichtigt werden. Längere Werte finden längere Wendungen.</string>
@@ -280,6 +281,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="popup_font_hint">Für das Popup und die Suchseite.</string>
     <string name="popup_font_system">Japanische Schrift des Telefons</string>
     <string name="popup_font_system_hint">Schon auf dem Telefon, kein Download nötig</string>
+    <string name="popup_font_script_only">Nur für japanischen Text</string>
+    <string name="popup_font_script_only_hint">Lateinische, kyrillische und andere Buchstaben behalten die Schrift des Telefons. Für heruntergeladene und hinzugefügte Schriften.</string>
     <string name="popup_font_downloaded">Heruntergeladen</string>
     <string name="popup_font_own_file">Eigene Datei</string>
     <string name="popup_font_delete">%1$s löschen</string>
@@ -379,9 +382,9 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="settings_badge">Neuer Tipp</string>
     <string name="eink_title">E-Ink-Bildschirm</string>
     <string name="eink_switch">E-Ink-Modus</string>
-    <string name="eink_hint">Schwarzweiß, keine Animationen, Rahmen statt durchscheinender Hervorhebungen. Hat Vorrang vor dem Design.</string>
+    <string name="eink_hint">Für E-Book-Reader und andere Geräte mit E-Paper-Bildschirm (E-Ink). Schwarzweiß, keine Animationen, Rahmen statt durchscheinender Hervorhebungen. Hat Vorrang vor dem Design.</string>
     <string name="eink_enlarge_title">Größere Blase und größerer Text?</string>
-    <string name="eink_enlarge_message">Die schwebende Blase um %1$d dp und den Popup-Text um %2$d px vergrößern? Beides bleibt einstellbar, und das Ausschalten des E-Ink-Modus setzt es nicht zurück.</string>
+    <string name="eink_enlarge_message">Die schwebende Blase auf %1$d dp und den Popup-Text um %2$d px vergrößern? Beides bleibt einstellbar. Beim Ausschalten des E-Ink-Modus kehren die vorherigen Größen zurück, sofern du sie inzwischen nicht geändert hast.</string>
     <string name="eink_enlarge_confirm">Vergrößern</string>
     <string name="eink_enlarge_keep">Größen behalten</string>
     <string name="eink_home_title">E-Ink-Bildschirm?</string>

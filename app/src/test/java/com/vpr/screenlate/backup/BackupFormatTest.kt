@@ -26,7 +26,7 @@ class BackupFormatTest {
         listOf(
             "e_ink_hint_seen", "update_last_check", "update_announced_tag", "sort_dictionary_id", "index_texts_decoded",
             "bundled_dictionaries_installed", "background_tip_seen", "notification_permission_asked",
-            "installed_languages_filled",
+            "installed_languages_filled", "e_ink_bubble_before", "e_ink_font_after",
         ).forEach { assertThat(BackupPreferences.sectionOf(it)).isNull() }
     }
 
