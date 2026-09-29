@@ -57,7 +57,8 @@ Each entry lists the code of the unit, then the integration path the review must
 
 - Module 10 (appearance and fonts): two runs and a final check, 2026-09-29.
 - Module 9 (overlay runtime): two runs, 2026-09-29; findings and decisions in `plans/2026-09-29-feedback-after-0.1.4.md`.
-- The others wait for the owner's command.
+- 2026-09-30: the owner started reviews of the other 11 modules (3–4 runs each, xhigh); plan, progress and findings in
+  `plans/2026-09-30-module-reviews.md`, questions for the owner in `plans/2026-09-30-module-review-questions.md`.
 
 ## How to run each review
 
