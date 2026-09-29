@@ -27,6 +27,21 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   thread, game, small-text and manga screenshots in `testdata/ocr/`. Lens and app text are not affected.
 - `OcrOptions.deferWholeImage` ("Reduce load on the device"): the band around the aim runs at once, the whole screen
   only when Lens is 3 s late, fails or is unavailable.
+- Threads: the scan flow is collected on the main thread, so every engine moves its own heavy work off it: ML Kit's
+  line building (pixel reads for `SymbolLag`) on Default, `CompositeOcr`'s screenshot copy and band crops on its
+  `worker` (Default), the Lens JPEG on Default and the whole HTTP exchange including the body on IO. `withContext`
+  waits for its block even when cancelled, so a bitmap freed after the call returns is no longer read.
+
+## Screenshot lifetime (overlay)
+
+- `Bitmap.createBitmap(src, 0, 0, w, h)` returns `src` itself for an immutable source and the full rectangle; code that
+  recycles its crop must compare with the source (`CropView.cropped` copies instead, since the note frees it).
+- The scan's screenshot is a `SharedScreenshot`: the scan holds it until `resetScan`, a note being added retains it in
+  `noteContext` and releases it when done (the crop editor draws it meanwhile). The bitmap is freed by the last user,
+  so a dock, rotation or hide while the editor is open no longer recycles what it draws; closing the scan also closes
+  the editor as cancelled (owner). No timeout: the screenshot is needed as long as the bubble is out.
+- The screenshot callback copies the hardware buffer on `Dispatchers.Default` (the capturer's executor); a screenshot
+  that arrives after the scan was cancelled is recycled in the continuation's `onCancellation`.
 
 ## App text (accessibility tree)
 

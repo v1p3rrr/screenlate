@@ -24,6 +24,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.resume
+import com.vpr.screenlate.core.common.redacted
 
 /**
  * The lookup results page (`assets/popup/popup.html`) in a WebView, shared by the overlay popup and the search
@@ -218,7 +219,8 @@ class LookupPage(
 
     private fun mediaResponse(dictionary: String, path: String): WebResourceResponse {
         val bytes = runCatching { callbacks.media(dictionary, path) }
-            .onFailure { Log.w(TAG, "Media $path of $dictionary failed", it) }
+            // Media files may be named after the words they show: neither the path nor the message is logged.
+            .onFailure { Log.w(TAG, "Media of $dictionary failed", it.redacted()) }
             .getOrNull()
             ?: return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
         return WebResourceResponse(mimeType(path), null, bytes.inputStream())

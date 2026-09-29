@@ -24,6 +24,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
+import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.web.LookupPage
 import kotlinx.coroutines.CancellationException
@@ -45,15 +46,13 @@ import com.vpr.screenlate.core.common.redacted
 /**
  * Where the looked-up word came from: its sentence and a clean screenshot.
  *
- * @property screenshotLeft screen position of the screenshot's left edge.
+ * @property screenshot taken for the note, which releases it when done.
  * @property focus the word's paragraph in screen coordinates, the initial crop frame.
  * @property documentTitle name of the app the word was found in, for `{document-title}`.
  */
 data class NoteContext(
     val sentence: Sentence?,
-    val screenshot: Bitmap?,
-    val screenshotLeft: Float = 0f,
-    val screenshotTop: Float = 0f,
+    val screenshot: SharedScreenshot?,
     val focus: RectF? = null,
     val documentTitle: String = "",
 )
@@ -65,7 +64,8 @@ data class NoteContext(
  * Words added during one scan remember their notes until [onClosed], so their button opens the note instead of
  * adding it again.
  *
- * @param noteContext waits for the final OCR result and describes where the word came from.
+ * @param noteContext waits for the final OCR result and describes where the word came from; the screenshot only when
+ *   asked for.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
  * @param onOpenAnkiSettings shows Screenlate's Anki settings, where a broken setup is explained.
  */
@@ -80,7 +80,7 @@ class PopupNotes(
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
     private val language: Language,
-    private val noteContext: suspend () -> NoteContext,
+    private val noteContext: suspend (screenshot: Boolean) -> NoteContext,
     private val cropEditor: CropEditor?,
     private val onAnkiOpened: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
@@ -175,8 +175,12 @@ class PopupNotes(
         if (audioSettings.current().autoPlay) play(term.first, term.second)
     }
 
-    /** The scan ended (bubble docked or screen left): forget notes added and clips chosen during it. */
+    /**
+     * The scan ended (bubble docked, screen rotated or left): forget notes added and clips chosen during it. An open
+     * crop editor closes as if cancelled, so its note is not added.
+     */
     fun onClosed() {
+        cropEditor?.cancel()
         onResultsHidden()
         ankiStatus = null
         lastAutoPlayed = null
@@ -204,7 +208,15 @@ class PopupNotes(
             ).orEmpty()
             entries.forEachIndexed { index, values ->
                 if (index in states) return@forEachIndexed
-                val ids = runCatching { notes.duplicateIds(values) }.getOrDefault(emptyList())
+                val ids = try {
+                    notes.duplicateIds(values)
+                } catch (e: CancellationException) {
+                    // The view changed: its marks must not reach the next one.
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Duplicate check failed", e.redacted())
+                    emptyList()
+                }
                 if (ids.isEmpty()) return@forEachIndexed
                 if (settings.duplicateBehavior == DuplicateBehavior.PREVENT) {
                     openableNotes[index] = ids
@@ -229,11 +241,13 @@ class PopupNotes(
 
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) {
         scope.launch {
+            var shared: SharedScreenshot? = null
             val state = try {
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val term = data.term.expression to data.term.reading
                 val used = notes.usedMarkers()
-                val context = noteContext()
+                val context = noteContext(withScreenshot && "screenshot" in used)
+                shared = context.screenshot
                 val values = data.values.toMutableMap()
                 context.sentence?.let { sentence ->
                     values["sentence"] = escapeHtml(sentence.text)
@@ -249,15 +263,11 @@ class PopupNotes(
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
                 resolveGlossaryMedia(data.media, values, used)
-                val picture = if (withScreenshot && "screenshot" in used) {
-                    val image = context.screenshot?.takeUnless { it.isRecycled }
-                    if (image != null && cropEditor != null) {
-                        // Cancelling the editor cancels the note.
-                        cropEditor.edit(image, context.screenshotLeft, context.screenshotTop, context.focus)
-                            ?: return@launch page.setNoteStates(mapOf(index to ""))
-                    } else {
-                        null
-                    }
+                val shot = context.screenshot
+                val picture = if (shot != null && cropEditor != null) {
+                    // Cancelling the editor cancels the note.
+                    cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
+                        ?: return@launch page.setNoteStates(mapOf(index to ""))
                 } else {
                     null
                 }
@@ -274,6 +284,8 @@ class PopupNotes(
                 Log.w(TAG, "Adding a note failed", e.redacted())
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
+            } finally {
+                shared?.release()
             }
             page.setNoteStates(mapOf(index to state))
         }
@@ -347,7 +359,7 @@ class PopupNotes(
     }
 
     fun release() {
-        cropEditor?.dismiss()
+        cropEditor?.cancel()
         duplicateJob?.cancel()
         audioMenuJob?.cancel()
         page.noteActions = null
@@ -361,9 +373,13 @@ class PopupNotes(
         val parts = mutableListOf<SentencePart>()
         var offset = 0
         while (offset < sentence.length) {
-            val result = runCatching { lookup.lookup(sentence.substring(offset), language, extraEntries = false) }
-                .getOrDefault(emptyList())
-                .firstOrNull()
+            val result = try {
+                lookup.lookup(sentence.substring(offset), language, extraEntries = false).firstOrNull()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                null
+            }
             val matched = result?.matched?.takeIf { it.isNotEmpty() && sentence.startsWith(it, offset) }
             if (result != null && matched != null) {
                 parts += SentencePart(matched, result.term.expression, result.term.reading)

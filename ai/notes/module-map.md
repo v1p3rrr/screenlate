@@ -53,6 +53,12 @@ Each entry lists the code of the unit, then the integration path the review must
 
 13. **Updates, About and logs** — app `update/*` (AppUpdates, Releases, UpdateCards, UpdateReceiver, UpdateSettings, UpdateViewModel), `settings/{AboutScreen,AboutViewModel,LicenseScreens}`, `logs/LogExport`. Integration: GitHub releases and release assets (module 1), PackageInstaller and signing, home update card, privacy of logs across all modules (`Redaction`; logs never hold recognized text, looked-up words, note contents or term URLs).
 
+## Progress
+
+- Module 10 (appearance and fonts): two runs and a final check, 2026-09-29.
+- Module 9 (overlay runtime): one run, 2026-09-29; findings and decisions in `plans/2026-09-29-feedback-after-0.1.4.md`.
+- The others wait for the owner's command.
+
 ## How to run each review
 
 - One run per functional module, in the order above unless the owner says otherwise; report findings per run before starting the next.

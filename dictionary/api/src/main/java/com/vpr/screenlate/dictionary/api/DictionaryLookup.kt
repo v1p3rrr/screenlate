@@ -25,6 +25,12 @@ class DictionaryLookup @Inject constructor(
     private val engine: DictionaryEngine,
     private val lookupSettings: LookupSettingsRepository,
 ) {
+    // Asked for every scan or shown word; kept until the dictionaries change.
+    private val cachedStyles = PerGeneration<List<DictionaryStyle>>()
+    private val cachedTagNotes = PerGeneration<List<DictionaryTagNotes>>()
+    private val cachedFrequencyModes = PerGeneration<Map<String, String>>()
+    private val cachedHasTerms = PerGeneration<Boolean>()
+
     /**
      * @param scanLength characters of [text] to consider; the scan length setting when null.
      * @param primaryReading terms with this reading come first, as for Yomitan's `primary_reading` links.
@@ -85,15 +91,16 @@ class DictionaryLookup @Inject constructor(
 
     val settingsUpdates: Flow<LookupSettings> get() = lookupSettings.settings
 
+    /** The same list until the dictionaries change, so callers can skip work for an unchanged one. */
     suspend fun styles(language: Language): List<DictionaryStyle> {
         repository.prepareLookup(language)
-        return engine.styles()
+        return cachedStyles.get(repository.generation) { engine.styles() }
     }
 
     suspend fun media(dictionary: String, path: String): ByteArray? = engine.media(dictionary, path)
 
     /** Tag descriptions of the enabled dictionaries, shown when a tag in the popup is tapped. */
-    suspend fun tagNotes(): List<DictionaryTagNotes> = repository.tagNotes()
+    suspend fun tagNotes(): List<DictionaryTagNotes> = cachedTagNotes.get(repository.generation) { repository.tagNotes() }
 
     /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
     suspend fun kanji(character: String, language: Language): KanjiResult {
@@ -102,13 +109,17 @@ class DictionaryLookup @Inject constructor(
     }
 
     /** `rank-based` or `occurrence-based` for each enabled frequency dictionary that declares it, by title. */
-    suspend fun frequencyModes(): Map<String, String> = repository.getAll()
-        .filter { it.enabled }
-        .mapNotNull { entity -> entity.frequencyMode?.let { entity.title to it } }
-        .toMap()
+    suspend fun frequencyModes(): Map<String, String> = cachedFrequencyModes.get(repository.generation) {
+        repository.getAll()
+            .filter { it.enabled }
+            .mapNotNull { entity -> entity.frequencyMode?.let { entity.title to it } }
+            .toMap()
+    }
 
     /** Whether any enabled dictionary with definitions is installed. */
-    suspend fun hasTermDictionaries(): Boolean = repository.getAll().any { it.enabled && it.termCount > 0 }
+    suspend fun hasTermDictionaries(): Boolean = cachedHasTerms.get(repository.generation) {
+        repository.getAll().any { it.enabled && it.termCount > 0 }
+    }
 }
 
 /** The popup shows the first frequency of an entry: the one the results are sorted by. */

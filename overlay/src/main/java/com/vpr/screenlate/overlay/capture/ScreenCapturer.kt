@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -29,7 +30,8 @@ sealed class CaptureException(message: String) : Exception(message) {
 }
 
 /**
- * Takes screenshots through the accessibility service.
+ * Takes screenshots through the accessibility service. The system calls back on [executor], where the screenshot is
+ * copied into a bitmap; a thread other than the main one keeps the copy from holding up the overlay.
  *
  * On API 34+ only the app window under the given point is captured, so our own overlays never appear in the image.
  * Older versions capture the whole display; the caller hides the overlays for that case (see [needsOverlayHiding]).
@@ -46,14 +48,16 @@ class ScreenCapturer(
             val window = findAppWindow(pointX, pointY)
             if (window != null) {
                 val bounds = Rect().also(window::getBoundsInScreen)
-                runCatching { return captureWindow(window.id, bounds).also { log("window", it, started) } }
-                    .onFailure {
-                        if (it is CaptureException.SecureWindow) {
-                            Log.i(TAG, "The window forbids screenshots")
-                            throw it
-                        }
-                    }
-                    .onFailure { Log.w(TAG, "Window capture failed, falling back to display capture", it) }
+                try {
+                    return captureWindow(window.id, bounds).also { log("window", it, started) }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: CaptureException.SecureWindow) {
+                    Log.i(TAG, "The window forbids screenshots")
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Window capture failed, falling back to display capture", e)
+                }
             }
         }
         return captureDisplay().also { log("display", it, started) }
@@ -107,7 +111,9 @@ class ScreenCapturer(
                         val bitmap = Bitmap.wrapHardwareBuffer(buffer, screenshot.colorSpace)
                             ?.copy(Bitmap.Config.ARGB_8888, false)
                         buffer.close()
-                        continuation.resume(if (bitmap != null) Result.Success(bitmap) else Result.Error(-1))
+                        val result = if (bitmap != null) Result.Success(bitmap) else Result.Error(-1)
+                        // A screenshot that nobody waits for any more is freed at once.
+                        continuation.resume(result) { _, value, _ -> (value as? Result.Success)?.bitmap?.recycle() }
                     }
 
                     override fun onFailure(errorCode: Int) {

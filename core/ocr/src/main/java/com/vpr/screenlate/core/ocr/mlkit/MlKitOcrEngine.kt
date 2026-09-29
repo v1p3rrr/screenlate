@@ -24,6 +24,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -59,9 +60,12 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         // A running task cannot be stopped and keeps reading the pixels, so a cancelled call still waits for it.
         val text = withContext(NonCancellable) { task.await() }
         val separator = support.wordSeparator
-        val paragraphs = text.textBlocks.map { block ->
-            OcrParagraph(block.lines.mapNotNull { line -> line.toOcrLine(image, separator) })
-        }.filter { it.lines.isNotEmpty() }
+        // Checking every character against the pixels takes a while on a dense page; the caller may be the main thread.
+        val paragraphs = withContext(Dispatchers.Default) {
+            text.textBlocks.map { block ->
+                OcrParagraph(block.lines.mapNotNull { line -> line.toOcrLine(image, separator) })
+            }.filter { it.lines.isNotEmpty() }
+        }
         return OcrPage(image.width, image.height, paragraphs, OcrEngineType.ML_KIT)
     }
 

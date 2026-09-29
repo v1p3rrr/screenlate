@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.vpr.screenlate.overlay.R
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -21,25 +22,23 @@ import kotlin.coroutines.resume
  * and add.
  */
 class CropEditor(private val context: Context, private val windowManager: WindowManager) {
-    private var window: View? = null
+    private var open: Session? = null
 
     /**
-     * Shows the editor and returns the cropped picture, or null if the user cancelled.
+     * Shows the editor and returns the cropped picture, a new bitmap, or null if the user cancelled. [image] must
+     * stay usable until then. An editor still open for another note closes as if cancelled.
      *
      * @param focus initial frame in screen coordinates; the whole screenshot when null.
      */
     suspend fun edit(image: Bitmap, left: Float, top: Float, focus: RectF?): Bitmap? =
         suspendCancellableCoroutine { continuation ->
+            cancel()
             val cropView = CropView(context, image, left, top)
             // The frame to return to from the whole screen: the paragraph, or the middle of the screenshot.
             val frame = RectF(focus ?: middleOf(image, left, top))
             var wholeScreen = focus == null
             if (wholeScreen) cropView.selectAll() else cropView.setFrame(frame)
-
-            fun finish(result: Bitmap?) {
-                dismiss()
-                if (continuation.isActive) continuation.resume(result)
-            }
+            lateinit var session: Session
 
             val density = context.resources.displayMetrics.density
             val bar = LinearLayout(context).apply {
@@ -59,8 +58,8 @@ class CropEditor(private val context: Context, private val windowManager: Window
                         setText(if (wholeScreen) R.string.crop_frame else R.string.crop_whole_screen)
                     },
                 )
-                addView(button(R.string.crop_cancel, primary = false) { finish(null) })
-                addView(button(R.string.crop_add, primary = true) { finish(cropView.cropped()) })
+                addView(button(R.string.crop_cancel, primary = false) { session.finish(null) })
+                addView(button(R.string.crop_add, primary = true) { if (session.isOpen) session.finish(cropView.cropped()) })
             }
             val root = FrameLayout(context).apply {
                 addView(cropView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
@@ -73,14 +72,26 @@ class CropEditor(private val context: Context, private val windowManager: Window
                     ),
                 )
             }
+            session = Session(root, continuation)
             windowManager.addView(root, OverlayWindows.editorParams())
-            window = root
-            continuation.invokeOnCancellation { root.post { dismiss() } }
+            open = session
+            continuation.invokeOnCancellation { root.post { session.finish(null) } }
         }
 
-    fun dismiss() {
-        window?.let(windowManager::removeView)
-        window = null
+    /** Closes the open editor as if the user cancelled. */
+    fun cancel() {
+        open?.finish(null)
+    }
+
+    private inner class Session(private val root: View, private val continuation: CancellableContinuation<Bitmap?>) {
+        val isOpen: Boolean get() = open === this
+
+        fun finish(result: Bitmap?) {
+            if (!isOpen) return
+            open = null
+            windowManager.removeView(root)
+            if (continuation.isActive) continuation.resume(result)
+        }
     }
 
     private fun middleOf(image: Bitmap, left: Float, top: Float): RectF {

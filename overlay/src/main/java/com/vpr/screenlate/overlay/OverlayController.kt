@@ -58,6 +58,7 @@ import com.vpr.screenlate.overlay.capture.AccessibilityText
 import com.vpr.screenlate.overlay.capture.CaptureException
 import com.vpr.screenlate.overlay.capture.CapturedScreen
 import com.vpr.screenlate.overlay.capture.ScreenCapturer
+import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.popup.PopupController
 import com.vpr.screenlate.overlay.web.LookupPage
@@ -89,6 +90,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.async
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.cancelAndJoin
@@ -149,7 +151,8 @@ class OverlayController(
     private val layerView = LayerView(service)
     private val layerParams = OverlayWindows.layerParams()
     private val popup = PopupController(service, windowManager, PopupCallbacks())
-    private val capturer = ScreenCapturer(service, service.mainExecutor)
+    // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
+    private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
     // Only Japanese is supported for now; this becomes a setting with more languages.
     private val language = Language.JAPANESE
@@ -200,13 +203,17 @@ class OverlayController(
 
     /** Expression and reading of the word the last vibration was for. */
     private var hapticWord: Pair<String, String>? = null
-    private var screenshot: CapturedScreen? = null
+    private var screenshot: SharedScreenshot? = null
     private var onDeviceLoaded = false
     private var bandTimer: Job? = null
     private val bandJobs = mutableListOf<Job>()
     private val requestedBands = mutableSetOf<Int>()
 
     private val json = Json
+
+    /** What the page was given last; the lookup keeps the same lists until the dictionaries change. */
+    private var pageStyles: List<DictionaryStyle>? = null
+    private var pageTagNotes: List<DictionaryTagNotes>? = null
 
     fun start() {
         lastScreen = screenBounds()
@@ -273,8 +280,7 @@ class OverlayController(
         if (size != bubbleSize) resizeBubble(size)
         if (show && !attached) attachWindows()
         if (!show && attached) {
-            resetScan()
-            popup.hide()
+            closeScan()
             detachWindows()
             state = State.DOCKED
         }
@@ -389,11 +395,7 @@ class OverlayController(
     private fun dock(side: DockSide = settings.dockSide, atCurrentHeight: Boolean = false) {
         if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
-        resetScan()
-        popup.hide()
-        popupNotes.onClosed()
-        layerView.clearAll()
-        bubbleView.showCenterDot = false
+        closeScan()
         haptic()
         val yFraction = if (atCurrentHeight) bubbleCenter().second / screenBounds().height else settings.dockY
         if (side != settings.dockSide || yFraction != settings.dockY) {
@@ -401,6 +403,15 @@ class OverlayController(
             scope.launch { overlaySettings.setDock(side, yFraction) }
         }
         placeDocked()
+    }
+
+    /** Drops the scan and everything shown for it: popup, highlights, notes in progress and an open crop editor. */
+    private fun closeScan() {
+        resetScan()
+        popup.hide()
+        popupNotes.onClosed()
+        layerView.clearAll()
+        bubbleView.showCenterDot = false
     }
 
     private fun aimPoint(): Pair<Float, Float> {
@@ -588,18 +599,21 @@ class OverlayController(
                         }
                     }
                 }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> when {
-                    held -> Unit
-                    !moved -> if (event.actionMasked == MotionEvent.ACTION_UP) {
-                        mainHandler.removeCallbacks(hold)
-                        view.performClick()
-                        onTap()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    // A cancelled touch must not open the copy menu later.
+                    mainHandler.removeCallbacks(hold)
+                    when {
+                        held -> Unit
+                        !moved -> if (event.actionMasked == MotionEvent.ACTION_UP) {
+                            view.performClick()
+                            onTap()
+                        }
+                        alongDock -> {
+                            val (_, cy) = bubbleCenter()
+                            scope.launch { overlaySettings.setDock(settings.dockSide, cy / screenBounds().height) }
+                        }
+                        else -> endDrag(event.rawX)
                     }
-                    alongDock -> {
-                        val (_, cy) = bubbleCenter()
-                        scope.launch { overlaySettings.setDock(settings.dockSide, cy / screenBounds().height) }
-                    }
-                    else -> endDrag(event.rawX)
                 }
             }
             return true
@@ -627,7 +641,8 @@ class OverlayController(
         lookupJob = null
         shownLookup = null
         hapticWord = null
-        screenshot?.bitmap?.recycle()
+        // A note still using the screenshot keeps it until it is done.
+        screenshot?.release()
         screenshot = null
         bubbleView.loading = false
         pendingSingleTap?.let(mainHandler::removeCallbacks)
@@ -678,10 +693,8 @@ class OverlayController(
                 val read = appTextRead.await()
                 bubbleView.loading = false
                 if (read == null) {
-                    showMessage(
-                        service.getString(
-                            if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
-                        ),
+                    showScanError(
+                        if (captureError is CaptureException.SecureWindow) R.string.overlay_error_secure else R.string.overlay_error_capture,
                     )
                 }
                 return@launch
@@ -696,9 +709,7 @@ class OverlayController(
                             show(flash = false)
                         } else {
                             // Offline fails the scan only while the device does not recognize.
-                            val message =
-                                if (error is OfflineException) R.string.overlay_error_offline else R.string.overlay_error_ocr
-                            showMessage(service.getString(message))
+                            showScanError(if (error is OfflineException) R.string.overlay_error_offline else R.string.overlay_error_ocr)
                         }
                     }
                     .collect { update ->
@@ -716,7 +727,7 @@ class OverlayController(
                 throw e
             }
             // Kept for {screenshot} and small-text bands until the next scan or docking.
-            screenshot = captured
+            screenshot = SharedScreenshot(captured)
             if (smallText() == SmallTextMode.ALWAYS) {
                 ScreenBands.of(captured.bitmap.width, captured.bitmap.height).indices.forEach { refineBand(captured, it) }
             }
@@ -728,9 +739,7 @@ class OverlayController(
         val page = readAppText()
         bubbleView.loading = false
         if (page == null || page.paragraphs.isEmpty()) {
-            // Nothing more will come: no spinner in the popup.
-            ocrFinal = true
-            showMessage(service.getString(R.string.overlay_no_app_text))
+            showScanError(R.string.overlay_no_app_text)
             return
         }
         onPage(page = page, final = true, lensError = null, flashLines = flashLines)
@@ -761,8 +770,9 @@ class OverlayController(
         bandTimer?.cancel()
         bandTimer = scope.launch {
             delay(BAND_DELAY_MS)
+            if (screenshot !== shot) return@launch
             val bands = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)
-            refineBand(shot, ScreenBands.nearest(bands, y - shot.top))
+            refineBand(shot.screen, ScreenBands.nearest(bands, y - shot.screen.top))
         }
     }
 
@@ -770,7 +780,7 @@ class OverlayController(
     private fun refineBand(shot: CapturedScreen, index: Int) {
         if (!requestedBands.add(index)) return
         val band = ScreenBands.of(shot.bitmap.width, shot.bitmap.height)[index]
-        // Cropped here, on the main thread, where resetScan recycles the screenshot.
+        // Cropped at once, while the scan still holds the screenshot.
         val crop = Bitmap.createBitmap(
             shot.bitmap,
             band.left.toInt(),
@@ -782,7 +792,8 @@ class OverlayController(
             val found = try {
                 ocr.recognizeRegion(crop, language)
             } finally {
-                crop.recycle()
+                // createBitmap returns the screenshot itself when the band is the whole of it.
+                if (crop !== shot.bitmap) crop.recycle()
             }
             val current = layout ?: return@launch
             val added = found?.offset(shot.left.toFloat(), shot.top + band.top) ?: return@launch
@@ -926,6 +937,13 @@ class OverlayController(
         }
     }
 
+    /** A scan that ended without text: nothing more will come, so the popup shows no spinner. */
+    private fun showScanError(message: Int) {
+        ocrFinal = true
+        bubbleView.loading = false
+        showMessage(service.getString(message))
+    }
+
     private fun showMessage(message: String) {
         val (x, y) = aim ?: aimPoint()
         val anchor = Box.fromCenter(x, y, 1f, 1f)
@@ -948,34 +966,43 @@ class OverlayController(
         if (popup.isShowing) popup.update(popupState(view))
     }
 
-    /** Sentence and screenshot for a note; waits for the final OCR result first, as Lens may still refine the text. */
-    private suspend fun noteContext(): NoteContext {
+    /**
+     * Sentence and screenshot for a note. Waits for the final OCR result and the lookup made on it first, as Lens may
+     * still refine the text. The screenshot, when [withScreenshot], is retained for the note, which releases it.
+     */
+    private suspend fun noteContext(withScreenshot: Boolean): NoteContext {
         scanJob?.join()
-        val layout = layout
-        val position = shownLookup?.start ?: hit
+        lookupJob?.join()
+        // The shown word's position belongs to the layout it was found in, which a later OCR result may have replaced.
+        val shown = shownLookup?.takeIf { it.layout != null }
+        val layout = if (shown != null) shown.layout else layout
+        val position = if (shown != null) shown.start else hit
         val sentence = if (layout != null && position != null) {
             val (paragraph, index) = layout.paragraphText(position)
-            val length = layout.textFrom(position, shownLookup?.matched?.coerceAtLeast(1) ?: 1).length
+            val length = layout.textFrom(position, shown?.matched?.coerceAtLeast(1) ?: 1).length
             Sentence.extract(paragraph, index, length, language)
         } else {
             null
         }
         // Without recognition no screenshot is taken during the scan, so the note takes one now.
-        if (screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
-            screenshot = try {
+        if (withScreenshot && screenshot == null && settings.textSource == TextSource.APP_TEXT_ONLY) {
+            val captured = try {
                 capture()
             } catch (e: CaptureException) {
                 Log.w(TAG, "No screenshot for the note", e)
                 null
             }
+            // Another note may have taken one meanwhile.
+            if (screenshot == null) captured?.let { screenshot = SharedScreenshot(it) } else captured?.bitmap?.recycle()
         }
-        val shot = screenshot
+        val shot = screenshot?.takeIf { withScreenshot }
         val focus = if (layout != null && position != null && shot != null) {
+            val screen = shot.screen
             val image = Box(
-                shot.left.toFloat(),
-                shot.top.toFloat(),
-                (shot.left + shot.bitmap.width).toFloat(),
-                (shot.top + shot.bitmap.height).toFloat(),
+                screen.left.toFloat(),
+                screen.top.toFloat(),
+                (screen.left + screen.bitmap.width).toFloat(),
+                (screen.top + screen.bitmap.height).toFloat(),
             )
             val lines = layout.readingParagraphs[position.paragraphIndex].lines.map { it.box }
             CropFocus.of(lines, FOCUS_PADDING_DP * density, image)?.let { RectF(it.left, it.top, it.right, it.bottom) }
@@ -984,9 +1011,7 @@ class OverlayController(
         }
         return NoteContext(
             sentence = sentence,
-            screenshot = shot?.bitmap,
-            screenshotLeft = shot?.left?.toFloat() ?: 0f,
-            screenshotTop = shot?.top?.toFloat() ?: 0f,
+            screenshot = shot?.takeIf { it.retain() },
             focus = focus,
             documentTitle = foregroundPackage?.let(::appLabel).orEmpty(),
         )
@@ -1007,11 +1032,17 @@ class OverlayController(
                 Log.w(TAG, "Loading dictionary styles failed", e)
                 return@launch
             }
-            popup.page.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
+            if (styles !== pageStyles) {
+                pageStyles = styles
+                popup.page.setStyles(json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), styles))
+            }
             val tagNotes = runCatching { lookup.tagNotes() }
                 .onFailure { if (it is CancellationException) throw it else Log.w(TAG, "Loading tag descriptions failed", it) }
                 .getOrDefault(emptyList())
-            popup.page.setTagNotes(json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), tagNotes))
+            if (tagNotes !== pageTagNotes) {
+                pageTagNotes = tagNotes
+                popup.page.setTagNotes(json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), tagNotes))
+            }
         }
     }
 

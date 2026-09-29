@@ -9,6 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
+import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
@@ -18,6 +19,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -33,6 +35,7 @@ class DictionaryRepositoryTest {
     private lateinit var engine: FakeEngine
     private lateinit var storage: DictionaryStorage
     private lateinit var repository: DictionaryRepository
+    private lateinit var lookup: DictionaryLookup
     private lateinit var root: File
 
     @Before
@@ -43,6 +46,7 @@ class DictionaryRepositoryTest {
         storage = DictionaryStorage(context)
         val preferences = PreferenceDataStoreFactory.create { File(root, "prefs.preferences_pb") }
         repository = DictionaryRepository(database.dictionaryDao(), engine, storage, preferences, DictionaryLanguageDetector(context))
+        lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences))
     }
 
     @After
@@ -174,6 +178,25 @@ class DictionaryRepositoryTest {
         assertThat(repository.getAll().first { it.id == terms.id }.targetLanguage).isNull()
     }
 
+    @Test
+    fun valuesDerivedFromTheDictionariesAreKeptUntilTheyChange() = runTest {
+        val terms = repository.import(archive("Terms", terms = 1))
+        repository.import(archive("Freq", frequencies = 1, frequencyMode = "rank-based"))
+
+        assertThat(lookup.styles(Language.JAPANESE)).isSameInstanceAs(lookup.styles(Language.JAPANESE))
+        assertThat(engine.stylesRead).isEqualTo(1)
+        assertThat(lookup.frequencyModes()).containsExactly("Freq", "rank-based")
+        assertThat(lookup.hasTermDictionaries()).isTrue()
+
+        repository.setEnabled(terms.id, false)
+        lookup.styles(Language.JAPANESE)
+        assertThat(engine.stylesRead).isEqualTo(2)
+        assertThat(lookup.hasTermDictionaries()).isFalse()
+
+        repository.import(archive("Freq", frequencies = 1, frequencyMode = "occurrence-based"))
+        assertThat(lookup.frequencyModes()).containsExactly("Freq", "occurrence-based")
+    }
+
     private fun archive(
         title: String,
         terms: Long = 0,
@@ -186,6 +209,7 @@ class DictionaryRepositoryTest {
     /** Reads the "archive" written by [archive] and creates a directory named after the title. */
     private class FakeEngine : DictionaryEngine {
         var loaded = DictionarySet()
+        var stylesRead = 0
 
         override suspend fun import(archive: File, outputDir: File): ImportedDictionary {
             val (title, terms, frequencies, mode) = archive.readText().split("\n")
@@ -209,7 +233,10 @@ class DictionaryRepositoryTest {
 
         override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> = emptyList()
 
-        override suspend fun styles(): List<DictionaryStyle> = emptyList()
+        override suspend fun styles(): List<DictionaryStyle> {
+            stylesRead++
+            return listOf(DictionaryStyle("Terms", ".a { color: red }"))
+        }
 
         override suspend fun media(dictionary: String, path: String): ByteArray? = null
 

@@ -38,6 +38,10 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Copy modes | "Everything" (default): all the dictionary shows, as HTML with a plain-text alternative, so apps without formatting get plain text, not tags. "Only meanings": the numbered meanings as plain text, without tags, examples, notes, references and form tables (owner) |
 | Dictionaries without recognizable meanings | "Only meanings" copies their whole text as plain text; the option's hint says it is not guaranteed for every dictionary. Recognize meanings as generally as possible, checked on Jitendex, JMdict, Kolobok and the owner's test dictionaries (owner) |
 | Popup settings | A new settings screen "Popup": font, text size and weight, custom CSS (moved from Appearance) and definition copying. Appearance keeps theme, language and e-ink; Lookup stays as is (owner) |
+| Crop editor when the scan closes | Rotation, hiding the bubble or docking closes an open crop editor as if cancelled; the note is not added (owner) |
+| Popup in display screenshots | Stays as is: on Android 13 and older, and in the API 34+ fallback to a display screenshot, the popup is not hidden before the capture (owner) |
+| Scan screenshot lifetime | Use-counted, no timeout: the scan and each note being added hold it, the last one frees it (owner: users must "know" its lifetime) |
+| Overlay performance (review) | ML Kit's line building, screenshot copies and crops off the main thread, the cloud response read on IO; dictionary styles, tag descriptions and frequency modes cached until the dictionaries change (owner) |
 
 ## Code review: appearance and fonts
 
@@ -77,6 +81,26 @@ Owner's command (2026-09-29): review the same module and its integrations again,
 12. The KDoc and `@Suppress` of the backup preference restore sit on the wrong function.
 13. No tests for font import and its failures.
 
+## Code review: overlay runtime
+
+Owner's command (2026-09-29): the next module by importance and risk, with its integrations, then a check of the fixes. Module 9 (`notes/module-map.md`). Findings, most severe first:
+
+1. The crop editor's "Whole screen" returned the scan screenshot itself (Android's `createBitmap` for the full rectangle of an immutable bitmap), and the note recycled it: the next picture was lost, and an OCR boost band on it crashed the service.
+2. Rotating, hiding the bubble or docking while the crop editor was open recycled the screenshot it drew (crash on redraw or on Add).
+3. A note's sentence and crop frame took the current layout with the position of the word shown from an earlier one (wrong sentence, or an error after the cloud result replaced the draft).
+4. A cancelled duplicate check still wrote its marks onto the next word's entries.
+5. The cloud response body was read on the main thread.
+6. Hiding the bubble (hidden app, tile) left the highlights, note state and clip choices of the old scan.
+7. The popup is not hidden for display screenshots (Android 13 and older, API 34+ fallback). Left as is (owner).
+8. A capture or recognition error left the popup's spinner running.
+9. A cancelled scan's window capture was logged as a failure and fell back to a display capture.
+10. A cancelled touch on the bubble still opened the copy menu later.
+11. ML Kit's line building, the screenshot copy and band crops ran on the main thread.
+12. Dictionary styles, tag descriptions and frequency modes were re-read and re-encoded for every scan and shown word.
+13. The media failure log named the media path, which can carry the looked-up word.
+14. The shared screenshot had no owner: findings 1 and 2 came from recycling without knowing its users.
+15. The overlay fixes `Language.JAPANESE` (known; waits for the multi-language phase).
+
 ## Changelog
 
 - 2026-09-29: plan created from the owner's feedback.
@@ -91,3 +115,5 @@ Owner's command (2026-09-29): review the same module and its integrations again,
 - 2026-09-29: final check of the second review's changes (owner's command): the phone's font weights now come from the file the page's `local()` names resolve to (Hentaigana is also listed for `ja`), a variable font's name leaves out its default weight, and heavier-text marks follow custom CSS changes. New request 10: configurable definition copying; questions to the owner before the plan.
 - 2026-09-29: owner answers on request 10 — a copy button per dictionary, off by default; "Everything" (default, HTML with plain text for other apps) or "Only meanings"; no headword; whole text where meanings cannot be found, with a hint; in the popup and the app's search; a new "Popup" settings screen gathers the popup's settings.
 - 2026-09-29: request 10 done: per-dictionary copy button (`definition.js`, `ClipData.newHtmlText` for "Everything"), new "Popup" settings screen with font, text and CSS cards and the copy card; Yomitan import summaries now point to it. Checked on the emulator in the app's search: "Everything" and "Only meanings" for 食べる (JMdict). Owner question on wide app-text and ML Kit highlight boxes answered (the boxes come from the app or ML Kit; trimming to the glyphs would need pixel checks on the screenshot); the owner decided not to change them.
+- 2026-09-29: review of module 9, overlay runtime (owner's command), 15 findings. Owner answers: the crop editor closes as cancelled when the scan closes; the popup in display screenshots stays as is; the screenshot's users must "know" its lifetime, so it is use-counted rather than freed on a timeout; all three performance fixes.
+- 2026-09-29: findings 1–6 and 8–14 fixed (`SharedScreenshot`, `CropEditor.cancel`, `closeScan`, `PerGeneration` caches by `DictionaryRepository.generation`), 7 and 15 left. The fixes were reviewed again with their callers (search screen notes, service stop, the crop editor's window removal, OCR cancellation); nothing new found. Tests: `SharedScreenshotTest`, `PerGenerationTest`, instrumented `CropViewTest` and a `DictionaryRepositoryTest` case. The overlay was not run on the emulator (its accessibility service is off).

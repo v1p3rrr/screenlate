@@ -9,6 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import android.util.Log
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -16,6 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 sealed interface OcrUpdate {
@@ -68,6 +71,8 @@ class CompositeOcr internal constructor(
     },
     private val copyOf: (Bitmap) -> Bitmap = { it.copy(it.config ?: Bitmap.Config.ARGB_8888, false) },
     private val release: (Bitmap) -> Unit = Bitmap::recycle,
+    /** Where images are copied and cropped, off the collector's (main) thread. */
+    private val worker: CoroutineContext = Dispatchers.Default,
 ) {
     @Inject
     constructor(lens: LensOcrEngine, mlKit: MlKitOcrEngine, networkStatus: NetworkStatus) :
@@ -97,7 +102,7 @@ class CompositeOcr internal constructor(
         val emitter = UpdateEmitter(this)
         // ML Kit cannot be stopped once it runs, so it reads its own copy outside this flow: the flow ends with the
         // Lens result while ML Kit finishes, and the copy is freed once ML Kit no longer reads it.
-        val copy = copyOf(image)
+        val copy = withContext(worker) { copyOf(image) }
         val draft = CoroutineScope(coroutineContext.minusKey(Job)).async {
             try {
                 runCatching { recognizeOnDevice(copy, language, focus, emitter, wholeImage) }
@@ -168,7 +173,7 @@ class CompositeOcr internal constructor(
                 continue
             }
             val started = clock()
-            val crop = cropRows(image, rows)
+            val crop = withContext(worker) { cropRows(image, rows) }
             val band = try {
                 mlKit.recognize(crop, language)
             } finally {

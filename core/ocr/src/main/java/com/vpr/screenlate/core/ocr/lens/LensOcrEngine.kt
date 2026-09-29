@@ -57,14 +57,17 @@ class LensOcrEngine @Inject constructor(
             .header("User-Agent", USER_AGENT)
             .post(body.toRequestBody(PROTOBUF))
             .build()
-        val bytes = client.newCall(request).await().use { response ->
-            Log.d(
-                TAG,
-                "Lens: HTTP ${response.code} for ${jpeg.size shr 10} KB (${sentWidth}x$sentHeight) " +
-                    "in ${SystemClock.elapsedRealtime() - started} ms",
-            )
-            if (!response.isSuccessful) throw LensHttpException(response.code)
-            response.body.bytes()
+        // The body arrives after the headers, possibly slowly: it is read off the caller's (main) thread.
+        val bytes = withContext(Dispatchers.IO) {
+            client.newCall(request).await().use { response ->
+                Log.d(
+                    TAG,
+                    "Lens: HTTP ${response.code} for ${jpeg.size shr 10} KB (${sentWidth}x$sentHeight) " +
+                        "in ${SystemClock.elapsedRealtime() - started} ms",
+                )
+                if (!response.isSuccessful) throw LensHttpException(response.code)
+                response.body.bytes()
+            }
         }
         return withContext(Dispatchers.Default) { LensProtocol.parseResponse(bytes, image.width, image.height) }
     }

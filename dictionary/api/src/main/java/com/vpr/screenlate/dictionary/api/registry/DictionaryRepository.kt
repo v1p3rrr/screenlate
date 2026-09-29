@@ -24,6 +24,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,6 +44,13 @@ class DictionaryRepository @Inject constructor(
     private var loadedLanguage: Language? = null
     private var sortDictionary: DictionaryEntity? = null
     private var termOrder: List<String> = emptyList()
+    private val changes = AtomicInteger()
+
+    /**
+     * Changes whenever the loaded dictionaries, their switches, order or files may have changed; values derived from
+     * them (styles, tag descriptions) can be kept until it does.
+     */
+    val generation: Int get() = changes.get()
 
     val dictionaries: Flow<List<DictionaryEntity>> = dao.observeAll()
 
@@ -267,6 +275,7 @@ class DictionaryRepository @Inject constructor(
     }
 
     private suspend fun reloadLocked() {
+        changes.incrementAndGet()
         loadedLanguage?.let { load(it) }
     }
 
@@ -287,6 +296,7 @@ class DictionaryRepository @Inject constructor(
             val notes = runCatching { source(dictionary.title) }.getOrNull().orEmpty()
             storage.writeTagNotes(storage.directoryOf(dictionary), notes)
         }
+        if (missing.isNotEmpty()) changes.incrementAndGet()
     }
 
     /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
@@ -312,6 +322,7 @@ class DictionaryRepository @Inject constructor(
         sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
         termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
         loadedLanguage = language
+        changes.incrementAndGet()
     }
 }
 

@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.withContext
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -36,7 +37,7 @@ class CompositeOcrTest {
     private val mlKit = FakeEngine(OcrEngineType.ML_KIT, 200.milliseconds)
     private var online = true
     private var now = 0L
-    private val ocr = CompositeOcr(lens, mlKit, { online }, { now }, copyOf = { it }, release = {})
+    private val ocr = CompositeOcr(lens, mlKit, { online }, { now }, copyOf = { it }, release = {}, worker = EmptyCoroutineContext)
 
     /** The engines are fakes and never look at the image; the Android stub cannot be constructed normally. */
     private val image: Bitmap = unsafe().allocateInstance(Bitmap::class.java) as Bitmap
@@ -130,6 +131,7 @@ class CompositeOcrTest {
         cropRows = { image, _ -> image },
         copyOf = { it },
         release = {},
+        worker = EmptyCoroutineContext,
     )
 
     @Test
@@ -201,6 +203,7 @@ class CompositeOcrTest {
             { now },
             copyOf = { copy },
             release = { if (it === copy) freedAt = testScheduler.currentTime },
+            worker = EmptyCoroutineContext,
         )
 
         val updates = ocr.recognize(image, Language.JAPANESE).toList()

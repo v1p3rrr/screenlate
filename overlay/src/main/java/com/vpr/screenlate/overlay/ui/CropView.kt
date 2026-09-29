@@ -58,13 +58,15 @@ class CropView(
 
     fun selectAll() = setFrame(imageBounds)
 
-    /** The part of the screenshot inside the frame, as a new bitmap. */
+    /** The part of the screenshot inside the frame, as a new bitmap that the caller may free. */
     fun cropped(): Bitmap {
         val left = (frame.left - imageLeft).toInt().coerceIn(0, image.width - 1)
         val top = (frame.top - imageTop).toInt().coerceIn(0, image.height - 1)
         val width = frame.width().toInt().coerceIn(1, image.width - left)
         val height = frame.height().toInt().coerceIn(1, image.height - top)
-        return Bitmap.createBitmap(image, left, top, width, height)
+        val crop = Bitmap.createBitmap(image, left, top, width, height)
+        // For the whole of an immutable bitmap createBitmap returns the screenshot itself.
+        return if (crop === image) image.copy(image.config ?: Bitmap.Config.ARGB_8888, false) else crop
     }
 
     override fun onDraw(canvas: Canvas) {

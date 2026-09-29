@@ -48,6 +48,7 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
 - `DictionaryImportWorker` handles three sources (bundled assets, a local file, a URL with optional `indexUrl` resolution) in one unique WorkManager chain (`APPEND_OR_REPLACE`). Task names travel in a `dictionary-import-name:` tag because WorkInfo does not expose input data.
 - `BundledDictionaries` installs each `assets/dictionaries/*.zip` once, keyed by name and size in DataStore, so a deleted bundled dictionary does not come back. Zip assets are stored uncompressed (`noCompress`), which `openFd` needs.
 - The sort frequency dictionary is the first enabled frequency dictionary (rank-based → ascending, occurrence-based → descending) until phase 4 adds a setting.
+- `DictionaryRepository.generation` changes on every reload, engine load and bundled tag-notes fill. `DictionaryLookup` keeps styles, tag descriptions, frequency modes and "has term dictionaries" per generation (`PerGeneration`), so a scan or a shown word no longer re-reads all CSS through JNI or queries Room; `styles()` returns the same list instance until then, which the overlay uses to skip re-encoding it for the page. A new kind of registry change that affects those values must go through `reloadLocked()` or bump the generation itself.
 - Glossary media is served to the popup at `https://appassets.androidplatform.net/media?d=<dictionary>&p=<path>`.
 - Jitendex titles contain the date (`Jitendex.org [2026-08-11]`), so catalog entries match installed dictionaries by `indexUrl` or a title prefix.
 
