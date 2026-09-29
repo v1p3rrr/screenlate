@@ -82,6 +82,9 @@ object CssCheck {
         private val families = mutableListOf<FontFamily>()
         private val declared = mutableListOf<String>()
 
+        /** Offsets of the line breaks, the same in the CSS and in [text]. */
+        private val newlines = css.indices.filter { css[it] == '\n' }.toIntArray()
+
         /** The CSS with comments blanked out (newlines kept), so offsets and lines match the original. */
         private val text = blankComments()
 
@@ -225,7 +228,7 @@ object CssCheck {
                     css.startsWith("/*", i) -> {
                         val end = css.indexOf("*/", i + 2)
                         val stop = if (end < 0) css.length else end + 2
-                        if (end < 0) issues += Issue(lineIn(css, i), Problem.UNCLOSED_COMMENT)
+                        if (end < 0) issues += Issue(lineOf(i), Problem.UNCLOSED_COMMENT)
                         for (j in i until stop) if (out[j] != '\n') out.setCharAt(j, ' ')
                         i = stop - 1
                     }
@@ -245,13 +248,11 @@ object CssCheck {
             return if (i < css.length && css[i] == '\n') i - 1 else i
         }
 
-        private fun lineOf(index: Int): Int = lineIn(text, index)
-    }
-
-    private fun lineIn(text: String, index: Int): Int {
-        var line = 1
-        for (i in 0 until minOf(index, text.length)) if (text[i] == '\n') line++
-        return line
+        /** The 1-based line of [index]: one more than the line breaks before it. */
+        private fun lineOf(index: Int): Int {
+            val found = newlines.binarySearch(index)
+            return (if (found >= 0) found else -found - 1) + 1
+        }
     }
 
     private fun indexOutsideStrings(text: String, target: Char): Int {

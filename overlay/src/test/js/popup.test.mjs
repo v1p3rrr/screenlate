@@ -185,6 +185,79 @@ test('the chosen font is loaded for the sample text', () => {
     assert.deepEqual(loads, [['1em "Screenlate Chosen"', 'あ漢']]);
 });
 
+const heavier = (extra = {}) => ({
+    lang: 'ja',
+    fontFamily: '"Screenlate Sans", sans-serif',
+    textWeight: 600,
+    textStroke: 0.02,
+    textScope: 'script',
+    scriptPattern: '[\\u{3000}-\\u{30FF}\\u{4E00}-\\u{9FFF}]',
+    ...extra,
+});
+
+/** Lets the page's mutation observer run. */
+const settle = () => new Promise(resolve => setTimeout(resolve, 0));
+
+const runs = node => [...node.querySelectorAll('.script-run')].map(span => span.textContent);
+
+test('heavier text wraps runs of the script as they arrive', async () => {
+    Popup.setAppearance(heavier());
+    Popup.render(state({ results: [result('猫', 'ねこ', 'cat 猫舌 dog')] }));
+    await settle();
+    const root = page.document.documentElement;
+    assert.equal(root.dataset.heavier, 'script');
+    assert.equal(root.style.getPropertyValue('--text-weight'), '600');
+    assert.equal(root.style.getPropertyValue('--bold-weight'), '600');
+    assert.equal(root.style.getPropertyValue('--text-stroke'), '0.02');
+    const body = content.querySelector('.definition-body');
+    assert.deepEqual(runs(body), ['猫舌']);
+    assert.equal(body.textContent.trim().endsWith('cat 猫舌 dog'), true);
+    assert.ok(body.querySelector('.script-run').classList.contains('heavier'));
+    assert.deepEqual(runs(page.document.getElementById('source')), ['猫', 'が好き']);
+
+    // Text drawn later is marked too, and a kanji in the word still opens its entry.
+    Popup.push(state({ source: { text: '犬', matched: 1 }, results: [result('犬', 'いぬ')] }));
+    await settle();
+    assert.deepEqual(runs(page.document.getElementById('source')), ['犬']);
+    content.querySelector('.kanji-char .script-run').dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
+    assert.deepEqual(page.calls.at(-1), ['onKanji', '犬']);
+});
+
+test('heavier text leaves fields, graphs and bold text as they are', async () => {
+    Popup.setAppearance(heavier());
+    Popup.render(state());
+    await settle();
+    const extra = page.document.createElement('div');
+    extra.innerHTML = '<textarea>猫</textarea><svg><text>猫</text></svg><b style="font-weight: 700">太字</b>';
+    content.append(extra);
+    await settle();
+    assert.deepEqual(runs(extra), ['太字']);
+    // The bold word is already heavier than the chosen weight: only the outline applies.
+    assert.equal(extra.querySelector('.script-run').classList.contains('heavier'), false);
+    assert.equal(extra.querySelector('textarea').value, '猫');
+});
+
+test('heavier text for all text or none drops the marks', async () => {
+    Popup.setAppearance(heavier());
+    Popup.render(state({ results: [result('猫', 'ねこ', 'cat 猫舌 dog')] }));
+    await settle();
+    const body = content.querySelector('.definition-body');
+    const text = body.textContent;
+
+    Popup.setAppearance(heavier({ textScope: 'all', textWeight: 700 }));
+    const root = page.document.documentElement;
+    assert.equal(root.dataset.heavier, 'all');
+    assert.equal(root.style.getPropertyValue('--bold-weight'), '700');
+    assert.equal(page.document.querySelectorAll('.script-run').length, 0);
+    assert.equal(body.textContent, text);
+
+    Popup.setAppearance(heavier({ textWeight: 400, textStroke: 0 }));
+    assert.equal(root.dataset.heavier, '');
+    Popup.render(state());
+    await settle();
+    assert.equal(page.document.querySelectorAll('.script-run').length, 0);
+});
+
 test('dictionary styles are scoped to their dictionary', () => {
     Popup.setStyles([{ dictionary: 'Dict [1]', css: '.x { color: blue }' }]);
     assert.match(page.document.getElementById('dictionary-styles').textContent, /Dict \[1\]/);

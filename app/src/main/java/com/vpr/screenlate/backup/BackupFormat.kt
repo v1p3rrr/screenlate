@@ -146,12 +146,12 @@ object BackupPreferences {
         }
     }
 
-    /** Replaces the keys of [sections]: the app's own values go, the backup's come in. */
-    @Suppress("UNCHECKED_CAST")
     /** Whether the decoded [backup] has e-ink mode on; a restored General section without the key turns it off. */
     fun eInk(backup: Map<Preferences.Key<*>, Any>): Boolean =
         backup.entries.firstOrNull { it.key.name == E_INK }?.value as? Boolean ?: false
 
+    /** Replaces the keys of [sections]: the app's own values go, the backup's come in. */
+    @Suppress("UNCHECKED_CAST")
     fun restore(preferences: MutablePreferences, backup: Map<Preferences.Key<*>, Any>, sections: Set<BackupSection>) {
         preferences.asMap().keys.filter { sectionOf(it.name) in sections }.toList().forEach { preferences.remove(it) }
         for ((key, value) in backup) {

@@ -30,12 +30,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @HiltViewModel
 class EInkViewModel @Inject constructor(
     private val settings: AppSettingsRepository,
     private val sizes: EInkSizes,
 ) : ViewModel() {
+    /** Keeps the switch and "Make larger" in order: a quick tap must not enlarge before the old record is forgotten. */
+    private val lock = Mutex()
+
     val eInk: StateFlow<Boolean> = settings.eInk.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     /** The one-time offer on a device that looks like an e-ink reader. */
@@ -46,8 +51,10 @@ class EInkViewModel @Inject constructor(
     /** Turning the mode off brings back the sizes "Make larger" changed, unless they were changed by hand since. */
     fun setEInk(enabled: Boolean) {
         viewModelScope.launch {
-            settings.setEInk(enabled)
-            if (enabled) sizes.forget() else sizes.restore()
+            lock.withLock {
+                settings.setEInk(enabled)
+                if (enabled) sizes.forget() else sizes.restore()
+            }
         }
     }
 
@@ -57,7 +64,7 @@ class EInkViewModel @Inject constructor(
 
     /** Raises the bubble and popup text sizes to the e-ink suggestions; larger sizes stay. */
     fun enlarge() {
-        viewModelScope.launch { sizes.enlarge() }
+        viewModelScope.launch { lock.withLock { sizes.enlarge() } }
     }
 }
 

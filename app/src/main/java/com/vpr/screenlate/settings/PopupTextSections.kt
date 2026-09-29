@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,10 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +55,7 @@ import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
+import kotlin.math.roundToInt
 
 private val FONT_TYPES = arrayOf(
     "font/*",
@@ -59,6 +64,14 @@ private val FONT_TYPES = arrayOf(
     "application/x-font-otf",
     "application/vnd.ms-opentype",
     "application/octet-stream",
+)
+
+/** Names of the weight steps, from [PopupAppearance.NORMAL_WEIGHT] up. */
+private val WEIGHT_NAMES = listOf(
+    R.string.popup_text_weight_normal,
+    R.string.popup_text_weight_medium,
+    R.string.popup_text_weight_semibold,
+    R.string.popup_text_weight_bold,
 )
 
 /** The lookup page's font and custom CSS, as two cards of the Appearance screen. */
@@ -77,6 +90,7 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
     val downloads by viewModel.downloads.collectAsStateWithLifecycle()
     val lastImport by viewModel.lastImport.collectAsStateWithLifecycle()
     val systemFontMissing by viewModel.systemFontMissing.collectAsStateWithLifecycle()
+    val previewTypeface by viewModel.previewTypeface.collectAsStateWithLifecycle()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.import(uri)
     }
@@ -103,19 +117,18 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
                 onDelete = { viewModel.delete(font) },
             )
         }
-        // The phone's font is always limited to the script; the switch applies to installed fonts.
+        // The phone's font is always limited to the script, so the disabled switch shows on; it applies to installed fonts.
         SwitchRow(
             stringResource(R.string.popup_font_script_only),
-            checked = !appearance.fontForAllText,
+            checked = selected == null || !appearance.fontForAllText,
             onChange = { viewModel.setFontForAllText(!it) },
             hint = stringResource(R.string.popup_font_script_only_hint),
             enabled = selected != null,
         )
         FontSize(appearance.fontSize, viewModel::setFontSize)
-        Preview(
-            typeface = typefaces[selected?.id ?: PopupAppearanceViewModel.SYSTEM],
-            size = appearance.fontSize,
-        )
+        TextWeight(appearance.textWeight, viewModel::setTextWeight)
+        LetterThickness(appearance.letterThickness, viewModel::setLetterThickness)
+        Preview(previewTypeface, appearance)
         HorizontalDivider()
         LabelWithInfo(stringResource(R.string.popup_font_catalog), stringResource(R.string.popup_font_proprietary))
         val installedIds = installed.mapNotNull { it.catalogId }.toSet()
@@ -127,8 +140,10 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
         }
         when (lastImport) {
             FontImport.NotAFont -> ErrorText(stringResource(R.string.popup_font_not_a_font))
+            FontImport.WebFont -> ErrorText(stringResource(R.string.popup_font_web_font))
             FontImport.TooLarge -> ErrorText(stringResource(R.string.popup_font_too_large))
-            else -> Unit
+            FontImport.Failed -> ErrorText(stringResource(R.string.popup_font_import_failed))
+            is FontImport.Added, null -> Unit
         }
     }
 }
@@ -165,29 +180,78 @@ private fun FontOption(
 @Composable
 private fun FontSize(size: Int, onChange: (Int) -> Unit) {
     var value by remember(size) { mutableFloatStateOf(size.toFloat()) }
-    Text(stringResource(R.string.popup_font_size, value.toInt()), style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.popup_font_size, value.roundToInt()), style = MaterialTheme.typography.labelLarge)
     Slider(
         value = value,
         onValueChange = { value = it },
-        onValueChangeFinished = { onChange(value.toInt()) },
+        onValueChangeFinished = { onChange(value.roundToInt()) },
         valueRange = PopupAppearance.MIN_FONT_SIZE.toFloat()..PopupAppearance.MAX_FONT_SIZE.toFloat(),
         steps = PopupAppearance.MAX_FONT_SIZE - PopupAppearance.MIN_FONT_SIZE - 1,
     )
 }
 
+/** Weight of the text in steps of 100; the ⓘ explains the scope and fonts with one weight. */
 @Composable
-private fun Preview(typeface: Typeface?, size: Int) {
+private fun TextWeight(weight: Int, onChange: (Int) -> Unit) {
+    val steps = WEIGHT_NAMES.size - 1
+    var value by remember(weight) { mutableFloatStateOf(((weight - PopupAppearance.NORMAL_WEIGHT) / PopupAppearance.WEIGHT_STEP).toFloat()) }
+    val name = stringResource(WEIGHT_NAMES[value.roundToInt().coerceIn(0, steps)])
+    LabelWithInfo(stringResource(R.string.popup_text_weight, name), stringResource(R.string.popup_text_weight_info))
+    Slider(
+        value = value,
+        onValueChange = { value = it },
+        onValueChangeFinished = { onChange(PopupAppearance.NORMAL_WEIGHT + value.roundToInt() * PopupAppearance.WEIGHT_STEP) },
+        valueRange = 0f..steps.toFloat(),
+        steps = steps - 1,
+    )
+}
+
+@Composable
+private fun LetterThickness(thickness: Int, onChange: (Int) -> Unit) {
+    var value by remember(thickness) { mutableFloatStateOf(thickness.toFloat()) }
+    val step = value.roundToInt()
+    Text(
+        if (step == 0) {
+            stringResource(R.string.popup_letter_thickness_off)
+        } else {
+            stringResource(R.string.popup_letter_thickness, step)
+        },
+        style = MaterialTheme.typography.labelLarge,
+    )
+    Slider(
+        value = value,
+        onValueChange = { value = it },
+        onValueChangeFinished = { onChange(value.roundToInt()) },
+        valueRange = 0f..PopupAppearance.MAX_THICKNESS.toFloat(),
+        steps = PopupAppearance.MAX_THICKNESS - 1,
+    )
+}
+
+/**
+ * The language's sample at the chosen size, weight and letter thickness. The sample is all in the language's script,
+ * so it shows them whether they apply to all text or to the script only. The outline is drawn over the letters, as
+ * the page's text stroke is.
+ */
+@Composable
+private fun Preview(typeface: Typeface?, appearance: PopupAppearance) {
     val support = PopupAppearanceViewModel.LANGUAGE.support
+    val style = MaterialTheme.typography.bodyLarge.copy(
+        fontFamily = typeface?.let { FontFamily(it) },
+        fontWeight = FontWeight(appearance.textWeight),
+        fontSize = appearance.fontSize.sp,
+        localeList = LocaleList(support.languageTag),
+    )
+    val stroke = with(LocalDensity.current) { appearance.fontSize.sp.toPx() } *
+        (appearance.letterThickness * PopupAppearance.STROKE_PER_STEP).toFloat()
     Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = MaterialTheme.shapes.small) {
-        Text(
-            support.fontSample,
-            fontFamily = typeface?.let { FontFamily(it) },
-            fontSize = size.sp,
-            style = MaterialTheme.typography.bodyLarge.copy(localeList = LocaleList(support.languageTag)),
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-        )
+        ) {
+            Text(support.fontSample, style = style)
+            if (stroke > 0f) Text(support.fontSample, style = style.copy(drawStyle = Stroke(width = stroke)))
+        }
     }
 }
 

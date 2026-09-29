@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -18,18 +19,37 @@ import kotlinx.coroutines.flow.map
  * @property fontForAllText whether the installed font applies to all text; otherwise only to the language's script,
  *   and Latin and Cyrillic keep the default font.
  * @property fontSize base text size in CSS pixels.
+ * @property textWeight CSS weight of normal text, [NORMAL_WEIGHT] to [MAX_WEIGHT] in steps of 100; bold text stays at
+ *   least as heavy. It follows [fontForAllText]: all text when that is on, otherwise only the language's script.
+ * @property letterThickness an outline that thickens letters, 0 (none) to [MAX_THICKNESS] steps of [STROKE_PER_STEP];
+ *   the same scope as [textWeight].
  * @property customCss the user's CSS, applied after the dictionaries' styles.
  */
 data class PopupAppearance(
     val fontId: String? = null,
     val fontForAllText: Boolean = false,
     val fontSize: Int = DEFAULT_FONT_SIZE,
+    val textWeight: Int = NORMAL_WEIGHT,
+    val letterThickness: Int = 0,
     val customCss: String = "",
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
         const val MIN_FONT_SIZE = 10
         const val MAX_FONT_SIZE = 28
+        const val NORMAL_WEIGHT = 400
+        const val MAX_WEIGHT = 700
+        const val WEIGHT_STEP = 100
+        const val MAX_THICKNESS = 5
+
+        /** Outline width per thickness step, in em. */
+        const val STROKE_PER_STEP = 0.01
+
+        /** [weight] as one of the offered steps. */
+        fun textWeight(weight: Int): Int =
+            ((weight.toFloat() / WEIGHT_STEP).roundToInt() * WEIGHT_STEP).coerceIn(NORMAL_WEIGHT, MAX_WEIGHT)
+
+        fun letterThickness(thickness: Int): Int = thickness.coerceIn(0, MAX_THICKNESS)
     }
 }
 
@@ -44,6 +64,8 @@ class PopupAppearanceRepository @Inject constructor(
             // A restored backup may hold a size outside this version's range.
             fontSize = (prefs[FONT_SIZE] ?: PopupAppearance.DEFAULT_FONT_SIZE)
                 .coerceIn(PopupAppearance.MIN_FONT_SIZE, PopupAppearance.MAX_FONT_SIZE),
+            textWeight = PopupAppearance.textWeight(prefs[TEXT_WEIGHT] ?: PopupAppearance.NORMAL_WEIGHT),
+            letterThickness = PopupAppearance.letterThickness(prefs[LETTER_THICKNESS] ?: 0),
             customCss = prefs[CUSTOM_CSS].orEmpty(),
         )
     }
@@ -62,6 +84,14 @@ class PopupAppearanceRepository @Inject constructor(
         }
     }
 
+    suspend fun setTextWeight(weight: Int) {
+        dataStore.edit { it[TEXT_WEIGHT] = PopupAppearance.textWeight(weight) }
+    }
+
+    suspend fun setLetterThickness(thickness: Int) {
+        dataStore.edit { it[LETTER_THICKNESS] = PopupAppearance.letterThickness(thickness) }
+    }
+
     suspend fun setCustomCss(css: String) {
         dataStore.edit { it[CUSTOM_CSS] = css }
     }
@@ -70,6 +100,8 @@ class PopupAppearanceRepository @Inject constructor(
         val FONT = stringPreferencesKey("popup_font")
         val FONT_ALL_TEXT = booleanPreferencesKey("popup_font_all_text")
         val FONT_SIZE = intPreferencesKey("popup_font_size")
+        val TEXT_WEIGHT = intPreferencesKey("popup_text_weight")
+        val LETTER_THICKNESS = intPreferencesKey("popup_letter_thickness")
         val CUSTOM_CSS = stringPreferencesKey("popup_custom_css")
     }
 }

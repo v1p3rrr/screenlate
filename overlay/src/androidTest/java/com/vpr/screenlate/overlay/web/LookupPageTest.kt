@@ -8,6 +8,8 @@ import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.dictionary.api.model.Glossary
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
+import com.vpr.screenlate.overlay.fonts.FontFile
+import com.vpr.screenlate.overlay.fonts.InstalledFont
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.fonts.PageFonts
 import com.vpr.screenlate.overlay.settings.PopupAppearance
@@ -109,6 +111,28 @@ class LookupPageTest {
             .isEqualTo("\"19\"")
         assertThat(evaluate("document.getElementById('custom-css').textContent")).contains("Meiryo, \\\"Screenlate Sans\\\"")
         assertThat(evaluate("document.querySelector('.definition-body').textContent")).contains("sensitive to heat")
+    }
+
+    @Test
+    fun heavierTextAppliesToTheScriptOrToAllText() = onMain {
+        val heavier = PopupAppearance(textWeight = 700, letterThickness = 2)
+        page.setAppearance(PageAppearance.build(JapaneseSupport, heavier, emptyList()))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat")), message = null))
+
+        awaitValue("document.querySelectorAll('.expression .script-run').length > 0", "true")
+        assertThat(evaluate("getComputedStyle(document.querySelector('.expression .script-run')).fontWeight")).isEqualTo("\"700\"")
+        assertThat(evaluate("parseFloat(getComputedStyle(document.querySelector('.expression .script-run')).webkitTextStrokeWidth) > 0"))
+            .isEqualTo("true")
+        assertThat(evaluate("document.querySelectorAll('.definition-body .script-run').length")).isEqualTo("0")
+        assertThat(evaluate("getComputedStyle(document.body).fontWeight")).isEqualTo("\"400\"")
+
+        // All text, with a chosen font set for all text: no marks, the whole page is heavier.
+        val klee = InstalledFont("klee", "Klee", listOf(FontFile("probe-0.ttf")))
+        page.setAppearance(PageAppearance.build(JapaneseSupport, heavier.copy(fontId = "klee", fontForAllText = true), listOf(klee)))
+        awaitValue("document.documentElement.dataset.heavier", "\"all\"")
+        assertThat(evaluate("document.querySelectorAll('.script-run').length")).isEqualTo("0")
+        assertThat(evaluate("getComputedStyle(document.querySelector('.definition-body')).fontWeight")).isEqualTo("\"700\"")
+        assertThat(evaluate("getComputedStyle(document.querySelector('.dictionary-name')).fontWeight")).isEqualTo("\"700\"")
     }
 
     @Test

@@ -28,6 +28,15 @@ class CssCheckTest {
     }
 
     @Test
+    fun `counts lines across blank lines and comments`() {
+        assertThat(problems("}\n}")).containsExactly(1 to Problem.UNEXPECTED_BRACE, 2 to Problem.UNEXPECTED_BRACE)
+        assertThat(problems("\n\n/* open")).containsExactly(3 to Problem.UNCLOSED_COMMENT)
+        assertThat(problems("/* a\nb */\n\n.a {\n color red;\n}")).containsExactly(5 to Problem.MISSING_COLON)
+        val long = ".a { color: red; }\n".repeat(5000) + "}"
+        assertThat(problems(long)).containsExactly(5001 to Problem.UNEXPECTED_BRACE)
+    }
+
+    @Test
     fun `reports broken declarations`() {
         assertThat(problems(".a {\n color red;\n}")).containsExactly(2 to Problem.MISSING_COLON)
         assertThat(problems(".a { color: ; }")).containsExactly(1 to Problem.EMPTY_VALUE)

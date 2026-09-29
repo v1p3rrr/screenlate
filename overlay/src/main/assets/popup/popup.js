@@ -25,6 +25,9 @@
  * Text can be selected with a long press; in the popup, whose overlay window has no system toolbar, a Copy button
  * appears above the selection.
  *
+ * Heavier text (setAppearance) applies to the whole page, or only to the language's script: then runs of it are
+ * wrapped in .script-run spans as text arrives in the page.
+ *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
  * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
  */
@@ -762,10 +765,135 @@ const Popup = (() => {
             .join('\n');
     }
 
+    // region Heavier text
+
+    const NORMAL_WEIGHT = 400;
+    const BOLD_WEIGHT = 600;
+    /** Elements whose text is not marked: editable fields, code, and SVG (such as pitch graphs), where spans do not belong. */
+    const UNMARKED_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION']);
+    const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
+
+    /** { weight, runs } while the language's script is drawn heavier; runs matches a run of its characters. */
+    let scriptRuns = null;
+    let heavierKey = null;
+    const scriptObserver = new MutationObserver(records => {
+        const nodes = [];
+        for (const record of records) {
+            if (record.type === 'characterData') nodes.push(record.target);
+            else nodes.push(...record.addedNodes);
+        }
+        markScript(nodes);
+    });
+
     /**
-     * Language, fonts and the user's CSS: { lang, fontFaces, fontFamily, fontSize, customCss, preload, preloadText }.
-     * The custom CSS comes after the dictionaries' styles; preload names a font to load before it is first needed, for
-     * the characters of preloadText (a face limited to the language's script loads only for them).
+     * { textWeight, textStroke, textScope, scriptPattern }: the CSS weight of normal text, the letter outline in em,
+     * 'all' or 'script', and a character class of the language's script. Bold text stays at least as heavy.
+     */
+    function setHeavierText(appearance) {
+        const weight = Math.min(Math.max(Number(appearance.textWeight) || NORMAL_WEIGHT, NORMAL_WEIGHT), 1000);
+        const stroke = Math.max(Number(appearance.textStroke) || 0, 0);
+        const on = weight > NORMAL_WEIGHT || stroke > 0;
+        const scope = !on ? '' : appearance.textScope === 'all' ? 'all' : 'script';
+        const key = JSON.stringify([weight, stroke, scope, appearance.scriptPattern]);
+        if (key === heavierKey) return;
+        heavierKey = key;
+        const root = document.documentElement;
+        root.style.setProperty('--text-weight', String(weight));
+        root.style.setProperty('--bold-weight', String(scope === 'all' ? Math.max(BOLD_WEIGHT, weight) : BOLD_WEIGHT));
+        root.style.setProperty('--text-stroke', String(stroke));
+        root.dataset.heavier = scope;
+        scriptObserver.disconnect();
+        scriptRuns = null;
+        unmarkScript();
+        if (scope !== 'script' || !appearance.scriptPattern) return;
+        try {
+            scriptRuns = { weight, runs: new RegExp(`${appearance.scriptPattern}+`, 'gu') };
+        } catch (e) {
+            return;
+        }
+        scriptObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        markScript([document.body]);
+    }
+
+    /**
+     * Wraps the runs of the language's script in the text of [nodes] in .script-run spans. Weights are read before
+     * anything changes, so style is computed once; a run whose text is already as heavy keeps its weight.
+     */
+    function markScript(nodes) {
+        if (!scriptRuns) return;
+        const texts = scriptTexts(nodes);
+        const heavier = texts.map(text => scriptRuns.weight > NORMAL_WEIGHT && scriptRuns.weight > weightOf(text.parentElement));
+        texts.forEach((text, i) => wrapRuns(text, heavier[i]));
+        // The spans just added need no second look.
+        scriptObserver.takeRecords();
+    }
+
+    function scriptTexts(nodes) {
+        const test = new RegExp(scriptRuns.runs.source, 'u');
+        const found = new Set();
+        for (const node of nodes) {
+            if (!node.isConnected) continue;
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (test.test(node.data) && !insideUnmarked(node.parentElement)) found.add(node);
+                continue;
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE || insideUnmarked(node)) continue;
+            const walker = document.createTreeWalker(node, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+                acceptNode: child => {
+                    if (child.nodeType === Node.ELEMENT_NODE) return unmarked(child) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_SKIP;
+                    return test.test(child.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+                },
+            });
+            for (let text = walker.nextNode(); text; text = walker.nextNode()) found.add(text);
+        }
+        return [...found];
+    }
+
+    function unmarked(node) {
+        return node.namespaceURI !== HTML_NAMESPACE || UNMARKED_TAGS.has(node.tagName) ||
+            node.hasAttribute('contenteditable') || node.classList.contains('script-run');
+    }
+
+    function insideUnmarked(node) {
+        for (let current = node; current; current = current.parentElement) {
+            if (unmarked(current)) return true;
+        }
+        return false;
+    }
+
+    function weightOf(node) {
+        return node ? parseFloat(getComputedStyle(node).fontWeight) || NORMAL_WEIGHT : NORMAL_WEIGHT;
+    }
+
+    function wrapRuns(text, heavier) {
+        const value = text.data;
+        const fragment = document.createDocumentFragment();
+        let last = 0;
+        for (const match of value.matchAll(scriptRuns.runs)) {
+            if (match.index > last) fragment.append(value.slice(last, match.index));
+            fragment.append(element('span', heavier ? 'script-run heavier' : 'script-run', match[0]));
+            last = match.index + match[0].length;
+        }
+        if (last < value.length) fragment.append(value.slice(last));
+        text.replaceWith(fragment);
+    }
+
+    function unmarkScript() {
+        const parents = new Set();
+        document.querySelectorAll('.script-run').forEach(span => {
+            parents.add(span.parentNode);
+            span.replaceWith(...span.childNodes);
+        });
+        parents.forEach(parent => parent?.normalize());
+    }
+
+    // endregion
+
+    /**
+     * Language, fonts, text weight and the user's CSS: { lang, fontFaces, fontFamily, fontSize, textWeight, textStroke,
+     * textScope, scriptPattern, customCss, preload, preloadText }. The custom CSS comes after the dictionaries' styles;
+     * preload names a font to load before it is first needed, for the characters of preloadText (a face limited to the
+     * language's script loads only for them). See setHeavierText for the weight.
      */
     function setAppearance(appearance) {
         const root = document.documentElement;
@@ -774,6 +902,7 @@ const Popup = (() => {
         root.style.setProperty('--font-family', appearance.fontFamily || 'sans-serif');
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));
         customCss.textContent = appearance.customCss || '';
+        setHeavierText(appearance);
         if (appearance.preload && document.fonts) {
             const font = `1em "${appearance.preload.replace(/"/g, '\\"')}"`;
             document.fonts.load(font, appearance.preloadText || undefined).catch(() => {});

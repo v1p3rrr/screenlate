@@ -222,12 +222,15 @@ class LookupPage(
     }
 
     private fun fontResponse(name: String): WebResourceResponse {
-        val file = File(fontDirectory, name)
         val format = FontFiles.formatOf(name)
-        if (!FontFiles.isFileName(name) || format == null || !file.isFile) {
-            return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
+        // The file may go (a font deleted or replaced) between the page asking for it and this read.
+        val input = if (FontFiles.isFileName(name) && format != null) {
+            runCatching { File(fontDirectory, name).inputStream() }.getOrNull()
+        } else {
+            null
         }
-        return WebResourceResponse(format.mimeType, null, file.inputStream())
+        if (format == null || input == null) return WebResourceResponse("text/plain", null, 404, "Not Found", emptyMap(), null)
+        return WebResourceResponse(format.mimeType, null, input)
     }
 
     private fun mimeType(path: String): String = when (val extension = path.substringAfterLast('.', "").lowercase()) {

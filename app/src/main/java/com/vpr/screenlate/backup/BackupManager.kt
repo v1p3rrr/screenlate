@@ -176,7 +176,7 @@ class BackupManager @Inject constructor(
         val staging = mutableMapOf<Int, File>()
         val restoredFiles = mutableListOf<String>()
         val failed = mutableListOf<String>()
-        var fontCount = 0
+        var fontCount: Int? = null
         try {
             val input = context.contentResolver.openInputStream(uri) ?: error("No input")
             var list = BackupDictionaryList(emptyList())
@@ -189,7 +189,6 @@ class BackupManager @Inject constructor(
                         override suspend fun font(name: String, input: InputStream) {
                             if (BackupSection.POPUP !in sections) return
                             File(fontDirectory, name).outputStream().use { input.copyTo(it) }
-                            if (name.substringAfterLast('.') != "json") fontCount++
                         }
 
                         override suspend fun dictionaryFile(index: Int, path: String, input: InputStream) {
@@ -223,7 +222,7 @@ class BackupManager @Inject constructor(
                     },
                 )
             }
-            if (BackupSection.POPUP in sections) fonts.restore(fontDirectory)
+            if (BackupSection.POPUP in sections) fontCount = fonts.restore(fontDirectory)
             var missing = emptyList<String>()
             if (BackupSection.DICTIONARY_LIST in sections) {
                 val outcome = BackupDictionaries.applyList(dictionaries.getAll(), head.dictionaries.dictionaries)
@@ -233,7 +232,7 @@ class BackupManager @Inject constructor(
             }
             return RestoreSummary(
                 settings = sections.filter { it in PREFERENCE_SECTIONS && it in head.manifest.sections },
-                fonts = fontCount.takeIf { BackupSection.POPUP in sections },
+                fonts = fontCount,
                 dictionaryFiles = restoredFiles.size.takeIf { BackupSection.DICTIONARY_FILES in sections },
                 failed = failed,
                 listApplied = BackupSection.DICTIONARY_LIST in sections,

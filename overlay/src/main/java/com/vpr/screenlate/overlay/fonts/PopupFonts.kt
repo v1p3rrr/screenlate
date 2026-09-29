@@ -41,7 +41,13 @@ sealed interface FontImport {
 
     data object NotAFont : FontImport
 
+    /** A font compressed for websites (WOFF, WOFF2), which Android cannot preview; TTF and OTF files are needed. */
+    data object WebFont : FontImport
+
     data object TooLarge : FontImport
+
+    /** The file could not be read, or the font could not be stored. */
+    data object Failed : FontImport
 }
 
 /**
@@ -84,49 +90,72 @@ class PopupFonts @Inject constructor(
     }
 
     /**
-     * Adds a font file chosen by the user; a font with the same family added before is replaced. The file is copied
-     * first and read in place, so a large font is never held in memory.
+     * Adds a font file chosen by the user as a font of its own, named by its family and style ("Noto Serif JP Bold");
+     * a font added from a file of the same name is replaced. The file is copied first and read in place, so a large
+     * font is never held in memory.
      */
     suspend fun import(uri: Uri): FontImport = withContext(Dispatchers.IO) {
-        directory.mkdirs()
         val partial = File(directory, "import-${newId()}.part")
         try {
+            directory.mkdirs()
             val copied = context.contentResolver.openInputStream(uri)?.use { input ->
                 partial.outputStream().use { output -> copyAtMost(input, output, MAX_FILE_BYTES) }
-            } ?: return@withContext FontImport.NotAFont
+            } ?: return@withContext FontImport.Failed
             if (!copied) return@withContext FontImport.TooLarge
-            val (format, fileFamily) = RandomAccessFile(partial, "r").use { file ->
+            val (format, description) = RandomAccessFile(partial, "r").use { file ->
                 val buffer = file.channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length())
                 val head = ByteArray(minOf(HEAD.toLong(), file.length()).toInt()) { buffer.get(it) }
-                FontFiles.format(head) to FontFiles.family(buffer)
+                FontFiles.format(head) to FontFiles.describe(buffer)
             }
             if (format == null) return@withContext FontImport.NotAFont
-            val family = fileFamily ?: displayName(uri)?.substringBeforeLast('.')?.takeIf { it.isNotBlank() } ?: DEFAULT_NAME
+            if (format.web) return@withContext FontImport.WebFont
+            val family = description?.displayName
+                ?: displayName(uri)?.substringBeforeLast('.')?.takeIf { it.isNotBlank() }
+                ?: DEFAULT_NAME
             lock.withLock {
                 val existing = mutableInstalled.value.firstOrNull { it.catalogId == null && it.family == family }
                 val id = existing?.id ?: "file-${newId()}"
-                existing?.files?.forEach { File(directory, it.name).delete() }
                 // A new file name every time: a page that loaded the replaced file must not keep it from its cache.
                 val name = "$id-${newId()}.${format.extension}"
-                if (!partial.renameTo(File(directory, name))) throw IOException("Rename failed")
-                val font = InstalledFont(id, family, listOf(FontFile(name)))
-                save(mutableInstalled.value.filter { it.id != id } + font)
+                val target = File(directory, name)
+                if (!partial.renameTo(target)) throw IOException("Rename failed")
+                val font = InstalledFont(id, family, listOf(FontFile(name, description?.weight ?: DEFAULT_WEIGHT)))
+                try {
+                    save(mutableInstalled.value.filter { it.id != id } + font)
+                } catch (e: IOException) {
+                    target.delete()
+                    throw e
+                }
+                // Only once the new font is in the list: a failure above keeps the replaced one working.
+                existing?.files?.forEach { File(directory, it.name).delete() }
                 FontImport.Added(font)
             }
+        } catch (e: IOException) {
+            Log.w(TAG, "Font import failed", e.redacted())
+            FontImport.Failed
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Font file not readable", e.redacted())
+            FontImport.Failed
         } finally {
             partial.delete()
         }
     }
 
+    /** Removes an installed font; its files go once the list without it is stored. */
     suspend fun delete(id: String) = withContext(Dispatchers.IO) {
         lock.withLock {
             val font = mutableInstalled.value.firstOrNull { it.id == id } ?: return@withLock
+            try {
+                save(mutableInstalled.value - font)
+            } catch (e: IOException) {
+                Log.w(TAG, "Font list not stored", e.redacted())
+                return@withLock
+            }
             font.files.forEach { File(directory, it.name).delete() }
-            save(mutableInstalled.value - font)
         }
     }
 
-    fun file(font: InstalledFont): File? = font.files.firstOrNull()?.let { File(directory, it.name) }
+    fun file(file: FontFile): File = File(directory, file.name)
 
     /** The font files and their list, for a backup; empty when no font is installed. */
     fun backupFiles(): List<File> {
@@ -135,62 +164,88 @@ class PopupFonts @Inject constructor(
         return listOf(index) + fonts.flatMap { font -> font.files.map { File(directory, it.name) } }.filter { it.exists() }
     }
 
-    /** Replaces the installed fonts with the files in [source] (as [backupFiles] lists them). */
-    suspend fun restore(source: File) = withContext(Dispatchers.IO) {
+    /**
+     * Replaces the installed fonts with the files in [source] (as [backupFiles] lists them).
+     *
+     * @return the number of fonts installed now.
+     */
+    suspend fun restore(source: File): Int = withContext(Dispatchers.IO) {
         lock.withLock {
             directory.listFiles()?.forEach { it.deleteRecursively() }
             directory.mkdirs()
             source.listFiles()?.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
             mutableInstalled.value = readIndex()
+            mutableInstalled.value.size
         }
     }
 
+    /** Downloads all files of [font]; on a failure, the files of this attempt that no installed font lists go. */
     private suspend fun fetch(font: CatalogFont) {
         directory.mkdirs()
-        val files = font.files.mapIndexed { index, file ->
-            val extension = file.url.substringAfterLast('.').lowercase().takeIf { it == "otf" } ?: "ttf"
-            val name = "${font.id}-$index.$extension"
-            val partial = File(directory, "$name.part")
-            client.newCall(Request.Builder().url(file.url).build()).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
-                val length = response.body.contentLength()
-                response.body.byteStream().use { input ->
-                    partial.outputStream().use { output ->
-                        val buffer = ByteArray(BUFFER)
-                        var copied = 0L
-                        while (true) {
-                            val read = input.read(buffer)
-                            if (read < 0) break
-                            output.write(buffer, 0, read)
-                            copied += read
-                            if (length > 0) {
-                                val fraction = (index + copied.toFloat() / length) / font.files.size
-                                mutableDownloads.update { it + (font.id to FontDownload.Running(fraction)) }
-                            }
-                        }
+        val written = mutableListOf<File>()
+        try {
+            val files = font.files.mapIndexed { index, file ->
+                val extension = file.url.substringAfterLast('.').lowercase().takeIf { it == "otf" } ?: "ttf"
+                val name = "${font.id}-$index.$extension"
+                val partial = File(directory, "$name.part")
+                val target = File(directory, name)
+                written += partial
+                written += target
+                download(file.url, partial) { copied, length ->
+                    val fraction = (index + copied.toFloat() / length) / font.files.size
+                    mutableDownloads.update { it + (font.id to FontDownload.Running(fraction)) }
+                }
+                val head = partial.inputStream().use { it.readNBytesCompat(HEAD) }
+                if (FontFiles.format(head) == null) throw IOException("Not a font")
+                target.delete()
+                if (!partial.renameTo(target)) throw IOException("Rename failed")
+                FontFile(name, file.weight)
+            }
+            lock.withLock {
+                save(mutableInstalled.value.filter { it.id != font.id } + InstalledFont(font.id, font.family, files, font.id))
+            }
+        } catch (e: Throwable) {
+            lock.withLock {
+                val listed = mutableInstalled.value.flatMap { it.files }.map { it.name }.toSet()
+                written.filter { it.name !in listed }.forEach { it.delete() }
+            }
+            throw e
+        }
+    }
+
+    /** Writes [url] into [target]; [progress] gets the bytes so far and the total when the server names it. */
+    private fun download(url: String, target: File, progress: (copied: Long, length: Long) -> Unit) {
+        client.newCall(Request.Builder().url(url).build()).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+            val length = response.body.contentLength()
+            response.body.byteStream().use { input ->
+                target.outputStream().use { output ->
+                    val buffer = ByteArray(BUFFER)
+                    var copied = 0L
+                    while (true) {
+                        val read = input.read(buffer)
+                        if (read < 0) break
+                        output.write(buffer, 0, read)
+                        copied += read
+                        if (length > 0) progress(copied, length)
                     }
                 }
             }
-            val head = partial.inputStream().use { it.readNBytesCompat(HEAD) }
-            if (FontFiles.format(head) == null) {
-                partial.delete()
-                throw IOException("Not a font")
-            }
-            val target = File(directory, name)
-            target.delete()
-            if (!partial.renameTo(target)) throw IOException("Rename failed")
-            FontFile(name, file.weight)
-        }
-        lock.withLock {
-            save(mutableInstalled.value.filter { it.id != font.id } + InstalledFont(font.id, font.family, files, font.id))
         }
     }
 
-    /** The installed fonts; a font with a missing file, or a file name that is not plain (a restored list), is left out. */
+    /**
+     * The installed fonts. A restored list is not trusted: a font with a missing file, a file name that is not plain,
+     * or no family name is left out, and a weight that is not a CSS weight becomes the normal one.
+     */
     private fun readIndex(): List<InstalledFont> = runCatching {
         if (!index.exists()) return emptyList()
         json.decodeFromString<List<InstalledFont>>(index.readText())
+            .filter { font -> font.family.isNotBlank() && font.files.isNotEmpty() }
             .filter { font -> font.files.all { FontFiles.isFileName(it.name) && File(directory, it.name).exists() } }
+            .map { font ->
+                font.copy(files = font.files.map { if (PageFonts.isWeight(it.weight)) it else it.copy(weight = DEFAULT_WEIGHT) })
+            }
     }.onFailure { Log.w(TAG, "Font list unreadable", it.redacted()) }.getOrDefault(emptyList())
 
     private fun save(fonts: List<InstalledFont>) {
@@ -246,5 +301,6 @@ class PopupFonts @Inject constructor(
         const val ID_LENGTH = 8
         const val MAX_FILE_BYTES = 64 * 1024 * 1024
         const val DEFAULT_NAME = "Font"
+        const val DEFAULT_WEIGHT = "400"
     }
 }

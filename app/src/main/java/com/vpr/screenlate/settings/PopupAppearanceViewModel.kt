@@ -3,8 +3,6 @@ package com.vpr.screenlate.settings
 import android.graphics.Typeface
 import android.graphics.fonts.Font
 import android.graphics.fonts.FontFamily
-import android.graphics.fonts.FontStyle
-import android.graphics.fonts.SystemFonts
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +15,7 @@ import com.vpr.screenlate.overlay.fonts.FontImport
 import com.vpr.screenlate.overlay.fonts.InstalledFont
 import com.vpr.screenlate.overlay.fonts.PageFonts
 import com.vpr.screenlate.overlay.fonts.PopupFonts
+import com.vpr.screenlate.overlay.fonts.SystemFontFiles
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,16 +26,17 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.abs
 
-/** Font, text size and custom CSS of the lookup page. */
+/** Font, text size and weight, and custom CSS of the lookup page. */
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class PopupAppearanceViewModel @Inject constructor(
@@ -50,18 +50,31 @@ class PopupAppearanceViewModel @Inject constructor(
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
     val catalog: List<CatalogFont> get() = fonts.catalog.filter { it.language == LANGUAGE.support.languageTag }
 
-    /** Typefaces for previews: installed fonts by id, the phone's font for the language under [SYSTEM]. */
+    /** Typefaces for the font list: installed fonts by id, the phone's font for the language under [SYSTEM]. */
     val typefaces: StateFlow<Map<String, Typeface>> = fonts.installed
         .map { installed -> loadTypefaces(installed) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
+    /**
+     * The preview's typeface: the chosen font, or the phone's, with a variable font set to the text weight. The
+     * preview asks it for that weight, so a font with one weight is made bold from 600 on, as on the page.
+     */
+    val previewTypeface: StateFlow<Typeface?> =
+        combine(repository.appearance, fonts.installed) { appearance, installed ->
+            installed.firstOrNull { it.id == appearance.fontId } to appearance.textWeight
+        }
+            .distinctUntilChanged()
+            .map { (font, weight) -> withContext(Dispatchers.IO) { typeface(sources(font), weight) } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     /** The phone declares no font for the language, so its kanji may take another region's forms. */
-    val systemFontMissing: StateFlow<Boolean> = flow { emit(withContext(Dispatchers.IO) { systemTypeface() == null }) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val systemFontMissing: StateFlow<Boolean> =
+        flow { emit(withContext(Dispatchers.IO) { SystemFontFiles.find(LANGUAGE.support.languageTag) == null }) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val mutableImport = MutableStateFlow<FontImport?>(null)
 
-    /** The result of the last font file added, to report a file that is not a font. */
+    /** The result of the last font file added, to report a file that could not be added. */
     val lastImport: StateFlow<FontImport?> = mutableImport
 
     private val cssEdits = MutableStateFlow<String?>(null)
@@ -79,6 +92,10 @@ class PopupAppearanceViewModel @Inject constructor(
     fun setFontForAllText(enabled: Boolean) = launch { repository.setFontForAllText(enabled) }
 
     fun setFontSize(size: Int) = launch { repository.setFontSize(size) }
+
+    fun setTextWeight(weight: Int) = launch { repository.setTextWeight(weight) }
+
+    fun setLetterThickness(thickness: Int) = launch { repository.setLetterThickness(thickness) }
 
     fun download(font: CatalogFont) = fonts.download(font)
 
@@ -109,25 +126,48 @@ class PopupAppearanceViewModel @Inject constructor(
 
     private suspend fun loadTypefaces(installed: List<InstalledFont>): Map<String, Typeface> =
         withContext(Dispatchers.IO) {
-            val loaded = installed.mapNotNull { font ->
-                val file = fonts.file(font) ?: return@mapNotNull null
-                runCatching { Typeface.Builder(file).build() }.getOrNull()?.let { font.id to it }
-            }.toMap()
-            loaded + listOfNotNull(systemTypeface()?.let { SYSTEM to it })
+            val loaded = installed.mapNotNull { font -> typeface(sources(font), PopupAppearance.NORMAL_WEIGHT)?.let { font.id to it } }
+            loaded.toMap() + listOfNotNull(typeface(sources(null), PopupAppearance.NORMAL_WEIGHT)?.let { SYSTEM to it })
         }
 
-    /** The phone's regular font declared for the language, as the page asks for it. */
-    private fun systemTypeface(): Typeface? = runCatching {
+    /** A font file and the CSS weight the page declares for it. */
+    private class Source(val weight: String, val builder: () -> Font.Builder)
+
+    /** The files of [font], or of the phone's sans-serif font for the language when null (the page's default). */
+    private fun sources(font: InstalledFont?): List<Source> {
+        if (font != null) return font.files.map { file -> Source(file.weight) { Font.Builder(fonts.file(file)) } }
         val tag = LANGUAGE.support.languageTag
-        val font = SystemFonts.getAvailableFonts()
-            .filter { font -> (0 until font.localeList.size()).any { font.localeList[it].language == tag } }
-            // The page's default is the sans-serif face.
-            .minWithOrNull(
-                compareBy<Font>({ it.file?.name?.contains("Serif") == true }, { abs(it.style.weight - FontStyle.FONT_WEIGHT_NORMAL) }),
-            )
-            ?: return null
-        Typeface.CustomFallbackBuilder(FontFamily.Builder(font).build()).build()
-    }.getOrNull()
+        val system = SystemFontFiles.find(tag) ?: return emptyList()
+        val weight = SystemFontFiles.weights(tag).sans ?: system.style.weight.toString()
+        return listOf(Source(weight) { Font.Builder(system.buffer).setTtcIndex(system.ttcIndex) })
+    }
+
+    /**
+     * [sources] as one family for [weight]: a variable font is set to it within its range, and a file with one weight
+     * keeps its own. Files that cannot be read (such as web fonts) are left out; null if none can.
+     */
+    private fun typeface(sources: List<Source>, weight: Int): Typeface? {
+        val loaded = sources.mapNotNull { source ->
+            runCatching {
+                val range = source.weight.split(' ').mapNotNull { it.toIntOrNull() }
+                val builder = source.builder()
+                if (range.size == 2) {
+                    val used = weight.coerceIn(range[0], range[1])
+                    builder.setWeight(used).setFontVariationSettings("'wght' $used")
+                } else {
+                    range.firstOrNull()?.takeIf { it in 1..1000 }?.let { builder.setWeight(it) }
+                }
+                builder.build()
+            }.getOrNull()
+        }
+        // A family takes one font per style.
+        val fonts = loaded.distinctBy { it.style }
+        if (fonts.isEmpty()) return null
+        return runCatching {
+            val family = FontFamily.Builder(fonts.first()).apply { fonts.drop(1).forEach { addFont(it) } }.build()
+            Typeface.CustomFallbackBuilder(family).build()
+        }.getOrNull()
+    }
 
     companion object {
         const val SYSTEM = ""
