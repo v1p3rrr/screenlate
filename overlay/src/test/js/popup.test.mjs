@@ -237,6 +237,17 @@ test('heavier text leaves fields, graphs and bold text as they are', async () =>
     assert.equal(extra.querySelector('textarea').value, '猫');
 });
 
+test('heavier text is looked at again when the custom css changes', async () => {
+    Popup.setAppearance(heavier());
+    Popup.render(state({ results: [result('猫', 'ねこ', 'cat 猫舌 dog')] }));
+    await settle();
+    const heavy = () => content.querySelector('.definition-body .script-run').classList.contains('heavier');
+    assert.equal(heavy(), true);
+    Popup.setAppearance(heavier({ customCss: '.definition-body { font-weight: 700 }' }));
+    await settle();
+    assert.equal(heavy(), false);
+});
+
 test('heavier text for all text or none drops the marks', async () => {
     Popup.setAppearance(heavier());
     Popup.render(state({ results: [result('猫', 'ねこ', 'cat 猫舌 dog')] }));

@@ -26,7 +26,7 @@ class PageAppearance @Inject constructor(
     fun json(language: Language): Flow<JsonObject> {
         val support = language.support
         // The phone's font files are read once, off the main thread.
-        val weights = flow { emit(SystemFontFiles.weights(support.languageTag)) }.flowOn(Dispatchers.IO)
+        val weights = flow { emit(SystemFontFiles.weights(support)) }.flowOn(Dispatchers.IO)
         return combine(settings.appearance, fonts.installed, weights) { appearance, installed, systemWeights ->
             build(support, appearance, installed, systemWeights)
         }.distinctUntilChanged()

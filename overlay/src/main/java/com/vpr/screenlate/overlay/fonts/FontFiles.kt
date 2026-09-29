@@ -45,9 +45,15 @@ object FontFiles {
      * @param weightClass the weight the font declares for itself (`OS/2`), 100 to 1000; null if it declares none.
      */
     data class Description(val family: String, val style: String?, val weightRange: String?, val weightClass: Int? = null) {
-        /** The family with the style unless it is the regular one: "Noto Serif JP", "Noto Serif JP Bold". */
+        /**
+         * The family with the style unless it is the regular one: "Noto Serif JP", "Noto Serif JP Bold". A variable
+         * font has all its weights, so a weight in its style (that of its default instance) is left out.
+         */
         val displayName: String
-            get() = if (style == null || style.lowercase() in REGULAR_STYLES) family else "$family $style"
+            get() {
+                val shown = if (weightRange == null) style else style?.let(::withoutWeights)
+                return if (shown.isNullOrBlank() || shown.lowercase() in REGULAR_STYLES) family else "$family $shown"
+            }
 
         /** CSS `font-weight` of the file: the variable range, or its own weight. */
         val weight: String
@@ -62,14 +68,7 @@ object FontFiles {
      * the tables it needs. Null for compressed web fonts or damaged tables.
      */
     fun describe(buffer: ByteBuffer, index: Int = 0): Description? = runCatching {
-        val font = if (tag(buffer, 0) == "ttcf") {
-            if (index >= buffer.getInt(8)) return null
-            buffer.getInt(12 + 4 * index)
-        } else {
-            0
-        }
-        val count = buffer.getShort(font + 4).toInt() and 0xFFFF
-        val tables = (0 until count).associate { tag(buffer, font + 12 + 16 * it) to buffer.getInt(font + 12 + 16 * it + 8) }
+        val tables = tables(buffer, index) ?: return null
         val name = tables["name"] ?: return null
         val records = nameRecords(buffer, name)
         // The typographic names go together; the legacy ones fold weights beyond bold into the family.
@@ -83,6 +82,28 @@ object FontFiles {
         val weightClass = tables["OS/2"]?.let { u16(buffer, it + 4) }?.takeIf { it in 100..1000 }
         Description(family, style, tables["fvar"]?.let { weightAxis(buffer, it) }, weightClass)
     }.getOrNull()
+
+    /**
+     * The names `local()` in CSS finds font [index] of a collection by: the full name and the PostScript name. Empty
+     * for compressed web fonts or damaged tables.
+     */
+    fun localNames(buffer: ByteBuffer, index: Int = 0): Set<String> = runCatching {
+        val name = tables(buffer, index)?.get("name") ?: return emptySet()
+        val records = nameRecords(buffer, name)
+        listOf(FULL_NAME, POSTSCRIPT_NAME).mapNotNull { nameString(buffer, name, records, it) }.toSet()
+    }.getOrDefault(emptySet())
+
+    /** Offsets of the tables of font [index] (of a collection) by tag; null if there is no such font. */
+    private fun tables(buffer: ByteBuffer, index: Int): Map<String, Int>? {
+        val font = if (tag(buffer, 0) == "ttcf") {
+            if (index >= buffer.getInt(8)) return null
+            buffer.getInt(12 + 4 * index)
+        } else {
+            0
+        }
+        val count = u16(buffer, font + 4)
+        return (0 until count).associate { tag(buffer, font + 12 + 16 * it) to buffer.getInt(font + 12 + 16 * it + 8) }
+    }
 
     private data class NameRecord(val platform: Int, val encoding: Int, val language: Int, val nameId: Int, val length: Int, val offset: Int)
 
@@ -130,10 +151,21 @@ object FontFiles {
     private fun tag(buffer: ByteBuffer, offset: Int): String =
         String(CharArray(4) { (buffer.get(offset + it).toInt() and 0xFF).toChar() })
 
+    /** [style] without weight words: "Thin Italic" is "Italic", "Extra Light" is "". */
+    private fun withoutWeights(style: String): String =
+        style.replace(WEIGHT_PREFIX, "$1").split(' ').filterNot { it.lowercase() in WEIGHT_STYLES }.joinToString(" ")
+
     private val REGULAR_STYLES = setOf("regular", "normal", "roman", "book")
+    private val WEIGHT_STYLES = REGULAR_STYLES + setOf(
+        "thin", "hairline", "extralight", "ultralight", "light", "medium", "semibold", "demibold", "bold", "extrabold",
+        "ultrabold", "black", "heavy",
+    )
+    private val WEIGHT_PREFIX = Regex("""(?i)\b(extra|ultra|semi|demi)[ -](?=\w)""")
     private val FILE_NAME = Regex("[A-Za-z0-9_-]+\\.[a-z0-9]+")
     private const val FAMILY = 1
     private const val SUBFAMILY = 2
+    private const val FULL_NAME = 4
+    private const val POSTSCRIPT_NAME = 6
     private const val TYPOGRAPHIC_FAMILY = 16
     private const val TYPOGRAPHIC_SUBFAMILY = 17
     private const val FIXED_ONE = 65536.0

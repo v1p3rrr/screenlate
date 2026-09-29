@@ -794,7 +794,8 @@ const Popup = (() => {
         const stroke = Math.max(Number(appearance.textStroke) || 0, 0);
         const on = weight > NORMAL_WEIGHT || stroke > 0;
         const scope = !on ? '' : appearance.textScope === 'all' ? 'all' : 'script';
-        const key = JSON.stringify([weight, stroke, scope, appearance.scriptPattern]);
+        // The custom CSS may change the weights runs are compared with.
+        const key = JSON.stringify([weight, stroke, scope, appearance.scriptPattern, appearance.customCss || '']);
         if (key === heavierKey) return;
         heavierKey = key;
         const root = document.documentElement;

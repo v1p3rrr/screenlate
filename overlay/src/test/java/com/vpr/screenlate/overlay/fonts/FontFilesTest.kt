@@ -194,6 +194,36 @@ class FontFilesTest {
     }
 
     @Test
+    fun `a variable font is not named by the weight of its default instance`() {
+        fun variable(style: String) = sfnt(
+            listOf(
+                "fvar" to fvar(Triple("wght", 100.0, 900.0)),
+                "name" to nameTable(listOf(Name(3, 0x409, 16, "Noto Sans JP"), Name(3, 0x409, 17, style))),
+            ),
+        )
+        assertThat(describe(variable("Thin"))?.displayName).isEqualTo("Noto Sans JP")
+        assertThat(describe(variable("Extra Light"))?.displayName).isEqualTo("Noto Sans JP")
+        assertThat(describe(variable("SemiBold Italic"))?.displayName).isEqualTo("Noto Sans JP Italic")
+        assertThat(describe(variable("Condensed"))?.displayName).isEqualTo("Noto Sans JP Condensed")
+        // A font with one weight keeps it.
+        val thin = font(listOf(Name(3, 0x409, 16, "Noto Sans JP"), Name(3, 0x409, 17, "Thin")))
+        assertThat(describe(thin)?.displayName).isEqualTo("Noto Sans JP Thin")
+    }
+
+    @Test
+    fun `reads the names local() finds a font by`() {
+        val bytes = font(
+            listOf(
+                Name(3, 0x409, 1, "Noto Sans CJK JP"),
+                Name(3, 0x409, 4, "Noto Sans CJK JP Regular"),
+                Name(3, 0x409, 6, "NotoSansCJKJP-Regular"),
+            ),
+        )
+        assertThat(FontFiles.localNames(ByteBuffer.wrap(bytes))).containsExactly("Noto Sans CJK JP Regular", "NotoSansCJKJP-Regular")
+        assertThat(FontFiles.localNames(ByteBuffer.wrap(bytes.copyOf(20)))).isEmpty()
+    }
+
+    @Test
     fun `reads a font of a collection by index`() {
         val first = font(listOf(Name(3, 0x409, 1, "First")), base = 20)
         val second = font(listOf(Name(3, 0x409, 1, "Second")), base = 20 + first.size)

@@ -69,7 +69,7 @@ class PopupAppearanceViewModel @Inject constructor(
 
     /** The phone declares no font for the language, so its kanji may take another region's forms. */
     val systemFontMissing: StateFlow<Boolean> =
-        flow { emit(withContext(Dispatchers.IO) { SystemFontFiles.find(LANGUAGE.support.languageTag) == null }) }
+        flow { emit(withContext(Dispatchers.IO) { SystemFontFiles.find(LANGUAGE.support) == null }) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val mutableImport = MutableStateFlow<FontImport?>(null)
@@ -136,9 +136,8 @@ class PopupAppearanceViewModel @Inject constructor(
     /** The files of [font], or of the phone's sans-serif font for the language when null (the page's default). */
     private fun sources(font: InstalledFont?): List<Source> {
         if (font != null) return font.files.map { file -> Source(file.weight) { Font.Builder(fonts.file(file)) } }
-        val tag = LANGUAGE.support.languageTag
-        val system = SystemFontFiles.find(tag) ?: return emptyList()
-        val weight = SystemFontFiles.weights(tag).sans ?: system.style.weight.toString()
+        val system = SystemFontFiles.find(LANGUAGE.support) ?: return emptyList()
+        val weight = SystemFontFiles.weightRange(system) ?: system.style.weight.toString()
         return listOf(Source(weight) { Font.Builder(system.buffer).setTtcIndex(system.ttcIndex) })
     }
 
