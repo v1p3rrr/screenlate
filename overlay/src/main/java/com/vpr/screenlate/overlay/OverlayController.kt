@@ -775,8 +775,12 @@ class OverlayController(
         else -> settings.smallText
     }
 
-    /** A note is being added: the scan's pending and later cloud requests are dropped, so its text stays as shown. */
+    /**
+     * A note is added while the scan's cloud request is pending: the request and the scan's later OCR boost requests
+     * are dropped, so the text stays as shown. A scan with its final result keeps OCR boost.
+     */
     private fun stopCloud() {
+        if (ocrFinal) return
         val stop = cloudStop ?: return
         if (!stop.complete(Unit)) return
         Log.d(TAG, "Cloud recognition stopped for a note")
@@ -1121,8 +1125,9 @@ class OverlayController(
     private fun engineLabel(ocrEngine: OcrEngineType?): String = when {
         ocrEngine == OcrEngineType.LENS -> service.getString(R.string.overlay_engine_lens)
         ocrEngine == OcrEngineType.ACCESSIBILITY -> service.getString(R.string.overlay_engine_app_text)
-        // Only the device recognizes by choice: nothing is unavailable.
-        ocrEngine == OcrEngineType.ML_KIT && ocrFinal && settings.ocrEngines == OcrEngines.DEVICE ->
+        // Only the device recognizes by choice, or a note stopped the cloud request: nothing is unavailable.
+        ocrEngine == OcrEngineType.ML_KIT && ocrFinal &&
+            (settings.ocrEngines == OcrEngines.DEVICE || cloudStop?.isCompleted == true) ->
             service.getString(R.string.overlay_engine_device_only)
         ocrEngine == OcrEngineType.ML_KIT && ocrFinal && ocrOffline -> service.getString(R.string.overlay_engine_offline)
         ocrEngine == OcrEngineType.ML_KIT && ocrFinal -> service.getString(R.string.overlay_engine_device)
