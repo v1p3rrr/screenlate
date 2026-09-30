@@ -173,8 +173,12 @@ class PopupFonts @Inject constructor(
         lock.withLock {
             directory.listFiles()?.forEach { it.deleteRecursively() }
             directory.mkdirs()
-            source.listFiles()?.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
-            mutableInstalled.value = readIndex()
+            try {
+                source.listFiles()?.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
+            } finally {
+                // The old files are gone already: a failed copy must not leave them listed.
+                mutableInstalled.value = readIndex()
+            }
             mutableInstalled.value.size
         }
     }
