@@ -38,4 +38,25 @@ class BundledDictionariesTest {
         val installed = setOf("10-jitendex.zip:38698313", frequency.key)
         assertThat(BundledDictionaries.pending(shipped, installed)).containsExactly(pitch)
     }
+
+    @Test
+    fun `an archive whose dictionary the user deleted is not installed again in any version`() {
+        val installed = setOf("20-jiten-global-frequency.zip:19", jmdict.key, pitch.key)
+        assertThat(BundledDictionaries.pending(shipped, installed, declined = setOf(frequency.name))).isEmpty()
+        assertThat(BundledDictionaries.pending(shipped, emptySet(), declined = setOf(frequency.name)))
+            .containsExactly(jmdict, pitch).inOrder()
+    }
+
+    @Test
+    fun `archives installed before in any version are found by name`() {
+        val installed = setOf("10-jmdict-english.zip:90", pitch.key, "10-jitendex.zip:38698313")
+        assertThat(BundledDictionaries.installedBefore(shipped, installed)).containsExactly(jmdict, pitch).inOrder()
+    }
+
+    @Test
+    fun `a bracketed version does not change the title`() {
+        assertThat(BundledDictionaries.baseTitle("JMdict [2026-09-27]")).isEqualTo("JMdict")
+        assertThat(BundledDictionaries.baseTitle("Jiten")).isEqualTo("Jiten")
+        assertThat(BundledDictionaries.baseTitle("Kanjium Pitch Accents")).isEqualTo("Kanjium Pitch Accents")
+    }
 }

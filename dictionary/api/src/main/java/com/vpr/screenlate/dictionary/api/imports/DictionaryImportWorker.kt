@@ -88,7 +88,7 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     private suspend fun installBundled(): List<String> {
         repository.cleanUp()
-        return bundled.pending().map { asset ->
+        return bundled.pending { repository.getAll().mapTo(hashSetOf()) { it.title } }.map { asset ->
             setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
             try {

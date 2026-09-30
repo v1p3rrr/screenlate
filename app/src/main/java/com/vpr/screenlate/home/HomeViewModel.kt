@@ -14,6 +14,7 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
+import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -73,6 +74,7 @@ class HomeViewModel @Inject constructor(
     private val repository: DictionaryRepository,
     private val imports: DictionaryImports,
     private val repair: DictionaryRepair,
+    private val bundled: BundledDictionaries,
     private val catalog: DictionaryCatalog,
     private val notes: AnkiNotes,
     private val audio: AudioFinder,
@@ -153,6 +155,7 @@ class HomeViewModel @Inject constructor(
 
     fun remove(missing: MissingDictionary) {
         viewModelScope.launch {
+            if (missing.dictionary.bundled) bundled.markDeleted(missing.dictionary.title)
             repository.delete(missing.dictionary.id)
             resolved(missing)
         }

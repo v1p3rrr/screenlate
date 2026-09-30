@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
+import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -55,6 +56,7 @@ class DictionariesViewModel @Inject constructor(
     private val repository: DictionaryRepository,
     private val imports: DictionaryImports,
     private val dictionaryUpdates: DictionaryUpdates,
+    private val bundled: BundledDictionaries,
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
@@ -138,7 +140,10 @@ class DictionariesViewModel @Inject constructor(
     }
 
     fun delete(dictionary: DictionaryEntity) {
-        viewModelScope.launch { repository.delete(dictionary.id) }
+        viewModelScope.launch {
+            if (dictionary.bundled) bundled.markDeleted(dictionary.title)
+            repository.delete(dictionary.id)
+        }
     }
 
     fun clearFinishedTasks() {

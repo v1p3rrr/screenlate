@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api.imports
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,8 +21,9 @@ import javax.inject.Singleton
 /**
  * Yomitan archives shipped in `assets/dictionaries/`, installed in file name order.
  *
- * Each archive is installed once, identified by name and size, so a dictionary the user deleted does not come
- * back, while a different archive shipped by a later app version is installed (replacing the same title).
+ * Each archive is installed once, identified by name and size; a different archive of the same name shipped by a later
+ * app version is installed (replacing the same title). An archive whose dictionary the user deleted is never installed
+ * again, whatever version ships later ([markDeleted]).
  * The numeric prefix is a slot: when a later version ships another dictionary in a slot whose earlier archive the
  * user already installed, the user keeps the earlier dictionary and the new one is not installed.
  */
@@ -37,7 +39,30 @@ class BundledDictionaries @Inject constructor(
         val displayName: String get() = name.removeSuffix(".zip").substringAfter('-')
     }
 
-    suspend fun pending(): List<Asset> = pending(all(), dataStore.data.first()[INSTALLED].orEmpty())
+    /** Archives to install; [presentTitles] are the titles of the installed dictionaries, of every kind. */
+    suspend fun pending(presentTitles: suspend () -> Set<String>): List<Asset> {
+        val shipped = all()
+        val prefs = dataStore.data.first()
+        val installed = prefs[INSTALLED].orEmpty()
+        var declined = prefs[DECLINED].orEmpty()
+        // Versions before deletions were remembered: an archive installed then whose dictionary is gone was deleted.
+        if (prefs[DECLINED_CHECKED] != true) {
+            val titles = presentTitles().mapTo(hashSetOf(), ::baseTitle)
+            val deleted = installedBefore(shipped, installed).filter { asset ->
+                titleOf(asset)?.let { baseTitle(it) !in titles } == true
+            }
+            declined = declined + deleted.map { it.name }
+            dataStore.edit { it[DECLINED] = declined; it[DECLINED_CHECKED] = true }
+        }
+        return pending(shipped, installed, declined)
+    }
+
+    /** Remembers that the user deleted the bundled dictionary [title], so no later version installs it again. */
+    suspend fun markDeleted(title: String) {
+        val names = all().filter { asset -> titleOf(asset)?.let(::baseTitle) == baseTitle(title) }.map { it.name }
+        if (names.isEmpty()) return
+        dataStore.edit { it[DECLINED] = it[DECLINED].orEmpty() + names }
+    }
 
     suspend fun copy(asset: Asset, target: File) = withContext(Dispatchers.IO) {
         context.assets.open("$ASSET_DIR/${asset.name}").use { input ->
@@ -88,16 +113,34 @@ class BundledDictionaries @Inject constructor(
     internal companion object {
         private const val ASSET_DIR = "dictionaries"
         private val INSTALLED = stringSetPreferencesKey("bundled_dictionaries_installed")
+        private val DECLINED = stringSetPreferencesKey("bundled_dictionaries_declined")
+        private val DECLINED_CHECKED = booleanPreferencesKey("bundled_dictionaries_declined_checked")
 
-        /** [shipped] archives to install, given the `name:size` keys of the archives installed before. */
-        fun pending(shipped: List<Asset>, installed: Set<String>): List<Asset> {
+        /**
+         * [shipped] archives to install, given the `name:size` keys of the archives installed before and the names of
+         * the archives whose dictionaries the user deleted.
+         */
+        fun pending(shipped: List<Asset>, installed: Set<String>, declined: Set<String> = emptySet()): List<Asset> {
             val shippedNames = shipped.map { it.name }.toSet()
             val installedNames = installed.map { it.substringBeforeLast(':') }
             val replacedSlots = installedNames.filter { it !in shippedNames }.map(::slot).toSet()
             return shipped.filter { asset ->
-                asset.key !in installed && (asset.name in installedNames || slot(asset.name) !in replacedSlots)
+                asset.name !in declined &&
+                    asset.key !in installed &&
+                    (asset.name in installedNames || slot(asset.name) !in replacedSlots)
             }
         }
+
+        /** Shipped archives of which some version was installed before. */
+        fun installedBefore(shipped: List<Asset>, installed: Set<String>): List<Asset> {
+            val installedNames = installed.map { it.substringBeforeLast(':') }.toSet()
+            return shipped.filter { it.name in installedNames }
+        }
+
+        /** A title without a trailing bracketed version, e.g. `JMdict [2026-09-27]` → `JMdict`, as updates change it. */
+        fun baseTitle(title: String): String = title.replace(VERSION_SUFFIX, "")
+
+        private val VERSION_SUFFIX = Regex("""\s*\[[^\]]*]$""")
 
         private fun slot(name: String): String = name.substringBefore('-')
     }
