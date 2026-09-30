@@ -324,6 +324,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - `OverlayController.showBubbleMenu` always shows the menu; `openApp()` starts the launch intent with
   `NEW_TASK | RESET_TASK_IF_NEEDED` and docks. String `overlay_menu_open_app` in all 14 locales (`overlay_open_app` is
   taken by "Open Anki settings").
+- CI run by hand on the branch passed with both commits (build, unit tests, lint without errors, page tests):
+  https://github.com/v1p3rrr/screenlate/actions/runs/36783630992, debug APK in the artifact `screenlate-debug-8914b85`.
 - Not checked on a device: the menu's look (background, shadow, text), placement near each edge and corner, a tap
   outside and on the bubble closing it, "Open Screenlate" from another app (a background activity start from the
   accessibility service, as the Anki settings button already does), docking afterwards; MagicOS.
