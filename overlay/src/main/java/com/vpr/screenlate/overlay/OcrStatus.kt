@@ -35,8 +35,8 @@ internal fun ocrBoostMode(setting: SmallTextMode, engines: OcrEngines, textSourc
 }
 
 /**
- * ➕ waits while the scan still refines its text ([pending]), so a note never takes its sentence from a draft. A word
- * read from the app's own text ([engine]) is exact already.
+ * ➕ waits while the scan still refines its text ([pending]), so a note takes the final text where it has the word. A
+ * word read from the app's own text ([engine]) is exact already.
  */
 internal fun noteWaitsForText(pending: Boolean, engine: OcrEngineType?): Boolean =
     pending && engine != OcrEngineType.ACCESSIBILITY

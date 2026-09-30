@@ -887,6 +887,7 @@ class OverlayController(
         val (x, y) = aim ?: aimPoint()
         onAim(x, y)
         // The final text has no word under the aim: the word shown from the draft stays, without the spinner and with ➕.
+        // Its note takes the word and the sentence from the draft, as the note always holds the word the popup shows.
         if (hit == null && ocrFinal) refreshPopup()
         if (hit == null && ocrFinal && page.paragraphs.isEmpty()) {
             showMessage(service.getString(R.string.overlay_no_text))
