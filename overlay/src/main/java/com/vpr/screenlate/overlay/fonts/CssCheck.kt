@@ -75,16 +75,15 @@ object CssCheck {
     /**
      * [Problem.REMOTE_FILE] issues of [css], one for each host on a line. The CSS is read as a browser reads it:
      * CRLF, CR and form feed are line breaks, comments go (a comment marker inside a string or an unquoted `url(...)`
-     * is text), escapes are decoded (`\68ttps:`), and addresses are parsed as a browser parses them (`https:\\host`
-     * and tabs inside the address).
+     * is text), escapes are decoded (`\68ttps:`), a bare string of an `image-set()` is an address as much as
+     * a `url(...)` is, and addresses are parsed as a browser parses them (`https:\\host` and tabs in the address).
      */
     fun remoteFiles(css: String): List<Issue> {
         val decoded = unescape(blankComments(css.replace("\r\n", "\n").replace('\r', '\n').replace('\u000C', '\n')))
         return FILE_REFERENCE.findAll(decoded.text)
-            .mapNotNull { match ->
-                val url = match.value.startsWith("url", ignoreCase = true)
-                val host = urlValue(decoded, match.range.last + 1, unquoted = url)?.let(::remoteHost) ?: return@mapNotNull null
-                Issue(decoded.lines[match.range.first], Problem.REMOTE_FILE, host)
+            .flatMap { match ->
+                val line = decoded.lines[match.range.first]
+                addresses(decoded, match).mapNotNull(::remoteHost).map { Issue(line, Problem.REMOTE_FILE, it) }
             }
             .distinct()
             .toList()
@@ -97,8 +96,11 @@ object CssCheck {
         return out.toString()
     }
 
-    /** Where a file address may follow: `url(` or `@import` (whose address is a string or a `url(`). */
-    private val FILE_REFERENCE = Regex("""url\(|@import""", RegexOption.IGNORE_CASE)
+    /**
+     * Where a file address may follow: `url(`, `@import` (whose address is a string or a `url(`), or
+     * `image-set(`, every string of which is an address.
+     */
+    private val FILE_REFERENCE = Regex("""url\(|@import|(?:-webkit-)?image-set\(""", RegexOption.IGNORE_CASE)
 
     /** An absolute or protocol-relative web address; group 1 is its authority. Browsers take `\` as `/` in it. */
     private val WEB_ADDRESS = Regex("""^(?:https?:)?[/\\]{2,}([^/\\?#]*)""", RegexOption.IGNORE_CASE)
@@ -389,25 +391,63 @@ object CssCheck {
         return Decoded(out.toString(), lines, escaped)
     }
 
+    /** The addresses the reference [match] points at: one for `url(` and `@import`, every string of an `image-set()`. */
+    private fun addresses(decoded: Decoded, match: MatchResult): List<String> {
+        val start = match.range.last + 1
+        if (match.value.endsWith("image-set(", ignoreCase = true)) return imageSetValues(decoded, start)
+        return listOfNotNull(urlValue(decoded, start, unquoted = match.value.startsWith("url", ignoreCase = true)))
+    }
+
     /**
      * The address after `url(` or `@import` at [start] of [decoded] CSS: a quoted string, or with [unquoted] the text
      * up to `)`; null when none follows (an `@import url(...)`, whose `url(` is read on its own).
      */
     private fun urlValue(decoded: Decoded, start: Int, unquoted: Boolean): String? {
         val text = decoded.text
-        fun isPlain(i: Int, c: Char) = text[i] == c && !decoded.escaped[i]
         fun isSpace(i: Int) = text[i] in CSS_WHITESPACE && !decoded.escaped[i]
         var i = start
         while (i < text.length && isSpace(i)) i++
         if (i == text.length) return null
-        val quote = text[i]
-        if (isPlain(i, '"') || isPlain(i, '\'')) {
-            val end = (i + 1 until text.length).firstOrNull { isPlain(it, quote) || isPlain(it, '\n') } ?: text.length
-            return text.substring(i + 1, end)
-        }
+        quotedValue(decoded, i)?.let { return it.first }
         if (!unquoted) return null
-        val end = (i until text.length).firstOrNull { isPlain(it, ')') || isSpace(it) } ?: text.length
+        val end = (i until text.length)
+            .firstOrNull { (text[it] == ')' && !decoded.escaped[it]) || isSpace(it) } ?: text.length
         return text.substring(i, end)
+    }
+
+    /**
+     * Every string up to the `)` that closes the `image-set()` opened before [start]: a browser takes a bare string
+     * there as an address, as it takes a `url(...)`.
+     */
+    private fun imageSetValues(decoded: Decoded, start: Int): List<String> {
+        val text = decoded.text
+        val values = mutableListOf<String>()
+        var i = start
+        var depth = 1
+        while (i < text.length && depth > 0) {
+            val quoted = quotedValue(decoded, i)
+            if (quoted != null) {
+                values += quoted.first
+                i = quoted.second
+                continue
+            }
+            if (!decoded.escaped[i]) {
+                if (text[i] == '(') depth++
+                if (text[i] == ')') depth--
+            }
+            i++
+        }
+        return values
+    }
+
+    /** The string that a plain quote at [start] opens and the index after it, or null when no quote is there. */
+    private fun quotedValue(decoded: Decoded, start: Int): Pair<String, Int>? {
+        val text = decoded.text
+        val quote = text[start]
+        if (decoded.escaped[start] || (quote != '"' && quote != '\'')) return null
+        val end = (start + 1 until text.length)
+            .firstOrNull { (text[it] == quote || text[it] == '\n') && !decoded.escaped[it] } ?: text.length
+        return text.substring(start + 1, end) to if (end < text.length && text[end] == quote) end + 1 else end
     }
 
     /** The host [address] reaches on the internet, lowercase, or null for data, local and relative addresses. */

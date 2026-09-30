@@ -202,6 +202,23 @@ class CssCheckTest {
     }
 
     @Test
+    fun `a bare string of an image-set is an address`() {
+        val css = """
+            .a { background-image: image-set("https://a.example.com/x.png" 1x, "y.png" 2x) }
+            .b { background-image: -webkit-image-set(url("https://b.example.com/x.png") 1x) }
+            .c { background-image: image-set("z.png" 1x, "https://c.example.com/x.png" 2x) }
+        """.trimIndent()
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(
+            CssCheck.Issue(1, Problem.REMOTE_FILE, "a.example.com"),
+            CssCheck.Issue(2, Problem.REMOTE_FILE, "b.example.com"),
+            CssCheck.Issue(3, Problem.REMOTE_FILE, "c.example.com"),
+        ).inOrder()
+        // The closing `)` of the image-set ends it, so a string after it is not one of its addresses.
+        val after = """.a { background-image: image-set("x.png" 1x) } .b::before { content: "//d.example.com/" }"""
+        assertThat(CssCheck.remoteFiles(after)).isEmpty()
+    }
+
+    @Test
     fun `escaped and one-slash addresses on the page itself are not remote`() {
         val css = """
             .a { background: url(\2f img/x.png) }
