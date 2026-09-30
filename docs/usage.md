@@ -98,7 +98,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 
 ### Audio sources
 
-Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}` and `{reading}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; failures say what went wrong (for example "The server refused the connection or is not running (ConnectException)"), and sources that failed recently are listed together in one card on the start screen.
+Sources are tried in the listed order, as in Yomitan: JapanesePod101, LanguagePod101, Jisho, Lingua Libre, Wiktionary, the phone's text-to-speech (played only, never put into notes), a custom URL template with `{term}`, `{reading}` and `{language}`, and a custom URL returning Yomitan's audio source list JSON. Each source has a Test button; failures say what went wrong (for example "The server refused the connection or is not running (ConnectException)"), and sources that failed recently are listed together in one card on the start screen.
 
 A custom URL may point to a server on the home network over plain `http://`, as in Yomitan on a computer. When such a server's list names its files by a local address (`0.0.0.0`, `localhost`, `127.0.0.1`), the files are fetched from the list's server instead. On Android 17 and newer, a source on the home network needs the nearby devices (local network) permission: the app asks for it when such a source is added, imported from Yomitan or restored from a backup, and a failed test offers it again.
 

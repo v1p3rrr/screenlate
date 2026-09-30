@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 
 /** Yomitan's audio sources. */
 enum class AudioSourceType(val hasUrl: Boolean = false) {
@@ -48,8 +53,9 @@ data class AudioSource(val type: AudioSourceType, val url: String = "") {
     val address: String?
         get() = if (!type.hasUrl) null else ADDRESS.find(url.trim())?.groupValues?.get(1)?.substringAfterLast('@')
 
-    private companion object {
-        val ADDRESS = Regex("^[A-Za-z][A-Za-z0-9+.-]*://([^/?#]+)")
+    // Not private: the serialization plugin puts the serializer here, which the settings decoding looks up.
+    companion object {
+        private val ADDRESS = Regex("^[A-Za-z][A-Za-z0-9+.-]*://([^/?#]+)")
     }
 }
 
@@ -73,24 +79,39 @@ data class AudioSettings(
 
 @Singleton
 class AudioSettingsRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
-    private val json = Json { ignoreUnknownKeys = true }
-
-    val settings: Flow<AudioSettings> = dataStore.data.map { prefs ->
-        val stored = prefs[KEY]?.let { runCatching { json.decodeFromString<AudioSettings>(it) }.getOrNull() }
-            ?: return@map AudioSettings()
-        // Versions before the full source set stored their only default; that was never the user's choice.
-        if (prefs[CHOSEN] != true && stored.sources == LEGACY_DEFAULT) stored.copy(sources = AudioSettings().sources) else stored
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
     }
+
+    val settings: Flow<AudioSettings> = dataStore.data.map(::read)
 
     suspend fun current(): AudioSettings = settings.first()
 
+    /** Reads and writes in one step, so quick successive changes do not overwrite each other. */
     suspend fun update(transform: (AudioSettings) -> AudioSettings) {
-        val next = transform(current())
         dataStore.edit {
-            it[KEY] = json.encodeToString(next)
+            it[KEY] = json.encodeToString(transform(read(it)))
             it[CHOSEN] = true
         }
     }
+
+    private fun read(prefs: Preferences): AudioSettings {
+        val stored = prefs[KEY]?.let(::decode) ?: return AudioSettings()
+        // Versions before the full source set stored their only default; that was never the user's choice.
+        return if (prefs[CHOSEN] != true && stored.sources == LEGACY_DEFAULT) stored.copy(sources = AudioSettings().sources) else stored
+    }
+
+    /** Sources of a type this version does not know (settings of a newer version) are left out, not the whole list. */
+    private fun decode(raw: String): AudioSettings? = runCatching {
+        val stored = json.parseToJsonElement(raw).jsonObject
+        val sources = stored["sources"]?.jsonArray?.filter { source ->
+            runCatching { json.decodeFromJsonElement<AudioSource>(source) }.isSuccess
+        }
+        json.decodeFromJsonElement<AudioSettings>(
+            if (sources == null) stored else JsonObject(stored + ("sources" to JsonArray(sources))),
+        )
+    }.getOrNull()
 
     private companion object {
         val KEY = stringPreferencesKey("audio_settings")

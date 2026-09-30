@@ -73,22 +73,24 @@ class AudioFinder internal constructor(
     init {
         directory.mkdirs()
     }
-    private val clipCache = mutableMapOf<Pair<String, String>, AudioClip?>()
+    private val clipCache = mutableMapOf<ClipKey, AudioClip?>()
     private val failures = ConcurrentHashMap<AudioSource, AudioSourceFailure>()
     private val json = Json { ignoreUnknownKeys = true }
 
     /** The first clip of the sources in priority order, for notes; text-to-speech is skipped. */
     suspend fun find(term: String, reading: String, language: Language): AudioClip? {
-        val key = term to reading
+        val sources = settings.current().sources
+        // Other sources may have the clip, or no longer have it.
+        val key = ClipKey(sources, language, term, reading)
         synchronized(clipCache) { if (key in clipCache) return clipCache[key] }
         var failed = false
         val started = System.currentTimeMillis()
         var asked = 0
-        val clip = settings.current().sources.withIndex()
+        val clip = sources.withIndex()
             .filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
             .firstNotNullOfOrNull { (index, source) ->
                 asked++
-                firstClip(index, source, term, reading, language).also { if (it == null && failures.containsKey(source)) failed = true }
+                firstClip(index, source, term, reading, language).onFailure { failed = true }.getOrNull()
             }
         Log.d(TAG, "Audio: ${if (clip != null) "found" else "none"} after $asked sources in ${System.currentTimeMillis() - started} ms")
         // A network error is worth retrying later; "no audio for this word" is not.
@@ -145,13 +147,20 @@ class AudioFinder internal constructor(
 
     fun clearFailures() = failures.clear()
 
-    private suspend fun firstClip(index: Int, source: AudioSource, term: String, reading: String, language: Language): AudioClip? =
-        withContext(Dispatchers.IO) {
-            val candidates = candidatesOrNull(index, source, term, reading, language) ?: return@withContext null
-            runCatching { candidates.firstNotNullOfOrNull { downloadChecked(it, term, reading) } }
-                .onFailure { note(source, it) }
-                .getOrNull()
-        }
+    /** Fails when the source could not be asked, also without a network, which [note] does not count as a failure. */
+    private suspend fun firstClip(
+        index: Int,
+        source: AudioSource,
+        term: String,
+        reading: String,
+        language: Language,
+    ): Result<AudioClip?> = withContext(Dispatchers.IO) {
+        runCatching {
+            val candidates = candidatesOf(index, source, term, reading, language)
+            failures.remove(source)
+            candidates.firstNotNullOfOrNull { downloadChecked(it, term, reading) }
+        }.onFailure { note(source, it) }
+    }
 
     private fun candidatesOrNull(
         index: Int,
@@ -215,9 +224,9 @@ class AudioFinder internal constructor(
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))
             AudioSourceType.URL ->
-                listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading), ""))
+                listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading, language), ""))
             AudioSourceType.CUSTOM_JSON -> {
-                val listUrl = expand(source.url, term, reading).toHttpUrl()
+                val listUrl = expand(source.url, term, reading, language).toHttpUrl()
                 val body = fetch(request(listUrl).build())
                 val items = try {
                     json.parseToJsonElement(body).jsonObject["audioSources"]?.jsonArray.orEmpty().map { item ->
@@ -270,10 +279,14 @@ class AudioFinder internal constructor(
         httpClient.newCall(request(url).build()).execute().use { response ->
             if (response.code >= 500) throw HttpStatusException(response.code)
             if (!response.isSuccessful) return null
-            val bytes = response.body.bytes()
-            if (bytes.isEmpty()) return null
             val contentType = response.header("Content-Type").orEmpty()
             if (contentType.startsWith("text/") || contentType.contains("json")) return null
+            // A word clip is small; a stream or a large file from a mistyped URL is not read into memory.
+            if (response.body.contentLength() > MAX_CLIP_BYTES) return null
+            val body = response.body.source()
+            if (body.request(MAX_CLIP_BYTES + 1)) return null
+            val bytes = body.buffer.readByteArray()
+            if (bytes.isEmpty()) return null
             val extension = extensionFor(contentType, url)
             val file = File(directory, "${sha256("$term\n$reading\n$url".toByteArray()).take(16)}.$extension")
             file.writeBytes(bytes)
@@ -289,17 +302,11 @@ class AudioFinder internal constructor(
 
     private fun request(url: HttpUrl) = Request.Builder().url(url).header("User-Agent", USER_AGENT)
 
-    private fun extensionFor(contentType: String, url: String): String = when {
-        contentType.contains("mpeg") || contentType.contains("mp3") -> "mp3"
-        contentType.contains("ogg") || contentType.contains("opus") -> "ogg"
-        contentType.contains("wav") -> "wav"
-        contentType.contains("flac") -> "flac"
-        contentType.contains("aac") || contentType.contains("mp4") || contentType.contains("m4a") -> "m4a"
-        else -> url.substringBefore('?').substringAfterLast('.', "mp3").take(4).lowercase()
-    }
-
-    private fun expand(template: String, term: String, reading: String): String =
-        template.replace("{term}", encode(term)).replace("{reading}", encode(reading.ifEmpty { term }))
+    /** Yomitan's placeholders of a URL template. */
+    private fun expand(template: String, term: String, reading: String, language: Language): String =
+        template.replace("{term}", encode(term))
+            .replace("{reading}", encode(reading.ifEmpty { term }))
+            .replace("{language}", encode(language.code))
 
     private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 
@@ -308,7 +315,26 @@ class AudioFinder internal constructor(
     private fun sha256(bytes: ByteArray): String =
         MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
+    private data class ClipKey(val sources: List<AudioSource>, val language: Language, val term: String, val reading: String)
+
     companion object {
+        /**
+         * The clip file's extension: by content type, else the extension of the URL's file name (a dot in the host or
+         * a folder does not count), else mp3.
+         */
+        internal fun extensionFor(contentType: String, url: String): String = when {
+            contentType.contains("mpeg") || contentType.contains("mp3") -> "mp3"
+            contentType.contains("ogg") || contentType.contains("opus") -> "ogg"
+            contentType.contains("wav") -> "wav"
+            contentType.contains("flac") -> "flac"
+            contentType.contains("webm") -> "webm"
+            contentType.contains("aac") || contentType.contains("mp4") || contentType.contains("m4a") -> "m4a"
+            else -> url.substringBefore('#').substringBefore('?').substringAfter("://").substringAfter('/', "")
+                .substringAfterLast('/').substringAfterLast('.', "").lowercase()
+                .takeIf { it.length in 1..4 && it.all(Char::isLetterOrDigit) }
+                ?: "mp3"
+        }
+
         private val LOCAL_HOSTS = setOf("0.0.0.0", "localhost", "127.0.0.1", "::1")
 
         /**
@@ -324,6 +350,7 @@ class AudioFinder internal constructor(
         private const val LANGUAGE_POD_SEARCH = "https://www.japanesepod101.com/learningcenter/reference/dictionary_post"
         private const val COMMONS_API = "https://commons.wikimedia.org/w/api.php"
         private const val COMMONS_LIMIT = 10
+        private const val MAX_CLIP_BYTES = 10L * 1024 * 1024
 
         /** JapanesePod101 answers unknown words with this "not available" clip (the same check as Yomitan). */
         private const val JPOD_PLACEHOLDER_SHA256 = "ae6398b5a27bc8c0a771df6c907ade794be15518174773c58c7c7ddd17098906"

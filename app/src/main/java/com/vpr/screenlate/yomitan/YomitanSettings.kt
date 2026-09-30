@@ -177,8 +177,9 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
         }
 
         private fun audioSourceType(type: String): AudioSourceType? = when (type) {
-            "jpod101", "jpod101-alternate" -> AudioSourceType.JAPANESE_POD_101
-            "language-pod-101" -> AudioSourceType.LANGUAGE_POD_101
+            "jpod101" -> AudioSourceType.JAPANESE_POD_101
+            // Older Yomitan versions called the dictionary search source jpod101-alternate.
+            "language-pod-101", "jpod101-alternate" -> AudioSourceType.LANGUAGE_POD_101
             "jisho" -> AudioSourceType.JISHO
             "lingua-libre" -> AudioSourceType.LINGUA_LIBRE
             "wiktionary" -> AudioSourceType.WIKTIONARY

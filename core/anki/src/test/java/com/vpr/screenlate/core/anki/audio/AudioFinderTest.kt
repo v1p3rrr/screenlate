@@ -26,6 +26,9 @@ class AudioFinderTest {
     /** Requests as the app sent them, before being redirected to the test server. */
     private val requests = Collections.synchronizedList(mutableListOf<okhttp3.Request>())
 
+    /** Every request fails as without a network. */
+    @Volatile private var offline = false
+
     /** Answers by path; everything else is a 404. */
     private val routes = mutableMapOf<String, () -> MockResponse>()
 
@@ -43,6 +46,7 @@ class AudioFinderTest {
         val client = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val original = chain.request()
+                if (offline) throw java.net.UnknownHostException(original.url.host)
                 requests += original
                 val url = original.url.newBuilder().scheme("http").host(server.hostName).port(server.port).build()
                 chain.proceed(original.newBuilder().url(url).build())
@@ -95,6 +99,51 @@ class AudioFinderTest {
         assertThat(finder.recentFailures().single().error).isEqualTo(AudioError(AudioError.Kind.HTTP_STATUS, "HTTP 503"))
         finder.clearFailures()
         assertThat(finder.recentFailures()).isEmpty()
+    }
+
+    @Test
+    fun `a clip remembered as missing is asked again after the sources changed`() {
+        sources(AudioSource(AudioSourceType.URL, "https://first.example/word?term={term}"))
+        assertThat(find()).isNull()
+        sources(AudioSource(AudioSourceType.URL, "https://second.example/clip?term={term}"))
+        routes["/clip"] = { audio() }
+        assertThat(find()?.url).startsWith("https://second.example/clip")
+    }
+
+    @Test
+    fun `no audio found without a network is asked again later`() {
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}"))
+        routes["/word"] = { audio() }
+        offline = true
+        assertThat(find()).isNull()
+        assertThat(finder.recentFailures()).isEmpty()
+        offline = false
+        assertThat(find()).isNotNull()
+    }
+
+    @Test
+    fun `url templates take the language`() {
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}&lang={language}"))
+        routes["/word"] = { audio() }
+        find()
+        assertThat(requests.single().url.queryParameter("lang")).isEqualTo("ja")
+    }
+
+    @Test
+    fun `a clip larger than any word recording is not read`() {
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/stream?term={term}"))
+        routes["/stream"] = { audio(ByteArray(10 * 1024 * 1024 + 1)) }
+        assertThat(find()).isNull()
+    }
+
+    @Test
+    fun `the extension comes from the content type or the url's file name`() {
+        assertThat(AudioFinder.extensionFor("audio/webm", "https://a.example/x")).isEqualTo("webm")
+        assertThat(AudioFinder.extensionFor("application/octet-stream", "https://a.example/clip.OGG?x=1")).isEqualTo("ogg")
+        // A dot in the host or a folder is not an extension.
+        assertThat(AudioFinder.extensionFor("", "https://audio.example.com/word?term=a.b")).isEqualTo("mp3")
+        assertThat(AudioFinder.extensionFor("", "https://audio.example.com")).isEqualTo("mp3")
+        assertThat(AudioFinder.extensionFor("", "https://a.example/v1.2/word")).isEqualTo("mp3")
     }
 
     @Test

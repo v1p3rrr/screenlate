@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 7 done and committed; module 8 (Audio), run 1 in progress. Owner said: do all modules without stopping (don't end the turn between modules).
+Updated after every step so the work survives a context reset or a paused session: module 8 done and committed; module 11 run 1 next (check get_usage first). Owner said: do all modules without stopping; stop when weekly usage > 92% (finish the current module first; check get_usage after each module).
 
 ## Progress
 
@@ -45,7 +45,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 5 | Lookup and engine | 8 found: 5 fixed, 2 questions (Q5, Q6), 1 deferred | 2 found, fixed | 2 found, fixed | nothing found | see git log |
 | 6 | Lookup page and rendering | 7 found: 6 fixed, 1 question (Q7) | 6 found, fixed | 1 found, fixed | nothing found | see git log |
 | 7 | Anki export | 5 found, fixed | 8 found: 7 fixed, 1 deferred (overlay) | 1 found, fixed | nothing found | see git log |
-| 8 | Audio | | | | | |
+| 8 | Audio | 8 found, fixed | 3 found, fixed | nothing found | not needed | see git log |
 | 11 | App shell, home, search and localization | | | | | |
 | 12 | Backup and Yomitan settings import | | | | | |
 | 13 | Updates, About and logs | | | | | |
@@ -357,6 +357,48 @@ Review of the module 7 diff.
 Review of the serializer change: names encode as the generated enum serializer did, nothing else serializes the
 enum. Nothing found.
 
+### Module 8, run 1
+
+- Fixed: `AudioSettingsRepository.update` read the settings outside the DataStore edit, so close changes overwrote
+  each other; it reads and writes in one edit now.
+- Fixed: the clip cache ignored the sources and language, so a clip (or "no audio") stayed after the sources changed;
+  the key includes them.
+- Fixed: a source type unknown to this version reset all audio settings; such sources are left out and other values
+  fall back to their defaults.
+- Fixed: `AudioSource` had a private companion object, which holds the generated serializer; decoding a source from
+  another class failed with `IllegalAccessError` (found while writing the fix above).
+- Fixed: without a known content type the clip extension came from the last dot of the whole URL (a host name gave
+  `com/`, the write failed and the source was reported as failing); only the file name counts now, and `audio/webm`
+  maps to webm.
+- Fixed: clip downloads were read whole before the content-type check and without a limit; the type is checked
+  first and anything over 10 MB is skipped.
+- Fixed: a dialog test that was still running after the dialog closed or its type changed came back and played;
+  tests and test clips keep only the latest job.
+- Done (deferred from module 1 review): a test that every language's default audio source names map to a source
+  type.
+- Emulator: the stored sources load, the source test lists clips from every source, a test clip plays.
+
+### Module 8, run 2
+
+Whole module again, with its integrations (popup audio and notes, home failure card, Yomitan import, backup, the
+local network permission flow).
+
+- Fixed: without a network every source throws `UnknownHostException`, which is not recorded as a source failure,
+  so the word was cached as having no audio until the process restarted; a source that could not be asked now
+  keeps the word out of the cache.
+- Fixed: Yomitan's old source name `jpod101-alternate` (renamed to `language-pod-101` in Yomitan's options version
+  50) was imported as JapanesePod101 word audio.
+- Fixed: URL templates take Yomitan's `{language}` placeholder too (docs/usage.md updated; the in-app hints still
+  name the two common ones).
+- Looked at and fine: the player (completion and errors reset it), text-to-speech start, the home failure card
+  (failures of removed sources are hidden), the local network permission flow.
+
+### Module 8, run 3
+
+Review of the module 8 diff: the combined source attempt keeps the old failure bookkeeping (a source that answered
+clears its failure before downloads), the size check stops a stream after 10 MB, settings reads apply the legacy
+default mapping inside the edit as before, cancelled test jobs leave no stale state. Nothing found; no run 4.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -365,8 +407,8 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   warnings on CI).
 - Module 4 (done in run 1): `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
   `Data.getStringArray` (use `getNullableStringArray`).
-- Module 8: a test that every name in `LanguageSupport.defaultAudioSources` maps to an `AudioSourceType`
-  (`AudioSettings.defaultSources` drops unknown names silently).
+- Module 8 (done in run 1): a test that every name in `LanguageSupport.defaultAudioSources` maps to an
+  `AudioSourceType` (`AudioSettings.defaultSources` drops unknown names silently).
 - Module 11: `SearchViewModel.search` wraps the lookup in `runCatching`, which also catches `CancellationException`;
   rethrow it (today the cancelled result is dropped by `mapLatest`).
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
@@ -392,3 +434,4 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   modules' bugs, commits per module, emulator after each run).
 - 2026-09-30: owner asked to discuss later how ➕ behaves on a draft or an old popup and whether ➕ should cancel the
   cloud request (questions Q1, Q2).
+- 2026-09-30: owner asked to stop once the weekly usage limit passes 92% (finish the module in progress first; check usage after each module).

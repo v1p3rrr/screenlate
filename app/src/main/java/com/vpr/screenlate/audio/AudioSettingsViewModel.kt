@@ -53,6 +53,8 @@ class AudioSettingsViewModel @Inject constructor(
     val dialogTest = MutableStateFlow<SourceTest?>(null)
 
     private var testJob: Job? = null
+    private var dialogJob: Job? = null
+    private var playJob: Job? = null
 
     fun setAutoPlay(enabled: Boolean) = update { it.copy(autoPlay = enabled) }
 
@@ -106,8 +108,9 @@ class AudioSettingsViewModel @Inject constructor(
 
     /** Tests the source being edited and plays its first clip. */
     fun testInDialog(source: AudioSource) {
+        dialogJob?.cancel()
         dialogTest.value = SourceTest(source)
-        viewModelScope.launch {
+        dialogJob = viewModelScope.launch {
             val (term, reading) = resolve(testWord.value)
             val result = finder.test(source, term, reading, LANGUAGE)
             val candidates = result.getOrDefault(emptyList())
@@ -121,12 +124,16 @@ class AudioSettingsViewModel @Inject constructor(
         }
     }
 
+    /** Also drops a test still running, so its result does not show up or play after the dialog changed. */
     fun clearDialogTest() {
+        dialogJob?.cancel()
         dialogTest.value = null
     }
 
+    /** The last clip asked for plays; an earlier one still downloading is dropped. */
     fun play(candidate: AudioCandidate, sourceIndex: Int) {
-        viewModelScope.launch {
+        playJob?.cancel()
+        playJob = viewModelScope.launch {
             played.value = PlayState(candidate.id, sourceIndex)
             val (term, reading) = resolve(testWord.value)
             if (candidate.isSpeech) {

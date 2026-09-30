@@ -100,6 +100,13 @@ class YomitanSettingsTest {
     }
 
     @Test
+    fun `the old name of the dictionary search source is read as that source`() {
+        val old = """{"options": {"profiles": [{"options": {"audio": {"sources": [{"type": "jpod101-alternate"}]}}}]}}"""
+        assertThat(YomitanSettings.parse(old).profiles.single().audio!!.sources)
+            .containsExactly(AudioSource(AudioSourceType.LANGUAGE_POD_101))
+    }
+
+    @Test
     fun `reads term card formats with overwrite modes`() {
         val anki = YomitanSettings.parse(export).profiles[1].anki!!
         assertThat(anki.main!!.model).isEqualTo("Senren")
