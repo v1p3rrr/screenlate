@@ -68,40 +68,50 @@ class PopupPlacementTest {
     }
 
     @Test
-    fun `vertical text goes beside the column when there is room`() {
+    fun `above wins over a roomier space below when the full height fits`() {
+        // 690 px free above, 1140 px below: both hold the 600 px popup.
+        val popup = place(Box(400f, 800f, 600f, 850f))
+
+        assertThat(popup.bottom).isEqualTo(790f)
+        assertThat(popup.height).isEqualTo(600f)
+    }
+
+    @Test
+    fun `vertical text gets the popup above the column like horizontal text`() {
         val popup = place(Box(900f, 800f, 950f, 1300f), vertical = true)
 
-        assertThat(popup.right).isEqualTo(890f)
+        assertThat(popup.bottom).isEqualTo(790f)
+        assertThat(popup.width).isEqualTo(800f)
     }
 
     @Test
-    fun `vertical text falls back to above or below when the sides are too narrow`() {
-        val popup = place(Box(500f, 1300f, 550f, 1800f), vertical = true)
+    fun `vertical text goes below when only there the full height fits`() {
+        val popup = place(Box(500f, 250f, 550f, 700f), vertical = true)
 
-        assertThat(popup.bottom).isEqualTo(1290f)
+        assertThat(popup.top).isEqualTo(710f)
     }
 
     @Test
-    fun `portrait vertical text gets a narrower, taller popup beside the column`() {
+    fun `portrait vertical text too tall for above or below gets a narrower, taller popup beside the column`() {
         val phone = Box(0f, 100f, 1080f, 2340f)
         val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
         assertThat(size.minWidth).isEqualTo(600f)
         assertThat(size.besideHeight).isWithin(0.5f).of(2240f * 0.6f)
 
-        // A column 750 px from the left edge, the bubble below the word: 740 px free on the left.
-        val word = Box(750f, 900f, 800f, 1400f)
-        val popup = PopupPlacement.place(word, true, Box(725f, 1410f, 875f, 1560f), size, phone, margin = 10f)
-        assertThat(popup.right).isEqualTo(715f)
-        assertThat(popup.width).isEqualTo(715f)
+        // A column over nearly the whole height, 750 px from the left edge: 740 px free on the left.
+        val word = Box(750f, 300f, 800f, 2150f)
+        val popup = PopupPlacement.place(word, true, null, size, phone, margin = 10f)
+        assertThat(popup.right).isEqualTo(740f)
+        assertThat(popup.width).isEqualTo(740f)
         assertThat(popup.height).isWithin(0.5f).of(2240f * 0.6f)
     }
 
     @Test
-    fun `portrait vertical text in the middle of a narrow screen goes beside the column on the roomier side`() {
+    fun `a tall column in the middle of a narrow screen gets the narrow popup on the roomier side`() {
         val phone = Box(0f, 100f, 1080f, 2340f)
         val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
         // Less than 200 dp on either side of the column: 490 px on the left, 510 px on the right.
-        val word = Box(500f, 1500f, 560f, 2000f)
+        val word = Box(500f, 300f, 560f, 2150f)
         val popup = PopupPlacement.place(word, true, null, size, phone, margin = 10f)
         assertThat(popup.left).isEqualTo(570f)
         assertThat(popup.width).isEqualTo(510f)
@@ -109,14 +119,15 @@ class PopupPlacementTest {
     }
 
     @Test
-    fun `portrait vertical text goes above or below when even a narrow popup does not fit beside`() {
+    fun `portrait vertical text in the middle of the screen goes above with the full width`() {
         val phone = Box(0f, 100f, 1080f, 2340f)
         val size = PopupPlacement.size(phone, density = 3f, maxWidth = 1260f)
-        // A wide keep-out (the bubble off to the side) leaves under 140 dp on both sides.
+        // The owner's case: a short column low on the page, the bubble right under it.
         val word = Box(500f, 1500f, 560f, 2000f)
-        val bubble = Box(380f, 2010f, 680f, 2150f)
+        val bubble = Box(455f, 2010f, 605f, 2160f)
         val popup = PopupPlacement.place(word, true, bubble, size, phone, margin = 10f)
         assertThat(popup.bottom).isEqualTo(1490f)
+        assertThat(popup.width).isWithin(0.5f).of(1080f * 0.85f)
         assertThat(popup.height).isWithin(0.5f).of(2240f * 0.35f)
     }
 

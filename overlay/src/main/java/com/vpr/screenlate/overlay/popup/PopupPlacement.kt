@@ -12,8 +12,8 @@ object PopupPlacement {
     /**
      * Preferred popup size. Above or below the word the popup is [height] tall and may shrink to the free space, down
      * to [minHeight]; beside it the popup is [besideHeight] tall and its width may shrink, down to [minWidth].
-     * [besideFirst] tries the sides for horizontal text too. Vertical text whose sides both lack [minWidth] still goes
-     * beside the column, on the roomier side, while that side has [narrowMinWidth].
+     * [besideFirst] tries the sides before above and below. Vertical text that fits neither above nor below goes
+     * beside the column, even on a side with only [narrowMinWidth].
      */
     data class Size(
         val width: Float,
@@ -26,12 +26,10 @@ object PopupPlacement {
     )
 
     /**
-     * About a third of a portrait screen, above or below the word. Vertical text in portrait goes beside its column
-     * when a side has room for at least a narrow popup, which is taller to make up for the width; a column in the
-     * middle of a narrow screen gets an even narrower one on the roomier side, so the columns next to it stay
-     * visible. A landscape screen
-     * is so low that a strip above or below holds hardly one entry, so there the popup goes beside the word, up to
-     * half the width and nearly the whole height.
+     * About a third of a portrait screen, above or below the word, vertical text included. A vertical column too
+     * tall for that gets a popup beside it, narrower and taller to make up for the width, down to an even narrower one
+     * on the roomier side. A landscape screen is so low that a strip above or below holds hardly one entry, so there
+     * the popup goes beside the word, up to half the width and nearly the whole height.
      *
      * @param screen usable screen area in pixels; [density] converts dp to pixels.
      */
@@ -73,36 +71,40 @@ object PopupPlacement {
 
     /**
      * Returns the popup bounds next to [word], never covering [bubble]: the word and the bubble are kept out together,
-     * so a popup below the word goes below the bubble when the bubble is there. Vertical text, and any
-     * text with [Size.besideFirst], prefers the left/right sides so the text stays visible; horizontal text otherwise
-     * uses above/below. A popup above or below shrinks to the free height, one beside the word to the free width
-     * (for vertical text down to [Size.narrowMinWidth] before it moves above or below).
+     * so a popup below the word goes below the bubble when the bubble is there. The popup goes above when the full
+     * height fits there, else below when it fits there, else where it shrinks least, down to [Size.minHeight].
+     * Vertical text that fits neither goes beside the column, to the roomier side, shrinking to the free width, down
+     * to [Size.minWidth] and then [Size.narrowMinWidth]. With [Size.besideFirst] the sides come first and then
+     * above or below.
      *
      * @param screen usable screen area, excluding system bars.
      */
     fun place(word: Box, vertical: Boolean, bubble: Box?, size: Size, screen: Box, margin: Float): Box {
         val keepOut = bubble?.let(word::union) ?: word
-        val beside = vertical || size.besideFirst
-        val primary = if (beside) listOf(Side.LEFT, Side.RIGHT) else listOf(Side.ABOVE, Side.BELOW)
-        val secondary = if (beside) listOf(Side.ABOVE, Side.BELOW) else emptyList()
-        val candidates = (primary + secondary).map { candidate(it, word, keepOut, size, screen, margin, size.minWidth) }
+        fun candidates(sides: List<Side>, minWidth: Float = size.minWidth) =
+            sides.map { candidate(it, word, keepOut, size, screen, margin, minWidth) }
+        val stacked = candidates(listOf(Side.ABOVE, Side.BELOW))
+        val beside = candidates(listOf(Side.LEFT, Side.RIGHT))
         val narrow = if (vertical && size.narrowMinWidth < size.minWidth) {
-            primary.map { candidate(it, word, keepOut, size, screen, margin, size.narrowMinWidth) }
+            candidates(listOf(Side.LEFT, Side.RIGHT), size.narrowMinWidth)
         } else {
             emptyList()
         }
-        val groups = listOf(
-            candidates.filter { it.side in primary },
-            narrow,
-            candidates.filter { it.side in secondary },
-        )
+        val groups = when {
+            size.besideFirst -> listOf(beside, narrow, stacked)
+            vertical -> listOf(stacked, beside, narrow)
+            else -> listOf(stacked)
+        }
         for (group in groups) {
             val fitting = group.filter { it.box != null }
-            val best = fitting.filter { it.full }.maxByOrNull { it.space } ?: fitting.maxByOrNull { it.space }
+            // Above wins over below when both have the full height; the sides take the roomier one.
+            val full = fitting.filter { it.full }
+            val best = (if (group === stacked) full.firstOrNull() else full.maxByOrNull { it.space })
+                ?: fitting.maxByOrNull { it.space }
             if (best?.box != null) return best.box
         }
         // Nothing fits beside the word and the bubble: use the roomiest side and let the popup cover what it must.
-        val side = candidates.filter { it.side in primary }.maxBy { it.space }.side
+        val side = groups.first().maxBy { it.space }.side
         return clampInto(overlapping(side, word, size, screen, margin), screen)
     }
 

@@ -23,7 +23,7 @@ A word broken at the end of a line or column is looked up as a whole, reading on
 
 When no word is found at the aim, no entry opens; if the character there is a kanji that a kanji dictionary describes, its kanji entry opens instead. The Search screen does the same for its text.
 
-The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; beside a column in the middle of a narrow screen it can get narrower still. When neither side has room, it goes above or below.
+The entry opens above the word when it fits there, otherwise below the bubble, and never covers either; when neither has room for all of it, it takes the roomier one and gets lower. Vertical text is treated the same, unless its column is so tall that the entry fits neither above nor below: then it opens beside the column, on the side with more room, narrower and taller. In landscape it opens to the side with more room, nearly as tall as the screen; when neither side has room, it goes above or below.
 
 The Quick Settings tile, the start screen and the "Show the bubble" switch in the bubble settings hide and show the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 
