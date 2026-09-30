@@ -30,9 +30,16 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.JsonObject
 
-/** Results for one search text. */
-/** [noTermDictionary] is set when nothing was found because no dictionary with definitions is searched. */
-data class SearchResults(val text: String, val results: List<LookupResult>, val noTermDictionary: NoTermDictionary?)
+/**
+ * Results for one search text. [kanji] is the first character's kanji entry when no word was found; [noTermDictionary]
+ * is set when nothing was found because no dictionary with definitions is searched.
+ */
+data class SearchResults(
+    val text: String,
+    val results: List<LookupResult>,
+    val noTermDictionary: NoTermDictionary?,
+    val kanji: KanjiResult? = null,
+)
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -64,7 +71,9 @@ class SearchViewModel @Inject constructor(
     suspend fun search(text: String, primaryReading: String? = null): SearchResults {
         val trimmed = text.trim()
         val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading) }
-        return SearchResults(trimmed, found, noTermDictionary = if (found.isEmpty()) lookup.noTermDictionary(LANGUAGE) else null)
+        if (found.isNotEmpty()) return SearchResults(trimmed, found, noTermDictionary = null)
+        val kanji = orElse(null) { lookup.characterEntry(trimmed, LANGUAGE) }
+        return SearchResults(trimmed, found, noTermDictionary = lookup.noTermDictionary(LANGUAGE), kanji = kanji)
     }
 
     suspend fun kanji(character: String): KanjiResult = orElse(KanjiResult(character)) { lookup.kanji(character, LANGUAGE) }

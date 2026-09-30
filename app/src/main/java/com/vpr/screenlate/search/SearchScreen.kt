@@ -292,10 +292,11 @@ private fun state(context: android.content.Context, theme: PageTheme, results: S
     context = context,
     theme = theme,
     text = results.text,
-    matched = PageState.matchedLength(results.results),
+    matched = if (results.kanji != null) 1 else PageState.matchedLength(results.results),
     results = results.results,
     message = when {
-        results.results.isNotEmpty() -> null
+        results.results.isNotEmpty() || results.kanji != null -> null
         else -> context.getString(noResultsText(results.noTermDictionary))
     },
+    kanji = results.kanji,
 )

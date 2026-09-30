@@ -85,6 +85,8 @@ val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDic
             "30-kanjium-pitch-accents.zip" to
                 "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary/releases/download/1.0.0/" +
                 "kanjium_pitch_accents.zip",
+            "40-kanjidic-english.zip" to
+                "https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/KANJIDIC_english.zip",
         ),
     )
     cacheDir.set(rootProject.layout.projectDirectory.dir("dicts/bundled"))

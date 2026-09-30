@@ -119,6 +119,15 @@ class DictionaryLookup @Inject constructor(
         return engine.kanji(character)
     }
 
+    /**
+     * The kanji entry for the first character of [text], shown instead of results when no word is found there, as in
+     * Yomitan; null when the language gives that character no entry or no enabled kanji dictionary has it.
+     */
+    suspend fun characterEntry(text: String, language: Language): KanjiResult? {
+        val character = language.support.characterEntry(text) ?: return null
+        return kanji(character, language).takeIf { it.entries.isNotEmpty() }
+    }
+
     /** `rank-based` or `occurrence-based` for each enabled frequency dictionary that declares it, by title. */
     suspend fun frequencyModes(): Map<String, String> = cachedFrequencyModes.get(repository.generation) {
         repository.getAll()

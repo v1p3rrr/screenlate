@@ -11,6 +11,8 @@
  *   ocrError: string,              why cloud recognition failed, empty without a failure; ⚠ opens it in the panel
  *   source: { text, matched },     lookup text and the length of its matched prefix (code points)
  *   results: [LookupResult],       see dictionary.api.model.LookupResult
+ *   kanji: KanjiResult,            a kanji entry shown instead of results: a tapped headword kanji, or the first
+ *                                  character when no word was found
  *   message: string,               shown instead of results
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
  *   labels: { ... }                localized strings

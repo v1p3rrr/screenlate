@@ -78,8 +78,8 @@
       "sourceLanguage": "ja",
       "targetLanguage": "en",
       "description": {
-        "en": "Readings, meanings, stroke count, grade and JLPT level of about 13,000 kanji. Tap a kanji in an entry's headword to see it.",
-        "ru": "Чтения, значения, число черт, класс и уровень JLPT примерно для 13 000 кандзи. Нажмите на кандзи в заголовке статьи, чтобы открыть его."
+        "en": "Readings, meanings, stroke count, grade and JLPT level of about 13,000 kanji. Shown for a kanji tapped in an entry's headword, and for a kanji where no word is found.",
+        "ru": "Чтения, значения, число черт, класс и уровень JLPT примерно для 13 000 кандзи. Открывается по нажатию на кандзи в заголовке статьи и для кандзи, с которого не начинается ни одно слово."
       },
       "indexUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_english.json",
       "downloadUrl": "https://github.com/yomidevs/jmdict-yomitan/releases/latest/download/KANJIDIC_english.zip",

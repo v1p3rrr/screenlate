@@ -57,9 +57,14 @@ licenses in the app under About → Open-source libraries; the list is generated
 Third-party data
 ----------------
 
-The APK bundles these dictionaries unmodified. They are imported on first launch.
+The APK bundles these dictionaries unmodified. They are imported on first launch, or by the update that adds them.
 
 JMdict (English) (https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project), CC BY-SA 4.0,
+  by the Electronic Dictionary Research and Development Group, used in conformance with the Group's
+  licence (https://www.edrdg.org/edrdg/licence.html). Yomitan conversion by jmdict-yomitan
+  (https://github.com/yomidevs/jmdict-yomitan), MIT License.
+
+KANJIDIC (English) (https://www.edrdg.org/wiki/index.php/KANJIDIC_Project), CC BY-SA 4.0,
   by the Electronic Dictionary Research and Development Group, used in conformance with the Group's
   licence (https://www.edrdg.org/edrdg/licence.html). Yomitan conversion by jmdict-yomitan
   (https://github.com/yomidevs/jmdict-yomitan), MIT License.

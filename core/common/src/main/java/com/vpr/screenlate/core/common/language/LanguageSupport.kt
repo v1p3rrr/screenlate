@@ -67,6 +67,12 @@ interface LanguageSupport {
 
     /** Characters of a matched word that get entries of their own below the results (kanji for Japanese). */
     fun singleCharacterEntries(matched: String): List<String>
+
+    /**
+     * The first character of [text] when kanji dictionaries describe such characters (a kanji for Japanese), for the
+     * kanji entry shown when no word is found there; null otherwise.
+     */
+    fun characterEntry(text: String): String?
 }
 
 /** Which matches a lookup accepts. */

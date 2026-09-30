@@ -20,7 +20,7 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 - **Any app, any orientation.** Horizontal and vertical text, portrait and landscape. The popup opens where there is room and never covers the word.
 - **Text from the screen.** Cloud recognition with an instant on-device draft, or the app's own text where the app exposes it (exact and offline), or only the app's text, without recognition, for e-ink readers and weak devices.
 - **Yomitan dictionaries**, looked up and shown the way Yomitan does it: rich entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries.
-- **Dictionaries included**: JMdict (English), a frequency list and pitch accents work right after installing. Jitendex, dictionaries for other languages, kanji and name dictionaries are one tap away in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
+- **Dictionaries included**: JMdict (English), KANJIDIC, a frequency list and pitch accents work right after installing. Jitendex, dictionaries for other languages, more kanji dictionaries and name dictionaries are one tap away in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
 - **Anki cards** through AnkiDroid: your deck, note type and field templates (Yomitan's markers), duplicate checks, pronunciation audio and a cropped screenshot of the scene.
 - **Pronunciation** from the same audio sources as Yomitan, or the phone's text-to-speech.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
@@ -68,7 +68,7 @@ Translations of the interface were made with AI and have not been reviewed by na
 
 Screenlate is free software under the GPL-3.0 ([LICENSE](LICENSE)). [NOTICE](NOTICE) lists the third-party code and data with their licenses; the app shows the same under About.
 
-The bundled dictionaries keep their own licenses: JMdict by the Electronic Dictionary Research and Development Group, the Jiten frequency list and the Kanjium pitch accents, all under CC BY-SA 4.0. Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; dictionaries you import yourself are yours to license.
+The bundled dictionaries keep their own licenses: JMdict and KANJIDIC by the Electronic Dictionary Research and Development Group, the Jiten frequency list and the Kanjium pitch accents, all under CC BY-SA 4.0. Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; dictionaries you import yourself are yours to license.
 
 Screenlate is an independent project, not affiliated with the dictionary authors, Anki, AnkiDroid, Yomitan or the cloud recognition provider.
 

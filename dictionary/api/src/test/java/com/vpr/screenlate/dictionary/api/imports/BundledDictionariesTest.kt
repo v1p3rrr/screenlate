@@ -59,4 +59,13 @@ class BundledDictionariesTest {
         assertThat(BundledDictionaries.baseTitle("Jiten")).isEqualTo("Jiten")
         assertThat(BundledDictionaries.baseTitle("Kanjium Pitch Accents")).isEqualTo("Kanjium Pitch Accents")
     }
+
+    @Test
+    fun `an installed copy in another revision or with the older English title is the same dictionary`() {
+        assertThat(BundledDictionaries.sameTitle("KANJIDIC [2026-250]", "KANJIDIC [2026-270]")).isTrue()
+        assertThat(BundledDictionaries.sameTitle("KANJIDIC (English)", "KANJIDIC [2026-270]")).isTrue()
+        assertThat(BundledDictionaries.sameTitle("KANJIDIC", "KANJIDIC [2026-270]")).isTrue()
+        assertThat(BundledDictionaries.sameTitle("KANJIDIC (French)", "KANJIDIC [2026-270]")).isFalse()
+        assertThat(BundledDictionaries.sameTitle("Jitendex.org [2026-09-20]", "JMdict [2026-09-27]")).isFalse()
+    }
 }

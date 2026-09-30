@@ -6,7 +6,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 - State: `main` is clean and pushed; last release v0.1.4; no release until the owner says so. All module reviews and
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
-  Request 12 (spinner while the hidden-apps list loads) is done.
+  Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
+  KANJIDIC, kept aside when one is installed) are done. Next: 15 (popup above/below instead of squeezed at the side),
+  16 (bring in `claude/elegant-allen-xmu3fx`), 17 (`/code-review xhigh --fix` since 764ae60).
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond

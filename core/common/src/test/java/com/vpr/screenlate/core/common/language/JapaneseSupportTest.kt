@@ -120,4 +120,14 @@ class JapaneseSupportTest {
         assertThat(JapaneseSupport.singleCharacterEntries("人々")).isEmpty()
         assertThat(JapaneseSupport.singleCharacterEntries("𠮟る𠮟")).containsExactly("𠮟")
     }
+
+    @Test
+    fun `the kanji entry is for a kanji at the start`() {
+        assertThat(JapaneseSupport.characterEntry("彅は")).isEqualTo("彅")
+        assertThat(JapaneseSupport.characterEntry("𠮟る")).isEqualTo("𠮟")
+        assertThat(JapaneseSupport.characterEntry("は彅")).isNull()
+        assertThat(JapaneseSupport.characterEntry("々")).isNull()
+        assertThat(JapaneseSupport.characterEntry("abc")).isNull()
+        assertThat(JapaneseSupport.characterEntry("")).isNull()
+    }
 }

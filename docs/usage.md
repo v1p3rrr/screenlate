@@ -2,7 +2,7 @@
 
 ## First launch
 
-1. Open Screenlate and enable its accessibility service (the start screen links to the settings). The bundled dictionaries install in the background; the start screen shows when they are ready. A bundled dictionary you delete stays deleted, also after app updates.
+1. Open Screenlate and enable its accessibility service (the start screen links to the settings). The bundled dictionaries install in the background; the start screen shows when they are ready. A bundled dictionary you delete stays deleted, also after app updates. An update that adds a bundled dictionary installs it as well, unless you already have that dictionary.
 2. If the switch in the accessibility settings is greyed out after installing from an APK file: App info → ⋮ → Allow restricted settings.
 3. On devices with aggressive battery management, allow Screenlate to run in the background, or the system may stop the service. Settings → Background work shows whether battery optimization is on for Screenlate, asks the system to turn it off, and opens the manufacturer's startup settings on phones that have them.
 
@@ -20,6 +20,8 @@
 | Drag the docked bubble along the edge | Move the dock. |
 
 A word broken at the end of a line or column is looked up as a whole, reading on in the next line or column.
+
+When no word is found at the aim, no entry opens; if the character there is a kanji that a kanji dictionary describes, its kanji entry opens instead. The Search screen does the same for its text.
 
 The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; beside a column in the middle of a narrow screen it can get narrower still. When neither side has room, it goes above or below.
 
@@ -47,7 +49,7 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 ## Entries
 
 - Tap a link inside a definition to look it up; the back arrow returns.
-- Tap a kanji in the headword to see its kanji dictionary entry (install KANJIDIC from the catalog first).
+- Tap a kanji in the headword to see its kanji dictionary entry (KANJIDIC is included).
 - Tap an inflection step 🧩, a pitch accent or a tag with a description (dotted underline, or a label such as "noun" in dictionaries that describe their labels) to read the explanation at the bottom of the popup. Tag descriptions come from the dictionary's tag list and are kept for dictionaries imported from this version on; import an older dictionary again to get them.
 - 🔊 plays the pronunciation from the configured audio sources; hold it to choose among all recordings found.
 - ➕ adds a note to Anki; hold it to attach a picture: a crop editor opens with the word's paragraph and some space around it selected. "Whole screen" selects the whole screenshot and turns into "Frame", which brings the previous frame back.

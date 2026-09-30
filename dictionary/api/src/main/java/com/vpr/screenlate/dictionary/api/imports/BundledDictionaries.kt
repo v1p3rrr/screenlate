@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,7 +24,8 @@ import javax.inject.Singleton
  *
  * Each archive is installed once, identified by name and size; a different archive of the same name shipped by a later
  * app version is installed (replacing the same title). An archive whose dictionary the user deleted is never installed
- * again, whatever version ships later ([markDeleted]).
+ * again, whatever version ships later ([markDeleted]), and neither is a newly shipped one whose dictionary the user
+ * already has from elsewhere (the catalog, a file, a Yomitan collection): theirs stays.
  * The numeric prefix is a slot: when a later version ships another dictionary in a slot whose earlier archive the
  * user already installed, the user keeps the earlier dictionary and the new one is not installed.
  */
@@ -45,16 +47,27 @@ class BundledDictionaries @Inject constructor(
         val prefs = dataStore.data.first()
         val installed = prefs[INSTALLED].orEmpty()
         var declined = prefs[DECLINED].orEmpty()
+        var present: Set<String>? = null
+        suspend fun present(): Set<String> = present ?: presentTitles().also { present = it }
         // Versions before deletions were remembered: an archive installed then whose dictionary is gone was deleted.
         if (prefs[DECLINED_CHECKED] != true) {
-            val titles = presentTitles().mapTo(hashSetOf(), ::baseTitle)
+            val titles = present().mapTo(hashSetOf(), ::baseTitle)
             val deleted = installedBefore(shipped, installed).filter { asset ->
                 titleOf(asset)?.let { baseTitle(it) !in titles } == true
             }
             declined = declined + deleted.map { it.name }
             dataStore.edit { it[DECLINED] = declined; it[DECLINED_CHECKED] = true }
         }
-        return pending(shipped, installed, declined)
+        val pending = pending(shipped, installed, declined)
+        val installedNames = installed.mapTo(hashSetOf()) { it.substringBeforeLast(':') }
+        val fresh = pending.filter { it.name !in installedNames }
+        // On first launch nothing is installed yet, and the archives need not be opened for their titles.
+        val titles = if (fresh.isEmpty()) emptySet() else present()
+        if (titles.isEmpty()) return pending
+        val owned = fresh.filter { asset -> titleOf(asset)?.let { title -> titles.any { sameTitle(it, title) } } == true }
+        if (owned.isEmpty()) return pending
+        dataStore.edit { it[DECLINED] = it[DECLINED].orEmpty() + owned.map { asset -> asset.name } }
+        return pending - owned.toSet()
     }
 
     /** Remembers that the user deleted the bundled dictionary [title], so no later version installs it again. */
@@ -139,6 +152,14 @@ class BundledDictionaries @Inject constructor(
 
         /** A title without a trailing bracketed version, e.g. `JMdict [2026-09-27]` → `JMdict`, as updates change it. */
         fun baseTitle(title: String): String = title.replace(VERSION_SUFFIX, "")
+
+        /**
+         * Whether the installed dictionary titled [installed] is the bundled one titled [bundled] in another revision.
+         * Older builds of English dictionaries name the language: `KANJIDIC (English)` for `KANJIDIC [2026-270]`.
+         */
+        fun sameTitle(installed: String, bundled: String): Boolean = ownKey(installed) == ownKey(bundled)
+
+        private fun ownKey(title: String): String = dictionaryKey(title).removeSuffix(" (english)")
 
         private val VERSION_SUFFIX = Regex("""\s*\[[^\]]*]$""")
 

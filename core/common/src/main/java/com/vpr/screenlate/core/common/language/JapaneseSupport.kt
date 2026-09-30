@@ -175,6 +175,12 @@ object JapaneseSupport : LanguageSupport {
         return result
     }
 
+    override fun characterEntry(text: String): String? {
+        if (text.isEmpty()) return null
+        val codePoint = text.codePointAt(0)
+        return if (isKanji(codePoint)) String(Character.toChars(codePoint)) else null
+    }
+
     fun isKanji(codePoint: Int): Boolean =
         codePoint in 0x4E00..0x9FFF ||
             codePoint in 0x3400..0x4DBF ||

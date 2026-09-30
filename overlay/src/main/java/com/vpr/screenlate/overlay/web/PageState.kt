@@ -25,6 +25,7 @@ object PageState {
      * @param matched length of the matched prefix of [text] in code points.
      * @param pending OCR is still refining the text; shows a spinner.
      * @param engine OCR engine label, empty to hide.
+     * @param kanji shown instead of [results] and [message]: the first character's kanji entry when no word was found.
      */
     fun build(
         context: Context,
@@ -38,6 +39,7 @@ object PageState {
         hideSource: Boolean = false,
         ocrError: String = "",
         noteWait: Boolean = false,
+        kanji: KanjiResult? = null,
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
@@ -48,8 +50,9 @@ object PageState {
             hideSource = hideSource,
             source = SourceDto(text, matched),
             results = results,
-            message = message,
-            labels = labels(context),
+            kanji = kanji,
+            message = message.takeIf { kanji == null },
+            labels = if (kanji != null) labels(context) + kanjiLabels(context) else labels(context),
         ),
     )
 
@@ -79,15 +82,17 @@ object PageState {
             source = SourceDto(kanji.character, 1),
             kanji = kanji.takeIf { it.entries.isNotEmpty() },
             message = message.takeIf { kanji.entries.isEmpty() },
-            labels = labels(context) + mapOf(
-                "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
-                "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
-                "stat_strokes" to context.getString(R.string.overlay_kanji_strokes),
-                "stat_grade" to context.getString(R.string.overlay_kanji_grade),
-                "stat_jlpt" to context.getString(R.string.overlay_kanji_jlpt),
-                "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
-            ),
+            labels = labels(context) + kanjiLabels(context),
         ),
+    )
+
+    private fun kanjiLabels(context: Context): Map<String, String> = mapOf(
+        "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
+        "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
+        "stat_strokes" to context.getString(R.string.overlay_kanji_strokes),
+        "stat_grade" to context.getString(R.string.overlay_kanji_grade),
+        "stat_jlpt" to context.getString(R.string.overlay_kanji_jlpt),
+        "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
     )
 
     /** Length of the first result's match in code points, for highlighting. */

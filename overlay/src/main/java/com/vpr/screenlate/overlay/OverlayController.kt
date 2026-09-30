@@ -140,6 +140,8 @@ class OverlayController(
         val start: TextPosition? = null,
         /** The layout [start] belongs to; a newer scan result may have replaced the current one since. */
         val layout: TextLayout? = null,
+        /** The first character's kanji entry, shown when no word was found. */
+        val kanji: KanjiResult? = null,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -914,14 +916,11 @@ class OverlayController(
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
-            val shown = shownLookup
-            val results = if (shown != null && shown.text == text && popup.isShowing) {
-                shown.results
-            } else {
-                lookupResults(text)
-            }
+            val cached = shownLookup?.takeIf { it.text == text && popup.isShowing }
+            val results = cached?.results ?: lookupResults(text)
+            val kanji = if (cached != null) cached.kanji else if (results.isEmpty()) characterEntry(text) else null
             // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
-            if (results.isEmpty() && lookup.hasTermDictionaries(language)) {
+            if (results.isEmpty() && kanji == null && lookup.hasTermDictionaries(language)) {
                 layerView.setWordBoxes(emptyList())
                 shownLookup = null
                 hapticWord = null
@@ -929,14 +928,14 @@ class OverlayController(
                 popupNotes.onResultsHidden()
                 return@launch
             }
-            val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
+            val matched = if (kanji != null) 1 else PageState.matchedLength(results)
             val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
-            val message = if (results.isEmpty()) noResultsMessage() else null
-            val view = LookupView(text, matched, results, message, start = position, layout = layout)
+            val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
+            val view = LookupView(text, matched, results, message, start = position, layout = layout, kanji = kanji)
             shownLookup = view
-            val word = results.firstOrNull()?.term?.let { it.expression to it.reading }
+            val word = results.firstOrNull()?.term?.let { it.expression to it.reading } ?: kanji?.let { it.character to "" }
             if (word != null && word != hapticWord) haptic()
             hapticWord = word
             popupNotes.refreshActions()
@@ -975,6 +974,16 @@ class OverlayController(
         emptyList()
     }
 
+    /** The kanji entry shown when no word starts at [text]; null when there is none or the lookup failed. */
+    private suspend fun characterEntry(text: String): KanjiResult? = try {
+        lookup.characterEntry(text, language)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Log.w(TAG, "Kanji lookup failed", e.redacted())
+        null
+    }
+
     private suspend fun noResultsMessage(): String = service.getString(noResultsText(lookup.noTermDictionary(language)))
 
     /** Looks up a link target from inside the popup and shows it on top of the current view. */
@@ -982,9 +991,10 @@ class OverlayController(
         val shown = shownLookup
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
-            val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
-            val message = if (results.isEmpty()) noResultsMessage() else null
-            val state = popupStateOffMain(LookupView(query, matched, results, message))
+            val kanji = if (results.isEmpty()) characterEntry(query) else null
+            val matched = if (kanji != null) 1 else PageState.matchedLength(results)
+            val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
+            val state = popupStateOffMain(LookupView(query, matched, results, message, kanji = kanji))
             // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.
             if (shownLookup !== shown) return@launch
             popup.push(state)
@@ -1122,7 +1132,7 @@ class OverlayController(
         return withContext(Dispatchers.Default) {
             PageState.build(
                 service, theme, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError,
-                noteWait,
+                noteWait, view.kanji,
             )
         }
     }
@@ -1161,6 +1171,7 @@ class OverlayController(
             hideSource = !settings.showSourceText,
             ocrError = ocrErrorText(),
             noteWait = noteWaitsForText(pending, aimedEngine()),
+            kanji = view.kanji,
         )
     }
 

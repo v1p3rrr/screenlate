@@ -7,6 +7,7 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
 1. Take up to `scanLength` (16) characters from the cursor. Try prefixes from longest to shortest.
 2. For each prefix, build text variants with preprocessors (width conversion, hiragana ↔ katakana, collapsing emphatic sequences, …), deinflect each variant with the language transforms (keeping the rule chain), post-process.
 3. Query all candidates at once, matching term or reading exactly. Drop matches whose part-of-speech rules do not satisfy the deinflection conditions.
+4. No term found: the scanner looks up the first character in the kanji dictionaries and shows its kanji entry, highlighting one character (`TextScanner._findDictionaryEntries` in `ext/js/language/text-scanner.js`; `searchKanji` is on by default for every scanning input). Screenlate does the same in the popup, popup links and the Search screen (`DictionaryLookup.characterEntry`).
 
 ## Result modes (`resultOutputMode`, default `group`)
 
