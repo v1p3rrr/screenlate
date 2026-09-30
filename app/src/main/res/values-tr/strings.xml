@@ -357,7 +357,8 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="update_retry">Yeniden dene</string>
     <string name="update_skip">Bu sürümü atla</string>
     <string name="update_downloading">İndiriliyor… %%%1$d</string>
-    <string name="update_installing">Yükleniyor; Screenlate bittiğinde yeniden başlar.</string>
+    <string name="update_installing">Yükleniyor. Bitince Android Screenlate’i kapatır; ardından yeniden açın.</string>
+    <string name="update_confirm_install">Yüklemeye devam et</string>
     <string name="update_allow_installs">Güncellemelerin yüklenmesine izin ver</string>
     <string name="update_allow_installs_hint">Screenlate’in kendi güncellemelerini yükleyebilmesi için Android’in izninize ihtiyacı var.</string>
     <string name="update_announce">Yeni sürümleri bana bildir</string>

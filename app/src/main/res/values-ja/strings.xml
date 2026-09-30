@@ -357,7 +357,8 @@
     <string name="update_retry">再試行</string>
     <string name="update_skip">このバージョンをスキップ</string>
     <string name="update_downloading">ダウンロード中… %1$d%%</string>
-    <string name="update_installing">インストール中です。完了すると Screenlate が再起動します。</string>
+    <string name="update_installing">インストール中です。完了すると Android が Screenlate を閉じるので、もう一度開いてください。</string>
+    <string name="update_confirm_install">インストールを続ける</string>
     <string name="update_allow_installs">アップデートのインストールを許可</string>
     <string name="update_allow_installs_hint">Screenlate が自身のアップデートをインストールするには、Android での許可が必要です。</string>
     <string name="update_announce">新しいバージョンを知らせる</string>

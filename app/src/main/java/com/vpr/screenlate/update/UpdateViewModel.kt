@@ -1,5 +1,6 @@
 package com.vpr.screenlate.update
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +49,8 @@ class UpdateViewModel @Inject constructor(
     }
 
     fun update(release: Release) = updates.update(release)
+
+    fun confirm(prompt: Intent) = updates.confirm(prompt)
 
     fun canInstall(): Boolean = updates.canInstall()
 

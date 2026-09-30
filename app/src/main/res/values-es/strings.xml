@@ -357,7 +357,8 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="update_retry">Reintentar</string>
     <string name="update_skip">Omitir esta versión</string>
     <string name="update_downloading">Descargando… %1$d %%</string>
-    <string name="update_installing">Instalando; Screenlate se reinicia al terminar.</string>
+    <string name="update_installing">Instalando. Al terminar, Android cerrará Screenlate; vuelve a abrirlo entonces.</string>
+    <string name="update_confirm_install">Continuar la instalación</string>
     <string name="update_allow_installs">Permitir instalar actualizaciones</string>
     <string name="update_allow_installs_hint">Android necesita tu permiso para que Screenlate instale sus actualizaciones.</string>
     <string name="update_announce">Avisarme de nuevas versiones</string>

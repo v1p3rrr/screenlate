@@ -357,7 +357,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="update_retry">Réessayer</string>
     <string name="update_skip">Ignorer cette version</string>
     <string name="update_downloading">Téléchargement… %1$d %%</string>
-    <string name="update_installing">Installation ; Screenlate redémarre une fois terminé.</string>
+    <string name="update_installing">Installation en cours. À la fin, Android ferme Screenlate ; rouvrez-le ensuite.</string>
+    <string name="update_confirm_install">Poursuivre l\'installation</string>
     <string name="update_allow_installs">Autoriser l’installation des mises à jour</string>
     <string name="update_allow_installs_hint">Android a besoin de votre autorisation pour que Screenlate installe ses mises à jour.</string>
     <string name="update_announce">M’informer des nouvelles versions</string>

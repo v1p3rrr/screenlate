@@ -357,7 +357,8 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="update_retry">Thử lại</string>
     <string name="update_skip">Bỏ qua phiên bản này</string>
     <string name="update_downloading">Đang tải… %1$d%%</string>
-    <string name="update_installing">Đang cài đặt; Screenlate sẽ khởi động lại khi xong.</string>
+    <string name="update_installing">Đang cài đặt. Khi xong, Android sẽ đóng Screenlate; hãy mở lại ứng dụng.</string>
+    <string name="update_confirm_install">Tiếp tục cài đặt</string>
     <string name="update_allow_installs">Cho phép cài đặt bản cập nhật</string>
     <string name="update_allow_installs_hint">Android cần bạn cho phép để Screenlate cài đặt bản cập nhật của mình.</string>
     <string name="update_announce">Báo cho tôi về phiên bản mới</string>

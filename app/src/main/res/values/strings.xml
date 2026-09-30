@@ -360,7 +360,8 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="update_retry">Try again</string>
     <string name="update_skip">Skip this version</string>
     <string name="update_downloading">Downloading… %1$d%%</string>
-    <string name="update_installing">Installing; Screenlate restarts when it is done.</string>
+    <string name="update_installing">Installing. When it is done, Android closes Screenlate; open it again then.</string>
+    <string name="update_confirm_install">Continue installing</string>
     <string name="update_allow_installs">Allow installing updates</string>
     <string name="update_allow_installs_hint">Android needs your permission for Screenlate to install its updates.</string>
     <string name="update_announce">Tell me about new versions</string>

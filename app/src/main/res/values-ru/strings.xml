@@ -358,7 +358,8 @@
     <string name="update_retry">Попробовать ещё раз</string>
     <string name="update_skip">Пропустить эту версию</string>
     <string name="update_downloading">Загрузка… %1$d%%</string>
-    <string name="update_installing">Установка; Screenlate перезапустится, когда она закончится.</string>
+    <string name="update_installing">Установка. Когда она закончится, Android закроет Screenlate — откройте его снова.</string>
+    <string name="update_confirm_install">Продолжить установку</string>
     <string name="update_allow_installs">Разрешить установку обновлений</string>
     <string name="update_allow_installs_hint">Android нужно ваше разрешение, чтобы Screenlate мог устанавливать свои обновления.</string>
     <string name="update_announce">Сообщать о новых версиях</string>

@@ -105,7 +105,7 @@ A custom URL may point to a server on the home network over plain `http://`, as 
 ## Updates and About
 
 - Release builds look for a new version on GitHub at most once a day when the app is opened, and announce each new version once on the start screen with its changes. "Skip this version" hides it until the next release; About → Updates can still install it and has a "Check for updates" button. The announcements can be turned off there.
-- "Update" downloads the APK for the device and installs it. Android asks once to allow installs from Screenlate, and asks to confirm the first update; later updates install without a prompt where Android allows it (Android 12 and newer).
+- "Update" downloads the APK for the device and installs it. Android asks once to allow installs from Screenlate, and asks to confirm the first update; later updates install without a prompt where Android allows it (Android 12 and newer). If the prompt did not show (the app was in the background), "Continue installing" opens it. Android closes the app when the update is installed; open it again.
 - About also lists the open-source libraries, the third-party notices and the installed dictionaries with their authors and licenses, "Share logs" sends the app's log (with the app version and device model, but no looked-up text) through the share sheet, and "Save to Downloads" writes the same file to `Download/Screenlate/`, where any file manager can open it. "Report a problem" opens a short issue form on GitHub.
 
 ## Troubleshooting

@@ -357,7 +357,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="update_retry">Erneut versuchen</string>
     <string name="update_skip">Diese Version überspringen</string>
     <string name="update_downloading">Wird heruntergeladen… %1$d %%</string>
-    <string name="update_installing">Wird installiert; Screenlate startet danach neu.</string>
+    <string name="update_installing">Wird installiert. Danach schließt Android Screenlate; öffne es dann erneut.</string>
+    <string name="update_confirm_install">Installation fortsetzen</string>
     <string name="update_allow_installs">Installation von Updates erlauben</string>
     <string name="update_allow_installs_hint">Android braucht deine Erlaubnis, damit Screenlate seine Updates installieren kann.</string>
     <string name="update_announce">Über neue Versionen informieren</string>

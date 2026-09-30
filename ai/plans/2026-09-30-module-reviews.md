@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: modules 1-8, 11 and 12 done; next is module 13 (updates, About and logs), run 1.
+Updated after every step so the work survives a context reset or a paused session: all modules except 9 and 10 fixes done (1-8, 11-13); next are the deferred module 9/10 fixes with a recheck, then asking the owner Q1-Q10.
 
 ## Progress
 
@@ -48,7 +48,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 8 | Audio | 8 found, fixed | 3 found, fixed | nothing found | not needed | see git log |
 | 11 | App shell, home, search and localization | 14 found: 12 fixed, 2 questions (Q8, Q9) | 4 found: 3 fixed, 1 question (Q10) | 1 found, fixed | not needed | see git log |
 | 12 | Backup and Yomitan settings import | 8 found: 7 fixed, 1 noted | 3 found: 2 fixed, 1 noted | 2 found, fixed | not needed | see git log |
-| 13 | Updates, About and logs | | | | | |
+| 13 | Updates, About and logs | 6 found: 5 fixed, 1 noted | 1 found, fixed | none | not needed | see git log |
 | — | Deferred fixes in modules 9 and 10 | | | | | |
 
 ## Findings
@@ -489,6 +489,44 @@ default mapping inside the edit as before, cancelled test jobs leave no stale st
   one audio source; restoring only the audio section of a 58 MB backup with dictionary files finishes at once and
   says "Restored".
 - Run 4 not needed: run 3 changed only a failure message and imports.
+
+### Module 13, run 1
+
+- Fixed: the updater asked Android to install without a prompt (`USER_ACTION_NOT_REQUIRED`) but lacked
+  `UPDATE_PACKAGES_WITHOUT_USER_ACTION`, without which Android ignores the request and always asks. The manifest
+  declares it (a normal permission, granted at install; checked on the emulator).
+- Fixed: a manual check started in About and left before it finished (the screen's scope cancelled) kept the state
+  at "Checking" with the check button off until the app restarted. Checks run in the updater's own scope and a
+  running check is joined; an update is not started during a check, and a check does not replace "Installing".
+- Fixed: when Android wanted a confirmation and could not show its prompt (the app was in the background by then),
+  the state stayed "Installing" with nothing to tap. The prompt is kept in the state and a "Continue installing"
+  button opens it again (new string in all locales).
+- Fixed: "Installing; Screenlate restarts when it is done" was wrong: Android closes the app on a self-update and
+  nothing starts it again. The text says the app closes and to open it again (all locales).
+- Fixed: saving a log to Downloads removed the pending entry only on an `IOException`; any failure removes it now.
+- Checked: release selection and version codes (`ReleasesTest`), APK verification (package, higher version, same
+  signers), the receiver is not exported and its `PendingIntent` is explicit; log lines across modules with
+  interpolated values (none carries text, words or term URLs; a saved emulator log had no CJK text or query URLs).
+- Noted, not changed: a failed "Share logs" shows nothing (saving shows an error); the updater has no unit tests,
+  as it runs only in release builds and wraps `PackageInstaller`.
+
+### Module 13, run 2
+
+- Fixed: an install session that failed before its commit (e.g. writing the APK into it failed) was left open with
+  its staged copy; it is abandoned now.
+- Checked: the announcement across the home and About view models (each version announced once; a skip is not
+  undone by the same state), `ProblemReport` field ids against `.github/ISSUE_TEMPLATE/problem.yml`, the NOTICE and
+  libraries screens (NOTICE scrolls both ways on purpose), dictionary attributions (only http links open).
+
+### Module 13, run 3
+
+- Checked the changes of runs 1-2: checks started from the main thread only, so the shared check is not raced; a
+  prompt opened again after it was dismissed ends in the session's aborted status ("did not install"); a check is
+  refused only while "Installing", which ends with the status or with the app's process. No new issue.
+- Docs: `docs/usage.md` says the app closes after an update and mentions "Continue installing".
+- Checked on the emulator: the permission is granted at install, About shows the development-build hint, saving a
+  log to Downloads works.
+- Run 4 not needed: run 3 changed only docs.
 
 ## Deferred
 

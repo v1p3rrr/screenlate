@@ -69,7 +69,8 @@ object LogExport {
                 val output = resolver.openOutputStream(uri) ?: throw IOException("Cannot write to Downloads")
                 output.use { out -> file.inputStream().use { it.copyTo(out) } }
                 resolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
+                // Any failure (also a refused write) removes the pending entry, which would otherwise linger.
                 resolver.delete(uri, null, null)
                 throw e
             }

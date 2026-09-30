@@ -124,7 +124,14 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
             Text(stringResource(R.string.update_downloading, (state.fraction * 100).toInt()))
             LinearProgressIndicator(progress = { state.fraction }, modifier = Modifier.fillMaxWidth())
         }
-        is UpdateState.Installing -> Text(stringResource(R.string.update_installing))
+        is UpdateState.Installing -> {
+            Text(stringResource(R.string.update_installing))
+            state.confirmation?.let { prompt ->
+                OutlinedButton(onClick = { viewModel.confirm(prompt) }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.update_confirm_install))
+                }
+            }
+        }
         else -> {
             if (state is UpdateState.Failed && state.release == release) ErrorText(errorText(state.error))
             if (!canInstall) {

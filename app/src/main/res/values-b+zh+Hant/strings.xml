@@ -357,7 +357,8 @@
     <string name="update_retry">重試</string>
     <string name="update_skip">跳過此版本</string>
     <string name="update_downloading">正在下載… %1$d%%</string>
-    <string name="update_installing">正在安裝；完成後 Screenlate 會重新啟動。</string>
+    <string name="update_installing">正在安裝。完成後 Android 會關閉 Screenlate，請重新開啟。</string>
+    <string name="update_confirm_install">繼續安裝</string>
     <string name="update_allow_installs">允許安裝更新</string>
     <string name="update_allow_installs_hint">Screenlate 需要獲得 Android 的授權才能安裝自身的更新。</string>
     <string name="update_announce">有新版本時通知我</string>

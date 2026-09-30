@@ -15,13 +15,14 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -50,8 +51,12 @@ sealed interface UpdateState {
 
     data class Downloading(val release: Release, val fraction: Float) : UpdateState
 
-    /** Handed to Android; the app restarts when the update is installed. */
-    data class Installing(val release: Release) : UpdateState
+    /**
+     * Handed to Android, which closes the app when the update is installed. [confirmation] is Android's prompt when
+     * it asks the user first; kept so the user can open it again if it did not show (e.g. the app was in the
+     * background).
+     */
+    data class Installing(val release: Release, val confirmation: Intent? = null) : UpdateState
 
     data class Failed(val error: UpdateError, val release: Release?) : UpdateState
 }
@@ -69,6 +74,7 @@ class AppUpdates @Inject constructor(
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var job: Job? = null
+    private var checkJob: Deferred<UpdateState>? = null
     private val mutableState = MutableStateFlow<UpdateState>(UpdateState.Idle)
     val state: StateFlow<UpdateState> = mutableState
 
@@ -86,18 +92,23 @@ class AppUpdates @Inject constructor(
         check()
     }
 
-    /** Looks for a newer release; returns the resulting state. */
+    /**
+     * Looks for a newer release; returns the resulting state. Runs in the updater's own scope, so a caller that goes
+     * away (the screen is closed) does not leave the state at [UpdateState.Checking]; a check already running is
+     * joined.
+     */
     suspend fun check(): UpdateState {
-        if (!supported || job?.isActive == true) return state.value
-        mutableState.value = UpdateState.Checking
-        val next = withContext(Dispatchers.IO) {
-            runCatching { fetchLatest() }
+        if (!supported || job?.isActive == true || state.value is UpdateState.Installing) return state.value
+        val running = checkJob?.takeIf { it.isActive } ?: scope.async {
+            mutableState.value = UpdateState.Checking
+            val next = runCatching { fetchLatest() }
                 .map { release -> if (Releases.isNewer(release, installedCode)) UpdateState.Available(release) else UpdateState.UpToDate }
                 .onFailure { Log.w(TAG, "Update check failed", it.redacted()) }
                 .getOrElse { UpdateState.Failed(UpdateError.NETWORK, null) }
-        }
-        mutableState.value = next
-        return next
+            mutableState.value = next
+            next
+        }.also { checkJob = it }
+        return running.await()
     }
 
     suspend fun setAnnounced(release: Release) = settings.setAnnounced(release.tag)
@@ -107,7 +118,7 @@ class AppUpdates @Inject constructor(
 
     /** Downloads and installs [release]; progress and errors go to [state]. */
     fun update(release: Release) {
-        if (!supported || job?.isActive == true) return
+        if (!supported || job?.isActive == true || checkJob?.isActive == true) return
         job = scope.launch {
             val asset = Releases.apkFor(release, Build.SUPPORTED_ABIS.toList())
             if (asset == null) {
@@ -139,15 +150,21 @@ class AppUpdates @Inject constructor(
     internal fun onInstallStatus(status: Int, confirmation: Intent?) {
         val release = (state.value as? UpdateState.Installing)?.release
         when (status) {
-            PackageInstaller.STATUS_PENDING_USER_ACTION -> confirmation
-                ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                ?.let { runCatching { context.startActivity(it) } }
+            PackageInstaller.STATUS_PENDING_USER_ACTION -> confirmation?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)?.let { prompt ->
+                release?.let { mutableState.value = UpdateState.Installing(it, prompt) }
+                confirm(prompt)
+            }
             PackageInstaller.STATUS_SUCCESS -> Unit
             else -> {
                 Log.w(TAG, "Update install ended with status $status")
                 mutableState.value = UpdateState.Failed(UpdateError.INSTALL_FAILED, release)
             }
         }
+    }
+
+    /** Opens Android's install prompt of the update being installed. */
+    fun confirm(prompt: Intent) {
+        runCatching { context.startActivity(prompt) }.onFailure { Log.w(TAG, "Cannot open the install prompt", it.redacted()) }
     }
 
     private fun fetchLatest(): Release = client.newCall(Request.Builder().url(BuildConfig.UPDATE_FEED).header("Accept", "application/vnd.github+json").build())
@@ -209,6 +226,16 @@ class AppUpdates @Inject constructor(
             }
         }
         val id = installer.createSession(params)
+        // A session that fails before its commit is abandoned, so the staged copy does not stay on the device.
+        try {
+            commit(installer, id, file)
+        } catch (e: Exception) {
+            runCatching { installer.abandonSession(id) }
+            throw e
+        }
+    }
+
+    private fun commit(installer: PackageInstaller, id: Int, file: File) {
         installer.openSession(id).use { session ->
             file.inputStream().use { input ->
                 session.openWrite("screenlate.apk", 0, file.length()).use { output ->
