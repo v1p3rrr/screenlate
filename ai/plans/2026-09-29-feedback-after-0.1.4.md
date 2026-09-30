@@ -152,7 +152,7 @@ Owner's command (2026-10-01, request 17): `/code-review xhigh --fix` over everyt
 
 Questions for the owner (the work went on with the choice in brackets, cheap to change):
 
-- Q1. Popup placement for horizontal text: above the word first, as for vertical text [yes; before, horizontal text also went above first unless below had more room].
+- Q1. Popup placement for horizontal text: above the word first, as for vertical text [yes; before, when the full height fit on both sides, the roomier side won, often below].
 - Q2. Landscape: still beside the word first [yes, unchanged].
 - Q3. The kanji entry when no word is found also in dictionary links inside the popup [yes, besides the popup and the search].
 - Q4. With every dictionary with definitions off but a kanji dictionary on, the popup shows the kanji entry for a kanji instead of the "no dictionaries with definitions" message [yes; the search screen keeps its "Open dictionaries" button].
