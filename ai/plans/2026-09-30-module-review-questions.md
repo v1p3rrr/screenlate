@@ -146,4 +146,43 @@ answered; answers go to the plan's changelog.
      with a remote font stops working.
   3. Keep as is.
 
+### Q8. The background work hint names one phone maker (module 11 run 1)
+
+- **Feature:** Settings → Background work → "Launch" card. It opens the phone maker's startup settings when the app
+  knows one (a list of 23 screens of 13 makers in `StartupScreens`), otherwise the app info.
+- **How it works now:** the card's text (`background_launch_text`, all 14 locales) ends with one maker's exact path:
+  "Honor / MagicOS: App launch → Screenlate → Manage manually, with all three options on." Every user sees it,
+  whatever their phone. The repo rule keeps README and `docs/` free of device and vendor names; UI strings are not
+  named in that rule, so I left it.
+- **Options:**
+  1. Recommended: show the maker's path only on phones of that maker (a second string, shown when the found startup
+     screen is Honor's or Huawei's); others see the generic text. The path stays useful where it applies.
+  2. Drop the path from the text: generic for everyone, Honor users find the options themselves.
+  3. Keep as is.
+
+### Q9. A system dark mode switch closes a kanji or link view in the search screen (module 11 run 1)
+
+- **Feature:** the search screen ("Look up words", also "Look up in Screenlate" from the text selection menu).
+  Tapping a kanji or a link in the results opens it as a view on top, with a back arrow.
+- **How it works now:** switching the system to dark mode (by hand or on a schedule) makes Android recreate the
+  screen; the results come back in the new theme, but the opened kanji or link view and the scroll position are gone.
+  A change of the app's own theme setting does not have this problem (it is set on another screen).
+- **Options:**
+  1. Recommended: let the app's activities handle the dark mode switch themselves (`configChanges="uiMode"`); Compose
+     redraws in the new colors and the search page restyles in place, keeping the view. Every screen then relies on
+     Compose for theme colors, which it already does.
+  2. Keep as is (a rare case: the switch happens while a view is open).
+
+### Q10. "Look up in Screenlate" opens with the keyboard over the results (module 11 run 2)
+
+- **Feature:** selecting text in another app and choosing "Look up in Screenlate" in the selection menu opens the
+  search screen with that text already searched.
+- **How it works now:** the screen always puts the cursor in the search field, so the keyboard opens and covers the
+  lower half of the results, although the text is already there. The user has to close the keyboard to read. From the
+  home screen's "Look up a word" the field is empty and the keyboard is what the user wants.
+- **Options:**
+  1. Recommended: focus the field (and open the keyboard) only when the screen opens empty; with selected text the
+     results use the whole screen and a tap on the field opens the keyboard.
+  2. Keep as is.
+
 ## Answered

@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api.registry
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.vpr.screenlate.core.common.Language
 
 /**
  * An imported dictionary as known to the app. The converted data lives in [directory] under the dictionary
@@ -43,3 +44,6 @@ data class DictionaryEntity(
     val bundled: Boolean,
     val importedAt: Long,
 )
+
+/** Whether the dictionary is for words of [language]; one that does not say its language is used for any. */
+fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.code

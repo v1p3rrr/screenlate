@@ -18,6 +18,7 @@ import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,18 +61,24 @@ class SearchViewModel @Inject constructor(
 
     suspend fun search(text: String, primaryReading: String? = null): SearchResults {
         val trimmed = text.trim()
-        val found = runCatching {
-            lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading)
-        }.getOrDefault(emptyList())
+        val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading) }
         return SearchResults(trimmed, found, noDictionaries = found.isEmpty() && !lookup.hasTermDictionaries(LANGUAGE))
     }
 
-    suspend fun kanji(character: String): KanjiResult =
-        runCatching { lookup.kanji(character, LANGUAGE) }.getOrElse { KanjiResult(character) }
+    suspend fun kanji(character: String): KanjiResult = orElse(KanjiResult(character)) { lookup.kanji(character, LANGUAGE) }
 
-    suspend fun styles(): List<DictionaryStyle> = runCatching { lookup.styles(LANGUAGE) }.getOrDefault(emptyList())
+    suspend fun styles(): List<DictionaryStyle> = orElse(emptyList()) { lookup.styles(LANGUAGE) }
 
-    suspend fun tagNotes(): List<DictionaryTagNotes> = runCatching { lookup.tagNotes() }.getOrDefault(emptyList())
+    suspend fun tagNotes(): List<DictionaryTagNotes> = orElse(emptyList()) { lookup.tagNotes() }
+
+    /** [fallback] when [block] fails; a cancellation is passed on, so a replaced search does not show as empty. */
+    private inline fun <T> orElse(fallback: T, block: () -> T): T = try {
+        block()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        fallback
+    }
 
     companion object {
         const val SEARCH_DELAY_MS = 150L

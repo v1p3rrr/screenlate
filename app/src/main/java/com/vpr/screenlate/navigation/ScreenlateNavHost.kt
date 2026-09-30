@@ -7,6 +7,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -100,7 +102,8 @@ fun ScreenlateNavHost(
 ) {
     val navController = rememberNavController()
     val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: HomeRoute
-    val back: () -> Unit = { navController.popBackStack() }
+    val back: () -> Unit = { navController.fromResumed { popBackStack() } }
+    val go: (Any) -> Unit = { route -> navController.fromResumed { navigate(route) } }
     LaunchedEffect(ankiSettingsRequests) {
         if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
     }
@@ -114,18 +117,18 @@ fun ScreenlateNavHost(
     ) {
         composable<HomeRoute> {
             HomeScreen(
-                onOpenSearch = { navController.navigate(SearchRoute()) },
-                onOpenSettings = { navController.navigate(SettingsRoute) },
-                onOpenDictionaries = { navController.navigate(DictionariesRoute) },
-                onOpenAnki = { navController.navigate(AnkiRoute) },
-                onOpenAppText = { navController.navigate(BubbleRoute(showAppText = true)) },
+                onOpenSearch = { go(SearchRoute()) },
+                onOpenSettings = { go(SettingsRoute) },
+                onOpenDictionaries = { go(DictionariesRoute) },
+                onOpenAnki = { go(AnkiRoute) },
+                onOpenAppText = { go(BubbleRoute(showAppText = true)) },
             )
         }
         composable<SettingsRoute> {
             SettingsScreen(
                 onBack = back,
                 onOpen = { page ->
-                    navController.navigate(
+                    go(
                         when (page) {
                             SettingsPage.BUBBLE -> BubbleRoute()
                             SettingsPage.BACKGROUND -> BackgroundRoute
@@ -150,15 +153,15 @@ fun ScreenlateNavHost(
         composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
         composable<YomitanImportRoute> {
-            YomitanImportScreen(onBack = back, onOpenDictionaries = { navController.navigate(DictionariesRoute) })
+            YomitanImportScreen(onBack = back, onOpenDictionaries = { go(DictionariesRoute) })
         }
         composable<BackupRoute> { BackupScreen(onBack = back) }
         composable<AboutRoute> {
             AboutScreen(
                 onBack = back,
-                onOpenOcrTest = { navController.navigate(OcrTestRoute) },
-                onOpenLibraries = { navController.navigate(LibrariesRoute) },
-                onOpenNotices = { navController.navigate(NoticesRoute) },
+                onOpenOcrTest = { go(OcrTestRoute) },
+                onOpenLibraries = { go(LibrariesRoute) },
+                onOpenNotices = { go(NoticesRoute) },
             )
         }
         composable<LibrariesRoute> { LibrariesScreen(onBack = back) }
@@ -166,19 +169,27 @@ fun ScreenlateNavHost(
         composable<SearchRoute> { entry ->
             SearchScreen(
                 onBack = back,
-                onOpenAnkiSettings = { navController.navigate(AnkiRoute) },
+                onOpenAnkiSettings = { go(AnkiRoute) },
                 initialQuery = entry.toRoute<SearchRoute>().query,
             )
         }
         composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
         composable<DictionariesRoute> {
-            DictionariesScreen(onBack = back, onOpenYomitanImport = { navController.navigate(YomitanImportRoute) })
+            DictionariesScreen(onBack = back, onOpenYomitanImport = { go(YomitanImportRoute) })
         }
         composable<OcrTestRoute> { OcrTestScreen(onBack = back) }
         composable<ImageViewerRoute> { entry ->
             entry.toRoute<ImageViewerRoute>().let { ImageViewerScreen(it.path, it.caption) }
         }
     }
+}
+
+/**
+ * Runs [action] only while the current screen is resumed. During a transition it is not, so a second tap on back or
+ * on a button does nothing: two backs would leave the start screen too, and the app would show an empty window.
+ */
+private fun NavController.fromResumed(action: NavController.() -> Unit) {
+    if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) action()
 }
 
 private const val FADE_MS = 700

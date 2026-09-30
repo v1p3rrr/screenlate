@@ -2,6 +2,7 @@ package com.vpr.screenlate
 
 import android.app.Application
 import android.content.res.Resources
+import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
@@ -39,6 +40,13 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         dictionaryImports.installBundled()
-        MainScope().launch(Dispatchers.IO) { dictionaryRepair.repair() }
+        MainScope().launch(Dispatchers.IO) {
+            // A failed check must not stop the app from starting; the home screen checks again.
+            runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
+        }
+    }
+
+    private companion object {
+        const val TAG = "Screenlate"
     }
 }

@@ -16,6 +16,7 @@ import com.vpr.screenlate.core.ocr.TextPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,8 +58,12 @@ class OcrTestViewModel @Inject constructor(
     fun onImagePicked(uri: Uri) {
         job?.cancel()
         job = viewModelScope.launch {
-            val image = runCatching { withContext(Dispatchers.IO) { decode(uri) } }.getOrElse {
-                _state.value = OcrTestState(error = it.message ?: it.toString())
+            val image = try {
+                withContext(Dispatchers.IO) { decode(uri) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _state.value = OcrTestState(error = e.message ?: e.toString())
                 return@launch
             }
             _state.value = OcrTestState(image = image, running = true)
@@ -90,8 +95,15 @@ class OcrTestViewModel @Inject constructor(
         }
     }
 
+    /** A camera photo is scaled down to about screen size: at full size it does not fit in memory or on a canvas. */
     private fun decode(uri: Uri): Bitmap =
-        ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri)) { decoder, _, _ ->
+        ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri)) { decoder, info, _ ->
             decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            val longest = maxOf(info.size.width, info.size.height)
+            if (longest > MAX_SIDE) decoder.setTargetSampleSize((longest + MAX_SIDE - 1) / MAX_SIDE)
         }.copy(Bitmap.Config.ARGB_8888, false)
+
+    private companion object {
+        const val MAX_SIDE = 4096
+    }
 }

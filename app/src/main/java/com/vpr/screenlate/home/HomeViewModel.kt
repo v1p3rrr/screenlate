@@ -1,5 +1,6 @@
 package com.vpr.screenlate.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiNotes
@@ -10,14 +11,19 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceFailure
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.search.SearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -41,6 +47,13 @@ data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry:
  */
 internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<AudioSource>): List<AudioSourceFailure> =
     failures.filter { it.source in sources }.sortedBy { sources.indexOf(it.source) }
+
+/**
+ * Whether lookups would find no term dictionary: none of [dictionaries] is on, has terms and is for [language]. Missing
+ * files are a card of their own.
+ */
+internal fun noTermDictionaries(dictionaries: List<DictionaryEntity>, language: Language): Boolean =
+    dictionaries.none { it.enabled && it.termCount > 0 && it.isFor(language) }
 
 /** Something that broke without the user changing Screenlate's settings. */
 sealed interface HomeProblem {
@@ -80,21 +93,41 @@ class HomeViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionarySummary())
 
     private val checked = MutableStateFlow<List<HomeProblem>>(emptyList())
+    private var refreshJob: Job? = null
+
+    /** Dictionaries downloaded again from the card; their files stay missing until the download ends. */
+    private val downloading = mutableSetOf<Long>()
 
     /** Problems found by the last [refresh], plus "no dictionary" while nothing is being installed. */
     val problems: StateFlow<List<HomeProblem>> = combine(checked, repository.dictionaries, imports.tasks) { found, all, tasks ->
-        val noTerms = tasks.none { !it.finished } && all.none { it.enabled && it.termCount > 0 }
+        val noTerms = tasks.none { !it.finished } && noTermDictionaries(all, SearchViewModel.LANGUAGE)
         found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(HomeProblem.NoTermDictionaries.takeIf { noTerms })
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Checks AnkiDroid, dictionary files and audio sources again; call when the screen is shown. */
     fun refresh() {
-        viewModelScope.launch {
+        // A check started earlier would otherwise finish last and bring back what a newer one found fixed.
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
             val found = mutableListOf<HomeProblem>()
             (notes.status() as? AnkiStatus.Broken)?.let { found += HomeProblem.Anki(it.problem) }
-            val missing = repair.repair()
+            if (imports.tasks.first().all { it.finished }) downloading.clear()
+            val missing = try {
+                repair.repair()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Dictionary check failed: ${e.javaClass.simpleName}")
+                emptyList()
+            }.filterNot { it.id in downloading }
             if (missing.isNotEmpty()) {
-                val entries = runCatching { catalog.entries().first() }.getOrDefault(emptyList())
+                val entries = try {
+                    catalog.entries().first()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    emptyList()
+                }
                 found += HomeProblem.MissingDictionaries(
                     missing.map { dictionary -> MissingDictionary(dictionary, entries.firstOrNull { it.matches(dictionary) }) },
                 )
@@ -114,6 +147,7 @@ class HomeViewModel @Inject constructor(
             indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
             replaces = missing.dictionary.id,
         )
+        downloading += missing.dictionary.id
         resolved(missing)
     }
 
@@ -134,5 +168,9 @@ class HomeViewModel @Inject constructor(
     fun dismissAudioFailures() {
         audio.clearFailures()
         checked.value = checked.value.filterNot { it is HomeProblem.AudioSources }
+    }
+
+    private companion object {
+        const val TAG = "Home"
     }
 }

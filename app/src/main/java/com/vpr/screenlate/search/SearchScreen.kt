@@ -32,9 +32,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -114,8 +116,11 @@ fun SearchScreen(
                 override fun onClose() = Unit
 
                 override fun onLookup(query: String, primaryReading: String?) {
+                    val shown = viewModel.results.value
                     scope.launch {
                         val found = viewModel.search(query, primaryReading)
+                        // A new search text replaced the page meanwhile; this lookup belonged to the old one.
+                        if (viewModel.results.value !== shown) return@launch
                         holder.page.push(state(context, currentTheme, found))
                         holder.notes.onResultsShown(found.results.firstOrNull()?.term?.let { it.expression to it.reading })
                     }
@@ -128,8 +133,10 @@ fun SearchScreen(
                 override fun onCopy(text: String, html: String?) = PageState.copy(context, text, html)
 
                 override fun onKanji(character: String) {
+                    val shown = viewModel.results.value
                     scope.launch {
                         val result = viewModel.kanji(character)
+                        if (viewModel.results.value !== shown) return@launch
                         holder.page.push(
                             PageState.kanji(context, currentTheme, result, noKanji),
                         )
@@ -178,11 +185,19 @@ fun SearchScreen(
         focus.requestFocus()
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
-    LaunchedEffect(results, theme) {
+    LaunchedEffect(results) {
         val current = results ?: return@LaunchedEffect
         holder.notes.refreshActions()
-        page.render(state(context, theme, current))
+        page.render(state(context, currentTheme, current))
         holder.notes.onResultsShown(current.results.firstOrNull()?.term?.let { it.expression to it.reading })
+    }
+    // A theme change restyles the page and keeps the view shown, e.g. a kanji opened from the results.
+    var styledTheme by remember { mutableStateOf(theme) }
+    LaunchedEffect(theme) {
+        if (theme == styledTheme) return@LaunchedEffect
+        styledTheme = theme
+        val current = results ?: return@LaunchedEffect
+        page.update(state(context, theme, current))
     }
 
     Scaffold(

@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 8 done and committed; module 11 run 1 next (check get_usage first). Owner said: do all modules without stopping; stop when weekly usage > 92% (finish the current module first; check get_usage after each module).
+Updated after every step so the work survives a context reset or a paused session: module 11 done (three runs); next module 12 backup and Yomitan import, run 1
 
 ## Progress
 
@@ -46,7 +46,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 6 | Lookup page and rendering | 7 found: 6 fixed, 1 question (Q7) | 6 found, fixed | 1 found, fixed | nothing found | see git log |
 | 7 | Anki export | 5 found, fixed | 8 found: 7 fixed, 1 deferred (overlay) | 1 found, fixed | nothing found | see git log |
 | 8 | Audio | 8 found, fixed | 3 found, fixed | nothing found | not needed | see git log |
-| 11 | App shell, home, search and localization | | | | | |
+| 11 | App shell, home, search and localization | 14 found: 12 fixed, 2 questions (Q8, Q9) | 4 found: 3 fixed, 1 question (Q10) | 1 found, fixed | not needed | see git log |
 | 12 | Backup and Yomitan settings import | | | | | |
 | 13 | Updates, About and logs | | | | | |
 | — | Deferred fixes in modules 9 and 10 | | | | | |
@@ -399,6 +399,54 @@ Review of the module 8 diff: the combined source attempt keeps the old failure b
 clears its failure before downloads), the size check stops a stream after 10 MB, settings reads apply the legacy
 default mapping inside the edit as before, cancelled test jobs leave no stale state. Nothing found; no run 4.
 
+### Module 11, run 1
+
+- Fixed: the back arrow of every screen called `popBackStack()` directly; two quick taps during the 700 ms fade
+  popped the home screen too and left an empty window. Back and every button that opens a screen act only while the
+  current screen is resumed, so a second tap during a transition also no longer opens a screen twice.
+- Fixed: each return to the home screen started another problem check; an older check that finished last put back
+  a card a newer one had dropped. A new check cancels the one still running.
+- Fixed: after "Download again" on a missing dictionary, the next return to the home screen showed the same card
+  again while the download ran (its files are missing until it ends); such dictionaries stay hidden until the import
+  queue is idle.
+- Fixed: `DictionaryRepository.missingFiles` listed directories on the caller's thread, the main thread for the home
+  screen; it runs on the IO dispatcher (dictionary:api, a one-line integration fix).
+- Fixed: the scan length slider ends at 40 while the setting (and a Yomitan import) allows 100; a longer imported
+  value showed the knob at the end, and touching it cut the value down. The slider widens to the stored value.
+- Fixed: a link or kanji lookup in the search screen that finished after the search text changed was pushed on top
+  of the new results; it is dropped.
+- Fixed: the OCR test screen (About → Tools, also in release builds) decoded a picked camera photo at full size, which
+  does not fit in memory or on a canvas; images are scaled to at most 4096 px on the longest side. Picking another
+  image while one decoded showed "Job was cancelled" as the error; the cancellation is passed on.
+- Fixed: `TranslationsTest` checked quotes line by line and skipped strings that continue over several lines (28 of
+  them); it checks whole elements now (checked by adding quotes to one).
+- Fixed (deferred): `SearchViewModel` wrapped lookups in `runCatching`, which also caught
+  cancellation; a replaced search is cancelled, not shown as empty.
+- Fixed (deferred): a theme change rendered the search page again and dropped a pushed view; it updates
+  the page in place. A system dark mode switch recreates the activity, which still loses pushed views (Q9).
+- Question Q8: the background work screen's launch hint names one phone maker and its menu path, in every locale.
+- Emulator: two quick taps on back from Settings leave the home screen shown; two quick taps on Settings open it once;
+  the search screen restyles when the system theme changes.
+
+### Module 11, run 2
+
+- Fixed: the home screen's "no dictionaries" card counted term dictionaries of any language, while the popup and the
+  search screen use only those for the language looked up (or without a stated language); with only, say, a Chinese
+  dictionary on, lookups said "no dictionaries" and the home screen showed nothing. Both use
+  `DictionaryEntity.isFor(language)` now (dictionary:api), with a test.
+- Fixed: the dictionary check at app start ran outside any error handling, so a failure (e.g. a database or asset
+  error) crashed the app on every start; it is logged (class name only) and the home screen checks again. The home
+  screen's check shows no missing-files card on such a failure instead of crashing.
+- Checked: no string resource is unused (520 names, all referenced).
+- Question Q10: "Look up in Screenlate" from the text selection menu opens the keyboard over the results.
+
+### Module 11, run 3
+
+- Fixed: the home check can now be cancelled by a newer one, but the catalog lookup inside it still used
+  `runCatching`, which caught the cancellation and carried on; it passes the cancellation on.
+- Cleanup: the new log tags' companion objects moved to the end of their classes.
+- Run 4 not needed: the change above is a one-line catch.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -409,7 +457,7 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   `Data.getStringArray` (use `getNullableStringArray`).
 - Module 8 (done in run 1): a test that every name in `LanguageSupport.defaultAudioSources` maps to an
   `AudioSourceType` (`AudioSettings.defaultSources` drops unknown names silently).
-- Module 11: `SearchViewModel.search` wraps the lookup in `runCatching`, which also catches `CancellationException`;
+- Module 11 (done in run 1): `SearchViewModel.search` wraps the lookup in `runCatching`, which also catches `CancellationException`;
   rethrow it (today the cancelled result is dropped by `mapLatest`).
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
 - Module 12: `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
@@ -425,7 +473,7 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   34+) the popup is in the note's picture. Hide the popup window too, or capture before it is shown.
 - Module 9: `OverlayController` `onKanji` wraps the kanji lookup in `runCatching`, which also catches
   `CancellationException` and then pushes a view from a cancelled scan; rethrow it.
-- Module 11: `SearchScreen` renders again when the theme changes (`LaunchedEffect(results, theme)`), which drops a
+- Module 11 (done in run 1): `SearchScreen` renders again when the theme changes (`LaunchedEffect(results, theme)`), which drops a
   pushed view (kanji, link lookup); a theme change could update the page instead, as the overlay does.
 
 ## Changelog

@@ -305,7 +305,9 @@ class DictionaryRepository @Inject constructor(
     }
 
     /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
-    suspend fun missingFiles(): List<DictionaryEntity> = dao.getAll().filter { !storage.hasFiles(it) }
+    suspend fun missingFiles(): List<DictionaryEntity> = withContext(Dispatchers.IO) {
+        dao.getAll().filter { !storage.hasFiles(it) }
+    }
 
     private suspend fun load(language: Language) {
         val enabled = dao.getAll().filter { usable(it, language) }
@@ -328,9 +330,7 @@ class DictionaryRepository @Inject constructor(
 
     /** Whether lookups in [language] load [dictionary]. */
     private fun usable(dictionary: DictionaryEntity, language: Language): Boolean =
-        dictionary.enabled &&
-            (dictionary.sourceLanguage == null || dictionary.sourceLanguage == language.code) &&
-            storage.hasFiles(dictionary)
+        dictionary.enabled && dictionary.isFor(language) && storage.hasFiles(dictionary)
 }
 
 /**

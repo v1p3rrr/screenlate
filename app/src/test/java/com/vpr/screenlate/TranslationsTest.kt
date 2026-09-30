@@ -93,13 +93,18 @@ class TranslationsTest {
     fun `apostrophes and quotes are escaped`() {
         // aapt drops an unescaped ' and everything a pair of " encloses loses its meaning; both are easy to miss.
         val raw = Regex("""(?<!\\)'""")
+        val quote = Regex("""(?<!\\)"""")
+        // Whole elements, since a long string continues over several lines.
+        val element = Regex("""<(string|item)\b[^>]*>(.*?)</\1>""", RegexOption.DOT_MATCHES_ALL)
         for (res in modules) {
             res.listFiles().orEmpty().filter { it.name.startsWith("values") }.forEach { dir ->
                 val file = File(dir, "strings.xml").takeIf { it.exists() } ?: return@forEach
-                file.readLines().forEachIndexed { index, line ->
-                    val text = line.substringAfter('>', "").substringBeforeLast('<', "")
-                    assertWithMessage("$file:${index + 1} has an unescaped '").that(raw.containsMatchIn(text)).isFalse()
-                    assertWithMessage("$file:${index + 1} has an unescaped \"").that(Regex("""(?<!\\)"""").containsMatchIn(text)).isFalse()
+                val content = file.readText()
+                element.findAll(content).forEach { match ->
+                    val text = match.groupValues[2]
+                    val line = content.substring(0, match.range.first).count { it == '\n' } + 1
+                    assertWithMessage("$file:$line has an unescaped '").that(raw.containsMatchIn(text)).isFalse()
+                    assertWithMessage("$file:$line has an unescaped \"").that(quote.containsMatchIn(text)).isFalse()
                 }
             }
         }

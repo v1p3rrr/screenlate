@@ -85,18 +85,22 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
     }
 }
 
-/** The slider moves freely; the setting is written when the finger is lifted. */
+/**
+ * The slider moves freely; the setting is written when the finger is lifted. A longer imported value widens the
+ * slider, so touching it does not cut the value down unasked.
+ */
 @Composable
 private fun ScanLengthRow(length: Int, onChange: (Int) -> Unit) {
     var value by remember(length) { mutableStateOf(length.toFloat()) }
+    val max = maxOf(SCAN_LENGTH_SLIDER_MAX, length)
     Column {
         Text(stringResource(R.string.lookup_scan_length, value.toInt()), style = MaterialTheme.typography.labelLarge)
         Slider(
             value = value,
             onValueChange = { value = it },
             onValueChangeFinished = { onChange(value.toInt()) },
-            valueRange = 1f..SCAN_LENGTH_SLIDER_MAX.toFloat(),
-            steps = SCAN_LENGTH_SLIDER_MAX - 2,
+            valueRange = 1f..max.toFloat(),
+            steps = max - 2,
         )
         Hint(stringResource(R.string.lookup_scan_length_hint))
     }
