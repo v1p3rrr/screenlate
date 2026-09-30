@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Zu Anki hinzufügen (halten für ein Bild)</string>
     <string name="overlay_play_audio">Audio abspielen (halten zum Auswählen)</string>
     <string name="anki_error">Notiz konnte nicht hinzugefügt werden: %1$s</string>
+    <string name="anki_rejected">AnkiDroid hat die Notiz nicht gespeichert.</string>
     <string name="anki_not_configured">Richte zuerst den Anki-Export in Screenlate ein.</string>
     <string name="anki_not_installed">AnkiDroid ist nicht installiert.</string>
     <string name="anki_no_permission">Erlaube Screenlate in seinen Anki-Einstellungen den Zugriff auf AnkiDroid.</string>

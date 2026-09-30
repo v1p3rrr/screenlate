@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Thêm vào Anki (giữ để thêm ảnh)</string>
     <string name="overlay_play_audio">Phát âm thanh (giữ để chọn)</string>
     <string name="anki_error">Không thêm được ghi chú: %1$s</string>
+    <string name="anki_rejected">AnkiDroid không lưu ghi chú.</string>
     <string name="anki_not_configured">Hãy thiết lập xuất sang Anki trong Screenlate trước.</string>
     <string name="anki_not_installed">AnkiDroid chưa được cài.</string>
     <string name="anki_no_permission">Hãy cho phép Screenlate truy cập AnkiDroid trong cài đặt Anki của nó.</string>

@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider
 import com.ichi2.anki.FlashCardsContract
 import com.ichi2.anki.api.AddContentApi
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
+import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -143,7 +144,8 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         try {
             block()
         } catch (e: RuntimeException) {
-            Log.w(TAG, "AnkiDroid query failed", e)
+            // The message may quote the query, e.g. the first field of a duplicate check.
+            Log.w(TAG, "AnkiDroid query failed", e.redacted())
             emptyList()
         }
     }

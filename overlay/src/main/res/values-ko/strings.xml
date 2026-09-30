@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Anki에 추가(길게 누르면 이미지 포함)</string>
     <string name="overlay_play_audio">오디오 재생(길게 눌러 선택)</string>
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>
+    <string name="anki_rejected">AnkiDroid가 노트를 저장하지 않았습니다.</string>
     <string name="anki_not_configured">먼저 Screenlate에서 Anki 내보내기를 설정하세요.</string>
     <string name="anki_not_installed">AnkiDroid가 설치되어 있지 않습니다.</string>
     <string name="anki_no_permission">Screenlate의 Anki 설정에서 AnkiDroid 접근을 허용하세요.</string>

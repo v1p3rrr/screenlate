@@ -7,7 +7,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +40,7 @@ enum class DuplicateBehavior {
 }
 
 /** How a field of an existing note changes when a duplicate overwrites it (Yomitan's per-field overwrite modes). */
+@Serializable(with = OverwriteModeSerializer::class)
 enum class OverwriteMode {
     /** Keep the existing value unless it is empty. */
     COALESCE,
@@ -53,6 +60,22 @@ enum class OverwriteMode {
         SKIP -> existing
         APPEND -> existing + new
         PREPEND -> new + existing
+    }
+}
+
+/**
+ * Stores [OverwriteMode] by name. The modes are map values, which `coerceInputValues` does not cover: a mode this
+ * version does not know reads as [OverwriteMode.COALESCE] instead of failing, and resetting, all Anki settings.
+ */
+internal object OverwriteModeSerializer : KSerializer<OverwriteMode> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("com.vpr.screenlate.core.anki.settings.OverwriteMode", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: OverwriteMode) = encoder.encodeString(value.name)
+
+    override fun deserialize(decoder: Decoder): OverwriteMode {
+        val name = decoder.decodeString()
+        return OverwriteMode.entries.firstOrNull { it.name == name } ?: OverwriteMode.COALESCE
     }
 }
 
@@ -97,7 +120,12 @@ data class AnkiSettings(
 class AnkiSettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
-    private val json = Json { ignoreUnknownKeys = true }
+    // A value this version does not know (settings of a newer version) falls back to its default instead of
+    // failing the whole object, which would reset every setting.
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
 
     val settings: Flow<AnkiSettings> = dataStore.data.map { prefs ->
         prefs[KEY]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() } ?: AnkiSettings()

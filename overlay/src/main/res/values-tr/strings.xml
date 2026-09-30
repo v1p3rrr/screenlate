@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Anki’ye ekle (görsel için basılı tutun)</string>
     <string name="overlay_play_audio">Sesi çal (seçmek için basılı tutun)</string>
     <string name="anki_error">Not eklenemedi: %1$s</string>
+    <string name="anki_rejected">AnkiDroid notu kaydetmedi.</string>
     <string name="anki_not_configured">Önce Screenlate’te Anki dışa aktarımını ayarlayın.</string>
     <string name="anki_not_installed">AnkiDroid yüklü değil.</string>
     <string name="anki_no_permission">Screenlate’in Anki ayarlarında AnkiDroid’e erişmesine izin verin.</string>

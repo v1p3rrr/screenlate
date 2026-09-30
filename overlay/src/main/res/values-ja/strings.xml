@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Anki に追加（長押しで画像付き）</string>
     <string name="overlay_play_audio">音声を再生（長押しで選択）</string>
     <string name="anki_error">ノートを追加できませんでした：%1$s</string>
+    <string name="anki_rejected">AnkiDroid がノートを保存しませんでした。</string>
     <string name="anki_not_configured">先に Screenlate で Anki へのエクスポートを設定してください。</string>
     <string name="anki_not_installed">AnkiDroid がインストールされていません。</string>
     <string name="anki_no_permission">Screenlate の Anki の設定で AnkiDroid へのアクセスを許可してください。</string>

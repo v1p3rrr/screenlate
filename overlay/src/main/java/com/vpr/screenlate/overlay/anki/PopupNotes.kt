@@ -61,6 +61,16 @@ data class NoteContext(
 internal fun entryOf(terms: List<Pair<String, String>>, index: Int, term: Pair<String, String>): Int? =
     if (terms.getOrNull(index) == term) index else terms.indexOf(term).takeIf { it >= 0 }
 
+/**
+ * The extension for the copy of a dictionary media file handed to AnkiDroid: the file name's own (a dot in a folder
+ * name does not count), png when there is none.
+ */
+internal fun mediaExtension(path: String): String =
+    path.substringAfterLast('/').substringAfterLast('.', "")
+        .takeIf { it.isNotEmpty() && it.all(Char::isLetterOrDigit) }
+        ?.lowercase()
+        ?: "png"
+
 /** Where a word came from, taken when its ➕ is pressed, so a view shown later does not change the note. */
 fun interface NoteSource {
     /** Called once per note; [screenshot] asks for the screen picture. */
@@ -263,6 +273,7 @@ class PopupNotes(
             var picture: Bitmap? = null
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
+            var screenshot: File? = null
             val state = try {
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
@@ -295,12 +306,11 @@ class PopupNotes(
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
                 resolveGlossaryMedia(data.media, values, used)
-                val screenshot = picture?.let { saveScreenshot(it) }
+                screenshot = picture?.let { saveScreenshot(it) }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(TAG, "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, forced $force")
-                screenshot?.delete()
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
                 resultState
@@ -313,6 +323,7 @@ class PopupNotes(
             } finally {
                 shared?.release()
                 picture?.recycle()
+                screenshot?.delete()
             }
             showState(scan, index, term, state, opens)
         }
@@ -404,8 +415,7 @@ class PopupNotes(
 
     fun release() {
         cropEditor?.cancel()
-        duplicateJob?.cancel()
-        audioMenuJob?.cancel()
+        onResultsHidden()
         page.noteActions = null
     }
 
@@ -451,10 +461,13 @@ class PopupNotes(
             if (ref.placeholder !in needed) continue
             val name = stored.getOrPut(ref.dictionary to ref.path) {
                 val bytes = lookup.media(ref.dictionary, ref.path) ?: return@getOrPut ""
-                val file = File(anki.mediaDirectory(), "${ref.path.hashCode().toUInt()}.${ref.path.substringAfterLast('.', "png")}")
-                withContext(Dispatchers.IO) { file.writeBytes(bytes) }
-                val markup = anki.addMedia(file, "screenlate_${file.nameWithoutExtension}", AnkiDroid.MediaKind.IMAGE)
-                file.delete()
+                val file = File(anki.mediaDirectory(), "${ref.path.hashCode().toUInt()}.${mediaExtension(ref.path)}")
+                val markup = try {
+                    withContext(Dispatchers.IO) { file.writeBytes(bytes) }
+                    anki.addMedia(file, "screenlate_${file.nameWithoutExtension}", AnkiDroid.MediaKind.IMAGE)
+                } finally {
+                    file.delete()
+                }
                 markup?.let { IMG_SRC.find(it)?.groupValues?.get(1) }.orEmpty()
             }
             values.replaceAll { _, value -> value.replace(ref.placeholder, name) }
@@ -485,8 +498,12 @@ class PopupNotes(
                 )
                 "error" to null
             }
-            is AddResult.Failed -> {
+            AddResult.Rejected -> {
                 Log.w(TAG, "AnkiDroid rejected the note")
+                toast(context.getString(R.string.anki_error, context.getString(R.string.anki_rejected)))
+                "error" to null
+            }
+            is AddResult.Failed -> {
                 toast(context.getString(R.string.anki_error, result.message))
                 "error" to null
             }

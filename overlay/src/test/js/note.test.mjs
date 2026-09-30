@@ -108,3 +108,14 @@ test('dictionary names in marker names', () => {
     assert.equal(NoteData.kebab('大辞林　第四版'), '大辞林-第四版');
     assert.equal(NoteData.kebab('JMdict (English) [2026-01]'), 'jmdict-english-2026-01');
 });
+
+test('furigana markers escape the text', () => {
+    const odd = { matched: 'A&B<', term: { expression: 'A&B<', reading: 'えー', glossaries: [] } };
+    const { values } = NoteData.build(odd, {});
+    assert.doesNotMatch(values.furigana, /A&B</);
+    assert.match(values.furigana, /A&amp;B&lt;/);
+    assert.match(values['furigana-plain'], /A&amp;B&lt;/);
+    const sentence = NoteData.sentenceFurigana([{ text: '<b>&' }, { text: '食べた', expression: '食べる', reading: 'たべる' }]);
+    assert.equal(sentence.html, '<span class="term">&lt;b&gt;&amp;</span><span class="term"><ruby>食<rt>た</rt></ruby>べた</span>');
+    assert.equal(sentence.plain, '&lt;b&gt;&amp; 食[た]べた');
+});

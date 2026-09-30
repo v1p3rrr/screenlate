@@ -8,7 +8,11 @@ import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import java.io.File
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,6 +33,7 @@ class AnkiNotesTest {
         var fieldQueries = 0
         var duplicateQuery: Triple<String, List<Long>, DuplicateScope>? = null
         var refuseNotes = false
+        var cancelNotes = false
 
         override fun availability() = availability
 
@@ -43,6 +48,7 @@ class AnkiNotesTest {
 
         override suspend fun addNote(modelId: Long, deckId: Long, fields: List<String>, tags: Set<String>): Long? {
             if (refuseNotes) return null
+            if (cancelNotes) throw CancellationException("scan closed")
             added += fields to tags
             return 100L + added.size
         }
@@ -152,7 +158,30 @@ class AnkiNotesTest {
         assertThat(notes.add(request)).isEqualTo(AddResult.Unavailable(AnkiAvailability.NO_PERMISSION))
         anki.availability = AnkiAvailability.READY
         anki.refuseNotes = true
-        assertThat(notes.add(request)).isInstanceOf(AddResult.Failed::class.java)
+        assertThat(notes.add(request)).isEqualTo(AddResult.Rejected)
+    }
+
+    @Test
+    fun `a cancelled add is not reported as a failure`() {
+        configure()
+        anki.cancelNotes = true
+        assertThrows(CancellationException::class.java) { runBlocking { notes.add(request) } }
+    }
+
+    @Test
+    fun `a value this version does not know keeps the other settings`() = runBlocking<Unit> {
+        val store = MemoryDataStore()
+        store.edit {
+            it[stringPreferencesKey("anki_settings")] =
+                """{"deckId":5,"modelId":6,"fields":{"Word":"{expression}"},"duplicateScope":"SOME_NEW_SCOPE",""" +
+                """"overwriteModes":{"Word":"SOME_NEW_MODE"},"savedTemplates":{"Old":{"overwriteModes":{"A":"APPEND"}}}}"""
+        }
+        val loaded = AnkiSettingsRepository(store).current()
+        assertThat(loaded.deckId).isEqualTo(5L)
+        assertThat(loaded.fields).containsExactly("Word", "{expression}")
+        assertThat(loaded.duplicateScope).isEqualTo(DuplicateScope.COLLECTION)
+        assertThat(loaded.overwriteModes).containsExactly("Word", OverwriteMode.COALESCE)
+        assertThat(loaded.savedTemplates.getValue("Old").overwriteModes).containsExactly("A", OverwriteMode.APPEND)
     }
 
     @Test

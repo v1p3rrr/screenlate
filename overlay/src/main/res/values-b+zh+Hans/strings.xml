@@ -28,6 +28,7 @@
     <string name="overlay_add_note">添加到 Anki（长按附带图片）</string>
     <string name="overlay_play_audio">播放音频（长按选择）</string>
     <string name="anki_error">无法添加笔记：%1$s</string>
+    <string name="anki_rejected">AnkiDroid 未保存该笔记。</string>
     <string name="anki_not_configured">请先在 Screenlate 中设置 Anki 导出。</string>
     <string name="anki_not_installed">未安装 AnkiDroid。</string>
     <string name="anki_no_permission">请在 Screenlate 的 Anki 设置中允许访问 AnkiDroid。</string>

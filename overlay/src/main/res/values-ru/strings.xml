@@ -29,6 +29,7 @@
     <string name="overlay_add_note">Добавить в Anki (удерживайте — с картинкой)</string>
     <string name="overlay_play_audio">Воспроизвести аудио (удерживайте — выбрать)</string>
     <string name="anki_error">Не удалось добавить карточку: %1$s</string>
+    <string name="anki_rejected">AnkiDroid не сохранил карточку.</string>
     <string name="anki_not_configured">Сначала настройте экспорт в Anki в Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid не установлен.</string>
     <string name="anki_no_permission">Разрешите Screenlate доступ к AnkiDroid в настройках Anki.</string>

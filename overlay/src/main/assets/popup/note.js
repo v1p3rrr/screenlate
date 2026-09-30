@@ -69,10 +69,13 @@ const NoteData = (() => {
         return render ? render.furiganaSegments(expression, reading) : [[expression, '']];
     }
 
+    /** Ruby markup of one piece; text and reading are escaped, as Yomitan's templates do. */
+    function rubyHtml(text, ruby) {
+        return ruby ? `<ruby>${escapeHtml(text)}<rt>${escapeHtml(ruby)}</rt></ruby>` : escapeHtml(text);
+    }
+
     function furiganaHtml(expression, reading) {
-        return segments(expression, reading)
-            .map(([text, ruby]) => (ruby ? `<ruby>${text}<rt>${ruby}</rt></ruby>` : text))
-            .join('');
+        return segments(expression, reading).map(([text, ruby]) => rubyHtml(text, ruby)).join('');
     }
 
     /** Anki's `漢字[かんじ]` notation; a space separates a reading group from the text before it. */
@@ -81,9 +84,9 @@ const NoteData = (() => {
         for (const [text, ruby] of segments(expression, reading)) {
             if (ruby) {
                 if (result.length > 0) result += ' ';
-                result += `${text}[${ruby}]`;
+                result += `${escapeHtml(text)}[${escapeHtml(ruby)}]`;
             } else {
-                result += text;
+                result += escapeHtml(text);
             }
         }
         return result;
@@ -98,8 +101,8 @@ const NoteData = (() => {
                 : [[part.text, '']];
             html += '<span class="term">';
             for (const [text, ruby] of pieces) {
-                html += ruby ? `<ruby>${text}<rt>${ruby}</rt></ruby>` : text;
-                plain += ruby ? ` ${text}[${ruby}]` : text;
+                html += rubyHtml(text, ruby);
+                plain += ruby ? ` ${escapeHtml(text)}[${escapeHtml(ruby)}]` : escapeHtml(text);
             }
             html += '</span>';
         }
@@ -284,7 +287,7 @@ const NoteData = (() => {
             'glossary-first-no-dictionary': () => glossary.first(glossaries[0], false, true),
             'cloze-body-kana': () => (anki
                 ? anki.distributeFuriganaInflected(term.expression, reading, result.matched || term.expression)
-                    .map(([text, ruby]) => ruby || text).join('')
+                    .map(([text, ruby]) => escapeHtml(ruby || text)).join('')
                 : ''),
             conjugation: () => escapeHtml((result.trace || []).map(step => step.name).join(' « ')),
             dictionary: () => escapeHtml(glossaries[0]?.dictionary || ''),

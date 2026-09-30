@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import java.io.File
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,6 +32,9 @@ sealed interface AddResult {
     data object NotConfigured : AddResult
 
     data class Unavailable(val availability: AnkiAvailability) : AddResult
+
+    /** AnkiDroid answered but did not store the note. */
+    data object Rejected : AddResult
 
     data class Failed(val message: String) : AddResult
 }
@@ -150,13 +154,14 @@ class AnkiNotes @Inject constructor(
                     val mode = settings.overwriteModes[name] ?: OverwriteMode.COALESCE
                     mode.apply(overwrite.fields.getOrElse(index) { "" }, fields[index])
                 }
-                if (anki.updateNote(overwrite.id, merged, tags)) AddResult.Updated(overwrite.id)
-                else AddResult.Failed("AnkiDroid did not update the note")
+                if (anki.updateNote(overwrite.id, merged, tags)) AddResult.Updated(overwrite.id) else AddResult.Rejected
             } else {
-                anki.addNote(modelId, deckId, fields, tags)?.let { AddResult.Added(it) }
-                    ?: AddResult.Failed("AnkiDroid did not add the note")
+                anki.addNote(modelId, deckId, fields, tags)?.let { AddResult.Added(it) } ?: AddResult.Rejected
             }
-        }.getOrElse { AddResult.Failed(it.message ?: it.javaClass.simpleName) }
+        }.getOrElse {
+            if (it is CancellationException) throw it
+            AddResult.Failed(it.message ?: it.javaClass.simpleName)
+        }
     }
 
     private suspend fun duplicates(settings: AnkiSettings, values: Map<String, String>): List<ExistingNote> {

@@ -19,6 +19,8 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +30,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class AnkiScreenState(
-    val availability: AnkiAvailability = AnkiAvailability.NOT_INSTALLED,
+    /** Null until AnkiDroid was checked. */
+    val availability: AnkiAvailability? = null,
     val decks: List<AnkiDeck> = emptyList(),
     val models: List<AnkiModel> = emptyList(),
     val fieldNames: List<String> = emptyList(),
@@ -48,6 +51,7 @@ class AnkiSettingsViewModel @Inject constructor(
     dictionaries: DictionaryRepository,
 ) : ViewModel() {
     private val connection = MutableStateFlow(AnkiScreenState())
+    private var refreshJob: Job? = null
 
     private val dictionaryMarkers = dictionaries.dictionaries.map { list ->
         val glossaries = list.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
@@ -72,7 +76,9 @@ class AnkiSettingsViewModel @Inject constructor(
 
     /** Re-reads AnkiDroid's decks, note types and fields, e.g. after the permission was granted. */
     fun refresh() {
-        viewModelScope.launch {
+        // The latest check wins: an earlier one may have read the note type the user just changed.
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
             val availability = anki.availability()
             if (availability != AnkiAvailability.READY) {
                 connection.value = AnkiScreenState(availability = availability)
@@ -89,7 +95,10 @@ class AnkiSettingsViewModel @Inject constructor(
                     status = notes.status(),
                 )
             }.onSuccess { connection.value = it }
-                .onFailure { connection.value = AnkiScreenState(availability = availability, error = it.message) }
+                .onFailure {
+                    if (it is CancellationException) throw it
+                    connection.value = AnkiScreenState(availability = availability, error = it.message)
+                }
         }
     }
 
@@ -106,7 +115,13 @@ class AnkiSettingsViewModel @Inject constructor(
      */
     fun selectModel(model: AnkiModel) {
         viewModelScope.launch {
-            val fields = runCatching { anki.fields(model.id) }.getOrDefault(emptyList())
+            val fields = anki.fields(model.id)
+            // Every note type has a field; no fields means AnkiDroid did not answer, and switching now would drop the
+            // templates saved for this note type.
+            if (fields.isEmpty()) {
+                refresh()
+                return@launch
+            }
             settingsRepository.update { settings ->
                 val saved = settings.modelName
                     ?.let { settings.savedTemplates + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }

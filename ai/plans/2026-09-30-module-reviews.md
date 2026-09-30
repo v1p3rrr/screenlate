@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 6 done (commit pending); next module 7 (Anki export), run 1. Owner said: do all modules without stopping (don't end the turn between modules).
+Updated after every step so the work survives a context reset or a paused session: module 7 done and committed; module 8 (Audio), run 1 in progress. Owner said: do all modules without stopping (don't end the turn between modules).
 
 ## Progress
 
@@ -44,7 +44,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 4 | Dictionary registry, imports and catalog | 9 found: 8 fixed, 1 question (Q4) | 4 found, fixed | nothing found | not needed | see git log |
 | 5 | Lookup and engine | 8 found: 5 fixed, 2 questions (Q5, Q6), 1 deferred | 2 found, fixed | 2 found, fixed | nothing found | see git log |
 | 6 | Lookup page and rendering | 7 found: 6 fixed, 1 question (Q7) | 6 found, fixed | 1 found, fixed | nothing found | see git log |
-| 7 | Anki export | | | | | |
+| 7 | Anki export | 5 found, fixed | 8 found: 7 fixed, 1 deferred (overlay) | 1 found, fixed | nothing found | see git log |
 | 8 | Audio | | | | | |
 | 11 | App shell, home, search and localization | | | | | |
 | 12 | Backup and Yomitan settings import | | | | | |
@@ -306,6 +306,57 @@ same. Found next to them:
 The `update` change: `history[0]` is always the first view, `current` is set whenever a view was pushed, a pushed
 view is never compact, so ⚠ stays in the header. Nothing found. Page tests (69) and unit tests pass.
 
+### Module 7, run 1
+
+- Fixed: `{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}` and `{cloze-body-kana}`
+  were not HTML-escaped (OCR text with `<` or `&` broke the card).
+- Fixed: `AnkiNotes.add` turned a cancellation into `AddResult.Failed` (an error toast when the overlay stopped).
+- Fixed: an enum value unknown to this version (a newer backup) reset all Anki settings; unknown values fall back to
+  their defaults now.
+- Fixed: the glossary media copy took its extension after the last dot of the whole path (a dot in a folder failed
+  the note) and left the file when `addMedia` threw.
+- Fixed: failed AnkiDroid queries were logged unredacted (the message may quote the first field).
+- Looked at and fine: sentence extraction, duplicate scopes, overwrite modes, presets, the crop editor (frames from
+  `CropFocus` are always larger than the minimum size, so the resize ranges are never empty).
+
+### Module 7, run 2
+
+Whole module again, with its integrations (Anki settings screen and view model, home problems, Yomitan settings
+import, backup, the overlay's note source, the search screen's notes).
+
+- Fixed: concurrent refreshes of the Anki settings screen could land out of order and show the previous note type's
+  fields; the latest refresh now cancels the earlier one (cancellation is rethrown, not shown as an error).
+- Fixed: choosing a note type while AnkiDroid returned no fields dropped that note type's saved templates; the switch
+  is skipped then.
+- Fixed: a template changed from outside while its field had focus (suggested templates) was never shown and the next
+  keystroke wrote the old text back; the field takes the new template once it loses focus.
+- Fixed: the screen showed "AnkiDroid is not installed" until the first check; the state starts unknown.
+- Fixed: the note's screenshot file stayed in the cache when adding failed or was cancelled; it is deleted in finally.
+- Fixed: a note AnkiDroid refused was reported with an English reason inside a localized toast; `AddResult.Rejected`
+  with a translated message (14 locales).
+- Fixed: `PopupNotes.release()` did not cancel a pending auto-play.
+- Deferred to the overlay module: the note screenshot in app-text-only mode hides only the bubble and the scan layer,
+  so on API 30-33 (and on the display-capture fallback) the popup window is in the picture.
+- Emulator: note added from the search screen (local AnkiDroid), Anki settings screen opens straight to the note
+  settings.
+
+### Module 7, run 3
+
+Review of the module 7 diff.
+
+- Fixed: `coerceInputValues` does not reach map values, so an overwrite mode unknown to this version (in
+  `overwriteModes` or `savedTemplates`) still reset all Anki settings; `OverwriteMode` reads through a serializer
+  that maps unknown names to COALESCE (names are stored as before).
+- Checked: the latest-wins refresh cannot apply a cancelled result (cancel and result both run on the main thread);
+  the template field converges on the stored value after focus changes; the screenshot file is deleted after the
+  result is reported.
+- Emulator: the stored settings still load after the change.
+
+### Module 7, run 4
+
+Review of the serializer change: names encode as the generated enum serializer did, nothing else serializes the
+enum. Nothing found.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -327,6 +378,13 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   reports (a timeout is a `SocketTimeoutException` now); drop that branch and its import.
 - Module 9: a cloud-only scan that fails without app text shows the generic OCR error for every reason but offline,
   although `ocrErrorText` knows paused, timeout and HTTP errors; show that reason instead.
+- Module 9: `OverlayController.noteSource` in app-text-only mode captures the screen for the note while the popup is
+  shown; `capture()` hides only the bubble and the scan layer, so on API 30-33 (and on the display-capture fallback of
+  34+) the popup is in the note's picture. Hide the popup window too, or capture before it is shown.
+- Module 9: `OverlayController` `onKanji` wraps the kanji lookup in `runCatching`, which also catches
+  `CancellationException` and then pushes a view from a cancelled scan; rethrow it.
+- Module 11: `SearchScreen` renders again when the theme changes (`LaunchedEffect(results, theme)`), which drops a
+  pushed view (kanji, link lookup); a theme change could update the page instead, as the overlay does.
 
 ## Changelog
 

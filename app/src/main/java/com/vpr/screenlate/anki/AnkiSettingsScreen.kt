@@ -102,6 +102,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                     }
                 }
                 AnkiAvailability.READY -> NoteSettings(state, viewModel)
+                null -> Unit
             }
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             AudioSettingsSection()
@@ -284,8 +285,9 @@ private fun TemplateField(field: String, template: String, markers: List<String>
     var text by remember(field) { mutableStateOf(template) }
     var menu by remember { mutableStateOf(false) }
     var focused by remember { mutableStateOf(false) }
-    // Suggested templates or a note type switch change the template from outside; typing must not be overwritten.
-    LaunchedEffect(template) {
+    // Suggested templates or a note type switch change the template from outside; typing must not be overwritten,
+    // and a change that arrived while typing shows once the field loses focus.
+    LaunchedEffect(template, focused) {
         if (!focused && template != text) text = template
     }
     OutlinedTextField(

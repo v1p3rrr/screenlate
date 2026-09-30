@@ -28,6 +28,7 @@
     <string name="overlay_add_note">Aggiungi ad Anki (tieni premuto per un’immagine)</string>
     <string name="overlay_play_audio">Riproduci audio (tieni premuto per scegliere)</string>
     <string name="anki_error">Impossibile aggiungere la nota: %1$s</string>
+    <string name="anki_rejected">AnkiDroid non ha salvato la nota.</string>
     <string name="anki_not_configured">Configura prima l’esportazione su Anki in Screenlate.</string>
     <string name="anki_not_installed">AnkiDroid non è installato.</string>
     <string name="anki_no_permission">Consenti a Screenlate di accedere ad AnkiDroid nelle sue impostazioni di Anki.</string>
