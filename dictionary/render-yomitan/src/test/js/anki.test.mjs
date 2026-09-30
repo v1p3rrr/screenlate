@@ -84,6 +84,72 @@ test('statement at-rules do not swallow the next rule', () => {
     assert.match(css, /\.p \.a \{ color: red \}/);
 });
 
+// The check that warns about files from the internet reads the dictionary's own CSS, while the page gets the scoped
+// output, so a rule the check sees commented out must stay commented out in that output.
+const HIDDEN_FONT = '@font-face { font-family: Q; src: url(https://h.example.com/q.woff) }';
+const stillCommented = (scoped, what) => {
+    const open = scoped.indexOf('/*');
+    const at = scoped.indexOf(HIDDEN_FONT);
+    assert.ok(at === -1 || (open !== -1 && open < at && scoped.indexOf('*/', open + 2) > at), what);
+};
+
+test('dropping a statement at-rule uncovers no rules inside a comment', () => {
+    const hidden = '@x /*;\n' + HIDDEN_FONT + '\n*/\n.a { color: red }';
+    stillCommented(window.YomitanRender.scopeCss(hidden, '.p'), 'comment after a semicolon');
+    const quoted = window.YomitanRender.scopeCss('@import "a;b.css";\n.a { color: red }', '.p');
+    assert.doesNotMatch(quoted, /b\.css/);
+    assert.match(quoted, /\.p \.a \{ color: red \}/);
+    const unclosed = window.YomitanRender.scopeCss('@charset "utf-8;\n.a { color: red }', '.p');
+    assert.equal(unclosed, '\n.p .a { color: red }');
+});
+
+test('a carriage return or form feed ends a string of a statement at-rule', () => {
+    // A browser ends a string at any line break, so `/*` after one opens a comment and the at-rule never reaches a `;`.
+    for (const br of ['\r', '\f']) {
+        const hidden = '@x "a' + br + '/*" ;\n' + HIDDEN_FONT + '\n*/';
+        stillCommented(window.YomitanRender.scopeCss(hidden, '.p'), JSON.stringify(br));
+    }
+    const crlf = window.YomitanRender.scopeCss('@charset "utf-8;\r\n.a { color: red }', '.p');
+    assert.equal(crlf, '\r\n.p .a { color: red }');
+});
+
+test('an unquoted url() of a statement at-rule is one address, not CSS', () => {
+    const hidden = '@x url(a") /*;\n' + HIDDEN_FONT + '\n*/';
+    stillCommented(window.YomitanRender.scopeCss(hidden, '.p'), 'quote inside an address');
+    const semicolon = window.YomitanRender.scopeCss('@import url(a;b.css);\n.a { color: red }', '.p');
+    assert.doesNotMatch(semicolon, /b\.css/);
+    assert.match(semicolon, /\.p \.a \{ color: red \}/);
+    // A name that only ends in "url" is not one, so its `/*` opens a comment, as it does for a browser.
+    const named = window.YomitanRender.scopeCss('@x myurl(/*) ;\n.a { color: red }', '.p');
+    assert.doesNotMatch(named, /\.p \.a/);
+    const string = window.YomitanRender.scopeCss('@import url( "a;b.css" );\n.a { color: red }', '.p');
+    assert.doesNotMatch(string, /b\.css/);
+    assert.match(string, /\.p \.a \{ color: red \}/);
+});
+
+test('a brace inside a comment, a string or an address does not end the rule', () => {
+    // A browser reads those three as text, so a `{` or `}` inside one neither opens nor closes a block. Taking one for
+    // a brace would leave the rest of the stylesheet unscoped, and a dictionary could style the whole page.
+    const hiding = [
+        '.a /*{*/ { color: red }',
+        '.a[x="{"] { color: red }',
+        '.a { content: "}" }',
+        '.a { /*}*/ color: red }',
+        '.a { background: url(a{b) }',
+        '.a { background: url(a}b) }',
+        '.a { color: red; /*{*/ }',
+        '.a { .n /*{*/ { color: red } }',
+        '.a { .n { content: ";}" } color: red }',
+        '@media all { .a { content: "}" } }',
+    ];
+    for (const rule of hiding) {
+        const scoped = window.YomitanRender.scopeCss(rule + '\n.b { color: blue }', '.p');
+        assert.ok(scoped.includes('.p .b { color: blue }'), rule);
+        // `&` at the top level of the page's styles resolves to the document root, so it is an escape of its own.
+        assert.ok(!scoped.includes('& .b'), rule);
+    }
+});
+
 test('keyframe selectors are kept as they are', () => {
     const css = window.YomitanRender.scopeCss('@keyframes spin { from { opacity: 0 } 50% { opacity: 1 } }', '.p');
     assert.match(css, /from \{ opacity: 0 \}/);

@@ -310,14 +310,14 @@ window.YomitanRender = (() => {
                 i = end + 2;
                 continue;
             }
-            const bracePos = css.indexOf('{', i);
-            const semicolonPos = css.indexOf(';', i);
             // Statement at-rules (@charset, @import, @namespace) are dropped: inside the page's combined styles they
             // are invalid anyway, and taken as a block start they would swallow the next rule unscoped.
-            if (css[i] === '@' && semicolonPos !== -1 && (bracePos === -1 || semicolonPos < bracePos)) {
-                i = semicolonPos + 1;
+            const statementEnd = css[i] === '@' ? atStatementEnd(css, i) : -1;
+            if (statementEnd !== -1) {
+                i = statementEnd + 1;
                 continue;
             }
+            const bracePos = nextOutsideText(css, i, '{');
             if (bracePos === -1) break;
             const selectorPart = css.slice(i, bracePos);
             const atRule = selectorPart.trim().startsWith('@');
@@ -330,14 +330,8 @@ window.YomitanRender = (() => {
                 return trimmed.startsWith('&') ? trimmed : `${prefix} ${trimmed}`;
             }).join(', ');
             parts.push(selectors, ' {');
-            i = bracePos + 1;
-            let depth = 1;
-            const blockStart = i;
-            while (i < css.length && depth > 0) {
-                if (css[i] === '{') depth++;
-                else if (css[i] === '}') depth--;
-                i++;
-            }
+            const blockStart = bracePos + 1;
+            i = blockEnd(css, blockStart);
             const block = css.slice(blockStart, i - 1);
             if (block.includes('{') && !keyframes) {
                 const { properties, nested } = splitNestedBlock(block);
@@ -351,6 +345,132 @@ window.YomitanRender = (() => {
         return parts.join('');
     }
 
+    const LINE_BREAK = /[\n\r\f]/;
+    const CSS_SPACE = /[ \t\n\r\f]/;
+    const NAME_CHAR = /[A-Za-z0-9_\u0080-\uffff-]/;
+
+    /**
+     * The index of the `;` that ends the statement at-rule at `start`, or -1 when a block or the end comes first.
+     * Comments, strings, escapes and unquoted `url(...)` addresses are skipped, so dropping the rule never uncovers
+     * rules inside a comment.
+     */
+    function atStatementEnd(css, start) {
+        let i = start;
+        while (i < css.length) {
+            const c = css[i];
+            if (c === '\\') {
+                i = escapeEnd(css, i);
+            } else if (c === '"' || c === "'") {
+                const end = rawStringEnd(css, i);
+                if (end < css.length && css[end] === c) {
+                    i = end + 1;
+                    continue;
+                }
+                // A string left open ends at the line break; its `;` still ends the rule, as it always did, so a
+                // broken `@charset "utf-8;` does not take the next rule with it.
+                for (let j = i + 1; j < end; j++) {
+                    if (css[j] === ';') return j;
+                    if (css[j] === '{') return -1;
+                }
+                i = end;
+            } else if (css.startsWith('/*', i)) {
+                const end = css.indexOf('*/', i + 2);
+                if (end === -1) return -1;
+                i = end + 2;
+            } else if (c === ';') {
+                return i;
+            } else if (c === '{') {
+                return -1;
+            } else {
+                const url = c === 'u' || c === 'U' ? urlTokenEnd(css, i) : -1;
+                i = url === -1 ? i + 1 : url;
+            }
+        }
+        return -1;
+    }
+
+    /** The index after the escape at `start` (a `\`); one before a CRLF covers both characters. */
+    function escapeEnd(css, start) {
+        return start + (css.startsWith('\r\n', start + 1) ? 3 : 2);
+    }
+
+    /**
+     * The index of the quote that closes the string opened at `start`, or of the line break that cuts it short (CR and
+     * form feed end a string as a line feed does), or the end of the CSS.
+     */
+    function rawStringEnd(css, start) {
+        const quote = css[start];
+        let i = start + 1;
+        while (i < css.length && css[i] !== quote && !LINE_BREAK.test(css[i])) {
+            i = css[i] === '\\' ? escapeEnd(css, i) : i + 1;
+        }
+        return Math.min(i, css.length);
+    }
+
+    /**
+     * The index after the unquoted `url(...)` address at `start`, or -1 when no such token starts there: a browser
+     * reads comment markers, quotes and `;` inside such an address as part of it, not as CSS.
+     */
+    function urlTokenEnd(css, start) {
+        if (!/^url\(/i.test(css.slice(start, start + 4)) || NAME_CHAR.test(css[start - 1] || '')) return -1;
+        let i = start + 4;
+        while (i < css.length && CSS_SPACE.test(css[i])) i++;
+        if (i < css.length && (css[i] === '"' || css[i] === "'")) return -1;
+        while (i < css.length && css[i] !== ')') i = css[i] === '\\' ? escapeEnd(css, i) : i + 1;
+        return Math.min(i + 1, css.length);
+    }
+
+    /**
+     * The index after the comment, string, escape or unquoted `url(...)` address at `i`, or -1 when none starts there.
+     * A browser reads all four as text, so a `{`, `}` or `;` inside one neither opens nor closes anything.
+     */
+    function textTokenEnd(css, i) {
+        const c = css[i];
+        if (c === '\\') return escapeEnd(css, i);
+        if (c === '"' || c === "'") {
+            const end = rawStringEnd(css, i);
+            return end < css.length && css[end] === c ? end + 1 : end;
+        }
+        if (css.startsWith('/*', i)) {
+            const end = css.indexOf('*/', i + 2);
+            return end === -1 ? css.length : end + 2;
+        }
+        if (c === 'u' || c === 'U') return urlTokenEnd(css, i);
+        return -1;
+    }
+
+    /** The index of the next `target` outside text, at or after `from`; -1 when there is none. */
+    function nextOutsideText(css, from, target) {
+        let i = from;
+        while (i < css.length) {
+            const end = textTokenEnd(css, i);
+            if (end > i) {
+                i = end;
+                continue;
+            }
+            if (css[i] === target) return i;
+            i++;
+        }
+        return -1;
+    }
+
+    /** The index after the `}` that closes the block opened before `from`, or the end of the CSS. */
+    function blockEnd(css, from) {
+        let i = from;
+        let depth = 1;
+        while (i < css.length && depth > 0) {
+            const end = textTokenEnd(css, i);
+            if (end > i) {
+                i = end;
+                continue;
+            }
+            if (css[i] === '{') depth++;
+            else if (css[i] === '}') depth--;
+            i++;
+        }
+        return i;
+    }
+
     function splitNestedBlock(block) {
         let pos = 0;
         let properties = '';
@@ -358,16 +478,10 @@ window.YomitanRender = (() => {
         while (pos < block.length) {
             while (pos < block.length && /\s/.test(block[pos])) pos++;
             if (pos >= block.length) break;
-            const nextSemi = block.indexOf(';', pos);
-            const nextBrace = block.indexOf('{', pos);
+            const nextSemi = nextOutsideText(block, pos, ';');
+            const nextBrace = nextOutsideText(block, pos, '{');
             if (nextBrace !== -1 && (nextSemi === -1 || nextBrace < nextSemi)) {
-                let depth = 1;
-                let end = nextBrace + 1;
-                while (end < block.length && depth > 0) {
-                    if (block[end] === '{') depth++;
-                    else if (block[end] === '}') depth--;
-                    end++;
-                }
+                const end = blockEnd(block, nextBrace + 1);
                 nested += block.slice(pos, end);
                 pos = end;
             } else if (nextSemi !== -1) {

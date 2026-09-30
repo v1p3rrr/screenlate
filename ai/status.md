@@ -19,9 +19,35 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `EInkSizes.enlarge` overwrites an earlier stored record (keep the first); `AppUpdates.update` silently ignored while a
   check runs (needs a UI text — ask); `LookupPage.evaluate` keeps its callback after cancellation; last-dictionary rule
   counts missing-file dictionaries differently in `isLastTermDictionary`/`keptTermDictionaries` and lives only in
-  callers; `CssCheck` misreads `user@host` and `/*` inside strings; `markDeleted` rescans bundled zips and `baseTitle`
-  duplicates `dictionaryKey`.
+  callers; `markDeleted` rescans bundled zips and `baseTitle` duplicates `dictionaryKey`.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
+- Security review of the whole project (2026-09-30): fixed — a dictionary's `styles.css` or title could close the
+  `<style>` that `note.js` puts into glossary fields and store HTML with event handlers in Anki notes (`styleElement`
+  writes `</style` as `<\/style`). Kept by the owner's decision: dictionary `@font-face` is not scoped and can add
+  faces to the page's own families ("Screenlate Sans"/"Screenlate Chosen"), so remote per-character fonts can see the
+  OCR header text (Q7: the CSS is not rewritten); `javascript:` hrefs from structured content reach exported notes
+  (needs a tap); `scopeCss` ends a block at a `}` inside a CSS string, which lets the next rule apply to the whole page
+  (the owner chose not to touch the scoper). Fixed: the remote-file warning (`CssCheck.remoteFiles`) now reads CSS as
+  a browser does (string-aware comments, decoded escapes, `\\`/tabs in addresses; checked in Chromium); after the PR
+  review also CRLF/CR/form feed as line breaks, a hex escape taking the line break after it, `/*` inside an unquoted
+  `url(...)`, and escaped whitespace inside an unquoted address (each confirmed in Chromium). `scopeCss` now looks
+  for the `;` of a dropped statement at-rule outside comments, strings and escapes (owner's go-ahead for this narrow
+  change), so `@x /*;` no longer uncovers commented rules the check does not see; a string left open still ends at
+  its `;` as before (owner: keep a broken `@charset "utf-8;` from taking the next rule), which the check reports since it
+  reads `url(` inside strings. Output byte-identical to before on the catalog's real `styles.css` (Jitendex,
+  Wiktionary) and synthetic and broken at-rule cases. Low: build-time dictionary downloads have no checksum.
+- Review of the security-fix branch (2026-09-30, xhigh, with fixes): `atStatementEnd` ended a string only at a
+  line feed and read an unquoted `url(...)` address as CSS, so `@x "a<CR>/*" ;` and `@x url(a") /*;` both made
+  the scoper drop the at-rule and uncover an `@font-face` that `remoteFiles` reports as commented out - a remote
+  font with no ⚠. Fixed with `rawStringEnd` and `urlTokenEnd`; `@import url(a;b.css);` no longer eats the next
+  rule either. `remoteFiles` now also reads a bare string of `image-set()`/`-webkit-image-set()` as an address
+  (Chromium fetches it, the check saw nothing). Gradle build and unit tests and the page tests run clean here.
+  Open, not fixed: `scopeCss` finds the block's `{` with a plain `indexOf`, so a `{` inside a comment splits the
+  rule and `@media /*{*/ screen { .a { ... } }` yields `& .a`, which Chromium resolves against the document root
+  and applies to the whole page (checked in Chromium) - needs the owner's go-ahead, being wider than the narrow
+  scoper change approved. Also open: `remoteFiles` scans string contents, so `content: "url(https://x/)"` raises
+  a ⚠ for a host nothing loads from, and it reports a percent-encoded or IDN host as written rather than as a
+  browser resolves it. Not checked here: the ⚠ and a note with dictionary CSS on a device.
 
 ## Phases
 
@@ -202,6 +228,25 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27), and beside a column in the middle of a narrow screen down to 140 dp; above or below only when neither fits.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
 
+### 2026-09-30 (security review)
+
+- Security review of the whole project in three passes (lookup page and scripts; archives, files, JNI and backup;
+  components, network, updates, logs), each finding re-checked separately. One confirmed issue, fixed: dictionary CSS
+  or a dictionary title ending the `<style>` element in glossary note fields (reproduced in jsdom; page tests for the
+  escape and for unchanged ordinary CSS). Findings below the report threshold are listed under "Next session".
+- Owner's answers: `@font-face`, `javascript:` hrefs and the scoper stay; the remote-file warning is fixed (escaped,
+  backslashed and tab-split addresses and a `/*` inside a string no longer hide a server; Chromium confirmed which of
+  them load). Changes go through https://github.com/v1p3rrr/screenlate/pull/2.
+
 ### 2026-09-30 (review of all changes since v0.1.4)
 
 - Reviewed v0.1.4..HEAD at xhigh, cut short by the weekly limit: the dictionary repository, download cache, Lens protobuf, page scripts and crop editor diffs were only partly read. Fixed: a failed font restore now re-reads the installed list. Open, not fixed (behavior choices or minor): the popup chip and ➕ wait follow the aimed engine, not the shown word's (matters for a kept draft word); a failed final ML Kit pass replaces a shown draft word with the error; `showMessage` leaves a pending lookup running; catalog font re-downloads reuse file names; `EInkSizes.enlarge` overwrites an earlier record; `AppUpdates.update` does nothing during a check; plus the skipped items of the previous review.
+
+### 2026-09-30 (scoper hardening)
+
+- The CSS scoper is now text-aware everywhere, not only in the statement at-rule scan: a `{`, `}` or `;` inside a
+  comment, a string, an escape or an unquoted `url(...)` no longer opens or closes a block. Without it a dictionary
+  could put `/*{*/` in a selector and have the rest of its stylesheet apply to the whole popup page, while the
+  remote-file warning, which reads the raw CSS, saw those rules as commented out.
+- Proof kept in the plan's changelog: 0 differences against the old scoper on real dictionary stylesheets and on
+  ordinary CSS, 8 of 14 targeted escapes closed with none left, no declarations lost (checked in Chromium).

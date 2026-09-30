@@ -584,3 +584,38 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - 2026-09-30: all answers implemented, no new questions. Q5's button from search to the Dictionaries screen was added last (`OPEN_DICTIONARIES`). Q6 measured on the emulator: 5-32 candidates for one-kana and long queries and no slower uncut, so no margin. Q7: the check follows Yomitan's idea of warning about remote URLs; dictionary cards are checked from the loaded styles, so only switched-on dictionaries get the ⚠. Q1: the grey ➕ could not be shown on the emulator (no ML Kit draft before the cloud result); check on the phone.
 - 2026-09-30: xhigh code review of the whole change set; two bugs fixed (cancelled deletes, a permanent "installing"), new question Q11 (draft sentence after the final text), minor findings listed in `ai/status.md`.
 - 2026-09-30: owner answered Q11: the note holds the word the popup shows; a word kept from the draft takes the draft's sentence. Already so, no code change.
+- 2026-09-30: security review of the whole project (owner's request). Fixed with the owner's go-ahead: dictionary CSS or
+  titles could end the `<style>` in glossary note fields. Unscoped dictionary `@font-face`, CSS-escaped remote URLs the
+  warning misses, and `javascript:` hrefs in exported notes are explained to the owner; fixing the first two changes Q7
+  ("the CSS is not rewritten") and needs the owner's answer.
+- 2026-09-30: owner's answers on the security review: dictionary `@font-face` stays as it is (Q7 unchanged: the CSS is
+  not rewritten); `javascript:` hrefs in exported notes stay as they are; changes go through a PR instead of a push to
+  main. The question on the CSS scoper and the remote-file warning is asked again in simpler words.
+- 2026-09-30: owner's answers: fix the remote-file warning (read CSS as a browser does); leave the CSS scoper as it is;
+  do not watch PR #2.
+- 2026-09-30: xhigh code review of PR #2 with fixes: the remote-file warning also reads CRLF/CR/form feed as line
+  breaks, lets a hex escape take the line break after it inside a string, keeps `/*` inside an unquoted `url(...)`,
+  and keeps escaped whitespace inside an unquoted address (all four hid servers Chromium loads). Open for the owner:
+  dictionary CSS is checked raw while the page gets `scopeCss`'s output, which can uncover commented rules.
+- 2026-09-30: owner approved a narrow scoper change: `scopeCss` finds the `;` of a statement at-rule outside comments,
+  strings and escapes, so dropping it cannot uncover commented rules (verified in Chromium; output unchanged on real
+  dictionaries' `styles.css`).
+- 2026-09-30: owner chose to keep the old scoper behavior for a string left open in a statement at-rule (its `;` ends
+  the rule, so a broken `@charset "utf-8;` keeps the next rule working); the remote-file check reports addresses after it.
+- 2026-09-30: xhigh code review of the security-fix branch, with fixes. Two holes in the new `atStatementEnd` let a
+  dictionary uncover a rule the remote-file check reports as commented out: its string scan ended only at a line feed
+  (CR and form feed end a string too), and it read an unquoted `url(...)` address as CSS, so a quote or `;` inside one
+  cut the at-rule short. Both are fixed (`rawStringEnd`, `urlTokenEnd`), which also keeps `@import url(a;b.css);` from
+  eating the next rule. `CssCheck.remoteFiles` now also reads a bare string of `image-set()`/`-webkit-image-set()`
+  as an address (Chromium fetches it; the check saw nothing). Open for the owner: `scopeCss` still looks for the
+  block's `{` with a plain `indexOf`, so `@media /*{*/ screen { .a { ... } }` produces `& .a`, which Chromium resolves
+  against the document root and applies to the whole page - a broader scoper change than the one approved.
+- 2026-09-30: owner approved the wider scoper change on condition that it changes no behavior and no kind of CSS.
+  `scopeCss` now finds the block's `{`, the matching `}` and a nested block's `;`/`{` through shared primitives
+  (`textTokenEnd`, `nextOutsideText`, `blockEnd`) that skip comments, strings, escapes and unquoted `url(...)`, as the
+  statement at-rule scan already did. Proof: a differential run of the old and the new scoper over ~431k inputs (6 real
+  dictionary `styles.css`, 20 ordinary CSS constructs, every string up to 4 characters over a CSS-significant alphabet,
+  400k random token strings, 270 truncations of real files) gives **0 differences on the real and the ordinary CSS**;
+  all differences are on malformed input. 6637 sampled differing cases and 14 targeted ones were then parsed in
+  Chromium: the old output let a rule out of the glossary in 8 of the 14 (`& .evil` resolves to the document root, so it
+  styles the whole page), the new output in none, and no case delivers fewer declarations than before.
