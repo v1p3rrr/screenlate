@@ -269,10 +269,14 @@ class OverlayController(
         if (resized) dock() else refreshPopup()
     }
 
-    /** The app in the foreground changed; the bubble hides in apps the user excluded. */
+    /**
+     * The app in the foreground changed; the bubble hides in apps the user excluded. The bubble's menu closes: it takes
+     * no focus, so Home and Back do not close it, and its items belong to the screen it was opened on.
+     */
     fun onForegroundApp(packageName: String) {
         if (packageName == foregroundPackage) return
         foregroundPackage = packageName
+        bubbleMenu.dismiss()
         applySettings(settings)
     }
 
@@ -936,7 +940,7 @@ class OverlayController(
                 popupNotes.onResultsHidden()
                 return@launch
             }
-            val matched = if (kanji != null) 1 else PageState.matchedLength(results)
+            val matched = PageState.matchedLength(results, kanji)
             val boxes = layout.boxesFor(position, matched.coerceAtLeast(1))
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
@@ -1000,7 +1004,7 @@ class OverlayController(
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
             val kanji = if (results.isEmpty()) characterEntry(query) else null
-            val matched = if (kanji != null) 1 else PageState.matchedLength(results)
+            val matched = PageState.matchedLength(results, kanji)
             val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
             val state = popupStateOffMain(LookupView(query, matched, results, message, kanji = kanji))
             // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.

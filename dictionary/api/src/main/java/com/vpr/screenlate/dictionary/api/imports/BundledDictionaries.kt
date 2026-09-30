@@ -47,8 +47,8 @@ class BundledDictionaries @Inject constructor(
         val prefs = dataStore.data.first()
         val installed = prefs[INSTALLED].orEmpty()
         var declined = prefs[DECLINED].orEmpty()
-        var present: Set<String>? = null
-        suspend fun present(): Set<String> = present ?: presentTitles().also { present = it }
+        var read: Set<String>? = null
+        suspend fun present(): Set<String> = read ?: presentTitles().also { read = it }
         // Versions before deletions were remembered: an archive installed then whose dictionary is gone was deleted.
         if (prefs[DECLINED_CHECKED] != true) {
             val titles = present().mapTo(hashSetOf(), ::baseTitle)
@@ -59,12 +59,7 @@ class BundledDictionaries @Inject constructor(
             dataStore.edit { it[DECLINED] = declined; it[DECLINED_CHECKED] = true }
         }
         val pending = pending(shipped, installed, declined)
-        val installedNames = installed.mapTo(hashSetOf()) { it.substringBeforeLast(':') }
-        val fresh = pending.filter { it.name !in installedNames }
-        // On first launch nothing is installed yet, and the archives need not be opened for their titles.
-        val titles = if (fresh.isEmpty()) emptySet() else present()
-        if (titles.isEmpty()) return pending
-        val owned = fresh.filter { asset -> titleOf(asset)?.let { title -> titles.any { sameTitle(it, title) } } == true }
+        val owned = alreadyPresent(pending, installed, ::present, ::titleOf)
         if (owned.isEmpty()) return pending
         dataStore.edit { it[DECLINED] = it[DECLINED].orEmpty() + owned.map { asset -> asset.name } }
         return pending - owned.toSet()
@@ -142,6 +137,26 @@ class BundledDictionaries @Inject constructor(
                     asset.key !in installed &&
                     (asset.name in installedNames || slot(asset.name) !in replacedSlots)
             }
+        }
+
+        /**
+         * The archives of [pending] that no version of was installed before and whose dictionary is already there under
+         * another revision or title ([sameTitle]), from the catalog, a file or a Yomitan collection: the user's copy stays.
+         * [present] gives the installed titles and [titleOf] an archive's title; neither is read without new archives or
+         * installed dictionaries, as on first launch.
+         */
+        suspend fun alreadyPresent(
+            pending: List<Asset>,
+            installed: Set<String>,
+            present: suspend () -> Set<String>,
+            titleOf: suspend (Asset) -> String?,
+        ): List<Asset> {
+            val installedNames = installed.mapTo(hashSetOf()) { it.substringBeforeLast(':') }
+            val fresh = pending.filter { it.name !in installedNames }
+            if (fresh.isEmpty()) return emptyList()
+            val titles = present()
+            if (titles.isEmpty()) return emptyList()
+            return fresh.filter { asset -> titleOf(asset)?.let { title -> titles.any { sameTitle(it, title) } } == true }
         }
 
         /** Shipped archives of which some version was installed before. */

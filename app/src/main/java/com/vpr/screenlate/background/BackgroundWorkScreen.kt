@@ -118,6 +118,9 @@ fun BackgroundWorkScreen(
                     checked = bubbleSettings.keepAlive,
                     onChange = { enabled ->
                         if (!enabled || !askNotifications()) bubble.setKeepAlive(enabled)
+                        // The running service stops it too, but after the phone killed the app the system may restart
+                        // the notification without the service.
+                        if (!enabled) BubbleKeepAliveService.keepAlive(context, false)
                     },
                     hint = stringResource(R.string.background_keep_alive_hint),
                 )

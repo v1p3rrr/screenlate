@@ -95,9 +95,9 @@ object PageState {
         "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
     )
 
-    /** Length of the first result's match in code points, for highlighting. */
-    fun matchedLength(results: List<LookupResult>): Int =
-        results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
+    /** Length of the first result's match in code points, for highlighting; one character for a [kanji] entry. */
+    fun matchedLength(results: List<LookupResult>, kanji: KanjiResult? = null): Int =
+        if (kanji != null) 1 else results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
 
     /**
      * Puts [text] on the clipboard, with [html] for apps that paste formatted text (others take the text); Android

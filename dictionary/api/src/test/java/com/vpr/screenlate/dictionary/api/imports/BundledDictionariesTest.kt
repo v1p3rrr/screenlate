@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries.Asset
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class BundledDictionariesTest {
@@ -67,5 +68,33 @@ class BundledDictionariesTest {
         assertThat(BundledDictionaries.sameTitle("KANJIDIC", "KANJIDIC [2026-270]")).isTrue()
         assertThat(BundledDictionaries.sameTitle("KANJIDIC (French)", "KANJIDIC [2026-270]")).isFalse()
         assertThat(BundledDictionaries.sameTitle("Jitendex.org [2026-09-20]", "JMdict [2026-09-27]")).isFalse()
+    }
+
+    private val kanjidic = Asset("40-kanjidic-english.zip", 40)
+    private val titles = mapOf(jmdict to "JMdict [2026-09-27]", frequency to "Jiten [2026-09-01]", kanjidic to "KANJIDIC [2026-270]")
+
+    private suspend fun alreadyPresent(pending: List<Asset>, installed: Set<String>, present: Set<String>) =
+        BundledDictionaries.alreadyPresent(pending, installed, { present }, { titles[it] })
+
+    @Test
+    fun `a new archive whose dictionary the user already has is left out`() = runTest {
+        val installed = setOf(jmdict.key, frequency.key)
+        val present = setOf("JMdict [2026-09-27]", "KANJIDIC (English)")
+        assertThat(alreadyPresent(listOf(kanjidic), installed, present)).containsExactly(kanjidic)
+        assertThat(alreadyPresent(listOf(kanjidic), installed, setOf("JMdict [2026-09-27]", "KANJIDIC (French)"))).isEmpty()
+    }
+
+    @Test
+    fun `a new version of an installed archive is not taken for the user's own copy`() = runTest {
+        val installed = setOf(Asset(jmdict.name, 99).key)
+        assertThat(alreadyPresent(listOf(jmdict), installed, setOf("JMdict [2026-09-20]"))).isEmpty()
+    }
+
+    @Test
+    fun `nothing is read without new archives or installed dictionaries`() = runTest {
+        val unread: suspend () -> Set<String> = { error("titles read") }
+        assertThat(BundledDictionaries.alreadyPresent(emptyList(), emptySet(), unread) { error("archive opened") }).isEmpty()
+        assertThat(BundledDictionaries.alreadyPresent(listOf(kanjidic), emptySet(), { emptySet() }) { error("archive opened") })
+            .isEmpty()
     }
 }

@@ -78,6 +78,15 @@ test('dictionary css is scoped to the glossary', () => {
     assert.match(anki.glossaryCss('.a { color: red }'), /\.yomitan-glossary \.a/);
 });
 
+test('a line break in the dictionary title stays inside the scope selector', () => {
+    const title = 'A' + String.fromCharCode(10) + '] {} * { display: none } z' + String.fromCharCode(34, 92);
+    const css = window.YomitanRender.dictionaryCss('.a { color: red }', title);
+    assert.ok(!css.includes(String.fromCharCode(10)), 'no raw line break');
+    const prefix = '.yomitan-glossary [data-dictionary=' + String.fromCharCode(34) + 'A' + String.fromCharCode(92) + 'a ] {} * { display: none } z'
+        + String.fromCharCode(92, 34, 92, 92, 34) + '] .a {';
+    assert.ok(css.startsWith(prefix), css);
+});
+
 test('statement at-rules do not swallow the next rule', () => {
     const css = window.YomitanRender.scopeCss('@charset "utf-8";\n@import url(x.css);\n.a { color: red }', '.p');
     assert.doesNotMatch(css, /@charset|@import/);

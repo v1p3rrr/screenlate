@@ -25,17 +25,19 @@ import kotlin.math.roundToInt
  * windows are laid out without screen limits, so it believes there is room on every side and runs off the screen.
  * Closes on a tap outside it or on an item.
  */
-class BubbleMenu(context: Context, private val windowManager: WindowManager) {
+class BubbleMenu(private val context: Context, private val windowManager: WindowManager) {
 
     class Item(val title: String, val onClick: () -> Unit)
 
-    private val themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight)
+    /** Made again for each menu: a theme keeps the day or night look it was made with. */
+    private var themed: Context = context
     private val density = context.resources.displayMetrics.density
     private var window: View? = null
 
     /** Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them. */
     fun show(items: List<Item>, anchor: Box, bounds: Box) {
         dismiss()
+        themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight)
         val margin = MARGIN_DP * density
         val area = Box(bounds.left + margin, bounds.top + margin, bounds.right - margin, bounds.bottom - margin)
         val card = card(items)

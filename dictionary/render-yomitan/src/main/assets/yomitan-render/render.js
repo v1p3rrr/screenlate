@@ -295,8 +295,17 @@ window.YomitanRender = (() => {
     /** Prefixes every selector of a dictionary's styles.css so it only applies inside its own glossaries. */
     function dictionaryCss(css, dictionary) {
         if (!css) return '';
-        const escaped = dictionary.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-        return scopeCss(css, `.yomitan-glossary [data-dictionary="${escaped}"]`);
+        return scopeCss(css, `.yomitan-glossary [data-dictionary="${cssString(dictionary)}"]`);
+    }
+
+    /**
+     * `text` for inside a double-quoted CSS string. A line break would end the string and let the rest of a dictionary
+     * title become rules of the whole page, so control characters are written as hex escapes.
+     */
+    function cssString(text) {
+        return text
+            .replace(/[\\"]/g, '\\$&')
+            .replace(/[\u0000-\u001f\u007f]/g, c => `\\${c.charCodeAt(0).toString(16)} `);
     }
 
     function scopeCss(css, prefix) {
