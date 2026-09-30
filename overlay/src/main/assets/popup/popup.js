@@ -6,6 +6,7 @@
  * {
  *   theme: 'light' | 'dark',
  *   pending: boolean,              OCR is still refining the text
+ *   noteWait: boolean,             ➕ waits for the final text: it is grey, and a tap asks the app for a hint
  *   engine: string,                OCR engine label, empty to hide
  *   ocrError: string,              why cloud recognition failed, empty without a failure; ⚠ opens it in the panel
  *   source: { text, matched },     lookup text and the length of its matched prefix (code points)
@@ -99,6 +100,7 @@ const Popup = (() => {
     function drawHeader(state) {
         document.documentElement.dataset.theme = state.theme || 'light';
         document.documentElement.dataset.compact = String(compact(state));
+        document.documentElement.dataset.noteWait = String(Boolean(state.noteWait));
         backButton.hidden = history.length === 0;
         spinner.hidden = !state.pending;
         engine.hidden = !state.engine;
@@ -261,6 +263,10 @@ const Popup = (() => {
             const add = iconButton('add', ICONS.add, labelOf('addNote'));
             add.dataset.index = String(index);
             const addNote = (withScreenshot, force) => {
+                if (current?.noteWait) {
+                    ScreenlateBridge.onNoteWaiting();
+                    return;
+                }
                 setButtonState(add, 'busy');
                 const data = NoteData.build(result, noteContext(), noteConfig.markers);
                 ScreenlateBridge.onAddNote(index, JSON.stringify(data), withScreenshot, force);
@@ -757,8 +763,8 @@ const Popup = (() => {
     function update(state) {
         if (history.length) {
             history[0].state = state;
-            const { theme, pending, engine, ocrError } = state;
-            current = { ...current, theme, pending, engine, ocrError };
+            const { theme, pending, noteWait, engine, ocrError } = state;
+            current = { ...current, theme, pending, noteWait, engine, ocrError };
             drawHeader(current);
             return;
         }

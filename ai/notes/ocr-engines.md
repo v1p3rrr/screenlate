@@ -50,12 +50,13 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
 - The screenshot callback copies the hardware buffer on `Dispatchers.Default` (the capturer's executor); a screenshot
   that arrives after the scan was cancelled is recycled in the continuation's `onCancellation`.
 
-- ➕ calls `noteSource()` synchronously: it fixes the shown view's layout and position (the sentence) and, before the
-  scan's final result only, completes its `cloudStop` (`CompositeOcr.recognize(stopCloud)`: the ML Kit page becomes
-  final with `cloudWithdrawn`; a cloud-only scan, or one whose ML Kit run failed, ends without a final and the
-  controller marks it final itself). Only a withdrawal the final confirms turns OCR boost off for the scan and labels
-  the chip "On-device" (`ocrBoostMode`, `engineLabelOf` in `OcrStatus.kt`): a Lens result or failure that was already
-  on its way keeps its own label, and offline stays "offline" (owner: ➕ stops the pending cloud request). A picture is
+- ➕ calls `noteSource()` synchronously: it fixes the shown view's layout and position (the sentence). Until the scan's
+  final result ➕ is grey and a tap only toasts a hint (`noteWaitsForText` in `OcrStatus.kt`, page state `noteWait`,
+  bridge `onNoteWaiting`); a word from app text (engine ACCESSIBILITY) is exact and can be added at once. A new scan
+  closes the previous popup (`closePopup()` in `startScan`), so ➕ of an old word cannot take the new scan's sentence.
+  The earlier withdrawal of the pending cloud request on ➕ (`stopCloud`, `cloudWithdrawn`) was removed (owner's
+  answers Q1/Q2 of the 2026-09-30 reviews). The grey state could not be seen on the emulator: its ML Kit draft never
+  came before the cloud result (2-3 s); check it on the phone. A picture is
   taken only while the same scan is open (`scanId`), so the crop editor never opens after a dock; the note itself goes
   on, but its result reaches neither the next scan's note memory (`ScanNotes`) nor its popup. It is shown on the entry
   of its term (`entryOf`), not by index.

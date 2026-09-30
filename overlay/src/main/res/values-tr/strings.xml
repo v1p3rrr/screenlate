@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">Sözlükler hâlâ yükleniyor. Biraz sonra yeniden deneyin.</string>
     <string name="overlay_no_dictionaries_on">Tanım içeren hiçbir sözlük açık değil. Screenlate’te Sözlükler bölümünden birini açın veya ekleyin.</string>
     <string name="overlay_add_note">Anki’ye ekle (görsel için basılı tutun)</string>
+    <string name="overlay_note_wait">Metnin kesinleşmesini bekleyin (gösterge durana kadar).</string>
     <string name="overlay_play_audio">Sesi çal (seçmek için basılı tutun)</string>
     <string name="anki_error">Not eklenemedi: %1$s</string>
     <string name="anki_rejected">AnkiDroid notu kaydetmedi.</string>

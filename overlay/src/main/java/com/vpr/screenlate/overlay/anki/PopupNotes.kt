@@ -355,6 +355,8 @@ class PopupNotes(
 
     override fun onOpenApp() = onOpenAnkiSettings()
 
+    override fun onNoteWaiting() = toast(context.getString(R.string.overlay_note_wait))
+
     override fun onAudioMenu(index: Int, expression: String, reading: String) {
         audioMenuJob?.cancel()
         page.showAudioMenu(index, buildJsonArray { }, loading = true)

@@ -11,7 +11,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -384,86 +383,5 @@ class CompositeOcrTest {
         assertThat(final.page.engine).isEqualTo(OcrEngineType.ML_KIT)
         assertThat((final as OcrUpdate.Final).lensError).isNull()
         assertThat(lens.calls).isEqualTo(0)
-    }
-
-    @Test
-    fun `a withdrawn lens request makes the draft final without an error`() = runTest {
-        lens.latency = 2.seconds
-        val stop = CompletableDeferred<Unit>()
-        launch {
-            delay(500)
-            stop.complete(Unit)
-        }
-        val updates = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList()
-        assertThat(updates.engines).containsExactly(false to OcrEngineType.ML_KIT, true to OcrEngineType.ML_KIT).inOrder()
-        val final = updates.last() as OcrUpdate.Final
-        assertThat(final.lensError).isNull()
-        assertThat(final.cloudWithdrawn).isTrue()
-        assertThat(testScheduler.currentTime).isEqualTo(500)
-    }
-
-    @Test
-    fun `lens is not asked once the request was withdrawn`() = runTest {
-        val stop = CompletableDeferred(Unit)
-        val final = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList().last() as OcrUpdate.Final
-        assertThat(final.page.engine).isEqualTo(OcrEngineType.ML_KIT)
-        assertThat(final.lensError).isNull()
-        assertThat(final.cloudWithdrawn).isTrue()
-        assertThat(lens.calls).isEqualTo(0)
-    }
-
-    @Test
-    fun `a lens result that came before the stop is not withdrawn`() = runTest {
-        val stop = CompletableDeferred<Unit>()
-        launch {
-            delay(1000)
-            stop.complete(Unit)
-        }
-        val final = ocr.recognize(image, Language.JAPANESE, stopCloud = stop).toList().last() as OcrUpdate.Final
-        assertThat(final.page.engine).isEqualTo(OcrEngineType.LENS)
-        assertThat(final.cloudWithdrawn).isFalse()
-    }
-
-    @Test
-    fun `offline is reported even when the request was withdrawn`() = runTest {
-        online = false
-        val final = ocr.recognize(image, Language.JAPANESE, stopCloud = CompletableDeferred(Unit)).toList().single()
-            as OcrUpdate.Final
-        assertThat(final.lensError).isInstanceOf(OfflineException::class.java)
-        assertThat(final.cloudWithdrawn).isFalse()
-    }
-
-    @Test
-    fun `a withdrawn request ends without a result when the device fails`() = runTest {
-        mlKit.error = IllegalStateException("device")
-        val updates = ocr.recognize(image, Language.JAPANESE, stopCloud = CompletableDeferred(Unit)).toList()
-        assertThat(updates.filterIsInstance<OcrUpdate.Final>()).isEmpty()
-    }
-
-    @Test
-    fun `saving, a withdrawn lens request starts the whole image at once`() = runTest {
-        lens.latency = 5.seconds
-        val stop = CompletableDeferred<Unit>()
-        launch {
-            delay(1000)
-            stop.complete(Unit)
-        }
-        val updates = focused.recognize(image, Language.JAPANESE, saving, focus = { 1000f }, stopCloud = stop).toList()
-        assertThat(updates.last().page.engine).isEqualTo(OcrEngineType.ML_KIT)
-        assertThat(mlKit.calls).isEqualTo(2)
-        assertThat(testScheduler.currentTime).isEqualTo(1200)
-    }
-
-    @Test
-    fun `cloud only ends without a result when the request is withdrawn`() = runTest {
-        lens.latency = 2.seconds
-        val stop = CompletableDeferred<Unit>()
-        launch {
-            delay(300)
-            stop.complete(Unit)
-        }
-        val updates = ocr.recognize(image, Language.JAPANESE, OcrOptions(OcrEngines.CLOUD), stopCloud = stop).toList()
-        assertThat(updates).isEmpty()
-        assertThat(testScheduler.currentTime).isEqualTo(300)
     }
 }

@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">Słowniki wciąż się instalują. Spróbuj ponownie za chwilę.</string>
     <string name="overlay_no_dictionaries_on">Żaden słownik z definicjami nie jest włączony. Włącz lub dodaj go w sekcji Słowniki w Screenlate.</string>
     <string name="overlay_add_note">Dodaj do Anki (przytrzymaj, aby dodać obraz)</string>
+    <string name="overlay_note_wait">Poczekaj na ostateczny tekst (aż wskaźnik się zatrzyma).</string>
     <string name="overlay_play_audio">Odtwórz dźwięk (przytrzymaj, aby wybrać)</string>
     <string name="anki_error">Nie udało się dodać notatki: %1$s</string>
     <string name="anki_rejected">AnkiDroid nie zapisał notatki.</string>

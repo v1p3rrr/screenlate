@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">辞書をインストール中です。少し待ってからもう一度お試しください。</string>
     <string name="overlay_no_dictionaries_on">定義のある辞書が有効になっていません。Screenlate の「辞書」で有効にするか追加してください。</string>
     <string name="overlay_add_note">Anki に追加（長押しで画像付き）</string>
+    <string name="overlay_note_wait">テキストが確定するまでお待ちください（読み込み表示が消えるまで）。</string>
     <string name="overlay_play_audio">音声を再生（長押しで選択）</string>
     <string name="anki_error">ノートを追加できませんでした：%1$s</string>
     <string name="anki_rejected">AnkiDroid がノートを保存しませんでした。</string>

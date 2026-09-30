@@ -28,6 +28,7 @@
     <string name="overlay_no_dictionaries">Словари ещё устанавливаются. Попробуйте чуть позже.</string>
     <string name="overlay_no_dictionaries_on">Нет включённого словаря с определениями. Включите или добавьте его в разделе «Словари» в Screenlate.</string>
     <string name="overlay_add_note">Добавить в Anki (удерживайте — с картинкой)</string>
+    <string name="overlay_note_wait">Текст ещё уточняется: дождитесь, пока пропадёт значок загрузки.</string>
     <string name="overlay_play_audio">Воспроизвести аудио (удерживайте — выбрать)</string>
     <string name="anki_error">Не удалось добавить карточку: %1$s</string>
     <string name="anki_rejected">AnkiDroid не сохранил карточку.</string>

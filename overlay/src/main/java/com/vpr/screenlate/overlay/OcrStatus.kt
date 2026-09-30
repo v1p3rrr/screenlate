@@ -10,14 +10,13 @@ internal enum class EngineLabel { NONE, LENS, APP_TEXT, DRAFT, DEVICE, DEVICE_OF
 
 /**
  * The chip for text from [engine]. An on-device result is "unavailable" only when cloud recognition was wanted and
- * failed: not when only the device recognizes by choice or a note withdrew the cloud request ([cloudWithdrawn]).
+ * failed, not when only the device recognizes by choice.
  */
 internal fun engineLabelOf(
     engine: OcrEngineType?,
     final: Boolean,
     engines: OcrEngines,
     offline: Boolean,
-    cloudWithdrawn: Boolean,
 ): EngineLabel = when {
     engine == OcrEngineType.LENS -> EngineLabel.LENS
     engine == OcrEngineType.ACCESSIBILITY -> EngineLabel.APP_TEXT
@@ -25,22 +24,19 @@ internal fun engineLabelOf(
     !final -> EngineLabel.DRAFT
     engines == OcrEngines.DEVICE -> EngineLabel.DEVICE
     offline -> EngineLabel.DEVICE_OFFLINE
-    cloudWithdrawn -> EngineLabel.DEVICE
     else -> EngineLabel.DEVICE_LENS_UNAVAILABLE
 }
 
-/**
- * OCR boost asks cloud recognition, so it is off while only the device recognizes, without recognition, and in a scan
- * whose cloud request a note withdrew.
- */
-internal fun ocrBoostMode(
-    setting: SmallTextMode,
-    engines: OcrEngines,
-    textSource: TextSource,
-    cloudWithdrawn: Boolean,
-): SmallTextMode = when {
+/** OCR boost asks cloud recognition, so it is off while only the device recognizes and without recognition. */
+internal fun ocrBoostMode(setting: SmallTextMode, engines: OcrEngines, textSource: TextSource): SmallTextMode = when {
     engines == OcrEngines.DEVICE -> SmallTextMode.OFF
     textSource == TextSource.APP_TEXT_ONLY -> SmallTextMode.OFF
-    cloudWithdrawn -> SmallTextMode.OFF
     else -> setting
 }
+
+/**
+ * ➕ waits while the scan still refines its text ([pending]), so a note never takes its sentence from a draft. A word
+ * read from the app's own text ([engine]) is exact already.
+ */
+internal fun noteWaitsForText(pending: Boolean, engine: OcrEngineType?): Boolean =
+    pending && engine != OcrEngineType.ACCESSIBILITY

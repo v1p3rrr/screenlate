@@ -29,6 +29,7 @@
     <string name="overlay_no_dictionaries">Dictionaries are still being installed. Try again in a moment.</string>
     <string name="overlay_no_dictionaries_on">No dictionary with definitions is on. Turn one on or add one under Dictionaries in Screenlate.</string>
     <string name="overlay_add_note">Add to Anki (hold for a picture)</string>
+    <string name="overlay_note_wait">Wait for the final text, until the spinner is gone.</string>
     <string name="overlay_play_audio">Play audio (hold to choose)</string>
     <string name="anki_error">Could not add the note: %1$s</string>
     <string name="anki_rejected">AnkiDroid did not save the note.</string>

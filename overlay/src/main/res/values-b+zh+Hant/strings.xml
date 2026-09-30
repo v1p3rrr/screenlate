@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">詞典仍在安裝中。請稍後再試。</string>
     <string name="overlay_no_dictionaries_on">沒有啟用帶釋義的詞典。請在 Screenlate 的「詞典」中啟用或新增一個。</string>
     <string name="overlay_add_note">新增到 Anki（長按附帶圖片）</string>
+    <string name="overlay_note_wait">請等待文字確定（載入圖示停止後）。</string>
     <string name="overlay_play_audio">播放音訊（長按選擇）</string>
     <string name="anki_error">無法新增筆記：%1$s</string>
     <string name="anki_rejected">AnkiDroid 未儲存該筆記。</string>

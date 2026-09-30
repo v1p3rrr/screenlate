@@ -36,7 +36,7 @@ Aiming again only repeats steps 3–6; the screen is not scanned again until the
 
 ## Anki export
 
-The page builds the dictionary markers of an entry (glossary HTML with scoped CSS, furigana, pitch, frequencies) because it already has the renderer. `PopupNotes` adds the sentence and cloze markers from the OCR paragraph, the audio clip and, on a long press, the cropped screenshot. The sentence and the crop frame come from the view shown when ➕ is pressed (`NoteSource`); pressing it before the final result withdraws the scan's pending cloud request (`CompositeOcr`'s `stopCloud`), so the on-device result becomes final (marked `cloudWithdrawn`) and the note waits for nothing; a note that finishes after its scan closed stays out of the next scan (`ScanNotes`); `AnkiNotes` renders the field templates, handles duplicates and talks to AnkiDroid through its content provider. Media files go to AnkiDroid through a FileProvider.
+The page builds the dictionary markers of an entry (glossary HTML with scoped CSS, furigana, pitch, frequencies) because it already has the renderer. `PopupNotes` adds the sentence and cloze markers from the OCR paragraph, the audio clip and, on a long press, the cropped screenshot. The sentence and the crop frame come from the view shown when ➕ is pressed (`NoteSource`); until the scan's final result ➕ is grey and only explains itself (`noteWaitsForText`, the page state's `noteWait`), except for a word from the app's own text; a new scan closes the previous popup; a note that finishes after its scan closed stays out of the next scan (`ScanNotes`); `AnkiNotes` renders the field templates, handles duplicates and talks to AnkiDroid through its content provider. Media files go to AnkiDroid through a FileProvider.
 
 ## Dictionaries
 

@@ -335,7 +335,8 @@ a {
     background: var(--frequency-bg);
 }
 
-.action-add.unavailable {
+.action-add.unavailable,
+:root[data-note-wait="true"] .action-add:not([data-state="added"]):not([data-state="open"]) {
     color: var(--muted);
     opacity: 0.5;
 }

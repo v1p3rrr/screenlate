@@ -75,6 +75,9 @@ class LookupPage(
          */
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean)
 
+        /** ➕ was tapped while it waits for the scan's final text. */
+        fun onNoteWaiting()
+
         /** 📖 on an entry: the note added for it, or its duplicate, should open in AnkiDroid. */
         fun onOpenNote(index: Int)
 
@@ -320,6 +323,9 @@ class LookupPage(
         @JavascriptInterface
         fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) =
             post { noteActions?.onAddNote(index, noteData, withScreenshot, force) }
+
+        @JavascriptInterface
+        fun onNoteWaiting() = post { noteActions?.onNoteWaiting() }
 
         @JavascriptInterface
         fun onOpenNote(index: Int) = post { noteActions?.onOpenNote(index) }

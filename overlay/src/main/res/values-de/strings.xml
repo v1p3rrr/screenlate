@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">Die Wörterbücher werden noch installiert. Versuche es gleich noch einmal.</string>
     <string name="overlay_no_dictionaries_on">Kein Wörterbuch mit Definitionen ist aktiv. Aktiviere oder füge eines unter „Wörterbücher“ in Screenlate hinzu.</string>
     <string name="overlay_add_note">Zu Anki hinzufügen (halten für ein Bild)</string>
+    <string name="overlay_note_wait">Warte, bis der Text fertig ist (das Rad stoppt).</string>
     <string name="overlay_play_audio">Audio abspielen (halten zum Auswählen)</string>
     <string name="anki_error">Notiz konnte nicht hinzugefügt werden: %1$s</string>
     <string name="anki_rejected">AnkiDroid hat die Notiz nicht gespeichert.</string>

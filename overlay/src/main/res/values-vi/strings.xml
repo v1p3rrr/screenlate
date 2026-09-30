@@ -27,6 +27,7 @@
     <string name="overlay_no_dictionaries">Từ điển vẫn đang được cài. Hãy thử lại sau giây lát.</string>
     <string name="overlay_no_dictionaries_on">Không có từ điển có định nghĩa nào được bật. Hãy bật hoặc thêm một từ điển trong mục Từ điển của Screenlate.</string>
     <string name="overlay_add_note">Thêm vào Anki (giữ để thêm ảnh)</string>
+    <string name="overlay_note_wait">Chờ văn bản hoàn tất (đến khi biểu tượng dừng quay).</string>
     <string name="overlay_play_audio">Phát âm thanh (giữ để chọn)</string>
     <string name="anki_error">Không thêm được ghi chú: %1$s</string>
     <string name="anki_rejected">AnkiDroid không lưu ghi chú.</string>

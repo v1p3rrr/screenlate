@@ -95,6 +95,29 @@ test('a tap on the note button sends the note data', () => {
     assert.equal(add.dataset.state, 'busy');
 });
 
+test('while the text is not final the note button is grey and asks for a hint', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.render(state({ pending: true, noteWait: true }));
+    assert.equal(page.document.documentElement.dataset.noteWait, 'true');
+    const add = content.querySelector('.action-add');
+    tap(add);
+    assert.deepEqual(page.calls.at(-1), ['onNoteWaiting']);
+    assert.equal(add.dataset.state, undefined);
+    Popup.update(state({ pending: false, noteWait: false }));
+    assert.equal(page.document.documentElement.dataset.noteWait, 'false');
+    tap(add);
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+});
+
+test('a pushed view keeps waiting until the first one gets its final text', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.render(state({ pending: true, noteWait: true }));
+    Popup.push(state({ source: { text: '犬', matched: 1 }, results: [result('犬', 'いぬ')], noteWait: true }));
+    Popup.update(state({ pending: false, noteWait: false }));
+    tap(content.querySelector('.action-add'));
+    assert.equal(page.calls.at(-1)[0], 'onAddNote');
+});
+
 test('added notes show the open button', () => {
     Popup.setActions({ anki: true, audio: false, ankiProblem: null });
     Popup.render(state());

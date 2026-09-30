@@ -37,10 +37,12 @@ object PageState {
         engine: String = "",
         hideSource: Boolean = false,
         ocrError: String = "",
+        noteWait: Boolean = false,
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
             pending = pending,
+            noteWait = noteWait,
             engine = engine,
             ocrError = ocrError,
             hideSource = hideSource,
@@ -55,6 +57,7 @@ object PageState {
     private fun labels(context: Context): Map<String, String> = mapOf(
         "noResults" to context.getString(R.string.overlay_no_results),
         "addNote" to context.getString(R.string.overlay_add_note),
+        "noteWait" to context.getString(R.string.overlay_note_wait),
         "playAudio" to context.getString(R.string.overlay_play_audio),
         "copy" to context.getString(R.string.overlay_copy),
         "copyDefinition" to context.getString(R.string.overlay_copy_definition),
@@ -105,6 +108,8 @@ object PageState {
     private data class StateDto(
         val theme: String,
         val pending: Boolean = false,
+        /** ➕ is grey and only explains itself until the scan's final text (`noteWaitsForText`). */
+        val noteWait: Boolean = false,
         val engine: String = "",
         /** Why cloud recognition failed for this scan, shown behind ⚠; empty without a failure. */
         val ocrError: String = "",
