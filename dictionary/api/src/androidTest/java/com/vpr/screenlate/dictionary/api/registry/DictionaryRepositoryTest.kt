@@ -150,6 +150,16 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun reorderSetsSwitchesInTheSameStep() = runTest {
+        val a = repository.import(archive("A", terms = 1))
+        val b = repository.import(archive("B", terms = 1))
+        repository.prepareLookup(Language.JAPANESE)
+        repository.reorder(listOf(b.id, a.id), enabled = mapOf(a.id to false))
+        assertThat(repository.getAll().map { it.title to it.enabled }).containsExactly("B" to true, "A" to false).inOrder()
+        assertThat(engine.loaded.terms.map { it.name }).containsExactly(repository.getAll()[0].directory)
+    }
+
+    @Test
     fun languagesMissingFromTheIndexComeFromTheCatalog() = runTest {
         val catalog = listOf(
             CatalogEntry(

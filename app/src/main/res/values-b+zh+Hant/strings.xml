@@ -237,6 +237,7 @@
     <string name="yomitan_import_settings">設定</string>
     <string name="yomitan_import_settings_hint">在 Yomitan 中：設定 → 備份 → 匯出設定。在此選擇該檔案，並選擇要從中獲取設定的設定檔。</string>
     <string name="yomitan_import_not_settings">此檔案不是 Yomitan 的設定匯出檔案。</string>
+    <string name="yomitan_import_failed">匯入因錯誤而中斷。已匯入的設定仍然有效。</string>
     <string name="yomitan_import_choose_settings">選擇設定檔案</string>
     <string name="yomitan_import_profile">設定檔</string>
     <string name="yomitan_import_profile_current">%1$s（目前）</string>
@@ -269,6 +270,7 @@
     <string name="yomitan_summary_lookup">掃描長度 %1$s，每次查詞的詞條數 %2$s</string>
     <string name="yomitan_summary_replacements_skipped">文字替換（%1$d 條規則）不會匯入：數字作為漢字數字、々、ッ 和標點會自動處理</string>
     <string name="yomitan_collection_not_collection">此檔案不是 Yomitan 詞典合集的匯出檔案。</string>
+    <string name="yomitan_collection_failed">無法開始匯入：無法讀取或複製該檔案。</string>
     <string name="yomitan_collection_choose">檔案中的詞典</string>
     <string name="yomitan_collection_entries">%1$d 個詞條</string>
     <string name="yomitan_collection_media">%1$d 張圖片</string>

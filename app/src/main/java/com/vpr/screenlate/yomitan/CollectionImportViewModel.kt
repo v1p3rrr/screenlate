@@ -1,14 +1,17 @@
 package com.vpr.screenlate.yomitan
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.dictionary.api.imports.CollectionDictionary
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +28,11 @@ sealed interface CollectionState {
 
     data object NotCollection : CollectionState
 
-    data class Listed(val uri: Uri, val items: List<CollectionItem>) : CollectionState
+    /** Queuing the import failed, e.g. the file could not be copied. */
+    data object Failed : CollectionState
+
+    /** @property importing the file is being queued (copied first when the app cannot keep access to it). */
+    data class Listed(val uri: Uri, val items: List<CollectionItem>, val importing: Boolean = false) : CollectionState
 
     data class Queued(val count: Int) : CollectionState
 }
@@ -70,11 +77,19 @@ class CollectionImportViewModel @Inject constructor(
     fun import() {
         val listed = mutableState.value as? CollectionState.Listed ?: return
         val titles = listed.items.filter { it.checked }.map { it.dictionary.title }.toSet()
-        if (titles.isEmpty()) return
+        // A second tap while a large file is copied would queue the whole collection again.
+        if (titles.isEmpty() || listed.importing) return
+        mutableState.value = listed.copy(importing = true)
         viewModelScope.launch {
-            runCatching { imports.importCollection(listed.uri, titles) }
-                .onSuccess { mutableState.value = CollectionState.Queued(titles.size) }
-                .onFailure { mutableState.value = CollectionState.NotCollection }
+            mutableState.value = try {
+                imports.importCollection(listed.uri, titles)
+                CollectionState.Queued(titles.size)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Queuing the collection import failed", e.redacted())
+                CollectionState.Failed
+            }
         }
     }
 
@@ -82,3 +97,5 @@ class CollectionImportViewModel @Inject constructor(
         mutableState.value = CollectionState.Idle
     }
 }
+
+private const val TAG = "CollectionImport"

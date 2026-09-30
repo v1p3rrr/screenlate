@@ -237,6 +237,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="yomitan_import_settings">Einstellungen</string>
     <string name="yomitan_import_settings_hint">In Yomitan: Einstellungen → Backup → Einstellungen exportieren. Wähle die Datei hier und das Profil, aus dem die Einstellungen kommen.</string>
     <string name="yomitan_import_not_settings">Diese Datei ist kein Yomitan-Einstellungsexport.</string>
+    <string name="yomitan_import_failed">Der Import wurde wegen eines Fehlers abgebrochen. Bereits importierte Einstellungen bleiben übernommen.</string>
     <string name="yomitan_import_choose_settings">Einstellungsdatei wählen</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (aktuell)</string>
@@ -269,6 +270,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="yomitan_summary_lookup">Scanlänge %1$s, Einträge pro Suche %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Textersetzungen (%1$d Regeln) werden nicht importiert: Ziffern als Kanji-Zahlen, 々, ッ und Satzzeichen werden automatisch behandelt</string>
     <string name="yomitan_collection_not_collection">Diese Datei ist kein Export einer Yomitan-Wörterbuchsammlung.</string>
+    <string name="yomitan_collection_failed">Der Import konnte nicht gestartet werden: Die Datei ließ sich nicht lesen oder kopieren.</string>
     <string name="yomitan_collection_choose">Wörterbücher in der Datei</string>
     <string name="yomitan_collection_entries">%1$d Einträge</string>
     <string name="yomitan_collection_media">%1$d Bilder</string>

@@ -237,6 +237,7 @@
     <string name="yomitan_import_settings">设置</string>
     <string name="yomitan_import_settings_hint">在 Yomitan 中：设置 → 备份 → 导出设置。在此选择该文件，并选择要从中获取设置的配置文件。</string>
     <string name="yomitan_import_not_settings">此文件不是 Yomitan 的设置导出文件。</string>
+    <string name="yomitan_import_failed">导入因错误而中断。已导入的设置仍然有效。</string>
     <string name="yomitan_import_choose_settings">选择设置文件</string>
     <string name="yomitan_import_profile">配置文件</string>
     <string name="yomitan_import_profile_current">%1$s（当前）</string>
@@ -269,6 +270,7 @@
     <string name="yomitan_summary_lookup">扫描长度 %1$s，每次查词的词条数 %2$s</string>
     <string name="yomitan_summary_replacements_skipped">文本替换（%1$d 条规则）不会导入：数字作为汉字数字、々、ッ 和标点会自动处理</string>
     <string name="yomitan_collection_not_collection">此文件不是 Yomitan 词典合集的导出文件。</string>
+    <string name="yomitan_collection_failed">无法开始导入：无法读取或复制该文件。</string>
     <string name="yomitan_collection_choose">文件中的词典</string>
     <string name="yomitan_collection_entries">%1$d 个词条</string>
     <string name="yomitan_collection_media">%1$d 张图片</string>

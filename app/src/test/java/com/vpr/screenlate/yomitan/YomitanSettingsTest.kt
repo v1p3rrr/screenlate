@@ -100,6 +100,13 @@ class YomitanSettingsTest {
     }
 
     @Test
+    fun `custom audio sources without a URL are skipped`() {
+        val blank = """{"options": {"profiles": [{"options": {"audio": {"sources": [{"type": "custom", "url": " "}, {"type": "custom-json"}, {"type": "jisho"}]}}}]}}"""
+        assertThat(YomitanSettings.parse(blank).profiles.single().audio!!.sources)
+            .containsExactly(AudioSource(AudioSourceType.JISHO))
+    }
+
+    @Test
     fun `the old name of the dictionary search source is read as that source`() {
         val old = """{"options": {"profiles": [{"options": {"audio": {"sources": [{"type": "jpod101-alternate"}]}}}]}}"""
         assertThat(YomitanSettings.parse(old).profiles.single().audio!!.sources)
@@ -109,10 +116,11 @@ class YomitanSettingsTest {
     @Test
     fun `reads term card formats with overwrite modes`() {
         val anki = YomitanSettings.parse(export).profiles[1].anki!!
-        assertThat(anki.main!!.model).isEqualTo("Senren")
-        assertThat(anki.main!!.deck).isEqualTo("Mining")
-        assertThat(anki.main!!.fields).containsExactly("word", "{expression}", "sentence", "{sentence}")
-        assertThat(anki.main!!.overwriteModes).containsExactly("word", OverwriteMode.COALESCE, "sentence", OverwriteMode.APPEND)
+        val main = anki.main!!
+        assertThat(main.model).isEqualTo("Senren")
+        assertThat(main.deck).isEqualTo("Mining")
+        assertThat(main.fields).containsExactly("word", "{expression}", "sentence", "{sentence}")
+        assertThat(main.overwriteModes).containsExactly("word", OverwriteMode.COALESCE, "sentence", OverwriteMode.APPEND)
         assertThat(anki.others.map { it.model }).containsExactly("Lapis")
         assertThat(anki.others.single().overwriteModes).containsExactly("Expression", OverwriteMode.COALESCE_NEW)
         assertThat(anki.tags).containsExactly("yomitan", "mined").inOrder()

@@ -237,6 +237,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="yomitan_import_settings">Paramètres</string>
     <string name="yomitan_import_settings_hint">Dans Yomitan : Paramètres → Sauvegarde → Exporter les paramètres. Choisissez le fichier ici, puis le profil dont les paramètres seront repris.</string>
     <string name="yomitan_import_not_settings">Ce fichier n’est pas un export de paramètres Yomitan.</string>
+    <string name="yomitan_import_failed">L\'importation s\'est arrêtée à cause d\'une erreur. Les réglages déjà importés restent appliqués.</string>
     <string name="yomitan_import_choose_settings">Choisir le fichier de paramètres</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (actuel)</string>
@@ -269,6 +270,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="yomitan_summary_lookup">Longueur d’analyse %1$s, entrées par recherche %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Les remplacements de texte (%1$d règles) ne sont pas importés : chiffres en numéraux kanji, 々, ッ et ponctuation sont gérés automatiquement</string>
     <string name="yomitan_collection_not_collection">Ce fichier n’est pas un export de collection de dictionnaires Yomitan.</string>
+    <string name="yomitan_collection_failed">Impossible de lancer l\'importation : le fichier n\'a pas pu être lu ou copié.</string>
     <string name="yomitan_collection_choose">Dictionnaires du fichier</string>
     <string name="yomitan_collection_entries">%1$d entrées</string>
     <string name="yomitan_collection_media">%1$d images</string>

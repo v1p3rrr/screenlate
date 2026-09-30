@@ -237,6 +237,7 @@
     <string name="yomitan_import_settings">설정</string>
     <string name="yomitan_import_settings_hint">Yomitan에서: 설정 → 백업 → 설정 내보내기. 여기서 파일을 고르고 설정을 가져올 프로필을 선택하세요.</string>
     <string name="yomitan_import_not_settings">이 파일은 Yomitan 설정 내보내기 파일이 아닙니다.</string>
+    <string name="yomitan_import_failed">오류로 인해 가져오기가 중단되었습니다. 이미 가져온 설정은 적용된 상태로 유지됩니다.</string>
     <string name="yomitan_import_choose_settings">설정 파일 선택</string>
     <string name="yomitan_import_profile">프로필</string>
     <string name="yomitan_import_profile_current">%1$s(현재)</string>
@@ -269,6 +270,7 @@
     <string name="yomitan_summary_lookup">스캔 길이 %1$s, 검색당 항목 수 %2$s</string>
     <string name="yomitan_summary_replacements_skipped">텍스트 치환(규칙 %1$d개)은 가져오지 않습니다. 한자 숫자로 된 숫자, 々, ッ, 문장 부호는 자동으로 처리됩니다</string>
     <string name="yomitan_collection_not_collection">이 파일은 Yomitan 사전 컬렉션 내보내기 파일이 아닙니다.</string>
+    <string name="yomitan_collection_failed">가져오기를 시작하지 못했습니다. 파일을 읽거나 복사할 수 없습니다.</string>
     <string name="yomitan_collection_choose">파일 속 사전</string>
     <string name="yomitan_collection_entries">항목 %1$d개</string>
     <string name="yomitan_collection_media">이미지 %1$d개</string>

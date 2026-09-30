@@ -59,6 +59,37 @@ class BackupArchiveTest {
     }
 
     @Test
+    fun `without dictionary files reading stops where they start`() = runTest {
+        val big = temp.newFolder("big").apply { File(this, "data.bin").writeBytes(kotlin.random.Random(1).nextBytes(1 shl 20)) }
+        val contents = BackupArchive.Contents(
+            manifest = BackupManifest(appVersion = "1.0", createdAt = 1, sections = BackupSection.entries),
+            settings = JsonObject(emptyMap()),
+            dictionaries = BackupDictionaryList(listOf(dictionary("A", files = true))),
+            dictionaryFiles = mapOf(0 to big),
+        )
+        val bytes = ByteArrayOutputStream().also { BackupArchive.write(it, contents) }.toByteArray()
+        val input = ByteArrayInputStream(bytes)
+        val reader = Recorder()
+        val head = BackupArchive.read(input, reader, dictionaryFiles = false)
+        assertThat(head.dictionaries.dictionaries.single().title).isEqualTo("A")
+        assertThat(reader.events).isEmpty()
+        assertThat(input.available()).isGreaterThan(bytes.size / 2)
+    }
+
+    @Test
+    fun `sections of a newer version are left out`() {
+        val zip = ByteArrayOutputStream().also { out ->
+            ZipOutputStream(out).use {
+                it.putNextEntry(ZipEntry(BackupLayout.MANIFEST))
+                it.write("""{"format":1,"appVersion":"9","createdAt":0,"sections":["GENERAL","SOMETHING_NEW","ANKI"]}""".toByteArray())
+                it.closeEntry()
+            }
+        }.toByteArray()
+        assertThat(BackupArchive.readHead(ByteArrayInputStream(zip)).manifest.sections)
+            .containsExactly(BackupSection.GENERAL, BackupSection.ANKI).inOrder()
+    }
+
+    @Test
     fun `other zip files are not backups`() {
         val zip = ByteArrayOutputStream().also { out ->
             ZipOutputStream(out).use {

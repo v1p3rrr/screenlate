@@ -237,6 +237,7 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="yomitan_import_settings">Configurações</string>
     <string name="yomitan_import_settings_hint">No Yomitan: Configurações → Backup → Exportar configurações. Escolha o arquivo aqui e o perfil do qual pegar as configurações.</string>
     <string name="yomitan_import_not_settings">Este arquivo não é uma exportação de configurações do Yomitan.</string>
+    <string name="yomitan_import_failed">A importação parou por causa de um erro. As configurações já importadas continuam aplicadas.</string>
     <string name="yomitan_import_choose_settings">Escolher o arquivo de configurações</string>
     <string name="yomitan_import_profile">Perfil</string>
     <string name="yomitan_import_profile_current">%1$s (atual)</string>
@@ -269,6 +270,7 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="yomitan_summary_lookup">Alcance da varredura %1$s, entradas por pesquisa %2$s</string>
     <string name="yomitan_summary_replacements_skipped">As substituições de texto (%1$d regras) não são importadas: dígitos como numerais kanji, 々, ッ e pontuação são tratados automaticamente</string>
     <string name="yomitan_collection_not_collection">Este arquivo não é uma exportação de coleção de dicionários do Yomitan.</string>
+    <string name="yomitan_collection_failed">Não foi possível iniciar a importação: o arquivo não pôde ser lido nem copiado.</string>
     <string name="yomitan_collection_choose">Dicionários no arquivo</string>
     <string name="yomitan_collection_entries">%1$d entradas</string>
     <string name="yomitan_collection_media">%1$d imagens</string>

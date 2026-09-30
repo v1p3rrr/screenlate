@@ -185,7 +185,8 @@ class BackupManager @Inject constructor(
             }.use { counted ->
                 BackupArchive.read(
                     counted,
-                    object : BackupArchive.Reader {
+                    dictionaryFiles = BackupSection.DICTIONARY_FILES in sections,
+                    reader = object : BackupArchive.Reader {
                         override suspend fun font(name: String, input: InputStream) {
                             if (BackupSection.POPUP !in sections) return
                             File(fontDirectory, name).outputStream().use { input.copyTo(it) }

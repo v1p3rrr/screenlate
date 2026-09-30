@@ -237,6 +237,7 @@
     <string name="yomitan_import_settings">設定</string>
     <string name="yomitan_import_settings_hint">Yomitan で：設定 → バックアップ → 設定をエクスポート。ここでファイルを選び、設定を取り込むプロファイルを選んでください。</string>
     <string name="yomitan_import_not_settings">このファイルは Yomitan の設定のエクスポートではありません。</string>
+    <string name="yomitan_import_failed">エラーのためインポートが中断されました。すでにインポートされた設定はそのまま適用されています。</string>
     <string name="yomitan_import_choose_settings">設定ファイルを選ぶ</string>
     <string name="yomitan_import_profile">プロファイル</string>
     <string name="yomitan_import_profile_current">%1$s（現在）</string>
@@ -269,6 +270,7 @@
     <string name="yomitan_summary_lookup">スキャン長 %1$s、1 回の検索の項目数 %2$s</string>
     <string name="yomitan_summary_replacements_skipped">テキスト置換（%1$d 件のルール）はインポートしません。漢数字としての数字、々、ッ、句読点は自動で処理されます</string>
     <string name="yomitan_collection_not_collection">このファイルは Yomitan の辞書コレクションのエクスポートではありません。</string>
+    <string name="yomitan_collection_failed">インポートを開始できませんでした。ファイルを読み込めないか、コピーできませんでした。</string>
     <string name="yomitan_collection_choose">ファイル内の辞書</string>
     <string name="yomitan_collection_entries">%1$d 項目</string>
     <string name="yomitan_collection_media">画像 %1$d 枚</string>

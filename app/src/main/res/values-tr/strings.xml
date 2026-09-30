@@ -237,6 +237,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="yomitan_import_settings">Ayarlar</string>
     <string name="yomitan_import_settings_hint">Yomitan’da: Ayarlar → Yedekleme → Ayarları dışa aktar. Dosyayı burada seçin ve ayarların alınacağı profili seçin.</string>
     <string name="yomitan_import_not_settings">Bu dosya bir Yomitan ayar dışa aktarımı değil.</string>
+    <string name="yomitan_import_failed">İçe aktarma bir hata nedeniyle durdu. Önceden içe aktarılan ayarlar uygulanmış olarak kalır.</string>
     <string name="yomitan_import_choose_settings">Ayar dosyasını seç</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (geçerli)</string>
@@ -269,6 +270,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="yomitan_summary_lookup">Tarama uzunluğu %1$s, arama başına madde %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Metin değiştirmeleri (%1$d kural) içe aktarılmaz: kanji rakamları olarak sayılar, 々, ッ ve noktalama otomatik olarak işlenir</string>
     <string name="yomitan_collection_not_collection">Bu dosya bir Yomitan sözlük koleksiyonu dışa aktarımı değil.</string>
+    <string name="yomitan_collection_failed">İçe aktarma başlatılamadı: dosya okunamadı veya kopyalanamadı.</string>
     <string name="yomitan_collection_choose">Dosyadaki sözlükler</string>
     <string name="yomitan_collection_entries">%1$d madde</string>
     <string name="yomitan_collection_media">%1$d görsel</string>

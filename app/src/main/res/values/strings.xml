@@ -240,6 +240,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="yomitan_import_settings">Settings</string>
     <string name="yomitan_import_settings_hint">In Yomitan: Settings → Backup → Export Settings. Choose the file here and pick the profile to take the settings from.</string>
     <string name="yomitan_import_not_settings">This file is not a Yomitan settings export.</string>
+    <string name="yomitan_import_failed">The import stopped with an error. Settings imported before it stay applied.</string>
     <string name="yomitan_import_choose_settings">Choose the settings file</string>
     <string name="yomitan_import_profile">Profile</string>
     <string name="yomitan_import_profile_current">%1$s (current)</string>
@@ -272,6 +273,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="yomitan_summary_lookup">Scan length %1$s, entries per lookup %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Text replacements (%1$d rules) are not imported: digits as kanji numerals, 々, ッ and punctuation are handled automatically</string>
     <string name="yomitan_collection_not_collection">This file is not a Yomitan dictionary collection export.</string>
+    <string name="yomitan_collection_failed">Could not start the import: the file could not be read or copied.</string>
     <string name="yomitan_collection_choose">Dictionaries in the file</string>
     <string name="yomitan_collection_entries">%1$d entries</string>
     <string name="yomitan_collection_media">%1$d images</string>

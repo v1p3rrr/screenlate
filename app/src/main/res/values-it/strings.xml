@@ -237,6 +237,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="yomitan_import_settings">Impostazioni</string>
     <string name="yomitan_import_settings_hint">In Yomitan: Impostazioni → Backup → Esporta impostazioni. Scegli qui il file e il profilo da cui prendere le impostazioni.</string>
     <string name="yomitan_import_not_settings">Questo file non è un’esportazione delle impostazioni di Yomitan.</string>
+    <string name="yomitan_import_failed">L\'importazione si è interrotta per un errore. Le impostazioni già importate restano applicate.</string>
     <string name="yomitan_import_choose_settings">Scegli il file delle impostazioni</string>
     <string name="yomitan_import_profile">Profilo</string>
     <string name="yomitan_import_profile_current">%1$s (attuale)</string>
@@ -269,6 +270,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="yomitan_summary_lookup">Lunghezza di scansione %1$s, voci per ricerca %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Le sostituzioni di testo (%1$d regole) non vengono importate: cifre come numerali kanji, 々, ッ e punteggiatura sono gestiti automaticamente</string>
     <string name="yomitan_collection_not_collection">Questo file non è un’esportazione di una raccolta di dizionari di Yomitan.</string>
+    <string name="yomitan_collection_failed">Impossibile avviare l\'importazione: non è stato possibile leggere o copiare il file.</string>
     <string name="yomitan_collection_choose">Dizionari nel file</string>
     <string name="yomitan_collection_entries">%1$d voci</string>
     <string name="yomitan_collection_media">%1$d immagini</string>

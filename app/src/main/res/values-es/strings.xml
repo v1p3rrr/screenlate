@@ -237,6 +237,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="yomitan_import_settings">Ajustes</string>
     <string name="yomitan_import_settings_hint">En Yomitan: Ajustes → Copia de seguridad → Exportar ajustes. Elige aquí el archivo y el perfil del que tomar los ajustes.</string>
     <string name="yomitan_import_not_settings">Este archivo no es una exportación de ajustes de Yomitan.</string>
+    <string name="yomitan_import_failed">La importación se detuvo por un error. Los ajustes ya importados se mantienen.</string>
     <string name="yomitan_import_choose_settings">Elegir el archivo de ajustes</string>
     <string name="yomitan_import_profile">Perfil</string>
     <string name="yomitan_import_profile_current">%1$s (actual)</string>
@@ -269,6 +270,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="yomitan_summary_lookup">Longitud de análisis %1$s, entradas por búsqueda %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Los reemplazos de texto (%1$d reglas) no se importan: las cifras como numerales kanji, 々, ッ y la puntuación se gestionan automáticamente</string>
     <string name="yomitan_collection_not_collection">Este archivo no es una exportación de colección de diccionarios de Yomitan.</string>
+    <string name="yomitan_collection_failed">No se pudo iniciar la importación: no se pudo leer ni copiar el archivo.</string>
     <string name="yomitan_collection_choose">Diccionarios del archivo</string>
     <string name="yomitan_collection_entries">%1$d entradas</string>
     <string name="yomitan_collection_media">%1$d imágenes</string>

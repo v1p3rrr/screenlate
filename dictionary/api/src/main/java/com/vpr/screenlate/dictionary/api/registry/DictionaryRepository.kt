@@ -198,10 +198,17 @@ class DictionaryRepository @Inject constructor(
         reloadLocked()
     }
 
-    /** Applies a new priority order; [ids] lists every dictionary, highest priority first. */
-    suspend fun reorder(ids: List<Long>) = mutex.withLock {
+    /**
+     * Applies a new priority order; [ids] lists every dictionary, highest priority first. [enabled] sets switches in
+     * the same step, so the engine reloads once.
+     */
+    suspend fun reorder(ids: List<Long>, enabled: Map<Long, Boolean> = emptyMap()) = mutex.withLock {
         val byId = dao.getAll().associateBy { it.id }
-        dao.update(ids.mapNotNull { byId[it] }.mapIndexed { index, dictionary -> dictionary.copy(priority = index) })
+        dao.update(
+            ids.mapNotNull { byId[it] }.mapIndexed { index, dictionary ->
+                dictionary.copy(priority = index, enabled = enabled[dictionary.id] ?: dictionary.enabled)
+            },
+        )
         reloadLocked()
     }
 

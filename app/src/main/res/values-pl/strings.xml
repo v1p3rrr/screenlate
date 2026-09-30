@@ -237,6 +237,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="yomitan_import_settings">Ustawienia</string>
     <string name="yomitan_import_settings_hint">W Yomitan: Ustawienia → Kopia zapasowa → Eksportuj ustawienia. Wybierz tutaj plik i profil, z którego mają pochodzić ustawienia.</string>
     <string name="yomitan_import_not_settings">Ten plik nie jest eksportem ustawień Yomitan.</string>
+    <string name="yomitan_import_failed">Import przerwał się z powodu błędu. Już zaimportowane ustawienia pozostają zastosowane.</string>
     <string name="yomitan_import_choose_settings">Wybierz plik ustawień</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (bieżący)</string>
@@ -269,6 +270,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="yomitan_summary_lookup">Zasięg skanowania %1$s, hasła na wyszukiwanie %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Zamiany tekstu (reguły: %1$d) nie są importowane: cyfry jako liczebniki kanji, 々, ッ i interpunkcja są obsługiwane automatycznie</string>
     <string name="yomitan_collection_not_collection">Ten plik nie jest eksportem kolekcji słowników Yomitan.</string>
+    <string name="yomitan_collection_failed">Nie udało się rozpocząć importu: nie można odczytać ani skopiować pliku.</string>
     <string name="yomitan_collection_choose">Słowniki w pliku</string>
     <string name="yomitan_collection_entries">Hasła: %1$d</string>
     <string name="yomitan_collection_media">Obrazy: %1$d</string>

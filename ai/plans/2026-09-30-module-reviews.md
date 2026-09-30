@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 11 done (three runs); next module 12 backup and Yomitan import, run 1
+Updated after every step so the work survives a context reset or a paused session: modules 1-8, 11 and 12 done; next is module 13 (updates, About and logs), run 1.
 
 ## Progress
 
@@ -47,7 +47,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 7 | Anki export | 5 found, fixed | 8 found: 7 fixed, 1 deferred (overlay) | 1 found, fixed | nothing found | see git log |
 | 8 | Audio | 8 found, fixed | 3 found, fixed | nothing found | not needed | see git log |
 | 11 | App shell, home, search and localization | 14 found: 12 fixed, 2 questions (Q8, Q9) | 4 found: 3 fixed, 1 question (Q10) | 1 found, fixed | not needed | see git log |
-| 12 | Backup and Yomitan settings import | | | | | |
+| 12 | Backup and Yomitan settings import | 8 found: 7 fixed, 1 noted | 3 found: 2 fixed, 1 noted | 2 found, fixed | not needed | see git log |
 | 13 | Updates, About and logs | | | | | |
 | — | Deferred fixes in modules 9 and 10 | | | | | |
 
@@ -447,6 +447,49 @@ default mapping inside the edit as before, cancelled test jobs leave no stale st
 - Cleanup: the new log tags' companion objects moved to the end of their classes.
 - Run 4 not needed: the change above is a one-line catch.
 
+### Module 12, run 1
+
+- Checked (deferred item): `BackupManager.restoreFrom` writes only paths that `BackupLayout.safePath` accepts (no
+  empty, `.`, `..` or absolute segments, no backslashes), and `BackupFormatTest` covers `..`; no zip slip.
+- Fixed: a backup from a newer version that lists a section this version does not know failed to decode and was
+  reported as "not a backup"; unknown sections are left out and the known ones are offered.
+- Fixed: restoring only settings read the whole archive, gigabytes with dictionary files; reading stops where the
+  dictionary files start when they are not restored.
+- Fixed: the Yomitan settings import read any picked file whole into memory (a dictionary picked by mistake); files
+  over 16 MB are "not a settings export". A second pick while one was read could be overwritten by the first.
+- Fixed: an error while applying Yomitan settings (database or DataStore) crashed the app; it shows a new
+  "the import stopped" message (14 locales) and keeps what was applied.
+- Fixed: a second tap on "Import" of a Yomitan collection while the file was copied queued the whole collection
+  again; the button is off while it is queued.
+- Fixed (deferred): unnecessary `!!` in `YomitanSettingsTest` (compiler warnings).
+- Noted, not changed: a restore replaces the settings before the dictionary files are read; if reading fails later,
+  the settings stay replaced and the screen says only that the restore failed.
+
+### Module 12, run 2
+
+- Fixed: a Yomitan export can hold a custom (or custom JSON) audio source without a URL, which Yomitan keeps
+  switched off in practice; the import added it as a source that failed on every lookup and showed up as a failing
+  source on the home screen. Such sources are skipped now (the URL is trimmed first), with a test.
+- Fixed: applying Yomitan's dictionary switches reloaded the dictionary engine once per changed switch (plus once for
+  the order), which took seconds with many large dictionaries. `DictionaryRepository.reorder` takes the switches and
+  applies them with the order in one step; an instrumented test covers it (run on the emulator, 13 passed).
+- Checked: backup creation, `BackupViewModel`'s section choice on reopening a backup, `PopupFonts` backup and
+  restore, `DictionaryRepository.restore`/`applyStates`, the lookup setters' clamping of imported values.
+- Noted, not changed: a Yomitan dictionary name whose revision-less key matches several installed dictionaries takes
+  the one of highest priority, while a backup's list reports such a name as ambiguous. Both are reasonable for their
+  source (Yomitan titles carry the revision, backups keep exact titles).
+
+### Module 12, run 3
+
+- Fixed: when queuing a collection import failed (e.g. the file could not be copied for lack of space), the screen
+  said the file was not a collection export. It says the import could not start now (new string in all locales) and
+  the failure is logged without file names.
+- Fixed: import order in `BackupArchive`.
+- Checked on the emulator: a Yomitan export with a blank custom source, a blank custom JSON source and Jisho imports
+  one audio source; restoring only the audio section of a 58 MB backup with dictionary files finishes at once and
+  says "Restored".
+- Run 4 not needed: run 3 changed only a failure message and imports.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -459,8 +502,8 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   `AudioSourceType` (`AudioSettings.defaultSources` drops unknown names silently).
 - Module 11 (done in run 1): `SearchViewModel.search` wraps the lookup in `runCatching`, which also catches `CancellationException`;
   rethrow it (today the cancelled result is dropped by `mapLatest`).
-- Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
-- Module 12: `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
+- Module 12 (done in run 1): `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
+- Module 12 (done in run 1): `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
   archive; check that `BackupArchive` refuses `..` segments and absolute paths (zip slip).
 - Modules 9–11 (at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
   `search/SearchScreen.kt:87`, `OverlayController.isDarkTheme`); one helper next to `ThemeMode` in core:common.

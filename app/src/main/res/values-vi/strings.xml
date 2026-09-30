@@ -237,6 +237,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="yomitan_import_settings">Cài đặt</string>
     <string name="yomitan_import_settings_hint">Trong Yomitan: Cài đặt → Sao lưu → Xuất cài đặt. Chọn tệp ở đây rồi chọn hồ sơ để lấy cài đặt.</string>
     <string name="yomitan_import_not_settings">Tệp này không phải bản xuất cài đặt của Yomitan.</string>
+    <string name="yomitan_import_failed">Việc nhập đã dừng do lỗi. Các cài đặt đã nhập trước đó vẫn được áp dụng.</string>
     <string name="yomitan_import_choose_settings">Chọn tệp cài đặt</string>
     <string name="yomitan_import_profile">Hồ sơ</string>
     <string name="yomitan_import_profile_current">%1$s (hiện tại)</string>
@@ -269,6 +270,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="yomitan_summary_lookup">Độ dài quét %1$s, số mục mỗi lần tra %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Các quy tắc thay thế văn bản (%1$d quy tắc) không được nhập: chữ số dạng số kanji, 々, ッ và dấu câu được xử lý tự động</string>
     <string name="yomitan_collection_not_collection">Tệp này không phải bản xuất bộ sưu tập từ điển của Yomitan.</string>
+    <string name="yomitan_collection_failed">Không thể bắt đầu nhập: không đọc hoặc sao chép được tệp.</string>
     <string name="yomitan_collection_choose">Từ điển trong tệp</string>
     <string name="yomitan_collection_entries">%1$d mục</string>
     <string name="yomitan_collection_media">%1$d hình ảnh</string>

@@ -238,6 +238,7 @@
     <string name="yomitan_import_settings">Настройки</string>
     <string name="yomitan_import_settings_hint">В Yomitan: Настройки → Резервная копия → Экспорт настроек. Выберите файл здесь и профиль, из которого взять настройки.</string>
     <string name="yomitan_import_not_settings">Это не экспорт настроек Yomitan.</string>
+    <string name="yomitan_import_failed">Импорт прервался из-за ошибки. Уже импортированные настройки остались применены.</string>
     <string name="yomitan_import_choose_settings">Выбрать файл настроек</string>
     <string name="yomitan_import_profile">Профиль</string>
     <string name="yomitan_import_profile_current">%1$s (текущий)</string>
@@ -270,6 +271,7 @@
     <string name="yomitan_summary_lookup">Длина скана %1$s, статей на поиск %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Замены текста (правил: %1$d) не переносятся: цифры как кандзи, 々, ッ и знаки препинания учитываются автоматически</string>
     <string name="yomitan_collection_not_collection">Это не экспорт коллекции словарей Yomitan.</string>
+    <string name="yomitan_collection_failed">Не удалось начать импорт: файл не читается или не копируется.</string>
     <string name="yomitan_collection_choose">Словари в файле</string>
     <string name="yomitan_collection_entries">записей: %1$d</string>
     <string name="yomitan_collection_media">картинок: %1$d</string>

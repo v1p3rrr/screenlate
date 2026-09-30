@@ -9,7 +9,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 
 /** The zip archive of a backup (see [BackupLayout]); streams only, so it works on any document the user picks. */
 object BackupArchive {
@@ -68,9 +72,7 @@ object BackupArchive {
         while (true) {
             val entry = zip.nextEntry ?: break
             when (entry.name) {
-                BackupLayout.MANIFEST -> manifest = runCatching {
-                    json.decodeFromString(BackupManifest.serializer(), zip.readText())
-                }.getOrElse { throw NotBackupException() }
+                BackupLayout.MANIFEST -> manifest = decodeManifest(zip.readText())
                 BackupLayout.SETTINGS -> settings = json.parseToJsonElement(zip.readText()) as? JsonObject
                 BackupLayout.DICTIONARIES -> dictionaries = json.decodeFromString(BackupDictionaryList.serializer(), zip.readText())
                 else -> break
@@ -93,8 +95,16 @@ object BackupArchive {
         suspend fun dictionaryDone(index: Int)
     }
 
-    /** Streams the files to [reader]; [onHead] gets the [Head] before the first file. */
-    suspend fun read(input: InputStream, reader: Reader, onHead: suspend (Head) -> Unit = {}): Head {
+    /**
+     * Streams the files to [reader]; [onHead] gets the [Head] before the first file. Without [dictionaryFiles] reading
+     * stops where they start, which saves reading gigabytes when only settings are restored.
+     */
+    suspend fun read(
+        input: InputStream,
+        reader: Reader,
+        dictionaryFiles: Boolean = true,
+        onHead: suspend (Head) -> Unit = {},
+    ): Head {
         val zip = ZipInputStream(input.buffered())
         var manifest: BackupManifest? = null
         var settings: JsonObject? = null
@@ -122,8 +132,7 @@ object BackupArchive {
             if (manifest == null && entry.name != BackupLayout.MANIFEST) throw NotBackupException()
             when (entry.name) {
                 BackupLayout.MANIFEST -> {
-                    manifest = runCatching { json.decodeFromString(BackupManifest.serializer(), zip.readText()) }
-                        .getOrElse { throw NotBackupException() }
+                    manifest = decodeManifest(zip.readText())
                     if (manifest.format > BackupLayout.FORMAT) throw NewerFormatException()
                 }
                 BackupLayout.SETTINGS -> settings = json.parseToJsonElement(zip.readText()) as? JsonObject
@@ -136,6 +145,7 @@ object BackupArchive {
                         continue
                     }
                     val (index, path) = BackupLayout.dictionaryFile(entry.name) ?: continue
+                    if (!dictionaryFiles) break
                     if (index in done) continue
                     if (index != current) {
                         finish()
@@ -149,6 +159,17 @@ object BackupArchive {
         finish()
         return found
     }
+
+    /** Sections this version does not know (a newer version's) are left out rather than refusing the backup. */
+    private fun decodeManifest(text: String): BackupManifest = runCatching {
+        val stored = json.parseToJsonElement(text).jsonObject
+        val known = BackupSection.entries.map { it.name }.toSet()
+        val sections = stored["sections"]?.jsonArray?.filter { (it as? JsonPrimitive)?.content in known }
+        json.decodeFromJsonElement(
+            BackupManifest.serializer(),
+            if (sections == null) stored else JsonObject(stored + ("sections" to JsonArray(sections))),
+        )
+    }.getOrElse { throw NotBackupException() }
 
     private fun ZipOutputStream.putText(name: String, text: String) {
         putNextEntry(ZipEntry(name))

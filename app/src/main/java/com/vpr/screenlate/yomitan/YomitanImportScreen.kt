@@ -63,10 +63,13 @@ fun YomitanImportScreen(
         ) {
             SectionCard(title = stringResource(R.string.yomitan_import_settings)) {
                 when (val current = state) {
-                    SettingsImportState.Idle, SettingsImportState.NotSettings -> {
+                    SettingsImportState.Idle, SettingsImportState.NotSettings, SettingsImportState.Failed -> {
                         Text(stringResource(R.string.yomitan_import_settings_hint))
                         if (current == SettingsImportState.NotSettings) {
                             Text(stringResource(R.string.yomitan_import_not_settings), color = MaterialTheme.colorScheme.error)
+                        }
+                        if (current == SettingsImportState.Failed) {
+                            Text(stringResource(R.string.yomitan_import_failed), color = MaterialTheme.colorScheme.error)
                         }
                         Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
                             Text(stringResource(R.string.yomitan_import_choose_settings))
@@ -84,10 +87,13 @@ fun YomitanImportScreen(
             }
             SectionCard(title = stringResource(R.string.yomitan_import_dictionaries)) {
                 when (val current = collectionState) {
-                    CollectionState.Idle, CollectionState.NotCollection -> {
+                    CollectionState.Idle, CollectionState.NotCollection, CollectionState.Failed -> {
                         Text(stringResource(R.string.yomitan_import_dictionaries_hint))
                         if (current == CollectionState.NotCollection) {
                             Text(stringResource(R.string.yomitan_collection_not_collection), color = MaterialTheme.colorScheme.error)
+                        }
+                        if (current == CollectionState.Failed) {
+                            Text(stringResource(R.string.yomitan_collection_failed), color = MaterialTheme.colorScheme.error)
                         }
                         OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
                             Text(stringResource(R.string.dictionaries_import_yomitan_backup))
@@ -141,7 +147,7 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
             askNotifications()
             viewModel.import()
         },
-        enabled = state.items.any { it.checked },
+        enabled = !state.importing && state.items.any { it.checked },
         modifier = Modifier.fillMaxWidth(),
     ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked })) }
 }

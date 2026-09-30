@@ -162,9 +162,13 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
             val unknown = mutableListOf<String>()
             audio.array("sources").orEmpty().mapNotNull { it as? JsonObject }.forEach { source ->
                 val type = source.string("type").orEmpty()
-                when (val mapped = audioSourceType(type)) {
-                    null -> unknown += type
-                    else -> sources += AudioSource(mapped, if (mapped.hasUrl) source.string("url").orEmpty() else "")
+                val mapped = audioSourceType(type)
+                val url = if (mapped?.hasUrl == true) source.string("url").orEmpty().trim() else ""
+                when {
+                    mapped == null -> unknown += type
+                    // Yomitan keeps a custom source without a URL; here it would only fail on every lookup.
+                    mapped.hasUrl && url.isEmpty() -> Unit
+                    else -> sources += AudioSource(mapped, url)
                 }
             }
             return Audio(

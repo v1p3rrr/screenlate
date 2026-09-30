@@ -110,10 +110,10 @@ class YomitanSettingsImporter @Inject constructor(
         }.distinctBy { it.first.id }
         val missing = profile.dictionaries.map { it.name }.filter { name -> matched.none { it.second.name == name } }
         val ordered = matched.map { it.first } + installed.filter { dictionary -> matched.none { it.first.id == dictionary.id } }
-        dictionaries.reorder(ordered.map { it.id })
-        matched.forEach { (dictionary, preference) ->
-            if (dictionary.enabled != preference.enabled) dictionaries.setEnabled(dictionary.id, preference.enabled)
-        }
+        dictionaries.reorder(
+            ordered.map { it.id },
+            enabled = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled },
+        )
         val sortName = profile.sortFrequencyDictionary
         val sort = sortName?.let { name ->
             installed.filter { it.frequencyCount > 0 }
