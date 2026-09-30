@@ -119,3 +119,29 @@ test('furigana markers escape the text', () => {
     assert.equal(sentence.html, '<span class="term">&lt;b&gt;&amp;</span><span class="term"><ruby>食<rt>た</rt></ruby>べた</span>');
     assert.equal(sentence.plain, '&lt;b&gt;&amp; 食[た]べた');
 });
+
+test('dictionary styles cannot end the style element of a glossary field', () => {
+    const title = 'Evil</STYLE ><img src=x onerror=alert(1)>';
+    const evil = {
+        term: { expression: 'x', reading: 'x', glossaries: [{ dictionary: title, content: '["meaning"]' }] },
+    };
+    const styles = [{ dictionary: title, css: 'a{color:red;</style><img src=x onerror=alert(2)>} b{content:"</style>"}' }];
+    const markers = ['glossary', 'glossary-first', `single-glossary-${NoteData.kebab(title)}`];
+    const { values } = NoteData.build(evil, { styles }, markers);
+    for (const marker of markers) {
+        const template = page.document.createElement('template');
+        template.innerHTML = values[marker];
+        assert.equal(template.content.querySelectorAll('img').length, 0, marker);
+        assert.equal(template.content.querySelectorAll('style').length, 1, marker);
+        assert.match(template.content.querySelector('style').textContent, /<\\\/style><img src=x onerror=alert\(2\)>/, marker);
+    }
+    assert.match(values.glossary, /\[data-dictionary="Evil<\\\/STYLE ><img src=x onerror=alert\(1\)>"\]/);
+});
+
+test('dictionary styles go into glossary fields unchanged', () => {
+    const styled = { term: { expression: 'x', reading: 'x', glossaries: [{ dictionary: 'D', content: '["meaning"]' }] } };
+    const styles = [{ dictionary: 'D', css: 'b { color: red; } @media (width < 600px) { i { color: blue; } }' }];
+    const { values } = NoteData.build(styled, { styles }, ['glossary', 'glossary-first']);
+    assert.match(values.glossary, /<style>\.yomitan-glossary \[data-dictionary="D"\] b \{ color: red; \}.*\(width < 600px\).*<\/style>/);
+    assert.match(values['glossary-first'], /<style>\.yomitan-glossary b \{ color: red; \}.*<\/style><\/div>$/);
+});

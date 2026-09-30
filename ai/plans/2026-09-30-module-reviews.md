@@ -584,3 +584,7 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - 2026-09-30: all answers implemented, no new questions. Q5's button from search to the Dictionaries screen was added last (`OPEN_DICTIONARIES`). Q6 measured on the emulator: 5-32 candidates for one-kana and long queries and no slower uncut, so no margin. Q7: the check follows Yomitan's idea of warning about remote URLs; dictionary cards are checked from the loaded styles, so only switched-on dictionaries get the ⚠. Q1: the grey ➕ could not be shown on the emulator (no ML Kit draft before the cloud result); check on the phone.
 - 2026-09-30: xhigh code review of the whole change set; two bugs fixed (cancelled deletes, a permanent "installing"), new question Q11 (draft sentence after the final text), minor findings listed in `ai/status.md`.
 - 2026-09-30: owner answered Q11: the note holds the word the popup shows; a word kept from the draft takes the draft's sentence. Already so, no code change.
+- 2026-09-30: security review of the whole project (owner's request). Fixed with the owner's go-ahead: dictionary CSS or
+  titles could end the `<style>` in glossary note fields. Unscoped dictionary `@font-face`, CSS-escaped remote URLs the
+  warning misses, and `javascript:` hrefs in exported notes are explained to the owner; fixing the first two changes Q7
+  ("the CSS is not rewritten") and needs the owner's answer.

@@ -38,6 +38,15 @@ const NoteData = (() => {
             .replace(/"/g, '&quot;');
     }
 
+    /**
+     * A `<style>` element for a note field, or '' for no styles. The CSS comes from dictionaries (styles.css and the
+     * title in the scope selector), and a `</style` in it would end the element early and turn the rest into markup of
+     * the card; written as `<\/style` it is the same text inside CSS strings and no longer an end tag.
+     */
+    function styleElement(css) {
+        return css.trim() ? `<style>${css.replace(/<\/(style)/gi, '<\\/$1')}</style>` : '';
+    }
+
     /** Yomitan's getKebabCase: the dictionary part of single-glossary-* and single-frequency-* markers. */
     function kebab(title) {
         return title
@@ -154,8 +163,7 @@ const NoteData = (() => {
                 html += `<li data-dictionary="${escapeHtml(glossary.dictionary)}">${single(glossary, brief, noDictionaryTag)}</li>`;
                 if (!styled.has(glossary.dictionary)) {
                     styled.add(glossary.dictionary);
-                    const css = render ? render.dictionaryCss(styleOf(glossary.dictionary), glossary.dictionary) : '';
-                    if (css.trim()) html += `<style>${css}</style>`;
+                    html += styleElement(render ? render.dictionaryCss(styleOf(glossary.dictionary), glossary.dictionary) : '');
                 }
             }
             return html + '</ol></div>';
@@ -166,7 +174,7 @@ const NoteData = (() => {
             const css = anki ? anki.glossaryCss(styleOf(glossary.dictionary)) : '';
             return '<div style="text-align: left;" class="yomitan-glossary">'
                 + single(glossary, brief, noDictionaryTag)
-                + (css.trim() ? `<style>${css}</style>` : '')
+                + styleElement(css)
                 + '</div>';
         }
 

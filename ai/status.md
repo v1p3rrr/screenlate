@@ -22,13 +22,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   callers; `CssCheck` misreads `user@host` and `/*` inside strings; `markDeleted` rescans bundled zips and `baseTitle`
   duplicates `dictionaryKey`.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
-- Security review of the whole project (2026-09-30, not fixed, waits for the owner): a dictionary's `styles.css` or
-  title can close the `<style>` that `note.js` puts into `{glossary}`/`{glossary-first}`/`single-glossary-*` fields
-  (`note.js:158,169`, via `render.js` `dictionaryCss`/`scopeCss`), so a malicious dictionary stores HTML with event
-  handlers in Anki notes, which AnkiDroid and Anki run when the card is shown. Below the report threshold: dictionary
-  `@font-face` is not scoped and can target the page's own font families, `CssCheck.REMOTE` misses CSS-escaped URLs
-  (silent remote fonts over the whole page, including the OCR header); `javascript:` hrefs from structured content
-  reach exported notes (needs a tap); build-time dictionary downloads have no checksum.
+- Security review of the whole project (2026-09-30): fixed — a dictionary's `styles.css` or title could close the
+  `<style>` that `note.js` puts into glossary fields and store HTML with event handlers in Anki notes (`styleElement`
+  writes `</style` as `<\/style`). Open, waiting for the owner: dictionary `@font-face` is not scoped and can add
+  faces to the page's own families ("Screenlate Sans"/"Screenlate Chosen"), and `CssCheck.REMOTE` misses CSS-escaped
+  URLs, so remote per-character fonts can see the OCR header text without a warning (Q7 says "the CSS is not
+  rewritten", so a fix needs the owner); `javascript:` hrefs from structured content reach exported notes (needs a
+  tap); build-time dictionary downloads have no checksum.
 
 ## Phases
 
@@ -208,6 +208,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Rotation handling is minimal (the bubble re-docks on configuration change).
 - Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27), and beside a column in the middle of a narrow screen down to 140 dp; above or below only when neither fits.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
+
+### 2026-09-30 (security review)
+
+- Security review of the whole project in three passes (lookup page and scripts; archives, files, JNI and backup;
+  components, network, updates, logs), each finding re-checked separately. One confirmed issue, fixed: dictionary CSS
+  or a dictionary title ending the `<style>` element in glossary note fields (reproduced in jsdom; page tests for the
+  escape and for unchanged ordinary CSS). Findings below the report threshold are listed under "Next session".
 
 ### 2026-09-30 (review of all changes since v0.1.4)
 
