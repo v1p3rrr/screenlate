@@ -22,6 +22,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   callers; `CssCheck` misreads `user@host` and `/*` inside strings; `markDeleted` rescans bundled zips and `baseTitle`
   duplicates `dictionaryKey`.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
+- Security review of the whole project (2026-09-30, not fixed, waits for the owner): a dictionary's `styles.css` or
+  title can close the `<style>` that `note.js` puts into `{glossary}`/`{glossary-first}`/`single-glossary-*` fields
+  (`note.js:158,169`, via `render.js` `dictionaryCss`/`scopeCss`), so a malicious dictionary stores HTML with event
+  handlers in Anki notes, which AnkiDroid and Anki run when the card is shown. Below the report threshold: dictionary
+  `@font-face` is not scoped and can target the page's own font families, `CssCheck.REMOTE` misses CSS-escaped URLs
+  (silent remote fonts over the whole page, including the OCR header); `javascript:` hrefs from structured content
+  reach exported notes (needs a tap); build-time dictionary downloads have no checksum.
 
 ## Phases
 
