@@ -96,4 +96,37 @@ answered; answers go to the plan's changelog.
      the name is the backup file). A changed string in all 14 locales.
   2. Keep as is.
 
+### Q5. The "no dictionaries" message always says they are still being installed (module 5 run 1)
+
+- **Feature:** what the popup and the search screen say when a lookup finds nothing and there is no dictionary with
+  definitions to search (`overlay_no_dictionaries`). With dictionaries, nothing found hides the popup as in Yomitan.
+- **How it works now:** the only text is "Dictionaries are still being installed. Try again in a moment." It fits the
+  first minutes after installing the app, while the bundled dictionaries are imported. It is wrong when the user
+  deleted or switched off every term dictionary, or has term dictionaries only for another language: the message then
+  stays forever. (Since this review the check itself follows the lookup: dictionaries of another language or with
+  missing files no longer count, so these cases now reach the message instead of a silent hidden popup.)
+- **Options:**
+  1. Recommended: two texts. While an import is queued or running: the current one. Otherwise: "No dictionary with
+     definitions is on. Open Settings → Dictionaries to add or turn one on." (the search screen could add a button to
+     the Dictionaries screen). Needs the import queue state in the overlay and the search screen; strings in 14
+     locales.
+  2. One neutral text for both cases, e.g. "No dictionary with definitions is installed or on yet." (strings only).
+  3. Keep as is.
+
+### Q6. The engine cuts the result list before dictionary priority is applied (module 5 run 1)
+
+- **Feature:** the order and the limit of lookup results (Settings → Lookup → "Entries shown", 32 by default).
+- **How it works now:** hoshidicts sorts the candidates by its own order (match length, deinflection, frequency, score)
+  and returns the first 32; `YomitanSorter` then applies Yomitan's order, which puts dictionary priority before score.
+  An entry that only the higher-priority dictionary has and that ranks 33rd by score is lost, while entries of lower
+  priority dictionaries stay. It happens only with several term dictionaries and more than 32 candidates of the same
+  match length and frequency, e.g. one-kana matches; the lost entries would be near the end of the list.
+- **Options:**
+  1. Recommended: ask the engine for all candidates when more than one term dictionary is on, cut after our sort.
+     Exact; costs more for lookups with many candidates (all glossaries are read and passed to Kotlin). I would
+     measure a one-kana lookup on the phone with the owner's dictionaries first and fall back to option 2 if it is
+     slow.
+  2. Ask the engine for a margin (e.g. twice the limit): cheap, fixes nearly all cases, not exact.
+  3. Keep as is (a note in `yomitan-behavior.md`).
+
 ## Answered

@@ -62,6 +62,17 @@ class YomitanSorterTest {
         assertThat(sorted.first()).isEqualTo(primary)
     }
 
+    @Test
+    fun remainingTiesGoToTheLongerTermThenTheTermTextThenMoreDefinitions() {
+        val short = result("見", reading = "み", matched = "み")
+        val fewer = result("見る", reading = "みる", matched = "み")
+        val more = result("見る", reading = "める", matched = "み", definitions = 2)
+        val otherText = result("観る", reading = "みる", matched = "み")
+        val kana = result("みる", matched = "み")
+        assertThat(sort(short, fewer, otherText, more, kana))
+            .containsExactly(kana, more, fewer, otherText, short).inOrder()
+    }
+
     private fun sort(vararg results: LookupResult) = YomitanSorter.sort(results.toList(), options, listOf("Dict"))
 
     private fun result(
@@ -72,6 +83,7 @@ class YomitanSorterTest {
         frequency: Int? = null,
         dictionary: String = "Dict",
         score: Int = 0,
+        definitions: Int = 1,
     ) = LookupResult(
         matched = matched,
         deinflected = if (trace > 0) expression else matched,
@@ -80,7 +92,7 @@ class YomitanSorterTest {
             expression = expression,
             reading = reading,
             score = score,
-            glossaries = listOf(Glossary(dictionary, "[]")),
+            glossaries = List(definitions) { Glossary(dictionary, "[]") },
             frequencies = frequency?.let { listOf(FrequencyGroup("Freq", listOf(FrequencyValue(it)))) }.orEmpty(),
         ),
     )

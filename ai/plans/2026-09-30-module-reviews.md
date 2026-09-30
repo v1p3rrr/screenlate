@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 4 done and committed. Next: module 5 (lookup and engine), run 1.
+Updated after every step so the work survives a context reset or a paused session: module 5 done; committing. Next: module 6 (lookup page and rendering), run 1.
 
 ## Progress
 
@@ -42,7 +42,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 2 | Common and language support | 4 found: 3 fixed, 1 deferred | 1 found (test), deferred | 1 found (validation), fixed | not needed | see git log |
 | 3 | OCR | 7 found, fixed | 4 found, fixed | 3 found, fixed | nothing found | see git log |
 | 4 | Dictionary registry, imports and catalog | 9 found: 8 fixed, 1 question (Q4) | 4 found, fixed | nothing found | not needed | see git log |
-| 5 | Lookup and engine | | | | | |
+| 5 | Lookup and engine | 8 found: 5 fixed, 2 questions (Q5, Q6), 1 deferred | 2 found, fixed | 2 found, fixed | nothing found | see git log |
 | 6 | Lookup page and rendering | | | | | |
 | 7 | Anki export | | | | | |
 | 8 | Audio | | | | | |
@@ -210,6 +210,57 @@ Tool note: tool inputs decode `\uXXXX` and halve `\\`; write backslashes in edit
 
 The diff of runs 1 and 2. Nothing found; checked the collision rule for plain imports (the title match makes `collided` null), works queued by the previous version (no order tag, `Result.failure`), and the error length limit. No run 4. All unit tests, the registry and engine androidTests pass. No emulator run: no screen changed, the task mapping is unit tested.
 
+### Module 5, run 1
+
+`DictionaryLookup`, variants, `YomitanSorter`, lookup settings, the hoshidicts engine and JNI bridge, and their use in
+the overlay, the search screen and `PopupNotes`. Eight findings: five fixed, two questions, one deferred.
+
+- `hasTermDictionaries` counted enabled term dictionaries of any language and with missing files, unlike the lookup:
+  nothing found then hid the popup silently instead of the no-dictionary message → `hasTermDictionaries(language)`
+  asks the prepared lookup (androidTest).
+- Dictionary links in the popup were looked up with the scan length setting, so a link to a longer term failed; the
+  search screen scanned its whole query without a bound (a long text from the selection menu held the engine lock for
+  thousands of prefixes) → `DictionaryLookup.lookupQuery` scans the whole query up to 100 characters, as Yomitan does
+  for the search field and links (test).
+- After score the sorter preferred kana terms (hoshidicts' rule), while Yomitan orders by longer term, term text and
+  more definitions → Yomitan's tiebreaks (test, fails on the old code).
+- Scan length and result limit restored from a backup were used unchecked → clamped when read.
+- Question Q5: the no-dictionary text always says they are still being installed.
+- Question Q6: the engine cuts the list at the limit before dictionary priority is applied.
+- Deferred to module 11: `SearchViewModel.search` catches `CancellationException` in `runCatching` (harmless now).
+
+Considered, no change: inflection labels follow the in-app language (the application's `getResources` is wrapped);
+negative or huge JNI scan lengths are bounded by the text length; link lookups after a closed screen go to a
+destroyed page, which ignores them.
+
+### Module 5, run 2
+
+The whole module again with the run 1 fixes. Two findings, fixed:
+
+- The clamp of restored lookup settings had no test → `LookupSettingsRepositoryTest` (fails on the old code).
+- `LookupSettings.SLOW_MAX_RESULTS` was never used (the screen warns above the default) → removed.
+
+Also: `yomitan-behavior.md` notes the sorter's string compare, the engine's cut (Q6) and whole-query lookups. Checked
+on the emulator: a 3000-character text from the selection menu opens the search screen at once with the first
+term's entries. Considered, no change: the language-aware check now takes the repository lock per empty lookup
+(cheap once loaded); the lock order is repository → engine only.
+
+### Module 5, run 3
+
+The diff of runs 1 and 2. Two findings, fixed:
+
+- The language-aware check went through `prepareLookup`, which loads the engine; the overlay calls it outside the
+  lookup's `try`, so a failing engine load would have thrown a second time and ended the service →
+  `DictionaryRepository.hasTermDictionaries(language)` reads the registry with the same filter as the engine load
+  (`usable`), without loading.
+- The androidTest toggled a switch only to force a reload → checks the switch, the language and missing files
+  directly, and that the loaded set agrees.
+
+### Module 5, run 4
+
+The run 3 change: the extracted filter is the load's own, the check runs on IO without the repository lock (it only
+reads). Nothing found. All unit tests, the registry androidTests and the engine androidTests pass.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -220,6 +271,8 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   `Data.getStringArray` (use `getNullableStringArray`).
 - Module 8: a test that every name in `LanguageSupport.defaultAudioSources` maps to an `AudioSourceType`
   (`AudioSettings.defaultSources` drops unknown names silently).
+- Module 11: `SearchViewModel.search` wraps the lookup in `runCatching`, which also catches `CancellationException`;
+  rethrow it (today the cancelled result is dropped by `mapLatest`).
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
 - Module 12: `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
   archive; check that `BackupArchive` refuses `..` segments and absolute paths (zip slip).

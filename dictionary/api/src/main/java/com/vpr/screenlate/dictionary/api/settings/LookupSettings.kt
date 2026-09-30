@@ -29,9 +29,6 @@ data class LookupSettings(
         const val DEFAULT_MAX_RESULTS = 32
         const val MIN_SCAN_LENGTH = 1
         const val MAX_SCAN_LENGTH = 100
-
-        /** Above this, rendering long entry lists gets noticeably slower. */
-        const val SLOW_MAX_RESULTS = 64
     }
 }
 
@@ -39,10 +36,12 @@ data class LookupSettings(
 class LookupSettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
+    // Restored backups write the values without the setters' checks.
     val settings: Flow<LookupSettings> = dataStore.data.map { prefs ->
         LookupSettings(
-            scanLength = prefs[SCAN_LENGTH] ?: LookupSettings.DEFAULT_SCAN_LENGTH,
-            maxResults = prefs[MAX_RESULTS] ?: LookupSettings.DEFAULT_MAX_RESULTS,
+            scanLength = (prefs[SCAN_LENGTH] ?: LookupSettings.DEFAULT_SCAN_LENGTH)
+                .coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
+            maxResults = (prefs[MAX_RESULTS] ?: LookupSettings.DEFAULT_MAX_RESULTS).coerceAtLeast(0),
             romaji = prefs[ROMAJI] ?: false,
             singleKanji = prefs[SINGLE_KANJI] ?: true,
         )

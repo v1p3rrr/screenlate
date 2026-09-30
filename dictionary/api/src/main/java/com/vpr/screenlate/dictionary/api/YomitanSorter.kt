@@ -5,7 +5,7 @@ import com.vpr.screenlate.dictionary.api.model.LookupResult
 /**
  * Orders lookup results the way Yomitan does:
  * primary reading, longer match, fewer text normalizations, shorter deinflection chain, term equal to the
- * deinflected text, sort frequency, dictionary priority, score, and finally terms written in kana.
+ * deinflected text, sort frequency, dictionary priority, score, longer term, term text, and more definitions.
  *
  * Engines may already sort by most of these; this adds dictionary priority and makes the order independent of
  * the engine.
@@ -42,7 +42,9 @@ object YomitanSorter {
             .thenComparator { a, b -> compareFrequency(frequency(a), frequency(b), descending) }
             .thenBy { dictionaryIndex(it) }
             .thenByDescending { it.term.score }
-            .thenByDescending { it.term.expression == it.term.reading }
+            .thenByDescending { it.term.expression.length }
+            .thenBy { it.term.expression }
+            .thenByDescending { it.term.glossaries.size }
         return results.sortedWith(comparator)
     }
 

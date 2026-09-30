@@ -205,6 +205,25 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun termDictionariesCountOnlyWhenLookupsInTheLanguageUseThem() = runTest {
+        val terms = repository.import(archive("Terms", terms = 1))
+        repository.import(archive("Freq", frequencies = 1))
+        assertThat(lookup.hasTermDictionaries(Language.JAPANESE)).isTrue()
+
+        repository.setLanguages(terms.id, source = "ko", target = null)
+        assertThat(lookup.hasTermDictionaries(Language.JAPANESE)).isFalse()
+        assertThat(repository.prepareLookup(Language.JAPANESE).termDictionaries).isEmpty()
+
+        repository.setLanguages(terms.id, source = "ja", target = null)
+        repository.setEnabled(terms.id, false)
+        assertThat(lookup.hasTermDictionaries(Language.JAPANESE)).isFalse()
+
+        repository.setEnabled(terms.id, true)
+        storage.directoryOf(repository.getAll().first { it.id == terms.id }).deleteRecursively()
+        assertThat(lookup.hasTermDictionaries(Language.JAPANESE)).isFalse()
+    }
+
+    @Test
     fun valuesDerivedFromTheDictionariesAreKeptUntilTheyChange() = runTest {
         val terms = repository.import(archive("Terms", terms = 1))
         repository.import(archive("Freq", frequencies = 1, frequencyMode = "rank-based"))
@@ -212,12 +231,10 @@ class DictionaryRepositoryTest {
         assertThat(lookup.styles(Language.JAPANESE)).isSameInstanceAs(lookup.styles(Language.JAPANESE))
         assertThat(engine.stylesRead).isEqualTo(1)
         assertThat(lookup.frequencyModes()).containsExactly("Freq", "rank-based")
-        assertThat(lookup.hasTermDictionaries()).isTrue()
 
         repository.setEnabled(terms.id, false)
         lookup.styles(Language.JAPANESE)
         assertThat(engine.stylesRead).isEqualTo(2)
-        assertThat(lookup.hasTermDictionaries()).isFalse()
 
         repository.import(archive("Freq", frequencies = 1, frequencyMode = "occurrence-based"))
         assertThat(lookup.frequencyModes()).containsExactly("Freq", "occurrence-based")

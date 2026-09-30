@@ -926,7 +926,7 @@ class OverlayController(
                 lookupResults(text)
             }
             // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
-            if (results.isEmpty() && lookup.hasTermDictionaries()) {
+            if (results.isEmpty() && lookup.hasTermDictionaries(language)) {
                 layerView.setWordBoxes(emptyList())
                 shownLookup = null
                 hapticWord = null
@@ -958,9 +958,19 @@ class OverlayController(
         }
     }
 
-    private suspend fun lookupResults(text: String, primaryReading: String? = null): List<LookupResult> = try {
+    /** @param link [text] is a dictionary link's term, looked up whole rather than as text at the aim point. */
+    private suspend fun lookupResults(
+        text: String,
+        link: Boolean = false,
+        primaryReading: String? = null,
+    ): List<LookupResult> = try {
         val started = System.currentTimeMillis()
-        lookup.lookup(text, language, primaryReading = primaryReading).also {
+        val results = if (link) {
+            lookup.lookupQuery(text, language, primaryReading)
+        } else {
+            lookup.lookup(text, language, primaryReading = primaryReading)
+        }
+        results.also {
             Log.d(TAG, "Lookup found ${it.size} entries in ${System.currentTimeMillis() - started} ms")
         }
     } catch (e: CancellationException) {
@@ -971,13 +981,13 @@ class OverlayController(
     }
 
     private suspend fun noResultsMessage(): String = service.getString(
-        if (lookup.hasTermDictionaries()) R.string.overlay_no_results else R.string.overlay_no_dictionaries,
+        if (lookup.hasTermDictionaries(language)) R.string.overlay_no_results else R.string.overlay_no_dictionaries,
     )
 
     /** Looks up a link target from inside the popup and shows it on top of the current view. */
     private fun lookupLink(query: String, primaryReading: String?) {
         scope.launch {
-            val results = lookupResults(query, primaryReading)
+            val results = lookupResults(query, link = true, primaryReading = primaryReading)
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val message = if (results.isEmpty()) noResultsMessage() else null
             popup.push(popupStateOffMain(LookupView(query, matched, results, message)))

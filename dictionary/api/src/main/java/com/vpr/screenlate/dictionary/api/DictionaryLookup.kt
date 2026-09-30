@@ -29,7 +29,6 @@ class DictionaryLookup @Inject constructor(
     private val cachedStyles = PerGeneration<List<DictionaryStyle>>()
     private val cachedTagNotes = PerGeneration<List<DictionaryTagNotes>>()
     private val cachedFrequencyModes = PerGeneration<Map<String, String>>()
-    private val cachedHasTerms = PerGeneration<Boolean>()
 
     /**
      * @param scanLength characters of [text] to consider; the scan length setting when null.
@@ -65,6 +64,13 @@ class DictionaryLookup @Inject constructor(
         if (!extraEntries || !settings.singleKanji) return results
         return results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
     }
+
+    /**
+     * A lookup of a whole query (the search field, a dictionary link) rather than of text at the aim point: the scan
+     * covers the query, up to [LookupSettings.MAX_SCAN_LENGTH] characters, instead of the scan length setting.
+     */
+    suspend fun lookupQuery(text: String, language: Language, primaryReading: String? = null): List<LookupResult> =
+        lookup(text, language, scanLength = queryScanLength(text), primaryReading = primaryReading)
 
     /**
      * Entries for the characters of the longest match that the language gives entries of their own (kanji), as
@@ -116,11 +122,13 @@ class DictionaryLookup @Inject constructor(
             .toMap()
     }
 
-    /** Whether any enabled dictionary with definitions is installed. */
-    suspend fun hasTermDictionaries(): Boolean = cachedHasTerms.get(repository.generation) {
-        repository.getAll().any { it.enabled && it.termCount > 0 }
-    }
+    /** Whether lookups in [language] search any dictionary with definitions (enabled, for the language, with files). */
+    suspend fun hasTermDictionaries(language: Language): Boolean = repository.hasTermDictionaries(language)
 }
+
+/** Scan length of [DictionaryLookup.lookupQuery]: the whole query in characters, within the setting's range. */
+internal fun queryScanLength(text: String): Int =
+    text.codePointCount(0, text.length).coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH)
 
 /** The popup shows the first frequency of an entry: the one the results are sorted by. */
 internal fun LookupResult.withSortFrequencyFirst(dictionary: String?): LookupResult {

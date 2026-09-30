@@ -18,6 +18,12 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
 
 primary reading match (from xref links) → longer original text → shorter text-processing chain → shorter inflection chain → more exact source matches → frequency order (only if a sort frequency dictionary is chosen) → dictionary order → score → longer term → term string → more definitions.
 
+Screenlate's `YomitanSorter` follows it; the term string is compared by UTF-16 code units, not with a collator. The
+engine cuts the list at the result limit before this sort, by its own order without dictionary priority (question Q6
+of the 2026-09-30 reviews). The search field and dictionary links are looked up whole (Yomitan's `termsFind` has no
+scan length; the scan length applies to text under the cursor); Screenlate caps them at 100 characters
+(`DictionaryLookup.lookupQuery`).
+
 Definitions inside an entry: frequency order → dictionary order → score → headword indices → original order.
 
 ## Anki duplicate options (defaults)

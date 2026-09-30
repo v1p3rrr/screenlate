@@ -61,9 +61,9 @@ class SearchViewModel @Inject constructor(
     suspend fun search(text: String, primaryReading: String? = null): SearchResults {
         val trimmed = text.trim()
         val found = runCatching {
-            lookup.lookup(trimmed, LANGUAGE, scanLength = trimmed.length.coerceAtLeast(1), primaryReading = primaryReading)
+            lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading)
         }.getOrDefault(emptyList())
-        return SearchResults(trimmed, found, noDictionaries = found.isEmpty() && !lookup.hasTermDictionaries())
+        return SearchResults(trimmed, found, noDictionaries = found.isEmpty() && !lookup.hasTermDictionaries(LANGUAGE))
     }
 
     suspend fun kanji(character: String): KanjiResult =

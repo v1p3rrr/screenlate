@@ -299,15 +299,16 @@ class DictionaryRepository @Inject constructor(
         if (missing.isNotEmpty()) changes.incrementAndGet()
     }
 
+    /** Whether lookups in [language] search a dictionary with definitions; reads the registry without loading the engine. */
+    suspend fun hasTermDictionaries(language: Language): Boolean = withContext(Dispatchers.IO) {
+        dao.getAll().any { it.termCount > 0 && usable(it, language) }
+    }
+
     /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
     suspend fun missingFiles(): List<DictionaryEntity> = dao.getAll().filter { !storage.hasFiles(it) }
 
     private suspend fun load(language: Language) {
-        val enabled = dao.getAll().filter { dictionary ->
-            dictionary.enabled &&
-                (dictionary.sourceLanguage == null || dictionary.sourceLanguage == language.code) &&
-                storage.hasFiles(dictionary)
-        }
+        val enabled = dao.getAll().filter { usable(it, language) }
         fun List<DictionaryEntity>.directories() = map { storage.directoryOf(it) }
         engine.load(
             DictionarySet(
@@ -324,6 +325,12 @@ class DictionaryRepository @Inject constructor(
         loadedLanguage = language
         changes.incrementAndGet()
     }
+
+    /** Whether lookups in [language] load [dictionary]. */
+    private fun usable(dictionary: DictionaryEntity, language: Language): Boolean =
+        dictionary.enabled &&
+            (dictionary.sourceLanguage == null || dictionary.sourceLanguage == language.code) &&
+            storage.hasFiles(dictionary)
 }
 
 /**
