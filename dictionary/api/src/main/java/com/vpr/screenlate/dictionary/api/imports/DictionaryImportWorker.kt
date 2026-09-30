@@ -59,7 +59,8 @@ class DictionaryImportWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val name = inputData.getString(KEY_NAME).orEmpty()
         runCatching { setForeground(foregroundInfo(name)) }
-        try {
+        // Failures are results with an error: a failed work would fail every import queued after it unrun.
+        val output = try {
             val titles = when (inputData.getString(KEY_SOURCE)) {
                 SOURCE_BUNDLED -> installBundled()
                 SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
@@ -71,21 +72,18 @@ class DictionaryImportWorker @AssistedInject constructor(
                 }
                 else -> error("Unknown import source")
             }
-            Result.success(workDataOf(KEY_TITLES to titles.toTypedArray()))
+            workDataOf(KEY_TITLES to titles.toTypedArray())
         } catch (e: CancellationException) {
             throw e
-        } catch (e: DictionaryImportException) {
-            Log.w(TAG, "Import failed", e)
-            Result.failure(workDataOf(KEY_ERROR to e.message))
         } catch (e: NotEnoughSpaceException) {
             Log.w(TAG, "Not enough space: ${e.neededBytes shr 20} MB needed, ${e.freeBytes shr 20} MB free")
-            Result.failure(
-                workDataOf(KEY_ERROR to e.message, KEY_NEEDED_BYTES to e.neededBytes, KEY_FREE_BYTES to e.freeBytes),
-            )
-        } catch (e: IOException) {
+            workDataOf(KEY_ERROR to e.message, KEY_NEEDED_BYTES to e.neededBytes, KEY_FREE_BYTES to e.freeBytes)
+        } catch (e: Exception) {
             Log.w(TAG, "Import failed", e)
-            Result.failure(workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName)))
+            // Work data is limited to 10 KB.
+            workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH))
         }
+        Result.success(output)
     }
 
     private suspend fun installBundled(): List<String> {
@@ -108,7 +106,9 @@ class DictionaryImportWorker @AssistedInject constructor(
             repository.decodeStoredTexts()
             try {
                 installedLanguages.fillOnce()
-            } catch (e: IOException) {
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
                 Log.w(TAG, "Filling in languages failed", e)
             }
         }
@@ -136,7 +136,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private suspend fun importCollection(name: String): List<String> {
         val uri = inputData.getString(KEY_URI)?.toUri()
         val copy = inputData.getString(KEY_PATH)?.let(::File)
-        val selected = inputData.getStringArray(KEY_SELECTED)?.toSet()
+        val selected = inputData.getNullableStringArray(KEY_SELECTED)?.filterNotNull()?.toSet()
         val size = inputData.getLong(KEY_SIZE, -1)
         val staging = storage.newStagingDirectory()
         fun open() = uri?.let { applicationContext.contentResolver.openInputStream(it) }
@@ -171,16 +171,13 @@ class DictionaryImportWorker @AssistedInject constructor(
             started = System.currentTimeMillis()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT, KEY_PERCENT to 0))
             val compress = plan == CollectionSpacePlan.Compressed
-            val archives = open().use { YomitanBackup(staging, compress).convert(it, selected, progress(STAGE_CONVERT)) }
+            val backup = YomitanBackup(staging, compress)
+            val archives = open().use { backup.convert(it, selected, progress(STAGE_CONVERT)) }
             Log.i(TAG, "Wrote ${archives.size} archives in ${System.currentTimeMillis() - started} ms")
             started = System.currentTimeMillis()
-            val titles = archives.mapIndexed { index, archive ->
+            val titles = importEach(archives, backup::titleOf) { index, archive ->
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT, KEY_PERCENT to index * 100 / archives.size))
-                try {
-                    repository.import(archive, catalog = catalogEntries).title
-                } finally {
-                    archive.delete()
-                }
+                repository.import(archive, catalog = catalogEntries).title
             }
             Log.i(TAG, "Imported ${titles.size} dictionaries in ${System.currentTimeMillis() - started} ms")
             return titles
@@ -291,5 +288,33 @@ class DictionaryImportWorker @AssistedInject constructor(
         private const val TAG = "DictionaryImport"
         private const val CHANNEL_ID = "dictionary_imports"
         private const val NOTIFICATION_ID = 1001
+        private const val MAX_ERROR_LENGTH = 2000
     }
+}
+
+/**
+ * Imports [archives] in order and deletes each one afterwards. A dictionary that fails does not keep the others out:
+ * the failures are thrown together at the end, each named by [titleOf].
+ */
+internal suspend fun importEach(
+    archives: List<File>,
+    titleOf: (File) -> String?,
+    import: suspend (index: Int, archive: File) -> String,
+): List<String> {
+    val failures = mutableListOf<String>()
+    val titles = archives.mapIndexedNotNull { index, archive ->
+        try {
+            import(index, archive)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w("DictionaryImport", "A dictionary of the collection failed", e)
+            failures += "${titleOf(archive) ?: archive.name}: ${e.message ?: e.javaClass.simpleName}"
+            null
+        } finally {
+            archive.delete()
+        }
+    }
+    if (failures.isNotEmpty()) throw DictionaryImportException(failures.joinToString("; "))
+    return titles
 }

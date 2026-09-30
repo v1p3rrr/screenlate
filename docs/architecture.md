@@ -40,7 +40,7 @@ The page builds the dictionary markers of an entry (glossary HTML with scoped CS
 
 ## Dictionaries
 
-`DictionaryRepository` is the only writer of the registry. Imports (bundled archives, files, downloads, Yomitan collection exports) run one at a time as a foreground WorkManager job: the archive is converted into a staging directory, moved into `files/dictionaries/<uuid>/`, registered, and the engine is reloaded. A dictionary with the same title, or the one an update was started for, is replaced in place.
+`DictionaryRepository` is the only writer of the registry. Imports (bundled archives, files, downloads, Yomitan collection exports) run one at a time as a foreground WorkManager job: the archive is converted into a staging directory, moved into `files/dictionaries/<uuid>/`, registered, and the engine is reloaded. A dictionary with the same title, or the one an update was started for, is replaced in place. A failed import is reported on its task and does not stop the imports queued after it. Before the engine imports an archive, its title is checked: the engine writes into a directory named after it.
 
 A Yomitan collection export is one JSON file with the rows of all dictionaries, table by table. `YomitanBackup` reads it twice as UTF-8 bytes without decoding row values: first to measure the chosen dictionaries (`measure`), then to copy their rows into one Yomitan archive per dictionary (`convert`). `CollectionSpace` turns the measurement into the peak storage of the import (all archives exist before the first one is imported, each is deleted after its dictionary is installed) and decides whether the archives are stored uncompressed (fastest), deflated (when only that fits), or not written at all (the task fails with the needed and free space).
 

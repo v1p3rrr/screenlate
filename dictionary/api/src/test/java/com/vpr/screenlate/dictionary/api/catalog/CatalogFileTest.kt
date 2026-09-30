@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import java.io.File
 import org.junit.Test
@@ -37,5 +38,22 @@ class CatalogFileTest {
             // A prefix shared with another entry would mark both as installed.
             assertThat(others.map { it.id }).isEmpty()
         }
+    }
+
+    @Test
+    fun `an installed dictionary matches entries of its own kind only`() {
+        fun installed(title: String, kind: DictionaryKind, indexUrl: String? = null) = DictionaryEntity(
+            title = title, revision = "1", kind = kind, sourceLanguage = "ja", targetLanguage = null, frequencyMode = null,
+            enabled = true, priority = 0, directory = "d", termCount = 1, frequencyCount = 0, pitchCount = 0, kanjiCount = 0,
+            mediaCount = 0, isUpdatable = false, indexUrl = indexUrl, downloadUrl = null, author = null, url = null,
+            description = null, attribution = null, bundled = false, importedAt = 0,
+        )
+        fun matching(dictionary: DictionaryEntity) = entries!!.filter { it.matches(dictionary) }.map { it.id }
+
+        // "Jiten" is a prefix of Jitendex's titles, old and new; the old one is no catalog entry's.
+        assertThat(matching(installed("Jitendex.org [2026-09-01]", DictionaryKind.TERM))).containsExactly("jitendex")
+        assertThat(matching(installed("Jitendex [2023-12-12]", DictionaryKind.TERM))).isEmpty()
+        assertThat(matching(installed("Jiten", DictionaryKind.FREQUENCY, "https://api.jiten.moe/api/frequency-list/index")))
+            .containsExactly("jiten-global")
     }
 }

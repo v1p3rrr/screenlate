@@ -99,6 +99,14 @@ class YomitanBackupJvmTest {
         assertThat(entries(archives.single()).keys).contains("term_meta_bank_1.json")
     }
 
+    @Test
+    fun `names the archives it wrote`() {
+        val backup = YomitanBackup(directory)
+        val archives = backup.convert(export.byteInputStream())
+        assertThat(archives.map(backup::titleOf)).containsExactly("Terms", "Freq").inOrder()
+        assertThat(backup.titleOf(File(directory, "other.zip"))).isNull()
+    }
+
     /** An export with the given summary rows and table rows, in dexie's layout. */
     private fun export(summaries: List<String>, vararg tables: Pair<String, List<String>>): String {
         val all = listOf("dictionaries" to summaries) + tables

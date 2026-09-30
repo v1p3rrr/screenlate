@@ -97,10 +97,9 @@ class DictionaryRepository @Inject constructor(
             }
             return mutex.withLock {
                 val existing = replaced(replaces, metadata.title, kind)
-                // An update must not collide with another dictionary that already has the new title.
-                if (replaces != null) {
-                    dao.findByTitle(metadata.title)?.takeIf { it.id != replaces }?.let { dao.delete(it) }
-                }
+                // An update may take the title of another installed dictionary, which it then replaces as well.
+                val collided = dao.findByTitle(metadata.title)?.takeIf { it.id != existing?.id }
+                collided?.let { dao.delete(it) }
                 val entity = DictionaryEntity(
                     id = existing?.id ?: 0,
                     title = metadata.title,
@@ -135,7 +134,7 @@ class DictionaryRepository @Inject constructor(
                 }
                 reloadLocked()
                 // The old files are unmapped only after the reload.
-                existing?.let { storage.directoryOf(it).deleteRecursively() }
+                listOfNotNull(existing, collided).forEach { storage.directoryOf(it).deleteRecursively() }
                 saved
             }
         } finally {
@@ -161,6 +160,7 @@ class DictionaryRepository @Inject constructor(
         if (preferences.data.first()[TEXTS_DECODED] == true) return@withLock
         for (dictionary in dao.getAll()) {
             val decoded = dictionary.copy(
+                revision = decodeIndexText(dictionary.revision) ?: dictionary.revision,
                 author = decodeIndexText(dictionary.author),
                 url = decodeIndexText(dictionary.url),
                 description = decodeIndexText(dictionary.description),

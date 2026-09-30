@@ -34,6 +34,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     private var handle = 0L
 
     override suspend fun import(archive: File, outputDir: File): ImportedDictionary = withContext(Dispatchers.IO) {
+        ArchiveTitles.check(archive)
         outputDir.mkdirs()
         val raw = try {
             HoshidictsNative.importDictionary(
@@ -143,7 +144,7 @@ private data class NativeSummary(
 ) {
     fun toMetadata(title: String) = DictionaryMetadata(
         title = title,
-        revision = revision,
+        revision = decodeIndexText(revision) ?: revision,
         sourceLanguage = sourceLanguage,
         targetLanguage = targetLanguage,
         frequencyMode = frequencyMode,

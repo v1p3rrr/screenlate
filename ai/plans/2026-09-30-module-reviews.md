@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 3 (OCR) done in 4 runs, committing; next: module 4 (dictionaries: api, engine, import), run 1 — read ai/notes/module-map.md for its files, apply the deferred getNullableStringArray item.
+Updated after every step so the work survives a context reset or a paused session: module 4 done and committed. Next: module 5 (lookup and engine), run 1.
 
 ## Progress
 
@@ -41,7 +41,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 1 | Build, CI and release | 9 found, 9 fixed | 3 found: 1 fixed, 1 question (Q3), 1 deferred | 1 found (test), fixed | not needed | see git log |
 | 2 | Common and language support | 4 found: 3 fixed, 1 deferred | 1 found (test), deferred | 1 found (validation), fixed | not needed | see git log |
 | 3 | OCR | 7 found, fixed | 4 found, fixed | 3 found, fixed | nothing found | see git log |
-| 4 | Dictionary registry, imports and catalog | | | | | |
+| 4 | Dictionary registry, imports and catalog | 9 found: 8 fixed, 1 question (Q4) | 4 found, fixed | nothing found | not needed | see git log |
 | 5 | Lookup and engine | | | | | |
 | 6 | Lookup page and rendering | | | | | |
 | 7 | Anki export | | | | | |
@@ -167,17 +167,62 @@ their order stay; the caller check only fires when the caller is cancelled): not
 cloud result and a lookup; on a slow network the cloud request timed out after 16 s, the device result became final
 and the ⚠ said the timeout.
 
+### Module 4, run 1
+
+`dictionary/api` (registry, imports, catalog, updates, Yomitan backup), the engine's import path and the
+Dictionaries screen's task cards. Nine findings: eight fixed, one question.
+
+- The native importer writes `outputDir/<title>` and deletes it on failure; a title with `..` or a leading `/`
+  deleted files outside the staging directory (all dictionaries with `../..`) → `ArchiveTitles` checks every
+  `index.json` title before the import and refuses unreadable archives (tests).
+- A failed import returned `Result.failure`, which WorkManager passes on to every APPEND dependent unrun → a failure
+  is now a successful result with an error; `ImportTask` maps it to FAILED, and any exception is caught with its
+  message (tests).
+- An update whose new title belonged to another dictionary compared with `replaces`, not the dictionary actually
+  replaced, and left the collider's files → compares with the replaced row, deletes the collider's files after the
+  reload (androidTest, both fail on the old code).
+- `CatalogEntry.matches` ignored the kind: the Jiten frequency entry matched Jitendex → same kind only (test).
+- A collection import stopped at the first failing dictionary → imports the rest, then reports each failure by title
+  (`importEach`, `YomitanBackup.titleOf`; tests).
+- Import tasks were sorted by random UUID → an order tag at enqueue (test).
+- The language fill after the bundled install caught only `IOException` → any non-cancellation exception is logged.
+- The deferred `getStringArray` deprecation.
+- Question Q4: the failed card names the reason instead of the dictionary.
+
+### Module 4, run 2
+
+The whole module again with the run 1 fixes. Four findings, all fixed:
+
+- The engine kept the revision as raw JSON, while the update check compares it with the decoded remote revision: an
+  escaped revision (`2026\/09\/30`) always looked like an update and showed its backslashes → decoded like the other
+  index texts, also in the one-time decoding of stored texts (androidTest, fails on the old code).
+- The docs did not mention the new failure behavior → `docs/architecture.md`, `docs/usage.md`,
+  `ai/notes/dictionary-engine.md`.
+- The BOM constant and its test were invisible characters in the source → `\uFEFF`.
+- No test went through the native importer with a bad title → androidTest; without the check the importer deleted
+  the test's sibling directory, which confirms the run 1 finding.
+
+Considered, no change: on Android 14+ `ZipFile` itself refuses archives with `..` or absolute entry names, so such
+archives now fail with "failed to open zip" (they only come from malicious archives); the unused `ImportTask.titles`.
+Tool note: tool inputs decode `\uXXXX` and halve `\\`; write backslashes in edit scripts with `chr(92)`.
+
+### Module 4, run 3
+
+The diff of runs 1 and 2. Nothing found; checked the collision rule for plain imports (the title match makes `collided` null), works queued by the previous version (no order tag, `Result.failure`), and the error length limit. No run 4. All unit tests, the registry and engine androidTests pass. No emulator run: no screen changed, the task mapping is unit tested.
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
 
 - Module 3 (done in run 1): `CompositeOcrTest` uses `ExperimentalCoroutinesApi` without an opt-in (compiler
   warnings on CI).
-- Module 4: `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
+- Module 4 (done in run 1): `DictionaryImportWorker.kt:139` and `DictionaryImports.kt:197` call the deprecated
   `Data.getStringArray` (use `getNullableStringArray`).
 - Module 8: a test that every name in `LanguageSupport.defaultAudioSources` maps to an `AudioSourceType`
   (`AudioSettings.defaultSources` drops unknown names silently).
 - Module 12: `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
+- Module 12: `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
+  archive; check that `BackupArchive` refuses `..` segments and absolute paths (zip slip).
 - Modules 9–11 (at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
   `search/SearchScreen.kt:87`, `OverlayController.isDarkTheme`); one helper next to `ThemeMode` in core:common.
 - Module 9: `OverlayController.ocrErrorText` still matches `TimeoutCancellationException`, which OCR no longer

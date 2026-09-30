@@ -44,10 +44,14 @@ data class CatalogEntry(
     fun description(locale: Locale = Locale.getDefault()): String =
         description[locale.language] ?: description["en"].orEmpty()
 
-    /** Whether [dictionary] is an installed copy of this entry, whatever its revision. */
-    fun matches(dictionary: DictionaryEntity): Boolean = matches(dictionary.indexUrl, dictionary.title)
+    /**
+     * Whether [dictionary] is an installed copy of this entry, whatever its revision. Only the same kind counts: title
+     * prefixes may overlap across kinds (`Jiten` for `Jitendex`).
+     */
+    fun matches(dictionary: DictionaryEntity): Boolean =
+        dictionary.kind == kind && matches(dictionary.indexUrl, dictionary.title)
 
-    /** Whether a dictionary with this index URL and title is a copy of this entry, whatever its revision. */
+    /** Whether a dictionary with this index URL and title is a copy of this entry; the caller compares the kind. */
     fun matches(indexUrl: String?, title: String): Boolean =
         (this.indexUrl != null && indexUrl == this.indexUrl) || title.startsWith(installedTitle)
 }

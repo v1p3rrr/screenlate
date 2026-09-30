@@ -1,0 +1,131 @@
+package com.vpr.screenlate.dictionary.api.imports
+
+import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.DictionaryImportException
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
+import androidx.work.Data
+import androidx.work.WorkInfo
+import androidx.work.workDataOf
+import java.io.File
+import java.nio.file.Files
+import java.util.UUID
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Assert.assertThrows
+import org.junit.Test
+
+class DictionaryImportsTest {
+    private val directory: File = Files.createTempDirectory("imports").toFile()
+
+    @After
+    fun tearDown() {
+        directory.deleteRecursively()
+    }
+
+    private fun work(
+        name: String,
+        state: WorkInfo.State,
+        order: Long?,
+        output: Data = Data.EMPTY,
+        progress: Data = Data.EMPTY,
+    ) = WorkInfo(
+        id = UUID.randomUUID(),
+        state = state,
+        tags = setOfNotNull(
+            DictionaryImports.TAG,
+            DictionaryImports.NAME_TAG_PREFIX + name,
+            order?.let { DictionaryImports.ORDER_TAG_PREFIX + it },
+        ),
+        outputData = output,
+        progress = progress,
+    )
+
+    @Test
+    fun `tasks come in queue order, not by their random ids`() {
+        val works = listOf(
+            work("C", WorkInfo.State.ENQUEUED, order = 1_000_002),
+            work("A", WorkInfo.State.SUCCEEDED, order = 1_000_000),
+            work("B", WorkInfo.State.RUNNING, order = 1_000_001, progress = workDataOf(KEY_STAGE to STAGE_DOWNLOAD)),
+            // Queued before the order was kept.
+            work("Old", WorkInfo.State.SUCCEEDED, order = null),
+        )
+
+        val tasks = importTasks(works.shuffled())
+
+        assertThat(tasks.map { it.name }).containsExactly("Old", "A", "B", "C").inOrder()
+        assertThat(tasks.map { it.state }).containsExactly(
+            ImportTask.State.SUCCEEDED,
+            ImportTask.State.SUCCEEDED,
+            ImportTask.State.DOWNLOADING,
+            ImportTask.State.QUEUED,
+        ).inOrder()
+    }
+
+    @Test
+    fun `a finished work with an error is a failed task`() {
+        val tasks = importTasks(
+            listOf(
+                work("Ok", WorkInfo.State.SUCCEEDED, 1, output = workDataOf(KEY_TITLES to arrayOf("Ok [1]"))),
+                work("Broken", WorkInfo.State.SUCCEEDED, 2, output = workDataOf(KEY_ERROR to "HTTP 404")),
+                work(
+                    "Big",
+                    WorkInfo.State.SUCCEEDED,
+                    3,
+                    output = workDataOf(KEY_ERROR to "No space", KEY_NEEDED_BYTES to 300L, KEY_FREE_BYTES to 100L),
+                ),
+            ),
+        )
+
+        assertThat(tasks.map { it.state })
+            .containsExactly(ImportTask.State.SUCCEEDED, ImportTask.State.FAILED, ImportTask.State.FAILED).inOrder()
+        assertThat(tasks[0].titles).containsExactly("Ok [1]")
+        assertThat(tasks[1].error).isEqualTo("HTTP 404")
+        assertThat(tasks[2].shortage).isEqualTo(CollectionSpacePlan.NotEnough(300, 100))
+    }
+
+    @Test
+    fun `a failed dictionary of a collection does not keep the others out`() = runTest {
+        val archives = (1..3).map { File(directory, "$it.zip").apply { writeText("zip") } }
+        val imported = mutableListOf<Int>()
+
+        val error = runCatching {
+            importEach(archives, titleOf = { "Dict ${it.nameWithoutExtension}" }) { index, _ ->
+                imported += index
+                if (index == 1) throw DictionaryImportException("empty dictionary")
+                "Dict $index"
+            }
+        }.exceptionOrNull()
+
+        assertThat(imported).containsExactly(0, 1, 2).inOrder()
+        assertThat(error).isInstanceOf(DictionaryImportException::class.java)
+        assertThat(error).hasMessageThat().isEqualTo("Dict 2: empty dictionary")
+        assertThat(archives.none { it.exists() }).isTrue()
+        assertThat(importEach(emptyList(), { null }) { _, _ -> "" }).isEmpty()
+    }
+
+    @Test
+    fun `a cancelled collection import stops at once`() {
+        val archives = (1..2).map { File(directory, "$it.zip").apply { writeText("zip") } }
+        val imported = mutableListOf<Int>()
+
+        assertThrows(CancellationException::class.java) {
+            runBlocking {
+                importEach(archives, { null }) { index, _ ->
+                    imported += index
+                    throw CancellationException("stopped")
+                }
+            }
+        }
+
+        assertThat(imported).containsExactly(0)
+        assertThat(archives[0].exists()).isFalse()
+        assertThat(archives[1].exists()).isTrue()
+    }
+}

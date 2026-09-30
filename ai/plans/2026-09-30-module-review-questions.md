@@ -81,4 +81,19 @@ answered; answers go to the plan's changelog.
      updates of bundled dictionaries then come only through the dictionary update check (`indexUrl`) or a renamed file.
   4. Keep as is.
 
+### Q4. A failed import card does not say which dictionary failed (module 4 run 1, module 11)
+
+- **Feature:** the import queue on the Dictionaries screen. Every download, update or file import is a card; a failed
+  one stays until dismissed (`TaskCard` in `DictionariesScreen`).
+- **How it works now:** the failed card shows "Import failed: <reason>", and the reason replaces the dictionary name:
+  `task.error ?: task.name`. After "Update all" with three updates, a card reads "Import failed: HTTP 404" and nothing
+  tells which of the three it was (the order of the cards is the queue order since this review, which helps a little).
+  The name is shown only when the reason is unknown.
+- **Collections:** since this review a Yomitan collection import goes on after a dictionary of it fails, and the error
+  lists each failed one as "Title: reason; Title: reason", so there the names are already in the text.
+- **Options:**
+  1. Recommended: show both, e.g. "Jitendex: import failed — HTTP 404" (name first, then the reason; for a collection
+     the name is the backup file). A changed string in all 14 locales.
+  2. Keep as is.
+
 ## Answered

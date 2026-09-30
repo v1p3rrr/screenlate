@@ -92,6 +92,32 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun updateTakingTheTitleOfAnotherDictionaryReplacesItToo() = runTest {
+        val old = repository.import(archive("Old name", terms = 1))
+        val other = repository.import(archive("New name", terms = 1))
+        val otherDirectory = storage.directoryOf(other)
+
+        val updated = repository.import(archive("New name", terms = 2), replaces = old.id)
+
+        assertThat(updated.id).isEqualTo(old.id)
+        assertThat(repository.getAll().map { it.id to it.title }).containsExactly(old.id to "New name")
+        assertThat(otherDirectory.exists()).isFalse()
+    }
+
+    @Test
+    fun updateOfADeletedDictionaryReplacesTheOneWithItsTitle() = runTest {
+        val old = repository.import(archive("Old name", terms = 1))
+        val other = repository.import(archive("New name", terms = 1))
+        repository.delete(old.id)
+
+        val updated = repository.import(archive("New name", terms = 2), replaces = old.id)
+
+        assertThat(updated.id).isEqualTo(other.id)
+        assertThat(repository.getAll().map { it.id to it.termCount }).containsExactly(other.id to 2L)
+        assertThat(storage.directoryOf(updated).exists()).isTrue()
+    }
+
+    @Test
     fun sameTitleReplacesAndDeleteRemovesFiles() = runTest {
         val first = repository.import(archive("Same", terms = 1))
         val second = repository.import(archive("Same", terms = 3))

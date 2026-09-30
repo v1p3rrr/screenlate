@@ -120,9 +120,12 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Tag banks are only counted at import; tag names reach lookups, their descriptions (`notes`) do not. `TagBanks`
   reads them from the archive at import into `tag_notes.json` next to the engine's files (the engine ignores other
   files in its directory); bundled dictionaries get theirs from the APK once (`fillBundledTagNotes`).
-- Index strings come back as their raw JSON (`glz::raw_string`): a line break is a backslash and `n`. Author, URLs,
+- Index strings come back as their raw JSON (`glz::raw_string`): a line break is a backslash and `n`. Revision, author, URLs,
   description and attribution are decoded (`decodeIndexText`); the title stays raw because lookups name
   dictionaries by the engine's title.
+- The importer writes into `outputDir / title` and removes that path when an import fails; `std::filesystem` lets a
+  `..` segment or an absolute title leave `outputDir`. `ArchiveTitles` refuses such titles (checked on every
+  `index.json` of the zip) before the native import.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin or Cyrillic ≥ 15% of letters is the target language even
   with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese), with Android's `TextClassifier`

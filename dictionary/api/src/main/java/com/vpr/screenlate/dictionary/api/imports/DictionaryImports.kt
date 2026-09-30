@@ -43,6 +43,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -71,9 +72,11 @@ class DictionaryImports @Inject constructor(
 ) {
     private val workManager get() = WorkManager.getInstance(context)
 
-    val tasks: Flow<List<ImportTask>> = workManager.getWorkInfosByTagFlow(TAG).map { infos ->
-        infos.sortedBy { it.id }.map { it.toTask() }
-    }
+    /** The queue position of the last enqueued import; see [ORDER_TAG_PREFIX]. */
+    private val lastOrder = AtomicLong()
+
+    /** Imports in the order they were queued. */
+    val tasks: Flow<List<ImportTask>> = workManager.getWorkInfosByTagFlow(TAG).map(::importTasks)
 
     /** Installs bundled dictionaries that are not installed yet. Cheap when there is nothing to do. */
     fun installBundled() = enqueue(workDataOf(KEY_SOURCE to SOURCE_BUNDLED), name = "")
@@ -163,6 +166,7 @@ class DictionaryImports @Inject constructor(
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
+            .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
             .build()
         // One queue for all imports: the native importer is memory hungry and imports are cheaper one at a time.
         workManager.enqueueUniqueWork(QUEUE, ExistingWorkPolicy.APPEND_OR_REPLACE, request)
@@ -174,37 +178,51 @@ class DictionaryImports @Inject constructor(
         } ?: uri.lastPathSegment.orEmpty()
     }
 
-    private fun WorkInfo.toTask(): ImportTask {
-        val data = if (state.isFinished) outputData else progress
-        val name = progress.getString(KEY_NAME)
-            ?: tags.firstOrNull { it.startsWith(NAME_TAG_PREFIX) }?.removePrefix(NAME_TAG_PREFIX).orEmpty()
-        val taskState = when (state) {
-            WorkInfo.State.SUCCEEDED -> ImportTask.State.SUCCEEDED
-            WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
-            WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
-                STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
-                STAGE_CHECK -> ImportTask.State.CHECKING_SPACE
-                STAGE_CONVERT -> ImportTask.State.CONVERTING
-                else -> ImportTask.State.IMPORTING
-            }
-            else -> ImportTask.State.QUEUED
-        }
-        return ImportTask(
-            id = id,
-            name = name,
-            state = taskState,
-            percent = progress.getInt(KEY_PERCENT, -1).takeIf { !state.isFinished && it >= 0 },
-            titles = data.getStringArray(KEY_TITLES)?.toList().orEmpty(),
-            error = outputData.getString(KEY_ERROR),
-            shortage = outputData.getLong(KEY_NEEDED_BYTES, -1).takeIf { it >= 0 }?.let { needed ->
-                CollectionSpacePlan.NotEnough(needed, outputData.getLong(KEY_FREE_BYTES, 0))
-            },
-        )
-    }
-
-    private companion object {
+    internal companion object {
         const val TAG = "dictionary-import"
         const val NAME_TAG_PREFIX = "dictionary-import-name:"
+
+        /** Followed by a number that grows with every enqueued import; work ids are random. */
+        const val ORDER_TAG_PREFIX = "dictionary-import-order:"
         const val QUEUE = "dictionary-imports"
     }
+}
+
+/** The import works as tasks, in queue order. */
+internal fun importTasks(infos: List<WorkInfo>): List<ImportTask> =
+    infos.sortedWith(compareBy<WorkInfo> { it.order() }.thenBy { it.id }).map { it.toTask() }
+
+private fun WorkInfo.order(): Long =
+    tags.firstOrNull { it.startsWith(DictionaryImports.ORDER_TAG_PREFIX) }
+        ?.removePrefix(DictionaryImports.ORDER_TAG_PREFIX)?.toLongOrNull() ?: 0L
+
+private fun WorkInfo.toTask(): ImportTask {
+    val data = if (state.isFinished) outputData else progress
+    val name = progress.getString(KEY_NAME)
+        ?: tags.firstOrNull { it.startsWith(DictionaryImports.NAME_TAG_PREFIX) }
+            ?.removePrefix(DictionaryImports.NAME_TAG_PREFIX).orEmpty()
+    val error = outputData.getString(KEY_ERROR)
+    val taskState = when (state) {
+        // The worker reports its failures as results with an error.
+        WorkInfo.State.SUCCEEDED -> if (error != null) ImportTask.State.FAILED else ImportTask.State.SUCCEEDED
+        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
+        WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
+            STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
+            STAGE_CHECK -> ImportTask.State.CHECKING_SPACE
+            STAGE_CONVERT -> ImportTask.State.CONVERTING
+            else -> ImportTask.State.IMPORTING
+        }
+        else -> ImportTask.State.QUEUED
+    }
+    return ImportTask(
+        id = id,
+        name = name,
+        state = taskState,
+        percent = progress.getInt(KEY_PERCENT, -1).takeIf { !state.isFinished && it >= 0 },
+        titles = data.getNullableStringArray(KEY_TITLES)?.filterNotNull().orEmpty(),
+        error = error,
+        shortage = outputData.getLong(KEY_NEEDED_BYTES, -1).takeIf { it >= 0 }?.let { needed ->
+            CollectionSpacePlan.NotEnough(needed, outputData.getLong(KEY_FREE_BYTES, 0))
+        },
+    )
 }

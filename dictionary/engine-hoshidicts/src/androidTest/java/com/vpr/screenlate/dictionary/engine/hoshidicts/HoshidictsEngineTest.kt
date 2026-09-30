@@ -73,6 +73,31 @@ class HoshidictsEngineTest {
         engine.import(archive, File(root, "out"))
     }
 
+    @Test
+    fun decodesIndexTextsButKeepsTheTitleRaw() = runTest {
+        val index = """{"title":"Esc\u0061ped","revision":"2026\/09\/30","description":"one\ntwo","format":3}"""
+        val archive = zip("escaped.zip", "index.json" to index.toByteArray(), "term_bank_1.json" to TERM_BANK)
+
+        val metadata = engine.import(archive, File(root, "out")).metadata
+
+        assertThat(metadata.title).isEqualTo("Esc\\u0061ped")
+        assertThat(metadata.revision).isEqualTo("2026/09/30")
+        assertThat(metadata.description).isEqualTo("one\ntwo")
+    }
+
+    @Test
+    fun refusesATitleThatLeavesTheOutputDirectory() = runTest {
+        // The importer would write into out/../kept and delete it when the empty dictionary fails.
+        val kept = File(root, "kept").apply { mkdirs() }
+        File(kept, "file").writeText("data")
+        val archive = zip("escape.zip", "index.json" to """{"title":"../kept","revision":"1","format":3}""".toByteArray())
+
+        val error = runCatching { engine.import(archive, File(root, "out")) }.exceptionOrNull()
+
+        assertThat(error).isInstanceOf(DictionaryImportException::class.java)
+        assertThat(File(kept, "file").readText()).isEqualTo("data")
+    }
+
     private fun termDictionary(): File = zip(
         "terms.zip",
         "index.json" to """{"title":"Test Terms","revision":"1","format":3,"sourceLanguage":"ja"}""".toByteArray(),
@@ -107,6 +132,7 @@ class HoshidictsEngineTest {
     }
 
     private companion object {
+        val TERM_BANK = """[["食べる","たべる","","v1",0,["to eat"],1,""]]""".toByteArray()
         val PNG_BYTES = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 1, 2, 3)
     }
 }

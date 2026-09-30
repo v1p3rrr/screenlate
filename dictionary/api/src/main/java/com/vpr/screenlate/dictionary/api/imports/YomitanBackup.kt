@@ -98,6 +98,9 @@ class YomitanBackup private constructor(
         }
     }
 
+    /** The dictionary title of an archive that [convert] wrote. */
+    fun titleOf(archive: File): String? = targets.values.firstOrNull { it.archive?.file == archive }?.title
+
     private fun measureRows(input: InputStream, titles: Set<String>?, onProgress: (Long) -> Unit): List<CollectionSize> {
         selected = titles
         val scanner = RawJsonScanner(CountingInputStream(input, onProgress))
