@@ -32,9 +32,11 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   review also CRLF/CR/form feed as line breaks, a hex escape taking the line break after it, `/*` inside an unquoted
   `url(...)`, and escaped whitespace inside an unquoted address (each confirmed in Chromium). `scopeCss` now looks
   for the `;` of a dropped statement at-rule outside comments, strings and escapes (owner's go-ahead for this narrow
-  change), so `@x /*;` no longer uncovers commented rules the check does not see; its output is byte-identical to
-  before on the catalog's real `styles.css` (Jitendex, Wiktionary) and synthetic at-rule cases. Low: build-time
-  dictionary downloads have no checksum.
+  change), so `@x /*;` no longer uncovers commented rules the check does not see; a string left open still ends at
+  its `;` as before (owner: keep a broken `@charset "utf-8;` from taking the next rule), which the check reports since it
+  reads `url(` inside strings. Output byte-identical to before on the catalog's real `styles.css` (Jitendex,
+  Wiktionary) and synthetic and broken at-rule cases. Not checked here: Gradle build and lint (CI on the PR), the ⚠ and
+  a note with dictionary CSS on a device. Low: build-time dictionary downloads have no checksum.
 
 ## Phases
 

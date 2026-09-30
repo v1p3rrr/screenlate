@@ -195,6 +195,13 @@ class CssCheckTest {
     }
 
     @Test
+    fun `an address after a string left open is reported`() {
+        // The popup drops `@x "/*;` up to its `;`, so the next line's rule loads; the `/*` in the string is no comment.
+        val css = "@x \"/*;\n@font-face { font-family: Q; src: url(https://a.example.com/q.woff) }\n*/"
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(CssCheck.Issue(2, Problem.REMOTE_FILE, "a.example.com"))
+    }
+
+    @Test
     fun `escaped and one-slash addresses on the page itself are not remote`() {
         val css = """
             .a { background: url(\2f img/x.png) }

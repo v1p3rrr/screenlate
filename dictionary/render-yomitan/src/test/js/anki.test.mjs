@@ -91,6 +91,8 @@ test('dropping a statement at-rule uncovers no rules inside a comment', () => {
     const quoted = window.YomitanRender.scopeCss('@import "a;b.css";\n.a { color: red }', '.p');
     assert.doesNotMatch(quoted, /b\.css/);
     assert.match(quoted, /\.p \.a \{ color: red \}/);
+    const unclosed = window.YomitanRender.scopeCss('@charset "utf-8;\n.a { color: red }', '.p');
+    assert.equal(unclosed, '\n.p .a { color: red }');
 });
 
 test('keyframe selectors are kept as they are', () => {

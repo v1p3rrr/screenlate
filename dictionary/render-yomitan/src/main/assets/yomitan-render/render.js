@@ -362,9 +362,19 @@ window.YomitanRender = (() => {
             if (c === '\\') {
                 i += 2;
             } else if (c === '"' || c === "'") {
-                i++;
-                while (i < css.length && css[i] !== c && css[i] !== '\n') i += css[i] === '\\' ? 2 : 1;
-                i++;
+                let end = i + 1;
+                while (end < css.length && css[end] !== c && css[end] !== '\n') end += css[end] === '\\' ? 2 : 1;
+                if (end < css.length && css[end] === c) {
+                    i = end + 1;
+                    continue;
+                }
+                // A string left open ends at the line break; its `;` still ends the rule, as it always did, so a
+                // broken `@charset "utf-8;` does not take the next rule with it.
+                for (let j = i + 1; j < Math.min(end, css.length); j++) {
+                    if (css[j] === ';') return j;
+                    if (css[j] === '{') return -1;
+                }
+                i = end;
             } else if (css.startsWith('/*', i)) {
                 const end = css.indexOf('*/', i + 2);
                 if (end === -1) return -1;

@@ -600,3 +600,5 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - 2026-09-30: owner approved a narrow scoper change: `scopeCss` finds the `;` of a statement at-rule outside comments,
   strings and escapes, so dropping it cannot uncover commented rules (verified in Chromium; output unchanged on real
   dictionaries' `styles.css`).
+- 2026-09-30: owner chose to keep the old scoper behavior for a string left open in a statement at-rule (its `;` ends
+  the rule, so a broken `@charset "utf-8;` keeps the next rule working); the remote-file check reports addresses after it.
