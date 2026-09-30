@@ -32,7 +32,7 @@ import com.vpr.screenlate.home.HomeViewModel
 import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
-enum class SettingsPage { BUBBLE, BACKGROUND, LOOKUP, POPUP, DICTIONARIES, ANKI, APPEARANCE, YOMITAN_IMPORT, BACKUP, ABOUT }
+enum class SettingsPage { BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, APPEARANCE, BACKGROUND, YOMITAN_IMPORT, BACKUP, ABOUT }
 
 /**
  * One list of every settings section; each opens its own screen. Leaving the list while Background work is badged
@@ -64,17 +64,8 @@ fun SettingsScreen(
             SettingsEntry(R.drawable.ic_touch_app, stringResource(R.string.bubble_title), stringResource(R.string.settings_bubble_summary)) {
                 onOpen(SettingsPage.BUBBLE)
             }
-            SettingsEntry(
-                R.drawable.ic_battery,
-                stringResource(R.string.background_title),
-                stringResource(R.string.background_summary),
-                badge = backgroundBadge,
-            ) { onOpen(SettingsPage.BACKGROUND) }
             SettingsEntry(R.drawable.ic_manage_search, stringResource(R.string.lookup_title), stringResource(R.string.settings_lookup_summary)) {
                 onOpen(SettingsPage.LOOKUP)
-            }
-            SettingsEntry(R.drawable.ic_web_asset, stringResource(R.string.popup_settings_title), stringResource(R.string.settings_popup_summary)) {
-                onOpen(SettingsPage.POPUP)
             }
             SettingsEntry(
                 R.drawable.ic_library_books,
@@ -91,9 +82,18 @@ fun SettingsScreen(
                 anki?.let { stringResource(R.string.home_anki_ready, it.deck, it.model) }
                     ?: stringResource(R.string.home_anki_not_configured),
             ) { onOpen(SettingsPage.ANKI) }
+            SettingsEntry(R.drawable.ic_web_asset, stringResource(R.string.popup_settings_title), stringResource(R.string.settings_popup_summary)) {
+                onOpen(SettingsPage.POPUP)
+            }
             SettingsEntry(R.drawable.ic_palette, stringResource(R.string.appearance_title), stringResource(R.string.settings_appearance_summary)) {
                 onOpen(SettingsPage.APPEARANCE)
             }
+            SettingsEntry(
+                R.drawable.ic_battery,
+                stringResource(R.string.background_title),
+                stringResource(R.string.background_summary),
+                badge = backgroundBadge,
+            ) { onOpen(SettingsPage.BACKGROUND) }
             SettingsEntry(R.drawable.ic_upload_file, stringResource(R.string.yomitan_import_title), stringResource(R.string.settings_yomitan_summary)) {
                 onOpen(SettingsPage.YOMITAN_IMPORT)
             }

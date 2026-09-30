@@ -300,3 +300,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Not checked: the phone's own case (MagicOS stopping the service; whether its settings app opens the details page).
 - Emulator state: the debug app has the notification permission (granted in this check, flag USER_SET), keep-alive
   off, the bubble shown, the accessibility service enabled for the debug app only.
+
+### 2026-10-01 (settings order, cloud session)
+
+- Owner's request 18 (13 on its branch) in [plans/2026-09-29-feedback-after-0.1.4.md](plans/2026-09-29-feedback-after-0.1.4.md): the
+  settings list now goes from function to look to system: Bubble, Lookup, Dictionaries, Anki and audio, Popup,
+  Appearance, Background work, Import from Yomitan, Backup and restore, About; no group headings (owner's answers).
+- Code: only the entry order and the `SettingsPage` enum in `SettingsScreen.kt`; `docs/usage.md` lists the sections in
+  the same order. A parallel session was working on main, so the change stays out of every other file.
+- On branch `claude/elegant-allen-xmu3fx` (rebased onto main at f3d5f80), not merged. Not checked on a
+  device: the list is plain reordering, the Background work badge moves down with its entry.
