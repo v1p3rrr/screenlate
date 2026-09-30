@@ -19,8 +19,11 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
 primary reading match (from xref links) → longer original text → shorter text-processing chain → shorter inflection chain → more exact source matches → frequency order (only if a sort frequency dictionary is chosen) → dictionary order → score → longer term → term string → more definitions.
 
 Screenlate's `YomitanSorter` follows it; the term string is compared by UTF-16 code units, not with a collator. The
-engine cuts the list at the result limit before this sort, by its own order without dictionary priority (question Q6
-of the 2026-09-30 reviews). The search field and dictionary links are looked up whole (Yomitan's `termsFind` has no
+engine cuts the list at the result limit before this sort, by its own order without dictionary priority, and reads
+glossaries only for what it keeps. With more than one dictionary with definitions `DictionaryLookup` asks it for every
+candidate (`engineLimit`) and cuts after the sort (question Q6 of the 2026-09-30 reviews). Measured on the emulator
+with JMdict: one-kana and long queries found 5-32 candidates; uncut and cut lookups took the same few to tens of ms
+(first, cold runs a few hundred ms either way), so no margin was needed. The search field and dictionary links are looked up whole (Yomitan's `termsFind` has no
 scan length; the scan length applies to text under the cursor); Screenlate caps them at 100 characters
 (`DictionaryLookup.lookupQuery`).
 

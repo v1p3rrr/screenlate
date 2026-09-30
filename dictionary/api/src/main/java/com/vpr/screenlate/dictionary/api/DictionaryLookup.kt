@@ -53,8 +53,9 @@ class DictionaryLookup @Inject constructor(
             primaryReading = primaryReading,
             maxResults = limit,
         )
+        val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
         val found = LookupVariants.of(text, settings, support).flatMap { variant ->
-            engine.lookup(variant.text, options).map { it.inSource(text, variant) }
+            engine.lookup(variant.text, engineOptions).map { it.inSource(text, variant) }
         }
         val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
             .filter { start !is LookupStart.Whole || it.matched.length == start.length }
@@ -142,6 +143,13 @@ enum class NoTermDictionary {
     /** Every dictionary with definitions for the language is off, deleted, or without its files. */
     NONE_ON,
 }
+
+/**
+ * Results the engine returns for [limit] shown ones. The engine cuts its list without the dictionary order, so with
+ * several dictionaries with definitions it returns every candidate and the cut comes after [YomitanSorter]. A lookup
+ * rarely finds more than a few dozen candidates, and reading them all costs about as much as reading [limit].
+ */
+internal fun engineLimit(limit: Int, termDictionaries: Int): Int = if (termDictionaries > 1) Int.MAX_VALUE else limit
 
 /** Scan length of [DictionaryLookup.lookupQuery]: the whole query in characters, within the setting's range. */
 internal fun queryScanLength(text: String): Int =
