@@ -10,6 +10,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
@@ -46,7 +47,7 @@ class DictionaryRepositoryTest {
         storage = DictionaryStorage(context)
         val preferences = PreferenceDataStoreFactory.create { File(root, "prefs.preferences_pb") }
         repository = DictionaryRepository(database.dictionaryDao(), engine, storage, preferences, DictionaryLanguageDetector(context))
-        lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences))
+        lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { DictionaryImports(context, storage) }
     }
 
     @After

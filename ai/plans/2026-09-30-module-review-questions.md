@@ -6,7 +6,17 @@ answered; answers go to the plan's changelog.
 
 ## Open
 
-None; all answered on 2026-09-30 (the full texts are in git history) and implemented the same day.
+- Q11 (overlay, code review 2026-09-30): the word kept from the draft after the final text. How it works now: when
+  the final OCR result has no word under the aim, the popup keeps the word found in the draft, drops the spinner and
+  makes ➕ active (`OverlayController.onPage`). A note then takes its sentence from the draft's text, which Q1 meant to
+  avoid; the final text may have corrected it. Options:
+  1. (recommended) Keep the word, but take the note's sentence from the final text at the word's place on screen;
+     when the final text has nothing there, the note has no sentence.
+  2. Keep ➕ grey for a word from the draft once the final text is in; the user moves the aim to get a word from the
+     final text.
+  3. Keep as is: the draft sentence goes into the note.
+
+Q1-Q10 were answered on 2026-09-30 (the full texts are in git history) and implemented the same day.
 
 ## Answered
 

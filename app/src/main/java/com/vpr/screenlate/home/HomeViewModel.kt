@@ -24,6 +24,7 @@ import com.vpr.screenlate.search.SearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class DictionarySummary(val installed: Int = 0, val enabled: Int = 0, val importing: Boolean = false)
 
@@ -155,8 +157,11 @@ class HomeViewModel @Inject constructor(
 
     fun remove(missing: MissingDictionary) {
         viewModelScope.launch {
-            if (missing.dictionary.bundled) bundled.markDeleted(missing.dictionary.title)
-            repository.delete(missing.dictionary.id)
+            // Leaving the screen must not stop a delete halfway; finding the bundled archive takes a while.
+            withContext(NonCancellable) {
+                if (missing.dictionary.bundled) bundled.markDeleted(missing.dictionary.title)
+                repository.delete(missing.dictionary.id)
+            }
             resolved(missing)
         }
     }

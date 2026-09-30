@@ -4,6 +4,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
@@ -12,8 +13,10 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 /**
  * Entry point for lookups: loads the enabled dictionaries on first use and applies the language's spelling variants,
@@ -24,6 +27,7 @@ class DictionaryLookup @Inject constructor(
     private val repository: DictionaryRepository,
     private val engine: DictionaryEngine,
     private val lookupSettings: LookupSettingsRepository,
+    private val imports: Provider<DictionaryImports>,
 ) {
     // Asked for every scan or shown word; kept until the dictionaries change.
     private val cachedStyles = PerGeneration<List<DictionaryStyle>>()
@@ -127,17 +131,30 @@ class DictionaryLookup @Inject constructor(
     suspend fun hasTermDictionaries(language: Language): Boolean = repository.hasTermDictionaries(language)
 
     /** Why lookups in [language] search no dictionary with definitions; null when they search one. */
-    suspend fun noTermDictionary(language: Language): NoTermDictionary? = when {
-        repository.hasTermDictionaries(language) -> null
-        // The bundled dictionaries are installed on first launch; until the first one is, the registry is empty.
-        repository.getAll().isEmpty() -> NoTermDictionary.INSTALLING
-        else -> NoTermDictionary.NONE_ON
-    }
+    suspend fun noTermDictionary(language: Language): NoTermDictionary? = noTermDictionary(
+        hasTermDictionaries = repository.hasTermDictionaries(language),
+        registryEmpty = { repository.getAll().isEmpty() },
+        importing = { imports.get().tasks.first().any { !it.finished } },
+    )
+}
+
+/**
+ * The bundled dictionaries are installed on first launch; until the first one is, the registry is empty. An empty
+ * registry without a running import means the user removed everything.
+ */
+internal suspend fun noTermDictionary(
+    hasTermDictionaries: Boolean,
+    registryEmpty: suspend () -> Boolean,
+    importing: suspend () -> Boolean,
+): NoTermDictionary? = when {
+    hasTermDictionaries -> null
+    registryEmpty() && importing() -> NoTermDictionary.INSTALLING
+    else -> NoTermDictionary.NONE_ON
 }
 
 /** See [DictionaryLookup.noTermDictionary]. */
 enum class NoTermDictionary {
-    /** Nothing is installed yet, as while the bundled dictionaries are installed. */
+    /** Nothing is installed yet while an import runs, as the bundled dictionaries on first launch. */
     INSTALLING,
 
     /** Every dictionary with definitions for the language is off, deleted, or without its files. */

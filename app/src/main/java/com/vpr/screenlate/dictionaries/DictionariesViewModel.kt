@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** A catalog entry with its state relative to the installed dictionaries and running imports. */
 data class CatalogItem(val entry: CatalogEntry, val installed: Boolean, val inProgress: Boolean)
@@ -162,8 +164,11 @@ class DictionariesViewModel @Inject constructor(
 
     fun delete(dictionary: DictionaryEntity) {
         viewModelScope.launch {
-            if (dictionary.bundled) bundled.markDeleted(dictionary.title)
-            repository.delete(dictionary.id)
+            // Leaving the screen must not stop a delete halfway; finding the bundled archive takes a while.
+            withContext(NonCancellable) {
+                if (dictionary.bundled) bundled.markDeleted(dictionary.title)
+                repository.delete(dictionary.id)
+            }
         }
     }
 

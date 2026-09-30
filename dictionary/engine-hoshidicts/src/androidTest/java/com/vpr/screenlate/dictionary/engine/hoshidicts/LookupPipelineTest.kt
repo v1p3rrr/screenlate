@@ -9,6 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.registry.DictionaryDatabase
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
@@ -48,7 +49,9 @@ class LookupPipelineTest {
             DictionaryLanguageDetector(InstrumentationRegistry.getInstrumentation().targetContext),
         )
         settings = LookupSettingsRepository(PreferenceDataStoreFactory.create { File(root, "lookup.preferences_pb") })
-        lookup = DictionaryLookup(repository, engine, settings)
+        lookup = DictionaryLookup(repository, engine, settings) {
+            DictionaryImports(InstrumentationRegistry.getInstrumentation().targetContext, storage)
+        }
         repository.import(termDictionary())
     }
 
