@@ -15,6 +15,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.vpr.screenlate.core.common.settings.ThemeMode
+import com.vpr.screenlate.core.common.settings.isDark
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -73,11 +74,7 @@ fun ScreenlateTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val darkTheme = when (themeMode) {
-        ThemeMode.SYSTEM -> isSystemInDarkTheme()
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
-    }
+    val darkTheme = themeMode.isDark(isSystemInDarkTheme())
     val colorScheme = when {
         eInk -> EInkColorScheme
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

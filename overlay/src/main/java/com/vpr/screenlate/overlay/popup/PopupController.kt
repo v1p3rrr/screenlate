@@ -87,6 +87,13 @@ class PopupController(
         if (visible) page.push(state)
     }
 
+    /** See-through for a screenshot that must not show the popup; it keeps its place and state. */
+    var alpha: Float
+        get() = page.container.alpha
+        set(value) {
+            page.container.alpha = value
+        }
+
     fun hide() {
         if (!visible) return
         visible = false

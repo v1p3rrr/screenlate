@@ -34,15 +34,19 @@ sealed class CaptureException(message: String) : Exception(message) {
  * copied into a bitmap; a thread other than the main one keeps the copy from holding up the overlay.
  *
  * On API 34+ only the app window under the given point is captured, so our own overlays never appear in the image.
- * Older versions capture the whole display; the caller hides the overlays for that case (see [needsOverlayHiding]).
+ * Older versions, and the fallback when no window is found or its capture fails, capture the whole display; the
+ * caller hides the overlays around that capture (see [capture]).
  */
 class ScreenCapturer(
     private val service: AccessibilityService,
     private val executor: Executor,
 ) {
-    val needsOverlayHiding: Boolean get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-
-    suspend fun capture(pointX: Int, pointY: Int): CapturedScreen {
+    /** [withoutOverlays] runs the display capture, which shows every window, with the app's overlays hidden. */
+    suspend fun capture(
+        pointX: Int,
+        pointY: Int,
+        withoutOverlays: suspend (displayCapture: suspend () -> CapturedScreen) -> CapturedScreen,
+    ): CapturedScreen {
         val started = SystemClock.elapsedRealtime()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             val window = findAppWindow(pointX, pointY)
@@ -60,7 +64,7 @@ class ScreenCapturer(
                 }
             }
         }
-        return captureDisplay().also { log("display", it, started) }
+        return withoutOverlays { captureDisplay() }.also { log("display", it, started) }
     }
 
     private fun log(kind: String, shot: CapturedScreen, started: Long) {

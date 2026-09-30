@@ -2,13 +2,9 @@ package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.RectF
-import android.util.Log
-import android.widget.Toast
-import android.widget.PopupMenu
-import android.view.ContextThemeWrapper
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -16,11 +12,15 @@ import android.os.SystemClock
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
@@ -31,21 +31,24 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.redactUrl
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
+import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.core.ocr.CompositeOcr
+import com.vpr.screenlate.core.ocr.LensPausedException
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.OcrOptions
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrUpdate
-import com.vpr.screenlate.core.ocr.ScreenBands
-import com.vpr.screenlate.core.ocr.withMissingFrom
-import com.vpr.screenlate.core.ocr.LensPausedException
 import com.vpr.screenlate.core.ocr.OfflineException
-import com.vpr.screenlate.core.ocr.lens.LensHttpException
+import com.vpr.screenlate.core.ocr.ScreenBands
 import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
+import com.vpr.screenlate.core.ocr.lens.LensHttpException
+import com.vpr.screenlate.core.ocr.withMissingFrom
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
@@ -62,9 +65,6 @@ import com.vpr.screenlate.overlay.capture.ScreenCapturer
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.popup.PopupController
-import com.vpr.screenlate.overlay.web.LookupPage
-import com.vpr.screenlate.overlay.web.PageState
-import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.settings.AimMode
 import com.vpr.screenlate.overlay.settings.DockSide
 import com.vpr.screenlate.overlay.settings.OverlaySettings
@@ -76,6 +76,9 @@ import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
+import com.vpr.screenlate.overlay.web.LookupPage
+import com.vpr.screenlate.overlay.web.PageState
+import com.vpr.screenlate.overlay.web.PageTheme
 import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.math.abs
@@ -84,23 +87,20 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.async
-import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import com.vpr.screenlate.core.common.redacted
-import com.vpr.screenlate.core.common.redactUrl
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -730,8 +730,15 @@ class OverlayController(
                         if (appTextRead.await() != null) {
                             show(flash = false)
                         } else {
-                            // Offline fails the scan only while the device does not recognize.
-                            showScanError(if (error is OfflineException) R.string.overlay_error_offline else R.string.overlay_error_ocr)
+                            // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
+                            // the cloud failed.
+                            showScanError(
+                                when {
+                                    error is OfflineException -> service.getString(R.string.overlay_error_offline)
+                                    settings.ocrEngines == OcrEngines.CLOUD -> cloudErrorReason(error)
+                                    else -> service.getString(R.string.overlay_error_ocr)
+                                },
+                            )
                         }
                     }
                     .collect { update ->
@@ -858,19 +865,22 @@ class OverlayController(
 
     private suspend fun capture(): CapturedScreen {
         val (cx, cy) = bubbleCenter()
-        if (!capturer.needsOverlayHiding) return capturer.capture(cx.roundToInt(), cy.roundToInt())
-        setOverlaysAlpha(0f)
-        delay(HIDE_FRAME_MS)
-        return try {
-            capturer.capture(cx.roundToInt(), cy.roundToInt())
-        } finally {
-            setOverlaysAlpha(1f)
+        return capturer.capture(cx.roundToInt(), cy.roundToInt()) { displayCapture ->
+            setOverlaysAlpha(0f)
+            delay(HIDE_FRAME_MS)
+            try {
+                displayCapture()
+            } finally {
+                setOverlaysAlpha(1f)
+            }
         }
     }
 
+    /** The popup too: a note's screenshot in app-text-only mode is taken while it is shown. */
     private fun setOverlaysAlpha(alpha: Float) {
         bubbleView.alpha = if (alpha == 0f) 0f else bubbleView.restingAlpha()
         layerView.alpha = alpha
+        popup.alpha = alpha
     }
 
     /** A new text layout in screen coordinates: the OCR draft or the final result. */
@@ -986,20 +996,26 @@ class OverlayController(
 
     /** Looks up a link target from inside the popup and shows it on top of the current view. */
     private fun lookupLink(query: String, primaryReading: String?) {
+        val shown = shownLookup
         scope.launch {
             val results = lookupResults(query, link = true, primaryReading = primaryReading)
             val matched = results.firstOrNull()?.matched?.let { it.codePointCount(0, it.length) } ?: 0
             val message = if (results.isEmpty()) noResultsMessage() else null
-            popup.push(popupStateOffMain(LookupView(query, matched, results, message)))
+            val state = popupStateOffMain(LookupView(query, matched, results, message))
+            // A lookup of another word replaced the popup meanwhile; the link belonged to the old one.
+            if (shownLookup !== shown) return@launch
+            popup.push(state)
             popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
 
     /** A scan that ended without text: nothing more will come, so the popup shows no spinner. */
-    private fun showScanError(message: Int) {
+    private fun showScanError(message: Int) = showScanError(service.getString(message))
+
+    private fun showScanError(message: String) {
         ocrFinal = true
         bubbleView.loading = false
-        showMessage(service.getString(message))
+        showMessage(message)
     }
 
     private fun showMessage(message: String) {
@@ -1166,20 +1182,21 @@ class OverlayController(
         if (settings.ocrEngines == OcrEngines.DEVICE) return ""
         // A word read from the app's own text does not depend on recognition.
         if (aimedEngine() == OcrEngineType.ACCESSIBILITY) return ""
-        val reason = when (error) {
-            is OfflineException -> service.getString(R.string.overlay_ocr_error_offline)
-            is LensPausedException -> service.getString(R.string.overlay_ocr_error_paused)
-            is TimeoutCancellationException, is SocketTimeoutException -> service.getString(R.string.overlay_ocr_error_timeout)
-            is LensHttpException -> when {
-                error.code == HTTP_TOO_MANY_REQUESTS -> service.getString(R.string.overlay_ocr_error_too_many)
-                error.code == HTTP_FORBIDDEN -> service.getString(R.string.overlay_ocr_error_refused)
-                error.code >= HTTP_SERVER_ERROR -> service.getString(R.string.overlay_ocr_error_server, error.code)
-                else -> service.getString(R.string.overlay_ocr_error_http, error.code)
-            }
-            is IOException -> service.getString(R.string.overlay_ocr_error_network)
-            else -> service.getString(R.string.overlay_ocr_error_other)
+        return "${cloudErrorReason(error)} ${service.getString(R.string.overlay_ocr_error_fallback)}"
+    }
+
+    private fun cloudErrorReason(error: Throwable): String = when (error) {
+        is OfflineException -> service.getString(R.string.overlay_ocr_error_offline)
+        is LensPausedException -> service.getString(R.string.overlay_ocr_error_paused)
+        is SocketTimeoutException -> service.getString(R.string.overlay_ocr_error_timeout)
+        is LensHttpException -> when {
+            error.code == HTTP_TOO_MANY_REQUESTS -> service.getString(R.string.overlay_ocr_error_too_many)
+            error.code == HTTP_FORBIDDEN -> service.getString(R.string.overlay_ocr_error_refused)
+            error.code >= HTTP_SERVER_ERROR -> service.getString(R.string.overlay_ocr_error_server, error.code)
+            else -> service.getString(R.string.overlay_ocr_error_http, error.code)
         }
-        return "$reason ${service.getString(R.string.overlay_ocr_error_fallback)}"
+        is IOException -> service.getString(R.string.overlay_ocr_error_network)
+        else -> service.getString(R.string.overlay_ocr_error_other)
     }
 
     private fun pageTheme(): PageTheme = when {
@@ -1188,12 +1205,8 @@ class OverlayController(
         else -> PageTheme.LIGHT
     }
 
-    private fun isDarkTheme(): Boolean = when (themeMode) {
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
-        ThemeMode.SYSTEM ->
-            service.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-    }
+    private fun isDarkTheme(): Boolean =
+        themeMode.isDark(service.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
 
     /**
      * A short click from the vibrator. View haptic feedback, and plain vibrations this short, follow the system's
@@ -1225,8 +1238,16 @@ class OverlayController(
         override fun onCopy(text: String, html: String?) = PageState.copy(service, text, html)
 
         override fun onKanji(character: String) {
+            val shown = shownLookup
             scope.launch {
-                val result = runCatching { lookup.kanji(character, language) }.getOrElse { KanjiResult(character) }
+                val result = try {
+                    lookup.kanji(character, language)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    KanjiResult(character)
+                }
+                if (shownLookup !== shown) return@launch
                 popup.push(PageState.kanji(service, pageTheme(), result, service.getString(R.string.overlay_no_kanji)))
             }
         }

@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: all modules except 9 and 10 fixes done (1-8, 11-13); next are the deferred module 9/10 fixes with a recheck, then asking the owner Q1-Q10.
+Updated after every step so the work survives a context reset or a paused session: all modules reviewed (1-13) and the deferred module 9/10 fixes done; next is asking the owner Q1-Q10 from the questions file.
 
 ## Progress
 
@@ -528,6 +528,20 @@ default mapping inside the edit as before, cancelled test jobs leave no stale st
   log to Downloads works.
 - Run 4 not needed: run 3 changed only docs.
 
+### Modules 9 and 10, deferred fixes
+
+- The theme mode to dark mapping is one helper, `ThemeMode.isDark(systemDark)` in core:common, used by the app
+  theme, the search screen and the overlay (test added).
+- `ocrErrorText` no longer matches `TimeoutCancellationException`; the reason text is `cloudErrorReason`.
+- A cloud-only scan that fails without app text shows the cloud's reason (paused, timeout, HTTP, network).
+- The display capture (API < 34, and the 34+ fallback when no window is found or its capture fails) now hides the
+  bubble, the scan layer and the popup; `ScreenCapturer.capture` takes the hiding step as a parameter, so the fallback
+  is covered too (before, 34+ never hid anything).
+- `onKanji` rethrows cancellation; kanji and link pushes are dropped when another lookup replaced the popup meanwhile.
+- Recheck of these fixes: 1 found, fixed (a dropped link push still reported its word to the note actions).
+- Emulator: scan, lookup, kanji push and link lookup work (window capture path on API 37; the display-capture path
+  cannot be triggered there).
+
 ## Deferred
 
 Bugs found in another module's code, fixed in that module's runs (modules 9 and 10: after all 11 modules).
@@ -543,16 +557,16 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - Module 12 (done in run 1): `YomitanSettingsTest.kt:106-108` has unnecessary `!!` (compiler warnings).
 - Module 12 (done in run 1): `BackupManager.restoreFrom` writes a dictionary to `File(directory, path)` with a path from the backup
   archive; check that `BackupArchive` refuses `..` segments and absolute paths (zip slip).
-- Modules 9–11 (at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
+- Modules 9–11 (done at the end): the theme mode to dark mapping is written three times (`ui/theme/Theme.kt:76`,
   `search/SearchScreen.kt:87`, `OverlayController.isDarkTheme`); one helper next to `ThemeMode` in core:common.
-- Module 9: `OverlayController.ocrErrorText` still matches `TimeoutCancellationException`, which OCR no longer
+- Module 9 (done at the end): `OverlayController.ocrErrorText` still matches `TimeoutCancellationException`, which OCR no longer
   reports (a timeout is a `SocketTimeoutException` now); drop that branch and its import.
-- Module 9: a cloud-only scan that fails without app text shows the generic OCR error for every reason but offline,
+- Module 9 (done at the end): a cloud-only scan that fails without app text shows the generic OCR error for every reason but offline,
   although `ocrErrorText` knows paused, timeout and HTTP errors; show that reason instead.
-- Module 9: `OverlayController.noteSource` in app-text-only mode captures the screen for the note while the popup is
+- Module 9 (done at the end): `OverlayController.noteSource` in app-text-only mode captures the screen for the note while the popup is
   shown; `capture()` hides only the bubble and the scan layer, so on API 30-33 (and on the display-capture fallback of
   34+) the popup is in the note's picture. Hide the popup window too, or capture before it is shown.
-- Module 9: `OverlayController` `onKanji` wraps the kanji lookup in `runCatching`, which also catches
+- Module 9 (done at the end): `OverlayController` `onKanji` wraps the kanji lookup in `runCatching`, which also catches
   `CancellationException` and then pushes a view from a cancelled scan; rethrow it.
 - Module 11 (done in run 1): `SearchScreen` renders again when the theme changes (`LaunchedEffect(results, theme)`), which drops a
   pushed view (kanji, link lookup); a theme change could update the page instead, as the overlay does.
