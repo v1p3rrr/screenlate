@@ -55,8 +55,9 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   bridge `onNoteWaiting`); a word from app text (engine ACCESSIBILITY) is exact and can be added at once. A new scan
   closes the previous popup (`closePopup()` in `startScan`), so ➕ of an old word cannot take the new scan's sentence.
   The earlier withdrawal of the pending cloud request on ➕ (`stopCloud`, `cloudWithdrawn`) was removed (owner's
-  answers Q1/Q2 of the 2026-09-30 reviews). The grey state could not be seen on the emulator: its ML Kit draft never
-  came before the cloud result (2-3 s); check it on the phone. A picture is
+  answers Q1/Q2 of the 2026-09-30 reviews). Checked on the emulator with a hanging proxy (see `build-environment.md`):
+  the draft popup shows ➕ grey with the spinner, a tap shows the two-line hint, the final result makes ➕ active, and
+  a new scan closes the old popup at once. A picture is
   taken only while the same scan is open (`scanId`), so the crop editor never opens after a dock; the note itself goes
   on, but its result reaches neither the next scan's note memory (`ScanNotes`) nor its popup. It is shown on the entry
   of its term (`entryOf`), not by index.
