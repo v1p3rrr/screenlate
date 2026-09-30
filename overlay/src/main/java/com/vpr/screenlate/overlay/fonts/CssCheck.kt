@@ -74,16 +74,17 @@ object CssCheck {
 
     /**
      * [Problem.REMOTE_FILE] issues of [css], one for each host on a line. The CSS is read as a browser reads it:
-     * without comments (a comment marker inside a string is text), with escapes decoded (`\68ttps:`), and addresses
-     * parsed as a browser parses them (`https:\\host` and tabs inside the address).
+     * CRLF, CR and form feed are line breaks, comments go (a comment marker inside a string or an unquoted `url(...)`
+     * is text), escapes are decoded (`\68ttps:`), and addresses are parsed as a browser parses them (`https:\\host`
+     * and tabs inside the address).
      */
     fun remoteFiles(css: String): List<Issue> {
-        val (text, lines) = unescape(blankComments(css))
-        return FILE_REFERENCE.findAll(text)
+        val decoded = unescape(blankComments(css.replace("\r\n", "\n").replace('\r', '\n').replace('\u000C', '\n')))
+        return FILE_REFERENCE.findAll(decoded.text)
             .mapNotNull { match ->
                 val url = match.value.startsWith("url", ignoreCase = true)
-                val host = urlValue(text, match.range.last + 1, unquoted = url)?.let(::remoteHost) ?: return@mapNotNull null
-                Issue(lines[match.range.first], Problem.REMOTE_FILE, host)
+                val host = urlValue(decoded, match.range.last + 1, unquoted = url)?.let(::remoteHost) ?: return@mapNotNull null
+                Issue(decoded.lines[match.range.first], Problem.REMOTE_FILE, host)
             }
             .distinct()
             .toList()
@@ -235,7 +236,7 @@ object CssCheck {
             var i = open + 1
             while (i < text.length) {
                 when (text[i]) {
-                    '\\' -> i++
+                    '\\' -> i = escapeEnd(text, i) - 1
                     quote -> return i
                     '\n' -> {
                         if (report) issues += Issue(lineOf(open), Problem.UNCLOSED_STRING)
@@ -256,25 +257,26 @@ object CssCheck {
     }
 
     /**
-     * [css] with comments blanked out (line breaks kept, so offsets and lines stay); comment markers inside strings
-     * and escaped characters are text. [onUnclosed] gets the offset of a comment that is never closed.
+     * [css] with comments blanked out (line breaks kept, so offsets and lines stay); comment markers inside strings,
+     * escapes and unquoted `url(...)` addresses are text. [onUnclosed] gets the offset of a comment that is never
+     * closed.
      */
     private fun blankComments(css: String, onUnclosed: (Int) -> Unit = {}): String {
         val out = StringBuilder(css)
         var i = 0
         while (i < css.length) {
-            when {
-                css[i] == '\\' -> i++
-                css[i] == '"' || css[i] == '\'' -> i = skipRawString(css, i)
+            i = when {
+                css[i] == '"' || css[i] == '\'' -> skipRawString(css, i) + 1
                 css.startsWith("/*", i) -> {
                     val end = css.indexOf("*/", i + 2)
                     val stop = if (end < 0) css.length else end + 2
                     if (end < 0) onUnclosed(i)
                     for (j in i until stop) if (out[j] != '\n') out.setCharAt(j, ' ')
-                    i = stop - 1
+                    stop
                 }
+                css[i].isNameChar() || isEscape(css, i) -> nameEnd(css, i)
+                else -> i + 1
             }
-            i++
         }
         return out.toString()
     }
@@ -283,68 +285,128 @@ object CssCheck {
     private fun skipRawString(css: String, open: Int): Int {
         var i = open + 1
         while (i < css.length && css[i] != css[open] && css[i] != '\n') {
-            if (css[i] == '\\') i++
-            i++
+            i = if (css[i] == '\\') escapeEnd(css, i) else i + 1
         }
         return if (i < css.length && css[i] == '\n') i - 1 else i
     }
 
     /**
-     * [text] with CSS escapes replaced by the characters they stand for, and the 1-based line in [text] of each
-     * character of the result. An escaped line break (a continued string) is dropped.
+     * The index after the name at [start] (name characters and escapes, e.g. `\75rl`). For `url(` with an unquoted
+     * address it is the index of the closing `)`: a browser reads comment markers and quotes there as part of the
+     * address.
      */
-    private fun unescape(text: String): Pair<String, IntArray> {
+    private fun nameEnd(css: String, start: Int): Int {
+        // Only a name of three characters can be "url"; longer names are not kept whole.
+        val name = StringBuilder()
+        var i = start
+        while (i < css.length && (css[i].isNameChar() || isEscape(css, i))) {
+            if (css[i] == '\\') {
+                val (code, end) = escapeAt(css, i)
+                if (name.length <= URL_NAME.length) name.appendCodePoint(code)
+                i = end
+            } else {
+                if (name.length <= URL_NAME.length) name.append(css[i])
+                i++
+            }
+        }
+        if (i == css.length || css[i] != '(' || !name.toString().equals(URL_NAME, ignoreCase = true)) return i
+        var end = i + 1
+        while (end < css.length && css[end] in CSS_WHITESPACE) end++
+        if (end < css.length && (css[end] == '"' || css[end] == '\'')) return i
+        while (end < css.length && css[end] != ')') end += if (css[end] == '\\') 2 else 1
+        return minOf(end, css.length)
+    }
+
+    /** Letters, digits, `_`, `-` and non-ASCII characters. */
+    private fun Char.isNameChar(): Boolean =
+        this in 'a'..'z' || this in 'A'..'Z' || this in '0'..'9' || this == '_' || this == '-' || code >= NON_ASCII
+
+    /** A `\` at [i] that starts an escape: one not followed by a line break. */
+    private fun isEscape(text: String, i: Int): Boolean =
+        text[i] == '\\' && (i + 1 == text.length || text[i + 1] !in LINE_BREAKS)
+
+    /**
+     * The code point the escape at [start] (a `\`) stands for, and the index after it: up to six hex digits and one
+     * whitespace after them (CRLF counts as one), or one character.
+     */
+    private fun escapeAt(text: String, start: Int): Pair<Int, Int> {
+        if (start + 1 == text.length) return REPLACEMENT to text.length
+        if (!text[start + 1].isHexDigit()) {
+            val code = text.codePointAt(start + 1)
+            return code to start + 1 + Character.charCount(code)
+        }
+        var end = start + 1
+        while (end < text.length && end - start <= MAX_HEX_DIGITS && text[end].isHexDigit()) end++
+        val code = text.substring(start + 1, end).toInt(HEX)
+        end += when {
+            text.startsWith("\r\n", end) -> 2
+            end < text.length && text[end] in CSS_WHITESPACE -> 1
+            else -> 0
+        }
+        return (if (code == 0 || code in SURROGATES || code > Character.MAX_CODE_POINT) REPLACEMENT else code) to end
+    }
+
+    /** The index after the escape at [start] (a `\`); a `\` before CRLF continues a string over one line break. */
+    private fun escapeEnd(text: String, start: Int): Int =
+        if (text.startsWith("\r\n", start + 1)) start + 3 else escapeAt(text, start).second
+
+    /**
+     * CSS with its escapes decoded.
+     *
+     * @param lines the 1-based line in the source of each character of [text].
+     * @param escaped the character was written as an escape: an escaped quote, `)` or whitespace ends nothing.
+     */
+    private class Decoded(val text: String, val lines: IntArray, val escaped: BooleanArray)
+
+    /** [text] (line breaks already `\n`) with CSS escapes replaced by their characters; an escaped line break is dropped. */
+    private fun unescape(text: String): Decoded {
         val out = StringBuilder(text.length)
         val lines = IntArray(text.length)
+        val escaped = BooleanArray(text.length)
         var line = 1
         var i = 0
         while (i < text.length) {
-            val start = line
-            val c = text[i]
-            if (c != '\\' || i + 1 == text.length) {
-                out.append(c)
-                if (c == '\n') line++
-                i++
-            } else if (text[i + 1] == '\n') {
-                line++
-                i += 2
-            } else if (text[i + 1].isHexDigit()) {
-                var end = i + 1
-                while (end < text.length && end - i <= MAX_HEX_DIGITS && text[end].isHexDigit()) end++
-                val code = text.substring(i + 1, end).toInt(HEX)
-                out.appendCodePoint(if (code == 0 || code in SURROGATES || code > Character.MAX_CODE_POINT) REPLACEMENT else code)
-                if (end < text.length && text[end] in CSS_WHITESPACE) {
-                    if (text[end] == '\n') line++
-                    end++
+            val from = out.length
+            val end = when {
+                text[i] != '\\' || i + 1 == text.length -> {
+                    out.append(text[i])
+                    i + 1
                 }
-                i = end
-            } else {
-                out.append(text[i + 1])
-                i += 2
+                text[i + 1] == '\n' -> i + 2
+                else -> {
+                    val (code, after) = escapeAt(text, i)
+                    out.appendCodePoint(code)
+                    after
+                }
             }
-            for (j in (out.length - 1) downTo 0) {
-                if (lines[j] != 0) break
-                lines[j] = start
+            for (j in from until out.length) {
+                lines[j] = line
+                escaped[j] = end - i > 1
             }
+            for (j in i until end) if (text[j] == '\n') line++
+            i = end
         }
-        return out.toString() to lines
+        return Decoded(out.toString(), lines, escaped)
     }
 
     /**
-     * The address after `url(` or `@import` at [start] of decoded CSS: a quoted string, or with [unquoted] the text up
-     * to `)`; null when none follows (an `@import url(...)`, whose `url(` is read on its own).
+     * The address after `url(` or `@import` at [start] of [decoded] CSS: a quoted string, or with [unquoted] the text
+     * up to `)`; null when none follows (an `@import url(...)`, whose `url(` is read on its own).
      */
-    private fun urlValue(text: String, start: Int, unquoted: Boolean): String? {
+    private fun urlValue(decoded: Decoded, start: Int, unquoted: Boolean): String? {
+        val text = decoded.text
+        fun isPlain(i: Int, c: Char) = text[i] == c && !decoded.escaped[i]
+        fun isSpace(i: Int) = text[i] in CSS_WHITESPACE && !decoded.escaped[i]
         var i = start
-        while (i < text.length && text[i] in CSS_WHITESPACE) i++
+        while (i < text.length && isSpace(i)) i++
         if (i == text.length) return null
         val quote = text[i]
-        if (quote == '"' || quote == '\'') {
-            val end = (i + 1 until text.length).firstOrNull { text[it] == quote || text[it] == '\n' } ?: text.length
+        if (isPlain(i, '"') || isPlain(i, '\'')) {
+            val end = (i + 1 until text.length).firstOrNull { isPlain(it, quote) || isPlain(it, '\n') } ?: text.length
             return text.substring(i + 1, end)
         }
         if (!unquoted) return null
-        val end = (i until text.length).firstOrNull { text[it] == ')' || text[it] in CSS_WHITESPACE } ?: text.length
+        val end = (i until text.length).firstOrNull { isPlain(it, ')') || isSpace(it) } ?: text.length
         return text.substring(i, end)
     }
 
@@ -401,6 +463,9 @@ object CssCheck {
     private const val HEX = 16
     private const val MAX_HEX_DIGITS = 6
     private const val REPLACEMENT = 0xFFFD
+    private const val NON_ASCII = 0x80
+    private const val URL_NAME = "url"
     private val SURROGATES = 0xD800..0xDFFF
     private val CSS_WHITESPACE = charArrayOf(' ', '\t', '\n', '\r', '\u000C')
+    private val LINE_BREAKS = charArrayOf('\n', '\r', '\u000C')
 }

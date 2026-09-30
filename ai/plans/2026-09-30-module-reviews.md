@@ -593,3 +593,7 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   main. The question on the CSS scoper and the remote-file warning is asked again in simpler words.
 - 2026-09-30: owner's answers: fix the remote-file warning (read CSS as a browser does); leave the CSS scoper as it is;
   do not watch PR #2.
+- 2026-09-30: xhigh code review of PR #2 with fixes: the remote-file warning also reads CRLF/CR/form feed as line
+  breaks, lets a hex escape take the line break after it inside a string, keeps `/*` inside an unquoted `url(...)`,
+  and keeps escaped whitespace inside an unquoted address (all four hid servers Chromium loads). Open for the owner:
+  dictionary CSS is checked raw while the page gets `scopeCss`'s output, which can uncover commented rules.

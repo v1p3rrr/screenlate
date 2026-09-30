@@ -19,8 +19,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `EInkSizes.enlarge` overwrites an earlier stored record (keep the first); `AppUpdates.update` silently ignored while a
   check runs (needs a UI text — ask); `LookupPage.evaluate` keeps its callback after cancellation; last-dictionary rule
   counts missing-file dictionaries differently in `isLastTermDictionary`/`keptTermDictionaries` and lives only in
-  callers; `CssCheck` misreads `user@host` and `/*` inside strings; `markDeleted` rescans bundled zips and `baseTitle`
-  duplicates `dictionaryKey`.
+  callers; `markDeleted` rescans bundled zips and `baseTitle` duplicates `dictionaryKey`.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
 - Security review of the whole project (2026-09-30): fixed — a dictionary's `styles.css` or title could close the
   `<style>` that `note.js` puts into glossary fields and store HTML with event handlers in Anki notes (`styleElement`
@@ -29,8 +28,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   OCR header text (Q7: the CSS is not rewritten); `javascript:` hrefs from structured content reach exported notes
   (needs a tap); `scopeCss` ends a block at a `}` inside a CSS string, which lets the next rule apply to the whole page
   (the owner chose not to touch the scoper). Fixed: the remote-file warning (`CssCheck.remoteFiles`) now reads CSS as
-  a browser does (string-aware comments, decoded escapes, `\\`/tabs in addresses; checked in Chromium). Low:
-  build-time dictionary downloads have no checksum.
+  a browser does (string-aware comments, decoded escapes, `\\`/tabs in addresses; checked in Chromium); after the PR
+  review also CRLF/CR/form feed as line breaks, a hex escape taking the line break after it, `/*` inside an unquoted
+  `url(...)`, and escaped whitespace inside an unquoted address (each confirmed in Chromium). Open: the check reads a
+  dictionary's raw `styles.css`, but the page gets `scopeCss`'s output, which drops a statement at-rule up to the first
+  `;` even inside a comment (`@x /*;` uncovers the commented rules after it), so such a remote font goes unreported;
+  fixing it needs the scoper or a check of the scoped CSS (owner's call). Low: build-time dictionary downloads have no
+  checksum.
 
 ## Phases
 

@@ -164,6 +164,37 @@ class CssCheckTest {
     }
 
     @Test
+    fun `a string continued over a line break or an unquoted address hides no comment start`() {
+        // A hex escape takes the line break after it, and `\` before CRLF continues the string, so `/*` is text.
+        val continued = listOf(".a::before { content: \"x\\41\n/*\" }", ".a::before { content: \"x\\\r\n/*\" }")
+        for (string in continued) {
+            val css = "$string\n.b { background: url(https://a.example.com/x.png) }\n/* */"
+            assertThat(CssCheck.remoteFiles(css)).containsExactly(CssCheck.Issue(3, Problem.REMOTE_FILE, "a.example.com"))
+        }
+        val inUrl = listOf(
+            ".x { background: url(/*) }",
+            "@font-face { font-family: Q; src: url(https://b.example.com/q.woff) }",
+            ".y { background: url(*/) }",
+        ).joinToString("\n")
+        assertThat(CssCheck.remoteFiles(inUrl)).containsExactly(CssCheck.Issue(2, Problem.REMOTE_FILE, "b.example.com"))
+        assertThat(CssCheck.analyze(".a { background: url(img/*.png) }").issues).isEmpty()
+    }
+
+    @Test
+    fun `finds addresses split by escaped or other line breaks and escaped whitespace`() {
+        val css = listOf(
+            ".a { background: url(\"htt\\\r\nps://a.example.com/x.png\") }",
+            ".b { background: url(\"htt\\\u000Cps://b.example.com/x.png\") }",
+            ".c { background: url(htt\\70\r\ns://c.example.com/x.png) }",
+            ".d { background: url(htt\\9 ps://d.example.com/x.png) }",
+            ".e { background: url(https:/\\A /e.example.com/x.png) }",
+        ).joinToString("\n")
+        assertThat(CssCheck.remoteFiles(css).map { it.detail })
+            .containsExactly("a.example.com", "b.example.com", "c.example.com", "d.example.com", "e.example.com")
+            .inOrder()
+    }
+
+    @Test
     fun `escaped and one-slash addresses on the page itself are not remote`() {
         val css = """
             .a { background: url(\2f img/x.png) }
