@@ -35,6 +35,7 @@
     <string name="dictionaries_import_file">Import from file</string>
     <string name="dictionaries_import_failed">Import failed: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: import failed — %2$s</string>
+    <string name="dictionaries_last_term">At least one dictionary with definitions must stay on.</string>
     <string name="dictionaries_import_no_space">Not enough free space to import %1$s: about %2$s needed, %3$s free. Free up space and try again.</string>
     <string name="dictionaries_installed">Installed</string>
     <string name="dictionaries_none">No dictionaries installed.</string>

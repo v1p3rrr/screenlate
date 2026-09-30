@@ -124,6 +124,23 @@ class DictionaryLookup @Inject constructor(
 
     /** Whether lookups in [language] search any dictionary with definitions (enabled, for the language, with files). */
     suspend fun hasTermDictionaries(language: Language): Boolean = repository.hasTermDictionaries(language)
+
+    /** Why lookups in [language] search no dictionary with definitions; null when they search one. */
+    suspend fun noTermDictionary(language: Language): NoTermDictionary? = when {
+        repository.hasTermDictionaries(language) -> null
+        // The bundled dictionaries are installed on first launch; until the first one is, the registry is empty.
+        repository.getAll().isEmpty() -> NoTermDictionary.INSTALLING
+        else -> NoTermDictionary.NONE_ON
+    }
+}
+
+/** See [DictionaryLookup.noTermDictionary]. */
+enum class NoTermDictionary {
+    /** Nothing is installed yet, as while the bundled dictionaries are installed. */
+    INSTALLING,
+
+    /** Every dictionary with definitions for the language is off, deleted, or without its files. */
+    NONE_ON,
 }
 
 /** Scan length of [DictionaryLookup.lookupQuery]: the whole query in characters, within the setting's range. */

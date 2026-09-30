@@ -61,6 +61,7 @@ import com.vpr.screenlate.overlay.anki.PopupNotes
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
+import com.vpr.screenlate.overlay.web.noResultsText
 import com.vpr.screenlate.ui.theme.LocalEInk
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -284,7 +285,6 @@ private fun state(context: android.content.Context, theme: PageTheme, results: S
     results = results.results,
     message = when {
         results.results.isNotEmpty() -> null
-        results.noDictionaries -> context.getString(OverlayR.string.overlay_no_dictionaries)
-        else -> context.getString(OverlayR.string.overlay_no_results)
+        else -> context.getString(noResultsText(results.noTermDictionary))
     },
 )

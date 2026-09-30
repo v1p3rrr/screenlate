@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">从文件导入</string>
     <string name="dictionaries_import_failed">导入失败：%1$s</string>
     <string name="dictionaries_import_failed_named">%1$s：导入失败（%2$s）</string>
+    <string name="dictionaries_last_term">至少要保留一个启用的带释义词典。</string>
     <string name="dictionaries_import_no_space">剩余空间不足，无法导入 %1$s：约需 %2$s，剩余 %3$s。请释放空间后重试。</string>
     <string name="dictionaries_installed">已安装</string>
     <string name="dictionaries_none">未安装任何词典。</string>

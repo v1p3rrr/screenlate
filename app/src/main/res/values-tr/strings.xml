@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Dosyadan içe aktar</string>
     <string name="dictionaries_import_failed">İçe aktarma başarısız: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: içe aktarma başarısız — %2$s</string>
+    <string name="dictionaries_last_term">Tanım içeren en az bir sözlük açık kalmalıdır.</string>
     <string name="dictionaries_import_no_space">%1$s içe aktarmak için yeterli boş alan yok: yaklaşık %2$s gerekli, %3$s boş. Yer açıp yeniden deneyin.</string>
     <string name="dictionaries_installed">Yüklü</string>
     <string name="dictionaries_none">Yüklü sözlük yok.</string>

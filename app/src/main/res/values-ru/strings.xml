@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Импорт из файла</string>
     <string name="dictionaries_import_failed">Не удалось импортировать: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: не удалось импортировать — %2$s</string>
+    <string name="dictionaries_last_term">Хотя бы один словарь с определениями должен остаться включённым.</string>
     <string name="dictionaries_import_no_space">Не хватает места для импорта %1$s: нужно около %2$s, свободно %3$s. Освободите место и попробуйте снова.</string>
     <string name="dictionaries_installed">Установленные</string>
     <string name="dictionaries_none">Словари не установлены.</string>

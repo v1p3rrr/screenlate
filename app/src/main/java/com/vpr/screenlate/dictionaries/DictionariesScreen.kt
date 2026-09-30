@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionaries
 
 import android.text.format.Formatter
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -52,6 +53,7 @@ import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
+import com.vpr.screenlate.dictionary.api.registry.isLastTermDictionary
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import java.util.Locale
 
@@ -63,6 +65,7 @@ fun DictionariesScreen(
     onOpenYomitanImport: () -> Unit,
     viewModel: DictionariesViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
@@ -140,6 +143,7 @@ fun DictionariesScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            val allDictionaries = state.installed.flatMap { it.dictionaries }
             state.installed.forEach { section ->
                 SubsectionTitle(stringResource(sectionLabel(section.kind)))
                 ReorderableColumn(
@@ -152,8 +156,20 @@ fun DictionariesScreen(
                         dictionary = dictionary,
                         handle = handle,
                         dragging = dragging,
-                        onEnabledChange = { viewModel.setEnabled(dictionary, it) },
-                        onDelete = { pendingDelete = dictionary },
+                        onEnabledChange = { on ->
+                            if (!on && dictionary.isLastTermDictionary(allDictionaries)) {
+                                Toast.makeText(context, R.string.dictionaries_last_term, Toast.LENGTH_LONG).show()
+                            } else {
+                                viewModel.setEnabled(dictionary, on)
+                            }
+                        },
+                        onDelete = {
+                            if (dictionary.isLastTermDictionary(allDictionaries)) {
+                                Toast.makeText(context, R.string.dictionaries_last_term, Toast.LENGTH_LONG).show()
+                            } else {
+                                pendingDelete = dictionary
+                            }
+                        },
                         onEditLanguages = { editingLanguages = dictionary },
                         links = state.links[dictionary.id],
                         sort = if (section.kind == DictionaryKind.FREQUENCY) {

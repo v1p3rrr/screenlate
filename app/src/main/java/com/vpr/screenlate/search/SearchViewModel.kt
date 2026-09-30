@@ -11,6 +11,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.NoTermDictionary
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
@@ -30,7 +31,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.JsonObject
 
 /** Results for one search text. */
-data class SearchResults(val text: String, val results: List<LookupResult>, val noDictionaries: Boolean)
+/** [noTermDictionary] is set when nothing was found because no dictionary with definitions is searched. */
+data class SearchResults(val text: String, val results: List<LookupResult>, val noTermDictionary: NoTermDictionary?)
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -62,7 +64,7 @@ class SearchViewModel @Inject constructor(
     suspend fun search(text: String, primaryReading: String? = null): SearchResults {
         val trimmed = text.trim()
         val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading) }
-        return SearchResults(trimmed, found, noDictionaries = found.isEmpty() && !lookup.hasTermDictionaries(LANGUAGE))
+        return SearchResults(trimmed, found, noTermDictionary = if (found.isEmpty()) lookup.noTermDictionary(LANGUAGE) else null)
     }
 
     suspend fun kanji(character: String): KanjiResult = orElse(KanjiResult(character)) { lookup.kanji(character, LANGUAGE) }

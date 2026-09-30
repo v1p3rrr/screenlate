@@ -25,6 +25,7 @@
     <string name="overlay_ocr_error_fallback">텍스트를 기기에서 인식해 정확도가 낮습니다.</string>
     <string name="overlay_no_results">사전 항목을 찾지 못했습니다.</string>
     <string name="overlay_no_dictionaries">사전을 아직 설치하는 중입니다. 잠시 후 다시 시도하세요.</string>
+    <string name="overlay_no_dictionaries_on">정의가 있는 사전이 켜져 있지 않습니다. Screenlate의 사전에서 켜거나 추가하세요.</string>
     <string name="overlay_add_note">Anki에 추가(길게 누르면 이미지 포함)</string>
     <string name="overlay_play_audio">오디오 재생(길게 눌러 선택)</string>
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>

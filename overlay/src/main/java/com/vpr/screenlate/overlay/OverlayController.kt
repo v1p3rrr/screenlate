@@ -79,6 +79,7 @@ import com.vpr.screenlate.overlay.ui.OverlayWindows
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
+import com.vpr.screenlate.overlay.web.noResultsText
 import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.math.abs
@@ -990,9 +991,7 @@ class OverlayController(
         emptyList()
     }
 
-    private suspend fun noResultsMessage(): String = service.getString(
-        if (lookup.hasTermDictionaries(language)) R.string.overlay_no_results else R.string.overlay_no_dictionaries,
-    )
+    private suspend fun noResultsMessage(): String = service.getString(noResultsText(lookup.noTermDictionary(language)))
 
     /** Looks up a link target from inside the popup and shows it on top of the current view. */
     private fun lookupLink(query: String, primaryReading: String?) {

@@ -75,6 +75,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 ## Dictionaries
 
 - The Dictionaries screen lists installed dictionaries by type. Drag the handle to change the order: entries from dictionaries higher in the list come first. Among frequency dictionaries, pick the one used for sorting.
+- The last enabled dictionary with definitions for a language cannot be switched off or deleted; lookups would find nothing without it. If none is on anyway (e.g. its files are missing), the popup and the search say so instead of "no entries found".
 - Import Yomitan archives (`.zip`) from a file, download dictionaries from the catalog, or import a Yomitan "dictionary collection" export (`.json`) to bring over everything installed in Yomitan at once.
 - "Check for updates" asks each dictionary's index whether a newer revision exists.
 - Each dictionary shows its languages (words → explanations). They come from the dictionary's own description, else from the catalog, else from its content: the script of the headwords and definitions, with Latin text identified by the phone's on-device language detection. Dictionaries installed before this was added get theirs once, from sample lookups. Frequency and pitch dictionaries show only the language of their words. Tap a dictionary and "Change" to set them by hand; a dictionary is used only for lookups in its word language.

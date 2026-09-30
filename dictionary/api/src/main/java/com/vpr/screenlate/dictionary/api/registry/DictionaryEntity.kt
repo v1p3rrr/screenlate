@@ -47,3 +47,12 @@ data class DictionaryEntity(
 
 /** Whether the dictionary is for words of [language]; one that does not say its language is used for any. */
 fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.code
+
+/**
+ * Whether this is the only enabled dictionary with definitions, among [all], for a language it is for; lookups in that
+ * language would find nothing without it.
+ */
+fun DictionaryEntity.isLastTermDictionary(all: List<DictionaryEntity>): Boolean =
+    enabled && termCount > 0 && Language.entries.any { language ->
+        isFor(language) && all.none { it.id != id && it.enabled && it.termCount > 0 && it.isFor(language) }
+    }

@@ -25,6 +25,7 @@
     <string name="overlay_ocr_error_fallback">O texto foi reconhecido no dispositivo, o que é menos preciso.</string>
     <string name="overlay_no_results">Nenhuma entrada encontrada nos dicionários.</string>
     <string name="overlay_no_dictionaries">Os dicionários ainda estão sendo instalados. Tente de novo em instantes.</string>
+    <string name="overlay_no_dictionaries_on">Nenhum dicionário com definições está ativado. Ative ou adicione um em Dicionários, no Screenlate.</string>
     <string name="overlay_add_note">Adicionar ao Anki (segure para uma imagem)</string>
     <string name="overlay_play_audio">Tocar áudio (segure para escolher)</string>
     <string name="anki_error">Não foi possível adicionar a nota: %1$s</string>

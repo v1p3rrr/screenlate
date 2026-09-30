@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Nhập từ tệp</string>
     <string name="dictionaries_import_failed">Nhập thất bại: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: nhập thất bại — %2$s</string>
+    <string name="dictionaries_last_term">Phải giữ bật ít nhất một từ điển có định nghĩa.</string>
     <string name="dictionaries_import_no_space">Không đủ dung lượng trống để nhập %1$s: cần khoảng %2$s, còn trống %3$s. Hãy giải phóng dung lượng và thử lại.</string>
     <string name="dictionaries_installed">Đã cài</string>
     <string name="dictionaries_none">Chưa cài từ điển nào.</string>

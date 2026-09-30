@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Aus Datei importieren</string>
     <string name="dictionaries_import_failed">Import fehlgeschlagen: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: Import fehlgeschlagen – %2$s</string>
+    <string name="dictionaries_last_term">Mindestens ein Wörterbuch mit Definitionen muss aktiv bleiben.</string>
     <string name="dictionaries_import_no_space">Nicht genug freier Speicher für %1$s: etwa %2$s nötig, %3$s frei. Gib Speicher frei und versuche es erneut.</string>
     <string name="dictionaries_installed">Installiert</string>
     <string name="dictionaries_none">Keine Wörterbücher installiert.</string>

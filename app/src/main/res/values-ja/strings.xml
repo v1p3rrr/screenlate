@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">ファイルからインポート</string>
     <string name="dictionaries_import_failed">インポートに失敗しました：%1$s</string>
     <string name="dictionaries_import_failed_named">%1$s：インポートに失敗しました（%2$s）</string>
+    <string name="dictionaries_last_term">定義のある辞書を少なくとも 1 つ有効にしておく必要があります。</string>
     <string name="dictionaries_import_no_space">%1$s をインポートする空き容量が足りません。約 %2$s 必要で、空きは %3$s です。容量を空けてからもう一度お試しください。</string>
     <string name="dictionaries_installed">インストール済み</string>
     <string name="dictionaries_none">辞書がインストールされていません。</string>

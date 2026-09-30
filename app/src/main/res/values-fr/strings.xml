@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Importer un fichier</string>
     <string name="dictionaries_import_failed">Échec de l’import : %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s : échec de l’import — %2$s</string>
+    <string name="dictionaries_last_term">Au moins un dictionnaire avec des définitions doit rester activé.</string>
     <string name="dictionaries_import_no_space">Pas assez d’espace libre pour importer %1$s : environ %2$s nécessaires, %3$s libres. Libérez de l’espace et réessayez.</string>
     <string name="dictionaries_installed">Installés</string>
     <string name="dictionaries_none">Aucun dictionnaire installé.</string>

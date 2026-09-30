@@ -33,6 +33,7 @@
     <string name="dictionaries_import_file">Importar desde archivo</string>
     <string name="dictionaries_import_failed">Error al importar: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: error al importar — %2$s</string>
+    <string name="dictionaries_last_term">Al menos un diccionario con definiciones debe seguir activado.</string>
     <string name="dictionaries_import_no_space">No hay espacio suficiente para importar %1$s: se necesitan unos %2$s y quedan %3$s libres. Libera espacio y vuelve a intentarlo.</string>
     <string name="dictionaries_installed">Instalados</string>
     <string name="dictionaries_none">No hay diccionarios instalados.</string>

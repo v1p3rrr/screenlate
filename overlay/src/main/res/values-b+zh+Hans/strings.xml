@@ -25,6 +25,7 @@
     <string name="overlay_ocr_error_fallback">文字由设备识别，准确度较低。</string>
     <string name="overlay_no_results">未找到词条。</string>
     <string name="overlay_no_dictionaries">词典仍在安装中。请稍后再试。</string>
+    <string name="overlay_no_dictionaries_on">没有启用带释义的词典。请在 Screenlate 的“词典”中启用或添加一个。</string>
     <string name="overlay_add_note">添加到 Anki（长按附带图片）</string>
     <string name="overlay_play_audio">播放音频（长按选择）</string>
     <string name="anki_error">无法添加笔记：%1$s</string>
