@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -78,6 +79,7 @@ import kotlinx.serialization.json.Json
 fun SearchScreen(
     onBack: () -> Unit,
     onOpenAnkiSettings: () -> Unit,
+    onOpenDictionaries: () -> Unit,
     initialQuery: String = "",
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -231,6 +233,15 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .focusRequester(focus),
             )
+            // Nothing can be found until a dictionary with definitions is on; the page says why.
+            if (query.isNotBlank() && results?.noTermDictionary != null) {
+                OutlinedButton(
+                    onClick = onOpenDictionaries,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) { Text(stringResource(R.string.home_dictionaries_open)) }
+            }
             Box(modifier = Modifier.fillMaxSize()) {
                 // The page stays alive while hidden so the next search renders without a reload.
                 AndroidView(

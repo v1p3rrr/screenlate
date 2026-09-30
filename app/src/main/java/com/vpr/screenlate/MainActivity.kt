@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
 
     /** Counts requests to open the Anki settings, from the launch intent and later ones. */
     private var ankiSettingsRequests by mutableIntStateOf(0)
+    private var dictionariesRequests by mutableIntStateOf(0)
 
     /**
      * Debug builds only: `--es debug_image <file>` opens a file from the app's internal files directory,
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     debugImagePath = debugImagePath(),
                     debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
                     ankiSettingsRequests = ankiSettingsRequests,
+                    dictionariesRequests = dictionariesRequests,
                 )
             }
         }
@@ -63,7 +65,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleOpenRequest(intent: Intent) {
-        if (intent.getStringExtra(OverlayIntents.EXTRA_OPEN) == OverlayIntents.OPEN_ANKI_SETTINGS) ankiSettingsRequests++
+        when (intent.getStringExtra(OverlayIntents.EXTRA_OPEN)) {
+            OverlayIntents.OPEN_ANKI_SETTINGS -> ankiSettingsRequests++
+            OverlayIntents.OPEN_DICTIONARIES -> dictionariesRequests++
+        }
     }
 
     private companion object {

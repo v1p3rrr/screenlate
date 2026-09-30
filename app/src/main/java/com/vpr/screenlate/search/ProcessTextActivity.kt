@@ -27,15 +27,21 @@ class ProcessTextActivity : ComponentActivity() {
         setContent {
             val theme = mainViewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
             ScreenlateTheme(themeMode = theme.mode, eInk = theme.eInk) {
-                SearchScreen(onBack = ::finish, onOpenAnkiSettings = ::openAnkiSettings, initialQuery = text)
+                SearchScreen(
+                    onBack = ::finish,
+                    onOpenAnkiSettings = { openApp(OverlayIntents.OPEN_ANKI_SETTINGS) },
+                    onOpenDictionaries = { openApp(OverlayIntents.OPEN_DICTIONARIES) },
+                    initialQuery = text,
+                )
             }
         }
     }
 
-    private fun openAnkiSettings() {
+    /** [screen] is one of the `OverlayIntents.OPEN_*` values. */
+    private fun openApp(screen: String) {
         startActivity(
             Intent(this, MainActivity::class.java)
-                .putExtra(OverlayIntents.EXTRA_OPEN, OverlayIntents.OPEN_ANKI_SETTINGS)
+                .putExtra(OverlayIntents.EXTRA_OPEN, screen)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
         )
         finish()

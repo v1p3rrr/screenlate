@@ -91,6 +91,7 @@ private data class ImageViewerRoute(val path: String, val caption: String = "")
  * @param debugImagePath when set, starts on the debug image viewer instead of the home screen.
  * @param debugImageCaption text shown above the debug image, to test app text next to text in an image.
  * @param ankiSettingsRequests each increment opens the Anki settings (from the overlay's grey ➕).
+ * @param dictionariesRequests each increment opens the Dictionaries screen (from search without a dictionary).
  */
 @Composable
 fun ScreenlateNavHost(
@@ -99,6 +100,7 @@ fun ScreenlateNavHost(
     debugImagePath: String? = null,
     debugImageCaption: String = "",
     ankiSettingsRequests: Int = 0,
+    dictionariesRequests: Int = 0,
 ) {
     val navController = rememberNavController()
     val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: HomeRoute
@@ -106,6 +108,9 @@ fun ScreenlateNavHost(
     val go: (Any) -> Unit = { route -> navController.fromResumed { navigate(route) } }
     LaunchedEffect(ankiSettingsRequests) {
         if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
+    }
+    LaunchedEffect(dictionariesRequests) {
+        if (dictionariesRequests > 0) navController.navigate(DictionariesRoute) { launchSingleTop = true }
     }
     // Navigation's default cross-fade; e-ink screens switch at once, since every frame of a fade costs a refresh.
     val eInk = LocalEInk.current
@@ -170,6 +175,7 @@ fun ScreenlateNavHost(
             SearchScreen(
                 onBack = back,
                 onOpenAnkiSettings = { go(AnkiRoute) },
+                onOpenDictionaries = { go(DictionariesRoute) },
                 initialQuery = entry.toRoute<SearchRoute>().query,
             )
         }

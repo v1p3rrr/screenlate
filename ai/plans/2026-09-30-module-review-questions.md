@@ -6,7 +6,7 @@ answered; answers go to the plan's changelog.
 
 ## Open
 
-None; all answered on 2026-09-30 (the full texts are in git history).
+None; all answered on 2026-09-30 (the full texts are in git history) and implemented the same day.
 
 ## Answered
 
