@@ -9,7 +9,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
   16 is done: the branch `claude/elegant-allen-xmu3fx` (requests 18, settings order, and 19, bubble hold menu; 13 and
-  14 there) is cherry-picked onto main and checked on the emulator. Next: 17 (`/code-review xhigh --fix` since 764ae60).
+  14 there) is cherry-picked onto main and checked on the emulator. 17 (`/code-review xhigh --fix` since 764ae60) is
+  done: six findings fixed. Next: the owner's answers to Q1-Q6 in the feedback plan's section "Code review: changes
+  since 764ae60". The remote branch `claude/elegant-allen-xmu3fx` is merged and can be deleted.
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond

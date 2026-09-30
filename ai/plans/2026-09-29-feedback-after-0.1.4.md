@@ -139,6 +139,26 @@ Owner's command (2026-09-29): review the fixes of the first run and the module w
 8. No tests for the crop editor's sessions.
 9. A redundant spinner reset and a band guard duplicating the timer's cancel.
 
+## Code review: changes since 764ae60
+
+Owner's command (2026-10-01, request 17): `/code-review xhigh --fix` over everything since 764ae60 (keep-alive, bringing the bubble back, the spinner, the kanji entry and bundled KANJIDIC, popup placement, the CSS scoper and remote-file check, the settings order, the bubble hold menu). Findings, all fixed:
+
+1. A line break in a dictionary title ended the CSS string of the scope selector (`dictionaryCss`), so the rest of the title became unscoped rules of the popup page; control characters are now hex escapes (page test).
+2. The bubble menu stayed over the next app after Home or an app switch (it takes no focus), offering the old screen's text; it now closes when another app comes to the front.
+3. The menu kept the day or night theme the service started with; its theme is now made when it opens.
+4. Turning the keep-alive switch off did not stop a notification the system had restarted without the accessibility service; the screen now stops it directly.
+5. The rule that a newly shipped dictionary already installed from elsewhere is left out had no unit test; now `BundledDictionaries.alreadyPresent` with tests.
+6. The kanji entry's one-character highlight was written out in three places; now `PageState.matchedLength(results, kanji)`.
+
+Questions for the owner (the work went on with the choice in brackets, cheap to change):
+
+- Q1. Popup placement for horizontal text: above the word first, as for vertical text [yes; before, horizontal text also went above first unless below had more room].
+- Q2. Landscape: still beside the word first [yes, unchanged].
+- Q3. The kanji entry when no word is found also in dictionary links inside the popup [yes, besides the popup and the search].
+- Q4. With every dictionary with definitions off but a kanji dictionary on, the popup shows the kanji entry for a kanji instead of the "no dictionaries with definitions" message [yes; the search screen keeps its "Open dictionaries" button].
+- Q5. The bubble menu opens below the bubble, where the finger holding it may cover it; the decision row came from the cloud session without an owner mark [left below; alternative: above first].
+- Q6. The menu now also closes when another app comes to the front (Home, app switch); Back still does not close it [done, extends the decision row].
+
 ## Changelog
 
 - 2026-09-29: plan created from the owner's feedback.
@@ -170,3 +190,4 @@ Owner's command (2026-09-29): review the fixes of the first run and the module w
 - 2026-10-01: request 18 (settings order; request 13 on its branch). Owner answers: function, then look, then system sections, no group headings. Done in the settings list and `docs/usage.md`; only `SettingsScreen.kt` changed in code, so the parallel session's work on main is not touched.
 - 2026-10-01: request 19 (bubble hold menu; request 14 on its branch). Owner answers: "Open Screenlate" last, the bubble docks when it is used. Done: `BubbleMenu` (own overlay window, `MenuPlacement` with JVM tests), the item in all 14 languages, `docs/usage.md`. Not checked on a device (the cloud session has no emulator).
 - 2026-10-01: request 16 done: the three commits of `claude/elegant-allen-xmu3fx` cherry-picked onto main (its requests 13 and 14 renumbered 18 and 19; only the plan conflicted). Build, unit tests and lint pass. Checked on the emulator: the settings order and its pages; the hold menu below the bubble, above it at the bottom edge, aligned to the bubble on the right half, closing on a tap outside; "Open Screenlate" from another app opens the app and docks the bubble. Fixed while checking: the menu's shadow was clipped.
+- 2026-10-01: request 17 done: the review of everything since 764ae60 found six issues, all fixed and checked (build, unit and page tests, lint; the menu's theme and its closing on Home on the emulator). Six questions for the owner in "Code review: changes since 764ae60".
