@@ -311,11 +311,11 @@ window.YomitanRender = (() => {
                 continue;
             }
             const bracePos = css.indexOf('{', i);
-            const semicolonPos = css.indexOf(';', i);
             // Statement at-rules (@charset, @import, @namespace) are dropped: inside the page's combined styles they
             // are invalid anyway, and taken as a block start they would swallow the next rule unscoped.
-            if (css[i] === '@' && semicolonPos !== -1 && (bracePos === -1 || semicolonPos < bracePos)) {
-                i = semicolonPos + 1;
+            const statementEnd = css[i] === '@' ? atStatementEnd(css, i) : -1;
+            if (statementEnd !== -1) {
+                i = statementEnd + 1;
                 continue;
             }
             if (bracePos === -1) break;
@@ -349,6 +349,35 @@ window.YomitanRender = (() => {
             parts.push('}');
         }
         return parts.join('');
+    }
+
+    /**
+     * The index of the `;` that ends the statement at-rule at `start`, or -1 when a block or the end comes first.
+     * Comments, strings and escapes are skipped, so dropping the rule never uncovers rules inside a comment.
+     */
+    function atStatementEnd(css, start) {
+        let i = start;
+        while (i < css.length) {
+            const c = css[i];
+            if (c === '\\') {
+                i += 2;
+            } else if (c === '"' || c === "'") {
+                i++;
+                while (i < css.length && css[i] !== c && css[i] !== '\n') i += css[i] === '\\' ? 2 : 1;
+                i++;
+            } else if (css.startsWith('/*', i)) {
+                const end = css.indexOf('*/', i + 2);
+                if (end === -1) return -1;
+                i = end + 2;
+            } else if (c === ';') {
+                return i;
+            } else if (c === '{') {
+                return -1;
+            } else {
+                i++;
+            }
+        }
+        return -1;
     }
 
     function splitNestedBlock(block) {

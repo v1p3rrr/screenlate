@@ -597,3 +597,6 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   breaks, lets a hex escape take the line break after it inside a string, keeps `/*` inside an unquoted `url(...)`,
   and keeps escaped whitespace inside an unquoted address (all four hid servers Chromium loads). Open for the owner:
   dictionary CSS is checked raw while the page gets `scopeCss`'s output, which can uncover commented rules.
+- 2026-09-30: owner approved a narrow scoper change: `scopeCss` finds the `;` of a statement at-rule outside comments,
+  strings and escapes, so dropping it cannot uncover commented rules (verified in Chromium; output unchanged on real
+  dictionaries' `styles.css`).

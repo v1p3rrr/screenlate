@@ -84,6 +84,15 @@ test('statement at-rules do not swallow the next rule', () => {
     assert.match(css, /\.p \.a \{ color: red \}/);
 });
 
+test('dropping a statement at-rule uncovers no rules inside a comment', () => {
+    const hidden = '@x /*;\n@font-face { font-family: Q; src: url(https://h.example.com/q.woff) }\n*/\n.a { color: red }';
+    const outsideComments = css => css.replace(/\/\*[\s\S]*?(\*\/|$)/g, '');
+    assert.doesNotMatch(outsideComments(window.YomitanRender.scopeCss(hidden, '.p')), /@font-face/);
+    const quoted = window.YomitanRender.scopeCss('@import "a;b.css";\n.a { color: red }', '.p');
+    assert.doesNotMatch(quoted, /b\.css/);
+    assert.match(quoted, /\.p \.a \{ color: red \}/);
+});
+
 test('keyframe selectors are kept as they are', () => {
     const css = window.YomitanRender.scopeCss('@keyframes spin { from { opacity: 0 } 50% { opacity: 1 } }', '.p');
     assert.match(css, /from \{ opacity: 0 \}/);
