@@ -180,3 +180,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Rotation handling is minimal (the bubble re-docks on configuration change).
 - Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27), and beside a column in the middle of a narrow screen down to 140 dp; above or below only when neither fits.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
+
+### 2026-09-30 (review of all changes since v0.1.4)
+
+- Reviewed v0.1.4..HEAD at xhigh, cut short by the weekly limit: the dictionary repository, download cache, Lens protobuf, page scripts and crop editor diffs were only partly read. Fixed: a failed font restore now re-reads the installed list. Open, not fixed (behavior choices or minor): the popup chip and ➕ wait follow the aimed engine, not the shown word's (matters for a kept draft word); a failed final ML Kit pass replaces a shown draft word with the error; `showMessage` leaves a pending lookup running; catalog font re-downloads reuse file names; `EInkSizes.enlarge` overwrites an earlier record; `AppUpdates.update` does nothing during a check; plus the skipped items of the previous review.
