@@ -124,4 +124,52 @@ class CssCheckTest {
         ).joinToString("\n")
         assertThat(CssCheck.remoteFiles(css)).containsExactly(CssCheck.Issue(5, Problem.REMOTE_FILE, "c.example.com"))
     }
+
+    @Test
+    fun `finds addresses written with escapes, backslashes and tabs`() {
+        val css = """
+            .a { background: url(\68ttps://a.example.com/x.png) }
+            @font-face { font-family: X; src: url("htt\70s://b.example.com/x.woff") }
+            .c { background: url(https:\2f\2f c.example.com/y.png) }
+            .d { background: \75rl(https://d.example.com/y.png) }
+            @\69mport "https://e.example.com/e.css";
+            .f { background: url("https:\\\\f.example.com/f.png") }
+            .g { background: url("htt\9 ps:/\9/g.example.com/g.png") }
+            .h { background: url(https://user@H.example.com:8443/h.png) }
+        """.trimIndent()
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(
+            CssCheck.Issue(1, Problem.REMOTE_FILE, "a.example.com"),
+            CssCheck.Issue(2, Problem.REMOTE_FILE, "b.example.com"),
+            CssCheck.Issue(3, Problem.REMOTE_FILE, "c.example.com"),
+            CssCheck.Issue(4, Problem.REMOTE_FILE, "d.example.com"),
+            CssCheck.Issue(5, Problem.REMOTE_FILE, "e.example.com"),
+            CssCheck.Issue(6, Problem.REMOTE_FILE, "f.example.com"),
+            CssCheck.Issue(7, Problem.REMOTE_FILE, "g.example.com"),
+            CssCheck.Issue(8, Problem.REMOTE_FILE, "h.example.com"),
+        ).inOrder()
+    }
+
+    @Test
+    fun `a comment marker inside a string or after an escaped quote hides nothing`() {
+        val css = listOf(
+            ".a::before { content: \"/*\" }",
+            ".b { background: url(https://a.example.com/x.png) }",
+            ".c\\\" { color: red } .d::after { content: \"/*\" }",
+            ".e { background: url(https://b.example.com/y.png) } /* \" */",
+        ).joinToString("\n")
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(
+            CssCheck.Issue(2, Problem.REMOTE_FILE, "a.example.com"),
+            CssCheck.Issue(4, Problem.REMOTE_FILE, "b.example.com"),
+        ).inOrder()
+    }
+
+    @Test
+    fun `escaped and one-slash addresses on the page itself are not remote`() {
+        val css = """
+            .a { background: url(\2f img/x.png) }
+            .b { background: url(https:/img/y.png); src: url(https:img/z.png) }
+            .c { background: url("data:image/png;base64,Ly9h") }
+        """.trimIndent()
+        assertThat(CssCheck.remoteFiles(css)).isEmpty()
+    }
 }

@@ -27,9 +27,10 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   writes `</style` as `<\/style`). Kept by the owner's decision: dictionary `@font-face` is not scoped and can add
   faces to the page's own families ("Screenlate Sans"/"Screenlate Chosen"), so remote per-character fonts can see the
   OCR header text (Q7: the CSS is not rewritten); `javascript:` hrefs from structured content reach exported notes
-  (needs a tap). Open, question to the owner: `CssCheck.REMOTE` misses CSS-escaped URLs and `COMMENT` takes `/*` inside
-  a string for a comment (the warning is the only defense left); `scopeCss` ends a block at a `}` inside a CSS string,
-  which lets the next rule apply to the whole page. Low: build-time dictionary downloads have no checksum.
+  (needs a tap); `scopeCss` ends a block at a `}` inside a CSS string, which lets the next rule apply to the whole page
+  (the owner chose not to touch the scoper). Fixed: the remote-file warning (`CssCheck.remoteFiles`) now reads CSS as
+  a browser does (string-aware comments, decoded escapes, `\\`/tabs in addresses; checked in Chromium). Low:
+  build-time dictionary downloads have no checksum.
 
 ## Phases
 
@@ -216,6 +217,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   components, network, updates, logs), each finding re-checked separately. One confirmed issue, fixed: dictionary CSS
   or a dictionary title ending the `<style>` element in glossary note fields (reproduced in jsdom; page tests for the
   escape and for unchanged ordinary CSS). Findings below the report threshold are listed under "Next session".
+- Owner's answers: `@font-face`, `javascript:` hrefs and the scoper stay; the remote-file warning is fixed (escaped,
+  backslashed and tab-split addresses and a `/*` inside a string no longer hide a server; Chromium confirmed which of
+  them load). Changes go through https://github.com/v1p3rrr/screenlate/pull/2.
 
 ### 2026-09-30 (review of all changes since v0.1.4)
 

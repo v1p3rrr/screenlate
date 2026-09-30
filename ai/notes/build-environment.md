@@ -70,3 +70,9 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   JVM test that writes a file-backed store twice, or replaces a damaged file, fails locally. Use an in-memory
   `DataStore` in unit tests (`EInkSizesTest`), or skip the test on Windows when the file itself is under test
   (`SettingsDataStoreTest`; CI runs it on Linux).
+- Cloud sessions have no Android SDK, so Gradle cannot build the Android modules. Plain-Kotlin classes and their JUnit
+  tests (e.g. `overlay/fonts/CssCheck`) run with the compiler from the JetBrains GitHub release
+  (`kotlin-compiler-<version>.zip`) and JUnit, Hamcrest, Truth, Guava and failureaccess jars from Maven Central:
+  `kotlinc -cp <jars> -d out <class>.kt <test>.kt`, then `java -cp out:<jars>:kotlinc/lib/kotlin-stdlib.jar
+  org.junit.runner.JUnitCore <test class>`. Page scripts run with `npm --prefix scripts/page-tests ci/test`, and the
+  preinstalled global Playwright (`npm root -g`) drives Chromium to check how a browser reads CSS or URLs.

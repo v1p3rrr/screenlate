@@ -591,3 +591,5 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - 2026-09-30: owner's answers on the security review: dictionary `@font-face` stays as it is (Q7 unchanged: the CSS is
   not rewritten); `javascript:` hrefs in exported notes stay as they are; changes go through a PR instead of a push to
   main. The question on the CSS scoper and the remote-file warning is asked again in simpler words.
+- 2026-09-30: owner's answers: fix the remote-file warning (read CSS as a browser does); leave the CSS scoper as it is;
+  do not watch PR #2.
