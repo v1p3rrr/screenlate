@@ -588,3 +588,6 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   titles could end the `<style>` in glossary note fields. Unscoped dictionary `@font-face`, CSS-escaped remote URLs the
   warning misses, and `javascript:` hrefs in exported notes are explained to the owner; fixing the first two changes Q7
   ("the CSS is not rewritten") and needs the owner's answer.
+- 2026-09-30: owner's answers on the security review: dictionary `@font-face` stays as it is (Q7 unchanged: the CSS is
+  not rewritten); `javascript:` hrefs in exported notes stay as they are; changes go through a PR instead of a push to
+  main. The question on the CSS scoper and the remote-file warning is asked again in simpler words.

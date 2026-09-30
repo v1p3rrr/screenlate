@@ -24,11 +24,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
 - Security review of the whole project (2026-09-30): fixed — a dictionary's `styles.css` or title could close the
   `<style>` that `note.js` puts into glossary fields and store HTML with event handlers in Anki notes (`styleElement`
-  writes `</style` as `<\/style`). Open, waiting for the owner: dictionary `@font-face` is not scoped and can add
-  faces to the page's own families ("Screenlate Sans"/"Screenlate Chosen"), and `CssCheck.REMOTE` misses CSS-escaped
-  URLs, so remote per-character fonts can see the OCR header text without a warning (Q7 says "the CSS is not
-  rewritten", so a fix needs the owner); `javascript:` hrefs from structured content reach exported notes (needs a
-  tap); build-time dictionary downloads have no checksum.
+  writes `</style` as `<\/style`). Kept by the owner's decision: dictionary `@font-face` is not scoped and can add
+  faces to the page's own families ("Screenlate Sans"/"Screenlate Chosen"), so remote per-character fonts can see the
+  OCR header text (Q7: the CSS is not rewritten); `javascript:` hrefs from structured content reach exported notes
+  (needs a tap). Open, question to the owner: `CssCheck.REMOTE` misses CSS-escaped URLs and `COMMENT` takes `/*` inside
+  a string for a comment (the warning is the only defense left); `scopeCss` ends a block at a `}` inside a CSS string,
+  which lets the next rule apply to the whole page. Low: build-time dictionary downloads have no checksum.
 
 ## Phases
 
