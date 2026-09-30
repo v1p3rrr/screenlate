@@ -2,6 +2,7 @@ package com.vpr.screenlate.background
 
 import java.io.File
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,6 +31,14 @@ class StartupScreensTest {
         val manifest = File("src/main/AndroidManifest.xml").readText()
         val missing = StartupScreens.packages.filterNot { "<package android:name=\"$it\" />" in manifest }
         assertTrue("Missing from <queries>: $missing", missing.isEmpty())
+    }
+
+    @Test
+    fun `only the app launch lists of Honor and Huawei get the spelled out path`() {
+        val appLaunch = StartupScreens.known.filter { StartupScreens.isAppLaunch(it.packageName, it.className) }
+        assertEquals(setOf("com.hihonor.systemmanager", "com.huawei.systemmanager"), appLaunch.map { it.packageName }.toSet())
+        assertFalse(StartupScreens.isAppLaunch("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity"))
+        assertFalse(StartupScreens.isAppLaunch("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"))
     }
 
     @Test

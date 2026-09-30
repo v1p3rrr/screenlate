@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Dizionari</string>
     <string name="dictionaries_import_file">Importa da file</string>
     <string name="dictionaries_import_failed">Importazione non riuscita: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: importazione non riuscita — %2$s</string>
     <string name="dictionaries_import_no_space">Spazio libero insufficiente per importare %1$s: servono circa %2$s, liberi %3$s. Libera spazio e riprova.</string>
     <string name="dictionaries_installed">Installati</string>
     <string name="dictionaries_none">Nessun dizionario installato.</string>
@@ -397,7 +398,8 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="background_battery_list">Apri l’elenco di ottimizzazione della batteria</string>
     <string name="background_battery_list_hint">Nell’elenco, trova Screenlate e disattiva la sua ottimizzazione (“Non ottimizzare”, “Senza limitazioni” o simile). Le app che all’inizio mancano dall’elenco si trovano spesso in “Tutte le app”.</string>
     <string name="background_launch_title">Avvio delle app</string>
-    <string name="background_launch_text">Alcuni telefoni fermano le app in background anche tramite impostazioni proprie del produttore, oltre all’ottimizzazione della batteria. Lì, consenti a Screenlate di avviarsi da solo e di funzionare in background. Honor / MagicOS: Avvio app → Screenlate → Gestisci manualmente, con tutte e tre le opzioni attive.</string>
+    <string name="background_launch_text">Alcuni telefoni fermano le app in background anche tramite impostazioni proprie del produttore, oltre all’ottimizzazione della batteria. Lì, consenti a Screenlate di avviarsi da solo e di funzionare in background.</string>
+    <string name="background_launch_path">Su questo telefono: Avvio app → Screenlate → Gestisci manualmente, con tutte e tre le opzioni attive.</string>
     <string name="background_launch_open">Apri le impostazioni di avvio</string>
     <string name="background_launch_app_info">Apri Informazioni app</string>
     <string name="background_launch_app_info_hint">Questo telefono non ha nessuna delle schermate di avvio conosciute. Informazioni app di solito porta alle impostazioni di batteria e background.</string>

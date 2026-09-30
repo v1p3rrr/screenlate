@@ -32,6 +32,7 @@
     <string name="dictionaries_title">詞典</string>
     <string name="dictionaries_import_file">從檔案匯入</string>
     <string name="dictionaries_import_failed">匯入失敗：%1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s：匯入失敗（%2$s）</string>
     <string name="dictionaries_import_no_space">剩餘空間不足，無法匯入 %1$s：約需 %2$s，剩餘 %3$s。請釋放空間後重試。</string>
     <string name="dictionaries_installed">已安裝</string>
     <string name="dictionaries_none">未安裝任何詞典。</string>
@@ -397,7 +398,8 @@
     <string name="background_battery_list">開啟電池最佳化清單</string>
     <string name="background_battery_list_hint">在清單中找到 Screenlate 並關閉其最佳化（「不最佳化」「無限制」或類似選項）。一開始不在清單中的應用程式，通常在「所有應用程式」裡。</string>
     <string name="background_launch_title">應用程式啟動管理</string>
-    <string name="background_launch_text">除電池最佳化外，有些手機還會透過廠商自己的設定停止背景應用程式。請在那裡允許 Screenlate 自啟動並在背景執行。Honor / MagicOS：應用程式啟動管理 → Screenlate → 手動管理，開啟全部三個選項。</string>
+    <string name="background_launch_text">除電池最佳化外，有些手機還會透過廠商自己的設定停止背景應用程式。請在那裡允許 Screenlate 自啟動並在背景執行。</string>
+    <string name="background_launch_path">在此手機上：應用程式啟動管理 → Screenlate → 手動管理，開啟全部三個選項。</string>
     <string name="background_launch_open">開啟啟動設定</string>
     <string name="background_launch_app_info">開啟應用程式資訊</string>
     <string name="background_launch_app_info_hint">這部手機沒有任何已知的啟動設定頁面。應用程式資訊通常可以進入電池和背景設定。</string>

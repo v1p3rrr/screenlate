@@ -177,7 +177,8 @@ fun SearchScreen(
         if (initialQuery.isNotBlank() && viewModel.query.value.isBlank()) viewModel.query.value = initialQuery
         page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles()))
         page.setTagNotes(Json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), viewModel.tagNotes()))
-        focus.requestFocus()
+        // Text from the selection menu is already searched: the keyboard would only cover the results.
+        if (viewModel.query.value.isBlank()) focus.requestFocus()
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
     LaunchedEffect(results) {

@@ -1,7 +1,11 @@
 package com.vpr.screenlate.background
 
-/** A system app's screen where apps are allowed to start on their own and keep running in the background. */
-internal data class StartupScreen(val packageName: String, val className: String)
+/**
+ * A system app's screen where apps are allowed to start on their own and keep running in the background.
+ *
+ * @param appLaunch the "App launch" list of Honor and Huawei, whose path the Background work screen spells out.
+ */
+internal data class StartupScreen(val packageName: String, val className: String, val appLaunch: Boolean = false)
 
 /**
  * Startup and background management screens of phone makers' system apps. These stop background apps on their own,
@@ -11,11 +15,11 @@ internal data class StartupScreen(val packageName: String, val className: String
 internal object StartupScreens {
     val known: List<StartupScreen> = listOf(
         // Honor (MagicOS): App launch.
-        StartupScreen("com.hihonor.systemmanager", "com.hihonor.systemmanager.startupmgr.ui.StartupNormalAppListActivity"),
-        StartupScreen("com.hihonor.systemmanager", "com.hihonor.systemmanager.appcontrol.activity.StartupAppControlActivity"),
+        StartupScreen("com.hihonor.systemmanager", "com.hihonor.systemmanager.startupmgr.ui.StartupNormalAppListActivity", appLaunch = true),
+        StartupScreen("com.hihonor.systemmanager", "com.hihonor.systemmanager.appcontrol.activity.StartupAppControlActivity", appLaunch = true),
         // Huawei (EMUI, HarmonyOS): App launch, then protected apps on old versions.
-        StartupScreen("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"),
-        StartupScreen("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity"),
+        StartupScreen("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity", appLaunch = true),
+        StartupScreen("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity", appLaunch = true),
         StartupScreen("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity"),
         // Xiaomi, Redmi, POCO (MIUI, HyperOS): Autostart.
         StartupScreen("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"),
@@ -49,6 +53,10 @@ internal object StartupScreens {
 
     /** The first known screen that [opens] reports as present and startable on this phone. */
     fun find(opens: (StartupScreen) -> Boolean): StartupScreen? = known.firstOrNull(opens)
+
+    /** Whether the screen [packageName]/[className] is an "App launch" list (see [StartupScreen.appLaunch]). */
+    fun isAppLaunch(packageName: String, className: String): Boolean =
+        known.any { it.appLaunch && it.packageName == packageName && it.className == className }
 
     /** System apps whose screens are listed; the manifest must make them visible to the app (`<queries>`). */
     val packages: Set<String> get() = known.mapTo(linkedSetOf()) { it.packageName }

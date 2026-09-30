@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Từ điển</string>
     <string name="dictionaries_import_file">Nhập từ tệp</string>
     <string name="dictionaries_import_failed">Nhập thất bại: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: nhập thất bại — %2$s</string>
     <string name="dictionaries_import_no_space">Không đủ dung lượng trống để nhập %1$s: cần khoảng %2$s, còn trống %3$s. Hãy giải phóng dung lượng và thử lại.</string>
     <string name="dictionaries_installed">Đã cài</string>
     <string name="dictionaries_none">Chưa cài từ điển nào.</string>
@@ -397,7 +398,8 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="background_battery_list">Mở danh sách tối ưu hóa pin</string>
     <string name="background_battery_list_hint">Trong danh sách, tìm Screenlate và tắt tối ưu hóa cho nó (“Không tối ưu hóa”, “Không hạn chế” hoặc tương tự). Ứng dụng không có trong danh sách lúc đầu thường nằm trong “Tất cả ứng dụng”.</string>
     <string name="background_launch_title">Khởi chạy ứng dụng</string>
-    <string name="background_launch_text">Một số điện thoại còn dừng ứng dụng chạy nền qua cài đặt riêng của nhà sản xuất, ngoài tối ưu hóa pin. Ở đó, hãy cho phép Screenlate tự khởi động và chạy nền. Honor / MagicOS: Khởi chạy ứng dụng → Screenlate → Quản lý thủ công, bật cả ba tùy chọn.</string>
+    <string name="background_launch_text">Một số điện thoại còn dừng ứng dụng chạy nền qua cài đặt riêng của nhà sản xuất, ngoài tối ưu hóa pin. Ở đó, hãy cho phép Screenlate tự khởi động và chạy nền.</string>
+    <string name="background_launch_path">Trên điện thoại này: Khởi chạy ứng dụng → Screenlate → Quản lý thủ công, bật cả ba tùy chọn.</string>
     <string name="background_launch_open">Mở cài đặt khởi động</string>
     <string name="background_launch_app_info">Mở thông tin ứng dụng</string>
     <string name="background_launch_app_info_hint">Điện thoại này không có màn hình khởi động nào đã biết. Thông tin ứng dụng thường dẫn tới cài đặt pin và chạy nền.</string>

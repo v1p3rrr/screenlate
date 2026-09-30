@@ -32,6 +32,7 @@
     <string name="dictionaries_title">词典</string>
     <string name="dictionaries_import_file">从文件导入</string>
     <string name="dictionaries_import_failed">导入失败：%1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s：导入失败（%2$s）</string>
     <string name="dictionaries_import_no_space">剩余空间不足，无法导入 %1$s：约需 %2$s，剩余 %3$s。请释放空间后重试。</string>
     <string name="dictionaries_installed">已安装</string>
     <string name="dictionaries_none">未安装任何词典。</string>
@@ -397,7 +398,8 @@
     <string name="background_battery_list">打开电池优化列表</string>
     <string name="background_battery_list_hint">在列表中找到 Screenlate 并关闭其优化（“不优化”“无限制”或类似选项）。一开始不在列表中的应用，通常在“所有应用”里。</string>
     <string name="background_launch_title">应用启动管理</string>
-    <string name="background_launch_text">除电池优化外，有些手机还会通过厂商自己的设置停止后台应用。请在那里允许 Screenlate 自启动并在后台运行。Honor / MagicOS：应用启动管理 → Screenlate → 手动管理，开启全部三个选项。</string>
+    <string name="background_launch_text">除电池优化外，有些手机还会通过厂商自己的设置停止后台应用。请在那里允许 Screenlate 自启动并在后台运行。</string>
+    <string name="background_launch_path">在此手机上：应用启动管理 → Screenlate → 手动管理，开启全部三个选项。</string>
     <string name="background_launch_open">打开启动设置</string>
     <string name="background_launch_app_info">打开应用信息</string>
     <string name="background_launch_app_info_hint">这部手机没有任何已知的启动设置页面。应用信息通常可以进入电池和后台设置。</string>

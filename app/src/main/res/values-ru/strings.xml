@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Словари</string>
     <string name="dictionaries_import_file">Импорт из файла</string>
     <string name="dictionaries_import_failed">Не удалось импортировать: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: не удалось импортировать — %2$s</string>
     <string name="dictionaries_import_no_space">Не хватает места для импорта %1$s: нужно около %2$s, свободно %3$s. Освободите место и попробуйте снова.</string>
     <string name="dictionaries_installed">Установленные</string>
     <string name="dictionaries_none">Словари не установлены.</string>
@@ -398,7 +399,8 @@
     <string name="background_battery_list">Открыть список оптимизации батареи</string>
     <string name="background_battery_list_hint">Найдите в списке Screenlate и отключите для него оптимизацию («Не оптимизировать», «Без ограничений» или похоже). Если его не видно, он часто в разделе «Все приложения».</string>
     <string name="background_launch_title">Запуск приложений</string>
-    <string name="background_launch_text">Некоторые телефоны останавливают фоновые приложения ещё и через настройки производителя, отдельно от оптимизации батареи. Там нужно разрешить Screenlate запускаться самому и работать в фоне. Honor / MagicOS: Запуск приложений → Screenlate → Управлять вручную и включить все три пункта.</string>
+    <string name="background_launch_text">Некоторые телефоны останавливают фоновые приложения ещё и через настройки производителя, отдельно от оптимизации батареи. Там нужно разрешить Screenlate запускаться самому и работать в фоне.</string>
+    <string name="background_launch_path">На этом телефоне: Запуск приложений → Screenlate → Управлять вручную и включить все три пункта.</string>
     <string name="background_launch_open">Открыть настройки запуска</string>
     <string name="background_launch_app_info">Открыть сведения о приложении</string>
     <string name="background_launch_app_info_hint">На этом телефоне нет известных экранов запуска. Обычно из сведений о приложении можно перейти к настройкам батареи и работы в фоне.</string>

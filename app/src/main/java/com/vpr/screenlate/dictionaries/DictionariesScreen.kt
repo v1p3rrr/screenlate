@@ -420,7 +420,14 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
                 Formatter.formatShortFileSize(context, shortage.freeBytes),
             )
         } else {
-            stringResource(R.string.dictionaries_import_failed, task.error ?: task.name)
+            val name = task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
+            val error = task.error
+            // The name tells which of several queued imports failed, e.g. after "Update all".
+            if (error != null) {
+                stringResource(R.string.dictionaries_import_failed_named, name, error)
+            } else {
+                stringResource(R.string.dictionaries_import_failed, name)
+            }
         }
         ErrorCard(message, onDismiss)
         return

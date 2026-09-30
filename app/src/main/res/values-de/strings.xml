@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Wörterbücher</string>
     <string name="dictionaries_import_file">Aus Datei importieren</string>
     <string name="dictionaries_import_failed">Import fehlgeschlagen: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: Import fehlgeschlagen – %2$s</string>
     <string name="dictionaries_import_no_space">Nicht genug freier Speicher für %1$s: etwa %2$s nötig, %3$s frei. Gib Speicher frei und versuche es erneut.</string>
     <string name="dictionaries_installed">Installiert</string>
     <string name="dictionaries_none">Keine Wörterbücher installiert.</string>
@@ -397,7 +398,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="background_battery_list">Liste der Akkuoptimierung öffnen</string>
     <string name="background_battery_list_hint">Suche Screenlate in der Liste und schalte die Optimierung dafür aus („Nicht optimieren“, „Uneingeschränkt“ oder ähnlich). Apps, die anfangs fehlen, stehen oft unter „Alle Apps“.</string>
     <string name="background_launch_title">App-Start</string>
-    <string name="background_launch_text">Manche Telefone beenden Hintergrund-Apps zusätzlich über eigene Einstellungen des Herstellers, getrennt von der Akkuoptimierung. Erlaube Screenlate dort, selbst zu starten und im Hintergrund zu laufen. Honor / MagicOS: App-Start → Screenlate → Manuell verwalten, alle drei Optionen an.</string>
+    <string name="background_launch_text">Manche Telefone beenden Hintergrund-Apps zusätzlich über eigene Einstellungen des Herstellers, getrennt von der Akkuoptimierung. Erlaube Screenlate dort, selbst zu starten und im Hintergrund zu laufen.</string>
+    <string name="background_launch_path">Auf diesem Telefon: App-Start → Screenlate → Manuell verwalten, alle drei Optionen an.</string>
     <string name="background_launch_open">Starteinstellungen öffnen</string>
     <string name="background_launch_app_info">App-Info öffnen</string>
     <string name="background_launch_app_info_hint">Dieses Telefon hat keinen der bekannten Startbildschirme. Die App-Info führt meist zu den Akku- und Hintergrundeinstellungen.</string>

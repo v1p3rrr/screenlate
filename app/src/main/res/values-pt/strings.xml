@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Dicionários</string>
     <string name="dictionaries_import_file">Importar de arquivo</string>
     <string name="dictionaries_import_failed">Falha na importação: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: falha na importação — %2$s</string>
     <string name="dictionaries_import_no_space">Não há espaço livre suficiente para importar %1$s: são necessários cerca de %2$s, há %3$s livres. Libere espaço e tente de novo.</string>
     <string name="dictionaries_installed">Instalados</string>
     <string name="dictionaries_none">Nenhum dicionário instalado.</string>
@@ -397,7 +398,8 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="background_battery_list">Abrir a lista de otimização de bateria</string>
     <string name="background_battery_list_hint">Na lista, encontre o Screenlate e desative a otimização dele (“Não otimizar”, “Sem restrições” ou parecido). Apps que não aparecem de início costumam estar em “Todos os apps”.</string>
     <string name="background_launch_title">Inicialização de apps</string>
-    <string name="background_launch_text">Alguns celulares também param apps em segundo plano por configurações próprias do fabricante, além da otimização de bateria. Lá, permita que o Screenlate inicie sozinho e rode em segundo plano. Honor / MagicOS: Inicialização de apps → Screenlate → Gerenciar manualmente, com as três opções ativadas.</string>
+    <string name="background_launch_text">Alguns celulares também param apps em segundo plano por configurações próprias do fabricante, além da otimização de bateria. Lá, permita que o Screenlate inicie sozinho e rode em segundo plano.</string>
+    <string name="background_launch_path">Neste celular: Inicialização de apps → Screenlate → Gerenciar manualmente, com as três opções ativadas.</string>
     <string name="background_launch_open">Abrir as configurações de inicialização</string>
     <string name="background_launch_app_info">Abrir informações do app</string>
     <string name="background_launch_app_info_hint">Este celular não tem nenhuma das telas de inicialização conhecidas. As informações do app costumam levar às configurações de bateria e segundo plano.</string>

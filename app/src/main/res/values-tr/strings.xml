@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Sözlükler</string>
     <string name="dictionaries_import_file">Dosyadan içe aktar</string>
     <string name="dictionaries_import_failed">İçe aktarma başarısız: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: içe aktarma başarısız — %2$s</string>
     <string name="dictionaries_import_no_space">%1$s içe aktarmak için yeterli boş alan yok: yaklaşık %2$s gerekli, %3$s boş. Yer açıp yeniden deneyin.</string>
     <string name="dictionaries_installed">Yüklü</string>
     <string name="dictionaries_none">Yüklü sözlük yok.</string>
@@ -397,7 +398,8 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="background_battery_list">Pil optimizasyonu listesini aç</string>
     <string name="background_battery_list_hint">Listede Screenlate’i bulun ve optimizasyonunu kapatın (“Optimize etme”, “Kısıtlamasız” veya benzeri). Listede başta görünmeyen uygulamalar çoğunlukla “Tüm uygulamalar” altındadır.</string>
     <string name="background_launch_title">Uygulama başlatma</string>
-    <string name="background_launch_text">Bazı telefonlar pil optimizasyonundan ayrı olarak üreticinin kendi ayarlarıyla da arka plandaki uygulamaları durdurur. Orada Screenlate’in kendi kendine başlamasına ve arka planda çalışmasına izin verin. Honor / MagicOS: Uygulama başlatma → Screenlate → Elle yönet, üç seçeneğin tümü açık.</string>
+    <string name="background_launch_text">Bazı telefonlar pil optimizasyonundan ayrı olarak üreticinin kendi ayarlarıyla da arka plandaki uygulamaları durdurur. Orada Screenlate’in kendi kendine başlamasına ve arka planda çalışmasına izin verin.</string>
+    <string name="background_launch_path">Bu telefonda: Uygulama başlatma → Screenlate → Elle yönet, üç seçeneğin tümü açık.</string>
     <string name="background_launch_open">Başlatma ayarlarını aç</string>
     <string name="background_launch_app_info">Uygulama bilgilerini aç</string>
     <string name="background_launch_app_info_hint">Bu telefonda bilinen başlatma ekranlarının hiçbiri yok. Uygulama bilgileri genellikle pil ve arka plan ayarlarına götürür.</string>

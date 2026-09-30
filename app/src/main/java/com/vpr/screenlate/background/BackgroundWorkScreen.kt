@@ -78,6 +78,10 @@ fun BackgroundWorkScreen(onBack: () -> Unit, tip: BackgroundTipViewModel = hiltV
             }
             SectionCard(title = stringResource(R.string.background_launch_title)) {
                 Text(stringResource(R.string.background_launch_text))
+                val component = startupScreen?.component
+                if (component != null && StartupScreens.isAppLaunch(component.packageName, component.className)) {
+                    Text(stringResource(R.string.background_launch_path))
+                }
                 OutlinedButton(
                     onClick = { BackgroundSettings.open(context, startupScreen, BackgroundSettings.appInfo(context)) },
                     modifier = Modifier.fillMaxWidth(),

@@ -32,6 +32,7 @@
     <string name="dictionaries_title">辞書</string>
     <string name="dictionaries_import_file">ファイルからインポート</string>
     <string name="dictionaries_import_failed">インポートに失敗しました：%1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s：インポートに失敗しました（%2$s）</string>
     <string name="dictionaries_import_no_space">%1$s をインポートする空き容量が足りません。約 %2$s 必要で、空きは %3$s です。容量を空けてからもう一度お試しください。</string>
     <string name="dictionaries_installed">インストール済み</string>
     <string name="dictionaries_none">辞書がインストールされていません。</string>
@@ -397,7 +398,8 @@
     <string name="background_battery_list">バッテリー最適化の一覧を開く</string>
     <string name="background_battery_list_hint">一覧で Screenlate を探し、最適化をオフにしてください（「最適化しない」「制限なし」など）。最初は一覧にないアプリも、「すべてのアプリ」の中にあることが多いです。</string>
     <string name="background_launch_title">アプリの起動</string>
-    <string name="background_launch_text">一部の端末は、バッテリーの最適化とは別に、メーカー独自の設定でもバックグラウンドのアプリを止めます。その設定で、Screenlate の自動起動とバックグラウンド動作を許可してください。Honor / MagicOS：アプリ起動 → Screenlate → 手動で管理、3 つのオプションをすべてオン。</string>
+    <string name="background_launch_text">一部の端末は、バッテリーの最適化とは別に、メーカー独自の設定でもバックグラウンドのアプリを止めます。その設定で、Screenlate の自動起動とバックグラウンド動作を許可してください。</string>
+    <string name="background_launch_path">この端末では：アプリ起動 → Screenlate → 手動で管理、3 つのオプションをすべてオン。</string>
     <string name="background_launch_open">起動の設定を開く</string>
     <string name="background_launch_app_info">アプリ情報を開く</string>
     <string name="background_launch_app_info_hint">この端末には既知の起動設定画面がありません。アプリ情報から、たいていバッテリーやバックグラウンドの設定に進めます。</string>

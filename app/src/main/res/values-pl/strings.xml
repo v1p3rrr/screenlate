@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Słowniki</string>
     <string name="dictionaries_import_file">Importuj z pliku</string>
     <string name="dictionaries_import_failed">Import nie powiódł się: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: import nie powiódł się — %2$s</string>
     <string name="dictionaries_import_no_space">Za mało wolnego miejsca, aby zaimportować %1$s: potrzeba około %2$s, wolne %3$s. Zwolnij miejsce i spróbuj ponownie.</string>
     <string name="dictionaries_installed">Zainstalowane</string>
     <string name="dictionaries_none">Brak zainstalowanych słowników.</string>
@@ -397,7 +398,8 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="background_battery_list">Otwórz listę optymalizacji baterii</string>
     <string name="background_battery_list_hint">Na liście znajdź Screenlate i wyłącz dla niego optymalizację („Nie optymalizuj”, „Bez ograniczeń” lub podobnie). Aplikacje, których początkowo nie ma na liście, często są w „Wszystkie aplikacje”.</string>
     <string name="background_launch_title">Uruchamianie aplikacji</string>
-    <string name="background_launch_text">Niektóre telefony zatrzymują aplikacje w tle także przez własne ustawienia producenta, niezależnie od optymalizacji baterii. Tam zezwól Screenlate na samodzielne uruchamianie się i działanie w tle. Honor / MagicOS: Uruchamianie aplikacji → Screenlate → Zarządzaj ręcznie, z włączonymi wszystkimi trzema opcjami.</string>
+    <string name="background_launch_text">Niektóre telefony zatrzymują aplikacje w tle także przez własne ustawienia producenta, niezależnie od optymalizacji baterii. Tam zezwól Screenlate na samodzielne uruchamianie się i działanie w tle.</string>
+    <string name="background_launch_path">Na tym telefonie: Uruchamianie aplikacji → Screenlate → Zarządzaj ręcznie, z włączonymi wszystkimi trzema opcjami.</string>
     <string name="background_launch_open">Otwórz ustawienia uruchamiania</string>
     <string name="background_launch_app_info">Otwórz informacje o aplikacji</string>
     <string name="background_launch_app_info_hint">Ten telefon nie ma żadnego ze znanych ekranów uruchamiania. Informacje o aplikacji zwykle prowadzą do ustawień baterii i pracy w tle.</string>

@@ -34,6 +34,7 @@
     <string name="dictionaries_title">Dictionaries</string>
     <string name="dictionaries_import_file">Import from file</string>
     <string name="dictionaries_import_failed">Import failed: %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s: import failed — %2$s</string>
     <string name="dictionaries_import_no_space">Not enough free space to import %1$s: about %2$s needed, %3$s free. Free up space and try again.</string>
     <string name="dictionaries_installed">Installed</string>
     <string name="dictionaries_none">No dictionaries installed.</string>
@@ -400,7 +401,8 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="background_battery_list">Open the battery optimization list</string>
     <string name="background_battery_list_hint">In the list, find Screenlate and turn optimization off for it (\"Don\'t optimize\", \"Unrestricted\" or similar). Apps missing from the list at first are often under \"All apps\".</string>
     <string name="background_launch_title">App launch</string>
-    <string name="background_launch_text">Some phones also stop background apps through the manufacturer\'s own settings, apart from battery optimization. There, allow Screenlate to start on its own and to run in the background. Honor / MagicOS: App launch → Screenlate → Manage manually, with all three options on.</string>
+    <string name="background_launch_text">Some phones also stop background apps through the manufacturer\'s own settings, apart from battery optimization. There, allow Screenlate to start on its own and to run in the background.</string>
+    <string name="background_launch_path">On this phone: App launch → Screenlate → Manage manually, with all three options on.</string>
     <string name="background_launch_open">Open the startup settings</string>
     <string name="background_launch_app_info">Open app info</string>
     <string name="background_launch_app_info_hint">This phone has none of the known startup screens. App info usually leads to battery and background settings.</string>

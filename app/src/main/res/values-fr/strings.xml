@@ -32,6 +32,7 @@
     <string name="dictionaries_title">Dictionnaires</string>
     <string name="dictionaries_import_file">Importer un fichier</string>
     <string name="dictionaries_import_failed">Échec de l’import : %1$s</string>
+    <string name="dictionaries_import_failed_named">%1$s : échec de l’import — %2$s</string>
     <string name="dictionaries_import_no_space">Pas assez d’espace libre pour importer %1$s : environ %2$s nécessaires, %3$s libres. Libérez de l’espace et réessayez.</string>
     <string name="dictionaries_installed">Installés</string>
     <string name="dictionaries_none">Aucun dictionnaire installé.</string>
@@ -397,7 +398,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="background_battery_list">Ouvrir la liste d’optimisation de la batterie</string>
     <string name="background_battery_list_hint">Dans la liste, trouvez Screenlate et désactivez son optimisation (« Ne pas optimiser », « Sans restriction » ou similaire). Les applis absentes de la liste au départ sont souvent sous « Toutes les applis ».</string>
     <string name="background_launch_title">Lancement des applis</string>
-    <string name="background_launch_text">Certains téléphones arrêtent aussi les applis en arrière-plan via des réglages propres au fabricant, en plus de l’optimisation de la batterie. Là, autorisez Screenlate à démarrer seul et à fonctionner en arrière-plan. Honor / MagicOS : Lancement des applis → Screenlate → Gérer manuellement, avec les trois options activées.</string>
+    <string name="background_launch_text">Certains téléphones arrêtent aussi les applis en arrière-plan via des réglages propres au fabricant, en plus de l’optimisation de la batterie. Là, autorisez Screenlate à démarrer seul et à fonctionner en arrière-plan.</string>
+    <string name="background_launch_path">Sur ce téléphone : Lancement des applis → Screenlate → Gérer manuellement, avec les trois options activées.</string>
     <string name="background_launch_open">Ouvrir les réglages de démarrage</string>
     <string name="background_launch_app_info">Ouvrir les infos sur l’appli</string>
     <string name="background_launch_app_info_hint">Ce téléphone n’a aucun des écrans de démarrage connus. Les infos sur l’appli mènent généralement aux réglages de batterie et d’arrière-plan.</string>
