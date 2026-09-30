@@ -59,6 +59,7 @@
     <string name="overlay_pitch_dictionaries">Ударение из словарей</string>
     <string name="overlay_copy_paragraph">Скопировать этот абзац</string>
     <string name="overlay_copy_all">Скопировать весь распознанный текст</string>
+    <string name="overlay_menu_open_app">Открыть Screenlate</string>
     <string name="overlay_copied">Скопировано</string>
     <string name="overlay_keep_alive_channel">Служба работает</string>
     <string name="overlay_keep_alive_title">Screenlate готов</string>

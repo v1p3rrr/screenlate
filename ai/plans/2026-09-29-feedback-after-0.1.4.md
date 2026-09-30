@@ -22,6 +22,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 16. Bring the changes of the remote branch `claude/elegant-allen-xmu3fx` into main (rebase or cherry-pick, fix conflicts), test what they add, push (2026-10-01).
 17. Afterwards, autonomously: `/code-review xhigh --fix` over all changes since 764ae60. Open questions are written down and asked at the end; meanwhile either wait with that part or do what is 90% right and cheap to undo (2026-10-01).
 18. Settings list: order the sections more logically, from functional and decorative ones to system ones (2026-10-01). Another session works on main at the same time, so the change must not clash with its code.
+19. Holding the bubble: add "Open the app" next to the copy items, and open the menu toward the side with room (on the phone "Copy all" ran off the right edge with the bubble near the right side) (2026-10-01).
 
 ## Decisions
 
@@ -63,6 +64,8 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Popup placement in portrait | Above the word when the full height fits there, else below the bubble when it fits there, else the roomier of the two, shrunk. Vertical text the same; beside the column (narrower and taller) only when neither above nor below holds the minimum height. Landscape unchanged: beside first. Replaces the 2026-09-27 rule "vertical text in portrait goes beside the column" (owner) |
 | Review findings that are plain bugs | Fixed without asking the owner (owner) |
 | Settings order | Function, then look, then system: Bubble, Lookup, Dictionaries, Anki and audio, Popup, Appearance, Background work, Import from Yomitan, Backup and restore, About. No group headings (owner) |
+| Bubble hold menu | "Copy this paragraph" and "Copy all recognized text" when there is text, then "Open Screenlate", so the menu opens even without text. "Open Screenlate" brings the app to the front as the launcher does and docks the bubble (owner) |
+| Bubble menu placement | Below the bubble when it fits, otherwise above (the side with more room when neither fits); horizontally it grows toward the middle of the screen. Drawn in its own overlay window: the system popup menu never fits itself into overlay windows, which are laid out without screen limits. Closes on a tap outside or on an item; the window takes no focus, like the popup, so Back no longer closes it |
 
 ## Code review: appearance and fonts
 
@@ -165,3 +168,4 @@ Owner's command (2026-09-29): review the fixes of the first run and the module w
 - 2026-10-01: 13 and 14 done. `LanguageSupport.characterEntry` and `DictionaryLookup.characterEntry` give the first character's kanji entry when no word is found: in the popup (one character highlighted, the recognized text and OCR chip stay in the header), in popup links, and in the search screen. KANJIDIC English (jmdict-yomitan 2026-09-27) is bundled in slot 40; a newly shipped archive whose dictionary is already installed (same title without the revision, `KANJIDIC (English)` counting as `KANJIDIC`) is added to the declined list instead. Checked on the emulator: the update skipped the bundled KANJIDIC next to the two installed ones; a fresh install in a second user installed it (ja/en, index URL, 10384 kanji); 噌 in 味噌汁 opened its kanji entry in the popup and in "Look up in Screenlate".
 - 2026-10-01: request 15 done (owner's decision replaces the 2026-09-27 rule): in portrait the popup goes above when the full height fits, else below, else the roomier of the two; vertical text the same, beside the column only when it fits neither. Checked on the emulator on the owner's manga screenshot: お父さん説得 and 不思議 get a full-width popup above the column.
 - 2026-10-01: request 18 (settings order; request 13 on its branch). Owner answers: function, then look, then system sections, no group headings. Done in the settings list and `docs/usage.md`; only `SettingsScreen.kt` changed in code, so the parallel session's work on main is not touched.
+- 2026-10-01: request 19 (bubble hold menu; request 14 on its branch). Owner answers: "Open Screenlate" last, the bubble docks when it is used. Done: `BubbleMenu` (own overlay window, `MenuPlacement` with JVM tests), the item in all 14 languages, `docs/usage.md`. Not checked on a device (the cloud session has no emulator).

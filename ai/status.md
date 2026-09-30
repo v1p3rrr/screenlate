@@ -310,3 +310,20 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   the same order. A parallel session was working on main, so the change stays out of every other file.
 - On branch `claude/elegant-allen-xmu3fx` (rebased onto main at f3d5f80), not merged. Not checked on a
   device: the list is plain reordering, the Background work badge moves down with its entry.
+
+### 2026-10-01 (bubble hold menu, cloud session)
+
+- Owner's request 19 (14 on its branch): holding the bubble offers "Open Screenlate" after the copy items, and the menu opens toward the
+  side with room (on the phone "Copy all" ran off the right edge). Two decision rows in the feedback plan.
+- Cause: overlay windows use `FLAG_LAYOUT_NO_LIMITS`, so their display frame is unbounded and `PopupMenu` (a
+  `PopupWindow` attached to the bubble window) never shifts or flips itself onto the screen.
+- `overlay/.../ui/BubbleMenu.kt`: the menu in its own `TYPE_ACCESSIBILITY_OVERLAY` window (`OverlayWindows.menuParams`:
+  not focusable, `FLAG_WATCH_OUTSIDE_TOUCH`, hardware accelerated for the shadow), styled from the DayNight theme's
+  popup menu attributes; closes on `ACTION_OUTSIDE`, an item, `closeScan()` and `detachWindows()`. `MenuPlacement`
+  (same file) picks the position; `MenuPlacementTest` (6 cases) passes in a plain JVM harness here.
+- `OverlayController.showBubbleMenu` always shows the menu; `openApp()` starts the launch intent with
+  `NEW_TASK | RESET_TASK_IF_NEEDED` and docks. String `overlay_menu_open_app` in all 14 locales (`overlay_open_app` is
+  taken by "Open Anki settings").
+- Not checked on a device: the menu's look (background, shadow, text), placement near each edge and corner, a tap
+  outside and on the bubble closing it, "Open Screenlate" from another app (a background activity start from the
+  accessibility service, as the Anki settings button already does), docking afterwards; MagicOS.

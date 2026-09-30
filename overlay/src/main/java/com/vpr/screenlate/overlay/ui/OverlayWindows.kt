@@ -25,6 +25,12 @@ object OverlayWindows {
         LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCH_MODAL,
     )
 
+    /** The held bubble's menu: told about touches outside it so it can close; hardware drawn for its shadow. */
+    fun menuParams(): LayoutParams = base(
+        LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or
+            LayoutParams.FLAG_HARDWARE_ACCELERATED,
+    )
+
     /** Full-screen, touchable, without keyboard focus: the crop editor. */
     fun editorParams(): LayoutParams = base(LayoutParams.FLAG_NOT_FOCUSABLE).apply {
         width = LayoutParams.MATCH_PARENT

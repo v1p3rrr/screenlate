@@ -58,6 +58,7 @@
     <string name="overlay_pitch_dictionaries">Ton vurgusu kaynağı</string>
     <string name="overlay_copy_paragraph">Bu paragrafı kopyala</string>
     <string name="overlay_copy_all">Tanınan tüm metni kopyala</string>
+    <string name="overlay_menu_open_app">Screenlate’i aç</string>
     <string name="overlay_copied">Kopyalandı</string>
     <string name="overlay_keep_alive_channel">Hizmet çalışıyor</string>
     <string name="overlay_keep_alive_title">Screenlate hazır</string>

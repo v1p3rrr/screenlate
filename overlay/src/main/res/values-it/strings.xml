@@ -58,6 +58,7 @@
     <string name="overlay_pitch_dictionaries">Accento tonale da</string>
     <string name="overlay_copy_paragraph">Copia questo paragrafo</string>
     <string name="overlay_copy_all">Copia tutto il testo riconosciuto</string>
+    <string name="overlay_menu_open_app">Apri Screenlate</string>
     <string name="overlay_copied">Copiato</string>
     <string name="overlay_keep_alive_channel">Servizio attivo</string>
     <string name="overlay_keep_alive_title">Screenlate è pronto</string>

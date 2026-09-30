@@ -58,6 +58,7 @@
     <string name="overlay_pitch_dictionaries">고저 악센트 출처</string>
     <string name="overlay_copy_paragraph">이 단락 복사</string>
     <string name="overlay_copy_all">인식된 텍스트 모두 복사</string>
+    <string name="overlay_menu_open_app">Screenlate 열기</string>
     <string name="overlay_copied">복사됨</string>
     <string name="overlay_keep_alive_channel">서비스 실행 중</string>
     <string name="overlay_keep_alive_title">Screenlate 준비됨</string>

@@ -58,6 +58,7 @@
     <string name="overlay_pitch_dictionaries">Accent de hauteur selon</string>
     <string name="overlay_copy_paragraph">Copier ce paragraphe</string>
     <string name="overlay_copy_all">Copier tout le texte reconnu</string>
+    <string name="overlay_menu_open_app">Ouvrir Screenlate</string>
     <string name="overlay_copied">Copié</string>
     <string name="overlay_keep_alive_channel">Service actif</string>
     <string name="overlay_keep_alive_title">Screenlate est prêt</string>

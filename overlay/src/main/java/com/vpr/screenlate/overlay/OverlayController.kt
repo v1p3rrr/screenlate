@@ -13,13 +13,11 @@ import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -71,6 +69,7 @@ import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
+import com.vpr.screenlate.overlay.ui.BubbleMenu
 import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
@@ -156,6 +155,7 @@ class OverlayController(
     private val layerView = LayerView(service)
     private val layerParams = OverlayWindows.layerParams()
     private val popup = PopupController(service, windowManager, PopupCallbacks())
+    private val bubbleMenu = BubbleMenu(service, windowManager)
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
     private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
@@ -318,6 +318,7 @@ class OverlayController(
 
     private fun detachWindows() {
         if (!attached) return
+        bubbleMenu.dismiss()
         windowManager.removeView(bubbleView)
         popup.detach()
         windowManager.removeView(layerView)
@@ -419,6 +420,7 @@ class OverlayController(
      * still finishes.
      */
     private fun closeScan() {
+        bubbleMenu.dismiss()
         resetScan()
         popup.hide()
         popupNotes.onClosed()
@@ -509,31 +511,37 @@ class OverlayController(
         mainHandler.postDelayed(single, ViewConfiguration.getDoubleTapTimeout().toLong())
     }
 
-    /** Holding the floating bubble: copy the paragraph under the aim, or everything recognized, as whole text. */
-    private fun showCopyMenu() {
-        val layout = layout ?: return
-        val (x, y) = aim ?: aimPoint()
-        val aimed = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
-        val shown = shownLookup?.takeIf { popup.isShowing }?.let { view ->
-            val start = view.start ?: return@let null
-            (view.layout ?: return@let null) to start
+    /**
+     * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
+     * the app.
+     */
+    private fun showBubbleMenu() {
+        val layout = layout
+        val paragraph = if (layout == null) "" else {
+            val (x, y) = aim ?: aimPoint()
+            val aimed = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
+            val shown = shownLookup?.takeIf { popup.isShowing }?.let { view ->
+                val start = view.start ?: return@let null
+                (view.layout ?: return@let null) to start
+            }
+            CopyMenuText.paragraph(layout, aimed, shown)
         }
-        val paragraph = CopyMenuText.paragraph(layout, aimed, shown)
-        val all = CopyMenuText.all(layout, System.lineSeparator())
-        if (paragraph.isEmpty() && all.isEmpty()) return
+        val all = layout?.let { CopyMenuText.all(it, System.lineSeparator()) }.orEmpty()
         haptic()
-        val themed = ContextThemeWrapper(service, android.R.style.Theme_DeviceDefault_DayNight)
-        PopupMenu(themed, bubbleView).apply {
-            if (paragraph.isNotEmpty()) menu.add(service.getString(R.string.overlay_copy_paragraph)).setOnMenuItemClickListener {
-                copyText(paragraph)
-                true
-            }
-            if (all.isNotEmpty()) menu.add(service.getString(R.string.overlay_copy_all)).setOnMenuItemClickListener {
-                copyText(all)
-                true
-            }
-            show()
+        val items = buildList {
+            if (paragraph.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_paragraph)) { copyText(paragraph) })
+            if (all.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_all)) { copyText(all) })
+            add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
+        bubbleMenu.show(items, bubbleBox(), usableBounds())
+    }
+
+    /** Brings the app to the front as the launcher does; the bubble docks so it does not hang over the app. */
+    private fun openApp() {
+        service.packageManager.getLaunchIntentForPackage(service.packageName)
+            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            ?.let { intent -> runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open the app", it) } }
+        dock()
     }
 
     private fun copyText(text: String) {
@@ -563,7 +571,7 @@ class OverlayController(
         private var held = false
         private val hold = Runnable {
             held = true
-            showCopyMenu()
+            showBubbleMenu()
         }
 
         override fun onTouch(view: View, event: MotionEvent): Boolean {
@@ -612,7 +620,7 @@ class OverlayController(
                     }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    // A cancelled touch must not open the copy menu later.
+                    // A cancelled touch must not open the menu later.
                     mainHandler.removeCallbacks(hold)
                     when {
                         held -> Unit
