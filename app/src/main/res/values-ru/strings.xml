@@ -502,4 +502,6 @@
     <string name="background_keep_alive_text">Телефон, который останавливает приложения в фоне, может остановить и службу, рисующую кнопку. Приложение с собственным уведомлением он трогает заметно реже.</string>
     <string name="background_keep_alive_switch">Держать уведомление, пока служба работает</string>
     <string name="background_keep_alive_hint">Помогает не всегда. Если служба уже остановлена, кнопку вернёт только выключение и включение в настройках специальных возможностей.</string>
+    <string name="background_keep_alive_notifications_off">Уведомления для Screenlate выключены: служба работает, но её уведомление не видно.</string>
+    <string name="background_keep_alive_notifications_allow">Разрешить уведомления</string>
 </resources>

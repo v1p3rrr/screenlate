@@ -282,15 +282,18 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
     default, owner's decision; backed up with the bubble section), switched from a Settings → Background work card.
     Turning it on asks for the notification permission the first time and writes the setting only after the answer: a
     notification posted before the grant stays hidden until the service restarts (seen on the emulator). A sticky
-    restart stops itself when the accessibility switch has been turned off meanwhile.
+    restart stops itself when the accessibility switch has been turned off meanwhile. With notifications off the card
+    says so and offers to allow them (owner's answer, 2026-10-01; `rememberNotificationsPermission`, shared with the
+    Dictionaries card), and `BubbleKeepAliveService.repost` shows the notification once they are allowed.
   - Strings in all 14 locale files of `app` and `overlay`; `docs/usage.md` and `docs/architecture.md` updated.
   - The `setComponentEnabledSetting` rebind trick was rejected by the owner ("не трогать вообще") and is not used.
 - Checked on the emulator (API 37, debug build): all three home states (STOPPED reproduced by holding a UiAutomation
   connection, see `notes/build-environment.md`), live switch between them, both accessibility buttons open the list
   with the row highlighted and no crash, hide/show from home and from the bubble settings switch, keep-alive on (with
-  the first-time permission dialog; notification in the shade), off (service gone), and following the accessibility
-  service through an unbind and rebind. `./gradlew assembleDebug testDebugUnitTest :app:lintDebug :overlay:lintDebug`
+  the first-time permission dialog; notification in the shade), off (service gone), following the accessibility
+  service through an unbind and rebind, and with notifications declined earlier: the line and button, then the
+  notification after allowing through the dialog and through the app's notification settings. `./gradlew assembleDebug testDebugUnitTest :app:lintDebug :overlay:lintDebug`
   green, lint only old warnings.
 - Not checked: the phone's own case (MagicOS stopping the service; whether its settings app opens the details page).
-- Emulator state: the debug app has the notification permission (granted in this check), keep-alive off, the bubble
-  shown, the accessibility service enabled for the debug app only.
+- Emulator state: the debug app has the notification permission (granted in this check, flag USER_SET), keep-alive
+  off, the bubble shown, the accessibility service enabled for the debug app only.

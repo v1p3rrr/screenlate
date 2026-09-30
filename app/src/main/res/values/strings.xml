@@ -494,4 +494,6 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="background_keep_alive_text">A phone that stops apps in the background can also stop the service that draws the bubble. An app with a notification of its own is left alone far more often.</string>
     <string name="background_keep_alive_switch">Keep a notification while the service runs</string>
     <string name="background_keep_alive_hint">It does not always help. Once the service is stopped, only turning it off and on in the accessibility settings brings the bubble back.</string>
+    <string name="background_keep_alive_notifications_off">Notifications are off for Screenlate: the service runs, but its notification is not shown.</string>
+    <string name="background_keep_alive_notifications_allow">Allow notifications</string>
 </resources>

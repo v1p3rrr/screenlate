@@ -496,4 +496,6 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="background_keep_alive_text">Un teléfono que detiene aplicaciones en segundo plano también puede detener el servicio que dibuja la burbuja. Una aplicación con su propia notificación se detiene mucho menos.</string>
     <string name="background_keep_alive_switch">Mantener una notificación mientras el servicio funciona</string>
     <string name="background_keep_alive_hint">No siempre ayuda. Una vez detenido el servicio, solo desactivarlo y activarlo en los ajustes de accesibilidad devuelve la burbuja.</string>
+    <string name="background_keep_alive_notifications_off">Las notificaciones de Screenlate están desactivadas: el servicio funciona, pero su notificación no se muestra.</string>
+    <string name="background_keep_alive_notifications_allow">Permitir notificaciones</string>
 </resources>

@@ -501,4 +501,6 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="background_keep_alive_text">Telefon, który zatrzymuje aplikacje w tle, może zatrzymać też usługę rysującą dymek. Aplikacja z własnym powiadomieniem jest zatrzymywana znacznie rzadziej.</string>
     <string name="background_keep_alive_switch">Utrzymuj powiadomienie, gdy usługa działa</string>
     <string name="background_keep_alive_hint">Nie zawsze pomaga. Gdy usługa już się zatrzyma, dymek przywróci tylko wyłączenie i włączenie w ustawieniach ułatwień dostępu.</string>
+    <string name="background_keep_alive_notifications_off">Powiadomienia Screenlate są wyłączone: usługa działa, ale jej powiadomienie nie jest widoczne.</string>
+    <string name="background_keep_alive_notifications_allow">Zezwól na powiadomienia</string>
 </resources>

@@ -486,4 +486,6 @@
     <string name="background_keep_alive_text">バックグラウンドのアプリを停止する端末は、バブルを描くサービスも停止することがあります。自分の通知を持つアプリは停止されにくくなります。</string>
     <string name="background_keep_alive_switch">サービスの実行中は通知を表示したままにする</string>
     <string name="background_keep_alive_hint">常に効くわけではありません。サービスが停止した後は、ユーザー補助の設定でオフにしてオンにする以外にバブルを戻す方法はありません。</string>
+    <string name="background_keep_alive_notifications_off">Screenlate の通知がオフです。サービスは動作していますが、通知は表示されません。</string>
+    <string name="background_keep_alive_notifications_allow">通知を許可</string>
 </resources>

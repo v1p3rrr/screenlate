@@ -69,6 +69,14 @@ class BubbleKeepAliveService : Service() {
         private const val CHANNEL_ID = "bubble_keep_alive"
         private const val NOTIFICATION_ID = 2
 
+        /**
+         * Posts the notification again while the service runs, e.g. after the notification permission was granted:
+         * Android keeps hiding a notification posted before that.
+         */
+        fun repost(context: Context) {
+            if (OverlayServiceStatus.running.value) keepAlive(context, true)
+        }
+
         /** Starts or stops the notification; a start the system refuses is logged and left alone. */
         fun keepAlive(context: Context, enabled: Boolean) {
             val intent = Intent(context, BubbleKeepAliveService::class.java)

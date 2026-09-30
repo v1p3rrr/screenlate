@@ -46,8 +46,8 @@ import kotlinx.coroutines.launch
 
 /*
  * Imports and downloads show their progress in a foreground notification, which Android 13+ shows only with the
- * notification permission. The first import or download started from the app asks for it once; the Dictionaries
- * screen offers it again while it is missing.
+ * notification permission; so does the bubble's keep-alive service. The first import, download or keep-alive switch
+ * asks for it once; the Dictionaries screen and the keep-alive card offer it again while it is missing.
  */
 
 @HiltViewModel
@@ -86,22 +86,57 @@ fun rememberImportNotificationsAsk(
     }
 }
 
+/** Whether notifications are allowed, re-read when the screen resumes, and a way to ask for them. */
+class NotificationsPermission(val allowed: Boolean, val request: () -> Unit)
+
 /**
- * Offers the notification permission while it is missing. Once the system no longer shows its request (declined
- * twice), the button opens the app's notification settings instead.
+ * The notification permission for a screen that offers it. Once the system no longer shows its request (declined
+ * twice), [NotificationsPermission.request] opens the app's notification settings instead. [onGranted] runs when the
+ * permission turns on while the screen is shown, from the request or from the settings.
  */
 @Composable
-fun ImportNotificationsCard(viewModel: ImportNotificationsViewModel = hiltViewModel()) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+fun rememberNotificationsPermission(
+    viewModel: ImportNotificationsViewModel = hiltViewModel(),
+    onGranted: () -> Unit = {},
+): NotificationsPermission {
     val context = LocalContext.current
     val asked by viewModel.asked.collectAsStateWithLifecycle()
     var allowed by remember { mutableStateOf(notificationsAllowed(context)) }
+    val currentOnGranted by rememberUpdatedState(onGranted)
+    val update = { now: Boolean ->
+        if (now && !allowed) currentOnGranted()
+        allowed = now
+    }
     LifecycleResumeEffect(Unit) {
-        allowed = notificationsAllowed(context)
+        update(notificationsAllowed(context))
         onPauseOrDispose { }
     }
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { allowed = it }
-    if (allowed) return
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { update(it) }
+    return NotificationsPermission(allowed) request@{
+        // Before Android 13 notifications need no permission, so nothing offers this request there.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@request
+        val activity = context.findActivity()
+        val canAsk = asked != true || (
+            activity != null &&
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
+            )
+        viewModel.markAsked()
+        if (canAsk) {
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            context.startActivity(
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
+            )
+        }
+    }
+}
+
+/** Offers the notification permission while it is missing. */
+@Composable
+fun ImportNotificationsCard(viewModel: ImportNotificationsViewModel = hiltViewModel()) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+    val notifications = rememberNotificationsPermission(viewModel)
+    if (notifications.allowed) return
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 8.dp, bottom = 4.dp)) {
             Text(stringResource(R.string.dictionaries_notifications_title), style = MaterialTheme.typography.titleSmall)
@@ -111,25 +146,7 @@ fun ImportNotificationsCard(viewModel: ImportNotificationsViewModel = hiltViewMo
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp, end = 8.dp),
             )
-            TextButton(
-                onClick = {
-                    val activity = context.findActivity()
-                    val canAsk = asked != true || (
-                        activity != null &&
-                            ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
-                        )
-                    viewModel.markAsked()
-                    if (canAsk) {
-                        launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    } else {
-                        context.startActivity(
-                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
-                        )
-                    }
-                },
-                modifier = Modifier.align(Alignment.End),
-            ) {
+            TextButton(onClick = notifications.request, modifier = Modifier.align(Alignment.End)) {
                 Text(stringResource(R.string.dictionaries_notifications_allow))
             }
         }

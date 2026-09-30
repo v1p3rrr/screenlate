@@ -27,6 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.bubble.BubbleSettingsViewModel
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
+import com.vpr.screenlate.dictionaries.rememberNotificationsPermission
+import com.vpr.screenlate.overlay.BubbleKeepAliveService
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -44,6 +46,9 @@ fun BackgroundWorkScreen(
     // The service posts its notification when it starts, and Android does not show one posted before the permission
     // was granted, so the switch is written only after the answer.
     val askNotifications = rememberImportNotificationsAsk(onAnswered = { bubble.setKeepAlive(true) })
+    val notifications = rememberNotificationsPermission(
+        onGranted = { if (bubbleSettings.keepAlive) BubbleKeepAliveService.repost(context) },
+    )
     var batteryExempt by remember { mutableStateOf(BackgroundSettings.isBatteryExempt(context)) }
     val startupScreen = remember { BackgroundSettings.startupScreen(context) }
     LaunchedEffect(Unit) { tip.markSeen() }
@@ -116,6 +121,15 @@ fun BackgroundWorkScreen(
                     },
                     hint = stringResource(R.string.background_keep_alive_hint),
                 )
+                if (bubbleSettings.keepAlive && !notifications.allowed) {
+                    Text(
+                        stringResource(R.string.background_keep_alive_notifications_off),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    OutlinedButton(onClick = notifications.request, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(R.string.background_keep_alive_notifications_allow))
+                    }
+                }
             }
         }
     }

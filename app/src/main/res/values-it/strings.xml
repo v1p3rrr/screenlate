@@ -496,4 +496,6 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="background_keep_alive_text">Un telefono che ferma le app in background può fermare anche il servizio che disegna la bolla. Un’app con una notifica propria viene fermata molto più di rado.</string>
     <string name="background_keep_alive_switch">Tieni una notifica mentre il servizio è attivo</string>
     <string name="background_keep_alive_hint">Non sempre basta. Una volta fermato il servizio, solo spegnerlo e riaccenderlo nelle impostazioni di accessibilità riporta la bolla.</string>
+    <string name="background_keep_alive_notifications_off">Le notifiche di Screenlate sono disattivate: il servizio funziona, ma la sua notifica non viene mostrata.</string>
+    <string name="background_keep_alive_notifications_allow">Consenti notifiche</string>
 </resources>

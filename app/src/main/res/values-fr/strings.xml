@@ -496,4 +496,6 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="background_keep_alive_text">Un téléphone qui arrête les applications en arrière-plan peut aussi arrêter le service qui dessine la bulle. Une application avec sa propre notification est bien plus souvent épargnée.</string>
     <string name="background_keep_alive_switch">Garder une notification tant que le service tourne</string>
     <string name="background_keep_alive_hint">Cela n’aide pas toujours. Une fois le service arrêté, seul un arrêt puis une remise en marche dans les paramètres d’accessibilité ramène la bulle.</string>
+    <string name="background_keep_alive_notifications_off">Les notifications de Screenlate sont désactivées : le service fonctionne, mais sa notification n’est pas affichée.</string>
+    <string name="background_keep_alive_notifications_allow">Autoriser les notifications</string>
 </resources>

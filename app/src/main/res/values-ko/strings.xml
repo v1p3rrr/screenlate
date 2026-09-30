@@ -486,4 +486,6 @@
     <string name="background_keep_alive_text">백그라운드 앱을 중지하는 휴대전화는 버블을 그리는 서비스도 중지할 수 있습니다. 자체 알림이 있는 앱은 훨씬 덜 중지됩니다.</string>
     <string name="background_keep_alive_switch">서비스가 실행되는 동안 알림 유지</string>
     <string name="background_keep_alive_hint">항상 도움이 되지는 않습니다. 서비스가 중지된 뒤에는 접근성 설정에서 꺼다가 켜야만 버블이 돌아옵니다.</string>
+    <string name="background_keep_alive_notifications_off">Screenlate 알림이 꺼져 있습니다. 서비스는 실행 중이지만 알림이 표시되지 않습니다.</string>
+    <string name="background_keep_alive_notifications_allow">알림 허용</string>
 </resources>

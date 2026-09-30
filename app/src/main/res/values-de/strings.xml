@@ -491,4 +491,6 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="background_keep_alive_text">Ein Telefon, das Apps im Hintergrund stoppt, kann auch den Dienst stoppen, der die Blase zeichnet. Eine App mit einer eigenen Benachrichtigung wird deutlich seltener gestoppt.</string>
     <string name="background_keep_alive_switch">Benachrichtigung behalten, solange der Dienst läuft</string>
     <string name="background_keep_alive_hint">Das hilft nicht immer. Ist der Dienst erst gestoppt, bringt nur Aus- und Einschalten in den Bedienungshilfen die Blase zurück.</string>
+    <string name="background_keep_alive_notifications_off">Benachrichtigungen sind für Screenlate aus: Der Dienst läuft, aber seine Benachrichtigung wird nicht angezeigt.</string>
+    <string name="background_keep_alive_notifications_allow">Benachrichtigungen erlauben</string>
 </resources>

@@ -496,4 +496,6 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="background_keep_alive_text">Um telefone que para aplicativos em segundo plano também pode parar o serviço que desenha a bolha. Um aplicativo com notificação própria é parado bem menos.</string>
     <string name="background_keep_alive_switch">Manter uma notificação enquanto o serviço estiver ativo</string>
     <string name="background_keep_alive_hint">Nem sempre resolve. Depois que o serviço para, só desligar e ligar nas configurações de acessibilidade traz a bolha de volta.</string>
+    <string name="background_keep_alive_notifications_off">As notificações do Screenlate estão desativadas: o serviço funciona, mas a notificação dele não aparece.</string>
+    <string name="background_keep_alive_notifications_allow">Permitir notificações</string>
 </resources>

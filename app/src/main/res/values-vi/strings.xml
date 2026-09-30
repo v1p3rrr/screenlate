@@ -486,4 +486,6 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="background_keep_alive_text">Điện thoại dừng ứng dụng chạy nền cũng có thể dừng dịch vụ vẽ bong bóng. Ứng dụng có thông báo riêng bị dừng ít hơn nhiều.</string>
     <string name="background_keep_alive_switch">Giữ một thông báo khi dịch vụ đang chạy</string>
     <string name="background_keep_alive_hint">Không phải lúc nào cũng hiệu quả. Khi dịch vụ đã dừng, chỉ có tắt rồi bật lại trong cài đặt trợ năng mới đưa bong bóng trở lại.</string>
+    <string name="background_keep_alive_notifications_off">Thông báo của Screenlate đang tắt: dịch vụ vẫn chạy nhưng thông báo của nó không hiển thị.</string>
+    <string name="background_keep_alive_notifications_allow">Cho phép thông báo</string>
 </resources>

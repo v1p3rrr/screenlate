@@ -491,4 +491,6 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="background_keep_alive_text">Arka plandaki uygulamaları durduran bir telefon, baloncuğu çizen hizmeti de durdurabilir. Kendi bildirimi olan bir uygulama çok daha seyrek durdurulur.</string>
     <string name="background_keep_alive_switch">Hizmet çalışırken bir bildirim tut</string>
     <string name="background_keep_alive_hint">Her zaman işe yaramaz. Hizmet bir kez durduktan sonra baloncuğu yalnızca erişilebilirlik ayarlarından kapatıp açmak geri getirir.</string>
+    <string name="background_keep_alive_notifications_off">Screenlate için bildirimler kapalı: hizmet çalışıyor ama bildirimi görünmüyor.</string>
+    <string name="background_keep_alive_notifications_allow">Bildirimlere izin ver</string>
 </resources>

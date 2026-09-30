@@ -486,4 +486,6 @@
     <string name="background_keep_alive_text">会停止后台应用的手机也可能停止绘制悬浮球的服务。带有自己通知的应用被停止的情况要少得多。</string>
     <string name="background_keep_alive_switch">服务运行时保留一条通知</string>
     <string name="background_keep_alive_hint">并非总是有效。服务一旦被停止，只有在无障碍设置中关闭再打开才能找回悬浮球。</string>
+    <string name="background_keep_alive_notifications_off">Screenlate 的通知已关闭：服务仍在运行，但不会显示其通知。</string>
+    <string name="background_keep_alive_notifications_allow">允许通知</string>
 </resources>
