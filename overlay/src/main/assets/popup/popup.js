@@ -125,13 +125,15 @@ const Popup = (() => {
             state.message,
             state.source,
             state.kanji?.character,
-            (state.results || []).map(r => r.term.expression + r.term.reading),
+            (state.results || []).map(r => [r.term.expression, r.term.reading]),
         ]);
     }
 
     function drawResults(state) {
         drawnKey = resultsKey(state);
         hideInfo();
+        // A menu belongs to the buttons of the entries it was opened from.
+        closeMenu();
         if (state.kanji) {
             content.replaceChildren(kanjiView(state.kanji, state.labels || {}));
             return;
@@ -406,7 +408,9 @@ const Popup = (() => {
     function showAudioMenu(index, items, loading) {
         const button = content.querySelector(`.action-play[data-index="${index}"]`);
         if (!button) return;
-        if (menu && (menu.dataset.kind !== 'audio' || menu.dataset.anchor !== String(index)) && !loading) return;
+        // The clips fill the menu that is waiting for them; once it was closed, they are not shown.
+        const waiting = menu && menu.dataset.kind === 'audio' && menu.dataset.anchor === String(index);
+        if (!loading && !waiting) return;
         const rows = (items || []).map(item => ({
             label: item.label,
             detail: item.detail,
@@ -746,7 +750,18 @@ const Popup = (() => {
         return { entries: (current.results || []).length, ms: Math.round(performance.now() - started) };
     }
 
+    /**
+     * Updates the first view (the app does not know about views pushed by links); a pushed view on top keeps its
+     * entries and takes the theme and OCR status.
+     */
     function update(state) {
+        if (history.length) {
+            history[0].state = state;
+            const { theme, pending, engine, ocrError } = state;
+            current = { ...current, theme, pending, engine, ocrError };
+            drawHeader(current);
+            return;
+        }
         current = state;
         drawHeader(state);
         if (resultsKey(state) !== drawnKey) drawResults(state);
@@ -759,12 +774,14 @@ const Popup = (() => {
         content.scrollTop = 0;
     }
 
+    /** Drawing again loses the note buttons' states, so the app is told to mark them anew. */
     function back() {
         const previous = history.pop();
         if (!previous) return;
         current = previous.state;
         draw(previous.state);
         content.scrollTop = previous.scroll;
+        ScreenlateBridge.onViewRestored();
     }
 
     /** Tag descriptions by dictionary: [{ dictionary, notes: { tag: description } }]. */
@@ -937,7 +954,14 @@ const Popup = (() => {
     function setActions(newActions) {
         const changed = JSON.stringify(newActions) !== JSON.stringify(actions);
         actions = newActions;
-        if (changed && current) drawResults(current);
+        if (!changed || !current) return;
+        // Drawing again resets the ➕ buttons; the states they had carry over.
+        const states = {};
+        content.querySelectorAll('.action-add[data-index][data-state]').forEach(button => {
+            states[button.dataset.index] = button.dataset.state;
+        });
+        drawResults(current);
+        setNoteStates(states);
     }
 
     /**

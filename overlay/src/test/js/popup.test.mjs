@@ -132,6 +132,8 @@ test('links push a view and back restores the previous one', () => {
     back.click();
     assert.equal(back.hidden, true);
     assert.equal(content.querySelectorAll('article.entry').length, 2);
+    // The note buttons were drawn anew, so the app marks them again.
+    assert.deepEqual(page.calls.at(-1), ['onViewRestored']);
 });
 
 test('updates redraw only the header when the results are the same', () => {
@@ -495,4 +497,54 @@ test('inside the app the system toolbar copies, so no Copy button appears', () =
     page.window.getSelection().addRange(range);
     page.document.dispatchEvent(new page.window.Event('selectionchange'));
     assert.equal(page.document.querySelector('.selection-copy').hidden, true);
+});
+
+test('audio clips do not reopen a menu that was closed while they loaded', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state());
+    Popup.showAudioMenu(0, [], true);
+    assert.ok(page.document.querySelector('.menu'));
+    press(page.document.body, 'pointerdown');
+    assert.equal(page.document.querySelector('.menu'), null);
+    Popup.showAudioMenu(0, [{ id: 'a', label: 'Clip' }], false);
+    assert.equal(page.document.querySelector('.menu'), null);
+});
+
+test('audio clips fill the menu waiting for them, and a new view closes it', () => {
+    Popup.setActions({ anki: false, audio: true, ankiProblem: null });
+    Popup.render(state());
+    Popup.showAudioMenu(1, [], true);
+    Popup.showAudioMenu(1, [{ id: 'a', label: 'Clip' }], false);
+    const item = page.document.querySelector('.menu .menu-item');
+    assert.equal(item.textContent, 'Clip');
+    item.click();
+    assert.deepEqual(page.calls.at(-1), ['onPlayClip', 1, 'a']);
+    Popup.showAudioMenu(1, [], true);
+    Popup.update(state({ results: [result('犬', 'いぬ')] }));
+    assert.equal(page.document.querySelector('.menu'), null);
+});
+
+test('changing the entry buttons keeps the note states', () => {
+    Popup.setActions({ anki: true, audio: false, ankiProblem: null });
+    Popup.render(state());
+    Popup.setNoteStates({ 1: 'added' });
+    Popup.setActions({ anki: true, audio: true, ankiProblem: null });
+    assert.equal(content.querySelectorAll('.action-play').length, 2);
+    const [first, second] = content.querySelectorAll('.action-add');
+    assert.equal(first.dataset.state, undefined);
+    assert.equal(second.dataset.state, 'added');
+});
+
+test('an update while a link view is on top changes the first view and only the status of the top one', () => {
+    Popup.render(state({ pending: true }));
+    Popup.push(state({ source: { text: '犬', matched: 1 }, results: [result('犬', 'いぬ')] }));
+    Popup.update(state({ theme: 'light', pending: false, engine: 'Lens', results: [result('好き', 'すき')] }));
+    assert.equal(content.querySelectorAll('article.entry').length, 1);
+    assert.match(content.textContent, /犬/);
+    assert.equal(page.document.documentElement.dataset.theme, 'light');
+    assert.equal(page.document.getElementById('spinner').hidden, true);
+    assert.equal(page.document.getElementById('engine').textContent, 'Lens');
+    page.document.getElementById('back').click();
+    assert.equal(content.querySelectorAll('article.entry').length, 1);
+    assert.match(content.textContent, /好すき/);
 });

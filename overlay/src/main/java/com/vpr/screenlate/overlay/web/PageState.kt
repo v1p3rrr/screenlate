@@ -9,15 +9,15 @@ import com.vpr.screenlate.overlay.R
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+/** Colors of the lookup page; e-ink also turns off its animations. */
+enum class PageTheme(val css: String) { LIGHT("light"), DARK("dark"), E_INK("eink") }
+
 /**
  * Builds the JSON state that `Popup.render` expects (see the comment at the top of popup.js).
  *
  * The result can be large (Jitendex entries), so it is written in one pass from data classes; call it off the
  * main thread where possible.
  */
-/** Colors of the lookup page; e-ink also turns off its animations. */
-enum class PageTheme(val css: String) { LIGHT("light"), DARK("dark"), E_INK("eink") }
-
 object PageState {
     private val json = Json { encodeDefaults = true }
 
@@ -47,23 +47,26 @@ object PageState {
             source = SourceDto(text, matched),
             results = results,
             message = message,
-            labels = mapOf(
-                "noResults" to context.getString(R.string.overlay_no_results),
-                "addNote" to context.getString(R.string.overlay_add_note),
-                "playAudio" to context.getString(R.string.overlay_play_audio),
-                "copy" to context.getString(R.string.overlay_copy),
-                "copyDefinition" to context.getString(R.string.overlay_copy_definition),
-                "openNote" to context.getString(R.string.overlay_open_note),
-                "openApp" to context.getString(R.string.overlay_open_app),
-                "addAnyway" to context.getString(R.string.overlay_add_anyway),
-                "addAnywayWithPicture" to context.getString(R.string.overlay_add_anyway_picture),
-                "audioLoading" to context.getString(R.string.overlay_audio_loading),
-                "audioNone" to context.getString(R.string.audio_not_found),
-                "close" to context.getString(R.string.overlay_close),
-                "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
-                "ocrError" to context.getString(R.string.overlay_ocr_error_title),
-            ),
+            labels = labels(context),
         ),
+    )
+
+    /** Strings of the entries and of the page itself (Copy over a selection), which every view needs. */
+    private fun labels(context: Context): Map<String, String> = mapOf(
+        "noResults" to context.getString(R.string.overlay_no_results),
+        "addNote" to context.getString(R.string.overlay_add_note),
+        "playAudio" to context.getString(R.string.overlay_play_audio),
+        "copy" to context.getString(R.string.overlay_copy),
+        "copyDefinition" to context.getString(R.string.overlay_copy_definition),
+        "openNote" to context.getString(R.string.overlay_open_note),
+        "openApp" to context.getString(R.string.overlay_open_app),
+        "addAnyway" to context.getString(R.string.overlay_add_anyway),
+        "addAnywayWithPicture" to context.getString(R.string.overlay_add_anyway_picture),
+        "audioLoading" to context.getString(R.string.overlay_audio_loading),
+        "audioNone" to context.getString(R.string.audio_not_found),
+        "close" to context.getString(R.string.overlay_close),
+        "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
+        "ocrError" to context.getString(R.string.overlay_ocr_error_title),
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
@@ -73,7 +76,7 @@ object PageState {
             source = SourceDto(kanji.character, 1),
             kanji = kanji.takeIf { it.entries.isNotEmpty() },
             message = message.takeIf { kanji.entries.isEmpty() },
-            labels = mapOf(
+            labels = labels(context) + mapOf(
                 "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
                 "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
                 "stat_strokes" to context.getString(R.string.overlay_kanji_strokes),

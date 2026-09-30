@@ -129,4 +129,21 @@ answered; answers go to the plan's changelog.
   2. Ask the engine for a margin (e.g. twice the limit): cheap, fixes nearly all cases, not exact.
   3. Keep as is (a note in `yomitan-behavior.md`).
 
+### Q7. The lookup page may load anything from the internet (module 6 run 1)
+
+- **Feature:** the popup and the search screen show dictionary entries in a WebView page. Dictionaries bring their
+  own `styles.css` and structured content; Settings → Appearance has a custom CSS field.
+- **How it works now:** the page answers its own addresses (page files, dictionary media, fonts) and lets every other
+  request go to the network. A dictionary whose CSS says `background: url(https://example.org/x.png)` makes every
+  lookup that shows it contact that server, which learns when (and, with per-entry URLs, what) the user looks up.
+  Bundled dictionaries do not do this; an imported one could. A custom CSS that loads a web font (`@import` of Google
+  Fonts or a `url()` in `@font-face`) works today and is the one legitimate use.
+- **Options:**
+  1. Recommended: a Content-Security-Policy on the page that blocks remote images, media, scripts and fetches, but
+     allows remote stylesheets and fonts, so a custom CSS with a web font keeps working. Dictionary CSS could still
+     pull a remote font, which is rare and does not identify the word.
+  2. Block every remote request; web fonts only through Settings → Fonts (local files). The strictest; a custom CSS
+     with a remote font stops working.
+  3. Keep as is.
+
 ## Answered

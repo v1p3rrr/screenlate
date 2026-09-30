@@ -24,13 +24,23 @@
 'use strict';
 
 window.YomitanRender = (() => {
-    const KANJI_RANGE = '一-鿿㐀-䶿豈-﫿々';
-    const KANJI_PATTERN = new RegExp(`[${KANJI_RANGE}]`);
-    const KANJI_SEGMENT_PATTERN = new RegExp(`[${KANJI_RANGE}]+|[^${KANJI_RANGE}]+`, 'g');
+    // CJK ideographs as Yomitan counts them, with the supplementary planes (𠮟 and other extension kanji).
+    const KANJI_RANGE = '一-鿿㐀-䶿豈-﫿々\u{20000}-\u{323AF}';
+    const KANJI_PATTERN = new RegExp(`[${KANJI_RANGE}]`, 'u');
+    const KANJI_SEGMENT_PATTERN = new RegExp(`[${KANJI_RANGE}]+|[^${KANJI_RANGE}]+`, 'gu');
     const SMALL_KANA = new Set('ぁぃぅぇぉゃゅょゎァィゥェォャュョヮ');
     const ALLOWED_TAGS = new Set([
         'br', 'ruby', 'rt', 'rp', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th',
         'div', 'span', 'ol', 'ul', 'li', 'details', 'summary', 'a', 'img',
+    ]);
+    /** Style properties structured content may set (Yomitan's list); others, such as position, are ignored. */
+    const STYLE_PROPERTIES = new Set([
+        'fontStyle', 'fontWeight', 'fontSize', 'color', 'background', 'backgroundColor',
+        'textDecorationLine', 'textDecorationStyle', 'textDecorationColor',
+        'borderColor', 'borderStyle', 'borderRadius', 'borderWidth', 'clipPath', 'verticalAlign', 'textAlign',
+        'textEmphasis', 'textShadow', 'margin', 'marginTop', 'marginLeft', 'marginRight', 'marginBottom',
+        'padding', 'paddingTop', 'paddingLeft', 'paddingRight', 'paddingBottom',
+        'wordBreak', 'whiteSpace', 'cursor', 'listStyleType',
     ]);
     const EM_STYLE_PROPERTIES = new Set([
         'marginTop', 'marginLeft', 'marginRight', 'marginBottom',
@@ -150,6 +160,7 @@ window.YomitanRender = (() => {
 
     function setStyle(element, style) {
         for (const [property, value] of Object.entries(style)) {
+            if (!STYLE_PROPERTIES.has(property)) continue;
             if (EM_STYLE_PROPERTIES.has(property) && typeof value === 'number') {
                 element.style[property] = `${value}em`;
             } else if (Array.isArray(value)) {
@@ -300,9 +311,19 @@ window.YomitanRender = (() => {
                 continue;
             }
             const bracePos = css.indexOf('{', i);
+            const semicolonPos = css.indexOf(';', i);
+            // Statement at-rules (@charset, @import, @namespace) are dropped: inside the page's combined styles they
+            // are invalid anyway, and taken as a block start they would swallow the next rule unscoped.
+            if (css[i] === '@' && semicolonPos !== -1 && (bracePos === -1 || semicolonPos < bracePos)) {
+                i = semicolonPos + 1;
+                continue;
+            }
             if (bracePos === -1) break;
             const selectorPart = css.slice(i, bracePos);
             const atRule = selectorPart.trim().startsWith('@');
+            const atName = atRule ? selectorPart.trim().toLowerCase() : '';
+            // Keyframe selectors (from, to, 50%) are not element selectors.
+            const keyframes = atName.startsWith('@keyframes') || /^@-[a-z]+-keyframes/.test(atName);
             const selectors = atRule ? selectorPart : selectorPart.split(',').map(selector => {
                 const trimmed = selector.trim();
                 if (!trimmed) return '';
@@ -318,7 +339,7 @@ window.YomitanRender = (() => {
                 i++;
             }
             const block = css.slice(blockStart, i - 1);
-            if (block.includes('{')) {
+            if (block.includes('{') && !keyframes) {
                 const { properties, nested } = splitNestedBlock(block);
                 parts.push(properties);
                 if (nested) parts.push(scopeCss(nested, atRule ? prefix : '&'));
@@ -431,7 +452,7 @@ window.YomitanRender = (() => {
     function furiganaSegments(expression, reading) {
         if (!reading || reading === expression) return [[expression, '']];
         const groups = (expression.match(KANJI_SEGMENT_PATTERN) || []).map(text => {
-            const isKana = !KANJI_PATTERN.test(text[0]);
+            const isKana = !KANJI_PATTERN.test(text);
             return { isKana, text, textNormalized: isKana ? toHiragana(text) : null };
         });
         const segments = segmentize(reading, toHiragana(reading), groups, 0);

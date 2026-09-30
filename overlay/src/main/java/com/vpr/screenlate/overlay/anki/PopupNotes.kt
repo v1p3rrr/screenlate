@@ -161,6 +161,14 @@ class PopupNotes(
         }
     }
 
+    /** The earlier view is back: its entries are marked again, without auto-play. */
+    override fun onViewRestored() {
+        openableNotes.clear()
+        audioMenuJob?.cancel()
+        duplicateJob?.cancel()
+        duplicateJob = scope.launch { markNotes() }
+    }
+
     /** The popup went away without closing the scan, e.g. the aim moved to text without results. */
     fun onResultsHidden() {
         duplicateJob?.cancel()

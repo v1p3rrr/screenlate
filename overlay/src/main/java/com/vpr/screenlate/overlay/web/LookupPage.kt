@@ -20,6 +20,7 @@ import androidx.webkit.WebViewAssetLoader
 import com.vpr.screenlate.overlay.fonts.FontFiles
 import com.vpr.screenlate.overlay.fonts.PageFonts
 import java.io.File
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
@@ -87,6 +88,9 @@ class LookupPage(
 
         /** The button under an unavailable ➕ asks for the Anki settings, where the problem is explained. */
         fun onOpenApp()
+
+        /** The back button drew an earlier view again, with its buttons in their initial states. */
+        fun onViewRestored()
     }
 
     /** Receives the note and audio buttons; without it they do nothing. */
@@ -95,6 +99,9 @@ class LookupPage(
     private val mainHandler = Handler(Looper.getMainLooper())
     private var pageReady = false
     private val pendingScripts = mutableListOf<String>()
+
+    /** Evaluations waiting for the page; a renderer that goes away never answers them. */
+    private val evaluations = mutableSetOf<CancellableContinuation<String?>>()
 
     /** Scripts that configure the page and must be replayed after a renderer restart. */
     private val persistent = linkedMapOf<String, String>()
@@ -140,7 +147,7 @@ class LookupPage(
     }
 
     /** Shows [state] (JSON from [PageState]), replacing the current view and its back stack. */
-    fun render(state: String) = run("Popup.render($state)")
+    fun render(state: String) = run("Popup.render($state)", replacesView = true)
 
     /** Re-renders the current view in place (theme, OCR status). */
     fun update(state: String) = run("Popup.update($state)")
@@ -157,8 +164,11 @@ class LookupPage(
     /** Tag descriptions of the enabled dictionaries (a JSON array of {dictionary, notes}). */
     fun setTagNotes(notes: JsonElement) = setPersistent("tagNotes", "Popup.setTagNotes($notes)")
 
-    /** Shows or hides the ➕ and 🔊 buttons of entries. */
-    /** @param ankiProblem a short reason shown by a grey ➕ when Anki export is set up but broken. */
+    /**
+     * Shows or hides the ➕ and 🔊 buttons of entries.
+     *
+     * @param ankiProblem a short reason shown by a grey ➕ when Anki export is set up but broken.
+     */
     fun setActions(anki: Boolean, audio: Boolean, ankiProblem: String? = null) = setPersistent(
         "actions",
         "Popup.setActions({anki: $anki, audio: $audio, ankiProblem: ${ankiProblem?.let { JsonPrimitive(it) } ?: "null"}})",
@@ -183,7 +193,11 @@ class LookupPage(
         val view = webView
         if (!pageReady || view == null) return null
         return suspendCancellableCoroutine { continuation ->
-            view.evaluateJavascript(script) { result -> if (continuation.isActive) continuation.resume(result) }
+            evaluations += continuation
+            view.evaluateJavascript(script) { result ->
+                evaluations -= continuation
+                if (continuation.isActive) continuation.resume(result)
+            }
         }
     }
 
@@ -196,6 +210,15 @@ class LookupPage(
         container.removeAllViews()
         webView?.destroy()
         webView = null
+        pageReady = false
+        pendingScripts.clear()
+        abandonEvaluations()
+    }
+
+    private fun abandonEvaluations() {
+        val waiting = evaluations.toList()
+        evaluations.clear()
+        waiting.forEach { if (it.isActive) it.resume(null) }
     }
 
     /** Configuration waits for the page to be ready, which replays it; it does not bring back a reclaimed page. */
@@ -205,13 +228,13 @@ class LookupPage(
         if (pageReady) webView?.evaluateJavascript(script, null)
     }
 
-    private fun run(script: String) {
+    /** Until the page is ready, scripts queue up; a new view drops the queued ones, which only concern older views. */
+    private fun run(script: String, replacesView: Boolean = false) {
         val view = webView
         if (pageReady && view != null) {
             view.evaluateJavascript(script, null)
         } else {
-            // Only the latest view matters; configuration is replayed from `persistent`.
-            pendingScripts.clear()
+            if (replacesView) pendingScripts.clear()
             pendingScripts += script
             prepare()
         }
@@ -266,6 +289,7 @@ class LookupPage(
             pageReady = false
             pendingScripts.clear()
             webView = null
+            abandonEvaluations()
             // A renderer the system reclaimed from a hidden popup comes back with the next scan.
             if (shown || !reclaimable) {
                 prepare()
@@ -315,6 +339,9 @@ class LookupPage(
         fun onOpenApp() = post { noteActions?.onOpenApp() }
 
         @JavascriptInterface
+        fun onViewRestored() = post { noteActions?.onViewRestored() }
+
+        @JavascriptInterface
         fun onKanji(character: String) = post { callbacks.onKanji(character) }
 
         @JavascriptInterface
@@ -333,5 +360,6 @@ class LookupPage(
         const val HOST = "appassets.androidplatform.net"
         const val PAGE_URL = "https://$HOST/assets/popup/popup.html"
         const val MEDIA_PATH = "/media"
-        const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"    }
+        const val FONTS_PATH = "/${PageFonts.DIRECTORY}/"
+    }
 }

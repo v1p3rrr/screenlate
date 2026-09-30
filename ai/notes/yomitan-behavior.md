@@ -37,10 +37,11 @@ Definitions inside an entry: frequency order → dictionary order → score → 
 
 - Tags: `br ruby rt rp table thead tbody tfoot tr td th span div ol ul li details summary img a`.
 - `data: {k: v}` becomes `data-sc-k="v"`; dictionary `styles.css` targets these attributes (Kolobok relies on it).
-- `style` objects use camelCase CSS property names from a whitelist.
+- `style` objects use camelCase CSS property names from a whitelist. `render.js` applies the same list (`STYLE_PROPERTIES`); other properties are dropped.
 - Internal links look like `?query=…&wildcards=off&primary_reading=…`.
 - Images: `path`, `width`/`height` + `sizeUnits` (`px`/`em`), `appearance: monochrome` (render as a mask in text color), `collapsible`/`collapsed`, `background`, `border`, `borderRadius`. Jitendex ships AVIF illustrations and HanaMinA SVG glyphs.
 - Dictionary CSS is scoped as `[data-dictionary="<title>"] { … }` (CSS nesting). Kolobok's CSS uses nesting, `color-mix()` and `var(--font-size-no-units)`, `var(--text-color)`, `var(--fg)`.
+- `scopeCss` drops statement at-rules (`@charset`, `@import`, `@namespace`) and leaves `@keyframes` blocks unprefixed.
 
 ## Glossary shapes for "only meanings" copying (`definition.js`)
 

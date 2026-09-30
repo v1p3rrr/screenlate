@@ -77,3 +77,36 @@ test('glossary markup inlines structured content styles', () => {
 test('dictionary css is scoped to the glossary', () => {
     assert.match(anki.glossaryCss('.a { color: red }'), /\.yomitan-glossary \.a/);
 });
+
+test('statement at-rules do not swallow the next rule', () => {
+    const css = window.YomitanRender.scopeCss('@charset "utf-8";\n@import url(x.css);\n.a { color: red }', '.p');
+    assert.doesNotMatch(css, /@charset|@import/);
+    assert.match(css, /\.p \.a \{ color: red \}/);
+});
+
+test('keyframe selectors are kept as they are', () => {
+    const css = window.YomitanRender.scopeCss('@keyframes spin { from { opacity: 0 } 50% { opacity: 1 } }', '.p');
+    assert.match(css, /from \{ opacity: 0 \}/);
+    assert.doesNotMatch(css, /\.p from|\.p 50%/);
+});
+
+test('rules inside media queries are scoped', () => {
+    const css = window.YomitanRender.scopeCss('@media (min-width: 1px) { .a { color: red } }', '.p');
+    assert.match(css, /@media \(min-width: 1px\)/);
+    assert.match(css, /\.p \.a/);
+});
+
+test('kanji outside the basic plane get furigana of their own', () => {
+    const segments = window.YomitanRender.furiganaSegments('𠮟る', 'しかる');
+    assert.deepEqual(plain(segments), [['𠮟', 'しか'], ['る', '']]);
+});
+
+test('structured content keeps only the style properties Yomitan allows', () => {
+    const parent = window.document.createElement('div');
+    const node = { type: 'structured-content', content: { tag: 'span', style: { color: 'red', position: 'fixed', marginTop: 1 }, content: 'x' } };
+    window.YomitanRender.renderGlossary(parent, [node], 'D', {});
+    const span = parent.querySelector('.gloss-sc-span');
+    assert.equal(span.style.color, 'red');
+    assert.equal(span.style.position, '');
+    assert.equal(span.style.marginTop, '1em');
+});

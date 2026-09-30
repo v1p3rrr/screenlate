@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: module 5 done; committing. Next: module 6 (lookup page and rendering), run 1.
+Updated after every step so the work survives a context reset or a paused session: module 6 done (commit pending); next module 7 (Anki export), run 1. Owner said: do all modules without stopping (don't end the turn between modules).
 
 ## Progress
 
@@ -43,7 +43,7 @@ Updated after every step so the work survives a context reset or a paused sessio
 | 3 | OCR | 7 found, fixed | 4 found, fixed | 3 found, fixed | nothing found | see git log |
 | 4 | Dictionary registry, imports and catalog | 9 found: 8 fixed, 1 question (Q4) | 4 found, fixed | nothing found | not needed | see git log |
 | 5 | Lookup and engine | 8 found: 5 fixed, 2 questions (Q5, Q6), 1 deferred | 2 found, fixed | 2 found, fixed | nothing found | see git log |
-| 6 | Lookup page and rendering | | | | | |
+| 6 | Lookup page and rendering | 7 found: 6 fixed, 1 question (Q7) | 6 found, fixed | 1 found, fixed | nothing found | see git log |
 | 7 | Anki export | | | | | |
 | 8 | Audio | | | | | |
 | 11 | App shell, home, search and localization | | | | | |
@@ -260,6 +260,51 @@ The diff of runs 1 and 2. Two findings, fixed:
 
 The run 3 change: the extracted filter is the load's own, the check runs on IO without the repository lock (it only
 reads). Nothing found. All unit tests, the registry androidTests and the engine androidTests pass.
+
+### Module 6, run 1
+
+- Fixed: the popup's back button drew the earlier view with its note buttons reset and left `PopupNotes` pointing at
+  the pushed view's notes; the page now reports `onViewRestored` and the notes are marked again (no auto-play).
+- Fixed: `LookupPage.run` dropped a queued render when any other script (note states, audio menu) came in before the
+  page was ready; only a new view clears the queue now.
+- Fixed: `LookupPage.evaluate` never returned when the renderer died or the page was destroyed; waiting evaluations
+  get null. `destroy` also forgets the ready state and the queue.
+- Fixed: `scopeCss` took `@charset`/`@import`/`@namespace` plus the next rule for one at-rule (that rule stayed
+  unscoped) and prefixed keyframe selectors; statement at-rules are dropped, keyframes kept as they are.
+- Fixed: the results key joined expression and reading without a separator.
+- Fixed: stacked KDoc on `setActions`, the `PageState` KDoc on `PageTheme`, a misplaced brace.
+- Question Q7: the page has no Content-Security-Policy, so dictionary CSS can load remote resources.
+- Checked on the emulator: search screen, ➕ gives 📖, a kanji view and back keep 📖.
+
+### Module 6, run 2
+
+- Fixed: clips arriving after the loading audio menu was closed opened it again; they only fill a menu still open
+  for that entry.
+- Fixed: a menu (audio clips, "add anyway") stayed over a redrawn view and acted on the new view's entries; drawing
+  entries closes it.
+- Fixed: changing the entry buttons (`setActions`) redrew the entries and dropped the ➕/📖 states; they carry over.
+- Fixed: kanji views had only the kanji labels, so the selection's Copy button showed the raw key; every view gets
+  the common labels.
+- Fixed: structured content could set any CSS property (e.g. `position: fixed` over the popup); only Yomitan's list
+  of properties applies now.
+- Fixed: kanji outside the basic plane (𠮟) were not kanji for furigana and taps; the pattern covers Yomitan's CJK
+  ranges.
+- Checked on the emulator: search results with inflection, furigana and Jitendex styles.
+
+### Module 6, run 3
+
+The fixes of runs 1-2 hold: the queue keeps configuration out (it is replayed from `persistent`), evaluations are
+only touched on the main thread, the style list matches Yomitan's schema and the Jitendex entries still look the
+same. Found next to them:
+
+- Fixed: `Popup.update` (OCR status, theme; the app always sends the first view) replaced a view pushed by a link or
+  a kanji tap with the first view, back button still shown. Now it updates the first view in the history, and the
+  view on top takes only the theme and OCR status.
+
+### Module 6, run 4
+
+The `update` change: `history[0]` is always the first view, `current` is set whenever a view was pushed, a pushed
+view is never compact, so ⚠ stays in the header. Nothing found. Page tests (69) and unit tests pass.
 
 ## Deferred
 
