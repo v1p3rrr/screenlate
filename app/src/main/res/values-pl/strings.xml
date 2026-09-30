@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Import nie powiódł się: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: import nie powiódł się — %2$s</string>
     <string name="dictionaries_last_term">Co najmniej jeden słownik z definicjami musi pozostać włączony.</string>
+    <string name="dictionaries_remote_css">⚠ Jego style wczytują pliki z %1$s, który widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów się wczytują, inne pliki są blokowane.</string>
     <string name="dictionaries_import_no_space">Za mało wolnego miejsca, aby zaimportować %1$s: potrzeba około %2$s, wolne %3$s. Zwolnij miejsce i spróbuj ponownie.</string>
     <string name="dictionaries_installed">Zainstalowane</string>
     <string name="dictionaries_none">Brak zainstalowanych słowników.</string>
@@ -330,6 +331,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="css_problem_empty_font_name">Wiersz %1$d: pusta nazwa w font-family (o jeden przecinek za dużo?), przeglądarka pomija całą deklarację</string>
     <string name="css_problem_outside_rule">Wiersz %1$d: „%2$s” jest poza jakąkolwiek regułą { }</string>
     <string name="css_problem_unknown_font">Wiersz %1$d: telefon nie ma czcionki „%2$s”, używana jest następna z listy lub czcionka okienka</string>
+    <string name="css_problem_remote_file">Wiersz %1$d: wczytuje plik z %2$s, który widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów z internetu się wczytują, inne pliki są blokowane.</string>
     <string name="yomitan_section_appearance">Wygląd okienka</string>
     <string name="yomitan_section_appearance_hint">Rozmiar tekstu i własny CSS okienka</string>
     <string name="yomitan_summary_font_size">Rozmiar tekstu %1$d</string>

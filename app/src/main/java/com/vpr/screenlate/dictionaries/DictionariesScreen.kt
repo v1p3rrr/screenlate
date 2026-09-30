@@ -172,6 +172,7 @@ fun DictionariesScreen(
                         },
                         onEditLanguages = { editingLanguages = dictionary },
                         links = state.links[dictionary.id],
+                        remoteHosts = state.remoteCss[dictionary.title].orEmpty(),
                         sort = if (section.kind == DictionaryKind.FREQUENCY) {
                             SortChoice(dictionary.id == state.sortDictionaryId) { viewModel.setSortDictionary(dictionary) }
                         } else {
@@ -272,6 +273,7 @@ private fun DictionaryCard(
     onDelete: () -> Unit,
     onEditLanguages: () -> Unit,
     links: DictionaryLinks?,
+    remoteHosts: List<String> = emptyList(),
     sort: SortChoice? = null,
 ) {
     var expanded by rememberSaveable(dictionary.id) { mutableStateOf(false) }
@@ -298,6 +300,13 @@ private fun DictionaryCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (remoteHosts.isNotEmpty()) {
+                    Text(
+                        stringResource(R.string.dictionaries_remote_css, remoteHosts.joinToString(", ")),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
                 if (sort != null && dictionary.enabled) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(selected = sort.selected, onClick = sort.onSelect)

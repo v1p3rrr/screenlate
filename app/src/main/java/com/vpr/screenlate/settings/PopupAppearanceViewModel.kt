@@ -178,12 +178,13 @@ class PopupAppearanceViewModel @Inject constructor(
         const val CSS_SAVE_DELAY_MS = 400L
         val LANGUAGE = Language.JAPANESE
 
-        /** Syntax problems of [css], then the fonts it names that the page cannot show. */
+        /** Syntax problems of [css], the fonts it names that the page cannot show, then the files it loads from the internet. */
         fun cssIssues(css: String, installed: List<InstalledFont>): List<CssCheck.Issue> {
             if (css.isBlank()) return emptyList()
             val result = CssCheck.analyze(css)
             val system = LANGUAGE.support.systemFonts
-            return result.issues + CssCheck.unknownFonts(result) { PageFonts.isAvailable(it, system, installed) }
+            return result.issues + CssCheck.unknownFonts(result) { PageFonts.isAvailable(it, system, installed) } +
+                CssCheck.remoteFiles(css)
         }
     }
 }

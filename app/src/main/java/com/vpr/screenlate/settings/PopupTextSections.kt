@@ -316,6 +316,7 @@ private fun issueText(issue: CssCheck.Issue): String = stringResource(
         CssCheck.Problem.EMPTY_FONT_NAME -> R.string.css_problem_empty_font_name
         CssCheck.Problem.OUTSIDE_RULE -> R.string.css_problem_outside_rule
         CssCheck.Problem.UNKNOWN_FONT -> R.string.css_problem_unknown_font
+        CssCheck.Problem.REMOTE_FILE -> R.string.css_problem_remote_file
     },
     issue.line,
     issue.detail,

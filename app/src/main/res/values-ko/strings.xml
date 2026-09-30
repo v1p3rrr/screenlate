@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">가져오기 실패: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: 가져오기 실패 — %2$s</string>
     <string name="dictionaries_last_term">정의가 있는 사전이 하나 이상 켜져 있어야 합니다.</string>
+    <string name="dictionaries_remote_css">⚠ 이 사전의 스타일은 %1$s에서 파일을 불러오며, 이 서버는 단어를 찾는 시점을 알 수 있습니다. 글꼴과 스타일시트는 불러오고 다른 파일은 차단됩니다.</string>
     <string name="dictionaries_import_no_space">%1$s을(를) 가져올 여유 공간이 부족합니다. 약 %2$s가 필요하고 %3$s가 남아 있습니다. 공간을 확보한 뒤 다시 시도하세요.</string>
     <string name="dictionaries_installed">설치됨</string>
     <string name="dictionaries_none">설치된 사전이 없습니다.</string>
@@ -330,6 +331,7 @@
     <string name="css_problem_empty_font_name">%1$d번째 줄: font-family에 빈 이름이 있습니다(쉼표가 하나 더?). 브라우저가 선언 전체를 건너뜁니다</string>
     <string name="css_problem_outside_rule">%1$d번째 줄: ‘%2$s’이(가) 어떤 규칙 { } 안에도 없습니다</string>
     <string name="css_problem_unknown_font">%1$d번째 줄: 휴대폰에 ‘%2$s’ 글꼴이 없어 목록의 다음 글꼴이나 팝업 글꼴을 사용합니다</string>
+    <string name="css_problem_remote_file">%1$d번째 줄: %2$s에서 파일을 불러오며, 이 서버는 단어를 찾는 시점을 알 수 있습니다. 인터넷의 글꼴과 스타일시트는 불러오고 다른 파일은 차단됩니다.</string>
     <string name="yomitan_section_appearance">팝업 모양</string>
     <string name="yomitan_section_appearance_hint">글자 크기와 팝업 사용자 CSS</string>
     <string name="yomitan_summary_font_size">글자 크기 %1$d</string>

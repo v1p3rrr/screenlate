@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Error al importar: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: error al importar — %2$s</string>
     <string name="dictionaries_last_term">Al menos un diccionario con definiciones debe seguir activado.</string>
+    <string name="dictionaries_remote_css">⚠ Sus estilos cargan archivos de %1$s, que así ve cuándo buscas palabras. Las fuentes y hojas de estilo se cargan; los demás archivos se bloquean.</string>
     <string name="dictionaries_import_no_space">No hay espacio suficiente para importar %1$s: se necesitan unos %2$s y quedan %3$s libres. Libera espacio y vuelve a intentarlo.</string>
     <string name="dictionaries_installed">Instalados</string>
     <string name="dictionaries_none">No hay diccionarios instalados.</string>
@@ -330,6 +331,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="css_problem_empty_font_name">Línea %1$d: un nombre vacío en font-family (¿una coma de más?), el navegador omite toda la declaración</string>
     <string name="css_problem_outside_rule">Línea %1$d: «%2$s» está fuera de cualquier regla { }</string>
     <string name="css_problem_unknown_font">Línea %1$d: el teléfono no tiene la fuente «%2$s», se usa la siguiente de la lista o la de la ventana emergente</string>
+    <string name="css_problem_remote_file">Línea %1$d: carga un archivo de %2$s, que así ve cuándo buscas palabras. Las fuentes y hojas de estilo de internet se cargan; los demás archivos se bloquean.</string>
     <string name="yomitan_section_appearance">Apariencia de la ventana emergente</string>
     <string name="yomitan_section_appearance_hint">Tamaño del texto y CSS personalizado de la ventana</string>
     <string name="yomitan_summary_font_size">Tamaño del texto %1$d</string>

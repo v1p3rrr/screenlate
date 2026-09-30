@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">インポートに失敗しました：%1$s</string>
     <string name="dictionaries_import_failed_named">%1$s：インポートに失敗しました（%2$s）</string>
     <string name="dictionaries_last_term">定義のある辞書を少なくとも 1 つ有効にしておく必要があります。</string>
+    <string name="dictionaries_remote_css">⚠ この辞書のスタイルは %1$s からファイルを読み込みます。このサーバーには単語を調べたタイミングが伝わります。フォントとスタイルシートは読み込まれ、その他のファイルはブロックされます。</string>
     <string name="dictionaries_import_no_space">%1$s をインポートする空き容量が足りません。約 %2$s 必要で、空きは %3$s です。容量を空けてからもう一度お試しください。</string>
     <string name="dictionaries_installed">インストール済み</string>
     <string name="dictionaries_none">辞書がインストールされていません。</string>
@@ -330,6 +331,7 @@
     <string name="css_problem_empty_font_name">%1$d 行目：font-family に空の名前があります（カンマが多い？）。ブラウザーは宣言全体を無視します</string>
     <string name="css_problem_outside_rule">%1$d 行目：「%2$s」がどのルール { } にも入っていません</string>
     <string name="css_problem_unknown_font">%1$d 行目：端末にフォント「%2$s」がありません。リストの次のフォントかポップアップのフォントが使われます</string>
+    <string name="css_problem_remote_file">%1$d 行目：%2$s からファイルを読み込みます。このサーバーには単語を調べたタイミングが伝わります。インターネットのフォントとスタイルシートは読み込まれ、その他のファイルはブロックされます。</string>
     <string name="yomitan_section_appearance">ポップアップの外観</string>
     <string name="yomitan_section_appearance_hint">文字サイズとポップアップのカスタム CSS</string>
     <string name="yomitan_summary_font_size">文字サイズ %1$d</string>

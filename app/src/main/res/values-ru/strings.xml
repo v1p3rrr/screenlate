@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Не удалось импортировать: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: не удалось импортировать — %2$s</string>
     <string name="dictionaries_last_term">Хотя бы один словарь с определениями должен остаться включённым.</string>
+    <string name="dictionaries_remote_css">⚠ Его стили загружают файлы с %1$s, и этот сервер видит, когда вы ищете слова. Шрифты и стили загружаются, остальные файлы блокируются.</string>
     <string name="dictionaries_import_no_space">Не хватает места для импорта %1$s: нужно около %2$s, свободно %3$s. Освободите место и попробуйте снова.</string>
     <string name="dictionaries_installed">Установленные</string>
     <string name="dictionaries_none">Словари не установлены.</string>
@@ -331,6 +332,7 @@
     <string name="css_problem_empty_font_name">Строка %1$d: пустое имя в font-family (лишняя запятая?), браузер пропустит всё объявление</string>
     <string name="css_problem_outside_rule">Строка %1$d: «%2$s» стоит вне правила { }</string>
     <string name="css_problem_unknown_font">Строка %1$d: шрифта «%2$s» нет на телефоне, будет следующий из списка или шрифт попапа</string>
+    <string name="css_problem_remote_file">Строка %1$d: загружает файл с %2$s, и этот сервер видит, когда вы ищете слова. Шрифты и стили из интернета загружаются, остальные файлы блокируются.</string>
     <string name="yomitan_section_appearance">Оформление попапа</string>
     <string name="yomitan_section_appearance_hint">Размер текста и свой CSS попапа</string>
     <string name="yomitan_summary_font_size">Размер текста %1$d</string>

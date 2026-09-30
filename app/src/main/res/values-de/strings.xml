@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Import fehlgeschlagen: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: Import fehlgeschlagen – %2$s</string>
     <string name="dictionaries_last_term">Mindestens ein Wörterbuch mit Definitionen muss aktiv bleiben.</string>
+    <string name="dictionaries_remote_css">⚠ Seine Stile laden Dateien von %1$s, das dann sieht, wann du Wörter nachschlägst. Schriften und Stylesheets werden geladen, andere Dateien blockiert.</string>
     <string name="dictionaries_import_no_space">Nicht genug freier Speicher für %1$s: etwa %2$s nötig, %3$s frei. Gib Speicher frei und versuche es erneut.</string>
     <string name="dictionaries_installed">Installiert</string>
     <string name="dictionaries_none">Keine Wörterbücher installiert.</string>
@@ -330,6 +331,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="css_problem_empty_font_name">Zeile %1$d: ein leerer Name in font-family (ein Komma zu viel?), der Browser überspringt die ganze Deklaration</string>
     <string name="css_problem_outside_rule">Zeile %1$d: „%2$s“ steht außerhalb jeder Regel { }</string>
     <string name="css_problem_unknown_font">Zeile %1$d: Das Telefon hat keine Schrift „%2$s“, die nächste in der Liste oder die Popup-Schrift wird verwendet</string>
+    <string name="css_problem_remote_file">Zeile %1$d: lädt eine Datei von %2$s, das dann sieht, wann du Wörter nachschlägst. Schriften und Stylesheets aus dem Internet werden geladen, andere Dateien blockiert.</string>
     <string name="yomitan_section_appearance">Popup-Darstellung</string>
     <string name="yomitan_section_appearance_hint">Textgröße und eigenes Popup-CSS</string>
     <string name="yomitan_summary_font_size">Textgröße %1$d</string>

@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Échec de l’import : %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s : échec de l’import — %2$s</string>
     <string name="dictionaries_last_term">Au moins un dictionnaire avec des définitions doit rester activé.</string>
+    <string name="dictionaries_remote_css">⚠ Ses styles chargent des fichiers depuis %1$s, qui voit alors quand vous cherchez des mots. Les polices et feuilles de style se chargent, les autres fichiers sont bloqués.</string>
     <string name="dictionaries_import_no_space">Pas assez d’espace libre pour importer %1$s : environ %2$s nécessaires, %3$s libres. Libérez de l’espace et réessayez.</string>
     <string name="dictionaries_installed">Installés</string>
     <string name="dictionaries_none">Aucun dictionnaire installé.</string>
@@ -330,6 +331,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="css_problem_empty_font_name">Ligne %1$d : un nom vide dans font-family (une virgule de trop ?), le navigateur ignore toute la déclaration</string>
     <string name="css_problem_outside_rule">Ligne %1$d : « %2$s » est en dehors de toute règle { }</string>
     <string name="css_problem_unknown_font">Ligne %1$d : le téléphone n’a pas de police « %2$s », la suivante de la liste ou la police de la fenêtre contextuelle est utilisée</string>
+    <string name="css_problem_remote_file">Ligne %1$d : charge un fichier depuis %2$s, qui voit alors quand vous cherchez des mots. Les polices et feuilles de style d’internet se chargent, les autres fichiers sont bloqués.</string>
     <string name="yomitan_section_appearance">Apparence de la fenêtre contextuelle</string>
     <string name="yomitan_section_appearance_hint">Taille du texte et CSS personnalisé de la fenêtre</string>
     <string name="yomitan_summary_font_size">Taille du texte %1$d</string>

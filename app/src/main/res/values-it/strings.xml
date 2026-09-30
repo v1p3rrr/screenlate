@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Importazione non riuscita: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: importazione non riuscita — %2$s</string>
     <string name="dictionaries_last_term">Almeno un dizionario con definizioni deve restare attivo.</string>
+    <string name="dictionaries_remote_css">⚠ I suoi stili caricano file da %1$s, che così vede quando cerchi parole. Font e fogli di stile vengono caricati, gli altri file sono bloccati.</string>
     <string name="dictionaries_import_no_space">Spazio libero insufficiente per importare %1$s: servono circa %2$s, liberi %3$s. Libera spazio e riprova.</string>
     <string name="dictionaries_installed">Installati</string>
     <string name="dictionaries_none">Nessun dizionario installato.</string>
@@ -330,6 +331,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="css_problem_empty_font_name">Riga %1$d: un nome vuoto in font-family (una virgola di troppo?), il browser salta l’intera dichiarazione</string>
     <string name="css_problem_outside_rule">Riga %1$d: “%2$s” è fuori da qualsiasi regola { }</string>
     <string name="css_problem_unknown_font">Riga %1$d: il telefono non ha il carattere “%2$s”, si usa il successivo nell’elenco o il carattere del popup</string>
+    <string name="css_problem_remote_file">Riga %1$d: carica un file da %2$s, che così vede quando cerchi parole. Font e fogli di stile da internet vengono caricati, gli altri file sono bloccati.</string>
     <string name="yomitan_section_appearance">Aspetto del popup</string>
     <string name="yomitan_section_appearance_hint">Dimensione del testo e CSS personalizzato del popup</string>
     <string name="yomitan_summary_font_size">Dimensione del testo %1$d</string>

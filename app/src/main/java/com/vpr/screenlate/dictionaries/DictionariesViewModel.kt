@@ -3,6 +3,8 @@ package com.vpr.screenlate.dictionaries
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
@@ -13,13 +15,16 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
+import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -45,6 +50,8 @@ data class DictionariesState(
     val sortDictionaryId: Long? = null,
     /** Website and download links by dictionary id. */
     val links: Map<Long, DictionaryLinks> = emptyMap(),
+    /** Hosts that the styles of a switched on dictionary load files from, by dictionary title. */
+    val remoteCss: Map<String, List<String>> = emptyMap(),
     val loaded: Boolean = false,
 )
 
@@ -57,6 +64,7 @@ class DictionariesViewModel @Inject constructor(
     private val imports: DictionaryImports,
     private val dictionaryUpdates: DictionaryUpdates,
     private val bundled: BundledDictionaries,
+    private val lookup: DictionaryLookup,
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
@@ -70,7 +78,8 @@ class DictionariesViewModel @Inject constructor(
         imports.tasks,
         catalog.entries(),
         repository.sortDictionaryId,
-    ) { dictionaries, tasks, entries, sortId ->
+        repository.dictionaries.map { remoteCss() },
+    ) { dictionaries, tasks, entries, sortId, remoteCss ->
         val running = tasks.filter { !it.finished }.map { it.name }.toSet()
         val items = entries.map { entry ->
             CatalogItem(entry, installed = dictionaries.any(entry::matches), inProgress = entry.title in running)
@@ -88,9 +97,21 @@ class DictionariesViewModel @Inject constructor(
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
             },
+            remoteCss = remoteCss,
             loaded = true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionariesState())
+
+    /** Only the loaded dictionaries have styles; a switched on or imported one changes the registry and is checked then. */
+    private suspend fun remoteCss(): Map<String, List<String>> = try {
+        Language.entries.flatMap { lookup.styles(it) }
+            .associate { style -> style.dictionary to CssCheck.remoteFiles(style.css).map { it.detail }.distinct() }
+            .filterValues { it.isNotEmpty() }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        emptyMap()
+    }
 
     /** Error from copying a picked file, before the import is queued. */
     val importError: StateFlow<String?> = copyError

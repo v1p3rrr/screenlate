@@ -96,4 +96,32 @@ class CssCheckTest {
         val unknown = CssCheck.unknownFonts(result) { false }
         assertThat(unknown).containsExactly(CssCheck.Issue(3, Problem.UNKNOWN_FONT, "Missing"))
     }
+
+    @Test
+    fun `finds files loaded from the internet with their lines and hosts`() {
+        val css = listOf(
+            "@import url(\"https://Fonts.Example.com/css?family=A\");",
+            ".a { background: url( 'http://img.example.org:8080/x.png' ) }",
+            "@import '//cdn.example.net/b.css';",
+            ".b { background: url(//img.example.org/y.png) }",
+        ).joinToString("\n")
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(
+            CssCheck.Issue(1, Problem.REMOTE_FILE, "fonts.example.com"),
+            CssCheck.Issue(2, Problem.REMOTE_FILE, "img.example.org"),
+            CssCheck.Issue(3, Problem.REMOTE_FILE, "cdn.example.net"),
+            CssCheck.Issue(4, Problem.REMOTE_FILE, "img.example.org"),
+        ).inOrder()
+    }
+
+    @Test
+    fun `ignores local files, data and commented out urls`() {
+        val css = listOf(
+            "/* old: url(https://a.example.com/x.png)",
+            "   @import 'https://b.example.com/c.css'; */",
+            ".a { background: url(data:image/png;base64,AAAA) }",
+            ".b { background: url(img/x.png); src: local(\"X\") }",
+            ".c { background: url(https://c.example.com/y.png) }",
+        ).joinToString("\n")
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(CssCheck.Issue(5, Problem.REMOTE_FILE, "c.example.com"))
+    }
 }

@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">İçe aktarma başarısız: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: içe aktarma başarısız — %2$s</string>
     <string name="dictionaries_last_term">Tanım içeren en az bir sözlük açık kalmalıdır.</string>
+    <string name="dictionaries_remote_css">⚠ Stilleri %1$s adresinden dosya yükler; bu sunucu kelime aradığınızı görür. Yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
     <string name="dictionaries_import_no_space">%1$s içe aktarmak için yeterli boş alan yok: yaklaşık %2$s gerekli, %3$s boş. Yer açıp yeniden deneyin.</string>
     <string name="dictionaries_installed">Yüklü</string>
     <string name="dictionaries_none">Yüklü sözlük yok.</string>
@@ -330,6 +331,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="css_problem_empty_font_name">Satır %1$d: font-family içinde boş bir ad (fazladan bir virgül mü?), tarayıcı tüm bildirimi atlar</string>
     <string name="css_problem_outside_rule">Satır %1$d: “%2$s” hiçbir { } kuralının içinde değil</string>
     <string name="css_problem_unknown_font">Satır %1$d: telefonda “%2$s” yazı tipi yok, listedeki sonraki veya açılır pencere yazı tipi kullanılır</string>
+    <string name="css_problem_remote_file">Satır %1$d: %2$s adresinden dosya yükler; bu sunucu kelime aradığınızı görür. İnternetten yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
     <string name="yomitan_section_appearance">Açılır pencere görünümü</string>
     <string name="yomitan_section_appearance_hint">Metin boyutu ve özel açılır pencere CSS’i</string>
     <string name="yomitan_summary_font_size">Metin boyutu %1$d</string>

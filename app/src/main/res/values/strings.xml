@@ -36,6 +36,7 @@
     <string name="dictionaries_import_failed">Import failed: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: import failed — %2$s</string>
     <string name="dictionaries_last_term">At least one dictionary with definitions must stay on.</string>
+    <string name="dictionaries_remote_css">⚠ Its styles load files from %1$s, which then sees when you look up words. Fonts and stylesheets load, other files are blocked.</string>
     <string name="dictionaries_import_no_space">Not enough free space to import %1$s: about %2$s needed, %3$s free. Free up space and try again.</string>
     <string name="dictionaries_installed">Installed</string>
     <string name="dictionaries_none">No dictionaries installed.</string>
@@ -333,6 +334,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="css_problem_empty_font_name">Line %1$d: an empty name in font-family (a comma too many?), the browser skips the whole declaration</string>
     <string name="css_problem_outside_rule">Line %1$d: “%2$s” is outside of any rule { }</string>
     <string name="css_problem_unknown_font">Line %1$d: the phone has no font “%2$s”, the next one in the list or the popup font is used</string>
+    <string name="css_problem_remote_file">Line %1$d: loads a file from %2$s, which then sees when you look up words. Fonts and stylesheets from the internet load, other files are blocked.</string>
     <string name="yomitan_section_appearance">Popup appearance</string>
     <string name="yomitan_section_appearance_hint">Text size and custom popup CSS</string>
     <string name="yomitan_summary_font_size">Text size %1$d</string>

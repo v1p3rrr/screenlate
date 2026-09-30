@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">Nhập thất bại: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: nhập thất bại — %2$s</string>
     <string name="dictionaries_last_term">Phải giữ bật ít nhất một từ điển có định nghĩa.</string>
+    <string name="dictionaries_remote_css">⚠ Kiểu của từ điển này tải tệp từ %1$s, máy chủ này sẽ biết khi bạn tra từ. Phông chữ và bảng định kiểu vẫn tải, các tệp khác bị chặn.</string>
     <string name="dictionaries_import_no_space">Không đủ dung lượng trống để nhập %1$s: cần khoảng %2$s, còn trống %3$s. Hãy giải phóng dung lượng và thử lại.</string>
     <string name="dictionaries_installed">Đã cài</string>
     <string name="dictionaries_none">Chưa cài từ điển nào.</string>
@@ -330,6 +331,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="css_problem_empty_font_name">Dòng %1$d: tên trống trong font-family (thừa dấu phẩy?), trình duyệt bỏ qua toàn bộ khai báo</string>
     <string name="css_problem_outside_rule">Dòng %1$d: “%2$s” nằm ngoài mọi quy tắc { }</string>
     <string name="css_problem_unknown_font">Dòng %1$d: điện thoại không có phông chữ “%2$s”, phông tiếp theo trong danh sách hoặc phông chữ của cửa sổ bật lên được dùng</string>
+    <string name="css_problem_remote_file">Dòng %1$d: tải tệp từ %2$s, máy chủ này sẽ biết khi bạn tra từ. Phông chữ và bảng định kiểu từ internet vẫn tải, các tệp khác bị chặn.</string>
     <string name="yomitan_section_appearance">Hiển thị cửa sổ bật lên</string>
     <string name="yomitan_section_appearance_hint">Cỡ chữ và CSS tùy chỉnh của cửa sổ bật lên</string>
     <string name="yomitan_summary_font_size">Cỡ chữ %1$d</string>

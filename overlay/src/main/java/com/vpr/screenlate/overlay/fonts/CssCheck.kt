@@ -30,6 +30,12 @@ object CssCheck {
 
         /** A font the phone does not have; the next font of the list is used. */
         UNKNOWN_FONT,
+
+        /**
+         * A file from the internet (`url(https://...)`, `@import "https://..."`); the detail is its host. The lookup
+         * page lets stylesheets and fonts through and blocks the rest, and the server sees when a lookup shows it.
+         */
+        REMOTE_FILE,
     }
 
     /** @param detail the font name, the property or the text near the problem. */
@@ -66,12 +72,36 @@ object CssCheck {
         }
     }
 
+    /** [Problem.REMOTE_FILE] issues of [css], one for each host on a line. */
+    fun remoteFiles(css: String): List<Issue> {
+        // Comments are blanked out, keeping line breaks so lines stay where they were.
+        val text = COMMENT.replace(css) { comment -> comment.value.replace(NOT_NEWLINE, " ") }
+        val lines = text.indices.filter { text[it] == '\n' }.toIntArray()
+        return REMOTE.findAll(text)
+            .map { match ->
+                val found = lines.binarySearch(match.range.first)
+                val line = (if (found >= 0) found else -found - 1) + 1
+                Issue(line, Problem.REMOTE_FILE, match.groupValues[1].lowercase())
+            }
+            .distinct()
+            .toList()
+    }
+
     /** Appends [fallback] (a font-family list) to every appendable `font-family` declaration. */
     fun withFallback(css: String, families: List<FontFamily>, fallback: String): String {
         val out = StringBuilder(css)
         families.filter { it.appendable }.sortedByDescending { it.end }.forEach { out.insert(it.end, ", $fallback") }
         return out.toString()
     }
+
+    private val COMMENT = Regex("""/\*.*?(\*/|$)""", RegexOption.DOT_MATCHES_ALL)
+    private val NOT_NEWLINE = Regex("""[^\n]""")
+
+    /** `url(` or `@import` followed by an absolute or protocol-relative web address; group 1 is the host. */
+    private val REMOTE = Regex(
+        """(?:url\(|@import)\s*['"]?\s*(?:https?:)?//([^/'")\s?#:]+)""",
+        RegexOption.IGNORE_CASE,
+    )
 
     private val PROPERTY = Regex("-{0,2}[A-Za-z_][A-Za-z0-9_-]*")
     private val CSS_WIDE_KEYWORDS = setOf("inherit", "initial", "unset", "revert", "revert-layer")

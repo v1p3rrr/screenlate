@@ -34,6 +34,7 @@
     <string name="dictionaries_import_failed">匯入失敗：%1$s</string>
     <string name="dictionaries_import_failed_named">%1$s：匯入失敗（%2$s）</string>
     <string name="dictionaries_last_term">至少要保留一個啟用的帶釋義詞典。</string>
+    <string name="dictionaries_remote_css">⚠ 此詞典的樣式從 %1$s 載入檔案，該伺服器會知道你何時查詞。字型和樣式表會載入，其他檔案會被封鎖。</string>
     <string name="dictionaries_import_no_space">剩餘空間不足，無法匯入 %1$s：約需 %2$s，剩餘 %3$s。請釋放空間後重試。</string>
     <string name="dictionaries_installed">已安裝</string>
     <string name="dictionaries_none">未安裝任何詞典。</string>
@@ -330,6 +331,7 @@
     <string name="css_problem_empty_font_name">第 %1$d 行：font-family 中有空名稱（多了一個逗號？），瀏覽器會跳過整條宣告</string>
     <string name="css_problem_outside_rule">第 %1$d 行：「%2$s」不在任何規則 { } 之內</string>
     <string name="css_problem_unknown_font">第 %1$d 行：手機上沒有字型「%2$s」，將使用清單中的下一個字型或彈出視窗字型</string>
+    <string name="css_problem_remote_file">第 %1$d 行：從 %2$s 載入檔案，該伺服器會知道你何時查詞。來自網際網路的字型和樣式表會載入，其他檔案會被封鎖。</string>
     <string name="yomitan_section_appearance">彈出視窗外觀</string>
     <string name="yomitan_section_appearance_hint">文字大小和彈出視窗自訂 CSS</string>
     <string name="yomitan_summary_font_size">文字大小 %1$d</string>
