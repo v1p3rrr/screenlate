@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: all modules reviewed (1-13) and the deferred module 9/10 fixes done; next is asking the owner Q1-Q10 from the questions file.
+Updated after every step so the work survives a context reset or a paused session: all modules reviewed and the deferred fixes done; the owner answered Q1-Q10 (see the questions file); next is implementing Q1-Q8 and Q10.
 
 ## Progress
 
@@ -578,3 +578,5 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
 - 2026-09-30: owner asked to discuss later how ➕ behaves on a draft or an old popup and whether ➕ should cancel the
   cloud request (questions Q1, Q2).
 - 2026-09-30: owner asked to stop once the weekly usage limit passes 92% (finish the module in progress first; check usage after each module).
+- 2026-09-30: owner answered Q1-Q4 of the questions file (➕ grey until the final result with a hint on tap, active at once for app-text words, a new scan closes the old popup; no cloud cancel on ➕; remember deleted bundled dictionaries; name and reason on failed import cards).
+- 2026-09-30: owner answered Q5-Q10 (two no-dictionary texts and no switching off or deleting the last dictionary with definitions; all engine candidates before the cut; CSP plus remote-CSS warnings; vendor path only on that vendor; Q9 kept; keyboard only for an empty search). Next: implement the answers Q1-Q8 and Q10.
