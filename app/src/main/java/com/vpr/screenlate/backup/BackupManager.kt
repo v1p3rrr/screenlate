@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
+import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
 import com.vpr.screenlate.overlay.fonts.PopupFonts
 import com.vpr.screenlate.settings.EInkSizes
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -71,6 +72,7 @@ data class RestoreSummary(
     val failed: List<String>,
     val listApplied: Boolean,
     val missing: List<String>,
+    val keptOn: List<String> = emptyList(),
 )
 
 /**
@@ -225,11 +227,15 @@ class BackupManager @Inject constructor(
             }
             if (BackupSection.POPUP in sections) fontCount = fonts.restore(fontDirectory)
             var missing = emptyList<String>()
+            var keptOn = emptyList<String>()
             if (BackupSection.DICTIONARY_LIST in sections) {
-                val outcome = BackupDictionaries.applyList(dictionaries.getAll(), head.dictionaries.dictionaries)
+                val installed = dictionaries.getAll()
+                val outcome = BackupDictionaries.applyList(installed, head.dictionaries.dictionaries)
                 val sortId = head.dictionaries.sortDictionary?.let { BackupDictionaries.match(outcome.updated, it)?.id }
-                dictionaries.applyStates(outcome.updated, sortId)
+                val kept = keptTermDictionaries(installed, outcome.updated).mapTo(hashSetOf()) { it.id }
+                dictionaries.applyStates(outcome.updated.map { if (it.id in kept) it.copy(enabled = true) else it }, sortId)
                 missing = outcome.missing
+                keptOn = outcome.updated.filter { it.id in kept }.map { it.title }
             }
             return RestoreSummary(
                 settings = sections.filter { it in PREFERENCE_SECTIONS && it in head.manifest.sections },
@@ -238,6 +244,7 @@ class BackupManager @Inject constructor(
                 failed = failed,
                 listApplied = BackupSection.DICTIONARY_LIST in sections,
                 missing = missing,
+                keptOn = keptOn,
             )
         } finally {
             fontDirectory.deleteRecursively()

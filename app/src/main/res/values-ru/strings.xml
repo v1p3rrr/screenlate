@@ -489,4 +489,5 @@
     </plurals>
     <string name="backup_summary_failed">Не восстановлены: %1$s</string>
     <string name="backup_summary_missing">Не установлены, их настройки пропущены: %1$s</string>
+    <string name="dictionaries_kept_on">Оставлены включёнными, иначе не был бы включён ни один словарь с определениями: %1$s</string>
 </resources>

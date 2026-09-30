@@ -203,6 +203,9 @@ private fun Summary(summary: RestoreSummary) {
     if (summary.missing.isNotEmpty()) {
         SummaryLine(stringResource(R.string.backup_summary_missing, summary.missing.joinToString(", ")), warning = true)
     }
+    if (summary.keptOn.isNotEmpty()) {
+        SummaryLine(stringResource(R.string.dictionaries_kept_on, summary.keptOn.joinToString(", ")), warning = true)
+    }
 }
 
 @Composable

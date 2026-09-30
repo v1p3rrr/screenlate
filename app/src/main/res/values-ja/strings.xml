@@ -473,4 +473,5 @@
     </plurals>
     <string name="backup_summary_failed">復元されなかった部分：%1$s</string>
     <string name="backup_summary_missing">インストールされていないため、設定をスキップしました：%1$s</string>
+    <string name="dictionaries_kept_on">定義のある辞書がすべてオフになるため、オンのままにしました: %1$s</string>
 </resources>

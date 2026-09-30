@@ -473,4 +473,5 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     </plurals>
     <string name="backup_summary_failed">Chưa khôi phục: %1$s</string>
     <string name="backup_summary_missing">Chưa cài, nên cài đặt của chúng bị bỏ qua: %1$s</string>
+    <string name="dictionaries_kept_on">Vẫn bật, nếu không sẽ không có từ điển có định nghĩa nào được bật: %1$s</string>
 </resources>

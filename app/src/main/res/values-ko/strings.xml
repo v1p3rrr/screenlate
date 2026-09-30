@@ -473,4 +473,5 @@
     </plurals>
     <string name="backup_summary_failed">복원되지 않음: %1$s</string>
     <string name="backup_summary_missing">설치되지 않아 설정을 건너뜀: %1$s</string>
+    <string name="dictionaries_kept_on">정의가 있는 사전이 모두 꺼지므로 켜진 상태로 두었습니다: %1$s</string>
 </resources>

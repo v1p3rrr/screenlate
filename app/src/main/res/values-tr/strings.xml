@@ -478,4 +478,5 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     </plurals>
     <string name="backup_summary_failed">Geri yüklenmedi: %1$s</string>
     <string name="backup_summary_missing">Yüklü değil, bu yüzden ayarları atlandı: %1$s</string>
+    <string name="dictionaries_kept_on">Açık bırakıldı, yoksa tanımlı hiçbir sözlük açık olmazdı: %1$s</string>
 </resources>

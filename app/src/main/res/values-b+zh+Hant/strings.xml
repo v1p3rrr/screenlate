@@ -473,4 +473,5 @@
     </plurals>
     <string name="backup_summary_failed">未恢復：%1$s</string>
     <string name="backup_summary_missing">未安裝，因此跳過了其設定：%1$s</string>
+    <string name="dictionaries_kept_on">已保持開啟，否則沒有任何附釋義的詞典處於開啟狀態：%1$s</string>
 </resources>

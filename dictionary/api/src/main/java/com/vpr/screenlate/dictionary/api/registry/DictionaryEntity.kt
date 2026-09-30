@@ -56,3 +56,20 @@ fun DictionaryEntity.isLastTermDictionary(all: List<DictionaryEntity>): Boolean 
     enabled && termCount > 0 && Language.entries.any { language ->
         isFor(language) && all.none { it.id != id && it.enabled && it.termCount > 0 && it.isFor(language) }
     }
+
+/**
+ * Dictionaries that an import's switches (from [before] to [after], both full lists) turn off although a language
+ * that had an enabled dictionary with definitions would then have none: per such language the first of [after]'s
+ * order that was on before. Imports keep them on, as the Dictionaries screen does.
+ */
+fun keptTermDictionaries(before: List<DictionaryEntity>, after: List<DictionaryEntity>): List<DictionaryEntity> {
+    val wasOn = before.filter { it.enabled && it.termCount > 0 }.mapTo(hashSetOf()) { it.id }
+    val kept = mutableListOf<DictionaryEntity>()
+    for (language in Language.entries) {
+        if (before.none { it.id in wasOn && it.isFor(language) }) continue
+        val terms = after.filter { it.termCount > 0 && it.isFor(language) }
+        if (terms.any { it.enabled || kept.any { k -> k.id == it.id } }) continue
+        terms.firstOrNull { it.id in wasOn }?.let { kept += it }
+    }
+    return kept
+}

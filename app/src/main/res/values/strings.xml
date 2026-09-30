@@ -481,4 +481,5 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     </plurals>
     <string name="backup_summary_failed">Not restored: %1$s</string>
     <string name="backup_summary_missing">Not installed, so their settings were skipped: %1$s</string>
+    <string name="dictionaries_kept_on">Left on, or no dictionary with definitions would be on: %1$s</string>
 </resources>

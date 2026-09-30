@@ -205,6 +205,9 @@ private fun Summary(done: SettingsImportState.Done) {
         }
         outcome.sortDictionary?.let { SummaryLine(stringResource(R.string.yomitan_summary_sort, it)) }
         outcome.sortMissing?.let { SummaryLine(stringResource(R.string.yomitan_summary_sort_missing, it), warning = true) }
+        if (outcome.keptOn.isNotEmpty()) {
+            SummaryLine(stringResource(R.string.dictionaries_kept_on, outcome.keptOn.joinToString(", ")), warning = true)
+        }
     }
     summary.anki?.let { outcome ->
         if (outcome.unavailable) SummaryLine(stringResource(R.string.yomitan_summary_anki_unavailable), warning = true)

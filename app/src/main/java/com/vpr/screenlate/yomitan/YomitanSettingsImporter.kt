@@ -9,6 +9,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import com.vpr.screenlate.overlay.fonts.PopupFonts
@@ -31,8 +32,15 @@ data class ImportSummary(
 /**
  * @property missing dictionaries of the profile that are not installed here.
  * @property sortMissing the sort frequency dictionary when it is not installed.
+ * @property keptOn dictionaries the profile switches off that stay on, as a language would have none with definitions.
  */
-data class DictionaryOutcome(val matched: Int, val missing: List<String>, val sortDictionary: String?, val sortMissing: String?)
+data class DictionaryOutcome(
+    val matched: Int,
+    val missing: List<String>,
+    val sortDictionary: String?,
+    val sortMissing: String?,
+    val keptOn: List<String> = emptyList(),
+)
 
 /**
  * @property unavailable AnkiDroid could not be asked; the templates were kept for when the note type is chosen.
@@ -110,10 +118,9 @@ class YomitanSettingsImporter @Inject constructor(
         }.distinctBy { it.first.id }
         val missing = profile.dictionaries.map { it.name }.filter { name -> matched.none { it.second.name == name } }
         val ordered = matched.map { it.first } + installed.filter { dictionary -> matched.none { it.first.id == dictionary.id } }
-        dictionaries.reorder(
-            ordered.map { it.id },
-            enabled = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled },
-        )
+        val switches = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled }
+        val kept = keptTermDictionaries(installed, ordered.map { it.copy(enabled = switches[it.id] ?: it.enabled) })
+        dictionaries.reorder(ordered.map { it.id }, enabled = switches + kept.associate { it.id to true })
         val sortName = profile.sortFrequencyDictionary
         val sort = sortName?.let { name ->
             installed.filter { it.frequencyCount > 0 }
@@ -125,6 +132,7 @@ class YomitanSettingsImporter @Inject constructor(
             missing = missing,
             sortDictionary = sort?.title,
             sortMissing = sortName.takeIf { sort == null },
+            keptOn = kept.map { it.title },
         )
     }
 

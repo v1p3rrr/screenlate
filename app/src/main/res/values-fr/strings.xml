@@ -483,4 +483,5 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     </plurals>
     <string name="backup_summary_failed">Non restauré : %1$s</string>
     <string name="backup_summary_missing">Non installés, leurs paramètres ont donc été ignorés : %1$s</string>
+    <string name="dictionaries_kept_on">Laissés activés, sinon aucun dictionnaire avec définitions ne serait actif : %1$s</string>
 </resources>

@@ -488,4 +488,5 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     </plurals>
     <string name="backup_summary_failed">Nie przywrócono: %1$s</string>
     <string name="backup_summary_missing">Niezainstalowane, więc ich ustawienia pominięto: %1$s</string>
+    <string name="dictionaries_kept_on">Pozostawione włączone, inaczej żaden słownik z definicjami nie byłby włączony: %1$s</string>
 </resources>

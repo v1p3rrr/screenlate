@@ -483,4 +483,5 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     </plurals>
     <string name="backup_summary_failed">No restaurado: %1$s</string>
     <string name="backup_summary_missing">No instalados, así que se omitieron sus ajustes: %1$s</string>
+    <string name="dictionaries_kept_on">Se dejan activados; si no, ningún diccionario con definiciones estaría activo: %1$s</string>
 </resources>
