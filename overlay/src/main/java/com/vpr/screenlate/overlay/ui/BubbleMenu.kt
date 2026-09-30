@@ -84,6 +84,8 @@ class BubbleMenu(context: Context, private val windowManager: WindowManager) {
     @SuppressLint("ClickableViewAccessibility")
     private fun root(card: View, shadow: Int) = FrameLayout(themed).apply {
         setPadding(shadow, shadow, shadow, shadow)
+        // The card's shadow is drawn in the padding.
+        clipToPadding = false
         addView(card, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) dismiss()

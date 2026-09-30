@@ -8,7 +8,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
   Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
-  Next: 16 (bring in `claude/elegant-allen-xmu3fx`), 17 (`/code-review xhigh --fix` since 764ae60).
+  16 is done: the branch `claude/elegant-allen-xmu3fx` (requests 18, settings order, and 19, bubble hold menu; 13 and
+  14 there) is cherry-picked onto main and checked on the emulator. Next: 17 (`/code-review xhigh --fix` since 764ae60).
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
@@ -329,3 +330,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Not checked on a device: the menu's look (background, shadow, text), placement near each edge and corner, a tap
   outside and on the bubble closing it, "Open Screenlate" from another app (a background activity start from the
   accessibility service, as the Anki settings button already does), docking afterwards; MagicOS.
+- Checked on the emulator after the cherry-pick onto main (2026-10-01): the settings list in the new order, each entry
+  opening its own page; the menu below the bubble, above it at the bottom edge, ending at the bubble's right side on
+  the right half; a tap outside closes it; "Open Screenlate" from the system settings brought the app's task to the
+  front and docked the bubble. Fixed: the card's shadow was clipped by the root's padding (`clipToPadding`).
