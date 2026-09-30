@@ -602,3 +602,20 @@ Bugs found in another module's code, fixed in that module's runs (modules 9 and 
   dictionaries' `styles.css`).
 - 2026-09-30: owner chose to keep the old scoper behavior for a string left open in a statement at-rule (its `;` ends
   the rule, so a broken `@charset "utf-8;` keeps the next rule working); the remote-file check reports addresses after it.
+- 2026-09-30: xhigh code review of the security-fix branch, with fixes. Two holes in the new `atStatementEnd` let a
+  dictionary uncover a rule the remote-file check reports as commented out: its string scan ended only at a line feed
+  (CR and form feed end a string too), and it read an unquoted `url(...)` address as CSS, so a quote or `;` inside one
+  cut the at-rule short. Both are fixed (`rawStringEnd`, `urlTokenEnd`), which also keeps `@import url(a;b.css);` from
+  eating the next rule. `CssCheck.remoteFiles` now also reads a bare string of `image-set()`/`-webkit-image-set()`
+  as an address (Chromium fetches it; the check saw nothing). Open for the owner: `scopeCss` still looks for the
+  block's `{` with a plain `indexOf`, so `@media /*{*/ screen { .a { ... } }` produces `& .a`, which Chromium resolves
+  against the document root and applies to the whole page - a broader scoper change than the one approved.
+- 2026-09-30: owner approved the wider scoper change on condition that it changes no behavior and no kind of CSS.
+  `scopeCss` now finds the block's `{`, the matching `}` and a nested block's `;`/`{` through shared primitives
+  (`textTokenEnd`, `nextOutsideText`, `blockEnd`) that skip comments, strings, escapes and unquoted `url(...)`, as the
+  statement at-rule scan already did. Proof: a differential run of the old and the new scoper over ~431k inputs (6 real
+  dictionary `styles.css`, 20 ordinary CSS constructs, every string up to 4 characters over a CSS-significant alphabet,
+  400k random token strings, 270 truncations of real files) gives **0 differences on the real and the ordinary CSS**;
+  all differences are on malformed input. 6637 sampled differing cases and 14 targeted ones were then parsed in
+  Chromium: the old output let a rule out of the glossary in 8 of the 14 (`& .evil` resolves to the document root, so it
+  styles the whole page), the new output in none, and no case delivers fewer declarations than before.

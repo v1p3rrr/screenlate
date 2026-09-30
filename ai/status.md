@@ -35,8 +35,19 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   change), so `@x /*;` no longer uncovers commented rules the check does not see; a string left open still ends at
   its `;` as before (owner: keep a broken `@charset "utf-8;` from taking the next rule), which the check reports since it
   reads `url(` inside strings. Output byte-identical to before on the catalog's real `styles.css` (Jitendex,
-  Wiktionary) and synthetic and broken at-rule cases. Not checked here: Gradle build and lint (CI on the PR), the ⚠ and
-  a note with dictionary CSS on a device. Low: build-time dictionary downloads have no checksum.
+  Wiktionary) and synthetic and broken at-rule cases. Low: build-time dictionary downloads have no checksum.
+- Review of the security-fix branch (2026-09-30, xhigh, with fixes): `atStatementEnd` ended a string only at a
+  line feed and read an unquoted `url(...)` address as CSS, so `@x "a<CR>/*" ;` and `@x url(a") /*;` both made
+  the scoper drop the at-rule and uncover an `@font-face` that `remoteFiles` reports as commented out - a remote
+  font with no ⚠. Fixed with `rawStringEnd` and `urlTokenEnd`; `@import url(a;b.css);` no longer eats the next
+  rule either. `remoteFiles` now also reads a bare string of `image-set()`/`-webkit-image-set()` as an address
+  (Chromium fetches it, the check saw nothing). Gradle build and unit tests and the page tests run clean here.
+  Open, not fixed: `scopeCss` finds the block's `{` with a plain `indexOf`, so a `{` inside a comment splits the
+  rule and `@media /*{*/ screen { .a { ... } }` yields `& .a`, which Chromium resolves against the document root
+  and applies to the whole page (checked in Chromium) - needs the owner's go-ahead, being wider than the narrow
+  scoper change approved. Also open: `remoteFiles` scans string contents, so `content: "url(https://x/)"` raises
+  a ⚠ for a host nothing loads from, and it reports a percent-encoded or IDN host as written rather than as a
+  browser resolves it. Not checked here: the ⚠ and a note with dictionary CSS on a device.
 
 ## Phases
 
@@ -230,3 +241,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 ### 2026-09-30 (review of all changes since v0.1.4)
 
 - Reviewed v0.1.4..HEAD at xhigh, cut short by the weekly limit: the dictionary repository, download cache, Lens protobuf, page scripts and crop editor diffs were only partly read. Fixed: a failed font restore now re-reads the installed list. Open, not fixed (behavior choices or minor): the popup chip and ➕ wait follow the aimed engine, not the shown word's (matters for a kept draft word); a failed final ML Kit pass replaces a shown draft word with the error; `showMessage` leaves a pending lookup running; catalog font re-downloads reuse file names; `EInkSizes.enlarge` overwrites an earlier record; `AppUpdates.update` does nothing during a check; plus the skipped items of the previous review.
+
+### 2026-09-30 (scoper hardening)
+
+- The CSS scoper is now text-aware everywhere, not only in the statement at-rule scan: a `{`, `}` or `;` inside a
+  comment, a string, an escape or an unquoted `url(...)` no longer opens or closes a block. Without it a dictionary
+  could put `/*{*/` in a selector and have the rest of its stylesheet apply to the whole popup page, while the
+  remote-file warning, which reads the raw CSS, saw those rules as commented out.
+- Proof kept in the plan's changelog: 0 differences against the old scoper on real dictionary stylesheets and on
+  ordinary CSS, 8 of 14 targeted escapes closed with none left, no declarations lost (checked in Chromium).
