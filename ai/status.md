@@ -2,6 +2,27 @@
 
 Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 
+## Next session (handoff, 2026-09-30)
+
+- State: `main` is clean and pushed; last release v0.1.4; no release until the owner says so. All module reviews and
+  answers Q1-Q11 are done and committed.
+- The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
+  (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
+  Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
+  `noTermDictionary`), `PerGeneration`, `BundledDictionaries`, `DictionaryImportWorker`, `DownloadCache`/
+  `DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`, `render.js`, `anki.js`,
+  `definition.js`/`popup.js`, `CropEditor`, `PopupTextSections`/`PopupAppearanceViewModel`, `SearchScreen`/
+  `SearchViewModel`, `OcrTestViewModel`. Next: review those (`git diff v0.1.4..HEAD -- <files>`).
+- Open findings (reported, not fixed): Q12 and Q13 in `plans/2026-09-30-module-review-questions.md` wait for the owner.
+  Minor ones fixable without asking: `PopupFonts.fetch` reuses fixed file names (replace in place, mixed versions on a
+  partial failure; use new names like `import` does); `PopupFonts.import` catches only IO/Security exceptions;
+  `EInkSizes.enlarge` overwrites an earlier stored record (keep the first); `AppUpdates.update` silently ignored while a
+  check runs (needs a UI text — ask); `LookupPage.evaluate` keeps its callback after cancellation; last-dictionary rule
+  counts missing-file dictionaries differently in `isLastTermDictionary`/`keptTermDictionaries` and lives only in
+  callers; `CssCheck` misreads `user@host` and `/*` inside strings; `markDeleted` rescans bundled zips and `baseTitle`
+  duplicates `dictionaryKey`.
+- To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
+
 ## Phases
 
 - [x] Phase 0 — infrastructure

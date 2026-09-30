@@ -32,7 +32,7 @@ owner are collected in `2026-09-30-module-review-questions.md` and asked when th
 
 ## Current position
 
-Updated after every step so the work survives a context reset or a paused session: all modules reviewed, the deferred fixes done and every answer to Q1-Q10 implemented. Nothing is left in this plan.
+Updated after every step so the work survives a context reset or a paused session: all modules reviewed, the deferred fixes done and every answer to Q1-Q10 implemented. Nothing is left in this plan; the follow-up review of v0.1.4..HEAD and its open items are in `ai/status.md` (Next session).
 
 ## Progress
 
