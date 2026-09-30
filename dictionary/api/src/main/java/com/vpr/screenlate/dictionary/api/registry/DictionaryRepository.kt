@@ -85,7 +85,7 @@ class DictionaryRepository @Inject constructor(
             val metadata = imported.metadata
             val kind = DictionaryKind.of(metadata)
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
-            val known = replaced(replaces, metadata.title, kind)
+            val known = replaced(replaces, metadata.title, kind, bundled)
             val source = metadata.sourceLanguage ?: listed?.sourceLanguage ?: known?.sourceLanguage
             val target = (metadata.targetLanguage ?: listed?.targetLanguage ?: known?.targetLanguage).takeIf { kind.hasTarget }
             val detected = if (source == null || (target == null && kind.hasTarget)) {
@@ -96,7 +96,7 @@ class DictionaryRepository @Inject constructor(
                 null
             }
             return mutex.withLock {
-                val existing = replaced(replaces, metadata.title, kind)
+                val existing = replaced(replaces, metadata.title, kind, bundled)
                 // An update may take the title of another installed dictionary, which it then replaces as well.
                 val collided = dao.findByTitle(metadata.title)?.takeIf { it.id != existing?.id }
                 collided?.let { dao.delete(it) }
@@ -145,12 +145,12 @@ class DictionaryRepository @Inject constructor(
     /**
      * The dictionary an import replaces: [replaces], else one with the same title, else the only one of the same
      * [kind] whose title differs just by its revision mark (`Jitendex.org [2026-01-04]` for `[2026-08-11]`), as the
-     * collection import lists it as installed.
+     * collection import lists it as installed ([sameDictionary]).
      */
-    private suspend fun replaced(replaces: Long?, title: String, kind: DictionaryKind): DictionaryEntity? =
+    private suspend fun replaced(replaces: Long?, title: String, kind: DictionaryKind, bundled: Boolean): DictionaryEntity? =
         replaces?.let { dao.get(it) }
             ?: dao.findByTitle(title)
-            ?: dao.getAll().filter { it.kind == kind && dictionaryKey(it.title) == dictionaryKey(title) }.singleOrNull()
+            ?: sameDictionary(dao.getAll(), title, kind, bundled)
 
     /**
      * Decodes index texts stored raw by earlier versions (a line break as a backslash and `n`), once; see
