@@ -60,4 +60,7 @@
     <string name="overlay_copy_paragraph">Скопировать этот абзац</string>
     <string name="overlay_copy_all">Скопировать весь распознанный текст</string>
     <string name="overlay_copied">Скопировано</string>
+    <string name="overlay_keep_alive_channel">Служба работает</string>
+    <string name="overlay_keep_alive_title">Screenlate готов</string>
+    <string name="overlay_keep_alive_text">Плавающая кнопка остаётся доступной в фоне</string>
 </resources>

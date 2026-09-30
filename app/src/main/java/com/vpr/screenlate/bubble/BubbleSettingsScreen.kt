@@ -80,6 +80,8 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     val settings: StateFlow<OverlaySettings> =
         repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), OverlaySettings())
 
+    fun setBubbleVisible(visible: Boolean) = launch { repository.setBubbleVisible(visible) }
+
     fun setAimMode(mode: AimMode) = launch { repository.setAimMode(mode) }
 
     fun setDockSide(side: DockSide) = launch { repository.setDockSide(side) }
@@ -101,6 +103,8 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
     fun setOcrEngines(engines: OcrEngines) = launch { repository.setOcrEngines(engines) }
 
     fun setOcrSaving(enabled: Boolean) = launch { repository.setOcrSaving(enabled) }
+
+    fun setKeepAlive(enabled: Boolean) = launch { repository.setKeepAlive(enabled) }
 
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
@@ -155,6 +159,13 @@ fun BubbleSettingsScreen(
         ) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SwitchRow(
+                        label = stringResource(R.string.bubble_visible),
+                        checked = settings.bubbleVisible,
+                        onChange = viewModel::setBubbleVisible,
+                        hint = stringResource(R.string.bubble_visible_hint),
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     Text(stringResource(R.string.bubble_aim), style = MaterialTheme.typography.titleMedium)
                     Segments(
                         options = AimMode.entries,

@@ -474,4 +474,16 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="backup_summary_failed">Chưa khôi phục: %1$s</string>
     <string name="backup_summary_missing">Chưa cài, nên cài đặt của chúng bị bỏ qua: %1$s</string>
     <string name="dictionaries_kept_on">Vẫn bật, nếu không sẽ không có từ điển có định nghĩa nào được bật: %1$s</string>
+    <string name="home_bubble_shown">Bong bóng đang ở trên màn hình</string>
+    <string name="home_bubble_hidden">Bong bóng đang bị ẩn</string>
+    <string name="home_bubble_stopped">Không có bong bóng: điện thoại đã dừng dịch vụ</string>
+    <string name="home_bubble_stopped_hint">Ứng dụng không thể tự bật lại dịch vụ. Hãy mở phần cài đặt của dịch vụ, tắt rồi bật lại công tắc, bong bóng sẽ trở lại.</string>
+    <string name="home_bubble_show">Đưa bong bóng trở lại</string>
+    <string name="home_bubble_hide">Ẩn bong bóng</string>
+    <string name="bubble_visible">Hiện bong bóng</string>
+    <string name="bubble_visible_hint">Tắt: bong bóng không hiện trên màn hình. Ô trong cài đặt nhanh cũng làm điều tương tự.</string>
+    <string name="background_keep_alive_title">Để bong bóng không biến mất</string>
+    <string name="background_keep_alive_text">Điện thoại dừng ứng dụng chạy nền cũng có thể dừng dịch vụ vẽ bong bóng. Ứng dụng có thông báo riêng bị dừng ít hơn nhiều.</string>
+    <string name="background_keep_alive_switch">Giữ một thông báo khi dịch vụ đang chạy</string>
+    <string name="background_keep_alive_hint">Không phải lúc nào cũng hiệu quả. Khi dịch vụ đã dừng, chỉ có tắt rồi bật lại trong cài đặt trợ năng mới đưa bong bóng trở lại.</string>
 </resources>

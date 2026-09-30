@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">Copia questo paragrafo</string>
     <string name="overlay_copy_all">Copia tutto il testo riconosciuto</string>
     <string name="overlay_copied">Copiato</string>
+    <string name="overlay_keep_alive_channel">Servizio attivo</string>
+    <string name="overlay_keep_alive_title">Screenlate è pronto</string>
+    <string name="overlay_keep_alive_text">La bolla resta disponibile in background</string>
 </resources>

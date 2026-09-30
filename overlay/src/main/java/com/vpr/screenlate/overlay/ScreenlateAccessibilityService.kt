@@ -23,6 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * Hosts the floating bubble and popup overlays.
@@ -67,6 +70,12 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(TAG, "Service connected")
+        OverlayServiceStatus.setRunning(true)
+        scope.launch {
+            overlaySettings.settings.map { it.keepAlive }.distinctUntilChanged().collect {
+                BubbleKeepAliveService.keepAlive(this@ScreenlateAccessibilityService, it)
+            }
+        }
         controller = OverlayController(
             service = this,
             ocr = ocr,
@@ -107,6 +116,8 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         Log.i(TAG, "Service stopped")
+        OverlayServiceStatus.setRunning(false)
+        BubbleKeepAliveService.keepAlive(this, false)
         handler.removeCallbacksAndMessages(null)
         controller?.stop()
         controller = null

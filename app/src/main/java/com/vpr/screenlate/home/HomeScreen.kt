@@ -68,6 +68,8 @@ fun HomeScreen(
     val dictionaries by viewModel.dictionaries.collectAsStateWithLifecycle()
     val problems by viewModel.problems.collectAsStateWithLifecycle()
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
+    val serviceRunning by OverlayServiceStatus.running.collectAsStateWithLifecycle()
+    val bubbleVisible by viewModel.bubbleVisible.collectAsStateWithLifecycle()
     val settingsBadge = rememberBackgroundTipBadge()
     LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
@@ -122,13 +124,15 @@ fun HomeScreen(
                 if (!serviceEnabled) Text(stringResource(R.string.onboarding_service_explanation))
                 if (dictionaries.importing) Hint(stringResource(R.string.home_dictionaries_installing))
                 if (serviceEnabled) {
+                    HorizontalDivider()
+                    BubbleControls(serviceRunning, bubbleVisible, viewModel::setBubbleVisible)
                     OutlinedButton(
-                        onClick = { context.startActivity(OverlayServiceStatus.accessibilitySettingsIntent()) },
+                        onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings)) }
                 } else {
                     Button(
-                        onClick = { context.startActivity(OverlayServiceStatus.accessibilitySettingsIntent()) },
+                        onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings)) }
                 }
@@ -146,6 +150,52 @@ fun HomeScreen(
                 Text(stringResource(R.string.settings_title), modifier = Modifier.padding(start = 8.dp))
             }
         }
+    }
+}
+
+/** What the home screen tells about the bubble. A service the phone stopped wins over the user's own hiding. */
+internal enum class BubbleState { SHOWN, HIDDEN, STOPPED }
+
+internal fun bubbleState(serviceRunning: Boolean, visible: Boolean): BubbleState = when {
+    !serviceRunning -> BubbleState.STOPPED
+    visible -> BubbleState.SHOWN
+    else -> BubbleState.HIDDEN
+}
+
+/**
+ * The bubble's state and the button that changes it. With the service stopped by the phone the button can only open
+ * the accessibility settings: an app may not turn its own accessibility service back on.
+ */
+@Composable
+private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible: (Boolean) -> Unit) {
+    val context = LocalContext.current
+    val state = bubbleState(serviceRunning, visible)
+    Text(
+        text = stringResource(
+            when (state) {
+                BubbleState.STOPPED -> R.string.home_bubble_stopped
+                BubbleState.SHOWN -> R.string.home_bubble_shown
+                BubbleState.HIDDEN -> R.string.home_bubble_hidden
+            },
+        ),
+        color = when (state) {
+            BubbleState.STOPPED -> MaterialTheme.colorScheme.error
+            BubbleState.SHOWN -> MaterialTheme.colorScheme.primary
+            BubbleState.HIDDEN -> MaterialTheme.colorScheme.onSurfaceVariant
+        },
+    )
+    if (state == BubbleState.STOPPED) Hint(stringResource(R.string.home_bubble_stopped_hint))
+    if (state == BubbleState.SHOWN) {
+        OutlinedButton(onClick = { onVisible(false) }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.home_bubble_hide))
+        }
+    } else {
+        Button(
+            onClick = {
+                if (state == BubbleState.HIDDEN) onVisible(true) else OverlayServiceStatus.openAccessibilitySettings(context)
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.home_bubble_show)) }
     }
 }
 

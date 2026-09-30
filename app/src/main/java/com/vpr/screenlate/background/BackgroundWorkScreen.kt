@@ -23,15 +23,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.bubble.BubbleSettingsViewModel
+import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.components.SwitchRow
 
-/** Battery optimization and the phone maker's startup settings, which can stop the bubble in the background. */
+/** Battery optimization, the phone's own startup settings and the keep-alive notification, which all keep the bubble alive. */
 @Composable
-fun BackgroundWorkScreen(onBack: () -> Unit, tip: BackgroundTipViewModel = hiltViewModel()) {
+fun BackgroundWorkScreen(
+    onBack: () -> Unit,
+    tip: BackgroundTipViewModel = hiltViewModel(),
+    bubble: BubbleSettingsViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
+    val bubbleSettings by bubble.settings.collectAsStateWithLifecycle()
+    // The service posts its notification when it starts, and Android does not show one posted before the permission
+    // was granted, so the switch is written only after the answer.
+    val askNotifications = rememberImportNotificationsAsk(onAnswered = { bubble.setKeepAlive(true) })
     var batteryExempt by remember { mutableStateOf(BackgroundSettings.isBatteryExempt(context)) }
     val startupScreen = remember { BackgroundSettings.startupScreen(context) }
     LaunchedEffect(Unit) { tip.markSeen() }
@@ -93,6 +105,17 @@ fun BackgroundWorkScreen(onBack: () -> Unit, tip: BackgroundTipViewModel = hiltV
                     )
                 }
                 if (startupScreen == null) Hint(stringResource(R.string.background_launch_app_info_hint))
+            }
+            SectionCard(title = stringResource(R.string.background_keep_alive_title)) {
+                Text(stringResource(R.string.background_keep_alive_text))
+                SwitchRow(
+                    label = stringResource(R.string.background_keep_alive_switch),
+                    checked = bubbleSettings.keepAlive,
+                    onChange = { enabled ->
+                        if (!enabled || !askNotifications()) bubble.setKeepAlive(enabled)
+                    },
+                    hint = stringResource(R.string.background_keep_alive_hint),
+                )
             }
         }
     }

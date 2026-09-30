@@ -479,4 +479,16 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="backup_summary_failed">Geri yüklenmedi: %1$s</string>
     <string name="backup_summary_missing">Yüklü değil, bu yüzden ayarları atlandı: %1$s</string>
     <string name="dictionaries_kept_on">Açık bırakıldı, yoksa tanımlı hiçbir sözlük açık olmazdı: %1$s</string>
+    <string name="home_bubble_shown">Baloncuk ekranda</string>
+    <string name="home_bubble_hidden">Baloncuk gizli</string>
+    <string name="home_bubble_stopped">Baloncuk yok: telefon hizmeti durdurdu</string>
+    <string name="home_bubble_stopped_hint">Bir uygulama hizmeti kendisi yeniden açamaz. Hizmetin ayarlarını açın, anahtarı kapatıp yeniden açın; baloncuk geri gelir.</string>
+    <string name="home_bubble_show">Baloncuğu geri getir</string>
+    <string name="home_bubble_hide">Baloncuğu gizle</string>
+    <string name="bubble_visible">Baloncuğu göster</string>
+    <string name="bubble_visible_hint">Kapalıyken baloncuk ekranda olmaz. Hızlı ayarlar karosu da aynı işi yapar.</string>
+    <string name="background_keep_alive_title">Baloncuk kaybolmasın diye</string>
+    <string name="background_keep_alive_text">Arka plandaki uygulamaları durduran bir telefon, baloncuğu çizen hizmeti de durdurabilir. Kendi bildirimi olan bir uygulama çok daha seyrek durdurulur.</string>
+    <string name="background_keep_alive_switch">Hizmet çalışırken bir bildirim tut</string>
+    <string name="background_keep_alive_hint">Her zaman işe yaramaz. Hizmet bir kez durduktan sonra baloncuğu yalnızca erişilebilirlik ayarlarından kapatıp açmak geri getirir.</string>
 </resources>

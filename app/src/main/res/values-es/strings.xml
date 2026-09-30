@@ -484,4 +484,16 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="backup_summary_failed">No restaurado: %1$s</string>
     <string name="backup_summary_missing">No instalados, así que se omitieron sus ajustes: %1$s</string>
     <string name="dictionaries_kept_on">Se dejan activados; si no, ningún diccionario con definiciones estaría activo: %1$s</string>
+    <string name="home_bubble_shown">La burbuja está en la pantalla</string>
+    <string name="home_bubble_hidden">La burbuja está oculta</string>
+    <string name="home_bubble_stopped">No hay burbuja: el teléfono detuvo el servicio</string>
+    <string name="home_bubble_stopped_hint">Una aplicación no puede volver a activar el servicio. Abre sus ajustes, desactiva y vuelve a activar el interruptor y la burbuja regresará.</string>
+    <string name="home_bubble_show">Recuperar la burbuja</string>
+    <string name="home_bubble_hide">Ocultar la burbuja</string>
+    <string name="bubble_visible">Mostrar la burbuja</string>
+    <string name="bubble_visible_hint">Desactivado: la burbuja no aparece en la pantalla. El mosaico de ajustes rápidos hace lo mismo.</string>
+    <string name="background_keep_alive_title">Para que la burbuja no desaparezca</string>
+    <string name="background_keep_alive_text">Un teléfono que detiene aplicaciones en segundo plano también puede detener el servicio que dibuja la burbuja. Una aplicación con su propia notificación se detiene mucho menos.</string>
+    <string name="background_keep_alive_switch">Mantener una notificación mientras el servicio funciona</string>
+    <string name="background_keep_alive_hint">No siempre ayuda. Una vez detenido el servicio, solo desactivarlo y activarlo en los ajustes de accesibilidad devuelve la burbuja.</string>
 </resources>

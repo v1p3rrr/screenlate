@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">複製此段落</string>
     <string name="overlay_copy_all">複製全部辨識文字</string>
     <string name="overlay_copied">已複製</string>
+    <string name="overlay_keep_alive_channel">服務執行中</string>
+    <string name="overlay_keep_alive_title">Screenlate 已就緒</string>
+    <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
 </resources>

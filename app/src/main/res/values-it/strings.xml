@@ -484,4 +484,16 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="backup_summary_failed">Non ripristinato: %1$s</string>
     <string name="backup_summary_missing">Non installati, quindi le loro impostazioni sono state saltate: %1$s</string>
     <string name="dictionaries_kept_on">Lasciati attivi, altrimenti nessun dizionario con definizioni sarebbe attivo: %1$s</string>
+    <string name="home_bubble_shown">La bolla è sullo schermo</string>
+    <string name="home_bubble_hidden">La bolla è nascosta</string>
+    <string name="home_bubble_stopped">Nessuna bolla: il telefono ha fermato il servizio</string>
+    <string name="home_bubble_stopped_hint">Un’app non può riattivare il servizio da sola. Apri le sue impostazioni, disattiva e riattiva l’interruttore e la bolla torna.</string>
+    <string name="home_bubble_show">Riporta la bolla</string>
+    <string name="home_bubble_hide">Nascondi la bolla</string>
+    <string name="bubble_visible">Mostra la bolla</string>
+    <string name="bubble_visible_hint">Disattivato: la bolla non è sullo schermo. Il riquadro delle impostazioni rapide fa lo stesso.</string>
+    <string name="background_keep_alive_title">Perché la bolla non sparisca</string>
+    <string name="background_keep_alive_text">Un telefono che ferma le app in background può fermare anche il servizio che disegna la bolla. Un’app con una notifica propria viene fermata molto più di rado.</string>
+    <string name="background_keep_alive_switch">Tieni una notifica mentre il servizio è attivo</string>
+    <string name="background_keep_alive_hint">Non sempre basta. Una volta fermato il servizio, solo spegnerlo e riaccenderlo nelle impostazioni di accessibilità riporta la bolla.</string>
 </resources>

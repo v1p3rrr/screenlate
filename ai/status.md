@@ -2,10 +2,10 @@
 
 Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 
-## Next session (handoff, 2026-09-30)
+## Next session (handoff, 2026-10-01)
 
 - State: `main` is clean and pushed; last release v0.1.4; no release until the owner says so. All module reviews and
-  answers Q1-Q11 are done and committed.
+  answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
@@ -211,6 +211,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Waiting for the owner's phone feedback on v0.1.4 (interface languages, overlay in the chosen language, crop frame and toggle, "On-device" chip) and v0.1.3: backup and restore, e-ink mode, app text only, dock pull, plus the v0.1.2 list (icon, collection import timings, import notification, scan timings, vertical text across columns, "Read app text" in X and Chrome, self-update).
 - Module reviews and the answers to their questions are done ([plans/2026-09-30-module-reviews.md](plans/2026-09-30-module-reviews.md)). On the phone: the CSS warnings with a real dictionary.
 - On the phone or with the emulator's accessibility service on: crop editor (Frame, Whole screen, two notes in a row, rotation while open), a note right after the popup appears (sentence from the final text), hiding the bubble through a hidden app.
+- On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
+  opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
 
 ## Open items
@@ -250,3 +252,45 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   remote-file warning, which reads the raw CSS, saw those rules as commented out.
 - Proof kept in the plan's changelog: 0 differences against the old scoper on real dictionary stylesheets and on
   ordinary CSS, 8 of 14 targeted escapes closed with none left, no declarations lost (checked in Chromium).
+
+### 2026-10-01 (bringing the bubble back)
+
+- Owner's request 11 in [plans/2026-09-29-feedback-after-0.1.4.md](plans/2026-09-29-feedback-after-0.1.4.md): when the
+  phone stops the service, the bubble is gone until the accessibility switch is turned off and on by hand; the home
+  screen should bring it back in one tap. Five decision rows and a changelog line for the owner's answers are in that
+  plan. PR #2 (the security fixes) was merged into main first; local `main` was at bc6116b when this work started.
+- The limit, established and told to the owner: `Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES` needs
+  `WRITE_SECURE_SETTINGS` (signature|privileged), so an app can never re-enable its own accessibility service. Only
+  the case "service alive, bubble hidden" is fixable in the app; a stopped service can only be pointed at the settings.
+- Implemented and committed to main:
+  - `OverlayServiceStatus.running` — a `StateFlow` set in `onServiceConnected` and cleared in `onDestroy`. The service
+    shares the app's process, so it is an exact "is the service running" signal, and the start screen follows it live.
+  - `OverlayServiceStatus.openAccessibilitySettings` tries Screenlate's own page
+    (`android.settings.ACCESSIBILITY_DETAILS_SETTINGS` + `Intent.EXTRA_COMPONENT_NAME`). Stock Android guards that page
+    with `OPEN_ACCESSIBILITY_DETAILS_SETTINGS` (signature|installer), so on the emulator it throws a
+    `SecurityException` (the first version crashed on every accessibility button, found while checking); a refused or
+    missing page opens the list of services with the settings app's highlight extras (`:settings:fragment_args_key`),
+    which highlight Screenlate's row on the emulator. Every accessibility button on home goes there (owner's decision).
+  - Home: inside the "Accessibility service" card, `BubbleControls` shows one of three states
+    (`BubbleState.SHOWN|HIDDEN|STOPPED`, `bubbleState()` in `HomeScreen.kt`, pinned by `BubbleStateTest`). STOPPED wins
+    over the visibility setting, is coloured as an error, adds a hint, and its button opens the accessibility settings;
+    HIDDEN offers "Bring the bubble back", SHOWN offers "Hide the bubble".
+  - A "Show the bubble" switch at the top of the bubble settings, backed by the same `bubbleVisible` preference.
+  - `BubbleKeepAliveService` (overlay): a silent ongoing notification (channel `bubble_keep_alive`, `IMPORTANCE_MIN`,
+    id 2, `FOREGROUND_SERVICE_TYPE_SPECIAL_USE` on API 34+, 2-arg `startForeground` below it since minSdk is 30),
+    started and stopped by the accessibility service. It follows the new `overlay_keep_alive` preference (off by
+    default, owner's decision; backed up with the bubble section), switched from a Settings → Background work card.
+    Turning it on asks for the notification permission the first time and writes the setting only after the answer: a
+    notification posted before the grant stays hidden until the service restarts (seen on the emulator). A sticky
+    restart stops itself when the accessibility switch has been turned off meanwhile.
+  - Strings in all 14 locale files of `app` and `overlay`; `docs/usage.md` and `docs/architecture.md` updated.
+  - The `setComponentEnabledSetting` rebind trick was rejected by the owner ("не трогать вообще") and is not used.
+- Checked on the emulator (API 37, debug build): all three home states (STOPPED reproduced by holding a UiAutomation
+  connection, see `notes/build-environment.md`), live switch between them, both accessibility buttons open the list
+  with the row highlighted and no crash, hide/show from home and from the bubble settings switch, keep-alive on (with
+  the first-time permission dialog; notification in the shade), off (service gone), and following the accessibility
+  service through an unbind and rebind. `./gradlew assembleDebug testDebugUnitTest :app:lintDebug :overlay:lintDebug`
+  green, lint only old warnings.
+- Not checked: the phone's own case (MagicOS stopping the service; whether its settings app opens the details page).
+- Emulator state: the debug app has the notification permission (granted in this check), keep-alive off, the bubble
+  shown, the accessibility service enabled for the debug app only.

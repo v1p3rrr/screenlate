@@ -474,4 +474,16 @@
     <string name="backup_summary_failed">복원되지 않음: %1$s</string>
     <string name="backup_summary_missing">설치되지 않아 설정을 건너뜀: %1$s</string>
     <string name="dictionaries_kept_on">정의가 있는 사전이 모두 꺼지므로 켜진 상태로 두었습니다: %1$s</string>
+    <string name="home_bubble_shown">버블이 화면에 있습니다</string>
+    <string name="home_bubble_hidden">버블이 숨겨져 있습니다</string>
+    <string name="home_bubble_stopped">버블이 없습니다: 휴대전화가 서비스를 중지했습니다</string>
+    <string name="home_bubble_stopped_hint">앱이 서비스를 다시 켜지는 못합니다. 서비스 설정을 열고 스위치를 꺼다가 다시 켜면 버블이 돌아옵니다.</string>
+    <string name="home_bubble_show">버블 되돌리기</string>
+    <string name="home_bubble_hide">버블 숨기기</string>
+    <string name="bubble_visible">버블 표시</string>
+    <string name="bubble_visible_hint">끄면 버블이 화면에 나타나지 않습니다. 빠른 설정 타일도 같은 일을 합니다.</string>
+    <string name="background_keep_alive_title">버블이 사라지지 않도록</string>
+    <string name="background_keep_alive_text">백그라운드 앱을 중지하는 휴대전화는 버블을 그리는 서비스도 중지할 수 있습니다. 자체 알림이 있는 앱은 훨씬 덜 중지됩니다.</string>
+    <string name="background_keep_alive_switch">서비스가 실행되는 동안 알림 유지</string>
+    <string name="background_keep_alive_hint">항상 도움이 되지는 않습니다. 서비스가 중지된 뒤에는 접근성 설정에서 꺼다가 켜야만 버블이 돌아옵니다.</string>
 </resources>

@@ -76,3 +76,14 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `kotlinc -cp <jars> -d out <class>.kt <test>.kt`, then `java -cp out:<jars>:kotlinc/lib/kotlin-stdlib.jar
   org.junit.runner.JUnitCore <test class>`. Page scripts run with `npm --prefix scripts/page-tests ci/test`, and the
   preinstalled global Playwright (`npm root -g`) drives Chromium to check how a browser reads CSS or URLs.
+- `uiautomator dump` and `uiautomator events` connect a UiAutomation, which unbinds every other accessibility service
+  while it is connected: Screenlate's service gets `onDestroy`, the bubble goes, and it reconnects when the command
+  ends. Screens that show the service state (the start screen) change layout during a dump, so tap them by screenshot
+  coordinates. The same effect reproduces "service enabled, process alive, service not bound" (the start screen's
+  stopped state): keep `adb shell uiautomator events` running in the background and look at the app meanwhile.
+- To reset one DataStore preference of the debug app (e.g. `notification_permission_asked`): take the service out of
+  `enabled_accessibility_services` (`settings delete secure ...`), `am kill` the app, pull
+  `files/datastore/settings.preferences_pb` with `run-as ... cat`, drop the map entry (top-level field 1 entries, key in
+  field 1), write it back through `/data/local/tmp` with `run-as ... sh -c 'cat ... > ...'`, and put the service back.
+  Git Bash rewrites device paths: set `MSYS_NO_PATHCONV=1`. Never `am force-stop`: it drops the service from the enabled
+  list.

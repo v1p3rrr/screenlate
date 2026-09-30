@@ -490,4 +490,16 @@
     <string name="backup_summary_failed">Не восстановлены: %1$s</string>
     <string name="backup_summary_missing">Не установлены, их настройки пропущены: %1$s</string>
     <string name="dictionaries_kept_on">Оставлены включёнными, иначе не был бы включён ни один словарь с определениями: %1$s</string>
+    <string name="home_bubble_shown">Плавающая кнопка на экране</string>
+    <string name="home_bubble_hidden">Плавающая кнопка скрыта</string>
+    <string name="home_bubble_stopped">Кнопки нет: телефон остановил службу</string>
+    <string name="home_bubble_stopped_hint">Приложение не может включить службу само. Откройте её настройки, выключите и снова включите переключатель — кнопка вернётся.</string>
+    <string name="home_bubble_show">Вернуть кнопку</string>
+    <string name="home_bubble_hide">Скрыть кнопку</string>
+    <string name="bubble_visible">Показывать плавающую кнопку</string>
+    <string name="bubble_visible_hint">Выключено — кнопки нет на экране. То же делает плитка в быстрых настройках.</string>
+    <string name="background_keep_alive_title">Чтобы кнопка не пропадала</string>
+    <string name="background_keep_alive_text">Телефон, который останавливает приложения в фоне, может остановить и службу, рисующую кнопку. Приложение с собственным уведомлением он трогает заметно реже.</string>
+    <string name="background_keep_alive_switch">Держать уведомление, пока служба работает</string>
+    <string name="background_keep_alive_hint">Помогает не всегда. Если служба уже остановлена, кнопку вернёт только выключение и включение в настройках специальных возможностей.</string>
 </resources>

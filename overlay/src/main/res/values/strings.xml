@@ -62,4 +62,7 @@
     <string name="overlay_copy_paragraph">Copy this paragraph</string>
     <string name="overlay_copy_all">Copy all recognized text</string>
     <string name="overlay_copied">Copied</string>
+    <string name="overlay_keep_alive_channel">Service running</string>
+    <string name="overlay_keep_alive_title">Screenlate is ready</string>
+    <string name="overlay_keep_alive_text">Keeping the bubble available in the background</string>
 </resources>

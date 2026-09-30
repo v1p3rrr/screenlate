@@ -484,4 +484,16 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="backup_summary_failed">Não restaurado: %1$s</string>
     <string name="backup_summary_missing">Não instalados, então as configurações deles foram ignoradas: %1$s</string>
     <string name="dictionaries_kept_on">Mantidos ativados; caso contrário, nenhum dicionário com definições ficaria ativo: %1$s</string>
+    <string name="home_bubble_shown">A bolha está na tela</string>
+    <string name="home_bubble_hidden">A bolha está oculta</string>
+    <string name="home_bubble_stopped">Sem bolha: o telefone parou o serviço</string>
+    <string name="home_bubble_stopped_hint">Um aplicativo não consegue ligar o serviço de novo. Abra as configurações dele, desligue e ligue o botão, e a bolha volta.</string>
+    <string name="home_bubble_show">Trazer a bolha de volta</string>
+    <string name="home_bubble_hide">Ocultar a bolha</string>
+    <string name="bubble_visible">Mostrar a bolha</string>
+    <string name="bubble_visible_hint">Desligado: a bolha não fica na tela. O bloco das configurações rápidas faz o mesmo.</string>
+    <string name="background_keep_alive_title">Para a bolha não sumir</string>
+    <string name="background_keep_alive_text">Um telefone que para aplicativos em segundo plano também pode parar o serviço que desenha a bolha. Um aplicativo com notificação própria é parado bem menos.</string>
+    <string name="background_keep_alive_switch">Manter uma notificação enquanto o serviço estiver ativo</string>
+    <string name="background_keep_alive_hint">Nem sempre resolve. Depois que o serviço para, só desligar e ligar nas configurações de acessibilidade traz a bolha de volta.</string>
 </resources>

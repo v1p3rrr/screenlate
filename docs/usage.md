@@ -23,13 +23,13 @@ A word broken at the end of a line or column is looked up as a whole, reading on
 
 The entry opens above the word or below the bubble and never covers either. Beside vertical text and in landscape it opens to the side with more room, narrower and taller; beside a column in the middle of a narrow screen it can get narrower still. When neither side has room, it goes above or below.
 
-The Quick Settings tile hides and shows the bubble. Turning the screen closes the entry and docks the bubble on the same side.
+The Quick Settings tile, the start screen and the "Show the bubble" switch in the bubble settings hide and show the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 
 ## Settings
 
 The start screen keeps the search, the service status and warnings; everything else is under Settings:
 
-- **Bubble**: aim point, dock side, bubble size, word highlight, vibration, apps where the bubble hides, whether the popup starts with the recognized text, and the text source:
+- **Bubble**: whether the bubble shows, aim point, dock side, bubble size, word highlight, vibration, apps where the bubble hides, whether the popup starts with the recognized text, and the text source:
   - **Screen recognition** (the default): a screenshot is recognized in the cloud; an on-device draft of the lines around the aim appears first. When cloud recognition fails (no network, no answer within 15 seconds, an error), the on-device result stays and ⚠ appears next to the text source; tap it for the reason. Cloud recognition uses mobile data, about 0.1–0.4 MB per scan.
   - **Read app text** (experimental): the app's own text is used where the app exposes character positions. It is exact, ready almost at once and works offline. The screen is still recognized alongside for everything else, such as text in images; whichever is ready first is shown. Some apps report wrong character positions, so the highlight can be off or a neighboring word found; turn it off then.
   - **App text only**: no screenshots and no recognition, only the text apps expose. Text in images, manga and games is not read, and apps that do not expose their text show a message instead. Meant for e-ink readers, old or weak devices where recognition fails or is slow, and slow or metered internet. The recognition settings below are off while it is on; a picture for an Anki note is still taken when asked for.
@@ -39,7 +39,7 @@ The start screen keeps the search, the service status and warnings; everything e
 - **Lookup**: how many characters from the aim point are considered (16 by default), how many entries a lookup shows (32; more gets slower), romaji typed or recognized as Latin text looked up as kana (taberu → たべる), and the kanji of the matched word shown as their own entries below the results. Without romaji, Latin text is looked up when Japanese follows it (Tシャツ) or when the whole word is a dictionary entry (OL, DNA, CD-ROM), wherever the aim is inside it; single letters are skipped, and letter case counts.
 - **Popup**, **Dictionaries**, **Anki and audio**, **Appearance**: see below.
 - **Backup and restore**: see below.
-- **Background work**: battery optimization for Screenlate and the manufacturer's startup settings, the two things that can stop the bubble in the background.
+- **Background work**: battery optimization for Screenlate and the manufacturer's startup settings, the two things that can stop the bubble in the background. "Keep a notification while the service runs" (off by default) holds a quiet notification, and phones that stop background apps leave an app with one alone far more often.
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too; single dictionaries (one `.zip` each) are added under Dictionaries, which the screen links to.
 
 When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing, audio sources failing), the start screen says what and links to the fix; several missing dictionaries or failed audio sources share one card. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
@@ -114,7 +114,7 @@ A custom URL may point to a server on the home network over plain `http://`, as 
 
 - **"This app does not allow screenshots."** The app protects its windows. Try "Read app text".
 - **Only the on-device result appears.** Cloud recognition was unreachable or took longer than 15 seconds; the on-device result is used instead.
-- **The bubble disappears after a while.** The system stopped the service; see Settings → Background work.
+- **The bubble disappears after a while.** The system stopped the service, and the start screen says so. An app cannot turn its accessibility service back on: "Bring the bubble back" opens the accessibility settings, where turning Screenlate's switch off and on again brings the bubble back. To make it happen less often, see Settings → Background work.
 - **The device gets warm or slow while scanning.** Most of a scan's work is the on-device recognition of the whole screen. Turn on "Reduce load on the device" in the bubble settings; as a last resort, choose one engine.
 - **The highlight is off or the wrong word is found with "Read app text".** The app reports wrong character positions; turn "Read app text" off.
 - **"This app does not expose its text here."** "App text only" is on, and the app under the aim shows its text as an image or does not expose it. Turn "App text only" off to recognize the screen.

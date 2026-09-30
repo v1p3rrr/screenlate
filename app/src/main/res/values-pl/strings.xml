@@ -489,4 +489,16 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="backup_summary_failed">Nie przywrócono: %1$s</string>
     <string name="backup_summary_missing">Niezainstalowane, więc ich ustawienia pominięto: %1$s</string>
     <string name="dictionaries_kept_on">Pozostawione włączone, inaczej żaden słownik z definicjami nie byłby włączony: %1$s</string>
+    <string name="home_bubble_shown">Dymek jest na ekranie</string>
+    <string name="home_bubble_hidden">Dymek jest ukryty</string>
+    <string name="home_bubble_stopped">Brak dymka: telefon zatrzymał usługę</string>
+    <string name="home_bubble_stopped_hint">Aplikacja nie może sama włączyć usługi z powrotem. Otwórz jej ustawienia, wyłącz i ponownie włącz przełącznik, a dymek wróci.</string>
+    <string name="home_bubble_show">Przywróć dymek</string>
+    <string name="home_bubble_hide">Ukryj dymek</string>
+    <string name="bubble_visible">Pokazuj dymek</string>
+    <string name="bubble_visible_hint">Wyłączone: dymka nie ma na ekranie. Kafelek szybkich ustawień robi to samo.</string>
+    <string name="background_keep_alive_title">Żeby dymek nie znikał</string>
+    <string name="background_keep_alive_text">Telefon, który zatrzymuje aplikacje w tle, może zatrzymać też usługę rysującą dymek. Aplikacja z własnym powiadomieniem jest zatrzymywana znacznie rzadziej.</string>
+    <string name="background_keep_alive_switch">Utrzymuj powiadomienie, gdy usługa działa</string>
+    <string name="background_keep_alive_hint">Nie zawsze pomaga. Gdy usługa już się zatrzyma, dymek przywróci tylko wyłączenie i włączenie w ustawieniach ułatwień dostępu.</string>
 </resources>

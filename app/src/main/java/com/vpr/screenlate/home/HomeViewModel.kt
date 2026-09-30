@@ -20,6 +20,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.search.SearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -81,6 +82,7 @@ class HomeViewModel @Inject constructor(
     private val notes: AnkiNotes,
     private val audio: AudioFinder,
     private val audioSettings: AudioSettingsRepository,
+    private val overlaySettings: OverlaySettingsRepository,
     ankiSettings: AnkiSettingsRepository,
 ) : ViewModel() {
     val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
@@ -95,6 +97,15 @@ class HomeViewModel @Inject constructor(
                 importing = tasks.any { !it.finished },
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionarySummary())
+
+    /** Whether the bubble is set to show; with the service running, that is whether it is on the screen. */
+    val bubbleVisible: StateFlow<Boolean> = overlaySettings.settings
+        .map { it.bubbleVisible }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+
+    fun setBubbleVisible(visible: Boolean) {
+        viewModelScope.launch { overlaySettings.setBubbleVisible(visible) }
+    }
 
     private val checked = MutableStateFlow<List<HomeProblem>>(emptyList())
     private var refreshJob: Job? = null

@@ -474,4 +474,16 @@
     <string name="backup_summary_failed">未恢復：%1$s</string>
     <string name="backup_summary_missing">未安裝，因此跳過了其設定：%1$s</string>
     <string name="dictionaries_kept_on">已保持開啟，否則沒有任何附釋義的詞典處於開啟狀態：%1$s</string>
+    <string name="home_bubble_shown">懸浮球在螢幕上</string>
+    <string name="home_bubble_hidden">懸浮球已隱藏</string>
+    <string name="home_bubble_stopped">沒有懸浮球：手機停止了服務</string>
+    <string name="home_bubble_stopped_hint">應用程式無法自行重新開啟服務。請開啟它的設定，將開關關閉再開啟，懸浮球就會回來。</string>
+    <string name="home_bubble_show">找回懸浮球</string>
+    <string name="home_bubble_hide">隱藏懸浮球</string>
+    <string name="bubble_visible">顯示懸浮球</string>
+    <string name="bubble_visible_hint">關閉後螢幕上不會顯示懸浮球。快速設定磚也有同樣的作用。</string>
+    <string name="background_keep_alive_title">讓懸浮球不再消失</string>
+    <string name="background_keep_alive_text">會停止背景應用程式的手機，也可能停止繪製懸浮球的服務。有自己通知的應用程式被停止的情況少得多。</string>
+    <string name="background_keep_alive_switch">服務執行時保留一則通知</string>
+    <string name="background_keep_alive_hint">並非總是有效。服務一旦停止，只有在無障礙設定中關閉再開啟才能找回懸浮球。</string>
 </resources>

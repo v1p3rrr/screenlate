@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">Sao chép đoạn này</string>
     <string name="overlay_copy_all">Sao chép toàn bộ văn bản đã nhận dạng</string>
     <string name="overlay_copied">Đã sao chép</string>
+    <string name="overlay_keep_alive_channel">Dịch vụ đang chạy</string>
+    <string name="overlay_keep_alive_title">Screenlate đã sẵn sàng</string>
+    <string name="overlay_keep_alive_text">Bong bóng vẫn sẵn sàng ở chế độ nền</string>
 </resources>

@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">Kopiuj ten akapit</string>
     <string name="overlay_copy_all">Kopiuj cały rozpoznany tekst</string>
     <string name="overlay_copied">Skopiowano</string>
+    <string name="overlay_keep_alive_channel">Usługa działa</string>
+    <string name="overlay_keep_alive_title">Screenlate jest gotowy</string>
+    <string name="overlay_keep_alive_text">Dymek pozostaje dostępny w tle</string>
 </resources>

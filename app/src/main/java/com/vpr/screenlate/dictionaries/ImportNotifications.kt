@@ -60,18 +60,27 @@ class ImportNotificationsViewModel @Inject constructor(private val settings: App
     }
 }
 
-/** Call when an import or download starts: asks for the notification permission the first time. */
+/**
+ * Call when something that shows a notification starts: asks for the notification permission the first time. The
+ * returned function tells whether it asked; [onAnswered] runs once the user has answered.
+ */
 @Composable
-fun rememberImportNotificationsAsk(viewModel: ImportNotificationsViewModel = hiltViewModel()): () -> Unit {
+fun rememberImportNotificationsAsk(
+    viewModel: ImportNotificationsViewModel = hiltViewModel(),
+    onAnswered: () -> Unit = {},
+): () -> Boolean {
     val context = LocalContext.current
     val asked by viewModel.asked.collectAsStateWithLifecycle()
     val currentAsked by rememberUpdatedState(asked)
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { onAnswered() }
     return remember(launcher) {
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && currentAsked == false && !notificationsAllowed(context)) {
                 viewModel.markAsked()
                 launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                true
+            } else {
+                false
             }
         }
     }

@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">この段落をコピー</string>
     <string name="overlay_copy_all">認識したテキストをすべてコピー</string>
     <string name="overlay_copied">コピーしました</string>
+    <string name="overlay_keep_alive_channel">サービス実行中</string>
+    <string name="overlay_keep_alive_title">Screenlate は待機中です</string>
+    <string name="overlay_keep_alive_text">バックグラウンドでバブルを使える状態に保ちます</string>
 </resources>

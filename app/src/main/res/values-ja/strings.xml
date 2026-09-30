@@ -474,4 +474,16 @@
     <string name="backup_summary_failed">復元されなかった部分：%1$s</string>
     <string name="backup_summary_missing">インストールされていないため、設定をスキップしました：%1$s</string>
     <string name="dictionaries_kept_on">定義のある辞書がすべてオフになるため、オンのままにしました: %1$s</string>
+    <string name="home_bubble_shown">バブルは画面に表示されています</string>
+    <string name="home_bubble_hidden">バブルは非表示です</string>
+    <string name="home_bubble_stopped">バブルがありません: 端末がサービスを停止しました</string>
+    <string name="home_bubble_stopped_hint">アプリからサービスを再び有効にすることはできません。設定を開き、スイッチをオフにしてからオンにすると、バブルが戻ります。</string>
+    <string name="home_bubble_show">バブルを戻す</string>
+    <string name="home_bubble_hide">バブルを非表示にする</string>
+    <string name="bubble_visible">バブルを表示する</string>
+    <string name="bubble_visible_hint">オフにすると画面にバブルは出ません。クイック設定のタイルでも同じことができます。</string>
+    <string name="background_keep_alive_title">バブルを消さないために</string>
+    <string name="background_keep_alive_text">バックグラウンドのアプリを停止する端末は、バブルを描くサービスも停止することがあります。自分の通知を持つアプリは停止されにくくなります。</string>
+    <string name="background_keep_alive_switch">サービスの実行中は通知を表示したままにする</string>
+    <string name="background_keep_alive_hint">常に効くわけではありません。サービスが停止した後は、ユーザー補助の設定でオフにしてオンにする以外にバブルを戻す方法はありません。</string>
 </resources>

@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">Copiar este párrafo</string>
     <string name="overlay_copy_all">Copiar todo el texto reconocido</string>
     <string name="overlay_copied">Copiado</string>
+    <string name="overlay_keep_alive_channel">Servicio en ejecución</string>
+    <string name="overlay_keep_alive_title">Screenlate está listo</string>
+    <string name="overlay_keep_alive_text">La burbuja sigue disponible en segundo plano</string>
 </resources>

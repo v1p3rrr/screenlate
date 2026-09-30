@@ -52,6 +52,7 @@ enum class SmallTextMode {
  * @property hiddenPackages apps in which the bubble is hidden.
  * @property showSourceText the popup starts with the recognized text; off, it starts with the first entry.
  * @property ocrSaving the device reads the whole screen only when cloud recognition is late or fails.
+ * @property keepAlive the service holds a foreground notification so the phone stops the app less often.
  */
 data class OverlaySettings(
     val bubbleVisible: Boolean = true,
@@ -67,6 +68,7 @@ data class OverlaySettings(
     val showSourceText: Boolean = true,
     val ocrEngines: OcrEngines = OcrEngines.BOTH,
     val ocrSaving: Boolean = false,
+    val keepAlive: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_BUBBLE_DP = 48
@@ -101,6 +103,7 @@ class OverlaySettingsRepository @Inject constructor(
             ocrEngines = prefs[OCR_ENGINES]?.let { stored -> OcrEngines.entries.firstOrNull { it.name == stored } }
                 ?: defaults.ocrEngines,
             ocrSaving = prefs[OCR_SAVING] ?: defaults.ocrSaving,
+            keepAlive = prefs[KEEP_ALIVE] ?: defaults.keepAlive,
         )
     }
 
@@ -151,6 +154,10 @@ class OverlaySettingsRepository @Inject constructor(
         dataStore.edit { it[OCR_SAVING] = enabled }
     }
 
+    suspend fun setKeepAlive(enabled: Boolean) {
+        dataStore.edit { it[KEEP_ALIVE] = enabled }
+    }
+
     suspend fun setDockSide(side: DockSide) {
         dataStore.edit { it[DOCK_SIDE] = side.name }
     }
@@ -176,5 +183,6 @@ class OverlaySettingsRepository @Inject constructor(
         val SHOW_SOURCE_TEXT = booleanPreferencesKey("overlay_show_source_text")
         val OCR_ENGINES = stringPreferencesKey("overlay_ocr_engines")
         val OCR_SAVING = booleanPreferencesKey("overlay_ocr_saving")
+        val KEEP_ALIVE = booleanPreferencesKey("overlay_keep_alive")
     }
 }

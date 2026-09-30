@@ -59,4 +59,7 @@
     <string name="overlay_copy_paragraph">Diesen Absatz kopieren</string>
     <string name="overlay_copy_all">Gesamten erkannten Text kopieren</string>
     <string name="overlay_copied">Kopiert</string>
+    <string name="overlay_keep_alive_channel">Dienst aktiv</string>
+    <string name="overlay_keep_alive_title">Screenlate ist bereit</string>
+    <string name="overlay_keep_alive_text">Die Blase bleibt im Hintergrund verfügbar</string>
 </resources>

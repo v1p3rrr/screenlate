@@ -479,4 +479,16 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="backup_summary_failed">Nicht wiederhergestellt: %1$s</string>
     <string name="backup_summary_missing">Nicht installiert, daher wurden ihre Einstellungen übersprungen: %1$s</string>
     <string name="dictionaries_kept_on">Bleiben an, sonst wäre kein Wörterbuch mit Definitionen an: %1$s</string>
+    <string name="home_bubble_shown">Die Blase ist auf dem Bildschirm</string>
+    <string name="home_bubble_hidden">Die Blase ist ausgeblendet</string>
+    <string name="home_bubble_stopped">Die Blase fehlt: das Telefon hat den Dienst gestoppt</string>
+    <string name="home_bubble_stopped_hint">Eine App kann den Dienst nicht selbst wieder einschalten. Öffnen Sie seine Einstellungen, schalten Sie den Schalter aus und wieder ein, dann kommt die Blase zurück.</string>
+    <string name="home_bubble_show">Blase zurückholen</string>
+    <string name="home_bubble_hide">Blase ausblenden</string>
+    <string name="bubble_visible">Blase anzeigen</string>
+    <string name="bubble_visible_hint">Aus: die Blase ist nicht auf dem Bildschirm. Die Schnelleinstellungs-Kachel macht dasselbe.</string>
+    <string name="background_keep_alive_title">Damit die Blase bleibt</string>
+    <string name="background_keep_alive_text">Ein Telefon, das Apps im Hintergrund stoppt, kann auch den Dienst stoppen, der die Blase zeichnet. Eine App mit einer eigenen Benachrichtigung wird deutlich seltener gestoppt.</string>
+    <string name="background_keep_alive_switch">Benachrichtigung behalten, solange der Dienst läuft</string>
+    <string name="background_keep_alive_hint">Das hilft nicht immer. Ist der Dienst erst gestoppt, bringt nur Aus- und Einschalten in den Bedienungshilfen die Blase zurück.</string>
 </resources>

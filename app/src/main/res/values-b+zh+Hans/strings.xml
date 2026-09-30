@@ -474,4 +474,16 @@
     <string name="backup_summary_failed">未恢复：%1$s</string>
     <string name="backup_summary_missing">未安装，因此跳过了其设置：%1$s</string>
     <string name="dictionaries_kept_on">已保持开启，否则没有任何带释义的词典处于开启状态：%1$s</string>
+    <string name="home_bubble_shown">悬浮球在屏幕上</string>
+    <string name="home_bubble_hidden">悬浮球已隐藏</string>
+    <string name="home_bubble_stopped">没有悬浮球：手机停止了服务</string>
+    <string name="home_bubble_stopped_hint">应用无法自行重新开启服务。请打开它的设置，将开关关闭再打开，悬浮球就会回来。</string>
+    <string name="home_bubble_show">找回悬浮球</string>
+    <string name="home_bubble_hide">隐藏悬浮球</string>
+    <string name="bubble_visible">显示悬浮球</string>
+    <string name="bubble_visible_hint">关闭后屏幕上不显示悬浮球。快捷设置磁贴的作用相同。</string>
+    <string name="background_keep_alive_title">让悬浮球不再消失</string>
+    <string name="background_keep_alive_text">会停止后台应用的手机也可能停止绘制悬浮球的服务。带有自己通知的应用被停止的情况要少得多。</string>
+    <string name="background_keep_alive_switch">服务运行时保留一条通知</string>
+    <string name="background_keep_alive_hint">并非总是有效。服务一旦被停止，只有在无障碍设置中关闭再打开才能找回悬浮球。</string>
 </resources>
