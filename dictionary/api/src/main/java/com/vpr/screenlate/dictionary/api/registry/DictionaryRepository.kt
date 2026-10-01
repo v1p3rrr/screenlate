@@ -22,6 +22,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -54,7 +55,12 @@ class DictionaryRepository @Inject constructor(
      */
     val generation: Int get() = changes.get()
 
-    val dictionaries: Flow<List<DictionaryEntity>> = dao.observeAll()
+    val dictionaries: Flow<List<DictionaryEntity>> = dao.observeAll().onEach { cachedDictionaries = it }
+
+    /** The dictionaries as last read by any screen, for a screen's first frame; null before the first read. */
+    @Volatile
+    var cachedDictionaries: List<DictionaryEntity>? = null
+        private set
 
     /** The frequency dictionary chosen for sorting; null means the first enabled one. */
     val sortDictionaryId: Flow<Long?> = preferences.data.map { it[SORT_DICTIONARY] }

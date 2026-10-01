@@ -80,9 +80,9 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class BubbleSettingsViewModel @Inject constructor(private val repository: OverlaySettingsRepository) : ViewModel() {
-    /** Null until the stored settings are read, so screens do not show the defaults first and then jump. */
+    /** Starts from the settings as last read; null only before the first read, so screens never show the defaults first. */
     val settings: StateFlow<OverlaySettings?> =
-        repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+        repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), repository.cachedSettings)
 
     fun setBubbleVisible(visible: Boolean) = launch { repository.setBubbleVisible(visible) }
 
@@ -132,7 +132,8 @@ fun BubbleSettingsScreen(
     val stored by viewModel.settings.collectAsStateWithLifecycle()
     val settings = stored ?: OverlaySettings()
     val context = LocalContext.current
-    val apps by produceState<List<LaunchableApp>?>(null) { value = launchableApps(context) }
+    // Opens with the list read last while the app runs, then reads it again for apps installed meanwhile.
+    val apps by produceState(lastLaunchableApps) { value = launchableApps(context).also { lastLaunchableApps = it } }
     var filter by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     val recognizes = settings.textSource != TextSource.APP_TEXT_ONLY
@@ -355,6 +356,10 @@ private const val APP_TEXT_KEY = "app_text"
 
 /** Index of the app text item: the first item holds aim, dock and screen recognition. */
 private const val APP_TEXT_INDEX = 1
+
+/** The launcher apps as read last while the app runs; reading them with their icons takes a moment. */
+@Volatile
+private var lastLaunchableApps: List<LaunchableApp>? = null
 
 private suspend fun launchableApps(context: Context): List<LaunchableApp> = withContext(Dispatchers.IO) {
     val pm = context.packageManager

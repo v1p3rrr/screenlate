@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,6 +93,7 @@ class DictionariesViewModel @Inject constructor(
     private val bundled: BundledDictionaries,
     private val lookup: DictionaryLookup,
     private val dictionaryReset: DictionaryReset,
+    private val cache: DictionariesStateCache,
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
@@ -105,7 +108,10 @@ class DictionariesViewModel @Inject constructor(
         imports.tasks,
         catalog.entries(),
         repository.sortDictionaryId,
-        repository.dictionaries.map { remoteCss() to withoutFiles() },
+        // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
+        repository.dictionaries
+            .map { remoteCss() to withoutFiles() }
+            .onStart { emit((cache.last?.remoteCss ?: emptyMap()) to (cache.last?.withoutFiles ?: emptySet())) },
     ) { dictionaries, tasks, entries, sortId, (remoteCss, withoutFiles) ->
         val items = catalogItems(entries, dictionaries, tasks)
         DictionariesState(
@@ -125,7 +131,9 @@ class DictionariesViewModel @Inject constructor(
             withoutFiles = withoutFiles,
             loaded = true,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionariesState())
+    }
+        .onEach { cache.last = it }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), cache.last ?: DictionariesState())
 
     /** Only the loaded dictionaries have styles; a switched on or imported one changes the registry and is checked then. */
     private suspend fun remoteCss(): Map<String, List<String>> = try {

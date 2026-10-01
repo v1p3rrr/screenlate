@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.common.settings.cached
 import com.vpr.screenlate.core.ocr.OcrEngines
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -81,7 +82,7 @@ data class OverlaySettings(
 class OverlaySettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
-    val settings: Flow<OverlaySettings> = dataStore.data.map { prefs ->
+    private val readOverlaySettings: (Preferences) -> OverlaySettings = { prefs ->
         val defaults = OverlaySettings()
         OverlaySettings(
             bubbleVisible = prefs[BUBBLE_VISIBLE] ?: defaults.bubbleVisible,
@@ -106,6 +107,11 @@ class OverlaySettingsRepository @Inject constructor(
             keepAlive = prefs[KEEP_ALIVE] ?: defaults.keepAlive,
         )
     }
+
+    val settings: Flow<OverlaySettings> = dataStore.data.map { readOverlaySettings(it) }
+
+    /** The settings as last read, for a screen's first frame; null before the first read. */
+    val cachedSettings: OverlaySettings? get() = dataStore.cached(readOverlaySettings)
 
     suspend fun setBubbleVisible(visible: Boolean) {
         dataStore.edit { it[BUBBLE_VISIBLE] = visible }

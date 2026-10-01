@@ -46,9 +46,10 @@ class PopupAppearanceViewModel @Inject constructor(
     private val repository: PopupAppearanceRepository,
     private val fonts: PopupFonts,
     private val settingsReset: SettingsReset,
+    private val cache: PopupTypefaces,
 ) : ViewModel() {
     val appearance: StateFlow<PopupAppearance?> =
-        repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedAppearance)
 
     val installed: StateFlow<List<InstalledFont>> = fonts.installed
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
@@ -57,7 +58,7 @@ class PopupAppearanceViewModel @Inject constructor(
     /** Typefaces for the font list: installed fonts by id, the phone's font for the language under [SYSTEM]. */
     val typefaces: StateFlow<Map<String, Typeface>> = fonts.installed
         .map { installed -> loadTypefaces(installed) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, cachedTypefaces(fonts.installed.value))
 
     /**
      * The preview's typeface: the chosen font, or the phone's, with a variable font set to the text weight. The
@@ -68,13 +69,17 @@ class PopupAppearanceViewModel @Inject constructor(
             installed.firstOrNull { it.id == appearance.fontId } to appearance.textWeight
         }
             .distinctUntilChanged()
-            .map { (font, weight) -> withContext(Dispatchers.IO) { typeface(sources(font), weight) } }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+            .map { (font, weight) -> withContext(Dispatchers.IO) { cachedTypeface(font, weight) } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, cachedPreview())
 
     /** The phone declares no font for the language, so its kanji may take another region's forms. */
     val systemFontMissing: StateFlow<Boolean> =
-        flow { emit(withContext(Dispatchers.IO) { SystemFontFiles.find(LANGUAGE.support) == null }) }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+        flow {
+            val missing = cache.systemFontMissing ?: withContext(Dispatchers.IO) {
+                SystemFontFiles.find(LANGUAGE.support) == null
+            }.also { cache.systemFontMissing = it }
+            emit(missing)
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, cache.systemFontMissing ?: false)
 
     private val mutableImport = MutableStateFlow<FontImport?>(null)
 
@@ -149,9 +154,35 @@ class PopupAppearanceViewModel @Inject constructor(
 
     private suspend fun loadTypefaces(installed: List<InstalledFont>): Map<String, Typeface> =
         withContext(Dispatchers.IO) {
-            val loaded = installed.mapNotNull { font -> typeface(sources(font), PopupAppearance.NORMAL_WEIGHT)?.let { font.id to it } }
-            loaded.toMap() + listOfNotNull(typeface(sources(null), PopupAppearance.NORMAL_WEIGHT)?.let { SYSTEM to it })
+            val loaded = installed.mapNotNull { font -> cachedTypeface(font, PopupAppearance.NORMAL_WEIGHT)?.let { font.id to it } }
+            loaded.toMap() + listOfNotNull(cachedTypeface(null, PopupAppearance.NORMAL_WEIGHT)?.let { SYSTEM to it })
         }
+
+    /** The typefaces of the font list already built, so the list opens in its fonts; the rest follow. */
+    private fun cachedTypefaces(installed: List<InstalledFont>): Map<String, Typeface> {
+        val weight = PopupAppearance.NORMAL_WEIGHT
+        val fontsBuilt = installed.mapNotNull { font -> cache.byKey[key(font, weight)]?.let { font.id to it } }
+        return fontsBuilt.toMap() + listOfNotNull(cache.byKey[key(null, weight)]?.let { SYSTEM to it })
+    }
+
+    /** The preview's typeface for the saved appearance, if already built. */
+    private fun cachedPreview(): Typeface? {
+        val appearance = repository.cachedAppearance ?: return null
+        val font = fonts.installed.value.firstOrNull { it.id == appearance.fontId }
+        return cache.byKey[key(font, appearance.textWeight)]
+    }
+
+    /** [typeface] for [font] (the phone's when null) at [weight], built once while the app runs. */
+    private fun cachedTypeface(font: InstalledFont?, weight: Int): Typeface? {
+        val key = key(font, weight)
+        return cache.byKey[key] ?: typeface(sources(font), weight)?.also { cache.byKey[key] = it }
+    }
+
+    /** A font's files with their change times, so a file added again under the same name is read again. */
+    private fun key(font: InstalledFont?, weight: Int): String {
+        val files = font?.files?.joinToString(",") { "${it.name}:${fonts.file(it).lastModified()}" } ?: SYSTEM
+        return "${font?.id}|$files|$weight"
+    }
 
     /** A font file and the CSS weight the page declares for it. */
     private class Source(val weight: String, val builder: () -> Font.Builder)

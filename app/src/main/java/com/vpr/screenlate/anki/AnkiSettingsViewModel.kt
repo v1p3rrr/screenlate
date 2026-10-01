@@ -45,6 +45,8 @@ data class AnkiScreenState(
     /** Markers offered for templates, including Yomitan's per-dictionary markers for installed dictionaries. */
     val markers: List<String> = FieldTemplate.markersFor(Language.JAPANESE),
     val error: String? = null,
+    /** Shown from the last known state while AnkiDroid is asked again; the screen dims it and takes no taps. */
+    val refreshing: Boolean = false,
 )
 
 @HiltViewModel
@@ -53,9 +55,18 @@ class AnkiSettingsViewModel @Inject constructor(
     private val notes: AnkiNotes,
     private val settingsRepository: AnkiSettingsRepository,
     private val settingsReset: SettingsReset,
+    private val cache: AnkiConnectionCache,
     dictionaries: DictionaryRepository,
 ) : ViewModel() {
-    private val connection = MutableStateFlow(AnkiScreenState())
+    // Opens with AnkiDroid's last answer, or the first time with the saved setup laid out as if AnkiDroid answered;
+    // either way the screen keeps its layout when the answer comes.
+    private val connection = MutableStateFlow(
+        cache.last?.copy(refreshing = true) ?: AnkiScreenState(
+            availability = AnkiAvailability.READY,
+            fieldNames = settingsRepository.cachedSettings?.fields?.keys?.toList().orEmpty(),
+            refreshing = true,
+        ),
+    )
     private var refreshJob: Job? = null
 
     private val dictionaryMarkers = dictionaries.dictionaries.map { list ->
@@ -73,7 +84,11 @@ class AnkiSettingsViewModel @Inject constructor(
             settings = settings,
             markers = FieldTemplate.markersFor(Language.JAPANESE) + dynamicMarkers,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AnkiScreenState())
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        connection.value.copy(settings = settingsRepository.cachedSettings ?: AnkiSettings()),
+    )
 
     init {
         refresh()
@@ -86,7 +101,7 @@ class AnkiSettingsViewModel @Inject constructor(
         refreshJob = viewModelScope.launch {
             val availability = anki.availability()
             if (availability != AnkiAvailability.READY) {
-                connection.value = AnkiScreenState(availability = availability)
+                answer(AnkiScreenState(availability = availability))
                 return@launch
             }
             runCatching {
@@ -99,12 +114,17 @@ class AnkiSettingsViewModel @Inject constructor(
                     fieldNames = modelId?.let { anki.fields(it) }.orEmpty(),
                     status = notes.status(),
                 )
-            }.onSuccess { connection.value = it }
+            }.onSuccess(::answer)
                 .onFailure {
                     if (it is CancellationException) throw it
-                    connection.value = AnkiScreenState(availability = availability, error = it.message)
+                    answer(AnkiScreenState(availability = availability, error = it.message))
                 }
         }
+    }
+
+    private fun answer(state: AnkiScreenState) {
+        cache.last = state
+        connection.value = state
     }
 
     /** Resets the page's settings; the setup is checked again, as no note type is chosen any more. */

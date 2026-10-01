@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.common.settings.cached
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -127,9 +128,14 @@ class AnkiSettingsRepository @Inject constructor(
         coerceInputValues = true
     }
 
-    val settings: Flow<AnkiSettings> = dataStore.data.map { prefs ->
+    private val readAnkiSettings: (Preferences) -> AnkiSettings = { prefs ->
         prefs[KEY]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() } ?: AnkiSettings()
     }
+
+    val settings: Flow<AnkiSettings> = dataStore.data.map { readAnkiSettings(it) }
+
+    /** The settings as last read, for a screen's first frame; null before the first read. */
+    val cachedSettings: AnkiSettings? get() = dataStore.cached(readAnkiSettings)
 
     suspend fun current(): AnkiSettings = settings.first()
 

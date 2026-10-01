@@ -62,6 +62,7 @@ import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
+import com.vpr.screenlate.ui.components.pending
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Deck, note type, field templates, duplicate handling and audio sources. */
@@ -105,9 +106,11 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                         Text(stringResource(R.string.anki_grant_permission), textAlign = TextAlign.Center)
                     }
                 }
-                AnkiAvailability.READY -> NoteSettings(state, viewModel)
-                // Until AnkiDroid answers, only a spinner: the audio section alone would show first and be pushed
-                // down by the note settings a moment later.
+                // Drawn from the last answer or the saved setup until AnkiDroid answers, dimmed and without taps.
+                AnkiAvailability.READY -> Column(
+                    modifier = Modifier.pending(state.refreshing),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) { NoteSettings(state, viewModel) }
                 null -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = AccentDefaults.progress,

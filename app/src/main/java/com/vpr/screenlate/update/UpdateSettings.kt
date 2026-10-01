@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -25,13 +26,18 @@ data class UpdateSettings(
 
 @Singleton
 class UpdateSettingsRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
-    val settings: Flow<UpdateSettings> = dataStore.data.map { prefs ->
+    private val readUpdateSettings: (Preferences) -> UpdateSettings = { prefs ->
         UpdateSettings(
             announce = prefs[ANNOUNCE] ?: true,
             lastCheck = prefs[LAST_CHECK] ?: 0,
             announcedTag = prefs[ANNOUNCED],
         )
     }
+
+    val settings: Flow<UpdateSettings> = dataStore.data.map { readUpdateSettings(it) }
+
+    /** The settings as last read, for a screen's first frame; null before the first read. */
+    val cachedSettings: UpdateSettings? get() = dataStore.cached(readUpdateSettings)
 
     suspend fun current(): UpdateSettings = settings.first()
 

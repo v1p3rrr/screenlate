@@ -44,6 +44,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 38. Every screen change plays a fade that flashes white and sometimes shows the previous screen first, and a tap on a menu item opens its screen with a delay; remove it (2026-10-01).
 39. Not every accent button is pink yet, e.g. in Import from Yomitan and Backup: the filled buttons should use the pink accent too (2026-10-01).
 40. Opening Anki and audio (e.g. after Lookup) shows another settings screen with a slider for a moment, every time; find why. Then release v0.2.1 (2026-10-01).
+41. Find every screen where a part appears, disappears or changes a moment after opening because it waits for a check or an answer. The screen's layout should stay the same from the first frame: show the last known (cached) state, disabled for taps or editing until it is confirmed, or a loading state in place, then update quickly; no field that changes under the finger, no element that was not there a second ago (2026-10-01). Before v0.2.1.
 
 ## Decisions
 
@@ -270,3 +271,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-01: owner's command: merge the cloud branch into main and release v0.2.0 (owner chose the version); README features updated for the important additions only.
 - 2026-10-01: requests 38 and 39 done in the cloud session: no screen transitions (the 700 ms cross-fade went), and every filled button uses the pink accent (row "App colors" changed by the owner's request).
 - 2026-10-01: request 40: the Anki screen showed only its audio section (sources, test, volume slider) until AnkiDroid answered, then the note settings pushed it down; it now shows a spinner until then. The bubble settings showed the defaults for a moment (and the recognition sections for app-text-only users), Background work its keep-alive switch off; both wait for the stored settings now. Release v0.2.1 on the owner's command.
+- 2026-10-01: request 41 done in the cloud session: a settings snapshot gives every settings screen its stored values in the first frame; AnkiDroid's last answer, the Dictionaries state, the dictionary list, launcher apps and popup typefaces are kept while the app runs; the Anki screen shows its last state with taps blocked (dimmed after 300 ms) until AnkiDroid answers. The release v0.2.1 waits for this.

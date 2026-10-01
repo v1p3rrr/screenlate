@@ -16,7 +16,7 @@ class LookupSettingsViewModel @Inject constructor(
     private val repository: LookupSettingsRepository,
 ) : ViewModel() {
     val settings: StateFlow<LookupSettings?> =
-        repository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        repository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedSettings)
 
     fun setScanLength(value: Int) = launch { repository.setScanLength(value) }
 

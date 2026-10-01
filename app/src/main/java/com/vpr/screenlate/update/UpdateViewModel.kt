@@ -21,7 +21,7 @@ class UpdateViewModel @Inject constructor(
     val supported: Boolean get() = updates.supported
     val state: StateFlow<UpdateState> = updates.state
     val settings: StateFlow<UpdateSettings?> =
-        settingsRepository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        settingsRepository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, settingsRepository.cachedSettings)
 
     /** The release announced in this session; it stays until dismissed, but is not announced again later. */
     private val announcedHere = MutableStateFlow<Release?>(null)

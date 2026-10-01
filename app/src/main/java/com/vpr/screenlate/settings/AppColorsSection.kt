@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AppColorsViewModel @Inject constructor(private val settings: AppSettingsRepository) : ViewModel() {
     val colors: StateFlow<AppColors> =
-        settings.appColors.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppColors.SCREENLATE)
+        settings.appColors.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), settings.cachedAppColors ?: AppColors.SCREENLATE)
 
     fun setColors(colors: AppColors) {
         viewModelScope.launch { settings.setAppColors(colors) }

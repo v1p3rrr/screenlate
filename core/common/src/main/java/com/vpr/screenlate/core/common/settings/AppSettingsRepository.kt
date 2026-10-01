@@ -16,17 +16,27 @@ import kotlinx.coroutines.flow.map
 class AppSettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
-    val themeMode: Flow<ThemeMode> = dataStore.data.map { prefs ->
+    private val readThemeMode: (Preferences) -> ThemeMode = { prefs ->
         prefs[THEME_MODE]?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } } ?: ThemeMode.SYSTEM
     }
+
+    val themeMode: Flow<ThemeMode> = dataStore.data.map { readThemeMode(it) }
+
+    /** [themeMode] as last read, for a screen's first frame; null before the first read. */
+    val cachedThemeMode: ThemeMode? get() = dataStore.cached(readThemeMode)
 
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.edit { it[THEME_MODE] = mode.name }
     }
 
-    val appColors: Flow<AppColors> = dataStore.data.map { prefs ->
+    private val readAppColors: (Preferences) -> AppColors = { prefs ->
         prefs[APP_COLORS]?.let { stored -> AppColors.entries.firstOrNull { it.name == stored } } ?: AppColors.SCREENLATE
     }
+
+    val appColors: Flow<AppColors> = dataStore.data.map { readAppColors(it) }
+
+    /** [appColors] as last read, for a screen's first frame; null before the first read. */
+    val cachedAppColors: AppColors? get() = dataStore.cached(readAppColors)
 
     suspend fun setAppColors(colors: AppColors) {
         dataStore.edit { it[APP_COLORS] = colors.name }
@@ -37,6 +47,9 @@ class AppSettingsRepository @Inject constructor(
      * show few shades. It overrides the theme mode.
      */
     val eInk: Flow<Boolean> = dataStore.data.map { it[E_INK] ?: false }
+
+    /** [eInk] as last read, for a screen's first frame; null before the first read. */
+    val cachedEInk: Boolean? get() = dataStore.cached { it[E_INK] ?: false }
 
     suspend fun setEInk(enabled: Boolean) {
         dataStore.edit {
@@ -87,6 +100,9 @@ class AppSettingsRepository @Inject constructor(
 
     /** Whether the user has seen the background work tip, which is badged in the settings until then. */
     val backgroundTipSeen: Flow<Boolean> = dataStore.data.map { it[BACKGROUND_TIP_SEEN] ?: false }
+
+    /** [backgroundTipSeen] as last read, for a screen's first frame; null before the first read. */
+    val cachedBackgroundTipSeen: Boolean? get() = dataStore.cached { it[BACKGROUND_TIP_SEEN] ?: false }
 
     suspend fun setBackgroundTipSeen() {
         dataStore.edit { it[BACKGROUND_TIP_SEEN] = true }

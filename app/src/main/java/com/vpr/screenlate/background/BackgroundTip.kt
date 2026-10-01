@@ -29,7 +29,8 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class BackgroundTipViewModel @Inject constructor(private val settings: AppSettingsRepository) : ViewModel() {
-    val seen: StateFlow<Boolean?> = settings.backgroundTipSeen.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val seen: StateFlow<Boolean?> =
+        settings.backgroundTipSeen.stateIn(viewModelScope, SharingStarted.Eagerly, settings.cachedBackgroundTipSeen)
 
     /** Survives the screen closing right after the call. */
     fun markSeen() {

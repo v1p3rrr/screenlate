@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +38,7 @@ class LookupSettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
     // Restored backups write the values without the setters' checks.
-    val settings: Flow<LookupSettings> = dataStore.data.map { prefs ->
+    private val readLookupSettings: (Preferences) -> LookupSettings = { prefs ->
         LookupSettings(
             scanLength = (prefs[SCAN_LENGTH] ?: LookupSettings.DEFAULT_SCAN_LENGTH)
                 .coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
@@ -46,6 +47,11 @@ class LookupSettingsRepository @Inject constructor(
             singleKanji = prefs[SINGLE_KANJI] ?: true,
         )
     }
+
+    val settings: Flow<LookupSettings> = dataStore.data.map { readLookupSettings(it) }
+
+    /** The settings as last read, for a screen's first frame; null before the first read. */
+    val cachedSettings: LookupSettings? get() = dataStore.cached(readLookupSettings)
 
     suspend fun current(): LookupSettings = settings.first()
 

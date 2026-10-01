@@ -10,6 +10,7 @@ import com.vpr.screenlate.core.anki.audio.AudioFinder
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceFailure
+import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -88,8 +89,8 @@ class HomeViewModel @Inject constructor(
     ankiSettings: AnkiSettingsRepository,
 ) : ViewModel() {
     val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
-        .map { if (it.configured) AnkiSummary(it.deckName.orEmpty(), it.modelName.orEmpty()) else null }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+        .map(::ankiSummary)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ankiSettings.cachedSettings?.let(::ankiSummary))
 
     val dictionaries: StateFlow<DictionarySummary> =
         combine(repository.dictionaries, imports.tasks) { dictionaries, tasks ->
@@ -98,12 +99,17 @@ class HomeViewModel @Inject constructor(
                 enabled = dictionaries.count { it.enabled },
                 importing = tasks.any { !it.finished },
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionarySummary())
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            repository.cachedDictionaries?.let { DictionarySummary(installed = it.size, enabled = it.count { d -> d.enabled }) }
+                ?: DictionarySummary(),
+        )
 
     /** Whether the bubble is set to show; with the service running, that is whether it is on the screen. */
     val bubbleVisible: StateFlow<Boolean> = overlaySettings.settings
         .map { it.bubbleVisible }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), overlaySettings.cachedSettings?.bubbleVisible ?: true)
 
     fun setBubbleVisible(visible: Boolean) {
         viewModelScope.launch { overlaySettings.setBubbleVisible(visible) }
@@ -220,3 +226,6 @@ class HomeViewModel @Inject constructor(
         const val TAG = "Home"
     }
 }
+
+private fun ankiSummary(settings: AnkiSettings): AnkiSummary? =
+    if (settings.configured) AnkiSummary(settings.deckName.orEmpty(), settings.modelName.orEmpty()) else null

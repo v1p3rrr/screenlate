@@ -21,7 +21,7 @@ object SettingsModule {
     @Provides
     @Singleton
     fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        settingsDataStore { context.preferencesDataStoreFile("settings") }
+        SnapshotDataStore(settingsDataStore { context.preferencesDataStoreFile("settings") })
 }
 
 /** A damaged file would make every read fail and the app crash on each start; the defaults replace it instead. */

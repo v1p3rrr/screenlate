@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -85,6 +86,9 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
     }
 
     val settings: Flow<AudioSettings> = dataStore.data.map(::read)
+
+    /** The settings as last read, for a screen's first frame; null before the first read. */
+    val cachedSettings: AudioSettings? get() = dataStore.cached(::read)
 
     suspend fun current(): AudioSettings = settings.first()
 

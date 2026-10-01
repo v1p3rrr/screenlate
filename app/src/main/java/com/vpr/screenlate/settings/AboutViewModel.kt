@@ -24,7 +24,11 @@ class AboutViewModel @Inject constructor(
 ) : ViewModel() {
     val dictionaries: StateFlow<List<DictionaryEntity>> = repository.dictionaries
         .map { list -> list.sortedBy { it.priority } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            repository.cachedDictionaries?.sortedBy { it.priority }.orEmpty(),
+        )
 
     /** A share intent for a fresh log file. */
     suspend fun logShareIntent(): Intent = LogExport.shareIntent(context, LogExport.write(context))

@@ -35,10 +35,10 @@ fun LibrariesScreen(onBack: () -> Unit) {
 @Composable
 fun NoticesScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val text by produceState("") {
-        value = withContext(Dispatchers.IO) {
+    val text by produceState(noticeText.orEmpty()) {
+        value = noticeText ?: withContext(Dispatchers.IO) {
             runCatching { context.assets.open("NOTICE.txt").bufferedReader().use { it.readText() } }.getOrDefault("")
-        }
+        }.also { noticeText = it }
     }
     SettingsScaffold(stringResource(R.string.about_notices), onBack) { padding ->
         // NOTICE keeps its own line breaks; long lines scroll sideways instead of wrapping mid-list.
@@ -54,3 +54,7 @@ fun NoticesScreen(onBack: () -> Unit) {
         )
     }
 }
+
+/** NOTICE as read once while the app runs; it ships with the app and does not change. */
+@Volatile
+private var noticeText: String? = null

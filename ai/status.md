@@ -58,8 +58,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
      should count.
   4. Left from the v0.1.4..HEAD review: `definition.js` hard-codes Japanese dictionary markup (ルビ, ルビG, 語釈, 【】)
      in a page shared by all languages, against CLAUDE.md's language rule (owner's decision whether to move it now).
-  5. Left from the v0.1.4..HEAD review: `PopupAppearanceViewModel` finds and parses the system font again on every
-     weight or font change (`systemFontMissing`, `loadTypefaces`, `previewTypeface`); small cost, a cache would fix it.
+  5. Done 2026-10-01 (`PopupTypefaces`): the system font is no longer read again on every weight or font change.
   6. Minor: two bundled copies of one dictionary still get a third on update (install logic; check on the emulator).
   7. Minor: `DictionariesViewModel.remoteCss` loads the engine to read styles just for the remote-file ⚠.
 - Minor items fixed in the cloud: shipped archives' indexes are read once
@@ -644,3 +643,24 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   now null until read; the bubble screen and the keep-alive switch on Background work wait for it. Left: Appearance's
   Colors segment and e-ink switch start from their defaults for a frame (no layout change).
 - Release v0.2.1 (owner's command): notes in `.github/release-notes/v0.2.1.md`.
+
+### 2026-10-01 (stable first frames; cloud session)
+
+- Request 41: screens kept changing a moment after opening while they waited for a read or a check. Common cause:
+  every view model started from defaults or null and the DataStore answered a frame or more later. Now
+  `SettingsModule` provides a `SnapshotDataStore` (the settings as last read, kept from the first read on, writes
+  unchanged) and every settings repository has `cachedSettings`/`cachedAppearance`/`cachedThemeMode`/
+  `cachedAppColors`/`cachedEInk`/`cachedBackgroundTipSeen` (`DataStore.cached`); the view models of Bubble,
+  Lookup, Popup, audio, updates, Appearance colors and e-ink, the background tip, the search page theme, the home
+  bubble button and the Settings list's Anki summary start from them. `SettingsSnapshotTest` covers it.
+- Outside the settings, last answers kept for the process: `AnkiConnectionCache` (the Anki screen opens from it, or
+  the first time from the saved setup laid out as if AnkiDroid answered, and is `pending` until AnkiDroid answers:
+  taps blocked at once, dimmed only after 300 ms), `DictionariesStateCache` (the Dictionaries screen; the style and
+  file checks, which load the engine, no longer hold the list back), `DictionaryRepository.cachedDictionaries`
+  (Settings list counts, About attributions), the launcher apps of the bubble settings, NOTICE, and `PopupTypefaces`
+  (font list, preview, the missing-font check; also fixes "To revisit" item 5, the system font read on every slider
+  move).
+- Left as they are: the start screen's problem cards still appear after their checks on a cold start (they are news,
+  and a stale card would be wrong); the first opening of a screen after the process started may still start
+  from defaults if the settings were never read yet (the splash screen reads them first, so in practice they are).
+- Not seen on a device.

@@ -43,7 +43,7 @@ class AudioSettingsViewModel @Inject constructor(
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
 ) : ViewModel() {
-    val settings: StateFlow<AudioSettings?> = repository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val settings: StateFlow<AudioSettings?> = repository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedSettings)
 
     val testWord = MutableStateFlow(DEFAULT_TEST_WORD)
     val tests = MutableStateFlow<List<SourceTest>>(emptyList())

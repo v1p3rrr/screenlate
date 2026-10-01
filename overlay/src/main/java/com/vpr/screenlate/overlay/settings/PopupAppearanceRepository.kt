@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
@@ -75,7 +76,7 @@ enum class DefinitionCopyMode(val id: String) {
 class PopupAppearanceRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) {
-    val appearance: Flow<PopupAppearance> = dataStore.data.map { prefs ->
+    private val readPopupAppearance: (Preferences) -> PopupAppearance = { prefs ->
         PopupAppearance(
             fontId = prefs[FONT]?.takeIf { it.isNotEmpty() },
             fontForAllText = prefs[FONT_ALL_TEXT] ?: false,
@@ -89,6 +90,11 @@ class PopupAppearanceRepository @Inject constructor(
             copyMode = DefinitionCopyMode.of(prefs[COPY_MODE]),
         )
     }
+
+    val appearance: Flow<PopupAppearance> = dataStore.data.map { readPopupAppearance(it) }
+
+    /** The appearance as last read, for a screen's first frame; null before the first read. */
+    val cachedAppearance: PopupAppearance? get() = dataStore.cached(readPopupAppearance)
 
     suspend fun setCopyDefinitions(enabled: Boolean) {
         dataStore.edit { it[COPY_DEFINITIONS] = enabled }

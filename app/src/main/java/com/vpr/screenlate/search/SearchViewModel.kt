@@ -59,7 +59,7 @@ class SearchViewModel @Inject constructor(
     val query = MutableStateFlow("")
 
     val themeMode: StateFlow<ThemeMode> =
-        appSettings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, ThemeMode.SYSTEM)
+        appSettings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedThemeMode ?: ThemeMode.SYSTEM)
 
     val results: StateFlow<SearchResults?> = query
         .debounce(SEARCH_DELAY_MS)

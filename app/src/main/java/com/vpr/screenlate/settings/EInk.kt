@@ -42,7 +42,8 @@ class EInkViewModel @Inject constructor(
     /** Keeps the switch and "Make larger" in order: a quick tap must not enlarge before the old record is forgotten. */
     private val lock = Mutex()
 
-    val eInk: StateFlow<Boolean> = settings.eInk.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+    val eInk: StateFlow<Boolean> =
+        settings.eInk.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), settings.cachedEInk ?: false)
 
     /** The one-time offer on a device that looks like an e-ink reader. */
     val hintVisible: StateFlow<Boolean> = combine(settings.eInk, settings.eInkHintSeen) { on, seen ->
