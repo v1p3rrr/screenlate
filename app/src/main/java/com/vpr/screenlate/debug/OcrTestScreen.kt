@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -69,7 +70,7 @@ fun OcrTestScreen(onBack: () -> Unit, viewModel: OcrTestViewModel = hiltViewMode
                 onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.ocr_test_pick_image))
+                Text(stringResource(R.string.ocr_test_pick_image), textAlign = TextAlign.Center)
             }
 
             if (state.running) Text(stringResource(R.string.ocr_test_running))

@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -81,7 +82,7 @@ fun AboutUpdateCard(viewModel: UpdateViewModel, currentVersion: String) {
                 onClick = viewModel::check,
                 enabled = state != UpdateState.Checking,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text(stringResource(R.string.update_check)) }
+            ) { Text(stringResource(R.string.update_check), textAlign = TextAlign.Center) }
         }
         settings?.let {
             SwitchRow(
@@ -101,7 +102,7 @@ private fun ReleaseNotes(release: Release) {
     if (notes.isEmpty()) return
     var open by rememberSaveable(release.tag) { mutableStateOf(false) }
     OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.update_whats_new))
+        Text(stringResource(R.string.update_whats_new), textAlign = TextAlign.Center)
     }
     if (open) {
         InfoDialog(stringResource(R.string.update_available_title, release.tag.removePrefix("v")), onDismiss = { open = false }) {
@@ -129,7 +130,7 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
             Text(stringResource(R.string.update_installing))
             state.confirmation?.let { prompt ->
                 OutlinedButton(onClick = { viewModel.confirm(prompt) }, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.update_confirm_install))
+                    Text(stringResource(R.string.update_confirm_install), textAlign = TextAlign.Center)
                 }
             }
         }
@@ -143,10 +144,13 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
                         runCatching { context.startActivity(intent) }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.update_allow_installs)) }
+                ) { Text(stringResource(R.string.update_allow_installs), textAlign = TextAlign.Center) }
             }
             Button(onClick = { viewModel.update(release) }, enabled = canInstall, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(if (state is UpdateState.Failed) R.string.update_retry else R.string.update_install))
+                Text(
+                    stringResource(if (state is UpdateState.Failed) R.string.update_retry else R.string.update_install),
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

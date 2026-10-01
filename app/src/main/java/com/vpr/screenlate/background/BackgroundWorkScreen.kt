@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -89,14 +90,14 @@ fun BackgroundWorkScreen(
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text(stringResource(R.string.background_battery_allow)) }
+                    ) { Text(stringResource(R.string.background_battery_allow), textAlign = TextAlign.Center) }
                 }
                 OutlinedButton(
                     onClick = {
                         BackgroundSettings.open(context, BackgroundSettings.batteryList(), BackgroundSettings.appInfo(context))
                     },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.background_battery_list)) }
+                ) { Text(stringResource(R.string.background_battery_list), textAlign = TextAlign.Center) }
                 Hint(stringResource(R.string.background_battery_list_hint))
             }
             SectionCard(title = stringResource(R.string.background_launch_title)) {
@@ -113,6 +114,7 @@ fun BackgroundWorkScreen(
                         stringResource(
                             if (startupScreen != null) R.string.background_launch_open else R.string.background_launch_app_info,
                         ),
+                        textAlign = TextAlign.Center,
                     )
                 }
                 if (startupScreen == null) Hint(stringResource(R.string.background_launch_app_info_hint))
@@ -136,7 +138,7 @@ fun BackgroundWorkScreen(
                         color = MaterialTheme.colorScheme.error,
                     )
                     OutlinedButton(onClick = notifications.request, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.background_keep_alive_notifications_allow))
+                        Text(stringResource(R.string.background_keep_alive_notifications_allow), textAlign = TextAlign.Center)
                     }
                 }
             }

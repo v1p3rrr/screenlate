@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -78,20 +79,20 @@ fun AboutScreen(
                 Hint(stringResource(R.string.about_author))
                 Hint(stringResource(R.string.about_license))
                 OutlinedButton(onClick = { openUrl(context, SOURCE_URL) }, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.about_source))
+                    Text(stringResource(R.string.about_source), textAlign = TextAlign.Center)
                 }
                 OutlinedButton(onClick = { openUrl(context, ProblemReport.url(versionName(context))) }, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.about_report_bug))
+                    Text(stringResource(R.string.about_report_bug), textAlign = TextAlign.Center)
                 }
             }
             AboutUpdateCard(updates, versionName(context))
             SectionCard(title = stringResource(R.string.about_licenses)) {
                 Hint(stringResource(R.string.about_licenses_hint))
                 OutlinedButton(onClick = onOpenLibraries, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.about_libraries))
+                    Text(stringResource(R.string.about_libraries), textAlign = TextAlign.Center)
                 }
                 OutlinedButton(onClick = onOpenNotices, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.about_notices))
+                    Text(stringResource(R.string.about_notices), textAlign = TextAlign.Center)
                 }
             }
             if (dictionaries.isNotEmpty()) {
@@ -128,7 +129,7 @@ fun AboutScreen(
                     },
                     enabled = !sharing,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.about_logs_share)) }
+                ) { Text(stringResource(R.string.about_logs_share), textAlign = TextAlign.Center) }
                 OutlinedButton(
                     onClick = {
                         sharing = true
@@ -141,7 +142,7 @@ fun AboutScreen(
                     },
                     enabled = !sharing,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.about_logs_save)) }
+                ) { Text(stringResource(R.string.about_logs_save), textAlign = TextAlign.Center) }
                 savedLog?.let { log ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Hint(stringResource(R.string.about_logs_saved, log.path), modifier = Modifier.weight(1f))
@@ -154,7 +155,7 @@ fun AboutScreen(
             }
             SectionCard(title = stringResource(R.string.home_tools_title)) {
                 OutlinedButton(onClick = onOpenOcrTest, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.ocr_test_title))
+                    Text(stringResource(R.string.ocr_test_title), textAlign = TextAlign.Center)
                 }
             }
         }

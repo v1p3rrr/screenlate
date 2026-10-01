@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -73,7 +74,7 @@ fun YomitanImportScreen(
                             Text(stringResource(R.string.yomitan_import_failed), color = MaterialTheme.colorScheme.error)
                         }
                         Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.yomitan_import_choose_settings))
+                            Text(stringResource(R.string.yomitan_import_choose_settings), textAlign = TextAlign.Center)
                         }
                     }
                     SettingsImportState.Reading -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
@@ -81,7 +82,7 @@ fun YomitanImportScreen(
                     is SettingsImportState.Done -> {
                         Summary(current)
                         OutlinedButton(onClick = viewModel::reset, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.yomitan_import_another))
+                            Text(stringResource(R.string.yomitan_import_another), textAlign = TextAlign.Center)
                         }
                     }
                 }
@@ -97,7 +98,7 @@ fun YomitanImportScreen(
                             Text(stringResource(R.string.yomitan_collection_failed), color = MaterialTheme.colorScheme.error)
                         }
                         OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.dictionaries_import_yomitan_backup))
+                            Text(stringResource(R.string.dictionaries_import_yomitan_backup), textAlign = TextAlign.Center)
                         }
                         Hint(stringResource(R.string.yomitan_import_single_hint))
                         TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
@@ -107,7 +108,7 @@ fun YomitanImportScreen(
                     is CollectionState.Queued -> {
                         Text(stringResource(R.string.yomitan_collection_queued, current.count))
                         Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.home_dictionaries_open))
+                            Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center)
                         }
                         TextButton(onClick = collection::reset) { Text(stringResource(R.string.yomitan_import_another)) }
                     }
@@ -150,7 +151,7 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
         },
         enabled = !state.importing && state.items.any { it.checked },
         modifier = Modifier.fillMaxWidth(),
-    ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked })) }
+    ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked }), textAlign = TextAlign.Center) }
 }
 
 @Composable
@@ -192,7 +193,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
         onClick = viewModel::apply,
         enabled = !state.applying && state.sections.isNotEmpty(),
         modifier = Modifier.fillMaxWidth(),
-    ) { Text(stringResource(R.string.yomitan_import_apply)) }
+    ) { Text(stringResource(R.string.yomitan_import_apply), textAlign = TextAlign.Center) }
 }
 
 @Composable

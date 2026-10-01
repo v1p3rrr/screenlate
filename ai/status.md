@@ -567,3 +567,14 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Translations: a script over every module's `values*/` (in the session scratchpad) found no missing or extra
   strings and no English string changed since v0.1.4, 22894ac, 3ce5fb2 or ae3bf5b with an unchanged translation;
   strings equal to English are real words there ("normal", "Popup", "System", "Notifications").
+
+### 2026-10-01 (system bar icons, button labels; cloud session)
+
+- Request 36: `enableEdgeToEdge()` in the activities follows the system's night mode, so a dark theme chosen in
+  Appearance kept black status bar icons. `ScreenlateTheme` now calls `enableEdgeToEdge` with
+  `SystemBarStyle.auto { dark }` for the app's theme (e-ink counts as light) through `LocalActivity`, in both
+  activities; the navigation bar keeps the default scrims.
+- Request 37: a label that wraps was left-aligned inside its button. All 42 full-width buttons whose content is one
+  `Text` now center it (Home, Background work, Backup, Dictionaries, Search, About, Popup fonts, updates, Yomitan
+  import, Anki, audio, OCR test); the Anki pickers (one line with an ellipsis) and dialog buttons are unchanged.
+- Not seen on a device: the icons with the theme set against the system's (both ways), and the labels in Russian.

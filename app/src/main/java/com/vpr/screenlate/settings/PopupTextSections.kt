@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.LocaleList
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -135,7 +136,7 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
             CatalogRow(font, downloads[font.id]) { viewModel.download(font) }
         }
         OutlinedButton(onClick = { picker.launch(FONT_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.popup_font_add_file))
+            Text(stringResource(R.string.popup_font_add_file), textAlign = TextAlign.Center)
         }
         when (lastImport) {
             FontImport.NotAFont -> ErrorText(stringResource(R.string.popup_font_not_a_font))

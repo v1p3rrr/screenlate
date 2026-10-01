@@ -237,7 +237,7 @@ fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                ) { Text(stringResource(R.string.home_dictionaries_open)) }
+                ) { Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center) }
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 // The page stays alive while hidden so the next search renders without a reload.

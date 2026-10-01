@@ -1,6 +1,11 @@
 package com.vpr.screenlate.ui.theme
 
+import android.graphics.Color as AndroidColor
 import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
@@ -10,6 +15,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -84,6 +90,7 @@ fun ScreenlateTheme(
         darkTheme -> Accent(fill = AccentDark, onFill = OnAccent, line = AccentDark)
         else -> Accent(fill = AccentLightFill, onFill = OnAccent, line = AccentLightLine)
     }
+    SystemBarIcons(dark = darkTheme && !eInk)
     // One composition path for both modes: switching must keep the screens and their state.
     CompositionLocalProvider(
         LocalEInk provides eInk,
@@ -93,3 +100,24 @@ fun ScreenlateTheme(
         MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
     }
 }
+
+/**
+ * Light status and navigation bar icons on the dark theme, dark ones on the light theme. `enableEdgeToEdge()` alone
+ * follows the system's night mode, which differs from the app's theme when one is chosen in Appearance.
+ */
+@Composable
+private fun SystemBarIcons(dark: Boolean) {
+    val activity = LocalActivity.current as? ComponentActivity ?: return
+    DisposableEffect(activity, dark) {
+        activity.enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(AndroidColor.TRANSPARENT, AndroidColor.TRANSPARENT) { dark },
+            navigationBarStyle = SystemBarStyle.auto(LIGHT_SCRIM, DARK_SCRIM) { dark },
+        )
+        onDispose {}
+    }
+}
+
+/** The scrims `enableEdgeToEdge()` puts behind three-button navigation by default. */
+private val LIGHT_SCRIM = AndroidColor.argb(0xe6, 0xFF, 0xFF, 0xFF)
+private val DARK_SCRIM = AndroidColor.argb(0x80, 0x1b, 0x1b, 0x1b)
+

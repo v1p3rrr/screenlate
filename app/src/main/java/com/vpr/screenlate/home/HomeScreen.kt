@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -122,7 +123,7 @@ fun HomeScreen(
 
             SectionCard(title = stringResource(R.string.home_search_title)) {
                 Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
-                    Text(stringResource(R.string.home_search_open))
+                    Text(stringResource(R.string.home_search_open), textAlign = TextAlign.Center)
                 }
             }
 
@@ -141,12 +142,12 @@ fun HomeScreen(
                     OutlinedButton(
                         onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text(stringResource(R.string.onboarding_open_accessibility_settings)) }
+                    ) { Text(stringResource(R.string.onboarding_open_accessibility_settings), textAlign = TextAlign.Center) }
                 } else {
                     Button(
                         onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text(stringResource(R.string.onboarding_open_accessibility_settings)) }
+                    ) { Text(stringResource(R.string.onboarding_open_accessibility_settings), textAlign = TextAlign.Center) }
                 }
                 HorizontalDivider()
                 LabelWithInfo(
@@ -199,7 +200,7 @@ private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible:
     if (state == BubbleState.STOPPED) Hint(stringResource(R.string.home_bubble_stopped_hint))
     if (state == BubbleState.SHOWN) {
         OutlinedButton(onClick = { onVisible(false) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.home_bubble_hide))
+            Text(stringResource(R.string.home_bubble_hide), textAlign = TextAlign.Center)
         }
     } else {
         Button(
@@ -207,7 +208,7 @@ private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible:
                 if (state == BubbleState.HIDDEN) onVisible(true) else OverlayServiceStatus.openAccessibilitySettings(context)
             },
             modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.home_bubble_show)) }
+        ) { Text(stringResource(R.string.home_bubble_show), textAlign = TextAlign.Center) }
     }
 }
 

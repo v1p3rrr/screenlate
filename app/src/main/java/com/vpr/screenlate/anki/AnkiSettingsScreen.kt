@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -98,7 +99,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 AnkiAvailability.NO_PERMISSION -> SectionCard(title = stringResource(R.string.anki_connection)) {
                     Text(stringResource(R.string.anki_permission_explanation))
                     Button(onClick = { permission.launch(AnkiDroid.PERMISSION) }, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.anki_grant_permission))
+                        Text(stringResource(R.string.anki_grant_permission), textAlign = TextAlign.Center)
                     }
                 }
                 AnkiAvailability.READY -> NoteSettings(state, viewModel)
@@ -128,7 +129,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
             )
             if (problem == AnkiProblem.FIELDS_CHANGED) {
                 Button(onClick = viewModel::updateFieldList, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.anki_update_fields))
+                    Text(stringResource(R.string.anki_update_fields), textAlign = TextAlign.Center)
                 }
             }
         }
@@ -160,7 +161,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
         SectionCard(title = stringResource(R.string.anki_fields)) {
             LabelWithInfo(stringResource(R.string.anki_fields_how), stringResource(R.string.anki_fields_hint))
             OutlinedButton(onClick = viewModel::suggestTemplates, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.anki_suggest_templates))
+                Text(stringResource(R.string.anki_suggest_templates), textAlign = TextAlign.Center)
             }
             val overwrite = settings.duplicateCheck && settings.duplicateBehavior == DuplicateBehavior.OVERWRITE
             state.fieldNames.forEach { field ->

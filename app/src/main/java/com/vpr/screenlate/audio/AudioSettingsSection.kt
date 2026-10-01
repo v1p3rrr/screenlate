@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -75,7 +76,7 @@ fun AudioSettingsSection(viewModel: AudioSettingsViewModel = hiltViewModel()) {
         OutlinedButton(
             onClick = { editing = null to AudioSource(AudioSourceType.JAPANESE_POD_101) },
             modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.audio_add_source)) }
+        ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
         TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
         HorizontalDivider()
         TestPanel(viewModel)
@@ -230,7 +231,7 @@ private fun SourceDialog(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box {
                     OutlinedButton(onClick = { menu = true }, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(type.label))
+                        Text(stringResource(type.label), textAlign = TextAlign.Center)
                     }
                     DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                         AudioSourceType.entries.forEach { option ->

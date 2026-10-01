@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -152,14 +153,14 @@ fun DictionariesScreen(
             }
 
             OutlinedButton(onClick = onOpenYomitanImport, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.dictionaries_import_yomitan_backup))
+                Text(stringResource(R.string.dictionaries_import_yomitan_backup), textAlign = TextAlign.Center)
             }
             OutlinedButton(
                 onClick = viewModel::checkUpdates,
                 enabled = updateCheck?.updates != null || updateCheck == null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.dictionaries_check_updates))
+                Text(stringResource(R.string.dictionaries_check_updates), textAlign = TextAlign.Center)
             }
             updateCheck?.let { check ->
                 UpdatesCard(
@@ -469,7 +470,7 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                     }
                     if (updates.size > 1) {
                         Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.dictionaries_update_all))
+                            Text(stringResource(R.string.dictionaries_update_all), textAlign = TextAlign.Center)
                         }
                     }
                 }

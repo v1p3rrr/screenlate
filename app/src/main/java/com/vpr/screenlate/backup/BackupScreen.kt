@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -99,7 +100,7 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
                     onClick = { createPicker.launch("screenlate-backup-${LocalDate.now()}.zip") },
                     enabled = !working,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.backup_create_button)) }
+                ) { Text(stringResource(R.string.backup_create_button), textAlign = TextAlign.Center) }
             }
             SectionCard(title = stringResource(R.string.backup_restore)) {
                 when (val current = state) {
@@ -112,7 +113,7 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
                     is BackupState.Restored -> {
                         Summary(current.summary)
                         OutlinedButton(onClick = viewModel::reset, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.action_close))
+                            Text(stringResource(R.string.action_close), textAlign = TextAlign.Center)
                         }
                     }
                     else -> {
@@ -133,7 +134,7 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
                             onClick = { openPicker.launch(BACKUP_TYPES) },
                             enabled = !working,
                             modifier = Modifier.fillMaxWidth(),
-                        ) { Text(stringResource(R.string.backup_choose)) }
+                        ) { Text(stringResource(R.string.backup_choose), textAlign = TextAlign.Center) }
                     }
                 }
             }
@@ -186,7 +187,7 @@ private fun Checklist(state: BackupState.Loaded, checked: Set<BackupSection>, vi
     }
     Hint(stringResource(R.string.backup_replace_warning))
     Button(onClick = viewModel::restore, enabled = checked.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.backup_restore_button))
+        Text(stringResource(R.string.backup_restore_button), textAlign = TextAlign.Center)
     }
     TextButton(onClick = viewModel::reset) { Text(stringResource(R.string.action_cancel)) }
 }
