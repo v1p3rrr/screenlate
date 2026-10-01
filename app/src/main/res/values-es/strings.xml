@@ -517,4 +517,5 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="reset_dictionaries_title">¿Restablecer los diccionarios?</string>
     <string name="reset_dictionaries_text">Se eliminan todos los diccionarios, incluidos los que añadiste, y los incluidos se instalan de nuevo como tras la instalación, con el orden y los interruptores iniciales. Las importaciones y descargas en curso se cancelan. La instalación tarda hasta un minuto; hasta entonces la búsqueda es incompleta.</string>
     <string name="reset_dictionaries_running">Deteniendo importaciones y eliminando diccionarios…</string>
+    <string name="reset_dictionaries_busy">Restableciendo los diccionarios…</string>
 </resources>

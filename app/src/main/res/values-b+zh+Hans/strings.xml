@@ -507,4 +507,5 @@
     <string name="reset_dictionaries_title">要重置词典吗？</string>
     <string name="reset_dictionaries_text">所有词典都会被删除，包括你添加的词典，内置词典会像安装后一样以初始顺序和开关重新安装。正在进行的导入和下载会被取消。安装最多需要一分钟，在此之前查词结果不完整。</string>
     <string name="reset_dictionaries_running">正在停止导入并删除词典…</string>
+    <string name="reset_dictionaries_busy">正在重置词典…</string>
 </resources>

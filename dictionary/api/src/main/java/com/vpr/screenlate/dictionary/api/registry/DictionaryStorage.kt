@@ -1,6 +1,8 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import android.content.Context
+import android.os.Process
+import android.os.SystemClock
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.UUID
@@ -58,24 +60,47 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     }
 
     /**
-     * Removes directories that no registry entry points to, and staging or download leftovers older than
-     * [STALE_MS] (younger ones may belong to an import that is still running).
+     * Removes directories that no registry entry points to, and what imports cut short by the process dying left
+     * behind; see [cleanUpLeftovers].
      */
-    fun cleanUp(known: Collection<String>) {
-        val staleBefore = System.currentTimeMillis() - STALE_MS
-        root.listFiles()
-            ?.filter { it.isDirectory && it != staging && it.name !in known }
-            ?.forEach { it.deleteRecursively() }
-        listOf(staging, downloads).flatMap { it.listFiles().orEmpty().asList() }
-            .filter { it.lastModified() < staleBefore }
-            .forEach { it.deleteRecursively() }
+    fun cleanUp(known: Collection<String>, archivesInUse: Set<String>?) {
+        val now = System.currentTimeMillis()
+        val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
+        cleanUpLeftovers(root, staging, downloads, known, archivesInUse, processStart, now)
     }
 
     private companion object {
-        const val STALE_MS = 6 * 60 * 60 * 1000L
-
         /** Next to the engine's files, which it does not look at. */
         const val TAG_NOTES = "tag_notes.json"
         val NOTES = MapSerializer(String.serializer(), String.serializer())
     }
+}
+
+/** Leftovers younger than this may belong to an import still running; used when the archives in use are unknown. */
+private const val STALE_MS = 6 * 60 * 60 * 1000L
+
+/**
+ * Deletes dictionary directories in [root] that are not [known], staging directories made before [processStart]
+ * (only a running import writes there, and none from an earlier process runs any more), and archives in [downloads]
+ * made before it that no queued import reads ([archivesInUse]; when null, only archives older than [STALE_MS] go).
+ */
+internal fun cleanUpLeftovers(
+    root: File,
+    staging: File,
+    downloads: File,
+    known: Collection<String>,
+    archivesInUse: Set<String>?,
+    processStart: Long,
+    now: Long,
+) {
+    root.listFiles()
+        ?.filter { it.isDirectory && it != staging && it.name !in known }
+        ?.forEach { it.deleteRecursively() }
+    staging.listFiles().orEmpty()
+        .filter { it.lastModified() < processStart }
+        .forEach { it.deleteRecursively() }
+    val archivesBefore = if (archivesInUse == null) minOf(processStart, now - STALE_MS) else processStart
+    downloads.listFiles().orEmpty()
+        .filter { it.lastModified() < archivesBefore && it.name !in archivesInUse.orEmpty() }
+        .forEach { it.deleteRecursively() }
 }

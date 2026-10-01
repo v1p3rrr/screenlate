@@ -1,9 +1,12 @@
 package com.vpr.screenlate.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,10 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.vpr.screenlate.R
 
 /**
@@ -65,6 +72,21 @@ fun WithTooltip(tooltip: String, content: @Composable () -> Unit) {
     )
 }
 
+/** A spinner in the place of an icon button while its action runs; holding it shows [description]. */
+@Composable
+fun IconButtonProgress(description: String) {
+    WithTooltip(description) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .semantics { contentDescription = description },
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+        }
+    }
+}
+
 /** The top bar's back arrow. */
 @Composable
 fun BackButton(onBack: () -> Unit) {
@@ -73,10 +95,10 @@ fun BackButton(onBack: () -> Unit) {
 
 /** A reset icon for a top bar that asks with [title] and [text] before it calls [onReset]. */
 @Composable
-fun ResetButton(tooltip: String, title: String, text: String, onReset: () -> Unit, enabled: Boolean = true) {
+fun ResetButton(tooltip: String, title: String, text: String, onReset: () -> Unit) {
     var asking by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    TooltipIconButton(R.drawable.ic_reset, tooltip, onClick = { asking = true }, enabled = enabled)
+    TooltipIconButton(R.drawable.ic_reset, tooltip, onClick = { asking = true })
     if (asking) {
         AlertDialog(
             onDismissRequest = { asking = false },

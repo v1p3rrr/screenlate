@@ -14,7 +14,10 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. The tap that closes the menu
   stays consumed (owner). The merged branch `claude/elegant-allen-xmu3fx` is deleted on GitHub and locally. Nothing
   is open from those. Request 22 (open review findings, bundled dictionary updates) is done, see the 2026-10-01
-  log entry; request 23 (settings resets, tooltips) is done, see its log entry.
+  log entry; request 23 (settings resets, tooltips) is done, see its log entry. Requests 24 (spinner instead of the
+  Dictionaries reset icon) and 25 (imports and resets cut short by a killed app) are done, see their log entry.
+- The owner's message «Если надо то проверяй на эмуляторе доработки еще, напоминаю про возможность просто.» looks
+  cut off; they were asked to finish it.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
   read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
   `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
@@ -411,3 +414,26 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   dictionary reset (four bundled dictionaries in the default order; a running Jitendex download cancelled; no
   temporary files left), tooltips and the Russian texts. The test environment was restored afterwards from a copy
   taken before the tests (settings byte-identical, 20 dictionaries, the user's Jiten copy 26-12-01).
+
+### 2026-10-01 (interrupted imports and resets)
+
+- Owner's requests 24 and 25; answers are in the feedback plan's decision table ("Interrupted dictionary reset",
+  "Interrupted import") and changelog.
+- `DictionaryReset.phase` (DELETING, then INSTALLING until the queued bundled install finishes,
+  `DictionaryImports.awaitFinished`): the Dictionaries page shows `IconButtonProgress` (a spinner with the tooltip
+  "Resetting dictionaries…") instead of the reset icon for both phases, and the progress line only while deleting.
+- A reset writes `dictionary_reset_pending` into the settings DataStore before it cancels or deletes anything and
+  removes it once the bundled install is queued; `ScreenlateApplication` calls `resumeInterrupted()` at start, which
+  runs the reset again while the flag is set. The key is bookkeeping: the settings resets keep it (`SettingsKeysTest`).
+- Imports: WorkManager already reruns a job the process died in. Leftovers are now removed by the first import job of
+  each process (`DictionaryImports.firstOfProcess`) instead of by the bundled install: unregistered directories,
+  staging entries older than the process, and downloaded/copied archives older than the process that no unfinished
+  job reads (jobs carry the tag `dictionary-import-archive:<file name>`; an unfinished job without it, from an older
+  version, falls back to the old six-hour rule). `DictionaryRepository.cleanUp` runs under the registry lock.
+  Rules are in `cleanUpLeftovers` (`StorageCleanUpTest`) and `archivesInUse` (`DictionaryImportsTest`).
+- Checked on the emulator: the spinner through both phases, its tooltip, the icon back after the install; `kill -9`
+  0.3 s after confirming a reset with 20 dictionaries (flag set, all 20 still registered) → after the automatic
+  restart only the four bundled dictionaries in their shipped versions, the flag gone, nothing in staging or
+  downloads; `kill -9` during a catalog download → the job reran about 25 s later and succeeded, and the partial
+  archive of the killed process was removed by the next process's first import. The environment was restored from a
+  copy taken before the tests (settings identical, 20 dictionaries, the user's Jiten copy 26-12-01).

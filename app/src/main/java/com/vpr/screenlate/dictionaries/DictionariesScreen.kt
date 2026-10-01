@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -55,6 +56,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.isLastTermDictionary
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
+import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.ResetButton
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import java.util.Locale
@@ -71,7 +73,7 @@ fun DictionariesScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
-    val resetting by viewModel.resetting.collectAsStateWithLifecycle()
+    val resetPhase by viewModel.resetPhase.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
     val askNotifications = rememberImportNotificationsAsk()
@@ -90,13 +92,16 @@ fun DictionariesScreen(
                     BackButton(onBack)
                 },
                 actions = {
-                    ResetButton(
-                        tooltip = stringResource(R.string.reset_dictionaries_tooltip),
-                        title = stringResource(R.string.reset_dictionaries_title),
-                        text = stringResource(R.string.reset_dictionaries_text),
-                        onReset = viewModel::resetDictionaries,
-                        enabled = !resetting,
-                    )
+                    if (resetPhase != null) {
+                        IconButtonProgress(stringResource(R.string.reset_dictionaries_busy))
+                    } else {
+                        ResetButton(
+                            tooltip = stringResource(R.string.reset_dictionaries_tooltip),
+                            title = stringResource(R.string.reset_dictionaries_title),
+                            text = stringResource(R.string.reset_dictionaries_text),
+                            onReset = viewModel::resetDictionaries,
+                        )
+                    }
                 },
             )
         },
@@ -109,7 +114,8 @@ fun DictionariesScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (resetting) {
+            // The installs that follow show as an import task.
+            if (resetPhase == DictionaryReset.Phase.DELETING) {
                 Text(stringResource(R.string.reset_dictionaries_running))
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }

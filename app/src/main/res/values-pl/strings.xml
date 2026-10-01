@@ -522,4 +522,5 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="reset_dictionaries_title">Zresetować słowniki?</string>
     <string name="reset_dictionaries_text">Wszystkie słowniki zostaną usunięte, także dodane przez Ciebie, a dołączone zostaną zainstalowane od nowa jak po instalacji, z początkową kolejnością i przełącznikami. Trwające importy i pobierania zostaną anulowane. Instalacja trwa do minuty; do tego czasu wyszukiwanie jest niepełne.</string>
     <string name="reset_dictionaries_running">Zatrzymywanie importów i usuwanie słowników…</string>
+    <string name="reset_dictionaries_busy">Resetowanie słowników…</string>
 </resources>

@@ -28,7 +28,7 @@ class SettingsKeysTest {
     private val kept = listOf(
         "sort_dictionary_id", "bundled_dictionaries_installed", "bundled_dictionaries_declined",
         "bundled_dictionaries_declined_checked", "bundled_dictionaries_records", "bundled_dictionaries_repair",
-        "index_texts_decoded", "installed_languages_filled", "update_last_check", "some_future_key",
+        "index_texts_decoded", "installed_languages_filled", "update_last_check", "dictionary_reset_pending", "some_future_key",
     )
 
     @Test

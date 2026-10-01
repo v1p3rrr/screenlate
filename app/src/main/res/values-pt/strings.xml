@@ -517,4 +517,5 @@ Indicado para leitores de tinta eletrônica, dispositivos antigos ou fracos em q
     <string name="reset_dictionaries_title">Redefinir os dicionários?</string>
     <string name="reset_dictionaries_text">Todos os dicionários são excluídos, inclusive os que você adicionou, e os incluídos são instalados de novo como após a instalação, com a ordem e as chaves iniciais. Importações e downloads em andamento são cancelados. A instalação leva até um minuto; até lá, a pesquisa fica incompleta.</string>
     <string name="reset_dictionaries_running">Parando importações e excluindo dicionários…</string>
+    <string name="reset_dictionaries_busy">Redefinindo os dicionários…</string>
 </resources>

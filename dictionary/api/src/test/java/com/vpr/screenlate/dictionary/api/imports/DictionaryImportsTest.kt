@@ -35,6 +35,7 @@ class DictionaryImportsTest {
         order: Long?,
         output: Data = Data.EMPTY,
         progress: Data = Data.EMPTY,
+        archive: String? = null,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -42,6 +43,7 @@ class DictionaryImportsTest {
             DictionaryImports.TAG,
             DictionaryImports.NAME_TAG_PREFIX + name,
             order?.let { DictionaryImports.ORDER_TAG_PREFIX + it },
+            archive?.let { DictionaryImports.ARCHIVE_TAG_PREFIX + it },
         ),
         outputData = output,
         progress = progress,
@@ -127,5 +129,29 @@ class DictionaryImportsTest {
         assertThat(imported).containsExactly(0)
         assertThat(archives[0].exists()).isFalse()
         assertThat(archives[1].exists()).isTrue()
+    }
+
+    @Test
+    fun `archives in use are the ones unfinished imports read`() {
+        val works = listOf(
+            work("file", WorkInfo.State.ENQUEUED, order = 1, archive = "a.zip"),
+            work("collection", WorkInfo.State.RUNNING, order = 2, archive = "b.zip"),
+            work("done", WorkInfo.State.SUCCEEDED, order = 3, archive = "c.zip"),
+            work("download", WorkInfo.State.ENQUEUED, order = 4, archive = ""),
+        )
+
+        assertThat(archivesInUse(works)).containsExactly("a.zip", "b.zip")
+    }
+
+    @Test
+    fun `an unfinished import from an older version leaves the archives in use unknown`() {
+        val works = listOf(
+            work("file", WorkInfo.State.ENQUEUED, order = 1, archive = "a.zip"),
+            work("old", WorkInfo.State.ENQUEUED, order = null),
+        )
+
+        assertThat(archivesInUse(works)).isNull()
+        // A finished one no longer reads anything.
+        assertThat(archivesInUse(listOf(work("old", WorkInfo.State.SUCCEEDED, order = null)))).isEmpty()
     }
 }

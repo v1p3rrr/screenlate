@@ -507,4 +507,5 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="reset_dictionaries_title">Đặt lại từ điển?</string>
     <string name="reset_dictionaries_text">Mọi từ điển đều bị xóa, kể cả những từ điển bạn đã thêm, và các từ điển đi kèm được cài lại như sau khi cài, với thứ tự và công tắc ban đầu. Các lần nhập và tải xuống đang chạy sẽ bị hủy. Việc cài mất tới một phút; đến lúc đó kết quả tra cứu chưa đầy đủ.</string>
     <string name="reset_dictionaries_running">Đang dừng nhập và xóa từ điển…</string>
+    <string name="reset_dictionaries_busy">Đang đặt lại từ điển…</string>
 </resources>

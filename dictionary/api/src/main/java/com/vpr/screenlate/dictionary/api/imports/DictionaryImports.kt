@@ -47,6 +47,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -82,11 +83,24 @@ class DictionaryImports @Inject constructor(
     /** Import workers running in this process; a cancelled one runs on until its current step returns. */
     private val running = MutableStateFlow(0)
 
+    private val leftoversClaimed = AtomicBoolean()
+
     /** Imports in the order they were queued. */
     val tasks: Flow<List<ImportTask>> = workManager.getWorkInfosByTagFlow(TAG).map(::importTasks)
 
-    /** Installs bundled dictionaries that are not installed yet. Cheap when there is nothing to do. */
-    fun installBundled() = enqueue(workDataOf(KEY_SOURCE to SOURCE_BUNDLED), name = "")
+    /** Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to do. */
+    fun installBundled(): UUID = enqueue(workDataOf(KEY_SOURCE to SOURCE_BUNDLED), name = "")
+
+    /** Returns once the task [id] has finished, failed or been cancelled or removed. */
+    suspend fun awaitFinished(id: UUID) {
+        workManager.getWorkInfoByIdFlow(id).first { it == null || it.state.isFinished }
+    }
+
+    /**
+     * File names of the archives that queued imports still need; null when an import queued by an older app version,
+     * which does not name its archive, may need one.
+     */
+    internal suspend fun archivesInUse(): Set<String>? = archivesInUse(workManager.getWorkInfosByTagFlow(TAG).first())
 
     /** Copies the archive behind [uri] into app storage and queues its import. */
     suspend fun importFrom(uri: Uri) {
@@ -177,6 +191,9 @@ class DictionaryImports @Inject constructor(
         workManager.pruneWork().await()
     }
 
+    /** True for the first import of this process only, which removes what earlier processes left behind. */
+    internal fun firstOfProcess(): Boolean = leftoversClaimed.compareAndSet(false, true)
+
     /** Runs a worker's [block], counted for [cancelAll]. */
     internal suspend fun <T> tracked(block: suspend () -> T): T {
         running.update { it + 1 }
@@ -187,16 +204,19 @@ class DictionaryImports @Inject constructor(
         }
     }
 
-    private fun enqueue(data: Data, name: String) {
+    private fun enqueue(data: Data, name: String): UUID {
         val request = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
             .setInputData(data)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
             .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
+            // Empty for imports that make their own temporary archive; see archivesInUse.
+            .addTag(ARCHIVE_TAG_PREFIX + data.getString(KEY_PATH)?.let { File(it).name }.orEmpty())
             .build()
         // One queue for all imports: the native importer is memory hungry and imports are cheaper one at a time.
         workManager.enqueueUniqueWork(QUEUE, ExistingWorkPolicy.APPEND_OR_REPLACE, request)
+        return request.id
     }
 
     private suspend fun displayName(uri: Uri): String = withContext(Dispatchers.IO) {
@@ -211,9 +231,19 @@ class DictionaryImports @Inject constructor(
 
         /** Followed by a number that grows with every enqueued import; work ids are random. */
         const val ORDER_TAG_PREFIX = "dictionary-import-order:"
+
+        /** Followed by the file name of the archive the import reads, or nothing. */
+        const val ARCHIVE_TAG_PREFIX = "dictionary-import-archive:"
         const val QUEUE = "dictionary-imports"
     }
 }
+
+/** Archives the unfinished [works] read; null when one of them does not say (queued by an older version). */
+internal fun archivesInUse(works: List<WorkInfo>): Set<String>? =
+    works.filterNot { it.state.isFinished }.mapTo(mutableSetOf()) { work ->
+        work.tags.firstOrNull { it.startsWith(DictionaryImports.ARCHIVE_TAG_PREFIX) }
+            ?.removePrefix(DictionaryImports.ARCHIVE_TAG_PREFIX) ?: return null
+    }.apply { remove("") }
 
 /** The import works as tasks, in queue order. */
 internal fun importTasks(infos: List<WorkInfo>): List<ImportTask> =

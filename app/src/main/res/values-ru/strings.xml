@@ -523,4 +523,5 @@
     <string name="reset_dictionaries_title">Сбросить словари?</string>
     <string name="reset_dictionaries_text">Все словари удалятся, включая добавленные вами, а предустановленные поставятся заново, как после установки, с исходным порядком и переключателями. Идущие импорты и скачивания отменятся. Установка займёт до минуты; до её конца поиск будет неполным.</string>
     <string name="reset_dictionaries_running">Останавливаю импорты и удаляю словари…</string>
+    <string name="reset_dictionaries_busy">Словари сбрасываются…</string>
 </resources>

@@ -285,9 +285,12 @@ class DictionaryRepository @Inject constructor(
         reloadLocked()
     }
 
-    /** Deletes storage leftovers. Call once at startup. */
-    suspend fun cleanUp() = mutex.withLock {
-        storage.cleanUp(dao.getAll().map { it.directory })
+    /**
+     * Deletes storage leftovers: directories of no dictionary and the temporary files of imports cut short. Call from
+     * the import queue, where no other import runs; [archivesInUse] are kept (see [DictionaryStorage.cleanUp]).
+     */
+    suspend fun cleanUp(archivesInUse: Set<String>?) = mutex.withLock {
+        storage.cleanUp(dao.getAll().map { it.directory }, archivesInUse)
     }
 
     private suspend fun reloadLocked() {

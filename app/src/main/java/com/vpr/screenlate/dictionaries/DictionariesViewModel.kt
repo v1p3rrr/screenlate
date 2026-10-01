@@ -128,8 +128,8 @@ class DictionariesViewModel @Inject constructor(
         emptySet()
     }
 
-    /** Whether a reset is stopping imports or deleting dictionaries. */
-    val resetting: StateFlow<Boolean> = dictionaryReset.running
+    /** The step of a running dictionary reset; null when none runs. */
+    val resetPhase: StateFlow<DictionaryReset.Phase?> = dictionaryReset.phase
 
     /** Returns the dictionaries to a fresh install; leaving the screen does not stop it. */
     fun resetDictionaries() {

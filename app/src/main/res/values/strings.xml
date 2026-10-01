@@ -515,4 +515,5 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="reset_dictionaries_title">Reset dictionaries?</string>
     <string name="reset_dictionaries_text">All dictionaries are deleted, including the ones you added, and the bundled ones are installed again as after installation, with the default order and switches. Running imports and downloads are cancelled. Installing takes up to a minute; lookups are incomplete until then.</string>
     <string name="reset_dictionaries_running">Stopping imports and deleting dictionaries…</string>
+    <string name="reset_dictionaries_busy">Resetting dictionaries…</string>
 </resources>

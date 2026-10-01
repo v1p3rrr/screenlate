@@ -57,7 +57,27 @@ class DictionaryImportWorker @AssistedInject constructor(
     /** Languages for dictionaries whose index.json names none. */
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
-    override suspend fun doWork(): Result = imports.tracked { withContext(Dispatchers.IO) { work() } }
+    override suspend fun doWork(): Result = imports.tracked {
+        withContext(Dispatchers.IO) {
+            removeLeftovers()
+            work()
+        }
+    }
+
+    /**
+     * The first import of a process removes what imports cut short by an earlier process left behind, before it
+     * needs the space itself; an import started again after the process died writes new files.
+     */
+    private suspend fun removeLeftovers() {
+        if (!imports.firstOfProcess()) return
+        try {
+            repository.cleanUp(imports.archivesInUse())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.w(TAG, "Removing import leftovers failed", e)
+        }
+    }
 
     private suspend fun work(): Result {
         val name = inputData.getString(KEY_NAME).orEmpty()
@@ -90,7 +110,6 @@ class DictionaryImportWorker @AssistedInject constructor(
     }
 
     private suspend fun installBundled(): List<String> {
-        repository.cleanUp()
         return bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } }.map { asset ->
             setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()

@@ -512,4 +512,5 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="reset_dictionaries_title">Wörterbücher zurücksetzen?</string>
     <string name="reset_dictionaries_text">Alle Wörterbücher werden gelöscht, auch die selbst hinzugefügten, und die mitgelieferten werden wie nach der Installation neu installiert, mit der ursprünglichen Reihenfolge und den ursprünglichen Schaltern. Laufende Importe und Downloads werden abgebrochen. Die Installation dauert bis zu einer Minute; bis dahin ist das Nachschlagen unvollständig.</string>
     <string name="reset_dictionaries_running">Importe werden gestoppt und Wörterbücher gelöscht…</string>
+    <string name="reset_dictionaries_busy">Wörterbücher werden zurückgesetzt…</string>
 </resources>

@@ -512,4 +512,5 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="reset_dictionaries_title">Sözlükler sıfırlansın mı?</string>
     <string name="reset_dictionaries_text">Eklediğiniz sözlükler de dâhil tüm sözlükler silinir ve yerleşik sözlükler kurulumdan sonraki gibi, ilk sıralama ve anahtarlarla yeniden yüklenir. Süren içe aktarmalar ve indirmeler iptal edilir. Yükleme bir dakikaya kadar sürer; o zamana kadar arama eksik kalır.</string>
     <string name="reset_dictionaries_running">İçe aktarmalar durduruluyor ve sözlükler siliniyor…</string>
+    <string name="reset_dictionaries_busy">Sözlükler sıfırlanıyor…</string>
 </resources>

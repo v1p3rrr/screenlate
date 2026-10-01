@@ -517,4 +517,5 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="reset_dictionaries_title">Ripristinare i dizionari?</string>
     <string name="reset_dictionaries_text">Tutti i dizionari vengono eliminati, compresi quelli aggiunti da te, e quelli inclusi vengono reinstallati come dopo l’installazione, con l’ordine e gli interruttori iniziali. Le importazioni e i download in corso vengono annullati. L’installazione richiede fino a un minuto; fino ad allora la ricerca è incompleta.</string>
     <string name="reset_dictionaries_running">Interruzione delle importazioni ed eliminazione dei dizionari…</string>
+    <string name="reset_dictionaries_busy">Ripristino dei dizionari…</string>
 </resources>
