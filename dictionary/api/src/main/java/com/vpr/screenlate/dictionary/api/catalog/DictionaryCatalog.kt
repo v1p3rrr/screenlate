@@ -22,6 +22,7 @@ import javax.inject.Singleton
  * A dictionary the app can download. Adding a dictionary is one entry in `catalog/dictionaries.json`.
  *
  * @property installedTitle title prefix of the installed dictionary, used when it has no [indexUrl].
+ * @property formerTitles title prefixes the dictionary had before upstream renamed it; copies installed then still match.
  * @property resolveLatest ask [indexUrl] for the current `downloadUrl` before downloading.
  * @property description text per language code; `en` is the fallback.
  */
@@ -30,6 +31,7 @@ data class CatalogEntry(
     val id: String,
     val title: String,
     val installedTitle: String,
+    val formerTitles: List<String> = emptyList(),
     val kind: DictionaryKind,
     val sourceLanguage: String,
     val targetLanguage: String? = null,
@@ -53,7 +55,8 @@ data class CatalogEntry(
 
     /** Whether a dictionary with this index URL and title is a copy of this entry; the caller compares the kind. */
     fun matches(indexUrl: String?, title: String): Boolean =
-        (this.indexUrl != null && indexUrl == this.indexUrl) || title.startsWith(installedTitle)
+        (this.indexUrl != null && indexUrl == this.indexUrl) || title.startsWith(installedTitle) ||
+            formerTitles.any(title::startsWith)
 }
 
 @Serializable

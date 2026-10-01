@@ -41,27 +41,43 @@ class DictionaryUpdates @Inject constructor(
     private suspend fun check(dictionary: DictionaryEntity): DictionaryUpdate? = withContext(Dispatchers.IO) {
         val indexUrl = dictionary.indexUrl ?: return@withContext null
         runCatching {
-            httpClient.newCall(Request.Builder().url(indexUrl).build()).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Log.i(TAG, "Update check for ${dictionary.title} failed: HTTP ${response.code}")
-                    return@use null
-                }
-                val index = json.decodeFromString<RemoteIndex>(response.body.string())
-                val downloadUrl = index.downloadUrl ?: dictionary.downloadUrl ?: return@use null
-                if (index.revision.isNotBlank() && index.revision != dictionary.revision) {
-                    Log.i(TAG, "Update for ${dictionary.title}: ${dictionary.revision} → ${index.revision}")
-                    DictionaryUpdate(dictionary, index.revision, downloadUrl)
-                } else {
-                    null
-                }
+            val index = IndexMoves.follow(indexUrl) { url -> fetch(dictionary, url) } ?: return@runCatching null
+            val downloadUrl = index.downloadUrl ?: dictionary.downloadUrl ?: return@runCatching null
+            if (index.revision.isNotBlank() && index.revision != dictionary.revision) {
+                Log.i(TAG, "Update for ${dictionary.title}: ${dictionary.revision} → ${index.revision}")
+                DictionaryUpdate(dictionary, index.revision, downloadUrl)
+            } else {
+                null
             }
         }.onFailure { Log.i(TAG, "Update check for ${dictionary.title} failed: ${it.message}") }.getOrNull()
     }
 
-    @Serializable
-    private data class RemoteIndex(val revision: String = "", val downloadUrl: String? = null)
+    private fun fetch(dictionary: DictionaryEntity, url: String): RemoteIndex? =
+        httpClient.newCall(Request.Builder().url(url).build()).execute().use { response ->
+            if (!response.isSuccessful) {
+                Log.i(TAG, "Update check for ${dictionary.title} failed: HTTP ${response.code}")
+                return@use null
+            }
+            json.decodeFromString<RemoteIndex>(response.body.string())
+        }
 
     private companion object {
         const val TAG = "DictionaryUpdates"
+    }
+}
+
+/** The fields of a remote Yomitan index an update check reads. */
+@Serializable
+internal data class RemoteIndex(val revision: String = "", val downloadUrl: String? = null, val indexUrl: String? = null)
+
+/**
+ * A dictionary that moved keeps its old index online with the new address in `indexUrl` (Wiktionary moved from
+ * kty-* to wty-* that way); its revision there is frozen, so the check follows the new address once.
+ */
+internal object IndexMoves {
+    fun follow(url: String, fetch: (String) -> RemoteIndex?): RemoteIndex? {
+        val first = fetch(url) ?: return null
+        val moved = first.indexUrl?.takeIf { it.isNotBlank() && it != url } ?: return first
+        return runCatching { fetch(moved) }.getOrNull() ?: first
     }
 }

@@ -271,7 +271,8 @@
     {
       "id": "wiktionary-ja-en",
       "title": "Wiktionary (ja–en)",
-      "installedTitle": "kty-ja-en",
+      "installedTitle": "wty-ja-en",
+      "formerTitles": ["kty-ja-en"],
       "kind": "TERM",
       "sourceLanguage": "ja",
       "targetLanguage": "en",
@@ -279,17 +280,18 @@
         "en": "Japanese entries of the English Wiktionary, with etymology and usage notes.",
         "ru": "Японские статьи английского Викисловаря, с этимологией и пометами."
       },
-      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-en-index.json",
-      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-en.zip",
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/en/wty-ja-en.zip?download=true",
       "resolveLatest": true,
-      "sizeMb": 22,
+      "sizeMb": 16,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
     {
       "id": "wiktionary-ja-ru",
       "title": "Wiktionary (ja–ru)",
-      "installedTitle": "kty-ja-ru",
+      "installedTitle": "wty-ja-ru",
+      "formerTitles": ["kty-ja-ru"],
       "kind": "TERM",
       "sourceLanguage": "ja",
       "targetLanguage": "ru",
@@ -297,17 +299,18 @@
         "en": "Japanese entries of the Russian Wiktionary.",
         "ru": "Японские статьи русского Викисловаря."
       },
-      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ru-index.json",
-      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ru.zip",
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/ru/wty-ja-ru.zip?download=true",
       "resolveLatest": true,
       "sizeMb": 1,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
     {
       "id": "wiktionary-ja-ja",
       "title": "Wiktionary (ja–ja)",
-      "installedTitle": "kty-ja-ja",
+      "installedTitle": "wty-ja-ja",
+      "formerTitles": ["kty-ja-ja"],
       "kind": "TERM",
       "sourceLanguage": "ja",
       "targetLanguage": "ja",
@@ -315,12 +318,12 @@
         "en": "Japanese entries of the Japanese Wiktionary (monolingual).",
         "ru": "Статьи японского Викисловаря (толковый японский)."
       },
-      "indexUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ja-index.json",
-      "downloadUrl": "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ja.zip",
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-ja-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ja/ja/wty-ja-ja.zip?download=true",
       "resolveLatest": true,
-      "sizeMb": 13,
+      "sizeMb": 14,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/yomidevs/kaikki-to-yomitan"
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     },
     {
       "id": "kanjidic-french",

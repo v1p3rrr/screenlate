@@ -55,5 +55,10 @@ class CatalogFileTest {
         assertThat(matching(installed("Jitendex [2023-12-12]", DictionaryKind.TERM))).isEmpty()
         assertThat(matching(installed("Jiten", DictionaryKind.FREQUENCY, "https://api.jiten.moe/api/frequency-list/index")))
             .containsExactly("jiten-global")
+        // Wiktionary was renamed from kty-* to wty-* and moved; copies from before and after both belong to the entry.
+        val wty = "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ja-ru-index.json?download=true"
+        assertThat(matching(installed("wty-ja-ru", DictionaryKind.TERM, wty))).containsExactly("wiktionary-ja-ru")
+        val kty = "https://pub-c3d38cca4dc2403b88934c56748f5144.r2.dev/releases/latest/kty-ja-ru-index.json"
+        assertThat(matching(installed("kty-ja-ru", DictionaryKind.TERM, kty))).containsExactly("wiktionary-ja-ru")
     }
 }
