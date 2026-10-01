@@ -11,8 +11,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   16 is done: the branch `claude/elegant-allen-xmu3fx` (requests 18, settings order, and 19, bubble hold menu; 13 and
   14 there) is cherry-picked onto main and checked on the emulator. 17 (`/code-review xhigh --fix` since 764ae60) is
   done: six findings fixed. The owner answered Q1-Q6; requests 20 (popup never low or narrow, covering the word
-  instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. Open: whether to delete the
-  merged remote branch `claude/elegant-allen-xmu3fx`, and whether the tap that closes the menu should also reach the app.
+  instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. The tap that closes the menu
+  stays consumed (owner). The merged branch `claude/elegant-allen-xmu3fx` is deleted on GitHub and locally. Nothing
+  is open from the owner's last message; next: a release or new requests on the owner's command.
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
