@@ -610,8 +610,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Doubtful, not reported as findings: a race between a dictionary reset and the repair at start; a system stop of an
   import job counted as the app dying.
 - CI on the branch (build, every module's unit tests, `:build-logic:convention:test`, lint, page tests): passed on
-  5e5b54a (run 36898861756) and edf4697 (run 36900910601, which includes 2f7744b and 0296da1); 0abb074 in run
-  36902706961. The instrumented tests (`connectedDebugAndroidTest`, emulator in CI) run only on release tags or by
+  5e5b54a (run 36898861756) and edf4697 (run 36900910601, which includes 2f7744b and 0296da1); 0abb074 (run
+  36902706961) too. The instrumented tests (`connectedDebugAndroidTest`, emulator in CI) run only on release tags or by
   hand (`instrumented.yml`); started by hand for this branch.
 
 ### 2026-10-01 (release v0.2.0; cloud session)
