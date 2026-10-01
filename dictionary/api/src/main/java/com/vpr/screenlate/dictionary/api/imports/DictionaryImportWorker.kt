@@ -26,6 +26,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.job
@@ -66,12 +67,14 @@ class DictionaryImportWorker @AssistedInject constructor(
         Log.i(TAG, "Task $id ($source) started, run ${runAttemptCount + 1}")
         try {
             withContext(Dispatchers.IO) {
+                // WorkManager counts every run, also those the system stopped; only deaths of the app count here.
+                val interrupted = interruptions(runAttemptCount, imports.stopsOf(id))
                 when {
                     imports.isCancelled(id) -> cancelled(started = false)
                     // Started over once after the app died during it; a second death may well be the import's own
                     // doing, e.g. a damaged archive, and another try would only repeat it.
-                    runAttemptCount >= MAX_RUN_ATTEMPTS -> {
-                        Log.w(TAG, "Task $id interrupted $runAttemptCount times; not started again")
+                    interrupted >= MAX_RUN_ATTEMPTS -> {
+                        Log.w(TAG, "Task $id interrupted $interrupted times; not started again")
                         removeLeftovers()
                         discardInput()
                         // App starts queue the bundled install again; the same archives would end the same way. A
@@ -91,12 +94,20 @@ class DictionaryImportWorker @AssistedInject constructor(
                         removeLeftovers()
                         imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled(started = true)
                     }
-                }
+                }.also { imports.forgetStops(id) }
             }
         } catch (e: CancellationException) {
+            if (!isStopped) throw e
             // Cancelled by a dictionary reset, or stopped by the system, which runs it again later.
             val reason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) " (reason $stopReason)" else ""
             Log.i(TAG, "Task $id stopped by WorkManager$reason")
+            withContext(NonCancellable) {
+                try {
+                    imports.markStopped(id)
+                } catch (e: Exception) {
+                    Log.w(TAG, "Recording the stop failed: ${e.javaClass.simpleName}")
+                }
+            }
             throw e
         }
     }
@@ -118,7 +129,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         if (imports.leftoversRemoved) return
         try {
             repository.cleanUp(imports.archivesInUse())
-            imports.forgetEndedCancels()
+            imports.forgetEnded()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -411,6 +422,12 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Runs of one import: the first, and one more after the app died during it (owner). */
         private const val MAX_RUN_ATTEMPTS = 2
+
+        /**
+         * Earlier runs of a task the app died in: WorkManager's [runAttemptCount] less the runs the system [stops]
+         * ([DictionaryImports.markStopped]), which WorkManager counts as well.
+         */
+        fun interruptions(runAttemptCount: Int, stops: Int): Int = (runAttemptCount - stops).coerceAtLeast(0)
     }
 }
 

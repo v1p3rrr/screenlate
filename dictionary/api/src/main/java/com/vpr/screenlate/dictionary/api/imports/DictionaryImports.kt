@@ -244,8 +244,11 @@ class DictionaryImports @Inject constructor(
         }
     }
 
-    /** Forgets the cancels of tasks that ended without seeing them (cancelled just as they finished). */
-    internal suspend fun forgetEndedCancels() {
+    /**
+     * Forgets the cancels of tasks that ended without seeing them (cancelled just as they finished), and the stops of
+     * tasks that ended without forgetting them (the process died first).
+     */
+    internal suspend fun forgetEnded() {
         val unfinished = workManager.getWorkInfosByTagFlow(TAG).first()
             .filterNot { it.state.isFinished }
             .mapTo(hashSetOf()) { it.id.toString() }
@@ -255,6 +258,30 @@ class DictionaryImports @Inject constructor(
                 Log.i(LOG_TAG, "Forgot ${ids.count { it !in unfinished }} cancels of ended tasks")
                 prefs[CANCELLED] = ids.filterTo(hashSetOf()) { it in unfinished }
             }
+            val stops = readStops(prefs[STOPPED].orEmpty())
+            if (stops.keys.any { it !in unfinished }) prefs[STOPPED] = writeStops(stops.filterKeys { it in unfinished })
+        }
+    }
+
+    /**
+     * Records that WorkManager stopped the running task [id]: the system (a time limit, power saving) runs it again
+     * later, and that run does not count as one after the app died. A task cancelled by [cancelAll] does not run again.
+     */
+    internal suspend fun markStopped(id: UUID) {
+        preferences.edit { prefs ->
+            val stops = readStops(prefs[STOPPED].orEmpty())
+            prefs[STOPPED] = writeStops(stops + (id.toString() to (stops[id.toString()] ?: 0) + 1))
+        }
+    }
+
+    /** How often WorkManager stopped the task [id] while it ran; see [markStopped]. */
+    internal suspend fun stopsOf(id: UUID): Int = readStops(preferences.data.first()[STOPPED].orEmpty())[id.toString()] ?: 0
+
+    /** Forgets the stops of the task [id], which has ended. */
+    internal suspend fun forgetStops(id: UUID) {
+        preferences.edit { prefs ->
+            val stops = readStops(prefs[STOPPED].orEmpty())
+            if (id.toString() in stops) prefs[STOPPED] = writeStops(stops - id.toString())
         }
     }
 
@@ -274,7 +301,10 @@ class DictionaryImports @Inject constructor(
         workManager.cancelAllWorkByTag(TAG).await()
         running.first { it == 0 }
         workManager.pruneWork().await()
-        preferences.edit { it.remove(CANCELLED) }
+        preferences.edit {
+            it.remove(CANCELLED)
+            it.remove(STOPPED)
+        }
         Log.i(LOG_TAG, "All tasks cancelled in ${System.currentTimeMillis() - started} ms")
     }
 
@@ -324,6 +354,17 @@ class DictionaryImports @Inject constructor(
 
         /** Ids of the tasks the user cancelled that have not ended yet. */
         val CANCELLED = stringSetPreferencesKey("dictionary_imports_cancelled")
+
+        /** How often WorkManager stopped each unfinished task while it ran, as `id=count`; see [markStopped]. */
+        val STOPPED = stringSetPreferencesKey("dictionary_imports_stopped")
+
+        /** Reads [STOPPED]; entries that do not parse are dropped. */
+        fun readStops(entries: Set<String>): Map<String, Int> = entries.mapNotNull { entry ->
+            val count = entry.substringAfterLast('=', "").toIntOrNull() ?: return@mapNotNull null
+            entry.substringBeforeLast('=') to count
+        }.toMap()
+
+        fun writeStops(stops: Map<String, Int>): Set<String> = stops.mapTo(hashSetOf()) { (id, count) -> "$id=$count" }
     }
 }
 

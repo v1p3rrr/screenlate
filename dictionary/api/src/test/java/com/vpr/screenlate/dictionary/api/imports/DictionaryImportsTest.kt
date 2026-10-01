@@ -210,4 +210,28 @@ class DictionaryImportsTest {
         // A finished one no longer reads anything.
         assertThat(archivesInUse(listOf(work("old", WorkInfo.State.SUCCEEDED, order = null)))).isEmpty()
     }
+
+    @Test
+    fun `runs the system stopped do not count as runs the app died in`() {
+        // First run, and a run after one stop by the system.
+        assertThat(DictionaryImportWorker.interruptions(runAttemptCount = 0, stops = 0)).isEqualTo(0)
+        assertThat(DictionaryImportWorker.interruptions(runAttemptCount = 1, stops = 1)).isEqualTo(0)
+        // Two stops by the system and one death: started again, not given up.
+        assertThat(DictionaryImportWorker.interruptions(runAttemptCount = 3, stops = 2)).isEqualTo(1)
+        // Two deaths are counted as before.
+        assertThat(DictionaryImportWorker.interruptions(runAttemptCount = 2, stops = 0)).isEqualTo(2)
+        // A stop recorded for a run WorkManager never counted does not go below zero.
+        assertThat(DictionaryImportWorker.interruptions(runAttemptCount = 0, stops = 1)).isEqualTo(0)
+    }
+
+    @Test
+    fun `stops are stored per task and read back`() {
+        val id = UUID.randomUUID().toString()
+        val other = UUID.randomUUID().toString()
+        val stored = DictionaryImports.writeStops(mapOf(id to 2, other to 1))
+
+        assertThat(DictionaryImports.readStops(stored)).containsExactly(id, 2, other, 1)
+        // Entries that do not parse are dropped.
+        assertThat(DictionaryImports.readStops(setOf("$id=x", "no count", "$other=3"))).containsExactly(other, 3)
+    }
 }

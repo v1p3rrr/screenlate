@@ -38,6 +38,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 ## Devices
 
 - Emulator AVD `Pixel_10_Pro`: 1280×2856, density 480 (3.0), Android 17 (API 37.2), Play Store image with 16 KB pages. Native libraries (hoshidicts) must be 16 KB aligned: use NDK r28+ or the equivalent linker flags.
+- Starting the emulator with `-no-snapshot-save` boots from its quick-boot snapshot and discards everything done since when it exits: installed builds, app data and settings changed in that run are gone after a restart. Check `dumpsys package <pkg>` (versionName, lastUpdateTime) before relying on a state from an earlier run; on 2026-10-01 the snapshot still held the published v0.1.0 release (`com.vpr.screenlate`) with default settings.
 - `adb`: `D:\Android\Sdk\platform-tools\adb.exe`. In Git Bash set `MSYS_NO_PATHCONV=1`, otherwise device paths like `/sdcard/...` get rewritten to Windows paths.
 - `scripts/debug-device.sh` wraps the routine: `install` (installs the debug APK and enables the accessibility service, retrying because the system drops the service shortly after a package update), `images` (copies `testdata/ocr/*` into the app's internal files via `run-as`), `show <file>` (opens the debug full-screen image viewer), `shot <out.png>`.
 - Never use `am start -S` or `am force-stop` on the app while testing the overlay: force-stopping removes the accessibility service from the enabled list.
