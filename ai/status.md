@@ -612,7 +612,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - CI on the branch (build, every module's unit tests, `:build-logic:convention:test`, lint, page tests): passed on
   5e5b54a (run 36898861756) and edf4697 (run 36900910601, which includes 2f7744b and 0296da1); 0abb074 (run
   36902706961) too. The instrumented tests (`connectedDebugAndroidTest`, emulator in CI) run only on release tags or by
-  hand (`instrumented.yml`); started by hand for this branch.
+  hand (`instrumented.yml`); passed on this branch (run 36903149349, 1530e0b) and on the tag v0.2.0 (run
+  36906907984).
 
 ### 2026-10-01 (release v0.2.0; cloud session)
 
@@ -620,8 +621,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   notes in `.github/release-notes/v0.2.0.md` (main changes, fixes in general words). README features updated for
   the important additions: per-dictionary definition copying, copying text with the bubble, own colors and text
   weight, the start screen's help when the phone stops the bubble.
-- The instrumented tests of the branch (run 36903149349) were still running at the merge; the branch's UI was not
-  seen on a device. Check the release on the phone: colors in light and dark, status bar icons, button labels,
+- The instrumented tests of the branch (run 36903149349) passed after the merge, those of the tag too; the owner
+  pushed the tag v0.2.0 (the cloud proxy refused tag pushes) and the Release workflow published it (run
+  36906908091). The branch's UI was not seen on a device. Check the release on the phone: colors in light and dark, status bar icons, button labels,
   Wiktionary in the catalog.
 
 ### 2026-10-01 (after v0.2.0: screen changes, filled buttons; cloud session)
