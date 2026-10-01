@@ -685,3 +685,4 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   tests in a JVM harness in the scratchpad (core/anki audio + core/common language sources, stubs for `Log`,
   `Context`, `@ApplicationContext`): all pass; the cancellation and connection tests fail with those fixes removed.
 - Not seen on a device; whether a fresh connection gets JapanesePod101 through on mobile data is for the owner to see.
+- CI run 36919275787 green on 211d0f9 (branch only; not merged, waits for the owner's release command).
