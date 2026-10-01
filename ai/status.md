@@ -699,7 +699,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   their catalog cards as installed; "Check for updates" follows the frozen kty indexes to wty (2026.09.20); the update
   replaces the copy under the same id; during the kty-ja-ja update (13 MB) the Wiktionary (ja–ja) card shows the ring
   with ✕ and "Downloading". The test copies were deleted afterwards (20 dictionaries again).
-- Found: the catalog's JMdict card offers a download although an old "JMdict" is installed (revision JMdict1, no
-  index URL, from the owner's Yomitan collection); the entry's `installedTitle` "JMdict [" does not match it. Asked
-  the owner.
+- Request 44 (found in this check): the catalog's JMdict card offered a download although an old "JMdict" was
+  installed (revision JMdict1, no update address, from the owner's Yomitan collection). Owner: replace it. Now
+  `CatalogEntry.oldTitles` (JMdict, JMdict (English), Jitendex, KANJIDIC (English); matched whole or with " [")
+  recognizes old builds, and any recognized copy that cannot update itself, while no copy of its entry can, is
+  outdated (`outdatedCopy`, `outdatedCopies`): its card shows an update icon and a line, "Check for updates" lists it
+  ("JMdict1 → JMdict.2026-10-01"), and updating replaces it in place. Every catalog entry with an index was checked:
+  their archives carry the address, so catalog downloads are never outdated. Seen on the emulator (card and update
+  list; the owner's old JMdict (Russian), revision jmdict4, is listed too); the replacement itself was not run there,
+  it takes the update path checked with kty-ja-ru. Old app versions ignore the new catalog field.
 - Not checked: e-ink with the new colors, the Anki screen's first frame.
