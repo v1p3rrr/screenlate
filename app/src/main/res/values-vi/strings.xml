@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Đây là phông web (.woff hoặc .woff2) nên không thể thêm. Hãy chuyển nó sang .ttf hoặc .otf trước.</string>
     <string name="popup_font_import_failed">Không thể thêm tệp. Hãy thử lại hoặc kiểm tra dung lượng trống trên điện thoại.</string>
     <string name="popup_settings_title">Cửa sổ bật lên</string>
-    <string name="popup_content_title">Nội dung hiển thị trong cửa sổ bật lên</string>
+    <string name="popup_content_title">Thành phần cửa sổ bật lên</string>
     <string name="popup_copy_switch">Nút sao chép cạnh tên từ điển</string>
     <string name="popup_copy_switch_hint">Trong cửa sổ bật lên và tìm kiếm, nút cạnh tên mỗi từ điển sẽ sao chép định nghĩa của từ điển đó cho mục từ.</string>
     <string name="popup_copy_mode_all">Tất cả</string>

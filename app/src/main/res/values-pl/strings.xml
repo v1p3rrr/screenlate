@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">To czcionka internetowa (.woff lub .woff2), której nie można dodać. Najpierw przekonwertuj ją na .ttf lub .otf.</string>
     <string name="popup_font_import_failed">Nie udało się dodać pliku. Spróbuj ponownie lub sprawdź, czy w telefonie jest wolne miejsce.</string>
     <string name="popup_settings_title">Okienko</string>
-    <string name="popup_content_title">Co pokazuje okienko</string>
+    <string name="popup_content_title">Elementy okienka</string>
     <string name="popup_copy_switch">Przycisk kopiowania przy nazwach słowników</string>
     <string name="popup_copy_switch_hint">W okienku i wyszukiwaniu przycisk przy nazwie każdego słownika kopiuje jego definicje z hasła.</string>
     <string name="popup_copy_mode_all">Wszystko</string>

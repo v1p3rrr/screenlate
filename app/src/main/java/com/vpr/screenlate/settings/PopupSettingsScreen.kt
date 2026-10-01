@@ -23,7 +23,7 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
 /**
- * The lookup page (popup and search): what the popup shows (the recognized text, definition copying), its font, text
+ * The lookup page (popup and search): popup elements (the recognized text, definition copying), its font, text
  * size and weight, and custom CSS.
  */
 @Composable

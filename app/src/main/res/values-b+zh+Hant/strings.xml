@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">這是網頁字型（.woff 或 .woff2），無法新增。請先將其轉換為 .ttf 或 .otf。</string>
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
     <string name="popup_settings_title">彈出視窗</string>
-    <string name="popup_content_title">彈出視窗顯示內容</string>
+    <string name="popup_content_title">彈出視窗元素</string>
     <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
     <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個詞典名稱旁的按鈕會複製該詞典的釋義。</string>
     <string name="popup_copy_mode_all">全部</string>

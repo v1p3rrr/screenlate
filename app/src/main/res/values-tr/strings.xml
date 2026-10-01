@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Bu bir web yazı tipi (.woff veya .woff2) ve eklenemez. Önce .ttf veya .otf biçimine dönüştürün.</string>
     <string name="popup_font_import_failed">Dosya eklenemedi. Yeniden deneyin veya telefonda boş alan olup olmadığını kontrol edin.</string>
     <string name="popup_settings_title">Açılır pencere</string>
-    <string name="popup_content_title">Açılır pencerede gösterilenler</string>
+    <string name="popup_content_title">Açılır pencere öğeleri</string>
     <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
     <string name="popup_copy_switch_hint">Açılır pencerede ve aramada her sözlük adının yanındaki düğme, o sözlüğün girişteki tanımlarını kopyalar.</string>
     <string name="popup_copy_mode_all">Tümü</string>

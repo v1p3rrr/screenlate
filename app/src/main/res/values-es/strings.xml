@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Es una fuente web (.woff o .woff2) y no se puede añadir. Conviértela antes a .ttf u .otf.</string>
     <string name="popup_font_import_failed">No se pudo añadir el archivo. Vuelve a intentarlo o comprueba que el teléfono tenga espacio libre.</string>
     <string name="popup_settings_title">Ventana emergente</string>
-    <string name="popup_content_title">Qué muestra la ventana emergente</string>
+    <string name="popup_content_title">Elementos de la ventana emergente</string>
     <string name="popup_copy_switch">Botón de copiar junto a los nombres de diccionarios</string>
     <string name="popup_copy_switch_hint">En la ventana emergente y en la búsqueda, un botón junto al nombre de cada diccionario copia sus definiciones de la entrada.</string>
     <string name="popup_copy_mode_all">Todo</string>

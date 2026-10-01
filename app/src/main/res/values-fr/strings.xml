@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">C’est une police web (.woff ou .woff2), qui ne peut pas être ajoutée. Convertissez-la d’abord en .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Impossible d’ajouter le fichier. Réessayez, ou vérifiez qu’il reste de l’espace sur le téléphone.</string>
     <string name="popup_settings_title">Fenêtre contextuelle</string>
-    <string name="popup_content_title">Contenu de la fenêtre contextuelle</string>
+    <string name="popup_content_title">Éléments de la fenêtre contextuelle</string>
     <string name="popup_copy_switch">Bouton de copie près des noms de dictionnaires</string>
     <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
     <string name="popup_copy_mode_all">Tout</string>

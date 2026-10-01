@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">È un carattere web (.woff o .woff2) e non si può aggiungere. Convertilo prima in .ttf o .otf.</string>
     <string name="popup_font_import_failed">Impossibile aggiungere il file. Riprova o controlla che sul telefono ci sia spazio libero.</string>
     <string name="popup_settings_title">Popup</string>
-    <string name="popup_content_title">Cosa mostra il popup</string>
+    <string name="popup_content_title">Elementi del popup</string>
     <string name="popup_copy_switch">Pulsante di copia accanto ai nomi dei dizionari</string>
     <string name="popup_copy_switch_hint">Nel popup e nella ricerca, un pulsante accanto al nome di ogni dizionario ne copia le definizioni per la voce.</string>
     <string name="popup_copy_mode_all">Tutto</string>

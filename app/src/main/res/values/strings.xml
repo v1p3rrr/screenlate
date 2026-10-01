@@ -324,7 +324,7 @@
     <string name="popup_font_web_font">This is a web font (.woff or .woff2), which cannot be added. Convert it to .ttf or .otf first.</string>
     <string name="popup_font_import_failed">The file could not be added. Try again, or check that the phone has free space.</string>
     <string name="popup_settings_title">Popup</string>
-    <string name="popup_content_title">What the popup shows</string>
+    <string name="popup_content_title">Popup elements</string>
     <string name="popup_copy_switch">Copy button next to dictionary names</string>
     <string name="popup_copy_switch_hint">In the popup and search, a button next to each dictionary’s name copies its definitions for the entry.</string>
     <string name="popup_copy_mode_all">Everything</string>

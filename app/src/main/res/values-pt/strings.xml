@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Esta é uma fonte web (.woff ou .woff2), que não pode ser adicionada. Converta-a antes para .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Não foi possível adicionar o arquivo. Tente de novo ou verifique se há espaço livre no celular.</string>
     <string name="popup_settings_title">Pop-up</string>
-    <string name="popup_content_title">O que o pop-up mostra</string>
+    <string name="popup_content_title">Elementos do pop-up</string>
     <string name="popup_copy_switch">Botão de copiar junto aos nomes dos dicionários</string>
     <string name="popup_copy_switch_hint">No pop-up e na busca, um botão junto ao nome de cada dicionário copia as definições dele para a entrada.</string>
     <string name="popup_copy_mode_all">Tudo</string>

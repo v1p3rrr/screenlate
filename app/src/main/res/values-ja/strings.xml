@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">これは Web フォント（.woff または .woff2）なので追加できません。先に .ttf か .otf に変換してください。</string>
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
     <string name="popup_settings_title">ポップアップ</string>
-    <string name="popup_content_title">ポップアップに表示する内容</string>
+    <string name="popup_content_title">ポップアップの要素</string>
     <string name="popup_copy_switch">辞書名の横にコピーボタン</string>
     <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
     <string name="popup_copy_mode_all">すべて</string>

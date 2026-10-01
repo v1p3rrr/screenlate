@@ -321,7 +321,7 @@
     <string name="popup_font_web_font">Это веб-шрифт (.woff или .woff2), такие не добавляются. Сначала преобразуйте его в .ttf или .otf.</string>
     <string name="popup_font_import_failed">Не удалось добавить файл. Попробуйте ещё раз или проверьте, есть ли свободное место на телефоне.</string>
     <string name="popup_settings_title">Попап</string>
-    <string name="popup_content_title">Что показывать в попапе</string>
+    <string name="popup_content_title">Элементы попапа</string>
     <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
     <string name="popup_copy_switch_hint">В попапе и поиске кнопка у названия каждого словаря копирует его определения из статьи.</string>
     <string name="popup_copy_mode_all">Всё</string>
