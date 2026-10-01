@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -129,6 +130,8 @@ class DictionariesViewModel @Inject constructor(
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
+        // The ⚠ for remote files is left out until the next registry change; the list itself still shows.
+        Log.w(TAG, "Cannot check dictionary styles for remote files", e.redacted())
         emptyMap()
     }
 

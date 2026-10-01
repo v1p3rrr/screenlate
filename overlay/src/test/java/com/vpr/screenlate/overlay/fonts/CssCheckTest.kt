@@ -227,4 +227,16 @@ class CssCheckTest {
         """.trimIndent()
         assertThat(CssCheck.remoteFiles(css)).isEmpty()
     }
+
+    @Test
+    fun `a user name before the host and a comment marker inside a string are read as a browser does`() {
+        val css = """
+            .a { background: url(https://user:pw@a.example.com:8080/x.png) }
+            .b::before { content: "/*" } .c { background: url(https://c.example.com/x.png) }
+        """.trimIndent()
+        assertThat(CssCheck.remoteFiles(css)).containsExactly(
+            CssCheck.Issue(1, Problem.REMOTE_FILE, "a.example.com"),
+            CssCheck.Issue(2, Problem.REMOTE_FILE, "c.example.com"),
+        ).inOrder()
+    }
 }

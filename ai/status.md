@@ -34,17 +34,17 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   Colors switch, e-ink, a Wiktionary download and an old kty-* copy in the catalog; request 29's install-over check
   (install v0.1.4, change settings, install the branch over it); 34 on the emulator's 20 dictionaries. Then merge the
   branch. 32 (bubble color picker) stays deferred by the owner.
-- The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
-  read or only partly (about 1,500 added and 300 removed lines in 19 files; `anki.js` has no changes since v0.1.4):
-  `popup.js` (+248/-24), `definition.js` (new, 330), `render.js` (+169/-25), `PopupTextSections` (+105/-24),
-  `PopupAppearanceViewModel` (+102/-27), `DictionaryRepository` (+94/-24), `DictionaryLookup` (+79/-9),
-  `DownloadCache` (new, 68), `SearchScreen` (+59/-35), `CropEditor` (+29/-14), `SearchViewModel` (+28/-10),
-  `Protobuf` (+20/-17), `PerGeneration` (new, 17), `OcrTestViewModel` (+15/-3), `LensOcrEngine` (+14/-9),
-  `release.yml` (+11/-7), `Redaction` (+9/-3), `DownloadAssetsTask` (+3/-36), `TextLayout` (+1/-19)
-  (`git diff v0.1.4..HEAD -- <files>`). `BundledDictionaries` and `DictionaryImportWorker` were reworked since and
-  checked on the emulator.
-- Known, minor, left: `markDeleted` inflates every bundled zip; two bundled copies still get a third on update;
-  `remoteCss` may load the engine and swallows errors; `CssCheck` misreads `user@host` and `/*` inside strings.
+- The code review of v0.1.4..HEAD is finished (2026-10-01, cloud session, `/code-review --fix` over the 19 files left):
+  7 findings, 5 fixed in 2f7744b (stale OCR status on popup views under the top after going back; "Only meanings"
+  taking a gloss like "24 hours" for a numbered meaning; single-kanji entries cut by the engine before the dictionary
+  order; `noTermDictionary` failures ending the search results; the scoper's statement end duplicating the token
+  reader). Left for the owner: `definition.js` hard-codes Japanese dictionary markup (ルビ, 語釈, 【】) in a page shared by
+  all languages (CLAUDE.md wants language rules behind the support class); the Popup settings re-read the system
+  font on every slider move (small cost, would need a cache). Page tests 85/85 in the cloud; Kotlin via CI.
+- Known, minor, left: two bundled copies still get a third on update (install logic; needs the emulator to check a
+  change); `remoteCss` loads the engine to read styles. Fixed in the cloud: shipped archives' indexes are read once
+  per run (`markDeleted` and tag notes inflated archives again), `remoteCss` logs why it failed. The `CssCheck` item
+  (`user@host`, `/*` in strings) was already fixed by the security work; a test now pins it.
 - Emulator state: the user's Jiten copy there is a test archive with the revision "Jiten 26-12-01" (imported to
   check that updates leave a user's copy alone); content equals the real Jiten.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.

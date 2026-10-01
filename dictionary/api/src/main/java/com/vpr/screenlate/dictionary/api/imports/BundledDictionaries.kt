@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipInputStream
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -45,6 +46,9 @@ class BundledDictionaries @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataStore: DataStore<Preferences>,
 ) {
+    /** Indexes already read, by [Asset.key]; reading one inflates the archive up to its `index.json`. */
+    private val indexes = ConcurrentHashMap<String, Copy>()
+
     data class Asset(val name: String, val size: Long) {
         val key: String get() = "$name:$size"
 
@@ -189,8 +193,13 @@ class BundledDictionaries @Inject constructor(
     /** The dictionary title in an archive's `index.json`. */
     suspend fun titleOf(asset: Asset): String? = indexOf(asset)?.title
 
-    /** The dictionary title and revision in an archive's `index.json`, as an import stores them. */
-    private suspend fun indexOf(asset: Asset): Copy? = withContext(Dispatchers.IO) {
+    /**
+     * The dictionary title and revision in an archive's `index.json`, as an import stores them. The archives ship
+     * inside the app and do not change while it runs, so each is read once ([indexes]).
+     */
+    private suspend fun indexOf(asset: Asset): Copy? = indexes[asset.key] ?: readIndex(asset)?.also { indexes[asset.key] = it }
+
+    private suspend fun readIndex(asset: Asset): Copy? = withContext(Dispatchers.IO) {
         runCatching {
             ZipInputStream(context.assets.open("$ASSET_DIR/${asset.name}").buffered()).use { zip ->
                 val index = generateSequence { zip.nextEntry }
