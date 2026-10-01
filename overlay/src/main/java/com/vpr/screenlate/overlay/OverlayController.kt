@@ -270,8 +270,8 @@ class OverlayController(
     }
 
     /**
-     * The app in the foreground changed; the bubble hides in apps the user excluded. The bubble's menu closes: it takes
-     * no focus, so Home and Back do not close it, and its items belong to the screen it was opened on.
+     * The app in the foreground changed; the bubble hides in apps the user excluded. The bubble's menu closes: Home
+     * does not take its focus, and its items belong to the screen it was opened on.
      */
     fun onForegroundApp(packageName: String) {
         if (packageName == foregroundPackage) return
@@ -952,14 +952,7 @@ class OverlayController(
             hapticWord = word
             popupNotes.refreshActions()
             val state = popupStateOffMain(view)
-            popup.show(
-                state,
-                anchor,
-                layout.characterAt(position).vertical,
-                bubbleBox(),
-                usableBounds(),
-                MAX_POPUP_DP * density,
-            )
+            popup.show(state, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
             popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
@@ -1028,7 +1021,7 @@ class OverlayController(
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
         shownLookup = null
-        popup.show(popupState(view), anchor, false, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
+        popup.show(popupState(view), anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
     /** Where the lookup aimed at [aimed] starts: the first character of a word the language reads as a whole. */

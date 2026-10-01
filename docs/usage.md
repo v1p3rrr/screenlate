@@ -13,7 +13,7 @@
 | Pull the bubble away from the screen edge | The screen is scanned; aim at a word to see its entry. |
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
 | Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
-| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks). With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens on the side of the bubble where it fits. |
+| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks). With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens above the bubble, or below it when there is no room above. Back or a tap anywhere outside closes it; that tap does nothing else. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
 | Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
 | Drag the bubble to the left or right edge | Close the entry and dock the bubble: once the bubble's center is past the edge, or when the finger is lifted at the edge. |
@@ -23,7 +23,7 @@ A word broken at the end of a line or column is looked up as a whole, reading on
 
 When no word is found at the aim, no entry opens; if the character there is a kanji that a kanji dictionary describes, its kanji entry opens instead. The Search screen does the same for its text.
 
-The entry opens above the word when it fits there, otherwise below the bubble, and never covers either; when neither has room for all of it, it takes the roomier one and gets lower. Vertical text is treated the same, unless its column is so tall that the entry fits neither above nor below: then it opens beside the column, on the side with more room, narrower and taller. In landscape it opens to the side with more room, nearly as tall as the screen; when neither side has room, it goes above or below.
+The entry opens above the word when it fits there, otherwise below the bubble, and covers neither; vertical text is treated the same. When neither has room for all of it, it keeps its size at the edge of the screen on the roomier side and covers part of the word or the bubble rather than getting low or narrow. In landscape it opens beside the word, on the side with more room, nearly as tall as the screen and a little narrower when it has to; when no side has that much room, it covers part of the word the same way.
 
 The Quick Settings tile, the start screen and the "Show the bubble" switch in the bubble settings hide and show the bubble. Turning the screen closes the entry and docks the bubble on the same side.
 

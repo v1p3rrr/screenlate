@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.MeasureSpec
@@ -15,6 +17,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
 import com.vpr.screenlate.core.common.geometry.Box
 import kotlin.math.max
 import kotlin.math.min
@@ -23,7 +27,8 @@ import kotlin.math.roundToInt
 /**
  * The menu of the held bubble, in its own overlay window. The system popup menu cannot place itself here: overlay
  * windows are laid out without screen limits, so it believes there is room on every side and runs off the screen.
- * Closes on a tap outside it or on an item.
+ * While open, the window takes focus and every touch on the screen, like a menu inside an app: Back or a tap anywhere
+ * outside closes it, and that tap does nothing else. Closes on an item too.
  */
 class BubbleMenu(private val context: Context, private val windowManager: WindowManager) {
 
@@ -64,6 +69,13 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         }
         windowManager.addView(root, params)
         window = root
+        // Back reaches a window as a key press only for apps without predictive back.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            root.findOnBackInvokedDispatcher()?.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                OnBackInvokedCallback { dismiss() },
+            )
+        }
     }
 
     fun dismiss() {
@@ -83,18 +95,39 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         items.forEach { addView(itemView(it)) }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun root(card: View, shadow: Int) = FrameLayout(themed).apply {
+    private fun root(card: View, shadow: Int) = Root(themed).apply {
         setPadding(shadow, shadow, shadow, shadow)
         // The card's shadow is drawn in the padding.
         clipToPadding = false
         addView(card, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) dismiss()
-            false
+    }
+
+    /**
+     * Gets every touch outside the card, on the shadow margin and beyond the window, which closes the menu when the
+     * finger lifts. A system gesture (Back or Home swiped from the edge) cancels the touch instead and is not taken
+     * for a tap; Back then closes the menu itself.
+     */
+    private inner class Root(context: Context) : FrameLayout(context) {
+        private var outside = false
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_OUTSIDE -> dismiss()
+                MotionEvent.ACTION_DOWN -> outside = getChildAt(0)?.let { card ->
+                    event.x < card.left || event.x >= card.right || event.y < card.top || event.y >= card.bottom
+                } ?: true
+                MotionEvent.ACTION_UP -> if (outside) dismiss()
+                MotionEvent.ACTION_CANCEL -> outside = false
+            }
+            return true
         }
-        // A tap on the shadow margin counts as outside.
-        setOnClickListener { dismiss() }
+
+        override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+            if (event.keyCode != KeyEvent.KEYCODE_BACK) return super.dispatchKeyEvent(event)
+            if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) dismiss()
+            return true
+        }
     }
 
     private fun itemView(item: Item) = TextView(themed).apply {
@@ -144,19 +177,20 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 internal object MenuPlacement {
 
     /**
-     * Top-left corner of a [width] × [height] menu next to [anchor] inside [bounds]: below the anchor when it fits
-     * there, otherwise above; when neither fits, on the side with more room. Horizontally it grows from the anchor
-     * toward the middle of the screen, so a bubble near the right edge gets a menu that ends at its right side.
+     * Top-left corner of a [width] × [height] menu next to [anchor] inside [bounds]: above the anchor when it fits
+     * there, so the finger holding the bubble does not cover it, otherwise below; when neither fits, on the side with
+     * more room. Horizontally it grows from the anchor toward the middle of the screen, so a bubble near the right edge
+     * gets a menu that ends at its right side. The menu never leaves [bounds] when it fits in them.
      */
     fun position(width: Float, height: Float, anchor: Box, bounds: Box, gap: Float): Pair<Float, Float> {
         val x = if (anchor.centerX > bounds.centerX) anchor.right - width else anchor.left
         val below = anchor.bottom + gap
         val above = anchor.top - gap - height
         val y = when {
-            below + height <= bounds.bottom -> below
             above >= bounds.top -> above
-            bounds.bottom - anchor.bottom >= anchor.top - bounds.top -> below
-            else -> above
+            below + height <= bounds.bottom -> below
+            anchor.top - bounds.top >= bounds.bottom - anchor.bottom -> above
+            else -> below
         }
         return x.coerceIn(bounds.left, max(bounds.left, bounds.right - width)) to
             y.coerceIn(bounds.top, max(bounds.top, bounds.bottom - height))

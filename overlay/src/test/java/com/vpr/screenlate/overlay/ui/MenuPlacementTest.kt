@@ -11,8 +11,13 @@ class MenuPlacementTest {
     private fun bubble(centerX: Float, centerY: Float) = Box.fromCenter(centerX, centerY, 100f, 100f)
 
     @Test
-    fun `opens below and to the right of a bubble on the left`() {
-        assertThat(MenuPlacement.position(400f, 300f, bubble(100f, 500f), screen, 10f)).isEqualTo(50f to 560f)
+    fun `opens above and to the right of a bubble on the left`() {
+        assertThat(MenuPlacement.position(400f, 300f, bubble(100f, 500f), screen, 10f)).isEqualTo(50f to 140f)
+    }
+
+    @Test
+    fun `opens below a bubble near the top`() {
+        assertThat(MenuPlacement.position(400f, 300f, bubble(100f, 200f), screen, 10f)).isEqualTo(50f to 260f)
     }
 
     @Test
@@ -27,10 +32,19 @@ class MenuPlacementTest {
     }
 
     @Test
+    fun `stays inside the bounds when the bubble is at the very top`() {
+        val (_, y) = MenuPlacement.position(400f, 300f, bubble(500f, 20f), screen, 10f)
+        assertThat(y).isAtLeast(0f)
+        assertThat(y + 300f).isAtMost(2000f)
+    }
+
+    @Test
     fun `takes the side with more room and stays on the screen when neither fits`() {
         val short = Box(0f, 0f, 1000f, 600f)
         assertThat(MenuPlacement.position(400f, 400f, bubble(100f, 200f), short, 10f)).isEqualTo(50f to 200f)
         assertThat(MenuPlacement.position(400f, 400f, bubble(100f, 400f), short, 10f)).isEqualTo(50f to 0f)
+        // Equal room on both sides: above.
+        assertThat(MenuPlacement.position(400f, 400f, bubble(100f, 300f), short, 10f)).isEqualTo(50f to 0f)
     }
 
     @Test

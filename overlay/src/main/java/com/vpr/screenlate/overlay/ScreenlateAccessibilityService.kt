@@ -105,12 +105,17 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         focusedAppPackage()?.let { controller?.onForegroundApp(it) }
     }
 
-    /** Package of the focused application window; system UI, keyboards and our overlays are not applications. */
-    private fun focusedAppPackage(): String? = windows
-        .firstOrNull { it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isFocused }
-        ?.root
-        ?.packageName
-        ?.toString()
+    /**
+     * Package of the focused application window; system UI, keyboards and our overlays are not applications. The
+     * bubble menu holds focus while open, also after Home, so then the topmost application window counts.
+     */
+    private fun focusedAppPackage(): String? {
+        val all = windows
+        val apps = all.filter { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
+        val overlayFocused = all.any { it.type == AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY && it.isFocused }
+        val app = apps.firstOrNull { it.isFocused } ?: if (overlayFocused) apps.maxByOrNull { it.layer } else null
+        return app?.root?.packageName?.toString()
+    }
 
     override fun onInterrupt() = Unit
 

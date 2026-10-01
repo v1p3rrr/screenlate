@@ -60,11 +60,11 @@ class PopupController(
     }
 
     /** Shows [state] in a popup placed next to [word], replacing whatever it showed before. */
-    fun show(state: String, word: Box, vertical: Boolean, bubble: Box?, screen: Box, maxWidth: Float) {
+    fun show(state: String, word: Box, bubble: Box?, screen: Box, maxWidth: Float) {
         if (!attached) attach()
         val area = Box(screen.left + edgeMargin, screen.top + edgeMargin, screen.right - edgeMargin, screen.bottom - edgeMargin)
-        val size = PopupPlacement.size(screen, density, maxWidth)
-        val placed = PopupPlacement.place(word, vertical, bubble, size, area, margin = edgeMargin * 2)
+        val size = PopupPlacement.size(screen, maxWidth)
+        val placed = PopupPlacement.place(word, bubble, size, area, margin = edgeMargin * 2)
         bounds = placed
         params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
         params.x = placed.left.roundToInt()

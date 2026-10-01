@@ -10,8 +10,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
   16 is done: the branch `claude/elegant-allen-xmu3fx` (requests 18, settings order, and 19, bubble hold menu; 13 and
   14 there) is cherry-picked onto main and checked on the emulator. 17 (`/code-review xhigh --fix` since 764ae60) is
-  done: six findings fixed. Next: the owner's answers to Q1-Q6 in the feedback plan's section "Code review: changes
-  since 764ae60". The remote branch `claude/elegant-allen-xmu3fx` is merged and can be deleted.
+  done: six findings fixed. The owner answered Q1-Q6; requests 20 (popup never low or narrow, covering the word
+  instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. Open: whether to delete the
+  merged remote branch `claude/elegant-allen-xmu3fx`, and whether the tap that closes the menu should also reach the app.
 - The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
   (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
   Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
@@ -336,3 +337,22 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   opening its own page; the menu below the bubble, above it at the bottom edge, ending at the bubble's right side on
   the right half; a tap outside closes it; "Open Screenlate" from the system settings brought the app's task to the
   front and docked the bubble. Fixed: the card's shadow was clipped by the root's padding (`clipToPadding`).
+
+### 2026-10-01 (popup placement without shrinking, modal bubble menu)
+
+- Owner's answers to the review questions since 764ae60 (requests 20 and 21 in the feedback plan). `PopupPlacement`
+  no longer shrinks the height or goes beside vertical text in portrait: above when the whole popup fits, else below
+  the bubble, else whole at the screen's edge on the roomier side, covering part of the word or the bubble. Landscape
+  stays beside, shrinking to 80% of the width at most, then covers the same way. `Size` lost `minHeight`,
+  `besideHeight`, `narrowMinWidth`; `place` lost `vertical` (and so did `PopupController.show`).
+- Bubble menu: above the bubble first. The window is now focusable and touch modal (`menuParams`:
+  `FLAG_ALT_FOCUSABLE_IM`, no `NOT_FOCUSABLE`/`NOT_TOUCH_MODAL`), so it gets Back and every touch on the screen; a
+  touch outside the card closes it on lift and is consumed; a system gesture cancels the touch, so a back swipe closes
+  only the menu. Back is handled both as `KEYCODE_BACK` and through `OnBackInvokedCallback` (API 33+).
+- While the menu holds focus no application window is focused, so after Home the foreground check would see nothing;
+  `focusedAppPackage` now takes the topmost application window when an accessibility overlay holds focus. Right after
+  Home our window still had focus on the emulator, and the menu closed about 0.3 s later through this check.
+- Checked on the emulator (API 37, gesture navigation): the menu above the bubble; Back key, back swipe (the Settings
+  page under it stayed), Home key and Home swipe close it; a tap on a Settings row closes it without opening the row;
+  a tap on the bubble closes it; a tap on the card's padding does not; an item works. Popup above a manga column in
+  portrait and beside a line in landscape at full width; Back still ends a text selection in the popup on API 37.
