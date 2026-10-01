@@ -23,7 +23,7 @@ class DictionaryRepair @Inject constructor(
         if (bundledTitles.isEmpty()) return missing
         val assets = bundled.all().associateWith { bundled.titleOf(it) }.filterValues { it in bundledTitles }
         if (assets.isNotEmpty()) {
-            bundled.forgetAll(assets.keys)
+            bundled.markForRepair(assets.keys)
             imports.installBundled()
         }
         return missing.filterNot { it.bundled && it.title in assets.values }

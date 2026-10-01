@@ -54,6 +54,8 @@ data class DictionariesState(
     val links: Map<Long, DictionaryLinks> = emptyMap(),
     /** Hosts that the styles of a switched on dictionary load files from, by dictionary title. */
     val remoteCss: Map<String, List<String>> = emptyMap(),
+    /** Ids of the dictionaries whose files are gone. */
+    val withoutFiles: Set<Long> = emptySet(),
     val loaded: Boolean = false,
 )
 
@@ -80,8 +82,8 @@ class DictionariesViewModel @Inject constructor(
         imports.tasks,
         catalog.entries(),
         repository.sortDictionaryId,
-        repository.dictionaries.map { remoteCss() },
-    ) { dictionaries, tasks, entries, sortId, remoteCss ->
+        repository.dictionaries.map { remoteCss() to withoutFiles() },
+    ) { dictionaries, tasks, entries, sortId, (remoteCss, withoutFiles) ->
         val running = tasks.filter { !it.finished }.map { it.name }.toSet()
         val items = entries.map { entry ->
             CatalogItem(entry, installed = dictionaries.any(entry::matches), inProgress = entry.title in running)
@@ -100,6 +102,7 @@ class DictionariesViewModel @Inject constructor(
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
             },
             remoteCss = remoteCss,
+            withoutFiles = withoutFiles,
             loaded = true,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DictionariesState())
@@ -113,6 +116,14 @@ class DictionariesViewModel @Inject constructor(
         throw e
     } catch (e: Exception) {
         emptyMap()
+    }
+
+    private suspend fun withoutFiles(): Set<Long> = try {
+        repository.missingFiles().mapTo(hashSetOf()) { it.id }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        emptySet()
     }
 
     /** Error from copying a picked file, before the import is queued. */

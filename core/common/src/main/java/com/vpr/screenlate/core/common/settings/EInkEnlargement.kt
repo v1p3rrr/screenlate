@@ -15,6 +15,20 @@ data class EInkEnlargement(val bubble: Change?, val font: Change?) {
 
     data class Restore(val bubble: Int?, val font: Int?)
 
+    /**
+     * This enlargement followed by [next], made while e-ink mode stayed on: a size still at this one's value goes back
+     * to the size from before both; one set by hand in between goes back to that.
+     */
+    fun followedBy(next: EInkEnlargement): EInkEnlargement =
+        EInkEnlargement(bubble = chain(bubble, next.bubble), font = chain(font, next.font))
+
+    private fun chain(first: Change?, second: Change?): Change? = when {
+        first == null -> second
+        second == null -> first
+        second.before == first.after -> Change(first.before, second.after)
+        else -> second
+    }
+
     companion object {
         /** A bubble of at least [minBubble] and text [fontStep] larger, at most [maxFont]; larger sizes stay. */
         fun of(bubbleNow: Int, fontNow: Int, minBubble: Int, fontStep: Int, maxFont: Int): EInkEnlargement {

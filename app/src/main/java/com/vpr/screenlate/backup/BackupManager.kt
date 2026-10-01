@@ -232,7 +232,7 @@ class BackupManager @Inject constructor(
                 val installed = dictionaries.getAll()
                 val outcome = BackupDictionaries.applyList(installed, head.dictionaries.dictionaries)
                 val sortId = head.dictionaries.sortDictionary?.let { BackupDictionaries.match(outcome.updated, it)?.id }
-                val kept = keptTermDictionaries(installed, outcome.updated).mapTo(hashSetOf()) { it.id }
+                val kept = keptTermDictionaries(installed, outcome.updated, storage::hasFiles).mapTo(hashSetOf()) { it.id }
                 dictionaries.applyStates(outcome.updated.map { if (it.id in kept) it.copy(enabled = true) else it }, sortId)
                 missing = outcome.missing
                 keptOn = outcome.updated.filter { it.id in kept }.map { it.title }

@@ -34,6 +34,14 @@ class OcrStatusTest {
     }
 
     @Test
+    fun `a device word kept beside the cloud's final text is plain`() {
+        assertThat(engineLabelOf(OcrEngineType.ML_KIT, true, OcrEngines.BOTH, false, keptBesideCloud = true))
+            .isEqualTo(EngineLabel.DEVICE)
+        assertThat(engineLabelOf(OcrEngineType.ACCESSIBILITY, true, OcrEngines.BOTH, false, keptBesideCloud = true))
+            .isEqualTo(EngineLabel.APP_TEXT)
+    }
+
+    @Test
     fun `a device result by choice is plain`() {
         assertThat(device(engines = OcrEngines.DEVICE)).isEqualTo(EngineLabel.DEVICE)
         assertThat(device(engines = OcrEngines.DEVICE, offline = true)).isEqualTo(EngineLabel.DEVICE)

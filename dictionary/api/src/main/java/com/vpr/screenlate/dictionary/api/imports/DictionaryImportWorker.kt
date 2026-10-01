@@ -88,16 +88,16 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     private suspend fun installBundled(): List<String> {
         repository.cleanUp()
-        return bundled.pending { repository.getAll().mapTo(hashSetOf()) { it.title } }.map { asset ->
+        return bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } }.map { asset ->
             setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
             try {
                 bundled.copy(asset, archive)
                 val started = System.currentTimeMillis()
-                val title = repository.import(archive, bundled = true, catalog = catalogEntries).title
-                bundled.markInstalled(asset)
-                Log.i(TAG, "Installed $title in ${System.currentTimeMillis() - started} ms")
-                title
+                val dictionary = repository.import(archive, bundled = true, catalog = catalogEntries)
+                bundled.markInstalled(asset, dictionary.title, dictionary.revision)
+                Log.i(TAG, "Installed ${dictionary.title} in ${System.currentTimeMillis() - started} ms")
+                dictionary.title
             } finally {
                 archive.delete()
             }

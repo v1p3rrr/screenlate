@@ -116,10 +116,13 @@ class AppUpdates @Inject constructor(
     /** Whether Android lets Screenlate install APKs; otherwise the user allows it in the system settings first. */
     fun canInstall(): Boolean = context.packageManager.canRequestPackageInstalls()
 
-    /** Downloads and installs [release]; progress and errors go to [state]. */
+    /** Downloads and installs [release]; progress and errors go to [state]. A check running meanwhile is waited for. */
     fun update(release: Release) {
-        if (!supported || job?.isActive == true || checkJob?.isActive == true) return
+        if (!supported || job?.isActive == true) return
+        val check = checkJob?.takeIf { it.isActive }
         job = scope.launch {
+            // Its result would otherwise replace the download's progress.
+            check?.join()
             val asset = Releases.apkFor(release, Build.SUPPORTED_ABIS.toList())
             if (asset == null) {
                 mutableState.value = UpdateState.Failed(UpdateError.NO_APK, release)

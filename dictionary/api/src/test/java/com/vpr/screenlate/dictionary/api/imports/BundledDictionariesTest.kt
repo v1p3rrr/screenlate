@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries.Asset
+import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries.Copy
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -55,13 +56,6 @@ class BundledDictionariesTest {
     }
 
     @Test
-    fun `a bracketed version does not change the title`() {
-        assertThat(BundledDictionaries.baseTitle("JMdict [2026-09-27]")).isEqualTo("JMdict")
-        assertThat(BundledDictionaries.baseTitle("Jiten")).isEqualTo("Jiten")
-        assertThat(BundledDictionaries.baseTitle("Kanjium Pitch Accents")).isEqualTo("Kanjium Pitch Accents")
-    }
-
-    @Test
     fun `an installed copy in another revision or with the older English title is the same dictionary`() {
         assertThat(BundledDictionaries.sameTitle("KANJIDIC [2026-250]", "KANJIDIC [2026-270]")).isTrue()
         assertThat(BundledDictionaries.sameTitle("KANJIDIC (English)", "KANJIDIC [2026-270]")).isTrue()
@@ -96,5 +90,58 @@ class BundledDictionariesTest {
         assertThat(BundledDictionaries.alreadyPresent(emptyList(), emptySet(), unread) { error("archive opened") }).isEmpty()
         assertThat(BundledDictionaries.alreadyPresent(listOf(kanjidic), emptySet(), { emptySet() }) { error("archive opened") })
             .isEmpty()
+    }
+
+    private val ours = Copy("JMdict [2026-09-27]", "JMdict.2026-09-27")
+    private val shippedJmdict = Copy("JMdict [2026-11-01]", "JMdict.2026-11-01")
+    private val update = Asset(jmdict.name, 120)
+    private val earlier = setOf(jmdict.key, frequency.key)
+
+    private suspend fun userCopies(present: List<Copy>, records: Map<String, Copy> = mapOf(jmdict.name to ours)) =
+        BundledDictionaries.userCopies(listOf(update), earlier, records, { present }) { shippedJmdict }
+
+    @Test
+    fun `a new version replaces the copy Screenlate installed`() = runTest {
+        assertThat(userCopies(listOf(ours, Copy("Jiten", "Jiten 26-09-27")))).isEmpty()
+    }
+
+    @Test
+    fun `a copy the user put in place stays in any revision`() = runTest {
+        assertThat(userCopies(listOf(Copy("JMdict [2026-12-01]", "JMdict.2026-12-01")))).containsExactly(update)
+        assertThat(userCopies(listOf(Copy("JMdict [2026-05-01]", "JMdict.2026-05-01")))).containsExactly(update)
+        assertThat(userCopies(listOf(Copy("JMdict", "yomitan-backup")))).containsExactly(update)
+    }
+
+    @Test
+    fun `a dictionary that is gone is installed again`() = runTest {
+        assertThat(userCopies(listOf(Copy("Jiten", "Jiten 26-09-27")))).isEmpty()
+    }
+
+    @Test
+    fun `a copy installed before records were kept counts as the user's`() = runTest {
+        assertThat(userCopies(listOf(ours), records = emptyMap())).containsExactly(update)
+    }
+
+    @Test
+    fun `the shipped archive itself counts as Screenlate's copy`() = runTest {
+        // Installed, but the app stopped before the install was recorded.
+        assertThat(userCopies(listOf(shippedJmdict))).isEmpty()
+        assertThat(userCopies(listOf(shippedJmdict), records = emptyMap())).isEmpty()
+    }
+
+    @Test
+    fun `only new versions of installed archives are compared`() = runTest {
+        val copies = BundledDictionaries.userCopies(listOf(pitch), earlier, emptyMap(), { error("copies read") }) {
+            error("archive opened")
+        }
+        assertThat(copies).isEmpty()
+    }
+
+    @Test
+    fun `records survive storing`() {
+        val records = mapOf(jmdict.name to ours, frequency.name to Copy("Jiten \"global\"\nlist", ""))
+        assertThat(BundledDictionaries.readRecords(BundledDictionaries.writeRecords(records))).isEqualTo(records)
+        assertThat(BundledDictionaries.readRecords(null)).isEmpty()
+        assertThat(BundledDictionaries.readRecords("not json")).isEmpty()
     }
 }

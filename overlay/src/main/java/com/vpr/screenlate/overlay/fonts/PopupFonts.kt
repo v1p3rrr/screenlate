@@ -15,6 +15,7 @@ import java.nio.channels.FileChannel
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -130,11 +131,14 @@ class PopupFonts @Inject constructor(
                 existing?.files?.forEach { File(directory, it.name).delete() }
                 FontImport.Added(font)
             }
-        } catch (e: IOException) {
-            Log.w(TAG, "Font import failed", e.redacted())
-            FontImport.Failed
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: SecurityException) {
             Log.w(TAG, "Font file not readable", e.redacted())
+            FontImport.Failed
+        } catch (e: Exception) {
+            // A malformed file can fail anywhere in reading its tables.
+            Log.w(TAG, "Font import failed", e.redacted())
             FontImport.Failed
         } finally {
             partial.delete()
@@ -183,14 +187,18 @@ class PopupFonts @Inject constructor(
         }
     }
 
-    /** Downloads all files of [font]; on a failure, the files of this attempt that no installed font lists go. */
+    /**
+     * Downloads all files of [font]. A font downloaded before keeps its files until the new ones are listed, so a
+     * failure leaves it whole; on a failure, the files of this attempt go.
+     */
     private suspend fun fetch(font: CatalogFont) {
         directory.mkdirs()
         val written = mutableListOf<File>()
         try {
             val files = font.files.mapIndexed { index, file ->
                 val extension = file.url.substringAfterLast('.').lowercase().takeIf { it == "otf" } ?: "ttf"
-                val name = "${font.id}-$index.$extension"
+                // A new file name every time: a page that loaded the replaced file must not keep it from its cache.
+                val name = "${font.id}-$index-${newId()}.$extension"
                 val partial = File(directory, "$name.part")
                 val target = File(directory, name)
                 written += partial
@@ -201,12 +209,13 @@ class PopupFonts @Inject constructor(
                 }
                 val head = partial.inputStream().use { it.readNBytesCompat(HEAD) }
                 if (FontFiles.format(head) == null) throw IOException("Not a font")
-                target.delete()
                 if (!partial.renameTo(target)) throw IOException("Rename failed")
                 FontFile(name, file.weight)
             }
             lock.withLock {
-                save(mutableInstalled.value.filter { it.id != font.id } + InstalledFont(font.id, font.family, files, font.id))
+                val replaced = mutableInstalled.value.filter { it.id == font.id }
+                save(mutableInstalled.value - replaced.toSet() + InstalledFont(font.id, font.family, files, font.id))
+                replaced.flatMap { it.files }.forEach { File(directory, it.name).delete() }
             }
         } catch (e: Throwable) {
             lock.withLock {

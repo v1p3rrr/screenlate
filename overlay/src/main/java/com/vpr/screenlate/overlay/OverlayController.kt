@@ -1017,6 +1017,9 @@ class OverlayController(
     }
 
     private fun showMessage(message: String) {
+        // A lookup still running would draw its word over the message.
+        lookupJob?.cancel()
+        lookupJob = null
         val (x, y) = aim ?: aimPoint()
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
@@ -1142,16 +1145,10 @@ class OverlayController(
         }
     }
 
-    private fun engineLabel(): String = engineLabel(aimedEngine())
-
-    /** Where the word under the aim came from: text added around app text keeps its own engine. */
-    private fun aimedEngine(): OcrEngineType? {
-        val paragraphEngine = hit?.let { position -> layout?.readingParagraphs?.getOrNull(position.paragraphIndex)?.engine }
-        return paragraphEngine ?: ocrEngine
-    }
-
-    private fun engineLabel(ocrEngine: OcrEngineType?): String =
-        when (engineLabelOf(ocrEngine, ocrFinal, settings.ocrEngines, ocrOffline)) {
+    private fun engineLabel(): String {
+        val engine = aimedEngine()
+        val keptBesideCloud = keptWord() != null && ocrEngine == OcrEngineType.LENS
+        return when (engineLabelOf(engine, ocrFinal, settings.ocrEngines, ocrOffline, keptBesideCloud)) {
             EngineLabel.NONE -> ""
             EngineLabel.LENS -> service.getString(R.string.overlay_engine_lens)
             EngineLabel.APP_TEXT -> service.getString(R.string.overlay_engine_app_text)
@@ -1160,6 +1157,22 @@ class OverlayController(
             EngineLabel.DEVICE_OFFLINE -> service.getString(R.string.overlay_engine_offline)
             EngineLabel.DEVICE_LENS_UNAVAILABLE -> service.getString(R.string.overlay_engine_device)
         }
+    }
+
+    /**
+     * Where the word under the aim came from: text added around app text keeps its own engine. A word kept from an
+     * earlier layout ([keptWord]) keeps the engine that read it.
+     */
+    private fun aimedEngine(): OcrEngineType? {
+        val kept = keptWord()
+        val source = kept?.layout ?: layout
+        val position = if (kept != null) kept.start else hit
+        val paragraphEngine = position?.let { source?.readingParagraphs?.getOrNull(it.paragraphIndex)?.engine }
+        return paragraphEngine ?: kept?.layout?.page?.engine ?: ocrEngine
+    }
+
+    /** The word shown from an earlier layout, kept because the newer text has no word under the aim. */
+    private fun keptWord(): LookupView? = shownLookup?.takeIf { hit == null && it.layout != null && it.layout !== layout }
 
     private fun popupState(view: LookupView): String {
         val engineLabel = engineLabel()

@@ -19,7 +19,10 @@ class EInkSizes @Inject constructor(
     private val overlay: OverlaySettingsRepository,
     private val popup: PopupAppearanceRepository,
 ) {
-    /** Raises the bubble and popup text sizes to the e-ink suggestions and remembers the change; larger sizes stay. */
+    /**
+     * Raises the bubble and popup text sizes to the e-ink suggestions and remembers the change, together with an
+     * earlier one, so the sizes from before the first come back; larger sizes stay.
+     */
     suspend fun enlarge() {
         val enlargement = EInkEnlargement.of(
             bubbleNow = overlay.settings.first().bubbleSizeDp,
@@ -30,7 +33,8 @@ class EInkSizes @Inject constructor(
         )
         enlargement.bubble?.let { overlay.setBubbleSize(it.after) }
         enlargement.font?.let { popup.setFontSize(it.after) }
-        settings.setEInkEnlargement(enlargement)
+        val earlier = settings.eInkEnlargement.first()
+        settings.setEInkEnlargement(earlier?.followedBy(enlargement) ?: enlargement)
     }
 
     /** Brings back the sizes [enlarge] changed, unless they were changed since, and forgets the change. */

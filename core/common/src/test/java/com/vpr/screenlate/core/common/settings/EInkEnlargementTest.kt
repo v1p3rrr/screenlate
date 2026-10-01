@@ -42,4 +42,20 @@ class EInkEnlargementTest {
         assertThat(enlarge(bubble = 60, font = 16).restore(bubbleNow = 60, fontNow = 18))
             .isEqualTo(EInkEnlargement.Restore(bubble = null, font = 16))
     }
+
+    @Test
+    fun `a second enlargement keeps the sizes from before the first`() {
+        val first = enlarge(bubble = 44, font = 16)
+        val second = enlarge(bubble = 56, font = 18)
+        val both = first.followedBy(second)
+        assertThat(both).isEqualTo(EInkEnlargement(EInkEnlargement.Change(44, 56), EInkEnlargement.Change(16, 20)))
+        assertThat(both.restore(bubbleNow = 56, fontNow = 20)).isEqualTo(EInkEnlargement.Restore(bubble = 44, font = 16))
+    }
+
+    @Test
+    fun `a size set by hand between two enlargements comes back instead`() {
+        val first = enlarge(bubble = 44, font = 16)
+        val second = enlarge(bubble = 56, font = 14)
+        assertThat(first.followedBy(second).font).isEqualTo(EInkEnlargement.Change(14, 16))
+    }
 }

@@ -13,21 +13,18 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   done: six findings fixed. The owner answered Q1-Q6; requests 20 (popup never low or narrow, covering the word
   instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. The tap that closes the menu
   stays consumed (owner). The merged branch `claude/elegant-allen-xmu3fx` is deleted on GitHub and locally. Nothing
-  is open from the owner's last message; next: a release or new requests on the owner's command.
-- The code review of v0.1.4..HEAD (`/code-review xhigh --fix`) stopped early at the weekly limit. Read fully: overlay
-  (OverlayController, OcrStatus, PopupNotes, capture, fonts, LookupPage), settings/e-ink, AppUpdates, Anki settings,
-  Yomitan import view models, nav host. Not read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond
-  `noTermDictionary`), `PerGeneration`, `BundledDictionaries`, `DictionaryImportWorker`, `DownloadCache`/
-  `DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`, `render.js`, `anki.js`,
-  `definition.js`/`popup.js`, `CropEditor`, `PopupTextSections`/`PopupAppearanceViewModel`, `SearchScreen`/
-  `SearchViewModel`, `OcrTestViewModel`. Next: review those (`git diff v0.1.4..HEAD -- <files>`).
-- Open findings (reported, not fixed): Q12 and Q13 in `plans/2026-09-30-module-review-questions.md` wait for the owner.
-  Minor ones fixable without asking: `PopupFonts.fetch` reuses fixed file names (replace in place, mixed versions on a
-  partial failure; use new names like `import` does); `PopupFonts.import` catches only IO/Security exceptions;
-  `EInkSizes.enlarge` overwrites an earlier stored record (keep the first); `AppUpdates.update` silently ignored while a
-  check runs (needs a UI text — ask); `LookupPage.evaluate` keeps its callback after cancellation; last-dictionary rule
-  counts missing-file dictionaries differently in `isLastTermDictionary`/`keptTermDictionaries` and lives only in
-  callers; `markDeleted` rescans bundled zips and `baseTitle` duplicates `dictionaryKey`.
+  is open from those. Request 22 (open review findings, bundled dictionary updates) is done, see the 2026-10-01
+  log entry; request 23 (settings resets, tooltips) is next, answers in the feedback plan.
+- The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
+  read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
+  `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
+  `render.js`, `anki.js`, `definition.js`/`popup.js`, `CropEditor`, `PopupTextSections`/`PopupAppearanceViewModel`,
+  `SearchScreen`/`SearchViewModel`, `OcrTestViewModel` (`git diff v0.1.4..HEAD -- <files>`). `BundledDictionaries`
+  and `DictionaryImportWorker` were reworked since and checked on the emulator.
+- Known, minor, left: `markDeleted` inflates every bundled zip; two bundled copies still get a third on update;
+  `remoteCss` may load the engine and swallows errors; `CssCheck` misreads `user@host` and `/*` inside strings.
+- Emulator state: the user's Jiten copy there is a test archive with the revision "Jiten 26-12-01" (imported to
+  check that updates leave a user's copy alone); content equals the real Jiten.
 - To check on the phone: grey ➕ during a slow cloud scan and its hint; CSS warnings with a real dictionary.
 - Security review of the whole project (2026-09-30): fixed — a dictionary's `styles.css` or title could close the
   `<style>` that `note.js` puts into glossary fields and store HTML with event handlers in Anki notes (`styleElement`
@@ -50,7 +47,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   font with no ⚠. Fixed with `rawStringEnd` and `urlTokenEnd`; `@import url(a;b.css);` no longer eats the next
   rule either. `remoteFiles` now also reads a bare string of `image-set()`/`-webkit-image-set()` as an address
   (Chromium fetches it, the check saw nothing). Gradle build and unit tests and the page tests run clean here.
-  Open, not fixed: `scopeCss` finds the block's `{` with a plain `indexOf`, so a `{` inside a comment splits the
+  Fixed later in 0a087b9 (scoper hardening): `scopeCss` found the block's `{` with a plain `indexOf`, so a `{` inside a comment split the
   rule and `@media /*{*/ screen { .a { ... } }` yields `& .a`, which Chromium resolves against the document root
   and applies to the whole page (checked in Chromium) - needs the owner's go-ahead, being wider than the narrow
   scoper change approved. Also open: `remoteFiles` scans string contents, so `content: "url(https://x/)"` raises
@@ -369,3 +366,25 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Third review (owner's command), 1 finding, fixed: `View.onScreenStateChanged` reports off only for
   `Display.STATE_OFF`, so with an always-on display (doze) the menu stayed; it now listens for `ACTION_SCREEN_OFF`
   while open (registered in `show`, unregistered in `dismiss`). Checked with sleep, wake, reopen and Back.
+
+### 2026-10-01 (review leftovers, bundled dictionary updates)
+
+- Owner's request 22: fix the open findings, minimal CSS checks (the user is responsible for CSS they paste; do not
+  risk breaking features), no checksum for bundled archives, but make sure an app update neither reinstalls a deleted
+  bundled dictionary nor replaces a version the user imported. Answers are in the feedback plan's decision table.
+- Bundled updates: `BundledDictionaries` records the title and revision of every copy it installs
+  (`bundled_dictionaries_records`, backfilled from the shipped archive for older installs). A new shipped version
+  replaces a copy only when the present copy is the recorded one or the shipped archive itself; any other copy with
+  that title is the user's and stays, newer or older (its archive key is still recorded, so it is not asked again).
+  A dictionary that is gone is installed again unless it was deleted (declined). Repair of missing files goes through
+  `bundled_dictionaries_repair`, so a repaired archive is not taken for the user's copy and declined (this was a bug).
+- Q12: a word kept from the on-device draft beside a cloud result shows the on-device chip; ➕ waits for the shown
+  word's engine. Q13: the error of a failed whole-image pass stays; `showMessage` cancels the pending lookup.
+- Minor fixes: `PopupFonts.fetch` writes new file names and deletes the replaced ones after saving the list; `import`
+  reports any failure; `EInkSizes.enlarge` chains a second enlargement onto the first; `AppUpdates.update` waits for a
+  running check instead of doing nothing; `LookupPage.evaluate` drops a cancelled callback; the last-dictionary rule
+  ignores dictionaries without files in both helpers (callers pass `hasFiles`).
+- Checked on the emulator with rebuilt APKs carrying modified Jiten archives: records backfilled; a newer shipped
+  archive updated Screenlate's copy; a user's import (newer revision) stayed through an older and then the original
+  shipped archive; a bundled dictionary whose folder was deleted was reinstalled with its id, position and switches.
+  A folder emptied except the engine's hidden `.hoshidicts_N` marker still counts as having files (not a real case).

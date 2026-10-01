@@ -197,6 +197,8 @@ class LookupPage(
         if (!pageReady || view == null) return null
         return suspendCancellableCoroutine { continuation ->
             evaluations += continuation
+            // The page may never answer (a reclaimed renderer); a cancelled caller is not kept until it does.
+            continuation.invokeOnCancellation { mainHandler.post { evaluations -= continuation } }
             view.evaluateJavascript(script) { result ->
                 evaluations -= continuation
                 if (continuation.isActive) continuation.resume(result)

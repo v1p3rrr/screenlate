@@ -2,7 +2,7 @@
 
 ## First launch
 
-1. Open Screenlate and enable its accessibility service (the start screen links to the settings). The bundled dictionaries install in the background; the start screen shows when they are ready. A bundled dictionary you delete stays deleted, also after app updates. An update that adds a bundled dictionary installs it as well, unless you already have that dictionary.
+1. Open Screenlate and enable its accessibility service (the start screen links to the settings). The bundled dictionaries install in the background; the start screen shows when they are ready. A bundled dictionary you delete stays deleted, also after app updates. An update that adds a bundled dictionary installs it as well, unless you already have that dictionary. An update that ships a new version of a bundled dictionary replaces only the copy Screenlate installed; a version you imported yourself stays, whether it is newer or older.
 2. If the switch in the accessibility settings is greyed out after installing from an APK file: App info → ⋮ → Allow restricted settings.
 3. On devices with aggressive battery management, allow Screenlate to run in the background, or the system may stop the service. Settings → Background work shows whether battery optimization is on for Screenlate, asks the system to turn it off, and opens the manufacturer's startup settings on phones that have them.
 

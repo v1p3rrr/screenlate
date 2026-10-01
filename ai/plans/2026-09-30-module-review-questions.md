@@ -6,18 +6,7 @@ answered; answers go to the plan's changelog.
 
 ## Open
 
-Q1-Q11 were answered on 2026-09-30 (the full texts are in git history). New from the review of v0.1.4..HEAD:
-
-- **Q12. OCR source chip for a word kept from the draft** (overlay, `OverlayController.engineLabel`/`aimedEngine`,
-  `OcrStatus.noteWaitsForText`). After Q11 the popup keeps a word ML Kit saw when the cloud result has no word under
-  the aim, and the note takes that word and the draft's sentence. The chip and the ➕ wait are computed from the engine
-  of the *current* layout under the aim, so such a word shows the cloud chip. Options: (a, recommended) remember the
-  engine with the shown lookup (`shownLookup`) and use it for the chip and ➕; (b) keep as is.
-- **Q13. Failed final ML Kit pass after band drafts** (overlay, `showScanError`/`showMessage`). In screen mode, band
-  drafts may already show a word; if the whole-image ML Kit call then fails, the error message replaces that word, and a
-  lookup still in flight (`lookupJob`, not cancelled by `showMessage`) may later draw over the error again. Options:
-  (a, recommended) keep a shown word and only stop the spinner, show the error only when nothing is shown, and cancel
-  `lookupJob` in `showMessage`; (b) always show the error and cancel the pending lookup.
+None. Q1-Q13 are answered (the full question texts are in git history).
 
 ## Answered
 
@@ -43,3 +32,7 @@ Q1-Q11 were answered on 2026-09-30 (the full texts are in git history). New from
 - Q10 (2026-09-30): focus the search field (keyboard) only when the screen opens empty.
 - Q11 (2026-09-30): the note always holds the word the popup shows. When the final text has no word where the draft
   had one, the word kept from the draft and its sentence from the draft go into the note (the current behavior).
+- Q12 (2026-10-01): a word kept from the on-device draft beside a cloud result shows the on-device chip, and ➕
+  waits for the engine of the shown word (its layout), not the one under the aim.
+- Q13 (2026-10-01): a failed whole-image pass after band drafts still shows the error, since the note would carry
+  a sentence that may be cut; `showMessage` now cancels the pending lookup so it cannot draw over the error.

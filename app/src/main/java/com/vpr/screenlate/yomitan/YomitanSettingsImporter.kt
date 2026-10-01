@@ -119,7 +119,9 @@ class YomitanSettingsImporter @Inject constructor(
         val missing = profile.dictionaries.map { it.name }.filter { name -> matched.none { it.second.name == name } }
         val ordered = matched.map { it.first } + installed.filter { dictionary -> matched.none { it.first.id == dictionary.id } }
         val switches = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled }
-        val kept = keptTermDictionaries(installed, ordered.map { it.copy(enabled = switches[it.id] ?: it.enabled) })
+        val withoutFiles = dictionaries.missingFiles().mapTo(hashSetOf()) { it.id }
+        val switched = ordered.map { it.copy(enabled = switches[it.id] ?: it.enabled) }
+        val kept = keptTermDictionaries(installed, switched) { it.id !in withoutFiles }
         dictionaries.reorder(ordered.map { it.id }, enabled = switches + kept.associate { it.id to true })
         val sortName = profile.sortFrequencyDictionary
         val sort = sortName?.let { name ->

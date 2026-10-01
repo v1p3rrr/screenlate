@@ -18,19 +18,25 @@ class LastTermDictionaryTest {
         bundled = false, importedAt = 0,
     )
 
+    private fun DictionaryEntity.isLast(all: List<DictionaryEntity>, missing: Set<Long> = emptySet()) =
+        isLastTermDictionary(all) { it.id !in missing }
+
+    private fun kept(before: List<DictionaryEntity>, after: List<DictionaryEntity>, missing: Set<Long> = emptySet()) =
+        keptTermDictionaries(before, after) { it.id !in missing }
+
     @Test
     fun `the only enabled dictionary with definitions is the last one`() {
         val jmdict = dictionary(1)
         val frequencies = dictionary(2, terms = 0)
-        assertThat(jmdict.isLastTermDictionary(listOf(jmdict, frequencies))).isTrue()
-        assertThat(frequencies.isLastTermDictionary(listOf(jmdict, frequencies))).isFalse()
+        assertThat(jmdict.isLast(listOf(jmdict, frequencies))).isTrue()
+        assertThat(frequencies.isLast(listOf(jmdict, frequencies))).isFalse()
     }
 
     @Test
     fun `another enabled dictionary with definitions for the language frees it`() {
         val jmdict = dictionary(1)
         val jitendex = dictionary(2)
-        assertThat(jmdict.isLastTermDictionary(listOf(jmdict, jitendex))).isFalse()
+        assertThat(jmdict.isLast(listOf(jmdict, jitendex))).isFalse()
     }
 
     @Test
@@ -38,21 +44,21 @@ class LastTermDictionaryTest {
         val jmdict = dictionary(1)
         val off = dictionary(2, enabled = false)
         val english = dictionary(3, source = "en")
-        assertThat(jmdict.isLastTermDictionary(listOf(jmdict, off, english))).isTrue()
+        assertThat(jmdict.isLast(listOf(jmdict, off, english))).isTrue()
     }
 
     @Test
     fun `a dictionary without a language counts for every language`() {
         val jmdict = dictionary(1)
         val any = dictionary(2, source = null)
-        assertThat(jmdict.isLastTermDictionary(listOf(jmdict, any))).isFalse()
-        assertThat(any.isLastTermDictionary(listOf(jmdict, any))).isFalse()
+        assertThat(jmdict.isLast(listOf(jmdict, any))).isFalse()
+        assertThat(any.isLast(listOf(jmdict, any))).isFalse()
     }
 
     @Test
     fun `a switched off dictionary can always be deleted`() {
         val off = dictionary(1, enabled = false)
-        assertThat(off.isLastTermDictionary(listOf(off))).isFalse()
+        assertThat(off.isLast(listOf(off))).isFalse()
     }
 
     @Test
@@ -61,7 +67,7 @@ class LastTermDictionaryTest {
         val jitendex = dictionary(2)
         val frequencies = dictionary(3, terms = 0)
         val after = listOf(jitendex.copy(enabled = false), jmdict.copy(enabled = false), frequencies.copy(enabled = false))
-        assertThat(keptTermDictionaries(listOf(jmdict, jitendex, frequencies), after).map { it.id }).containsExactly(2L)
+        assertThat(kept(listOf(jmdict, jitendex, frequencies), after).map { it.id }).containsExactly(2L)
     }
 
     @Test
@@ -69,8 +75,8 @@ class LastTermDictionaryTest {
         val jmdict = dictionary(1)
         val jitendex = dictionary(2)
         val off = dictionary(3, enabled = false)
-        assertThat(keptTermDictionaries(listOf(jmdict, jitendex), listOf(jmdict.copy(enabled = false), jitendex))).isEmpty()
-        assertThat(keptTermDictionaries(listOf(off), listOf(off))).isEmpty()
+        assertThat(kept(listOf(jmdict, jitendex), listOf(jmdict.copy(enabled = false), jitendex))).isEmpty()
+        assertThat(kept(listOf(off), listOf(off))).isEmpty()
     }
 
     @Test
@@ -78,7 +84,7 @@ class LastTermDictionaryTest {
         val jmdict = dictionary(1)
         val off = dictionary(2, enabled = false)
         val after = listOf(off, jmdict.copy(enabled = false))
-        assertThat(keptTermDictionaries(listOf(jmdict, off), after).map { it.id }).containsExactly(1L)
+        assertThat(kept(listOf(jmdict, off), after).map { it.id }).containsExactly(1L)
     }
 
     @Test
@@ -86,6 +92,16 @@ class LastTermDictionaryTest {
         val any = dictionary(1, source = null)
         val english = dictionary(2, source = "en")
         val after = listOf(any.copy(enabled = false), english.copy(enabled = false))
-        assertThat(keptTermDictionaries(listOf(any, english), after).map { it.id }).containsExactly(1L)
+        assertThat(kept(listOf(any, english), after).map { it.id }).containsExactly(1L)
+    }
+
+    @Test
+    fun `a dictionary whose files are gone does not count`() {
+        val jmdict = dictionary(1)
+        val gone = dictionary(2)
+        assertThat(jmdict.isLast(listOf(jmdict, gone), missing = setOf(2L))).isTrue()
+        assertThat(gone.isLast(listOf(gone), missing = setOf(2L))).isFalse()
+        val after = listOf(gone, jmdict.copy(enabled = false))
+        assertThat(kept(listOf(jmdict, gone), after, missing = setOf(2L)).map { it.id }).containsExactly(1L)
     }
 }
