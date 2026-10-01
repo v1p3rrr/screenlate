@@ -41,26 +41,20 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   reader). Left for the owner: `definition.js` hard-codes Japanese dictionary markup (ルビ, 語釈, 【】) in a page shared by
   all languages (CLAUDE.md wants language rules behind the support class); the Popup settings re-read the system
   font on every slider move (small cost, would need a cache). Page tests 85/85 in the cloud; Kotlin via CI.
-- To revisit (collected 2026-10-01 by the cloud session's reviews; check each again in a main session after the
-  current work settles, confirm or rule it out, then fix or strike it here):
-  1. Open finding: the Appearance reset dialog (`reset_appearance_text`), the full reset dialog (`reset_all_text`)
-     and the backup's General hint (`backup_section_general_hint`) do not mention the Colors setting, though both
-     resets clear `theme_colors` and the backup keeps it. Needs the owner's wording, then all 14 languages.
-  2. Doubtful, race at app start: `ScreenlateApplication.onCreate` runs `dictionaryReset.resumeInterrupted()` and
-     `dictionaryRepair.repair()` at the same time, next to `installBundled()`. While an interrupted reset deletes
-     the dictionaries, the repair may see their files missing and mark bundled archives for repair or offer
-     re-downloads, which could install extra copies after the reset. Check the order and whether repair should wait
-     for the reset.
-  3. Doubtful, system stops counted as deaths: `DictionaryImportWorker` gives up on a task once `runAttemptCount`
-     reaches `MAX_RUN_ATTEMPTS`, meant for the app dying during an import. WorkManager also raises the count when it
-     stops and reruns a job itself (`stopReason`: quota, constraints, the dataSync foreground limit), so two system
-     stops may give up an import, or pause the bundled install until the next update. Check whether a system stop
-     should count.
-  4. Left from the v0.1.4..HEAD review: `definition.js` hard-codes Japanese dictionary markup (ルビ, ルビG, 語釈, 【】)
-     in a page shared by all languages, against CLAUDE.md's language rule (owner's decision whether to move it now).
+- To revisit (collected 2026-10-01 by the cloud session's reviews), all settled in the local session of 2026-10-01:
+  1. Fixed: the reset dialogs, the backup's General hint and the Appearance row name the Colors setting (owner's
+     wording, 14 languages).
+  2. Ruled out: the startup repair next to a resumed reset. `missingFiles` reads rows outside the repository mutex,
+     but `deleteAll` removes rows before files with an engine reload in between, and in every order the repair's
+     extra bundled task installs nothing new or the same archives.
+  3. Fixed: WorkManager raises `runAttemptCount` for every run (`WorkerWrapper.trySetRunning`), also after a stop by
+     the system; the worker now records its stops (`dictionary_imports_stopped`) and counts only the other runs.
+  4. Fixed: the Japanese markup moved from `definition.js` to `definition-ja.js` (owner: now).
   5. Done 2026-10-01 (`PopupTypefaces`): the system font is no longer read again on every weight or font change.
-  6. Minor: two bundled copies of one dictionary still get a third on update (install logic; check on the emulator).
-  7. Minor: `DictionariesViewModel.remoteCss` loads the engine to read styles just for the remote-file ⚠.
+  6. Fixed: `sameDictionary` gave up on two bundled copies with the same key, so an update added a third; it now
+     replaces the last imported bundled copy.
+  7. Kept: `remoteCss` loads the engine, as the styles exist only in the engine's own format; the load is shared
+     with lookups, cached per registry change, and the list does not wait for it.
 - Minor items fixed in the cloud: shipped archives' indexes are read once
   per run (`markDeleted` and tag notes inflated archives again), `remoteCss` logs why it failed. The `CssCheck` item
   (`user@host`, `/*` in strings) was already fixed by the security work; a test now pins it.
