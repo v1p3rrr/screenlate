@@ -623,3 +623,14 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - The instrumented tests of the branch (run 36903149349) were still running at the merge; the branch's UI was not
   seen on a device. Check the release on the phone: colors in light and dark, status bar icons, button labels,
   Wiktionary in the catalog.
+
+### 2026-10-01 (after v0.2.0: screen changes, filled buttons; cloud session)
+
+- Request 38: the nav host cross-faded screens for 700 ms. Both screens were half transparent, so the window's light
+  background showed through (a white flash in the dark theme) and the old screen stayed visible over the new one;
+  `fromResumed` also ignored taps until the fade ended, which felt like a delay. Screens now switch at once
+  (`EnterTransition.None`/`ExitTransition.None`, pop too); e-ink already did.
+- Request 39: every filled `Button` takes the pink accent (`AccentDefaults.buttonColors()`), 15 more besides the
+  home screen's search button (Yomitan import, Backup, Anki, Background work, updates, Dictionaries, home, e-ink offer,
+  OCR test). Outlined and text buttons stay violet. Decision row "App colors" updated.
+- Not seen on a device.

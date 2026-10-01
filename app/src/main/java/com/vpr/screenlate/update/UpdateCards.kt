@@ -146,7 +146,7 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.update_allow_installs), textAlign = TextAlign.Center) }
             }
-            Button(onClick = { viewModel.update(release) }, enabled = canInstall, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = { viewModel.update(release) }, enabled = canInstall, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                 Text(
                     stringResource(if (state is UpdateState.Failed) R.string.update_retry else R.string.update_install),
                     textAlign = TextAlign.Center,

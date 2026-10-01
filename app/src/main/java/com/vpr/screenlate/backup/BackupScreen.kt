@@ -100,6 +100,7 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
                     onClick = { createPicker.launch("screenlate-backup-${LocalDate.now()}.zip") },
                     enabled = !working,
                     modifier = Modifier.fillMaxWidth(),
+                    colors = AccentDefaults.buttonColors(),
                 ) { Text(stringResource(R.string.backup_create_button), textAlign = TextAlign.Center) }
             }
             SectionCard(title = stringResource(R.string.backup_restore)) {
@@ -186,7 +187,7 @@ private fun Checklist(state: BackupState.Loaded, checked: Set<BackupSection>, vi
         }
     }
     Hint(stringResource(R.string.backup_replace_warning))
-    Button(onClick = viewModel::restore, enabled = checked.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+    Button(onClick = viewModel::restore, enabled = checked.isNotEmpty(), modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
         Text(stringResource(R.string.backup_restore_button), textAlign = TextAlign.Center)
     }
     TextButton(onClick = viewModel::reset) { Text(stringResource(R.string.action_cancel)) }

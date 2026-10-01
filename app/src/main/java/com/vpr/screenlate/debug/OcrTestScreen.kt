@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.ocr.OcrEngineType
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Debug screen: runs OCR on a picked image, draws the recognized lines and hit-tests taps. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,6 +70,7 @@ fun OcrTestScreen(onBack: () -> Unit, viewModel: OcrTestViewModel = hiltViewMode
             Button(
                 onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                 modifier = Modifier.fillMaxWidth(),
+                colors = AccentDefaults.buttonColors(),
             ) {
                 Text(stringResource(R.string.ocr_test_pick_image), textAlign = TextAlign.Center)
             }

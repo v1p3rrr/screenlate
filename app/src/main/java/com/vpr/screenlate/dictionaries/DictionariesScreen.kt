@@ -469,7 +469,7 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                         }
                     }
                     if (updates.size > 1) {
-                        Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth()) {
+                        Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                             Text(stringResource(R.string.dictionaries_update_all), textAlign = TextAlign.Center)
                         }
                     }

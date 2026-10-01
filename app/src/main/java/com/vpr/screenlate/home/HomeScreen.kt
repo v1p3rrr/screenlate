@@ -147,6 +147,7 @@ fun HomeScreen(
                     Button(
                         onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
                         modifier = Modifier.fillMaxWidth(),
+                        colors = AccentDefaults.buttonColors(),
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings), textAlign = TextAlign.Center) }
                 }
                 HorizontalDivider()
@@ -208,6 +209,7 @@ private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible:
                 if (state == BubbleState.HIDDEN) onVisible(true) else OverlayServiceStatus.openAccessibilitySettings(context)
             },
             modifier = Modifier.fillMaxWidth(),
+            colors = AccentDefaults.buttonColors(),
         ) { Text(stringResource(R.string.home_bubble_show), textAlign = TextAlign.Center) }
     }
 }

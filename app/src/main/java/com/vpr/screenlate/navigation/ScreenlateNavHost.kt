@@ -2,9 +2,6 @@ package com.vpr.screenlate.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
@@ -31,7 +28,6 @@ import com.vpr.screenlate.settings.NoticesScreen
 import com.vpr.screenlate.settings.PopupSettingsScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
-import com.vpr.screenlate.ui.theme.LocalEInk
 import com.vpr.screenlate.yomitan.YomitanImportScreen
 import kotlinx.serialization.Serializable
 
@@ -112,13 +108,16 @@ fun ScreenlateNavHost(
     LaunchedEffect(dictionariesRequests) {
         if (dictionariesRequests > 0) navController.navigate(DictionariesRoute) { launchSingleTop = true }
     }
-    // Navigation's default cross-fade; e-ink screens switch at once, since every frame of a fade costs a refresh.
-    val eInk = LocalEInk.current
+    // Screens switch at once. A cross-fade let the window's background shine through both half-transparent screens
+    // (a white flash in the dark theme), showed the old screen over the new one, and held taps until it ended, as the
+    // screen is not resumed before (see fromResumed).
     NavHost(
         navController = navController,
         startDestination = start,
-        enterTransition = { if (eInk) EnterTransition.None else fadeIn(tween(FADE_MS)) },
-        exitTransition = { if (eInk) ExitTransition.None else fadeOut(tween(FADE_MS)) },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
     ) {
         composable<HomeRoute> {
             HomeScreen(
@@ -198,4 +197,3 @@ private fun NavController.fromResumed(action: NavController.() -> Unit) {
     if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) action()
 }
 
-private const val FADE_MS = 700

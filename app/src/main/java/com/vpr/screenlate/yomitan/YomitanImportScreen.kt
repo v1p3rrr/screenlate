@@ -73,7 +73,7 @@ fun YomitanImportScreen(
                         if (current == SettingsImportState.Failed) {
                             Text(stringResource(R.string.yomitan_import_failed), color = MaterialTheme.colorScheme.error)
                         }
-                        Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+                        Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                             Text(stringResource(R.string.yomitan_import_choose_settings), textAlign = TextAlign.Center)
                         }
                     }
@@ -107,7 +107,7 @@ fun YomitanImportScreen(
                     is CollectionState.Listed -> CollectionChecklist(current, collection)
                     is CollectionState.Queued -> {
                         Text(stringResource(R.string.yomitan_collection_queued, current.count))
-                        Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth()) {
+                        Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                             Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center)
                         }
                         TextButton(onClick = collection::reset) { Text(stringResource(R.string.yomitan_import_another)) }
@@ -151,6 +151,7 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
         },
         enabled = !state.importing && state.items.any { it.checked },
         modifier = Modifier.fillMaxWidth(),
+        colors = AccentDefaults.buttonColors(),
     ) { Text(stringResource(R.string.yomitan_collection_import, state.items.count { it.checked }), textAlign = TextAlign.Center) }
 }
 
@@ -193,6 +194,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
         onClick = viewModel::apply,
         enabled = !state.applying && state.sections.isNotEmpty(),
         modifier = Modifier.fillMaxWidth(),
+        colors = AccentDefaults.buttonColors(),
     ) { Text(stringResource(R.string.yomitan_import_apply), textAlign = TextAlign.Center) }
 }
 

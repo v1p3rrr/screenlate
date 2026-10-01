@@ -60,6 +60,7 @@ import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Deck, note type, field templates, duplicate handling and audio sources. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +99,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 }
                 AnkiAvailability.NO_PERMISSION -> SectionCard(title = stringResource(R.string.anki_connection)) {
                     Text(stringResource(R.string.anki_permission_explanation))
-                    Button(onClick = { permission.launch(AnkiDroid.PERMISSION) }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { permission.launch(AnkiDroid.PERMISSION) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                         Text(stringResource(R.string.anki_grant_permission), textAlign = TextAlign.Center)
                     }
                 }
@@ -128,7 +129,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                 style = MaterialTheme.typography.bodySmall,
             )
             if (problem == AnkiProblem.FIELDS_CHANGED) {
-                Button(onClick = viewModel::updateFieldList, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = viewModel::updateFieldList, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                     Text(stringResource(R.string.anki_update_fields), textAlign = TextAlign.Center)
                 }
             }

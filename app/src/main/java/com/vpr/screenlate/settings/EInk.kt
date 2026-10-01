@@ -23,6 +23,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -119,10 +120,13 @@ fun EInkHint(onOpenAppText: () -> Unit, viewModel: EInkViewModel = hiltViewModel
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.eink_home_message))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = {
-                        viewModel.setEInk(true)
-                        offerSizes = true
-                    }) { Text(stringResource(R.string.eink_home_turn_on)) }
+                    Button(
+                        onClick = {
+                            viewModel.setEInk(true)
+                            offerSizes = true
+                        },
+                        colors = AccentDefaults.buttonColors(),
+                    ) { Text(stringResource(R.string.eink_home_turn_on)) }
                     TextButton(onClick = onOpenAppText) { Text(stringResource(R.string.eink_home_app_text)) }
                     TextButton(onClick = viewModel::dismissHint) { Text(stringResource(R.string.action_dismiss)) }
                 }

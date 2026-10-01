@@ -36,6 +36,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Battery optimization, the phone's own startup settings and the keep-alive notification, which all keep the bubble alive. */
 @Composable
@@ -90,6 +91,7 @@ fun BackgroundWorkScreen(
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        colors = AccentDefaults.buttonColors(),
                     ) { Text(stringResource(R.string.background_battery_allow), textAlign = TextAlign.Center) }
                 }
                 OutlinedButton(
