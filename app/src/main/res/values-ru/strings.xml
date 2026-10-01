@@ -523,6 +523,7 @@
     <string name="reset_dictionaries_failed">Не удалось сбросить словари: %1$s</string>
     <string name="dictionaries_delete_failed">Не удалось удалить словарь: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: приложение дважды закрылось во время этого импорта, поэтому он остановлен. Попробуйте ещё раз; если повторится, файл может быть повреждён или слишком велик для этого устройства.</string>
+    <string name="dictionaries_bundled_paused">Установка встроенных словарей остановлена: приложение дважды закрылось во время неё. Она будет повторена после следующего обновления приложения; чтобы повторить сейчас, нажмите «Попробовать ещё раз».</string>
     <string name="reset_dictionaries_gave_up_title">Сброс словарей не завершился</string>
     <string name="reset_dictionaries_gave_up_text">Приложение дважды закрылось во время сброса словарей, поэтому сброс остановлен. Часть словарей могла остаться или пропасть. Запустите сброс ещё раз кнопкой вверху страницы «Словари».</string>
     <string name="reset_dictionaries_gave_up_open">Открыть словари</string>

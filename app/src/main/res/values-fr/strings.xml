@@ -517,6 +517,7 @@
     <string name="reset_dictionaries_failed">Échec de la réinitialisation des dictionnaires : %1$s</string>
     <string name="dictionaries_delete_failed">Impossible de supprimer le dictionnaire : %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s : l’appli s’est fermée deux fois pendant cette importation, elle a donc été arrêtée. Réessayez ; si cela se reproduit, le fichier est peut-être endommagé ou trop volumineux pour cet appareil.</string>
+    <string name="dictionaries_bundled_paused">L’installation des dictionnaires fournis a été arrêtée : l’appli s’est fermée deux fois pendant celle-ci. Elle sera relancée après la prochaine mise à jour de l’appli ; pour réessayer maintenant, touchez « Réessayer ».</string>
     <string name="reset_dictionaries_gave_up_title">La réinitialisation des dictionnaires n’a pas abouti</string>
     <string name="reset_dictionaries_gave_up_text">L’appli s’est fermée deux fois pendant la réinitialisation des dictionnaires, elle a donc été arrêtée. Certains dictionnaires peuvent rester ou manquer. Relancez la réinitialisation avec le bouton en haut de la page Dictionnaires.</string>
     <string name="reset_dictionaries_gave_up_open">Ouvrir les dictionnaires</string>

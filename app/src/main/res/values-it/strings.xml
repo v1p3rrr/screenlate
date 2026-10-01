@@ -517,6 +517,7 @@
     <string name="reset_dictionaries_failed">Ripristino dei dizionari non riuscito: %1$s</string>
     <string name="dictionaries_delete_failed">Impossibile eliminare il dizionario: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: l’app si è chiusa due volte durante questa importazione, quindi è stata interrotta. Riprova; se succede di nuovo, il file potrebbe essere danneggiato o troppo grande per questo dispositivo.</string>
+    <string name="dictionaries_bundled_paused">L’installazione dei dizionari inclusi è stata interrotta: l’app si è chiusa due volte durante l’installazione. Verrà ritentata dopo il prossimo aggiornamento dell’app; per riprovare ora, tocca “Riprova”.</string>
     <string name="reset_dictionaries_gave_up_title">Il ripristino dei dizionari non è terminato</string>
     <string name="reset_dictionaries_gave_up_text">L’app si è chiusa due volte durante il ripristino dei dizionari, quindi il ripristino è stato interrotto. Alcuni dizionari potrebbero essere rimasti o mancare. Ripristinali di nuovo con il pulsante in alto nella pagina Dizionari.</string>
     <string name="reset_dictionaries_gave_up_open">Apri i dizionari</string>

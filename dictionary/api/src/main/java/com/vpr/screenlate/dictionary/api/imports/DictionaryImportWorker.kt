@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
@@ -61,26 +62,47 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
     override suspend fun doWork(): Result = imports.tracked {
-        withContext(Dispatchers.IO) {
-            when {
-                imports.isCancelled(id) -> cancelled()
-                // Started over once after the app died during it; a second death may well be the import's own doing,
-                // e.g. a damaged archive, and another try would only repeat it.
-                runAttemptCount >= MAX_RUN_ATTEMPTS -> {
-                    Log.w(TAG, "Import interrupted $runAttemptCount times; not started again")
-                    removeLeftovers()
-                    discardInput()
-                    Result.success(workDataOf(KEY_INTERRUPTED to true))
-                }
-                else -> {
-                    removeLeftovers()
-                    imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled()
+        val source = inputData.getString(KEY_SOURCE)
+        Log.i(TAG, "Task $id ($source) started, run ${runAttemptCount + 1}")
+        try {
+            withContext(Dispatchers.IO) {
+                when {
+                    imports.isCancelled(id) -> cancelled(started = false)
+                    // Started over once after the app died during it; a second death may well be the import's own
+                    // doing, e.g. a damaged archive, and another try would only repeat it.
+                    runAttemptCount >= MAX_RUN_ATTEMPTS -> {
+                        Log.w(TAG, "Task $id interrupted $runAttemptCount times; not started again")
+                        removeLeftovers()
+                        discardInput()
+                        // App starts queue the bundled install again; the same archives would end the same way. A
+                        // failed work would fail the imports queued after it, so a failed write is only logged.
+                        if (source == SOURCE_BUNDLED) {
+                            try {
+                                bundled.pauseUntilUpdate()
+                            } catch (e: CancellationException) {
+                                throw e
+                            } catch (e: Exception) {
+                                Log.w(TAG, "Pausing the bundled install failed", e)
+                            }
+                        }
+                        Result.success(workDataOf(KEY_INTERRUPTED to true, KEY_PAUSED to (source == SOURCE_BUNDLED)))
+                    }
+                    else -> {
+                        removeLeftovers()
+                        imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled(started = true)
+                    }
                 }
             }
+        } catch (e: CancellationException) {
+            // Cancelled by a dictionary reset, or stopped by the system, which runs it again later.
+            val reason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) " (reason $stopReason)" else ""
+            Log.i(TAG, "Task $id stopped by WorkManager$reason")
+            throw e
         }
     }
 
-    private suspend fun cancelled(): Result {
+    private suspend fun cancelled(started: Boolean): Result {
+        Log.i(TAG, if (started) "Task $id cancelled while running" else "Task $id cancelled before it started")
         // A task cancelled before it ran never got to the clean-up at the end of its run.
         discardInput()
         imports.forgetCancel(id)
@@ -108,6 +130,8 @@ class DictionaryImportWorker @AssistedInject constructor(
     private suspend fun work(): Result {
         val name = inputData.getString(KEY_NAME).orEmpty()
         runCatching { setForeground(foregroundInfo(name)) }
+            .onFailure { Log.w(TAG, "Task $id runs without a foreground service: ${it.javaClass.simpleName}") }
+        val started = System.currentTimeMillis()
         // Failures are results with an error: a failed work would fail every import queued after it unrun.
         val output = try {
             val titles = when (inputData.getString(KEY_SOURCE)) {
@@ -121,14 +145,15 @@ class DictionaryImportWorker @AssistedInject constructor(
                 }
                 else -> error("Unknown import source")
             }
+            Log.i(TAG, "Task $id done in ${System.currentTimeMillis() - started} ms: ${titles.size} dictionaries $titles")
             workDataOf(KEY_TITLES to titles.toTypedArray())
         } catch (e: CancellationException) {
             throw e
         } catch (e: NotEnoughSpaceException) {
-            Log.w(TAG, "Not enough space: ${e.neededBytes shr 20} MB needed, ${e.freeBytes shr 20} MB free")
+            Log.w(TAG, "Task $id: not enough space: ${e.neededBytes shr 20} MB needed, ${e.freeBytes shr 20} MB free")
             workDataOf(KEY_ERROR to e.message, KEY_NEEDED_BYTES to e.neededBytes, KEY_FREE_BYTES to e.freeBytes)
         } catch (e: Exception) {
-            Log.w(TAG, "Import failed", e)
+            Log.w(TAG, "Task $id failed after ${System.currentTimeMillis() - started} ms", e)
             // Work data is limited to 10 KB.
             workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH))
         }
@@ -136,7 +161,12 @@ class DictionaryImportWorker @AssistedInject constructor(
     }
 
     private suspend fun installBundled(): List<String> {
+        if (bundled.isPaused()) {
+            Log.w(TAG, "Bundled install skipped: paused until the app is updated")
+            return emptyList()
+        }
         return bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } }.map { asset ->
+            Log.i(TAG, "Installing ${asset.name} (${asset.size shr 10} KB)")
             setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
             try {
@@ -163,6 +193,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     }
 
     private suspend fun importFile(archive: File): String {
+        Log.i(TAG, "Importing a file of ${archive.length() shr 10} KB")
         setProgress(workDataOf(KEY_STAGE to STAGE_IMPORT))
         try {
             return repository.import(archive, catalog = catalogEntries).title
@@ -219,6 +250,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         try {
             var started = System.currentTimeMillis()
             val free = staging.usableSpace
+            Log.i(
+                TAG,
+                "Collection of ${size shr 20} MB, read ${if (uri != null) "in place" else "from a copy"}, " +
+                    "${selected?.size ?: "all"} dictionaries chosen",
+            )
             val plan = if (CollectionSpace.clearlyEnough(size, free)) {
                 Log.i(TAG, "Skipped measuring: ${free shr 20} MB free for a ${size shr 20} MB file")
                 CollectionSpacePlan.Uncompressed
@@ -258,7 +294,10 @@ class DictionaryImportWorker @AssistedInject constructor(
     /** `downloadUrl` from a Yomitan index file, or null if it cannot be read. */
     private fun latestDownloadUrl(indexUrl: String): String? = runCatching {
         downloadClient.newCall(Request.Builder().url(indexUrl).build()).execute().use { response ->
-            if (!response.isSuccessful) return null
+            if (!response.isSuccessful) {
+                Log.w(TAG, "Cannot read $indexUrl: HTTP ${response.code}")
+                return null
+            }
             Json.parseToJsonElement(response.body.string()).jsonObject["downloadUrl"]?.jsonPrimitive?.contentOrNull
         }
     }.onFailure { Log.w(TAG, "Cannot read $indexUrl", it) }.getOrNull()
@@ -267,10 +306,13 @@ class DictionaryImportWorker @AssistedInject constructor(
         val archive = storage.newArchiveFile()
         try {
             val request = Request.Builder().url(url).build()
+            val started = System.currentTimeMillis()
+            Log.i(TAG, "Downloading $url")
             downloadClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
                 val body = response.body
                 val total = body.contentLength()
+                Log.i(TAG, "Download size: ${if (total >= 0) "${total shr 10} KB" else "unknown"}")
                 body.byteStream().use { input ->
                     archive.outputStream().use { output ->
                         val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 8)
@@ -292,6 +334,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                     }
                 }
             }
+            Log.i(TAG, "Downloaded ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
             val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
             return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
@@ -335,6 +378,9 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Output of an import the app died during twice; see [MAX_RUN_ATTEMPTS]. */
         const val KEY_INTERRUPTED = "interrupted"
+
+        /** Output of an interrupted bundled install: none runs until [BundledDictionaries.resumeInstall]. */
+        const val KEY_PAUSED = "paused"
 
         /** Output of an import the user cancelled. */
         const val KEY_CANCELLED = "cancelled"

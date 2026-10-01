@@ -86,5 +86,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `enabled_accessibility_services` (`settings delete secure ...`), `am kill` the app, pull
   `files/datastore/settings.preferences_pb` with `run-as ... cat`, drop the map entry (top-level field 1 entries, key in
   field 1), write it back through `/data/local/tmp` with `run-as ... sh -c 'cat ... > ...'`, and put the service back.
-  Git Bash rewrites device paths: set `MSYS_NO_PATHCONV=1`. Never `am force-stop`: it drops the service from the enabled
+  Git Bash rewrites device paths: set `MSYS_NO_PATHCONV=1`. Pass the device command as one argument,
+  `adb shell "run-as <package> sh -c 'cat /data/local/tmp/x > files/...'"`: unquoted, the device's outer shell does the
+  redirect as the shell user (permission denied, or a relative path that does not exist). `am kill` stops only a
+  background process: press Home first. Never `am force-stop`: it drops the service from the enabled
   list.

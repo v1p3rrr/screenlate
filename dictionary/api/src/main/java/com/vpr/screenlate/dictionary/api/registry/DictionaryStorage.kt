@@ -62,11 +62,11 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     /** Dictionary directories that no registry entry ([known] directory names) points to. */
     fun orphans(known: Collection<String>): List<File> = orphanDirectories(root, staging, known)
 
-    /** Deletes what imports cut short by the process dying left behind; see [importLeftovers]. */
-    fun removeImportLeftovers(archivesInUse: Set<String>?) {
+    /** Deletes what imports cut short by the process dying left behind ([importLeftovers]); returns how many. */
+    fun removeImportLeftovers(archivesInUse: Set<String>?): Int {
         val now = System.currentTimeMillis()
         val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
-        importLeftovers(staging, downloads, archivesInUse, processStart, now).forEach { it.deleteRecursively() }
+        return importLeftovers(staging, downloads, archivesInUse, processStart, now).onEach { it.deleteRecursively() }.size
     }
 
     private companion object {

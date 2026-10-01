@@ -79,7 +79,11 @@ class DictionaryRepository @Inject constructor(
     ): DictionaryEntity {
         val staging = storage.newStagingDirectory()
         try {
+            var started = System.currentTimeMillis()
+            Log.i(TAG, "Importing an archive of ${archive.length() shr 10} KB (bundled $bundled, replaces $replaces)")
             val imported = engine.import(archive, staging)
+            Log.i(TAG, "Engine import of ${imported.metadata.title} took ${System.currentTimeMillis() - started} ms")
+            started = System.currentTimeMillis()
             val tagNotes = runCatching { TagBanks.read(archive) }
                 .onFailure { Log.w(TAG, "Reading tag descriptions failed", it) }
                 .getOrDefault(emptyMap())
@@ -99,6 +103,7 @@ class DictionaryRepository @Inject constructor(
             }
             // The engine's step cannot be stopped; a cancelled import ends here instead of registering its dictionary.
             currentCoroutineContext().ensureActive()
+            Log.i(TAG, "Languages of ${metadata.title}: ${source ?: detected?.source} → ${target ?: detected?.target}")
             return mutex.withLock {
                 val existing = replaced(replaces, metadata.title, kind, bundled)
                 // An update may take the title of another installed dictionary, which it then replaces as well.
@@ -139,6 +144,12 @@ class DictionaryRepository @Inject constructor(
                 reloadLocked()
                 // The old files are unmapped only after the reload.
                 listOfNotNull(existing, collided).forEach { storage.directoryOf(it).deleteRecursively() }
+                Log.i(
+                    TAG,
+                    "Registered ${saved.title} as ${saved.id} in ${System.currentTimeMillis() - started} ms" +
+                        (existing?.let { ", replacing ${it.id} ${it.title}" } ?: "") +
+                        (collided?.let { ", removing ${it.id} ${it.title} of the same title" } ?: ""),
+                )
                 saved
             }
         } finally {
@@ -252,19 +263,26 @@ class DictionaryRepository @Inject constructor(
     }
 
     suspend fun delete(id: Long) = mutex.withLock {
-        val dictionary = dao.get(id) ?: return@withLock
+        val dictionary = dao.get(id)
+        if (dictionary == null) {
+            Log.i(TAG, "Dictionary $id to delete is already gone")
+            return@withLock
+        }
+        Log.i(TAG, "Deleting $id ${dictionary.title}")
         dao.delete(dictionary)
         reloadLocked()
-        storage.directoryOf(dictionary).deleteRecursively()
+        if (!storage.directoryOf(dictionary).deleteRecursively()) Log.w(TAG, "Some files of $id were not deleted")
     }
 
     /** Deletes every dictionary and forgets the chosen sort dictionary. */
     suspend fun deleteAll() = mutex.withLock {
         val all = dao.getAll()
+        Log.i(TAG, "Deleting all ${all.size} dictionaries")
         all.forEach { dao.delete(it) }
         preferences.edit { it.remove(SORT_DICTIONARY) }
         reloadLocked()
-        all.forEach { storage.directoryOf(it).deleteRecursively() }
+        val kept = all.count { !storage.directoryOf(it).deleteRecursively() }
+        if (kept > 0) Log.w(TAG, "Files of $kept dictionaries were not all deleted")
     }
 
     /** Loads the engine for [language] unless it is already loaded; returns what lookups need to know. */
@@ -298,7 +316,12 @@ class DictionaryRepository @Inject constructor(
         // as a large directory takes a while and lookups wait for the lock.
         val orphans = mutex.withLock { storage.orphans(dao.getAll().map { it.directory }) }
         orphans.forEach { it.deleteRecursively() }
-        storage.removeImportLeftovers(archivesInUse)
+        val leftovers = storage.removeImportLeftovers(archivesInUse)
+        Log.i(
+            TAG,
+            "Cleaned up ${orphans.size} directories of no dictionary and $leftovers import leftovers" +
+                (archivesInUse?.let { ", kept ${it.size} queued archives" } ?: ", kept every archive (queued by an older version)"),
+        )
     }
 
     private suspend fun reloadLocked() {
@@ -333,7 +356,9 @@ class DictionaryRepository @Inject constructor(
 
     /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
     suspend fun missingFiles(): List<DictionaryEntity> = withContext(Dispatchers.IO) {
-        dao.getAll().filter { !storage.hasFiles(it) }
+        dao.getAll().filter { !storage.hasFiles(it) }.also { missing ->
+            if (missing.isNotEmpty()) Log.w(TAG, "Files missing: ${missing.map { "${it.id} ${it.title}" }}")
+        }
     }
 
     private suspend fun load(language: Language) {

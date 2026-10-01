@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import android.util.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import javax.inject.Inject
@@ -23,9 +24,14 @@ class DictionaryRepair @Inject constructor(
         if (bundledTitles.isEmpty()) return missing
         val assets = bundled.all().associateWith { bundled.titleOf(it) }.filterValues { it in bundledTitles }
         if (assets.isNotEmpty()) {
+            Log.i(TAG, "Reinstalling ${assets.size} bundled dictionaries with missing files")
             bundled.markForRepair(assets.keys)
             imports.installBundled()
         }
         return missing.filterNot { it.bundled && it.title in assets.values }
+    }
+
+    private companion object {
+        const val TAG = "DictionaryRepair"
     }
 }

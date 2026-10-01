@@ -7,6 +7,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
@@ -117,7 +118,34 @@ class DictionaryImportsTest {
 
         assertThat(task.state).isEqualTo(ImportTask.State.FAILED)
         assertThat(task.interrupted).isTrue()
+        assertThat(task.paused).isFalse()
         assertThat(task.error).isNull()
+    }
+
+    @Test
+    fun `a bundled install the app died during twice says it is paused`() {
+        val task = importTasks(
+            listOf(work("", WorkInfo.State.SUCCEEDED, 1, output = workDataOf(KEY_INTERRUPTED to true, KEY_PAUSED to true))),
+        ).single()
+
+        assertThat(task.state).isEqualTo(ImportTask.State.FAILED)
+        assertThat(task.paused).isTrue()
+    }
+
+    @Test
+    fun `imports a dictionary reset cancelled are left out, not shown as failed`() {
+        val tasks = importTasks(
+            listOf(
+                work("Stopped", WorkInfo.State.CANCELLED, 1),
+                work("Failed", WorkInfo.State.FAILED, 2),
+                work("Queued", WorkInfo.State.ENQUEUED, 3),
+            ),
+        )
+
+        assertThat(tasks.map { it.name to it.state }).containsExactly(
+            "Failed" to ImportTask.State.FAILED,
+            "Queued" to ImportTask.State.QUEUED,
+        ).inOrder()
     }
 
     @Test

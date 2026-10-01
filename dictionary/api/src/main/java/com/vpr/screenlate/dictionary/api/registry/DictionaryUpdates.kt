@@ -30,21 +30,26 @@ class DictionaryUpdates @Inject constructor(
 
     /** Updates for every updatable dictionary; dictionaries whose index cannot be read are skipped. */
     suspend fun check(): List<DictionaryUpdate> = coroutineScope {
-        repository.getAll()
-            .filter { it.isUpdatable && !it.indexUrl.isNullOrBlank() }
+        val updatable = repository.getAll().filter { it.isUpdatable && !it.indexUrl.isNullOrBlank() }
+        updatable
             .map { dictionary -> async { check(dictionary) } }
             .awaitAll()
             .filterNotNull()
+            .also { Log.i(TAG, "Checked ${updatable.size} dictionaries, ${it.size} updates") }
     }
 
     private suspend fun check(dictionary: DictionaryEntity): DictionaryUpdate? = withContext(Dispatchers.IO) {
         val indexUrl = dictionary.indexUrl ?: return@withContext null
         runCatching {
             httpClient.newCall(Request.Builder().url(indexUrl).build()).execute().use { response ->
-                if (!response.isSuccessful) return@use null
+                if (!response.isSuccessful) {
+                    Log.i(TAG, "Update check for ${dictionary.title} failed: HTTP ${response.code}")
+                    return@use null
+                }
                 val index = json.decodeFromString<RemoteIndex>(response.body.string())
                 val downloadUrl = index.downloadUrl ?: dictionary.downloadUrl ?: return@use null
                 if (index.revision.isNotBlank() && index.revision != dictionary.revision) {
+                    Log.i(TAG, "Update for ${dictionary.title}: ${dictionary.revision} → ${index.revision}")
                     DictionaryUpdate(dictionary, index.revision, downloadUrl)
                 } else {
                     null

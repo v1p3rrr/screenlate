@@ -18,7 +18,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   Dictionaries reset icon) and 25 (imports and resets cut short by a killed app) are done, see their log entry.
   Request 26 (error handling of imports, deletes and resets) is done together with `/code-review xhigh --fix` over
   9ed170e..HEAD, see the log entry "import errors, cancel, retry limits". Request 27 (every string translated, and
-  translated well, in all 14 languages) is done, see the log entry "translation audit".
+  translated well, in all 14 languages) is done, see the log entry "translation audit". The review of its code
+  (ae3bf5b) and request 30 (logs of imports, deletions and resets) are done, see the log entry "review of the import
+  error handling, logs".
+- Next: questions to the owner for requests 28 (a dialog before the notification permission request), 29 (settings
+  kept across installs of another version), 33 (download ring and Cancel on the catalog card) and 34 (repeated tags
+  and badges in the popup with many dictionaries; look at the emulator's 20 dictionaries first), then the work.
+  31 (a more purple theme) and 32 (bubble color picker) are deferred by the owner.
 - Open, found while testing: the catalog does not recognize installed Wiktionary dictionaries (upstream renamed
   `kty-*` to `wty-*` and moved the index to Hugging Face); suggested to the owner as a separate task.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
@@ -489,3 +495,30 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   module. Translated into the other 12 languages with each language's school terms for the conjugation bases;
   `TranslationsTest` now finds every string file of every module (checked: removing a locale's file fails it).
   Owner's remark: request 27 meant a side check whenever strings are added; a review checks the code first.
+
+### 2026-10-01 (review of the import error handling, logs)
+
+- `/code-review xhigh --fix` of ae3bf5b, 5 findings; owner answers in the plan's rows "Built-in install given up" and
+  "Cancel the built-in install".
+- The retry limit did not stop a bundled install that kills the app: every start queues it again. The given-up
+  bundled job now pauses it (`BundledDictionaries.pauseUntilUpdate`, key `bundled_dictionaries_paused_for` holding the
+  package's `lastUpdateTime`, so any update or reinstall ends it); the worker skips paused installs (repairs too).
+  The task reports `paused`, and its card says so with "Try again" (`retryBundledInstall`: resume, prune finished
+  tasks, queue the install). `BundledDictionaries.reset` clears the pause.
+- Fixed: imports a reset cancelled (`WorkInfo.State.CANCELLED`) showed as failed until the running one stopped; they
+  are hidden now. A failed remove on the start screen's missing files card said nothing; it shows the error under
+  the list. The tasks flow rebuilt on every settings write; the cancelled set is `distinctUntilChanged`. A failed copy
+  of a picked file deletes its partial copy. Kept by the owner: Cancel on the bundled task postpones it to the next
+  start.
+- Request 30, logs: tags `DictionaryImport` (worker: start with run number, done with titles and time, failures,
+  cancels, WorkManager stops with the reason on API 31+, each bundled archive, download URL, size and time, file and
+  collection sizes), `DictionaryImports` (queued, cancel, cancel all with its time, cleared tasks, copies of picked
+  files), `DictionaryRepository` (engine import time, languages, registration with what it replaced, deletes,
+  missing files, clean-up counts), `BundledDictionaries` (what is installed and why not, declines, repairs, pause,
+  reset), `DictionaryReset` (runs, phases, times), `DictionaryRepair`, `DictionaryUpdates` (HTTP errors, found
+  updates). Titles, file sizes and dictionary URLs only; no user text.
+- Checked on the emulator: Jiten's files moved aside, the repair queued its reinstall, `kill -9` during it twice →
+  "interrupted 2 times", "paused until the app is updated", the jobs queued by the restarts skipped; the card with
+  "Try again" reinstalled Jiten in its place. A forced remove failure on the start screen showed its error line. The
+  environment was restored: the test Jiten 26-12-01 imported again from `Download/jiten_user.zip`, the settings
+  file written back byte for byte, every dictionary directory in place.

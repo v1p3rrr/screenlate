@@ -123,6 +123,11 @@ class HomeViewModel @Inject constructor(
     /** Dictionaries downloaded again from the card; their files stay missing until the download ends. */
     private val downloading = mutableSetOf<Long>()
 
+    private val mutableRemoveError = MutableStateFlow<String?>(null)
+
+    /** Why removing a dictionary from the missing files card failed; cleared by the next removal or check. */
+    val removeError: StateFlow<String?> = mutableRemoveError
+
     /** Problems found by the last [refresh], plus "no dictionary" while nothing is being installed. */
     val problems: StateFlow<List<HomeProblem>> = combine(checked, repository.dictionaries, imports.tasks) { found, all, tasks ->
         val noTerms = tasks.none { !it.finished } && noTermDictionaries(all, SearchViewModel.LANGUAGE)
@@ -134,6 +139,7 @@ class HomeViewModel @Inject constructor(
         // A check started earlier would otherwise finish last and bring back what a newer one found fixed.
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
+            mutableRemoveError.value = null
             val found = mutableListOf<HomeProblem>()
             (notes.status() as? AnkiStatus.Broken)?.let { found += HomeProblem.Anki(it.problem) }
             if (imports.tasks.first().all { it.finished }) downloading.clear()
@@ -177,6 +183,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun remove(missing: MissingDictionary) {
+        mutableRemoveError.value = null
         viewModelScope.launch {
             // Leaving the screen must not stop a delete halfway; finding the bundled archive takes a while.
             val deleted = withContext(NonCancellable) {
@@ -187,8 +194,9 @@ class HomeViewModel @Inject constructor(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    // The card stays; the Dictionaries page says why when deleting there.
+                    // E.g. a full storage, where the settings or the registry cannot be written; the card stays.
                     Log.w(TAG, "Removing a dictionary failed", e)
+                    mutableRemoveError.value = e.message ?: e.javaClass.simpleName
                     false
                 }
             }

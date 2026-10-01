@@ -517,6 +517,7 @@
     <string name="reset_dictionaries_failed">Error al restablecer los diccionarios: %1$s</string>
     <string name="dictionaries_delete_failed">No se pudo eliminar el diccionario: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: la app se cerró dos veces durante esta importación, así que se detuvo. Inténtalo de nuevo; si vuelve a pasar, puede que el archivo esté dañado o sea demasiado grande para este dispositivo.</string>
+    <string name="dictionaries_bundled_paused">Se detuvo la instalación de los diccionarios incluidos: la app se cerró dos veces durante ella. Se volverá a intentar tras la próxima actualización de la app; para intentarlo ahora, toca «Reintentar».</string>
     <string name="reset_dictionaries_gave_up_title">El restablecimiento de los diccionarios no terminó</string>
     <string name="reset_dictionaries_gave_up_text">La app se cerró dos veces mientras restablecía los diccionarios, así que el restablecimiento se detuvo. Puede que sobren o falten algunos diccionarios. Vuelve a restablecerlos con el botón de arriba de la página Diccionarios.</string>
     <string name="reset_dictionaries_gave_up_open">Abrir diccionarios</string>

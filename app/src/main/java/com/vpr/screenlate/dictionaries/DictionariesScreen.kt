@@ -161,7 +161,15 @@ fun DictionariesScreen(
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
             }
             state.tasks.forEach { task ->
-                TaskCard(task, onDismiss = viewModel::clearFinishedTasks, onCancel = { viewModel.cancel(task) })
+                TaskCard(
+                    task,
+                    onDismiss = viewModel::clearFinishedTasks,
+                    onCancel = { viewModel.cancel(task) },
+                    onRetryBundled = {
+                        askNotifications()
+                        viewModel.retryBundledInstall()
+                    },
+                )
             }
             ImportNotificationsCard()
 
@@ -463,8 +471,12 @@ private fun kindLabel(kind: DictionaryKind): Int = when (kind) {
 }
 
 @Composable
-private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Unit) {
+private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Unit, onRetryBundled: () -> Unit) {
     if (task.state == ImportTask.State.FAILED) {
+        if (task.paused) {
+            ErrorCard(stringResource(R.string.dictionaries_bundled_paused), onDismiss, onRetry = onRetryBundled)
+            return
+        }
         val shortage = task.shortage
         val message = if (task.interrupted) {
             stringResource(R.string.dictionaries_import_interrupted, task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) })
@@ -533,21 +545,32 @@ private fun NoticeCard(message: String, onClose: () -> Unit) {
     }
 }
 
+/** An error with a dismiss button; with [onRetry], a "Try again" button too, both below the text. */
 @Composable
-private fun ErrorCard(message: String, onDismiss: () -> Unit) {
+private fun ErrorCard(message: String, onDismiss: () -> Unit, onRetry: (() -> Unit)? = null) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp)) {
-            Text(
-                message,
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 12.dp),
-            )
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
+        if (onRetry == null) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    message,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 12.dp),
+                )
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
+            }
+        } else {
+            Column(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 8.dp)) {
+                Text(message, color = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(end = 8.dp))
+                FlowRow(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
+                    TextButton(onClick = onRetry) { Text(stringResource(R.string.update_retry)) }
+                }
+            }
         }
     }
 }

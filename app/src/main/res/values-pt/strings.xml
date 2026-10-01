@@ -517,6 +517,7 @@
     <string name="reset_dictionaries_failed">Falha ao redefinir os dicionários: %1$s</string>
     <string name="dictionaries_delete_failed">Não foi possível excluir o dicionário: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: o app fechou duas vezes durante esta importação, por isso ela foi interrompida. Tente de novo; se acontecer outra vez, o arquivo pode estar danificado ou ser grande demais para este dispositivo.</string>
+    <string name="dictionaries_bundled_paused">A instalação dos dicionários incluídos foi interrompida: o app fechou duas vezes durante ela. Ela será tentada de novo após a próxima atualização do app; para tentar agora, toque em “Tentar de novo”.</string>
     <string name="reset_dictionaries_gave_up_title">A redefinição dos dicionários não terminou</string>
     <string name="reset_dictionaries_gave_up_text">O app fechou duas vezes enquanto redefinia os dicionários, por isso a redefinição foi interrompida. Alguns dicionários podem ter ficado ou sumido. Redefina de novo com o botão no topo da página Dicionários.</string>
     <string name="reset_dictionaries_gave_up_open">Abrir dicionários</string>

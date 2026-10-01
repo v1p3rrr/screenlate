@@ -31,6 +31,13 @@ Owner requests after the v0.1.4 release (2026-09-29).
 25. Handle the app being closed or killed during a dictionary import or a dictionary reset (2026-10-01).
 26. Check the error handling of imports and deletions (dictionary reset, delete): nothing may hang forever, and a failure must not block later use of the app or other imports (2026-10-01).
 27. Every UI string must be translated in all languages, and translated well, not word for word (2026-10-01).
+28. Before the notification permission request pops up (the first import, download or keep-alive switch), show a dialog that explains what the permission is for, both purposes at once (import progress and keeping the bubble running), whatever asked for it; one button such as OK closes it (2026-10-01).
+29. Check that no settings are reset when another version of the app is installed (2026-10-01).
+30. Log the whole process of imports, deletions, resets and the rest everywhere, so that if it breaks for someone, the log shows why (2026-10-01, answer in the review of ae3bf5b).
+31. Make the app theme a little more purple than blue (2026-10-01; deferred by the owner).
+32. Bubble settings: choose the bubble's color and its saturation or opacity with a color picker (2026-10-01; deferred by the owner).
+33. A catalog dictionary being downloaded shows a ring that fills with the download and a Cancel button on its own card, since the task's progress at the top of the Dictionaries page is far above and the tapped card tells nothing; and a Cancel button on the progress at the top (2026-10-01; the task cards already got Cancel in ae3bf5b, not yet released). Questions to the owner after the review.
+34. With many dictionaries of any kind, the same tags and badges in the popup must not repeat next to each other or fill the popup before the definitions, so the user has to scroll down to them; check and fix (2026-10-01). Questions to the owner after the review, once the current look with the emulator's 20 dictionaries is known.
 
 ## Decisions
 
@@ -84,6 +91,8 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Interrupted import | An import or download cut short by the app being killed starts again from the beginning on its own when the app's process runs again (as WorkManager does); its partial files are removed at that start. It starts again once: interrupted a second time, it fails with a message in its task card saying the app closed twice during it, and the queue goes on (owner) |
 | Import and delete errors | A dictionary delete or reset that fails with an error shows a card at the top of the Dictionaries page instead of crashing the app (owner) |
 | Cancel an import | A running or queued import task has a Cancel button on its card; it cancels that task only, the queue goes on. A download or conversion stops at once; the engine's import step of an archive cannot be stopped, it finishes and its result is dropped (owner) |
+| Built-in install given up | When the install of the built-in dictionaries is given up after the app died during it twice, it is not started again by the app's starts until the app is updated (any new install of it); its task card has a Retry button that starts it again at once, and a dictionaries reset starts it too (owner, 2026-10-01) |
+| Cancel the built-in install | Its task keeps the Cancel button: cancelling postpones the install to the next start (owner, 2026-10-01) |
 
 ## Code review: appearance and fonts
 
@@ -230,3 +239,9 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-01: request 26 and the review done and checked on the emulator: Cancel on running and queued tasks, the second interruption of an import reported on its task, a reset given up after two interrupted runs reported once on the start screen and as a card on Dictionaries, delete and reset errors as cards. Found while testing and fixed: a task cancelled before it ran, or given up, kept its copied archive and the kept access to the picked file.
 - 2026-10-01: request 27 done: all strings present in all 14 languages; every translation read against English and about 250 strings rewritten; paragraph breaks restored in four ⓘ texts (raw line breaks in the XML became spaces), guarded by `TranslationsTest`.
 - 2026-10-01: `/code-review xhigh --fix` of the translation commit found the Japanese inflection names and descriptions (`dictionary/engine-hoshidicts`, `inflections_ja.xml`) only in English and Russian; translated into the other 12 languages, and `TranslationsTest` now finds every string file of every module. Owner's remark: request 27 meant a side check whenever strings are added, not an audit; a review checks the code changes first. Next: the review of the request 26 code (ae3bf5b), which no review has covered yet.
+- 2026-10-01: requests 28 (an explanation before the notification permission request) and 29 (settings kept across installs of another version) added; questions to the owner first.
+- 2026-10-01: review of ae3bf5b (request 26 code), 5 findings. Owner answers: a built-in install given up after two deaths waits for the next app version, with a Retry button on its card; the built-in task keeps Cancel; new request 30 (thorough logs of imports, deletions and resets). Requests 31 (a more purple theme) and 32 (bubble color picker) added, deferred by the owner. Owner: finish the code review first, then requests 28 and 29.
+- 2026-10-01: request 33 added (download ring and Cancel on the catalog card); its questions go together with those of 28 and 29 after the review.
+- 2026-10-01: request 34 added (repeated tags and badges in the popup with many dictionaries).
+- 2026-10-01: review of ae3bf5b done: the given-up bundled install pauses until the app is updated, with "Try again" on its card; imports a reset cancelled are hidden; the start screen shows a failed remove; the tasks flow ignores unrelated settings writes. Request 30 done (logs of imports, deletions, resets, update checks and the bundled install). Checked on the emulator.
+- 2026-10-01: row "Built-in install given up" worded as the owner chose ("wait for an update"): any new install of the app ends the pause, not only a new version number.

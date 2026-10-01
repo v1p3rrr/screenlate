@@ -512,6 +512,7 @@
     <string name="reset_dictionaries_failed">Zurücksetzen der Wörterbücher fehlgeschlagen: %1$s</string>
     <string name="dictionaries_delete_failed">Das Wörterbuch konnte nicht gelöscht werden: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: Die App wurde während dieses Imports zweimal beendet, daher wurde er abgebrochen. Versuche es noch einmal; passiert es wieder, ist die Datei vielleicht beschädigt oder zu groß für dieses Gerät.</string>
+    <string name="dictionaries_bundled_paused">Die Installation der mitgelieferten Wörterbücher wurde abgebrochen: Die App wurde dabei zweimal beendet. Sie wird nach dem nächsten App-Update erneut versucht; tippe auf „Erneut versuchen“, um es jetzt zu versuchen.</string>
     <string name="reset_dictionaries_gave_up_title">Zurücksetzen der Wörterbücher nicht abgeschlossen</string>
     <string name="reset_dictionaries_gave_up_text">Die App wurde beim Zurücksetzen der Wörterbücher zweimal beendet, daher wurde das Zurücksetzen abgebrochen. Manche Wörterbücher sind vielleicht noch da oder fehlen. Setze sie mit der Schaltfläche oben auf der Seite „Wörterbücher“ noch einmal zurück.</string>
     <string name="reset_dictionaries_gave_up_open">Wörterbücher öffnen</string>

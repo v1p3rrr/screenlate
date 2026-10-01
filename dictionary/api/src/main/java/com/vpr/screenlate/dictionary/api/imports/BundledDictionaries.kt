@@ -1,10 +1,12 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.dictionary.api.registry.decodeIndexText
@@ -69,6 +71,7 @@ class BundledDictionaries @Inject constructor(
                 titleOf(asset)?.let { title -> titles.none { sameTitle(it, title) } } == true
             }
             declined = declined + deleted.map { it.name }
+            if (deleted.isNotEmpty()) Log.i(TAG, "Deleted before deletions were kept: ${deleted.map { it.name }}")
             dataStore.edit { it[DECLINED] = declined; it[DECLINED_CHECKED] = true }
         }
         val records = records(shipped, installed, prefs[RECORDS])
@@ -83,7 +86,14 @@ class BundledDictionaries @Inject constructor(
             }
         }
         val install = pending - owned.toSet() - users.toSet()
-        return shipped.filter { it in install || it.name in repair }
+        return shipped.filter { it in install || it.name in repair }.also { result ->
+            Log.i(
+                TAG,
+                "${shipped.size} shipped, ${result.size} to install ${result.map { it.name }}; " +
+                    "declined ${declined.size}, to repair ${repair.size}, already present ${owned.map { it.name }}, " +
+                    "replaced by the user ${users.map { it.name }}",
+            )
+        }
     }
 
     /** Remembers that the user deleted the bundled dictionary [title], so no later version installs it again. */
@@ -95,6 +105,7 @@ class BundledDictionaries @Inject constructor(
             installedTitle != null && sameTitle(title, installedTitle)
         }.map { it.name }
         if (names.isEmpty()) return
+        Log.i(TAG, "Declined after deletion: $names")
         dataStore.edit { it[DECLINED] = it[DECLINED].orEmpty() + names }
     }
 
@@ -115,13 +126,39 @@ class BundledDictionaries @Inject constructor(
 
     /** Marks [assets] for the next bundled install, which imports them again whatever is installed. */
     suspend fun markForRepair(assets: Collection<Asset>) {
+        Log.i(TAG, "To repair: ${assets.map { it.name }}")
         dataStore.edit { prefs -> prefs[REPAIR] = prefs[REPAIR].orEmpty() + assets.map { it.name } }
     }
 
-    /** Forgets every install, deletion and record, so the next install brings every shipped archive as on a fresh install. */
+    /**
+     * Stops installs of the bundled dictionaries until the app is updated (installed again), [resumeInstall] or [reset]:
+     * the app died during one twice, and the same archives would likely make it die again.
+     */
+    suspend fun pauseUntilUpdate() {
+        Log.w(TAG, "Bundled install paused until the app is updated")
+        dataStore.edit { it[PAUSED_FOR] = installTime() }
+    }
+
+    /** Whether [pauseUntilUpdate] holds for this install of the app. */
+    suspend fun isPaused(): Boolean = pausedFor(dataStore.data.first()[PAUSED_FOR], installTime())
+
+    /** Ends [pauseUntilUpdate]; the next bundled install runs. */
+    suspend fun resumeInstall() {
+        Log.i(TAG, "Bundled install resumed")
+        dataStore.edit { it.remove(PAUSED_FOR) }
+    }
+
+    /** When this version of the app was installed; changes with every update. */
+    private fun installTime(): Long = context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+
+    /**
+     * Forgets every install, deletion, record and [pauseUntilUpdate], so the next install brings every shipped archive
+     * as on a fresh install.
+     */
     suspend fun reset() {
+        Log.i(TAG, "Bundled install state reset")
         dataStore.edit { prefs ->
-            listOf(INSTALLED, DECLINED, RECORDS, REPAIR).forEach { prefs.remove(it) }
+            listOf(INSTALLED, DECLINED, RECORDS, REPAIR, PAUSED_FOR).forEach { prefs.remove(it) }
             // Nothing is left for the migration to check.
             prefs[DECLINED_CHECKED] = true
         }
@@ -180,6 +217,13 @@ class BundledDictionaries @Inject constructor(
         private val DECLINED_CHECKED = booleanPreferencesKey("bundled_dictionaries_declined_checked")
         private val RECORDS = stringPreferencesKey("bundled_dictionaries_records")
         private val REPAIR = stringSetPreferencesKey("bundled_dictionaries_repair")
+
+        /** The app's install time ([installTime]) when [pauseUntilUpdate] was called. */
+        private val PAUSED_FOR = longPreferencesKey("bundled_dictionaries_paused_for")
+        private const val TAG = "BundledDictionaries"
+
+        /** Whether a pause made while the app's install time was [stored] holds now, at [current]. */
+        fun pausedFor(stored: Long?, current: Long): Boolean = stored == current
 
         /** [installed] keys with [assets] in place of other versions of the same archives. */
         private fun withKeys(installed: Set<String>, assets: List<Asset>): Set<String> {

@@ -64,7 +64,10 @@ class DictionaryReset @Inject constructor(
         val attempts = preferences.data.first()[ATTEMPTS]
         when (resumeAfter(attempts)) {
             Resume.NONE -> Unit
-            Resume.RETRY -> run(attempt = attempts!! + 1)
+            Resume.RETRY -> {
+                Log.w(TAG, "The app died during the dictionary reset; running it again")
+                run(attempt = attempts!! + 1)
+            }
             Resume.GIVE_UP -> {
                 Log.w(TAG, "The app died during the dictionary reset $attempts times; not tried again")
                 preferences.edit {
@@ -81,6 +84,7 @@ class DictionaryReset @Inject constructor(
     }
 
     suspend fun dismissGaveUp() {
+        Log.i(TAG, "Given-up reset dismissed")
         preferences.edit {
             it.remove(GAVE_UP)
             it.remove(GAVE_UP_TOLD)
@@ -93,8 +97,13 @@ class DictionaryReset @Inject constructor(
 
     private suspend fun run(attempt: Int) {
         // A second tap while one runs does nothing.
-        if (!mutablePhase.compareAndSet(expect = null, update = Phase.DELETING)) return
+        if (!mutablePhase.compareAndSet(expect = null, update = Phase.DELETING)) {
+            Log.i(TAG, "A reset is already running")
+            return
+        }
         mutableError.value = null
+        val started = System.currentTimeMillis()
+        Log.i(TAG, "Reset started, run $attempt")
         try {
             preferences.edit { it[ATTEMPTS] = attempt }
             imports.cancelAll()
@@ -103,6 +112,7 @@ class DictionaryReset @Inject constructor(
             bundled.reset()
             repository.deleteAll()
             val install = imports.installBundled()
+            Log.i(TAG, "Dictionaries deleted in ${System.currentTimeMillis() - started} ms; installing the bundled ones")
             // From here the import queue finishes the job on its own, also after the process dies.
             preferences.edit {
                 it.remove(ATTEMPTS)
@@ -111,6 +121,7 @@ class DictionaryReset @Inject constructor(
             }
             mutablePhase.value = Phase.INSTALLING
             imports.awaitFinished(install)
+            Log.i(TAG, "Reset done in ${System.currentTimeMillis() - started} ms")
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

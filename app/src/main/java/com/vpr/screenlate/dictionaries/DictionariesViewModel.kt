@@ -227,6 +227,15 @@ class DictionariesViewModel @Inject constructor(
         imports.clearFinished()
     }
 
+    /** Starts the bundled install that stopped after the app died during it twice; see [ImportTask.paused]. */
+    fun retryBundledInstall() {
+        viewModelScope.launch {
+            bundled.resumeInstall()
+            imports.clearFinished()
+            imports.installBundled()
+        }
+    }
+
     /** Cancels one queued or running import; the others go on. */
     fun cancel(task: ImportTask) {
         viewModelScope.launch { imports.cancel(task.id) }

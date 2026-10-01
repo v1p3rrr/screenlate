@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -25,6 +26,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SELECTED
@@ -47,6 +49,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -71,6 +74,11 @@ data class ImportTask(
     val shortage: CollectionSpacePlan.NotEnough? = null,
     /** Set when the import stopped because the app died during it again after it was started over. */
     val interrupted: Boolean = false,
+    /**
+     * Set on an [interrupted] install of the bundled dictionaries: none runs again until the app is updated or the user
+     * starts one ([BundledDictionaries.resumeInstall]).
+     */
+    val paused: Boolean = false,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -100,10 +108,17 @@ class DictionaryImports @Inject constructor(
     private val runs = CancellableRuns()
 
     /** Imports in the order they were queued; cancelled ones are left out. */
-    val tasks: Flow<List<ImportTask>> =
-        combine(workManager.getWorkInfosByTagFlow(TAG), preferences.data.map { it[CANCELLED].orEmpty() }, ::importTasks)
+    val tasks: Flow<List<ImportTask>> = combine(
+        workManager.getWorkInfosByTagFlow(TAG),
+        // Every settings write emits; the tasks change only with the cancels.
+        preferences.data.map { it[CANCELLED].orEmpty() }.distinctUntilChanged(),
+        ::importTasks,
+    )
 
-    /** Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to do. */
+    /**
+     * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to
+     * do or the install is paused ([BundledDictionaries.pauseUntilUpdate]).
+     */
     fun installBundled(): UUID = enqueue(workDataOf(KEY_SOURCE to SOURCE_BUNDLED), name = "")
 
     /** Returns once the task [id] has finished, failed or been cancelled or removed. */
@@ -139,6 +154,7 @@ class DictionaryImports @Inject constructor(
         val kept = runCatching {
             context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }.isSuccess
+        Log.i(LOG_TAG, "Collection of ${size shr 20} MB, ${titles.size} dictionaries chosen; access kept: $kept")
         val source = if (kept) KEY_URI to uri.toString() else KEY_PATH to copy(uri).absolutePath
         enqueue(
             workDataOf(
@@ -159,10 +175,18 @@ class DictionaryImports @Inject constructor(
 
     private suspend fun copy(uri: Uri): File {
         val target = storage.newArchiveFile()
-        withContext(Dispatchers.IO) {
-            val input = context.contentResolver.openInputStream(uri) ?: error("Cannot open $uri")
-            input.use { target.outputStream().use(it::copyTo) }
+        val started = System.currentTimeMillis()
+        try {
+            withContext(Dispatchers.IO) {
+                val input = context.contentResolver.openInputStream(uri) ?: error("Cannot open $uri")
+                input.use { target.outputStream().use(it::copyTo) }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Copying the picked file failed after ${target.length() shr 10} KB", e)
+            target.delete()
+            throw e
         }
+        Log.i(LOG_TAG, "Copied the picked file, ${target.length() shr 10} KB, in ${System.currentTimeMillis() - started} ms")
         return target
     }
 
@@ -193,6 +217,7 @@ class DictionaryImports @Inject constructor(
 
     /** Removes finished tasks from [tasks]. */
     fun clearFinished() {
+        Log.i(LOG_TAG, "Finished tasks cleared")
         workManager.pruneWork()
     }
 
@@ -203,6 +228,7 @@ class DictionaryImports @Inject constructor(
      * ends.
      */
     suspend fun cancel(id: UUID) {
+        Log.i(LOG_TAG, "Task $id cancelled by the user")
         preferences.edit { it[CANCELLED] = it[CANCELLED].orEmpty() + id.toString() }
         runs.cancel(id)
     }
@@ -225,7 +251,10 @@ class DictionaryImports @Inject constructor(
             .mapTo(hashSetOf()) { it.id.toString() }
         preferences.edit { prefs ->
             val ids = prefs[CANCELLED].orEmpty()
-            if (ids.any { it !in unfinished }) prefs[CANCELLED] = ids.filterTo(hashSetOf()) { it in unfinished }
+            if (ids.any { it !in unfinished }) {
+                Log.i(LOG_TAG, "Forgot ${ids.count { it !in unfinished }} cancels of ended tasks")
+                prefs[CANCELLED] = ids.filterTo(hashSetOf()) { it in unfinished }
+            }
         }
     }
 
@@ -240,10 +269,13 @@ class DictionaryImports @Inject constructor(
      * writing lands later; the cancelled tasks are removed from [tasks].
      */
     suspend fun cancelAll() {
+        Log.i(LOG_TAG, "Cancelling all tasks, ${running.value} running")
+        val started = System.currentTimeMillis()
         workManager.cancelAllWorkByTag(TAG).await()
         running.first { it == 0 }
         workManager.pruneWork().await()
         preferences.edit { it.remove(CANCELLED) }
+        Log.i(LOG_TAG, "All tasks cancelled in ${System.currentTimeMillis() - started} ms")
     }
 
     /** Runs a worker's [block], counted for [cancelAll]. */
@@ -268,6 +300,7 @@ class DictionaryImports @Inject constructor(
             .build()
         // One queue for all imports: the native importer is memory hungry and imports are cheaper one at a time.
         workManager.enqueueUniqueWork(QUEUE, ExistingWorkPolicy.APPEND_OR_REPLACE, request)
+        Log.i(LOG_TAG, "Task ${request.id} (${data.getString(KEY_SOURCE)}) queued")
         return request.id
     }
 
@@ -279,6 +312,7 @@ class DictionaryImports @Inject constructor(
 
     internal companion object {
         const val TAG = "dictionary-import"
+        private const val LOG_TAG = "DictionaryImports"
         const val NAME_TAG_PREFIX = "dictionary-import-name:"
 
         /** Followed by a number that grows with every enqueued import; work ids are random. */
@@ -300,9 +334,16 @@ internal fun archivesInUse(works: List<WorkInfo>): Set<String>? =
             ?.removePrefix(DictionaryImports.ARCHIVE_TAG_PREFIX) ?: return null
     }.apply { remove("") }
 
-/** The import works as tasks, in queue order; those the user cancelled ([cancelled] ids) are left out. */
+/**
+ * The import works as tasks, in queue order; those the user cancelled ([cancelled] ids) and those a dictionary reset
+ * cancelled are left out.
+ */
 internal fun importTasks(infos: List<WorkInfo>, cancelled: Set<String> = emptySet()): List<ImportTask> =
-    infos.filterNot { it.id.toString() in cancelled || it.outputData.getBoolean(KEY_CANCELLED, false) }
+    infos.filterNot {
+        it.state == WorkInfo.State.CANCELLED ||
+            it.id.toString() in cancelled ||
+            it.outputData.getBoolean(KEY_CANCELLED, false)
+    }
         .sortedWith(compareBy<WorkInfo> { it.order() }.thenBy { it.id })
         .map { it.toTask() }
 
@@ -320,7 +361,7 @@ private fun WorkInfo.toTask(): ImportTask {
     val taskState = when (state) {
         // The worker reports its failures as results with an error.
         WorkInfo.State.SUCCEEDED -> if (error != null || interrupted) ImportTask.State.FAILED else ImportTask.State.SUCCEEDED
-        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
+        WorkInfo.State.FAILED -> ImportTask.State.FAILED
         WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
             STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
             STAGE_CHECK -> ImportTask.State.CHECKING_SPACE
@@ -340,5 +381,6 @@ private fun WorkInfo.toTask(): ImportTask {
             CollectionSpacePlan.NotEnough(needed, outputData.getLong(KEY_FREE_BYTES, 0))
         },
         interrupted = interrupted,
+        paused = outputData.getBoolean(KEY_PAUSED, false),
     )
 }

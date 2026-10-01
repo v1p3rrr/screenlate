@@ -507,6 +507,7 @@
     <string name="reset_dictionaries_failed">Đặt lại từ điển thất bại: %1$s</string>
     <string name="dictionaries_delete_failed">Không thể xóa từ điển: %1$s</string>
     <string name="dictionaries_import_interrupted">%1$s: ứng dụng đã đóng hai lần khi đang nhập nên quá trình nhập đã dừng. Hãy thử lại; nếu vẫn xảy ra, tệp có thể bị hỏng hoặc quá lớn với điện thoại này.</string>
+    <string name="dictionaries_bundled_paused">Đã dừng cài đặt từ điển đi kèm: ứng dụng đã đóng hai lần trong lúc cài đặt. Việc cài đặt sẽ được thử lại sau lần cập nhật ứng dụng tiếp theo; để thử ngay, hãy chạm vào “Thử lại”.</string>
     <string name="reset_dictionaries_gave_up_title">Chưa đặt lại xong từ điển</string>
     <string name="reset_dictionaries_gave_up_text">Ứng dụng đã đóng hai lần khi đang đặt lại từ điển nên quá trình đặt lại đã dừng. Một số từ điển có thể còn sót hoặc bị thiếu. Hãy đặt lại lần nữa bằng nút ở đầu trang Từ điển.</string>
     <string name="reset_dictionaries_gave_up_open">Mở từ điển</string>

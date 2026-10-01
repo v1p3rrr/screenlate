@@ -507,6 +507,7 @@
     <string name="reset_dictionaries_failed">重設詞典失敗（%1$s）</string>
     <string name="dictionaries_delete_failed">無法刪除詞典（%1$s）</string>
     <string name="dictionaries_import_interrupted">%1$s：匯入期間應用程式關閉了兩次，因此已停止匯入。請重試；如果再次發生，檔案可能已損壞或對這支手機來說太大。</string>
+    <string name="dictionaries_bundled_paused">安裝內建詞典期間應用程式關閉了兩次，因此已停止安裝。下次更新應用程式後會再次嘗試；如要現在重試，請點按「重試」。</string>
     <string name="reset_dictionaries_gave_up_title">詞典重設未完成</string>
     <string name="reset_dictionaries_gave_up_text">重設詞典時應用程式關閉了兩次，因此已停止重設。部分詞典可能殘留或缺失。請用「詞典」頁面頂部的按鈕再次重設。</string>
     <string name="reset_dictionaries_gave_up_open">開啟詞典</string>

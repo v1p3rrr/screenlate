@@ -144,4 +144,11 @@ class BundledDictionariesTest {
         assertThat(BundledDictionaries.readRecords(null)).isEmpty()
         assertThat(BundledDictionaries.readRecords("not json")).isEmpty()
     }
+
+    @Test
+    fun `a paused install waits for another install of the app`() {
+        assertThat(BundledDictionaries.pausedFor(stored = 1_000L, current = 1_000L)).isTrue()
+        assertThat(BundledDictionaries.pausedFor(stored = 1_000L, current = 2_000L)).isFalse()
+        assertThat(BundledDictionaries.pausedFor(stored = null, current = 1_000L)).isFalse()
+    }
 }

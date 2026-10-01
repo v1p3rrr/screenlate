@@ -218,6 +218,7 @@ private fun ProblemsCard(
     onOpenAnki: () -> Unit,
 ) {
     val askNotifications = rememberImportNotificationsAsk()
+    val removeError by viewModel.removeError.collectAsStateWithLifecycle()
     SectionCard(title = stringResource(R.string.problems_title)) {
         problems.forEachIndexed { index, problem ->
             if (index > 0) HorizontalDivider()
@@ -253,6 +254,13 @@ private fun ProblemsCard(
                                         Text(stringResource(R.string.problems_remove))
                                     }
                                 }
+                            }
+                            removeError?.let { error ->
+                                Text(
+                                    stringResource(R.string.dictionaries_delete_failed, error),
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
                             }
                         }
                         HomeProblem.NoTermDictionaries -> {
