@@ -57,19 +57,20 @@ object PopupPlacement {
      */
     fun place(word: Box, bubble: Box?, size: Size, screen: Box, margin: Float): Box {
         val keepOut = bubble?.let(word::union) ?: word
+        // Above or below, the popup is centered on the word horizontally; beside it, vertically.
+        val x = centered(word.centerX, size.width, screen.left, screen.right)
+        val y = centered(word.centerY, size.height, screen.top, screen.bottom)
         val sides = if (size.beside) listOf(Side.LEFT, Side.RIGHT) else listOf(Side.ABOVE, Side.BELOW)
-        val candidates = sides.map { candidate(it, word, keepOut, size, screen, margin) }
+        val candidates = sides.map { candidate(it, keepOut, x, y, size, screen, margin) }
         val fitting = candidates.filter { it.box != null }
         // Above wins over below; of the sides the roomier one.
         val best = if (size.beside) fitting.maxByOrNull { it.space } else fitting.firstOrNull()
-        return best?.box ?: atEdge(candidates.maxBy { it.space }.side, word, size, screen)
+        return best?.box ?: atEdge(candidates.maxBy { it.space }.side, x, y, size, screen)
     }
 
-    private fun candidate(side: Side, word: Box, keepOut: Box, size: Size, screen: Box, margin: Float): Candidate {
+    private fun candidate(side: Side, keepOut: Box, x: Float, y: Float, size: Size, screen: Box, margin: Float): Candidate {
         val w = size.width
         val h = size.height
-        val x = centered(word.centerX, w, screen.left, screen.right)
-        val y = centered(word.centerY, h, screen.top, screen.bottom)
         return when (side) {
             Side.ABOVE -> {
                 val space = keepOut.top - margin - screen.top
@@ -96,18 +97,24 @@ object PopupPlacement {
         }
     }
 
-    /** The whole popup against the screen's edge on [side], centered on the word along that edge. */
-    private fun atEdge(side: Side, word: Box, size: Size, screen: Box): Box {
+    /**
+     * The whole popup against the screen's edge on [side], at [x] or [y] along that edge. A popup larger than the
+     * screen still starts inside it, so its header stays visible.
+     */
+    private fun atEdge(side: Side, x: Float, y: Float, size: Size, screen: Box): Box {
         val w = size.width
         val h = size.height
-        val x = centered(word.centerX, w, screen.left, screen.right)
-        val y = centered(word.centerY, h, screen.top, screen.bottom)
-        return when (side) {
-            Side.ABOVE -> Box(x, screen.top, x + w, screen.top + h)
-            Side.BELOW -> Box(x, screen.bottom - h, x + w, screen.bottom)
-            Side.LEFT -> Box(screen.left, y, screen.left + w, y + h)
-            Side.RIGHT -> Box(screen.right - w, y, screen.right, y + h)
+        val left = when (side) {
+            Side.LEFT -> screen.left
+            Side.RIGHT -> (screen.right - w).coerceAtLeast(screen.left)
+            else -> x
         }
+        val top = when (side) {
+            Side.ABOVE -> screen.top
+            Side.BELOW -> (screen.bottom - h).coerceAtLeast(screen.top)
+            else -> y
+        }
+        return Box(left, top, left + w, top + h)
     }
 
     /** Start of a [length] long span centered on [center] and kept between [start] and [end] when it fits. */

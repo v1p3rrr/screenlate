@@ -32,10 +32,10 @@ class MenuPlacementTest {
     }
 
     @Test
-    fun `stays inside the bounds when the bubble is at the very top`() {
+    fun `opens below a bubble partly above the bounds`() {
+        // The bubble spans y -30..70: no room above, so the menu goes below it.
         val (_, y) = MenuPlacement.position(400f, 300f, bubble(500f, 20f), screen, 10f)
-        assertThat(y).isAtLeast(0f)
-        assertThat(y + 300f).isAtMost(2000f)
+        assertThat(y).isEqualTo(80f)
     }
 
     @Test

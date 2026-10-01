@@ -90,6 +90,24 @@ class PopupPlacementTest {
     }
 
     @Test
+    fun `a popup larger than the screen starts at its top left corner`() {
+        val tinyScreen = Box(0f, 0f, 500f, 500f)
+        val popup = PopupPlacement.place(Box(200f, 200f, 300f, 250f), null, PopupPlacement.Size(800f, 600f), tinyScreen, 10f)
+
+        assertThat(popup.left).isEqualTo(0f)
+        assertThat(popup.top).isEqualTo(0f)
+        assertThat(popup.width).isEqualTo(800f)
+        assertThat(popup.height).isEqualTo(600f)
+
+        // Beside the word, with more room on the right.
+        val beside = PopupPlacement.place(
+            Box(100f, 200f, 150f, 250f), null, PopupPlacement.Size(800f, 600f, minWidth = 640f, beside = true), tinyScreen, 10f,
+        )
+        assertThat(beside.left).isEqualTo(0f)
+        assertThat(beside.top).isEqualTo(0f)
+    }
+
+    @Test
     fun `portrait vertical text in the middle of the screen goes above with the full width`() {
         val phone = Box(0f, 100f, 1080f, 2340f)
         val size = PopupPlacement.size(phone, maxWidth = 1260f)

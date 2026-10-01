@@ -357,3 +357,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   page under it stayed), Home key and Home swipe close it; a tap on a Settings row closes it without opening the row;
   a tap on the bubble closes it; a tap on the card's padding does not; an item works. Popup above a manga column in
   portrait and beside a line in landscape at full width; Back still ends a text selection in the popup on API 37.
+- Review of these changes (`/code-review xhigh --fix`, owner's command), 5 findings, all fixed: the fallback took a
+  picture-in-picture window for the app under the menu (now skipped; the choice moved to `ForegroundWindow.pick` with
+  `ForegroundWindowTest`); a popup larger than the screen started above or left of it in the edge fallback below or to
+  the right (the old clamp was lost; caught by the restored oversize test); centering computed once in `place`; an
+  exact menu test at the top edge. Home and Back close the menu on the emulator after the change.

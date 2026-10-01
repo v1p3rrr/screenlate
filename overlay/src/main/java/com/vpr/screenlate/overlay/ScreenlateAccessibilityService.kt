@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityWindowInfo
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioFinder
@@ -105,17 +104,12 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         focusedAppPackage()?.let { controller?.onForegroundApp(it) }
     }
 
-    /**
-     * Package of the focused application window; system UI, keyboards and our overlays are not applications. The
-     * bubble menu holds focus while open, also after Home, so then the topmost application window counts.
-     */
-    private fun focusedAppPackage(): String? {
-        val all = windows
-        val apps = all.filter { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
-        val overlayFocused = all.any { it.type == AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY && it.isFocused }
-        val app = apps.firstOrNull { it.isFocused } ?: if (overlayFocused) apps.maxByOrNull { it.layer } else null
-        return app?.root?.packageName?.toString()
-    }
+    /** Package of the app in the foreground; see [ForegroundWindow.pick]. */
+    private fun focusedAppPackage(): String? = ForegroundWindow
+        .pick(windows.map { ForegroundWindow.Window(it, it.type, it.isFocused, it.layer, it.isInPictureInPictureMode) })
+        ?.root
+        ?.packageName
+        ?.toString()
 
     override fun onInterrupt() = Unit
 
