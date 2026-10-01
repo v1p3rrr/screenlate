@@ -516,4 +516,10 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="reset_dictionaries_text">All dictionaries are deleted, including the ones you added, and the bundled ones are installed again as after installation, with the default order and switches. Running imports and downloads are cancelled. Installing takes up to a minute; lookups are incomplete until then.</string>
     <string name="reset_dictionaries_running">Stopping imports and deleting dictionaries…</string>
     <string name="reset_dictionaries_busy">Resetting dictionaries…</string>
+    <string name="reset_dictionaries_failed">Dictionary reset failed: %1$s</string>
+    <string name="dictionaries_delete_failed">Could not delete the dictionary: %1$s</string>
+    <string name="dictionaries_import_interrupted">%1$s: the app closed twice during this import, so it was stopped. Try again; if it happens again, the file may be damaged or too large for this phone.</string>
+    <string name="reset_dictionaries_gave_up_title">Dictionary reset did not finish</string>
+    <string name="reset_dictionaries_gave_up_text">The app closed twice while resetting the dictionaries, so the reset was stopped. Some dictionaries may be left over or missing. Run the reset again with the button at the top of the Dictionaries page.</string>
+    <string name="reset_dictionaries_gave_up_open">Open dictionaries</string>
 </resources>

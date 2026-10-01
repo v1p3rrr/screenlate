@@ -17,6 +17,7 @@ import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
+import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.isFor
@@ -83,6 +84,7 @@ class HomeViewModel @Inject constructor(
     private val audio: AudioFinder,
     private val audioSettings: AudioSettingsRepository,
     private val overlaySettings: OverlaySettingsRepository,
+    private val dictionaryReset: DictionaryReset,
     ankiSettings: AnkiSettingsRepository,
 ) : ViewModel() {
     val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
@@ -105,6 +107,14 @@ class HomeViewModel @Inject constructor(
 
     fun setBubbleVisible(visible: Boolean) {
         viewModelScope.launch { overlaySettings.setBubbleVisible(visible) }
+    }
+
+    /** Whether to tell, once, that a dictionary reset was given up after the app died during it twice. */
+    val resetGaveUpUntold: StateFlow<Boolean> =
+        dictionaryReset.gaveUpUntold.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun markResetGaveUpTold() {
+        viewModelScope.launch { dictionaryReset.markGaveUpTold() }
     }
 
     private val checked = MutableStateFlow<List<HomeProblem>>(emptyList())
@@ -169,11 +179,20 @@ class HomeViewModel @Inject constructor(
     fun remove(missing: MissingDictionary) {
         viewModelScope.launch {
             // Leaving the screen must not stop a delete halfway; finding the bundled archive takes a while.
-            withContext(NonCancellable) {
-                if (missing.dictionary.bundled) bundled.markDeleted(missing.dictionary.title)
-                repository.delete(missing.dictionary.id)
+            val deleted = withContext(NonCancellable) {
+                try {
+                    if (missing.dictionary.bundled) bundled.markDeleted(missing.dictionary.title)
+                    repository.delete(missing.dictionary.id)
+                    true
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    // The card stays; the Dictionaries page says why when deleting there.
+                    Log.w(TAG, "Removing a dictionary failed", e)
+                    false
+                }
             }
-            resolved(missing)
+            if (deleted) resolved(missing)
         }
     }
 

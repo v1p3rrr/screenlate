@@ -2,8 +2,10 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
@@ -90,6 +92,32 @@ class DictionaryImportsTest {
         assertThat(tasks[0].titles).containsExactly("Ok [1]")
         assertThat(tasks[1].error).isEqualTo("HTTP 404")
         assertThat(tasks[2].shortage).isEqualTo(CollectionSpacePlan.NotEnough(300, 100))
+    }
+
+    @Test
+    fun `cancelled tasks are left out, also before their work has ended`() {
+        val running = work("Running", WorkInfo.State.RUNNING, 1)
+        val tasks = importTasks(
+            listOf(
+                running,
+                work("Ended", WorkInfo.State.SUCCEEDED, 2, output = workDataOf(KEY_CANCELLED to true)),
+                work("Kept", WorkInfo.State.ENQUEUED, 3),
+            ),
+            cancelled = setOf(running.id.toString()),
+        )
+
+        assertThat(tasks.map { it.name }).containsExactly("Kept")
+    }
+
+    @Test
+    fun `an import the app died during twice is a failed task`() {
+        val task = importTasks(
+            listOf(work("Big", WorkInfo.State.SUCCEEDED, 1, output = workDataOf(KEY_INTERRUPTED to true))),
+        ).single()
+
+        assertThat(task.state).isEqualTo(ImportTask.State.FAILED)
+        assertThat(task.interrupted).isTrue()
+        assertThat(task.error).isNull()
     }
 
     @Test

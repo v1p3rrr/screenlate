@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -12,10 +16,12 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.await
 import androidx.work.workDataOf
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INDEX_URL
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NAME
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
@@ -40,6 +46,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -47,7 +54,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -63,6 +69,8 @@ data class ImportTask(
     val error: String?,
     /** Set when a collection import did not start because the storage cannot hold it. */
     val shortage: CollectionSpacePlan.NotEnough? = null,
+    /** Set when the import stopped because the app died during it again after it was started over. */
+    val interrupted: Boolean = false,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -74,6 +82,7 @@ data class ImportTask(
 class DictionaryImports @Inject constructor(
     @ApplicationContext private val context: Context,
     private val storage: DictionaryStorage,
+    private val preferences: DataStore<Preferences>,
 ) {
     private val workManager get() = WorkManager.getInstance(context)
 
@@ -83,10 +92,16 @@ class DictionaryImports @Inject constructor(
     /** Import workers running in this process; a cancelled one runs on until its current step returns. */
     private val running = MutableStateFlow(0)
 
-    private val leftoversClaimed = AtomicBoolean()
+    /** Whether an import of this process removed what earlier processes left behind; see the worker. */
+    @Volatile
+    internal var leftoversRemoved = false
 
-    /** Imports in the order they were queued. */
-    val tasks: Flow<List<ImportTask>> = workManager.getWorkInfosByTagFlow(TAG).map(::importTasks)
+    /** Running imports of this process that [cancel] stops. */
+    private val runs = CancellableRuns()
+
+    /** Imports in the order they were queued; cancelled ones are left out. */
+    val tasks: Flow<List<ImportTask>> =
+        combine(workManager.getWorkInfosByTagFlow(TAG), preferences.data.map { it[CANCELLED].orEmpty() }, ::importTasks)
 
     /** Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to do. */
     fun installBundled(): UUID = enqueue(workDataOf(KEY_SOURCE to SOURCE_BUNDLED), name = "")
@@ -182,6 +197,45 @@ class DictionaryImports @Inject constructor(
     }
 
     /**
+     * Cancels the task [id] only; the imports queued after it go on. A queued task ends without running when its turn
+     * comes, a running one stops at its next step (the engine's import of an archive runs to its end, and its result
+     * is dropped). The task leaves [tasks] at once. Kept in the settings file, as the process may die before the task
+     * ends.
+     */
+    suspend fun cancel(id: UUID) {
+        preferences.edit { it[CANCELLED] = it[CANCELLED].orEmpty() + id.toString() }
+        runs.cancel(id)
+    }
+
+    /** Whether the user cancelled the task [id]. */
+    internal suspend fun isCancelled(id: UUID): Boolean = id.toString() in preferences.data.first()[CANCELLED].orEmpty()
+
+    /** Forgets the cancel of the task [id], which has ended. */
+    internal suspend fun forgetCancel(id: UUID) {
+        preferences.edit { prefs ->
+            val ids = prefs[CANCELLED].orEmpty()
+            if (id.toString() in ids) prefs[CANCELLED] = ids - id.toString()
+        }
+    }
+
+    /** Forgets the cancels of tasks that ended without seeing them (cancelled just as they finished). */
+    internal suspend fun forgetEndedCancels() {
+        val unfinished = workManager.getWorkInfosByTagFlow(TAG).first()
+            .filterNot { it.state.isFinished }
+            .mapTo(hashSetOf()) { it.id.toString() }
+        preferences.edit { prefs ->
+            val ids = prefs[CANCELLED].orEmpty()
+            if (ids.any { it !in unfinished }) prefs[CANCELLED] = ids.filterTo(hashSetOf()) { it in unfinished }
+        }
+    }
+
+    /**
+     * Runs the worker [block] of the task [id] so that [cancel] stops it; returns null when it did. A stop by
+     * WorkManager ([cancelAll], the system) still ends the worker as a cancellation.
+     */
+    internal suspend fun <T> cancellable(id: UUID, block: suspend () -> T): T? = runs.run(id, { isCancelled(id) }, block)
+
+    /**
      * Cancels every queued and running import and returns once the running one has stopped, so nothing it was
      * writing lands later; the cancelled tasks are removed from [tasks].
      */
@@ -189,10 +243,8 @@ class DictionaryImports @Inject constructor(
         workManager.cancelAllWorkByTag(TAG).await()
         running.first { it == 0 }
         workManager.pruneWork().await()
+        preferences.edit { it.remove(CANCELLED) }
     }
-
-    /** True for the first import of this process only, which removes what earlier processes left behind. */
-    internal fun firstOfProcess(): Boolean = leftoversClaimed.compareAndSet(false, true)
 
     /** Runs a worker's [block], counted for [cancelAll]. */
     internal suspend fun <T> tracked(block: suspend () -> T): T {
@@ -235,6 +287,9 @@ class DictionaryImports @Inject constructor(
         /** Followed by the file name of the archive the import reads, or nothing. */
         const val ARCHIVE_TAG_PREFIX = "dictionary-import-archive:"
         const val QUEUE = "dictionary-imports"
+
+        /** Ids of the tasks the user cancelled that have not ended yet. */
+        val CANCELLED = stringSetPreferencesKey("dictionary_imports_cancelled")
     }
 }
 
@@ -245,9 +300,11 @@ internal fun archivesInUse(works: List<WorkInfo>): Set<String>? =
             ?.removePrefix(DictionaryImports.ARCHIVE_TAG_PREFIX) ?: return null
     }.apply { remove("") }
 
-/** The import works as tasks, in queue order. */
-internal fun importTasks(infos: List<WorkInfo>): List<ImportTask> =
-    infos.sortedWith(compareBy<WorkInfo> { it.order() }.thenBy { it.id }).map { it.toTask() }
+/** The import works as tasks, in queue order; those the user cancelled ([cancelled] ids) are left out. */
+internal fun importTasks(infos: List<WorkInfo>, cancelled: Set<String> = emptySet()): List<ImportTask> =
+    infos.filterNot { it.id.toString() in cancelled || it.outputData.getBoolean(KEY_CANCELLED, false) }
+        .sortedWith(compareBy<WorkInfo> { it.order() }.thenBy { it.id })
+        .map { it.toTask() }
 
 private fun WorkInfo.order(): Long =
     tags.firstOrNull { it.startsWith(DictionaryImports.ORDER_TAG_PREFIX) }
@@ -259,9 +316,10 @@ private fun WorkInfo.toTask(): ImportTask {
         ?: tags.firstOrNull { it.startsWith(DictionaryImports.NAME_TAG_PREFIX) }
             ?.removePrefix(DictionaryImports.NAME_TAG_PREFIX).orEmpty()
     val error = outputData.getString(KEY_ERROR)
+    val interrupted = outputData.getBoolean(KEY_INTERRUPTED, false)
     val taskState = when (state) {
         // The worker reports its failures as results with an error.
-        WorkInfo.State.SUCCEEDED -> if (error != null) ImportTask.State.FAILED else ImportTask.State.SUCCEEDED
+        WorkInfo.State.SUCCEEDED -> if (error != null || interrupted) ImportTask.State.FAILED else ImportTask.State.SUCCEEDED
         WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> ImportTask.State.FAILED
         WorkInfo.State.RUNNING -> when (progress.getString(KEY_STAGE)) {
             STAGE_DOWNLOAD -> ImportTask.State.DOWNLOADING
@@ -281,5 +339,6 @@ private fun WorkInfo.toTask(): ImportTask {
         shortage = outputData.getLong(KEY_NEEDED_BYTES, -1).takeIf { it >= 0 }?.let { needed ->
             CollectionSpacePlan.NotEnough(needed, outputData.getLong(KEY_FREE_BYTES, 0))
         },
+        interrupted = interrupted,
     )
 }

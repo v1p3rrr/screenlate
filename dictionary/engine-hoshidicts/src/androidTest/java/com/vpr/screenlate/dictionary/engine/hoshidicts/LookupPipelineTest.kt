@@ -50,7 +50,11 @@ class LookupPipelineTest {
         )
         settings = LookupSettingsRepository(PreferenceDataStoreFactory.create { File(root, "lookup.preferences_pb") })
         lookup = DictionaryLookup(repository, engine, settings) {
-            DictionaryImports(InstrumentationRegistry.getInstrumentation().targetContext, storage)
+            DictionaryImports(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                storage,
+                PreferenceDataStoreFactory.create { File(root, "imports.preferences_pb") },
+            )
         }
         repository.import(termDictionary())
     }

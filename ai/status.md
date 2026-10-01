@@ -16,6 +16,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   is open from those. Request 22 (open review findings, bundled dictionary updates) is done, see the 2026-10-01
   log entry; request 23 (settings resets, tooltips) is done, see its log entry. Requests 24 (spinner instead of the
   Dictionaries reset icon) and 25 (imports and resets cut short by a killed app) are done, see their log entry.
+  Request 26 (error handling of imports, deletes and resets) is done together with `/code-review xhigh --fix` over
+  9ed170e..HEAD, see the log entry "import errors, cancel, retry limits". Request 27 (every string translated, and
+  translated well, in all 14 languages) is open: completeness is checked (nothing missing, placeholders match); the
+  full read-through of the existing translations is next.
+- Open, found while testing: the catalog does not recognize installed Wiktionary dictionaries (upstream renamed
+  `kty-*` to `wty-*` and moved the index to Hugging Face); suggested to the owner as a separate task.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
   read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
   `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
@@ -435,3 +441,30 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   downloads; `kill -9` during a catalog download → the job reran about 25 s later and succeeded, and the partial
   archive of the killed process was removed by the next process's first import. The environment was restored from a
   copy taken before the tests (settings identical, 20 dictionaries, the user's Jiten copy 26-12-01).
+
+### 2026-10-01 (import errors, cancel, retry limits)
+
+- Owner's request 26 and `/code-review xhigh --fix` over 9ed170e..HEAD; answers in the feedback plan's decision
+  table ("Interrupted import", "Interrupted dictionary reset", "Import and delete errors", "Cancel an import").
+- Cancel per task: `DictionaryImports.cancel` stores the id in `dictionary_imports_cancelled` and cancels the job's
+  body, which runs inside `CancellableRuns` (unit tested), not the WorkManager job: cancelling that would cancel every
+  job appended after it in the unique queue. The worker returns success with `cancelled`, and `importTasks` hides
+  such tasks. Downloads check for the cancel before each read, collection reads in their progress callback, and
+  `DictionaryRepository.import` checks before it registers (the engine's own import cannot be stopped). A cancelled
+  or given-up job deletes its copied archive and releases a kept URI permission (`discardInput`).
+- Retry limits: a job with `runAttemptCount >= 2` (two earlier runs the process died in) ends with `interrupted`,
+  shown as a failed task with its own message. The reset stores `dictionary_reset_attempts` (replacing
+  `dictionary_reset_pending`, never released); `resumeInterrupted` reruns once, then sets
+  `dictionary_reset_gave_up`: a one-time dialog on the start screen (`dictionary_reset_gave_up_told`) and a card on
+  Dictionaries until ✕ or a successful reset. A reset that throws shows an error card and is not rerun.
+- Delete errors (Dictionaries page and the home "missing dictionary" card) no longer crash the app; the page shows a
+  card. Orphan directories are listed under the registry lock and deleted outside it (`orphanDirectories`,
+  `importLeftovers`, `StorageCleanUpTest`); `leftoversRemoved` is set only once the cleanup ran.
+- Checked on the emulator: Cancel on a queued task (ends without running) and on a running 202 MB download (stops at
+  once, the next task starts, no partial archive, the cancelled set empties); `kill -9` twice during a download →
+  "Import interrupted 2 times; not started again", the failed card, the queue goes on; `dictionary_reset_attempts=2`
+  written into the settings → the start dialog once, "Open dictionaries" opens the page with the card, a reset
+  clears it, ✕ clears it. Network throttling (`emu network speed`) did not slow the emulator's downloads. The
+  environment was restored from a copy (20 dictionaries, settings identical to the baseline).
+- Translations: the six new strings in all 14 languages; German uses "du" (also fixed in the older
+  `home_bubble_stopped_hint`), and the device is named with each language's existing word.

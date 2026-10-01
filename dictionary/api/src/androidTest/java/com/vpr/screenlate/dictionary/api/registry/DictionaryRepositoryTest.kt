@@ -47,7 +47,7 @@ class DictionaryRepositoryTest {
         storage = DictionaryStorage(context)
         val preferences = PreferenceDataStoreFactory.create { File(root, "prefs.preferences_pb") }
         repository = DictionaryRepository(database.dictionaryDao(), engine, storage, preferences, DictionaryLanguageDetector(context))
-        lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { DictionaryImports(context, storage) }
+        lookup = DictionaryLookup(repository, engine, LookupSettingsRepository(preferences)) { DictionaryImports(context, storage, preferences) }
     }
 
     @After

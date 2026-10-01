@@ -25,6 +25,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
@@ -59,24 +62,47 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = imports.tracked {
         withContext(Dispatchers.IO) {
-            removeLeftovers()
-            work()
+            when {
+                imports.isCancelled(id) -> cancelled()
+                // Started over once after the app died during it; a second death may well be the import's own doing,
+                // e.g. a damaged archive, and another try would only repeat it.
+                runAttemptCount >= MAX_RUN_ATTEMPTS -> {
+                    Log.w(TAG, "Import interrupted $runAttemptCount times; not started again")
+                    removeLeftovers()
+                    discardInput()
+                    Result.success(workDataOf(KEY_INTERRUPTED to true))
+                }
+                else -> {
+                    removeLeftovers()
+                    imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled()
+                }
+            }
         }
+    }
+
+    private suspend fun cancelled(): Result {
+        // A task cancelled before it ran never got to the clean-up at the end of its run.
+        discardInput()
+        imports.forgetCancel(id)
+        return Result.success(workDataOf(KEY_CANCELLED to true))
     }
 
     /**
      * The first import of a process removes what imports cut short by an earlier process left behind, before it
-     * needs the space itself; an import started again after the process died writes new files.
+     * needs the space itself; an import started again after the process died writes new files. One cancelled before
+     * it got to that leaves it to the next.
      */
     private suspend fun removeLeftovers() {
-        if (!imports.firstOfProcess()) return
+        if (imports.leftoversRemoved) return
         try {
             repository.cleanUp(imports.archivesInUse())
+            imports.forgetEndedCancels()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "Removing import leftovers failed", e)
         }
+        imports.leftoversRemoved = true
     }
 
     private suspend fun work(): Result {
@@ -141,7 +167,24 @@ class DictionaryImportWorker @AssistedInject constructor(
         try {
             return repository.import(archive, catalog = catalogEntries).title
         } finally {
-            if (inputData.getBoolean(KEY_DELETE_FILE, false)) archive.delete()
+            discardInput()
+        }
+    }
+
+    /** Deletes the copy of the picked file this import reads and gives back the access to the file it kept. */
+    private fun discardInput() {
+        val path = inputData.getString(KEY_PATH)
+        when (inputData.getString(KEY_SOURCE)) {
+            SOURCE_FILE -> if (inputData.getBoolean(KEY_DELETE_FILE, false)) path?.let { File(it).delete() }
+            SOURCE_YOMITAN_BACKUP -> {
+                path?.let { File(it).delete() }
+                inputData.getString(KEY_URI)?.let { uri ->
+                    runCatching {
+                        applicationContext.contentResolver
+                            .releasePersistableUriPermission(uri.toUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                }
+            }
         }
     }
 
@@ -161,10 +204,13 @@ class DictionaryImportWorker @AssistedInject constructor(
         val selected = inputData.getNullableStringArray(KEY_SELECTED)?.filterNotNull()?.toSet()
         val size = inputData.getLong(KEY_SIZE, -1)
         val staging = storage.newStagingDirectory()
+        val job = currentCoroutineContext().job
         fun open() = uri?.let { applicationContext.contentResolver.openInputStream(it) }
             ?: copy?.inputStream()
             ?: throw IOException("Cannot open the file")
         fun progress(stage: String): (Long) -> Unit = { read ->
+            // Called every few megabytes from blocking reads, which otherwise run to the end of a cancelled import.
+            job.ensureActive()
             if (size > 0) {
                 val percent = (read * 100 / size).toInt().coerceIn(0, 100)
                 setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to stage, KEY_PERCENT to percent))
@@ -205,12 +251,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             return titles
         } finally {
             staging.deleteRecursively()
-            copy?.delete()
-            uri?.let {
-                runCatching {
-                    applicationContext.contentResolver.releasePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-            }
+            discardInput()
         }
     }
 
@@ -236,6 +277,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                         var copied = 0L
                         var reported = -1
                         while (true) {
+                            // Progress may not change for long (unknown size), so it cannot be what notices a cancel.
+                            currentCoroutineContext().ensureActive()
                             val read = input.read(buffer)
                             if (read < 0) break
                             output.write(buffer, 0, read)
@@ -289,6 +332,12 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_DELETE_FILE = "delete_file"
         const val KEY_TITLES = "titles"
         const val KEY_ERROR = "error"
+
+        /** Output of an import the app died during twice; see [MAX_RUN_ATTEMPTS]. */
+        const val KEY_INTERRUPTED = "interrupted"
+
+        /** Output of an import the user cancelled. */
+        const val KEY_CANCELLED = "cancelled"
         const val KEY_STAGE = "stage"
         const val KEY_PERCENT = "percent"
         const val KEY_URI = "uri"
@@ -311,6 +360,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         private const val CHANNEL_ID = "dictionary_imports"
         private const val NOTIFICATION_ID = 1001
         private const val MAX_ERROR_LENGTH = 2000
+
+        /** Runs of one import: the first, and one more after the app died during it (owner). */
+        private const val MAX_RUN_ATTEMPTS = 2
     }
 }
 

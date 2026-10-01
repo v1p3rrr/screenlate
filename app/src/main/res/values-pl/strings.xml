@@ -523,4 +523,10 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="reset_dictionaries_text">Wszystkie słowniki zostaną usunięte, także dodane przez Ciebie, a dołączone zostaną zainstalowane od nowa jak po instalacji, z początkową kolejnością i przełącznikami. Trwające importy i pobierania zostaną anulowane. Instalacja trwa do minuty; do tego czasu wyszukiwanie jest niepełne.</string>
     <string name="reset_dictionaries_running">Zatrzymywanie importów i usuwanie słowników…</string>
     <string name="reset_dictionaries_busy">Resetowanie słowników…</string>
+    <string name="reset_dictionaries_failed">Resetowanie słowników nie powiodło się: %1$s</string>
+    <string name="dictionaries_delete_failed">Nie udało się usunąć słownika: %1$s</string>
+    <string name="dictionaries_import_interrupted">%1$s: aplikacja dwukrotnie zamknęła się podczas tego importu, więc został przerwany. Spróbuj ponownie; jeśli to się powtórzy, plik może być uszkodzony lub za duży dla tego urządzenia.</string>
+    <string name="reset_dictionaries_gave_up_title">Resetowanie słowników nie zostało ukończone</string>
+    <string name="reset_dictionaries_gave_up_text">Aplikacja dwukrotnie zamknęła się podczas resetowania słowników, więc reset został przerwany. Niektóre słowniki mogły zostać albo zniknąć. Zresetuj je ponownie przyciskiem u góry strony Słowniki.</string>
+    <string name="reset_dictionaries_gave_up_open">Otwórz słowniki</string>
 </resources>

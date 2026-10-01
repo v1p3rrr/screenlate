@@ -508,4 +508,10 @@
     <string name="reset_dictionaries_text">追加した辞書を含むすべての辞書が削除され、同梱の辞書がインストール直後と同じく、最初の順序とスイッチで再インストールされます。実行中のインポートとダウンロードは中止されます。インストールには最大 1 分かかり、それまでは検索結果が不完全になります。</string>
     <string name="reset_dictionaries_running">インポートを止めて辞書を削除しています…</string>
     <string name="reset_dictionaries_busy">辞書をリセットしています…</string>
+    <string name="reset_dictionaries_failed">辞書のリセットに失敗しました（%1$s）</string>
+    <string name="dictionaries_delete_failed">辞書を削除できませんでした（%1$s）</string>
+    <string name="dictionaries_import_interrupted">%1$s：このインポート中にアプリが2回終了したため、中止しました。もう一度お試しください。再び起きる場合は、ファイルが壊れているか、この端末には大きすぎる可能性があります。</string>
+    <string name="reset_dictionaries_gave_up_title">辞書のリセットが完了しませんでした</string>
+    <string name="reset_dictionaries_gave_up_text">辞書のリセット中にアプリが2回終了したため、リセットを中止しました。一部の辞書が残っているか、なくなっている可能性があります。「辞書」ページ上部のボタンでもう一度リセットしてください。</string>
+    <string name="reset_dictionaries_gave_up_open">辞書を開く</string>
 </resources>

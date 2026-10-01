@@ -74,6 +74,9 @@ fun DictionariesScreen(
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
     val resetPhase by viewModel.resetPhase.collectAsStateWithLifecycle()
+    val resetError by viewModel.resetError.collectAsStateWithLifecycle()
+    val resetGaveUp by viewModel.resetGaveUp.collectAsStateWithLifecycle()
+    val deleteError by viewModel.deleteError.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
     val askNotifications = rememberImportNotificationsAsk()
@@ -119,6 +122,15 @@ fun DictionariesScreen(
                 Text(stringResource(R.string.reset_dictionaries_running))
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
+            if (resetGaveUp && resetPhase == null) {
+                NoticeCard(stringResource(R.string.reset_dictionaries_gave_up_text), viewModel::dismissResetGaveUp)
+            }
+            resetError?.let { error ->
+                ErrorCard(stringResource(R.string.reset_dictionaries_failed, error), viewModel::dismissResetError)
+            }
+            deleteError?.let { error ->
+                ErrorCard(stringResource(R.string.dictionaries_delete_failed, error), viewModel::dismissDeleteError)
+            }
             OutlinedButton(onClick = { picker.launch(ARCHIVE_TYPES) }, modifier = Modifier.fillMaxWidth()) {
                 Icon(painterResource(R.drawable.ic_add), contentDescription = null)
                 Spacer(Modifier.width(8.dp))
@@ -149,7 +161,7 @@ fun DictionariesScreen(
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
             }
             state.tasks.forEach { task ->
-                TaskCard(task, onDismiss = viewModel::clearFinishedTasks)
+                TaskCard(task, onDismiss = viewModel::clearFinishedTasks, onCancel = { viewModel.cancel(task) })
             }
             ImportNotificationsCard()
 
@@ -451,10 +463,12 @@ private fun kindLabel(kind: DictionaryKind): Int = when (kind) {
 }
 
 @Composable
-private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
+private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Unit) {
     if (task.state == ImportTask.State.FAILED) {
         val shortage = task.shortage
-        val message = if (shortage != null) {
+        val message = if (task.interrupted) {
+            stringResource(R.string.dictionaries_import_interrupted, task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) })
+        } else if (shortage != null) {
             val context = LocalContext.current
             stringResource(
                 R.string.dictionaries_import_no_space,
@@ -492,6 +506,29 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit) {
             } else {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
+            TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.End)) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    }
+}
+
+/** A problem that stays until the user closes it with ✕ or it is resolved. */
+@Composable
+private fun NoticeCard(message: String, onClose: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+    ) {
+        Row(verticalAlignment = Alignment.Top, modifier = Modifier.padding(start = 16.dp)) {
+            Text(
+                message,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 12.dp),
+            )
+            TooltipIconButton(R.drawable.ic_close, stringResource(R.string.action_close), onClick = onClose)
         }
     }
 }

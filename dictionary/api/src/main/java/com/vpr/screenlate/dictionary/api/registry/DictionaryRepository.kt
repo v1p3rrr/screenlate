@@ -17,6 +17,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -95,6 +97,8 @@ class DictionaryRepository @Inject constructor(
             } else {
                 null
             }
+            // The engine's step cannot be stopped; a cancelled import ends here instead of registering its dictionary.
+            currentCoroutineContext().ensureActive()
             return mutex.withLock {
                 val existing = replaced(replaces, metadata.title, kind, bundled)
                 // An update may take the title of another installed dictionary, which it then replaces as well.
@@ -287,10 +291,14 @@ class DictionaryRepository @Inject constructor(
 
     /**
      * Deletes storage leftovers: directories of no dictionary and the temporary files of imports cut short. Call from
-     * the import queue, where no other import runs; [archivesInUse] are kept (see [DictionaryStorage.cleanUp]).
+     * the import queue, where no other import runs; [archivesInUse] are kept (see [importLeftovers]).
      */
-    suspend fun cleanUp(archivesInUse: Set<String>?) = mutex.withLock {
-        storage.cleanUp(dao.getAll().map { it.directory }, archivesInUse)
+    suspend fun cleanUp(archivesInUse: Set<String>?) {
+        // Listed under the lock, so no import is between moving its directory in and registering it; deleted after it,
+        // as a large directory takes a while and lookups wait for the lock.
+        val orphans = mutex.withLock { storage.orphans(dao.getAll().map { it.directory }) }
+        orphans.forEach { it.deleteRecursively() }
+        storage.removeImportLeftovers(archivesInUse)
     }
 
     private suspend fun reloadLocked() {

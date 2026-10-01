@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionaries
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
@@ -74,6 +75,7 @@ class DictionariesViewModel @Inject constructor(
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
+    private val mutableDeleteError = MutableStateFlow<String?>(null)
     private val updateCheck = MutableStateFlow<UpdateCheck?>(null)
 
     /** Null until the user checks for updates. */
@@ -136,6 +138,26 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { withContext(NonCancellable) { dictionaryReset.reset() } }
     }
 
+    /** Why the last dictionary reset failed; null when it did not or the message was dismissed. */
+    val resetError: StateFlow<String?> = dictionaryReset.error
+
+    fun dismissResetError() = dictionaryReset.dismissError()
+
+    /** Whether a reset was given up after the app died during it twice. */
+    val resetGaveUp: StateFlow<Boolean> =
+        dictionaryReset.gaveUp.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun dismissResetGaveUp() {
+        viewModelScope.launch { dictionaryReset.dismissGaveUp() }
+    }
+
+    /** Why the last delete failed; null when it did not or the message was dismissed. */
+    val deleteError: StateFlow<String?> = mutableDeleteError
+
+    fun dismissDeleteError() {
+        mutableDeleteError.value = null
+    }
+
     /** Error from copying a picked file, before the import is queued. */
     val importError: StateFlow<String?> = copyError
 
@@ -187,8 +209,16 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch {
             // Leaving the screen must not stop a delete halfway; finding the bundled archive takes a while.
             withContext(NonCancellable) {
-                if (dictionary.bundled) bundled.markDeleted(dictionary.title)
-                repository.delete(dictionary.id)
+                try {
+                    if (dictionary.bundled) bundled.markDeleted(dictionary.title)
+                    repository.delete(dictionary.id)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    // E.g. a full storage, where the settings or the registry cannot be written.
+                    Log.w(TAG, "Deleting a dictionary failed", e)
+                    mutableDeleteError.value = e.message ?: e.javaClass.simpleName
+                }
             }
         }
     }
@@ -196,7 +226,14 @@ class DictionariesViewModel @Inject constructor(
     fun clearFinishedTasks() {
         imports.clearFinished()
     }
+
+    /** Cancels one queued or running import; the others go on. */
+    fun cancel(task: ImportTask) {
+        viewModelScope.launch { imports.cancel(task.id) }
+    }
 }
+
+private const val TAG = "Dictionaries"
 
 /** Source language, then term dictionaries by target language, then the other kinds. */
 private fun groupCatalog(items: List<CatalogItem>): List<CatalogGroup> {

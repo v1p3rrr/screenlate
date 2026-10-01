@@ -518,4 +518,10 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="reset_dictionaries_text">Tous les dictionnaires sont supprimés, y compris ceux que vous avez ajoutés, et ceux fournis sont réinstallés comme après l’installation, avec l’ordre et les interrupteurs d’origine. Les importations et téléchargements en cours sont annulés. L’installation prend jusqu’à une minute ; d’ici là, la recherche est incomplète.</string>
     <string name="reset_dictionaries_running">Arrêt des importations et suppression des dictionnaires…</string>
     <string name="reset_dictionaries_busy">Réinitialisation des dictionnaires…</string>
+    <string name="reset_dictionaries_failed">Échec de la réinitialisation des dictionnaires : %1$s</string>
+    <string name="dictionaries_delete_failed">Impossible de supprimer le dictionnaire : %1$s</string>
+    <string name="dictionaries_import_interrupted">%1$s : l’application s’est fermée deux fois pendant cette importation, elle a donc été arrêtée. Réessayez ; si cela se reproduit, le fichier est peut-être endommagé ou trop volumineux pour cet appareil.</string>
+    <string name="reset_dictionaries_gave_up_title">La réinitialisation des dictionnaires n’a pas abouti</string>
+    <string name="reset_dictionaries_gave_up_text">L’application s’est fermée deux fois pendant la réinitialisation des dictionnaires, elle a donc été arrêtée. Certains dictionnaires peuvent rester ou manquer. Relancez la réinitialisation avec le bouton en haut de la page Dictionnaires.</string>
+    <string name="reset_dictionaries_gave_up_open">Ouvrir les dictionnaires</string>
 </resources>

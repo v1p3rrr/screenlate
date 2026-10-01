@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -70,6 +71,7 @@ fun HomeScreen(
     var serviceEnabled by remember { mutableStateOf(OverlayServiceStatus.isEnabled(context)) }
     val serviceRunning by OverlayServiceStatus.running.collectAsStateWithLifecycle()
     val bubbleVisible by viewModel.bubbleVisible.collectAsStateWithLifecycle()
+    val resetGaveUpUntold by viewModel.resetGaveUpUntold.collectAsStateWithLifecycle()
     val settingsBadge = rememberBackgroundTipBadge()
     LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
@@ -106,6 +108,15 @@ fun HomeScreen(
         ) {
             UpdateAnnouncementCard(updates)
             EInkHint(onOpenAppText)
+            if (resetGaveUpUntold) {
+                ResetGaveUpDialog(
+                    onOpen = {
+                        viewModel.markResetGaveUpTold()
+                        onOpenDictionaries()
+                    },
+                    onClose = viewModel::markResetGaveUpTold,
+                )
+            }
             if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
 
             SectionCard(title = stringResource(R.string.home_search_title)) {
@@ -274,4 +285,21 @@ private fun ProblemsCard(
             }
         }
     }
+}
+
+/** Told once: a dictionary reset was given up; the Dictionaries page keeps a card until it is closed or resolved. */
+@Composable
+private fun ResetGaveUpDialog(onOpen: () -> Unit, onClose: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = { Text(stringResource(R.string.reset_dictionaries_gave_up_title)) },
+        text = {
+            Text(
+                stringResource(R.string.reset_dictionaries_gave_up_text),
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+            )
+        },
+        confirmButton = { TextButton(onClick = onOpen) { Text(stringResource(R.string.reset_dictionaries_gave_up_open)) } },
+        dismissButton = { TextButton(onClick = onClose) { Text(stringResource(R.string.action_close)) } },
+    )
 }

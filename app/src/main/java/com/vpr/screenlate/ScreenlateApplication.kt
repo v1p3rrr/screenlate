@@ -45,7 +45,7 @@ class ScreenlateApplication : Application(), Configuration.Provider {
         super.onCreate()
         dictionaryImports.installBundled()
         MainScope().launch(Dispatchers.IO) {
-            // The user confirmed it; a reset the process died in is finished rather than left half done.
+            // The user confirmed it; a reset the process died in is run once more, and reported when that dies too.
             runCatching { dictionaryReset.resumeInterrupted() }
                 .onFailure { Log.w(TAG, "Finishing the dictionary reset failed: ${it.javaClass.simpleName}") }
         }

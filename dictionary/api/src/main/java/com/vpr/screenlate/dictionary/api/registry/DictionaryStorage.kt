@@ -59,14 +59,14 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
         return name
     }
 
-    /**
-     * Removes directories that no registry entry points to, and what imports cut short by the process dying left
-     * behind; see [cleanUpLeftovers].
-     */
-    fun cleanUp(known: Collection<String>, archivesInUse: Set<String>?) {
+    /** Dictionary directories that no registry entry ([known] directory names) points to. */
+    fun orphans(known: Collection<String>): List<File> = orphanDirectories(root, staging, known)
+
+    /** Deletes what imports cut short by the process dying left behind; see [importLeftovers]. */
+    fun removeImportLeftovers(archivesInUse: Set<String>?) {
         val now = System.currentTimeMillis()
         val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
-        cleanUpLeftovers(root, staging, downloads, known, archivesInUse, processStart, now)
+        importLeftovers(staging, downloads, archivesInUse, processStart, now).forEach { it.deleteRecursively() }
     }
 
     private companion object {
@@ -79,28 +79,23 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
 /** Leftovers younger than this may belong to an import still running; used when the archives in use are unknown. */
 private const val STALE_MS = 6 * 60 * 60 * 1000L
 
+/** Directories in [root] other than [staging] that are not [known]. */
+internal fun orphanDirectories(root: File, staging: File, known: Collection<String>): List<File> =
+    root.listFiles().orEmpty().filter { it.isDirectory && it != staging && it.name !in known }
+
 /**
- * Deletes dictionary directories in [root] that are not [known], staging directories made before [processStart]
- * (only a running import writes there, and none from an earlier process runs any more), and archives in [downloads]
- * made before it that no queued import reads ([archivesInUse]; when null, only archives older than [STALE_MS] go).
+ * Staging directories made before [processStart] (only a running import writes there, and none from an earlier
+ * process runs any more), and archives in [downloads] made before it that no queued import reads ([archivesInUse];
+ * when null, only archives older than [STALE_MS] count).
  */
-internal fun cleanUpLeftovers(
-    root: File,
+internal fun importLeftovers(
     staging: File,
     downloads: File,
-    known: Collection<String>,
     archivesInUse: Set<String>?,
     processStart: Long,
     now: Long,
-) {
-    root.listFiles()
-        ?.filter { it.isDirectory && it != staging && it.name !in known }
-        ?.forEach { it.deleteRecursively() }
-    staging.listFiles().orEmpty()
-        .filter { it.lastModified() < processStart }
-        .forEach { it.deleteRecursively() }
+): List<File> {
     val archivesBefore = if (archivesInUse == null) minOf(processStart, now - STALE_MS) else processStart
-    downloads.listFiles().orEmpty()
-        .filter { it.lastModified() < archivesBefore && it.name !in archivesInUse.orEmpty() }
-        .forEach { it.deleteRecursively() }
+    return staging.listFiles().orEmpty().filter { it.lastModified() < processStart } +
+        downloads.listFiles().orEmpty().filter { it.lastModified() < archivesBefore && it.name !in archivesInUse.orEmpty() }
 }

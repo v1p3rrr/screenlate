@@ -33,8 +33,8 @@ class StorageCleanUpTest {
             setLastModified(modified)
         }
 
-    private fun cleanUp(known: Collection<String>, archivesInUse: Set<String>?) =
-        cleanUpLeftovers(root, staging, downloads, known, archivesInUse, processStart, now)
+    private fun leftovers(archivesInUse: Set<String>?) =
+        importLeftovers(staging, downloads, archivesInUse, processStart, now)
 
     @Test
     fun `directories of no dictionary go, the staging area and registered ones stay`() {
@@ -42,11 +42,8 @@ class StorageCleanUpTest {
         val orphan = directory(root, "orphan")
         staging.mkdirs()
 
-        cleanUp(known = listOf("registered"), archivesInUse = emptySet())
-
+        assertThat(orphanDirectories(root, staging, known = listOf("registered"))).containsExactly(orphan)
         assertThat(registered.exists()).isTrue()
-        assertThat(orphan.exists()).isFalse()
-        assertThat(staging.exists()).isTrue()
     }
 
     @Test
@@ -54,9 +51,7 @@ class StorageCleanUpTest {
         val earlier = directory(staging, "earlier", modified = processStart - 1)
         val current = directory(staging, "current", modified = processStart + 1)
 
-        cleanUp(known = emptyList(), archivesInUse = emptySet())
-
-        assertThat(earlier.exists()).isFalse()
+        assertThat(leftovers(archivesInUse = emptySet())).containsExactly(earlier)
         assertThat(current.exists()).isTrue()
     }
 
@@ -66,11 +61,8 @@ class StorageCleanUpTest {
         val queuedCopy = archive("copy.zip", modified = processStart - 1)
         val beingWritten = archive("new.zip", modified = processStart + 1)
 
-        cleanUp(known = emptyList(), archivesInUse = setOf("copy.zip"))
-
-        assertThat(partialDownload.exists()).isFalse()
-        assertThat(queuedCopy.exists()).isTrue()
-        assertThat(beingWritten.exists()).isTrue()
+        assertThat(leftovers(archivesInUse = setOf("copy.zip"))).containsExactly(partialDownload)
+        assertThat(queuedCopy.exists() && beingWritten.exists()).isTrue()
     }
 
     @Test
@@ -78,9 +70,7 @@ class StorageCleanUpTest {
         val old = archive("old.zip", modified = now - 7 * HOUR)
         val recent = archive("recent.zip", modified = processStart - 1)
 
-        cleanUp(known = emptyList(), archivesInUse = null)
-
-        assertThat(old.exists()).isFalse()
+        assertThat(leftovers(archivesInUse = null)).containsExactly(old)
         assertThat(recent.exists()).isTrue()
     }
 

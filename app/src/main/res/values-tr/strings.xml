@@ -513,4 +513,10 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="reset_dictionaries_text">Eklediğiniz sözlükler de dâhil tüm sözlükler silinir ve yerleşik sözlükler kurulumdan sonraki gibi, ilk sıralama ve anahtarlarla yeniden yüklenir. Süren içe aktarmalar ve indirmeler iptal edilir. Yükleme bir dakikaya kadar sürer; o zamana kadar arama eksik kalır.</string>
     <string name="reset_dictionaries_running">İçe aktarmalar durduruluyor ve sözlükler siliniyor…</string>
     <string name="reset_dictionaries_busy">Sözlükler sıfırlanıyor…</string>
+    <string name="reset_dictionaries_failed">Sözlükler sıfırlanamadı: %1$s</string>
+    <string name="dictionaries_delete_failed">Sözlük silinemedi: %1$s</string>
+    <string name="dictionaries_import_interrupted">%1$s: bu içe aktarma sırasında uygulama iki kez kapandı, bu yüzden durduruldu. Yeniden deneyin; tekrar olursa dosya bozuk veya bu telefon için fazla büyük olabilir.</string>
+    <string name="reset_dictionaries_gave_up_title">Sözlük sıfırlama tamamlanmadı</string>
+    <string name="reset_dictionaries_gave_up_text">Sözlükler sıfırlanırken uygulama iki kez kapandı, bu yüzden sıfırlama durduruldu. Bazı sözlükler kalmış veya eksik olabilir. Sözlükler sayfasının üstündeki düğmeyle yeniden sıfırlayın.</string>
+    <string name="reset_dictionaries_gave_up_open">Sözlükleri aç</string>
 </resources>
