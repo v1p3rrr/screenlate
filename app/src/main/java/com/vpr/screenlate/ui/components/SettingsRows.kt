@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** A settings screen with a title, a back button and the top bar's [actions]. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +68,7 @@ fun SwitchRow(
             }
             if (hint != null) Hint(hint)
         }
-        Switch(checked = checked, onCheckedChange = onChange, enabled = enabled)
+        Switch(checked = checked, onCheckedChange = onChange, enabled = enabled, colors = AccentDefaults.switchColors())
     }
 }
 
@@ -98,6 +99,7 @@ fun <T> Segments(
                 onClick = { onSelect(option) },
                 enabled = enabled,
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                colors = AccentDefaults.segmentedButtonColors(),
             ) {
                 // Long translations shrink before they get cut.
                 Text(

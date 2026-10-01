@@ -50,6 +50,7 @@ import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.settings.EInkHint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import com.vpr.screenlate.update.UpdateAnnouncementCard
 import com.vpr.screenlate.update.UpdateViewModel
 
@@ -120,7 +121,7 @@ fun HomeScreen(
             if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
 
             SectionCard(title = stringResource(R.string.home_search_title)) {
-                Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                     Text(stringResource(R.string.home_search_open))
                 }
             }

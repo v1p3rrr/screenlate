@@ -68,6 +68,7 @@ import com.vpr.screenlate.ui.components.ReorderableColumn
 import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.ResetButton
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
@@ -133,7 +134,7 @@ fun DictionariesScreen(
             // The installs that follow show as an import task.
             if (resetPhase == DictionaryReset.Phase.DELETING) {
                 Text(stringResource(R.string.reset_dictionaries_running))
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
             }
             if (resetGaveUp && resetPhase == null) {
                 NoticeCard(stringResource(R.string.reset_dictionaries_gave_up_text), viewModel::dismissResetGaveUp)
@@ -383,12 +384,12 @@ private fun DictionaryCard(
                 }
                 if (sort != null && dictionary.enabled) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(selected = sort.selected, onClick = sort.onSelect)
+                        RadioButton(selected = sort.selected, onClick = sort.onSelect, colors = AccentDefaults.radioButtonColors())
                         Text(stringResource(R.string.dictionaries_sort_by), style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
-            Switch(checked = dictionary.enabled, onCheckedChange = onEnabledChange)
+            Switch(checked = dictionary.enabled, onCheckedChange = onEnabledChange, colors = AccentDefaults.switchColors())
             TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.action_delete), onClick = onDelete)
         }
         if (expanded) {
@@ -447,7 +448,7 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
             when {
                 updates == null -> {
                     Text(stringResource(R.string.dictionaries_checking_updates))
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
                 }
                 updates.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
                 else -> {
@@ -548,9 +549,9 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Un
             Text(status, style = MaterialTheme.typography.bodyMedium)
             val percent = task.percent
             if (percent != null) {
-                LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
             } else {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
             }
             TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.End)) {
                 Text(stringResource(R.string.action_cancel))
@@ -707,9 +708,9 @@ private fun TaskRing(task: ImportTask?, onCancel: () -> Unit) {
         val ring = Modifier.size(40.dp)
         val track = MaterialTheme.colorScheme.outlineVariant
         if (progress != null) {
-            CircularProgressIndicator(progress = { progress }, modifier = ring, strokeWidth = 3.dp, trackColor = track)
+            CircularProgressIndicator(progress = { progress }, modifier = ring, strokeWidth = 3.dp, trackColor = track, color = AccentDefaults.progress)
         } else {
-            CircularProgressIndicator(modifier = ring, strokeWidth = 3.dp, trackColor = track)
+            CircularProgressIndicator(modifier = ring, strokeWidth = 3.dp, trackColor = track, color = AccentDefaults.progress)
         }
         TooltipIconButton(stringResource(R.string.action_cancel), onClick = onCancel) {
             Icon(painterResource(R.drawable.ic_close), stringResource(R.string.action_cancel), modifier = Modifier.size(18.dp))

@@ -12,6 +12,9 @@
     <string name="settings_theme_system">Hệ thống</string>
     <string name="settings_theme_light">Sáng</string>
     <string name="settings_theme_dark">Tối</string>
+    <string name="settings_colors_title">Màu sắc</string>
+    <string name="settings_colors_wallpaper">Hình nền</string>
+    <string name="settings_colors_hint">Screenlate dùng bộ màu tím riêng. Màu hình nền thay đổi theo hình nền điện thoại, giống các ứng dụng khác.</string>
 
     <string name="action_back">Quay lại</string>
     <string name="home_tools_title">Công cụ</string>

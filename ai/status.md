@@ -522,3 +522,18 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   "Try again" reinstalled Jiten in its place. A forced remove failure on the start screen showed its error line. The
   environment was restored: the test Jiten 26-12-01 imported again from `Download/jiten_user.zip`, the settings
   file written back byte for byte, every dictionary directory in place.
+
+### 2026-10-01 (app colors, cloud session)
+
+- Request 31 settled with the owner on a preview artifact ("Фиолетовая тема Screenlate", Material color utilities in
+  the session scratchpad): the app uses its own violet scheme instead of the wallpaper's on Android 12+, standard
+  contrast, with a pink accent. Row "App colors" in the feedback plan has every value.
+- `ui/theme/Color.kt`: generated light and dark schemes (secondary containers deepened by hand); `ui/theme/Accent.kt`:
+  `Accent` (fill, onFill, line) in `LocalAccent` and `AccentDefaults` for switches, checkboxes, radio buttons, sliders,
+  segmented buttons, progress and the main button. All 32 control call sites in `app` use them; the overlay is not
+  touched. `ScreenlateTheme(wallpaperColors)` replaces `dynamicColor`; e-ink gets a black accent.
+- New setting `theme_colors` (`AppColors`: SCREENLATE default, WALLPAPER) in Appearance on Android 12+
+  (`AppColorsSection`), reset with Appearance and backed up with the general settings; strings in all 14 languages
+  ("Screenlate" untranslatable); `docs/usage.md`.
+- Not checked on a device: every screen in light and dark, the Colors switch, e-ink, Android 11 (no Colors card).
+  The decision row asks for app screenshots of light and dark for the owner.

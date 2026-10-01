@@ -31,6 +31,7 @@ import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.formContent
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 private val MAX_RESULT_OPTIONS = listOf(16, 32, 64, 128, 0)
 
@@ -107,6 +108,7 @@ private fun ScanLengthRow(length: Int, onChange: (Int) -> Unit) {
             onValueChangeFinished = { onChange(value.toInt()) },
             valueRange = 1f..max.toFloat(),
             steps = max - 2,
+            colors = AccentDefaults.sliderColors(),
         )
         Hint(stringResource(R.string.lookup_scan_length_hint))
     }

@@ -20,7 +20,7 @@ class SettingsKeysTest {
             "popup_font", "popup_font_all_text", "popup_font_size", "popup_text_weight", "popup_letter_thickness",
             "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "e_ink_font_before", "e_ink_font_after",
         ),
-        SettingsSection.APPEARANCE to listOf("theme_mode", "e_ink"),
+        SettingsSection.APPEARANCE to listOf("theme_mode", "theme_colors", "e_ink"),
     )
     private val globalOnly = listOf(
         "update_announce", "update_announced_tag", "e_ink_hint_seen", "background_tip_seen", "notification_permission_asked",

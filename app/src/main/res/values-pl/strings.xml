@@ -12,6 +12,9 @@
     <string name="settings_theme_system">Systemowy</string>
     <string name="settings_theme_light">Jasny</string>
     <string name="settings_theme_dark">Ciemny</string>
+    <string name="settings_colors_title">Kolory</string>
+    <string name="settings_colors_wallpaper">Tapeta</string>
+    <string name="settings_colors_hint">Screenlate używa własnych fioletowych kolorów. Kolory tapety dopasowują się do tapety telefonu, jak w innych aplikacjach.</string>
 
     <string name="action_back">Wstecz</string>
     <string name="home_tools_title">Narzędzia</string>

@@ -12,6 +12,9 @@
     <string name="settings_theme_system">跟随系统</string>
     <string name="settings_theme_light">浅色</string>
     <string name="settings_theme_dark">深色</string>
+    <string name="settings_colors_title">颜色</string>
+    <string name="settings_colors_wallpaper">壁纸</string>
+    <string name="settings_colors_hint">Screenlate 使用自己的紫色配色。壁纸颜色会像其他应用一样跟随手机壁纸变化。</string>
 
     <string name="action_back">返回</string>
     <string name="home_tools_title">工具</string>

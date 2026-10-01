@@ -23,4 +23,13 @@ class SettingsDataStoreTest {
         settings.setThemeMode(ThemeMode.DARK)
         assertThat(settings.themeMode.first()).isEqualTo(ThemeMode.DARK)
     }
+
+    @Test
+    fun `colors default to the own scheme and keep the choice`() = runBlocking {
+        assumeFalse(System.getProperty("os.name").startsWith("Windows"))
+        val settings = AppSettingsRepository(settingsDataStore { folder.root.resolve("colors.preferences_pb") })
+        assertThat(settings.appColors.first()).isEqualTo(AppColors.SCREENLATE)
+        settings.setAppColors(AppColors.WALLPAPER)
+        assertThat(settings.appColors.first()).isEqualTo(AppColors.WALLPAPER)
+    }
 }

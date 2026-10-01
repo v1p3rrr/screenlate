@@ -57,7 +57,7 @@ object SettingsKeys {
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
         key == "anki_settings" || key.startsWith("audio_") -> SettingsSection.ANKI
         key.startsWith("popup_") -> SettingsSection.POPUP
-        key == "theme_mode" || key == "e_ink" -> SettingsSection.APPEARANCE
+        key == "theme_mode" || key == "theme_colors" || key == "e_ink" -> SettingsSection.APPEARANCE
         // What e-ink's "Make larger" changed goes with the size it belongs to, so turning e-ink off later does not
         // change a size that was reset.
         key.startsWith("e_ink_bubble_") -> SettingsSection.BUBBLE

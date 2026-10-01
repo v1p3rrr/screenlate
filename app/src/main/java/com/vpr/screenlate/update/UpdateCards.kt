@@ -26,6 +26,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoDialog
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** The announcement of a new version on the home screen; shown once per version. */
 @Composable
@@ -122,7 +123,7 @@ private fun UpdateProgress(release: Release, state: UpdateState, viewModel: Upda
     when (state) {
         is UpdateState.Downloading -> {
             Text(stringResource(R.string.update_downloading, (state.fraction * 100).toInt()))
-            LinearProgressIndicator(progress = { state.fraction }, modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(progress = { state.fraction }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
         }
         is UpdateState.Installing -> {
             Text(stringResource(R.string.update_installing))

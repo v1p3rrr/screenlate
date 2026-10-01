@@ -45,7 +45,11 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) handleOpenRequest(intent)
         setContent {
             val theme = viewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
-            ScreenlateTheme(themeMode = theme.mode, eInk = theme.eInk) {
+            ScreenlateTheme(
+                themeMode = theme.mode,
+                eInk = theme.eInk,
+                wallpaperColors = theme.wallpaperColors,
+            ) {
                 LocalNetworkAskEffect()
                 ScreenlateNavHost(
                     themeMode = theme.mode,

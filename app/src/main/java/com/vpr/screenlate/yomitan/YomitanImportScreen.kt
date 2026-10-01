@@ -33,6 +33,7 @@ import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 private val JSON_TYPES = arrayOf("application/json", "application/octet-stream", "*/*")
 
@@ -75,7 +76,7 @@ fun YomitanImportScreen(
                             Text(stringResource(R.string.yomitan_import_choose_settings))
                         }
                     }
-                    SettingsImportState.Reading -> CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    SettingsImportState.Reading -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
                     is SettingsImportState.Loaded -> ProfileChoice(current, viewModel)
                     is SettingsImportState.Done -> {
                         Summary(current)
@@ -101,7 +102,7 @@ fun YomitanImportScreen(
                         Hint(stringResource(R.string.yomitan_import_single_hint))
                         TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                     }
-                    CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
                     is CollectionState.Listed -> CollectionChecklist(current, collection)
                     is CollectionState.Queued -> {
                         Text(stringResource(R.string.yomitan_collection_queued, current.count))
@@ -128,7 +129,7 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
                 .fillMaxWidth()
                 .clickable { viewModel.toggle(dictionary.title) },
         ) {
-            Checkbox(checked = item.checked, onCheckedChange = { viewModel.toggle(dictionary.title) })
+            Checkbox(checked = item.checked, onCheckedChange = { viewModel.toggle(dictionary.title) }, colors = AccentDefaults.checkboxColors())
             Column {
                 Text(dictionary.title)
                 Hint(
@@ -162,7 +163,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
                 .fillMaxWidth()
                 .clickable { viewModel.selectProfile(index) },
         ) {
-            RadioButton(selected = index == state.profile, onClick = { viewModel.selectProfile(index) })
+            RadioButton(selected = index == state.profile, onClick = { viewModel.selectProfile(index) }, colors = AccentDefaults.radioButtonColors())
             Text(
                 if (index == state.settings.currentProfile) {
                     stringResource(R.string.yomitan_import_profile_current, profile.name)
@@ -180,7 +181,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
                 .fillMaxWidth()
                 .clickable { viewModel.toggleSection(section) },
         ) {
-            Checkbox(checked = section in state.sections, onCheckedChange = { viewModel.toggleSection(section) })
+            Checkbox(checked = section in state.sections, onCheckedChange = { viewModel.toggleSection(section) }, colors = AccentDefaults.checkboxColors())
             Column {
                 Text(stringResource(sectionTitle(section)))
                 Hint(stringResource(sectionHint(section)))

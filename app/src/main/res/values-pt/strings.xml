@@ -12,6 +12,9 @@
     <string name="settings_theme_system">Sistema</string>
     <string name="settings_theme_light">Claro</string>
     <string name="settings_theme_dark">Escuro</string>
+    <string name="settings_colors_title">Cores</string>
+    <string name="settings_colors_wallpaper">Papel de parede</string>
+    <string name="settings_colors_hint">O Screenlate usa suas próprias cores violeta. As cores do papel de parede acompanham o papel de parede do celular, como nos outros apps.</string>
 
     <string name="action_back">Voltar</string>
     <string name="home_tools_title">Ferramentas</string>

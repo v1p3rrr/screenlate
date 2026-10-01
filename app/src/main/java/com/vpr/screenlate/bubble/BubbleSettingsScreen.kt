@@ -68,6 +68,7 @@ import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -315,13 +316,13 @@ fun BubbleSettingsScreen(
                     }
                     Spacer(Modifier.width(12.dp))
                     Text(app.label, modifier = Modifier.weight(1f))
-                    Checkbox(checked = hidden, onCheckedChange = { viewModel.setHidden(app.packageName, it) })
+                    Checkbox(checked = hidden, onCheckedChange = { viewModel.setHidden(app.packageName, it) }, colors = AccentDefaults.checkboxColors())
                 }
             }
             if (apps == null) {
                 item {
                     Box(Modifier.fillMaxWidth().padding(vertical = 16.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                        CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
                     }
                 }
             }
@@ -382,6 +383,7 @@ private fun BubbleSizeRow(sizeDp: Int, onChange: (Int) -> Unit) {
             onValueChangeFinished = { onChange(value.toInt()) },
             valueRange = OverlaySettings.MIN_BUBBLE_DP.toFloat()..OverlaySettings.MAX_BUBBLE_DP.toFloat(),
             steps = (OverlaySettings.MAX_BUBBLE_DP - OverlaySettings.MIN_BUBBLE_DP) / 4 - 1,
+            colors = AccentDefaults.sliderColors(),
         )
     }
 }

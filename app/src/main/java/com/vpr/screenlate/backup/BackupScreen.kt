@@ -36,6 +36,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.text.DateFormat
 import java.time.LocalDate
 import java.util.Date
@@ -72,7 +73,7 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
                         .fillMaxWidth()
                         .clickable(enabled = !working) { includeDictionaries = !includeDictionaries },
                 ) {
-                    Checkbox(checked = includeDictionaries, onCheckedChange = { includeDictionaries = it }, enabled = !working)
+                    Checkbox(checked = includeDictionaries, onCheckedChange = { includeDictionaries = it }, enabled = !working, colors = AccentDefaults.checkboxColors())
                     Column {
                         Text(stringResource(R.string.backup_include_dictionaries))
                         Hint(stringResource(R.string.backup_include_dictionaries_hint))
@@ -144,9 +145,9 @@ fun BackupScreen(onBack: () -> Unit, viewModel: BackupViewModel = hiltViewModel(
 private fun Progress(label: String, progress: Float?) {
     Text(label)
     if (progress == null) {
-        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
     } else {
-        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
     }
 }
 
@@ -162,7 +163,7 @@ private fun Checklist(state: BackupState.Loaded, checked: Set<BackupSection>, vi
                 .fillMaxWidth()
                 .clickable { viewModel.toggle(section) },
         ) {
-            Checkbox(checked = section in checked, onCheckedChange = { viewModel.toggle(section) })
+            Checkbox(checked = section in checked, onCheckedChange = { viewModel.toggle(section) }, colors = AccentDefaults.checkboxColors())
             Column {
                 Text(stringResource(sectionTitle(section)))
                 Hint(

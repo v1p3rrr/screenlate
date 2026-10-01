@@ -47,6 +47,7 @@ import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.WithTooltip
 import com.vpr.screenlate.ui.components.doneClearsFocus
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /** Auto-play, volume, the audio sources in priority order, and a test of every source with a sample word. */
 @Composable
@@ -160,7 +161,7 @@ private fun TestPanel(viewModel: AudioSettingsViewModel) {
                 style = MaterialTheme.typography.bodyMedium,
             )
             when {
-                test.loading -> CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                test.loading -> CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = AccentDefaults.progress)
                 test.error != null -> {
                     Text(
                         stringResource(R.string.audio_test_failed, audioErrorText(test.error, test.source)),
@@ -308,6 +309,7 @@ private fun VolumeRow(volume: Int, onChange: (Int) -> Unit) {
             onValueChange = { value = it },
             onValueChangeFinished = { onChange(value.toInt()) },
             valueRange = 0f..100f,
+            colors = AccentDefaults.sliderColors(),
         )
     }
 }

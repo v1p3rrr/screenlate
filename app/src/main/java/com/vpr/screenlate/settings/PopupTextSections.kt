@@ -53,6 +53,7 @@ import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.theme.AccentDefaults
 import kotlin.math.roundToInt
 
 private val FONT_TYPES = arrayOf(
@@ -161,7 +162,7 @@ private fun FontOption(
             .fillMaxWidth()
             .clickable(onClick = onSelect),
     ) {
-        RadioButton(selected = selected, onClick = onSelect)
+        RadioButton(selected = selected, onClick = onSelect, colors = AccentDefaults.radioButtonColors())
         Column(modifier = Modifier.weight(1f)) {
             Text(title, fontFamily = typeface?.let { FontFamily(it) })
             Hint(subtitle)
@@ -188,6 +189,7 @@ private fun FontSize(size: Int, onChange: (Int) -> Unit) {
         onValueChangeFinished = { onChange(value.roundToInt()) },
         valueRange = PopupAppearance.MIN_FONT_SIZE.toFloat()..PopupAppearance.MAX_FONT_SIZE.toFloat(),
         steps = PopupAppearance.MAX_FONT_SIZE - PopupAppearance.MIN_FONT_SIZE - 1,
+        colors = AccentDefaults.sliderColors(),
     )
 }
 
@@ -204,6 +206,7 @@ private fun TextWeight(weight: Int, onChange: (Int) -> Unit) {
         onValueChangeFinished = { onChange(PopupAppearance.NORMAL_WEIGHT + value.roundToInt() * PopupAppearance.WEIGHT_STEP) },
         valueRange = 0f..steps.toFloat(),
         steps = steps - 1,
+        colors = AccentDefaults.sliderColors(),
     )
 }
 
@@ -225,6 +228,7 @@ private fun LetterThickness(thickness: Int, onChange: (Int) -> Unit) {
         onValueChangeFinished = { onChange(value.roundToInt()) },
         valueRange = 0f..PopupAppearance.MAX_THICKNESS.toFloat(),
         steps = PopupAppearance.MAX_THICKNESS - 1,
+        colors = AccentDefaults.sliderColors(),
     )
 }
 
@@ -269,7 +273,7 @@ private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: (
             }
         }
         when (download) {
-            is FontDownload.Running -> LinearProgressIndicator(progress = { download.fraction }, modifier = Modifier.fillMaxWidth())
+            is FontDownload.Running -> LinearProgressIndicator(progress = { download.fraction }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
             else -> {
                 if (download == FontDownload.Failed) ErrorText(stringResource(R.string.popup_font_download_failed))
                 TextButton(onClick = onDownload) {

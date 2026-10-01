@@ -90,7 +90,7 @@ data class BackupManifest(
 /** Settings kept in the shared preferences file, grouped by the section each key belongs to. */
 object BackupPreferences {
     private const val E_INK = "e_ink"
-    private val general = setOf("theme_mode", E_INK, "update_announce")
+    private val general = setOf("theme_mode", "theme_colors", E_INK, "update_announce")
 
     /**
      * The section of a preference key; null for state the app keeps for itself (one-time hints, update checks,

@@ -12,6 +12,9 @@
     <string name="settings_theme_system">Système</string>
     <string name="settings_theme_light">Clair</string>
     <string name="settings_theme_dark">Sombre</string>
+    <string name="settings_colors_title">Couleurs</string>
+    <string name="settings_colors_wallpaper">Fond d’écran</string>
+    <string name="settings_colors_hint">Screenlate utilise ses propres couleurs violettes. Les couleurs du fond d’écran suivent celui du téléphone, comme dans les autres applis.</string>
 
     <string name="action_back">Retour</string>
     <string name="home_tools_title">Outils</string>

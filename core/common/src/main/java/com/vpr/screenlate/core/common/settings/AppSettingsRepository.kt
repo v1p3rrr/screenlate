@@ -24,6 +24,14 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[THEME_MODE] = mode.name }
     }
 
+    val appColors: Flow<AppColors> = dataStore.data.map { prefs ->
+        prefs[APP_COLORS]?.let { stored -> AppColors.entries.firstOrNull { it.name == stored } } ?: AppColors.SCREENLATE
+    }
+
+    suspend fun setAppColors(colors: AppColors) {
+        dataStore.edit { it[APP_COLORS] = colors.name }
+    }
+
     /**
      * E-ink mode: a black-and-white theme without animations or translucent fills, for screens that refresh slowly and
      * show few shades. It overrides the theme mode.
@@ -86,6 +94,7 @@ class AppSettingsRepository @Inject constructor(
 
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
+        val APP_COLORS = stringPreferencesKey("theme_colors")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
         val E_INK = booleanPreferencesKey("e_ink")

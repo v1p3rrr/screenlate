@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.vpr.screenlate.R
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /**
  * An icon-only button whose long press shows [tooltip], its short name. [description] is what screen readers say,
@@ -82,7 +83,7 @@ fun IconButtonProgress(description: String) {
                 .semantics { contentDescription = description },
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp, color = AccentDefaults.progress)
         }
     }
 }
