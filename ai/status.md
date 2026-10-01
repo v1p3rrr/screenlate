@@ -709,3 +709,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   list; the owner's old JMdict (Russian), revision jmdict4, is listed too); the replacement itself was not run there,
   it takes the update path checked with kty-ja-ru. Old app versions ignore the new catalog field.
 - Not checked: e-ink with the new colors, the Anki screen's first frame.
+- Grey ➕ during a slow cloud scan (Wi-Fi off, `adb emu network speed gprs`): with the ML Kit draft shown and the
+  cloud scan pending, the ➕ is grey and a tap shows "Wait for the final text, until the spinner is gone."; when the
+  cloud scan times out (about 15 s) the ➕ turns active and ⚠ appears. A broken Anki setup (a deck or note type
+  missing in AnkiDroid) takes priority over this hint, as intended. On the emulator, release and debug builds are both
+  installed: Anki choices made in one do not reach the other.
