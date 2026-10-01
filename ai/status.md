@@ -4,7 +4,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next session (handoff, 2026-10-01)
 
-- State: `main` is clean and pushed; last release v0.1.4; no release until the owner says so. All module reviews and
+- State: `main` is clean and pushed; last release v0.2.0 (2026-10-01, owner's command: the cloud branch merged into main and released, before a device check of its new colors). All module reviews and
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
   Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
@@ -613,3 +613,13 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   5e5b54a (run 36898861756) and edf4697 (run 36900910601, which includes 2f7744b and 0296da1); 0abb074 in run
   36902706961. The instrumented tests (`connectedDebugAndroidTest`, emulator in CI) run only on release tags or by
   hand (`instrumented.yml`); started by hand for this branch.
+
+### 2026-10-01 (release v0.2.0; cloud session)
+
+- Owner's command: merge `claude/elegant-allen-xmu3fx` into main and release; version v0.2.0 (owner). Hand-written
+  notes in `.github/release-notes/v0.2.0.md` (main changes, fixes in general words). README features updated for
+  the important additions: per-dictionary definition copying, copying text with the bubble, own colors and text
+  weight, the start screen's help when the phone stops the bubble.
+- The instrumented tests of the branch (run 36903149349) were still running at the merge; the branch's UI was not
+  seen on a device. Check the release on the phone: colors in light and dark, status bar icons, button labels,
+  Wiktionary in the catalog.

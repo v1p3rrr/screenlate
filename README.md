@@ -19,13 +19,14 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 
 - **Any app, any orientation.** Horizontal and vertical text, portrait and landscape. The popup opens where there is room and never covers the word.
 - **Text from the screen.** Cloud recognition with an instant on-device draft, or the app's own text where the app exposes it (exact and offline), or only the app's text, without recognition, for e-ink readers and weak devices.
-- **Yomitan dictionaries**, looked up and shown the way Yomitan does it: rich entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries.
+- **Yomitan dictionaries**, looked up and shown the way Yomitan does it: rich entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries. A copy button per dictionary copies its definition, whole or only the numbered meanings.
 - **Dictionaries included**: JMdict (English), KANJIDIC, a frequency list and pitch accents work right after installing. Jitendex, dictionaries for other languages, more kanji dictionaries and name dictionaries are one tap away in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
 - **Anki cards** through AnkiDroid: your deck, note type and field templates (Yomitan's markers), duplicate checks, pronunciation audio and a cropped screenshot of the scene.
 - **Pronunciation** from the same audio sources as Yomitan, or the phone's text-to-speech.
+- **Copy text** from anything on the screen: hold the bubble to copy the paragraph under it or all recognized text.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
 - **Import from Yomitan**: dictionary order, Anki setup, audio sources, lookup and popup settings.
-- **Your look**: popup font and text size, custom CSS, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
+- **Your look**: popup font, text size and weight, custom CSS; Screenlate's own violet colors or the phone's, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
 - **Backup and restore** of all settings and, if you like, the dictionaries, in one file.
 - **Updates** from GitHub Releases inside the app.
 
@@ -53,7 +54,7 @@ Translations of the interface were made with AI and have not been reviewed by na
 - Japanese only.
 - Cloud recognition uses an unofficial service that may change or stop working at any time; the app then falls back to on-device recognition, which is less accurate on small or stylized text.
 - Screens that block screenshots (some banking apps, protected video) cannot be scanned. "Read app text" and "App text only" can still read apps that expose their text.
-- The bubble lives in an accessibility service; some phones stop such services in the background (see Install).
+- The bubble lives in an accessibility service; some phones stop such services in the background (see Install). The start screen then says so and leads back to the switch; an optional quiet notification makes it happen less often.
 - Developed and tested on a small number of devices.
 
 ## Privacy
