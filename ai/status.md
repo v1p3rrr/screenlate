@@ -235,7 +235,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 - Not yet verified on the physical phone.
 - Rotation handling is minimal (the bubble re-docks on configuration change).
-- Vertical text in portrait: the popup goes beside the column down to 200 dp wide (owner, 2026-09-27), and beside a column in the middle of a narrow screen down to 140 dp; above or below only when neither fits.
+- Popup placement (requests 15 and 20, 2026-10-01): in portrait above the word (vertical text too), else below the bubble, else full size at the edge covering part of the word; in landscape beside the word down to 80% of its width, else full size at the edge. The earlier narrow popup beside a column is gone.
 - Test images in `testdata/ocr/` are local only (third-party content, gitignored).
 
 ### 2026-09-30 (security review)
