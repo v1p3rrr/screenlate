@@ -21,18 +21,28 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   translated well, in all 14 languages) is done, see the log entry "translation audit". The review of its code
   (ae3bf5b) and request 30 (logs of imports, deletions and resets) are done, see the log entry "review of the import
   error handling, logs".
-- Next: questions to the owner for requests 28 (a dialog before the notification permission request), 29 (settings
-  kept across installs of another version), 33 (download ring and Cancel on the catalog card) and 34 (repeated tags
-  and badges in the popup with many dictionaries; look at the emulator's 20 dictionaries first), then the work.
-  31 (a more purple theme) and 32 (bubble color picker) are deferred by the owner.
-- Open, found while testing: the catalog does not recognize installed Wiktionary dictionaries (upstream renamed
-  `kty-*` to `wty-*` and moved the index to Hugging Face); suggested to the owner as a separate task.
+- Done since (2026-10-01, local session, on main): 28 (explanation dialog before every notification permission
+  request; checked on the emulator), 33 (download ring with ✕ and a stage line on catalog cards; checked on the
+  emulator), 34 (collapsed frequency values and pitch accents in the popup, "+N" and "−"; page tests only, no
+  emulator check recorded). The plan's changelog has the details; this status was not updated in those commits.
+- Done in a cloud session on branch `claude/elegant-allen-xmu3fx` (not merged, CI per commit below, nothing seen on a
+  device): 31 (own violet colors, pink accent, "Colors" setting Screenlate/System in Appearance), 35 (Wiktionary in
+  the catalog: wty-* on Hugging Face, kty-* kept as former titles, update checks follow a moved index), and the static
+  part of 29 (see the log entry "updates over an installed version"). Strings of all modules checked in all 14
+  languages: none missing, none left stale since v0.1.4.
+- Next: on the emulator, the branch's colors in light and dark on every screen plus screenshots for the owner, the
+  Colors switch, e-ink, a Wiktionary download and an old kty-* copy in the catalog; request 29's install-over check
+  (install v0.1.4, change settings, install the branch over it); 34 on the emulator's 20 dictionaries. Then merge the
+  branch. 32 (bubble color picker) stays deferred by the owner.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
-  read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
-  `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
-  `render.js`, `anki.js`, `definition.js`/`popup.js`, `CropEditor`, `PopupTextSections`/`PopupAppearanceViewModel`,
-  `SearchScreen`/`SearchViewModel`, `OcrTestViewModel` (`git diff v0.1.4..HEAD -- <files>`). `BundledDictionaries`
-  and `DictionaryImportWorker` were reworked since and checked on the emulator.
+  read or only partly (about 1,500 added and 300 removed lines in 19 files; `anki.js` has no changes since v0.1.4):
+  `popup.js` (+248/-24), `definition.js` (new, 330), `render.js` (+169/-25), `PopupTextSections` (+105/-24),
+  `PopupAppearanceViewModel` (+102/-27), `DictionaryRepository` (+94/-24), `DictionaryLookup` (+79/-9),
+  `DownloadCache` (new, 68), `SearchScreen` (+59/-35), `CropEditor` (+29/-14), `SearchViewModel` (+28/-10),
+  `Protobuf` (+20/-17), `PerGeneration` (new, 17), `OcrTestViewModel` (+15/-3), `LensOcrEngine` (+14/-9),
+  `release.yml` (+11/-7), `Redaction` (+9/-3), `DownloadAssetsTask` (+3/-36), `TextLayout` (+1/-19)
+  (`git diff v0.1.4..HEAD -- <files>`). `BundledDictionaries` and `DictionaryImportWorker` were reworked since and
+  checked on the emulator.
 - Known, minor, left: `markDeleted` inflates every bundled zip; two bundled copies still get a third on update;
   `remoteCss` may load the engine and swallows errors; `CssCheck` misreads `user@host` and `/*` inside strings.
 - Emulator state: the user's Jiten copy there is a test archive with the revision "Jiten 26-12-01" (imported to
@@ -537,3 +547,23 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   ("Screenlate" untranslatable); `docs/usage.md`.
 - Not checked on a device: every screen in light and dark, the Colors switch, e-ink, Android 11 (no Colors card).
   The decision row asks for app screenshots of light and dark for the owner.
+- Renamed after the owner's remark: the option is "System" (the phone's colors), not "Wallpaper". CI of e78bc3d:
+  https://github.com/v1p3rrr/screenlate/actions/runs/36898128223.
+
+### 2026-10-01 (Wiktionary, updates over an installed version, translations; cloud session)
+
+- Request 35: the catalog's three Wiktionary entries point at Hugging Face (`daxida/wty-release`, URLs with
+  `?download=true` exactly as the archives' own `index.json` has them) and the wty-* titles; `CatalogEntry.formerTitles`
+  keeps kty-* copies recognized. `DictionaryUpdates` follows an index whose `indexUrl` names another address once
+  (`IndexMoves`, tested): the old kty indexes stay online with a frozen revision and point at the new ones. Old app
+  versions ignore the new catalog field. Checked by download here: the indexes and archives load (ja-en 16 MB,
+  ja-ru 0.7 MB, ja-ja 14 MB, revision 2026.09.20).
+- Request 29, static check of v0.1.4 → HEAD: Room schema unchanged (version 1, no destructive fallback); no
+  preference key removed or retyped (20 added); no stored enum value renamed or removed; the JSON-stored classes
+  changed only by fields with defaults, and Anki/audio decoding already tolerates unknown values; one settings file.
+  The one visible change is intended: an update shows the new colors, as `theme_colors` defaults to Screenlate (owner:
+  keep it so). `StoredNamesTest` now pins every enum name settings store. Left for the emulator: installing the branch
+  over v0.1.4 with changed settings.
+- Translations: a script over every module's `values*/` (in the session scratchpad) found no missing or extra
+  strings and no English string changed since v0.1.4, 22894ac, 3ce5fb2 or ae3bf5b with an unchanged translation;
+  strings equal to English are real words there ("normal", "Popup", "System", "Notifications").
