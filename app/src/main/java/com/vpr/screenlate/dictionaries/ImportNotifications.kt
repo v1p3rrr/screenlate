@@ -11,8 +11,11 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,7 +50,8 @@ import kotlinx.coroutines.launch
 /*
  * Imports and downloads show their progress in a foreground notification, which Android 13+ shows only with the
  * notification permission; so does the bubble's keep-alive service. The first import, download or keep-alive switch
- * asks for it once; the Dictionaries screen and the keep-alive card offer it again while it is missing.
+ * asks for it once; the Dictionaries screen and the keep-alive card offer it again while it is missing. Every request
+ * comes after a dialog that says what the permission is for.
  */
 
 @HiltViewModel
@@ -73,11 +77,14 @@ fun rememberImportNotificationsAsk(
     val asked by viewModel.asked.collectAsStateWithLifecycle()
     val currentAsked by rememberUpdatedState(asked)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { onAnswered() }
-    return remember(launcher) {
+    val explain = rememberNotificationsExplanation()
+    return remember(launcher, explain) {
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && currentAsked == false && !notificationsAllowed(context)) {
-                viewModel.markAsked()
-                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                explain {
+                    viewModel.markAsked()
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
                 true
             } else {
                 false
@@ -112,23 +119,54 @@ fun rememberNotificationsPermission(
         onPauseOrDispose { }
     }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { update(it) }
+    val currentAsked by rememberUpdatedState(asked)
+    val explain = rememberNotificationsExplanation()
     return NotificationsPermission(allowed) request@{
         // Before Android 13 notifications need no permission, so nothing offers this request there.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@request
-        val activity = context.findActivity()
-        val canAsk = asked != true || (
-            activity != null &&
-                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
-            )
-        viewModel.markAsked()
-        if (canAsk) {
-            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            context.startActivity(
-                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
-            )
+        explain {
+            val activity = context.findActivity()
+            val canAsk = currentAsked != true || (
+                activity != null &&
+                    ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
+                )
+            viewModel.markAsked()
+            if (canAsk) {
+                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                context.startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName),
+                )
+            }
         }
     }
+}
+
+/**
+ * A function that shows what the notification permission is for and then runs the action given to it, the request.
+ * The dialog has one button; Back and a tap outside close it the same way, so the request always follows.
+ */
+@Composable
+private fun rememberNotificationsExplanation(): (() -> Unit) -> Unit {
+    var pending by remember { mutableStateOf<(() -> Unit)?>(null) }
+    pending?.let { action ->
+        val done = {
+            pending = null
+            action()
+        }
+        AlertDialog(
+            onDismissRequest = done,
+            title = { Text(stringResource(R.string.notifications_explain_title)) },
+            text = {
+                Text(
+                    stringResource(R.string.notifications_explain_text, stringResource(R.string.background_title)),
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = { TextButton(onClick = done) { Text(stringResource(R.string.action_ok)) } },
+        )
+    }
+    return remember { { action -> pending = action } }
 }
 
 /** Offers the notification permission while it is missing. */

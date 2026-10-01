@@ -23,6 +23,7 @@
     <string name="action_delete">삭제</string>
     <string name="action_cancel">취소</string>
     <string name="action_dismiss">닫기</string>
+    <string name="action_ok">확인</string>
 
     <string name="home_dictionaries_title">사전</string>
     <string name="home_dictionaries_summary">설치됨: %1$d, 사용 중: %2$d</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">진행 알림</string>
     <string name="dictionaries_notifications_text">알림을 허용하면 앱 밖에서도 가져오기와 다운로드 진행 상황을 볼 수 있습니다.</string>
     <string name="dictionaries_notifications_allow">허용</string>
+    <string name="notifications_explain_title">알림</string>
+    <string name="notifications_explain_text">Screenlate는 사전 가져오기와 다운로드 진행 상황을 표시하기 위해 알림 권한이 필요합니다. 또한 시스템이 버블을 종료하지 않도록 할 수도 있으며, 이는 “%1$s”의 별도 스위치에서 켭니다.</string>
     <string name="dictionaries_languages">언어</string>
     <string name="dictionaries_languages_edit">변경</string>
     <string name="dictionaries_languages_title">사전 언어</string>

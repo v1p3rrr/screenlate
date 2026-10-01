@@ -23,6 +23,7 @@
     <string name="action_delete">Удалить</string>
     <string name="action_cancel">Отмена</string>
     <string name="action_dismiss">Скрыть</string>
+    <string name="action_ok">ОК</string>
 
     <string name="home_dictionaries_title">Словари</string>
     <string name="home_dictionaries_summary">Установлено: %1$d, включено: %2$d.</string>
@@ -384,6 +385,8 @@
     <string name="dictionaries_notifications_title">Уведомления о прогрессе</string>
     <string name="dictionaries_notifications_text">Разрешите уведомления, чтобы следить за импортом и скачиванием вне приложения.</string>
     <string name="dictionaries_notifications_allow">Разрешить</string>
+    <string name="notifications_explain_title">Уведомления</string>
+    <string name="notifications_explain_text">Разрешение на уведомления нужно Screenlate, чтобы показывать ход импорта и скачивания словарей. Ещё с ним можно не давать системе выгружать кнопку: это отдельный переключатель в разделе «%1$s».</string>
     <string name="dictionaries_languages">Языки</string>
     <string name="dictionaries_languages_edit">Изменить</string>
     <string name="dictionaries_languages_title">Языки словаря</string>

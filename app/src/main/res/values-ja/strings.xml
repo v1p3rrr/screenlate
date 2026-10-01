@@ -23,6 +23,7 @@
     <string name="action_delete">削除</string>
     <string name="action_cancel">キャンセル</string>
     <string name="action_dismiss">閉じる</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">辞書</string>
     <string name="home_dictionaries_summary">インストール済み：%1$d、有効：%2$d</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">進捗の通知</string>
     <string name="dictionaries_notifications_text">通知を許可すると、アプリの外でもインポートやダウンロードの進み具合を確認できます。</string>
     <string name="dictionaries_notifications_allow">許可</string>
+    <string name="notifications_explain_title">通知</string>
+    <string name="notifications_explain_text">Screenlate は、辞書のインポートやダウンロードの進み具合を表示するために通知の許可を使います。また、システムがバブルを終了させないようにすることもできます（「%1$s」にある別のスイッチです）。</string>
     <string name="dictionaries_languages">言語</string>
     <string name="dictionaries_languages_edit">変更</string>
     <string name="dictionaries_languages_title">辞書の言語</string>

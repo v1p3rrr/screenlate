@@ -25,6 +25,7 @@
     <string name="action_delete">Delete</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_dismiss">Dismiss</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Dictionaries</string>
     <string name="home_dictionaries_summary">Installed: %1$d, enabled: %2$d.</string>
@@ -386,6 +387,8 @@
     <string name="dictionaries_notifications_title">Progress notifications</string>
     <string name="dictionaries_notifications_text">Allow notifications to follow imports and downloads outside the app.</string>
     <string name="dictionaries_notifications_allow">Allow</string>
+    <string name="notifications_explain_title">Notifications</string>
+    <string name="notifications_explain_text">Screenlate needs the notification permission to show the progress of dictionary imports and downloads. It also makes it possible to keep the system from unloading the bubble, which is a separate switch under “%1$s”.</string>
     <string name="dictionaries_languages">Languages</string>
     <string name="dictionaries_languages_edit">Change</string>
     <string name="dictionaries_languages_title">Dictionary languages</string>

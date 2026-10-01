@@ -23,6 +23,7 @@
     <string name="action_delete">删除</string>
     <string name="action_cancel">取消</string>
     <string name="action_dismiss">忽略</string>
+    <string name="action_ok">确定</string>
 
     <string name="home_dictionaries_title">词典</string>
     <string name="home_dictionaries_summary">已安装：%1$d，已启用：%2$d。</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">进度通知</string>
     <string name="dictionaries_notifications_text">允许通知后，可在应用外查看导入和下载进度。</string>
     <string name="dictionaries_notifications_allow">允许</string>
+    <string name="notifications_explain_title">通知</string>
+    <string name="notifications_explain_text">Screenlate 需要通知权限来显示词典导入和下载的进度。有了它，还可以防止系统关闭悬浮球；这在“%1$s”中有单独的开关。</string>
     <string name="dictionaries_languages">语言</string>
     <string name="dictionaries_languages_edit">更改</string>
     <string name="dictionaries_languages_title">词典语言</string>

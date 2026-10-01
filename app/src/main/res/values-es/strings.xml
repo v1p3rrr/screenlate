@@ -23,6 +23,7 @@
     <string name="action_delete">Eliminar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_dismiss">Descartar</string>
+    <string name="action_ok">Aceptar</string>
 
     <string name="home_dictionaries_title">Diccionarios</string>
     <string name="home_dictionaries_summary">Instalados: %1$d, activados: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Notificaciones de progreso</string>
     <string name="dictionaries_notifications_text">Permite las notificaciones para seguir las importaciones y descargas fuera de la app.</string>
     <string name="dictionaries_notifications_allow">Permitir</string>
+    <string name="notifications_explain_title">Notificaciones</string>
+    <string name="notifications_explain_text">Screenlate necesita el permiso de notificaciones para mostrar el progreso de las importaciones y descargas de diccionarios. Además, permite evitar que el sistema cierre la burbuja; para eso hay un interruptor aparte en «%1$s».</string>
     <string name="dictionaries_languages">Idiomas</string>
     <string name="dictionaries_languages_edit">Cambiar</string>
     <string name="dictionaries_languages_title">Idiomas del diccionario</string>

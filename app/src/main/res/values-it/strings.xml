@@ -23,6 +23,7 @@
     <string name="action_delete">Elimina</string>
     <string name="action_cancel">Annulla</string>
     <string name="action_dismiss">Ignora</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Dizionari</string>
     <string name="home_dictionaries_summary">Installati: %1$d, attivi: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Notifiche di avanzamento</string>
     <string name="dictionaries_notifications_text">Consenti le notifiche per seguire importazioni e download fuori dall’app.</string>
     <string name="dictionaries_notifications_allow">Consenti</string>
+    <string name="notifications_explain_title">Notifiche</string>
+    <string name="notifications_explain_text">Screenlate ha bisogno del permesso per le notifiche per mostrare l’avanzamento di importazioni e download dei dizionari. Permette anche di evitare che il sistema chiuda la bolla; per questo c’è un interruttore a parte in “%1$s”.</string>
     <string name="dictionaries_languages">Lingue</string>
     <string name="dictionaries_languages_edit">Modifica</string>
     <string name="dictionaries_languages_title">Lingue del dizionario</string>

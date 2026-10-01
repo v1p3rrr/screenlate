@@ -23,6 +23,7 @@
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
     <string name="action_dismiss">Bỏ qua</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Từ điển</string>
     <string name="home_dictionaries_summary">Đã cài: %1$d, đang bật: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Thông báo tiến độ</string>
     <string name="dictionaries_notifications_text">Cho phép thông báo để theo dõi việc nhập và tải xuống bên ngoài ứng dụng.</string>
     <string name="dictionaries_notifications_allow">Cho phép</string>
+    <string name="notifications_explain_title">Thông báo</string>
+    <string name="notifications_explain_text">Screenlate cần quyền thông báo để hiển thị tiến trình nhập và tải xuống từ điển. Quyền này cũng giúp ngăn hệ thống đóng bong bóng; việc đó có công tắc riêng trong “%1$s”.</string>
     <string name="dictionaries_languages">Ngôn ngữ</string>
     <string name="dictionaries_languages_edit">Thay đổi</string>
     <string name="dictionaries_languages_title">Ngôn ngữ của từ điển</string>

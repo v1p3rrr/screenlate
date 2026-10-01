@@ -23,6 +23,7 @@
     <string name="action_delete">Sil</string>
     <string name="action_cancel">İptal</string>
     <string name="action_dismiss">Kapat</string>
+    <string name="action_ok">Tamam</string>
 
     <string name="home_dictionaries_title">Sözlükler</string>
     <string name="home_dictionaries_summary">Yüklü: %1$d, etkin: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">İlerleme bildirimleri</string>
     <string name="dictionaries_notifications_text">İçe aktarmaları ve indirmeleri uygulama dışında izlemek için bildirimlere izin verin.</string>
     <string name="dictionaries_notifications_allow">İzin ver</string>
+    <string name="notifications_explain_title">Bildirimler</string>
+    <string name="notifications_explain_text">Screenlate, sözlük içe aktarma ve indirmelerinin ilerlemesini göstermek için bildirim iznine ihtiyaç duyar. Bu izinle sistemin baloncuğu kapatması da önlenebilir; bunun için “%1$s” bölümünde ayrı bir anahtar vardır.</string>
     <string name="dictionaries_languages">Diller</string>
     <string name="dictionaries_languages_edit">Değiştir</string>
     <string name="dictionaries_languages_title">Sözlük dilleri</string>

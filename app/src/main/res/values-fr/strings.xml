@@ -23,6 +23,7 @@
     <string name="action_delete">Supprimer</string>
     <string name="action_cancel">Annuler</string>
     <string name="action_dismiss">Ignorer</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Dictionnaires</string>
     <string name="home_dictionaries_summary">Installés : %1$d, activés : %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Notifications de progression</string>
     <string name="dictionaries_notifications_text">Autorisez les notifications pour suivre les imports et téléchargements hors de l’appli.</string>
     <string name="dictionaries_notifications_allow">Autoriser</string>
+    <string name="notifications_explain_title">Notifications</string>
+    <string name="notifications_explain_text">Screenlate a besoin de l’autorisation des notifications pour afficher la progression des imports et téléchargements de dictionnaires. Elle permet aussi d’empêcher le système de fermer la bulle ; c’est un interrupteur à part dans « %1$s ».</string>
     <string name="dictionaries_languages">Langues</string>
     <string name="dictionaries_languages_edit">Modifier</string>
     <string name="dictionaries_languages_title">Langues du dictionnaire</string>

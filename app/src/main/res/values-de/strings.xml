@@ -23,6 +23,7 @@
     <string name="action_delete">Löschen</string>
     <string name="action_cancel">Abbrechen</string>
     <string name="action_dismiss">Ausblenden</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Wörterbücher</string>
     <string name="home_dictionaries_summary">Installiert: %1$d, aktiviert: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Fortschrittsbenachrichtigungen</string>
     <string name="dictionaries_notifications_text">Erlaube Benachrichtigungen, um Importe und Downloads außerhalb der App zu verfolgen.</string>
     <string name="dictionaries_notifications_allow">Erlauben</string>
+    <string name="notifications_explain_title">Benachrichtigungen</string>
+    <string name="notifications_explain_text">Screenlate braucht die Berechtigung für Benachrichtigungen, um den Fortschritt von Wörterbuch-Importen und Downloads anzuzeigen. Außerdem lässt sich damit verhindern, dass das System die Blase beendet; dafür gibt es einen eigenen Schalter unter „%1$s“.</string>
     <string name="dictionaries_languages">Sprachen</string>
     <string name="dictionaries_languages_edit">Ändern</string>
     <string name="dictionaries_languages_title">Wörterbuchsprachen</string>

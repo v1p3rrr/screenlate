@@ -23,6 +23,7 @@
     <string name="action_delete">Usuń</string>
     <string name="action_cancel">Anuluj</string>
     <string name="action_dismiss">Ukryj</string>
+    <string name="action_ok">OK</string>
 
     <string name="home_dictionaries_title">Słowniki</string>
     <string name="home_dictionaries_summary">Zainstalowane: %1$d, włączone: %2$d.</string>
@@ -383,6 +384,8 @@
     <string name="dictionaries_notifications_title">Powiadomienia o postępie</string>
     <string name="dictionaries_notifications_text">Zezwól na powiadomienia, aby śledzić importy i pobierania poza aplikacją.</string>
     <string name="dictionaries_notifications_allow">Zezwól</string>
+    <string name="notifications_explain_title">Powiadomienia</string>
+    <string name="notifications_explain_text">Screenlate potrzebuje uprawnienia do powiadomień, aby pokazywać postęp importu i pobierania słowników. Pozwala ono też zapobiec zamykaniu dymka przez system; służy do tego osobny przełącznik w sekcji „%1$s”.</string>
     <string name="dictionaries_languages">Języki</string>
     <string name="dictionaries_languages_edit">Zmień</string>
     <string name="dictionaries_languages_title">Języki słownika</string>
