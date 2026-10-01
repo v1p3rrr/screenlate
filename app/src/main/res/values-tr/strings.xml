@@ -13,8 +13,8 @@
     <string name="settings_theme_light">Açık</string>
     <string name="settings_theme_dark">Koyu</string>
     <string name="settings_colors_title">Renkler</string>
-    <string name="settings_colors_wallpaper">Duvar kâğıdı</string>
-    <string name="settings_colors_hint">Screenlate kendi mor renklerini kullanır. Duvar kâğıdı renkleri, diğer uygulamalarda olduğu gibi telefonun duvar kâğıdına uyar.</string>
+    <string name="settings_colors_system">Sistem</string>
+    <string name="settings_colors_hint">Screenlate kendi mor renklerini kullanır. Sistem renklerini telefon seçer, genellikle duvar kâğıdına göre, diğer uygulamalarda olduğu gibi.</string>
 
     <string name="action_back">Geri</string>
     <string name="home_tools_title">Araçlar</string>

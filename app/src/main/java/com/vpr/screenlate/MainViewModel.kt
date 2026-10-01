@@ -29,5 +29,5 @@ class MainViewModel @Inject constructor(
 }
 
 data class AppTheme(val mode: ThemeMode, val eInk: Boolean, val colors: AppColors) {
-    val wallpaperColors: Boolean get() = colors == AppColors.WALLPAPER
+    val systemColors: Boolean get() = colors == AppColors.SYSTEM
 }

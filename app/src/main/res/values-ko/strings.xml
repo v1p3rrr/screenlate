@@ -13,8 +13,8 @@
     <string name="settings_theme_light">밝게</string>
     <string name="settings_theme_dark">어둡게</string>
     <string name="settings_colors_title">색상</string>
-    <string name="settings_colors_wallpaper">배경화면</string>
-    <string name="settings_colors_hint">Screenlate 고유의 보라색 색상을 사용합니다. 배경화면 색상은 다른 앱처럼 휴대전화 배경화면에 맞춰집니다.</string>
+    <string name="settings_colors_system">시스템</string>
+    <string name="settings_colors_hint">Screenlate 고유의 보라색 색상을 사용합니다. 시스템 색상은 다른 앱처럼 휴대전화가 정하며, 보통 배경화면에 맞춰집니다.</string>
 
     <string name="action_back">뒤로</string>
     <string name="home_tools_title">도구</string>

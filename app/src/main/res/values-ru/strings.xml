@@ -13,8 +13,8 @@
     <string name="settings_theme_light">Светлая</string>
     <string name="settings_theme_dark">Тёмная</string>
     <string name="settings_colors_title">Цвета</string>
-    <string name="settings_colors_wallpaper">Обои</string>
-    <string name="settings_colors_hint">Screenlate использует свои фиолетовые цвета. Цвета обоев подстраиваются под обои телефона, как в других приложениях.</string>
+    <string name="settings_colors_system">Системные</string>
+    <string name="settings_colors_hint">Screenlate использует свои фиолетовые цвета. Системные цвета подбирает телефон, обычно под обои, как в других приложениях.</string>
 
     <string name="action_back">Назад</string>
     <string name="home_tools_title">Инструменты</string>

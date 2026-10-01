@@ -13,8 +13,8 @@
     <string name="settings_theme_light">ライト</string>
     <string name="settings_theme_dark">ダーク</string>
     <string name="settings_colors_title">カラー</string>
-    <string name="settings_colors_wallpaper">壁紙</string>
-    <string name="settings_colors_hint">Screenlate 独自の紫の配色を使います。「壁紙」を選ぶと、ほかのアプリと同じようにスマートフォンの壁紙に合わせた色になります。</string>
+    <string name="settings_colors_system">システム</string>
+    <string name="settings_colors_hint">Screenlate 独自の紫の配色を使います。「システム」では、ほかのアプリと同じようにスマートフォンが選んだ色（通常は壁紙に合わせた色）になります。</string>
 
     <string name="action_back">戻る</string>
     <string name="home_tools_title">ツール</string>

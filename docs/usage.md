@@ -75,7 +75,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 ## Appearance
 
 - **Theme**: the system's, light or dark.
-- **Colors** (Android 12 and later): Screenlate's own violet colors with a pink accent on switches, sliders, checkboxes, progress and the main button (the default), or the colors Android derives from the wallpaper.
+- **Colors** (Android 12 and later): Screenlate's own violet colors with a pink accent on switches, sliders, checkboxes, progress and the main button (the default), or System: the colors the phone picks for apps, usually from the wallpaper.
 - **Language** of the interface: the system's, or English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean, Chinese (Simplified or Traditional). It can also be set in the system settings: Apps → Screenlate → Language. Translations were made with AI and have not been reviewed by native speakers; a note under the picker says so.
 - **E-ink mode** (off by default): black and white, no animations, frames instead of translucent highlights, and a black bubble and aim; it overrides the theme. Turning it on offers a larger bubble and larger popup text; turning it off, with the switch or by restoring a backup, brings back the previous sizes, except those changed by hand in the meantime (sizes the backup holds win). On devices that look like e-ink readers the start screen offers the mode once, with a link to "App text only".
 

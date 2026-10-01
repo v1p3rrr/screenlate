@@ -29,7 +29,7 @@ class SettingsDataStoreTest {
         assumeFalse(System.getProperty("os.name").startsWith("Windows"))
         val settings = AppSettingsRepository(settingsDataStore { folder.root.resolve("colors.preferences_pb") })
         assertThat(settings.appColors.first()).isEqualTo(AppColors.SCREENLATE)
-        settings.setAppColors(AppColors.WALLPAPER)
-        assertThat(settings.appColors.first()).isEqualTo(AppColors.WALLPAPER)
+        settings.setAppColors(AppColors.SYSTEM)
+        assertThat(settings.appColors.first()).isEqualTo(AppColors.SYSTEM)
     }
 }

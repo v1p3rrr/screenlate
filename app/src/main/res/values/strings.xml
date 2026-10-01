@@ -16,8 +16,8 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_colors_title">Colors</string>
     <string name="settings_colors_screenlate" translatable="false">Screenlate</string>
-    <string name="settings_colors_wallpaper">Wallpaper</string>
-    <string name="settings_colors_hint">Screenlate uses its own violet colors. Wallpaper colors follow the phone\'s wallpaper, as other apps do.</string>
+    <string name="settings_colors_system">System</string>
+    <string name="settings_colors_hint">Screenlate uses its own violet colors. System colors are the ones the phone picks, usually to match the wallpaper, as in other apps.</string>
 
     <string name="action_back">Back</string>
     <string name="home_tools_title">Tools</string>

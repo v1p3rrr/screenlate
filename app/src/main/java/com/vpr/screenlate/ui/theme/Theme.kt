@@ -53,23 +53,23 @@ private val EInkColorScheme = lightColorScheme(
 val LocalEInk = staticCompositionLocalOf { false }
 
 /**
- * @param wallpaperColors the wallpaper's colors (Android 12+) instead of Screenlate's own.
- * @param eInk e-ink mode: overrides [themeMode] and [wallpaperColors], and turns off ripples.
+ * @param systemColors the colors the phone picks (Android 12+, usually from the wallpaper) instead of Screenlate's own.
+ * @param eInk e-ink mode: overrides [themeMode] and [systemColors], and turns off ripples.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenlateTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     eInk: Boolean = false,
-    wallpaperColors: Boolean = false,
+    systemColors: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val darkTheme = themeMode.isDark(isSystemInDarkTheme())
-    var wallpaper = false
+    var system = false
     val colorScheme = when {
         eInk -> EInkColorScheme
-        wallpaperColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            wallpaper = true
+        systemColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            system = true
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
@@ -78,8 +78,8 @@ fun ScreenlateTheme(
     }
     val accent = when {
         eInk -> Accent(fill = Color.Black, onFill = Color.White, line = Color.Black)
-        // The wallpaper's scheme keeps its own primary color on the controls, as before.
-        wallpaper ->
+        // The system's scheme keeps its own primary color on the controls, as before.
+        system ->
             Accent(fill = colorScheme.primary, onFill = colorScheme.onPrimary, line = colorScheme.primary)
         darkTheme -> Accent(fill = AccentDark, onFill = OnAccent, line = AccentDark)
         else -> Accent(fill = AccentLightFill, onFill = OnAccent, line = AccentLightLine)

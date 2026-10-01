@@ -31,7 +31,7 @@ class AppColorsViewModel @Inject constructor(private val settings: AppSettingsRe
     }
 }
 
-/** Screenlate's own colors or the wallpaper's; only on Android 12 and later, which derive colors from the wallpaper. */
+/** Screenlate's own colors or the system's; only on Android 12 and later, where the phone picks colors for apps. */
 @Composable
 fun AppColorsSection(viewModel: AppColorsViewModel = hiltViewModel()) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
@@ -44,7 +44,7 @@ fun AppColorsSection(viewModel: AppColorsViewModel = hiltViewModel()) {
                 stringResource(
                     when (it) {
                         AppColors.SCREENLATE -> R.string.settings_colors_screenlate
-                        AppColors.WALLPAPER -> R.string.settings_colors_wallpaper
+                        AppColors.SYSTEM -> R.string.settings_colors_system
                     },
                 )
             },

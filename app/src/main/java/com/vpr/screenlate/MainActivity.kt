@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
             ScreenlateTheme(
                 themeMode = theme.mode,
                 eInk = theme.eInk,
-                wallpaperColors = theme.wallpaperColors,
+                systemColors = theme.systemColors,
             ) {
                 LocalNetworkAskEffect()
                 ScreenlateNavHost(

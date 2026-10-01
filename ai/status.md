@@ -531,8 +531,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - `ui/theme/Color.kt`: generated light and dark schemes (secondary containers deepened by hand); `ui/theme/Accent.kt`:
   `Accent` (fill, onFill, line) in `LocalAccent` and `AccentDefaults` for switches, checkboxes, radio buttons, sliders,
   segmented buttons, progress and the main button. All 32 control call sites in `app` use them; the overlay is not
-  touched. `ScreenlateTheme(wallpaperColors)` replaces `dynamicColor`; e-ink gets a black accent.
-- New setting `theme_colors` (`AppColors`: SCREENLATE default, WALLPAPER) in Appearance on Android 12+
+  touched. `ScreenlateTheme(systemColors)` replaces `dynamicColor`; e-ink gets a black accent.
+- New setting `theme_colors` (`AppColors`: SCREENLATE default, SYSTEM: the phone's colors, named so after the owner found "Wallpaper" unclear) in Appearance on Android 12+
   (`AppColorsSection`), reset with Appearance and backed up with the general settings; strings in all 14 languages
   ("Screenlate" untranslatable); `docs/usage.md`.
 - Not checked on a device: every screen in light and dark, the Colors switch, e-ink, Android 11 (no Colors card).

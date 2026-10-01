@@ -13,8 +13,8 @@
     <string name="settings_theme_light">Chiaro</string>
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_colors_title">Colori</string>
-    <string name="settings_colors_wallpaper">Sfondo</string>
-    <string name="settings_colors_hint">Screenlate usa i propri colori viola. I colori dello sfondo seguono lo sfondo del telefono, come nelle altre app.</string>
+    <string name="settings_colors_system">Sistema</string>
+    <string name="settings_colors_hint">Screenlate usa i propri colori viola. I colori di sistema li sceglie il telefono, di solito in base allo sfondo, come nelle altre app.</string>
 
     <string name="action_back">Indietro</string>
     <string name="home_tools_title">Strumenti</string>

@@ -13,8 +13,8 @@
     <string name="settings_theme_light">淺色</string>
     <string name="settings_theme_dark">深色</string>
     <string name="settings_colors_title">色彩</string>
-    <string name="settings_colors_wallpaper">桌布</string>
-    <string name="settings_colors_hint">Screenlate 使用自己的紫色配色。桌布色彩會像其他應用程式一樣隨手機桌布變化。</string>
+    <string name="settings_colors_system">跟隨系統</string>
+    <string name="settings_colors_hint">Screenlate 使用自己的紫色配色。系統色彩由手機選擇，通常與桌布相配，和其他應用程式一樣。</string>
 
     <string name="action_back">返回</string>
     <string name="home_tools_title">工具</string>

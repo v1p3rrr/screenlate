@@ -5,6 +5,6 @@ enum class AppColors {
     /** Screenlate's own violet scheme with a pink accent. */
     SCREENLATE,
 
-    /** The colors Android 12 and later derive from the wallpaper. */
-    WALLPAPER,
+    /** The colors the phone picks on Android 12 and later, usually from the wallpaper. */
+    SYSTEM,
 }
