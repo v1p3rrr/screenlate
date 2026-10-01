@@ -51,7 +51,7 @@ fun BackgroundWorkScreen(
     // was granted, so the switch is written only after the answer.
     val askNotifications = rememberImportNotificationsAsk(onAnswered = { bubble.setKeepAlive(true) })
     val notifications = rememberNotificationsPermission(
-        onGranted = { if (bubbleSettings.keepAlive) BubbleKeepAliveService.repost(context) },
+        onGranted = { if (bubbleSettings?.keepAlive == true) BubbleKeepAliveService.repost(context) },
     )
     var batteryExempt by remember { mutableStateOf(BackgroundSettings.isBatteryExempt(context)) }
     val startupScreen = remember { BackgroundSettings.startupScreen(context) }
@@ -123,9 +123,11 @@ fun BackgroundWorkScreen(
             }
             SectionCard(title = stringResource(R.string.background_keep_alive_title)) {
                 Text(stringResource(R.string.background_keep_alive_text))
+                // The switch waits for the stored setting instead of showing "off" first.
+                val keepAlive = bubbleSettings?.keepAlive ?: return@SectionCard
                 SwitchRow(
                     label = stringResource(R.string.background_keep_alive_switch),
-                    checked = bubbleSettings.keepAlive,
+                    checked = keepAlive,
                     onChange = { enabled ->
                         if (!enabled || !askNotifications()) bubble.setKeepAlive(enabled)
                         // The running service stops it too, but after the phone killed the app the system may restart
@@ -134,7 +136,7 @@ fun BackgroundWorkScreen(
                     },
                     hint = stringResource(R.string.background_keep_alive_hint),
                 )
-                if (bubbleSettings.keepAlive && !notifications.allowed) {
+                if (keepAlive && !notifications.allowed) {
                     Text(
                         stringResource(R.string.background_keep_alive_notifications_off),
                         color = MaterialTheme.colorScheme.error,

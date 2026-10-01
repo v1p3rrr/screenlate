@@ -636,3 +636,11 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   home screen's search button (Yomitan import, Backup, Anki, Background work, updates, Dictionaries, home, e-ink offer,
   OCR test). Outlined and text buttons stay violet. Decision row "App colors" updated.
 - Not seen on a device.
+- Request 40 (the "other screen with a slider" when opening Anki and audio): not the fade. Until AnkiDroid answered
+  (`availability == null`), the Anki screen showed only `AudioSettingsSection` (sources, test, volume slider); the
+  note settings then appeared above and pushed it down, on every opening since each opening gets a new view model.
+  It now shows a spinner until then. Same class, fixed too: `BubbleSettingsViewModel.settings` started from
+  `OverlaySettings()` defaults (switches flipping, recognition sections showing then vanishing for app-text-only),
+  now null until read; the bubble screen and the keep-alive switch on Background work wait for it. Left: Appearance's
+  Colors segment and e-ink switch start from their defaults for a frame (no layout change).
+- Release v0.2.1 (owner's command): notes in `.github/release-notes/v0.2.1.md`.

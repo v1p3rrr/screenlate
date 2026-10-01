@@ -43,6 +43,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 37. Wrapped button labels ("Open accessibility settings" in Russian and other languages) shift to the left; center them, and check other buttons (2026-10-01).
 38. Every screen change plays a fade that flashes white and sometimes shows the previous screen first, and a tap on a menu item opens its screen with a delay; remove it (2026-10-01).
 39. Not every accent button is pink yet, e.g. in Import from Yomitan and Backup: the filled buttons should use the pink accent too (2026-10-01).
+40. Opening Anki and audio (e.g. after Lookup) shows another settings screen with a slider for a moment, every time; find why. Then release v0.2.1 (2026-10-01).
 
 ## Decisions
 
@@ -268,3 +269,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-01: owner: keep every review finding, doubtful ones too, so a main session can come back to them; they are listed under "To revisit" in `ai/status.md` (Next session).
 - 2026-10-01: owner's command: merge the cloud branch into main and release v0.2.0 (owner chose the version); README features updated for the important additions only.
 - 2026-10-01: requests 38 and 39 done in the cloud session: no screen transitions (the 700 ms cross-fade went), and every filled button uses the pink accent (row "App colors" changed by the owner's request).
+- 2026-10-01: request 40: the Anki screen showed only its audio section (sources, test, volume slider) until AnkiDroid answered, then the note settings pushed it down; it now shows a spinner until then. The bubble settings showed the defaults for a moment (and the recognition sections for app-text-only users), Background work its keep-alive switch off; both wait for the stored settings now. Release v0.2.1 on the owner's command.

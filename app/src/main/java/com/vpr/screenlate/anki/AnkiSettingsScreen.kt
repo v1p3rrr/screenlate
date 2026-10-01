@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
@@ -104,10 +106,15 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                     }
                 }
                 AnkiAvailability.READY -> NoteSettings(state, viewModel)
-                null -> Unit
+                // Until AnkiDroid answers, only a spinner: the audio section alone would show first and be pushed
+                // down by the note settings a moment later.
+                null -> CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = AccentDefaults.progress,
+                )
             }
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            AudioSettingsSection()
+            if (state.availability != null) AudioSettingsSection()
         }
     }
 }

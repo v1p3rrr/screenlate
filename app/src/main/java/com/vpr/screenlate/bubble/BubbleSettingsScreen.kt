@@ -80,8 +80,9 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class BubbleSettingsViewModel @Inject constructor(private val repository: OverlaySettingsRepository) : ViewModel() {
-    val settings: StateFlow<OverlaySettings> =
-        repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), OverlaySettings())
+    /** Null until the stored settings are read, so screens do not show the defaults first and then jump. */
+    val settings: StateFlow<OverlaySettings?> =
+        repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun setBubbleVisible(visible: Boolean) = launch { repository.setBubbleVisible(visible) }
 
@@ -128,7 +129,8 @@ fun BubbleSettingsScreen(
     showAppText: Boolean = false,
     viewModel: BubbleSettingsViewModel = hiltViewModel(),
 ) {
-    val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val stored by viewModel.settings.collectAsStateWithLifecycle()
+    val settings = stored ?: OverlaySettings()
     val context = LocalContext.current
     val apps by produceState<List<LaunchableApp>?>(null) { value = launchableApps(context) }
     var filter by remember { mutableStateOf("") }
@@ -136,8 +138,9 @@ fun BubbleSettingsScreen(
     val recognizes = settings.textSource != TextSource.APP_TEXT_ONLY
     var confirmAppTextOnly by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
-    LaunchedEffect(showAppText) {
-        if (showAppText) listState.animateScrollToItem(APP_TEXT_INDEX)
+    // The list is composed once the settings are read; scrolling waits for it.
+    LaunchedEffect(showAppText, stored != null) {
+        if (showAppText && stored != null) listState.animateScrollToItem(APP_TEXT_INDEX)
     }
 
     Scaffold(
@@ -151,6 +154,7 @@ fun BubbleSettingsScreen(
             )
         },
     ) { padding ->
+        if (stored == null) return@Scaffold
         LazyColumn(
             state = listState,
             modifier = Modifier
