@@ -49,6 +49,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val bundled: BundledDictionaries,
     private val catalog: DictionaryCatalog,
     private val installedLanguages: InstalledLanguages,
+    private val imports: DictionaryImports,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
@@ -56,7 +57,9 @@ class DictionaryImportWorker @AssistedInject constructor(
     /** Languages for dictionaries whose index.json names none. */
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+    override suspend fun doWork(): Result = imports.tracked { withContext(Dispatchers.IO) { work() } }
+
+    private suspend fun work(): Result {
         val name = inputData.getString(KEY_NAME).orEmpty()
         runCatching { setForeground(foregroundInfo(name)) }
         // Failures are results with an error: a failed work would fail every import queued after it unrun.
@@ -83,7 +86,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             // Work data is limited to 10 KB.
             workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH))
         }
-        Result.success(output)
+        return Result.success(output)
     }
 
     private suspend fun installBundled(): List<String> {

@@ -503,4 +503,23 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="background_keep_alive_hint">Nie zawsze pomaga. Gdy usługa już się zatrzyma, dymek przywróci tylko wyłączenie i włączenie w ustawieniach ułatwień dostępu.</string>
     <string name="background_keep_alive_notifications_off">Powiadomienia Screenlate są wyłączone: usługa działa, ale jej powiadomienie nie jest widoczne.</string>
     <string name="background_keep_alive_notifications_allow">Zezwól na powiadomienia</string>
+    <string name="action_reset">Resetuj</string>
+    <string name="action_move_up">W górę</string>
+    <string name="action_move_down">W dół</string>
+    <string name="tooltip_more_info">Więcej informacji</string>
+    <string name="reset_all_tooltip">Resetuj wszystkie ustawienia</string>
+    <string name="reset_all_title">Zresetować wszystkie ustawienia?</string>
+    <string name="reset_all_text">Wszystkie ustawienia wracają do stanu po instalacji: dymek i ukryte aplikacje, wyszukiwanie, Anki i dźwięk z szablonami pól, okienko z czcionką, rozmiarami i CSS, motyw i tryb e-ink, praca w tle oraz powiadomienia o nowych wersjach. Wskazówki pokażą się ponownie. Słowniki, zainstalowane czcionki i język aplikacji zostają.</string>
+    <string name="reset_section_tooltip">Resetuj tę sekcję</string>
+    <string name="reset_section_title">Zresetować tę sekcję?</string>
+    <string name="reset_bubble_text">Wszystkie ustawienia dymka wracają do stanu po instalacji, w tym ukryte aplikacje, rozmiar dymka i jego miejsce na ekranie. Ukryty dymek pojawi się znowu.</string>
+    <string name="reset_lookup_text">Długość skanowania, hasła na wyszukiwanie i pozostałe ustawienia wyszukiwania wracają do stanu po instalacji.</string>
+    <string name="reset_anki_text">Talia, typ notatki, szablony pól, tagi, obsługa duplikatów i źródła dźwięku wracają do stanu po instalacji. W AnkiDroid nic się nie zmienia.</string>
+    <string name="reset_popup_text">Wybór czcionki, rozmiar i grubość tekstu, własny CSS i kopiowanie definicji wracają do stanu po instalacji. Pobrane i dodane czcionki pozostają zainstalowane.</string>
+    <string name="reset_appearance_text">Motyw znowu podąża za systemem, a tryb e-ink się wyłącza i przywraca powiększone przez siebie rozmiary. Język aplikacji zostaje.</string>
+    <string name="reset_background_text">Powiadomienie, które podtrzymuje dymek, wyłącza się. Ustawienia baterii i autostartu należą do Androida i pozostają bez zmian.</string>
+    <string name="reset_dictionaries_tooltip">Resetuj słowniki</string>
+    <string name="reset_dictionaries_title">Zresetować słowniki?</string>
+    <string name="reset_dictionaries_text">Wszystkie słowniki zostaną usunięte, także dodane przez Ciebie, a dołączone zostaną zainstalowane od nowa jak po instalacji, z początkową kolejnością i przełącznikami. Trwające importy i pobierania zostaną anulowane. Instalacja trwa do minuty; do tego czasu wyszukiwanie jest niepełne.</string>
+    <string name="reset_dictionaries_running">Zatrzymywanie importów i usuwanie słowników…</string>
 </resources>

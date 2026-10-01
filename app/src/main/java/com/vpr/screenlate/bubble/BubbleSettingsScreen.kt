@@ -22,8 +22,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -47,13 +45,15 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
 import com.vpr.screenlate.core.ocr.OcrEngines
+import com.vpr.screenlate.settings.SectionResetButton
+import com.vpr.screenlate.settings.SettingsSection
+import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -144,10 +144,9 @@ fun BubbleSettingsScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.bubble_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.action_back))
-                    }
+                    BackButton(onBack)
                 },
+                actions = { SectionResetButton(SettingsSection.BUBBLE) },
             )
         },
     ) { padding ->

@@ -24,7 +24,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -54,7 +53,10 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.isLastTermDictionary
+import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
+import com.vpr.screenlate.ui.components.ResetButton
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import java.util.Locale
 
 /** Installed dictionaries (order, enable, delete), running imports and the download catalog. */
@@ -69,6 +71,7 @@ fun DictionariesScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val importError by viewModel.importError.collectAsStateWithLifecycle()
     val updateCheck by viewModel.updateState.collectAsStateWithLifecycle()
+    val resetting by viewModel.resetting.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
     val askNotifications = rememberImportNotificationsAsk()
@@ -84,9 +87,16 @@ fun DictionariesScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.dictionaries_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.action_back))
-                    }
+                    BackButton(onBack)
+                },
+                actions = {
+                    ResetButton(
+                        tooltip = stringResource(R.string.reset_dictionaries_tooltip),
+                        title = stringResource(R.string.reset_dictionaries_title),
+                        text = stringResource(R.string.reset_dictionaries_text),
+                        onReset = viewModel::resetDictionaries,
+                        enabled = !resetting,
+                    )
                 },
             )
         },
@@ -99,6 +109,10 @@ fun DictionariesScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            if (resetting) {
+                Text(stringResource(R.string.reset_dictionaries_running))
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
             OutlinedButton(onClick = { picker.launch(ARCHIVE_TYPES) }, modifier = Modifier.fillMaxWidth()) {
                 Icon(painterResource(R.drawable.ic_add), contentDescription = null)
                 Spacer(Modifier.width(8.dp))
@@ -315,9 +329,7 @@ private fun DictionaryCard(
                 }
             }
             Switch(checked = dictionary.enabled, onCheckedChange = onEnabledChange)
-            IconButton(onClick = onDelete) {
-                Icon(painterResource(R.drawable.ic_delete), stringResource(R.string.action_delete))
-            }
+            TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.action_delete), onClick = onDelete)
         }
         if (expanded) {
             Column(
@@ -527,9 +539,7 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(12.dp),
                 )
-                else -> IconButton(onClick = onDownload) {
-                    Icon(painterResource(R.drawable.ic_download), stringResource(R.string.dictionaries_download))
-                }
+                else -> TooltipIconButton(R.drawable.ic_download, stringResource(R.string.dictionaries_download), onClick = onDownload)
             }
         }
     }

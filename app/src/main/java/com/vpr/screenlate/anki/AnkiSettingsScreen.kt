@@ -14,8 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,7 +32,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,10 +49,14 @@ import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.settings.SectionResetButton
+import com.vpr.screenlate.settings.SettingsSection
+import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.Segments
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
 
@@ -76,10 +77,9 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
             TopAppBar(
                 title = { Text(stringResource(R.string.anki_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.action_back))
-                    }
+                    BackButton(onBack)
                 },
+                actions = { SectionResetButton(SettingsSection.ANKI, onReset = viewModel::resetSettings) },
             )
         },
     ) { padding ->
@@ -303,9 +303,7 @@ private fun TemplateField(field: String, template: String, markers: List<String>
             .onFocusChanged { focused = it.isFocused },
         trailingIcon = {
             Box {
-                IconButton(onClick = { menu = true }) {
-                    Icon(painterResource(R.drawable.ic_add), stringResource(R.string.anki_insert_marker))
-                }
+                TooltipIconButton(R.drawable.ic_add, stringResource(R.string.anki_insert_marker), onClick = { menu = true })
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     markers.forEach { marker ->
                         DropdownMenuItem(
@@ -326,6 +324,11 @@ private fun TemplateField(field: String, template: String, markers: List<String>
 @Composable
 private fun EditableText(key: String, initial: String, label: String, onChange: (String) -> Unit) {
     var text by remember(key) { mutableStateOf(initial) }
+    var focused by remember { mutableStateOf(false) }
+    // A reset changes the value from outside; typing is not overwritten.
+    LaunchedEffect(initial, focused) {
+        if (!focused && initial != text) text = initial
+    }
     OutlinedTextField(
         value = text,
         onValueChange = {
@@ -336,6 +339,8 @@ private fun EditableText(key: String, initial: String, label: String, onChange: 
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = doneClearsFocus(),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { focused = it.isFocused },
     )
 }

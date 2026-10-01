@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -63,6 +62,8 @@ import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.web.noResultsText
+import com.vpr.screenlate.ui.components.BackButton
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.LocalEInk
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -204,9 +205,7 @@ fun SearchScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.search_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.action_back))
-                    }
+                    BackButton(onBack)
                 },
             )
         },
@@ -223,9 +222,7 @@ fun SearchScreen(
                 keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
                 trailingIcon = {
                     if (query.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.query.value = "" }) {
-                            Icon(painterResource(R.drawable.ic_close), stringResource(R.string.action_clear))
-                        }
+                        TooltipIconButton(R.drawable.ic_close, stringResource(R.string.action_clear), onClick = { viewModel.query.value = "" })
                     }
                 },
                 modifier = Modifier

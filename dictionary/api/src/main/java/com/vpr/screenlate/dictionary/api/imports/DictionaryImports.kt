@@ -10,6 +10,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.await
 import androidx.work.workDataOf
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
@@ -38,7 +39,10 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
@@ -74,6 +78,9 @@ class DictionaryImports @Inject constructor(
 
     /** The queue position of the last enqueued import; see [ORDER_TAG_PREFIX]. */
     private val lastOrder = AtomicLong()
+
+    /** Import workers running in this process; a cancelled one runs on until its current step returns. */
+    private val running = MutableStateFlow(0)
 
     /** Imports in the order they were queued. */
     val tasks: Flow<List<ImportTask>> = workManager.getWorkInfosByTagFlow(TAG).map(::importTasks)
@@ -158,6 +165,26 @@ class DictionaryImports @Inject constructor(
     /** Removes finished tasks from [tasks]. */
     fun clearFinished() {
         workManager.pruneWork()
+    }
+
+    /**
+     * Cancels every queued and running import and returns once the running one has stopped, so nothing it was
+     * writing lands later; the cancelled tasks are removed from [tasks].
+     */
+    suspend fun cancelAll() {
+        workManager.cancelAllWorkByTag(TAG).await()
+        running.first { it == 0 }
+        workManager.pruneWork().await()
+    }
+
+    /** Runs a worker's [block], counted for [cancelAll]. */
+    internal suspend fun <T> tracked(block: suspend () -> T): T {
+        running.update { it + 1 }
+        try {
+            return block()
+        } finally {
+            running.update { it - 1 }
+        }
     }
 
     private fun enqueue(data: Data, name: String) {

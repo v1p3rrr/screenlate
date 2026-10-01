@@ -118,6 +118,15 @@ class BundledDictionaries @Inject constructor(
         dataStore.edit { prefs -> prefs[REPAIR] = prefs[REPAIR].orEmpty() + assets.map { it.name } }
     }
 
+    /** Forgets every install, deletion and record, so the next install brings every shipped archive as on a fresh install. */
+    suspend fun reset() {
+        dataStore.edit { prefs ->
+            listOf(INSTALLED, DECLINED, RECORDS, REPAIR).forEach { prefs.remove(it) }
+            // Nothing is left for the migration to check.
+            prefs[DECLINED_CHECKED] = true
+        }
+    }
+
     /**
      * What Screenlate installed from each archive. One installed before this was recorded and shipped unchanged since
      * is filled in from the shipped file, which is what was installed.

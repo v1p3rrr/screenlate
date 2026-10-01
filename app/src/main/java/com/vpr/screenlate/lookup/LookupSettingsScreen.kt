@@ -23,6 +23,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import com.vpr.screenlate.settings.SectionResetButton
+import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.Segments
@@ -37,7 +39,11 @@ private val MAX_RESULT_OPTIONS = listOf(16, 32, 64, 128, 0)
 fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel = hiltViewModel()) {
     val loaded by viewModel.settings.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    SettingsScaffold(stringResource(R.string.lookup_title), onBack) { padding ->
+    SettingsScaffold(
+        stringResource(R.string.lookup_title),
+        onBack,
+        actions = { SectionResetButton(SettingsSection.LOOKUP) },
+    ) { padding ->
         val settings = loaded ?: return@SettingsScaffold
         Column(
             modifier = Modifier

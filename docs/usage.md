@@ -44,6 +44,8 @@ The start screen keeps the search, the service status and warnings; everything e
 - **Import from Yomitan**: a Yomitan settings export (Settings → Backup → Export Settings) brings over one profile's dictionary order and sort dictionary, Anki deck, note type, field templates and duplicate handling, audio sources, scan length, entries per lookup, text size and custom popup CSS. A summary lists what was applied and what was skipped. A dictionary collection export is imported here too; single dictionaries (one `.zip` each) are added under Dictionaries, which the screen links to.
 - **Backup and restore**: see below.
 
+The ⟲ icon at the top of the Settings list returns every setting to how it was after installation: the bubble (whether it shows, its place, size and hidden apps), lookup, Anki and audio, the popup, the appearance, background work and the update announcements; hints and one-time offers show again. The dictionaries, installed fonts and the interface language stay. Bubble, Lookup, Anki and audio, Popup, Appearance and Background work each have the same icon for their own settings; a page reset leaves the rest alone, and the battery and startup settings, which belong to Android, never change. Every reset asks first. Holding an icon button shows what it does.
+
 When something breaks outside Screenlate (AnkiDroid removed or its permission revoked, the note type or deck deleted, fields renamed, the accessibility service turned off, dictionary files missing, audio sources failing), the start screen says what and links to the fix; several missing dictionaries or failed audio sources share one card. In the popup, ➕ turns grey; tapping it shows the reason and a button that opens the Anki settings.
 
 ## Entries
@@ -87,6 +89,7 @@ Lookups also try a common respelling of the text: digits as kanji numerals (1人
 - Before a collection import writes anything, it checks the free space for the chosen dictionaries. The fastest import needs roughly as much free space as those dictionaries take in the export; with less, the import packs its temporary files more tightly and takes longer. If even that does not fit, the import stops with a message saying how much space is needed. With at least four times the file size free, the check is skipped.
 - A dictionary's details link to its website and to where it can be downloaded, when the dictionary or the catalog names them.
 - Missing dictionary files are restored automatically for bundled dictionaries; catalog dictionaries can be downloaded again in one tap.
+- ⟲ at the top returns the dictionaries to how they were after installation: running imports and downloads are cancelled, every dictionary is deleted, including the ones you added, and the bundled ones are installed again with the default order, switches and sort dictionary. Lookups are incomplete until that is done, usually within a minute.
 
 ## Backup and restore
 

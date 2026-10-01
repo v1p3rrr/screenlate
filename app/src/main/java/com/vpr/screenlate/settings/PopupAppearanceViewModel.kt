@@ -24,6 +24,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -43,6 +45,7 @@ import kotlinx.coroutines.withContext
 class PopupAppearanceViewModel @Inject constructor(
     private val repository: PopupAppearanceRepository,
     private val fonts: PopupFonts,
+    private val settingsReset: SettingsReset,
 ) : ViewModel() {
     val appearance: StateFlow<PopupAppearance?> =
         repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -83,6 +86,11 @@ class PopupAppearanceViewModel @Inject constructor(
     /** The CSS being edited, which may be ahead of the saved setting; null before the first edit. */
     val cssDraft: String? get() = cssEdits.value
 
+    private val mutableResets = MutableStateFlow(0)
+
+    /** Counts resets of the page, after which the CSS field takes [cssDraft] again. */
+    val resets: StateFlow<Int> = mutableResets
+
     init {
         // The field edits its own copy; the setting follows once typing pauses.
         viewModelScope.launch { cssEdits.filterNotNull().debounce(CSS_SAVE_DELAY_MS).collect { repository.setCustomCss(it) } }
@@ -117,6 +125,16 @@ class PopupAppearanceViewModel @Inject constructor(
 
     fun setCustomCss(css: String) {
         cssEdits.value = css
+    }
+
+    /** Resets the page's settings, the CSS being edited included. */
+    fun resetSettings() {
+        // The default as the latest edit: a save of the old text still waiting would otherwise bring it back.
+        cssEdits.value = PopupAppearance().customCss
+        viewModelScope.launch {
+            withContext(NonCancellable) { settingsReset.reset(SettingsSection.POPUP) }
+            mutableResets.update { it + 1 }
+        }
     }
 
     override fun onCleared() {

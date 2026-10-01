@@ -504,4 +504,23 @@
     <string name="background_keep_alive_hint">Помогает не всегда. Если служба уже остановлена, кнопку вернёт только выключение и включение в настройках специальных возможностей.</string>
     <string name="background_keep_alive_notifications_off">Уведомления для Screenlate выключены: служба работает, но её уведомление не видно.</string>
     <string name="background_keep_alive_notifications_allow">Разрешить уведомления</string>
+    <string name="action_reset">Сбросить</string>
+    <string name="action_move_up">Выше</string>
+    <string name="action_move_down">Ниже</string>
+    <string name="tooltip_more_info">Подробнее</string>
+    <string name="reset_all_tooltip">Сбросить все настройки</string>
+    <string name="reset_all_title">Сбросить все настройки?</string>
+    <string name="reset_all_text">Все настройки вернутся к тем, что были после установки: плавающая кнопка и скрытые приложения, поиск, Anki и аудио с шаблонами полей, попап со шрифтом, размерами и CSS, тема и режим e-ink, работа в фоне и сообщения о новых версиях. Подсказки покажутся снова. Словари, установленные шрифты и язык приложения останутся.</string>
+    <string name="reset_section_tooltip">Сбросить раздел</string>
+    <string name="reset_section_title">Сбросить настройки раздела?</string>
+    <string name="reset_bubble_text">Все настройки плавающей кнопки вернутся к тем, что были после установки, включая скрытые приложения, размер кнопки и её место на экране. Скрытая кнопка снова появится.</string>
+    <string name="reset_lookup_text">Длина скана, число статей и остальные настройки поиска вернутся к тем, что были после установки.</string>
+    <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дубликатов и источники аудио вернутся к тем, что были после установки. В AnkiDroid ничего не изменится.</string>
+    <string name="reset_popup_text">Выбор шрифта, размер и толщина текста, свой CSS и копирование определений вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
+    <string name="reset_appearance_text">Тема снова будет как в системе, режим e-ink выключится, а увеличенные им размеры вернутся. Язык приложения останется.</string>
+    <string name="reset_background_text">Уведомление, которое не даёт кнопке пропадать, выключится. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
+    <string name="reset_dictionaries_tooltip">Сбросить словари</string>
+    <string name="reset_dictionaries_title">Сбросить словари?</string>
+    <string name="reset_dictionaries_text">Все словари удалятся, включая добавленные вами, а предустановленные поставятся заново, как после установки, с исходным порядком и переключателями. Идущие импорты и скачивания отменятся. Установка займёт до минуты; до её конца поиск будет неполным.</string>
+    <string name="reset_dictionaries_running">Останавливаю импорты и удаляю словари…</string>
 </resources>

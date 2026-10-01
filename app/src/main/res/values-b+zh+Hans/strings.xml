@@ -488,4 +488,23 @@
     <string name="background_keep_alive_hint">并非总是有效。服务一旦被停止，只有在无障碍设置中关闭再打开才能找回悬浮球。</string>
     <string name="background_keep_alive_notifications_off">Screenlate 的通知已关闭：服务仍在运行，但不会显示其通知。</string>
     <string name="background_keep_alive_notifications_allow">允许通知</string>
+    <string name="action_reset">重置</string>
+    <string name="action_move_up">上移</string>
+    <string name="action_move_down">下移</string>
+    <string name="tooltip_more_info">详细信息</string>
+    <string name="reset_all_tooltip">重置所有设置</string>
+    <string name="reset_all_title">要重置所有设置吗？</string>
+    <string name="reset_all_text">所有设置都会恢复到安装后的状态：悬浮球及其隐藏的应用、查词、Anki 和音频（含字段模板）、弹窗（含字体、大小和 CSS）、主题和墨水屏模式、后台运行以及新版本通知。提示也会再次显示。词典、已安装的字体和应用语言保持不变。</string>
+    <string name="reset_section_tooltip">重置此部分</string>
+    <string name="reset_section_title">要重置此部分吗？</string>
+    <string name="reset_bubble_text">悬浮球的所有设置都会恢复到安装后的状态，包括隐藏的应用、悬浮球的大小及其在屏幕上的位置。已隐藏的悬浮球会重新出现。</string>
+    <string name="reset_lookup_text">扫描长度、每次查词的词条数和其他查词设置会恢复到安装后的状态。</string>
+    <string name="reset_anki_text">牌组、笔记类型、字段模板、标签、重复处理方式和音频来源会恢复到安装后的状态。AnkiDroid 中的内容不会改变。</string>
+    <string name="reset_popup_text">字体选择、文字大小和粗细、自定义 CSS 以及释义复制会恢复到安装后的状态。已下载和已添加的字体仍保留安装。</string>
+    <string name="reset_appearance_text">主题重新跟随系统，墨水屏模式关闭，并恢复它放大过的尺寸。应用语言保持不变。</string>
+    <string name="reset_background_text">让悬浮球保持运行的通知会关闭。电池和自启动设置属于 Android，保持不变。</string>
+    <string name="reset_dictionaries_tooltip">重置词典</string>
+    <string name="reset_dictionaries_title">要重置词典吗？</string>
+    <string name="reset_dictionaries_text">所有词典都会被删除，包括你添加的词典，内置词典会像安装后一样以初始顺序和开关重新安装。正在进行的导入和下载会被取消。安装最多需要一分钟，在此之前查词结果不完整。</string>
+    <string name="reset_dictionaries_running">正在停止导入并删除词典…</string>
 </resources>

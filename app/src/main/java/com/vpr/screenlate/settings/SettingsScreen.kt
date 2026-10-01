@@ -53,7 +53,7 @@ fun SettingsScreen(
         onBack()
     }
     BackHandler(enabled = backgroundBadge, onBack = leave)
-    SettingsScaffold(stringResource(R.string.settings_title), leave) { padding ->
+    SettingsScaffold(stringResource(R.string.settings_title), leave, actions = { ResetAllButton() }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

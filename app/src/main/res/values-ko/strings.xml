@@ -488,4 +488,23 @@
     <string name="background_keep_alive_hint">항상 도움이 되지는 않습니다. 서비스가 중지된 뒤에는 접근성 설정에서 꺼다가 켜야만 버블이 돌아옵니다.</string>
     <string name="background_keep_alive_notifications_off">Screenlate 알림이 꺼져 있습니다. 서비스는 실행 중이지만 알림이 표시되지 않습니다.</string>
     <string name="background_keep_alive_notifications_allow">알림 허용</string>
+    <string name="action_reset">초기화</string>
+    <string name="action_move_up">위로</string>
+    <string name="action_move_down">아래로</string>
+    <string name="tooltip_more_info">자세히</string>
+    <string name="reset_all_tooltip">모든 설정 초기화</string>
+    <string name="reset_all_title">모든 설정을 초기화할까요?</string>
+    <string name="reset_all_text">모든 설정이 설치 직후 상태로 돌아갑니다: 버블과 숨긴 앱, 검색, 필드 템플릿을 포함한 Anki와 오디오, 글꼴·크기·CSS를 포함한 팝업, 테마와 E-ink 모드, 백그라운드 작업, 새 버전 알림. 도움말도 다시 표시됩니다. 사전, 설치한 글꼴, 앱 언어는 그대로입니다.</string>
+    <string name="reset_section_tooltip">이 섹션 초기화</string>
+    <string name="reset_section_title">이 섹션을 초기화할까요?</string>
+    <string name="reset_bubble_text">버블의 모든 설정이 설치 직후 상태로 돌아갑니다. 숨긴 앱, 버블 크기, 화면에서의 위치도 포함됩니다. 숨긴 버블이 다시 나타납니다.</string>
+    <string name="reset_lookup_text">스캔 길이, 검색당 항목 수와 그 밖의 검색 설정이 설치 직후 상태로 돌아갑니다.</string>
+    <string name="reset_anki_text">덱, 노트 유형, 필드 템플릿, 태그, 중복 처리, 오디오 소스가 설치 직후 상태로 돌아갑니다. AnkiDroid에서는 아무것도 바뀌지 않습니다.</string>
+    <string name="reset_popup_text">글꼴 선택, 글자 크기와 굵기, 사용자 CSS, 뜻풀이 복사가 설치 직후 상태로 돌아갑니다. 다운로드하거나 추가한 글꼴은 그대로 설치되어 있습니다.</string>
+    <string name="reset_appearance_text">테마가 다시 시스템을 따르고 E-ink 모드가 꺼지며, 이 모드가 키운 크기도 돌아옵니다. 앱 언어는 그대로입니다.</string>
+    <string name="reset_background_text">버블을 유지하는 알림이 꺼집니다. 배터리와 자동 시작 설정은 Android의 설정이라 그대로입니다.</string>
+    <string name="reset_dictionaries_tooltip">사전 초기화</string>
+    <string name="reset_dictionaries_title">사전을 초기화할까요?</string>
+    <string name="reset_dictionaries_text">직접 추가한 사전을 포함해 모든 사전이 삭제되고, 기본 제공 사전이 설치 직후처럼 처음 순서와 스위치로 다시 설치됩니다. 진행 중인 가져오기와 다운로드는 취소됩니다. 설치에는 최대 1분이 걸리며, 그때까지는 검색 결과가 불완전합니다.</string>
+    <string name="reset_dictionaries_running">가져오기를 멈추고 사전을 삭제하는 중…</string>
 </resources>

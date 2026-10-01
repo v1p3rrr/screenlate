@@ -14,7 +14,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   instead) and 21 (bubble menu above first, Back and any outside tap close it) are done. The tap that closes the menu
   stays consumed (owner). The merged branch `claude/elegant-allen-xmu3fx` is deleted on GitHub and locally. Nothing
   is open from those. Request 22 (open review findings, bundled dictionary updates) is done, see the 2026-10-01
-  log entry; request 23 (settings resets, tooltips) is next, answers in the feedback plan.
+  log entry; request 23 (settings resets, tooltips) is done, see its log entry.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
   read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
   `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
@@ -388,3 +388,26 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   archive updated Screenlate's copy; a user's import (newer revision) stayed through an older and then the original
   shipped archive; a bundled dictionary whose folder was deleted was reinstalled with its id, position and switches.
   A folder emptied except the engine's hidden `.hoshidicts_N` marker still counts as having files (not a real case).
+
+### 2026-10-01 (settings resets, icon tooltips)
+
+- Owner's request 23: a reset icon at the top right of Settings with a confirmation, and a short tooltip on a long
+  press of every icon-only button. Answers are in the feedback plan's decision table ("Settings reset", "Dictionary
+  reset", "Tooltips").
+- `SettingsReset` removes DataStore keys by name (`SettingsKeys` maps names to pages). The global reset clears every
+  page plus update announcements (switch and announced tag), the e-ink offer, the background tip and the
+  notification-permission flag; dictionaries, bundled bookkeeping, migrations and the app language stay. Each settings
+  page (Bubble, Lookup, Anki and audio, Popup, Appearance, Background work) has its own reset; About has none. The
+  bubble reset shows a hidden bubble again and moves it to the default place. Appearance goes through
+  `EInkSizes.restore`; Background stops the keep-alive service. Popup replaces the pending CSS save with the default
+  first, and an empty CSS now removes the key; Anki rechecks the setup after its reset (the "note type is gone" card
+  stayed before).
+- `DictionaryReset` (Dictionaries page): cancels import jobs by tag and waits for running workers to leave their
+  body, forgets the bundled installs, deletes everything (`DictionaryRepository.deleteAll`) and queues the bundled
+  archives; the page shows a progress line meanwhile and the icon is disabled.
+- Tooltips: `TooltipIconButton`/`WithTooltip`/`BackButton` in `ui/components/IconButtons.kt` on back, settings, ⓘ,
+  delete, download, reset, the ➕ marker button and the audio source arrows. Not in the popup (owner).
+- Checked on the emulator: every page reset, the global reset (only bundled and migration keys left), the
+  dictionary reset (four bundled dictionaries in the default order; a running Jitendex download cancelled; no
+  temporary files left), tooltips and the Russian texts. The test environment was restored afterwards from a copy
+  taken before the tests (settings byte-identical, 20 dictionaries, the user's Jiten copy 26-12-01).

@@ -9,6 +9,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
+import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -69,6 +70,7 @@ class DictionariesViewModel @Inject constructor(
     private val dictionaryUpdates: DictionaryUpdates,
     private val bundled: BundledDictionaries,
     private val lookup: DictionaryLookup,
+    private val dictionaryReset: DictionaryReset,
     catalog: DictionaryCatalog,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
@@ -124,6 +126,14 @@ class DictionariesViewModel @Inject constructor(
         throw e
     } catch (e: Exception) {
         emptySet()
+    }
+
+    /** Whether a reset is stopping imports or deleting dictionaries. */
+    val resetting: StateFlow<Boolean> = dictionaryReset.running
+
+    /** Returns the dictionaries to a fresh install; leaving the screen does not stop it. */
+    fun resetDictionaries() {
+        viewModelScope.launch { withContext(NonCancellable) { dictionaryReset.reset() } }
     }
 
     /** Error from copying a picked file, before the import is queued. */

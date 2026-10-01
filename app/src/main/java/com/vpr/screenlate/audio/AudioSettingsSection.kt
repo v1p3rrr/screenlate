@@ -14,8 +14,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -47,6 +44,8 @@ import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.components.TooltipIconButton
+import com.vpr.screenlate.ui.components.WithTooltip
 import com.vpr.screenlate.ui.components.doneClearsFocus
 
 /** Auto-play, volume, the audio sources in priority order, and a test of every source with a sample word. */
@@ -125,11 +124,13 @@ private fun SourceRow(
             }
             if (source.type == AudioSourceType.TEXT_TO_SPEECH) Hint(stringResource(R.string.audio_tts_hint))
         }
-        TextButton(onClick = { onMove(-1) }, enabled = index > 0) { Text("↑") }
-        TextButton(onClick = { onMove(1) }, enabled = !isLast) { Text("↓") }
-        IconButton(onClick = onDelete) {
-            Icon(painterResource(R.drawable.ic_delete), stringResource(R.string.action_delete))
+        WithTooltip(stringResource(R.string.action_move_up)) {
+            TextButton(onClick = { onMove(-1) }, enabled = index > 0) { Text("↑") }
         }
+        WithTooltip(stringResource(R.string.action_move_down)) {
+            TextButton(onClick = { onMove(1) }, enabled = !isLast) { Text("↓") }
+        }
+        TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.action_delete), onClick = onDelete)
     }
 }
 

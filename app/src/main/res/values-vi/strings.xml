@@ -488,4 +488,23 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="background_keep_alive_hint">Không phải lúc nào cũng hiệu quả. Khi dịch vụ đã dừng, chỉ có tắt rồi bật lại trong cài đặt trợ năng mới đưa bong bóng trở lại.</string>
     <string name="background_keep_alive_notifications_off">Thông báo của Screenlate đang tắt: dịch vụ vẫn chạy nhưng thông báo của nó không hiển thị.</string>
     <string name="background_keep_alive_notifications_allow">Cho phép thông báo</string>
+    <string name="action_reset">Đặt lại</string>
+    <string name="action_move_up">Lên trên</string>
+    <string name="action_move_down">Xuống dưới</string>
+    <string name="tooltip_more_info">Thêm thông tin</string>
+    <string name="reset_all_tooltip">Đặt lại mọi cài đặt</string>
+    <string name="reset_all_title">Đặt lại mọi cài đặt?</string>
+    <string name="reset_all_text">Mọi cài đặt trở về như sau khi cài: bong bóng và các ứng dụng đã ẩn, tra cứu, Anki và âm thanh cùng mẫu trường, cửa sổ bật lên cùng phông chữ, kích thước và CSS, giao diện và chế độ e-ink, chạy nền và thông báo phiên bản mới. Các gợi ý sẽ hiện lại. Từ điển, phông chữ đã cài và ngôn ngữ ứng dụng được giữ nguyên.</string>
+    <string name="reset_section_tooltip">Đặt lại mục này</string>
+    <string name="reset_section_title">Đặt lại mục này?</string>
+    <string name="reset_bubble_text">Mọi cài đặt của bong bóng trở về như sau khi cài, kể cả các ứng dụng đã ẩn, kích thước bong bóng và vị trí của nó trên màn hình. Bong bóng đã ẩn sẽ hiện lại.</string>
+    <string name="reset_lookup_text">Độ dài quét, số mục mỗi lần tra và các cài đặt tra cứu khác trở về như sau khi cài.</string>
+    <string name="reset_anki_text">Bộ thẻ, loại ghi chú, mẫu trường, nhãn, cách xử lý trùng lặp và nguồn âm thanh trở về như sau khi cài. Trong AnkiDroid không có gì thay đổi.</string>
+    <string name="reset_popup_text">Lựa chọn phông chữ, cỡ và độ đậm của chữ, CSS tùy chỉnh và việc sao chép định nghĩa trở về như sau khi cài. Phông chữ đã tải và đã thêm vẫn được cài.</string>
+    <string name="reset_appearance_text">Giao diện lại theo hệ thống và chế độ e-ink tắt, trả lại các kích thước nó đã phóng to. Ngôn ngữ ứng dụng được giữ nguyên.</string>
+    <string name="reset_background_text">Thông báo giữ cho bong bóng hoạt động sẽ tắt. Cài đặt pin và tự khởi động thuộc về Android và giữ nguyên.</string>
+    <string name="reset_dictionaries_tooltip">Đặt lại từ điển</string>
+    <string name="reset_dictionaries_title">Đặt lại từ điển?</string>
+    <string name="reset_dictionaries_text">Mọi từ điển đều bị xóa, kể cả những từ điển bạn đã thêm, và các từ điển đi kèm được cài lại như sau khi cài, với thứ tự và công tắc ban đầu. Các lần nhập và tải xuống đang chạy sẽ bị hủy. Việc cài mất tới một phút; đến lúc đó kết quả tra cứu chưa đầy đủ.</string>
+    <string name="reset_dictionaries_running">Đang dừng nhập và xóa từ điển…</string>
 </resources>

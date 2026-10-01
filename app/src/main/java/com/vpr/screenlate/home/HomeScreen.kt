@@ -14,7 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -49,6 +48,7 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.settings.EInkHint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.update.UpdateAnnouncementCard
 import com.vpr.screenlate.update.UpdateViewModel
 
@@ -83,7 +83,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_title)) },
                 actions = {
-                    IconButton(onClick = onOpenSettings) {
+                    TooltipIconButton(stringResource(R.string.settings_title), onClick = onOpenSettings) {
                         BadgedBox(badge = { if (settingsBadge) Badge() }) {
                             Icon(
                                 painterResource(R.drawable.ic_settings),

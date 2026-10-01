@@ -254,6 +254,15 @@ class DictionaryRepository @Inject constructor(
         storage.directoryOf(dictionary).deleteRecursively()
     }
 
+    /** Deletes every dictionary and forgets the chosen sort dictionary. */
+    suspend fun deleteAll() = mutex.withLock {
+        val all = dao.getAll()
+        all.forEach { dao.delete(it) }
+        preferences.edit { it.remove(SORT_DICTIONARY) }
+        reloadLocked()
+        all.forEach { storage.directoryOf(it).deleteRecursively() }
+    }
+
     /** Loads the engine for [language] unless it is already loaded; returns what lookups need to know. */
     suspend fun prepareLookup(language: Language): PreparedLookup = mutex.withLock {
         if (loadedLanguage != language) load(language)

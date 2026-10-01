@@ -121,7 +121,8 @@ class PopupAppearanceRepository @Inject constructor(
     }
 
     suspend fun setCustomCss(css: String) {
-        dataStore.edit { it[CUSTOM_CSS] = css }
+        // Empty is the default: a reset's pending save then leaves no key behind.
+        dataStore.edit { if (css.isEmpty()) it.remove(CUSTOM_CSS) else it[CUSTOM_CSS] = css }
     }
 
     private companion object {

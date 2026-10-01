@@ -17,10 +17,13 @@ import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.settings.SettingsReset
+import com.vpr.screenlate.settings.SettingsSection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class AnkiScreenState(
     /** Null until AnkiDroid was checked. */
@@ -48,6 +52,7 @@ class AnkiSettingsViewModel @Inject constructor(
     private val anki: AnkiDroid,
     private val notes: AnkiNotes,
     private val settingsRepository: AnkiSettingsRepository,
+    private val settingsReset: SettingsReset,
     dictionaries: DictionaryRepository,
 ) : ViewModel() {
     private val connection = MutableStateFlow(AnkiScreenState())
@@ -99,6 +104,14 @@ class AnkiSettingsViewModel @Inject constructor(
                     if (it is CancellationException) throw it
                     connection.value = AnkiScreenState(availability = availability, error = it.message)
                 }
+        }
+    }
+
+    /** Resets the page's settings; the setup is checked again, as no note type is chosen any more. */
+    fun resetSettings() {
+        viewModelScope.launch {
+            withContext(NonCancellable) { settingsReset.reset(SettingsSection.ANKI) }
+            refresh()
         }
     }
 

@@ -29,6 +29,8 @@ import com.vpr.screenlate.bubble.BubbleSettingsViewModel
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.dictionaries.rememberNotificationsPermission
 import com.vpr.screenlate.overlay.BubbleKeepAliveService
+import com.vpr.screenlate.settings.SectionResetButton
+import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -57,7 +59,11 @@ fun BackgroundWorkScreen(
         onPauseOrDispose { }
     }
 
-    SettingsScaffold(stringResource(R.string.background_title), onBack) { padding ->
+    SettingsScaffold(
+        stringResource(R.string.background_title),
+        onBack,
+        actions = { SectionResetButton(SettingsSection.BACKGROUND) },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

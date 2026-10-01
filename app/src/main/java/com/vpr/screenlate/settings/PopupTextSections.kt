@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -33,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +52,7 @@ import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
+import com.vpr.screenlate.ui.components.TooltipIconButton
 import kotlin.math.roundToInt
 
 private val FONT_TYPES = arrayOf(
@@ -169,9 +167,12 @@ private fun FontOption(
             Hint(subtitle)
         }
         if (onDelete != null) {
-            IconButton(onClick = onDelete) {
-                Icon(painterResource(R.drawable.ic_delete), stringResource(R.string.popup_font_delete, title))
-            }
+            TooltipIconButton(
+                R.drawable.ic_delete,
+                stringResource(R.string.action_delete),
+                onClick = onDelete,
+                description = stringResource(R.string.popup_font_delete, title),
+            )
         }
     }
 }
@@ -282,7 +283,8 @@ private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: (
 @Composable
 private fun CssCard(saved: String, installed: List<InstalledFont>, viewModel: PopupAppearanceViewModel) {
     // The view model keeps the latest edit across configuration changes; the setting follows after a delay.
-    var css by remember { mutableStateOf(viewModel.cssDraft ?: saved) }
+    val resets by viewModel.resets.collectAsStateWithLifecycle()
+    var css by remember(resets) { mutableStateOf(viewModel.cssDraft ?: saved) }
     val issues = remember(css, installed) { PopupAppearanceViewModel.cssIssues(css, installed) }
     SectionCard(title = stringResource(R.string.popup_css_title)) {
         LabelWithInfo(stringResource(R.string.popup_css_short), stringResource(R.string.popup_css_hint))

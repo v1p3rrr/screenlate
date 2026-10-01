@@ -26,7 +26,11 @@ import com.vpr.screenlate.ui.components.SwitchRow
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
-    SettingsScaffold(stringResource(R.string.popup_settings_title), onBack) { padding ->
+    SettingsScaffold(
+        stringResource(R.string.popup_settings_title),
+        onBack,
+        actions = { SectionResetButton(SettingsSection.POPUP, onReset = viewModel::resetSettings) },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
