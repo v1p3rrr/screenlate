@@ -90,10 +90,15 @@ class DictionaryLookup @Inject constructor(
         val longest = results.maxByOrNull { it.matched.length }?.matched ?: return emptyList()
         val shown = results.mapTo(mutableSetOf()) { it.term.expression to it.term.reading }
         return language.support.singleCharacterEntries(longest).flatMap { character ->
-            val entries = engine.lookup(character, options.copy(scanLength = 1, primaryReading = null))
+            val engineOptions = options.copy(
+                scanLength = 1,
+                primaryReading = null,
+                maxResults = engineLimit(options.maxResults, dictionaryOrder.size),
+            )
+            val entries = engine.lookup(character, engineOptions)
                 .filter { it.term.expression == character && it.deinflected == character }
                 .filter { shown.add(it.term.expression to it.term.reading) }
-            YomitanSorter.sort(entries, options, dictionaryOrder)
+            YomitanSorter.sort(entries, options, dictionaryOrder).take(options.maxResults)
         }
     }
 

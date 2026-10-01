@@ -654,3 +654,15 @@ test('an update while a link view is on top changes the first view and only the 
     assert.equal(content.querySelectorAll('article.entry').length, 1);
     assert.match(content.textContent, /好すき/);
 });
+
+test('going back to a link view under the top one keeps the status of the last update', () => {
+    Popup.render(state({ pending: true, noteWait: true }));
+    Popup.push(state({ pending: true, noteWait: true, source: { text: '犬', matched: 1 }, results: [result('犬', 'いぬ')] }));
+    Popup.push(state({ pending: true, noteWait: true, source: { text: '猿', matched: 1 }, results: [result('猿', 'さる')] }));
+    Popup.update(state({ theme: 'light', pending: false, noteWait: false }));
+    page.document.getElementById('back').click();
+    assert.match(content.textContent, /犬/);
+    assert.equal(page.document.documentElement.dataset.theme, 'light');
+    assert.equal(page.document.documentElement.dataset.noteWait, 'false');
+    assert.equal(page.document.getElementById('spinner').hidden, true);
+});

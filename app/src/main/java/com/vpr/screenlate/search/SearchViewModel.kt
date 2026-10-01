@@ -73,7 +73,8 @@ class SearchViewModel @Inject constructor(
         val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading) }
         if (found.isNotEmpty()) return SearchResults(trimmed, found, noTermDictionary = null)
         val kanji = orElse(null) { lookup.characterEntry(trimmed, LANGUAGE) }
-        return SearchResults(trimmed, found, noTermDictionary = lookup.noTermDictionary(LANGUAGE), kanji = kanji)
+        val noTermDictionary = orElse(null) { lookup.noTermDictionary(LANGUAGE) }
+        return SearchResults(trimmed, found, noTermDictionary = noTermDictionary, kanji = kanji)
     }
 
     suspend fun kanji(character: String): KanjiResult = orElse(KanjiResult(character)) { lookup.kanji(character, LANGUAGE) }

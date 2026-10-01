@@ -802,14 +802,16 @@ const Popup = (() => {
     }
 
     /**
-     * Updates the first view (the app does not know about views pushed by links); a pushed view on top keeps its
-     * entries and takes the theme and OCR status.
+     * Updates the first view (the app does not know about views pushed by links); pushed views keep their entries and
+     * take the theme and OCR status, the ones under the top too, so going back does not bring an old status.
      */
     function update(state) {
         if (history.length) {
-            history[0].state = state;
             const { theme, pending, noteWait, engine, ocrError } = state;
-            current = { ...current, theme, pending, noteWait, engine, ocrError };
+            const status = { theme, pending, noteWait, engine, ocrError };
+            history[0].state = state;
+            for (let i = 1; i < history.length; i++) history[i].state = { ...history[i].state, ...status };
+            current = { ...current, ...status };
             drawHeader(current);
             return;
         }

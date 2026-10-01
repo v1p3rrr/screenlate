@@ -131,6 +131,10 @@ test('without anything that looks like a meaning the lines are copied as one', (
     assert.equal(meanings(glossary([sc([])])), '');
 });
 
+test('a plain gloss that starts with a number is not taken for a numbered meaning', () => {
+    assert.equal(meanings(glossary(['all day', '24 hours'])), '1. all day\n2. 24 hours');
+});
+
 test('meanings of several glossaries are numbered together', () => {
     assert.equal(meanings(glossary(['to eat']), glossary(['to live on'])), '1. to eat\n2. to live on');
 });

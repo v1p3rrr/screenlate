@@ -367,33 +367,25 @@ window.YomitanRender = (() => {
         let i = start;
         while (i < css.length) {
             const c = css[i];
-            if (c === '\\') {
-                i = escapeEnd(css, i);
-            } else if (c === '"' || c === "'") {
-                const end = rawStringEnd(css, i);
-                if (end < css.length && css[end] === c) {
-                    i = end + 1;
-                    continue;
+            if (c === '"' || c === "'") {
+                const stringEnd = rawStringEnd(css, i);
+                if (stringEnd >= css.length || css[stringEnd] !== c) {
+                    // A string left open ends at the line break; its `;` still ends the rule, as it always did, so a
+                    // broken `@charset "utf-8;` does not take the next rule with it.
+                    for (let j = i + 1; j < stringEnd; j++) {
+                        if (css[j] === ';') return j;
+                        if (css[j] === '{') return -1;
+                    }
                 }
-                // A string left open ends at the line break; its `;` still ends the rule, as it always did, so a
-                // broken `@charset "utf-8;` does not take the next rule with it.
-                for (let j = i + 1; j < end; j++) {
-                    if (css[j] === ';') return j;
-                    if (css[j] === '{') return -1;
-                }
-                i = end;
-            } else if (css.startsWith('/*', i)) {
-                const end = css.indexOf('*/', i + 2);
-                if (end === -1) return -1;
-                i = end + 2;
-            } else if (c === ';') {
-                return i;
-            } else if (c === '{') {
-                return -1;
-            } else {
-                const url = c === 'u' || c === 'U' ? urlTokenEnd(css, i) : -1;
-                i = url === -1 ? i + 1 : url;
             }
+            const end = textTokenEnd(css, i);
+            if (end > i) {
+                i = end;
+                continue;
+            }
+            if (c === ';') return i;
+            if (c === '{') return -1;
+            i++;
         }
         return -1;
     }

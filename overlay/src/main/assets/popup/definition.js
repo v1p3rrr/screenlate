@@ -27,6 +27,11 @@ const DefinitionCopy = (() => {
 
     /** A number that opens a meaning: "1 ", "1.", "1)", "(1)", "①", "㊀". */
     const MARKER = /^\s*(?:\d{1,2}(?:[.)．）]\s*|\s+)|[(（]\d{1,2}[)）]\s*|[①-⑳㉑-㉟㊱-㊿❶-❿➀-➉㊀-㊉]\s*)/;
+    /**
+     * The marker of the first meaning. A glossary counts as numbered only with it, so a plain gloss that starts with a
+     * number ("24 hours") is not taken for a numbered meaning.
+     */
+    const FIRST_MARKER = /^\s*(?:1(?:[.)．）]\s*|\s+)|[(（]1[)）]\s*|[①❶➀㊀]\s*)/;
     /** Letters of sub-senses: ㋐, ㋑. */
     const SUB_MARKER = /^\s*[\u32d0-\u32fe]\s*/;
     /** A headword line: かな【漢字】. */
@@ -207,7 +212,7 @@ const DefinitionCopy = (() => {
         });
         const text = parts.filter(part => part.text !== undefined).map(part => part.text).join('\n');
         const state = {
-            numbered: text.split('\n').some(line => MARKER.test(line)),
+            numbered: text.split('\n').some(line => FIRST_MARKER.test(line)),
             bilingual: isBilingual(text),
             started: false,
             extra: false,
@@ -243,7 +248,7 @@ const DefinitionCopy = (() => {
         lines.forEach((raw, index) => {
             let line = raw.trim();
             if (!line) return;
-            const number = MARKER.exec(line);
+            const number = state.numbered ? MARKER.exec(line) : null;
             if (number) {
                 state.started = true;
                 state.extra = false;
