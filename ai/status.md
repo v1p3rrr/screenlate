@@ -4,7 +4,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next session (handoff, 2026-10-01)
 
-- State: `main` is clean and pushed; last release v0.2.0 (2026-10-01, owner's command: the cloud branch merged into main and released, before a device check of its new colors). All module reviews and
+- State: `main` is clean and pushed; last release v0.2.1 (2026-10-01, tagged by the owner on bec507b). Everything since is merged into main and was checked on the emulator, see the log entry "checks of the cloud work" (2026-10-02); v0.2.2 waits for the owner's command. All module reviews and
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
   Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
@@ -25,15 +25,15 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   request; checked on the emulator), 33 (download ring with ✕ and a stage line on catalog cards; checked on the
   emulator), 34 (collapsed frequency values and pitch accents in the popup, "+N" and "−"; page tests only, no
   emulator check recorded). The plan's changelog has the details; this status was not updated in those commits.
-- Done in a cloud session on branch `claude/elegant-allen-xmu3fx` (not merged, CI per commit below, nothing seen on a
-  device): 31 (own violet colors, pink accent, "Colors" setting Screenlate/System in Appearance), 35 (Wiktionary in
+- Done in a cloud session on branch `claude/elegant-allen-xmu3fx` (merged into main since; checked on the emulator
+  2026-10-02): 31 (own violet colors, pink accent, "Colors" setting Screenlate/System in Appearance), 35 (Wiktionary in
   the catalog: wty-* on Hugging Face, kty-* kept as former titles, update checks follow a moved index), and the static
   part of 29 (see the log entry "updates over an installed version"). Strings of all modules checked in all 14
   languages: none missing, none left stale since v0.1.4.
-- Next: on the emulator, the branch's colors in light and dark on every screen plus screenshots for the owner, the
-  Colors switch, e-ink, a Wiktionary download and an old kty-* copy in the catalog; request 29's install-over check
-  (install v0.1.4, change settings, install the branch over it); 34 on the emulator's 20 dictionaries. Then merge the
-  branch. 32 (bubble color picker) stays deferred by the owner.
+- Checked on the emulator 2026-10-02: the colors in Dark, Light and System with screenshots for the owner, the
+  Colors switch, Russian labels, a Wiktionary update over an old kty-* copy and request 29 over v0.1.0 (see the log
+  entry "checks of the cloud work"). Not checked: e-ink with the new colors, Android 11 (no Colors card), 34 on the
+  emulator's 20 dictionaries. 32 (bubble color picker) stays deferred by the owner.
 - The code review of v0.1.4..HEAD is finished (2026-10-01, cloud session, `/code-review --fix` over the 19 files left):
   7 findings, 5 fixed in 2f7744b (stale OCR status on popup views under the top after going back; "Only meanings"
   taking a gloss like "24 hours" for a numbered meaning; single-kanji entries cut by the engine before the dictionary
@@ -680,3 +680,26 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `Context`, `@ApplicationContext`): all pass; the cancellation and connection tests fail with those fixes removed.
 - Not seen on a device; whether a fresh connection gets JapanesePod101 through on mobile data is for the owner to see.
 - CI run 36919275787 green on 211d0f9 (branch only; not merged, waits for the owner's release command).
+
+### 2026-10-02 (checks of the cloud work; local session)
+
+- Merged into main: the cloud branch with request 42 (fast-forward to 211d0f9 after a green CI run), later its two
+  note commits of request 43. The branch `claude/elegant-allen-xmu3fx` stays on GitHub.
+- The open review items are settled (list "To revisit" above): the reset dialogs, the backup's General hint and the
+  Appearance row name the colors (14 languages); the Japanese markup moved to `definition-ja.js`; stops by the system
+  no longer count as deaths of the app; a bundled update replaces the last imported of two bundled copies.
+- Request 29 on the emulator: v0.1.0 with changed settings, updated with a release build of 72f47d0: every setting
+  kept, KANJIDIC added, the old Jiten kept as the user's copy.
+- Seen on the emulator: the colors in Dark, Light (against the system's night mode) and System on Home, Settings,
+  Appearance and Dictionaries; the status bar icons follow the app's theme both ways; Home, Settings, Dictionaries
+  and Backup in Russian with wrapped labels centered and pink filled buttons (screenshots sent to the owner). Audio:
+  a Custom URL answering a source list shows the "Custom URL (JSON)" hint, a JSON source (mock on port 5077) plays,
+  JapanesePod101 and LanguagePod101 find clips on Wi-Fi.
+- Wiktionary: handmade archives titled kty-ja-ru and kty-ja-ja with the old index URLs and revision 2025.01.01 show
+  their catalog cards as installed; "Check for updates" follows the frozen kty indexes to wty (2026.09.20); the update
+  replaces the copy under the same id; during the kty-ja-ja update (13 MB) the Wiktionary (ja–ja) card shows the ring
+  with ✕ and "Downloading". The test copies were deleted afterwards (20 dictionaries again).
+- Found: the catalog's JMdict card offers a download although an old "JMdict" is installed (revision JMdict1, no
+  index URL, from the owner's Yomitan collection); the entry's `installedTitle` "JMdict [" does not match it. Asked
+  the owner.
+- Not checked: e-ink with the new colors, the Anki screen's first frame.
