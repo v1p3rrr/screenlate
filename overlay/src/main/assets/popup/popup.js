@@ -51,6 +51,8 @@ const Popup = (() => {
     const HOLD_MS = 450;
     const SELECTION_GAP = 8;
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
+    /** Pitch accents shown before "+N"; a word with more shows only its first. */
+    const SHOWN_ACCENTS = 2;
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
@@ -516,7 +518,8 @@ const Popup = (() => {
 
     /**
      * Inflection, frequency and pitch accent in one row: beside the word when the popup is wide, below it when not.
-     * One frequency is shown (the first group: the lookup puts the sort dictionary first), "+N" reveals the rest.
+     * One frequency value is shown, the most frequent of the first group (the lookup puts the sort dictionary first),
+     * and up to [SHOWN_ACCENTS] accents; "+N" reveals the hidden values or accents, "−" hides them again.
      */
     function entryInfo(result, labels) {
         const row = element('div', 'entry-info');
@@ -525,27 +528,49 @@ const Popup = (() => {
 
         const frequencies = (result.term.frequencies || [])
             .map(group => ({ dictionary: group.dictionary, values: frequencyValues(group) }))
-            .filter(group => group.values);
+            .filter(group => group.values.length);
         if (frequencies.length) {
-            const chips = frequencies.map(frequencyChip);
-            row.append(chips[0]);
-            if (chips.length > 1) {
-                const more = element('button', 'frequency-more', `+${chips.length - 1}`);
-                more.type = 'button';
-                more.addEventListener('click', () => more.replaceWith(...chips.slice(1)));
-                row.append(more);
-            }
+            const first = frequencies[0];
+            const hidden = frequencies.reduce((count, group) => count + group.values.length, 0) - 1;
+            row.append(collapsible(
+                [frequencyChip(first.dictionary, first.values.slice(0, 1))],
+                frequencies.map(group => frequencyChip(group.dictionary, group.values)),
+                hidden,
+                'frequency-more',
+            ));
         }
 
-        for (const pitch of pitchAccents(result.term)) {
+        const accents = pitchAccents(result.term).map(pitch => {
             const item = element('button', 'pitch-item');
             item.type = 'button';
             item.append(pitch.graph);
             item.append(element('span', 'pitch-position', `[${pitch.downsteps}]`));
             item.addEventListener('click', () => showInfo(labels.pitchDictionaries || '', pitch.dictionaries.join('\n')));
-            row.append(item);
+            return item;
+        });
+        if (accents.length) {
+            const shown = accents.length > SHOWN_ACCENTS ? 1 : accents.length;
+            row.append(collapsible(accents.slice(0, shown), accents, accents.length - shown, 'pitch-more'));
         }
         return row.childNodes.length ? row : null;
+    }
+
+    /**
+     * [collapsed] with a "+[hidden]" button that swaps them for [expanded] and a "−" button that swaps them back.
+     * The group itself takes no box, so its badges wrap with the rest of the row.
+     */
+    function collapsible(collapsed, expanded, hidden, buttonClass) {
+        const group = element('span', 'badge-group');
+        group.append(...collapsed);
+        if (hidden <= 0) return group;
+        const more = element('button', `badge-toggle ${buttonClass}`, `+${hidden}`);
+        const less = element('button', `badge-toggle ${buttonClass}`, '−');
+        more.type = 'button';
+        less.type = 'button';
+        more.addEventListener('click', () => group.replaceChildren(...expanded, less));
+        less.addEventListener('click', () => group.replaceChildren(...collapsed, more));
+        group.append(more);
+        return group;
     }
 
     /** 🧩 and the rule chain; a rule with a description opens it in the panel below the entries. */
@@ -569,14 +594,32 @@ const Popup = (() => {
         return chain;
     }
 
+    /**
+     * The group's values as shown, the most frequent first: the lowest rank, or the highest count for a dictionary that
+     * counts occurrences. A dictionary may give several, e.g. one for the word written in kana (marked ㋕).
+     */
     function frequencyValues(group) {
-        return (group.values || []).map(v => v.displayValue || String(v.value)).join(', ');
+        const occurrences = noteConfig.frequencyModes?.[group.dictionary] === 'occurrence-based';
+        return (group.values || [])
+            .map(value => ({ text: value.displayValue || String(value.value), number: frequencyNumber(value) }))
+            .sort((a, b) => {
+                if ((a.number > 0) !== (b.number > 0)) return a.number > 0 ? -1 : 1;
+                return occurrences ? b.number - a.number : a.number - b.number;
+            })
+            .map(value => value.text);
     }
 
-    function frequencyChip(group) {
+    /** The value, or the leading digits of the display value when the value is missing; 0 when neither is a number. */
+    function frequencyNumber(value) {
+        if (value.value > 0) return value.value;
+        const digits = /^\d+/.exec(value.displayValue || '');
+        return digits ? Number.parseInt(digits[0], 10) : 0;
+    }
+
+    function frequencyChip(dictionary, values) {
         const chip = element('span', 'frequency');
-        chip.append(element('span', 'frequency-dictionary', shortName(group.dictionary)));
-        chip.append(element('span', 'frequency-value', group.values));
+        chip.append(element('span', 'frequency-dictionary', shortName(dictionary)));
+        chip.append(element('span', 'frequency-value', values.join(', ')));
         return chip;
     }
 

@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
@@ -133,13 +134,12 @@ class PopupNotes(
         val audioEnabled = audioSettings.current().sources.isNotEmpty()
         val problem = (status as? AnkiStatus.Broken)?.problem?.let { context.getString(it.message) }
         page.setActions(anki = ankiReady, audio = audioEnabled, ankiProblem = problem)
-        if (ankiReady) {
-            val config = buildJsonObject {
-                put("markers", buildJsonArray { notes.usedMarkers().forEach { add(JsonPrimitive(it)) } })
-                put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
-            }
-            page.setNoteConfig(config)
+        // The frequency modes also order each dictionary's frequency values in the popup, with or without Anki.
+        val config = buildJsonObject {
+            put("markers", if (ankiReady) buildJsonArray { notes.usedMarkers().forEach { add(JsonPrimitive(it)) } } else JsonNull)
+            put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
         }
+        page.setNoteConfig(config)
     }
 
     /** The Anki setup is checked against AnkiDroid at most every few seconds, not for every word. */

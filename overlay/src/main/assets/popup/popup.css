@@ -445,7 +445,7 @@ a {
 
 .inflection-step,
 .pitch-item,
-.frequency-more {
+.badge-toggle {
     font: inherit;
     color: inherit;
     background: none;
@@ -476,12 +476,27 @@ button.inflection-step {
     border-left: 1px solid rgba(128, 128, 128, 0.25);
 }
 
-.frequency-more {
+/* Lays the badges and their "+N" / "−" out in the row itself, so they wrap with the rest of it. */
+.badge-group {
+    display: contents;
+}
+
+.badge-toggle {
+    min-width: 1.6em;
     padding: 0 5px;
     border-radius: 4px;
+    font-weight: var(--bold-weight);
+    text-align: center;
+}
+
+.frequency-more {
     background: var(--tag-frequency-background-color, var(--frequency-bg));
     color: var(--tag-text-color, var(--frequency-fg));
-    font-weight: var(--bold-weight);
+}
+
+.pitch-more {
+    background: var(--tag-pronunciation-dictionary-background-color, var(--pitch-bg));
+    color: var(--tag-text-color, var(--pitch-fg));
 }
 
 .pitch-item {

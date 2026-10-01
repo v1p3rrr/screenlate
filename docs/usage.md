@@ -52,6 +52,7 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 
 - Tap a link inside a definition to look it up; the back arrow returns.
 - Tap a kanji in the headword to see its kanji dictionary entry (KANJIDIC is included).
+- Next to the word: one frequency, the most frequent value of the first frequency dictionary (the sorting one when chosen), and up to two pitch accents; "+N" shows the N hidden values or accents, "−" hides them again. A dictionary may give several values, such as one for the word written in kana (marked ㋕).
 - Tap an inflection step 🧩, a pitch accent or a tag with a description (dotted underline, or a label such as "noun" in dictionaries that describe their labels) to read the explanation at the bottom of the popup. Tag descriptions come from the dictionary's tag list and are kept for dictionaries imported from this version on; import an older dictionary again to get them.
 - 🔊 plays the pronunciation from the configured audio sources; hold it to choose among all recordings found.
 - ➕ adds a note to Anki; hold it to attach a picture: a crop editor opens with the word's paragraph and some space around it selected. "Whole screen" selects the whole screenshot and turns into "Frame", which brings the previous frame back.

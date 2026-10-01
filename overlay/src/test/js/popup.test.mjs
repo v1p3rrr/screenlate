@@ -360,7 +360,90 @@ test('details sit in one row: inflection, the first frequency and distinct accen
 
     row.querySelector('.frequency-more').click();
     assert.deepEqual([...row.querySelectorAll('.frequency')].map(chip => chip.textContent), ['Jiten500', 'JPDB700㋕']);
+    assert.equal(row.querySelector('.frequency-more').textContent, '−');
+});
+
+const chips = row => [...row.querySelectorAll('.frequency')].map(chip => chip.textContent);
+
+function frequent(frequencies) {
+    const result = detailed();
+    result.term.frequencies = frequencies;
+    result.term.pitches = [];
+    return result;
+}
+
+test('one frequency value shows, the most frequent; "+N" counts the hidden values and "−" hides them again', () => {
+    Popup.render(state({
+        results: [frequent([
+            { dictionary: 'Jiten', values: [{ value: 1066, displayValue: '1066㋕' }, { value: 39, displayValue: '39' }] },
+            { dictionary: 'JPDB', values: [{ value: 120, displayValue: '120' }, { value: 4000, displayValue: '4000㋕' }] },
+        ])],
+    }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(chips(row), ['Jiten39']);
+    const more = row.querySelector('.frequency-more');
+    assert.equal(more.textContent, '+3');
+
+    more.click();
+    assert.deepEqual(chips(row), ['Jiten39, 1066㋕', 'JPDB120, 4000㋕']);
+    const less = row.querySelector('.frequency-more');
+    assert.equal(less.textContent, '−');
+    assert.equal(row.lastElementChild.lastElementChild, less);
+
+    less.click();
+    assert.deepEqual(chips(row), ['Jiten39']);
+    assert.equal(row.querySelector('.frequency-more').textContent, '+3');
+});
+
+test('a kana value alone in its dictionary needs no "+N"', () => {
+    Popup.render(state({ results: [frequent([{ dictionary: 'Jiten', values: [{ value: 10, displayValue: '10㋕' }] }])] }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(chips(row), ['Jiten10㋕']);
     assert.equal(row.querySelector('.frequency-more'), null);
+});
+
+test('a dictionary counting occurrences shows its highest value first; values without a number go last', () => {
+    Popup.setNoteConfig({ markers: null, frequencyModes: { Counts: 'occurrence-based' } });
+    Popup.render(state({
+        results: [frequent([
+            { dictionary: 'Counts', values: [{ value: 3, displayValue: '' }, { value: 0, displayValue: '★' }, { value: 90, displayValue: '' }] },
+        ])],
+    }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(chips(row), ['Counts90']);
+    row.querySelector('.frequency-more').click();
+    assert.deepEqual(chips(row), ['Counts90, 3, ★']);
+});
+
+function accented(positions) {
+    const result = detailed();
+    result.term.frequencies = [];
+    result.term.pitches = [{ dictionary: 'Kanjium', pitches: positions.map(position => ({ position })) }];
+    return result;
+}
+
+test('two accents both show; three or more show the first, "+N" the rest and "−" hides them again', () => {
+    Popup.render(state({ results: [accented([0, 2])] }));
+    let row = content.querySelector('.entry-info');
+    assert.equal(row.querySelectorAll('.pitch-item').length, 2);
+    assert.equal(row.querySelector('.pitch-more'), null);
+
+    Popup.render(state({ results: [accented([0, 2, 3, 1])] }));
+    row = content.querySelector('.entry-info');
+    const positions = () => [...row.querySelectorAll('.pitch-position')].map(item => item.textContent);
+    assert.deepEqual(positions(), ['[0]']);
+    const more = row.querySelector('.pitch-more');
+    assert.equal(more.textContent, '+3');
+
+    more.click();
+    assert.equal(positions().length, 4);
+    assert.equal(positions()[0], '[0]');
+    const less = row.querySelector('.pitch-more');
+    assert.equal(less.textContent, '−');
+
+    less.click();
+    assert.deepEqual(positions(), ['[0]']);
+    assert.equal(row.querySelector('.pitch-more').textContent, '+3');
 });
 
 test('an inflection step or an accent opens the info panel', () => {
