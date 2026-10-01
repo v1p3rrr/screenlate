@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">すべての辞書が最新です。</string>
     <string name="dictionaries_update">更新</string>
     <string name="dictionaries_update_all">すべて更新</string>
+    <string name="dictionaries_outdated_copy">古いビルド（%1$s）がインストールされています。更新すると置き換えられます。</string>
     <string name="dictionaries_sort_by">この辞書で結果を並べ替える</string>
     <string name="bubble_title">バブル</string>
     <string name="bubble_aim">照準</string>

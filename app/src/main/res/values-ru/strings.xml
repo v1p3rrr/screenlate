@@ -110,6 +110,7 @@
     <string name="dictionaries_up_to_date">Все словари актуальны.</string>
     <string name="dictionaries_update">Обновить</string>
     <string name="dictionaries_update_all">Обновить все</string>
+    <string name="dictionaries_outdated_copy">Установлена старая сборка (%1$s), обновление заменит её.</string>
     <string name="dictionaries_sort_by">Сортировать результаты по этому словарю</string>
     <string name="bubble_title">Плавающая кнопка</string>
     <string name="bubble_aim">Прицел</string>

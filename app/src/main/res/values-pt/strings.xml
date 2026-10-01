@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">Todos os dicionários estão atualizados.</string>
     <string name="dictionaries_update">Atualizar</string>
     <string name="dictionaries_update_all">Atualizar todos</string>
+    <string name="dictionaries_outdated_copy">Está instalada uma versão antiga (%1$s); a atualização a substitui.</string>
     <string name="dictionaries_sort_by">Ordenar resultados por este dicionário</string>
     <string name="bubble_title">Bolha</string>
     <string name="bubble_aim">Ponto de mira</string>

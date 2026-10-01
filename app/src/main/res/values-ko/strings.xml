@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">모든 사전이 최신 상태입니다.</string>
     <string name="dictionaries_update">업데이트</string>
     <string name="dictionaries_update_all">모두 업데이트</string>
+    <string name="dictionaries_outdated_copy">이전 빌드(%1$s)가 설치되어 있습니다. 업데이트하면 교체됩니다.</string>
     <string name="dictionaries_sort_by">이 사전 기준으로 결과 정렬</string>
     <string name="bubble_title">버블</string>
     <string name="bubble_aim">조준점</string>

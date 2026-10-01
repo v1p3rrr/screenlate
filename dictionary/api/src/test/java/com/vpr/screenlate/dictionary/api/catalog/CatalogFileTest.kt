@@ -50,9 +50,14 @@ class CatalogFileTest {
         )
         fun matching(dictionary: DictionaryEntity) = entries!!.filter { it.matches(dictionary) }.map { it.id }
 
-        // "Jiten" is a prefix of Jitendex's titles, old and new; the old one is no catalog entry's.
+        // "Jiten" is a prefix of Jitendex's titles, old and new; the old one is listed as an old build of Jitendex.
         assertThat(matching(installed("Jitendex.org [2026-09-01]", DictionaryKind.TERM))).containsExactly("jitendex")
-        assertThat(matching(installed("Jitendex [2023-12-12]", DictionaryKind.TERM))).isEmpty()
+        assertThat(matching(installed("Jitendex [2023-12-12]", DictionaryKind.TERM))).containsExactly("jitendex")
+        // Old builds without an update address: the whole title, not a prefix of the other JMdict entries'.
+        assertThat(matching(installed("JMdict", DictionaryKind.TERM))).containsExactly("jmdict-english")
+        assertThat(matching(installed("JMdict (English)", DictionaryKind.TERM))).containsExactly("jmdict-english")
+        assertThat(matching(installed("JMdict (Russian) [2026-10-01]", DictionaryKind.TERM))).containsExactly("jmdict-russian")
+        assertThat(matching(installed("KANJIDIC (English)", DictionaryKind.KANJI))).containsExactly("kanjidic-english")
         assertThat(matching(installed("Jiten", DictionaryKind.FREQUENCY, "https://api.jiten.moe/api/frequency-list/index")))
             .containsExactly("jiten-global")
         // Wiktionary was renamed from kty-* to wty-* and moved; copies from before and after both belong to the entry.

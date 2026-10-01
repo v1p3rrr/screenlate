@@ -55,6 +55,25 @@ class CatalogItemsTest {
     }
 
     @Test
+    fun `an old copy that cannot update itself is offered the current build, the replacement shows on its entry`() {
+        val entry = entry("JMdict").copy(installedTitle = "JMdict [", oldTitles = listOf("JMdict"), indexUrl = "https://example.org/i.json")
+        val old = dictionary("JMdict")
+        val item = catalogItems(listOf(entry), listOf(old), emptyList()).single()
+
+        assertFalse(item.installed)
+        assertEquals(old, item.outdated)
+
+        val replacing = task("JMdict", ImportTask.State.DOWNLOADING)
+        assertEquals(replacing, catalogItems(listOf(entry), listOf(old), listOf(replacing)).single().task)
+
+        // Next to a current copy the old one is left alone.
+        val current = dictionary("JMdict [2026-10-01]").copy(isUpdatable = true, indexUrl = "https://example.org/i.json")
+        val both = catalogItems(listOf(entry), listOf(old, current), emptyList()).single()
+        assertTrue(both.installed)
+        assertNull(both.outdated)
+    }
+
+    @Test
     fun `the ring is empty while queued, fills with a known percent and spins otherwise`() {
         assertEquals(0f, ringProgress(task("A", ImportTask.State.QUEUED, 30)))
         assertEquals(0.45f, ringProgress(task("A", ImportTask.State.DOWNLOADING, 45))!!, 0.0001f)

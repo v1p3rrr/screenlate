@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.dictionary.api.registry.updatesItself
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,8 @@ import javax.inject.Singleton
  *
  * @property installedTitle title prefix of the installed dictionary, used when it has no [indexUrl].
  * @property formerTitles title prefixes the dictionary had before upstream renamed it; copies installed then still match.
+ * @property oldTitles titles of older builds without an update address, matched whole or followed by ` [` (a dated
+ *   build), e.g. `JMdict`, which [installedTitle] `JMdict [` leaves out so as not to match `JMdict (Russian)`.
  * @property resolveLatest ask [indexUrl] for the current `downloadUrl` before downloading.
  * @property description text per language code; `en` is the fallback.
  */
@@ -32,6 +35,7 @@ data class CatalogEntry(
     val title: String,
     val installedTitle: String,
     val formerTitles: List<String> = emptyList(),
+    val oldTitles: List<String> = emptyList(),
     val kind: DictionaryKind,
     val sourceLanguage: String,
     val targetLanguage: String? = null,
@@ -56,8 +60,21 @@ data class CatalogEntry(
     /** Whether a dictionary with this index URL and title is a copy of this entry; the caller compares the kind. */
     fun matches(indexUrl: String?, title: String): Boolean =
         (this.indexUrl != null && indexUrl == this.indexUrl) || title.startsWith(installedTitle) ||
-            formerTitles.any(title::startsWith)
+            formerTitles.any(title::startsWith) || oldTitles.any { title == it || title.startsWith("$it [") }
+
+    /**
+     * The copy among [copies] (copies of this entry) to replace with this entry's current build: an old one that cannot
+     * update itself, as long as no copy can and this entry has an update address to take the current build from.
+     */
+    fun outdatedCopy(copies: List<DictionaryEntity>): DictionaryEntity? =
+        copies.takeIf { indexUrl != null && it.none(DictionaryEntity::updatesItself) }?.firstOrNull()
 }
+
+/** Installed copies to replace with the current build of a catalog entry, see [CatalogEntry.outdatedCopy]. */
+fun outdatedCopies(entries: List<CatalogEntry>, dictionaries: List<DictionaryEntity>): Map<DictionaryEntity, CatalogEntry> =
+    entries.mapNotNull { entry ->
+        entry.outdatedCopy(dictionaries.filter(entry::matches))?.let { it to entry }
+    }.toMap()
 
 @Serializable
 private data class CatalogDocument(

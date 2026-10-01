@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">Tüm sözlükler güncel.</string>
     <string name="dictionaries_update">Güncelle</string>
     <string name="dictionaries_update_all">Tümünü güncelle</string>
+    <string name="dictionaries_outdated_copy">Eski bir sürüm yüklü (%1$s); güncelleme onu yenisiyle değiştirir.</string>
     <string name="dictionaries_sort_by">Sonuçları bu sözlüğe göre sırala</string>
     <string name="bubble_title">Baloncuk</string>
     <string name="bubble_aim">Nişan noktası</string>

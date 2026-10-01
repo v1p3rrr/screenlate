@@ -252,7 +252,8 @@ fun DictionariesScreen(
                                 item,
                                 onDownload = {
                                     askNotifications()
-                                    viewModel.download(item.entry)
+                                    val outdated = item.outdated
+                                    if (outdated != null) viewModel.replace(item.entry, outdated) else viewModel.download(item.entry)
                                 },
                                 onCancel = viewModel::cancel,
                             )
@@ -645,6 +646,14 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (Im
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(entry.description(), style = MaterialTheme.typography.bodySmall)
+                val outdated = item.outdated
+                if (outdated != null && task == null && !requested) {
+                    Text(
+                        stringResource(R.string.dictionaries_outdated_copy, outdated.revision.ifBlank { outdated.title }),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
                 if (task != null || requested) {
                     Text(taskStage(task), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                 }
@@ -661,8 +670,8 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (Im
                     modifier = Modifier.padding(12.dp),
                 )
                 else -> TooltipIconButton(
-                    R.drawable.ic_download,
-                    stringResource(R.string.dictionaries_download),
+                    if (item.outdated != null) R.drawable.ic_update else R.drawable.ic_download,
+                    stringResource(if (item.outdated != null) R.string.dictionaries_update else R.string.dictionaries_download),
                     onClick = {
                         cancelFrom = SystemClock.uptimeMillis() + CANCEL_GUARD_MS
                         requested = true

@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">Wszystkie słowniki są aktualne.</string>
     <string name="dictionaries_update">Aktualizuj</string>
     <string name="dictionaries_update_all">Aktualizuj wszystkie</string>
+    <string name="dictionaries_outdated_copy">Zainstalowana jest starsza wersja (%1$s); aktualizacja ją zastąpi.</string>
     <string name="dictionaries_sort_by">Sortuj wyniki według tego słownika</string>
     <string name="bubble_title">Dymek</string>
     <string name="bubble_aim">Celownik</string>

@@ -113,6 +113,7 @@
     <string name="dictionaries_up_to_date">All dictionaries are up to date.</string>
     <string name="dictionaries_update">Update</string>
     <string name="dictionaries_update_all">Update all</string>
+    <string name="dictionaries_outdated_copy">An older build is installed (%1$s); updating replaces it.</string>
     <string name="dictionaries_sort_by">Sort results by this dictionary</string>
     <string name="bubble_title">Bubble</string>
     <string name="bubble_aim">Aim point</string>

@@ -1,6 +1,8 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import android.util.Log
+import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
+import com.vpr.screenlate.dictionary.api.catalog.outdatedCopies
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -13,7 +15,10 @@ import okhttp3.Request
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** A newer revision of an installed dictionary, found through its Yomitan `indexUrl`. */
+/**
+ * A newer revision of an installed dictionary, found through its Yomitan `indexUrl`, or the current build of a catalog
+ * entry for an old copy that cannot update itself.
+ */
 data class DictionaryUpdate(
     val dictionary: DictionaryEntity,
     val revision: String,
@@ -25,25 +30,41 @@ data class DictionaryUpdate(
 class DictionaryUpdates @Inject constructor(
     private val repository: DictionaryRepository,
     private val httpClient: OkHttpClient,
+    private val catalog: DictionaryCatalog,
 ) {
     private val json = Json { ignoreUnknownKeys = true }
 
-    /** Updates for every updatable dictionary; dictionaries whose index cannot be read are skipped. */
+    /**
+     * Updates for every updatable dictionary and the current builds for old copies the catalog knows
+     * ([outdatedCopies]); dictionaries whose index cannot be read are skipped.
+     */
     suspend fun check(): List<DictionaryUpdate> = coroutineScope {
-        val updatable = repository.getAll().filter { it.isUpdatable && !it.indexUrl.isNullOrBlank() }
-        updatable
-            .map { dictionary -> async { check(dictionary) } }
+        val dictionaries = repository.getAll()
+        val updatable = dictionaries.filter { it.updatesItself }
+        val outdated = outdatedCopies(withContext(Dispatchers.IO) { catalog.local() }, dictionaries)
+        val updates = updatable.map { dictionary ->
+            async { check(dictionary, dictionary.indexUrl.orEmpty(), dictionary.downloadUrl, outdated = false) }
+        }
+        val replacements = outdated.map { (dictionary, entry) ->
+            async { check(dictionary, entry.indexUrl.orEmpty(), entry.downloadUrl, outdated = true) }
+        }
+        (updates + replacements)
             .awaitAll()
             .filterNotNull()
-            .also { Log.i(TAG, "Checked ${updatable.size} dictionaries, ${it.size} updates") }
+            .also { Log.i(TAG, "Checked ${updatable.size} dictionaries and ${outdated.size} old copies, ${it.size} updates") }
     }
 
-    private suspend fun check(dictionary: DictionaryEntity): DictionaryUpdate? = withContext(Dispatchers.IO) {
-        val indexUrl = dictionary.indexUrl ?: return@withContext null
+    private suspend fun check(
+        dictionary: DictionaryEntity,
+        indexUrl: String,
+        fallbackDownloadUrl: String?,
+        outdated: Boolean,
+    ): DictionaryUpdate? = withContext(Dispatchers.IO) {
         runCatching {
             val index = IndexMoves.follow(indexUrl) { url -> fetch(dictionary, url) } ?: return@runCatching null
-            val downloadUrl = index.downloadUrl ?: dictionary.downloadUrl ?: return@runCatching null
-            if (index.revision.isNotBlank() && index.revision != dictionary.revision) {
+            val downloadUrl = index.downloadUrl ?: fallbackDownloadUrl ?: return@runCatching null
+            // An old copy is a different build: its revision cannot be compared with the current one.
+            if (index.revision.isNotBlank() && (outdated || index.revision != dictionary.revision)) {
                 Log.i(TAG, "Update for ${dictionary.title}: ${dictionary.revision} → ${index.revision}")
                 DictionaryUpdate(dictionary, index.revision, downloadUrl)
             } else {
@@ -65,6 +86,10 @@ class DictionaryUpdates @Inject constructor(
         const val TAG = "DictionaryUpdates"
     }
 }
+
+/** Whether the dictionary can be checked for updates through its own Yomitan `indexUrl`. */
+val DictionaryEntity.updatesItself: Boolean
+    get() = isUpdatable && !indexUrl.isNullOrBlank()
 
 /** The fields of a remote Yomitan index an update check reads. */
 @Serializable

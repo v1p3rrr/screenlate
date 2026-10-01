@@ -37,9 +37,15 @@ import kotlinx.coroutines.withContext
 
 /**
  * A catalog entry with its state relative to the installed dictionaries and running imports; [task] is its queued or
- * running import, e.g. a download from the catalog or an update.
+ * running import, e.g. a download from the catalog or an update. [outdated] is an old copy to replace with the current
+ * build ([CatalogEntry.outdatedCopy]); the entry does not count as installed then.
  */
-data class CatalogItem(val entry: CatalogEntry, val installed: Boolean, val task: ImportTask? = null)
+data class CatalogItem(
+    val entry: CatalogEntry,
+    val installed: Boolean,
+    val task: ImportTask? = null,
+    val outdated: DictionaryEntity? = null,
+)
 
 /** Catalog entries with their installed state and the unfinished import named after each, if any. */
 internal fun catalogItems(
@@ -52,7 +58,8 @@ internal fun catalogItems(
         val copies = dictionaries.filter(entry::matches)
         // A download is named after the entry, an update after the installed dictionary it replaces.
         val task = running[entry.title] ?: copies.firstNotNullOfOrNull { running[it.title] }
-        CatalogItem(entry, installed = copies.isNotEmpty(), task = task)
+        val outdated = entry.outdatedCopy(copies)
+        CatalogItem(entry, installed = copies.isNotEmpty() && outdated == null, task = task, outdated = outdated)
     }
 }
 
@@ -199,6 +206,16 @@ class DictionariesViewModel @Inject constructor(
 
     fun download(entry: CatalogEntry) {
         imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
+    }
+
+    /** Replaces [copy], an old build of [entry], with the current build in its place. */
+    fun replace(entry: CatalogEntry, copy: DictionaryEntity) {
+        imports.download(
+            entry.downloadUrl,
+            copy.title,
+            indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
+            replaces = copy.id,
+        )
     }
 
     fun setEnabled(dictionary: DictionaryEntity, enabled: Boolean) {

@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">Alle Wörterbücher sind aktuell.</string>
     <string name="dictionaries_update">Aktualisieren</string>
     <string name="dictionaries_update_all">Alle aktualisieren</string>
+    <string name="dictionaries_outdated_copy">Eine ältere Version ist installiert (%1$s); das Aktualisieren ersetzt sie.</string>
     <string name="dictionaries_sort_by">Ergebnisse nach diesem Wörterbuch sortieren</string>
     <string name="bubble_title">Blase</string>
     <string name="bubble_aim">Zielpunkt</string>

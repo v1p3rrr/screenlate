@@ -109,6 +109,7 @@
     <string name="dictionaries_up_to_date">所有詞典均為最新。</string>
     <string name="dictionaries_update">更新</string>
     <string name="dictionaries_update_all">全部更新</string>
+    <string name="dictionaries_outdated_copy">已安裝舊版本（%1$s），更新會將其取代。</string>
     <string name="dictionaries_sort_by">按此詞典排序結果</string>
     <string name="bubble_title">懸浮球</string>
     <string name="bubble_aim">瞄準點</string>
