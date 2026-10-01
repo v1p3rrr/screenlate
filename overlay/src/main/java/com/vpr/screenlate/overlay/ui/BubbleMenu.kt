@@ -1,7 +1,10 @@
 package com.vpr.screenlate.overlay.ui
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -19,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
+import androidx.core.content.ContextCompat
 import com.vpr.screenlate.core.common.geometry.Box
 import kotlin.math.max
 import kotlin.math.min
@@ -38,6 +42,14 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
     private var themed: Context = context
     private val density = context.resources.displayMetrics.density
     private var window: View? = null
+
+    /**
+     * Overlays stay above the lock screen, where the menu would take the first touch of the unlock. The broadcast
+     * also comes when an always-on display takes over, which a view sees as the screen staying on.
+     */
+    private val screenOff = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = dismiss()
+    }
 
     /** Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them. */
     fun show(items: List<Item>, anchor: Box, bounds: Box) {
@@ -69,6 +81,12 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         }
         windowManager.addView(root, params)
         window = root
+        ContextCompat.registerReceiver(
+            context,
+            screenOff,
+            IntentFilter(Intent.ACTION_SCREEN_OFF),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         // Back reaches a window as a key press only for apps without predictive back.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             root.findOnBackInvokedDispatcher()?.registerOnBackInvokedCallback(
@@ -81,6 +99,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
     fun dismiss() {
         val view = window ?: return
         window = null
+        context.unregisterReceiver(screenOff)
         runCatching { windowManager.removeView(view) }
     }
 
@@ -127,12 +146,6 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
             if (event.keyCode != KeyEvent.KEYCODE_BACK) return super.dispatchKeyEvent(event)
             if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) dismiss()
             return true
-        }
-
-        /** Overlays stay above the lock screen, where the menu would take the first touch of the unlock. */
-        override fun onScreenStateChanged(screenState: Int) {
-            super.onScreenStateChanged(screenState)
-            if (screenState == SCREEN_STATE_OFF) dismiss()
         }
     }
 

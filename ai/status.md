@@ -364,5 +364,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   exact menu test at the top edge. Home and Back close the menu on the emulator after the change.
 - Second review of these changes (owner's command), 2 findings, fixed: the modal menu stayed open when the screen
   turned off and would sit over the lock screen, taking the first unlock touch; it now closes on screen off
-  (`onScreenStateChanged`, checked with sleep and wake on the emulator). `focusedAppPackage` renamed
+  (checked with sleep and wake on the emulator). `focusedAppPackage` renamed
   `foregroundAppPackage`. The emulator has no lock screen set, so the keyguard itself was not seen.
+- Third review (owner's command), 1 finding, fixed: `View.onScreenStateChanged` reports off only for
+  `Display.STATE_OFF`, so with an always-on display (doze) the menu stayed; it now listens for `ACTION_SCREEN_OFF`
+  while open (registered in `show`, unregistered in `dismiss`). Checked with sleep, wake, reopen and Back.
