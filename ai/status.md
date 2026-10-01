@@ -664,3 +664,5 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   and a stale card would be wrong); the first opening of a screen after the process started may still start
   from defaults if the settings were never read yet (the splash screen reads them first, so in practice they are).
 - Not seen on a device.
+- CI run 36911017154 green on bec507b; main fast-forwarded to it for v0.2.1. The git proxy refused the tag push
+  again, so the owner pushes `v0.2.1` on bec507b; the instrumented tests run on that tag.
