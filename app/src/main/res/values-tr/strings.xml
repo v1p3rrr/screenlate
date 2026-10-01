@@ -175,7 +175,7 @@
     <string name="lookup_title">Arama</string>
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
     <string name="appearance_title">Görünüm</string>
-    <string name="settings_appearance_summary">Tema, e-ink, dil</string>
+    <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
     <string name="settings_popup_summary">Yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
@@ -456,7 +456,7 @@
     <string name="backup_restore_button">İşaretlileri geri yükle</string>
     <string name="backup_restored">Geri yüklendi</string>
     <string name="backup_section_general">Genel</string>
-    <string name="backup_section_general_hint">Tema, e-ink modu, güncelleme duyuruları</string>
+    <string name="backup_section_general_hint">Tema, renkler, e-ink modu, güncelleme duyuruları</string>
     <string name="backup_section_bubble">Yüzen baloncuk ve tanıma</string>
     <string name="backup_section_bubble_hint">Boyut, nişan, tanıma motorları, uygulama metni, baloncuğun gizlendiği uygulamalar</string>
     <string name="backup_section_lookup">Arama</string>
@@ -508,14 +508,14 @@
     <string name="tooltip_more_info">Daha fazla bilgi</string>
     <string name="reset_all_tooltip">Tüm ayarları sıfırla</string>
     <string name="reset_all_title">Tüm ayarlar sıfırlansın mı?</string>
-    <string name="reset_all_text">Tüm ayarlar kurulumdan sonraki hâline döner: baloncuk ve gizlenen uygulamalar, arama, alan şablonlarıyla Anki ve ses, yazı tipi, boyutlar ve CSS ile açılır pencere, tema ve e-ink modu, arka plan çalışması ve yeni sürüm bildirimleri. İpuçları yeniden gösterilir. Sözlükler, yüklü yazı tipleri ve uygulama dili kalır.</string>
+    <string name="reset_all_text">Tüm ayarlar kurulumdan sonraki hâline döner: baloncuk ve gizlenen uygulamalar, arama, alan şablonlarıyla Anki ve ses, yazı tipi, boyutlar ve CSS ile açılır pencere, tema, renkler ve e-ink modu, arka plan çalışması ve yeni sürüm bildirimleri. İpuçları yeniden gösterilir. Sözlükler, yüklü yazı tipleri ve uygulama dili kalır.</string>
     <string name="reset_section_tooltip">Bu bölümü sıfırla</string>
     <string name="reset_section_title">Bu bölüm sıfırlansın mı?</string>
     <string name="reset_bubble_text">Baloncuğun tüm ayarları kurulumdan sonraki hâline döner; gizlenen uygulamalar, baloncuğun boyutu ve ekrandaki yeri de dâhil. Gizli baloncuk yeniden görünür.</string>
     <string name="reset_lookup_text">Tarama uzunluğu, arama başına madde ve diğer arama ayarları kurulumdan sonraki hâline döner.</string>
     <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları kurulumdan sonraki hâline döner. AnkiDroid’de hiçbir şey değişmez.</string>
     <string name="reset_popup_text">Yazı tipi seçimi, metin boyutu ve kalınlığı, özel CSS ve tanım kopyalama kurulumdan sonraki hâline döner. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
-    <string name="reset_appearance_text">Tema yeniden sistemi izler ve e-ink modu kapanır; büyüttüğü boyutlar eski hâline döner. Uygulama dili kalır.</string>
+    <string name="reset_appearance_text">Tema yeniden sistemi izler, renkler Screenlate’in kendi renklerine döner ve e-ink modu kapanır; büyüttüğü boyutlar eski hâline döner. Uygulama dili kalır.</string>
     <string name="reset_background_text">Baloncuğu ayakta tutan bildirim kapanır. Pil ve otomatik başlatma ayarları Android’e aittir ve olduğu gibi kalır.</string>
     <string name="reset_dictionaries_tooltip">Sözlükleri sıfırla</string>
     <string name="reset_dictionaries_title">Sözlükler sıfırlansın mı?</string>

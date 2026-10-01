@@ -176,7 +176,7 @@
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, кандзи слова</string>
     <string name="appearance_title">Оформление</string>
-    <string name="settings_appearance_summary">Тема, e-ink, язык</string>
+    <string name="settings_appearance_summary">Тема, цвета, e-ink, язык</string>
     <string name="settings_popup_summary">Шрифт, размер и жирность текста, CSS, копирование определений</string>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
     <string name="settings_yomitan_summary">Настройки и словари из Yomitan</string>
@@ -459,7 +459,7 @@
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
-    <string name="backup_section_general_hint">Тема, режим e-ink, сообщения о новых версиях</string>
+    <string name="backup_section_general_hint">Тема, цвета, режим e-ink, сообщения о новых версиях</string>
     <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
     <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
     <string name="backup_section_lookup">Поиск</string>
@@ -519,14 +519,14 @@
     <string name="tooltip_more_info">Подробнее</string>
     <string name="reset_all_tooltip">Сбросить все настройки</string>
     <string name="reset_all_title">Сбросить все настройки?</string>
-    <string name="reset_all_text">Все настройки вернутся к тем, что были после установки: плавающая кнопка и скрытые приложения, поиск, Anki и аудио с шаблонами полей, попап со шрифтом, размерами и CSS, тема и режим e-ink, работа в фоне и сообщения о новых версиях. Подсказки покажутся снова. Словари, установленные шрифты и язык приложения останутся.</string>
+    <string name="reset_all_text">Все настройки вернутся к тем, что были после установки: плавающая кнопка и скрытые приложения, поиск, Anki и аудио с шаблонами полей, попап со шрифтом, размерами и CSS, тема, цвета и режим e-ink, работа в фоне и сообщения о новых версиях. Подсказки покажутся снова. Словари, установленные шрифты и язык приложения останутся.</string>
     <string name="reset_section_tooltip">Сбросить раздел</string>
     <string name="reset_section_title">Сбросить настройки раздела?</string>
     <string name="reset_bubble_text">Все настройки плавающей кнопки вернутся к тем, что были после установки, включая скрытые приложения, размер кнопки и её место на экране. Скрытая кнопка снова появится.</string>
     <string name="reset_lookup_text">Длина скана, число статей и остальные настройки поиска вернутся к тем, что были после установки.</string>
     <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио вернутся к тем, что были после установки. В AnkiDroid ничего не изменится.</string>
     <string name="reset_popup_text">Выбор шрифта, размер и жирность текста, свой CSS и копирование определений вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
-    <string name="reset_appearance_text">Тема снова будет как в системе, режим e-ink выключится, а размеры, которые он увеличил, станут прежними. Язык приложения останется.</string>
+    <string name="reset_appearance_text">Тема снова будет как в системе, вернутся собственные цвета Screenlate, режим e-ink выключится, а размеры, которые он увеличил, станут прежними. Язык приложения останется.</string>
     <string name="reset_background_text">Уведомление, которое не даёт кнопке пропадать, выключится. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
     <string name="reset_dictionaries_tooltip">Сбросить словари</string>
     <string name="reset_dictionaries_title">Сбросить словари?</string>

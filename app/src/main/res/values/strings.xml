@@ -179,7 +179,7 @@
     <string name="lookup_title">Lookup</string>
     <string name="settings_lookup_summary">Scan length, results, romaji, kanji of the word</string>
     <string name="appearance_title">Appearance</string>
-    <string name="settings_appearance_summary">Theme, e-ink, language</string>
+    <string name="settings_appearance_summary">Theme, colors, e-ink, language</string>
     <string name="settings_popup_summary">Font, text size and weight, CSS, definition copying</string>
     <string name="yomitan_import_title">Import from Yomitan</string>
     <string name="settings_yomitan_summary">Settings and dictionaries from Yomitan</string>
@@ -460,7 +460,7 @@
     <string name="backup_restore_button">Restore checked</string>
     <string name="backup_restored">Restored</string>
     <string name="backup_section_general">General</string>
-    <string name="backup_section_general_hint">Theme, e-ink mode, update announcements</string>
+    <string name="backup_section_general_hint">Theme, colors, e-ink mode, update announcements</string>
     <string name="backup_section_bubble">Floating bubble and recognition</string>
     <string name="backup_section_bubble_hint">Size, aim, recognition engines, app text, apps where the bubble is hidden</string>
     <string name="backup_section_lookup">Lookup</string>
@@ -512,14 +512,14 @@
     <string name="tooltip_more_info">More info</string>
     <string name="reset_all_tooltip">Reset all settings</string>
     <string name="reset_all_title">Reset all settings?</string>
-    <string name="reset_all_text">Every setting goes back to how it was after installation: the bubble and its hidden apps, lookup, Anki and audio with the field templates, the popup with its font, sizes and CSS, the theme and e-ink mode, background work and update announcements. Hints show again. The dictionaries, installed fonts and the app language stay.</string>
+    <string name="reset_all_text">Every setting goes back to how it was after installation: the bubble and its hidden apps, lookup, Anki and audio with the field templates, the popup with its font, sizes and CSS, the theme, colors and e-ink mode, background work and update announcements. Hints show again. The dictionaries, installed fonts and the app language stay.</string>
     <string name="reset_section_tooltip">Reset this section</string>
     <string name="reset_section_title">Reset this section?</string>
     <string name="reset_bubble_text">All bubble settings go back to how they were after installation, including the hidden apps, the bubble’s size and its place on the screen. A hidden bubble shows again.</string>
     <string name="reset_lookup_text">Scan length, entries per lookup and the other lookup settings go back to how they were after installation.</string>
     <string name="reset_anki_text">The deck, note type, field templates, tags, duplicate handling and audio sources go back to how they were after installation. Nothing changes in AnkiDroid.</string>
     <string name="reset_popup_text">The font choice, text size and weight, custom CSS and definition copying go back to how they were after installation. Downloaded and added fonts stay installed.</string>
-    <string name="reset_appearance_text">The theme follows the system again and e-ink mode turns off, bringing back the sizes it made larger. The app language stays.</string>
+    <string name="reset_appearance_text">The theme follows the system again, the colors go back to Screenlate\'s own, and e-ink mode turns off, bringing back the sizes it made larger. The app language stays.</string>
     <string name="reset_background_text">The keep-alive notification turns off. Battery and startup settings belong to Android and stay as they are.</string>
     <string name="reset_dictionaries_tooltip">Reset dictionaries</string>
     <string name="reset_dictionaries_title">Reset dictionaries?</string>

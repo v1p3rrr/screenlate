@@ -175,7 +175,7 @@
     <string name="lookup_title">Búsqueda</string>
     <string name="settings_lookup_summary">Longitud de análisis, resultados, romaji, kanji de la palabra</string>
     <string name="appearance_title">Apariencia</string>
-    <string name="settings_appearance_summary">Tema, e-ink, idioma</string>
+    <string name="settings_appearance_summary">Tema, colores, e-ink, idioma</string>
     <string name="settings_popup_summary">Fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
     <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
@@ -457,7 +457,7 @@
     <string name="backup_restore_button">Restaurar lo marcado</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">General</string>
-    <string name="backup_section_general_hint">Tema, modo e-ink, avisos de actualizaciones</string>
+    <string name="backup_section_general_hint">Tema, colores, modo e-ink, avisos de actualizaciones</string>
     <string name="backup_section_bubble">Burbuja flotante y reconocimiento</string>
     <string name="backup_section_bubble_hint">Tamaño, punto de mira, motores de reconocimiento, texto de las apps, apps donde la burbuja se oculta</string>
     <string name="backup_section_lookup">Búsqueda</string>
@@ -513,14 +513,14 @@
     <string name="tooltip_more_info">Más información</string>
     <string name="reset_all_tooltip">Restablecer todos los ajustes</string>
     <string name="reset_all_title">¿Restablecer todos los ajustes?</string>
-    <string name="reset_all_text">Todos los ajustes vuelven a como estaban tras la instalación: la burbuja y sus apps ocultas, la búsqueda, Anki y el audio con las plantillas de campos, la ventana emergente con su fuente, tamaños y CSS, el tema y el modo e-ink, el segundo plano y los avisos de nuevas versiones. Los consejos vuelven a mostrarse. Los diccionarios, las fuentes instaladas y el idioma de la app se mantienen.</string>
+    <string name="reset_all_text">Todos los ajustes vuelven a como estaban tras la instalación: la burbuja y sus apps ocultas, la búsqueda, Anki y el audio con las plantillas de campos, la ventana emergente con su fuente, tamaños y CSS, el tema, los colores y el modo e-ink, el segundo plano y los avisos de nuevas versiones. Los consejos vuelven a mostrarse. Los diccionarios, las fuentes instaladas y el idioma de la app se mantienen.</string>
     <string name="reset_section_tooltip">Restablecer esta sección</string>
     <string name="reset_section_title">¿Restablecer esta sección?</string>
     <string name="reset_bubble_text">Todos los ajustes de la burbuja vuelven a como estaban tras la instalación, incluidas las apps ocultas, el tamaño de la burbuja y su lugar en la pantalla. Una burbuja oculta vuelve a aparecer.</string>
     <string name="reset_lookup_text">La longitud de análisis, las entradas por búsqueda y los demás ajustes de búsqueda vuelven a como estaban tras la instalación.</string>
     <string name="reset_anki_text">El mazo, el tipo de nota, las plantillas de campos, las etiquetas, la gestión de duplicados y las fuentes de audio vuelven a como estaban tras la instalación. En AnkiDroid no cambia nada.</string>
     <string name="reset_popup_text">La fuente elegida, el tamaño y el peso del texto, el CSS personalizado y la copia de definiciones vuelven a como estaban tras la instalación. Las fuentes descargadas y añadidas siguen instaladas.</string>
-    <string name="reset_appearance_text">El tema vuelve a seguir al sistema y el modo e-ink se desactiva; los tamaños que había aumentado vuelven a ser los de antes. El idioma de la app se mantiene.</string>
+    <string name="reset_appearance_text">El tema vuelve a seguir al sistema, los colores vuelven a ser los propios de Screenlate y el modo e-ink se desactiva; los tamaños que había aumentado vuelven a ser los de antes. El idioma de la app se mantiene.</string>
     <string name="reset_background_text">La notificación que mantiene viva la burbuja se desactiva. Los ajustes de batería y de inicio son de Android y quedan como están.</string>
     <string name="reset_dictionaries_tooltip">Restablecer diccionarios</string>
     <string name="reset_dictionaries_title">¿Restablecer los diccionarios?</string>

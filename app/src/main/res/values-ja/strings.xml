@@ -175,7 +175,7 @@
     <string name="lookup_title">検索</string>
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
-    <string name="settings_appearance_summary">テーマ、E Ink、言語</string>
+    <string name="settings_appearance_summary">テーマ、カラー、E Ink、言語</string>
     <string name="settings_popup_summary">フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="yomitan_import_title">Yomitan からインポート</string>
     <string name="settings_yomitan_summary">Yomitan の設定と辞書</string>
@@ -455,7 +455,7 @@
     <string name="backup_restore_button">チェックした部分を復元</string>
     <string name="backup_restored">復元しました</string>
     <string name="backup_section_general">全般</string>
-    <string name="backup_section_general_hint">テーマ、E Ink モード、アップデートのお知らせ</string>
+    <string name="backup_section_general_hint">テーマ、カラー、E Ink モード、アップデートのお知らせ</string>
     <string name="backup_section_bubble">フローティングバブルと認識</string>
     <string name="backup_section_bubble_hint">サイズ、照準、認識エンジン、アプリのテキスト、バブルを隠すアプリ</string>
     <string name="backup_section_lookup">検索</string>
@@ -503,14 +503,14 @@
     <string name="tooltip_more_info">詳細</string>
     <string name="reset_all_tooltip">すべての設定をリセット</string>
     <string name="reset_all_title">すべての設定をリセットしますか？</string>
-    <string name="reset_all_text">すべての設定がインストール直後の状態に戻ります：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、テーマと E Ink モード、バックグラウンド動作、新しいバージョンの通知。ヒントももう一度表示されます。辞書、インストール済みのフォント、アプリの言語はそのままです。</string>
+    <string name="reset_all_text">すべての設定がインストール直後の状態に戻ります：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、テーマ、カラー、E Ink モード、バックグラウンド動作、新しいバージョンの通知。ヒントももう一度表示されます。辞書、インストール済みのフォント、アプリの言語はそのままです。</string>
     <string name="reset_section_tooltip">このセクションをリセット</string>
     <string name="reset_section_title">このセクションをリセットしますか？</string>
     <string name="reset_bubble_text">バブルの設定がすべてインストール直後の状態に戻ります。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>
     <string name="reset_lookup_text">スキャン長、1 回の検索の項目数、その他の検索設定がインストール直後の状態に戻ります。</string>
     <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースがインストール直後の状態に戻ります。AnkiDroid 側は何も変わりません。</string>
     <string name="reset_popup_text">フォントの選択、文字のサイズと太さ、カスタム CSS、定義のコピーがインストール直後の状態に戻ります。ダウンロード・追加したフォントは残ります。</string>
-    <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、E Ink モードはオフになって、拡大したサイズも元に戻ります。アプリの言語はそのままです。</string>
+    <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、カラーは Screenlate 独自の配色に戻ります。E Ink モードはオフになって、拡大したサイズも元に戻ります。アプリの言語はそのままです。</string>
     <string name="reset_background_text">バブルを維持する通知がオフになります。バッテリーと自動起動の設定は Android 側のもので、変わりません。</string>
     <string name="reset_dictionaries_tooltip">辞書をリセット</string>
     <string name="reset_dictionaries_title">辞書をリセットしますか？</string>

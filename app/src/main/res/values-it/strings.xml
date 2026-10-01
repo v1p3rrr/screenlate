@@ -175,7 +175,7 @@
     <string name="lookup_title">Ricerca</string>
     <string name="settings_lookup_summary">Lunghezza di scansione, risultati, romaji, kanji della parola</string>
     <string name="appearance_title">Aspetto</string>
-    <string name="settings_appearance_summary">Tema, e-ink, lingua</string>
+    <string name="settings_appearance_summary">Tema, colori, e-ink, lingua</string>
     <string name="settings_popup_summary">Carattere, dimensione e peso del testo, CSS, copia delle definizioni</string>
     <string name="yomitan_import_title">Importa da Yomitan</string>
     <string name="settings_yomitan_summary">Impostazioni e dizionari da Yomitan</string>
@@ -457,7 +457,7 @@
     <string name="backup_restore_button">Ripristina la selezione</string>
     <string name="backup_restored">Ripristinato</string>
     <string name="backup_section_general">Generale</string>
-    <string name="backup_section_general_hint">Tema, modalità e-ink, avvisi di aggiornamento</string>
+    <string name="backup_section_general_hint">Tema, colori, modalità e-ink, avvisi di aggiornamento</string>
     <string name="backup_section_bubble">Bolla fluttuante e riconoscimento</string>
     <string name="backup_section_bubble_hint">Dimensione, mira, motori di riconoscimento, testo delle app, app in cui la bolla è nascosta</string>
     <string name="backup_section_lookup">Ricerca</string>
@@ -513,14 +513,14 @@
     <string name="tooltip_more_info">Altre info</string>
     <string name="reset_all_tooltip">Ripristina tutte le impostazioni</string>
     <string name="reset_all_title">Ripristinare tutte le impostazioni?</string>
-    <string name="reset_all_text">Tutte le impostazioni tornano com’erano dopo l’installazione: la bolla e le sue app nascoste, la ricerca, Anki e l’audio con i modelli dei campi, il popup con carattere, dimensioni e CSS, il tema e la modalità e-ink, l’attività in background e gli avvisi di nuove versioni. I suggerimenti tornano a comparire. I dizionari, i caratteri installati e la lingua dell’app restano.</string>
+    <string name="reset_all_text">Tutte le impostazioni tornano com’erano dopo l’installazione: la bolla e le sue app nascoste, la ricerca, Anki e l’audio con i modelli dei campi, il popup con carattere, dimensioni e CSS, il tema, i colori e la modalità e-ink, l’attività in background e gli avvisi di nuove versioni. I suggerimenti tornano a comparire. I dizionari, i caratteri installati e la lingua dell’app restano.</string>
     <string name="reset_section_tooltip">Ripristina questa sezione</string>
     <string name="reset_section_title">Ripristinare questa sezione?</string>
     <string name="reset_bubble_text">Tutte le impostazioni della bolla tornano com’erano dopo l’installazione, comprese le app nascoste, la dimensione della bolla e la sua posizione sullo schermo. Una bolla nascosta ricompare.</string>
     <string name="reset_lookup_text">La lunghezza di scansione, le voci per ricerca e le altre impostazioni di ricerca tornano com’erano dopo l’installazione.</string>
     <string name="reset_anki_text">Il mazzo, il tipo di nota, i modelli dei campi, le etichette, la gestione dei duplicati e le fonti audio tornano com’erano dopo l’installazione. In AnkiDroid non cambia nulla.</string>
     <string name="reset_popup_text">La scelta del carattere, la dimensione e il peso del testo, il CSS personalizzato e la copia delle definizioni tornano com’erano dopo l’installazione. I caratteri scaricati e aggiunti restano installati.</string>
-    <string name="reset_appearance_text">Il tema torna a seguire il sistema e la modalità e-ink si spegne; le dimensioni che aveva ingrandito tornano come prima. La lingua dell’app resta.</string>
+    <string name="reset_appearance_text">Il tema torna a seguire il sistema, i colori tornano quelli di Screenlate e la modalità e-ink si spegne; le dimensioni che aveva ingrandito tornano come prima. La lingua dell’app resta.</string>
     <string name="reset_background_text">La notifica che tiene in vita la bolla si spegne. Le impostazioni di batteria e di avvio appartengono ad Android e restano come sono.</string>
     <string name="reset_dictionaries_tooltip">Ripristina i dizionari</string>
     <string name="reset_dictionaries_title">Ripristinare i dizionari?</string>
