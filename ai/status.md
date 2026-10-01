@@ -16,8 +16,6 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   is open from those. Request 22 (open review findings, bundled dictionary updates) is done, see the 2026-10-01
   log entry; request 23 (settings resets, tooltips) is done, see its log entry. Requests 24 (spinner instead of the
   Dictionaries reset icon) and 25 (imports and resets cut short by a killed app) are done, see their log entry.
-- The owner's message «Если надо то проверяй на эмуляторе доработки еще, напоминаю про возможность просто.» looks
-  cut off; they were asked to finish it.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
   read or only partly: `DictionaryRepository`/`DictionaryLookup` (beyond `noTermDictionary`), `PerGeneration`,
   `DownloadCache`/`DownloadAssetsTask`/`release.yml`, `Protobuf`/`LensOcrEngine`, `Redaction`, `TextLayout`,
