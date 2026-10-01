@@ -1,10 +1,13 @@
 package com.vpr.screenlate.dictionaries
 
+import android.os.SystemClock
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
@@ -22,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -33,13 +37,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalUriHandler
@@ -60,6 +69,8 @@ import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.ResetButton
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import java.util.Locale
+import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 /** Installed dictionaries (order, enable, delete), running imports and the download catalog. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,11 +120,13 @@ fun DictionariesScreen(
             )
         },
     ) { padding ->
+        val scroll = rememberScrollState()
+        val anchors = remember(scroll) { ScrollAnchors(scroll) }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scroll)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -173,7 +186,7 @@ fun DictionariesScreen(
             }
             ImportNotificationsCard()
 
-            SectionTitle(stringResource(R.string.dictionaries_installed))
+            SectionTitle(stringResource(R.string.dictionaries_installed), anchors.at(0))
             if (state.loaded && state.installed.isEmpty()) {
                 Text(stringResource(R.string.dictionaries_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -222,7 +235,7 @@ fun DictionariesScreen(
                 }
             }
 
-            SectionTitle(stringResource(R.string.dictionaries_catalog))
+            SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
             state.catalog.forEach { group ->
                 SubsectionTitle(languageName(group.sourceLanguage))
                 group.sections.forEach { section ->
@@ -232,13 +245,16 @@ fun DictionariesScreen(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     section.items.forEach { item ->
-                        CatalogCard(
-                            item,
-                            onDownload = {
-                                askNotifications()
-                                viewModel.download(item.entry)
-                            },
-                        )
+                        key(item.entry.title) {
+                            CatalogCard(
+                                item,
+                                onDownload = {
+                                    askNotifications()
+                                    viewModel.download(item.entry)
+                                },
+                                onCancel = viewModel::cancel,
+                            )
+                        }
                     }
                 }
             }
@@ -275,8 +291,26 @@ fun DictionariesScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 8.dp))
+private fun SectionTitle(text: String, modifier: Modifier = Modifier) {
+    Text(text, style = MaterialTheme.typography.titleLarge, modifier = modifier.padding(top = 8.dp))
+}
+
+/**
+ * Keeps the part of the page the user looks at in place when something above it appears or goes away, such as a task
+ * card at the top after a tap on Download far below, or a dictionary added to the installed list above the catalog.
+ * Each anchor marks the top of a part, numbered down the page; the lowest one above the view moves the scroll by as
+ * much as it moved itself.
+ */
+private class ScrollAnchors(private val scroll: ScrollState) {
+    private val tops = HashMap<Int, Int>()
+
+    fun at(index: Int): Modifier = Modifier.onGloballyPositioned { coordinates ->
+        val top = coordinates.positionInParent().y.roundToInt()
+        val previous = tops.put(index, top) ?: return@onGloballyPositioned
+        if (top == previous || previous >= scroll.value) return@onGloballyPositioned
+        if (tops.any { (other, otherTop) -> other > index && otherTop < scroll.value }) return@onGloballyPositioned
+        scroll.dispatchRawDelta((top - previous).toFloat())
+    }
 }
 
 @Composable
@@ -576,8 +610,21 @@ private fun ErrorCard(message: String, onDismiss: () -> Unit, onRetry: (() -> Un
 }
 
 @Composable
-private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
+private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (ImportTask) -> Unit) {
     val entry = item.entry
+    val task = item.task
+    // The ring replaces Download at the tap, before the queued task shows up, so a double tap cannot queue it twice.
+    var requested by remember { mutableStateOf(false) }
+    LaunchedEffect(requested, task != null) {
+        if (task != null) {
+            requested = false
+        } else if (requested) {
+            delay(REQUEST_SHOWN_MS)
+            requested = false
+        }
+    }
+    // ✕ takes the place of Download, so the second tap of a double tap would cancel at once; it waits a moment first.
+    var cancelFrom by remember { mutableLongStateOf(0L) }
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp, end = 4.dp)) {
             Column(
@@ -596,19 +643,82 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(entry.description(), style = MaterialTheme.typography.bodySmall)
+                if (task != null || requested) {
+                    Text(taskStage(task), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                }
             }
             when {
-                item.inProgress -> Spacer(Modifier.size(48.dp))
+                task != null || requested -> TaskRing(
+                    task,
+                    onCancel = { if (task != null && SystemClock.uptimeMillis() >= cancelFrom) onCancel(task) },
+                )
                 item.installed -> Icon(
                     painterResource(R.drawable.ic_check),
                     contentDescription = stringResource(R.string.dictionaries_installed_mark),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(12.dp),
                 )
-                else -> TooltipIconButton(R.drawable.ic_download, stringResource(R.string.dictionaries_download), onClick = onDownload)
+                else -> TooltipIconButton(
+                    R.drawable.ic_download,
+                    stringResource(R.string.dictionaries_download),
+                    onClick = {
+                        cancelFrom = SystemClock.uptimeMillis() + CANCEL_GUARD_MS
+                        requested = true
+                        onDownload()
+                    },
+                )
             }
         }
     }
 }
+
+/** Taps on a catalog card's ✕ within this time after its Download was tapped are ignored. */
+private const val CANCEL_GUARD_MS = 1_000L
+
+/** How long a tapped Download shows the ring while its task has not shown up; then Download comes back. */
+private const val REQUEST_SHOWN_MS = 5_000L
+
+/** What a catalog card's import is doing, with the percent when it is known; null is a download just requested. */
+@Composable
+private fun taskStage(task: ImportTask?): String {
+    if (task == null) return stringResource(R.string.dictionaries_stage_queued)
+    val stage = stringResource(
+        when (task.state) {
+            ImportTask.State.QUEUED -> R.string.dictionaries_stage_queued
+            ImportTask.State.DOWNLOADING -> R.string.dictionaries_stage_downloading
+            ImportTask.State.CHECKING_SPACE -> R.string.dictionaries_stage_checking_space
+            ImportTask.State.CONVERTING -> R.string.dictionaries_stage_converting
+            else -> R.string.dictionaries_stage_importing
+        },
+    )
+    val percent = task.percent
+    return if (percent != null && task.state != ImportTask.State.QUEUED) {
+        stringResource(R.string.dictionaries_stage_percent, stage, percent)
+    } else {
+        stage
+    }
+}
+
+/** The import's progress around a ✕ that cancels it; see [ringProgress]. Empty for a download just requested. */
+@Composable
+private fun TaskRing(task: ImportTask?, onCancel: () -> Unit) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(48.dp)) {
+        val progress = if (task == null) 0f else ringProgress(task)
+        val ring = Modifier.size(40.dp)
+        val track = MaterialTheme.colorScheme.outlineVariant
+        if (progress != null) {
+            CircularProgressIndicator(progress = { progress }, modifier = ring, strokeWidth = 3.dp, trackColor = track)
+        } else {
+            CircularProgressIndicator(modifier = ring, strokeWidth = 3.dp, trackColor = track)
+        }
+        TooltipIconButton(stringResource(R.string.action_cancel), onClick = onCancel) {
+            Icon(painterResource(R.drawable.ic_close), stringResource(R.string.action_cancel), modifier = Modifier.size(18.dp))
+        }
+    }
+}
+
+/** The filled part of an import's ring: empty while queued, the percent when known, null (spinning) otherwise. */
+internal fun ringProgress(task: ImportTask): Float? =
+    if (task.state == ImportTask.State.QUEUED) 0f else task.percent?.let { it.coerceIn(0, 100) / 100f }
 
 private val ARCHIVE_TYPES = arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")

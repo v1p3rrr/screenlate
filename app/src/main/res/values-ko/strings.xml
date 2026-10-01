@@ -129,6 +129,12 @@
     <string name="dictionaries_import_yomitan_backup">Yomitan 사전 컬렉션 가져오기</string>
     <string name="dictionaries_task_converting">%1$s 압축 해제 중</string>
     <string name="dictionaries_task_checking_space">%1$s의 여유 공간 확인 중</string>
+    <string name="dictionaries_stage_queued">대기 중</string>
+    <string name="dictionaries_stage_downloading">다운로드 중</string>
+    <string name="dictionaries_stage_checking_space">여유 공간 확인 중</string>
+    <string name="dictionaries_stage_converting">압축 해제 중</string>
+    <string name="dictionaries_stage_importing">가져오는 중</string>
+    <string name="dictionaries_stage_percent">%1$s · %2$d%%</string>
     <string name="bubble_small_text">OCR 부스트</string>
     <string name="bubble_small_text_off">끄기</string>
     <string name="bubble_small_text_on_demand">필요할 때</string>

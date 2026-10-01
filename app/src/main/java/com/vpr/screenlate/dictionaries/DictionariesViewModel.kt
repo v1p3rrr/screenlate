@@ -32,8 +32,21 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** A catalog entry with its state relative to the installed dictionaries and running imports. */
-data class CatalogItem(val entry: CatalogEntry, val installed: Boolean, val inProgress: Boolean)
+/**
+ * A catalog entry with its state relative to the installed dictionaries and running imports; [task] is its queued or
+ * running import, e.g. a download from the catalog or an update.
+ */
+data class CatalogItem(val entry: CatalogEntry, val installed: Boolean, val task: ImportTask? = null)
+
+/** Catalog entries with their installed state and the unfinished import named after each, if any. */
+internal fun catalogItems(
+    entries: List<CatalogEntry>,
+    dictionaries: List<DictionaryEntity>,
+    tasks: List<ImportTask>,
+): List<CatalogItem> {
+    val running = tasks.filter { !it.finished }.associateBy { it.name }
+    return entries.map { entry -> CatalogItem(entry, installed = dictionaries.any(entry::matches), task = running[entry.title]) }
+}
 
 /**
  * Catalog entries of one kind and language pair. [targetLanguage] is set for term dictionaries only; frequency,
@@ -88,10 +101,7 @@ class DictionariesViewModel @Inject constructor(
         repository.sortDictionaryId,
         repository.dictionaries.map { remoteCss() to withoutFiles() },
     ) { dictionaries, tasks, entries, sortId, (remoteCss, withoutFiles) ->
-        val running = tasks.filter { !it.finished }.map { it.name }.toSet()
-        val items = entries.map { entry ->
-            CatalogItem(entry, installed = dictionaries.any(entry::matches), inProgress = entry.title in running)
-        }
+        val items = catalogItems(entries, dictionaries, tasks)
         DictionariesState(
             installed = DictionaryKind.entries.mapNotNull { kind ->
                 dictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }

@@ -139,6 +139,8 @@ class DictionaryImportWorker @AssistedInject constructor(
                 SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
                 SOURCE_YOMITAN_BACKUP -> importCollection(name)
                 SOURCE_URL -> {
+                    // Reading the index and connecting take a moment; the task says it is downloading meanwhile.
+                    setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
                     val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
                         ?: requireNotNull(inputData.getString(KEY_URL))
                     listOf(download(url, name))

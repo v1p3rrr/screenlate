@@ -129,6 +129,12 @@
     <string name="dictionaries_import_yomitan_backup">Yomitan の辞書コレクションをインポート</string>
     <string name="dictionaries_task_converting">%1$s を展開中</string>
     <string name="dictionaries_task_checking_space">%1$s の空き容量を確認中</string>
+    <string name="dictionaries_stage_queued">順番待ち</string>
+    <string name="dictionaries_stage_downloading">ダウンロード中</string>
+    <string name="dictionaries_stage_checking_space">空き容量を確認中</string>
+    <string name="dictionaries_stage_converting">展開中</string>
+    <string name="dictionaries_stage_importing">インポート中</string>
+    <string name="dictionaries_stage_percent">%1$s · %2$d%%</string>
     <string name="bubble_small_text">OCR ブースト</string>
     <string name="bubble_small_text_off">オフ</string>
     <string name="bubble_small_text_on_demand">必要なとき</string>

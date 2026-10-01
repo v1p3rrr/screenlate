@@ -129,6 +129,12 @@
     <string name="dictionaries_import_yomitan_backup">Importuj kolekcję słowników Yomitan</string>
     <string name="dictionaries_task_converting">Rozpakowywanie: %1$s</string>
     <string name="dictionaries_task_checking_space">Sprawdzanie wolnego miejsca dla %1$s</string>
+    <string name="dictionaries_stage_queued">W kolejce</string>
+    <string name="dictionaries_stage_downloading">Pobieranie</string>
+    <string name="dictionaries_stage_checking_space">Sprawdzanie wolnego miejsca</string>
+    <string name="dictionaries_stage_converting">Rozpakowywanie</string>
+    <string name="dictionaries_stage_importing">Importowanie</string>
+    <string name="dictionaries_stage_percent">%1$s · %2$d%%</string>
     <string name="bubble_small_text">Wzmocnienie OCR</string>
     <string name="bubble_small_text_off">Wyłączone</string>
     <string name="bubble_small_text_on_demand">Na żądanie</string>

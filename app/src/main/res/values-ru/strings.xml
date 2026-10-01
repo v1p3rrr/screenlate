@@ -130,6 +130,12 @@
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
     <string name="dictionaries_task_checking_space">Проверка свободного места: %1$s</string>
+    <string name="dictionaries_stage_queued">В очереди</string>
+    <string name="dictionaries_stage_downloading">Загрузка</string>
+    <string name="dictionaries_stage_checking_space">Проверка свободного места</string>
+    <string name="dictionaries_stage_converting">Распаковка</string>
+    <string name="dictionaries_stage_importing">Импорт</string>
+    <string name="dictionaries_stage_percent">%1$s · %2$d%%</string>
     <string name="bubble_small_text">Усиление OCR</string>
     <string name="bubble_small_text_off">Выкл</string>
     <string name="bubble_small_text_on_demand">По требованию</string>
