@@ -45,8 +45,10 @@ class CatalogItemsTest {
 
     @Test
     fun `an update of an installed dictionary shows on its entry too`() {
-        val update = task("A", ImportTask.State.QUEUED)
-        val item = catalogItems(listOf(entry("A")), listOf(dictionary("A")), listOf(update)).single()
+        // Updates are named after the installed dictionary, whose title differs from the entry's.
+        val entry = entry("Wiktionary (ja–en)").copy(installedTitle = "wty-ja-en")
+        val update = task("wty-ja-en", ImportTask.State.QUEUED)
+        val item = catalogItems(listOf(entry), listOf(dictionary("wty-ja-en")), listOf(update)).single()
 
         assertTrue(item.installed)
         assertEquals(update, item.task)

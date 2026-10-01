@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api.imports
 import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -110,7 +111,7 @@ class BundledDictionaries @Inject constructor(
         }.map { it.name }
         if (names.isEmpty()) return
         Log.i(TAG, "Declined after deletion: $names")
-        dataStore.edit { it[DECLINED] = it[DECLINED].orEmpty() + names }
+        dataStore.edit { declineDeleted(it, names) }
     }
 
     suspend fun copy(asset: Asset, target: File) = withContext(Dispatchers.IO) {
@@ -233,6 +234,15 @@ class BundledDictionaries @Inject constructor(
 
         /** Whether a pause made while the app's install time was [stored] holds now, at [current]. */
         fun pausedFor(stored: Long?, current: Long): Boolean = stored == current
+
+        /**
+         * Records that the user deleted the dictionaries of the archives [names]: they are declined, and a repair
+         * queued for them is dropped, as [pending] installs archives to repair even when declined.
+         */
+        fun declineDeleted(prefs: MutablePreferences, names: Collection<String>) {
+            prefs[DECLINED] = prefs[DECLINED].orEmpty() + names
+            prefs[REPAIR] = prefs[REPAIR].orEmpty() - names.toSet()
+        }
 
         /** [installed] keys with [assets] in place of other versions of the same archives. */
         private fun withKeys(installed: Set<String>, assets: List<Asset>): Set<String> {

@@ -1,5 +1,7 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import androidx.datastore.preferences.core.mutablePreferencesOf
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries.Asset
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries.Copy
@@ -150,5 +152,17 @@ class BundledDictionariesTest {
         assertThat(BundledDictionaries.pausedFor(stored = 1_000L, current = 1_000L)).isTrue()
         assertThat(BundledDictionaries.pausedFor(stored = 1_000L, current = 2_000L)).isFalse()
         assertThat(BundledDictionaries.pausedFor(stored = null, current = 1_000L)).isFalse()
+    }
+
+    @Test
+    fun `a deleted dictionary is declined and no longer repaired`() {
+        val declined = stringSetPreferencesKey("bundled_dictionaries_declined")
+        val repair = stringSetPreferencesKey("bundled_dictionaries_repair")
+        val prefs = mutablePreferencesOf(declined to setOf(pitch.name), repair to setOf(jmdict.name, frequency.name))
+
+        BundledDictionaries.declineDeleted(prefs, listOf(jmdict.name))
+
+        assertThat(prefs[declined]).containsExactly(pitch.name, jmdict.name)
+        assertThat(prefs[repair]).containsExactly(frequency.name)
     }
 }

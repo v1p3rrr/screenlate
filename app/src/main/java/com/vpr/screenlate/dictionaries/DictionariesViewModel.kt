@@ -46,7 +46,12 @@ internal fun catalogItems(
     tasks: List<ImportTask>,
 ): List<CatalogItem> {
     val running = tasks.filter { !it.finished }.associateBy { it.name }
-    return entries.map { entry -> CatalogItem(entry, installed = dictionaries.any(entry::matches), task = running[entry.title]) }
+    return entries.map { entry ->
+        val copies = dictionaries.filter(entry::matches)
+        // A download is named after the entry, an update after the installed dictionary it replaces.
+        val task = running[entry.title] ?: copies.firstNotNullOfOrNull { running[it.title] }
+        CatalogItem(entry, installed = copies.isNotEmpty(), task = task)
+    }
 }
 
 /**

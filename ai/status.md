@@ -578,3 +578,14 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `Text` now center it (Home, Background work, Backup, Dictionaries, Search, About, Popup fonts, updates, Yomitan
   import, Anki, audio, OCR test); the Anki pickers (one line with an ellipsis) and dialog buttons are unchanged.
 - Not seen on a device: the icons with the theme set against the system's (both ways), and the labels in Russian.
+
+### 2026-10-01 (review of 1c95a1e..HEAD; cloud session)
+
+- `/code-review --fix` over 1c95a1e..HEAD, only findings it was sure of: 3. Fixed: a bundled dictionary deleted while
+  queued for repair came back at the next start (`markDeleted` now also drops the repair, `declineDeleted`, tested);
+  an update task never showed its ring on the catalog card, since updates are named after the installed dictionary
+  (`catalogItems` now matches both titles; the test used one name for everything and could not catch it). Open, for
+  the owner's wording: the Appearance and full reset dialogs and the backup's General hint do not mention the new
+  Colors setting, which both resets clear and the backup keeps (strings in 14 languages).
+- Doubtful, not reported as findings: a race between a dictionary reset and the repair at start; a system stop of an
+  import job counted as the app dying.
