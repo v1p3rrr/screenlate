@@ -3,15 +3,18 @@
  * puts them on the clipboard.
  *
  * Public API (DefinitionCopy):
- *   copy(glossaries, mode)   { text, html }; glossaries are those of one dictionary ({ content, definitionTags }).
- *                            'all': everything the dictionary shows, as markup with inline styles (html) and as plain
- *                            text for apps without formatting. 'meanings': the meanings alone as plain text, numbered
- *                            when there are several; html is empty.
+ *   copy(glossaries, mode, lang)  { text, html }; glossaries are those of one dictionary ({ content, definitionTags }).
+ *                                 'all': everything the dictionary shows, as markup with inline styles (html) and as
+ *                                 plain text for apps without formatting. 'meanings': the meanings alone as plain
+ *                                 text, numbered when there are several; html is empty. lang, the page's language
+ *                                 tag, picks the markup rules of that language's dictionaries.
+ *   addLanguage(tag, rules)       registers the markup rules of a language's dictionaries (fields of NO_RULES); each
+ *                                 language has them in a script of its own, such as definition-ja.js.
  *
  * Meanings are found by the dictionary's markup: lists marked as glossaries (data "content": "glossary", as JMdict,
- * Jitendex and dictionaries built from them mark them), definitions of Japanese dictionaries (data "name": "語釈"),
- * and in plain text the lines left when headwords, examples, phrases and references are taken out. Where nothing is
- * found, the whole text is copied.
+ * Jitendex and dictionaries built from them mark them), definitions marked by name in the language's dictionaries,
+ * and in plain text the lines left when the language's headwords, examples, phrases and references are taken out.
+ * Where nothing is found, the whole text is copied.
  */
 const DefinitionCopy = (() => {
     const anki = window.YomitanAnki || null;
@@ -22,8 +25,6 @@ const DefinitionCopy = (() => {
     ]);
     const SKIPPED_TAGS = new Set(['img', 'rt', 'rp', 'svg', 'style', 'script']);
     const BULLET_STYLES = new Set(['disc', 'circle', 'square']);
-    /** Readings printed inside Japanese definitions, such as 愛玩(ガン). */
-    const READING_NAMES = new Set(['ルビ', 'ルビG']);
 
     /** A number that opens a meaning: "1 ", "1.", "1)", "(1)", "①", "㊀". */
     const MARKER = /^\s*(?:\d{1,2}(?:[.)．）]\s*|\s+)|[(（]\d{1,2}[)）]\s*|[①-⑳㉑-㉟㊱-㊿❶-❿➀-➉㊀-㊉]\s*)/;
@@ -32,27 +33,62 @@ const DefinitionCopy = (() => {
      * number ("24 hours") is not taken for a numbered meaning.
      */
     const FIRST_MARKER = /^\s*(?:1(?:[.)．）]\s*|\s+)|[(（]1[)）]\s*|[①❶➀㊀]\s*)/;
-    /** Letters of sub-senses: ㋐, ㋑. */
-    const SUB_MARKER = /^\s*[\u32d0-\u32fe]\s*/;
-    /** A headword line: かな【漢字】. */
-    const HEADWORD = /【[^】]*】|〖[^〗]*〗/;
-    /** Lines of examples, phrases, references and notes. */
-    const EXTRA_START = /^[→↔⇒⇔☞◇◆■□▼▽◎●「『《［[※＊]/;
-    /** A phrase or example in a bilingual dictionary: the looked-up language first, then its translation. */
-    const SOURCE_START = /^[{｛]?[…‥]?[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}～〜]/u;
-    /** The Japanese sense a bilingual line translates: 〈食物をとる〉 есть. */
-    const SENSE_LABEL = /^〈[^〉]+〉\s*\S/;
-    /** A quoted example; a dash or ～ stands for the word. */
-    const EXAMPLE = /「[^「」]*[―━～〜][^「」]*」/;
-    const EXAMPLES = /「[^「」]*[―━～〜][^「」]*」(?:（[^（）]*）)?/g;
-    /** Letters of the looked-up (CJK) languages and of the languages they are translated into. */
-    const SOURCE = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu;
+    /** A list bullet at the start of a line. */
+    const BULLET = /^\s*•\s*/;
+    /** Letters of the languages dictionaries translate into, against those of the looked-up language. */
     const TARGET = /[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}]/gu;
 
-    function copy(glossaries, mode) {
+    /**
+     * The markup rules of a language's dictionaries. A language without rules of its own gets these: meanings come
+     * from marked glossary lists and numbered lines only. A pattern left null never matches.
+     */
+    const NO_RULES = Object.freeze({
+        /** data "name" of readings printed inside definitions, left out of a meaning. */
+        readingNames: new Set(),
+        /** data "name" of a definition in structured content. */
+        meaningNames: new Set(),
+        /** Letters of the looked-up language (global): a text with twice as many target letters is bilingual. */
+        source: null,
+        /** A headword line of a plain-text item. */
+        headword: null,
+        /** The letter of a sub-sense at the start of a line. */
+        subMarker: null,
+        /** The start of a line of examples, phrases, references or notes. */
+        extraStart: null,
+        /** The start of a note line in a monolingual dictionary; in a bilingual one such a line is a translation. */
+        noteStart: null,
+        /** A phrase or example in a bilingual dictionary: the looked-up language first, then its translation. */
+        sourceStart: null,
+        /** A bilingual line that opens with the sense of the word it translates; it starts a meaning. */
+        senseLabel: null,
+        /** Labels anywhere in a line (global), and a note that opens it; both are taken out. */
+        labels: null,
+        leadingNote: null,
+        /** A list bullet of the language's dictionaries at the start of a line, besides •. */
+        bullet: null,
+        /** A quoted example inside a line, and every such example with what follows it (global). */
+        example: null,
+        examples: null,
+        /** The end of a sentence: a line with an example is cut after the last one before it. */
+        sentenceEnd: '.',
+    });
+    const languages = new Map();
+
+    function addLanguage(tag, rules) {
+        languages.set(String(tag).toLowerCase(), Object.freeze({ ...NO_RULES, ...rules }));
+    }
+
+    /** The rules of [lang] ("ja", "ja-JP"), or NO_RULES. */
+    function rulesOf(lang) {
+        const tag = String(lang || '').toLowerCase();
+        return languages.get(tag) || languages.get(tag.split('-')[0]) || NO_RULES;
+    }
+
+    function copy(glossaries, mode, lang) {
         const whole = allText(glossaries);
         if (mode === 'meanings') {
-            const found = glossaries.flatMap(glossary => meaningsOf(items(glossary)));
+            const rules = rulesOf(lang);
+            const found = glossaries.flatMap(glossary => meaningsOf(items(glossary), rules));
             return { text: found.length ? numbered(found) : whole, html: '' };
         }
         return { text: whole, html: allHtml(glossaries) };
@@ -202,18 +238,18 @@ const DefinitionCopy = (() => {
      * The meanings of one glossary's items, in order; empty when none can be told apart. Structured items without
      * marked meanings are read as text, as the page shows them.
      */
-    function meaningsOf(list) {
+    function meaningsOf(list, rules) {
         const parts = list.map(item => {
             const text = plainString(item);
             if (text !== null) return { text };
             const marked = [];
-            markedMeanings(item, marked);
+            markedMeanings(item, marked, rules);
             return marked.length ? { marked } : { text: textOf(item) };
         });
         const text = parts.filter(part => part.text !== undefined).map(part => part.text).join('\n');
         const state = {
             numbered: text.split('\n').some(line => FIRST_MARKER.test(line)),
-            bilingual: isBilingual(text),
+            bilingual: isBilingual(text, rules),
             started: false,
             extra: false,
         };
@@ -222,26 +258,27 @@ const DefinitionCopy = (() => {
             if (part.marked) {
                 found.push(...part.marked);
             } else {
-                textMeanings(part.text, state, found);
+                textMeanings(part.text, state, found, rules);
             }
         });
         return found.filter(Boolean);
     }
 
     /** Whether the dictionary explains in another language, so lines in the looked-up language are examples. */
-    function isBilingual(text) {
+    function isBilingual(text, rules) {
+        if (!rules.source) return false;
         const target = (text.match(TARGET) || []).length;
-        const source = (text.match(SOURCE) || []).length;
+        const source = (text.match(rules.source) || []).length;
         return target > 0 && target * 2 > source;
     }
 
     /**
      * Meanings of a text item. In a numbered glossary a number starts a meaning, lines before the first number (the
      * headword, grammar, origin) are left out, and once a line is an example, phrase or note, the lines after it are
-     * too until the next number. Without numbers every item is a meaning, its first line a headword when it has 【】;
-     * a bilingual line opening with 〈…〉 (the Japanese sense it translates) starts another one.
+     * too until the next number. Without numbers every item is a meaning, its first line left out when it is a
+     * headword; a bilingual line that opens with the sense it translates starts another one.
      */
-    function textMeanings(text, state, found) {
+    function textMeanings(text, state, found, rules) {
         const lines = text.split('\n');
         let startsNew = true;
         if (!state.numbered) state.extra = false;
@@ -256,18 +293,18 @@ const DefinitionCopy = (() => {
                 line = line.slice(number[0].length);
             } else if (state.numbered && !state.started) {
                 return;
-            } else if (!state.numbered && index === 0 && lines.length > 1 && HEADWORD.test(line)) {
+            } else if (!state.numbered && index === 0 && lines.length > 1 && rules.headword?.test(line)) {
                 return;
-            } else if (SUB_MARKER.test(line)) {
+            } else if (rules.subMarker?.test(line)) {
                 state.extra = false;
-            } else if (state.bilingual && !state.numbered && SENSE_LABEL.test(line)) {
+            } else if (state.bilingual && !state.numbered && rules.senseLabel?.test(line)) {
                 state.extra = false;
                 startsNew = true;
-            } else if (state.extra || isExtra(line, state.bilingual)) {
+            } else if (state.extra || isExtra(line, state.bilingual, rules)) {
                 state.extra = true;
                 return;
             }
-            line = tidy(line);
+            line = tidy(line, rules);
             if (!line) return;
             if (startsNew || found.length === 0) {
                 found.push(line);
@@ -278,36 +315,40 @@ const DefinitionCopy = (() => {
         });
     }
 
-    function isExtra(line, bilingual) {
-        if (EXTRA_START.test(line) || line.includes('∥')) return true;
-        // A bilingual line of notes in brackets is still a translation: 〔食する〕 eat.
-        return bilingual ? SOURCE_START.test(line) : line.startsWith('〔');
+    function isExtra(line, bilingual, rules) {
+        // An example and its translation around a double bar: 日本人は米を食べている∥Японцы едят рис.
+        if (rules.extraStart?.test(line) || line.includes('∥')) return true;
+        return Boolean(bilingual ? rules.sourceStart?.test(line) : rules.noteStart?.test(line));
     }
 
     /**
-     * Takes out labels in 〘〙, a leading note in 《》, list bullets and sub-sense letters, and examples: a line is cut
-     * after the last sentence before its first example (a quote with a dash or ～ standing for the word).
+     * Takes out the language's labels, a leading note, list bullets and sub-sense letters, and examples: a line is cut
+     * after the last sentence before its first example.
      */
-    function tidy(line) {
-        let text = line.replace(/〘[^〙]*〙/g, ' ').replace(/^\s*《[^》]*》/, '').replace(/^\s*[•・]\s*/, '')
-            .replace(SUB_MARKER, '');
-        const example = EXAMPLE.exec(text);
+    function tidy(line, rules) {
+        let text = line;
+        if (rules.labels) text = text.replace(rules.labels, ' ');
+        if (rules.leadingNote) text = text.replace(rules.leadingNote, '');
+        text = text.replace(BULLET, '');
+        if (rules.bullet) text = text.replace(rules.bullet, '');
+        if (rules.subMarker) text = text.replace(rules.subMarker, '');
+        const example = rules.example?.exec(text);
         if (example) {
-            const end = text.lastIndexOf('。', example.index);
-            text = end >= 0 ? text.slice(0, end + 1) : text.replace(EXAMPLES, '');
+            const end = text.lastIndexOf(rules.sentenceEnd, example.index);
+            text = end >= 0 ? text.slice(0, end + rules.sentenceEnd.length) : text.replace(rules.examples, '');
         }
         return text.replace(/\s+/g, ' ').trim();
     }
 
     /** Meanings marked in structured content; a glossary list's items go on one line. */
-    function markedMeanings(node, found) {
+    function markedMeanings(node, found, rules) {
         if (!node || typeof node !== 'object') return;
         if (Array.isArray(node)) {
-            node.forEach(child => markedMeanings(child, found));
+            node.forEach(child => markedMeanings(child, found, rules));
             return;
         }
         if (node.type === 'structured-content') {
-            markedMeanings(node.content, found);
+            markedMeanings(node.content, found, rules);
             return;
         }
         const data = node.data || {};
@@ -318,11 +359,11 @@ const DefinitionCopy = (() => {
             found.push(parts.filter(Boolean).join('; '));
             return;
         }
-        if (data.name === '語釈') {
-            found.push(oneLine(textOf(node.content, child => READING_NAMES.has(child.data?.name))));
+        if (rules.meaningNames.has(data.name)) {
+            found.push(oneLine(textOf(node.content, child => rules.readingNames.has(child.data?.name))));
             return;
         }
-        markedMeanings(node.content, found);
+        markedMeanings(node.content, found, rules);
     }
 
     function oneLine(text) {
@@ -331,5 +372,5 @@ const DefinitionCopy = (() => {
 
     // endregion
 
-    return { copy };
+    return { copy, addLanguage };
 })();

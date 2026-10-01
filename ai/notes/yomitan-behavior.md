@@ -49,11 +49,11 @@ Definitions inside an entry: frequency order → dictionary order → score → 
 
 ## Glossary shapes for "only meanings" copying (`definition.js`)
 
-Own heuristic (not Yomitan code; Yomitan has no such mode). Checked with 猫/食べる from Jitendex, Kolobok, JMdict (en, ru, bundled), JMdict Extra, Warodai, Kenrowa, Wadoku, 新和英, 大辞林, 新明解, 大辞泉, 三省堂, 明鏡, 広辞苑, 岩波, 旺文社.
+Own heuristic (not Yomitan code; Yomitan has no such mode). `definition.js` holds what is the same for every language (glossary lists, numbered lines, `∥` examples, bilingual detection against Latin/Cyrillic/Greek letters); the markup of a language's dictionaries is in its own script, registered by language tag and picked by the page's `lang` (`definition-ja.js`: the names, brackets and marks below). A language without such a script gets glossary lists and numbered lines only. Checked with 猫/食べる from Jitendex, Kolobok, JMdict (en, ru, bundled), JMdict Extra, Warodai, Kenrowa, Wadoku, 新和英, 大辞林, 新明解, 大辞泉, 三省堂, 明鏡, 広辞苑, 岩波, 旺文社.
 
 - JMdict-based structured content (Jitendex, Kolobok, JMdict exports): `data.content = "glossary"` lists hold the meanings; examples (`example-sentence`), `xref`, `extra-info`, `attribution` sit beside them. One sense = the list's `li` joined by "; ".
 - Japanese monolingual structured content (大辞林, 新明解, 三省堂 style): `data.name = "語釈"` spans; `ルビ`/`ルビG` inside them are readings to skip; `語義番号`, `用例` beside.
 - Everything else is plain text lines (明鏡, 広辞苑, 岩波, 大辞泉, 旺文社 come as text or unmarked structured content): numbered senses (1, 1., 1), (1), ①, ❶, ➀, ㊀), sub-senses ㋐–㋾, preamble before the first number (headword 【】, 〘〙 labels, 《》 etymology). Extra lines (examples 「」, →/⇒/☞ references, ◆■ notes, [補説], and 〔 notes in monolingual text) run until the next number.
-- Bilingual text without numbers (Warodai, Kenrowa): one sense per glossary item, or per 〈…〉 label line (Kenrowa); Japanese-led lines are examples (`日本語∥перевод`, Warodai's `…を食べている питаться`). Bilingual = Latin/Cyrillic/Greek letters outnumber CJK letters 2:1.
+- Bilingual text without numbers (Warodai, Kenrowa): one sense per glossary item, or per 〈…〉 label line (Kenrowa); Japanese-led lines are examples (`日本語∥перевод`, Warodai's `…を食べている питаться`). Bilingual = Latin/Cyrillic/Greek letters outnumber the looked-up language's letters (kanji and kana for Japanese) 2:1.
 - Examples inside a sense line (大辞泉/広辞苑: `…食物にいう。宇津保物語「かの―・べ…」`): cut after the last 。 before the first quote containing ―, ━, ～ or 〜.
-- Chinese and Korean dictionaries were not sampled; they fall into the text rules.
+- Chinese and Korean dictionaries were not sampled; with no rules of their own they get glossary lists and numbered lines only.

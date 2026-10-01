@@ -7,7 +7,8 @@ const DefinitionCopy = page.global('DefinitionCopy');
 
 const glossary = (content, definitionTags = '', dictionary = 'Dict') =>
     ({ dictionary, definitionTags, content: JSON.stringify(content) });
-const meanings = (...glossaries) => DefinitionCopy.copy(glossaries, 'meanings').text;
+const meaningsIn = (lang, ...glossaries) => DefinitionCopy.copy(glossaries, 'meanings', lang).text;
+const meanings = (...glossaries) => meaningsIn('ja', ...glossaries);
 const sc = content => ({ type: 'structured-content', content });
 
 // Shaped as JMdict-based dictionaries (Jitendex, Kolobok) mark them: senses with a glossary list, examples and
@@ -133,6 +134,22 @@ test('without anything that looks like a meaning the lines are copied as one', (
 
 test('a plain gloss that starts with a number is not taken for a numbered meaning', () => {
     assert.equal(meanings(glossary(['all day', '24 hours'])), '1. all day\n2. 24 hours');
+});
+
+test('a language without rules of its own: glossary lists and numbered lines, labels and examples kept', () => {
+    assert.equal(meaningsIn('ko', glossary([jitendexLike])), '1. есть; кушать\n2. зарабатывать на жизнь');
+    const monolingual = 'ね‐こ【猫】\n① 〘名〙食肉目ネコ科の哺乳類。「―が一枚」\n② 三味線のこと。';
+    assert.equal(meaningsIn('', glossary([monolingual])), '1. 〘名〙食肉目ネコ科の哺乳類。「―が一枚」\n2. 三味線のこと。');
+    // Without the language's names nothing is marked, so the entry is read as the page shows it.
+    const marked = sc([{ tag: 'span', data: { name: '見出部' }, content: 'ねこ【猫】' }, { tag: 'span', data: { name: '語釈' }, content: '小動物。' }]);
+    assert.equal(meaningsIn('ko', glossary([marked])), 'ねこ【猫】小動物。');
+    assert.equal(meaningsIn('ja', glossary([marked])), '小動物。');
+});
+
+test('a regional language tag takes the rules of its language', () => {
+    const english = 'ねこ・ネコ【猫】\n〘n〙\n1 cat.\n2 〘col〙 shamisen.\n→猫車';
+    assert.equal(meaningsIn('ja-JP', glossary([english])), '1. cat.\n2. shamisen.');
+    assert.equal(meaningsIn('JA', glossary([english])), '1. cat.\n2. shamisen.');
 });
 
 test('meanings of several glossaries are numbered together', () => {

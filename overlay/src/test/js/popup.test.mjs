@@ -312,6 +312,19 @@ test('the definition copy button shows when copying is on and copies its diction
     assert.deepEqual(page.calls.at(-1), ['onCopyDefinition', 'cat', 'cat']);
 });
 
+test('the page language picks the markup rules of the copied meanings', () => {
+    const entry = result('猫', 'ねこ', 'cat');
+    entry.term.glossaries[0].content = JSON.stringify(['ねこ【猫】\n〘n〙 cat']);
+    Popup.render(state({ results: [entry] }));
+    const button = content.querySelector('.copy-definition');
+    Popup.setAppearance({ lang: 'ja', definitionCopy: 'meanings' });
+    button.click();
+    assert.equal(page.calls.at(-1)[1], 'cat');
+    Popup.setAppearance({ lang: '', definitionCopy: 'meanings' });
+    button.click();
+    assert.equal(page.calls.at(-1)[1], 'ねこ【猫】; 〘n〙 cat');
+});
+
 test('dictionary styles are scoped to their dictionary', () => {
     Popup.setStyles([{ dictionary: 'Dict [1]', css: '.x { color: blue }' }]);
     assert.match(page.document.getElementById('dictionary-styles').textContent, /Dict \[1\]/);

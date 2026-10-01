@@ -13,6 +13,7 @@ export const SCRIPTS = {
     anki: path.join(RENDER, 'anki.js'),
     note: path.join(POPUP, 'note.js'),
     definition: path.join(POPUP, 'definition.js'),
+    definitionJa: path.join(POPUP, 'definition-ja.js'),
     popup: path.join(POPUP, 'popup.js'),
 };
 
@@ -47,13 +48,13 @@ export function notePage() {
     return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note] });
 }
 
-/** The definition copier with the renderer, on an empty page. */
+/** The definition copier with the renderer and the Japanese rules, on an empty page. */
 export function definitionPage() {
-    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.definition] });
+    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.definition, SCRIPTS.definitionJa] });
 }
 
 /** popup.html with all its scripts; the page's own script tags are dropped. */
 export function popupPage() {
     const html = readFileSync(path.join(POPUP, 'popup.html'), 'utf8').replace(/<script[^>]*><\/script>\s*/g, '');
-    return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.popup] });
+    return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.definitionJa, SCRIPTS.popup] });
 }

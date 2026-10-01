@@ -709,7 +709,7 @@ const Popup = (() => {
     function copyDefinition(glossaries) {
         const mode = document.documentElement.dataset.definitionCopy;
         if (!mode || typeof DefinitionCopy === 'undefined') return;
-        const { text, html } = DefinitionCopy.copy(glossaries, mode);
+        const { text, html } = DefinitionCopy.copy(glossaries, mode, document.documentElement.lang);
         if (text) ScreenlateBridge.onCopyDefinition(text, html);
     }
 
