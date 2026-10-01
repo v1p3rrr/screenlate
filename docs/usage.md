@@ -13,7 +13,7 @@
 | Pull the bubble away from the screen edge | The screen is scanned; aim at a word to see its entry. |
 | Move the floating bubble | The entry follows the aim point. The screen is not scanned again. |
 | Tap the floating bubble | Scan again, e.g. after scrolling. Recognized lines flash briefly. |
-| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks). With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens above the bubble, or below it when there is no room above. Back or a tap anywhere outside closes it; that tap does nothing else. |
+| Hold the floating bubble | A menu: copy the paragraph under the aim (a whole speech bubble or paragraph, without line breaks) or all recognized text, or open Screenlate (the bubble docks). With the aim off text, the paragraph of the word shown in the popup is copied. The menu opens above the bubble, or below it when there is no room above. Back, a tap anywhere outside or turning the screen off closes it; that tap does nothing else. |
 | Double tap the floating bubble | Switch the aim point between "above the finger" and "bubble center". |
 | Press ✕ | Close the entry; the bubble stays where it is and keeps the recognized text. |
 | Drag the bubble to the left or right edge | Close the entry and dock the bubble: once the bubble's center is past the edge, or when the finger is lifted at the edge. |

@@ -101,11 +101,11 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val foregroundCheck = Runnable {
-        focusedAppPackage()?.let { controller?.onForegroundApp(it) }
+        foregroundAppPackage()?.let { controller?.onForegroundApp(it) }
     }
 
     /** Package of the app in the foreground; see [ForegroundWindow.pick]. */
-    private fun focusedAppPackage(): String? = ForegroundWindow
+    private fun foregroundAppPackage(): String? = ForegroundWindow
         .pick(windows.map { ForegroundWindow.Window(it, it.type, it.isFocused, it.layer, it.isInPictureInPictureMode) })
         ?.root
         ?.packageName

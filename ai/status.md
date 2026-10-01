@@ -362,3 +362,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `ForegroundWindowTest`); a popup larger than the screen started above or left of it in the edge fallback below or to
   the right (the old clamp was lost; caught by the restored oversize test); centering computed once in `place`; an
   exact menu test at the top edge. Home and Back close the menu on the emulator after the change.
+- Second review of these changes (owner's command), 2 findings, fixed: the modal menu stayed open when the screen
+  turned off and would sit over the lock screen, taking the first unlock touch; it now closes on screen off
+  (`onScreenStateChanged`, checked with sleep and wake on the emulator). `focusedAppPackage` renamed
+  `foregroundAppPackage`. The emulator has no lock screen set, so the keyguard itself was not seen.

@@ -198,3 +198,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-01: requests 20 and 21 done and checked on the emulator. The tap that closes the menu is consumed (as in an app's popup menu, and a back swipe then closes only the menu); asked the owner whether it should reach the app below too.
 - 2026-10-01: owner answers: the tap that closes the menu does nothing else (kept); the merged branch `claude/elegant-allen-xmu3fx` deleted on GitHub and locally.
 - 2026-10-01: review of requests 20 and 21 (owner's command), 5 findings, all fixed: a picture-in-picture window is not taken for the app under the bubble menu; a popup larger than the screen starts inside it in the edge fallback; tests for both.
+- 2026-10-01: second review of requests 20 and 21 (owner's command), 2 findings, fixed: the bubble menu closes when the screen turns off, so it never waits over the lock screen; a rename.

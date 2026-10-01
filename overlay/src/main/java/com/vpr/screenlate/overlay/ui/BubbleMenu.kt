@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
  * The menu of the held bubble, in its own overlay window. The system popup menu cannot place itself here: overlay
  * windows are laid out without screen limits, so it believes there is room on every side and runs off the screen.
  * While open, the window takes focus and every touch on the screen, like a menu inside an app: Back or a tap anywhere
- * outside closes it, and that tap does nothing else. Closes on an item too.
+ * outside closes it, and that tap does nothing else. Closes on an item and when the screen turns off too.
  */
 class BubbleMenu(private val context: Context, private val windowManager: WindowManager) {
 
@@ -127,6 +127,12 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
             if (event.keyCode != KeyEvent.KEYCODE_BACK) return super.dispatchKeyEvent(event)
             if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) dismiss()
             return true
+        }
+
+        /** Overlays stay above the lock screen, where the menu would take the first touch of the unlock. */
+        override fun onScreenStateChanged(screenState: Int) {
+            super.onScreenStateChanged(screenState)
+            if (screenState == SCREEN_STATE_OFF) dismiss()
         }
     }
 
