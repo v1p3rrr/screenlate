@@ -16,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.util.Collections
+import java.util.concurrent.TimeUnit
 
 class AudioFinderTest {
     @get:Rule
@@ -30,20 +31,29 @@ class AudioFinderTest {
     @Volatile private var offline = false
 
     /** Answers by path; everything else is a 404. */
-    private val routes = mutableMapOf<String, () -> MockResponse>()
+    private val routes = Collections.synchronizedMap(mutableMapOf<String, () -> MockResponse>())
 
+    /** The index of each request on its connection, as the server saw it. */
+    private val exchangeIndexes = Collections.synchronizedList(mutableListOf<Int>())
+
+    /** The finder's clock for tests that create a finder with it. */
+    @Volatile private var now = 0L
+
+    private lateinit var client: OkHttpClient
     private lateinit var settings: AudioSettingsRepository
     private lateinit var finder: AudioFinder
 
     @Before
     fun setUp() {
         server.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse =
-                routes[request.url.encodedPath]?.invoke() ?: MockResponse.Builder().code(404).build()
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                exchangeIndexes += request.exchangeIndex
+                return routes[request.url.encodedPath]?.invoke() ?: MockResponse.Builder().code(404).build()
+            }
         }
         server.start()
         // Every host goes to the test server, so the fixed hosts of the built-in sources are covered too.
-        val client = OkHttpClient.Builder()
+        client = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val original = chain.request()
                 if (offline) throw java.net.UnknownHostException(original.url.host)
@@ -61,8 +71,10 @@ class AudioFinderTest {
         server.close()
     }
 
-    private fun audio(bytes: ByteArray = byteArrayOf(1, 2, 3), type: String = "audio/mpeg") =
-        MockResponse.Builder().code(200).addHeader("Content-Type", type).body(Buffer().write(bytes)).build()
+    private fun audio(bytes: ByteArray = byteArrayOf(1, 2, 3), type: String = "audio/mpeg", delayMs: Long = 0) =
+        MockResponse.Builder().code(200).addHeader("Content-Type", type).body(Buffer().write(bytes))
+            .headersDelay(delayMs, TimeUnit.MILLISECONDS)
+            .build()
 
     private fun text(body: String, type: String = "text/html") =
         MockResponse.Builder().code(200).addHeader("Content-Type", type).body(body).build()
@@ -257,5 +269,111 @@ class AudioFinderTest {
         assertThat(finder.pronunciation("犬", "", Language.JAPANESE)).isEqualTo(Pronunciation.Speech("犬", Language.JAPANESE))
         val speech = finder.candidates("犬", "", Language.JAPANESE).single { it.isSpeech }
         assertThat(finder.download(speech, "犬", "")).isNull()
+    }
+
+    @Test
+    fun `a source that does not answer in time is skipped`() {
+        finder = AudioFinder(folder.newFolder("short"), client, settings, sourceTimeoutMs = 300)
+        val slow = AudioSource(AudioSourceType.URL, "https://slow.example/slow?term={term}")
+        sources(slow, AudioSource(AudioSourceType.URL, "https://fast.example/fast?term={term}"))
+        routes["/slow"] = { audio(delayMs = 3_000) }
+        routes["/fast"] = { audio() }
+        val started = System.nanoTime()
+        assertThat(find()?.url).startsWith("https://fast.example/fast")
+        assertThat(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started)).isLessThan(2_000)
+        val failure = finder.recentFailures().single()
+        assertThat(failure.source).isEqualTo(slow)
+        assertThat(failure.error.kind).isEqualTo(AudioError.Kind.TIMEOUT)
+    }
+
+    @Test
+    fun `the highest source with a clip wins, also when a lower one answers first`() {
+        sources(
+            AudioSource(AudioSourceType.URL, "https://first.example/first?term={term}"),
+            AudioSource(AudioSourceType.URL, "https://second.example/second?term={term}"),
+        )
+        routes["/first"] = { audio(delayMs = 300) }
+        routes["/second"] = { audio() }
+        assertThat(find()?.url).startsWith("https://first.example/first")
+    }
+
+    @Test
+    fun `sources below the one with a clip are stopped`() {
+        sources(
+            AudioSource(AudioSourceType.URL, "https://first.example/first?term={term}"),
+            AudioSource(AudioSourceType.URL, "https://second.example/hang?term={term}"),
+        )
+        // The first answers once the second's request is running.
+        routes["/first"] = { audio(delayMs = 300) }
+        routes["/hang"] = { audio(delayMs = 4_000) }
+        val started = System.nanoTime()
+        assertThat(find()?.url).startsWith("https://first.example/first")
+        assertThat(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started)).isLessThan(2_000)
+        assertThat(requests).hasSize(2)
+        assertThat(finder.recentFailures()).isEmpty()
+    }
+
+    @Test
+    fun `a downloaded clip plays again without a request for a minute`() = runBlocking<Unit> {
+        finder = AudioFinder(folder.newFolder("clock"), client, settings, clock = { now })
+        val source = AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}")
+        routes["/word"] = { audio() }
+        val candidate = finder.candidates("猫", "ねこ", Language.JAPANESE, listOf(source)).single()
+        assertThat(finder.download(candidate, "猫", "ねこ")).isNotNull()
+        now += AudioFinder.CACHE_MS - 1
+        assertThat(finder.download(candidate, "猫", "ねこ")).isNotNull()
+        assertThat(requests).hasSize(1)
+        now += 1
+        assertThat(finder.download(candidate, "猫", "ねこ")).isNotNull()
+        assertThat(requests).hasSize(2)
+    }
+
+    @Test
+    fun `a word's answer is asked again after a minute`() {
+        finder = AudioFinder(folder.newFolder("clock"), client, settings, clock = { now })
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}"))
+        assertThat(find()).isNull()
+        now += AudioFinder.CACHE_MS - 1
+        assertThat(find()).isNull()
+        assertThat(requests).hasSize(1)
+        now += 1
+        routes["/word"] = { audio() }
+        assertThat(find()).isNotNull()
+        assertThat(requests).hasSize(2)
+    }
+
+    @Test
+    fun `every request opens its own connection`() {
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}"))
+        routes["/word"] = { audio() }
+        find("猫", "ねこ")
+        find("犬", "いぬ")
+        find("鳥", "とり")
+        assertThat(exchangeIndexes).containsExactly(0, 0, 0)
+    }
+
+    @Test
+    fun `a url source answering with a source list says so`() = runBlocking<Unit> {
+        val source = AudioSource(AudioSourceType.URL, "https://audio.example/?term={term}&reading={reading}")
+        routes["/"] = {
+            text("""{"type": "audioSourceList", "audioSources": [{"url": "https://audio.example/a.opus"}]}""", "application/json")
+        }
+        val error = finder.test(source, "猫", "ねこ", Language.JAPANESE).exceptionOrNull()!!
+        assertThat(AudioError.of(error).kind).isEqualTo(AudioError.Kind.SOURCE_LIST)
+        finder.clearFailures()
+        sources(source)
+        assertThat(find()).isNull()
+        assertThat(finder.recentFailures().single().error.kind).isEqualTo(AudioError.Kind.SOURCE_LIST)
+    }
+
+    @Test
+    fun `testing a url source downloads its clip, which then plays without another request`() = runBlocking<Unit> {
+        val source = AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}")
+        routes["/word"] = { audio() }
+        val candidate = finder.test(source, "猫", "ねこ", Language.JAPANESE).getOrThrow().single()
+        assertThat(finder.download(candidate, "猫", "ねこ")).isNotNull()
+        assertThat(requests).hasSize(1)
+        routes.remove("/word")
+        assertThat(finder.test(source, "犬", "いぬ", Language.JAPANESE).getOrThrow()).isEmpty()
     }
 }

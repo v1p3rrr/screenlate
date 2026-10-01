@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">Serwer nie odpowiedział na czas</string>
     <string name="audio_error_secure">Bezpieczne połączenie nie powiodło się (certyfikat lub TLS)</string>
     <string name="audio_error_not_a_list">Odpowiedź nie jest listą źródeł dźwięku</string>
+    <string name="audio_error_source_list">URL zwraca listę źródeł dźwięku, a nie plik dźwiękowy: wybierz „Własny URL (JSON)”</string>
     <string name="audio_error_other">Żądanie nie powiodło się</string>
     <string name="audio_error_local_network">Brak dostępu do sieci lokalnej</string>
     <string name="audio_local_network_allow">Zezwól na dostęp do sieci lokalnej</string>

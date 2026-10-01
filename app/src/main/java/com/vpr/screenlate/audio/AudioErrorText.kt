@@ -22,6 +22,7 @@ fun audioErrorText(error: AudioError, source: AudioSource): String {
             AudioError.Kind.TIMEOUT -> R.string.audio_error_timeout
             AudioError.Kind.SECURE_CONNECTION -> R.string.audio_error_secure
             AudioError.Kind.NOT_A_LIST -> R.string.audio_error_not_a_list
+            AudioError.Kind.SOURCE_LIST -> R.string.audio_error_source_list
             AudioError.Kind.OTHER -> R.string.audio_error_other
         }
     }

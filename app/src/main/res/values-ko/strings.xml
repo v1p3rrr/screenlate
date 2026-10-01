@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">서버가 제시간에 응답하지 않았습니다</string>
     <string name="audio_error_secure">보안 연결 실패(인증서 또는 TLS)</string>
     <string name="audio_error_not_a_list">응답이 오디오 소스 목록이 아닙니다</string>
+    <string name="audio_error_source_list">URL이 오디오 파일이 아니라 오디오 소스 목록을 반환합니다. ‘사용자 지정 URL(JSON)’을 선택하세요</string>
     <string name="audio_error_other">요청이 실패했습니다</string>
     <string name="audio_error_local_network">로컬 네트워크에 접근할 수 없습니다</string>
     <string name="audio_local_network_allow">로컬 네트워크 접근 허용</string>

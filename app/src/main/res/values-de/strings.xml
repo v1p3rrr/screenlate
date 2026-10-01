@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">Der Server hat nicht rechtzeitig geantwortet</string>
     <string name="audio_error_secure">Sichere Verbindung fehlgeschlagen (Zertifikat oder TLS)</string>
     <string name="audio_error_not_a_list">Die Antwort ist keine Liste von Audioquellen</string>
+    <string name="audio_error_source_list">Die URL liefert eine Liste von Audioquellen statt einer Audiodatei: wähle „Eigene URL (JSON)“</string>
     <string name="audio_error_other">Die Anfrage ist fehlgeschlagen</string>
     <string name="audio_error_local_network">Kein Zugriff auf das lokale Netzwerk</string>
     <string name="audio_local_network_allow">Zugriff auf das lokale Netzwerk erlauben</string>

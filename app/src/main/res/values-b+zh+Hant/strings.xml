@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">伺服器未及時回應</string>
     <string name="audio_error_secure">安全連線失敗（證書或 TLS）</string>
     <string name="audio_error_not_a_list">回應不是音訊來源清單</string>
+    <string name="audio_error_source_list">URL 回傳的是音訊來源清單而非音訊檔案：請選擇「自訂 URL（JSON）」</string>
     <string name="audio_error_other">請求失敗</string>
     <string name="audio_error_local_network">無法存取本地網路</string>
     <string name="audio_local_network_allow">允許存取本地網路</string>

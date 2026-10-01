@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">Máy chủ không trả lời kịp</string>
     <string name="audio_error_secure">Kết nối bảo mật thất bại (chứng chỉ hoặc TLS)</string>
     <string name="audio_error_not_a_list">Phản hồi không phải danh sách nguồn âm thanh</string>
+    <string name="audio_error_source_list">URL trả về danh sách nguồn âm thanh, không phải tệp âm thanh: hãy chọn “URL tùy chỉnh (JSON)”</string>
     <string name="audio_error_other">Yêu cầu thất bại</string>
     <string name="audio_error_local_network">Không có quyền truy cập mạng cục bộ</string>
     <string name="audio_local_network_allow">Cho phép truy cập mạng cục bộ</string>

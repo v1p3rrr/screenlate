@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">サーバーが時間内に応答しませんでした</string>
     <string name="audio_error_secure">安全な接続に失敗しました（証明書または TLS）</string>
     <string name="audio_error_not_a_list">応答が音声ソースのリストではありません</string>
+    <string name="audio_error_source_list">URL が音声ファイルではなく音声ソースのリストを返します。「カスタム URL（JSON）」を選んでください</string>
     <string name="audio_error_other">リクエストに失敗しました</string>
     <string name="audio_error_local_network">ローカルネットワークへのアクセス権がありません</string>
     <string name="audio_local_network_allow">ローカルネットワークへのアクセスを許可</string>

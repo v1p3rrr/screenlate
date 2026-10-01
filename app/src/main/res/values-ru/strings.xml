@@ -233,6 +233,7 @@
     <string name="audio_error_timeout">Сервер не ответил вовремя</string>
     <string name="audio_error_secure">Не удалось установить защищённое соединение (сертификат или TLS)</string>
     <string name="audio_error_not_a_list">Ответ сервера — не список источников аудио</string>
+    <string name="audio_error_source_list">URL отдаёт список источников аудио, а не аудиофайл: выберите «Свой URL (JSON)»</string>
     <string name="audio_error_other">Запрос не удался</string>
     <string name="audio_error_local_network">Нет доступа к локальной сети</string>
     <string name="audio_local_network_allow">Разрешить доступ к локальной сети</string>

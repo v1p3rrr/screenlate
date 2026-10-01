@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">Sunucu zamanında yanıt vermedi</string>
     <string name="audio_error_secure">Güvenli bağlantı başarısız (sertifika veya TLS)</string>
     <string name="audio_error_not_a_list">Yanıt bir ses kaynağı listesi değil</string>
+    <string name="audio_error_source_list">URL bir ses dosyası değil, ses kaynağı listesi döndürüyor: “Özel URL (JSON)” seçin</string>
     <string name="audio_error_other">İstek başarısız oldu</string>
     <string name="audio_error_local_network">Yerel ağa erişim yok</string>
     <string name="audio_local_network_allow">Yerel ağ erişimine izin ver</string>

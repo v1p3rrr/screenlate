@@ -232,6 +232,7 @@
     <string name="audio_error_timeout">El servidor no respondió a tiempo</string>
     <string name="audio_error_secure">Falló la conexión segura (certificado o TLS)</string>
     <string name="audio_error_not_a_list">La respuesta no es una lista de fuentes de audio</string>
+    <string name="audio_error_source_list">La URL devuelve una lista de fuentes de audio, no un archivo de audio: elige «URL personalizada (JSON)»</string>
     <string name="audio_error_other">La solicitud falló</string>
     <string name="audio_error_local_network">Sin acceso a la red local</string>
     <string name="audio_local_network_allow">Permitir acceso a la red local</string>

@@ -666,3 +666,22 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Not seen on a device.
 - CI run 36911017154 green on bec507b; main fast-forwarded to it for v0.2.1. The git proxy refused the tag push
   again, so the owner pushes `v0.2.1` on bec507b; the instrumented tests run on that tag.
+
+### 2026-10-01 (audio sources on mobile data; cloud session)
+
+- The owner pushed `v0.2.1` on bec507b.
+- Request 42: almost no audio found. Two causes. (1) The owner's Yomitan audio server was a "Custom URL" source, but
+  it answers `audioSourceList` JSON; as "Custom URL (JSON)" it works. A Custom URL answering a list now fails its
+  test with `AudioError.Kind.SOURCE_LIST` ("returns an audio source list… choose Custom URL (JSON)", 14 locales),
+  and `test()` downloads a URL source's clip instead of only building its URL. (2) On mobile data only, the three
+  default sources time out (Jisho at OVH, JapanesePod101 behind CloudFront; see `ai/notes/audio-sources.md`).
+- `AudioFinder` now: every source asked at once (`find`, `candidates`), the highest with a clip wins and the lower
+  ones are cancelled (an OkHttp call is cancelled with its coroutine); each source has a 5 s budget shared by its
+  requests (`Call.timeout()`); a new connection per request (`ConnectionPool(0, …)`); found clips (`downloads`) and
+  per-word answers (`clipCache`) kept for 1 minute (owner), expired entries pruned. Cancelled requests are not
+  counted as source failures.
+- Tests: 8 new `AudioFinderTest` cases (timeout skip, priority, cancellation, both caches with a fake clock, one
+  connection per request via `exchangeIndex`, the list answer, the URL test download). Run with the 21 other audio
+  tests in a JVM harness in the scratchpad (core/anki audio + core/common language sources, stubs for `Log`,
+  `Context`, `@ApplicationContext`): all pass; the cancellation and connection tests fail with those fixes removed.
+- Not seen on a device; whether a fresh connection gets JapanesePod101 through on mobile data is for the owner to see.
