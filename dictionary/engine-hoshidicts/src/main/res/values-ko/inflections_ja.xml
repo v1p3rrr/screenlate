@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. 조건형: 앞의 조건이 성립하는 것이 뒤의 일이 일어나는 조건이 됩니다.\n2. 뒤따르는 지각이나 판단의 계기를 나타냅니다.\n접속: 동사·い형용사의 가정형(仮定形)에 ば를 붙입니다.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">-ば의 축약형.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">～ては의 축약형.\n1. 그 조건에서는 항상 어떤 일이 일어남을 설명합니다.\n2. 동작(의 연속)이 되풀이됨을 나타냅니다.\n3. 말하는 사람이 상대의 의도를 (부정적으로) 평가하는 가정 상황을 나타냅니다.\n4. ～てはいけない 같은 금지 표현에 쓰입니다.\n접속: 동사의 て형에 は를 붙이고, ては를 ちゃ로 줄입니다.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">-しまう의 축약형.\n1. 의도하고 한 일이 나쁜 결과로 끝났을 때의 후회나 놀라움을 나타냅니다.\n2. 완료를 나타냅니다: 동작이 끝까지 이루어졌습니다.\n3. 의도하지 않은 동작(‘실수로’)을 나타냅니다.\n접속: 동사의 て형에 しまう를 붙이고, てしまう를 ちゃう로 줄입니다.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">-しまう의 축약형.\n1. 의도하고 한 일이 나쁜 결과로 끝났을 때의 후회나 놀라움을 나타냅니다.\n2. 완료를 나타냅니다: 동작이 끝까지 이루어졌습니다.\n3. 의도하지 않은 동작(‘실수로’)을 나타냅니다.\n접속: 동사의 て형에 しまう를 붙이고, てしまう를 ちまう로 줄입니다.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. 의도하고 한 일이 나쁜 결과로 끝났을 때의 후회나 놀라움을 나타냅니다.\n2. 완료를 나타냅니다: 동작이 끝까지 이루어졌습니다.\n3. 의도하지 않은 동작(‘실수로’)을 나타냅니다.\n접속: 동사의 て형에 しまう를 붙입니다.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">정중한 명령 접미사.\n접속: 동사의 연용형(連用形)에 なさい를 붙입니다.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">…인 것 같다, …해 보인다.\n접속: 동사의 연용형(連用形) 또는 형용사의 어간에 そう를 붙입니다.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">무언가가 ‘너무 …하다’거나 누군가가 무언가를 ‘지나치게’ 함을 나타냅니다.\n접속: 동사의 연용형(連用形) 또는 형용사의 어간에 すぎる를 붙입니다.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">무언가가 ‘너무 …하다’거나 누군가가 무언가를 ‘지나치게’ 함을 나타냅니다.\n접속: 동사의 연용형(連用形) 또는 형용사의 어간에 すぎる를 붙입니다.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. 바람이나 희망을 나타냅니다.\n2. …たいと思います의 형태로, 말하는 사람이 하려는 일을 돌려서 말합니다.\n접속: 동사의 연용형(連用形)에 たい를 붙입니다. たい 자체는 い형용사처럼 활용합니다.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. 뒤의 일이 앞의 일에 이어서 일어남을 나타냅니다.\n2. 어떤 일이 완료되었거나 결말이 났음을 전제로 합니다.\n접속: 음편을 거친 동사의 연용형(連用形)에 たら를, い형용사의 어간에 かったら를 붙입니다.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. 두 동작이 번갈아 일어남을 나타냅니다(동사 두 개와 함께).\n2. 동작이나 상태의 예를 듭니다(여러 동사·형용사와 함께).\n접속: 음편을 거친 동사의 연용형(連用形)에 たり를, い형용사의 어간에 かったり를 붙입니다.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">て형.\n매우 많은 의미가 있습니다. 무엇보다 두 절을 이어 주는 접속 조사입니다.\n접속: 음편을 거친 동사의 연용형(連用形)에 て를, い형용사의 어간에 くて를 붙입니다.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. 동사의 부정형.\n2. 조동사 ぬ(nu)의 연용형(連用形).\n접속: 동사의 미연형(未然形)에 ず를 붙입니다.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">동사의 부정형.\n접속: 동사의 미연형(未然形)에 ぬ를 붙입니다.\nする는 せぬ가 됩니다</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">동사의 부정형. ぬ의 음 변화.\n접속: 동사의 미연형(未然形)에 ん을 붙입니다.\nする는 せん이 됩니다</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">동작이나 상태가 막 일어나려 함, 또는 지나친 정도를 나타냅니다.\n접속: 동사의 미연형(未然形)에 んばかり를 붙입니다.\nする는 せんばかり가 됩니다</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. 말하는 사람의 의지나 의도를 나타냅니다.\n2. 동작이나 상태가 막 일어나려 함을 나타냅니다.\n접속: 동사의 미연형(未然形)에 んとする를 붙입니다.\nする는 せんとする가 됩니다</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">고어.\n1. 추측을 나타냅니다.\n2. 말하는 사람의 의도를 나타냅니다.\n접속: 동사의 미연형(未然形)에 む를 붙입니다.\nする는 せむ가 됩니다</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">동사의 부정형.\n접속: 동사의 미연형(未然形)에 ざる를 붙입니다.\nする는 せざる가 됩니다</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. 가정의 부정: 만약 …하지 않으면\n2. 의무를 나타냅니다. ならぬ와 함께 또는 단독으로 쓰입니다.\n접속: 동사의 미연형(未然形)에 ねば를 붙입니다.\nする는 せねば가 됩니다</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">い형용사의 부사형.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">사역</string>
+    <string name="inflection_ja_causative">누군가에게 무언가를 시키려는 의도를 나타냅니다.\n접속: 1단 동사와 くる의 미연형(未然形)에 させる를 붙입니다.\n5단 동사와 する의 미연형(未然形)에 せる를 붙입니다.\n이 형태 자체는 1단 동사처럼 활용합니다.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">짧은 사역</string>
+    <string name="inflection_ja_short_causative">사역형의 축약형.\n누군가에게 무언가를 시키려는 의도를 나타냅니다.\n접속: 5단 동사의 미연형(未然形)에 す를 붙입니다.\n1단 동사의 사전형(終止形)에 さす를 붙입니다.\nする는 さす, くる는 こさす가 됩니다.\n이 형태 자체는 5단 동사처럼 활용합니다.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">명령형</string>
+    <string name="inflection_ja_imperative">1. 명령합니다.\n2. (あれ의 형태로) 어떤 상황에서도 변하지 않음을 나타냅니다.\n3. 바람을 나타냅니다.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">연용형</string>
+    <string name="inflection_ja_continuative">행해지는(또는 행해졌던) 동작을 나타냅니다.\n연용형(連用形)을 가리킵니다: 동사를 -ます형으로 활용한 뒤 ます를 뗀 부분입니다.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">부정</string>
+    <string name="inflection_ja_negative">1. 동사의 부정형.\n2. 상대에게 권유나 요청을 나타냅니다.\n접속: 동사의 미연형(未然形)에 ない를, い형용사의 어간에 くない를 붙입니다. ない 자체는 い형용사처럼 활용합니다. ます는 ません이 됩니다.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">い형용사를 성질·상태·감정·정도를 나타내는 명사로 바꾸는 접미사.\n접속: い형용사의 어간에 さ를 붙입니다.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">수동</string>
+    <string name="inflection_ja_passive">1. 동작의 주체로부터 동작을 받음을 나타냅니다.\n2. 동작의 주체에 대한 존경을 나타냅니다.\n접속: 5단 동사의 미연형(未然形)에 れる를 붙입니다.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. 과거에 일어난 일을 나타냅니다.\n2. 동작의 완료를 나타냅니다.\n3. 사실의 확인을 나타냅니다.\n4. 동작이 이루어질 것이라는 말하는 사람의 확신을 나타냅니다.\n5. 주절보다 앞선 일을 상대적 과거로 나타냅니다.\n6. 가벼운 명령을 나타냅니다.\n접속: 음편을 거친 동사의 연용형(連用形)에 た를, い형용사의 어간에 かった를 붙입니다.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">동사와 형용사의 정중한 활용.\n접속: 동사의 연용형(連用形)에 ます를 붙입니다.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">가능</string>
+    <string name="inflection_ja_potential">동작을 할 수 있는 (타고난) 능력을 나타냅니다.\n접속: 1단 동사의 미연형(未然形)에 (ら)れる를 붙입니다.\n5단 동사의 명령형(命令形)에 る를 붙입니다.\nする는 できる, くる는 こ(ら)れる가 됩니다</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">가능 또는 수동</string>
+    <string name="inflection_ja_potential_or_passive">1. 동작의 주체로부터 동작을 받음을 나타냅니다.\n2. 동작의 주체에 대한 존경을 나타냅니다.\n3. 동작을 할 수 있는 (타고난) 능력을 나타냅니다.\n접속: 1단 동사의 미연형(未然形)에 られる를 붙입니다.\nする는 せられる, くる는 こられる가 됩니다</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">의지형</string>
+    <string name="inflection_ja_volitional">1. 말하는 사람의 의지나 의도를 나타냅니다.\n2. 상대에게 권유를 나타냅니다.\n3. (…ようとする의 형태로) 동작이 막 시작되려 하거나 상태가 막 바뀌려 함을 나타냅니다.\n4. 추측을 나타냅니다.\n접속: 1단 동사의 미연형(未然形)에 よう를 붙입니다.\n5단 동사의 미연형(未然形)을 -o단으로 바꾼 뒤 う를 붙입니다.\nい형용사의 어간에 かろう를 붙입니다(4번 의미만).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">의지형(구어)</string>
+    <string name="inflection_ja_volitional_slang">의지형의 축약형 + か\n1. 말하는 사람의 의지나 의도를 나타냅니다.\n2. 상대에게 권유를 나타냅니다.\n접속: 의지형 끝의 う를 っ로 바꾸고 か를 붙입니다.\n예: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">동사의 부정 의지형.\n1. 무언가가 아마 사실이 아닐 것이라는 말하는 사람의 추측을 나타냅니다.\n2. 무언가를 하지 않겠다는 말하는 사람의 의지나 의도를 나타냅니다.\n접속: 동사의 사전형(終止形)에 まい를 붙입니다.\n1단 동사의 미연형(未然形)에 まい를 붙입니다.\nする는 しまい, くる는 こまい가 됩니다</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">나중에 필요할 것에 대비해(또는 그것을 내다보고) 미리 무언가를 해 둡니다.\n접속: 동사의 て형에 おく를 붙입니다.\n동사의 ない 부정형에 でおく를 붙입니다.\n말할 때는 とく・どく로 줄어듭니다.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. 동작이 계속되고 있거나 어느 시점까지 계속되었음을 나타냅니다.\n2. 동작이 끝나고 그 결과가 남아 있음을 나타냅니다.\n3. 어떤 변화의 결과로 볼 수 있는 상태를 나타냅니다.\n접속: 동사의 て형에 いる를 붙입니다. 말할 때는 い가 빠지기도 합니다.\n동사의 ない 부정형에 でいる를 붙입니다.\n(구어) 동사의 て형에 おる를 붙입니다. 말할 때는 とる・でる로 줄어듭니다.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">い형용사의 연체형(連体形). 현대 일본어에 남아 있는 옛 형태입니다.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">사람의 모습을 묘사하고 그 사람의 감정을 보여 줍니다.\n접속: い형용사의 어간에 げ 또는 気를 붙입니다</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. 주어의 감정이 그 사람에 대해 생각되거나 알려진 것과 대비됨을 나타냅니다.\n2. 주어의 (겉으로 드러나는) 행동을 나타냅니다.\n접속: い형용사의 어간에 がる를 붙입니다. 이 형태 자체는 5단 동사처럼 활용합니다.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">속어. い형용사의 음 변화.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん(구어)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">금지(구어)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">간사이벤: 부정</string>
+    <string name="inflection_ja_kansai_ben_negative">간사이벤의 동사 부정형</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">간사이벤 -て</string>
+    <string name="inflection_ja_kansai_ben_te">간사이벤의 동사 -て형</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">간사이벤 -た</string>
+    <string name="inflection_ja_kansai_ben_ta">간사이벤의 -た형</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">간사이벤 -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">간사이벤의 -たら형</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">간사이벤 -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">간사이벤의 -たり형</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">간사이벤 -く</string>
+    <string name="inflection_ja_kansai_ben_ku">간사이벤의 형용사 -く형</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">간사이벤: 형용사 -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">간사이벤의 형용사 -て형</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">간사이벤: 형용사 부정</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">간사이벤의 형용사 부정형</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">정중(유아어).\n접속: ます가 ましゅ가 됩니다.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">정중한 부탁.\n접속: 동사의 て형에 ください를 붙입니다.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">말하는 사람을 위해 무언가를 해 줍니다(존경).\n접속: 동사의 て형에 くださる를 붙입니다.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">누군가에게 무언가를 한번 해 보라고 권합니다.\n접속: 동사의 て형에 ごらん을 붙입니다.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">누군가에게 무언가를 한번 해 보라고 정중하게 말합니다.\n접속: 동사의 て형에 ごらんなさい를 붙입니다.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">누군가가 무언가를 해 주는 것을 받습니다(겸양).\n접속: 동사의 て형에 いただく를 붙입니다.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">누군가를 위해 무언가를 해 줍니다.\n접속: 동사의 て형에 あげる를 붙입니다.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">나 또는 우리를 위해 무언가를 해 줍니다.\n접속: 동사의 て형에 くれる를 붙입니다.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">누군가가 무언가를 해 주는 것을 받습니다.\n접속: 동사의 て형에 もらう를 붙입니다.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">누군가를 위해 무언가를 해 줍니다(허물없는 말).\n접속: 동사의 て형에 やる를 붙입니다.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">누군가를 위해 무언가를 해 드립니다(겸양).\n접속: 동사의 て형에 さしあげる를 붙입니다.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">무언가를 시험 삼아 해 봅니다.\n접속: 동사의 て형에 みる를 붙입니다.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">누군가에게 동작을 해 보입니다.\n접속: 동사의 て형에 みせる를 붙입니다.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">(의도적인) 결과 상태.\n접속: 동사의 て형에 ある를 붙입니다.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. 말하는 사람에게서 멀어지는 동작.\n2. 앞으로 계속되는 변화를 나타냅니다.\n접속: 동사의 て형에 いく를 붙입니다.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. 말하는 사람 쪽으로 향하는 동작.\n2. 지금까지 이어져 온 변화를 나타냅니다.\n3. 과정의 시작.\n접속: 동사의 て형에 くる를 붙입니다.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">…하지 않은 것 같다, …해 보이지 않는다.\n접속: ない가 なさそう가 됩니다.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">무언가를 하면서.\n접속: 동사의 연용형(連用形)에 ながら를 붙입니다.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">다른 사람의 행동에 대한 말하는 사람의 경멸이나 분노를 나타냅니다.\n접속: 동사의 연용형(連用形)에 やがる를 붙입니다.</string>
+</resources>

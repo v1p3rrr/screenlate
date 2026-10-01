@@ -1,9 +1,17 @@
 # Translations
 
-UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `dictionary/api`, in 14 locales:
-English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`. `TranslationsTest` checks
-that every key exists in every locale with the same format arguments, that plurals have the CLDR categories of their
-locale, and that apostrophes, quotes and line breaks are escaped.
+UI strings live in `values*/strings.xml` of `app`, `overlay`, `core/anki` and `dictionary/api`, and the Japanese
+inflection names and descriptions shown in the popup in `values*/inflections_ja.xml` of `dictionary/engine-hoshidicts`
+(GPL, from Yomitan through hoshidicts; `tools/generate_inflections.py` writes only the English file, translations are
+edited by hand). 14 locales: English (`values`), ru, de, es, fr, it, ja, ko, pl, pt, tr, vi, `b+zh+Hans`, `b+zh+Hant`.
+`TranslationsTest` finds every string file under `values/` of every module and checks that every key exists in every
+locale with the same format arguments, that plurals have the CLDR categories of their locale, and that apostrophes,
+quotes and line breaks are escaped.
+
+Inflection terms per language follow the school grammar of Japanese taught in that language: 連用形 continuative
+(ru соединительная форма, ko 연용형, vi dạng liên dụng), 未然形 irrealis, 仮定形 hypothetical, 終止形 dictionary form,
+命令形 imperative, 連体形 attributive; the kanji term stays in parentheses where the local term differs from it
+(not in ja and zh).
 
 ## Format pitfalls
 

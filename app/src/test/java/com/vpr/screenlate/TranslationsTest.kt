@@ -8,8 +8,15 @@ import org.w3c.dom.Element
 
 /** Every translation has every string of the English resources, with the same format arguments. */
 class TranslationsTest {
-    /** Modules with string resources, relative to the app module, where the tests run. */
-    private val modules = listOf(".", "../overlay", "../core/anki", "../dictionary/api").map { File(it, "src/main/res") }
+    /**
+     * English resource files with strings in every module (one or two levels below the root, like `app` and
+     * `core/anki`). The tests run in the app module, so the root is its parent.
+     */
+    private val englishFiles: List<File> = File("..").listFiles().orEmpty()
+        .flatMap { listOf(it) + it.listFiles().orEmpty() }
+        .map { File(it, "src/main/res/values") }
+        .flatMap { it.listFiles { file -> file.extension == "xml" }.orEmpty().toList() }
+        .filter { read(it).let { strings -> strings.strings.isNotEmpty() || strings.plurals.isNotEmpty() } }
 
     /** Plural categories each language needs (CLDR); other categories are left out. */
     private val pluralCategories = mapOf(
@@ -57,16 +64,19 @@ class TranslationsTest {
 
     @Test
     fun `translations match the english strings`() {
-        val locales = modules.flatMap { res -> res.listFiles().orEmpty().map { it.name } }
-            .filter { it.startsWith("values-") && File(modules[0], "$it/strings.xml").exists() }
-            .map { it.removePrefix("values-") }
-            .distinct()
+        val paths = englishFiles.map { it.relativeTo(File("..")).invariantSeparatorsPath.replace("/src/main/res/values/", ":") }
+        assertWithMessage("string files").that(paths).containsAtLeast(
+            "app:strings.xml", "overlay:strings.xml", "core/anki:strings.xml", "dictionary/api:strings.xml",
+            "dictionary/engine-hoshidicts:inflections_ja.xml",
+        )
+        val locales = File("src/main/res").listFiles().orEmpty()
+            .filter { it.name.startsWith("values-") && File(it, "strings.xml").exists() }
+            .map { it.name.removePrefix("values-") }
         assertWithMessage("translated locales").that(locales).containsAtLeastElementsIn(pluralCategories.keys)
-        for (res in modules) {
-            val english = read(File(res, "values/strings.xml"))
+        for (englishFile in englishFiles) {
+            val english = read(englishFile)
             for (locale in pluralCategories.keys) {
-                val file = File(res, "values-$locale/strings.xml")
-                if (english.strings.isEmpty() && english.plurals.isEmpty()) continue
+                val file = File(englishFile.parentFile.parentFile, "values-$locale/${englishFile.name}")
                 assertWithMessage("$file exists").that(file.exists()).isTrue()
                 val translated = read(file)
                 assertWithMessage("$file strings").that(translated.strings.keys).containsExactlyElementsIn(english.strings.keys)
@@ -97,9 +107,9 @@ class TranslationsTest {
         val quote = Regex("""(?<!\\)"""")
         // Whole elements, so a string broken over several lines is caught.
         val element = Regex("""<(string|item)\b[^>]*>(.*?)</\1>""", RegexOption.DOT_MATCHES_ALL)
-        for (res in modules) {
-            res.listFiles().orEmpty().filter { it.name.startsWith("values") }.forEach { dir ->
-                val file = File(dir, "strings.xml").takeIf { it.exists() } ?: return@forEach
+        for (englishFile in englishFiles) {
+            englishFile.parentFile.parentFile.listFiles().orEmpty().filter { it.name.startsWith("values") }.forEach { dir ->
+                val file = File(dir, englishFile.name).takeIf { it.exists() } ?: return@forEach
                 val content = file.readText()
                 element.findAll(content).forEach { match ->
                     val text = match.groupValues[2]

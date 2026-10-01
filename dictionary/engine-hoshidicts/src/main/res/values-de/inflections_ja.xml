@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. Konditionalform: Das Eintreten der zuerst genannten Bedingung ist die Voraussetzung für das später Genannte.\n2. Nennt den Auslöser einer nachfolgenden Wahrnehmung oder Einschätzung.\nBildung: ば an die hypothetische Form (仮定形) von Verben und i-Adjektiven anhängen.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">Zusammenziehung von -ば.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">Zusammenziehung von ～ては.\n1. Erklärt, dass unter der genannten Bedingung immer etwas geschieht.\n2. Drückt die Wiederholung (einer Reihe) von Handlungen aus.\n3. Beschreibt eine hypothetische Lage, in der der Sprecher die Absichten des Gegenübers (negativ) bewertet.\n4. In Verboten wie ～てはいけない.\nBildung: は an die て-Form des Verbs hängen und ては zu ちゃ zusammenziehen.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">Zusammenziehung von -しまう.\n1. Drückt Bedauern oder Überraschung aus: Man hat etwas bewusst getan, aber es ging schief.\n2. Drückt Abgeschlossenheit aus: Die Handlung ist vollständig ausgeführt.\n3. Drückt eine unbeabsichtigte Handlung aus („versehentlich“).\nBildung: しまう an die て-Form des Verbs hängen und てしまう zu ちゃう zusammenziehen.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">Zusammenziehung von -しまう.\n1. Drückt Bedauern oder Überraschung aus: Man hat etwas bewusst getan, aber es ging schief.\n2. Drückt Abgeschlossenheit aus: Die Handlung ist vollständig ausgeführt.\n3. Drückt eine unbeabsichtigte Handlung aus („versehentlich“).\nBildung: しまう an die て-Form des Verbs hängen und てしまう zu ちまう zusammenziehen.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. Drückt Bedauern oder Überraschung aus: Man hat etwas bewusst getan, aber es ging schief.\n2. Drückt Abgeschlossenheit aus: Die Handlung ist vollständig ausgeführt.\n3. Drückt eine unbeabsichtigte Handlung aus („versehentlich“).\nBildung: しまう an die て-Form des Verbs hängen.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">Höfliches Imperativsuffix.\nBildung: なさい an die Verbindungsform (連用形) des Verbs hängen.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">Sieht so aus, als ob …; scheint …\nBildung: そう an die Verbindungsform (連用形) von Verben oder an den Stamm von Adjektiven hängen.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">Drückt aus, dass etwas „zu …“ ist oder jemand etwas „zu viel“ tut.\nBildung: すぎる an die Verbindungsform (連用形) von Verben oder an den Stamm von Adjektiven hängen.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">Drückt aus, dass etwas „zu …“ ist oder jemand etwas „zu viel“ tut.\nBildung: すぎる an die Verbindungsform (連用形) von Verben oder an den Stamm von Adjektiven hängen.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. Drückt einen Wunsch oder eine Hoffnung aus.\n2. In …たいと思います, einer indirekten Art zu sagen, was der Sprecher vorhat.\nBildung: たい an die Verbindungsform (連用形) des Verbs hängen. たい selbst wird wie ein i-Adjektiv konjugiert.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. Das später genannte Ereignis folgt auf das zuerst genannte.\n2. Setzt voraus, dass etwas abgeschlossen oder erledigt ist.\nBildung: たら an die Verbindungsform (連用形) von Verben nach dem Lautwandel hängen, かったら an den Stamm von i-Adjektiven.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. Zwei Handlungen, die sich abwechseln (mit zwei Verben).\n2. Nennt Beispiele für Handlungen und Zustände (mit mehreren Verben und Adjektiven).\nBildung: たり an die Verbindungsform (連用形) von Verben nach dem Lautwandel hängen, かったり an den Stamm von i-Adjektiven.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">て-Form.\nSie hat sehr viele Bedeutungen. Vor allem ist sie eine Konjunktionspartikel, die zwei Satzteile verbindet.\nBildung: て an die Verbindungsform (連用形) von Verben nach dem Lautwandel hängen, くて an den Stamm von i-Adjektiven.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. Verneinte Form von Verben.\n2. Verbindungsform (連用形) der Partikel ぬ (nu).\nBildung: ず an die Irrealisform (未然形) des Verbs hängen.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">Verneinte Form von Verben.\nBildung: ぬ an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せぬ</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">Verneinte Form von Verben; Lautwandel von ぬ.\nBildung: ん an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せん</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">Eine Handlung oder ein Zustand steht kurz bevor, oder ein übermäßiger, extremer Grad.\nBildung: んばかり an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せんばかり</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. Drückt den Willen oder die Absicht des Sprechers aus.\n2. Eine Handlung oder ein Zustand steht kurz bevor.\nBildung: んとする an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せんとする</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">Veraltet.\n1. Drückt eine Vermutung aus.\n2. Drückt die Absicht des Sprechers aus.\nBildung: む an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せむ</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">Verneinte Form von Verben.\nBildung: ざる an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せざる</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. Hypothetische Verneinung: wenn nicht …\n2. Drückt eine Pflicht aus. Mit oder ohne ならぬ.\nBildung: ねば an die Irrealisform (未然形) des Verbs hängen.\nする wird zu せねば</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">Adverbiale Form von i-Adjektiven.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">Kausativ</string>
+    <string name="inflection_ja_causative">Beschreibt die Absicht, jemanden etwas tun zu lassen.\nBildung: させる an die Irrealisform (未然形) von Ichidan-Verben und くる hängen.\nせる an die Irrealisform (未然形) von Godan-Verben und する hängen.\nDie Form selbst wird wie ein Ichidan-Verb konjugiert.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">Kausativ (kurz)</string>
+    <string name="inflection_ja_short_causative">Zusammengezogene Kausativform.\nBeschreibt die Absicht, jemanden etwas tun zu lassen.\nBildung: す an die Irrealisform (未然形) von Godan-Verben hängen.\nさす an die Wörterbuchform (終止形) von Ichidan-Verben hängen.\nする wird zu さす, くる zu こさす.\nDie Form selbst wird wie ein Godan-Verb konjugiert.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">Imperativ</string>
+    <string name="inflection_ja_imperative">1. Erteilt einen Befehl.\n2. (Als あれ) Drückt aus, dass sich etwas unter keinen Umständen ändert.\n3. Drückt eine Hoffnung aus.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">Verbindungsform</string>
+    <string name="inflection_ja_continuative">Bezeichnet Handlungen, die ausgeführt werden (wurden).\nGemeint ist 連用形: der Teil des Verbs, der bleibt, wenn man es in die -ます-Form setzt und ます weglässt.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">Verneinung</string>
+    <string name="inflection_ja_negative">1. Verneinte Form von Verben.\n2. Drückt eine Aufforderung an das Gegenüber aus.\nBildung: ない an die Irrealisform (未然形) von Verben hängen, くない an den Stamm von i-Adjektiven. ない selbst wird wie ein i-Adjektiv konjugiert. ます wird zu ません.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">Nominalisierendes Suffix von i-Adjektiven für Beschaffenheit, Zustand, Empfinden oder Grad.\nBildung: さ an den Stamm von i-Adjektiven hängen.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">Passiv</string>
+    <string name="inflection_ja_passive">1. Bezeichnet eine Handlung, die man von jemand anderem erfährt.\n2. Drückt Respekt vor dem Handelnden aus.\nBildung: れる an die Irrealisform (未然形) von Godan-Verben hängen.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. Bezeichnet etwas, das in der Vergangenheit geschehen ist.\n2. Bezeichnet den Abschluss einer Handlung.\n3. Bezeichnet die Bestätigung eines Sachverhalts.\n4. Drückt die Gewissheit des Sprechers aus, dass die Handlung sicher eintritt.\n5. Stellt Ereignisse vor dem Hauptsatz als relative Vergangenheit dar.\n6. Drückt eine milde Aufforderung aus.\nBildung: た an die Verbindungsform (連用形) von Verben nach dem Lautwandel hängen, かった an den Stamm von i-Adjektiven.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">Höfliche Form von Verben und Adjektiven.\nBildung: ます an die Verbindungsform (連用形) des Verbs hängen.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">Potential</string>
+    <string name="inflection_ja_potential">Bezeichnet die (natürliche) Fähigkeit, eine Handlung auszuführen.\nBildung: (ら)れる an die Irrealisform (未然形) von Ichidan-Verben hängen.\nる an die Imperativform (命令形) von Godan-Verben hängen.\nする wird zu できる, くる zu こ(ら)れる</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">Potential oder Passiv</string>
+    <string name="inflection_ja_potential_or_passive">1. Bezeichnet eine Handlung, die man von jemand anderem erfährt.\n2. Drückt Respekt vor dem Handelnden aus.\n3. Bezeichnet die (natürliche) Fähigkeit, eine Handlung auszuführen.\nBildung: られる an die Irrealisform (未然形) von Ichidan-Verben hängen.\nする wird zu せられる, くる zu こられる</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">Volitiv</string>
+    <string name="inflection_ja_volitional">1. Drückt den Willen oder die Absicht des Sprechers aus.\n2. Drückt eine Einladung an das Gegenüber aus.\n3. (In …ようとする) Eine Handlung beginnt gleich oder ein Zustand ändert sich gleich.\n4. Drückt eine Vermutung aus.\nBildung: よう an die Irrealisform (未然形) von Ichidan-Verben hängen.\nう an die Irrealisform (未然形) von Godan-Verben nach dem Lautwandel zu -o hängen.\nかろう an den Stamm von i-Adjektiven hängen (nur 4. Bedeutung).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">Volitiv (umgangssprachlich)</string>
+    <string name="inflection_ja_volitional_slang">Zusammenziehung von Volitiv + か\n1. Drückt den Willen oder die Absicht des Sprechers aus.\n2. Drückt eine Einladung an das Gegenüber aus.\nBildung: das auslautende う des Volitivs durch っ ersetzen, dann か anhängen.\nZum Beispiel: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">Verneinter Volitiv von Verben.\n1. Drückt die Annahme des Sprechers aus, dass etwas wahrscheinlich nicht zutrifft.\n2. Drückt den Willen oder die Absicht des Sprechers aus, etwas nicht zu tun.\nBildung: まい an die Wörterbuchform (終止形) des Verbs hängen.\nまい an die Irrealisform (未然形) von Ichidan-Verben hängen.\nする wird zu しまい, くる zu こまい</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">Etwas vorab tun, als Vorbereitung auf (oder in Erwartung von) spätere(n) Bedürfnisse(n).\nBildung: おく an die て-Form des Verbs hängen.\nでおく an die verneinte ない-Form des Verbs hängen.\nGesprochen zu とく・どく zusammengezogen.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. Eine Handlung dauert an oder läuft bis zu einem Zeitpunkt.\n2. Eine Handlung ist abgeschlossen und ihr Ergebnis bleibt bestehen.\n3. Ein Zustand, der als Ergebnis einer Veränderung gelten kann.\nBildung: いる an die て-Form des Verbs hängen. Gesprochen kann い wegfallen.\nでいる an die verneinte ない-Form des Verbs hängen.\n(Umgangssprachlich) おる an die て-Form des Verbs hängen. Gesprochen zu とる・でる zusammengezogen.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">Attributive Form (連体形) von i-Adjektiven. Eine alte Form, die im heutigen Japanisch erhalten ist.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">Beschreibt das Aussehen einer Person. Zeigt ihre Gefühle.\nBildung: げ oder 気 an den Stamm von i-Adjektiven hängen</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. Die Gefühle des Subjekts weichen von dem ab, was man über es denkt oder weiß.\n2. Bezeichnet ein (auffälliges) Verhalten des Subjekts.\nBildung: がる an den Stamm von i-Adjektiven hängen. Die Form selbst wird wie ein Godan-Verb konjugiert.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">Slang. Lautwandel von i-Adjektiven.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん (umgangssprachlich)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">Verbot (umgangssprachlich)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">Kansai-ben: Verneinung</string>
+    <string name="inflection_ja_kansai_ben_negative">Verneinte Form von Verben im Kansai-ben</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">Kansai-ben -て</string>
+    <string name="inflection_ja_kansai_ben_te">-て-Form von Verben im Kansai-ben</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">Kansai-ben -た</string>
+    <string name="inflection_ja_kansai_ben_ta">-た-Form im Kansai-ben</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">Kansai-ben -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">-たら-Form im Kansai-ben</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">Kansai-ben -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">-たり-Form im Kansai-ben</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">Kansai-ben -く</string>
+    <string name="inflection_ja_kansai_ben_ku">-く-Stamm von Adjektiven im Kansai-ben</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">Kansai-ben: Adj. -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">-て-Form von Adjektiven im Kansai-ben</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">Kansai-ben: Adj. Verneinung</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">Verneinte Form von Adjektiven im Kansai-ben</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">Höflich (kindlich).\nBildung: ます durch ましゅ ersetzen.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">Höfliche Bitte.\nBildung: ください an die て-Form des Verbs hängen.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">Etwas für den Sprecher tun (respektvoll).\nBildung: くださる an die て-Form des Verbs hängen.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">Jemanden ermuntern, etwas zu versuchen.\nBildung: ごらん an die て-Form des Verbs hängen.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">Jemanden höflich auffordern, etwas zu versuchen.\nBildung: ごらんなさい an die て-Form des Verbs hängen.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">Den Gefallen erhalten, dass jemand etwas tut (respektvoll).\nBildung: いただく an die て-Form des Verbs hängen.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">Etwas für jemanden tun.\nBildung: あげる an die て-Form des Verbs hängen.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">Etwas für mich oder uns tun.\nBildung: くれる an die て-Form des Verbs hängen.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">Den Gefallen erhalten, dass jemand etwas tut.\nBildung: もらう an die て-Form des Verbs hängen.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">Etwas für jemanden tun (salopp).\nBildung: やる an die て-Form des Verbs hängen.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">Etwas für jemanden tun (bescheiden).\nBildung: さしあげる an die て-Form des Verbs hängen.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">Versuchen, etwas zu tun.\nBildung: みる an die て-Form des Verbs hängen.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">Jemandem eine Handlung vorführen.\nBildung: みせる an die て-Form des Verbs hängen.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">Ergebniszustand (absichtlich herbeigeführt).\nBildung: ある an die て-Form des Verbs hängen.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. Handlung vom Sprecher weg.\n2. Eine Veränderung, die sich in die Zukunft fortsetzt.\nBildung: いく an die て-Form des Verbs hängen.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. Handlung zum Sprecher hin.\n2. Eine Veränderung, die bis in die Gegenwart andauert.\n3. Beginn eines Vorgangs.\nBildung: くる an die て-Form des Verbs hängen.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">Scheint nicht …; sieht nicht so aus, als ob …\nBildung: ない durch なさそう ersetzen.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">Während man etwas tut.\nBildung: ながら an die Verbindungsform (連用形) des Verbs hängen.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">Drückt Verachtung oder Ärger des Sprechers über die Handlung eines anderen aus.\nBildung: やがる an die Verbindungsform (連用形) des Verbs hängen.</string>
+</resources>

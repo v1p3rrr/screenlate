@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. Forma condicional: a realização da condição dita antes é a condição para que ocorra o que é dito depois.\n2. Indica o gatilho de uma percepção ou um julgamento posterior.\nFormação: ば é acrescentado à forma hipotética (仮定形) de verbos e adjetivos -i.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">Contração de -ば.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">Contração de ～ては.\n1. Explica que algo sempre acontece na condição que marca.\n2. Expressa a repetição de (uma série de) ações.\n3. Indica uma situação hipotética em que quem fala avalia (negativamente) as intenções do outro.\n4. Usado em proibições como ～てはいけない.\nFormação: は é acrescentado à forma て do verbo, e ては se contrai em ちゃ.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">Contração de -しまう.\n1. Expressa arrependimento ou surpresa: a ação foi feita de propósito, mas deu errado.\n2. Expressa conclusão: a ação foi levada até o fim.\n3. Expressa uma ação involuntária (“sem querer”).\nFormação: しまう é acrescentado à forma て do verbo, e てしまう se contrai em ちゃう.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">Contração de -しまう.\n1. Expressa arrependimento ou surpresa: a ação foi feita de propósito, mas deu errado.\n2. Expressa conclusão: a ação foi levada até o fim.\n3. Expressa uma ação involuntária (“sem querer”).\nFormação: しまう é acrescentado à forma て do verbo, e てしまう se contrai em ちまう.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. Expressa arrependimento ou surpresa: a ação foi feita de propósito, mas deu errado.\n2. Expressa conclusão: a ação foi levada até o fim.\n3. Expressa uma ação involuntária (“sem querer”).\nFormação: しまう é acrescentado à forma て do verbo.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">Sufixo imperativo educado.\nFormação: なさい é acrescentado à forma continuativa (連用形) do verbo.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">Parece que…; tem cara de…\nFormação: そう é acrescentado à forma continuativa (連用形) dos verbos ou ao radical dos adjetivos.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">Indica que algo é “demais…” ou que alguém faz algo “em excesso”.\nFormação: すぎる é acrescentado à forma continuativa (連用形) dos verbos ou ao radical dos adjetivos.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">Indica que algo é “demais…” ou que alguém faz algo “em excesso”.\nFormação: すぎる é acrescentado à forma continuativa (連用形) dos verbos ou ao radical dos adjetivos.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. Expressa desejo ou esperança.\n2. Usado em …たいと思います, um jeito indireto de dizer o que quem fala pretende fazer.\nFormação: たい é acrescentado à forma continuativa (連用形) do verbo. たい se conjuga como um adjetivo -i.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. Indica que o evento dito depois dá continuidade ao dito antes.\n2. Supõe que algo já foi concluído ou resolvido.\nFormação: たら é acrescentado à forma continuativa (連用形) dos verbos após a mudança eufônica, かったら ao radical dos adjetivos -i.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. Indica duas ações que se alternam (com dois verbos).\n2. Dá exemplos de ações e estados (com vários verbos e adjetivos).\nFormação: たり é acrescentado à forma continuativa (連用形) dos verbos após a mudança eufônica, かったり ao radical dos adjetivos -i.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">Forma て.\nTem inúmeros sentidos. Acima de tudo, é uma partícula conjuntiva que liga duas orações.\nFormação: て é acrescentado à forma continuativa (連用形) dos verbos após a mudança eufônica, くて ao radical dos adjetivos -i.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. Forma negativa dos verbos.\n2. Forma continuativa (連用形) da partícula ぬ (nu).\nFormação: ず é acrescentado à forma irreal (未然形) do verbo.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">Forma negativa dos verbos.\nFormação: ぬ é acrescentado à forma irreal (未然形) do verbo.\nする vira せぬ</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">Forma negativa dos verbos; mudança sonora de ぬ.\nFormação: ん é acrescentado à forma irreal (未然形) do verbo.\nする vira せん</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">Indica que uma ação ou um estado está prestes a ocorrer, ou um grau excessivo, extremo.\nFormação: んばかり é acrescentado à forma irreal (未然形) do verbo.\nする vira せんばかり</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. Expressa a vontade ou a intenção de quem fala.\n2. Indica que uma ação ou um estado está prestes a ocorrer.\nFormação: んとする é acrescentado à forma irreal (未然形) do verbo.\nする vira せんとする</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">Arcaico.\n1. Expressa uma suposição.\n2. Expressa a intenção de quem fala.\nFormação: む é acrescentado à forma irreal (未然形) do verbo.\nする vira せむ</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">Forma negativa dos verbos.\nFormação: ざる é acrescentado à forma irreal (未然形) do verbo.\nする vira せざる</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. Negação hipotética: se não…\n2. Expressa obrigação. Usado com ou sem ならぬ.\nFormação: ねば é acrescentado à forma irreal (未然形) do verbo.\nする vira せねば</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">Forma adverbial dos adjetivos -i.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">causativo</string>
+    <string name="inflection_ja_causative">Descreve a intenção de fazer alguém fazer algo.\nFormação: させる é acrescentado à forma irreal (未然形) dos verbos ichidan e de くる.\nせる é acrescentado à forma irreal (未然形) dos verbos godan e de する.\nA forma se conjuga como um verbo ichidan.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">causativo curto</string>
+    <string name="inflection_ja_short_causative">Contração da forma causativa.\nDescreve a intenção de fazer alguém fazer algo.\nFormação: す é acrescentado à forma irreal (未然形) dos verbos godan.\nさす é acrescentado à forma de dicionário (終止形) dos verbos ichidan.\nする vira さす, くる vira こさす.\nA forma se conjuga como um verbo godan.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">imperativo</string>
+    <string name="inflection_ja_imperative">1. Dá uma ordem.\n2. (Como あれ) Expressa que algo não vai mudar em nenhuma circunstância.\n3. Expressa uma esperança.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">continuativo</string>
+    <string name="inflection_ja_continuative">Indica ações que são (ou eram) realizadas.\nRefere-se a 連用形: a parte do verbo que sobra ao conjugá-lo com -ます e tirar ます.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">negativo</string>
+    <string name="inflection_ja_negative">1. Forma negativa dos verbos.\n2. Expressa um convite ou pedido ao outro.\nFormação: ない é acrescentado à forma irreal (未然形) dos verbos, くない ao radical dos adjetivos -i. ない se conjuga como um adjetivo -i. ます vira ません.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">Sufixo que transforma adjetivos -i em substantivos de qualidade, estado, sentimento ou grau.\nFormação: さ é acrescentado ao radical dos adjetivos -i.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">passivo</string>
+    <string name="inflection_ja_passive">1. Indica uma ação recebida de quem a pratica.\n2. Expressa respeito por quem pratica a ação.\nFormação: れる é acrescentado à forma irreal (未然形) dos verbos godan.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. Indica algo que aconteceu no passado.\n2. Indica a conclusão de uma ação.\n3. Indica a confirmação de um fato.\n4. Indica a certeza de quem fala de que a ação vai se realizar.\n5. Apresenta eventos anteriores à oração principal como passado relativo.\n6. Indica uma ordem suave.\nFormação: た é acrescentado à forma continuativa (連用形) dos verbos após a mudança eufônica, かった ao radical dos adjetivos -i.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">Conjugação educada de verbos e adjetivos.\nFormação: ます é acrescentado à forma continuativa (連用形) do verbo.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">potencial</string>
+    <string name="inflection_ja_potential">Indica a capacidade (natural) de realizar uma ação.\nFormação: (ら)れる é acrescentado à forma irreal (未然形) dos verbos ichidan.\nる é acrescentado à forma imperativa (命令形) dos verbos godan.\nする vira できる, くる vira こ(ら)れる</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">potencial ou passivo</string>
+    <string name="inflection_ja_potential_or_passive">1. Indica uma ação recebida de quem a pratica.\n2. Expressa respeito por quem pratica a ação.\n3. Indica a capacidade (natural) de realizar uma ação.\nFormação: られる é acrescentado à forma irreal (未然形) dos verbos ichidan.\nする vira せられる, くる vira こられる</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">volitivo</string>
+    <string name="inflection_ja_volitional">1. Expressa a vontade ou a intenção de quem fala.\n2. Expressa um convite ao outro.\n3. (Em …ようとする) Indica que uma ação está prestes a começar ou um estado prestes a mudar.\n4. Expressa uma suposição.\nFormação: よう é acrescentado à forma irreal (未然形) dos verbos ichidan.\nう é acrescentado à forma irreal (未然形) dos verbos godan após a mudança eufônica para -o.\nかろう é acrescentado ao radical dos adjetivos -i (só no 4º sentido).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">volitivo (coloquial)</string>
+    <string name="inflection_ja_volitional_slang">Contração da forma volitiva + か\n1. Expressa a vontade ou a intenção de quem fala.\n2. Expressa um convite ao outro.\nFormação: o う final da forma volitiva vira っ, depois se acrescenta か.\nPor exemplo: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">Forma volitiva negativa dos verbos.\n1. Expressa a suposição de quem fala de que algo provavelmente não é verdade.\n2. Expressa a vontade ou a intenção de quem fala de não fazer algo.\nFormação: まい é acrescentado à forma de dicionário (終止形) do verbo.\nまい é acrescentado à forma irreal (未然形) dos verbos ichidan.\nする vira しまい, くる vira こまい</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">Fazer algo com antecedência, preparando-se para (ou prevendo) necessidades futuras.\nFormação: おく é acrescentado à forma て do verbo.\nでおく é acrescentado à forma negativa em ない do verbo.\nNa fala, se contrai em とく・どく.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. Indica que uma ação continua ou se estende até certo momento.\n2. Indica que uma ação foi concluída e o resultado permanece.\n3. Indica um estado que pode ser visto como resultado de alguma mudança.\nFormação: いる é acrescentado à forma て do verbo. Na fala, い pode cair.\nでいる é acrescentado à forma negativa em ない do verbo.\n(Coloquial) おる é acrescentado à forma て do verbo. Na fala, se contrai em とる・でる.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">Forma atributiva (連体形) dos adjetivos -i. Uma forma arcaica que ficou no japonês moderno.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">Descreve a aparência de uma pessoa. Mostra os sentimentos dela.\nFormação: げ ou 気 é acrescentado ao radical dos adjetivos -i</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. Indica que os sentimentos do sujeito contrastam com o que se pensa ou se sabe dele.\n2. Indica o comportamento (visível) do sujeito.\nFormação: がる é acrescentado ao radical dos adjetivos -i. A forma se conjuga como um verbo godan.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">Gíria. Mudança sonora dos adjetivos -i.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん (coloquial)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">proibição (coloquial)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">kansai-ben: negativo</string>
+    <string name="inflection_ja_kansai_ben_negative">Forma negativa dos verbos em kansai-ben</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">kansai-ben -て</string>
+    <string name="inflection_ja_kansai_ben_te">Forma -て dos verbos em kansai-ben</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">kansai-ben -た</string>
+    <string name="inflection_ja_kansai_ben_ta">Forma -た em kansai-ben</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">kansai-ben -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">Forma -たら em kansai-ben</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">kansai-ben -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">Forma -たり em kansai-ben</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">kansai-ben -く</string>
+    <string name="inflection_ja_kansai_ben_ku">Radical em -く dos adjetivos em kansai-ben</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">kansai-ben: adj. -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">Forma -て dos adjetivos em kansai-ben</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">kansai-ben: adj. negativo</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">Forma negativa dos adjetivos em kansai-ben</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">Educado (infantil).\nFormação: ます vira ましゅ.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">Pedido educado.\nFormação: ください é acrescentado à forma て do verbo.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">Fazer algo para quem fala (respeitoso).\nFormação: くださる é acrescentado à forma て do verbo.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">Incentivar alguém a tentar fazer algo.\nFormação: ごらん é acrescentado à forma て do verbo.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">Dizer educadamente a alguém que tente fazer algo.\nFormação: ごらんなさい é acrescentado à forma て do verbo.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">Receber o favor de alguém fazer algo (respeitoso).\nFormação: いただく é acrescentado à forma て do verbo.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">Fazer algo para alguém.\nFormação: あげる é acrescentado à forma て do verbo.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">Fazer algo para mim ou para nós.\nFormação: くれる é acrescentado à forma て do verbo.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">Receber o favor de alguém fazer algo.\nFormação: もらう é acrescentado à forma て do verbo.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">Fazer algo para alguém (informal).\nFormação: やる é acrescentado à forma て do verbo.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">Fazer algo para alguém (humilde).\nFormação: さしあげる é acrescentado à forma て do verbo.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">Tentar fazer algo.\nFormação: みる é acrescentado à forma て do verbo.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">Mostrar uma ação a alguém.\nFormação: みせる é acrescentado à forma て do verbo.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">Estado resultante (intencional).\nFormação: ある é acrescentado à forma て do verbo.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. Ação que se afasta de quem fala.\n2. Indica uma mudança que continua no futuro.\nFormação: いく é acrescentado à forma て do verbo.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. Ação em direção a quem fala.\n2. Indica uma mudança em curso que chega até o presente.\n3. Início de um processo.\nFormação: くる é acrescentado à forma て do verbo.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">Parece que não…; não tem cara de…\nFormação: ない vira なさそう.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">Enquanto se faz algo.\nFormação: ながら é acrescentado à forma continuativa (連用形) do verbo.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">Expressa o desprezo ou a raiva de quem fala pela ação de outra pessoa.\nFormação: やがる é acrescentado à forma continuativa (連用形) do verbo.</string>
+</resources>

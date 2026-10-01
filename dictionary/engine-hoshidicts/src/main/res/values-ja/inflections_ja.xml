@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. 仮定条件：前の条件が成り立つことが、後のことが起こる条件になる。\n2. 後に続く知覚や判断のきっかけを表す。\n接続：動詞・形容詞の仮定形に「ば」を付ける。</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">「-ば」の縮約形。</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">「～ては」の縮約形。\n1. その条件のもとでは必ずそうなることを表す。\n2. 動作（の連続）の繰り返しを表す。\n3. 相手の意図を話し手が（否定的に）評価する仮定の状況を表す。\n4. 「～てはいけない」のような禁止の表現に使う。\n接続：動詞のて形に「は」を付け、「ては」を「ちゃ」に縮める。</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">「-しまう」の縮約形。\n1. 意図して行ったことが悪い結果になったときの後悔や驚きを表す。\n2. 完了を表す：動作が最後までやり遂げられたこと。\n3. 意図しない動作（「うっかり」）を表す。\n接続：動詞のて形に「しまう」を付け、「てしまう」を「ちゃう」に縮める。</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">「-しまう」の縮約形。\n1. 意図して行ったことが悪い結果になったときの後悔や驚きを表す。\n2. 完了を表す：動作が最後までやり遂げられたこと。\n3. 意図しない動作（「うっかり」）を表す。\n接続：動詞のて形に「しまう」を付け、「てしまう」を「ちまう」に縮める。</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. 意図して行ったことが悪い結果になったときの後悔や驚きを表す。\n2. 完了を表す：動作が最後までやり遂げられたこと。\n3. 意図しない動作（「うっかり」）を表す。\n接続：動詞のて形に「しまう」を付ける。</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">丁寧な命令を表す接尾辞。\n接続：動詞の連用形に「なさい」を付ける。</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">…のようだ、…のように見える。\n接続：動詞の連用形、または形容詞の語幹に「そう」を付ける。</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">程度が過ぎていること（「…すぎる」）、または何かをしすぎることを表す。\n接続：動詞の連用形、または形容詞の語幹に「すぎる」を付ける。</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">程度が過ぎていること（「…すぎる」）、または何かをしすぎることを表す。\n接続：動詞の連用形、または形容詞の語幹に「すぎる」を付ける。</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. 願望や希望の気持ちを表す。\n2. 「…たいと思います」の形で、話し手がしようとしていることを遠回しに言う。\n接続：動詞の連用形に「たい」を付ける。「たい」自体は形容詞と同じように活用する。</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. 後の出来事が前の出来事に続いて起こることを表す。\n2. 物事が完了した、または決着したことを前提とする。\n接続：動詞の連用形（音便形）に「たら」、形容詞の語幹に「かったら」を付ける。</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. 二つの動作が交互に行われることを表す（動詞二つで）。\n2. 動作や状態の例を挙げる（複数の動詞・形容詞で）。\n接続：動詞の連用形（音便形）に「たり」、形容詞の語幹に「かったり」を付ける。</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">て形。\n非常に多くの意味を持つ。主に二つの節をつなぐ接続助詞。\n接続：動詞の連用形（音便形）に「て」、形容詞の語幹に「くて」を付ける。</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. 動詞の否定形。\n2. 助動詞「ぬ」の連用形。\n接続：動詞の未然形に「ず」を付ける。</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">動詞の否定形。\n接続：動詞の未然形に「ぬ」を付ける。\n「する」は「せぬ」になる。</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">動詞の否定形。「ぬ」の音変化。\n接続：動詞の未然形に「ん」を付ける。\n「する」は「せん」になる。</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">動作や状態が今にも起こりそうなこと、または度を越した程度を表す。\n接続：動詞の未然形に「んばかり」を付ける。\n「する」は「せんばかり」になる。</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. 話し手の意志や意図を表す。\n2. 動作や状態が今にも起こりそうなことを表す。\n接続：動詞の未然形に「んとする」を付ける。\n「する」は「せんとする」になる。</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">古語。\n1. 推量を表す。\n2. 話し手の意志を表す。\n接続：動詞の未然形に「む」を付ける。\n「する」は「せむ」になる。</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">動詞の否定形。\n接続：動詞の未然形に「ざる」を付ける。\n「する」は「せざる」になる。</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. 否定の仮定：もし…ないなら。\n2. 義務を表す。「ならぬ」を伴っても伴わなくても使う。\n接続：動詞の未然形に「ねば」を付ける。\n「する」は「せねば」になる。</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">形容詞の副詞的な形（連用形）。</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">使役</string>
+    <string name="inflection_ja_causative">誰かに何かをさせる意図を表す。\n接続：一段動詞と「くる」の未然形に「させる」を付ける。\n五段動詞と「する」の未然形に「せる」を付ける。\nそれ自体は一段動詞として活用する。</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">使役（短縮形）</string>
+    <string name="inflection_ja_short_causative">使役形の縮約形。\n誰かに何かをさせる意図を表す。\n接続：五段動詞の未然形に「す」を付ける。\n一段動詞の終止形に「さす」を付ける。\n「する」は「さす」、「くる」は「こさす」になる。\nそれ自体は五段動詞として活用する。</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">命令形</string>
+    <string name="inflection_ja_imperative">1. 命令する。\n2. （「あれ」の形で）どんな状況でも変わらないことを表す。\n3. 願望を表す。</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">連用形</string>
+    <string name="inflection_ja_continuative">行われる（または行われた）動作を表す。\n連用形のこと：動詞を「-ます」の形にして「ます」を取った部分。</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">否定</string>
+    <string name="inflection_ja_negative">1. 動詞の否定形。\n2. 相手への勧誘や依頼を表す。\n接続：動詞の未然形に「ない」、形容詞の語幹に「くない」を付ける。「ない」自体は形容詞と同じように活用する。「ます」は「ません」になる。</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">形容詞を、性質・状態・気持ち・程度を表す名詞にする接尾辞。\n接続：形容詞の語幹に「さ」を付ける。</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">受身</string>
+    <string name="inflection_ja_passive">1. 動作の主体から動作を受けることを表す。\n2. 動作の主体への敬意を表す。\n接続：五段動詞の未然形に「れる」を付ける。</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. 過去に起こったことを表す。\n2. 動作の完了を表す。\n3. 事実の確認を表す。\n4. 動作が実現するという話し手の確信を表す。\n5. 主節より前の出来事を相対的な過去として示す。\n6. 軽い命令を表す。\n接続：動詞の連用形（音便形）に「た」、形容詞の語幹に「かった」を付ける。</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">動詞・形容詞の丁寧な形。\n接続：動詞の連用形に「ます」を付ける。</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">可能</string>
+    <string name="inflection_ja_potential">動作をする（生まれつきの）能力を表す。\n接続：一段動詞の未然形に「(ら)れる」を付ける。\n五段動詞の命令形に「る」を付ける。\n「する」は「できる」、「くる」は「こ(ら)れる」になる。</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">可能・受身</string>
+    <string name="inflection_ja_potential_or_passive">1. 動作の主体から動作を受けることを表す。\n2. 動作の主体への敬意を表す。\n3. 動作をする（生まれつきの）能力を表す。\n接続：一段動詞の未然形に「られる」を付ける。\n「する」は「せられる」、「くる」は「こられる」になる。</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">意志形</string>
+    <string name="inflection_ja_volitional">1. 話し手の意志や意図を表す。\n2. 相手への勧誘を表す。\n3. （「…ようとする」の形で）動作が始まろうとしている、または状態が変わろうとしていることを表す。\n4. 推量を表す。\n接続：一段動詞の未然形に「よう」を付ける。\n五段動詞の未然形（オ段に変えた形）に「う」を付ける。\n形容詞の語幹に「かろう」を付ける（4 の意味のみ）。</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">意志形（口語）</string>
+    <string name="inflection_ja_volitional_slang">意志形の縮約形＋「か」\n1. 話し手の意志や意図を表す。\n2. 相手への勧誘を表す。\n接続：意志形の末尾の「う」を「っ」に変え、「か」を付ける。\n例：行こうか → 行こっか。</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">動詞の否定の意志形。\n1. そうではないだろうという話し手の推量を表す。\n2. 何かをしないという話し手の意志や意図を表す。\n接続：動詞の終止形に「まい」を付ける。\n一段動詞の未然形に「まい」を付ける。\n「する」は「しまい」、「くる」は「こまい」になる。</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">後で必要になることに備えて（あるいは見越して）、前もって何かをしておく。\n接続：動詞のて形に「おく」を付ける。\n動詞の「ない」形に「でおく」を付ける。\n話し言葉では「とく・どく」に縮まる。</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. 動作が続いている、またはある時点まで続いていたことを表す。\n2. 動作が完了し、その結果が残っていることを表す。\n3. 何らかの変化の結果とみなせる状態を表す。\n接続：動詞のて形に「いる」を付ける。話し言葉では「い」が落ちることがある。\n動詞の「ない」形に「でいる」を付ける。\n（口語）動詞のて形に「おる」を付ける。話し言葉では「とる・でる」に縮まる。</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">形容詞の連体形。現代語に残る古い形。</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">人の様子を表し、その人の気持ちを示す。\n接続：形容詞の語幹に「げ」または「気」を付ける。</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. 主語の気持ちが、その人について思われていることや知られていることと食い違うことを表す。\n2. 主語の（外から見える）振る舞いを表す。\n接続：形容詞の語幹に「がる」を付ける。それ自体は五段動詞として活用する。</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">俗語。形容詞の音変化。\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん（口語）</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">禁止（口語）</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">関西弁：否定</string>
+    <string name="inflection_ja_kansai_ben_negative">関西弁の動詞の否定形</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">関西弁 -て</string>
+    <string name="inflection_ja_kansai_ben_te">関西弁の動詞の -て形</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">関西弁 -た</string>
+    <string name="inflection_ja_kansai_ben_ta">関西弁の -た形</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">関西弁 -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">関西弁の -たら形</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">関西弁 -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">関西弁の -たり形</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">関西弁 -く</string>
+    <string name="inflection_ja_kansai_ben_ku">関西弁の形容詞の -く形</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">関西弁：形容詞 -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">関西弁の形容詞の -て形</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">関西弁：形容詞の否定</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">関西弁の形容詞の否定形</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">丁寧（幼児語）。\n接続：「ます」が「ましゅ」になる。</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">丁寧な依頼。\n接続：動詞のて形に「ください」を付ける。</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">話し手のために何かをする（尊敬）。\n接続：動詞のて形に「くださる」を付ける。</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">試しに何かをやってみるよう相手に促す。\n接続：動詞のて形に「ごらん」を付ける。</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">試しに何かをやってみるよう相手に丁寧に言う。\n接続：動詞のて形に「ごらんなさい」を付ける。</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">誰かに何かをしてもらう（謙譲）。\n接続：動詞のて形に「いただく」を付ける。</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">誰かのために何かをする。\n接続：動詞のて形に「あげる」を付ける。</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">話し手（の側）のために何かをする。\n接続：動詞のて形に「くれる」を付ける。</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">誰かに何かをしてもらう。\n接続：動詞のて形に「もらう」を付ける。</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">誰かのために何かをする（くだけた言い方）。\n接続：動詞のて形に「やる」を付ける。</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">誰かのために何かをする（謙譲）。\n接続：動詞のて形に「さしあげる」を付ける。</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">試しに何かをする。\n接続：動詞のて形に「みる」を付ける。</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">動作をして誰かに見せる。\n接続：動詞のて形に「みせる」を付ける。</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">（意図的な）結果の状態。\n接続：動詞のて形に「ある」を付ける。</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. 話し手から離れていく動作。\n2. 未来へ続いていく変化を表す。\n接続：動詞のて形に「いく」を付ける。</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. 話し手に向かってくる動作。\n2. 現在まで続いてきた変化を表す。\n3. 過程の始まり。\n接続：動詞のて形に「くる」を付ける。</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">…ないようだ、…ないように見える。\n接続：「ない」が「なさそう」になる。</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">何かをしながら。\n接続：動詞の連用形に「ながら」を付ける。</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">他人の動作に対する話し手の軽蔑や怒りを表す。\n接続：動詞の連用形に「やがる」を付ける。</string>
+</resources>

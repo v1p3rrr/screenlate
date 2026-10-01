@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. 條件形：前項條件成立是後項發生的條件。\n2. 表示引發後續感知或判斷的契機。\n接續：在動詞、い形容詞的假定形後接ば。</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">-ば的縮約形。</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">～ては的縮約形。\n1. 說明在該條件下總會發生某事。\n2. 表示（一系列）動作的反覆。\n3. 表示說話者（消極地）評價對方意圖的假設情況。\n4. 用於～てはいけない等禁止句型。\n接續：在動詞て形後接は，並將ては縮約為ちゃ。</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">-しまう的縮約形。\n1. 表示遺憾或驚訝：有意去做，結果卻不好。\n2. 表示完成：動作已做到最後。\n3. 表示無意中的動作（「不小心」）。\n接續：在動詞て形後接しまう，並將てしまう縮約為ちゃう。</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">-しまう的縮約形。\n1. 表示遺憾或驚訝：有意去做，結果卻不好。\n2. 表示完成：動作已做到最後。\n3. 表示無意中的動作（「不小心」）。\n接續：在動詞て形後接しまう，並將てしまう縮約為ちまう。</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. 表示遺憾或驚訝：有意去做，結果卻不好。\n2. 表示完成：動作已做到最後。\n3. 表示無意中的動作（「不小心」）。\n接續：在動詞て形後接しまう。</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">禮貌的命令後綴。\n接續：在動詞連用形後接なさい。</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">看起來……；好像……\n接續：在動詞連用形或形容詞詞幹後接そう。</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">表示某物「太……」或某人做某事「過度」。\n接續：在動詞連用形或形容詞詞幹後接すぎる。</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">表示某物「太……」或某人做某事「過度」。\n接續：在動詞連用形或形容詞詞幹後接すぎる。</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. 表示願望或希望。\n2. 用於……たいと思います，委婉地說出說話者打算做的事。\n接續：在動詞連用形後接たい。たい本身按い形容詞變化。</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. 表示後項事件緊接前項事件發生。\n2. 以某事已完成或已了結為前提。\n接續：在動詞音便後的連用形後接たら，在い形容詞詞幹後接かったら。</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. 表示兩個動作交替進行（用兩個動詞時）。\n2. 列舉動作和狀態的例子（用多個動詞和形容詞時）。\n接續：在動詞音便後的連用形後接たり，在い形容詞詞幹後接かったり。</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">て形。\n含義非常多。首先，它是連接兩個分句的接續助詞。\n接續：在動詞音便後的連用形後接て，在い形容詞詞幹後接くて。</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. 動詞的否定形。\n2. 助動詞ぬ（nu）的連用形。\n接續：在動詞未然形後接ず。</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">動詞的否定形。\n接續：在動詞未然形後接ぬ。\nする變為せぬ</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">動詞的否定形；ぬ的音變。\n接續：在動詞未然形後接ん。\nする變為せん</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">表示動作或狀態即將發生，或程度過分、極端。\n接續：在動詞未然形後接んばかり。\nする變為せんばかり</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. 表示說話者的意志或意圖。\n2. 表示動作或狀態即將發生。\n接續：在動詞未然形後接んとする。\nする變為せんとする</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">古語。\n1. 表示推測。\n2. 表示說話者的意圖。\n接續：在動詞未然形後接む。\nする變為せむ</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">動詞的否定形。\n接續：在動詞未然形後接ざる。\nする變為せざる</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. 假設的否定：如果不……\n2. 表示必須。可與ならぬ連用，也可單用。\n接續：在動詞未然形後接ねば。\nする變為せねば</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">い形容詞的副詞形式。</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">使役</string>
+    <string name="inflection_ja_causative">表示讓某人做某事的意圖。\n接續：在一段動詞和くる的未然形後接させる。\n在五段動詞和する的未然形後接せる。\n該形式本身按一段動詞變化。</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">使役縮約形</string>
+    <string name="inflection_ja_short_causative">使役形的縮約形。\n表示讓某人做某事的意圖。\n接續：在五段動詞未然形後接す。\n在一段動詞辭書形後接さす。\nする變為さす，くる變為こさす。\n該形式本身按五段動詞變化。</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">命令形</string>
+    <string name="inflection_ja_imperative">1. 下達命令。\n2. （以あれ的形式）表示在任何情況下都不會改變。\n3. 表示願望。</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">連用形</string>
+    <string name="inflection_ja_continuative">表示正在（或曾經）進行的動作。\n指連用形：動詞變成-ます形後去掉ます所剩的部分。</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">否定</string>
+    <string name="inflection_ja_negative">1. 動詞的否定形。\n2. 表示對對方的邀請或請求。\n接續：在動詞未然形後接ない，在い形容詞詞幹後接くない。ない本身按い形容詞變化。ます變為ません。</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">把い形容詞變成表示性質、狀態、感情或程度的名詞的後綴。\n接續：在い形容詞詞幹後接さ。</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">被動</string>
+    <string name="inflection_ja_passive">1. 表示從動作發出者那裡承受動作。\n2. 表示對動作發出者的尊敬。\n接續：在五段動詞未然形後接れる。</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. 表示過去發生的事。\n2. 表示動作的完成。\n3. 表示對事實的確認。\n4. 表示說話者確信動作會實現。\n5. 把主句之前的事件表示為相對過去。\n6. 表示語氣緩和的命令。\n接續：在動詞音便後的連用形後接た，在い形容詞詞幹後接かった。</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">動詞和形容詞的禮貌變化。\n接續：在動詞連用形後接ます。</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">可能</string>
+    <string name="inflection_ja_potential">表示（天生的）做某動作的能力。\n接續：在一段動詞未然形後接(ら)れる。\n在五段動詞命令形後接る。\nする變為できる，くる變為こ(ら)れる</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">可能或被動</string>
+    <string name="inflection_ja_potential_or_passive">1. 表示從動作發出者那裡承受動作。\n2. 表示對動作發出者的尊敬。\n3. 表示（天生的）做某動作的能力。\n接續：在一段動詞未然形後接られる。\nする變為せられる，くる變為こられる</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">意志形</string>
+    <string name="inflection_ja_volitional">1. 表示說話者的意志或意圖。\n2. 表示對對方的邀請。\n3. （用於……ようとする）表示動作即將開始或狀態即將改變。\n4. 表示推測。\n接續：在一段動詞未然形後接よう。\n五段動詞未然形音變為-o段後接う。\n在い形容詞詞幹後接かろう（僅限第 4 個意思）。</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">意志形（口語）</string>
+    <string name="inflection_ja_volitional_slang">意志形的縮約形＋か\n1. 表示說話者的意志或意圖。\n2. 表示對對方的邀請。\n接續：把意志形末尾的う變為っ，再接か。\n例如：行こうか → 行こっか。</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">動詞的否定意志形。\n1. 表示說話者推測某事大概不是真的。\n2. 表示說話者不做某事的意志或意圖。\n接續：在動詞辭書形後接まい。\n在一段動詞未然形後接まい。\nする變為しまい，くる變為こまい</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">為以後的需要做準備（或預先考慮到），提前做某事。\n接續：在動詞て形後接おく。\n在動詞的ない否定形後接でおく。\n口語中縮約為とく・どく。</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. 表示動作正在持續，或持續到某一時刻。\n2. 表示動作已完成且其結果仍然存在。\n3. 表示可視為某種變化結果的狀態。\n接續：在動詞て形後接いる。口語中い可能脫落。\n在動詞的ない否定形後接でいる。\n（口語）在動詞て形後接おる。口語中縮約為とる・でる。</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">い形容詞的連體形。殘留在現代日語中的古舊形式。</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">描述人的樣子，顯露其情感。\n接續：在い形容詞詞幹後接げ或気</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. 表示主語的感情與人們對其的看法或了解形成對比。\n2. 表示主語（外在可見的）舉動。\n接續：在い形容詞詞幹後接がる。該形式本身按五段動詞變化。</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">俚語。い形容詞的音變。\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん（口語）</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">禁止（口語）</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">關西腔：否定</string>
+    <string name="inflection_ja_kansai_ben_negative">關西腔中動詞的否定形</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">關西腔 -て</string>
+    <string name="inflection_ja_kansai_ben_te">關西腔中動詞的 -て 形</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">關西腔 -た</string>
+    <string name="inflection_ja_kansai_ben_ta">關西腔中的 -た 形</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">關西腔 -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">關西腔中的 -たら 形</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">關西腔 -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">關西腔中的 -たり 形</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">關西腔 -く</string>
+    <string name="inflection_ja_kansai_ben_ku">關西腔中形容詞的 -く 詞幹</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">關西腔：形容詞 -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">關西腔中形容詞的 -て 形</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">關西腔：形容詞否定</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">關西腔中形容詞的否定形</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">禮貌（兒語）。\n接續：ます變為ましゅ。</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">禮貌的請求。\n接續：在動詞て形後接ください。</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">為說話者做某事（尊敬）。\n接續：在動詞て形後接くださる。</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">鼓勵某人試著做某事。\n接續：在動詞て形後接ごらん。</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">禮貌地讓某人試著做某事。\n接續：在動詞て形後接ごらんなさい。</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">承蒙某人為自己做某事（謙讓）。\n接續：在動詞て形後接いただく。</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">為某人做某事。\n接續：在動詞て形後接あげる。</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">為我或我們做某事。\n接續：在動詞て形後接くれる。</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">請某人為自己做某事。\n接續：在動詞て形後接もらう。</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">為某人做某事（隨意的說法）。\n接續：在動詞て形後接やる。</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">為某人做某事（謙讓）。\n接續：在動詞て形後接さしあげる。</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">試著做某事。\n接續：在動詞て形後接みる。</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">做某個動作給某人看。\n接續：在動詞て形後接みせる。</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">（有意的）結果狀態。\n接續：在動詞て形後接ある。</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. 離說話者而去的動作。\n2. 表示向未來持續的變化。\n接續：在動詞て形後接いく。</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. 朝說話者而來的動作。\n2. 表示一直持續到現在的變化。\n3. 過程的開始。\n接續：在動詞て形後接くる。</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">看起來不……；好像不……\n接續：ない變為なさそう。</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">一邊做某事一邊……\n接續：在動詞連用形後接ながら。</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">表示說話者對他人動作的輕蔑或憤怒。\n接續：在動詞連用形後接やがる。</string>
+</resources>

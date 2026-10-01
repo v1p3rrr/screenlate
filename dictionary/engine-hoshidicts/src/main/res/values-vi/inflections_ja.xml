@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. Thể điều kiện: việc điều kiện nêu trước được thỏa mãn là điều kiện để điều nêu sau xảy ra.\n2. Chỉ tác nhân dẫn đến một nhận thức hay phán đoán theo sau.\nCách tạo: thêm ば vào dạng giả định (仮定形) của động từ và tính từ đuôi -i.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">Dạng rút gọn của -ば.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">Dạng rút gọn của ～ては.\n1. Giải thích rằng trong điều kiện đó, việc gì đó luôn xảy ra.\n2. Diễn tả sự lặp lại của (một chuỗi) hành động.\n3. Chỉ một tình huống giả định trong đó người nói đánh giá (tiêu cực) ý định của người kia.\n4. Dùng trong các mẫu cấm đoán như ～てはいけない.\nCách tạo: thêm は vào thể て của động từ, rồi rút gọn ては thành ちゃ.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">Dạng rút gọn của -しまう.\n1. Diễn tả sự hối tiếc hoặc ngạc nhiên: hành động được làm có chủ ý nhưng kết quả lại tệ.\n2. Diễn tả sự hoàn tất: hành động đã được làm đến cùng.\n3. Diễn tả hành động ngoài ý muốn (“lỡ”).\nCách tạo: thêm しまう vào thể て của động từ, rồi rút gọn てしまう thành ちゃう.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">Dạng rút gọn của -しまう.\n1. Diễn tả sự hối tiếc hoặc ngạc nhiên: hành động được làm có chủ ý nhưng kết quả lại tệ.\n2. Diễn tả sự hoàn tất: hành động đã được làm đến cùng.\n3. Diễn tả hành động ngoài ý muốn (“lỡ”).\nCách tạo: thêm しまう vào thể て của động từ, rồi rút gọn てしまう thành ちまう.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. Diễn tả sự hối tiếc hoặc ngạc nhiên: hành động được làm có chủ ý nhưng kết quả lại tệ.\n2. Diễn tả sự hoàn tất: hành động đã được làm đến cùng.\n3. Diễn tả hành động ngoài ý muốn (“lỡ”).\nCách tạo: thêm しまう vào thể て của động từ.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">Hậu tố mệnh lệnh lịch sự.\nCách tạo: thêm なさい vào dạng liên dụng (連用形) của động từ.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">Có vẻ như…; trông như…\nCách tạo: thêm そう vào dạng liên dụng (連用形) của động từ hoặc vào gốc của tính từ.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">Cho biết điều gì đó “quá…” hoặc ai đó làm việc gì “quá mức”.\nCách tạo: thêm すぎる vào dạng liên dụng (連用形) của động từ hoặc vào gốc của tính từ.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">Cho biết điều gì đó “quá…” hoặc ai đó làm việc gì “quá mức”.\nCách tạo: thêm すぎる vào dạng liên dụng (連用形) của động từ hoặc vào gốc của tính từ.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. Diễn tả mong muốn hoặc hy vọng.\n2. Dùng trong …たいと思います, cách nói gián tiếp về điều người nói định làm.\nCách tạo: thêm たい vào dạng liên dụng (連用形) của động từ. Bản thân たい chia như tính từ đuôi -i.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. Cho biết sự việc nêu sau tiếp nối sự việc nêu trước.\n2. Giả định rằng việc gì đó đã hoàn tất hoặc đã xong xuôi.\nCách tạo: thêm たら vào dạng liên dụng (連用形) của động từ sau biến âm, かったら vào gốc của tính từ đuôi -i.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. Chỉ hai hành động diễn ra luân phiên (với hai động từ).\n2. Nêu ví dụ về hành động và trạng thái (với nhiều động từ và tính từ).\nCách tạo: thêm たり vào dạng liên dụng (連用形) của động từ sau biến âm, かったり vào gốc của tính từ đuôi -i.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">Thể て.\nCó rất nhiều nghĩa. Trước hết, đây là trợ từ liên kết nối hai mệnh đề với nhau.\nCách tạo: thêm て vào dạng liên dụng (連用形) của động từ sau biến âm, くて vào gốc của tính từ đuôi -i.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. Thể phủ định của động từ.\n2. Dạng liên dụng (連用形) của trợ động từ ぬ (nu).\nCách tạo: thêm ず vào dạng vị nhiên (未然形) của động từ.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">Thể phủ định của động từ.\nCách tạo: thêm ぬ vào dạng vị nhiên (未然形) của động từ.\nする thành せぬ</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">Thể phủ định của động từ; biến âm của ぬ.\nCách tạo: thêm ん vào dạng vị nhiên (未然形) của động từ.\nする thành せん</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">Cho biết một hành động hay trạng thái sắp xảy ra, hoặc một mức độ thái quá, cực độ.\nCách tạo: thêm んばかり vào dạng vị nhiên (未然形) của động từ.\nする thành せんばかり</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. Diễn tả ý chí hoặc ý định của người nói.\n2. Cho biết một hành động hay trạng thái sắp xảy ra.\nCách tạo: thêm んとする vào dạng vị nhiên (未然形) của động từ.\nする thành せんとする</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">Cổ ngữ.\n1. Diễn tả sự phỏng đoán.\n2. Diễn tả ý định của người nói.\nCách tạo: thêm む vào dạng vị nhiên (未然形) của động từ.\nする thành せむ</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">Thể phủ định của động từ.\nCách tạo: thêm ざる vào dạng vị nhiên (未然形) của động từ.\nする thành せざる</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. Phủ định giả định: nếu không…\n2. Diễn tả sự bắt buộc. Dùng kèm hoặc không kèm ならぬ.\nCách tạo: thêm ねば vào dạng vị nhiên (未然形) của động từ.\nする thành せねば</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">Dạng trạng từ của tính từ đuôi -i.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">sai khiến</string>
+    <string name="inflection_ja_causative">Diễn tả ý định khiến ai đó làm việc gì.\nCách tạo: thêm させる vào dạng vị nhiên (未然形) của động từ ichidan và くる.\nThêm せる vào dạng vị nhiên (未然形) của động từ godan và する.\nBản thân dạng này chia như động từ ichidan.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">sai khiến rút gọn</string>
+    <string name="inflection_ja_short_causative">Dạng rút gọn của thể sai khiến.\nDiễn tả ý định khiến ai đó làm việc gì.\nCách tạo: thêm す vào dạng vị nhiên (未然形) của động từ godan.\nThêm さす vào thể từ điển (終止形) của động từ ichidan.\nする thành さす, くる thành こさす.\nBản thân dạng này chia như động từ godan.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">mệnh lệnh</string>
+    <string name="inflection_ja_imperative">1. Ra lệnh.\n2. (Dạng あれ) Diễn tả rằng điều gì đó sẽ không thay đổi trong bất kỳ hoàn cảnh nào.\n3. Diễn tả mong ước.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">liên dụng</string>
+    <string name="inflection_ja_continuative">Chỉ các hành động đang (hoặc đã) được thực hiện.\nChỉ 連用形: phần còn lại của động từ khi chia sang -ます rồi bỏ ます.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">phủ định</string>
+    <string name="inflection_ja_negative">1. Thể phủ định của động từ.\n2. Diễn tả lời mời hoặc lời đề nghị với người kia.\nCách tạo: thêm ない vào dạng vị nhiên (未然形) của động từ, くない vào gốc của tính từ đuôi -i. Bản thân ない chia như tính từ đuôi -i. ます thành ません.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">Hậu tố biến tính từ đuôi -i thành danh từ chỉ tính chất, trạng thái, cảm xúc hoặc mức độ.\nCách tạo: thêm さ vào gốc của tính từ đuôi -i.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">bị động</string>
+    <string name="inflection_ja_passive">1. Chỉ hành động mà chủ thể phải chịu từ người thực hiện.\n2. Diễn tả sự tôn trọng với người thực hiện hành động.\nCách tạo: thêm れる vào dạng vị nhiên (未然形) của động từ godan.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. Chỉ việc đã xảy ra trong quá khứ.\n2. Chỉ sự hoàn tất của hành động.\n3. Chỉ sự xác nhận một sự việc.\n4. Chỉ sự chắc chắn của người nói rằng hành động sẽ xảy ra.\n5. Trình bày các sự việc trước mệnh đề chính như quá khứ tương đối.\n6. Chỉ một mệnh lệnh nhẹ nhàng.\nCách tạo: thêm た vào dạng liên dụng (連用形) của động từ sau biến âm, かった vào gốc của tính từ đuôi -i.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">Cách chia lịch sự của động từ và tính từ.\nCách tạo: thêm ます vào dạng liên dụng (連用形) của động từ.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">khả năng</string>
+    <string name="inflection_ja_potential">Chỉ khả năng (tự nhiên) thực hiện một hành động.\nCách tạo: thêm (ら)れる vào dạng vị nhiên (未然形) của động từ ichidan.\nThêm る vào dạng mệnh lệnh (命令形) của động từ godan.\nする thành できる, くる thành こ(ら)れる</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">khả năng hoặc bị động</string>
+    <string name="inflection_ja_potential_or_passive">1. Chỉ hành động mà chủ thể phải chịu từ người thực hiện.\n2. Diễn tả sự tôn trọng với người thực hiện hành động.\n3. Chỉ khả năng (tự nhiên) thực hiện một hành động.\nCách tạo: thêm られる vào dạng vị nhiên (未然形) của động từ ichidan.\nする thành せられる, くる thành こられる</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">ý chí</string>
+    <string name="inflection_ja_volitional">1. Diễn tả ý chí hoặc ý định của người nói.\n2. Diễn tả lời mời với người kia.\n3. (Trong …ようとする) Cho biết một hành động sắp bắt đầu hoặc một trạng thái sắp thay đổi.\n4. Diễn tả sự phỏng đoán.\nCách tạo: thêm よう vào dạng vị nhiên (未然形) của động từ ichidan.\nThêm う vào dạng vị nhiên (未然形) của động từ godan sau khi biến âm sang -o.\nThêm かろう vào gốc của tính từ đuôi -i (chỉ nghĩa 4).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">ý chí (khẩu ngữ)</string>
+    <string name="inflection_ja_volitional_slang">Dạng rút gọn của thể ý chí + か\n1. Diễn tả ý chí hoặc ý định của người nói.\n2. Diễn tả lời mời với người kia.\nCách tạo: đổi う ở cuối thể ý chí thành っ, rồi thêm か.\nVí dụ: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">Thể ý chí phủ định của động từ.\n1. Diễn tả phỏng đoán của người nói rằng điều gì đó có lẽ không đúng.\n2. Diễn tả ý chí hoặc ý định của người nói là không làm việc gì.\nCách tạo: thêm まい vào thể từ điển (終止形) của động từ.\nThêm まい vào dạng vị nhiên (未然形) của động từ ichidan.\nする thành しまい, くる thành こまい</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">Làm việc gì trước để chuẩn bị cho (hoặc dự liệu) nhu cầu về sau.\nCách tạo: thêm おく vào thể て của động từ.\nThêm でおく vào thể phủ định ない của động từ.\nTrong văn nói, rút gọn thành とく・どく.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. Cho biết hành động đang tiếp diễn hoặc kéo dài đến một thời điểm nào đó.\n2. Cho biết hành động đã kết thúc và kết quả của nó vẫn còn.\n3. Chỉ một trạng thái có thể xem là kết quả của một sự thay đổi.\nCách tạo: thêm いる vào thể て của động từ. Trong văn nói, い có thể bị lược.\nThêm でいる vào thể phủ định ない của động từ.\n(Khẩu ngữ) thêm おる vào thể て của động từ. Trong văn nói, rút gọn thành とる・でる.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">Dạng liên thể (連体形) của tính từ đuôi -i. Một dạng cổ còn sót lại trong tiếng Nhật hiện đại.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">Miêu tả vẻ bề ngoài của một người, cho thấy cảm xúc của họ.\nCách tạo: thêm げ hoặc 気 vào gốc của tính từ đuôi -i</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. Cho biết cảm xúc của chủ thể trái với những gì người ta nghĩ hoặc biết về họ.\n2. Chỉ hành vi (bộc lộ ra ngoài) của chủ thể.\nCách tạo: thêm がる vào gốc của tính từ đuôi -i. Bản thân dạng này chia như động từ godan.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">Tiếng lóng. Biến âm của tính từ đuôi -i.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん (khẩu ngữ)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">cấm đoán (khẩu ngữ)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">kansai-ben: phủ định</string>
+    <string name="inflection_ja_kansai_ben_negative">Thể phủ định của động từ trong kansai-ben</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">kansai-ben -て</string>
+    <string name="inflection_ja_kansai_ben_te">Thể -て của động từ trong kansai-ben</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">kansai-ben -た</string>
+    <string name="inflection_ja_kansai_ben_ta">Thể -た trong kansai-ben</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">kansai-ben -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">Thể -たら trong kansai-ben</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">kansai-ben -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">Thể -たり trong kansai-ben</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">kansai-ben -く</string>
+    <string name="inflection_ja_kansai_ben_ku">Gốc -く của tính từ trong kansai-ben</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">kansai-ben: tính từ -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">Thể -て của tính từ trong kansai-ben</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">kansai-ben: tính từ phủ định</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">Thể phủ định của tính từ trong kansai-ben</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">Lịch sự (giọng trẻ con).\nCách tạo: ます thành ましゅ.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">Lời nhờ lịch sự.\nCách tạo: thêm ください vào thể て của động từ.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">Làm việc gì cho người nói (tôn kính).\nCách tạo: thêm くださる vào thể て của động từ.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">Khuyến khích ai đó thử làm việc gì.\nCách tạo: thêm ごらん vào thể て của động từ.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">Lịch sự bảo ai đó thử làm việc gì.\nCách tạo: thêm ごらんなさい vào thể て của động từ.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">Được ai đó làm cho việc gì (khiêm nhường).\nCách tạo: thêm いただく vào thể て của động từ.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">Làm việc gì cho ai đó.\nCách tạo: thêm あげる vào thể て của động từ.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">Làm việc gì cho tôi hoặc cho chúng tôi.\nCách tạo: thêm くれる vào thể て của động từ.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">Được ai đó làm cho việc gì.\nCách tạo: thêm もらう vào thể て của động từ.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">Làm việc gì cho ai đó (thân mật).\nCách tạo: thêm やる vào thể て của động từ.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">Làm việc gì cho ai đó (khiêm nhường).\nCách tạo: thêm さしあげる vào thể て của động từ.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">Thử làm việc gì.\nCách tạo: thêm みる vào thể て của động từ.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">Làm một hành động cho ai đó xem.\nCách tạo: thêm みせる vào thể て của động từ.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">Trạng thái kết quả (có chủ ý).\nCách tạo: thêm ある vào thể て của động từ.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. Hành động hướng ra xa người nói.\n2. Chỉ sự thay đổi tiếp diễn về sau.\nCách tạo: thêm いく vào thể て của động từ.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. Hành động hướng về phía người nói.\n2. Chỉ sự thay đổi diễn ra cho đến hiện tại.\n3. Sự bắt đầu của một quá trình.\nCách tạo: thêm くる vào thể て của động từ.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">Có vẻ như không…; trông không có vẻ…\nCách tạo: ない thành なさそう.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">Trong khi làm việc gì đó.\nCách tạo: thêm ながら vào dạng liên dụng (連用形) của động từ.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">Diễn tả sự khinh miệt hoặc giận dữ của người nói đối với hành động của người khác.\nCách tạo: thêm やがる vào dạng liên dụng (連用形) của động từ.</string>
+</resources>

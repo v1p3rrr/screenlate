@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. Koşul kipi: önce söylenen koşulun gerçekleşmesi, sonra söylenenin gerçekleşmesinin koşuludur.\n2. Sonraki bir algı veya yargıyı tetikleyen şeyi belirtir.\nYapılışı: ば, fiillerin ve -i sıfatlarının varsayım biçimine (仮定形) eklenir.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">-ば ekinin kısaltılmışı.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">～ては yapısının kısaltılmışı.\n1. Belirttiği koşulda bir şeyin her zaman olduğunu açıklar.\n2. Eylemlerin (veya bir eylem dizisinin) tekrarını anlatır.\n3. Konuşanın karşısındakinin niyetini (olumsuz) değerlendirdiği varsayımsal bir durumu belirtir.\n4. ～てはいけない gibi yasak yapılarında kullanılır.\nYapılışı: は, fiilin て biçimine eklenir ve ては, ちゃ olarak kısalır.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">-しまう ekinin kısaltılmışı.\n1. Pişmanlık veya şaşkınlık anlatır: eylem bilerek yapılmış ama kötü sonuçlanmıştır.\n2. Tamamlanmışlık anlatır: eylem sonuna kadar götürülmüştür.\n3. İstemsiz bir eylemi anlatır (“yanlışlıkla”).\nYapılışı: しまう, fiilin て biçimine eklenir ve てしまう, ちゃう olarak kısalır.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">-しまう ekinin kısaltılmışı.\n1. Pişmanlık veya şaşkınlık anlatır: eylem bilerek yapılmış ama kötü sonuçlanmıştır.\n2. Tamamlanmışlık anlatır: eylem sonuna kadar götürülmüştür.\n3. İstemsiz bir eylemi anlatır (“yanlışlıkla”).\nYapılışı: しまう, fiilin て biçimine eklenir ve てしまう, ちまう olarak kısalır.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. Pişmanlık veya şaşkınlık anlatır: eylem bilerek yapılmış ama kötü sonuçlanmıştır.\n2. Tamamlanmışlık anlatır: eylem sonuna kadar götürülmüştür.\n3. İstemsiz bir eylemi anlatır (“yanlışlıkla”).\nYapılışı: しまう, fiilin て biçimine eklenir.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">Kibar emir eki.\nYapılışı: なさい, fiilin bağlama biçimine (連用形) eklenir.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">Görünüşe göre…; …gibi görünüyor\nYapılışı: そう, fiillerin bağlama biçimine (連用形) veya sıfatların gövdesine eklenir.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">Bir şeyin “fazla…” olduğunu veya birinin bir şeyi “aşırı” yaptığını belirtir.\nYapılışı: すぎる, fiillerin bağlama biçimine (連用形) veya sıfatların gövdesine eklenir.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">Bir şeyin “fazla…” olduğunu veya birinin bir şeyi “aşırı” yaptığını belirtir.\nYapılışı: すぎる, fiillerin bağlama biçimine (連用形) veya sıfatların gövdesine eklenir.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. İstek veya umut anlatır.\n2. Konuşanın ne yapmayı düşündüğünü dolaylı yoldan söyleyen …たいと思います yapısında kullanılır.\nYapılışı: たい, fiilin bağlama biçimine (連用形) eklenir. たい, bir -i sıfatı gibi çekimlenir.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. Sonra söylenen olayın önce söyleneni izlediğini belirtir.\n2. Bir şeyin tamamlandığını veya sonuçlandığını varsayar.\nYapılışı: たら, ses değişiminden sonra fiillerin bağlama biçimine (連用形), かったら ise -i sıfatlarının gövdesine eklenir.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. Sırayla yapılan iki eylemi belirtir (iki fiille).\n2. Eylem ve durumlardan örnekler verir (birden çok fiil ve sıfatla).\nYapılışı: たり, ses değişiminden sonra fiillerin bağlama biçimine (連用形), かったり ise -i sıfatlarının gövdesine eklenir.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">て biçimi.\nÇok sayıda anlamı vardır. Her şeyden önce iki cümleciği birbirine bağlayan bir bağlaç ilgecidir.\nYapılışı: て, ses değişiminden sonra fiillerin bağlama biçimine (連用形), くて ise -i sıfatlarının gövdesine eklenir.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. Fiillerin olumsuz biçimi.\n2. ぬ (nu) ilgecinin bağlama biçimi (連用形).\nYapılışı: ず, fiilin gerçekleşmemiş biçimine (未然形) eklenir.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">Fiillerin olumsuz biçimi.\nYapılışı: ぬ, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せぬ olur</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">Fiillerin olumsuz biçimi; ぬ ekinin ses değişimi.\nYapılışı: ん, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せん olur</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">Bir eylemin veya durumun gerçekleşmek üzere olduğunu ya da aşırı, uç bir dereceyi belirtir.\nYapılışı: んばかり, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せんばかり olur</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. Konuşanın isteğini veya niyetini anlatır.\n2. Bir eylemin veya durumun gerçekleşmek üzere olduğunu belirtir.\nYapılışı: んとする, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せんとする olur</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">Eski dil.\n1. Tahmin anlatır.\n2. Konuşanın niyetini anlatır.\nYapılışı: む, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せむ olur</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">Fiillerin olumsuz biçimi.\nYapılışı: ざる, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せざる olur</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. Varsayımsal olumsuzluk: …mazsa\n2. Zorunluluk anlatır. ならぬ ile ya da onsuz kullanılır.\nYapılışı: ねば, fiilin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せねば olur</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">-i sıfatlarının zarf biçimi.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">ettirgen</string>
+    <string name="inflection_ja_causative">Birine bir şey yaptırma niyetini anlatır.\nYapılışı: させる, ichidan fiillerin ve くる fiilinin gerçekleşmemiş biçimine (未然形) eklenir.\nせる, godan fiillerin ve する fiilinin gerçekleşmemiş biçimine (未然形) eklenir.\nBu biçim bir ichidan fiil gibi çekimlenir.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">kısa ettirgen</string>
+    <string name="inflection_ja_short_causative">Ettirgen biçimin kısaltılmışı.\nBirine bir şey yaptırma niyetini anlatır.\nYapılışı: す, godan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nさす, ichidan fiillerin sözlük biçimine (終止形) eklenir.\nする, さす olur; くる, こさす olur.\nBu biçim bir godan fiil gibi çekimlenir.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">emir</string>
+    <string name="inflection_ja_imperative">1. Emir verir.\n2. (あれ olarak) Bir şeyin hiçbir koşulda değişmeyeceğini anlatır.\n3. Umut anlatır.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">bağlama</string>
+    <string name="inflection_ja_continuative">Yapılan (veya yapılmış olan) eylemleri belirtir.\n連用形 için kullanılır: fiil -ます ile çekimlenip ます atıldığında kalan kısım.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">olumsuz</string>
+    <string name="inflection_ja_negative">1. Fiillerin olumsuz biçimi.\n2. Karşıdakine bir davet veya istek anlatır.\nYapılışı: ない, fiillerin gerçekleşmemiş biçimine (未然形), くない ise -i sıfatlarının gövdesine eklenir. ない, bir -i sıfatı gibi çekimlenir. ます, ません olur.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">-i sıfatlarını nitelik, durum, duygu veya derece bildiren adlara dönüştüren ek.\nYapılışı: さ, -i sıfatlarının gövdesine eklenir.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">edilgen</string>
+    <string name="inflection_ja_passive">1. Eylemi yapandan maruz kalınan bir eylemi belirtir.\n2. Eylemi yapana saygı anlatır.\nYapılışı: れる, godan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. Geçmişte olmuş bir şeyi belirtir.\n2. Bir eylemin tamamlandığını belirtir.\n3. Bir olgunun doğrulandığını belirtir.\n4. Konuşanın eylemin gerçekleşeceğinden emin olduğunu belirtir.\n5. Ana cümleden önceki olayları göreli geçmiş olarak sunar.\n6. Yumuşatılmış bir emri belirtir.\nYapılışı: た, ses değişiminden sonra fiillerin bağlama biçimine (連用形), かった ise -i sıfatlarının gövdesine eklenir.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">Fiillerin ve sıfatların kibar çekimi.\nYapılışı: ます, fiilin bağlama biçimine (連用形) eklenir.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">yeterlilik</string>
+    <string name="inflection_ja_potential">Bir eylemi yapabilme (doğal) yetisini belirtir.\nYapılışı: (ら)れる, ichidan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nる, godan fiillerin emir biçimine (命令形) eklenir.\nする, できる olur; くる, こ(ら)れる olur</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">yeterlilik veya edilgen</string>
+    <string name="inflection_ja_potential_or_passive">1. Eylemi yapandan maruz kalınan bir eylemi belirtir.\n2. Eylemi yapana saygı anlatır.\n3. Bir eylemi yapabilme (doğal) yetisini belirtir.\nYapılışı: られる, ichidan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nする, せられる olur; くる, こられる olur</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">istek</string>
+    <string name="inflection_ja_volitional">1. Konuşanın isteğini veya niyetini anlatır.\n2. Karşıdakine bir davet anlatır.\n3. (…ようとする içinde) Bir eylemin başlamak, bir durumun değişmek üzere olduğunu belirtir.\n4. Tahmin anlatır.\nYapılışı: よう, ichidan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nう, -o yönündeki ses değişiminden sonra godan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nかろう, -i sıfatlarının gövdesine eklenir (yalnızca 4. anlam).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">istek (konuşma dili)</string>
+    <string name="inflection_ja_volitional_slang">İstek biçiminin kısaltılmışı + か\n1. Konuşanın isteğini veya niyetini anlatır.\n2. Karşıdakine bir davet anlatır.\nYapılışı: istek biçiminin sonundaki う, っ olur, ardından か eklenir.\nÖrneğin: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">Fiillerin olumsuz istek biçimi.\n1. Konuşanın bir şeyin büyük olasılıkla doğru olmadığına dair tahminini anlatır.\n2. Konuşanın bir şeyi yapmama isteğini veya niyetini anlatır.\nYapılışı: まい, fiilin sözlük biçimine (終止形) eklenir.\nまい, ichidan fiillerin gerçekleşmemiş biçimine (未然形) eklenir.\nする, しまい olur; くる, こまい olur</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">Sonraki ihtiyaçlara hazırlık olarak (veya onları öngörerek) bir şeyi önceden yapmak.\nYapılışı: おく, fiilin て biçimine eklenir.\nでおく, fiilin ない ile kurulan olumsuz biçimine eklenir.\nKonuşmada とく・どく olarak kısalır.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. Bir eylemin sürdüğünü veya belli bir ana kadar sürdüğünü belirtir.\n2. Bir eylemin tamamlandığını ve sonucunun sürdüğünü belirtir.\n3. Bir değişimin sonucu sayılabilecek bir durumu belirtir.\nYapılışı: いる, fiilin て biçimine eklenir. Konuşmada い düşebilir.\nでいる, fiilin ない ile kurulan olumsuz biçimine eklenir.\n(Konuşma dili) おる, fiilin て biçimine eklenir. Konuşmada とる・でる olarak kısalır.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">-i sıfatlarının niteleme biçimi (連体形). Günümüz Japoncasında kalmış eski bir biçim.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">Bir kişinin görünüşünü anlatır. Duygularını gösterir.\nYapılışı: げ veya 気, -i sıfatlarının gövdesine eklenir</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. Öznenin duygularının, onun hakkında düşünülen veya bilinenle çeliştiğini belirtir.\n2. Öznenin (görünür) davranışını belirtir.\nYapılışı: がる, -i sıfatlarının gövdesine eklenir. Bu biçim bir godan fiil gibi çekimlenir.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">Argo. -i sıfatlarının ses değişimi.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん (konuşma dili)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">yasaklama (konuşma dili)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">kansai-ben: olumsuz</string>
+    <string name="inflection_ja_kansai_ben_negative">Kansai-ben\'de fiillerin olumsuz biçimi</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">kansai-ben -て</string>
+    <string name="inflection_ja_kansai_ben_te">Kansai-ben\'de fiillerin -て biçimi</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">kansai-ben -た</string>
+    <string name="inflection_ja_kansai_ben_ta">Kansai-ben\'de -た biçimi</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">kansai-ben -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">Kansai-ben\'de -たら biçimi</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">kansai-ben -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">Kansai-ben\'de -たり biçimi</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">kansai-ben -く</string>
+    <string name="inflection_ja_kansai_ben_ku">Kansai-ben\'de sıfatların -く gövdesi</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">kansai-ben: sıfat -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">Kansai-ben\'de sıfatların -て biçimi</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">kansai-ben: sıfat olumsuz</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">Kansai-ben\'de sıfatların olumsuz biçimi</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">Kibar (çocuksu).\nYapılışı: ます, ましゅ olur.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">Kibar rica.\nYapılışı: ください, fiilin て biçimine eklenir.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">Konuşan için bir şey yapmak (saygılı).\nYapılışı: くださる, fiilin て biçimine eklenir.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">Birini bir şeyi denemeye teşvik etmek.\nYapılışı: ごらん, fiilin て biçimine eklenir.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">Birine kibarca bir şeyi denemesini söylemek.\nYapılışı: ごらんなさい, fiilin て biçimine eklenir.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">Birinin bir şey yapma iyiliğini almak (saygılı).\nYapılışı: いただく, fiilin て biçimine eklenir.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">Biri için bir şey yapmak.\nYapılışı: あげる, fiilin て biçimine eklenir.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">Benim veya bizim için bir şey yapmak.\nYapılışı: くれる, fiilin て biçimine eklenir.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">Birinin bir şey yapma iyiliğini almak.\nYapılışı: もらう, fiilin て biçimine eklenir.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">Biri için bir şey yapmak (samimi).\nYapılışı: やる, fiilin て biçimine eklenir.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">Biri için bir şey yapmak (alçakgönüllü).\nYapılışı: さしあげる, fiilin て biçimine eklenir.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">Bir şeyi yapmayı denemek.\nYapılışı: みる, fiilin て biçimine eklenir.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">Birine bir eylemi göstermek.\nYapılışı: みせる, fiilin て biçimine eklenir.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">Sonuç durumu (kasıtlı).\nYapılışı: ある, fiilin て biçimine eklenir.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. Konuşandan uzaklaşan eylem.\n2. Geleceğe doğru süren bir değişimi belirtir.\nYapılışı: いく, fiilin て biçimine eklenir.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. Konuşana doğru yönelen eylem.\n2. Şu ana kadar süregelen bir değişimi belirtir.\n3. Bir sürecin başlangıcı.\nYapılışı: くる, fiilin て biçimine eklenir.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">Görünüşe göre …değil; …gibi görünmüyor\nYapılışı: ない, なさそう olur.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">Bir şey yaparken.\nYapılışı: ながら, fiilin bağlama biçimine (連用形) eklenir.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">Konuşanın başka birinin eylemine karşı küçümsemesini veya öfkesini anlatır.\nYapılışı: やがる, fiilin bağlama biçimine (連用形) eklenir.</string>
+</resources>

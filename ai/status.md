@@ -470,8 +470,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ### 2026-10-01 (translation audit)
 
-- Owner's request 27. Completeness: every key in every locale and module, format arguments and plural categories
-  match (`TranslationsTest`). Then every string of all 13 translations read against English; about 250 strings
+- Owner's request 27. Completeness: every key of the four UI string modules in every locale, format arguments and
+  plural categories match (`TranslationsTest`). Then every string of all 13 translations read against English; about 250 strings
   rewritten where they were literal, ambiguous or inconsistent. Conventions and shared terms:
   `notes/translations.md`.
 - Bug found and fixed: four ⓘ texts written over several lines in the XML lost their paragraph breaks (aapt2 turns a
@@ -484,3 +484,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   says "kanji of the word", as the setting does.
 - Build, unit tests and lint clean (lint's Typos warning on Turkish "ayrı ayrı" is correct Turkish). Checked on the
   emulator in Japanese: the app-text-only ⓘ shows its two paragraphs. App language set back to system.
+- `/code-review xhigh --fix` of that commit: the popup's Japanese inflection names (20) and descriptions (70) in
+  `dictionary/engine-hoshidicts` existed only in English and Russian, and `TranslationsTest` did not look at that
+  module. Translated into the other 12 languages with each language's school terms for the conjugation bases;
+  `TranslationsTest` now finds every string file of every module (checked: removing a locale's file fails it).
+  Owner's remark: request 27 meant a side check whenever strings are added; a review checks the code first.

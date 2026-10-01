@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_ja.xml (GPL-3.0, like the original). -->
+<resources>
+    <!-- -ば -->
+    <string name="inflection_ja_ba">1. Forma warunkowa: spełnienie warunku z pierwszej części jest warunkiem tego, co następuje po nim.\n2. Wskazuje bodziec dla następującego po nim spostrzeżenia lub oceny.\nTworzenie: ば dodaje się do formy hipotetycznej (仮定形) czasowników i przymiotników -i.</string>
+    <!-- -ゃ -->
+    <string name="inflection_ja_ya">Ściągnięcie -ば.</string>
+    <!-- -ちゃ -->
+    <string name="inflection_ja_cha">Ściągnięcie ～ては.\n1. Wyjaśnia, że przy danym warunku coś zawsze się dzieje.\n2. Wyraża powtarzanie się czynności (lub ich serii).\n3. Wskazuje hipotetyczną sytuację, w której mówiący (negatywnie) ocenia zamiary rozmówcy.\n4. Używane w zakazach, np. ～てはいけない.\nTworzenie: は dodaje się do formy て czasownika, a ては ściąga się do ちゃ.</string>
+    <!-- -ちゃう -->
+    <string name="inflection_ja_chau">Ściągnięcie -しまう.\n1. Wyraża żal lub zaskoczenie: czynność była zamierzona, ale skończyła się źle.\n2. Wyraża dokonanie: czynność została doprowadzona do końca.\n3. Wyraża czynność mimowolną („niechcący”).\nTworzenie: しまう dodaje się do formy て czasownika, a てしまう ściąga się do ちゃう.</string>
+    <!-- -ちまう -->
+    <string name="inflection_ja_chimau">Ściągnięcie -しまう.\n1. Wyraża żal lub zaskoczenie: czynność była zamierzona, ale skończyła się źle.\n2. Wyraża dokonanie: czynność została doprowadzona do końca.\n3. Wyraża czynność mimowolną („niechcący”).\nTworzenie: しまう dodaje się do formy て czasownika, a てしまう ściąga się do ちまう.</string>
+    <!-- -しまう -->
+    <string name="inflection_ja_shimau">1. Wyraża żal lub zaskoczenie: czynność była zamierzona, ale skończyła się źle.\n2. Wyraża dokonanie: czynność została doprowadzona do końca.\n3. Wyraża czynność mimowolną („niechcący”).\nTworzenie: しまう dodaje się do formy て czasownika.</string>
+    <!-- -なさい -->
+    <string name="inflection_ja_nasai">Uprzejmy przyrostek trybu rozkazującego.\nTworzenie: なさい dodaje się do formy łączącej (連用形) czasownika.</string>
+    <!-- -そう -->
+    <string name="inflection_ja_sou">Wygląda na to, że…; wydaje się…\nTworzenie: そう dodaje się do formy łączącej (連用形) czasowników lub do rdzenia przymiotników.</string>
+    <!-- -すぎる -->
+    <string name="inflection_ja_sugiru">Wskazuje, że coś jest „zbyt…” albo że ktoś robi coś „za bardzo”.\nTworzenie: すぎる dodaje się do formy łączącej (連用形) czasowników lub do rdzenia przymiotników.</string>
+    <!-- -過ぎる -->
+    <string name="inflection_ja_sugigiru_kanji">Wskazuje, że coś jest „zbyt…” albo że ktoś robi coś „za bardzo”.\nTworzenie: すぎる dodaje się do formy łączącej (連用形) czasowników lub do rdzenia przymiotników.</string>
+    <!-- -たい -->
+    <string name="inflection_ja_tai">1. Wyraża pragnienie lub nadzieję.\n2. Używane w …たいと思います, pośrednim sposobie powiedzenia, co mówiący zamierza zrobić.\nTworzenie: たい dodaje się do formy łączącej (連用形) czasownika. たい odmienia się jak przymiotnik -i.</string>
+    <!-- -たら -->
+    <string name="inflection_ja_tara">1. Wskazuje, że zdarzenie z drugiej części następuje po tym z pierwszej.\n2. Zakłada, że coś zostało już zrobione lub załatwione.\nTworzenie: たら dodaje się do formy łączącej (連用形) czasowników po zmianie eufonicznej, かったら do rdzenia przymiotników -i.</string>
+    <!-- -たり -->
+    <string name="inflection_ja_tari">1. Wskazuje dwie czynności wykonywane na przemian (z dwoma czasownikami).\n2. Podaje przykłady czynności i stanów (z kilkoma czasownikami i przymiotnikami).\nTworzenie: たり dodaje się do formy łączącej (連用形) czasowników po zmianie eufonicznej, かったり do rdzenia przymiotników -i.</string>
+    <!-- -て -->
+    <string name="inflection_ja_te">Forma て.\nMa bardzo wiele znaczeń. Przede wszystkim jest partykułą łączącą dwa zdania składowe.\nTworzenie: て dodaje się do formy łączącej (連用形) czasowników po zmianie eufonicznej, くて do rdzenia przymiotników -i.</string>
+    <!-- -ず -->
+    <string name="inflection_ja_zu">1. Przecząca forma czasowników.\n2. Forma łącząca (連用形) partykuły ぬ (nu).\nTworzenie: ず dodaje się do formy nierealnej (未然形) czasownika.</string>
+    <!-- -ぬ -->
+    <string name="inflection_ja_nu">Przecząca forma czasowników.\nTworzenie: ぬ dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せぬ</string>
+    <!-- -ん -->
+    <string name="inflection_ja_n">Przecząca forma czasowników; zmiana brzmienia ぬ.\nTworzenie: ん dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せん</string>
+    <!-- -んばかり -->
+    <string name="inflection_ja_nbakari">Wskazuje, że czynność lub stan zaraz nastąpi, albo nadmierny, skrajny stopień.\nTworzenie: んばかり dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せんばかり</string>
+    <!-- -んとする -->
+    <string name="inflection_ja_ntosuru">1. Wyraża wolę lub zamiar mówiącego.\n2. Wskazuje, że czynność lub stan zaraz nastąpi.\nTworzenie: んとする dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せんとする</string>
+    <!-- -む -->
+    <string name="inflection_ja_mu">Archaiczne.\n1. Wyraża przypuszczenie.\n2. Wyraża zamiar mówiącego.\nTworzenie: む dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せむ</string>
+    <!-- -ざる -->
+    <string name="inflection_ja_zaru">Przecząca forma czasowników.\nTworzenie: ざる dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せざる</string>
+    <!-- -ねば -->
+    <string name="inflection_ja_neba">1. Przeczenie hipotetyczne: jeśli nie…\n2. Wyraża konieczność. Używane z ならぬ lub bez.\nTworzenie: ねば dodaje się do formy nierealnej (未然形) czasownika.\nする zmienia się w せねば</string>
+    <!-- -く -->
+    <string name="inflection_ja_ku">Przysłówkowa forma przymiotników -i.</string>
+    <!-- causative -->
+    <string name="inflection_ja_causative_label">kauzatyw</string>
+    <string name="inflection_ja_causative">Opisuje zamiar sprawienia, by ktoś coś zrobił.\nTworzenie: させる dodaje się do formy nierealnej (未然形) czasowników ichidan i くる.\nせる dodaje się do formy nierealnej (未然形) czasowników godan i する.\nTa forma odmienia się jak czasownik ichidan.</string>
+    <!-- short causative -->
+    <string name="inflection_ja_short_causative_label">krótki kauzatyw</string>
+    <string name="inflection_ja_short_causative">Ściągnięcie formy kauzatywnej.\nOpisuje zamiar sprawienia, by ktoś coś zrobił.\nTworzenie: す dodaje się do formy nierealnej (未然形) czasowników godan.\nさす dodaje się do formy słownikowej (終止形) czasowników ichidan.\nする zmienia się w さす, くる w こさす.\nTa forma odmienia się jak czasownik godan.</string>
+    <!-- imperative -->
+    <string name="inflection_ja_imperative_label">tryb rozkazujący</string>
+    <string name="inflection_ja_imperative">1. Wydaje polecenie.\n2. (Jako あれ) Wyraża, że coś nie zmieni się w żadnych okolicznościach.\n3. Wyraża nadzieję.</string>
+    <!-- continuative -->
+    <string name="inflection_ja_continuative_label">forma łącząca</string>
+    <string name="inflection_ja_continuative">Wskazuje czynności, które są (lub były) wykonywane.\nOdnosi się do 連用形: części czasownika, która zostaje po odmianie z -ます i odrzuceniu ます.</string>
+    <!-- negative -->
+    <string name="inflection_ja_negative_label">przeczenie</string>
+    <string name="inflection_ja_negative">1. Przecząca forma czasowników.\n2. Wyraża zaproszenie lub zachętę skierowaną do rozmówcy.\nTworzenie: ない dodaje się do formy nierealnej (未然形) czasowników, くない do rdzenia przymiotników -i. ない odmienia się jak przymiotnik -i. ます zmienia się w ません.</string>
+    <!-- -さ -->
+    <string name="inflection_ja_sa">Przyrostek, który zmienia przymiotniki -i w rzeczowniki oznaczające cechę, stan, uczucie lub stopień.\nTworzenie: さ dodaje się do rdzenia przymiotników -i.</string>
+    <!-- passive -->
+    <string name="inflection_ja_passive_label">strona bierna</string>
+    <string name="inflection_ja_passive">1. Wskazuje czynność doznawaną od jej wykonawcy.\n2. Wyraża szacunek wobec wykonawcy czynności.\nTworzenie: れる dodaje się do formy nierealnej (未然形) czasowników godan.</string>
+    <!-- -た -->
+    <string name="inflection_ja_ta">1. Wskazuje coś, co wydarzyło się w przeszłości.\n2. Wskazuje zakończenie czynności.\n3. Wskazuje potwierdzenie faktu.\n4. Wskazuje pewność mówiącego, że czynność się dokona.\n5. Przedstawia zdarzenia poprzedzające zdanie główne jako przeszłość względną.\n6. Wskazuje złagodzone polecenie.\nTworzenie: た dodaje się do formy łączącej (連用形) czasowników po zmianie eufonicznej, かった do rdzenia przymiotników -i.</string>
+    <!-- -ます -->
+    <string name="inflection_ja_masu">Uprzejma odmiana czasowników i przymiotników.\nTworzenie: ます dodaje się do formy łączącej (連用形) czasownika.</string>
+    <!-- potential -->
+    <string name="inflection_ja_potential_label">forma możliwości</string>
+    <string name="inflection_ja_potential">Wskazuje (naturalną) zdolność do wykonania czynności.\nTworzenie: (ら)れる dodaje się do formy nierealnej (未然形) czasowników ichidan.\nる dodaje się do formy rozkazującej (命令形) czasowników godan.\nする zmienia się w できる, くる w こ(ら)れる</string>
+    <!-- potential or passive -->
+    <string name="inflection_ja_potential_or_passive_label">możliwość lub strona bierna</string>
+    <string name="inflection_ja_potential_or_passive">1. Wskazuje czynność doznawaną od jej wykonawcy.\n2. Wyraża szacunek wobec wykonawcy czynności.\n3. Wskazuje (naturalną) zdolność do wykonania czynności.\nTworzenie: られる dodaje się do formy nierealnej (未然形) czasowników ichidan.\nする zmienia się w せられる, くる w こられる</string>
+    <!-- volitional -->
+    <string name="inflection_ja_volitional_label">forma wolitywna</string>
+    <string name="inflection_ja_volitional">1. Wyraża wolę lub zamiar mówiącego.\n2. Wyraża zaproszenie skierowane do rozmówcy.\n3. (W …ようとする) Wskazuje, że czynność zaraz się zacznie lub stan zaraz się zmieni.\n4. Wyraża przypuszczenie.\nTworzenie: よう dodaje się do formy nierealnej (未然形) czasowników ichidan.\nう dodaje się do formy nierealnej (未然形) czasowników godan po zmianie eufonicznej na -o.\nかろう dodaje się do rdzenia przymiotników -i (tylko 4. znaczenie).</string>
+    <!-- volitional slang -->
+    <string name="inflection_ja_volitional_slang_label">forma wolitywna (potoczna)</string>
+    <string name="inflection_ja_volitional_slang">Ściągnięcie formy wolitywnej + か\n1. Wyraża wolę lub zamiar mówiącego.\n2. Wyraża zaproszenie skierowane do rozmówcy.\nTworzenie: końcowe う formy wolitywnej zmienia się w っ, a potem dodaje się か.\nNa przykład: 行こうか → 行こっか.</string>
+    <!-- -まい -->
+    <string name="inflection_ja_mai">Przecząca forma wolitywna czasowników.\n1. Wyraża przypuszczenie mówiącego, że coś raczej nie jest prawdą.\n2. Wyraża wolę lub zamiar mówiącego, by czegoś nie robić.\nTworzenie: まい dodaje się do formy słownikowej (終止形) czasownika.\nまい dodaje się do formy nierealnej (未然形) czasowników ichidan.\nする zmienia się w しまい, くる w こまい</string>
+    <!-- -おく -->
+    <string name="inflection_ja_oku">Zrobić coś zawczasu, przygotowując się na (lub przewidując) późniejsze potrzeby.\nTworzenie: おく dodaje się do formy て czasownika.\nでおく dodaje się do przeczącej formy ない czasownika.\nW mowie ściąga się do とく・どく.</string>
+    <!-- -いる -->
+    <string name="inflection_ja_iru">1. Wskazuje, że czynność trwa lub trwała do pewnego momentu.\n2. Wskazuje, że czynność została zakończona, a jej skutek trwa.\n3. Wskazuje stan, który można uznać za wynik jakiejś zmiany.\nTworzenie: いる dodaje się do formy て czasownika. W mowie い może odpaść.\nでいる dodaje się do przeczącej formy ない czasownika.\n(Potocznie) おる dodaje się do formy て czasownika. W mowie ściąga się do とる・でる.</string>
+    <!-- -き -->
+    <string name="inflection_ja_ki">Forma przydawkowa (連体形) przymiotników -i. Archaiczna forma, która przetrwała we współczesnym japońskim.</string>
+    <!-- -げ -->
+    <string name="inflection_ja_ge">Opisuje wygląd osoby. Pokazuje jej uczucia.\nTworzenie: げ lub 気 dodaje się do rdzenia przymiotników -i</string>
+    <!-- -がる -->
+    <string name="inflection_ja_garu">1. Wskazuje, że uczucia podmiotu kontrastują z tym, co się o nim myśli lub wie.\n2. Wskazuje (widoczne) zachowanie podmiotu.\nTworzenie: がる dodaje się do rdzenia przymiotników -i. Ta forma odmienia się jak czasownik godan.</string>
+    <!-- -え -->
+    <string name="inflection_ja_e">Slang. Zmiana brzmienia przymiotników -i.\nai：やばい → やべぇ\nui：さむい → さみぃ/さめぇ\noi：すごい → すげぇ</string>
+    <!-- n-slang -->
+    <string name="inflection_ja_n_slang_label">ん (potoczne)</string>
+    <!-- imperative negative slang -->
+    <string name="inflection_ja_imperative_negative_slang_label">zakaz (potoczny)</string>
+    <!-- kansai-ben negative -->
+    <string name="inflection_ja_kansai_ben_negative_label">kansai-ben: przeczenie</string>
+    <string name="inflection_ja_kansai_ben_negative">Przecząca forma czasowników w kansai-ben</string>
+    <!-- kansai-ben -て -->
+    <string name="inflection_ja_kansai_ben_te_label">kansai-ben -て</string>
+    <string name="inflection_ja_kansai_ben_te">Forma -て czasowników w kansai-ben</string>
+    <!-- kansai-ben -た -->
+    <string name="inflection_ja_kansai_ben_ta_label">kansai-ben -た</string>
+    <string name="inflection_ja_kansai_ben_ta">Forma -た w kansai-ben</string>
+    <!-- kansai-ben -たら -->
+    <string name="inflection_ja_kansai_ben_tara_label">kansai-ben -たら</string>
+    <string name="inflection_ja_kansai_ben_tara">Forma -たら w kansai-ben</string>
+    <!-- kansai-ben -たり -->
+    <string name="inflection_ja_kansai_ben_tari_label">kansai-ben -たり</string>
+    <string name="inflection_ja_kansai_ben_tari">Forma -たり w kansai-ben</string>
+    <!-- kansai-ben -く -->
+    <string name="inflection_ja_kansai_ben_ku_label">kansai-ben -く</string>
+    <string name="inflection_ja_kansai_ben_ku">Rdzeń -く przymiotników w kansai-ben</string>
+    <!-- kansai-ben adjective -て -->
+    <string name="inflection_ja_kansai_ben_adjective_te_label">kansai-ben: przym. -て</string>
+    <string name="inflection_ja_kansai_ben_adjective_te">Forma -て przymiotników w kansai-ben</string>
+    <!-- kansai-ben adjective negative -->
+    <string name="inflection_ja_kansai_ben_adjective_negative_label">kansai-ben: przym. przeczenie</string>
+    <string name="inflection_ja_kansai_ben_adjective_negative">Przecząca forma przymiotników w kansai-ben</string>
+    <!-- -ましゅ -->
+    <string name="inflection_ja_mashu">Uprzejme (dziecięce).\nTworzenie: ます zmienia się w ましゅ.</string>
+    <!-- -ください -->
+    <string name="inflection_ja_kudasai">Uprzejma prośba.\nTworzenie: ください dodaje się do formy て czasownika.</string>
+    <!-- -くださる -->
+    <string name="inflection_ja_kudasaru">Zrobić coś dla mówiącego (z szacunkiem).\nTworzenie: くださる dodaje się do formy て czasownika.</string>
+    <!-- -ごらん -->
+    <string name="inflection_ja_goran">Zachęcić kogoś, by spróbował coś zrobić.\nTworzenie: ごらん dodaje się do formy て czasownika.</string>
+    <!-- -ごらんなさい -->
+    <string name="inflection_ja_gorannasai">Uprzejmie polecić komuś, by spróbował coś zrobić.\nTworzenie: ごらんなさい dodaje się do formy て czasownika.</string>
+    <!-- -いただく -->
+    <string name="inflection_ja_itadaku">Otrzymać od kogoś przysługę w postaci czynności (z szacunkiem).\nTworzenie: いただく dodaje się do formy て czasownika.</string>
+    <!-- -あげる -->
+    <string name="inflection_ja_ageru">Zrobić coś dla kogoś.\nTworzenie: あげる dodaje się do formy て czasownika.</string>
+    <!-- -くれる -->
+    <string name="inflection_ja_kureru">Zrobić coś dla mnie lub dla nas.\nTworzenie: くれる dodaje się do formy て czasownika.</string>
+    <!-- -もらう -->
+    <string name="inflection_ja_morau">Otrzymać od kogoś przysługę w postaci czynności.\nTworzenie: もらう dodaje się do formy て czasownika.</string>
+    <!-- -やる -->
+    <string name="inflection_ja_yaru">Zrobić coś dla kogoś (nieformalnie).\nTworzenie: やる dodaje się do formy て czasownika.</string>
+    <!-- -さしあげる -->
+    <string name="inflection_ja_sashiageru">Zrobić coś dla kogoś (skromnie).\nTworzenie: さしあげる dodaje się do formy て czasownika.</string>
+    <!-- -みる -->
+    <string name="inflection_ja_miru">Spróbować coś zrobić.\nTworzenie: みる dodaje się do formy て czasownika.</string>
+    <!-- -みせる -->
+    <string name="inflection_ja_miseru">Pokazać komuś czynność.\nTworzenie: みせる dodaje się do formy て czasownika.</string>
+    <!-- -ある -->
+    <string name="inflection_ja_aru">Stan wynikowy (zamierzony).\nTworzenie: ある dodaje się do formy て czasownika.</string>
+    <!-- -いく -->
+    <string name="inflection_ja_iku">1. Czynność oddalająca się od mówiącego.\n2. Wskazuje zmianę, która trwa w przyszłość.\nTworzenie: いく dodaje się do formy て czasownika.</string>
+    <!-- -くる -->
+    <string name="inflection_ja_kuru">1. Czynność skierowana ku mówiącemu.\n2. Wskazuje trwającą zmianę, która dochodzi do chwili obecnej.\n3. Początek procesu.\nTworzenie: くる dodaje się do formy て czasownika.</string>
+    <!-- -なさそう -->
+    <string name="inflection_ja_nasasou">Wygląda na to, że nie…; nie wydaje się…\nTworzenie: ない zmienia się w なさそう.</string>
+    <!-- -ながら -->
+    <string name="inflection_ja_nagara">Robiąc jednocześnie coś innego.\nTworzenie: ながら dodaje się do formy łączącej (連用形) czasownika.</string>
+    <!-- -やがる -->
+    <string name="inflection_ja_yagaru">Wyraża pogardę lub złość mówiącego wobec czynności kogoś innego.\nTworzenie: やがる dodaje się do formy łączącej (連用形) czasownika.</string>
+</resources>
