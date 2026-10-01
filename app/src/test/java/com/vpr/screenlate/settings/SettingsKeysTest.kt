@@ -10,7 +10,7 @@ class SettingsKeysTest {
         SettingsSection.BUBBLE to listOf(
             "overlay_bubble_visible", "overlay_dock_side", "overlay_dock_y", "overlay_aim_mode", "overlay_highlight_word",
             "overlay_haptics", "overlay_hidden_packages", "overlay_text_source", "overlay_bubble_size_dp",
-            "overlay_small_text", "overlay_show_source_text", "overlay_ocr_engines", "overlay_ocr_saving",
+            "overlay_small_text", "overlay_ocr_engines", "overlay_ocr_saving",
             "e_ink_bubble_before", "e_ink_bubble_after",
         ),
         SettingsSection.BACKGROUND to listOf("overlay_keep_alive"),
@@ -18,7 +18,8 @@ class SettingsKeysTest {
         SettingsSection.ANKI to listOf("anki_settings", "audio_settings", "audio_sources_chosen"),
         SettingsSection.POPUP to listOf(
             "popup_font", "popup_font_all_text", "popup_font_size", "popup_text_weight", "popup_letter_thickness",
-            "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "e_ink_font_before", "e_ink_font_after",
+            "popup_custom_css", "popup_copy_definitions", "popup_copy_mode", "overlay_show_source_text", "e_ink_font_before",
+            "e_ink_font_after",
         ),
         SettingsSection.APPEARANCE to listOf("theme_mode", "theme_colors", "e_ink"),
     )

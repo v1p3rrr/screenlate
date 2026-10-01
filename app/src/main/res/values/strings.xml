@@ -181,7 +181,7 @@
     <string name="settings_lookup_summary">Scan length, results, romaji, kanji of the word</string>
     <string name="appearance_title">Appearance</string>
     <string name="settings_appearance_summary">Theme, colors, e-ink, language</string>
-    <string name="settings_popup_summary">Font, text size and weight, CSS, definition copying</string>
+    <string name="settings_popup_summary">Recognized text, font, text size and weight, CSS, definition copying</string>
     <string name="yomitan_import_title">Import from Yomitan</string>
     <string name="settings_yomitan_summary">Settings and dictionaries from Yomitan</string>
     <string name="about_title">About</string>
@@ -293,8 +293,8 @@
     <string name="yomitan_collection_hint">Installed dictionaries start unchecked; a checked one replaces the installed copy. Large files take a few minutes.</string>
     <string name="yomitan_collection_import">Import %1$d</string>
     <string name="yomitan_collection_queued">Importing %1$d dictionaries in the background; the Dictionaries screen shows the progress.</string>
-    <string name="bubble_show_source">Show the recognized text above the entries</string>
-    <string name="bubble_show_source_hint">Off: the popup starts right with the entry, and ✕ sits next to its buttons.</string>
+    <string name="popup_show_source">Show the recognized text above the entries</string>
+    <string name="popup_show_source_hint">Off: the popup starts right with the entry, and ✕ sits next to its buttons.</string>
     <string name="popup_font_title">Popup font</string>
     <string name="popup_font_hint">Used by the popup and the search page.</string>
     <string name="popup_font_system">Phone\'s Japanese font</string>
@@ -324,7 +324,7 @@
     <string name="popup_font_web_font">This is a web font (.woff or .woff2), which cannot be added. Convert it to .ttf or .otf first.</string>
     <string name="popup_font_import_failed">The file could not be added. Try again, or check that the phone has free space.</string>
     <string name="popup_settings_title">Popup</string>
-    <string name="popup_copy_title">Definition copying</string>
+    <string name="popup_content_title">What the popup shows</string>
     <string name="popup_copy_switch">Copy button next to dictionary names</string>
     <string name="popup_copy_switch_hint">In the popup and search, a button next to each dictionary’s name copies its definitions for the entry.</string>
     <string name="popup_copy_mode_all">Everything</string>

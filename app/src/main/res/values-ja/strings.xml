@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
     <string name="settings_appearance_summary">テーマ、カラー、E Ink、言語</string>
-    <string name="settings_popup_summary">フォント、文字サイズと太さ、CSS、定義のコピー</string>
+    <string name="settings_popup_summary">認識したテキスト、フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="yomitan_import_title">Yomitan からインポート</string>
     <string name="settings_yomitan_summary">Yomitan の設定と辞書</string>
     <string name="about_title">アプリについて</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">インストール済みの辞書は最初はチェックされていません。チェックするとインストール済みのものを置き換えます。大きなファイルは数分かかります。</string>
     <string name="yomitan_collection_import">%1$d 個をインポート</string>
     <string name="yomitan_collection_queued">%1$d 個の辞書をバックグラウンドでインポート中です。進捗は辞書画面に表示されます。</string>
-    <string name="bubble_show_source">認識したテキストを項目の上に表示</string>
-    <string name="bubble_show_source_hint">オフ：ポップアップは項目から直接始まり、✕ は項目のボタンの横に置かれます。</string>
+    <string name="popup_show_source">認識したテキストを項目の上に表示</string>
+    <string name="popup_show_source_hint">オフ：ポップアップは項目から直接始まり、✕ は項目のボタンの横に置かれます。</string>
     <string name="popup_font_title">ポップアップのフォント</string>
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">これは Web フォント（.woff または .woff2）なので追加できません。先に .ttf か .otf に変換してください。</string>
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
     <string name="popup_settings_title">ポップアップ</string>
-    <string name="popup_copy_title">定義のコピー</string>
+    <string name="popup_content_title">ポップアップに表示する内容</string>
     <string name="popup_copy_switch">辞書名の横にコピーボタン</string>
     <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
     <string name="popup_copy_mode_all">すべて</string>

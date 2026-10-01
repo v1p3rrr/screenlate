@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, kanji của từ</string>
     <string name="appearance_title">Hiển thị</string>
     <string name="settings_appearance_summary">Giao diện, màu sắc, e-ink, ngôn ngữ</string>
-    <string name="settings_popup_summary">Phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
+    <string name="settings_popup_summary">Văn bản nhận dạng, phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
     <string name="yomitan_import_title">Nhập từ Yomitan</string>
     <string name="settings_yomitan_summary">Cài đặt và từ điển từ Yomitan</string>
     <string name="about_title">Giới thiệu</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Từ điển đã cài ban đầu không được chọn; từ điển được chọn sẽ thay thế bản đã cài. Tệp lớn mất vài phút.</string>
     <string name="yomitan_collection_import">Nhập %1$d</string>
     <string name="yomitan_collection_queued">Đang nhập %1$d từ điển trong nền; màn hình Từ điển hiển thị tiến độ.</string>
-    <string name="bubble_show_source">Hiện văn bản nhận dạng được phía trên các mục</string>
-    <string name="bubble_show_source_hint">Tắt: cửa sổ bật lên bắt đầu ngay với mục từ, và ✕ nằm cạnh các nút của mục đó.</string>
+    <string name="popup_show_source">Hiện văn bản nhận dạng được phía trên các mục</string>
+    <string name="popup_show_source_hint">Tắt: cửa sổ bật lên bắt đầu ngay với mục từ, và ✕ nằm cạnh các nút của mục đó.</string>
     <string name="popup_font_title">Phông chữ cửa sổ bật lên</string>
     <string name="popup_font_hint">Dùng cho cửa sổ bật lên và trang tìm kiếm.</string>
     <string name="popup_font_system">Phông chữ tiếng Nhật của điện thoại</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Đây là phông web (.woff hoặc .woff2) nên không thể thêm. Hãy chuyển nó sang .ttf hoặc .otf trước.</string>
     <string name="popup_font_import_failed">Không thể thêm tệp. Hãy thử lại hoặc kiểm tra dung lượng trống trên điện thoại.</string>
     <string name="popup_settings_title">Cửa sổ bật lên</string>
-    <string name="popup_copy_title">Sao chép định nghĩa</string>
+    <string name="popup_content_title">Nội dung hiển thị trong cửa sổ bật lên</string>
     <string name="popup_copy_switch">Nút sao chép cạnh tên từ điển</string>
     <string name="popup_copy_switch_hint">Trong cửa sổ bật lên và tìm kiếm, nút cạnh tên mỗi từ điển sẽ sao chép định nghĩa của từ điển đó cho mục từ.</string>
     <string name="popup_copy_mode_all">Tất cả</string>

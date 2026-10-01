@@ -22,10 +22,14 @@ import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
-/** The lookup page (popup and search): its font, text size and weight, custom CSS, and definition copying. */
+/**
+ * The lookup page (popup and search): what the popup shows (the recognized text, definition copying), its font, text
+ * size and weight, and custom CSS.
+ */
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
+    val showSourceText by viewModel.showSourceText.collectAsStateWithLifecycle()
     SettingsScaffold(
         stringResource(R.string.popup_settings_title),
         onBack,
@@ -39,15 +43,21 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            appearance?.let { current -> showSourceText?.let { PopupContentCard(current, it, viewModel) } }
             PopupTextSections(viewModel)
-            appearance?.let { DefinitionCopyCard(it, viewModel) }
         }
     }
 }
 
 @Composable
-private fun DefinitionCopyCard(appearance: PopupAppearance, viewModel: PopupAppearanceViewModel) {
-    SectionCard(title = stringResource(R.string.popup_copy_title)) {
+private fun PopupContentCard(appearance: PopupAppearance, showSourceText: Boolean, viewModel: PopupAppearanceViewModel) {
+    SectionCard(title = stringResource(R.string.popup_content_title)) {
+        SwitchRow(
+            label = stringResource(R.string.popup_show_source),
+            checked = showSourceText,
+            onChange = viewModel::setShowSourceText,
+            hint = stringResource(R.string.popup_show_source_hint),
+        )
         SwitchRow(
             label = stringResource(R.string.popup_copy_switch),
             checked = appearance.copyDefinitions,

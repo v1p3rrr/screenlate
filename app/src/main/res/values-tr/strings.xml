@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
     <string name="appearance_title">Görünüm</string>
     <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
-    <string name="settings_popup_summary">Yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
+    <string name="settings_popup_summary">Tanınan metin, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
     <string name="about_title">Hakkında</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Yüklü sözlükler işaretsiz başlar; işaretlenen, yüklü kopyanın yerini alır. Büyük dosyalar birkaç dakika sürer.</string>
     <string name="yomitan_collection_import">%1$d sözlüğü içe aktar</string>
     <string name="yomitan_collection_queued">%1$d sözlük arka planda içe aktarılıyor; ilerleme Sözlükler ekranında görünür.</string>
-    <string name="bubble_show_source">Tanınan metni maddelerin üstünde göster</string>
-    <string name="bubble_show_source_hint">Kapalı: açılır pencere doğrudan maddeyle başlar ve ✕ onun düğmelerinin yanında durur.</string>
+    <string name="popup_show_source">Tanınan metni maddelerin üstünde göster</string>
+    <string name="popup_show_source_hint">Kapalı: açılır pencere doğrudan maddeyle başlar ve ✕ onun düğmelerinin yanında durur.</string>
     <string name="popup_font_title">Açılır pencere yazı tipi</string>
     <string name="popup_font_hint">Açılır pencere ve arama sayfası tarafından kullanılır.</string>
     <string name="popup_font_system">Telefonun Japonca yazı tipi</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Bu bir web yazı tipi (.woff veya .woff2) ve eklenemez. Önce .ttf veya .otf biçimine dönüştürün.</string>
     <string name="popup_font_import_failed">Dosya eklenemedi. Yeniden deneyin veya telefonda boş alan olup olmadığını kontrol edin.</string>
     <string name="popup_settings_title">Açılır pencere</string>
-    <string name="popup_copy_title">Tanım kopyalama</string>
+    <string name="popup_content_title">Açılır pencerede gösterilenler</string>
     <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
     <string name="popup_copy_switch_hint">Açılır pencerede ve aramada her sözlük adının yanındaki düğme, o sözlüğün girişteki tanımlarını kopyalar.</string>
     <string name="popup_copy_mode_all">Tümü</string>

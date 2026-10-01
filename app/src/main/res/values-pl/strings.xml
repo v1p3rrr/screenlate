@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, kanji słowa</string>
     <string name="appearance_title">Wygląd</string>
     <string name="settings_appearance_summary">Motyw, kolory, e-ink, język</string>
-    <string name="settings_popup_summary">Czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
+    <string name="settings_popup_summary">Rozpoznany tekst, czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
     <string name="yomitan_import_title">Import z Yomitan</string>
     <string name="settings_yomitan_summary">Ustawienia i słowniki z Yomitan</string>
     <string name="about_title">O aplikacji</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Zainstalowane słowniki są na początku odznaczone; zaznaczony zastępuje zainstalowaną kopię. Import dużych plików trwa kilka minut.</string>
     <string name="yomitan_collection_import">Importuj (%1$d)</string>
     <string name="yomitan_collection_queued">Importowanie słowników w tle (%1$d); postęp widać na ekranie Słowniki.</string>
-    <string name="bubble_show_source">Pokazuj rozpoznany tekst nad hasłami</string>
-    <string name="bubble_show_source_hint">Wyłączone: okienko zaczyna się od razu od hasła, a ✕ jest obok jego przycisków.</string>
+    <string name="popup_show_source">Pokazuj rozpoznany tekst nad hasłami</string>
+    <string name="popup_show_source_hint">Wyłączone: okienko zaczyna się od razu od hasła, a ✕ jest obok jego przycisków.</string>
     <string name="popup_font_title">Czcionka okienka</string>
     <string name="popup_font_hint">Używana przez okienko i stronę wyszukiwania.</string>
     <string name="popup_font_system">Japońska czcionka telefonu</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">To czcionka internetowa (.woff lub .woff2), której nie można dodać. Najpierw przekonwertuj ją na .ttf lub .otf.</string>
     <string name="popup_font_import_failed">Nie udało się dodać pliku. Spróbuj ponownie lub sprawdź, czy w telefonie jest wolne miejsce.</string>
     <string name="popup_settings_title">Okienko</string>
-    <string name="popup_copy_title">Kopiowanie definicji</string>
+    <string name="popup_content_title">Co pokazuje okienko</string>
     <string name="popup_copy_switch">Przycisk kopiowania przy nazwach słowników</string>
     <string name="popup_copy_switch_hint">W okienku i wyszukiwaniu przycisk przy nazwie każdego słownika kopiuje jego definicje z hasła.</string>
     <string name="popup_copy_mode_all">Wszystko</string>

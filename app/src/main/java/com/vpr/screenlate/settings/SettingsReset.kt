@@ -39,6 +39,9 @@ class SettingsReset @Inject constructor(
     }
 }
 
+/** Whether the popup starts with the recognized text: set on the Popup page, kept under its old bubble key. */
+const val SHOW_SOURCE_TEXT_KEY = "overlay_show_source_text"
+
 /** Which reset clears a stored preference key. */
 object SettingsKeys {
     /** Kept in the settings file but changed only on the About page or once by the app itself. */
@@ -53,6 +56,7 @@ object SettingsKeys {
     /** The page a key belongs to; null for keys no page resets. */
     fun sectionOf(key: String): SettingsSection? = when {
         key == "overlay_keep_alive" -> SettingsSection.BACKGROUND
+        key == SHOW_SOURCE_TEXT_KEY -> SettingsSection.POPUP
         key.startsWith("overlay_") -> SettingsSection.BUBBLE
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
         key == "anki_settings" || key.startsWith("audio_") -> SettingsSection.ANKI

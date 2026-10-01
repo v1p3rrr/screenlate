@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Longitud de análisis, resultados, romaji, kanji de la palabra</string>
     <string name="appearance_title">Apariencia</string>
     <string name="settings_appearance_summary">Tema, colores, e-ink, idioma</string>
-    <string name="settings_popup_summary">Fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
+    <string name="settings_popup_summary">Texto reconocido, fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
     <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
     <string name="about_title">Acerca de</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Los diccionarios instalados empiezan sin marcar; uno marcado reemplaza la copia instalada. Los archivos grandes tardan unos minutos.</string>
     <string name="yomitan_collection_import">Importar %1$d</string>
     <string name="yomitan_collection_queued">Importando %1$d diccionarios en segundo plano; la pantalla Diccionarios muestra el progreso.</string>
-    <string name="bubble_show_source">Mostrar el texto reconocido encima de las entradas</string>
-    <string name="bubble_show_source_hint">Desactivado: la ventana emergente empieza directamente con la entrada, y ✕ queda junto a sus botones.</string>
+    <string name="popup_show_source">Mostrar el texto reconocido encima de las entradas</string>
+    <string name="popup_show_source_hint">Desactivado: la ventana emergente empieza directamente con la entrada, y ✕ queda junto a sus botones.</string>
     <string name="popup_font_title">Fuente de la ventana emergente</string>
     <string name="popup_font_hint">La usan la ventana emergente y la página de búsqueda.</string>
     <string name="popup_font_system">Fuente japonesa del teléfono</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Es una fuente web (.woff o .woff2) y no se puede añadir. Conviértela antes a .ttf u .otf.</string>
     <string name="popup_font_import_failed">No se pudo añadir el archivo. Vuelve a intentarlo o comprueba que el teléfono tenga espacio libre.</string>
     <string name="popup_settings_title">Ventana emergente</string>
-    <string name="popup_copy_title">Copia de definiciones</string>
+    <string name="popup_content_title">Qué muestra la ventana emergente</string>
     <string name="popup_copy_switch">Botón de copiar junto a los nombres de diccionarios</string>
     <string name="popup_copy_switch_hint">En la ventana emergente y en la búsqueda, un botón junto al nombre de cada diccionario copia sus definiciones de la entrada.</string>
     <string name="popup_copy_mode_all">Todo</string>

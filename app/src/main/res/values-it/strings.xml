@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Lunghezza di scansione, risultati, romaji, kanji della parola</string>
     <string name="appearance_title">Aspetto</string>
     <string name="settings_appearance_summary">Tema, colori, e-ink, lingua</string>
-    <string name="settings_popup_summary">Carattere, dimensione e peso del testo, CSS, copia delle definizioni</string>
+    <string name="settings_popup_summary">Testo riconosciuto, carattere, dimensione e peso del testo, CSS, copia delle definizioni</string>
     <string name="yomitan_import_title">Importa da Yomitan</string>
     <string name="settings_yomitan_summary">Impostazioni e dizionari da Yomitan</string>
     <string name="about_title">Informazioni</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">I dizionari installati partono non selezionati; uno selezionato sostituisce la copia installata. I file grandi richiedono qualche minuto.</string>
     <string name="yomitan_collection_import">Importa %1$d</string>
     <string name="yomitan_collection_queued">Importazione di %1$d dizionari in background; la schermata Dizionari mostra l’avanzamento.</string>
-    <string name="bubble_show_source">Mostra il testo riconosciuto sopra le voci</string>
-    <string name="bubble_show_source_hint">Disattivato: il popup inizia direttamente con la voce, e ✕ sta accanto ai suoi pulsanti.</string>
+    <string name="popup_show_source">Mostra il testo riconosciuto sopra le voci</string>
+    <string name="popup_show_source_hint">Disattivato: il popup inizia direttamente con la voce, e ✕ sta accanto ai suoi pulsanti.</string>
     <string name="popup_font_title">Carattere del popup</string>
     <string name="popup_font_hint">Usato dal popup e dalla pagina di ricerca.</string>
     <string name="popup_font_system">Carattere giapponese del telefono</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">È un carattere web (.woff o .woff2) e non si può aggiungere. Convertilo prima in .ttf o .otf.</string>
     <string name="popup_font_import_failed">Impossibile aggiungere il file. Riprova o controlla che sul telefono ci sia spazio libero.</string>
     <string name="popup_settings_title">Popup</string>
-    <string name="popup_copy_title">Copia delle definizioni</string>
+    <string name="popup_content_title">Cosa mostra il popup</string>
     <string name="popup_copy_switch">Pulsante di copia accanto ai nomi dei dizionari</string>
     <string name="popup_copy_switch_hint">Nel popup e nella ricerca, un pulsante accanto al nome di ogni dizionario ne copia le definizioni per la voce.</string>
     <string name="popup_copy_mode_all">Tutto</string>

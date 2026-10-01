@@ -714,3 +714,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   cloud scan times out (about 15 s) the ➕ turns active and ⚠ appears. A broken Anki setup (a deck or note type
   missing in AnkiDroid) takes priority over this hint, as intended. On the emulator, release and debug builds are both
   installed: Anki choices made in one do not reach the other.
+- Request 45: the switch "Show the recognized text above the entries" moved from Bubble to Popup settings, one card
+  "What the popup shows" with definition copying at the top of the page (owner's choice). The key stays
+  `overlay_show_source_text`; the Popup reset and the backup's Popup section take it. Seen on the emulator.
+- The branch `claude/elegant-allen-xmu3fx` was deleted on GitHub (fully merged).
+- Owner, 2026-10-02: audio on mobile data now works more or less.

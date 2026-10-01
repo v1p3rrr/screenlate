@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, kanji da palavra</string>
     <string name="appearance_title">Aparência</string>
     <string name="settings_appearance_summary">Tema, cores, e-ink, idioma</string>
-    <string name="settings_popup_summary">Fonte, tamanho e peso do texto, CSS, cópia de definições</string>
+    <string name="settings_popup_summary">Texto reconhecido, fonte, tamanho e peso do texto, CSS, cópia de definições</string>
     <string name="yomitan_import_title">Importar do Yomitan</string>
     <string name="settings_yomitan_summary">Configurações e dicionários do Yomitan</string>
     <string name="about_title">Sobre</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Os dicionários instalados começam desmarcados; um marcado substitui a cópia instalada. Arquivos grandes levam alguns minutos.</string>
     <string name="yomitan_collection_import">Importar %1$d</string>
     <string name="yomitan_collection_queued">Importando %1$d dicionários em segundo plano; a tela Dicionários mostra o progresso.</string>
-    <string name="bubble_show_source">Mostrar o texto reconhecido acima das entradas</string>
-    <string name="bubble_show_source_hint">Desativado: o pop-up começa direto pela entrada, e o ✕ fica ao lado dos botões dela.</string>
+    <string name="popup_show_source">Mostrar o texto reconhecido acima das entradas</string>
+    <string name="popup_show_source_hint">Desativado: o pop-up começa direto pela entrada, e o ✕ fica ao lado dos botões dela.</string>
     <string name="popup_font_title">Fonte do pop-up</string>
     <string name="popup_font_hint">Usada pelo pop-up e pela página de pesquisa.</string>
     <string name="popup_font_system">Fonte japonesa do celular</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">Esta é uma fonte web (.woff ou .woff2), que não pode ser adicionada. Converta-a antes para .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Não foi possível adicionar o arquivo. Tente de novo ou verifique se há espaço livre no celular.</string>
     <string name="popup_settings_title">Pop-up</string>
-    <string name="popup_copy_title">Cópia de definições</string>
+    <string name="popup_content_title">O que o pop-up mostra</string>
     <string name="popup_copy_switch">Botão de copiar junto aos nomes dos dicionários</string>
     <string name="popup_copy_switch_hint">No pop-up e na busca, um botão junto ao nome de cada dicionário copia as definições dele para a entrada.</string>
     <string name="popup_copy_mode_all">Tudo</string>

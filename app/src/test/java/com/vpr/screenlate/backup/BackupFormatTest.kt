@@ -21,6 +21,7 @@ class BackupFormatTest {
         assertThat(BackupPreferences.sectionOf("overlay_hidden_packages")).isEqualTo(BackupSection.BUBBLE)
         assertThat(BackupPreferences.sectionOf("lookup_scan_length")).isEqualTo(BackupSection.LOOKUP)
         assertThat(BackupPreferences.sectionOf("popup_custom_css")).isEqualTo(BackupSection.POPUP)
+        assertThat(BackupPreferences.sectionOf("overlay_show_source_text")).isEqualTo(BackupSection.POPUP)
         assertThat(BackupPreferences.sectionOf("anki_settings")).isEqualTo(BackupSection.ANKI)
         assertThat(BackupPreferences.sectionOf("audio_settings")).isEqualTo(BackupSection.AUDIO)
         listOf(

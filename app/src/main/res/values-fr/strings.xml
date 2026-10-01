@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, kanji du mot</string>
     <string name="appearance_title">Apparence</string>
     <string name="settings_appearance_summary">Thème, couleurs, e-ink, langue</string>
-    <string name="settings_popup_summary">Police, taille et graisse du texte, CSS, copie des définitions</string>
+    <string name="settings_popup_summary">Texte reconnu, police, taille et graisse du texte, CSS, copie des définitions</string>
     <string name="yomitan_import_title">Importer depuis Yomitan</string>
     <string name="settings_yomitan_summary">Paramètres et dictionnaires de Yomitan</string>
     <string name="about_title">À propos</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">Les dictionnaires installés sont décochés au départ ; un dictionnaire coché remplace la copie installée. Les gros fichiers prennent quelques minutes.</string>
     <string name="yomitan_collection_import">Importer %1$d</string>
     <string name="yomitan_collection_queued">Import de %1$d dictionnaires en arrière-plan ; l’écran Dictionnaires affiche la progression.</string>
-    <string name="bubble_show_source">Afficher le texte reconnu au-dessus des entrées</string>
-    <string name="bubble_show_source_hint">Désactivé : la fenêtre contextuelle commence directement par l’entrée, et ✕ se place à côté de ses boutons.</string>
+    <string name="popup_show_source">Afficher le texte reconnu au-dessus des entrées</string>
+    <string name="popup_show_source_hint">Désactivé : la fenêtre contextuelle commence directement par l’entrée, et ✕ se place à côté de ses boutons.</string>
     <string name="popup_font_title">Police de la fenêtre contextuelle</string>
     <string name="popup_font_hint">Utilisée par la fenêtre contextuelle et la page de recherche.</string>
     <string name="popup_font_system">Police japonaise du téléphone</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">C’est une police web (.woff ou .woff2), qui ne peut pas être ajoutée. Convertissez-la d’abord en .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Impossible d’ajouter le fichier. Réessayez, ou vérifiez qu’il reste de l’espace sur le téléphone.</string>
     <string name="popup_settings_title">Fenêtre contextuelle</string>
-    <string name="popup_copy_title">Copie des définitions</string>
+    <string name="popup_content_title">Contenu de la fenêtre contextuelle</string>
     <string name="popup_copy_switch">Bouton de copie près des noms de dictionnaires</string>
     <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
     <string name="popup_copy_mode_all">Tout</string>

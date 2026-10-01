@@ -18,6 +18,7 @@ import com.vpr.screenlate.overlay.fonts.PopupFonts
 import com.vpr.screenlate.overlay.fonts.SystemFontFiles
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
 import com.vpr.screenlate.overlay.settings.PopupAppearance
+import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -39,7 +40,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Font, text size and weight, custom CSS, and definition copying of the lookup page. */
+/**
+ * Font, text size and weight, custom CSS, and definition copying of the lookup page, and whether the popup starts with
+ * the recognized text.
+ */
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class PopupAppearanceViewModel @Inject constructor(
@@ -47,9 +51,15 @@ class PopupAppearanceViewModel @Inject constructor(
     private val fonts: PopupFonts,
     private val settingsReset: SettingsReset,
     private val cache: PopupTypefaces,
+    private val overlaySettings: OverlaySettingsRepository,
 ) : ViewModel() {
     val appearance: StateFlow<PopupAppearance?> =
         repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedAppearance)
+
+    /** Whether the popup starts with the recognized text; stored with the bubble's settings. */
+    val showSourceText: StateFlow<Boolean?> = overlaySettings.settings
+        .map { it.showSourceText }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, overlaySettings.cachedSettings?.showSourceText)
 
     val installed: StateFlow<List<InstalledFont>> = fonts.installed
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
@@ -114,6 +124,8 @@ class PopupAppearanceViewModel @Inject constructor(
     fun setCopyDefinitions(enabled: Boolean) = launch { repository.setCopyDefinitions(enabled) }
 
     fun setCopyMode(mode: DefinitionCopyMode) = launch { repository.setCopyMode(mode) }
+
+    fun setShowSourceText(enabled: Boolean) = launch { overlaySettings.setShowSourceText(enabled) }
 
     fun download(font: CatalogFont) = fonts.download(font)
 

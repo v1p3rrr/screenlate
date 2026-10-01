@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
+import com.vpr.screenlate.settings.SHOW_SOURCE_TEXT_KEY
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -98,6 +99,7 @@ object BackupPreferences {
      */
     fun sectionOf(key: String): BackupSection? = when {
         key in general -> BackupSection.GENERAL
+        key == SHOW_SOURCE_TEXT_KEY -> BackupSection.POPUP
         key.startsWith("overlay_") -> BackupSection.BUBBLE
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP

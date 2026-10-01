@@ -177,7 +177,7 @@
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
     <string name="appearance_title">外觀</string>
     <string name="settings_appearance_summary">主題、色彩、電子紙、語言</string>
-    <string name="settings_popup_summary">字型、文字大小與粗細、CSS、釋義複製</string>
+    <string name="settings_popup_summary">辨識文字、字型、文字大小與粗細、CSS、釋義複製</string>
     <string name="yomitan_import_title">從 Yomitan 匯入</string>
     <string name="settings_yomitan_summary">Yomitan 的設定和詞典</string>
     <string name="about_title">關於</string>
@@ -289,8 +289,8 @@
     <string name="yomitan_collection_hint">已安裝的詞典預設不勾選；勾選後會替換已安裝的副本。大檔案需要幾分鐘。</string>
     <string name="yomitan_collection_import">匯入 %1$d 個</string>
     <string name="yomitan_collection_queued">正在背景匯入 %1$d 個詞典；可在詞典頁面檢視進度。</string>
-    <string name="bubble_show_source">在詞條上方顯示辨識出的文字</string>
-    <string name="bubble_show_source_hint">關閉時：彈出視窗直接從詞條開始，✕ 位於詞條按鈕旁邊。</string>
+    <string name="popup_show_source">在詞條上方顯示辨識出的文字</string>
+    <string name="popup_show_source_hint">關閉時：彈出視窗直接從詞條開始，✕ 位於詞條按鈕旁邊。</string>
     <string name="popup_font_title">彈出視窗字型</string>
     <string name="popup_font_hint">用於彈出視窗和搜尋頁面。</string>
     <string name="popup_font_system">手機自帶的日文字型</string>
@@ -320,7 +320,7 @@
     <string name="popup_font_web_font">這是網頁字型（.woff 或 .woff2），無法新增。請先將其轉換為 .ttf 或 .otf。</string>
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
     <string name="popup_settings_title">彈出視窗</string>
-    <string name="popup_copy_title">釋義複製</string>
+    <string name="popup_content_title">彈出視窗顯示內容</string>
     <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
     <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個詞典名稱旁的按鈕會複製該詞典的釋義。</string>
     <string name="popup_copy_mode_all">全部</string>
