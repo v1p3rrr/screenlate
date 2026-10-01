@@ -64,7 +64,7 @@
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Версия</string>
 
-    <string name="home_anki_ready">Карточки идут в %1$s (%2$s).</string>
+    <string name="home_anki_ready">Карточки добавляются в %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Выберите колоду, тип записи и шаблоны полей.</string>
 
     <string name="anki_title">Anki и аудио</string>
@@ -89,11 +89,11 @@
     <string name="anki_duplicate_behavior">Если дубль найден</string>
     <string name="anki_behavior_prevent">Запретить</string>
     <string name="anki_behavior_overwrite">Перезаписать</string>
-    <string name="anki_behavior_new">Добавить</string>
+    <string name="anki_behavior_new">Добавить новую</string>
 
     <string name="audio_title">Аудио</string>
     <string name="audio_auto_play">Проигрывать аудио нового слова</string>
-    <string name="audio_sources_hint">Перебираются сверху вниз; играет и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>
+    <string name="audio_sources_hint">Источники перебираются сверху вниз; играет и попадает в карточки первое найденное аудио. Нажмите на источник, чтобы изменить его.</string>
     <string name="audio_url_template">Шаблон URL</string>
     <string name="audio_add_source">Добавить источник аудио</string>
     <string name="search_title">Поиск слов</string>
@@ -112,7 +112,7 @@
     <string name="bubble_aim_above">Над пальцем</string>
     <string name="bubble_aim_center">Центр кнопки</string>
     <string name="bubble_aim_hint">Двойной тап по кнопке переключает режим.</string>
-    <string name="bubble_dock_side">Док</string>
+    <string name="bubble_dock_side">Сторона</string>
     <string name="bubble_dock_left">Слева</string>
     <string name="bubble_dock_right">Справа</string>
     <string name="bubble_highlight">Подсвечивать слово под прицелом</string>
@@ -122,14 +122,10 @@
     <string name="bubble_filter_apps">Фильтр приложений</string>
     <string name="bubble_read_app_text">Читать текст приложения (экспериментально)</string>
     <string name="bubble_read_app_text_hint">Быстрее в приложениях, которые отдают свой текст.</string>
-    <string name="bubble_read_app_text_info">Текст приложения точный, готов почти сразу, без ожидания распознавания, и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.
-
-Чтение текста приложения — экспериментальная функция: некоторые приложения сообщают неверные позиции символов, и тогда подсветка может съехать или найдётся соседнее слово. В таком случае выключите её.</string>
+    <string name="bubble_read_app_text_info">Текст приложения точный, готов почти сразу, без ожидания распознавания, и не требует сети, но работает только в приложениях, которые сообщают позиции символов службам специальных возможностей; в остальных случаях и для текста на картинках экран распознаётся как обычно.\n\nЧтение текста приложения — экспериментальная функция: некоторые приложения сообщают неверные позиции символов, и тогда подсветка может съехать или найдётся соседнее слово. В таком случае выключите её.</string>
     <string name="bubble_app_text_only">Только текст приложения</string>
     <string name="bubble_app_text_only_hint">Без скриншотов и распознавания. Текст на картинках не читается.</string>
-    <string name="bubble_app_text_only_info">Экран совсем не распознаётся: читается только текст, который приложения отдают службам специальных возможностей. Текст на картинках, манга, игры и приложения, которые не отдают свой текст, не читаются.
-
-Подходит для электронных книг, старых или слабых устройств, где распознавание не работает или работает медленно, и для медленного или лимитного интернета: заряд на распознавание не тратится, и ничего не отправляется в сеть.</string>
+    <string name="bubble_app_text_only_info">Экран совсем не распознаётся: читается только текст, который приложения отдают службам специальных возможностей. Текст на картинках, манга, игры и приложения, которые не отдают свой текст, не читаются.\n\nПодходит для электронных книг, старых или слабых устройств, где распознавание не работает или работает медленно, и для медленного или лимитного интернета: заряд на распознавание не тратится, и ничего не отправляется в сеть.</string>
     <string name="bubble_app_text_only_confirm">Включить</string>
     <string name="dictionaries_import_yomitan_backup">Импорт коллекции словарей Yomitan</string>
     <string name="dictionaries_task_converting">Распаковка: %1$s</string>
@@ -166,12 +162,12 @@
     <string name="anki_overwrite_prepend">дописать в начало</string>
     <string name="audio_volume">Громкость: %1$d%%</string>
     <string name="settings_title">Настройки</string>
-    <string name="settings_bubble_summary">Прицел, док, источник текста, скрытие в приложениях</string>
+    <string name="settings_bubble_summary">Прицел, сторона, источник текста, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, кандзи слова</string>
     <string name="appearance_title">Оформление</string>
     <string name="settings_appearance_summary">Тема, e-ink, язык</string>
-    <string name="settings_popup_summary">Шрифт, размер и толщина текста, CSS, копирование определений</string>
+    <string name="settings_popup_summary">Шрифт, размер и жирность текста, CSS, копирование определений</string>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
     <string name="settings_yomitan_summary">Настройки и словари из Yomitan</string>
     <string name="about_title">О приложении</string>
@@ -237,7 +233,7 @@
     <string name="audio_url_hint">{term} и {reading} заменяются словом и его чтением; URL должен отдавать аудиофайл.</string>
     <string name="audio_url_json_hint">URL должен отдавать список источников аудио Yomitan (JSON); {term} и {reading} заменяются.</string>
     <string name="action_save">Сохранить</string>
-    <string name="audio_test_no_voice">Нет голоса</string>
+    <string name="audio_test_no_voice">Голос не установлен</string>
     <string name="yomitan_import_settings">Настройки</string>
     <string name="yomitan_import_settings_hint">В Yomitan: Настройки → Резервная копия → Экспорт настроек. Выберите файл здесь и профиль, из которого взять настройки.</string>
     <string name="yomitan_import_not_settings">Это не экспорт настроек Yomitan.</string>
@@ -249,7 +245,7 @@
     <string name="yomitan_section_dictionaries">Словари</string>
     <string name="yomitan_section_dictionaries_hint">Порядок, включение и словарь сортировки — для словарей, установленных здесь</string>
     <string name="yomitan_section_anki">Anki</string>
-    <string name="yomitan_section_anki_hint">Колода, тип записи, шаблоны полей, теги и обработка дублей</string>
+    <string name="yomitan_section_anki_hint">Колода, тип записи, шаблоны полей, метки и обработка дублей</string>
     <string name="yomitan_section_audio">Аудио</string>
     <string name="yomitan_section_audio_hint">Источники, громкость и автопроигрывание</string>
     <string name="yomitan_section_lookup">Поиск</string>
@@ -299,7 +295,7 @@
     <string name="popup_text_weight_medium">средняя</string>
     <string name="popup_text_weight_semibold">полужирная</string>
     <string name="popup_text_weight_bold">жирная</string>
-    <string name="popup_text_weight_info">Делает тонкий текст заметнее. Когда включено «Только для японского текста» или выбран шрифт телефона, толще становятся только японские символы; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
+    <string name="popup_text_weight_info">Делает тонкий текст разборчивее. Когда включено «Только для японского текста» или выбран шрифт телефона, толще становятся только японские символы; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
     <string name="popup_letter_thickness">Толщина букв: %1$d</string>
     <string name="popup_letter_thickness_off">Толщина букв: нет</string>
     <string name="popup_font_catalog">Бесплатные шрифты для скачивания</string>
@@ -355,7 +351,7 @@
     <string name="update_current">Установлена версия %1$s</string>
     <string name="update_checking">Проверка обновлений…</string>
     <string name="update_up_to_date">Screenlate %1$s — последняя версия.</string>
-    <string name="update_available_title">Вышла Screenlate %1$s</string>
+    <string name="update_available_title">Вышел Screenlate %1$s</string>
     <string name="update_whats_new">Что нового</string>
     <string name="update_check">Проверить обновления</string>
     <string name="update_install">Обновить</string>
@@ -370,13 +366,13 @@
     <string name="update_announce_hint">Не чаще раза в день, при открытии приложения; о каждой версии — один раз.</string>
     <string name="update_error_network">Не удалось связаться с GitHub. Проверьте подключение и попробуйте ещё раз.</string>
     <string name="update_error_no_apk">В этом релизе нет APK для этого устройства.</string>
-    <string name="update_error_bad_apk">Скачанный файл — не более новая Screenlate с той же подписью.</string>
+    <string name="update_error_bad_apk">Скачанный файл — не более новый Screenlate с той же подписью.</string>
     <string name="update_error_install">Android не установил обновление.</string>
     <string name="action_close">Закрыть</string>
     <string name="action_more_info">Подробнее: %1$s</string>
     <string name="anki_fields_how">Как работают шаблоны полей</string>
     <string name="popup_css_short">Применяется после стилей словарей</string>
-    <string name="about_dictionaries_hint">Авторы и лицензии словаря — за его ⓘ.</string>
+    <string name="about_dictionaries_hint">Авторы и лицензии каждого словаря — под его значком ⓘ.</string>
     <string name="about_dictionaries_show">Показать все (%1$d)</string>
     <string name="about_dictionaries_hide">Скрыть</string>
     <string name="dictionaries_notifications_title">Уведомления о прогрессе</string>
@@ -409,14 +405,14 @@
     <string name="background_launch_app_info_hint">На этом телефоне нет известных экранов запуска. Обычно из сведений о приложении можно перейти к настройкам батареи и работы в фоне.</string>
     <string name="settings_badge">Новый совет</string>
     <string name="eink_title">Экран e-ink</string>
-    <string name="eink_switch">Режим для электронных книг</string>
+    <string name="eink_switch">Режим e-ink</string>
     <string name="eink_hint">Для электронных книг и других устройств с экраном на электронных чернилах (e-ink). Чёрно-белый, без анимаций, рамки вместо полупрозрачной подсветки. Заменяет тему.</string>
     <string name="eink_enlarge_title">Крупнее кнопка и текст?</string>
-    <string name="eink_enlarge_message">Увеличить плавающую кнопку до %1$d dp (если она меньше), а текст во всплывающем окне — на %2$d px? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
+    <string name="eink_enlarge_message">Увеличить плавающую кнопку до %1$d dp (если она меньше), а текст попапа — на %2$d px? Оба размера можно менять. При выключении режима вернутся прежние размеры, если вы их не меняли.</string>
     <string name="eink_enlarge_confirm">Увеличить</string>
     <string name="eink_enlarge_keep">Оставить как есть</string>
     <string name="eink_home_title">Экран e-ink?</string>
-    <string name="eink_home_message">Похоже, это устройство с экраном e-ink. Режим для электронных книг делает Screenlate чёрно-белым и без анимаций. На медленных устройствах или без интернета плавающая кнопка может читать только текст приложений, не распознавая экран.</string>
+    <string name="eink_home_message">Похоже, это устройство с экраном e-ink. Режим e-ink делает Screenlate чёрно-белым и без анимаций. На медленных устройствах или без интернета плавающая кнопка может читать только текст приложений, не распознавая экран.</string>
     <string name="eink_home_turn_on">Включить режим e-ink</string>
     <string name="eink_home_app_text">Только текст приложения…</string>
     <string name="dictionaries_website">Сайт</string>
@@ -425,7 +421,7 @@
     <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их</string>
     <string name="backup_create">Создать копию</string>
     <string name="backup_create_hint">Один файл со всеми настройками, порядком и переключателями словарей и установленными шрифтами. Храните его где угодно: в телефоне, на карте памяти или в облаке.</string>
-    <string name="backup_include_dictionaries">Включить словари</string>
+    <string name="backup_include_dictionaries">Добавить словари в копию</string>
     <string name="backup_include_dictionaries_hint">Сами словари, готовые к работе без скачивания и импорта. Файл станет намного больше.</string>
     <string name="backup_create_button">Создать копию…</string>
     <string name="backup_creating">Создаётся копия…</string>
@@ -446,19 +442,19 @@
     <string name="backup_read_failed">Не удалось прочитать копию.</string>
     <string name="backup_loaded">Копия от %1$s, версия %2$s</string>
     <string name="backup_sections">Что восстановить</string>
-    <string name="backup_replace_warning">Отмеченное заменит текущее. Словари из копии добавятся или заменят такие же; остальные установленные словари останутся.</string>
+    <string name="backup_replace_warning">Отмеченное заменит текущее. Словари из копии добавятся или заменят свои установленные версии; остальные установленные словари останутся.</string>
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
-    <string name="backup_section_general_hint">Тема, режим e-ink, уведомления об обновлениях</string>
+    <string name="backup_section_general_hint">Тема, режим e-ink, сообщения о новых версиях</string>
     <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
     <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
     <string name="backup_section_lookup">Поиск</string>
-    <string name="backup_section_lookup_hint">Длина сканирования, число результатов, ромадзи, отдельные кандзи</string>
-    <string name="backup_section_popup">Вид окна</string>
+    <string name="backup_section_lookup_hint">Длина скана, число результатов, ромадзи, кандзи слова</string>
+    <string name="backup_section_popup">Оформление попапа</string>
     <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS и установленные шрифты</string>
     <string name="backup_section_anki">Anki</string>
-    <string name="backup_section_anki_hint">Колода, тип записи, поля, дубликаты</string>
+    <string name="backup_section_anki_hint">Колода, тип записи, поля, обработка дублей</string>
     <string name="backup_section_audio">Аудио</string>
     <string name="backup_section_audio_hint">Источники произношения</string>
     <string name="backup_section_dictionary_list">Порядок и переключатели словарей</string>
@@ -470,10 +466,10 @@
     </plurals>
     <string name="backup_section_dictionary_files">Словари</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d словарь, добавится или заменит такой же</item>
-        <item quantity="few">%d словаря, добавятся или заменят такие же</item>
-        <item quantity="many">%d словарей, добавятся или заменят такие же</item>
-        <item quantity="other">%d словаря, добавятся или заменят такие же</item>
+        <item quantity="one">%d словарь: добавится или заменит установленную версию</item>
+        <item quantity="few">%d словаря: добавятся или заменят установленные версии</item>
+        <item quantity="many">%d словарей: добавятся или заменят установленные версии</item>
+        <item quantity="other">%d словаря: добавятся или заменят установленные версии</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d шрифт</item>
@@ -515,9 +511,9 @@
     <string name="reset_section_title">Сбросить настройки раздела?</string>
     <string name="reset_bubble_text">Все настройки плавающей кнопки вернутся к тем, что были после установки, включая скрытые приложения, размер кнопки и её место на экране. Скрытая кнопка снова появится.</string>
     <string name="reset_lookup_text">Длина скана, число статей и остальные настройки поиска вернутся к тем, что были после установки.</string>
-    <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дубликатов и источники аудио вернутся к тем, что были после установки. В AnkiDroid ничего не изменится.</string>
-    <string name="reset_popup_text">Выбор шрифта, размер и толщина текста, свой CSS и копирование определений вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
-    <string name="reset_appearance_text">Тема снова будет как в системе, режим e-ink выключится, а увеличенные им размеры вернутся. Язык приложения останется.</string>
+    <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио вернутся к тем, что были после установки. В AnkiDroid ничего не изменится.</string>
+    <string name="reset_popup_text">Выбор шрифта, размер и жирность текста, свой CSS и копирование определений вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
+    <string name="reset_appearance_text">Тема снова будет как в системе, режим e-ink выключится, а размеры, которые он увеличил, станут прежними. Язык приложения останется.</string>
     <string name="reset_background_text">Уведомление, которое не даёт кнопке пропадать, выключится. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
     <string name="reset_dictionaries_tooltip">Сбросить словари</string>
     <string name="reset_dictionaries_title">Сбросить словари?</string>

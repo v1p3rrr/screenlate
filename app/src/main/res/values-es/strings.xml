@@ -18,7 +18,7 @@
     <string name="ocr_test_title">Prueba de OCR</string>
     <string name="ocr_test_pick_image">Elegir una imagen</string>
     <string name="ocr_test_running">Reconociendo…</string>
-    <string name="ocr_test_hit">Bajo el toque: %1$s</string>
+    <string name="ocr_test_hit">En el punto tocado: %1$s</string>
 
     <string name="action_delete">Eliminar</string>
     <string name="action_cancel">Cancelar</string>
@@ -92,7 +92,7 @@
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Reproducir el audio al mostrar una palabra nueva</string>
-    <string name="audio_sources_hint">Se prueban de arriba abajo; la primera que tiene audio se reproduce y va a las notas. Toca una fuente para editarla.</string>
+    <string name="audio_sources_hint">Las fuentes se prueban de arriba abajo; la primera que tiene audio se reproduce y va a las notas. Toca una fuente para editarla.</string>
     <string name="audio_url_template">Plantilla de URL</string>
     <string name="audio_add_source">Añadir fuente de audio</string>
     <string name="search_title">Buscar palabras</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Encima del dedo</string>
     <string name="bubble_aim_center">Centro de la burbuja</string>
     <string name="bubble_aim_hint">Un doble toque en la burbuja flotante alterna entre los dos.</string>
-    <string name="bubble_dock_side">Anclaje</string>
+    <string name="bubble_dock_side">Lado</string>
     <string name="bubble_dock_left">Borde izquierdo</string>
     <string name="bubble_dock_right">Borde derecho</string>
     <string name="bubble_highlight">Resaltar la palabra bajo el punto de mira</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Filtrar apps</string>
     <string name="bubble_read_app_text">Leer el texto de las apps (experimental)</string>
     <string name="bubble_read_app_text_hint">Más rápido en las apps que exponen su texto.</string>
-    <string name="bubble_read_app_text_info">El texto de la app es exacto, está listo casi al instante sin esperar al reconocimiento y no necesita red, pero solo funciona en apps que comunican la posición de los caracteres a los servicios de accesibilidad; en las demás, y para el texto en imágenes, la pantalla se reconoce como siempre.
-
-Leer el texto de las apps es experimental: algunas apps dan posiciones de caracteres incorrectas, así que el resaltado puede quedar desplazado o encontrarse una palabra vecina. Si pasa eso, desactívalo.</string>
+    <string name="bubble_read_app_text_info">El texto de la app es exacto, está listo casi al instante sin esperar al reconocimiento y no necesita red, pero solo funciona en apps que comunican la posición de los caracteres a los servicios de accesibilidad; en las demás, y para el texto en imágenes, la pantalla se reconoce como siempre.\n\nLeer el texto de las apps es experimental: algunas apps dan posiciones de caracteres incorrectas, así que el resaltado puede quedar desplazado o encontrarse una palabra vecina. Si pasa eso, desactívalo.</string>
     <string name="bubble_app_text_only">Solo texto de las apps</string>
     <string name="bubble_app_text_only_hint">Sin capturas de pantalla ni reconocimiento. El texto en imágenes no se lee.</string>
-    <string name="bubble_app_text_only_info">La pantalla no se reconoce en absoluto: solo se lee el texto que las apps comunican a los servicios de accesibilidad. No se lee el texto en imágenes, manga, juegos ni en apps que no exponen su texto.
-
-Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco potentes donde el reconocimiento no funciona o es lento, y para internet lento o con datos limitados: no se gasta batería en reconocimiento ni se envían datos.</string>
+    <string name="bubble_app_text_only_info">La pantalla no se reconoce en absoluto: solo se lee el texto que las apps comunican a los servicios de accesibilidad. No se lee el texto en imágenes, manga, juegos ni en apps que no exponen su texto.\n\nAdecuado para lectores de tinta electrónica, dispositivos antiguos o poco potentes donde el reconocimiento no funciona o es lento, y para internet lento o con datos limitados: no se gasta batería en reconocimiento ni se envían datos.</string>
     <string name="bubble_app_text_only_confirm">Activar</string>
     <string name="dictionaries_import_yomitan_backup">Importar una colección de diccionarios de Yomitan</string>
     <string name="dictionaries_task_converting">Descomprimiendo %1$s</string>
@@ -165,12 +161,12 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="anki_overwrite_prepend">añadir al principio</string>
     <string name="audio_volume">Volumen: %1$d %%</string>
     <string name="settings_title">Ajustes</string>
-    <string name="settings_bubble_summary">Punto de mira, anclaje, fuente del texto, apps ocultas</string>
+    <string name="settings_bubble_summary">Punto de mira, lado, fuente del texto, apps ocultas</string>
     <string name="lookup_title">Búsqueda</string>
     <string name="settings_lookup_summary">Longitud de análisis, resultados, romaji, kanji de la palabra</string>
     <string name="appearance_title">Apariencia</string>
     <string name="settings_appearance_summary">Tema, e-ink, idioma</string>
-    <string name="settings_popup_summary">Fuente, tamaño y grosor del texto, CSS, copia de definiciones</string>
+    <string name="settings_popup_summary">Fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
     <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
     <string name="about_title">Acerca de</string>
@@ -340,7 +336,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="yomitan_summary_font_family">La fuente «%1$s» no se importa: elige una fuente en «Ventana emergente»</string>
     <string name="popup_font_system_missing">Este teléfono no tiene una fuente japonesa del sistema, así que los kanji pueden verse con formas chinas. Descarga Noto Sans JP más abajo.</string>
     <string name="about_licenses">Licencias</string>
-    <string name="about_licenses_hint">Screenlate está hecho con bibliotecas y código de código abierto; los diccionarios conservan sus propias licencias.</string>
+    <string name="about_licenses_hint">Screenlate usa bibliotecas y fragmentos de código abierto; los diccionarios conservan sus propias licencias.</string>
     <string name="about_libraries">Bibliotecas de código abierto</string>
     <string name="about_notices">Avisos de terceros</string>
     <string name="about_dictionaries">Diccionarios instalados</string>
@@ -375,7 +371,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="action_more_info">Acerca de %1$s</string>
     <string name="anki_fields_how">Cómo funcionan las plantillas de campos</string>
     <string name="popup_css_short">Se aplica después de los estilos de los diccionarios</string>
-    <string name="about_dictionaries_hint">Los autores y licencias de cada diccionario están tras su ⓘ.</string>
+    <string name="about_dictionaries_hint">Los autores y licencias de cada diccionario aparecen al tocar su ⓘ.</string>
     <string name="about_dictionaries_show">Mostrar todos (%1$d)</string>
     <string name="about_dictionaries_hide">Ocultar</string>
     <string name="dictionaries_notifications_title">Notificaciones de progreso</string>
@@ -415,7 +411,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="eink_enlarge_confirm">Agrandar</string>
     <string name="eink_enlarge_keep">Mantener tamaños</string>
     <string name="eink_home_title">¿Pantalla de tinta electrónica?</string>
-    <string name="eink_home_message">Este dispositivo parece un lector de tinta electrónica. El modo e-ink hace Screenlate en blanco y negro, sin animaciones. En dispositivos lentos o sin internet, la burbuja también puede leer solo el texto de las apps, sin reconocer la pantalla.</string>
+    <string name="eink_home_message">Este dispositivo parece un lector de tinta electrónica. El modo e-ink muestra Screenlate en blanco y negro y sin animaciones. En dispositivos lentos o sin internet, la burbuja también puede leer solo el texto de las apps, sin reconocer la pantalla.</string>
     <string name="eink_home_turn_on">Activar el modo e-ink</string>
     <string name="eink_home_app_text">Solo texto de las apps…</string>
     <string name="dictionaries_website">Sitio web</string>
@@ -444,7 +440,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="backup_read_failed">No se pudo leer la copia.</string>
     <string name="backup_loaded">Copia del %1$s, versión %2$s</string>
     <string name="backup_sections">Partes que restaurar</string>
-    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales. Los diccionarios de la copia se añaden o reemplazan a los mismos; los demás diccionarios instalados se quedan.</string>
+    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales. Los diccionarios de la copia se añaden o sustituyen a su versión instalada; los demás diccionarios instalados se mantienen.</string>
     <string name="backup_restore_button">Restaurar lo marcado</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">General</string>
@@ -452,7 +448,7 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="backup_section_bubble">Burbuja flotante y reconocimiento</string>
     <string name="backup_section_bubble_hint">Tamaño, punto de mira, motores de reconocimiento, texto de las apps, apps donde la burbuja se oculta</string>
     <string name="backup_section_lookup">Búsqueda</string>
-    <string name="backup_section_lookup_hint">Longitud de análisis, número de resultados, romaji, kanji sueltos</string>
+    <string name="backup_section_lookup_hint">Longitud de análisis, número de resultados, romaji, kanji de la palabra</string>
     <string name="backup_section_popup">Apariencia de la ventana emergente</string>
     <string name="backup_section_popup_hint">Fuente, tamaño del texto, CSS personalizado y fuentes instaladas</string>
     <string name="backup_section_anki">Anki</string>
@@ -467,9 +463,9 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     </plurals>
     <string name="backup_section_dictionary_files">Diccionarios</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d diccionario, añadido o reemplazando al mismo</item>
-        <item quantity="many">%d diccionarios, añadidos o reemplazando a los mismos</item>
-        <item quantity="other">%d diccionarios, añadidos o reemplazando a los mismos</item>
+        <item quantity="one">%d diccionario: se añade o sustituye a su versión instalada</item>
+        <item quantity="many">%d diccionarios: se añaden o sustituyen a su versión instalada</item>
+        <item quantity="other">%d diccionarios: se añaden o sustituyen a su versión instalada</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d fuente</item>
@@ -487,13 +483,13 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="home_bubble_shown">La burbuja está en la pantalla</string>
     <string name="home_bubble_hidden">La burbuja está oculta</string>
     <string name="home_bubble_stopped">No hay burbuja: el teléfono detuvo el servicio</string>
-    <string name="home_bubble_stopped_hint">Una aplicación no puede volver a activar el servicio. Abre sus ajustes, desactiva y vuelve a activar el interruptor y la burbuja regresará.</string>
+    <string name="home_bubble_stopped_hint">Una app no puede volver a activar el servicio. Abre sus ajustes, desactiva y vuelve a activar el interruptor, y la burbuja volverá.</string>
     <string name="home_bubble_show">Recuperar la burbuja</string>
     <string name="home_bubble_hide">Ocultar la burbuja</string>
     <string name="bubble_visible">Mostrar la burbuja</string>
     <string name="bubble_visible_hint">Desactivado: la burbuja no aparece en la pantalla. El mosaico de ajustes rápidos hace lo mismo.</string>
     <string name="background_keep_alive_title">Para que la burbuja no desaparezca</string>
-    <string name="background_keep_alive_text">Un teléfono que detiene aplicaciones en segundo plano también puede detener el servicio que dibuja la burbuja. Una aplicación con su propia notificación se detiene mucho menos.</string>
+    <string name="background_keep_alive_text">Un teléfono que detiene apps en segundo plano también puede detener el servicio que dibuja la burbuja. Una app con su propia notificación se detiene con mucha menos frecuencia.</string>
     <string name="background_keep_alive_switch">Mantener una notificación mientras el servicio funciona</string>
     <string name="background_keep_alive_hint">No siempre ayuda. Una vez detenido el servicio, solo desactivarlo y activarlo en los ajustes de accesibilidad devuelve la burbuja.</string>
     <string name="background_keep_alive_notifications_off">Las notificaciones de Screenlate están desactivadas: el servicio funciona, pero su notificación no se muestra.</string>
@@ -508,14 +504,14 @@ Adecuado para lectores de tinta electrónica, dispositivos antiguos o poco poten
     <string name="reset_section_tooltip">Restablecer esta sección</string>
     <string name="reset_section_title">¿Restablecer esta sección?</string>
     <string name="reset_bubble_text">Todos los ajustes de la burbuja vuelven a como estaban tras la instalación, incluidas las apps ocultas, el tamaño de la burbuja y su lugar en la pantalla. Una burbuja oculta vuelve a aparecer.</string>
-    <string name="reset_lookup_text">La longitud de escaneo, las entradas por búsqueda y los demás ajustes de búsqueda vuelven a como estaban tras la instalación.</string>
-    <string name="reset_anki_text">El mazo, el tipo de nota, las plantillas de campos, las etiquetas, el manejo de duplicados y las fuentes de audio vuelven a como estaban tras la instalación. En AnkiDroid no cambia nada.</string>
-    <string name="reset_popup_text">La fuente elegida, el tamaño y el grosor del texto, el CSS personalizado y la copia de definiciones vuelven a como estaban tras la instalación. Las fuentes descargadas y añadidas siguen instaladas.</string>
-    <string name="reset_appearance_text">El tema vuelve a seguir al sistema y el modo e-ink se desactiva, devolviendo los tamaños que había aumentado. El idioma de la app se mantiene.</string>
+    <string name="reset_lookup_text">La longitud de análisis, las entradas por búsqueda y los demás ajustes de búsqueda vuelven a como estaban tras la instalación.</string>
+    <string name="reset_anki_text">El mazo, el tipo de nota, las plantillas de campos, las etiquetas, la gestión de duplicados y las fuentes de audio vuelven a como estaban tras la instalación. En AnkiDroid no cambia nada.</string>
+    <string name="reset_popup_text">La fuente elegida, el tamaño y el peso del texto, el CSS personalizado y la copia de definiciones vuelven a como estaban tras la instalación. Las fuentes descargadas y añadidas siguen instaladas.</string>
+    <string name="reset_appearance_text">El tema vuelve a seguir al sistema y el modo e-ink se desactiva; los tamaños que había aumentado vuelven a ser los de antes. El idioma de la app se mantiene.</string>
     <string name="reset_background_text">La notificación que mantiene viva la burbuja se desactiva. Los ajustes de batería y de inicio son de Android y quedan como están.</string>
     <string name="reset_dictionaries_tooltip">Restablecer diccionarios</string>
     <string name="reset_dictionaries_title">¿Restablecer los diccionarios?</string>
-    <string name="reset_dictionaries_text">Se eliminan todos los diccionarios, incluidos los que añadiste, y los incluidos se instalan de nuevo como tras la instalación, con el orden y los interruptores iniciales. Las importaciones y descargas en curso se cancelan. La instalación tarda hasta un minuto; hasta entonces la búsqueda es incompleta.</string>
+    <string name="reset_dictionaries_text">Se eliminan todos los diccionarios, también los que añadiste, y los diccionarios incluidos se vuelven a instalar como tras la instalación, con el orden y los interruptores iniciales. Las importaciones y descargas en curso se cancelan. La instalación tarda hasta un minuto; hasta entonces la búsqueda es incompleta.</string>
     <string name="reset_dictionaries_running">Deteniendo importaciones y eliminando diccionarios…</string>
     <string name="reset_dictionaries_busy">Restableciendo los diccionarios…</string>
     <string name="reset_dictionaries_failed">Error al restablecer los diccionarios: %1$s</string>

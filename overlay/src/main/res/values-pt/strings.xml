@@ -33,7 +33,7 @@
     <string name="anki_rejected">O AnkiDroid não salvou a nota.</string>
     <string name="anki_not_configured">Configure primeiro a exportação para o Anki no Screenlate.</string>
     <string name="anki_not_installed">O AnkiDroid não está instalado.</string>
-    <string name="anki_no_permission">Permita que o Screenlate acesse o AnkiDroid nas configurações do Anki dele.</string>
+    <string name="anki_no_permission">Permita que o Screenlate acesse o AnkiDroid nas configurações de Anki do app.</string>
     <string name="audio_not_found">Nenhum áudio encontrado para esta palavra.</string>
     <string name="crop_whole_screen">Tela inteira</string>
     <string name="crop_frame">Moldura</string>

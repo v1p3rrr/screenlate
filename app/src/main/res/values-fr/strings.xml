@@ -18,7 +18,7 @@
     <string name="ocr_test_title">Test OCR</string>
     <string name="ocr_test_pick_image">Choisir une image</string>
     <string name="ocr_test_running">Reconnaissance…</string>
-    <string name="ocr_test_hit">Sous le toucher : %1$s</string>
+    <string name="ocr_test_hit">Au point touché : %1$s</string>
 
     <string name="action_delete">Supprimer</string>
     <string name="action_cancel">Annuler</string>
@@ -92,7 +92,7 @@
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Lire l’audio quand un nouveau mot s’affiche</string>
-    <string name="audio_sources_hint">Essayées de haut en bas ; la première qui a un audio est lue et va dans les notes. Touchez une source pour la modifier.</string>
+    <string name="audio_sources_hint">Les sources sont essayées de haut en bas ; la première qui a de l’audio est lue et va dans les notes. Touchez une source pour la modifier.</string>
     <string name="audio_url_template">Modèle d’URL</string>
     <string name="audio_add_source">Ajouter une source audio</string>
     <string name="search_title">Chercher des mots</string>
@@ -111,24 +111,20 @@
     <string name="bubble_aim_above">Au-dessus du doigt</string>
     <string name="bubble_aim_center">Centre de la bulle</string>
     <string name="bubble_aim_hint">Un double toucher sur la bulle flottante passe de l’un à l’autre.</string>
-    <string name="bubble_dock_side">Ancrage</string>
+    <string name="bubble_dock_side">Côté</string>
     <string name="bubble_dock_left">Bord gauche</string>
     <string name="bubble_dock_right">Bord droit</string>
     <string name="bubble_highlight">Surligner le mot visé</string>
     <string name="bubble_haptics">Vibrer à chaque nouveau mot</string>
-    <string name="bubble_hidden_apps">Masquer la bulle dans des applis</string>
+    <string name="bubble_hidden_apps">Masquer la bulle dans certaines applis</string>
     <string name="bubble_hidden_apps_hint">La bulle disparaît tant qu’une des applis cochées est ouverte.</string>
     <string name="bubble_filter_apps">Filtrer les applis</string>
     <string name="bubble_read_app_text">Lire le texte des applis (expérimental)</string>
     <string name="bubble_read_app_text_hint">Plus rapide dans les applis qui exposent leur texte.</string>
-    <string name="bubble_read_app_text_info">Le texte de l’appli est exact, prêt presque aussitôt sans attendre la reconnaissance et ne demande pas de réseau, mais il ne fonctionne que dans les applis qui transmettent la position des caractères aux services d’accessibilité ; ailleurs, et pour le texte dans les images, l’écran est reconnu comme d’habitude.
-
-La lecture du texte des applis est expérimentale : certaines applis donnent de mauvaises positions de caractères, le surlignage peut alors être décalé ou un mot voisin peut être trouvé. Dans ce cas, désactivez-la.</string>
+    <string name="bubble_read_app_text_info">Le texte de l’appli est exact, prêt presque aussitôt sans attendre la reconnaissance et ne demande pas de réseau, mais il ne fonctionne que dans les applis qui transmettent la position des caractères aux services d’accessibilité ; ailleurs, et pour le texte dans les images, l’écran est reconnu comme d’habitude.\n\nLa lecture du texte des applis est expérimentale : certaines applis donnent de mauvaises positions de caractères, le surlignage peut alors être décalé ou un mot voisin peut être trouvé. Dans ce cas, désactivez-la.</string>
     <string name="bubble_app_text_only">Texte des applis uniquement</string>
     <string name="bubble_app_text_only_hint">Ni captures d’écran ni reconnaissance. Le texte dans les images n’est pas lu.</string>
-    <string name="bubble_app_text_only_info">L’écran n’est pas reconnu du tout : seul le texte que les applis transmettent aux services d’accessibilité est lu. Le texte dans les images, les mangas, les jeux et les applis qui n’exposent pas leur texte n’est pas lu.
-
-Convient aux liseuses à encre électronique, aux appareils anciens ou peu puissants où la reconnaissance ne marche pas ou est lente, et à un internet lent ou limité : pas de batterie dépensée en reconnaissance et aucune donnée envoyée.</string>
+    <string name="bubble_app_text_only_info">L’écran n’est pas reconnu du tout : seul le texte que les applis transmettent aux services d’accessibilité est lu. Le texte dans les images, les mangas, les jeux et les applis qui n’exposent pas leur texte n’est pas lu.\n\nConvient aux liseuses à encre électronique, aux appareils anciens ou peu puissants où la reconnaissance ne marche pas ou est lente, et à un internet lent ou limité : pas de batterie dépensée en reconnaissance et aucune donnée envoyée.</string>
     <string name="bubble_app_text_only_confirm">Activer</string>
     <string name="dictionaries_import_yomitan_backup">Importer une collection de dictionnaires Yomitan</string>
     <string name="dictionaries_task_converting">Décompression de %1$s</string>
@@ -165,7 +161,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="anki_overwrite_prepend">ajouter au début</string>
     <string name="audio_volume">Volume : %1$d %%</string>
     <string name="settings_title">Paramètres</string>
-    <string name="settings_bubble_summary">Visée, ancrage, source du texte, applis masquées</string>
+    <string name="settings_bubble_summary">Visée, côté, source du texte, applis masquées</string>
     <string name="lookup_title">Recherche</string>
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, kanji du mot</string>
     <string name="appearance_title">Apparence</string>
@@ -214,7 +210,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="audio_sources">Sources</string>
     <string name="audio_reset_sources">Rétablir les sources par défaut</string>
     <string name="audio_url_missing">Pas d’URL</string>
-    <string name="audio_tts_hint">Seulement lu ; les notes reçoivent l’audio des autres sources.</string>
+    <string name="audio_tts_hint">Uniquement lu : les notes reçoivent l’audio des autres sources.</string>
     <string name="audio_test_title">Test</string>
     <string name="audio_test_word">Mot</string>
     <string name="audio_test">Tester</string>
@@ -240,11 +236,11 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="yomitan_import_settings">Paramètres</string>
     <string name="yomitan_import_settings_hint">Dans Yomitan : Paramètres → Sauvegarde → Exporter les paramètres. Choisissez le fichier ici, puis le profil dont les paramètres seront repris.</string>
     <string name="yomitan_import_not_settings">Ce fichier n’est pas un export de paramètres Yomitan.</string>
-    <string name="yomitan_import_failed">L\'importation s\'est arrêtée à cause d\'une erreur. Les réglages déjà importés restent appliqués.</string>
+    <string name="yomitan_import_failed">L’importation s’est arrêtée à cause d’une erreur. Les paramètres déjà importés restent appliqués.</string>
     <string name="yomitan_import_choose_settings">Choisir le fichier de paramètres</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (actuel)</string>
-    <string name="yomitan_import_sections">Quoi importer</string>
+    <string name="yomitan_import_sections">Éléments à importer</string>
     <string name="yomitan_section_dictionaries">Dictionnaires</string>
     <string name="yomitan_section_dictionaries_hint">Ordre, activation et dictionnaire de tri, pour les dictionnaires installés ici</string>
     <string name="yomitan_section_anki">Anki</string>
@@ -273,7 +269,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="yomitan_summary_lookup">Longueur d’analyse %1$s, entrées par recherche %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Les remplacements de texte (%1$d règles) ne sont pas importés : chiffres en numéraux kanji, 々, ッ et ponctuation sont gérés automatiquement</string>
     <string name="yomitan_collection_not_collection">Ce fichier n’est pas un export de collection de dictionnaires Yomitan.</string>
-    <string name="yomitan_collection_failed">Impossible de lancer l\'importation : le fichier n\'a pas pu être lu ou copié.</string>
+    <string name="yomitan_collection_failed">Impossible de lancer l’importation : le fichier n’a pas pu être lu ou copié.</string>
     <string name="yomitan_collection_choose">Dictionnaires du fichier</string>
     <string name="yomitan_collection_entries">%1$d entrées</string>
     <string name="yomitan_collection_media">%1$d images</string>
@@ -317,7 +313,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
     <string name="popup_copy_mode_all">Tout</string>
     <string name="popup_copy_mode_meanings">Sens seulement</string>
-    <string name="popup_copy_mode_all_hint">Tout ce qu’affiche le dictionnaire. Les applications qui gèrent la mise en forme la reçoivent, les autres reçoivent du texte brut.</string>
+    <string name="popup_copy_mode_all_hint">Tout ce qu’affiche le dictionnaire. Les applis qui gèrent la mise en forme le reçoivent mis en forme, les autres en texte brut.</string>
     <string name="popup_copy_mode_meanings_hint">Les sens numérotés en texte brut, sans exemples, remarques ni renvois. Pas garanti pour tous les dictionnaires : si les sens ne peuvent pas être distingués, tout le texte est copié.</string>
     <string name="popup_css_title">CSS personnalisé</string>
     <string name="popup_css_hint">Appliqué à la fenêtre contextuelle et à la page de recherche après les styles des dictionnaires, comme le CSS personnalisé de la fenêtre de Yomitan. Les entrées utilisent les noms de classes de Yomitan, et les couleurs des étiquettes suivent les variables de Yomitan (--tag-frequency-background-color et d’autres). Une police absente du téléphone est remplacée par celle de la fenêtre contextuelle.</string>
@@ -362,7 +358,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="update_skip">Ignorer cette version</string>
     <string name="update_downloading">Téléchargement… %1$d %%</string>
     <string name="update_installing">Installation en cours. À la fin, Android ferme Screenlate ; rouvrez-le ensuite.</string>
-    <string name="update_confirm_install">Poursuivre l\'installation</string>
+    <string name="update_confirm_install">Poursuivre l’installation</string>
     <string name="update_allow_installs">Autoriser l’installation des mises à jour</string>
     <string name="update_allow_installs_hint">Android a besoin de votre autorisation pour que Screenlate installe ses mises à jour.</string>
     <string name="update_announce">M’informer des nouvelles versions</string>
@@ -375,7 +371,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="action_more_info">À propos de %1$s</string>
     <string name="anki_fields_how">Fonctionnement des modèles de champs</string>
     <string name="popup_css_short">Appliqué après les styles des dictionnaires</string>
-    <string name="about_dictionaries_hint">Les auteurs et licences de chaque dictionnaire sont derrière son ⓘ.</string>
+    <string name="about_dictionaries_hint">Les auteurs et licences de chaque dictionnaire s’affichent en touchant son ⓘ.</string>
     <string name="about_dictionaries_show">Tout afficher (%1$d)</string>
     <string name="about_dictionaries_hide">Masquer</string>
     <string name="dictionaries_notifications_title">Notifications de progression</string>
@@ -393,7 +389,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="about_logs_save_failed">Impossible d’enregistrer le journal.</string>
     <string name="background_title">Arrière-plan</string>
     <string name="background_summary">Empêcher le système d’arrêter la bulle</string>
-    <string name="background_intro">Le système redémarre de lui-même le service de la bulle, sauf si l’un de ces réglages l’arrête pour économiser l’énergie. Ce sont des réglages du système : Screenlate ne fait que les ouvrir.</string>
+    <string name="background_intro">Le système redémarre de lui-même le service de la bulle, sauf si l’un de ces paramètres l’arrête pour économiser l’énergie. Ce sont des paramètres du système : Screenlate ne fait que les ouvrir.</string>
     <string name="background_battery_title">Optimisation de la batterie</string>
     <string name="background_battery_on">Active pour Screenlate : le système peut arrêter la bulle en arrière-plan.</string>
     <string name="background_battery_off">Inactive pour Screenlate : le système laisse la bulle tourner.</string>
@@ -401,11 +397,11 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="background_battery_list">Ouvrir la liste d’optimisation de la batterie</string>
     <string name="background_battery_list_hint">Dans la liste, trouvez Screenlate et désactivez son optimisation (« Ne pas optimiser », « Sans restriction » ou similaire). Les applis absentes de la liste au départ sont souvent sous « Toutes les applis ».</string>
     <string name="background_launch_title">Lancement des applis</string>
-    <string name="background_launch_text">Certains téléphones arrêtent aussi les applis en arrière-plan via des réglages propres au fabricant, en plus de l’optimisation de la batterie. Là, autorisez Screenlate à démarrer seul et à fonctionner en arrière-plan.</string>
+    <string name="background_launch_text">Certains téléphones arrêtent aussi les applis en arrière-plan via des paramètres propres au fabricant, en plus de l’optimisation de la batterie. Là, autorisez Screenlate à démarrer seul et à fonctionner en arrière-plan.</string>
     <string name="background_launch_path">Sur ce téléphone : Lancement des applis → Screenlate → Gérer manuellement, avec les trois options activées.</string>
-    <string name="background_launch_open">Ouvrir les réglages de démarrage</string>
+    <string name="background_launch_open">Ouvrir les paramètres de démarrage</string>
     <string name="background_launch_app_info">Ouvrir les infos sur l’appli</string>
-    <string name="background_launch_app_info_hint">Ce téléphone n’a aucun des écrans de démarrage connus. Les infos sur l’appli mènent généralement aux réglages de batterie et d’arrière-plan.</string>
+    <string name="background_launch_app_info_hint">Ce téléphone n’a aucun des écrans de démarrage connus. Les infos sur l’appli mènent généralement aux paramètres de batterie et d’arrière-plan.</string>
     <string name="settings_badge">Nouveau conseil</string>
     <string name="eink_title">Écran à encre électronique</string>
     <string name="eink_switch">Mode e-ink</string>
@@ -415,7 +411,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="eink_enlarge_confirm">Agrandir</string>
     <string name="eink_enlarge_keep">Garder les tailles</string>
     <string name="eink_home_title">Écran à encre électronique ?</string>
-    <string name="eink_home_message">Cet appareil ressemble à une liseuse à encre électronique. Le mode e-ink rend Screenlate noir et blanc, sans animations. Sur les appareils lents ou sans internet, la bulle peut aussi lire uniquement le texte des applis, sans reconnaître l’écran.</string>
+    <string name="eink_home_message">Cet appareil ressemble à une liseuse à encre électronique. Le mode e-ink affiche Screenlate en noir et blanc, sans animations. Sur les appareils lents ou sans internet, la bulle peut aussi lire uniquement le texte des applis, sans reconnaître l’écran.</string>
     <string name="eink_home_turn_on">Activer le mode e-ink</string>
     <string name="eink_home_app_text">Texte des applis uniquement…</string>
     <string name="dictionaries_website">Site web</string>
@@ -444,7 +440,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="backup_read_failed">La sauvegarde n’a pas pu être lue.</string>
     <string name="backup_loaded">Sauvegarde du %1$s, version %2$s</string>
     <string name="backup_sections">Parties à restaurer</string>
-    <string name="backup_replace_warning">Les parties cochées remplacent les actuelles. Les dictionnaires de la sauvegarde sont ajoutés ou remplacent les mêmes ; les autres dictionnaires installés restent.</string>
+    <string name="backup_replace_warning">Les parties cochées remplacent les actuelles. Les dictionnaires de la sauvegarde sont ajoutés ou remplacent leur version installée ; les autres dictionnaires installés restent.</string>
     <string name="backup_restore_button">Restaurer la sélection</string>
     <string name="backup_restored">Restauré</string>
     <string name="backup_section_general">Général</string>
@@ -452,7 +448,7 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="backup_section_bubble">Bulle flottante et reconnaissance</string>
     <string name="backup_section_bubble_hint">Taille, visée, moteurs de reconnaissance, texte des applis, applis où la bulle est masquée</string>
     <string name="backup_section_lookup">Recherche</string>
-    <string name="backup_section_lookup_hint">Longueur d’analyse, nombre de résultats, romaji, kanji isolés</string>
+    <string name="backup_section_lookup_hint">Longueur d’analyse, nombre de résultats, romaji, kanji du mot</string>
     <string name="backup_section_popup">Apparence de la fenêtre contextuelle</string>
     <string name="backup_section_popup_hint">Police, taille du texte, CSS personnalisé et polices installées</string>
     <string name="backup_section_anki">Anki</string>
@@ -467,9 +463,9 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     </plurals>
     <string name="backup_section_dictionary_files">Dictionnaires</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d dictionnaire, ajouté ou remplaçant le même</item>
-        <item quantity="many">%d dictionnaires, ajoutés ou remplaçant les mêmes</item>
-        <item quantity="other">%d dictionnaires, ajoutés ou remplaçant les mêmes</item>
+        <item quantity="one">%d dictionnaire : il s’ajoute ou remplace sa version installée</item>
+        <item quantity="many">%d dictionnaires : ils s’ajoutent ou remplacent leur version installée</item>
+        <item quantity="other">%d dictionnaires : ils s’ajoutent ou remplacent leur version installée</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d police</item>
@@ -487,13 +483,13 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="home_bubble_shown">La bulle est à l’écran</string>
     <string name="home_bubble_hidden">La bulle est masquée</string>
     <string name="home_bubble_stopped">Pas de bulle : le téléphone a arrêté le service</string>
-    <string name="home_bubble_stopped_hint">Une application ne peut pas réactiver le service elle-même. Ouvrez ses paramètres, désactivez puis réactivez l’interrupteur, et la bulle revient.</string>
+    <string name="home_bubble_stopped_hint">Une appli ne peut pas réactiver le service elle-même. Ouvrez ses paramètres, désactivez puis réactivez l’interrupteur, et la bulle revient.</string>
     <string name="home_bubble_show">Ramener la bulle</string>
     <string name="home_bubble_hide">Masquer la bulle</string>
     <string name="bubble_visible">Afficher la bulle</string>
     <string name="bubble_visible_hint">Désactivé : la bulle n’est pas à l’écran. La tuile des réglages rapides fait la même chose.</string>
     <string name="background_keep_alive_title">Pour que la bulle ne disparaisse pas</string>
-    <string name="background_keep_alive_text">Un téléphone qui arrête les applications en arrière-plan peut aussi arrêter le service qui dessine la bulle. Une application avec sa propre notification est bien plus souvent épargnée.</string>
+    <string name="background_keep_alive_text">Un téléphone qui arrête les applis en arrière-plan peut aussi arrêter le service qui dessine la bulle. Une appli avec sa propre notification est bien plus souvent épargnée.</string>
     <string name="background_keep_alive_switch">Garder une notification tant que le service tourne</string>
     <string name="background_keep_alive_hint">Cela n’aide pas toujours. Une fois le service arrêté, seul un arrêt puis une remise en marche dans les paramètres d’accessibilité ramène la bulle.</string>
     <string name="background_keep_alive_notifications_off">Les notifications de Screenlate sont désactivées : le service fonctionne, mais sa notification n’est pas affichée.</string>
@@ -502,17 +498,17 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="action_move_up">Monter</string>
     <string name="action_move_down">Descendre</string>
     <string name="tooltip_more_info">En savoir plus</string>
-    <string name="reset_all_tooltip">Réinitialiser tous les réglages</string>
-    <string name="reset_all_title">Réinitialiser tous les réglages ?</string>
-    <string name="reset_all_text">Tous les réglages reviennent à leur état après l’installation : la bulle et ses applis masquées, la recherche, Anki et l’audio avec les modèles de champs, la fenêtre contextuelle avec sa police, ses tailles et son CSS, le thème et le mode e-ink, l’arrière-plan et les annonces de nouvelles versions. Les astuces s’affichent de nouveau. Les dictionnaires, les polices installées et la langue de l’appli restent.</string>
+    <string name="reset_all_tooltip">Réinitialiser tous les paramètres</string>
+    <string name="reset_all_title">Réinitialiser tous les paramètres ?</string>
+    <string name="reset_all_text">Tous les paramètres reviennent à leur état après l’installation : la bulle et ses applis masquées, la recherche, Anki et l’audio avec les modèles de champs, la fenêtre contextuelle avec sa police, ses tailles et son CSS, le thème et le mode e-ink, l’arrière-plan et les annonces de nouvelles versions. Les astuces s’affichent de nouveau. Les dictionnaires, les polices installées et la langue de l’appli restent.</string>
     <string name="reset_section_tooltip">Réinitialiser cette section</string>
     <string name="reset_section_title">Réinitialiser cette section ?</string>
-    <string name="reset_bubble_text">Tous les réglages de la bulle reviennent à leur état après l’installation, y compris les applis masquées, la taille de la bulle et sa place à l’écran. Une bulle masquée réapparaît.</string>
-    <string name="reset_lookup_text">La longueur de balayage, les entrées par recherche et les autres réglages de recherche reviennent à leur état après l’installation.</string>
+    <string name="reset_bubble_text">Tous les paramètres de la bulle reviennent à leur état après l’installation, y compris les applis masquées, la taille de la bulle et sa place à l’écran. Une bulle masquée réapparaît.</string>
+    <string name="reset_lookup_text">La longueur d’analyse, les entrées par recherche et les autres paramètres de recherche reviennent à leur état après l’installation.</string>
     <string name="reset_anki_text">Le paquet, le type de note, les modèles de champs, les étiquettes, la gestion des doublons et les sources audio reviennent à leur état après l’installation. Rien ne change dans AnkiDroid.</string>
     <string name="reset_popup_text">Le choix de police, la taille et la graisse du texte, le CSS personnalisé et la copie des définitions reviennent à leur état après l’installation. Les polices téléchargées et ajoutées restent installées.</string>
-    <string name="reset_appearance_text">Le thème suit de nouveau le système et le mode e-ink s’éteint, en rendant les tailles qu’il avait agrandies. La langue de l’appli reste.</string>
-    <string name="reset_background_text">La notification qui garde la bulle en vie s’éteint. Les réglages de batterie et de démarrage appartiennent à Android et ne changent pas.</string>
+    <string name="reset_appearance_text">Le thème suit de nouveau le système et le mode e-ink se désactive ; les tailles qu’il avait agrandies reviennent à leurs valeurs précédentes. La langue de l’appli reste.</string>
+    <string name="reset_background_text">La notification qui garde la bulle en vie s’éteint. Les paramètres de batterie et de démarrage appartiennent à Android et ne changent pas.</string>
     <string name="reset_dictionaries_tooltip">Réinitialiser les dictionnaires</string>
     <string name="reset_dictionaries_title">Réinitialiser les dictionnaires ?</string>
     <string name="reset_dictionaries_text">Tous les dictionnaires sont supprimés, y compris ceux que vous avez ajoutés, et ceux fournis sont réinstallés comme après l’installation, avec l’ordre et les interrupteurs d’origine. Les importations et téléchargements en cours sont annulés. L’installation prend jusqu’à une minute ; d’ici là, la recherche est incomplète.</string>
@@ -520,8 +516,8 @@ Convient aux liseuses à encre électronique, aux appareils anciens ou peu puiss
     <string name="reset_dictionaries_busy">Réinitialisation des dictionnaires…</string>
     <string name="reset_dictionaries_failed">Échec de la réinitialisation des dictionnaires : %1$s</string>
     <string name="dictionaries_delete_failed">Impossible de supprimer le dictionnaire : %1$s</string>
-    <string name="dictionaries_import_interrupted">%1$s : l’application s’est fermée deux fois pendant cette importation, elle a donc été arrêtée. Réessayez ; si cela se reproduit, le fichier est peut-être endommagé ou trop volumineux pour cet appareil.</string>
+    <string name="dictionaries_import_interrupted">%1$s : l’appli s’est fermée deux fois pendant cette importation, elle a donc été arrêtée. Réessayez ; si cela se reproduit, le fichier est peut-être endommagé ou trop volumineux pour cet appareil.</string>
     <string name="reset_dictionaries_gave_up_title">La réinitialisation des dictionnaires n’a pas abouti</string>
-    <string name="reset_dictionaries_gave_up_text">L’application s’est fermée deux fois pendant la réinitialisation des dictionnaires, elle a donc été arrêtée. Certains dictionnaires peuvent rester ou manquer. Relancez la réinitialisation avec le bouton en haut de la page Dictionnaires.</string>
+    <string name="reset_dictionaries_gave_up_text">L’appli s’est fermée deux fois pendant la réinitialisation des dictionnaires, elle a donc été arrêtée. Certains dictionnaires peuvent rester ou manquer. Relancez la réinitialisation avec le bouton en haut de la page Dictionnaires.</string>
     <string name="reset_dictionaries_gave_up_open">Ouvrir les dictionnaires</string>
 </resources>

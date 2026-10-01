@@ -79,7 +79,7 @@
     <string name="anki_fields_hint">範本使用 {expression}、{reading}、{glossary}、{sentence}、{audio}、{screenshot} 等標記。點按 + 按鈕可插入標記。第一個欄位用於檢查重複。</string>
     <string name="anki_insert_marker">插入標記</string>
     <string name="anki_duplicates">重複</string>
-    <string name="anki_duplicate_check">檢檢查重複複</string>
+    <string name="anki_duplicate_check">檢查重複</string>
     <string name="anki_duplicate_scope">查詢範圍</string>
     <string name="anki_scope_collection">整個集合</string>
     <string name="anki_scope_deck">牌組</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">手指上方</string>
     <string name="bubble_aim_center">懸浮球中心</string>
     <string name="bubble_aim_hint">雙擊懸浮球可在兩者之間切換。</string>
-    <string name="bubble_dock_side">停靠</string>
+    <string name="bubble_dock_side">停靠邊</string>
     <string name="bubble_dock_left">左邊緣</string>
     <string name="bubble_dock_right">右邊緣</string>
     <string name="bubble_highlight">醒目標示瞄準處的詞</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">篩選應用程式</string>
     <string name="bubble_read_app_text">讀取應用程式文字（實驗性）</string>
     <string name="bubble_read_app_text_hint">在提供文字的應用程式中速度更快。</string>
-    <string name="bubble_read_app_text_info">應用程式文字準確無誤，無需等待辨識即可幾乎立刻獲得，也不需要網路；但僅適用於向無障礙服務提供字元位置的應用程式。在其他應用程式中以及對圖片中的文字，仍照常辨識螢幕。
-
-讀取應用程式文字屬於實驗功能：有些應用程式報告的字元位置有誤，因此醒目標示可能偏移，或查到相鄰的詞。遇到這種情況請關閉它。</string>
+    <string name="bubble_read_app_text_info">應用程式文字準確無誤，無需等待辨識即可幾乎立刻獲得，也不需要網路；但僅適用於向無障礙服務提供字元位置的應用程式。在其他應用程式中以及對圖片中的文字，仍照常辨識螢幕。\n\n讀取應用程式文字屬於實驗功能：有些應用程式報告的字元位置有誤，因此醒目標示可能偏移，或查到相鄰的詞。遇到這種情況請關閉它。</string>
     <string name="bubble_app_text_only">僅應用程式文字</string>
     <string name="bubble_app_text_only_hint">不截圖，也不辨識。不讀取圖片中的文字。</string>
-    <string name="bubble_app_text_only_info">完全不辨識螢幕：只讀取應用程式向無障礙服務提供的文字。圖片、漫畫、遊戲以及不提供文字的應用程式中的文字都不會被讀取。
-
-適合電子紙閱讀器、無法辨識或辨識緩慢的舊裝置或低效能裝置，以及網路速度慢或按流量計費的網路：不在辨識上耗電，也不傳送任何資料。</string>
+    <string name="bubble_app_text_only_info">完全不辨識螢幕：只讀取應用程式向無障礙服務提供的文字。圖片、漫畫、遊戲以及不提供文字的應用程式中的文字都不會被讀取。\n\n適合電子紙閱讀器、無法辨識或辨識緩慢的舊裝置或低效能裝置，以及網路速度慢或按流量計費的網路：不在辨識上耗電，也不傳送任何資料。</string>
     <string name="bubble_app_text_only_confirm">開啟</string>
     <string name="dictionaries_import_yomitan_backup">匯入 Yomitan 詞典合集</string>
     <string name="dictionaries_task_converting">正在解壓 %1$s</string>
@@ -165,7 +161,7 @@
     <string name="anki_overwrite_prepend">新增到開頭</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
-    <string name="settings_bubble_summary">瞄準、停靠、文字來源、隱藏的應用程式</string>
+    <string name="settings_bubble_summary">瞄準、停靠邊、文字來源、隱藏的應用程式</string>
     <string name="lookup_title">查詞</string>
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
     <string name="appearance_title">外觀</string>
@@ -271,7 +267,7 @@
     <string name="yomitan_summary_audio_off">Yomitan 中音訊已關閉；未設定任何來源</string>
     <string name="yomitan_summary_audio_unknown">不支援的音訊來源：%1$s</string>
     <string name="yomitan_summary_lookup">掃描長度 %1$s，每次查詞的詞條數 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">文字替換（%1$d 條規則）不會匯入：數字作為漢字數字、々、ッ 和標點會自動處理</string>
+    <string name="yomitan_summary_replacements_skipped">文字替換（%1$d 條規則）不會匯入：漢字書寫的數字、々、ッ 和標點會自動處理</string>
     <string name="yomitan_collection_not_collection">此檔案不是 Yomitan 詞典合集的匯出檔案。</string>
     <string name="yomitan_collection_failed">無法開始匯入：無法讀取或複製該檔案。</string>
     <string name="yomitan_collection_choose">檔案中的詞典</string>
@@ -313,12 +309,12 @@
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
     <string name="popup_settings_title">彈出視窗</string>
     <string name="popup_copy_title">釋義複製</string>
-    <string name="popup_copy_switch">字典名稱旁的複製按鈕</string>
-    <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個字典名稱旁的按鈕會複製該字典的釋義。</string>
+    <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
+    <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個詞典名稱旁的按鈕會複製該詞典的釋義。</string>
     <string name="popup_copy_mode_all">全部</string>
     <string name="popup_copy_mode_meanings">僅釋義</string>
-    <string name="popup_copy_mode_all_hint">字典顯示的全部內容。支援格式的應用程式會取得帶格式的內容，其他則取得純文字。</string>
-    <string name="popup_copy_mode_meanings_hint">以純文字複製編號釋義，不含例句、註解和參見。並非對所有字典都有效：無法區分釋義時會複製全文。</string>
+    <string name="popup_copy_mode_all_hint">詞典顯示的全部內容。支援格式的應用程式會取得帶格式的內容，其他則取得純文字。</string>
+    <string name="popup_copy_mode_meanings_hint">以純文字複製編號釋義，不含例句、註解和參見。並非對所有詞典都有效：無法區分釋義時會複製全文。</string>
     <string name="popup_css_title">自訂 CSS</string>
     <string name="popup_css_hint">與 Yomitan 的彈出視窗自訂 CSS 一樣，在詞典樣式之後應用於彈出視窗和搜尋頁面。詞條使用 Yomitan 的類別名稱，標籤顏色遵循 Yomitan 的變數（--tag-frequency-background-color 等）。手機上沒有的字型會改用彈出視窗字型。</string>
     <string name="css_problem_unclosed_comment">第 %1$d 行：註解未閉合（缺少 */），其後的內容全部被忽略</string>
@@ -442,7 +438,7 @@
     <string name="backup_read_failed">無法讀取備份。</string>
     <string name="backup_loaded">%1$s 的備份，版本 %2$s</string>
     <string name="backup_sections">要恢復的部分</string>
-    <string name="backup_replace_warning">勾選的部分會替換目前內容。備份中的詞典會被新增或替換相同的詞典；其他已安裝的詞典保持不變。</string>
+    <string name="backup_replace_warning">勾選的部分會替換目前內容。備份中的詞典會被新增，或替換已安裝的同一詞典；其他已安裝的詞典保持不變。</string>
     <string name="backup_restore_button">恢復所選</string>
     <string name="backup_restored">已恢復</string>
     <string name="backup_section_general">常規</string>
@@ -450,7 +446,7 @@
     <string name="backup_section_bubble">懸浮球與辨識</string>
     <string name="backup_section_bubble_hint">大小、瞄準、辨識引擎、應用程式文字、隱藏懸浮球的應用程式</string>
     <string name="backup_section_lookup">查詞</string>
-    <string name="backup_section_lookup_hint">掃描長度、結果數量、羅馬字、單個漢字</string>
+    <string name="backup_section_lookup_hint">掃描長度、結果數量、羅馬字、詞中的漢字</string>
     <string name="backup_section_popup">彈出視窗外觀</string>
     <string name="backup_section_popup_hint">字型、文字大小、自訂 CSS 和已安裝的字型</string>
     <string name="backup_section_anki">Anki</string>
@@ -463,7 +459,7 @@
     </plurals>
     <string name="backup_section_dictionary_files">詞典</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d 個詞典，新增或替換相同的詞典</item>
+        <item quantity="other">%d 個詞典，新增或替換已安裝的版本</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d 個字型</item>

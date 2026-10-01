@@ -20,7 +20,7 @@
     <string name="overlay_ocr_error_network">クラウド認識に接続できませんでした。</string>
     <string name="overlay_ocr_error_too_many">クラウド認識へのリクエストが多すぎたため、数分間休止します。</string>
     <string name="overlay_ocr_error_refused">クラウド認識がリクエストを拒否したため、数分間休止します。</string>
-    <string name="overlay_ocr_error_server">クラウド認識側で問題が起きています（エラー %1$d）。</string>
+    <string name="overlay_ocr_error_server">クラウド認識のサーバー側で問題が起きています（エラー %1$d）。</string>
     <string name="overlay_ocr_error_other">クラウド認識に失敗しました。</string>
     <string name="overlay_ocr_error_fallback">文字は端末上で認識されたため、精度が下がります。</string>
     <string name="overlay_no_results">辞書に項目が見つかりません。</string>
@@ -58,7 +58,7 @@
     <string name="overlay_pitch_dictionaries">アクセントの出典</string>
     <string name="overlay_copy_paragraph">この段落をコピー</string>
     <string name="overlay_copy_all">認識したテキストをすべてコピー</string>
-    <string name="overlay_menu_open_app">Screenlateを開く</string>
+    <string name="overlay_menu_open_app">Screenlate を開く</string>
     <string name="overlay_copied">コピーしました</string>
     <string name="overlay_keep_alive_channel">サービス実行中</string>
     <string name="overlay_keep_alive_title">Screenlate は待機中です</string>

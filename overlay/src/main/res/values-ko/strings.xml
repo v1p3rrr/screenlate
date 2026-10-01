@@ -20,14 +20,14 @@
     <string name="overlay_ocr_error_network">클라우드 인식에 연결할 수 없습니다.</string>
     <string name="overlay_ocr_error_too_many">클라우드 인식에 요청이 너무 많아 몇 분간 쉽니다.</string>
     <string name="overlay_ocr_error_refused">클라우드 인식이 요청을 거부해 몇 분간 쉽니다.</string>
-    <string name="overlay_ocr_error_server">클라우드 인식 쪽에 문제가 있습니다(오류 %1$d).</string>
+    <string name="overlay_ocr_error_server">클라우드 인식 서버 쪽에 문제가 있습니다(오류 %1$d).</string>
     <string name="overlay_ocr_error_other">클라우드 인식에 실패했습니다.</string>
     <string name="overlay_ocr_error_fallback">텍스트를 기기에서 인식해 정확도가 낮습니다.</string>
     <string name="overlay_no_results">사전 항목을 찾지 못했습니다.</string>
     <string name="overlay_no_dictionaries">사전을 아직 설치하는 중입니다. 잠시 후 다시 시도하세요.</string>
     <string name="overlay_no_dictionaries_on">정의가 있는 사전이 켜져 있지 않습니다. Screenlate의 사전에서 켜거나 추가하세요.</string>
     <string name="overlay_add_note">Anki에 추가(길게 누르면 이미지 포함)</string>
-    <string name="overlay_note_wait">텍스트가 확정될 때까지 기다려 주세요(표시가 멈출 때까지).</string>
+    <string name="overlay_note_wait">텍스트가 확정될 때까지 기다려 주세요(로딩 표시가 사라질 때까지).</string>
     <string name="overlay_play_audio">오디오 재생(길게 눌러 선택)</string>
     <string name="anki_error">노트를 추가하지 못했습니다: %1$s</string>
     <string name="anki_rejected">AnkiDroid가 노트를 저장하지 않았습니다.</string>
@@ -53,7 +53,7 @@
     <string name="overlay_add_anyway_picture">그래도 이미지와 함께 추가</string>
     <string name="overlay_audio_loading">오디오를 찾는 중…</string>
     <string name="overlay_open_app">Anki 설정 열기</string>
-    <string name="audio_no_voice">이 언어의 텍스트 음성 변환 음성이 설치되어 있지 않습니다.</string>
+    <string name="audio_no_voice">이 언어의 TTS 음성이 설치되어 있지 않습니다.</string>
     <string name="overlay_close">닫기</string>
     <string name="overlay_pitch_dictionaries">고저 악센트 출처</string>
     <string name="overlay_copy_paragraph">이 단락 복사</string>

@@ -18,11 +18,11 @@
     <string name="ocr_test_title">Test OCR</string>
     <string name="ocr_test_pick_image">Wybierz obraz</string>
     <string name="ocr_test_running">Rozpoznawanie…</string>
-    <string name="ocr_test_hit">Pod dotknięciem: %1$s</string>
+    <string name="ocr_test_hit">W miejscu dotknięcia: %1$s</string>
 
     <string name="action_delete">Usuń</string>
     <string name="action_cancel">Anuluj</string>
-    <string name="action_dismiss">Odrzuć</string>
+    <string name="action_dismiss">Ukryj</string>
 
     <string name="home_dictionaries_title">Słowniki</string>
     <string name="home_dictionaries_summary">Zainstalowane: %1$d, włączone: %2$d.</string>
@@ -34,7 +34,7 @@
     <string name="dictionaries_import_failed">Import nie powiódł się: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: import nie powiódł się — %2$s</string>
     <string name="dictionaries_last_term">Co najmniej jeden słownik z definicjami musi pozostać włączony.</string>
-    <string name="dictionaries_remote_css">⚠ Jego style wczytują pliki z %1$s, który widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów się wczytują, inne pliki są blokowane.</string>
+    <string name="dictionaries_remote_css">⚠ Jego style wczytują pliki z %1$s; ten serwer widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów się wczytują, inne pliki są blokowane.</string>
     <string name="dictionaries_import_no_space">Za mało wolnego miejsca, aby zaimportować %1$s: potrzeba około %2$s, wolne %3$s. Zwolnij miejsce i spróbuj ponownie.</string>
     <string name="dictionaries_installed">Zainstalowane</string>
     <string name="dictionaries_none">Brak zainstalowanych słowników.</string>
@@ -92,7 +92,7 @@
 
     <string name="audio_title">Dźwięk</string>
     <string name="audio_auto_play">Odtwarzaj dźwięk, gdy pojawi się nowe słowo</string>
-    <string name="audio_sources_hint">Sprawdzane od góry do dołu; pierwsze z nagraniem jest odtwarzane i trafia do notatek. Dotknij źródła, aby je edytować.</string>
+    <string name="audio_sources_hint">Źródła są sprawdzane od góry do dołu; pierwsze z nagraniem jest odtwarzane i trafia do notatek. Dotknij źródła, aby je edytować.</string>
     <string name="audio_url_template">Szablon URL</string>
     <string name="audio_add_source">Dodaj źródło dźwięku</string>
     <string name="search_title">Wyszukaj słowa</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Nad palcem</string>
     <string name="bubble_aim_center">Środek dymka</string>
     <string name="bubble_aim_hint">Dwukrotne dotknięcie pływającego dymka przełącza między nimi.</string>
-    <string name="bubble_dock_side">Dokowanie</string>
+    <string name="bubble_dock_side">Strona</string>
     <string name="bubble_dock_left">Lewa krawędź</string>
     <string name="bubble_dock_right">Prawa krawędź</string>
     <string name="bubble_highlight">Podświetlaj słowo pod celownikiem</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Filtruj aplikacje</string>
     <string name="bubble_read_app_text">Czytaj tekst aplikacji (eksperymentalne)</string>
     <string name="bubble_read_app_text_hint">Szybciej w aplikacjach, które udostępniają swój tekst.</string>
-    <string name="bubble_read_app_text_info">Tekst aplikacji jest dokładny, gotowy niemal od razu bez czekania na rozpoznawanie i nie wymaga sieci, ale działa tylko w aplikacjach, które przekazują pozycje znaków usługom ułatwień dostępu; gdzie indziej, a także dla tekstu na obrazach, ekran jest rozpoznawany jak zwykle.
-
-Czytanie tekstu aplikacji jest eksperymentalne: niektóre aplikacje podają błędne pozycje znaków, więc podświetlenie może być przesunięte albo może zostać znalezione sąsiednie słowo. Jeśli tak się dzieje, wyłącz je.</string>
+    <string name="bubble_read_app_text_info">Tekst aplikacji jest dokładny, gotowy niemal od razu bez czekania na rozpoznawanie i nie wymaga sieci, ale działa tylko w aplikacjach, które przekazują pozycje znaków usługom ułatwień dostępu; gdzie indziej, a także dla tekstu na obrazach, ekran jest rozpoznawany jak zwykle.\n\nCzytanie tekstu aplikacji jest eksperymentalne: niektóre aplikacje podają błędne pozycje znaków, więc podświetlenie może być przesunięte albo może zostać znalezione sąsiednie słowo. Jeśli tak się dzieje, wyłącz je.</string>
     <string name="bubble_app_text_only">Tylko tekst aplikacji</string>
     <string name="bubble_app_text_only_hint">Bez zrzutów ekranu i bez rozpoznawania. Tekst na obrazach nie jest czytany.</string>
-    <string name="bubble_app_text_only_info">Ekran w ogóle nie jest rozpoznawany: czytany jest tylko tekst, który aplikacje przekazują usługom ułatwień dostępu. Tekst na obrazach, w mangach, grach i aplikacjach, które nie udostępniają swojego tekstu, nie jest czytany.
-
-Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na których rozpoznawanie nie działa albo jest wolne, oraz przy wolnym lub limitowanym internecie: bateria nie jest zużywana na rozpoznawanie i żadne dane nie są wysyłane.</string>
+    <string name="bubble_app_text_only_info">Ekran w ogóle nie jest rozpoznawany: czytany jest tylko tekst, który aplikacje przekazują usługom ułatwień dostępu. Tekst na obrazach, w mangach, grach i aplikacjach, które nie udostępniają swojego tekstu, nie jest czytany.\n\nSprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na których rozpoznawanie nie działa albo jest wolne, oraz przy wolnym lub limitowanym internecie: bateria nie jest zużywana na rozpoznawanie i żadne dane nie są wysyłane.</string>
     <string name="bubble_app_text_only_confirm">Włącz</string>
     <string name="dictionaries_import_yomitan_backup">Importuj kolekcję słowników Yomitan</string>
     <string name="dictionaries_task_converting">Rozpakowywanie: %1$s</string>
@@ -165,7 +161,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="anki_overwrite_prepend">dopisz na początku</string>
     <string name="audio_volume">Głośność: %1$d%%</string>
     <string name="settings_title">Ustawienia</string>
-    <string name="settings_bubble_summary">Celownik, dokowanie, źródło tekstu, ukryte aplikacje</string>
+    <string name="settings_bubble_summary">Celownik, strona, źródło tekstu, ukryte aplikacje</string>
     <string name="lookup_title">Wyszukiwanie</string>
     <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, kanji słowa</string>
     <string name="appearance_title">Wygląd</string>
@@ -205,7 +201,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="problems_audio_sources">Źródła dźwięku, które zawiodły:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Ustawienia dźwięku</string>
-    <string name="problems_dismiss">Odrzuć</string>
+    <string name="problems_dismiss">Ukryj</string>
     <string name="anki_problem_title">Konfiguracja Anki</string>
     <string name="anki_problem_fix_model">Wybierz typ notatki ponownie.</string>
     <string name="anki_problem_fix_deck">Wybierz talię ponownie.</string>
@@ -240,7 +236,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="yomitan_import_settings">Ustawienia</string>
     <string name="yomitan_import_settings_hint">W Yomitan: Ustawienia → Kopia zapasowa → Eksportuj ustawienia. Wybierz tutaj plik i profil, z którego mają pochodzić ustawienia.</string>
     <string name="yomitan_import_not_settings">Ten plik nie jest eksportem ustawień Yomitan.</string>
-    <string name="yomitan_import_failed">Import przerwał się z powodu błędu. Już zaimportowane ustawienia pozostają zastosowane.</string>
+    <string name="yomitan_import_failed">Import został przerwany przez błąd. Już zaimportowane ustawienia pozostają zastosowane.</string>
     <string name="yomitan_import_choose_settings">Wybierz plik ustawień</string>
     <string name="yomitan_import_profile">Profil</string>
     <string name="yomitan_import_profile_current">%1$s (bieżący)</string>
@@ -278,7 +274,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="yomitan_collection_entries">Hasła: %1$d</string>
     <string name="yomitan_collection_media">Obrazy: %1$d</string>
     <string name="yomitan_collection_installed">już zainstalowany</string>
-    <string name="yomitan_collection_hint">Zainstalowane słowniki są na początku odznaczone; zaznaczony zastępuje zainstalowaną kopię. Duże pliki zajmują kilka minut.</string>
+    <string name="yomitan_collection_hint">Zainstalowane słowniki są na początku odznaczone; zaznaczony zastępuje zainstalowaną kopię. Import dużych plików trwa kilka minut.</string>
     <string name="yomitan_collection_import">Importuj (%1$d)</string>
     <string name="yomitan_collection_queued">Importowanie słowników w tle (%1$d); postęp widać na ekranie Słowniki.</string>
     <string name="bubble_show_source">Pokazuj rozpoznany tekst nad hasłami</string>
@@ -331,11 +327,11 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="css_problem_empty_font_name">Wiersz %1$d: pusta nazwa w font-family (o jeden przecinek za dużo?), przeglądarka pomija całą deklarację</string>
     <string name="css_problem_outside_rule">Wiersz %1$d: „%2$s” jest poza jakąkolwiek regułą { }</string>
     <string name="css_problem_unknown_font">Wiersz %1$d: telefon nie ma czcionki „%2$s”, używana jest następna z listy lub czcionka okienka</string>
-    <string name="css_problem_remote_file">Wiersz %1$d: wczytuje plik z %2$s, który widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów z internetu się wczytują, inne pliki są blokowane.</string>
+    <string name="css_problem_remote_file">Wiersz %1$d: wczytuje plik z %2$s; ten serwer widzi wtedy, kiedy szukasz słów. Czcionki i arkusze stylów z internetu się wczytują, inne pliki są blokowane.</string>
     <string name="yomitan_section_appearance">Wygląd okienka</string>
     <string name="yomitan_section_appearance_hint">Rozmiar tekstu i własny CSS okienka</string>
     <string name="yomitan_summary_font_size">Rozmiar tekstu %1$d</string>
-    <string name="yomitan_summary_css">Własny CSS okienka: wiersze: %1$d</string>
+    <string name="yomitan_summary_css">Własny CSS okienka (wiersze: %1$d)</string>
     <string name="yomitan_summary_css_issues">CSS ma problemy (%1$d), zobacz ekran „Okienko”</string>
     <string name="yomitan_summary_font_family">Czcionka „%1$s” nie jest importowana: wybierz czcionkę na ekranie „Okienko”</string>
     <string name="popup_font_system_missing">Ten telefon nie ma japońskiej czcionki systemowej, więc kanji mogą mieć chińskie formy. Pobierz Noto Sans JP poniżej.</string>
@@ -435,7 +431,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
         <item quantity="many">Zapisano kopię (%1$s, %2$d słowników).</item>
         <item quantity="other">Zapisano kopię (%1$s, %2$d słownika).</item>
     </plurals>
-    <string name="backup_write_failed">Nie udało się zapisać kopii. Sprawdź wolne miejsce lub wybierz inne miejsce.</string>
+    <string name="backup_write_failed">Nie udało się zapisać kopii. Sprawdź, ile jest wolnego miejsca, lub wybierz inną lokalizację.</string>
     <string name="backup_restore">Przywróć</string>
     <string name="backup_restore_hint">Wybierz plik kopii, a potem części do przywrócenia.</string>
     <string name="backup_choose">Wybierz kopię…</string>
@@ -445,7 +441,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="backup_read_failed">Nie udało się odczytać kopii.</string>
     <string name="backup_loaded">Kopia z %1$s, wersja %2$s</string>
     <string name="backup_sections">Części do przywrócenia</string>
-    <string name="backup_replace_warning">Zaznaczone części zastępują obecne. Słowniki z kopii są dodawane lub zastępują te same; pozostałe zainstalowane słowniki zostają.</string>
+    <string name="backup_replace_warning">Zaznaczone części zastępują obecne. Słowniki z kopii są dodawane lub zastępują swoje zainstalowane wersje; pozostałe zainstalowane słowniki zostają.</string>
     <string name="backup_restore_button">Przywróć zaznaczone</string>
     <string name="backup_restored">Przywrócono</string>
     <string name="backup_section_general">Ogólne</string>
@@ -453,7 +449,7 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="backup_section_bubble">Pływający dymek i rozpoznawanie</string>
     <string name="backup_section_bubble_hint">Rozmiar, celownik, silniki rozpoznawania, tekst aplikacji, aplikacje, w których dymek jest ukryty</string>
     <string name="backup_section_lookup">Wyszukiwanie</string>
-    <string name="backup_section_lookup_hint">Zasięg skanowania, liczba wyników, romaji, pojedyncze kanji</string>
+    <string name="backup_section_lookup_hint">Zasięg skanowania, liczba wyników, romaji, kanji słowa</string>
     <string name="backup_section_popup">Wygląd okienka</string>
     <string name="backup_section_popup_hint">Czcionka, rozmiar tekstu, własny CSS i zainstalowane czcionki</string>
     <string name="backup_section_anki">Anki</string>
@@ -469,10 +465,10 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     </plurals>
     <string name="backup_section_dictionary_files">Słowniki</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d słownik, dodany lub zastępujący ten sam</item>
-        <item quantity="few">%d słowniki, dodane lub zastępujące te same</item>
-        <item quantity="many">%d słowników, dodanych lub zastępujących te same</item>
-        <item quantity="other">%d słownika, dodane lub zastępujące te same</item>
+        <item quantity="one">%d słownik: zostanie dodany lub zastąpi zainstalowaną wersję</item>
+        <item quantity="few">%d słowniki: zostaną dodane lub zastąpią zainstalowane wersje</item>
+        <item quantity="many">%d słowników: zostaną dodane lub zastąpią zainstalowane wersje</item>
+        <item quantity="other">%d słownika: zostaną dodane lub zastąpią zainstalowane wersje</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d czcionka</item>
@@ -513,10 +509,10 @@ Sprawdza się na czytnikach e-ink, starych lub słabych urządzeniach, na który
     <string name="reset_section_tooltip">Resetuj tę sekcję</string>
     <string name="reset_section_title">Zresetować tę sekcję?</string>
     <string name="reset_bubble_text">Wszystkie ustawienia dymka wracają do stanu po instalacji, w tym ukryte aplikacje, rozmiar dymka i jego miejsce na ekranie. Ukryty dymek pojawi się znowu.</string>
-    <string name="reset_lookup_text">Długość skanowania, hasła na wyszukiwanie i pozostałe ustawienia wyszukiwania wracają do stanu po instalacji.</string>
+    <string name="reset_lookup_text">Zasięg skanowania, hasła na wyszukiwanie i pozostałe ustawienia wyszukiwania wracają do stanu po instalacji.</string>
     <string name="reset_anki_text">Talia, typ notatki, szablony pól, tagi, obsługa duplikatów i źródła dźwięku wracają do stanu po instalacji. W AnkiDroid nic się nie zmienia.</string>
     <string name="reset_popup_text">Wybór czcionki, rozmiar i grubość tekstu, własny CSS i kopiowanie definicji wracają do stanu po instalacji. Pobrane i dodane czcionki pozostają zainstalowane.</string>
-    <string name="reset_appearance_text">Motyw znowu podąża za systemem, a tryb e-ink się wyłącza i przywraca powiększone przez siebie rozmiary. Język aplikacji zostaje.</string>
+    <string name="reset_appearance_text">Motyw znowu podąża za systemem, a tryb e-ink się wyłącza; rozmiary, które powiększył, wracają do poprzednich. Język aplikacji zostaje.</string>
     <string name="reset_background_text">Powiadomienie, które podtrzymuje dymek, wyłącza się. Ustawienia baterii i autostartu należą do Androida i pozostają bez zmian.</string>
     <string name="reset_dictionaries_tooltip">Resetuj słowniki</string>
     <string name="reset_dictionaries_title">Zresetować słowniki?</string>

@@ -18,8 +18,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   Dictionaries reset icon) and 25 (imports and resets cut short by a killed app) are done, see their log entry.
   Request 26 (error handling of imports, deletes and resets) is done together with `/code-review xhigh --fix` over
   9ed170e..HEAD, see the log entry "import errors, cancel, retry limits". Request 27 (every string translated, and
-  translated well, in all 14 languages) is open: completeness is checked (nothing missing, placeholders match); the
-  full read-through of the existing translations is next.
+  translated well, in all 14 languages) is done, see the log entry "translation audit".
 - Open, found while testing: the catalog does not recognize installed Wiktionary dictionaries (upstream renamed
   `kty-*` to `wty-*` and moved the index to Hugging Face); suggested to the owner as a separate task.
 - The code review of v0.1.4..HEAD stopped early at the weekly limit; the owner chose to finish it another time. Not
@@ -468,3 +467,20 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   environment was restored from a copy (20 dictionaries, settings identical to the baseline).
 - Translations: the six new strings in all 14 languages; German uses "du" (also fixed in the older
   `home_bubble_stopped_hint`), and the device is named with each language's existing word.
+
+### 2026-10-01 (translation audit)
+
+- Owner's request 27. Completeness: every key in every locale and module, format arguments and plural categories
+  match (`TranslationsTest`). Then every string of all 13 translations read against English; about 250 strings
+  rewritten where they were literal, ambiguous or inconsistent. Conventions and shared terms:
+  `notes/translations.md`.
+- Bug found and fixed: four ⓘ texts written over several lines in the XML lost their paragraph breaks (aapt2 turns a
+  raw line break into a space) in all 14 locales. They use `\n` now, and `TranslationsTest` fails on a raw line break.
+- Typical fixes: the bubble's "dock" became the side or edge; "replaces the same ones" for backup dictionaries became
+  "replaces its installed version"; text weight and letter thickness got distinct words where they were mixed; scan
+  length one name everywhere; sentences without a subject (audio sources, cloud recognition pauses); fr and it
+  typographic apostrophes and quotes; pt "app"/"celular"/"Baixar"; Turkish case suffixes after placeholders; ko
+  spelling (껐다가); a garbled zh-Hant "檢檢查重複複"; zh-Hant 字典 unified to 詞典. English: the backup's lookup part
+  says "kanji of the word", as the setting does.
+- Build, unit tests and lint clean (lint's Typos warning on Turkish "ayrı ayrı" is correct Turkish). Checked on the
+  emulator in Japanese: the app-text-only ⓘ shows its two paragraphs. App language set back to system.

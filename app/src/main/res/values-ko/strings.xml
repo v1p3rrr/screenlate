@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">손가락 위</string>
     <string name="bubble_aim_center">버블 중앙</string>
     <string name="bubble_aim_hint">플로팅 버블을 두 번 탭하면 둘 사이를 전환합니다.</string>
-    <string name="bubble_dock_side">고정 위치</string>
+    <string name="bubble_dock_side">가장자리</string>
     <string name="bubble_dock_left">왼쪽 가장자리</string>
     <string name="bubble_dock_right">오른쪽 가장자리</string>
     <string name="bubble_highlight">조준점 아래 단어 강조</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">앱 필터</string>
     <string name="bubble_read_app_text">앱 텍스트 읽기(실험적)</string>
     <string name="bubble_read_app_text_hint">텍스트를 제공하는 앱에서 더 빠릅니다.</string>
-    <string name="bubble_read_app_text_info">앱 텍스트는 정확하고, 인식을 기다리지 않아 거의 즉시 준비되며, 네트워크가 필요 없습니다. 하지만 글자 위치를 접근성 서비스에 제공하는 앱에서만 동작합니다. 그 밖의 앱과 이미지 속 글자는 평소처럼 화면을 인식합니다.
-
-앱 텍스트 읽기는 실험 기능입니다. 일부 앱은 글자 위치를 잘못 알려 주기 때문에 강조 표시가 어긋나거나 옆 단어가 검색될 수 있습니다. 그럴 때는 끄세요.</string>
+    <string name="bubble_read_app_text_info">앱 텍스트는 정확하고, 인식을 기다리지 않아 거의 즉시 준비되며, 네트워크가 필요 없습니다. 하지만 글자 위치를 접근성 서비스에 제공하는 앱에서만 동작합니다. 그 밖의 앱과 이미지 속 글자는 평소처럼 화면을 인식합니다.\n\n앱 텍스트 읽기는 실험 기능입니다. 일부 앱은 글자 위치를 잘못 알려 주기 때문에 강조 표시가 어긋나거나 옆 단어가 검색될 수 있습니다. 그럴 때는 끄세요.</string>
     <string name="bubble_app_text_only">앱 텍스트만</string>
     <string name="bubble_app_text_only_hint">스크린샷도 인식도 하지 않습니다. 이미지 속 글자는 읽지 않습니다.</string>
-    <string name="bubble_app_text_only_info">화면을 전혀 인식하지 않고, 앱이 접근성 서비스에 제공하는 텍스트만 읽습니다. 이미지, 만화, 게임, 텍스트를 제공하지 않는 앱의 글자는 읽지 않습니다.
-
-전자잉크 리더, 인식이 동작하지 않거나 느린 오래되거나 성능이 낮은 기기, 느리거나 데이터 요금이 드는 인터넷에 적합합니다. 인식에 배터리를 쓰지 않고 데이터도 보내지 않습니다.</string>
+    <string name="bubble_app_text_only_info">화면을 전혀 인식하지 않고, 앱이 접근성 서비스에 제공하는 텍스트만 읽습니다. 이미지, 만화, 게임, 텍스트를 제공하지 않는 앱의 글자는 읽지 않습니다.\n\n전자잉크 리더, 인식이 동작하지 않거나 느린 오래되거나 성능이 낮은 기기, 느리거나 데이터 요금이 드는 인터넷에 적합합니다. 인식에 배터리를 쓰지 않고 데이터도 보내지 않습니다.</string>
     <string name="bubble_app_text_only_confirm">켜기</string>
     <string name="dictionaries_import_yomitan_backup">Yomitan 사전 컬렉션 가져오기</string>
     <string name="dictionaries_task_converting">%1$s 압축 해제 중</string>
@@ -143,8 +139,8 @@
     <string name="bubble_ocr_engines_both">둘 다</string>
     <string name="bubble_ocr_engines_cloud">클라우드</string>
     <string name="bubble_ocr_engines_device">기기</string>
-    <string name="bubble_ocr_engines_hint">둘 다 켜 두세요. 하나를 끄는 것은 성능이 낮거나 바쁜 기기를 위한 최후의 수단입니다. 클라우드 인식은 모바일 데이터를 사용하며(스캔당 약 0.1–0.4 MB), 기기 내 인식은 사용하지 않습니다.</string>
-    <string name="bubble_ocr_engines_info">둘 다: 기기와 클라우드가 동시에 인식을 시작합니다. 기기가 조준점 주변 글자를 빠르게 읽어 단어가 거의 바로 나타나고, 클라우드가 응답하면 더 정확한 결과로 바뀝니다. 네트워크가 없거나 클라우드가 실패하면 기기의 결과가 그대로 남습니다.\n\n클라우드만: 네트워크가 없으면 아무것도 인식되지 않으며, 서버가 응답해야 단어가 나타납니다.\n\n기기만: 오프라인에서도 동작하지만 세로쓰기와 만화를 더 잘 못 읽고, OCR 부스트가 꺼집니다.</string>
+    <string name="bubble_ocr_engines_hint">둘 다 켜 두세요. 하나를 끄는 것은 성능이 낮거나 부하가 큰 기기를 위한 최후의 수단입니다. 클라우드 인식은 모바일 데이터를 사용하며(스캔당 약 0.1–0.4 MB), 기기 내 인식은 사용하지 않습니다.</string>
+    <string name="bubble_ocr_engines_info">둘 다: 기기와 클라우드가 동시에 인식을 시작합니다. 기기가 조준점 주변 글자를 빠르게 읽어 단어가 거의 바로 나타나고, 클라우드가 응답하면 더 정확한 결과로 바뀝니다. 네트워크가 없거나 클라우드가 실패하면 기기의 결과가 그대로 남습니다.\n\n클라우드만: 네트워크가 없으면 아무것도 인식되지 않으며, 서버가 응답해야 단어가 나타납니다.\n\n기기만: 오프라인에서도 동작하지만 세로쓰기와 만화 인식이 떨어지고, OCR 부스트가 꺼집니다.</string>
     <string name="bubble_ocr_saving">기기 부하 줄이기</string>
     <string name="bubble_ocr_saving_hint">클라우드 인식이 3초 안에 응답하지 않을 때만 기기가 직접 화면 전체를 읽습니다. 부하와 배터리 사용은 줄지만, 조준점에서 먼 단어는 늦게 나타납니다. 속도가 가장 중요하다면 꺼 두세요.</string>
     <string name="bubble_size">버블 크기: %1$d dp</string>
@@ -165,7 +161,7 @@
     <string name="anki_overwrite_prepend">앞에 추가</string>
     <string name="audio_volume">볼륨: %1$d%%</string>
     <string name="settings_title">설정</string>
-    <string name="settings_bubble_summary">조준, 고정 위치, 텍스트 출처, 숨길 앱</string>
+    <string name="settings_bubble_summary">조준, 가장자리, 텍스트 출처, 숨길 앱</string>
     <string name="lookup_title">검색</string>
     <string name="settings_lookup_summary">스캔 길이, 결과, 로마자, 단어의 한자</string>
     <string name="appearance_title">모양</string>
@@ -271,7 +267,7 @@
     <string name="yomitan_summary_audio_off">Yomitan에서 오디오가 꺼져 있어 소스를 설정하지 않았습니다</string>
     <string name="yomitan_summary_audio_unknown">지원하지 않는 오디오 소스: %1$s</string>
     <string name="yomitan_summary_lookup">스캔 길이 %1$s, 검색당 항목 수 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">텍스트 치환(규칙 %1$d개)은 가져오지 않습니다. 한자 숫자로 된 숫자, 々, ッ, 문장 부호는 자동으로 처리됩니다</string>
+    <string name="yomitan_summary_replacements_skipped">텍스트 치환(규칙 %1$d개)은 가져오지 않습니다. 한자로 쓴 숫자, 々, ッ, 문장 부호는 자동으로 처리됩니다</string>
     <string name="yomitan_collection_not_collection">이 파일은 Yomitan 사전 컬렉션 내보내기 파일이 아닙니다.</string>
     <string name="yomitan_collection_failed">가져오기를 시작하지 못했습니다. 파일을 읽거나 복사할 수 없습니다.</string>
     <string name="yomitan_collection_choose">파일 속 사전</string>
@@ -409,7 +405,7 @@
     <string name="settings_badge">새 팁</string>
     <string name="eink_title">전자잉크 화면</string>
     <string name="eink_switch">E-ink 모드</string>
-    <string name="eink_hint">전자책 리더기 등 전자 잉크(E-ink) 화면 기기용입니다. 흑백, 애니메이션 없음, 반투명 강조 대신 테두리. 테마보다 우선합니다.</string>
+    <string name="eink_hint">전자책 리더기 등 전자잉크(E-ink) 화면 기기용입니다. 흑백, 애니메이션 없음, 반투명 강조 대신 테두리. 테마보다 우선합니다.</string>
     <string name="eink_enlarge_title">버블과 글자를 크게 할까요?</string>
     <string name="eink_enlarge_message">플로팅 버블을 (더 작으면) %1$d dp로, 팝업 글자를 %2$d px 더 크게 할까요? 둘 다 계속 조절할 수 있습니다. E-ink 모드를 끄면, 그 사이에 바꾸지 않은 경우 이전 크기로 돌아갑니다.</string>
     <string name="eink_enlarge_confirm">크게 하기</string>
@@ -442,7 +438,7 @@
     <string name="backup_read_failed">백업을 읽지 못했습니다.</string>
     <string name="backup_loaded">%1$s 백업, 버전 %2$s</string>
     <string name="backup_sections">복원할 부분</string>
-    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체합니다. 백업의 사전은 추가되거나 같은 사전을 대체하며, 설치된 다른 사전은 그대로 남습니다.</string>
+    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체합니다. 백업의 사전은 새로 추가되거나 설치된 버전을 대체하며, 설치된 다른 사전은 그대로 남습니다.</string>
     <string name="backup_restore_button">선택한 부분 복원</string>
     <string name="backup_restored">복원됨</string>
     <string name="backup_section_general">일반</string>
@@ -450,7 +446,7 @@
     <string name="backup_section_bubble">플로팅 버블과 인식</string>
     <string name="backup_section_bubble_hint">크기, 조준, 인식 엔진, 앱 텍스트, 버블을 숨길 앱</string>
     <string name="backup_section_lookup">검색</string>
-    <string name="backup_section_lookup_hint">스캔 길이, 결과 수, 로마자, 개별 한자</string>
+    <string name="backup_section_lookup_hint">스캔 길이, 결과 수, 로마자, 단어의 한자</string>
     <string name="backup_section_popup">팝업 모양</string>
     <string name="backup_section_popup_hint">글꼴, 글자 크기, 사용자 CSS, 설치된 글꼴</string>
     <string name="backup_section_anki">Anki</string>
@@ -463,7 +459,7 @@
     </plurals>
     <string name="backup_section_dictionary_files">사전</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">사전 %d개, 추가되거나 같은 사전을 대체</item>
+        <item quantity="other">사전 %d개, 추가되거나 설치된 버전을 대체</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">글꼴 %d개</item>
@@ -476,16 +472,16 @@
     <string name="dictionaries_kept_on">정의가 있는 사전이 모두 꺼지므로 켜진 상태로 두었습니다: %1$s</string>
     <string name="home_bubble_shown">버블이 화면에 있습니다</string>
     <string name="home_bubble_hidden">버블이 숨겨져 있습니다</string>
-    <string name="home_bubble_stopped">버블이 없습니다: 휴대전화가 서비스를 중지했습니다</string>
-    <string name="home_bubble_stopped_hint">앱이 서비스를 다시 켜지는 못합니다. 서비스 설정을 열고 스위치를 꺼다가 다시 켜면 버블이 돌아옵니다.</string>
+    <string name="home_bubble_stopped">버블이 사라졌습니다: 휴대폰이 서비스를 중지했습니다</string>
+    <string name="home_bubble_stopped_hint">앱은 서비스를 다시 켤 수 없습니다. 서비스 설정을 열고 스위치를 껐다가 다시 켜면 버블이 돌아옵니다.</string>
     <string name="home_bubble_show">버블 되돌리기</string>
     <string name="home_bubble_hide">버블 숨기기</string>
     <string name="bubble_visible">버블 표시</string>
     <string name="bubble_visible_hint">끄면 버블이 화면에 나타나지 않습니다. 빠른 설정 타일도 같은 일을 합니다.</string>
     <string name="background_keep_alive_title">버블이 사라지지 않도록</string>
-    <string name="background_keep_alive_text">백그라운드 앱을 중지하는 휴대전화는 버블을 그리는 서비스도 중지할 수 있습니다. 자체 알림이 있는 앱은 훨씬 덜 중지됩니다.</string>
+    <string name="background_keep_alive_text">백그라운드 앱을 중지하는 휴대폰은 버블을 그리는 서비스도 중지할 수 있습니다. 자체 알림이 있는 앱은 훨씬 덜 중지됩니다.</string>
     <string name="background_keep_alive_switch">서비스가 실행되는 동안 알림 유지</string>
-    <string name="background_keep_alive_hint">항상 도움이 되지는 않습니다. 서비스가 중지된 뒤에는 접근성 설정에서 꺼다가 켜야만 버블이 돌아옵니다.</string>
+    <string name="background_keep_alive_hint">항상 도움이 되지는 않습니다. 서비스가 중지된 뒤에는 접근성 설정에서 껐다가 다시 켜야만 버블이 돌아옵니다.</string>
     <string name="background_keep_alive_notifications_off">Screenlate 알림이 꺼져 있습니다. 서비스는 실행 중이지만 알림이 표시되지 않습니다.</string>
     <string name="background_keep_alive_notifications_allow">알림 허용</string>
     <string name="action_reset">초기화</string>
@@ -501,7 +497,7 @@
     <string name="reset_lookup_text">스캔 길이, 검색당 항목 수와 그 밖의 검색 설정이 설치 직후 상태로 돌아갑니다.</string>
     <string name="reset_anki_text">덱, 노트 유형, 필드 템플릿, 태그, 중복 처리, 오디오 소스가 설치 직후 상태로 돌아갑니다. AnkiDroid에서는 아무것도 바뀌지 않습니다.</string>
     <string name="reset_popup_text">글꼴 선택, 글자 크기와 굵기, 사용자 CSS, 뜻풀이 복사가 설치 직후 상태로 돌아갑니다. 다운로드하거나 추가한 글꼴은 그대로 설치되어 있습니다.</string>
-    <string name="reset_appearance_text">테마가 다시 시스템을 따르고 E-ink 모드가 꺼지며, 이 모드가 키운 크기도 돌아옵니다. 앱 언어는 그대로입니다.</string>
+    <string name="reset_appearance_text">테마가 다시 시스템을 따르고 E-ink 모드가 꺼지며, 이 모드가 키운 크기도 원래대로 돌아갑니다. 앱 언어는 그대로입니다.</string>
     <string name="reset_background_text">버블을 유지하는 알림이 꺼집니다. 배터리와 자동 시작 설정은 Android의 설정이라 그대로입니다.</string>
     <string name="reset_dictionaries_tooltip">사전 초기화</string>
     <string name="reset_dictionaries_title">사전을 초기화할까요?</string>

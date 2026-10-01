@@ -18,7 +18,7 @@
     <string name="ocr_test_title">OCR-Test</string>
     <string name="ocr_test_pick_image">Bild auswählen</string>
     <string name="ocr_test_running">Wird erkannt…</string>
-    <string name="ocr_test_hit">Unter dem Tippen: %1$s</string>
+    <string name="ocr_test_hit">An der Tippstelle: %1$s</string>
 
     <string name="action_delete">Löschen</string>
     <string name="action_cancel">Abbrechen</string>
@@ -34,7 +34,7 @@
     <string name="dictionaries_import_failed">Import fehlgeschlagen: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: Import fehlgeschlagen – %2$s</string>
     <string name="dictionaries_last_term">Mindestens ein Wörterbuch mit Definitionen muss aktiv bleiben.</string>
-    <string name="dictionaries_remote_css">⚠ Seine Stile laden Dateien von %1$s, das dann sieht, wann du Wörter nachschlägst. Schriften und Stylesheets werden geladen, andere Dateien blockiert.</string>
+    <string name="dictionaries_remote_css">⚠ Seine Stile laden Dateien von %1$s; dieser Server sieht dann, wann du Wörter nachschlägst. Schriften und Stylesheets werden geladen, andere Dateien blockiert.</string>
     <string name="dictionaries_import_no_space">Nicht genug freier Speicher für %1$s: etwa %2$s nötig, %3$s frei. Gib Speicher frei und versuche es erneut.</string>
     <string name="dictionaries_installed">Installiert</string>
     <string name="dictionaries_none">Keine Wörterbücher installiert.</string>
@@ -63,7 +63,7 @@
     <string name="dictionaries_section_terms">Wörterbücher</string>
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Version</string>
-    <string name="home_anki_ready">Notizen gehen nach %1$s (%2$s).</string>
+    <string name="home_anki_ready">Notizen landen in %1$s (%2$s).</string>
     <string name="home_anki_not_configured">Wähle einen Stapel, einen Notiztyp und Feldvorlagen.</string>
 
     <string name="anki_title">Anki und Audio</string>
@@ -88,11 +88,11 @@
     <string name="anki_duplicate_behavior">Wenn ein Duplikat existiert</string>
     <string name="anki_behavior_prevent">Verhindern</string>
     <string name="anki_behavior_overwrite">Überschreiben</string>
-    <string name="anki_behavior_new">Neu hinzufügen</string>
+    <string name="anki_behavior_new">Trotzdem hinzufügen</string>
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Audio abspielen, wenn ein neues Wort angezeigt wird</string>
-    <string name="audio_sources_hint">Von oben nach unten versucht; die erste Quelle mit Audio wird abgespielt und kommt in die Notizen. Tippe auf eine Quelle, um sie zu bearbeiten.</string>
+    <string name="audio_sources_hint">Quellen werden von oben nach unten probiert; die erste mit Audio wird abgespielt und kommt in die Notizen. Tippe auf eine Quelle, um sie zu bearbeiten.</string>
     <string name="audio_url_template">URL-Vorlage</string>
     <string name="audio_add_source">Audioquelle hinzufügen</string>
     <string name="search_title">Wörter nachschlagen</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Über dem Finger</string>
     <string name="bubble_aim_center">Mitte der Blase</string>
     <string name="bubble_aim_hint">Doppeltippen auf die schwebende Blase wechselt zwischen beiden.</string>
-    <string name="bubble_dock_side">Andocken</string>
+    <string name="bubble_dock_side">Seite</string>
     <string name="bubble_dock_left">Linker Rand</string>
     <string name="bubble_dock_right">Rechter Rand</string>
     <string name="bubble_highlight">Wort unter dem Zielpunkt hervorheben</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Apps filtern</string>
     <string name="bubble_read_app_text">App-Text lesen (experimentell)</string>
     <string name="bubble_read_app_text_hint">Schneller in Apps, die ihren Text bereitstellen.</string>
-    <string name="bubble_read_app_text_info">App-Text ist exakt, fast sofort da, ohne auf die Erkennung zu warten, und braucht kein Netz, funktioniert aber nur in Apps, die Zeichenpositionen an Bedienungshilfen weitergeben; anderswo und für Text in Bildern wird der Bildschirm wie gewohnt erkannt.
-
-Das Lesen von App-Text ist experimentell: Manche Apps melden falsche Zeichenpositionen, dann liegt die Hervorhebung daneben oder ein Nachbarwort wird gefunden. Schalte es in dem Fall aus.</string>
+    <string name="bubble_read_app_text_info">App-Text ist exakt, fast sofort da, ohne auf die Erkennung zu warten, und braucht kein Netz, funktioniert aber nur in Apps, die Zeichenpositionen an Bedienungshilfen weitergeben; anderswo und für Text in Bildern wird der Bildschirm wie gewohnt erkannt.\n\nDas Lesen von App-Text ist experimentell: Manche Apps melden falsche Zeichenpositionen, dann liegt die Hervorhebung daneben oder ein Nachbarwort wird gefunden. Schalte es in dem Fall aus.</string>
     <string name="bubble_app_text_only">Nur App-Text</string>
     <string name="bubble_app_text_only_hint">Keine Screenshots und keine Erkennung. Text in Bildern wird nicht gelesen.</string>
-    <string name="bubble_app_text_only_info">Der Bildschirm wird gar nicht erkannt: Gelesen wird nur Text, den Apps an Bedienungshilfen weitergeben. Text in Bildern, Manga, Spielen und Apps, die ihren Text nicht bereitstellen, wird nicht gelesen.
-
-Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung nicht oder nur langsam läuft, und zu langsamem oder begrenztem Internet: kein Akku für die Erkennung und keine gesendeten Daten.</string>
+    <string name="bubble_app_text_only_info">Der Bildschirm wird gar nicht erkannt: Gelesen wird nur Text, den Apps an Bedienungshilfen weitergeben. Text in Bildern, Manga, Spielen und Apps, die ihren Text nicht bereitstellen, wird nicht gelesen.\n\nPasst zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung nicht oder nur langsam läuft, und zu langsamem oder begrenztem Internet: kein Akku für die Erkennung und keine gesendeten Daten.</string>
     <string name="bubble_app_text_only_confirm">Einschalten</string>
     <string name="dictionaries_import_yomitan_backup">Yomitan-Wörterbuchsammlung importieren</string>
     <string name="dictionaries_task_converting">%1$s wird entpackt</string>
@@ -165,7 +161,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="anki_overwrite_prepend">voranstellen</string>
     <string name="audio_volume">Lautstärke: %1$d %%</string>
     <string name="settings_title">Einstellungen</string>
-    <string name="settings_bubble_summary">Zielpunkt, Andocken, Textquelle, ausgeblendete Apps</string>
+    <string name="settings_bubble_summary">Zielpunkt, Seite, Textquelle, ausgeblendete Apps</string>
     <string name="lookup_title">Nachschlagen</string>
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Kanji des Wortes</string>
     <string name="appearance_title">Darstellung</string>
@@ -177,7 +173,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="settings_about_summary">Version, Updates, Lizenzen, Protokolle</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_description">Eine App zum Sprachenlernen: ein Pop-up-Wörterbuch für Text auf dem Bildschirm.</string>
-    <string name="about_author">Von vpr</string>
+    <string name="about_author">Entwickelt von vpr</string>
     <string name="about_license">Freie Software unter der GNU General Public License, Version 3.</string>
     <string name="about_source">Quellcode</string>
     <string name="about_report_bug">Problem melden</string>
@@ -190,7 +186,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="lookup_max_results">Einträge pro Suche</string>
     <string name="lookup_max_results_unlimited">Alle</string>
     <string name="lookup_max_results_hint">Yomitan zeigt bis zu 32.</string>
-    <string name="lookup_max_results_warning">Viele Einträge lassen das Popup bei Wörtern mit langen Definitionen langsamer öffnen.</string>
+    <string name="lookup_max_results_warning">Bei Wörtern mit langen Definitionen öffnet sich das Popup mit vielen Einträgen langsamer.</string>
     <string name="lookup_single_kanji">Kanji des Wortes</string>
     <string name="lookup_single_kanji_hint">Unter den Ergebnissen bekommen die übrigen Kanji des gefundenen Wortes eigene Einträge.</string>
     <string name="lookup_romaji">Romaji als Japanisch nachschlagen</string>
@@ -280,7 +276,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="yomitan_collection_installed">bereits installiert</string>
     <string name="yomitan_collection_hint">Installierte Wörterbücher sind zunächst nicht markiert; ein markiertes ersetzt die installierte Kopie. Große Dateien dauern einige Minuten.</string>
     <string name="yomitan_collection_import">%1$d importieren</string>
-    <string name="yomitan_collection_queued">%1$d Wörterbücher werden im Hintergrund importiert; der Fortschritt steht unter Wörterbücher.</string>
+    <string name="yomitan_collection_queued">%1$d Wörterbücher werden im Hintergrund importiert; den Fortschritt zeigt der Bildschirm „Wörterbücher“.</string>
     <string name="bubble_show_source">Erkannten Text über den Einträgen zeigen</string>
     <string name="bubble_show_source_hint">Aus: Das Popup beginnt direkt mit dem Eintrag, und ✕ steht neben seinen Schaltflächen.</string>
     <string name="popup_font_title">Popup-Schrift</string>
@@ -313,8 +309,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="popup_font_import_failed">Die Datei konnte nicht hinzugefügt werden. Versuche es erneut oder prüfe, ob auf dem Telefon genug Speicher frei ist.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_copy_title">Definitionen kopieren</string>
-    <string name="popup_copy_switch">Kopierknopf neben Wörterbuchnamen</string>
-    <string name="popup_copy_switch_hint">Im Popup und in der Suche kopiert ein Knopf neben jedem Wörterbuchnamen dessen Definitionen des Eintrags.</string>
+    <string name="popup_copy_switch">Schaltfläche „Kopieren“ neben Wörterbuchnamen</string>
+    <string name="popup_copy_switch_hint">Im Popup und in der Suche kopiert eine Schaltfläche neben dem Namen jedes Wörterbuchs dessen Definitionen für den Eintrag.</string>
     <string name="popup_copy_mode_all">Alles</string>
     <string name="popup_copy_mode_meanings">Nur Bedeutungen</string>
     <string name="popup_copy_mode_all_hint">Alles, was das Wörterbuch zeigt. Apps mit Formatierung erhalten es formatiert, andere als reinen Text.</string>
@@ -331,7 +327,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="css_problem_empty_font_name">Zeile %1$d: ein leerer Name in font-family (ein Komma zu viel?), der Browser überspringt die ganze Deklaration</string>
     <string name="css_problem_outside_rule">Zeile %1$d: „%2$s“ steht außerhalb jeder Regel { }</string>
     <string name="css_problem_unknown_font">Zeile %1$d: Das Telefon hat keine Schrift „%2$s“, die nächste in der Liste oder die Popup-Schrift wird verwendet</string>
-    <string name="css_problem_remote_file">Zeile %1$d: lädt eine Datei von %2$s, das dann sieht, wann du Wörter nachschlägst. Schriften und Stylesheets aus dem Internet werden geladen, andere Dateien blockiert.</string>
+    <string name="css_problem_remote_file">Zeile %1$d: lädt eine Datei von %2$s; dieser Server sieht dann, wann du Wörter nachschlägst. Schriften und Stylesheets aus dem Internet werden geladen, andere Dateien blockiert.</string>
     <string name="yomitan_section_appearance">Popup-Darstellung</string>
     <string name="yomitan_section_appearance_hint">Textgröße und eigenes Popup-CSS</string>
     <string name="yomitan_summary_font_size">Textgröße %1$d</string>
@@ -369,13 +365,13 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="update_announce_hint">Höchstens einmal täglich beim Öffnen der App; jede Version wird einmal angekündigt.</string>
     <string name="update_error_network">GitHub ist nicht erreichbar. Prüfe die Verbindung und versuche es erneut.</string>
     <string name="update_error_no_apk">Dieses Release hat kein APK für dieses Gerät.</string>
-    <string name="update_error_bad_apk">Die heruntergeladene Datei ist kein neueres Screenlate mit demselben Schlüssel.</string>
+    <string name="update_error_bad_apk">Die heruntergeladene Datei ist kein neueres, mit demselben Schlüssel signiertes Screenlate.</string>
     <string name="update_error_install">Android hat das Update nicht installiert.</string>
     <string name="action_close">Schließen</string>
     <string name="action_more_info">Über %1$s</string>
     <string name="anki_fields_how">So funktionieren Feldvorlagen</string>
     <string name="popup_css_short">Wird nach den Stilen der Wörterbücher angewendet</string>
-    <string name="about_dictionaries_hint">Autoren und Lizenzen jedes Wörterbuchs stehen hinter seinem ⓘ.</string>
+    <string name="about_dictionaries_hint">Autoren und Lizenzen jedes Wörterbuchs findest du unter seinem ⓘ.</string>
     <string name="about_dictionaries_show">Alle zeigen (%1$d)</string>
     <string name="about_dictionaries_hide">Ausblenden</string>
     <string name="dictionaries_notifications_title">Fortschrittsbenachrichtigungen</string>
@@ -395,8 +391,8 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="background_summary">Verhindern, dass das System die Blase beendet</string>
     <string name="background_intro">Das System startet den Dienst der Blase selbst neu, es sei denn, eine dieser Einstellungen beendet ihn, um Energie zu sparen. Beides sind Einstellungen des Systems: Screenlate öffnet sie nur.</string>
     <string name="background_battery_title">Akkuoptimierung</string>
-    <string name="background_battery_on">An für Screenlate: Das System kann die Blase im Hintergrund beenden.</string>
-    <string name="background_battery_off">Aus für Screenlate: Das System lässt die Blase laufen.</string>
+    <string name="background_battery_on">Für Screenlate aktiv: Das System kann die Blase im Hintergrund beenden.</string>
+    <string name="background_battery_off">Für Screenlate aus: Das System lässt die Blase laufen.</string>
     <string name="background_battery_allow">Hintergrundaktivität erlauben</string>
     <string name="background_battery_list">Liste der Akkuoptimierung öffnen</string>
     <string name="background_battery_list_hint">Suche Screenlate in der Liste und schalte die Optimierung dafür aus („Nicht optimieren“, „Uneingeschränkt“ oder ähnlich). Apps, die anfangs fehlen, stehen oft unter „Alle Apps“.</string>
@@ -443,7 +439,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="backup_read_failed">Die Sicherung konnte nicht gelesen werden.</string>
     <string name="backup_loaded">Sicherung vom %1$s, Version %2$s</string>
     <string name="backup_sections">Wiederherzustellende Teile</string>
-    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen. Wörterbücher aus der Sicherung werden hinzugefügt oder ersetzen dieselben; andere installierte Wörterbücher bleiben.</string>
+    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen. Wörterbücher aus der Sicherung kommen hinzu oder ersetzen ihre installierte Fassung; andere installierte Wörterbücher bleiben.</string>
     <string name="backup_restore_button">Markierte wiederherstellen</string>
     <string name="backup_restored">Wiederhergestellt</string>
     <string name="backup_section_general">Allgemein</string>
@@ -451,7 +447,7 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="backup_section_bubble">Schwebende Blase und Erkennung</string>
     <string name="backup_section_bubble_hint">Größe, Zielpunkt, Erkennungs-Engines, App-Text, Apps, in denen die Blase ausgeblendet ist</string>
     <string name="backup_section_lookup">Nachschlagen</string>
-    <string name="backup_section_lookup_hint">Scanlänge, Anzahl der Ergebnisse, Romaji, einzelne Kanji</string>
+    <string name="backup_section_lookup_hint">Scanlänge, Anzahl der Ergebnisse, Romaji, Kanji des Wortes</string>
     <string name="backup_section_popup">Popup-Darstellung</string>
     <string name="backup_section_popup_hint">Schrift, Textgröße, eigenes CSS und installierte Schriften</string>
     <string name="backup_section_anki">Anki</string>
@@ -460,13 +456,13 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="backup_section_audio_hint">Quellen für die Aussprache</string>
     <string name="backup_section_dictionary_list">Reihenfolge und Schalter der Wörterbücher</string>
     <plurals name="backup_section_dictionary_list_hint">
-        <item quantity="one">%d Wörterbuch: Reihenfolge, an oder aus, Sprachen und das zum Sortieren. Gilt für die installierten.</item>
-        <item quantity="other">%d Wörterbücher: Reihenfolge, an oder aus, Sprachen und das zum Sortieren. Gilt für die installierten.</item>
+        <item quantity="one">%d Wörterbuch: Reihenfolge, an oder aus, Sprachen und Sortierwörterbuch. Gilt für die installierten.</item>
+        <item quantity="other">%d Wörterbücher: Reihenfolge, an oder aus, Sprachen und Sortierwörterbuch. Gilt für die installierten.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Wörterbücher</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d Wörterbuch, hinzugefügt oder ersetzt dasselbe</item>
-        <item quantity="other">%d Wörterbücher, hinzugefügt oder ersetzen dieselben</item>
+        <item quantity="one">%d Wörterbuch; kommt hinzu oder ersetzt seine installierte Fassung</item>
+        <item quantity="other">%d Wörterbücher; kommen hinzu oder ersetzen ihre installierte Fassung</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d Schrift</item>
@@ -481,12 +477,12 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="dictionaries_kept_on">Bleiben an, sonst wäre kein Wörterbuch mit Definitionen an: %1$s</string>
     <string name="home_bubble_shown">Die Blase ist auf dem Bildschirm</string>
     <string name="home_bubble_hidden">Die Blase ist ausgeblendet</string>
-    <string name="home_bubble_stopped">Die Blase fehlt: das Telefon hat den Dienst gestoppt</string>
+    <string name="home_bubble_stopped">Die Blase ist weg: Das Telefon hat den Dienst gestoppt</string>
     <string name="home_bubble_stopped_hint">Eine App kann den Dienst nicht selbst wieder einschalten. Öffne seine Einstellungen und schalte den Schalter aus und wieder ein, dann kommt die Blase zurück.</string>
     <string name="home_bubble_show">Blase zurückholen</string>
     <string name="home_bubble_hide">Blase ausblenden</string>
     <string name="bubble_visible">Blase anzeigen</string>
-    <string name="bubble_visible_hint">Aus: die Blase ist nicht auf dem Bildschirm. Die Schnelleinstellungs-Kachel macht dasselbe.</string>
+    <string name="bubble_visible_hint">Aus: Die Blase ist nicht auf dem Bildschirm. Die Kachel in den Schnelleinstellungen macht dasselbe.</string>
     <string name="background_keep_alive_title">Damit die Blase bleibt</string>
     <string name="background_keep_alive_text">Ein Telefon, das Apps im Hintergrund stoppt, kann auch den Dienst stoppen, der die Blase zeichnet. Eine App mit einer eigenen Benachrichtigung wird deutlich seltener gestoppt.</string>
     <string name="background_keep_alive_switch">Benachrichtigung behalten, solange der Dienst läuft</string>
@@ -499,14 +495,14 @@ Passt zu E-Ink-Readern, alten oder schwachen Geräten, auf denen die Erkennung n
     <string name="tooltip_more_info">Mehr erfahren</string>
     <string name="reset_all_tooltip">Alle Einstellungen zurücksetzen</string>
     <string name="reset_all_title">Alle Einstellungen zurücksetzen?</string>
-    <string name="reset_all_text">Alle Einstellungen werden wie nach der Installation: die Blase und ihre ausgeblendeten Apps, das Nachschlagen, Anki und Audio mit den Feldvorlagen, das Popup mit Schrift, Größen und CSS, das Design und der E-Ink-Modus, die Hintergrundaktivität und die Hinweise auf neue Versionen. Tipps erscheinen wieder. Die Wörterbücher, installierten Schriften und die App-Sprache bleiben.</string>
+    <string name="reset_all_text">Alle Einstellungen werden auf den Stand nach der Installation zurückgesetzt: die Blase und ihre ausgeblendeten Apps, das Nachschlagen, Anki und Audio mit den Feldvorlagen, das Popup mit Schrift, Größen und CSS, das Design und der E-Ink-Modus, die Hintergrundaktivität und die Hinweise auf neue Versionen. Tipps erscheinen wieder. Die Wörterbücher, installierten Schriften und die App-Sprache bleiben.</string>
     <string name="reset_section_tooltip">Diesen Bereich zurücksetzen</string>
     <string name="reset_section_title">Diesen Bereich zurücksetzen?</string>
-    <string name="reset_bubble_text">Alle Einstellungen der Blase werden wie nach der Installation, auch die ausgeblendeten Apps, die Größe der Blase und ihr Platz auf dem Bildschirm. Eine ausgeblendete Blase erscheint wieder.</string>
-    <string name="reset_lookup_text">Suchlänge, Einträge pro Suche und die übrigen Einstellungen zum Nachschlagen werden wie nach der Installation.</string>
-    <string name="reset_anki_text">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden wie nach der Installation. In AnkiDroid ändert sich nichts.</string>
-    <string name="reset_popup_text">Die Schriftwahl, Textgröße und -stärke, das eigene CSS und das Kopieren von Definitionen werden wie nach der Installation. Heruntergeladene und hinzugefügte Schriften bleiben installiert.</string>
-    <string name="reset_appearance_text">Das Design folgt wieder dem System und der E-Ink-Modus geht aus; die Größen, die er vergrößert hat, kommen zurück. Die App-Sprache bleibt.</string>
+    <string name="reset_bubble_text">Alle Einstellungen der Blase werden auf den Stand nach der Installation zurückgesetzt, auch die ausgeblendeten Apps, die Größe der Blase und ihr Platz auf dem Bildschirm. Eine ausgeblendete Blase erscheint wieder.</string>
+    <string name="reset_lookup_text">Scanlänge, Einträge pro Suche und die übrigen Einstellungen zum Nachschlagen werden auf den Stand nach der Installation zurückgesetzt.</string>
+    <string name="reset_anki_text">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden auf den Stand nach der Installation zurückgesetzt. In AnkiDroid ändert sich nichts.</string>
+    <string name="reset_popup_text">Schriftwahl, Textgröße und -stärke, eigenes CSS und das Kopieren von Definitionen werden auf den Stand nach der Installation zurückgesetzt. Heruntergeladene und hinzugefügte Schriften bleiben installiert.</string>
+    <string name="reset_appearance_text">Das Design folgt wieder dem System, und der E-Ink-Modus geht aus; was er vergrößert hat, bekommt wieder die vorherige Größe. Die App-Sprache bleibt.</string>
     <string name="reset_background_text">Die Benachrichtigung, die die Blase am Leben hält, geht aus. Akku- und Autostart-Einstellungen gehören zu Android und bleiben, wie sie sind.</string>
     <string name="reset_dictionaries_tooltip">Wörterbücher zurücksetzen</string>
     <string name="reset_dictionaries_title">Wörterbücher zurücksetzen?</string>

@@ -6,7 +6,7 @@
     <string name="onboarding_open_accessibility_settings">Erişilebilirlik ayarlarını aç</string>
 
     <string name="onboarding_device_title">Cihaz kurulumu</string>
-    <string name="onboarding_device_restricted_settings">Screenlate anahtarı griyse (uygulama bir dosyadan yüklendiyse), Uygulama bilgileri → ⋮ → Kısıtlanmış ayarlara izin ver’i açın ve yeniden deneyin.</string>
+    <string name="onboarding_device_restricted_settings">Screenlate anahtarı griyse (uygulama bir dosyadan yüklendiyse), Uygulama bilgileri → ⋮ → Kısıtlanmış ayarlara izin ver adımlarını izleyin ve yeniden deneyin.</string>
 
     <string name="settings_theme_title">Tema</string>
     <string name="settings_theme_system">Sistem</string>
@@ -34,8 +34,8 @@
     <string name="dictionaries_import_failed">İçe aktarma başarısız: %1$s</string>
     <string name="dictionaries_import_failed_named">%1$s: içe aktarma başarısız — %2$s</string>
     <string name="dictionaries_last_term">Tanım içeren en az bir sözlük açık kalmalıdır.</string>
-    <string name="dictionaries_remote_css">⚠ Stilleri %1$s adresinden dosya yükler; bu sunucu kelime aradığınızı görür. Yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
-    <string name="dictionaries_import_no_space">%1$s içe aktarmak için yeterli boş alan yok: yaklaşık %2$s gerekli, %3$s boş. Yer açıp yeniden deneyin.</string>
+    <string name="dictionaries_remote_css">⚠ Stilleri %1$s adresinden dosya yükler; böylece bu sunucu ne zaman kelime aradığınızı görür. Yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
+    <string name="dictionaries_import_no_space">%1$s sözlüğünü içe aktarmak için yeterli boş alan yok: yaklaşık %2$s gerekli, %3$s boş. Yer açıp yeniden deneyin.</string>
     <string name="dictionaries_installed">Yüklü</string>
     <string name="dictionaries_none">Yüklü sözlük yok.</string>
     <string name="dictionaries_order_hint">Sırayı değiştirmek için tutamacı sürükleyin: listede üstteki sözlüklerin maddeleri önce gelir. Ayrıntılar için bir sözlüğe dokunun.</string>
@@ -63,7 +63,7 @@
     <string name="dictionaries_section_terms">Sözlükler</string>
     <string name="dictionaries_catalog_translations">→ %1$s</string>
     <string name="dictionaries_version">Sürüm</string>
-    <string name="home_anki_ready">Notlar şuraya gider: %1$s (%2$s).</string>
+    <string name="home_anki_ready">Notlar %1$s destesine eklenir (%2$s).</string>
     <string name="home_anki_not_configured">Bir deste, not türü ve alan şablonları seçin.</string>
 
     <string name="anki_title">Anki ve ses</string>
@@ -92,7 +92,7 @@
 
     <string name="audio_title">Ses</string>
     <string name="audio_auto_play">Yeni bir kelime gösterildiğinde sesi çal</string>
-    <string name="audio_sources_hint">Yukarıdan aşağıya denenir; sesi olan ilk kaynak çalınır ve notlara girer. Düzenlemek için bir kaynağa dokunun.</string>
+    <string name="audio_sources_hint">Kaynaklar yukarıdan aşağıya denenir; sesi olan ilk kaynak çalınır ve notlara girer. Düzenlemek için bir kaynağa dokunun.</string>
     <string name="audio_url_template">URL şablonu</string>
     <string name="audio_add_source">Ses kaynağı ekle</string>
     <string name="search_title">Kelime ara</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Parmağın üstünde</string>
     <string name="bubble_aim_center">Baloncuğun ortası</string>
     <string name="bubble_aim_hint">Yüzen baloncuğa çift dokunmak ikisi arasında geçiş yapar.</string>
-    <string name="bubble_dock_side">Yanaşma</string>
+    <string name="bubble_dock_side">Taraf</string>
     <string name="bubble_dock_left">Sol kenar</string>
     <string name="bubble_dock_right">Sağ kenar</string>
     <string name="bubble_highlight">Nişan altındaki kelimeyi vurgula</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Uygulamaları filtrele</string>
     <string name="bubble_read_app_text">Uygulama metnini oku (deneysel)</string>
     <string name="bubble_read_app_text_hint">Metnini paylaşan uygulamalarda daha hızlı.</string>
-    <string name="bubble_read_app_text_info">Uygulama metni kesindir, tanıma beklenmeden neredeyse anında hazırdır ve ağ gerektirmez; ancak yalnızca karakter konumlarını erişilebilirlik hizmetlerine bildiren uygulamalarda çalışır. Diğer yerlerde ve görsellerdeki metinde ekran her zamanki gibi tanınır.
-
-Uygulama metnini okumak deneyseldir: bazı uygulamalar yanlış karakter konumları bildirir, bu yüzden vurgu kayabilir veya komşu bir kelime bulunabilir. Böyle olursa kapatın.</string>
+    <string name="bubble_read_app_text_info">Uygulama metni kesindir, tanıma beklenmeden neredeyse anında hazırdır ve ağ gerektirmez; ancak yalnızca karakter konumlarını erişilebilirlik hizmetlerine bildiren uygulamalarda çalışır. Diğer yerlerde ve görsellerdeki metinde ekran her zamanki gibi tanınır.\n\nUygulama metnini okumak deneyseldir: bazı uygulamalar yanlış karakter konumları bildirir, bu yüzden vurgu kayabilir veya komşu bir kelime bulunabilir. Böyle olursa kapatın.</string>
     <string name="bubble_app_text_only">Yalnızca uygulama metni</string>
     <string name="bubble_app_text_only_hint">Ekran görüntüsü ve tanıma yok. Görsellerdeki metin okunmaz.</string>
-    <string name="bubble_app_text_only_info">Ekran hiç tanınmaz: yalnızca uygulamaların erişilebilirlik hizmetlerine bildirdiği metin okunur. Görsellerdeki, mangalardaki, oyunlardaki ve metnini paylaşmayan uygulamalardaki metin okunmaz.
-
-E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da zayıf cihazlara ve yavaş veya kotalı internete uygundur: tanımaya pil harcanmaz ve hiçbir veri gönderilmez.</string>
+    <string name="bubble_app_text_only_info">Ekran hiç tanınmaz: yalnızca uygulamaların erişilebilirlik hizmetlerine bildirdiği metin okunur. Görsellerdeki, mangalardaki, oyunlardaki ve metnini paylaşmayan uygulamalardaki metin okunmaz.\n\nE-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da zayıf cihazlara ve yavaş veya kotalı internete uygundur: tanımaya pil harcanmaz ve hiçbir veri gönderilmez.</string>
     <string name="bubble_app_text_only_confirm">Aç</string>
     <string name="dictionaries_import_yomitan_backup">Yomitan sözlük koleksiyonunu içe aktar</string>
     <string name="dictionaries_task_converting">Açılıyor: %1$s</string>
@@ -165,7 +161,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="anki_overwrite_prepend">başa ekle</string>
     <string name="audio_volume">Ses düzeyi: %%%1$d</string>
     <string name="settings_title">Ayarlar</string>
-    <string name="settings_bubble_summary">Nişan, yanaşma, metin kaynağı, gizli uygulamalar</string>
+    <string name="settings_bubble_summary">Nişan, taraf, metin kaynağı, gizli uygulamalar</string>
     <string name="lookup_title">Arama</string>
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
     <string name="appearance_title">Görünüm</string>
@@ -279,7 +275,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="yomitan_collection_media">%1$d görsel</string>
     <string name="yomitan_collection_installed">zaten yüklü</string>
     <string name="yomitan_collection_hint">Yüklü sözlükler işaretsiz başlar; işaretlenen, yüklü kopyanın yerini alır. Büyük dosyalar birkaç dakika sürer.</string>
-    <string name="yomitan_collection_import">%1$d içe aktar</string>
+    <string name="yomitan_collection_import">%1$d sözlüğü içe aktar</string>
     <string name="yomitan_collection_queued">%1$d sözlük arka planda içe aktarılıyor; ilerleme Sözlükler ekranında görünür.</string>
     <string name="bubble_show_source">Tanınan metni maddelerin üstünde göster</string>
     <string name="bubble_show_source_hint">Kapalı: açılır pencere doğrudan maddeyle başlar ve ✕ onun düğmelerinin yanında durur.</string>
@@ -291,7 +287,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="popup_font_script_only_hint">Latin, Kiril ve diğer harfler telefonun yazı tipinde kalır. İndirilen ve eklenen yazı tipleri için.</string>
     <string name="popup_font_downloaded">İndirilenler</string>
     <string name="popup_font_own_file">Kendi dosyanız</string>
-    <string name="popup_font_delete">%1$s sil</string>
+    <string name="popup_font_delete">%1$s yazı tipini sil</string>
     <string name="popup_font_size">Metin boyutu: %1$d</string>
     <string name="popup_text_weight">Yazı kalınlığı: %1$s</string>
     <string name="popup_text_weight_normal">normal</string>
@@ -331,7 +327,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="css_problem_empty_font_name">Satır %1$d: font-family içinde boş bir ad (fazladan bir virgül mü?), tarayıcı tüm bildirimi atlar</string>
     <string name="css_problem_outside_rule">Satır %1$d: “%2$s” hiçbir { } kuralının içinde değil</string>
     <string name="css_problem_unknown_font">Satır %1$d: telefonda “%2$s” yazı tipi yok, listedeki sonraki veya açılır pencere yazı tipi kullanılır</string>
-    <string name="css_problem_remote_file">Satır %1$d: %2$s adresinden dosya yükler; bu sunucu kelime aradığınızı görür. İnternetten yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
+    <string name="css_problem_remote_file">Satır %1$d: %2$s adresinden dosya yükler; böylece bu sunucu ne zaman kelime aradığınızı görür. İnternetten yazı tipleri ve stil sayfaları yüklenir, diğer dosyalar engellenir.</string>
     <string name="yomitan_section_appearance">Açılır pencere görünümü</string>
     <string name="yomitan_section_appearance_hint">Metin boyutu ve özel açılır pencere CSS’i</string>
     <string name="yomitan_summary_font_size">Metin boyutu %1$d</string>
@@ -375,7 +371,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="action_more_info">%1$s hakkında</string>
     <string name="anki_fields_how">Alan şablonları nasıl çalışır</string>
     <string name="popup_css_short">Sözlük stillerinden sonra uygulanır</string>
-    <string name="about_dictionaries_hint">Her sözlüğün yazarları ve lisansları ⓘ simgesinin arkasındadır.</string>
+    <string name="about_dictionaries_hint">Her sözlüğün yazarları ve lisansları, ⓘ simgesine dokununca görünür.</string>
     <string name="about_dictionaries_show">Tümünü göster (%1$d)</string>
     <string name="about_dictionaries_hide">Gizle</string>
     <string name="dictionaries_notifications_title">İlerleme bildirimleri</string>
@@ -443,7 +439,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="backup_read_failed">Yedek okunamadı.</string>
     <string name="backup_loaded">%1$s tarihli yedek, sürüm %2$s</string>
     <string name="backup_sections">Geri yüklenecek bölümler</string>
-    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır. Yedekteki sözlükler eklenir veya aynılarının yerini alır; diğer yüklü sözlükler kalır.</string>
+    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır. Yedekteki sözlükler eklenir veya yüklü sürümlerinin yerini alır; diğer yüklü sözlükler kalır.</string>
     <string name="backup_restore_button">İşaretlileri geri yükle</string>
     <string name="backup_restored">Geri yüklendi</string>
     <string name="backup_section_general">Genel</string>
@@ -451,7 +447,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="backup_section_bubble">Yüzen baloncuk ve tanıma</string>
     <string name="backup_section_bubble_hint">Boyut, nişan, tanıma motorları, uygulama metni, baloncuğun gizlendiği uygulamalar</string>
     <string name="backup_section_lookup">Arama</string>
-    <string name="backup_section_lookup_hint">Tarama uzunluğu, sonuç sayısı, romaji, tek kanjiler</string>
+    <string name="backup_section_lookup_hint">Tarama uzunluğu, sonuç sayısı, romaji, kelimenin kanjileri</string>
     <string name="backup_section_popup">Açılır pencere görünümü</string>
     <string name="backup_section_popup_hint">Yazı tipi, metin boyutu, özel CSS ve yüklü yazı tipleri</string>
     <string name="backup_section_anki">Anki</string>
@@ -460,13 +456,13 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="backup_section_audio_hint">Telaffuz kaynakları</string>
     <string name="backup_section_dictionary_list">Sözlük sırası ve anahtarları</string>
     <plurals name="backup_section_dictionary_list_hint">
-        <item quantity="one">%d sözlük: sıra, açık veya kapalı, diller ve sıralama için kullanılan. Yüklü olanlara uygulanır.</item>
-        <item quantity="other">%d sözlük: sıra, açık veya kapalı, diller ve sıralama için kullanılan. Yüklü olanlara uygulanır.</item>
+        <item quantity="one">%d sözlük: sıra, açık/kapalı durumu, diller ve sıralama sözlüğü. Yüklü olanlara uygulanır.</item>
+        <item quantity="other">%d sözlük: sıra, açık/kapalı durumu, diller ve sıralama sözlüğü. Yüklü olanlara uygulanır.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Sözlükler</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d sözlük, eklenir veya aynısının yerini alır</item>
-        <item quantity="other">%d sözlük, eklenir veya aynılarının yerini alır</item>
+        <item quantity="one">%d sözlük; eklenir veya yüklü sürümünün yerini alır</item>
+        <item quantity="other">%d sözlük; eklenir veya yüklü sürümlerinin yerini alır</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d yazı tipi</item>
@@ -506,7 +502,7 @@ E-ink okuyuculara, tanımanın çalışmadığı veya yavaş olduğu eski ya da 
     <string name="reset_lookup_text">Tarama uzunluğu, arama başına madde ve diğer arama ayarları kurulumdan sonraki hâline döner.</string>
     <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları kurulumdan sonraki hâline döner. AnkiDroid’de hiçbir şey değişmez.</string>
     <string name="reset_popup_text">Yazı tipi seçimi, metin boyutu ve kalınlığı, özel CSS ve tanım kopyalama kurulumdan sonraki hâline döner. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
-    <string name="reset_appearance_text">Tema yeniden sistemi izler ve e-ink modu kapanır; büyüttüğü boyutlar geri gelir. Uygulama dili kalır.</string>
+    <string name="reset_appearance_text">Tema yeniden sistemi izler ve e-ink modu kapanır; büyüttüğü boyutlar eski hâline döner. Uygulama dili kalır.</string>
     <string name="reset_background_text">Baloncuğu ayakta tutan bildirim kapanır. Pil ve otomatik başlatma ayarları Android’e aittir ve olduğu gibi kalır.</string>
     <string name="reset_dictionaries_tooltip">Sözlükleri sıfırla</string>
     <string name="reset_dictionaries_title">Sözlükler sıfırlansın mı?</string>

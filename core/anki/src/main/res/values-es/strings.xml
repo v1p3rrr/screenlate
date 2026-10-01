@@ -1,5 +1,5 @@
 <resources>
-    <string name="audio_source_tts">Texto a voz</string>
+    <string name="audio_source_tts">Síntesis de voz</string>
     <string name="audio_source_url">URL personalizada</string>
     <string name="audio_source_json">URL personalizada (JSON)</string>
 

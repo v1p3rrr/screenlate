@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">指の上</string>
     <string name="bubble_aim_center">バブルの中心</string>
     <string name="bubble_aim_hint">フローティングバブルをダブルタップすると切り替わります。</string>
-    <string name="bubble_dock_side">待機位置</string>
+    <string name="bubble_dock_side">寄せる側</string>
     <string name="bubble_dock_left">左端</string>
     <string name="bubble_dock_right">右端</string>
     <string name="bubble_highlight">照準の下の語をハイライト</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">アプリを絞り込む</string>
     <string name="bubble_read_app_text">アプリのテキストを読む（試験運用）</string>
     <string name="bubble_read_app_text_hint">テキストを提供するアプリでは速くなります。</string>
-    <string name="bubble_read_app_text_info">アプリのテキストは正確で、認識を待たずにほぼ即座に使え、ネットワークも不要です。ただし、文字の位置をユーザー補助サービスに提供するアプリでしか使えません。それ以外のアプリや画像内の文字では、いつもどおり画面を認識します。
-
-アプリのテキストの読み取りは試験運用中です。一部のアプリは文字の位置を誤って報告するため、ハイライトがずれたり、隣の語が見つかったりすることがあります。その場合はオフにしてください。</string>
+    <string name="bubble_read_app_text_info">アプリのテキストは正確で、認識を待たずにほぼ即座に使え、ネットワークも不要です。ただし、文字の位置をユーザー補助サービスに提供するアプリでしか使えません。それ以外のアプリや画像内の文字では、いつもどおり画面を認識します。\n\nアプリのテキストの読み取りは試験運用中です。一部のアプリは文字の位置を誤って報告するため、ハイライトがずれたり、隣の語が見つかったりすることがあります。その場合はオフにしてください。</string>
     <string name="bubble_app_text_only">アプリのテキストのみ</string>
     <string name="bubble_app_text_only_hint">スクリーンショットも認識も行いません。画像内の文字は読み取りません。</string>
-    <string name="bubble_app_text_only_info">画面の認識はまったく行わず、アプリがユーザー補助サービスに提供するテキストだけを読みます。画像、マンガ、ゲーム、テキストを提供しないアプリの文字は読み取りません。
-
-電子ペーパー端末、認識が動かないか遅い古い端末や非力な端末、遅い回線や従量制の回線に向いています。認識にバッテリーを使わず、データも送信しません。</string>
+    <string name="bubble_app_text_only_info">画面の認識はまったく行わず、アプリがユーザー補助サービスに提供するテキストだけを読みます。画像、マンガ、ゲーム、テキストを提供しないアプリの文字は読み取りません。\n\n電子ペーパー端末、認識が動かないか遅い古い端末や非力な端末、遅い回線や従量制の回線に向いています。認識にバッテリーを使わず、データも送信しません。</string>
     <string name="bubble_app_text_only_confirm">オンにする</string>
     <string name="dictionaries_import_yomitan_backup">Yomitan の辞書コレクションをインポート</string>
     <string name="dictionaries_task_converting">%1$s を展開中</string>
@@ -165,7 +161,7 @@
     <string name="anki_overwrite_prepend">先頭に追加</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">設定</string>
-    <string name="settings_bubble_summary">照準、待機位置、テキストの取得元、非表示のアプリ</string>
+    <string name="settings_bubble_summary">照準、寄せる側、テキストの取得元、非表示のアプリ</string>
     <string name="lookup_title">検索</string>
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
@@ -186,7 +182,7 @@
     <string name="yomitan_import_single_hint">個別の辞書（1 つずつ .zip ファイル）は「辞書」画面の「ファイルからインポート」で追加します。</string>
     <string name="lookup_scanning">スキャン</string>
     <string name="lookup_scan_length">スキャン長：%1$d 文字</string>
-    <string name="lookup_scan_length_hint">照準から後ろの何文字までを検索の対象にするか。値を大きくすると長い表現も見つかります。</string>
+    <string name="lookup_scan_length_hint">照準から何文字先までを検索の対象にするかを決めます。値を大きくすると長い表現も見つかります。</string>
     <string name="lookup_max_results">1 回の検索の項目数</string>
     <string name="lookup_max_results_unlimited">すべて</string>
     <string name="lookup_max_results_hint">Yomitan は最大 32 件表示します。</string>
@@ -271,7 +267,7 @@
     <string name="yomitan_summary_audio_off">Yomitan で音声がオフのため、ソースは設定されませんでした</string>
     <string name="yomitan_summary_audio_unknown">対応していない音声ソース：%1$s</string>
     <string name="yomitan_summary_lookup">スキャン長 %1$s、1 回の検索の項目数 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">テキスト置換（%1$d 件のルール）はインポートしません。漢数字としての数字、々、ッ、句読点は自動で処理されます</string>
+    <string name="yomitan_summary_replacements_skipped">テキスト置換（%1$d 件のルール）はインポートしません。漢数字で書かれた数字、々、ッ、句読点は自動で処理されます</string>
     <string name="yomitan_collection_not_collection">このファイルは Yomitan の辞書コレクションのエクスポートではありません。</string>
     <string name="yomitan_collection_failed">インポートを開始できませんでした。ファイルを読み込めないか、コピーできませんでした。</string>
     <string name="yomitan_collection_choose">ファイル内の辞書</string>
@@ -282,7 +278,7 @@
     <string name="yomitan_collection_import">%1$d 個をインポート</string>
     <string name="yomitan_collection_queued">%1$d 個の辞書をバックグラウンドでインポート中です。進捗は辞書画面に表示されます。</string>
     <string name="bubble_show_source">認識したテキストを項目の上に表示</string>
-    <string name="bubble_show_source_hint">オフ：ポップアップはいきなり項目から始まり、✕ は項目のボタンの横に置かれます。</string>
+    <string name="bubble_show_source_hint">オフ：ポップアップは項目から直接始まり、✕ は項目のボタンの横に置かれます。</string>
     <string name="popup_font_title">ポップアップのフォント</string>
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>
@@ -342,7 +338,7 @@
     <string name="about_licenses">ライセンス</string>
     <string name="about_licenses_hint">Screenlate はオープンソースのライブラリとコードで作られています。辞書にはそれぞれのライセンスがあります。</string>
     <string name="about_libraries">オープンソースライブラリ</string>
-    <string name="about_notices">サードパーティの告知</string>
+    <string name="about_notices">サードパーティの権利表記</string>
     <string name="about_dictionaries">インストール済みの辞書</string>
     <string name="about_dictionary_revision">リビジョン %1$s</string>
     <string name="about_dictionary_author">作者：%1$s</string>
@@ -442,7 +438,7 @@
     <string name="backup_read_failed">バックアップを読み込めませんでした。</string>
     <string name="backup_loaded">%1$s のバックアップ、バージョン %2$s</string>
     <string name="backup_sections">復元する部分</string>
-    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。バックアップ内の辞書は追加されるか、同じ辞書を置き換えます。ほかのインストール済みの辞書はそのまま残ります。</string>
+    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。バックアップ内の辞書は追加されるか、インストール済みの同じ辞書を置き換えます。ほかのインストール済みの辞書はそのまま残ります。</string>
     <string name="backup_restore_button">チェックした部分を復元</string>
     <string name="backup_restored">復元しました</string>
     <string name="backup_section_general">全般</string>
@@ -450,7 +446,7 @@
     <string name="backup_section_bubble">フローティングバブルと認識</string>
     <string name="backup_section_bubble_hint">サイズ、照準、認識エンジン、アプリのテキスト、バブルを隠すアプリ</string>
     <string name="backup_section_lookup">検索</string>
-    <string name="backup_section_lookup_hint">スキャン長、結果の数、ローマ字、単独の漢字</string>
+    <string name="backup_section_lookup_hint">スキャン長、結果の数、ローマ字、語の漢字</string>
     <string name="backup_section_popup">ポップアップの外観</string>
     <string name="backup_section_popup_hint">フォント、文字サイズ、カスタム CSS、インストール済みのフォント</string>
     <string name="backup_section_anki">Anki</string>
@@ -463,7 +459,7 @@
     </plurals>
     <string name="backup_section_dictionary_files">辞書</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">辞書 %d 個。追加されるか、同じ辞書を置き換えます</item>
+        <item quantity="other">辞書 %d 個。追加されるか、インストール済みの版を置き換えます</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">フォント %d 個</item>
@@ -473,10 +469,10 @@
     </plurals>
     <string name="backup_summary_failed">復元されなかった部分：%1$s</string>
     <string name="backup_summary_missing">インストールされていないため、設定をスキップしました：%1$s</string>
-    <string name="dictionaries_kept_on">定義のある辞書がすべてオフになるため、オンのままにしました: %1$s</string>
+    <string name="dictionaries_kept_on">定義のある辞書がすべてオフになるため、オンのままにしました：%1$s</string>
     <string name="home_bubble_shown">バブルは画面に表示されています</string>
     <string name="home_bubble_hidden">バブルは非表示です</string>
-    <string name="home_bubble_stopped">バブルがありません: 端末がサービスを停止しました</string>
+    <string name="home_bubble_stopped">バブルが消えました：端末がサービスを停止しました</string>
     <string name="home_bubble_stopped_hint">アプリからサービスを再び有効にすることはできません。設定を開き、スイッチをオフにしてからオンにすると、バブルが戻ります。</string>
     <string name="home_bubble_show">バブルを戻す</string>
     <string name="home_bubble_hide">バブルを非表示にする</string>
@@ -498,7 +494,7 @@
     <string name="reset_section_tooltip">このセクションをリセット</string>
     <string name="reset_section_title">このセクションをリセットしますか？</string>
     <string name="reset_bubble_text">バブルの設定がすべてインストール直後の状態に戻ります。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>
-    <string name="reset_lookup_text">スキャンの長さ、1 回の検索の項目数、その他の検索設定がインストール直後の状態に戻ります。</string>
+    <string name="reset_lookup_text">スキャン長、1 回の検索の項目数、その他の検索設定がインストール直後の状態に戻ります。</string>
     <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースがインストール直後の状態に戻ります。AnkiDroid 側は何も変わりません。</string>
     <string name="reset_popup_text">フォントの選択、文字のサイズと太さ、カスタム CSS、定義のコピーがインストール直後の状態に戻ります。ダウンロード・追加したフォントは残ります。</string>
     <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、E Ink モードはオフになって、拡大したサイズも元に戻ります。アプリの言語はそのままです。</string>
@@ -510,8 +506,8 @@
     <string name="reset_dictionaries_busy">辞書をリセットしています…</string>
     <string name="reset_dictionaries_failed">辞書のリセットに失敗しました（%1$s）</string>
     <string name="dictionaries_delete_failed">辞書を削除できませんでした（%1$s）</string>
-    <string name="dictionaries_import_interrupted">%1$s：このインポート中にアプリが2回終了したため、中止しました。もう一度お試しください。再び起きる場合は、ファイルが壊れているか、この端末には大きすぎる可能性があります。</string>
+    <string name="dictionaries_import_interrupted">%1$s：このインポート中にアプリが 2 回終了したため、中止しました。もう一度お試しください。再び起きる場合は、ファイルが壊れているか、この端末には大きすぎる可能性があります。</string>
     <string name="reset_dictionaries_gave_up_title">辞書のリセットが完了しませんでした</string>
-    <string name="reset_dictionaries_gave_up_text">辞書のリセット中にアプリが2回終了したため、リセットを中止しました。一部の辞書が残っているか、なくなっている可能性があります。「辞書」ページ上部のボタンでもう一度リセットしてください。</string>
+    <string name="reset_dictionaries_gave_up_text">辞書のリセット中にアプリが 2 回終了したため、リセットを中止しました。一部の辞書が残っているか、なくなっている可能性があります。「辞書」ページ上部のボタンでもう一度リセットしてください。</string>
     <string name="reset_dictionaries_gave_up_open">辞書を開く</string>
 </resources>

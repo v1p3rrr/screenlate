@@ -25,9 +25,9 @@
     <string name="overlay_ocr_error_fallback">Le texte a été reconnu sur l’appareil, ce qui est moins précis.</string>
     <string name="overlay_no_results">Aucune entrée trouvée dans les dictionnaires.</string>
     <string name="overlay_no_dictionaries">Les dictionnaires sont encore en cours d’installation. Réessayez dans un instant.</string>
-    <string name="overlay_no_dictionaries_on">Aucun dictionnaire avec des définitions n’est activé. Activez-en ou ajoutez-en un dans Dictionnaires, dans Screenlate.</string>
+    <string name="overlay_no_dictionaries_on">Aucun dictionnaire avec des définitions n’est activé. Activez-en un ou ajoutez-en un dans Dictionnaires, dans Screenlate.</string>
     <string name="overlay_add_note">Ajouter à Anki (maintenir pour une image)</string>
-    <string name="overlay_note_wait">Attendez le texte définitif (fin de l’indicateur).</string>
+    <string name="overlay_note_wait">Attendez le texte définitif, jusqu’à ce que l’indicateur disparaisse.</string>
     <string name="overlay_play_audio">Lire l’audio (maintenir pour choisir)</string>
     <string name="anki_error">Impossible d’ajouter la note : %1$s</string>
     <string name="anki_rejected">AnkiDroid n’a pas enregistré la note.</string>

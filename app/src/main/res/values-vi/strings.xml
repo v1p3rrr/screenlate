@@ -92,7 +92,7 @@
 
     <string name="audio_title">Âm thanh</string>
     <string name="audio_auto_play">Phát âm thanh khi hiện từ mới</string>
-    <string name="audio_sources_hint">Thử lần lượt từ trên xuống; nguồn đầu tiên có âm thanh sẽ được phát và đưa vào ghi chú. Chạm vào một nguồn để sửa.</string>
+    <string name="audio_sources_hint">Các nguồn được thử lần lượt từ trên xuống; nguồn đầu tiên có âm thanh sẽ được phát và đưa vào ghi chú. Chạm vào một nguồn để sửa.</string>
     <string name="audio_url_template">Mẫu URL</string>
     <string name="audio_add_source">Thêm nguồn âm thanh</string>
     <string name="search_title">Tra từ</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Phía trên ngón tay</string>
     <string name="bubble_aim_center">Tâm bong bóng</string>
     <string name="bubble_aim_hint">Chạm hai lần vào bong bóng nổi để chuyển giữa hai chế độ.</string>
-    <string name="bubble_dock_side">Neo cạnh</string>
+    <string name="bubble_dock_side">Cạnh màn hình</string>
     <string name="bubble_dock_left">Cạnh trái</string>
     <string name="bubble_dock_right">Cạnh phải</string>
     <string name="bubble_highlight">Tô sáng từ dưới điểm ngắm</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Lọc ứng dụng</string>
     <string name="bubble_read_app_text">Đọc văn bản của ứng dụng (thử nghiệm)</string>
     <string name="bubble_read_app_text_hint">Nhanh hơn trong các ứng dụng cung cấp văn bản của mình.</string>
-    <string name="bubble_read_app_text_info">Văn bản ứng dụng chính xác, có gần như ngay lập tức mà không phải chờ nhận dạng và không cần mạng, nhưng chỉ hoạt động trong các ứng dụng cung cấp vị trí ký tự cho dịch vụ hỗ trợ tiếp cận; ở nơi khác, và với chữ trong ảnh, màn hình được nhận dạng như bình thường.
-
-Đọc văn bản ứng dụng đang ở giai đoạn thử nghiệm: một số ứng dụng báo sai vị trí ký tự, nên phần tô sáng có thể bị lệch hoặc tìm ra từ bên cạnh. Nếu vậy, hãy tắt nó.</string>
+    <string name="bubble_read_app_text_info">Văn bản ứng dụng chính xác, có gần như ngay lập tức mà không phải chờ nhận dạng và không cần mạng, nhưng chỉ hoạt động trong các ứng dụng cung cấp vị trí ký tự cho dịch vụ hỗ trợ tiếp cận; ở nơi khác, và với chữ trong ảnh, màn hình được nhận dạng như bình thường.\n\nĐọc văn bản ứng dụng đang ở giai đoạn thử nghiệm: một số ứng dụng báo sai vị trí ký tự, nên phần tô sáng có thể bị lệch hoặc tìm ra từ bên cạnh. Nếu vậy, hãy tắt nó.</string>
     <string name="bubble_app_text_only">Chỉ văn bản ứng dụng</string>
     <string name="bubble_app_text_only_hint">Không chụp màn hình và không nhận dạng. Chữ trong ảnh không được đọc.</string>
-    <string name="bubble_app_text_only_info">Màn hình hoàn toàn không được nhận dạng: chỉ đọc văn bản mà ứng dụng cung cấp cho dịch vụ hỗ trợ tiếp cận. Chữ trong ảnh, manga, trò chơi và các ứng dụng không cung cấp văn bản sẽ không được đọc.
-
-Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà việc nhận dạng không chạy hoặc chậm, và internet chậm hoặc giới hạn dung lượng: không tốn pin cho nhận dạng và không gửi dữ liệu nào.</string>
+    <string name="bubble_app_text_only_info">Màn hình hoàn toàn không được nhận dạng: chỉ đọc văn bản mà ứng dụng cung cấp cho dịch vụ hỗ trợ tiếp cận. Chữ trong ảnh, manga, trò chơi và các ứng dụng không cung cấp văn bản sẽ không được đọc.\n\nPhù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà việc nhận dạng không chạy hoặc chậm, và internet chậm hoặc giới hạn dung lượng: không tốn pin cho nhận dạng và không gửi dữ liệu nào.</string>
     <string name="bubble_app_text_only_confirm">Bật</string>
     <string name="dictionaries_import_yomitan_backup">Nhập bộ sưu tập từ điển Yomitan</string>
     <string name="dictionaries_task_converting">Đang giải nén %1$s</string>
@@ -165,7 +161,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="anki_overwrite_prepend">thêm vào đầu</string>
     <string name="audio_volume">Âm lượng: %1$d%%</string>
     <string name="settings_title">Cài đặt</string>
-    <string name="settings_bubble_summary">Điểm ngắm, neo cạnh, nguồn văn bản, ứng dụng ẩn</string>
+    <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, nguồn văn bản, ứng dụng ẩn</string>
     <string name="lookup_title">Tra cứu</string>
     <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, kanji của từ</string>
     <string name="appearance_title">Hiển thị</string>
@@ -220,7 +216,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="audio_test">Kiểm tra</string>
     <string name="audio_test_failed">Thất bại: %1$s</string>
     <string name="audio_error_format">%1$s (%2$s)</string>
-    <string name="audio_error_http">Máy chủ trả lời bằng một lỗi</string>
+    <string name="audio_error_http">Máy chủ trả về lỗi</string>
     <string name="audio_error_not_found">Không tìm thấy địa chỉ máy chủ, hoặc không có internet</string>
     <string name="audio_error_refused">Máy chủ từ chối kết nối hoặc không chạy</string>
     <string name="audio_error_timeout">Máy chủ không trả lời kịp</string>
@@ -262,7 +258,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="yomitan_summary_sort_missing">Từ điển sắp xếp %1$s chưa được cài ở đây</string>
     <string name="yomitan_summary_anki_unavailable">AnkiDroid không khả dụng; các mẫu được giữ lại và sẽ áp dụng khi bạn chọn loại ghi chú</string>
     <string name="yomitan_summary_anki_model">Loại ghi chú %1$s cùng các mẫu trường</string>
-    <string name="yomitan_summary_anki_model_missing">AnkiDroid không có loại ghi chú %1$s; các mẫu của nó sẽ áp dụng khi nó tồn tại và được chọn</string>
+    <string name="yomitan_summary_anki_model_missing">AnkiDroid không có loại ghi chú %1$s; các mẫu của nó sẽ được áp dụng khi loại này có trong AnkiDroid và được chọn</string>
     <string name="yomitan_summary_anki_deck">Bộ thẻ %1$s</string>
     <string name="yomitan_summary_anki_deck_missing">AnkiDroid không có bộ thẻ %1$s; hãy chọn bộ thẻ trong cài đặt Anki</string>
     <string name="yomitan_summary_anki_dropped">Các trường mà loại ghi chú không có: %1$s</string>
@@ -271,7 +267,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="yomitan_summary_audio_off">Âm thanh đang tắt trong Yomitan; không có nguồn nào được đặt</string>
     <string name="yomitan_summary_audio_unknown">Nguồn âm thanh không được hỗ trợ: %1$s</string>
     <string name="yomitan_summary_lookup">Độ dài quét %1$s, số mục mỗi lần tra %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">Các quy tắc thay thế văn bản (%1$d quy tắc) không được nhập: chữ số dạng số kanji, 々, ッ và dấu câu được xử lý tự động</string>
+    <string name="yomitan_summary_replacements_skipped">Thay thế văn bản (%1$d quy tắc) không được nhập: chữ số dạng số kanji, 々, ッ và dấu câu được xử lý tự động</string>
     <string name="yomitan_collection_not_collection">Tệp này không phải bản xuất bộ sưu tập từ điển của Yomitan.</string>
     <string name="yomitan_collection_failed">Không thể bắt đầu nhập: không đọc hoặc sao chép được tệp.</string>
     <string name="yomitan_collection_choose">Từ điển trong tệp</string>
@@ -345,7 +341,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="about_notices">Thông báo của bên thứ ba</string>
     <string name="about_dictionaries">Từ điển đã cài</string>
     <string name="about_dictionary_revision">Bản %1$s</string>
-    <string name="about_dictionary_author">Bởi %1$s</string>
+    <string name="about_dictionary_author">Tác giả: %1$s</string>
     <string name="about_logs">Nhật ký</string>
     <string name="about_logs_hint">Nhật ký của ứng dụng này kèm phiên bản và mẫu thiết bị, để đính kèm vào báo cáo lỗi hoặc tự đọc: “Lưu vào Tải xuống” đặt nó vào Download/Screenlate. Nó chứa sự kiện và lỗi, không bao giờ chứa văn bản bạn tra.</string>
     <string name="about_logs_share">Chia sẻ nhật ký</string>
@@ -375,7 +371,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="action_more_info">Về %1$s</string>
     <string name="anki_fields_how">Cách hoạt động của mẫu trường</string>
     <string name="popup_css_short">Áp dụng sau kiểu dáng của từ điển</string>
-    <string name="about_dictionaries_hint">Tác giả và giấy phép của từng từ điển nằm sau biểu tượng ⓘ của nó.</string>
+    <string name="about_dictionaries_hint">Tác giả và giấy phép của từng từ điển hiện ra khi chạm vào biểu tượng ⓘ của từ điển đó.</string>
     <string name="about_dictionaries_show">Hiện tất cả (%1$d)</string>
     <string name="about_dictionaries_hide">Ẩn</string>
     <string name="dictionaries_notifications_title">Thông báo tiến độ</string>
@@ -415,7 +411,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="eink_enlarge_confirm">Phóng to</string>
     <string name="eink_enlarge_keep">Giữ kích thước</string>
     <string name="eink_home_title">Màn hình e-ink?</string>
-    <string name="eink_home_message">Thiết bị này có vẻ là máy đọc sách e-ink. Chế độ e-ink làm Screenlate đen trắng, không có hiệu ứng động. Trên thiết bị chậm hoặc không có internet, bong bóng cũng có thể chỉ đọc văn bản của ứng dụng mà không nhận dạng màn hình.</string>
+    <string name="eink_home_message">Thiết bị này có vẻ là máy đọc sách e-ink. Chế độ e-ink hiển thị Screenlate đen trắng, không có hiệu ứng động. Trên thiết bị chậm hoặc không có internet, bong bóng cũng có thể chỉ đọc văn bản của ứng dụng mà không nhận dạng màn hình.</string>
     <string name="eink_home_turn_on">Bật chế độ e-ink</string>
     <string name="eink_home_app_text">Chỉ văn bản ứng dụng…</string>
     <string name="dictionaries_website">Trang web</string>
@@ -442,7 +438,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="backup_read_failed">Không đọc được bản sao lưu.</string>
     <string name="backup_loaded">Bản sao lưu từ %1$s, phiên bản %2$s</string>
     <string name="backup_sections">Các phần cần khôi phục</string>
-    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại. Từ điển trong bản sao lưu được thêm vào hoặc thay thế từ điển giống nó; các từ điển đã cài khác vẫn giữ nguyên.</string>
+    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại. Từ điển trong bản sao lưu được thêm vào hoặc thay thế bản đã cài của chúng; các từ điển đã cài khác vẫn giữ nguyên.</string>
     <string name="backup_restore_button">Khôi phục phần đã chọn</string>
     <string name="backup_restored">Đã khôi phục</string>
     <string name="backup_section_general">Chung</string>
@@ -450,7 +446,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="backup_section_bubble">Bong bóng nổi và nhận dạng</string>
     <string name="backup_section_bubble_hint">Kích thước, điểm ngắm, công cụ nhận dạng, văn bản ứng dụng, các ứng dụng ẩn bong bóng</string>
     <string name="backup_section_lookup">Tra cứu</string>
-    <string name="backup_section_lookup_hint">Độ dài quét, số kết quả, romaji, kanji đơn</string>
+    <string name="backup_section_lookup_hint">Độ dài quét, số kết quả, romaji, kanji của từ</string>
     <string name="backup_section_popup">Hiển thị cửa sổ bật lên</string>
     <string name="backup_section_popup_hint">Phông chữ, cỡ chữ, CSS tùy chỉnh và phông chữ đã cài</string>
     <string name="backup_section_anki">Anki</string>
@@ -463,7 +459,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     </plurals>
     <string name="backup_section_dictionary_files">Từ điển</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d từ điển, được thêm vào hoặc thay thế từ điển giống nó</item>
+        <item quantity="other">%d từ điển; được thêm vào hoặc thay thế bản đã cài</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d phông chữ</item>
@@ -485,7 +481,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="background_keep_alive_title">Để bong bóng không biến mất</string>
     <string name="background_keep_alive_text">Điện thoại dừng ứng dụng chạy nền cũng có thể dừng dịch vụ vẽ bong bóng. Ứng dụng có thông báo riêng bị dừng ít hơn nhiều.</string>
     <string name="background_keep_alive_switch">Giữ một thông báo khi dịch vụ đang chạy</string>
-    <string name="background_keep_alive_hint">Không phải lúc nào cũng hiệu quả. Khi dịch vụ đã dừng, chỉ có tắt rồi bật lại trong cài đặt trợ năng mới đưa bong bóng trở lại.</string>
+    <string name="background_keep_alive_hint">Không phải lúc nào cũng hiệu quả. Khi dịch vụ đã dừng, chỉ có tắt rồi bật lại trong cài đặt hỗ trợ tiếp cận mới đưa bong bóng trở lại.</string>
     <string name="background_keep_alive_notifications_off">Thông báo của Screenlate đang tắt: dịch vụ vẫn chạy nhưng thông báo của nó không hiển thị.</string>
     <string name="background_keep_alive_notifications_allow">Cho phép thông báo</string>
     <string name="action_reset">Đặt lại</string>
@@ -501,7 +497,7 @@ Phù hợp với máy đọc sách e-ink, thiết bị cũ hoặc yếu mà vi�
     <string name="reset_lookup_text">Độ dài quét, số mục mỗi lần tra và các cài đặt tra cứu khác trở về như sau khi cài.</string>
     <string name="reset_anki_text">Bộ thẻ, loại ghi chú, mẫu trường, nhãn, cách xử lý trùng lặp và nguồn âm thanh trở về như sau khi cài. Trong AnkiDroid không có gì thay đổi.</string>
     <string name="reset_popup_text">Lựa chọn phông chữ, cỡ và độ đậm của chữ, CSS tùy chỉnh và việc sao chép định nghĩa trở về như sau khi cài. Phông chữ đã tải và đã thêm vẫn được cài.</string>
-    <string name="reset_appearance_text">Giao diện lại theo hệ thống và chế độ e-ink tắt, trả lại các kích thước nó đã phóng to. Ngôn ngữ ứng dụng được giữ nguyên.</string>
+    <string name="reset_appearance_text">Giao diện lại theo hệ thống và chế độ e-ink tắt; các kích thước nó đã phóng to trở về như trước. Ngôn ngữ ứng dụng được giữ nguyên.</string>
     <string name="reset_background_text">Thông báo giữ cho bong bóng hoạt động sẽ tắt. Cài đặt pin và tự khởi động thuộc về Android và giữ nguyên.</string>
     <string name="reset_dictionaries_tooltip">Đặt lại từ điển</string>
     <string name="reset_dictionaries_title">Đặt lại từ điển?</string>

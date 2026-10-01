@@ -20,7 +20,7 @@
     <string name="overlay_ocr_error_network">Không kết nối được tới nhận dạng đám mây.</string>
     <string name="overlay_ocr_error_too_many">Nhận dạng đám mây nhận quá nhiều yêu cầu, nên tạm nghỉ vài phút.</string>
     <string name="overlay_ocr_error_refused">Nhận dạng đám mây đã từ chối yêu cầu, nên tạm nghỉ vài phút.</string>
-    <string name="overlay_ocr_error_server">Nhận dạng đám mây gặp sự cố ở phía họ (lỗi %1$d).</string>
+    <string name="overlay_ocr_error_server">Nhận dạng đám mây gặp sự cố ở phía máy chủ (lỗi %1$d).</string>
     <string name="overlay_ocr_error_other">Nhận dạng đám mây thất bại.</string>
     <string name="overlay_ocr_error_fallback">Văn bản được nhận dạng trên thiết bị, kém chính xác hơn.</string>
     <string name="overlay_no_results">Không tìm thấy mục từ nào.</string>

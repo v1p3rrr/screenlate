@@ -90,11 +90,12 @@ class TranslationsTest {
     }
 
     @Test
-    fun `apostrophes and quotes are escaped`() {
-        // aapt drops an unescaped ' and everything a pair of " encloses loses its meaning; both are easy to miss.
+    fun `apostrophes, quotes and line breaks are escaped`() {
+        // aapt drops an unescaped ' and everything a pair of " encloses loses its meaning; a line break in the
+        // source becomes a space, so paragraphs need an escaped one. All are easy to miss.
         val raw = Regex("""(?<!\\)'""")
         val quote = Regex("""(?<!\\)"""")
-        // Whole elements, since a long string continues over several lines.
+        // Whole elements, so a string broken over several lines is caught.
         val element = Regex("""<(string|item)\b[^>]*>(.*?)</\1>""", RegexOption.DOT_MATCHES_ALL)
         for (res in modules) {
             res.listFiles().orEmpty().filter { it.name.startsWith("values") }.forEach { dir ->
@@ -105,6 +106,7 @@ class TranslationsTest {
                     val line = content.substring(0, match.range.first).count { it == '\n' } + 1
                     assertWithMessage("$file:$line has an unescaped '").that(raw.containsMatchIn(text)).isFalse()
                     assertWithMessage("$file:$line has an unescaped \"").that(quote.containsMatchIn(text)).isFalse()
+                    assertWithMessage("$file:$line has a line break; write \\n").that('\n' in text).isFalse()
                 }
             }
         }

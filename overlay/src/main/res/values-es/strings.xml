@@ -53,7 +53,7 @@
     <string name="overlay_add_anyway_picture">Añadir igualmente, con una imagen</string>
     <string name="overlay_audio_loading">Buscando audio…</string>
     <string name="overlay_open_app">Abrir ajustes de Anki</string>
-    <string name="audio_no_voice">No hay ninguna voz de texto a voz instalada para este idioma.</string>
+    <string name="audio_no_voice">No hay ninguna voz instalada para este idioma en la síntesis de voz.</string>
     <string name="overlay_close">Cerrar</string>
     <string name="overlay_pitch_dictionaries">Acento tonal según</string>
     <string name="overlay_copy_paragraph">Copiar este párrafo</string>

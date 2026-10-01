@@ -124,14 +124,10 @@
     <string name="bubble_filter_apps">Filter apps</string>
     <string name="bubble_read_app_text">Read app text (experimental)</string>
     <string name="bubble_read_app_text_hint">Faster in apps that expose their text.</string>
-    <string name="bubble_read_app_text_info">App text is exact, ready almost at once without waiting for recognition, and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.
-
-Reading app text is experimental: some apps report wrong character positions, so the highlight can be off or a neighboring word can be found. If that happens, turn it off.</string>
+    <string name="bubble_read_app_text_info">App text is exact, ready almost at once without waiting for recognition, and needs no network, but only works in apps that expose character positions to accessibility services; elsewhere, and for text in images, the screen is recognized as usual.\n\nReading app text is experimental: some apps report wrong character positions, so the highlight can be off or a neighboring word can be found. If that happens, turn it off.</string>
     <string name="bubble_app_text_only">App text only</string>
     <string name="bubble_app_text_only_hint">No screenshots and no recognition. Text in images is not read.</string>
-    <string name="bubble_app_text_only_info">The screen is not recognized at all: only text that apps expose to accessibility services is read. Text in images, manga, games and apps that do not expose their text is not read.
-
-Suits e-ink readers, old or weak devices where recognition does not work or is slow, and slow or metered internet: no battery spent on recognition and no data sent.</string>
+    <string name="bubble_app_text_only_info">The screen is not recognized at all: only text that apps expose to accessibility services is read. Text in images, manga, games and apps that do not expose their text is not read.\n\nSuits e-ink readers, old or weak devices where recognition does not work or is slow, and slow or metered internet: no battery spent on recognition and no data sent.</string>
     <string name="bubble_app_text_only_confirm">Turn on</string>
     <string name="dictionaries_import_yomitan_backup">Import a Yomitan dictionary collection</string>
     <string name="dictionaries_task_converting">Unpacking %1$s</string>
@@ -454,7 +450,7 @@ Suits e-ink readers, old or weak devices where recognition does not work or is s
     <string name="backup_section_bubble">Floating bubble and recognition</string>
     <string name="backup_section_bubble_hint">Size, aim, recognition engines, app text, apps where the bubble is hidden</string>
     <string name="backup_section_lookup">Lookup</string>
-    <string name="backup_section_lookup_hint">Scan length, number of results, romaji, single kanji</string>
+    <string name="backup_section_lookup_hint">Scan length, number of results, romaji, kanji of the word</string>
     <string name="backup_section_popup">Popup appearance</string>
     <string name="backup_section_popup_hint">Font, text size, custom CSS and installed fonts</string>
     <string name="backup_section_anki">Anki</string>

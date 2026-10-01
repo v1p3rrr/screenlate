@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">手指上方</string>
     <string name="bubble_aim_center">悬浮球中心</string>
     <string name="bubble_aim_hint">双击悬浮球可在两者之间切换。</string>
-    <string name="bubble_dock_side">停靠</string>
+    <string name="bubble_dock_side">停靠边</string>
     <string name="bubble_dock_left">左边缘</string>
     <string name="bubble_dock_right">右边缘</string>
     <string name="bubble_highlight">高亮瞄准处的词</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">筛选应用</string>
     <string name="bubble_read_app_text">读取应用文本（实验性）</string>
     <string name="bubble_read_app_text_hint">在提供文本的应用中速度更快。</string>
-    <string name="bubble_read_app_text_info">应用文本准确无误，无需等待识别即可几乎立刻获得，也不需要网络；但仅适用于向无障碍服务提供字符位置的应用。在其他应用中以及对图片中的文字，仍照常识别屏幕。
-
-读取应用文本属于实验功能：有些应用报告的字符位置有误，因此高亮可能偏移，或查到相邻的词。遇到这种情况请关闭它。</string>
+    <string name="bubble_read_app_text_info">应用文本准确无误，无需等待识别即可几乎立刻获得，也不需要网络；但仅适用于向无障碍服务提供字符位置的应用。在其他应用中以及对图片中的文字，仍照常识别屏幕。\n\n读取应用文本属于实验功能：有些应用报告的字符位置有误，因此高亮可能偏移，或查到相邻的词。遇到这种情况请关闭它。</string>
     <string name="bubble_app_text_only">仅应用文本</string>
     <string name="bubble_app_text_only_hint">不截屏，也不识别。不读取图片中的文字。</string>
-    <string name="bubble_app_text_only_info">完全不识别屏幕：只读取应用向无障碍服务提供的文本。图片、漫画、游戏以及不提供文本的应用中的文字都不会被读取。
-
-适合墨水屏阅读器、无法识别或识别缓慢的旧设备或低性能设备，以及网速慢或按流量计费的网络：不在识别上耗电，也不发送任何数据。</string>
+    <string name="bubble_app_text_only_info">完全不识别屏幕：只读取应用向无障碍服务提供的文本。图片、漫画、游戏以及不提供文本的应用中的文字都不会被读取。\n\n适合墨水屏阅读器、无法识别或识别缓慢的旧设备或低性能设备，以及网速慢或按流量计费的网络：不在识别上耗电，也不发送任何数据。</string>
     <string name="bubble_app_text_only_confirm">开启</string>
     <string name="dictionaries_import_yomitan_backup">导入 Yomitan 词典合集</string>
     <string name="dictionaries_task_converting">正在解压 %1$s</string>
@@ -165,7 +161,7 @@
     <string name="anki_overwrite_prepend">添加到开头</string>
     <string name="audio_volume">音量：%1$d%%</string>
     <string name="settings_title">设置</string>
-    <string name="settings_bubble_summary">瞄准、停靠、文本来源、隐藏的应用</string>
+    <string name="settings_bubble_summary">瞄准、停靠边、文本来源、隐藏的应用</string>
     <string name="lookup_title">查词</string>
     <string name="settings_lookup_summary">扫描长度、结果、罗马字、词中的汉字</string>
     <string name="appearance_title">外观</string>
@@ -271,7 +267,7 @@
     <string name="yomitan_summary_audio_off">Yomitan 中音频已关闭；未设置任何来源</string>
     <string name="yomitan_summary_audio_unknown">不支持的音频来源：%1$s</string>
     <string name="yomitan_summary_lookup">扫描长度 %1$s，每次查词的词条数 %2$s</string>
-    <string name="yomitan_summary_replacements_skipped">文本替换（%1$d 条规则）不会导入：数字作为汉字数字、々、ッ 和标点会自动处理</string>
+    <string name="yomitan_summary_replacements_skipped">文本替换（%1$d 条规则）不会导入：汉字书写的数字、々、ッ 和标点会自动处理</string>
     <string name="yomitan_collection_not_collection">此文件不是 Yomitan 词典合集的导出文件。</string>
     <string name="yomitan_collection_failed">无法开始导入：无法读取或复制该文件。</string>
     <string name="yomitan_collection_choose">文件中的词典</string>
@@ -442,7 +438,7 @@
     <string name="backup_read_failed">无法读取备份。</string>
     <string name="backup_loaded">%1$s 的备份，版本 %2$s</string>
     <string name="backup_sections">要恢复的部分</string>
-    <string name="backup_replace_warning">勾选的部分会替换当前内容。备份中的词典会被添加或替换相同的词典；其他已安装的词典保持不变。</string>
+    <string name="backup_replace_warning">勾选的部分会替换当前内容。备份中的词典会被添加，或替换已安装的同一词典；其他已安装的词典保持不变。</string>
     <string name="backup_restore_button">恢复所选</string>
     <string name="backup_restored">已恢复</string>
     <string name="backup_section_general">常规</string>
@@ -450,7 +446,7 @@
     <string name="backup_section_bubble">悬浮球与识别</string>
     <string name="backup_section_bubble_hint">大小、瞄准、识别引擎、应用文本、隐藏悬浮球的应用</string>
     <string name="backup_section_lookup">查词</string>
-    <string name="backup_section_lookup_hint">扫描长度、结果数量、罗马字、单个汉字</string>
+    <string name="backup_section_lookup_hint">扫描长度、结果数量、罗马字、词中的汉字</string>
     <string name="backup_section_popup">弹窗外观</string>
     <string name="backup_section_popup_hint">字体、文字大小、自定义 CSS 和已安装的字体</string>
     <string name="backup_section_anki">Anki</string>
@@ -463,7 +459,7 @@
     </plurals>
     <string name="backup_section_dictionary_files">词典</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d 个词典，添加或替换相同的词典</item>
+        <item quantity="other">%d 个词典，添加或替换已安装的版本</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d 个字体</item>

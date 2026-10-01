@@ -18,7 +18,7 @@
     <string name="ocr_test_title">Test OCR</string>
     <string name="ocr_test_pick_image">Scegli un’immagine</string>
     <string name="ocr_test_running">Riconoscimento…</string>
-    <string name="ocr_test_hit">Sotto il tocco: %1$s</string>
+    <string name="ocr_test_hit">Nel punto toccato: %1$s</string>
 
     <string name="action_delete">Elimina</string>
     <string name="action_cancel">Annulla</string>
@@ -92,7 +92,7 @@
 
     <string name="audio_title">Audio</string>
     <string name="audio_auto_play">Riproduci l’audio quando appare una nuova parola</string>
-    <string name="audio_sources_hint">Provate dall’alto in basso; la prima con un audio viene riprodotta e finisce nelle note. Tocca una fonte per modificarla.</string>
+    <string name="audio_sources_hint">Le fonti vengono provate dall’alto in basso; la prima con un audio viene riprodotta e finisce nelle note. Tocca una fonte per modificarla.</string>
     <string name="audio_url_template">Modello di URL</string>
     <string name="audio_add_source">Aggiungi fonte audio</string>
     <string name="search_title">Cerca parole</string>
@@ -111,7 +111,7 @@
     <string name="bubble_aim_above">Sopra il dito</string>
     <string name="bubble_aim_center">Centro della bolla</string>
     <string name="bubble_aim_hint">Un doppio tocco sulla bolla fluttuante passa dall’uno all’altro.</string>
-    <string name="bubble_dock_side">Aggancio</string>
+    <string name="bubble_dock_side">Lato</string>
     <string name="bubble_dock_left">Bordo sinistro</string>
     <string name="bubble_dock_right">Bordo destro</string>
     <string name="bubble_highlight">Evidenzia la parola sotto il punto di mira</string>
@@ -121,14 +121,10 @@
     <string name="bubble_filter_apps">Filtra le app</string>
     <string name="bubble_read_app_text">Leggi il testo delle app (sperimentale)</string>
     <string name="bubble_read_app_text_hint">Più veloce nelle app che espongono il loro testo.</string>
-    <string name="bubble_read_app_text_info">Il testo dell’app è esatto, pronto quasi subito senza attendere il riconoscimento e non richiede la rete, ma funziona solo nelle app che comunicano la posizione dei caratteri ai servizi di accessibilità; altrove, e per il testo nelle immagini, lo schermo viene riconosciuto come al solito.
-
-La lettura del testo delle app è sperimentale: alcune app riportano posizioni dei caratteri errate, quindi l’evidenziazione può essere spostata o può essere trovata una parola vicina. In tal caso, disattivala.</string>
+    <string name="bubble_read_app_text_info">Il testo dell’app è esatto, pronto quasi subito senza attendere il riconoscimento e non richiede la rete, ma funziona solo nelle app che comunicano la posizione dei caratteri ai servizi di accessibilità; altrove, e per il testo nelle immagini, lo schermo viene riconosciuto come al solito.\n\nLa lettura del testo delle app è sperimentale: alcune app riportano posizioni dei caratteri errate, quindi l’evidenziazione può essere spostata o può essere trovata una parola vicina. In tal caso, disattivala.</string>
     <string name="bubble_app_text_only">Solo testo delle app</string>
     <string name="bubble_app_text_only_hint">Niente screenshot e niente riconoscimento. Il testo nelle immagini non viene letto.</string>
-    <string name="bubble_app_text_only_info">Lo schermo non viene riconosciuto affatto: si legge solo il testo che le app comunicano ai servizi di accessibilità. Non si leggono il testo nelle immagini, i manga, i giochi e le app che non espongono il loro testo.
-
-Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscimento non funziona o è lento, e a internet lento o a consumo: nessuna batteria spesa per il riconoscimento e nessun dato inviato.</string>
+    <string name="bubble_app_text_only_info">Lo schermo non viene riconosciuto affatto: si legge solo il testo che le app comunicano ai servizi di accessibilità. Non si leggono il testo nelle immagini, i manga, i giochi e le app che non espongono il loro testo.\n\nAdatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscimento non funziona o è lento, e a internet lento o a consumo: nessuna batteria spesa per il riconoscimento e nessun dato inviato.</string>
     <string name="bubble_app_text_only_confirm">Attiva</string>
     <string name="dictionaries_import_yomitan_backup">Importa una raccolta di dizionari di Yomitan</string>
     <string name="dictionaries_task_converting">Estrazione di %1$s</string>
@@ -165,12 +161,12 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="anki_overwrite_prepend">aggiungi all’inizio</string>
     <string name="audio_volume">Volume: %1$d%%</string>
     <string name="settings_title">Impostazioni</string>
-    <string name="settings_bubble_summary">Mira, aggancio, fonte del testo, app nascoste</string>
+    <string name="settings_bubble_summary">Mira, lato, fonte del testo, app nascoste</string>
     <string name="lookup_title">Ricerca</string>
     <string name="settings_lookup_summary">Lunghezza di scansione, risultati, romaji, kanji della parola</string>
     <string name="appearance_title">Aspetto</string>
     <string name="settings_appearance_summary">Tema, e-ink, lingua</string>
-    <string name="settings_popup_summary">Carattere, dimensione e spessore del testo, CSS, copia delle definizioni</string>
+    <string name="settings_popup_summary">Carattere, dimensione e peso del testo, CSS, copia delle definizioni</string>
     <string name="yomitan_import_title">Importa da Yomitan</string>
     <string name="settings_yomitan_summary">Impostazioni e dizionari da Yomitan</string>
     <string name="about_title">Informazioni</string>
@@ -183,7 +179,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="about_report_bug">Segnala un problema</string>
     <string name="yomitan_import_dictionaries">Dizionari</string>
     <string name="yomitan_import_dictionaries_hint">In Yomitan: Impostazioni → Backup → Esporta raccolta di dizionari. Il file contiene tutti i dizionari installati.</string>
-    <string name="yomitan_import_single_hint">I singoli dizionari (un file .zip ciascuno) si aggiungono nella schermata «Dizionari» con «Importa da file».</string>
+    <string name="yomitan_import_single_hint">I singoli dizionari (un file .zip ciascuno) si aggiungono nella schermata “Dizionari” con “Importa da file”.</string>
     <string name="lookup_scanning">Scansione</string>
     <string name="lookup_scan_length">Lunghezza di scansione: %1$d caratteri</string>
     <string name="lookup_scan_length_hint">Quanti caratteri dopo il punto di mira considera una ricerca. Valori più alti trovano frasi più lunghe.</string>
@@ -240,7 +236,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="yomitan_import_settings">Impostazioni</string>
     <string name="yomitan_import_settings_hint">In Yomitan: Impostazioni → Backup → Esporta impostazioni. Scegli qui il file e il profilo da cui prendere le impostazioni.</string>
     <string name="yomitan_import_not_settings">Questo file non è un’esportazione delle impostazioni di Yomitan.</string>
-    <string name="yomitan_import_failed">L\'importazione si è interrotta per un errore. Le impostazioni già importate restano applicate.</string>
+    <string name="yomitan_import_failed">L’importazione si è interrotta per un errore. Le impostazioni già importate restano applicate.</string>
     <string name="yomitan_import_choose_settings">Scegli il file delle impostazioni</string>
     <string name="yomitan_import_profile">Profilo</string>
     <string name="yomitan_import_profile_current">%1$s (attuale)</string>
@@ -273,7 +269,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="yomitan_summary_lookup">Lunghezza di scansione %1$s, voci per ricerca %2$s</string>
     <string name="yomitan_summary_replacements_skipped">Le sostituzioni di testo (%1$d regole) non vengono importate: cifre come numerali kanji, 々, ッ e punteggiatura sono gestiti automaticamente</string>
     <string name="yomitan_collection_not_collection">Questo file non è un’esportazione di una raccolta di dizionari di Yomitan.</string>
-    <string name="yomitan_collection_failed">Impossibile avviare l\'importazione: non è stato possibile leggere o copiare il file.</string>
+    <string name="yomitan_collection_failed">Impossibile avviare l’importazione: non è stato possibile leggere o copiare il file.</string>
     <string name="yomitan_collection_choose">Dizionari nel file</string>
     <string name="yomitan_collection_entries">%1$d voci</string>
     <string name="yomitan_collection_media">%1$d immagini</string>
@@ -298,7 +294,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="popup_text_weight_medium">medio</string>
     <string name="popup_text_weight_semibold">semigrassetto</string>
     <string name="popup_text_weight_bold">grassetto</string>
-    <string name="popup_text_weight_info">Rende più leggibile il testo sottile. Con «Solo per il testo giapponese» attivo, o con il carattere del telefono, diventano più spessi solo i caratteri giapponesi; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
+    <string name="popup_text_weight_info">Rende più leggibile il testo sottile. Con “Solo per il testo giapponese” attivo, o con il carattere del telefono, diventano più spessi solo i caratteri giapponesi; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
     <string name="popup_letter_thickness">Spessore delle lettere: %1$d</string>
     <string name="popup_letter_thickness_off">Spessore delle lettere: disattivato</string>
     <string name="popup_font_catalog">Caratteri liberi da scaricare</string>
@@ -347,7 +343,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="about_dictionary_revision">Revisione %1$s</string>
     <string name="about_dictionary_author">Di %1$s</string>
     <string name="about_logs">Log</string>
-    <string name="about_logs_hint">Un log di questa app con la sua versione e il modello del dispositivo, da allegare a una segnalazione di bug o da leggere da sé: “Salva in Download” lo mette in Download/Screenlate. Contiene eventi ed errori, mai il testo che cerchi.</string>
+    <string name="about_logs_hint">Un log di questa app con la sua versione e il modello del dispositivo, da allegare a una segnalazione di bug o da leggere tu stesso: “Salva in Download” lo mette in Download/Screenlate. Contiene eventi ed errori, mai il testo che cerchi.</string>
     <string name="about_logs_share">Condividi i log</string>
     <string name="update_title">Aggiornamenti</string>
     <string name="update_debug_build">Questa è una build di sviluppo; non viene aggiornata dalle release.</string>
@@ -362,7 +358,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="update_skip">Salta questa versione</string>
     <string name="update_downloading">Download… %1$d%%</string>
     <string name="update_installing">Installazione in corso. Al termine Android chiude Screenlate; riaprilo poi.</string>
-    <string name="update_confirm_install">Continua l\'installazione</string>
+    <string name="update_confirm_install">Continua l’installazione</string>
     <string name="update_allow_installs">Consenti l’installazione degli aggiornamenti</string>
     <string name="update_allow_installs_hint">Android ha bisogno del tuo permesso perché Screenlate installi i suoi aggiornamenti.</string>
     <string name="update_announce">Avvisami delle nuove versioni</string>
@@ -375,7 +371,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="action_more_info">Informazioni su %1$s</string>
     <string name="anki_fields_how">Come funzionano i modelli dei campi</string>
     <string name="popup_css_short">Applicato dopo gli stili dei dizionari</string>
-    <string name="about_dictionaries_hint">Autori e licenze di ogni dizionario sono dietro la sua ⓘ.</string>
+    <string name="about_dictionaries_hint">Autori e licenze di ogni dizionario si vedono toccando la sua ⓘ.</string>
     <string name="about_dictionaries_show">Mostra tutti (%1$d)</string>
     <string name="about_dictionaries_hide">Nascondi</string>
     <string name="dictionaries_notifications_title">Notifiche di avanzamento</string>
@@ -415,11 +411,11 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="eink_enlarge_confirm">Ingrandisci</string>
     <string name="eink_enlarge_keep">Mantieni le dimensioni</string>
     <string name="eink_home_title">Schermo e-ink?</string>
-    <string name="eink_home_message">Questo dispositivo sembra un lettore e-ink. La modalità e-ink rende Screenlate in bianco e nero, senza animazioni. Sui dispositivi lenti o senza internet, la bolla può anche leggere solo il testo delle app, senza riconoscere lo schermo.</string>
+    <string name="eink_home_message">Questo dispositivo sembra un lettore e-ink. La modalità e-ink mostra Screenlate in bianco e nero, senza animazioni. Sui dispositivi lenti o senza internet, la bolla può anche leggere solo il testo delle app, senza riconoscere lo schermo.</string>
     <string name="eink_home_turn_on">Attiva la modalità e-ink</string>
     <string name="eink_home_app_text">Solo testo delle app…</string>
     <string name="dictionaries_website">Sito web</string>
-    <string name="dictionaries_download_link">Download</string>
+    <string name="dictionaries_download_link">Scarica</string>
     <string name="backup_title">Backup e ripristino</string>
     <string name="settings_backup_summary">Salva impostazioni e dizionari in un file, ripristinali</string>
     <string name="backup_create">Crea un backup</string>
@@ -444,7 +440,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="backup_read_failed">Impossibile leggere il backup.</string>
     <string name="backup_loaded">Backup del %1$s, versione %2$s</string>
     <string name="backup_sections">Parti da ripristinare</string>
-    <string name="backup_replace_warning">Le parti selezionate sostituiscono quelle attuali. I dizionari del backup vengono aggiunti o sostituiscono gli stessi; gli altri dizionari installati restano.</string>
+    <string name="backup_replace_warning">Le parti selezionate sostituiscono quelle attuali. I dizionari del backup vengono aggiunti o sostituiscono la loro versione installata; gli altri dizionari installati restano.</string>
     <string name="backup_restore_button">Ripristina la selezione</string>
     <string name="backup_restored">Ripristinato</string>
     <string name="backup_section_general">Generale</string>
@@ -452,7 +448,7 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="backup_section_bubble">Bolla fluttuante e riconoscimento</string>
     <string name="backup_section_bubble_hint">Dimensione, mira, motori di riconoscimento, testo delle app, app in cui la bolla è nascosta</string>
     <string name="backup_section_lookup">Ricerca</string>
-    <string name="backup_section_lookup_hint">Lunghezza di scansione, numero di risultati, romaji, kanji singoli</string>
+    <string name="backup_section_lookup_hint">Lunghezza di scansione, numero di risultati, romaji, kanji della parola</string>
     <string name="backup_section_popup">Aspetto del popup</string>
     <string name="backup_section_popup_hint">Carattere, dimensione del testo, CSS personalizzato e caratteri installati</string>
     <string name="backup_section_anki">Anki</string>
@@ -467,9 +463,9 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     </plurals>
     <string name="backup_section_dictionary_files">Dizionari</string>
     <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d dizionario, aggiunto o in sostituzione dello stesso</item>
-        <item quantity="many">%d dizionari, aggiunti o in sostituzione degli stessi</item>
-        <item quantity="other">%d dizionari, aggiunti o in sostituzione degli stessi</item>
+        <item quantity="one">%d dizionario: viene aggiunto o sostituisce la versione installata</item>
+        <item quantity="many">%d dizionari: vengono aggiunti o sostituiscono la versione installata</item>
+        <item quantity="other">%d dizionari: vengono aggiunti o sostituiscono la versione installata</item>
     </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d carattere</item>
@@ -510,8 +506,8 @@ Adatto ai lettori e-ink, ai dispositivi vecchi o poco potenti dove il riconoscim
     <string name="reset_bubble_text">Tutte le impostazioni della bolla tornano com’erano dopo l’installazione, comprese le app nascoste, la dimensione della bolla e la sua posizione sullo schermo. Una bolla nascosta ricompare.</string>
     <string name="reset_lookup_text">La lunghezza di scansione, le voci per ricerca e le altre impostazioni di ricerca tornano com’erano dopo l’installazione.</string>
     <string name="reset_anki_text">Il mazzo, il tipo di nota, i modelli dei campi, le etichette, la gestione dei duplicati e le fonti audio tornano com’erano dopo l’installazione. In AnkiDroid non cambia nulla.</string>
-    <string name="reset_popup_text">La scelta del carattere, la dimensione e lo spessore del testo, il CSS personalizzato e la copia delle definizioni tornano com’erano dopo l’installazione. I caratteri scaricati e aggiunti restano installati.</string>
-    <string name="reset_appearance_text">Il tema torna a seguire il sistema e la modalità e-ink si spegne, riportando le dimensioni che aveva ingrandito. La lingua dell’app resta.</string>
+    <string name="reset_popup_text">La scelta del carattere, la dimensione e il peso del testo, il CSS personalizzato e la copia delle definizioni tornano com’erano dopo l’installazione. I caratteri scaricati e aggiunti restano installati.</string>
+    <string name="reset_appearance_text">Il tema torna a seguire il sistema e la modalità e-ink si spegne; le dimensioni che aveva ingrandito tornano come prima. La lingua dell’app resta.</string>
     <string name="reset_background_text">La notifica che tiene in vita la bolla si spegne. Le impostazioni di batteria e di avvio appartengono ad Android e restano come sono.</string>
     <string name="reset_dictionaries_tooltip">Ripristina i dizionari</string>
     <string name="reset_dictionaries_title">Ripristinare i dizionari?</string>
