@@ -117,3 +117,19 @@ LensOverlayClientContext
 For comparison, the keyless web endpoint `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=ru&dt=t&q=...`
 answers JSON arrays in 1.3–2.4 s per sentence and names its models: ja→ru went through `ja_en_2023q1` and
 `en_ru_2023q1`, i.e. through English.
+
+Our paragraphs against Lens's (same day, `testdata/ocr/manga-page.webp`):
+
+- Horizontal text: `ReadingOrder` keeps Lens's paragraphs, so its translations map 1:1. Vertical balloons: Lens sent
+  the balloon 安くはないが / 商品のクオリティは高く / 上位商品は必ず手に / 入れたい代物が多い as four paragraphs and
+  translated each alone (入れたい代物が多い → "вещей, которые я хочу туда добавить": 手に|入れたい is broken).
+  `ReadingOrder` joins them into one paragraph, which has no Lens translation. Lines filled in from other sources
+  (ML Kit, OCR boost bands, app text) have none either.
+- There is no text-only translation in this protocol: requests always carry an image.
+- A crop of the balloon (203×473, 24 KB) still came as three paragraphs, with an OCR slip (が → か).
+- Our joined paragraph drawn as horizontal text (one line or wrapped, YuGothic 40 px) came back as one paragraph with
+  one translation in 0.9 s, but a poor one: "Несмотря на невысокую цену … предметами первой необходимости". The web
+  endpoint got the same sentence right through English: "Это не дешево, но качество продукции высокое, и есть много
+  высококачественных продуктов, которые вы обязательно захотите приобрести". Over these four sentences neither
+  translator was consistently better.
+
