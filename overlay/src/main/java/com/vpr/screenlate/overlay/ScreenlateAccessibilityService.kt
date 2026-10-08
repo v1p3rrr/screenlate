@@ -93,6 +93,10 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+            controller?.onWindowsChanged()
+            return
+        }
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         // Window focus moves shortly after the event; read it once things settle.
         handler.removeCallbacks(foregroundCheck)

@@ -29,7 +29,7 @@ class StoredNamesTest {
     fun `names written by released versions still read back`() {
         assertStillKnown(ThemeMode.entries, "SYSTEM", "LIGHT", "DARK")
         assertStillKnown(AppColors.entries, "SCREENLATE", "SYSTEM")
-        assertStillKnown(DockSide.entries, "LEFT", "RIGHT")
+        assertStillKnown(DockSide.entries, "LEFT", "RIGHT", "TOP", "BOTTOM")
         assertStillKnown(AimMode.entries, "ABOVE_FINGER", "BUBBLE_CENTER")
         assertStillKnown(TextSource.entries, "SCREEN", "APP_TEXT", "APP_TEXT_ONLY")
         assertStillKnown(SmallTextMode.entries, "OFF", "ON_DEMAND", "ALWAYS")

@@ -254,7 +254,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
-- Backlog: sentence translation (request 46, decided 2026-10-09, outline in the plan's "Sentence translation" section), sending text to AI and translator apps from the bubble's hold menu (request 47, far backlog, analysed).
+- Requests 49-51 (top and bottom dock, popup auto-hide) are done; question D1 waits for the owner. Next: sentence translation (request 46, decided 2026-10-09, outline in the plan's "Sentence translation" section), sending text to AI and translator apps from the bubble's hold menu (request 47, far backlog, analysed).
 - Backlog: accessibility disclosure with consent (request 48, decided 2026-10-09). Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
 
 ## Open items
@@ -721,3 +721,24 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `overlay_show_source_text`; the Popup reset and the backup's Popup section take it. Seen on the emulator.
 - The branch `claude/elegant-allen-xmu3fx` was deleted on GitHub (fully merged).
 - Owner, 2026-10-02: audio on mobile data now works more or less.
+
+### 2026-10-09 (top and bottom dock, popup auto-hide)
+
+- Request 49: "Top and bottom edges" in the Bubble settings (off by default) adds Top and Bottom to the dock side;
+  a bubble dropped at those edges docks there (`DockPlacement.edgeAt`), moves along them and is pulled out away from
+  them. The top and bottom windows hold only the visible cap, which hangs below the status bar and the top gesture
+  strip or stands above the navigation bar and the Home strip, and rises above an open keyboard
+  (`TYPE_WINDOWS_CHANGED` plus `currentWindowMetrics`; overlays get no insets dispatch). Turning the switch off moves
+  a top or bottom dock to the nearer side. In fullscreen apps the very edge does not work at the top and bottom (the
+  system takes the pull), so those docks keep the same line; question D1 in the plan. Details in
+  `notes/overlay-system-ui.md`.
+- A touch the system cancels (an edge swipe it takes) no longer docks or drops the bubble at the cancel's position:
+  a pulled-out bubble goes back to its dock, a moved dock back to its place.
+- Requests 50 and 51: an "Auto-hide" card on the Popup page with "After adding to Anki" and "When the aim leaves
+  the word" (both off by default).
+- Fixed: a popup closed with ✕ (or after ➕) reopened when a later OCR result or band arrived under the unmoved aim.
+- Checked on the emulator: top and bottom docks with bars shown and in both fullscreen behaviors, moving along the
+  edge, pulling out, the keyboard lift, both auto-hide switches (the note went to the emulator's local AnkiDroid
+  collection; the Screenlate Test note type and deck had to be chosen again there), ✕ then a nudge, the Bubble page
+  in Spanish with four segments.
+- Open for the owner: D1 (fullscreen edge at the top and bottom).

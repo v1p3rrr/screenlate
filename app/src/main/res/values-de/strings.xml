@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">Mitte der Blase</string>
     <string name="bubble_aim_hint">Doppeltippen auf die schwebende Blase wechselt zwischen beiden.</string>
     <string name="bubble_dock_side">Seite</string>
-    <string name="bubble_dock_left">Linker Rand</string>
-    <string name="bubble_dock_right">Rechter Rand</string>
+    <string name="bubble_dock_left">Links</string>
+    <string name="bubble_dock_right">Rechts</string>
+    <string name="bubble_dock_top">Oben</string>
+    <string name="bubble_dock_bottom">Unten</string>
+    <string name="bubble_dock_top_bottom">Oberer und unterer Rand</string>
+    <string name="bubble_dock_top_bottom_hint">Die Blase lässt sich auch am oberen oder unteren Rand ablegen: Zieh sie dorthin. Sie bleibt von Statusleiste, Navigationsleiste und den Wischgesten des Systems am Rand fern, auch in Vollbild-Apps.</string>
     <string name="bubble_highlight">Wort unter dem Zielpunkt hervorheben</string>
     <string name="bubble_haptics">Bei neuem Wort vibrieren</string>
     <string name="bubble_hidden_apps">Blase in Apps ausblenden</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Kanji des Wortes</string>
     <string name="appearance_title">Darstellung</string>
     <string name="settings_appearance_summary">Design, Farben, E-Ink, Sprache</string>
-    <string name="settings_popup_summary">Erkannter Text, Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
+    <string name="settings_popup_summary">Erkannter Text, automatisches Ausblenden, Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
     <string name="yomitan_import_title">Aus Yomitan importieren</string>
     <string name="settings_yomitan_summary">Einstellungen und Wörterbücher aus Yomitan</string>
     <string name="about_title">Über</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">Die Datei konnte nicht hinzugefügt werden. Versuche es erneut oder prüfe, ob auf dem Telefon genug Speicher frei ist.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_content_title">Popup-Elemente</string>
+    <string name="popup_auto_hide_title">Automatisch ausblenden</string>
+    <string name="popup_hide_after_add">Nach dem Hinzufügen zu Anki</string>
+    <string name="popup_hide_after_add_hint">Das Popup schließt sich, sobald ➕ das Wort hinzugefügt hat.</string>
+    <string name="popup_hide_off_word">Wenn der Zielpunkt das Wort verlässt</string>
+    <string name="popup_hide_off_word_hint">Während du die Blase bewegst, schließt sich das Popup, sobald der Zielpunkt einige Millimeter vom Wort entfernt ist, wo kein Text steht.</string>
     <string name="popup_copy_switch">Schaltfläche „Kopieren“ neben Wörterbuchnamen</string>
     <string name="popup_copy_switch_hint">Im Popup und in der Suche kopiert eine Schaltfläche neben dem Namen jedes Wörterbuchs dessen Definitionen für den Eintrag.</string>
     <string name="popup_copy_mode_all">Alles</string>
@@ -515,7 +524,7 @@
     <string name="reset_bubble_text">Alle Einstellungen der Blase werden auf den Stand nach der Installation zurückgesetzt, auch die ausgeblendeten Apps, die Größe der Blase und ihr Platz auf dem Bildschirm. Eine ausgeblendete Blase erscheint wieder.</string>
     <string name="reset_lookup_text">Scanlänge, Einträge pro Suche und die übrigen Einstellungen zum Nachschlagen werden auf den Stand nach der Installation zurückgesetzt.</string>
     <string name="reset_anki_text">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden auf den Stand nach der Installation zurückgesetzt. In AnkiDroid ändert sich nichts.</string>
-    <string name="reset_popup_text">Schriftwahl, Textgröße und -stärke, eigenes CSS und das Kopieren von Definitionen werden auf den Stand nach der Installation zurückgesetzt. Heruntergeladene und hinzugefügte Schriften bleiben installiert.</string>
+    <string name="reset_popup_text">Der erkannte Text oben, das Kopieren von Definitionen, das automatische Ausblenden, Schriftwahl, Textgröße und -stärke und eigenes CSS werden auf den Stand nach der Installation zurückgesetzt. Heruntergeladene und hinzugefügte Schriften bleiben installiert.</string>
     <string name="reset_appearance_text">Das Design folgt wieder dem System, die Farben sind wieder die von Screenlate, und der E-Ink-Modus geht aus; was er vergrößert hat, bekommt wieder die vorherige Größe. Die App-Sprache bleibt.</string>
     <string name="reset_background_text">Die Benachrichtigung, die die Blase am Leben hält, geht aus. Akku- und Autostart-Einstellungen gehören zu Android und bleiben, wie sie sind.</string>
     <string name="reset_dictionaries_tooltip">Wörterbücher zurücksetzen</string>

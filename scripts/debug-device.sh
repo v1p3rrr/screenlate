@@ -3,7 +3,9 @@
 #
 #   scripts/debug-device.sh install            install the debug APK and enable the accessibility service
 #   scripts/debug-device.sh images             copy testdata/ocr/* into the app's internal files
-#   scripts/debug-device.sh show <file>        open a copied image in the debug full-screen viewer
+#   scripts/debug-device.sh show <file> [default|swipe]
+#                                              open a copied image in the debug full-screen viewer; with a mode, the
+#                                              system bars are hidden as in fullscreen apps (see MainActivity)
 #   scripts/debug-device.sh shot <out.png>     save a screenshot
 #
 # Set ANDROID_SERIAL to pick a device. On Git Bash, MSYS path conversion is disabled below.
@@ -53,7 +55,11 @@ case "${1:-}" in
         ;;
     show)
         # No -S: force-stopping the package would also unbind the accessibility service.
-        "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2" >/dev/null
+        if [ -n "${3:-}" ]; then
+            "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2"                 --es debug_fullscreen "$3" >/dev/null
+        else
+            "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2" >/dev/null
+        fi
         ;;
     shot)
         "$ADB" exec-out screencap -p > "$2"

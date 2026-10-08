@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">Baloncuğun ortası</string>
     <string name="bubble_aim_hint">Yüzen baloncuğa çift dokunmak ikisi arasında geçiş yapar.</string>
     <string name="bubble_dock_side">Taraf</string>
-    <string name="bubble_dock_left">Sol kenar</string>
-    <string name="bubble_dock_right">Sağ kenar</string>
+    <string name="bubble_dock_left">Sol</string>
+    <string name="bubble_dock_right">Sağ</string>
+    <string name="bubble_dock_top">Üst</string>
+    <string name="bubble_dock_bottom">Alt</string>
+    <string name="bubble_dock_top_bottom">Üst ve alt kenar</string>
+    <string name="bubble_dock_top_bottom_hint">Baloncuk üst veya alt kenara da yerleştirilebilir: oraya sürükleyin. Durum çubuğundan, gezinme çubuğundan ve sistemin kenardan kaydırma hareketlerinden uzak durur; tam ekran uygulamalarda da.</string>
     <string name="bubble_highlight">Nişan altındaki kelimeyi vurgula</string>
     <string name="bubble_haptics">Yeni kelimede titreş</string>
     <string name="bubble_hidden_apps">Baloncuğu uygulamalarda gizle</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
     <string name="appearance_title">Görünüm</string>
     <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
-    <string name="settings_popup_summary">Tanınan metin, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
+    <string name="settings_popup_summary">Tanınan metin, otomatik gizleme, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
     <string name="about_title">Hakkında</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">Dosya eklenemedi. Yeniden deneyin veya telefonda boş alan olup olmadığını kontrol edin.</string>
     <string name="popup_settings_title">Açılır pencere</string>
     <string name="popup_content_title">Açılır pencere öğeleri</string>
+    <string name="popup_auto_hide_title">Otomatik gizleme</string>
+    <string name="popup_hide_after_add">Anki’ye ekledikten sonra</string>
+    <string name="popup_hide_after_add_hint">➕ kelimeyi ekler eklemez açılır pencere kapanır.</string>
+    <string name="popup_hide_off_word">Nişan noktası kelimeden ayrılınca</string>
+    <string name="popup_hide_off_word_hint">Baloncuğu hareket ettirirken nişan noktası kelimeden birkaç milimetre uzaklaşıp metin olmayan bir yere gelince açılır pencere kapanır.</string>
     <string name="popup_copy_switch">Sözlük adlarının yanında kopyalama düğmesi</string>
     <string name="popup_copy_switch_hint">Açılır pencerede ve aramada her sözlük adının yanındaki düğme, o sözlüğün girişteki tanımlarını kopyalar.</string>
     <string name="popup_copy_mode_all">Tümü</string>
@@ -515,7 +524,7 @@
     <string name="reset_bubble_text">Baloncuğun tüm ayarları kurulumdan sonraki hâline döner; gizlenen uygulamalar, baloncuğun boyutu ve ekrandaki yeri de dâhil. Gizli baloncuk yeniden görünür.</string>
     <string name="reset_lookup_text">Tarama uzunluğu, arama başına madde ve diğer arama ayarları kurulumdan sonraki hâline döner.</string>
     <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları kurulumdan sonraki hâline döner. AnkiDroid’de hiçbir şey değişmez.</string>
-    <string name="reset_popup_text">Yazı tipi seçimi, metin boyutu ve kalınlığı, özel CSS ve tanım kopyalama kurulumdan sonraki hâline döner. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
+    <string name="reset_popup_text">Üstteki tanınan metin, tanım kopyalama, otomatik gizleme, yazı tipi seçimi, metin boyutu ve kalınlığı ve özel CSS kurulumdan sonraki hâline döner. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
     <string name="reset_appearance_text">Tema yeniden sistemi izler, renkler Screenlate’in kendi renklerine döner ve e-ink modu kapanır; büyüttüğü boyutlar eski hâline döner. Uygulama dili kalır.</string>
     <string name="reset_background_text">Baloncuğu ayakta tutan bildirim kapanır. Pil ve otomatik başlatma ayarları Android’e aittir ve olduğu gibi kalır.</string>
     <string name="reset_dictionaries_tooltip">Sözlükleri sıfırla</string>

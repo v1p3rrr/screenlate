@@ -167,6 +167,8 @@ fun SearchScreen(
             },
             cropEditor = null,
             onAnkiOpened = {},
+            // The app's own search keeps its results: auto-hide is for the popup over other apps.
+            onNoteAdded = {},
             onOpenAnkiSettings = onOpenAnkiSettings,
         ).also { holder.notes = it }
     }

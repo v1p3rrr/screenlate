@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">버블 중앙</string>
     <string name="bubble_aim_hint">플로팅 버블을 두 번 탭하면 둘 사이를 전환합니다.</string>
     <string name="bubble_dock_side">가장자리</string>
-    <string name="bubble_dock_left">왼쪽 가장자리</string>
-    <string name="bubble_dock_right">오른쪽 가장자리</string>
+    <string name="bubble_dock_left">왼쪽</string>
+    <string name="bubble_dock_right">오른쪽</string>
+    <string name="bubble_dock_top">위쪽</string>
+    <string name="bubble_dock_bottom">아래쪽</string>
+    <string name="bubble_dock_top_bottom">위쪽과 아래쪽 가장자리</string>
+    <string name="bubble_dock_top_bottom_hint">버블을 위쪽이나 아래쪽 가장자리에도 붙일 수 있습니다. 그곳으로 끌어다 놓으세요. 상태 표시줄, 내비게이션 바, 가장자리에서 시작하는 시스템 스와이프 영역을 피하며, 전체 화면 앱에서도 마찬가지입니다.</string>
     <string name="bubble_highlight">조준점 아래 단어 강조</string>
     <string name="bubble_haptics">새 단어에서 진동</string>
     <string name="bubble_hidden_apps">앱에서 버블 숨기기</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">스캔 길이, 결과, 로마자, 단어의 한자</string>
     <string name="appearance_title">모양</string>
     <string name="settings_appearance_summary">테마, 색상, 전자잉크, 언어</string>
-    <string name="settings_popup_summary">인식된 텍스트, 글꼴, 글자 크기와 굵기, CSS, 뜻풀이 복사</string>
+    <string name="settings_popup_summary">인식된 텍스트, 자동 숨기기, 글꼴, 글자 크기와 굵기, CSS, 뜻풀이 복사</string>
     <string name="yomitan_import_title">Yomitan에서 가져오기</string>
     <string name="settings_yomitan_summary">Yomitan의 설정과 사전</string>
     <string name="about_title">정보</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">파일을 추가하지 못했습니다. 다시 시도하거나 휴대폰의 여유 공간을 확인하세요.</string>
     <string name="popup_settings_title">팝업</string>
     <string name="popup_content_title">팝업 요소</string>
+    <string name="popup_auto_hide_title">자동 숨기기</string>
+    <string name="popup_hide_after_add">Anki에 추가한 후</string>
+    <string name="popup_hide_after_add_hint">➕로 단어를 추가하면 바로 팝업이 닫힙니다.</string>
+    <string name="popup_hide_off_word">조준점이 단어를 벗어나면</string>
+    <string name="popup_hide_off_word_hint">버블을 움직이는 동안 조준점이 단어에서 몇 밀리미터 떨어져 텍스트가 없는 곳에 가면 팝업이 닫힙니다.</string>
     <string name="popup_copy_switch">사전 이름 옆 복사 버튼</string>
     <string name="popup_copy_switch_hint">팝업과 검색에서 각 사전 이름 옆의 버튼이 그 사전의 뜻풀이를 복사합니다.</string>
     <string name="popup_copy_mode_all">전체</string>
@@ -510,7 +519,7 @@
     <string name="reset_bubble_text">버블의 모든 설정이 설치 직후 상태로 돌아갑니다. 숨긴 앱, 버블 크기, 화면에서의 위치도 포함됩니다. 숨긴 버블이 다시 나타납니다.</string>
     <string name="reset_lookup_text">스캔 길이, 검색당 항목 수와 그 밖의 검색 설정이 설치 직후 상태로 돌아갑니다.</string>
     <string name="reset_anki_text">덱, 노트 유형, 필드 템플릿, 태그, 중복 처리, 오디오 소스가 설치 직후 상태로 돌아갑니다. AnkiDroid에서는 아무것도 바뀌지 않습니다.</string>
-    <string name="reset_popup_text">글꼴 선택, 글자 크기와 굵기, 사용자 CSS, 뜻풀이 복사가 설치 직후 상태로 돌아갑니다. 다운로드하거나 추가한 글꼴은 그대로 설치되어 있습니다.</string>
+    <string name="reset_popup_text">위쪽의 인식된 텍스트, 뜻풀이 복사, 자동 숨기기, 글꼴 선택, 글자 크기와 굵기, 사용자 CSS가 설치 직후 상태로 돌아갑니다. 다운로드하거나 추가한 글꼴은 그대로 설치되어 있습니다.</string>
     <string name="reset_appearance_text">테마가 다시 시스템을 따르고 색상은 Screenlate 고유 색상으로 돌아갑니다. E-ink 모드가 꺼지며, 이 모드가 키운 크기도 원래대로 돌아갑니다. 앱 언어는 그대로입니다.</string>
     <string name="reset_background_text">버블을 유지하는 알림이 꺼집니다. 배터리와 자동 시작 설정은 Android의 설정이라 그대로입니다.</string>
     <string name="reset_dictionaries_tooltip">사전 초기화</string>

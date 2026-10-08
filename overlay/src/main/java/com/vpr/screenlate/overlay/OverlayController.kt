@@ -73,6 +73,7 @@ import com.vpr.screenlate.overlay.ui.BubbleMenu
 import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
+import com.vpr.screenlate.overlay.ui.DockPlacement
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import com.vpr.screenlate.overlay.web.LookupPage
@@ -141,6 +142,8 @@ class OverlayController(
         val layout: TextLayout? = null,
         /** The first character's kanji entry, shown when no word was found. */
         val kanji: KanjiResult? = null,
+        /** The looked-up word on screen. */
+        val anchor: Box? = null,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -176,6 +179,12 @@ class OverlayController(
         noteSource = ::noteSource,
         cropEditor = CropEditor(service, windowManager),
         onAnkiOpened = { dock() },
+        onNoteAdded = {
+            if (settings.hideAfterAdd) {
+                Log.d(TAG, "Popup closed after adding a note")
+                dismissPopup()
+            }
+        },
         onOpenAnkiSettings = {
             service.packageManager.getLaunchIntentForPackage(service.packageName)
                 ?.putExtra(OverlayIntents.EXTRA_OPEN, OverlayIntents.OPEN_ANKI_SETTINGS)
@@ -193,6 +202,9 @@ class OverlayController(
     private var state = State.DOCKED
     private var attached = false
 
+    /** A finger is on the bubble. */
+    private var touching = false
+
     private var scanJob: Job? = null
 
     /** Counts scans; a note compares it to tell whether the scan it was started in is still open. */
@@ -205,6 +217,9 @@ class OverlayController(
     private var lensError: Throwable? = null
     private var hit: TextPosition? = null
     private var aim: Pair<Float, Float>? = null
+
+    /** The user closed the popup and the bubble has not moved since: more text under the aim does not reopen it. */
+    private var popupDismissed = false
     private var pendingSingleTap: Runnable? = null
     private var foregroundPackage: String? = null
     private var lookupJob: Job? = null
@@ -298,7 +313,7 @@ class OverlayController(
             state = State.DOCKED
         }
         if (!attached) return
-        if (state == State.DOCKED && (previous.dockSide != new.dockSide || previous.dockY != new.dockY || !previous.bubbleVisible)) {
+        if (state == State.DOCKED && (previous.dockSide != new.dockSide || previous.dockPosition != new.dockPosition || !previous.bubbleVisible)) {
             placeDocked()
         }
         updateAimVisuals()
@@ -342,6 +357,32 @@ class OverlayController(
         return Box(0f, 0f, bounds.width().toFloat(), bounds.height().toFloat())
     }
 
+    /** The screen for the dock: system bars, gesture areas and an open keyboard. */
+    private fun dockScreen(): DockPlacement.Screen {
+        val metrics = windowManager.maximumWindowMetrics
+        val bounds = metrics.bounds
+        // Only the current metrics tell where a keyboard is.
+        val current = windowManager.currentWindowMetrics.windowInsets
+        val gestures = metrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.mandatorySystemGestures())
+        val keyboard = current.getInsets(WindowInsets.Type.ime()).bottom
+        return DockPlacement.Screen(
+            width = bounds.width().toFloat(),
+            height = bounds.height().toFloat(),
+            usable = usableBounds(),
+            gestures = Box(
+                gestures.left.toFloat(),
+                gestures.top.toFloat(),
+                (bounds.width() - gestures.right).toFloat(),
+                (bounds.height() - gestures.bottom).toFloat(),
+            ),
+            keyboardTop = if (current.isVisible(WindowInsets.Type.ime()) && keyboard > 0) {
+                (bounds.height() - keyboard).toFloat()
+            } else {
+                null
+            },
+        )
+    }
+
     /** Screen area not covered by system bars or the display cutout. */
     private fun usableBounds(): Box {
         val metrics = windowManager.maximumWindowMetrics
@@ -361,8 +402,15 @@ class OverlayController(
 
     // region Bubble position and state
 
-    private fun bubbleCenter(): Pair<Float, Float> =
-        bubbleParams.x + bubbleSize / 2f to bubbleParams.y + bubbleSize / 2f
+    /** The disc's center; a top dock's window holds only the disc's lower part. */
+    private fun bubbleCenter(): Pair<Float, Float> {
+        val top = if (bubbleParams.height < bubbleSize && settings.dockSide == DockSide.TOP) {
+            bubbleParams.y + bubbleParams.height - bubbleSize
+        } else {
+            bubbleParams.y
+        }
+        return bubbleParams.x + bubbleSize / 2f to top + bubbleSize / 2f
+    }
 
     private fun bubbleBox(): Box {
         val (cx, cy) = bubbleCenter()
@@ -370,20 +418,47 @@ class OverlayController(
     }
 
     private fun moveBubbleTo(centerX: Float, centerY: Float) {
-        bubbleParams.x = (centerX - bubbleSize / 2f).roundToInt()
-        bubbleParams.y = (centerY - bubbleSize / 2f).roundToInt()
-        if (attached) windowManager.updateViewLayout(bubbleView, bubbleParams)
+        setBubbleWindow(
+            DockPlacement.Window(
+                (centerX - bubbleSize / 2f).roundToInt(),
+                (centerY - bubbleSize / 2f).roundToInt(),
+                bubbleSize,
+                bubbleSize,
+            ),
+        )
     }
 
-    private fun placeDocked() {
-        val screen = screenBounds()
-        val visibleOffset = bubbleSize * BubbleView.DOCK_VISIBLE_FRACTION - bubbleSize / 2f
-        val x = if (settings.dockSide == DockSide.RIGHT) screen.right - visibleOffset else screen.left + visibleOffset
-        val usable = usableBounds()
-        val y = (settings.dockY * screen.height).coerceIn(usable.top + bubbleSize, usable.bottom - bubbleSize)
+    private fun setBubbleWindow(window: DockPlacement.Window) {
+        val params = bubbleParams
+        if (params.x == window.x && params.y == window.y && params.width == window.width && params.height == window.height) {
+            return
+        }
+        params.x = window.x
+        params.y = window.y
+        params.width = window.width
+        params.height = window.height
+        if (attached) windowManager.updateViewLayout(bubbleView, params)
+    }
+
+    /** @param position along the dock's edge; the saved one by default. */
+    private fun placeDocked(position: Float = settings.dockPosition) {
         bubbleView.dockSide = settings.dockSide
         bubbleView.docked = true
-        moveBubbleTo(x, y)
+        setBubbleWindow(DockPlacement.window(settings.dockSide, position, bubbleSize, dockScreen()))
+    }
+
+    /**
+     * The windows on the screen changed: a keyboard may have opened or closed, which moves a bottom dock. Not while
+     * the bubble is touched: it would jump under the finger.
+     */
+    fun onWindowsChanged() {
+        if (attached && state == State.DOCKED && !touching && settings.dockSide == DockSide.BOTTOM) placeDocked()
+    }
+
+    /** The user closed the popup: it stays closed until the bubble moves or scans again. */
+    private fun dismissPopup() {
+        closePopup()
+        popupDismissed = true
     }
 
     /**
@@ -404,19 +479,28 @@ class OverlayController(
     /**
      * Returns the bubble to the dock, closing the popup and dropping the OCR result.
      *
-     * @param atCurrentHeight dock at the bubble's current height (when dragged into the dock) instead of the saved one.
+     * @param atCurrentPlace dock where the bubble is now along the edge (when dragged into the dock) instead of the
+     *   saved place.
      */
-    private fun dock(side: DockSide = settings.dockSide, atCurrentHeight: Boolean = false) {
+    private fun dock(side: DockSide = settings.dockSide, atCurrentPlace: Boolean = false) {
         if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
         closeScan()
         haptic()
-        val yFraction = if (atCurrentHeight) bubbleCenter().second / screenBounds().height else settings.dockY
-        if (side != settings.dockSide || yFraction != settings.dockY) {
-            settings = settings.copy(dockSide = side, dockY = yFraction)
-            scope.launch { overlaySettings.setDock(side, yFraction) }
+        val position = if (atCurrentPlace) {
+            val (cx, cy) = bubbleCenter()
+            DockPlacement.position(side, cx, cy, dockScreen())
+        } else {
+            settings.dockPosition
         }
+        saveDock(side, position)
         placeDocked()
+    }
+
+    private fun saveDock(side: DockSide, position: Float) {
+        if (side == settings.dockSide && position == settings.dockPosition) return
+        settings = settings.copy(dockSide = side, dockPosition = position)
+        scope.launch { overlaySettings.setDock(side, position) }
     }
 
     /**
@@ -471,31 +555,39 @@ class OverlayController(
         moveBubbleTo(centerX, centerY)
         updateAimVisuals()
         val (x, y) = aimPoint()
-        onAim(x, y)
+        onAim(x, y, moving = true)
     }
 
-    /**
-     * Docks when the bubble's center has crossed the edge or the finger is lifted at the very edge, so words next to the
-     * edge stay reachable. The center counts too because the finger may hold the bubble off-center, and curved screens
-     * often report no touches at the edge itself.
-     */
-    private fun endDrag(fingerX: Float) {
+    /** Docks at the edge the bubble was dropped at ([DockPlacement.edgeAt]), otherwise leaves it floating. */
+    private fun endDrag(fingerX: Float, fingerY: Float) {
         val screen = screenBounds()
-        val dockZone = DOCK_ZONE_DP * density
-        val centerX = bubbleCenter().first
-        when {
-            fingerX >= screen.right - dockZone || centerX >= screen.right -> dock(DockSide.RIGHT, atCurrentHeight = true)
-            fingerX <= screen.left + dockZone || centerX <= screen.left -> dock(DockSide.LEFT, atCurrentHeight = true)
-            else -> {
-                state = State.FLOATING
-                popupNotes.onAimSettled()
-            }
+        val (centerX, centerY) = bubbleCenter()
+        val edge = DockPlacement.edgeAt(
+            fingerX = fingerX,
+            fingerY = fingerY,
+            centerX = centerX,
+            centerY = centerY,
+            width = screen.width,
+            height = screen.height,
+            zone = DOCK_ZONE_DP * density,
+            topBottom = settings.dockTopBottom,
+        )
+        if (edge != null) {
+            dock(edge, atCurrentPlace = true)
+        } else {
+            state = State.FLOATING
+            popupNotes.onAimSettled()
         }
     }
 
-    private fun distanceFromDockEdge(x: Float): Float {
+    private fun distanceFromDockEdge(x: Float, y: Float): Float {
         val screen = screenBounds()
-        return if (settings.dockSide == DockSide.RIGHT) screen.right - x else x - screen.left
+        return when (settings.dockSide) {
+            DockSide.LEFT -> x - screen.left
+            DockSide.RIGHT -> screen.right - x
+            DockSide.TOP -> y - screen.top
+            DockSide.BOTTOM -> screen.bottom - y
+        }
     }
 
     private fun onTap() {
@@ -573,6 +665,17 @@ class OverlayController(
         private var moved = false
         private var alongDock = false
         private var held = false
+        private var pulledOut = false
+        private var lastX = 0f
+        private var lastY = 0f
+
+        /** The screen when a touch on the docked bubble started; moving the dock along its edge places it there. */
+        private var screenAtDown: DockPlacement.Screen? = null
+        private fun pullOut() {
+            pulledOut = true
+            startDrag(fromDock = true)
+        }
+
         private val hold = Runnable {
             held = true
             showBubbleMenu()
@@ -581,63 +684,93 @@ class OverlayController(
         override fun onTouch(view: View, event: MotionEvent): Boolean {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    touching = true
                     downX = event.rawX
                     downY = event.rawY
+                    lastX = downX
+                    lastY = downY
+                    screenAtDown = if (state == State.DOCKED) dockScreen() else null
                     val (cx, cy) = bubbleCenter()
                     grabDx = event.rawX - cx
                     grabDy = event.rawY - cy
                     moved = false
                     alongDock = false
                     held = false
+                    pulledOut = false
                     if (state == State.FLOATING) {
                         mainHandler.postDelayed(hold, ViewConfiguration.getLongPressTimeout().toLong())
                     }
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    lastX = event.rawX
+                    lastY = event.rawY
                     val dx = event.rawX - downX
                     val dy = event.rawY - downY
                     if (!moved && !held && hypot(dx, dy) > touchSlop) {
                         mainHandler.removeCallbacks(hold)
                         moved = true
                         if (state == State.DOCKED) {
-                            val awayFromEdge = if (settings.dockSide == DockSide.RIGHT) dx < 0 else dx > 0
-                            // Pulling out is the main gesture: only a clearly vertical move moves the dock instead.
-                            val alongEdge = abs(dy) > abs(dx) * ALONG_DOCK_RATIO || !awayFromEdge
-                            if (alongEdge) alongDock = true else startDrag(fromDock = true)
+                            val awayFromEdge = when (settings.dockSide) {
+                                DockSide.LEFT -> dx > 0
+                                DockSide.RIGHT -> dx < 0
+                                DockSide.TOP -> dy > 0
+                                DockSide.BOTTOM -> dy < 0
+                            }
+                            val (along, across) = if (settings.dockSide.horizontal) dx to dy else dy to dx
+                            // Pulling out is the main gesture: only a move clearly along the edge moves the dock instead.
+                            val alongEdge = abs(along) > abs(across) * ALONG_DOCK_RATIO || !awayFromEdge
+                            if (alongEdge) alongDock = true else pullOut()
                         } else {
                             startDrag(fromDock = false)
                         }
                     }
                     // Moving along the edge repositions the dock; pulling away from the edge undocks, even mid-gesture.
-                    val pulledAway = distanceFromDockEdge(event.rawX) - distanceFromDockEdge(downX)
+                    val pulledAway = distanceFromDockEdge(event.rawX, event.rawY) - distanceFromDockEdge(downX, downY)
                     if (moved && alongDock && pulledAway > UNDOCK_DISTANCE_DP * density) {
                         alongDock = false
-                        startDrag(fromDock = true)
+                        pullOut()
                     }
                     if (moved) {
-                        if (alongDock) {
-                            val (cx, _) = bubbleCenter()
-                            moveBubbleTo(cx, event.rawY - grabDy)
+                        val screen = screenAtDown
+                        if (alongDock && screen != null) {
+                            val x = event.rawX - grabDx
+                            val y = event.rawY - grabDy
+                            placeDocked(DockPlacement.position(settings.dockSide, x, y, screen))
                         } else {
                             dragTo(event.rawX - grabDx, event.rawY - grabDy)
                         }
                     }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    touching = false
                     // A cancelled touch must not open the menu later.
                     mainHandler.removeCallbacks(hold)
+                    val screen = screenAtDown
+                    screenAtDown = null
+                    // The system cancels a touch it takes for its own gesture, such as a swipe from the screen's edge.
+                    // The cancel's position is not where the finger was, and the user did not mean to move the bubble.
+                    val cancelled = event.actionMasked == MotionEvent.ACTION_CANCEL
+                    if (cancelled) {
+                        Log.d(TAG, "Bubble touch cancelled")
+                    } else {
+                        lastX = event.rawX
+                        lastY = event.rawY
+                    }
                     when {
                         held -> Unit
-                        !moved -> if (event.actionMasked == MotionEvent.ACTION_UP) {
+                        !moved -> if (!cancelled) {
                             view.performClick()
                             onTap()
                         }
-                        alongDock -> {
-                            val (_, cy) = bubbleCenter()
-                            scope.launch { overlaySettings.setDock(settings.dockSide, cy / screenBounds().height) }
+                        alongDock && screen != null -> if (!cancelled) {
+                            val (cx, cy) = bubbleCenter()
+                            saveDock(settings.dockSide, DockPlacement.position(settings.dockSide, cx, cy, screen))
                         }
-                        else -> endDrag(event.rawX)
+                        cancelled && pulledOut -> dock()
+                        else -> endDrag(lastX, lastY)
                     }
+                    // Back to the saved place after a cancelled move; a keyboard may also have changed during the touch.
+                    if (state == State.DOCKED) placeDocked()
                 }
             }
             return true
@@ -662,6 +795,7 @@ class OverlayController(
         ocrOffline = false
         lensError = null
         hit = null
+        popupDismissed = false
         lookupJob?.cancel()
         lookupJob = null
         shownLookup = null
@@ -848,7 +982,7 @@ class OverlayController(
             if (merged === current.page) return@launch
             layout = TextLayout(merged)
             hit = null
-            if (state != State.DOCKED) aim?.let { (x, y) -> onAim(x, y) }
+            if (state != State.DOCKED && !popupDismissed) aim?.let { (x, y) -> onAim(x, y) }
         }
     }
 
@@ -897,7 +1031,7 @@ class OverlayController(
         if (ocrFinal) bubbleView.loading = false
         if (flashLines) layerView.flashLines(newLayout.lineBoxes(), FLASH_HOLD_MS)
         hit = null
-        if (state == State.DOCKED) return
+        if (state == State.DOCKED || popupDismissed) return
         val (x, y) = aim ?: aimPoint()
         onAim(x, y)
         // The final text has no word under the aim: the word shown from the draft stays, without the spinner and with ➕.
@@ -908,11 +1042,14 @@ class OverlayController(
         }
     }
 
-    private fun onAim(x: Float, y: Float) {
+    /** @param moving the bubble moved the aim here, rather than a new scan result arriving under it. */
+    private fun onAim(x: Float, y: Float, moving: Boolean = false) {
         aim = x to y
+        if (moving) popupDismissed = false
         val layout = layout ?: return
         val position = layout.hitTest(x, y, HIT_TOLERANCE_DP * density)
         if (position == null) {
+            if (moving) hideWhenOffWord(layout, x, y)
             scheduleBandAt(y)
             return
         }
@@ -920,6 +1057,20 @@ class OverlayController(
         if (position == hit) return
         hit = position
         showLookup(layout, position)
+    }
+
+    /**
+     * "When the aim leaves the word": the aim moved onto no text, away from the word shown or being looked up, so the
+     * popup closes. A message (no text, an error) belongs to no word and stays.
+     */
+    private fun hideWhenOffWord(layout: TextLayout, x: Float, y: Float) {
+        if (!settings.hideOffWord) return
+        val word = shownLookup?.takeIf { popup.isShowing }?.anchor
+            ?: hit?.let { Box.unionOf(layout.boxesFor(it, 1)) }
+            ?: return
+        if (word.distanceTo(x, y) <= OFF_WORD_DP * density) return
+        Log.d(TAG, "Popup closed: the aim left the word")
+        closePopup()
     }
 
     private fun showLookup(layout: TextLayout, aimed: TextPosition) {
@@ -945,7 +1096,16 @@ class OverlayController(
             layerView.setWordBoxes(if (settings.highlightWord) boxes else emptyList())
             val anchor = Box.unionOf(boxes) ?: return@launch
             val message = if (results.isEmpty() && kanji == null) noResultsMessage() else null
-            val view = LookupView(text, matched, results, message, start = position, layout = layout, kanji = kanji)
+            val view = LookupView(
+                text,
+                matched,
+                results,
+                message,
+                start = position,
+                layout = layout,
+                kanji = kanji,
+                anchor = anchor,
+            )
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading } ?: kanji?.let { it.character to "" }
             if (word != null && word != hapticWord) haptic()
@@ -1242,7 +1402,7 @@ class OverlayController(
     // endregion
 
     private inner class PopupCallbacks : LookupPage.Callbacks {
-        override fun onClose() = closePopup()
+        override fun onClose() = dismissPopup()
 
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
@@ -1286,6 +1446,9 @@ class OverlayController(
         /** A move from the dock this much more vertical than horizontal (about 60°) moves the dock. */
         const val ALONG_DOCK_RATIO = 1.7f
         const val HIT_TOLERANCE_DP = 12f
+
+        /** How far the aim must leave the word, onto no text, for "When the aim leaves the word": about 3 mm. */
+        const val OFF_WORD_DP = 20f
 
         /** Characters before the aim that may belong to the aimed word. */
         const val WORD_LOOKBACK = 32

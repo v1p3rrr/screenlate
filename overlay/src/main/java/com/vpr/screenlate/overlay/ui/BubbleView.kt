@@ -16,6 +16,9 @@ import java.util.Locale
 /**
  * The draggable bubble. Draws a translucent disc, an optional center dot, a loading arc and, while docked, a letter of
  * the lookup language in the part that shows past the screen edge.
+ *
+ * The disc is as wide as the view. A view lower than it is a top or bottom dock's window, which holds only the part
+ * that shows: the disc is drawn cut off at the view's top or bottom edge, the one facing the screen edge.
  */
 class BubbleView(context: Context) : View(context) {
 
@@ -125,8 +128,12 @@ class BubbleView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         val cx = width / 2f
-        val cy = height / 2f
-        val radius = minOf(width, height) / 2f - ring.strokeWidth
+        val cy = when {
+            height >= width -> height / 2f
+            dockSide == DockSide.TOP -> height - width / 2f
+            else -> width / 2f
+        }
+        val radius = width / 2f - ring.strokeWidth
         canvas.drawCircle(cx, cy, radius, fill)
         canvas.drawCircle(cx, cy, radius, ring)
         if (showCenterDot) canvas.drawCircle(cx, cy, 3.5f * density, dot)
@@ -143,10 +150,22 @@ class BubbleView(context: Context) : View(context) {
     }
 
     private fun drawGlyph(canvas: Canvas, cy: Float) {
-        val visible = width * DOCK_VISIBLE_FRACTION
-        val x = if (dockSide == DockSide.RIGHT) visible / 2f else width - visible / 2f
-        glyphPaint.textSize = minOf(visible * GLYPH_SIZE, height * GLYPH_SIZE)
-        val baseline = cy - (glyphPaint.descent() + glyphPaint.ascent()) / 2f
+        val x: Float
+        val y: Float
+        if (dockSide.horizontal) {
+            // The view is the part that shows, a disc segment narrowing away from the screen edge: the glyph sits
+            // nearer to the edge, where the segment is wide.
+            x = width / 2f
+            val fromEdge = height * CAP_GLYPH_CENTER
+            y = if (dockSide == DockSide.TOP) fromEdge else height - fromEdge
+            glyphPaint.textSize = minOf(width, height) * CAP_GLYPH_SIZE
+        } else {
+            val visible = width * DOCK_VISIBLE_FRACTION
+            x = if (dockSide == DockSide.RIGHT) visible / 2f else width - visible / 2f
+            y = cy
+            glyphPaint.textSize = minOf(visible * GLYPH_SIZE, height * GLYPH_SIZE)
+        }
+        val baseline = y - (glyphPaint.descent() + glyphPaint.ascent()) / 2f
         canvas.drawText(glyph, x, baseline, glyphPaint)
     }
 
@@ -158,7 +177,7 @@ class BubbleView(context: Context) : View(context) {
     }
 
     companion object {
-        /** Part of the docked bubble's width that stays on screen. */
+        /** Part of the docked bubble's width (its height at the top and bottom) that stays on screen. */
         const val DOCK_VISIBLE_FRACTION = 0.4f
 
         private const val BUBBLE_COLOR = 0x737C5CFF
@@ -169,5 +188,9 @@ class BubbleView(context: Context) : View(context) {
 
         /** Glyph size relative to the visible part of the docked bubble. */
         private const val GLYPH_SIZE = 0.8f
+
+        /** At the top and bottom: the glyph's size and center relative to the cap's height, from the screen edge. */
+        private const val CAP_GLYPH_SIZE = 0.68f
+        private const val CAP_GLYPH_CENTER = 0.42f
     }
 }

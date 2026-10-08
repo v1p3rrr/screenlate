@@ -100,6 +100,8 @@ fun <T> Segments(
                 enabled = enabled,
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
                 colors = AccentDefaults.segmentedButtonColors(),
+                // Four labels need the check mark's room; the fill still marks the choice.
+                icon = { if (options.size <= MAX_SEGMENTS_WITH_ICON) SegmentedButtonDefaults.Icon(option == selected) },
             ) {
                 // Long translations shrink before they get cut.
                 Text(
@@ -117,3 +119,4 @@ fun <T> Segments(
 }
 
 private val SEGMENT_MIN_FONT_SIZE = 10.sp
+private const val MAX_SEGMENTS_WITH_ICON = 3

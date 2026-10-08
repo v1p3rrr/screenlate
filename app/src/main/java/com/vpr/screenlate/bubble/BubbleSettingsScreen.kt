@@ -90,6 +90,8 @@ class BubbleSettingsViewModel @Inject constructor(private val repository: Overla
 
     fun setDockSide(side: DockSide) = launch { repository.setDockSide(side) }
 
+    fun setDockTopBottom(enabled: Boolean) = launch { repository.setDockTopBottom(enabled) }
+
     fun setHighlight(enabled: Boolean) = launch { repository.setHighlightWord(enabled) }
 
     fun setHaptics(enabled: Boolean) = launch { repository.setHaptics(enabled) }
@@ -189,12 +191,25 @@ fun BubbleSettingsScreen(
                     )
                     Text(stringResource(R.string.bubble_dock_side), style = MaterialTheme.typography.titleMedium)
                     Segments(
-                        options = DockSide.entries,
+                        options = if (settings.dockTopBottom) DockSide.entries else DockSide.entries.filterNot { it.horizontal },
                         selected = settings.dockSide,
                         label = {
-                            stringResource(if (it == DockSide.LEFT) R.string.bubble_dock_left else R.string.bubble_dock_right)
+                            stringResource(
+                                when (it) {
+                                    DockSide.LEFT -> R.string.bubble_dock_left
+                                    DockSide.RIGHT -> R.string.bubble_dock_right
+                                    DockSide.TOP -> R.string.bubble_dock_top
+                                    DockSide.BOTTOM -> R.string.bubble_dock_bottom
+                                },
+                            )
                         },
                         onSelect = viewModel::setDockSide,
+                    )
+                    SwitchRow(
+                        label = stringResource(R.string.bubble_dock_top_bottom),
+                        checked = settings.dockTopBottom,
+                        onChange = viewModel::setDockTopBottom,
+                        hint = stringResource(R.string.bubble_dock_top_bottom_hint),
                     )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     Text(

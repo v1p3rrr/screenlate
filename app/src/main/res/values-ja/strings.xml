@@ -119,6 +119,10 @@
     <string name="bubble_dock_side">寄せる側</string>
     <string name="bubble_dock_left">左端</string>
     <string name="bubble_dock_right">右端</string>
+    <string name="bubble_dock_top">上端</string>
+    <string name="bubble_dock_bottom">下端</string>
+    <string name="bubble_dock_top_bottom">上端と下端</string>
+    <string name="bubble_dock_top_bottom_hint">バブルは上端や下端にも寄せられます。そこまでドラッグしてください。ステータスバーやナビゲーションバー、画面の端からのシステムのスワイプ操作とは重ならず、全画面のアプリでも同じです。</string>
     <string name="bubble_highlight">照準の下の語をハイライト</string>
     <string name="bubble_haptics">新しい語で振動</string>
     <string name="bubble_hidden_apps">アプリでバブルを隠す</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">スキャン長、結果、ローマ字、語の漢字</string>
     <string name="appearance_title">外観</string>
     <string name="settings_appearance_summary">テーマ、カラー、E Ink、言語</string>
-    <string name="settings_popup_summary">認識したテキスト、フォント、文字サイズと太さ、CSS、定義のコピー</string>
+    <string name="settings_popup_summary">認識したテキスト、自動で閉じる、フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="yomitan_import_title">Yomitan からインポート</string>
     <string name="settings_yomitan_summary">Yomitan の設定と辞書</string>
     <string name="about_title">アプリについて</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
     <string name="popup_settings_title">ポップアップ</string>
     <string name="popup_content_title">ポップアップの要素</string>
+    <string name="popup_auto_hide_title">自動で閉じる</string>
+    <string name="popup_hide_after_add">Anki に追加したあと</string>
+    <string name="popup_hide_after_add_hint">➕ で単語を追加すると、すぐにポップアップが閉じます。</string>
+    <string name="popup_hide_off_word">照準が単語から離れたとき</string>
+    <string name="popup_hide_off_word_hint">バブルを動かしている間、照準が単語から数ミリ離れてテキストのない場所に来ると、ポップアップが閉じます。</string>
     <string name="popup_copy_switch">辞書名の横にコピーボタン</string>
     <string name="popup_copy_switch_hint">ポップアップと検索で、各辞書名の横のボタンがその辞書の定義をコピーします。</string>
     <string name="popup_copy_mode_all">すべて</string>
@@ -510,7 +519,7 @@
     <string name="reset_bubble_text">バブルの設定がすべてインストール直後の状態に戻ります。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>
     <string name="reset_lookup_text">スキャン長、1 回の検索の項目数、その他の検索設定がインストール直後の状態に戻ります。</string>
     <string name="reset_anki_text">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースがインストール直後の状態に戻ります。AnkiDroid 側は何も変わりません。</string>
-    <string name="reset_popup_text">フォントの選択、文字のサイズと太さ、カスタム CSS、定義のコピーがインストール直後の状態に戻ります。ダウンロード・追加したフォントは残ります。</string>
+    <string name="reset_popup_text">上部の認識したテキスト、定義のコピー、自動で閉じる設定、フォントの選択、文字のサイズと太さ、カスタム CSS がインストール直後の状態に戻ります。ダウンロード・追加したフォントは残ります。</string>
     <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、カラーは Screenlate 独自の配色に戻ります。E Ink モードはオフになって、拡大したサイズも元に戻ります。アプリの言語はそのままです。</string>
     <string name="reset_background_text">バブルを維持する通知がオフになります。バッテリーと自動起動の設定は Android 側のもので、変わりません。</string>
     <string name="reset_dictionaries_tooltip">辞書をリセット</string>

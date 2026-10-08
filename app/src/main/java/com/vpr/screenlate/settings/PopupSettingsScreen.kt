@@ -15,6 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
+import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
@@ -23,13 +24,13 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
 /**
- * The lookup page (popup and search): popup elements (the recognized text, definition copying), its font, text
- * size and weight, and custom CSS.
+ * The lookup page (popup and search): popup elements (the recognized text, definition copying), auto-hide, its font,
+ * text size and weight, and custom CSS.
  */
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
-    val showSourceText by viewModel.showSourceText.collectAsStateWithLifecycle()
+    val overlay by viewModel.overlay.collectAsStateWithLifecycle()
     SettingsScaffold(
         stringResource(R.string.popup_settings_title),
         onBack,
@@ -43,9 +44,33 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            appearance?.let { current -> showSourceText?.let { PopupContentCard(current, it, viewModel) } }
+            val current = appearance
+            val stored = overlay
+            if (current != null && stored != null) {
+                PopupContentCard(current, stored.showSourceText, viewModel)
+                AutoHideCard(stored, viewModel)
+            }
             PopupTextSections(viewModel)
         }
+    }
+}
+
+/** The popup over other apps closes by itself; the app's own search is not affected. */
+@Composable
+private fun AutoHideCard(settings: OverlaySettings, viewModel: PopupAppearanceViewModel) {
+    SectionCard(title = stringResource(R.string.popup_auto_hide_title)) {
+        SwitchRow(
+            label = stringResource(R.string.popup_hide_after_add),
+            checked = settings.hideAfterAdd,
+            onChange = viewModel::setHideAfterAdd,
+            hint = stringResource(R.string.popup_hide_after_add_hint),
+        )
+        SwitchRow(
+            label = stringResource(R.string.popup_hide_off_word),
+            checked = settings.hideOffWord,
+            onChange = viewModel::setHideOffWord,
+            hint = stringResource(R.string.popup_hide_off_word_hint),
+        )
     }
 }
 

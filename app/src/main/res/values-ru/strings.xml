@@ -120,6 +120,10 @@
     <string name="bubble_dock_side">Сторона</string>
     <string name="bubble_dock_left">Слева</string>
     <string name="bubble_dock_right">Справа</string>
+    <string name="bubble_dock_top">Сверху</string>
+    <string name="bubble_dock_bottom">Снизу</string>
+    <string name="bubble_dock_top_bottom">Верхний и нижний края</string>
+    <string name="bubble_dock_top_bottom_hint">Кнопку можно спрятать и у верхнего или нижнего края: перетащите её туда. Она держится в стороне от строки состояния, панели навигации и системных свайпов от края, в том числе в полноэкранных приложениях.</string>
     <string name="bubble_highlight">Подсвечивать слово под прицелом</string>
     <string name="bubble_haptics">Вибрация на новом слове</string>
     <string name="bubble_hidden_apps">Скрывать кнопку в приложениях</string>
@@ -178,7 +182,7 @@
     <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, кандзи слова</string>
     <string name="appearance_title">Оформление</string>
     <string name="settings_appearance_summary">Тема, цвета, e-ink, язык</string>
-    <string name="settings_popup_summary">Распознанный текст, шрифт, размер и жирность текста, CSS, копирование определений</string>
+    <string name="settings_popup_summary">Распознанный текст, автоскрытие, шрифт, размер и жирность текста, CSS, копирование определений</string>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
     <string name="settings_yomitan_summary">Настройки и словари из Yomitan</string>
     <string name="about_title">О приложении</string>
@@ -322,6 +326,11 @@
     <string name="popup_font_import_failed">Не удалось добавить файл. Попробуйте ещё раз или проверьте, есть ли свободное место на телефоне.</string>
     <string name="popup_settings_title">Попап</string>
     <string name="popup_content_title">Элементы попапа</string>
+    <string name="popup_auto_hide_title">Автоскрытие</string>
+    <string name="popup_hide_after_add">После добавления в Anki</string>
+    <string name="popup_hide_after_add_hint">Попап закрывается, как только ➕ добавил слово.</string>
+    <string name="popup_hide_off_word">Когда прицел ушёл со слова</string>
+    <string name="popup_hide_off_word_hint">Пока вы двигаете кнопку, попап закрывается, когда прицел отходит от слова на несколько миллиметров туда, где нет текста.</string>
     <string name="popup_copy_switch">Кнопка копирования у названий словарей</string>
     <string name="popup_copy_switch_hint">В попапе и поиске кнопка у названия каждого словаря копирует его определения из статьи.</string>
     <string name="popup_copy_mode_all">Всё</string>
@@ -526,7 +535,7 @@
     <string name="reset_bubble_text">Все настройки плавающей кнопки вернутся к тем, что были после установки, включая скрытые приложения, размер кнопки и её место на экране. Скрытая кнопка снова появится.</string>
     <string name="reset_lookup_text">Длина скана, число статей и остальные настройки поиска вернутся к тем, что были после установки.</string>
     <string name="reset_anki_text">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио вернутся к тем, что были после установки. В AnkiDroid ничего не изменится.</string>
-    <string name="reset_popup_text">Выбор шрифта, размер и жирность текста, свой CSS и копирование определений вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
+    <string name="reset_popup_text">Распознанный текст вверху, копирование определений, автоскрытие, выбор шрифта, размер и жирность текста и свой CSS вернутся к тем, что были после установки. Скачанные и добавленные шрифты останутся.</string>
     <string name="reset_appearance_text">Тема снова будет как в системе, вернутся собственные цвета Screenlate, режим e-ink выключится, а размеры, которые он увеличил, станут прежними. Язык приложения останется.</string>
     <string name="reset_background_text">Уведомление, которое не даёт кнопке пропадать, выключится. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
     <string name="reset_dictionaries_tooltip">Сбросить словари</string>

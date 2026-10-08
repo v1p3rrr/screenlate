@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">懸浮球中心</string>
     <string name="bubble_aim_hint">雙擊懸浮球可在兩者之間切換。</string>
     <string name="bubble_dock_side">停靠邊</string>
-    <string name="bubble_dock_left">左邊緣</string>
-    <string name="bubble_dock_right">右邊緣</string>
+    <string name="bubble_dock_left">左側</string>
+    <string name="bubble_dock_right">右側</string>
+    <string name="bubble_dock_top">頂部</string>
+    <string name="bubble_dock_bottom">底部</string>
+    <string name="bubble_dock_top_bottom">頂部和底部邊緣</string>
+    <string name="bubble_dock_top_bottom_hint">懸浮球也可以停靠在頂部或底部：把它拖到那裡即可。它會避開狀態列、導覽列和系統的邊緣滑動區域，全螢幕應用程式中也是如此。</string>
     <string name="bubble_highlight">醒目標示瞄準處的詞</string>
     <string name="bubble_haptics">遇到新詞時振動</string>
     <string name="bubble_hidden_apps">在應用程式中隱藏懸浮球</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">掃描長度、結果、羅馬字、詞中的漢字</string>
     <string name="appearance_title">外觀</string>
     <string name="settings_appearance_summary">主題、色彩、電子紙、語言</string>
-    <string name="settings_popup_summary">辨識文字、字型、文字大小與粗細、CSS、釋義複製</string>
+    <string name="settings_popup_summary">辨識文字、自動隱藏、字型、文字大小與粗細、CSS、釋義複製</string>
     <string name="yomitan_import_title">從 Yomitan 匯入</string>
     <string name="settings_yomitan_summary">Yomitan 的設定和詞典</string>
     <string name="about_title">關於</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
     <string name="popup_settings_title">彈出視窗</string>
     <string name="popup_content_title">彈出視窗元素</string>
+    <string name="popup_auto_hide_title">自動隱藏</string>
+    <string name="popup_hide_after_add">新增到 Anki 後</string>
+    <string name="popup_hide_after_add_hint">➕ 新增該詞後，彈出視窗會立即關閉。</string>
+    <string name="popup_hide_off_word">瞄準點離開詞語時</string>
+    <string name="popup_hide_off_word_hint">移動懸浮球時，若瞄準點離開詞語幾公釐、移到沒有文字的地方，彈出視窗就會關閉。</string>
     <string name="popup_copy_switch">詞典名稱旁的複製按鈕</string>
     <string name="popup_copy_switch_hint">在彈出視窗和搜尋中，每個詞典名稱旁的按鈕會複製該詞典的釋義。</string>
     <string name="popup_copy_mode_all">全部</string>
@@ -510,7 +519,7 @@
     <string name="reset_bubble_text">懸浮球的所有設定都會恢復成安裝後的狀態，包括隱藏的應用程式、懸浮球的大小及其在螢幕上的位置。已隱藏的懸浮球會重新出現。</string>
     <string name="reset_lookup_text">掃描長度、每次查詞的詞條數和其他查詞設定會恢復成安裝後的狀態。</string>
     <string name="reset_anki_text">牌組、筆記類型、欄位範本、標籤、重複處理方式和音訊來源會恢復成安裝後的狀態。AnkiDroid 中的內容不會改變。</string>
-    <string name="reset_popup_text">字型選擇、文字大小和粗細、自訂 CSS 以及釋義複製會恢復成安裝後的狀態。已下載和已新增的字型仍保留安裝。</string>
+    <string name="reset_popup_text">頂部的辨識文字、釋義複製、自動隱藏、字型選擇、文字大小和粗細以及自訂 CSS 會恢復成安裝後的狀態。已下載和已新增的字型仍保留安裝。</string>
     <string name="reset_appearance_text">主題重新跟隨系統，色彩恢復為 Screenlate 自己的配色，電子紙模式關閉，並恢復它放大過的尺寸。應用程式語言保持不變。</string>
     <string name="reset_background_text">讓懸浮球保持執行的通知會關閉。電池和自動啟動設定屬於 Android，保持不變。</string>
     <string name="reset_dictionaries_tooltip">重設詞典</string>

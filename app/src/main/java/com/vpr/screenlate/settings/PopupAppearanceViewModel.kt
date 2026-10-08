@@ -17,6 +17,7 @@ import com.vpr.screenlate.overlay.fonts.PageFonts
 import com.vpr.screenlate.overlay.fonts.PopupFonts
 import com.vpr.screenlate.overlay.fonts.SystemFontFiles
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
+import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.PopupAppearance
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.PopupAppearanceRepository
@@ -56,10 +57,9 @@ class PopupAppearanceViewModel @Inject constructor(
     val appearance: StateFlow<PopupAppearance?> =
         repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedAppearance)
 
-    /** Whether the popup starts with the recognized text; stored with the bubble's settings. */
-    val showSourceText: StateFlow<Boolean?> = overlaySettings.settings
-        .map { it.showSourceText }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, overlaySettings.cachedSettings?.showSourceText)
+    /** The popup settings stored with the bubble's: the recognized text at the top, auto-hide. */
+    val overlay: StateFlow<OverlaySettings?> =
+        overlaySettings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, overlaySettings.cachedSettings)
 
     val installed: StateFlow<List<InstalledFont>> = fonts.installed
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
@@ -126,6 +126,10 @@ class PopupAppearanceViewModel @Inject constructor(
     fun setCopyMode(mode: DefinitionCopyMode) = launch { repository.setCopyMode(mode) }
 
     fun setShowSourceText(enabled: Boolean) = launch { overlaySettings.setShowSourceText(enabled) }
+
+    fun setHideAfterAdd(enabled: Boolean) = launch { overlaySettings.setHideAfterAdd(enabled) }
+
+    fun setHideOffWord(enabled: Boolean) = launch { overlaySettings.setHideOffWord(enabled) }
 
     fun download(font: CatalogFont) = fonts.download(font)
 

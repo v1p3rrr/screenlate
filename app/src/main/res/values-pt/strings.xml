@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">Centro da bolha</string>
     <string name="bubble_aim_hint">Um toque duplo na bolha flutuante alterna entre os dois.</string>
     <string name="bubble_dock_side">Lado</string>
-    <string name="bubble_dock_left">Borda esquerda</string>
-    <string name="bubble_dock_right">Borda direita</string>
+    <string name="bubble_dock_left">Esquerda</string>
+    <string name="bubble_dock_right">Direita</string>
+    <string name="bubble_dock_top">Em cima</string>
+    <string name="bubble_dock_bottom">Embaixo</string>
+    <string name="bubble_dock_top_bottom">Bordas superior e inferior</string>
+    <string name="bubble_dock_top_bottom_hint">A bolha também pode ficar encaixada em cima ou embaixo: arraste-a até lá. Ela fica longe da barra de status, da barra de navegação e dos gestos do sistema a partir da borda, também em apps em tela cheia.</string>
     <string name="bubble_highlight">Destacar a palavra sob o ponto de mira</string>
     <string name="bubble_haptics">Vibrar a cada nova palavra</string>
     <string name="bubble_hidden_apps">Ocultar a bolha em apps</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, kanji da palavra</string>
     <string name="appearance_title">Aparência</string>
     <string name="settings_appearance_summary">Tema, cores, e-ink, idioma</string>
-    <string name="settings_popup_summary">Texto reconhecido, fonte, tamanho e peso do texto, CSS, cópia de definições</string>
+    <string name="settings_popup_summary">Texto reconhecido, ocultação automática, fonte, tamanho e peso do texto, CSS, cópia de definições</string>
     <string name="yomitan_import_title">Importar do Yomitan</string>
     <string name="settings_yomitan_summary">Configurações e dicionários do Yomitan</string>
     <string name="about_title">Sobre</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">Não foi possível adicionar o arquivo. Tente de novo ou verifique se há espaço livre no celular.</string>
     <string name="popup_settings_title">Pop-up</string>
     <string name="popup_content_title">Elementos do pop-up</string>
+    <string name="popup_auto_hide_title">Ocultar automaticamente</string>
+    <string name="popup_hide_after_add">Depois de adicionar ao Anki</string>
+    <string name="popup_hide_after_add_hint">O pop-up fecha assim que ➕ adiciona a palavra.</string>
+    <string name="popup_hide_off_word">Quando o ponto de mira sai da palavra</string>
+    <string name="popup_hide_off_word_hint">Enquanto você move a bolha, o pop-up fecha quando o ponto de mira se afasta alguns milímetros da palavra, para onde não há texto.</string>
     <string name="popup_copy_switch">Botão de copiar junto aos nomes dos dicionários</string>
     <string name="popup_copy_switch_hint">No pop-up e na busca, um botão junto ao nome de cada dicionário copia as definições dele para a entrada.</string>
     <string name="popup_copy_mode_all">Tudo</string>
@@ -520,7 +529,7 @@
     <string name="reset_bubble_text">Todas as configurações da bolha voltam a como estavam após a instalação, incluindo os apps ocultos, o tamanho da bolha e seu lugar na tela. Uma bolha oculta aparece de novo.</string>
     <string name="reset_lookup_text">O alcance da varredura, as entradas por pesquisa e as demais configurações de pesquisa voltam a como estavam após a instalação.</string>
     <string name="reset_anki_text">O baralho, o tipo de nota, os modelos de campos, as etiquetas, o tratamento de duplicatas e as fontes de áudio voltam a como estavam após a instalação. Nada muda no AnkiDroid.</string>
-    <string name="reset_popup_text">A escolha de fonte, o tamanho e o peso do texto, o CSS personalizado e a cópia de definições voltam a como estavam após a instalação. As fontes baixadas e adicionadas continuam instaladas.</string>
+    <string name="reset_popup_text">O texto reconhecido no topo, a cópia de definições, a ocultação automática, a escolha de fonte, o tamanho e o peso do texto e o CSS personalizado voltam a como estavam após a instalação. As fontes baixadas e adicionadas continuam instaladas.</string>
     <string name="reset_appearance_text">O tema volta a seguir o sistema, as cores voltam a ser as do Screenlate e o modo e-ink é desligado; os tamanhos que ele aumentou voltam ao que eram. O idioma do app continua.</string>
     <string name="reset_background_text">A notificação que mantém a bolha viva é desligada. As configurações de bateria e de inicialização são do Android e continuam como estão.</string>
     <string name="reset_dictionaries_tooltip">Redefinir dicionários</string>

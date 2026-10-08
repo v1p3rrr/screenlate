@@ -87,6 +87,7 @@ fun interface NoteSource {
  *
  * @param noteSource called when ➕ is pressed; describes where the shown word came from.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
+ * @param onNoteAdded called after ➕ added or updated a note for the word the popup still shows.
  * @param onOpenAnkiSettings shows Screenlate's Anki settings, where a broken setup is explained.
  */
 class PopupNotes(
@@ -103,6 +104,7 @@ class PopupNotes(
     private val noteSource: () -> NoteSource,
     private val cropEditor: CropEditor?,
     private val onAnkiOpened: () -> Unit,
+    private val onNoteAdded: () -> Unit,
     private val onOpenAnkiSettings: () -> Unit,
 ) : LookupPage.NoteActions {
     private val json = Json { ignoreUnknownKeys = true }
@@ -286,7 +288,10 @@ class PopupNotes(
                 if (shot != null && cropEditor != null) {
                     // Cancelling the editor cancels the note.
                     picture = cropEditor.edit(shot.bitmap, shot.screen.left.toFloat(), shot.screen.top.toFloat(), context.focus)
-                        ?: return@launch showState(scan, index, noteTerm, "", null)
+                        ?: run {
+                            showState(scan, index, noteTerm, "", null)
+                            return@launch
+                        }
                 }
                 // The crop is a bitmap of its own.
                 shared?.release()
@@ -325,13 +330,16 @@ class PopupNotes(
                 picture?.recycle()
                 screenshot?.delete()
             }
-            showState(scan, index, term, state, opens)
+            val shown = showState(scan, index, term, state, opens)
+            if (state == "added" && shown) onNoteAdded()
         }
     }
 
     /**
      * Shows a note's [state] on the entry of its [term]: the popup may show another word by now, or the same one at
      * another index. [opens] are the notes that entry's 📖 opens. Nothing is shown once the note's [scan] has closed.
+     *
+     * @return whether the popup still shows the entry.
      */
     private suspend fun showState(
         scan: Int,
@@ -339,11 +347,12 @@ class PopupNotes(
         term: Pair<String, String>?,
         state: String,
         opens: List<Long>?,
-    ) {
-        if (scan != scanNotes.scan) return
-        val entry = if (term == null) index else entryOf(currentTerms() ?: return, index, term) ?: return
+    ): Boolean {
+        if (scan != scanNotes.scan) return false
+        val entry = if (term == null) index else entryOf(currentTerms() ?: return false, index, term) ?: return false
         opens?.let { openableNotes[entry] = it }
         page.setNoteStates(mapOf(entry to state))
+        return true
     }
 
     override fun onOpenNote(index: Int) {

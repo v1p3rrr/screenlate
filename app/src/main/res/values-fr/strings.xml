@@ -117,8 +117,12 @@
     <string name="bubble_aim_center">Centre de la bulle</string>
     <string name="bubble_aim_hint">Un double toucher sur la bulle flottante passe de l’un à l’autre.</string>
     <string name="bubble_dock_side">Côté</string>
-    <string name="bubble_dock_left">Bord gauche</string>
-    <string name="bubble_dock_right">Bord droit</string>
+    <string name="bubble_dock_left">Gauche</string>
+    <string name="bubble_dock_right">Droite</string>
+    <string name="bubble_dock_top">Haut</string>
+    <string name="bubble_dock_bottom">Bas</string>
+    <string name="bubble_dock_top_bottom">Bords haut et bas</string>
+    <string name="bubble_dock_top_bottom_hint">La bulle peut aussi se ranger en haut ou en bas : faites-la glisser jusque-là. Elle reste à l’écart de la barre d’état, de la barre de navigation et des gestes système depuis le bord, y compris dans les applis en plein écran.</string>
     <string name="bubble_highlight">Surligner le mot visé</string>
     <string name="bubble_haptics">Vibrer à chaque nouveau mot</string>
     <string name="bubble_hidden_apps">Masquer la bulle dans certaines applis</string>
@@ -177,7 +181,7 @@
     <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, kanji du mot</string>
     <string name="appearance_title">Apparence</string>
     <string name="settings_appearance_summary">Thème, couleurs, e-ink, langue</string>
-    <string name="settings_popup_summary">Texte reconnu, police, taille et graisse du texte, CSS, copie des définitions</string>
+    <string name="settings_popup_summary">Texte reconnu, masquage automatique, police, taille et graisse du texte, CSS, copie des définitions</string>
     <string name="yomitan_import_title">Importer depuis Yomitan</string>
     <string name="settings_yomitan_summary">Paramètres et dictionnaires de Yomitan</string>
     <string name="about_title">À propos</string>
@@ -321,6 +325,11 @@
     <string name="popup_font_import_failed">Impossible d’ajouter le fichier. Réessayez, ou vérifiez qu’il reste de l’espace sur le téléphone.</string>
     <string name="popup_settings_title">Fenêtre contextuelle</string>
     <string name="popup_content_title">Éléments de la fenêtre contextuelle</string>
+    <string name="popup_auto_hide_title">Masquage automatique</string>
+    <string name="popup_hide_after_add">Après l’ajout à Anki</string>
+    <string name="popup_hide_after_add_hint">La fenêtre contextuelle se ferme dès que ➕ a ajouté le mot.</string>
+    <string name="popup_hide_off_word">Quand le point de visée quitte le mot</string>
+    <string name="popup_hide_off_word_hint">Pendant que vous déplacez la bulle, la fenêtre contextuelle se ferme quand le point de visée s’éloigne du mot de quelques millimètres, là où il n’y a pas de texte.</string>
     <string name="popup_copy_switch">Bouton de copie près des noms de dictionnaires</string>
     <string name="popup_copy_switch_hint">Dans la fenêtre contextuelle et la recherche, un bouton près du nom de chaque dictionnaire copie ses définitions pour l’entrée.</string>
     <string name="popup_copy_mode_all">Tout</string>
@@ -520,7 +529,7 @@
     <string name="reset_bubble_text">Tous les paramètres de la bulle reviennent à leur état après l’installation, y compris les applis masquées, la taille de la bulle et sa place à l’écran. Une bulle masquée réapparaît.</string>
     <string name="reset_lookup_text">La longueur d’analyse, les entrées par recherche et les autres paramètres de recherche reviennent à leur état après l’installation.</string>
     <string name="reset_anki_text">Le paquet, le type de note, les modèles de champs, les étiquettes, la gestion des doublons et les sources audio reviennent à leur état après l’installation. Rien ne change dans AnkiDroid.</string>
-    <string name="reset_popup_text">Le choix de police, la taille et la graisse du texte, le CSS personnalisé et la copie des définitions reviennent à leur état après l’installation. Les polices téléchargées et ajoutées restent installées.</string>
+    <string name="reset_popup_text">Le texte reconnu en haut, la copie des définitions, le masquage automatique, le choix de police, la taille et la graisse du texte et le CSS personnalisé reviennent à leur état après l’installation. Les polices téléchargées et ajoutées restent installées.</string>
     <string name="reset_appearance_text">Le thème suit de nouveau le système, les couleurs redeviennent celles de Screenlate et le mode e-ink se désactive ; les tailles qu’il avait agrandies reviennent à leurs valeurs précédentes. La langue de l’appli reste.</string>
     <string name="reset_background_text">La notification qui garde la bulle en vie s’éteint. Les paramètres de batterie et de démarrage appartiennent à Android et ne changent pas.</string>
     <string name="reset_dictionaries_tooltip">Réinitialiser les dictionnaires</string>
