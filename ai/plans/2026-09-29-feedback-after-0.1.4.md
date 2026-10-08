@@ -50,7 +50,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 44. Found in the catalog check (2026-10-02): the catalog's JMdict card offers a download although an old "JMdict" (revision JMdict1, no update address, from a Yomitan collection) is installed; an old copy without an update address never updates. Owner: offer to replace it.
 45. (2026-10-02) The switch "Show the recognized text above the entries" (the popup header with the scanned text and the OCR source) sits in the Bubble settings; it belongs to the popup. Owner: move it to the Popup settings.
 46. (2026-10-09, backlog) Sentence translation in the popup and in Anki notes: a button that translates the sentence of the looked-up word with a free service that needs no key (findings in `ai/notes/translation-services.md`: Bing best, Google and the keyless Edge endpoint weaker). Owner: a setting chooses the service, Bing by default with a note that it translates better; a note that any translation may be inaccurate; the button can be turned off, so a learner is not tempted to translate. Details in the questions of 2026-10-09.
-47. (2026-10-09, analysis only, not decided to build) Next to copying the sentence, a menu that sends it to an AI chat (Gemini, Claude, ChatGPT, others): with a fixed or templated prompt, or only opening the chat with the text pasted so the user writes the request. To be thought through separately after the translation.
+47. (2026-10-09, far backlog, not planned soon) Next to copying the sentence, a menu that sends it to an AI chat (Gemini, Claude, ChatGPT, others): with a fixed or templated prompt, or only opening the chat with the text pasted so the user writes the request. Analysed 2026-10-09, see the section "Sending text to other apps"; the owner prefers the system text actions in the bubble's hold menu next to the copy items, for AI apps and translator apps alike, maybe with templates in the settings.
 48. (2026-10-09) An accessibility disclosure in the app in every build, as the store policy for non-accessibility tools asks: before the accessibility settings open, say what the service reads (the screenshot taken on a bubble tap or pull, window text with app text on) and where it goes (cloud recognition, on-device recognition, translation), and take an explicit agreement. Today the home card has a short paragraph and the button opens the system settings directly.
 
 ## Decisions
@@ -155,6 +155,29 @@ Outline from the analysis of 2026-10-09; the decisions are the "Translation …"
   if gtx accepts it).
 - Tests: parsing from saved answers (token page excerpt, each service's JSON), the cascade with MockWebServer (error,
   timeout, late token), language mapping, the popup block in `popup.js`, the marker.
+
+## Sending text to other apps (far backlog, request 47)
+
+Findings of 2026-10-09; nothing decided, the questions below wait until the owner picks it up.
+
+- Ways to hand text to an AI app: the system text actions (`ACTION_PROCESS_TEXT`, the entries of Android's selection
+  toolbar such as "Ask ChatGPT", "Ask Claude", Copilot, "Ask Gemini" from the Google app, and translators); Share
+  (`ACTION_SEND`); web links that take a prompt (`chatgpt.com/?q=` sends it, Perplexity similar, Claude documents it
+  for its desktop app only, Gemini has none; all unofficial, so at most a user-entered URL template like the audio
+  "Custom URL"); an API with the user's own key and the answer in the popup (OpenRouter free models, GigaChat free tier;
+  the biggest job, could also serve as a translation service). The owner chose the first.
+- The bubble's hold menu is our own overlay window (`overlay/ui/BubbleMenu.kt`): the system popup menu misplaces itself
+  in overlays. The system's floating text toolbar only appears for text selected in a `TextView` of a focusable window,
+  so using it from the overlay would be a hack with the same placement risk. Instead the menu lists the handlers itself:
+  `packageManager.queryIntentActivities(Intent(ACTION_PROCESS_TEXT).setType("text/plain"), 0)` gives the same labels
+  and icons the system toolbar shows; an item starts the activity with `EXTRA_PROCESS_TEXT`,
+  `EXTRA_PROCESS_TEXT_READONLY = true` and `FLAG_ACTIVITY_NEW_TASK`. Android 11+ needs a `<queries>` entry for that
+  intent. Share (a chooser) covers apps without a text action. Which handlers each app registers and how it takes the
+  text needs a check on the phone.
+- Questions for later: which text (the paragraph as in "Copy this paragraph", the sentence of the shown word, all);
+  the menu's length (the apps inline or behind one "Send to…" item); which apps show and in what order (a settings list
+  with switches); templates (markers as in Anki notes: `{sentence}`, `{word}`, `{reading}`, `{paragraph}`; per app or a
+  template picked after the app); whether the popup offers the same menu.
 
 ## Code review: appearance and fonts
 
@@ -343,3 +366,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-09: request 48 (accessibility disclosure with consent, all builds); questions asked.
 - 2026-10-09: owner answers on request 48: the dialog before the accessibility settings until agreed, the service unnamed, the text again under About.
 - 2026-10-09: owner: request 47 was asked for analysis only; whether to build it is not decided.
+- 2026-10-09: request 47 analysed and put in the far backlog: system text actions in the bubble's hold menu, details in "Sending text to other apps".
