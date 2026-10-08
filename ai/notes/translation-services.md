@@ -7,12 +7,33 @@ and three manga lines (`testdata/ocr/manga-page.webp`), each sent whole. Scripts
 
 | Service | Request | Time | Result |
 |---|---|---|---|
-| Bing Translator (web) | GET `https://www.bing.com/translator?setlang=en&cc=us` (keep cookies) → `IG:"…"`, `data-iid="translator.NNNN"`, `params_AbusePreventionHelper = [key,"token",…]`; POST form `fromLang, to, text, token, key` to `/ttranslatev3?isVertical=1&IG=…&IID=…` → `[{"translations":[{"text":…}]}]` | 1.5–2 s, first call 4 s | Best of the free ones: 5 of 6 right and natural, e.g. 安くはないが…必ず手に入れたい代物が多い → "Не дешево, но качество товаров высокое, и среди них много вещей, которые обязательно хочется заполучить" |
+| Bing Translator (web) | GET `https://www.bing.com/translator?setlang=en&cc=us` (keep cookies) → `IG:"…"`, `data-iid="translator.NNNN"`, `params_AbusePreventionHelper = [key,"token",…]`; POST form `fromLang, to, text, token, key` to `/ttranslatev3?isVertical=1&IG=…&IID=…` → `[{"translations":[{"text":…}]}]` | 1.5–2 s, first call 4 s | Best of the free ones; the answer carries `"usedLLM": true`: 5 of 6 right and natural, e.g. 安くはないが…必ず手に入れたい代物が多い → "Не дешево, но качество товаров высокое, и среди них много вещей, которые обязательно хочется заполучить" |
+| Edge browser translator (keyless) | POST JSON `["text", …]` to `https://edge.microsoft.com/translate/translatetext?from=ja&to=ru&isEnterpriseClient=false` (omit `from` to detect) → `[{"detectedLanguage":{…},"translations":[{"text":…,"to":"ru"}]}]`, the Azure Translator v3 shape; no token, no cookies, any User-Agent (even okhttp's), several texts per request | 0.65–0.8 s | 3 of 6, a different model from Bing's: 2万円 → "20 000 йен" right, but 面影を感じる → "почувствуете старую сцену", 桃香さんの服で桃香さんの表情をする → "делает выражение сквозь одежду" |
 | Lens, the sentence drawn as an image with the translate filter (see `lens-protocol.md`) | as in `lens-protocol.md` | 0.9–1.1 s | 4 of 6; turned the meaning of the manga sentence around ("Несмотря на невысокую цену … предметами первой необходимости") |
 | Yandex | POST `https://translate.yandex.net/api/v1/tr.json/translate?id=<32 hex>-0-0&srv=android&lang=ja-ru&text=…` → `{"text":[…]}` | 0.1–0.3 s | Fast but wrong in places: 2万円 → "2 миллионов иен", お願いしマス → "массируйтесь" |
 | Google, `translate.googleapis.com/translate_a/single?client=gtx` and the site's `batchexecute` (rpc `MkEWBc`) | — | 0.6–2 s | Word for word the same output from both: the old models `ja_en_2023q1` + `en_ru_2023q1`, through English ("я думаю, ты милый", "следы его лица") |
 
-- `edge.microsoft.com/translate/auth` (the Edge browser's keyless token) answered 404.
+- `edge.microsoft.com/translate/auth` (the Edge token endpoint) answered 404; `translatetext` on the same host needs no token now (2026-10-09).
 - The key of Chrome's page translator (`translate-pa.googleapis.com`) is not in `element.js`; not pursued.
 - Google's Gemini-based "Advanced" translation is in its app in some countries only, not behind these endpoints.
 - Blocking on Russian mobile networks was not checked; Yandex is the one likely to pass whitelists.
+
+## Bing in the app
+
+From the request shapes above and plainheart/bing-translate-api (MIT, `src/index.js`, `src/config.json`):
+
+- Token: GET `https://www.bing.com/translator` (630 KB, about 170 KB gzipped, 2 s). It may redirect to a regional subdomain
+  (`cn.bing.com`); later calls go to the host it ended on. Parse `IG:"…"`, `data-iid="…"` and
+  `params_AbusePreventionHelper = [key, "token", expiryMs]`. `key` is the issue time in ms: the token is stale after
+  `now - key > expiryMs` (3 600 000, an hour). Keep the cookies of that page for the POST.
+- Translate: POST form `fromLang` (`auto-detect` works), `to`, `text`, `token`, `key` to
+  `/ttranslatev3?isVertical=1&IG=…&IID=…` with a `Referer` of the translator page. Text up to 1000 characters;
+  the library's "EPT" variant (`&SFX=<n>&ref=TThis&edgepdftranslator=1`) takes up to 3000 for languages in
+  `eptLangs` (ja, ru, en, zh-Hans, zh-Hant, ko and most others) and is less prone to 429.
+- Failures: `{"ShowCaptcha":true}` in the body, 401 (limit), 429 (throttled), a token rejected → fetch the page again
+  once, then give up with a message. With `tryFetchingGenderDebiasedTranslations=true` some answers come as HTML with
+  an `isgenderdebiasedtranslation` header and need a second request; with `false` the answer was plain JSON.
+- Language codes are Microsoft's: `zh-Hans`/`zh-Hant`, `pt` vs `pt-PT`, `sr-Cyrl`/`sr-Latn`, `nb`.
+- The Edge endpoint above (no `usedLLM` in its answers, hence the weaker results) takes the same codes and answers in the same shape, so it can serve as the fallback with no
+  extra parsing.
+
