@@ -50,7 +50,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 44. Found in the catalog check (2026-10-02): the catalog's JMdict card offers a download although an old "JMdict" (revision JMdict1, no update address, from a Yomitan collection) is installed; an old copy without an update address never updates. Owner: offer to replace it.
 45. (2026-10-02) The switch "Show the recognized text above the entries" (the popup header with the scanned text and the OCR source) sits in the Bubble settings; it belongs to the popup. Owner: move it to the Popup settings.
 46. (2026-10-09, backlog) Sentence translation in the popup and in Anki notes: a button that translates the sentence of the looked-up word with a free service that needs no key (findings in `ai/notes/translation-services.md`: Bing best, Google and the keyless Edge endpoint weaker). Owner: a setting chooses the service, Bing by default with a note that it translates better; a note that any translation may be inaccurate; the button can be turned off, so a learner is not tempted to translate. Details in the questions of 2026-10-09.
-47. (2026-10-09, later, separate task) Next to copying the sentence, a menu that sends it to an AI chat (Gemini, Claude, ChatGPT, others): with a fixed or templated prompt, or only opening the chat with the text pasted so the user writes the request. To be thought through separately after the translation.
+47. (2026-10-09, analysis only, not decided to build) Next to copying the sentence, a menu that sends it to an AI chat (Gemini, Claude, ChatGPT, others): with a fixed or templated prompt, or only opening the chat with the text pasted so the user writes the request. To be thought through separately after the translation.
 48. (2026-10-09) An accessibility disclosure in the app in every build, as the store policy for non-accessibility tools asks: before the accessibility settings open, say what the service reads (the screenshot taken on a bubble tap or pull, window text with app text on) and where it goes (cloud recognition, on-device recognition, translation), and take an explicit agreement. Today the home card has a short paragraph and the button opens the system settings directly.
 
 ## Decisions
@@ -342,3 +342,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-09: owner: favorites only, no recent languages; implementation outline of request 46 added.
 - 2026-10-09: request 48 (accessibility disclosure with consent, all builds); questions asked.
 - 2026-10-09: owner answers on request 48: the dialog before the accessibility settings until agreed, the service unnamed, the text again under About.
+- 2026-10-09: owner: request 47 was asked for analysis only; whether to build it is not decided.
