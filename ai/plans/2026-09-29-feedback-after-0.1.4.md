@@ -49,6 +49,8 @@ Owner requests after the v0.1.4 release (2026-09-29).
 43. Know the number of installs without tracking users; distribution is GitHub only for now. Asked whether a one-time download of a tiny release file at the first start is legitimate and safe; not decided (2026-10-01).
 44. Found in the catalog check (2026-10-02): the catalog's JMdict card offers a download although an old "JMdict" (revision JMdict1, no update address, from a Yomitan collection) is installed; an old copy without an update address never updates. Owner: offer to replace it.
 45. (2026-10-02) The switch "Show the recognized text above the entries" (the popup header with the scanned text and the OCR source) sits in the Bubble settings; it belongs to the popup. Owner: move it to the Popup settings.
+46. (2026-10-09, backlog) Sentence translation in the popup and in Anki notes: a button that translates the sentence of the looked-up word with a free service that needs no key (findings in `ai/notes/translation-services.md`: Bing best, Google and the keyless Edge endpoint weaker). Owner: a setting chooses the service, Bing by default with a note that it translates better; a note that any translation may be inaccurate; the button can be turned off, so a learner is not tempted to translate. Details in the questions of 2026-10-09.
+47. (2026-10-09, later, separate task) Next to copying the sentence, a menu that sends it to an AI chat (Gemini, Claude, ChatGPT, others): with a fixed or templated prompt, or only opening the chat with the text pasted so the user writes the request. To be thought through separately after the translation.
 
 ## Decisions
 
@@ -120,6 +122,37 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Outdated copy on the catalog card | An update icon (tooltip "Update") instead of Download, and a colored line under the description: an old build is installed (its revision) and updating replaces it (owner, 2026-10-02) |
 | Outdated copies in the update check | "Check for updates" also lists outdated copies ("old revision → current revision") and "Update all" includes them (owner, 2026-10-02) |
 | Popup header switch | "Show the recognized text above the entries" moves from Bubble to Popup settings, into one card with definition copying, named "Popup elements", at the top of the Popup page. The Popup page's reset and the backup's Popup section take it along (owner, 2026-10-02) |
+| Translation services | Bing, Google and Edge in an ordered list in the settings, each with its own switch: the first enabled service translates, the next enabled ones take over when it fails (the user builds the cascade); by default Bing → Google → Edge, all on, Bing marked as usually more accurate; reordered by dragging, as the dictionaries (owner, 2026-10-09) |
+| Translation failure | When a service fails (network, captcha, limit, changed protocol) or gives no answer within 3 s, the next enabled one in the list translates on its own; the translation shows which service made it (owner, 2026-10-09) |
+| Translation button | Icon 文A. In the popup header before the OCR chip; with the header off, in the first entry's buttons like ⚠ and ✕ (owner, 2026-10-09) |
+| Translation in the popup | Only on a tap of 文A; the Bing token is fetched then too, nothing is sent before (owner, 2026-10-09). A block under the header, above the entries, with the service chip; a second tap on the button hides it (owner, 2026-10-09) |
+| Translation settings | A separate "Translation" settings page, listed after Popup (changed from a card on the Popup page, owner, 2026-10-09): the 文A button switch and the Anki field switch, independent of each other, both on by default; the service list; the language (all languages the services know, with search, names from the system; a service that does not know the language is skipped); a test: a field with a short default text and a button that asks every enabled service at once and shows each one's time and translation or its error. The 文A switch is repeated in "Popup elements", one state. Its hint says the translation is machine-made and may be inaccurate and that the text goes to the service's server; the ⓘ adds that Bing's first request in an hour takes longer (owner, 2026-10-09) |
+| Favorite translation languages | In the language picker every row has a star; starred languages are listed at the top in their own section, a tap on the star again takes a language out; no "recent" section (owner, 2026-10-09) |
+| Translation in Anki notes | A `{sentence-translation}` marker for note fields, filled with the sentence translation when one came, left empty otherwise; a switch turns it off without editing the template, e.g. while the translator is slow; the switch is on the Translation page and repeated in the Anki settings above the deck, one state. On ➕ a translation already shown is used, otherwise it is requested then and the note waits for it up to 5 s, then goes in with the field empty (owner, 2026-10-09) |
+| Translated text | The sentence around the word, the same one `{sentence}` puts into the Anki note (owner, 2026-10-09) |
+| Translation language | The app's interface language by default (English when that is the source language); a setting changes it (owner, 2026-10-09) |
+
+## Sentence translation (backlog, request 46)
+
+Outline from the analysis of 2026-10-09; the decisions are the "Translation …" rows above, the services' requests are in
+`ai/notes/translation-services.md`.
+
+- Module `core:translate` (depends on `core:common` for OkHttp and `Language`): a `Translator` interface and three
+  implementations: Bing (token page, then `/ttranslatev3`), Google (`translate_a/single?client=gtx`), Edge
+  (`translatetext`, no token). A cascade runs the enabled ones in the user's order, 3 s each. Every request on a fresh
+  connection, as for audio. A Bing token that arrives after the 3 s is kept for the next request.
+- Language codes per service (Microsoft `zh-Hans`/`zh-Hant`, Google `zh-CN`/`zh-TW`, …); the picker lists the languages of
+  the services with names from `Locale`, favorites (starred) on top; a service that lacks the language is skipped.
+- Settings: DataStore keys, a Translation section in reset and backup, the page after Popup; the 文A switch repeated in
+  "Popup elements", the Anki switch repeated in the Anki settings above the deck.
+- Popup: 文A in the header before the OCR chip, or in the first entry's buttons without the header; the block under the
+  header with the service chip; errors in 14 locales.
+- Anki: the `sentence-translation` marker in `FieldTemplate`; on ➕ the popup's translation, or a request waited for up
+  to 5 s.
+- Privacy: no text in logs; gtx carries the text in its URL, so its URL is never logged (or the request goes as POST
+  if gtx accepts it).
+- Tests: parsing from saved answers (token page excerpt, each service's JSON), the cascade with MockWebServer (error,
+  timeout, late token), language mapping, the popup block in `popup.js`, the marker.
 
 ## Code review: appearance and fonts
 
@@ -298,3 +331,10 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-02: request 44 (old JMdict in the catalog), owner: replace it with the current build; the card shows an update icon and a line; the update check lists outdated copies too; any recognized copy without an update address counts (rows "Old dictionary copies", "Outdated copy on the catalog card", "Outdated copies in the update check"). Owner asked whether this affects only old installs: it affects copies imported from outside the catalog (a Yomitan collection, an old archive) in any app version; catalog downloads carry their update address.
 - 2026-10-02: request 45, owner: the popup header switch moves to the Popup settings, one card with definition copying at the top of the page.
 - 2026-10-02: owner: the card is "Popup elements", not "What the popup shows"; settings take terse names.
+- 2026-10-09: requests 46 (sentence translation, backlog: service setting with Bing by default, accuracy note, a switch for the button) and 47 (send the sentence to an AI chat, later).
+- 2026-10-09: owner answers on request 46: services Bing, Google, Edge as an ordered list with switches (a cascade the user builds), automatic fallback, the sentence of `{sentence}`, the interface language, button 文A in the header (or the first entry without it), a block under the header, a "Translation" card on the Popup page; added: a `{sentence-translation}` Anki marker with its own switch.
+- 2026-10-09: owner: cascade Bing → Google → Edge all on by default, reordered by dragging; translate only on a tap; the accuracy note is the Translation card's hint.
+- 2026-10-09: owner: translation moves to its own settings page (was a card on the Popup page); the 文A switch and the Anki field switch are independent, both on by default, the Anki one repeated in the Anki settings above the deck; all languages of the services; a test in the settings; the ⓘ mentions Bing's slower first request in an hour; on ➕ the translation is requested and waited for up to a limit.
+- 2026-10-09: owner: favorite languages in the translation language picker, starred, at the top in their own section.
+- 2026-10-09: owner: 3 s per service, ➕ waits up to 5 s; the test asks every enabled service; the Translation page after Popup; the 文A switch repeated in "Popup elements".
+- 2026-10-09: owner: favorites only, no recent languages; implementation outline of request 46 added.
