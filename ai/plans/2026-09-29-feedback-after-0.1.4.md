@@ -173,6 +173,29 @@ Outline from the analysis of 2026-10-09; the decisions are the "Translation …"
 - Tests: parsing from saved answers (token page excerpt, each service's JSON), the cascade with MockWebServer (error,
   timeout, late token), language mapping, the popup block in `popup.js`, the marker.
 
+Design worked out on 2026-10-09 (not built yet; the usage limit ended the session first):
+
+- `core:translate`: `TranslationService { BING, GOOGLE, EDGE }`; a generated table of languages (canonical BCP 47 tag,
+  Microsoft code, Google code, English name as a fallback when `Locale` has no name); the default target from the app
+  locale (`AppLanguage.locales`, else the system's): zh by script or region, pt-PT only for Portugal (else pt-BR),
+  sr-Latn only for the Latin script, no/nn → nb, tl → fil, iw → he; English when the result is the source language or
+  unknown. `TranslationError` kinds: offline, timeout, HTTP status, limited (401/429), captcha, rejected, unsupported
+  language, too long (Bing 1000 characters, others 5000), bad answer, other.
+- `SentenceTranslator` (@Singleton): the cascade with `withTimeoutOrNull(3 s)` per service; a shared in-flight request
+  and a short cache of successes keyed by text, source and target, so ➕ reuses the popup's translation or joins its
+  request; the settings test runs every enabled service at once with a longer limit and reports the time.
+- Bing's token is fetched in the translator's own scope, so a fetch that outlives the 3 s still lands for the next
+  request; stale after its expiry by the local clock; a `statusCode` answer drops it and fetches once more.
+- Settings keys `translation_button`, `translation_anki`, `translation_services` (JSON list of service and switch),
+  `translation_language` (absent: the interface language), `translation_favorites`; a `TRANSLATION` reset and backup
+  section.
+- Page: `Popup.setTranslation({enabled, labels})` (persistent), `ScreenlateBridge.onTranslate()`, and
+  `Popup.showTranslation({state, text, service, error})`; the block sits between the header and the entries, belongs
+  to the first view, is cleared by `render` and kept by `update`. `LookupPage.Callbacks.onTranslate` gets a default
+  no-op, so the search screen shows no 文A.
+- The overlay computes the sentence as `noteSource()` does; `PopupNotes` fills `sentence-translation` through
+  `SentenceTranslator` with a 5 s wait when the marker is used and the Anki switch is on.
+
 ## Sending text to other apps (far backlog, request 47)
 
 Findings of 2026-10-09; nothing decided, the questions below wait until the owner picks it up.
@@ -388,3 +411,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-09: owner answers on 49–51: the bottom dock rises above an open keyboard; a switch plus Top and Bottom in the side choice; an "Auto-hide" card on the Popup page; the side dock in landscape stays at the screen edge.
 - 2026-10-09: owner: in fullscreen the dock goes to the very screen edge on all four sides; rotation unchanged. Then build 49–51 and go straight on to the sentence translation (46), autonomously: questions are collected for later, no release, push, a code review follows.
 - 2026-10-09: 49–51 built and checked on the emulator. The very edge in fullscreen does not work at the top and bottom (the system takes the pull), so those docks keep the safe line; question D1 for the owner. The top line also moved below the top gesture strip, where a pull was cancelled even with the status bar shown. A touch the system cancels no longer docks or drops the bubble at a random place: a pulled-out bubble goes back to its dock. Fixed on the way: a popup closed with ✕ (or after ➕) no longer reopens when later text arrives under the unmoved aim.
+- 2026-10-09: request 46: the services probed again and the design written down under the section "Sentence translation"; building it is next.

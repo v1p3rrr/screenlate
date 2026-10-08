@@ -37,3 +37,19 @@ From the request shapes above and plainheart/bing-translate-api (MIT, `src/index
 - The Edge endpoint above (no `usedLLM` in its answers, hence the weaker results) takes the same codes and answers in the same shape, so it can serve as the fallback with no
   extra parsing.
 
+## Probe of 2026-10-09 (before building request 46)
+
+- Google gtx takes the text as a POST form field: POST `translate_a/single?client=gtx&sl=ja&tl=ru&dt=t` with body
+  `q=<text>` answered 200 in 0.6 s, so the text never goes into a URL.
+- Edge `translatetext` still needs no token (0.6–0.8 s).
+- Bing: the token page took 1.7 s (635 KB), translations 1.7–2.4 s each, `usedLLM: true`. The first request of a
+  token therefore misses a 3 s budget; later ones fit. The answer is an array: the first element has `translations`,
+  a second one `inputTransliteration`. An `IID` without a suffix and with `.1` both worked. A rejected token answers
+  HTTP 200 with `{"statusCode":205,"errorMessage":""}`.
+- Language lists: `https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation`
+  (138 codes, Bing and Edge) and `https://translate.googleapis.com/translate_a/l?client=gtx&hl=en` (`tl`: 249 codes).
+  Codes that differ (canonical BCP 47 tag: Microsoft / Google): `zh-Hans`: zh-Hans / zh-CN, `zh-Hant`: zh-Hant / zh-TW,
+  `he`: he / iw, `fil`: fil / tl, `nb`: nb / no, `jv`: – / jw, `mni`: mni / mni-Mtei, `mn`: mn-Cyrl / mn,
+  `sr-Cyrl`: sr-Cyrl / sr, `ny`: nya / ny, `lg`: lug / lg, `rn`: run / rn, `prs`: prs / fa-AF, `pt-BR`: pt / pt, and the
+  Kurdish pair: Microsoft `ku` is Central (Sorani, `ckb`) while Google `ku` is Kurmanji (`kmr`; Microsoft `kmr`, Google
+  `ckb` for Sorani). Microsoft `mww` (Hmong Daw) and Google `hmn` (Hmong) are different languages.

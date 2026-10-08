@@ -254,7 +254,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
-- Requests 49-51 (top and bottom dock, popup auto-hide) are done; question D1 waits for the owner. Next: sentence translation (request 46, decided 2026-10-09, outline in the plan's "Sentence translation" section), sending text to AI and translator apps from the bubble's hold menu (request 47, far backlog, analysed).
+- Requests 49-51 (top and bottom dock, popup auto-hide) are done; question D1 waits for the owner. Next: sentence translation (request 46, decided 2026-10-09; services probed again and the design written in the plan's "Sentence translation" section, no code yet), sending text to AI and translator apps from the bubble's hold menu (request 47, far backlog, analysed).
 - Backlog: accessibility disclosure with consent (request 48, decided 2026-10-09). Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
 
 ## Open items
