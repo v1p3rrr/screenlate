@@ -48,7 +48,7 @@ LensOverlayServerResponse
                   3 geometry: Geometry
           2 content_language: string
       4 deep_gleams (repeated)
-          10 translation: TranslationData (1 status{1 code}, 4 translation) — unused
+          10 translation: TranslationData — only with the translate filter, see "Translation" below
 
 Geometry
   1 bounding_box: CenterRotatedBox
@@ -84,3 +84,36 @@ Conclusion: downscaling to 1500 px costs nothing in quality; full resolution is 
 - `ReadingOrder` (core:ocr) sorts vertical columns right to left and joins a vertical paragraph whose last column runs
   to the bottom with the one starting right after it (same top margin and width, gap ≤ 1.5 columns). Horizontal
   paragraphs are left as they are.
+
+## Translation (probe 2026-10-08, `testdata/ocr/x-thread.png`, from a desktop connection)
+
+The same `crupload` request translates when the client context carries a translate filter (field numbers from
+Chromium's `third_party/lens_server_proto/lens_overlay_filters.proto` and `lens_overlay_deep_gleam_data.proto`):
+
+```
+LensOverlayClientContext
+  17 client_filters: AppliedFilters
+      1 filter (repeated): AppliedFilter
+          1 filter_type: enum = 2 (TRANSLATE)
+          3 translate
+              1 target_language: string ("ru")
+              2 source_language: string ("auto")
+```
+
+- The answer keeps the same OCR text and adds `objects_response.4 deep_gleams`, one per OCR paragraph in the same
+  order (49 paragraphs, 49 gleams). Without the filter there are no deep gleams at all.
+- `TranslationData`: 1 status{1 code}, 2 target_language, 3 source_language (detected per paragraph), 4 translation,
+  5 line (repeated: 1 start, 2 end offsets into the translation, per OCR line). Status codes: 0 UNKNOWN, 1 SUCCESS,
+  2 SERVER_ERROR, 3 UNSUPPORTED_LANGUAGE_PAIR, 4 SAME_LANGUAGE, 5 UNKNOWN_SOURCE_LANGUAGE (numbers such as "840"),
+  6 INVALID_REQUEST, 7 DEADLINE_EXCEEDED, 8 EMPTY_TRANSLATION, 9 NO_OP_TRANSLATION (handles such as "@user").
+- Cost: 22.8 KB answer instead of 12.7 KB, 1.03 s against 1.13 s without the filter; no rendered background images
+  came back.
+- The unit is Lens's paragraph, not a sentence: a lone fragment translates badly (っぽい → "выход"), and manga
+  balloons come as several column paragraphs (see "Paragraph grouping"), so their translation would be split too.
+- Quality ja→ru was clearly better than the keyless web endpoint below, e.g. 確かにそう言われると面影を感じるかもですね
+  → "Теперь, когда вы об этом упомянули, я вижу сходство" (web endpoint: "Это правда, когда ты говоришь это, ты можешь
+  почувствовать следы его лица"). Which model Lens uses is not visible in the answer.
+
+For comparison, the keyless web endpoint `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=ru&dt=t&q=...`
+answers JSON arrays in 1.3–2.4 s per sentence and names its models: ja→ru went through `ja_en_2023q1` and
+`en_ru_2023q1`, i.e. through English.
