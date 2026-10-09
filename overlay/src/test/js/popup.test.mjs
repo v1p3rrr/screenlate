@@ -679,3 +679,163 @@ test('going back to a link view under the top one keeps the status of the last u
     assert.equal(page.document.documentElement.dataset.noteWait, 'false');
     assert.equal(page.document.getElementById('spinner').hidden, true);
 });
+
+const translateLabels = { ...labels, translate: 'Translate the sentence', translating: 'Translating…' };
+
+test('文A stays hidden until the app turns it on', () => {
+    Popup.render(state({ labels: translateLabels }));
+    const button = page.document.getElementById('translate');
+    assert.equal(button.hidden, true);
+    Popup.setTranslation({ enabled: true });
+    assert.equal(button.hidden, false);
+    assert.equal(button.title, 'Translate the sentence');
+    Popup.render(state({ labels: translateLabels, results: [], message: 'No text here' }));
+    assert.equal(button.hidden, true);
+});
+
+test('a tap asks for the translation, the answer fills the block and a second tap hides it', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    const button = page.document.getElementById('translate');
+    const box = page.document.getElementById('translation');
+    assert.equal(box.hidden, true);
+
+    button.click();
+    assert.deepEqual(page.calls.at(-1), ['onTranslate', 1]);
+    assert.equal(box.hidden, false);
+    assert.equal(box.dataset.state, 'loading');
+    assert.match(box.textContent, /Translating…/);
+    assert.equal(button.getAttribute('aria-pressed'), 'true');
+
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing' });
+    assert.equal(box.dataset.state, 'done');
+    assert.equal(box.querySelector('.translation-service').textContent, 'Bing');
+    assert.match(box.textContent, /I like cats/);
+
+    button.click();
+    assert.equal(box.hidden, true);
+    assert.equal(button.getAttribute('aria-pressed'), 'false');
+    assert.equal(page.calls.filter(call => call[0] === 'onTranslate').length, 1);
+});
+
+test('the copy button copies the sentence and the translation on two lines', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: { ...translateLabels, copyTranslation: 'Copy sentence and translation' } }));
+    const box = page.document.getElementById('translation');
+    page.document.getElementById('translate').click();
+    assert.equal(box.querySelector('.action-copy-translation'), null);
+
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing', sentence: '猫が好き' });
+    const copy = box.querySelector('.translation-tools .action-copy-translation');
+    assert.equal(copy.getAttribute('aria-label'), 'Copy sentence and translation');
+    copy.click();
+    assert.deepEqual(page.calls.at(-1), ['onCopy', '猫が好き\nI like cats']);
+});
+
+test('without a sentence the copy button copies the translation alone', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing' });
+    page.document.querySelector('.action-copy-translation').click();
+    assert.deepEqual(page.calls.at(-1), ['onCopy', 'I like cats']);
+});
+
+test('an error shows in the block; an answer to an older request is dropped', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    const button = page.document.getElementById('translate');
+    const box = page.document.getElementById('translation');
+    button.click();
+    button.click();
+    button.click();
+    assert.deepEqual(page.calls.at(-1), ['onTranslate', 2]);
+    Popup.showTranslation(1, { text: 'old' });
+    assert.equal(box.dataset.state, 'loading');
+    Popup.showTranslation(2, { error: 'No connection.' });
+    assert.equal(box.dataset.state, 'error');
+    assert.equal(box.textContent, 'No connection.');
+});
+
+test('a new word drops the translation; refined text around the same word keeps it', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    const box = page.document.getElementById('translation');
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing' });
+
+    Popup.update(state({ labels: translateLabels, source: { text: '猫が好きです', matched: 1 } }));
+    assert.equal(box.hidden, false);
+    Popup.update(state({ labels: translateLabels, results: [result('犬', 'いぬ')] }));
+    assert.equal(box.hidden, true);
+
+    page.document.getElementById('translate').click();
+    Popup.render(state({ labels: translateLabels }));
+    assert.equal(box.hidden, true);
+    Popup.showTranslation(2, { text: 'late' });
+    assert.equal(box.hidden, true);
+});
+
+test('a new scan result with the same word and sentence keeps the translation while the popup stays open', () => {
+    const sentence = '猫が好きです。';
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels, sentence }));
+    const box = page.document.getElementById('translation');
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing', sentence });
+
+    Popup.render(state({ labels: translateLabels, sentence, engine: 'Lens' }), { continued: true });
+    assert.equal(box.hidden, false);
+    assert.match(box.textContent, /I like cats/);
+
+    Popup.render(state({ labels: translateLabels, sentence: '猫がいます。' }), { continued: true });
+    assert.equal(box.hidden, true);
+});
+
+test('a popup opened again starts without the translation, also for the same sentence', () => {
+    const sentence = '猫が好きです。';
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels, sentence }));
+    const box = page.document.getElementById('translation');
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing', sentence });
+
+    Popup.render(state({ labels: translateLabels, sentence }));
+    assert.equal(box.hidden, true);
+});
+
+test('a pushed view hides the translation until back returns to the first view', () => {
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels }));
+    const button = page.document.getElementById('translate');
+    const box = page.document.getElementById('translation');
+    button.click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Google' });
+    Popup.push(state({ labels: translateLabels, results: [result('好き', 'すき')] }));
+    assert.equal(box.hidden, true);
+    assert.equal(button.hidden, true);
+    page.document.getElementById('back').click();
+    assert.equal(box.hidden, false);
+    assert.match(box.textContent, /I like cats/);
+});
+
+test('without the header 文A sits first in the first entry, before ⚠ and ✕', () => {
+    const failed = { hideSource: true, ocrError: 'Offline.', labels: { ...translateLabels, ocrError: 'Cloud recognition' } };
+    Popup.render(state({ hideSource: true, labels: translateLabels }));
+    Popup.setTranslation({ enabled: true });
+    assert.equal(page.document.getElementById('translate').hidden, true);
+    Popup.update(state(failed));
+    const actions = content.querySelector('article.entry .entry-actions');
+    const classes = [...actions.children].slice(0, 3).map(button => button.className);
+    assert.deepEqual(classes, ['icon-button action-translate', 'icon-button action-ocr-warning ocr-warning', 'icon-button action-close']);
+    assert.equal(content.querySelectorAll('.action-translate').length, 1);
+
+    actions.firstChild.click();
+    assert.deepEqual(page.calls.at(-1), ['onTranslate', 1]);
+    assert.equal(page.document.getElementById('translation').hidden, false);
+    assert.equal(actions.firstChild.getAttribute('aria-pressed'), 'true');
+
+    Popup.setTranslation({ enabled: false });
+    assert.equal(content.querySelector('.action-translate'), null);
+    assert.equal(page.document.getElementById('translation').hidden, true);
+});

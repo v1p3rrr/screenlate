@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.translate.TranslationSettings
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.overlay.fonts.CatalogFont
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import com.vpr.screenlate.overlay.fonts.FontDownload
@@ -53,6 +55,7 @@ class PopupAppearanceViewModel @Inject constructor(
     private val settingsReset: SettingsReset,
     private val cache: PopupTypefaces,
     private val overlaySettings: OverlaySettingsRepository,
+    private val translationSettings: TranslationSettingsRepository,
 ) : ViewModel() {
     val appearance: StateFlow<PopupAppearance?> =
         repository.appearance.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedAppearance)
@@ -60,6 +63,10 @@ class PopupAppearanceViewModel @Inject constructor(
     /** The popup settings stored with the bubble's: the recognized text at the top, auto-hide. */
     val overlay: StateFlow<OverlaySettings?> =
         overlaySettings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, overlaySettings.cachedSettings)
+
+    /** For the 文A switch, which the Translation page has too. */
+    val translation: StateFlow<TranslationSettings?> =
+        translationSettings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, translationSettings.cachedSettings)
 
     val installed: StateFlow<List<InstalledFont>> = fonts.installed
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
@@ -128,6 +135,8 @@ class PopupAppearanceViewModel @Inject constructor(
     fun setShowSourceText(enabled: Boolean) = launch { overlaySettings.setShowSourceText(enabled) }
 
     fun setHideAfterAdd(enabled: Boolean) = launch { overlaySettings.setHideAfterAdd(enabled) }
+
+    fun setTranslateButton(enabled: Boolean) = launch { translationSettings.setButton(enabled) }
 
     fun setHideOffWord(enabled: Boolean) = launch { overlaySettings.setHideOffWord(enabled) }
 

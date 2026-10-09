@@ -303,6 +303,7 @@ class BackupManager @Inject constructor(
             BackupSection.POPUP,
             BackupSection.ANKI,
             BackupSection.AUDIO,
+            BackupSection.TRANSLATION,
         )
     }
 }

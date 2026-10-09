@@ -25,6 +25,8 @@ object JapaneseSupport : LanguageSupport {
     override val languageTag = "ja"
     override val fontSample = "置く・直す・骨 — あいうえお アイウエオ"
 
+    override val translationSample = "今日はいい天気ですね。散歩に行きましょう。"
+
     /**
      * Noto Sans/Serif CJK JP, which Android ships; asking for the Japanese face by name keeps Japanese glyph forms
      * even where the phone's main font covers Chinese. Windows and macOS Japanese fonts map to them.

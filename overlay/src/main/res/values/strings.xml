@@ -51,6 +51,7 @@
     <string name="overlay_engine_app_text">App text</string>
     <string name="overlay_copy">Copy</string>
     <string name="overlay_copy_definition">Copy definition</string>
+    <string name="overlay_copy_translation">Copy sentence and translation</string>
     <string name="overlay_open_note">Open in AnkiDroid (hold to add anyway)</string>
     <string name="overlay_add_anyway">Add anyway</string>
     <string name="overlay_add_anyway_picture">Add anyway, with a picture</string>
@@ -66,4 +67,23 @@
     <string name="overlay_keep_alive_channel">Service running</string>
     <string name="overlay_keep_alive_title">Screenlate is ready</string>
     <string name="overlay_keep_alive_text">Keeping the bubble available in the background</string>
+    <string name="overlay_translate">Translate the sentence</string>
+    <string name="overlay_translating">Translating…</string>
+    <string name="translation_failed">Could not translate the sentence.</string>
+    <string name="translation_failed_other">Translation failed.</string>
+    <string name="translation_none_enabled">No translation service is turned on. They are under Translation in Screenlate’s settings.</string>
+    <string name="translation_no_sentence">There is no sentence to translate.</string>
+    <string name="translation_service_error">%1$s: %2$s</string>
+    <string name="translation_error_offline">No network connection.</string>
+    <string name="translation_error_timeout">No answer in time.</string>
+    <string name="translation_error_secure">Secure connection failed (certificate or TLS).</string>
+    <string name="translation_error_network">Could not reach the server.</string>
+    <string name="translation_error_http">The server answered with error %1$d.</string>
+    <string name="translation_error_limited">Too many requests; try again later.</string>
+    <string name="translation_error_captcha">Asks to solve a captcha; try again later.</string>
+    <string name="translation_error_rejected">The request was refused.</string>
+    <string name="translation_error_language">This language is not supported.</string>
+    <string name="translation_error_too_long">The text is too long.</string>
+    <string name="translation_error_bad_answer">The answer could not be read.</string>
+    <string name="translation_error_other">Something went wrong.</string>
 </resources>

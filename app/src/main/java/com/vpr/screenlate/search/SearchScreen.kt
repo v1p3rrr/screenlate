@@ -165,6 +165,7 @@ fun SearchScreen(
                 val query = viewModel.query.value.trim()
                 NoteSource { NoteContext(Sentence("", query, ""), null) }
             },
+            translation = viewModel.translation,
             cropEditor = null,
             onAnkiOpened = {},
             // The app's own search keeps its results: auto-hide is for the popup over other apps.

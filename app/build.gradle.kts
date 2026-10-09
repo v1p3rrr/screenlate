@@ -109,6 +109,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ocr"))
     implementation(project(":core:anki"))
+    implementation(project(":core:translate"))
     implementation(project(":dictionary:api"))
     implementation(project(":dictionary:engine-hoshidicts"))
     implementation(project(":dictionary:render-yomitan"))

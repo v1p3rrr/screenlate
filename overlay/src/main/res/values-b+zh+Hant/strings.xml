@@ -48,6 +48,7 @@
     <string name="overlay_engine_app_text">應用程式文字</string>
     <string name="overlay_copy">複製</string>
     <string name="overlay_copy_definition">複製釋義</string>
+    <string name="overlay_copy_translation">複製句子和譯文</string>
     <string name="overlay_open_note">在 AnkiDroid 中開啟（長按仍然新增）</string>
     <string name="overlay_add_anyway">仍然新增</string>
     <string name="overlay_add_anyway_picture">仍然新增並附帶圖片</string>
@@ -63,4 +64,23 @@
     <string name="overlay_keep_alive_channel">服務執行中</string>
     <string name="overlay_keep_alive_title">Screenlate 已就緒</string>
     <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
+    <string name="overlay_translate">翻譯句子</string>
+    <string name="overlay_translating">正在翻譯…</string>
+    <string name="translation_failed">無法翻譯這個句子。</string>
+    <string name="translation_failed_other">翻譯失敗。</string>
+    <string name="translation_none_enabled">沒有啟用任何翻譯服務。請在 Screenlate 設定的「翻譯」中啟用。</string>
+    <string name="translation_no_sentence">沒有可翻譯的句子。</string>
+    <string name="translation_service_error">%1$s：%2$s</string>
+    <string name="translation_error_offline">未連線網路。</string>
+    <string name="translation_error_timeout">未能及時回應。</string>
+    <string name="translation_error_secure">安全連線失敗（證書或 TLS）。</string>
+    <string name="translation_error_network">無法連線到伺服器。</string>
+    <string name="translation_error_http">伺服器回傳了錯誤 %1$d。</string>
+    <string name="translation_error_limited">請求過多，請稍後再試。</string>
+    <string name="translation_error_captcha">要求完成驗證碼，請稍後再試。</string>
+    <string name="translation_error_rejected">請求遭到拒絕。</string>
+    <string name="translation_error_language">不支援此語言。</string>
+    <string name="translation_error_too_long">文字太長。</string>
+    <string name="translation_error_bad_answer">無法讀取回應。</string>
+    <string name="translation_error_other">發生問題。</string>
 </resources>

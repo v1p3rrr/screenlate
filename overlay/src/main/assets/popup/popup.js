@@ -18,6 +18,11 @@
  *   labels: { ... }                localized strings
  * }
  *
+ * Sentence translation (setTranslation): 文A sits in the header before the OCR chip, or without the header in the first
+ * entry's buttons. A tap asks the app (onTranslate with a request number) and shows a block under the header, which
+ * showTranslation fills; a second tap hides it. The block belongs to the first view: a new word drops it, a pushed
+ * view hides it until back returns.
+ *
  * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents) and
  * the buttons. Tapping an inflection step or an accent opens the info panel at the bottom of the card, and so does a
  * tag with a description: a dictionary's tag (its tag bank's notes, see setTagNotes) or a structured-content element
@@ -39,6 +44,8 @@ const Popup = (() => {
     const source = document.getElementById('source');
     const engine = document.getElementById('engine');
     const ocrErrorButton = document.getElementById('ocr-error');
+    const translateButton = document.getElementById('translate');
+    const translationBox = document.getElementById('translation');
     const spinner = document.getElementById('spinner');
     const content = document.getElementById('content');
     const info = document.getElementById('info');
@@ -61,6 +68,8 @@ const Popup = (() => {
         puzzle: '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M10 3.5a2 2 0 0 1 4 0V5h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 0 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V19H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z" fill="currentColor"/></svg>',
         audio: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
         warning: '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3.5 2.5 20h19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor"/></svg>',
+        // Material Icons "translate" (Apache 2.0, see NOTICE).
+        translate: '<svg viewBox="0 0 24 24" width="17" height="17"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/></svg>',
     };
 
     const history = [];
@@ -71,11 +80,18 @@ const Popup = (() => {
     let actions = { anki: false, audio: false };
     let noteConfig = { markers: null, frequencyModes: {} };
     let menu = null;
+    /** Whether 文A shows. */
+    let translationEnabled = false;
+    /** The first view's translation: null, or { request, state: 'loading' | 'done' | 'error', text, service, error }. */
+    let translation = null;
+    let translationRequests = 0;
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
     document.getElementById('info-close').addEventListener('click', hideInfo);
     ocrErrorButton.innerHTML = ICONS.warning;
     ocrErrorButton.addEventListener('click', showOcrError);
+    translateButton.innerHTML = ICONS.translate;
+    translateButton.addEventListener('click', toggleTranslation);
     backButton.addEventListener('click', back);
     content.addEventListener('click', explainTag);
 
@@ -112,6 +128,7 @@ const Popup = (() => {
         ocrErrorButton.hidden = !state.ocrError;
         ocrErrorButton.title = state.labels?.ocrError || '';
         placeInlineOcrWarning(state);
+        drawTranslation(state);
 
         source.replaceChildren();
         const text = state.source?.text || '';
@@ -135,6 +152,10 @@ const Popup = (() => {
         ]);
     }
 
+    function termsKey(state) {
+        return JSON.stringify([state?.message, (state?.results || []).map(r => [r.term.expression, r.term.reading])]);
+    }
+
     function drawResults(state) {
         drawnKey = resultsKey(state);
         hideInfo();
@@ -155,6 +176,7 @@ const Popup = (() => {
         // Layout is known only once the entries are in the document.
         content.querySelectorAll('.definition > .dictionary-name').forEach(placeDictionaryName);
         placeInlineOcrWarning(state);
+        drawTranslation(state);
     }
 
     function tagNote(chip) {
@@ -202,6 +224,106 @@ const Popup = (() => {
         button.classList.add('ocr-warning');
         button.addEventListener('click', showOcrError);
         actions.prepend(button);
+        orderInlineButtons(actions);
+    }
+
+    /** 文A, then ⚠, then ✕ at the start of the first entry's buttons, whichever came first. */
+    function orderInlineButtons(actions) {
+        const first = [actions.querySelector(':scope > .action-translate'), actions.querySelector(':scope > .ocr-warning')];
+        actions.prepend(...first.filter(Boolean));
+    }
+
+    // endregion
+
+    // region Translation
+
+    /** 文A on the first view while it has something to translate. */
+    function translatable(state) {
+        return translationEnabled && history.length === 0 && Boolean(state) && !state.message;
+    }
+
+    function drawTranslation(state) {
+        const shown = translatable(state);
+        const pressed = String(shown && translation !== null);
+        const label = state?.labels?.translate || 'Translate';
+        translateButton.hidden = !shown || compact(state);
+        translateButton.setAttribute('aria-pressed', pressed);
+        translateButton.setAttribute('aria-label', label);
+        translateButton.title = label;
+        placeInlineTranslate(state, shown, pressed, label);
+        translationBox.hidden = !shown || translation === null;
+        if (translationBox.hidden) {
+            translationBox.replaceChildren();
+            return;
+        }
+        translationBox.dataset.state = translation.state;
+        if (translation.state === 'loading') {
+            const loading = element('div', 'translation-loading');
+            loading.append(element('div', 'spinner'), element('span', null, state.labels?.translating || ''));
+            translationBox.replaceChildren(loading);
+            return;
+        }
+        if (translation.state === 'error') {
+            translationBox.replaceChildren(element('div', 'translation-error', translation.error));
+            return;
+        }
+        const tools = element('span', 'translation-tools');
+        const copy = iconButton('copy-translation', ICONS.copy, labelOf('copyTranslation'));
+        copy.title = labelOf('copyTranslation');
+        const copied = translation.sentence ? `${translation.sentence}\n${translation.text}` : translation.text;
+        copy.addEventListener('click', () => ScreenlateBridge.onCopy(copied));
+        tools.append(element('span', 'chip translation-service', translation.service), copy);
+        const text = element('div', 'translation-text');
+        text.append(tools, translation.text);
+        translationBox.replaceChildren(text);
+    }
+
+    /** Without the header, 文A goes to the first entry's buttons, before ⚠ and ✕. */
+    function placeInlineTranslate(state, shown, pressed, label) {
+        const actions = content.querySelector('.entry .entry-actions');
+        let inline = content.querySelector('.entry-actions > .action-translate');
+        if (!shown || !compact(state) || !actions) {
+            inline?.remove();
+            return;
+        }
+        if (!inline) {
+            inline = iconButton('translate', ICONS.translate, label);
+            inline.addEventListener('click', toggleTranslation);
+            actions.prepend(inline);
+            orderInlineButtons(actions);
+        }
+        inline.setAttribute('aria-pressed', pressed);
+        inline.title = label;
+    }
+
+    function toggleTranslation() {
+        if (translation !== null) {
+            translation = null;
+        } else {
+            translationRequests += 1;
+            translation = { request: translationRequests, state: 'loading' };
+            ScreenlateBridge.onTranslate(translationRequests);
+        }
+        drawTranslation(current);
+    }
+
+    /** { enabled }: whether 文A shows. */
+    function setTranslation(config) {
+        translationEnabled = Boolean(config?.enabled);
+        if (!translationEnabled) translation = null;
+        if (current) drawTranslation(current);
+    }
+
+    /**
+     * The answer to onTranslate(request): { text, service, sentence } or { error }; an answer to an older request is
+     * dropped. The copy button copies the sentence and the translation on two lines.
+     */
+    function showTranslation(request, result) {
+        if (translation === null || translation.request !== request) return;
+        translation = result?.error
+            ? { request, state: 'error', error: result.error }
+            : { request, state: 'done', text: result?.text || '', service: result?.service || '', sentence: result?.sentence || '' };
+        if (history.length === 0) drawTranslation(current);
     }
 
     function entry(result, index, labels) {
@@ -785,7 +907,11 @@ const Popup = (() => {
         drawResults(state);
     }
 
-    function render(state) {
+    /** { continued }: the popup stayed open, so a new scan result of the same word and sentence keeps the translation. */
+    function render(state, options) {
+        const first = history.length ? history[0].state : current;
+        const same = state.sentence && state.sentence === first?.sentence && termsKey(state) === termsKey(first);
+        if (!options?.continued || !same) translation = null;
         history.length = 0;
         current = state;
         draw(state);
@@ -815,6 +941,8 @@ const Popup = (() => {
             drawHeader(current);
             return;
         }
+        // Another word under the aim has another sentence; refined text around the same word keeps the translation.
+        if (termsKey(state) !== termsKey(current)) translation = null;
         current = state;
         drawHeader(state);
         if (resultsKey(state) !== drawnKey) drawResults(state);
@@ -1059,6 +1187,8 @@ const Popup = (() => {
         setActions,
         setNoteStates,
         setNoteConfig,
+        setTranslation,
+        showTranslation,
         allNoteData,
         terms,
         showAudioMenu,

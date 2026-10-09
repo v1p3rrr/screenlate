@@ -18,6 +18,7 @@ import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.MainScope
@@ -55,6 +56,8 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     @Inject lateinit var pageAppearance: PageAppearance
 
+    @Inject lateinit var sentenceTranslation: SentenceTranslation
+
     private val scope = MainScope()
     private var controller: OverlayController? = null
     private var languageResources: AppLanguageResources? = null
@@ -83,6 +86,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             lookup = dictionaryLookup,
             pageAppearance = pageAppearance,
             anki = OverlayController.AnkiServices(ankiDroid, ankiNotes, audioFinder, audioSettings, audioPlayer),
+            translation = sentenceTranslation,
             scope = scope,
         ).also { it.start() }
     }

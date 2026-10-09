@@ -742,3 +742,29 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   collection; the Screenlate Test note type and deck had to be chosen again there), ✕ then a nudge, the Bubble page
   in Spanish with four segments.
 - Open for the owner: D1 (fullscreen edge at the top and bottom).
+
+### 2026-10-09 (sentence translation)
+
+- Request 46 is built: module `core:translate` (Bing, Google, Edge in the user's order, the next one after a failure
+  or 3 s, shared requests and a 10-minute cache; errors by kind, a separate one for certificate or TLS failures), the
+  translate button in the popup header (or the first entry's buttons) with a block under the header and the service
+  chip, a "Translation" settings page after Popup (both switches, the services with drag reorder, the target language
+  with search and favorites, a test of every enabled service), the switches repeated in Popup elements and the Anki
+  settings, `{sentence-translation}` for notes (the popup's translation, or a new one waited for up to 5 s), reset and
+  backup sections, 14 locales, docs.
+- Requests 52 and 53 (owner, the same day): a copy button at the right of the translation block (sentence and
+  translation on two lines), and the Material "translate" SVG instead of 文A as text, the size of the other header
+  icons.
+- Owner answers: Senren's SentenceTranslation (sentenceEng in older versions) gets `{sentence-translation}` in the
+  suggested templates; the test waits 15 s; the button stays hidden on messages and link views; the language notes
+  stay in the settings.
+- Fixed on the way: a scan result arriving after the translate tap re-rendered the popup and dropped the translation
+  (now kept while the popup stays open with the same word and sentence); the language dialog keeps its height and
+  scrolls to the top when the search changes.
+- Checked on the emulator: the settings page, the test (Google answers; Bing and Edge fail on the emulator's lagging
+  clock with the new certificate message), the language dialog with search and a favorite, drag reorder, the
+  Popup elements and Anki switches, the popup button, block, copy (pasted into search) and the late cloud result,
+  a note with the translation in the local Screenlate Test deck. The emulator's Meaning template is back to
+  `{glossary}`, its header switch back on.
+- Open for the owner: D1 (fullscreen edge at the top and bottom). A code review of this work follows on the owner's
+  command; no release.

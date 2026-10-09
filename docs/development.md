@@ -33,6 +33,7 @@ Debug builds install as `com.vpr.screenlate.debug` and can live next to a releas
 | `core:common` | Shared models and settings, per-language behavior |
 | `core:ocr` | Cloud and on-device OCR, hit testing |
 | `core:anki` | AnkiDroid integration, note templates, audio sources |
+| `core:translate` | Sentence translation through free online services |
 | `dictionary:api` | Dictionary engine interface, dictionary registry |
 | `dictionary:engine-hoshidicts` | Engine based on hoshidicts (GPL-3.0) |
 | `dictionary:render-yomitan` | Yomitan-style entry renderer (GPL-3.0) |

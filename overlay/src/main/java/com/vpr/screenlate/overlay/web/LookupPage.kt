@@ -64,6 +64,9 @@ class LookupPage(
 
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
+
+        /** 文A asks to translate the shown word's sentence; the answer goes to [showTranslation] with [request]. */
+        fun onTranslate(request: Int) {}
     }
 
     /** The note and audio buttons of entries; entries are identified by their [index] in the current view. */
@@ -149,8 +152,13 @@ class LookupPage(
         container.addView(this, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
 
-    /** Shows [state] (JSON from [PageState]), replacing the current view and its back stack. */
-    fun render(state: String) = run("Popup.render($state)", replacesView = true)
+    /**
+     * Shows [state] (JSON from [PageState]), replacing the current view and its back stack.
+     *
+     * @param continued the popup stayed open, so a new scan result of the same word and sentence keeps the translation.
+     */
+    fun render(state: String, continued: Boolean = false) =
+        run("Popup.render($state, {continued: $continued})", replacesView = true)
 
     /** Re-renders the current view in place (theme, OCR status). */
     fun update(state: String) = run("Popup.update($state)")
@@ -176,6 +184,12 @@ class LookupPage(
         "actions",
         "Popup.setActions({anki: $anki, audio: $audio, ankiProblem: ${ankiProblem?.let { JsonPrimitive(it) } ?: "null"}})",
     )
+
+    /** Shows or hides 文A, the sentence translation button. */
+    fun setTranslation(enabled: Boolean) = setPersistent("translation", "Popup.setTranslation({enabled: $enabled})")
+
+    /** The answer to [Callbacks.onTranslate]: `{text, service, sentence}` or `{error}`. */
+    fun showTranslation(request: Int, result: JsonElement) = run("Popup.showTranslation($request, $result)")
 
     /** Markers used by the note fields and frequency dictionary modes (see `Popup.setNoteConfig`). */
     fun setNoteConfig(config: JsonElement) = setPersistent("noteConfig", "Popup.setNoteConfig($config)")
@@ -351,6 +365,9 @@ class LookupPage(
 
         @JavascriptInterface
         fun onKanji(character: String) = post { callbacks.onKanji(character) }
+
+        @JavascriptInterface
+        fun onTranslate(request: Int) = post { callbacks.onTranslate(request) }
 
         @JavascriptInterface
         fun onCopy(text: String) = post { callbacks.onCopy(text) }

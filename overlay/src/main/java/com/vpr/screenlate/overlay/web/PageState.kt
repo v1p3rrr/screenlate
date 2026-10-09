@@ -40,6 +40,7 @@ object PageState {
         ocrError: String = "",
         noteWait: Boolean = false,
         kanji: KanjiResult? = null,
+        sentence: String = "",
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
@@ -53,6 +54,7 @@ object PageState {
             kanji = kanji,
             message = message.takeIf { kanji == null },
             labels = if (kanji != null) labels(context) + kanjiLabels(context) else labels(context),
+            sentence = sentence,
         ),
     )
 
@@ -64,6 +66,7 @@ object PageState {
         "playAudio" to context.getString(R.string.overlay_play_audio),
         "copy" to context.getString(R.string.overlay_copy),
         "copyDefinition" to context.getString(R.string.overlay_copy_definition),
+        "copyTranslation" to context.getString(R.string.overlay_copy_translation),
         "openNote" to context.getString(R.string.overlay_open_note),
         "openApp" to context.getString(R.string.overlay_open_app),
         "addAnyway" to context.getString(R.string.overlay_add_anyway),
@@ -73,6 +76,8 @@ object PageState {
         "close" to context.getString(R.string.overlay_close),
         "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
         "ocrError" to context.getString(R.string.overlay_ocr_error_title),
+        "translate" to context.getString(R.string.overlay_translate),
+        "translating" to context.getString(R.string.overlay_translating),
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
@@ -125,6 +130,8 @@ object PageState {
         val kanji: KanjiResult? = null,
         val message: String? = null,
         val labels: Map<String, String> = emptyMap(),
+        /** The sentence around the word; a new scan result with the same word and sentence keeps the translation. */
+        val sentence: String = "",
     )
 
     @Serializable

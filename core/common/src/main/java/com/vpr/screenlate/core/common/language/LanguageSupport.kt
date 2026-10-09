@@ -45,6 +45,9 @@ interface LanguageSupport {
     /** Sample text for font previews, with characters whose forms differ between fonts or regions. */
     val fontSample: String
 
+    /** A short sentence for the translation services' test. */
+    val translationSample: String
+
     /**
      * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on), and which
      * matches count; null when there is nothing to look up.

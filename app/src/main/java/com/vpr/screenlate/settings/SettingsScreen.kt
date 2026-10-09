@@ -32,7 +32,9 @@ import com.vpr.screenlate.home.HomeViewModel
 import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
-enum class SettingsPage { BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, APPEARANCE, BACKGROUND, YOMITAN_IMPORT, BACKUP, ABOUT }
+enum class SettingsPage {
+    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND, YOMITAN_IMPORT, BACKUP, ABOUT,
+}
 
 /**
  * One list of every settings section; each opens its own screen. Leaving the list while Background work is badged
@@ -84,6 +86,9 @@ fun SettingsScreen(
             ) { onOpen(SettingsPage.ANKI) }
             SettingsEntry(R.drawable.ic_web_asset, stringResource(R.string.popup_settings_title), stringResource(R.string.settings_popup_summary)) {
                 onOpen(SettingsPage.POPUP)
+            }
+            SettingsEntry(R.drawable.ic_translate, stringResource(R.string.translation_title), stringResource(R.string.settings_translation_summary)) {
+                onOpen(SettingsPage.TRANSLATION)
             }
             SettingsEntry(R.drawable.ic_palette, stringResource(R.string.appearance_title), stringResource(R.string.settings_appearance_summary)) {
                 onOpen(SettingsPage.APPEARANCE)

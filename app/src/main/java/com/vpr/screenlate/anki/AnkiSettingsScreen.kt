@@ -146,6 +146,15 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
         }
     }
     SectionCard(title = stringResource(R.string.anki_note)) {
+        val translation by viewModel.translationInNotes.collectAsStateWithLifecycle()
+        translation?.let { on ->
+            SwitchRow(
+                label = stringResource(R.string.translation_anki),
+                checked = on,
+                onChange = viewModel::setTranslationInNotes,
+                hint = stringResource(R.string.translation_anki_hint),
+            )
+        }
         Picker(
             label = stringResource(R.string.anki_deck),
             value = settings.deckName,

@@ -48,6 +48,7 @@
     <string name="overlay_engine_app_text">Texte de l’appli</string>
     <string name="overlay_copy">Copier</string>
     <string name="overlay_copy_definition">Copier la définition</string>
+    <string name="overlay_copy_translation">Copier la phrase et la traduction</string>
     <string name="overlay_open_note">Ouvrir dans AnkiDroid (maintenir pour ajouter quand même)</string>
     <string name="overlay_add_anyway">Ajouter quand même</string>
     <string name="overlay_add_anyway_picture">Ajouter quand même, avec une image</string>
@@ -63,4 +64,23 @@
     <string name="overlay_keep_alive_channel">Service actif</string>
     <string name="overlay_keep_alive_title">Screenlate est prêt</string>
     <string name="overlay_keep_alive_text">La bulle reste disponible en arrière-plan</string>
+    <string name="overlay_translate">Traduire la phrase</string>
+    <string name="overlay_translating">Traduction…</string>
+    <string name="translation_failed">Impossible de traduire la phrase.</string>
+    <string name="translation_failed_other">La traduction a échoué.</string>
+    <string name="translation_none_enabled">Aucun service de traduction n’est activé. Ils se trouvent dans Traduction, dans les paramètres de Screenlate.</string>
+    <string name="translation_no_sentence">Il n’y a pas de phrase à traduire.</string>
+    <string name="translation_service_error">%1$s : %2$s</string>
+    <string name="translation_error_offline">Pas de connexion réseau.</string>
+    <string name="translation_error_timeout">Pas de réponse à temps.</string>
+    <string name="translation_error_secure">Échec de la connexion sécurisée (certificat ou TLS).</string>
+    <string name="translation_error_network">Impossible de joindre le serveur.</string>
+    <string name="translation_error_http">Le serveur a répondu par l’erreur %1$d.</string>
+    <string name="translation_error_limited">Trop de requêtes ; réessayez plus tard.</string>
+    <string name="translation_error_captcha">Demande de résoudre un captcha ; réessayez plus tard.</string>
+    <string name="translation_error_rejected">La requête a été refusée.</string>
+    <string name="translation_error_language">Cette langue n’est pas prise en charge.</string>
+    <string name="translation_error_too_long">Le texte est trop long.</string>
+    <string name="translation_error_bad_answer">La réponse n’a pas pu être lue.</string>
+    <string name="translation_error_other">Une erreur s’est produite.</string>
 </resources>

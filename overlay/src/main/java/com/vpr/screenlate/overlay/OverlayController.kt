@@ -77,6 +77,7 @@ import com.vpr.screenlate.overlay.ui.DockPlacement
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
 import com.vpr.screenlate.overlay.web.LookupPage
+import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.web.noResultsText
@@ -96,11 +97,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -115,6 +120,7 @@ class OverlayController(
     private val lookup: DictionaryLookup,
     private val pageAppearance: PageAppearance,
     private val anki: AnkiServices,
+    private val translation: SentenceTranslation,
     private val scope: CoroutineScope,
 ) {
     /** Anki and audio dependencies, grouped to keep the constructor short. */
@@ -177,6 +183,7 @@ class OverlayController(
         lookup = lookup,
         language = language,
         noteSource = ::noteSource,
+        translation = translation,
         cropEditor = CropEditor(service, windowManager),
         onAnkiOpened = { dock() },
         onNoteAdded = {
@@ -247,6 +254,9 @@ class OverlayController(
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
+        scope.launch {
+            translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
+        }
         scope.launch {
             appSettings.themeMode.collect {
                 themeMode = it
@@ -1206,17 +1216,8 @@ class OverlayController(
      * screenshot on request. ➕ waits for the scan's final text ([noteWaitsForText]).
      */
     private fun noteSource(): NoteSource {
-        // The shown word's position belongs to the layout it was found in, which a later OCR result may have replaced.
-        val shown = shownLookup?.takeIf { it.layout != null }
-        val layout = if (shown != null) shown.layout else layout
-        val position = if (shown != null) shown.start else hit
-        val sentence = if (layout != null && position != null) {
-            val (paragraph, index) = layout.paragraphText(position)
-            val length = layout.textFrom(position, shown?.matched?.coerceAtLeast(1) ?: 1).length
-            Sentence.extract(paragraph, index, length, language)
-        } else {
-            null
-        }
+        val (layout, position) = shownPosition()
+        val sentence = shownSentence()
         val scan = scanId
         val documentTitle = foregroundPackage?.let(::appLabel).orEmpty()
         return NoteSource { withScreenshot ->
@@ -1224,6 +1225,36 @@ class OverlayController(
             val focus = if (layout != null && position != null && shot != null) cropFocus(layout, position, shot.screen) else null
             NoteContext(sentence, shot, focus, documentTitle)
         }
+    }
+
+    /**
+     * Where the shown word is: its layout and position. The word's position belongs to the layout it was found in,
+     * which a later OCR result may have replaced.
+     */
+    private fun shownPosition(): Pair<TextLayout?, TextPosition?> {
+        val shown = shownLookup?.takeIf { it.layout != null }
+        return if (shown != null) shown.layout to shown.start else layout to hit
+    }
+
+    /** The sentence around the shown word, which `{sentence}` and 文A take. */
+    private fun shownSentence(): Sentence? {
+        shownLookup?.let { sentenceOf(it) }?.let { return it }
+        val (layout, position) = shownPosition()
+        if (layout == null || position == null) return null
+        return sentenceAt(layout, position, 1)
+    }
+
+    /** The sentence around [view]'s word; null for a view of no word on screen (a message, a dictionary link). */
+    private fun sentenceOf(view: LookupView): Sentence? {
+        val layout = view.layout ?: return null
+        val position = view.start ?: return null
+        return sentenceAt(layout, position, view.matched.coerceAtLeast(1))
+    }
+
+    private fun sentenceAt(layout: TextLayout, position: TextPosition, matched: Int): Sentence {
+        val (paragraph, index) = layout.paragraphText(position)
+        val length = layout.textFrom(position, matched).length
+        return Sentence.extract(paragraph, index, length, language)
     }
 
     /**
@@ -1300,7 +1331,7 @@ class OverlayController(
         return withContext(Dispatchers.Default) {
             PageState.build(
                 service, theme, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError,
-                noteWait, view.kanji,
+                noteWait, view.kanji, sentenceOf(view)?.text.orEmpty(),
             )
         }
     }
@@ -1350,6 +1381,7 @@ class OverlayController(
             ocrError = ocrErrorText(),
             noteWait = noteWaitsForText(pending, aimedEngine()),
             kanji = view.kanji,
+            sentence = sentenceOf(view)?.text.orEmpty(),
         )
     }
 
@@ -1431,6 +1463,21 @@ class OverlayController(
 
         override fun media(dictionary: String, path: String): ByteArray? =
             runBlocking { lookup.media(dictionary, path) }
+
+        override fun onTranslate(request: Int) {
+            val sentence = shownSentence()?.text
+            scope.launch {
+                val result = try {
+                    translation.forPopup(service, sentence, language)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Translation failed", e.redacted())
+                    buildJsonObject { put("error", service.getString(R.string.translation_failed_other)) }
+                }
+                popup.page.showTranslation(request, result)
+            }
+        }
     }
 
     private companion object {

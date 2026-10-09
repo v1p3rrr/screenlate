@@ -73,8 +73,9 @@ class PopupController(
         params.height = placed.height.roundToInt()
         windowManager.updateViewLayout(page.container, params)
         page.container.visibility = View.VISIBLE
+        val continued = visible
         visible = true
-        page.render(state)
+        page.render(state, continued)
     }
 
     /** Re-renders the current view in place, if the popup is showing. */

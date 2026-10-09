@@ -56,11 +56,17 @@ object FieldTemplate {
         "url-plain",
     )
 
+    /** The sentence's machine translation, when one came; Yomitan has no such marker. */
+    const val SENTENCE_TRANSLATION = "sentence-translation"
+
+    /** Markers of this app beyond Yomitan's. */
+    val APP_MARKERS = listOf(SENTENCE_TRANSLATION)
+
     /** Markers that exist only for some languages (Yomitan offers pitch accents for Japanese only). */
     private val LANGUAGE_MARKERS = Language.entries.flatMap { it.support.ankiMarkers }.distinct()
 
-    /** The standard markers plus those of [language]. */
-    fun markersFor(language: Language): List<String> = MARKERS + language.support.ankiMarkers
+    /** The standard markers, this app's, and those of [language]. */
+    fun markersFor(language: Language): List<String> = MARKERS + APP_MARKERS + language.support.ankiMarkers
 
     const val SINGLE_GLOSSARY_PREFIX = "single-glossary-"
     const val SINGLE_FREQUENCY_NUMBER_PREFIX = "single-frequency-number-"
@@ -77,6 +83,7 @@ object FieldTemplate {
     /** Whether [marker] is one this app fills (possibly with an empty value), as opposed to a typo. */
     fun isKnown(marker: String): Boolean =
         marker in MARKERS ||
+            marker in APP_MARKERS ||
             marker in LANGUAGE_MARKERS ||
             marker.startsWith(SINGLE_GLOSSARY_PREFIX) ||
             marker.startsWith(SINGLE_FREQUENCY_PREFIX) ||
@@ -114,7 +121,7 @@ object FieldTemplate {
     fun guessField(fieldName: String, index: Int): String {
         if (index == 0) return "{expression}"
         val name = fieldName.normalizedFieldName()
-        for (marker in MARKERS + LANGUAGE_MARKERS) {
+        for (marker in MARKERS + APP_MARKERS + LANGUAGE_MARKERS) {
             val names = listOf(marker) + ALIASES[marker].orEmpty()
             if (names.any { it.normalizedFieldName() == name }) return "{$marker}"
         }

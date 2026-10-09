@@ -48,6 +48,7 @@
     <string name="overlay_engine_app_text">Texto de la app</string>
     <string name="overlay_copy">Copiar</string>
     <string name="overlay_copy_definition">Copiar definición</string>
+    <string name="overlay_copy_translation">Copiar oración y traducción</string>
     <string name="overlay_open_note">Abrir en AnkiDroid (mantén pulsado para añadir igualmente)</string>
     <string name="overlay_add_anyway">Añadir igualmente</string>
     <string name="overlay_add_anyway_picture">Añadir igualmente, con una imagen</string>
@@ -63,4 +64,23 @@
     <string name="overlay_keep_alive_channel">Servicio en ejecución</string>
     <string name="overlay_keep_alive_title">Screenlate está listo</string>
     <string name="overlay_keep_alive_text">La burbuja sigue disponible en segundo plano</string>
+    <string name="overlay_translate">Traducir la frase</string>
+    <string name="overlay_translating">Traduciendo…</string>
+    <string name="translation_failed">No se pudo traducir la frase.</string>
+    <string name="translation_failed_other">La traducción falló.</string>
+    <string name="translation_none_enabled">No hay ningún servicio de traducción activado. Están en Traducción, en los ajustes de Screenlate.</string>
+    <string name="translation_no_sentence">No hay ninguna frase que traducir.</string>
+    <string name="translation_service_error">%1$s: %2$s</string>
+    <string name="translation_error_offline">No hay conexión de red.</string>
+    <string name="translation_error_timeout">No respondió a tiempo.</string>
+    <string name="translation_error_secure">Falló la conexión segura (certificado o TLS).</string>
+    <string name="translation_error_network">No se pudo conectar con el servidor.</string>
+    <string name="translation_error_http">El servidor respondió con el error %1$d.</string>
+    <string name="translation_error_limited">Demasiadas solicitudes; inténtalo más tarde.</string>
+    <string name="translation_error_captcha">Pide resolver un captcha; inténtalo más tarde.</string>
+    <string name="translation_error_rejected">La solicitud fue rechazada.</string>
+    <string name="translation_error_language">Este idioma no es compatible.</string>
+    <string name="translation_error_too_long">El texto es demasiado largo.</string>
+    <string name="translation_error_bad_answer">No se pudo leer la respuesta.</string>
+    <string name="translation_error_other">Algo salió mal.</string>
 </resources>

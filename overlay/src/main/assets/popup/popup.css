@@ -247,6 +247,54 @@ a {
     font-weight: var(--bold-weight);
 }
 
+/* Sentence translation: 文A and the block under the header */
+
+.icon-button[aria-pressed="true"] {
+    background: var(--chip-bg);
+    color: var(--accent);
+}
+
+.translation {
+    flex: none;
+    max-height: 35%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--divider);
+    line-height: 1.45;
+}
+
+.translation[hidden] {
+    display: none;
+}
+
+/* The service chip and the copy button, at the right of the first line. */
+.translation-tools {
+    float: right;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 -6px 0 8px;
+}
+
+.translation-tools .icon-button {
+    width: 32px;
+    height: 28px;
+}
+
+.translation-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+}
+
+.translation-error {
+    color: var(--muted);
+    white-space: pre-line;
+    font-size: 0.9em;
+}
+
 /* Content */
 
 .content {

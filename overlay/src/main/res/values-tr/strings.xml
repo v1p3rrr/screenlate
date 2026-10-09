@@ -48,6 +48,7 @@
     <string name="overlay_engine_app_text">Uygulama metni</string>
     <string name="overlay_copy">Kopyala</string>
     <string name="overlay_copy_definition">Tanımı kopyala</string>
+    <string name="overlay_copy_translation">Cümleyi ve çeviriyi kopyala</string>
     <string name="overlay_open_note">AnkiDroid’de aç (yine de eklemek için basılı tutun)</string>
     <string name="overlay_add_anyway">Yine de ekle</string>
     <string name="overlay_add_anyway_picture">Yine de ekle, görselle</string>
@@ -63,4 +64,23 @@
     <string name="overlay_keep_alive_channel">Hizmet çalışıyor</string>
     <string name="overlay_keep_alive_title">Screenlate hazır</string>
     <string name="overlay_keep_alive_text">Baloncuk arka planda kullanılabilir kalır</string>
+    <string name="overlay_translate">Cümleyi çevir</string>
+    <string name="overlay_translating">Çevriliyor…</string>
+    <string name="translation_failed">Cümle çevrilemedi.</string>
+    <string name="translation_failed_other">Çeviri başarısız oldu.</string>
+    <string name="translation_none_enabled">Hiçbir çeviri hizmeti açık değil. Hizmetler, Screenlate ayarlarındaki Çeviri bölümündedir.</string>
+    <string name="translation_no_sentence">Çevrilecek cümle yok.</string>
+    <string name="translation_service_error">%1$s: %2$s</string>
+    <string name="translation_error_offline">Ağ bağlantısı yok.</string>
+    <string name="translation_error_timeout">Zamanında yanıt vermedi.</string>
+    <string name="translation_error_secure">Güvenli bağlantı başarısız (sertifika veya TLS).</string>
+    <string name="translation_error_network">Sunucuya ulaşılamadı.</string>
+    <string name="translation_error_http">Sunucu %1$d hatasıyla yanıt verdi.</string>
+    <string name="translation_error_limited">Çok fazla istek; daha sonra yeniden deneyin.</string>
+    <string name="translation_error_captcha">Captcha çözülmesini istiyor; daha sonra yeniden deneyin.</string>
+    <string name="translation_error_rejected">İstek reddedildi.</string>
+    <string name="translation_error_language">Bu dil desteklenmiyor.</string>
+    <string name="translation_error_too_long">Metin çok uzun.</string>
+    <string name="translation_error_bad_answer">Yanıt okunamadı.</string>
+    <string name="translation_error_other">Bir şeyler ters gitti.</string>
 </resources>

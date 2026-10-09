@@ -48,7 +48,8 @@ Material Icons (https://github.com/google/material-design-icons), Apache License
 Copyright (c) Google LLC.
   Vector icon paths in app/src/main/res/drawable/ic_*.xml (except the launcher icon,
   ic_launcher_*.xml) and the bug glyph on the debug build's launcher icon
-  (app/src/debug/res/drawable/ic_launcher_*.xml).
+  (app/src/debug/res/drawable/ic_launcher_*.xml), and the "translate" icon of the popup page
+  (overlay/src/main/assets/popup/popup.js).
 
 Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
 licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries

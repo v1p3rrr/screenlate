@@ -19,18 +19,22 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
+import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
+import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.web.LookupPage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -86,6 +90,7 @@ fun interface NoteSource {
  * adding it again.
  *
  * @param noteSource called when ➕ is pressed; describes where the shown word came from.
+ * @param translation fills `{sentence-translation}`.
  * @param onAnkiOpened called after a note was opened in AnkiDroid, e.g. to dock the bubble.
  * @param onNoteAdded called after ➕ added or updated a note for the word the popup still shows.
  * @param onOpenAnkiSettings shows Screenlate's Anki settings, where a broken setup is explained.
@@ -102,6 +107,7 @@ class PopupNotes(
     private val lookup: DictionaryLookup,
     private val language: Language,
     private val noteSource: () -> NoteSource,
+    private val translation: SentenceTranslation,
     private val cropEditor: CropEditor?,
     private val onAnkiOpened: () -> Unit,
     private val onNoteAdded: () -> Unit,
@@ -276,6 +282,7 @@ class PopupNotes(
             var term: Pair<String, String>? = null
             var opens: List<Long>? = null
             var screenshot: File? = null
+            var translated: Deferred<String?>? = null
             val state = try {
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
@@ -283,6 +290,11 @@ class PopupNotes(
                 val used = notes.usedMarkers()
                 val context = source.context(withScreenshot && "screenshot" in used)
                 shared = context.screenshot
+                // Asked now, so it comes while the crop editor is open.
+                val sentence = context.sentence?.text
+                if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
+                    translated = async { translation.forNote(sentence, language) }
+                }
                 // The editor opens first, while the scan it shows is still on the screen.
                 val shot = context.screenshot
                 if (shot != null && cropEditor != null) {
@@ -310,12 +322,17 @@ class PopupNotes(
                     }
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
+                translated?.await()?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used)
                 screenshot = picture?.let { saveScreenshot(it) }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
                 // The kind of result only: messages and fields may carry the note's text.
-                Log.i(TAG, "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, forced $force")
+                Log.i(
+                    TAG,
+                    "Note: ${result.javaClass.simpleName}, picture ${screenshot != null}, audio ${clip != null}, " +
+                        "translation ${FieldTemplate.SENTENCE_TRANSLATION in values}, forced $force",
+                )
                 val (resultState, ids) = report(scan, noteTerm, result)
                 opens = ids
                 resultState
@@ -326,6 +343,8 @@ class PopupNotes(
                 toast(context.getString(R.string.anki_error, e.message ?: e.javaClass.simpleName))
                 "error"
             } finally {
+                // A cancelled note does not wait for its translation.
+                translated?.cancel()
                 shared?.release()
                 picture?.recycle()
                 screenshot?.delete()

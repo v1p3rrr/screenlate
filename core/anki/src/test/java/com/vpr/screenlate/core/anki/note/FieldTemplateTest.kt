@@ -69,9 +69,17 @@ class FieldTemplateTest {
         assertThat(templates["frequency"]).isEqualTo("{frequencies}")
         assertThat(templates["freqSort"]).isEqualTo("{frequency-harmonic-rank}")
         assertThat(templates["picture"]).isEqualTo("{screenshot}")
-        for (flag in listOf("sentenceCard", "audioCard", "sentenceEng", "definition", "wordFuriganaUnused")) {
+        assertThat(templates["sentenceEng"]).isEqualTo("{sentence-translation}")
+        for (flag in listOf("sentenceCard", "audioCard", "definition", "wordFuriganaUnused")) {
             assertThat(templates[flag]).isEmpty()
         }
+    }
+
+    @Test
+    fun senrenSentenceTranslationGetsTheTranslation() {
+        val templates = FieldTemplate.guess("Senren", listOf("Word", "Sentence", "SentenceTranslation"))
+
+        assertThat(templates["SentenceTranslation"]).isEqualTo("{sentence-translation}")
     }
 
     @Test

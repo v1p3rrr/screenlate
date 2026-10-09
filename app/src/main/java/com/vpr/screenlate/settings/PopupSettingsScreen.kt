@@ -24,13 +24,14 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
 /**
- * The lookup page (popup and search): popup elements (the recognized text, definition copying), auto-hide, its font,
- * text size and weight, and custom CSS.
+ * The lookup page (popup and search): popup elements (the recognized text, 文A, definition copying), auto-hide, its
+ * font, text size and weight, and custom CSS.
  */
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
     val overlay by viewModel.overlay.collectAsStateWithLifecycle()
+    val translation by viewModel.translation.collectAsStateWithLifecycle()
     SettingsScaffold(
         stringResource(R.string.popup_settings_title),
         onBack,
@@ -47,7 +48,7 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
             val current = appearance
             val stored = overlay
             if (current != null && stored != null) {
-                PopupContentCard(current, stored.showSourceText, viewModel)
+                PopupContentCard(current, stored.showSourceText, translation?.button, viewModel)
                 AutoHideCard(stored, viewModel)
             }
             PopupTextSections(viewModel)
@@ -75,7 +76,12 @@ private fun AutoHideCard(settings: OverlaySettings, viewModel: PopupAppearanceVi
 }
 
 @Composable
-private fun PopupContentCard(appearance: PopupAppearance, showSourceText: Boolean, viewModel: PopupAppearanceViewModel) {
+private fun PopupContentCard(
+    appearance: PopupAppearance,
+    showSourceText: Boolean,
+    translateButton: Boolean?,
+    viewModel: PopupAppearanceViewModel,
+) {
     SectionCard(title = stringResource(R.string.popup_content_title)) {
         SwitchRow(
             label = stringResource(R.string.popup_show_source),
@@ -83,6 +89,14 @@ private fun PopupContentCard(appearance: PopupAppearance, showSourceText: Boolea
             onChange = viewModel::setShowSourceText,
             hint = stringResource(R.string.popup_show_source_hint),
         )
+        if (translateButton != null) {
+            SwitchRow(
+                label = stringResource(R.string.translation_button),
+                checked = translateButton,
+                onChange = viewModel::setTranslateButton,
+                hint = stringResource(R.string.translation_button_hint),
+            )
+        }
         SwitchRow(
             label = stringResource(R.string.popup_copy_switch),
             checked = appearance.copyDefinitions,

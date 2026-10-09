@@ -16,6 +16,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.settings.SettingsReset
 import com.vpr.screenlate.settings.SettingsSection
@@ -56,8 +57,13 @@ class AnkiSettingsViewModel @Inject constructor(
     private val settingsRepository: AnkiSettingsRepository,
     private val settingsReset: SettingsReset,
     private val cache: AnkiConnectionCache,
+    private val translationSettings: TranslationSettingsRepository,
     dictionaries: DictionaryRepository,
 ) : ViewModel() {
+    /** Whether notes get `{sentence-translation}`; the Translation page has this switch too. */
+    val translationInNotes: StateFlow<Boolean?> = translationSettings.settings.map { it.ankiField }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, translationSettings.cachedSettings?.ankiField)
+
     // Opens with AnkiDroid's last answer, or the first time with the saved setup laid out as if AnkiDroid answered;
     // either way the screen keeps its layout when the answer comes.
     private val connection = MutableStateFlow(
@@ -133,6 +139,10 @@ class AnkiSettingsViewModel @Inject constructor(
             withContext(NonCancellable) { settingsReset.reset(SettingsSection.ANKI) }
             refresh()
         }
+    }
+
+    fun setTranslationInNotes(enabled: Boolean) {
+        viewModelScope.launch { translationSettings.setAnkiField(enabled) }
     }
 
     fun selectDeck(deck: AnkiDeck) {

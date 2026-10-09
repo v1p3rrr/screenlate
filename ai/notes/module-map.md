@@ -5,9 +5,9 @@ Owner request (2026-09-29): split the system into functional modules, map how ea
 ## Gradle modules and dependencies
 
 ```
-app ──► overlay, core:common, core:ocr, core:anki, dictionary:api, dictionary:engine-hoshidicts, dictionary:render-yomitan
-overlay ──► core:common, core:ocr, core:anki, dictionary:api
-core:ocr, core:anki, dictionary:api ──api──► core:common
+app ──► overlay, core:common, core:ocr, core:anki, core:translate, dictionary:api, dictionary:engine-hoshidicts, dictionary:render-yomitan
+overlay ──► core:common, core:ocr, core:anki, core:translate, dictionary:api
+core:ocr, core:anki, core:translate, dictionary:api ──api──► core:common
 dictionary:engine-hoshidicts ──► dictionary:api          (GPL-3.0, JNI + hoshidicts submodule)
 dictionary:render-yomitan (assets only: render.js, anki.js, render.css; GPL-3.0) — loaded by overlay's popup.html
 build-logic (convention plugins) — used by every module
@@ -15,12 +15,12 @@ build-logic (convention plugins) — used by every module
 
 Non-Gradle integration channels (easy to miss in a review):
 - **WebView bridge**: `overlay/web/LookupPage.kt` (`ScreenlateBridge`, `@JavascriptInterface`) ⇄ `overlay/assets/popup/{popup.js,note.js,popup.html,popup.css}` ⇄ `render-yomitan/assets/yomitan-render/{render.js,anki.js,render.css}` (via `../yomitan-render/` in popup.html). JSON contracts: `PageState`, glossary JSON from the engine, note actions.
-- **DataStore repositories shared across modules**: `AppSettingsRepository` (core:common), `OverlaySettingsRepository` / `PopupAppearanceRepository` (overlay), `AnkiSettings` / `AudioSettings` (core:anki), `LookupSettings` (dictionary:api). Written by app screens, backup, Yomitan import; read by the overlay service.
+- **DataStore repositories shared across modules**: `AppSettingsRepository` (core:common), `OverlaySettingsRepository` / `PopupAppearanceRepository` (overlay), `AnkiSettings` / `AudioSettings` (core:anki), `TranslationSettingsRepository` (core:translate), `LookupSettings` (dictionary:api). Written by app screens, backup, Yomitan import; read by the overlay service.
 - **Room registry**: `DictionaryRepository` / `DictionaryDao` (dictionary:api) — used by engine, lookup, app screens, backup, home problems.
 - **WorkManager**: `DictionaryImportWorker` / `DictionaryImports` (imports, downloads, collection conversion), progress read by app (`ImportNotifications`, dictionaries screen, home).
 - **Intents**: `OverlayIntents.EXTRA_OPEN` (overlay → app screens), `OverlayServiceStatus` (app home reads the service state), `ProcessTextActivity` (system text selection → search), `UpdateReceiver` (package installer).
 - **JNI**: `HoshidictsNative` ⇄ `engine-hoshidicts/src/main/cpp/jni_bridge.cpp` ⇄ hoshidicts submodule (UTF-8 byte arrays in, JSON out).
-- **Network**: Lens (core:ocr/lens), audio sources (core:anki/audio, cleartext config, Android 17 local network permission in app/audio), dictionary catalog and downloads, GitHub releases (app/update).
+- **Network**: Lens (core:ocr/lens), audio sources (core:anki/audio, cleartext config, Android 17 local network permission in app/audio), translation services (core:translate: Bing, Google gtx, Edge), dictionary catalog and downloads, GitHub releases (app/update).
 - **Hilt DI**: modules in core:common (`NetworkModule`, `SettingsModule`), dictionary:api (`RegistryModule`), engine (`HoshidictsModule`); the accessibility service field-injects its collaborators.
 
 ## Functional modules (one review run each)
@@ -50,6 +50,8 @@ Each entry lists the code of the unit, then the integration path the review must
 11. **App shell, home, search and localization** — `MainActivity`, `MainViewModel`, `ScreenlateApplication`, `navigation/ScreenlateNavHost`, `home/*`, `settings/{SettingsScreen,ProblemReport}`, `background/*`, `search/{SearchScreen,SearchViewModel,ProcessTextActivity}`, `lookup/*` screens, `debug/*`, `ui/components/*`, all `res/values*` string files (14 locales) and `TranslationsTest`. Integration: navigation to every feature screen, home problem cards from dictionaries/Anki/audio, onboarding and service status from the overlay, search through the lookup page, UI rules (scroll, wrap, ⓘ dialogs).
 
 12. **Backup and Yomitan settings import** — app `backup/{BackupArchive,BackupFormat,BackupManager,BackupScreen,BackupViewModel}`, `yomitan/{YomitanSettings,YomitanSettingsImporter,YomitanImportScreen,YomitanImportViewModel,CollectionImportViewModel}`. Integration: every settings repository (app, overlay, popup appearance, lookup, Anki, audio), dictionary registry and files, fonts, local network permission after imports, format versioning and forward compatibility.
+
+14. **Sentence translation** — `core/translate`: `SentenceTranslator` (cascade, shared requests, cache, settings test), `Translator` and `BingTranslator` / `GoogleTranslator` / `EdgeTranslator`, `TranslationError`, `TranslationLanguages` + generated `TranslationLanguageTable` (`scripts/translation/languages.py`), `TranslationSettings`; `overlay/translate/SentenceTranslation`; app `translate/{TranslationSettingsScreen,TranslationSettingsViewModel,TranslationLanguageDialog}`. Integration: the page's translate button and block (`popup.js` translation region, `LookupPage.showTranslation`, `PageState` sentence and `render(continued)`), `OverlayController.onTranslate`, `PopupNotes` (`{sentence-translation}`, `FieldTemplate.APP_MARKERS`, Senren preset), repeated switches (Popup elements, Anki settings), reset and backup sections, privacy (no sentence or translation in logs). Note: `translation-services.md`.
 
 13. **Updates, About and logs** — app `update/*` (AppUpdates, Releases, UpdateCards, UpdateReceiver, UpdateSettings, UpdateViewModel), `settings/{AboutScreen,AboutViewModel,LicenseScreens}`, `logs/LogExport`. Integration: GitHub releases and release assets (module 1), PackageInstaller and signing, home update card, privacy of logs across all modules (`Redaction`; logs never hold recognized text, looked-up words, note contents or term URLs).
 

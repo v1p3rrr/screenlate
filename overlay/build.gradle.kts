@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:ocr"))
     implementation(project(":dictionary:api"))
     implementation(project(":core:anki"))
+    implementation(project(":core:translate"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.webkit)

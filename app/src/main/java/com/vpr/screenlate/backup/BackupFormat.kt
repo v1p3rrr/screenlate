@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
@@ -39,6 +40,9 @@ enum class BackupSection {
     POPUP,
     ANKI,
     AUDIO,
+
+    /** The translation button, notes, services, language and favorites. */
+    TRANSLATION,
 
     /** Order, switches and languages of the dictionaries, and the one used for sorting. */
     DICTIONARY_LIST,
@@ -105,6 +109,7 @@ object BackupPreferences {
         key.startsWith("popup_") -> BackupSection.POPUP
         key == "anki_settings" -> BackupSection.ANKI
         key.startsWith("audio_") -> BackupSection.AUDIO
+        key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> BackupSection.TRANSLATION
         else -> null
     }
 

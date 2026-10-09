@@ -28,6 +28,7 @@ import com.vpr.screenlate.settings.NoticesScreen
 import com.vpr.screenlate.settings.PopupSettingsScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
+import com.vpr.screenlate.translate.TranslationSettingsScreen
 import com.vpr.screenlate.yomitan.YomitanImportScreen
 import kotlinx.serialization.Serializable
 
@@ -55,6 +56,9 @@ private object LookupRoute
 
 @Serializable
 private object PopupRoute
+
+@Serializable
+private object TranslationRoute
 
 @Serializable
 private object BackgroundRoute
@@ -138,6 +142,7 @@ fun ScreenlateNavHost(
                             SettingsPage.BACKGROUND -> BackgroundRoute
                             SettingsPage.LOOKUP -> LookupRoute
                             SettingsPage.POPUP -> PopupRoute
+                            SettingsPage.TRANSLATION -> TranslationRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
                             SettingsPage.ANKI -> AnkiRoute
                             SettingsPage.APPEARANCE -> AppearanceRoute
@@ -154,6 +159,7 @@ fun ScreenlateNavHost(
         }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
         composable<PopupRoute> { PopupSettingsScreen(onBack = back) }
+        composable<TranslationRoute> { TranslationSettingsScreen(onBack = back) }
         composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
         composable<YomitanImportRoute> {

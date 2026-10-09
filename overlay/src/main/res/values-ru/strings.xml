@@ -49,6 +49,7 @@
     <string name="overlay_engine_app_text">Текст приложения</string>
     <string name="overlay_copy">Копировать</string>
     <string name="overlay_copy_definition">Копировать определение</string>
+    <string name="overlay_copy_translation">Копировать предложение и перевод</string>
     <string name="overlay_open_note">Открыть в AnkiDroid (удерживайте — добавить всё равно)</string>
     <string name="overlay_add_anyway">Добавить всё равно</string>
     <string name="overlay_add_anyway_picture">Добавить всё равно, с картинкой</string>
@@ -64,4 +65,23 @@
     <string name="overlay_keep_alive_channel">Служба работает</string>
     <string name="overlay_keep_alive_title">Screenlate готов</string>
     <string name="overlay_keep_alive_text">Плавающая кнопка остаётся доступной в фоне</string>
+    <string name="overlay_translate">Перевести предложение</string>
+    <string name="overlay_translating">Перевожу…</string>
+    <string name="translation_failed">Не удалось перевести предложение.</string>
+    <string name="translation_failed_other">Перевод не удался.</string>
+    <string name="translation_none_enabled">Ни один сервис перевода не включён. Они в настройках Screenlate, в разделе «Перевод».</string>
+    <string name="translation_no_sentence">Нет предложения для перевода.</string>
+    <string name="translation_service_error">%1$s: %2$s</string>
+    <string name="translation_error_offline">Нет подключения к сети.</string>
+    <string name="translation_error_timeout">Не ответил вовремя.</string>
+    <string name="translation_error_secure">Не удалось установить защищённое соединение (сертификат или TLS).</string>
+    <string name="translation_error_network">Не удалось связаться с сервером.</string>
+    <string name="translation_error_http">Сервер ответил ошибкой %1$d.</string>
+    <string name="translation_error_limited">Слишком много запросов, попробуйте позже.</string>
+    <string name="translation_error_captcha">Просит пройти капчу, попробуйте позже.</string>
+    <string name="translation_error_rejected">Запрос отклонён.</string>
+    <string name="translation_error_language">Этот язык не поддерживается.</string>
+    <string name="translation_error_too_long">Текст слишком длинный.</string>
+    <string name="translation_error_bad_answer">Не удалось прочитать ответ.</string>
+    <string name="translation_error_other">Что-то пошло не так.</string>
 </resources>

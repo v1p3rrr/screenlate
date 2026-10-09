@@ -30,10 +30,11 @@ internal object NoteTypePresets {
             "frequency" to "{frequencies}",
             "freqsort" to "{frequency-harmonic-rank}",
             "miscinfo" to "{document-title}",
+            // Senren leaves the sentence translation to the user; this app can fill it.
+            "sentencetranslation" to "{sentence-translation}",
+            "sentenceeng" to "{sentence-translation}",
             // Left empty on purpose: card type switches and fields filled by other tools.
             "definition" to "",
-            "sentencetranslation" to "",
-            "sentenceeng" to "",
             "sentencecard" to "",
             "audiocard" to "",
             "notes" to "",

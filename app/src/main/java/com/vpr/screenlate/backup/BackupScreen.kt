@@ -227,6 +227,7 @@ private fun sectionTitle(section: BackupSection): Int = when (section) {
     BackupSection.POPUP -> R.string.backup_section_popup
     BackupSection.ANKI -> R.string.backup_section_anki
     BackupSection.AUDIO -> R.string.backup_section_audio
+    BackupSection.TRANSLATION -> R.string.backup_section_translation
     BackupSection.DICTIONARY_LIST -> R.string.backup_section_dictionary_list
     BackupSection.DICTIONARY_FILES -> R.string.backup_section_dictionary_files
 }
@@ -238,5 +239,6 @@ private fun sectionHint(section: BackupSection): Int = when (section) {
     BackupSection.POPUP -> R.string.backup_section_popup_hint
     BackupSection.ANKI -> R.string.backup_section_anki_hint
     BackupSection.AUDIO -> R.string.backup_section_audio_hint
+    BackupSection.TRANSLATION -> R.string.backup_section_translation_hint
     BackupSection.DICTIONARY_LIST, BackupSection.DICTIONARY_FILES -> R.string.backup_section_general_hint
 }

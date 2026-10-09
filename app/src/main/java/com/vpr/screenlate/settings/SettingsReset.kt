@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.overlay.BubbleKeepAliveService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Settings pages with their own reset. */
-enum class SettingsSection { BUBBLE, LOOKUP, ANKI, POPUP, APPEARANCE, BACKGROUND }
+enum class SettingsSection { BUBBLE, LOOKUP, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND }
 
 /**
  * Returns settings to their defaults by removing the stored values. The dictionaries, the bundled dictionary
@@ -61,6 +62,7 @@ object SettingsKeys {
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
         key == "anki_settings" || key.startsWith("audio_") -> SettingsSection.ANKI
         key.startsWith("popup_") -> SettingsSection.POPUP
+        key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> SettingsSection.TRANSLATION
         key == "theme_mode" || key == "theme_colors" || key == "e_ink" -> SettingsSection.APPEARANCE
         // What e-ink's "Make larger" changed goes with the size it belongs to, so turning e-ink off later does not
         // change a size that was reset.

@@ -17,6 +17,7 @@ import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.fonts.PageAppearance
+import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -50,6 +51,7 @@ class SearchViewModel @Inject constructor(
     val audio: AudioFinder,
     val audioSettings: AudioSettingsRepository,
     val audioPlayer: AudioPlayer,
+    val translation: SentenceTranslation,
     appSettings: AppSettingsRepository,
     pageAppearance: PageAppearance,
 ) : ViewModel() {

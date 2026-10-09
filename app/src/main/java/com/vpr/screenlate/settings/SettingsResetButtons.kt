@@ -58,6 +58,7 @@ private val SettingsSection.text: Int
         SettingsSection.LOOKUP -> R.string.reset_lookup_text
         SettingsSection.ANKI -> R.string.reset_anki_text
         SettingsSection.POPUP -> R.string.reset_popup_text
+        SettingsSection.TRANSLATION -> R.string.reset_translation_text
         SettingsSection.APPEARANCE -> R.string.reset_appearance_text
         SettingsSection.BACKGROUND -> R.string.reset_background_text
     }

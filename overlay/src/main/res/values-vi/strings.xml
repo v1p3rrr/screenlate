@@ -48,6 +48,7 @@
     <string name="overlay_engine_app_text">Văn bản ứng dụng</string>
     <string name="overlay_copy">Sao chép</string>
     <string name="overlay_copy_definition">Sao chép định nghĩa</string>
+    <string name="overlay_copy_translation">Sao chép câu và bản dịch</string>
     <string name="overlay_open_note">Mở trong AnkiDroid (giữ để vẫn thêm)</string>
     <string name="overlay_add_anyway">Vẫn thêm</string>
     <string name="overlay_add_anyway_picture">Vẫn thêm, kèm ảnh</string>
@@ -63,4 +64,23 @@
     <string name="overlay_keep_alive_channel">Dịch vụ đang chạy</string>
     <string name="overlay_keep_alive_title">Screenlate đã sẵn sàng</string>
     <string name="overlay_keep_alive_text">Bong bóng vẫn sẵn sàng ở chế độ nền</string>
+    <string name="overlay_translate">Dịch câu</string>
+    <string name="overlay_translating">Đang dịch…</string>
+    <string name="translation_failed">Không dịch được câu.</string>
+    <string name="translation_failed_other">Dịch không thành công.</string>
+    <string name="translation_none_enabled">Chưa bật dịch vụ dịch nào. Các dịch vụ nằm trong mục Dịch của phần cài đặt Screenlate.</string>
+    <string name="translation_no_sentence">Không có câu nào để dịch.</string>
+    <string name="translation_service_error">%1$s: %2$s</string>
+    <string name="translation_error_offline">Không có kết nối mạng.</string>
+    <string name="translation_error_timeout">Không trả lời kịp.</string>
+    <string name="translation_error_secure">Kết nối bảo mật thất bại (chứng chỉ hoặc TLS).</string>
+    <string name="translation_error_network">Không kết nối được với máy chủ.</string>
+    <string name="translation_error_http">Máy chủ trả lời với lỗi %1$d.</string>
+    <string name="translation_error_limited">Quá nhiều yêu cầu; hãy thử lại sau.</string>
+    <string name="translation_error_captcha">Yêu cầu giải captcha; hãy thử lại sau.</string>
+    <string name="translation_error_rejected">Yêu cầu bị từ chối.</string>
+    <string name="translation_error_language">Ngôn ngữ này không được hỗ trợ.</string>
+    <string name="translation_error_too_long">Văn bản quá dài.</string>
+    <string name="translation_error_bad_answer">Không đọc được câu trả lời.</string>
+    <string name="translation_error_other">Đã xảy ra lỗi.</string>
 </resources>
