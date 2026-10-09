@@ -570,8 +570,8 @@
     <string name="accessibility_disclosure_reads_title">읽는 것</string>
     <string name="accessibility_disclosure_reads">• 스크린샷: 버블을 탭하거나 끌어낼 때만. ‘앱 텍스트만’에서는 Anki 노트의 이미지용으로만 찍습니다.\n• 앱이 화면에 표시하는 텍스트: ‘앱 텍스트 읽기’ 또는 ‘앱 텍스트만’이 켜져 있을 때, 같은 순간에.\n• 열려 있는 앱, 키보드와 시스템 바의 위치: 선택한 앱에서 버블을 숨기고 바와 겹치지 않게 하기 위해.</string>
     <string name="accessibility_disclosure_sends_title">보내는 곳</string>
-    <string name="accessibility_disclosure_sends">• 스크린샷: 클라우드 텍스트 인식으로. ‘엔진’에서 ‘기기’를 선택했다면 보내지 않습니다. 기기 내 인식은 아무것도 보내지 않습니다.\n• 문장: 文A를 탭하거나 노트 템플릿이 번역을 요청할 때 온라인 번역기로.\n• 단어와 읽기: 발음을 위해 선택한 오디오 소스로.\n• 노트: 이 기기의 AnkiDroid로.</string>
-    <string name="accessibility_disclosure_outro">이 서비스는 대신 탭하거나 입력하지 않습니다. 읽은 내용은 저장하지 않습니다. 스크린샷은 팝업이 열려 있는 동안만 메모리에 있고, 노트에는 스크린샷에서 선택한 부분만 들어가며, 로그에는 화면의 텍스트가 절대 남지 않습니다.</string>
+    <string name="accessibility_disclosure_sends">• 스크린샷: 클라우드 텍스트 인식으로. ‘엔진’에서 ‘기기’를 선택했거나 ‘앱 텍스트만’이 켜져 있으면 보내지 않습니다. 기기 내 인식은 아무것도 보내지 않습니다.\n• 문장: 文A를 탭하거나 노트 템플릿이 번역을 요청할 때 온라인 번역기로.\n• 단어와 읽기: 발음을 위해 선택한 오디오 소스로.\n• 노트: 이 기기의 AnkiDroid로.</string>
+    <string name="accessibility_disclosure_outro">이 서비스는 대신 탭하거나 입력하지 않습니다. 읽은 내용은 저장하지 않습니다. 스크린샷은 버블이 가장자리로 돌아갈 때까지만 메모리에 있고, 노트에는 스크린샷에서 선택한 부분만 들어가며, 로그에는 화면의 텍스트가 절대 남지 않습니다.</string>
     <string name="accessibility_disclosure_agree">동의</string>
     <string name="accessibility_disclosure_later">나중에</string>
     <string name="about_accessibility_disclosure">서비스가 읽고 보내는 것</string>

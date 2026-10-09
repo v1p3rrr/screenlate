@@ -802,3 +802,15 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   the front instead of the app's page in the phone's settings.
 - Checked on the emulator: the dialog, "Not now", "Agree" and the direct open afterwards, About's dialog, and a real
   hold on the tile. Unit tests pass (the reset and backup key lists include the new key).
+
+### 2026-10-09 (code review since 0c23e9f)
+
+- `/code-review xhigh --fix` over 0c23e9f..HEAD, 8 findings, all fixed (list in the plan): the dialog no longer says
+  the screenshot goes to the cloud with App text only, and says it stays in memory until the bubble docks again (not
+  "while the popup is open"), all 14 locales; the dock no longer redraws the bubble on every window change; the tile and
+  the bubble menu open the app through `OverlayIntents.openApp`; stale KDoc; `AccessibilityAgreedTest`.
+- Checked on the emulator: the docked bubble keeps its resting transparency, holding the tile opens the app. Unit tests
+  pass.
+- The three JVM crash logs committed in 7e35544 are removed from the tree but remain in the public history; the
+  history rewrite was blocked for the agent, so the owner runs the script (`git filter-branch` over 38856bf..HEAD, then
+  a force push).

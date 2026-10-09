@@ -378,6 +378,17 @@ Owner's command (2026-10-09): `/code-review xhigh --fix` over the changes of 202
 
 Also done with the review (requests 55 and 56, translation part): every translation failure is logged with its kind and a detail without text (an unexpected answer's shape, a missing part of Bing's token page, a refused token's status), stored services that cannot be read are logged, and a certificate not valid at the device's date gets its own text asking to check the date and time.
 
+## Code review: since 0c23e9f
+
+Owner's command (2026-10-09): `/code-review xhigh --fix` over everything since 0c23e9f (field templates for more mining note types, the dock at the very edge in fullscreen, the accessibility service dialog, holding the tile). Findings, all fixed:
+
+1. The dialog said the screenshot goes to cloud recognition unless Engines is Device; with App text only nothing is recognized either. All 14 locales.
+2. The dialog said the screenshot stays in memory while the popup is open; it stays until the bubble docks again (closing the popup keeps the scan). All 14 locales.
+3. Every window change placed the dock again and redrew the bubble even when nothing changed, and the dock read the window metrics twice; the bubble's dock setters return early, the metrics are read once.
+4. The tile's activity copied the bubble menu's "open the app" code; both use `OverlayIntents.openApp`.
+5.–7. Stale KDoc: `topLine`/`bottomLine` (fullscreen goes to the edge now), `bubbleCenter` (side docks hold only the visible part too), `NoteTypePresets.find` (a preset known by its fields alone).
+8. The agreement flag had only key-list tests; `AccessibilityAgreedTest` reads it back through the repository and the snapshot.
+
 ## Changelog
 
 - 2026-09-29: plan created from the owner's feedback.
@@ -491,3 +502,4 @@ Also done with the review (requests 55 and 56, translation part): every translat
 - 2026-10-09: owner answers on D1 (request 57): top and bottom docks show 60% of the bubble; in fullscreen apps they go to the very edge and stick out a third of the disc past the system gesture strip, or stay at the line when the strip is too wide; the sides keep 40%. The owner asked whether the bubble overrides the system gestures: it does not, the system keeps the mandatory strips (see `ai/notes/overlay-system-ui.md`).
 - 2026-10-09: owner's correction of 57: 40% wherever nothing takes the touch, more only where the bubble stands in a system strip; asked about landscape and whether gestures or buttons can be told apart (answered: the strips come from the system per edge and orientation; the mode shows in the tappable element insets). Built and checked on the emulator in portrait (fullscreen bottom: the whole 48 dp disc at the edge, its upper third pulls out; top: the line; sides: 40% cap windows; bars shown by the system move the dock to the line). Not checked: landscape and three-button navigation (system settings stay untouched).
 - 2026-10-09: owner on the disclosure text: the Russian app says "плавающая кнопка", not "пузырь"; a drier tone; the agreement stays out of backups. Request 58 (holding the tile opens the app). Both built and checked on the emulator: the dialog before the settings, "Not now" stays in the app, "Agree" opens the settings and later taps open them at once, About shows the text with Close only; a real hold on the tile opens the app's task.
+- 2026-10-09: code review since 0c23e9f (owner's command), 8 findings, all fixed; two were wrong statements in the accessibility dialog (App text only sends nothing to the cloud; the screenshot stays until the bubble docks again).

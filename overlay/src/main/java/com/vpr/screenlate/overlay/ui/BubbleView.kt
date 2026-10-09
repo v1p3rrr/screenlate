@@ -58,6 +58,7 @@ class BubbleView(context: Context) : View(context) {
 
     var docked: Boolean = true
         set(value) {
+            if (field == value) return
             field = value
             alpha = restingAlpha()
             invalidate()
@@ -82,6 +83,7 @@ class BubbleView(context: Context) : View(context) {
     /** The edge the docked bubble sits at; the glyph goes into the part that stays on screen. */
     var dockSide: DockSide = DockSide.RIGHT
         set(value) {
+            if (field == value) return
             field = value
             invalidate()
         }

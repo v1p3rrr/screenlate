@@ -184,7 +184,10 @@ internal object NoteTypePresets {
     /** Presets with a name first, so one that matches by name wins over one known by its fields alone. */
     private val PRESETS = listOf(SENREN, KIKU, LAPIS, JP_MINING_NOTE, KAISHI, BASIC_MINING_DECK)
 
-    /** The preset for a note type whose name and fields match, as normalized field name → template. */
+    /**
+     * The preset for a note type, as normalized field name → template: one whose name and fields match, or else one
+     * known by its fields alone.
+     */
     fun find(modelName: String, fieldNames: List<String>): Map<String, String>? {
         val normalized = fieldNames.map { it.normalizedFieldName() }.toSet()
         return PRESETS.firstOrNull {

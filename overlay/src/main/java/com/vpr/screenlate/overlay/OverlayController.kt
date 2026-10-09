@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.WindowMetrics
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -378,7 +379,7 @@ class OverlayController(
         return DockPlacement.Screen(
             width = bounds.width().toFloat(),
             height = bounds.height().toFloat(),
-            usable = usableBounds(),
+            usable = usableBounds(metrics),
             gestures = Box(
                 gestures.left.toFloat(),
                 gestures.top.toFloat(),
@@ -400,8 +401,7 @@ class OverlayController(
     }
 
     /** Screen area not covered by system bars or the display cutout. */
-    private fun usableBounds(): Box {
-        val metrics = windowManager.maximumWindowMetrics
+    private fun usableBounds(metrics: WindowMetrics = windowManager.maximumWindowMetrics): Box {
         val insets = metrics.windowInsets.getInsetsIgnoringVisibility(
             WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout(),
         )
@@ -418,7 +418,7 @@ class OverlayController(
 
     // region Bubble position and state
 
-    /** The disc's center; a top or bottom dock's window holds only part of it. */
+    /** The disc's center; a docked bubble's window holds only the part that shows. */
     private fun bubbleCenter(): Pair<Float, Float> = DockPlacement.center(
         DockPlacement.Window(bubbleParams.x, bubbleParams.y, bubbleParams.width, bubbleParams.height),
         bubbleSize,
@@ -647,9 +647,7 @@ class OverlayController(
 
     /** Brings the app to the front as the launcher does; the bubble docks so it does not hang over the app. */
     private fun openApp() {
-        service.packageManager.getLaunchIntentForPackage(service.packageName)
-            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            ?.let { intent -> runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open the app", it) } }
+        OverlayIntents.openApp(service)
         dock()
     }
 

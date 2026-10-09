@@ -570,8 +570,8 @@
     <string name="accessibility_disclosure_reads_title">讀取的內容</string>
     <string name="accessibility_disclosure_reads">• 截圖：僅在你輕觸或拖出懸浮球時。在「僅應用程式文字」模式下，僅用於 Anki 筆記中的圖片。\n• 應用程式在螢幕上顯示的文字：在同樣的時刻，且開啟了「讀取應用程式文字」或「僅應用程式文字」時。\n• 開啟的是哪個應用程式，鍵盤和系統列的位置：用於在你選擇的應用程式中隱藏懸浮球，並讓它避開系統列。</string>
     <string name="accessibility_disclosure_sends_title">傳送到哪裡</string>
-    <string name="accessibility_disclosure_sends">• 截圖傳送到雲端文字辨識，除非「引擎」選的是「裝置」。裝置上的辨識不傳送任何內容。\n• 句子在你輕觸 文A 或筆記範本需要譯文時傳送到線上翻譯服務。\n• 單字及其讀音傳送到你選擇的音訊來源，用於取得發音。\n• 筆記傳送到本裝置上的 AnkiDroid。</string>
-    <string name="accessibility_disclosure_outro">此服務不會替你輕觸或輸入任何內容。讀取的內容不會儲存：截圖只在彈出視窗開啟期間保留在記憶體中，筆記只取得截圖中你選取的部分，日誌中從不包含螢幕上的文字。</string>
+    <string name="accessibility_disclosure_sends">• 截圖傳送到雲端文字辨識，除非「引擎」選的是「裝置」，或開啟了「僅應用程式文字」。裝置上的辨識不傳送任何內容。\n• 句子在你輕觸 文A 或筆記範本需要譯文時傳送到線上翻譯服務。\n• 單字及其讀音傳送到你選擇的音訊來源，用於取得發音。\n• 筆記傳送到本裝置上的 AnkiDroid。</string>
+    <string name="accessibility_disclosure_outro">此服務不會替你輕觸或輸入任何內容。讀取的內容不會儲存：截圖只在懸浮球停靠回邊緣之前保留在記憶體中，筆記只取得截圖中你選取的部分，日誌中從不包含螢幕上的文字。</string>
     <string name="accessibility_disclosure_agree">同意</string>
     <string name="accessibility_disclosure_later">暫不</string>
     <string name="about_accessibility_disclosure">服務讀取和傳送的內容</string>

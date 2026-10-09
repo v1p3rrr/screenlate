@@ -32,14 +32,15 @@ object DockPlacement {
 
     /**
      * The line a top dock hangs from: under the status bar, the cutout and the system gesture area, so the bubble
-     * covers none of them and the system does not take a pull that starts on it. The same in fullscreen apps: a
-     * swipe from the very edge shows the bars or opens the notifications and cancels the pull.
+     * covers none of them and the system does not take a pull that starts on it. A fullscreen app hides the bar; there
+     * the bubble goes to the very edge when a third of it still clears the gesture area (see [cap]).
      */
     fun topLine(screen: Screen): Float = maxOf(screen.usable.top, screen.gestures.top)
 
     /**
      * The line a bottom dock stands on: above the navigation buttons and the gesture area, where pulling the bubble
-     * up would be the Home gesture, in fullscreen apps too. An open keyboard lifts it.
+     * up would be the Home gesture. An open keyboard lifts it. In a fullscreen app the bubble goes to the very edge
+     * instead when a third of it still clears the gesture area (see [cap]).
      */
     fun bottomLine(screen: Screen): Float {
         val line = minOf(screen.usable.bottom, screen.gestures.bottom)
