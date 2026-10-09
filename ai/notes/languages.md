@@ -150,3 +150,31 @@ languages go through Yomitan's own language code run in QuickJS, and hoshidicts 
 - Yomitan's `Translator` talks to its database through `findTermsBulk`, `findTermMetaBulk`, `findKanjiBulk`,
   `findKanjiMetaBulk`, `findTagMetaBulk`, `findTermsBySequenceBulk`, `findTermsExactBulk`, `getDictionaryInfo`; the
   experiment calls only its deinflection part and does the rest natively.
+
+### Russian (no transforms in Yomitan)
+
+Same branch, wty ru→en (2026-10-04 build, 25 MB zip). Yomitan's Russian descriptor has only text processors
+(capitalization, ё ↔ е, removing the stress mark U+0301); every inflected form comes from the dictionary.
+
+- The dictionary: 1,492,900 rows, of which 1,432,414 are form-of rows (`["кошки","ко́шки","non-lemma","",0,
+  [["ко́шка",["genitive singular"]],…]]`, 1.77 M form items over 990 K distinct forms) and 60,486 have definitions.
+  Expressions carry no stress marks; readings do (`ко́шка`), and the popup shows them above the headword, which is
+  useful for learners. Lemmas in form-of items are sometimes stressed (`ко́шка`), sometimes not; hoshidicts finds both,
+  as it matches the reading too. Noise in the data: lemmas like `стать pf`, pre-reform `человѣкъ`, and pronoun tables
+  that make "он" a form of вы, его, её, меня, мы, она, они.
+- Size: hoshidicts imports it in 2.4 s (CLI) or 4.1 s (app) on the emulator, but it takes 273 MB on disk (en→en:
+  293 MB from a 103 MB zip). Split by row kind: the definitions take 18 MB, the form-of rows 231 MB (blobs about
+  135 B per row plus a 45 MB hash table). Storing form-of compactly at import (form → lemma and tags, in the record's
+  "redirects" field or a side table of our own) would cut the dictionary several times.
+- Lookups (harness and popup, cloud recognition read the Cyrillic): Кошками → кошка (instrumental plural), ежика →
+  ёжик (ё/е), ко́шки → кошка (stress mark), стали → сталь and стать, людей → человек and люди, шел → идти, пошли →
+  послать and пойти, лучше → лучше, хороший, хорошо. Candidates 0.06–0.5 ms, queries 0.03–1.2 ms; 3–46 ms per
+  lookup in the app.
+- Found:
+  - Form-of is followed one level, as in Yomitan: ежика → ёжик shows ёжик's own senses, not "diminutive of ёж"
+    (looking up ёжик directly shows ёж). Following a second level would be our own extension.
+  - Only the first rule chain shows (кошки: "accusative plural inanimate"; genitive singular and nominative plural
+    are lost); Yomitan lists every chain.
+  - Homographs have no useful order without a frequency dictionary (послать before пойти).
+  - Audio found nothing: the audio sources are the Japanese ones (JapanesePod101, the custom server); per-language
+    sources are part of the settings design.

@@ -96,7 +96,8 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
 - Open: whole-word hit testing and highlight for Latin text beyond the experiment's word start; sentence splitting
   with abbreviations.
 - In progress: licenses of catalog candidates per language, a list of risky ones.
-- Open: Russian as a language without transforms (request 9).
+- Done: Russian as a language without transforms (request 9): works through the dictionary's form-of entries;
+  the form-of rows make wty ru→en 273 MB on disk (notes, "Russian").
 - Request 5: CC-CEDICT stores every term under both headwords and wty zh→en links simplified forms to traditional
   ones, so one Chinese profile works for both scripts; only the `lang` tag and fonts (SC or TC glyph forms) differ.
   To be asked with the concrete questions.
@@ -107,3 +108,4 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
 - 2026-10-09: plan started with the owner's request, the research (`notes/languages.md`) and the topics above.
 - 2026-10-09: owner's answers to the general topics (Decisions) and requests 2-7.
 - 2026-10-09: English and Chinese experiment in `experiment/languages`; findings in the notes; requests 8 and 9.
+- 2026-10-09: Russian experiment (request 9) in the same branch.
