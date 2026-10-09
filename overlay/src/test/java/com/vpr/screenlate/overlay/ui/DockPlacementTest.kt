@@ -40,6 +40,19 @@ class DockPlacementTest {
     }
 
     @Test
+    fun `the disc's center comes back from a dock's window`() {
+        for (side in DockSide.entries) {
+            val window = DockPlacement.window(side, 0.3f, 100, screen)
+            val (x, y) = DockPlacement.center(window, 100, side)
+            assertThat(DockPlacement.position(side, x, y, screen)).isWithin(0.001f).of(0.3f)
+        }
+        // The top window holds the disc's lower 40 px under the line at 70, the bottom one its upper 40 px.
+        assertThat(DockPlacement.center(DockPlacement.Window(450, 70, 100, 40), 100, DockSide.TOP)).isEqualTo(500f to 60f)
+        assertThat(DockPlacement.center(DockPlacement.Window(450, 1900, 100, 40), 100, DockSide.BOTTOM)).isEqualTo(500f to 1950f)
+        assertThat(DockPlacement.center(DockPlacement.Window(200, 300, 100, 100), 100, DockSide.TOP)).isEqualTo(250f to 350f)
+    }
+
+    @Test
     fun `a dock keeps a bubble's size away from the corners`() {
         assertThat(DockPlacement.window(DockSide.TOP, 0f, 100, screen).x).isEqualTo(50)
         assertThat(DockPlacement.window(DockSide.BOTTOM, 1f, 100, screen).x).isEqualTo(850)

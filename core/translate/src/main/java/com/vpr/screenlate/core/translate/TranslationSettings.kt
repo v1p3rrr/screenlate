@@ -1,11 +1,13 @@
 package com.vpr.screenlate.core.translate
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.cached
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -102,7 +104,10 @@ class TranslationSettingsRepository @Inject constructor(private val dataStore: D
             json.parseToJsonElement(raw).jsonArray.mapNotNull { item ->
                 (item as? JsonObject)?.let { runCatching { json.decodeFromJsonElement<ServiceChoice>(it) }.getOrNull() }
             }
-        }.getOrNull() ?: return TranslationSettings.DEFAULT_SERVICES
+        }.getOrElse {
+            Log.w(TAG, "Stored services are unreadable, using the defaults", it.redacted())
+            return TranslationSettings.DEFAULT_SERVICES
+        }
         val known = stored.distinctBy { it.service }
         return known + TranslationService.entries.filter { service -> known.none { it.service == service } }.map { ServiceChoice(it) }
     }
@@ -110,6 +115,8 @@ class TranslationSettingsRepository @Inject constructor(private val dataStore: D
     companion object {
         /** Every key of this page starts with it, for the page's reset and the backup. */
         const val KEY_PREFIX = "translation_"
+
+        private const val TAG = "TranslationSettings"
 
         private val BUTTON = booleanPreferencesKey("${KEY_PREFIX}button")
         private val ANKI = booleanPreferencesKey("${KEY_PREFIX}anki")

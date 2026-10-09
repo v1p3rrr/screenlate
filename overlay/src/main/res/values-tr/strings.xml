@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Ağ bağlantısı yok.</string>
     <string name="translation_error_timeout">Zamanında yanıt vermedi.</string>
+    <string name="translation_error_clock">Sunucunun sertifikası cihazın tarihinde geçerli değil: tarih ve saati kontrol edin.</string>
     <string name="translation_error_secure">Güvenli bağlantı başarısız (sertifika veya TLS).</string>
     <string name="translation_error_network">Sunucuya ulaşılamadı.</string>
     <string name="translation_error_http">Sunucu %1$d hatasıyla yanıt verdi.</string>

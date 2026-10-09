@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s：%2$s</string>
     <string name="translation_error_offline">未連線網路。</string>
     <string name="translation_error_timeout">未能及時回應。</string>
+    <string name="translation_error_clock">伺服器憑證在裝置目前日期下無效：請檢查日期和時間。</string>
     <string name="translation_error_secure">安全連線失敗（證書或 TLS）。</string>
     <string name="translation_error_network">無法連線到伺服器。</string>
     <string name="translation_error_http">伺服器回傳了錯誤 %1$d。</string>

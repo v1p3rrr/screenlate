@@ -76,6 +76,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">No network connection.</string>
     <string name="translation_error_timeout">No answer in time.</string>
+    <string name="translation_error_clock">The server\'s certificate is not valid for the device\'s date: check the date and time.</string>
     <string name="translation_error_secure">Secure connection failed (certificate or TLS).</string>
     <string name="translation_error_network">Could not reach the server.</string>
     <string name="translation_error_http">The server answered with error %1$d.</string>

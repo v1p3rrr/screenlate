@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s：%2$s</string>
     <string name="translation_error_offline">未连接网络。</string>
     <string name="translation_error_timeout">未能及时响应。</string>
+    <string name="translation_error_clock">服务器证书在设备当前日期下无效：请检查日期和时间。</string>
     <string name="translation_error_secure">安全连接失败（证书或 TLS）。</string>
     <string name="translation_error_network">无法连接到服务器。</string>
     <string name="translation_error_http">服务器返回了错误 %1$d。</string>

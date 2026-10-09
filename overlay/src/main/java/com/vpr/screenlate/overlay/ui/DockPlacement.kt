@@ -64,6 +64,15 @@ object DockPlacement {
         }
     }
 
+    /**
+     * The disc's center for the bubble's [window], the inverse of [window]: a top dock's window, lower than the disc,
+     * holds only the disc's lower part; any other window starts at the disc's top.
+     */
+    fun center(window: Window, size: Int, side: DockSide): Pair<Float, Float> {
+        val top = if (window.height < size && side == DockSide.TOP) window.y + window.height - size else window.y
+        return window.x + size / 2f to top + size / 2f
+    }
+
     /** Where a bubble centered at ([centerX], [centerY]) sits along [side], as a fraction of the screen. */
     fun position(side: DockSide, centerX: Float, centerY: Float, screen: Screen): Float =
         if (side.horizontal) centerX / screen.width else centerY / screen.height

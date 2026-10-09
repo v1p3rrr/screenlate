@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">네트워크에 연결되어 있지 않습니다.</string>
     <string name="translation_error_timeout">제때 응답하지 않았습니다.</string>
+    <string name="translation_error_clock">서버 인증서가 기기 날짜에 유효하지 않습니다. 날짜와 시간을 확인하세요.</string>
     <string name="translation_error_secure">보안 연결 실패(인증서 또는 TLS).</string>
     <string name="translation_error_network">서버에 연결할 수 없습니다.</string>
     <string name="translation_error_http">서버가 오류 %1$d로 응답했습니다.</string>

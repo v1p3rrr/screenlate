@@ -12,7 +12,6 @@ import com.vpr.screenlate.overlay.R
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -24,15 +23,14 @@ class SentenceTranslation @Inject constructor(
     val settings: TranslationSettingsRepository,
 ) {
     /**
-     * The translation for a note: the one the popup shows, or a new one waited for up to [NOTE_WAIT_MS]. Null when
-     * notes get none (the switch is off) or none came in time.
+     * The translation for a note: the one the popup shows, or a new one. Null when notes get none (the switch is off)
+     * or no service translated. The caller limits the wait ([NOTE_WAIT_MS]).
      */
     suspend fun forNote(sentence: String, language: Language): String? = try {
         if (sentence.isBlank() || !settings.current().ankiField) {
             null
         } else {
-            val result = withTimeoutOrNull(NOTE_WAIT_MS) { translator.translate(sentence, language) }
-            (result as? TranslationResult.Success)?.text
+            (translator.translate(sentence, language) as? TranslationResult.Success)?.text
         }
     } catch (e: CancellationException) {
         throw e
@@ -43,22 +41,32 @@ class SentenceTranslation @Inject constructor(
     }
 
     /** What the popup's block shows for [sentence]: `{text, service, sentence}` (the sentence for copying) or `{error}`. */
-    suspend fun forPopup(context: Context, sentence: String?, language: Language): JsonObject {
-        if (sentence.isNullOrBlank()) return buildJsonObject { put("error", context.getString(R.string.translation_no_sentence)) }
-        return when (val result = translator.translate(sentence, language)) {
-            is TranslationResult.Success -> buildJsonObject {
-                put("text", result.text)
-                put("service", result.service.label)
-                put("sentence", sentence)
+    suspend fun forPopup(context: Context, sentence: String?, language: Language): JsonObject = try {
+        if (sentence.isNullOrBlank()) {
+            errorAnswer(context.getString(R.string.translation_no_sentence))
+        } else {
+            when (val result = translator.translate(sentence, language)) {
+                is TranslationResult.Success -> buildJsonObject {
+                    put("text", result.text)
+                    put("service", result.service.label)
+                    put("sentence", sentence)
+                }
+                is TranslationResult.Failure -> errorAnswer(failureText(context, result))
             }
-            is TranslationResult.Failure -> buildJsonObject { put("error", failureText(context, result)) }
         }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Log.w(TAG, "Translation for the popup failed", e.redacted())
+        errorAnswer(context.getString(R.string.translation_failed_other))
     }
+
+    private fun errorAnswer(text: String): JsonObject = buildJsonObject { put("error", text) }
 
     companion object {
         private const val TAG = "SentenceTranslation"
 
-        /** How long ➕ waits for a translation before the note goes in without one. */
+        /** How long a note, once ready (after the crop editor), waits for its translation before going in without one. */
         const val NOTE_WAIT_MS = 5_000L
 
         /** A line per service that failed, under a heading; or why no service was asked. */
@@ -72,6 +80,7 @@ class SentenceTranslation @Inject constructor(
         fun errorText(context: Context, error: TranslationError): String = when (error.kind) {
             TranslationError.Kind.OFFLINE -> context.getString(R.string.translation_error_offline)
             TranslationError.Kind.TIMEOUT -> context.getString(R.string.translation_error_timeout)
+            TranslationError.Kind.CERTIFICATE_DATE -> context.getString(R.string.translation_error_clock)
             TranslationError.Kind.SECURE_CONNECTION -> context.getString(R.string.translation_error_secure)
             TranslationError.Kind.NETWORK -> context.getString(R.string.translation_error_network)
             TranslationError.Kind.HTTP_STATUS -> context.getString(R.string.translation_error_http, error.code)

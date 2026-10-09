@@ -38,6 +38,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
@@ -290,7 +291,7 @@ class PopupNotes(
                 val used = notes.usedMarkers()
                 val context = source.context(withScreenshot && "screenshot" in used)
                 shared = context.screenshot
-                // Asked now, so it comes while the crop editor is open.
+                // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
                     translated = async { translation.forNote(sentence, language) }
@@ -322,7 +323,8 @@ class PopupNotes(
                     }
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
-                translated?.await()?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
+                translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
+                    ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used)
                 screenshot = picture?.let { saveScreenshot(it) }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language) else null

@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Không có kết nối mạng.</string>
     <string name="translation_error_timeout">Không trả lời kịp.</string>
+    <string name="translation_error_clock">Chứng chỉ của máy chủ không hợp lệ với ngày trên thiết bị: hãy kiểm tra ngày và giờ.</string>
     <string name="translation_error_secure">Kết nối bảo mật thất bại (chứng chỉ hoặc TLS).</string>
     <string name="translation_error_network">Không kết nối được với máy chủ.</string>
     <string name="translation_error_http">Máy chủ trả lời với lỗi %1$d.</string>

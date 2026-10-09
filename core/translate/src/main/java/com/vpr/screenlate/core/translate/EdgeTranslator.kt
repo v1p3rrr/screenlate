@@ -42,7 +42,7 @@ internal class EdgeTranslator(client: OkHttpClient) : Translator {
 
 /** The answer of Microsoft's translators, Bing's and Edge's: `[{"translations": [{"text": …}]}, …]`. */
 internal object MicrosoftAnswer {
-    fun parse(body: String): String = parseAnswer {
+    fun parse(body: String): String = parseAnswer(body) {
         val first = Json.parseToJsonElement(body).jsonArray[0] as? JsonObject ?: badAnswer()
         val translations = first["translations"] as? JsonArray ?: badAnswer()
         (translations[0].jsonObject["text"] as? JsonPrimitive)?.content ?: badAnswer()

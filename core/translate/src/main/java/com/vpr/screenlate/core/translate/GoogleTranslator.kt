@@ -39,7 +39,7 @@ internal class GoogleTranslator(client: OkHttpClient) : Translator {
         private const val MAX_LENGTH = 5000
 
         /** `[[["translated", "original", …], …], …]`: the translated parts of each sentence, joined. */
-        internal fun parse(body: String): String = parseAnswer {
+        internal fun parse(body: String): String = parseAnswer(body) {
             val sentences = Json.parseToJsonElement(body).jsonArray[0] as? JsonArray ?: badAnswer()
             sentences.joinToString("") { sentence -> (sentence.jsonArray[0] as? JsonPrimitive)?.contentOrNull.orEmpty() }
         }

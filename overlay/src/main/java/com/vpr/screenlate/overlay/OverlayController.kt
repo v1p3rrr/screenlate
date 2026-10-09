@@ -104,8 +104,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
 /**
  * Owns the overlay windows and the bubble state machine: docked → dragging → floating.
@@ -348,17 +346,18 @@ class OverlayController(
     private fun detachWindows() {
         if (!attached) return
         bubbleMenu.dismiss()
+        // A finger on the bubble gets no up or cancel once its window is gone.
+        touching = false
         windowManager.removeView(bubbleView)
         popup.detach()
         windowManager.removeView(layerView)
         attached = false
     }
 
+    /** The window takes the new size from [placeDocked] or [moveBubbleTo], which update it only when it changes. */
     private fun resizeBubble(size: Int) {
         val (cx, cy) = bubbleCenter()
         bubbleSize = size
-        bubbleParams.width = size
-        bubbleParams.height = size
         if (state == State.DOCKED) placeDocked() else moveBubbleTo(cx, cy)
     }
 
@@ -412,15 +411,12 @@ class OverlayController(
 
     // region Bubble position and state
 
-    /** The disc's center; a top dock's window holds only the disc's lower part. */
-    private fun bubbleCenter(): Pair<Float, Float> {
-        val top = if (bubbleParams.height < bubbleSize && settings.dockSide == DockSide.TOP) {
-            bubbleParams.y + bubbleParams.height - bubbleSize
-        } else {
-            bubbleParams.y
-        }
-        return bubbleParams.x + bubbleSize / 2f to top + bubbleSize / 2f
-    }
+    /** The disc's center; a top or bottom dock's window holds only part of it. */
+    private fun bubbleCenter(): Pair<Float, Float> = DockPlacement.center(
+        DockPlacement.Window(bubbleParams.x, bubbleParams.y, bubbleParams.width, bubbleParams.height),
+        bubbleSize,
+        settings.dockSide,
+    )
 
     private fun bubbleBox(): Box {
         val (cx, cy) = bubbleCenter()
@@ -1466,17 +1462,7 @@ class OverlayController(
 
         override fun onTranslate(request: Int) {
             val sentence = shownSentence()?.text
-            scope.launch {
-                val result = try {
-                    translation.forPopup(service, sentence, language)
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "Translation failed", e.redacted())
-                    buildJsonObject { put("error", service.getString(R.string.translation_failed_other)) }
-                }
-                popup.page.showTranslation(request, result)
-            }
+            scope.launch { popup.page.showTranslation(request, translation.forPopup(service, sentence, language)) }
         }
     }
 

@@ -55,11 +55,9 @@ case "${1:-}" in
         ;;
     show)
         # No -S: force-stopping the package would also unbind the accessibility service.
-        if [ -n "${3:-}" ]; then
-            "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2"                 --es debug_fullscreen "$3" >/dev/null
-        else
-            "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2" >/dev/null
-        fi
+        extra=()
+        if [ -n "${3:-}" ]; then extra=(--es debug_fullscreen "$3"); fi
+        "$ADB" shell am start -f 0x10008000 -n "$PKG/com.vpr.screenlate.MainActivity" --es debug_image "testdata/$2" ${extra[@]+"${extra[@]}"} >/dev/null
         ;;
     shot)
         "$ADB" exec-out screencap -p > "$2"

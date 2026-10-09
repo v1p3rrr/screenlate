@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.translate
 
+import android.util.Log
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
@@ -11,6 +12,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.intOrNull
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.FormBody
@@ -40,13 +42,17 @@ internal class BingTranslator(
 
     override fun code(language: TranslationLanguage): String? = language.microsoft
 
-    override suspend fun translate(text: String, from: String, to: String): String = try {
-        request(token(renew = false), text, from, to)
-    } catch (e: TokenRejectedException) {
-        try {
-            request(token(renew = true), text, from, to)
-        } catch (again: TokenRejectedException) {
-            throw TranslationException(TranslationError.Kind.REJECTED)
+    override suspend fun translate(text: String, from: String, to: String): String {
+        val first = token()
+        return try {
+            request(first, text, from, to)
+        } catch (e: TokenRejectedException) {
+            Log.i(TAG, "Token refused (status ${e.status}), fetching a new one")
+            try {
+                request(token(rejected = first), text, from, to)
+            } catch (again: TokenRejectedException) {
+                throw TranslationException(TranslationError(TranslationError.Kind.REJECTED, detail = "status ${again.status}"))
+            }
         }
     }
 
@@ -74,10 +80,13 @@ internal class BingTranslator(
         return parseTranslation(client.newCall(request).await { it.successBody() })
     }
 
-    /** The kept token while it lasts; otherwise the page being fetched, or a new fetch. */
-    private suspend fun token(renew: Boolean): BingToken {
+    /**
+     * The kept token while it lasts, unless it is the [rejected] one; otherwise the page being fetched, or a new fetch.
+     * A token another request already renewed is kept.
+     */
+    private suspend fun token(rejected: BingToken? = null): BingToken {
         val job = synchronized(this) {
-            if (renew) token = null
+            if (rejected != null && token === rejected) token = null
             token?.takeIf { it.expiresAt > clock() }?.let { return it }
             fetching?.takeIf { it.isActive } ?: scope.async { fetchToken() }.also { fetching = it }
         }
@@ -103,8 +112,8 @@ internal class BingTranslator(
         val requests = AtomicInteger()
     }
 
-    /** The service did not accept the token. */
-    internal class TokenRejectedException : Exception()
+    /** The service did not accept the token; [status] is the answer's `statusCode`, for the logs. */
+    internal class TokenRejectedException(val status: String) : Exception()
 
     /** Cookies of the translator page, sent back with the translations. */
     private class MemoryCookieJar(private val clock: () -> Long) : CookieJar {
@@ -124,6 +133,7 @@ internal class BingTranslator(
     }
 
     companion object {
+        private const val TAG = "BingTranslator"
         private const val PAGE_URL = "https://www.bing.com/translator"
         private const val PAGE_TIMEOUT_MS = 20_000L
         private const val MAX_LENGTH = 1000
@@ -137,23 +147,26 @@ internal class BingTranslator(
 
         /** The token in the translator [page] loaded from [url]; it lasts as long as the page says from [now] on. */
         internal fun parseTokenPage(page: String, url: HttpUrl, now: Long): BingToken {
-            val ig = IG.find(page)?.groupValues?.get(1) ?: badAnswer()
-            val iid = IID.find(page)?.groupValues?.get(1) ?: badAnswer()
-            val helper = HELPER.find(page)?.groupValues ?: badAnswer()
-            val lifetime = helper[3].toLongOrNull() ?: badAnswer()
+            val ig = IG.find(page)?.groupValues?.get(1) ?: badAnswer(pageProblem("IG", page))
+            val iid = IID.find(page)?.groupValues?.get(1) ?: badAnswer(pageProblem("IID", page))
+            val helper = HELPER.find(page)?.groupValues ?: badAnswer(pageProblem("AbusePreventionHelper", page))
+            val lifetime = helper[3].toLongOrNull() ?: badAnswer(pageProblem("token lifetime", page))
             val origin = HttpUrl.Builder().scheme(url.scheme).host(url.host).port(url.port).build()
             return BingToken(origin, ig, iid, helper[1], helper[2], now + lifetime - EXPIRY_MARGIN_MS)
         }
 
+        /** Which part of the token page is missing, and the page's size, for the logs. */
+        private fun pageProblem(part: String, page: String) = "token page without $part, ${page.length} chars"
+
         /** A translation, a captcha, or a refused token (`{"statusCode": …}`). */
         internal fun parseTranslation(body: String): String {
-            val answer = parseAnswer { Json.parseToJsonElement(body) }
+            val answer = parseAnswer(body) { Json.parseToJsonElement(body) }
             if (answer is JsonObject) {
                 if ((answer["ShowCaptcha"] as? JsonPrimitive)?.booleanOrNull == true) {
                     throw TranslationException(TranslationError.Kind.CAPTCHA)
                 }
-                if (answer["statusCode"] != null) throw TokenRejectedException()
-                badAnswer()
+                answer["statusCode"]?.let { throw TokenRejectedException((it as? JsonPrimitive)?.intOrNull?.toString() ?: "?") }
+                badAnswer(answerShape(body))
             }
             return MicrosoftAnswer.parse(body)
         }

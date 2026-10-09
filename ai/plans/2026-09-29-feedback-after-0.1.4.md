@@ -58,6 +58,8 @@ Owner requests after the v0.1.4 release (2026-09-29).
 52. (2026-10-09) The popup's sentence translation gets a copy button.
 53. (2026-10-09) The popup's 文A button: a real translate icon (an SVG found or drawn) instead of the two characters set as text.
 54. (2026-10-09, backlog) Network audit and an offline mode. Find every place that uses the network and check how it behaves without internet or on a bad connection: each must give clear feedback (no connection, timeout, the server is not reachable, as audio already does for a local server), also where no alternative exists (translation: no internet, or a bad connection, so no translation). Then a separate settings switch "Offline mode" that forcibly turns off every internet function, down to the smallest (e.g. fetching Bing's token). A feature known not to work in that mode is hidden (the translate button) rather than failing. Details in the section "Network audit and offline mode".
+55. (2026-10-09) The suggested Anki field templates must work for the other popular note types too, not only Senren (all fields, not just the translation): Lapis and others.
+56. (2026-10-09) Every problem and error is logged so the cause can be understood (e.g. the HTTP error a translator answered with), without user data from the request; typical network errors (a certificate, e.g. a wrong clock, and others) get clear descriptions, for the translators and the other features too.
 
 ## Decisions
 
@@ -138,6 +140,10 @@ Owner requests after the v0.1.4 release (2026-09-29).
 | Translation settings | A separate "Translation" settings page, listed after Popup (changed from a card on the Popup page, owner, 2026-10-09): the 文A button switch and the Anki field switch, independent of each other, both on by default; the service list; the language (all languages the services know, with search, names from the system; a service that does not know the language is skipped); a test: a field with a short default text and a button that asks every enabled service at once and shows each one's time and translation or its error. The 文A switch is repeated in "Popup elements", one state. Its hint says the translation is machine-made and may be inaccurate and that the text goes to the service's server; the ⓘ adds that Bing's first request in an hour takes longer (owner, 2026-10-09) |
 | Favorite translation languages | In the language picker every row has a star; starred languages are listed at the top in their own section, a tap on the star again takes a language out; no "recent" section (owner, 2026-10-09) |
 | Translation in Anki notes | A `{sentence-translation}` marker for note fields, filled with the sentence translation when one came, left empty otherwise; a switch turns it off without editing the template, e.g. while the translator is slow; the switch is on the Translation page and repeated in the Anki settings above the deck, one state. On ➕ a translation already shown is used, otherwise it is requested then and the note waits for it up to 5 s, then goes in with the field empty (owner, 2026-10-09) |
+| Note type presets | Presets from the authors' Yomitan tables for more note types: Kiku (as Lapis), jp-mining-note (its own `jpmn-*` markers replaced by this app's nearest ones), Basic Mining Deck, Kaishi; and more aliases in the general rule so unknown note types fill too (Picture/Image → `{screenshot}`, FrequencySort → the frequency rank, PrimaryDefinition → the first definition and the like) (owner, 2026-10-09) |
+| Sentence translation field names | Only names with "sentence": SentenceTranslation, Sentence Meaning, SentenceEnglish, SentenceEng and their spellings with spaces or underscores; a bare "Translation" stays empty and "Meaning" keeps the glossary (owner, 2026-10-09) |
+| Error logs | Now: the translation logs get the missing details (Bing's token renewal with its statusCode, the shape of an unreadable answer as types and keys without values, damaged service settings, the TLS cause chain). The other features' logs are checked in the network audit (request 54), which goes through every network call anyway (owner, 2026-10-09) |
+| Network error texts | One parser of network exceptions in `core:common` with one set of kinds and texts (a certificate not yet valid or expired → "check the date and time", 5xx → "the service is unavailable", unknown host, timeout…), wired to every network feature in the network audit (request 54); the translators get the date-and-time hint now (owner, 2026-10-09) |
 | Translated text | The sentence around the word, the same one `{sentence}` puts into the Anki note (owner, 2026-10-09) |
 | Translation language | The app's interface language by default (English when that is the source language); a setting changes it (owner, 2026-10-09) |
 | Accessibility disclosure | A dialog when "Open accessibility settings" is tapped while no agreement is saved: what the service reads and where it goes, "Agree" opens the settings, "Not now" closes it; after an agreement it no longer appears (again after a settings reset). The cloud service stays unnamed ("cloud recognition"), as everywhere else. The same text can be read again under About, without the agreement button (owner, 2026-10-09) |
@@ -217,6 +223,11 @@ Places that use the network (inventory of 2026-10-09, to be checked again when t
 - Custom popup CSS: stylesheets and fonts from the internet load in the WebView (the page's content security policy
   allows only those).
 - Not the app's own requests: links that open the browser (dictionary links, About, GitHub).
+
+Also in this work (request 56, decided): every network call's failures are logged with what explains them (kind,
+HTTP status, exception class chain, answer shape) and no user data; one parser of network exceptions in
+`core:common` (kinds and texts shared by every feature, e.g. a certificate not yet valid → "check the date and
+time", 5xx → "the service is unavailable") replaces the per-feature ones, starting from `TranslationError`.
 
 Open questions for the owner, to ask when the work starts:
 
@@ -345,6 +356,24 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - Q5. The bubble menu opens below the bubble, where the finger holding it may cover it; the decision row came from the cloud session without an owner mark [left below; alternative: above first]. Answer: above first, never under the screen's edge.
 - Q6. The menu now also closes when another app comes to the front (Home, app switch); Back still does not close it [done, extends the decision row]. Answer: Back closes it, and so does a tap anywhere outside it.
 
+## Code review: dock and translation
+
+Owner's command (2026-10-09): `/code-review xhigh --fix` over the changes of 2026-10-08 and 2026-10-09 (top and bottom dock, auto-hide, sentence translation, its copy button). Findings:
+
+1. A note's 5 s wait for its translation counted from the ➕ tap, so time in the crop editor used it up; the request still starts at ➕, and the wait now starts when the note is ready. Fixed.
+2. A bubble removed while a finger was on it (the next app hides it) kept `touching` set, so the bottom dock ignored the keyboard until the next touch; removing the windows clears it. Fixed.
+3. `resizeBubble` set the window's size before placing it, so the update could be skipped when x and y stayed the same; only the size is stored first now. Fixed.
+4. Two Bing requests refused at once both cleared the token, so the second threw away the token the first had just fetched; only the refused token is dropped now. Fixed.
+5. The translation cache kept an entry made again after it expired in its old place, so the newest entry was evicted first; it moves to the end now. Fixed.
+6. The popup rebuilt the translation block on every header redraw (status updates too), resetting its scroll and its copy button; it is drawn again only when the translation changes (page test). Fixed.
+7. The key that decides whether a new scan result keeps the translation ignored the kanji, so another kanji in the same sentence kept it; the kanji is part of the key now (page test). Fixed.
+8. The controller built the popup's error answer itself, besides `SentenceTranslation.forPopup`; `forPopup` now gives every answer. Fixed.
+9. The bubble's center was computed back from a top dock's window inline; `DockPlacement.center` does it next to `window`, with a round-trip test. Fixed.
+10. `SentenceTranslation` has no unit tests. Skipped: the overlay module has no Android test setup, and faking `SentenceTranslator` needs an interface outside the reviewed changes; its parts are covered in `core:translate`.
+11. `debug-device.sh` repeated the viewer's start command in two branches. Fixed.
+
+Also done with the review (requests 55 and 56, translation part): every translation failure is logged with its kind and a detail without text (an unexpected answer's shape, a missing part of Bing's token page, a refused token's status), stored services that cannot be read are logged, and a certificate not valid at the device's date gets its own text asking to check the date and time.
+
 ## Changelog
 
 - 2026-09-29: plan created from the owner's feedback.
@@ -451,3 +480,6 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-09: owner answers on the translation details: Senren's sentence translation field (SentenceTranslation, and sentenceEng in older versions) gets `{sentence-translation}` in the suggested templates; the settings test waits 15 s per service; the translate button stays hidden on messages and on views opened from dictionary links; the "Google only" / "Bing and Edge only" notes stay in the settings' language list, and the popup names only the service that translated.
 - 2026-10-09: fixed on the way: a scan result that arrived after the translate tap (the cloud result after app text) re-rendered the popup and dropped the translation; the page now keeps it while the popup stays open and the word and sentence are the same. A certificate or TLS failure of a translation service has its own message instead of "Could not reach the server".
 - 2026-10-09: request 54 (network audit and an offline mode, backlog); inventory and open questions in its section.
+- 2026-10-09: owner's command `/code-review xhigh --fix` over the changes of 2026-10-08 and 2026-10-09 (top and bottom dock, auto-hide, sentence translation); findings in the section "Code review: dock and translation".
+- 2026-10-09: requests 55 (field templates for more note types) and 56 (error logs and clear network error texts); owner answers: presets for Kiku, jp-mining-note, Basic Mining Deck and Kaishi plus more aliases; the translation field only for names with "sentence"; the translation logs completed now, the rest of the logs and one shared network error parser in the network audit (54), the translators' date-and-time hint now.
+- 2026-10-09: review findings fixed except the overlay's `SentenceTranslation` tests (no test setup there); translation errors carry a detail for the logs and a certificate-date kind.

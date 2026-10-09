@@ -74,6 +74,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Нет подключения к сети.</string>
     <string name="translation_error_timeout">Не ответил вовремя.</string>
+    <string name="translation_error_clock">Сертификат сервера не действует на дату устройства: проверьте дату и время.</string>
     <string name="translation_error_secure">Не удалось установить защищённое соединение (сертификат или TLS).</string>
     <string name="translation_error_network">Не удалось связаться с сервером.</string>
     <string name="translation_error_http">Сервер ответил ошибкой %1$d.</string>

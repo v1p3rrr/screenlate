@@ -804,6 +804,34 @@ test('a popup opened again starts without the translation, also for the same sen
     assert.equal(box.hidden, true);
 });
 
+test('status updates keep the translation block as built, with its copy button', () => {
+    const sentence = '猫が好きです。';
+    Popup.setTranslation({ enabled: true });
+    Popup.render(state({ labels: translateLabels, sentence }));
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'I like cats', service: 'Bing', sentence });
+    const copy = page.document.querySelector('.action-copy-translation');
+
+    Popup.update(state({ labels: translateLabels, sentence, pending: true }));
+    Popup.render(state({ labels: translateLabels, sentence, engine: 'Lens' }), { continued: true });
+    assert.equal(page.document.querySelector('.action-copy-translation'), copy);
+});
+
+test('another kanji in the same sentence drops the translation', () => {
+    const sentence = '猫と犬。';
+    const kanji = character => state({ labels: translateLabels, sentence, results: [], kanji: { character, entries: [] } });
+    Popup.setTranslation({ enabled: true });
+    Popup.render(kanji('猫'));
+    const box = page.document.getElementById('translation');
+    page.document.getElementById('translate').click();
+    Popup.showTranslation(1, { text: 'Cats and dogs.', service: 'Bing', sentence });
+
+    Popup.render(kanji('猫'), { continued: true });
+    assert.equal(box.hidden, false);
+    Popup.render(kanji('犬'), { continued: true });
+    assert.equal(box.hidden, true);
+});
+
 test('a pushed view hides the translation until back returns to the first view', () => {
     Popup.setTranslation({ enabled: true });
     Popup.render(state({ labels: translateLabels }));

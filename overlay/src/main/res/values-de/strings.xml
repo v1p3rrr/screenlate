@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Keine Netzwerkverbindung.</string>
     <string name="translation_error_timeout">Keine rechtzeitige Antwort.</string>
+    <string name="translation_error_clock">Das Zertifikat des Servers gilt nicht für das Datum des Geräts: Prüfe Datum und Uhrzeit.</string>
     <string name="translation_error_secure">Sichere Verbindung fehlgeschlagen (Zertifikat oder TLS).</string>
     <string name="translation_error_network">Der Server ist nicht erreichbar.</string>
     <string name="translation_error_http">Der Server hat mit Fehler %1$d geantwortet.</string>

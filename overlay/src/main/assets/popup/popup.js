@@ -84,6 +84,8 @@ const Popup = (() => {
     let translationEnabled = false;
     /** The first view's translation: null, or { request, state: 'loading' | 'done' | 'error', text, service, error }. */
     let translation = null;
+    /** The translation the block was last built for. */
+    let drawnTranslation = null;
     let translationRequests = 0;
 
     document.getElementById('close').addEventListener('click', () => ScreenlateBridge.onClose());
@@ -153,7 +155,11 @@ const Popup = (() => {
     }
 
     function termsKey(state) {
-        return JSON.stringify([state?.message, (state?.results || []).map(r => [r.term.expression, r.term.reading])]);
+        return JSON.stringify([
+            state?.message,
+            state?.kanji?.character,
+            (state?.results || []).map(r => [r.term.expression, r.term.reading]),
+        ]);
     }
 
     function drawResults(state) {
@@ -254,8 +260,12 @@ const Popup = (() => {
         translationBox.hidden = !shown || translation === null;
         if (translationBox.hidden) {
             translationBox.replaceChildren();
+            drawnTranslation = null;
             return;
         }
+        // Built again only when it changed: header redraws (OCR status) would lose its scroll and a tap on copy.
+        if (translation === drawnTranslation) return;
+        drawnTranslation = translation;
         translationBox.dataset.state = translation.state;
         if (translation.state === 'loading') {
             const loading = element('div', 'translation-loading');

@@ -153,6 +153,8 @@ class SentenceTranslator internal constructor(
     private fun translatorOf(service: TranslationService): Translator = translators.first { it.service == service }
 
     private fun keep(key: Key, result: TranslationResult) {
+        // Taken out first, so a translation made again after its entry expired goes to the end and is evicted last.
+        kept.remove(key)
         kept[key] = Kept(result, clock())
         while (kept.size > CACHE_SIZE) kept.remove(kept.keys.first())
     }

@@ -36,6 +36,20 @@ class AnswerParsingTest {
     }
 
     @Test
+    fun `a bad answer tells its shape without the values`() {
+        val refusal = assertThrows(TranslationException::class.java) {
+            MicrosoftAnswer.parse("""{"statusCode":400,"errorMessage":"猫が好き","猫":1}""")
+        }
+        assertThat(refusal.error.detail).isEqualTo("{statusCode: number, errorMessage: string, ?: number}")
+        val nested = assertThrows(TranslationException::class.java) { GoogleTranslator.parse("""[null,"ja",[true]]""") }
+        assertThat(nested.error.detail).isEqualTo("[3: null]")
+        assertThat(answerShape("""[{"translations":[{"text":"猫"}]}]""")).isEqualTo("[1: {translations: [1: {…}]}]")
+        assertThat(answerShape("<html>猫</html>")).isEqualTo("HTML, 14 chars")
+        assertThat(answerShape("猫が好き")).isEqualTo("not JSON, 4 chars")
+        assertThat(refusal.error.toString()).doesNotContain("猫")
+    }
+
+    @Test
     fun `Bing's token page`() {
         val page = """<div id="rich_tta" data-iid="translator.5023"></div><script>_G={IG:"2F1E0C",EF:{}};""" +
             """var params_AbusePreventionHelper = [1791500740887,"KAnzVAfT-ken",3600000];</script>"""
@@ -55,14 +69,16 @@ class AnswerParsingTest {
             BingTranslator.parseTokenPage("""<div data-iid="translator.1"></div>IG:"A"""", "https://www.bing.com/".toHttpUrl(), 0)
         }
         assertThat(error.error.kind).isEqualTo(TranslationError.Kind.BAD_ANSWER)
+        assertThat(error.error.detail).startsWith("token page without AbusePreventionHelper")
     }
 
     @Test
     fun `Bing's captcha and refused token`() {
         val captcha = assertThrows(TranslationException::class.java) { BingTranslator.parseTranslation("""{"ShowCaptcha":true}""") }
         assertThat(captcha.error.kind).isEqualTo(TranslationError.Kind.CAPTCHA)
-        assertThrows(BingTranslator.TokenRejectedException::class.java) {
+        val refused = assertThrows(BingTranslator.TokenRejectedException::class.java) {
             BingTranslator.parseTranslation("""{"statusCode":205,"errorMessage":""}""")
         }
+        assertThat(refused.status).isEqualTo("205")
     }
 }

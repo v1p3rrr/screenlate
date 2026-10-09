@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s: %2$s</string>
     <string name="translation_error_offline">Nessuna connessione di rete.</string>
     <string name="translation_error_timeout">Nessuna risposta in tempo.</string>
+    <string name="translation_error_clock">Il certificato del server non è valido per la data del dispositivo: controlla data e ora.</string>
     <string name="translation_error_secure">Connessione sicura non riuscita (certificato o TLS).</string>
     <string name="translation_error_network">Impossibile raggiungere il server.</string>
     <string name="translation_error_http">Il server ha risposto con l’errore %1$d.</string>

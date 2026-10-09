@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s：%2$s</string>
     <string name="translation_error_offline">ネットワークに接続されていません。</string>
     <string name="translation_error_timeout">時間内に応答がありませんでした。</string>
+    <string name="translation_error_clock">サーバーの証明書が端末の日付では有効ではありません。日付と時刻を確認してください。</string>
     <string name="translation_error_secure">安全な接続に失敗しました（証明書または TLS）。</string>
     <string name="translation_error_network">サーバーに接続できませんでした。</string>
     <string name="translation_error_http">サーバーがエラー %1$d を返しました。</string>

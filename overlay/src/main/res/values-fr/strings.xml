@@ -73,6 +73,7 @@
     <string name="translation_service_error">%1$s : %2$s</string>
     <string name="translation_error_offline">Pas de connexion réseau.</string>
     <string name="translation_error_timeout">Pas de réponse à temps.</string>
+    <string name="translation_error_clock">Le certificat du serveur n’est pas valide à la date de l’appareil : vérifiez la date et l’heure.</string>
     <string name="translation_error_secure">Échec de la connexion sécurisée (certificat ou TLS).</string>
     <string name="translation_error_network">Impossible de joindre le serveur.</string>
     <string name="translation_error_http">Le serveur a répondu par l’erreur %1$d.</string>

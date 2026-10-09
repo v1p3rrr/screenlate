@@ -58,11 +58,16 @@ From the request shapes above and plainheart/bing-translate-api (MIT, `src/index
 
 - The cascade, the settings test and the popup are in `core:translate`, `overlay/translate` and app `translate/`; the
   design is in `ai/plans/2026-09-29-feedback-after-0.1.4.md`, section "Sentence translation".
-- Logs: each service's outcome with its time and `TranslationError` kind (`SentenceTranslator`), the settings test's
-  failures too; never the sentence, the translation or a URL. Exceptions go through `redacted()`.
+- Logs: each service's outcome with its time and `TranslationError` (`SentenceTranslator`), the settings test's
+  failures too; never the sentence, the translation or a URL. Exceptions go through `redacted()`. The error's `detail`
+  says more without text: an unexpected answer's shape (`answerShape`: JSON types, field names that look like
+  identifiers, array sizes, or "HTML, N chars"), which part of Bing's token page was missing, a refused token's
+  `statusCode`.
 - The emulator's clock may lag behind the real date (seen: 2026-09-27 against 2026-10-09). Microsoft's certificates
   (Bing, Edge) were newer than that clock, so both failed with `CertificateNotYetValidException` (wrapped in
-  `SSLHandshakeException`, shown as "Secure connection failed (certificate or TLS)") and only Google answered; Bing's
-  test took about 9 s before it failed (OCSP). Not a service problem: check the device clock before blaming a service.
+  `SSLHandshakeException`) and only Google answered; Bing's test took about 9 s before it failed (OCSP). Not a service
+  problem: check the device clock before blaming a service. Such a failure is now `CERTIFICATE_DATE` (the cause chain
+  holds `CertificateNotYetValidException` or `CertificateExpiredException`; on the emulator it sits under
+  `CertPathValidatorException`), and the popup and the settings test ask to check the date and time.
 - A scan result that arrives after the translate tap (the cloud result after app text) renders the popup again; the
   page keeps the translation only while the popup stays open and the word and the sentence are unchanged.

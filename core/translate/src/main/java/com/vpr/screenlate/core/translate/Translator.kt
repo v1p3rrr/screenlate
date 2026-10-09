@@ -7,6 +7,14 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
 import okhttp3.Call
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
@@ -59,20 +67,64 @@ internal fun Response.successBody(): String {
     return body.string()
 }
 
-/** Reads an answer with [parse]; an answer of another shape is [TranslationError.Kind.BAD_ANSWER]. */
-internal inline fun <T> parseAnswer(parse: () -> T): T = try {
+/**
+ * Reads [body] with [parse]; an answer of another shape is [TranslationError.Kind.BAD_ANSWER], with the answer's shape
+ * ([answerShape]) for the logs.
+ */
+internal inline fun <T> parseAnswer(body: String, parse: () -> T): T = try {
     parse()
 } catch (e: TranslationException) {
-    throw e
+    if (e.error.kind == TranslationError.Kind.BAD_ANSWER && e.error.detail.isEmpty()) badAnswer(answerShape(body)) else throw e
 } catch (e: SerializationException) {
-    throw TranslationException(TranslationError.Kind.BAD_ANSWER)
+    badAnswer(answerShape(body))
 } catch (e: IllegalArgumentException) {
-    throw TranslationException(TranslationError.Kind.BAD_ANSWER)
+    badAnswer(answerShape(body))
 } catch (e: IndexOutOfBoundsException) {
-    throw TranslationException(TranslationError.Kind.BAD_ANSWER)
+    badAnswer(answerShape(body))
 }
 
-internal fun badAnswer(): Nothing = throw TranslationException(TranslationError.Kind.BAD_ANSWER)
+internal fun badAnswer(detail: String = ""): Nothing =
+    throw TranslationException(TranslationError(TranslationError.Kind.BAD_ANSWER, detail = detail))
+
+/**
+ * An answer's shape for the logs, without its values: JSON types, the keys of objects (the service's field names
+ * only), the sizes of arrays, a few levels deep; for an answer that is no JSON, its length and whether it is HTML.
+ */
+internal fun answerShape(body: String): String {
+    // The parser takes a bare word for a value, so a page that is no JSON may still parse.
+    val json = runCatching { Json.parseToJsonElement(body) }.getOrNull()?.takeUnless { it.isBareWord() }
+    return when {
+        json != null -> shapeOf(json, SHAPE_DEPTH)
+        body.trimStart().startsWith("<") -> "HTML, ${body.length} chars"
+        else -> "not JSON, ${body.length} chars"
+    }
+}
+
+private fun shapeOf(element: JsonElement, depth: Int): String = when (element) {
+    is JsonObject -> if (depth == 0) {
+        "{…}"
+    } else {
+        val more = if (element.size > SHAPE_KEYS) ", …" else ""
+        element.entries.take(SHAPE_KEYS).joinToString(", ", "{", "$more}") { (key, value) ->
+            // Field names only: a key of another form might carry text.
+            "${key.takeIf { SHAPE_KEY.matches(it) } ?: "?"}: ${shapeOf(value, depth - 1)}"
+        }
+    }
+    is JsonArray -> if (depth == 0 || element.isEmpty()) "[${element.size}]" else "[${element.size}: ${shapeOf(element[0], depth - 1)}]"
+    JsonNull -> "null"
+    is JsonPrimitive -> when {
+        element.isString -> "string"
+        element.booleanOrNull != null -> "boolean"
+        else -> "number"
+    }
+}
+
+private fun JsonElement.isBareWord(): Boolean =
+    this is JsonPrimitive && this !is JsonNull && !isString && booleanOrNull == null && doubleOrNull == null
+
+private const val SHAPE_DEPTH = 3
+private const val SHAPE_KEYS = 8
+private val SHAPE_KEY = Regex("[A-Za-z_][A-Za-z0-9_]{0,31}")
 
 /** A desktop browser's: the endpoints are the ones the services' web pages and browsers use. */
 internal const val BROWSER_USER_AGENT =
