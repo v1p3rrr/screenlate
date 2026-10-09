@@ -4,7 +4,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 
 ## Next session (handoff, 2026-10-01)
 
-- State: `main` is clean and pushed; last release v0.2.1 (2026-10-01, tagged by the owner on bec507b). Everything since is merged into main and was checked on the emulator, see the log entry "checks of the cloud work" (2026-10-02); v0.2.2 waits for the owner's command. All module reviews and
+- State (2026-10-09): last release v0.2.2, see the log entry "release v0.2.2". Earlier: v0.2.1 (2026-10-01, tagged by the owner on bec507b). All module reviews and
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
   Requests 12 (spinner while the hidden-apps list loads), 13 (kanji entry when no word is found) and 14 (bundled
   KANJIDIC, kept aside when one is installed) are done. 15 (popup above/below instead of squeezed at the side) is done.
@@ -811,6 +811,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   the bubble menu open the app through `OverlayIntents.openApp`; stale KDoc; `AccessibilityAgreedTest`.
 - Checked on the emulator: the docked bubble keeps its resting transparency, holding the tile opens the app. Unit tests
   pass.
-- The three JVM crash logs committed in 7e35544 are removed from the tree but remain in the public history; the
-  history rewrite was blocked for the agent, so the owner runs the script (`git filter-branch` over 38856bf..HEAD, then
-  a force push).
+- The three JVM crash logs committed with the accessibility dialog are gone from the public history: the owner ran
+  `git filter-branch` over 38856bf..HEAD and force-pushed (the rewrite was blocked for the agent). Commits after
+  38856bf got new hashes (the dialog is eb73ca3, the review fixes 3204235); other clones must reset to origin/main.
+
+### 2026-10-09 (release v0.2.2)
+
+- Owner: "можешь релизить"; version v0.2.2 (asked: v0.3.0 or v0.2.2). Notes in `.github/release-notes/v0.2.2.md`
+  list the features since v0.2.1 by area; bug fixes are one sentence (owner). Tagged and pushed by the agent; the
+  release workflow builds and publishes.
