@@ -106,6 +106,53 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
   To be asked with the concrete questions.
 - Test material: `testdata/ocr/en-sample.png` and `zh-sample.png`.
 
+## Handoff (2026-10-09, end of the research session)
+
+Everything found is in `notes/languages.md`: Yomitan's language support, hoshidicts, the experiment ("Experiment",
+"Russian"), dictionaries with licenses and gloss-language coverage ("Catalog candidates and licenses"), OCR sizes.
+
+Branch `experiment/languages` (pushed; may be thrown away, pieces reusable):
+- 0732dea English and Chinese, 89f9073 Russian, acf21f1 Korean (`KoreanSupport`, letter resolution) plus
+  `scripts/yomitan-language/harness/` (native lookup harness for the emulator) and `scripts/yomitan-language/tools/`
+  (`ru_peek.py` rows of a dictionary, `split_formof.py` split lemma and form-of rows, `wty_pairs.py` table of wty
+  sizes from the Hugging Face tree API `https://huggingface.co/api/datasets/daxida/wty-release/tree/main/latest/dict/<src>?recursive=true`).
+- Bundles: `node scripts/yomitan-language/build.mjs <Yomitan checkout> <out dir> <iso>...` (after `npm ci` there),
+  output goes to `dictionary/engine-hoshidicts/src/main/assets/yomitan-language/` (en, zh, ru, ko are committed).
+- The overlay's language comes from the file `files/experiment-language` in the debug app (`echo ko | adb shell
+  run-as com.vpr.screenlate.debug tee files/experiment-language`); a uiautomator dump reconnects the service, which
+  re-reads it. Test images: `scripts/text-image.py` (Cyrillic needs `FONT=C:/Windows/Fonts/arial.ttf`),
+  `scripts/debug-device.sh images` and `show <name>.png`; drag the bubble with `input motionevent DOWN/MOVE/UP`, the
+  aim sits about 133 px above the bubble's center.
+
+Emulator state (Pixel_10_Pro, started with `-no-snapshot-save`): debug app with the experiment build (Korean);
+imported in the app: wty-en-ru, wty-en-en, wty-zh-en, wty-ru-en, KRDICT RU (ko→ru); `experiment-language` = `ko`.
+`/sdcard/Download` has wty-en-ru, wty-zh-en, wty-ru-en, KO-RU.KRDICT.No.Examples, Frequency.CC100.Korean.
+`/data/local/tmp/hd`: hoshidicts-cli `hd`, harness `ll`, bundles `y-*.js`, imported wty-en-ru, wty-ko-en,
+wty-zh-en, wty-ru-en. Space on `/data` is short (under 1 GB free); delete test copies there first.
+
+Was in progress:
+- Korean in the popup: KRDICT RU imported (its index.json says target "ko", so the app recorded "ko → ko": the
+  language guess trusts a wrong index); the CC100 frequency dictionary not imported yet; no popup screenshot yet.
+  Next: import the frequency list, render a Korean sample (needs a Korean font for `text-image.py`, e.g.
+  `C:/Windows/Fonts/malgun.ttf`), check deinflection (먹었습니다 → 먹다) and timing (9–18 ms per candidate call).
+
+Still to do before the concrete questions (told to the owner):
+1. Audio per language: whether Lingua Libre and Wiktionary find clips for en, zh, ru, ko when given the language
+   (today the Japanese sources and settings are used).
+2. Compact form-of storage: estimate the size of a form → (lemma, tags) table against the 231 MB of rows.
+3. ML Kit Chinese and Korean recognizers: the real APK delta; Tesseract or PaddleOCR for Cyrillic.
+4. Settings design "global + per language", page by page, as a draft in chat. Starting point: language-bound
+   settings live in the language profile (dictionaries, Anki deck and note type, audio sources, lookup rules such as
+   scan length and text replacements, popup font and CSS), the rest stays global (bubble, appearance, background
+   work, translation services and target language, backup), with per-language overrides only where the owner wants
+   them (e.g. text size).
+5. Then the concrete questions (AskUserQuestion, Russian, recommended option first): QuickJS against
+   `androidx.javascriptengine` or a Kotlin port; form-of at import (hoshidicts "redirects" field via a patch or
+   fork, or our own side table); translating inflection names (en 17, ko ~450 rules); following form-of a second
+   level (ёжика → ёжик → ёж); showing every rule chain; frequency dictionaries we build from wordfreq (CC BY-SA 4.0)
+   for the catalog; the risky dictionaries list; one Chinese profile for both scripts (request 5); the multi-language
+   version branch and per-language branches. Then the implementation plan, built from scratch on that branch.
+
 ## Changelog
 
 - 2026-10-09: plan started with the owner's request, the research (`notes/languages.md`) and the topics above.
@@ -113,3 +160,4 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
 - 2026-10-09: English and Chinese experiment in `experiment/languages`; findings in the notes; requests 8 and 9.
 - 2026-10-09: Russian experiment (request 9) in the same branch.
 - 2026-10-09: request 10 (gloss languages) and its decision row; license survey in the notes.
+- 2026-10-09: Korean started in the experiment branch; handoff section for the next session (owner's request).
