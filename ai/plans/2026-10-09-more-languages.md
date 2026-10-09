@@ -98,8 +98,10 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
   import (the "redirects" field), per-row part-of-speech rules.
 - Done: lookup cost (candidates 0.2–18 ms per call by language, queries 0.1–4 ms).
 - Done: Chinese on device costs about 0 MB more in ML Kit, Korean about 0.8 MB; other engines measured.
-- Open: cloud recognition on Korean screenshots, and which engine read the English and Chinese test screenshots
-  (cloud or ML Kit); word boxes and `content_language`.
+- Done (second session): cloud recognition reads Korean; ML Kit needs the Chinese and Korean recognizers (the
+  Japanese one reads them as garbage), +0.56 MB in the APK for both. Open: word boxes and `content_language`.
+- Done (second session): Korean in the popup (notes, "Korean"), audio per language ("Audio per language"), compact
+  form-of storage ("Compact form-of storage"), Cyrillic engine costs ("OCR"), the settings draft below.
 - Open: whole-word hit testing and highlight for Latin text beyond the experiment's word start; sentence splitting
   with abbreviations.
 - In progress: licenses of catalog candidates per language, a list of risky ones.
@@ -109,6 +111,28 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
   ones, so one Chinese profile works for both scripts; only the `lang` tag and fonts (SC or TC glyph forms) differ.
   To be asked with the concrete questions.
 - Test material: `testdata/ocr/en-sample.png` and `zh-sample.png`.
+
+## Settings: global and per language (draft, 2026-10-09)
+
+Shown to the owner before the concrete questions. "Lang" = kept per language profile, "Global" = one value for
+all languages. A setting that does not apply to a language is hidden in its profile.
+
+| Page | Global | Lang |
+|---|---|---|
+| Home | – | the profile switch (chips of the turned-on languages), "Add a language" (required dictionary, on-device model, Anki guess); search and "Look up in Screenlate" use the active profile |
+| Bubble | show, dock side and edges, aim mode, highlight, haptics, size, small text, text source, hidden apps, recognition engines, "device only when the cloud is late" | the glyph (日 A 中 한 Я) follows the profile, not a setting; a language without an on-device model uses the cloud and says so |
+| Lookup | number of results | scan length (default per language), single character entries (kanji, hanzi, hanja; where a character dictionary exists), romaji (Japanese only), frequency dictionary and order |
+| Popup | recognized text first, close after ➕, close off the word, text size, weight, thickness, definition copy button and mode | font and "font for all text", custom CSS |
+| Anki and audio | AnkiDroid connection, volume, auto-play | deck, note type, field templates (markers offered per language), tags, duplicate check and behavior, audio sources (defaults per language) |
+| Translation | everything (button, Anki field, services, target language) | the source language is the profile's |
+| Dictionaries | storage (one copy per file even when two profiles use it) | which dictionaries are on and their order; the catalog shows the profile's language first |
+| Background work, Appearance, Backup, About | everything | the backup holds every profile |
+| Import from Yomitan | – | each Yomitan profile goes to the profile of its `general.language` |
+
+- Storage: per-language keys carry the language code; today's keys stay Japanese's, so an upgrade keeps everything.
+- Layout options for the owner: the language-bound items stay on today's pages in a block named after the profile
+  with a language switch on the page (one language looks as today), or a "Languages" section with a page per
+  language holding all of them.
 
 ## Handoff (2026-10-09, end of the research session)
 
@@ -139,6 +163,10 @@ Was in progress:
   language guess trusts a wrong index); the CC100 frequency dictionary not imported yet; no popup screenshot yet.
   Next: import the frequency list, render a Korean sample (needs a Korean font for `text-image.py`, e.g.
   `C:/Windows/Fonts/malgun.ttf`), check deinflection (먹었습니다 → 먹다) and timing (9–18 ms per candidate call).
+
+Second session (2026-10-09): the Korean popup check and items 1–4 below are done (notes and the settings draft);
+the frequency list is imported, KRDICT's wrong "ko → ko" stays as is on the emulator. Next: the concrete questions
+(item 5), then the new plan (item 6).
 
 Still to do before the concrete questions (told to the owner):
 1. Audio per language: whether Lingua Libre and Wiktionary find clips for en, zh, ru, ko when given the language
@@ -175,3 +203,5 @@ the imported dictionaries).
 - 2026-10-09: request 11 (priority languages by popularity among learners); the order of languages revised by
   the owner: the first three as before, then the five most learned European languages, then the remaining
   interface languages, then the rest.
+- 2026-10-09: second session: Korean checked in the popup, audio per language, compact form-of storage, ML Kit
+  Chinese and Korean measured, Cyrillic engine costs, settings draft (notes and the section above).

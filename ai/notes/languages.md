@@ -168,10 +168,26 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
   2.02. The models are assets, not per ABI. The Japanese AAR already holds `Hani_ctc/optical/lstm_model.fb`
   (891,872 B, the same file as in the Chinese AAR) and `Latn_ctc` (309,568 B); Korean adds `Kore_ctc` (795,904 B).
   So on-device Chinese costs about 0 MB more, Korean about 0.8 MB.
+- Measured in the APK (2026-10-09, debug build, `text-recognition-chinese` and `-korean` 16.0.1 next to the Japanese
+  one): +559 KB compressed for both. Korean adds `Kore_ctc` (lstm 796 KB, 500 KB compressed; conv model and label
+  map 70 KB) and both add a few 13 KB engine configs (`taser_tflite_gocr{chinese,korean}_and_latin_*`); the Hani
+  and Latin models are shared files, merged once. No native library changes (`libmlkit_google_ocr_pipeline.so`
+  is common).
+- Each script needs its own recognizer: the Japanese one runs the `Jpan` model. On the OCR test screen with the
+  cloud blocked (emulator, ~1 s per image): the Japanese recognizer read simplified Chinese as 我作己祭吃対坂了 and
+  学羽中文役有意思, and Korean as one garbage line (O1型子9世音円以合C); the Chinese and Korean recognizers read the
+  samples correctly (one 壞 came out as 壊). Latin reads fine with the Japanese recognizer.
 - Other on-device engines for the scripts ML Kit lacks: PaddleOCR PP-OCRv5 (Apache-2.0) script models Cyrillic
   ~7.5–8 MB, Arabic ~7.6–8, Devanagari ~7.6–7.9, Korean 13.4, ch/ja/en 16.6, detector 4.6 MB, runtimes ONNX Runtime,
   MNN, ncnn or Paddle Lite; Tesseract `tessdata_fast` (download/installed): rus ~1.4/3.7 MB, ukr 3.8, ara ~0.7/1.4,
   heb ~0.4/0.9, tha ~0.9/1.0. Both could be downloaded like catalog items.
+- Cyrillic on device, costs (2026-10-09): Tesseract4Android 4.9.0 AAR 12.8 MB for four ABIs (about 3.2 MB per ABI
+  in a per-ABI APK, ~10 MB in the universal one; Apache-2.0) plus `rus.traineddata` fast 3.9 MB (best 15.3 MB),
+  `ukr` 3.8 MB as downloads. PaddleOCR through ONNX Runtime: `onnxruntime-android` 1.22.0 AAR 28.5 MB for four ABIs
+  (about 7 MB per ABI; a reduced build is smaller) plus the detector 4.6 MB and the East Slavic recognizer
+  (`eslav_PP-OCRv5_mobile_rec`) ~7.5 MB. ncnn or MNN builds of PP-OCR are smaller but not packaged. Native
+  libraries cannot be downloaded later in a clean way, so the runtime goes into the APK and only the models can be
+  catalog downloads. Recognition quality on real screenshots not compared yet.
 - `TextLayout` hit testing knows horizontal, vertical and rotated lines; right-to-left lines (Arabic, Hebrew) are not
   handled.
 
@@ -253,3 +269,69 @@ Same branch, wty ru→en (2026-10-04 build, 25 MB zip). Yomitan's Russian descri
   - Homographs have no useful order without a frequency dictionary (послать before пойти).
   - Audio found nothing: the audio sources are the Japanese ones (JapanesePod101, the custom server); per-language
     sources are part of the settings design.
+
+### Korean (2026-10-09, second session)
+
+Same branch, `KoreanSupport` (letter resolution inside the spaced word, as Yomitan), KRDICT RU (ko→ru) and the CC100
+Korean frequency list imported in the app, `testdata/ocr/ko-sample.png` (five sentences, Malgun Gothic).
+
+- Cloud recognition read the Korean screenshot (5 paragraphs, 2.4 s); the Japanese ML Kit draft read one line.
+- Popup: 먹었습니다 → 먹다 (chain "-았/었 « -(스)ㅂ니다", CC100 285), 싶어요 → 싶다 (-아/어요), 갔어요 → 가다
+  (-았/었 « -아/어요), 읽고 → 읽다 (-고), 공부하고 → 공부하다 (-고) then 공부, 한국어를 → 한국어. The whole word
+  is highlighted. Lookups take 21–53 ms in the app (candidates 9–18 ms of it).
+- Yomitan's Korean rule names are the endings themselves (-았/었, -고), so they need no translation.
+- The aim starts the lookup at the aimed syllable, as in Yomitan (Korean is excluded from its word scan
+  resolution): aimed at 었 of 먹었습니다 the popup shows the ending -었-, aimed at 부 of 공부하고 it shows 부하 (負荷).
+  Starting at the start of the spaced word would find 먹다 from any syllable, but no longer the parts of a compound.
+- KRDICT orders homographs by its own number: 먹다¹ "go deaf" before 먹다² "eat" (the ★★★ marks the basic word).
+- wty ko→en also has 387 K form-of rows (420 K form items; 47 MB installed of 57 MB).
+
+### Audio per language (2026-10-09)
+
+The app's own Commons searches (`AudioPages.linguaLibreSearch`, `wiktionarySearch`) run for ten common words per
+language from the PC (`scripts/yomitan-language/tools/commons_audio.py` in the experiment branch; Commons answers
+429 to fast series, so it waits 2 s between requests; each search 0.4–0.7 s):
+
+| Language | Lingua Libre | Wiktionary (`Xx-term.ogg`) | Notes |
+|---|---|---|---|
+| en | 9/10 | 10/10 | accents in the title: En-us, En-uk, En-au, En-in, En-ca; "look up" has one En-au clip |
+| ru | 6/10 | 10/10 | `Ru-кошка.ogg`, by the lemma without stress marks |
+| ko | 5/10 | 7/10 | `Ko-먹다.ogg`; 공부하다 has none |
+| zh | 2/10 with Q727694, 4/6 with Q9192 | 0/10 by characters | see below |
+
+- Mandarin: Lingua Libre files it as `LL-Q9192 (cmn)-…` (Q727694 has one speaker); Cantonese as `LL-Q9186 (yue)`.
+  Wiktionary's Mandarin clips are named by pinyin with tone marks (`Zh-péngyou.ogg`, `Zh-shuǐ.ogg`, `Zh-tiānqì.ogg`,
+  `Zh-māo.oga`), some with tone numbers (`Cmn-shan1.flac`), dialects add a place (`Zh-Chengdu-mao1.ogg`). So the
+  Wiktionary source must search Chinese by the reading in pinyin (wty readings look like "nǎo (nao³)", CC-CEDICT's
+  have tone marks), not by the characters.
+- Lingua Libre's pattern `-.*-term.wav` also matches compounds and phrases ending in the word: "kitty-cat",
+  "she-cat", "summer-house", "акула-кошка", "транс-человек"; the first result may be one of them. Japanese never had
+  hyphens, so it did not show. A title whose part before `-term.wav` still contains a hyphen after the speaker is
+  ambiguous (speaker names can hold hyphens too); such titles should go last.
+- Phrases: Lingua Libre has none for "look up"; Wiktionary has a few phrase clips.
+- JapanesePod101, LanguagePod101 and Jisho are Japanese only; text to speech covers every language the phone has a
+  voice for (played only, never put into notes).
+
+### Compact form-of storage (2026-10-09)
+
+Measured on the wty dictionaries with `scripts/yomitan-language/tools/formof_size.py` and `redirects_size.py`
+(experiment branch). A side table of our own: sorted distinct forms front-coded in blocks of 16 (binary search over
+block starts), per form a varint count and (lemma id, tag set id) varints, a lemma table and a tag set table.
+
+| Dictionary | Form-of rows | Form items | Distinct forms | Lemmas | Tag sets | Compact table | Installed today |
+|---|---|---|---|---|---|---|---|
+| wty ru→en | 1,432,414 | 1,770,513 | 990,678 | 114,289 | 1,146 | 19.4 MB | 231 MB of 273 |
+| wty ko→en | 387,390 | 420,361 | 358,814 | 45,422 | 823 | 5.8 MB | ~47 MB of 57 |
+| wty zh→en | 157,318 | 168,057 | 142,800 | 112,096 | 306 | 2.9 MB | – |
+| wty en→ru | 15,720 | 15,800 | 13,664 | 8,860 | 170 | 0.3 MB | – |
+
+- ru→en: the form keys take 6.4 MB front-coded (20.9 MB raw), the entries 7.9 MB plus 4 MB of offsets, lemmas
+  1.2 MB, tag sets 45 KB. About 12 times smaller than the rows; the whole dictionary would take about 40 MB
+  instead of 273 MB.
+- hoshidicts' "redirects" field instead (format ≥ 2): the record keeps the strings inline (length-prefixed lemma and
+  every tag) and the index still holds the expression and the reading of every row (1.95 M keys for ru→en): about
+  226 MB of records plus the hash table, no smaller than today. It would only save parsing the glossary per query.
+- Tags: wty uses 654 distinct tag words in ru→en and 1,180 in ko→en (with noise like dialect and romanization
+  names); the first 40 cover the grammar (plural, singular, masculine, instrumental, …, second-person, participle,
+  perfective). Translating the grammatical ones is a closed list of about 100–150 words.
+- None of the four dictionaries has a row mixing definitions and form-of items.
