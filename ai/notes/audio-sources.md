@@ -27,3 +27,8 @@ with a 5 s budget per source, and keeps found clips for a minute.
 A Yomitan local-audio style server (`?term={term}&reading={reading}`) answering `audioSourceList` JSON with NHK16,
 SMK8 and Forvo clips (opus). It must be a "Custom URL (JSON)" source; as a "Custom URL" source it found nothing, which
 the source test now reports (`AudioError.Kind.SOURCE_LIST`).
+
+## Other languages
+
+Lingua Libre and Wiktionary results for English, Russian, Korean and Chinese, the Mandarin codes and pinyin file
+names, and the compound matches of the Lingua Libre pattern: `languages.md`, "Audio per language".
