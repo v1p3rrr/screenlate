@@ -23,6 +23,14 @@ in the language branch once the hypotheses below are checked. Research findings:
    easier) in an experimental branch to check the hypotheses, then ask concrete questions in the language branch,
    agree on the implementation plan, and build it from scratch there (the experiments may be thrown away, at most
    their pieces reused).
+8. (2026-10-09) Owner's questions: is hoshidicts only for Japanese or for every language like Yomitan, and would the
+   fix be a library in another language built in? Answered: storage, query and sorting are language-agnostic; only
+   text processing and deinflection are Japanese. The fix tried in the experiment is Yomitan's own language code
+   run in QuickJS (a small C JavaScript engine, MIT, compiled into the same native library, about +1.3 MB per ABI)
+   plus native form-of following; alternatives are `androidx.javascriptengine` or a Kotlin port. The choice is a
+   concrete question for later.
+9. (2026-10-09) Also experiment with a language that has no deinflection rules in Yomitan and gets its forms only
+   from the dictionary's form-of entries, e.g. Russian.
 
 ## Decisions
 
@@ -74,17 +82,28 @@ Yomitan's rules, which stay in the GPL modules) come with a recommendation after
 
 ## To find out (agent)
 
-- A real Wiktionary dictionary (e.g. en→en, 103 MB) in our engine: import time, lookup speed, how its form-of
-  entries look in the popup today.
-- What extending hoshidicts takes: a language parameter for text processors and deinflection, following form-of
-  entries; a fork of the submodule or patches; upstream interest.
-- Lookup cost of case and diacritics variants and phrase prefixes.
-- Cloud recognition on English, Chinese and Korean screenshots: word boxes, spaces, `content_language`.
-- Whole-word hit testing and highlight for Latin text; sentence splitting with abbreviations.
-- Licenses of catalog candidates, English–Russian in particular.
-- Test material: screenshots in the chosen languages for `testdata/ocr/`.
+Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`, "Experiment"):
+
+- Done: wty en→en, en→ru and zh→en imported in the app and looked up in the popup; form-of followed natively.
+  Import time of en→en was not recorded.
+- Done: extending hoshidicts is not needed for the lookup itself: Yomitan's language code in QuickJS makes the
+  candidates, hoshidicts answers exact queries without a submodule change. Optional submodule changes: form-of at
+  import (the "redirects" field), per-row part-of-speech rules.
+- Done: lookup cost (candidates 0.2–18 ms per call by language, queries 0.1–4 ms).
+- Done: Chinese on device costs about 0 MB more in ML Kit, Korean about 0.8 MB; other engines measured.
+- Open: cloud recognition on Korean screenshots, and which engine read the English and Chinese test screenshots
+  (cloud or ML Kit); word boxes and `content_language`.
+- Open: whole-word hit testing and highlight for Latin text beyond the experiment's word start; sentence splitting
+  with abbreviations.
+- In progress: licenses of catalog candidates per language, a list of risky ones.
+- Open: Russian as a language without transforms (request 9).
+- Request 5: CC-CEDICT stores every term under both headwords and wty zh→en links simplified forms to traditional
+  ones, so one Chinese profile works for both scripts; only the `lang` tag and fonts (SC or TC glyph forms) differ.
+  To be asked with the concrete questions.
+- Test material: `testdata/ocr/en-sample.png` and `zh-sample.png`.
 
 ## Changelog
 
 - 2026-10-09: plan started with the owner's request, the research (`notes/languages.md`) and the topics above.
 - 2026-10-09: owner's answers to the general topics (Decisions) and requests 2-7.
+- 2026-10-09: English and Chinese experiment in `experiment/languages`; findings in the notes; requests 8 and 9.

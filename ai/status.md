@@ -253,7 +253,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - On the phone or with the emulator's accessibility service on: crop editor (Frame, Whole screen, two notes in a row, rotation while open), a note right after the popup appears (sentence from the final text), hiding the bubble through a hidden app.
 - On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
-- Phase 8 (more languages) started 2026-10-09 with research and general topics for the owner:
+- Phase 8 (more languages) started 2026-10-09: research, the owner's general answers, an English and Chinese
+  experiment in `experiment/languages`; next a Russian experiment, licenses, the settings design:
   [plans/2026-10-09-more-languages.md](plans/2026-10-09-more-languages.md), findings in `notes/languages.md`.
 - Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 is answered and built (request 57). Request 55 (field templates for more note types) is done too. Next: the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
 - Request 48 (accessibility disclosure with consent) and 58 (holding the tile opens the app) are done. Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
@@ -829,3 +830,12 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   descriptors, transforms and form-of entries, Wiktionary dictionaries and sizes, what hoshidicts and the app fix to
   Japanese, ML Kit scripts); the phase's plan `plans/2026-10-09-more-languages.md` holds the general topics the owner
   answers first. No code changed.
+
+### 2026-10-09 (more languages: English and Chinese experiment)
+
+- Owner's questions (is hoshidicts Japanese-only; would the fix be a built-in library in another language) answered
+  and recorded as request 8. Experiment in the branch `experiment/languages` (commit 0732dea, local only): Yomitan's
+  language code in QuickJS-ng makes the deinflection candidates, hoshidicts answers exact queries, form-of entries are
+  followed natively. English and Chinese work in the popup on the emulator with wty dictionaries. Numbers, design and
+  findings in `notes/languages.md` ("Experiment"); the plan's "To find out" has the status.
+- Owner: also try a language without Yomitan transforms (request 9, Russian). License survey in progress.

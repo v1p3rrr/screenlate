@@ -68,10 +68,17 @@ questions: `plans/2026-10-09-more-languages.md`.
   fr→en 10.5, fr→ru 1.6; es→en 20.7, es→ru 1.0; it→en 16.4; pt→en 10.8; pl→en 21.0; uk→en 9.3, uk→ru 3.1;
   zh→en 20.1 (no zh→ru); ko→en 7.1, ko→ru 0.3; tr→en 16.7; ar→en 13.0; he→en 3.2; la→en 25.2. A small size means
   the gloss-language Wiktionary covers few words of that source language.
-- Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan, CC BY-SA 3.0): terms with pinyin, a Hanzi dictionary
-  (Yomitan's kanji format), Cantonese variants with Jyutping; words.hk for Cantonese.
-- Korean: KRDICT/STDICT (Lyroxide/yomitan-ko-dic).
-- Licenses of other candidates (e.g. English–Russian) are not checked yet.
+- wty main rows of inflected forms look like `["ran","","non-lemma","v",0,[["run",["past"]],…]]`: the glossary holds
+  only `[lemma, [tags]]` items. zh→en uses traditional headwords; simplified spellings are form-of rows tagged
+  "Simplified-Chinese". Readings are like "nǎo (nao³)".
+- Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan; converter MIT, data CC BY-SA 3.0 per the CC-CEDICT wiki,
+  some third parties say 4.0): terms with pinyin, a Hanzi dictionary (Yomitan's kanji format), Cantonese variants
+  with Jyutping (CC-CEDICT Canto, CC-Canto); words.hk for Cantonese. `addTermEntry` stores each term under the
+  traditional and, when different, the simplified headword, so one dictionary and one profile cover both scripts.
+- Korean: KRDICT/STDICT (Lyroxide/yomitan-ko-dic releases): KO-EN KRDICT 15.6 MB (4.3 MB without examples), CC100
+  frequency 1.85 MB, IPA 6.6 MB, STDICT, KRDICT for 11 gloss languages. No license stated in the repo; third parties
+  say the source data is CC BY-SA 2.0 KR (unconfirmed).
+- English–Russian outside Wiktionary: Mueller 7 and FreeDict eng-rus are GPL-2+.
 
 ## OCR
 
@@ -80,6 +87,66 @@ questions: `plans/2026-10-09-more-languages.md`.
 - ML Kit v2 scripts: Latin, Chinese, Devanagari, Japanese, Korean. No Cyrillic for Russian or Ukrainian, no Arabic,
   Hebrew or Thai: those languages have no on-device recognition, only cloud and app text.
 - Models: bundled (`com.google.mlkit`) ~4 MB per script per ABI; unbundled through Google Play services
-  (`com.google.android.gms`) ~260 KB, downloaded on first use, needs Play services.
+  (`com.google.android.gms`) ~260 KB, downloaded on first use, needs Play services (`ModuleInstallClient` installs
+  with progress).
+- The AARs (16.0.1, compressed): text-recognition 1.38 MB, chinese 2.04, korean 1.90, japanese 2.63, devanagari
+  2.02. The models are assets, not per ABI. The Japanese AAR already holds `Hani_ctc/optical/lstm_model.fb`
+  (891,872 B, the same file as in the Chinese AAR) and `Latn_ctc` (309,568 B); Korean adds `Kore_ctc` (795,904 B).
+  So on-device Chinese costs about 0 MB more, Korean about 0.8 MB.
+- Other on-device engines for the scripts ML Kit lacks: PaddleOCR PP-OCRv5 (Apache-2.0) script models Cyrillic
+  ~7.5–8 MB, Arabic ~7.6–8, Devanagari ~7.6–7.9, Korean 13.4, ch/ja/en 16.6, detector 4.6 MB, runtimes ONNX Runtime,
+  MNN, ncnn or Paddle Lite; Tesseract `tessdata_fast` (download/installed): rus ~1.4/3.7 MB, ukr 3.8, ara ~0.7/1.4,
+  heb ~0.4/0.9, tha ~0.9/1.0. Both could be downloaded like catalog items.
 - `TextLayout` hit testing knows horizontal, vertical and rotated lines; right-to-left lines (Arabic, Hebrew) are not
   handled.
+
+## Experiment: Yomitan's language code over hoshidicts
+
+Branch `experiment/languages` (not merged, may be thrown away). Japanese keeps the native hoshidicts path; other
+languages go through Yomitan's own language code run in QuickJS, and hoshidicts only answers exact queries.
+
+- Pieces:
+  - QuickJS-ng v0.17.0 (MIT) as a submodule next to hoshidicts, built into the same native library
+    (`quickjs.c`, `libregexp.c`, `libunicode.c`, `dtoa.c`). No `Intl`: a stub `Intl.Collator` is loaded first, as
+    Yomitan's `Translator` constructor builds one. Calls come from a pool of threads, so every call starts with
+    `JS_UpdateStackTop` (without it QuickJS's stack check failed lookups on IO threads).
+  - Per-language bundles built with esbuild from a Yomitan checkout (`scripts/yomitan-language/build.mjs`): the
+    `Translator` (not prepared, no database) plus one language's descriptor, text processors and transforms; the
+    language list is cut to that language before bundling, as module-level tables of all languages otherwise cost
+    22–30 MB of heap. Korean needs the npm packages `hangul-js` and `kanji-processor` (Yomitan's own build makes
+    `lib/` files from them).
+  - The script returns Yomitan's deinflection candidates (`_getAlgorithmDeinflections`: original text, transformed
+    text, deinflected text, text processor steps, condition flags, inflection rule chains) for every substring;
+    resolution "word" for languages with spaces, "letter" otherwise.
+  - Native code queries each candidate once (exact expression or reading), filters by part-of-speech conditions
+    (`conditions == 0 || conditions & flags(term rules)`, Yomitan's `_partOfSpeechToConditionFlagsMap`), strips
+    `[lemma, [rules]]` glossary items and looks the lemmas up with the rules added to the chain (Yomitan's
+    `_getDictionaryDeinflections`), drops entries left without definitions, keeps one result per headword (longest
+    match), and sorts as Yomitan: matched length, text processor steps, chain length, exact match, frequency,
+    dictionary order, score.
+- Numbers (emulator x86_64): bundles en 48 KB (heap 0.85 MB), zh 43 KB (0.37 MB), ja 209 KB (2.7 MB), ko 270 KB
+  (4.3 MB). One candidate call: en 0.2–1.5 ms, zh < 0.3 ms, ja 2–5 ms, ko 9–18 ms. Querying the candidates in
+  hoshidicts: 0.1–4 ms (cold up to 15 ms). Native library in the APK: arm64 2.65 → 3.96 MB, armv7 2.11 → 3.10,
+  x86_64 2.79 → 4.22 (about +1.3 MB per ABI). QuickJS bytecode (`JS_WriteObject`) is larger than the minified source.
+- In the app popup (wty en→ru, en→en, zh→en): English phrases highlight whole ("looked up to"), form-of works ("ran"
+  → "run"), Russian glosses show; Chinese simplified text finds the traditional headwords through form-of, pinyin
+  shows as ruby.
+- Found:
+  - Inflection names come from Yomitan in English (ko has about 450); they would need translating like
+    `JapaneseInflections`.
+  - "Cats" ranks the name "Cat" above "cat", as Yomitan does (the capitalized form is the exact match).
+  - Alternative forms with equal keys sort alphabetically; a frequency dictionary would fix the order.
+  - Audio sources have nothing for phrases ("No audio found").
+  - The Kotlin `YomitanSorter` sorts again after the engine (primary reading, matched length, steps, chain length,
+    exact, frequency, dictionary index, score, expression length, expression, glossaries).
+  - Form-of could be stored at import time: the record format has a "redirects" field the importer writes as 0;
+    patching the importer would save parsing glossaries per query. Per-row part-of-speech filtering is not possible
+    as is: terms are grouped by (expression, reading) with their rules merged.
+  - hoshidicts stores an empty reading as the expression.
+- Alternatives to QuickJS: `androidx.javascriptengine` (a sandboxed WebView process, asynchronous, needs a recent
+  WebView); a Kotlin port with tables generated from Yomitan's JS and its test cases; the Rust crate `deinflector`
+  (aramrw, aims at a one-to-one port of Yomitan's multi-language transformer, part of yomichan_rs, few languages
+  done).
+- Yomitan's `Translator` talks to its database through `findTermsBulk`, `findTermMetaBulk`, `findKanjiBulk`,
+  `findKanjiMetaBulk`, `findTagMetaBulk`, `findTermsBySequenceBulk`, `findTermsExactBulk`, `getDictionaryInfo`; the
+  experiment calls only its deinflection part and does the rest natively.
