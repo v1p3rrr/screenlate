@@ -1,6 +1,8 @@
 package com.vpr.screenlate.dictionary.engine.hoshidicts
 
 import android.content.Context
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
@@ -32,6 +34,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     private val json = Json { ignoreUnknownKeys = true }
     private val mutex = Mutex()
     private var handle = 0L
+    private var scriptLanguage: Language? = null
 
     override suspend fun import(archive: File, outputDir: File): ImportedDictionary = withContext(Dispatchers.IO) {
         ArchiveTitles.check(archive)
@@ -63,7 +66,31 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         )
     }
 
-    override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
+    override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> {
+        if (options.language != Language.JAPANESE) return lookupWithScript(text, options)
+        return lookupJapanese(text, options)
+    }
+
+    /** Experiment: other languages go through Yomitan's language code (see `src/main/cpp/language`). */
+    private suspend fun lookupWithScript(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
+        val language = options.language
+        if (scriptLanguage != language) {
+            val script = context.assets.open("yomitan-language/${language.code}.js").use { it.readBytes() }
+            HoshidictsNative.setLanguageScript(handle, language.code.encodeToByteArray(), script)
+            scriptLanguage = language
+        }
+        val resolution = if (language.support.wordSeparator.isEmpty()) "letter" else "word"
+        val raw = HoshidictsNative.lookupWithScript(
+            handle = handle,
+            text = text.encodeToByteArray(),
+            resolution = resolution.encodeToByteArray(),
+            maxResults = options.maxResults,
+            scanLength = options.scanLength,
+        )
+        json.decodeFromString<List<LookupResult>>(raw.decodeToString())
+    }
+
+    private suspend fun lookupJapanese(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
         val frequencyDictionary = options.frequencyDictionary
             ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
         val raw = HoshidictsNative.lookup(

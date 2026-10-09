@@ -1,0 +1,14 @@
+{
+  "name": "screenlate-yomitan-language",
+  "private": true,
+  "type": "module",
+  "description": "Builds Yomitan's language code into one script per language for the dictionary engine (experiment).",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "hangul-js": "0.2.6",
+    "kanji-processor": "1.0.2"
+  }
+}

@@ -1,3 +1,6 @@
 [submodule "dictionary/engine-hoshidicts/src/main/cpp/hoshidicts"]
 	path = dictionary/engine-hoshidicts/src/main/cpp/hoshidicts
 	url = https://github.com/Manhhao/hoshidicts.git
+[submodule "dictionary/engine-hoshidicts/src/main/cpp/quickjs"]
+	path = dictionary/engine-hoshidicts/src/main/cpp/quickjs
+	url = https://github.com/quickjs-ng/quickjs.git

@@ -109,4 +109,6 @@ enum class OcrScript { LATIN, CHINESE, DEVANAGARI, JAPANESE, KOREAN }
 val Language.support: LanguageSupport
     get() = when (this) {
         Language.JAPANESE -> JapaneseSupport
+        Language.ENGLISH -> EnglishSupport
+        Language.CHINESE -> ChineseSupport
     }

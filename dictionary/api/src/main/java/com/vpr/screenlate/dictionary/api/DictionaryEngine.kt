@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api
 
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -45,6 +46,7 @@ data class DictionarySet(
  * @property scanLength maximum number of characters of the lookup string to consider.
  * @property frequencyDictionary title of the frequency dictionary used for sorting; null disables it.
  * @property primaryReading terms with this reading are sorted first.
+ * @property language source language; decides text processing and deinflection.
  */
 data class LookupOptions(
     val maxResults: Int = 16,
@@ -52,6 +54,7 @@ data class LookupOptions(
     val frequencyDictionary: String? = null,
     val frequencyOrder: FrequencyOrder = FrequencyOrder.ASCENDING,
     val primaryReading: String? = null,
+    val language: Language = Language.JAPANESE,
 )
 
 enum class FrequencyOrder {

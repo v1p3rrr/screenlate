@@ -35,6 +35,12 @@ internal object HoshidictsNative {
         primaryReading: ByteArray?,
     ): ByteArray
 
+    /** Experiment: loads Yomitan's language code for [language] (ISO 639-1) into the session. */
+    external fun setLanguageScript(handle: Long, language: ByteArray, script: ByteArray)
+
+    /** Experiment: lookup with the language script's candidates, following form-of entries. */
+    external fun lookupWithScript(handle: Long, text: ByteArray, resolution: ByteArray, maxResults: Int, scanLength: Int): ByteArray
+
     external fun styles(handle: Long): ByteArray
 
     external fun media(handle: Long, dictionary: ByteArray, path: ByteArray): ByteArray?

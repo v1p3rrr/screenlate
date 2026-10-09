@@ -167,8 +167,9 @@ class OverlayController(
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
     private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
-    // Only Japanese is supported for now; this becomes a setting with more languages.
-    private val language = Language.JAPANESE
+    // Experiment: the language code in `files/experiment-language`, Japanese without it.
+    private val language = java.io.File(service.filesDir, "experiment-language").takeIf { it.isFile }?.readText()?.trim()
+        ?.let { code -> Language.entries.firstOrNull { it.code == code } } ?: Language.JAPANESE
 
     private val popupNotes = PopupNotes(
         context = service,

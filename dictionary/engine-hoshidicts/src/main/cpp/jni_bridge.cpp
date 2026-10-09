@@ -14,11 +14,14 @@
 #include <vector>
 
 #include <glaze/glaze.hpp>
+#include <utf8.h>
 
 #include "hoshidicts/deinflector.hpp"
 #include "hoshidicts/importer.hpp"
 #include "hoshidicts/lookup.hpp"
 #include "hoshidicts/query.hpp"
+#include "language/candidate_lookup.hpp"
+#include "language/yomitan_language.hpp"
 
 // glaze reflection needs types with linkage, so this is a named namespace.
 namespace screenlate_jni {
@@ -26,6 +29,10 @@ namespace screenlate_jni {
 struct Session {
   DictionaryQuery query;
   Deinflector deinflector;
+  // Experiment: the language script for languages other than Japanese, created on first use.
+  std::string script_language;
+  std::unique_ptr<screenlate_language::YomitanLanguage> script;
+  std::unordered_map<std::string, uint32_t> part_of_speech_flags;
 };
 
 struct TransformDto {
@@ -276,6 +283,49 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     Lookup lookup(s->query, s->deinflector);
     std::vector<LookupResult> results =
         lookup.lookup(to_string(env, text), max_results, static_cast<size_t>(scan_length), options);
+    std::vector<LookupDto> dtos;
+    dtos.reserve(results.size());
+    for (auto& result : results) {
+      dtos.push_back(to_dto(std::move(result)));
+    }
+    return write_json(env, dtos);
+  } catch (const std::exception& e) {
+    throw_runtime(env, e.what());
+    return nullptr;
+  }
+}
+
+JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_setLanguageScript(
+    JNIEnv* env, jobject, jlong handle, jbyteArray language, jbyteArray script) {
+  try {
+    Session* s = session(handle);
+    s->script.reset();
+    s->script = std::make_unique<screenlate_language::YomitanLanguage>(to_string(env, script));
+    s->script_language = to_string(env, language);
+    s->part_of_speech_flags =
+        screenlate_language::parse_part_of_speech_flags(s->script->part_of_speech_flags_json(s->script_language));
+  } catch (const std::exception& e) {
+    throw_runtime(env, e.what());
+  }
+}
+
+JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_lookupWithScript(
+    JNIEnv* env, jobject, jlong handle, jbyteArray text, jbyteArray resolution, jint max_results, jint scan_length) {
+  try {
+    Session* s = session(handle);
+    if (!s->script) {
+      throw_runtime(env, "no language script");
+      return nullptr;
+    }
+    std::string source = to_string(env, text);
+    auto end = source.begin();
+    utf8::unchecked::advance(end, std::min<size_t>(static_cast<size_t>(scan_length),
+                                                   utf8::unchecked::distance(source.begin(), source.end())));
+    source.erase(end, source.end());
+    auto candidates = screenlate_language::parse_candidates(
+        s->script->candidates_json(source, s->script_language, to_string(env, resolution)));
+    std::vector<LookupResult> results =
+        screenlate_language::lookup_candidates(s->query, candidates, s->part_of_speech_flags, max_results);
     std::vector<LookupDto> dtos;
     dtos.reserve(results.size());
     for (auto& result : results) {
