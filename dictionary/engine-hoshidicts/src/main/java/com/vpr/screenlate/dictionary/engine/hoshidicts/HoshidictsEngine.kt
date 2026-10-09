@@ -79,7 +79,8 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             HoshidictsNative.setLanguageScript(handle, language.code.encodeToByteArray(), script)
             scriptLanguage = language
         }
-        val resolution = if (language.support.wordSeparator.isEmpty()) "letter" else "word"
+        // Korean words carry their endings inside the spaced word, so Yomitan shortens it letter by letter.
+        val resolution = if (language.support.wordSeparator.isEmpty() || language == Language.KOREAN) "letter" else "word"
         val raw = HoshidictsNative.lookupWithScript(
             handle = handle,
             text = text.encodeToByteArray(),
