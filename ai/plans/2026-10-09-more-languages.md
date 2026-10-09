@@ -53,6 +53,20 @@ in the language branch once the hypotheses below are checked. Research findings:
     Owner's question: would it be legally fine to upload the unlicensed dictionaries to a repository of ours and
     link to it from the app, so that users download and import them by hand?
 17. (2026-10-09) Build the OCR architecture so that Tesseract can be integrated later without much trouble.
+18. (2026-10-09) Glosses are needed not only in Russian but in the other interface languages too, and possibly in
+    further languages, depending on what dictionaries exist: every dictionary we find whose license and terms allow
+    it goes into the catalog. Unofficial and unlicensed ones should not be pulled into the app; the owner considers
+    a separate collection kept apart from the app's account (another GitHub account or a cloud drive) and asks
+    whether its takedown could affect the app.
+19. (2026-10-09) The owner's picture of turning on a language: a start screen to pick the target language, then a
+    screen of what to download. Where files differ by gloss language, the interface language and English are
+    offered (only English when it is the interface language), e.g. English→English and English→Russian; at least
+    one and at most two gloss languages. Every item shows its size in MB, and the Confirm button at the bottom shows
+    the total, updated on every tick. Where a category has several dictionaries (Japanese: Jitendex and JMdict),
+    either one default (the smallest download) or every variant for each of the two languages, the user installing
+    at least one. When the interface language is the target language, another gloss language can be chosen. A
+    category with a choice needs at least one ticked; a mandatory category without a choice shows a preselected
+    radio button and counts in the total.
 
 ## Decisions
 
@@ -84,6 +98,14 @@ in the language branch once the hypotheses below are checked. Research findings:
 | OCR runtime and models | The runtime (native code) goes into the APK; the detector and the per-script recognizers are downloads checked against pinned SHA-256 hashes, fetched when a language that needs them is turned on (owner, 2026-10-09) |
 | Risky dictionaries | The catalog offers dictionaries with open licenses and non-commercial ones (words.hk, the Zaliznyak meta dictionary), the latter marked with their license and removed if the app ever becomes paid, ad-supported or goes to Google Play; dictionaries without a license only as a link to the author's page in the help; conversions of commercial dictionaries nowhere; no БКРС for now (owner, 2026-10-09, request 16) |
 | Korean lookup start | The lookup starts at the start of the space-separated word, not at the aimed syllable as in Yomitan: a finger aim on a phone often lands on a neighboring syllable, and a start mid-word finds endings or unrelated words (부하 in 공부하고); shorter matches from the start still show, compound parts are found by search (agent's choice, delegated by the owner, 2026-10-09) |
+| Settings layout | Language-bound settings stay on today's pages (Lookup, Popup, Anki and audio, Dictionaries) in a block named after the profile with a language switch; with one language turned on the pages look as today (owner, 2026-10-09) |
+| Popup text size | Global, as today; a bigger size for one language goes into that language's CSS (owner, 2026-10-09) |
+| Switching the language | The home screen's chips and a row of language chips in the bubble's hold menu, shown when more than one language is turned on; no automatic switching by app (owner, 2026-10-09) |
+| Branches per language | The shared base (profiles, settings split, QuickJS, form-of table, model downloads) is built first in the multi-language branch; then a branch per language (`languages/en`, `languages/zh`, …) merged into it when the language works on the phone (owner, 2026-10-09) |
+| Unofficial collection | If the owner keeps a separate collection of unlicensed dictionaries, the app and its repository do not link to it (owner, 2026-10-09, preliminary) |
+| Audio regions | A per-language order of regions in the audio settings, used for Wiktionary clips whose file names carry the region; defaults: English US, UK, others; Portuguese Brazil; Spanish Latin America, Spain; French France (owner, 2026-10-09) |
+| Turning on a language | After the target language, a download screen (request 19). Gloss languages: the interface language and English, at most two; when the interface language is English or is the target language, the user picks another one in its place. Each category lists every dictionary for the chosen gloss languages with the recommended one ticked; a mandatory category (the main dictionary; the forms dictionary for languages whose forms are only in dictionaries) needs at least one ticked, else Confirm is disabled with a hint; a mandatory item without a choice is a preselected radio button. Optional items ticked by default: the frequency dictionary and the on-device OCR model where the script needs one; glossaries, IPA and character dictionaries are not. Every item shows its size; the button shows the download total and, under it, the space after import; not enough free space disables it and says how much is needed; on mobile data a total over 50 MB asks first (owner, 2026-10-10) |
+| First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings") |
@@ -250,3 +272,8 @@ the imported dictionaries).
   APK, inflection names and tags translated; requests 16 and 17.
 - 2026-10-09: batch 6: risky dictionaries (open and non-commercial in the catalog, no БКРС for now), Korean lookup
   start (delegated), text to speech as the last default source.
+- 2026-10-09: batch 7: settings layout, global text size, language chips in the bubble's hold menu, a branch per
+  language.
+- 2026-10-10: request 18 (catalog for every gloss language, unofficial dictionaries apart from the app), request 19
+  (the owner's download screen); decisions on the unofficial collection (preliminary), audio regions, the first run
+  and turning on a language.
