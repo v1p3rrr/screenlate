@@ -18,6 +18,15 @@ interface LanguageSupport {
     /** On-device recognizer to use. */
     val ocrScript: OcrScript
 
+    /**
+     * How the lookup shortens the text after the aim when a longer match fails: by words for languages written with
+     * spaces ("look up to" → "look up" → "look"), by characters otherwise (Yomitan's search resolution).
+     */
+    val searchResolution: SearchResolution
+
+    /** Whether lines run from right to left. */
+    val rightToLeft: Boolean get() = false
+
     /** Characters that end a sentence, for `{sentence}` and cloze markers. */
     val sentenceTerminators: Set<Char>
 
@@ -103,10 +112,13 @@ data class SystemFonts(
     val aliases: Map<String, FontStyle>,
 )
 
+enum class SearchResolution { WORD, LETTER }
+
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript { LATIN, CHINESE, DEVANAGARI, JAPANESE, KOREAN }
 
 val Language.support: LanguageSupport
     get() = when (this) {
         Language.JAPANESE -> JapaneseSupport
+        Language.ENGLISH -> EnglishSupport
     }

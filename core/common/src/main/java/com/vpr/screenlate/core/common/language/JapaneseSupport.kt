@@ -7,6 +7,7 @@ object JapaneseSupport : LanguageSupport {
     override val glyph = "あ"
     override val wordSeparator = ""
     override val ocrScript = OcrScript.JAPANESE
+    override val searchResolution = SearchResolution.LETTER
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
     override val quotePairs = mapOf('「' to '」', '『' to '』', '（' to '）', '(' to ')')
 

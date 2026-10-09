@@ -56,6 +56,7 @@ class DictionaryLookup @Inject constructor(
             scanLength = scanLength ?: settings.scanLength,
             primaryReading = primaryReading,
             maxResults = limit,
+            language = language,
         )
         val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
         val found = LookupVariants.of(text, settings, support).flatMap { variant ->

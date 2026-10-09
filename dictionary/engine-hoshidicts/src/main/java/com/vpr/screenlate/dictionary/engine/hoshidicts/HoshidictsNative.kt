@@ -35,6 +35,29 @@ internal object HoshidictsNative {
         primaryReading: ByteArray?,
     ): ByteArray
 
+    /** Whether Yomitan's language code for [language] (ISO 639-1) is loaded into the session. */
+    external fun hasLanguage(handle: Long, language: ByteArray): Boolean
+
+    /** Loads [script], the language's bundle (`assets/yomitan-language`), into the session. */
+    external fun loadLanguage(handle: Long, language: ByteArray, script: ByteArray)
+
+    /**
+     * Lookup through the language's bundle: its deinflection candidates, exact queries, form-of entries followed.
+     *
+     * @param resolution `word` or `letter` (Yomitan's search resolution).
+     */
+    external fun lookupLanguage(
+        handle: Long,
+        language: ByteArray,
+        text: ByteArray,
+        resolution: ByteArray,
+        maxResults: Int,
+        scanLength: Int,
+        frequencyDictionary: ByteArray?,
+        frequencyDescending: Boolean,
+        primaryReading: ByteArray?,
+    ): ByteArray
+
     external fun styles(handle: Long): ByteArray
 
     external fun media(handle: Long, dictionary: ByteArray, path: ByteArray): ByteArray?

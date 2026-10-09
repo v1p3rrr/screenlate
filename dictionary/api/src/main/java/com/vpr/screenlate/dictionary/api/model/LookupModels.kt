@@ -9,6 +9,8 @@ import kotlinx.serialization.Serializable
  * @property matched prefix of the lookup string that produced this term, as it appeared in the source text.
  * @property deinflected dictionary form the matched text was reduced to.
  * @property trace deinflection steps from [matched] to [deinflected], outermost first.
+ * @property otherTraces further chains of steps that lead to the same term (Yomitan lists every one), the shorter
+ * first; only lookups through Yomitan's language code report them.
  * @property preprocessorSteps number of text normalizations applied (kana conversion, width, etc.).
  */
 @Serializable
@@ -16,6 +18,7 @@ data class LookupResult(
     val matched: String,
     val deinflected: String,
     val trace: List<Transform> = emptyList(),
+    val otherTraces: List<List<Transform>> = emptyList(),
     val term: TermEntry,
     val preprocessorSteps: Int = 0,
 )

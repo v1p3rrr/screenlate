@@ -12,8 +12,23 @@ add_compile_options(-O2)
 
 add_subdirectory(hoshidicts)
 
+# QuickJS-ng runs Yomitan's language code (text processors, deinflection) for languages other than Japanese.
+add_library(quickjs STATIC
+    quickjs/quickjs.c
+    quickjs/libregexp.c
+    quickjs/libunicode.c
+    quickjs/dtoa.c
+)
+target_compile_definitions(quickjs PRIVATE _GNU_SOURCE)
+target_compile_options(quickjs PRIVATE -w)
+target_include_directories(quickjs PUBLIC quickjs)
+
 add_library(screenlate_hoshidicts SHARED
     jni_bridge.cpp
+    language/archive_split.cpp
+    language/candidate_lookup.cpp
+    language/form_of_table.cpp
+    language/yomitan_language.cpp
 )
 
 target_compile_options(screenlate_hoshidicts PRIVATE -fvisibility=hidden -Wall)
@@ -21,5 +36,7 @@ target_compile_options(screenlate_hoshidicts PRIVATE -fvisibility=hidden -Wall)
 target_link_libraries(screenlate_hoshidicts PRIVATE
     hoshidicts
     glaze::glaze
+    libdeflate_static
+    quickjs
     log
 )

@@ -360,9 +360,12 @@ class DictionaryRepository @Inject constructor(
         dao.getAll().any { it.termCount > 0 && usable(it, language) }
     }
 
-    /** Dictionaries whose files are gone (e.g. after a data transfer that skipped large files). */
+    /**
+     * Dictionaries whose files are gone or cut short (e.g. after a data transfer that skipped large files, or stopped
+     * in the middle of one).
+     */
     suspend fun missingFiles(): List<DictionaryEntity> = withContext(Dispatchers.IO) {
-        dao.getAll().filter { !storage.hasFiles(it) }.also { missing ->
+        dao.getAll().filter { !storage.hasFiles(it) || !engine.isComplete(storage.directoryOf(it)) }.also { missing ->
             if (missing.isNotEmpty()) Log.w(TAG, "Files missing: ${missing.map { "${it.id} ${it.title}" }}")
         }
     }

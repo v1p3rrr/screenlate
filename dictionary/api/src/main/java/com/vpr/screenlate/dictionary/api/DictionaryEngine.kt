@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api
 
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -31,6 +32,12 @@ interface DictionaryEngine {
     suspend fun media(dictionary: String, path: String): ByteArray?
 
     suspend fun kanji(character: String): KanjiResult
+
+    /**
+     * Whether the engine's files in [directory] (one dictionary, see [import]) are whole; a file cut short by a data
+     * transfer makes the dictionary count as broken, as missing files do.
+     */
+    fun isComplete(directory: File): Boolean = true
 }
 
 /** Engine directories to load, each list in priority order. A directory may appear in several lists. */
@@ -45,6 +52,7 @@ data class DictionarySet(
  * @property scanLength maximum number of characters of the lookup string to consider.
  * @property frequencyDictionary title of the frequency dictionary used for sorting; null disables it.
  * @property primaryReading terms with this reading are sorted first.
+ * @property language language of the text; decides its text processing and deinflection.
  */
 data class LookupOptions(
     val maxResults: Int = 16,
@@ -52,6 +60,7 @@ data class LookupOptions(
     val frequencyDictionary: String? = null,
     val frequencyOrder: FrequencyOrder = FrequencyOrder.ASCENDING,
     val primaryReading: String? = null,
+    val language: Language = Language.JAPANESE,
 )
 
 enum class FrequencyOrder {
