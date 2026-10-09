@@ -1,7 +1,7 @@
 # More languages (phase 8)
 
-Status: research and experiments; paused 2026-10-09 with a handoff (see "Handoff"). The owner answered the general topics (see Decisions); concrete questions follow
-in the language branch once the hypotheses below are checked. Research findings: `notes/languages.md`.
+Status: research and decisions done (2026-10-10). Implementation: `2026-10-10-languages-implementation.md`, which
+continues the decision table below (frozen here on 2026-10-10). Research findings: `notes/languages.md`.
 
 ## Owner requests
 
@@ -286,3 +286,5 @@ the imported dictionaries).
   items decided before group 1 is merged.
 - 2026-10-10: pronunciation dictionaries (user-facing name, one per language, ticked except Chinese; the "Turning on
   a language" row changed accordingly with the owner's answer), scope of the big release.
+- 2026-10-10: decisions on turning a language off, the catalog threshold, links to unlicensed dictionaries and
+  switching during a scan; the decision table moves to the implementation plan and is frozen here.
