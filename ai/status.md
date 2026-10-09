@@ -254,7 +254,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
-- Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 waits for the owner. Next: request 55 (field templates for Lapis, Kiku, jp-mining-note, Basic Mining Deck, Kaishi and more aliases, decided 2026-10-09), then the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
+- Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 waits for the owner. Request 55 (field templates for more note types) is done too. Next: the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
 - Backlog: accessibility disclosure with consent (request 48, decided 2026-10-09). Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
 
 ## Open items
@@ -777,7 +777,9 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Request 56, translation part: every translation failure is logged with its kind and a detail without text (an
   unexpected answer's shape, a missing part of Bing's token page, a refused token's status); a certificate not valid
   at the device's date is its own kind, with a text asking to check the date and time, in 14 locales.
-- Request 55 decided (presets plus aliases, the translation field only for names with "sentence"); not built yet.
+- Request 55 built: presets for Kiku, JP Mining Note, Kaishi 1.5k and the Basic Mining Deck (besides Senren and
+  Lapis) and more aliases for other note types (`NoteTypePresets`, `FieldTemplate.ALIASES`), with unit tests; not
+  checked in the app on the emulator (the settings screen only calls `FieldTemplate.guess`).
 - Checked on the emulator: pulling the bubble out of the top and bottom docks without a jump, the settings test's
   date message for Bing and Edge (the emulator's clock lags), the popup translation through Google after Bing's
   timeout. Lint, unit tests and page tests pass. No release.

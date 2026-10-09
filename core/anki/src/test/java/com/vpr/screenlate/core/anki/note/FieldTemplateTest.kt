@@ -92,4 +92,101 @@ class FieldTemplateTest {
         assertThat(templates["Sentence"]).isEqualTo("{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}")
         assertThat(templates["IsClickCard"]).isEmpty()
     }
+
+    @Test
+    fun kikuPresetAddsItsFieldsToLapis() {
+        val fields = listOf("Expression", "MainDefinition", "Sentence", "SentenceFurigana", "SentenceTranslation", "RelatedExpression", "Picture")
+        val templates = FieldTemplate.guess("Kiku", fields)
+
+        assertThat(templates["MainDefinition"]).isEqualTo("{glossary-first}")
+        assertThat(templates["SentenceFurigana"]).isEqualTo("{sentence-furigana-plain}")
+        assertThat(templates["SentenceTranslation"]).isEqualTo("{sentence-translation}")
+        assertThat(templates["RelatedExpression"]).isEmpty()
+        assertThat(templates["Picture"]).isEqualTo("{screenshot}")
+        // Lapis keeps the sentence furigana empty, as its authors advise.
+        assertThat(FieldTemplate.guess("Lapis", fields)["SentenceFurigana"]).isEmpty()
+    }
+
+    @Test
+    fun jpMiningNoteGetsTheNearestMarkers() {
+        val fields = listOf(
+            "Key", "Word", "WordReading", "PrimaryDefinition", "Sentence", "IsTargetedSentenceCard", "Picture",
+            "WordAudio", "PAGraphs", "PAPositions", "PASilence", "WordReadingHiragana", "FrequenciesStylized",
+            "FrequencySort", "SecondaryDefinition", "Comment",
+        )
+        val templates = FieldTemplate.guess("JP Mining Note", fields)
+
+        assertThat(templates).containsExactlyEntriesIn(
+            mapOf(
+                "Key" to "{expression}",
+                "Word" to "{expression}",
+                "WordReading" to "{furigana-plain}",
+                "PrimaryDefinition" to "{glossary-first}",
+                "Sentence" to "{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}",
+                "IsTargetedSentenceCard" to "",
+                "Picture" to "{screenshot}",
+                "WordAudio" to "{audio}",
+                "PAGraphs" to "{pitch-accent-graphs}",
+                "PAPositions" to "{pitch-accent-positions}",
+                "PASilence" to "[sound:_silence.wav]",
+                "WordReadingHiragana" to "{reading}",
+                "FrequenciesStylized" to "{frequencies}",
+                "FrequencySort" to "{frequency-harmonic-rank}",
+                "SecondaryDefinition" to "",
+                "Comment" to "",
+            ),
+        )
+    }
+
+    @Test
+    fun kaishiFillsItsSpacedFieldNames() {
+        val fields = listOf(
+            "Word", "Word Reading", "Word Furigana", "Word Meaning", "Word Audio", "Sentence", "Sentence Meaning",
+            "Sentence Furigana", "Sentence Audio", "Picture", "Notes", "Pitch Accent", "Pitch Accent Notes",
+        )
+        val templates = FieldTemplate.guess("Kaishi 1.5k", fields)
+
+        assertThat(templates["Word Furigana"]).isEqualTo("{furigana-plain}")
+        assertThat(templates["Word Meaning"]).isEqualTo("{glossary-first-brief}")
+        assertThat(templates["Sentence"]).isEqualTo("{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}")
+        assertThat(templates["Sentence Meaning"]).isEqualTo("{sentence-translation}")
+        assertThat(templates["Sentence Furigana"]).isEqualTo("{sentence-furigana-plain}")
+        assertThat(templates["Pitch Accent"]).isEqualTo("{pitch-accents}")
+        assertThat(templates["Pitch Accent Notes"]).isEmpty()
+    }
+
+    @Test
+    fun basicMiningDeckIsKnownByItsFields() {
+        val fields = listOf("Word", "Reading", "Glossary", "Sentence", "Picture", "Audio", "SentenceAudio", "Graph", "Hint")
+        val templates = FieldTemplate.guess("Mining", fields)
+
+        assertThat(templates["Glossary"]).isEqualTo("{glossary-no-dictionary}")
+        assertThat(templates["Sentence"]).isEqualTo("{sentence}")
+        assertThat(templates["Graph"]).isEqualTo("{pitch-accent-graphs}")
+        assertThat(templates["SentenceAudio"]).isEmpty()
+        // Without its fields the general rule applies.
+        assertThat(FieldTemplate.guess("Mining", listOf("Word", "Glossary"))["Glossary"]).isEqualTo("{glossary}")
+    }
+
+    @Test
+    fun aliasesFillUnknownNoteTypes() {
+        val fields = listOf(
+            "Front", "Image", "Frequency Sort", "PrimaryDefinition", "Sentence_English", "SentenceEng", "Sentence Meaning",
+            "Translation", "Meaning", "Pitch Graph",
+        )
+        assertThat(FieldTemplate.guess("Custom", fields)).containsExactlyEntriesIn(
+            mapOf(
+                "Front" to "{expression}",
+                "Image" to "{screenshot}",
+                "Frequency Sort" to "{frequency-harmonic-rank}",
+                "PrimaryDefinition" to "{glossary-first}",
+                "Sentence_English" to "{sentence-translation}",
+                "SentenceEng" to "{sentence-translation}",
+                "Sentence Meaning" to "{sentence-translation}",
+                "Translation" to "",
+                "Meaning" to "{glossary}",
+                "Pitch Graph" to "{pitch-accent-graphs}",
+            ),
+        )
+    }
 }

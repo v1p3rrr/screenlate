@@ -133,14 +133,19 @@ object FieldTemplate {
         "reading" to listOf("expression-reading", "term-reading", "word-reading"),
         "furigana" to listOf("expression-furigana", "term-furigana", "word-furigana"),
         "glossary" to listOf("definition", "meaning"),
+        "glossary-first" to listOf("primary-definition", "main-definition"),
         "audio" to listOf("sound", "word-audio", "term-audio", "expression-audio"),
         "dictionary" to listOf("dict"),
         "pitch-accents" to listOf("pitch", "pitch-accent", "pitch-pattern"),
         "sentence" to listOf("example-sentence"),
-        "frequency-harmonic-rank" to listOf("freq", "frequency", "freq-sort", "freqency-sort"),
+        "frequency-harmonic-rank" to listOf("freq", "frequency", "freq-sort", "freqency-sort", "frequency-sort"),
+        "screenshot" to listOf("picture", "image"),
         "popup-selection-text" to listOf("selection", "selection-text"),
         "pitch-accent-positions" to listOf("pitch-position"),
         "pitch-accent-categories" to listOf("pitch-categories"),
+        "pitch-accent-graphs" to listOf("graph", "pitch-graph", "pitch-graphs"),
+        // Only names with "sentence": a bare "Translation" may mean the word's, and "Meaning" is the glossary.
+        SENTENCE_TRANSLATION to listOf("sentence-meaning", "sentence-english", "sentence-eng"),
     )
 }
 
