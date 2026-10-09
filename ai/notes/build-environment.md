@@ -96,3 +96,6 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   redirect as the shell user (permission denied, or a relative path that does not exist). `am kill` stops only a
   background process: press Home first. Never `am force-stop`: it drops the service from the enabled
   list.
+- Running every module's unit tests at once can crash a test executor with "insufficient memory" (G1 virtual space
+  mmap) while the emulator runs; Gradle reports "Test process encountered an unexpected problem" and the JVM leaves
+  `hs_err_pid*.log` in the module (ignored by git). Rerun; it passes when memory is free.
