@@ -1,6 +1,6 @@
 # More languages (phase 8)
 
-Status: research and experiments. The owner answered the general topics (see Decisions); concrete questions follow
+Status: research and experiments; paused 2026-10-09 with a handoff (see "Handoff"). The owner answered the general topics (see Decisions); concrete questions follow
 in the language branch once the hypotheses below are checked. Research findings: `notes/languages.md`.
 
 ## Owner requests
@@ -23,12 +23,26 @@ in the language branch once the hypotheses below are checked. Research findings:
    easier) in an experimental branch to check the hypotheses, then ask concrete questions in the language branch,
    agree on the implementation plan, and build it from scratch there (the experiments may be thrown away, at most
    their pieces reused).
+8. (2026-10-09) Owner's questions: is hoshidicts only for Japanese or for every language like Yomitan, and would the
+   fix be a library in another language built in? Answered: storage, query and sorting are language-agnostic; only
+   text processing and deinflection are Japanese. The fix tried in the experiment is Yomitan's own language code
+   run in QuickJS (a small C JavaScript engine, MIT, compiled into the same native library, about +1.3 MB per ABI)
+   plus native form-of following; alternatives are `androidx.javascriptengine` or a Kotlin port. The choice is a
+   concrete question for later.
+9. (2026-10-09) Also experiment with a language that has no deinflection rules in Yomitan and gets its forms only
+   from the dictionary's form-of entries, e.g. Russian.
+10. (2026-10-09) Dictionaries: every language needs at least a dictionary into English, preferably also into
+    Russian, optionally into the other main interface languages.
+11. (2026-10-09) Priority by popularity among learners (an estimate the owner brought): learners in general:
+    English, Spanish, French, Japanese, German, Korean, Italian, Chinese, Portuguese; immersion learners:
+    Japanese, English, Spanish, Korean, Chinese, then Russian, French and others. These languages get support
+    first.
 
 ## Decisions
 
 | Topic | Decision |
 |---|---|
-| Languages and order | English, Chinese, Korean first (English and Chinese before Korean); then the European languages, Russian, Ukrainian and others; in the end every language Yomitan supports (owner, 2026-10-09) |
+| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese; 4) every other language Yomitan supports, Ukrainian among them (owner, 2026-10-09; revised the same day with request 11) |
 | Audience | Every user, not only the owner: the app goes to a community of learners of Japanese, where others learn other languages, mostly English and Chinese; later anyone with their own target language (owner, 2026-10-09) |
 | Depth | Full support (deinflection, on-device recognition, fonts, audio, Anki), if it is feasible without writing our own Yomitan from scratch (owner, 2026-10-09) |
 | Language profiles | Separate language profiles, switched on the home screen; dictionaries and the rest are set up within the profile (owner, 2026-10-09) |
@@ -42,6 +56,7 @@ in the language branch once the hypotheses below are checked. Research findings:
 | Search and "Look up in Screenlate" | Use the active language profile (owner, 2026-10-09) |
 | Branches | `main`; a branch for the multi-language version; branches per language (or per batch) off it; a separate experimental branch for the hypotheses, which may be thrown away (owner, 2026-10-09) |
 | First language | English or Chinese, whichever is easier, as the experiment (owner, 2026-10-09) |
+| Gloss languages | Every language: at least a dictionary into English, preferably into Russian, optionally into the other main interface languages (owner, 2026-10-09) |
 
 ## General topics for the owner
 
@@ -74,17 +89,89 @@ Yomitan's rules, which stay in the GPL modules) come with a recommendation after
 
 ## To find out (agent)
 
-- A real Wiktionary dictionary (e.g. en→en, 103 MB) in our engine: import time, lookup speed, how its form-of
-  entries look in the popup today.
-- What extending hoshidicts takes: a language parameter for text processors and deinflection, following form-of
-  entries; a fork of the submodule or patches; upstream interest.
-- Lookup cost of case and diacritics variants and phrase prefixes.
-- Cloud recognition on English, Chinese and Korean screenshots: word boxes, spaces, `content_language`.
-- Whole-word hit testing and highlight for Latin text; sentence splitting with abbreviations.
-- Licenses of catalog candidates, English–Russian in particular.
-- Test material: screenshots in the chosen languages for `testdata/ocr/`.
+Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`, "Experiment"):
+
+- Done: wty en→en, en→ru and zh→en imported in the app and looked up in the popup; form-of followed natively.
+  Import time of en→en was not recorded.
+- Done: extending hoshidicts is not needed for the lookup itself: Yomitan's language code in QuickJS makes the
+  candidates, hoshidicts answers exact queries without a submodule change. Optional submodule changes: form-of at
+  import (the "redirects" field), per-row part-of-speech rules.
+- Done: lookup cost (candidates 0.2–18 ms per call by language, queries 0.1–4 ms).
+- Done: Chinese on device costs about 0 MB more in ML Kit, Korean about 0.8 MB; other engines measured.
+- Open: cloud recognition on Korean screenshots, and which engine read the English and Chinese test screenshots
+  (cloud or ML Kit); word boxes and `content_language`.
+- Open: whole-word hit testing and highlight for Latin text beyond the experiment's word start; sentence splitting
+  with abbreviations.
+- In progress: licenses of catalog candidates per language, a list of risky ones.
+- Done: Russian as a language without transforms (request 9): works through the dictionary's form-of entries;
+  the form-of rows make wty ru→en 273 MB on disk (notes, "Russian").
+- Request 5: CC-CEDICT stores every term under both headwords and wty zh→en links simplified forms to traditional
+  ones, so one Chinese profile works for both scripts; only the `lang` tag and fonts (SC or TC glyph forms) differ.
+  To be asked with the concrete questions.
+- Test material: `testdata/ocr/en-sample.png` and `zh-sample.png`.
+
+## Handoff (2026-10-09, end of the research session)
+
+Everything found is in `notes/languages.md`: Yomitan's language support, hoshidicts, the experiment ("Experiment",
+"Russian"), dictionaries with licenses and gloss-language coverage ("Catalog candidates and licenses"), OCR sizes.
+
+Branch `experiment/languages` (pushed; may be thrown away, pieces reusable):
+- 0732dea English and Chinese, 89f9073 Russian, acf21f1 Korean (`KoreanSupport`, letter resolution) plus
+  `scripts/yomitan-language/harness/` (native lookup harness for the emulator) and `scripts/yomitan-language/tools/`
+  (`ru_peek.py` rows of a dictionary, `split_formof.py` split lemma and form-of rows, `wty_pairs.py` table of wty
+  sizes from the Hugging Face tree API `https://huggingface.co/api/datasets/daxida/wty-release/tree/main/latest/dict/<src>?recursive=true`).
+- Bundles: `node scripts/yomitan-language/build.mjs <Yomitan checkout> <out dir> <iso>...` (after `npm ci` there),
+  output goes to `dictionary/engine-hoshidicts/src/main/assets/yomitan-language/` (en, zh, ru, ko are committed).
+- The overlay's language comes from the file `files/experiment-language` in the debug app (`echo ko | adb shell
+  run-as com.vpr.screenlate.debug tee files/experiment-language`); a uiautomator dump reconnects the service, which
+  re-reads it. Test images: `scripts/text-image.py` (Cyrillic needs `FONT=C:/Windows/Fonts/arial.ttf`),
+  `scripts/debug-device.sh images` and `show <name>.png`; drag the bubble with `input motionevent DOWN/MOVE/UP`, the
+  aim sits about 133 px above the bubble's center.
+
+Emulator state (Pixel_10_Pro, started with `-no-snapshot-save`): debug app with the experiment build (Korean);
+imported in the app: wty-en-ru, wty-en-en, wty-zh-en, wty-ru-en, KRDICT RU (ko→ru); `experiment-language` = `ko`.
+`/sdcard/Download` has wty-en-ru, wty-zh-en, wty-ru-en, KO-RU.KRDICT.No.Examples, Frequency.CC100.Korean.
+`/data/local/tmp/hd`: hoshidicts-cli `hd`, harness `ll`, bundles `y-*.js`, imported wty-en-ru, wty-ko-en,
+wty-zh-en, wty-ru-en. Space on `/data` is short (under 1 GB free); delete test copies there first.
+
+Was in progress:
+- Korean in the popup: KRDICT RU imported (its index.json says target "ko", so the app recorded "ko → ko": the
+  language guess trusts a wrong index); the CC100 frequency dictionary not imported yet; no popup screenshot yet.
+  Next: import the frequency list, render a Korean sample (needs a Korean font for `text-image.py`, e.g.
+  `C:/Windows/Fonts/malgun.ttf`), check deinflection (먹었습니다 → 먹다) and timing (9–18 ms per candidate call).
+
+Still to do before the concrete questions (told to the owner):
+1. Audio per language: whether Lingua Libre and Wiktionary find clips for en, zh, ru, ko when given the language
+   (today the Japanese sources and settings are used).
+2. Compact form-of storage: estimate the size of a form → (lemma, tags) table against the 231 MB of rows.
+3. ML Kit Chinese and Korean recognizers: the real APK delta; Tesseract or PaddleOCR for Cyrillic.
+4. Settings design "global + per language", page by page, as a draft in chat. Starting point: language-bound
+   settings live in the language profile (dictionaries, Anki deck and note type, audio sources, lookup rules such as
+   scan length and text replacements, popup font and CSS), the rest stays global (bubble, appearance, background
+   work, translation services and target language, backup), with per-language overrides only where the owner wants
+   them (e.g. text size).
+5. Then the concrete questions (AskUserQuestion, Russian, recommended option first): QuickJS against
+   `androidx.javascriptengine` or a Kotlin port; form-of at import (hoshidicts "redirects" field via a patch or
+   fork, or our own side table); translating inflection names (en 17, ko ~450 rules); following form-of a second
+   level (ёжика → ёжик → ёж); showing every rule chain; frequency dictionaries we build from wordfreq (CC BY-SA 4.0)
+   for the catalog; the risky dictionaries list; one Chinese profile for both scripts (request 5); the multi-language
+   version branch and per-language branches. Then the implementation plan, built from scratch on that branch.
+6. The implementation plan follows the decision table's order of languages (revised with request 11) and the
+   gloss-language rule (request 10). It is a major re-plan: a new dated file in `plans/`, written after the
+   concrete questions are answered.
+
+The emulator ran from this session's background task; if it is gone, start it again with
+`D:/Android/Sdk/emulator/emulator.exe -avd Pixel_10_Pro -no-snapshot-save` (the data partition keeps the app and
+the imported dictionaries).
 
 ## Changelog
 
 - 2026-10-09: plan started with the owner's request, the research (`notes/languages.md`) and the topics above.
 - 2026-10-09: owner's answers to the general topics (Decisions) and requests 2-7.
+- 2026-10-09: English and Chinese experiment in `experiment/languages`; findings in the notes; requests 8 and 9.
+- 2026-10-09: Russian experiment (request 9) in the same branch.
+- 2026-10-09: request 10 (gloss languages) and its decision row; license survey in the notes.
+- 2026-10-09: Korean started in the experiment branch; handoff section for the next session (owner's request).
+- 2026-10-09: request 11 (priority languages by popularity among learners); the order of languages revised by
+  the owner: the first three as before, then the five most learned European languages, then the remaining
+  interface languages, then the rest.
