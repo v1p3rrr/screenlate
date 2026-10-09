@@ -31,6 +31,8 @@ in the language branch once the hypotheses below are checked. Research findings:
    concrete question for later.
 9. (2026-10-09) Also experiment with a language that has no deinflection rules in Yomitan and gets its forms only
    from the dictionary's form-of entries, e.g. Russian.
+10. (2026-10-09) Dictionaries: every language needs at least a dictionary into English, preferably also into
+    Russian, optionally into the other main interface languages.
 
 ## Decisions
 
@@ -50,6 +52,7 @@ in the language branch once the hypotheses below are checked. Research findings:
 | Search and "Look up in Screenlate" | Use the active language profile (owner, 2026-10-09) |
 | Branches | `main`; a branch for the multi-language version; branches per language (or per batch) off it; a separate experimental branch for the hypotheses, which may be thrown away (owner, 2026-10-09) |
 | First language | English or Chinese, whichever is easier, as the experiment (owner, 2026-10-09) |
+| Gloss languages | Every language: at least a dictionary into English, preferably into Russian, optionally into the other main interface languages (owner, 2026-10-09) |
 
 ## General topics for the owner
 
@@ -109,3 +112,4 @@ Status 2026-10-09 after the English and Chinese experiment (`notes/languages.md`
 - 2026-10-09: owner's answers to the general topics (Decisions) and requests 2-7.
 - 2026-10-09: English and Chinese experiment in `experiment/languages`; findings in the notes; requests 8 and 9.
 - 2026-10-09: Russian experiment (request 9) in the same branch.
+- 2026-10-09: request 10 (gloss languages) and its decision row; license survey in the notes.

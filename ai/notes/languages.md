@@ -79,6 +79,81 @@ questions: `plans/2026-10-09-more-languages.md`.
   frequency 1.85 MB, IPA 6.6 MB, STDICT, KRDICT for 11 gloss languages. No license stated in the repo; third parties
   say the source data is CC BY-SA 2.0 KR (unconfirmed).
 - English–Russian outside Wiktionary: Mueller 7 and FreeDict eng-rus are GPL-2+.
+- Licenses per dictionary: "Catalog candidates and licenses" below.
+
+## Catalog candidates and licenses (checked 2026-10-09)
+
+Licenses from the sources' own pages where they exist; "third parties" marks what only others say. The catalog links
+to the publishers' downloads, as it does for Japanese; a few entries would have to be built and hosted by us.
+
+Usable (open licenses):
+
+| Language | Dictionary | Data license | Notes |
+|---|---|---|---|
+| all ~157 | Wiktionary (wty main, glossary, IPA) | CC BY-SA / GFDL (Wiktionary); converter MIT | Hugging Face, weekly, update index; gloss editions cs de el en simple es fr id it ja ko ku ms nl pl pt ru th tr vi zh |
+| many | Wikipedia for Yomitan (MarvNC) | CC BY-SA (Wikipedia via DBpedia abstracts) | encyclopedia entries; DBpedia has no dumps after 2022-12 |
+| zh | CC-CEDICT for Yomitan (MarvNC): terms, Hanzi, Canto | CC BY-SA 4.0 on mdbg.net (cc-cedict.org and the Yomitan release say 3.0); converter MIT | daily releases; both scripts |
+| zh | wty zh→en (20 MB), Wiktionary Hanzi (MarvNC) | CC BY-SA | |
+| ko | KRDICT (Lyroxide; 11 gloss languages incl. en, ru, ja), STDICT, OPENDICT, IPA, CC100 frequency | NIKL: "Creative Commons Attribution-Share Alike" for text (krdict's copyright page, no version; third parties: 2.0 KR); multimedia differs | the repo states no license of its own packaging; GitHub releases |
+| ru | wty ru→en (25 MB zip, 273 MB installed), ru→ru (80 MB) | CC BY-SA | |
+| ru | OpenRussian (ImenaOphelia converter, Apache-2.0) | CC BY-SA 4.0 | no releases: we would build and host it; its Zaliznyak meta dictionary is CC BY-NC 4.0 (risky list) |
+| en | wty en→en (103 MB), en→ru (4.8 MB), en→other editions | CC BY-SA | |
+| en–ru | Mueller 7, FreeDict eng-rus | GPL-2+ | no Yomitan builds found; we would convert and host, with the GPL source offer |
+| de fr es it pt pl uk tr ar he la … | wty →en, →ru and other editions | CC BY-SA | sizes in "Dictionaries for other languages" |
+| id | Indonesian–English (Kamata954) | Wiktionary-based, CC BY-SA | |
+| frequency, ~40 languages | wordfreq (rspeer) | data CC BY-SA 4.0, code Apache-2.0 | frozen at 2021 data; large lists for ar bn ca zh cs nl en fi fr de he hi it ja mk nb pl pt ru es sv uk; we would build Yomitan frequency dictionaries and host them |
+
+Coverage by gloss language (owner: at least English, preferably Russian, optionally the other interface languages).
+wty sizes in MB from the Hugging Face tree of 2026-10-09 (`latest`); "g" is the glossary dictionary, built from
+translation tables (short word-to-word translations through English Wiktionary), "-" none:
+
+| Source | en | ru | es | fr | de | it | pt | pl | tr | vi | ja | ko | zh |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| en | 114.7 | 6.0 g4.0 | 1.8 g3.6 | 9.0 g3.8 | 2.0 g4.1 | 1.8 g2.7 | 1.2 g3.0 | 6.0 g3.6 | 3.4 g1.5 | 7.3 g1.0 | 5.2 g2.2 | 1.3 g1.5 | 6.3 g0.1 |
+| zh | 23.0 g1.0 | g7.6 | g0.4 | 1.3 g0.4 | 0.1 g0.5 | 0.1 g0.4 | 0.1 g0.4 | 0.7 g0.4 | 0.0 g0.3 | 0.2 g0.3 | 2.4 g0.4 | 1.2 g0.4 | 9.7 |
+| ko | 7.4 g0.6 | 0.4 g0.2 | 0.0 g0.2 | 1.1 g0.2 | 0.0 g0.2 | 0.1 g0.2 | 0.0 g0.2 | 0.3 g0.2 | 0.1 g0.1 | 0.1 g0.1 | 1.6 g0.1 | 4.9 | 10.0 g0.2 |
+| ru | 14.2 g2.1 | 77.0 | 0.1 g1.0 | 10.5 g1.4 | 0.4 g1.3 | 0.1 g0.9 | 0.2 g0.6 | 2.0 g0.7 | 1.0 g0.5 | 3.0 g0.3 | 0.8 g0.4 | 1.0 g0.3 | 8.8 g0.4 |
+| de | 15.2 g5.2 | 6.2 g2.1 | 0.3 g2.6 | 12.8 g4.2 | 40.3 | 0.7 g2.4 | 0.3 g1.5 | 3.2 g1.7 | 1.6 g1.1 | 0.1 g0.2 | 0.8 g0.6 | 0.3 g0.2 | 6.7 g0.3 |
+| fr | 11.2 g4.0 | 1.9 g1.0 | 0.6 g1.8 | 79.8 | 1.1 g1.9 | 0.6 g2.1 | 0.3 g1.0 | 1.8 g0.8 | 6.5 g0.3 | 3.8 g0.2 | 1.1 g0.6 | 0.3 g0.3 | 3.1 g0.4 |
+| es | 22.1 g0.6 | 1.2 g0.1 | 21.0 | 5.8 g0.4 | 0.3 g0.3 | 0.3 g0.3 | 0.5 g0.2 | 2.3 g0.1 | 0.2 g0.1 | 0.1 g0.0 | 0.7 g0.1 | 0.3 g0.0 | 3.2 g0.1 |
+| it | 17.8 g1.4 | 1.1 g0.1 | 0.4 g0.3 | 21.8 g0.3 | 1.0 g0.4 | 10.5 | 0.3 g0.2 | 2.6 g0.1 | 5.5 g0.0 | 0.0 g0.0 | 0.9 g0.1 | 0.3 g0.0 | 2.6 g0.0 |
+| pt | 11.4 g0.6 | 0.8 g0.2 | 0.4 g0.4 | 3.7 g0.4 | 0.2 g0.4 | 0.1 g0.3 | 12.0 | 0.6 g0.2 | 0.1 g0.1 | 0.0 g0.1 | 0.6 g0.2 | 0.1 g0.1 | 1.9 g0.1 |
+| pl | 22.2 g1.2 | 1.6 g0.8 | 0.1 g0.7 | 1.7 g0.6 | 1.5 g0.7 | 0.1 g0.6 | 0.2 g0.2 | 24.4 | 0.8 g0.1 | 0.0 g0.0 | 0.4 g0.1 | 0.1 g0.1 | 1.6 g0.1 |
+| uk | 7.7 | 3.5 | 0.0 | 2.5 | 0.4 | 0.0 | 0.0 | 2.4 | 0.5 | 0.0 | 0.2 | 0.1 | 0.6 |
+| tr | 18.9 g0.4 | 1.3 g0.2 | 0.0 g0.1 | 0.3 g0.3 | 0.1 g0.3 | 0.0 g0.2 | 0.1 g0.1 | 0.5 g0.1 | 19.0 | 0.0 g0.0 | 0.1 g0.1 | g0.0 | 0.6 g0.0 |
+| vi | 4.7 g0.2 | 0.1 g0.0 | 0.0 g0.0 | 1.5 g0.1 | 0.1 g0.0 | 0.0 g0.0 | 0.1 g0.0 | 0.1 g0.0 | 0.0 g0.0 | 4.3 | 0.6 g0.0 | 0.3 g0.0 | 1.9 g0.0 |
+| ar | 6.4 | 0.8 | 0.0 | 1.4 | 0.1 | 0.0 | 0.1 | 0.8 | 0.3 | 0.0 | 0.1 | 0.1 | 0.4 |
+| he | 3.4 | 0.6 | 0.2 | 0.1 | 0.0 | 0.0 | 0.0 | 0.1 | 0.1 | - | 0.1 | 0.0 | 0.3 |
+| th | 2.9 g0.1 | 0.2 g0.0 | 0.0 g0.1 | 0.0 g0.0 | 0.0 g0.0 | 0.0 g0.0 | 0.0 g0.0 | 0.2 g0.0 | 0.0 g0.0 | 0.1 g0.0 | 0.2 g0.0 | g0.0 | 0.3 |
+| id | 4.3 | 0.3 | 0.0 | 0.8 | 0.0 | 0.0 | 0.1 | 0.1 | 0.0 | 0.0 | 0.1 | 0.1 | 0.3 |
+
+- Beyond Wiktionary: zh→en CC-CEDICT; ko→en, ru, es, fr, ja, zh, vi, th, id, ar, mn KRDICT; ru→en OpenRussian.
+- Gaps for Russian glosses: zh→ru has only the wty glossary (7.6 MB); БКРС (bkrs.info, crowd-sourced, DSL
+  downloads) is called free by third parties, but no license text was found (risky list). Thai, Vietnamese,
+  Indonesian, Arabic and Hebrew have almost nothing into Russian.
+- Gaps for English glosses: none among the languages above (Thai and Hebrew are small).
+
+Risky (no license stated, non-commercial, unclear or copyrighted):
+
+| Language | Dictionary | Why |
+|---|---|---|
+| yue | words.hk for Yomitan (MarvNC) | Non-Commercial Open Data License 1.0 (converter MIT): fine while the app is free, a problem for any paid or ad-supported version |
+| yue | CantoDict, Canto CEDICT and the Migaku "Learn Cantonese" set | archived or repackaged data, no license stated |
+| yue | Cifu frequency | license not found |
+| zh | SUBTLEX-CH, BLCU BCC frequency, Sinica | research data, redistribution terms not found |
+| zh | HSK levels (official word list, OCR'd) | facts list, no license stated |
+| zh | Oxford, DrEye, Wenlin ABC, Tuttle, 现代汉语词典, 规范词典, 兩岸詞典, 漢語大詞典, MoeDict conversions, Kroll, Vogelsang | commercial dictionaries converted by users; MoeDict's text is © Taiwan's Ministry of Education (an open license for it not found) |
+| ko | jarjumarvin KRDICT, Hanja and conjugation dictionaries, SpazzTL supplement | no license stated (KRDICT data itself is CC BY-SA) |
+| ru | OpenRussian Zaliznyak meta dictionary | CC BY-NC 4.0 |
+| en | Oxford Advanced Learner's, Macmillan, NOAD, Cambridge, Longman (Umbrella's folder) | commercial dictionaries |
+| en–ja | 研究社 新英和大辞典, ライトハウス, Oxford thesaurus | commercial (Monokakido rips) |
+| de es pt ro en | Migaku conversions: PONS, DUDEN, RAE, Priberam, Oxford, dexonline | commercial or unclear |
+| th | LEXiTRON, Pleang Na Nakorn TH-TH | NECTEC terms not found (Language Grid lists it as non-profit research use); the other has none |
+| vi | VNEDICT, Free Vietnamese Dictionary Project, stardict-vi, vntk dictionary, Chữ Nôm | licenses not checked yet; MediaFire uploads |
+| ar | kaihouguide's language→Arabic set | self-ripped |
+| many | Lingoes Vicon dictionaries | ripped from Lingoes |
+| zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
+| many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent |
 
 ## OCR
 
