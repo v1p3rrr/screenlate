@@ -57,6 +57,7 @@ Owner requests after the v0.1.4 release (2026-09-29).
 51. (2026-10-09) An optional setting, separate from 50: the popup hides itself when the aim moves a few millimeters away from the word onto no text or onto text the current mode does not read (e.g. English with romaji conversion off), instead of a tap on ✕ or docking the bubble.
 52. (2026-10-09) The popup's sentence translation gets a copy button.
 53. (2026-10-09) The popup's 文A button: a real translate icon (an SVG found or drawn) instead of the two characters set as text.
+54. (2026-10-09, backlog) Network audit and an offline mode. Find every place that uses the network and check how it behaves without internet or on a bad connection: each must give clear feedback (no connection, timeout, the server is not reachable, as audio already does for a local server), also where no alternative exists (translation: no internet, or a bad connection, so no translation). Then a separate settings switch "Offline mode" that forcibly turns off every internet function, down to the smallest (e.g. fetching Bing's token). A feature known not to work in that mode is hidden (the translate button) rather than failing. Details in the section "Network audit and offline mode".
 
 ## Decisions
 
@@ -199,6 +200,35 @@ Design worked out on 2026-10-09 (not built yet; the usage limit ended the sessio
   no-op, so the search screen shows no 文A.
 - The overlay computes the sentence as `noteSource()` does; `PopupNotes` fills `sentence-translation` through
   `SentenceTranslator` with a 5 s wait when the marker is used and the Anki switch is on.
+
+## Network audit and offline mode (backlog, request 54)
+
+Places that use the network (inventory of 2026-10-09, to be checked again when the work starts):
+
+- Cloud recognition (`core:ocr/lens/LensOcrEngine`) and OCR boost (extra cloud requests); offline the on-device
+  engine stays, ⚠ already names the cloud failure.
+- Audio sources (`core:anki/audio/AudioFinder`): the remote defaults, custom URLs, the custom JSON list, which may
+  point to a server on the home network; the phone's text-to-speech is local.
+- Sentence translation (`core:translate`): Bing (token page and translation), Google gtx, Edge.
+- Dictionaries (`dictionary:api`): the remote catalog (`DictionaryCatalog`), downloads (`DictionaryImportWorker`),
+  update checks (`DictionaryUpdates`).
+- App updates (`app/update/AppUpdates`): the GitHub release check and the APK download.
+- Popup fonts (`overlay/fonts/PopupFonts`): font downloads.
+- Custom popup CSS: stylesheets and fonts from the internet load in the WebView (the page's content security policy
+  allows only those).
+- Not the app's own requests: links that open the browser (dictionary links, About, GitHub).
+
+Open questions for the owner, to ask when the work starts:
+
+- Where the "Offline mode" switch sits (its own settings entry, the top of the Settings list, the start screen) and
+  whether the bubble's hold menu or the Quick Settings tile toggles it too.
+- What it does to each feature: recognition on the device only and OCR boost off; translation button hidden and
+  `{sentence-translation}` empty; remote audio sources skipped (text-to-speech stays); catalog downloads, dictionary
+  and app update checks off (hidden or greyed with a line); font downloads off; remote fonts and stylesheets in the
+  custom CSS blocked.
+- Whether a server on the home network (a local audio server) counts as internet in offline mode.
+- Whether links that open the browser stay.
+- Whether the app also notices on its own that there is no network (and says so once) or only reports each failure.
 
 ## Sending text to other apps (far backlog, request 47)
 
@@ -420,3 +450,4 @@ Questions for the owner (the work went on with the choice in brackets, cheap to 
 - 2026-10-09: owner answers on 52: the copy button sits at the right of the block next to the service chip, copies the sentence and the translation on two lines, and shows whenever a translation is shown (no setting). Request 53 (an SVG translate icon instead of the 文A text).
 - 2026-10-09: owner answers on the translation details: Senren's sentence translation field (SentenceTranslation, and sentenceEng in older versions) gets `{sentence-translation}` in the suggested templates; the settings test waits 15 s per service; the translate button stays hidden on messages and on views opened from dictionary links; the "Google only" / "Bing and Edge only" notes stay in the settings' language list, and the popup names only the service that translated.
 - 2026-10-09: fixed on the way: a scan result that arrived after the translate tap (the cloud result after app text) re-rendered the popup and dropped the translation; the page now keeps it while the popup stays open and the word and sentence are the same. A certificate or TLS failure of a translation service has its own message instead of "Could not reach the server".
+- 2026-10-09: request 54 (network audit and an offline mode, backlog); inventory and open questions in its section.
