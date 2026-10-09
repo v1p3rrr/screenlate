@@ -15,6 +15,11 @@ Requests 1–19 are in the previous plan. New ones:
     ready, before it is merged.
 22. (2026-10-10) Turning a language off asks about its files; the settings also offer to delete the files of languages
     that are turned off, per file or, simpler, all files of such a language at once.
+23. (2026-10-10) Build the whole shared base, so later languages are only additions, and English on it. When both are
+    done, tested and checked on the emulator, run the code-review skill at xhigh with `--fix` twice over the whole
+    multi-language change, following the owner's earlier review instructions (`notes/module-map.md`, "How to run each
+    review"): bugs first, and also translations in all 14 locales, docs, tests, privacy, the GPL boundary and the UI
+    rules.
 
 ## Decisions
 
@@ -247,6 +252,11 @@ piece is exercised end to end; `languages/en` then finishes English. Japanese mu
   (bundles, catalog generator, frequency builder), `docs/usage.md` (turning languages on and off); NOTICE: QuickJS-ng,
   Yomitan's language code (inside the engine module), hangul-js and kanji-processor when Korean comes, wordfreq data.
 
+### After stage A and English (request 23)
+
+Two runs of the code-review skill at xhigh with `--fix` over the whole change (`main..languages/main` plus
+`languages/en`), each finding fixed or reported; then the owner tests the debug build.
+
 ### Done when
 
 - English can be turned on from the download screen on the emulator, its words looked up with forms and phrases, its
@@ -347,3 +357,4 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   switching during a scan); requests 20–22.
 - 2026-10-10: recommended dictionaries (both gloss languages ticked, one entry per gloss language by quality), English
   first; implementation started.
+- 2026-10-10: request 23 (whole base, English, then two code-review runs with fixes).
