@@ -13,7 +13,7 @@ object ChineseSupport : LanguageSupport {
     override val ankiMarkers = emptyList<String>()
     override val defaultAudioSources = listOf("LINGUA_LIBRE", "WIKTIONARY")
     override val iso639Part3 = "cmn"
-    override val wikidataId = "Q727694"
+    override val wikidataId = "Q9192"
     override val languageTag = "zh"
     override val fontSample = "门户 骨 直 — 門戶 骨 直"
     override val translationSample = "今天天气很好。我们去散步吧。"

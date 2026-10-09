@@ -7,7 +7,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.OcrScript
@@ -43,7 +45,10 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     private fun recognizer(script: OcrScript): TextRecognizer = synchronized(recognizers) {
         recognizers.getOrPut(script) {
             when (script) {
-                OcrScript.JAPANESE, OcrScript.LATIN, OcrScript.CHINESE, OcrScript.DEVANAGARI, OcrScript.KOREAN ->
+                // Experiment: the Chinese and Korean recognizers.
+                OcrScript.CHINESE -> TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
+                OcrScript.KOREAN -> TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+                OcrScript.JAPANESE, OcrScript.LATIN, OcrScript.DEVANAGARI ->
                     TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
             }
         }

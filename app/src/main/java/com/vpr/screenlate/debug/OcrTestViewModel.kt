@@ -68,7 +68,10 @@ class OcrTestViewModel @Inject constructor(
             }
             _state.value = OcrTestState(image = image, running = true)
             val start = SystemClock.elapsedRealtime()
-            ocr.recognize(image, Language.JAPANESE)
+            // Experiment: the language in `files/experiment-language`.
+            val language = java.io.File(context.filesDir, "experiment-language").takeIf { it.isFile }?.readText()?.trim()
+                ?.let { code -> Language.entries.firstOrNull { it.code == code } } ?: Language.JAPANESE
+            ocr.recognize(image, language)
                 .catch { error -> _state.update { it.copy(running = false, error = error.toString()) } }
                 .collect { update ->
                     val run = OcrRun(
