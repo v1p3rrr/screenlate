@@ -37,6 +37,18 @@ in the language branch once the hypotheses below are checked. Research findings:
     English, Spanish, French, Japanese, German, Korean, Italian, Chinese, Portuguese; immersion learners:
     Japanese, English, Spanish, Korean, Chinese, then Russian, French and others. These languages get support
     first.
+12. (2026-10-09) Do not carry other languages' files in the APK: a user of Japanese only should not get megabytes
+    for other languages. Large files a language needs (required dictionaries, on-device recognition models, the
+    local OCR engine) are downloaded when its profile is turned on: from the publishers' links as the catalog does
+    now, or, at worst, from a public GitHub repository of our own for models and possibly dictionaries.
+13. (2026-10-09) Owner's question again (request 5): does Chinese need a split by script, traditional and simplified,
+    and by what logic?
+14. (2026-10-09) Before deciding on translating inflection names: count how many such names and tags there are in
+    total over all languages (counted, `notes/languages.md`, "Inflection names and tags: volume").
+15. (2026-10-09) On-device OCR: are Tesseract and PaddleOCR the only candidates; Paddle seems better at recognition,
+    Tesseract has more languages; think through the most rational setup, possibly combining them (e.g. Paddle for
+    its scripts, Tesseract for the rest). Explain how the engine and the per-language models relate (engine in the
+    APK, models downloaded?).
 
 ## Decisions
 
@@ -57,6 +69,23 @@ in the language branch once the hypotheses below are checked. Research findings:
 | Branches | `main`; a branch for the multi-language version; branches per language (or per batch) off it; a separate experimental branch for the hypotheses, which may be thrown away (owner, 2026-10-09) |
 | First language | English or Chinese, whichever is easier, as the experiment (owner, 2026-10-09) |
 | Gloss languages | Every language: at least a dictionary into English, preferably into Russian, optionally into the other main interface languages (owner, 2026-10-09) |
+| Deinflection runtime | Yomitan's language code in QuickJS inside the engine's native library, hoshidicts answering exact queries (owner, 2026-10-09) |
+| Rule chains | The first chain under the word and a "+N" that opens the others, as frequencies and pitch accents (owner, 2026-10-09) |
+| Form-of storage | Our own compact table written at import in the dictionary's folder (form → lemma and tag set ids); hoshidicts gets only the rows with definitions and stays unchanged (owner, 2026-10-09) |
+| Second form-of step | Only from a lemma without definitions of its own (шокирующее → шокирующий → шокировать); one step otherwise (owner, 2026-10-09) |
+| ML Kit Chinese and Korean | Bundled (+0.56 MB for both); anything within a few MB may be bundled, large files are not carried in the APK (owner, 2026-10-09, request 12) |
+| Chinese profiles | One profile for both scripts (owner, 2026-10-09) |
+| Frequency dictionaries | Built by us from wordfreq (CC BY-SA 4.0) for the supported languages, one per language (top ~100 K words), in the catalog and offered with the main dictionary when a profile is turned on, declinable; hosting is an open item (owner, 2026-10-09) |
+| Cyrillic on-device OCR | PaddleOCR preliminarily; before the Russian stage both engines are compared on real screenshots and a smaller runtime is tried; Tesseract if Paddle is not clearly better (owner, 2026-10-09; the setup for all scripts ML Kit lacks is asked again after request 15) |
+| Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings") |
+
+## Open items (postponed by the owner)
+
+- Bundled Japanese dictionaries (25 MB in the APK): keep them bundled or download them when Japanese is turned on.
+  Must be decided before the first multi-language release; the owner leans to keeping them bundled (2026-10-09).
+- Hosting the files we build or mirror (OCR runtime libraries, wordfreq frequency dictionaries, dictionaries without
+  releases such as OpenRussian): likely a public repository of our own; Hugging Face to be looked at. Decided when
+  the main work is done; until then test builds download them from wherever is handy (owner, 2026-10-09).
 
 ## General topics for the owner
 
@@ -205,3 +234,6 @@ the imported dictionaries).
   interface languages, then the rest.
 - 2026-10-09: second session: Korean checked in the popup, audio per language, compact form-of storage, ML Kit
   Chinese and Korean measured, Cyrillic engine costs, settings draft (notes and the section above).
+- 2026-10-09: concrete questions, batches 1-4: decisions on the deinflection runtime, rule chains, form-of storage,
+  the second form-of step, ML Kit Chinese and Korean, Chinese profiles and script, frequency dictionaries, Cyrillic
+  OCR (preliminary); requests 12-15; open items (bundled Japanese dictionaries, hosting).
