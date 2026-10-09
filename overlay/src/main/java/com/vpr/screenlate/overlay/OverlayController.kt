@@ -374,6 +374,7 @@ class OverlayController(
         val current = windowManager.currentWindowMetrics.windowInsets
         val gestures = metrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.mandatorySystemGestures())
         val keyboard = current.getInsets(WindowInsets.Type.ime()).bottom
+        val bars = current.getInsets(WindowInsets.Type.systemBars())
         return DockPlacement.Screen(
             width = bounds.width().toFloat(),
             height = bounds.height().toFloat(),
@@ -388,6 +389,12 @@ class OverlayController(
                 (bounds.height() - keyboard).toFloat()
             } else {
                 null
+            },
+            shownBars = buildSet {
+                if (bars.left > 0) add(DockSide.LEFT)
+                if (bars.top > 0) add(DockSide.TOP)
+                if (bars.right > 0) add(DockSide.RIGHT)
+                if (bars.bottom > 0) add(DockSide.BOTTOM)
             },
         )
     }
@@ -454,11 +461,11 @@ class OverlayController(
     }
 
     /**
-     * The windows on the screen changed: a keyboard may have opened or closed, which moves a bottom dock. Not while
-     * the bubble is touched: it would jump under the finger.
+     * The windows on the screen changed: a keyboard may have opened or closed, or a fullscreen app hidden or shown
+     * the bars, which moves the dock. Not while the bubble is touched: it would jump under the finger.
      */
     fun onWindowsChanged() {
-        if (attached && state == State.DOCKED && !touching && settings.dockSide == DockSide.BOTTOM) placeDocked()
+        if (attached && state == State.DOCKED && !touching) placeDocked()
     }
 
     /** The user closed the popup: it stays closed until the bubble moves or scans again. */

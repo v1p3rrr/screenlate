@@ -42,10 +42,15 @@ class DockPlacementTest {
     @Test
     fun `the disc's center comes back from a dock's window`() {
         for (side in DockSide.entries) {
-            val window = DockPlacement.window(side, 0.3f, 100, screen)
-            val (x, y) = DockPlacement.center(window, 100, side)
-            assertThat(DockPlacement.position(side, x, y, screen)).isWithin(0.001f).of(0.3f)
+            for (bars in listOf(DockSide.entries.toSet(), emptySet())) {
+                val shown = screen.copy(shownBars = bars)
+                val window = DockPlacement.window(side, 0.3f, 100, shown)
+                val (x, y) = DockPlacement.center(window, 100, side)
+                assertThat(DockPlacement.position(side, x, y, shown)).isWithin(0.001f).of(0.3f)
+            }
         }
+        // A left dock's window holds the disc's right 40 px at the edge.
+        assertThat(DockPlacement.center(DockPlacement.Window(0, 850, 40, 100), 100, DockSide.LEFT)).isEqualTo(-10f to 900f)
         // The top window holds the disc's lower 40 px under the line at 70, the bottom one its upper 40 px.
         assertThat(DockPlacement.center(DockPlacement.Window(450, 70, 100, 40), 100, DockSide.TOP)).isEqualTo(500f to 60f)
         assertThat(DockPlacement.center(DockPlacement.Window(450, 1900, 100, 40), 100, DockSide.BOTTOM)).isEqualTo(500f to 1950f)
@@ -60,9 +65,37 @@ class DockPlacementTest {
     }
 
     @Test
-    fun `a side dock's window stands past the screen edge`() {
-        assertThat(DockPlacement.window(DockSide.RIGHT, 0.45f, 100, screen)).isEqualTo(DockPlacement.Window(960, 850, 100, 100))
-        assertThat(DockPlacement.window(DockSide.LEFT, 0.45f, 100, screen)).isEqualTo(DockPlacement.Window(-60, 850, 100, 100))
+    fun `a side dock's window is the part at the screen edge`() {
+        assertThat(DockPlacement.window(DockSide.RIGHT, 0.45f, 100, screen)).isEqualTo(DockPlacement.Window(960, 850, 40, 100))
+        assertThat(DockPlacement.window(DockSide.LEFT, 0.45f, 100, screen)).isEqualTo(DockPlacement.Window(0, 850, 40, 100))
+    }
+
+    @Test
+    fun `a navigation bar at the side keeps the dock off it`() {
+        // Three-button navigation in landscape: the bar is at the right.
+        val landscape = screen.copy(usable = Box(0f, 50f, 900f, 2000f), gestures = Box(0f, 70f, 900f, 2000f))
+        assertThat(DockPlacement.window(DockSide.RIGHT, 0.45f, 100, landscape).x).isEqualTo(860)
+        assertThat(DockPlacement.window(DockSide.BOTTOM, 0.5f, 100, landscape).y).isEqualTo(1960)
+    }
+
+    @Test
+    fun `in fullscreen the bubble goes to the edge and stands a third past the gesture strip`() {
+        val fullscreen = screen.copy(shownBars = emptySet())
+        // The bottom strip is 60: 60 + 34 of the 100 px disc show from the very edge.
+        assertThat(DockPlacement.window(DockSide.BOTTOM, 0.5f, 100, fullscreen)).isEqualTo(DockPlacement.Window(450, 1906, 100, 94))
+        // The top strip of 70 leaves no third of the disc: the line, as with the bars shown.
+        assertThat(DockPlacement.window(DockSide.TOP, 0.5f, 100, fullscreen)).isEqualTo(DockPlacement.Window(450, 70, 100, 40))
+        // A narrow strip: at least 60% shows.
+        val narrow = fullscreen.copy(gestures = Box(0f, 10f, 1000f, 1990f))
+        assertThat(DockPlacement.window(DockSide.TOP, 0.5f, 100, narrow)).isEqualTo(DockPlacement.Window(450, 0, 100, 60))
+        // No strip at the sides: the very edge, 40%.
+        assertThat(DockPlacement.window(DockSide.LEFT, 0.45f, 100, fullscreen)).isEqualTo(DockPlacement.Window(0, 850, 40, 100))
+    }
+
+    @Test
+    fun `a keyboard keeps the bottom dock above it in fullscreen too`() {
+        val typing = screen.copy(shownBars = emptySet(), keyboardTop = 1200f)
+        assertThat(DockPlacement.window(DockSide.BOTTOM, 0.5f, 100, typing)).isEqualTo(DockPlacement.Window(450, 1160, 100, 40))
     }
 
     @Test

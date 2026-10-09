@@ -17,8 +17,8 @@ import java.util.Locale
  * The draggable bubble. Draws a translucent disc, an optional center dot, a loading arc and, while docked, a letter of
  * the lookup language in the part that shows past the screen edge.
  *
- * The disc is as wide as the view. A view lower than it is a top or bottom dock's window, which holds only the part
- * that shows: the disc is drawn cut off at the view's top or bottom edge, the one facing the screen edge.
+ * The disc is as large as the view's longer side. A narrower or lower view is a dock's window, which holds only the
+ * part that shows: the disc is drawn cut off at the view's edge that faces the screen edge.
  */
 class BubbleView(context: Context) : View(context) {
 
@@ -127,17 +127,14 @@ class BubbleView(context: Context) : View(context) {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val cx = width / 2f
-        val cy = when {
-            height >= width -> height / 2f
-            dockSide == DockSide.TOP -> height - width / 2f
-            else -> width / 2f
-        }
-        val radius = width / 2f - ring.strokeWidth
+        val size = maxOf(width, height)
+        val cx = if (dockSide == DockSide.LEFT) width - size / 2f else size / 2f
+        val cy = if (dockSide == DockSide.TOP) height - size / 2f else size / 2f
+        val radius = size / 2f - ring.strokeWidth
         canvas.drawCircle(cx, cy, radius, fill)
         canvas.drawCircle(cx, cy, radius, ring)
         if (showCenterDot) canvas.drawCircle(cx, cy, 3.5f * density, dot)
-        if (docked && glyph.isNotEmpty()) drawGlyph(canvas, cy)
+        if (docked && glyph.isNotEmpty()) drawGlyph(canvas, size, cy)
         if (loading) {
             val inset = radius - 6f * density
             arcBounds.set(cx - inset, cy - inset, cx + inset, cy + inset)
@@ -149,21 +146,18 @@ class BubbleView(context: Context) : View(context) {
         }
     }
 
-    private fun drawGlyph(canvas: Canvas, cy: Float) {
-        val x: Float
+    private fun drawGlyph(canvas: Canvas, size: Int, cy: Float) {
+        val x = width / 2f
         val y: Float
         if (dockSide.horizontal) {
             // The view is the part that shows, a disc segment narrowing away from the screen edge: the glyph sits
-            // nearer to the edge, where the segment is wide.
-            x = width / 2f
-            val fromEdge = height * CAP_GLYPH_CENTER
+            // nearer to the edge, where the segment is wide, or at the disc's center when that shows.
+            val fromEdge = maxOf(height * CAP_GLYPH_CENTER, height - size / 2f)
             y = if (dockSide == DockSide.TOP) fromEdge else height - fromEdge
-            glyphPaint.textSize = minOf(width, height) * CAP_GLYPH_SIZE
+            glyphPaint.textSize = minOf(height * CAP_GLYPH_SIZE, size * CAP_GLYPH_MAX)
         } else {
-            val visible = width * DOCK_VISIBLE_FRACTION
-            x = if (dockSide == DockSide.RIGHT) visible / 2f else width - visible / 2f
             y = cy
-            glyphPaint.textSize = minOf(visible * GLYPH_SIZE, height * GLYPH_SIZE)
+            glyphPaint.textSize = minOf(width, height) * GLYPH_SIZE
         }
         val baseline = y - (glyphPaint.descent() + glyphPaint.ascent()) / 2f
         canvas.drawText(glyph, x, baseline, glyphPaint)
@@ -177,9 +171,6 @@ class BubbleView(context: Context) : View(context) {
     }
 
     companion object {
-        /** Part of the docked bubble's width (its height at the top and bottom) that stays on screen. */
-        const val DOCK_VISIBLE_FRACTION = 0.4f
-
         private const val BUBBLE_COLOR = 0x737C5CFF
         private const val DOCKED_ALPHA = 0.55f
 
@@ -192,5 +183,8 @@ class BubbleView(context: Context) : View(context) {
         /** At the top and bottom: the glyph's size and center relative to the cap's height, from the screen edge. */
         private const val CAP_GLYPH_SIZE = 0.68f
         private const val CAP_GLYPH_CENTER = 0.42f
+
+        /** The glyph's largest size relative to the disc, when much of it shows. */
+        private const val CAP_GLYPH_MAX = 0.45f
     }
 }

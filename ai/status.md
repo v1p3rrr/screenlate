@@ -254,7 +254,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - On the phone: after MagicOS stops the service, the start screen's red "bubble is gone" line and whether its button
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
-- Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 waits for the owner. Request 55 (field templates for more note types) is done too. Next: the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
+- Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 is answered and built (request 57). Request 55 (field templates for more note types) is done too. Next: the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
 - Backlog: accessibility disclosure with consent (request 48, decided 2026-10-09). Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
 
 ## Open items
@@ -783,3 +783,8 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - Checked on the emulator: pulling the bubble out of the top and bottom docks without a jump, the settings test's
   date message for Bing and Edge (the emulator's clock lags), the popup translation through Google after Bing's
   timeout. Lint, unit tests and page tests pass. No release.
+- D1 answered (request 57) and built: 40% of a docked bubble shows wherever nothing takes a touch at the edge; in
+  fullscreen apps the top and bottom docks go to the very edge and show enough for a third of the disc past the
+  system's gesture strip (at least 60%), or keep the line when the strip is too wide; a shown bar (also a side
+  navigation bar in landscape) keeps the dock past it. Checked on the emulator in portrait; landscape and three-button
+  navigation not checked.

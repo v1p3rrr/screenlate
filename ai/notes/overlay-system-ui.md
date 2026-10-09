@@ -28,9 +28,21 @@ which edge swipes the system takes from them. Measured on the emulator (Pixel_10
     shows the bars and cancels the touch (going on opens the notifications).
   - Fullscreen, `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`: from the bottom strip the touch is cancelled and the bars
     show; from the top strip the overlay keeps the touch and the bars show for a while.
-  - The app's fullscreen behavior cannot be read from the service, so the top and bottom docks stay outside the
-    mandatory strips in every mode (`DockPlacement`). The left and right edges carry only the Back gesture, which is
+  - The app's fullscreen behavior cannot be read from the service; whether a bar shows can. In fullscreen the top and
+    bottom docks stand in the strip only with a third of the disc past it (see Placement below). The left and right edges carry only the Back gesture, which is
     not mandatory: `systemGestureExclusionRects` on the bubble keeps it, also in fullscreen apps.
+- Placement (`DockPlacement.cap`, 2026-10-09): per edge, a bar shown now (`currentWindowMetrics` insets of
+  `systemBars()`, or the keyboard at the bottom) puts the dock at the line past bars, cutout and mandatory strip with
+  40% showing; no bar and no mandatory strip: the very edge, 40%; no bar but a strip (fullscreen): the very edge with
+  max(60%, strip + a third of the disc) when that fits in the disc, else the line. On the emulator in fullscreen the
+  48 dp bubble shows whole at the bottom (strip 32 dp) and its upper third pulls out without going Home; the top
+  (strip 64 dp) keeps the line. Every dock window holds only the visible part (`DockPlacement.center` inverts it).
+- `BEHAVIOR_DEFAULT` fullscreen: a drag that starts on the bubble at the right edge and ends in the bottom strip
+  showed the bars, and the test viewer does not hide them again; the dock then moved to the line, as it should.
+- Navigation mode: not needed for placement, the strips come per edge and orientation. If ever needed, the
+  `tappableElement()` insets are empty at the bottom with gesture navigation and cover the button bar with buttons
+  (the public way); `Settings.Secure` `navigation_mode` (0 buttons, 1 two buttons, 2 gestures) is readable but not
+  public API. On phones the three-button bar moves to a side in landscape; the gesture handle stays at the bottom.
 - The `ACTION_CANCEL` of a taken touch has no reliable position: one arrived near y 0 and docked the bubble at the top.
   The bubble's listener uses the last `ACTION_MOVE` instead and puts a bubble pulled out of the dock back.
 
