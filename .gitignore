@@ -32,3 +32,6 @@ node_modules/
 
 # Written into source archives by the release workflow; builds from git read the version from tags.
 /version.txt
+
+# JVM crash logs (test executors out of memory)
+hs_err_pid*.log
