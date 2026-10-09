@@ -5,4 +5,5 @@ enum class Language(val code: String) {
     JAPANESE("ja"),
     ENGLISH("en"),
     CHINESE("zh"),
+    RUSSIAN("ru"),
 }
