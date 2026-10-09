@@ -565,4 +565,14 @@
     <string name="reset_dictionaries_gave_up_title">Chưa đặt lại xong từ điển</string>
     <string name="reset_dictionaries_gave_up_text">Ứng dụng đã đóng hai lần khi đang đặt lại từ điển nên quá trình đặt lại đã dừng. Một số từ điển có thể còn sót hoặc bị thiếu. Hãy đặt lại lần nữa bằng nút ở đầu trang Từ điển.</string>
     <string name="reset_dictionaries_gave_up_open">Mở từ điển</string>
+    <string name="accessibility_disclosure_title">Dịch vụ hỗ trợ tiếp cận làm gì</string>
+    <string name="accessibility_disclosure_intro">Screenlate dùng dịch vụ hỗ trợ tiếp cận của mình để hiển thị bong bóng trên các ứng dụng khác và đọc văn bản bên dưới nó.</string>
+    <string name="accessibility_disclosure_reads_title">Những gì nó đọc</string>
+    <string name="accessibility_disclosure_reads">• Ảnh chụp màn hình, khi bạn chạm vào bong bóng hoặc kéo nó ra. Với “Chỉ văn bản ứng dụng”, chỉ để lấy hình cho ghi chú Anki.\n• Văn bản mà các ứng dụng hiển thị trên màn hình, vào cùng những lúc đó, nếu bật “Đọc văn bản của ứng dụng” hoặc “Chỉ văn bản ứng dụng”.\n• Ứng dụng nào đang mở, bàn phím và các thanh hệ thống ở đâu: để ẩn bong bóng trong các ứng dụng bạn chọn và giữ nó tránh xa các thanh.</string>
+    <string name="accessibility_disclosure_sends_title">Dữ liệu đi đâu</string>
+    <string name="accessibility_disclosure_sends">• Ảnh chụp màn hình được gửi đến dịch vụ nhận dạng văn bản trên đám mây, trừ khi “Công cụ nhận dạng” đặt là “Thiết bị”. Nhận dạng trên thiết bị không gửi gì.\n• Câu được gửi đến trình dịch trực tuyến khi bạn chạm 文A hoặc mẫu ghi chú cần bản dịch.\n• Từ và cách đọc được gửi đến các nguồn âm thanh bạn chọn, để lấy phát âm.\n• Ghi chú được gửi đến AnkiDroid trên thiết bị này.</string>
+    <string name="accessibility_disclosure_outro">Dịch vụ không chạm hay nhập gì thay bạn. Những gì nó đọc không được lưu: ảnh chụp màn hình chỉ nằm trong bộ nhớ khi cửa sổ bật lên đang mở, ghi chú chỉ nhận phần ảnh bạn chọn, và nhật ký không bao giờ chứa văn bản trên màn hình.</string>
+    <string name="accessibility_disclosure_agree">Đồng ý</string>
+    <string name="accessibility_disclosure_later">Để sau</string>
+    <string name="about_accessibility_disclosure">Dịch vụ đọc và gửi gì</string>
 </resources>

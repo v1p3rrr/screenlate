@@ -108,11 +108,25 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[BACKGROUND_TIP_SEEN] = true }
     }
 
+    /**
+     * Whether the user agreed to what the accessibility service reads and sends, in the dialog shown before its
+     * settings open. Not part of backups: a new device asks again.
+     */
+    val accessibilityAgreed: Flow<Boolean> = dataStore.data.map { it[ACCESSIBILITY_AGREED] ?: false }
+
+    /** [accessibilityAgreed] as last read, for a screen's first frame; null before the first read. */
+    val cachedAccessibilityAgreed: Boolean? get() = dataStore.cached { it[ACCESSIBILITY_AGREED] ?: false }
+
+    suspend fun setAccessibilityAgreed() {
+        dataStore.edit { it[ACCESSIBILITY_AGREED] = true }
+    }
+
     private companion object {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val APP_COLORS = stringPreferencesKey("theme_colors")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")
         val BACKGROUND_TIP_SEEN = booleanPreferencesKey("background_tip_seen")
+        val ACCESSIBILITY_AGREED = booleanPreferencesKey("accessibility_agreed")
         val E_INK = booleanPreferencesKey("e_ink")
         val E_INK_HINT_SEEN = booleanPreferencesKey("e_ink_hint_seen")
         val E_INK_BUBBLE_BEFORE = intPreferencesKey("e_ink_bubble_before")

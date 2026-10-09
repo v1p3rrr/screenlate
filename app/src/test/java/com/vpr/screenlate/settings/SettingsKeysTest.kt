@@ -28,6 +28,7 @@ class SettingsKeysTest {
     )
     private val globalOnly = listOf(
         "update_announce", "update_announced_tag", "e_ink_hint_seen", "background_tip_seen", "notification_permission_asked",
+        "accessibility_agreed",
     )
     private val kept = listOf(
         "sort_dictionary_id", "bundled_dictionaries_installed", "bundled_dictionaries_declined",

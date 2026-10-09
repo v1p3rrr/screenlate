@@ -575,4 +575,14 @@
     <string name="reset_dictionaries_gave_up_title">Il ripristino dei dizionari non è terminato</string>
     <string name="reset_dictionaries_gave_up_text">L’app si è chiusa due volte durante il ripristino dei dizionari, quindi il ripristino è stato interrotto. Alcuni dizionari potrebbero essere rimasti o mancare. Ripristinali di nuovo con il pulsante in alto nella pagina Dizionari.</string>
     <string name="reset_dictionaries_gave_up_open">Apri i dizionari</string>
+    <string name="accessibility_disclosure_title">Cosa fa il servizio di accessibilità</string>
+    <string name="accessibility_disclosure_intro">Screenlate usa il suo servizio di accessibilità per mostrare la bolla sopra le altre app e leggere il testo sotto di essa.</string>
+    <string name="accessibility_disclosure_reads_title">Cosa legge</string>
+    <string name="accessibility_disclosure_reads">• Uno screenshot, quando tocchi la bolla o la trascini fuori. Con “Solo testo delle app”, solo per un’immagine in una nota di Anki.\n• Il testo che le app mostrano sullo schermo, negli stessi momenti, se “Leggi il testo delle app” o “Solo testo delle app” è attivo.\n• Quale app è aperta e dove sono la tastiera e le barre di sistema: per nascondere la bolla nelle app scelte e tenerla lontana dalle barre.</string>
+    <string name="accessibility_disclosure_sends_title">Dove va</string>
+    <string name="accessibility_disclosure_sends">• Lo screenshot va al riconoscimento del testo nel cloud, a meno che in “Motori” sia scelto “Dispositivo”. Il riconoscimento sul dispositivo non invia nulla.\n• La frase va a un traduttore online quando tocchi 文A o un modello di nota ne chiede la traduzione.\n• La parola e la sua lettura vanno alle fonti audio scelte, per la pronuncia.\n• Le note vanno ad AnkiDroid su questo dispositivo.</string>
+    <string name="accessibility_disclosure_outro">Il servizio non tocca e non scrive nulla al posto tuo. Ciò che legge non viene salvato: lo screenshot resta in memoria finché il popup è aperto, una nota riceve solo la parte dello screenshot che selezioni e i log non contengono mai testo dello schermo.</string>
+    <string name="accessibility_disclosure_agree">Accetto</string>
+    <string name="accessibility_disclosure_later">Non ora</string>
+    <string name="about_accessibility_disclosure">Cosa legge e invia il servizio</string>
 </resources>

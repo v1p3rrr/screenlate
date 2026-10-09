@@ -61,8 +61,9 @@ Translations of the interface were made with AI and have not been reviewed by na
 
 - No accounts, ads or analytics.
 - With cloud recognition, a scaled-down screenshot of the app under the bubble is sent for recognition when you scan: when the bubble is pulled out or tapped. The on-device draft and the app's own text stay on the phone.
+- Sentence translation sends the sentence to an online translator when you ask for it in the popup or a note template uses it.
 - Audio sources receive the word being played. Dictionary downloads and update checks contact the dictionary hosts and GitHub.
-- The accessibility service reads the screen only when you scan. It also notices which app is in front, to hide the bubble in the apps you choose.
+- The accessibility service reads the screen only when you scan. It also notices which app is in front, to hide the bubble in the apps you choose. The app says this before the accessibility settings open, and again under About.
 - The app's log never contains recognized text or looked-up words, and leaves the phone only when you share it.
 
 ## License

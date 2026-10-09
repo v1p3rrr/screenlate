@@ -75,6 +75,7 @@ fun HomeScreen(
     val bubbleVisible by viewModel.bubbleVisible.collectAsStateWithLifecycle()
     val resetGaveUpUntold by viewModel.resetGaveUpUntold.collectAsStateWithLifecycle()
     val settingsBadge = rememberBackgroundTipBadge()
+    val openAccessibilitySettings = rememberOpenAccessibilitySettings()
     LaunchedEffect(Unit) { updates.checkIfDue() }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
@@ -138,14 +139,14 @@ fun HomeScreen(
                 if (dictionaries.importing) Hint(stringResource(R.string.home_dictionaries_installing))
                 if (serviceEnabled) {
                     HorizontalDivider()
-                    BubbleControls(serviceRunning, bubbleVisible, viewModel::setBubbleVisible)
+                    BubbleControls(serviceRunning, bubbleVisible, viewModel::setBubbleVisible, openAccessibilitySettings)
                     OutlinedButton(
-                        onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
+                        onClick = openAccessibilitySettings,
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings), textAlign = TextAlign.Center) }
                 } else {
                     Button(
-                        onClick = { OverlayServiceStatus.openAccessibilitySettings(context) },
+                        onClick = openAccessibilitySettings,
                         modifier = Modifier.fillMaxWidth(),
                         colors = AccentDefaults.buttonColors(),
                     ) { Text(stringResource(R.string.onboarding_open_accessibility_settings), textAlign = TextAlign.Center) }
@@ -181,8 +182,12 @@ internal fun bubbleState(serviceRunning: Boolean, visible: Boolean): BubbleState
  * the accessibility settings: an app may not turn its own accessibility service back on.
  */
 @Composable
-private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible: (Boolean) -> Unit) {
-    val context = LocalContext.current
+private fun BubbleControls(
+    serviceRunning: Boolean,
+    visible: Boolean,
+    onVisible: (Boolean) -> Unit,
+    onOpenAccessibilitySettings: () -> Unit,
+) {
     val state = bubbleState(serviceRunning, visible)
     Text(
         text = stringResource(
@@ -206,7 +211,7 @@ private fun BubbleControls(serviceRunning: Boolean, visible: Boolean, onVisible:
     } else {
         Button(
             onClick = {
-                if (state == BubbleState.HIDDEN) onVisible(true) else OverlayServiceStatus.openAccessibilitySettings(context)
+                if (state == BubbleState.HIDDEN) onVisible(true) else onOpenAccessibilitySettings()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = AccentDefaults.buttonColors(),

@@ -255,7 +255,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   opens Screenlate's own accessibility page or the list; the keep-alive notification and whether it keeps the service.
 - Phase 8 (more languages) needs an interview per language first.
 - Requests 49-51 (top and bottom dock, popup auto-hide) and 46 (sentence translation, with 52 and 53) are done and reviewed; question D1 is answered and built (request 57). Request 55 (field templates for more note types) is done too. Next: the network audit with offline mode (54, which also takes the rest of 56: logs of the other network features and one shared parser of network errors in `core:common`). Sending text to AI and translator apps from the bubble's hold menu (request 47) stays far backlog.
-- Backlog: accessibility disclosure with consent (request 48, decided 2026-10-09). Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
+- Request 48 (accessibility disclosure with consent) and 58 (holding the tile opens the app) are done. Store publishing was only discussed: a store build would drop the updater, the battery permission and the unofficial endpoints (Lens, translators).
 
 ## Open items
 
@@ -788,3 +788,17 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   system's gesture strip (at least 60%), or keep the line when the strip is too wide; a shown bar (also a side
   navigation bar in landscape) keeps the dock past it. Checked on the emulator in portrait; landscape and three-button
   navigation not checked.
+
+### 2026-10-09 (accessibility disclosure, tile)
+
+- Request 48: before the accessibility settings open, a dialog says what the service reads (a screenshot on a tap or
+  pull, app text when on, the app in front, the keyboard and bars) and where it goes (cloud recognition unless the
+  engines are set to the device, the online translator for 文A and note translations, audio sources, AnkiDroid).
+  "Agree" stores `accessibility_agreed` and opens the settings; later taps open them at once. The flag is cleared by
+  the full settings reset only and is not backed up (owner). About → "What the service reads and sends" shows the
+  same text with Close. All three home buttons that open the settings go through it. 14 locales; the Russian text says
+  "плавающая кнопка" and keeps a dry tone (owner).
+- Request 58: `BubbleTileSettingsActivity` answers `QS_TILE_PREFERENCES`, so holding the tile brings the app's task to
+  the front instead of the app's page in the phone's settings.
+- Checked on the emulator: the dialog, "Not now", "Agree" and the direct open afterwards, About's dialog, and a real
+  hold on the tile. Unit tests pass (the reset and backup key lists include the new key).

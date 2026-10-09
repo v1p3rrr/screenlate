@@ -36,6 +36,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.logs.LogExport
 import com.vpr.screenlate.logs.SavedLog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
+import com.vpr.screenlate.home.AccessibilityDisclosureDialog
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.SectionCard
@@ -46,7 +47,10 @@ import kotlinx.coroutines.launch
 
 const val SOURCE_URL = "https://github.com/v1p3rrr/screenlate"
 
-/** Version and updates, source code, licenses, dictionary attributions, logs and developer tools. */
+/**
+ * Version and updates, source code, what the accessibility service reads and sends, licenses, dictionary attributions,
+ * logs and developer tools.
+ */
 @Composable
 fun AboutScreen(
     onBack: () -> Unit,
@@ -63,6 +67,7 @@ fun AboutScreen(
     var savedLog by remember { mutableStateOf<SavedLog?>(null) }
     var saveFailed by remember { mutableStateOf(false) }
     var showDictionaries by rememberSaveable { mutableStateOf(false) }
+    var showDisclosure by rememberSaveable { mutableStateOf(false) }
     val shareTitle = stringResource(R.string.about_logs_share)
     SettingsScaffold(stringResource(R.string.about_title), onBack) { padding ->
         Column(
@@ -84,6 +89,10 @@ fun AboutScreen(
                 OutlinedButton(onClick = { openUrl(context, ProblemReport.url(versionName(context))) }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.about_report_bug), textAlign = TextAlign.Center)
                 }
+                OutlinedButton(onClick = { showDisclosure = true }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.about_accessibility_disclosure), textAlign = TextAlign.Center)
+                }
+                if (showDisclosure) AccessibilityDisclosureDialog(onDismiss = { showDisclosure = false })
             }
             AboutUpdateCard(updates, versionName(context))
             SectionCard(title = stringResource(R.string.about_licenses)) {

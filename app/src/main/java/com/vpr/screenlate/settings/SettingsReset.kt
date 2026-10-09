@@ -52,6 +52,7 @@ object SettingsKeys {
         "e_ink_hint_seen",
         "background_tip_seen",
         "notification_permission_asked",
+        "accessibility_agreed",
     )
 
     /** The page a key belongs to; null for keys no page resets. */

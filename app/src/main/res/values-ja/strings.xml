@@ -565,4 +565,14 @@
     <string name="reset_dictionaries_gave_up_title">辞書のリセットが完了しませんでした</string>
     <string name="reset_dictionaries_gave_up_text">辞書のリセット中にアプリが 2 回終了したため、リセットを中止しました。一部の辞書が残っているか、なくなっている可能性があります。「辞書」ページ上部のボタンでもう一度リセットしてください。</string>
     <string name="reset_dictionaries_gave_up_open">辞書を開く</string>
+    <string name="accessibility_disclosure_title">ユーザー補助サービスの役割</string>
+    <string name="accessibility_disclosure_intro">Screenlate はユーザー補助サービスを使って、ほかのアプリの上にバブルを表示し、その下のテキストを読み取ります。</string>
+    <string name="accessibility_disclosure_reads_title">読み取るもの</string>
+    <string name="accessibility_disclosure_reads">• スクリーンショット：バブルをタップしたときや引き出したときだけ。「アプリのテキストのみ」では、Anki ノートの画像用にだけ撮ります。\n• アプリが画面に表示しているテキスト：「アプリのテキストを読む」または「アプリのテキストのみ」がオンのとき、同じタイミングで。\n• 開いているアプリ、キーボードとシステムバーの位置：選んだアプリでバブルを隠し、バーに重ならないようにするため。</string>
+    <string name="accessibility_disclosure_sends_title">送信先</string>
+    <string name="accessibility_disclosure_sends">• スクリーンショット：クラウドの文字認識へ。「エンジン」で「端末」を選んでいる場合は送りません。端末での認識は何も送信しません。\n• 文：文A をタップしたときや、ノートのテンプレートが翻訳を求めるときに、オンライン翻訳サービスへ。\n• 単語と読み：発音のために、選んだ音声ソースへ。\n• ノート：この端末の AnkiDroid へ。</string>
+    <string name="accessibility_disclosure_outro">このサービスが代わりにタップや入力をすることはありません。読み取った内容は保存しません。スクリーンショットはポップアップが開いている間だけメモリーに保持され、ノートにはスクリーンショットの選んだ部分だけが入り、ログに画面のテキストが残ることはありません。</string>
+    <string name="accessibility_disclosure_agree">同意する</string>
+    <string name="accessibility_disclosure_later">後で</string>
+    <string name="about_accessibility_disclosure">サービスが読み取るもの・送信するもの</string>
 </resources>

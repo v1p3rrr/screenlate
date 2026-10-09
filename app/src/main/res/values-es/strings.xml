@@ -575,4 +575,14 @@
     <string name="reset_dictionaries_gave_up_title">El restablecimiento de los diccionarios no terminó</string>
     <string name="reset_dictionaries_gave_up_text">La app se cerró dos veces mientras restablecía los diccionarios, así que el restablecimiento se detuvo. Puede que sobren o falten algunos diccionarios. Vuelve a restablecerlos con el botón de arriba de la página Diccionarios.</string>
     <string name="reset_dictionaries_gave_up_open">Abrir diccionarios</string>
+    <string name="accessibility_disclosure_title">Qué hace el servicio de accesibilidad</string>
+    <string name="accessibility_disclosure_intro">Screenlate usa su servicio de accesibilidad para mostrar la burbuja sobre otras apps y leer el texto que hay debajo.</string>
+    <string name="accessibility_disclosure_reads_title">Qué lee</string>
+    <string name="accessibility_disclosure_reads">• Una captura de pantalla, cuando tocas la burbuja o la sacas. Con «Solo texto de las apps», solo para una imagen en una nota de Anki.\n• El texto que las apps muestran en pantalla, en esos mismos momentos, si «Leer el texto de las apps» o «Solo texto de las apps» está activado.\n• Qué app está abierta y dónde están el teclado y las barras del sistema: para ocultar la burbuja en las apps que elegiste y mantenerla fuera de las barras.</string>
+    <string name="accessibility_disclosure_sends_title">Adónde va</string>
+    <string name="accessibility_disclosure_sends">• La captura va al reconocimiento de texto en la nube, salvo que en «Motores» esté elegido «Dispositivo». El reconocimiento en el dispositivo no envía nada.\n• La frase va a un traductor en línea cuando tocas 文A o una plantilla de nota pide su traducción.\n• La palabra y su lectura van a las fuentes de audio que elegiste, para la pronunciación.\n• Las notas van a AnkiDroid en este dispositivo.</string>
+    <string name="accessibility_disclosure_outro">El servicio no toca ni escribe nada por ti. Lo que lee no se guarda: la captura se queda en memoria mientras la ventana emergente está abierta, una nota recibe solo la parte de la captura que eliges y los registros nunca contienen texto de la pantalla.</string>
+    <string name="accessibility_disclosure_agree">Aceptar</string>
+    <string name="accessibility_disclosure_later">Ahora no</string>
+    <string name="about_accessibility_disclosure">Qué lee y envía el servicio</string>
 </resources>

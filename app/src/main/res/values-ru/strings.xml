@@ -581,4 +581,14 @@
     <string name="reset_dictionaries_gave_up_title">Сброс словарей не завершился</string>
     <string name="reset_dictionaries_gave_up_text">Приложение дважды закрылось во время сброса словарей, поэтому сброс остановлен. Часть словарей могла остаться или пропасть. Запустите сброс ещё раз кнопкой вверху страницы «Словари».</string>
     <string name="reset_dictionaries_gave_up_open">Открыть словари</string>
+    <string name="accessibility_disclosure_title">Что делает служба специальных возможностей</string>
+    <string name="accessibility_disclosure_intro">Через службу специальных возможностей Screenlate показывает плавающую кнопку поверх других приложений и читает текст под ней.</string>
+    <string name="accessibility_disclosure_reads_title">Что служба читает</string>
+    <string name="accessibility_disclosure_reads">• Скриншот — когда вы нажимаете кнопку или вытягиваете её. В режиме «Только текст приложения» — только для картинки в карточке Anki.\n• Текст, который приложения показывают на экране, — в те же моменты, если включено «Читать текст приложения» или «Только текст приложения».\n• Какое приложение открыто, где клавиатура и системные панели — чтобы скрывать кнопку в выбранных приложениях и не ставить её на панели.</string>
+    <string name="accessibility_disclosure_sends_title">Куда уходят данные</string>
+    <string name="accessibility_disclosure_sends">• Скриншот — облачному сервису распознавания текста, если в настройке «Движки» не выбрано «Устройство». Распознавание на устройстве ничего не отправляет.\n• Предложение — онлайн-переводчику, когда вы нажимаете 文A или шаблон карточки Anki просит перевод.\n• Слово и чтение — выбранным источникам аудио, чтобы получить произношение.\n• Карточки — в AnkiDroid на этом устройстве.</string>
+    <string name="accessibility_disclosure_outro">Служба ничего не нажимает и не вводит за вас. Прочитанное не сохраняется: скриншот хранится в памяти, пока открыт попап; в карточку попадает только выбранная вами часть скриншота; в логах текста с экрана нет.</string>
+    <string name="accessibility_disclosure_agree">Согласиться</string>
+    <string name="accessibility_disclosure_later">Не сейчас</string>
+    <string name="about_accessibility_disclosure">Что служба читает и отправляет</string>
 </resources>

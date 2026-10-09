@@ -565,4 +565,14 @@
     <string name="reset_dictionaries_gave_up_title">词典重置未完成</string>
     <string name="reset_dictionaries_gave_up_text">重置词典时应用关闭了两次，因此已停止重置。部分词典可能残留或缺失。请用“词典”页面顶部的按钮再次重置。</string>
     <string name="reset_dictionaries_gave_up_open">打开词典</string>
+    <string name="accessibility_disclosure_title">无障碍服务做什么</string>
+    <string name="accessibility_disclosure_intro">Screenlate 通过其无障碍服务在其他应用上方显示悬浮球，并读取其下方的文字。</string>
+    <string name="accessibility_disclosure_reads_title">读取的内容</string>
+    <string name="accessibility_disclosure_reads">• 截屏：仅在你点按或拖出悬浮球时。在“仅应用文本”模式下，仅用于 Anki 笔记中的图片。\n• 应用在屏幕上显示的文字：在同样的时刻，且开启了“读取应用文本”或“仅应用文本”时。\n• 打开的是哪个应用，键盘和系统栏的位置：用于在你选择的应用中隐藏悬浮球，并让它避开系统栏。</string>
+    <string name="accessibility_disclosure_sends_title">发送到哪里</string>
+    <string name="accessibility_disclosure_sends">• 截屏发送到云端文字识别，除非“引擎”选的是“设备”。设备上的识别不发送任何内容。\n• 句子在你点按 文A 或笔记模板需要译文时发送到在线翻译服务。\n• 单词及其读音发送到你选择的音频来源，用于获取发音。\n• 笔记发送到本设备上的 AnkiDroid。</string>
+    <string name="accessibility_disclosure_outro">该服务不会替你点按或输入任何内容。读取的内容不会保存：截屏只在弹窗打开期间保留在内存中，笔记只获得截屏中你选中的部分，日志中从不包含屏幕上的文字。</string>
+    <string name="accessibility_disclosure_agree">同意</string>
+    <string name="accessibility_disclosure_later">暂不</string>
+    <string name="about_accessibility_disclosure">服务读取和发送的内容</string>
 </resources>

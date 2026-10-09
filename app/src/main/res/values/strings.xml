@@ -574,4 +574,14 @@
     <string name="reset_dictionaries_gave_up_title">Dictionary reset did not finish</string>
     <string name="reset_dictionaries_gave_up_text">The app closed twice while resetting the dictionaries, so the reset was stopped. Some dictionaries may be left over or missing. Run the reset again with the button at the top of the Dictionaries page.</string>
     <string name="reset_dictionaries_gave_up_open">Open dictionaries</string>
+    <string name="accessibility_disclosure_title">What the accessibility service does</string>
+    <string name="accessibility_disclosure_intro">Screenlate uses its accessibility service to show the bubble over other apps and to read the text under it.</string>
+    <string name="accessibility_disclosure_reads_title">What it reads</string>
+    <string name="accessibility_disclosure_reads">• A screenshot, when you tap the bubble or pull it out. With App text only, only for a picture in an Anki note.\n• The text apps show on the screen, at the same moments, when Read app text or App text only is on.\n• Which app is open and where the keyboard and the system bars are: to hide the bubble in the apps you chose and to keep it off the bars.</string>
+    <string name="accessibility_disclosure_sends_title">Where it goes</string>
+    <string name="accessibility_disclosure_sends">• The screenshot goes to cloud text recognition, unless Engines is set to Device. On-device recognition sends nothing.\n• The sentence goes to an online translator when you tap 文A or a note template asks for its translation.\n• The word and its reading go to the audio sources you chose, for the pronunciation.\n• Notes go to AnkiDroid on this device.</string>
+    <string name="accessibility_disclosure_outro">The service does not tap or type anything for you. What it reads is not saved: the screenshot stays in memory while the popup is open, a note gets only the part of the screenshot you select, and the logs never hold text from the screen.</string>
+    <string name="accessibility_disclosure_agree">Agree</string>
+    <string name="accessibility_disclosure_later">Not now</string>
+    <string name="about_accessibility_disclosure">What the service reads and sends</string>
 </resources>

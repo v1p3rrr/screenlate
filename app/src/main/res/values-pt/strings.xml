@@ -575,4 +575,14 @@
     <string name="reset_dictionaries_gave_up_title">A redefinição dos dicionários não terminou</string>
     <string name="reset_dictionaries_gave_up_text">O app fechou duas vezes enquanto redefinia os dicionários, por isso a redefinição foi interrompida. Alguns dicionários podem ter ficado ou sumido. Redefina de novo com o botão no topo da página Dicionários.</string>
     <string name="reset_dictionaries_gave_up_open">Abrir dicionários</string>
+    <string name="accessibility_disclosure_title">O que o serviço de acessibilidade faz</string>
+    <string name="accessibility_disclosure_intro">O Screenlate usa seu serviço de acessibilidade para mostrar a bolha sobre outros apps e ler o texto embaixo dela.</string>
+    <string name="accessibility_disclosure_reads_title">O que ele lê</string>
+    <string name="accessibility_disclosure_reads">• Uma captura de tela, quando você toca na bolha ou a puxa para fora. Com “Somente texto dos apps”, só para uma imagem em uma nota do Anki.\n• O texto que os apps mostram na tela, nos mesmos momentos, se “Ler o texto dos apps” ou “Somente texto dos apps” estiver ativado.\n• Qual app está aberto e onde estão o teclado e as barras do sistema: para ocultar a bolha nos apps escolhidos e mantê-la longe das barras.</string>
+    <string name="accessibility_disclosure_sends_title">Para onde vai</string>
+    <string name="accessibility_disclosure_sends">• A captura vai para o reconhecimento de texto na nuvem, a menos que “Dispositivo” esteja escolhido em “Mecanismos”. O reconhecimento no dispositivo não envia nada.\n• A frase vai para um tradutor on-line quando você toca em 文A ou um modelo de nota pede a tradução dela.\n• A palavra e a leitura vão para as fontes de áudio escolhidas, para a pronúncia.\n• As notas vão para o AnkiDroid neste dispositivo.</string>
+    <string name="accessibility_disclosure_outro">O serviço não toca nem digita nada por você. O que ele lê não é salvo: a captura fica na memória enquanto o pop-up está aberto, uma nota recebe só a parte da captura que você seleciona e os registros nunca contêm texto da tela.</string>
+    <string name="accessibility_disclosure_agree">Concordar</string>
+    <string name="accessibility_disclosure_later">Agora não</string>
+    <string name="about_accessibility_disclosure">O que o serviço lê e envia</string>
 </resources>
