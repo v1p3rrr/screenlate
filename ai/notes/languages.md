@@ -188,6 +188,17 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
   (`eslav_PP-OCRv5_mobile_rec`) ~7.5 MB. ncnn or MNN builds of PP-OCR are smaller but not packaged. Native
   libraries cannot be downloaded later in a clean way, so the runtime goes into the APK and only the models can be
   catalog downloads. Recognition quality on real screenshots not compared yet.
+- PP-OCRv5 recognizers (2026-10-09, PaddleOCR's multi-language page): korean, latin (~47 languages, Vietnamese
+  included), eslav (ru, be, uk), cyrillic (~33 languages incl. bg, sr, mn, kk), arabic (ar, fa, ur, ug, ps, ku, sd),
+  devanagari, th, el, te, ta, en. None for Hebrew, Georgian, Armenian, Khmer, Lao, Syriac or Kannada; PP-OCRv6
+  exists, its languages not checked. Yomitan languages whose script neither ML Kit nor Paddle reads: he, yi, ka, hy,
+  km, lo, kn, aii (Tesseract has all of them).
+- Prior art: PlayTranslate (an Android screen translator) runs PP-OCRv5 on MNN: the detector is bundled in its APK,
+  recognizer packs (~8 MB each, Apache-2.0; CJK 16.6, Korean 13.4) are downloaded from Hugging Face
+  (`playtranslate/ocr-models`) and checked against pinned SHA-256 hashes. MNN (Apache-2.0) is a smaller runtime than
+  ONNX Runtime; its library size not measured yet.
+- Google Play forbids downloading executable code (`.so`, dex) from outside Play; models are data and may be
+  downloaded. So an OCR runtime goes into the APK, its models are downloads.
 - `TextLayout` hit testing knows horizontal, vertical and rotated lines; right-to-left lines (Arabic, Hebrew) are not
   handled.
 
@@ -335,3 +346,30 @@ block starts), per form a varint count and (lemma id, tag set id) varints, a lem
   names); the first 40 cover the grammar (plural, singular, masculine, instrumental, …, second-person, participle,
   perfective). Translating the grammatical ones is a closed list of about 100–150 words.
 - None of the four dictionaries has a row mixing definitions and form-of items.
+
+### Inflection names and tags: volume (2026-10-09)
+
+Counted in Yomitan's `ext/js/language/*/*transforms.js` (commit e7334a9) and the form-of items of nine wty
+dictionaries (en→ru; ru, ko, zh, es, de, fr, it, pt →en).
+
+- Yomitan rules: 17 of its ~55 languages have transforms. Leaving out Japanese (translated already: 99 names, 98
+  descriptions), Korean (450 names that are endings) and affix names (`-able`, Tagalog `-an`): 284 names and 198
+  descriptions (1,164 words). Per language: en 14 names / 17 descriptions, es 15/15, fr 9/9, de 5/4, uk 35/35,
+  ar 23/50, sq 31/31, eu 75/0 (case combinations), grc 21/0, sga 15/15, eo 7/7, yi 6/6, la 4/4, ka 3/3, ga 1/1,
+  tl 20/1. zh, it, pt, ru, pl, tr, vi have no transforms: their forms come from the dictionaries.
+- By the order of languages: group 1 (en, zh, ko) 14 names and 17 descriptions; group 2 (es, fr, de, it, pt) 29 and
+  28; group 3 (ru, pl, tr, vi) none.
+- wty tags: 104 base words (after splitting `nominative/accusative`) cover 99% of the form-of items in each of the
+  nine dictionaries (ru 37 words, de 53, fr 26, it 25, pt 28, ko 29, zh 19); about 25 of them are names of dialects,
+  scripts and romanizations (Cantonese, Hokkien, Simplified-Chinese, Yale, hanja). The last 1% is a long tail of
+  noise: es→en alone has 9,712 distinct tag words, mostly text that leaked into tags.
+- Total for groups 1 and 2: about 200 strings (45 names, 45 descriptions, ~105 tag words), as many as the Japanese
+  names and descriptions translated today; all languages: about 630 strings.
+
+Second form-of step, wty ru→en (`second_level.py`, stress marks removed from lemmas): of 80,860 lemmas named in
+form-of items, 53,316 have definitions (40,901 of them are also forms of something), 26,273 are only forms (dead
+ends after one step) and 1,271 are missing. Of 991,988 surface forms, 327,148 (a third) find no entry with one step:
+mostly participle forms (шокирующее → шокирующий → шокировать, погребающие, сталкивающемуся). Entries over all forms:
+690 K with one step, 1.34 M with two (noise: кошки → кот, aspect partners принуждали → принудить, pronoun tables),
+1.01 M with a second step only from lemmas without definitions, which finds 315,469 of the 327,148 dead ends and
+leaves every form that already finds something as it was.
