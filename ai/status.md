@@ -843,3 +843,5 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   dictionary's 273 MB on disk. Licenses and gloss-language coverage per language are in the notes; the owner
   asked for at least English, preferably Russian glosses (request 10). Korean started (acf21f1). The branch
   `experiment/languages` is pushed. Continue from the plan's "Handoff" section.
+- Owner: priority languages by popularity among learners (request 11); the decision table's order of languages
+  is revised: en, zh, ko; then es, fr, de, it, pt; then ru, pl, tr, vi; then the rest. Session paused here.

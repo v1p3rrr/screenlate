@@ -1,6 +1,6 @@
 # More languages (phase 8)
 
-Status: research and experiments. The owner answered the general topics (see Decisions); concrete questions follow
+Status: research and experiments; paused 2026-10-09 with a handoff (see "Handoff"). The owner answered the general topics (see Decisions); concrete questions follow
 in the language branch once the hypotheses below are checked. Research findings: `notes/languages.md`.
 
 ## Owner requests
@@ -156,6 +156,13 @@ Still to do before the concrete questions (told to the owner):
    level (ёжика → ёжик → ёж); showing every rule chain; frequency dictionaries we build from wordfreq (CC BY-SA 4.0)
    for the catalog; the risky dictionaries list; one Chinese profile for both scripts (request 5); the multi-language
    version branch and per-language branches. Then the implementation plan, built from scratch on that branch.
+6. The implementation plan follows the decision table's order of languages (revised with request 11) and the
+   gloss-language rule (request 10). It is a major re-plan: a new dated file in `plans/`, written after the
+   concrete questions are answered.
+
+The emulator ran from this session's background task; if it is gone, start it again with
+`D:/Android/Sdk/emulator/emulator.exe -avd Pixel_10_Pro -no-snapshot-save` (the data partition keeps the app and
+the imported dictionaries).
 
 ## Changelog
 
