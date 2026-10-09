@@ -49,6 +49,10 @@ in the language branch once the hypotheses below are checked. Research findings:
     Tesseract has more languages; think through the most rational setup, possibly combining them (e.g. Paddle for
     its scripts, Tesseract for the rest). Explain how the engine and the per-language models relate (engine in the
     APK, models downloaded?).
+16. (2026-10-09) Risky dictionaries: a summary per language of what is missing with licensed dictionaries only.
+    Owner's question: would it be legally fine to upload the unlicensed dictionaries to a repository of ours and
+    link to it from the app, so that users download and import them by hand?
+17. (2026-10-09) Build the OCR architecture so that Tesseract can be integrated later without much trouble.
 
 ## Decisions
 
@@ -76,7 +80,12 @@ in the language branch once the hypotheses below are checked. Research findings:
 | ML Kit Chinese and Korean | Bundled (+0.56 MB for both); anything within a few MB may be bundled, large files are not carried in the APK (owner, 2026-10-09, request 12) |
 | Chinese profiles | One profile for both scripts (owner, 2026-10-09) |
 | Frequency dictionaries | Built by us from wordfreq (CC BY-SA 4.0) for the supported languages, one per language (top ~100 K words), in the catalog and offered with the main dictionary when a profile is turned on, declinable; hosting is an open item (owner, 2026-10-09) |
-| Cyrillic on-device OCR | PaddleOCR preliminarily; before the Russian stage both engines are compared on real screenshots and a smaller runtime is tried; Tesseract if Paddle is not clearly better (owner, 2026-10-09; the setup for all scripts ML Kit lacks is asked again after request 15) |
+| On-device OCR beyond ML Kit | PaddleOCR only, for Cyrillic, Arabic, Greek and Thai; the scripts it lacks (Hebrew, Georgian, Armenian, Khmer, Lao, Kannada, Syriac) use the cloud for now. Before the Russian stage Paddle is compared with Tesseract on real screenshots and the runtime (MNN or ONNX Runtime) is picked by size and speed; Tesseract alone if Paddle is not clearly better. The OCR layer is built so that Tesseract can be added later without rework (owner, 2026-10-09, requests 15 and 17) |
+| OCR runtime and models | The runtime (native code) goes into the APK; the detector and the per-script recognizers are downloads checked against pinned SHA-256 hashes, fetched when a language that needs them is turned on (owner, 2026-10-09) |
+| Risky dictionaries | The catalog offers dictionaries with open licenses and non-commercial ones (words.hk, the Zaliznyak meta dictionary), the latter marked with their license and removed if the app ever becomes paid, ad-supported or goes to Google Play; dictionaries without a license only as a link to the author's page in the help; conversions of commercial dictionaries nowhere; no БКРС for now (owner, 2026-10-09, request 16) |
+| Korean lookup start | The lookup starts at the start of the space-separated word, not at the aimed syllable as in Yomitan: a finger aim on a phone often lands on a neighboring syllable, and a start mid-word finds endings or unrelated words (부하 in 공부하고); shorter matches from the start still show, compound parts are found by search (agent's choice, delegated by the owner, 2026-10-09) |
+| Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
+| Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings") |
 
 ## Open items (postponed by the owner)
@@ -237,3 +246,7 @@ the imported dictionaries).
 - 2026-10-09: concrete questions, batches 1-4: decisions on the deinflection runtime, rule chains, form-of storage,
   the second form-of step, ML Kit Chinese and Korean, Chinese profiles and script, frequency dictionaries, Cyrillic
   OCR (preliminary); requests 12-15; open items (bundled Japanese dictionaries, hosting).
+- 2026-10-09: batch 5: on-device OCR beyond ML Kit (Paddle only, Tesseract pluggable later), OCR runtime in the
+  APK, inflection names and tags translated; requests 16 and 17.
+- 2026-10-09: batch 6: risky dictionaries (open and non-commercial in the catalog, no БКРС for now), Korean lookup
+  start (delegated), text to speech as the last default source.
