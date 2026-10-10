@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.ocr.mlkit
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -44,20 +45,29 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
 
     private val recognizers = mutableMapOf<OcrScript, TextRecognizer>()
 
-    override fun reads(language: Language): Boolean = options(language.support.ocrScript) != null
+    override fun reads(language: Language): Boolean = model(language.support.ocrScript) != null
 
-    /** The bundled model for [script]; each script needs its own recognizer (the Japanese one misreads Chinese). */
-    private fun options(script: OcrScript): TextRecognizerOptionsInterface? = when (script) {
-        OcrScript.JAPANESE, OcrScript.LATIN -> JapaneseTextRecognizerOptions.Builder().build()
-        OcrScript.CHINESE -> ChineseTextRecognizerOptions.Builder().build()
-        OcrScript.KOREAN -> KoreanTextRecognizerOptions.Builder().build()
+    /** The bundled model that reads [script]: the Japanese one also reads Latin text. */
+    private fun model(script: OcrScript): OcrScript? = when (script) {
+        OcrScript.JAPANESE, OcrScript.LATIN -> OcrScript.JAPANESE
+        OcrScript.CHINESE -> OcrScript.CHINESE
+        OcrScript.KOREAN -> OcrScript.KOREAN
         OcrScript.DEVANAGARI -> null
     }
 
+    /** One recognizer per bundled model; scripts with a model of their own do not share (Japanese misreads Chinese). */
     private fun recognizer(script: OcrScript): TextRecognizer = synchronized(recognizers) {
-        recognizers.getOrPut(script) {
-            TextRecognition.getClient(options(script) ?: throw NoDeviceOcrException())
+        val model = model(script) ?: throw NoDeviceOcrException()
+        recognizers.getOrPut(model) {
+            Log.i(TAG, "Loading the ML Kit model for $model")
+            TextRecognition.getClient(options(model))
         }
+    }
+
+    private fun options(model: OcrScript): TextRecognizerOptionsInterface = when (model) {
+        OcrScript.CHINESE -> ChineseTextRecognizerOptions.Builder().build()
+        OcrScript.KOREAN -> KoreanTextRecognizerOptions.Builder().build()
+        else -> JapaneseTextRecognizerOptions.Builder().build()
     }
 
     override fun release() = synchronized(recognizers) {
@@ -110,6 +120,10 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     }
 
     private fun Rect.toBox() = Box(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
+
+    private companion object {
+        const val TAG = "MlKitOcr"
+    }
 }
 
 /** A cancelled task fails the call: cancelling the coroutine would pass for a cancellation of the caller. */

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.displayName
@@ -83,10 +84,11 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
     // The screen closes once the downloads are queued and the notification question, if asked, is answered.
     var queued by remember { mutableStateOf(false) }
     var asking by remember { mutableStateOf(false) }
+    var finished by remember { mutableStateOf(false) }
     val askNotifications = rememberImportNotificationsAsk(
         onAnswered = {
             asking = false
-            if (queued) onDone()
+            if (queued) finished = true
         },
     )
     val confirm = {
@@ -94,7 +96,14 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
         asking = askNotifications()
         viewModel.confirm {
             queued = true
-            if (!asking) onDone()
+            if (!asking) finished = true
+        }
+    }
+    // The permission's answer arrives before the screen is resumed, and navigation waits for that.
+    if (finished) {
+        LifecycleResumeEffect(Unit) {
+            onDone()
+            onPauseOrDispose {}
         }
     }
     Scaffold(

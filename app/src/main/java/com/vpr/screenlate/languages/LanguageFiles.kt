@@ -1,5 +1,6 @@
 package com.vpr.screenlate.languages
 
+import android.util.Log
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
@@ -45,10 +46,17 @@ class LanguageFiles @Inject constructor(
 
     /** Deletes the language's files; a bundled dictionary is remembered as deleted, as a single delete does. */
     suspend fun delete(code: String) {
-        dictionaries(code).forEach { dictionary ->
+        val dictionaries = dictionaries(code)
+        dictionaries.forEach { dictionary ->
             if (dictionary.bundled) bundled.markDeleted(dictionary.title)
             repository.delete(dictionary.id)
         }
-        store.delete(models(code).map { it.id })
+        val models = models(code)
+        store.delete(models.map { it.id })
+        Log.i(TAG, "Deleted the files of $code: ${dictionaries.size} dictionaries, ${models.size} models")
+    }
+
+    private companion object {
+        const val TAG = "LanguageFiles"
     }
 }

@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.ocr
 
 import android.graphics.Bitmap
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import java.io.IOException
@@ -92,6 +93,7 @@ class CompositeOcr internal constructor(
         val deviceReads = deviceReads(language)
         if (!deviceReads && options.engines == OcrEngines.DEVICE) throw NoDeviceOcrException()
         if (options.engines == OcrEngines.CLOUD || !deviceReads) {
+            if (!deviceReads) Log.d(TAG, "No on-device recognition for ${language.code}; cloud only")
             send(OcrUpdate.Final(recognizeWithLens(image, language)))
             return@channelFlow
         }
@@ -113,7 +115,7 @@ class CompositeOcr internal constructor(
         val draft = CoroutineScope(coroutineContext.minusKey(Job)).async(start = CoroutineStart.UNDISPATCHED) {
             try {
                 runCatching { recognizeOnDevice(copy, language, focus, emitter, wholeImage) }
-                    .onFailure { if (it !is CancellationException) Log.w(TAG, "ML Kit failed", it) }
+                    .onFailure { if (it !is CancellationException) Log.w(TAG, "On-device OCR failed", it.redacted()) }
             } finally {
                 release(copy)
             }
@@ -207,7 +209,7 @@ class CompositeOcr internal constructor(
             } finally {
                 if (crop !== image) release(crop)
             }
-            Log.d(TAG, "ML Kit band: ${band.paragraphs.size} paragraphs in ${clock() - started} ms")
+            Log.d(TAG, "${band.source} band: ${band.paragraphs.size} paragraphs in ${clock() - started} ms")
             val placed = band.offset(0f, rows.first.toFloat()).copy(height = height)
             draft = draft?.let(placed::withMissingFrom) ?: placed
             done += rows
@@ -215,9 +217,12 @@ class CompositeOcr internal constructor(
         }
         val started = clock()
         return device.recognize(image, language).also {
-            Log.d(TAG, "ML Kit: ${it.paragraphs.size} paragraphs in ${clock() - started} ms")
+            Log.d(TAG, "${it.source}: ${it.paragraphs.size} paragraphs in ${clock() - started} ms")
         }
     }
+
+    /** The on-device engine that read the page, for the log. */
+    private val OcrPage.source: String get() = if (engine == OcrEngineType.ML_KIT) "ML Kit" else "On-device model"
 
     /** Whether the device reads [language]; a scan of a language it does not read asks the cloud alone. */
     fun deviceReads(language: Language): Boolean = device.reads(language)
@@ -237,7 +242,7 @@ class CompositeOcr internal constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.w(TAG, "ML Kit warm-up failed", e)
+            Log.w(TAG, "On-device OCR warm-up failed", e.redacted())
         } finally {
             image.recycle()
         }

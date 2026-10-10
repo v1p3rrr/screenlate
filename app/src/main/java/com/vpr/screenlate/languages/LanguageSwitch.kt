@@ -1,5 +1,6 @@
 package com.vpr.screenlate.languages
 
+import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
@@ -75,6 +76,10 @@ class LanguageSwitch @Inject constructor(
                     imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
                 }
             }
+            val bytes = downloads.sumOf { it.downloadBytes }
+            val models = downloads.count { it.isModel }
+            Log.i(TAG, "Turned on ${language.code}${if (firstRun) " (first run)" else ""}: ${downloads.size} downloads " +
+                "($models models, ${bytes shr 20} MB)")
         }
     }
 
@@ -92,9 +97,17 @@ class LanguageSwitch @Inject constructor(
             val titles = withContext(Dispatchers.IO) { catalog.localCatalog() }.entries
                 .filter { it.sourceLanguage == language.code }
                 .mapTo(hashSetOf()) { it.title }
-            imports.tasks.first().filter { !it.finished && it.name in titles }.forEach { imports.cancel(it.id) }
+            val unfinished = imports.tasks.first().filter { !it.finished && it.name in titles }
+            unfinished.forEach { imports.cancel(it.id) }
             files.delete(language.code)
+            Log.i(TAG, "Turned off ${language.code}: files deleted, ${unfinished.size} downloads cancelled")
+        } else {
+            Log.i(TAG, "Turned off ${language.code}: files kept")
         }
         true
+    }
+
+    private companion object {
+        const val TAG = "LanguageSwitch"
     }
 }
