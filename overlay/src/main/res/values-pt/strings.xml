@@ -57,6 +57,7 @@
     <string name="audio_no_voice">Nenhuma voz de conversão de texto em voz está instalada para este idioma.</string>
     <string name="overlay_close">Fechar</string>
     <string name="overlay_pitch_dictionaries">Acento tonal de</string>
+    <string name="overlay_transcription_dictionaries">Transcrição de</string>
     <string name="overlay_copy_paragraph">Copiar este parágrafo</string>
     <string name="overlay_copy_all">Copiar todo o texto reconhecido</string>
     <string name="overlay_menu_open_app">Abrir o Screenlate</string>

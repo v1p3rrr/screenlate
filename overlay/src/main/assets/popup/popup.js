@@ -23,8 +23,8 @@
  * showTranslation fills; a second tap hides it. The block belongs to the first view: a new word drops it, a pushed
  * view hides it until back returns.
  *
- * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents) and
- * the buttons. Tapping an inflection step or an accent opens the info panel at the bottom of the card, and so does a
+ * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents,
+ * transcriptions) and the buttons. Tapping an inflection step, an accent or a transcription opens the info panel at the bottom of the card, and so does a
  * tag with a description: a dictionary's tag (its tag bank's notes, see setTagNotes) or a structured-content element
  * with a title, such as Jitendex's part-of-speech labels.
  *
@@ -649,14 +649,19 @@ const Popup = (() => {
     }
 
     /**
-     * Inflection, frequency and pitch accent in one row: beside the word when the popup is wide, below it when not.
-     * One frequency value is shown, the most frequent of the first group (the lookup puts the sort dictionary first),
-     * and up to [SHOWN_ACCENTS] accents; "+N" reveals the hidden values or accents, "−" hides them again.
+     * Inflection, frequency, pitch accent and transcription in one row: beside the word when the popup is wide, below
+     * it when not. The first rule chain is shown, one frequency value, the most frequent of the first group (the lookup
+     * puts the sort dictionary first), and up to [SHOWN_ACCENTS] accents or transcriptions; "+N" reveals the hidden
+     * chains, values, accents or transcriptions, "−" hides them again.
      */
     function entryInfo(result, labels) {
         const row = element('div', 'entry-info');
-        const trace = (result.trace || []).filter(step => step.name);
-        if (trace.length) row.append(inflectionChain(trace));
+        const chains = [result.trace, ...(result.otherTraces || [])]
+            .map(trace => (trace || []).filter(step => step.name))
+            .filter(trace => trace.length);
+        if (chains.length) {
+            row.append(collapsible([inflectionChain(chains[0])], chains.map(inflectionChain), chains.length - 1, 'inflection-more'));
+        }
 
         const frequencies = (result.term.frequencies || [])
             .map(group => ({ dictionary: group.dictionary, values: frequencyValues(group) }))
@@ -683,6 +688,17 @@ const Popup = (() => {
         if (accents.length) {
             const shown = accents.length > SHOWN_ACCENTS ? 1 : accents.length;
             row.append(collapsible(accents.slice(0, shown), accents, accents.length - shown, 'pitch-more'));
+        }
+
+        const transcriptions = phoneticTranscriptions(result.term).map(item => {
+            const chip = element('button', 'transcription', item.ipa);
+            chip.type = 'button';
+            chip.addEventListener('click', () => showInfo(labels.transcriptionDictionaries || '', item.dictionaries.join('\n')));
+            return chip;
+        });
+        if (transcriptions.length) {
+            const shown = transcriptions.length > SHOWN_ACCENTS ? 1 : transcriptions.length;
+            row.append(collapsible(transcriptions.slice(0, shown), transcriptions, transcriptions.length - shown, 'pitch-more'));
         }
         return row.childNodes.length ? row : null;
     }
@@ -775,6 +791,19 @@ const Popup = (() => {
             }
         }
         return [...accents.values()];
+    }
+
+    /** Distinct phonetic transcriptions of the word (Yomitan's `ipa` term meta); the dictionaries that list each one. */
+    function phoneticTranscriptions(term) {
+        const transcriptions = new Map();
+        for (const group of term.pitches || []) {
+            for (const ipa of group.transcriptions || []) {
+                if (!transcriptions.has(ipa)) transcriptions.set(ipa, { ipa, dictionaries: [] });
+                const dictionaries = transcriptions.get(ipa).dictionaries;
+                if (!dictionaries.includes(group.dictionary)) dictionaries.push(group.dictionary);
+            }
+        }
+        return [...transcriptions.values()];
     }
 
     function showInfo(title, text) {

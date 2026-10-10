@@ -57,6 +57,7 @@
     <string name="audio_no_voice">Bu dil için yüklü metin okuma sesi yok.</string>
     <string name="overlay_close">Kapat</string>
     <string name="overlay_pitch_dictionaries">Ton vurgusu kaynağı</string>
+    <string name="overlay_transcription_dictionaries">Transkripsiyon kaynağı</string>
     <string name="overlay_copy_paragraph">Bu paragrafı kopyala</string>
     <string name="overlay_copy_all">Tanınan tüm metni kopyala</string>
     <string name="overlay_menu_open_app">Screenlate’i aç</string>

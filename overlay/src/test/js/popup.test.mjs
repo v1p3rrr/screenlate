@@ -459,6 +459,50 @@ test('two accents both show; three or more show the first, "+N" the rest and "�
     assert.equal(row.querySelector('.pitch-more').textContent, '+3');
 });
 
+test('the first rule chain shows, "+N" reveals the others and "−" hides them again', () => {
+    const result = detailed();
+    result.otherTraces = [[{ name: 'past', label: '', description: '' }], [], [{ name: 'past participle', label: '', description: '' }]];
+    Popup.render(state({ results: [result] }));
+    const row = content.querySelector('.entry-info');
+    const chains = () => [...row.querySelectorAll('.inflection')].map(chain => chain.textContent);
+    assert.deepEqual(chains(), ['-た«n-slang']);
+    // An empty chain is not counted.
+    const more = row.querySelector('.inflection-more');
+    assert.equal(more.textContent, '+2');
+
+    more.click();
+    assert.deepEqual(chains(), ['-た«n-slang', 'past', 'past participle']);
+    row.querySelector('.inflection-more').click();
+    assert.deepEqual(chains(), ['-た«n-slang']);
+
+    Popup.render(state({ results: [detailed()] }));
+    assert.equal(content.querySelector('.inflection-more'), null);
+});
+
+test('distinct transcriptions show like accents and open their dictionaries in the panel', () => {
+    const result = detailed();
+    result.term.frequencies = [];
+    result.term.pitches = [
+        { dictionary: 'wty-en-ipa', pitches: [], transcriptions: ['/ˈwɔːtə/', '/ˈwɔtɚ/'] },
+        { dictionary: 'Other IPA', pitches: [], transcriptions: ['/ˈwɔtɚ/'] },
+    ];
+    Popup.render(state({ results: [result], labels: { ...labels, transcriptionDictionaries: 'Transcription from' } }));
+    const row = content.querySelector('.entry-info');
+    const shown = () => [...row.querySelectorAll('.transcription')].map(chip => chip.textContent);
+    assert.deepEqual(shown(), ['/ˈwɔːtə/', '/ˈwɔtɚ/']);
+    assert.equal(row.querySelector('.pitch-item'), null);
+
+    row.querySelectorAll('.transcription')[1].click();
+    assert.equal(page.document.getElementById('info-title').textContent, 'Transcription from');
+    assert.equal(page.document.getElementById('info-text').textContent, 'wty-en-ipa\nOther IPA');
+
+    result.term.pitches = [{ dictionary: 'wty-en-ipa', transcriptions: ['/a/', '/b/', '/c/'] }];
+    Popup.render(state({ results: [result] }));
+    const again = content.querySelector('.entry-info');
+    assert.deepEqual([...again.querySelectorAll('.transcription')].map(chip => chip.textContent), ['/a/']);
+    assert.equal(again.querySelector('.pitch-more').textContent, '+2');
+});
+
 test('an inflection step or an accent opens the info panel', () => {
     Popup.render(state({ results: [detailed()], labels: { ...labels, pitchDictionaries: 'Pitch from' } }));
     const info = page.document.getElementById('info');

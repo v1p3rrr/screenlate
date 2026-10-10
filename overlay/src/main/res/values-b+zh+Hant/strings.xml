@@ -57,6 +57,7 @@
     <string name="audio_no_voice">未安裝此語言的文字轉語音資料。</string>
     <string name="overlay_close">關閉</string>
     <string name="overlay_pitch_dictionaries">音調來源</string>
+    <string name="overlay_transcription_dictionaries">音標來源</string>
     <string name="overlay_copy_paragraph">複製此段落</string>
     <string name="overlay_copy_all">複製全部辨識文字</string>
     <string name="overlay_menu_open_app">開啟 Screenlate</string>

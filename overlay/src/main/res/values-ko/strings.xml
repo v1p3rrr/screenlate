@@ -57,6 +57,7 @@
     <string name="audio_no_voice">이 언어의 TTS 음성이 설치되어 있지 않습니다.</string>
     <string name="overlay_close">닫기</string>
     <string name="overlay_pitch_dictionaries">고저 악센트 출처</string>
+    <string name="overlay_transcription_dictionaries">발음 기호 출처</string>
     <string name="overlay_copy_paragraph">이 단락 복사</string>
     <string name="overlay_copy_all">인식된 텍스트 모두 복사</string>
     <string name="overlay_menu_open_app">Screenlate 열기</string>

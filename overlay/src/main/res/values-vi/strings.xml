@@ -57,6 +57,7 @@
     <string name="audio_no_voice">Chưa cài giọng đọc văn bản cho ngôn ngữ này.</string>
     <string name="overlay_close">Đóng</string>
     <string name="overlay_pitch_dictionaries">Trọng âm cao độ theo</string>
+    <string name="overlay_transcription_dictionaries">Phiên âm theo</string>
     <string name="overlay_copy_paragraph">Sao chép đoạn này</string>
     <string name="overlay_copy_all">Sao chép toàn bộ văn bản đã nhận dạng</string>
     <string name="overlay_menu_open_app">Mở Screenlate</string>

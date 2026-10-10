@@ -493,6 +493,7 @@ a {
 
 .inflection-step,
 .pitch-item,
+.transcription,
 .badge-toggle {
     font: inherit;
     color: inherit;
@@ -547,10 +548,19 @@ button.inflection-step {
     color: var(--tag-text-color, var(--pitch-fg));
 }
 
+.inflection-more {
+    color: var(--muted);
+    border: 1px solid currentColor;
+}
+
 .pitch-item {
     display: inline-flex;
     align-items: baseline;
     font-size: 1.15em;
+}
+
+.transcription {
+    font-size: 1.05em;
 }
 
 .pitch-position {

@@ -57,6 +57,7 @@
     <string name="audio_no_voice">Für diese Sprache ist keine Sprachausgabe-Stimme installiert.</string>
     <string name="overlay_close">Schließen</string>
     <string name="overlay_pitch_dictionaries">Tonhöhenakzent aus</string>
+    <string name="overlay_transcription_dictionaries">Transkription aus</string>
     <string name="overlay_copy_paragraph">Diesen Absatz kopieren</string>
     <string name="overlay_copy_all">Gesamten erkannten Text kopieren</string>
     <string name="overlay_menu_open_app">Screenlate öffnen</string>

@@ -57,6 +57,7 @@
     <string name="audio_no_voice">この言語の読み上げ音声がインストールされていません。</string>
     <string name="overlay_close">閉じる</string>
     <string name="overlay_pitch_dictionaries">アクセントの出典</string>
+    <string name="overlay_transcription_dictionaries">発音記号の出典</string>
     <string name="overlay_copy_paragraph">この段落をコピー</string>
     <string name="overlay_copy_all">認識したテキストをすべてコピー</string>
     <string name="overlay_menu_open_app">Screenlate を開く</string>

@@ -57,6 +57,7 @@
     <string name="audio_no_voice">Nie zainstalowano głosu syntezy mowy dla tego języka.</string>
     <string name="overlay_close">Zamknij</string>
     <string name="overlay_pitch_dictionaries">Akcent toniczny według</string>
+    <string name="overlay_transcription_dictionaries">Transkrypcja według</string>
     <string name="overlay_copy_paragraph">Kopiuj ten akapit</string>
     <string name="overlay_copy_all">Kopiuj cały rozpoznany tekst</string>
     <string name="overlay_menu_open_app">Otwórz Screenlate</string>
