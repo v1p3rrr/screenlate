@@ -44,9 +44,10 @@ class DownloadCacheTest {
         if (body.isNotEmpty()) responseBody.write(body)
     }
 
+    // A zip stores each entry's time; a fixed one keeps two archives of the same text the same bytes.
     private fun zip(text: String): ByteArray = ByteArrayOutputStream().also { bytes ->
         ZipOutputStream(bytes).use { zip ->
-            zip.putNextEntry(ZipEntry("index.json"))
+            zip.putNextEntry(ZipEntry("index.json").apply { time = ENTRY_TIME })
             zip.write(text.toByteArray())
             zip.closeEntry()
         }
@@ -132,5 +133,9 @@ class DownloadCacheTest {
         val error = runCatching { cache.get("dict.zip", url("/slow.zip")) }.exceptionOrNull()
         assertTrue(error.toString(), error is java.net.SocketTimeoutException)
         assertFalse(File(folder.root, "cache/dict.zip").exists())
+    }
+
+    private companion object {
+        const val ENTRY_TIME = 1_700_000_000_000L
     }
 }
