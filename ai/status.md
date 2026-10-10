@@ -17,8 +17,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   owner's "ok": tag `v0.2.3` on main and push the tag.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
-- The four findings from the read-only review against `2215893` are fixed on `languages/main`; see the
-  "language isolation review fixes" entry. The phone checks above are still pending.
+- The findings from both delegated reviews against `2215893` are fixed on `languages/main`; see the
+  "language isolation review fixes" and "follow-up language review fixes" entries. The phone checks above are still pending.
 
 ## Earlier handoff (phase 7, 2026-10-01)
 
@@ -120,6 +120,26 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - [ ] Phase 8 — languages beyond Japanese: stage A and English built and reviewed, stages B to E open
 
 ## Log
+
+### 2026-10-11 (follow-up language review fixes; languages/main)
+
+- Owner: fix the four findings from the follow-up delegated review, verify as before, and push (request 25).
+- Code and tests committed in `4cfde62` on `languages/main`.
+- Import tasks carry their source kind in a stable WorkManager tag, separately from the displayed name. Bundled
+  progress also carries it for older queued tasks. Deleting the bundled language cancels its install even while
+  the task displays an asset stem; deletion waits for cancelled runs to release their files and reads the registry
+  again so a dictionary registered just before cancellation is removed too.
+- Dictionary media reads now take the page or note's language and hold `withLookup` through the engine read. A CSS
+  check or lookup of another language cannot leave a note reading images from the wrong native set.
+- Sentence parsing uses the language captured when the note was requested for every term. Its parser was extracted
+  without changing the matching or formatting rules, enabling coroutine regression tests of a mid-parse switch.
+- Audio selection snapshots sources and the resolved regional order together. That order is in the clip cache key,
+  and every source of the request uses the same snapshot; changing US/UK priority immediately changes the next choice.
+- Added nine regression tests (seven JVM, two Android); the existing WorkManager queue test now also verifies that
+  turning English off preserves the bundled Japanese task and turning Japanese off cancels it before files exist.
+- Verified: debug and test APK builds, the JVM suite, page tests (102/102), registry tests (17/17) and app Compose/queue
+  tests (5/5) on API 30. Final app lint passed (0 errors; no warnings in changed files).
+- Human docs and technical notes updated. The owner's local `CLAUDE.md` deletion and untracked `AGENTS.md` are untouched.
 
 ### 2026-10-11 (language isolation review fixes; languages/main)
 
