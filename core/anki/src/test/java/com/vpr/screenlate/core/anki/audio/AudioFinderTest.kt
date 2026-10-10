@@ -84,6 +84,34 @@ class AudioFinderTest {
     private fun find(term: String = "猫", reading: String = "ねこ") = runBlocking { finder.find(term, reading, Language.JAPANESE) }
 
     @Test
+    fun `changing the region order selects new audio without waiting for the cache to expire`() = runBlocking<Unit> {
+        finder = AudioFinder(folder.newFolder("regions"), client, settings, clock = { now })
+        settings.update(Language.ENGLISH) { it.copy(sources = listOf(AudioSource(AudioSourceType.WIKTIONARY))) }
+        routes["/w/api.php"] = {
+            if (requests.last().url.queryParameter("list") == "search") {
+                text("""{"query":{"search":[{"title":"File:En-us-water.ogg"},{"title":"File:En-uk-water.ogg"}]}}""", "application/json")
+            } else {
+                text("""{"query":{"pages":{"1":{"title":"File:En-us-water.ogg","imageinfo":[{"url":"https://upload.example/us.ogg"}]},"2":{"title":"File:En-uk-water.ogg","imageinfo":[{"url":"https://upload.example/uk.ogg"}]}}}}""", "application/json")
+            }
+        }
+        routes["/us.ogg"] = { audio(byteArrayOf(1), "audio/ogg") }
+        routes["/uk.ogg"] = { audio(byteArrayOf(2), "audio/ogg") }
+
+        val us = finder.find("water", "", Language.ENGLISH)!!
+        assertThat(us.file.readBytes()).isEqualTo(byteArrayOf(1))
+        val before = requests.size
+        assertThat(finder.find("water", "", Language.ENGLISH)).isSameInstanceAs(us)
+        assertThat(requests).hasSize(before)
+
+        settings.update(Language.ENGLISH) { it.copy(regions = listOf("uk", "us", "other")) }
+        val uk = finder.find("water", "", Language.ENGLISH)!!
+        assertThat(uk.url).isEqualTo("https://upload.example/uk.ogg")
+        assertThat(uk.file.readBytes()).isEqualTo(byteArrayOf(2))
+        assertThat(now).isEqualTo(0L)
+        assertThat(finder.pronunciation("water", "", Language.ENGLISH)).isEqualTo(Pronunciation.Clip(uk))
+    }
+
+    @Test
     fun `url template downloads the clip`() {
         sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}&reading={reading}"))
         routes["/word"] = { audio(byteArrayOf(7, 8)) }

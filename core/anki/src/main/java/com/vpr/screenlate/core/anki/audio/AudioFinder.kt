@@ -106,9 +106,11 @@ class AudioFinder internal constructor(
 
     /** The first clip of the sources in priority order, for notes; text-to-speech is skipped. */
     suspend fun find(term: String, reading: String, language: Language): AudioClip? = withContext(Dispatchers.IO) {
-        val sources = settings.current(language).sources
+        val profile = settings.current(language)
+        val sources = profile.sources
+        val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
         // Other sources may have the clip, or no longer have it.
-        val key = ClipKey(sources, language, term, reading)
+        val key = ClipKey(sources, regions, language, term, reading)
         synchronized(clipCache) {
             val kept = clipCache[key]
             if (kept != null && kept.fresh()) return@withContext kept.value
@@ -119,7 +121,7 @@ class AudioFinder internal constructor(
         var position = 0
         val asked = sources.withIndex().filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
         val clip = coroutineScope {
-            val answers = asked.map { (index, source) -> async { firstClip(index, source, term, reading, language) } }
+            val answers = asked.map { (index, source) -> async { firstClip(index, source, term, reading, language, regions) } }
             answers.firstNotNullOfOrNull { answer ->
                 position++
                 answer.await().onFailure { failed = true }.getOrNull()
@@ -161,8 +163,10 @@ class AudioFinder internal constructor(
         language: Language,
         sources: List<AudioSource>? = null,
     ): List<AudioCandidate> = withContext(Dispatchers.IO) {
-        val asked = (sources ?: settings.current(language).sources).withIndex()
-            .map { (index, source) -> async { candidatesOrNull(index, source, term, reading, language) } }
+        val profile = settings.current(language)
+        val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
+        val asked = (sources ?: profile.sources).withIndex()
+            .map { (index, source) -> async { candidatesOrNull(index, source, term, reading, language, regions) } }
         asked.flatMap { it.await().orEmpty() }
     }
 
@@ -181,8 +185,9 @@ class AudioFinder internal constructor(
     suspend fun test(source: AudioSource, term: String, reading: String, language: Language): Result<List<AudioCandidate>> =
         withContext(Dispatchers.IO) {
             val deadline = Deadline()
+            val regions = AudioRegion.ordered(settings.current(language).regions, language.support.audioRegions)
             attempt(source) {
-                val candidates = candidatesOf(0, source, term, reading, language, deadline)
+                val candidates = candidatesOf(0, source, term, reading, language, regions, deadline)
                 if (source.type != AudioSourceType.URL) candidates
                 else candidates.filter { downloadChecked(it, term, reading, deadline) != null }
             }.onSuccess { failures.remove(source) }
@@ -200,10 +205,11 @@ class AudioFinder internal constructor(
         term: String,
         reading: String,
         language: Language,
+        regions: List<AudioRegion>,
     ): Result<AudioClip?> {
         val deadline = Deadline()
         return attempt(source) {
-            val candidates = candidatesOf(index, source, term, reading, language, deadline)
+            val candidates = candidatesOf(index, source, term, reading, language, regions, deadline)
             failures.remove(source)
             candidates.firstNotNullOfOrNull { downloadChecked(it, term, reading, deadline) }
         }
@@ -215,7 +221,8 @@ class AudioFinder internal constructor(
         term: String,
         reading: String,
         language: Language,
-    ): List<AudioCandidate>? = attempt(source) { candidatesOf(index, source, term, reading, language, Deadline()) }
+        regions: List<AudioRegion>,
+    ): List<AudioCandidate>? = attempt(source) { candidatesOf(index, source, term, reading, language, regions, Deadline()) }
         .onSuccess { failures.remove(source) }
         .getOrNull()
 
@@ -246,6 +253,7 @@ class AudioFinder internal constructor(
         term: String,
         reading: String,
         language: Language,
+        regions: List<AudioRegion>,
         deadline: Deadline,
     ): List<AudioCandidate> {
         fun candidates(found: List<AudioPages.Found>) =
@@ -280,7 +288,6 @@ class AudioFinder internal constructor(
                 candidates(AudioPages.linguaLibre(files, term))
             }
             AudioSourceType.WIKTIONARY -> {
-                val regions = AudioRegion.ordered(settings.current(language).regions, language.support.audioRegions)
                 val files = AudioPages.byRegion(commonsFiles(AudioPages.wiktionarySearch(term, language.code), deadline), term, language.code, regions)
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
@@ -426,7 +433,13 @@ class AudioFinder internal constructor(
     private fun sha256(bytes: ByteArray): String =
         MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
-    private data class ClipKey(val sources: List<AudioSource>, val language: Language, val term: String, val reading: String)
+    private data class ClipKey(
+        val sources: List<AudioSource>,
+        val regions: List<AudioRegion>,
+        val language: Language,
+        val term: String,
+        val reading: String,
+    )
 
     /** A remembered answer and when it was given. */
     private class Kept<T>(val value: T, val at: Long)

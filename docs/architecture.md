@@ -90,7 +90,7 @@ Imports, deletions, resets, update checks and the bundled install log each step 
 
 - The overlay runs on the main thread of the accessibility service; OCR, lookups and file work suspend on IO or Default dispatchers.
 - The hoshidicts session is used from one coroutine at a time (a mutex in `HoshidictsEngine`); imports do not touch the session and run in parallel with lookups.
-- `DictionaryRepository.withLookup(language)` holds the registry mutex from loading a language's dictionaries through its queries, so another language's lookup, CSS read or registry change cannot replace them mid-query.
+- `DictionaryRepository.withLookup(language)` holds the registry mutex from loading a language's dictionaries through its queries, including glossary image reads, so another language's lookup, CSS read or registry change cannot replace them mid-query. A note keeps the language captured when adding it, including its sentence parsing and glossary images.
 - The lookup page talks to Kotlin through `@JavascriptInterface` methods, which post to the main thread.
 - The popup's WebView renderer runs at a priority the system may lower while the popup is hidden (`setRendererPriorityPolicy(…, waivedWhenNotVisible = true)`); if the renderer is reclaimed, the page is recreated at the next scan. The search screen's embedded page keeps the default priority.
 - A cancelled ML Kit task cannot be stopped, so the on-device pass works on its own copy of the screenshot and frees it when the task ends.

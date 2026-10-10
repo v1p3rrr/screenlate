@@ -319,7 +319,7 @@ class PopupNotes(
                     values["cloze-body"] = escapeHtml(sentence.body)
                     values["cloze-suffix"] = escapeHtml(sentence.suffix)
                     if ("sentence-furigana" in used || "sentence-furigana-plain" in used) {
-                        sentenceFurigana(sentence.text)?.let { (html, plain) ->
+                        sentenceFurigana(sentence.text, noteLanguage)?.let { (html, plain) ->
                             values["sentence-furigana"] = html
                             values["sentence-furigana-plain"] = plain
                         }
@@ -328,7 +328,7 @@ class PopupNotes(
                 values["document-title"] = escapeHtml(context.documentTitle)
                 translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
-                resolveGlossaryMedia(data.media, values, used)
+                resolveGlossaryMedia(data.media, values, used, noteLanguage)
                 screenshot = picture?.let { saveScreenshot(it) }
                 val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
                 val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip), force)
@@ -458,29 +458,9 @@ class PopupNotes(
      * `{sentence-furigana}` and `{sentence-furigana-plain}`: the sentence split into the longest terms the
      * dictionaries know, as Yomitan's scanning parser does, formatted by the page.
      */
-    private suspend fun sentenceFurigana(sentence: String): Pair<String, String>? {
-        val parts = mutableListOf<SentencePart>()
-        var offset = 0
-        while (offset < sentence.length) {
-            val result = try {
-                lookup.lookup(sentence.substring(offset), language(), extraEntries = false).firstOrNull()
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                null
-            }
-            val matched = result?.matched?.takeIf { it.isNotEmpty() && sentence.startsWith(it, offset) }
-            if (result != null && matched != null) {
-                parts += SentencePart(matched, result.term.expression, result.term.reading)
-                offset += matched.length
-            } else {
-                val next = sentence.offsetByCodePoints(offset, 1)
-                val text = sentence.substring(offset, next)
-                val last = parts.lastOrNull()
-                if (last != null && last.expression == null) parts[parts.lastIndex] = last.copy(text = last.text + text)
-                else parts += SentencePart(text)
-                offset = next
-            }
+    private suspend fun sentenceFurigana(sentence: String, noteLanguage: Language): Pair<String, String>? {
+        val parts = parseSentence(sentence, noteLanguage) { text, language ->
+            lookup.lookup(text, language, extraEntries = false).firstOrNull()
         }
         val formatted = evaluateJson<Map<String, String>>(
             "JSON.stringify(NoteData.sentenceFurigana(${json.encodeToString(parts)}))",
@@ -489,13 +469,18 @@ class PopupNotes(
     }
 
     /** Copies glossary images into AnkiDroid and replaces their placeholders with the stored file names. */
-    private suspend fun resolveGlossaryMedia(media: List<MediaRef>, values: MutableMap<String, String>, used: Set<String>) {
+    private suspend fun resolveGlossaryMedia(
+        media: List<MediaRef>,
+        values: MutableMap<String, String>,
+        used: Set<String>,
+        noteLanguage: Language,
+    ) {
         val needed = values.filterKeys { it in used }.values.joinToString("")
         val stored = mutableMapOf<Pair<String, String>, String>()
         for (ref in media) {
             if (ref.placeholder !in needed) continue
             val name = stored.getOrPut(ref.dictionary to ref.path) {
-                val bytes = lookup.media(ref.dictionary, ref.path) ?: return@getOrPut ""
+                val bytes = lookup.media(ref.dictionary, ref.path, noteLanguage) ?: return@getOrPut ""
                 val file = File(anki.mediaDirectory(), "${ref.path.hashCode().toUInt()}.${mediaExtension(ref.path)}")
                 val markup = try {
                     withContext(Dispatchers.IO) { file.writeBytes(bytes) }
@@ -575,9 +560,6 @@ class PopupNotes(
 
     @Serializable
     private data class MediaRef(val dictionary: String, val path: String, val placeholder: String)
-
-    @Serializable
-    private data class SentencePart(val text: String, val expression: String? = null, val reading: String? = null)
 
     private companion object {
         const val TAG = "PopupNotes"

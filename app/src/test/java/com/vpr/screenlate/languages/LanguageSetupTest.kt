@@ -153,7 +153,22 @@ class LanguageSetupTest {
         )
         val installed = listOf(installed("Old English Title"))
 
-        assertThat(downloadsOf("en", tasks, catalog, installed).map { it.name })
+        assertThat(downloadsOf("en", tasks, catalog, installed, Language.JAPANESE).map { it.name })
             .containsExactly("en-ru", "Old English Title")
+    }
+
+    @Test
+    fun `bundled imports belong to their language regardless of their displayed name`() {
+        fun task(name: String, state: ImportTask.State = ImportTask.State.QUEUED, source: String? = "bundled") =
+            ImportTask(UUID.randomUUID(), name, state, null, emptyList(), null, source = source)
+        val queued = task("")
+        val importing = task("jmdict-english", ImportTask.State.IMPORTING)
+        val finished = task("kanjidic", ImportTask.State.SUCCEEDED)
+        val ownFile = task("own.zip", source = "file")
+        val tasks = listOf(queued, importing, finished, ownFile)
+
+        assertThat(downloadsOf("ja", tasks, catalog, emptyList(), Language.JAPANESE))
+            .containsExactly(queued, importing)
+        assertThat(downloadsOf("en", tasks, catalog, emptyList(), Language.JAPANESE)).isEmpty()
     }
 }

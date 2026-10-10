@@ -1,6 +1,7 @@
 package com.vpr.screenlate.languages
 
 import android.util.Log
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
@@ -8,6 +9,7 @@ import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_BUNDLED
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
@@ -19,12 +21,18 @@ import kotlinx.coroutines.withContext
 
 /**
  * Unfinished [tasks] that would bring the files of the language with [code] back once they are deleted: downloads of
- * its catalog entries and updates of its [installed] dictionaries, which carry the installed title.
+ * its catalog entries, updates of its [installed] dictionaries, and the bundled install for [bundledLanguage].
  */
-internal fun downloadsOf(code: String, tasks: List<ImportTask>, catalog: Catalog, installed: List<DictionaryEntity>): List<ImportTask> {
+internal fun downloadsOf(
+    code: String,
+    tasks: List<ImportTask>,
+    catalog: Catalog,
+    installed: List<DictionaryEntity>,
+    bundledLanguage: Language,
+): List<ImportTask> {
     val names = catalog.entries.filter { it.sourceLanguage == code }.mapTo(hashSetOf()) { it.title }
     installed.mapTo(names) { it.title }
-    return tasks.filter { !it.finished && it.name in names }
+    return tasks.filter { !it.finished && (it.name in names || (code == bundledLanguage.code && it.source == SOURCE_BUNDLED)) }
 }
 
 /**
@@ -55,7 +63,7 @@ class LanguageFiles @Inject constructor(
     suspend fun isEmpty(code: String): Boolean {
         val installed = dictionaries(code)
         if (installed.isNotEmpty() || models(code).isNotEmpty()) return false
-        return downloadsOf(code, imports.tasks.first(), withContext(Dispatchers.IO) { catalog.localCatalog() }, installed).isEmpty()
+        return downloadsOf(code, imports.tasks.first(), withContext(Dispatchers.IO) { catalog.localCatalog() }, installed, bundled.language).isEmpty()
     }
 
     /** The bytes the language's files take on disk. */
@@ -67,10 +75,12 @@ class LanguageFiles @Inject constructor(
      * deleted, as a single delete does.
      */
     suspend fun delete(code: String) {
-        val dictionaries = dictionaries(code)
+        val installed = dictionaries(code)
         val catalog = withContext(Dispatchers.IO) { catalog.localCatalog() }
-        val downloads = downloadsOf(code, imports.tasks.first(), catalog, dictionaries)
-        downloads.forEach { imports.cancel(it.id) }
+        val downloads = downloadsOf(code, imports.tasks.first(), catalog, installed, bundled.language)
+        downloads.forEach { imports.cancelAndAwait(it.id) }
+        // An import may have registered a dictionary just before cancellation; include it in the deletion.
+        val dictionaries = dictionaries(code)
         dictionaries.forEach { dictionary ->
             if (dictionary.bundled) bundled.markDeleted(dictionary.title)
             repository.delete(dictionary.id)

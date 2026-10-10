@@ -144,7 +144,7 @@ fun SearchScreen(
                 }
 
                 override fun media(dictionary: String, path: String): ByteArray? =
-                    runBlocking { viewModel.dictionaryLookup.media(dictionary, path) }
+                    runBlocking { viewModel.dictionaryLookup.media(dictionary, path, viewModel.language.value) }
             },
             embedded = true,
         ).also { holder.page = it }

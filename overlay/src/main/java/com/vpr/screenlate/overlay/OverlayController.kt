@@ -1531,7 +1531,7 @@ class OverlayController(
         }
 
         override fun media(dictionary: String, path: String): ByteArray? =
-            runBlocking { lookup.media(dictionary, path) }
+            runBlocking { lookup.media(dictionary, path, language) }
 
         override fun onTranslate(request: Int) {
             val sentence = shownSentence()?.text

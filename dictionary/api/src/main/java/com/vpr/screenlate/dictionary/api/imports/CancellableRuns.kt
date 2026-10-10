@@ -6,6 +6,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -16,6 +17,11 @@ internal class CancellableRuns {
     /** Stops the run of [id] if one is going on; a run that starts later checks its own cancel. */
     fun cancel(id: UUID) {
         jobs[id]?.cancel()
+    }
+
+    /** Stops a running task and waits until it has released its files. */
+    suspend fun cancelAndJoin(id: UUID) {
+        jobs[id]?.cancelAndJoin()
     }
 
     /**

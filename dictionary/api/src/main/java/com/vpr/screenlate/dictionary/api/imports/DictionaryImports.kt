@@ -82,6 +82,8 @@ data class ImportTask(
      * starts one ([BundledDictionaries.resumeInstall]).
      */
     val paused: Boolean = false,
+    /** The worker's source kind, independent of the displayed archive or dictionary name. */
+    val source: String? = null,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -246,6 +248,12 @@ class DictionaryImports @Inject constructor(
         runs.cancel(id)
     }
 
+    /** Cancels [id] and waits for its running step before its language's files are deleted. */
+    suspend fun cancelAndAwait(id: UUID) {
+        cancel(id)
+        runs.cancelAndJoin(id)
+    }
+
     /** Whether the user cancelled the task [id]. */
     internal suspend fun isCancelled(id: UUID): Boolean = id.toString() in preferences.data.first()[CANCELLED].orEmpty()
 
@@ -337,6 +345,7 @@ class DictionaryImports @Inject constructor(
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
+            .addTag(SOURCE_TAG_PREFIX + data.getString(KEY_SOURCE).orEmpty())
             .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
             // Empty for imports that make their own temporary archive; see archivesInUse.
             .addTag(ARCHIVE_TAG_PREFIX + data.getString(KEY_PATH)?.let { File(it).name }.orEmpty())
@@ -357,6 +366,7 @@ class DictionaryImports @Inject constructor(
         const val TAG = "dictionary-import"
         private const val LOG_TAG = "DictionaryImports"
         const val NAME_TAG_PREFIX = "dictionary-import-name:"
+        const val SOURCE_TAG_PREFIX = "dictionary-import-source:"
 
         /** Followed by a number that grows with every enqueued import; work ids are random. */
         const val ORDER_TAG_PREFIX = "dictionary-import-order:"
@@ -436,5 +446,8 @@ private fun WorkInfo.toTask(): ImportTask {
         },
         interrupted = interrupted,
         paused = outputData.getBoolean(KEY_PAUSED, false),
+        source = tags.firstOrNull { it.startsWith(DictionaryImports.SOURCE_TAG_PREFIX) }
+            ?.removePrefix(DictionaryImports.SOURCE_TAG_PREFIX)
+            ?: progress.getString(KEY_SOURCE),
     )
 }

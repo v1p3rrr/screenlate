@@ -284,6 +284,47 @@ class DictionaryRepositoryTest {
     }
 
     @Test
+    fun mediaReloadsTheNotesLanguageAfterAnotherLanguagesStylesWereRead() = runTest {
+        val japanese = repository.import(archive("Japanese", terms = 1))
+        repository.setLanguages(japanese.id, "ja", "en")
+        val english = repository.import(archive("English", terms = 1))
+        repository.setLanguages(english.id, "en", "ru")
+        engine.onMedia = { _, _ ->
+            if (engine.loaded.terms.map { it.name } == listOf(japanese.directory)) byteArrayOf(1, 2, 3) else null
+        }
+
+        lookup.styles(Language.ENGLISH)
+        assertThat(engine.loaded.terms.map { it.name }).containsExactly(english.directory)
+        assertThat(lookup.media("Japanese", "image.png", Language.JAPANESE)).isEqualTo(byteArrayOf(1, 2, 3))
+    }
+
+    @Test
+    fun anotherLanguagesStylesWaitUntilTheMediaReadFinishes() = runTest {
+        val japanese = repository.import(archive("Japanese", terms = 1))
+        repository.setLanguages(japanese.id, "ja", "en")
+        val english = repository.import(archive("English", terms = 1))
+        repository.setLanguages(english.id, "en", "ru")
+        val started = CompletableDeferred<Unit>()
+        val resume = CompletableDeferred<Unit>()
+        engine.onMedia = { _, _ ->
+            started.complete(Unit)
+            resume.await()
+            assertThat(engine.loaded.terms.map { it.name }).containsExactly(japanese.directory)
+            byteArrayOf(9)
+        }
+
+        val media = async { lookup.media("Japanese", "image.png", Language.JAPANESE) }
+        started.await()
+        val styles = async { lookup.styles(Language.ENGLISH) }
+        runCurrent()
+        assertThat(styles.isCompleted).isFalse()
+        resume.complete(Unit)
+        assertThat(media.await()).isEqualTo(byteArrayOf(9))
+        styles.await()
+        assertThat(engine.loaded.terms.map { it.name }).containsExactly(english.directory)
+    }
+
+    @Test
     fun registryChangesWaitForQueriesAndCancellationReleasesTheLock() = runTest {
         val dictionary = repository.import(archive("Terms", terms = 1))
         val started = CompletableDeferred<Unit>()
@@ -318,6 +359,7 @@ class DictionaryRepositoryTest {
         var loaded = DictionarySet()
         var stylesRead = 0
         var onLookup: suspend () -> Unit = { }
+        var onMedia: suspend (String, String) -> ByteArray? = { _, _ -> null }
 
         override suspend fun import(archive: File, outputDir: File): ImportedDictionary {
             val (title, terms, frequencies, mode) = archive.readText().split("\n")
@@ -349,7 +391,7 @@ class DictionaryRepositoryTest {
             return listOf(DictionaryStyle("Terms", ".a { color: red }"))
         }
 
-        override suspend fun media(dictionary: String, path: String): ByteArray? = null
+        override suspend fun media(dictionary: String, path: String): ByteArray? = onMedia(dictionary, path)
 
         override suspend fun kanji(character: String): KanjiResult = KanjiResult(character)
     }

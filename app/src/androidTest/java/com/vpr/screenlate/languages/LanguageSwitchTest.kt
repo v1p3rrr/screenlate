@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.await
+import androidx.work.workDataOf
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
@@ -70,11 +71,18 @@ class LanguageSwitchTest {
             .build()
         val english = request("en")
         val japanese = request("ja")
+        val bundledTask = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
+            .setInitialDelay(1, TimeUnit.HOURS)
+            .setInputData(workDataOf(DictionaryImportWorker.KEY_SOURCE to DictionaryImportWorker.SOURCE_BUNDLED))
+            .addTag("dictionary-import")
+            .addTag("dictionary-import-name:")
+            .addTag("dictionary-import-source:" + DictionaryImportWorker.SOURCE_BUNDLED)
+            .build()
         try {
             profiles.turnOn(Language.ENGLISH)
             assertThat(switch.filesSize(Language.ENGLISH)).isNull()
-            manager.enqueue(listOf(english, japanese)).await()
-            imports.tasks.first { tasks -> tasks.any { it.id == english.id } && tasks.any { it.id == japanese.id } }
+            manager.enqueue(listOf(english, japanese, bundledTask)).await()
+            imports.tasks.first { tasks -> listOf(english.id, japanese.id, bundledTask.id).all { id -> tasks.any { it.id == id } } }
             assertThat(repository.getAll()).isEmpty()
             assertThat(switch.filesSize(Language.ENGLISH)).isEqualTo(0L)
 
@@ -83,10 +91,19 @@ class LanguageSwitchTest {
             val tasks = imports.tasks.first()
             assertThat(tasks.map { it.id }).doesNotContain(english.id)
             assertThat(tasks.map { it.id }).contains(japanese.id)
+            assertThat(tasks.map { it.id }).contains(bundledTask.id)
             assertThat(switch.filesSize(Language.ENGLISH)).isNull()
+
+            profiles.turnOn(Language.ENGLISH)
+            assertThat(switch.filesSize(Language.JAPANESE)).isEqualTo(0L)
+            assertThat(switch.turnOff(Language.JAPANESE, deleteFiles = true)).isTrue()
+            assertThat(profiles.current().turnedOn).containsExactly(Language.ENGLISH)
+            assertThat(imports.tasks.first().map { it.id }).containsNoneOf(japanese.id, bundledTask.id)
+            assertThat(switch.filesSize(Language.JAPANESE)).isNull()
         } finally {
             manager.cancelWorkById(english.id).await()
             manager.cancelWorkById(japanese.id).await()
+            manager.cancelWorkById(bundledTask.id).await()
             database.close()
             scope.cancel()
             root.deleteRecursively()

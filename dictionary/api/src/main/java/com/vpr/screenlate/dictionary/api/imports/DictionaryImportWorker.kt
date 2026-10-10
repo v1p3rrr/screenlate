@@ -200,7 +200,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         val pending = if (wanted) bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } } else emptyList()
         return pending.map { asset ->
             Log.i(TAG, "Installing ${asset.name} (${asset.size shr 10} KB)")
-            setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
+            setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT, KEY_SOURCE to SOURCE_BUNDLED))
             val archive = storage.newArchiveFile()
             try {
                 bundled.copy(asset, archive)

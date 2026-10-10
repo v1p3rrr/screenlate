@@ -114,7 +114,10 @@ class DictionaryLookup @Inject constructor(
         cachedStyles.get(repository.generation) { engine.styles() }
     }
 
-    suspend fun media(dictionary: String, path: String): ByteArray? = engine.media(dictionary, path)
+    /** Reads an image from the dictionary set of the page or note's captured [language]. */
+    suspend fun media(dictionary: String, path: String, language: Language): ByteArray? = repository.withLookup(language) {
+        engine.media(dictionary, path)
+    }
 
     /** Tag descriptions of the enabled dictionaries, shown when a tag in the popup is tapped. */
     suspend fun tagNotes(): List<DictionaryTagNotes> = cachedTagNotes.get(repository.generation) { repository.tagNotes() }

@@ -7,6 +7,8 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Assert.assertThrows
@@ -67,6 +69,34 @@ class CancellableRunsTest {
 
         assertThat(runs.run(id, { id in cancelled }) { ran = true }).isNull()
         assertThat(ran).isFalse()
+    }
+
+    @Test
+    fun `waiting for a cancel includes the running step's cleanup`() = runTest {
+        val started = CompletableDeferred<Unit>()
+        val cleaning = CompletableDeferred<Unit>()
+        val release = CompletableDeferred<Unit>()
+        val run = async {
+            runs.run<String>(id, { id in cancelled }) {
+                started.complete(Unit)
+                try {
+                    awaitCancellation()
+                } finally {
+                    withContext(NonCancellable) {
+                        cleaning.complete(Unit)
+                        release.await()
+                    }
+                }
+            }
+        }
+        started.await()
+        cancelled += id
+        val deletion = async { runs.cancelAndJoin(id) }
+        cleaning.await()
+        assertThat(deletion.isCompleted).isFalse()
+        release.complete(Unit)
+        deletion.await()
+        assertThat(run.await()).isNull()
     }
 
     @Test

@@ -39,6 +39,7 @@ class DictionaryImportsTest {
         output: Data = Data.EMPTY,
         progress: Data = Data.EMPTY,
         archive: String? = null,
+        source: String? = null,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -47,10 +48,24 @@ class DictionaryImportsTest {
             DictionaryImports.NAME_TAG_PREFIX + name,
             order?.let { DictionaryImports.ORDER_TAG_PREFIX + it },
             archive?.let { DictionaryImports.ARCHIVE_TAG_PREFIX + it },
+            source?.let { DictionaryImports.SOURCE_TAG_PREFIX + it },
         ),
         outputData = output,
         progress = progress,
     )
+
+    @Test
+    fun `bundled source survives a change in the displayed archive name`() {
+        val queued = work("", WorkInfo.State.ENQUEUED, 1, source = "bundled")
+        val importing = work("", WorkInfo.State.RUNNING, 2, source = "bundled",
+            progress = workDataOf(DictionaryImportWorker.KEY_NAME to "jmdict-english"))
+        val oldRunning = work("", WorkInfo.State.RUNNING, 3,
+            progress = workDataOf(DictionaryImportWorker.KEY_NAME to "kanjidic", DictionaryImportWorker.KEY_SOURCE to "bundled"))
+
+        val tasks = importTasks(listOf(queued, importing, oldRunning), emptySet())
+        assertThat(tasks.map { it.source }).containsExactly("bundled", "bundled", "bundled")
+        assertThat(tasks.map { it.name }).containsExactly("", "jmdict-english", "kanjidic").inOrder()
+    }
 
     @Test
     fun `tasks come in queue order, not by their random ids`() {
