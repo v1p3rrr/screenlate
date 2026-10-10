@@ -16,7 +16,7 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val audioRegions = listOf(AudioRegion("us", setOf("us")), AudioRegion("uk", setOf("uk", "gb")), AudioRegion.OTHER)
 
     override val abbreviations = setOf(
-        "mr", "mrs", "ms", "dr", "prof", "sr", "jr", "st", "mt", "vs", "etc", "e.g", "i.e", "cf", "approx", "no",
+        "mr", "mrs", "ms", "dr", "prof", "sr", "jr", "st", "mt", "vs", "etc", "e.g", "i.e", "cf", "approx",
         "fig", "vol", "ch", "p", "pp", "ed", "inc", "ltd", "co", "corp", "dept", "est", "jan", "feb", "mar", "apr",
         "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec", "a.m", "p.m", "u.s", "u.k",
     )

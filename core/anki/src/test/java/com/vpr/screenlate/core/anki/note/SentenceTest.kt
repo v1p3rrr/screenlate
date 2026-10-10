@@ -5,8 +5,8 @@ import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class SentenceTest {
-    private fun extract(paragraph: String, word: String): Sentence =
-        Sentence.extract(paragraph, paragraph.indexOf(word), word.length, Language.JAPANESE)
+    private fun extract(paragraph: String, word: String, language: Language = Language.JAPANESE): Sentence =
+        Sentence.extract(paragraph, paragraph.indexOf(word), word.length, language)
 
     @Test
     fun cutsAtTerminators() {
@@ -32,5 +32,19 @@ class SentenceTest {
         val sentence = extract("ありがとうございます 桃香さんもね", "桃香")
         assertThat(sentence.prefix).isEqualTo("ありがとうございます ")
         assertThat(sentence.suffix).isEqualTo("さんもね")
+    }
+
+    @Test
+    fun abbreviationsAndDecimalsDoNotEndAnEnglishSentence() {
+        val paragraph = "She gave up. Mr. Smith met her at 5 p.m. at gate 3.5 near example.com. They went home."
+        val sentence = extract(paragraph, "gate", Language.ENGLISH)
+        assertThat(sentence.text).isEqualTo("Mr. Smith met her at 5 p.m. at gate 3.5 near example.com.")
+    }
+
+    @Test
+    fun englishSentenceEndsAtOtherTerminatorsAndQuotes() {
+        val sentence = extract("Really? “Go home.” he said. Fine!", "said", Language.ENGLISH)
+        assertThat(sentence.text).isEqualTo("“Go home.” he said.")
+        assertThat(extract("It was late... Then it rained.", "rained", Language.ENGLISH).text).isEqualTo("Then it rained.")
     }
 }

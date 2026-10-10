@@ -27,6 +27,18 @@ abstract class SpacedLanguageSupport : LanguageSupport {
      */
     open val abbreviations: Set<String> = emptySet()
 
+    /**
+     * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com) or it closes an
+     * abbreviation. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     */
+    override fun endsSentence(text: String, index: Int): Boolean {
+        val character = text[index]
+        if (character !in sentenceTerminators) return false
+        if (character != '.') return true
+        if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
+        return wordBefore(text, index) !in abbreviations
+    }
+
     /** A word starts with a letter or digit; phrases and inflections are tried by the engine. */
     override fun lookupStart(text: String, latinAsNative: Boolean): LookupStart? {
         if (text.isEmpty()) return null
@@ -57,6 +69,18 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     override fun singleCharacterEntries(matched: String): List<String> = emptyList()
 
     override fun characterEntry(text: String): String? = null
+
+    /** The word before the period at [index], lowercase, with its inner periods: "p.m" in "at 5 p.m.". */
+    private fun wordBefore(text: String, index: Int): String {
+        var start = index
+        while (start > 0) {
+            val previous = text[start - 1]
+            val inWord = previous.isLetter() || previous == '.' && start > 1 && text[start - 2].isLetter()
+            if (!inWord) break
+            start--
+        }
+        return text.substring(start, index).lowercase()
+    }
 
     private fun isWordCharacter(codePoint: Int): Boolean =
         Character.isLetterOrDigit(codePoint) || Character.getType(codePoint) == Character.NON_SPACING_MARK.toInt()

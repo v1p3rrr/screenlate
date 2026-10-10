@@ -24,7 +24,8 @@ data class TextPosition(val paragraphIndex: Int, val offset: Int)
  * Character-level index over an [OcrPage] used for hit testing and highlighting.
  *
  * Engines report boxes per word; when per-character boxes are missing the word box is split evenly along the
- * reading direction: down a vertical line, leftwards along a right-to-left one. Lines inside a paragraph are concatenated without separators, which is correct for Japanese.
+ * reading direction: down a vertical line, leftwards along a right-to-left one. Words and lines inside a paragraph are
+ * joined by each word's separator, which is empty for Japanese, so a phrase broken across lines is still found.
  * Paragraphs are taken in reading order ([ReadingOrder]), so text runs on across a broken line.
  */
 class TextLayout(val page: OcrPage) {

@@ -10,13 +10,15 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
     companion object {
         /**
          * Extracts the sentence containing `paragraph[start, start + length)`. A terminator inside quotes opened
-         * before the word does not end the sentence, and a closing quote right after a terminator stays in it.
+         * before the word does not end the sentence, and a closing quote right after a terminator stays in it. The
+         * language decides whether a terminator ends the sentence ("Mr." does not).
          */
         fun extract(paragraph: String, start: Int, length: Int, language: Language): Sentence {
             val safeStart = start.coerceIn(0, paragraph.length)
             val end = (safeStart + length).coerceIn(safeStart, paragraph.length)
-            val terminators = language.support.sentenceTerminators
-            val quotes = language.support.quotePairs
+            val support = language.support
+            val terminators = support.sentenceTerminators
+            val quotes = support.quotePairs
             val closing = quotes.values.toSet()
 
             // Walk back to the previous terminator that is not inside an open quote.
@@ -27,7 +29,7 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
                 when {
                     c in closing -> depth++
                     c in quotes -> if (depth > 0) depth-- else Unit
-                    c in terminators && depth == 0 -> break
+                    depth == 0 && support.endsSentence(paragraph, from - 1) -> break
                 }
                 from--
             }
@@ -40,7 +42,7 @@ data class Sentence(val prefix: String, val body: String, val suffix: String) {
                 when {
                     c in quotes -> depth++
                     c in closing -> if (depth > 0) depth-- else Unit
-                    c in terminators && depth == 0 -> {
+                    depth == 0 && support.endsSentence(paragraph, to - 1) -> {
                         while (to < paragraph.length && (paragraph[to] in closing || paragraph[to] in terminators)) to++
                         break
                     }

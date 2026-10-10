@@ -27,8 +27,11 @@ interface LanguageSupport {
     /** Whether lines run from right to left. */
     val rightToLeft: Boolean get() = false
 
-    /** Characters that end a sentence, for `{sentence}` and cloze markers. */
+    /** Characters that may end a sentence, for `{sentence}` and cloze markers; [endsSentence] has the final say. */
     val sentenceTerminators: Set<Char>
+
+    /** Whether the character at [index] of [text] ends a sentence. */
+    fun endsSentence(text: String, index: Int): Boolean = text[index] in sentenceTerminators
 
     /** Opening to closing brackets and quotes; a terminator inside them does not end the sentence. */
     val quotePairs: Map<Char, Char>
