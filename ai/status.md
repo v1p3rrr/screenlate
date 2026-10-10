@@ -8,7 +8,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 
 - Stage A (shared base) and English are built on `languages/main`, checked on the emulator, and both review runs of
   request 23 are done (see the log entry "languages: stage A, English, two reviews"). Next: the owner tests the debug
-  build; then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
+  build of `languages/main` (CI builds only pushes to main and pull requests; a manual run of `ci.yml` on
+  `languages/main` gives its APK); then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
   release, backup and restore), then stage B (Chinese, Korean).
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
@@ -882,3 +883,15 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - Emulator state: Japanese and English on, English active with wty-en-ru and wty-en-ipa, English Anki configured.
   The 2.7 GB copy in the emulator's Download folder was deleted (the same files are in `testdata/dictionaries/`).
   A full `connectedDebugAndroidTest` uninstalls the debug app; run the engine package alone to keep it.
+
+### 2026-10-10 (bubble pull-out glide; owner's first test)
+
+- The owner installed the CI debug build 0.2.2-32cd384 and found no languages: that build is main, which has only the
+  plan notes; the language code is on `languages/main`, which CI does not build on push. A manual CI run on
+  `languages/main` gives its APK.
+- Owner: pulling the bubble out of the dock, the aim follows the finger but the bubble stays at the edge, spinning,
+  for about half a second, then flies to the finger (new in v0.2.2). Cause: the window manager's move animation for a
+  window that moves and changes size at once; since v0.2.2 the dock's window holds only the visible part. Fixed by
+  `setCanPlayMoveAnimation(false)` on every overlay window (API 34+); checked on the emulator with a trace (no
+  animation on `android.anim.lf` any more, 405 ms before) and a recording. Details and the Android 11-13 gap in
+  `ai/notes/overlay-system-ui.md`. The fix is on main and `languages/main`.
