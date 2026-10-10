@@ -384,3 +384,12 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   with one language; "Turn off the chosen language" acts on the active one; deleting a language's files also cancels
   its unfinished downloads. Imports take languages from the catalog entry first, then index.json, where Wiktionary's
   `all` names no language; dictionaries registered under `all` earlier get their catalog language at start.
+- 2026-10-10: A7–A9 as built. The language chips sit in the floating bubble's hold menu (the docked bubble has no
+  menu); the dock glyph and the scan language already followed the active language. The page shows every rule chain:
+  the first under the word, "+N" (bordered, muted) opens the rest; transcriptions are buttons like pitch accents,
+  collapsed to one when there are more than two, and a tap lists their dictionaries. Audio regions are a list with
+  up and down arrows under the sources (like the sources, no drag); ids `us` (codes `us`), `uk` (`uk`, `gb`) and
+  `other`; a stored order keeps only known ids and appends the rest; "Restore the default sources" leaves the regions
+  alone. Noticed, not addressed: the merged IPA dictionary holds dozens of variants for common words (about 89 for
+  "water", some junk); hoshidicts drops IPA tags; some Wiktionary form-of tags read oddly ("past past participle
+  simple and"); "walke" sorts before "walk" (A2 ordering).
