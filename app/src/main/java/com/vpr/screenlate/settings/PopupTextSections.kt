@@ -2,6 +2,7 @@ package com.vpr.screenlate.settings
 
 import android.graphics.Typeface
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.annotation.StringRes
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.languages.LanguageCard
+import com.vpr.screenlate.languages.fontStrings
 import com.vpr.screenlate.overlay.fonts.CatalogFont
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import com.vpr.screenlate.overlay.fonts.FontDownload
@@ -74,77 +78,124 @@ private val WEIGHT_NAMES = listOf(
     R.string.popup_text_weight_bold,
 )
 
-/** The lookup page's font and custom CSS, as two cards of the Popup screen. */
+/**
+ * The lookup page's font and custom CSS, as two cards of the Popup screen. With several languages on, the text size
+ * and weight are a card of their own and the font and CSS go into the language's card.
+ */
 @Composable
 fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
+    val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
+    val shown by viewModel.shown.language.collectAsStateWithLifecycle()
+    val previewTypeface by viewModel.previewTypeface.collectAsStateWithLifecycle()
     val current = appearance ?: return
     val installed by viewModel.installed.collectAsStateWithLifecycle()
-    FontCard(current, installed, viewModel)
-    CssCard(current.customCss, installed, viewModel)
+    if (profiles.several) {
+        SectionCard(title = stringResource(R.string.popup_text_title)) {
+            Hint(stringResource(R.string.popup_font_hint))
+            TextSizes(current, R.string.popup_text_weight_info_languages, viewModel)
+            Preview(previewTypeface, current, shown)
+        }
+        LanguageCard(profiles, shown, viewModel::show) {
+            FontChoice(current, installed, shown, viewModel)
+            FontSources(installed, shown, viewModel)
+            HorizontalDivider()
+            CssRows(current.customCss, installed, shown, viewModel)
+        }
+    } else {
+        SectionCard(title = stringResource(R.string.popup_font_title)) {
+            Hint(stringResource(R.string.popup_font_hint))
+            FontChoice(current, installed, shown, viewModel)
+            TextSizes(current, shown.fontStrings.weightInfo, viewModel)
+            Preview(previewTypeface, current, shown)
+            HorizontalDivider()
+            FontSources(installed, shown, viewModel)
+        }
+        SectionCard(title = stringResource(R.string.popup_css_title)) {
+            CssRows(current.customCss, installed, shown, viewModel)
+        }
+    }
 }
 
 @Composable
-private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>, viewModel: PopupAppearanceViewModel) {
+private fun TextSizes(appearance: PopupAppearance, @StringRes weightInfo: Int, viewModel: PopupAppearanceViewModel) {
+    FontSize(appearance.fontSize, viewModel::setFontSize)
+    TextWeight(appearance.textWeight, weightInfo, viewModel::setTextWeight)
+    LetterThickness(appearance.letterThickness, viewModel::setLetterThickness)
+}
+
+/** The phone's font and the installed ones for [language], and whether an installed one is kept to its text. */
+@Composable
+private fun FontChoice(
+    appearance: PopupAppearance,
+    installed: List<InstalledFont>,
+    language: Language,
+    viewModel: PopupAppearanceViewModel,
+) {
     val typefaces by viewModel.typefaces.collectAsStateWithLifecycle()
+    val systemFontMissing by viewModel.systemFontMissing.collectAsStateWithLifecycle()
+    val strings = language.fontStrings
+    val selected = installed.firstOrNull { it.id == appearance.fontId }
+    FontOption(
+        title = stringResource(strings.system),
+        subtitle = stringResource(R.string.popup_font_system_hint),
+        selected = selected == null,
+        typeface = typefaces[PopupAppearanceViewModel.SYSTEM],
+        onSelect = { viewModel.selectFont(null) },
+    )
+    if (systemFontMissing) strings.systemMissing?.let { ErrorText(stringResource(it)) }
+    installed.forEach { font ->
+        FontOption(
+            title = font.family,
+            subtitle = stringResource(
+                if (font.catalogId != null) R.string.popup_font_downloaded else R.string.popup_font_own_file,
+            ),
+            selected = font == selected,
+            typeface = typefaces[font.id],
+            onSelect = { viewModel.selectFont(font.id) },
+            onDelete = { viewModel.delete(font) },
+        )
+    }
+    // The phone's font is always limited to the script, so the disabled switch shows on; it applies to installed fonts.
+    SwitchRow(
+        stringResource(strings.scriptOnly),
+        checked = selected == null || !appearance.fontForAllText,
+        onChange = { viewModel.setFontForAllText(!it) },
+        hint = stringResource(strings.scriptOnlyHint),
+        enabled = selected != null,
+    )
+}
+
+/** Free fonts for [language] to download, when there are any, and adding a font file. */
+@Composable
+private fun FontSources(installed: List<InstalledFont>, language: Language, viewModel: PopupAppearanceViewModel) {
     val downloads by viewModel.downloads.collectAsStateWithLifecycle()
     val lastImport by viewModel.lastImport.collectAsStateWithLifecycle()
-    val systemFontMissing by viewModel.systemFontMissing.collectAsStateWithLifecycle()
-    val previewTypeface by viewModel.previewTypeface.collectAsStateWithLifecycle()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.import(uri)
     }
-    val selected = installed.firstOrNull { it.id == appearance.fontId }
-    SectionCard(title = stringResource(R.string.popup_font_title)) {
-        Hint(stringResource(R.string.popup_font_hint))
-        FontOption(
-            title = stringResource(R.string.popup_font_system),
-            subtitle = stringResource(R.string.popup_font_system_hint),
-            selected = selected == null,
-            typeface = typefaces[PopupAppearanceViewModel.SYSTEM],
-            onSelect = { viewModel.selectFont(null) },
-        )
-        if (systemFontMissing) ErrorText(stringResource(R.string.popup_font_system_missing))
-        installed.forEach { font ->
-            FontOption(
-                title = font.family,
-                subtitle = stringResource(
-                    if (font.catalogId != null) R.string.popup_font_downloaded else R.string.popup_font_own_file,
-                ),
-                selected = font == selected,
-                typeface = typefaces[font.id],
-                onSelect = { viewModel.selectFont(font.id) },
-                onDelete = { viewModel.delete(font) },
-            )
+    val catalog = viewModel.catalog
+    if (catalog.isNotEmpty()) {
+        val info = language.fontStrings.catalogInfo
+        if (info != null) {
+            LabelWithInfo(stringResource(R.string.popup_font_catalog), stringResource(info))
+        } else {
+            Text(stringResource(R.string.popup_font_catalog), style = MaterialTheme.typography.labelLarge)
         }
-        // The phone's font is always limited to the script, so the disabled switch shows on; it applies to installed fonts.
-        SwitchRow(
-            stringResource(R.string.popup_font_script_only),
-            checked = selected == null || !appearance.fontForAllText,
-            onChange = { viewModel.setFontForAllText(!it) },
-            hint = stringResource(R.string.popup_font_script_only_hint),
-            enabled = selected != null,
-        )
-        FontSize(appearance.fontSize, viewModel::setFontSize)
-        TextWeight(appearance.textWeight, viewModel::setTextWeight)
-        LetterThickness(appearance.letterThickness, viewModel::setLetterThickness)
-        Preview(previewTypeface, appearance)
-        HorizontalDivider()
-        LabelWithInfo(stringResource(R.string.popup_font_catalog), stringResource(R.string.popup_font_proprietary))
         val installedIds = installed.mapNotNull { it.catalogId }.toSet()
-        viewModel.catalog.filter { it.id !in installedIds }.forEach { font ->
+        catalog.filter { it.id !in installedIds }.forEach { font ->
             CatalogRow(font, downloads[font.id]) { viewModel.download(font) }
         }
-        OutlinedButton(onClick = { picker.launch(FONT_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.popup_font_add_file), textAlign = TextAlign.Center)
-        }
-        when (lastImport) {
-            FontImport.NotAFont -> ErrorText(stringResource(R.string.popup_font_not_a_font))
-            FontImport.WebFont -> ErrorText(stringResource(R.string.popup_font_web_font))
-            FontImport.TooLarge -> ErrorText(stringResource(R.string.popup_font_too_large))
-            FontImport.Failed -> ErrorText(stringResource(R.string.popup_font_import_failed))
-            is FontImport.Added, null -> Unit
-        }
+    }
+    OutlinedButton(onClick = { picker.launch(FONT_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(R.string.popup_font_add_file), textAlign = TextAlign.Center)
+    }
+    when (lastImport) {
+        FontImport.NotAFont -> ErrorText(stringResource(R.string.popup_font_not_a_font))
+        FontImport.WebFont -> ErrorText(stringResource(R.string.popup_font_web_font))
+        FontImport.TooLarge -> ErrorText(stringResource(R.string.popup_font_too_large))
+        FontImport.Failed -> ErrorText(stringResource(R.string.popup_font_import_failed))
+        is FontImport.Added, null -> Unit
     }
 }
 
@@ -196,11 +247,11 @@ private fun FontSize(size: Int, onChange: (Int) -> Unit) {
 
 /** Weight of the text in steps of 100; the ⓘ explains the scope and fonts with one weight. */
 @Composable
-private fun TextWeight(weight: Int, onChange: (Int) -> Unit) {
+private fun TextWeight(weight: Int, @StringRes info: Int, onChange: (Int) -> Unit) {
     val steps = WEIGHT_NAMES.size - 1
     var value by remember(weight) { mutableFloatStateOf(((weight - PopupAppearance.NORMAL_WEIGHT) / PopupAppearance.WEIGHT_STEP).toFloat()) }
     val name = stringResource(WEIGHT_NAMES[value.roundToInt().coerceIn(0, steps)])
-    LabelWithInfo(stringResource(R.string.popup_text_weight, name), stringResource(R.string.popup_text_weight_info))
+    LabelWithInfo(stringResource(R.string.popup_text_weight, name), stringResource(info))
     Slider(
         value = value,
         onValueChange = { value = it },
@@ -234,13 +285,13 @@ private fun LetterThickness(thickness: Int, onChange: (Int) -> Unit) {
 }
 
 /**
- * The language's sample at the chosen size, weight and letter thickness. The sample is all in the language's script,
+ * [language]'s sample at the chosen size, weight and letter thickness. The sample is all in the language's script,
  * so it shows them whether they apply to all text or to the script only. The outline is drawn over the letters, as
  * the page's text stroke is.
  */
 @Composable
-private fun Preview(typeface: Typeface?, appearance: PopupAppearance) {
-    val support = PopupAppearanceViewModel.LANGUAGE.support
+private fun Preview(typeface: Typeface?, appearance: PopupAppearance, language: Language) {
+    val support = language.support
     val style = MaterialTheme.typography.bodyLarge.copy(
         fontFamily = typeface?.let { FontFamily(it) },
         fontWeight = FontWeight(appearance.textWeight),
@@ -285,29 +336,29 @@ private fun CatalogRow(font: CatalogFont, download: FontDownload?, onDownload: (
     }
 }
 
+/** [language]'s custom CSS with the problems found in it. */
 @Composable
-private fun CssCard(saved: String, installed: List<InstalledFont>, viewModel: PopupAppearanceViewModel) {
-    // The view model keeps the latest edit across configuration changes; the setting follows after a delay.
+private fun CssRows(saved: String, installed: List<InstalledFont>, language: Language, viewModel: PopupAppearanceViewModel) {
+    // The view model keeps the latest edit across configuration changes; the setting follows after a delay. Right
+    // after the language changes, the saved CSS passed in may still be the previous language's.
     val resets by viewModel.resets.collectAsStateWithLifecycle()
-    var css by remember(resets) { mutableStateOf(viewModel.cssDraft ?: saved) }
-    val issues = remember(css, installed) { PopupAppearanceViewModel.cssIssues(css, installed) }
-    SectionCard(title = stringResource(R.string.popup_css_title)) {
-        LabelWithInfo(stringResource(R.string.popup_css_short), stringResource(R.string.popup_css_hint))
-        issues.forEach { issue -> ErrorText("⚠ " + issueText(issue)) }
-        OutlinedTextField(
-            value = css,
-            onValueChange = {
-                css = it
-                viewModel.setCustomCss(it)
-            },
-            placeholder = {
-                Text(".gloss-content { font-size: 16px; }", style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
-            },
-            textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-            minLines = 6,
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
+    var css by remember(resets, language) { mutableStateOf(viewModel.cssDraft ?: viewModel.savedCss(language) ?: saved) }
+    val issues = remember(css, installed, language) { PopupAppearanceViewModel.cssIssues(css, language, installed) }
+    LabelWithInfo(stringResource(R.string.popup_css_short), stringResource(R.string.popup_css_hint))
+    issues.forEach { issue -> ErrorText("⚠ " + issueText(issue)) }
+    OutlinedTextField(
+        value = css,
+        onValueChange = {
+            css = it
+            viewModel.setCustomCss(it)
+        },
+        placeholder = {
+            Text(".gloss-content { font-size: 16px; }", style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+        },
+        textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+        minLines = 6,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable

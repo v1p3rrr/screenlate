@@ -326,6 +326,15 @@
     <string name="popup_font_too_large">Файл слишком большой для шрифта (больше 64 МБ).</string>
     <string name="popup_font_web_font">Это веб-шрифт (.woff или .woff2), такие не добавляются. Сначала преобразуйте его в .ttf или .otf.</string>
     <string name="popup_font_import_failed">Не удалось добавить файл. Попробуйте ещё раз или проверьте, есть ли свободное место на телефоне.</string>
+    <string name="popup_text_title">Размер и жирность текста</string>
+    <string name="popup_font_system_default">Шрифт телефона</string>
+    <string name="popup_font_script_only_en">Только для английского текста</string>
+    <string name="popup_font_script_only_hint_any">Буквы других письменностей остаются шрифтом телефона. Для скачанных и добавленных шрифтов.</string>
+    <string name="popup_text_weight_info_languages">Делает тонкий текст разборчивее. Когда у языка включено «Только для … текста» или выбран шрифт телефона, толще становятся только символы этого языка; когда выключено — весь текст.\n\nЖирность берётся из начертаний самого шрифта. У шрифта с одним начертанием есть только обычная и жирная, поэтому средняя выглядит как обычная.\n\nТолщина букв обводит каждую букву тонким контуром: она работает с любым шрифтом и добавляется к жирности.</string>
+    <string name="languages_settings_hint">Настройки ниже относятся к выбранному языку; остальное на странице — общее для всех языков.</string>
+    <string name="anki_languages_hint">Колода, тип записи, шаблоны полей, метки, обработка дублей и источники аудио задаются для каждого языка. Перевод в карточках, автовоспроизведение аудио и громкость — общие.</string>
+    <string name="yomitan_summary_language">Язык: %1$s</string>
+    <string name="reset_section_language">Сбрасываются общие для всех языков настройки и настройки языка, показанного на странице; у других языков они остаются.</string>
     <string name="popup_settings_title">Попап</string>
     <string name="popup_content_title">Элементы попапа</string>
     <string name="popup_auto_hide_title">Автоскрытие</string>

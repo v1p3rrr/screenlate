@@ -261,7 +261,7 @@ class OverlayController(
         showGlyph(activeLanguage)
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }
-        scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
+        scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         scope.launch {
             translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }

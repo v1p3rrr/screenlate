@@ -7,6 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.ui.components.ResetButton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,8 +22,8 @@ class SettingsResetViewModel @Inject constructor(private val settingsReset: Sett
         viewModelScope.launch { withContext(NonCancellable) { settingsReset.resetAll() } }
     }
 
-    fun reset(section: SettingsSection) {
-        viewModelScope.launch { withContext(NonCancellable) { settingsReset.reset(section) } }
+    fun reset(section: SettingsSection, language: Language?) {
+        viewModelScope.launch { withContext(NonCancellable) { settingsReset.reset(section, language) } }
     }
 }
 
@@ -37,18 +38,25 @@ fun ResetAllButton(viewModel: SettingsResetViewModel = hiltViewModel()) {
     )
 }
 
-/** A section page's icon that resets its settings; [onReset] replaces the plain reset where the page keeps edits. */
+/**
+ * A section page's icon that resets its settings; [onReset] replaces the plain reset where the page keeps edits. A
+ * page with settings per language resets the [shown] language's and the shared ones, and says so while [several]
+ * languages are on.
+ */
 @Composable
 fun SectionResetButton(
     section: SettingsSection,
+    shown: Language? = null,
+    several: Boolean = false,
     onReset: (() -> Unit)? = null,
     viewModel: SettingsResetViewModel = hiltViewModel(),
 ) {
+    val text = stringResource(section.text)
     ResetButton(
         tooltip = stringResource(R.string.reset_section_tooltip),
         title = stringResource(R.string.reset_section_title),
-        text = stringResource(section.text),
-        onReset = onReset ?: { viewModel.reset(section) },
+        text = if (several) text + "\n\n" + stringResource(R.string.reset_section_language) else text,
+        onReset = onReset ?: { viewModel.reset(section, shown) },
     )
 }
 

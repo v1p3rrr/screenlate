@@ -32,10 +32,12 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
     val appearance by viewModel.appearance.collectAsStateWithLifecycle()
     val overlay by viewModel.overlay.collectAsStateWithLifecycle()
     val translation by viewModel.translation.collectAsStateWithLifecycle()
+    val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
+    val shown by viewModel.shown.language.collectAsStateWithLifecycle()
     SettingsScaffold(
         stringResource(R.string.popup_settings_title),
         onBack,
-        actions = { SectionResetButton(SettingsSection.POPUP, onReset = viewModel::resetSettings) },
+        actions = { SectionResetButton(SettingsSection.POPUP, shown, profiles.several, onReset = viewModel::resetSettings) },
     ) { padding ->
         Column(
             modifier = Modifier

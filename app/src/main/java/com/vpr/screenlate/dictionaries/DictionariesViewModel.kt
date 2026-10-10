@@ -20,12 +20,14 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
+import com.vpr.screenlate.dictionary.api.registry.isFor
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -80,8 +82,8 @@ data class DictionariesState(
     val installed: List<InstalledSection> = emptyList(),
     val tasks: List<ImportTask> = emptyList(),
     val catalog: List<CatalogGroup> = emptyList(),
-    /** The frequency dictionary used for sorting. */
-    val sortDictionaryId: Long? = null,
+    /** The frequency dictionaries used for sorting, one per turned-on language. */
+    val sortDictionaryIds: Set<Long> = emptySet(),
     /** Website and download links by dictionary id. */
     val links: Map<Long, DictionaryLinks> = emptyMap(),
     /** Hosts that the styles of a switched on dictionary load files from, by dictionary title. */
@@ -108,7 +110,7 @@ class DictionariesViewModel @Inject constructor(
     private val dictionaryReset: DictionaryReset,
     private val cache: DictionariesStateCache,
     catalog: DictionaryCatalog,
-    profiles: LanguageProfiles,
+    private val profiles: LanguageProfiles,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
     private val mutableDeleteError = MutableStateFlow<String?>(null)
@@ -121,12 +123,12 @@ class DictionariesViewModel @Inject constructor(
         repository.dictionaries,
         imports.tasks,
         catalog.entries(),
-        combine(repository.sortDictionaryId, profiles.state, ::Pair),
+        combine(sortDictionaryIds(), profiles.state, ::Pair),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
         repository.dictionaries
             .map { remoteCss() to withoutFiles() }
             .onStart { emit((cache.last?.remoteCss ?: emptyMap()) to (cache.last?.withoutFiles ?: emptySet())) },
-    ) { dictionaries, tasks, entries, (sortId, profileState), (remoteCss, withoutFiles) ->
+    ) { dictionaries, tasks, entries, (sortIds, profileState), (remoteCss, withoutFiles) ->
         val items = catalogItems(entries, dictionaries, tasks)
         DictionariesState(
             installed = DictionaryKind.entries.mapNotNull { kind ->
@@ -134,10 +136,10 @@ class DictionariesViewModel @Inject constructor(
             },
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             catalog = groupCatalog(items, profileState.active),
-            sortDictionaryId = dictionaries
-                .filter { it.enabled && it.frequencyCount > 0 }
-                .let { frequencies -> frequencies.firstOrNull { it.id == sortId } ?: frequencies.firstOrNull() }
-                ?.id,
+            sortDictionaryIds = profileState.turnedOn.mapNotNull { language ->
+                val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 && it.isFor(language) }
+                (frequencies.firstOrNull { it.id == sortIds[language] } ?: frequencies.firstOrNull())?.id
+            }.toSet(),
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
             },
@@ -242,9 +244,16 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { repository.setLanguages(dictionary.id, source, target) }
     }
 
+    /** Sorts the results of [dictionary]'s language by it; one without a language sorts the active language's. */
     fun setSortDictionary(dictionary: DictionaryEntity) {
-        viewModelScope.launch { repository.setSortDictionary(dictionary.id) }
+        viewModelScope.launch {
+            val language = Language.of(dictionary.sourceLanguage) ?: profiles.current().active
+            repository.setSortDictionary(language, dictionary.id)
+        }
     }
+
+    private fun sortDictionaryIds(): Flow<Map<Language, Long?>> =
+        combine(Language.entries.map { language -> repository.sortDictionaryId(language).map { language to it } }) { it.toMap() }
 
     fun checkUpdates() {
         updateCheck.value = UpdateCheck(null)

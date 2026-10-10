@@ -16,19 +16,24 @@ import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.languages.ShownLanguage
 import com.vpr.screenlate.settings.SettingsReset
 import com.vpr.screenlate.settings.SettingsSection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -50,6 +55,8 @@ data class AnkiScreenState(
     val refreshing: Boolean = false,
 )
 
+/** The [shown] language's note setup; the translation switch is shared by every language. */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AnkiSettingsViewModel @Inject constructor(
     private val anki: AnkiDroid,
@@ -59,42 +66,55 @@ class AnkiSettingsViewModel @Inject constructor(
     private val cache: AnkiConnectionCache,
     private val translationSettings: TranslationSettingsRepository,
     dictionaries: DictionaryRepository,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
+    val shown = ShownLanguage(profiles, viewModelScope)
+
     /** Whether notes get `{sentence-translation}`; the Translation page has this switch too. */
     val translationInNotes: StateFlow<Boolean?> = translationSettings.settings.map { it.ankiField }
         .stateIn(viewModelScope, SharingStarted.Eagerly, translationSettings.cachedSettings?.ankiField)
 
     // Opens with AnkiDroid's last answer, or the first time with the saved setup laid out as if AnkiDroid answered;
     // either way the screen keeps its layout when the answer comes.
-    private val connection = MutableStateFlow(
-        cache.last?.copy(refreshing = true) ?: AnkiScreenState(
-            availability = AnkiAvailability.READY,
-            fieldNames = settingsRepository.cachedSettings?.fields?.keys?.toList().orEmpty(),
-            refreshing = true,
-        ),
-    )
+    private val connection = MutableStateFlow(opening(shown.language.value))
     private var refreshJob: Job? = null
 
-    private val dictionaryMarkers = dictionaries.dictionaries.map { list ->
-        val glossaries = list.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
-        val frequencies = list.filter { it.frequencyCount > 0 }.map { FieldTemplate.singleFrequencyNumberMarker(it.title) }
-        (glossaries + frequencies).distinct()
-    }
+    private val shownSettings = shown.language.flatMapLatest { language -> settingsRepository.settings(language).map { language to it } }
 
     val state: StateFlow<AnkiScreenState> = combine(
         connection,
-        settingsRepository.settings,
-        dictionaryMarkers,
-    ) { connection, settings, dynamicMarkers ->
+        shownSettings,
+        dictionaries.dictionaries,
+    ) { connection, (language, settings), list ->
+        // Yomitan's per-dictionary markers for the language's installed dictionaries.
+        val own = list.filter { it.isFor(language) }
+        val glossaries = own.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
+        val frequencies = own.filter { it.frequencyCount > 0 }.map { FieldTemplate.singleFrequencyNumberMarker(it.title) }
         connection.copy(
             settings = settings,
-            markers = FieldTemplate.markersFor(Language.JAPANESE) + dynamicMarkers,
+            markers = FieldTemplate.markersFor(language) + (glossaries + frequencies).distinct(),
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        connection.value.copy(settings = settingsRepository.cachedSettings ?: AnkiSettings()),
+        connection.value.copy(settings = settingsRepository.cachedSettings(shown.language.value) ?: AnkiSettings()),
     )
+
+    /** AnkiDroid's last answer for [language]'s setup, or the saved setup laid out as if AnkiDroid answered. */
+    private fun opening(language: Language): AnkiScreenState =
+        cache.last[language]?.copy(refreshing = true) ?: AnkiScreenState(
+            availability = AnkiAvailability.READY,
+            fieldNames = settingsRepository.cachedSettings(language)?.fields?.keys?.toList().orEmpty(),
+            refreshing = true,
+        )
+
+    /** Shows [language]'s setup, dimmed until AnkiDroid answered for it. */
+    fun show(language: Language) {
+        if (language == shown.language.value) return
+        shown.show(language)
+        connection.value = opening(language)
+        refresh()
+    }
 
     init {
         refresh()
@@ -104,39 +124,44 @@ class AnkiSettingsViewModel @Inject constructor(
     fun refresh() {
         // The latest check wins: an earlier one may have read the note type the user just changed.
         refreshJob?.cancel()
+        val language = shown.language.value
         refreshJob = viewModelScope.launch {
             val availability = anki.availability()
             if (availability != AnkiAvailability.READY) {
-                answer(AnkiScreenState(availability = availability))
+                answer(language, AnkiScreenState(availability = availability))
                 return@launch
             }
             runCatching {
                 notes.invalidate()
-                val modelId = settingsRepository.current().modelId
+                val modelId = settingsRepository.current(language).modelId
                 AnkiScreenState(
                     availability = availability,
                     decks = anki.decks(),
                     models = anki.models(),
                     fieldNames = modelId?.let { anki.fields(it) }.orEmpty(),
-                    status = notes.status(),
+                    status = notes.status(language),
                 )
-            }.onSuccess(::answer)
+            }.onSuccess { answer(language, it) }
                 .onFailure {
                     if (it is CancellationException) throw it
-                    answer(AnkiScreenState(availability = availability, error = it.message))
+                    answer(language, AnkiScreenState(availability = availability, error = it.message))
                 }
         }
     }
 
-    private fun answer(state: AnkiScreenState) {
-        cache.last = state
+    private fun answer(language: Language, state: AnkiScreenState) {
+        cache.last[language] = state
         connection.value = state
     }
 
-    /** Resets the page's settings; the setup is checked again, as no note type is chosen any more. */
+    /**
+     * Resets the page's shared settings and the shown language's; the setup is checked again, as no note type is
+     * chosen any more.
+     */
     fun resetSettings() {
+        val language = shown.language.value
         viewModelScope.launch {
-            withContext(NonCancellable) { settingsReset.reset(SettingsSection.ANKI) }
+            withContext(NonCancellable) { settingsReset.reset(SettingsSection.ANKI, language) }
             refresh()
         }
     }
@@ -146,8 +171,9 @@ class AnkiSettingsViewModel @Inject constructor(
     }
 
     fun selectDeck(deck: AnkiDeck) {
+        val language = shown.language.value
         viewModelScope.launch {
-            settingsRepository.update { it.copy(deckId = deck.id, deckName = deck.name) }
+            settingsRepository.update(language) { it.copy(deckId = deck.id, deckName = deck.name) }
             refresh()
         }
     }
@@ -157,6 +183,7 @@ class AnkiSettingsViewModel @Inject constructor(
      * note type used before gets its templates back, a new one gets suggested templates.
      */
     fun selectModel(model: AnkiModel) {
+        val language = shown.language.value
         viewModelScope.launch {
             val fields = anki.fields(model.id)
             // Every note type has a field; no fields means AnkiDroid did not answer, and switching now would drop the
@@ -165,7 +192,7 @@ class AnkiSettingsViewModel @Inject constructor(
                 refresh()
                 return@launch
             }
-            settingsRepository.update { settings ->
+            settingsRepository.update(language) { settings ->
                 val saved = settings.modelName
                     ?.let { settings.savedTemplates + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }
                     ?: settings.savedTemplates
@@ -189,13 +216,14 @@ class AnkiSettingsViewModel @Inject constructor(
      * get suggested templates.
      */
     fun updateFieldList() {
+        val language = shown.language.value
         viewModelScope.launch {
-            val current = settingsRepository.current()
+            val current = settingsRepository.current(language)
             val modelId = current.modelId ?: return@launch
             val fields = anki.fields(modelId)
             if (fields.isEmpty()) return@launch
             val suggested = FieldTemplate.guess(current.modelName.orEmpty(), fields)
-            settingsRepository.update { settings ->
+            settingsRepository.update(language) { settings ->
                 settings.copy(
                     fields = fields.associateWith { settings.fields[it] ?: suggested[it].orEmpty() },
                     overwriteModes = settings.overwriteModes.filterKeys { it in fields },
@@ -230,6 +258,7 @@ class AnkiSettingsViewModel @Inject constructor(
     fun setDuplicateBehavior(behavior: DuplicateBehavior) = updateSettings { it.copy(duplicateBehavior = behavior) }
 
     private fun updateSettings(transform: (AnkiSettings) -> AnkiSettings) {
-        viewModelScope.launch { settingsRepository.update(transform) }
+        val language = shown.language.value
+        viewModelScope.launch { settingsRepository.update(language, transform) }
     }
 }

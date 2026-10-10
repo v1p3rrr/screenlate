@@ -27,6 +27,7 @@ import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -63,7 +65,8 @@ internal fun noTermDictionaries(dictionaries: List<DictionaryEntity>, language: 
 
 /** Something that broke without the user changing Screenlate's settings. */
 sealed interface HomeProblem {
-    data class Anki(val problem: AnkiProblem) : HomeProblem
+    /** A broken note setup; [language] names whose setup while several languages are turned on. */
+    data class Anki(val problem: AnkiProblem, val language: Language? = null) : HomeProblem
 
     /** Downloaded or imported dictionaries whose files are gone, in one card. */
     data class MissingDictionaries(val dictionaries: List<MissingDictionary>) : HomeProblem
@@ -75,6 +78,7 @@ sealed interface HomeProblem {
     data class AudioSources(val failures: List<AudioSourceFailure>) : HomeProblem
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: DictionaryRepository,
@@ -88,11 +92,17 @@ class HomeViewModel @Inject constructor(
     private val overlaySettings: OverlaySettingsRepository,
     private val dictionaryReset: DictionaryReset,
     ankiSettings: AnkiSettingsRepository,
-    profiles: LanguageProfiles,
+    private val profiles: LanguageProfiles,
 ) : ViewModel() {
-    val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
+    /** The active language's note setup. */
+    val anki: StateFlow<AnkiSummary?> = profiles.active
+        .flatMapLatest { ankiSettings.settings(it) }
         .map(::ankiSummary)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ankiSettings.cachedSettings?.let(::ankiSummary))
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            ankiSettings.cachedSettings(profiles.cachedState?.active ?: Language.JAPANESE)?.let(::ankiSummary),
+        )
 
     val dictionaries: StateFlow<DictionarySummary> =
         combine(repository.dictionaries, imports.tasks) { dictionaries, tasks ->
@@ -151,7 +161,12 @@ class HomeViewModel @Inject constructor(
         refreshJob = viewModelScope.launch {
             mutableRemoveError.value = null
             val found = mutableListOf<HomeProblem>()
-            (notes.status() as? AnkiStatus.Broken)?.let { found += HomeProblem.Anki(it.problem) }
+            val languages = profiles.current()
+            for (language in languages.turnedOn) {
+                (notes.status(language) as? AnkiStatus.Broken)?.let {
+                    found += HomeProblem.Anki(it.problem, language.takeIf { languages.several })
+                }
+            }
             if (imports.tasks.first().all { it.finished }) downloading.clear()
             val missing = try {
                 repair.repair()
@@ -173,7 +188,8 @@ class HomeViewModel @Inject constructor(
                     missing.map { dictionary -> MissingDictionary(dictionary, entries.firstOrNull { it.matches(dictionary) }) },
                 )
             }
-            currentFailures(audio.recentFailures(), audioSettings.current().sources)
+            val sources = languages.turnedOn.flatMap { audioSettings.current(it).sources }.distinct()
+            currentFailures(audio.recentFailures(), sources)
                 .takeIf { it.isNotEmpty() }
                 ?.let { found += HomeProblem.AudioSources(it) }
             checked.value = found

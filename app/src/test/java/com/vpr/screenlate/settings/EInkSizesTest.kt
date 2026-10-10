@@ -20,7 +20,7 @@ class EInkSizesTest {
 
         suspend fun bubble() = overlay.settings.first().bubbleSizeDp
 
-        suspend fun font() = popup.appearance.first().fontSize
+        suspend fun font() = popup.fontSize()
     }
 
     /** Preferences in memory; a file-backed store is flaky on Windows when written in quick succession. */

@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Dosya bir yazı tipi için çok büyük (64 MB’den fazla).</string>
     <string name="popup_font_web_font">Bu bir web yazı tipi (.woff veya .woff2) ve eklenemez. Önce .ttf veya .otf biçimine dönüştürün.</string>
     <string name="popup_font_import_failed">Dosya eklenemedi. Yeniden deneyin veya telefonda boş alan olup olmadığını kontrol edin.</string>
+    <string name="popup_text_title">Metin boyutu ve kalınlığı</string>
+    <string name="popup_font_system_default">Telefonun yazı tipi</string>
+    <string name="popup_font_script_only_en">Yalnızca İngilizce metin için</string>
+    <string name="popup_font_script_only_hint_any">Diğer yazı sistemlerinin harfleri telefonun yazı tipinde kalır. İndirilen ve eklenen yazı tipleri için.</string>
+    <string name="popup_text_weight_info_languages">İnce metni daha okunur yapar. Bir dilde “Yalnızca … metin için” açıkken ya da telefonun yazı tipiyle yalnızca o dilin karakterleri kalınlaşır; kapalıyken tüm metin.\n\nKalınlık, yazı tipinin kendi ağırlıklarını kullanır. Tek ağırlığı olan bir yazı tipi normalden doğrudan kalına geçer, bu yüzden orta normal gibi görünür.\n\nHarf dış çizgisi her harfin çevresine ince bir kontur çizer: her yazı tipiyle çalışır ve kalınlığa eklenir.</string>
+    <string name="languages_settings_hint">Aşağıdaki ayarlar seçilen dile uygulanır; sayfanın geri kalanı tüm diller için geçerlidir.</string>
+    <string name="anki_languages_hint">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları her dil için ayrı ayarlanır. Notlardaki çeviri, sesin otomatik çalınması ve ses düzeyi ortaktır.</string>
+    <string name="yomitan_summary_language">Dil: %1$s</string>
+    <string name="reset_section_language">Tüm dillerin ortak ayarları ve sayfada gösterilen dilin ayarları sıfırlanır; diğer diller kendi ayarlarını korur.</string>
     <string name="popup_settings_title">Açılır pencere</string>
     <string name="popup_content_title">Açılır pencere öğeleri</string>
     <string name="popup_auto_hide_title">Otomatik gizleme</string>

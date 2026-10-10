@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.cached
+import com.vpr.screenlate.core.common.settings.preferenceKey
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +62,8 @@ data class AudioSource(val type: AudioSourceType, val url: String = "") {
 }
 
 /**
- * Audio sources in priority order, as in Yomitan.
+ * Audio sources in priority order, as in Yomitan. Each language has its own sources; [autoPlay] and [volume] are
+ * shared by every language.
  *
  * @property volume playback volume in percent.
  */
@@ -78,6 +80,10 @@ data class AudioSettings(
     }
 }
 
+/**
+ * Audio settings per language. Japanese keeps the keys it had before languages were added; another language keeps
+ * its sources under its own key, while [AudioSettings.autoPlay] and [AudioSettings.volume] stay under Japanese's.
+ */
 @Singleton
 class AudioSettingsRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
     private val json = Json {
@@ -85,22 +91,55 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
         coerceInputValues = true
     }
 
-    val settings: Flow<AudioSettings> = dataStore.data.map(::read)
+    fun settings(language: Language): Flow<AudioSettings> = dataStore.data.map { read(it, language) }
 
     /** The settings as last read, for a screen's first frame; null before the first read. */
-    val cachedSettings: AudioSettings? get() = dataStore.cached(::read)
+    fun cachedSettings(language: Language): AudioSettings? = dataStore.cached { read(it, language) }
 
-    suspend fun current(): AudioSettings = settings.first()
+    suspend fun current(language: Language): AudioSettings = settings(language).first()
+
+    /** The volume every language plays at, in percent. */
+    suspend fun volume(): Int = dataStore.data.map { read(it, Language.JAPANESE).volume }.first()
 
     /** Reads and writes in one step, so quick successive changes do not overwrite each other. */
-    suspend fun update(transform: (AudioSettings) -> AudioSettings) {
-        dataStore.edit {
-            it[KEY] = json.encodeToString(transform(read(it)))
-            it[CHOSEN] = true
+    suspend fun update(language: Language, transform: (AudioSettings) -> AudioSettings) {
+        dataStore.edit { prefs ->
+            val updated = transform(read(prefs, language))
+            if (language == Language.JAPANESE) {
+                prefs[KEY] = json.encodeToString(updated)
+                prefs[CHOSEN] = true
+            } else {
+                val shared = readOwn(prefs, Language.JAPANESE)
+                if (updated.autoPlay != shared.autoPlay || updated.volume != shared.volume) {
+                    prefs[KEY] = json.encodeToString(shared.copy(autoPlay = updated.autoPlay, volume = updated.volume))
+                }
+                prefs[stringPreferencesKey(language.preferenceKey(KEY.name))] =
+                    json.encodeToString(AudioSettings(sources = updated.sources))
+            }
         }
     }
 
-    private fun read(prefs: Preferences): AudioSettings {
+    /** Puts [AudioSettings.autoPlay] and [AudioSettings.volume] back to their defaults; every language's sources stay. */
+    suspend fun resetShared() {
+        dataStore.edit { prefs ->
+            val stored = prefs[KEY]?.let(::decode) ?: return@edit
+            val defaults = AudioSettings()
+            prefs[KEY] = json.encodeToString(stored.copy(autoPlay = defaults.autoPlay, volume = defaults.volume))
+        }
+    }
+
+    private fun read(prefs: Preferences, language: Language): AudioSettings {
+        val shared = readOwn(prefs, Language.JAPANESE)
+        if (language == Language.JAPANESE) return shared
+        return readOwn(prefs, language).copy(autoPlay = shared.autoPlay, volume = shared.volume)
+    }
+
+    /** What [language]'s own key holds; for languages other than Japanese only the sources count. */
+    private fun readOwn(prefs: Preferences, language: Language): AudioSettings {
+        if (language != Language.JAPANESE) {
+            return prefs[stringPreferencesKey(language.preferenceKey(KEY.name))]?.let(::decode)
+                ?: AudioSettings(sources = AudioSettings.defaultSources(language))
+        }
         val stored = prefs[KEY]?.let(::decode) ?: return AudioSettings()
         // Versions before the full source set stored their only default; that was never the user's choice.
         return if (prefs[CHOSEN] != true && stored.sources == LEGACY_DEFAULT) stored.copy(sources = AudioSettings().sources) else stored

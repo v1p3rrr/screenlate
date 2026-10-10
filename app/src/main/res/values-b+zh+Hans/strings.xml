@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">文件太大，不像是字体（超过 64 MB）。</string>
     <string name="popup_font_web_font">这是网页字体（.woff 或 .woff2），无法添加。请先将其转换为 .ttf 或 .otf。</string>
     <string name="popup_font_import_failed">无法添加此文件。请重试，或检查手机是否有剩余空间。</string>
+    <string name="popup_text_title">文字大小和粗细</string>
+    <string name="popup_font_system_default">手机自带的字体</string>
+    <string name="popup_font_script_only_en">仅用于英文文字</string>
+    <string name="popup_font_script_only_hint_any">其他书写系统的文字仍使用手机字体。适用于下载或添加的字体。</string>
+    <string name="popup_text_weight_info_languages">让纤细的文字更易读。某种语言开启“仅用于…文字”或使用手机字体时，只有该语言的字符变粗；关闭时，所有文字都会变粗。\n\n粗细使用字体自带的字重。只有一种字重的字体会从常规直接变为粗体，因此“中等”看起来与常规相同。\n\n文字描边会在每个字周围画一圈细轮廓：适用于任何字体，并叠加在粗细之上。</string>
+    <string name="languages_settings_hint">下面的设置适用于所选语言；页面上的其他设置适用于所有语言。</string>
+    <string name="anki_languages_hint">牌组、笔记类型、字段模板、标签、重复处理方式和音频来源按语言分别设置。笔记中的译文、自动播放音频和音量为所有语言共用。</string>
+    <string name="yomitan_summary_language">语言：%1$s</string>
+    <string name="reset_section_language">所有语言共用的设置和页面上显示的语言的设置将被重置；其他语言的设置保持不变。</string>
     <string name="popup_settings_title">弹窗</string>
     <string name="popup_content_title">弹窗元素</string>
     <string name="popup_auto_hide_title">自动隐藏</string>

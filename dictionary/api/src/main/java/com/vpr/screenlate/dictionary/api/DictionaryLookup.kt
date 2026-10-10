@@ -47,7 +47,7 @@ class DictionaryLookup @Inject constructor(
         extraEntries: Boolean = true,
     ): List<LookupResult> {
         if (text.isBlank()) return emptyList()
-        val settings = lookupSettings.current()
+        val settings = lookupSettings.current(language)
         val support = language.support
         val start = support.lookupStart(text, latinAsNative = settings.romaji) ?: return emptyList()
         val prepared = repository.prepareLookup(language)
@@ -103,10 +103,10 @@ class DictionaryLookup @Inject constructor(
         }
     }
 
-    /** The lookup settings in effect. */
-    suspend fun settings(): LookupSettings = lookupSettings.current()
+    /** The lookup settings in effect for [language]. */
+    suspend fun settings(language: Language): LookupSettings = lookupSettings.current(language)
 
-    val settingsUpdates: Flow<LookupSettings> get() = lookupSettings.settings
+    fun settingsUpdates(language: Language): Flow<LookupSettings> = lookupSettings.settings(language)
 
     /** The same list until the dictionaries change, so callers can skip work for an unchanged one. */
     suspend fun styles(language: Language): List<DictionaryStyle> {

@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Le fichier est trop gros pour une police (plus de 64 Mo).</string>
     <string name="popup_font_web_font">C’est une police web (.woff ou .woff2), qui ne peut pas être ajoutée. Convertissez-la d’abord en .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Impossible d’ajouter le fichier. Réessayez, ou vérifiez qu’il reste de l’espace sur le téléphone.</string>
+    <string name="popup_text_title">Taille et graisse du texte</string>
+    <string name="popup_font_system_default">Police du téléphone</string>
+    <string name="popup_font_script_only_en">Seulement pour le texte anglais</string>
+    <string name="popup_font_script_only_hint_any">Les lettres des autres écritures gardent la police du téléphone. Pour les polices téléchargées et ajoutées.</string>
+    <string name="popup_text_weight_info_languages">Rend un texte fin plus lisible. Avec « Seulement pour le texte … » activé pour une langue, ou avec la police du téléphone, seuls les caractères de cette langue s’épaississent ; désactivé, tout le texte.\n\nLa graisse utilise les graisses propres à la police. Une police qui n’en a qu’une passe directement de normale à grasse, donc moyenne ressemble à normale.\n\nL’épaisseur des lettres trace un fin contour autour de chaque lettre : elle fonctionne avec toutes les polices et s’ajoute à la graisse.</string>
+    <string name="languages_settings_hint">Les réglages ci-dessous concernent la langue choisie ; le reste de la page s’applique à toutes les langues.</string>
+    <string name="anki_languages_hint">Le paquet, le type de note, les modèles de champs, les étiquettes, la gestion des doublons et les sources audio se règlent pour chaque langue. La traduction dans les notes, la lecture automatique et le volume sont communs.</string>
+    <string name="yomitan_summary_language">Langue : %1$s</string>
+    <string name="reset_section_language">Les réglages communs à toutes les langues et ceux de la langue affichée sur la page sont réinitialisés ; les autres langues gardent les leurs.</string>
     <string name="popup_settings_title">Fenêtre contextuelle</string>
     <string name="popup_content_title">Éléments de la fenêtre contextuelle</string>
     <string name="popup_auto_hide_title">Masquage automatique</string>

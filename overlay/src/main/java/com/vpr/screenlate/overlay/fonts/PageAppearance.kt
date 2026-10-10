@@ -27,7 +27,7 @@ class PageAppearance @Inject constructor(
         val support = language.support
         // The phone's font files are read once, off the main thread.
         val weights = flow { emit(SystemFontFiles.weights(support)) }.flowOn(Dispatchers.IO)
-        return combine(settings.appearance, fonts.installed, weights) { appearance, installed, systemWeights ->
+        return combine(settings.appearance(language), fonts.installed, weights) { appearance, installed, systemWeights ->
             build(support, appearance, installed, systemWeights)
         }.distinctUntilChanged()
     }

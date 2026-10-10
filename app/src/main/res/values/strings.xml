@@ -329,6 +329,15 @@
     <string name="popup_font_too_large">The file is too large for a font (over 64 MB).</string>
     <string name="popup_font_web_font">This is a web font (.woff or .woff2), which cannot be added. Convert it to .ttf or .otf first.</string>
     <string name="popup_font_import_failed">The file could not be added. Try again, or check that the phone has free space.</string>
+    <string name="popup_text_title">Text size and weight</string>
+    <string name="popup_font_system_default">Phone\'s font</string>
+    <string name="popup_font_script_only_en">Only for English text</string>
+    <string name="popup_font_script_only_hint_any">Letters of other scripts keep the phone\'s font. For downloaded and added fonts.</string>
+    <string name="popup_text_weight_info_languages">Makes thin text easier to read. With a language\'s “Only for … text” switch on, or with the phone\'s font, only that language\'s letters get heavier; with it off, all text does.\n\nThe weight uses the font\'s own weights. A font with only one weight goes from normal straight to bold, so medium looks like normal.\n\nLetter thickness draws a thin outline around each letter: it works with any font and adds to the weight.</string>
+    <string name="languages_settings_hint">The settings below apply to the chosen language; the rest of the page applies to all languages.</string>
+    <string name="anki_languages_hint">The deck, note type, field templates, tags, duplicate handling and audio sources are set for each language. Translation in notes, audio auto play and volume are shared.</string>
+    <string name="yomitan_summary_language">Language: %1$s</string>
+    <string name="reset_section_language">Settings shared by all languages and those of the language shown on the page are reset; other languages keep theirs.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_content_title">Popup elements</string>
     <string name="popup_auto_hide_title">Auto-hide</string>

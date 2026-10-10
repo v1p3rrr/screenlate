@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Die Datei ist zu groß für eine Schrift (über 64 MB).</string>
     <string name="popup_font_web_font">Das ist eine Webschrift (.woff oder .woff2), die nicht hinzugefügt werden kann. Wandle sie zuerst in .ttf oder .otf um.</string>
     <string name="popup_font_import_failed">Die Datei konnte nicht hinzugefügt werden. Versuche es erneut oder prüfe, ob auf dem Telefon genug Speicher frei ist.</string>
+    <string name="popup_text_title">Textgröße und -stärke</string>
+    <string name="popup_font_system_default">Schrift des Telefons</string>
+    <string name="popup_font_script_only_en">Nur für englischen Text</string>
+    <string name="popup_font_script_only_hint_any">Buchstaben anderer Schriften behalten die Schrift des Telefons. Für heruntergeladene und hinzugefügte Schriften.</string>
+    <string name="popup_text_weight_info_languages">Macht dünne Schrift besser lesbar. Ist bei einer Sprache „Nur für … Text“ an oder die Schrift des Telefons gewählt, werden nur die Zeichen dieser Sprache kräftiger; ist es aus, der ganze Text.\n\nDie Schriftstärke nutzt die Schnitte der Schrift selbst. Eine Schrift mit nur einem Schnitt springt von normal direkt zu fett, daher sieht mittel wie normal aus.\n\nDie Buchstabendicke zieht eine feine Kontur um jeden Buchstaben: Sie wirkt mit jeder Schrift und kommt zur Schriftstärke hinzu.</string>
+    <string name="languages_settings_hint">Die Einstellungen unten gelten für die gewählte Sprache; der Rest der Seite gilt für alle Sprachen.</string>
+    <string name="anki_languages_hint">Stapel, Notiztyp, Feldvorlagen, Schlagwörter, der Umgang mit Duplikaten und die Audioquellen werden für jede Sprache festgelegt. Übersetzung in Notizen, automatische Audiowiedergabe und Lautstärke gelten für alle.</string>
+    <string name="yomitan_summary_language">Sprache: %1$s</string>
+    <string name="reset_section_language">Zurückgesetzt werden die Einstellungen, die alle Sprachen teilen, und die der auf der Seite gezeigten Sprache; andere Sprachen behalten ihre.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_content_title">Popup-Elemente</string>
     <string name="popup_auto_hide_title">Automatisch ausblenden</string>

@@ -9,6 +9,7 @@ import com.ichi2.anki.api.AddContentApi
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
+import com.vpr.screenlate.core.common.Language
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.runBlocking
@@ -50,7 +51,7 @@ class AnkiDroidRoundTripTest {
             .getOrNull()
         assumeTrue("AnkiDroid has no collection yet", modelId != null && deckId != null)
         runBlocking {
-            settings.update {
+            settings.update(Language.JAPANESE) {
                 it.copy(
                     deckId = deckId!!,
                     deckName = NAME,
@@ -72,26 +73,26 @@ class AnkiDroidRoundTripTest {
 
     @Test
     fun addsFindsAndUpdatesNotes() = runBlocking<Unit> {
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Ready)
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Ready)
         val values = mapOf("expression" to word, "glossary" to "first")
 
-        val added = notes.add(NoteRequest(values)) as AddResult.Added
-        assertThat(notes.duplicateIds(values)).containsExactly(added.noteId)
-        assertThat(notes.add(NoteRequest(values))).isEqualTo(AddResult.Duplicate(listOf(added.noteId)))
+        val added = notes.add(Language.JAPANESE, NoteRequest(values)) as AddResult.Added
+        assertThat(notes.duplicateIds(Language.JAPANESE, values)).containsExactly(added.noteId)
+        assertThat(notes.add(Language.JAPANESE, NoteRequest(values))).isEqualTo(AddResult.Duplicate(listOf(added.noteId)))
 
-        settings.update { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE) }
-        val updated = notes.add(NoteRequest(values + ("glossary" to "second")))
+        settings.update(Language.JAPANESE) { it.copy(duplicateBehavior = DuplicateBehavior.OVERWRITE) }
+        val updated = notes.add(Language.JAPANESE, NoteRequest(values + ("glossary" to "second")))
         assertThat(updated).isEqualTo(AddResult.Updated(added.noteId))
 
-        val forced = notes.add(NoteRequest(values), force = true) as AddResult.Added
+        val forced = notes.add(Language.JAPANESE, NoteRequest(values), force = true) as AddResult.Added
         assertThat(forced.noteId).isNotEqualTo(added.noteId)
-        assertThat(notes.duplicateIds(values)).containsExactly(added.noteId, forced.noteId)
+        assertThat(notes.duplicateIds(Language.JAPANESE, values)).containsExactly(added.noteId, forced.noteId)
     }
 
     @Test
     fun reportsAMissingNoteType() = runBlocking<Unit> {
-        settings.update { it.copy(modelId = Long.MAX_VALUE - 1) }
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.MODEL_MISSING))
+        settings.update(Language.JAPANESE) { it.copy(modelId = Long.MAX_VALUE - 1) }
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.MODEL_MISSING))
     }
 
     private companion object {

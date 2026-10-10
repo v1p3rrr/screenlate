@@ -81,12 +81,12 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
         prefs[ACTIVE] = (state.active.takeIf { it in state.turnedOn } ?: state.turnedOn.first()).code
     }
 
-    internal companion object {
+    companion object {
         val TURNED_ON = stringPreferencesKey("languages_turned_on")
         val ACTIVE = stringPreferencesKey("language_active")
 
         /** Codes this version does not know (written by a newer one) are skipped; nothing usable means the default. */
-        fun read(prefs: Preferences): LanguageProfilesState {
+        internal fun read(prefs: Preferences): LanguageProfilesState {
             val turnedOn = prefs[TURNED_ON]?.split(',')?.mapNotNull { Language.of(it.trim()) }?.distinct().orEmpty()
             if (turnedOn.isEmpty()) return LanguageProfilesState.DEFAULT
             val active = Language.of(prefs[ACTIVE])?.takeIf { it in turnedOn } ?: turnedOn.first()

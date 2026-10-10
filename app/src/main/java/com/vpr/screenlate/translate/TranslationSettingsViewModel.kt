@@ -3,6 +3,7 @@ package com.vpr.screenlate.translate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.SentenceTranslator
 import com.vpr.screenlate.core.translate.ServiceChoice
 import com.vpr.screenlate.core.translate.ServiceTest
@@ -33,7 +34,12 @@ class TranslationSettingsViewModel @Inject constructor(
     private val repository: TranslationSettingsRepository,
     private val translator: SentenceTranslator,
     private val settingsReset: SettingsReset,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
+    /** The language translated from: the active one. */
+    val language: StateFlow<Language> =
+        profiles.active.stateIn(viewModelScope, SharingStarted.Eagerly, profiles.cachedState?.active ?: Language.JAPANESE)
+
     val settings: StateFlow<TranslationSettings?> =
         repository.settings.stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedSettings)
 
@@ -45,7 +51,7 @@ class TranslationSettingsViewModel @Inject constructor(
     private var testJob: Job? = null
 
     /** The language "the interface language" stands for; read each time, as the app's language may change. */
-    fun interfaceLanguage(): TranslationLanguage = translator.interfaceTarget(LANGUAGE)
+    fun interfaceLanguage(): TranslationLanguage = translator.interfaceTarget(language.value)
 
     fun setButton(on: Boolean) = launch { repository.setButton(on) }
 
@@ -64,12 +70,13 @@ class TranslationSettingsViewModel @Inject constructor(
     /** Asks every service that is on at once; each row fills in when its answer comes. */
     fun runTest(text: String) {
         testJob?.cancel()
+        val source = language.value
         testJob = viewModelScope.launch {
             val services = repository.current().enabledServices
             mutableTest.value = services.map { TestRow(it) }
             services.forEach { service ->
                 launch {
-                    val result = translator.test(service, text, LANGUAGE)
+                    val result = translator.test(service, text, source)
                     mutableTest.update { rows -> rows.map { if (it.service == service) it.copy(result = result) else it } }
                 }
             }
@@ -84,10 +91,5 @@ class TranslationSettingsViewModel @Inject constructor(
 
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
-    }
-
-    companion object {
-        /** The language translated from; the only one the app reads so far. */
-        val LANGUAGE = Language.JAPANESE
     }
 }

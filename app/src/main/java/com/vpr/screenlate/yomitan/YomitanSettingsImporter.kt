@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
@@ -22,7 +23,9 @@ import javax.inject.Inject
 enum class YomitanSection { DICTIONARIES, ANKI, AUDIO, LOOKUP, APPEARANCE }
 
 /** What an import applied and what it had to skip, per section. */
+/** @property language the language whose settings were changed, named when several are turned on or it is not the active one. */
 data class ImportSummary(
+    val language: Language? = null,
     val dictionaries: DictionaryOutcome? = null,
     val anki: AnkiOutcome? = null,
     val audio: AudioOutcome? = null,
@@ -82,12 +85,22 @@ class YomitanSettingsImporter @Inject constructor(
     private val fonts: PopupFonts,
     private val profiles: LanguageProfiles,
 ) {
-    suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary = ImportSummary(
-        dictionaries = if (YomitanSection.DICTIONARIES in sections) applyDictionaries(profile) else null,
-        anki = if (YomitanSection.ANKI in sections) profile.anki?.let { applyAnki(it) } else null,
-        audio = if (YomitanSection.AUDIO in sections) profile.audio?.let { applyAudio(it) } else null,
-        lookup = if (YomitanSection.LOOKUP in sections) applyLookup(profile) else null,
-        appearance = if (YomitanSection.APPEARANCE in sections) applyAppearance(profile) else null,
+    /**
+     * Applies [sections] of [profile] to the settings of the profile's language; a profile without one, or with a
+     * language Screenlate does not support, goes to the active language.
+     */
+    suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary {
+        val state = profiles.current()
+        val language = Language.of(profile.language) ?: state.active
+        return apply(profile, sections, language).copy(language = language.takeIf { state.several || it != state.active })
+    }
+
+    private suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>, language: Language) = ImportSummary(
+        dictionaries = if (YomitanSection.DICTIONARIES in sections) applyDictionaries(profile, language) else null,
+        anki = if (YomitanSection.ANKI in sections) profile.anki?.let { applyAnki(it, language) } else null,
+        audio = if (YomitanSection.AUDIO in sections) profile.audio?.let { applyAudio(it, language) } else null,
+        lookup = if (YomitanSection.LOOKUP in sections) applyLookup(profile, language) else null,
+        appearance = if (YomitanSection.APPEARANCE in sections) applyAppearance(profile, language) else null,
     ).also { summary ->
         Log.i(
             TAG,
@@ -96,21 +109,24 @@ class YomitanSettingsImporter @Inject constructor(
         )
     }
 
-    /** Text size and custom CSS; an empty custom CSS in the profile keeps the current one. */
-    private suspend fun applyAppearance(profile: YomitanSettings.Profile): AppearanceOutcome {
+    /** Text size and [language]'s custom CSS; an empty custom CSS in the profile keeps the current one. */
+    private suspend fun applyAppearance(profile: YomitanSettings.Profile, language: Language): AppearanceOutcome {
         profile.fontSize?.let { appearance.setFontSize(it) }
         val css = profile.customPopupCss
-        css?.let { appearance.setCustomCss(it) }
+        css?.let { appearance.setCustomCss(language, it) }
         return AppearanceOutcome(
             fontSize = profile.fontSize?.coerceIn(PopupAppearance.MIN_FONT_SIZE, PopupAppearance.MAX_FONT_SIZE),
             cssLines = css?.lines()?.count { it.isNotBlank() } ?: 0,
-            cssIssues = css?.let { PopupAppearanceViewModel.cssIssues(it, fonts.installed.value).size } ?: 0,
+            cssIssues = css?.let { PopupAppearanceViewModel.cssIssues(it, language, fonts.installed.value).size } ?: 0,
             fontFamily = profile.fontFamily,
         )
     }
 
-    /** Yomitan's order first for the dictionaries installed here, the others after them in their current order. */
-    private suspend fun applyDictionaries(profile: YomitanSettings.Profile): DictionaryOutcome {
+    /**
+     * Yomitan's order first for the dictionaries installed here, the others after them in their current order; the
+     * sort dictionary becomes [language]'s.
+     */
+    private suspend fun applyDictionaries(profile: YomitanSettings.Profile, language: Language): DictionaryOutcome {
         val installed = dictionaries.getAll().sortedBy { it.priority }
         val byKey = installed.groupBy { dictionaryKey(it.title) }
         val matched = profile.dictionaries.mapNotNull { preference ->
@@ -130,7 +146,7 @@ class YomitanSettingsImporter @Inject constructor(
             installed.filter { it.frequencyCount > 0 }
                 .firstOrNull { it.title == name || dictionaryKey(it.title) == dictionaryKey(name) }
         }
-        sort?.let { dictionaries.setSortDictionary(it.id) }
+        sort?.let { dictionaries.setSortDictionary(language, it.id) }
         return DictionaryOutcome(
             matched = matched.size,
             missing = missing,
@@ -140,13 +156,13 @@ class YomitanSettingsImporter @Inject constructor(
         )
     }
 
-    private suspend fun applyAnki(anki: YomitanSettings.Anki): AnkiOutcome {
+    private suspend fun applyAnki(anki: YomitanSettings.Anki, language: Language): AnkiOutcome {
         val main = anki.main
         val available = ankiDroid.availability() == AnkiAvailability.READY
         val deck = if (available) ankiDroid.decks().firstOrNull { it.name == main?.deck } else null
         val model = if (available) ankiDroid.models().firstOrNull { it.name == main?.model } else null
         val modelFields = model?.let { ankiDroid.fields(it.id) }.orEmpty()
-        ankiSettings.update { settings ->
+        ankiSettings.update(language) { settings ->
             var saved = settings.savedTemplates
             settings.modelName?.let { saved = saved + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }
             anki.others.forEach { format ->
@@ -188,8 +204,8 @@ class YomitanSettingsImporter @Inject constructor(
         )
     }
 
-    private suspend fun applyAudio(audio: YomitanSettings.Audio): AudioOutcome {
-        audioSettings.update { settings ->
+    private suspend fun applyAudio(audio: YomitanSettings.Audio, language: Language): AudioOutcome {
+        audioSettings.update(language) { settings ->
             settings.copy(
                 sources = if (audio.enabled) audio.sources else emptyList(),
                 volume = audio.volume?.coerceIn(0, 100) ?: settings.volume,
@@ -199,8 +215,8 @@ class YomitanSettingsImporter @Inject constructor(
         return AudioOutcome(audio.sources.size, audio.unknown, disabledInYomitan = !audio.enabled)
     }
 
-    private suspend fun applyLookup(profile: YomitanSettings.Profile): LookupOutcome {
-        profile.scanLength?.let { lookupSettings.setScanLength(it) }
+    private suspend fun applyLookup(profile: YomitanSettings.Profile, language: Language): LookupOutcome {
+        profile.scanLength?.let { lookupSettings.setScanLength(language, it) }
         profile.maxResults?.let { lookupSettings.setMaxResults(it.coerceAtLeast(1)) }
         return LookupOutcome(
             scanLength = profile.scanLength?.coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),

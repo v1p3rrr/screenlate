@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrUpdate
@@ -49,6 +49,7 @@ data class OcrTestState(
 class OcrTestViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val ocr: CompositeOcr,
+    private val profiles: LanguageProfiles,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OcrTestState())
@@ -68,7 +69,7 @@ class OcrTestViewModel @Inject constructor(
             }
             _state.value = OcrTestState(image = image, running = true)
             val start = SystemClock.elapsedRealtime()
-            ocr.recognize(image, Language.JAPANESE)
+            ocr.recognize(image, profiles.current().active)
                 .catch { error -> _state.update { it.copy(running = false, error = error.toString()) } }
                 .collect { update ->
                     val run = OcrRun(

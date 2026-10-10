@@ -26,7 +26,7 @@ class EInkSizes @Inject constructor(
     suspend fun enlarge() {
         val enlargement = EInkEnlargement.of(
             bubbleNow = overlay.settings.first().bubbleSizeDp,
-            fontNow = popup.appearance.first().fontSize,
+            fontNow = popup.fontSize(),
             minBubble = BUBBLE_DP,
             fontStep = FONT_STEP,
             maxFont = PopupAppearance.MAX_FONT_SIZE,
@@ -40,7 +40,7 @@ class EInkSizes @Inject constructor(
     /** Brings back the sizes [enlarge] changed, unless they were changed since, and forgets the change. */
     suspend fun restore() {
         val enlargement = settings.eInkEnlargement.first() ?: return
-        val restore = enlargement.restore(overlay.settings.first().bubbleSizeDp, popup.appearance.first().fontSize)
+        val restore = enlargement.restore(overlay.settings.first().bubbleSizeDp, popup.fontSize())
         restore.bubble?.let { overlay.setBubbleSize(it) }
         restore.font?.let { popup.setFontSize(it) }
         settings.setEInkEnlargement(null)

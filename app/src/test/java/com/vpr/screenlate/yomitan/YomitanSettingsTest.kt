@@ -107,6 +107,12 @@ class YomitanSettingsTest {
     }
 
     @Test
+    fun `reads the profile's language, absent in older exports`() {
+        val profiles = """{"options": {"profiles": [{"options": {"general": {"language": "en"}}}, {"options": {"general": {}}}]}}"""
+        assertThat(YomitanSettings.parse(profiles).profiles.map { it.language }).containsExactly("en", null).inOrder()
+    }
+
+    @Test
     fun `the old name of the dictionary search source is read as that source`() {
         val old = """{"options": {"profiles": [{"options": {"audio": {"sources": [{"type": "jpod101-alternate"}]}}}]}}"""
         assertThat(YomitanSettings.parse(old).profiles.single().audio!!.sources)

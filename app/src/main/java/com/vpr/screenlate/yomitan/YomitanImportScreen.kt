@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
@@ -202,6 +203,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
 private fun Summary(done: SettingsImportState.Done) {
     val summary = done.summary
     Text(stringResource(R.string.yomitan_import_done, done.profile), style = MaterialTheme.typography.titleSmall)
+    summary.language?.let { SummaryLine(stringResource(R.string.yomitan_summary_language, it.displayName())) }
     summary.dictionaries?.let { outcome ->
         SummaryLine(stringResource(R.string.yomitan_summary_dictionaries, outcome.matched))
         if (outcome.missing.isNotEmpty()) {

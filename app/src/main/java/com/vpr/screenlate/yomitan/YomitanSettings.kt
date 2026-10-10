@@ -31,6 +31,8 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
         val fontSize: Int?,
         val fontFamily: String?,
         val customPopupCss: String?,
+        /** Yomitan's language code of the profile (`general.language`); null in exports of older versions. */
+        val language: String? = null,
     )
 
     data class Dictionary(val name: String, val enabled: Boolean)
@@ -100,6 +102,7 @@ data class YomitanSettings(val profiles: List<Profile>, val currentProfile: Int)
                 fontSize = general?.int("fontSize"),
                 fontFamily = general?.string("fontFamily")?.trim()?.takeIf { it.isNotEmpty() },
                 customPopupCss = general?.string("customPopupCss")?.takeIf { it.isNotBlank() },
+                language = general?.string("language")?.trim()?.takeIf { it.isNotEmpty() },
             )
         }
 

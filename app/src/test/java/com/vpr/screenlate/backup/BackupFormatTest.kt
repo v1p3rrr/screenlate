@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import org.junit.Test
@@ -31,6 +32,32 @@ class BackupFormatTest {
             "bundled_dictionaries_installed", "background_tip_seen", "notification_permission_asked",
             "installed_languages_filled", "e_ink_bubble_before", "e_ink_font_after", "accessibility_agreed",
         ).forEach { assertThat(BackupPreferences.sectionOf(it)).isNull() }
+    }
+
+    @Test
+    fun `each language's settings go with their page and the turned-on languages with the general ones`() {
+        assertThat(BackupPreferences.sectionOf("languages_turned_on")).isEqualTo(BackupSection.GENERAL)
+        assertThat(BackupPreferences.sectionOf("language_active")).isEqualTo(BackupSection.GENERAL)
+        assertThat(BackupPreferences.sectionOf("anki_settings_en")).isEqualTo(BackupSection.ANKI)
+        assertThat(BackupPreferences.sectionOf("audio_settings_en")).isEqualTo(BackupSection.AUDIO)
+        assertThat(BackupPreferences.sectionOf("lookup_scan_length_en")).isEqualTo(BackupSection.LOOKUP)
+        assertThat(BackupPreferences.sectionOf("popup_custom_css_en")).isEqualTo(BackupSection.POPUP)
+        // A language this version does not know, and the sort dictionaries, which go by title with the list.
+        assertThat(BackupPreferences.sectionOf("anki_settings_xx")).isNull()
+        assertThat(BackupPreferences.sectionOf("sort_dictionary_id_en")).isNull()
+    }
+
+    @Test
+    fun `an older backup's sort dictionary is Japanese's`() {
+        val older = BackupDictionaryList(dictionaries = emptyList(), sortDictionary = "JPDB")
+        assertThat(older.sortDictionary(Language.JAPANESE)).isEqualTo("JPDB")
+        assertThat(older.sortDictionary(Language.ENGLISH)).isNull()
+        val newer = BackupDictionaryList(
+            dictionaries = emptyList(),
+            sortDictionary = "JPDB",
+            sortDictionaries = mapOf("ja" to "JPDB", "en" to "Wordfreq"),
+        )
+        assertThat(newer.sortDictionary(Language.ENGLISH)).isEqualTo("Wordfreq")
     }
 
     @Test

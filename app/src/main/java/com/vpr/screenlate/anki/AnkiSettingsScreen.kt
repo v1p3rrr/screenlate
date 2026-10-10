@@ -52,6 +52,7 @@ import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.BackButton
@@ -70,6 +71,8 @@ import com.vpr.screenlate.ui.theme.AccentDefaults
 @Composable
 fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
+    val shown by viewModel.shown.language.collectAsStateWithLifecycle()
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { viewModel.refresh() }
     val focusManager = LocalFocusManager.current
     LifecycleResumeEffect(Unit) {
@@ -84,7 +87,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 navigationIcon = {
                     BackButton(onBack)
                 },
-                actions = { SectionResetButton(SettingsSection.ANKI, onReset = viewModel::resetSettings) },
+                actions = { SectionResetButton(SettingsSection.ANKI, shown, profiles.several, onReset = viewModel::resetSettings) },
             )
         },
     ) { padding ->
@@ -96,6 +99,10 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Nearly the whole page belongs to a language, so the language's card only switches it.
+            if (profiles.several) {
+                LanguageCard(profiles, shown, viewModel::show, hint = stringResource(R.string.anki_languages_hint))
+            }
             when (state.availability) {
                 AnkiAvailability.NOT_INSTALLED -> SectionCard(title = stringResource(R.string.anki_connection)) {
                     Text(stringResource(R.string.anki_not_installed))
@@ -117,7 +124,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 )
             }
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            if (state.availability != null) AudioSettingsSection()
+            if (state.availability != null) AudioSettingsSection(shown)
         }
     }
 }

@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">檔案太大，不像是字型（超過 64 MB）。</string>
     <string name="popup_font_web_font">這是網頁字型（.woff 或 .woff2），無法新增。請先將其轉換為 .ttf 或 .otf。</string>
     <string name="popup_font_import_failed">無法新增此檔案。請重試，或檢查手機是否有剩餘空間。</string>
+    <string name="popup_text_title">文字大小和粗細</string>
+    <string name="popup_font_system_default">手機自帶的字型</string>
+    <string name="popup_font_script_only_en">僅用於英文文字</string>
+    <string name="popup_font_script_only_hint_any">其他書寫系統的文字仍使用手機字型。適用於下載或新增的字型。</string>
+    <string name="popup_text_weight_info_languages">讓纖細的文字更易讀。某種語言開啟「僅用於…文字」或使用手機字型時，只有該語言的字元變粗；關閉時，所有文字都會變粗。\n\n粗細使用字型本身的字重。只有一種字重的字型會從標準直接變為粗體，因此「中等」看起來與標準相同。\n\n文字描邊會在每個字周圍畫一圈細輪廓：適用於任何字型，並疊加在粗細之上。</string>
+    <string name="languages_settings_hint">下面的設定適用於所選語言；頁面上的其他設定適用於所有語言。</string>
+    <string name="anki_languages_hint">牌組、筆記類型、欄位範本、標籤、重複處理方式和音訊來源按語言分別設定。筆記中的譯文、自動播放音訊和音量為所有語言共用。</string>
+    <string name="yomitan_summary_language">語言：%1$s</string>
+    <string name="reset_section_language">所有語言共用的設定和頁面上顯示的語言的設定將被重設；其他語言的設定保持不變。</string>
     <string name="popup_settings_title">彈出視窗</string>
     <string name="popup_content_title">彈出視窗元素</string>
     <string name="popup_auto_hide_title">自動隱藏</string>

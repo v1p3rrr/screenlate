@@ -242,6 +242,7 @@ private fun ProblemsCard(
                 Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     when (problem) {
                         is HomeProblem.Anki -> {
+                            problem.language?.let { Text(it.displayName(), style = MaterialTheme.typography.titleSmall) }
                             Text(stringResource(problem.problem.message))
                             TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_anki)) }
                         }

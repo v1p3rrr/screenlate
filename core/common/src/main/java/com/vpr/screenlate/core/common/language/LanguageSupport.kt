@@ -57,6 +57,9 @@ interface LanguageSupport {
     /** A short sentence for the translation services' test. */
     val translationSample: String
 
+    /** A common word for the audio sources' test. */
+    val audioTestWord: String
+
     /**
      * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on), and which
      * matches count; null when there is nothing to look up.
@@ -79,6 +82,12 @@ interface LanguageSupport {
 
     /** Characters of a matched word that get entries of their own below the results (kanji for Japanese). */
     fun singleCharacterEntries(matched: String): List<String>
+
+    /** Whether [singleCharacterEntries] gives any, which the lookup settings offer to turn off. */
+    val hasCharacterEntries: Boolean get() = false
+
+    /** Whether [fromLatin] converts anything, which the lookup settings offer to turn on (romaji for Japanese). */
+    val convertsLatin: Boolean get() = false
 
     /**
      * The first character of [text] when kanji dictionaries describe such characters (a kanji for Japanese), for the

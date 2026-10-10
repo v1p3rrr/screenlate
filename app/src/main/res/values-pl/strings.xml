@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Plik jest za duży jak na czcionkę (ponad 64 MB).</string>
     <string name="popup_font_web_font">To czcionka internetowa (.woff lub .woff2), której nie można dodać. Najpierw przekonwertuj ją na .ttf lub .otf.</string>
     <string name="popup_font_import_failed">Nie udało się dodać pliku. Spróbuj ponownie lub sprawdź, czy w telefonie jest wolne miejsce.</string>
+    <string name="popup_text_title">Rozmiar i grubość tekstu</string>
+    <string name="popup_font_system_default">Czcionka telefonu</string>
+    <string name="popup_font_script_only_en">Tylko dla tekstu angielskiego</string>
+    <string name="popup_font_script_only_hint_any">Litery innych pism zachowują czcionkę telefonu. Dotyczy pobranych i dodanych czcionek.</string>
+    <string name="popup_text_weight_info_languages">Ułatwia czytanie cienkiego tekstu. Gdy przy języku włączone jest „Tylko dla tekstu …” albo używasz czcionki telefonu, grubsze stają się tylko znaki tego języka; gdy jest wyłączone — cały tekst.\n\nGrubość korzysta z odmian samej czcionki. Czcionka z jedną odmianą przechodzi od razu z normalnej na grubą, więc średnia wygląda jak normalna.\n\nObrys liter rysuje cienki kontur wokół każdej litery: działa z każdą czcionką i dodaje się do grubości.</string>
+    <string name="languages_settings_hint">Ustawienia poniżej dotyczą wybranego języka; reszta strony dotyczy wszystkich języków.</string>
+    <string name="anki_languages_hint">Talię, typ notatki, szablony pól, tagi, obsługę duplikatów i źródła dźwięku ustawia się dla każdego języka. Tłumaczenie w notatkach, automatyczne odtwarzanie i głośność są wspólne.</string>
+    <string name="yomitan_summary_language">Język: %1$s</string>
+    <string name="reset_section_language">Resetowane są ustawienia wspólne dla wszystkich języków i ustawienia języka pokazanego na stronie; inne języki zachowują swoje.</string>
     <string name="popup_settings_title">Okienko</string>
     <string name="popup_content_title">Elementy okienka</string>
     <string name="popup_auto_hide_title">Automatyczne ukrywanie</string>

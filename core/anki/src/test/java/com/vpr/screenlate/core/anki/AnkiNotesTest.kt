@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.anki
 
+import com.vpr.screenlate.core.common.Language
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.anki.audio.AudioClip
 import com.vpr.screenlate.core.anki.settings.AnkiSettings
@@ -85,7 +86,7 @@ class AnkiNotesTest {
     }
 
     private fun configure(transform: (AnkiSettings) -> AnkiSettings = { it }) = runBlocking {
-        settings.update {
+        settings.update(Language.JAPANESE) {
             transform(
                 it.copy(
                     deckId = DECK,
@@ -106,34 +107,34 @@ class AnkiNotesTest {
 
     @Test
     fun `status reports what broke`() = runBlocking<Unit> {
-        assertThat(notes.status()).isEqualTo(AnkiStatus.NotConfigured)
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.NotConfigured)
         configure()
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Ready)
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Ready)
 
         anki.availability = AnkiAvailability.NO_PERMISSION
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.NO_PERMISSION))
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.NO_PERMISSION))
         anki.availability = AnkiAvailability.NOT_INSTALLED
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.NOT_INSTALLED))
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.NOT_INSTALLED))
         anki.availability = AnkiAvailability.READY
 
         anki.decks.clear()
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Ready)
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Ready)
         anki.decks += AnkiDeck(99, "Other")
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.DECK_MISSING))
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.DECK_MISSING))
         anki.decks += AnkiDeck(DECK, "Mining")
 
         anki.models[MODEL] = listOf("Word", "Meaning")
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.FIELDS_CHANGED))
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.FIELDS_CHANGED))
         anki.models.remove(MODEL)
-        assertThat(notes.status()).isEqualTo(AnkiStatus.Broken(AnkiProblem.MODEL_MISSING))
-        assertThat(notes.ready()).isFalse()
+        assertThat(notes.status(Language.JAPANESE)).isEqualTo(AnkiStatus.Broken(AnkiProblem.MODEL_MISSING))
+        assertThat(notes.ready(Language.JAPANESE)).isFalse()
     }
 
     @Test
     fun `adds a note with rendered fields and tags`() = runBlocking<Unit> {
-        assertThat(notes.add(request)).isEqualTo(AddResult.NotConfigured)
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.NotConfigured)
         configure()
-        assertThat(notes.add(request)).isEqualTo(AddResult.Added(101))
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Added(101))
         val (fields, tags) = anki.added.single()
         // Known markers without a value stay empty; the screenshot is only copied when there is one.
         assertThat(fields).containsExactly("猫", "cat", "", "").inOrder()
@@ -146,7 +147,7 @@ class AnkiNotesTest {
         configure()
         val screenshot = folder.newFile("shot.png")
         val audio = AudioClip(folder.newFile("clip.mp3"), "https://example.org/a.mp3", "mp3")
-        notes.add(request.copy(screenshot = screenshot, audio = audio))
+        notes.add(Language.JAPANESE, request.copy(screenshot = screenshot, audio = audio))
         assertThat(anki.added.single().first[3]).isEqualTo("<img src=\"shot.png\">")
         assertThat(anki.media.map { it.second }).containsExactly(AnkiDroid.MediaKind.IMAGE)
     }
@@ -155,17 +156,17 @@ class AnkiNotesTest {
     fun `unavailable anki and refused notes are reported`() = runBlocking<Unit> {
         configure()
         anki.availability = AnkiAvailability.NO_PERMISSION
-        assertThat(notes.add(request)).isEqualTo(AddResult.Unavailable(AnkiAvailability.NO_PERMISSION))
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Unavailable(AnkiAvailability.NO_PERMISSION))
         anki.availability = AnkiAvailability.READY
         anki.refuseNotes = true
-        assertThat(notes.add(request)).isEqualTo(AddResult.Rejected)
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Rejected)
     }
 
     @Test
     fun `a cancelled add is not reported as a failure`() {
         configure()
         anki.cancelNotes = true
-        assertThrows(CancellationException::class.java) { runBlocking { notes.add(request) } }
+        assertThrows(CancellationException::class.java) { runBlocking { notes.add(Language.JAPANESE, request) } }
     }
 
     @Test
@@ -176,7 +177,7 @@ class AnkiNotesTest {
                 """{"deckId":5,"modelId":6,"fields":{"Word":"{expression}"},"duplicateScope":"SOME_NEW_SCOPE",""" +
                 """"overwriteModes":{"Word":"SOME_NEW_MODE"},"savedTemplates":{"Old":{"overwriteModes":{"A":"APPEND"}}}}"""
         }
-        val loaded = AnkiSettingsRepository(store).current()
+        val loaded = AnkiSettingsRepository(store).current(Language.JAPANESE)
         assertThat(loaded.deckId).isEqualTo(5L)
         assertThat(loaded.fields).containsExactly("Word", "{expression}")
         assertThat(loaded.duplicateScope).isEqualTo(DuplicateScope.COLLECTION)
@@ -188,17 +189,17 @@ class AnkiNotesTest {
     fun `duplicates are prevented unless forced`() = runBlocking<Unit> {
         configure()
         anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "", ""))
-        assertThat(notes.duplicateIds(request.values)).containsExactly(7L)
-        assertThat(notes.add(request)).isEqualTo(AddResult.Duplicate(listOf(7L)))
+        assertThat(notes.duplicateIds(Language.JAPANESE, request.values)).containsExactly(7L)
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Duplicate(listOf(7L)))
         assertThat(anki.added).isEmpty()
-        assertThat(notes.add(request, force = true)).isEqualTo(AddResult.Added(101))
+        assertThat(notes.add(Language.JAPANESE, request, force = true)).isEqualTo(AddResult.Added(101))
     }
 
     @Test
     fun `new behavior adds another note`() = runBlocking<Unit> {
         configure { it.copy(duplicateBehavior = DuplicateBehavior.NEW) }
         anki.existing += ExistingNote(7, MODEL, listOf("猫", "old", "", ""))
-        assertThat(notes.add(request)).isEqualTo(AddResult.Added(101))
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Added(101))
     }
 
     @Test
@@ -210,7 +211,7 @@ class AnkiNotesTest {
             )
         }
         anki.existing += ExistingNote(7, MODEL, listOf("猫", "old ", "a sentence", "<img src=\"x.png\">"))
-        assertThat(notes.add(request)).isEqualTo(AddResult.Updated(7))
+        assertThat(notes.add(Language.JAPANESE, request)).isEqualTo(AddResult.Updated(7))
         // Word and Picture use the default COALESCE: the existing values stay.
         assertThat(anki.updated.single().second).containsExactly("猫", "old cat", "", "<img src=\"x.png\">").inOrder()
     }
@@ -219,34 +220,46 @@ class AnkiNotesTest {
     fun `duplicate search follows the settings`() = runBlocking<Unit> {
         configure { it.copy(duplicateAllModels = true, duplicateScope = DuplicateScope.DECK_ROOT) }
         anki.models[2L] = listOf("Front")
-        notes.duplicateIds(request.values)
+        notes.duplicateIds(Language.JAPANESE, request.values)
         assertThat(anki.duplicateQuery).isEqualTo(Triple("猫", listOf(MODEL, 2L), DuplicateScope.DECK_ROOT))
 
         anki.duplicateQuery = null
-        notes.duplicateIds(mapOf("glossary" to "cat"))
+        notes.duplicateIds(Language.JAPANESE, mapOf("glossary" to "cat"))
         assertThat(anki.duplicateQuery).isNull()
 
         configure { it.copy(duplicateCheck = false) }
-        notes.duplicateIds(request.values)
+        notes.duplicateIds(Language.JAPANESE, request.values)
         assertThat(anki.duplicateQuery).isNull()
     }
 
     @Test
     fun `note type fields are cached until invalidated`() = runBlocking<Unit> {
         configure()
-        notes.add(request)
-        notes.add(request)
+        notes.add(Language.JAPANESE, request)
+        notes.add(Language.JAPANESE, request)
         val queries = anki.fieldQueries
-        notes.duplicateCheckMarkers()
+        notes.duplicateCheckMarkers(Language.JAPANESE)
         assertThat(anki.fieldQueries).isEqualTo(queries)
         notes.invalidate()
-        assertThat(notes.duplicateCheckMarkers()).containsExactly("expression")
+        assertThat(notes.duplicateCheckMarkers(Language.JAPANESE)).containsExactly("expression")
         assertThat(anki.fieldQueries).isEqualTo(queries + 1)
-        assertThat(notes.usedMarkers()).containsExactly("expression", "glossary", "sentence", "screenshot")
+        assertThat(notes.usedMarkers(Language.JAPANESE)).containsExactly("expression", "glossary", "sentence", "screenshot")
     }
 
     private companion object {
         const val DECK = 1L
         const val MODEL = 1L
+    }
+
+    @Test
+    fun `each language adds with its own settings`() = runBlocking {
+        assertThat(notes.status(Language.ENGLISH)).isEqualTo(AnkiStatus.NotConfigured)
+        configure()
+        assertThat(notes.add(Language.ENGLISH, request)).isEqualTo(AddResult.NotConfigured)
+        val japanese = settings.current(Language.JAPANESE)
+        settings.update(Language.ENGLISH) { japanese.copy(tags = "english") }
+        assertThat(notes.add(Language.ENGLISH, request)).isEqualTo(AddResult.Added(101))
+        assertThat(anki.added.single().second).containsExactly("english")
+        assertThat(settings.current(Language.JAPANESE).tags).isEqualTo("screenlate, mined")
     }
 }

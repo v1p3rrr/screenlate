@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">フォントとしてはファイルが大きすぎます（64 MB 超）。</string>
     <string name="popup_font_web_font">これは Web フォント（.woff または .woff2）なので追加できません。先に .ttf か .otf に変換してください。</string>
     <string name="popup_font_import_failed">ファイルを追加できませんでした。もう一度試すか、端末の空き容量を確認してください。</string>
+    <string name="popup_text_title">文字の大きさと太さ</string>
+    <string name="popup_font_system_default">端末のフォント</string>
+    <string name="popup_font_script_only_en">英語の文字だけに使う</string>
+    <string name="popup_font_script_only_hint_any">ほかの文字体系の文字は端末のフォントのままです。ダウンロードまたは追加したフォントに適用されます。</string>
+    <string name="popup_text_weight_info_languages">細い文字を読みやすくします。言語の「…の文字だけに使う」がオンのとき、または端末のフォントのときはその言語の文字だけが太くなり、オフのときはすべての文字が太くなります。\n\n太さはフォント自身のウェイトを使います。ウェイトが一つだけのフォントは標準から太字に切り替わるだけなので、「中」は標準と同じに見えます。\n\n縁取りは各文字の周りに細い輪郭を描きます。どのフォントでも使え、太さに加わります。</string>
+    <string name="languages_settings_hint">以下の設定は選んだ言語に適用されます。ページのほかの設定はすべての言語で共通です。</string>
+    <string name="anki_languages_hint">デッキ、ノートタイプ、フィールドのテンプレート、タグ、重複の扱い、音声のソースは言語ごとに設定します。ノートの翻訳、音声の自動再生と音量は共通です。</string>
+    <string name="yomitan_summary_language">言語：%1$s</string>
+    <string name="reset_section_language">すべての言語で共通の設定と、ページに表示中の言語の設定がリセットされます。ほかの言語の設定はそのままです。</string>
     <string name="popup_settings_title">ポップアップ</string>
     <string name="popup_content_title">ポップアップの要素</string>
     <string name="popup_auto_hide_title">自動で閉じる</string>

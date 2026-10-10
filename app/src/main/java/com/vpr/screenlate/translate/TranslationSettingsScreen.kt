@@ -198,7 +198,8 @@ internal fun supportNote(language: TranslationLanguage): Int? = when {
 private fun TestCard(settings: TranslationSettings, viewModel: TranslationSettingsViewModel) {
     val rows by viewModel.test.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    var text by rememberSaveable { mutableStateOf(TranslationSettingsViewModel.LANGUAGE.support.translationSample) }
+    val language by viewModel.language.collectAsStateWithLifecycle()
+    var text by rememberSaveable(language) { mutableStateOf(language.support.translationSample) }
     val none = settings.enabledServices.isEmpty()
     SectionCard(title = stringResource(R.string.translation_test_title)) {
         Hint(stringResource(R.string.translation_test_hint))

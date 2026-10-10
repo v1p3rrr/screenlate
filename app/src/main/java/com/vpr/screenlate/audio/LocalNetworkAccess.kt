@@ -31,11 +31,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.network.LocalNetwork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -53,9 +55,10 @@ fun localNetworkMissing(context: Context, url: String): Boolean = LocalNetwork.i
 
 @HiltViewModel
 class LocalNetworkViewModel @Inject constructor(repository: AudioSettingsRepository) : ViewModel() {
-    /** URL templates of the audio sources on the local network. */
-    val localSources: StateFlow<List<String>?> = repository.settings
-        .map { settings -> settings.sources.filter { it.type.hasUrl && LocalNetwork.isLocalUrl(it.url) }.map { it.url } }
+    /** URL templates of every language's audio sources on the local network. */
+    val localSources: StateFlow<List<String>?> = combine(Language.entries.map { repository.settings(it) }) { all ->
+        all.flatMap { settings -> settings.sources.filter { it.type.hasUrl && LocalNetwork.isLocalUrl(it.url) }.map { it.url } }.distinct()
+    }
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 }

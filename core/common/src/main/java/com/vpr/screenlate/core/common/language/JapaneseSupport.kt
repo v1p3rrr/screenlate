@@ -8,6 +8,8 @@ object JapaneseSupport : LanguageSupport {
     override val wordSeparator = ""
     override val ocrScript = OcrScript.JAPANESE
     override val searchResolution = SearchResolution.LETTER
+    override val hasCharacterEntries = true
+    override val convertsLatin = true
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
     override val quotePairs = mapOf('「' to '」', '『' to '』', '（' to '）', '(' to ')')
 
@@ -27,6 +29,7 @@ object JapaneseSupport : LanguageSupport {
     override val fontSample = "置く・直す・骨 — あいうえお アイウエオ"
 
     override val translationSample = "今日はいい天気ですね。散歩に行きましょう。"
+    override val audioTestWord = "読む"
 
     /**
      * Noto Sans/Serif CJK JP, which Android ships; asking for the Japanese face by name keeps Japanese glyph forms

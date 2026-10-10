@@ -9,11 +9,14 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import com.vpr.screenlate.settings.SHOW_SOURCE_TEXT_KEY
+import com.vpr.screenlate.settings.SettingsKeys
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -95,11 +98,19 @@ data class BackupManifest(
 /** Settings kept in the shared preferences file, grouped by the section each key belongs to. */
 object BackupPreferences {
     private const val E_INK = "e_ink"
-    private val general = setOf("theme_mode", "theme_colors", E_INK, "update_announce")
+    private val general = setOf(
+        "theme_mode",
+        "theme_colors",
+        E_INK,
+        "update_announce",
+        LanguageProfiles.TURNED_ON.name,
+        LanguageProfiles.ACTIVE.name,
+    )
 
     /**
      * The section of a preference key; null for state the app keeps for itself (one-time hints, update checks,
-     * migrations), which a backup leaves out. The sort dictionary is kept by title with the dictionary list.
+     * migrations), which a backup leaves out. The sort dictionaries are kept by title with the dictionary list. Each
+     * language's settings go with their page's section.
      */
     fun sectionOf(key: String): BackupSection? = when {
         key in general -> BackupSection.GENERAL
@@ -107,7 +118,7 @@ object BackupPreferences {
         key.startsWith("overlay_") -> BackupSection.BUBBLE
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP
-        key == "anki_settings" -> BackupSection.ANKI
+        key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null -> BackupSection.ANKI
         key.startsWith("audio_") -> BackupSection.AUDIO
         key.startsWith(TranslationSettingsRepository.KEY_PREFIX) -> BackupSection.TRANSLATION
         else -> null
@@ -259,13 +270,21 @@ data class BackupDictionary(
 
 /**
  * @property dictionaries in priority order.
- * @property sortDictionary title of the frequency dictionary chosen for sorting.
+ * @property sortDictionary title of the frequency dictionary chosen for sorting Japanese, the only one older versions
+ *   read.
+ * @property sortDictionaries titles of the frequency dictionaries chosen for sorting, by language code; a backup of an
+ *   older version has only [sortDictionary].
  */
 @Serializable
 data class BackupDictionaryList(
     val dictionaries: List<BackupDictionary>,
     val sortDictionary: String? = null,
-)
+    val sortDictionaries: Map<String, String> = emptyMap(),
+) {
+    /** The title of [language]'s sort dictionary. */
+    fun sortDictionary(language: Language): String? =
+        sortDictionaries[language.code] ?: sortDictionary.takeIf { language == Language.JAPANESE }
+}
 
 /**
  * @property updated every installed dictionary with its new priority, switch and languages.

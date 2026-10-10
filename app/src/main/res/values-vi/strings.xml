@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Tệp quá lớn đối với một phông chữ (trên 64 MB).</string>
     <string name="popup_font_web_font">Đây là phông web (.woff hoặc .woff2) nên không thể thêm. Hãy chuyển nó sang .ttf hoặc .otf trước.</string>
     <string name="popup_font_import_failed">Không thể thêm tệp. Hãy thử lại hoặc kiểm tra dung lượng trống trên điện thoại.</string>
+    <string name="popup_text_title">Cỡ chữ và độ đậm</string>
+    <string name="popup_font_system_default">Phông chữ của điện thoại</string>
+    <string name="popup_font_script_only_en">Chỉ cho chữ tiếng Anh</string>
+    <string name="popup_font_script_only_hint_any">Chữ của các hệ chữ viết khác giữ phông của điện thoại. Áp dụng cho phông đã tải về hoặc đã thêm.</string>
+    <string name="popup_text_weight_info_languages">Giúp chữ mảnh dễ đọc hơn. Khi một ngôn ngữ bật “Chỉ cho chữ tiếng …”, hoặc khi dùng phông của điện thoại, chỉ các ký tự của ngôn ngữ đó đậm hơn; khi tắt, toàn bộ văn bản.\n\nĐộ đậm dùng các độ đậm có sẵn của phông. Phông chỉ có một độ đậm sẽ chuyển thẳng từ thường sang đậm, nên mức vừa trông giống thường.\n\nViền chữ vẽ một đường viền mảnh quanh mỗi chữ: dùng được với mọi phông và cộng thêm vào độ đậm.</string>
+    <string name="languages_settings_hint">Các cài đặt bên dưới áp dụng cho ngôn ngữ đã chọn; phần còn lại của trang áp dụng cho mọi ngôn ngữ.</string>
+    <string name="anki_languages_hint">Bộ thẻ, loại ghi chú, mẫu trường, nhãn, cách xử lý trùng lặp và nguồn âm thanh được đặt riêng cho từng ngôn ngữ. Bản dịch trong ghi chú, tự động phát âm thanh và âm lượng dùng chung.</string>
+    <string name="yomitan_summary_language">Ngôn ngữ: %1$s</string>
+    <string name="reset_section_language">Các cài đặt dùng chung cho mọi ngôn ngữ và cài đặt của ngôn ngữ đang hiển thị trên trang sẽ được đặt lại; các ngôn ngữ khác giữ nguyên cài đặt của mình.</string>
     <string name="popup_settings_title">Cửa sổ bật lên</string>
     <string name="popup_content_title">Thành phần cửa sổ bật lên</string>
     <string name="popup_auto_hide_title">Tự động ẩn</string>

@@ -9,6 +9,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.BuildConfig
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
@@ -109,7 +110,8 @@ class BackupManager @Inject constructor(
             mutableState.value = BackupState.Working(restoring = false, progress = null)
             val result = runCatching {
                 val installed = dictionaries.getAll()
-                val sortId = dictionaries.sortDictionaryId.first()
+                val sortIds = Language.entries.associateWith { dictionaries.sortDictionaryId(it).first() }
+                fun title(id: Long?) = installed.firstOrNull { it.id == id }?.title
                 val withFiles = if (includeDictionaries) installed.filter { storage.hasFiles(it) }.map { it.id }.toSet() else emptySet()
                 val sections = BackupSection.entries.filter { it != BackupSection.DICTIONARY_FILES || withFiles.isNotEmpty() }
                 val contents = BackupArchive.Contents(
@@ -117,7 +119,8 @@ class BackupManager @Inject constructor(
                     settings = BackupPreferences.encode(preferences.data.first()),
                     dictionaries = BackupDictionaryList(
                         dictionaries = installed.map { BackupDictionary.of(it, files = it.id in withFiles) },
-                        sortDictionary = installed.firstOrNull { it.id == sortId }?.title,
+                        sortDictionary = title(sortIds[Language.JAPANESE]),
+                        sortDictionaries = sortIds.mapNotNull { (language, id) -> title(id)?.let { language.code to it } }.toMap(),
                     ),
                     fonts = fonts.backupFiles(),
                     dictionaryFiles = installed.withIndex()
@@ -233,10 +236,12 @@ class BackupManager @Inject constructor(
             if (BackupSection.DICTIONARY_LIST in sections) {
                 val installed = dictionaries.getAll()
                 val outcome = BackupDictionaries.applyList(installed, head.dictionaries.dictionaries)
-                val sortId = head.dictionaries.sortDictionary?.let { BackupDictionaries.match(outcome.updated, it)?.id }
+                val sortIds = Language.entries.associateWith { language ->
+                    head.dictionaries.sortDictionary(language)?.let { BackupDictionaries.match(outcome.updated, it)?.id }
+                }
                 val languages = profiles.current().turnedOn
                 val kept = keptTermDictionaries(installed, outcome.updated, languages, storage::hasFiles).mapTo(hashSetOf()) { it.id }
-                dictionaries.applyStates(outcome.updated.map { if (it.id in kept) it.copy(enabled = true) else it }, sortId)
+                dictionaries.applyStates(outcome.updated.map { if (it.id in kept) it.copy(enabled = true) else it }, sortIds)
                 missing = outcome.missing
                 keptOn = outcome.updated.filter { it.id in kept }.map { it.title }
             }

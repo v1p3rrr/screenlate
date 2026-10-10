@@ -79,7 +79,7 @@ class AudioFinderTest {
     private fun text(body: String, type: String = "text/html") =
         MockResponse.Builder().code(200).addHeader("Content-Type", type).body(body).build()
 
-    private fun sources(vararg sources: AudioSource) = runBlocking { settings.update { it.copy(sources = sources.toList()) } }
+    private fun sources(vararg sources: AudioSource) = runBlocking { settings.update(Language.JAPANESE) { it.copy(sources = sources.toList()) } }
 
     private fun find(term: String = "猫", reading: String = "ねこ") = runBlocking { finder.find(term, reading, Language.JAPANESE) }
 

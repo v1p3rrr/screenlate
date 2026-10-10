@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">O arquivo é grande demais para uma fonte (mais de 64 MB).</string>
     <string name="popup_font_web_font">Esta é uma fonte web (.woff ou .woff2), que não pode ser adicionada. Converta-a antes para .ttf ou .otf.</string>
     <string name="popup_font_import_failed">Não foi possível adicionar o arquivo. Tente de novo ou verifique se há espaço livre no celular.</string>
+    <string name="popup_text_title">Tamanho e peso do texto</string>
+    <string name="popup_font_system_default">Fonte do celular</string>
+    <string name="popup_font_script_only_en">Só para texto em inglês</string>
+    <string name="popup_font_script_only_hint_any">Letras de outras escritas mantêm a fonte do celular. Para fontes baixadas e adicionadas.</string>
+    <string name="popup_text_weight_info_languages">Deixa o texto fino mais fácil de ler. Com “Só para texto em …” ativado em um idioma, ou com a fonte do celular, só os caracteres desse idioma ficam mais grossos; com ele desativado, todo o texto.\n\nO peso usa os pesos da própria fonte. Uma fonte com um só peso passa direto de normal para negrito, então médio fica igual a normal.\n\nA espessura das letras desenha um contorno fino em volta de cada letra: funciona com qualquer fonte e se soma ao peso.</string>
+    <string name="languages_settings_hint">As configurações abaixo valem para o idioma escolhido; o resto da página vale para todos os idiomas.</string>
+    <string name="anki_languages_hint">O baralho, o tipo de nota, os modelos de campos, as etiquetas, o tratamento de duplicatas e as fontes de áudio são definidos para cada idioma. A tradução nas notas, a reprodução automática e o volume são comuns.</string>
+    <string name="yomitan_summary_language">Idioma: %1$s</string>
+    <string name="reset_section_language">São redefinidas as configurações comuns a todos os idiomas e as do idioma mostrado na página; os outros idiomas mantêm as suas.</string>
     <string name="popup_settings_title">Pop-up</string>
     <string name="popup_content_title">Elementos do pop-up</string>
     <string name="popup_auto_hide_title">Ocultar automaticamente</string>

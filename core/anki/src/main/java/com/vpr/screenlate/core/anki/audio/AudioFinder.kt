@@ -105,7 +105,7 @@ class AudioFinder internal constructor(
 
     /** The first clip of the sources in priority order, for notes; text-to-speech is skipped. */
     suspend fun find(term: String, reading: String, language: Language): AudioClip? = withContext(Dispatchers.IO) {
-        val sources = settings.current().sources
+        val sources = settings.current(language).sources
         // Other sources may have the clip, or no longer have it.
         val key = ClipKey(sources, language, term, reading)
         synchronized(clipCache) {
@@ -143,7 +143,7 @@ class AudioFinder internal constructor(
      * What to play: a clip of the sources, or text-to-speech when it is the first source or no source has a clip.
      */
     suspend fun pronunciation(term: String, reading: String, language: Language): Pronunciation? {
-        val sources = settings.current().sources
+        val sources = settings.current(language).sources
         val speech = Pronunciation.Speech(reading.ifEmpty { term }, language)
         if (sources.firstOrNull()?.type == AudioSourceType.TEXT_TO_SPEECH) return speech
         find(term, reading, language)?.let { return Pronunciation.Clip(it) }
@@ -160,7 +160,7 @@ class AudioFinder internal constructor(
         language: Language,
         sources: List<AudioSource>? = null,
     ): List<AudioCandidate> = withContext(Dispatchers.IO) {
-        val asked = (sources ?: settings.current().sources).withIndex()
+        val asked = (sources ?: settings.current(language).sources).withIndex()
             .map { (index, source) -> async { candidatesOrNull(index, source, term, reading, language) } }
         asked.flatMap { it.await().orEmpty() }
     }

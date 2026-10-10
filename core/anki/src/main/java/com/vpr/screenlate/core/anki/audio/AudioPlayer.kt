@@ -26,7 +26,7 @@ class AudioPlayer @Inject constructor(
 
     /** False when nothing could be played, e.g. the system has no text-to-speech voice for the language. */
     suspend fun play(pronunciation: Pronunciation): Boolean {
-        val volume = settings.current().volume.coerceIn(0, 100) / 100f
+        val volume = settings.volume().coerceIn(0, 100) / 100f
         return when (pronunciation) {
             is Pronunciation.Clip -> playClip(pronunciation.clip, volume)
             is Pronunciation.Speech -> speak(pronunciation.text, pronunciation.language, volume)

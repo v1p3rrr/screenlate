@@ -4,7 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.cached
+import com.vpr.screenlate.core.common.settings.preferenceKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -117,6 +119,7 @@ data class AnkiSettings(
     }
 }
 
+/** Anki settings per language: each language has its own deck, note type and templates, and starts empty. */
 @Singleton
 class AnkiSettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
@@ -128,26 +131,24 @@ class AnkiSettingsRepository @Inject constructor(
         coerceInputValues = true
     }
 
-    private val readAnkiSettings: (Preferences) -> AnkiSettings = { prefs ->
-        prefs[KEY]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() } ?: AnkiSettings()
-    }
+    private fun read(prefs: Preferences, language: Language): AnkiSettings =
+        prefs[key(language)]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() } ?: AnkiSettings()
 
-    val settings: Flow<AnkiSettings> = dataStore.data.map { readAnkiSettings(it) }
+    fun settings(language: Language): Flow<AnkiSettings> = dataStore.data.map { read(it, language) }
 
     /** The settings as last read, for a screen's first frame; null before the first read. */
-    val cachedSettings: AnkiSettings? get() = dataStore.cached(readAnkiSettings)
+    fun cachedSettings(language: Language): AnkiSettings? = dataStore.cached { read(it, language) }
 
-    suspend fun current(): AnkiSettings = settings.first()
+    suspend fun current(language: Language): AnkiSettings = settings(language).first()
 
-    suspend fun update(transform: (AnkiSettings) -> AnkiSettings) {
-        dataStore.edit { prefs ->
-            val current = prefs[KEY]?.let { runCatching { json.decodeFromString<AnkiSettings>(it) }.getOrNull() }
-                ?: AnkiSettings()
-            prefs[KEY] = json.encodeToString(transform(current))
-        }
+    suspend fun update(language: Language, transform: (AnkiSettings) -> AnkiSettings) {
+        dataStore.edit { prefs -> prefs[key(language)] = json.encodeToString(transform(read(prefs, language))) }
     }
 
-    private companion object {
-        val KEY = stringPreferencesKey("anki_settings")
+    companion object {
+        /** Name of the preference key; other languages than Japanese add their code (see [preferenceKey]). */
+        const val KEY = "anki_settings"
+
+        private fun key(language: Language) = stringPreferencesKey(language.preferenceKey(KEY))
     }
 }

@@ -134,7 +134,7 @@ class DictionaryRepositoryTest {
     fun chosenSortDictionaryWinsOverOrder() = runTest {
         repository.import(archive("First freq", frequencies = 1))
         val second = repository.import(archive("Second freq", frequencies = 1))
-        repository.setSortDictionary(second.id)
+        repository.setSortDictionary(Language.JAPANESE, second.id)
         assertThat(repository.prepareLookup(Language.JAPANESE).options.frequencyDictionary).isEqualTo("Second freq")
     }
 

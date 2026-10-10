@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">El archivo es demasiado grande para una fuente (más de 64 MB).</string>
     <string name="popup_font_web_font">Es una fuente web (.woff o .woff2) y no se puede añadir. Conviértela antes a .ttf u .otf.</string>
     <string name="popup_font_import_failed">No se pudo añadir el archivo. Vuelve a intentarlo o comprueba que el teléfono tenga espacio libre.</string>
+    <string name="popup_text_title">Tamaño y peso del texto</string>
+    <string name="popup_font_system_default">Fuente del teléfono</string>
+    <string name="popup_font_script_only_en">Solo para texto en inglés</string>
+    <string name="popup_font_script_only_hint_any">Las letras de otras escrituras mantienen la fuente del teléfono. Para fuentes descargadas y añadidas.</string>
+    <string name="popup_text_weight_info_languages">Hace más legible el texto fino. Con «Solo para texto en …» activado en un idioma, o con la fuente del teléfono, solo los caracteres de ese idioma se vuelven más gruesos; con el ajuste desactivado, todo el texto.\n\nEl peso usa los pesos propios de la fuente. Una fuente con un solo peso pasa de normal directamente a negrita, así que medio se ve igual que normal.\n\nEl grosor de las letras dibuja un contorno fino alrededor de cada letra: funciona con cualquier fuente y se suma al peso.</string>
+    <string name="languages_settings_hint">Los ajustes de abajo son del idioma elegido; el resto de la página se aplica a todos los idiomas.</string>
+    <string name="anki_languages_hint">El mazo, el tipo de nota, las plantillas de campos, las etiquetas, la gestión de duplicados y las fuentes de audio se configuran para cada idioma. La traducción en las notas, la reproducción automática y el volumen son comunes.</string>
+    <string name="yomitan_summary_language">Idioma: %1$s</string>
+    <string name="reset_section_language">Se restablecen los ajustes comunes a todos los idiomas y los del idioma que muestra la página; los demás idiomas conservan los suyos.</string>
     <string name="popup_settings_title">Ventana emergente</string>
     <string name="popup_content_title">Elementos de la ventana emergente</string>
     <string name="popup_auto_hide_title">Ocultar automáticamente</string>

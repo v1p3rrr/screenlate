@@ -141,12 +141,12 @@ class PopupNotes(
     suspend fun refreshActions() {
         val status = ankiStatus()
         val ankiReady = status == AnkiStatus.Ready
-        val audioEnabled = audioSettings.current().sources.isNotEmpty()
+        val audioEnabled = audioSettings.current(language()).sources.isNotEmpty()
         val problem = (status as? AnkiStatus.Broken)?.problem?.let { context.getString(it.message) }
         page.setActions(anki = ankiReady, audio = audioEnabled, ankiProblem = problem)
         // The frequency modes also order each dictionary's frequency values in the popup, with or without Anki.
         val config = buildJsonObject {
-            put("markers", if (ankiReady) buildJsonArray { notes.usedMarkers().forEach { add(JsonPrimitive(it)) } } else JsonNull)
+            put("markers", if (ankiReady) buildJsonArray { notes.usedMarkers(language()).forEach { add(JsonPrimitive(it)) } } else JsonNull)
             put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
         }
         page.setNoteConfig(config)
@@ -156,7 +156,7 @@ class PopupNotes(
     private suspend fun ankiStatus(): AnkiStatus {
         val now = System.currentTimeMillis()
         ankiStatus?.takeIf { now - ankiStatusAt < ANKI_STATUS_TTL_MS }?.let { return it }
-        return notes.status().also {
+        return notes.status(language()).also {
             ankiStatus = it
             ankiStatusAt = now
         }
@@ -208,7 +208,7 @@ class PopupNotes(
         val term = pendingAutoPlay ?: return
         pendingAutoPlay = null
         lastAutoPlayed = term
-        if (audioSettings.current().autoPlay) play(term.first, term.second)
+        if (audioSettings.current(language()).autoPlay) play(term.first, term.second)
     }
 
     /**
@@ -227,7 +227,7 @@ class PopupNotes(
 
     /** Words added during this scan get 📖; duplicates get 📖 or a mark, depending on the duplicate behavior. */
     private suspend fun markNotes() {
-        val settings = notes.settings()
+        val settings = notes.settings(language())
         if (ankiStatus() != AnkiStatus.Ready) return
         val terms = currentTerms() ?: return
         val states = mutableMapOf<Int, String>()
@@ -238,14 +238,14 @@ class PopupNotes(
             }
         }
         if (settings.duplicateCheck) {
-            val markers = notes.duplicateCheckMarkers()
+            val markers = notes.duplicateCheckMarkers(language())
             val entries = evaluateJson<List<Map<String, String>>>(
                 "JSON.stringify(Popup.allNoteData(${Json.encodeToString(markers.toList())}))",
             ).orEmpty()
             entries.forEachIndexed { index, values ->
                 if (index in states) return@forEachIndexed
                 val ids = try {
-                    notes.duplicateIds(values)
+                    notes.duplicateIds(language(), values)
                 } catch (e: CancellationException) {
                     // The view changed: its marks must not reach the next one.
                     throw e
@@ -278,6 +278,8 @@ class PopupNotes(
     override fun onAddNote(index: Int, noteData: String, withScreenshot: Boolean, force: Boolean) {
         val source = noteSource()
         val scan = scanNotes.scan
+        // The note keeps the language it was asked for, even if the scan closes before it is added.
+        val noteLanguage = language()
         scope.launch {
             var shared: SharedScreenshot? = null
             var picture: Bitmap? = null
@@ -289,13 +291,13 @@ class PopupNotes(
                 val data = json.decodeFromString<NoteDataDto>(noteData)
                 val noteTerm = data.term.expression to data.term.reading
                 term = noteTerm
-                val used = notes.usedMarkers()
+                val used = notes.usedMarkers(noteLanguage)
                 val context = source.context(withScreenshot && "screenshot" in used)
                 shared = context.screenshot
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
-                    translated = async { translation.forNote(sentence, language()) }
+                    translated = async { translation.forNote(sentence, noteLanguage) }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
                 val shot = context.screenshot
@@ -328,8 +330,8 @@ class PopupNotes(
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used)
                 screenshot = picture?.let { saveScreenshot(it) }
-                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language()) else null
-                val result = notes.add(NoteRequest(values, screenshot, clip), force)
+                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, noteLanguage) else null
+                val result = notes.add(noteLanguage, NoteRequest(values, screenshot, clip), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
                     TAG,
@@ -394,7 +396,7 @@ class PopupNotes(
         audioMenuJob = scope.launch {
             val candidates = audio.candidates(expression, reading, language())
             menuCandidates = candidates
-            val sources = audioSettings.current().sources
+            val sources = audioSettings.current(language()).sources
             val items = buildJsonArray {
                 for (candidate in candidates) {
                     add(

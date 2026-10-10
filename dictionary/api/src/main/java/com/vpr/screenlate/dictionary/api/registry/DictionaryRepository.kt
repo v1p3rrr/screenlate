@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.preferenceKey
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
@@ -63,7 +64,8 @@ class DictionaryRepository @Inject constructor(
         private set
 
     /** The frequency dictionary chosen for sorting; null means the first enabled one. */
-    val sortDictionaryId: Flow<Long?> = preferences.data.map { it[SORT_DICTIONARY] }
+    /** The frequency dictionary chosen for sorting [language]'s results; each language has its own. */
+    fun sortDictionaryId(language: Language): Flow<Long?> = preferences.data.map { it[sortKey(language)] }
 
     suspend fun getAll(): List<DictionaryEntity> = dao.getAll()
 
@@ -257,13 +259,16 @@ class DictionaryRepository @Inject constructor(
         saved
     }
 
-    /** Saves the order, switches and languages of [dictionaries] (full entries) and the sort dictionary. */
-    suspend fun applyStates(dictionaries: List<DictionaryEntity>, sortDictionaryId: Long?) = mutex.withLock {
+    /**
+     * Saves the order, switches and languages of [dictionaries] (full entries) and the sort dictionaries: a language
+     * of [sortDictionaryIds] without a value goes back to the first enabled frequency dictionary.
+     */
+    suspend fun applyStates(dictionaries: List<DictionaryEntity>, sortDictionaryIds: Map<Language, Long?>) = mutex.withLock {
         dao.update(dictionaries)
-        if (sortDictionaryId != null) {
-            preferences.edit { it[SORT_DICTIONARY] = sortDictionaryId }
-        } else {
-            preferences.edit { it.remove(SORT_DICTIONARY) }
+        preferences.edit { prefs ->
+            for ((language, id) in sortDictionaryIds) {
+                if (id != null) prefs[sortKey(language)] = id else prefs.remove(sortKey(language))
+            }
         }
         reloadLocked()
     }
@@ -285,7 +290,7 @@ class DictionaryRepository @Inject constructor(
         val all = dao.getAll()
         Log.i(TAG, "Deleting all ${all.size} dictionaries")
         all.forEach { dao.delete(it) }
-        preferences.edit { it.remove(SORT_DICTIONARY) }
+        preferences.edit { prefs -> Language.entries.forEach { prefs.remove(sortKey(it)) } }
         reloadLocked()
         val kept = all.count { !storage.directoryOf(it).deleteRecursively() }
         if (kept > 0) Log.w(TAG, "Files of $kept dictionaries were not all deleted")
@@ -308,8 +313,8 @@ class DictionaryRepository @Inject constructor(
         )
     }
 
-    suspend fun setSortDictionary(id: Long) = mutex.withLock {
-        preferences.edit { it[SORT_DICTIONARY] = id }
+    suspend fun setSortDictionary(language: Language, id: Long) = mutex.withLock {
+        preferences.edit { it[sortKey(language)] = id }
         reloadLocked()
     }
 
@@ -382,7 +387,7 @@ class DictionaryRepository @Inject constructor(
             ),
         )
         val frequencies = enabled.filter { it.frequencyCount > 0 }
-        val preferred = preferences.data.first()[SORT_DICTIONARY]
+        val preferred = preferences.data.first()[sortKey(language)]
         sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
         termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
         loadedLanguage = language
@@ -402,6 +407,6 @@ data class PreparedLookup(
     val termDictionaries: List<String>,
 )
 
-private val SORT_DICTIONARY = longPreferencesKey("sort_dictionary_id")
+private fun sortKey(language: Language) = longPreferencesKey(language.preferenceKey("sort_dictionary_id"))
 private val TEXTS_DECODED = booleanPreferencesKey("index_texts_decoded")
 private const val TAG = "DictionaryRepository"

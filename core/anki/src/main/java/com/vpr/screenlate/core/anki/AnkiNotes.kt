@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.core.common.Language
 import java.io.File
 import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
@@ -59,11 +60,11 @@ class AnkiNotes @Inject constructor(
 ) {
     private val fieldCache = mutableMapOf<Long, List<String>>()
 
-    suspend fun settings(): AnkiSettings = settingsRepository.current()
+    suspend fun settings(language: Language): AnkiSettings = settingsRepository.current(language)
 
-    /** Whether notes can be added now: AnkiDroid is ready and the configured note type still exists. */
-    suspend fun ready(): Boolean {
-        val settings = settings()
+    /** Whether notes can be added now: AnkiDroid is ready and [language]'s note type still exists. */
+    suspend fun ready(language: Language): Boolean {
+        val settings = settings(language)
         val modelId = settings.modelId ?: return false
         return settings.configured && anki.availability() == AnkiAvailability.READY && fieldNames(modelId).isNotEmpty()
     }
@@ -72,8 +73,8 @@ class AnkiNotes @Inject constructor(
      * Checks the configured deck, note type and fields against AnkiDroid. Asks AnkiDroid every time, so it is meant
      * for occasional checks (screen resume, popup opening), not for every note.
      */
-    suspend fun status(): AnkiStatus {
-        val settings = settings()
+    suspend fun status(language: Language): AnkiStatus {
+        val settings = settings(language)
         val modelId = settings.modelId
         if (!settings.configured || modelId == null) return AnkiStatus.NotConfigured
         when (anki.availability()) {
@@ -92,31 +93,35 @@ class AnkiNotes @Inject constructor(
     }
 
     /** Markers used by any field template; callers skip expensive markers (audio, screenshot) that are unused. */
-    suspend fun usedMarkers(): Set<String> =
-        settings().fields.values.flatMapTo(mutableSetOf()) { FieldTemplate.markersIn(it) }
+    suspend fun usedMarkers(language: Language): Set<String> =
+        settings(language).fields.values.flatMapTo(mutableSetOf()) { FieldTemplate.markersIn(it) }
 
     /** Markers of the first field, the one the duplicate check compares. */
-    suspend fun duplicateCheckMarkers(): Set<String> {
-        val settings = settings()
+    suspend fun duplicateCheckMarkers(language: Language): Set<String> {
+        val settings = settings(language)
         val modelId = settings.modelId ?: return emptySet()
         val first = fieldNames(modelId).firstOrNull() ?: return emptySet()
         return FieldTemplate.markersIn(settings.fields[first].orEmpty())
     }
 
     /** Existing notes a note with these values would duplicate; empty when Anki is unavailable or unconfigured. */
-    suspend fun duplicateIds(values: Map<String, String>): List<Long> {
-        val settings = settings()
+    suspend fun duplicateIds(language: Language, values: Map<String, String>): List<Long> {
+        val settings = settings(language)
         if (!settings.configured || !settings.duplicateCheck || anki.availability() != AnkiAvailability.READY) {
             return emptyList()
         }
         return duplicates(settings, values).map { it.id }
     }
 
-    /** @param force add a new note even if the settings prevent duplicates. */
-    suspend fun add(request: NoteRequest, force: Boolean = false): AddResult {
+    /**
+     * Adds a note with [language]'s settings (deck, note type, templates).
+     *
+     * @param force add a new note even if the settings prevent duplicates.
+     */
+    suspend fun add(language: Language, request: NoteRequest, force: Boolean = false): AddResult {
         val availability = anki.availability()
         if (availability != AnkiAvailability.READY) return AddResult.Unavailable(availability)
-        val settings = settings()
+        val settings = settings(language)
         val modelId = settings.modelId
         val deckId = settings.deckId
         if (!settings.configured || modelId == null || deckId == null) return AddResult.NotConfigured
@@ -129,7 +134,7 @@ class AnkiNotes @Inject constructor(
             }
 
             val values = request.values.toMutableMap()
-            val used = usedMarkers()
+            val used = usedMarkers(language)
             if ("screenshot" in used && request.screenshot != null) {
                 anki.addMedia(request.screenshot, "screenlate_${System.currentTimeMillis()}", AnkiDroid.MediaKind.IMAGE)
                     ?.let { values["screenshot"] = it }

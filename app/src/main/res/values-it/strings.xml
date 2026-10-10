@@ -325,6 +325,15 @@
     <string name="popup_font_too_large">Il file è troppo grande per un carattere (oltre 64 MB).</string>
     <string name="popup_font_web_font">È un carattere web (.woff o .woff2) e non si può aggiungere. Convertilo prima in .ttf o .otf.</string>
     <string name="popup_font_import_failed">Impossibile aggiungere il file. Riprova o controlla che sul telefono ci sia spazio libero.</string>
+    <string name="popup_text_title">Dimensione e peso del testo</string>
+    <string name="popup_font_system_default">Carattere del telefono</string>
+    <string name="popup_font_script_only_en">Solo per il testo inglese</string>
+    <string name="popup_font_script_only_hint_any">Le lettere di altre scritture mantengono il carattere del telefono. Per i caratteri scaricati e aggiunti.</string>
+    <string name="popup_text_weight_info_languages">Rende più leggibile il testo sottile. Con “Solo per il testo …” attivo per una lingua, o con il carattere del telefono, diventano più spessi solo i caratteri di quella lingua; con l’opzione disattivata, tutto il testo.\n\nIl peso usa i pesi propri del carattere. Un carattere con un solo peso passa direttamente da normale a grassetto, quindi medio sembra normale.\n\nLo spessore delle lettere traccia un sottile contorno attorno a ogni lettera: funziona con qualsiasi carattere e si aggiunge al peso.</string>
+    <string name="languages_settings_hint">Le impostazioni qui sotto valgono per la lingua scelta; il resto della pagina vale per tutte le lingue.</string>
+    <string name="anki_languages_hint">Il mazzo, il tipo di nota, i modelli dei campi, le etichette, la gestione dei duplicati e le fonti audio si impostano per ogni lingua. La traduzione nelle note, la riproduzione automatica e il volume sono comuni.</string>
+    <string name="yomitan_summary_language">Lingua: %1$s</string>
+    <string name="reset_section_language">Vengono ripristinate le impostazioni comuni a tutte le lingue e quelle della lingua mostrata nella pagina; le altre lingue mantengono le proprie.</string>
     <string name="popup_settings_title">Popup</string>
     <string name="popup_content_title">Elementi del popup</string>
     <string name="popup_auto_hide_title">Chiusura automatica</string>

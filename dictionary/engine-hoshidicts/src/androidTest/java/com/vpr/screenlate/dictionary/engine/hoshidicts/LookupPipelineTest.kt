@@ -98,7 +98,7 @@ class LookupPipelineTest {
         // 面 is a shorter match of the text itself; 影 is only reachable as a kanji of the word.
         val results = lookUp("面影が")
         assertThat(results.map { it.term.expression }).containsExactly("面影", "面", "影").inOrder()
-        settings.setSingleKanji(false)
+        settings.setSingleKanji(Language.JAPANESE, false)
         assertThat(lookUp("面影が").map { it.term.expression }).containsExactly("面影", "面").inOrder()
     }
 
@@ -107,7 +107,7 @@ class LookupPipelineTest {
         settings.setMaxResults(1)
         val results = lookUp("面影が")
         assertThat(results.map { it.term.expression }).containsExactly("面影", "影").inOrder()
-        settings.setSingleKanji(false)
+        settings.setSingleKanji(Language.JAPANESE, false)
         assertThat(lookUp("食べる").map { it.term.expression }).hasSize(1)
     }
 

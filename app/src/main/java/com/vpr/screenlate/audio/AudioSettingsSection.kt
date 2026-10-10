@@ -21,6 +21,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import com.vpr.screenlate.core.anki.audio.AudioCandidate
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.label
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -50,9 +52,13 @@ import com.vpr.screenlate.ui.components.WithTooltip
 import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
-/** Auto-play, volume, the audio sources in priority order, and a test of every source with a sample word. */
+/**
+ * Auto-play, volume, the audio sources of [language] in priority order, and a test of every source with a sample
+ * word.
+ */
 @Composable
-fun AudioSettingsSection(viewModel: AudioSettingsViewModel = hiltViewModel()) {
+fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel = hiltViewModel()) {
+    LaunchedEffect(language) { viewModel.show(language) }
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val audio = settings ?: return
     var editing by remember { mutableStateOf<Pair<Int?, AudioSource>?>(null) }
