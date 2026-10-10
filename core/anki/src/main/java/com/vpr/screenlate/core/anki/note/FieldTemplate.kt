@@ -65,8 +65,12 @@ object FieldTemplate {
     /** Markers that exist only for some languages (Yomitan offers pitch accents for Japanese only). */
     private val LANGUAGE_MARKERS = Language.entries.flatMap { it.support.ankiMarkers }.distinct()
 
-    /** The standard markers, this app's, and those of [language]. */
-    fun markersFor(language: Language): List<String> = MARKERS + APP_MARKERS + language.support.ankiMarkers
+    /** Pronunciation in the phonetic alphabet; offered only while a pronunciation dictionary is on. */
+    const val PHONETIC_TRANSCRIPTIONS = "phonetic-transcriptions"
+
+    /** The standard markers, this app's, and those of [language]; [transcriptions] keeps [PHONETIC_TRANSCRIPTIONS]. */
+    fun markersFor(language: Language, transcriptions: Boolean = true): List<String> =
+        MARKERS.filter { transcriptions || it != PHONETIC_TRANSCRIPTIONS } + APP_MARKERS + language.support.ankiMarkers
 
     const val SINGLE_GLOSSARY_PREFIX = "single-glossary-"
     const val SINGLE_FREQUENCY_NUMBER_PREFIX = "single-frequency-number-"

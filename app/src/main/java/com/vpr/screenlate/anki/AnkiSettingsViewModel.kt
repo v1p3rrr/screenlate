@@ -90,9 +90,10 @@ class AnkiSettingsViewModel @Inject constructor(
         val own = list.filter { it.isFor(language) }
         val glossaries = own.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
         val frequencies = own.filter { it.frequencyCount > 0 }.map { FieldTemplate.singleFrequencyNumberMarker(it.title) }
+        val transcriptions = own.any { it.enabled && it.pitchCount > 0 }
         connection.copy(
             settings = settings,
-            markers = FieldTemplate.markersFor(language) + (glossaries + frequencies).distinct(),
+            markers = FieldTemplate.markersFor(language, transcriptions) + (glossaries + frequencies).distinct(),
         )
     }.stateIn(
         viewModelScope,

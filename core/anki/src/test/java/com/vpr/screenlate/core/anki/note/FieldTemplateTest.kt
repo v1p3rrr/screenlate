@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.note
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class FieldTemplateTest {
@@ -11,6 +12,16 @@ class FieldTemplateTest {
             mapOf("expression" to "食べる", "reading" to "たべる"),
         )
         assertThat(rendered).isEqualTo("食べる【たべる】 {nope}")
+    }
+
+    @Test
+    fun offersPitchMarkersForJapaneseAndTranscriptionsWithADictionary() {
+        assertThat(FieldTemplate.markersFor(Language.JAPANESE)).contains("pitch-accents")
+        assertThat(FieldTemplate.markersFor(Language.ENGLISH)).doesNotContain("pitch-accents")
+        assertThat(FieldTemplate.markersFor(Language.ENGLISH)).contains(FieldTemplate.PHONETIC_TRANSCRIPTIONS)
+        assertThat(FieldTemplate.markersFor(Language.ENGLISH, transcriptions = false))
+            .doesNotContain(FieldTemplate.PHONETIC_TRANSCRIPTIONS)
+        assertThat(FieldTemplate.isKnown(FieldTemplate.PHONETIC_TRANSCRIPTIONS)).isTrue()
     }
 
     @Test
