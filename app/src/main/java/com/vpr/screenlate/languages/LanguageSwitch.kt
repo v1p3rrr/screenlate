@@ -16,7 +16,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 /**
@@ -88,19 +87,14 @@ class LanguageSwitch @Inject constructor(
         if (files.isEmpty(language.code)) null else files.size(language.code)
 
     /**
-     * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries and models go too, and its downloads
-     * still queued or running are cancelled. Returns false for the last language, which stays on.
+     * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries, models and unfinished downloads go
+     * too. Returns false for the last language, which stays on.
      */
     suspend fun turnOff(language: Language, deleteFiles: Boolean): Boolean = withContext(NonCancellable) {
         if (!profiles.turnOff(language)) return@withContext false
         if (deleteFiles) {
-            val titles = withContext(Dispatchers.IO) { catalog.localCatalog() }.entries
-                .filter { it.sourceLanguage == language.code }
-                .mapTo(hashSetOf()) { it.title }
-            val unfinished = imports.tasks.first().filter { !it.finished && it.name in titles }
-            unfinished.forEach { imports.cancel(it.id) }
             files.delete(language.code)
-            Log.i(TAG, "Turned off ${language.code}: files deleted, ${unfinished.size} downloads cancelled")
+            Log.i(TAG, "Turned off ${language.code}: files deleted")
         } else {
             Log.i(TAG, "Turned off ${language.code}: files kept")
         }

@@ -139,4 +139,21 @@ class LanguageSetupTest {
         )
         assertThat(progress).isEqualTo(InstallProgress(2, "en-ru", 45))
     }
+
+    @Test
+    fun `deleting a language's files cancels downloads of its catalog entries and updates of its dictionaries`() {
+        fun task(name: String, state: ImportTask.State = ImportTask.State.DOWNLOADING) =
+            ImportTask(UUID.randomUUID(), name, state, null, emptyList(), null)
+        val tasks = listOf(
+            task("en-ru"),
+            task("Old English Title"),
+            task("ja-en"),
+            task("Own Import"),
+            task("en-en", ImportTask.State.SUCCEEDED),
+        )
+        val installed = listOf(installed("Old English Title"))
+
+        assertThat(downloadsOf("en", tasks, catalog, installed).map { it.name })
+            .containsExactly("en-ru", "Old English Title")
+    }
 }
