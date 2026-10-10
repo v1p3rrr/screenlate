@@ -38,6 +38,11 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 
 ## Devices
 
+- Compose UI tests (added 2026-10-11) fail inside the bundled Espresso input injector on the API 37 emulator before
+  running the UI checks: `NoSuchMethodException: android.hardware.input.InputManager.getInstance`. Run them on
+  API 30 (or the CI API 34 emulator) until the test dependency supports that platform. The non-UI registry and
+  WorkManager tests run on API 37. This is a test framework failure, not an app exception.
+
 - Emulator AVD `Pixel_10_Pro`: 1280×2856, density 480 (3.0), Android 17 (API 37.2), Play Store image with 16 KB pages. Native libraries (hoshidicts) must be 16 KB aligned: use NDK r28+ or the equivalent linker flags.
 - Starting the emulator with `-no-snapshot-save` boots from its quick-boot snapshot and discards everything done since when it exits: installed builds, app data and settings changed in that run are gone after a restart. Check `dumpsys package <pkg>` (versionName, lastUpdateTime) before relying on a state from an earlier run; on 2026-10-01 the snapshot still held the published v0.1.0 release (`com.vpr.screenlate`) with default settings.
 - `adb`: `D:\Android\Sdk\platform-tools\adb.exe`. In Git Bash set `MSYS_NO_PATHCONV=1`, otherwise device paths like `/sdcard/...` get rewritten to Windows paths.

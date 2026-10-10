@@ -21,6 +21,11 @@ Requests 1–19 are in the previous plan. New ones:
     review"): bugs first, and also translations in all 14 locales, docs, tests, privacy, the GPL boundary and the UI
     rules.
 
+24. (2026-10-11) Fix the four findings from the review against `2215893`: keep engine preparation and queries atomic,
+    isolate Yomitan dictionary settings by profile language, reset Anki editors on language switches, and offer to
+    cancel initial downloads when turning a language off before it has installed files. Add regression tests and
+    verify the fixes, including the UI on the emulator.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -356,6 +361,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-10-11: request 24 implemented: preparation and queries share the registry lock; Yomitan imports preserve
+  other languages' switches and priority slots; Anki editor drafts and refresh answers are isolated by language;
+  initial downloads count in the turn-off dialog before files exist. Ten regression tests added. Unit and page
+  tests pass, registry tests pass on API 37 and Compose/queue tests on API 30. Phone checks remain open.
 
 - 2026-10-10: plan written from the decisions of `2026-10-09-more-languages.md` and the owner's answers of the day
   (pronunciation dictionaries, scope, turning a language off, catalog threshold, links to unlicensed dictionaries,
