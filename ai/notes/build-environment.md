@@ -34,6 +34,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Bash heredocs in this environment turn `\\` into `\`, even with a quoted delimiter. Write files that contain backslashes (regexes, escapes) with the Write/Edit tools.
 - `cd` inside a Bash call can move the session's working directory; use absolute paths.
 - `/tmp` in Git Bash is not the same path Windows Python sees; pipe data into Python through stdin or use the scratchpad directory.
+- A new `git worktree` (e.g. of main for cherry-picks) has no hoshidicts submodule and no `local.properties`: before building there, copy `local.properties` and run `git submodule update --init --recursive`, or CMake fails with "does not contain a CMakeLists.txt file".
 
 ## Devices
 
