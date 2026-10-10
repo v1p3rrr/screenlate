@@ -11,8 +11,10 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   build of `languages/main` (CI builds only pushes to main and pull requests; a manual run of `ci.yml` on
   `languages/main` gives its APK); then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
   release, backup and restore), then stage B (Chinese, Korean).
-- Pending owner decision: release v0.2.3 from main with the bubble glide fix (see the log entry "bubble pull-out
-  glide").
+- Release v0.2.3 from main with the bubble glide fix once the owner has checked it on the phone (debug build
+  `screenlate-debug-c45edd8` of `languages/main`, CI run 38085087448, has the same fix). Owner's decisions
+  (2026-10-11): version v0.2.3, notes name the fix in one sentence (`.github/release-notes/v0.2.3.md`). On the
+  owner's "ok": tag `v0.2.3` on main and push the tag.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
 
@@ -908,5 +910,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - Owner: can 0.2.2 be re-released as a hotfix? No: a rebuilt 0.2.2 has the same version code (202), and the app's
   update check (`Releases.isNewer`) offers only a higher one, so users who updated would never get it. The fix ships
   as v0.2.3 from main (main = 0.2.2 + the bubble fix), on the owner's command.
+- Owner (2026-10-11): release after checking the fix on the phone, as v0.2.3, with notes that name the bubble fix
+  (one sentence). A flaky build-logic test (`DownloadCacheTest`: zip entries carried the current time, so two
+  "equal" archives differed across a clock tick) failed a CI run; fixed on both branches.
 - The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
   `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
