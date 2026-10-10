@@ -393,3 +393,17 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   alone. Noticed, not addressed: the merged IPA dictionary holds dozens of variants for common words (about 89 for
   "water", some junk); hoshidicts drops IPA tags; some Wiktionary form-of tags read oddly ("past past participle
   simple and"); "walke" sorts before "walk" (A2 ordering).
+- 2026-10-10: A10–A14 as built. A10: the phonetic transcription marker is offered while an enabled pronunciation
+  dictionary has transcriptions; pitch markers stay Japanese. A11: `MlKitOcrEngine` keeps one recognizer per script
+  (the Japanese model also reads Latin; Devanagari has none); `DeviceOcr` tries ML Kit, then a `ModelOcrEngine` whose
+  installed models read the language (none yet: an empty multibinding); `OcrModelStore` (`files/ocr-models`) checks
+  the pinned SHA-256, unpacks zips with a path guard and swaps versions; a catalog entry of the category `OCR_MODEL`
+  without model, engine, version or checksum is dropped; a language the device cannot read is scanned by the cloud
+  alone, and a device-only scan of it shows a message. Lines carry `rightToLeft` (first strong character) and words
+  split from the right edge. A12: `scripts/frequency/wordfreq_dictionary.py`, wordfreq's `best` list, capitalized
+  copies with the same rank; English top 100K is a 1.0 MB archive (hosting still open). A13: line ends already carry
+  each word's separator (ML Kit gives every word the language's, Lens its own), so "give up" broken across lines is
+  found (checked on the emulator); a period ends a sentence unless a letter or digit follows at once or it closes an
+  abbreviation (`LanguageSupport.endsSentence`); "no" left out of the English list. A14: NOTICE (QuickJS-ng, the
+  Yomitan language code, wordfreq data), docs, and an instrumented test of the English path (deinflection, form-of,
+  phrase, a table cut short).
