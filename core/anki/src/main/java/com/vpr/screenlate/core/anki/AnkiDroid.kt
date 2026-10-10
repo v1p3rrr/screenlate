@@ -47,7 +47,8 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
     // e.g. after the user switched collections or deleted a note type.
 
     override suspend fun decks(): List<AnkiDeck> = query {
-        api.deckList.orEmpty().map { (id, name) -> AnkiDeck(id, name) }.sortedBy { it.name.lowercase() }
+        val decks = api.deckList.orEmpty().map { (id, name) -> AnkiDeck(id, name) }
+        withDefaultDeck(decks).sortedBy { it.name.lowercase() }
     }
 
     override suspend fun models(): List<AnkiModel> = query {
@@ -160,3 +161,16 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
         private const val DECK_SEPARATOR = "::"
     }
 }
+
+/**
+ * [decks] with Anki's default deck. Anki never deletes it (removing it only resets its name), but AnkiDroid leaves it out
+ * of the deck list, and answers nothing when asked for it by id, while it is empty and other decks exist; notes can
+ * still be added to it. Its real name is unknown then, so it is listed as "Default". An empty list (AnkiDroid did not
+ * answer) stays empty.
+ */
+internal fun withDefaultDeck(decks: List<AnkiDeck>): List<AnkiDeck> {
+    if (decks.isEmpty() || decks.any { it.id == AddContentApi.DEFAULT_DECK_ID }) return decks
+    return decks + AnkiDeck(AddContentApi.DEFAULT_DECK_ID, DEFAULT_DECK_NAME)
+}
+
+private const val DEFAULT_DECK_NAME = "Default"
