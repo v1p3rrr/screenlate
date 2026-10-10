@@ -322,6 +322,9 @@ Per-language checklist (every language branch):
 
 - Before Russian: Paddle against Tesseract on real screenshots; MNN against ONNX Runtime by size and speed; the
   chosen engine fills the A11 slot (runtime in the APK, detector and the East Slavic recognizer as downloads).
+- With the first downloadable model: the Dictionaries page block of turned-off languages lists only languages with
+  dictionaries, and its size and delete text leave models out, although the delete removes them; count the models in
+  (the wording needs all 14 locales).
 - Russian: forms from the dictionaries, the second form-of step, stress marks in readings, OpenRussian built and
   hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
 - Polish: forms from the dictionary (pl→en 22 MB). Turkish: dotted and dotless i in case folding. Vietnamese: words of
@@ -407,3 +410,6 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   abbreviation (`LanguageSupport.endsSentence`); "no" left out of the English list. A14: NOTICE (QuickJS-ng, the
   Yomitan language code, wordfreq data), docs, and an instrumented test of the English path (deinflection, form-of,
   phrase, a table cut short).
+- 2026-10-10: second review of the multi-language change. Deleting a language's files also cancels updates of its
+  dictionaries, from the turn-off dialog and from the Dictionaries page; the block of turned-off languages leaves models
+  out until the first downloadable model (stage D).
