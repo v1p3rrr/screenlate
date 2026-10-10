@@ -15,7 +15,6 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
-import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -62,13 +61,6 @@ data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry:
  */
 internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<AudioSource>): List<AudioSourceFailure> =
     failures.filter { it.source in sources }.sortedBy { sources.indexOf(it.source) }
-
-/**
- * Whether lookups would find no term dictionary: none of [dictionaries] is on, has terms and is for [language]. Missing
- * files are a card of their own.
- */
-internal fun noTermDictionaries(dictionaries: List<DictionaryEntity>, language: Language): Boolean =
-    CatalogCategory.MAIN in missingCategories(language, dictionaries, Catalog(emptyList()))
 
 /** Imports not finished yet: how many, and the running one's name and percent, if known. */
 data class InstallProgress(val queued: Int, val current: String?, val percent: Int?)

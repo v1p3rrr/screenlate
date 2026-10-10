@@ -80,27 +80,17 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var askMobileData by rememberSaveable { mutableStateOf(false) }
-    var confirming by remember { mutableStateOf(false) }
-    // The screen closes once the downloads are queued and the notification question, if asked, is answered.
-    var queued by remember { mutableStateOf(false) }
+    val confirmation by viewModel.confirmed.collectAsStateWithLifecycle()
+    // The screen closes once the downloads are queued and the notification question, if asked, is answered. A
+    // recreated screen has lost the question's explanation dialog, so it does not wait for it.
     var asking by remember { mutableStateOf(false) }
-    var finished by remember { mutableStateOf(false) }
-    val askNotifications = rememberImportNotificationsAsk(
-        onAnswered = {
-            asking = false
-            if (queued) finished = true
-        },
-    )
+    val askNotifications = rememberImportNotificationsAsk(onAnswered = { asking = false })
     val confirm = {
-        confirming = true
         asking = askNotifications()
-        viewModel.confirm {
-            queued = true
-            if (!asking) finished = true
-        }
+        viewModel.confirm()
     }
     // The permission's answer arrives before the screen is resumed, and navigation waits for that.
-    if (finished) {
+    if (confirmation == LanguageSetupViewModel.Confirmation.QUEUED && !asking) {
         LifecycleResumeEffect(Unit) {
             onDone()
             onPauseOrDispose {}
@@ -116,7 +106,7 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
         bottomBar = {
             ConfirmBar(
                 state = state,
-                enabled = state.canConfirm && !confirming,
+                enabled = state.canConfirm && confirmation == LanguageSetupViewModel.Confirmation.NONE,
                 onConfirm = {
                     val metered = context.getSystemService(ConnectivityManager::class.java)?.isActiveNetworkMetered == true
                     if (metered && state.totals.downloadBytes > MOBILE_DATA_ASK_BYTES) askMobileData = true else confirm()

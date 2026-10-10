@@ -121,6 +121,15 @@ class LanguageSetupTest {
     }
 
     @Test
+    fun `an enabled term dictionary of the language or of no stated language covers the main category`() {
+        assertThat(missingCategories(Language.ENGLISH, listOf(installed("any", source = null)), catalog)).isEmpty()
+        assertThat(missingCategories(Language.ENGLISH, listOf(installed("en-ru").copy(enabled = false)), catalog))
+            .containsExactly(CatalogCategory.MAIN)
+        assertThat(missingCategories(Language.ENGLISH, listOf(installed("en-freq", terms = 0)), catalog))
+            .containsExactly(CatalogCategory.MAIN)
+    }
+
+    @Test
     fun `the install progress counts the unfinished imports and names the running one`() {
         fun task(name: String, state: ImportTask.State, percent: Int? = null) =
             ImportTask(UUID.randomUUID(), name, state, percent, emptyList(), null)

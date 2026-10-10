@@ -242,7 +242,7 @@ fun DictionariesScreen(
                         links = state.links[dictionary.id],
                         remoteHosts = state.remoteCss[dictionary.title].orEmpty(),
                         sort = if (section.kind == DictionaryKind.FREQUENCY) {
-                            SortChoice(dictionary.id in state.sortDictionaryIds) { viewModel.setSortDictionary(dictionary) }
+                            SortChoice(dictionary.id == state.sortDictionaryId) { viewModel.setSortDictionary(dictionary) }
                         } else {
                             null
                         },

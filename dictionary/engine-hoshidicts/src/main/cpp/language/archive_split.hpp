@@ -19,8 +19,9 @@ struct ArchiveSplit {
 };
 
 // Reads the term banks of the archive at [archive]; when they hold form-of items, writes an archive without them to
-// [output] and returns them in the table. Japanese dictionaries (index `sourceLanguage` "ja") are left as they are:
-// their lookup runs in hoshidicts, which keeps such rows. Archives this cannot read are left to hoshidicts as well.
+// [output] and returns them in the table. Only dictionaries whose index names a source language other than Japanese are
+// split: Japanese lookup runs in hoshidicts, which keeps such rows, and a dictionary without a language serves it too.
+// Archives this cannot read are left to hoshidicts as well.
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output);
 
 }  // namespace screenlate_language

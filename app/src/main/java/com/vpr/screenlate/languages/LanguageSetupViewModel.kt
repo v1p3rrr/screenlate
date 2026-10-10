@@ -113,14 +113,22 @@ class LanguageSetupViewModel @Inject constructor(
         choices.value += item.entry.id to ticked
     }
 
-    /** Turns the language on with the ticked downloads queued; [onDone] runs once they are. */
-    fun confirm(onDone: () -> Unit) {
+    private val confirmation = MutableStateFlow(Confirmation.NONE)
+
+    /** How far the confirmation got; it outlives the screen's recreation, e.g. on rotation. */
+    val confirmed: StateFlow<Confirmation> = confirmation
+
+    /** Turns the language on with the ticked downloads queued, once; later calls do nothing. */
+    fun confirm() {
+        if (!confirmation.compareAndSet(Confirmation.NONE, Confirmation.TURNING_ON)) return
         val downloads = state.value.downloads
         viewModelScope.launch {
             switch.turnOn(language, downloads, firstRun)
-            onDone()
+            confirmation.value = Confirmation.QUEUED
         }
     }
+
+    enum class Confirmation { NONE, TURNING_ON, QUEUED }
 
     private data class GlossPick(val code: String?)
 

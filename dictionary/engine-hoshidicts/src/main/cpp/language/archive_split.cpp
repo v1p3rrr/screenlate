@@ -347,15 +347,16 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
   Compressors compressors;
   if (compressors.decompressor == nullptr || compressors.compressor == nullptr) return split;
 
+  // A dictionary without a source language also serves Japanese lookups, which would lose the rows moved out.
+  bool other_language = false;
   for (const auto& entry : *entries) {
     if (entry.name != "index.json") continue;
     const auto content = inflate(file, entry, compressors.decompressor);
     IndexLanguage index;
-    if (content && !glz::read<glz::opts{.error_on_unknown_keys = false}>(index, *content) &&
-        index.sourceLanguage == "ja") {
-      return split;
-    }
+    other_language = content && !glz::read<glz::opts{.error_on_unknown_keys = false}>(index, *content) &&
+                     index.sourceLanguage && !index.sourceLanguage->empty() && *index.sourceLanguage != "ja";
   }
+  if (!other_language) return split;
 
   std::error_code error;
   try {

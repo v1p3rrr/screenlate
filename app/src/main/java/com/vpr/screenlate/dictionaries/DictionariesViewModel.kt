@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -96,15 +97,15 @@ data class DictionariesState(
     val shown: Language = Language.JAPANESE,
     val tasks: List<ImportTask> = emptyList(),
     val catalog: List<CatalogGroup> = emptyList(),
-    /** The frequency dictionaries used for sorting, one per turned-on language. */
-    val sortDictionaryIds: Set<Long> = emptySet(),
+    /** The frequency dictionary that sorts the [shown] language's results. */
+    val sortDictionaryId: Long? = null,
     /** Website and download links by dictionary id. */
     val links: Map<Long, DictionaryLinks> = emptyMap(),
     /** Hosts that the styles of a switched on dictionary load files from, by dictionary title. */
     val remoteCss: Map<String, List<String>> = emptyMap(),
     /** Ids of the dictionaries whose files are gone. */
     val withoutFiles: Set<Long> = emptySet(),
-    /** Bytes on disk by dictionary id; empty until measured. */
+    /** Bytes on disk by dictionary id, for the dictionaries in [others]; empty until measured. */
     val sizes: Map<Long, Long> = emptyMap(),
     val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
     val loaded: Boolean = false,
@@ -143,8 +144,10 @@ class DictionariesViewModel @Inject constructor(
         catalog.entries(),
         combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
-        repository.dictionaries
-            .map { FileChecks(remoteCss(), withoutFiles(), sizes(it)) }
+        combine(repository.dictionaries, profiles.state.map { it.turnedOn }.distinctUntilChanged(), ::Pair)
+            .map { (dictionaries, turnedOn) ->
+                FileChecks(remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)))
+            }
             .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes) } ?: FileChecks()) },
     ) { dictionaries, tasks, entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
@@ -158,10 +161,7 @@ class DictionariesViewModel @Inject constructor(
             shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             catalog = groupCatalog(items.filter { it.entry.sourceLanguage == shown.code }, shown),
-            sortDictionaryIds = profileState.turnedOn.mapNotNull { language ->
-                val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 && it.isFor(language) }
-                (frequencies.firstOrNull { it.id == sortIds[language] } ?: frequencies.firstOrNull())?.id
-            }.toSet(),
+            sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
             },
@@ -275,10 +275,10 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { repository.setLanguages(dictionary.id, source, target) }
     }
 
-    /** Sorts the results of [dictionary]'s language by it; one without a language sorts the active language's. */
+    /** Sorts the results of [dictionary]'s language by it; one without a language sorts the shown language's. */
     fun setSortDictionary(dictionary: DictionaryEntity) {
+        val language = Language.of(dictionary.sourceLanguage) ?: shownLanguage.language.value
         viewModelScope.launch {
-            val language = Language.of(dictionary.sourceLanguage) ?: profiles.current().active
             repository.setSortDictionary(language, dictionary.id)
         }
     }
@@ -368,15 +368,29 @@ internal fun reordered(all: List<DictionaryEntity>, ordered: List<DictionaryEnti
     return all.map { if (it.id in moved && next.hasNext()) next.next() else it }
 }
 
+/**
+ * The frequency dictionary that sorts a language's results: the [stored] choice while it is among the enabled frequency
+ * dictionaries of [dictionaries], otherwise the first of them, as lookups do.
+ */
+internal fun sortDictionaryId(dictionaries: List<DictionaryEntity>, stored: Long?): Long? {
+    val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 }
+    return (frequencies.firstOrNull { it.id == stored } ?: frequencies.firstOrNull())?.id
+}
+
+/** Dictionaries with a source language that is not turned on. */
+private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: List<Language>): List<DictionaryEntity> {
+    val on = turnedOn.mapTo(hashSetOf()) { it.code }
+    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
+}
+
 /** Dictionaries with a source language that is not turned on, by language, ordered by the language's name. */
 internal fun otherLanguages(
     dictionaries: List<DictionaryEntity>,
     turnedOn: List<Language>,
     sizes: Map<Long, Long>,
 ): List<OtherLanguage> {
-    val on = turnedOn.mapTo(hashSetOf()) { it.code }
     val locale = Locale.getDefault()
-    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
+    return ofOtherLanguages(dictionaries, turnedOn)
         .groupBy { it.sourceLanguage!! }
         .map { (code, list) ->
             val bytes = list.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }

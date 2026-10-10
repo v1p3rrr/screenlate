@@ -63,8 +63,7 @@ class DictionaryRepository @Inject constructor(
     var cachedDictionaries: List<DictionaryEntity>? = null
         private set
 
-    /** The frequency dictionary chosen for sorting; null means the first enabled one. */
-    /** The frequency dictionary chosen for sorting [language]'s results; each language has its own. */
+    /** The frequency dictionary chosen for sorting [language]'s results; null means the first enabled one. */
     fun sortDictionaryId(language: Language): Flow<Long?> = preferences.data.map { it[sortKey(language)] }
 
     suspend fun getAll(): List<DictionaryEntity> = dao.getAll()
@@ -178,10 +177,6 @@ class DictionaryRepository @Inject constructor(
             ?: sameDictionary(dao.getAll(), title, kind, bundled)
 
     /**
-     * Decodes index texts stored raw by earlier versions (a line break as a backslash and `n`), once; see
-     * [decodeIndexText].
-     */
-    /**
      * Gives dictionaries that earlier imports registered under index.json's `all` the languages of their catalog entry,
      * or none, so lookups of their language reach them again.
      */
@@ -197,6 +192,10 @@ class DictionaryRepository @Inject constructor(
         if (changed) reloadLocked()
     }
 
+    /**
+     * Decodes index texts stored raw by earlier versions (a line break as a backslash and `n`), once; see
+     * [decodeIndexText].
+     */
     suspend fun decodeStoredTexts() = mutex.withLock {
         if (preferences.data.first()[TEXTS_DECODED] == true) return@withLock
         for (dictionary in dao.getAll()) {

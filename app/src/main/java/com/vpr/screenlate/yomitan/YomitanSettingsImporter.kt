@@ -22,8 +22,12 @@ import javax.inject.Inject
 
 enum class YomitanSection { DICTIONARIES, ANKI, AUDIO, LOOKUP, APPEARANCE }
 
-/** What an import applied and what it had to skip, per section. */
-/** @property language the language whose settings were changed, named when several are turned on or it is not the active one. */
+/**
+ * What an import applied and what it had to skip, per section.
+ *
+ * @property language the language whose settings were changed, named when several are turned on or it is not the
+ *   active one.
+ */
 data class ImportSummary(
     val language: Language? = null,
     val dictionaries: DictionaryOutcome? = null,

@@ -60,7 +60,7 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             val maxResults: @Composable ColumnScope.() -> Unit = { MaxResults(settings.maxResults, viewModel::setMaxResults) }
-            // Scan length, single kanji entries and romaji belong to the shown language.
+            // Scan length and single kanji entries belong to the shown language; romaji and the result count are shared.
             val ownRows: @Composable ColumnScope.() -> Unit = {
                 ScanLengthRow(settings.scanLength, viewModel::setScanLength)
             }

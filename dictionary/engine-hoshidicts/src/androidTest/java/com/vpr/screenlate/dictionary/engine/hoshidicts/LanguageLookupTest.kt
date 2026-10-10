@@ -68,9 +68,23 @@ class LanguageLookupTest {
         assertThat(engine.isComplete(imported.directory)).isFalse()
     }
 
-    private fun englishDictionary(): File = zip(
+    @Test
+    fun dictionaryWithoutLanguageKeepsItsFormOfRows() = runTest {
+        // Japanese lookups use it too, and they read form-of rows from the term banks.
+        val imported = engine.import(
+            englishDictionary(index = """{"title":"No Language","revision":"1","format":3}"""),
+            File(root, "out"),
+        )
+
+        assertThat(File(imported.directory, FORM_OF_TABLE).exists()).isFalse()
+        assertThat(engine.isComplete(imported.directory)).isTrue()
+    }
+
+    private fun englishDictionary(
+        index: String = """{"title":"Test English","revision":"1","format":3,"sourceLanguage":"en"}""",
+    ): File = zip(
         "en.zip",
-        "index.json" to """{"title":"Test English","revision":"1","format":3,"sourceLanguage":"en"}""".toByteArray(),
+        "index.json" to index.toByteArray(),
         "term_bank_1.json" to """
             [
               ["run","","","v",0,["to move fast on foot"],1,""],

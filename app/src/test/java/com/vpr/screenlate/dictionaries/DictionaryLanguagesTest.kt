@@ -51,4 +51,17 @@ class DictionaryLanguagesTest {
         assertThat(unmeasured.single().code).isEqualTo("ko")
         assertThat(unmeasured.single().bytes).isNull()
     }
+
+    @Test
+    fun `the stored sort dictionary counts while it is an enabled frequency dictionary, else the first one sorts`() {
+        fun frequencies(id: Long, enabled: Boolean = true) =
+            dictionary(id, "en").copy(kind = DictionaryKind.FREQUENCY, termCount = 0, frequencyCount = 1, enabled = enabled)
+        val list = listOf(dictionary(1, "en"), frequencies(2), frequencies(3), frequencies(4, enabled = false))
+
+        assertThat(sortDictionaryId(list, stored = 3)).isEqualTo(3L)
+        assertThat(sortDictionaryId(list, stored = null)).isEqualTo(2L)
+        assertThat(sortDictionaryId(list, stored = 4)).isEqualTo(2L)
+        assertThat(sortDictionaryId(list, stored = 1)).isEqualTo(2L)
+        assertThat(sortDictionaryId(listOf(dictionary(1, "en")), stored = 1)).isNull()
+    }
 }
