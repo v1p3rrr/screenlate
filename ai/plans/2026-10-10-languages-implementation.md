@@ -373,3 +373,14 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   summary names it. Home checks the Anki setup of every turned-on language and audio failures against all their
   sources; its Anki summary shows the active language.
 - 2026-10-10: the merged transcription dictionary per language; a confirmed language is turned on and active at once.
+- 2026-10-10: A5 as built. First run: the application settles it before anything writes preferences; any preference
+  or installed dictionary means an upgrade, which keeps Japanese on without asking. The bundled dictionaries install
+  only while Japanese is on and the first run is settled; turning Japanese on again after its dictionaries were
+  deleted installs them anew. The download screen's own slot for a gloss language (when the interface language is
+  English, the learned language or has no dictionaries) starts empty; downloads go smallest first within each
+  category; the free space needed is the size after import plus the largest archive. Size after import is estimated
+  from the archive: ×9 for pronunciation dictionaries (measured ×8.1), ×3 for the others (measured ×2–3). The screen
+  closes once the downloads are queued and the notification question is answered. Home shows the languages card even
+  with one language; "Turn off the chosen language" acts on the active one; deleting a language's files also cancels
+  its unfinished downloads. Imports take languages from the catalog entry first, then index.json, where Wiktionary's
+  `all` names no language; dictionaries registered under `all` earlier get their catalog language at start.
