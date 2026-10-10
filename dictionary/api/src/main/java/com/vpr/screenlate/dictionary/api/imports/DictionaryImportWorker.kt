@@ -16,6 +16,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -29,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -55,6 +57,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val catalog: DictionaryCatalog,
     private val installedLanguages: InstalledLanguages,
     private val imports: DictionaryImports,
+    private val profiles: LanguageProfiles,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
@@ -178,7 +181,11 @@ class DictionaryImportWorker @AssistedInject constructor(
             Log.w(TAG, "Bundled install skipped: paused until the app is updated")
             return emptyList()
         }
-        return bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } }.map { asset ->
+        // Their language may be off, or not chosen yet on a first run; turning it on installs them.
+        val wanted = !profiles.firstRunPending.first() && bundled.language in profiles.current().turnedOn
+        if (!wanted) Log.i(TAG, "Bundled install skipped: their language is off")
+        val pending = if (wanted) bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } } else emptyList()
+        return pending.map { asset ->
             Log.i(TAG, "Installing ${asset.name} (${asset.size shr 10} KB)")
             setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
@@ -195,6 +202,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         }.also {
             repository.fillBundledTagNotes(bundled::tagNotesOf)
             repository.decodeStoredTexts()
+            repository.replaceIndexAll(catalogEntries)
             try {
                 installedLanguages.fillOnce()
             } catch (e: CancellationException) {

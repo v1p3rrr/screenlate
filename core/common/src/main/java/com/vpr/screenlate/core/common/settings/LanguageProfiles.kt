@@ -3,11 +3,13 @@ package com.vpr.screenlate.core.common.settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.vpr.screenlate.core.common.Language
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -37,6 +39,41 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
     val cachedState: LanguageProfilesState? get() = dataStore.cached(::read)
 
     suspend fun current(): LanguageProfilesState = state.first()
+
+    /** Whether the app still has to ask which language the user learns: a first run not answered yet. */
+    val firstRunPending: Flow<Boolean> = dataStore.data.map { it[FIRST_RUN] == true }.distinctUntilChanged()
+
+    private val settled = CompletableDeferred<Unit>()
+
+    /**
+     * Decides once whether this is a first run, before anything else writes the settings. Settings without the language
+     * state come from a version before languages or from a fresh install: any settings or [hasDictionaries] mean an
+     * upgrade, which keeps Japanese alone; neither means a first run, which asks ([firstRunPending]).
+     */
+    suspend fun settleFirstRun(hasDictionaries: suspend () -> Boolean) {
+        try {
+            val prefs = dataStore.data.first()
+            if (prefs[TURNED_ON] != null || prefs[FIRST_RUN] != null) return
+            val upgrade = prefs.asMap().isNotEmpty() || hasDictionaries()
+            dataStore.edit { edited ->
+                if (edited[TURNED_ON] != null || edited[FIRST_RUN] != null) return@edit
+                if (upgrade) write(edited, LanguageProfilesState.DEFAULT) else edited[FIRST_RUN] = true
+            }
+        } finally {
+            settled.complete(Unit)
+        }
+    }
+
+    /** Returns once [settleFirstRun] has run in this process. */
+    suspend fun awaitFirstRunSettled() = settled.await()
+
+    /** Answers the first run: [language] alone is turned on and active. */
+    suspend fun finishFirstRun(language: Language) {
+        dataStore.edit { prefs ->
+            prefs.remove(FIRST_RUN)
+            write(prefs, LanguageProfilesState(listOf(language), language))
+        }
+    }
 
     /** Makes a turned-on [language] the active one; a language that is off is ignored. */
     suspend fun setActive(language: Language) {
@@ -73,7 +110,10 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
     /** Replaces the whole state, e.g. from a backup; languages this version does not know are already left out. */
     suspend fun restore(state: LanguageProfilesState) {
         if (state.turnedOn.isEmpty()) return
-        dataStore.edit { write(it, state) }
+        dataStore.edit { prefs ->
+            prefs.remove(FIRST_RUN)
+            write(prefs, state)
+        }
     }
 
     private fun write(prefs: MutablePreferences, state: LanguageProfilesState) {
@@ -84,6 +124,9 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
     companion object {
         val TURNED_ON = stringPreferencesKey("languages_turned_on")
         val ACTIVE = stringPreferencesKey("language_active")
+
+        /** Set on a fresh install until the user says which language they learn; see [settleFirstRun]. */
+        val FIRST_RUN = booleanPreferencesKey("languages_first_run")
 
         /** Codes this version does not know (written by a newer one) are skipped; nothing usable means the default. */
         internal fun read(prefs: Preferences): LanguageProfilesState {

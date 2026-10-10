@@ -19,6 +19,8 @@ import com.vpr.screenlate.debug.ImageViewerScreen
 import com.vpr.screenlate.debug.OcrTestScreen
 import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.home.HomeScreen
+import com.vpr.screenlate.languages.FirstRunScreen
+import com.vpr.screenlate.languages.LanguageSetupScreen
 import com.vpr.screenlate.lookup.LookupSettingsScreen
 import com.vpr.screenlate.search.SearchScreen
 import com.vpr.screenlate.settings.AboutScreen
@@ -85,6 +87,13 @@ private object NoticesRoute
 private data class SearchRoute(val query: String = "")
 
 @Serializable
+private object FirstRunRoute
+
+/** Argument names as `LanguageSetupViewModel` reads them. */
+@Serializable
+private data class LanguageSetupRoute(val code: String, val firstRun: Boolean = false)
+
+@Serializable
 private data class ImageViewerRoute(val path: String, val caption: String = "")
 
 /**
@@ -92,20 +101,24 @@ private data class ImageViewerRoute(val path: String, val caption: String = "")
  * @param debugImageCaption text shown above the debug image, to test app text next to text in an image.
  * @param ankiSettingsRequests each increment opens the Anki settings (from the overlay's grey ➕).
  * @param dictionariesRequests each increment opens the Dictionaries screen (from search without a dictionary).
+ * @param firstRun starts on the question which language the user learns.
  */
 @Composable
 fun ScreenlateNavHost(
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
+    firstRun: Boolean = false,
     debugImagePath: String? = null,
     debugImageCaption: String = "",
     ankiSettingsRequests: Int = 0,
     dictionariesRequests: Int = 0,
 ) {
     val navController = rememberNavController()
-    val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: HomeRoute
+    val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: if (firstRun) FirstRunRoute else HomeRoute
     val back: () -> Unit = { navController.fromResumed { popBackStack() } }
     val go: (Any) -> Unit = { route -> navController.fromResumed { navigate(route) } }
+    // After the first run nothing before the home screen stays on the back stack.
+    val home: () -> Unit = { navController.navigate(HomeRoute) { popUpTo(navController.graph.id) { inclusive = true } } }
     LaunchedEffect(ankiSettingsRequests) {
         if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
     }
@@ -130,7 +143,15 @@ fun ScreenlateNavHost(
                 onOpenDictionaries = { go(DictionariesRoute) },
                 onOpenAnki = { go(AnkiRoute) },
                 onOpenAppText = { go(BubbleRoute(showAppText = true)) },
+                onOpenLanguageSetup = { go(LanguageSetupRoute(it.code)) },
             )
+        }
+        composable<FirstRunRoute> {
+            FirstRunScreen(onSetup = { go(LanguageSetupRoute(it.code, firstRun = true)) }, onDone = home)
+        }
+        composable<LanguageSetupRoute> { entry ->
+            val firstRunSetup = entry.toRoute<LanguageSetupRoute>().firstRun
+            LanguageSetupScreen(onBack = back, onDone = if (firstRunSetup) home else back)
         }
         composable<SettingsRoute> {
             SettingsScreen(

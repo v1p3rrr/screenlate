@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -59,13 +60,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // The splash screen stays until the settings are read: an e-ink screen would flash a frame in the colour theme.
-        installSplashScreen().setKeepOnScreenCondition { viewModel.theme.value == null }
+        installSplashScreen().setKeepOnScreenCondition { viewModel.theme.value == null || viewModel.firstRun.value == null }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState == null) handleOpenRequest(intent)
         debugFullscreen()
         setContent {
             val theme = viewModel.theme.collectAsStateWithLifecycle().value ?: return@setContent
+            val pending = viewModel.firstRun.collectAsStateWithLifecycle().value ?: return@setContent
+            // Read once: answering the first run must not change the start screen under the restored back stack.
+            val firstRun = rememberSaveable { pending }
             ScreenlateTheme(
                 themeMode = theme.mode,
                 eInk = theme.eInk,
@@ -75,6 +79,7 @@ class MainActivity : ComponentActivity() {
                 ScreenlateNavHost(
                     themeMode = theme.mode,
                     onThemeModeChange = viewModel::setThemeMode,
+                    firstRun = firstRun,
                     debugImagePath = debugImagePath(),
                     debugImageCaption = intent.getStringExtra(EXTRA_DEBUG_CAPTION).orEmpty(),
                     ankiSettingsRequests = ankiSettingsRequests,

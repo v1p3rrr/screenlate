@@ -2,6 +2,7 @@ package com.vpr.screenlate.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,12 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -44,8 +48,14 @@ import com.vpr.screenlate.audio.localNetworkMissing
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
+import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
+import com.vpr.screenlate.languages.AddLanguageDialog
+import com.vpr.screenlate.languages.TurnOffLanguageDialog
+import com.vpr.screenlate.languages.label
 import com.vpr.screenlate.overlay.OverlayServiceStatus
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
@@ -65,6 +75,7 @@ fun HomeScreen(
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
     onOpenAppText: () -> Unit,
+    onOpenLanguageSetup: (Language) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     updates: UpdateViewModel = hiltViewModel(),
 ) {
@@ -75,6 +86,9 @@ fun HomeScreen(
     val serviceRunning by OverlayServiceStatus.running.collectAsStateWithLifecycle()
     val bubbleVisible by viewModel.bubbleVisible.collectAsStateWithLifecycle()
     val resetGaveUpUntold by viewModel.resetGaveUpUntold.collectAsStateWithLifecycle()
+    val languages by viewModel.languages.collectAsStateWithLifecycle()
+    val turnOffRequest by viewModel.turnOffRequest.collectAsStateWithLifecycle()
+    var addingLanguage by remember { mutableStateOf(false) }
     val settingsBadge = rememberBackgroundTipBadge()
     val openAccessibilitySettings = rememberOpenAccessibilitySettings()
     LaunchedEffect(Unit) { updates.checkIfDue() }
@@ -123,6 +137,32 @@ fun HomeScreen(
             }
             if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
 
+            LanguagesCard(
+                languages = languages,
+                canAdd = Language.entries.size > languages.turnedOn.size,
+                onSelect = viewModel::setActive,
+                onAdd = { addingLanguage = true },
+                onTurnOff = viewModel::requestTurnOff,
+            )
+            if (addingLanguage) {
+                AddLanguageDialog(
+                    languages = Language.entries - languages.turnedOn.toSet(),
+                    onPick = { language ->
+                        addingLanguage = false
+                        viewModel.add(language, onSetup = onOpenLanguageSetup)
+                    },
+                    onDismiss = { addingLanguage = false },
+                )
+            }
+            turnOffRequest?.let { request ->
+                TurnOffLanguageDialog(
+                    language = request.language,
+                    filesBytes = request.filesBytes,
+                    onTurnOff = { delete -> viewModel.turnOff(request.language, delete) },
+                    onDismiss = viewModel::cancelTurnOff,
+                )
+            }
+
             SectionCard(title = stringResource(R.string.home_search_title)) {
                 Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                     Text(stringResource(R.string.home_search_open), textAlign = TextAlign.Center)
@@ -164,6 +204,44 @@ fun HomeScreen(
                     Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
                 }
                 Text(stringResource(R.string.settings_title), modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+    }
+}
+
+/**
+ * The turned-on languages as chips, the selected one active; "Add a language" while others can be turned on. With
+ * several, the active one can be turned off.
+ */
+@Composable
+private fun LanguagesCard(
+    languages: LanguageProfilesState,
+    canAdd: Boolean,
+    onSelect: (Language) -> Unit,
+    onAdd: () -> Unit,
+    onTurnOff: (Language) -> Unit,
+) {
+    SectionCard(title = stringResource(R.string.home_languages_title)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            languages.turnedOn.forEach { language ->
+                FilterChip(
+                    selected = language == languages.active,
+                    onClick = { onSelect(language) },
+                    label = { Text(language.displayName()) },
+                )
+            }
+            if (canAdd) {
+                AssistChip(
+                    onClick = onAdd,
+                    label = { Text(stringResource(R.string.home_language_add)) },
+                    leadingIcon = { Icon(painterResource(R.drawable.ic_add), contentDescription = null) },
+                )
+            }
+        }
+        if (languages.several) {
+            Hint(stringResource(R.string.home_languages_hint))
+            TextButton(onClick = { onTurnOff(languages.active) }) {
+                Text(stringResource(R.string.home_language_turn_off))
             }
         }
     }
@@ -275,13 +353,28 @@ private fun ProblemsCard(
                             }
                         }
                         is HomeProblem.NoTermDictionaries -> {
-                            if (problem.several) {
-                                problem.languages.forEach { language ->
-                                    Text(stringResource(R.string.problems_no_dictionaries_language, language.displayName()))
+                            problem.languages.forEach { (language, categories) ->
+                                if (CatalogCategory.MAIN in categories) {
+                                    Text(
+                                        if (problem.several) {
+                                            stringResource(R.string.problems_no_dictionaries_language, language.displayName())
+                                        } else {
+                                            stringResource(R.string.problems_no_dictionaries)
+                                        },
+                                    )
                                 }
-                            } else {
-                                Text(stringResource(R.string.problems_no_dictionaries))
+                                val others = categories - CatalogCategory.MAIN
+                                if (others.isNotEmpty()) {
+                                    Text(
+                                        stringResource(
+                                            R.string.problems_missing_categories,
+                                            language.displayName(),
+                                            others.map { stringResource(it.label) }.joinToString(", "),
+                                        ),
+                                    )
+                                }
                             }
+                            problem.installing?.let { InstallProgressLine(it) }
                             TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                         }
                         is HomeProblem.AudioSources -> {
@@ -309,6 +402,23 @@ private fun ProblemsCard(
                 }
             }
         }
+    }
+}
+
+/** The imports still to finish, the running one's name and its progress. */
+@Composable
+private fun InstallProgressLine(progress: InstallProgress) {
+    Text(
+        stringResource(R.string.problems_installing, progress.queued),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.primary,
+    )
+    progress.current?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+    val percent = progress.percent
+    if (percent != null) {
+        LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth())
+    } else {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
 }
 

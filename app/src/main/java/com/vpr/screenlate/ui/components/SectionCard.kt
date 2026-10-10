@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/** A card with a [title]; [info] adds an ⓘ next to it with a longer explanation. */
 @Composable
 fun SectionCard(
     title: String,
     modifier: Modifier = Modifier,
+    info: String? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
@@ -23,7 +25,11 @@ fun SectionCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
+            if (info == null) {
+                Text(title, style = MaterialTheme.typography.titleMedium)
+            } else {
+                LabelWithInfo(title, info, style = MaterialTheme.typography.titleMedium)
+            }
             content()
         }
     }

@@ -68,7 +68,9 @@ All settings live in one preferences DataStore. Its provider keeps the settings 
 
 ## Languages
 
-Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; only Japanese is implemented so far.
+Language is a parameter of OCR, lookup and rendering (`core.common.Language`). Whatever differs between languages lives behind `LanguageSupport`; Japanese and English are implemented so far.
+
+`LanguageProfiles` (`core:common`) keeps the turned-on languages and the active one in the preferences. Settings kept per language use their old key for Japanese and the key with `_<code>` for other languages. The application settles the first run before anything writes preferences: any stored preference or installed dictionary means an upgrade, which keeps Japanese on; a fresh install opens `FirstRunScreen` first. `LanguageSwitch` (`app`) turns a language on, queueing the downloads chosen on `LanguageSetupScreen` as ordinary imports, and off, optionally deleting its dictionaries and cancelling their unfinished downloads. The bundled dictionaries are Japanese, so the import worker installs them only while Japanese is on. A dictionary belongs to its source language, which an import takes from the matching catalog entry first, then from index.json (where Wiktionary's `all` names no language), then from the replaced dictionary, then from the archive's content. The start screen reports, per turned-on language, the mandatory catalog categories that no enabled dictionary covers, with the progress of the queued imports.
 
 The interface language is separate: string resources in 14 locales, chosen in Appearance or in the system's app language settings (Android 13 and newer). The system applies a per-app language to activities only, so the application object and the accessibility service return resources in that language themselves (`AppLanguageResources`); the bubble, popup, crop editor and notifications follow it.
 

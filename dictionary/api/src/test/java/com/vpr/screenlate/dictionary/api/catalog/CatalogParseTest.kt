@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import java.util.Locale
 import org.junit.Test
 
@@ -52,6 +53,8 @@ class CatalogParseTest {
         assertThat(entry.description(Locale.GERMAN)).isEqualTo("Eigener Text")
         assertThat(entry.downloadBytes).isEqualTo(1000L)
         assertThat(entry.installedBytes).isEqualTo(5000L)
+        assertThat(entry.copy(installedSize = null).installedBytes).isEqualTo(3000L)
+        assertThat(entry.copy(installedSize = null, kind = DictionaryKind.PITCH).installedBytes).isEqualTo(9000L)
         assertThat(catalog.mandatory("it")).containsExactly(CatalogCategory.MAIN, CatalogCategory.FORMS)
     }
 

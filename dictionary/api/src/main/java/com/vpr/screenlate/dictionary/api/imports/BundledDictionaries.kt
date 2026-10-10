@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.decodeIndexText
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -47,6 +48,9 @@ class BundledDictionaries @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataStore: DataStore<Preferences>,
 ) {
+    /** The language of every shipped dictionary; they are installed while it is turned on. */
+    val language: Language = Language.JAPANESE
+
     /** Indexes already read, by [Asset.key]; reading one inflates the archive up to its `index.json`. */
     private val indexes = ConcurrentHashMap<String, Copy>()
 
@@ -126,6 +130,19 @@ class BundledDictionaries @Inject constructor(
             prefs[INSTALLED] = withKeys(prefs[INSTALLED].orEmpty(), listOf(asset))
             prefs[RECORDS] = writeRecords(readRecords(prefs[RECORDS]) + (asset.name to Copy(title, revision)))
             prefs[REPAIR] = prefs[REPAIR].orEmpty() - asset.name
+        }
+    }
+
+    /**
+     * Brings every shipped archive back with the next bundled install, the deleted ones too: their language was turned
+     * on again with none of its dictionaries left.
+     */
+    suspend fun reinstallAll() {
+        val names = all().map { it.name }
+        Log.i(TAG, "Reinstalling all: $names")
+        dataStore.edit { prefs ->
+            prefs[DECLINED] = prefs[DECLINED].orEmpty() - names.toSet()
+            prefs[REPAIR] = prefs[REPAIR].orEmpty() + names
         }
     }
 

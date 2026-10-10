@@ -61,6 +61,12 @@ interface LanguageSupport {
     val audioTestWord: String
 
     /**
+     * A word with its transcription, the example that explains pronunciation dictionaries (`water → /ˈwɔːtər/`); null
+     * where they hold something else (pitch accents for Japanese).
+     */
+    val pronunciationSample: String? get() = null
+
+    /**
      * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on), and which
      * matches count; null when there is nothing to look up.
      *

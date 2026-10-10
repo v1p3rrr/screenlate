@@ -61,6 +61,37 @@ class LanguageProfilesTest {
     }
 
     @Test
+    fun `a fresh install asks for the language until it is answered`() = runBlocking {
+        profiles.settleFirstRun { false }
+        assertThat(profiles.firstRunPending.first()).isTrue()
+        profiles.settleFirstRun { true }
+        assertThat(profiles.firstRunPending.first()).isTrue()
+        profiles.finishFirstRun(Language.ENGLISH)
+        assertThat(profiles.firstRunPending.first()).isFalse()
+        assertThat(profiles.current()).isEqualTo(LanguageProfilesState(listOf(Language.ENGLISH), Language.ENGLISH))
+    }
+
+    @Test
+    fun `an upgrade keeps Japanese and never asks`() = runBlocking {
+        memory.edit { it[stringPreferencesKey("lookup_scan_length")] = "16" }
+        profiles.settleFirstRun { false }
+        assertThat(profiles.firstRunPending.first()).isFalse()
+        assertThat(memory.data.first()[LanguageProfiles.TURNED_ON]).isEqualTo("ja")
+
+        val withDictionaries = LanguageProfiles(MemoryDataStore())
+        withDictionaries.settleFirstRun { true }
+        assertThat(withDictionaries.firstRunPending.first()).isFalse()
+        assertThat(withDictionaries.current()).isEqualTo(LanguageProfilesState.DEFAULT)
+    }
+
+    @Test
+    fun `a restored backup answers the first run`() = runBlocking {
+        profiles.settleFirstRun { false }
+        profiles.restore(LanguageProfilesState(listOf(Language.ENGLISH), Language.ENGLISH))
+        assertThat(profiles.firstRunPending.first()).isFalse()
+    }
+
+    @Test
     fun `codes of a newer version are skipped`() = runBlocking {
         memory.edit {
             it[LanguageProfiles.TURNED_ON] = "xx, en,en"

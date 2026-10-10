@@ -103,7 +103,8 @@ data class CatalogEntry(
     val downloadBytes: Long get() = if (downloadSize > 0) downloadSize else sizeMb * MIB
 
     /** The space the dictionary takes once imported: measured, or a cautious guess from the archive size. */
-    val installedBytes: Long get() = installedSize ?: (downloadBytes * INSTALLED_PER_DOWNLOADED)
+    val installedBytes: Long
+        get() = installedSize ?: (downloadBytes * if (kind == DictionaryKind.PITCH) PITCH_INSTALLED_PER_DOWNLOADED else INSTALLED_PER_DOWNLOADED)
 
     fun displayTitle(locale: Locale = Locale.getDefault()): String =
         localized(titles, locale)?.let { fill(it, locale) } ?: title
@@ -145,8 +146,12 @@ data class CatalogEntry(
 
 private const val MIB = 1024L * 1024L
 
-/** Imports measured so far stay below it; the free space check prefers a guess too high to one too low. */
+/**
+ * Imports measured so far stay below these: term dictionaries take 2-2.5 times their archive, Wiktionary glossaries 3,
+ * IPA transcriptions 8 (many short rows). The free space check prefers a guess too high to one too low.
+ */
 private const val INSTALLED_PER_DOWNLOADED = 3L
+private const val PITCH_INSTALLED_PER_DOWNLOADED = 9L
 
 /** The key of catalog texts for [locale]: the language, or `zh-Hant` for Chinese in traditional characters. */
 fun localeKey(locale: Locale): String = when {

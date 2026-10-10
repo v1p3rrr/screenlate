@@ -74,10 +74,11 @@ class DictionaryRepository @Inject constructor(
 
     /**
      * Imports a Yomitan archive. The dictionary [replaces] (an update, whose title may differ) or else one with
-     * the same title is replaced and keeps its position and enabled state. Languages missing from index.json are
-     * taken from the matching [catalog] entry (JMdict names none), then from the replaced dictionary, then from the
-     * archive's content ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency
-     * and pitch dictionaries keep only a source language.
+     * the same title is replaced and keeps its position and enabled state. Languages come from the matching [catalog]
+     * entry, which knows them best (JMdict names none, Wiktionary's merged transcriptions name `all` as the source),
+     * then from index.json, then from the replaced dictionary, then from the archive's content
+     * ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency and pitch
+     * dictionaries keep only a source language.
      */
     suspend fun import(
         archive: File,
@@ -100,8 +101,9 @@ class DictionaryRepository @Inject constructor(
             val kind = DictionaryKind.of(metadata)
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
             val known = replaced(replaces, metadata.title, kind, bundled)
-            val source = metadata.sourceLanguage ?: listed?.sourceLanguage ?: known?.sourceLanguage
-            val target = (metadata.targetLanguage ?: listed?.targetLanguage ?: known?.targetLanguage).takeIf { kind.hasTarget }
+            val source = listed?.sourceLanguage ?: indexLanguage(metadata.sourceLanguage) ?: known?.sourceLanguage
+            val target = (listed?.targetLanguage ?: indexLanguage(metadata.targetLanguage) ?: known?.targetLanguage)
+                .takeIf { kind.hasTarget }
             val detected = if (source == null || (target == null && kind.hasTarget)) {
                 runCatching { languageDetector.detect(DictionarySample.of(archive)) }
                     .onFailure { Log.w(TAG, "Detecting the languages failed", it) }
@@ -179,6 +181,22 @@ class DictionaryRepository @Inject constructor(
      * Decodes index texts stored raw by earlier versions (a line break as a backslash and `n`), once; see
      * [decodeIndexText].
      */
+    /**
+     * Gives dictionaries that earlier imports registered under index.json's `all` the languages of their catalog entry,
+     * or none, so lookups of their language reach them again.
+     */
+    suspend fun replaceIndexAll(catalog: List<CatalogEntry>) = mutex.withLock {
+        var changed = false
+        for (dictionary in dao.getAll()) {
+            val fixed = withoutIndexAll(dictionary, catalog)
+            if (fixed == dictionary) continue
+            dao.update(fixed)
+            changed = true
+            Log.i(TAG, "Replaced the language all of a dictionary: ${dictionary.kind}, source ${fixed.sourceLanguage ?: "unknown"}")
+        }
+        if (changed) reloadLocked()
+    }
+
     suspend fun decodeStoredTexts() = mutex.withLock {
         if (preferences.data.first()[TEXTS_DECODED] == true) return@withLock
         for (dictionary in dao.getAll()) {
@@ -417,3 +435,19 @@ data class PreparedLookup(
 private fun sortKey(language: Language) = longPreferencesKey(language.preferenceKey("sort_dictionary_id"))
 private val TEXTS_DECODED = booleanPreferencesKey("index_texts_decoded")
 private const val TAG = "DictionaryRepository"
+
+/** A language code from index.json; `all`, which Wiktionary's merged dictionaries give, names no single language. */
+internal fun indexLanguage(code: String?): String? = code?.takeUnless { it.isBlank() || it == INDEX_ALL }
+
+/** [dictionary] with a language `all` replaced by its [catalog] entry's, or by none. */
+internal fun withoutIndexAll(dictionary: DictionaryEntity, catalog: List<CatalogEntry>): DictionaryEntity {
+    if (dictionary.sourceLanguage != INDEX_ALL && dictionary.targetLanguage != INDEX_ALL) return dictionary
+    val listed = catalog.firstOrNull { it.matches(dictionary) }
+    fun fixed(code: String?, listedCode: String?) = if (code == INDEX_ALL) listedCode else code
+    return dictionary.copy(
+        sourceLanguage = fixed(dictionary.sourceLanguage, listed?.sourceLanguage),
+        targetLanguage = fixed(dictionary.targetLanguage, listed?.targetLanguage).takeIf { dictionary.kind.hasTarget },
+    )
+}
+
+private const val INDEX_ALL = "all"

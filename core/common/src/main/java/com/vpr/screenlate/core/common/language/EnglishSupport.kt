@@ -12,6 +12,7 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val fontSample = "The quick brown fox jumps over the lazy dog"
     override val translationSample = "The weather is nice today. Let's go for a walk."
     override val audioTestWord = "read"
+    override val pronunciationSample = "water → /ˈwɔːtər/"
 
     override val abbreviations = setOf(
         "mr", "mrs", "ms", "dr", "prof", "sr", "jr", "st", "mt", "vs", "etc", "e.g", "i.e", "cf", "approx", "no",

@@ -14,19 +14,25 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
+import com.vpr.screenlate.dictionary.api.catalog.Catalog
+import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
+import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
-import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.languages.LanguageSwitch
+import com.vpr.screenlate.languages.missingCategories
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
@@ -36,6 +42,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -61,7 +68,19 @@ internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<A
  * files are a card of their own.
  */
 internal fun noTermDictionaries(dictionaries: List<DictionaryEntity>, language: Language): Boolean =
-    dictionaries.none { it.enabled && it.termCount > 0 && it.isFor(language) }
+    CatalogCategory.MAIN in missingCategories(language, dictionaries, Catalog(emptyList()))
+
+/** Imports not finished yet: how many, and the running one's name and percent, if known. */
+data class InstallProgress(val queued: Int, val current: String?, val percent: Int?)
+
+internal fun installProgress(tasks: List<ImportTask>): InstallProgress? {
+    val unfinished = tasks.filter { !it.finished }.takeIf { it.isNotEmpty() } ?: return null
+    val running = unfinished.firstOrNull { it.state != ImportTask.State.QUEUED }
+    return InstallProgress(unfinished.size, running?.name?.takeIf { it.isNotEmpty() }, running?.percent)
+}
+
+/** Turning [language] off asks about its files, [filesBytes] on disk; null when it has none. */
+data class TurnOffRequest(val language: Language, val filesBytes: Long?)
 
 /** Something that broke without the user changing Screenlate's settings. */
 sealed interface HomeProblem {
@@ -71,8 +90,16 @@ sealed interface HomeProblem {
     /** Downloaded or imported dictionaries whose files are gone, in one card. */
     data class MissingDictionaries(val dictionaries: List<MissingDictionary>) : HomeProblem
 
-    /** Turned-on languages without an enabled dictionary with definitions; [several] languages are turned on. */
-    data class NoTermDictionaries(val languages: List<Language>, val several: Boolean) : HomeProblem
+    /**
+     * Turned-on languages without a dictionary they cannot work without, with the categories they lack (the main one:
+     * no enabled dictionary with definitions); [several] languages are turned on. While dictionaries are [installing],
+     * the card shows their progress too.
+     */
+    data class NoTermDictionaries(
+        val languages: Map<Language, Set<CatalogCategory>>,
+        val several: Boolean,
+        val installing: InstallProgress? = null,
+    ) : HomeProblem
 
     /** Every audio source that failed recently, in one card. */
     data class AudioSources(val failures: List<AudioSourceFailure>) : HomeProblem
@@ -93,7 +120,43 @@ class HomeViewModel @Inject constructor(
     private val dictionaryReset: DictionaryReset,
     ankiSettings: AnkiSettingsRepository,
     private val profiles: LanguageProfiles,
+    private val switch: LanguageSwitch,
 ) : ViewModel() {
+    val languages: StateFlow<LanguageProfilesState> = profiles.state
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), profiles.cachedState ?: LanguageProfilesState.DEFAULT)
+
+    fun setActive(language: Language) {
+        viewModelScope.launch { profiles.setActive(language) }
+    }
+
+    /** Turns [language] on at once when its dictionaries are installed; otherwise [onSetup] opens its download screen. */
+    fun add(language: Language, onSetup: (Language) -> Unit) {
+        viewModelScope.launch {
+            if (switch.needsDownloads(language)) onSetup(language) else switch.turnOn(language)
+        }
+    }
+
+    private val mutableTurnOff = MutableStateFlow<TurnOffRequest?>(null)
+
+    /** The language whose turn-off dialog is open, once its files are measured. */
+    val turnOffRequest: StateFlow<TurnOffRequest?> = mutableTurnOff
+
+    fun requestTurnOff(language: Language) {
+        viewModelScope.launch { mutableTurnOff.value = TurnOffRequest(language, switch.filesSize(language)) }
+    }
+
+    fun cancelTurnOff() {
+        mutableTurnOff.value = null
+    }
+
+    fun turnOff(language: Language, deleteFiles: Boolean) {
+        mutableTurnOff.value = null
+        viewModelScope.launch { switch.turnOff(language, deleteFiles) }
+    }
+
+    /** The catalog's mandatory categories; the copy on the phone is enough for them. */
+    private val localCatalog = flow { emit(withContext(Dispatchers.IO) { catalog.localCatalog() }) }
+
     /** The active language's note setup. */
     val anki: StateFlow<AnkiSummary?> = profiles.active
         .flatMapLatest { ankiSettings.settings(it) }
@@ -146,11 +209,11 @@ class HomeViewModel @Inject constructor(
     /** Why removing a dictionary from the missing files card failed; cleared by the next removal or check. */
     val removeError: StateFlow<String?> = mutableRemoveError
 
-    /** Problems found by the last [refresh], plus "no dictionary" while nothing is being installed. */
+    /** Problems found by the last [refresh], plus the languages without a dictionary they need, with the imports' progress. */
     val problems: StateFlow<List<HomeProblem>> =
-        combine(checked, repository.dictionaries, imports.tasks, profiles.state) { found, all, tasks, languages ->
-            val without = if (tasks.any { !it.finished }) emptyList() else languages.turnedOn.filter { noTermDictionaries(all, it) }
-            val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
+        combine(checked, repository.dictionaries, imports.tasks, profiles.state, localCatalog) { found, all, tasks, languages, catalog ->
+            val without = languages.turnedOn.associateWith { missingCategories(it, all, catalog) }.filterValues { it.isNotEmpty() }
+            val noTerms = HomeProblem.NoTermDictionaries(without, languages.several, installProgress(tasks)).takeIf { without.isNotEmpty() }
             found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(noTerms)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
