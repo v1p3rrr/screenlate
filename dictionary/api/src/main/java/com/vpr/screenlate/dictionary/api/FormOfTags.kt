@@ -9,7 +9,7 @@ import android.content.res.Resources
  */
 object FormOfTags {
     private val STRINGS: Map<String, Int> = mapOf(
-"abbreviation" to R.string.form_of_tag_abbreviation,
+        "abbreviation" to R.string.form_of_tag_abbreviation,
         "ablative" to R.string.form_of_tag_ablative,
         "accusative" to R.string.form_of_tag_accusative,
         "active" to R.string.form_of_tag_active,

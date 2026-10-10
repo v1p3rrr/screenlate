@@ -44,6 +44,7 @@ import com.vpr.screenlate.audio.localNetworkMissing
 import com.vpr.screenlate.background.rememberBackgroundTipBadge
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.anki.message
+import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.overlay.OverlayServiceStatus
 import com.vpr.screenlate.ui.components.Hint
@@ -272,8 +273,14 @@ private fun ProblemsCard(
                                 )
                             }
                         }
-                        HomeProblem.NoTermDictionaries -> {
-                            Text(stringResource(R.string.problems_no_dictionaries))
+                        is HomeProblem.NoTermDictionaries -> {
+                            if (problem.several) {
+                                problem.languages.forEach { language ->
+                                    Text(stringResource(R.string.problems_no_dictionaries_language, language.displayName()))
+                                }
+                            } else {
+                                Text(stringResource(R.string.problems_no_dictionaries))
+                            }
                             TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                         }
                         is HomeProblem.AudioSources -> {

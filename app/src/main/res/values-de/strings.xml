@@ -214,6 +214,7 @@
     <string name="problems_import_again">Importiere seine Datei erneut.</string>
     <string name="problems_remove">Entfernen</string>
     <string name="problems_no_dictionaries">Kein Wörterbuch mit Definitionen ist aktiviert.</string>
+    <string name="problems_no_dictionaries_language">%1$s: Kein Wörterbuch mit Definitionen ist aktiviert.</string>
     <string name="problems_audio_sources">Fehlgeschlagene Audioquellen:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Audioeinstellungen</string>

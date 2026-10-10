@@ -9,6 +9,7 @@ import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.NoTermDictionary
@@ -26,7 +27,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.JsonObject
@@ -54,34 +57,43 @@ class SearchViewModel @Inject constructor(
     val translation: SentenceTranslation,
     appSettings: AppSettingsRepository,
     pageAppearance: PageAppearance,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
+    /** The active language; a switch while the screen is open searches again in it. */
+    val language: StateFlow<Language> = profiles.active
+        .stateIn(viewModelScope, SharingStarted.Eagerly, profiles.cachedState?.active ?: Language.JAPANESE)
+
     /** Fonts and custom CSS of the result page. */
-    val appearance: Flow<JsonObject> = pageAppearance.json(LANGUAGE)
+    val appearance: Flow<JsonObject> = language.flatMapLatest { pageAppearance.json(it) }
 
     val query = MutableStateFlow("")
 
     val themeMode: StateFlow<ThemeMode> =
         appSettings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedThemeMode ?: ThemeMode.SYSTEM)
 
-    val results: StateFlow<SearchResults?> = query
-        .debounce(SEARCH_DELAY_MS)
-        .mapLatest { text -> if (text.isBlank()) null else search(text) }
+    val results: StateFlow<SearchResults?> = combine(query.debounce(SEARCH_DELAY_MS), language, ::Pair)
+        .mapLatest { (text, language) -> if (text.isBlank()) null else search(text, language) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val dictionaryLookup: DictionaryLookup get() = lookup
 
-    suspend fun search(text: String, primaryReading: String? = null): SearchResults {
+    suspend fun search(
+        text: String,
+        language: Language = this.language.value,
+        primaryReading: String? = null,
+    ): SearchResults {
         val trimmed = text.trim()
-        val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, LANGUAGE, primaryReading = primaryReading) }
+        val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, language, primaryReading = primaryReading) }
         if (found.isNotEmpty()) return SearchResults(trimmed, found, noTermDictionary = null)
-        val kanji = orElse(null) { lookup.characterEntry(trimmed, LANGUAGE) }
-        val noTermDictionary = orElse(null) { lookup.noTermDictionary(LANGUAGE) }
+        val kanji = orElse(null) { lookup.characterEntry(trimmed, language) }
+        val noTermDictionary = orElse(null) { lookup.noTermDictionary(language) }
         return SearchResults(trimmed, found, noTermDictionary = noTermDictionary, kanji = kanji)
     }
 
-    suspend fun kanji(character: String): KanjiResult = orElse(KanjiResult(character)) { lookup.kanji(character, LANGUAGE) }
+    suspend fun kanji(character: String): KanjiResult =
+        orElse(KanjiResult(character)) { lookup.kanji(character, language.value) }
 
-    suspend fun styles(): List<DictionaryStyle> = orElse(emptyList()) { lookup.styles(LANGUAGE) }
+    suspend fun styles(language: Language): List<DictionaryStyle> = orElse(emptyList()) { lookup.styles(language) }
 
     suspend fun tagNotes(): List<DictionaryTagNotes> = orElse(emptyList()) { lookup.tagNotes() }
 
@@ -96,6 +108,5 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         const val SEARCH_DELAY_MS = 150L
-        val LANGUAGE = Language.JAPANESE
     }
 }

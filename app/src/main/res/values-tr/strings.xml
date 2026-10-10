@@ -214,6 +214,7 @@
     <string name="problems_import_again">Dosyasını yeniden içe aktarın.</string>
     <string name="problems_remove">Kaldır</string>
     <string name="problems_no_dictionaries">Tanım içeren hiçbir sözlük etkin değil.</string>
+    <string name="problems_no_dictionaries_language">%1$s: tanım içeren hiçbir sözlük etkin değil.</string>
     <string name="problems_audio_sources">Başarısız olan ses kaynakları:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Ses ayarları</string>

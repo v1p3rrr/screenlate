@@ -106,7 +106,8 @@ class PopupNotes(
     private val audioSettings: AudioSettingsRepository,
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
-    private val language: Language,
+    /** The open scan's language. */
+    private val language: () -> Language,
     private val noteSource: () -> NoteSource,
     private val translation: SentenceTranslation,
     private val cropEditor: CropEditor?,
@@ -294,7 +295,7 @@ class PopupNotes(
                 // Asked now, so it comes while the crop editor is open; the wait counts from when the note is ready.
                 val sentence = context.sentence?.text
                 if (FieldTemplate.SENTENCE_TRANSLATION in used && sentence != null) {
-                    translated = async { translation.forNote(sentence, language) }
+                    translated = async { translation.forNote(sentence, language()) }
                 }
                 // The editor opens first, while the scan it shows is still on the screen.
                 val shot = context.screenshot
@@ -327,7 +328,7 @@ class PopupNotes(
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used)
                 screenshot = picture?.let { saveScreenshot(it) }
-                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language) else null
+                val clip = if ("audio" in used) chosenClips[noteTerm] ?: audio.find(noteTerm.first, noteTerm.second, language()) else null
                 val result = notes.add(NoteRequest(values, screenshot, clip), force)
                 // The kind of result only: messages and fields may carry the note's text.
                 Log.i(
@@ -391,7 +392,7 @@ class PopupNotes(
         audioMenuJob?.cancel()
         page.showAudioMenu(index, buildJsonArray { }, loading = true)
         audioMenuJob = scope.launch {
-            val candidates = audio.candidates(expression, reading, language)
+            val candidates = audio.candidates(expression, reading, language())
             menuCandidates = candidates
             val sources = audioSettings.current().sources
             val items = buildJsonArray {
@@ -415,7 +416,7 @@ class PopupNotes(
             val terms = currentTerms() ?: return@launch
             val term = terms.getOrNull(index) ?: return@launch
             if (candidate.isSpeech) {
-                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, language))) {
+                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, language()))) {
                     toast(context.getString(R.string.audio_no_voice))
                 }
                 return@launch
@@ -434,7 +435,7 @@ class PopupNotes(
     fun play(expression: String, reading: String) {
         scope.launch {
             val pronunciation = chosenClips[expression to reading]?.let { Pronunciation.Clip(it) }
-                ?: audio.pronunciation(expression, reading, language)
+                ?: audio.pronunciation(expression, reading, language())
             if (pronunciation == null) {
                 toast(context.getString(R.string.audio_not_found))
                 return@launch
@@ -460,7 +461,7 @@ class PopupNotes(
         var offset = 0
         while (offset < sentence.length) {
             val result = try {
-                lookup.lookup(sentence.substring(offset), language, extraEntries = false).firstOrNull()
+                lookup.lookup(sentence.substring(offset), language(), extraEntries = false).firstOrNull()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

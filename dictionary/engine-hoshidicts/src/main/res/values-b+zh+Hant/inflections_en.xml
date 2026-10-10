@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">複數</string>
+    <string name="inflection_en_plural">名詞的複數形式</string>
+    <string name="inflection_en_possessive_label">所有格</string>
+    <string name="inflection_en_possessive">名詞的所有格</string>
+    <string name="inflection_en_past_label">過去時</string>
+    <string name="inflection_en_past">動詞的一般過去時</string>
+    <string name="inflection_en_ing_label">ing形式</string>
+    <string name="inflection_en_ing">動詞的現在分詞</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">第三人稱單數現在時</string>
+    <string name="inflection_en_3rd_pers_sing_pres">動詞的第三人稱單數現在時</string>
+    <string name="inflection_en_interposed_object_label">賓語插入</string>
+    <string name="inflection_en_interposed_object">中間插入賓語的片語動詞</string>
+    <string name="inflection_en_archaic_label">古語</string>
+    <string name="inflection_en_archaic">詞的古舊形式</string>
+    <string name="inflection_en_adverb_label">副詞</string>
+    <string name="inflection_en_adverb">形容詞的副詞形式</string>
+    <string name="inflection_en_comparative_label">比較級</string>
+    <string name="inflection_en_comparative">形容詞的比較級</string>
+    <string name="inflection_en_superlative_label">最高級</string>
+    <string name="inflection_en_superlative">形容詞的最高級</string>
+    <string name="inflection_en_dropped_g_label">省略 g</string>
+    <string name="inflection_en_dropped_g">動詞 -ing 形式省略 g</string>
+    <string name="inflection_en_y">由動詞或名詞構成的形容詞</string>
+    <string name="inflection_en_un">形容詞、副詞或動詞的否定形式</string>
+    <string name="inflection_en_going_to_future_label">going to 將來時</string>
+    <string name="inflection_en_going_to_future">動詞的 going to 將來時</string>
+    <string name="inflection_en_will_future_label">will 將來時</string>
+    <string name="inflection_en_will_future">動詞的 will 將來時</string>
+    <string name="inflection_en_imperative_negative_label">否定命令式</string>
+    <string name="inflection_en_imperative_negative">動詞的否定命令式</string>
+    <string name="inflection_en_able">由動詞構成的形容詞</string>
+</resources>

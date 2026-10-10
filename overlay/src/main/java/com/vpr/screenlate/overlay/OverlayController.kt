@@ -33,6 +33,7 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.core.ocr.CompositeOcr
@@ -92,13 +93,16 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -120,6 +124,7 @@ class OverlayController(
     private val pageAppearance: PageAppearance,
     private val anki: AnkiServices,
     private val translation: SentenceTranslation,
+    private val profiles: LanguageProfiles,
     private val scope: CoroutineScope,
 ) {
     /** Anki and audio dependencies, grouped to keep the constructor short. */
@@ -167,8 +172,12 @@ class OverlayController(
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
     private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
-    // Only Japanese is supported for now; this becomes a setting with more languages.
-    private val language = Language.JAPANESE
+    /** The language switched to last; a scan takes it when the bubble leaves the dock. */
+    private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
+
+    /** The open scan's language: a switch in the hold menu applies once the bubble has docked. */
+    private val scanLanguage = MutableStateFlow(activeLanguage)
+    private val language: Language get() = scanLanguage.value
 
     private val popupNotes = PopupNotes(
         context = service,
@@ -180,7 +189,7 @@ class OverlayController(
         audioSettings = anki.audioSettings,
         player = anki.player,
         lookup = lookup,
-        language = language,
+        language = { language },
         noteSource = ::noteSource,
         translation = translation,
         cropEditor = CropEditor(service, windowManager),
@@ -245,14 +254,15 @@ class OverlayController(
     private var pageStyles: List<DictionaryStyle>? = null
     private var pageTagNotes: List<DictionaryTagNotes>? = null
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun start() {
         lastScreen = screenBounds()
         bubbleView.setOnTouchListener(BubbleTouchListener())
-        bubbleView.glyphLanguage = language.support.languageTag
-        bubbleView.glyph = language.support.glyph
+        showGlyph(activeLanguage)
         scope.launch { overlaySettings.settings.collect(::applySettings) }
+        scope.launch { profiles.active.collect(::onActiveLanguage) }
         scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
-        scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
+        scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         scope.launch {
             translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
         }
@@ -305,6 +315,25 @@ class OverlayController(
     }
 
     private fun shouldShowBubble(): Boolean = settings.bubbleVisible && foregroundPackage !in settings.hiddenPackages
+
+    /** The dock glyph follows the switch at once; the scan's language changes when the bubble is docked. */
+    private fun onActiveLanguage(new: Language) {
+        activeLanguage = new
+        showGlyph(new)
+        if (state == State.DOCKED) takeActiveLanguage()
+    }
+
+    private fun showGlyph(language: Language) {
+        bubbleView.glyphLanguage = language.support.languageTag
+        bubbleView.glyph = language.support.glyph
+    }
+
+    private fun takeActiveLanguage() {
+        if (scanLanguage.value == activeLanguage) return
+        Log.d(TAG, "Scan language ${activeLanguage.code}")
+        scanLanguage.value = activeLanguage
+        if (onDeviceLoaded) scope.launch { ocr.warmUp(activeLanguage) }
+    }
 
     // region Settings and windows
 
@@ -499,6 +528,7 @@ class OverlayController(
         if (state != State.DOCKED) Log.d(TAG, "Bubble docked")
         state = State.DOCKED
         closeScan()
+        takeActiveLanguage()
         haptic()
         val position = if (atCurrentPlace) {
             val (cx, cy) = bubbleCenter()

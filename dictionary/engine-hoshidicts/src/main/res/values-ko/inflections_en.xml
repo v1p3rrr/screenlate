@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">복수</string>
+    <string name="inflection_en_plural">명사의 복수형</string>
+    <string name="inflection_en_possessive_label">소유격</string>
+    <string name="inflection_en_possessive">명사의 소유격</string>
+    <string name="inflection_en_past_label">과거</string>
+    <string name="inflection_en_past">동사의 단순 과거형</string>
+    <string name="inflection_en_ing_label">ing형</string>
+    <string name="inflection_en_ing">동사의 현재분사</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3인칭 단수 현재</string>
+    <string name="inflection_en_3rd_pers_sing_pres">동사의 3인칭 단수 현재형</string>
+    <string name="inflection_en_interposed_object_label">목적어 삽입</string>
+    <string name="inflection_en_interposed_object">목적어가 끼어든 구동사</string>
+    <string name="inflection_en_archaic_label">고어</string>
+    <string name="inflection_en_archaic">단어의 고어형</string>
+    <string name="inflection_en_adverb_label">부사</string>
+    <string name="inflection_en_adverb">형용사의 부사형</string>
+    <string name="inflection_en_comparative_label">비교급</string>
+    <string name="inflection_en_comparative">형용사의 비교급</string>
+    <string name="inflection_en_superlative_label">최상급</string>
+    <string name="inflection_en_superlative">형용사의 최상급</string>
+    <string name="inflection_en_dropped_g_label">g 탈락</string>
+    <string name="inflection_en_dropped_g">동사 -ing형에서 g가 탈락한 형태</string>
+    <string name="inflection_en_y">동사나 명사에서 만들어진 형용사</string>
+    <string name="inflection_en_un">형용사, 부사, 동사의 부정형</string>
+    <string name="inflection_en_going_to_future_label">going to 미래</string>
+    <string name="inflection_en_going_to_future">동사의 going to 미래형</string>
+    <string name="inflection_en_will_future_label">will 미래</string>
+    <string name="inflection_en_will_future">동사의 will 미래형</string>
+    <string name="inflection_en_imperative_negative_label">부정 명령</string>
+    <string name="inflection_en_imperative_negative">동사의 부정 명령형</string>
+    <string name="inflection_en_able">동사에서 만들어진 형용사</string>
+</resources>

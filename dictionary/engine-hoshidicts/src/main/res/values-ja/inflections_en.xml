@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">複数</string>
+    <string name="inflection_en_plural">名詞の複数形</string>
+    <string name="inflection_en_possessive_label">所有格</string>
+    <string name="inflection_en_possessive">名詞の所有格</string>
+    <string name="inflection_en_past_label">過去</string>
+    <string name="inflection_en_past">動詞の単純過去形</string>
+    <string name="inflection_en_ing_label">ing形</string>
+    <string name="inflection_en_ing">動詞の現在分詞</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">三人称単数現在</string>
+    <string name="inflection_en_3rd_pers_sing_pres">動詞の三人称単数現在形</string>
+    <string name="inflection_en_interposed_object_label">目的語挿入</string>
+    <string name="inflection_en_interposed_object">目的語を挟んだ句動詞</string>
+    <string name="inflection_en_archaic_label">古語</string>
+    <string name="inflection_en_archaic">語の古形</string>
+    <string name="inflection_en_adverb_label">副詞</string>
+    <string name="inflection_en_adverb">形容詞の副詞形</string>
+    <string name="inflection_en_comparative_label">比較級</string>
+    <string name="inflection_en_comparative">形容詞の比較級</string>
+    <string name="inflection_en_superlative_label">最上級</string>
+    <string name="inflection_en_superlative">形容詞の最上級</string>
+    <string name="inflection_en_dropped_g_label">g 脱落</string>
+    <string name="inflection_en_dropped_g">動詞の -ing 形で g が落ちた形</string>
+    <string name="inflection_en_y">動詞または名詞から作られた形容詞</string>
+    <string name="inflection_en_un">形容詞・副詞・動詞の否定形</string>
+    <string name="inflection_en_going_to_future_label">going to 未来</string>
+    <string name="inflection_en_going_to_future">動詞の going to 未来形</string>
+    <string name="inflection_en_will_future_label">will 未来</string>
+    <string name="inflection_en_will_future">動詞の will 未来形</string>
+    <string name="inflection_en_imperative_negative_label">否定命令</string>
+    <string name="inflection_en_imperative_negative">動詞の否定命令形</string>
+    <string name="inflection_en_able">動詞から作られた形容詞</string>
+</resources>

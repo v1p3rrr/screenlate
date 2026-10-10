@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class LastTermDictionaryTest {
@@ -18,11 +19,18 @@ class LastTermDictionaryTest {
         bundled = false, importedAt = 0,
     )
 
-    private fun DictionaryEntity.isLast(all: List<DictionaryEntity>, missing: Set<Long> = emptySet()) =
-        isLastTermDictionary(all) { it.id !in missing }
+    private fun DictionaryEntity.isLast(
+        all: List<DictionaryEntity>,
+        missing: Set<Long> = emptySet(),
+        languages: List<Language> = listOf(Language.JAPANESE),
+    ) = isLastTermDictionary(all, languages) { it.id !in missing }
 
-    private fun kept(before: List<DictionaryEntity>, after: List<DictionaryEntity>, missing: Set<Long> = emptySet()) =
-        keptTermDictionaries(before, after) { it.id !in missing }
+    private fun kept(
+        before: List<DictionaryEntity>,
+        after: List<DictionaryEntity>,
+        missing: Set<Long> = emptySet(),
+        languages: List<Language> = listOf(Language.JAPANESE),
+    ) = keptTermDictionaries(before, after, languages) { it.id !in missing }
 
     @Test
     fun `the only enabled dictionary with definitions is the last one`() {
@@ -53,6 +61,20 @@ class LastTermDictionaryTest {
         val any = dictionary(2, source = null)
         assertThat(jmdict.isLast(listOf(jmdict, any))).isFalse()
         assertThat(any.isLast(listOf(jmdict, any))).isFalse()
+    }
+
+    @Test
+    fun `only turned-on languages count`() {
+        val jmdict = dictionary(1)
+        val any = dictionary(2, source = null)
+        val both = listOf(Language.JAPANESE, Language.ENGLISH)
+        assertThat(any.isLast(listOf(jmdict, any), languages = both)).isTrue()
+        val english = dictionary(3, source = "en")
+        assertThat(english.isLast(listOf(jmdict, english))).isFalse()
+        assertThat(english.isLast(listOf(jmdict, english), languages = both)).isTrue()
+        val after = listOf(jmdict, english.copy(enabled = false))
+        assertThat(kept(listOf(jmdict, english), after)).isEmpty()
+        assertThat(kept(listOf(jmdict, english), after, languages = both).map { it.id }).containsExactly(3L)
     }
 
     @Test

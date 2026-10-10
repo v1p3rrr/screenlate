@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">Plural</string>
+    <string name="inflection_en_plural">Pluralform eines Substantivs</string>
+    <string name="inflection_en_possessive_label">Possessiv</string>
+    <string name="inflection_en_possessive">Possessivform eines Substantivs</string>
+    <string name="inflection_en_past_label">Vergangenheit</string>
+    <string name="inflection_en_past">Einfache Vergangenheit eines Verbs</string>
+    <string name="inflection_en_ing_label">ing-Form</string>
+    <string name="inflection_en_ing">Partizip Präsens eines Verbs</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3. Pers. Sg. Präs.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">3. Person Singular Präsens eines Verbs</string>
+    <string name="inflection_en_interposed_object_label">eingeschobenes Objekt</string>
+    <string name="inflection_en_interposed_object">Phrasal Verb mit eingeschobenem Objekt</string>
+    <string name="inflection_en_archaic_label">archaisch</string>
+    <string name="inflection_en_archaic">Archaische Form eines Wortes</string>
+    <string name="inflection_en_adverb_label">Adverb</string>
+    <string name="inflection_en_adverb">Adverbform eines Adjektivs</string>
+    <string name="inflection_en_comparative_label">Komparativ</string>
+    <string name="inflection_en_comparative">Komparativ eines Adjektivs</string>
+    <string name="inflection_en_superlative_label">Superlativ</string>
+    <string name="inflection_en_superlative">Superlativ eines Adjektivs</string>
+    <string name="inflection_en_dropped_g_label">ohne g</string>
+    <string name="inflection_en_dropped_g">Weggelassenes g in der ing-Form eines Verbs</string>
+    <string name="inflection_en_y">Aus einem Verb oder Substantiv gebildetes Adjektiv</string>
+    <string name="inflection_en_un">Verneinte Form eines Adjektivs, Adverbs oder Verbs</string>
+    <string name="inflection_en_going_to_future_label">Futur mit going to</string>
+    <string name="inflection_en_going_to_future">Futur eines Verbs mit going to</string>
+    <string name="inflection_en_will_future_label">Futur mit will</string>
+    <string name="inflection_en_will_future">Futur eines Verbs mit will</string>
+    <string name="inflection_en_imperative_negative_label">verneinter Imperativ</string>
+    <string name="inflection_en_imperative_negative">Verneinter Imperativ eines Verbs</string>
+    <string name="inflection_en_able">Aus einem Verb gebildetes Adjektiv</string>
+</resources>

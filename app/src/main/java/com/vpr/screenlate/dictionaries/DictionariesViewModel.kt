@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -86,8 +88,12 @@ data class DictionariesState(
     val remoteCss: Map<String, List<String>> = emptyMap(),
     /** Ids of the dictionaries whose files are gone. */
     val withoutFiles: Set<Long> = emptySet(),
+    val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
     val loaded: Boolean = false,
-)
+) {
+    /** The turned-on languages, for which the last dictionary with definitions stays on. */
+    val languages: List<Language> get() = profiles.turnedOn
+}
 
 /** Result of the last update check; [updates] is null while checking. */
 data class UpdateCheck(val updates: List<DictionaryUpdate>?)
@@ -102,6 +108,7 @@ class DictionariesViewModel @Inject constructor(
     private val dictionaryReset: DictionaryReset,
     private val cache: DictionariesStateCache,
     catalog: DictionaryCatalog,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
     private val copyError = MutableStateFlow<String?>(null)
     private val mutableDeleteError = MutableStateFlow<String?>(null)
@@ -114,19 +121,19 @@ class DictionariesViewModel @Inject constructor(
         repository.dictionaries,
         imports.tasks,
         catalog.entries(),
-        repository.sortDictionaryId,
+        combine(repository.sortDictionaryId, profiles.state, ::Pair),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
         repository.dictionaries
             .map { remoteCss() to withoutFiles() }
             .onStart { emit((cache.last?.remoteCss ?: emptyMap()) to (cache.last?.withoutFiles ?: emptySet())) },
-    ) { dictionaries, tasks, entries, sortId, (remoteCss, withoutFiles) ->
+    ) { dictionaries, tasks, entries, (sortId, profileState), (remoteCss, withoutFiles) ->
         val items = catalogItems(entries, dictionaries, tasks)
         DictionariesState(
             installed = DictionaryKind.entries.mapNotNull { kind ->
                 dictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
             },
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
-            catalog = groupCatalog(items),
+            catalog = groupCatalog(items, profileState.active),
             sortDictionaryId = dictionaries
                 .filter { it.enabled && it.frequencyCount > 0 }
                 .let { frequencies -> frequencies.firstOrNull { it.id == sortId } ?: frequencies.firstOrNull() }
@@ -136,6 +143,7 @@ class DictionariesViewModel @Inject constructor(
             },
             remoteCss = remoteCss,
             withoutFiles = withoutFiles,
+            profiles = profileState,
             loaded = true,
         )
     }
@@ -287,12 +295,15 @@ class DictionariesViewModel @Inject constructor(
 
 private const val TAG = "Dictionaries"
 
-/** Source language, then term dictionaries by target language, then the other kinds. */
-private fun groupCatalog(items: List<CatalogItem>): List<CatalogGroup> {
+/**
+ * Source language, then term dictionaries by target language, then the other kinds. The [active] language's
+ * dictionaries come first, then those for the interface language.
+ */
+private fun groupCatalog(items: List<CatalogItem>, active: Language): List<CatalogGroup> {
     val locale = Locale.getDefault()
     val userLanguage = locale.language
     return items.groupBy { it.entry.sourceLanguage }
-        .toSortedMap(compareBy<String> { it != userLanguage && it != "ja" }.thenBy { it })
+        .toSortedMap(compareBy<String> { it != active.code }.thenBy { it != userLanguage }.thenBy { it })
         .map { (source, sourceItems) ->
             val terms = sourceItems.filter { it.entry.kind == DictionaryKind.TERM }
                 .groupBy { it.entry.targetLanguage }

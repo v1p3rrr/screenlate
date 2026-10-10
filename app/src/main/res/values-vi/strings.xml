@@ -214,6 +214,7 @@
     <string name="problems_import_again">Hãy nhập lại tệp của nó.</string>
     <string name="problems_remove">Gỡ bỏ</string>
     <string name="problems_no_dictionaries">Không có từ điển định nghĩa nào đang bật.</string>
+    <string name="problems_no_dictionaries_language">%1$s: không có từ điển định nghĩa nào đang bật.</string>
     <string name="problems_audio_sources">Nguồn âm thanh bị lỗi:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Cài đặt âm thanh</string>

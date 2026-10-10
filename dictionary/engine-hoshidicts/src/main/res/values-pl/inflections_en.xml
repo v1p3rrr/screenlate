@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">liczba mnoga</string>
+    <string name="inflection_en_plural">Liczba mnoga rzeczownika</string>
+    <string name="inflection_en_possessive_label">forma dzierżawcza</string>
+    <string name="inflection_en_possessive">Forma dzierżawcza rzeczownika</string>
+    <string name="inflection_en_past_label">czas przeszły</string>
+    <string name="inflection_en_past">Czas przeszły prosty czasownika</string>
+    <string name="inflection_en_ing_label">forma -ing</string>
+    <string name="inflection_en_ing">Imiesłów czynny czasownika</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3. os. l. poj. cz. ter.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">3. osoba liczby pojedynczej czasu teraźniejszego czasownika</string>
+    <string name="inflection_en_interposed_object_label">wtrącone dopełnienie</string>
+    <string name="inflection_en_interposed_object">Czasownik frazowy z wtrąconym dopełnieniem</string>
+    <string name="inflection_en_archaic_label">archaiczny</string>
+    <string name="inflection_en_archaic">Archaiczna forma wyrazu</string>
+    <string name="inflection_en_adverb_label">przysłówek</string>
+    <string name="inflection_en_adverb">Przysłówek od przymiotnika</string>
+    <string name="inflection_en_comparative_label">stopień wyższy</string>
+    <string name="inflection_en_comparative">Stopień wyższy przymiotnika</string>
+    <string name="inflection_en_superlative_label">stopień najwyższy</string>
+    <string name="inflection_en_superlative">Stopień najwyższy przymiotnika</string>
+    <string name="inflection_en_dropped_g_label">bez g</string>
+    <string name="inflection_en_dropped_g">Opuszczone g w formie -ing czasownika</string>
+    <string name="inflection_en_y">Przymiotnik utworzony od czasownika lub rzeczownika</string>
+    <string name="inflection_en_un">Forma przecząca przymiotnika, przysłówka lub czasownika</string>
+    <string name="inflection_en_going_to_future_label">przyszły z going to</string>
+    <string name="inflection_en_going_to_future">Czas przyszły czasownika z going to</string>
+    <string name="inflection_en_will_future_label">przyszły z will</string>
+    <string name="inflection_en_will_future">Czas przyszły czasownika z will</string>
+    <string name="inflection_en_imperative_negative_label">przeczący tryb rozkazujący</string>
+    <string name="inflection_en_imperative_negative">Przeczący tryb rozkazujący czasownika</string>
+    <string name="inflection_en_able">Przymiotnik utworzony od czasownika</string>
+</resources>

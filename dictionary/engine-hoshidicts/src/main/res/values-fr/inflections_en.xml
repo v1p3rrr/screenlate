@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">pluriel</string>
+    <string name="inflection_en_plural">Forme plurielle d’un nom</string>
+    <string name="inflection_en_possessive_label">possessif</string>
+    <string name="inflection_en_possessive">Forme possessive d’un nom</string>
+    <string name="inflection_en_past_label">passé</string>
+    <string name="inflection_en_past">Prétérit d’un verbe</string>
+    <string name="inflection_en_ing_label">forme en -ing</string>
+    <string name="inflection_en_ing">Participe présent d’un verbe</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3e pers. sing. prés.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Troisième personne du singulier du présent d’un verbe</string>
+    <string name="inflection_en_interposed_object_label">objet intercalé</string>
+    <string name="inflection_en_interposed_object">Verbe à particule avec objet intercalé</string>
+    <string name="inflection_en_archaic_label">archaïque</string>
+    <string name="inflection_en_archaic">Forme archaïque d’un mot</string>
+    <string name="inflection_en_adverb_label">adverbe</string>
+    <string name="inflection_en_adverb">Forme adverbiale d’un adjectif</string>
+    <string name="inflection_en_comparative_label">comparatif</string>
+    <string name="inflection_en_comparative">Comparatif d’un adjectif</string>
+    <string name="inflection_en_superlative_label">superlatif</string>
+    <string name="inflection_en_superlative">Superlatif d’un adjectif</string>
+    <string name="inflection_en_dropped_g_label">g omis</string>
+    <string name="inflection_en_dropped_g">g omis dans la forme en -ing d’un verbe</string>
+    <string name="inflection_en_y">Adjectif formé sur un verbe ou un nom</string>
+    <string name="inflection_en_un">Forme négative d’un adjectif, d’un adverbe ou d’un verbe</string>
+    <string name="inflection_en_going_to_future_label">futur avec going to</string>
+    <string name="inflection_en_going_to_future">Futur d’un verbe avec going to</string>
+    <string name="inflection_en_will_future_label">futur avec will</string>
+    <string name="inflection_en_will_future">Futur d’un verbe avec will</string>
+    <string name="inflection_en_imperative_negative_label">impératif négatif</string>
+    <string name="inflection_en_imperative_negative">Impératif négatif d’un verbe</string>
+    <string name="inflection_en_able">Adjectif formé sur un verbe</string>
+</resources>

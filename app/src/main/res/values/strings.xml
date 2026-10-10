@@ -218,6 +218,7 @@
     <string name="problems_import_again">Import its file again.</string>
     <string name="problems_remove">Remove</string>
     <string name="problems_no_dictionaries">No dictionary with definitions is enabled.</string>
+    <string name="problems_no_dictionaries_language">%1$s: no dictionary with definitions is enabled.</string>
     <string name="problems_audio_sources">Audio sources that failed:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Audio settings</string>

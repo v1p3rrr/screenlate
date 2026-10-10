@@ -49,30 +49,36 @@ data class DictionaryEntity(
 fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.code
 
 /**
- * Whether this is the only enabled dictionary with definitions, among [all], for a language it is for; lookups in that
- * language would find nothing without it. Like lookups, it leaves out dictionaries whose files are gone ([hasFiles]).
+ * Whether this is the only enabled dictionary with definitions, among [all], for one of the turned-on [languages] it is
+ * for; lookups in that language would find nothing without it. Like lookups, it leaves out dictionaries whose files
+ * are gone ([hasFiles]).
  */
-fun DictionaryEntity.isLastTermDictionary(all: List<DictionaryEntity>, hasFiles: (DictionaryEntity) -> Boolean): Boolean {
+fun DictionaryEntity.isLastTermDictionary(
+    all: List<DictionaryEntity>,
+    languages: Collection<Language>,
+    hasFiles: (DictionaryEntity) -> Boolean,
+): Boolean {
     fun searched(dictionary: DictionaryEntity) = dictionary.enabled && dictionary.termCount > 0 && hasFiles(dictionary)
-    return searched(this) && Language.entries.any { language ->
+    return searched(this) && languages.any { language ->
         isFor(language) && all.none { it.id != id && searched(it) && it.isFor(language) }
     }
 }
 
 /**
- * Dictionaries that an import's switches (from [before] to [after], both full lists) turn off although a language
- * that had an enabled dictionary with definitions would then have none: per such language the first of [after]'s
- * order that was on before. Imports keep them on, as the Dictionaries screen does. Dictionaries whose files are gone
- * ([hasFiles]) do not count, as lookups leave them out.
+ * Dictionaries that an import's switches (from [before] to [after], both full lists) turn off although a turned-on
+ * language (of [languages]) that had an enabled dictionary with definitions would then have none: per such language
+ * the first of [after]'s order that was on before. Imports keep them on, as the Dictionaries screen does. Dictionaries
+ * whose files are gone ([hasFiles]) do not count, as lookups leave them out.
  */
 fun keptTermDictionaries(
     before: List<DictionaryEntity>,
     after: List<DictionaryEntity>,
+    languages: Collection<Language>,
     hasFiles: (DictionaryEntity) -> Boolean,
 ): List<DictionaryEntity> {
     val wasOn = before.filter { it.enabled && it.termCount > 0 && hasFiles(it) }.mapTo(hashSetOf()) { it.id }
     val kept = mutableListOf<DictionaryEntity>()
-    for (language in Language.entries) {
+    for (language in languages) {
         if (before.none { it.id in wasOn && it.isFor(language) }) continue
         val terms = after.filter { it.termCount > 0 && it.isFor(language) && hasFiles(it) }
         if (terms.any { it.enabled || kept.any { k -> k.id == it.id } }) continue

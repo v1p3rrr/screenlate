@@ -214,6 +214,7 @@
     <string name="problems_import_again">请重新导入其文件。</string>
     <string name="problems_remove">移除</string>
     <string name="problems_no_dictionaries">没有启用任何含释义的词典。</string>
+    <string name="problems_no_dictionaries_language">%1$s：没有启用任何含释义的词典。</string>
     <string name="problems_audio_sources">失败的音频来源：</string>
     <string name="problems_audio_source_line">• %1$s：%2$s</string>
     <string name="problems_open_audio">音频设置</string>

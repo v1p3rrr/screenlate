@@ -215,6 +215,7 @@
     <string name="problems_import_again">Импортируйте его файл заново.</string>
     <string name="problems_remove">Удалить</string>
     <string name="problems_no_dictionaries">Не включён ни один словарь с определениями.</string>
+    <string name="problems_no_dictionaries_language">%1$s: не включён ни один словарь с определениями.</string>
     <string name="problems_audio_sources">Не работают источники аудио:</string>
     <string name="problems_audio_source_line">• %1$s: %2$s</string>
     <string name="problems_open_audio">Настройки аудио</string>

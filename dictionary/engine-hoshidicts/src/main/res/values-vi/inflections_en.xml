@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">số nhiều</string>
+    <string name="inflection_en_plural">Dạng số nhiều của danh từ</string>
+    <string name="inflection_en_possessive_label">sở hữu cách</string>
+    <string name="inflection_en_possessive">Dạng sở hữu của danh từ</string>
+    <string name="inflection_en_past_label">quá khứ</string>
+    <string name="inflection_en_past">Thì quá khứ đơn của động từ</string>
+    <string name="inflection_en_ing_label">dạng -ing</string>
+    <string name="inflection_en_ing">Hiện tại phân từ của động từ</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">ngôi 3 số ít hiện tại</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Ngôi thứ ba số ít thì hiện tại của động từ</string>
+    <string name="inflection_en_interposed_object_label">tân ngữ chen giữa</string>
+    <string name="inflection_en_interposed_object">Cụm động từ có tân ngữ chen giữa</string>
+    <string name="inflection_en_archaic_label">cổ</string>
+    <string name="inflection_en_archaic">Dạng cổ của từ</string>
+    <string name="inflection_en_adverb_label">trạng từ</string>
+    <string name="inflection_en_adverb">Dạng trạng từ của tính từ</string>
+    <string name="inflection_en_comparative_label">so sánh hơn</string>
+    <string name="inflection_en_comparative">Dạng so sánh hơn của tính từ</string>
+    <string name="inflection_en_superlative_label">so sánh nhất</string>
+    <string name="inflection_en_superlative">Dạng so sánh nhất của tính từ</string>
+    <string name="inflection_en_dropped_g_label">bỏ g</string>
+    <string name="inflection_en_dropped_g">Bỏ g ở dạng -ing của động từ</string>
+    <string name="inflection_en_y">Tính từ tạo từ động từ hoặc danh từ</string>
+    <string name="inflection_en_un">Dạng phủ định của tính từ, trạng từ hoặc động từ</string>
+    <string name="inflection_en_going_to_future_label">tương lai going to</string>
+    <string name="inflection_en_going_to_future">Thì tương lai của động từ với going to</string>
+    <string name="inflection_en_will_future_label">tương lai will</string>
+    <string name="inflection_en_will_future">Thì tương lai của động từ với will</string>
+    <string name="inflection_en_imperative_negative_label">mệnh lệnh phủ định</string>
+    <string name="inflection_en_imperative_negative">Dạng mệnh lệnh phủ định của động từ</string>
+    <string name="inflection_en_able">Tính từ tạo từ động từ</string>
+</resources>

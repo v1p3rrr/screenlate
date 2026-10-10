@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
@@ -88,6 +89,7 @@ class BackupManager @Inject constructor(
     private val fonts: PopupFonts,
     private val appSettings: AppSettingsRepository,
     private val eInkSizes: EInkSizes,
+    private val profiles: LanguageProfiles,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val mutableState = MutableStateFlow<BackupState>(BackupState.Idle)
@@ -232,7 +234,8 @@ class BackupManager @Inject constructor(
                 val installed = dictionaries.getAll()
                 val outcome = BackupDictionaries.applyList(installed, head.dictionaries.dictionaries)
                 val sortId = head.dictionaries.sortDictionary?.let { BackupDictionaries.match(outcome.updated, it)?.id }
-                val kept = keptTermDictionaries(installed, outcome.updated, storage::hasFiles).mapTo(hashSetOf()) { it.id }
+                val languages = profiles.current().turnedOn
+                val kept = keptTermDictionaries(installed, outcome.updated, languages, storage::hasFiles).mapTo(hashSetOf()) { it.id }
                 dictionaries.applyStates(outcome.updated.map { if (it.id in kept) it.copy(enabled = true) else it }, sortId)
                 missing = outcome.missing
                 keptOn = outcome.updated.filter { it.id in kept }.map { it.title }

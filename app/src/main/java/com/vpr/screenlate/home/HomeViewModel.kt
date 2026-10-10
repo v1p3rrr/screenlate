@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSourceFailure
 import com.vpr.screenlate.core.anki.settings.AnkiSettings
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
@@ -23,7 +24,6 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.isFor
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
-import com.vpr.screenlate.search.SearchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -68,7 +68,8 @@ sealed interface HomeProblem {
     /** Downloaded or imported dictionaries whose files are gone, in one card. */
     data class MissingDictionaries(val dictionaries: List<MissingDictionary>) : HomeProblem
 
-    data object NoTermDictionaries : HomeProblem
+    /** Turned-on languages without an enabled dictionary with definitions; [several] languages are turned on. */
+    data class NoTermDictionaries(val languages: List<Language>, val several: Boolean) : HomeProblem
 
     /** Every audio source that failed recently, in one card. */
     data class AudioSources(val failures: List<AudioSourceFailure>) : HomeProblem
@@ -87,6 +88,7 @@ class HomeViewModel @Inject constructor(
     private val overlaySettings: OverlaySettingsRepository,
     private val dictionaryReset: DictionaryReset,
     ankiSettings: AnkiSettingsRepository,
+    profiles: LanguageProfiles,
 ) : ViewModel() {
     val anki: StateFlow<AnkiSummary?> = ankiSettings.settings
         .map(::ankiSummary)
@@ -135,10 +137,12 @@ class HomeViewModel @Inject constructor(
     val removeError: StateFlow<String?> = mutableRemoveError
 
     /** Problems found by the last [refresh], plus "no dictionary" while nothing is being installed. */
-    val problems: StateFlow<List<HomeProblem>> = combine(checked, repository.dictionaries, imports.tasks) { found, all, tasks ->
-        val noTerms = tasks.none { !it.finished } && noTermDictionaries(all, SearchViewModel.LANGUAGE)
-        found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(HomeProblem.NoTermDictionaries.takeIf { noTerms })
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val problems: StateFlow<List<HomeProblem>> =
+        combine(checked, repository.dictionaries, imports.tasks, profiles.state) { found, all, tasks, languages ->
+            val without = if (tasks.any { !it.finished }) emptyList() else languages.turnedOn.filter { noTermDictionaries(all, it) }
+            val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
+            found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(noTerms)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Checks AnkiDroid, dictionary files and audio sources again; call when the screen is shown. */
     fun refresh() {

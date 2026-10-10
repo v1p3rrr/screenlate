@@ -212,14 +212,14 @@ fun DictionariesScreen(
                         handle = handle,
                         dragging = dragging,
                         onEnabledChange = { on ->
-                            if (!on && dictionary.isLastTermDictionary(allDictionaries) { it.id !in state.withoutFiles }) {
+                            if (!on && dictionary.isLastTermDictionary(allDictionaries, state.languages) { it.id !in state.withoutFiles }) {
                                 Toast.makeText(context, R.string.dictionaries_last_term, Toast.LENGTH_LONG).show()
                             } else {
                                 viewModel.setEnabled(dictionary, on)
                             }
                         },
                         onDelete = {
-                            if (dictionary.isLastTermDictionary(allDictionaries) { it.id !in state.withoutFiles }) {
+                            if (dictionary.isLastTermDictionary(allDictionaries, state.languages) { it.id !in state.withoutFiles }) {
                                 Toast.makeText(context, R.string.dictionaries_last_term, Toast.LENGTH_LONG).show()
                             } else {
                                 pendingDelete = dictionary

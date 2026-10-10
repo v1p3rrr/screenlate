@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.anki.AnkiNotes
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.anki.settings.NoteTemplate
+import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
@@ -79,6 +80,7 @@ class YomitanSettingsImporter @Inject constructor(
     private val audioSettings: AudioSettingsRepository,
     private val appearance: PopupAppearanceRepository,
     private val fonts: PopupFonts,
+    private val profiles: LanguageProfiles,
 ) {
     suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary = ImportSummary(
         dictionaries = if (YomitanSection.DICTIONARIES in sections) applyDictionaries(profile) else null,
@@ -121,7 +123,7 @@ class YomitanSettingsImporter @Inject constructor(
         val switches = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled }
         val withoutFiles = dictionaries.missingFiles().mapTo(hashSetOf()) { it.id }
         val switched = ordered.map { it.copy(enabled = switches[it.id] ?: it.enabled) }
-        val kept = keptTermDictionaries(installed, switched) { it.id !in withoutFiles }
+        val kept = keptTermDictionaries(installed, switched, profiles.current().turnedOn) { it.id !in withoutFiles }
         dictionaries.reorder(ordered.map { it.id }, enabled = switches + kept.associate { it.id to true })
         val sortName = profile.sortFrequencyDictionary
         val sort = sortName?.let { name ->

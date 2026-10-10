@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_en.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_en_plural_label">множественное число</string>
+    <string name="inflection_en_plural">Множественное число существительного</string>
+    <string name="inflection_en_possessive_label">притяжательная форма</string>
+    <string name="inflection_en_possessive">Притяжательная форма существительного</string>
+    <string name="inflection_en_past_label">прошедшее время</string>
+    <string name="inflection_en_past">Простое прошедшее время глагола</string>
+    <string name="inflection_en_ing_label">ing-форма</string>
+    <string name="inflection_en_ing">Причастие настоящего времени глагола</string>
+    <string name="inflection_en_3rd_pers_sing_pres_label">3-е л. ед. ч. наст. вр.</string>
+    <string name="inflection_en_3rd_pers_sing_pres">Третье лицо единственного числа настоящего времени глагола</string>
+    <string name="inflection_en_interposed_object_label">дополнение внутри</string>
+    <string name="inflection_en_interposed_object">Фразовый глагол с дополнением внутри</string>
+    <string name="inflection_en_archaic_label">архаичное</string>
+    <string name="inflection_en_archaic">Архаичная форма слова</string>
+    <string name="inflection_en_adverb_label">наречие</string>
+    <string name="inflection_en_adverb">Наречие от прилагательного</string>
+    <string name="inflection_en_comparative_label">сравнительная степень</string>
+    <string name="inflection_en_comparative">Сравнительная степень прилагательного</string>
+    <string name="inflection_en_superlative_label">превосходная степень</string>
+    <string name="inflection_en_superlative">Превосходная степень прилагательного</string>
+    <string name="inflection_en_dropped_g_label">без g</string>
+    <string name="inflection_en_dropped_g">Опущенная g в ing-форме глагола</string>
+    <string name="inflection_en_y">Прилагательное, образованное от глагола или существительного</string>
+    <string name="inflection_en_un">Отрицательная форма прилагательного, наречия или глагола</string>
+    <string name="inflection_en_going_to_future_label">будущее с going to</string>
+    <string name="inflection_en_going_to_future">Будущее время глагола с going to</string>
+    <string name="inflection_en_will_future_label">будущее с will</string>
+    <string name="inflection_en_will_future">Будущее время глагола с will</string>
+    <string name="inflection_en_imperative_negative_label">отрицательный императив</string>
+    <string name="inflection_en_imperative_negative">Отрицательная повелительная форма глагола</string>
+    <string name="inflection_en_able">Прилагательное, образованное от глагола</string>
+</resources>

@@ -88,6 +88,7 @@ fun SearchScreen(
     val scope = rememberCoroutineScope()
     val query by viewModel.query.collectAsStateWithLifecycle()
     val results by viewModel.results.collectAsStateWithLifecycle()
+    val language by viewModel.language.collectAsStateWithLifecycle()
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val dark = themeMode.isDark(isSystemInDarkTheme())
     val eInk = LocalEInk.current
@@ -117,7 +118,7 @@ fun SearchScreen(
                 override fun onLookup(query: String, primaryReading: String?) {
                     val shown = viewModel.results.value
                     scope.launch {
-                        val found = viewModel.search(query, primaryReading)
+                        val found = viewModel.search(query, primaryReading = primaryReading)
                         // A new search text replaced the page meanwhile; this lookup belonged to the old one.
                         if (viewModel.results.value !== shown) return@launch
                         holder.page.push(state(context, currentTheme, found))
@@ -159,7 +160,7 @@ fun SearchScreen(
             audioSettings = viewModel.audioSettings,
             player = viewModel.audioPlayer,
             lookup = viewModel.dictionaryLookup,
-            language = SearchViewModel.LANGUAGE,
+            language = { viewModel.language.value },
             // The search text is the sentence; there is no screenshot.
             noteSource = {
                 val query = viewModel.query.value.trim()
@@ -182,10 +183,12 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         if (initialQuery.isNotBlank() && viewModel.query.value.isBlank()) viewModel.query.value = initialQuery
-        page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles()))
         page.setTagNotes(Json.encodeToJsonElement(ListSerializer(DictionaryTagNotes.serializer()), viewModel.tagNotes()))
         // Text from the selection menu is already searched: the keyboard would only cover the results.
         if (viewModel.query.value.isBlank()) focus.requestFocus()
+    }
+    LaunchedEffect(language) {
+        page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles(language)))
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
     LaunchedEffect(results) {
@@ -219,8 +222,8 @@ fun SearchScreen(
                 onValueChange = { viewModel.query.value = it },
                 placeholder = { Text(stringResource(R.string.search_hint)) },
                 singleLine = true,
-                // Japanese glyph forms for the typed text, whatever the UI language.
-                textStyle = LocalTextStyle.current.copy(localeList = LocaleList(SearchViewModel.LANGUAGE.support.languageTag)),
+                // The language's glyph forms for the typed text, whatever the UI language.
+                textStyle = LocalTextStyle.current.copy(localeList = LocaleList(language.support.languageTag)),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
                 trailingIcon = {
