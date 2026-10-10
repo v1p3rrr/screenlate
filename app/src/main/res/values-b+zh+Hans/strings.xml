@@ -58,6 +58,20 @@
     <string name="dictionaries_kind_frequency">词频</string>
     <string name="dictionaries_kind_pitch">音调</string>
     <string name="dictionaries_kind_kanji">汉字</string>
+    <string name="dictionaries_kind_pronunciation">发音</string>
+    <string name="dictionaries_kind_characters">汉字</string>
+    <string name="dictionaries_count_transcriptions">音标：%1$d</string>
+    <string name="dictionaries_count_characters">汉字：%1$d</string>
+    <string name="dictionaries_languages_hint">下方已安装和可下载的词典属于所选语言。未设语言的词典用于所有语言。</string>
+    <string name="dictionaries_other_languages">其他语言</string>
+    <string name="dictionaries_other_languages_hint">未启用的语言的词典。查词不会用到它们，只占用空间。</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="other">%1$d 个词典</item>
+    </plurals>
+    <string name="dictionaries_delete_language">全部删除</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="other">将删除该语言的 %1$d 个词典（%2$s）。</item>
+    </plurals>
     <string name="dictionaries_bundled">内置词典</string>
     <string name="dictionaries_task_queued">等待中：%1$s</string>
     <string name="dictionaries_task_downloading">正在下载 %1$s</string>

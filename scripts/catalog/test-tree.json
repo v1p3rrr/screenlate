@@ -1,0 +1,152 @@
+[
+  {
+    "type": "directory",
+    "path": "latest/dict/ja/en/mdict",
+    "size": 0
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/ja/ru/mdict",
+    "size": 0
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/en/wty-ja-en-gloss.zip",
+    "size": 386523
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/en/wty-ja-en-ipa.zip",
+    "size": 1181756
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/en/wty-ja-en.zip",
+    "size": 16417149
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/ru/wty-ja-ru-gloss.zip",
+    "size": 147272
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/ru/wty-ja-ru-ipa.zip",
+    "size": 32918
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/ja/ru/wty-ja-ru.zip",
+    "size": 690159
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/en/ady/mdict",
+    "size": 0
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/en/en/mdict",
+    "size": 0
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/en/nl/mdict",
+    "size": 0
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/en/ru/mdict",
+    "size": 0
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/ady/wty-en-ady-gloss.zip",
+    "size": 25517
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/en/wty-en-en-ipa.zip",
+    "size": 2761439
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/en/wty-en-en.zip",
+    "size": 107871321
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/nl/wty-en-nl-gloss.zip",
+    "size": 1829688
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/nl/wty-en-nl-ipa.zip",
+    "size": 86749
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/nl/wty-en-nl.zip",
+    "size": 866273
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/ru/wty-en-ru-gloss.zip",
+    "size": 3281709
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/ru/wty-en-ru-ipa.zip",
+    "size": 228428
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/en/ru/wty-en-ru.zip",
+    "size": 4995136
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/zh/de/mdict",
+    "size": 0
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/zh/de/wty-zh-de-gloss.zip",
+    "size": 358987
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/zh/de/wty-zh-de-ipa.zip",
+    "size": 10393
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/zh/de/wty-zh-de.zip",
+    "size": 53110
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/all/en/mdict",
+    "size": 0
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/all/en/wty-en-ipa.zip",
+    "size": 3777767
+  },
+  {
+    "type": "directory",
+    "path": "latest/dict/all/zh/mdict",
+    "size": 0
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/all/zh/mdict/wty-zh-ipa.zip",
+    "size": 41110704
+  },
+  {
+    "type": "file",
+    "path": "latest/dict/all/zh/wty-zh-ipa.zip",
+    "size": 39356932
+  }
+]

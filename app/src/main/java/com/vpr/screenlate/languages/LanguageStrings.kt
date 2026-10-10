@@ -24,6 +24,30 @@ class FontStrings(
     @param:StringRes val weightInfo: Int,
 )
 
+/** Dictionary labels that differ by language: pitch accents and kanji are Japanese, others have transcriptions. */
+class DictionaryStrings(
+    @param:StringRes val pitchKind: Int,
+    @param:StringRes val pitchCount: Int,
+    @param:StringRes val kanjiKind: Int,
+    @param:StringRes val kanjiCount: Int,
+)
+
+/** Labels for dictionaries of the language with [code]; a dictionary without a language keeps the Japanese ones. */
+fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null) Language.JAPANESE else Language.of(code)) {
+    Language.JAPANESE -> DictionaryStrings(
+        pitchKind = R.string.dictionaries_kind_pitch,
+        pitchCount = R.string.dictionaries_count_pitches,
+        kanjiKind = R.string.dictionaries_kind_kanji,
+        kanjiCount = R.string.dictionaries_count_kanji,
+    )
+    Language.ENGLISH, null -> DictionaryStrings(
+        pitchKind = R.string.dictionaries_kind_pronunciation,
+        pitchCount = R.string.dictionaries_count_transcriptions,
+        kanjiKind = R.string.dictionaries_kind_characters,
+        kanjiCount = R.string.dictionaries_count_characters,
+    )
+}
+
 val Language.fontStrings: FontStrings
     get() = when (this) {
         Language.JAPANESE -> FontStrings(

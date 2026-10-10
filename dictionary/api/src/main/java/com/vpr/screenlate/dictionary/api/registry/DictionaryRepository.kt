@@ -375,6 +375,13 @@ class DictionaryRepository @Inject constructor(
         }
     }
 
+    /** The bytes the files of each of [dictionaries] take on disk, by id. */
+    suspend fun sizes(dictionaries: List<DictionaryEntity>): Map<Long, Long> = withContext(Dispatchers.IO) {
+        dictionaries.associate { dictionary ->
+            dictionary.id to storage.directoryOf(dictionary).walk().filter(File::isFile).sumOf(File::length)
+        }
+    }
+
     private suspend fun load(language: Language) {
         val enabled = dao.getAll().filter { usable(it, language) }
         fun List<DictionaryEntity>.directories() = map { storage.directoryOf(it) }

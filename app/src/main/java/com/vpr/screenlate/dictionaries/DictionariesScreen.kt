@@ -51,6 +51,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +65,8 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.isLastTermDictionary
+import com.vpr.screenlate.languages.LanguageCard
+import com.vpr.screenlate.languages.dictionaryStrings
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import com.vpr.screenlate.ui.components.IconButtonProgress
@@ -92,6 +95,8 @@ fun DictionariesScreen(
     val deleteError by viewModel.deleteError.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
+    var pendingLanguageDelete by remember { mutableStateOf<OtherLanguage?>(null) }
+    var expandedLanguages by rememberSaveable { mutableStateOf(emptyList<String>()) }
     val askNotifications = rememberImportNotificationsAsk()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -188,6 +193,14 @@ fun DictionariesScreen(
             }
             ImportNotificationsCard()
 
+            if (state.profiles.several) {
+                LanguageCard(
+                    state.profiles,
+                    state.shown,
+                    viewModel::show,
+                    hint = stringResource(R.string.dictionaries_languages_hint),
+                )
+            }
             SectionTitle(stringResource(R.string.dictionaries_installed), anchors.at(0))
             if (state.loaded && state.installed.isEmpty()) {
                 Text(stringResource(R.string.dictionaries_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -198,13 +211,13 @@ fun DictionariesScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            val allDictionaries = state.installed.flatMap { it.dictionaries }
+            val allDictionaries = state.all
             state.installed.forEach { section ->
-                SubsectionTitle(stringResource(sectionLabel(section.kind)))
+                SubsectionTitle(stringResource(sectionLabel(section.kind, state.shown.code)))
                 ReorderableColumn(
                     items = section.dictionaries,
                     key = { it.id },
-                    onReorder = { viewModel.reorder(section.kind, it) },
+                    onReorder = viewModel::reorder,
                     spacing = 8.dp,
                 ) { dictionary, handle, dragging ->
                     DictionaryCard(
@@ -237,12 +250,51 @@ fun DictionariesScreen(
                 }
             }
 
+            if (state.others.isNotEmpty()) {
+                SectionTitle(stringResource(R.string.dictionaries_other_languages))
+                Text(
+                    stringResource(R.string.dictionaries_other_languages_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                state.others.forEach { other ->
+                    key(other.code) {
+                        OtherLanguageCard(
+                            other,
+                            onToggle = {
+                                expandedLanguages = if (other.code in expandedLanguages) {
+                                    expandedLanguages - other.code
+                                } else {
+                                    expandedLanguages + other.code
+                                }
+                            },
+                            onDelete = { pendingLanguageDelete = other },
+                        )
+                        if (other.code in expandedLanguages) {
+                            other.dictionaries.forEach { dictionary ->
+                                key(dictionary.id) {
+                                    DictionaryCard(
+                                        dictionary = dictionary,
+                                        handle = null,
+                                        dragging = false,
+                                        onEnabledChange = { viewModel.setEnabled(dictionary, it) },
+                                        onDelete = { pendingDelete = dictionary },
+                                        onEditLanguages = { editingLanguages = dictionary },
+                                        links = state.links[dictionary.id],
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
             state.catalog.forEach { group ->
                 SubsectionTitle(languageName(group.sourceLanguage))
                 group.sections.forEach { section ->
                     Text(
-                        catalogSectionLabel(section),
+                        catalogSectionLabel(section, group.sourceLanguage),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -272,6 +324,33 @@ fun DictionariesScreen(
                 editingLanguages = null
             },
             onDismiss = { editingLanguages = null },
+        )
+    }
+
+    pendingLanguageDelete?.let { other ->
+        AlertDialog(
+            onDismissRequest = { pendingLanguageDelete = null },
+            title = { Text(languageName(other.code)) },
+            text = {
+                val size = other.bytes?.let { Formatter.formatShortFileSize(context, it) } ?: "…"
+                Text(
+                    pluralStringResource(
+                        R.plurals.dictionaries_delete_language_text,
+                        other.dictionaries.size,
+                        other.dictionaries.size,
+                        size,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteLanguage(other.code)
+                    pendingLanguageDelete = null
+                }) { Text(stringResource(R.string.action_delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingLanguageDelete = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
         )
     }
 
@@ -325,18 +404,44 @@ private fun languageName(code: String): String =
     Locale.forLanguageTag(code).getDisplayLanguage(Locale.getDefault()).replaceFirstChar { it.titlecase(Locale.getDefault()) }
 
 @Composable
-private fun catalogSectionLabel(section: CatalogSection): String = when (section.kind) {
+private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String): String = when (section.kind) {
     DictionaryKind.TERM -> section.targetLanguage
         ?.let { stringResource(R.string.dictionaries_catalog_translations, languageName(it)) }
         ?: stringResource(R.string.dictionaries_kind_term)
-    else -> stringResource(kindLabel(section.kind))
+    else -> stringResource(kindLabel(section.kind, sourceLanguage))
 }
 
-private fun sectionLabel(kind: DictionaryKind): Int = when (kind) {
-    DictionaryKind.TERM -> R.string.dictionaries_section_terms
-    DictionaryKind.FREQUENCY -> R.string.dictionaries_kind_frequency
-    DictionaryKind.PITCH -> R.string.dictionaries_kind_pitch
-    DictionaryKind.KANJI -> R.string.dictionaries_kind_kanji
+/** The heading of installed dictionaries of one kind, for the language with [code]. */
+private fun sectionLabel(kind: DictionaryKind, code: String): Int =
+    if (kind == DictionaryKind.TERM) R.string.dictionaries_section_terms else kindLabel(kind, code)
+
+/** A header with the language's name, the number and size of its dictionaries; a tap shows them. */
+@Composable
+private fun OtherLanguageCard(language: OtherLanguage, onToggle: () -> Unit, onDelete: () -> Unit) {
+    val context = LocalContext.current
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp, end = 4.dp)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = onToggle)
+                    .padding(vertical = 12.dp),
+            ) {
+                Text(languageName(language.code), style = MaterialTheme.typography.bodyLarge)
+                val count = pluralStringResource(
+                    R.plurals.dictionaries_other_language_count,
+                    language.dictionaries.size,
+                    language.dictionaries.size,
+                )
+                Text(
+                    listOfNotNull(count, language.bytes?.let { Formatter.formatShortFileSize(context, it) }).joinToString(" · "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.dictionaries_delete_language), onClick = onDelete)
+        }
+    }
 }
 
 // `handle` goes on the drag handle, not on the card, so it is not the conventional `modifier` parameter.
@@ -344,7 +449,8 @@ private fun sectionLabel(kind: DictionaryKind): Int = when (kind) {
 @Composable
 private fun DictionaryCard(
     dictionary: DictionaryEntity,
-    handle: Modifier,
+    /** Null for a card outside the ordered list, which has no handle. */
+    handle: Modifier?,
     dragging: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     onDelete: () -> Unit,
@@ -358,13 +464,18 @@ private fun DictionaryCard(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = if (dragging) 8.dp else 0.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 4.dp)) {
-            Icon(
-                painterResource(R.drawable.ic_drag_handle),
-                contentDescription = stringResource(R.string.dictionaries_reorder),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = handle.padding(12.dp),
-            )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = if (handle == null) 16.dp else 0.dp, end = 4.dp),
+        ) {
+            if (handle != null) {
+                Icon(
+                    painterResource(R.drawable.ic_drag_handle),
+                    contentDescription = stringResource(R.string.dictionaries_reorder),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = handle.padding(12.dp),
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -492,19 +603,23 @@ private fun subtitle(dictionary: DictionaryEntity): String {
 }
 
 @Composable
-private fun counts(dictionary: DictionaryEntity): String = listOfNotNull(
-    dictionary.termCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_terms, it) },
-    dictionary.frequencyCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_frequencies, it) },
-    dictionary.pitchCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_pitches, it) },
-    dictionary.kanjiCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_kanji, it) },
-    dictionary.mediaCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_media, it) },
-).joinToString(", ")
+private fun counts(dictionary: DictionaryEntity): String {
+    val strings = dictionaryStrings(dictionary.sourceLanguage)
+    return listOfNotNull(
+        dictionary.termCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_terms, it) },
+        dictionary.frequencyCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_frequencies, it) },
+        dictionary.pitchCount.takeIf { it > 0 }?.let { stringResource(strings.pitchCount, it) },
+        dictionary.kanjiCount.takeIf { it > 0 }?.let { stringResource(strings.kanjiCount, it) },
+        dictionary.mediaCount.takeIf { it > 0 }?.let { stringResource(R.string.dictionaries_count_media, it) },
+    ).joinToString(", ")
+}
 
-private fun kindLabel(kind: DictionaryKind): Int = when (kind) {
+/** The name of a kind of dictionary for the language with [code]: pitch accent or pronunciation, kanji or characters. */
+private fun kindLabel(kind: DictionaryKind, code: String?): Int = when (kind) {
     DictionaryKind.TERM -> R.string.dictionaries_kind_term
     DictionaryKind.FREQUENCY -> R.string.dictionaries_kind_frequency
-    DictionaryKind.PITCH -> R.string.dictionaries_kind_pitch
-    DictionaryKind.KANJI -> R.string.dictionaries_kind_kanji
+    DictionaryKind.PITCH -> dictionaryStrings(code).pitchKind
+    DictionaryKind.KANJI -> dictionaryStrings(code).kanjiKind
 }
 
 @Composable
@@ -636,10 +751,10 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (Im
                     .padding(vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Text(entry.title, style = MaterialTheme.typography.bodyLarge)
+                Text(entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
                 val languages = listOfNotNull(entry.sourceLanguage, entry.targetLanguage).joinToString(" → ")
                 Text(
-                    listOf(languages, "${entry.sizeMb} MB", entry.license)
+                    listOf(languages, Formatter.formatShortFileSize(LocalContext.current, entry.downloadBytes), entry.license)
                         .filter { it.isNotEmpty() }
                         .joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall,

@@ -58,6 +58,20 @@
     <string name="dictionaries_kind_frequency">Tần suất</string>
     <string name="dictionaries_kind_pitch">Trọng âm cao độ</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Phát âm</string>
+    <string name="dictionaries_kind_characters">Chữ Hán</string>
+    <string name="dictionaries_count_transcriptions">phiên âm: %1$d</string>
+    <string name="dictionaries_count_characters">chữ Hán: %1$d</string>
+    <string name="dictionaries_languages_hint">Các từ điển đã cài và có thể tải xuống bên dưới thuộc về ngôn ngữ đã chọn. Từ điển không có ngôn ngữ được dùng cho mọi ngôn ngữ.</string>
+    <string name="dictionaries_other_languages">Ngôn ngữ khác</string>
+    <string name="dictionaries_other_languages_hint">Từ điển của các ngôn ngữ chưa bật. Tra cứu không dùng đến chúng; chúng chỉ chiếm dung lượng.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="other">%1$d từ điển</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Xóa tất cả</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="other">%1$d từ điển của ngôn ngữ này (%2$s) sẽ bị xóa.</item>
+    </plurals>
     <string name="dictionaries_bundled">từ điển đi kèm</string>
     <string name="dictionaries_task_queued">Đang chờ: %1$s</string>
     <string name="dictionaries_task_downloading">Đang tải %1$s</string>

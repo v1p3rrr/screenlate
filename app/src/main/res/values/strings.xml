@@ -61,6 +61,22 @@
     <string name="dictionaries_kind_frequency">Frequency</string>
     <string name="dictionaries_kind_pitch">Pitch accent</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Pronunciation</string>
+    <string name="dictionaries_kind_characters">Characters</string>
+    <string name="dictionaries_count_transcriptions">transcriptions: %1$d</string>
+    <string name="dictionaries_count_characters">characters: %1$d</string>
+    <string name="dictionaries_languages_hint">The installed dictionaries and those available for download below belong to the chosen language. Dictionaries without a language serve every language.</string>
+    <string name="dictionaries_other_languages">Other languages</string>
+    <string name="dictionaries_other_languages_hint">Dictionaries of languages that are not turned on. Lookups do not use them; they only take space.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d dictionary</item>
+        <item quantity="other">%1$d dictionaries</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Delete all</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">%1$d dictionary of this language (%2$s) will be deleted.</item>
+        <item quantity="other">%1$d dictionaries of this language (%2$s) will be deleted.</item>
+    </plurals>
     <string name="dictionaries_bundled">bundled dictionaries</string>
     <string name="dictionaries_task_queued">Waiting: %1$s</string>
     <string name="dictionaries_task_downloading">Downloading %1$s</string>

@@ -98,6 +98,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 ## Dictionaries
 
 - The Dictionaries screen lists installed dictionaries by type. Drag the handle to change the order: entries from dictionaries higher in the list come first. Among frequency dictionaries, pick the one used for sorting.
+- With several languages turned on, chips at the top pick the language whose dictionaries and catalog the page shows; dictionaries without a language show for every language. Dictionaries of languages that are not turned on are listed under "Other languages" with their size: a tap shows them, the bin deletes them all.
 - The last enabled dictionary with definitions for a language cannot be switched off or deleted; lookups would find nothing without it. A Yomitan settings import or a backup restore that would switch them all off leaves the first of them on and says so. If none is on anyway (e.g. its files are missing), the popup and the search say so instead of "no entries found", and the search offers "Manage dictionaries".
 - ⚠ on a switched on dictionary names the servers its styles load files from. Stylesheets and fonts from the internet load, and that server then sees when you look up words; other files are blocked.
 - Import Yomitan archives (`.zip`) from a file, download dictionaries from the catalog, or import a Yomitan "dictionary collection" export (`.json`) to bring over everything installed in Yomitan at once.

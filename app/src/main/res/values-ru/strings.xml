@@ -58,6 +58,26 @@
     <string name="dictionaries_kind_frequency">Частотность</string>
     <string name="dictionaries_kind_pitch">Питч-акцент</string>
     <string name="dictionaries_kind_kanji">Кандзи</string>
+    <string name="dictionaries_kind_pronunciation">Произношение</string>
+    <string name="dictionaries_kind_characters">Иероглифы</string>
+    <string name="dictionaries_count_transcriptions">транскрипции: %1$d</string>
+    <string name="dictionaries_count_characters">иероглифы: %1$d</string>
+    <string name="dictionaries_languages_hint">Установленные и доступные для загрузки словари ниже относятся к выбранному языку. Словари без языка используются для всех языков.</string>
+    <string name="dictionaries_other_languages">Другие языки</string>
+    <string name="dictionaries_other_languages_hint">Словари языков, которые не включены. Поиск ими не пользуется, они только занимают место.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d словарь</item>
+        <item quantity="few">%1$d словаря</item>
+        <item quantity="many">%1$d словарей</item>
+        <item quantity="other">%1$d словаря</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Удалить все</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">Будет удалён %1$d словарь этого языка (%2$s).</item>
+        <item quantity="few">Будут удалены %1$d словаря этого языка (%2$s).</item>
+        <item quantity="many">Будут удалены %1$d словарей этого языка (%2$s).</item>
+        <item quantity="other">Будут удалены %1$d словаря этого языка (%2$s).</item>
+    </plurals>
     <string name="dictionaries_bundled">встроенные словари</string>
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>

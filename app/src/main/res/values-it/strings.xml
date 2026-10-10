@@ -58,6 +58,24 @@
     <string name="dictionaries_kind_frequency">Frequenza</string>
     <string name="dictionaries_kind_pitch">Accento tonale</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Pronuncia</string>
+    <string name="dictionaries_kind_characters">Caratteri</string>
+    <string name="dictionaries_count_transcriptions">trascrizioni: %1$d</string>
+    <string name="dictionaries_count_characters">caratteri: %1$d</string>
+    <string name="dictionaries_languages_hint">I dizionari installati e quelli disponibili per il download qui sotto sono quelli della lingua scelta. I dizionari senza lingua valgono per tutte le lingue.</string>
+    <string name="dictionaries_other_languages">Altre lingue</string>
+    <string name="dictionaries_other_languages_hint">Dizionari di lingue non attivate. Le ricerche non li usano: occupano solo spazio.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d dizionario</item>
+        <item quantity="many">%1$d dizionari</item>
+        <item quantity="other">%1$d dizionari</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Elimina tutti</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">Verrà eliminato %1$d dizionario di questa lingua (%2$s).</item>
+        <item quantity="many">Verranno eliminati %1$d dizionari di questa lingua (%2$s).</item>
+        <item quantity="other">Verranno eliminati %1$d dizionari di questa lingua (%2$s).</item>
+    </plurals>
     <string name="dictionaries_bundled">dizionari inclusi</string>
     <string name="dictionaries_task_queued">In attesa: %1$s</string>
     <string name="dictionaries_task_downloading">Download di %1$s</string>

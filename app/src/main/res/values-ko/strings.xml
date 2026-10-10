@@ -58,6 +58,20 @@
     <string name="dictionaries_kind_frequency">빈도</string>
     <string name="dictionaries_kind_pitch">고저 악센트</string>
     <string name="dictionaries_kind_kanji">한자</string>
+    <string name="dictionaries_kind_pronunciation">발음</string>
+    <string name="dictionaries_kind_characters">한자</string>
+    <string name="dictionaries_count_transcriptions">발음 기호: %1$d</string>
+    <string name="dictionaries_count_characters">한자: %1$d</string>
+    <string name="dictionaries_languages_hint">아래의 설치된 사전과 다운로드 가능한 사전은 선택한 언어의 것입니다. 언어가 없는 사전은 모든 언어에 쓰입니다.</string>
+    <string name="dictionaries_other_languages">다른 언어</string>
+    <string name="dictionaries_other_languages_hint">켜지 않은 언어의 사전입니다. 검색에 쓰이지 않고 공간만 차지합니다.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="other">사전 %1$d개</item>
+    </plurals>
+    <string name="dictionaries_delete_language">모두 삭제</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="other">이 언어의 사전 %1$d개(%2$s)가 삭제됩니다.</item>
+    </plurals>
     <string name="dictionaries_bundled">기본 제공 사전</string>
     <string name="dictionaries_task_queued">대기 중: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s 다운로드 중</string>

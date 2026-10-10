@@ -58,6 +58,22 @@
     <string name="dictionaries_kind_frequency">Häufigkeit</string>
     <string name="dictionaries_kind_pitch">Tonhöhenakzent</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Aussprache</string>
+    <string name="dictionaries_kind_characters">Schriftzeichen</string>
+    <string name="dictionaries_count_transcriptions">Lautschriften: %1$d</string>
+    <string name="dictionaries_count_characters">Schriftzeichen: %1$d</string>
+    <string name="dictionaries_languages_hint">Die installierten und die zum Herunterladen angebotenen Wörterbücher unten gehören zur gewählten Sprache. Wörterbücher ohne Sprache gelten für alle Sprachen.</string>
+    <string name="dictionaries_other_languages">Andere Sprachen</string>
+    <string name="dictionaries_other_languages_hint">Wörterbücher von Sprachen, die nicht eingeschaltet sind. Die Suche nutzt sie nicht; sie belegen nur Speicherplatz.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d Wörterbuch</item>
+        <item quantity="other">%1$d Wörterbücher</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Alle löschen</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">%1$d Wörterbuch dieser Sprache (%2$s) wird gelöscht.</item>
+        <item quantity="other">%1$d Wörterbücher dieser Sprache (%2$s) werden gelöscht.</item>
+    </plurals>
     <string name="dictionaries_bundled">mitgelieferte Wörterbücher</string>
     <string name="dictionaries_task_queued">Wartet: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s wird heruntergeladen</string>

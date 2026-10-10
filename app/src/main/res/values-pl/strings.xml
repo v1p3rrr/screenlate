@@ -58,6 +58,26 @@
     <string name="dictionaries_kind_frequency">Częstość</string>
     <string name="dictionaries_kind_pitch">Akcent toniczny</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Wymowa</string>
+    <string name="dictionaries_kind_characters">Znaki</string>
+    <string name="dictionaries_count_transcriptions">transkrypcje: %1$d</string>
+    <string name="dictionaries_count_characters">znaki: %1$d</string>
+    <string name="dictionaries_languages_hint">Zainstalowane i dostępne do pobrania słowniki poniżej dotyczą wybranego języka. Słowniki bez języka służą wszystkim językom.</string>
+    <string name="dictionaries_other_languages">Inne języki</string>
+    <string name="dictionaries_other_languages_hint">Słowniki języków, które nie są włączone. Wyszukiwanie z nich nie korzysta, zajmują tylko miejsce.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d słownik</item>
+        <item quantity="few">%1$d słowniki</item>
+        <item quantity="many">%1$d słowników</item>
+        <item quantity="other">%1$d słownika</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Usuń wszystkie</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">Zostanie usunięty %1$d słownik tego języka (%2$s).</item>
+        <item quantity="few">Zostaną usunięte %1$d słowniki tego języka (%2$s).</item>
+        <item quantity="many">Zostanie usuniętych %1$d słowników tego języka (%2$s).</item>
+        <item quantity="other">Zostanie usunięte %1$d słownika tego języka (%2$s).</item>
+    </plurals>
     <string name="dictionaries_bundled">słowniki w zestawie</string>
     <string name="dictionaries_task_queued">Oczekuje: %1$s</string>
     <string name="dictionaries_task_downloading">Pobieranie: %1$s</string>

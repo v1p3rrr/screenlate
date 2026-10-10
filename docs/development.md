@@ -16,12 +16,25 @@ git submodule update --init --recursive
 
 The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bundled/`; a file is downloaded again when its URL in `app/build.gradle.kts` changes.
 
+## Dictionary catalog
+
+The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches
+it from the repository's `main` branch. Entries have a category (main, forms, frequency, pronunciation, short
+translations, characters), the source and gloss language, a "recommended" mark (ticked when a language is turned on),
+the archive size in bytes and, where measured, the size after import. Hand-written entries carry their descriptions in
+all interface languages. Wiktionary entries come from `node scripts/catalog/generate.mjs`, which reads the Hugging Face
+listing of wty-release for the supported source languages and the interface languages as gloss languages, skips
+archives under 0.5 MB, and fills titles and descriptions from the templates in the file. It also writes
+`dictionaries.json`, the format 1 copy with the Japanese entries that older app versions read. `--tree <file>` uses a
+recorded listing, `--record <file>` saves one.
+
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
 
 ## Tests
 
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
 - `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`) in a simulated DOM.
+- `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
 - `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
 
 ## Project layout

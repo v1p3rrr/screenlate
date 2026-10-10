@@ -58,6 +58,22 @@
     <string name="dictionaries_kind_frequency">Sıklık</string>
     <string name="dictionaries_kind_pitch">Ton vurgusu</string>
     <string name="dictionaries_kind_kanji">Kanji</string>
+    <string name="dictionaries_kind_pronunciation">Telaffuz</string>
+    <string name="dictionaries_kind_characters">Karakterler</string>
+    <string name="dictionaries_count_transcriptions">fonetik yazımlar: %1$d</string>
+    <string name="dictionaries_count_characters">karakterler: %1$d</string>
+    <string name="dictionaries_languages_hint">Aşağıdaki yüklü ve indirilebilir sözlükler seçilen dile aittir. Dili olmayan sözlükler tüm diller için kullanılır.</string>
+    <string name="dictionaries_other_languages">Diğer diller</string>
+    <string name="dictionaries_other_languages_hint">Açık olmayan dillerin sözlükleri. Aramalarda kullanılmazlar, yalnızca yer kaplarlar.</string>
+    <plurals name="dictionaries_other_language_count">
+        <item quantity="one">%1$d sözlük</item>
+        <item quantity="other">%1$d sözlük</item>
+    </plurals>
+    <string name="dictionaries_delete_language">Tümünü sil</string>
+    <plurals name="dictionaries_delete_language_text">
+        <item quantity="one">Bu dilin %1$d sözlüğü (%2$s) silinecek.</item>
+        <item quantity="other">Bu dilin %1$d sözlüğü (%2$s) silinecek.</item>
+    </plurals>
     <string name="dictionaries_bundled">birlikte gelen sözlükler</string>
     <string name="dictionaries_task_queued">Bekliyor: %1$s</string>
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>

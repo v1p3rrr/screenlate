@@ -21,8 +21,11 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.languages.LanguageFiles
+import com.vpr.screenlate.languages.ShownLanguage
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.text.Collator
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -78,8 +81,19 @@ data class CatalogGroup(val sourceLanguage: String, val sections: List<CatalogSe
 /** Installed dictionaries of one kind, in priority order. */
 data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<DictionaryEntity>)
 
+/**
+ * Installed dictionaries of a language that is not turned on, or that the app does not support; lookups do not use
+ * them. [bytes] is null until their files are measured.
+ */
+data class OtherLanguage(val code: String, val dictionaries: List<DictionaryEntity>, val bytes: Long?)
+
 data class DictionariesState(
+    /** Every installed dictionary, in priority order. */
+    val all: List<DictionaryEntity> = emptyList(),
+    /** The dictionaries of the [shown] language and those without a language. */
     val installed: List<InstalledSection> = emptyList(),
+    val others: List<OtherLanguage> = emptyList(),
+    val shown: Language = Language.JAPANESE,
     val tasks: List<ImportTask> = emptyList(),
     val catalog: List<CatalogGroup> = emptyList(),
     /** The frequency dictionaries used for sorting, one per turned-on language. */
@@ -90,6 +104,8 @@ data class DictionariesState(
     val remoteCss: Map<String, List<String>> = emptyMap(),
     /** Ids of the dictionaries whose files are gone. */
     val withoutFiles: Set<Long> = emptySet(),
+    /** Bytes on disk by dictionary id; empty until measured. */
+    val sizes: Map<Long, Long> = emptyMap(),
     val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
     val loaded: Boolean = false,
 ) {
@@ -111,7 +127,9 @@ class DictionariesViewModel @Inject constructor(
     private val cache: DictionariesStateCache,
     catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
+    private val languageFiles: LanguageFiles,
 ) : ViewModel() {
+    private val shownLanguage = ShownLanguage(profiles, viewModelScope)
     private val copyError = MutableStateFlow<String?>(null)
     private val mutableDeleteError = MutableStateFlow<String?>(null)
     private val updateCheck = MutableStateFlow<UpdateCheck?>(null)
@@ -123,19 +141,23 @@ class DictionariesViewModel @Inject constructor(
         repository.dictionaries,
         imports.tasks,
         catalog.entries(),
-        combine(sortDictionaryIds(), profiles.state, ::Pair),
+        combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
         repository.dictionaries
-            .map { remoteCss() to withoutFiles() }
-            .onStart { emit((cache.last?.remoteCss ?: emptyMap()) to (cache.last?.withoutFiles ?: emptySet())) },
-    ) { dictionaries, tasks, entries, (sortIds, profileState), (remoteCss, withoutFiles) ->
+            .map { FileChecks(remoteCss(), withoutFiles(), sizes(it)) }
+            .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes) } ?: FileChecks()) },
+    ) { dictionaries, tasks, entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
+        val shownDictionaries = dictionaries.filter { it.isFor(shown) }
         DictionariesState(
+            all = dictionaries,
             installed = DictionaryKind.entries.mapNotNull { kind ->
-                dictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
+                shownDictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
             },
+            others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes),
+            shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
-            catalog = groupCatalog(items, profileState.active),
+            catalog = groupCatalog(items.filter { it.entry.sourceLanguage == shown.code }, shown),
             sortDictionaryIds = profileState.turnedOn.mapNotNull { language ->
                 val frequencies = dictionaries.filter { it.enabled && it.frequencyCount > 0 && it.isFor(language) }
                 (frequencies.firstOrNull { it.id == sortIds[language] } ?: frequencies.firstOrNull())?.id
@@ -143,8 +165,9 @@ class DictionariesViewModel @Inject constructor(
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
             },
-            remoteCss = remoteCss,
-            withoutFiles = withoutFiles,
+            remoteCss = checks.remoteCss,
+            withoutFiles = checks.withoutFiles,
+            sizes = checks.sizes,
             profiles = profileState,
             loaded = true,
         )
@@ -164,6 +187,17 @@ class DictionariesViewModel @Inject constructor(
         Log.w(TAG, "Cannot check dictionary styles for remote files", e.redacted())
         emptyMap()
     }
+
+    private suspend fun sizes(dictionaries: List<DictionaryEntity>): Map<Long, Long> = try {
+        repository.sizes(dictionaries)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        emptyMap()
+    }
+
+    /** Shows the dictionaries and the catalog of a turned-on [language]. */
+    fun show(language: Language) = shownLanguage.show(language)
 
     private suspend fun withoutFiles(): Set<Long> = try {
         repository.missingFiles().mapTo(hashSetOf()) { it.id }
@@ -232,12 +266,9 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { repository.setEnabled(dictionary.id, enabled) }
     }
 
-    /** Applies a new order inside one section; other sections keep theirs. */
-    fun reorder(kind: DictionaryKind, ordered: List<DictionaryEntity>) {
-        val all = state.value.installed.flatMap { section ->
-            if (section.kind == kind) ordered else section.dictionaries
-        }
-        viewModelScope.launch { repository.reorder(all.map { it.id }) }
+    /** Applies a new order to the dictionaries of one section; every other dictionary keeps its place. */
+    fun reorder(ordered: List<DictionaryEntity>) {
+        viewModelScope.launch { repository.reorder(reordered(state.value.all, ordered).map { it.id }) }
     }
 
     fun setLanguages(dictionary: DictionaryEntity, source: String?, target: String?) {
@@ -283,6 +314,22 @@ class DictionariesViewModel @Inject constructor(
         }
     }
 
+    /** Deletes every dictionary of a language that is not turned on; leaving the screen does not stop it. */
+    fun deleteLanguage(code: String) {
+        viewModelScope.launch {
+            withContext(NonCancellable) {
+                try {
+                    languageFiles.delete(code)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Deleting the dictionaries of a language failed", e)
+                    mutableDeleteError.value = e.message ?: e.javaClass.simpleName
+                }
+            }
+        }
+    }
+
     fun clearFinishedTasks() {
         imports.clearFinished()
     }
@@ -303,6 +350,40 @@ class DictionariesViewModel @Inject constructor(
 }
 
 private const val TAG = "Dictionaries"
+
+/** Results of the checks that read files, which the list does not wait for. */
+private data class FileChecks(
+    val remoteCss: Map<String, List<String>> = emptyMap(),
+    val withoutFiles: Set<Long> = emptySet(),
+    val sizes: Map<Long, Long> = emptyMap(),
+)
+
+/**
+ * [all] with the dictionaries of [ordered] in its order, in the places they held; the others stay where they are, so a
+ * new order among one language's dictionaries leaves the other languages' alone.
+ */
+internal fun reordered(all: List<DictionaryEntity>, ordered: List<DictionaryEntity>): List<DictionaryEntity> {
+    val moved = ordered.mapTo(hashSetOf()) { it.id }
+    val next = ordered.iterator()
+    return all.map { if (it.id in moved && next.hasNext()) next.next() else it }
+}
+
+/** Dictionaries with a source language that is not turned on, by language, ordered by the language's name. */
+internal fun otherLanguages(
+    dictionaries: List<DictionaryEntity>,
+    turnedOn: List<Language>,
+    sizes: Map<Long, Long>,
+): List<OtherLanguage> {
+    val on = turnedOn.mapTo(hashSetOf()) { it.code }
+    val locale = Locale.getDefault()
+    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
+        .groupBy { it.sourceLanguage!! }
+        .map { (code, list) ->
+            val bytes = list.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
+            OtherLanguage(code, list, bytes)
+        }
+        .sortedWith(compareBy(Collator.getInstance(locale)) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) })
+}
 
 /**
  * Source language, then term dictionaries by target language, then the other kinds. The [active] language's
