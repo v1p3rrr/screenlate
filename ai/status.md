@@ -1,8 +1,19 @@
 # Status
 
-Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
+Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-languages-implementation.md) (phase 8,
+languages beyond Japanese, branch `languages/main`); the earlier phases followed
+[plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 
-## Next session (handoff, 2026-10-01)
+## Next session (handoff, 2026-10-10)
+
+- Stage A (shared base) and English are built on `languages/main`, checked on the emulator, and both review runs of
+  request 23 are done (see the log entry "languages: stage A, English, two reviews"). Next: the owner tests the debug
+  build; then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
+  release, backup and restore), then stage B (Chinese, Korean).
+- Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
+  `scripts/frequency/`).
+
+## Earlier handoff (phase 7, 2026-10-01)
 
 - State (2026-10-09): last release v0.2.2, see the log entry "release v0.2.2". Earlier: v0.2.1 (2026-10-01, tagged by the owner on bec507b). All module reviews and
   answers Q1-Q11 are done and committed. Request 11 (bring the bubble back) is done, see the 2026-10-01 log entry.
@@ -99,6 +110,7 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
 - [x] Phase 5 — first phone test feedback
 - [x] Phase 6 — build and publishing (first release v0.1.0 published 2026-09-27)
 - [x] Phase 7 — release readiness (the owner's open questions pending)
+- [ ] Phase 8 — languages beyond Japanese: stage A and English built and reviewed, stages B to E open
 
 ## Log
 
@@ -845,3 +857,28 @@ Current plan: [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.m
   `experiment/languages` is pushed. Continue from the plan's "Handoff" section.
 - Owner: priority languages by popularity among learners (request 11); the decision table's order of languages
   is revised: en, zh, ko; then es, fr, de, it, pt; then ru, pl, tr, vi; then the rest. Session paused here.
+
+### 2026-10-10 (languages: stage A, English, two reviews; languages/main)
+
+- Built A1 to A14 and English (commits from 928c3b3 to 3519c04 on `languages/main`): language profiles and the active
+  language in scans and search, settings per language, the second catalog format and dictionaries per language,
+  turning languages on and off from the start screen with the download screen, switching from the bubble's hold
+  menu, transcriptions and rule chains next to the word, audio regions, the transcription marker in Anki, the OCR
+  recognizer per script and the model store, the wordfreq builder, sentence rules for spaced languages, docs and
+  NOTICE. The plan's changelog has the per-step details.
+- Checked on the emulator: English turned on from the download screen, lookups with forms and phrases, settings
+  kept apart from Japanese, switching from the home screen and the bubble, turning off with and without the files,
+  Anki with the hidden default deck. Unit, page, Python, catalog and engine instrumented tests pass.
+- Review run 1 (xhigh, fixed in f87d87c): the sort dictionary is now one per language and ignores a disabled or
+  missing one; the setup screen's confirm runs once (a second tap or a rotation no longer queues the downloads
+  twice) and closes after the notification question; a dictionary without a source language keeps its form-of rows
+  in the term banks (Japanese lookups read them there); stacked KDoc merged; a helper moved into its test.
+- Review run 2 (xhigh, fixed in 78052bb): deleting a language's files now also cancels updates of its dictionaries
+  (they carry the installed title, not the catalog's), from the turn-off dialog and from the Dictionaries page;
+  checked on the emulator (queued English downloads, English off with its files: one queued download cancelled,
+  nothing came back). Skipped: the block of turned-off languages leaves OCR models out (no downloadable model before
+  stage D; recorded there in the plan); navigation callbacks of the first run and "Add a language" run in the view
+  model and are lost if the activity is recreated within the ~100 ms check (a second tap recovers).
+- Emulator state: Japanese and English on, English active with wty-en-ru and wty-en-ipa, English Anki configured.
+  The 2.7 GB copy in the emulator's Download folder was deleted (the same files are in `testdata/dictionaries/`).
+  A full `connectedDebugAndroidTest` uninstalls the debug app; run the engine package alone to keep it.
