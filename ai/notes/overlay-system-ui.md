@@ -50,19 +50,26 @@ which edge swipes the system takes from them. Measured on the emulator (Pixel_10
 
 - The window manager animates a window's move when the same update also changes its size (`WindowState.hasMoved`
   counts a move only together with a changed size; the animation is `window_move_from_decor`, about 400 ms,
-  decelerating). Since v0.2.2 the docked bubble's window holds only the part that shows, so pulling it out resizes and
-  moves it at once: on the owner's phone (2026-10-10) the bubble stayed at the edge for about half a second while the
-  aim, in the layer window, followed the finger, then flew to the finger. Dropping it into the dock, which shrinks and
-  moves the window, would glide the same way.
+  decelerating). Since v0.2.2 the docked bubble's window holds only the part that shows, so pulling it out resized and
+  moved it at once: on the owner's phone (2026-10-10) the bubble stayed at the edge for about half a second while the
+  aim, in the layer window, followed the finger, then flew to the finger. Dropping it into the dock glided the same
+  way. Confirmed on API 30 and API 37 emulators by trace.
 - In a trace (`atrace ... wm gfx view`) the animation shows on system_server's `android.anim.lf` thread
-  (`SurfaceAnimationRunner`, `notifyAnimEnd-SurfaceAnimationRunner$SfValueAnimator`), starting 2 ms after the
-  client's `relayoutWindow ... resize=true` and lasting about 405 ms on the emulator.
-- `LayoutParams.setCanPlayMoveAnimation(false)` (API 34+, sets `PRIVATE_FLAG_NO_MOVE_ANIMATION`, shown as
-  `pfl=NO_MOVE_ANIMATION` in `dumpsys window windows`) turns it off; every overlay window sets it in
-  `OverlayWindows`. Android 11-13 have no public switch, so the glide likely remains there (not checked on the API 30
-  image).
-- On the emulator the slow first frame after a pull-out (new surface, buffers) hides the difference in a screen
-  recording; the trace is the reliable check.
+  (`SurfaceAnimationRunner`; its `Choreographer#doFrame` slices for about 400 ms right after the client's
+  `relayoutWindow`, and on API 30 a `LocalAnimationAdapter` lambda on `android.anim` when it ends). Without the glide
+  that thread has no frames at all during the gesture.
+- The fix on every version: `BubbleWindowMover` never changes the bubble window's size and position in one update.
+  It grows the window in place (still drawing the old look), moves it (new look), then shrinks it; the view draws the
+  disc where `BubbleView.place` puts it, clipped to the part that shows, so a larger window looks the same. The next
+  step runs from a message posted after the update: the traversal that sends the relayout blocks other main-thread
+  messages until it is done. Unit tests check the rule over every pair of dock and free frames.
+- On API 34+ `LayoutParams.setCanPlayMoveAnimation(false)` (`PRIVATE_FLAG_NO_MOVE_ANIMATION`, `pfl=NO_MOVE_ANIMATION`
+  in `dumpsys window windows`) is also set on every overlay window in `OverlayWindows`.
+- Emulator recordings mislead here: `screenrecord`'s software encoder can stall SurfaceFlinger for half a second
+  (`presentAndGetReleaseFences` waiting on the encoder's `lockAsync`), which looks like the bubble vanishing after a
+  pull-out. Trace without recording; check the look with screenshots between `input motionevent` steps. Each `input`
+  call takes long enough on the emulator that a floating bubble's DOWN followed by a MOVE opens the hold menu; drag a
+  floating bubble with one `input swipe`.
 
 ## Testing
 

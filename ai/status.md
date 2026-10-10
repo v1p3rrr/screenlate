@@ -11,6 +11,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   build of `languages/main` (CI builds only pushes to main and pull requests; a manual run of `ci.yml` on
   `languages/main` gives its APK); then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
   release, backup and restore), then stage B (Chinese, Korean).
+- Pending owner decision: release v0.2.3 from main with the bubble glide fix (see the log entry "bubble pull-out
+  glide").
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
 
@@ -895,3 +897,16 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   `setCanPlayMoveAnimation(false)` on every overlay window (API 34+); checked on the emulator with a trace (no
   animation on `android.anim.lf` any more, 405 ms before) and a recording. Details and the Android 11-13 gap in
   `ai/notes/overlay-system-ui.md`. The fix is on main and `languages/main`.
+- Owner: was it like this on Android 11-13 before, and fix it at the root, with tests. Before v0.2.2 no version
+  glided (the dock window was the whole disc, so a pull-out only moved it). Root fix for every version:
+  `BubbleWindowMover` never changes the bubble window's size and position in one update (grow in place, move, shrink;
+  the next step is posted after the traversal), and `BubbleView` draws the disc at an explicit place clipped to the
+  part that shows. Unit tests (`BubbleWindowMoverTest`) check the rule for every pair of dock and free frames and a
+  whole gesture. Checked on a fresh API 30 emulator: the old build glides (420 ms on `android.anim.lf`), the new one
+  has no frames there for a pull-out or a drop from one dock into another; pulled out, at the edge, docked left, top
+  and bottom look right.
+- Owner: can 0.2.2 be re-released as a hotfix? No: a rebuilt 0.2.2 has the same version code (202), and the app's
+  update check (`Releases.isNewer`) offers only a higher one, so users who updated would never get it. The fix ships
+  as v0.2.3 from main (main = 0.2.2 + the bubble fix), on the owner's command.
+- The AVD `Screenlate_API30` is locked by a qemu process that cannot be killed (PID 70992 this session); a fresh AVD
+  `Screenlate_API30_glide` (pixel_4, google_apis x86) replaced it for this check. A reboot of the PC frees the lock.
