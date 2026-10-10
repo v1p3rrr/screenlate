@@ -27,6 +27,11 @@ hoshidicts (https://github.com/Manhhao/hoshidicts), GPL-3.0.
   - xxHash, BSD 2-Clause License, Copyright (c) 2012-2021 Yann Collet
   - kanji-processor, MIT License, Copyright (c) 2024-2025 Lyroxide, Yomitan Authors
 
+QuickJS-ng (https://github.com/quickjs-ng/quickjs), MIT License,
+Copyright (c) 2017-2026 Fabrice Bellard, Copyright (c) 2017-2024 Charlie Gordon,
+Copyright (c) 2023-2026 Ben Noordhuis, Copyright (c) 2023-2026 Saúl Ibarra Corretgé.
+  JavaScript engine linked into dictionary/engine-hoshidicts; it runs Yomitan's language code (below).
+
 Hoshi Reader (https://github.com/HuangAntimony/Hoshi-Reader-Android), GPL-3.0-or-later,
 Copyright (c) 2026 Manhhao; Yomitan (https://github.com/yomidevs/yomitan), GPL-3.0,
 Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Authors.
@@ -34,6 +39,8 @@ Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Author
   dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
   The Japanese inflection names and descriptions in dictionary/engine-hoshidicts come from
   Yomitan's japanese-transforms.js through hoshidicts; their translations are under the same license.
+  The text processors and inflection rules of the other languages are Yomitan's own language code,
+  bundled by scripts/yomitan-language into dictionary/engine-hoshidicts/src/main/assets/yomitan-language.
 
 AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
 Copyright (c) AnkiDroid contributors.
@@ -75,3 +82,9 @@ Jiten frequency list (https://jiten.moe), CC BY-SA 4.0.
 Kanjium pitch accents (https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary),
   data from Kanjium (https://github.com/mifunetoshiro/kanjium), CC BY-SA 4.0;
   conversion by toasted-nutbread, MIT License.
+
+Dictionaries offered for download are not part of the APK; each one carries its own license and
+attribution, shown in the app under Dictionaries. The frequency dictionaries built by scripts/frequency
+use the word lists of wordfreq (https://github.com/rspeer/wordfreq) by Robyn Speer, data licensed
+CC BY-SA 4.0, which come from Wikipedia, OpenSubtitles, SUBTLEX, Google Books Ngrams and other sources;
+each built dictionary names them all and is shared under CC BY-SA 4.0.

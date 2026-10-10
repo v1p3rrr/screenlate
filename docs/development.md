@@ -16,6 +16,8 @@ git submodule update --init --recursive
 
 The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bundled/`; a file is downloaded again when its URL in `app/build.gradle.kts` changes.
 
+Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
+
 ## Dictionary catalog
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches
@@ -37,7 +39,16 @@ Frequency dictionaries for languages without one are built from wordfreq: `pip i
 the index; `--download-url` and `--index-url` make it updatable once hosted. Its data is CC BY-SA 4.0, and so is the
 dictionary.
 
-Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
+## Language bundles
+
+Languages other than Japanese are looked up through Yomitan's language code, built into one script per language in
+`dictionary/engine-hoshidicts/src/main/assets/yomitan-language/<iso>.js`. The bundles are committed; to rebuild them,
+check out Yomitan at the commit in `scripts/yomitan-language/yomitan-commit.txt`, then
+`npm --prefix scripts/yomitan-language ci` and `node scripts/yomitan-language/build.mjs <yomitan checkout> <out dir>
+<iso>...`. `node scripts/yomitan-language/generate-inflections.mjs <yomitan checkout> <iso>...` regenerates the
+inflection rule names (`res/values/inflections_<iso>.xml` and `YomitanInflections.kt`) and lists the translations
+that are missing or no longer needed; translations are edited by hand. The bundles and the strings are GPL-3.0, like
+the engine module that holds them.
 
 ## Tests
 
