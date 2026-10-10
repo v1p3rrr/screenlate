@@ -73,8 +73,10 @@ import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.settings.SmallTextMode
 import com.vpr.screenlate.overlay.settings.TextSource
+import com.vpr.screenlate.overlay.ui.BubbleFrame
 import com.vpr.screenlate.overlay.ui.BubbleMenu
 import com.vpr.screenlate.overlay.ui.BubbleView
+import com.vpr.screenlate.overlay.ui.BubbleWindowMover
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
 import com.vpr.screenlate.overlay.ui.DockPlacement
@@ -165,8 +167,15 @@ class OverlayController(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val vibrator = service.getSystemService(Vibrator::class.java)?.takeIf { it.hasVibrator() }
 
-    private val bubbleView = BubbleView(service)
+    private val bubbleView = BubbleView(service).apply { diameter = bubbleSize }
     private val bubbleParams = OverlayWindows.bubbleParams(bubbleSize)
+    private val bubbleWindow = BubbleWindowMover(
+        initial = BubbleFrame(DockPlacement.Window(0, 0, bubbleSize, bubbleSize), bubbleSize / 2f, bubbleSize / 2f, null),
+        update = ::showBubbleFrame,
+        // A posted message runs after the traversal that sends the update: until then the traversal holds back the
+        // main thread's other messages.
+        afterUpdate = { next -> if (attached) mainHandler.post(next) else next() },
+    )
     private val layerView = LayerView(service)
     private val layerParams = OverlayWindows.layerParams()
     private val popup = PopupController(service, windowManager, PopupCallbacks())
@@ -388,10 +397,10 @@ class OverlayController(
         attached = false
     }
 
-    /** The window takes the new size from [placeDocked] or [moveBubbleTo], which update it only when it changes. */
     private fun resizeBubble(size: Int) {
         val (cx, cy) = bubbleCenter()
         bubbleSize = size
+        bubbleView.diameter = size
         if (state == State.DOCKED) placeDocked() else moveBubbleTo(cx, cy)
     }
 
@@ -451,12 +460,8 @@ class OverlayController(
 
     // region Bubble position and state
 
-    /** The disc's center; a docked bubble's window holds only the part that shows. */
-    private fun bubbleCenter(): Pair<Float, Float> = DockPlacement.center(
-        DockPlacement.Window(bubbleParams.x, bubbleParams.y, bubbleParams.width, bubbleParams.height),
-        bubbleSize,
-        settings.dockSide,
-    )
+    /** The disc's center: where the bubble goes, even while its window is still on the way there. */
+    private fun bubbleCenter(): Pair<Float, Float> = bubbleWindow.target.let { it.centerX to it.centerY }
 
     private fun bubbleBox(): Box {
         val (cx, cy) = bubbleCenter()
@@ -464,17 +469,40 @@ class OverlayController(
     }
 
     private fun moveBubbleTo(centerX: Float, centerY: Float) {
-        setBubbleWindow(
-            DockPlacement.Window(
-                (centerX - bubbleSize / 2f).roundToInt(),
-                (centerY - bubbleSize / 2f).roundToInt(),
-                bubbleSize,
-                bubbleSize,
-            ),
+        val window = DockPlacement.Window(
+            (centerX - bubbleSize / 2f).roundToInt(),
+            (centerY - bubbleSize / 2f).roundToInt(),
+            bubbleSize,
+            bubbleSize,
         )
+        bubbleWindow.moveTo(BubbleFrame(window, centerX, centerY, shown = null))
     }
 
-    private fun setBubbleWindow(window: DockPlacement.Window) {
+    /** @param position along the dock's edge; the saved one by default. */
+    private fun placeDocked(position: Float = settings.dockPosition) {
+        bubbleView.dockSide = settings.dockSide
+        bubbleView.docked = true
+        val window = DockPlacement.window(settings.dockSide, position, bubbleSize, dockScreen())
+        val (cx, cy) = DockPlacement.center(window, bubbleSize, settings.dockSide)
+        val shown = Box(
+            window.x.toFloat(),
+            window.y.toFloat(),
+            (window.x + window.width).toFloat(),
+            (window.y + window.height).toFloat(),
+        )
+        bubbleWindow.moveTo(BubbleFrame(window, cx, cy, shown))
+    }
+
+    /** One step of [bubbleWindow]: the window's place and size, and where the disc goes in it. */
+    private fun showBubbleFrame(frame: BubbleFrame) {
+        val window = frame.window
+        val x = window.x.toFloat()
+        val y = window.y.toFloat()
+        bubbleView.place(
+            frame.centerX - x,
+            frame.centerY - y,
+            frame.shown?.let { RectF(it.left - x, it.top - y, it.right - x, it.bottom - y) },
+        )
         val params = bubbleParams
         if (params.x == window.x && params.y == window.y && params.width == window.width && params.height == window.height) {
             return
@@ -484,13 +512,6 @@ class OverlayController(
         params.width = window.width
         params.height = window.height
         if (attached) windowManager.updateViewLayout(bubbleView, params)
-    }
-
-    /** @param position along the dock's edge; the saved one by default. */
-    private fun placeDocked(position: Float = settings.dockPosition) {
-        bubbleView.dockSide = settings.dockSide
-        bubbleView.docked = true
-        setBubbleWindow(DockPlacement.window(settings.dockSide, position, bubbleSize, dockScreen()))
     }
 
     /**

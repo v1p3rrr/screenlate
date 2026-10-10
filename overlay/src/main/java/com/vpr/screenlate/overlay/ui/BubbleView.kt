@@ -17,8 +17,8 @@ import java.util.Locale
  * The draggable bubble. Draws a translucent disc, an optional center dot, a loading arc and, while docked, a letter of
  * the lookup language in the part that shows past the screen edge.
  *
- * The disc is as large as the view's longer side. A narrower or lower view is a dock's window, which holds only the
- * part that shows: the disc is drawn cut off at the view's edge that faces the screen edge.
+ * The disc goes where [place] puts it; a dock's window holds only the part that shows, and a window on its way between
+ * the dock and the finger may be larger than the disc.
  */
 class BubbleView(context: Context) : View(context) {
 
@@ -43,6 +43,10 @@ class BubbleView(context: Context) : View(context) {
         typeface = Typeface.DEFAULT_BOLD
     }
     private val arcBounds = RectF()
+    private val discBounds = RectF()
+    private var centerX = 0f
+    private var centerY = 0f
+    private var shown: RectF? = null
     private val exclusionRect = Rect()
     private val exclusionRects = listOf(exclusionRect)
     private var arcStart = 0f
@@ -117,8 +121,25 @@ class BubbleView(context: Context) : View(context) {
             invalidate()
         }
 
+    /** The disc's size in pixels. */
+    var diameter: Int = 0
+        set(value) {
+            if (field == value) return
+            field = value
+            invalidate()
+        }
+
     init {
         alpha = DOCKED_ALPHA
+    }
+
+    /** Puts the disc's center at ([x], [y]) in the view; only [shown] of it is drawn, or the whole disc when null. */
+    fun place(x: Float, y: Float, shown: RectF?) {
+        if (x == centerX && y == centerY && shown == this.shown) return
+        centerX = x
+        centerY = y
+        this.shown = shown
+        invalidate()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -129,14 +150,18 @@ class BubbleView(context: Context) : View(context) {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val size = maxOf(width, height)
-        val cx = if (dockSide == DockSide.LEFT) width - size / 2f else size / 2f
-        val cy = if (dockSide == DockSide.TOP) height - size / 2f else size / 2f
-        val radius = size / 2f - ring.strokeWidth
+        val cx = centerX
+        val cy = centerY
+        val half = diameter / 2f
+        discBounds.set(cx - half, cy - half, cx + half, cy + half)
+        val part = shown ?: discBounds
+        canvas.save()
+        canvas.clipRect(part)
+        val radius = half - ring.strokeWidth
         canvas.drawCircle(cx, cy, radius, fill)
         canvas.drawCircle(cx, cy, radius, ring)
         if (showCenterDot) canvas.drawCircle(cx, cy, 3.5f * density, dot)
-        if (docked && glyph.isNotEmpty()) drawGlyph(canvas, size, cy)
+        if (docked && glyph.isNotEmpty()) drawGlyph(canvas, part)
         if (loading) {
             val inset = radius - 6f * density
             arcBounds.set(cx - inset, cy - inset, cx + inset, cy + inset)
@@ -146,20 +171,22 @@ class BubbleView(context: Context) : View(context) {
                 canvas.drawArc(arcBounds, arcStart, 100f, false, arc)
             }
         }
+        canvas.restore()
     }
 
-    private fun drawGlyph(canvas: Canvas, size: Int, cy: Float) {
-        val x = width / 2f
+    /** [part] is the part of the disc that shows. */
+    private fun drawGlyph(canvas: Canvas, part: RectF) {
+        val x = part.centerX()
         val y: Float
         if (dockSide.horizontal) {
-            // The view is the part that shows, a disc segment narrowing away from the screen edge: the glyph sits
-            // nearer to the edge, where the segment is wide, or at the disc's center when that shows.
-            val fromEdge = maxOf(height * CAP_GLYPH_CENTER, height - size / 2f)
-            y = if (dockSide == DockSide.TOP) fromEdge else height - fromEdge
-            glyphPaint.textSize = minOf(height * CAP_GLYPH_SIZE, size * CAP_GLYPH_MAX)
+            // The part that shows is a disc segment narrowing away from the screen edge: the glyph sits nearer to the
+            // edge, where the segment is wide, or at the disc's center when that shows.
+            val fromEdge = maxOf(part.height() * CAP_GLYPH_CENTER, part.height() - diameter / 2f)
+            y = if (dockSide == DockSide.TOP) part.top + fromEdge else part.bottom - fromEdge
+            glyphPaint.textSize = minOf(part.height() * CAP_GLYPH_SIZE, diameter * CAP_GLYPH_MAX)
         } else {
-            y = cy
-            glyphPaint.textSize = minOf(width, height) * GLYPH_SIZE
+            y = centerY
+            glyphPaint.textSize = minOf(part.width(), part.height()) * GLYPH_SIZE
         }
         val baseline = y - (glyphPaint.descent() + glyphPaint.ascent()) / 2f
         canvas.drawText(glyph, x, baseline, glyphPaint)
