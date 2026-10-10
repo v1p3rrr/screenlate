@@ -74,6 +74,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Recommended dictionaries | On the download screen the main dictionary of each chosen gloss language is ticked (both, each can be unticked while one stays). Within one gloss language and category one entry is ticked when there are several (Jitendex or JMdict): the catalog marks it, chosen by quality and coverage (Jitendex over JMdict, KRDICT over Wiktionary for Korean), size only breaking ties (owner, 2026-10-10; the rule within a gloss language delegated to the agent) |
 | First language branch | English: fewer open questions than Chinese and the simpler lookup; it is also the vehicle of the shared stage (agent's choice, delegated by the owner, 2026-10-10) |
 | Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan; the open scan keeps its language until the bubble is docked (owner, 2026-10-10) |
+| Transcription file | The merged transcription dictionary of all Wiktionary editions (`dict/all/<language>`, e.g. en 3.8 MB against en-en 2.8, ru 10.4 against 6.5) instead of the edition with the most entries; still one item per language (owner, 2026-10-10; changes the "Pronunciation dictionaries" row) |
+| A language confirmed on the download screen | Turned on and made active at once; until its main dictionary is installed the home screen shows the missing-dictionary card with the download progress (owner, 2026-10-10) |
 
 ## Open items (postponed by the owner)
 
@@ -370,3 +372,4 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   naturally in every locale. Yomitan import goes to the profile's `general.language`, else the active language, and the
   summary names it. Home checks the Anki setup of every turned-on language and audio failures against all their
   sources; its Anki summary shows the active language.
+- 2026-10-10: the merged transcription dictionary per language; a confirmed language is turned on and active at once.
