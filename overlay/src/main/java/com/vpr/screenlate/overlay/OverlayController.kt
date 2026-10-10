@@ -28,6 +28,7 @@ import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.redactUrl
@@ -174,6 +175,7 @@ class OverlayController(
     private val accessibilityText = AccessibilityText(service)
     /** The language switched to last; a scan takes it when the bubble leaves the dock. */
     private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
+    private var turnedOn = profiles.cachedState?.turnedOn.orEmpty()
 
     /** The open scan's language: a switch in the hold menu applies once the bubble has docked. */
     private val scanLanguage = MutableStateFlow(activeLanguage)
@@ -261,6 +263,7 @@ class OverlayController(
         showGlyph(activeLanguage)
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }
+        scope.launch { profiles.state.collect { turnedOn = it.turnedOn } }
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         scope.launch {
@@ -652,7 +655,7 @@ class OverlayController(
 
     /**
      * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
-     * the app.
+     * the app; with several languages on, chips switch the active one, which the next scan takes.
      */
     private fun showBubbleMenu() {
         val layout = layout
@@ -672,7 +675,16 @@ class OverlayController(
             if (all.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_all)) { copyText(all) })
             add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
-        bubbleMenu.show(items, bubbleBox(), usableBounds())
+        val locale = service.resources.configuration.locales[0]
+        val chips = turnedOn.takeIf { it.size > 1 }.orEmpty().map { language ->
+            BubbleMenu.Chip(language.displayName(locale), selected = language == activeLanguage) {
+                if (language != activeLanguage) {
+                    Log.d(TAG, "Active language ${language.code} from the bubble menu")
+                    scope.launch { profiles.setActive(language) }
+                }
+            }
+        }
+        bubbleMenu.show(items, bubbleBox(), usableBounds(), chips)
     }
 
     /** Brings the app to the front as the launcher does; the bubble docks so it does not hang over the app. */

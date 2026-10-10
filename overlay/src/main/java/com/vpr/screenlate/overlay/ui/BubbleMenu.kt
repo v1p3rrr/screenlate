@@ -18,11 +18,13 @@ import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import com.vpr.screenlate.core.common.geometry.Box
 import kotlin.math.max
 import kotlin.math.min
@@ -32,11 +34,14 @@ import kotlin.math.roundToInt
  * The menu of the held bubble, in its own overlay window. The system popup menu cannot place itself here: overlay
  * windows are laid out without screen limits, so it believes there is room on every side and runs off the screen.
  * While open, the window takes focus and every touch on the screen, like a menu inside an app: Back or a tap anywhere
- * outside closes it, and that tap does nothing else. Closes on an item and when the screen turns off too.
+ * outside closes it, and that tap does nothing else. Closes on an item and when the screen turns off too. A row of chips
+ * above the items picks the active language while several are turned on.
  */
 class BubbleMenu(private val context: Context, private val windowManager: WindowManager) {
 
     class Item(val title: String, val onClick: () -> Unit)
+
+    class Chip(val title: String, val selected: Boolean, val onClick: () -> Unit)
 
     /** Made again for each menu: a theme keeps the day or night look it was made with. */
     private var themed: Context = context
@@ -51,13 +56,16 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         override fun onReceive(context: Context, intent: Intent) = dismiss()
     }
 
-    /** Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them. */
-    fun show(items: List<Item>, anchor: Box, bounds: Box) {
+    /**
+     * Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them, with [chips] in a
+     * row above them; the row scrolls when it is wider than the menu.
+     */
+    fun show(items: List<Item>, anchor: Box, bounds: Box, chips: List<Chip> = emptyList()) {
         dismiss()
         themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight)
         val margin = MARGIN_DP * density
         val area = Box(bounds.left + margin, bounds.top + margin, bounds.right - margin, bounds.bottom - margin)
-        val card = card(items)
+        val card = card(items, chips)
         val maxWidth = min(area.width, MAX_WIDTH_DP * density).roundToInt().coerceAtLeast(1)
         card.measure(
             MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.AT_MOST),
@@ -103,7 +111,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         runCatching { windowManager.removeView(view) }
     }
 
-    private fun card(items: List<Item>) = LinearLayout(themed).apply {
+    private fun card(items: List<Item>, chips: List<Chip>) = LinearLayout(themed).apply {
         orientation = LinearLayout.VERTICAL
         background = popupBackground()
         elevation = ELEVATION_DP * density
@@ -111,7 +119,50 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         minimumWidth = (MIN_WIDTH_DP * density).roundToInt()
         val padding = (LIST_PADDING_DP * density).roundToInt()
         setPadding(0, padding, 0, padding)
+        if (chips.isNotEmpty()) addView(chipRow(chips))
         items.forEach { addView(itemView(it)) }
+    }
+
+    private fun chipRow(chips: List<Chip>) = HorizontalScrollView(themed).apply {
+        isHorizontalScrollBarEnabled = false
+        val row = LinearLayout(themed).apply {
+            orientation = LinearLayout.HORIZONTAL
+            val horizontal = (CHIP_ROW_PADDING_DP * density).roundToInt()
+            setPaddingRelative(horizontal, 0, horizontal, (CHIP_ROW_PADDING_DP * density).roundToInt())
+            chips.forEach { addView(chipView(it)) }
+        }
+        addView(row)
+        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun chipView(chip: Chip) = TextView(themed).apply {
+        text = chip.title
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, CHIP_TEXT_SP)
+        isSingleLine = true
+        isSelected = chip.selected
+        gravity = Gravity.CENTER
+        minHeight = (CHIP_HEIGHT_DP * density).roundToInt()
+        val horizontal = (CHIP_PADDING_DP * density).roundToInt()
+        setPaddingRelative(horizontal, 0, horizontal, 0)
+        setTextColor(color(android.R.attr.textColorPrimary))
+        val accent = color(android.R.attr.colorAccent)
+        val outline = color(android.R.attr.textColorSecondary)
+        background = GradientDrawable().apply {
+            cornerRadius = CHIP_CORNER_DP * density
+            if (chip.selected) {
+                setColor(ColorUtils.setAlphaComponent(accent, SELECTED_ALPHA))
+                setStroke(density.roundToInt(), accent)
+            } else {
+                setStroke(density.roundToInt(), ColorUtils.setAlphaComponent(outline, OUTLINE_ALPHA))
+            }
+        }
+        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = (CHIP_GAP_DP * density).roundToInt()
+        }
+        setOnClickListener {
+            dismiss()
+            chip.onClick()
+        }
     }
 
     private fun root(card: View, shadow: Int) = Root(themed).apply {
@@ -178,6 +229,10 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 
     private fun attr(id: Int) = TypedValue().also { themed.theme.resolveAttribute(id, it, true) }
 
+    /** A theme color, also when the theme gives it as a color state list. */
+    private fun color(id: Int): Int =
+        attr(id).let { value -> if (value.resourceId != 0) themed.getColorStateList(value.resourceId).defaultColor else value.data }
+
     private companion object {
         const val MARGIN_DP = 8f
         const val GAP_DP = 4f
@@ -189,6 +244,14 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         const val ITEM_PADDING_DP = 16f
         const val ITEM_VERTICAL_PADDING_DP = 8f
         const val CORNER_DP = 8f
+        const val CHIP_ROW_PADDING_DP = 12f
+        const val CHIP_HEIGHT_DP = 32f
+        const val CHIP_PADDING_DP = 12f
+        const val CHIP_GAP_DP = 8f
+        const val CHIP_CORNER_DP = 8f
+        const val CHIP_TEXT_SP = 14f
+        const val SELECTED_ALPHA = 0x3D
+        const val OUTLINE_ALPHA = 0x80
     }
 }
 
