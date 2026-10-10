@@ -358,3 +358,15 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - 2026-10-10: recommended dictionaries (both gloss languages ticked, one entry per gloss language by quality), English
   first; implementation started.
 - 2026-10-10: request 23 (whole base, English, then two code-review runs with fixes).
+- 2026-10-10: A6 as built. The backup keeps format 1: older versions skip keys they do not know, so a new backup still
+  restores there, and an older backup restores into Japanese (its single sort dictionary is Japanese's; each language's
+  sort dictionary is now kept by title per language code). The turned-on languages go into the General section and the
+  full settings reset keeps them, like the dictionaries. Japanese keeps its old preference keys, other languages add
+  `_<code>` (no migration). A page reset clears the shared settings and the shown language's; the dialog says so while
+  several languages are on. Page layout with several languages: Lookup and Popup get the language's card (chips,
+  scan length, single character entries, romaji; font, its scope, preview sample, catalog, CSS) next to a shared card
+  (results; text size and weight); the Anki page, nearly all per language, gets a card at the top that only switches the
+  language. Font strings that name the language ("Only for English text") are written per language so they read
+  naturally in every locale. Yomitan import goes to the profile's `general.language`, else the active language, and the
+  summary names it. Home checks the Anki setup of every turned-on language and audio failures against all their
+  sources; its Anki summary shows the active language.
