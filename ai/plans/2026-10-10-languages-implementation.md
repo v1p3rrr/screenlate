@@ -26,6 +26,11 @@ Requests 1–19 are in the previous plan. New ones:
     cancel initial downloads when turning a language off before it has installed files. Add regression tests and
     verify the fixes, including the UI on the emulator.
 
+25. (2026-10-11) Fix the four findings from the follow-up review against `2215893`: cancel bundled imports when
+    deleting a language, select and lock the correct dictionary set for media reads, keep the note's captured
+    language throughout sentence parsing, and invalidate audio selections when the regional order changes.
+    Add regression tests, verify as for request 24, then commit and push.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -361,6 +366,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-10-11: request 25 implemented: bundled imports are identified by source and cancelled before file deletion;
+  dictionary media reads select and lock their language; sentence parsing uses the captured note language; the audio
+  selection cache includes the regional order. Nine regression tests added and the WorkManager queue test extended.
+  JVM and page tests pass; registry (17/17) and Compose/queue tests (5/5) pass on API 30. Phone checks remain open.
 
 - 2026-10-11: request 24 implemented: preparation and queries share the registry lock; Yomitan imports preserve
   other languages' switches and priority slots; Anki editor drafts and refresh answers are isolated by language;

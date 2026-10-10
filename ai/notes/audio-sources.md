@@ -30,5 +30,9 @@ the source test now reports (`AudioError.Kind.SOURCE_LIST`).
 
 ## Other languages
 
+Audio selection caches include the resolved per-language region order as well as the sources and term. Capture both
+from one settings read and pass the same order to the source requests: re-reading it mid-request can cache a clip
+under another order's key. Changing region priority must affect the next selection, even within the one-minute TTL.
+
 Lingua Libre and Wiktionary results for English, Russian, Korean and Chinese, the Mandarin codes and pinyin file
 names, and the compound matches of the Lingua Libre pattern: `languages.md`, "Audio per language".
