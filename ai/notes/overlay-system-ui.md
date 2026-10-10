@@ -46,6 +46,24 @@ which edge swipes the system takes from them. Measured on the emulator (Pixel_10
 - The `ACTION_CANCEL` of a taken touch has no reliable position: one arrived near y 0 and docked the bubble at the top.
   The bubble's listener uses the last `ACTION_MOVE` instead and puts a bubble pulled out of the dock back.
 
+## Window move animation
+
+- The window manager animates a window's move when the same update also changes its size (`WindowState.hasMoved`
+  counts a move only together with a changed size; the animation is `window_move_from_decor`, about 400 ms,
+  decelerating). Since v0.2.2 the docked bubble's window holds only the part that shows, so pulling it out resizes and
+  moves it at once: on the owner's phone (2026-10-10) the bubble stayed at the edge for about half a second while the
+  aim, in the layer window, followed the finger, then flew to the finger. Dropping it into the dock, which shrinks and
+  moves the window, would glide the same way.
+- In a trace (`atrace ... wm gfx view`) the animation shows on system_server's `android.anim.lf` thread
+  (`SurfaceAnimationRunner`, `notifyAnimEnd-SurfaceAnimationRunner$SfValueAnimator`), starting 2 ms after the
+  client's `relayoutWindow ... resize=true` and lasting about 405 ms on the emulator.
+- `LayoutParams.setCanPlayMoveAnimation(false)` (API 34+, sets `PRIVATE_FLAG_NO_MOVE_ANIMATION`, shown as
+  `pfl=NO_MOVE_ANIMATION` in `dumpsys window windows`) turns it off; every overlay window sets it in
+  `OverlayWindows`. Android 11-13 have no public switch, so the glide likely remains there (not checked on the API 30
+  image).
+- On the emulator the slow first frame after a pull-out (new surface, buffers) hides the difference in a screen
+  recording; the trace is the reliable check.
+
 ## Testing
 
 - `scripts/debug-device.sh show <file> default|swipe` opens the debug image viewer with the system bars hidden in the
