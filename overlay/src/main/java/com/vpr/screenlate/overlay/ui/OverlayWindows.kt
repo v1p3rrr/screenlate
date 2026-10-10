@@ -1,6 +1,7 @@
 package com.vpr.screenlate.overlay.ui
 
 import android.graphics.PixelFormat
+import android.os.Build
 import android.view.Gravity
 import android.view.WindowManager.LayoutParams
 
@@ -49,5 +50,8 @@ object OverlayWindows {
         gravity = Gravity.TOP or Gravity.START
         layoutInDisplayCutoutMode = LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         setFitInsetsTypes(0)
+        // A window that moves and changes size in one update would glide to its new place for about 400 ms. The
+        // bubble's does both when it leaves the dock, whose window holds only the part that shows.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) setCanPlayMoveAnimation(false)
     }
 }
