@@ -62,16 +62,19 @@ data class AudioSource(val type: AudioSourceType, val url: String = "") {
 }
 
 /**
- * Audio sources in priority order, as in Yomitan. Each language has its own sources; [autoPlay] and [volume] are
- * shared by every language.
+ * Audio sources in priority order, as in Yomitan. Each language has its own sources and regions; [autoPlay] and
+ * [volume] are shared by every language.
  *
  * @property volume playback volume in percent.
+ * @property regions ids of the language's regions (`AudioRegion`) in the order Wiktionary recordings are tried; empty
+ *   for the default order.
  */
 @Serializable
 data class AudioSettings(
     val sources: List<AudioSource> = defaultSources(Language.JAPANESE),
     val autoPlay: Boolean = false,
     val volume: Int = 100,
+    val regions: List<String> = emptyList(),
 ) {
     companion object {
         fun defaultSources(language: Language): List<AudioSource> = language.support.defaultAudioSources
@@ -114,7 +117,7 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
                     prefs[KEY] = json.encodeToString(shared.copy(autoPlay = updated.autoPlay, volume = updated.volume))
                 }
                 prefs[stringPreferencesKey(language.preferenceKey(KEY.name))] =
-                    json.encodeToString(AudioSettings(sources = updated.sources))
+                    json.encodeToString(AudioSettings(sources = updated.sources, regions = updated.regions))
             }
         }
     }
@@ -134,7 +137,7 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
         return readOwn(prefs, language).copy(autoPlay = shared.autoPlay, volume = shared.volume)
     }
 
-    /** What [language]'s own key holds; for languages other than Japanese only the sources count. */
+    /** What [language]'s own key holds; for languages other than Japanese only the sources and regions count. */
     private fun readOwn(prefs: Preferences, language: Language): AudioSettings {
         if (language != Language.JAPANESE) {
             return prefs[stringPreferencesKey(language.preferenceKey(KEY.name))]?.let(::decode)

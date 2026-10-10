@@ -3,6 +3,7 @@ package com.vpr.screenlate.core.anki.audio
 import android.content.Context
 import android.util.Log
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -276,10 +277,11 @@ class AudioFinder internal constructor(
             AudioSourceType.LINGUA_LIBRE -> {
                 val support = language.support
                 val files = commonsFiles(AudioPages.linguaLibreSearch(term, support.wikidataId, support.iso639Part3), deadline)
-                candidates(files.map { (title, url) -> AudioPages.Found(url, AudioPages.linguaLibreSpeaker(title)) })
+                candidates(AudioPages.linguaLibre(files, term))
             }
             AudioSourceType.WIKTIONARY -> {
-                val files = commonsFiles(AudioPages.wiktionarySearch(term, language.code), deadline)
+                val regions = AudioRegion.ordered(settings.current(language).regions, language.support.audioRegions)
+                val files = AudioPages.byRegion(commonsFiles(AudioPages.wiktionarySearch(term, language.code), deadline), term, language.code, regions)
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))

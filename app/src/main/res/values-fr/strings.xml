@@ -277,6 +277,11 @@
     <string name="anki_update_fields">Mettre à jour la liste des champs</string>
     <string name="audio_sources">Sources</string>
     <string name="audio_reset_sources">Rétablir les sources par défaut</string>
+    <string name="audio_regions">Régions</string>
+    <string name="audio_regions_hint">Les enregistrements Wiktionary des régions placées plus haut dans la liste passent en premier.</string>
+    <string name="audio_region_us">États-Unis</string>
+    <string name="audio_region_uk">Royaume-Uni</string>
+    <string name="audio_region_other">Autres régions</string>
     <string name="audio_url_missing">Pas d’URL</string>
     <string name="audio_tts_hint">Uniquement lu : les notes reçoivent l’audio des autres sources.</string>
     <string name="audio_test_title">Test</string>

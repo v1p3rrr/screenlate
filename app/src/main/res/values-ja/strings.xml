@@ -273,6 +273,11 @@
     <string name="anki_update_fields">フィールド一覧を更新</string>
     <string name="audio_sources">ソース</string>
     <string name="audio_reset_sources">デフォルトのソースに戻す</string>
+    <string name="audio_regions">地域</string>
+    <string name="audio_regions_hint">リストの上にある地域の Wiktionary の録音から再生します。</string>
+    <string name="audio_region_us">アメリカ</string>
+    <string name="audio_region_uk">イギリス</string>
+    <string name="audio_region_other">その他の地域</string>
     <string name="audio_url_missing">URL なし</string>
     <string name="audio_tts_hint">再生のみ。ノートにはほかのソースの音声が入ります。</string>
     <string name="audio_test_title">テスト</string>

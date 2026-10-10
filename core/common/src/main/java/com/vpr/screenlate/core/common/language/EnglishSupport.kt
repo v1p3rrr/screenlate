@@ -13,6 +13,7 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val translationSample = "The weather is nice today. Let's go for a walk."
     override val audioTestWord = "read"
     override val pronunciationSample = "water → /ˈwɔːtər/"
+    override val audioRegions = listOf(AudioRegion("us", setOf("us")), AudioRegion("uk", setOf("uk", "gb")), AudioRegion.OTHER)
 
     override val abbreviations = setOf(
         "mr", "mrs", "ms", "dr", "prof", "sr", "jr", "st", "mt", "vs", "etc", "e.g", "i.e", "cf", "approx", "no",

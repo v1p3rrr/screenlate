@@ -277,6 +277,11 @@
     <string name="anki_update_fields">Aggiorna l’elenco dei campi</string>
     <string name="audio_sources">Fonti</string>
     <string name="audio_reset_sources">Ripristina le fonti predefinite</string>
+    <string name="audio_regions">Regioni</string>
+    <string name="audio_regions_hint">Le registrazioni di Wiktionary delle regioni più in alto nell’elenco vengono riprodotte per prime.</string>
+    <string name="audio_region_us">Stati Uniti</string>
+    <string name="audio_region_uk">Regno Unito</string>
+    <string name="audio_region_other">Altre regioni</string>
     <string name="audio_url_missing">Nessun URL</string>
     <string name="audio_tts_hint">Solo riprodotta; le note ricevono l’audio dalle altre fonti.</string>
     <string name="audio_test_title">Prova</string>

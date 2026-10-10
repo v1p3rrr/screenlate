@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.anki.audio
 
+import com.vpr.screenlate.core.common.language.AudioRegion
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
@@ -89,6 +90,40 @@ internal object AudioPages {
         return titles.mapNotNull { title -> urls[title]?.let { title to it } }.toMap()
     }
 
-    /** The speaker in a Lingua Libre file title. */
-    fun linguaLibreSpeaker(title: String): String = title.substringAfter(")-", "").substringBeforeLast('-', "")
+    /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`). */
+    fun linguaLibreSpeaker(title: String, term: String): String {
+        val rest = title.substringAfter(")-", "")
+        val suffix = "-$term.wav"
+        return if (rest.endsWith(suffix)) rest.dropLast(suffix.length) else rest.substringBeforeLast('-', "")
+    }
+
+    /**
+     * Lingua Libre recordings (title to URL) with their speakers, those whose speaker part holds a hyphen last: such a
+     * title is usually a compound that ends with the term ("kitty-cat" for "cat"), though a speaker's name may hold
+     * one too.
+     */
+    fun linguaLibre(files: List<Pair<String, String>>, term: String): List<Found> =
+        files.map { (title, url) -> Found(url, linguaLibreSpeaker(title, term)) }.sortedBy { '-' in it.name }
+
+    /** The region code in a Wiktionary file title (`File:En-us-water.ogg` gives `us`); null when it names none. */
+    fun wiktionaryRegion(title: String, term: String, languageCode: String): String? {
+        val pattern = Regex(
+            """^${Regex.escape(languageCode)}-(?:([a-z]{2})-)?${Regex.escape(term)}[0-9]*\.[a-z0-9]+$""",
+            RegexOption.IGNORE_CASE,
+        )
+        return pattern.find(title.removePrefix("File:"))?.groupValues?.get(1)?.lowercase()?.ifEmpty { null }
+    }
+
+    /**
+     * Wiktionary files (title to URL) in the order of their regions in [regions]; a file of no listed region goes where
+     * [AudioRegion.OTHER] is, or last. Files of the same region keep their order.
+     */
+    fun byRegion(files: List<Pair<String, String>>, term: String, languageCode: String, regions: List<AudioRegion>): List<Pair<String, String>> {
+        if (regions.isEmpty()) return files
+        val other = regions.indexOf(AudioRegion.OTHER).takeIf { it >= 0 } ?: regions.size
+        return files.sortedBy { (title, _) ->
+            val code = wiktionaryRegion(title, term, languageCode)
+            regions.indexOfFirst { code != null && code in it.codes }.takeIf { it >= 0 } ?: other
+        }
+    }
 }

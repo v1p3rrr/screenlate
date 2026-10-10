@@ -280,6 +280,11 @@
     <string name="anki_update_fields">Обновить список полей</string>
     <string name="audio_sources">Источники</string>
     <string name="audio_reset_sources">Вернуть источники по умолчанию</string>
+    <string name="audio_regions">Регионы</string>
+    <string name="audio_regions_hint">Записи Wiktionary из регионов выше в списке звучат первыми.</string>
+    <string name="audio_region_us">США</string>
+    <string name="audio_region_uk">Великобритания</string>
+    <string name="audio_region_other">Другие регионы</string>
     <string name="audio_url_missing">Нет URL</string>
     <string name="audio_tts_hint">Только проигрывается; в карточки идёт аудио других источников.</string>
     <string name="audio_test_title">Проверка</string>

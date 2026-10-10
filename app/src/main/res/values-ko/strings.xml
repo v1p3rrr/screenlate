@@ -273,6 +273,11 @@
     <string name="anki_update_fields">필드 목록 업데이트</string>
     <string name="audio_sources">소스</string>
     <string name="audio_reset_sources">기본 소스로 복원</string>
+    <string name="audio_regions">지역</string>
+    <string name="audio_regions_hint">목록에서 위에 있는 지역의 Wiktionary 녹음을 먼저 재생합니다.</string>
+    <string name="audio_region_us">미국</string>
+    <string name="audio_region_uk">영국</string>
+    <string name="audio_region_other">기타 지역</string>
     <string name="audio_url_missing">URL 없음</string>
     <string name="audio_tts_hint">재생만 합니다. 노트에는 다른 소스의 오디오가 들어갑니다.</string>
     <string name="audio_test_title">테스트</string>

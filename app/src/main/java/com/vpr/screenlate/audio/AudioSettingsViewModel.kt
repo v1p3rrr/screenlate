@@ -11,6 +11,7 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.Pronunciation
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
@@ -105,6 +106,17 @@ class AudioSettingsViewModel @Inject constructor(
         val target = index + delta
         if (target !in audio.sources.indices) return@update audio
         audio.copy(sources = audio.sources.toMutableList().apply { add(target, removeAt(index)) })
+    }
+
+    /** Moves a region of the shown language's Wiktionary recordings by [delta] places. */
+    fun moveRegion(index: Int, delta: Int) {
+        val language = shown.language.value
+        update { audio ->
+            val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions).map { it.id }
+            val target = index + delta
+            if (target !in regions.indices) return@update audio
+            audio.copy(regions = regions.toMutableList().apply { add(target, removeAt(index)) })
+        }
     }
 
     fun resetSources() {

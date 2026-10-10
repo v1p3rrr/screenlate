@@ -44,6 +44,8 @@ import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.label
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.AudioRegion
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SwitchRow
@@ -53,8 +55,8 @@ import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /**
- * Auto-play, volume, the audio sources of [language] in priority order, and a test of every source with a sample
- * word.
+ * Auto-play, volume, the audio sources of [language] in priority order, the order of its regions for Wiktionary
+ * recordings where it has them, and a test of every source with a sample word.
  */
 @Composable
 fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel = hiltViewModel()) {
@@ -84,6 +86,15 @@ fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel =
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
         TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
+        val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions)
+        if (regions.isNotEmpty()) {
+            HorizontalDivider()
+            Text(stringResource(R.string.audio_regions), style = MaterialTheme.typography.labelLarge)
+            Hint(stringResource(R.string.audio_regions_hint))
+            regions.forEachIndexed { index, region ->
+                RegionRow(index, region, isLast = index == regions.lastIndex, onMove = { viewModel.moveRegion(index, it) })
+            }
+        }
         HorizontalDivider()
         TestPanel(viewModel)
     }
@@ -140,6 +151,27 @@ private fun SourceRow(
         }
         TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.action_delete), onClick = onDelete)
     }
+}
+
+@Composable
+private fun RegionRow(index: Int, region: AudioRegion, isLast: Boolean, onMove: (Int) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text("${index + 1}. ${regionName(region)}", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+        WithTooltip(stringResource(R.string.action_move_up)) {
+            TextButton(onClick = { onMove(-1) }, enabled = index > 0) { Text("↑") }
+        }
+        WithTooltip(stringResource(R.string.action_move_down)) {
+            TextButton(onClick = { onMove(1) }, enabled = !isLast) { Text("↓") }
+        }
+    }
+}
+
+@Composable
+private fun regionName(region: AudioRegion): String = when (region.id) {
+    "us" -> stringResource(R.string.audio_region_us)
+    "uk" -> stringResource(R.string.audio_region_uk)
+    AudioRegion.OTHER.id -> stringResource(R.string.audio_region_other)
+    else -> region.id.uppercase()
 }
 
 /** Plays what each source has for a sample word. */

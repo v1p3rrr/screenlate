@@ -279,6 +279,11 @@
     <string name="anki_update_fields">Odśwież listę pól</string>
     <string name="audio_sources">Źródła</string>
     <string name="audio_reset_sources">Przywróć domyślne źródła</string>
+    <string name="audio_regions">Regiony</string>
+    <string name="audio_regions_hint">Nagrania z Wiktionary z regionów wyżej na liście są odtwarzane jako pierwsze.</string>
+    <string name="audio_region_us">Stany Zjednoczone</string>
+    <string name="audio_region_uk">Wielka Brytania</string>
+    <string name="audio_region_other">Inne regiony</string>
     <string name="audio_url_missing">Brak URL</string>
     <string name="audio_tts_hint">Tylko odtwarzane; notatki dostają dźwięk z innych źródeł.</string>
     <string name="audio_test_title">Test</string>

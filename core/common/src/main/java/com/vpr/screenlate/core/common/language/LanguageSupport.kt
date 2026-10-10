@@ -60,6 +60,9 @@ interface LanguageSupport {
     /** A common word for the audio sources' test. */
     val audioTestWord: String
 
+    /** Regions of Wiktionary recordings in their default order; empty where the file titles name none. */
+    val audioRegions: List<AudioRegion> get() = emptyList()
+
     /**
      * A word with its transcription, the example that explains pronunciation dictionaries (`water → /ˈwɔːtər/`); null
      * where they hold something else (pitch accents for Japanese).

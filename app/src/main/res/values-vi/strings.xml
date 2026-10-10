@@ -273,6 +273,11 @@
     <string name="anki_update_fields">Cập nhật danh sách trường</string>
     <string name="audio_sources">Nguồn</string>
     <string name="audio_reset_sources">Khôi phục nguồn mặc định</string>
+    <string name="audio_regions">Khu vực</string>
+    <string name="audio_regions_hint">Bản ghi Wiktionary của các khu vực ở cao hơn trong danh sách được phát trước.</string>
+    <string name="audio_region_us">Hoa Kỳ</string>
+    <string name="audio_region_uk">Vương quốc Anh</string>
+    <string name="audio_region_other">Khu vực khác</string>
     <string name="audio_url_missing">Không có URL</string>
     <string name="audio_tts_hint">Chỉ phát; ghi chú lấy âm thanh từ các nguồn khác.</string>
     <string name="audio_test_title">Kiểm tra</string>

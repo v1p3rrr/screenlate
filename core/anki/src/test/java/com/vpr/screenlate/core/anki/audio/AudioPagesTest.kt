@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.audio
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.AudioRegion
 import kotlinx.serialization.json.Json
 import org.junit.Test
 
@@ -71,6 +72,52 @@ class AudioPagesTest {
             "File:LL-Q5287 (jpn)-葵心-猫.wav" to "https://upload.example/a.wav",
             "File:Ja-猫.ogg" to "https://upload.example/b.ogg",
         ).inOrder()
-        assertThat(AudioPages.linguaLibreSpeaker("File:LL-Q5287 (jpn)-葵心-猫.wav")).isEqualTo("葵心")
+        assertThat(AudioPages.linguaLibreSpeaker("File:LL-Q5287 (jpn)-葵心-猫.wav", "猫")).isEqualTo("葵心")
+    }
+
+    @Test
+    fun `Lingua Libre titles with a hyphen left before the term go last, as they are usually compounds`() {
+        val files = listOf(
+            "File:LL-Q1860 (eng)-Back ache-kitty-cat.wav" to "https://upload.example/compound.wav",
+            "File:LL-Q1860 (eng)-Jean-Pierre-cat.wav" to "https://upload.example/hyphen.wav",
+            "File:LL-Q1860 (eng)-Back ache-cat.wav" to "https://upload.example/plain.wav",
+        )
+        assertThat(AudioPages.linguaLibre(files, "cat")).containsExactly(
+            AudioPages.Found("https://upload.example/plain.wav", "Back ache"),
+            AudioPages.Found("https://upload.example/compound.wav", "Back ache-kitty"),
+            AudioPages.Found("https://upload.example/hyphen.wav", "Jean-Pierre"),
+        ).inOrder()
+    }
+
+    @Test
+    fun `Wiktionary titles name their region before the term`() {
+        assertThat(AudioPages.wiktionaryRegion("File:En-us-water.ogg", "water", "en")).isEqualTo("us")
+        assertThat(AudioPages.wiktionaryRegion("File:En-UK-water2.oga", "water", "en")).isEqualTo("uk")
+        assertThat(AudioPages.wiktionaryRegion("File:En-water.ogg", "water", "en")).isNull()
+        // A term that starts like a region code is not taken for one.
+        assertThat(AudioPages.wiktionaryRegion("File:En-up-to.ogg", "up-to", "en")).isNull()
+    }
+
+    @Test
+    fun `Wiktionary files follow the order of the regions, other regions where Other is`() {
+        val files = listOf("au", "uk", "", "us", "gb").map { code ->
+            val title = if (code.isEmpty()) "File:En-water.ogg" else "File:En-$code-water.ogg"
+            title to code
+        }
+        val us = AudioRegion("us", setOf("us"))
+        val uk = AudioRegion("uk", setOf("uk", "gb"))
+        fun order(regions: List<AudioRegion>) = AudioPages.byRegion(files, "water", "en", regions).map { it.second }
+        assertThat(order(listOf(us, uk, AudioRegion.OTHER))).containsExactly("us", "uk", "gb", "au", "").inOrder()
+        assertThat(order(listOf(AudioRegion.OTHER, uk, us))).containsExactly("au", "", "uk", "gb", "us").inOrder()
+        assertThat(order(emptyList())).containsExactly("au", "uk", "", "us", "gb").inOrder()
+    }
+
+    @Test
+    fun `stored region ids order the defaults, and new regions keep their default place after them`() {
+        val us = AudioRegion("us", setOf("us"))
+        val uk = AudioRegion("uk", setOf("uk"))
+        val defaults = listOf(us, uk, AudioRegion.OTHER)
+        assertThat(AudioRegion.ordered(emptyList(), defaults)).isEqualTo(defaults)
+        assertThat(AudioRegion.ordered(listOf("uk", "gone", "us"), defaults)).containsExactly(uk, us, AudioRegion.OTHER).inOrder()
     }
 }

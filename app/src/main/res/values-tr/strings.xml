@@ -275,6 +275,11 @@
     <string name="anki_update_fields">Alan listesini güncelle</string>
     <string name="audio_sources">Kaynaklar</string>
     <string name="audio_reset_sources">Varsayılan kaynakları geri yükle</string>
+    <string name="audio_regions">Bölgeler</string>
+    <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları önce çalınır.</string>
+    <string name="audio_region_us">ABD</string>
+    <string name="audio_region_uk">Birleşik Krallık</string>
+    <string name="audio_region_other">Diğer bölgeler</string>
     <string name="audio_url_missing">URL yok</string>
     <string name="audio_tts_hint">Yalnızca çalınır; notlar sesi diğer kaynaklardan alır.</string>
     <string name="audio_test_title">Test</string>

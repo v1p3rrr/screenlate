@@ -273,6 +273,11 @@
     <string name="anki_update_fields">更新字段列表</string>
     <string name="audio_sources">来源</string>
     <string name="audio_reset_sources">恢复默认来源</string>
+    <string name="audio_regions">地区</string>
+    <string name="audio_regions_hint">列表中靠前地区的 Wiktionary 录音优先播放。</string>
+    <string name="audio_region_us">美国</string>
+    <string name="audio_region_uk">英国</string>
+    <string name="audio_region_other">其他地区</string>
     <string name="audio_url_missing">无 URL</string>
     <string name="audio_tts_hint">仅播放；笔记使用其他来源的音频。</string>
     <string name="audio_test_title">测试</string>
