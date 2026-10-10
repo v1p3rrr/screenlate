@@ -4,7 +4,7 @@ Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-la
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
 [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 
-## Next session (handoff, 2026-10-10)
+## Next session (handoff, 2026-10-11)
 
 - Stage A (shared base) and English are built on `languages/main`, checked on the emulator, and both review runs of
   request 23 are done (see the log entry "languages: stage A, English, two reviews"). Next: the owner tests the debug
@@ -17,6 +17,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   owner's "ok": tag `v0.2.3` on main and push the tag.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
+- The four findings from the read-only review against `2215893` are fixed on `languages/main`; see the
+  "language isolation review fixes" entry. The phone checks above are still pending.
 
 ## Earlier handoff (phase 7, 2026-10-01)
 
@@ -118,6 +120,31 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - [ ] Phase 8 — languages beyond Japanese: stage A and English built and reviewed, stages B to E open
 
 ## Log
+
+### 2026-10-11 (language isolation review fixes; languages/main)
+
+- Owner: fix all four findings from the review against `2215893`, verify them and add tests (request 24).
+- Code and tests committed in `5bc3cf3` on `languages/main`.
+- `DictionaryRepository.withLookup` holds its mutex through preparation and all term/character/CSS queries, including
+  language sampling. Registry mutations wait too; cancellation releases the lock. The old split preparation API is
+  private so callers cannot accidentally query another language's loaded set.
+- Yomitan dictionary settings now match only the imported profile's language (plus dictionaries without a source
+  language, as in lookups); their order changes within their existing slots. Other languages' switches and positions
+  stay unchanged, and the sort frequency dictionary must be applicable to the imported language.
+- Anki editors are keyed by the language of the loaded settings and note type; selecting another language clears
+  focus. The connection refresh follows the shown-language flow, uses that language explicitly and ignores late
+  answers for another profile. A transient mismatch is dimmed until the matching answer arrives.
+- A language's unfinished catalog downloads count when deciding whether to show the file deletion checkbox, even
+  before its first file is installed (size zero). The existing checked default cancels them; unticking keeps them.
+- Added 10 regression tests: three JVM tests of dictionary settings import, two Android registry concurrency tests,
+  four Compose editor/dialog tests and a WorkManager-backed queue cancellation test with an isolated registry and
+  preferences. Delayed test jobs never download and are cancelled individually afterward.
+- Verified: debug and test APK builds, unit suite, page tests (102/102), registry tests on API 37 (15/15), app tests on
+  API 30 (5/5); the queue test also passed on API 37. Final app lint passed (0 errors; no warnings in changed files).
+  The initial parallel build ran out of
+  memory; the serial build with a smaller heap passed. API 37 Compose tests fail in Espresso before the UI checks
+  (`InputManager.getInstance`); the same tests pass on API 30, noted in `notes/build-environment.md`.
+- Human docs updated. The owner's local `CLAUDE.md` deletion and untracked `AGENTS.md` are left untouched.
 
 ### 2026-09-26
 
