@@ -20,13 +20,22 @@ The first build downloads the bundled dictionaries (about 25 MB) into `dicts/bun
 
 The download catalog is `dictionary/api/src/main/assets/catalog/dictionaries-v2.json` (format 2); the app also fetches
 it from the repository's `main` branch. Entries have a category (main, forms, frequency, pronunciation, short
-translations, characters), the source and gloss language, a "recommended" mark (ticked when a language is turned on),
+translations, characters, on-device recognition model), the source and gloss language, a "recommended" mark (ticked when a language is turned on),
 the archive size in bytes and, where measured, the size after import. Hand-written entries carry their descriptions in
 all interface languages. Wiktionary entries come from `node scripts/catalog/generate.mjs`, which reads the Hugging Face
 listing of wty-release for the supported source languages and the interface languages as gloss languages, skips
 archives under 0.5 MB, and fills titles and descriptions from the templates in the file. It also writes
 `dictionaries.json`, the format 1 copy with the Japanese entries that older app versions read. `--tree <file>` uses a
 recorded listing, `--record <file>` saves one.
+
+A model entry (category `OCR_MODEL`) has no dictionary kind but names its model id, engine, version and SHA-256; the
+app installs the download only when the checksum matches. Entries of several languages may name the same model.
+
+Frequency dictionaries for languages without one are built from wordfreq: `pip install wordfreq`, then
+`python scripts/frequency/wordfreq_dictionary.py <language> <out.zip>` writes a rank-based Yomitan dictionary of the
+100,000 most frequent words (`--size` changes it), each also in its capitalized form, with wordfreq's attribution in
+the index; `--download-url` and `--index-url` make it updatable once hosted. Its data is CC BY-SA 4.0, and so is the
+dictionary.
 
 Debug builds install as `com.vpr.screenlate.debug` and can live next to a release build. `scripts/debug-device.sh install` installs a debug build on a connected device or emulator and enables the accessibility service.
 
@@ -35,6 +44,7 @@ Debug builds install as `com.vpr.screenlate.debug` and can live next to a releas
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
 - `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`) in a simulated DOM.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
+- `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
 - `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
 
 ## Project layout
