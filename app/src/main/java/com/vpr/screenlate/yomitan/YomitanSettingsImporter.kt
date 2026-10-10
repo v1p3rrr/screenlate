@@ -1,7 +1,6 @@
 package com.vpr.screenlate.yomitan
 
 import android.util.Log
-import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes
@@ -127,33 +126,24 @@ class YomitanSettingsImporter @Inject constructor(
     }
 
     /**
-     * Yomitan's order first for the dictionaries installed here, the others after them in their current order; the
-     * sort dictionary becomes [language]'s.
+     * Yomitan's order within [language]'s dictionary slots, with unlisted dictionaries last within those slots; the
+     * other languages keep their order and switches. The sort dictionary becomes [language]'s.
      */
     private suspend fun applyDictionaries(profile: YomitanSettings.Profile, language: Language): DictionaryOutcome {
         val installed = dictionaries.getAll().sortedBy { it.priority }
-        val byKey = installed.groupBy { dictionaryKey(it.title) }
-        val matched = profile.dictionaries.mapNotNull { preference ->
-            val dictionary = installed.firstOrNull { it.title == preference.name }
-                ?: byKey[dictionaryKey(preference.name)]?.firstOrNull()
-            dictionary?.let { it to preference }
-        }.distinctBy { it.first.id }
-        val missing = profile.dictionaries.map { it.name }.filter { name -> matched.none { it.second.name == name } }
-        val ordered = matched.map { it.first } + installed.filter { dictionary -> matched.none { it.first.id == dictionary.id } }
-        val switches = matched.associate { (dictionary, preference) -> dictionary.id to preference.enabled }
+        val changes = dictionaryChanges(profile, language, installed)
+        val ordered = changes.ordered
+        val switches = changes.switches
         val withoutFiles = dictionaries.missingFiles().mapTo(hashSetOf()) { it.id }
         val switched = ordered.map { it.copy(enabled = switches[it.id] ?: it.enabled) }
         val kept = keptTermDictionaries(installed, switched, profiles.current().turnedOn) { it.id !in withoutFiles }
         dictionaries.reorder(ordered.map { it.id }, enabled = switches + kept.associate { it.id to true })
         val sortName = profile.sortFrequencyDictionary
-        val sort = sortName?.let { name ->
-            installed.filter { it.frequencyCount > 0 }
-                .firstOrNull { it.title == name || dictionaryKey(it.title) == dictionaryKey(name) }
-        }
+        val sort = changes.sort
         sort?.let { dictionaries.setSortDictionary(language, it.id) }
         return DictionaryOutcome(
-            matched = matched.size,
-            missing = missing,
+            matched = switches.size,
+            missing = changes.missing,
             sortDictionary = sort?.title,
             sortMissing = sortName.takeIf { sort == null },
             keptOn = kept.map { it.title },

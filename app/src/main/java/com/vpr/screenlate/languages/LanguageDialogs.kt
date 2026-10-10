@@ -48,7 +48,7 @@ fun AddLanguageDialog(languages: List<Language>, onPick: (Language) -> Unit, onD
     )
 }
 
-/** Turning [language] off keeps its settings; its files ([filesBytes], null for none) go unless the user unticks it. */
+/** Turning [language] off keeps its settings; [filesBytes] is zero for downloads only, null for no files or downloads. */
 @Composable
 fun TurnOffLanguageDialog(
     language: Language,

@@ -47,8 +47,7 @@ class InstalledLanguages @Inject constructor(
     }
 
     /** Definition text by dictionary title for the dictionaries in [titles] that the sample words reach. */
-    private suspend fun sample(titles: Set<String>): Map<String, StringBuilder> {
-        val prepared = repository.prepareLookup(Language.JAPANESE)
+    private suspend fun sample(titles: Set<String>): Map<String, StringBuilder> = repository.withLookup(Language.JAPANESE) { prepared ->
         val texts = mutableMapOf<String, StringBuilder>()
         fun add(dictionary: String, text: () -> String) {
             if (dictionary !in titles) return
@@ -76,7 +75,7 @@ class InstalledLanguages @Inject constructor(
                 add(entry.dictionary) { entry.definitions.joinToString(" ") }
             }
         }
-        return texts
+        texts
     }
 
     private companion object {

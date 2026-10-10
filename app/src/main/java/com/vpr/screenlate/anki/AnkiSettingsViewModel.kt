@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 data class AnkiScreenState(
+    val language: Language,
     /** Null until AnkiDroid was checked. */
     val availability: AnkiAvailability? = null,
     val decks: List<AnkiDeck> = emptyList(),
@@ -49,7 +50,7 @@ data class AnkiScreenState(
     /** The saved setup checked against AnkiDroid. */
     val status: AnkiStatus? = null,
     /** Markers offered for templates, including Yomitan's per-dictionary markers for installed dictionaries. */
-    val markers: List<String> = FieldTemplate.markersFor(Language.JAPANESE),
+    val markers: List<String> = FieldTemplate.markersFor(language),
     val error: String? = null,
     /** Shown from the last known state while AnkiDroid is asked again; the screen dims it and takes no taps. */
     val refreshing: Boolean = false,
@@ -92,6 +93,8 @@ class AnkiSettingsViewModel @Inject constructor(
         val frequencies = own.filter { it.frequencyCount > 0 }.map { FieldTemplate.singleFrequencyNumberMarker(it.title) }
         val transcriptions = own.any { it.enabled && it.pitchCount > 0 }
         connection.copy(
+            language = language,
+            refreshing = connection.refreshing || connection.language != language,
             settings = settings,
             markers = FieldTemplate.markersFor(language, transcriptions) + (glossaries + frequencies).distinct(),
         )
@@ -104,6 +107,7 @@ class AnkiSettingsViewModel @Inject constructor(
     /** AnkiDroid's last answer for [language]'s setup, or the saved setup laid out as if AnkiDroid answered. */
     private fun opening(language: Language): AnkiScreenState =
         cache.last[language]?.copy(refreshing = true) ?: AnkiScreenState(
+            language = language,
             availability = AnkiAvailability.READY,
             fieldNames = settingsRepository.cachedSettings(language)?.fields?.keys?.toList().orEmpty(),
             refreshing = true,
@@ -111,31 +115,35 @@ class AnkiSettingsViewModel @Inject constructor(
 
     /** Shows [language]'s setup, dimmed until AnkiDroid answered for it. */
     fun show(language: Language) {
-        if (language == shown.language.value) return
         shown.show(language)
-        connection.value = opening(language)
-        refresh()
     }
 
     init {
-        refresh()
+        viewModelScope.launch {
+            shown.language.collect { language ->
+                connection.value = opening(language)
+                refresh(language)
+            }
+        }
     }
 
     /** Re-reads AnkiDroid's decks, note types and fields, e.g. after the permission was granted. */
-    fun refresh() {
+    fun refresh() = refresh(shown.language.value)
+
+    private fun refresh(language: Language) {
         // The latest check wins: an earlier one may have read the note type the user just changed.
         refreshJob?.cancel()
-        val language = shown.language.value
         refreshJob = viewModelScope.launch {
             val availability = anki.availability()
             if (availability != AnkiAvailability.READY) {
-                answer(language, AnkiScreenState(availability = availability))
+                answer(language, AnkiScreenState(language = language, availability = availability))
                 return@launch
             }
             runCatching {
                 notes.invalidate()
                 val modelId = settingsRepository.current(language).modelId
                 AnkiScreenState(
+                    language = language,
                     availability = availability,
                     decks = anki.decks(),
                     models = anki.models(),
@@ -145,14 +153,15 @@ class AnkiSettingsViewModel @Inject constructor(
             }.onSuccess { answer(language, it) }
                 .onFailure {
                     if (it is CancellationException) throw it
-                    answer(language, AnkiScreenState(availability = availability, error = it.message))
+                    answer(language, AnkiScreenState(language = language, availability = availability, error = it.message))
                 }
         }
     }
 
     private fun answer(language: Language, state: AnkiScreenState) {
-        cache.last[language] = state
-        connection.value = state
+        val answer = state.copy(language = language)
+        cache.last[language] = answer
+        if (connection.value.language == language) connection.value = answer
     }
 
     /**

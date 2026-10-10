@@ -82,7 +82,7 @@ class LanguageSwitch @Inject constructor(
         }
     }
 
-    /** The bytes [language]'s files take; null when it has none. */
+    /** The bytes [language]'s files take; zero for downloads only, null when it has neither files nor downloads. */
     suspend fun filesSize(language: Language): Long? =
         if (files.isEmpty(language.code)) null else files.size(language.code)
 

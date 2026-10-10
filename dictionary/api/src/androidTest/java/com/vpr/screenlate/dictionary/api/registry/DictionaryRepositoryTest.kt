@@ -22,6 +22,11 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.test.runCurrent
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +35,7 @@ import java.io.File
 import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class DictionaryRepositoryTest {
     private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var database: DictionaryDatabase
@@ -63,7 +69,7 @@ class DictionaryRepositoryTest {
         val frequency = repository.import(archive("Freq", frequencies = 5, frequencyMode = "occurrence-based"))
         assertThat(terms.priority).isLessThan(frequency.priority)
 
-        val prepared = repository.prepareLookup(Language.JAPANESE)
+        val prepared = repository.withLookup(Language.JAPANESE) { it }
         assertThat(engine.loaded.terms.map { it.name }).containsExactly(terms.directory)
         assertThat(engine.loaded.frequencies.map { it.name }).containsExactly(frequency.directory)
         assertThat(prepared.options.frequencyDictionary).isEqualTo("Freq")
@@ -135,14 +141,14 @@ class DictionaryRepositoryTest {
         repository.import(archive("First freq", frequencies = 1))
         val second = repository.import(archive("Second freq", frequencies = 1))
         repository.setSortDictionary(Language.JAPANESE, second.id)
-        assertThat(repository.prepareLookup(Language.JAPANESE).options.frequencyDictionary).isEqualTo("Second freq")
+        assertThat(repository.withLookup(Language.JAPANESE) { it.options.frequencyDictionary }).isEqualTo("Second freq")
     }
 
     @Test
     fun reorderChangesPriorities() = runTest {
         val a = repository.import(archive("A", terms = 1))
         val b = repository.import(archive("B", terms = 1))
-        repository.prepareLookup(Language.JAPANESE)
+        repository.withLookup(Language.JAPANESE) { }
         repository.reorder(listOf(b.id, a.id))
         assertThat(repository.getAll().map { it.title }).containsExactly("B", "A").inOrder()
         assertThat(engine.loaded.terms.map { it.name })
@@ -154,7 +160,7 @@ class DictionaryRepositoryTest {
     fun reorderSetsSwitchesInTheSameStep() = runTest {
         val a = repository.import(archive("A", terms = 1))
         val b = repository.import(archive("B", terms = 1))
-        repository.prepareLookup(Language.JAPANESE)
+        repository.withLookup(Language.JAPANESE) { }
         repository.reorder(listOf(b.id, a.id), enabled = mapOf(a.id to false))
         assertThat(repository.getAll().map { it.title to it.enabled }).containsExactly("B" to true, "A" to false).inOrder()
         assertThat(engine.loaded.terms.map { it.name }).containsExactly(repository.getAll()[0].directory)
@@ -223,7 +229,7 @@ class DictionaryRepositoryTest {
 
         repository.setLanguages(terms.id, source = "ko", target = null)
         assertThat(lookup.hasTermDictionaries(Language.JAPANESE)).isFalse()
-        assertThat(repository.prepareLookup(Language.JAPANESE).termDictionaries).isEmpty()
+        assertThat(repository.withLookup(Language.JAPANESE) { it.termDictionaries }).isEmpty()
 
         repository.setLanguages(terms.id, source = "ja", target = null)
         repository.setEnabled(terms.id, false)
@@ -251,6 +257,53 @@ class DictionaryRepositoryTest {
         assertThat(lookup.frequencyModes()).containsExactly("Freq", "occurrence-based")
     }
 
+    @Test
+    fun anotherLanguagesStylesCannotReplaceDictionariesDuringALookup() = runTest {
+        val japanese = repository.import(archive("Japanese", terms = 1))
+        repository.setLanguages(japanese.id, "ja", "en")
+        val english = repository.import(archive("English", terms = 1))
+        repository.setLanguages(english.id, "en", "ru")
+        val started = CompletableDeferred<Unit>()
+        val resume = CompletableDeferred<Unit>()
+        engine.onLookup = {
+            started.complete(Unit)
+            resume.await()
+            assertThat(engine.loaded.terms.map { it.name }).containsExactly(english.directory)
+        }
+
+        val query = async { lookup.lookup("walk", Language.ENGLISH) }
+        started.await()
+        val styles = async { lookup.styles(Language.JAPANESE) }
+        runCurrent()
+        assertThat(styles.isCompleted).isFalse()
+        assertThat(engine.loaded.terms.map { it.name }).containsExactly(english.directory)
+        resume.complete(Unit)
+        query.await()
+        styles.await()
+        assertThat(engine.loaded.terms.map { it.name }).containsExactly(japanese.directory)
+    }
+
+    @Test
+    fun registryChangesWaitForQueriesAndCancellationReleasesTheLock() = runTest {
+        val dictionary = repository.import(archive("Terms", terms = 1))
+        val started = CompletableDeferred<Unit>()
+        val query = async {
+            repository.withLookup(Language.JAPANESE) {
+                started.complete(Unit)
+                awaitCancellation()
+            }
+        }
+        started.await()
+        val change = async { repository.setEnabled(dictionary.id, false) }
+        runCurrent()
+        assertThat(change.isCompleted).isFalse()
+        assertThat(engine.loaded.terms).hasSize(1)
+        query.cancelAndJoin()
+        change.await()
+        assertThat(engine.loaded.terms).isEmpty()
+        assertThat(lookup.styles(Language.JAPANESE)).isNotNull()
+    }
+
     private fun archive(
         title: String,
         terms: Long = 0,
@@ -264,6 +317,7 @@ class DictionaryRepositoryTest {
     private class FakeEngine : DictionaryEngine {
         var loaded = DictionarySet()
         var stylesRead = 0
+        var onLookup: suspend () -> Unit = { }
 
         override suspend fun import(archive: File, outputDir: File): ImportedDictionary {
             val (title, terms, frequencies, mode) = archive.readText().split("\n")
@@ -285,7 +339,10 @@ class DictionaryRepositoryTest {
             loaded = dictionaries
         }
 
-        override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> = emptyList()
+        override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> {
+            onLookup()
+            return emptyList()
+        }
 
         override suspend fun styles(): List<DictionaryStyle> {
             stylesRead++

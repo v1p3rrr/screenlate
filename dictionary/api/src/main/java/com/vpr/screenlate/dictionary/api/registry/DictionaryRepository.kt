@@ -313,11 +313,15 @@ class DictionaryRepository @Inject constructor(
         if (kept > 0) Log.w(TAG, "Files of $kept dictionaries were not all deleted")
     }
 
-    /** Loads the engine for [language] unless it is already loaded; returns what lookups need to know. */
-    suspend fun prepareLookup(language: Language): PreparedLookup = mutex.withLock {
+    /** Keeps [language]'s dictionaries loaded and unchanged until [query] finishes. Do not call registry mutations inside it. */
+    suspend fun <T> withLookup(language: Language, query: suspend (PreparedLookup) -> T): T = mutex.withLock {
+        query(prepareLookupLocked(language))
+    }
+
+    private suspend fun prepareLookupLocked(language: Language): PreparedLookup {
         if (loadedLanguage != language) load(language)
         val sort = sortDictionary
-        PreparedLookup(
+        return PreparedLookup(
             options = LookupOptions(
                 frequencyDictionary = sort?.title,
                 frequencyOrder = when {

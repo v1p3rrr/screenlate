@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +53,7 @@ import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
@@ -101,7 +103,10 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
         ) {
             // Nearly the whole page belongs to a language, so the language's card only switches it.
             if (profiles.several) {
-                LanguageCard(profiles, shown, viewModel::show, hint = stringResource(R.string.anki_languages_hint))
+                LanguageCard(profiles, shown, { language ->
+                    focusManager.clearFocus()
+                    viewModel.show(language)
+                }, hint = stringResource(R.string.anki_languages_hint))
             }
             when (state.availability) {
                 AnkiAvailability.NOT_INSTALLED -> SectionCard(title = stringResource(R.string.anki_connection)) {
@@ -117,7 +122,9 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 AnkiAvailability.READY -> Column(
                     modifier = Modifier.pending(state.refreshing),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) { NoteSettings(state, viewModel) }
+                ) {
+                    AnkiProfileEditors(state.language, state.settings.modelId) { NoteSettings(state, viewModel) }
+                }
                 null -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     color = AccentDefaults.progress,
@@ -127,6 +134,12 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
             if (state.availability != null) AudioSettingsSection(shown)
         }
     }
+}
+
+@Composable
+internal fun AnkiProfileEditors(language: Language, modelId: Long?, content: @Composable () -> Unit) {
+    // A focused editor keeps a local draft; another profile or note type must start with its own saved values.
+    key(language, modelId) { content() }
 }
 
 @Composable
@@ -309,7 +322,7 @@ private fun <T> Picker(label: String, value: String?, options: List<T>, name: (T
 }
 
 @Composable
-private fun TemplateField(field: String, template: String, markers: List<String>, onChange: (String) -> Unit) {
+internal fun TemplateField(field: String, template: String, markers: List<String>, onChange: (String) -> Unit) {
     var text by remember(field) { mutableStateOf(template) }
     var menu by remember { mutableStateOf(false) }
     var focused by remember { mutableStateOf(false) }
@@ -350,7 +363,7 @@ private fun TemplateField(field: String, template: String, markers: List<String>
 }
 
 @Composable
-private fun EditableText(key: String, initial: String, label: String, onChange: (String) -> Unit) {
+internal fun EditableText(key: String, initial: String, label: String, onChange: (String) -> Unit) {
     var text by remember(key) { mutableStateOf(initial) }
     var focused by remember { mutableStateOf(false) }
     // A reset changes the value from outside; typing is not overwritten.

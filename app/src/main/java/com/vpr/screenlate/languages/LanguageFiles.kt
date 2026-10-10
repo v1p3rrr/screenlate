@@ -51,8 +51,12 @@ class LanguageFiles @Inject constructor(
         return store.models.value.filter { it.id in ids }
     }
 
-    /** Whether the language has no files. */
-    suspend fun isEmpty(code: String): Boolean = dictionaries(code).isEmpty() && models(code).isEmpty()
+    /** Whether the language has no files or unfinished downloads that could install them. */
+    suspend fun isEmpty(code: String): Boolean {
+        val installed = dictionaries(code)
+        if (installed.isNotEmpty() || models(code).isNotEmpty()) return false
+        return downloadsOf(code, imports.tasks.first(), withContext(Dispatchers.IO) { catalog.localCatalog() }, installed).isEmpty()
+    }
 
     /** The bytes the language's files take on disk. */
     suspend fun size(code: String): Long =

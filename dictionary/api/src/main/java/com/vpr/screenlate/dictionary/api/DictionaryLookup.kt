@@ -50,25 +50,26 @@ class DictionaryLookup @Inject constructor(
         val settings = lookupSettings.current(language)
         val support = language.support
         val start = support.lookupStart(text, latinAsNative = settings.romaji) ?: return emptyList()
-        val prepared = repository.prepareLookup(language)
-        val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
-        val options = prepared.options.copy(
-            scanLength = scanLength ?: settings.scanLength,
-            primaryReading = primaryReading,
-            maxResults = limit,
-            language = language,
-        )
-        val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
-        val found = LookupVariants.of(text, settings, support).flatMap { variant ->
-            engine.lookup(variant.text, engineOptions).map { it.inSource(text, variant) }
+        return repository.withLookup(language) { prepared ->
+            val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
+            val options = prepared.options.copy(
+                scanLength = scanLength ?: settings.scanLength,
+                primaryReading = primaryReading,
+                maxResults = limit,
+                language = language,
+            )
+            val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
+            val found = LookupVariants.of(text, settings, support).flatMap { variant ->
+                engine.lookup(variant.text, engineOptions).map { it.inSource(text, variant) }
+            }
+            val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
+                .filter { start !is LookupStart.Whole || it.matched.length == start.length }
+                .distinctBy { it.term.expression to it.term.reading }
+                .take(limit)
+                .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
+            if (!extraEntries || !settings.singleKanji) return@withLookup results
+            results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
         }
-        val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
-            .filter { start !is LookupStart.Whole || it.matched.length == start.length }
-            .distinctBy { it.term.expression to it.term.reading }
-            .take(limit)
-            .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
-        if (!extraEntries || !settings.singleKanji) return results
-        return results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
     }
 
     /**
@@ -109,9 +110,8 @@ class DictionaryLookup @Inject constructor(
     fun settingsUpdates(language: Language): Flow<LookupSettings> = lookupSettings.settings(language)
 
     /** The same list until the dictionaries change, so callers can skip work for an unchanged one. */
-    suspend fun styles(language: Language): List<DictionaryStyle> {
-        repository.prepareLookup(language)
-        return cachedStyles.get(repository.generation) { engine.styles() }
+    suspend fun styles(language: Language): List<DictionaryStyle> = repository.withLookup(language) {
+        cachedStyles.get(repository.generation) { engine.styles() }
     }
 
     suspend fun media(dictionary: String, path: String): ByteArray? = engine.media(dictionary, path)
@@ -120,9 +120,8 @@ class DictionaryLookup @Inject constructor(
     suspend fun tagNotes(): List<DictionaryTagNotes> = cachedTagNotes.get(repository.generation) { repository.tagNotes() }
 
     /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
-    suspend fun kanji(character: String, language: Language): KanjiResult {
-        repository.prepareLookup(language)
-        return engine.kanji(character)
+    suspend fun kanji(character: String, language: Language): KanjiResult = repository.withLookup(language) {
+        engine.kanji(character)
     }
 
     /**

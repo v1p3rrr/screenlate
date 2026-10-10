@@ -128,6 +128,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.aboutlibraries.compose.m3)
     implementation(libs.androidx.datastore.preferences)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.room.runtime)
 }
 
 disableAnkiDroidLintChecks()
