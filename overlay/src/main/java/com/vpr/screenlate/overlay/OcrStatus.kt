@@ -22,7 +22,7 @@ internal fun engineLabelOf(
 ): EngineLabel = when {
     engine == OcrEngineType.LENS -> EngineLabel.LENS
     engine == OcrEngineType.ACCESSIBILITY -> EngineLabel.APP_TEXT
-    engine != OcrEngineType.ML_KIT -> EngineLabel.NONE
+    engine != OcrEngineType.ML_KIT && engine != OcrEngineType.DEVICE_MODEL -> EngineLabel.NONE
     !final -> EngineLabel.DRAFT
     keptBesideCloud -> EngineLabel.DEVICE
     engines == OcrEngines.DEVICE -> EngineLabel.DEVICE

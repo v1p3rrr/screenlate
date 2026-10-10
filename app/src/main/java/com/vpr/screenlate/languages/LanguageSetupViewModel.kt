@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionaries.catalogTargetOrder
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
@@ -52,6 +53,7 @@ class LanguageSetupViewModel @Inject constructor(
     repository: DictionaryRepository,
     private val storage: DictionaryStorage,
     private val switch: LanguageSwitch,
+    private val models: OcrModelStore,
 ) : ViewModel() {
     val language: Language = requireNotNull(Language.of(savedState.get<String>(ARG_CODE)))
     private val firstRun: Boolean = savedState.get<Boolean>(ARG_FIRST_RUN) ?: false
@@ -61,8 +63,13 @@ class LanguageSetupViewModel @Inject constructor(
     private val chosenGloss = MutableStateFlow<GlossPick?>(null)
     private val choices = MutableStateFlow<Map<String, Boolean>>(emptyMap())
 
-    val state: StateFlow<LanguageSetupState> = combine(catalog.catalog(), repository.dictionaries, chosenGloss, choices) {
-            catalog, installed, chosen, choices ->
+    val state: StateFlow<LanguageSetupState> = combine(
+        catalog.catalog(),
+        repository.dictionaries,
+        models.models,
+        chosenGloss,
+        choices,
+    ) { catalog, installed, _, chosen, choices ->
         build(catalog, installed, chosen, choices)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LanguageSetupState(language))
 
@@ -77,7 +84,7 @@ class LanguageSetupViewModel @Inject constructor(
         val slots = glossSlots(language.code, interfaceLanguage, available)
         val choosable = slots.indexOf(null).takeIf { it >= 0 }
         val glosses = if (choosable == null || chosen == null) slots else slots.toMutableList().also { it[choosable] = chosen.code }
-        val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed)
+        val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed) { it.isInstalledIn(models) }
         val downloads = setupDownloads(categories, choices)
         return LanguageSetupState(
             language = language,

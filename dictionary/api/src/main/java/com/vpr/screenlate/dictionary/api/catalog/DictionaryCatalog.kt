@@ -39,6 +39,9 @@ enum class CatalogCategory {
     /** Short word-for-word translations without definitions. */
     GLOSSARY,
     CHARACTERS,
+
+    /** An on-device recognition model, for a script ML Kit has no model for; not a dictionary. */
+    OCR_MODEL,
     ;
 
     companion object {
@@ -70,7 +73,12 @@ enum class CatalogCategory {
  * @property downloadSize archive size in bytes; catalogs of format 1 give [sizeMb] instead.
  * @property installedSize measured size after import in bytes; [installedBytes] estimates it otherwise.
  * @property nonCommercial the license forbids commercial use.
- * @property sha256 checksum of the archive, where the project hosts the file.
+ * @property sha256 checksum of the archive, where the project hosts the file; required for a model.
+ * @property kind the dictionary's kind; null for a model ([CatalogCategory.OCR_MODEL]).
+ * @property model a model's id in the OCR model store; entries of several languages may share one model, such as a
+ *   text detector.
+ * @property engine the on-device engine that reads [model].
+ * @property version [model]'s version; an installed copy of another version is replaced.
  */
 @Serializable
 data class CatalogEntry(
@@ -79,7 +87,7 @@ data class CatalogEntry(
     val installedTitle: String? = null,
     val formerTitles: List<String> = emptyList(),
     val oldTitles: List<String> = emptyList(),
-    val kind: DictionaryKind,
+    val kind: DictionaryKind? = null,
     @SerialName("category") private val declaredCategory: CatalogCategory? = null,
     val sourceLanguage: String,
     val targetLanguage: String? = null,
@@ -97,14 +105,30 @@ data class CatalogEntry(
     val nonCommercial: Boolean = false,
     val homepage: String = "",
     val sha256: String? = null,
+    val model: String? = null,
+    val engine: String? = null,
+    val version: String? = null,
 ) {
-    val category: CatalogCategory get() = declaredCategory ?: CatalogCategory.of(kind)
+    val category: CatalogCategory get() = declaredCategory ?: kind?.let(CatalogCategory::of) ?: CatalogCategory.MAIN
+
+    val isModel: Boolean get() = category == CatalogCategory.OCR_MODEL
+
+    /** A dictionary names its kind; a model its id, engine, version and checksum. */
+    internal val isComplete: Boolean
+        get() = if (isModel) model != null && engine != null && version != null && sha256 != null else kind != null
 
     val downloadBytes: Long get() = if (downloadSize > 0) downloadSize else sizeMb * MIB
 
-    /** The space the dictionary takes once imported: measured, or a cautious guess from the archive size. */
+    /**
+     * The space the dictionary takes once imported: measured, or a cautious guess from the archive size. A model is
+     * stored as downloaded or unpacked, which compressed weights barely shrink.
+     */
     val installedBytes: Long
-        get() = installedSize ?: (downloadBytes * if (kind == DictionaryKind.PITCH) PITCH_INSTALLED_PER_DOWNLOADED else INSTALLED_PER_DOWNLOADED)
+        get() = installedSize ?: when {
+            isModel -> downloadBytes
+            kind == DictionaryKind.PITCH -> downloadBytes * PITCH_INSTALLED_PER_DOWNLOADED
+            else -> downloadBytes * INSTALLED_PER_DOWNLOADED
+        }
 
     fun displayTitle(locale: Locale = Locale.getDefault()): String =
         localized(titles, locale)?.let { fill(it, locale) } ?: title
@@ -250,6 +274,7 @@ class DictionaryCatalog @Inject constructor(
                 runCatching { json.decodeFromJsonElement<CatalogEntry>(element) }
                     .onFailure { Log.i(TAG, "Catalog entry skipped: ${it.message}") }
                     .getOrNull()
+                    ?.takeIf { entry -> entry.isComplete.also { if (!it) Log.i(TAG, "Catalog entry ${entry.id} skipped: incomplete") } }
                     ?.let { entry -> withTemplate(entry, document.templates) }
             }
             val mandatory = document.mandatory.mapValues { (_, names) ->

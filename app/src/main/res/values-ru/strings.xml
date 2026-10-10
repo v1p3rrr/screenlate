@@ -84,6 +84,7 @@
     <string name="catalog_category_pronunciation">Произношение</string>
     <string name="catalog_category_glossary">Краткие переводы</string>
     <string name="catalog_category_characters">Иероглифы</string>
+    <string name="catalog_category_ocr_model">Распознавание на устройстве</string>
     <string name="language_setup_hint">Выберите словари для загрузки. Позже их можно добавить или удалить на странице «Словари».</string>
     <string name="language_setup_glosses">Языки толкований</string>
     <string name="language_setup_glosses_hint">Ниже — словари, которые объясняют слова на этих языках.</string>

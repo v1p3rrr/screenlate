@@ -83,6 +83,7 @@
     <string name="catalog_category_pronunciation">Pronunciation</string>
     <string name="catalog_category_glossary">Short translations</string>
     <string name="catalog_category_characters">Characters</string>
+    <string name="catalog_category_ocr_model">On-device recognition</string>
     <string name="language_setup_hint">Choose the dictionaries to download. Dictionaries can be added or deleted later on the Dictionaries page.</string>
     <string name="language_setup_glosses">Languages of definitions</string>
     <string name="language_setup_glosses_hint">Below are the dictionaries that explain words in these languages.</string>

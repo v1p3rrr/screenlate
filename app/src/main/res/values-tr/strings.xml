@@ -80,6 +80,7 @@
     <string name="catalog_category_pronunciation">Telaffuz</string>
     <string name="catalog_category_glossary">Kısa çeviriler</string>
     <string name="catalog_category_characters">Karakterler</string>
+    <string name="catalog_category_ocr_model">Cihazda tanıma</string>
     <string name="language_setup_hint">İndirilecek sözlükleri seçin. Sözlükler daha sonra Sözlükler sayfasından eklenebilir veya silinebilir.</string>
     <string name="language_setup_glosses">Açıklama dilleri</string>
     <string name="language_setup_glosses_hint">Aşağıda sözcükleri bu dillerde açıklayan sözlükler var.</string>

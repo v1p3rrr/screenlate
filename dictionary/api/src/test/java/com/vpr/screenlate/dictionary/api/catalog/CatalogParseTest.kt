@@ -28,6 +28,25 @@ class CatalogParseTest {
     }
 
     @Test
+    fun `a model entry needs its id, engine, version and checksum, a dictionary its kind`() {
+        val catalog = DictionaryCatalog.parse(
+            """{"format": 2, "dictionaries": [
+                {"id": "ru-ocr", "title": "Cyrillic recognition", "category": "OCR_MODEL", "sourceLanguage": "ru",
+                 "model": "eslav-rec", "engine": "paddle", "version": "5", "sha256": "ab", "recommended": true,
+                 "downloadUrl": "https://example.org/eslav.zip", "downloadSize": 8000},
+                {"id": "uk-ocr", "title": "No checksum", "category": "OCR_MODEL", "sourceLanguage": "uk",
+                 "model": "eslav-rec", "engine": "paddle", "version": "5", "downloadUrl": "https://example.org/eslav.zip"},
+                {"id": "d", "title": "No kind", "sourceLanguage": "ru", "downloadUrl": "https://example.org/d.zip"}
+            ]}""",
+        )!!
+        val model = catalog.entries.single()
+        assertThat(model.isModel).isTrue()
+        assertThat(model.kind).isNull()
+        assertThat(model.category).isEqualTo(CatalogCategory.OCR_MODEL)
+        assertThat(model.installedBytes).isEqualTo(8000L)
+    }
+
+    @Test
     fun `templates give texts an entry can override, and unknown entries leave out only themselves`() {
         val catalog = DictionaryCatalog.parse(
             """{"format": 2,

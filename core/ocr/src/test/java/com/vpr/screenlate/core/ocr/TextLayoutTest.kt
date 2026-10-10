@@ -38,6 +38,28 @@ class TextLayoutTest {
     )
 
     @Test
+    fun `a right-to-left line is split from its right edge`() {
+        // "سلام" then "عليكم" in reading order, the first word on the right.
+        val line = OcrLine(
+            words = listOf(OcrWord("سلام", " ", Box(600f, 0f, 1000f, 100f)), word("عليكم", Box(0f, 0f, 500f, 100f))),
+            box = Box(0f, 0f, 1000f, 100f),
+            vertical = false,
+            rightToLeft = true,
+        )
+        val layout = TextLayout(page(OcrParagraph(listOf(line))))
+        val characters = layout.paragraphs.single()
+        assertThat(characters.joinToString("") { it.text }).isEqualTo("سلام عليكم")
+        assertThat(characters.first().box).isEqualTo(Box(900f, 0f, 1000f, 100f))
+        assertThat(characters[4].box.left).isEqualTo(600f)
+        assertThat(characters.last().box).isEqualTo(Box(0f, 0f, 100f, 100f))
+        assertThat(layout.hitTest(980f, 50f, 0f)).isEqualTo(TextPosition(0, 0))
+        assertThat(isRightToLeftText("123 سلام")).isTrue()
+        assertThat(isRightToLeftText("שלום")).isTrue()
+        assertThat(isRightToLeftText("食べる")).isFalse()
+        assertThat(isRightToLeftText("Hello سلام")).isFalse()
+    }
+
+    @Test
     fun `splits words evenly along the reading direction`() {
         val layout = TextLayout(page(horizontal, vertical))
 

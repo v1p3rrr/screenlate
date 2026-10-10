@@ -50,14 +50,16 @@ internal fun glossChoices(
 
 /**
  * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them,
- * and those without a gloss language (frequency, transcription). Categories go in their declared order, a mandatory
- * one even when empty; within one, in the order of [glosses], the recommended first.
+ * and those without a gloss language (frequency, transcription, recognition models). Categories go in their declared
+ * order, a mandatory one even when empty; within one, in the order of [glosses], the recommended first. A model counts
+ * as installed when [modelInstalled] says so.
  */
 internal fun setupCategories(
     catalog: Catalog,
     language: String,
     glosses: List<String>,
     installed: List<DictionaryEntity>,
+    modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
     val entries = catalog.entries.filter { it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses) }
     val mandatory = catalog.mandatory(language)
@@ -67,7 +69,7 @@ internal fun setupCategories(
                 compareBy<CatalogEntry> { entry -> entry.targetLanguage?.let(glosses::indexOf) ?: glosses.size }
                     .thenBy { !it.recommended },
             )
-            .map { entry -> SetupItem(entry, installed.any(entry::matches)) }
+            .map { entry -> SetupItem(entry, if (entry.isModel) modelInstalled(entry) else installed.any(entry::matches)) }
         SetupCategory(category, items, category in mandatory).takeIf { items.isNotEmpty() || it.mandatory }
     }
 }

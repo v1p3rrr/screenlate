@@ -65,6 +65,7 @@ val CatalogCategory.label: Int
         CatalogCategory.PRONUNCIATION -> R.string.catalog_category_pronunciation
         CatalogCategory.GLOSSARY -> R.string.catalog_category_glossary
         CatalogCategory.CHARACTERS -> R.string.catalog_category_characters
+        CatalogCategory.OCR_MODEL -> R.string.catalog_category_ocr_model
     }
 
 /**

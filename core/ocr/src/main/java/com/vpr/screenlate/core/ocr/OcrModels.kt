@@ -6,6 +6,9 @@ enum class OcrEngineType {
     LENS,
     ML_KIT,
 
+    /** An on-device engine with downloaded models ([com.vpr.screenlate.core.ocr.model.ModelOcrEngine]). */
+    DEVICE_MODEL,
+
     /** Not OCR: text read from the app's accessibility node tree. */
     ACCESSIBILITY,
 }
@@ -72,11 +75,14 @@ data class OcrParagraph(val lines: List<OcrLine>, val engine: OcrEngineType? = n
 
 /**
  * @property vertical true for top-to-bottom text (Japanese tategaki).
+ * @property rightToLeft a horizontal line written from right to left (Arabic, Hebrew); its words are in reading order,
+ *   so they run from right to left on the screen.
  */
 data class OcrLine(
     val words: List<OcrWord>,
     val box: Box,
     val vertical: Boolean,
+    val rightToLeft: Boolean = false,
 ) {
     val text: String get() = words.joinToString("") { it.text + it.separator }.trim()
 }

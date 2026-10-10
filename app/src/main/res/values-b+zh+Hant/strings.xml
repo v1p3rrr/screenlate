@@ -78,6 +78,7 @@
     <string name="catalog_category_pronunciation">發音</string>
     <string name="catalog_category_glossary">簡短翻譯</string>
     <string name="catalog_category_characters">漢字</string>
+    <string name="catalog_category_ocr_model">裝置端辨識</string>
     <string name="language_setup_hint">選擇要下載的詞典。之後可以在「詞典」頁面新增或刪除詞典。</string>
     <string name="language_setup_glosses">釋義語言</string>
     <string name="language_setup_glosses_hint">下方是用這些語言解釋詞語的詞典。</string>

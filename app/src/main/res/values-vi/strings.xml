@@ -78,6 +78,7 @@
     <string name="catalog_category_pronunciation">Phát âm</string>
     <string name="catalog_category_glossary">Bản dịch ngắn</string>
     <string name="catalog_category_characters">Chữ Hán</string>
+    <string name="catalog_category_ocr_model">Nhận dạng trên thiết bị</string>
     <string name="language_setup_hint">Chọn các từ điển cần tải xuống. Sau này có thể thêm hoặc xóa từ điển trong trang Từ điển.</string>
     <string name="language_setup_glosses">Ngôn ngữ giải nghĩa</string>
     <string name="language_setup_glosses_hint">Bên dưới là các từ điển giải nghĩa từ bằng những ngôn ngữ này.</string>

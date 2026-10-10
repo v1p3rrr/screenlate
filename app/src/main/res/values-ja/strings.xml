@@ -78,6 +78,7 @@
     <string name="catalog_category_pronunciation">発音</string>
     <string name="catalog_category_glossary">簡易訳</string>
     <string name="catalog_category_characters">漢字</string>
+    <string name="catalog_category_ocr_model">端末上の認識</string>
     <string name="language_setup_hint">ダウンロードする辞書を選んでください。辞書はあとから「辞書」ページで追加・削除できます。</string>
     <string name="language_setup_glosses">説明の言語</string>
     <string name="language_setup_glosses_hint">以下は、これらの言語で語を説明する辞書です。</string>

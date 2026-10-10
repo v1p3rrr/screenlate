@@ -82,6 +82,7 @@
     <string name="catalog_category_pronunciation">Pronunciación</string>
     <string name="catalog_category_glossary">Traducciones breves</string>
     <string name="catalog_category_characters">Caracteres</string>
+    <string name="catalog_category_ocr_model">Reconocimiento en el dispositivo</string>
     <string name="language_setup_hint">Elige los diccionarios que quieres descargar. Más tarde puedes añadir o eliminar diccionarios en la página Diccionarios.</string>
     <string name="language_setup_glosses">Idiomas de las definiciones</string>
     <string name="language_setup_glosses_hint">Abajo aparecen los diccionarios que explican las palabras en estos idiomas.</string>

@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">Không chụp được màn hình.</string>
     <string name="overlay_error_ocr">Nhận dạng văn bản thất bại.</string>
     <string name="overlay_error_offline">Không có mạng, và nhận dạng trên thiết bị đang tắt trong cài đặt.</string>
+    <string name="overlay_error_no_device_ocr">Nhận dạng trên thiết bị không đọc được ngôn ngữ này. Trong cài đặt Bong bóng, đặt Công cụ nhận dạng thành “Cả hai” hoặc “Đám mây”.</string>
+    <string name="overlay_error_offline_no_device">Không có mạng, và nhận dạng trên thiết bị không đọc được ngôn ngữ này.</string>
     <string name="overlay_ocr_error_title">Nhận dạng đám mây</string>
     <string name="overlay_ocr_error_offline">Không có kết nối mạng.</string>
     <string name="overlay_ocr_error_paused">Nhận dạng đám mây đã từ chối các yêu cầu gần đây, nên tạm nghỉ vài phút.</string>

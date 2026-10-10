@@ -80,6 +80,7 @@
     <string name="catalog_category_pronunciation">Aussprache</string>
     <string name="catalog_category_glossary">Kurzübersetzungen</string>
     <string name="catalog_category_characters">Schriftzeichen</string>
+    <string name="catalog_category_ocr_model">Erkennung auf dem Gerät</string>
     <string name="language_setup_hint">Wähle die Wörterbücher zum Herunterladen. Später lassen sie sich auf der Seite „Wörterbücher“ hinzufügen oder löschen.</string>
     <string name="language_setup_glosses">Sprachen der Erklärungen</string>
     <string name="language_setup_glosses_hint">Unten stehen die Wörterbücher, die Wörter in diesen Sprachen erklären.</string>

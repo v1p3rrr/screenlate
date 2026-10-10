@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">Não foi possível fazer uma captura de tela.</string>
     <string name="overlay_error_ocr">Falha no reconhecimento de texto.</string>
     <string name="overlay_error_offline">Sem rede, e o reconhecimento no dispositivo está desativado nas configurações.</string>
+    <string name="overlay_error_no_device_ocr">O reconhecimento no dispositivo não lê este idioma. Nas configurações de Bolha, defina Mecanismos como “Ambos” ou “Nuvem”.</string>
+    <string name="overlay_error_offline_no_device">Sem rede, e o reconhecimento no dispositivo não lê este idioma.</string>
     <string name="overlay_ocr_error_title">Reconhecimento na nuvem</string>
     <string name="overlay_ocr_error_offline">Não há conexão de rede.</string>
     <string name="overlay_ocr_error_paused">O reconhecimento na nuvem recusou as últimas solicitações, então descansa por alguns minutos.</string>

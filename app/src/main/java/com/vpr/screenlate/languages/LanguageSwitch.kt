@@ -69,18 +69,22 @@ class LanguageSwitch @Inject constructor(
                 imports.installBundled()
             }
             downloads.forEach { entry ->
-                imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
+                if (entry.isModel) {
+                    imports.downloadModel(entry)
+                } else {
+                    imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
+                }
             }
         }
     }
 
     /** The bytes [language]'s files take; null when it has none. */
     suspend fun filesSize(language: Language): Long? =
-        if (files.dictionaries(language.code).isEmpty()) null else files.size(language.code)
+        if (files.isEmpty(language.code)) null else files.size(language.code)
 
     /**
-     * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries go too, and its downloads still
-     * queued or running are cancelled. Returns false for the last language, which stays on.
+     * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries and models go too, and its downloads
+     * still queued or running are cancelled. Returns false for the last language, which stays on.
      */
     suspend fun turnOff(language: Language, deleteFiles: Boolean): Boolean = withContext(NonCancellable) {
         if (!profiles.turnOff(language)) return@withContext false

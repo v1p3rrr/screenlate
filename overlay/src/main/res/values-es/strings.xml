@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">No se pudo hacer una captura de pantalla.</string>
     <string name="overlay_error_ocr">Falló el reconocimiento de texto.</string>
     <string name="overlay_error_offline">No hay red, y el reconocimiento en el dispositivo está desactivado en los ajustes.</string>
+    <string name="overlay_error_no_device_ocr">El reconocimiento en el dispositivo no lee este idioma. En los ajustes de Burbuja, pon Motores en «Ambos» o «Nube».</string>
+    <string name="overlay_error_offline_no_device">No hay red, y el reconocimiento en el dispositivo no lee este idioma.</string>
     <string name="overlay_ocr_error_title">Reconocimiento en la nube</string>
     <string name="overlay_ocr_error_offline">No hay conexión de red.</string>
     <string name="overlay_ocr_error_paused">El reconocimiento en la nube rechazó las últimas solicitudes, así que descansa unos minutos.</string>

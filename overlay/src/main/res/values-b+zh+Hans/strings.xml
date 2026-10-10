@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">无法截屏。</string>
     <string name="overlay_error_ocr">文字识别失败。</string>
     <string name="overlay_error_offline">没有网络，且设置中已关闭设备端识别。</string>
+    <string name="overlay_error_no_device_ocr">设备端识别无法读取此语言。请在悬浮球设置中将“引擎”设为“两者”或“云端”。</string>
+    <string name="overlay_error_offline_no_device">没有网络，且设备端识别无法读取此语言。</string>
     <string name="overlay_ocr_error_title">云端识别</string>
     <string name="overlay_ocr_error_offline">未连接网络。</string>
     <string name="overlay_ocr_error_paused">云端识别拒绝了最近的请求，因此暂停几分钟。</string>

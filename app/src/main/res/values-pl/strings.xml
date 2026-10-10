@@ -84,6 +84,7 @@
     <string name="catalog_category_pronunciation">Wymowa</string>
     <string name="catalog_category_glossary">Krótkie tłumaczenia</string>
     <string name="catalog_category_characters">Znaki</string>
+    <string name="catalog_category_ocr_model">Rozpoznawanie na urządzeniu</string>
     <string name="language_setup_hint">Wybierz słowniki do pobrania. Później można je dodać lub usunąć na stronie Słowniki.</string>
     <string name="language_setup_glosses">Języki objaśnień</string>
     <string name="language_setup_glosses_hint">Poniżej są słowniki, które objaśniają słowa w tych językach.</string>

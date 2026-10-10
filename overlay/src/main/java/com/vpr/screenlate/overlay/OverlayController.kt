@@ -39,6 +39,7 @@ import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.core.ocr.CompositeOcr
 import com.vpr.screenlate.core.ocr.LensPausedException
+import com.vpr.screenlate.core.ocr.NoDeviceOcrException
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.OcrOptions
@@ -926,10 +927,14 @@ class OverlayController(
                         } else {
                             // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
                             // the cloud failed.
+                            val deviceReads = ocr.deviceReads(language)
                             showScanError(
                                 when {
+                                    error is OfflineException && !deviceReads ->
+                                        service.getString(R.string.overlay_error_offline_no_device)
                                     error is OfflineException -> service.getString(R.string.overlay_error_offline)
-                                    settings.ocrEngines == OcrEngines.CLOUD -> cloudErrorReason(error)
+                                    error is NoDeviceOcrException -> service.getString(R.string.overlay_error_no_device_ocr)
+                                    settings.ocrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
                                     else -> service.getString(R.string.overlay_error_ocr)
                                 },
                             )

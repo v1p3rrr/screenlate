@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">スクリーンショットを撮れませんでした。</string>
     <string name="overlay_error_ocr">文字認識に失敗しました。</string>
     <string name="overlay_error_offline">ネットワークがなく、端末上の認識は設定でオフになっています。</string>
+    <string name="overlay_error_no_device_ocr">端末上の認識はこの言語を読めません。バブルの設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
+    <string name="overlay_error_offline_no_device">ネットワークがなく、端末上の認識はこの言語を読めません。</string>
     <string name="overlay_ocr_error_title">クラウド認識</string>
     <string name="overlay_ocr_error_offline">ネットワークに接続されていません。</string>
     <string name="overlay_ocr_error_paused">クラウド認識が最近のリクエストを拒否したため、数分間休止します。</string>

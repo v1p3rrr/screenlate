@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">Impossibile fare uno screenshot.</string>
     <string name="overlay_error_ocr">Riconoscimento del testo non riuscito.</string>
     <string name="overlay_error_offline">Nessuna rete, e il riconoscimento sul dispositivo è disattivato nelle impostazioni.</string>
+    <string name="overlay_error_no_device_ocr">Il riconoscimento sul dispositivo non legge questa lingua. Nelle impostazioni Bolla, imposta Motori su «Entrambi» o «Cloud».</string>
+    <string name="overlay_error_offline_no_device">Nessuna rete, e il riconoscimento sul dispositivo non legge questa lingua.</string>
     <string name="overlay_ocr_error_title">Riconoscimento nel cloud</string>
     <string name="overlay_ocr_error_offline">Nessuna connessione di rete.</string>
     <string name="overlay_ocr_error_paused">Il riconoscimento nel cloud ha rifiutato le ultime richieste, quindi si ferma per qualche minuto.</string>

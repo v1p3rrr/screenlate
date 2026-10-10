@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">Impossible de prendre une capture d’écran.</string>
     <string name="overlay_error_ocr">La reconnaissance du texte a échoué.</string>
     <string name="overlay_error_offline">Pas de réseau, et la reconnaissance sur l’appareil est désactivée dans les paramètres.</string>
+    <string name="overlay_error_no_device_ocr">La reconnaissance sur l’appareil ne lit pas cette langue. Dans les paramètres Bulle, réglez Moteurs sur « Les deux » ou « Cloud ».</string>
+    <string name="overlay_error_offline_no_device">Pas de réseau, et la reconnaissance sur l’appareil ne lit pas cette langue.</string>
     <string name="overlay_ocr_error_title">Reconnaissance dans le cloud</string>
     <string name="overlay_ocr_error_offline">Pas de connexion réseau.</string>
     <string name="overlay_ocr_error_paused">La reconnaissance dans le cloud a refusé les dernières requêtes, elle se repose donc quelques minutes.</string>

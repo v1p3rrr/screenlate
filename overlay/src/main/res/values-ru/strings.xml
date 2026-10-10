@@ -13,6 +13,8 @@
     <string name="overlay_error_capture">Не удалось сделать скриншот.</string>
     <string name="overlay_error_ocr">Не удалось распознать текст.</string>
     <string name="overlay_error_offline">Нет сети, а распознавание на устройстве выключено в настройках.</string>
+    <string name="overlay_error_no_device_ocr">Распознавание на устройстве не читает этот язык. В настройках плавающей кнопки выберите в пункте «Движки» «Оба» или «Облако».</string>
+    <string name="overlay_error_offline_no_device">Нет сети, а распознавание на устройстве не читает этот язык.</string>
     <string name="overlay_ocr_error_title">Облачное распознавание</string>
     <string name="overlay_ocr_error_offline">Нет подключения к сети.</string>
     <string name="overlay_ocr_error_paused">Облачное распознавание отклонило последние запросы, поэтому несколько минут к нему не обращаемся.</string>

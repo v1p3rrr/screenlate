@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">Ekran görüntüsü alınamadı.</string>
     <string name="overlay_error_ocr">Metin tanıma başarısız oldu.</string>
     <string name="overlay_error_offline">Ağ yok ve cihazda tanıma ayarlarda kapalı.</string>
+    <string name="overlay_error_no_device_ocr">Cihazda tanıma bu dili okuyamıyor. Baloncuk ayarlarında Motorlar seçeneğini “İkisi de” veya “Bulut” yapın.</string>
+    <string name="overlay_error_offline_no_device">Ağ yok ve cihazda tanıma bu dili okuyamıyor.</string>
     <string name="overlay_ocr_error_title">Bulut tanıma</string>
     <string name="overlay_ocr_error_offline">Ağ bağlantısı yok.</string>
     <string name="overlay_ocr_error_paused">Bulut tanıma son istekleri reddetti, bu yüzden birkaç dakika ara veriyor.</string>

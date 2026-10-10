@@ -12,6 +12,8 @@
     <string name="overlay_error_capture">無法截圖。</string>
     <string name="overlay_error_ocr">文字辨識失敗。</string>
     <string name="overlay_error_offline">沒有網路，且設定中已關閉裝置端辨識。</string>
+    <string name="overlay_error_no_device_ocr">裝置端辨識無法讀取此語言。請在懸浮球設定中將「引擎」設為「兩者」或「雲端」。</string>
+    <string name="overlay_error_offline_no_device">沒有網路，且裝置端辨識無法讀取此語言。</string>
     <string name="overlay_ocr_error_title">雲端辨識</string>
     <string name="overlay_ocr_error_offline">未連線網路。</string>
     <string name="overlay_ocr_error_paused">雲端辨識拒絕了最近的請求，因此暫停幾分鐘。</string>

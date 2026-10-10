@@ -35,6 +35,9 @@ class CompositeOcrTest {
     /** Answers after [latency] with a one-line page, or fails with [error]. */
     private class FakeEngine(override val type: OcrEngineType, var latency: Duration, var error: Throwable? = null) : OcrEngine {
         var calls = 0
+        var readsLanguage = true
+
+        override fun reads(language: Language) = readsLanguage
 
         override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
             calls++
@@ -110,6 +113,25 @@ class CompositeOcrTest {
         assertThat((updates.single() as OcrUpdate.Final).lensError).isInstanceOf(OfflineException::class.java)
         assertThat(lens.calls).isEqualTo(0)
         assertThat(ocr.recognizeRegion(image, Language.JAPANESE)).isNull()
+    }
+
+    @Test
+    fun `a language the device does not read goes to lens alone`() = runTest {
+        mlKit.readsLanguage = false
+        assertThat(updates().engines).containsExactly(true to OcrEngineType.LENS)
+        assertThat(mlKit.calls).isEqualTo(0)
+
+        online = false
+        assertThrows(OfflineException::class.java) { kotlinx.coroutines.runBlocking { updates() } }
+        assertThat(mlKit.calls).isEqualTo(0)
+    }
+
+    @Test
+    fun `the device alone fails for a language it does not read`() = runTest {
+        mlKit.readsLanguage = false
+        val error = runCatching { ocr.recognize(image, Language.ENGLISH, OcrOptions(OcrEngines.DEVICE)).toList() }.exceptionOrNull()
+        assertThat(error).isInstanceOf(NoDeviceOcrException::class.java)
+        assertThat(lens.calls).isEqualTo(0)
     }
 
     @Test

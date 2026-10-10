@@ -14,6 +14,7 @@ data class OcrCharacter(
     val lineIndex: Int,
     val offset: Int,
     val vertical: Boolean,
+    val rightToLeft: Boolean = false,
 )
 
 /** Position of a character inside a [TextLayout]. */
@@ -23,7 +24,7 @@ data class TextPosition(val paragraphIndex: Int, val offset: Int)
  * Character-level index over an [OcrPage] used for hit testing and highlighting.
  *
  * Engines report boxes per word; when per-character boxes are missing the word box is split evenly along the
- * reading direction. Lines inside a paragraph are concatenated without separators, which is correct for Japanese.
+ * reading direction: down a vertical line, leftwards along a right-to-left one. Lines inside a paragraph are concatenated without separators, which is correct for Japanese.
  * Paragraphs are taken in reading order ([ReadingOrder]), so text runs on across a broken line.
  */
 class TextLayout(val page: OcrPage) {
@@ -35,8 +36,8 @@ class TextLayout(val page: OcrPage) {
         buildList {
             paragraph.lines.forEachIndexed { lineIndex, line ->
                 line.words.forEach { word ->
-                    splitWord(word, line.vertical).forEach { (text, box) ->
-                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, size, line.vertical))
+                    splitWord(word, line).forEach { (text, box) ->
+                        add(OcrCharacter(text, box, paragraphIndex, lineIndex, size, line.vertical, line.rightToLeft))
                     }
                 }
             }
@@ -106,30 +107,37 @@ class TextLayout(val page: OcrPage) {
         return dx * dx + dy * dy
     }
 
-    private fun splitWord(word: OcrWord, vertical: Boolean): List<Pair<String, Box>> {
+    private fun splitWord(word: OcrWord, line: OcrLine): List<Pair<String, Box>> {
         val glyphs = codePoints(word.text)
-        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs.size, vertical)
+        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs.size, line)
         val result = glyphs.zip(boxes).toMutableList()
         codePoints(word.separator).forEach { separator ->
-            val edge = if (vertical) {
-                Box(word.box.left, word.box.bottom, word.box.right, word.box.bottom)
-            } else {
-                Box(word.box.right, word.box.top, word.box.right, word.box.bottom)
+            val edge = when {
+                line.vertical -> Box(word.box.left, word.box.bottom, word.box.right, word.box.bottom)
+                line.rightToLeft -> Box(word.box.left, word.box.top, word.box.left, word.box.bottom)
+                else -> Box(word.box.right, word.box.top, word.box.right, word.box.bottom)
             }
             result += separator to edge
         }
         return result
     }
 
-    private fun splitBox(box: Box, count: Int, vertical: Boolean): List<Box> {
+    private fun splitBox(box: Box, count: Int, line: OcrLine): List<Box> {
         if (count <= 1) return List(count) { box }
         return List(count) { index ->
-            if (vertical) {
-                val step = box.height / count
-                Box(box.left, box.top + step * index, box.right, box.top + step * (index + 1))
-            } else {
-                val step = box.width / count
-                Box(box.left + step * index, box.top, box.left + step * (index + 1), box.bottom)
+            when {
+                line.vertical -> {
+                    val step = box.height / count
+                    Box(box.left, box.top + step * index, box.right, box.top + step * (index + 1))
+                }
+                line.rightToLeft -> {
+                    val step = box.width / count
+                    Box(box.right - step * (index + 1), box.top, box.right - step * index, box.bottom)
+                }
+                else -> {
+                    val step = box.width / count
+                    Box(box.left + step * index, box.top, box.left + step * (index + 1), box.bottom)
+                }
             }
         }
     }

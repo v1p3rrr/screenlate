@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
+import com.vpr.screenlate.core.ocr.isRightToLeftText
 import com.vpr.screenlate.core.ocr.isVerticalLine
 import kotlin.math.cos
 import kotlin.math.sin
@@ -92,7 +93,8 @@ internal object LensProtocol {
         if (words.isEmpty()) return null
         val box = lineBox ?: Box.unionOf(words.map { it.box }) ?: return null
         val text = words.joinToString("") { it.text }
-        return OcrLine(words, box, isVerticalLine(box, text))
+        val vertical = isVerticalLine(box, text)
+        return OcrLine(words, box, vertical, rightToLeft = !vertical && isRightToLeftText(text))
     }
 
     private fun parseWord(reader: ProtoReader, width: Int, height: Int): OcrWord? {

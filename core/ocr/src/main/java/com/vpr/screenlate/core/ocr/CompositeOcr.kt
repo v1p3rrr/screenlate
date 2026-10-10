@@ -3,7 +3,7 @@ package com.vpr.screenlate.core.ocr
 import android.graphics.Bitmap
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
-import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
+import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -44,7 +44,7 @@ sealed interface OcrUpdate {
     /** On-device result shown while Lens is still pending. A [Final] update always follows. */
     data class Draft(override val page: OcrPage) : OcrUpdate
 
-    /** The result to keep. [lensError] is set when Lens failed or was skipped and [page] comes from ML Kit. */
+    /** The result to keep. [lensError] is set when Lens failed or was skipped and [page] comes from the device. */
     data class Final(override val page: OcrPage, val lensError: Throwable? = null) : OcrUpdate
 }
 
@@ -54,17 +54,18 @@ class OfflineException : IOException("No network connection")
 class LensPausedException : IOException("Lens refused recent requests")
 
 /**
- * Runs ML Kit and Lens in parallel: ML Kit pages are emitted as [OcrUpdate.Draft]s while Lens is pending, the Lens
- * page as the [OcrUpdate.Final]. Without network or after a Lens failure the ML Kit page of the whole image becomes
- * final. [OcrOptions] can leave out either engine.
+ * Runs the device ([DeviceOcr]: ML Kit, or an engine with downloaded models) and Lens in parallel: device pages are
+ * emitted as [OcrUpdate.Draft]s while Lens is pending, the Lens page as the [OcrUpdate.Final]. Without network or after
+ * a Lens failure the device page of the whole image becomes final. [OcrOptions] can leave out either engine; a
+ * language the device cannot read goes to Lens alone.
  *
- * ML Kit first reads a band around the aim ([FocusBand]), and another one when the aim has moved out of it meanwhile,
+ * The device first reads a band around the aim ([FocusBand]), and another one when the aim has moved out of it meanwhile,
  * so the word under the aim has a draft long before the whole screen is read.
  */
 @Singleton
 class CompositeOcr internal constructor(
     private val lens: OcrEngine,
-    private val mlKit: OcrEngine,
+    private val device: OcrEngine,
     private val isOnline: () -> Boolean,
     private val clock: () -> Long = System::currentTimeMillis,
     private val heightOf: (Bitmap) -> Int = Bitmap::getHeight,
@@ -77,8 +78,8 @@ class CompositeOcr internal constructor(
     private val worker: CoroutineContext = Dispatchers.Default,
 ) {
     @Inject
-    constructor(lens: LensOcrEngine, mlKit: MlKitOcrEngine, networkStatus: NetworkStatus) :
-        this(lens, mlKit, networkStatus::isOnline)
+    constructor(lens: LensOcrEngine, device: DeviceOcr, networkStatus: NetworkStatus) :
+        this(lens, device, networkStatus::isOnline)
 
     /** @param focus the aim's row in [image] at the moment, or null without an aim. */
     fun recognize(
@@ -87,7 +88,10 @@ class CompositeOcr internal constructor(
         options: OcrOptions = OcrOptions(),
         focus: () -> Float? = { null },
     ): Flow<OcrUpdate> = channelFlow {
-        if (options.engines == OcrEngines.CLOUD) {
+        // A language the device cannot read goes to the cloud alone, unless the device alone was asked for.
+        val deviceReads = deviceReads(language)
+        if (!deviceReads && options.engines == OcrEngines.DEVICE) throw NoDeviceOcrException()
+        if (options.engines == OcrEngines.CLOUD || !deviceReads) {
             send(OcrUpdate.Final(recognizeWithLens(image, language)))
             return@channelFlow
         }
@@ -102,9 +106,9 @@ class CompositeOcr internal constructor(
         if (!useLens || !options.deferWholeImage) wholeImage.complete(Unit)
 
         val emitter = UpdateEmitter(this)
-        // ML Kit cannot be stopped once it runs, so it reads its own copy outside this flow: the flow ends with the
-        // Lens result while ML Kit finishes, and the copy is freed once ML Kit no longer reads it. Started at once, so
-        // a scan cancelled before the draft would have run still frees the copy.
+        // The device cannot be stopped once it runs, so it reads its own copy outside this flow: the flow ends with
+        // the Lens result while the device finishes, and the copy is freed once the device no longer reads it. Started
+        // at once, so a scan cancelled before the draft would have run still frees the copy.
         val copy = copyOnWorker(image)
         val draft = CoroutineScope(coroutineContext.minusKey(Job)).async(start = CoroutineStart.UNDISPATCHED) {
             try {
@@ -199,7 +203,7 @@ class CompositeOcr internal constructor(
             val started = clock()
             val crop = withContext(worker) { cropRows(image, rows) }
             val band = try {
-                mlKit.recognize(crop, language)
+                device.recognize(crop, language)
             } finally {
                 if (crop !== image) release(crop)
             }
@@ -210,22 +214,26 @@ class CompositeOcr internal constructor(
             emitter.emitDraft(OcrUpdate.Draft(draft))
         }
         val started = clock()
-        return mlKit.recognize(image, language).also {
+        return device.recognize(image, language).also {
             Log.d(TAG, "ML Kit: ${it.paragraphs.size} paragraphs in ${clock() - started} ms")
         }
     }
 
+    /** Whether the device reads [language]; a scan of a language it does not read asks the cloud alone. */
+    fun deviceReads(language: Language): Boolean = device.reads(language)
+
     /** Unloads the on-device model when it is turned off; a later scan loads it again. */
     fun releaseOnDevice() {
-        mlKit.release()
+        device.release()
         Log.i(TAG, "Released the on-device model")
     }
 
     /** Loads the on-device model for [language], which would otherwise delay the first draft. */
     suspend fun warmUp(language: Language) {
+        if (!device.reads(language)) return
         val image = Bitmap.createBitmap(WARM_UP_SIZE, WARM_UP_SIZE, Bitmap.Config.ARGB_8888)
         try {
-            mlKit.recognize(image, language)
+            device.recognize(image, language)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

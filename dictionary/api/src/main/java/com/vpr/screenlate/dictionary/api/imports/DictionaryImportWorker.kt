@@ -45,7 +45,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Imports dictionaries in the background: the archives bundled in the APK, a local archive file, or an
- * archive downloaded from a URL. Runs as a foreground `dataSync` job so the system does not stop a long import.
+ * archive downloaded from a URL; also downloads on-device recognition models of the catalog. Runs as a foreground
+ * `dataSync` job so the system does not stop a long import.
  */
 @HiltWorker
 class DictionaryImportWorker @AssistedInject constructor(
@@ -58,6 +59,7 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val installedLanguages: InstalledLanguages,
     private val imports: DictionaryImports,
     private val profiles: LanguageProfiles,
+    private val models: ModelInstaller,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
     private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
@@ -157,7 +159,18 @@ class DictionaryImportWorker @AssistedInject constructor(
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
                     val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
                         ?: requireNotNull(inputData.getString(KEY_URL))
-                    listOf(download(url, name))
+                    listOf(download(url, name, ::importDownloaded))
+                }
+                SOURCE_MODEL -> {
+                    setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
+                    val id = inputData.getString(KEY_ENTRY_ID)
+                    val entry = catalogEntries.firstOrNull { it.id == id && it.isModel } ?: error("The model is not in the catalog")
+                    listOf(
+                        download(entry.downloadUrl, name) { archive ->
+                            models.install(entry, archive)
+                            entry.title
+                        },
+                    )
                 }
                 else -> error("Unknown import source")
             }
@@ -323,7 +336,8 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }.onFailure { Log.w(TAG, "Cannot read $indexUrl", it) }.getOrNull()
 
-    private suspend fun download(url: String, name: String): String {
+    /** Downloads [url] to a temporary archive, which [install] gets; returns what [install] returns. */
+    private suspend fun download(url: String, name: String, install: suspend (File) -> String): String {
         val archive = storage.newArchiveFile()
         try {
             val request = Request.Builder().url(url).build()
@@ -357,11 +371,15 @@ class DictionaryImportWorker @AssistedInject constructor(
             }
             Log.i(TAG, "Downloaded ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
-            val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
-            return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
+            return install(archive)
         } finally {
             archive.delete()
         }
+    }
+
+    private suspend fun importDownloaded(archive: File): String {
+        val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
+        return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo = foregroundInfo(inputData.getString(KEY_NAME).orEmpty())
@@ -395,6 +413,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_REPLACE_ID = "replace_id"
         const val KEY_DELETE_FILE = "delete_file"
         const val KEY_TITLES = "titles"
+
+        /** The catalog entry of a model download. */
+        const val KEY_ENTRY_ID = "entry_id"
         const val KEY_ERROR = "error"
 
         /** Output of an import the app died during twice; see [MAX_RUN_ATTEMPTS]. */
@@ -417,6 +438,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val SOURCE_FILE = "file"
         const val SOURCE_URL = "url"
         const val SOURCE_YOMITAN_BACKUP = "yomitan_backup"
+        const val SOURCE_MODEL = "model"
 
         const val STAGE_DOWNLOAD = "download"
         const val STAGE_IMPORT = "import"
