@@ -50,6 +50,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.note.Sentence
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -107,6 +108,7 @@ fun SearchScreen(
         object {
             lateinit var page: LookupPage
             lateinit var notes: PopupNotes
+            var language: Language? = null
         }
     }
     val page = remember {
@@ -191,8 +193,13 @@ fun SearchScreen(
         page.setStyles(Json.encodeToJsonElement(ListSerializer(DictionaryStyle.serializer()), viewModel.styles(language)))
     }
     LaunchedEffect(Unit) { viewModel.appearance.collect { page.setAppearance(it) } }
-    LaunchedEffect(results) {
+    LaunchedEffect(language, results) {
+        if (holder.language != language) {
+            holder.notes.onClosed()
+            holder.language = language
+        }
         val current = results ?: return@LaunchedEffect
+        if (current.language != language) return@LaunchedEffect
         holder.notes.refreshActions()
         page.render(state(context, currentTheme, current))
         holder.notes.onResultsShown(current.results.firstOrNull()?.term?.let { it.expression to it.reading })
@@ -237,13 +244,13 @@ fun SearchScreen(
                     .focusRequester(focus),
             )
             // Nothing can be found until a dictionary with definitions is on; the page says why.
-            if (query.isNotBlank() && results?.noTermDictionary != null) {
+            if (query.isNotBlank() && (results?.noTermDictionary != null || results?.installation != null)) {
                 OutlinedButton(
                     onClick = onOpenDictionaries,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                ) { Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center) }
+                ) { Text(stringResource(OverlayR.string.installation_open), textAlign = TextAlign.Center) }
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 // The page stays alive while hidden so the next search renders without a reload.
@@ -298,6 +305,7 @@ private fun state(context: android.content.Context, theme: PageTheme, results: S
     matched = PageState.matchedLength(results.results, results.kanji),
     results = results.results,
     message = when {
+        results.installation != null -> results.installation.message(context)
         results.results.isNotEmpty() || results.kanji != null -> null
         else -> context.getString(noResultsText(results.noTermDictionary))
     },

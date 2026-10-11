@@ -117,8 +117,7 @@ class PopupNotes(
 ) : LookupPage.NoteActions {
     private val json = Json { ignoreUnknownKeys = true }
     private var duplicateJob: Job? = null
-    private var ankiStatus: AnkiStatus? = null
-    private var ankiStatusAt = 0L
+    private val statusCache = AnkiStatusCache(ANKI_STATUS_TTL_MS)
     private var lastAutoPlayed: Pair<String, String>? = null
     private var autoPlayJob: Job? = null
     private var pendingAutoPlay: Pair<String, String>? = null
@@ -153,14 +152,7 @@ class PopupNotes(
     }
 
     /** The Anki setup is checked against AnkiDroid at most every few seconds, not for every word. */
-    private suspend fun ankiStatus(): AnkiStatus {
-        val now = System.currentTimeMillis()
-        ankiStatus?.takeIf { now - ankiStatusAt < ANKI_STATUS_TTL_MS }?.let { return it }
-        return notes.status(language()).also {
-            ankiStatus = it
-            ankiStatusAt = now
-        }
-    }
+    private suspend fun ankiStatus(): AnkiStatus = statusCache.get(language(), notes::status)
 
     /** Called after a view with results is shown: schedules the duplicate check and auto-play. */
     fun onResultsShown(firstTerm: Pair<String, String>?) {
@@ -218,11 +210,12 @@ class PopupNotes(
     fun onClosed() {
         cropEditor?.cancel()
         onResultsHidden()
-        ankiStatus = null
+        statusCache.clear()
         lastAutoPlayed = null
         scanNotes.close()
         openableNotes.clear()
         chosenClips.clear()
+        menuCandidates = emptyList()
     }
 
     /** Words added during this scan get 📖; duplicates get 📖 or a mark, depending on the duplicate behavior. */
@@ -414,16 +407,20 @@ class PopupNotes(
 
     override fun onPlayClip(index: Int, clipId: String) {
         val candidate = menuCandidates.firstOrNull { it.id == clipId } ?: return
+        val scan = scanNotes.scan
+        val clipLanguage = language()
         scope.launch {
             val terms = currentTerms() ?: return@launch
             val term = terms.getOrNull(index) ?: return@launch
             if (candidate.isSpeech) {
-                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, language()))) {
+                if (scan != scanNotes.scan) return@launch
+                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, clipLanguage))) {
                     toast(context.getString(R.string.audio_no_voice))
                 }
                 return@launch
             }
             val clip = audio.download(candidate, term.first, term.second)
+            if (scan != scanNotes.scan) return@launch
             if (clip == null) {
                 toast(context.getString(R.string.audio_not_found))
                 return@launch

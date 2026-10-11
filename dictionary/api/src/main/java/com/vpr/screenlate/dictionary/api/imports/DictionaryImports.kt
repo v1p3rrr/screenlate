@@ -84,6 +84,9 @@ data class ImportTask(
     val paused: Boolean = false,
     /** The worker's source kind, independent of the displayed archive or dictionary name. */
     val source: String? = null,
+    /** Catalog language and entry, kept independently of changing progress names. */
+    val language: String? = null,
+    val catalogEntry: String? = null,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -209,7 +212,7 @@ class DictionaryImports @Inject constructor(
      * Downloads and imports an archive; with [indexUrl], the index's current `downloadUrl` is preferred.
      * [replaces] is the id of the installed dictionary this download updates.
      */
-    fun download(url: String, name: String, indexUrl: String? = null, replaces: Long? = null) = enqueue(
+    fun download(url: String, name: String, indexUrl: String? = null, replaces: Long? = null, entry: CatalogEntry? = null) = enqueue(
         workDataOf(
             KEY_SOURCE to SOURCE_URL,
             KEY_URL to url,
@@ -218,6 +221,7 @@ class DictionaryImports @Inject constructor(
             KEY_REPLACE_ID to (replaces ?: -1L),
         ),
         name = name,
+        entry = entry,
     )
 
     /** Downloads and installs an on-device recognition model of the catalog ([CatalogEntry.isModel]). */
@@ -228,6 +232,7 @@ class DictionaryImports @Inject constructor(
             KEY_NAME to entry.title,
         ),
         name = entry.title,
+        entry = entry,
     )
 
     /** Removes finished tasks from [tasks]. */
@@ -339,13 +344,19 @@ class DictionaryImports @Inject constructor(
         }
     }
 
-    private fun enqueue(data: Data, name: String): UUID {
+    private fun enqueue(data: Data, name: String, entry: CatalogEntry? = null): UUID {
         val request = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
             .setInputData(data)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
             .addTag(SOURCE_TAG_PREFIX + data.getString(KEY_SOURCE).orEmpty())
+            .apply {
+                entry?.let {
+                    addTag(LANGUAGE_TAG_PREFIX + it.sourceLanguage)
+                    addTag(ENTRY_TAG_PREFIX + it.id)
+                }
+            }
             .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
             // Empty for imports that make their own temporary archive; see archivesInUse.
             .addTag(ARCHIVE_TAG_PREFIX + data.getString(KEY_PATH)?.let { File(it).name }.orEmpty())
@@ -367,6 +378,8 @@ class DictionaryImports @Inject constructor(
         private const val LOG_TAG = "DictionaryImports"
         const val NAME_TAG_PREFIX = "dictionary-import-name:"
         const val SOURCE_TAG_PREFIX = "dictionary-import-source:"
+        const val LANGUAGE_TAG_PREFIX = "dictionary-import-language:"
+        const val ENTRY_TAG_PREFIX = "dictionary-import-entry:"
 
         /** Followed by a number that grows with every enqueued import; work ids are random. */
         const val ORDER_TAG_PREFIX = "dictionary-import-order:"
@@ -449,5 +462,7 @@ private fun WorkInfo.toTask(): ImportTask {
         source = tags.firstOrNull { it.startsWith(DictionaryImports.SOURCE_TAG_PREFIX) }
             ?.removePrefix(DictionaryImports.SOURCE_TAG_PREFIX)
             ?: progress.getString(KEY_SOURCE),
+        language = tags.firstOrNull { it.startsWith(DictionaryImports.LANGUAGE_TAG_PREFIX) }?.removePrefix(DictionaryImports.LANGUAGE_TAG_PREFIX),
+        catalogEntry = tags.firstOrNull { it.startsWith(DictionaryImports.ENTRY_TAG_PREFIX) }?.removePrefix(DictionaryImports.ENTRY_TAG_PREFIX),
     )
 }

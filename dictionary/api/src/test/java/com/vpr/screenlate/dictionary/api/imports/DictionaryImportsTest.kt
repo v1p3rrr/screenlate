@@ -40,6 +40,8 @@ class DictionaryImportsTest {
         progress: Data = Data.EMPTY,
         archive: String? = null,
         source: String? = null,
+        language: String? = null,
+        entry: String? = null,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -49,10 +51,21 @@ class DictionaryImportsTest {
             order?.let { DictionaryImports.ORDER_TAG_PREFIX + it },
             archive?.let { DictionaryImports.ARCHIVE_TAG_PREFIX + it },
             source?.let { DictionaryImports.SOURCE_TAG_PREFIX + it },
+            language?.let { DictionaryImports.LANGUAGE_TAG_PREFIX + it },
+            entry?.let { DictionaryImports.ENTRY_TAG_PREFIX + it },
         ),
         outputData = output,
         progress = progress,
     )
+
+    @Test
+    fun `catalog language and entry survive changes in displayed progress`() {
+        val task = importTasks(listOf(work("English", WorkInfo.State.RUNNING, 1, language = "en", entry = "english-main",
+            progress = workDataOf(DictionaryImportWorker.KEY_NAME to "new archive title")))).single()
+        assertThat(task.language).isEqualTo("en")
+        assertThat(task.catalogEntry).isEqualTo("english-main")
+        assertThat(task.name).isEqualTo("new archive title")
+    }
 
     @Test
     fun `bundled source survives a change in the displayed archive name`() {

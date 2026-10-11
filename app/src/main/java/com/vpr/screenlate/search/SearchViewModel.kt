@@ -19,6 +19,8 @@ import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.translate.SentenceTranslation
+import com.vpr.screenlate.overlay.install.InstallationStatus
+import com.vpr.screenlate.overlay.install.LanguageInstallation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -40,9 +42,11 @@ import kotlinx.serialization.json.JsonObject
  */
 data class SearchResults(
     val text: String,
+    val language: Language,
     val results: List<LookupResult>,
     val noTermDictionary: NoTermDictionary?,
     val kanji: KanjiResult? = null,
+    val installation: InstallationStatus? = null,
 )
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -58,6 +62,7 @@ class SearchViewModel @Inject constructor(
     appSettings: AppSettingsRepository,
     pageAppearance: PageAppearance,
     profiles: LanguageProfiles,
+    private val installation: LanguageInstallation,
 ) : ViewModel() {
     /** The active language; a switch while the screen is open searches again in it. */
     val language: StateFlow<Language> = profiles.active
@@ -71,8 +76,10 @@ class SearchViewModel @Inject constructor(
     val themeMode: StateFlow<ThemeMode> =
         appSettings.themeMode.stateIn(viewModelScope, SharingStarted.Eagerly, appSettings.cachedThemeMode ?: ThemeMode.SYSTEM)
 
-    val results: StateFlow<SearchResults?> = combine(query.debounce(SEARCH_DELAY_MS), language, ::Pair)
-        .mapLatest { (text, language) -> if (text.isBlank()) null else search(text, language) }
+    val results: StateFlow<SearchResults?> = combine(
+        query.debounce(SEARCH_DELAY_MS), language.flatMapLatest { selected -> installation.observe(selected).mapLatest { selected to it } },
+    ) { text, (language, status) -> Triple(text, language, status) }
+        .mapLatest { (text, language, status) -> if (text.isBlank()) null else search(text, language, status = status) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val dictionaryLookup: DictionaryLookup get() = lookup
@@ -81,13 +88,16 @@ class SearchViewModel @Inject constructor(
         text: String,
         language: Language = this.language.value,
         primaryReading: String? = null,
+        status: InstallationStatus? = null,
     ): SearchResults {
         val trimmed = text.trim()
+        val readiness = status ?: installation.current(language)
+        if (!readiness.dictionaryReady) return SearchResults(trimmed, language, emptyList(), noTermDictionary = null, installation = readiness)
         val found = orElse(emptyList()) { lookup.lookupQuery(trimmed, language, primaryReading = primaryReading) }
-        if (found.isNotEmpty()) return SearchResults(trimmed, found, noTermDictionary = null)
+        if (found.isNotEmpty()) return SearchResults(trimmed, language, found, noTermDictionary = null)
         val kanji = orElse(null) { lookup.characterEntry(trimmed, language) }
         val noTermDictionary = orElse(null) { lookup.noTermDictionary(language) }
-        return SearchResults(trimmed, found, noTermDictionary = noTermDictionary, kanji = kanji)
+        return SearchResults(trimmed, language, found, noTermDictionary = noTermDictionary, kanji = kanji)
     }
 
     suspend fun kanji(character: String): KanjiResult =

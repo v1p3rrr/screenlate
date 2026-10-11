@@ -249,7 +249,7 @@ class DictionariesViewModel @Inject constructor(
     }
 
     fun download(entry: CatalogEntry) {
-        imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
+        imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
     }
 
     /** Replaces [copy], an old build of [entry], with the current build in its place. */
@@ -259,6 +259,7 @@ class DictionariesViewModel @Inject constructor(
             copy.title,
             indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
             replaces = copy.id,
+            entry = entry,
         )
     }
 

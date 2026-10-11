@@ -41,6 +41,7 @@ object PageState {
         noteWait: Boolean = false,
         kanji: KanjiResult? = null,
         sentence: String = "",
+        installation: Boolean = false,
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
@@ -55,6 +56,7 @@ object PageState {
             message = message.takeIf { kanji == null },
             labels = if (kanji != null) labels(context) + kanjiLabels(context) else labels(context),
             sentence = sentence,
+            installation = installation,
         ),
     )
 
@@ -79,6 +81,7 @@ object PageState {
         "ocrError" to context.getString(R.string.overlay_ocr_error_title),
         "translate" to context.getString(R.string.overlay_translate),
         "translating" to context.getString(R.string.overlay_translating),
+        "installation" to context.getString(R.string.installation_open),
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
@@ -118,6 +121,7 @@ object PageState {
     @Serializable
     private data class StateDto(
         val theme: String,
+        val installation: Boolean = false,
         val pending: Boolean = false,
         /** ➕ is grey and only explains itself until the scan's final text (`noteWaitsForText`). */
         val noteWait: Boolean = false,

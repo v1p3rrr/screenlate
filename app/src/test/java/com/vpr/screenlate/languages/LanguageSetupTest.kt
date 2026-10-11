@@ -95,6 +95,19 @@ class LanguageSetupTest {
     }
 
     @Test
+    fun `selected installed dictionaries are enabled without downloads including disabled copies`() {
+        val main = installed("en-ru").copy(enabled = false)
+        val pronunciation = installed("en-ipa", kind = DictionaryKind.PITCH).copy(enabled = false)
+        val unrelated = installed("Own English Dictionary").copy(enabled = false)
+        val installed = listOf(main, pronunciation, unrelated)
+        val categories = setupCategories(catalog, "en", listOf("ru"), installed)
+
+        assertThat(missingChoices(categories, emptyMap())).isEmpty()
+        assertThat(setupDownloads(categories, emptyMap())).isEmpty()
+        assertThat(setupInstalled(categories, emptyMap(), installed)).containsExactly(main.id, pronunciation.id)
+    }
+
+    @Test
     fun `a mandatory category without dictionaries in the chosen languages is still shown, and missing`() {
         val categories = setupCategories(catalog, "en", listOf("fr"), installed = emptyList())
         assertThat(categories.first().category).isEqualTo(CatalogCategory.MAIN)

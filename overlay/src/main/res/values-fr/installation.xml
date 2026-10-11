@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Prêt</string>
+    <string name="installation_running">L’installation de la langue est en cours. La numérisation et la recherche seront disponibles lorsque les composants nécessaires seront prêts.</string>
+    <string name="installation_missing">Des dictionnaires ou modèles de reconnaissance nécessaires sont absents ou désactivés. Ouvrez l’état de l’installation pour terminer la configuration.</string>
+    <string name="installation_failed">L’installation de la langue a échoué. Ouvrez l’état de l’installation pour voir l’erreur et réessayer.</string>
+    <string name="installation_open">État de l’installation</string>
+    <string name="installation_device_ready">Reconnaissance sur l’appareil : prête</string>
+    <string name="installation_device_missing">Reconnaissance sur l’appareil : indisponible ; la reconnaissance dans le cloud peut être utilisée si elle est activée.</string>
+    <string name="installation_remaining">Installations restantes : %1$d</string>
+    <string name="installation_errors">Installations échouées : %1$d</string>
+</resources>

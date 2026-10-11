@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Gotowe</string>
+    <string name="installation_running">Trwa instalacja języka. Skanowanie i wyszukiwanie będą dostępne, gdy wymagane składniki będą gotowe.</string>
+    <string name="installation_missing">Brakuje wymaganych słowników lub modeli rozpoznawania albo są wyłączone. Otwórz stan instalacji, aby dokończyć konfigurację.</string>
+    <string name="installation_failed">Instalacja języka nie powiodła się. Otwórz stan instalacji, aby zobaczyć błąd i spróbować ponownie.</string>
+    <string name="installation_open">Stan instalacji</string>
+    <string name="installation_device_ready">Rozpoznawanie na urządzeniu: gotowe</string>
+    <string name="installation_device_missing">Rozpoznawanie na urządzeniu: niedostępne; można korzystać z rozpoznawania w chmurze, jeśli jest włączone.</string>
+    <string name="installation_remaining">Pozostałe instalacje: %1$d</string>
+    <string name="installation_errors">Nieudane instalacje: %1$d</string>
+</resources>

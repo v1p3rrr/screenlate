@@ -12,6 +12,14 @@ object OverlayIntents {
     /** The Anki settings, e.g. from the grey ➕ of a broken Anki setup. */
     const val OPEN_ANKI_SETTINGS = "anki"
     const val OPEN_DICTIONARIES = "dictionaries"
+    const val INSTALLATION_URL = "screenlate://installation"
+
+    fun openInstallation(context: Context) {
+        context.packageManager.getLaunchIntentForPackage(context.packageName)
+            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            ?.putExtra(EXTRA_OPEN, OPEN_DICTIONARIES)
+            ?.let { context.startActivity(it) }
+    }
 
     /** Brings the app to the front as the launcher does: its task as it was left, or a new one. */
     fun openApp(context: Context) {

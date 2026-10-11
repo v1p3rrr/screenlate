@@ -32,7 +32,10 @@ internal fun downloadsOf(
 ): List<ImportTask> {
     val names = catalog.entries.filter { it.sourceLanguage == code }.mapTo(hashSetOf()) { it.title }
     installed.mapTo(names) { it.title }
-    return tasks.filter { !it.finished && (it.name in names || (code == bundledLanguage.code && it.source == SOURCE_BUNDLED)) }
+    return tasks.filter {
+        !it.finished && if (it.language != null) it.language == code
+        else it.name in names || (code == bundledLanguage.code && it.source == SOURCE_BUNDLED)
+    }
 }
 
 /**

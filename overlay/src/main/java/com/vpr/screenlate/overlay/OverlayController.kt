@@ -87,6 +87,7 @@ import com.vpr.screenlate.overlay.translate.SentenceTranslation
 import com.vpr.screenlate.overlay.web.PageState
 import com.vpr.screenlate.overlay.web.PageTheme
 import com.vpr.screenlate.overlay.web.noResultsText
+import com.vpr.screenlate.overlay.install.LanguageInstallation
 import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.math.abs
@@ -129,6 +130,7 @@ class OverlayController(
     private val anki: AnkiServices,
     private val translation: SentenceTranslation,
     private val profiles: LanguageProfiles,
+    private val installation: LanguageInstallation,
     private val scope: CoroutineScope,
 ) {
     /** Anki and audio dependencies, grouped to keep the constructor short. */
@@ -892,6 +894,13 @@ class OverlayController(
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
+            val ready = installation.current(language)
+            if (!ready.scanReady) {
+                ocrFinal = true
+                bubbleView.loading = false
+                showMessage(ready.message(service, scanning = true), installation = true)
+                return@launch
+            }
             if (settings.textSource == TextSource.APP_TEXT_ONLY) {
                 readAppTextOnly(flashLines)
                 return@launch
@@ -1255,7 +1264,7 @@ class OverlayController(
         showMessage(message)
     }
 
-    private fun showMessage(message: String) {
+    private fun showMessage(message: String, installation: Boolean = false) {
         // A lookup still running would draw its word over the message.
         lookupJob?.cancel()
         lookupJob = null
@@ -1263,7 +1272,8 @@ class OverlayController(
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
         shownLookup = null
-        popup.show(popupState(view), anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
+        val page = if (installation) PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = true) else popupState(view)
+        popup.show(page, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
     /** Where the lookup aimed at [aimed] starts: the first character of a word the language reads as a whole. */
@@ -1508,6 +1518,11 @@ class OverlayController(
         override fun onLookup(query: String, primaryReading: String?) = lookupLink(query, primaryReading)
 
         override fun onOpenUrl(url: String) {
+            if (url == OverlayIntents.INSTALLATION_URL) {
+                OverlayIntents.openInstallation(service)
+                dock()
+                return
+            }
             val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             runCatching { service.startActivity(intent) }.onFailure { Log.w(TAG, "Cannot open ${redactUrl(url)}", it.redacted()) }
             dock()

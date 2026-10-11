@@ -36,6 +36,7 @@ data class LanguageSetupState(
     val choices: Map<String, Boolean> = emptyMap(),
     val missing: List<CatalogCategory> = emptyList(),
     val downloads: List<CatalogEntry> = emptyList(),
+    val enableDictionaries: Set<Long> = emptySet(),
     val totals: SetupTotals = SetupTotals(0, 0, 0),
     val freeBytes: Long = Long.MAX_VALUE,
     val loaded: Boolean = false,
@@ -96,6 +97,7 @@ class LanguageSetupViewModel @Inject constructor(
             choices = choices,
             missing = missingChoices(categories, choices),
             downloads = downloads,
+            enableDictionaries = setupInstalled(categories, choices, installed),
             totals = setupTotals(downloads),
             freeBytes = freeBytes(),
             loaded = true,
@@ -118,12 +120,12 @@ class LanguageSetupViewModel @Inject constructor(
     /** How far the confirmation got; it outlives the screen's recreation, e.g. on rotation. */
     val confirmed: StateFlow<Confirmation> = confirmation
 
-    /** Turns the language on with the ticked downloads queued, once; later calls do nothing. */
+    /** Enables ticked installed dictionaries and queues the other choices, once; later calls do nothing. */
     fun confirm() {
         if (!confirmation.compareAndSet(Confirmation.NONE, Confirmation.TURNING_ON)) return
-        val downloads = state.value.downloads
+        val selected = state.value
         viewModelScope.launch {
-            switch.turnOn(language, downloads, firstRun)
+            switch.turnOn(language, selected.downloads, firstRun, selected.enableDictionaries)
             confirmation.value = Confirmation.QUEUED
         }
     }

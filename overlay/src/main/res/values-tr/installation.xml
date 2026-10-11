@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Hazır</string>
+    <string name="installation_running">Dil kurulumu sürüyor. Gerekli bileşenler hazır olduğunda tarama ve arama kullanılabilecek.</string>
+    <string name="installation_missing">Gerekli sözlükler veya tanıma modelleri eksik ya da devre dışı. Kurulumu tamamlamak için kurulum durumunu açın.</string>
+    <string name="installation_failed">Dil kurulumu başarısız oldu. Hatayı görmek ve yeniden denemek için kurulum durumunu açın.</string>
+    <string name="installation_open">Kurulum durumu</string>
+    <string name="installation_device_ready">Cihazda tanıma: hazır</string>
+    <string name="installation_device_missing">Cihazda tanıma: kullanılamıyor; etkinleştirildiğinde bulutta tanıma kullanılabilir.</string>
+    <string name="installation_remaining">Kalan kurulumlar: %1$d</string>
+    <string name="installation_errors">Başarısız kurulumlar: %1$d</string>
+</resources>

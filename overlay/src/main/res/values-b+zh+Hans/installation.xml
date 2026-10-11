@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">就绪</string>
+    <string name="installation_running">正在安装语言。所需组件就绪后，即可扫描和查词。</string>
+    <string name="installation_missing">所需的词典或识别模型缺失或已停用。请打开安装状态以完成设置。</string>
+    <string name="installation_failed">语言安装失败。请打开安装状态查看错误并重试。</string>
+    <string name="installation_open">安装状态</string>
+    <string name="installation_device_ready">设备端识别：就绪</string>
+    <string name="installation_device_missing">设备端识别：不可用；启用后可使用云端识别。</string>
+    <string name="installation_remaining">剩余安装项目：%1$d</string>
+    <string name="installation_errors">安装失败的项目：%1$d</string>
+</resources>

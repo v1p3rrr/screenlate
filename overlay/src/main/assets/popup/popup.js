@@ -14,6 +14,7 @@
  *   kanji: KanjiResult,            a kanji entry shown instead of results: a tapped headword kanji, or the first
  *                                  character when no word was found
  *   message: string,               shown instead of results
+ *   installation: boolean,         opens the installation queue from the message
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
  *   labels: { ... }                localized strings
  * }
@@ -148,6 +149,7 @@ const Popup = (() => {
         return JSON.stringify([
             compact(state),
             state.message,
+            state.installation,
             state.source,
             state.kanji?.character,
             (state.results || []).map(r => [r.term.expression, r.term.reading]),
@@ -174,6 +176,11 @@ const Popup = (() => {
         const results = state.results || [];
         if (state.message || results.length === 0) {
             content.replaceChildren(element('div', 'message', state.message || state.labels?.noResults || ''));
+            if (state.installation) {
+                const status = element('button', 'installation-status', state.labels?.installation || 'Installation status');
+                status.addEventListener('click', () => ScreenlateBridge.onOpenUrl('screenlate://installation'));
+                content.append(status);
+            }
             return;
         }
         const fragment = document.createDocumentFragment();

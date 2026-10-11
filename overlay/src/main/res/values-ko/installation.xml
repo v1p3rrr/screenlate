@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">준비 완료</string>
+    <string name="installation_running">언어를 설치 중입니다. 필요한 구성 요소가 준비되면 스캔과 검색을 사용할 수 있습니다.</string>
+    <string name="installation_missing">필요한 사전 또는 인식 모델이 없거나 비활성화되어 있습니다. 설치 상태를 열어 설정을 완료하세요.</string>
+    <string name="installation_failed">언어 설치에 실패했습니다. 설치 상태를 열어 오류를 확인하고 다시 시도하세요.</string>
+    <string name="installation_open">설치 상태</string>
+    <string name="installation_device_ready">기기 내 인식: 준비 완료</string>
+    <string name="installation_device_missing">기기 내 인식: 사용할 수 없음. 클라우드 인식을 활성화하면 사용할 수 있습니다.</string>
+    <string name="installation_remaining">남은 설치: %1$d</string>
+    <string name="installation_errors">실패한 설치: %1$d</string>
+</resources>

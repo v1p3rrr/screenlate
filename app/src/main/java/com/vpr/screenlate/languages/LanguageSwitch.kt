@@ -58,11 +58,19 @@ class LanguageSwitch @Inject constructor(
 
     /**
      * Turns [language] on and makes it active (the only language when it answers the [firstRun]) and queues
-     * [downloads]. The bundled dictionaries' language gets them installed, all of them again when none of its
+     * [downloads]. [enableDictionaries] are selected installed copies, enabled without downloading again.
+     * The bundled dictionaries' language gets them installed, all of them again when none of its
      * dictionaries is left.
      */
-    suspend fun turnOn(language: Language, downloads: List<CatalogEntry> = emptyList(), firstRun: Boolean = false) {
+    suspend fun turnOn(
+        language: Language,
+        downloads: List<CatalogEntry> = emptyList(),
+        firstRun: Boolean = false,
+        enableDictionaries: Set<Long> = emptySet(),
+    ) {
         withContext(NonCancellable) {
+            repository.getAll().filter { !it.enabled && it.id in enableDictionaries && it.isFor(language) }
+                .forEach { repository.setEnabled(it.id, true) }
             if (firstRun) profiles.finishFirstRun(language) else profiles.turnOn(language)
             if (language == bundled.language) {
                 if (files.dictionaries(language.code).isEmpty()) bundled.reinstallAll()
@@ -72,7 +80,7 @@ class LanguageSwitch @Inject constructor(
                 if (entry.isModel) {
                     imports.downloadModel(entry)
                 } else {
-                    imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest })
+                    imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
                 }
             }
             val bytes = downloads.sumOf { it.downloadBytes }

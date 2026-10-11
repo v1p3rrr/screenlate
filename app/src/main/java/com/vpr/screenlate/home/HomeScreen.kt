@@ -57,6 +57,8 @@ import com.vpr.screenlate.languages.AddLanguageDialog
 import com.vpr.screenlate.languages.TurnOffLanguageDialog
 import com.vpr.screenlate.languages.label
 import com.vpr.screenlate.overlay.OverlayServiceStatus
+import com.vpr.screenlate.overlay.install.InstallationStatus
+import com.vpr.screenlate.overlay.R as OverlayR
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.LabelWithInfo
 import com.vpr.screenlate.settings.EInkHint
@@ -87,6 +89,7 @@ fun HomeScreen(
     val bubbleVisible by viewModel.bubbleVisible.collectAsStateWithLifecycle()
     val resetGaveUpUntold by viewModel.resetGaveUpUntold.collectAsStateWithLifecycle()
     val languages by viewModel.languages.collectAsStateWithLifecycle()
+    val installation by viewModel.installation.collectAsStateWithLifecycle()
     val turnOffRequest by viewModel.turnOffRequest.collectAsStateWithLifecycle()
     var addingLanguage by remember { mutableStateOf(false) }
     val settingsBadge = rememberBackgroundTipBadge()
@@ -143,6 +146,8 @@ fun HomeScreen(
                 onSelect = viewModel::setActive,
                 onAdd = { addingLanguage = true },
                 onTurnOff = viewModel::requestTurnOff,
+                installation = installation,
+                onOpenInstallation = onOpenDictionaries,
             )
             if (addingLanguage) {
                 AddLanguageDialog(
@@ -220,7 +225,10 @@ private fun LanguagesCard(
     onSelect: (Language) -> Unit,
     onAdd: () -> Unit,
     onTurnOff: (Language) -> Unit,
+    installation: InstallationStatus?,
+    onOpenInstallation: () -> Unit,
 ) {
+    val context = LocalContext.current
     SectionCard(title = stringResource(R.string.home_languages_title)) {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             languages.turnedOn.forEach { language ->
@@ -237,6 +245,16 @@ private fun LanguagesCard(
                     leadingIcon = { Icon(painterResource(R.drawable.ic_add), contentDescription = null) },
                 )
             }
+        }
+        installation?.takeIf { it.language == languages.active }?.let { status ->
+            Text(status.message(context, scanning = true))
+            Hint(stringResource(if (status.deviceReady) OverlayR.string.installation_device_ready else OverlayR.string.installation_device_missing))
+            if (status.tasks.isNotEmpty()) {
+                Text(stringResource(OverlayR.string.installation_remaining, status.tasks.size))
+                installProgress(status.tasks)?.let { InstallProgressLine(it) }
+            }
+            if (status.failures > 0) Text(stringResource(OverlayR.string.installation_errors, status.failures), color = MaterialTheme.colorScheme.error)
+            TextButton(onClick = onOpenInstallation) { Text(stringResource(OverlayR.string.installation_open)) }
         }
         if (languages.several) {
             Hint(stringResource(R.string.home_languages_hint))
@@ -374,7 +392,6 @@ private fun ProblemsCard(
                                     )
                                 }
                             }
-                            problem.installing?.let { InstallProgressLine(it) }
                             TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                         }
                         is HomeProblem.AudioSources -> {
@@ -408,11 +425,6 @@ private fun ProblemsCard(
 /** The imports still to finish, the running one's name and its progress. */
 @Composable
 private fun InstallProgressLine(progress: InstallProgress) {
-    Text(
-        stringResource(R.string.problems_installing, progress.queued),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.primary,
-    )
     progress.current?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
     val percent = progress.percent
     if (percent != null) {

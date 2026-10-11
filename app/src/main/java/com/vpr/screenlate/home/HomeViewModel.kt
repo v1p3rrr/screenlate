@@ -26,12 +26,12 @@ import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.languages.LanguageSwitch
-import com.vpr.screenlate.languages.missingCategories
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
+import com.vpr.screenlate.overlay.install.LanguageInstallation
+import com.vpr.screenlate.overlay.install.InstallationStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -84,13 +83,11 @@ sealed interface HomeProblem {
 
     /**
      * Turned-on languages without a dictionary they cannot work without, with the categories they lack (the main one:
-     * no enabled dictionary with definitions); [several] languages are turned on. While dictionaries are [installing],
-     * the card shows their progress too.
+     * no enabled dictionary with definitions); [several] languages are turned on.
      */
     data class NoTermDictionaries(
         val languages: Map<Language, Set<CatalogCategory>>,
         val several: Boolean,
-        val installing: InstallProgress? = null,
     ) : HomeProblem
 
     /** Every audio source that failed recently, in one card. */
@@ -113,7 +110,10 @@ class HomeViewModel @Inject constructor(
     ankiSettings: AnkiSettingsRepository,
     private val profiles: LanguageProfiles,
     private val switch: LanguageSwitch,
+    private val installs: LanguageInstallation,
 ) : ViewModel() {
+    val installation: StateFlow<InstallationStatus?> = profiles.active.flatMapLatest(installs::observe)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
     val languages: StateFlow<LanguageProfilesState> = profiles.state
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), profiles.cachedState ?: LanguageProfilesState.DEFAULT)
 
@@ -146,8 +146,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { switch.turnOff(language, deleteFiles) }
     }
 
-    /** The catalog's mandatory categories; the copy on the phone is enough for them. */
-    private val localCatalog = flow { emit(withContext(Dispatchers.IO) { catalog.localCatalog() }) }
+    private val languageInstallations = profiles.state.flatMapLatest { languages ->
+        combine(languages.turnedOn.map(installs::observe)) { statuses -> languages to statuses.toList() }
+    }
 
     /** The active language's note setup. */
     val anki: StateFlow<AnkiSummary?> = profiles.active
@@ -201,11 +202,11 @@ class HomeViewModel @Inject constructor(
     /** Why removing a dictionary from the missing files card failed; cleared by the next removal or check. */
     val removeError: StateFlow<String?> = mutableRemoveError
 
-    /** Problems found by the last [refresh], plus the languages without a dictionary they need, with the imports' progress. */
+    /** Problems found by the last [refresh], plus each turned-on language's missing mandatory components. */
     val problems: StateFlow<List<HomeProblem>> =
-        combine(checked, repository.dictionaries, imports.tasks, profiles.state, localCatalog) { found, all, tasks, languages, catalog ->
-            val without = languages.turnedOn.associateWith { missingCategories(it, all, catalog) }.filterValues { it.isNotEmpty() }
-            val noTerms = HomeProblem.NoTermDictionaries(without, languages.several, installProgress(tasks)).takeIf { without.isNotEmpty() }
+        combine(checked, languageInstallations) { found, (languages, statuses) ->
+            val without = statuses.associate { it.language to it.missing }.filterValues { it.isNotEmpty() }
+            val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
             found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(noTerms)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -258,6 +259,7 @@ class HomeViewModel @Inject constructor(
             entry.title,
             indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
             replaces = missing.dictionary.id,
+            entry = entry,
         )
         downloading += missing.dictionary.id
         resolved(missing)

@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Pronto</string>
+    <string name="installation_running">A instalação do idioma está em andamento. A digitalização e a pesquisa estarão disponíveis quando os componentes necessários estiverem prontos.</string>
+    <string name="installation_missing">Os dicionários ou modelos de reconhecimento necessários estão ausentes ou desativados. Abra o estado da instalação para concluir a configuração.</string>
+    <string name="installation_failed">A instalação do idioma falhou. Abra o estado da instalação para ver o erro e tentar novamente.</string>
+    <string name="installation_open">Estado da instalação</string>
+    <string name="installation_device_ready">Reconhecimento no dispositivo: pronto</string>
+    <string name="installation_device_missing">Reconhecimento no dispositivo: indisponível; o reconhecimento na nuvem pode ser usado se estiver ativado.</string>
+    <string name="installation_remaining">Instalações restantes: %1$d</string>
+    <string name="installation_errors">Instalações com falha: %1$d</string>
+</resources>

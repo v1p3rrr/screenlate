@@ -84,6 +84,17 @@ internal fun setupDownloads(categories: List<SetupCategory>, choices: Map<String
         category.items.filter { !it.installed && category.ticked(it, choices) }.map { it.entry }.sortedBy { it.downloadBytes }
     }
 
+/** Installed copies of ticked entries to enable on confirmation; no archive is downloaded for them. */
+internal fun setupInstalled(
+    categories: List<SetupCategory>,
+    choices: Map<String, Boolean>,
+    installed: List<DictionaryEntity>,
+): Set<Long> {
+    val selected = categories.flatMap { category -> category.items.filter { it.installed && category.ticked(it, choices) } }
+        .filterNot { it.entry.isModel }
+    return installed.filter { dictionary -> selected.any { it.entry.matches(dictionary) } }.mapTo(linkedSetOf()) { it.id }
+}
+
 /** Downloads come one at a time: the largest archive lies next to everything imported before it is unpacked. */
 internal fun setupTotals(downloads: List<CatalogEntry>): SetupTotals {
     val installed = downloads.sumOf { it.installedBytes }

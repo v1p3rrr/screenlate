@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">就緒</string>
+    <string name="installation_running">正在安裝語言。所需元件就緒後，即可掃描和查詞。</string>
+    <string name="installation_missing">所需的詞典或辨識模型缺失或已停用。請開啟安裝狀態以完成設定。</string>
+    <string name="installation_failed">語言安裝失敗。請開啟安裝狀態查看錯誤並重試。</string>
+    <string name="installation_open">安裝狀態</string>
+    <string name="installation_device_ready">裝置端辨識：就緒</string>
+    <string name="installation_device_missing">裝置端辨識：無法使用；啟用後可使用雲端辨識。</string>
+    <string name="installation_remaining">剩餘安裝項目：%1$d</string>
+    <string name="installation_errors">安裝失敗的項目：%1$d</string>
+</resources>

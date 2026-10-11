@@ -39,6 +39,18 @@ test('the page reports that it is ready', () => {
     assert.deepEqual(page.calls[0], ['onReady']);
 });
 
+test('an installation message opens the queue and its button disappears when results are ready', () => {
+    Popup.render(state({ results: [], message: 'Installing', installation: true }));
+    const button = content.querySelector('.installation-status');
+    assert.ok(button);
+    button.click();
+    assert.deepEqual(page.calls.at(-1), ['onOpenUrl', 'screenlate://installation']);
+    Popup.render(state({ results: [], message: 'Installing', installation: false }));
+    assert.equal(content.querySelector('.installation-status'), null);
+    Popup.render(state());
+    assert.equal(content.querySelectorAll('article.entry').length, 2);
+});
+
 test('renders the header and one card per result', () => {
     Popup.render(state());
     const root = page.document.documentElement;

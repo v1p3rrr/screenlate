@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Готово</string>
+    <string name="installation_running">Язык устанавливается. Сканирование и поиск станут доступны, когда необходимые компоненты будут готовы.</string>
+    <string name="installation_missing">Необходимые словари или модели распознавания отсутствуют либо отключены. Откройте статус установки, чтобы завершить настройку.</string>
+    <string name="installation_failed">Не удалось установить язык. Откройте статус установки, чтобы посмотреть ошибку и повторить попытку.</string>
+    <string name="installation_open">Статус установки</string>
+    <string name="installation_device_ready">Распознавание на устройстве: готово</string>
+    <string name="installation_device_missing">Распознавание на устройстве: недоступно; можно использовать облачное распознавание, если оно включено.</string>
+    <string name="installation_remaining">Осталось установок: %1$d</string>
+    <string name="installation_errors">Неудачные установки: %1$d</string>
+</resources>

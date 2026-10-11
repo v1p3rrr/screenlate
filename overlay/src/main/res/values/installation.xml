@@ -1,0 +1,11 @@
+<resources>
+    <string name="installation_ready">Ready</string>
+    <string name="installation_running">Language installation is in progress. Scanning and lookup will be available when the required components are ready.</string>
+    <string name="installation_missing">Required dictionaries or recognition models are missing or disabled. Open installation status to finish setup.</string>
+    <string name="installation_failed">Language installation failed. Open installation status to see the error and retry.</string>
+    <string name="installation_open">Installation status</string>
+    <string name="installation_device_ready">On-device recognition: ready</string>
+    <string name="installation_device_missing">On-device recognition: unavailable; cloud recognition can be used when enabled.</string>
+    <string name="installation_remaining">Remaining installations: %1$d</string>
+    <string name="installation_errors">Failed installations: %1$d</string>
+</resources>

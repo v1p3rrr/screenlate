@@ -20,6 +20,7 @@ import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.translate.SentenceTranslation
+import com.vpr.screenlate.overlay.install.LanguageInstallation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.MainScope
@@ -60,6 +61,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
     @Inject lateinit var sentenceTranslation: SentenceTranslation
 
     @Inject lateinit var languageProfiles: LanguageProfiles
+    @Inject lateinit var languageInstallation: LanguageInstallation
 
     private val scope = MainScope()
     private var controller: OverlayController? = null
@@ -91,6 +93,7 @@ class ScreenlateAccessibilityService : AccessibilityService() {
             anki = OverlayController.AnkiServices(ankiDroid, ankiNotes, audioFinder, audioSettings, audioPlayer),
             translation = sentenceTranslation,
             profiles = languageProfiles,
+            installation = languageInstallation,
             scope = scope,
         ).also { it.start() }
     }
