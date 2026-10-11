@@ -31,6 +31,21 @@ Requests 1–19 are in the previous plan. New ones:
     language throughout sentence parsing, and invalidate audio selections when the regional order changes.
     Add regression tests, verify as for request 24, then commit and push.
 
+26. (2026-10-11) Fix the two findings from the third delegated review against `2215893`: enable selected installed
+    dictionaries when confirming a language's setup, and reset Search's note/audio state when its language changes.
+    Add regression tests, verify on the emulator, commit and push as for requests 24 and 25.
+
+27. (2026-10-11) Show the installation/readiness status after activating a language while its dictionaries or OCR
+    are still downloading. The owner wants explicit status for everything needed to recognize words and show
+    definitions, or a link to the section showing that progress. Audit today's behavior; collect the placement and
+    pre-readiness scanning choices before implementation. Keep errors and remaining optional downloads visible.
+
+28. (2026-10-11) The owner asked why no emulator window is visible. The local checks use `-no-window` and adb;
+    UI verification uses screenshots. No change to emulator visibility was requested.
+
+29. (2026-10-11) After all checks, close the emulator started for this session and verify that its processes ended,
+    so it does not keep consuming the owner's computer resources. Leave unrelated emulator instances alone.
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -86,6 +101,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan; the open scan keeps its language until the bubble is docked (owner, 2026-10-10) |
 | Transcription file | The merged transcription dictionary of all Wiktionary editions (`dict/all/<language>`, e.g. en 3.8 MB against en-en 2.8, ru 10.4 against 6.5) instead of the edition with the most entries; still one item per language (owner, 2026-10-10; changes the "Pronunciation dictionaries" row) |
 | A language confirmed on the download screen | Turned on and made active at once; until its main dictionary is installed the home screen shows the missing-dictionary card with the download progress (owner, 2026-10-10) |
+| Installation status placement | The home screen shows the active language's status and a link to the queue; Search and the popup show an explanation and the same link while the language is not ready (owner, 2026-10-11, request 27) |
+| Scanning before installation is ready | Do not start recognition until the mandatory components are ready; show status and a link to the queue immediately (owner, 2026-10-11, request 27) |
 
 ## Open items (postponed by the owner)
 
@@ -433,3 +450,10 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - 2026-10-10: second review of the multi-language change. Deleting a language's files also cancels updates of its
   dictionaries, from the turn-off dialog and from the Dictionaries page; the block of turned-off languages leaves models
   out until the first downloadable model (stage D).
+- 2026-10-11: request 26 fixed and tested: selected installed dictionaries are enabled on setup confirmation; Search
+  closes its old note/audio session on a language switch. Request 27 built after the owner's two decisions:
+  active-language readiness and queue link on Home, explanations/links in Search and popup, and no recognition
+  before mandatory components are ready. Optional downloads and failures stay visible after lookup is ready.
+  Catalog tasks retain language/entry tags; Search observes readiness and reruns when dictionaries arrive.
+  Checked JVM tests, page tests (103/103), five Android scenarios and lint; Home and popup checked visually.
+  Requests 28–29: explained headless checks, closed the session's emulator and verified its processes gone.

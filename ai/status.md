@@ -17,8 +17,10 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   owner's "ok": tag `v0.2.3` on main and push the tag.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by
   `scripts/frequency/`).
-- The findings from both delegated reviews against `2215893` are fixed on `languages/main`; see the
-  "language isolation review fixes" and "follow-up language review fixes" entries. The phone checks above are still pending.
+- The findings from all three delegated reviews against `2215893` are fixed on `languages/main`; see the
+  "language isolation review fixes", "follow-up language review fixes" and "language installation readiness" entries.
+  Request 27 is also built: explicit active-language readiness on Home, queue links in Search/popup and a scan gate
+  before recognition while mandatory components are missing. The phone checks above are still pending.
 
 ## Earlier handoff (phase 7, 2026-10-01)
 
@@ -120,6 +122,34 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - [ ] Phase 8 — languages beyond Japanese: stage A and English built and reviewed, stages B to E open
 
 ## Log
+
+### 2026-10-11 (language installation readiness; languages/main)
+
+- Owner: fix the third review's two findings as before (request 26), then expose installation/readiness for an
+  immediately activated language (request 27). Decisions: active-language status and queue link on Home; explanation
+  and link in Search/popup when blocked; do not start recognition before mandatory components are ready.
+- Code, tests and human docs committed in `d6a28f1` on `languages/main`.
+- Confirming setup enables selected installed dictionaries, including disabled copies kept after turning a language
+  off, without downloading them again. Search results carry the language; a switch closes the old note/audio session.
+  The Anki status cache is language-scoped and rejects late answers after closing; late audio-menu downloads cannot
+  restore chosen clips from the old session.
+- Shared `LanguageInstallation` checks complete files, enabled mandatory categories, OCR model versions and the
+  configured recognition mode. Home keeps remaining optional downloads and failures visible after lookup is ready.
+  Search observes dictionary readiness and reruns when it changes. A blocked scan shows a popup message and queue
+  link before app-text reads or screenshot capture. Catalog task tags keep language and entry independently of
+  progress names; legacy paused bundled tasks retain their language, and a newer retry supersedes an old failure.
+- Added 13 JVM regression tests, four Android tests and one page test; all 14 locales have the new status strings.
+- Verified: debug/test APKs, the full JVM suite, page tests (103/103), five Android scenarios on API 37 (Search,
+  popup link, reactivation and cancellation), and app lint (0 errors). The earlier five Compose/queue checks passed
+  on API 30; its old WebView cannot render the existing popup page. The new page checks use ActivityScenario and
+  direct WebView callbacks on API 37, bypassing Espresso's incompatible input injector.
+- Home readiness and navigation to Dictionaries were checked visually; the real popup page's installation message
+  and button were captured and checked. APK: `app/build/outputs/apk/debug/app-debug.apk`.
+- Owner asked about invisible emulator windows: the checks used `-no-window`. On completion the session's API 37
+  emulator (`emulator-5554`, frontend 89760, QEMU 46476) was closed and its processes verified gone. The pre-existing
+  offline `Screenlate_API30_x86` process (70992 / emulator-5556) was left alone. The earlier API 30 test instance and
+  two intermediate API 37 launches from this session had already been closed.
+- The owner's local `CLAUDE.md` deletion and untracked `AGENTS.md` are untouched.
 
 ### 2026-10-11 (follow-up language review fixes; languages/main)
 

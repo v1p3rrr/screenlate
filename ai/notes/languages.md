@@ -4,6 +4,23 @@ Collected 2026-10-09 from Yomitan `master` (833409247c5e, 2026-10-09), wiktionar
 2026-10-04, release metadata of 2026-10-04), the hoshidicts submodule (fcea33f98f94) and ML Kit's docs. Plan and open
 questions: `plans/2026-10-09-more-languages.md`.
 
+## Installation readiness and reactivation (2026-10-11)
+
+- A language still activates as soon as setup is confirmed. Selected installed dictionaries are enabled at the
+  same time, including a disabled copy kept when the language was turned off; they are not downloaded again.
+- `overlay.install.LanguageInstallation` is shared by Home, Search and the overlay. It checks complete dictionary
+  files, enabled mandatory categories, exact OCR model versions and the recognition mode. Main dictionaries can be
+  user imports or shared dictionaries; other categories match their catalog entries. App text needs no OCR model.
+- Home shows the active language's readiness, device OCR capability, remaining optional downloads and failures.
+  Search waits for mandatory dictionaries and observes installation changes, searching the same query when ready.
+  A scan checks readiness before app-text reads or capture, then shows a message and a queue link when blocked.
+- Catalog downloads keep source language and entry IDs in WorkManager tags, independent of progress names; old
+  tasks fall back to catalog/installed titles and the bundled source. A paused legacy bundled install also belongs
+  to the bundled language. A newer retry supersedes the failed task of the same entry in the status count.
+- Search result identity includes the language. A switch closes the old `PopupNotes` session, clearing cached
+  Anki status, remembered note IDs, chosen clips, audio menus and auto-play. Late cache/audio answers cannot put
+  values back into a closed session. The cache is also keyed by language as a second guard.
+
 ## What in Screenlate is Japanese today
 
 - `Language` has one value, `JAPANESE`. `LanguageSupport` (`core/common/language`) already holds per-language rules:
