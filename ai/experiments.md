@@ -89,3 +89,13 @@ recording be killed fairly often, or will some indicator always show that record
 State: not silenced in the background, no green microphone dot; a notification and a projection mark in the status bar
 stay while the session is open; locking and calls do not stop an audio-only session; the session dies with the process
 and needs a new consent. Note: `notes/video-mining-concepts.md` ("System limits of capturing in the background").
+
+## E10. Sketches of the concepts (2026-10-12)
+
+Owner's request: draw a rough design of every concept in `notes/video-mining-concepts.md`, based on how the bubble and
+the popup look now (the README screenshots), with several variants for C.
+
+State: a design canvas, private to the owner: https://claude.ai/artifact/RYg5awh22DsEwwjym1gpne. Boards: overview,
+entry points for 🎙, A, B, D–H, C's mode and four editor variants C1–C4 (bottom panel, inside the popup, phrase strip,
+hint by the bubble); each board shows the steps over a landscape video and lists pros and cons. Note:
+`notes/video-mining-concepts.md` ("C: editor variants").

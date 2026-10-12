@@ -2,8 +2,10 @@
 
 A catalog of alternatives for looking up and mining subtitles of videos playing in other apps (YouTube, browsers,
 local players, media servers). Nothing here is decided (owner, 2026-10-12: "we are only thinking through options");
-a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E9). Findings behind
-the blocks: `media-pause.md`, `player-subtitles.md`.
+a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E10). Findings behind
+the blocks: `media-pause.md`, `player-subtitles.md`. Sketches of every concept over today's bubble and popup (E10),
+on the owner's private design canvas (read it with the Artifact tool; boards in Russian):
+https://claude.ai/artifact/RYg5awh22DsEwwjym1gpne
 
 ## Building blocks
 
@@ -88,10 +90,29 @@ C is H without recognition: the same capture, an editor instead of the automatic
 - A cheap help: the editor opens with the speech before the scan already selected, by WebRTC VAD (BSD, tiny C) or an
   energy threshold; about 0.1 s when it opens, nothing while capturing.
 
+#### C: editor variants (E10)
+
+Four ways to show the editor, sketched on the canvas; the mode itself is a switch in the bubble's hold menu or the
+settings, shown by a red dot on the bubble, with a message and "Turn on" when the system ends the capture.
+
+- **C1, bottom panel**: the wave of the last 30 s across the screen, the scan mark, the speech before it selected,
+  handles, ▶, "play on" (the selection's end follows the live edge, "enough" pauses again), save. Clear and easy to
+  hit; covers the subtitle and the bottom of the frame.
+- **C2, inside the popup**: 🎙 switches the popup to an "Audio of the sentence" view with back, like a nested lookup;
+  after saving the popup returns with "▶ sentence" in its header. Nothing new on screen, the subtitle stays visible; a
+  narrow wave (~320 dp in landscape), small handles.
+- **C3, phrase strip**: at the top, the speech segments the VAD found as buttons (▶ on each, duration); the last one
+  before the scan is preselected, a tap on a neighbor joins it; "finer" opens C1. Big targets, no dragging, the
+  subtitle stays visible; depends on the VAD (music and noise).
+- **C4, hint by the bubble**: 🎙 takes the last speech before the scan and plays it in a small pill (✓, ✂, ✕); ‹ ›
+  step to neighboring segments. One tap in the usual case, the popup stays open; no wave, relies on the VAD and the
+  ear; fine edits only through ✂.
+
 ### D. The bubble as the record button
 
 🎙 turns the floating bubble red; scanning pauses. The user rewinds in the player; a tap on the bubble starts, the
-next stops; then the bubble's ring menu (like the hold menu) offers ▶, ↺, ✓, ✕. No extra window over the video.
+next stops; then a menu by the bubble (the card the hold opens) offers ▶, ↺, ✂, ✓, ✕. No extra window over the
+video.
 
 ### E. Offer after ➕
 
