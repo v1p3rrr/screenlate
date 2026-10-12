@@ -59,3 +59,14 @@ gather all variants of the video work into one document to choose from in a late
 
 State: seven recording concepts (A–G), shared parts, entry points and packages that combine them with E1–E5. Note:
 `notes/video-mining-concepts.md`.
+
+## E7. Audio memory with an automatic pick, as GameSentenceMiner (2026-10-12)
+
+Owner's question: how heavy would it be to do as GameSentenceMiner, which (as the owner understood it) records the
+screen with OBS and, when a sentence is added, picks the matching audio from a buffer of a few minutes with Whisper?
+And what if Screenlate recorded the audio in a separate opt-in mode and cut the fragment matching the sentence the same
+way? That would also help in games such as visual novels, where one cannot go back.
+
+State: GSM takes the line's time from its text source and uses VAD or Whisper only to trim a few seconds. For
+Screenlate: concept H; continuous capture is light, recognition runs only on ➕. Note:
+`notes/video-mining-concepts.md` ("H. Audio memory with an automatic pick").

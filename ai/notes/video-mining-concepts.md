@@ -2,7 +2,7 @@
 
 A catalog of alternatives for looking up and mining subtitles of videos playing in other apps (YouTube, browsers,
 local players, media servers). Nothing here is decided (owner, 2026-10-12: "we are only thinking through options");
-a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E6). Findings behind
+a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E7). Findings behind
 the blocks: `media-pause.md`, `player-subtitles.md`.
 
 ## Building blocks
@@ -88,6 +88,49 @@ the episode (or at any time) "Record audio for N notes" walks through them: the 
 −3 s through its session, plays, the user taps ⏹ (or F's marks), next note. Needs the same video open and
 notification access. Keeps watching uninterrupted.
 
+### H. Audio memory with an automatic pick (E7)
+
+An opt-in mode, off by default: while it is on, the device's playback is captured into a rolling buffer of the last
+few minutes, in memory only. On ➕ the app finds the line's audio in it and attaches it; no rewinding, so it also
+works in games and visual novels that cannot go back.
+
+How GameSentenceMiner does it (checked in its source, `replay_handler.py`, `util/media/ffmpeg.py`, `vad.py`): OBS
+keeps a replay buffer of video and audio; each text line gets the time it appeared (a text hooker, or OCR that runs
+continuously); on a new Anki note GSM saves the buffer, cuts the audio from that line's time (with a per-source
+padding: 0 s for hooked or continuous OCR, 3 s for manual or overlay scans, "best-guess") to the next line's time,
+and trims the cut with voice activity detection: FireRed VAD by default, Silero, or Whisper (base by default), which
+transcribes the cut and accepts it only if its hiragana is similar enough to the mined sentence's. So Whisper does not
+search minutes of audio; the line's time comes from the text source, and the models only trim a few seconds.
+
+Screenlate has no text source between scans, only the scan's moment T (the line is on screen then):
+- Speech segments in the last 60–120 s before T by a VAD (Silero, MIT, ~2 MB ONNX; WebRTC VAD, BSD): ~0.1–0.3 s.
+- Candidate: the latest segment before T, merged with neighbors split by short pauses. In visual novels the voice of
+  the line on screen is almost always the latest voice; in video the line may still be playing at T (with auto-pause
+  its end comes after the resume, so the pick waits for it).
+- Check by speech recognition of the latest one to three candidates, compared with the OCR sentence in kana (GSM's
+  similarity gate; our engine gives readings for the sentence), walking back until one matches.
+- Low confidence: the trim editor of C opens with the candidates marked, for a manual pick.
+- Without a recognition model the pick is "latest speech before T" plus a ▶ to confirm; the model only makes it
+  automatic and robust.
+
+Load:
+- Continuous part: capture into a ring buffer, no recognition. 3 min of 48 kHz mono 16-bit PCM is ~17 MB; CPU around
+  a percent; little next to video decoding and the screen. Our own sounds (word audio) are left out with
+  `AudioPlaybackCaptureConfiguration.Builder.excludeUid`.
+- On ➕ only: VAD over a minute or two, then recognition of ~3–15 s. whisper.cpp (MIT) sizes from its README: tiny
+  75 MiB on disk, ~273 MB in memory; base 142 MiB, ~388 MB; small 466 MiB, ~852 MB (quantized models are smaller).
+  Unmeasured guesses for a recent phone, 10 s of audio: tiny and base a second or a few, small around ten. Vosk's small
+  Japanese model (Apache-2.0, ~48 MB) is lighter and weaker; enough for matching against a known sentence. The
+  system recognizer can take our audio (`EXTRA_AUDIO_SOURCE`, API 33) where an on-device one exists. Models are
+  downloads, not in the APK.
+- The note is added at once; the audio follows a few seconds later (`AnkiBackend.updateNote`), cached per scan for
+  further notes of the same line.
+
+Limits: the mode holds the capture session (consent once per session, indicator on); apps targeting Android 9 or lower
+and apps that opt out are not captured (silence, to detect and report), which may hit older visual novel engines;
+calls and notification sounds are not captured (only media, game and unknown usages); privacy: the buffer stays in
+memory, is dropped when the mode stops, and nothing of it is logged.
+
 ## Shared parts of the recording concepts
 
 - **Trim editor** (✂): waveform, two handles, ▶ preview, zoom; silence cut from both ends at once. The audio twin of
@@ -121,6 +164,7 @@ notification access. Keeps watching uninterrupted.
   user action (from the file or by replay and capture); B when no source exists.
 - **Watch first, mine later**: G on top of Minimal or Comfortable.
 - **No rewinding**: C, with the trim editor as its main screen.
+- **Audio memory**: H as an opt-in mode (games, visual novels, video), with A or B for when it picks wrong.
 
 ## Open choices
 
