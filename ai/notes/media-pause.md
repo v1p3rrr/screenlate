@@ -1,6 +1,6 @@
 # Pausing the video under the bubble
 
-Research of 2026-10-12 (owner's request 30): pause the player of the app being scanned while its subtitles are looked
+Experiment E1 (`../experiments.md`), 2026-10-12: pause the player of the app being scanned while its subtitles are looked
 up, and resume it when the aim leaves the word, leaving music of other apps alone. Nothing is built yet; the open
 choices are listed at the end. Not checked on a device.
 

@@ -11,11 +11,8 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   build of `languages/main` (CI builds only pushes to main and pull requests; a manual run of `ci.yml` on
   `languages/main` gives its APK); then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
   release, backup and restore), then stage B (Chinese, Korean).
-- 2026-10-12, request 30 (research only): pausing the scanned app's video while its subtitles are looked up is
-  feasible through MediaSession with notification access; nothing built, the owner's choices are open (see
-  `notes/media-pause.md`).
-- 2026-10-12, request 31 (research only): subtitle lines and timings from other players; exact sources exist for
-  Jellyfin, media3 players, local files and VLC's remote access, see `notes/player-subtitles.md`.
+- 2026-10-12: exploratory research E1–E3 (pausing the scanned video, subtitles and timings from other players,
+  replaying a line to record it) is in `experiments.md`, apart from the plans; nothing built.
 - v0.2.3 is released (2026-10-11, tag on main 3f2123c): 0.2.2 plus the bubble glide fix, checked by the owner on
   the phone. `languages/main` has the same fix.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by

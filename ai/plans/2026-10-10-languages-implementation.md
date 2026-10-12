@@ -46,17 +46,6 @@ Requests 1–19 are in the previous plan. New ones:
 29. (2026-10-11) After all checks, close the emulator started for this session and verify that its processes ended,
     so it does not keep consuming the owner's computer resources. Leave unrelated emulator instances alone.
 
-30. (2026-10-12) Find out whether the overlay can pause the foreground video player (YouTube, a browser player, other
-    player apps, but not background music in the notification shade or other media) when the aim is on text and the
-    popup shows, so subtitles can be scanned as the video goes, and play it again when the aim leaves the text, as
-    "When the aim leaves the word" closes the popup. Research only; findings and open choices in
-    `notes/media-pause.md`. Not part of the language work; nothing built until the owner decides.
-
-31. (2026-10-12) Find out whether the app can get the subtitle file, or the lines and their timings, from another
-    player (built-in, VLC, MX Player, mpv, YouTube, Chrome, Firefox, Jellyfin). That would allow Anki notes with
-    sentence audio cut to the subtitle, and rescans when the subtitle changes without docking the bubble (with the
-    pause of request 30). Research only; findings in `notes/player-subtitles.md`.
-
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -468,8 +457,3 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   Catalog tasks retain language/entry tags; Search observes readiness and reruns when dictionaries arrive.
   Checked JVM tests, page tests (103/103), five Android scenarios and lint; Home and popup checked visually.
   Requests 28–29: explained headless checks, closed the session's emulator and verified its processes gone.
-- 2026-10-12: request 30 researched (pausing the scanned app's video): feasible through MediaSession with
-  notification access; findings and the owner's open choices in `notes/media-pause.md`.
-- 2026-10-12: request 31 researched (subtitles and timings from other players): no general API; exact lines and
-  audio from Jellyfin's server API, media3 players' cues, local files and VLC's remote access; YouTube and browsers
-  only OCR and playback capture. Findings in `notes/player-subtitles.md`.

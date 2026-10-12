@@ -16,7 +16,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `overlay-system-ui.md` — insets, keyboard and fullscreen detection from the overlay, which edge swipes the system takes.
    - `ocr-engines.md` — OCR and app text costs, ML Kit quirks, trusted character boxes, popup renderer priority, OCR threads and the scan screenshot's lifetime.
    - `media-pause.md` — pausing the scanned app's video while its subtitles are looked up: MediaSession through notification access, rejected alternatives, pitfalls, open choices.
-   - `player-subtitles.md` — subtitle lines, timings and sentence audio from other players: media3 cues, local files, VLC remote access, Jellyfin API, playback capture, coverage per source.
+   - `player-subtitles.md` — subtitle lines, timings and sentence audio from other players: media3 cues, local files, VLC remote access, Jellyfin API, playback capture, which players expose subtitles as app text, replaying a line to record it.
    - `translations.md` — the 14 locales, escaping and line-break pitfalls, per-language conventions and shared terms.
    - `audio-sources.md` — hosts of the default audio sources, mobile networks that freeze foreign hosting, the owner's audio server.
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
@@ -32,6 +32,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
 - The owner prefers to be asked rather than to find decisions made for them, including defaults and UI placement. When new feedback arrives, first collect every open question it raises and ask them all (in batches of up to four) before continuing the work; don't leave some for later unless the owner says so.
 - Give every question enough context to be answered cold: which feature it is about, how it works now, and what each option changes. If the owner didn't understand a question, explain it more simply and ask it again.
 - The owner often writes while you work. Answer each message in the same turn, and add every request or remark to the plan right away so nothing gets lost. Send short progress updates in Russian during long work.
+- Exploratory research the owner asks for goes to `ai/experiments.md` (with its findings in `ai/notes/`), not into the plans; it moves into a plan only when the owner says so.
 - The decision table in the plan is binding. Changing a decision needs the owner's confirmation; record it in the plan's changelog.
 - Plans: small updates are edited in place with a changelog line; a major re-plan is a new dated file in `ai/plans/`.
 - Update `ai/status.md` at the end of each work session. Add notes to `ai/notes/` when you learn something a future session would otherwise rediscover (and link it here if it is a new file).

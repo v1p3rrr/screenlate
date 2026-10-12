@@ -1,6 +1,6 @@
 # Subtitles and their timings from other players
 
-Research of 2026-10-12 (owner's request 31): can Screenlate learn the subtitle lines and their timings of a video
+Experiments E2 and E3 (`../experiments.md`), 2026-10-12: can Screenlate learn the subtitle lines and their timings of a video
 playing in another app (built-in player, VLC, MX Player, mpv, YouTube, Chrome, Firefox, Jellyfin), to cut sentence
 audio for Anki notes to the line and to rescan when the subtitle changes without docking the bubble. Builds on
 `media-pause.md` (notification access, MediaSession). Nothing is built; nothing checked on a device.
@@ -64,6 +64,50 @@ every session's package, title, duration and playback position (`PlaybackState.p
   rolling buffer of the last minute (~11 MB of 48 kHz stereo PCM) is cut on ➕. Line bounds without a subtitle source
   are guesses (screen changes or a trim editor). With the pause the line has not finished playing at ➕: the clip can
   only be completed after the resume, so the note's audio would be added later.
+
+## Subtitles in the accessibility tree (E3)
+
+App text (`capture/AccessibilityText`) reads only nodes of application windows that report character positions.
+Checked in source, native players draw subtitles as pixels:
+
+- media3 / ExoPlayer `SubtitleView` defaults to `VIEW_TYPE_CANVAS`: `CanvasSubtitleOutput.dispatchDraw` paints the
+  cues, no text node (`VIEW_TYPE_WEB` is marked very experimental). Used by Just Player, NewPipe (ExoPlayer 2 view),
+  the Jellyfin app's native player (media3 `PlayerView`, ASS through libass), Findroid and most ExoPlayer apps.
+- VLC and mpv render subtitles with libvlc/libass into the video picture or a surface; no views at all. MX Player and
+  the built-in players are closed; most likely drawn too.
+- YouTube app: closed, unknown.
+- Browsers: captions drawn by the page (YouTube web and most site players) are DOM text, so they may reach the tree as
+  text, but WebView (Chrome's engine) answers with the node's bounds for every character (`ocr-engines.md`), which
+  app text skips; the text could
+  still serve as the exact line and a change signal, with positions from OCR. Native `<track>` captions: unknown.
+- A quick check on the phone: text source "App text first", pull the bubble out over a subtitle; the popup's source
+  chip says whether app text or OCR found it, and the log line "App text: N of M text nodes" counts the nodes.
+
+So line tracking by app text works almost nowhere; OCR, media3 cues, files or a server stay the sources.
+
+## Replaying the line to record it (E3)
+
+The owner's idea: on ➕, seek the player back to the current line's start, record while it plays, stop at its end.
+
+- Seeking: `transportControls.seekTo` where the session lists `ACTION_SEEK_TO` (VLC `MediaSessionCallback.onSeekTo`,
+  mpv-android `MPVActivity.onSeekTo`, the Jellyfin app's `PlayerMediaSessionCallback`; YouTube's notification has a
+  seek bar; Chrome to be checked); live streams cannot. After the replay the player is paused again at the line's end
+  (or back where it was).
+- Recording: playback capture as above (`RECORD_AUDIO`, one screen-capture consent per projection, a
+  `mediaProjection` foreground service, the capture indicator). One projection can be kept for the whole watching
+  session, so the consent is asked once per session, not per note. The replay is audible; whether it can be muted
+  without muting the capture is unchecked.
+- Alignment: `AudioRecord.getTimestamp` against `PlaybackState.position` at `lastPositionUpdateTime` maps captured
+  frames to media time; a keyframe seek or the player's latency only shifts the window, which the padding absorbs.
+- This solves the line not having finished at ➕ (E1 pauses mid-line): the whole line is played again.
+- Line bounds:
+  - exact with a text source (media3 cues, a file, Jellyfin; app text in the rare player that has it);
+  - otherwise from pixels during the replay: the scan gave the line's glyph boxes, so screenshots of the app window
+    (`takeScreenshotOfWindow`, API 34+, no overlays; one per 333 ms) tell when the same glyphs appear and vanish;
+    ±0.33 s plus padding. Only the glyph pixels are compared, as the video behind them moves; karaoke and fades
+    blur it. Without any signal: a fixed window around the pause, then speech detection or a trim editor.
+- Remembering the previous line needs tracking during normal playback: free with a text source, three screenshots a
+  second while the video plays otherwise.
 
 ## Coverage summary
 
