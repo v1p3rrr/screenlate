@@ -28,3 +28,11 @@ text feature: do all players expose subtitles that way?
 
 State: replay and capture are feasible; app text carries subtitles in almost no native player. Note:
 `notes/player-subtitles.md` ("Replaying the line" and "Subtitles in the accessibility tree").
+
+## E4. Timings without rescanning the screen (2026-10-12)
+
+Owner's question: what other tricks could reliably see or remember subtitle timings, other than constantly rescanning
+the screen to detect subtitle changes, which is expensive?
+
+State: five ways ranked; best is a subtitle file synced by the user's own scans (OCR anchors), then asking the player,
+then seek probing while paused on ➕. Note: `notes/player-subtitles.md` ("Timings without watching the screen").

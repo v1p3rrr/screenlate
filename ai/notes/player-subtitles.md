@@ -109,6 +109,46 @@ The owner's idea: on ➕, seek the player back to the current line's start, reco
 - Remembering the previous line needs tracking during normal playback: free with a text source, three screenshots a
   second while the video plays otherwise.
 
+## Timings without watching the screen (E4)
+
+Ways to know a line's start and end without rescanning the screen while the video plays, best first.
+
+1. **A subtitle file synced by OCR anchors.** Every scan the user makes already pairs a recognized line with the
+   player's position P (from the session), and P lies inside that line. Matched fuzzily against the file's lines near
+   P, each scan bounds the file's offset (offset within [P − end, P − start]); two scans far apart also give a speed
+   ratio (25 against 23.976 fps releases). After that every line's time is known: the current one, the previous one,
+   any. Nothing runs between scans. Where the file comes from:
+   - next to the video or embedded in it (local files, any player; E2);
+   - the Jellyfin server (E2);
+   - Jimaku (Japanese subtitles for anime; free account and API key, searched by title or AniList id) or
+     OpenSubtitles (API key), searched by the session's title; a different release is fine as long as the lines
+     match the screen;
+   - a file the user picks once per episode.
+   Works for streaming in a browser too (e.g. a Jimaku file for an anime watched on a site). Fails when the file's
+   text differs from what is shown (another translation or transcription).
+2. **Asking the player** (E2): media3 cues, VLC's remote access, Jellyfin, an mpv script.
+3. **Seek probing while paused**, for anything without a file, hardsubs included. On ➕ (the video is already paused
+   by E1) seek through the session to P − 1 s, P − 2 s, … until the line's glyph pixels are gone, then bisect the last
+   second; the same forwards. About six probes per boundary give ~0.1 s. Each probe is one screenshot of the player's
+   window: `takeScreenshotOfWindow` captures the window even under an accessibility overlay (AOSP javadoc), so an
+   opaque "measuring" curtain can hide the jumping picture. Accessibility screenshots allow one per 333 ms, so a note
+   takes some 4–5 s. Probing further back finds the previous line. Then the exact range is replayed for the audio
+   (E3), or cut from a file. To check per player: does the frame and its subtitle update after a seek while paused
+   (YouTube, Chrome, VLC, mpv, ExoPlayer, which renders text cues on its render loop).
+   - With the screen-capture consent that audio capture needs anyway, a `VirtualDisplay` gives frames without the
+     333 ms limit, but of the whole display, our overlays included (no curtain).
+4. **From the audio** (needs playback capture): speech segments around P by voice activity detection (WebRTC VAD,
+   BSD; Silero, MIT; ffsubsync, MIT, aligns subtitle files this way) are cheap but do not always match lines, and
+   music hurts them. Speech recognition with word times aligned to the OCR text is closer: the system recognizer takes
+   our audio (`RecognizerIntent.EXTRA_AUDIO_SOURCE`, API 33) and may return word times
+   (`EXTRA_REQUEST_WORD_TIMING`, API 34), both up to the recognizer installed; a bundled Whisper model is large.
+5. **Our own player** for local files and server streams (media3, Apache-2.0): every cue, its times and the audio
+   track are ours. The only full guarantee, and a feature of its own.
+
+Not ways: session metadata carries no subtitle data; the system caption settings are style only; Live Caption makes
+its own captions from speech and is missing on many phones. For completeness: watching the known glyph boxes with
+screenshots and no OCR costs a screenshot copy, not a recognition, three times a second; still continuous.
+
 ## Coverage summary
 
 | Source | Line text and times | Audio clip |
