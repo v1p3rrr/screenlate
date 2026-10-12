@@ -5,7 +5,7 @@ local players, media servers). Nothing here is decided (owner, 2026-10-12: "we a
 a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E10). Findings behind
 the blocks: `media-pause.md`, `player-subtitles.md`. Sketches of every concept over today's bubble and popup (E10),
 on the owner's private design canvas (read it with the Artifact tool; boards in Russian):
-https://claude.ai/artifact/RYg5awh22DsEwwjym1gpne
+https://claude.ai/artifact/RYg5awh22DsEwwjym1gpne; a copy of its source is in `../sketches/video-mining/`.
 
 ## Building blocks
 

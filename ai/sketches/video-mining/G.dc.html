@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>G. Озвучка после просмотра</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1680px; height: 840px; box-sizing: border-box; padding: 56px; background: #f4f2f8; font-family: 'Noto Sans', sans-serif; color: #1d1b20; display: flex; flex-direction: column; gap: 32px">
+<header style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 34px; line-height: 1.2; font-weight: 700">G. Озвучка после просмотра</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.5; color: #57506a; max-width: 1300px">Во время серии карточки добавляются без аудио, просмотр не прерывается. Потом — один проход по всем карточкам: плеер сам перематывает к каждой фразе.</p>
+</header>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; width: 760px; height: 350px">
+<dc-import name="Scene" added="{{ true }}" hint-size="760px,350px"></dc-import>
+<div style="position: absolute; left: 70px; top: 196px; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; border-radius: 22px; background: rgba(31,29,36,0.96); box-shadow: 0 4px 16px rgba(0,0,0,0.35); color: #ece8f2; font-size: 15px; white-space: nowrap"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#7ee2a0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Добавлено · аудио позже (3)</div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #6647e8; color: #ffffff; font-weight: 700; font-size: 15px; display: grid; place-items: center">1</span><p style="margin: 0; font-size: 16px; line-height: 1.45; color: #2b2733">➕ как обычно. Карточка запоминает приложение, видео и позицию плеера (12:41) и встаёт в очередь «аудио позже».</p></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; width: 760px; height: 350px">
+<dc-import name="Scene" popup="{{ false }}" aim="{{ false }}" hl="{{ false }}" bubble="none" hint-size="760px,350px"></dc-import>
+<div style="position: absolute; left: 14px; top: 14px; width: 420px; box-sizing: border-box; padding: 12px 14px 12px 16px; background: rgba(31,29,36,0.96); border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); color: #ece8f2; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #c9c2d6"><span>Озвучка карточек · 2 из 5</span>
+<button aria-label="Закончить" style="display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: none; border-radius: 50%; background: transparent; color: #ece8f2"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button></div>
+<div lang="ja" style="font-family: 'Noto Sans JP', sans-serif; font-size: 20px; line-height: 1.3">明日は晴れるといいね。</div>
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #c9c2d6">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #ff6369"></span>Играет с 12:38, пишется
+<span style="display: flex; align-items: center; gap: 2px; height: 20px; margin-left: 4px">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><span style="width: 2px; height: {{ b.h }}; border-radius: 1px; background: #ff8a8e"></span></sc-for>
+</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<button style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border: none; border-radius: 20px; background: #e5484d; color: #ffffff; font: inherit; font-size: 15px; font-weight: 600"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"></rect></svg>Стоп</button>
+<button style="display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.12); color: #ece8f2; font: inherit; font-size: 15px"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Ещё раз</button>
+<span style="flex: 1"></span>
+<button style="height: 40px; padding: 0 14px; border: none; border-radius: 20px; background: transparent; color: #ece8f2; font: inherit; font-size: 15px">Пропустить</button>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #6647e8; color: #ffffff; font-weight: 700; font-size: 15px; display: grid; place-items: center">2</span><p style="margin: 0; font-size: 16px; line-height: 1.45; color: #2b2733">После серии — «Записать аудио для 5 карточек» (меню кружка или приложение). Плеер перематывается к позиции −3 с и играет; «Стоп» (или метки F) — и сразу следующая карточка.</p></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; font-size: 16px; line-height: 1.45">
+<div><b style="color: #1e6b35">Плюсы.</b> Просмотр не прерывается; запись всех фраз — подряд, в одном ритме.</div>
+<div><b style="color: #9a3412">Минусы.</b> То же видео должно быть открыто в том же плеере; нужен доступ к уведомлениям (перемотка через сессию плеера).</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":840}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const out = [];
+    let s = 53;
+    for (let i = 0; i < 14; i++) {
+      s = (s * 9301 + 49297) % 233280;
+      const r = s / 233280;
+      out.push({ h: Math.round(3 + 15 * (0.3 + 0.7 * r)) + 'px' });
+    }
+    return { bars: out };
+  }
+}
+</script>
+</body>
+</html>

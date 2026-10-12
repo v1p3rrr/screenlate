@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>C. Мгновенный повтор: режим</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1680px; height: 1300px; box-sizing: border-box; padding: 56px; background: #f4f2f8; font-family: 'Noto Sans', sans-serif; color: #1d1b20; display: flex; flex-direction: column; gap: 32px">
+<header style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 34px; line-height: 1.2; font-weight: 700">C. Мгновенный повтор: режим «Аудиопамять»</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.5; color: #57506a; max-width: 1300px">Пока режим включён, последние 30–60 с звука держатся в памяти. Перематывать не нужно: 🎙 открывает редактор уже прозвучавшего. Редактор — в четырёх вариантах на досках C1–C4.</p>
+</header>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; width: 760px; height: 350px">
+<dc-import name="Scene" popup="{{ false }}" aim="{{ false }}" hl="{{ false }}" hint-size="760px,350px"></dc-import>
+<div style="position: absolute; left: 394px; top: 112px; min-width: 220px; padding: 8px 0; background: #fbf8ff; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.35); font-size: 15px; color: #1d1b20">
+<div style="display: flex; align-items: center; height: 40px; padding: 0 16px">Копировать абзац</div>
+<div style="display: flex; align-items: center; height: 40px; padding: 0 16px">Копировать всё</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 40px; padding: 0 16px; background: #ece3fa; color: #3b2566; font-weight: 600">Аудиопамять<span style="position: relative; width: 36px; height: 20px; border-radius: 10px; background: #6647e8"><span style="position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #ffffff"></span></span></div>
+<div style="display: flex; align-items: center; height: 40px; padding: 0 16px">Открыть приложение</div>
+</div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #6647e8; color: #ffffff; font-weight: 700; font-size: 15px; display: grid; place-items: center">1</span><p style="margin: 0; font-size: 16px; line-height: 1.45; color: #2b2733">Включение: переключатель в меню кружка (долгое нажатие) или в настройках. Первый раз — объяснение, разрешение на запись звука и системное согласие на захват.</p></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; width: 760px; height: 350px">
+<dc-import name="Scene" mic="{{ true }}" bubble="mem" hint-size="760px,350px"></dc-import>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #6647e8; color: #ffffff; font-weight: 700; font-size: 15px; display: grid; place-items: center">2</span><p style="margin: 0; font-size: 16px; line-height: 1.45; color: #2b2733">Режим включён — красная точка на кружке. Пока он включён, висят тихое уведомление и системный значок захвата (в полноэкранном видео строка состояния скрыта). 🎙 в попапе открывает редактор.</p></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; width: 760px; height: 350px">
+<dc-import name="Scene" popup="{{ false }}" aim="{{ false }}" hl="{{ false }}" hint-size="760px,350px"></dc-import>
+<div style="position: absolute; top: 14px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 5px 5px 5px 16px; background: rgba(31,29,36,0.96); border-radius: 26px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); color: #ece8f2; font-size: 15px; white-space: nowrap">
+<span>Аудиопамять остановлена</span>
+<button style="height: 40px; padding: 0 16px; border: none; border-radius: 20px; background: #b3a1ff; color: #1f1d24; font: inherit; font-weight: 600">Включить</button>
+</div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #6647e8; color: #ffffff; font-weight: 700; font-size: 15px; display: grid; place-items: center">3</span><p style="margin: 0; font-size: 16px; line-height: 1.45; color: #2b2733">Захват оборвался (остановили из шторки, процесс убит системой): точка гаснет, всплывает подсказка. «Включить» снова спросит системное согласие.</p></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 24px 28px; box-sizing: border-box; background: #ffffff; border-radius: 16px; font-size: 16px; line-height: 1.5; color: #2b2733">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700; color: #1d1b20">Что под капотом (E8, E9)</h2>
+<p style="margin: 0">Один поток пишет звук плеера в кольцевой буфер в памяти: 60 с — около 6 МБ, процессор — доли процента. На диск ничего не пишется, после падения чистить нечего.</p>
+<p style="margin: 0">Редактор копирует окно из кольца, поэтому захват не прерывается, пока редактируешь.</p>
+<p style="margin: 0">Речь перед сканом выделяется сразу детектором речи (WebRTC VAD) — около 0,1 с при открытии редактора.</p>
+<p style="margin: 0">Выключен режим — не работает ничего.</p>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

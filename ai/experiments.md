@@ -97,5 +97,5 @@ the popup look now (the README screenshots), with several variants for C.
 
 State: a design canvas, private to the owner: https://claude.ai/artifact/RYg5awh22DsEwwjym1gpne. Boards: overview,
 entry points for 🎙, A, B, D–H, C's mode and four editor variants C1–C4 (bottom panel, inside the popup, phrase strip,
-hint by the bubble); each board shows the steps over a landscape video and lists pros and cons. Note:
-`notes/video-mining-concepts.md` ("C: editor variants").
+hint by the bubble); each board shows the steps over a landscape video and lists pros and cons. A copy of the
+canvas source is in `sketches/video-mining/`. Note: `notes/video-mining-concepts.md` ("C: editor variants").

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Сцена: кружок и попап над видео</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 760px; height: 350px; overflow: hidden; border-radius: 24px; background: #000000; box-shadow: inset 0 0 0 5px #1b1a1f; font-family: 'Noto Sans', 'Noto Sans JP', sans-serif; color: #1d1b20">
+<div style="position: absolute; left: 69px; top: 0; width: 622px; height: 350px; overflow: hidden">
+<svg width="622" height="350" viewBox="0 0 622 350" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+<rect width="622" height="350" fill="#22344d"></rect>
+<rect y="120" width="622" height="230" fill="#2d4560"></rect>
+<circle cx="520" cy="74" r="24" fill="#efe3bd"></circle>
+<path d="M0 225 C 90 180 170 200 260 214 C 360 230 440 180 622 196 V350 H0 Z" fill="#2b4844"></path>
+<path d="M0 262 C 140 236 250 250 340 254 C 450 260 520 238 622 244 V350 H0 Z" fill="#1c302c"></path>
+<rect x="70" y="190" width="64" height="44" fill="#14221f"></rect>
+<path d="M64 192 L102 166 L140 192 Z" fill="#14221f"></path>
+<rect x="84" y="202" width="12" height="12" fill="#f0c26a"></rect>
+<rect x="110" y="202" width="12" height="12" fill="#f0c26a"></rect>
+<circle cx="470" cy="196" r="9" fill="#0f1917"></circle>
+<path d="M458 244 C 458 220 463 208 470 208 C 477 208 482 220 482 244 Z" fill="#0f1917"></path>
+<circle cx="504" cy="200" r="8" fill="#0f1917"></circle>
+<path d="M493 244 C 493 224 498 213 504 213 C 510 213 515 224 515 244 Z" fill="#0f1917"></path>
+</svg>
+</div>
+<sc-if value="{{ dim }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 69px; top: 0; width: 622px; height: 350px; background: rgba(0,0,0,0.45)"></div>
+</sc-if>
+<sc-if value="{{ controls }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 69px; top: 0; width: 622px; height: 350px; background: rgba(0,0,0,0.38)"></div>
+<div style="position: absolute; left: 69px; top: 112px; width: 622px; display: flex; justify-content: center; align-items: center; gap: 64px; color: #ffffff">
+<span style="display: grid; place-items: center; width: 48px; height: 48px"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M11 6v12L3 12zM20 6v12l-8-6z" fill="currentColor"></path></svg></span>
+<span style="display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: rgba(0,0,0,0.35)">
+<sc-if value="{{ showPlay }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="38" height="38" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg></sc-if>
+<sc-if value="{{ showPause }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="38" height="38" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg></sc-if>
+</span>
+<span style="display: grid; place-items: center; width: 48px; height: 48px"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M13 6v12l8-6zM4 6v12l8-6z" fill="currentColor"></path></svg></span>
+</div>
+<div style="position: absolute; left: 89px; bottom: 32px; font-size: 13px; color: #ffffff">12:41 / 23:40</div>
+<div style="position: absolute; left: 89px; width: 582px; bottom: 20px; height: 3px; background: rgba(255,255,255,0.35)">
+<div style="width: 54%; height: 3px; background: #ffffff"></div>
+<div style="position: absolute; left: 54%; top: -5px; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: #ffffff"></div>
+</div>
+</sc-if>
+<div lang="ja" style="position: absolute; left: 69px; width: 622px; bottom: 62px; text-align: center; font-family: 'Noto Sans JP', sans-serif; font-size: 24px; font-weight: 700; line-height: 34px; color: #ffffff; text-shadow: -1.5px -1.5px 0 #000000, 1.5px -1.5px 0 #000000, -1.5px 1.5px 0 #000000, 1.5px 1.5px 0 #000000, 0 0 4px #000000">明日は<span style="position: relative; display: inline-block; border-radius: 4px; background: {{ hlBg }}">晴れる<sc-if value="{{ aim }}" hint-placeholder-val="{{ true }}"><span style="position: absolute; left: 50%; top: 50%; width: 11px; height: 11px; margin: -5px 0 0 -5px; border-radius: 50%; background: #7c5cff; border: 1.5px solid #ffffff; box-sizing: border-box"></span></sc-if><sc-if value="{{ wordBubble }}" hint-placeholder-val="{{ true }}"><span style="position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: 18px 0 0 -24px; border-radius: 50%; background: {{ bubbleFill }}; border: 2px solid #ffffff; box-sizing: border-box; display: flex; align-items: center; justify-content: center"><sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}"><span style="width: 14px; height: 14px; border-radius: 50%; background: #ffffff"></span></sc-if><sc-if value="{{ rec }}" hint-placeholder-val="{{ false }}"><span style="width: 13px; height: 13px; border-radius: 3px; background: #ffffff"></span></sc-if><sc-if value="{{ mem }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; right: -4px; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: #e5484d; border: 2px solid #ffffff; box-sizing: border-box"></span></sc-if></span></sc-if></span>といいね。</div>
+<sc-if value="{{ freeBubble }}" hint-placeholder-val="{{ false }}">
+<span style="position: absolute; left: {{ bx }}px; top: {{ by }}px; width: 48px; height: 48px; border-radius: 50%; background: {{ bubbleFill }}; border: 2px solid #ffffff; box-sizing: border-box; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}"><span style="width: 14px; height: 14px; border-radius: 50%; background: #ffffff"></span></sc-if>
+<sc-if value="{{ rec }}" hint-placeholder-val="{{ false }}"><span style="width: 13px; height: 13px; border-radius: 3px; background: #ffffff"></span></sc-if>
+<sc-if value="{{ mem }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; right: -4px; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: #e5484d; border: 2px solid #ffffff; box-sizing: border-box"></span></sc-if>
+</span>
+</sc-if>
+<sc-if value="{{ popup }}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: 392px; top: 14px; width: 352px; height: 228px; box-sizing: border-box; padding: 6px 10px 0 14px; overflow: hidden; background: #f8f6fd; border-radius: 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.35); color: #1d1b20">
+<div style="display: flex; align-items: center; gap: 2px; height: 34px">
+<span style="font-size: 12px; font-weight: 600; color: #5a3d8a; background: #ece3fa; border-radius: 9px; padding: 2px 8px">Lens</span>
+<sc-if value="{{ sentenceAudio }}" hint-placeholder-val="{{ false }}">
+<button aria-label="Аудио фразы" style="margin-left: 6px; display: flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px 0 7px; border: none; border-radius: 13px; background: #6647e8; color: #ffffff; font: inherit; font-size: 13px; font-weight: 600"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg>фраза</button>
+</sc-if>
+<span style="flex: 1"></span>
+<button aria-label="Перевести" style="display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: none; background: transparent; color: #6b6475"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.190 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"></path></svg></button>
+<sc-if value="{{ micPlain }}" hint-placeholder-val="{{ false }}">
+<button aria-label="Записать аудио фразы" style="display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: none; border-radius: 50%; background: transparent; color: #5636d6"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.9"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg></button>
+</sc-if>
+<sc-if value="{{ micHot }}" hint-placeholder-val="{{ false }}">
+<button aria-label="Записать аудио фразы" style="display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: none; border-radius: 50%; background: #e7dfff; box-shadow: 0 0 0 2px #7c5cff; color: #5636d6"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.9"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg></button>
+</sc-if>
+<button aria-label="Закрыть" style="display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: none; background: transparent; color: #6b6475"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+</div>
+<div style="display: flex; align-items: flex-end; justify-content: space-between; margin-top: 2px">
+<div lang="ja" style="font-family: 'Noto Sans JP', sans-serif; font-size: 30px; line-height: 1.15"><ruby>晴<rt style="font-size: 12px; color: #6b6475">は</rt></ruby>れる</div>
+<div style="display: flex; align-items: center; gap: 2px">
+<sc-if value="{{ notAdded }}" hint-placeholder-val="{{ true }}">
+<button aria-label="Добавить в Anki" style="display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: none; background: transparent; color: #1d1b20"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+</sc-if>
+<sc-if value="{{ added }}" hint-placeholder-val="{{ false }}">
+<button aria-label="Открыть карточку" style="display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: none; background: transparent; color: #1d1b20"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 6.5C10.3 5.2 8 4.5 5 4.5H3.5v13H5c3 0 5.3.7 7 2 1.7-1.3 4-2 7-2h1.5v-13H19c-3 0-5.3.7-7 2zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+</sc-if>
+<button aria-label="Копировать" style="display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: none; background: transparent; color: #1d1b20"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button>
+<button aria-label="Произношение" style="display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: none; background: transparent; color: #6647e8"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"></path><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; color: #6b6475">
+<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M10 3.5a2 2 0 0 1 4 0V5h4a1 1 0 0 1 1 1v4h-1.5a2 2 0 0 0 0 4H19v4a1 1 0 0 1-1 1h-4v-1.5a2 2 0 0 0-4 0V19H6a1 1 0 0 1-1-1v-4h1.5a2 2 0 0 0 0-4H5V6a1 1 0 0 1 1-1h4z" fill="currentColor"></path></svg>
+<span style="border-bottom: 1px dotted #6b6475">-た</span>
+<span style="display: inline-flex; border-radius: 6px; overflow: hidden; background: #e6f4ea; color: #1e6b35"><b style="padding: 1px 7px">Jiten</b><span style="padding: 1px 7px; border-left: 1px solid rgba(30,107,53,0.25)">2594</span></span>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px">
+<span style="background: #ece3fa; color: #5a3d8a; font-weight: 600; border-radius: 6px; padding: 2px 8px">Jitendex.org</span>
+<span style="background: rgba(0,0,0,0.06); border-radius: 6px; padding: 2px 7px">★</span>
+<span style="background: #4d4a52; color: #ffffff; font-weight: 700; border-radius: 5px; padding: 2px 7px">1-dan</span>
+<span style="background: #4d4a52; color: #ffffff; font-weight: 700; border-radius: 5px; padding: 2px 7px">intransitive</span>
+</div>
+<ol style="margin: 8px 0 0; padding-left: 22px; font-size: 15px; line-height: 1.45">
+<li>to clear up; to be sunny</li>
+<li>to stop raining</li>
+<li>to be cleared (of suspicion)</li>
+</ol>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"popup":{"editor":"boolean","default":true},"mic":{"editor":"boolean","default":false},"micHot":{"editor":"boolean","default":false},"added":{"editor":"boolean","default":false},"sentenceAudio":{"editor":"boolean","default":false},"controls":{"editor":"boolean","default":false},"playing":{"editor":"boolean","default":false},"dim":{"editor":"boolean","default":false},"aim":{"editor":"boolean","default":true},"hl":{"editor":"boolean","default":true},"bubble":{"editor":"enum","options":["normal","ready","rec","mem","none"],"default":"normal"},"bubbleAt":{"editor":"enum","options":["word","free"],"default":"word"},"bx":{"editor":"int","default":560},"by":{"editor":"int","default":250},"$preview":{"width":760,"height":350}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const b = p.bubble ?? 'normal';
+    const at = p.bubbleAt ?? 'word';
+    const mic = p.mic ?? false;
+    const micHot = p.micHot ?? false;
+    const added = p.added ?? false;
+    const controls = p.controls ?? false;
+    const playing = p.playing ?? false;
+    const hl = p.hl ?? true;
+    return {
+      popup: p.popup ?? true,
+      micPlain: mic && !micHot,
+      micHot: micHot,
+      added: added,
+      notAdded: !added,
+      sentenceAudio: p.sentenceAudio ?? false,
+      controls: controls,
+      showPlay: !playing,
+      showPause: playing,
+      dim: (p.dim ?? false) && !controls,
+      aim: p.aim ?? true,
+      hlBg: hl ? 'rgba(124,92,255,0.45)' : 'transparent',
+      wordBubble: at === 'word' && b !== 'none',
+      freeBubble: at === 'free' && b !== 'none',
+      bubbleFill: b === 'ready' || b === 'rec' ? '#e5484d' : 'rgba(124,92,255,0.45)',
+      ready: b === 'ready',
+      rec: b === 'rec',
+      mem: b === 'mem',
+      bx: p.bx ?? 560,
+      by: p.by ?? 250
+    };
+  }
+}
+</script>
+</body>
+</html>
