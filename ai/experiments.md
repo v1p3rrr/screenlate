@@ -80,3 +80,12 @@ cleaning it when needed, also after closes, crashes and errors)?
 State: light while on, nothing while off; memory recommended for buffers up to a few minutes, a segmented file only for
 long buffers or surviving restarts, with its cleanup points. Note: `notes/video-mining-concepts.md` ("C: load and
 storage").
+
+## E9. System limits of capturing audio in the background (2026-10-12)
+
+Owner's question: does the system restrict capturing audio in the background this way? For example, will the
+recording be killed fairly often, or will some indicator always show that recording is going on?
+
+State: not silenced in the background, no green microphone dot; a notification and a projection mark in the status bar
+stay while the session is open; locking and calls do not stop an audio-only session; the session dies with the process
+and needs a new consent. Note: `notes/video-mining-concepts.md` ("System limits of capturing in the background").

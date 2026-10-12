@@ -2,7 +2,7 @@
 
 A catalog of alternatives for looking up and mining subtitles of videos playing in other apps (YouTube, browsers,
 local players, media servers). Nothing here is decided (owner, 2026-10-12: "we are only thinking through options");
-a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E8). Findings behind
+a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E9). Findings behind
 the blocks: `media-pause.md`, `player-subtitles.md`.
 
 ## Building blocks
@@ -173,6 +173,41 @@ memory, is dropped when the mode stops, and nothing of it is logged.
 - **Format**: AAC in `.m4a` (MediaCodec + MediaMuxer), mono; AnkiDroid and desktop Anki play it. A length cap
   (e.g. 30 s).
 - **In the popup**: once recorded, a ▶ for the sentence audio in the header.
+
+## System limits of capturing in the background (E9)
+
+Checked in AOSP sources (main branch); MagicOS may differ and has to be checked on the phone.
+
+- **Not silenced in the background.** Playback capture records from `AUDIO_SOURCE_REMOTE_SUBMIX`, which the audio
+  policy counts as a virtual source and lets capture whatever the app's state ("Allow capture for virtual (remote
+  submix, call audio TX or RX...) sources", `AudioPolicyService.cpp`), unlike the microphone. `RECORD_AUDIO` is still
+  needed to create the recorder.
+- **No green microphone dot.** The source is tracked under the app op `RECORD_AUDIO_OUTPUT`
+  (`ServiceUtilities.cpp`, `getOpForSource`), and SystemUI's privacy indicators watch `RECORD_AUDIO` and the call and
+  trigger microphone ops only (`AppOpsControllerImpl.OPS_MIC`).
+- **Indicators that do show**:
+  - the foreground service notification (a `mediaProjection` service is required); it can sit in a silent
+    low-importance channel; since Android 14 the user can swipe it away while the service goes on, and it is listed in
+    Quick Settings' active apps;
+  - a projection mark in the status bar: the cast icon (SystemUI's `CastControllerImpl` follows the active
+    projection) and, in newer versions, a chip for audio-only projections (`MediaProjectionManagerRepository`,
+    `Projecting.NoScreen`, behind the flag `statusBarShowAudioOnlyProjectionChip`). It stays while the session is open,
+    recording or not.
+- **When the system ends the session**: the user stops it from the status bar chip, the cast tile or the
+  notification (`MediaProjection.Callback.onStop`; the mode turns off and says so). Locking the screen and the end of a
+  phone call stop projections, but not ones without a `VirtualDisplay`: "Continuing MediaProjection as current
+  projection has no VirtualDisplay" (`MediaProjectionStopController.isExempt`). A new session cannot start while the
+  screen is locked.
+- **When the process dies** (the system or MagicOS kills it, a crash, our own update) the session dies with it and
+  cannot be restored silently: the next start needs the consent again. The process is held by the accessibility
+  service and the foreground service, so plain memory pressure seldom kills it; MagicOS's battery management is the
+  same risk the bubble already has (battery exemption, "manage manually" for app launch: the existing background tips).
+  The mode shows that it stopped (e.g. on the bubble) instead of failing silently.
+- **Consent**: since Android 14 once per session (the token cannot be reused); our transparent activity shows the
+  system dialog over the video and starts the `mediaProjection` service while it is in the foreground.
+- **Apps that refuse**: targeting Android 9 or lower, or opting out → silence, to detect and report.
+- **Screen-recording detection** by other apps (`WindowManager.addScreenRecordingCallback`, API 35) reports windows
+  shown in a recording; an audio-only session records no picture (not checked).
 
 ## Entry points for 🎙
 
