@@ -131,8 +131,8 @@ Ways to know a line's start and end without rescanning the screen while the vide
    by E1) seek through the session to P − 1 s, P − 2 s, … until the line's glyph pixels are gone, then bisect the last
    second; the same forwards. About six probes per boundary give ~0.1 s. Each probe is one screenshot of the player's
    window: `takeScreenshotOfWindow` captures the window even under an accessibility overlay (AOSP javadoc), so an
-   opaque "measuring" curtain can hide the jumping picture. Accessibility screenshots allow one per 333 ms, so a note
-   takes some 4–5 s. Probing further back finds the previous line. Then the exact range is replayed for the audio
+   opaque "measuring" curtain can hide the jumping picture. Accessibility screenshots allow one per 333 ms; timing
+   in E5 (about 4–8 s for a local file, much longer when streaming). Probing further back finds the previous line. Then the exact range is replayed for the audio
    (E3), or cut from a file. To check per player: does the frame and its subtitle update after a seek while paused
    (YouTube, Chrome, VLC, mpv, ExoPlayer, which renders text cues on its render loop).
    - With the screen-capture consent that audio capture needs anyway, a `VirtualDisplay` gives frames without the
@@ -148,6 +148,81 @@ Ways to know a line's start and end without rescanning the screen while the vide
 Not ways: session metadata carries no subtitle data; the system caption settings are style only; Live Caption makes
 its own captions from speech and is missing on many phones. For completeness: watching the known glyph boxes with
 screenshots and no OCR costs a screenshot copy, not a recognition, three times a second; still continuous.
+
+## Follow-up: how general, YouTube, timing, pixels (E5)
+
+### How general the player sources are
+
+- **media3 sessions**: one implementation for every app whose session is a media3 `MediaSession`; nothing per app.
+  `SessionToken.createSessionToken` asks the session for its media3 token and falls back to a legacy token after a
+  timeout, so trying every active session is enough. media3 keeps controllers and sessions of different versions
+  compatible (they live in different apps), so it is a stable channel. Limits: legacy sessions (`MediaSessionCompat`,
+  ExoPlayer 2's `MediaSessionConnector`, as in NewPipe) give no cues; an app may override `onConnect` and reject or
+  restrict outside controllers; only text subtitles; only while the player has a text track selected.
+- **Media servers**: the Jellyfin API is the same for every client (the Jellyfin app, the web client in any browser,
+  Findroid and other clients report their playback to the server); Emby keeps a nearly identical API (Jellyfin is its
+  fork); Plex needs a second small adapter (`/status/sessions`). The server's position comes from the clients'
+  periodic progress reports; on the phone the local session's position is the precise one.
+- **Players with their own web API**: each needs its own adapter. VLC's remote access is the protocol of its web page,
+  not a published API, and needs pairing with a code; Kodi has a documented JSON-RPC (player time, current subtitle,
+  file). Mostly they only tell which file plays and where, which the general file route below also finds.
+- **mpv inside other apps: not general.** mpv-android has no storage permission and no way to add scripts (only
+  `mpv.conf` and `input.conf` can be edited; its config dir is private). mpv can open its IPC socket in the abstract
+  namespace (`input-ipc-server=@name`, a line in `mpv.conf`), but Android's app isolation forbids connecting to it
+  from another app: SELinux MLS allows `unix_stream_socket connectto` only between equal levels
+  (`system/sepolicy/private/mls`), and every app since targetSdk 28 has its own categories. Forks that run user
+  scripts could only pass the line through hacks, e.g. a script setting `force-media-title` to the subtitle, which
+  mpv-android-like apps copy into the session's title. Not worth it.
+- **The general route for local files** needs no player adapter: the session's title, duration and position, the
+  file found in a granted folder, and OCR anchors that pick the subtitle track the player shows and its delay.
+
+### YouTube
+
+- No player source; the captions file is what those services and tools fetch, and the app can fetch it itself from
+  the phone, no third-party service: an InnerTube player request lists the caption tracks, each a `timedtext` URL
+  (json3 or srv3 with times; auto-generated tracks carry per-word times). Unofficial: YouTube changes it and since
+  2025 asks for a proof-of-origin token for subtitles from some clients but not others (yt-dlp's PO token guide), so
+  it breaks now and then and needs fixes; outside the YouTube terms, unfit for a store build. NewPipe Extractor
+  (Java, maintained, subtitles supported) is GPL-3.0, which our rules keep out of non-GPL modules: an owner's
+  decision; or an own small client.
+- The video id: Share → Screenlate in the YouTube app (one tap; reading a copied link in the background is impossible
+  since Android 10, so copying would need pasting into our app); maybe automatic if the session's metadata holds the
+  id (unchecked), or a YouTube search by the session's title, channel (artist) and duration; in browsers the address
+  bar is a text node.
+- Then the position from the session and OCR anchors choose the track (manual or auto-generated) and check it. With
+  subtitles burned into the video, the auto-generated track still gives the speech times for cutting audio.
+- Audio: replay and capture (E3); fetching YouTube's audio stream is possible as NewPipe does, but more fragile.
+
+### How long seek probing takes
+
+- One probe: a seek on pause, the player decoding up to the exact frame (from the previous keyframe; anime encodes
+  put keyframes 2–10 s apart), the frame and subtitle drawn, one window screenshot (at most one per 333 ms). Local
+  file with hardware decoding: about 0.35–0.6 s.
+- Probes: back in 1 s steps until the line is gone (1–4, lines last 1–6 s), then three halvings to 0.125 s; the same
+  for the end: 8–14 probes, about 4–8 s per note.
+- Streaming: a backward seek may download again (ExoPlayer keeps no back buffer by default,
+  `DEFAULT_BACK_BUFFER_DURATION_MS = 0`; YouTube unknown): 0.5–2 s per probe, 10–25 s. Too slow.
+- Embedded Matroska subtitles may not show after a seek into the middle of a line (mpv documents this for
+  `--demuxer-mkv-subtitle-preroll`; other players may have no remedy), so a probe can see "no line" wrongly. Playing
+  forward from before the line does not have this problem.
+- Hybrid: two to four coarse probes back, then replay from half a second before the line's start while recording,
+  watching for the line's end: about 5–9 s with the audio done. Streaming: no probes, replay from P − 5…7 s, about
+  8–12 s.
+
+### Comparing glyph pixels over a moving video
+
+- Comparing the glyph boxes whole fails: the video between the strokes changes every frame. Only the strokes are
+  compared: in the reference frame (the scan's paused frame) the pixels of the subtitle's fill color inside the
+  character boxes, plus the ring of outline or shadow around them where present. A renderer draws the same line the
+  same way every frame, so these stay put while the line shows; when it changes or goes, video takes their place and
+  the match collapses.
+- Defaults have a box or an outline almost everywhere: mpv and VLC draw white text with a black outline; ExoPlayer's
+  `CaptionStyleCompat.DEFAULT` is white text on a black box without an edge; YouTube's default is white text on a
+  translucent black box. A user style without either is rare.
+- Weak cases: white text without an outline or box over a white scene (the strokes "match" the background); burned-in
+  subtitles (compression noise: compare with a tolerance); moving or zooming telops and karaoke color sweeps (compare
+  light/dark contrast rather than exact color, or give up). Fallback: recognize the small band on the probe frames
+  only and compare text, slower but only on ➕.
 
 ## Coverage summary
 

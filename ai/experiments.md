@@ -36,3 +36,17 @@ the screen to detect subtitle changes, which is expensive?
 
 State: five ways ranked; best is a subtitle file synced by the user's own scans (OCR anchors), then asking the player,
 then seek probing while paused on ➕. Note: `notes/player-subtitles.md` ("Timings without watching the screen").
+
+## E5. Follow-up on E4 (2026-10-12)
+
+Owner's questions: can "asking the player" be general rather than per player (an mpv script for every player built on
+mpv, the same for Jellyfin-like and VLC-like mechanisms and for media3), or is stability hard to promise? For YouTube,
+are options 1 and 2 out unless a third-party service downloads the subtitles; could the app download them itself,
+at most asking the user for the video's link? How long would seek probing take? Would the moving video not spoil the
+comparison of glyph pixels, given that subtitles may have no visible background?
+
+State: media3 and the media servers are general and stable; mpv is not (no scripts in mpv-android, cross-app sockets
+forbidden); local files are general through the session and OCR anchors. YouTube captions can be fetched by the app
+itself, unofficially; the video id comes by sharing, maybe automatically. Probing 4–8 s for local files, a hybrid
+with the replay 5–9 s; strokes plus outline are compared, not whole boxes. Note: `notes/player-subtitles.md`
+("Follow-up: how general, YouTube, timing, pixels").
