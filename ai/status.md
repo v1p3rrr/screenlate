@@ -11,8 +11,9 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
   build of `languages/main` (CI builds only pushes to main and pull requests; a manual run of `ci.yml` on
   `languages/main` gives its APK); then the rest of the plan's "Done when" (Japanese on the phone as before, an upgrade over the current
   release, backup and restore), then stage B (Chinese, Korean).
-- 2026-10-12: exploratory research E1–E5 (pausing the scanned video, subtitles and timings from other players,
-  replaying a line to record it, timings without rescanning) is in `experiments.md`, apart from the plans; nothing built.
+- 2026-10-12: exploratory research E1–E6 (pausing the scanned video, subtitles and timings from other players,
+  replaying a line to record it, timings without rescanning, recording audio by hand) is in `experiments.md`, apart
+  from the plans; the options are gathered in `notes/video-mining-concepts.md`; nothing built.
 - v0.2.3 is released (2026-10-11, tag on main 3f2123c): 0.2.2 plus the bubble glide fix, checked by the owner on
   the phone. `languages/main` has the same fix.
 - Open: where the wordfreq frequency archives are hosted (English top 100K is a 1.0 MB archive, built by

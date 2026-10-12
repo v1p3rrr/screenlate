@@ -50,3 +50,12 @@ forbidden); local files are general through the session and OCR anchors. YouTube
 itself, unofficially; the video id comes by sharing, maybe automatically. Probing 4–8 s for local files, a hybrid
 with the replay 5–9 s; strokes plus outline are compared, not whole boxes. Note: `notes/player-subtitles.md`
 ("Follow-up: how general, YouTube, timing, pixels").
+
+## E6. Recording the sentence audio by hand (2026-10-12)
+
+Owner's idea: the simplest way may be to let the user record the audio when adding an Anki note, besides the
+screenshot: rewind the video, start recording, stop it. Wanted: UX concepts. Nothing approved; the owner asked to
+gather all variants of the video work into one document to choose from in a later session.
+
+State: seven recording concepts (A–G), shared parts, entry points and packages that combine them with E1–E5. Note:
+`notes/video-mining-concepts.md`.
