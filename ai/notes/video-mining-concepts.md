@@ -2,7 +2,7 @@
 
 A catalog of alternatives for looking up and mining subtitles of videos playing in other apps (YouTube, browsers,
 local players, media servers). Nothing here is decided (owner, 2026-10-12: "we are only thinking through options");
-a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E7). Findings behind
+a later session picks from it with the owner. Questions and history: `../experiments.md` (E1–E8). Findings behind
 the blocks: `media-pause.md`, `player-subtitles.md`.
 
 ## Building blocks
@@ -63,6 +63,30 @@ last 30 s                       scan ▼
                  [=========]
 ▶ listen    ⏵ play on    ✓ save    ✕
 ```
+
+#### C: load and storage (E8)
+
+C is H without recognition: the same capture, an editor instead of the automatic pick. Turned on only when wanted
+(a mode), so nothing runs otherwise.
+
+- Load while on: one `AudioRecord` thread copying ~100 KB/s into a ring buffer; well under a percent of a core, a
+  battery cost like a background voice recorder, small next to the screen and video decoding. Unmeasured: check with
+  `dumpsys batterystats` on the phone.
+- Sizes, 16-bit PCM: 48 kHz mono 96 KB/s (30 s 2.9 MB, 1 min 5.8 MB, 3 min 17 MB, 5 min 29 MB); 24 kHz mono half that
+  (fine for speech, music loses its top); AAC at 64–96 kbps 8–12 KB/s (10 min 5–7 MB) at the price of encoding and of
+  decoding before a cut. Mono is enough for cards.
+- Memory, recommended up to a few minutes: a preallocated ring (no garbage-collection churn); nothing on disk, nothing
+  to clean after a crash (the process's death frees it); no flash writes (~350 MB an hour at 48 kHz mono). A crash
+  ends the capture session too, which needs a new consent, so the lost audio rarely matters. The process is held by
+  the accessibility service, so the system seldom kills it.
+- A file, only for long buffers (tens of minutes) or to survive a restart: segments of ~10 s in an app-private,
+  backup-excluded folder (`noBackupFilesDir/capture/`), the oldest deleted past the window; everything in the folder
+  deleted when the mode stops, when the projection stops, and at every service or app start (leftovers of a crash or
+  kill); uninstalling removes it. Optionally AAC to shrink it.
+- Opening the editor copies the window (e.g. the last 60 s) out of the ring, so capture goes on ("⏵ play on")
+  without overwriting what is being edited.
+- A cheap help: the editor opens with the speech before the scan already selected, by WebRTC VAD (BSD, tiny C) or an
+  energy threshold; about 0.1 s when it opens, nothing while capturing.
 
 ### D. The bubble as the record button
 

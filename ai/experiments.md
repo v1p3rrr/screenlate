@@ -70,3 +70,13 @@ way? That would also help in games such as visual novels, where one cannot go ba
 State: GSM takes the line's time from its text source and uses VAD or Whisper only to trim a few seconds. For
 Screenlate: concept H; continuous capture is light, recognition runs only on ➕. Note:
 `notes/video-mining-concepts.md` ("H. Audio memory with an automatic pick").
+
+## E8. Instant replay (concept C): load and memory or file (2026-10-12)
+
+Owner's question: concept C sounds like H with manual trimming, turned on only when wanted so the phone is not loaded
+otherwise. How heavy is it? Is it better to keep the audio in memory or to write it to a file (and watch the file,
+cleaning it when needed, also after closes, crashes and errors)?
+
+State: light while on, nothing while off; memory recommended for buffers up to a few minutes, a segmented file only for
+long buffers or surviving restarts, with its cleanup points. Note: `notes/video-mining-concepts.md` ("C: load and
+storage").
