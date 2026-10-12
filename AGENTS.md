@@ -15,6 +15,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `app-icon.md` — the icon design, its generator and checks (`scripts/icon/`).
    - `overlay-system-ui.md` — insets, keyboard and fullscreen detection from the overlay, which edge swipes the system takes.
    - `ocr-engines.md` — OCR and app text costs, ML Kit quirks, trusted character boxes, popup renderer priority, OCR threads and the scan screenshot's lifetime.
+   - `media-pause.md` — pausing the scanned app's video while its subtitles are looked up: MediaSession through notification access, rejected alternatives, pitfalls, open choices.
    - `translations.md` — the 14 locales, escaping and line-break pitfalls, per-language conventions and shared terms.
    - `audio-sources.md` — hosts of the default audio sources, mobile networks that freeze foreign hosting, the owner's audio server.
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
