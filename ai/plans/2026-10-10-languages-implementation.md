@@ -190,6 +190,12 @@ Work that depends on an answer uses the recommended option or waits, as noted.
   (`-gpu swiftshader_indirect`) and crashed the same way at boot ("Could not allocate host memory", 3.8 GB free for a
   4 GB guest); the agent stopped that one itself. The crashed first instance probably still holds its memory, so the
   emulator testing waits for those windows to be closed; until then the agent keeps building the remaining items.
+- Chinese frequency in Traditional characters (2026-10-14). The frequency dictionary built on the phone from wordfreq
+  has Chinese words in Simplified characters only (wordfreq folds Traditional into Simplified). For text in
+  Traditional characters it gives no frequency, so results are not sorted by it. Options: (1, recommended) when the
+  Chinese dictionary is built, add each word's Traditional form with the same rank, converted with OpenCC's tables
+  (Apache 2.0, about 1 MB, bundled or downloaded with the list); (2) leave it Simplified only. The agent will decide
+  this on the `languages/zh` branch with option 1 unless told otherwise.
 
 ## Branches and workflow
 
@@ -571,3 +577,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   text are dropped; a list in one string (`/a/, /b/`) is split; /…/ and […] merge when equal apart from syllable dots
   too; the cleanup happens at lookup, so the `{phonetic-transcriptions}` marker gets the cleaned list as well. water:
   89 → 66, American first. Dictionaries imported earlier show no regions until imported again (on this branch only).
+- 2026-10-14: the "Frequency dictionaries" decision built. Catalog entries with `"build": "wordfreq"` (template
+  `wordfreq`, one per source language except Japanese, written by `scripts/frequency/wordfreq_catalog.py`) point at
+  wordfreq 3.2's lists at commit 912caf6 (large where there is one, small for ko, tr, vi; 0.04–4.5 MB) with SHA-256;
+  the import job checks and converts them (`WordfreqDictionary`, 0.4 s for English on a desktop) and imports the
+  result. Agent's choices: the built dictionary becomes the sort dictionary only when none was chosen or the chosen
+  one is gone (`preferSortDictionary`); capitals follow the language (Turkish i → İ), unlike the Python builder; a
+  built dictionary has no update path, so a newer pinned commit reaches only new downloads; the zh entry is wordfreq's
+  Simplified list (Traditional text: see the Chinese questions). Emulator check of the whole path pending.
