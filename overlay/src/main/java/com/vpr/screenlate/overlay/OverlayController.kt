@@ -1258,7 +1258,7 @@ class OverlayController(
         return if (shown != null) shown.layout to shown.start else layout to hit
     }
 
-    /** The sentence around the shown word, which `{sentence}` and 文A take. */
+    /** The sentence around the shown word, which `{sentence}` and the translation button take. */
     private fun shownSentence(): Sentence? {
         shownLookup?.let { sentenceOf(it) }?.let { return it }
         val (layout, position) = shownPosition()

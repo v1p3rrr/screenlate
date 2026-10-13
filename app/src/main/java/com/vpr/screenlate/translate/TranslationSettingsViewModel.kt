@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 /** A service's line in the test; [result] is null while the service is still asked. */
 data class TestRow(val service: TranslationService, val result: ServiceTest? = null)
 
-/** The Translation page: the 文A and note switches, the services, the language, and the test. */
+/** The Translation page: the translation button and note switches, the services, the language, and the test. */
 @HiltViewModel
 class TranslationSettingsViewModel @Inject constructor(
     private val repository: TranslationSettingsRepository,

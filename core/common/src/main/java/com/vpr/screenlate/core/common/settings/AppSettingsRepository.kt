@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.settings
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -9,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /** App-wide user preferences backed by DataStore. */
@@ -121,7 +123,24 @@ class AppSettingsRepository @Inject constructor(
         dataStore.edit { it[ACCESSIBILITY_AGREED] = true }
     }
 
+    /**
+     * Decides once, before anything else writes the settings, whether this is a new install: any settings or
+     * [hasDictionaries] mean an upgrade, and [onUpgrade] changes its settings in the same write, such as a default that
+     * changed for new installs only.
+     */
+    suspend fun settleInstall(onUpgrade: (MutablePreferences) -> Unit, hasDictionaries: suspend () -> Boolean) {
+        val prefs = dataStore.data.first()
+        if (prefs[INSTALL_SETTLED] == true) return
+        val upgrade = prefs.asMap().isNotEmpty() || hasDictionaries()
+        dataStore.edit { edited ->
+            if (edited[INSTALL_SETTLED] == true) return@edit
+            if (upgrade) onUpgrade(edited)
+            edited[INSTALL_SETTLED] = true
+        }
+    }
+
     private companion object {
+        val INSTALL_SETTLED = booleanPreferencesKey("install_settled")
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val APP_COLORS = stringPreferencesKey("theme_colors")
         val NOTIFICATIONS_ASKED = booleanPreferencesKey("notification_permission_asked")

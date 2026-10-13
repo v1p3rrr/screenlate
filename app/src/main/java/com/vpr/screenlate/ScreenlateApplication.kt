@@ -8,9 +8,12 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
+import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +34,12 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var dictionaryReset: DictionaryReset
 
+    @Inject
+    lateinit var appSettings: AppSettingsRepository
+
+    @Inject
+    lateinit var dictionaryRepository: DictionaryRepository
+
     private var languageResources: AppLanguageResources? = null
 
     // Workers, notifications and injected contexts show text in the app's language, not the system's.
@@ -50,15 +59,24 @@ class ScreenlateApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        dictionaryImports.installBundled()
         MainScope().launch(Dispatchers.IO) {
-            // The user confirmed it; a reset the process died in is run once more, and reported when that dies too.
-            runCatching { dictionaryReset.resumeInterrupted() }
-                .onFailure { Log.w(TAG, "Finishing the dictionary reset failed: ${it.javaClass.simpleName}") }
-        }
-        MainScope().launch(Dispatchers.IO) {
-            // A failed check must not stop the app from starting; the home screen checks again.
-            runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
+            // Before anything writes the settings: the translation button starts off on new installs only.
+            runCatching {
+                appSettings.settleInstall(onUpgrade = TranslationSettingsRepository::keepButtonOn) {
+                    dictionaryRepository.getAll().isNotEmpty()
+                }
+            }
+                .onFailure { Log.w(TAG, "Settling the install failed: ${it.javaClass.simpleName}") }
+            dictionaryImports.installBundled()
+            launch {
+                // The user confirmed it; a reset the process died in is run once more, and reported when that dies too.
+                runCatching { dictionaryReset.resumeInterrupted() }
+                    .onFailure { Log.w(TAG, "Finishing the dictionary reset failed: ${it.javaClass.simpleName}") }
+            }
+            launch {
+                // A failed check must not stop the app from starting; the home screen checks again.
+                runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
+            }
         }
     }
 

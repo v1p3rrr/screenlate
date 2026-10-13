@@ -78,6 +78,23 @@ class BackupFormatTest {
     }
 
     @Test
+    fun `an older backup without the translation button keeps it on`() {
+        val button = booleanPreferencesKey("translation_button")
+        val current = mutablePreferencesOf(button to false)
+        val older = BackupPreferences.decode(BackupPreferences.encode(mutablePreferencesOf(booleanPreferencesKey("translation_anki") to false)))
+        BackupPreferences.restore(current, older, setOf(BackupSection.TRANSLATION))
+        assertThat(current[button]).isTrue()
+
+        val switchedOff = BackupPreferences.decode(BackupPreferences.encode(mutablePreferencesOf(button to false)))
+        BackupPreferences.restore(current, switchedOff, setOf(BackupSection.TRANSLATION))
+        assertThat(current[button]).isFalse()
+
+        val other = mutablePreferencesOf()
+        BackupPreferences.restore(other, older, setOf(BackupSection.BUBBLE))
+        assertThat(other[button]).isNull()
+    }
+
+    @Test
     fun `dictionary list sets order, switches and languages of installed dictionaries`() {
         val installed = listOf(
             entity(1, "JMdict", priority = 0),

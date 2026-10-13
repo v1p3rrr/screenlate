@@ -65,7 +65,7 @@ class LookupPage(
         /** Bytes of a dictionary media file. Called on a WebView background thread; may block. */
         fun media(dictionary: String, path: String): ByteArray?
 
-        /** 文A asks to translate the shown word's sentence; the answer goes to [showTranslation] with [request]. */
+        /** The translation button asks to translate the shown word's sentence; the answer goes to [showTranslation] with [request]. */
         fun onTranslate(request: Int) {}
     }
 
@@ -185,7 +185,7 @@ class LookupPage(
         "Popup.setActions({anki: $anki, audio: $audio, ankiProblem: ${ankiProblem?.let { JsonPrimitive(it) } ?: "null"}})",
     )
 
-    /** Shows or hides 文A, the sentence translation button. */
+    /** Shows or hides the sentence translation button. */
     fun setTranslation(enabled: Boolean) = setPersistent("translation", "Popup.setTranslation({enabled: $enabled})")
 
     /** The answer to [Callbacks.onTranslate]: `{text, service, sentence}` or `{error}`. */

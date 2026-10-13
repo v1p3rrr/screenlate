@@ -1,6 +1,9 @@
 package com.vpr.screenlate.core.translate
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.preferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -13,7 +16,7 @@ class TranslationSettingsTest {
     @Test
     fun defaults() = runBlocking<Unit> {
         val settings = repository.current()
-        assertThat(settings.button).isTrue()
+        assertThat(settings.button).isFalse()
         assertThat(settings.ankiField).isTrue()
         assertThat(settings.enabledServices)
             .containsExactly(TranslationService.BING, TranslationService.GOOGLE, TranslationService.EDGE).inOrder()
@@ -43,6 +46,23 @@ class TranslationSettingsTest {
         assertThat(settings.ankiField).isFalse()
         repository.setLanguage(null)
         assertThat(repository.current().language).isNull()
+    }
+
+    @Test
+    fun `settings of an older version keep the button on unless it was turned off`() = runBlocking<Unit> {
+        store.edit { TranslationSettingsRepository.keepButtonOn(it) }
+        assertThat(repository.current().button).isTrue()
+        repository.setButton(false)
+        store.edit { TranslationSettingsRepository.keepButtonOn(it) }
+        assertThat(repository.current().button).isFalse()
+    }
+
+    @Test
+    fun `a backup carries the button even when it was never switched`() {
+        val button = booleanPreferencesKey("translation_button")
+        assertThat(TranslationSettingsRepository.withButton(emptyPreferences())[button]).isFalse()
+        val on = preferencesOf(button to true)
+        assertThat(TranslationSettingsRepository.withButton(on)[button]).isTrue()
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.translate
 
 import android.util.Log
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -25,14 +26,14 @@ import kotlinx.serialization.json.jsonArray
 data class ServiceChoice(val service: TranslationService, val enabled: Boolean = true)
 
 /**
- * @property button the 文A button in the popup.
+ * @property button the translation button in the popup; off on new installs, see [TranslationSettingsRepository.keepButtonOn].
  * @property ankiField whether notes get `{sentence-translation}`.
  * @property services the cascade: the first enabled service translates, the next ones take over when it fails.
  * @property language BCP 47 tag of the language translations go into; null follows the interface language.
  * @property favorites tags starred in the language list.
  */
 data class TranslationSettings(
-    val button: Boolean = true,
+    val button: Boolean = false,
     val ankiField: Boolean = true,
     val services: List<ServiceChoice> = DEFAULT_SERVICES,
     val language: String? = null,
@@ -87,7 +88,7 @@ class TranslationSettingsRepository @Inject constructor(private val dataStore: D
     }
 
     private fun read(prefs: Preferences) = TranslationSettings(
-        button = prefs[BUTTON] ?: true,
+        button = prefs[BUTTON] ?: DEFAULT.button,
         ankiField = prefs[ANKI] ?: true,
         services = readServices(prefs),
         language = prefs[LANGUAGE]?.takeIf { TranslationLanguages.of(it) != null },
@@ -125,5 +126,19 @@ class TranslationSettingsRepository @Inject constructor(private val dataStore: D
         private val FAVORITES = stringSetPreferencesKey("${KEY_PREFIX}favorites")
 
         private val json = Json { ignoreUnknownKeys = true }
+
+        private val DEFAULT = TranslationSettings()
+
+        /**
+         * Settings from versions where the translation button was on by default keep it on: an upgrade from such a
+         * version and the restore of its backup call this. A value the user chose stays.
+         */
+        fun keepButtonOn(prefs: MutablePreferences) {
+            if (prefs[BUTTON] == null) prefs[BUTTON] = true
+        }
+
+        /** [prefs] with the button written out, so that a backup without it is known to come from an older version. */
+        fun withButton(prefs: Preferences): Preferences =
+            if (prefs[BUTTON] != null) prefs else prefs.toMutablePreferences().apply { this[BUTTON] = DEFAULT.button }
     }
 }
