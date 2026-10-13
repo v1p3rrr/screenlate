@@ -46,6 +46,38 @@ Requests 1–19 are in the previous plan. New ones:
 29. (2026-10-11) After all checks, close the emulator started for this session and verify that its processes ended,
     so it does not keep consuming the owner's computer resources. Leave unrelated emulator instances alone.
 
+30. (2026-10-13) Hosting of the files we build or mirror (dictionaries the app cannot download from their authors) is
+    postponed with no date. Keep it in the open items and remind the owner of it whenever they ask what is left open
+    or unfinished in this task.
+31. (2026-10-13) The agent compares the APK size per ABI with the last release itself.
+32. (2026-10-13) The agent tests on the emulator itself what the stage's "Done when" left to the owner: Japanese
+    behaves as before (regression), an upgrade from the last release keeps every setting and dictionary, and a backup
+    made by the last release restores. The owner cannot check the upgrade on the phone: the release and the debug
+    build are different apps.
+33. (2026-10-13) Check that the 文A (sentence translation) button is off by default, after an upgrade and on a fresh
+    install. Found: it is on by default, as the decision table of `2026-09-29-feedback-after-0.1.4.md` says; asked.
+34. (2026-10-13) Language profiles: a section on the home screen or a screen of its own (not the general settings)
+    with every language profile, turned on or not; a turned-off one shows the dictionaries and technical files (OCR
+    models) it left behind. There up to three languages are chosen for quick switching, shown as flags (emoji or SVG)
+    in the bubble's hold menu; more languages may be turned on.
+35. (2026-10-13) Check what happens when a new language is activated before its dictionaries have downloaded
+    (request 27 built the readiness status; verify it).
+36. (2026-10-13) Downloads must finish after the app is closed, killed or has crashed, or the user can retry them by
+    hand.
+37. (2026-10-13) The items "noticed, not addressed" (transcription variants, IPA tags, odd form-of tags, "walke"
+    before "walk") and the review's skipped navigation callback lost on activity recreation: say what can be done and
+    fix what is ours.
+38. (2026-10-13) Ask the Chinese and Korean questions now; build both after the agent's own emulator testing and the
+    fixes above.
+39. (2026-10-14) The sentence translation button is "the translation button" everywhere (UI strings in 14 locales,
+    docs, KDoc, notes, plans); "文A" was only the owner's hint for the icon.
+40. (2026-10-14) Audit every user-facing text (UI strings in all 14 locales, Russian first; hints and ⓘ texts; docs;
+    release notes) for literal, naive, wordy or storytelling phrasing and rewrite it in the dry tone of software
+    documentation; detailed explanations stay where needed, in the same tone. The v0.2.3 notes are the example of what
+    not to write ("follows the finger again; in 0.2.2 it lagged"): "Fixed the bubble freezing when pulled out from the
+    edge" is enough.
+41. (2026-10-14) Pitch accent colors for Japanese, like the Chinese tone colors (a switch, off by default).
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
@@ -103,6 +135,21 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | A language confirmed on the download screen | Turned on and made active at once; until its main dictionary is installed the home screen shows the missing-dictionary card with the download progress (owner, 2026-10-10) |
 | Installation status placement | The home screen shows the active language's status and a link to the queue; Search and the popup show an explanation and the same link while the language is not ready (owner, 2026-10-11, request 27) |
 | Scanning before installation is ready | Do not start recognition until the mandatory components are ready; show status and a link to the queue immediately (owner, 2026-10-11, request 27) |
+| Languages screen | A screen of its own, "Languages", opened from the home screen. Home keeps a compact card: the quick languages' flags (the active one marked), the active language's installation status and an "All languages" button. The screen lists turned-on languages (status, quick-switch star, turn off), turned-off languages with files (their dictionaries and OCR models with sizes, delete all, turn on) and the rest (turn on, which opens the download screen). The block of turned-off languages moves there from the Dictionaries page, which keeps a link (owner, 2026-10-13, request 34) |
+| Quick languages | At most three: the active language has a star of its own, at most two more are starred on the Languages screen. Making a starred language active swaps the roles (the old active one keeps a star as an ordinary starred language); making an unstarred one active (also a language just turned on) moves the active language's star to it, and the old active one loses its star even when a place is free (owner, 2026-10-13/14) |
+| Flags | Round SVG flags bundled in the app (circle-flags, MIT, with a NOTICE entry; owner, 2026-10-13: "if you want to take someone else's, fine"); with e-ink on, the language's two-letter code replaces the flag (owner, 2026-10-13) |
+| Flag country | A default flag per language (English US, Spanish Spain, Portuguese Brazil, Chinese China, French France); for languages of several countries the Languages screen offers another country (owner, 2026-10-13) |
+| Downloads that stop | A download waits for the network and retries by itself up to three times, resuming where it broke off when the server allows it; dying while downloading (not importing) does not count towards the two-deaths limit. A download that continues or restarts by itself (WorkManager after a crash, a system kill or a force stop) shows no button; one that has stopped for any reason shows "Resume" (from where it broke off when possible) and "Cancel". Cancel stays available at all times (owner, 2026-10-14, request 36) |
+| Transcriptions | Region tags (US, UK, …) are read at import into our own small table (hoshidicts unchanged) and shown in the language's audio region order; duplicates (the same transcription in /…/ and […]) are removed; the list shows the first five and "Show all" (owner, 2026-10-14) |
+| Frequency dictionaries | Built on the phone when a language is turned on: the frequency item downloads wordfreq's word list from the author's GitHub (a pinned commit, checked by SHA-256), converts it into a Yomitan frequency dictionary (top ~100 K, as `scripts/frequency/`) and imports it; no hosting needed (owner, 2026-10-14; replaces the hosting of wordfreq dictionaries in the open items) |
+| Chinese tone colors | Pinyin colored by tone (1 red, 2 orange, 3 green, 4 blue, neutral grey) behind a switch in the Chinese block of the Popup settings, off by default (owner, 2026-10-14) |
+| Japanese pitch accent colors | Headword and reading colored by the first pitch accent in dictionary order, and each accent button in its own color: heiban blue, atamadaka red, nakadaka orange, odaka green, kifuku (a downstep in a verb or i-adjective) purple. A switch in the Japanese block of the Popup settings, off by default; needs a pitch accent dictionary (owner, 2026-10-14, request 41) |
+| Chinese script default | Simplified; Traditional when the interface language is Traditional Chinese (owner, 2026-10-14) |
+| KRDICT | Listed as CC BY-SA (a derivative of the NIKL data, ShareAlike), with its source; the recommended Korean dictionary (owner, 2026-10-14) |
+| Hanja dictionary | Built by our script from Unihan (Unicode License; Korean readings and English meanings) and bundled in the APK (~0.2 MB estimated); installed when Korean is turned on (owner, 2026-10-14) |
+| Typed pinyin in search | Found in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"); our own toneless pinyin index built at import; exact tones rank higher (owner, 2026-10-14) |
+| Translation button default | Off for new installs; an upgrade keeps it on for users who never touched the switch (the value is written as on during the upgrade). The Anki field switch is unchanged (owner, 2026-10-13, request 33; changes the "Translation settings" row of `2026-09-29-feedback-after-0.1.4.md`, "both on by default") |
+| Bubble menu languages | Only flags (the active one ringed, the language name for TalkBack); codes on e-ink (owner, 2026-10-13) |
 
 ## Open items (postponed by the owner)
 
@@ -110,9 +157,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 - Bundled Japanese dictionaries (25 MB in the APK): keep them bundled or download them when Japanese is turned on;
   the owner leans to keeping them bundled.
-- Hosting the files we build or mirror (OCR runtime models, wordfreq frequency dictionaries, dictionaries without
-  releases such as OpenRussian and FreeDict conversions): likely a public repository of our own; Hugging Face to be
-  looked at. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
+- Hosting the files we build or mirror (OCR runtime models, dictionaries without releases such as OpenRussian and
+  FreeDict conversions; wordfreq frequency dictionaries are built on the phone since 2026-10-14): likely a public repository of our own; Hugging Face to be
+  looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
+  left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
 
 ## Branches and workflow
@@ -383,6 +431,15 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-10-14: requests 30–41 and the owner's answers: the Languages screen with quick languages and flags, downloads
+  that resume or offer "Resume", transcription regions, frequency dictionaries built on the phone from wordfreq (no
+  hosting), Chinese tone colors and typed pinyin, Japanese pitch accent colors, the Chinese script default, KRDICT
+  as CC BY-SA, a bundled hanja dictionary, the translation button off for new installs only (changes a row of
+  `2026-09-29-feedback-after-0.1.4.md`), "translation button" instead of "文A button", and a tone audit of all texts.
+  Hosting is postponed with no date. Order of work: the agent's emulator checks (APK size, Japanese regression,
+  upgrade and backup from v0.2.3, request 35, downloads), fixes of our own items from request 37, then requests
+  33–41, then Chinese and Korean.
 
 - 2026-10-11: request 25 implemented: bundled imports are identified by source and cancelled before file deletion;
   dictionary media reads select and lock their language; sentence parsing uses the captured note language; the audio
