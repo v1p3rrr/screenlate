@@ -19,7 +19,7 @@
  *   labels: { ... }                localized strings
  * }
  *
- * Sentence translation (setTranslation): 文A sits in the header before the OCR chip, or without the header in the first
+ * Sentence translation (setTranslation): the translation button sits in the header before the OCR chip, or without the header in the first
  * entry's buttons. A tap asks the app (onTranslate with a request number) and shows a block under the header, which
  * showTranslation fills; a second tap hides it. The block belongs to the first view: a new word drops it, a pushed
  * view hides it until back returns.
@@ -81,7 +81,7 @@ const Popup = (() => {
     let actions = { anki: false, audio: false };
     let noteConfig = { markers: null, frequencyModes: {} };
     let menu = null;
-    /** Whether 文A shows. */
+    /** Whether the translation button shows. */
     let translationEnabled = false;
     /** The first view's translation: null, or { request, state: 'loading' | 'done' | 'error', text, service, error }. */
     let translation = null;
@@ -240,7 +240,7 @@ const Popup = (() => {
         orderInlineButtons(actions);
     }
 
-    /** 文A, then ⚠, then ✕ at the start of the first entry's buttons, whichever came first. */
+    /** The translation button, then ⚠, then ✕ at the start of the first entry's buttons, whichever came first. */
     function orderInlineButtons(actions) {
         const first = [actions.querySelector(':scope > .action-translate'), actions.querySelector(':scope > .ocr-warning')];
         actions.prepend(...first.filter(Boolean));
@@ -250,7 +250,7 @@ const Popup = (() => {
 
     // region Translation
 
-    /** 文A on the first view while it has something to translate. */
+    /** The translation button on the first view while it has something to translate. */
     function translatable(state) {
         return translationEnabled && history.length === 0 && Boolean(state) && !state.message;
     }
@@ -295,7 +295,7 @@ const Popup = (() => {
         translationBox.replaceChildren(text);
     }
 
-    /** Without the header, 文A goes to the first entry's buttons, before ⚠ and ✕. */
+    /** Without the header, the translation button goes to the first entry's buttons, before ⚠ and ✕. */
     function placeInlineTranslate(state, shown, pressed, label) {
         const actions = content.querySelector('.entry .entry-actions');
         let inline = content.querySelector('.entry-actions > .action-translate');
@@ -324,7 +324,7 @@ const Popup = (() => {
         drawTranslation(current);
     }
 
-    /** { enabled }: whether 文A shows. */
+    /** { enabled }: whether the translation button shows. */
     function setTranslation(config) {
         translationEnabled = Boolean(config?.enabled);
         if (!translationEnabled) translation = null;

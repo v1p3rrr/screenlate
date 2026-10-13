@@ -18,9 +18,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +42,10 @@ import com.vpr.screenlate.ui.theme.AccentDefaults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.Collator
 import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -51,17 +57,31 @@ class FirstRunViewModel @Inject constructor(private val switch: LanguageSwitch) 
 
     val preselected: Language get() = switch.bundledLanguage
 
-    /** A language with its dictionaries installed is turned on at once ([onDone]); another opens its download screen. */
-    fun choose(language: Language, onSetup: (Language) -> Unit, onDone: () -> Unit) {
-        viewModelScope.launch {
+    private val steps = Channel<FirstRunStep>(Channel.BUFFERED)
+
+    /** Where to go after [choose]; delivered once, also to a screen recreated while the check ran. */
+    val next: Flow<FirstRunStep> = steps.receiveAsFlow()
+
+    private var choosing: Job? = null
+
+    /** A language with its dictionaries installed is turned on at once; another opens its download screen. */
+    fun choose(language: Language) {
+        if (choosing?.isActive == true) return
+        choosing = viewModelScope.launch {
             if (switch.needsDownloads(language)) {
-                onSetup(language)
+                steps.send(FirstRunStep.Setup(language))
             } else {
                 switch.turnOn(language, firstRun = true)
-                onDone()
+                steps.send(FirstRunStep.Done)
             }
         }
     }
+}
+
+sealed interface FirstRunStep {
+    data class Setup(val language: Language) : FirstRunStep
+
+    data object Done : FirstRunStep
 }
 
 /** Asked once on a fresh install: the language the user learns. */
@@ -70,6 +90,19 @@ class FirstRunViewModel @Inject constructor(private val switch: LanguageSwitch) 
 fun FirstRunScreen(onSetup: (Language) -> Unit, onDone: () -> Unit, viewModel: FirstRunViewModel = hiltViewModel()) {
     var chosen by rememberSaveable { mutableStateOf(viewModel.preselected) }
     var busy by remember { mutableStateOf(false) }
+    val currentOnSetup by rememberUpdatedState(onSetup)
+    val currentOnDone by rememberUpdatedState(onDone)
+    LaunchedEffect(viewModel) {
+        viewModel.next.collect { step ->
+            when (step) {
+                is FirstRunStep.Setup -> {
+                    busy = false
+                    currentOnSetup(step.language)
+                }
+                FirstRunStep.Done -> currentOnDone()
+            }
+        }
+    }
     Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.app_title)) }) }) { padding ->
         Column(
             modifier = Modifier
@@ -98,7 +131,7 @@ fun FirstRunScreen(onSetup: (Language) -> Unit, onDone: () -> Unit, viewModel: F
             Button(
                 onClick = {
                     busy = true
-                    viewModel.choose(chosen, onSetup = { busy = false; onSetup(it) }, onDone = onDone)
+                    viewModel.choose(chosen)
                 },
                 enabled = !busy,
                 modifier = Modifier.fillMaxWidth(),

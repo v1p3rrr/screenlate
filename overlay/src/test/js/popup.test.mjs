@@ -738,7 +738,7 @@ test('going back to a link view under the top one keeps the status of the last u
 
 const translateLabels = { ...labels, translate: 'Translate the sentence', translating: 'Translating…' };
 
-test('文A stays hidden until the app turns it on', () => {
+test('the translation button stays hidden until the app turns it on', () => {
     Popup.render(state({ labels: translateLabels }));
     const button = page.document.getElementById('translate');
     assert.equal(button.hidden, true);
@@ -903,7 +903,7 @@ test('a pushed view hides the translation until back returns to the first view',
     assert.match(box.textContent, /I like cats/);
 });
 
-test('without the header 文A sits first in the first entry, before ⚠ and ✕', () => {
+test('without the header the translation button sits first in the first entry, before ⚠ and ✕', () => {
     const failed = { hideSource: true, ocrError: 'Offline.', labels: { ...translateLabels, ocrError: 'Cloud recognition' } };
     Popup.render(state({ hideSource: true, labels: translateLabels }));
     Popup.setTranslation({ enabled: true });

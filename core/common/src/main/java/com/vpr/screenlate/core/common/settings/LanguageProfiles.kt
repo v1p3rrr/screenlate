@@ -48,16 +48,22 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
     /**
      * Decides once whether this is a first run, before anything else writes the settings. Settings without the language
      * state come from a version before languages or from a fresh install: any settings or [hasDictionaries] mean an
-     * upgrade, which keeps Japanese alone; neither means a first run, which asks ([firstRunPending]).
+     * upgrade, which keeps Japanese alone; neither means a first run, which asks ([firstRunPending]). [onUpgrade] changes
+     * other settings of an upgrade in the same write, such as a default that changed for new installs only.
      */
-    suspend fun settleFirstRun(hasDictionaries: suspend () -> Boolean) {
+    suspend fun settleFirstRun(onUpgrade: (MutablePreferences) -> Unit = {}, hasDictionaries: suspend () -> Boolean) {
         try {
             val prefs = dataStore.data.first()
             if (prefs[TURNED_ON] != null || prefs[FIRST_RUN] != null) return
             val upgrade = prefs.asMap().isNotEmpty() || hasDictionaries()
             dataStore.edit { edited ->
                 if (edited[TURNED_ON] != null || edited[FIRST_RUN] != null) return@edit
-                if (upgrade) write(edited, LanguageProfilesState.DEFAULT) else edited[FIRST_RUN] = true
+                if (upgrade) {
+                    write(edited, LanguageProfilesState.DEFAULT)
+                    onUpgrade(edited)
+                } else {
+                    edited[FIRST_RUN] = true
+                }
             }
         } finally {
             settled.complete(Unit)

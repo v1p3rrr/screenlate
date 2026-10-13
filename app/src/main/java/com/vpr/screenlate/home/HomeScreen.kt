@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,6 +96,8 @@ fun HomeScreen(
     val settingsBadge = rememberBackgroundTipBadge()
     val openAccessibilitySettings = rememberOpenAccessibilitySettings()
     LaunchedEffect(Unit) { updates.checkIfDue() }
+    val openLanguageSetup by rememberUpdatedState(onOpenLanguageSetup)
+    LaunchedEffect(viewModel) { viewModel.languageSetup.collect { openLanguageSetup(it) } }
     LifecycleResumeEffect(Unit) {
         serviceEnabled = OverlayServiceStatus.isEnabled(context)
         viewModel.refresh()
@@ -154,7 +157,7 @@ fun HomeScreen(
                     languages = Language.entries - languages.turnedOn.toSet(),
                     onPick = { language ->
                         addingLanguage = false
-                        viewModel.add(language, onSetup = onOpenLanguageSetup)
+                        viewModel.add(language)
                     },
                     onDismiss = { addingLanguage = false },
                 )

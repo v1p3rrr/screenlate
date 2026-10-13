@@ -13,6 +13,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
@@ -116,7 +117,7 @@ class BackupManager @Inject constructor(
                 val sections = BackupSection.entries.filter { it != BackupSection.DICTIONARY_FILES || withFiles.isNotEmpty() }
                 val contents = BackupArchive.Contents(
                     manifest = BackupManifest(appVersion = BuildConfig.VERSION_NAME, createdAt = System.currentTimeMillis(), sections = sections),
-                    settings = BackupPreferences.encode(preferences.data.first()),
+                    settings = BackupPreferences.encode(TranslationSettingsRepository.withButton(preferences.data.first())),
                     dictionaries = BackupDictionaryList(
                         dictionaries = installed.map { BackupDictionary.of(it, files = it.id in withFiles) },
                         sortDictionary = title(sortIds[Language.JAPANESE]),

@@ -16,7 +16,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-/** Sentence translation for the popup's 文A and for the notes' `{sentence-translation}`. */
+/** Sentence translation for the popup's translation button and for the notes' `{sentence-translation}`. */
 @Singleton
 class SentenceTranslation @Inject constructor(
     val translator: SentenceTranslator,

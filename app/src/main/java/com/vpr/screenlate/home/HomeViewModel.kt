@@ -35,6 +35,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +44,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -121,10 +124,18 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { profiles.setActive(language) }
     }
 
-    /** Turns [language] on at once when its dictionaries are installed; otherwise [onSetup] opens its download screen. */
-    fun add(language: Language, onSetup: (Language) -> Unit) {
+    private val setupRequests = Channel<Language>(Channel.BUFFERED)
+
+    /**
+     * Languages whose download screen should open. Each is delivered once, also to a screen recreated while the check
+     * ran, which a callback captured from the old screen would miss.
+     */
+    val languageSetup: Flow<Language> = setupRequests.receiveAsFlow()
+
+    /** Turns [language] on at once when its dictionaries are installed; otherwise asks for its download screen. */
+    fun add(language: Language) {
         viewModelScope.launch {
-            if (switch.needsDownloads(language)) onSetup(language) else switch.turnOn(language)
+            if (switch.needsDownloads(language)) setupRequests.send(language) else switch.turnOn(language)
         }
     }
 

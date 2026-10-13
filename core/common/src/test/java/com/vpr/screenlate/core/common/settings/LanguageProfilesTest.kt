@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.common.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -82,6 +83,20 @@ class LanguageProfilesTest {
         withDictionaries.settleFirstRun { true }
         assertThat(withDictionaries.firstRunPending.first()).isFalse()
         assertThat(withDictionaries.current()).isEqualTo(LanguageProfilesState.DEFAULT)
+    }
+
+    @Test
+    fun `only an upgrade changes other settings`() = runBlocking {
+        val marker = booleanPreferencesKey("upgrade_marker")
+        profiles.settleFirstRun(onUpgrade = { it[marker] = true }) { false }
+        assertThat(memory.data.first()[marker]).isNull()
+
+        val upgraded = MemoryDataStore()
+        LanguageProfiles(upgraded).settleFirstRun(onUpgrade = { it[marker] = true }) { true }
+        assertThat(upgraded.data.first()[marker]).isTrue()
+        upgraded.edit { it.remove(marker) }
+        LanguageProfiles(upgraded).settleFirstRun(onUpgrade = { it[marker] = true }) { true }
+        assertThat(upgraded.data.first()[marker]).isNull()
     }
 
     @Test

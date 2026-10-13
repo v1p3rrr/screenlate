@@ -7,6 +7,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
@@ -53,7 +54,11 @@ class ScreenlateApplication : Application(), Configuration.Provider {
         super.onCreate()
         MainScope().launch(Dispatchers.IO) {
             // Before anything writes the settings: an install without any is a first run.
-            runCatching { languageProfiles.settleFirstRun { dictionaryRepository.getAll().isNotEmpty() } }
+            runCatching {
+                languageProfiles.settleFirstRun(onUpgrade = TranslationSettingsRepository::keepButtonOn) {
+                    dictionaryRepository.getAll().isNotEmpty()
+                }
+            }
                 .onFailure { Log.w(TAG, "Settling the first run failed: ${it.javaClass.simpleName}") }
             dictionaryImports.installBundled()
             launch {

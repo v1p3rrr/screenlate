@@ -225,7 +225,7 @@
     <string name="appearance_title">Apariencia</string>
     <string name="settings_appearance_summary">Tema, colores, e-ink, idioma</string>
     <string name="settings_popup_summary">Texto reconocido, ocultación automática, fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
-    <string name="settings_translation_summary">Botón 文A, notas, servicios, idioma</string>
+    <string name="settings_translation_summary">Botón de traducción, notas, servicios, idioma</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
     <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
     <string name="about_title">Acerca de</string>
@@ -464,8 +464,8 @@
     <string name="translation_sentence_title">Traducción de la frase</string>
     <string name="translation_hint">Un servicio en línea gratuito traduce la frase en la que está la palabra. La traducción es automática y puede ser inexacta, y la frase se envía al servidor del servicio.</string>
     <string name="translation_info">Los servicios se usan sin cuenta: Bing (el sitio web de Microsoft Translator), Google Traductor y el traductor integrado en Microsoft Edge. No publican sus límites; si uno se niega, el siguiente toma el relevo. La primera solicitud a Bing en una hora tarda alrededor de un segundo más, porque antes carga una clave de su sitio web.</string>
-    <string name="translation_button">Botón 文A</string>
-    <string name="translation_button_hint">En la ventana emergente, 文A muestra la traducción de la frase bajo la cabecera; un segundo toque la oculta. Si el texto reconocido está oculto, 文A aparece entre los botones de la primera entrada.</string>
+    <string name="translation_button">Botón de traducción</string>
+    <string name="translation_button_hint">Traduce la frase y muestra la traducción bajo la cabecera de la ventana emergente; un segundo toque la oculta. Si el texto reconocido está oculto, el botón aparece entre los botones de la primera entrada.</string>
     <string name="translation_anki">Traducción en las notas de Anki</string>
     <string name="translation_anki_hint">Rellena {sentence-translation} con la traducción que muestra la ventana emergente, o pide una y espera hasta 5 segundos. Sin traducción, el campo queda vacío.</string>
     <string name="translation_services_title">Servicios</string>
@@ -574,7 +574,7 @@
     <string name="backup_section_audio">Audio</string>
     <string name="backup_section_audio_hint">Fuentes de pronunciación</string>
     <string name="backup_section_translation">Traducción</string>
-    <string name="backup_section_translation_hint">Botón 文A, traducción en las notas, servicios, idioma, idiomas favoritos</string>
+    <string name="backup_section_translation_hint">Botón de traducción, traducción en las notas, servicios, idioma, idiomas favoritos</string>
     <string name="backup_section_dictionary_list">Orden e interruptores de los diccionarios</string>
     <plurals name="backup_section_dictionary_list_hint">
         <item quantity="one">%d diccionario: orden, activado o no, idiomas y el que se usa para ordenar. Se aplica a los instalados.</item>
@@ -627,7 +627,7 @@
     <string name="reset_lookup_text">La longitud de análisis, las entradas por búsqueda y los demás ajustes de búsqueda vuelven a como estaban tras la instalación.</string>
     <string name="reset_anki_text">El mazo, el tipo de nota, las plantillas de campos, las etiquetas, la gestión de duplicados y las fuentes de audio vuelven a como estaban tras la instalación. En AnkiDroid no cambia nada.</string>
     <string name="reset_popup_text">El texto reconocido arriba, la copia de definiciones, la ocultación automática, la fuente elegida, el tamaño y el peso del texto y el CSS personalizado vuelven a como estaban tras la instalación. Las fuentes descargadas y añadidas siguen instaladas.</string>
-    <string name="reset_translation_text">El botón 文A, la traducción en las notas, el orden y los interruptores de los servicios, el idioma y los idiomas favoritos vuelven a como estaban tras la instalación.</string>
+    <string name="reset_translation_text">El botón de traducción, la traducción en las notas, el orden y los interruptores de los servicios, el idioma y los idiomas favoritos vuelven a como estaban tras la instalación.</string>
     <string name="reset_appearance_text">El tema vuelve a seguir al sistema, los colores vuelven a ser los propios de Screenlate y el modo e-ink se desactiva; los tamaños que había aumentado vuelven a ser los de antes. El idioma de la app se mantiene.</string>
     <string name="reset_background_text">La notificación que mantiene viva la burbuja se desactiva. Los ajustes de batería y de inicio son de Android y quedan como están.</string>
     <string name="reset_dictionaries_tooltip">Restablecer diccionarios</string>
@@ -647,7 +647,7 @@
     <string name="accessibility_disclosure_reads_title">Qué lee</string>
     <string name="accessibility_disclosure_reads">• Una captura de pantalla, cuando tocas la burbuja o la sacas. Con «Solo texto de las apps», solo para una imagen en una nota de Anki.\n• El texto que las apps muestran en pantalla, en esos mismos momentos, si «Leer el texto de las apps» o «Solo texto de las apps» está activado.\n• Qué app está abierta y dónde están el teclado y las barras del sistema: para ocultar la burbuja en las apps que elegiste y mantenerla fuera de las barras.</string>
     <string name="accessibility_disclosure_sends_title">Adónde va</string>
-    <string name="accessibility_disclosure_sends">• La captura va al reconocimiento de texto en la nube, salvo que en «Motores» esté elegido «Dispositivo» o esté activado «Solo texto de las apps». El reconocimiento en el dispositivo no envía nada.\n• La frase va a un traductor en línea cuando tocas 文A o una plantilla de nota pide su traducción.\n• La palabra y su lectura van a las fuentes de audio que elegiste, para la pronunciación.\n• Las notas van a AnkiDroid en este dispositivo.</string>
+    <string name="accessibility_disclosure_sends">• La captura va al reconocimiento de texto en la nube, salvo que en «Motores» esté elegido «Dispositivo» o esté activado «Solo texto de las apps». El reconocimiento en el dispositivo no envía nada.\n• La frase va a un traductor en línea cuando tocas el botón de traducción o una plantilla de nota pide su traducción.\n• La palabra y su lectura van a las fuentes de audio que elegiste, para la pronunciación.\n• Las notas van a AnkiDroid en este dispositivo.</string>
     <string name="accessibility_disclosure_outro">El servicio no toca ni escribe nada por ti. Lo que lee no se guarda: la captura se queda en memoria solo hasta que la burbuja vuelve a acoplarse al borde, una nota recibe solo la parte de la captura que eliges y los registros nunca contienen texto de la pantalla.</string>
     <string name="accessibility_disclosure_agree">Aceptar</string>
     <string name="accessibility_disclosure_later">Ahora no</string>

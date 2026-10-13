@@ -223,7 +223,7 @@
     <string name="appearance_title">Görünüm</string>
     <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
     <string name="settings_popup_summary">Tanınan metin, otomatik gizleme, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
-    <string name="settings_translation_summary">文A düğmesi, notlar, hizmetler, dil</string>
+    <string name="settings_translation_summary">Çeviri düğmesi, notlar, hizmetler, dil</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
     <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
     <string name="about_title">Hakkında</string>
@@ -462,8 +462,8 @@
     <string name="translation_sentence_title">Cümle çevirisi</string>
     <string name="translation_hint">Kelimenin geçtiği cümleyi ücretsiz bir çevrimiçi hizmet çevirir. Çeviri makine çevirisidir ve hatalı olabilir; cümle, hizmetin sunucusuna gönderilir.</string>
     <string name="translation_info">Hizmetler hesap olmadan kullanılır: Bing (Microsoft Translator sitesi), Google Çeviri ve Microsoft Edge’e yerleşik çevirmen. Sınırlarını yayımlamazlar; biri reddederse sıradaki devralır. Bing’e bir saat içindeki ilk istek yaklaşık bir saniye daha uzun sürer, çünkü Bing önce sitesinden bir anahtar yükler.</string>
-    <string name="translation_button">文A düğmesi</string>
-    <string name="translation_button_hint">Açılır pencerede 文A, cümlenin çevirisini başlığın altında gösterir; ikinci dokunuş gizler. Tanınan metin gizliyse 文A, ilk maddenin düğmeleri arasında yer alır.</string>
+    <string name="translation_button">Çeviri düğmesi</string>
+    <string name="translation_button_hint">Cümleyi çevirir ve çeviriyi açılır pencerenin başlığının altında gösterir; ikinci dokunuş gizler. Tanınan metin gizliyse düğme, ilk maddenin düğmeleri arasında yer alır.</string>
     <string name="translation_anki">Anki notlarında çeviri</string>
     <string name="translation_anki_hint">{sentence-translation} alanını açılır pencerede gösterilen çeviriyle doldurur ya da yeni bir çeviri ister ve 5 saniyeye kadar bekler. Çeviri yoksa alan boş kalır.</string>
     <string name="translation_services_title">Hizmetler</string>
@@ -571,7 +571,7 @@
     <string name="backup_section_audio">Ses</string>
     <string name="backup_section_audio_hint">Telaffuz kaynakları</string>
     <string name="backup_section_translation">Çeviri</string>
-    <string name="backup_section_translation_hint">文A düğmesi, notlarda çeviri, hizmetler, dil, favori diller</string>
+    <string name="backup_section_translation_hint">Çeviri düğmesi, notlarda çeviri, hizmetler, dil, favori diller</string>
     <string name="backup_section_dictionary_list">Sözlük sırası ve anahtarları</string>
     <plurals name="backup_section_dictionary_list_hint">
         <item quantity="one">%d sözlük: sıra, açık/kapalı durumu, diller ve sıralama sözlüğü. Yüklü olanlara uygulanır.</item>
@@ -620,7 +620,7 @@
     <string name="reset_lookup_text">Tarama uzunluğu, arama başına madde ve diğer arama ayarları kurulumdan sonraki hâline döner.</string>
     <string name="reset_anki_text">Deste, not türü, alan şablonları, etiketler, yinelenenlerin işlenmesi ve ses kaynakları kurulumdan sonraki hâline döner. AnkiDroid’de hiçbir şey değişmez.</string>
     <string name="reset_popup_text">Üstteki tanınan metin, tanım kopyalama, otomatik gizleme, yazı tipi seçimi, metin boyutu ve kalınlığı ve özel CSS kurulumdan sonraki hâline döner. İndirilen ve eklenen yazı tipleri yüklü kalır.</string>
-    <string name="reset_translation_text">文A düğmesi, notlardaki çeviri, hizmetlerin sırası ve anahtarları, dil ve favori diller kurulumdan sonraki hâline döner.</string>
+    <string name="reset_translation_text">Çeviri düğmesi, notlardaki çeviri, hizmetlerin sırası ve anahtarları, dil ve favori diller kurulumdan sonraki hâline döner.</string>
     <string name="reset_appearance_text">Tema yeniden sistemi izler, renkler Screenlate’in kendi renklerine döner ve e-ink modu kapanır; büyüttüğü boyutlar eski hâline döner. Uygulama dili kalır.</string>
     <string name="reset_background_text">Baloncuğu ayakta tutan bildirim kapanır. Pil ve otomatik başlatma ayarları Android’e aittir ve olduğu gibi kalır.</string>
     <string name="reset_dictionaries_tooltip">Sözlükleri sıfırla</string>
@@ -640,7 +640,7 @@
     <string name="accessibility_disclosure_reads_title">Neyi okur</string>
     <string name="accessibility_disclosure_reads">• Ekran görüntüsü: baloncuğa dokunduğunuzda veya onu çektiğinizde. “Yalnızca uygulama metni” açıkken yalnızca Anki notundaki resim için.\n• Uygulamaların ekranda gösterdiği metin: aynı anlarda, “Uygulama metnini oku” veya “Yalnızca uygulama metni” açıksa.\n• Hangi uygulamanın açık olduğu, klavyenin ve sistem çubuklarının nerede olduğu: baloncuğu seçtiğiniz uygulamalarda gizlemek ve çubuklardan uzak tutmak için.</string>
     <string name="accessibility_disclosure_sends_title">Nereye gider</string>
-    <string name="accessibility_disclosure_sends">• Ekran görüntüsü buluttaki metin tanımaya gider; “Motorlar” ayarında “Cihaz” seçiliyse veya “Yalnızca uygulama metni” açıksa gitmez. Cihazdaki tanıma hiçbir şey göndermez.\n• Cümle, 文A’ya dokunduğunuzda veya bir not şablonu çevirisini istediğinde çevrimiçi bir çevirmene gider.\n• Kelime ve okunuşu, telaffuz için seçtiğiniz ses kaynaklarına gider.\n• Notlar bu cihazdaki AnkiDroid’e gider.</string>
+    <string name="accessibility_disclosure_sends">• Ekran görüntüsü buluttaki metin tanımaya gider; “Motorlar” ayarında “Cihaz” seçiliyse veya “Yalnızca uygulama metni” açıksa gitmez. Cihazdaki tanıma hiçbir şey göndermez.\n• Cümle, çeviri düğmesine dokunduğunuzda veya bir not şablonu çevirisini istediğinde çevrimiçi bir çevirmene gider.\n• Kelime ve okunuşu, telaffuz için seçtiğiniz ses kaynaklarına gider.\n• Notlar bu cihazdaki AnkiDroid’e gider.</string>
     <string name="accessibility_disclosure_outro">Hizmet sizin yerinize hiçbir şeye dokunmaz ve hiçbir şey yazmaz. Okuduğu şey kaydedilmez: ekran görüntüsü yalnızca baloncuk yeniden kenara yerleşene kadar bellekte kalır, nota ekran görüntüsünün yalnızca seçtiğiniz kısmı girer ve günlükler asla ekrandaki metni içermez.</string>
     <string name="accessibility_disclosure_agree">Kabul et</string>
     <string name="accessibility_disclosure_later">Şimdi değil</string>

@@ -260,7 +260,7 @@ a {
     font-weight: var(--bold-weight);
 }
 
-/* Sentence translation: 文A and the block under the header */
+/* Sentence translation: the translation button and the block under the header */
 
 .icon-button[aria-pressed="true"] {
     background: var(--chip-bg);

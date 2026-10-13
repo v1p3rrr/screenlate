@@ -73,7 +73,7 @@ class PopupAppearanceViewModel @Inject constructor(
     val overlay: StateFlow<OverlaySettings?> =
         overlaySettings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, overlaySettings.cachedSettings)
 
-    /** For the 文A switch, which the Translation page has too. */
+    /** For the translation button switch, which the Translation page has too. */
     val translation: StateFlow<TranslationSettings?> =
         translationSettings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, translationSettings.cachedSettings)
 
