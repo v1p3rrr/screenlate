@@ -13,6 +13,8 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import java.text.Collator
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,27 @@ internal fun downloadsOf(
     }
 }
 
+/** An installed recognition model with the catalog's name for it. */
+data class LeftoverModel(val id: String, val title: String, val bytes: Long)
+
+/**
+ * The files left by a language that is not turned on: its dictionaries (with [sizes] by id) and the recognition models
+ * no turned-on language uses. [language] is null for a code this version does not support.
+ */
+data class LanguageLeftovers(
+    val code: String,
+    val dictionaries: List<DictionaryEntity>,
+    val models: List<LeftoverModel>,
+    val sizes: Map<Long, Long>,
+) {
+    val language: Language? get() = Language.of(code)
+
+    /** Null until every dictionary's size is known. */
+    val bytes: Long?
+        get() = dictionaries.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }
+            ?.sumOf { it!! }?.plus(models.sumOf { it.bytes })
+}
+
 /**
  * The files a language brings: the dictionaries whose source language it is, and the recognition models of its catalog
  * entries that no other turned-on language uses. Dictionaries without a language serve every language and never
@@ -60,6 +83,36 @@ class LanguageFiles @Inject constructor(
         val others = profiles.state.first().turnedOn.map { it.code } - code
         val ids = modelsOnlyFor(code, others, withContext(Dispatchers.IO) { catalog.localCatalog() }.entries)
         return store.models.value.filter { it.id in ids }
+    }
+
+    /**
+     * The languages not in [turnedOn] that still have files, ordered by name: supported ones first, then codes this
+     * version does not support.
+     */
+    suspend fun leftovers(turnedOn: List<Language>): List<LanguageLeftovers> {
+        val on = turnedOn.map { it.code }
+        val dictionaries = repository.getAll().filter { it.sourceLanguage != null && it.sourceLanguage !in on }
+        val entries = withContext(Dispatchers.IO) { catalog.localCatalog() }.entries
+        val installed = store.models.value
+        val codes = (dictionaries.mapNotNull { it.sourceLanguage } + entries.filter { it.isModel }.map { it.sourceLanguage })
+            .filter { it !in on }
+            .distinct()
+        val sizes = repository.sizes(dictionaries)
+        val locale = Locale.getDefault()
+        val collator = Collator.getInstance(locale)
+        return withContext(Dispatchers.IO) {
+            codes.mapNotNull { code ->
+                val ids = modelsOnlyFor(code, on, entries)
+                val models = installed.filter { it.id in ids }.map { model ->
+                    LeftoverModel(model.id, entries.firstOrNull { it.model == model.id }?.displayTitle(locale) ?: model.id, model.bytes)
+                }
+                val own = dictionaries.filter { it.sourceLanguage == code }
+                if (own.isEmpty() && models.isEmpty()) null else LanguageLeftovers(code, own, models, sizes)
+            }
+        }.sortedWith(
+            compareBy<LanguageLeftovers> { it.language == null }
+                .thenBy(collator) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) },
+        )
     }
 
     /** Whether the language has no files or unfinished downloads that could install them. */

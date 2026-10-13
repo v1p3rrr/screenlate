@@ -38,6 +38,8 @@ class BackupFormatTest {
     fun `each language's settings go with their page and the turned-on languages with the general ones`() {
         assertThat(BackupPreferences.sectionOf("languages_turned_on")).isEqualTo(BackupSection.GENERAL)
         assertThat(BackupPreferences.sectionOf("language_active")).isEqualTo(BackupSection.GENERAL)
+        assertThat(BackupPreferences.sectionOf("languages_starred")).isEqualTo(BackupSection.GENERAL)
+        assertThat(BackupPreferences.sectionOf("language_flags")).isEqualTo(BackupSection.GENERAL)
         assertThat(BackupPreferences.sectionOf("anki_settings_en")).isEqualTo(BackupSection.ANKI)
         assertThat(BackupPreferences.sectionOf("audio_settings_en")).isEqualTo(BackupSection.AUDIO)
         assertThat(BackupPreferences.sectionOf("lookup_scan_length_en")).isEqualTo(BackupSection.LOOKUP)

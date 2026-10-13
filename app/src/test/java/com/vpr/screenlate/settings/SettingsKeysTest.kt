@@ -36,7 +36,7 @@ class SettingsKeysTest {
         "accessibility_agreed",
     )
     /** Turned-on languages: kept like the dictionaries they need. */
-    private val languages = listOf("languages_turned_on", "language_active")
+    private val languages = listOf("languages_turned_on", "language_active", "languages_starred", "language_flags")
     private val kept = languages + listOf(
         "sort_dictionary_id", "sort_dictionary_id_en", "anki_settings_xx", "bundled_dictionaries_installed", "bundled_dictionaries_declined",
         "bundled_dictionaries_declined_checked", "bundled_dictionaries_records", "bundled_dictionaries_repair",

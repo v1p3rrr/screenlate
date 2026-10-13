@@ -7,6 +7,7 @@ object JapaneseSupport : LanguageSupport {
     override val glyph = "あ"
     override val wordSeparator = ""
     override val ocrScript = OcrScript.JAPANESE
+    override val flagCountries = listOf("jp")
     override val searchResolution = SearchResolution.LETTER
     override val hasCharacterEntries = true
     override val convertsLatin = true

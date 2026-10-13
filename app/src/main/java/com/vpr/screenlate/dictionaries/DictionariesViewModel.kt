@@ -21,7 +21,6 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
-import com.vpr.screenlate.languages.LanguageFiles
 import com.vpr.screenlate.languages.ShownLanguage
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,7 +127,6 @@ class DictionariesViewModel @Inject constructor(
     private val cache: DictionariesStateCache,
     catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
-    private val languageFiles: LanguageFiles,
 ) : ViewModel() {
     private val shownLanguage = ShownLanguage(profiles, viewModelScope)
     private val copyError = MutableStateFlow<String?>(null)
@@ -309,22 +307,6 @@ class DictionariesViewModel @Inject constructor(
                 } catch (e: Exception) {
                     // E.g. a full storage, where the settings or the registry cannot be written.
                     Log.w(TAG, "Deleting a dictionary failed", e)
-                    mutableDeleteError.value = e.message ?: e.javaClass.simpleName
-                }
-            }
-        }
-    }
-
-    /** Deletes every dictionary of a language that is not turned on; leaving the screen does not stop it. */
-    fun deleteLanguage(code: String) {
-        viewModelScope.launch {
-            withContext(NonCancellable) {
-                try {
-                    languageFiles.delete(code)
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "Deleting the dictionaries of a language failed", e)
                     mutableDeleteError.value = e.message ?: e.javaClass.simpleName
                 }
             }

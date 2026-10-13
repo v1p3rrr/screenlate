@@ -105,6 +105,8 @@ object BackupPreferences {
         "update_announce",
         LanguageProfiles.TURNED_ON.name,
         LanguageProfiles.ACTIVE.name,
+        LanguageProfiles.STARRED.name,
+        LanguageProfiles.FLAGS.name,
     )
 
     /**

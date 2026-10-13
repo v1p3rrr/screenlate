@@ -63,6 +63,12 @@ interface LanguageSupport {
     /** A common word for the audio sources' test. */
     val audioTestWord: String
 
+    /**
+     * Countries whose round flag may stand for the language (ISO 3166-1 alpha-2, lower case), the default first; the
+     * Languages screen offers the others. Each has a `flag_<country>` drawable.
+     */
+    val flagCountries: List<String>
+
     /** Regions of Wiktionary recordings in their default order; empty where the file titles name none. */
     val audioRegions: List<AudioRegion> get() = emptyList()
 

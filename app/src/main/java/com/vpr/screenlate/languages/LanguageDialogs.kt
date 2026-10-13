@@ -28,25 +28,8 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 
-/** The languages that can be turned on; picking one turns it on or opens its download screen. */
-@Composable
-fun AddLanguageDialog(languages: List<Language>, onPick: (Language) -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.home_language_add)) },
-        text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                languages.forEach { language ->
-                    TextButton(onClick = { onPick(language) }, modifier = Modifier.fillMaxWidth()) {
-                        Text(language.displayName(), modifier = Modifier.fillMaxWidth())
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
-    )
-}
+/** Turning [language] off asks about its files, [filesBytes] on disk; null when it has none. */
+data class TurnOffRequest(val language: Language, val filesBytes: Long?)
 
 /** Turning [language] off keeps its settings; [filesBytes] is zero for downloads only, null for no files or downloads. */
 @Composable

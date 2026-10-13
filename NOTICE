@@ -58,6 +58,11 @@ Copyright (c) Google LLC.
   (app/src/debug/res/drawable/ic_launcher_*.xml), and the "translate" icon of the popup page
   (overlay/src/main/assets/popup/popup.js).
 
+circle-flags (https://github.com/HatScripts/circle-flags), MIT License,
+Copyright (c) 2026 HatScripts.
+  The round flags in overlay/src/main/res/drawable/flag_*.xml, converted from its SVG files
+  by scripts/flags/circle_flags.py.
+
 Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
 licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
 (https://github.com/mikepenz/AboutLibraries), Apache License 2.0.

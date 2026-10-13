@@ -35,6 +35,7 @@ import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.common.settings.ThemeMode
 import com.vpr.screenlate.core.common.settings.isDark
 import com.vpr.screenlate.core.ocr.CompositeOcr
@@ -79,6 +80,7 @@ import com.vpr.screenlate.overlay.ui.BubbleView
 import com.vpr.screenlate.overlay.ui.BubbleWindowMover
 import com.vpr.screenlate.overlay.ui.CropEditor
 import com.vpr.screenlate.overlay.ui.CropFocus
+import com.vpr.screenlate.overlay.ui.Flags
 import com.vpr.screenlate.overlay.ui.DockPlacement
 import com.vpr.screenlate.overlay.ui.LayerView
 import com.vpr.screenlate.overlay.ui.OverlayWindows
@@ -187,7 +189,7 @@ class OverlayController(
     private val accessibilityText = AccessibilityText(service)
     /** The language switched to last; a scan takes it when the bubble leaves the dock. */
     private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
-    private var turnedOn = profiles.cachedState?.turnedOn.orEmpty()
+    private var languages = profiles.cachedState ?: LanguageProfilesState.DEFAULT
 
     /** The open scan's language: a switch in the hold menu applies once the bubble has docked. */
     private val scanLanguage = MutableStateFlow(activeLanguage)
@@ -275,7 +277,7 @@ class OverlayController(
         showGlyph(activeLanguage)
         scope.launch { overlaySettings.settings.collect(::applySettings) }
         scope.launch { profiles.active.collect(::onActiveLanguage) }
-        scope.launch { profiles.state.collect { turnedOn = it.turnedOn } }
+        scope.launch { profiles.state.collect { languages = it } }
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         scope.launch {
@@ -679,7 +681,8 @@ class OverlayController(
 
     /**
      * Holding the floating bubble: copy the paragraph under the aim or everything recognized, as whole text, or open
-     * the app; with several languages on, chips switch the active one, which the next scan takes.
+     * the app; with several quick languages ([LanguageProfilesState.quick]), flags switch the active one, which the
+     * next scan takes.
      */
     private fun showBubbleMenu() {
         val layout = layout
@@ -700,8 +703,13 @@ class OverlayController(
             add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
         val locale = service.resources.configuration.locales[0]
-        val chips = turnedOn.takeIf { it.size > 1 }.orEmpty().map { language ->
-            BubbleMenu.Chip(language.displayName(locale), selected = language == activeLanguage) {
+        val chips = languages.quick.takeIf { it.size > 1 }.orEmpty().map { language ->
+            BubbleMenu.Chip(
+                name = language.displayName(locale),
+                code = Flags.code(language),
+                flag = if (eInk) null else Flags.of(languages, language),
+                selected = language == activeLanguage,
+            ) {
                 if (language != activeLanguage) {
                     Log.d(TAG, "Active language ${language.code} from the bubble menu")
                     scope.launch { profiles.setActive(language) }

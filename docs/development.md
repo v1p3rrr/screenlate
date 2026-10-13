@@ -39,6 +39,11 @@ Frequency dictionaries for languages without one are built from wordfreq: `pip i
 the index; `--download-url` and `--index-url` make it updatable once hosted. Its data is CC BY-SA 4.0, and so is the
 dictionary.
 
+The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
+(MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
+class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
+`overlay`, whose unit test checks that every listed country has a drawable.
+
 ## Language bundles
 
 Languages other than Japanese are looked up through Yomitan's language code, built into one script per language in
@@ -56,6 +61,7 @@ the engine module that holds them.
 - `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`) in a simulated DOM.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
 - `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
+- `python -m unittest discover scripts/flags`: the flag converter.
 - `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
 
 ## Project layout

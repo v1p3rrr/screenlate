@@ -21,6 +21,7 @@ import com.vpr.screenlate.dictionaries.DictionariesScreen
 import com.vpr.screenlate.home.HomeScreen
 import com.vpr.screenlate.languages.FirstRunScreen
 import com.vpr.screenlate.languages.LanguageSetupScreen
+import com.vpr.screenlate.languages.LanguagesScreen
 import com.vpr.screenlate.lookup.LookupSettingsScreen
 import com.vpr.screenlate.search.SearchScreen
 import com.vpr.screenlate.settings.AboutScreen
@@ -89,6 +90,9 @@ private data class SearchRoute(val query: String = "")
 @Serializable
 private object FirstRunRoute
 
+@Serializable
+private object LanguagesRoute
+
 /** Argument names as `LanguageSetupViewModel` reads them. */
 @Serializable
 private data class LanguageSetupRoute(val code: String, val firstRun: Boolean = false)
@@ -143,8 +147,11 @@ fun ScreenlateNavHost(
                 onOpenDictionaries = { go(DictionariesRoute) },
                 onOpenAnki = { go(AnkiRoute) },
                 onOpenAppText = { go(BubbleRoute(showAppText = true)) },
-                onOpenLanguageSetup = { go(LanguageSetupRoute(it.code)) },
+                onOpenLanguages = { go(LanguagesRoute) },
             )
+        }
+        composable<LanguagesRoute> {
+            LanguagesScreen(onBack = back, onOpenLanguageSetup = { go(LanguageSetupRoute(it.code)) })
         }
         composable<FirstRunRoute> {
             FirstRunScreen(onSetup = { go(LanguageSetupRoute(it.code, firstRun = true)) }, onDone = home)
@@ -207,7 +214,11 @@ fun ScreenlateNavHost(
         }
         composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
         composable<DictionariesRoute> {
-            DictionariesScreen(onBack = back, onOpenYomitanImport = { go(YomitanImportRoute) })
+            DictionariesScreen(
+                onBack = back,
+                onOpenYomitanImport = { go(YomitanImportRoute) },
+                onOpenLanguages = { go(LanguagesRoute) },
+            )
         }
         composable<OcrTestRoute> { OcrTestScreen(onBack = back) }
         composable<ImageViewerRoute> { entry ->

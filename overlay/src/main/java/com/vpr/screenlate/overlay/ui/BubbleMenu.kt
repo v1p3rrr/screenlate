@@ -19,10 +19,12 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.vpr.screenlate.core.common.geometry.Box
@@ -34,14 +36,18 @@ import kotlin.math.roundToInt
  * The menu of the held bubble, in its own overlay window. The system popup menu cannot place itself here: overlay
  * windows are laid out without screen limits, so it believes there is room on every side and runs off the screen.
  * While open, the window takes focus and every touch on the screen, like a menu inside an app: Back or a tap anywhere
- * outside closes it, and that tap does nothing else. Closes on an item and when the screen turns off too. A row of chips
- * above the items picks the active language while several are turned on.
+ * outside closes it, and that tap does nothing else. Closes on an item and when the screen turns off too. A row of round
+ * flags above the items picks the active language among the quick ones.
  */
 class BubbleMenu(private val context: Context, private val windowManager: WindowManager) {
 
     class Item(val title: String, val onClick: () -> Unit)
 
-    class Chip(val title: String, val selected: Boolean, val onClick: () -> Unit)
+    /**
+     * A language to switch to: its [flag], or its [code] where flags are not shown (e-ink); TalkBack reads [name]. The
+     * [selected] one, the active language, is ringed.
+     */
+    class Chip(val name: String, val code: String, @DrawableRes val flag: Int?, val selected: Boolean, val onClick: () -> Unit)
 
     /** Made again for each menu: a theme keeps the day or night look it was made with. */
     private var themed: Context = context
@@ -135,30 +141,42 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    private fun chipView(chip: Chip) = TextView(themed).apply {
-        text = chip.title
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, CHIP_TEXT_SP)
-        isSingleLine = true
+    /** A round flag or code; a ring around it, with a gap, marks the selected one. */
+    private fun chipView(chip: Chip) = FrameLayout(themed).apply {
+        val size = (CHIP_SIZE_DP * density).roundToInt()
+        val ring = (RING_DP * density).roundToInt()
+        val inset = ring + (RING_GAP_DP * density).roundToInt()
+        setPadding(inset, inset, inset, inset)
+        contentDescription = chip.name
         isSelected = chip.selected
-        gravity = Gravity.CENTER
-        minHeight = (CHIP_HEIGHT_DP * density).roundToInt()
-        val horizontal = (CHIP_PADDING_DP * density).roundToInt()
-        setPaddingRelative(horizontal, 0, horizontal, 0)
-        setTextColor(color(android.R.attr.textColorPrimary))
+        isClickable = true
+        isFocusable = true
         val accent = color(android.R.attr.colorAccent)
-        val outline = color(android.R.attr.textColorSecondary)
-        background = GradientDrawable().apply {
-            cornerRadius = CHIP_CORNER_DP * density
-            if (chip.selected) {
-                setColor(ColorUtils.setAlphaComponent(accent, SELECTED_ALPHA))
-                setStroke(density.roundToInt(), accent)
-            } else {
-                setStroke(density.roundToInt(), ColorUtils.setAlphaComponent(outline, OUTLINE_ALPHA))
+        val primary = color(android.R.attr.textColorPrimary)
+        if (chip.selected) {
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setStroke(ring, accent)
             }
         }
-        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-            marginEnd = (CHIP_GAP_DP * density).roundToInt()
+        val inner = if (chip.flag != null) {
+            ImageView(themed).apply { setImageResource(chip.flag) }
+        } else {
+            TextView(themed).apply {
+                text = chip.code
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, CHIP_TEXT_SP)
+                setTextColor(primary)
+                gravity = Gravity.CENTER
+                isSingleLine = true
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setStroke(density.roundToInt(), ColorUtils.setAlphaComponent(primary, OUTLINE_ALPHA))
+                }
+            }
         }
+        inner.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        addView(inner, FrameLayout.LayoutParams(size - 2 * inset, size - 2 * inset))
+        layoutParams = LinearLayout.LayoutParams(size, size).apply { marginEnd = (CHIP_GAP_DP * density).roundToInt() }
         setOnClickListener {
             dismiss()
             chip.onClick()
@@ -245,12 +263,11 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         const val ITEM_VERTICAL_PADDING_DP = 8f
         const val CORNER_DP = 8f
         const val CHIP_ROW_PADDING_DP = 12f
-        const val CHIP_HEIGHT_DP = 32f
-        const val CHIP_PADDING_DP = 12f
+        const val CHIP_SIZE_DP = 48f
+        const val RING_DP = 2f
+        const val RING_GAP_DP = 2f
         const val CHIP_GAP_DP = 8f
-        const val CHIP_CORNER_DP = 8f
         const val CHIP_TEXT_SP = 14f
-        const val SELECTED_ALPHA = 0x3D
         const val OUTLINE_ALPHA = 0x80
     }
 }

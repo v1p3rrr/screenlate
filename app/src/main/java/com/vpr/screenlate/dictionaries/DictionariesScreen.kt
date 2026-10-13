@@ -84,6 +84,7 @@ import kotlinx.coroutines.delay
 fun DictionariesScreen(
     onBack: () -> Unit,
     onOpenYomitanImport: () -> Unit,
+    onOpenLanguages: () -> Unit,
     viewModel: DictionariesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -96,8 +97,6 @@ fun DictionariesScreen(
     val deleteError by viewModel.deleteError.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<DictionaryEntity?>(null) }
     var editingLanguages by remember { mutableStateOf<DictionaryEntity?>(null) }
-    var pendingLanguageDelete by remember { mutableStateOf<OtherLanguage?>(null) }
-    var expandedLanguages by rememberSaveable { mutableStateOf(emptyList<String>()) }
     val askNotifications = rememberImportNotificationsAsk()
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -255,44 +254,7 @@ fun DictionariesScreen(
                 }
             }
 
-            if (state.others.isNotEmpty()) {
-                SectionTitle(stringResource(R.string.dictionaries_other_languages))
-                Text(
-                    stringResource(R.string.dictionaries_other_languages_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                state.others.forEach { other ->
-                    key(other.code) {
-                        OtherLanguageCard(
-                            other,
-                            onToggle = {
-                                expandedLanguages = if (other.code in expandedLanguages) {
-                                    expandedLanguages - other.code
-                                } else {
-                                    expandedLanguages + other.code
-                                }
-                            },
-                            onDelete = { pendingLanguageDelete = other },
-                        )
-                        if (other.code in expandedLanguages) {
-                            other.dictionaries.forEach { dictionary ->
-                                key(dictionary.id) {
-                                    DictionaryCard(
-                                        dictionary = dictionary,
-                                        handle = null,
-                                        dragging = false,
-                                        onEnabledChange = { viewModel.setEnabled(dictionary, it) },
-                                        onDelete = { pendingDelete = dictionary },
-                                        onEditLanguages = { editingLanguages = dictionary },
-                                        links = state.links[dictionary.id],
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            if (state.others.isNotEmpty()) OtherLanguagesCard(state.others, onOpenLanguages)
 
             SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
             state.catalog.forEach { group ->
@@ -329,33 +291,6 @@ fun DictionariesScreen(
                 editingLanguages = null
             },
             onDismiss = { editingLanguages = null },
-        )
-    }
-
-    pendingLanguageDelete?.let { other ->
-        AlertDialog(
-            onDismissRequest = { pendingLanguageDelete = null },
-            title = { Text(languageName(other.code)) },
-            text = {
-                val size = other.bytes?.let { Formatter.formatShortFileSize(context, it) } ?: "…"
-                Text(
-                    pluralStringResource(
-                        R.plurals.dictionaries_delete_language_text,
-                        other.dictionaries.size,
-                        other.dictionaries.size,
-                        size,
-                    ),
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.deleteLanguage(other.code)
-                    pendingLanguageDelete = null
-                }) { Text(stringResource(R.string.action_delete)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { pendingLanguageDelete = null }) { Text(stringResource(R.string.action_cancel)) }
-            },
         )
     }
 
@@ -420,31 +355,30 @@ private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String)
 private fun sectionLabel(kind: DictionaryKind, code: String): Int =
     if (kind == DictionaryKind.TERM) R.string.dictionaries_section_terms else kindLabel(kind, code)
 
-/** A header with the language's name, the number and size of its dictionaries; a tap shows them. */
+/** The dictionaries of languages that are not turned on, counted; the Languages screen lists them. */
 @Composable
-private fun OtherLanguageCard(language: OtherLanguage, onToggle: () -> Unit, onDelete: () -> Unit) {
+private fun OtherLanguagesCard(others: List<OtherLanguage>, onOpenLanguages: () -> Unit) {
     val context = LocalContext.current
+    val count = others.sumOf { it.dictionaries.size }
+    val bytes = others.map { it.bytes }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
     Card(modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp, end = 4.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClick = onToggle)
-                    .padding(vertical = 12.dp),
-            ) {
-                Text(languageName(language.code), style = MaterialTheme.typography.bodyLarge)
-                val count = pluralStringResource(
-                    R.plurals.dictionaries_other_language_count,
-                    language.dictionaries.size,
-                    language.dictionaries.size,
-                )
-                Text(
-                    listOfNotNull(count, language.bytes?.let { Formatter.formatShortFileSize(context, it) }).joinToString(" · "),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            TooltipIconButton(R.drawable.ic_delete, stringResource(R.string.dictionaries_delete_language), onClick = onDelete)
+        Column(modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 12.dp)) {
+            Text(stringResource(R.string.dictionaries_other_languages), style = MaterialTheme.typography.titleMedium)
+            Text(
+                listOfNotNull(
+                    others.joinToString(", ") { languageName(it.code) },
+                    pluralStringResource(R.plurals.dictionaries_other_language_count, count, count),
+                    bytes?.let { Formatter.formatShortFileSize(context, it) },
+                ).joinToString(" · "),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                stringResource(R.string.dictionaries_other_languages_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            TextButton(onClick = onOpenLanguages) { Text(stringResource(R.string.languages_open)) }
         }
     }
 }

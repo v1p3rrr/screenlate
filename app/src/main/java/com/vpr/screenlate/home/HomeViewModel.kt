@@ -25,7 +25,6 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
-import com.vpr.screenlate.languages.LanguageSwitch
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
 import com.vpr.screenlate.overlay.install.LanguageInstallation
 import com.vpr.screenlate.overlay.install.InstallationStatus
@@ -35,8 +34,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -44,7 +41,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -72,9 +68,6 @@ internal fun installProgress(tasks: List<ImportTask>): InstallProgress? {
     val running = unfinished.firstOrNull { it.state != ImportTask.State.QUEUED }
     return InstallProgress(unfinished.size, running?.name?.takeIf { it.isNotEmpty() }, running?.percent)
 }
-
-/** Turning [language] off asks about its files, [filesBytes] on disk; null when it has none. */
-data class TurnOffRequest(val language: Language, val filesBytes: Long?)
 
 /** Something that broke without the user changing Screenlate's settings. */
 sealed interface HomeProblem {
@@ -112,7 +105,6 @@ class HomeViewModel @Inject constructor(
     private val dictionaryReset: DictionaryReset,
     ankiSettings: AnkiSettingsRepository,
     private val profiles: LanguageProfiles,
-    private val switch: LanguageSwitch,
     private val installs: LanguageInstallation,
 ) : ViewModel() {
     val installation: StateFlow<InstallationStatus?> = profiles.active.flatMapLatest(installs::observe)
@@ -122,39 +114,6 @@ class HomeViewModel @Inject constructor(
 
     fun setActive(language: Language) {
         viewModelScope.launch { profiles.setActive(language) }
-    }
-
-    private val setupRequests = Channel<Language>(Channel.BUFFERED)
-
-    /**
-     * Languages whose download screen should open. Each is delivered once, also to a screen recreated while the check
-     * ran, which a callback captured from the old screen would miss.
-     */
-    val languageSetup: Flow<Language> = setupRequests.receiveAsFlow()
-
-    /** Turns [language] on at once when its dictionaries are installed; otherwise asks for its download screen. */
-    fun add(language: Language) {
-        viewModelScope.launch {
-            if (switch.needsDownloads(language)) setupRequests.send(language) else switch.turnOn(language)
-        }
-    }
-
-    private val mutableTurnOff = MutableStateFlow<TurnOffRequest?>(null)
-
-    /** The language whose turn-off dialog is open, once its files are measured. */
-    val turnOffRequest: StateFlow<TurnOffRequest?> = mutableTurnOff
-
-    fun requestTurnOff(language: Language) {
-        viewModelScope.launch { mutableTurnOff.value = TurnOffRequest(language, switch.filesSize(language)) }
-    }
-
-    fun cancelTurnOff() {
-        mutableTurnOff.value = null
-    }
-
-    fun turnOff(language: Language, deleteFiles: Boolean) {
-        mutableTurnOff.value = null
-        viewModelScope.launch { switch.turnOff(language, deleteFiles) }
     }
 
     private val languageInstallations = profiles.state.flatMapLatest { languages ->
