@@ -1,4 +1,5 @@
 <resources>
     <string name="dictionary_import_channel">Importazione dei dizionari</string>
     <string name="dictionary_import_notification">Importazione dei dizionari in corso</string>
+    <string name="dictionary_import_cancel">Annulla</string>
 </resources>

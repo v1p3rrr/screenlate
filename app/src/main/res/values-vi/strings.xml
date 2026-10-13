@@ -25,6 +25,7 @@
 
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
+    <string name="action_resume">Tiếp tục</string>
     <string name="action_dismiss">Bỏ qua</string>
     <string name="action_ok">OK</string>
 
@@ -100,6 +101,8 @@
     <string name="dictionaries_bundled">từ điển đi kèm</string>
     <string name="dictionaries_task_queued">Đang chờ: %1$s</string>
     <string name="dictionaries_task_downloading">Đang tải %1$s</string>
+    <string name="dictionaries_task_retrying">Đang thử tải lại (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s: đã dừng tải — %2$s</string>
     <string name="dictionaries_task_importing">Đang nhập %1$s</string>
     <string name="dictionaries_installed_mark">Đã cài</string>
     <string name="dictionaries_download">Tải xuống</string>

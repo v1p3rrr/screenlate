@@ -25,6 +25,7 @@
 
     <string name="action_delete">刪除</string>
     <string name="action_cancel">取消</string>
+    <string name="action_resume">繼續</string>
     <string name="action_dismiss">忽略</string>
     <string name="action_ok">確定</string>
 
@@ -100,6 +101,8 @@
     <string name="dictionaries_bundled">內建詞典</string>
     <string name="dictionaries_task_queued">等待中：%1$s</string>
     <string name="dictionaries_task_downloading">正在下載 %1$s</string>
+    <string name="dictionaries_task_retrying">正在重試下載（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_download_stopped">%1$s：下載已停止（%2$s）</string>
     <string name="dictionaries_task_importing">正在匯入 %1$s</string>
     <string name="dictionaries_installed_mark">已安裝</string>
     <string name="dictionaries_download">下載</string>

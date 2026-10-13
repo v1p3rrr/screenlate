@@ -74,14 +74,17 @@ class LanguageFiles @Inject constructor(
         repository.sizes(dictionaries(code)).values.sum() + withContext(Dispatchers.IO) { models(code).sumOf { it.bytes } }
 
     /**
-     * Deletes the language's files and cancels its unfinished downloads first; a bundled dictionary is remembered as
-     * deleted, as a single delete does.
+     * Deletes the language's files and cancels its unfinished downloads first, dismissing its stopped ones; a bundled
+     * dictionary is remembered as deleted, as a single delete does.
      */
     suspend fun delete(code: String) {
         val installed = dictionaries(code)
         val catalog = withContext(Dispatchers.IO) { catalog.localCatalog() }
-        val downloads = downloadsOf(code, imports.tasks.first(), catalog, installed, bundled.language)
+        val tasks = imports.tasks.first()
+        val downloads = downloadsOf(code, tasks, catalog, installed, bundled.language)
         downloads.forEach { imports.cancelAndAwait(it.id) }
+        // Stopped downloads keep what they got for a resume.
+        tasks.filter { it.resumable && it.language == code }.forEach { imports.dismiss(it.id) }
         // An import may have registered a dictionary just before cancellation; include it in the deletion.
         val dictionaries = dictionaries(code)
         dictionaries.forEach { dictionary ->

@@ -28,6 +28,7 @@
 
     <string name="action_delete">Delete</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_resume">Resume</string>
     <string name="action_dismiss">Dismiss</string>
     <string name="action_ok">OK</string>
 
@@ -105,6 +106,8 @@
     <string name="dictionaries_bundled">bundled dictionaries</string>
     <string name="dictionaries_task_queued">Waiting: %1$s</string>
     <string name="dictionaries_task_downloading">Downloading %1$s</string>
+    <string name="dictionaries_task_retrying">Retrying the download (%2$d of %3$d): %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s: download stopped — %2$s</string>
     <string name="dictionaries_task_importing">Importing %1$s</string>
     <string name="dictionaries_installed_mark">Installed</string>
     <string name="dictionaries_download">Download</string>

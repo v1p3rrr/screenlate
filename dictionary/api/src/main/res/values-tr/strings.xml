@@ -1,4 +1,5 @@
 <resources>
     <string name="dictionary_import_channel">Sözlük içe aktarmaları</string>
     <string name="dictionary_import_notification">Sözlükler içe aktarılıyor</string>
+    <string name="dictionary_import_cancel">İptal</string>
 </resources>

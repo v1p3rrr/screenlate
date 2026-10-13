@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -183,11 +184,15 @@ fun DictionariesScreen(
             state.tasks.forEach { task ->
                 TaskCard(
                     task,
-                    onDismiss = viewModel::clearFinishedTasks,
+                    onDismiss = { viewModel.dismiss(task) },
                     onCancel = { viewModel.cancel(task) },
+                    onResume = {
+                        askNotifications()
+                        viewModel.resume(task)
+                    },
                     onRetryBundled = {
                         askNotifications()
-                        viewModel.retryBundledInstall()
+                        viewModel.retryBundledInstall(task)
                     },
                 )
             }
@@ -623,7 +628,13 @@ private fun kindLabel(kind: DictionaryKind, code: String?): Int = when (kind) {
 }
 
 @Composable
-private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Unit, onRetryBundled: () -> Unit) {
+private fun TaskCard(
+    task: ImportTask,
+    onDismiss: () -> Unit,
+    onCancel: () -> Unit,
+    onResume: () -> Unit,
+    onRetryBundled: () -> Unit,
+) {
     if (task.state == ImportTask.State.FAILED) {
         if (task.paused) {
             ErrorCard(stringResource(R.string.dictionaries_bundled_paused), onDismiss, onRetry = onRetryBundled)
@@ -645,19 +656,35 @@ private fun TaskCard(task: ImportTask, onDismiss: () -> Unit, onCancel: () -> Un
             val error = task.error
             // The name tells which of several queued imports failed, e.g. after "Update all".
             if (error != null) {
-                stringResource(R.string.dictionaries_import_failed_named, name, error)
+                val text = if (task.downloadStopped) R.string.dictionaries_download_stopped else R.string.dictionaries_import_failed_named
+                stringResource(text, name, error)
             } else {
                 stringResource(R.string.dictionaries_import_failed, name)
             }
         }
-        ErrorCard(message, onDismiss)
+        if (task.resumable) {
+            // A stopped download: Cancel deletes what it got, Resume continues it.
+            ErrorCard(
+                message,
+                onDismiss = onDismiss,
+                onRetry = onResume,
+                dismissLabel = stringResource(R.string.action_cancel),
+                retryLabel = stringResource(R.string.action_resume),
+            )
+        } else {
+            ErrorCard(message, onDismiss)
+        }
         return
     }
     val name = task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val status = when (task.state) {
-                ImportTask.State.QUEUED -> stringResource(R.string.dictionaries_task_queued, name)
+                ImportTask.State.QUEUED -> if (task.retries > 0) {
+                    stringResource(R.string.dictionaries_task_retrying, name, task.retries, DictionaryImportWorker.MAX_RETRIES)
+                } else {
+                    stringResource(R.string.dictionaries_task_queued, name)
+                }
                 ImportTask.State.DOWNLOADING -> stringResource(R.string.dictionaries_task_downloading, name)
                 ImportTask.State.CHECKING_SPACE -> stringResource(R.string.dictionaries_task_checking_space, name)
                 ImportTask.State.CONVERTING -> stringResource(R.string.dictionaries_task_converting, name)
@@ -699,7 +726,13 @@ private fun NoticeCard(message: String, onClose: () -> Unit) {
 
 /** An error with a dismiss button; with [onRetry], a "Try again" button too, both below the text. */
 @Composable
-private fun ErrorCard(message: String, onDismiss: () -> Unit, onRetry: (() -> Unit)? = null) {
+private fun ErrorCard(
+    message: String,
+    onDismiss: () -> Unit,
+    onRetry: (() -> Unit)? = null,
+    dismissLabel: String = stringResource(R.string.action_dismiss),
+    retryLabel: String = stringResource(R.string.update_retry),
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
@@ -713,14 +746,14 @@ private fun ErrorCard(message: String, onDismiss: () -> Unit, onRetry: (() -> Un
                         .weight(1f)
                         .padding(vertical = 12.dp),
                 )
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
+                TextButton(onClick = onDismiss) { Text(dismissLabel) }
             }
         } else {
             Column(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 8.dp)) {
                 Text(message, color = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.padding(end = 8.dp))
                 FlowRow(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
-                    TextButton(onClick = onRetry) { Text(stringResource(R.string.update_retry)) }
+                    TextButton(onClick = onDismiss) { Text(dismissLabel) }
+                    TextButton(onClick = onRetry) { Text(retryLabel) }
                 }
             }
         }

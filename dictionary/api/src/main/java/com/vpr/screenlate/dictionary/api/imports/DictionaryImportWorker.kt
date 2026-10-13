@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -67,6 +68,12 @@ class DictionaryImportWorker @AssistedInject constructor(
     /** Languages for dictionaries whose index.json names none. */
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
+    /**
+     * Whether this run is counted as one the app did not die in ([DictionaryImports.markStopped]): set while it
+     * downloads, so that a death then does not count towards [MAX_RUN_ATTEMPTS], and kept when it ends for a retry.
+     */
+    private var uncounted = false
+
     override suspend fun doWork(): Result = imports.tracked {
         val source = inputData.getString(KEY_SOURCE)
         Log.i(TAG, "Task $id ($source) started, run ${runAttemptCount + 1}")
@@ -81,6 +88,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                     interrupted >= MAX_RUN_ATTEMPTS -> {
                         Log.w(TAG, "Task $id interrupted $interrupted times; not started again")
                         removeLeftovers()
+                        // Likely the import's own doing: a resumed download starts over.
                         discardInput()
                         // App starts queue the bundled install again; the same archives would end the same way. A
                         // failed work would fail the imports queued after it, so a failed write is only logged.
@@ -93,13 +101,13 @@ class DictionaryImportWorker @AssistedInject constructor(
                                 Log.w(TAG, "Pausing the bundled install failed", e)
                             }
                         }
-                        Result.success(workDataOf(KEY_INTERRUPTED to true, KEY_PAUSED to (source == SOURCE_BUNDLED)))
+                        Result.success(resumable(workDataOf(KEY_INTERRUPTED to true, KEY_PAUSED to (source == SOURCE_BUNDLED))))
                     }
                     else -> {
                         removeLeftovers()
                         imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled(started = true)
                     }
-                }.also { imports.forgetStops(id) }
+                }.also { if (it !is Result.Retry) imports.forgetStops(id) }
             }
         } catch (e: CancellationException) {
             if (!isStopped) throw e
@@ -108,7 +116,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             Log.i(TAG, "Task $id stopped by WorkManager$reason")
             withContext(NonCancellable) {
                 try {
-                    imports.markStopped(id)
+                    if (!uncounted) imports.markStopped(id)
                 } catch (e: Exception) {
                     Log.w(TAG, "Recording the stop failed: ${e.javaClass.simpleName}")
                 }
@@ -178,15 +186,53 @@ class DictionaryImportWorker @AssistedInject constructor(
             workDataOf(KEY_TITLES to titles.toTypedArray())
         } catch (e: CancellationException) {
             throw e
+        } catch (e: DownloadBrokeOffException) {
+            val retries = imports.retriesOf(id)
+            if (retries < MAX_RETRIES) {
+                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES")
+                imports.markRetry(id)
+                countRunAsStopped()
+                return Result.retry()
+            }
+            Log.w(TAG, "Task $id: the download broke off $MAX_RETRIES times; stopped", e.cause)
+            resumable(workDataOf(KEY_ERROR to e.reason().take(MAX_ERROR_LENGTH), KEY_DOWNLOAD_STOPPED to true))
+        } catch (e: ResumableDownload.FinalStatusException) {
+            Log.w(TAG, "Task $id: the server answered HTTP ${e.code}")
+            resumable(workDataOf(KEY_ERROR to "HTTP ${e.code}", KEY_DOWNLOAD_STOPPED to true))
         } catch (e: NotEnoughSpaceException) {
             Log.w(TAG, "Task $id: not enough space: ${e.neededBytes shr 20} MB needed, ${e.freeBytes shr 20} MB free")
             workDataOf(KEY_ERROR to e.message, KEY_NEEDED_BYTES to e.neededBytes, KEY_FREE_BYTES to e.freeBytes)
         } catch (e: Exception) {
             Log.w(TAG, "Task $id failed after ${System.currentTimeMillis() - started} ms", e)
             // Work data is limited to 10 KB.
-            workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH))
+            resumable(workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH)))
         }
         return Result.success(output)
+    }
+
+    /** [output] of a failed download with what [DictionaryImports.resume] needs; other imports' output as it is. */
+    private fun resumable(output: Data): Data {
+        val source = inputData.getString(KEY_SOURCE)
+        if (source != SOURCE_URL && source != SOURCE_MODEL) return output
+        return Data.Builder()
+            .apply { DictionaryImports.RESUME_KEYS.forEach { key -> inputData.keyValueMap[key]?.let { put(key, it) } } }
+            .putAll(output)
+            .putBoolean(KEY_RESUMABLE, true)
+            .build()
+    }
+
+    /** Counts this run as one the app did not die in; once per run. */
+    private suspend fun countRunAsStopped() {
+        if (uncounted) return
+        imports.markStopped(id)
+        uncounted = true
+    }
+
+    /** Takes back [countRunAsStopped]: what follows counts again. */
+    private suspend fun countRunAgain() {
+        if (!uncounted) return
+        imports.unmarkStopped(id)
+        uncounted = false
     }
 
     private suspend fun installBundled(): List<String> {
@@ -236,10 +282,18 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }
 
-    /** Deletes the copy of the picked file this import reads and gives back the access to the file it kept. */
+    /**
+     * Deletes the copy of the picked file this import reads and gives back the access to the file it kept; deletes
+     * what a download got so far.
+     */
     private fun discardInput() {
         val path = inputData.getString(KEY_PATH)
         when (inputData.getString(KEY_SOURCE)) {
+            SOURCE_URL, SOURCE_MODEL -> inputData.getString(KEY_ARCHIVE)?.let { name ->
+                val archive = storage.downloadFile(name)
+                archive.delete()
+                storage.downloadState(archive).delete()
+            }
             SOURCE_FILE -> if (inputData.getBoolean(KEY_DELETE_FILE, false)) path?.let { File(it).delete() }
             SOURCE_YOMITAN_BACKUP -> {
                 path?.let { File(it).delete() }
@@ -336,45 +390,47 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }.onFailure { Log.w(TAG, "Cannot read $indexUrl", it) }.getOrNull()
 
-    /** Downloads [url] to a temporary archive, which [install] gets; returns what [install] returns. */
+    /**
+     * Downloads [url] into the task's archive, which [install] gets; returns what [install] returns. The archive stays
+     * when the download breaks off ([DownloadBrokeOffException]), so the next run continues it; it is deleted once
+     * installed or when the install fails.
+     */
     private suspend fun download(url: String, name: String, install: suspend (File) -> String): String {
-        val archive = storage.newArchiveFile()
+        // Queued by an older version: no archive of its own to continue.
+        val archive = inputData.getString(KEY_ARCHIVE)?.let(storage::downloadFile) ?: storage.newArchiveFile()
+        val state = storage.downloadState(archive)
+        countRunAsStopped()
+        val started = System.currentTimeMillis()
+        val before = if (archive.exists()) archive.length() else 0L
+        Log.i(TAG, "Downloading $url" + if (before > 0) ", ${before shr 10} KB already there" else "")
+        var reported = -1
         try {
-            val request = Request.Builder().url(url).build()
-            val started = System.currentTimeMillis()
-            Log.i(TAG, "Downloading $url")
-            downloadClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
-                val body = response.body
-                val total = body.contentLength()
-                Log.i(TAG, "Download size: ${if (total >= 0) "${total shr 10} KB" else "unknown"}")
-                body.byteStream().use { input ->
-                    archive.outputStream().use { output ->
-                        val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 8)
-                        var copied = 0L
-                        var reported = -1
-                        while (true) {
-                            // Progress may not change for long (unknown size), so it cannot be what notices a cancel.
-                            currentCoroutineContext().ensureActive()
-                            val read = input.read(buffer)
-                            if (read < 0) break
-                            output.write(buffer, 0, read)
-                            copied += read
-                            val percent = if (total > 0) (copied * 100 / total).toInt() else -1
-                            if (percent != reported) {
-                                reported = percent
-                                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD, KEY_PERCENT to percent))
-                            }
-                        }
-                    }
+            ResumableDownload(downloadClient).fetch(url, archive, state) { copied, total ->
+                val percent = if (total > 0) (copied * 100 / total).toInt() else -1
+                if (percent != reported) {
+                    reported = percent
+                    setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD, KEY_PERCENT to percent))
                 }
             }
-            Log.i(TAG, "Downloaded ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
-            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+        } catch (e: ResumableDownload.FinalStatusException) {
+            throw e
+        } catch (e: IOException) {
+            throw DownloadBrokeOffException(e)
+        }
+        Log.i(TAG, "Downloaded ${(archive.length() - before) shr 10} KB of ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
+        countRunAgain()
+        setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+        try {
             return install(archive)
         } finally {
             archive.delete()
+            state.delete()
         }
+    }
+
+    /** A download that broke off: the network, a timeout, a server error. The next run continues it. */
+    private class DownloadBrokeOffException(cause: IOException) : IOException(cause) {
+        fun reason(): String = cause?.message ?: cause?.javaClass?.simpleName.orEmpty()
     }
 
     private suspend fun importDownloaded(archive: File): String {
@@ -400,6 +456,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             .setProgress(0, 0, true)
             .setOngoing(true)
             .setSilent(true)
+            .addAction(0, applicationContext.getString(R.string.dictionary_import_cancel), ImportCancelReceiver.intent(applicationContext, id))
             .build()
         return ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
@@ -411,6 +468,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val KEY_URL = "url"
         const val KEY_INDEX_URL = "index_url"
         const val KEY_REPLACE_ID = "replace_id"
+
+        /** The file name of a download's archive in the downloads directory, kept across the task's runs. */
+        const val KEY_ARCHIVE = "archive"
         const val KEY_DELETE_FILE = "delete_file"
         const val KEY_TITLES = "titles"
 
@@ -426,6 +486,12 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Output of an import the user cancelled. */
         const val KEY_CANCELLED = "cancelled"
+
+        /** Output of a download that stopped: it holds the input [DictionaryImports.resume] queues again. */
+        const val KEY_RESUMABLE = "resumable"
+
+        /** Output of a download that broke off, as opposed to one whose import failed. */
+        const val KEY_DOWNLOAD_STOPPED = "download_stopped"
         const val KEY_STAGE = "stage"
         const val KEY_PERCENT = "percent"
         const val KEY_URI = "uri"
@@ -452,6 +518,9 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Runs of one import: the first, and one more after the app died during it (owner). */
         private const val MAX_RUN_ATTEMPTS = 2
+
+        /** Automatic retries of a download that broke off, after which it waits for the user (owner). */
+        const val MAX_RETRIES = 3
 
         /**
          * Earlier runs of a task the app died in: WorkManager's [runAttemptCount] less the runs the system [stops]

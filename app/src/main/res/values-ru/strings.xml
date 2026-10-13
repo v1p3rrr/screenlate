@@ -25,6 +25,7 @@
 
     <string name="action_delete">Удалить</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_resume">Возобновить</string>
     <string name="action_dismiss">Скрыть</string>
     <string name="action_ok">ОК</string>
 
@@ -106,6 +107,8 @@
     <string name="dictionaries_bundled">встроенные словари</string>
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
+    <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
     <string name="dictionaries_installed_mark">Установлен</string>
     <string name="dictionaries_download">Скачать</string>

@@ -13,6 +13,11 @@
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="dataSync"
             tools:node="merge" />
+
+        <!-- The Cancel action of the import notification. -->
+        <receiver
+            android:name=".imports.ImportCancelReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

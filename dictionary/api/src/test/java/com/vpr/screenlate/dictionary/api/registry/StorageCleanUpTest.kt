@@ -66,6 +66,16 @@ class StorageCleanUpTest {
     }
 
     @Test
+    fun `the state of a download goes and stays with its archive`() {
+        val kept = archive("kept.zip", modified = processStart - 1)
+        val keptState = archive("kept.zip$DOWNLOAD_STATE_SUFFIX", modified = processStart - 1)
+        val goneState = archive("gone.zip$DOWNLOAD_STATE_SUFFIX", modified = processStart - 1)
+
+        assertThat(leftovers(archivesInUse = setOf("kept.zip"))).containsExactly(goneState)
+        assertThat(kept.exists() && keptState.exists()).isTrue()
+    }
+
+    @Test
     fun `with the archives in use unknown only old archives go`() {
         val old = archive("old.zip", modified = now - 7 * HOUR)
         val recent = archive("recent.zip", modified = processStart - 1)
