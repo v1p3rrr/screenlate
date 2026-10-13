@@ -386,6 +386,15 @@ dictionaries (en→ru; ru, ko, zh, es, de, fr, it, pt →en).
   nine dictionaries (ru 37 words, de 53, fr 26, it 25, pt 28, ko 29, zh 19); about 25 of them are names of dialects,
   scripts and romanizations (Cantonese, Hokkien, Simplified-Chinese, Yale, hanja). The last 1% is a long tail of
   noise: es→en alone has 9,712 distinct tag words, mostly text that leaked into tags.
+- wty en→ru revision 2026.10.11 (checked 2026-10-14): 13,664 form-of rows, each item with one tag: plural 7,728,
+  gerund 2,614, third-person singular 2,598, past participle 2,592, past 96, plus a few "redirected from …"
+  (spelling redirects such as learnt → learn). The odd "past past participle simple and" seen on the emulator on
+  2026-10-10 came from an earlier revision; the current data has no "simple" or "and" tags. Regular past forms carry
+  only "past participle" (walked → walk), which is wty's data, not our order. The tags of an item are shown in the
+  dictionary's order, and Yomitan's own rule ("past" for -ed) is a separate chain.
+- "walke" before "walk" for "walked": with no frequency dictionary Yomitan sorts by the matched length and then the
+  term length, so the candidate "walke" (from the rule -d) that some dictionary has comes before "walk". A frequency
+  sort dictionary puts "walk" first; the planned wordfreq dictionary is set as the language's sort dictionary.
 - Total for groups 1 and 2: about 200 strings (45 names, 45 descriptions, ~105 tag words), as many as the Japanese
   names and descriptions translated today; all languages: about 630 strings.
 

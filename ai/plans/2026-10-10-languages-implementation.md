@@ -54,7 +54,7 @@ Requests 1–19 are in the previous plan. New ones:
     behaves as before (regression), an upgrade from the last release keeps every setting and dictionary, and a backup
     made by the last release restores. The owner cannot check the upgrade on the phone: the release and the debug
     build are different apps.
-33. (2026-10-13) Check that the 文A (sentence translation) button is off by default, after an upgrade and on a fresh
+33. (2026-10-13) Check that the translation button (sentence translation) is off by default, after an upgrade and on a fresh
     install. Found: it is on by default, as the decision table of `2026-09-29-feedback-after-0.1.4.md` says; asked.
 34. (2026-10-13) Language profiles: a section on the home screen or a screen of its own (not the general settings)
     with every language profile, turned on or not; a turned-off one shows the dictionaries and technical files (OCR
@@ -66,7 +66,10 @@ Requests 1–19 are in the previous plan. New ones:
     hand.
 37. (2026-10-13) The items "noticed, not addressed" (transcription variants, IPA tags, odd form-of tags, "walke"
     before "walk") and the review's skipped navigation callback lost on activity recreation: say what can be done and
-    fix what is ours.
+    fix what is ours. Done 2026-10-14: the navigation of the first run and "Add a language" now goes through one-shot
+    events; the odd form-of tags were an earlier wty revision (the current one is clean); "walke" before "walk" is
+    Yomitan's order without a frequency dictionary, fixed by the wordfreq sort dictionary; transcriptions follow the
+    "Transcriptions" decision.
 38. (2026-10-13) Ask the Chinese and Korean questions now; build both after the agent's own emulator testing and the
     fixes above.
 39. (2026-10-14) The sentence translation button is "the translation button" everywhere (UI strings in 14 locales,
@@ -538,3 +541,8 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   Catalog tasks retain language/entry tags; Search observes readiness and reruns when dictionaries arrive.
   Checked JVM tests, page tests (103/103), five Android scenarios and lint; Home and popup checked visually.
   Requests 28–29: explained headless checks, closed the session's emulator and verified its processes gone.
+- 2026-10-14: requests 33 and 39 built: "translation button" in the 14 locales, docs, comments and plans (the glyph
+  stays only where the icon's shape is meant); the button is off on new installs. The upgrade from a version before
+  languages writes it as on in the same write that settles the first run, and restoring an older backup without the
+  setting keeps it on too (backups now always carry it). Request 37: one-shot navigation events; the form-of tags and
+  "walke" explained in `ai/notes/languages.md`.

@@ -887,7 +887,7 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 
 - Request 48: before the accessibility settings open, a dialog says what the service reads (a screenshot on a tap or
   pull, app text when on, the app in front, the keyboard and bars) and where it goes (cloud recognition unless the
-  engines are set to the device, the online translator for 文A and note translations, audio sources, AnkiDroid).
+  engines are set to the device, the online translator for the translation button and note translations, audio sources, AnkiDroid).
   "Agree" stores `accessibility_agreed` and opens the settings; later taps open them at once. The flag is cleared by
   the full settings reset only and is not backed up (owner). About → "What the service reads and sends" shows the
   same text with Close. All three home buttons that open the settings go through it. 14 locales; the Russian text says
