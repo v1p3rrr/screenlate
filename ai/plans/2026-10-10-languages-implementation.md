@@ -113,7 +113,9 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Settings layout | Language-bound settings stay on today's pages (Lookup, Popup, Anki and audio, Dictionaries) in a block named after the profile with a language switch; with one language turned on the pages look as today (owner, 2026-10-09) |
 | Popup text size | Global, as today; a bigger size for one language goes into that language's CSS (owner, 2026-10-09) |
 | Switching the language | The home screen's chips and a row of language chips in the bubble's hold menu, shown when more than one language is turned on; no automatic switching by app (owner, 2026-10-09) |
-| Branches per language | The shared base (profiles, settings split, QuickJS, form-of table, model downloads) is built first in the multi-language branch; then a branch per language (`languages/en`, `languages/zh`, …) merged into it when the language works on the phone (owner, 2026-10-09) |
+| Branches per language | The shared base (profiles, settings split, QuickJS, form-of table, model downloads) is built first in the multi-language branch; then a branch per language (`languages/en`, `languages/zh`, …) merged into it once the language is tested thoroughly on the emulator (owner, 2026-10-14; was "when the language works on the phone", 2026-10-09) |
+| Downloads by the agent | While the owner is away the agent may download, without asking, data from the authors' official sources for building and testing: circle-flags SVGs, wordfreq word lists, Unihan, CC-CEDICT, Wiktionary zh/ko (Hugging Face), KRDICT (Lyroxide); listed in the status afterwards (owner, 2026-10-14) |
+| Published release notes | Rewritten only in `.github/release-notes/`; the texts of published GitHub releases change only after the owner has seen the drafts (owner, 2026-10-14) |
 | Unofficial collection | If the owner keeps a separate collection of unlicensed dictionaries, the app and its repository do not link to it (owner, 2026-10-09, preliminary) |
 | Audio regions | A per-language order of regions in the audio settings, used for Wiktionary clips whose file names carry the region; defaults: English US, UK, others; Portuguese Brazil; Spanish Latin America, Spain; French France (owner, 2026-10-09) |
 | Turning on a language | After the target language, a download screen (request 19). Gloss languages: the interface language and English, at most two; when the interface language is English or is the target language, the user picks another one in its place. Each category lists every dictionary for the chosen gloss languages with the recommended one ticked; a mandatory category (the main dictionary; the forms dictionary for languages whose forms are only in dictionaries) needs at least one ticked, else Confirm is disabled with a hint; a mandatory item without a choice is a preselected radio button. Optional items ticked by default: the frequency dictionary, the pronunciation dictionary (except Chinese) and the on-device OCR model where the script needs one; glossaries and character dictionaries are not. Every item shows its size; the button shows the download total and, under it, the space after import; not enough free space disables it and says how much is needed; on mobile data a total over 50 MB asks first (owner, 2026-10-10) |
@@ -163,13 +165,20 @@ Decided when the first language or group 1 is ready, before it is merged into th
   left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
 
+## Questions for the owner
+
+Collected during autonomous work (owner away since 2026-10-14); each with its context, asked when the owner is back.
+Work that depends on an answer uses the recommended option or waits, as noted.
+
+- (none yet)
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
   `languages/en`, hence the name.) `main` stays releasable for Japanese fixes and is merged into `languages/main`
   regularly, at least after every release and before every language branch starts.
-- `languages/<code>`: one branch per language off `languages/main`, merged back when the language works on the
-  phone; the next language starts from the merged state.
+- `languages/<code>`: one branch per language off `languages/main`, merged back once tested thoroughly on the emulator (owner, 2026-10-14; was: when it works
+  on the phone); the next language starts from the merged state.
 - `experiment/languages`: reference only; pieces may be reused (QuickJS submodule, `scripts/yomitan-language/`
   bundles, harness and tools). Deleted with the owner's OK after group 1 is merged.
 - `ai/` commits (plans, status, notes) are also cherry-picked to `main`, so the plan on `main` is current.
