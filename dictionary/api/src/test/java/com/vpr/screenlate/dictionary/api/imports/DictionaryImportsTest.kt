@@ -3,11 +3,13 @@ package com.vpr.screenlate.dictionary.api.imports
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_RESUMABLE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
@@ -197,6 +199,41 @@ class DictionaryImportsTest {
         )
 
         assertThat(archivesInUse(works)).containsExactly("a.zip", "b.zip")
+    }
+
+    @Test
+    fun `a stopped download keeps its archive for a resume`() {
+        val works = listOf(
+            work("stopped", WorkInfo.State.SUCCEEDED, order = 1, archive = "a.zip", output = workDataOf(KEY_RESUMABLE to true)),
+            work("failed", WorkInfo.State.SUCCEEDED, order = 2, archive = "b.zip", output = workDataOf(KEY_ERROR to "x")),
+        )
+
+        assertThat(archivesInUse(works)).containsExactly("a.zip")
+    }
+
+    @Test
+    fun `stopped downloads can be resumed, dismissed tasks are left out`() {
+        val stopped = work(
+            "Stopped",
+            WorkInfo.State.SUCCEEDED,
+            1,
+            output = workDataOf(KEY_ERROR to "timeout", KEY_RESUMABLE to true, KEY_DOWNLOAD_STOPPED to true),
+        )
+        val importFailed = work("Broken", WorkInfo.State.SUCCEEDED, 2, output = workDataOf(KEY_ERROR to "bad zip", KEY_RESUMABLE to true))
+        val dismissed = work("Dismissed", WorkInfo.State.SUCCEEDED, 3, output = workDataOf(KEY_ERROR to "x"))
+        val retrying = work("Retrying", WorkInfo.State.ENQUEUED, 4)
+
+        val tasks = importTasks(
+            listOf(stopped, importFailed, dismissed, retrying),
+            dismissed = setOf(dismissed.id.toString()),
+            retries = mapOf(retrying.id.toString() to 2, stopped.id.toString() to 3),
+        )
+
+        assertThat(tasks.map { it.name }).containsExactly("Stopped", "Broken", "Retrying").inOrder()
+        assertThat(tasks.map { it.resumable }).containsExactly(true, true, false).inOrder()
+        assertThat(tasks.map { it.downloadStopped }).containsExactly(true, false, false).inOrder()
+        // Retries show only while the task is waiting for its next try.
+        assertThat(tasks.map { it.retries }).containsExactly(0, 0, 2).inOrder()
     }
 
     @Test

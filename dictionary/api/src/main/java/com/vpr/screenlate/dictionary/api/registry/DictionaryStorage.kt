@@ -45,7 +45,16 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     fun newStagingDirectory(): File = File(staging, UUID.randomUUID().toString()).apply { mkdirs() }
 
     /** A fresh file for a downloaded or copied archive; delete it when done. */
-    fun newArchiveFile(): File = File(downloads.apply { mkdirs() }, "${UUID.randomUUID()}.zip")
+    fun newArchiveFile(): File = downloadFile(newArchiveName())
+
+    /** A fresh name for an archive, which a queued download keeps across its runs; see [downloadFile]. */
+    fun newArchiveName(): String = "${UUID.randomUUID()}.zip"
+
+    /** The archive file named [name] ([newArchiveName]). */
+    fun downloadFile(name: String): File = File(downloads.apply { mkdirs() }, File(name).name)
+
+    /** The file that keeps the state of a download into [archive] (its validator, whether it finished). */
+    fun downloadState(archive: File): File = File(archive.parentFile, archive.name + DOWNLOAD_STATE_SUFFIX)
 
     /** Moves an imported dictionary directory into the storage root and returns the new directory name. */
     fun adopt(imported: File): String {
@@ -86,7 +95,7 @@ internal fun orphanDirectories(root: File, staging: File, known: Collection<Stri
 /**
  * Staging directories made before [processStart] (only a running import writes there, and none from an earlier
  * process runs any more), and archives in [downloads] made before it that no queued import reads ([archivesInUse];
- * when null, only archives older than [STALE_MS] count).
+ * when null, only archives older than [STALE_MS] count), with their download state files.
  */
 internal fun importLeftovers(
     staging: File,
@@ -97,5 +106,10 @@ internal fun importLeftovers(
 ): List<File> {
     val archivesBefore = if (archivesInUse == null) minOf(processStart, now - STALE_MS) else processStart
     return staging.listFiles().orEmpty().filter { it.lastModified() < processStart } +
-        downloads.listFiles().orEmpty().filter { it.lastModified() < archivesBefore && it.name !in archivesInUse.orEmpty() }
+        downloads.listFiles().orEmpty().filter {
+            it.lastModified() < archivesBefore && it.name.removeSuffix(DOWNLOAD_STATE_SUFFIX) !in archivesInUse.orEmpty()
+        }
 }
+
+/** The suffix of a download's state file next to its archive; see [DictionaryStorage.downloadState]. */
+internal const val DOWNLOAD_STATE_SUFFIX = ".state"

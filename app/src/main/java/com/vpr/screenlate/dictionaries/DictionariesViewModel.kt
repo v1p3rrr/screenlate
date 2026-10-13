@@ -266,15 +266,21 @@ class DictionariesViewModel @Inject constructor(
         }
     }
 
-    fun clearFinishedTasks() {
-        imports.clearFinished()
+    /** Removes a finished [task] from the list; a stopped download's file is deleted. */
+    fun dismiss(task: ImportTask) {
+        viewModelScope.launch { imports.dismiss(task.id) }
+    }
+
+    /** Queues a stopped download again; see [ImportTask.resumable]. */
+    fun resume(task: ImportTask) {
+        viewModelScope.launch { imports.resume(task.id) }
     }
 
     /** Starts the bundled install that stopped after the app died during it twice; see [ImportTask.paused]. */
-    fun retryBundledInstall() {
+    fun retryBundledInstall(task: ImportTask) {
         viewModelScope.launch {
             bundled.resumeInstall()
-            imports.clearFinished()
+            imports.dismiss(task.id)
             imports.installBundled()
         }
     }

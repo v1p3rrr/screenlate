@@ -25,6 +25,7 @@
 
     <string name="action_delete">Supprimer</string>
     <string name="action_cancel">Annuler</string>
+    <string name="action_resume">Reprendre</string>
     <string name="action_dismiss">Ignorer</string>
     <string name="action_ok">OK</string>
 
@@ -61,6 +62,8 @@
     <string name="dictionaries_bundled">dictionnaires fournis</string>
     <string name="dictionaries_task_queued">En attente : %1$s</string>
     <string name="dictionaries_task_downloading">Téléchargement de %1$s</string>
+    <string name="dictionaries_task_retrying">Nouvelle tentative de téléchargement (%2$d sur %3$d) : %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s : téléchargement interrompu — %2$s</string>
     <string name="dictionaries_task_importing">Import de %1$s</string>
     <string name="dictionaries_installed_mark">Installé</string>
     <string name="dictionaries_download">Télécharger</string>

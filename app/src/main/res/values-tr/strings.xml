@@ -25,6 +25,7 @@
 
     <string name="action_delete">Sil</string>
     <string name="action_cancel">İptal</string>
+    <string name="action_resume">Sürdür</string>
     <string name="action_dismiss">Kapat</string>
     <string name="action_ok">Tamam</string>
 
@@ -61,6 +62,8 @@
     <string name="dictionaries_bundled">birlikte gelen sözlükler</string>
     <string name="dictionaries_task_queued">Bekliyor: %1$s</string>
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>
+    <string name="dictionaries_task_retrying">İndirme yeniden deneniyor (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s: indirme durdu — %2$s</string>
     <string name="dictionaries_task_importing">İçe aktarılıyor: %1$s</string>
     <string name="dictionaries_installed_mark">Yüklü</string>
     <string name="dictionaries_download">İndir</string>

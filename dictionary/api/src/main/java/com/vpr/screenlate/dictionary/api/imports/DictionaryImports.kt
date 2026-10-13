@@ -9,16 +9,21 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.await
 import androidx.work.workDataOf
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ARCHIVE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INDEX_URL
@@ -29,6 +34,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PERCENT
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REPLACE_ID
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_RESUMABLE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SELECTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SIZE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
@@ -57,6 +63,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -79,6 +86,12 @@ data class ImportTask(
      * starts one ([BundledDictionaries.resumeInstall]).
      */
     val paused: Boolean = false,
+    /** Set on a download that stopped for any reason; [DictionaryImports.resume] starts it again where it broke off. */
+    val resumable: Boolean = false,
+    /** Set when the download itself broke off, not the import after it. */
+    val downloadStopped: Boolean = false,
+    /** Automatic retries of a download so far; a queued task with some waits for the network or its next try. */
+    val retries: Int = 0,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -107,13 +120,15 @@ class DictionaryImports @Inject constructor(
     /** Running imports of this process that [cancel] stops. */
     private val runs = CancellableRuns()
 
-    /** Imports in the order they were queued; cancelled ones are left out. */
+    /** Imports in the order they were queued; cancelled and dismissed ones are left out. */
     val tasks: Flow<List<ImportTask>> = combine(
         workManager.getWorkInfosByTagFlow(TAG),
-        // Every settings write emits; the tasks change only with the cancels.
-        preferences.data.map { it[CANCELLED].orEmpty() }.distinctUntilChanged(),
-        ::importTasks,
-    )
+        // Every settings write emits; the tasks change only with these.
+        preferences.data.map { TaskMarks(it[CANCELLED].orEmpty(), it[DISMISSED].orEmpty(), readStops(it[RETRIES].orEmpty())) }
+            .distinctUntilChanged(),
+    ) { infos, marks -> importTasks(infos, marks.cancelled, marks.dismissed, marks.retries) }
+
+    private data class TaskMarks(val cancelled: Set<String>, val dismissed: Set<String>, val retries: Map<String, Int>)
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to
@@ -215,10 +230,34 @@ class DictionaryImports @Inject constructor(
         name = name,
     )
 
-    /** Removes finished tasks from [tasks]. */
-    fun clearFinished() {
-        Log.i(LOG_TAG, "Finished tasks cleared")
-        workManager.pruneWork()
+    /** Removes the finished task [id] from [tasks] and deletes what its download left. */
+    suspend fun dismiss(id: UUID) {
+        Log.i(LOG_TAG, "Task $id dismissed")
+        preferences.edit { it[DISMISSED] = it[DISMISSED].orEmpty() + id.toString() }
+        val info = workManager.getWorkInfoByIdFlow(id).first() ?: return
+        if (info.tagValue(SOURCE_TAG_PREFIX) in DOWNLOAD_SOURCES) archiveOf(info)?.takeIf { it.isNotEmpty() }?.let(::deleteDownload)
+    }
+
+    /**
+     * Queues the stopped download [id] ([ImportTask.resumable]) again; it continues the file it left when the server
+     * allows that. The stopped task leaves [tasks].
+     */
+    suspend fun resume(id: UUID) {
+        val info = workManager.getWorkInfoByIdFlow(id).first() ?: return
+        val output = info.outputData
+        if (!output.getBoolean(KEY_RESUMABLE, false)) return
+        val data = Data.Builder().apply {
+            RESUME_KEYS.forEach { key -> output.keyValueMap[key]?.let { put(key, it) } }
+        }.build()
+        preferences.edit { it[DISMISSED] = it[DISMISSED].orEmpty() + id.toString() }
+        Log.i(LOG_TAG, "Task $id resumed")
+        enqueue(data, name = data.getString(KEY_NAME).orEmpty())
+    }
+
+    private fun deleteDownload(name: String) {
+        val archive = storage.downloadFile(name)
+        archive.delete()
+        storage.downloadState(archive).delete()
     }
 
     /**
@@ -249,9 +288,9 @@ class DictionaryImports @Inject constructor(
      * tasks that ended without forgetting them (the process died first).
      */
     internal suspend fun forgetEnded() {
-        val unfinished = workManager.getWorkInfosByTagFlow(TAG).first()
-            .filterNot { it.state.isFinished }
-            .mapTo(hashSetOf()) { it.id.toString() }
+        val works = workManager.getWorkInfosByTagFlow(TAG).first()
+        val unfinished = works.filterNot { it.state.isFinished }.mapTo(hashSetOf()) { it.id.toString() }
+        val known = works.mapTo(hashSetOf()) { it.id.toString() }
         preferences.edit { prefs ->
             val ids = prefs[CANCELLED].orEmpty()
             if (ids.any { it !in unfinished }) {
@@ -260,6 +299,11 @@ class DictionaryImports @Inject constructor(
             }
             val stops = readStops(prefs[STOPPED].orEmpty())
             if (stops.keys.any { it !in unfinished }) prefs[STOPPED] = writeStops(stops.filterKeys { it in unfinished })
+            val retries = readStops(prefs[RETRIES].orEmpty())
+            if (retries.keys.any { it !in unfinished }) prefs[RETRIES] = writeStops(retries.filterKeys { it in unfinished })
+            // Dismissed tasks stay out of the list until WorkManager prunes their work.
+            val dismissed = prefs[DISMISSED].orEmpty()
+            if (dismissed.any { it !in known }) prefs[DISMISSED] = dismissed.filterTo(hashSetOf()) { it in known }
         }
     }
 
@@ -274,14 +318,36 @@ class DictionaryImports @Inject constructor(
         }
     }
 
+    /** Takes back one [markStopped] of the task [id]: a download counted as stopped while it ran has finished. */
+    internal suspend fun unmarkStopped(id: UUID) {
+        preferences.edit { prefs ->
+            val stops = readStops(prefs[STOPPED].orEmpty())
+            val count = stops[id.toString()] ?: return@edit
+            prefs[STOPPED] = writeStops(if (count > 1) stops + (id.toString() to count - 1) else stops - id.toString())
+        }
+    }
+
     /** How often WorkManager stopped the task [id] while it ran; see [markStopped]. */
     internal suspend fun stopsOf(id: UUID): Int = readStops(preferences.data.first()[STOPPED].orEmpty())[id.toString()] ?: 0
 
-    /** Forgets the stops of the task [id], which has ended. */
+    /** Records an automatic retry of the download [id]. */
+    internal suspend fun markRetry(id: UUID) {
+        preferences.edit { prefs ->
+            val retries = readStops(prefs[RETRIES].orEmpty())
+            prefs[RETRIES] = writeStops(retries + (id.toString() to (retries[id.toString()] ?: 0) + 1))
+        }
+    }
+
+    /** Automatic retries of the download [id] so far. */
+    internal suspend fun retriesOf(id: UUID): Int = readStops(preferences.data.first()[RETRIES].orEmpty())[id.toString()] ?: 0
+
+    /** Forgets the stops and retries of the task [id], which has ended. */
     internal suspend fun forgetStops(id: UUID) {
         preferences.edit { prefs ->
             val stops = readStops(prefs[STOPPED].orEmpty())
             if (id.toString() in stops) prefs[STOPPED] = writeStops(stops - id.toString())
+            val retries = readStops(prefs[RETRIES].orEmpty())
+            if (id.toString() in retries) prefs[RETRIES] = writeStops(retries - id.toString())
         }
     }
 
@@ -304,6 +370,7 @@ class DictionaryImports @Inject constructor(
         preferences.edit {
             it.remove(CANCELLED)
             it.remove(STOPPED)
+            it.remove(RETRIES)
         }
         Log.i(LOG_TAG, "All tasks cancelled in ${System.currentTimeMillis() - started} ms")
     }
@@ -319,14 +386,30 @@ class DictionaryImports @Inject constructor(
     }
 
     private fun enqueue(data: Data, name: String): UUID {
+        val source = data.getString(KEY_SOURCE).orEmpty()
+        val download = source in DOWNLOAD_SOURCES
+        // A download keeps its archive across runs, so that a run after a break continues it.
+        val input = if (download && data.getString(KEY_ARCHIVE) == null) {
+            Data.Builder().putAll(data).putString(KEY_ARCHIVE, storage.newArchiveName()).build()
+        } else {
+            data
+        }
         val request = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
-            .setInputData(data)
+            .setInputData(input)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
+            .addTag(SOURCE_TAG_PREFIX + source)
+            .apply {
+                if (download) {
+                    // Waits for a network; one that broke off tries again (DictionaryImportWorker.MAX_RETRIES).
+                    setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    setBackoffCriteria(BackoffPolicy.EXPONENTIAL, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
+                }
+            }
             .addTag(ORDER_TAG_PREFIX + lastOrder.updateAndGet { maxOf(it + 1, System.currentTimeMillis()) })
             // Empty for imports that make their own temporary archive; see archivesInUse.
-            .addTag(ARCHIVE_TAG_PREFIX + data.getString(KEY_PATH)?.let { File(it).name }.orEmpty())
+            .addTag(ARCHIVE_TAG_PREFIX + (input.getString(KEY_PATH)?.let { File(it).name } ?: input.getString(KEY_ARCHIVE)).orEmpty())
             .build()
         // One queue for all imports: the native importer is memory hungry and imports are cheaper one at a time.
         workManager.enqueueUniqueWork(QUEUE, ExistingWorkPolicy.APPEND_OR_REPLACE, request)
@@ -344,6 +427,7 @@ class DictionaryImports @Inject constructor(
         const val TAG = "dictionary-import"
         private const val LOG_TAG = "DictionaryImports"
         const val NAME_TAG_PREFIX = "dictionary-import-name:"
+        const val SOURCE_TAG_PREFIX = "dictionary-import-source:"
 
         /** Followed by a number that grows with every enqueued import; work ids are random. */
         const val ORDER_TAG_PREFIX = "dictionary-import-order:"
@@ -355,8 +439,26 @@ class DictionaryImports @Inject constructor(
         /** Ids of the tasks the user cancelled that have not ended yet. */
         val CANCELLED = stringSetPreferencesKey("dictionary_imports_cancelled")
 
-        /** How often WorkManager stopped each unfinished task while it ran, as `id=count`; see [markStopped]. */
+        /**
+         * Runs of each unfinished task that do not count as runs the app died in, as `id=count`: WorkManager stopped
+         * them, they were downloading, or they ended for a retry; see [markStopped].
+         */
         val STOPPED = stringSetPreferencesKey("dictionary_imports_stopped")
+
+        /** Automatic retries of each unfinished download, as `id=count`; see [markRetry]. */
+        val RETRIES = stringSetPreferencesKey("dictionary_imports_retries")
+
+        /** Ids of finished tasks the user dismissed or resumed, kept out of [tasks]. */
+        val DISMISSED = stringSetPreferencesKey("dictionary_imports_dismissed")
+
+        /** Sources whose tasks download their archive and may continue it; see [ImportTask.resumable]. */
+        private val DOWNLOAD_SOURCES = setOf(SOURCE_URL)
+
+        /** The first wait before a download that broke off tries again; it doubles with each retry. */
+        private const val RETRY_DELAY_SECONDS = 30L
+
+        /** What a stopped download keeps in its output to be queued again; see [resume]. */
+        val RESUME_KEYS = listOf(KEY_SOURCE, KEY_URL, KEY_INDEX_URL, KEY_NAME, KEY_REPLACE_ID, KEY_ARCHIVE)
 
         /** Reads [STOPPED]; entries that do not parse are dropped. */
         fun readStops(entries: Set<String>): Map<String, Int> = entries.mapNotNull { entry ->
@@ -368,31 +470,44 @@ class DictionaryImports @Inject constructor(
     }
 }
 
-/** Archives the unfinished [works] read; null when one of them does not say (queued by an older version). */
+/**
+ * Archives the unfinished [works] read and those stopped downloads may continue; null when an unfinished one does not
+ * say (queued by an older version).
+ */
 internal fun archivesInUse(works: List<WorkInfo>): Set<String>? =
-    works.filterNot { it.state.isFinished }.mapTo(mutableSetOf()) { work ->
-        work.tags.firstOrNull { it.startsWith(DictionaryImports.ARCHIVE_TAG_PREFIX) }
-            ?.removePrefix(DictionaryImports.ARCHIVE_TAG_PREFIX) ?: return null
+    works.filter { !it.state.isFinished || it.outputData.getBoolean(KEY_RESUMABLE, false) }.mapTo(mutableSetOf()) { work ->
+        archiveOf(work) ?: return null
     }.apply { remove("") }
+
+/** The archive file name the import [work] reads; empty when it makes its own, null when it does not say. */
+internal fun archiveOf(work: WorkInfo): String? = work.tagValue(DictionaryImports.ARCHIVE_TAG_PREFIX)
+
+private fun WorkInfo.tagValue(prefix: String): String? = tags.firstOrNull { it.startsWith(prefix) }?.removePrefix(prefix)
 
 /**
  * The import works as tasks, in queue order; those the user cancelled ([cancelled] ids) and those a dictionary reset
  * cancelled are left out.
  */
-internal fun importTasks(infos: List<WorkInfo>, cancelled: Set<String> = emptySet()): List<ImportTask> =
+internal fun importTasks(
+    infos: List<WorkInfo>,
+    cancelled: Set<String> = emptySet(),
+    dismissed: Set<String> = emptySet(),
+    retries: Map<String, Int> = emptyMap(),
+): List<ImportTask> =
     infos.filterNot {
         it.state == WorkInfo.State.CANCELLED ||
             it.id.toString() in cancelled ||
+            it.id.toString() in dismissed ||
             it.outputData.getBoolean(KEY_CANCELLED, false)
     }
         .sortedWith(compareBy<WorkInfo> { it.order() }.thenBy { it.id })
-        .map { it.toTask() }
+        .map { it.toTask(retries[it.id.toString()] ?: 0) }
 
 private fun WorkInfo.order(): Long =
     tags.firstOrNull { it.startsWith(DictionaryImports.ORDER_TAG_PREFIX) }
         ?.removePrefix(DictionaryImports.ORDER_TAG_PREFIX)?.toLongOrNull() ?: 0L
 
-private fun WorkInfo.toTask(): ImportTask {
+private fun WorkInfo.toTask(retries: Int): ImportTask {
     val data = if (state.isFinished) outputData else progress
     val name = progress.getString(KEY_NAME)
         ?: tags.firstOrNull { it.startsWith(DictionaryImports.NAME_TAG_PREFIX) }
@@ -423,5 +538,8 @@ private fun WorkInfo.toTask(): ImportTask {
         },
         interrupted = interrupted,
         paused = outputData.getBoolean(KEY_PAUSED, false),
+        resumable = taskState == ImportTask.State.FAILED && outputData.getBoolean(KEY_RESUMABLE, false),
+        downloadStopped = outputData.getBoolean(KEY_DOWNLOAD_STOPPED, false),
+        retries = if (state.isFinished) 0 else retries,
     )
 }

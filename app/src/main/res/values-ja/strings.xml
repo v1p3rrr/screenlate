@@ -25,6 +25,7 @@
 
     <string name="action_delete">削除</string>
     <string name="action_cancel">キャンセル</string>
+    <string name="action_resume">再開</string>
     <string name="action_dismiss">閉じる</string>
     <string name="action_ok">OK</string>
 
@@ -61,6 +62,8 @@
     <string name="dictionaries_bundled">同梱の辞書</string>
     <string name="dictionaries_task_queued">待機中：%1$s</string>
     <string name="dictionaries_task_downloading">%1$s をダウンロード中</string>
+    <string name="dictionaries_task_retrying">ダウンロードを再試行中（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_download_stopped">%1$s：ダウンロードが停止しました（%2$s）</string>
     <string name="dictionaries_task_importing">%1$s をインポート中</string>
     <string name="dictionaries_installed_mark">インストール済み</string>
     <string name="dictionaries_download">ダウンロード</string>

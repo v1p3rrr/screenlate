@@ -25,6 +25,7 @@
 
     <string name="action_delete">삭제</string>
     <string name="action_cancel">취소</string>
+    <string name="action_resume">이어받기</string>
     <string name="action_dismiss">닫기</string>
     <string name="action_ok">확인</string>
 
@@ -61,6 +62,8 @@
     <string name="dictionaries_bundled">기본 제공 사전</string>
     <string name="dictionaries_task_queued">대기 중: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s 다운로드 중</string>
+    <string name="dictionaries_task_retrying">다운로드 재시도 중(%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_download_stopped">%1$s: 다운로드 중지됨 — %2$s</string>
     <string name="dictionaries_task_importing">%1$s 가져오는 중</string>
     <string name="dictionaries_installed_mark">설치됨</string>
     <string name="dictionaries_download">다운로드</string>

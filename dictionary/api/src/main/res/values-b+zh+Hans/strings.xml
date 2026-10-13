@@ -1,4 +1,5 @@
 <resources>
     <string name="dictionary_import_channel">词典导入</string>
     <string name="dictionary_import_notification">正在导入词典</string>
+    <string name="dictionary_import_cancel">取消</string>
 </resources>
