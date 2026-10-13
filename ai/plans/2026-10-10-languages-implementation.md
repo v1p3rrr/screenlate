@@ -181,7 +181,13 @@ Decided when the first language or group 1 is ready, before it is merged into th
 Collected during autonomous work (owner away since 2026-10-14); each with its context, asked when the owner is back.
 Work that depends on an answer uses the recommended option or waits, as noted.
 
-- (none yet)
+- Emulator processes (2026-10-14). A disposable `-read-only` Pixel_10_Pro instance started for checking the Languages
+  screen crashed at boot: the host could not allocate GPU memory ("Failed to allocate ColorBuffer with Vulkan
+  backing"). Its processes (emulator.exe 12780, qemu 127372, crashpad 117336, started 2026-10-14 01:14) may still be
+  waiting on the crash dialog; stopping them by PID was refused by the session's permission check. The stale qemu 70992
+  from 2026-10-10 could not be stopped either: Windows lists it, but it no longer exists as a process. Please close
+  those windows or allow the agent to stop the processes it started. The next attempt uses software rendering
+  (`-gpu swiftshader_indirect`).
 
 ## Branches and workflow
 
@@ -546,3 +552,12 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   languages writes it as on in the same write that settles the first run, and restoring an older backup without the
   setting keeps it on too (backups now always carry it). Request 37: one-shot navigation events; the form-of tags and
   "walke" explained in `ai/notes/languages.md`.
+- 2026-10-14: request 36 built: downloads wait for the network, retry by themselves three times and resume with Range
+  where the server allows it; stopped ones show Resume and Cancel, and the notification has Cancel. Emulator check
+  pending (testing phase).
+- 2026-10-14: request 34 built: the Languages screen (turned on with active radio, star, flag country and Turn off;
+  turned off with files, per-dictionary delete and language change, Delete all, Turn on; not turned on), the compact
+  home card with quick flags, flags in the bubble menu (codes on e-ink), stars and flag countries in `LanguageProfiles`
+  (backed up with the general settings), circle-flags converted by `scripts/flags/` with a NOTICE entry. The active
+  language turned off gives way to the first starred one (agent's choice, within the star rules). Emulator check
+  pending.
