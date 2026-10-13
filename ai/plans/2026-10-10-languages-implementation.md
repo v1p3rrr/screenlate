@@ -77,6 +77,14 @@ Requests 1–19 are in the previous plan. New ones:
     not to write ("follows the finger again; in 0.2.2 it lagged"): "Fixed the bubble freezing when pulled out from the
     edge" is enough.
 41. (2026-10-14) Pitch accent colors for Japanese, like the Chinese tone colors (a switch, off by default).
+42. (2026-10-14) A test model of the whole app: test cases for everything that can be checked on the emulator, old
+    and new, including non-functional ones (nothing lags, timings). Each case gets a category: checked once; checked
+    once and again in a full regression; checked in every regression (large changes, before a release); new (moved
+    into one of the others once checked). Cover with integration (instrumented) tests whatever they can cover, so the
+    agent does not click through it every time; the rest is checked by hand on the emulator. Order: after all the
+    improvements, before the full emulator testing, write the model; then test by it. The agent may install and set
+    up AnkiDroid, decks and whatever else the emulator needs, and open harmless, lawful websites in the emulator's
+    browser to check recognition through the app (without reading their content beyond that).
 
 ## Decisions
 
@@ -441,14 +449,19 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 
 ## Changelog
 
+- 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
+  against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),
+  universal 76.2 MB (71.8, +4.5). Chinese and Korean will add the ML Kit models (+0.56 MB) and the hanja dictionary.
+
 - 2026-10-14: requests 30–41 and the owner's answers: the Languages screen with quick languages and flags, downloads
   that resume or offer "Resume", transcription regions, frequency dictionaries built on the phone from wordfreq (no
   hosting), Chinese tone colors and typed pinyin, Japanese pitch accent colors, the Chinese script default, KRDICT
   as CC BY-SA, a bundled hanja dictionary, the translation button off for new installs only (changes a row of
   `2026-09-29-feedback-after-0.1.4.md`), "translation button" instead of "文A button", and a tone audit of all texts.
-  Hosting is postponed with no date. Order of work: the agent's emulator checks (APK size, Japanese regression,
-  upgrade and backup from v0.2.3, request 35, downloads), fixes of our own items from request 37, then requests
-  33–41, then Chinese and Korean.
+  Hosting is postponed with no date. Order of work (revised the same day with request 42): the APK size; requests
+  33–41 and our own items of request 37; the test model (request 42) with integration tests; the full emulator
+  testing by it (Japanese regression, upgrade and backup from v0.2.3, requests 35 and 36); then Chinese and Korean,
+  each tested by the model and merged.
 
 - 2026-10-11: request 25 implemented: bundled imports are identified by source and cancelled before file deletion;
   dictionary media reads select and lock their language; sentence parsing uses the captured note language; the audio
