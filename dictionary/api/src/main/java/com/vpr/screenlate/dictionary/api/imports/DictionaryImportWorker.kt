@@ -17,11 +17,13 @@ import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
+import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.assisted.Assisted
@@ -46,8 +48,9 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Imports dictionaries in the background: the archives bundled in the APK, a local archive file, or an
- * archive downloaded from a URL; also downloads on-device recognition models of the catalog. Runs as a foreground
- * `dataSync` job so the system does not stop a long import.
+ * archive downloaded from a URL; builds the dictionaries the catalog has as source files ([CatalogEntry.build]); also
+ * downloads on-device recognition models of the catalog. Runs as a foreground `dataSync` job so the system does not
+ * stop a long import.
  */
 @HiltWorker
 class DictionaryImportWorker @AssistedInject constructor(
@@ -165,9 +168,15 @@ class DictionaryImportWorker @AssistedInject constructor(
                 SOURCE_URL -> {
                     // Reading the index and connecting take a moment; the task says it is downloading meanwhile.
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
-                    val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
-                        ?: requireNotNull(inputData.getString(KEY_URL))
-                    listOf(download(url, name, ::importDownloaded))
+                    val built = inputData.getString(KEY_ENTRY_ID)
+                        ?.let { id -> catalogEntries.firstOrNull { it.id == id && it.build != null } }
+                    if (built != null) {
+                        listOf(download(built.downloadUrl, name) { buildAndImport(built, it, name) })
+                    } else {
+                        val url = inputData.getString(KEY_INDEX_URL)?.let { latestDownloadUrl(it) }
+                            ?: requireNotNull(inputData.getString(KEY_URL))
+                        listOf(download(url, name, ::importDownloaded))
+                    }
                 }
                 SOURCE_MODEL -> {
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
@@ -436,6 +445,33 @@ class DictionaryImportWorker @AssistedInject constructor(
     private suspend fun importDownloaded(archive: File): String {
         val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
         return repository.import(archive, replaces = replaces, catalog = catalogEntries).title
+    }
+
+    /**
+     * Builds the dictionary of [entry] from its checked [source] file and imports it. A frequency dictionary built
+     * for a language sorts its results, unless the user chose another one.
+     */
+    private suspend fun buildAndImport(entry: CatalogEntry, source: File, name: String): String {
+        if (!WordfreqDictionary.hasChecksum(source, requireNotNull(entry.sha256))) {
+            throw IOException("The downloaded file does not match its checksum")
+        }
+        setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_CONVERT))
+        val archive = storage.newArchiveFile()
+        try {
+            val started = System.currentTimeMillis()
+            val words = WordfreqDictionary.build(source, entry.sourceLanguage, requireNotNull(entry.version), archive)
+            Log.i(TAG, "Built ${entry.id}: $words words, ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
+            currentCoroutineContext().ensureActive()
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+            val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
+            val dictionary = repository.import(archive, replaces = replaces, catalog = catalogEntries)
+            if (dictionary.kind == DictionaryKind.FREQUENCY) {
+                Language.of(entry.sourceLanguage)?.let { repository.preferSortDictionary(it, dictionary.id) }
+            }
+            return dictionary.title
+        } finally {
+            archive.delete()
+        }
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo = foregroundInfo(inputData.getString(KEY_NAME).orEmpty())

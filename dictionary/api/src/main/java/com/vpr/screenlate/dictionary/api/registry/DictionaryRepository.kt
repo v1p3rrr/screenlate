@@ -346,6 +346,14 @@ class DictionaryRepository @Inject constructor(
         reloadLocked()
     }
 
+    /** As [setSortDictionary], unless another installed dictionary was chosen for [language]. */
+    suspend fun preferSortDictionary(language: Language, id: Long) = mutex.withLock {
+        val chosen = preferences.data.first()[sortKey(language)]
+        if (chosen != null && chosen != id && dao.getAll().any { it.id == chosen }) return@withLock
+        preferences.edit { it[sortKey(language)] = id }
+        reloadLocked()
+    }
+
     /**
      * Deletes storage leftovers: directories of no dictionary and the temporary files of imports cut short. Call from
      * the import queue, where no other import runs; [archivesInUse] are kept (see [importLeftovers]).

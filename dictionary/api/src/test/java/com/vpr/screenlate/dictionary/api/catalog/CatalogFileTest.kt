@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import java.io.File
@@ -54,6 +55,29 @@ class CatalogFileTest {
         val transcription = catalog.entries.first { it.id == "wiktionary-en-transcription" }
         assertThat(transcription.category).isEqualTo(CatalogCategory.PRONUNCIATION)
         assertThat(transcription.displayTitle(Locale.ENGLISH)).isEqualTo("Transcription (Wiktionary)")
+    }
+
+    @Test
+    fun `every source language but Japanese has a frequency dictionary built from wordfreq`() {
+        val built = catalog!!.entries.filter { it.build != null }
+        assertThat(built.map { it.sourceLanguage })
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi")
+        for (entry in built) {
+            assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
+            assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
+            assertThat(entry.recommended).isTrue()
+            assertThat(entry.sha256).matches("[0-9a-f]{64}")
+            assertThat(entry.downloadUrl).matches(
+                "https://raw\\.githubusercontent\\.com/rspeer/wordfreq/[0-9a-f]{40}/wordfreq/data/(large|small)_${entry.sourceLanguage}\\.msgpack\\.gz",
+            )
+            assertThat(entry.oldTitles).containsExactly(WordfreqDictionary.title(entry.sourceLanguage))
+            assertThat(entry.titles.keys).containsAtLeastElementsIn(locales)
+        }
+        val english = built.first { it.sourceLanguage == "en" }
+        assertThat(english.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (wordfreq)")
+        assertThat(english.description(Locale.ENGLISH)).startsWith("wordfreq, English:")
+        // Older versions cannot build it, so the format 1 copy leaves it out.
+        assertThat(legacy!!.entries.none { it.id == english.id }).isTrue()
     }
 
     @Test

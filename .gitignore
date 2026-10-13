@@ -31,6 +31,9 @@ keystore.properties
 
 # Local builds of earlier releases for upgrade tests.
 /testdata/apk/
+
+# wordfreq word lists for frequency dictionary tests (third-party data).
+/testdata/wordfreq/
 node_modules/
 
 # Written into source archives by the release workflow; builds from git read the version from tags.

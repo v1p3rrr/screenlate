@@ -73,12 +73,16 @@ enum class CatalogCategory {
  * @property downloadSize archive size in bytes; catalogs of format 1 give [sizeMb] instead.
  * @property installedSize measured size after import in bytes; [installedBytes] estimates it otherwise.
  * @property nonCommercial the license forbids commercial use.
- * @property sha256 checksum of the archive, where the project hosts the file; required for a model.
+ * @property sha256 checksum of the archive, where the project hosts the file; required for a model and for a file
+ *   the app builds a dictionary from.
  * @property kind the dictionary's kind; null for a model ([CatalogCategory.OCR_MODEL]).
  * @property model a model's id in the OCR model store; entries of several languages may share one model, such as a
  *   text detector.
  * @property engine the on-device engine that reads [model].
- * @property version [model]'s version; an installed copy of another version is replaced.
+ * @property version [model]'s version; an installed copy of another version is replaced. For [build], the version of
+ *   the data the downloaded file holds.
+ * @property build how the app builds the dictionary from the downloaded file instead of importing it as it is:
+ *   [BUILD_WORDFREQ] for one of wordfreq's word lists ([com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary]).
  */
 @Serializable
 data class CatalogEntry(
@@ -108,14 +112,22 @@ data class CatalogEntry(
     val model: String? = null,
     val engine: String? = null,
     val version: String? = null,
+    val build: String? = null,
 ) {
     val category: CatalogCategory get() = declaredCategory ?: kind?.let(CatalogCategory::of) ?: CatalogCategory.MAIN
 
     val isModel: Boolean get() = category == CatalogCategory.OCR_MODEL
 
-    /** A dictionary names its kind; a model its id, engine, version and checksum. */
+    /**
+     * A dictionary names its kind; a model its id, engine, version and checksum; a built dictionary a known [build],
+     * the version and the checksum.
+     */
     internal val isComplete: Boolean
-        get() = if (isModel) model != null && engine != null && version != null && sha256 != null else kind != null
+        get() = when {
+            isModel -> model != null && engine != null && version != null && sha256 != null
+            build != null -> build in BUILDS && kind != null && version != null && sha256 != null
+            else -> kind != null
+        }
 
     val downloadBytes: Long get() = if (downloadSize > 0) downloadSize else sizeMb * MIB
 
@@ -169,6 +181,11 @@ data class CatalogEntry(
 }
 
 private const val MIB = 1024L * 1024L
+
+/** [CatalogEntry.build] of a frequency dictionary built from a wordfreq word list. */
+const val BUILD_WORDFREQ = "wordfreq"
+
+private val BUILDS = setOf(BUILD_WORDFREQ)
 
 /**
  * Imports measured so far stay below these: term dictionaries take 2-2.5 times their archive, Wiktionary glossaries 3,

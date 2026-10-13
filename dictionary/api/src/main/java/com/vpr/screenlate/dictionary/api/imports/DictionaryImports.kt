@@ -234,6 +234,8 @@ class DictionaryImports @Inject constructor(
             KEY_INDEX_URL to indexUrl,
             KEY_NAME to name,
             KEY_REPLACE_ID to (replaces ?: -1L),
+            // A dictionary the worker builds from the download looks its entry up.
+            KEY_ENTRY_ID to entry?.id,
         ),
         name = name,
         language = entry?.sourceLanguage,

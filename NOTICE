@@ -89,7 +89,7 @@ Kanjium pitch accents (https://github.com/toasted-nutbread/yomichan-pitch-accent
   conversion by toasted-nutbread, MIT License.
 
 Dictionaries offered for download are not part of the APK; each one carries its own license and
-attribution, shown in the app under Dictionaries. The frequency dictionaries built by scripts/frequency
-use the word lists of wordfreq (https://github.com/rspeer/wordfreq) by Robyn Speer, data licensed
-CC BY-SA 4.0, which come from Wikipedia, OpenSubtitles, SUBTLEX, Google Books Ngrams and other sources;
-each built dictionary names them all and is shared under CC BY-SA 4.0.
+attribution, shown in the app under Dictionaries. The frequency dictionaries that the app builds on the device
+(and scripts/frequency on a computer) use the word lists of wordfreq (https://github.com/rspeer/wordfreq) by
+Robyn Speer, data licensed CC BY-SA 4.0, which come from Wikipedia, OpenSubtitles, SUBTLEX, Google Books Ngrams
+and other sources; each built dictionary names them all and is shared under CC BY-SA 4.0.

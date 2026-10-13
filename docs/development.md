@@ -33,11 +33,16 @@ recorded listing, `--record <file>` saves one.
 A model entry (category `OCR_MODEL`) has no dictionary kind but names its model id, engine, version and SHA-256; the
 app installs the download only when the checksum matches. Entries of several languages may name the same model.
 
-Frequency dictionaries for languages without one are built from wordfreq: `pip install wordfreq`, then
-`python scripts/frequency/wordfreq_dictionary.py <language> <out.zip>` writes a rank-based Yomitan dictionary of the
-100,000 most frequent words (`--size` changes it), each also in its capitalized form, with wordfreq's attribution in
-the index; `--download-url` and `--index-url` make it updatable once hosted. Its data is CC BY-SA 4.0, and so is the
-dictionary.
+Frequency dictionaries for languages without one are built from wordfreq on the device: a catalog entry with
+`"build": "wordfreq"` points at one of wordfreq's word lists at a pinned commit, with its size, SHA-256 and wordfreq
+version. The import job downloads the list, checks the checksum and converts it (`WordfreqDictionary`) into a
+rank-based Yomitan dictionary of the 100,000 most frequent words, each also in its capitalized form, with wordfreq's
+attribution in the index; the imported dictionary sorts its language's results unless another one was chosen.
+`python scripts/frequency/wordfreq_catalog.py` writes these entries (template `wordfreq`) for a new commit or language;
+it keeps the downloaded lists in `testdata/wordfreq/`, where a unit test also builds the English one. The same
+dictionary can be built on a computer: `pip install wordfreq`, then
+`python scripts/frequency/wordfreq_dictionary.py <language> <out.zip>` (`--size` changes the number of words). Its data
+is CC BY-SA 4.0, and so is the dictionary.
 
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
