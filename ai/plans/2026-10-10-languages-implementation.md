@@ -451,7 +451,9 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 
 - 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
   against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),
-  universal 76.2 MB (71.8, +4.5). Chinese and Korean will add the ML Kit models (+0.56 MB) and the hanja dictionary.
+  universal 76.2 MB (71.8, +4.5). Of the arm64 growth: native code +1.23 MB (QuickJS and the language bundles in
+  the engine library), ML Kit's Chinese and Korean models +0.53 MB (already bundled by A11), resources +0.22 MB, dex
+  +0.19 MB, the catalog +0.04 MB. Chinese and Korean will add little more (the hanja dictionary, ~0.2 MB).
 
 - 2026-10-14: requests 30–41 and the owner's answers: the Languages screen with quick languages and flags, downloads
   that resume or offer "Resume", transcription regions, frequency dictionaries built on the phone from wordfreq (no
