@@ -186,8 +186,10 @@ Work that depends on an answer uses the recommended option or waits, as noted.
   backing"). Its processes (emulator.exe 12780, qemu 127372, crashpad 117336, started 2026-10-14 01:14) may still be
   waiting on the crash dialog; stopping them by PID was refused by the session's permission check. The stale qemu 70992
   from 2026-10-10 could not be stopped either: Windows lists it, but it no longer exists as a process. Please close
-  those windows or allow the agent to stop the processes it started. The next attempt uses software rendering
-  (`-gpu swiftshader_indirect`).
+  those windows or allow the agent to stop the processes it started. The next attempt used software rendering
+  (`-gpu swiftshader_indirect`) and crashed the same way at boot ("Could not allocate host memory", 3.8 GB free for a
+  4 GB guest); the agent stopped that one itself. The crashed first instance probably still holds its memory, so the
+  emulator testing waits for those windows to be closed; until then the agent keeps building the remaining items.
 
 ## Branches and workflow
 
@@ -561,3 +563,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   (backed up with the general settings), circle-flags converted by `scripts/flags/` with a NOTICE entry. The active
   language turned off gives way to the first starred one (agent's choice, within the star rules). Emulator check
   pending.
+- 2026-10-14: the "Transcriptions" decision built. The import keeps the tags of tagged transcriptions in
+  `transcription_tags.bin` next to the engine's files (a sorted 64-bit hash of term and transcription to a tag set;
+  2.5 MB and 30 ms to load for wty-en-ipa), not in Room; a lookup maps flag emoji and per-language accent names
+  (`LanguageSupport.transcriptionRegionNames`) to regions, and the page orders by the user's audio regions and labels
+  them US/UK/AU. Agent's choices within "regions and cleanup": SAMPA/X-SAMPA-tagged transcriptions and ones with quoted
+  text are dropped; a list in one string (`/a/, /b/`) is split; /…/ and […] merge when equal apart from syllable dots
+  too; the cleanup happens at lookup, so the `{phonetic-transcriptions}` marker gets the cleaned list as well. water:
+  89 → 66, American first. Dictionaries imported earlier show no regions until imported again (on this branch only).
