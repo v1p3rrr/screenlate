@@ -72,11 +72,16 @@ data class FrequencyValue(
     val displayValue: String = "",
 )
 
+/**
+ * @property transcriptionRegions for each of [transcriptions], the regions its tags name (ISO 3166-1 codes in lower
+ * case, `us`), possibly none; empty when none of them names any.
+ */
 @Serializable
 data class PitchGroup(
     val dictionary: String,
     val pitches: List<PitchAccent> = emptyList(),
     val transcriptions: List<String> = emptyList(),
+    val transcriptionRegions: List<List<String>> = emptyList(),
 )
 
 /**

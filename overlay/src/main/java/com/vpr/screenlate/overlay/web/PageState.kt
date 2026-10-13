@@ -78,6 +78,7 @@ object PageState {
         "close" to context.getString(R.string.overlay_close),
         "pitchDictionaries" to context.getString(R.string.overlay_pitch_dictionaries),
         "transcriptionDictionaries" to context.getString(R.string.overlay_transcription_dictionaries),
+        "showAll" to context.getString(R.string.overlay_show_all),
         "ocrError" to context.getString(R.string.overlay_ocr_error_title),
         "translate" to context.getString(R.string.overlay_translate),
         "translating" to context.getString(R.string.overlay_translating),

@@ -41,6 +41,18 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
         File(directory, TAG_NOTES).writeText(Json.encodeToString(NOTES, notes))
     }
 
+    /** The tags of the dictionary's phonetic transcriptions; null when they have none or were not kept. */
+    fun transcriptionTags(dictionary: DictionaryEntity): TranscriptionTags? {
+        val file = File(directoryOf(dictionary), TRANSCRIPTION_TAGS)
+        if (!file.exists()) return null
+        return runCatching { TranscriptionTags.read(file) }.getOrNull()
+    }
+
+    /** Saves the tags of a dictionary's transcriptions into its [directory]; nothing is written for null. */
+    fun writeTranscriptionTags(directory: File, tags: TranscriptionTags?) {
+        if (tags != null) tags.write(File(directory, TRANSCRIPTION_TAGS))
+    }
+
     /** A fresh empty directory for one import; delete it when done. */
     fun newStagingDirectory(): File = File(staging, UUID.randomUUID().toString()).apply { mkdirs() }
 
@@ -81,6 +93,7 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     private companion object {
         /** Next to the engine's files, which it does not look at. */
         const val TAG_NOTES = "tag_notes.json"
+        const val TRANSCRIPTION_TAGS = "transcription_tags.bin"
         val NOTES = MapSerializer(String.serializer(), String.serializer())
     }
 }

@@ -60,6 +60,7 @@
     <string name="overlay_close">Fermer</string>
     <string name="overlay_pitch_dictionaries">Accent de hauteur selon</string>
     <string name="overlay_transcription_dictionaries">Transcription selon</string>
+    <string name="overlay_show_all">Tout afficher</string>
     <string name="overlay_copy_paragraph">Copier ce paragraphe</string>
     <string name="overlay_copy_all">Copier tout le texte reconnu</string>
     <string name="overlay_menu_open_app">Ouvrir Screenlate</string>

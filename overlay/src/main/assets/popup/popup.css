@@ -576,6 +576,18 @@ button.inflection-step {
     font-size: 1.05em;
 }
 
+/* US, UK: the regions a transcription's dictionary names for it. */
+.transcription-region {
+    margin-right: 4px;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--tag-pronunciation-dictionary-background-color, var(--pitch-bg));
+    color: var(--tag-text-color, var(--pitch-fg));
+    font-size: 0.72em;
+    font-weight: var(--bold-weight);
+    vertical-align: 0.12em;
+}
+
 .pitch-position {
     color: var(--muted);
     margin-left: 3px;

@@ -515,6 +515,73 @@ test('distinct transcriptions show like accents and open their dictionaries in t
     assert.equal(again.querySelector('.pitch-more').textContent, '+2');
 });
 
+const ENGLISH_REGIONS = [{ id: 'us', codes: ['us'] }, { id: 'uk', codes: ['uk', 'gb'] }, { id: 'other', codes: [] }];
+
+function transcribed(transcriptions, transcriptionRegions) {
+    const result = detailed();
+    result.term.frequencies = [];
+    result.term.pitches = [{ dictionary: 'wty-en-ipa', transcriptions, transcriptionRegions }];
+    return result;
+}
+
+const transcriptionTexts = row => [...row.querySelectorAll('.transcription')].map(chip => chip.textContent);
+
+test('transcriptions show their regions and follow the order of the audio regions, those without one last', () => {
+    Popup.setNoteConfig({ markers: null, frequencyModes: {}, regions: ENGLISH_REGIONS });
+    Popup.render(state({
+        results: [transcribed(['/none/', '/au/', '/uk/', '/us-uk/', '/us/'], [[], ['au'], ['gb'], ['gb', 'us'], ['us']])],
+    }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(transcriptionTexts(row), ['USUK/us-uk/']);
+
+    row.querySelector('.pitch-more').click();
+    assert.deepEqual(transcriptionTexts(row), ['USUK/us-uk/', 'US/us/', 'UK/uk/', 'AU/au/', '/none/']);
+    assert.deepEqual([...row.querySelectorAll('.transcription-region')].map(span => span.textContent).slice(0, 2), ['US', 'UK']);
+});
+
+test('the user order of the audio regions comes first', () => {
+    Popup.setNoteConfig({ markers: null, frequencyModes: {}, regions: [ENGLISH_REGIONS[1], ENGLISH_REGIONS[0], ENGLISH_REGIONS[2]] });
+    Popup.render(state({ results: [transcribed(['/us/', '/uk/'], [['us'], ['gb']])] }));
+
+    assert.deepEqual(transcriptionTexts(content.querySelector('.entry-info')), ['UK/uk/', 'US/us/']);
+});
+
+test('without audio regions the codes label the transcriptions in the dictionary order', () => {
+    Popup.setNoteConfig({ markers: null, frequencyModes: {} });
+    Popup.render(state({ results: [transcribed(['/ca/', '/none/'], [['ca'], []])] }));
+
+    assert.deepEqual(transcriptionTexts(content.querySelector('.entry-info')), ['CA/ca/', '/none/']);
+});
+
+test('a long list of transcriptions opens five, then all of them', () => {
+    const many = Array.from({ length: 8 }, (_, i) => `/t${i}/`);
+    Popup.render(state({ results: [transcribed(many)], labels: { ...labels, showAll: 'Show all' } }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(transcriptionTexts(row), ['/t0/']);
+    assert.equal(row.querySelector('.pitch-more').textContent, '+7');
+
+    row.querySelector('.pitch-more').click();
+    assert.deepEqual(transcriptionTexts(row), many.slice(0, 5));
+    const toggles = [...row.querySelectorAll('.pitch-more')];
+    assert.deepEqual(toggles.map(button => button.textContent), ['Show all', '−']);
+
+    toggles[0].click();
+    assert.deepEqual(transcriptionTexts(row), many);
+    assert.deepEqual([...row.querySelectorAll('.pitch-more')].map(button => button.textContent), ['−']);
+
+    row.querySelector('.pitch-more').click();
+    assert.deepEqual(transcriptionTexts(row), ['/t0/']);
+});
+
+test('five transcriptions or fewer need no "Show all"', () => {
+    Popup.render(state({ results: [transcribed(['/a/', '/b/', '/c/', '/d/', '/e/'])], labels: { ...labels, showAll: 'Show all' } }));
+    const row = content.querySelector('.entry-info');
+
+    row.querySelector('.pitch-more').click();
+    assert.equal(transcriptionTexts(row).length, 5);
+    assert.deepEqual([...row.querySelectorAll('.pitch-more')].map(button => button.textContent), ['−']);
+});
+
 test('an inflection step or an accent opens the info panel', () => {
     Popup.render(state({ results: [detailed()], labels: { ...labels, pitchDictionaries: 'Pitch from' } }));
     const info = page.document.getElementById('info');

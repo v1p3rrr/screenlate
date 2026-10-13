@@ -61,6 +61,8 @@ const Popup = (() => {
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
     const SHOWN_ACCENTS = 2;
+    /** Transcriptions that "+N" shows before "Show all". */
+    const SHOWN_TRANSCRIPTIONS = 5;
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
@@ -659,7 +661,8 @@ const Popup = (() => {
      * Inflection, frequency, pitch accent and transcription in one row: beside the word when the popup is wide, below
      * it when not. The first rule chain is shown, one frequency value, the most frequent of the first group (the lookup
      * puts the sort dictionary first), and up to [SHOWN_ACCENTS] accents or transcriptions; "+N" reveals the hidden
-     * chains, values, accents or transcriptions, "−" hides them again.
+     * chains, values, accents or transcriptions (up to [SHOWN_TRANSCRIPTIONS] of these, then "Show all"), "−" hides
+     * them again.
      */
     function entryInfo(result, labels) {
         const row = element('div', 'entry-info');
@@ -698,12 +701,22 @@ const Popup = (() => {
         }
 
         const transcriptions = phoneticTranscriptions(result.term).map(item => {
-            const chip = element('button', 'transcription', item.ipa);
+            const chip = element('button', 'transcription');
             chip.type = 'button';
+            for (const label of item.labels) chip.append(element('span', 'transcription-region', label));
+            chip.append(document.createTextNode(item.ipa));
             chip.addEventListener('click', () => showInfo(labels.transcriptionDictionaries || '', item.dictionaries.join('\n')));
             return chip;
         });
-        if (transcriptions.length) {
+        if (transcriptions.length > SHOWN_TRANSCRIPTIONS) {
+            row.append(collapsible(
+                transcriptions.slice(0, 1),
+                transcriptions.slice(0, SHOWN_TRANSCRIPTIONS),
+                transcriptions.length - 1,
+                'pitch-more',
+                { items: transcriptions, label: labels.showAll || '…' },
+            ));
+        } else if (transcriptions.length) {
             const shown = transcriptions.length > SHOWN_ACCENTS ? 1 : transcriptions.length;
             row.append(collapsible(transcriptions.slice(0, shown), transcriptions, transcriptions.length - shown, 'pitch-more'));
         }
@@ -711,18 +724,29 @@ const Popup = (() => {
     }
 
     /**
-     * [collapsed] with a "+[hidden]" button that swaps them for [expanded] and a "−" button that swaps them back.
+     * [collapsed] with a "+[hidden]" button that swaps them for [expanded] and a "−" button that swaps them back; with
+     * [all] ({ items, label }), [expanded] also gets a button with the label that shows all the items.
      * The group itself takes no box, so its badges wrap with the rest of the row.
      */
-    function collapsible(collapsed, expanded, hidden, buttonClass) {
+    function collapsible(collapsed, expanded, hidden, buttonClass, all = null) {
         const group = element('span', 'badge-group');
         group.append(...collapsed);
         if (hidden <= 0) return group;
-        const more = element('button', `badge-toggle ${buttonClass}`, `+${hidden}`);
-        const less = element('button', `badge-toggle ${buttonClass}`, '−');
-        more.type = 'button';
-        less.type = 'button';
-        more.addEventListener('click', () => group.replaceChildren(...expanded, less));
+        const toggle = text => {
+            const button = element('button', `badge-toggle ${buttonClass}`, text);
+            button.type = 'button';
+            return button;
+        };
+        const more = toggle(`+${hidden}`);
+        const less = toggle('−');
+        if (all) {
+            const showAll = toggle(all.label);
+            showAll.classList.add('show-all');
+            showAll.addEventListener('click', () => group.replaceChildren(...all.items, less));
+            more.addEventListener('click', () => group.replaceChildren(...expanded, showAll, less));
+        } else {
+            more.addEventListener('click', () => group.replaceChildren(...expanded, less));
+        }
         less.addEventListener('click', () => group.replaceChildren(...collapsed, more));
         group.append(more);
         return group;
@@ -800,17 +824,48 @@ const Popup = (() => {
         return [...accents.values()];
     }
 
-    /** Distinct phonetic transcriptions of the word (Yomitan's `ipa` term meta); the dictionaries that list each one. */
+    /**
+     * Distinct phonetic transcriptions of the word (Yomitan's `ipa` term meta) with the labels of the regions their tags
+     * name and the dictionaries that list each one. They follow the order of the audio regions (`noteConfig.regions`);
+     * those without a region come last.
+     */
     function phoneticTranscriptions(term) {
         const transcriptions = new Map();
         for (const group of term.pitches || []) {
-            for (const ipa of group.transcriptions || []) {
-                if (!transcriptions.has(ipa)) transcriptions.set(ipa, { ipa, dictionaries: [] });
-                const dictionaries = transcriptions.get(ipa).dictionaries;
-                if (!dictionaries.includes(group.dictionary)) dictionaries.push(group.dictionary);
-            }
+            (group.transcriptions || []).forEach((ipa, i) => {
+                if (!transcriptions.has(ipa)) transcriptions.set(ipa, { ipa, regions: [], dictionaries: [] });
+                const item = transcriptions.get(ipa);
+                for (const region of group.transcriptionRegions?.[i] || []) {
+                    if (!item.regions.includes(region)) item.regions.push(region);
+                }
+                if (!item.dictionaries.includes(group.dictionary)) item.dictionaries.push(group.dictionary);
+            });
         }
-        return [...transcriptions.values()];
+        const order = noteConfig.regions || [];
+        return [...transcriptions.values()]
+            .map((item, index) => {
+                const ranked = item.regions
+                    .map((code, i) => ({ code, i, rank: regionRank(code, order) }))
+                    .sort((a, b) => a.rank - b.rank || a.i - b.i);
+                const labels = [...new Set(ranked.map(region => regionLabel(region.code, order)))];
+                const rank = ranked.length ? ranked[0].rank : Number.MAX_SAFE_INTEGER;
+                return { ipa: item.ipa, labels, dictionaries: item.dictionaries, rank, index };
+            })
+            .sort((a, b) => a.rank - b.rank || a.index - b.index);
+    }
+
+    /** The position of the audio region that has [code]; regions not listed go where `other` is, or last. */
+    function regionRank(code, order) {
+        const listed = order.findIndex(region => (region.codes || []).includes(code));
+        if (listed >= 0) return listed;
+        const other = order.findIndex(region => region.id === 'other');
+        return other >= 0 ? other : order.length;
+    }
+
+    /** The name of the audio region that has [code] (`gb` is in `uk`), or the code itself, in capitals. */
+    function regionLabel(code, order) {
+        const region = order.find(item => (item.codes || []).includes(code));
+        return (region ? region.id : code).toUpperCase();
     }
 
     function showInfo(title, text) {
@@ -1203,8 +1258,9 @@ const Popup = (() => {
     }
 
     /**
-     * Which markers the note fields use and how frequency dictionaries count:
-     * { markers: [name], frequencyModes: { dictionary: 'rank-based' | 'occurrence-based' } }.
+     * Which markers the note fields use, how frequency dictionaries count, and the audio regions in the user's order,
+     * which also order transcriptions: { markers: [name], frequencyModes: { dictionary: 'rank-based' |
+     * 'occurrence-based' }, regions: [{ id, codes: [code] }] }.
      */
     function setNoteConfig(config) {
         noteConfig = config || { markers: null, frequencyModes: {} };

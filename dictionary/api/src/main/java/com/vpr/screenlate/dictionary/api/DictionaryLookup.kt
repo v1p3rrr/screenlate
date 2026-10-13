@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
@@ -10,6 +11,7 @@ import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.TranscriptionTags
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import javax.inject.Inject
@@ -33,6 +35,7 @@ class DictionaryLookup @Inject constructor(
     private val cachedStyles = PerGeneration<List<DictionaryStyle>>()
     private val cachedTagNotes = PerGeneration<List<DictionaryTagNotes>>()
     private val cachedFrequencyModes = PerGeneration<Map<String, String>>()
+    private val cachedTranscriptionTags = PerGeneration<Map<String, TranscriptionTags>>()
 
     /**
      * @param scanLength characters of [text] to consider; the scan length setting when null.
@@ -67,6 +70,7 @@ class DictionaryLookup @Inject constructor(
                 .distinctBy { it.term.expression to it.term.reading }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
+                .withTranscriptions(support)
             if (!extraEntries || !settings.singleKanji) return@withLookup results
             results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
         }
@@ -102,6 +106,13 @@ class DictionaryLookup @Inject constructor(
                 .filter { shown.add(it.term.expression to it.term.reading) }
             YomitanSorter.sort(entries, options, dictionaryOrder).take(options.maxResults)
         }
+    }
+
+    /** See [Transcriptions]; the tags are read only when a result has transcriptions. */
+    private suspend fun List<LookupResult>.withTranscriptions(support: LanguageSupport): List<LookupResult> {
+        if (none { result -> result.term.pitches.any { it.transcriptions.isNotEmpty() } }) return this
+        val tags = cachedTranscriptionTags.get(repository.generation) { repository.transcriptionTags() }
+        return map { Transcriptions.prepare(it, tags, support.transcriptionRegionNames) }
     }
 
     /** The lookup settings in effect for [language]. */

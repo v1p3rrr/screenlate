@@ -8,6 +8,7 @@ import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.TagBanks
+import com.vpr.screenlate.dictionary.api.imports.TranscriptionTagBanks
 import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
 import com.vpr.screenlate.dictionary.api.languages.DictionarySample
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
@@ -96,6 +97,12 @@ class DictionaryRepository @Inject constructor(
                 .onFailure { Log.w(TAG, "Reading tag descriptions failed", it) }
                 .getOrDefault(emptyMap())
             storage.writeTagNotes(imported.directory, tagNotes)
+            if (imported.metadata.pitchCount > 0) {
+                val transcriptionTags = runCatching { TranscriptionTagBanks.read(archive) }
+                    .onFailure { Log.w(TAG, "Reading transcription tags failed", it) }
+                    .getOrNull()
+                storage.writeTranscriptionTags(imported.directory, transcriptionTags)
+            }
             val metadata = imported.metadata
             val kind = DictionaryKind.of(metadata)
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
@@ -366,6 +373,13 @@ class DictionaryRepository @Inject constructor(
         dao.getAll().filter { it.enabled }.mapNotNull { dictionary ->
             storage.tagNotes(dictionary).takeIf { it.isNotEmpty() }?.let { DictionaryTagNotes(dictionary.title, it) }
         }
+    }
+
+    /** The transcription tags of the enabled dictionaries that kept any, by title. */
+    suspend fun transcriptionTags(): Map<String, TranscriptionTags> = withContext(Dispatchers.IO) {
+        dao.getAll().filter { it.enabled && it.pitchCount > 0 }.mapNotNull { dictionary ->
+            storage.transcriptionTags(dictionary)?.let { dictionary.title to it }
+        }.toMap()
     }
 
     /**

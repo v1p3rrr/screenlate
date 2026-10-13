@@ -23,6 +23,8 @@ import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.AudioRegion
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.capture.SharedScreenshot
@@ -143,10 +145,20 @@ class PopupNotes(
         val audioEnabled = audioSettings.current(language()).sources.isNotEmpty()
         val problem = (status as? AnkiStatus.Broken)?.problem?.let { context.getString(it.message) }
         page.setActions(anki = ankiReady, audio = audioEnabled, ankiProblem = problem)
-        // The frequency modes also order each dictionary's frequency values in the popup, with or without Anki.
+        // The frequency modes also order each dictionary's frequency values in the popup, with or without Anki, and the
+        // audio regions order the transcriptions.
+        val regions = AudioRegion.ordered(audioSettings.current(language()).regions, language().support.audioRegions)
         val config = buildJsonObject {
             put("markers", if (ankiReady) buildJsonArray { notes.usedMarkers(language()).forEach { add(JsonPrimitive(it)) } } else JsonNull)
             put("frequencyModes", buildJsonObject { lookup.frequencyModes().forEach { (title, mode) -> put(title, mode) } })
+            put("regions", buildJsonArray {
+                regions.forEach { region ->
+                    add(buildJsonObject {
+                        put("id", region.id)
+                        put("codes", buildJsonArray { region.codes.forEach { add(JsonPrimitive(it)) } })
+                    })
+                }
+            })
         }
         page.setNoteConfig(config)
     }

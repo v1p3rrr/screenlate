@@ -60,6 +60,7 @@
     <string name="overlay_close">닫기</string>
     <string name="overlay_pitch_dictionaries">고저 악센트 출처</string>
     <string name="overlay_transcription_dictionaries">발음 기호 출처</string>
+    <string name="overlay_show_all">모두 보기</string>
     <string name="overlay_copy_paragraph">이 단락 복사</string>
     <string name="overlay_copy_all">인식된 텍스트 모두 복사</string>
     <string name="overlay_menu_open_app">Screenlate 열기</string>

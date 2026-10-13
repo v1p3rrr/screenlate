@@ -73,6 +73,12 @@ interface LanguageSupport {
     val audioRegions: List<AudioRegion> get() = emptyList()
 
     /**
+     * Accent names in the transcription tags of Wiktionary dictionaries (`General-American`) and the regions they
+     * stand for (`us`); flag emoji need no entry (see [TranscriptionRegions]).
+     */
+    val transcriptionRegionNames: Map<String, String> get() = emptyMap()
+
+    /**
      * A word with its transcription, the example that explains pronunciation dictionaries (`water → /ˈwɔːtər/`); null
      * where they hold something else (pitch accents for Japanese).
      */

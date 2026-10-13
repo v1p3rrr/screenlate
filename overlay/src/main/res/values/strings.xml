@@ -63,6 +63,7 @@
     <string name="overlay_close">Close</string>
     <string name="overlay_pitch_dictionaries">Pitch accent from</string>
     <string name="overlay_transcription_dictionaries">Transcription from</string>
+    <string name="overlay_show_all">Show all</string>
     <string name="overlay_copy_paragraph">Copy this paragraph</string>
     <string name="overlay_copy_all">Copy all recognized text</string>
     <string name="overlay_menu_open_app">Open Screenlate</string>

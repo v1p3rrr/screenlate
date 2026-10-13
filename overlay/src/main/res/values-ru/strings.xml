@@ -61,6 +61,7 @@
     <string name="overlay_close">Закрыть</string>
     <string name="overlay_pitch_dictionaries">Ударение из словарей</string>
     <string name="overlay_transcription_dictionaries">Транскрипция из словарей</string>
+    <string name="overlay_show_all">Показать все</string>
     <string name="overlay_copy_paragraph">Скопировать этот абзац</string>
     <string name="overlay_copy_all">Скопировать весь распознанный текст</string>
     <string name="overlay_menu_open_app">Открыть Screenlate</string>
