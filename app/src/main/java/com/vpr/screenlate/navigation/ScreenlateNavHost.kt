@@ -44,8 +44,9 @@ private object OcrTestRoute
 @Serializable
 private object DictionariesRoute
 
+/** @property audio scrolls to the audio sources. */
 @Serializable
-private object AnkiRoute
+private data class AnkiRoute(val audio: Boolean = false)
 
 /** @property showAppText scrolls to the app text switches. */
 @Serializable
@@ -107,7 +108,7 @@ fun ScreenlateNavHost(
     val back: () -> Unit = { navController.fromResumed { popBackStack() } }
     val go: (Any) -> Unit = { route -> navController.fromResumed { navigate(route) } }
     LaunchedEffect(ankiSettingsRequests) {
-        if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
+        if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute()) { launchSingleTop = true }
     }
     LaunchedEffect(dictionariesRequests) {
         if (dictionariesRequests > 0) navController.navigate(DictionariesRoute) { launchSingleTop = true }
@@ -128,7 +129,8 @@ fun ScreenlateNavHost(
                 onOpenSearch = { go(SearchRoute()) },
                 onOpenSettings = { go(SettingsRoute) },
                 onOpenDictionaries = { go(DictionariesRoute) },
-                onOpenAnki = { go(AnkiRoute) },
+                onOpenAnki = { go(AnkiRoute()) },
+                onOpenAudio = { go(AnkiRoute(audio = true)) },
                 onOpenAppText = { go(BubbleRoute(showAppText = true)) },
             )
         }
@@ -144,7 +146,7 @@ fun ScreenlateNavHost(
                             SettingsPage.POPUP -> PopupRoute
                             SettingsPage.TRANSLATION -> TranslationRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
-                            SettingsPage.ANKI -> AnkiRoute
+                            SettingsPage.ANKI -> AnkiRoute()
                             SettingsPage.APPEARANCE -> AppearanceRoute
                             SettingsPage.YOMITAN_IMPORT -> YomitanImportRoute
                             SettingsPage.BACKUP -> BackupRoute
@@ -179,12 +181,12 @@ fun ScreenlateNavHost(
         composable<SearchRoute> { entry ->
             SearchScreen(
                 onBack = back,
-                onOpenAnkiSettings = { go(AnkiRoute) },
+                onOpenAnkiSettings = { go(AnkiRoute()) },
                 onOpenDictionaries = { go(DictionariesRoute) },
                 initialQuery = entry.toRoute<SearchRoute>().query,
             )
         }
-        composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
+        composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
         composable<DictionariesRoute> {
             DictionariesScreen(onBack = back, onOpenYomitanImport = { go(YomitanImportRoute) })
         }

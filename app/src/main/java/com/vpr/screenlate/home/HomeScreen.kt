@@ -63,6 +63,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
+    onOpenAudio: () -> Unit,
     onOpenAppText: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     updates: UpdateViewModel = hiltViewModel(),
@@ -120,7 +121,7 @@ fun HomeScreen(
                     onClose = viewModel::markResetGaveUpTold,
                 )
             }
-            if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
+            if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki, onOpenAudio)
 
             SectionCard(title = stringResource(R.string.home_search_title)) {
                 Button(onClick = onOpenSearch, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
@@ -225,6 +226,7 @@ private fun ProblemsCard(
     viewModel: HomeViewModel,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: () -> Unit,
+    onOpenAudio: () -> Unit,
 ) {
     val askNotifications = rememberImportNotificationsAsk()
     val removeError by viewModel.removeError.collectAsStateWithLifecycle()
@@ -291,7 +293,7 @@ private fun ProblemsCard(
                             }
                             if (problem.failures.any { localNetworkMissing(LocalContext.current, it.source.url) }) LocalNetworkAllowButton()
                             Row {
-                                TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_audio)) }
+                                TextButton(onClick = onOpenAudio) { Text(stringResource(R.string.problems_open_audio)) }
                                 TextButton(onClick = viewModel::dismissAudioFailures) {
                                     Text(stringResource(R.string.problems_dismiss))
                                 }
