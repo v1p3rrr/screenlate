@@ -49,6 +49,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.languages.LanguageFlag
 import com.vpr.screenlate.languages.label
@@ -86,6 +87,7 @@ fun HomeScreen(
     val resetGaveUpUntold by viewModel.resetGaveUpUntold.collectAsStateWithLifecycle()
     val languages by viewModel.languages.collectAsStateWithLifecycle()
     val installation by viewModel.installation.collectAsStateWithLifecycle()
+    val catalogEntries by viewModel.catalogEntries.collectAsStateWithLifecycle()
     val settingsBadge = rememberBackgroundTipBadge()
     val openAccessibilitySettings = rememberOpenAccessibilitySettings()
     LaunchedEffect(Unit) { updates.checkIfDue() }
@@ -138,6 +140,7 @@ fun HomeScreen(
                 languages = languages,
                 onSelect = viewModel::setActive,
                 installation = installation,
+                catalogEntries = catalogEntries,
                 onOpenInstallation = onOpenDictionaries,
                 onOpenLanguages = onOpenLanguages,
             )
@@ -197,6 +200,7 @@ private fun LanguagesCard(
     languages: LanguageProfilesState,
     onSelect: (Language) -> Unit,
     installation: InstallationStatus?,
+    catalogEntries: List<CatalogEntry>,
     onOpenInstallation: () -> Unit,
     onOpenLanguages: () -> Unit,
 ) {
@@ -225,7 +229,7 @@ private fun LanguagesCard(
             Hint(stringResource(if (status.deviceReady) OverlayR.string.installation_device_ready else OverlayR.string.installation_device_missing))
             if (status.tasks.isNotEmpty()) {
                 Text(stringResource(OverlayR.string.installation_remaining, status.tasks.size))
-                installProgress(status.tasks)?.let { InstallProgressLine(it) }
+                installProgress(status.tasks, catalogEntries)?.let { InstallProgressLine(it) }
             }
             if (status.failures > 0) Text(stringResource(OverlayR.string.installation_errors, status.failures), color = MaterialTheme.colorScheme.error)
             TextButton(onClick = onOpenInstallation) { Text(stringResource(OverlayR.string.installation_open)) }

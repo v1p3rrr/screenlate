@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
@@ -18,6 +19,7 @@ import androidx.work.WorkInfo
 import androidx.work.workDataOf
 import java.io.File
 import java.nio.file.Files
+import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
@@ -298,5 +300,21 @@ class DictionaryImportsTest {
         assertThat(DictionaryImports.readStops(stored)).containsExactly(id, 2, other, 1)
         // Entries that do not parse are dropped.
         assertThat(DictionaryImports.readStops(setOf("$id=x", "no count", "$other=3"))).containsExactly(other, 3)
+    }
+
+    @Test
+    fun `a catalog task shows the localized title of its entry`() {
+        val entry = CatalogEntry(
+            id = "wty-en-de", title = "Wiktionary glossary (en–de)", sourceLanguage = "en", targetLanguage = "de",
+            titles = mapOf("en" to "Wiktionary: short translations ({src}–{tgt})"), downloadUrl = "https://example.org/g.zip",
+        )
+        val entries = listOf(entry)
+
+        assertThat(shownImportName(entry.title, entry.id, entries, Locale.ENGLISH))
+            .isEqualTo("Wiktionary: short translations (en–de)")
+        // A file import, a renamed task and an entry missing from the catalog keep the stored name.
+        assertThat(shownImportName("my.zip", null, entries, Locale.ENGLISH)).isEqualTo("my.zip")
+        assertThat(shownImportName("Old title", entry.id, entries, Locale.ENGLISH)).isEqualTo("Old title")
+        assertThat(shownImportName(entry.title, entry.id, emptyList(), Locale.ENGLISH)).isEqualTo(entry.title)
     }
 }

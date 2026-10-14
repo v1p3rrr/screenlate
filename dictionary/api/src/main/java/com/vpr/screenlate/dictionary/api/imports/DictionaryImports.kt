@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -104,7 +105,18 @@ data class ImportTask(
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
     val finished: Boolean get() = state == State.SUCCEEDED || state == State.FAILED
+
+    /** The [name] to show: see [shownImportName]. */
+    fun shownName(entries: List<CatalogEntry>, locale: Locale = Locale.getDefault()): String =
+        shownImportName(name, catalogEntry, entries, locale)
 }
+
+/**
+ * A catalog download is named after its entry's own title, which other code matches; the user sees the entry's
+ * display title, as the download screens list it. Updates, files and the bundled install keep their [name].
+ */
+fun shownImportName(name: String, entryId: String?, entries: List<CatalogEntry>, locale: Locale = Locale.getDefault()): String =
+    entryId?.let { id -> entries.firstOrNull { it.id == id && it.title == name } }?.displayTitle(locale) ?: name
 
 /** Queues dictionary imports on WorkManager, one at a time, and reports their progress. */
 @Singleton

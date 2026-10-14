@@ -156,7 +156,7 @@ class DictionaryImportWorker @AssistedInject constructor(
 
     private suspend fun work(): Result {
         val name = inputData.getString(KEY_NAME).orEmpty()
-        runCatching { setForeground(foregroundInfo(name)) }
+        runCatching { setForeground(foregroundInfo(shownName())) }
             .onFailure { Log.w(TAG, "Task $id runs without a foreground service: ${it.javaClass.simpleName}") }
         val started = System.currentTimeMillis()
         // Failures are results with an error: a failed work would fail every import queued after it unrun.
@@ -476,7 +476,10 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
     }
 
-    override suspend fun getForegroundInfo(): ForegroundInfo = foregroundInfo(inputData.getString(KEY_NAME).orEmpty())
+    override suspend fun getForegroundInfo(): ForegroundInfo = foregroundInfo(shownName())
+
+    private fun shownName(): String =
+        shownImportName(inputData.getString(KEY_NAME).orEmpty(), inputData.getString(KEY_ENTRY_ID), catalogEntries)
 
     private fun foregroundInfo(name: String): ForegroundInfo {
         val manager = applicationContext.getSystemService(NotificationManager::class.java)

@@ -183,6 +183,7 @@ fun DictionariesScreen(
             state.tasks.forEach { task ->
                 TaskCard(
                     task,
+                    name = state.taskNames[task.id] ?: task.name,
                     onDismiss = { viewModel.dismiss(task) },
                     onCancel = { viewModel.cancel(task) },
                     onResume = {
@@ -564,6 +565,7 @@ private fun kindLabel(kind: DictionaryKind, code: String?): Int = when (kind) {
 @Composable
 private fun TaskCard(
     task: ImportTask,
+    name: String,
     onDismiss: () -> Unit,
     onCancel: () -> Unit,
     onResume: () -> Unit,
@@ -576,24 +578,24 @@ private fun TaskCard(
         }
         val shortage = task.shortage
         val message = if (task.interrupted) {
-            stringResource(R.string.dictionaries_import_interrupted, task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) })
+            stringResource(R.string.dictionaries_import_interrupted, name.ifEmpty { stringResource(R.string.dictionaries_bundled) })
         } else if (shortage != null) {
             val context = LocalContext.current
             stringResource(
                 R.string.dictionaries_import_no_space,
-                task.name,
+                name,
                 Formatter.formatShortFileSize(context, shortage.neededBytes),
                 Formatter.formatShortFileSize(context, shortage.freeBytes),
             )
         } else {
-            val name = task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
+            val shown = name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
             val error = task.error
             // The name tells which of several queued imports failed, e.g. after "Update all".
             if (error != null) {
                 val text = if (task.downloadStopped) R.string.dictionaries_download_stopped else R.string.dictionaries_import_failed_named
-                stringResource(text, name, error)
+                stringResource(text, shown, error)
             } else {
-                stringResource(R.string.dictionaries_import_failed, name)
+                stringResource(R.string.dictionaries_import_failed, shown)
             }
         }
         if (task.resumable) {
@@ -610,19 +612,19 @@ private fun TaskCard(
         }
         return
     }
-    val name = task.name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
+    val shown = name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val status = when (task.state) {
                 ImportTask.State.QUEUED -> if (task.retries > 0) {
-                    stringResource(R.string.dictionaries_task_retrying, name, task.retries, DictionaryImportWorker.MAX_RETRIES)
+                    stringResource(R.string.dictionaries_task_retrying, shown, task.retries, DictionaryImportWorker.MAX_RETRIES)
                 } else {
-                    stringResource(R.string.dictionaries_task_queued, name)
+                    stringResource(R.string.dictionaries_task_queued, shown)
                 }
-                ImportTask.State.DOWNLOADING -> stringResource(R.string.dictionaries_task_downloading, name)
-                ImportTask.State.CHECKING_SPACE -> stringResource(R.string.dictionaries_task_checking_space, name)
-                ImportTask.State.CONVERTING -> stringResource(R.string.dictionaries_task_converting, name)
-                else -> stringResource(R.string.dictionaries_task_importing, name)
+                ImportTask.State.DOWNLOADING -> stringResource(R.string.dictionaries_task_downloading, shown)
+                ImportTask.State.CHECKING_SPACE -> stringResource(R.string.dictionaries_task_checking_space, shown)
+                ImportTask.State.CONVERTING -> stringResource(R.string.dictionaries_task_converting, shown)
+                else -> stringResource(R.string.dictionaries_task_importing, shown)
             }
             Text(status, style = MaterialTheme.typography.bodyMedium)
             val percent = task.percent

@@ -31,6 +31,7 @@ import com.vpr.screenlate.overlay.install.InstallationStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Job
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -80,10 +82,10 @@ internal fun audioFailureCards(
 /** Imports not finished yet: how many, and the running one's name and percent, if known. */
 data class InstallProgress(val queued: Int, val current: String?, val percent: Int?)
 
-internal fun installProgress(tasks: List<ImportTask>): InstallProgress? {
+internal fun installProgress(tasks: List<ImportTask>, entries: List<CatalogEntry> = emptyList()): InstallProgress? {
     val unfinished = tasks.filter { !it.finished }.takeIf { it.isNotEmpty() } ?: return null
     val running = unfinished.firstOrNull { it.state != ImportTask.State.QUEUED }
-    return InstallProgress(unfinished.size, running?.name?.takeIf { it.isNotEmpty() }, running?.percent)
+    return InstallProgress(unfinished.size, running?.shownName(entries)?.takeIf { it.isNotEmpty() }, running?.percent)
 }
 
 /** Something that broke without the user changing Screenlate's settings. */
@@ -126,6 +128,10 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val installation: StateFlow<InstallationStatus?> = profiles.active.flatMapLatest(installs::observe)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** For the names of catalog downloads; the local catalog, without network access. */
+    val catalogEntries: StateFlow<List<CatalogEntry>> = flow { emit(withContext(Dispatchers.IO) { catalog.local() }) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val languages: StateFlow<LanguageProfilesState> = profiles.state
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), profiles.cachedState ?: LanguageProfilesState.DEFAULT)
 

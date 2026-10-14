@@ -26,6 +26,7 @@ import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.Collator
 import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
@@ -95,6 +96,8 @@ data class DictionariesState(
     val others: List<OtherLanguage> = emptyList(),
     val shown: Language = Language.JAPANESE,
     val tasks: List<ImportTask> = emptyList(),
+    /** What the [tasks] are called on their cards, by task id ([ImportTask.shownName]). */
+    val taskNames: Map<UUID, String> = emptyMap(),
     val catalog: List<CatalogGroup> = emptyList(),
     /** The frequency dictionary that sorts the [shown] language's results. */
     val sortDictionaryId: Long? = null,
@@ -158,6 +161,7 @@ class DictionariesViewModel @Inject constructor(
             others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes),
             shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
+            taskNames = tasks.associate { it.id to it.shownName(entries) },
             catalog = groupCatalog(items.filter { it.entry.sourceLanguage == shown.code }, shown),
             sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->
