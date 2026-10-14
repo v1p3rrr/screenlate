@@ -187,11 +187,11 @@ class OverlayController(
     // The screenshot callback copies the image into a bitmap, which should not hold up the main thread.
     private val capturer = ScreenCapturer(service, Dispatchers.Default.asExecutor())
     private val accessibilityText = AccessibilityText(service)
-    /** The language switched to last; a scan takes it when the bubble leaves the dock. */
+    /** The language switched to last; the next scan takes it, by a tap or when the bubble leaves the dock. */
     private var activeLanguage = profiles.cachedState?.active ?: Language.JAPANESE
     private var languages = profiles.cachedState ?: LanguageProfilesState.DEFAULT
 
-    /** The open scan's language: a switch in the hold menu applies once the bubble has docked. */
+    /** The open scan's language: a switch in the hold menu applies from the next scan, or once the bubble has docked. */
     private val scanLanguage = MutableStateFlow(activeLanguage)
     private val language: Language get() = scanLanguage.value
 
@@ -333,7 +333,7 @@ class OverlayController(
 
     private fun shouldShowBubble(): Boolean = settings.bubbleVisible && foregroundPackage !in settings.hiddenPackages
 
-    /** The dock glyph follows the switch at once; the scan's language changes when the bubble is docked. */
+    /** The dock glyph follows the switch at once; the scan's language changes with the next scan or the dock. */
     private fun onActiveLanguage(new: Language) {
         activeLanguage = new
         showGlyph(new)
@@ -345,11 +345,12 @@ class OverlayController(
         bubbleView.glyph = language.support.glyph
     }
 
-    private fun takeActiveLanguage() {
+    /** @param warmUp prepare on-device OCR for the language; a scan starting now does that itself. */
+    private fun takeActiveLanguage(warmUp: Boolean = true) {
         if (scanLanguage.value == activeLanguage) return
         Log.d(TAG, "Scan language ${activeLanguage.code}")
         scanLanguage.value = activeLanguage
-        if (onDeviceLoaded) scope.launch { ocr.warmUp(activeLanguage) }
+        if (warmUp && onDeviceLoaded) scope.launch { ocr.warmUp(activeLanguage) }
     }
 
     // region Settings and windows
@@ -898,6 +899,7 @@ class OverlayController(
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()
         resetScan()
+        takeActiveLanguage(warmUp = false)
         popup.page.prepare()
         loadDictionaryStyles()
         bubbleView.loading = true
