@@ -53,7 +53,7 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   reconnects the service and docks the bubble, so use screenshots during overlay checks; the popup page answers
   `scripts/popup-eval.mjs`; Chrome's first-run screen is not clicked through (it accepts terms).
 - Network failures: `svc wifi disable` with `adb emu network speed gprs`, or a host socket that never answers plus
-  `settings put global http_proxy 10.0.2.2:8899` (revert with `settings delete global http_proxy`).
+  `settings put global http_proxy 10.0.2.2:8899` (revert with `settings put global http_proxy :0`, then `settings delete global http_proxy` (deleting it alone leaves `global_http_proxy_host`/`_port` set and the proxy in force; `dumpsys connectivity | grep -A2 ProxyTracker` shows it)).
 - Instrumented runs: per module, e.g. `./gradlew :dictionary:engine-hoshidicts:connectedDebugAndroidTest`; a full
   `connectedDebugAndroidTest` uninstalls the debug app at the end, so reinstall afterwards.
 
