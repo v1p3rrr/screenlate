@@ -51,6 +51,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.install.InstallationStatus
 import com.vpr.screenlate.overlay.ui.Flags
+import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -408,22 +409,6 @@ private fun FlagDialog(language: Language, chosen: String, onChoose: (String) ->
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
-    )
-}
-
-@Composable
-private fun ConfirmDelete(title: String, text: String, onDelete: () -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = { Text(text, modifier = Modifier.verticalScroll(rememberScrollState())) },
-        confirmButton = {
-            TextButton(onClick = {
-                onDelete()
-                onDismiss()
-            }) { Text(stringResource(R.string.action_delete)) }
-        },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )
 }

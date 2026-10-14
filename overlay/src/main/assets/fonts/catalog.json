@@ -6,7 +6,19 @@
       "language": "ja",
       "description": {
         "en": "Clean gothic (sans-serif) in every weight, the web version of the phone's Japanese font.",
-        "ru": "Аккуратная готика (без засечек) во всех начертаниях, веб-версия японского шрифта телефона."
+        "ru": "Аккуратная готика (без засечек) во всех начертаниях, веб-версия японского шрифта телефона.",
+        "de": "Klare Gothic (serifenlos) in allen Strichstärken, die Webfassung der japanischen Schrift des Telefons.",
+        "es": "Gótica (sin serifa) limpia en todos los pesos, la versión web de la fuente japonesa del teléfono.",
+        "fr": "Gothique (sans empattement) nette dans toutes les graisses, la version web de la police japonaise du téléphone.",
+        "it": "Gotico (senza grazie) pulito in tutti i pesi, la versione web del carattere giapponese del telefono.",
+        "ja": "すべてのウェイトがそろった端正なゴシック体。端末の日本語フォントの Web 版。",
+        "ko": "모든 굵기를 갖춘 깔끔한 고딕(산세리프)으로, 휴대폰 일본어 글꼴의 웹 버전입니다.",
+        "pl": "Czysty krój gotycki (bezszeryfowy) we wszystkich grubościach, wersja webowa japońskiej czcionki telefonu.",
+        "pt": "Gótica (sem serifa) limpa em todos os pesos, a versão web da fonte japonesa do celular.",
+        "tr": "Her kalınlıkta sade gotik (tırnaksız), telefonun Japonca yazı tipinin web sürümü.",
+        "vi": "Kiểu gothic (không chân) gọn gàng với mọi độ đậm, bản web của phông chữ tiếng Nhật trên điện thoại.",
+        "zh": "各种字重齐全的简洁黑体（无衬线），手机日文字体的网页版。",
+        "zh-Hant": "各種字重齊全的簡潔黑體（無襯線），手機日文字型的網頁版。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf", "weight": "100 900"}
@@ -21,7 +33,19 @@
       "language": "ja",
       "description": {
         "en": "Mincho (serif) to match Noto Sans JP, close to Yu Mincho.",
-        "ru": "Минтё (с засечками) в пару к Noto Sans JP, близок к Yu Mincho."
+        "ru": "Минтё (с засечками) в пару к Noto Sans JP, близок к Yu Mincho.",
+        "de": "Mincho (mit Serifen) passend zu Noto Sans JP, nah an Yu Mincho.",
+        "es": "Mincho (con serifa) a juego con Noto Sans JP, parecida a Yu Mincho.",
+        "fr": "Mincho (à empattements) assortie à Noto Sans JP, proche de Yu Mincho.",
+        "it": "Mincho (con grazie) abbinato a Noto Sans JP, simile a Yu Mincho.",
+        "ja": "Noto Sans JP と対になる明朝体。游明朝に近い。",
+        "ko": "Noto Sans JP와 짝을 이루는 명조(세리프)로, Yu Mincho에 가깝습니다.",
+        "pl": "Mincho (szeryfowy) do pary z Noto Sans JP, zbliżony do Yu Mincho.",
+        "pt": "Mincho (com serifa) combinando com Noto Sans JP, próxima da Yu Mincho.",
+        "tr": "Noto Sans JP ile uyumlu mincho (tırnaklı), Yu Mincho'ya yakın.",
+        "vi": "Kiểu mincho (có chân) đi cặp với Noto Sans JP, gần với Yu Mincho.",
+        "zh": "与 Noto Sans JP 配套的明朝体（衬线），接近游明朝。",
+        "zh-Hant": "與 Noto Sans JP 配套的明朝體（襯線），接近游明朝。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp/NotoSerifJP%5Bwght%5D.ttf", "weight": "200 900"}
@@ -36,7 +60,19 @@
       "language": "ja",
       "description": {
         "en": "Proportional gothic by Morisawa designed for readability, close to Meiryo.",
-        "ru": "Пропорциональная готика Morisawa, сделанная для удобного чтения, близка к Meiryo."
+        "ru": "Пропорциональная готика Morisawa, сделанная для удобного чтения, близка к Meiryo.",
+        "de": "Proportionale Gothic von Morisawa, auf Lesbarkeit ausgelegt, nah an Meiryo.",
+        "es": "Gótica proporcional de Morisawa diseñada para leerse con facilidad, parecida a Meiryo.",
+        "fr": "Gothique proportionnelle de Morisawa conçue pour la lisibilité, proche de Meiryo.",
+        "it": "Gotico proporzionale di Morisawa pensato per la leggibilità, simile a Meiryo.",
+        "ja": "読みやすさを重視したモリサワのプロポーショナルゴシック。メイリオに近い。",
+        "ko": "가독성을 위해 만든 모리사와의 비례 고딕으로, Meiryo에 가깝습니다.",
+        "pl": "Proporcjonalny krój gotycki Morisawy zaprojektowany z myślą o czytelności, zbliżony do Meiryo.",
+        "pt": "Gótica proporcional da Morisawa feita para facilitar a leitura, próxima da Meiryo.",
+        "tr": "Okunabilirlik için tasarlanmış, Morisawa'nın orantılı gotiği; Meiryo'ya yakın.",
+        "vi": "Kiểu gothic tỷ lệ của Morisawa, thiết kế để dễ đọc, gần với Meiryo.",
+        "zh": "Morisawa 为易读性设计的比例黑体，接近 Meiryo。",
+        "zh-Hant": "Morisawa 為易讀性設計的比例黑體，接近 Meiryo。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpgothic/BIZUDPGothic-Regular.ttf", "weight": "400"},
@@ -52,7 +88,19 @@
       "language": "ja",
       "description": {
         "en": "Proportional mincho by Morisawa, easy to read at small sizes.",
-        "ru": "Пропорциональный минтё Morisawa, хорошо читается мелким кеглем."
+        "ru": "Пропорциональный минтё Morisawa, хорошо читается мелким кеглем.",
+        "de": "Proportionale Mincho von Morisawa, auch in kleinen Größen gut lesbar.",
+        "es": "Mincho proporcional de Morisawa, fácil de leer en tamaños pequeños.",
+        "fr": "Mincho proportionnelle de Morisawa, facile à lire en petite taille.",
+        "it": "Mincho proporzionale di Morisawa, facile da leggere a dimensioni ridotte.",
+        "ja": "小さなサイズでも読みやすいモリサワのプロポーショナル明朝。",
+        "ko": "작은 크기에서도 읽기 쉬운 모리사와의 비례 명조입니다.",
+        "pl": "Proporcjonalny mincho Morisawy, czytelny także w małych rozmiarach.",
+        "pt": "Mincho proporcional da Morisawa, fácil de ler em tamanhos pequenos.",
+        "tr": "Morisawa'nın orantılı mincho'su, küçük boyutlarda da kolay okunur.",
+        "vi": "Kiểu mincho tỷ lệ của Morisawa, dễ đọc ở cỡ nhỏ.",
+        "zh": "Morisawa 的比例明朝体，小字号也易读。",
+        "zh-Hant": "Morisawa 的比例明朝體，小字號也易讀。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudpmincho/BIZUDPMincho-Regular.ttf", "weight": "400"},
@@ -68,7 +116,19 @@
       "language": "ja",
       "description": {
         "en": "Handwritten textbook style: kanji look the way they are taught to be written.",
-        "ru": "Рукописный учебный стиль: кандзи выглядят так, как их учат писать."
+        "ru": "Рукописный учебный стиль: кандзи выглядят так, как их учат писать.",
+        "de": "Handschriftlicher Lehrbuchstil: Kanji sehen so aus, wie man sie schreiben lernt.",
+        "es": "Estilo manuscrito de libro de texto: los kanji se ven como se enseña a escribirlos.",
+        "fr": "Style manuscrit de manuel : les kanji ont la forme qu’on apprend à écrire.",
+        "it": "Stile manoscritto da libro di testo: i kanji appaiono come si insegna a scriverli.",
+        "ja": "教科書のような手書き風。漢字が書き方を習うとおりの形で表示される。",
+        "ko": "교과서 같은 손글씨체로, 한자가 쓰는 법을 배우는 모양 그대로 보입니다.",
+        "pl": "Odręczny styl podręcznikowy: kanji wyglądają tak, jak uczy się je pisać.",
+        "pt": "Estilo manuscrito de livro didático: os kanji aparecem como se aprende a escrevê-los.",
+        "tr": "Ders kitabı tarzı el yazısı: kanjiler yazılması öğretildiği gibi görünür.",
+        "vi": "Kiểu viết tay như sách giáo khoa: chữ kanji trông đúng như cách được dạy viết.",
+        "zh": "教科书般的手写风格：汉字的样子与学写时一致。",
+        "zh-Hant": "教科書般的手寫風格：漢字的樣子與學寫時一致。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf", "weight": "400"},
@@ -84,7 +144,19 @@
       "language": "ja",
       "description": {
         "en": "Rounded gothic, soft and easy on the eyes.",
-        "ru": "Скруглённая готика, мягкая и спокойная."
+        "ru": "Скруглённая готика, мягкая и спокойная.",
+        "de": "Abgerundete Gothic, weich und augenschonend.",
+        "es": "Gótica redondeada, suave y agradable a la vista.",
+        "fr": "Gothique arrondie, douce et reposante pour les yeux.",
+        "it": "Gotico arrotondato, morbido e riposante per gli occhi.",
+        "ja": "やわらかく目にやさしい丸ゴシック。",
+        "ko": "부드럽고 눈이 편한 둥근 고딕입니다.",
+        "pl": "Zaokrąglony krój gotycki, miękki i łagodny dla oczu.",
+        "pt": "Gótica arredondada, suave e agradável aos olhos.",
+        "tr": "Yuvarlak gotik, yumuşak ve göz yormayan.",
+        "vi": "Kiểu gothic bo tròn, mềm mại và dịu mắt.",
+        "zh": "柔和、看着舒服的圆黑体。",
+        "zh-Hant": "柔和、看著舒服的圓黑體。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zenmarugothic/ZenMaruGothic-Regular.ttf", "weight": "400"},
@@ -100,7 +172,19 @@
       "language": "ja",
       "description": {
         "en": "Light modern gothic, the smallest download.",
-        "ru": "Лёгкая современная готика, самая маленькая загрузка."
+        "ru": "Лёгкая современная готика, самая маленькая загрузка.",
+        "de": "Leichte moderne Gothic, der kleinste Download.",
+        "es": "Gótica moderna y ligera, la descarga más pequeña.",
+        "fr": "Gothique moderne et légère, le plus petit téléchargement.",
+        "it": "Gotico moderno e leggero, il download più piccolo.",
+        "ja": "軽快なモダンゴシック。ダウンロードが最も小さい。",
+        "ko": "가벼운 모던 고딕으로, 다운로드 크기가 가장 작습니다.",
+        "pl": "Lekki, nowoczesny krój gotycki, najmniejszy do pobrania.",
+        "pt": "Gótica moderna e leve, o menor download.",
+        "tr": "Hafif modern gotik, en küçük indirme.",
+        "vi": "Kiểu gothic hiện đại, nhẹ nhàng, dung lượng tải nhỏ nhất.",
+        "zh": "轻快的现代黑体，下载最小。",
+        "zh-Hant": "輕快的現代黑體，下載最小。"
       },
       "files": [
         {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf", "weight": "400"},
@@ -109,6 +193,142 @@
       "sizeMb": 3.5,
       "license": "SIL OFL 1.1",
       "homepage": "https://fonts.google.com/specimen/M+PLUS+1p"
+    },
+    {
+      "id": "noto-sans-sc",
+      "family": "Noto Sans SC",
+      "language": "zh",
+      "description": {
+        "en": "Clean sans-serif (hei) in every weight with the Simplified forms of mainland China, the web version of the phone's Chinese font.",
+        "ru": "Аккуратный шрифт без засечек (хэй) во всех начертаниях, с упрощёнными формами материкового Китая, веб-версия китайского шрифта телефона.",
+        "de": "Klare serifenlose Schrift (Hei) in allen Strichstärken mit den vereinfachten Formen Festlandchinas, die Webfassung der chinesischen Schrift des Telefons.",
+        "es": "Sin serifa (hei) limpia en todos los pesos, con las formas simplificadas de China continental; la versión web de la fuente china del teléfono.",
+        "fr": "Sans empattement (hei) nette dans toutes les graisses, aux formes simplifiées de Chine continentale ; la version web de la police chinoise du téléphone.",
+        "it": "Senza grazie (hei) pulito in tutti i pesi, con le forme semplificate della Cina continentale; la versione web del carattere cinese del telefono.",
+        "ja": "すべてのウェイトがそろった端正な黒体（ゴシック）。中国大陸の簡体字の字形で、端末の中国語フォントの Web 版。",
+        "ko": "모든 굵기를 갖춘 깔끔한 흑체(산세리프)로, 중국 본토의 간체 자형입니다. 휴대폰 중국어 글꼴의 웹 버전입니다.",
+        "pl": "Czysta czcionka bezszeryfowa (hei) we wszystkich grubościach, z uproszczonymi formami Chin kontynentalnych; wersja webowa chińskiej czcionki telefonu.",
+        "pt": "Sem serifa (hei) limpa em todos os pesos, com as formas simplificadas da China continental; a versão web da fonte chinesa do celular.",
+        "tr": "Her kalınlıkta sade tırnaksız (hei) yazı tipi, Çin anakarasının basitleştirilmiş biçimleriyle; telefonun Çince yazı tipinin web sürümü.",
+        "vi": "Kiểu không chân (hắc thể) gọn gàng với mọi độ đậm, theo dạng giản thể của Trung Quốc đại lục; bản web của phông chữ tiếng Trung trên điện thoại.",
+        "zh": "各种字重齐全的简洁黑体，采用中国大陆的简体字形，手机中文字体的网页版。",
+        "zh-Hant": "各種字重齊全的簡潔黑體，採用中國大陸的簡體字形，手機中文字型的網頁版。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 17.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+SC"
+    },
+    {
+      "id": "noto-serif-sc",
+      "family": "Noto Serif SC",
+      "language": "zh",
+      "description": {
+        "en": "Song (serif) in every weight with Simplified forms, to match Noto Sans SC.",
+        "ru": "Сун (с засечками) во всех начертаниях, с упрощёнными формами, в пару к Noto Sans SC.",
+        "de": "Song (mit Serifen) in allen Strichstärken mit vereinfachten Formen, passend zu Noto Sans SC.",
+        "es": "Song (con serifa) en todos los pesos, con formas simplificadas, a juego con Noto Sans SC.",
+        "fr": "Song (à empattements) dans toutes les graisses, aux formes simplifiées, assortie à Noto Sans SC.",
+        "it": "Song (con grazie) in tutti i pesi, con forme semplificate, abbinato a Noto Sans SC.",
+        "ja": "簡体字の字形で、すべてのウェイトがそろった宋朝体（明朝）。Noto Sans SC と対になる。",
+        "ko": "간체 자형에 모든 굵기를 갖춘 송체(세리프)로, Noto Sans SC와 짝을 이룹니다.",
+        "pl": "Song (szeryfowa) we wszystkich grubościach, z formami uproszczonymi, do pary z Noto Sans SC.",
+        "pt": "Song (com serifa) em todos os pesos, com formas simplificadas, combinando com Noto Sans SC.",
+        "tr": "Her kalınlıkta, basitleştirilmiş biçimli song (tırnaklı) yazı tipi; Noto Sans SC ile uyumlu.",
+        "vi": "Kiểu Tống (có chân) với mọi độ đậm, theo dạng giản thể, đi cặp với Noto Sans SC.",
+        "zh": "各种字重齐全的宋体（衬线），简体字形，与 Noto Sans SC 配套。",
+        "zh-Hant": "各種字重齊全的宋體（襯線），簡體字形，與 Noto Sans SC 配套。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 25.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Serif+SC"
+    },
+    {
+      "id": "noto-sans-tc",
+      "family": "Noto Sans TC",
+      "language": "zh",
+      "description": {
+        "en": "Clean sans-serif (hei) in every weight with the Traditional forms used in Taiwan.",
+        "ru": "Аккуратный шрифт без засечек (хэй) во всех начертаниях, с традиционными формами, принятыми на Тайване.",
+        "de": "Klare serifenlose Schrift (Hei) in allen Strichstärken mit den traditionellen Formen Taiwans.",
+        "es": "Sin serifa (hei) limpia en todos los pesos, con las formas tradicionales usadas en Taiwán.",
+        "fr": "Sans empattement (hei) nette dans toutes les graisses, aux formes traditionnelles en usage à Taïwan.",
+        "it": "Senza grazie (hei) pulito in tutti i pesi, con le forme tradizionali in uso a Taiwan.",
+        "ja": "すべてのウェイトがそろった端正な黒体（ゴシック）。台湾で使われる繁体字の字形。",
+        "ko": "모든 굵기를 갖춘 깔끔한 흑체(산세리프)로, 대만에서 쓰는 번체 자형입니다.",
+        "pl": "Czysta czcionka bezszeryfowa (hei) we wszystkich grubościach, z tradycyjnymi formami używanymi na Tajwanie.",
+        "pt": "Sem serifa (hei) limpa em todos os pesos, com as formas tradicionais usadas em Taiwan.",
+        "tr": "Her kalınlıkta sade tırnaksız (hei) yazı tipi, Tayvan'da kullanılan geleneksel biçimlerle.",
+        "vi": "Kiểu không chân (hắc thể) gọn gàng với mọi độ đậm, theo dạng phồn thể dùng ở Đài Loan.",
+        "zh": "各种字重齐全的简洁黑体，采用台湾通行的繁体字形。",
+        "zh-Hant": "各種字重齊全的簡潔黑體，採用臺灣通行的繁體字形。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 11.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+TC"
+    },
+    {
+      "id": "noto-serif-tc",
+      "family": "Noto Serif TC",
+      "language": "zh",
+      "description": {
+        "en": "Ming (serif) in every weight with Traditional forms, to match Noto Sans TC.",
+        "ru": "Мин (с засечками) во всех начертаниях, с традиционными формами, в пару к Noto Sans TC.",
+        "de": "Ming (mit Serifen) in allen Strichstärken mit traditionellen Formen, passend zu Noto Sans TC.",
+        "es": "Ming (con serifa) en todos los pesos, con formas tradicionales, a juego con Noto Sans TC.",
+        "fr": "Ming (à empattements) dans toutes les graisses, aux formes traditionnelles, assortie à Noto Sans TC.",
+        "it": "Ming (con grazie) in tutti i pesi, con forme tradizionali, abbinato a Noto Sans TC.",
+        "ja": "繁体字の字形で、すべてのウェイトがそろった明朝体。Noto Sans TC と対になる。",
+        "ko": "번체 자형에 모든 굵기를 갖춘 명조체(세리프)로, Noto Sans TC와 짝을 이룹니다.",
+        "pl": "Ming (szeryfowa) we wszystkich grubościach, z formami tradycyjnymi, do pary z Noto Sans TC.",
+        "pt": "Ming (com serifa) em todos os pesos, com formas tradicionais, combinando com Noto Sans TC.",
+        "tr": "Her kalınlıkta, geleneksel biçimli ming (tırnaklı) yazı tipi; Noto Sans TC ile uyumlu.",
+        "vi": "Kiểu Minh (có chân) với mọi độ đậm, theo dạng phồn thể, đi cặp với Noto Sans TC.",
+        "zh": "各种字重齐全的明体（衬线），繁体字形，与 Noto Sans TC 配套。",
+        "zh-Hant": "各種字重齊全的明體（襯線），繁體字形，與 Noto Sans TC 配套。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoseriftc/NotoSerifTC%5Bwght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 16.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Serif+TC"
+    },
+    {
+      "id": "lxgw-wenkai-tc",
+      "family": "LXGW WenKai TC",
+      "language": "zh",
+      "description": {
+        "en": "Handwritten regular script (kai) based on Klee One, with Traditional characters in their inherited forms.",
+        "ru": "Рукописный уставной стиль (кай) на основе Klee One, традиционные иероглифы в унаследованных формах.",
+        "de": "Handschriftliche Regelschrift (Kai) auf Grundlage von Klee One, mit traditionellen Zeichen in ihren überlieferten Formen.",
+        "es": "Escritura regular manuscrita (kai) basada en Klee One, con caracteres tradicionales en sus formas heredadas.",
+        "fr": "Écriture régulière manuscrite (kai) fondée sur Klee One, aux caractères traditionnels dans leurs formes héritées.",
+        "it": "Scrittura regolare manoscritta (kai) basata su Klee One, con caratteri tradizionali nelle forme ereditate.",
+        "ja": "Klee One をもとにした手書き風の楷書体。繁体字を伝統的な字形（旧字形）で表示する。",
+        "ko": "Klee One을 바탕으로 한 손글씨 해서체로, 번체자를 전통 자형(구자형)으로 보여 줍니다.",
+        "pl": "Odręczne pismo regularne (kai) oparte na Klee One, ze znakami tradycyjnymi w odziedziczonych formach.",
+        "pt": "Escrita regular manuscrita (kai) baseada na Klee One, com caracteres tradicionais em suas formas herdadas.",
+        "tr": "Klee One tabanlı, el yazısı düzenli yazı (kai); geleneksel karakterler kalıtsal biçimleriyle.",
+        "vi": "Kiểu khải thư viết tay dựa trên Klee One, chữ phồn thể theo dạng truyền thừa.",
+        "zh": "基于 Klee One 的手写风楷体，繁体字采用传承字形。",
+        "zh-Hant": "以 Klee One 為基礎的手寫風楷體，繁體字採用傳承字形。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lxgwwenkaitc/LXGWWenKaiTC-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lxgwwenkaitc/LXGWWenKaiTC-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 26.0,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/LXGW+WenKai+TC"
     }
   ]
 }

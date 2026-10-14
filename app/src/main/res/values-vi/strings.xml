@@ -393,6 +393,8 @@
     <string name="popup_font_downloaded">Đã tải</string>
     <string name="popup_font_own_file">Tệp của bạn</string>
     <string name="popup_font_delete">Xóa %1$s</string>
+    <string name="popup_font_delete_title">Xóa %1$s?</string>
+    <string name="popup_font_delete_text">Phông chữ sẽ bị xóa khỏi thiết bị này. Các ngôn ngữ đang dùng nó sẽ trở về phông chữ của điện thoại.</string>
     <string name="popup_font_size">Cỡ chữ: %1$d</string>
     <string name="popup_text_weight">Độ đậm chữ: %1$s</string>
     <string name="popup_text_weight_normal">thường</string>

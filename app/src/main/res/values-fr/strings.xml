@@ -399,6 +399,8 @@
     <string name="popup_font_downloaded">Téléchargées</string>
     <string name="popup_font_own_file">Votre fichier</string>
     <string name="popup_font_delete">Supprimer %1$s</string>
+    <string name="popup_font_delete_title">Supprimer %1$s ?</string>
+    <string name="popup_font_delete_text">La police est supprimée de cet appareil. Les langues qui l’utilisent reviennent à la police du téléphone.</string>
     <string name="popup_font_size">Taille du texte : %1$d</string>
     <string name="popup_text_weight">Graisse du texte : %1$s</string>
     <string name="popup_text_weight_normal">normale</string>

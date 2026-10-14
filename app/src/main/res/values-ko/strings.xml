@@ -393,6 +393,8 @@
     <string name="popup_font_downloaded">다운로드됨</string>
     <string name="popup_font_own_file">내 파일</string>
     <string name="popup_font_delete">%1$s 삭제</string>
+    <string name="popup_font_delete_title">%1$s을(를) 삭제할까요?</string>
+    <string name="popup_font_delete_text">글꼴이 이 기기에서 삭제됩니다. 이 글꼴을 쓰던 언어는 휴대폰 글꼴로 돌아갑니다.</string>
     <string name="popup_font_size">글자 크기: %1$d</string>
     <string name="popup_text_weight">글자 굵기: %1$s</string>
     <string name="popup_text_weight_normal">보통</string>

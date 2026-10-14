@@ -399,6 +399,8 @@
     <string name="popup_font_downloaded">Descargadas</string>
     <string name="popup_font_own_file">Tu archivo</string>
     <string name="popup_font_delete">Eliminar %1$s</string>
+    <string name="popup_font_delete_title">¿Eliminar %1$s?</string>
+    <string name="popup_font_delete_text">La fuente se elimina de este dispositivo. Los idiomas que la usan vuelven a la fuente del teléfono.</string>
     <string name="popup_font_size">Tamaño del texto: %1$d</string>
     <string name="popup_text_weight">Peso del texto: %1$s</string>
     <string name="popup_text_weight_normal">normal</string>

@@ -1,5 +1,7 @@
 package com.vpr.screenlate.overlay.fonts
 
+import com.vpr.screenlate.dictionary.api.catalog.localeKey
+import java.util.Locale
 import kotlinx.serialization.Serializable
 
 /**
@@ -27,7 +29,12 @@ data class InstalledFont(
 @Serializable
 data class CatalogFontFile(val url: String, val weight: String = "400")
 
-/** A freely licensed font offered for download. */
+/**
+ * A freely licensed font offered for download.
+ *
+ * @param language the code of the language whose page offers it (`Language.code`).
+ * @param description by the key of an interface locale (`localeKey`: the language, `zh-Hant` for Traditional Chinese).
+ */
 @Serializable
 data class CatalogFont(
     val id: String,
@@ -39,7 +46,7 @@ data class CatalogFont(
     val license: String,
     val homepage: String,
 ) {
-    fun description(languageCode: String): String = description[languageCode] ?: description["en"].orEmpty()
+    fun description(locale: Locale): String = description[localeKey(locale)] ?: description["en"].orEmpty()
 }
 
 @Serializable

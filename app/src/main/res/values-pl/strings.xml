@@ -402,6 +402,8 @@
     <string name="popup_font_downloaded">Pobrane</string>
     <string name="popup_font_own_file">Twój plik</string>
     <string name="popup_font_delete">Usuń %1$s</string>
+    <string name="popup_font_delete_title">Usunąć %1$s?</string>
+    <string name="popup_font_delete_text">Czcionka zostanie usunięta z tego urządzenia. Języki, które jej używają, wrócą do czcionki telefonu.</string>
     <string name="popup_font_size">Rozmiar tekstu: %1$d</string>
     <string name="popup_text_weight">Grubość tekstu: %1$s</string>
     <string name="popup_text_weight_normal">normalna</string>

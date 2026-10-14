@@ -393,6 +393,8 @@
     <string name="popup_font_downloaded">已下载</string>
     <string name="popup_font_own_file">你的文件</string>
     <string name="popup_font_delete">删除 %1$s</string>
+    <string name="popup_font_delete_title">删除 %1$s？</string>
+    <string name="popup_font_delete_text">该字体将从此设备中删除。使用它的语言将改回手机自带的字体。</string>
     <string name="popup_font_size">文字大小：%1$d</string>
     <string name="popup_text_weight">文字粗细：%1$s</string>
     <string name="popup_text_weight_normal">常规</string>

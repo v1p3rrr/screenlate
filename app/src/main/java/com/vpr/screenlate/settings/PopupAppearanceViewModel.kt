@@ -79,7 +79,11 @@ class PopupAppearanceViewModel @Inject constructor(
 
     val installed: StateFlow<List<InstalledFont>> = fonts.installed
     val downloads: StateFlow<Map<String, FontDownload>> = fonts.downloads
-    val catalog: List<CatalogFont> get() = fonts.catalog.filter { it.language == shown.language.value.support.languageTag }
+    val catalog: List<CatalogFont> get() = fonts.catalog.filter { it.language == shown.language.value.code }
+
+    /** The installed fonts the shown language's list offers, see [fontsFor]. */
+    fun fontsFor(language: Language, installed: List<InstalledFont>, chosen: String?): List<InstalledFont> =
+        fontsFor(language, installed, fonts.catalog, chosen)
 
     /** Typefaces for the font list: installed fonts by id, the phone's font for the shown language under [SYSTEM]. */
     val typefaces: StateFlow<Map<String, Typeface>> = combine(fonts.installed, shown.language, ::loadTypefaces)
@@ -296,6 +300,24 @@ class PopupAppearanceViewModel @Inject constructor(
     companion object {
         const val SYSTEM = ""
         const val CSS_SAVE_DELAY_MS = 400L
+
+        /**
+         * The installed fonts offered for [language]: the user's own files, the fonts downloaded from its catalog, and
+         * the [chosen] one wherever it came from. A font another language's catalog offers (a Japanese one for
+         * Chinese) would show that language's glyph forms, so it stays on that language's list.
+         */
+        fun fontsFor(
+            language: Language,
+            installed: List<InstalledFont>,
+            catalog: List<CatalogFont>,
+            chosen: String?,
+        ): List<InstalledFont> {
+            val languages = catalog.associate { it.id to it.language }
+            return installed.filter { font ->
+                val catalogId = font.catalogId
+                catalogId == null || font.id == chosen || (languages[catalogId] ?: language.code) == language.code
+            }
+        }
 
         /**
          * The phone's sans-serif font the page names for [language]; null when the page keeps the phone's default font
