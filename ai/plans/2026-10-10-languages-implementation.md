@@ -687,3 +687,10 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   Traditional) and "All words in these characters" (off), per language, reset with the Lookup page (question
   "Chinese script setting", option 1). Readings drop Wiktionary's numbered pinyin (question "Chinese readings",
   option 1); character views label both reading fields "Pinyin".
+- 2026-10-14: Z4 built. Chinese headwords show pinyin one syllable above each character (`reading.js` registry,
+  `reading-zh.js`: own pinyin splitter over a syllable pattern, fewest syllables, no vowel-initial syllable after
+  another, erhua r over 儿; a word with letters or a reading that does not match keeps one ruby). The Popup page's
+  Chinese block has "Tone colors" (off), reusing `popup_pronunciation_colors_zh`; syllables carry `data-tone` 1–5
+  and popup.css colors them with `--tone-N-color` (decision row colors; dark theme variants; e-ink keeps light).
+  Agent's choices: only the pinyin is colored, not the characters (the decision row says pinyin); character views
+  color their readings too; Anki's `{furigana}` for Chinese is left to Z8.
