@@ -1,5 +1,6 @@
 package com.vpr.screenlate.anki
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiAvailability
@@ -68,8 +69,10 @@ class AnkiSettingsViewModel @Inject constructor(
     private val translationSettings: TranslationSettingsRepository,
     dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
+    savedState: SavedStateHandle,
 ) : ViewModel() {
-    val shown = ShownLanguage(profiles, viewModelScope)
+    /** Opens on the route's `language` (a problem of that language on the home screen), otherwise the active one. */
+    val shown = ShownLanguage(profiles, viewModelScope).apply { Language.of(savedState.get<String>(ARG_LANGUAGE))?.let(::show) }
 
     /** Whether notes get `{sentence-translation}`; the Translation page has this switch too. */
     val translationInNotes: StateFlow<Boolean?> = translationSettings.settings.map { it.ankiField }
@@ -270,5 +273,9 @@ class AnkiSettingsViewModel @Inject constructor(
     private fun updateSettings(transform: (AnkiSettings) -> AnkiSettings) {
         val language = shown.language.value
         viewModelScope.launch { settingsRepository.update(language, transform) }
+    }
+
+    companion object {
+        const val ARG_LANGUAGE = "language"
     }
 }

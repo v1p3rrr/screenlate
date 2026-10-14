@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.anki.audio.AudioError
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceFailure
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
+import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class CurrentFailuresTest {
@@ -18,5 +19,22 @@ class CurrentFailuresTest {
         val failures = listOf(AudioSourceFailure(edited, error), AudioSourceFailure(second, error), AudioSourceFailure(first, error))
         val current = currentFailures(failures, listOf(first, AudioSource(AudioSourceType.JISHO), second))
         assertThat(current.map { it.source }).containsExactly(first, second).inOrder()
+    }
+
+    @Test
+    fun `each language gets a card with its own failures and a shared source goes to the first`() {
+        val failures = listOf(AudioSourceFailure(first, error), AudioSourceFailure(second, error))
+        val sources = listOf(Language.ENGLISH to listOf(AudioSource(AudioSourceType.JISHO)), Language.JAPANESE to listOf(second, first))
+
+        assertThat(audioFailureCards(failures, sources, several = true)).containsExactly(
+            HomeProblem.AudioSources(listOf(AudioSourceFailure(second, error), AudioSourceFailure(first, error)), Language.JAPANESE),
+        )
+        val shared = listOf(Language.ENGLISH to listOf(first), Language.JAPANESE to listOf(second, first))
+        assertThat(audioFailureCards(failures, shared, several = true)).containsExactly(
+            HomeProblem.AudioSources(listOf(AudioSourceFailure(first, error)), Language.ENGLISH),
+            HomeProblem.AudioSources(listOf(AudioSourceFailure(second, error)), Language.JAPANESE),
+        ).inOrder()
+        assertThat(audioFailureCards(failures, listOf(Language.JAPANESE to listOf(first)), several = false))
+            .containsExactly(HomeProblem.AudioSources(listOf(AudioSourceFailure(first, error))))
     }
 }

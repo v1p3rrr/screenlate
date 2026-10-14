@@ -60,6 +60,23 @@ data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry:
 internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<AudioSource>): List<AudioSourceFailure> =
     failures.filter { it.source in sources }.sortedBy { sources.indexOf(it.source) }
 
+/**
+ * One card of [currentFailures] per language, [sources] in the order the cards come (the active language first); a
+ * source several languages share goes to the first. The cards name their language when [several] are turned on.
+ */
+internal fun audioFailureCards(
+    failures: List<AudioSourceFailure>,
+    sources: List<Pair<Language, List<AudioSource>>>,
+    several: Boolean,
+): List<HomeProblem.AudioSources> {
+    val taken = mutableSetOf<AudioSource>()
+    return sources.mapNotNull { (language, its) ->
+        val own = currentFailures(failures, its.filter { it !in taken })
+        taken += its
+        own.takeIf { it.isNotEmpty() }?.let { HomeProblem.AudioSources(it, language.takeIf { several }) }
+    }
+}
+
 /** Imports not finished yet: how many, and the running one's name and percent, if known. */
 data class InstallProgress(val queued: Int, val current: String?, val percent: Int?)
 
@@ -86,8 +103,8 @@ sealed interface HomeProblem {
         val several: Boolean,
     ) : HomeProblem
 
-    /** Every audio source that failed recently, in one card. */
-    data class AudioSources(val failures: List<AudioSourceFailure>) : HomeProblem
+    /** The audio sources of one language that failed recently; [language] names it while several are turned on. */
+    data class AudioSources(val failures: List<AudioSourceFailure>, val language: Language? = null) : HomeProblem
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -214,10 +231,8 @@ class HomeViewModel @Inject constructor(
                     missing.map { dictionary -> MissingDictionary(dictionary, entries.firstOrNull { it.matches(dictionary) }) },
                 )
             }
-            val sources = languages.turnedOn.flatMap { audioSettings.current(it).sources }.distinct()
-            currentFailures(audio.recentFailures(), sources)
-                .takeIf { it.isNotEmpty() }
-                ?.let { found += HomeProblem.AudioSources(it) }
+            val order = listOf(languages.active) + (languages.turnedOn - languages.active)
+            found += audioFailureCards(audio.recentFailures(), order.map { it to audioSettings.current(it).sources }, languages.several)
             checked.value = found
         }
     }

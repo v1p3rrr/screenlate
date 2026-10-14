@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -64,11 +65,15 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 
     /**
      * Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them, with [chips] in a
-     * row above them; the row scrolls when it is wider than the menu.
+     * row above them; the row scrolls when it is wider than the menu. [dark] follows the app's theme, like the popup.
      */
-    fun show(items: List<Item>, anchor: Box, bounds: Box, chips: List<Chip> = emptyList()) {
+    fun show(items: List<Item>, anchor: Box, bounds: Box, dark: Boolean, chips: List<Chip> = emptyList()) {
         dismiss()
-        themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight)
+        val night = Configuration(context.resources.configuration).apply {
+            uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or
+                if (dark) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+        }
+        themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight).apply { applyOverrideConfiguration(night) }
         val margin = MARGIN_DP * density
         val area = Box(bounds.left + margin, bounds.top + margin, bounds.right - margin, bounds.bottom - margin)
         val card = card(items, chips)

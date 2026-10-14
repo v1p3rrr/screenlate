@@ -47,8 +47,9 @@ private object OcrTestRoute
 @Serializable
 private object DictionariesRoute
 
+/** @property language the code of the language the page opens on, as `AnkiSettingsViewModel` reads it; null for the active one. */
 @Serializable
-private object AnkiRoute
+private data class AnkiRoute(val language: String? = null)
 
 /** @property showAppText scrolls to the app text switches. */
 @Serializable
@@ -124,7 +125,7 @@ fun ScreenlateNavHost(
     // After the first run nothing before the home screen stays on the back stack.
     val home: () -> Unit = { navController.navigate(HomeRoute) { popUpTo(navController.graph.id) { inclusive = true } } }
     LaunchedEffect(ankiSettingsRequests) {
-        if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute) { launchSingleTop = true }
+        if (ankiSettingsRequests > 0) navController.navigate(AnkiRoute()) { launchSingleTop = true }
     }
     LaunchedEffect(dictionariesRequests) {
         if (dictionariesRequests > 0) navController.navigate(DictionariesRoute) { launchSingleTop = true }
@@ -145,7 +146,7 @@ fun ScreenlateNavHost(
                 onOpenSearch = { go(SearchRoute()) },
                 onOpenSettings = { go(SettingsRoute) },
                 onOpenDictionaries = { go(DictionariesRoute) },
-                onOpenAnki = { go(AnkiRoute) },
+                onOpenAnki = { language -> go(AnkiRoute(language?.code)) },
                 onOpenAppText = { go(BubbleRoute(showAppText = true)) },
                 onOpenLanguages = { go(LanguagesRoute) },
             )
@@ -172,7 +173,7 @@ fun ScreenlateNavHost(
                             SettingsPage.POPUP -> PopupRoute
                             SettingsPage.TRANSLATION -> TranslationRoute
                             SettingsPage.DICTIONARIES -> DictionariesRoute
-                            SettingsPage.ANKI -> AnkiRoute
+                            SettingsPage.ANKI -> AnkiRoute()
                             SettingsPage.APPEARANCE -> AppearanceRoute
                             SettingsPage.YOMITAN_IMPORT -> YomitanImportRoute
                             SettingsPage.BACKUP -> BackupRoute
@@ -207,7 +208,7 @@ fun ScreenlateNavHost(
         composable<SearchRoute> { entry ->
             SearchScreen(
                 onBack = back,
-                onOpenAnkiSettings = { go(AnkiRoute) },
+                onOpenAnkiSettings = { go(AnkiRoute()) },
                 onOpenDictionaries = { go(DictionariesRoute) },
                 initialQuery = entry.toRoute<SearchRoute>().query,
             )

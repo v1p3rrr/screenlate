@@ -71,7 +71,7 @@ fun HomeScreen(
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
-    onOpenAnki: () -> Unit,
+    onOpenAnki: (Language?) -> Unit,
     onOpenAppText: () -> Unit,
     onOpenLanguages: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -293,7 +293,7 @@ private fun ProblemsCard(
     problems: List<HomeProblem>,
     viewModel: HomeViewModel,
     onOpenDictionaries: () -> Unit,
-    onOpenAnki: () -> Unit,
+    onOpenAnki: (Language?) -> Unit,
 ) {
     val askNotifications = rememberImportNotificationsAsk()
     val removeError by viewModel.removeError.collectAsStateWithLifecycle()
@@ -312,7 +312,7 @@ private fun ProblemsCard(
                         is HomeProblem.Anki -> {
                             problem.language?.let { Text(it.displayName(), style = MaterialTheme.typography.titleSmall) }
                             Text(stringResource(problem.problem.message))
-                            TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_anki)) }
+                            TextButton(onClick = { onOpenAnki(problem.language) }) { Text(stringResource(R.string.problems_open_anki)) }
                         }
                         is HomeProblem.MissingDictionaries -> {
                             Text(stringResource(R.string.problems_dictionaries_missing))
@@ -367,6 +367,7 @@ private fun ProblemsCard(
                             TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
                         }
                         is HomeProblem.AudioSources -> {
+                            problem.language?.let { Text(it.displayName(), style = MaterialTheme.typography.titleSmall) }
                             Text(stringResource(R.string.problems_audio_sources))
                             problem.failures.forEach { failure ->
                                 val name = stringResource(failure.source.type.label)
@@ -381,7 +382,7 @@ private fun ProblemsCard(
                             }
                             if (problem.failures.any { localNetworkMissing(LocalContext.current, it.source.url) }) LocalNetworkAllowButton()
                             Row {
-                                TextButton(onClick = onOpenAnki) { Text(stringResource(R.string.problems_open_audio)) }
+                                TextButton(onClick = { onOpenAnki(problem.language) }) { Text(stringResource(R.string.problems_open_audio)) }
                                 TextButton(onClick = viewModel::dismissAudioFailures) {
                                     Text(stringResource(R.string.problems_dismiss))
                                 }
