@@ -28,10 +28,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
@@ -67,16 +70,29 @@ import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.components.formContent
 import com.vpr.screenlate.ui.components.pending
 import com.vpr.screenlate.ui.theme.AccentDefaults
+import kotlin.math.roundToInt
 
 /** Deck, note type, field templates, duplicate handling and audio sources. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hiltViewModel()) {
+fun AnkiSettingsScreen(onBack: () -> Unit, showAudio: Boolean = false, viewModel: AnkiSettingsViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val profiles by viewModel.shown.profiles.collectAsStateWithLifecycle()
     val shown by viewModel.shown.language.collectAsStateWithLifecycle()
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { viewModel.refresh() }
     val focusManager = LocalFocusManager.current
+    val scroll = rememberScrollState()
+    // The audio section comes after the note settings, which wait for AnkiDroid; scrolled to once it is placed.
+    var audioTop by remember { mutableStateOf<Int?>(null) }
+    var audioShown by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(showAudio, audioTop) {
+        val top = audioTop ?: return@LaunchedEffect
+        if (showAudio && !audioShown) {
+            // At once, like a link to an anchor: a restart of this effect would cut an animation short.
+            scroll.scrollTo(top)
+            audioShown = true
+        }
+    }
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
         onPauseOrDispose { }
@@ -97,7 +113,7 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
             modifier = Modifier
                 .fillMaxSize()
                 .formContent(padding, focusManager)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scroll)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -131,7 +147,9 @@ fun AnkiSettingsScreen(onBack: () -> Unit, viewModel: AnkiSettingsViewModel = hi
                 )
             }
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            if (state.availability != null) AudioSettingsSection(shown)
+            if (state.availability != null) {
+                Box(Modifier.onGloballyPositioned { audioTop = it.positionInParent().y.roundToInt() }) { AudioSettingsSection(shown) }
+            }
         }
     }
 }

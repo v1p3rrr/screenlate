@@ -73,6 +73,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: (Language?) -> Unit,
+    onOpenAudio: (Language?) -> Unit,
     onOpenAppText: () -> Unit,
     onOpenLanguages: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -134,7 +135,7 @@ fun HomeScreen(
                     onClose = viewModel::markResetGaveUpTold,
                 )
             }
-            if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki)
+            if (problems.isNotEmpty()) ProblemsCard(problems, viewModel, onOpenDictionaries, onOpenAnki, onOpenAudio)
 
             LanguagesCard(
                 languages = languages,
@@ -298,6 +299,7 @@ private fun ProblemsCard(
     viewModel: HomeViewModel,
     onOpenDictionaries: () -> Unit,
     onOpenAnki: (Language?) -> Unit,
+    onOpenAudio: (Language?) -> Unit,
 ) {
     val askNotifications = rememberImportNotificationsAsk()
     val removeError by viewModel.removeError.collectAsStateWithLifecycle()
@@ -386,7 +388,7 @@ private fun ProblemsCard(
                             }
                             if (problem.failures.any { localNetworkMissing(LocalContext.current, it.source.url) }) LocalNetworkAllowButton()
                             Row {
-                                TextButton(onClick = { onOpenAnki(problem.language) }) { Text(stringResource(R.string.problems_open_audio)) }
+                                TextButton(onClick = { onOpenAudio(problem.language) }) { Text(stringResource(R.string.problems_open_audio)) }
                                 TextButton(onClick = viewModel::dismissAudioFailures) {
                                     Text(stringResource(R.string.problems_dismiss))
                                 }

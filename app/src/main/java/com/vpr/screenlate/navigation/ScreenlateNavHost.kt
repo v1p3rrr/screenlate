@@ -47,9 +47,13 @@ private object OcrTestRoute
 @Serializable
 private object DictionariesRoute
 
-/** @property language the code of the language the page opens on, as `AnkiSettingsViewModel` reads it; null for the active one. */
+/**
+ * @property language the code of the language the page opens on, as `AnkiSettingsViewModel` reads it; null for the
+ *   active one.
+ * @property audio scrolls to the audio sources.
+ */
 @Serializable
-private data class AnkiRoute(val language: String? = null)
+private data class AnkiRoute(val language: String? = null, val audio: Boolean = false)
 
 /** @property showAppText scrolls to the app text switches. */
 @Serializable
@@ -147,6 +151,7 @@ fun ScreenlateNavHost(
                 onOpenSettings = { go(SettingsRoute) },
                 onOpenDictionaries = { go(DictionariesRoute) },
                 onOpenAnki = { language -> go(AnkiRoute(language?.code)) },
+                onOpenAudio = { language -> go(AnkiRoute(language?.code, audio = true)) },
                 onOpenAppText = { go(BubbleRoute(showAppText = true)) },
                 onOpenLanguages = { go(LanguagesRoute) },
             )
@@ -213,7 +218,7 @@ fun ScreenlateNavHost(
                 initialQuery = entry.toRoute<SearchRoute>().query,
             )
         }
-        composable<AnkiRoute> { AnkiSettingsScreen(onBack = back) }
+        composable<AnkiRoute> { entry -> AnkiSettingsScreen(onBack = back, showAudio = entry.toRoute<AnkiRoute>().audio) }
         composable<DictionariesRoute> {
             DictionariesScreen(
                 onBack = back,
