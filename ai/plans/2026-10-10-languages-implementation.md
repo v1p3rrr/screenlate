@@ -224,6 +224,13 @@ Work that depends on an answer uses the recommended option or waits, as noted.
 - Chinese fonts to download (2026-10-14). Japanese offers six free fonts. Options: (1, recommended) Noto Sans SC,
   Noto Serif SC, Noto Sans TC, Noto Serif TC and LXGW WenKai TC (all SIL OFL, 10–25 MB each); (2) the phone's font
   and own files only. The agent uses option 1 unless told otherwise.
+- Pinyin search order for words with several readings (2026-10-14). Typed pinyin finds every word read so, ranked by
+  the frequency dictionary; wordfreq gives one frequency per word, not per reading, so a common character under a
+  rare reading comes early: "xian" lists 见 (xiàn, "to appear"; usually jiàn) first, "lv" lists 率 (lǜ, "rate";
+  usually shuài) before 绿. Yomitan ranks a reading search the same way. Options: (1, recommended) keep the
+  frequency order, as Yomitan; (2) rank a word's minor readings (fewer definitions than its other readings) after the
+  words that are mainly read so, an own heuristic that may misjudge particles such as 了 (le). The agent keeps
+  option 1 until the owner answers.
 - Deleting a popup font (2026-10-14). Popup → font list: the bin next to a downloaded or added font deletes it at
   once, while deleting a dictionary asks first. A downloaded font is 7–18 MB to fetch again. Options: (1, recommended)
   ask "Delete <font>?" as for dictionaries; (2) keep deleting at once. The agent leaves it as is until the owner
@@ -694,3 +701,14 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   and popup.css colors them with `--tone-N-color` (decision row colors; dark theme variants; e-ink keeps light).
   Agent's choices: only the pinyin is colored, not the characters (the decision row says pinyin); character views
   color their readings too; Anki's `{furigana}` for Chinese is left to Z8.
+- 2026-10-14: Z5 built. Typed pinyin finds Chinese words in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"; ü as
+  v, u: or ü): at import a term dictionary of a language with a reading search gets `reading_index.bin`
+  (`ReadingIndex`: words by a 64-bit hash of the toneless key, memory-mapped; the banks are read on up to four
+  threads), and `lookupQuery` looks up the first 80 words of the key in the Lookup setting's script and ranks typed
+  tones and apostrophes (xi'an → 西安) first, then Yomitan's order. Agent's choices: a key lists its likely common
+  words first (a character in more of the dictionary's words counts as more common, a word as its rarest character),
+  so the 80 cover a syllable's common characters; words the engine found by an exact reading join the reading
+  search's order. Fixes found on the way: results whose readings differ only in spaces merge, as Yomitan's reading
+  normalizer for Chinese does (CC-CEDICT "nǐhǎo" and Wiktionary "nǐ hǎo" were two entries); a lookup through
+  Yomitan's code no longer fails when its letter resolution splits a character outside the BMP (𣱘), as the engine's
+  JSON reader refused the half surrogate.
