@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.anki.audio.AudioCandidate
+import com.vpr.screenlate.core.anki.audio.AudioSettings
 import com.vpr.screenlate.core.anki.audio.AudioSource
 import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.label
@@ -82,7 +83,8 @@ fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel =
             )
         }
         OutlinedButton(
-            onClick = { editing = null to AudioSource(AudioSourceType.JAPANESE_POD_101) },
+            // A new source starts as the language's first default kind.
+            onClick = { editing = null to AudioSource(AudioSettings.defaultSources(language).firstOrNull()?.type ?: AudioSourceType.URL) },
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
         TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
