@@ -19,15 +19,15 @@ A pop-up Japanese dictionary for Android that works over any app. Pull the bubbl
 
 - **Any app, any orientation.** Horizontal and vertical text, portrait and landscape. The popup opens where there is room and never covers the word.
 - **Text from the screen.** Cloud recognition with an instant on-device draft, or the app's own text where the app exposes it (exact and offline), or only the app's text, without recognition, for e-ink readers and weak devices.
-- **Yomitan dictionaries**, looked up and shown the way Yomitan does it: rich entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries. A copy button per dictionary copies its definition, whole or only the numbered meanings.
-- **Dictionaries included**: JMdict (English), KANJIDIC, a frequency list and pitch accents work right after installing. Jitendex, dictionaries for other languages, more kanji dictionaries and name dictionaries are one tap away in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
+- **Yomitan dictionaries**, looked up and shown the way Yomitan does it: structured entries with examples and images, frequencies, pitch accent, inflections with explanations, kanji entries. A copy button per dictionary copies its definition, whole or only the numbered meanings.
+- **Dictionaries included**: JMdict (English), KANJIDIC, a frequency list and pitch accents are installed with the app. Jitendex, dictionaries for other languages, more kanji dictionaries and name dictionaries are available in the built-in catalog; any Yomitan `.zip` or a whole Yomitan dictionary collection can be imported.
 - **Anki cards** through AnkiDroid: your deck, note type and field templates (Yomitan's markers), duplicate checks, pronunciation audio and a cropped screenshot of the scene.
 - **Pronunciation** from the same audio sources as Yomitan, or the phone's text-to-speech.
 - **Copy text** from anything on the screen: hold the bubble to copy the paragraph under it or all recognized text.
 - **Search** screen and "Look up in Screenlate" in the text selection menu of other apps.
 - **Import from Yomitan**: dictionary order, Anki setup, audio sources, lookup and popup settings.
-- **Your look**: popup font, text size and weight, custom CSS; Screenlate's own violet colors or the phone's, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
-- **Backup and restore** of all settings and, if you like, the dictionaries, in one file.
+- **Appearance**: popup font, text size and weight, custom CSS; Screenlate's own violet colors or the phone's, light and dark theme, an e-ink mode; the interface is in English, Russian, Spanish, French, German, Italian, Portuguese (Brazil), Polish, Turkish, Vietnamese, Japanese, Korean and Chinese (Simplified and Traditional).
+- **Backup and restore** of all settings and, optionally, the dictionaries, in one file.
 - **Updates** from GitHub Releases inside the app.
 
 Only Japanese is supported for now.
@@ -54,7 +54,7 @@ Translations of the interface were made with AI and have not been reviewed by na
 - Japanese only.
 - Cloud recognition uses an unofficial service that may change or stop working at any time; the app then falls back to on-device recognition, which is less accurate on small or stylized text.
 - Screens that block screenshots (some banking apps, protected video) cannot be scanned. "Read app text" and "App text only" can still read apps that expose their text.
-- The bubble lives in an accessibility service; some phones stop such services in the background (see Install). The start screen then says so and leads back to the switch; an optional quiet notification makes it happen less often.
+- The bubble runs in an accessibility service; some phones stop such services in the background (see Install). The start screen then reports it and links to the switch; an optional persistent notification reduces how often this happens.
 - Developed and tested on a small number of devices.
 
 ## Privacy
@@ -63,14 +63,14 @@ Translations of the interface were made with AI and have not been reviewed by na
 - With cloud recognition, a scaled-down screenshot of the app under the bubble is sent for recognition when you scan: when the bubble is pulled out or tapped. The on-device draft and the app's own text stay on the phone.
 - Sentence translation sends the sentence to an online translator when you ask for it in the popup or a note template uses it.
 - Audio sources receive the word being played. Dictionary downloads and update checks contact the dictionary hosts and GitHub.
-- The accessibility service reads the screen only when you scan. It also notices which app is in front, to hide the bubble in the apps you choose. The app says this before the accessibility settings open, and again under About.
-- The app's log never contains recognized text or looked-up words, and leaves the phone only when you share it.
+- The accessibility service reads the screen only when you scan. It also notices which app is in front, to hide the bubble in the apps you choose. The app shows this before opening the accessibility settings and under About.
+- The app's log never contains recognized text or looked-up words and leaves the phone only when shared by the user.
 
 ## License
 
 Screenlate is free software under the GPL-3.0 ([LICENSE](LICENSE)). [NOTICE](NOTICE) lists the third-party code and data with their licenses; the app shows the same under About.
 
-The bundled dictionaries keep their own licenses: JMdict and KANJIDIC by the Electronic Dictionary Research and Development Group, the Jiten frequency list and the Kanjium pitch accents, all under CC BY-SA 4.0. Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; dictionaries you import yourself are yours to license.
+The bundled dictionaries keep their own licenses: JMdict and KANJIDIC by the Electronic Dictionary Research and Development Group, the Jiten frequency list and the Kanjium pitch accents, all under CC BY-SA 4.0. Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; imported dictionaries are subject to their own licenses.
 
 Screenlate is an independent project, not affiliated with the dictionary authors, Anki, AnkiDroid, Yomitan or the cloud recognition provider.
 
