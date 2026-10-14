@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api.imports
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CONNECTION_LOST
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ERROR
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
@@ -217,7 +218,7 @@ class DictionaryImportsTest {
             "Stopped",
             WorkInfo.State.SUCCEEDED,
             1,
-            output = workDataOf(KEY_ERROR to "timeout", KEY_RESUMABLE to true, KEY_DOWNLOAD_STOPPED to true),
+            output = workDataOf(KEY_ERROR to "timeout", KEY_RESUMABLE to true, KEY_DOWNLOAD_STOPPED to true, KEY_CONNECTION_LOST to true),
         )
         val importFailed = work("Broken", WorkInfo.State.SUCCEEDED, 2, output = workDataOf(KEY_ERROR to "bad zip", KEY_RESUMABLE to true))
         val dismissed = work("Dismissed", WorkInfo.State.SUCCEEDED, 3, output = workDataOf(KEY_ERROR to "x"))
@@ -232,6 +233,7 @@ class DictionaryImportsTest {
         assertThat(tasks.map { it.name }).containsExactly("Stopped", "Broken", "Retrying").inOrder()
         assertThat(tasks.map { it.resumable }).containsExactly(true, true, false).inOrder()
         assertThat(tasks.map { it.downloadStopped }).containsExactly(true, false, false).inOrder()
+        assertThat(tasks.map { it.connectionLost }).containsExactly(true, false, false).inOrder()
         // Retries show only while the task is waiting for its next try.
         assertThat(tasks.map { it.retries }).containsExactly(0, 0, 2).inOrder()
     }

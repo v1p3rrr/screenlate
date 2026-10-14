@@ -64,6 +64,7 @@
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>
     <string name="dictionaries_task_retrying">İndirme yeniden deneniyor (%2$d/%3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: indirme durdu — %2$s</string>
+    <string name="dictionaries_connection_lost">bağlantı kesildi</string>
     <string name="dictionaries_task_importing">İçe aktarılıyor: %1$s</string>
     <string name="dictionaries_installed_mark">Yüklü</string>
     <string name="dictionaries_download">İndir</string>

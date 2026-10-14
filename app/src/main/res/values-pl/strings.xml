@@ -64,6 +64,7 @@
     <string name="dictionaries_task_downloading">Pobieranie: %1$s</string>
     <string name="dictionaries_task_retrying">Ponawianie pobierania (%2$d z %3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: pobieranie zatrzymane — %2$s</string>
+    <string name="dictionaries_connection_lost">połączenie przerwane</string>
     <string name="dictionaries_task_importing">Importowanie: %1$s</string>
     <string name="dictionaries_installed_mark">Zainstalowany</string>
     <string name="dictionaries_download">Pobierz</string>

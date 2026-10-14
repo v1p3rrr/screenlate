@@ -64,6 +64,7 @@
     <string name="dictionaries_task_downloading">Đang tải %1$s</string>
     <string name="dictionaries_task_retrying">Đang thử tải lại (%2$d/%3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: đã dừng tải — %2$s</string>
+    <string name="dictionaries_connection_lost">mất kết nối</string>
     <string name="dictionaries_task_importing">Đang nhập %1$s</string>
     <string name="dictionaries_installed_mark">Đã cài</string>
     <string name="dictionaries_download">Tải xuống</string>

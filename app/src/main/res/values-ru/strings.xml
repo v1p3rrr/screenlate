@@ -64,6 +64,7 @@
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
     <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
+    <string name="dictionaries_connection_lost">соединение прервалось</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
     <string name="dictionaries_installed_mark">Установлен</string>
     <string name="dictionaries_download">Скачать</string>

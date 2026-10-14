@@ -64,6 +64,7 @@
     <string name="dictionaries_task_downloading">Descargando %1$s</string>
     <string name="dictionaries_task_retrying">Reintentando la descarga (%2$d de %3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: descarga detenida — %2$s</string>
+    <string name="dictionaries_connection_lost">conexión interrumpida</string>
     <string name="dictionaries_task_importing">Importando %1$s</string>
     <string name="dictionaries_installed_mark">Instalado</string>
     <string name="dictionaries_download">Descargar</string>
