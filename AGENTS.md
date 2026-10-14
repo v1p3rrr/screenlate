@@ -22,6 +22,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `module-map.md` — functional modules, how they integrate, and the instruction for the pending full code review (one run per module, started only on the owner's command).
    - `languages.md` — what is Japanese-only in the app and in hoshidicts, how Yomitan supports other languages, Wiktionary and other dictionaries with licenses and gloss-language coverage, OCR scripts and model sizes, the QuickJS lookup experiment (en, zh, ru, ko).
 3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
+4. Testing on a device follows `ai/test-model.md`: cases by area with categories (E every regression, F full regression, O once, N new), coverage, emulator setup, non-functional baselines and the run log. New features add their cases there.
 
 ## Working rules
 

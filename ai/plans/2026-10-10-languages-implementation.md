@@ -181,15 +181,13 @@ Decided when the first language or group 1 is ready, before it is merged into th
 Collected during autonomous work (owner away since 2026-10-14); each with its context, asked when the owner is back.
 Work that depends on an answer uses the recommended option or waits, as noted.
 
-- Emulator processes (2026-10-14). A disposable `-read-only` Pixel_10_Pro instance started for checking the Languages
-  screen crashed at boot: the host could not allocate GPU memory ("Failed to allocate ColorBuffer with Vulkan
-  backing"). Its processes (emulator.exe 12780, qemu 127372, crashpad 117336, started 2026-10-14 01:14) may still be
-  waiting on the crash dialog; stopping them by PID was refused by the session's permission check. The stale qemu 70992
-  from 2026-10-10 could not be stopped either: Windows lists it, but it no longer exists as a process. Please close
-  those windows or allow the agent to stop the processes it started. The next attempt used software rendering
-  (`-gpu swiftshader_indirect`) and crashed the same way at boot ("Could not allocate host memory", 3.8 GB free for a
-  4 GB guest); the agent stopped that one itself. The crashed first instance probably still holds its memory, so the
-  emulator testing waits for those windows to be closed; until then the agent keeps building the remaining items.
+- Emulator processes (2026-10-14), resolved. The "crashes" at boot were the emulator's crash-report consent dialog
+  left from an earlier crash, which blocked the start; `-crash-report-mode never` avoids it. The stale processes from
+  that attempt are gone. Nothing to answer; kept for the record.
+- Test model location (2026-10-14). The test model for request 42 is `ai/test-model.md`: the cases name emulator
+  helpers, log tags and the agent's run rules, which are working notes rather than human docs. Options: (1,
+  recommended) keep it in `ai/` and link it from AGENTS.md; (2) move a cleaned copy to `docs/testing.md` for
+  contributors. The agent keeps option 1 unless told otherwise.
 - Chinese frequency in Traditional characters (2026-10-14). The frequency dictionary built on the phone from wordfreq
   has Chinese words in Simplified characters only (wordfreq folds Traditional into Simplified). For text in
   Traditional characters it gives no frequency, so results are not sorted by it. Options: (1, recommended) when the
@@ -601,3 +599,7 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   replaced. The usage guide follows the new wording, the README drops conversational phrases, and the release notes in
   `.github/release-notes/` list features by area with fixes in one sentence (v0.2.3: one sentence). GitHub releases
   are unchanged until the owner sees the drafts. Settled wording is in `ai/notes/translations.md` → Tone.
+- 2026-10-14: request 42 started. Test model in `ai/test-model.md` (categories E/F/O/N, coverage codes, setup, cases
+  by area, non-functional baselines, run log). Found and fixed on the way: custom CSS could not set the pitch accent
+  colors in the dark theme; the overlay page tests lacked the renderer's assets. Emulator results go to the model's
+  run log.
