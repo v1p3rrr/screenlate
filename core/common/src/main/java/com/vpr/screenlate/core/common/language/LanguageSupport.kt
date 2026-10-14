@@ -49,6 +49,15 @@ interface LanguageSupport {
     /** Wikidata item of the language, used by Lingua Libre recordings. */
     val wikidataId: String
 
+    /**
+     * The spelling Wiktionary's recordings of a word ([term] read as [reading]) are titled by: the word itself, or its
+     * pinyin for Chinese (`Zh-péngyou.ogg`).
+     */
+    fun recordingTitle(term: String, reading: String): String = term
+
+    /** What text to speech reads for a word: its reading where a voice reads it as the word (kana), else the word. */
+    fun speechText(term: String, reading: String): String = reading.ifEmpty { term }
+
     /** BCP 47 tag of the language, for `lang` attributes and locale-dependent glyph forms. */
     val languageTag: String
 

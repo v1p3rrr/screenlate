@@ -19,12 +19,24 @@ object ChineseSupport : LanguageSupport {
     )
     override val ankiMarkers: List<String> = emptyList()
 
-    /** Recordings of words first, then the phone's text to speech. */
-    override val defaultAudioSources = listOf("LINGUA_LIBRE", "WIKTIONARY", "TEXT_TO_SPEECH")
+    /**
+     * Wiktionary first: its recordings are titled by pinyin, so a word gets a clip of the reading it is shown with
+     * (行 háng or xíng), and more words have one than on Lingua Libre, whose titles have only the characters.
+     */
+    override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
 
     /** Lingua Libre files Mandarin under its own item, `LL-Q9192 (cmn)`. */
     override val iso639Part3 = "cmn"
     override val wikidataId = "Q9192"
+
+    /** The pinyin without spaces, as almost every Mandarin recording on Wiktionary is titled (`Zh-xièxie.ogg`). */
+    override fun recordingTitle(term: String, reading: String): String {
+        val pinyin = displayReading(reading).filterNot { it.isWhitespace() }
+        return if (ChinesePinyin.key(pinyin) != null) pinyin else term
+    }
+
+    /** The characters: a voice reads pinyin as Latin letters. */
+    override fun speechText(term: String, reading: String): String = term
 
     /** Simplified; each result carries the tag of its own script ([scriptTags]). */
     override val languageTag = "zh-Hans"

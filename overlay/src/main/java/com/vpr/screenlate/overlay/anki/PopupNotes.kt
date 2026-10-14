@@ -426,7 +426,7 @@ class PopupNotes(
             val term = terms.getOrNull(index) ?: return@launch
             if (candidate.isSpeech) {
                 if (scan != scanNotes.scan) return@launch
-                if (!player.play(Pronunciation.Speech(term.second.ifEmpty { term.first }, clipLanguage))) {
+                if (!player.play(Pronunciation.Speech.of(term.first, term.second, clipLanguage))) {
                     toast(context.getString(R.string.audio_no_voice))
                 }
                 return@launch

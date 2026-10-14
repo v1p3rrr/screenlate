@@ -274,6 +274,25 @@ class AudioFinderTest {
     }
 
     @Test
+    fun `chinese wiktionary recordings are searched by pinyin, text to speech reads the characters`() = runBlocking<Unit> {
+        val title = "File:Zh-nǐhǎo.ogg"
+        routes["/w/api.php"] = {
+            val url = requests.last().url
+            if (url.queryParameter("list") == "search") {
+                text("""{"query": {"search": [{"title": "$title"}]}}""", "application/json")
+            } else {
+                text("""{"query": {"pages": {"1": {"title": "$title", "imageinfo": [{"url": "https://upload.example/nihao.ogg"}]}}}}""", "application/json")
+            }
+        }
+        val candidates = finder.candidates("你好", "nǐ hǎo", Language.CHINESE, listOf(AudioSource(AudioSourceType.WIKTIONARY)))
+        assertThat(candidates.single().url).isEqualTo("https://upload.example/nihao.ogg")
+        assertThat(requests.first().url.queryParameter("srsearch")).isEqualTo(AudioPages.wiktionarySearch("nǐhǎo", "zh"))
+
+        settings.update(Language.CHINESE) { it.copy(sources = listOf(AudioSource(AudioSourceType.TEXT_TO_SPEECH))) }
+        assertThat(finder.pronunciation("你好", "nǐ hǎo", Language.CHINESE)).isEqualTo(Pronunciation.Speech("你好", Language.CHINESE))
+    }
+
+    @Test
     fun `testing a source reports its error and clears it on success`() = runBlocking<Unit> {
         val source = AudioSource(AudioSourceType.CUSTOM_JSON, "https://local.example/list?term={term}")
         routes["/list"] = { MockResponse.Builder().code(500).build() }

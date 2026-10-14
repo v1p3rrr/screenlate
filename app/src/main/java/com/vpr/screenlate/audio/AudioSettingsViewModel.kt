@@ -184,7 +184,7 @@ class AudioSettingsViewModel @Inject constructor(
             played.value = PlayState(candidate.id, sourceIndex)
             val (term, reading) = resolve(testWord.value, language)
             if (candidate.isSpeech) {
-                if (!player.play(Pronunciation.Speech(reading.ifEmpty { term }, language))) {
+                if (!player.play(Pronunciation.Speech.of(term, reading, language))) {
                     played.value = PlayState(candidate.id, sourceIndex, missing = true)
                 }
                 return@launch

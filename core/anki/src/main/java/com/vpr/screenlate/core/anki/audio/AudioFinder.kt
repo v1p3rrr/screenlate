@@ -65,7 +65,13 @@ sealed interface Pronunciation {
     data class Clip(val clip: AudioClip) : Pronunciation
 
     /** Read [text] aloud with the system's text-to-speech. */
-    data class Speech(val text: String, val language: Language) : Pronunciation
+    data class Speech(val text: String, val language: Language) : Pronunciation {
+        companion object {
+            /** A word read aloud in the form its language's voices read best (`LanguageSupport.speechText`). */
+            fun of(term: String, reading: String, language: Language) =
+                Speech(language.support.speechText(term, reading), language)
+        }
+    }
 }
 
 /** A source that failed recently for another reason than having no audio for a word. */
@@ -147,7 +153,7 @@ class AudioFinder internal constructor(
      */
     suspend fun pronunciation(term: String, reading: String, language: Language): Pronunciation? {
         val sources = settings.current(language).sources
-        val speech = Pronunciation.Speech(reading.ifEmpty { term }, language)
+        val speech = Pronunciation.Speech.of(term, reading, language)
         if (sources.firstOrNull()?.type == AudioSourceType.TEXT_TO_SPEECH) return speech
         find(term, reading, language)?.let { return Pronunciation.Clip(it) }
         return speech.takeIf { sources.any { it.type == AudioSourceType.TEXT_TO_SPEECH } }
@@ -288,7 +294,8 @@ class AudioFinder internal constructor(
                 candidates(AudioPages.linguaLibre(files, term))
             }
             AudioSourceType.WIKTIONARY -> {
-                val files = AudioPages.byRegion(commonsFiles(AudioPages.wiktionarySearch(term, language.code), deadline), term, language.code, regions)
+                val title = language.support.recordingTitle(term, reading)
+                val files = AudioPages.byRegion(commonsFiles(AudioPages.wiktionarySearch(title, language.code), deadline), title, language.code, regions)
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))

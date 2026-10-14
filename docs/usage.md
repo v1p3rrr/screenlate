@@ -154,6 +154,8 @@ Sources are listed by priority, as in Yomitan: JapanesePod101, LanguagePod101, J
 
 For a language spoken in several regions (English: United States, United Kingdom, other regions), the Regions list under the sources sets which Wiktionary recordings play first; recordings whose file names name no region count as other regions. Changing the region order applies to the next audio selection, including a word played recently. Lingua Libre recordings of a longer word that ends with the looked-up one (such as "kitty-cat" for "cat") come after the exact ones.
 
+For Chinese, Wiktionary's recordings are found by the word's pinyin with tone marks, so a word read in several ways plays the reading its entry shows; Lingua Libre's are found by the characters. Wiktionary comes first by default, as more words have a recording there. Text-to-speech reads the characters.
+
 A custom URL may point to a server on the home network over plain `http://`, as in Yomitan on a computer. When such a server's list names its files by a local address (`0.0.0.0`, `localhost`, `127.0.0.1`), the files are fetched from the list's server instead. On Android 17 and newer, a source on the home network needs the nearby devices (local network) permission: the app asks for it when such a source is added, imported from Yomitan or restored from a backup, and a failed test offers it again.
 
 ## Updates and About
@@ -171,4 +173,4 @@ A custom URL may point to a server on the home network over plain `http://`, as 
 - **The highlight is off or the wrong word is found with "Read app text".** The app reports incorrect character positions; turn "Read app text" off.
 - **"This app does not provide its text to accessibility services."** "App text only" is on, and the app under the aim shows its text as an image or does not provide it. Turn "App text only" off to recognize the screen.
 - **Kanji look Chinese.** The popup uses the phone's Japanese font; if the phone has none, the Popup settings offer to download Noto Sans JP.
-- **Text-to-speech says nothing.** No Japanese voice is installed; install one in the system's text-to-speech settings.
+- **Text-to-speech says nothing.** No voice for the language is installed; install one in the system's text-to-speech settings.

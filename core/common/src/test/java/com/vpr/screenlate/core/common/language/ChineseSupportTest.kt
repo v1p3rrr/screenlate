@@ -60,4 +60,19 @@ class ChineseSupportTest {
         assertThat(ChineseSupport.quotePairs['「']).isEqualTo('」')
         assertThat(ChineseSupport.quotePairs['《']).isEqualTo('》')
     }
+
+    @Test
+    fun `wiktionary recordings are found by the pinyin without spaces`() {
+        assertThat(ChineseSupport.recordingTitle("你好", "nǐ hǎo")).isEqualTo("nǐhǎo")
+        assertThat(ChineseSupport.recordingTitle("行", "xíng (xing²)")).isEqualTo("xíng")
+        assertThat(ChineseSupport.recordingTitle("你好", "")).isEqualTo("你好")
+        assertThat(ChineseSupport.recordingTitle("書", "syu¹")).isEqualTo("書")
+    }
+
+    @Test
+    fun `text to speech reads the characters, not the pinyin`() {
+        assertThat(ChineseSupport.speechText("行", "háng")).isEqualTo("行")
+        assertThat(JapaneseSupport.speechText("猫", "ねこ")).isEqualTo("ねこ")
+        assertThat(JapaneseSupport.speechText("猫", "")).isEqualTo("猫")
+    }
 }
