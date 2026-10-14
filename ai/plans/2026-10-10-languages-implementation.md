@@ -585,3 +585,12 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   one is gone (`preferSortDictionary`); capitals follow the language (Turkish i → İ), unlike the Python builder; a
   built dictionary has no update path, so a newer pinned commit reaches only new downloads; the zh entry is wordfreq's
   Simplified list (Traditional text: see the Chinese questions). Emulator check of the whole path pending.
+- 2026-10-14: request 41 built (Japanese pitch accent colors). A per-language preference
+  `popup_pronunciation_colors` (Japanese keeps the bare key; the Chinese tone colors will reuse it as `_zh`) reaches the
+  page as `pronunciationColors`; popup.js marks the headword (first accent of the first dictionary that has one) and
+  each accent button with `data-pitch-category` from render.js `pitchCategory`, and popup.css colors them while the
+  root's `data-pronunciation-colors` is on. Agent's choices: with one language the switch sits in the Popup elements
+  card (there is no language card then), with several in the Japanese card; the reading takes the word's color; colors
+  are CSS variables (`--pitch-heiban-color` …) the custom CSS can change; e-ink keeps the light theme's colors (the
+  switch is off by default, and color e-ink screens show them); the info panel of an accent is unchanged. Checked in a
+  desktop browser in light and dark themes; emulator check pending.
