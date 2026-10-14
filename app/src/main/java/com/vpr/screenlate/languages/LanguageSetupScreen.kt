@@ -56,6 +56,10 @@ import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.foundation.layout.width
 
 @get:StringRes
 val CatalogCategory.label: Int
@@ -162,8 +166,10 @@ private fun GlossCard(state: LanguageSetupState, onChoose: (String?) -> Unit) {
 @Composable
 private fun GlossPicker(chosen: String?, choices: List<String>, onChoose: (String?) -> Unit) {
     var open by remember { mutableStateOf(false) }
+    // The menu is as wide as the button rather than its shortest language names.
+    var width by remember { mutableIntStateOf(0) }
     Box {
-        OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) {
+        OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth().onSizeChanged { width = it.width }) {
             Text(
                 chosen?.let { languageName(it) } ?: stringResource(R.string.language_setup_gloss_add),
                 modifier = Modifier.weight(1f),
@@ -171,7 +177,11 @@ private fun GlossPicker(chosen: String?, choices: List<String>, onChoose: (Strin
             )
             Text("▾")
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        DropdownMenu(
+            expanded = open,
+            onDismissRequest = { open = false },
+            modifier = Modifier.width(with(LocalDensity.current) { width.toDp() }),
+        ) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.language_setup_gloss_none)) },
                 onClick = {
