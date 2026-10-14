@@ -205,6 +205,12 @@ Collected after that (autonomous work, 2026-10-15); the recommended option is in
    for it and every added file; another language's font shows only while it is the chosen one; (b) every installed
    font on every list, as before; (c) every installed font, with the other language's ones marked "Downloaded for
    Japanese".
+2. Simplified and Traditional fields in Chinese note types. Many Chinese note types have a field for each script
+   (Simplified, Traditional), and Yomitan has no marker for either. Options: (a, recommended, in use) two markers,
+   `{expression-simplified}` and `{expression-traditional}`, the word converted with the character table, where a
+   character has several forms the one a dictionary lists with the word's reading (头发 → 頭髮, not 頭發); such
+   fields are pre-filled with them, the first field too; (b) `{expression}` in both fields, the user fixes one by
+   hand; (c) leave such fields empty.
 
 ## Branches and workflow
 
@@ -711,3 +717,10 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   descriptions in all 14 locales (the Japanese ones had en and ru only), Traditional Chinese interfaces get the
   zh-Hant text (`localeKey`). Deleting a font asks "Delete <font>?" (shared `ConfirmDelete`). Question 1 above
   (other languages' fonts) logged with option (a) in use.
+- 2026-10-15: Chinese Anki (Z8's Anki part) done. `{furigana}` and `{sentence-furigana}` of Chinese put a pinyin
+  syllable over each character (reading.js rules, as the popup's headwords); Japanese keeps Yomitan's distribution.
+  Field guesses take the note language: `LanguageSupport.ankiFieldNames` (Chinese: Simplified, Traditional, Hanzi,
+  Chinese, Characters, Pinyin, English and the Chinese names) come before the shared names, and only the language's
+  own markers match by name (a "Pitch" field of a Chinese note type stays empty). Question 2 above (Simplified and
+  Traditional fields) logged with option (a) in use: `LanguageSupport.scriptMarkers`, filled by
+  `DictionaryLookup.inScript`.

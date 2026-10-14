@@ -178,6 +178,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK6 | Anki settings are per language (English deck apart from Japanese) | F | I AnkiProfileEditorsTest, M | 2026-10-14 |
 | ANK7 | `{sentence-translation}` filled from the popup's translation or fetched within 5 s | O | M | |
 | ANK8 | Docking during a note keeps the note; rotation or docking closes an open crop editor as cancelled | O | M | |
+| ANK9 | Chinese note type with Simplified, Traditional, Pinyin, English, Sound: pre-filled with `{expression-simplified}`, `{expression-traditional}`, `{reading}`, `{glossary}`, `{audio}`; the + list has both script markers; a note for 头发 gets 頭髮 (not 頭發) in Traditional; `{furigana}` puts tóu over 头 and fa over 发 | N | U FieldTemplateTest, ShownResultsTest, P, M | 2026-10-15 |
 
 ### TR: sentence translation
 
