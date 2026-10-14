@@ -1,10 +1,12 @@
 package com.vpr.screenlate
 
 import android.app.Application
+import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
@@ -40,6 +42,11 @@ class ScreenlateApplication : Application(), Configuration.Provider {
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
+
+    override fun onConfigurationChanged(newConfig: ResourcesConfiguration) {
+        super.onConfigurationChanged(newConfig)
+        AppLanguage.followConfiguration(newConfig)
+    }
 
     override fun onCreate() {
         super.onCreate()

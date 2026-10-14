@@ -46,4 +46,17 @@ class AppLanguageResourcesTest {
         assertThat(second).isNotSameInstanceAs(first)
         assertThat(second.configuration.locales[0]).isEqualTo(Locale.JAPANESE)
     }
+
+    @Test
+    fun defaultLocaleFollowsTheConfiguration() {
+        val before = LocaleList.getDefault()
+        val tag = if (before[0].language == "vi") "de" else "vi"
+        try {
+            AppLanguage.followConfiguration(Configuration(fallback.configuration).apply { setLocales(LocaleList.forLanguageTags("$tag,en-US")) })
+            assertThat(Locale.getDefault()).isEqualTo(Locale.forLanguageTag(tag))
+            assertThat(LocaleList.getDefault().toLanguageTags()).isEqualTo("$tag,en-US")
+        } finally {
+            LocaleList.setDefault(before)
+        }
+    }
 }
