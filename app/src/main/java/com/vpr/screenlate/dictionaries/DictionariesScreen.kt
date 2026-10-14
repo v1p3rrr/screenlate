@@ -198,6 +198,11 @@ fun DictionariesScreen(
             }
             ImportNotificationsCard()
 
+            // The first opening in a process has no last state: the lists wait in place instead of empty sections.
+            if (!state.loaded) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally), color = AccentDefaults.progress)
+                return@Column
+            }
             if (state.profiles.several) {
                 LanguageCard(
                     state.profiles,
@@ -207,7 +212,7 @@ fun DictionariesScreen(
                 )
             }
             SectionTitle(stringResource(R.string.dictionaries_installed), anchors.at(0))
-            if (state.loaded && state.installed.isEmpty()) {
+            if (state.installed.isEmpty()) {
                 Text(stringResource(R.string.dictionaries_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Text(
