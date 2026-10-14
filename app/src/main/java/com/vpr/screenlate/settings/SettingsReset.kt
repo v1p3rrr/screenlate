@@ -71,8 +71,8 @@ object SettingsKeys {
     private val perLanguage = setOf(
         "lookup_scan_length",
         "lookup_single_kanji",
-        "lookup_script",
-        "lookup_fixed_script",
+        "language_script",
+        "language_fixed_script",
         "popup_font",
         "popup_font_all_text",
         "popup_custom_css",
@@ -82,6 +82,13 @@ object SettingsKeys {
         "audio_sources_chosen",
         "sort_dictionary_id",
     )
+
+    /** Per-language keys set on the Languages screen, which has no reset of its own: only the full reset clears them. */
+    private val languagesScreen = setOf("language_script", "language_fixed_script")
+
+    /** Whether [key] is a language's setting on the Languages screen ([languagesScreen]). */
+    fun onLanguagesScreen(key: String): Boolean =
+        languagesScreen.any { name -> Language.entries.any { it.preferenceKey(name) == key } }
 
     /** The language a key's value belongs to; null for a value every language shares. */
     fun languageOf(key: String): Language? =
@@ -106,7 +113,7 @@ object SettingsKeys {
 
     /** Whether a reset of [sections] clears [key]; with a [language], other languages' values stay. */
     fun resets(key: String, sections: Set<SettingsSection>, everything: Boolean, language: Language? = null): Boolean {
-        if (everything && key in globalOnly) return true
+        if (everything && (key in globalOnly || onLanguagesScreen(key))) return true
         if (sectionOf(key) !in sections) return false
         val owner = languageOf(key)
         return language == null || owner == null || owner == language

@@ -259,7 +259,7 @@
     <string name="lookup_script">Caratteri</string>
     <string name="lookup_script_simplified">Semplificati</string>
     <string name="lookup_script_traditional">Tradizionali</string>
-    <string name="lookup_script_hint">I caratteri uguali nelle due scritture prendono le forme di questa quando il testo non mostra quale sia.</string>
+    <string name="lookup_script_hint">Le parole trovate tramite pinyin sono mostrate in questi caratteri. I caratteri uguali nelle due scritture prendono le forme di questa quando il testo non mostra quale sia.</string>
     <string name="lookup_fixed_script">Tutte le parole in questi caratteri</string>
     <string name="lookup_fixed_script_hint">Il testo nell’altra scrittura viene cercato anche in questi caratteri, e le parole vi sono mostrate se un dizionario le scrive così.</string>
     <string name="problems_title">Richiede attenzione</string>
@@ -601,7 +601,7 @@
     <string name="backup_restore_button">Ripristina la selezione</string>
     <string name="backup_restored">Ripristinato</string>
     <string name="backup_section_general">Generale</string>
-    <string name="backup_section_general_hint">Tema, colori, modalità e-ink, avvisi di aggiornamento</string>
+    <string name="backup_section_general_hint">Lingue, tema, colori, modalità e-ink, avvisi di aggiornamento</string>
     <string name="backup_section_bubble">Bolla fluttuante e riconoscimento</string>
     <string name="backup_section_bubble_hint">Dimensione, mira, motori di riconoscimento, testo delle app, app in cui la bolla è nascosta</string>
     <string name="backup_section_lookup">Ricerca</string>
@@ -659,7 +659,7 @@
     <string name="tooltip_more_info">Altre info</string>
     <string name="reset_all_tooltip">Ripristina tutte le impostazioni</string>
     <string name="reset_all_title">Ripristinare tutte le impostazioni?</string>
-    <string name="reset_all_text">Tutte le impostazioni vengono ripristinate ai valori predefiniti: la bolla e le sue app nascoste, la ricerca, Anki e l’audio con i modelli dei campi, il popup con carattere, dimensioni e CSS, la traduzione, il tema, i colori e la modalità e-ink, l’attività in background e gli avvisi di nuove versioni. I suggerimenti vengono mostrati di nuovo. I dizionari, i caratteri installati e la lingua dell’app vengono mantenuti.</string>
+    <string name="reset_all_text">Tutte le impostazioni vengono ripristinate ai valori predefiniti: la bolla e le sue app nascoste, la ricerca, Anki e l’audio con i modelli dei campi, il popup con carattere, dimensioni e CSS, la traduzione, i caratteri scelti per il cinese, il tema, i colori e la modalità e-ink, l’attività in background e gli avvisi di nuove versioni. I suggerimenti vengono mostrati di nuovo. I dizionari, le lingue attivate, i caratteri installati e la lingua dell’app vengono mantenuti.</string>
     <string name="reset_section_tooltip">Ripristina questa sezione</string>
     <string name="reset_section_title">Ripristinare questa sezione?</string>
     <string name="reset_bubble_text">Tutte le impostazioni della bolla vengono ripristinate ai valori predefiniti, comprese le app nascoste, la dimensione della bolla e la sua posizione sullo schermo. Una bolla nascosta viene mostrata di nuovo.</string>

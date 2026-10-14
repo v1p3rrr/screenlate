@@ -262,7 +262,7 @@
     <string name="lookup_script">Иероглифы</string>
     <string name="lookup_script_simplified">Упрощённые</string>
     <string name="lookup_script_traditional">Традиционные</string>
-    <string name="lookup_script_hint">Иероглифы, которые одинаковы в обеих системах, рисуются в начертании этой, если по тексту не видно, какая из них.</string>
+    <string name="lookup_script_hint">Слова, найденные по пиньиню, показываются в этих иероглифах. Иероглифы, которые одинаковы в обеих системах, рисуются в начертании этой, если по тексту не видно, какая из них.</string>
     <string name="lookup_fixed_script">Все слова в этих иероглифах</string>
     <string name="lookup_fixed_script_hint">Текст в другой системе ищется и в этих иероглифах, а слова показываются в них, если словарь их так пишет.</string>
     <string name="problems_title">Требует внимания</string>
@@ -606,7 +606,7 @@
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
-    <string name="backup_section_general_hint">Тема, цвета, режим e-ink, сообщения о новых версиях</string>
+    <string name="backup_section_general_hint">Языки, тема, цвета, режим e-ink, сообщения о новых версиях</string>
     <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
     <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
     <string name="backup_section_lookup">Поиск</string>
@@ -668,7 +668,7 @@
     <string name="tooltip_more_info">Подробнее</string>
     <string name="reset_all_tooltip">Сбросить все настройки</string>
     <string name="reset_all_title">Сбросить все настройки?</string>
-    <string name="reset_all_text">Все настройки будут сброшены к значениям по умолчанию: плавающая кнопка и скрытые приложения, поиск, Anki и аудио с шаблонами полей, попап со шрифтом, размерами и CSS, перевод, тема, цвета и режим e-ink, работа в фоне и сообщения о новых версиях. Подсказки будут показаны снова. Словари, установленные шрифты и язык приложения сохранятся.</string>
+    <string name="reset_all_text">Все настройки будут сброшены к значениям по умолчанию: плавающая кнопка и скрытые приложения, поиск, Anki и аудио с шаблонами полей, попап со шрифтом, размерами и CSS, перевод, выбранные для китайского иероглифы, тема, цвета и режим e-ink, работа в фоне и сообщения о новых версиях. Подсказки будут показаны снова. Словари, включённые языки, установленные шрифты и язык приложения сохранятся.</string>
     <string name="reset_section_tooltip">Сбросить раздел</string>
     <string name="reset_section_title">Сбросить настройки раздела?</string>
     <string name="reset_bubble_text">Все настройки плавающей кнопки будут сброшены к значениям по умолчанию, включая скрытые приложения, размер кнопки и её положение на экране. Скрытая кнопка снова появится.</string>

@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
 import com.vpr.screenlate.overlay.install.InstallationStatus
 import com.vpr.screenlate.overlay.install.LanguageInstallation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,13 +37,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * What the Languages screen lists: the turned-on languages with their installation status, the languages that are off
- * but left files ([leftovers], null while they are measured) and the [rest].
+ * What the Languages screen lists: the turned-on languages with their installation status and, for a language written
+ * in several scripts, the settings that hold its script ([scripts]); the languages that are off but left files
+ * ([leftovers], null while they are measured) and the [rest].
  */
 data class LanguagesState(
     val profiles: LanguageProfilesState,
     val statuses: Map<Language, InstallationStatus> = emptyMap(),
     val leftovers: List<LanguageLeftovers>? = null,
+    val scripts: Map<Language, LookupSettings> = emptyMap(),
 ) {
     /** Supported languages that are off and have no files. */
     val rest: List<Language>
@@ -58,6 +63,7 @@ class LanguagesViewModel @Inject constructor(
     private val installs: LanguageInstallation,
     private val repository: DictionaryRepository,
     private val bundled: BundledDictionaries,
+    private val lookupSettings: LookupSettingsRepository,
     models: OcrModelStore,
 ) : ViewModel() {
     private val statuses = profiles.state.map { it.turnedOn }.distinctUntilChanged().flatMapLatest { turnedOn ->
@@ -81,9 +87,16 @@ class LanguagesViewModel @Inject constructor(
         }
     }
 
-    val state: StateFlow<LanguagesState> = combine(profiles.state, statuses, leftovers) { state, statuses, leftovers ->
-        LanguagesState(state, statuses, leftovers)
-    }.stateIn(
+    private val scripts = profiles.state.map { it.turnedOn }.distinctUntilChanged().flatMapLatest { turnedOn ->
+        val written = turnedOn.filter { it.support.scriptTags.isNotEmpty() }
+        if (written.isEmpty()) flowOf(emptyMap())
+        else combine(written.map { language -> lookupSettings.settings(language).map { language to it } }) { it.toMap() }
+    }
+
+    val state: StateFlow<LanguagesState> =
+        combine(profiles.state, statuses, leftovers, scripts) { state, statuses, leftovers, scripts ->
+            LanguagesState(state, statuses, leftovers, scripts)
+        }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         LanguagesState(profiles.cachedState ?: LanguageProfilesState.DEFAULT),
@@ -111,6 +124,15 @@ class LanguagesViewModel @Inject constructor(
 
     fun setFlag(language: Language, country: String) {
         viewModelScope.launch { profiles.setFlag(language, country) }
+    }
+
+    /** [tag] is one of [language]'s script tags. */
+    fun setScript(language: Language, tag: String) {
+        viewModelScope.launch { lookupSettings.setScript(language, tag) }
+    }
+
+    fun setFixedScript(language: Language, enabled: Boolean) {
+        viewModelScope.launch { lookupSettings.setFixedScript(language, enabled) }
     }
 
     private val mutableTurnOff = MutableStateFlow<TurnOffRequest?>(null)

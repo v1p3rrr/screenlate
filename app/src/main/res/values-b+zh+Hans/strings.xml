@@ -255,7 +255,7 @@
     <string name="lookup_script">汉字</string>
     <string name="lookup_script_simplified">简体</string>
     <string name="lookup_script_traditional">繁体</string>
-    <string name="lookup_script_hint">两种写法相同的字，在文本看不出是哪一种时，按此写法的字形显示。</string>
+    <string name="lookup_script_hint">按拼音找到的词以此写法显示。两种写法相同的字，在文本看不出是哪一种时，按此写法的字形显示。</string>
     <string name="lookup_fixed_script">所有词都用此写法</string>
     <string name="lookup_fixed_script_hint">另一种写法的文本也会用此写法查询；词典收有此写法时，词语以此写法显示。</string>
     <string name="problems_title">需要处理</string>
@@ -593,7 +593,7 @@
     <string name="backup_restore_button">恢复所选</string>
     <string name="backup_restored">已恢复</string>
     <string name="backup_section_general">常规</string>
-    <string name="backup_section_general_hint">主题、颜色、墨水屏模式、更新通知</string>
+    <string name="backup_section_general_hint">语言、主题、颜色、墨水屏模式、更新通知</string>
     <string name="backup_section_bubble">悬浮球与识别</string>
     <string name="backup_section_bubble_hint">大小、瞄准、识别引擎、应用文本、隐藏悬浮球的应用</string>
     <string name="backup_section_lookup">查词</string>
@@ -643,7 +643,7 @@
     <string name="tooltip_more_info">详细信息</string>
     <string name="reset_all_tooltip">重置所有设置</string>
     <string name="reset_all_title">要重置所有设置吗？</string>
-    <string name="reset_all_text">所有设置都将重置为默认值：悬浮球及其隐藏的应用、查词、Anki 和音频（含字段模板）、弹窗（含字体、大小和 CSS）、翻译、主题、颜色和墨水屏模式、后台运行以及新版本通知。提示也会再次显示。词典、已安装的字体和应用语言保持不变。</string>
+    <string name="reset_all_text">所有设置都将重置为默认值：悬浮球及其隐藏的应用、查词、Anki 和音频（含字段模板）、弹窗（含字体、大小和 CSS）、翻译、中文的简繁选择、主题、颜色和墨水屏模式、后台运行以及新版本通知。提示也会再次显示。词典、已启用的语言、已安装的字体和应用语言保持不变。</string>
     <string name="reset_section_tooltip">重置此部分</string>
     <string name="reset_section_title">要重置此部分吗？</string>
     <string name="reset_bubble_text">悬浮球的所有设置都将重置为默认值，包括隐藏的应用、悬浮球的大小及其在屏幕上的位置。已隐藏的悬浮球会重新显示。</string>

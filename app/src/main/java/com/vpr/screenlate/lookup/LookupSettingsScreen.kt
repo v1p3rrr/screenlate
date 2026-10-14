@@ -27,7 +27,6 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.languages.characterEntryStrings
-import com.vpr.screenlate.languages.scriptName
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.Hint
@@ -41,8 +40,8 @@ import com.vpr.screenlate.ui.theme.AccentDefaults
 private val MAX_RESULT_OPTIONS = listOf(16, 32, 64, 128, 0)
 
 /**
- * Scan length, number of results, romaji, single character entries and the script; the language-bound ones per
- * turned-on language.
+ * Scan length, number of results, romaji and single character entries; the language-bound ones per turned-on language.
+ * The script of a language written in several is chosen on the Languages screen.
  */
 @Composable
 fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel = hiltViewModel()) {
@@ -78,22 +77,6 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
                         settings.singleKanji,
                         viewModel::setSingleKanji,
                         hint = stringResource(strings.hint),
-                    )
-                }
-                settings.script?.let { script ->
-                    Text(stringResource(R.string.lookup_script), style = MaterialTheme.typography.labelLarge)
-                    Segments(
-                        options = support.scriptTags,
-                        selected = script,
-                        label = { stringResource(scriptName(it)) },
-                        onSelect = viewModel::setScript,
-                    )
-                    Hint(stringResource(R.string.lookup_script_hint))
-                    SwitchRow(
-                        stringResource(R.string.lookup_fixed_script),
-                        settings.fixedScript,
-                        viewModel::setFixedScript,
-                        hint = stringResource(R.string.lookup_fixed_script_hint),
                     )
                 }
                 if (support.convertsLatin) {

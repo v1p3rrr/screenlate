@@ -2,6 +2,7 @@ package com.vpr.screenlate.settings
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.backup.BackupPreferences
+import com.vpr.screenlate.backup.BackupSection
 import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
@@ -17,7 +18,7 @@ class SettingsKeysTest {
         SettingsSection.BACKGROUND to listOf("overlay_keep_alive"),
         SettingsSection.LOOKUP to listOf(
             "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji", "lookup_scan_length_en",
-            "lookup_single_kanji_en", "lookup_script_zh", "lookup_fixed_script_zh",
+            "lookup_single_kanji_en",
         ),
         SettingsSection.ANKI to listOf("anki_settings", "audio_settings", "audio_sources_chosen", "anki_settings_en", "audio_settings_en"),
         SettingsSection.POPUP to listOf(
@@ -33,7 +34,7 @@ class SettingsKeysTest {
     )
     private val globalOnly = listOf(
         "update_announce", "update_announced_tag", "e_ink_hint_seen", "background_tip_seen", "notification_permission_asked",
-        "accessibility_agreed",
+        "accessibility_agreed", "language_script_zh", "language_fixed_script_zh",
     )
     /** Turned-on languages: kept like the dictionaries they need. */
     private val languages = listOf("languages_turned_on", "language_active", "languages_starred", "language_flags")
@@ -84,7 +85,7 @@ class SettingsKeysTest {
         assertThat(SettingsKeys.languageOf("popup_font_all_text_en")).isEqualTo(Language.ENGLISH)
         assertThat(SettingsKeys.languageOf("popup_font_size")).isNull()
         assertThat(SettingsKeys.languageOf("lookup_max_results")).isNull()
-        assertThat(SettingsKeys.languageOf("lookup_script_zh")).isEqualTo(Language.CHINESE)
+        assertThat(SettingsKeys.languageOf("language_script_zh")).isEqualTo(Language.CHINESE)
         assertThat(SettingsKeys.languageOf("anki_settings_xx")).isNull()
     }
 
@@ -97,7 +98,17 @@ class SettingsKeysTest {
             .containsExactly("lookup_max_results", "lookup_romaji", "lookup_scan_length_en", "lookup_single_kanji_en")
         assertThat(cleared(Language.JAPANESE))
             .containsExactly("lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji")
-        assertThat(cleared(Language.CHINESE))
-            .containsExactly("lookup_max_results", "lookup_romaji", "lookup_script_zh", "lookup_fixed_script_zh")
+        assertThat(cleared(Language.CHINESE)).containsExactly("lookup_max_results", "lookup_romaji")
+    }
+
+    @Test
+    fun `the script set on the Languages screen goes with the languages in a backup and only the full reset clears it`() {
+        for (key in listOf("language_script_zh", "language_fixed_script_zh")) {
+            assertThat(SettingsKeys.sectionOf(key)).isNull()
+            assertThat(SettingsKeys.resets(key, setOf(SettingsSection.LOOKUP), everything = false, language = Language.CHINESE)).isFalse()
+            assertThat(SettingsKeys.resets(key, SettingsSection.entries.toSet(), everything = true)).isTrue()
+            assertThat(BackupPreferences.sectionOf(key)).isEqualTo(BackupSection.GENERAL)
+        }
+        assertThat(SettingsKeys.onLanguagesScreen("language_active")).isFalse()
     }
 }

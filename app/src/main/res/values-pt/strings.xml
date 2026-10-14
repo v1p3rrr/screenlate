@@ -259,7 +259,7 @@
     <string name="lookup_script">Caracteres</string>
     <string name="lookup_script_simplified">Simplificados</string>
     <string name="lookup_script_traditional">Tradicionais</string>
-    <string name="lookup_script_hint">Caracteres escritos igual nas duas escritas assumem as formas desta quando o texto não mostra qual é.</string>
+    <string name="lookup_script_hint">As palavras encontradas pelo pinyin são mostradas nestes caracteres. Caracteres escritos igual nas duas escritas assumem as formas desta quando o texto não mostra qual é.</string>
     <string name="lookup_fixed_script">Todas as palavras nestes caracteres</string>
     <string name="lookup_fixed_script_hint">O texto na outra escrita também é pesquisado nestes caracteres, e as palavras são mostradas neles se um dicionário as escreve assim.</string>
     <string name="problems_title">Requer atenção</string>
@@ -601,7 +601,7 @@
     <string name="backup_restore_button">Restaurar os marcados</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">Geral</string>
-    <string name="backup_section_general_hint">Tema, cores, modo e-ink, avisos de atualização</string>
+    <string name="backup_section_general_hint">Idiomas, tema, cores, modo e-ink, avisos de atualização</string>
     <string name="backup_section_bubble">Bolha flutuante e reconhecimento</string>
     <string name="backup_section_bubble_hint">Tamanho, mira, mecanismos de reconhecimento, texto dos apps, apps em que a bolha fica oculta</string>
     <string name="backup_section_lookup">Pesquisa</string>
@@ -659,7 +659,7 @@
     <string name="tooltip_more_info">Mais informações</string>
     <string name="reset_all_tooltip">Redefinir todas as configurações</string>
     <string name="reset_all_title">Redefinir todas as configurações?</string>
-    <string name="reset_all_text">Todas as configurações são redefinidas para os valores padrão: a bolha e seus apps ocultos, a pesquisa, o Anki e o áudio com os modelos de campos, o pop-up com sua fonte, tamanhos e CSS, a tradução, o tema, as cores e o modo e-ink, o segundo plano e os avisos de novas versões. As dicas voltam a ser exibidas. Os dicionários, as fontes instaladas e o idioma do app são mantidos.</string>
+    <string name="reset_all_text">Todas as configurações são redefinidas para os valores padrão: a bolha e seus apps ocultos, a pesquisa, o Anki e o áudio com os modelos de campos, o pop-up com sua fonte, tamanhos e CSS, a tradução, os caracteres escolhidos para o chinês, o tema, as cores e o modo e-ink, o segundo plano e os avisos de novas versões. As dicas voltam a ser exibidas. Os dicionários, os idiomas ativados, as fontes instaladas e o idioma do app são mantidos.</string>
     <string name="reset_section_tooltip">Redefinir esta seção</string>
     <string name="reset_section_title">Redefinir esta seção?</string>
     <string name="reset_bubble_text">Todas as configurações da bolha são redefinidas para os valores padrão, incluindo os apps ocultos, o tamanho da bolha e sua posição na tela. Uma bolha oculta volta a ser exibida.</string>

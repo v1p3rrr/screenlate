@@ -48,10 +48,13 @@ import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.dictionaries.DictionaryLanguagesDialog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
+import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.overlay.install.InstallationStatus
 import com.vpr.screenlate.overlay.ui.Flags
 import com.vpr.screenlate.ui.components.Hint
+import com.vpr.screenlate.ui.components.Segments
 import com.vpr.screenlate.ui.components.SettingsScaffold
+import com.vpr.screenlate.ui.components.SwitchRow
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.components.WithTooltip
 import com.vpr.screenlate.ui.theme.AccentDefaults
@@ -99,6 +102,9 @@ fun LanguagesScreen(
                     onStar = { viewModel.setStarred(language, it) },
                     onChooseFlag = { choosingFlag = language },
                     onTurnOff = { viewModel.requestTurnOff(language) },
+                    script = state.scripts[language],
+                    onScript = { viewModel.setScript(language, it) },
+                    onFixedScript = { viewModel.setFixedScript(language, it) },
                 )
             }
 
@@ -202,7 +208,10 @@ private fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 8.dp))
 }
 
-/** A turned-on language: active (radio), quick-switch star, its status, its flag's country and turning it off. */
+/**
+ * A turned-on language: active (radio), quick-switch star, its status, its flag's country, turning it off and, for a
+ * language written in several scripts, the script; [script] holds it, null for a language with one.
+ */
 @Composable
 private fun TurnedOnCard(
     language: Language,
@@ -212,6 +221,9 @@ private fun TurnedOnCard(
     onStar: (Boolean) -> Unit,
     onChooseFlag: () -> Unit,
     onTurnOff: () -> Unit,
+    script: LookupSettings?,
+    onScript: (String) -> Unit,
+    onFixedScript: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val active = language == profiles.active
@@ -252,6 +264,29 @@ private fun TurnedOnCard(
                 if (profiles.several) {
                     TextButton(onClick = onTurnOff) { Text(stringResource(R.string.home_language_turn_off_confirm)) }
                 }
+            }
+        }
+        val tag = script?.script
+        if (tag != null) {
+            HorizontalDivider()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(stringResource(R.string.lookup_script), style = MaterialTheme.typography.labelLarge)
+                Segments(
+                    options = language.support.scriptTags,
+                    selected = tag,
+                    label = { stringResource(scriptName(it)) },
+                    onSelect = onScript,
+                )
+                Hint(stringResource(R.string.lookup_script_hint))
+                SwitchRow(
+                    stringResource(R.string.lookup_fixed_script),
+                    script.fixedScript,
+                    onFixedScript,
+                    hint = stringResource(R.string.lookup_fixed_script_hint),
+                )
             }
         }
     }

@@ -261,7 +261,7 @@
     <string name="lookup_script">Znaki</string>
     <string name="lookup_script_simplified">Uproszczone</string>
     <string name="lookup_script_traditional">Tradycyjne</string>
-    <string name="lookup_script_hint">Znaki pisane tak samo w obu systemach przyjmują kształty tego systemu, gdy tekst nie pokazuje, który to jest.</string>
+    <string name="lookup_script_hint">Słowa znalezione przez pinyin są pokazywane w tych znakach. Znaki pisane tak samo w obu systemach przyjmują kształty tego systemu, gdy tekst nie pokazuje, który to jest.</string>
     <string name="lookup_fixed_script">Wszystkie słowa w tych znakach</string>
     <string name="lookup_fixed_script_hint">Tekst w drugim systemie jest też wyszukiwany w tych znakach, a słowa są w nich pokazywane, jeśli słownik tak je zapisuje.</string>
     <string name="problems_title">Wymaga uwagi</string>
@@ -605,7 +605,7 @@
     <string name="backup_restore_button">Przywróć zaznaczone</string>
     <string name="backup_restored">Przywrócono</string>
     <string name="backup_section_general">Ogólne</string>
-    <string name="backup_section_general_hint">Motyw, kolory, tryb e-ink, powiadomienia o aktualizacjach</string>
+    <string name="backup_section_general_hint">Języki, motyw, kolory, tryb e-ink, powiadomienia o aktualizacjach</string>
     <string name="backup_section_bubble">Pływający dymek i rozpoznawanie</string>
     <string name="backup_section_bubble_hint">Rozmiar, celownik, silniki rozpoznawania, tekst aplikacji, aplikacje, w których dymek jest ukryty</string>
     <string name="backup_section_lookup">Wyszukiwanie</string>
@@ -667,7 +667,7 @@
     <string name="tooltip_more_info">Więcej informacji</string>
     <string name="reset_all_tooltip">Resetuj wszystkie ustawienia</string>
     <string name="reset_all_title">Zresetować wszystkie ustawienia?</string>
-    <string name="reset_all_text">Wszystkie ustawienia zostaną przywrócone do wartości domyślnych: dymek i ukryte aplikacje, wyszukiwanie, Anki i dźwięk z szablonami pól, okienko z czcionką, rozmiarami i CSS, tłumaczenie, motyw, kolory i tryb e-ink, praca w tle oraz powiadomienia o nowych wersjach. Wskazówki zostaną ponownie wyświetlone. Słowniki, zainstalowane czcionki i język aplikacji zostaną zachowane.</string>
+    <string name="reset_all_text">Wszystkie ustawienia zostaną przywrócone do wartości domyślnych: dymek i ukryte aplikacje, wyszukiwanie, Anki i dźwięk z szablonami pól, okienko z czcionką, rozmiarami i CSS, tłumaczenie, znaki wybrane dla chińskiego, motyw, kolory i tryb e-ink, praca w tle oraz powiadomienia o nowych wersjach. Wskazówki zostaną ponownie wyświetlone. Słowniki, włączone języki, zainstalowane czcionki i język aplikacji zostaną zachowane.</string>
     <string name="reset_section_tooltip">Resetuj tę sekcję</string>
     <string name="reset_section_title">Zresetować tę sekcję?</string>
     <string name="reset_bubble_text">Wszystkie ustawienia dymka zostaną przywrócone do wartości domyślnych, w tym ukryte aplikacje, rozmiar dymka i jego położenie na ekranie. Ukryty dymek zostanie ponownie wyświetlony.</string>

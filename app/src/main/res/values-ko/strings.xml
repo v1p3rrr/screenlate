@@ -255,7 +255,7 @@
     <string name="lookup_script">한자 표기</string>
     <string name="lookup_script_simplified">간체자</string>
     <string name="lookup_script_traditional">번체자</string>
-    <string name="lookup_script_hint">두 표기에서 같은 글자는 텍스트로 어느 쪽인지 알 수 없을 때 이 표기의 자형으로 표시합니다.</string>
+    <string name="lookup_script_hint">병음으로 찾은 단어는 이 표기로 표시합니다. 두 표기에서 같은 글자는 텍스트로 어느 쪽인지 알 수 없을 때 이 표기의 자형으로 표시합니다.</string>
     <string name="lookup_fixed_script">모든 단어를 이 표기로</string>
     <string name="lookup_fixed_script_hint">다른 표기의 텍스트도 이 표기로 검색하며, 사전에 이 표기가 있으면 단어를 이 표기로 표시합니다.</string>
     <string name="problems_title">확인 필요</string>
@@ -593,7 +593,7 @@
     <string name="backup_restore_button">선택한 부분 복원</string>
     <string name="backup_restored">복원됨</string>
     <string name="backup_section_general">일반</string>
-    <string name="backup_section_general_hint">테마, 색상, E-ink 모드, 업데이트 알림</string>
+    <string name="backup_section_general_hint">언어, 테마, 색상, E-ink 모드, 업데이트 알림</string>
     <string name="backup_section_bubble">플로팅 버블과 인식</string>
     <string name="backup_section_bubble_hint">크기, 조준, 인식 엔진, 앱 텍스트, 버블을 숨길 앱</string>
     <string name="backup_section_lookup">검색</string>
@@ -643,7 +643,7 @@
     <string name="tooltip_more_info">자세히</string>
     <string name="reset_all_tooltip">모든 설정 초기화</string>
     <string name="reset_all_title">모든 설정을 초기화할까요?</string>
-    <string name="reset_all_text">모든 설정이 기본값으로 초기화됩니다: 버블과 숨긴 앱, 검색, 필드 템플릿을 포함한 Anki와 오디오, 글꼴·크기·CSS를 포함한 팝업, 번역, 테마, 색상, E-ink 모드, 백그라운드 작업, 새 버전 알림. 도움말도 다시 표시됩니다. 사전, 설치한 글꼴, 앱 언어는 유지됩니다.</string>
+    <string name="reset_all_text">모든 설정이 기본값으로 초기화됩니다: 버블과 숨긴 앱, 검색, 필드 템플릿을 포함한 Anki와 오디오, 글꼴·크기·CSS를 포함한 팝업, 번역, 중국어 한자 표기, 테마, 색상, E-ink 모드, 백그라운드 작업, 새 버전 알림. 도움말도 다시 표시됩니다. 사전, 켠 언어, 설치한 글꼴, 앱 언어는 유지됩니다.</string>
     <string name="reset_section_tooltip">이 섹션 초기화</string>
     <string name="reset_section_title">이 섹션을 초기화할까요?</string>
     <string name="reset_bubble_text">버블의 모든 설정이 기본값으로 초기화됩니다. 숨긴 앱, 버블 크기, 화면에서의 위치도 포함됩니다. 숨긴 버블이 다시 표시됩니다.</string>

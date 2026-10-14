@@ -261,7 +261,7 @@
     <string name="lookup_script">Characters</string>
     <string name="lookup_script_simplified">Simplified</string>
     <string name="lookup_script_traditional">Traditional</string>
-    <string name="lookup_script_hint">Characters written alike in both scripts take this script’s shapes where the text does not show which one it is.</string>
+    <string name="lookup_script_hint">Words found by pinyin are shown in these characters. Characters written alike in both scripts take this script’s shapes where the text does not show which one it is.</string>
     <string name="lookup_fixed_script">All words in these characters</string>
     <string name="lookup_fixed_script_hint">Text in the other script is also looked up in these characters, and words are shown in them where a dictionary spells them so.</string>
     <string name="problems_title">Needs attention</string>
@@ -601,7 +601,7 @@
     <string name="backup_restore_button">Restore checked</string>
     <string name="backup_restored">Restored</string>
     <string name="backup_section_general">General</string>
-    <string name="backup_section_general_hint">Theme, colors, e-ink mode, update announcements</string>
+    <string name="backup_section_general_hint">Languages, theme, colors, e-ink mode, update announcements</string>
     <string name="backup_section_bubble">Floating bubble and recognition</string>
     <string name="backup_section_bubble_hint">Size, aim, recognition engines, app text, apps where the bubble is hidden</string>
     <string name="backup_section_lookup">Lookup</string>
@@ -655,7 +655,7 @@
     <string name="tooltip_more_info">More info</string>
     <string name="reset_all_tooltip">Reset all settings</string>
     <string name="reset_all_title">Reset all settings?</string>
-    <string name="reset_all_text">All settings are reset to their defaults: the bubble and its hidden apps, lookup, Anki and audio with the field templates, the popup with its font, sizes and CSS, translation, the theme, colors and e-ink mode, background work and update announcements. Hints are shown again. Dictionaries, installed fonts and the app language are kept.</string>
+    <string name="reset_all_text">All settings are reset to their defaults: the bubble and its hidden apps, lookup, Anki and audio with the field templates, the popup with its font, sizes and CSS, translation, the characters chosen for Chinese, the theme, colors and e-ink mode, background work and update announcements. Hints are shown again. Dictionaries, turned-on languages, installed fonts and the app language are kept.</string>
     <string name="reset_section_tooltip">Reset this section</string>
     <string name="reset_section_title">Reset this section?</string>
     <string name="reset_bubble_text">All bubble settings are reset to their defaults, including the hidden apps, the bubble size and its position on the screen. A hidden bubble is shown again.</string>

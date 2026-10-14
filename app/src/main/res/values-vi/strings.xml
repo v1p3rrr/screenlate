@@ -255,7 +255,7 @@
     <string name="lookup_script">Dạng chữ</string>
     <string name="lookup_script_simplified">Giản thể</string>
     <string name="lookup_script_traditional">Phồn thể</string>
-    <string name="lookup_script_hint">Chữ viết giống nhau ở cả hai dạng sẽ lấy nét của dạng này khi văn bản không cho biết là dạng nào.</string>
+    <string name="lookup_script_hint">Từ tìm được bằng bính âm được hiện ở dạng chữ này. Chữ viết giống nhau ở cả hai dạng sẽ lấy nét của dạng này khi văn bản không cho biết là dạng nào.</string>
     <string name="lookup_fixed_script">Mọi từ theo dạng chữ này</string>
     <string name="lookup_fixed_script_hint">Văn bản ở dạng kia cũng được tra theo dạng chữ này, và từ được hiển thị theo dạng này nếu từ điển viết như vậy.</string>
     <string name="problems_title">Cần chú ý</string>
@@ -593,7 +593,7 @@
     <string name="backup_restore_button">Khôi phục phần đã chọn</string>
     <string name="backup_restored">Đã khôi phục</string>
     <string name="backup_section_general">Chung</string>
-    <string name="backup_section_general_hint">Giao diện, màu sắc, chế độ e-ink, thông báo cập nhật</string>
+    <string name="backup_section_general_hint">Ngôn ngữ, giao diện, màu sắc, chế độ e-ink, thông báo cập nhật</string>
     <string name="backup_section_bubble">Bong bóng nổi và nhận dạng</string>
     <string name="backup_section_bubble_hint">Kích thước, điểm ngắm, công cụ nhận dạng, văn bản ứng dụng, các ứng dụng ẩn bong bóng</string>
     <string name="backup_section_lookup">Tra cứu</string>
@@ -643,7 +643,7 @@
     <string name="tooltip_more_info">Thêm thông tin</string>
     <string name="reset_all_tooltip">Đặt lại mọi cài đặt</string>
     <string name="reset_all_title">Đặt lại mọi cài đặt?</string>
-    <string name="reset_all_text">Mọi cài đặt được đặt lại về mặc định: bong bóng và các ứng dụng đã ẩn, tra cứu, Anki và âm thanh cùng mẫu trường, cửa sổ bật lên cùng phông chữ, kích thước và CSS, dịch câu, giao diện, màu sắc và chế độ e-ink, chạy nền và thông báo phiên bản mới. Các gợi ý sẽ hiện lại. Từ điển, phông chữ đã cài và ngôn ngữ ứng dụng được giữ nguyên.</string>
+    <string name="reset_all_text">Mọi cài đặt được đặt lại về mặc định: bong bóng và các ứng dụng đã ẩn, tra cứu, Anki và âm thanh cùng mẫu trường, cửa sổ bật lên cùng phông chữ, kích thước và CSS, dịch câu, dạng chữ đã chọn cho tiếng Trung, giao diện, màu sắc và chế độ e-ink, chạy nền và thông báo phiên bản mới. Các gợi ý sẽ hiện lại. Từ điển, các ngôn ngữ đã bật, phông chữ đã cài và ngôn ngữ ứng dụng được giữ nguyên.</string>
     <string name="reset_section_tooltip">Đặt lại mục này</string>
     <string name="reset_section_title">Đặt lại mục này?</string>
     <string name="reset_bubble_text">Mọi cài đặt của bong bóng được đặt lại về mặc định, kể cả các ứng dụng đã ẩn, kích thước bong bóng và vị trí của nó trên màn hình. Bong bóng đã ẩn sẽ hiện lại.</string>

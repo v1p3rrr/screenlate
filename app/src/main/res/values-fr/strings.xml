@@ -259,7 +259,7 @@
     <string name="lookup_script">Caractères</string>
     <string name="lookup_script_simplified">Simplifiés</string>
     <string name="lookup_script_traditional">Traditionnels</string>
-    <string name="lookup_script_hint">Les caractères identiques dans les deux écritures prennent les formes de celle-ci quand le texte ne montre pas laquelle c’est.</string>
+    <string name="lookup_script_hint">Les mots trouvés par le pinyin s’affichent dans ces caractères. Les caractères identiques dans les deux écritures prennent les formes de celle-ci quand le texte ne montre pas laquelle c’est.</string>
     <string name="lookup_fixed_script">Tous les mots dans ces caractères</string>
     <string name="lookup_fixed_script_hint">Le texte dans l’autre écriture est aussi cherché dans ces caractères, et les mots y sont affichés si un dictionnaire les écrit ainsi.</string>
     <string name="problems_title">À vérifier</string>
@@ -601,7 +601,7 @@
     <string name="backup_restore_button">Restaurer la sélection</string>
     <string name="backup_restored">Restauré</string>
     <string name="backup_section_general">Général</string>
-    <string name="backup_section_general_hint">Thème, couleurs, mode e-ink, annonces de mises à jour</string>
+    <string name="backup_section_general_hint">Langues, thème, couleurs, mode e-ink, annonces de mises à jour</string>
     <string name="backup_section_bubble">Bulle flottante et reconnaissance</string>
     <string name="backup_section_bubble_hint">Taille, visée, moteurs de reconnaissance, texte des applis, applis où la bulle est masquée</string>
     <string name="backup_section_lookup">Recherche</string>
@@ -659,7 +659,7 @@
     <string name="tooltip_more_info">En savoir plus</string>
     <string name="reset_all_tooltip">Réinitialiser tous les paramètres</string>
     <string name="reset_all_title">Réinitialiser tous les paramètres ?</string>
-    <string name="reset_all_text">Tous les paramètres sont réinitialisés à leurs valeurs par défaut : la bulle et ses applis masquées, la recherche, Anki et l’audio avec les modèles de champs, la fenêtre contextuelle avec sa police, ses tailles et son CSS, la traduction, le thème, les couleurs et le mode e-ink, l’arrière-plan et les annonces de nouvelles versions. Les astuces sont de nouveau affichées. Les dictionnaires, les polices installées et la langue de l’appli sont conservés.</string>
+    <string name="reset_all_text">Tous les paramètres sont réinitialisés à leurs valeurs par défaut : la bulle et ses applis masquées, la recherche, Anki et l’audio avec les modèles de champs, la fenêtre contextuelle avec sa police, ses tailles et son CSS, la traduction, les caractères choisis pour le chinois, le thème, les couleurs et le mode e-ink, l’arrière-plan et les annonces de nouvelles versions. Les astuces sont de nouveau affichées. Les dictionnaires, les langues activées, les polices installées et la langue de l’appli sont conservés.</string>
     <string name="reset_section_tooltip">Réinitialiser cette section</string>
     <string name="reset_section_title">Réinitialiser cette section ?</string>
     <string name="reset_bubble_text">Tous les paramètres de la bulle sont réinitialisés à leurs valeurs par défaut, y compris les applis masquées, la taille de la bulle et sa position à l’écran. Une bulle masquée est de nouveau affichée.</string>

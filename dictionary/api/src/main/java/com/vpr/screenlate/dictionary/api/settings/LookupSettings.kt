@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
 
 /**
  * Lookup settings of one language: [scanLength], [singleKanji], [script] and [fixedScript] are the language's own, the
- * others are shared.
+ * others are shared. [script] and [fixedScript] are set on the Languages screen.
  *
  * @property scanLength characters from the aim point that a lookup considers.
  * @property maxResults entries shown for a lookup; 0 means no limit.
@@ -107,8 +107,8 @@ class LookupSettingsRepository @Inject constructor(
 
         fun singleKanjiKey(language: Language) = booleanPreferencesKey(language.preferenceKey("lookup_single_kanji"))
 
-        fun scriptKey(language: Language) = stringPreferencesKey(language.preferenceKey("lookup_script"))
+        fun scriptKey(language: Language) = stringPreferencesKey(language.preferenceKey("language_script"))
 
-        fun fixedScriptKey(language: Language) = booleanPreferencesKey(language.preferenceKey("lookup_fixed_script"))
+        fun fixedScriptKey(language: Language) = booleanPreferencesKey(language.preferenceKey("language_fixed_script"))
     }
 }

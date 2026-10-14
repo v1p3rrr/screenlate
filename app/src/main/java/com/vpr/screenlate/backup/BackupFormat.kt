@@ -112,10 +112,10 @@ object BackupPreferences {
     /**
      * The section of a preference key; null for state the app keeps for itself (one-time hints, update checks,
      * migrations), which a backup leaves out. The sort dictionaries are kept by title with the dictionary list. Each
-     * language's settings go with their page's section.
+     * language's settings go with their page's section, those of the Languages screen with the turned-on languages.
      */
     fun sectionOf(key: String): BackupSection? = when {
-        key in general -> BackupSection.GENERAL
+        key in general || SettingsKeys.onLanguagesScreen(key) -> BackupSection.GENERAL
         key == SHOW_SOURCE_TEXT_KEY -> BackupSection.POPUP
         key.startsWith("overlay_") -> BackupSection.BUBBLE
         key.startsWith("lookup_") -> BackupSection.LOOKUP

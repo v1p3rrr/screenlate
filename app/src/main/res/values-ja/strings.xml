@@ -255,7 +255,7 @@
     <string name="lookup_script">字体</string>
     <string name="lookup_script_simplified">簡体字</string>
     <string name="lookup_script_traditional">繁体字</string>
-    <string name="lookup_script_hint">両方で同じ字は、テキストからどちらか分からないとき、この字体の字形で表示します。</string>
+    <string name="lookup_script_hint">ピンインで見つけた語はこの字体で表示します。両方で同じ字は、テキストからどちらか分からないとき、この字体の字形で表示します。</string>
     <string name="lookup_fixed_script">すべての語をこの字体で</string>
     <string name="lookup_fixed_script_hint">もう一方の字体のテキストもこの字体で調べ、辞書がこの字体で載せていれば語をこの字体で表示します。</string>
     <string name="problems_title">確認が必要です</string>
@@ -593,7 +593,7 @@
     <string name="backup_restore_button">チェックした部分を復元</string>
     <string name="backup_restored">復元しました</string>
     <string name="backup_section_general">全般</string>
-    <string name="backup_section_general_hint">テーマ、カラー、E Ink モード、アップデートのお知らせ</string>
+    <string name="backup_section_general_hint">言語、テーマ、カラー、E Ink モード、アップデートのお知らせ</string>
     <string name="backup_section_bubble">フローティングバブルと認識</string>
     <string name="backup_section_bubble_hint">サイズ、照準、認識エンジン、アプリのテキスト、バブルを隠すアプリ</string>
     <string name="backup_section_lookup">検索</string>
@@ -643,7 +643,7 @@
     <string name="tooltip_more_info">詳細</string>
     <string name="reset_all_tooltip">すべての設定をリセット</string>
     <string name="reset_all_title">すべての設定をリセットしますか？</string>
-    <string name="reset_all_text">すべての設定が初期値にリセットされます：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、翻訳、テーマ、カラー、E Ink モード、バックグラウンド動作、新しいバージョンの通知。ヒントも再び表示されます。辞書、インストール済みのフォント、アプリの言語は保持されます。</string>
+    <string name="reset_all_text">すべての設定が初期値にリセットされます：バブルと非表示にしたアプリ、検索、フィールドのテンプレートを含む Anki と音声、フォント・サイズ・CSS を含むポップアップ、翻訳、中国語の字体、テーマ、カラー、E Ink モード、バックグラウンド動作、新しいバージョンの通知。ヒントも再び表示されます。辞書、オンの言語、インストール済みのフォント、アプリの言語は保持されます。</string>
     <string name="reset_section_tooltip">このセクションをリセット</string>
     <string name="reset_section_title">このセクションをリセットしますか？</string>
     <string name="reset_bubble_text">バブルの設定がすべて初期値にリセットされます。非表示にしたアプリ、バブルのサイズ、画面上の位置も含みます。非表示のバブルは再び表示されます。</string>

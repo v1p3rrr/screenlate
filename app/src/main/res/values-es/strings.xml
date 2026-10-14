@@ -259,7 +259,7 @@
     <string name="lookup_script">Caracteres</string>
     <string name="lookup_script_simplified">Simplificados</string>
     <string name="lookup_script_traditional">Tradicionales</string>
-    <string name="lookup_script_hint">Los caracteres que se escriben igual en ambas escrituras toman las formas de esta cuando el texto no muestra cuál es.</string>
+    <string name="lookup_script_hint">Las palabras halladas por pinyin se muestran en estos caracteres. Los caracteres que se escriben igual en ambas escrituras toman las formas de esta cuando el texto no muestra cuál es.</string>
     <string name="lookup_fixed_script">Todas las palabras en estos caracteres</string>
     <string name="lookup_fixed_script_hint">El texto en la otra escritura también se busca en estos caracteres, y las palabras se muestran en ellos si un diccionario las escribe así.</string>
     <string name="problems_title">Requiere atención</string>
@@ -601,7 +601,7 @@
     <string name="backup_restore_button">Restaurar lo marcado</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">General</string>
-    <string name="backup_section_general_hint">Tema, colores, modo e-ink, avisos de actualizaciones</string>
+    <string name="backup_section_general_hint">Idiomas, tema, colores, modo e-ink, avisos de actualizaciones</string>
     <string name="backup_section_bubble">Burbuja flotante y reconocimiento</string>
     <string name="backup_section_bubble_hint">Tamaño, punto de mira, motores de reconocimiento, texto de las apps, apps donde la burbuja se oculta</string>
     <string name="backup_section_lookup">Búsqueda</string>
@@ -659,7 +659,7 @@
     <string name="tooltip_more_info">Más información</string>
     <string name="reset_all_tooltip">Restablecer todos los ajustes</string>
     <string name="reset_all_title">¿Restablecer todos los ajustes?</string>
-    <string name="reset_all_text">Todos los ajustes se restablecen a sus valores predeterminados: la burbuja y sus apps ocultas, la búsqueda, Anki y el audio con las plantillas de campos, la ventana emergente con su fuente, tamaños y CSS, la traducción, el tema, los colores y el modo e-ink, el segundo plano y los avisos de nuevas versiones. Los consejos se vuelven a mostrar. Los diccionarios, las fuentes instaladas y el idioma de la app se conservan.</string>
+    <string name="reset_all_text">Todos los ajustes se restablecen a sus valores predeterminados: la burbuja y sus apps ocultas, la búsqueda, Anki y el audio con las plantillas de campos, la ventana emergente con su fuente, tamaños y CSS, la traducción, los caracteres elegidos para el chino, el tema, los colores y el modo e-ink, el segundo plano y los avisos de nuevas versiones. Los consejos se vuelven a mostrar. Los diccionarios, los idiomas activados, las fuentes instaladas y el idioma de la app se conservan.</string>
     <string name="reset_section_tooltip">Restablecer esta sección</string>
     <string name="reset_section_title">¿Restablecer esta sección?</string>
     <string name="reset_bubble_text">Todos los ajustes de la burbuja se restablecen a sus valores predeterminados, incluidas las apps ocultas, el tamaño de la burbuja y su posición en la pantalla. Una burbuja oculta vuelve a mostrarse.</string>
