@@ -248,6 +248,8 @@
     <string name="lookup_max_results_warning">词条过多时，释义较长的词会让弹窗打开得更慢。</string>
     <string name="lookup_single_kanji">词中的汉字</string>
     <string name="lookup_single_kanji_hint">在结果下方显示所查词中其他汉字的词条。</string>
+    <string name="lookup_single_characters">词中的汉字</string>
+    <string name="lookup_single_characters_hint">在结果下方显示所查词中其他汉字的词条。</string>
     <string name="lookup_romaji">将罗马字当作日语查询</string>
     <string name="lookup_romaji_hint">拉丁字母也会作为假名查询（taberu → たべる），适用于屏幕和搜索。</string>
     <string name="problems_title">需要处理</string>
@@ -397,6 +399,7 @@
     <string name="popup_font_download">下载（%1$s MB）</string>
     <string name="popup_font_download_failed">下载失败。请检查网络连接后重试。</string>
     <string name="popup_font_proprietary">不提供 Windows 或 macOS 自带的字体（如 Meiryo 或 Yu Gothic）：其许可证不允许分发。在自定义 CSS 中，这些名称代表手机的日文字体。</string>
+    <string name="popup_font_proprietary_zh">不提供 Windows 或 macOS 自带的字体（如微软雅黑或苹方）：其许可证不允许分发。在自定义 CSS 中，这些名称代表手机的中文字体。</string>
     <string name="popup_font_add_file">添加字体文件（.ttf、.otf、.ttc）</string>
     <string name="popup_font_not_a_font">此文件不是字体。</string>
     <string name="popup_font_too_large">文件太大，不像是字体（超过 64 MB）。</string>
@@ -405,6 +408,8 @@
     <string name="popup_text_title">文字大小和粗细</string>
     <string name="popup_font_system_default">手机自带的字体</string>
     <string name="popup_font_script_only_en">仅用于英文文字</string>
+    <string name="popup_font_system_zh">手机自带的中文字体</string>
+    <string name="popup_font_script_only_zh">仅用于中文文字</string>
     <string name="popup_font_script_only_hint_any">其他书写系统使用手机字体。适用于下载或添加的字体。</string>
     <string name="popup_text_weight_info_languages">让纤细的文字更易读。某种语言开启“仅用于…文字”或使用手机字体时，只有该语言的字符变粗；关闭时，所有文字都会变粗。\n\n粗细使用字体自带的字重。只有一种字重的字体会从常规直接变为粗体，因此“中等”看起来与常规相同。\n\n文字描边会在每个字周围画一圈细轮廓：适用于任何字体，并叠加在粗细之上。</string>
     <string name="languages_settings_hint">下面的设置适用于所选语言；页面上的其他设置适用于所有语言。</string>

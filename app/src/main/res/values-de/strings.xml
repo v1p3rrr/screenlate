@@ -250,6 +250,8 @@
     <string name="lookup_max_results_warning">Bei Wörtern mit langen Definitionen öffnet sich das Popup mit vielen Einträgen langsamer.</string>
     <string name="lookup_single_kanji">Kanji des Wortes</string>
     <string name="lookup_single_kanji_hint">Unter den Ergebnissen werden Einträge zu den übrigen Kanji des gefundenen Wortes angezeigt.</string>
+    <string name="lookup_single_characters">Schriftzeichen des Wortes</string>
+    <string name="lookup_single_characters_hint">Unter den Ergebnissen werden Einträge zu den übrigen Schriftzeichen des gefundenen Wortes angezeigt.</string>
     <string name="lookup_romaji">Romaji als Japanisch nachschlagen</string>
     <string name="lookup_romaji_hint">Lateinischer Text wird auch als Kana nachgeschlagen (taberu → たべる), auf dem Bildschirm und in der Suche.</string>
     <string name="problems_title">Braucht Aufmerksamkeit</string>
@@ -400,6 +402,7 @@
     <string name="popup_font_download">Herunterladen (%1$s MB)</string>
     <string name="popup_font_download_failed">Download fehlgeschlagen. Prüfe die Verbindung und versuche es erneut.</string>
     <string name="popup_font_proprietary">Schriften, die mit Windows oder macOS kommen, etwa Meiryo oder Yu Gothic, werden nicht angeboten: ihre Lizenzen erlauben keine Weitergabe. In eigenem CSS stehen ihre Namen für die japanischen Schriften des Telefons.</string>
+    <string name="popup_font_proprietary_zh">Schriften, die mit Windows oder macOS kommen, etwa Microsoft YaHei oder PingFang, werden nicht angeboten: ihre Lizenzen erlauben keine Weitergabe. In eigenem CSS stehen ihre Namen für die chinesischen Schriften des Telefons.</string>
     <string name="popup_font_add_file">Schriftdatei hinzufügen (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">Diese Datei ist keine Schrift.</string>
     <string name="popup_font_too_large">Die Datei ist zu groß für eine Schrift (über 64 MB).</string>
@@ -408,6 +411,8 @@
     <string name="popup_text_title">Textgröße und -stärke</string>
     <string name="popup_font_system_default">Schrift des Telefons</string>
     <string name="popup_font_script_only_en">Nur für englischen Text</string>
+    <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
+    <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>
     <string name="popup_font_script_only_hint_any">Andere Schriften verwenden die Schrift des Telefons. Gilt für heruntergeladene und hinzugefügte Schriften.</string>
     <string name="popup_text_weight_info_languages">Macht dünne Schrift besser lesbar. Ist bei einer Sprache „Nur für … Text“ an oder die Schrift des Telefons gewählt, werden nur die Zeichen dieser Sprache kräftiger; ist es aus, der ganze Text.\n\nDie Schriftstärke nutzt die Schnitte der Schrift selbst. Eine Schrift mit nur einem Schnitt springt von normal direkt zu fett, daher sieht mittel wie normal aus.\n\nDie Buchstabendicke zieht eine feine Kontur um jeden Buchstaben: Sie wirkt mit jeder Schrift und kommt zur Schriftstärke hinzu.</string>
     <string name="languages_settings_hint">Die Einstellungen unten gelten für die gewählte Sprache; der Rest der Seite gilt für alle Sprachen.</string>

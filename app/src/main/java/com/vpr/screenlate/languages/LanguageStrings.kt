@@ -46,7 +46,7 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
         kanjiKind = R.string.dictionaries_kind_kanji,
         kanjiCount = R.string.dictionaries_count_kanji,
     )
-    Language.ENGLISH, null -> DictionaryStrings(
+    Language.ENGLISH, Language.CHINESE, null -> DictionaryStrings(
         pitchKind = R.string.dictionaries_kind_pronunciation,
         pitchCount = R.string.dictionaries_count_transcriptions,
         kanjiKind = R.string.dictionaries_kind_characters,
@@ -58,7 +58,20 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
 val Language.pronunciationColorStrings: PronunciationColorStrings?
     get() = when (this) {
         Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
-        Language.ENGLISH -> null
+        Language.ENGLISH, Language.CHINESE -> null
+    }
+
+/** The switch for entries of the other characters of a found word (`LanguageSupport.hasCharacterEntries`). */
+class CharacterEntryStrings(
+    @param:StringRes val label: Int,
+    @param:StringRes val hint: Int,
+)
+
+val Language.characterEntryStrings: CharacterEntryStrings
+    get() = when (this) {
+        Language.JAPANESE -> CharacterEntryStrings(R.string.lookup_single_kanji, R.string.lookup_single_kanji_hint)
+        Language.ENGLISH, Language.CHINESE ->
+            CharacterEntryStrings(R.string.lookup_single_characters, R.string.lookup_single_characters_hint)
     }
 
 val Language.fontStrings: FontStrings
@@ -77,6 +90,14 @@ val Language.fontStrings: FontStrings
             scriptOnlyHint = R.string.popup_font_script_only_hint_any,
             systemMissing = null,
             catalogInfo = null,
+            weightInfo = R.string.popup_text_weight_info_languages,
+        )
+        Language.CHINESE -> FontStrings(
+            system = R.string.popup_font_system_zh,
+            scriptOnly = R.string.popup_font_script_only_zh,
+            scriptOnlyHint = R.string.popup_font_script_only_hint,
+            systemMissing = null,
+            catalogInfo = R.string.popup_font_proprietary_zh,
             weightInfo = R.string.popup_text_weight_info_languages,
         )
     }

@@ -252,6 +252,8 @@
     <string name="lookup_max_results_warning">Beaucoup d’entrées ralentissent l’ouverture de la fenêtre contextuelle pour les mots aux longues définitions.</string>
     <string name="lookup_single_kanji">Kanji du mot</string>
     <string name="lookup_single_kanji_hint">Des entrées pour les autres kanji du mot trouvé s’affichent sous les résultats.</string>
+    <string name="lookup_single_characters">Caractères du mot</string>
+    <string name="lookup_single_characters_hint">Des entrées pour les autres caractères du mot trouvé s’affichent sous les résultats.</string>
     <string name="lookup_romaji">Chercher le romaji comme du japonais</string>
     <string name="lookup_romaji_hint">Le texte latin est aussi cherché en kana (taberu → たべる), à l’écran et dans la recherche.</string>
     <string name="problems_title">À vérifier</string>
@@ -403,6 +405,7 @@
     <string name="popup_font_download">Télécharger (%1$s Mo)</string>
     <string name="popup_font_download_failed">Échec du téléchargement. Vérifiez la connexion et réessayez.</string>
     <string name="popup_font_proprietary">Les polices fournies avec Windows ou macOS, comme Meiryo ou Yu Gothic, ne sont pas proposées : leurs licences n’autorisent pas leur partage. Dans un CSS personnalisé, leurs noms désignent les polices japonaises du téléphone.</string>
+    <string name="popup_font_proprietary_zh">Les polices fournies avec Windows ou macOS, comme Microsoft YaHei ou PingFang, ne sont pas proposées : leurs licences n’autorisent pas leur partage. Dans un CSS personnalisé, leurs noms désignent les polices chinoises du téléphone.</string>
     <string name="popup_font_add_file">Ajouter un fichier de police (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">Ce fichier n’est pas une police.</string>
     <string name="popup_font_too_large">Le fichier est trop gros pour une police (plus de 64 Mo).</string>
@@ -411,6 +414,8 @@
     <string name="popup_text_title">Taille et graisse du texte</string>
     <string name="popup_font_system_default">Police du téléphone</string>
     <string name="popup_font_script_only_en">Seulement pour le texte anglais</string>
+    <string name="popup_font_system_zh">Police chinoise du téléphone</string>
+    <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>
     <string name="popup_font_script_only_hint_any">Les autres écritures utilisent la police du téléphone. S’applique aux polices téléchargées et ajoutées.</string>
     <string name="popup_text_weight_info_languages">Rend un texte fin plus lisible. Avec « Seulement pour le texte … » activé pour une langue, ou avec la police du téléphone, seuls les caractères de cette langue s’épaississent ; désactivé, tout le texte.\n\nLa graisse utilise les graisses propres à la police. Une police qui n’en a qu’une passe directement de normale à grasse, donc moyenne ressemble à normale.\n\nL’épaisseur des lettres trace un fin contour autour de chaque lettre : elle fonctionne avec toutes les polices et s’ajoute à la graisse.</string>
     <string name="languages_settings_hint">Les réglages ci-dessous concernent la langue choisie ; le reste de la page s’applique à toutes les langues.</string>

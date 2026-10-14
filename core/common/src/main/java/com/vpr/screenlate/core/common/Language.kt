@@ -9,6 +9,7 @@ import java.util.Locale
 enum class Language(val code: String) {
     JAPANESE("ja"),
     ENGLISH("en"),
+    CHINESE("zh"),
     ;
 
     companion object {

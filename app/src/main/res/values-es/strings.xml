@@ -252,6 +252,8 @@
     <string name="lookup_max_results_warning">Muchas entradas hacen que la ventana emergente tarde más en abrirse con palabras de definiciones largas.</string>
     <string name="lookup_single_kanji">Kanji de la palabra</string>
     <string name="lookup_single_kanji_hint">Debajo de los resultados se muestran entradas para los demás kanji de la palabra encontrada.</string>
+    <string name="lookup_single_characters">Caracteres de la palabra</string>
+    <string name="lookup_single_characters_hint">Debajo de los resultados se muestran entradas para los demás caracteres de la palabra encontrada.</string>
     <string name="lookup_romaji">Buscar el romaji como japonés</string>
     <string name="lookup_romaji_hint">El texto latino también se busca como kana (taberu → たべる), en la pantalla y en la búsqueda.</string>
     <string name="problems_title">Requiere atención</string>
@@ -403,6 +405,7 @@
     <string name="popup_font_download">Descargar (%1$s MB)</string>
     <string name="popup_font_download_failed">Error en la descarga. Comprueba la conexión y vuelve a intentarlo.</string>
     <string name="popup_font_proprietary">Las fuentes que vienen con Windows o macOS, como Meiryo o Yu Gothic, no se ofrecen: sus licencias no permiten compartirlas. En el CSS personalizado, sus nombres equivalen a las fuentes japonesas del teléfono.</string>
+    <string name="popup_font_proprietary_zh">Las fuentes que vienen con Windows o macOS, como Microsoft YaHei o PingFang, no se ofrecen: sus licencias no permiten compartirlas. En el CSS personalizado, sus nombres equivalen a las fuentes chinas del teléfono.</string>
     <string name="popup_font_add_file">Añadir un archivo de fuente (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">Este archivo no es una fuente.</string>
     <string name="popup_font_too_large">El archivo es demasiado grande para una fuente (más de 64 MB).</string>
@@ -411,6 +414,8 @@
     <string name="popup_text_title">Tamaño y peso del texto</string>
     <string name="popup_font_system_default">Fuente del teléfono</string>
     <string name="popup_font_script_only_en">Solo para texto en inglés</string>
+    <string name="popup_font_system_zh">Fuente china del teléfono</string>
+    <string name="popup_font_script_only_zh">Solo para texto chino</string>
     <string name="popup_font_script_only_hint_any">Las demás escrituras usan la fuente del teléfono. Se aplica a las fuentes descargadas y añadidas.</string>
     <string name="popup_text_weight_info_languages">Hace más legible el texto fino. Con «Solo para texto en …» activado en un idioma, o con la fuente del teléfono, solo los caracteres de ese idioma se vuelven más gruesos; con el ajuste desactivado, todo el texto.\n\nEl peso usa los pesos propios de la fuente. Una fuente con un solo peso pasa de normal directamente a negrita, así que medio se ve igual que normal.\n\nEl grosor de las letras dibuja un contorno fino alrededor de cada letra: funciona con cualquier fuente y se suma al peso.</string>
     <string name="languages_settings_hint">Los ajustes de abajo son del idioma elegido; el resto de la página se aplica a todos los idiomas.</string>

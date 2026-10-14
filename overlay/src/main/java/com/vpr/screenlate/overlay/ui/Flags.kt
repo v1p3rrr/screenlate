@@ -19,6 +19,10 @@ object Flags {
         "ca" to R.drawable.flag_ca,
         "nz" to R.drawable.flag_nz,
         "ie" to R.drawable.flag_ie,
+        "cn" to R.drawable.flag_cn,
+        "tw" to R.drawable.flag_tw,
+        "hk" to R.drawable.flag_hk,
+        "sg" to R.drawable.flag_sg,
     )
 
     /** The flag of [country]; null for a country without one. */

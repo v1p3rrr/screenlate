@@ -26,6 +26,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.languages.LanguageCard
+import com.vpr.screenlate.languages.characterEntryStrings
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.Hint
@@ -60,18 +61,19 @@ fun LookupSettingsScreen(onBack: () -> Unit, viewModel: LookupSettingsViewModel 
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             val maxResults: @Composable ColumnScope.() -> Unit = { MaxResults(settings.maxResults, viewModel::setMaxResults) }
-            // Scan length and single kanji entries belong to the shown language; romaji and the result count are shared.
+            // Scan length and single character entries belong to the shown language; romaji and the result count are shared.
             val ownRows: @Composable ColumnScope.() -> Unit = {
                 ScanLengthRow(settings.scanLength, viewModel::setScanLength)
             }
             val support = shown.support
             val characterRows: @Composable ColumnScope.() -> Unit = {
                 if (support.hasCharacterEntries) {
+                    val strings = shown.characterEntryStrings
                     SwitchRow(
-                        stringResource(R.string.lookup_single_kanji),
+                        stringResource(strings.label),
                         settings.singleKanji,
                         viewModel::setSingleKanji,
-                        hint = stringResource(R.string.lookup_single_kanji_hint),
+                        hint = stringResource(strings.hint),
                     )
                 }
                 if (support.convertsLatin) {

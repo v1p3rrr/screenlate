@@ -248,6 +248,8 @@
     <string name="lookup_max_results_warning">항목이 많으면 정의가 긴 단어에서 팝업이 늦게 열립니다.</string>
     <string name="lookup_single_kanji">단어의 한자</string>
     <string name="lookup_single_kanji_hint">결과 아래에 찾은 단어의 다른 한자 항목을 표시합니다.</string>
+    <string name="lookup_single_characters">단어의 한자</string>
+    <string name="lookup_single_characters_hint">결과 아래에 찾은 단어의 다른 한자 항목을 표시합니다.</string>
     <string name="lookup_romaji">로마자를 일본어로 검색</string>
     <string name="lookup_romaji_hint">라틴 문자도 가나로 검색합니다(taberu → たべる). 화면과 검색 모두에 적용됩니다.</string>
     <string name="problems_title">확인 필요</string>
@@ -397,6 +399,7 @@
     <string name="popup_font_download">다운로드(%1$s MB)</string>
     <string name="popup_font_download_failed">다운로드에 실패했습니다. 연결을 확인하고 다시 시도하세요.</string>
     <string name="popup_font_proprietary">Meiryo나 Yu Gothic처럼 Windows나 macOS에 포함된 글꼴은 제공하지 않습니다. 라이선스상 공유가 허용되지 않기 때문입니다. 사용자 CSS에서 이 이름들은 휴대폰의 일본어 글꼴을 가리킵니다.</string>
+    <string name="popup_font_proprietary_zh">Microsoft YaHei나 PingFang처럼 Windows나 macOS에 포함된 글꼴은 제공하지 않습니다. 라이선스상 공유가 허용되지 않기 때문입니다. 사용자 CSS에서 이 이름들은 휴대폰의 중국어 글꼴을 가리킵니다.</string>
     <string name="popup_font_add_file">글꼴 파일 추가(.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">이 파일은 글꼴이 아닙니다.</string>
     <string name="popup_font_too_large">글꼴로 쓰기에는 파일이 너무 큽니다(64 MB 초과).</string>
@@ -405,6 +408,8 @@
     <string name="popup_text_title">글자 크기와 굵기</string>
     <string name="popup_font_system_default">휴대폰 글꼴</string>
     <string name="popup_font_script_only_en">영어 텍스트에만 사용</string>
+    <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
+    <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>
     <string name="popup_font_script_only_hint_any">다른 문자 체계에는 휴대폰 글꼴을 사용합니다. 다운로드하거나 추가한 글꼴에 적용됩니다.</string>
     <string name="popup_text_weight_info_languages">가는 글자를 읽기 쉽게 합니다. 언어의 “… 텍스트에만 사용”이 켜져 있거나 휴대폰 글꼴을 쓰면 그 언어의 문자만 굵어지고, 꺼져 있으면 모든 텍스트가 굵어집니다.\n\n굵기는 글꼴 자체의 굵기를 사용합니다. 굵기가 하나뿐인 글꼴은 보통에서 바로 굵게로 바뀌므로 중간은 보통과 같아 보입니다.\n\n글자 윤곽은 각 글자 둘레에 얇은 윤곽선을 그립니다. 어떤 글꼴에서나 작동하며 굵기에 더해집니다.</string>
     <string name="languages_settings_hint">아래 설정은 선택한 언어에 적용되고, 페이지의 나머지 설정은 모든 언어에 공통입니다.</string>

@@ -62,45 +62,11 @@ object JapaneseSupport : LanguageSupport {
         if (text.isEmpty()) return null
         val first = text.codePointAt(0)
         if (isJapaneseLetter(first)) return LookupStart.Any
-        if (!isLatinOrDigit(first)) return null
-        if (latinAsNative && isLatinLetter(first)) return LookupStart.Any
-        val word = latinWordLength(text)
-        if (word < text.length && isJapaneseLetter(text.codePointAt(word))) return LookupStart.Any
-        val letters = text.substring(0, word).count { isLatinLetter(it.code) }
-        return if (letters > 0 && word >= 2) LookupStart.Whole(word) else null
+        if (latinAsNative && CjkText.isLatinLetter(first)) return LookupStart.Any
+        return CjkText.latinStart(text, ::isJapaneseLetter)
     }
 
-    /** A Latin word is looked up from its first character wherever the aim is inside it. */
-    override fun wordStartOffset(before: String, aimed: String): Int {
-        if (aimed.isEmpty() || !isLatinLetter(aimed.codePointAt(0))) return 0
-        var index = before.length
-        var count = 0
-        while (index > 0) {
-            val c = before[index - 1]
-            val inWord = isLatinOrDigit(c.code) ||
-                (c in WORD_CONNECTORS && index > 1 && isLatinOrDigit(before[index - 2].code))
-            if (!inWord) break
-            index--
-            count++
-        }
-        return count
-    }
-
-    /** Length of the Latin word at the start of [text]: letters and digits, joined by [WORD_CONNECTORS]. */
-    private fun latinWordLength(text: String): Int {
-        var index = 0
-        while (index < text.length) {
-            val c = text[index]
-            val inWord = isLatinOrDigit(c.code) ||
-                (c in WORD_CONNECTORS && index > 0 && index + 1 < text.length && isLatinOrDigit(text[index + 1].code))
-            if (!inWord) break
-            index++
-        }
-        return index
-    }
-
-    /** Characters that join the parts of one Latin term: ＣＤ-ＲＯＭ, Ｍ＆Ａ, Ｉ／Ｏ. */
-    private const val WORD_CONNECTORS = "-－.．&＆/／"
+    override fun wordStartOffset(before: String, aimed: String): Int = CjkText.latinWordStartOffset(before, aimed)
 
     /**
      * Romaji to hiragana with Mozc's input rules, longest rule first. `nn` before a vowel is read as ん + n
@@ -108,7 +74,7 @@ object JapaneseSupport : LanguageSupport {
      */
     override fun fromLatin(text: MappedText): MappedText? {
         val source = text.text
-        if (source.none { isLatinLetter(it.code) }) return null
+        if (source.none { CjkText.isLatinLetter(it.code) }) return null
         val lower = String(CharArray(source.length) { asciiLower(source[it]) })
         val out = StringBuilder()
         val ends = ArrayList<Int>(source.length)
@@ -168,19 +134,7 @@ object JapaneseSupport : LanguageSupport {
                 Regex("[・、\\-.\\s]") to "",
             )
 
-    override fun singleCharacterEntries(matched: String): List<String> {
-        val result = mutableListOf<String>()
-        var index = 0
-        while (index < matched.length) {
-            val codePoint = matched.codePointAt(index)
-            if (index > 0 && isKanji(codePoint)) {
-                val character = String(Character.toChars(codePoint))
-                if (character !in result) result += character
-            }
-            index += Character.charCount(codePoint)
-        }
-        return result
-    }
+    override fun singleCharacterEntries(matched: String): List<String> = CjkText.laterCharacters(matched, ::isKanji)
 
     override fun characterEntry(text: String): String? {
         if (text.isEmpty()) return null
@@ -188,11 +142,7 @@ object JapaneseSupport : LanguageSupport {
         return if (isKanji(codePoint)) String(Character.toChars(codePoint)) else null
     }
 
-    fun isKanji(codePoint: Int): Boolean =
-        codePoint in 0x4E00..0x9FFF ||
-            codePoint in 0x3400..0x4DBF ||
-            codePoint in 0xF900..0xFAFF ||
-            codePoint in 0x20000..0x2FA1F
+    fun isKanji(codePoint: Int): Boolean = CjkText.isHan(codePoint)
 
     private fun isKana(codePoint: Int): Boolean =
         codePoint in 0x3041..0x309F ||
@@ -203,15 +153,6 @@ object JapaneseSupport : LanguageSupport {
     /** Kana, kanji and the marks 々〆〇. */
     private fun isJapaneseLetter(codePoint: Int): Boolean =
         isKana(codePoint) || isKanji(codePoint) || codePoint in 0x3005..0x3007
-
-    private fun isLatinLetter(codePoint: Int): Boolean =
-        codePoint in 'a'.code..'z'.code ||
-            codePoint in 'A'.code..'Z'.code ||
-            codePoint in 0xFF21..0xFF3A ||
-            codePoint in 0xFF41..0xFF5A
-
-    private fun isLatinOrDigit(codePoint: Int): Boolean =
-        isLatinLetter(codePoint) || codePoint in '0'.code..'9'.code || codePoint in 0xFF10..0xFF19
 
     /** ASCII and full-width Latin letters to lower-case ASCII; other characters unchanged. */
     private fun asciiLower(c: Char): Char = when (c) {

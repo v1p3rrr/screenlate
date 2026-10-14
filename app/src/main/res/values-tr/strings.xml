@@ -250,6 +250,8 @@
     <string name="lookup_max_results_warning">Çok sayıda madde, uzun tanımlı kelimelerde açılır pencerenin daha yavaş açılmasına yol açar.</string>
     <string name="lookup_single_kanji">Kelimenin kanjileri</string>
     <string name="lookup_single_kanji_hint">Sonuçların altında, bulunan kelimenin diğer kanjilerinin maddeleri gösterilir.</string>
+    <string name="lookup_single_characters">Kelimenin karakterleri</string>
+    <string name="lookup_single_characters_hint">Sonuçların altında, bulunan kelimenin diğer karakterlerinin maddeleri gösterilir.</string>
     <string name="lookup_romaji">Romajiyi Japonca olarak ara</string>
     <string name="lookup_romaji_hint">Latin metni kana olarak da aranır (taberu → たべる), ekranda ve aramada.</string>
     <string name="problems_title">İlgilenilmesi gerekenler</string>
@@ -400,6 +402,7 @@
     <string name="popup_font_download">İndir (%1$s MB)</string>
     <string name="popup_font_download_failed">İndirme başarısız. Bağlantıyı kontrol edip yeniden deneyin.</string>
     <string name="popup_font_proprietary">Meiryo veya Yu Gothic gibi Windows ya da macOS ile gelen yazı tipleri sunulmaz: lisansları paylaşılmalarına izin vermez. Özel CSS’te bu adlar telefonun Japonca yazı tiplerini temsil eder.</string>
+    <string name="popup_font_proprietary_zh">Microsoft YaHei veya PingFang gibi Windows ya da macOS ile gelen yazı tipleri sunulmaz: lisansları paylaşılmalarına izin vermez. Özel CSS’te bu adlar telefonun Çince yazı tiplerini temsil eder.</string>
     <string name="popup_font_add_file">Yazı tipi dosyası ekle (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">Bu dosya bir yazı tipi değil.</string>
     <string name="popup_font_too_large">Dosya bir yazı tipi için çok büyük (64 MB’den fazla).</string>
@@ -408,6 +411,8 @@
     <string name="popup_text_title">Metin boyutu ve kalınlığı</string>
     <string name="popup_font_system_default">Telefonun yazı tipi</string>
     <string name="popup_font_script_only_en">Yalnızca İngilizce metin için</string>
+    <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
+    <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>
     <string name="popup_font_script_only_hint_any">Diğer yazı sistemleri telefonun yazı tipini kullanır. İndirilen ve eklenen yazı tiplerine uygulanır.</string>
     <string name="popup_text_weight_info_languages">İnce metni daha okunur yapar. Bir dilde “Yalnızca … metin için” açıkken ya da telefonun yazı tipiyle yalnızca o dilin karakterleri kalınlaşır; kapalıyken tüm metin.\n\nKalınlık, yazı tipinin kendi ağırlıklarını kullanır. Tek ağırlığı olan bir yazı tipi normalden doğrudan kalına geçer, bu yüzden orta normal gibi görünür.\n\nHarf dış çizgisi her harfin çevresine ince bir kontur çizer: her yazı tipiyle çalışır ve kalınlığa eklenir.</string>
     <string name="languages_settings_hint">Aşağıdaki ayarlar seçilen dile uygulanır; sayfanın geri kalanı tüm diller için geçerlidir.</string>

@@ -154,4 +154,5 @@ val Language.support: LanguageSupport
     get() = when (this) {
         Language.JAPANESE -> JapaneseSupport
         Language.ENGLISH -> EnglishSupport
+        Language.CHINESE -> ChineseSupport
     }
