@@ -338,6 +338,14 @@ language from the PC (`scripts/yomitan-language/tools/commons_audio.py` in the e
   `Zh-māo.oga`), some with tone numbers (`Cmn-shan1.flac`), dialects add a place (`Zh-Chengdu-mao1.ogg`). So the
   Wiktionary source must search Chinese by the reading in pinyin (wty readings look like "nǎo (nao³)", CC-CEDICT's
   have tone marks), not by the characters.
+- Measured again 2026-10-15 for 30 common words (`<scratchpad>/zh/audio/measure.py`, not kept): Lingua Libre
+  `LL-Q9192 (cmn)` by characters 18/30 (Traditional 書 has its own file), Wiktionary by tone-marked pinyin without
+  spaces (`Zh-péngyou.ogg`) 25/30, Wiktionary by characters 1/30 (a redirect `Zh-北京` → `Zh-Beijing.ogg`); both
+  sources together 28/30 (电脑 has none). Commons title shapes: about 5,300 `Zh-<pinyin>.ogg/oga`, about 140 with a space
+  (`Zh nǐ hǎo.ogg`, dialect samples), 4 `Cmn-<numbered>.flac`, a few `Zh-cmn-<characters>.opus` and Cantonese
+  `Zh-yue-…`, which the 2-letter region group of the Wiktionary pattern does not match. A case-insensitive regex
+  (`/…/i`) found nothing more. So Chinese defaults to Wiktionary first (`LanguageSupport.recordingTitle` gives the
+  pinyin), then Lingua Libre; text to speech reads the characters (`speechText`), as a voice reads pinyin as Latin.
 - Lingua Libre's pattern `-.*-term.wav` also matches compounds and phrases ending in the word: "kitty-cat",
   "she-cat", "summer-house", "акула-кошка", "транс-человек"; the first result may be one of them. Japanese never had
   hyphens, so it did not show. A title whose part before `-term.wav` still contains a hyphen after the speaker is

@@ -712,3 +712,9 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   normalizer for Chinese does (CC-CEDICT "nǐhǎo" and Wiktionary "nǐ hǎo" were two entries); a lookup through
   Yomitan's code no longer fails when its letter resolution splits a character outside the BMP (𣱘), as the engine's
   JSON reader refused the half surrogate.
+- 2026-10-15: Z6 built. Wiktionary's Mandarin recordings are searched by the reading's pinyin without spaces
+  (`LanguageSupport.recordingTitle`; `Zh-péngyou.ogg`), so a word read several ways gets the clip of the reading shown;
+  Lingua Libre's by the characters. Measured on 30 common words: Wiktionary by pinyin 25, Lingua Libre 18, both 28
+  (`ai/notes/languages.md`). Agent's choice: Chinese defaults to Wiktionary, Lingua Libre, text to speech (Z1 had
+  Lingua Libre first; Chinese is unreleased, nothing to migrate). Fix: text to speech read the reading, which for
+  Chinese is pinyin; it now reads the characters (`speechText`), also in the clip menu and the audio source test.
