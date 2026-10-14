@@ -589,7 +589,7 @@ private fun TaskCard(
             )
         } else {
             val shown = name.ifEmpty { stringResource(R.string.dictionaries_bundled) }
-            val error = task.error
+            val error = if (task.connectionLost) stringResource(R.string.dictionaries_connection_lost) else task.error
             // The name tells which of several queued imports failed, e.g. after "Update all".
             if (error != null) {
                 val text = if (task.downloadStopped) R.string.dictionaries_download_stopped else R.string.dictionaries_import_failed_named

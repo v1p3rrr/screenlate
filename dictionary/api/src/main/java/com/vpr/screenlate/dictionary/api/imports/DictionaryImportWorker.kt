@@ -204,7 +204,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                 return Result.retry()
             }
             Log.w(TAG, "Task $id: the download broke off $MAX_RETRIES times; stopped", e.cause)
-            resumable(workDataOf(KEY_ERROR to e.reason().take(MAX_ERROR_LENGTH), KEY_DOWNLOAD_STOPPED to true))
+            resumable(workDataOf(KEY_ERROR to e.reason().take(MAX_ERROR_LENGTH), KEY_DOWNLOAD_STOPPED to true, KEY_CONNECTION_LOST to true))
         } catch (e: ResumableDownload.FinalStatusException) {
             Log.w(TAG, "Task $id: the server answered HTTP ${e.code}")
             resumable(workDataOf(KEY_ERROR to "HTTP ${e.code}", KEY_DOWNLOAD_STOPPED to true))
@@ -533,6 +533,9 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Output of a download that broke off, as opposed to one whose import failed. */
         const val KEY_DOWNLOAD_STOPPED = "download_stopped"
+
+        /** Output of a download stopped because the connection broke off ([MAX_RETRIES] times), not by the server. */
+        const val KEY_CONNECTION_LOST = "connection_lost"
         const val KEY_STAGE = "stage"
         const val KEY_PERCENT = "percent"
         const val KEY_URI = "uri"

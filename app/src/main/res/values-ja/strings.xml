@@ -103,6 +103,7 @@
     <string name="dictionaries_task_downloading">%1$s をダウンロード中</string>
     <string name="dictionaries_task_retrying">ダウンロードを再試行中（%2$d/%3$d）：%1$s</string>
     <string name="dictionaries_download_stopped">%1$s：ダウンロードが停止しました（%2$s）</string>
+    <string name="dictionaries_connection_lost">接続が切れました</string>
     <string name="dictionaries_task_importing">%1$s をインポート中</string>
     <string name="dictionaries_installed_mark">インストール済み</string>
     <string name="dictionaries_download">ダウンロード</string>

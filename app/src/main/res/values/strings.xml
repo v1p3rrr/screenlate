@@ -108,6 +108,7 @@
     <string name="dictionaries_task_downloading">Downloading %1$s</string>
     <string name="dictionaries_task_retrying">Retrying the download (%2$d of %3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: download stopped — %2$s</string>
+    <string name="dictionaries_connection_lost">connection lost</string>
     <string name="dictionaries_task_importing">Importing %1$s</string>
     <string name="dictionaries_installed_mark">Installed</string>
     <string name="dictionaries_download">Download</string>

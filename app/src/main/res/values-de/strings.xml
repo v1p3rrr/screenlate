@@ -105,6 +105,7 @@
     <string name="dictionaries_task_downloading">%1$s wird heruntergeladen</string>
     <string name="dictionaries_task_retrying">Download wird wiederholt (%2$d von %3$d): %1$s</string>
     <string name="dictionaries_download_stopped">%1$s: Download angehalten – %2$s</string>
+    <string name="dictionaries_connection_lost">Verbindung unterbrochen</string>
     <string name="dictionaries_task_importing">%1$s wird importiert</string>
     <string name="dictionaries_installed_mark">Installiert</string>
     <string name="dictionaries_download">Herunterladen</string>

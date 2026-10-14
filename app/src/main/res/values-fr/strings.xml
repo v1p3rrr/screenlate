@@ -107,6 +107,7 @@
     <string name="dictionaries_task_downloading">Téléchargement de %1$s</string>
     <string name="dictionaries_task_retrying">Nouvelle tentative de téléchargement (%2$d sur %3$d) : %1$s</string>
     <string name="dictionaries_download_stopped">%1$s : téléchargement interrompu — %2$s</string>
+    <string name="dictionaries_connection_lost">connexion interrompue</string>
     <string name="dictionaries_task_importing">Import de %1$s</string>
     <string name="dictionaries_installed_mark">Installé</string>
     <string name="dictionaries_download">Télécharger</string>

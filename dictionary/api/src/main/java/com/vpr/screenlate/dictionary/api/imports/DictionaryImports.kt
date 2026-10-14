@@ -23,6 +23,7 @@ import androidx.work.workDataOf
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ARCHIVE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CONNECTION_LOST
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DELETE_FILE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_DOWNLOAD_STOPPED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ENTRY_ID
@@ -99,6 +100,8 @@ data class ImportTask(
     val resumable: Boolean = false,
     /** Set when the download itself broke off, not the import after it. */
     val downloadStopped: Boolean = false,
+    /** Set when the download stopped because the connection broke off; [error] then holds the technical reason. */
+    val connectionLost: Boolean = false,
     /** Automatic retries of a download so far; a queued task with some waits for the network or its next try. */
     val retries: Int = 0,
 ) {
@@ -598,6 +601,7 @@ private fun WorkInfo.toTask(retries: Int): ImportTask {
         catalogEntry = tags.firstOrNull { it.startsWith(DictionaryImports.ENTRY_TAG_PREFIX) }?.removePrefix(DictionaryImports.ENTRY_TAG_PREFIX),
         resumable = taskState == ImportTask.State.FAILED && outputData.getBoolean(KEY_RESUMABLE, false),
         downloadStopped = outputData.getBoolean(KEY_DOWNLOAD_STOPPED, false),
+        connectionLost = outputData.getBoolean(KEY_CONNECTION_LOST, false),
         retries = if (state.isFinished) 0 else retries,
     )
 }
