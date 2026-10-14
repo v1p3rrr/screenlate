@@ -724,3 +724,9 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   own markers match by name (a "Pitch" field of a Chinese note type stays empty). Question 2 above (Simplified and
   Traditional fields) logged with option (a) in use: `LanguageSupport.scriptMarkers`, filled by
   `DictionaryLookup.inScript`.
+- 2026-10-15: Wiktionary tags of Chinese entries translated (Z8's last part): 22 tag words of wty-zh-en's form-of
+  items in all 14 locales (scripts: Simplified, Traditional, second-round Simplified; varieties: Cantonese, Hokkien,
+  Min Nan, Min, Min Dong, Hakka, Teochew, Wu, Mandarin; regions: mainland China, Taiwan, Hong Kong, southern;
+  name, Internet, humorous, euphemistic, dated, vulgar). With the words already translated they cover 99.5% of the
+  form-of tag words (counted over the 2026-10-14 revision). `lintDebug` fails in `dictionary:api` on three
+  RestrictedApi errors about WorkManager (`Result.Retry`, `Data.Builder.put`), older than this branch.
