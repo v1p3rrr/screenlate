@@ -191,8 +191,9 @@ Work that depends on an answer uses the recommended option or waits, as noted.
 - Chinese frequency in Traditional characters (2026-10-14). The frequency dictionary built on the phone from wordfreq
   has Chinese words in Simplified characters only (wordfreq folds Traditional into Simplified). For text in
   Traditional characters it gives no frequency, so results are not sorted by it. Options: (1, recommended) when the
-  Chinese dictionary is built, add each word's Traditional form with the same rank, converted with OpenCC's tables
-  (Apache 2.0, about 1 MB, bundled or downloaded with the list); (2) leave it Simplified only. The agent will decide
+  Chinese dictionary is built, add each word's Traditional form with the same rank, converted with the app's own
+  table of Simplified and Traditional characters (from Unihan and CC-CEDICT, bundled since Z3; OpenCC is not on the
+  allowed downloads); (2) leave it Simplified only. The agent will decide
   this on the `languages/zh` branch with option 1 unless told otherwise.
 
 - Dragging the bubble on the phone (2026-10-14). On the emulator a drag runs at about 30 frames per second (82 % of
@@ -207,6 +208,22 @@ Work that depends on an answer uses the recommended option or waits, as noted.
   Options: (1, recommended) accept the phrasal-verb rule's result for an entry without a part of speech, a small
   departure from Yomitan that only adds phrase matches; (2) keep Yomitan's behavior. The agent leaves it as is until
   the owner answers.
+- Chinese main dictionary for English glosses (2026-10-14). The download screen ticks one main dictionary per gloss
+  language. For English there are CC-CEDICT (7.7 MB, 120 K entries, the standard learner dictionary, both scripts
+  as headwords, pinyin with tone marks) and Wiktionary zh–en (21 MB, more entries, etymology and examples, Traditional
+  headwords). Options: (1, recommended) CC-CEDICT ticked, Wiktionary listed unticked; (2) Wiktionary ticked. The
+  agent uses option 1 unless told otherwise.
+- Chinese script setting (2026-10-14). The decision row "Chinese script" asks for a setting that picks the script
+  for text written alike in both and for typed searches, and may fix one script for everything. Options: (1,
+  recommended) on the Lookup page's Chinese block: "Characters: Simplified / Traditional" (default by the decision
+  row "Chinese script default") and a switch "Show all words in these characters", off; (2) on the Popup page's
+  Chinese block. The agent uses option 1 unless told otherwise.
+- Chinese readings (2026-10-14). Wiktionary readings carry the pinyin twice, "xíng (xing²)"; CC-CEDICT gives "xíng".
+  Options: (1, recommended) show only the tone-marked pinyin; (2) show the reading as the dictionary gives it. The
+  agent uses option 1 unless told otherwise.
+- Chinese fonts to download (2026-10-14). Japanese offers six free fonts. Options: (1, recommended) Noto Sans SC,
+  Noto Serif SC, Noto Sans TC, Noto Serif TC and LXGW WenKai TC (all SIL OFL, 10–25 MB each); (2) the phone's font
+  and own files only. The agent uses option 1 unless told otherwise.
 - Deleting a popup font (2026-10-14). Popup → font list: the bin next to a downloaded or added font deletes it at
   once, while deleting a dictionary asks first. A downloaded font is 7–18 MB to fetch again. Options: (1, recommended)
   ask "Delete <font>?" as for dictionaries; (2) keep deleting at once. The agent leaves it as is until the owner
@@ -420,6 +437,29 @@ Per-language checklist (every language branch):
 - The script setting (decision row), SC/TC glyph forms, audio by pinyin, the Chinese recognizer.
 - Questions: tone colors for pinyin; FreeDict zho-rus (WikDict, 157 K headwords) converted and hosted, as the only
   real Chinese–Russian dictionary; typed pinyin in search.
+- Work items (written 2026-10-14 when the branch started; the test dictionaries are in `testdata/dictionaries/zh/`):
+  - Z1. `Language.CHINESE` and `ChineseSupport`: glyph 中, no word separator, the Chinese recognizer, letter
+    resolution, sentence ends and quotes of Chinese text, Lingua Libre's Mandarin (`cmn`, Q9192), flags cn, tw, hk,
+    sg, the phone's Noto CJK SC/TC faces, Hanzi entries below the results ("Characters of the word") and as the
+    fallback where no word is found; Yomitan's `zh` bundle (radical normalization, pinyin reading normalizer).
+  - Z2. Catalog: CC-CEDICT (terms, both scripts as headwords, pinyin with tone marks) and CC-CEDICT Hanzi
+    (characters) from MarvNC's releases, next to the Wiktionary entries already listed.
+  - Z3. Scripts: each match is Simplified, Traditional or either, by a character table built from Unihan and CC-CEDICT
+    (`scripts/chinese-scripts/build.py`; replaces OpenCC, which is not on the allowed downloads);
+    the page's `lang` (zh-Hans or zh-Hant) and the headword spelling follow it, the setting decides for text written
+    alike in both and for typed searches, and may fix one script for everything. Wiktionary's Traditional headwords
+    found through a Simplified form show the form that was read.
+  - Z4. Pinyin: readings shown with tone marks ("xíng (xing²)" → "xíng"); tone colors behind the switch in the
+    Popup's Chinese block (decision row).
+  - Z5. Typed pinyin in search (decision row): a toneless pinyin index written at import next to the dictionary;
+    tone marks or numbers in the query rank exact tones first.
+  - Z6. Audio: Wiktionary clips searched by pinyin with tone marks, Lingua Libre's Mandarin, text to speech.
+  - Z7. Frequency: the wordfreq list is Simplified; Traditional forms added with Z3's character table when the frequency
+    dictionary is built (question "Chinese frequency in Traditional characters", option 1).
+  - Z8. Popup fonts for Chinese (free fonts to download, "Only for Chinese text"), Anki first guesses by Chinese
+    field names (Hanzi, Pinyin, …), the Wiktionary tags of Chinese entries (Simplified-Chinese, …) translated.
+  - Z9. Strings in all 14 locales, docs, NOTICE, unit, page and instrumented tests, test model cases (N), emulator
+    checks with Simplified and Traditional screenshots, vertical text included.
 
 ### Korean (`languages/ko`)
 
@@ -636,3 +676,14 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   no longer taken for Japanese → English (40 % foreign letters needed); the search screen opened from a selection menu
   no longer flashes a white card in the dark theme. Two questions added (English phrasal verbs in the past, deleting
   a font). Next: Chinese on `languages/zh`.
+- 2026-10-14: Z3 built. `ChineseScripts` (`core:common`) reads a generated table (`ChineseScriptTable.kt`, 82 KB:
+  2,775 Simplified-only and 4,314 Traditional-only characters, the other script's forms by frequency) that
+  `scripts/chinese-scripts/build.py` makes from Unihan 17.0.0 (Unicode License V3, in NOTICE with its text) and
+  CC-CEDICT's word pairs; Unihan alone marks 图 and 体 as their own Traditional variants. OpenCC is replaced by it
+  (not on the allowed downloads; the Z7 question now names this table). Each result carries `lang` (the word's
+  script, else the text's, else the setting), which the page sets on the source, entries and character views.
+  Wiktionary's `Simplified-Chinese` form-of results show the spelling read and merge with CC-CEDICT's entry; results
+  of the same expression and reading merge in general. Lookup page's Chinese block: "Characters" (Simplified /
+  Traditional) and "All words in these characters" (off), per language, reset with the Lookup page (question
+  "Chinese script setting", option 1). Readings drop Wiktionary's numbered pinyin (question "Chinese readings",
+  option 1); character views label both reading fields "Pinyin".
