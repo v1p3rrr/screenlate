@@ -99,7 +99,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 
 | Topic | Decision |
 |---|---|
-| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese, and Latvian (request 44); 4) every other language Yomitan supports, Ukrainian among them (owner, 2026-10-09; revised the same day with request 11) |
+| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese, and Latvian (request 44); 4) every other language Yomitan supports (owner, 2026-10-09; revised the same day with request 11) |
 | Audience | Every user, not only the owner: the app goes to a community of learners of Japanese, where others learn other languages, mostly English and Chinese; later anyone with their own target language (owner, 2026-10-09) |
 | Depth | Full support (deinflection, on-device recognition, fonts, audio, Anki), if it is feasible without writing our own Yomitan from scratch (owner, 2026-10-09) |
 | Language profiles | Separate language profiles, switched on the home screen; dictionaries and the rest are set up within the profile (owner, 2026-10-09) |
@@ -192,10 +192,19 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Questions for the owner
 
-None open. The questions collected while the owner was away (2026-10-14) were answered on 2026-10-15; the answers
+The questions collected while the owner was away (2026-10-14) were answered on 2026-10-15; the answers
 are decision rows (Chinese audio, pinyin search order, Chinese main dictionary, frequency in Traditional, Chinese
 script, readings, fonts, deleting a font, phrasal verbs, test model location). Dragging the bubble is smooth on the
 phone in the release, and the drag and drawing code has not changed since v0.2.3, so nothing to do.
+
+Collected after that (autonomous work, 2026-10-15); the recommended option is in use until the owner answers:
+
+1. Fonts downloaded for another language on a language's font list. With Chinese fonts in the catalog, the Chinese
+   list also showed M PLUS 1p, a Japanese font (Japanese glyph forms, no Simplified-only characters), and the
+   Japanese list would show Noto Sans TC. Options: (a, recommended, in use) a language lists the fonts downloaded
+   for it and every added file; another language's font shows only while it is the chosen one; (b) every installed
+   font on every list, as before; (c) every installed font, with the other language's ones marked "Downloaded for
+   Japanese".
 
 ## Branches and workflow
 
@@ -697,3 +706,8 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   migrate); a backup carries them in its General part with the turned-on languages; no page reset clears them, the
   full reset does (agent's choice: the Languages screen has no reset of its own). The hint names words found by pinyin;
   the full reset's text names the Chinese characters and that turned-on languages stay.
+- 2026-10-15: Chinese fonts and the font delete confirmation (Z8's fonts, Z11) done: five fonts in the catalog
+  (`language` is now the language code, the filter used the BCP 47 tag, which is zh-Hans for Chinese), font
+  descriptions in all 14 locales (the Japanese ones had en and ru only), Traditional Chinese interfaces get the
+  zh-Hant text (`localeKey`). Deleting a font asks "Delete <font>?" (shared `ConfirmDelete`). Question 1 above
+  (other languages' fonts) logged with option (a) in use.

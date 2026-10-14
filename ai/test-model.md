@@ -152,6 +152,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP14 | Pitch accent colors: off by default; on → the headword and reading take the first accent's color, each accent button its own; light and dark themes; `--pitch-*-color` in custom CSS overrides | F | P, I LookupPageTest, M | 2026-10-14 |
 | POP15 | Light and dark popup; e-ink frames and black border | F | M | 2026-10-14 |
 | POP16 | The installation link in the popup while the language is not ready | F | I InstallationPopupTest | 2026-10-14 |
+| POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | N | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
+| POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | N | M | 2026-10-15 (Cancel) |
 
 ### AUD: audio
 
@@ -366,4 +368,4 @@ Observations, not changed:
   showed the ANR dialog again about 15 s after each "Wait", even for a restarted process, until "Close app".
 - English phrasal verbs in the past ("picked up") find only the verb: wty-en-ru gives phrases no part of speech, and
   Yomitan's phrasal-verb rule needs a verb entry. Yomitan behaves the same; asked in the plan.
-- Deleting a downloaded or added popup font does not ask first, unlike a dictionary; asked in the plan.
+- Deleting a downloaded or added popup font does not ask first, unlike a dictionary; asked in the plan (now asks, POP18).
