@@ -377,6 +377,8 @@
     <string name="yomitan_collection_queued">Import de %1$d dictionnaires en arrière-plan ; l’écran Dictionnaires affiche la progression.</string>
     <string name="popup_show_source">Afficher le texte reconnu au-dessus des entrées</string>
     <string name="popup_show_source_hint">Désactivé : la fenêtre contextuelle commence directement par l’entrée, et ✕ se place à côté de ses boutons.</string>
+    <string name="popup_pitch_colors">Couleurs de l’accent de hauteur</string>
+    <string name="popup_pitch_colors_hint">Le mot et sa lecture prennent la couleur de leur premier accent de hauteur, et chaque accent la sienne : heiban bleu, atamadaka rouge, nakadaka orange, odaka vert, kifuku (verbes et adjectifs en -i avec une descente) violet. Nécessite un dictionnaire d’accent de hauteur.</string>
     <string name="popup_font_title">Police de la fenêtre contextuelle</string>
     <string name="popup_font_hint">Utilisée par la fenêtre contextuelle et la page de recherche.</string>
     <string name="popup_font_system">Police japonaise du téléphone</string>

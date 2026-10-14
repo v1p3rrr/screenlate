@@ -24,6 +24,12 @@ class FontStrings(
     @param:StringRes val weightInfo: Int,
 )
 
+/** The switch that colors words by their pronunciation (`PopupAppearance.pronunciationColors`). */
+class PronunciationColorStrings(
+    @param:StringRes val label: Int,
+    @param:StringRes val hint: Int,
+)
+
 /** Dictionary labels that differ by language: pitch accents and kanji are Japanese, others have transcriptions. */
 class DictionaryStrings(
     @param:StringRes val pitchKind: Int,
@@ -47,6 +53,13 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
         kanjiCount = R.string.dictionaries_count_characters,
     )
 }
+
+/** The pronunciation color switch for this language; null for a language without such colors. */
+val Language.pronunciationColorStrings: PronunciationColorStrings?
+    get() = when (this) {
+        Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
+        Language.ENGLISH -> null
+    }
 
 val Language.fontStrings: FontStrings
     get() = when (this) {

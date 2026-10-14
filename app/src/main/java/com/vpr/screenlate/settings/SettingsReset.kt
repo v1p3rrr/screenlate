@@ -74,6 +74,7 @@ object SettingsKeys {
         "popup_font",
         "popup_font_all_text",
         "popup_custom_css",
+        "popup_pronunciation_colors",
         "anki_settings",
         "audio_settings",
         "audio_sources_chosen",

@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
- * Text of the lookup page (popup and search screen). The font, its scope and the custom CSS belong to a language; the
- * other settings are shared by every language.
+ * Text of the lookup page (popup and search screen). The font, its scope, the custom CSS and the pronunciation colors
+ * belong to a language; the other settings are shared by every language.
  *
  * @property fontId the installed font to use; null for the phone's font for the language.
  * @property fontForAllText whether the installed font applies to all text; otherwise only to the language's script,
@@ -31,6 +31,8 @@ import kotlinx.coroutines.flow.map
  * @property customCss the user's CSS, applied after the dictionaries' styles.
  * @property copyDefinitions a copy button next to each dictionary's name in an entry copies its definitions.
  * @property copyMode what that button copies.
+ * @property pronunciationColors colors the word by its pronunciation where the language has such colors: Japanese by
+ *   pitch accent type.
  */
 data class PopupAppearance(
     val fontId: String? = null,
@@ -41,6 +43,7 @@ data class PopupAppearance(
     val customCss: String = "",
     val copyDefinitions: Boolean = false,
     val copyMode: DefinitionCopyMode = DefinitionCopyMode.ALL,
+    val pronunciationColors: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -92,6 +95,7 @@ class PopupAppearanceRepository @Inject constructor(
             customCss = prefs[customCssKey(language)].orEmpty(),
             copyDefinitions = prefs[COPY_DEFINITIONS] ?: false,
             copyMode = DefinitionCopyMode.of(prefs[COPY_MODE]),
+            pronunciationColors = prefs[pronunciationColorsKey(language)] ?: false,
         )
 
     /** The page's appearance for text in [language]. */
@@ -133,6 +137,10 @@ class PopupAppearanceRepository @Inject constructor(
         dataStore.edit { it[LETTER_THICKNESS] = PopupAppearance.letterThickness(thickness) }
     }
 
+    suspend fun setPronunciationColors(language: Language, enabled: Boolean) {
+        dataStore.edit { it[pronunciationColorsKey(language)] = enabled }
+    }
+
     suspend fun setCustomCss(language: Language, css: String) {
         // Empty is the default: a reset's pending save then leaves no key behind.
         val key = customCssKey(language)
@@ -145,6 +153,9 @@ class PopupAppearanceRepository @Inject constructor(
         fun fontAllTextKey(language: Language) = booleanPreferencesKey(language.preferenceKey("popup_font_all_text"))
 
         fun customCssKey(language: Language) = stringPreferencesKey(language.preferenceKey("popup_custom_css"))
+
+        fun pronunciationColorsKey(language: Language) =
+            booleanPreferencesKey(language.preferenceKey("popup_pronunciation_colors"))
 
         val FONT_SIZE = intPreferencesKey("popup_font_size")
         val TEXT_WEIGHT = intPreferencesKey("popup_text_weight")

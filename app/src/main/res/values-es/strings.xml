@@ -377,6 +377,8 @@
     <string name="yomitan_collection_queued">Importando %1$d diccionarios en segundo plano; la pantalla Diccionarios muestra el progreso.</string>
     <string name="popup_show_source">Mostrar el texto reconocido encima de las entradas</string>
     <string name="popup_show_source_hint">Desactivado: la ventana emergente empieza directamente con la entrada, y ✕ queda junto a sus botones.</string>
+    <string name="popup_pitch_colors">Colores del acento tonal</string>
+    <string name="popup_pitch_colors_hint">La palabra y su lectura toman el color de su primer acento tonal, y cada acento el suyo: heiban azul, atamadaka rojo, nakadaka naranja, odaka verde, kifuku (verbos y adjetivos -i con descenso) morado. Requiere un diccionario de acento tonal.</string>
     <string name="popup_font_title">Fuente de la ventana emergente</string>
     <string name="popup_font_hint">La usan la ventana emergente y la página de búsqueda.</string>
     <string name="popup_font_system">Fuente japonesa del teléfono</string>

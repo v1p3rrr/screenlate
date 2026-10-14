@@ -374,6 +374,8 @@
     <string name="yomitan_collection_queued">%1$d Wörterbücher werden im Hintergrund importiert; den Fortschritt zeigt der Bildschirm „Wörterbücher“.</string>
     <string name="popup_show_source">Erkannten Text über den Einträgen zeigen</string>
     <string name="popup_show_source_hint">Aus: Das Popup beginnt direkt mit dem Eintrag, und ✕ steht neben seinen Schaltflächen.</string>
+    <string name="popup_pitch_colors">Farben für Tonhöhenakzent</string>
+    <string name="popup_pitch_colors_hint">Wort und Lesung erhalten die Farbe ihres ersten Tonhöhenakzents, jeder Akzent seine eigene: Heiban blau, Atamadaka rot, Nakadaka orange, Odaka grün, Kifuku (Verben und i-Adjektive mit Abfall) lila. Erfordert ein Wörterbuch mit Tonhöhenakzenten.</string>
     <string name="popup_font_title">Popup-Schrift</string>
     <string name="popup_font_hint">Für das Popup und die Suchseite.</string>
     <string name="popup_font_system">Japanische Schrift des Telefons</string>

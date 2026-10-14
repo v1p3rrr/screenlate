@@ -45,7 +45,9 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.languages.LanguageCard
+import com.vpr.screenlate.languages.PronunciationColorStrings
 import com.vpr.screenlate.languages.fontStrings
+import com.vpr.screenlate.languages.pronunciationColorStrings
 import com.vpr.screenlate.overlay.fonts.CatalogFont
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import com.vpr.screenlate.overlay.fonts.FontDownload
@@ -97,6 +99,10 @@ fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
             Preview(previewTypeface, current, shown)
         }
         LanguageCard(profiles, shown, viewModel::show) {
+            shown.pronunciationColorStrings?.let {
+                PronunciationColorsRow(it, current, viewModel)
+                HorizontalDivider()
+            }
             FontChoice(current, installed, shown, viewModel)
             FontSources(installed, shown, viewModel)
             HorizontalDivider()
@@ -115,6 +121,17 @@ fun PopupTextSections(viewModel: PopupAppearanceViewModel = hiltViewModel()) {
             CssRows(current.customCss, installed, shown, viewModel)
         }
     }
+}
+
+/** Colors the shown language's words by pronunciation, such as Japanese pitch accent types. */
+@Composable
+fun PronunciationColorsRow(strings: PronunciationColorStrings, appearance: PopupAppearance, viewModel: PopupAppearanceViewModel) {
+    SwitchRow(
+        label = stringResource(strings.label),
+        checked = appearance.pronunciationColors,
+        onChange = viewModel::setPronunciationColors,
+        hint = stringResource(strings.hint),
+    )
 }
 
 @Composable

@@ -371,6 +371,8 @@
     <string name="yomitan_collection_queued">%1$d 個の辞書をバックグラウンドでインポート中です。進捗は辞書画面に表示されます。</string>
     <string name="popup_show_source">認識したテキストを項目の上に表示</string>
     <string name="popup_show_source_hint">オフ：ポップアップは項目から直接始まり、✕ は項目のボタンの横に置かれます。</string>
+    <string name="popup_pitch_colors">アクセントの色分け</string>
+    <string name="popup_pitch_colors_hint">単語と読みは最初のアクセントの型の色、各アクセントはそれぞれの型の色で表示します：平板型は青、頭高型は赤、中高型はオレンジ、尾高型は緑、起伏型（下がり目のある動詞・イ形容詞）は紫。アクセント辞書が必要です。</string>
     <string name="popup_font_title">ポップアップのフォント</string>
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>

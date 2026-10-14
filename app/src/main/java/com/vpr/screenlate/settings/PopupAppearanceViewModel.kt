@@ -153,6 +153,11 @@ class PopupAppearanceViewModel @Inject constructor(
         launch { repository.setFontForAllText(language, enabled) }
     }
 
+    fun setPronunciationColors(enabled: Boolean) {
+        val language = shown.language.value
+        launch { repository.setPronunciationColors(language, enabled) }
+    }
+
     fun setFontSize(size: Int) = launch { repository.setFontSize(size) }
 
     fun setTextWeight(weight: Int) = launch { repository.setTextWeight(weight) }

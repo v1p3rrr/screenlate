@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.languages.PronunciationColorStrings
+import com.vpr.screenlate.languages.pronunciationColorStrings
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
 import com.vpr.screenlate.overlay.settings.OverlaySettings
 import com.vpr.screenlate.overlay.settings.PopupAppearance
@@ -24,8 +26,8 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
 /**
- * The lookup page (popup and search): popup elements (the recognized text, the translation button, definition copying), auto-hide, its
- * font, text size and weight, and custom CSS.
+ * The lookup page (popup and search): popup elements (the recognized text, the translation button, pronunciation colors,
+ * definition copying), auto-hide, its font, text size and weight, and custom CSS.
  */
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
@@ -50,7 +52,9 @@ fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel 
             val current = appearance
             val stored = overlay
             if (current != null && stored != null) {
-                PopupContentCard(current, stored.showSourceText, translation?.button, viewModel)
+                // With several languages the pronunciation colors are in the language's card.
+                val pronunciation = if (profiles.several) null else shown.pronunciationColorStrings
+                PopupContentCard(current, stored.showSourceText, translation?.button, pronunciation, viewModel)
                 AutoHideCard(stored, viewModel)
             }
             PopupTextSections(viewModel)
@@ -82,6 +86,7 @@ private fun PopupContentCard(
     appearance: PopupAppearance,
     showSourceText: Boolean,
     translateButton: Boolean?,
+    pronunciation: PronunciationColorStrings?,
     viewModel: PopupAppearanceViewModel,
 ) {
     SectionCard(title = stringResource(R.string.popup_content_title)) {
@@ -99,6 +104,7 @@ private fun PopupContentCard(
                 hint = stringResource(R.string.translation_button_hint),
             )
         }
+        if (pronunciation != null) PronunciationColorsRow(pronunciation, appearance, viewModel)
         SwitchRow(
             label = stringResource(R.string.popup_copy_switch),
             checked = appearance.copyDefinitions,

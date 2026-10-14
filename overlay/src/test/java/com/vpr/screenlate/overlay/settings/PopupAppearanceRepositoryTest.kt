@@ -46,6 +46,17 @@ class PopupAppearanceRepositoryTest {
     }
 
     @Test
+    fun `pronunciation colors are off by default and belong to a language`() = runTest {
+        assertThat(repository.appearance(Language.JAPANESE).first().pronunciationColors).isFalse()
+
+        repository.setPronunciationColors(Language.JAPANESE, true)
+
+        assertThat(repository.appearance(Language.JAPANESE).first().pronunciationColors).isTrue()
+        assertThat(repository.appearance(Language.ENGLISH).first().pronunciationColors).isFalse()
+        assertThat(store.state.value.asMap().keys.map { it.name }).containsExactly("popup_pronunciation_colors")
+    }
+
+    @Test
     fun `Japanese keeps the keys it had before languages were added`() = runTest {
         repository.setFont(Language.JAPANESE, "noto")
         repository.setCustomCss(Language.JAPANESE, "a {}")

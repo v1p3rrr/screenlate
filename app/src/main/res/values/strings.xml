@@ -378,6 +378,8 @@
     <string name="yomitan_collection_queued">Importing %1$d dictionaries in the background; the Dictionaries screen shows the progress.</string>
     <string name="popup_show_source">Show the recognized text above the entries</string>
     <string name="popup_show_source_hint">Off: the popup starts right with the entry, and ✕ sits next to its buttons.</string>
+    <string name="popup_pitch_colors">Pitch accent colors</string>
+    <string name="popup_pitch_colors_hint">The word and its reading take the color of its first pitch accent, and each accent its own: heiban blue, atamadaka red, nakadaka orange, odaka green, kifuku (verbs and i-adjectives with a downstep) purple. Needs a pitch accent dictionary.</string>
     <string name="popup_font_title">Popup font</string>
     <string name="popup_font_hint">Used by the popup and the search page.</string>
     <string name="popup_font_system">Phone\'s Japanese font</string>

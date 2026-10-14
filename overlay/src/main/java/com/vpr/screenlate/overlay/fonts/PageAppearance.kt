@@ -17,7 +17,10 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-/** The lookup page's language, fonts, text weight and custom CSS, as the argument of `Popup.setAppearance`. */
+/**
+ * The lookup page's language, fonts, text weight, custom CSS and pronunciation colors, as the argument of
+ * `Popup.setAppearance`.
+ */
 @Singleton
 class PageAppearance @Inject constructor(
     private val settings: PopupAppearanceRepository,
@@ -62,6 +65,7 @@ class PageAppearance @Inject constructor(
                 put("scriptPattern", scriptPattern(support.systemFonts.unicodeRange))
                 put("customCss", customCss)
                 put("definitionCopy", if (appearance.copyDefinitions) appearance.copyMode.id else "")
+                put("pronunciationColors", appearance.pronunciationColors)
                 if (chosen != null) {
                     put("preload", PageFonts.CHOSEN)
                     put("preloadText", support.fontSample)
