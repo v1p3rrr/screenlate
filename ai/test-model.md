@@ -206,6 +206,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC14 | Importing wty-en-ipa writes the transcription regions (shown in POP6) | O | U TranscriptionTagBanksTest, M | 2026-10-14 |
 | DIC15 | The notification permission: the explanation dialog, then the system request, on the first import (API 33+) | O | M | |
 | DIC16 | With several languages: language chips on the page, "Other languages" links to the Languages screen | F | M | 2026-10-14 |
+| DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | N | U WordfreqDictionaryTest, M | 2026-10-15 |
 
 ### LNG: languages
 
@@ -341,6 +342,7 @@ Baselines (debug build, host idle):
   (dictionaries 177 MB) and English (57 MB).
 - NF10: download screen, Languages, home and Bubble settings wrap and scroll in de, ru, vi and ja.
 - NF11: the bundled set on first run about 20 s; English imports: en-ru 6.9 s, wordfreq 3.0 s, IPA 5.6 s.
+- Chinese wordfreq with Traditional spellings (203,820 rows, 1.5 MB): built in 15.6 s on the debug build (2026-10-15).
 - NF12: the search shows the result about 0.3 s after the last key; typing does not wait for it.
 
 Observations, not changed:
