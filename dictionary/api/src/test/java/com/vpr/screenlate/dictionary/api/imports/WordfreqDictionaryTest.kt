@@ -1,6 +1,8 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -83,6 +85,23 @@ class WordfreqDictionaryTest {
     }
 
     @Test
+    fun `other spellings take the word's rank unless the list has them as words`() {
+        val spellings = mapOf("头发" to listOf("頭髮", "頭發"), "后" to listOf("後"))
+        val rows = WordfreqDictionary.termMeta(listOf("头发", "后", "後"), 3, Locale.CHINESE) { spellings[it].orEmpty() }
+
+        assertThat(rows).containsExactly("头发" to 1, "后" to 2, "後" to 3, "頭髮" to 1, "頭發" to 1).inOrder()
+    }
+
+    @Test
+    fun `chinese words are spelled in traditional characters too`() {
+        val chinese = Language.CHINESE.support
+        assertThat(WordfreqDictionary.spellings("头发", chinese)).contains("頭髮")
+        assertThat(WordfreqDictionary.spellings("学习", chinese)).containsExactly("學習")
+        assertThat(WordfreqDictionary.spellings("中文", chinese)).isEmpty()
+        assertThat(WordfreqDictionary.spellings("water", Language.ENGLISH.support)).isEmpty()
+    }
+
+    @Test
     fun `capitals follow the language`() {
         assertThat(WordfreqDictionary.capitalized("istanbul", Locale.forLanguageTag("tr"))).isEqualTo("İstanbul")
         assertThat(WordfreqDictionary.capitalized("istanbul", Locale.ENGLISH)).isEqualTo("Istanbul")
@@ -117,6 +136,21 @@ class WordfreqDictionaryTest {
     }
 
     @Test
+    fun `a chinese archive ranks traditional spellings and says so`() {
+        val source = folder.newFile().apply { writeBytes(wordList(listOf(listOf("学习", "中文")))) }
+        val output = folder.newFile()
+
+        assertThat(WordfreqDictionary.build(source, "zh", "3.2", output, size = 2)).isEqualTo(2)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["description"]!!.jsonPrimitive.content).contains("other script")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("学习" to 1, "中文" to 2, "學習" to 1).inOrder()
+        }
+    }
+
+    @Test
     fun `the checksum is compared in any case`() {
         val file = folder.newFile().apply { writeText("wordfreq") }
         val sha = MessageDigest.getInstance("SHA-256").digest(file.readBytes()).joinToString("") { "%02x".format(it) }
@@ -139,5 +173,26 @@ class WordfreqDictionaryTest {
             val first = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
             assertThat(first.take(2).map { it.jsonArray[0].jsonPrimitive.content }).containsExactly("the", "The").inOrder()
         }
+    }
+
+    /** wordfreq's Chinese list, when it was downloaded into testdata. */
+    @Test
+    fun `the Chinese list ranks traditional spellings as their simplified words`() {
+        val source = File("../../testdata/wordfreq/large_zh.msgpack.gz").takeIf { it.exists() } ?: return
+        val output = folder.newFile()
+
+        val ranked = WordfreqDictionary.build(source, "zh", "3.2", output)
+
+        assertThat(ranked).isEqualTo(WordfreqDictionary.DEFAULT_SIZE)
+        val ranks = HashMap<String, Int>()
+        ZipFile(output).use { zip ->
+            zip.entries().asSequence().filter { it.name.startsWith("term_meta_bank_") }.forEach { entry ->
+                val bank = Json.parseToJsonElement(zip.getInputStream(entry).readBytes().decodeToString()) as JsonArray
+                bank.forEach { row -> ranks[row.jsonArray[0].jsonPrimitive.content] = row.jsonArray[2].jsonPrimitive.int }
+            }
+        }
+        assertThat(ranks["頭髮"]).isEqualTo(ranks["头发"])
+        assertThat(ranks["學習"]).isEqualTo(ranks["学习"])
+        assertThat(ranks["後"]).isNotNull()
     }
 }

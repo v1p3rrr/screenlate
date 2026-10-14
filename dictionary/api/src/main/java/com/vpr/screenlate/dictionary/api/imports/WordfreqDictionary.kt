@@ -1,5 +1,9 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.LanguageSupport
+import com.vpr.screenlate.core.common.language.MappedText
+import com.vpr.screenlate.core.common.language.support
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -21,8 +25,10 @@ import kotlinx.serialization.json.put
  * The list is gzipped MessagePack: a header `{"format": "cB", "version": 1}`, then one array of words per centibel of
  * frequency, the most frequent first. Ranks follow that order: 1 is the most frequent word. Tokens without a letter are
  * left out. wordfreq lowercases everything, while dictionaries write names and German nouns capitalized, so each word
- * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. The index credits
- * wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.
+ * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. A language written in
+ * two scripts gets each word's spellings in the other one too ([spellings]): wordfreq writes Chinese in Simplified
+ * characters only, which the script leaves as it is. The index credits wordfreq and its sources, as the CC BY-SA 4.0
+ * license of its data asks.
  */
 object WordfreqDictionary {
     const val DEFAULT_SIZE = 100_000
@@ -31,9 +37,12 @@ object WordfreqDictionary {
     fun build(source: File, language: String, version: String, output: File, size: Int = DEFAULT_SIZE): Int {
         // Tokens without letters are dropped, so more words are read than needed.
         val words = source.inputStream().use { words(it, size * 2) }
-        val rows = termMeta(words, size, Locale.forLanguageTag(language))
-        val ranked = rows.lastOrNull()?.second ?: 0
-        write(output, index(language, version, ranked), rows)
+        val support = Language.of(language)?.support
+        val rows = termMeta(words, size, Locale.forLanguageTag(language)) { word ->
+            support?.let { spellings(word, it) }.orEmpty()
+        }
+        val ranked = rows.maxOfOrNull { it.second } ?: 0
+        write(output, index(language, version, ranked, otherScripts = !support?.scriptTags.isNullOrEmpty()), rows)
         return ranked
     }
 
@@ -53,10 +62,19 @@ object WordfreqDictionary {
         return words
     }
 
-    /** `term_meta_bank` rows (word, rank) for the first [size] words with a letter, ranked from 1. */
-    fun termMeta(words: List<String>, size: Int, locale: Locale): List<Pair<String, Int>> {
+    /**
+     * `term_meta_bank` rows (word, rank) for the first [size] words with a letter, ranked from 1. The [otherSpellings]
+     * of a word get its rank unless the list has them as words of their own.
+     */
+    fun termMeta(
+        words: List<String>,
+        size: Int,
+        locale: Locale,
+        otherSpellings: (String) -> List<String> = { emptyList() },
+    ): List<Pair<String, Int>> {
         val rows = mutableListOf<Pair<String, Int>>()
         val seen = HashSet<String>()
+        val others = mutableListOf<Pair<String, Int>>()
         var rank = 0
         for (word in words) {
             if (rank >= size) break
@@ -64,9 +82,17 @@ object WordfreqDictionary {
             rank++
             rows += word to rank
             capitalized(word, locale)?.takeIf(seen::add)?.let { rows += it to rank }
+            otherSpellings(word).forEach { others += it to rank }
+        }
+        for (other in others) {
+            if (seen.add(other.first)) rows += other
         }
         return rows
     }
+
+    /** [word] in the language's other scripts (Traditional Chinese for wordfreq's Simplified), the likely ones. */
+    internal fun spellings(word: String, support: LanguageSupport): List<String> =
+        support.scriptTags.flatMap { tag -> support.inScript(MappedText.identity(word), tag).map { it.text } }
 
     /** The word with its first letter in upper case, or null when that changes nothing. */
     internal fun capitalized(word: String, locale: Locale): String? {
@@ -78,7 +104,7 @@ object WordfreqDictionary {
 
     private fun hasLetter(word: String): Boolean = word.codePoints().anyMatch(Character::isLetter)
 
-    internal fun index(language: String, version: String, size: Int) = buildJsonObject {
+    internal fun index(language: String, version: String, size: Int, otherScripts: Boolean = false) = buildJsonObject {
         put("title", title(language))
         put("format", 3)
         put("revision", "wordfreq-$version-$size")
@@ -88,7 +114,8 @@ object WordfreqDictionary {
         put("url", "https://github.com/rspeer/wordfreq")
         put(
             "description",
-            "Frequency ranks of the $size most frequent words of wordfreq $version for the language $language: 1 is the most frequent.",
+            "Frequency ranks of the $size most frequent words of wordfreq $version for the language $language: 1 is the most frequent." +
+                if (otherScripts) " A word's spellings in the language's other script have its rank." else "",
         )
         put("attribution", attribution(version))
         put("sourceLanguage", language)
