@@ -88,6 +88,9 @@ Requests 1–19 are in the previous plan. New ones:
     improvements, before the full emulator testing, write the model; then test by it. The agent may install and set
     up AnkiDroid, decks and whatever else the emulator needs, and open harmless, lawful websites in the emulator's
     browser to check recognition through the app (without reading their content beyond that).
+43. (2026-10-15) After Chinese, before Korean: the frequency chip shows the dictionary's name shortened to one letter
+    unless it is short; a tap on the chip shows the full name, another tap shortens it again. "+N" (more than one
+    frequency value) also shows the first chip's full name. Decision row "Frequency chip names".
 
 ## Decisions
 
@@ -138,7 +141,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
-| Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings") |
+| Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
 | Turning a language off | A dialog with "Delete its dictionaries and models (N MB)", ticked by default; the language's settings are kept, so turning it on again restores the deck, fonts and the rest, and without the files deleted it turns on at once. The Dictionaries page lists turned-off languages that still have files, with their size and a button that deletes them all; single dictionaries are deleted as today (owner, 2026-10-10, request 22; the place on the Dictionaries page is the agent's choice, delegated) |
 | Catalog threshold | Wiktionary pairs are listed from 0.5 MB of archive up (a few thousand words); nearly empty pairs (es→vi 0.0 MB, zh→de 0.1 MB) are left out, and the catalog script adds a pair once it grows past the threshold (owner, 2026-10-10) |
 | Recommended dictionaries | On the download screen the main dictionary of each chosen gloss language is ticked (both, each can be unticked while one stays). Within one gloss language and category one entry is ticked when there are several (Jitendex or JMdict): the catalog marks it, chosen by quality and coverage (Jitendex over JMdict, KRDICT over Wiktionary for Korean), size only breaking ties (owner, 2026-10-10; the rule within a gloss language delegated to the agent) |
@@ -163,6 +166,16 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Typed pinyin in search | Found in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"); our own toneless pinyin index built at import; exact tones rank higher (owner, 2026-10-14) |
 | Translation button default | Off for new installs; an upgrade keeps it on for users who never touched the switch (the value is written as on during the upgrade). The Anki field switch is unchanged (owner, 2026-10-13, request 33; changes the "Translation settings" row of `2026-09-29-feedback-after-0.1.4.md`, "both on by default") |
 | Bubble menu languages | Only flags (the active one ringed, the language name for TalkBack); codes on e-ink (owner, 2026-10-13) |
+| Chinese audio | Wiktionary (searched by tone-marked pinyin), Lingua Libre, text to speech (reads the characters) (owner, 2026-10-15) |
+| Pinyin search order | By the frequency dictionary, as Yomitan, also for a common character under a rare reading (owner, 2026-10-15) |
+| Chinese main dictionary | CC-CEDICT ticked for English glosses; Wiktionary zh–en listed unticked (owner, 2026-10-15) |
+| Chinese frequency in Traditional | The wordfreq dictionary built on the phone adds each word's Traditional spellings with its rank (owner, 2026-10-15) |
+| Chinese readings | Tone marks only ("xíng"); Wiktionary's numbered copy "(xing²)" is dropped; tone colors stay behind their switch (owner, 2026-10-15) |
+| Chinese fonts | Noto Sans SC, Noto Serif SC, Noto Sans TC, Noto Serif TC, LXGW WenKai TC to download (owner, 2026-10-15) |
+| Deleting a font | The bin next to a downloaded or added popup font asks "Delete <font>?" first, as for dictionaries (owner, 2026-10-15) |
+| Phrasal verbs in the past | Yomitan's English phrasal-verb rule ("picked up" → "pick up") also accepts entries without a part of speech; checked for false matches before it ships (owner, 2026-10-15: "make sure there are no false positives") |
+| Frequency chip names | A name up to 4 characters (a CJK character counts as 2) is shown whole (JPDB, JLPT, NieR); a longer one as its first character in upper case (BCCWJ → B, wordfreq zh → W, 国語辞典 → 国). A tap on the chip toggles its full name, for that chip only; "+N" shows the first chip's full name too; every lookup starts shortened (owner, 2026-10-15, request 43) |
+| Test model location | `ai/test-model.md`, linked from AGENTS.md; no copy in `docs/` (owner, 2026-10-15) |
 
 ## Open items (postponed by the owner)
 
@@ -178,63 +191,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Questions for the owner
 
-Collected during autonomous work (owner away since 2026-10-14); each with its context, asked when the owner is back.
-Work that depends on an answer uses the recommended option or waits, as noted.
-
-- Emulator processes (2026-10-14), resolved. The "crashes" at boot were the emulator's crash-report consent dialog
-  left from an earlier crash, which blocked the start; `-crash-report-mode never` avoids it. The stale processes from
-  that attempt are gone. Nothing to answer; kept for the record.
-- Test model location (2026-10-14). The test model for request 42 is `ai/test-model.md`: the cases name emulator
-  helpers, log tags and the agent's run rules, which are working notes rather than human docs. Options: (1,
-  recommended) keep it in `ai/` and link it from AGENTS.md; (2) move a cleaned copy to `docs/testing.md` for
-  contributors. The agent keeps option 1 unless told otherwise.
-- Chinese frequency in Traditional characters (2026-10-14). The frequency dictionary built on the phone from wordfreq
-  has Chinese words in Simplified characters only (wordfreq folds Traditional into Simplified). For text in
-  Traditional characters it gives no frequency, so results are not sorted by it. Options: (1, recommended) when the
-  Chinese dictionary is built, add each word's Traditional form with the same rank, converted with the app's own
-  table of Simplified and Traditional characters (from Unihan and CC-CEDICT, bundled since Z3; OpenCC is not on the
-  allowed downloads); (2) leave it Simplified only. The agent will decide
-  this on the `languages/zh` branch with option 1 unless told otherwise.
-
-- Dragging the bubble on the phone (2026-10-14). On the emulator a drag runs at about 30 frames per second (82 % of
-  frames late), the same over text and over an empty area: most of each frame goes to the full-screen layer that draws
-  the aim and the highlight. The emulator draws slowly, so this says little about the phone. Question: does dragging
-  feel smooth on the phone? If not, the agent would cut what the layer redraws on each move (the whole screen for a
-  moved aim dot) and compare frame times from the phone.
-- English phrasal verbs in the past (2026-10-14). "pick up" and "look up" are found, but "picked up" and "looked up"
-  find only "pick" and "look". Yomitan's English rule turns "picked up" into "pick up" only for an entry marked as a
-  verb; the Russian Wiktionary dictionary (wty-en-ru) gives its phrases no part of speech, so the rule's result is
-  dropped. Yomitan does the same with this dictionary, and the decision table says "Phrases: as Yomitan does".
-  Options: (1, recommended) accept the phrasal-verb rule's result for an entry without a part of speech, a small
-  departure from Yomitan that only adds phrase matches; (2) keep Yomitan's behavior. The agent leaves it as is until
-  the owner answers.
-- Chinese main dictionary for English glosses (2026-10-14). The download screen ticks one main dictionary per gloss
-  language. For English there are CC-CEDICT (7.7 MB, 120 K entries, the standard learner dictionary, both scripts
-  as headwords, pinyin with tone marks) and Wiktionary zh–en (21 MB, more entries, etymology and examples, Traditional
-  headwords). Options: (1, recommended) CC-CEDICT ticked, Wiktionary listed unticked; (2) Wiktionary ticked. The
-  agent uses option 1 unless told otherwise.
-- Chinese script setting (2026-10-14). The decision row "Chinese script" asks for a setting that picks the script
-  for text written alike in both and for typed searches, and may fix one script for everything. Options: (1,
-  recommended) on the Lookup page's Chinese block: "Characters: Simplified / Traditional" (default by the decision
-  row "Chinese script default") and a switch "Show all words in these characters", off; (2) on the Popup page's
-  Chinese block. The agent uses option 1 unless told otherwise.
-- Chinese readings (2026-10-14). Wiktionary readings carry the pinyin twice, "xíng (xing²)"; CC-CEDICT gives "xíng".
-  Options: (1, recommended) show only the tone-marked pinyin; (2) show the reading as the dictionary gives it. The
-  agent uses option 1 unless told otherwise.
-- Chinese fonts to download (2026-10-14). Japanese offers six free fonts. Options: (1, recommended) Noto Sans SC,
-  Noto Serif SC, Noto Sans TC, Noto Serif TC and LXGW WenKai TC (all SIL OFL, 10–25 MB each); (2) the phone's font
-  and own files only. The agent uses option 1 unless told otherwise.
-- Pinyin search order for words with several readings (2026-10-14). Typed pinyin finds every word read so, ranked by
-  the frequency dictionary; wordfreq gives one frequency per word, not per reading, so a common character under a
-  rare reading comes early: "xian" lists 见 (xiàn, "to appear"; usually jiàn) first, "lv" lists 率 (lǜ, "rate";
-  usually shuài) before 绿. Yomitan ranks a reading search the same way. Options: (1, recommended) keep the
-  frequency order, as Yomitan; (2) rank a word's minor readings (fewer definitions than its other readings) after the
-  words that are mainly read so, an own heuristic that may misjudge particles such as 了 (le). The agent keeps
-  option 1 until the owner answers.
-- Deleting a popup font (2026-10-14). Popup → font list: the bin next to a downloaded or added font deletes it at
-  once, while deleting a dictionary asks first. A downloaded font is 7–18 MB to fetch again. Options: (1, recommended)
-  ask "Delete <font>?" as for dictionaries; (2) keep deleting at once. The agent leaves it as is until the owner
-  answers.
+None open. The questions collected while the owner was away (2026-10-14) were answered on 2026-10-15; the answers
+are decision rows (Chinese audio, pinyin search order, Chinese main dictionary, frequency in Traditional, Chinese
+script, readings, fonts, deleting a font, phrasal verbs, test model location). Dragging the bubble is smooth on the
+phone in the release, and the drag and drawing code has not changed since v0.2.3, so nothing to do.
 
 ## Branches and workflow
 
@@ -467,6 +427,12 @@ Per-language checklist (every language branch):
     field names (Hanzi, Pinyin, …), the Wiktionary tags of Chinese entries (Simplified-Chinese, …) translated.
   - Z9. Strings in all 14 locales, docs, NOTICE, unit, page and instrumented tests, test model cases (N), emulator
     checks with Simplified and Traditional screenshots, vertical text included.
+  - Z10. The script setting moves from the Lookup page's Chinese block to the Chinese card of the Languages screen
+    (decision row "Chinese script"); backup and reset follow it.
+  - Z11. Deleting a popup font asks first (decision row "Deleting a font"; all languages).
+  - Z12. English phrasal verbs in the past for dictionaries without parts of speech (decision row), with a check for
+    false matches over sample text.
+  - Then request 43 (frequency chip names), before Korean.
 
 ### Korean (`languages/ko`)
 
@@ -718,3 +684,6 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   (`ai/notes/languages.md`). Agent's choice: Chinese defaults to Wiktionary, Lingua Libre, text to speech (Z1 had
   Lingua Libre first; Chinese is unreleased, nothing to migrate). Fix: text to speech read the reading, which for
   Chinese is pinyin; it now reads the characters (`speechText`), also in the clip menu and the audio source test.
+- 2026-10-15: the owner answered every open question (decision rows from "Chinese audio" to "Test model
+  location"); new: the Chinese script setting moves to the Languages screen's Chinese card, request 43 (frequency
+  chip names) comes after Chinese. Work items Z10–Z12 added.
