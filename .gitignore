@@ -44,3 +44,4 @@ node_modules/
 
 # JVM crash logs (test executors out of memory)
 hs_err_pid*.log
+replay_pid*.log
