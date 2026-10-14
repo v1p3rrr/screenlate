@@ -18,6 +18,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.webkit)
+    // The app provides the renderer's render.js to the lookup page; the page tests need its assets too.
+    androidTestImplementation(project(":dictionary:render-yomitan"))
 }
 
 disableAnkiDroidLintChecks()

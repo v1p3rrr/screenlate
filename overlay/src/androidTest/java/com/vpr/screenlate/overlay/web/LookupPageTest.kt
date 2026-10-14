@@ -7,6 +7,8 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.dictionary.api.model.Glossary
 import com.vpr.screenlate.dictionary.api.model.LookupResult
+import com.vpr.screenlate.dictionary.api.model.PitchAccent
+import com.vpr.screenlate.dictionary.api.model.PitchGroup
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import com.vpr.screenlate.overlay.fonts.FontFile
 import com.vpr.screenlate.overlay.fonts.InstalledFont
@@ -16,6 +18,7 @@ import com.vpr.screenlate.overlay.settings.PopupAppearance
 import java.io.File
 import java.util.Collections
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -83,8 +86,15 @@ class LookupPageTest {
     }
 
     /** Waits until [script] evaluates to [expected]; scripts that start async work store their result in a global. */
-    private suspend fun awaitValue(script: String, expected: String) = withTimeout(TIMEOUT_MS) {
-        while (evaluate(script) != expected) delay(POLL_MS)
+    private suspend fun awaitValue(script: String, expected: String) {
+        var last: String? = null
+        try {
+            withTimeout(TIMEOUT_MS) {
+                while (evaluate(script).also { last = it } != expected) delay(POLL_MS)
+            }
+        } catch (e: TimeoutCancellationException) {
+            throw AssertionError("$script: expected $expected, last $last", e)
+        }
     }
 
     private fun result(expression: String, reading: String, meaning: String) = LookupResult(
@@ -136,6 +146,43 @@ class LookupPageTest {
     }
 
     @Test
+    fun pitchAccentColorsFollowTheSwitchTheThemeAndCustomCss() = onMain {
+        // 箸 has atamadaka [1] first, then heiban [0]: the word takes the first accent's color, each button its own.
+        val chopsticks = result("箸", "はし", "chopsticks").let {
+            it.copy(term = it.term.copy(pitches = listOf(PitchGroup("Pitch", listOf(PitchAccent(1), PitchAccent(0))))))
+        }
+        fun state(theme: PageTheme) =
+            PageState.build(context, theme = theme, text = "箸", matched = 1, results = listOf(chopsticks), message = null)
+        val expression = "getComputedStyle(document.querySelector('.expression')).color"
+        val reading = "getComputedStyle(document.querySelector('.expression rt')).color"
+        val buttons = "Array.from(document.querySelectorAll('.pitch-item')).map(item => item.dataset.pitchCategory + ' ' + getComputedStyle(item).color).join('; ')"
+
+        page.setAppearance(PageAppearance.build(JapaneseSupport, PopupAppearance(), emptyList()))
+        page.render(state(PageTheme.LIGHT))
+        awaitValue("document.querySelectorAll('.pitch-item').length", "2")
+        assertThat(evaluate("document.documentElement.dataset.pronunciationColors")).isEqualTo("\"false\"")
+        assertThat(evaluate(expression)).isNotEqualTo("\"$LIGHT_ATAMADAKA\"")
+
+        page.setAppearance(PageAppearance.build(JapaneseSupport, PopupAppearance(pronunciationColors = true), emptyList()))
+        awaitValue("document.documentElement.dataset.pronunciationColors", "\"true\"")
+        assertThat(evaluate("document.querySelector('.expression').dataset.pitchCategory")).isEqualTo("\"atamadaka\"")
+        assertThat(evaluate(expression)).isEqualTo("\"$LIGHT_ATAMADAKA\"")
+        assertThat(evaluate(reading)).isEqualTo("\"$LIGHT_ATAMADAKA\"")
+        assertThat(evaluate(buttons)).isEqualTo("\"atamadaka $LIGHT_ATAMADAKA; heiban $LIGHT_HEIBAN\"")
+
+        page.render(state(PageTheme.DARK))
+        awaitValue("document.documentElement.dataset.theme", "\"dark\"")
+        awaitValue("document.querySelectorAll('.pitch-item').length", "2")
+        assertThat(evaluate(expression)).isEqualTo("\"$DARK_ATAMADAKA\"")
+        assertThat(evaluate(buttons)).isEqualTo("\"atamadaka $DARK_ATAMADAKA; heiban $DARK_HEIBAN\"")
+
+        val custom = PopupAppearance(pronunciationColors = true, customCss = ":root { --pitch-atamadaka-color: rgb(1, 2, 3); }")
+        page.setAppearance(PageAppearance.build(JapaneseSupport, custom, emptyList()))
+        awaitValue(expression, "\"rgb(1, 2, 3)\"")
+        assertThat(evaluate(buttons)).isEqualTo("\"atamadaka rgb(1, 2, 3); heiban $DARK_HEIBAN\"")
+    }
+
+    @Test
     fun bridgeCallsReachTheHost() = onMain {
         page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫", matched = 1, results = listOf(result("猫", "ねこ", "cat")), message = null))
         awaitValue("document.querySelectorAll('article.entry').length", "1")
@@ -163,5 +210,11 @@ class LookupPageTest {
     private companion object {
         const val TIMEOUT_MS = 20_000L
         const val POLL_MS = 100L
+
+        // --pitch-*-color in popup.css.
+        const val LIGHT_HEIBAN = "rgb(26, 95, 208)"
+        const val LIGHT_ATAMADAKA = "rgb(211, 47, 47)"
+        const val DARK_HEIBAN = "rgb(130, 177, 255)"
+        const val DARK_ATAMADAKA = "rgb(255, 138, 128)"
     }
 }
