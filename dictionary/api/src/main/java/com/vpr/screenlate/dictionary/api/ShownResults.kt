@@ -23,14 +23,15 @@ internal fun LookupResult.asShown(support: LanguageSupport): LookupResult {
 }
 
 /**
- * Results of the same word (expression and reading) as one entry in the place of the first: a respelled word
- * ([asShown]) meets the dictionaries that list its spelling itself, and spellings of the text may find a word twice.
- * Definitions, frequencies and pronunciations of the later ones join it unless it has them already.
+ * Results of the same word (expression and reading, see [LanguageSupport.normalizeReading]) as one entry in the place
+ * of the first: a respelled word ([asShown]) meets the dictionaries that list its spelling itself, spellings of the
+ * text may find a word twice, and dictionaries space readings differently. Definitions, frequencies and
+ * pronunciations of the later ones join it unless it has them already.
  */
-internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>): List<LookupResult> {
+internal fun List<LookupResult>.mergeSameWords(dictionaryOrder: List<String>, support: LanguageSupport): List<LookupResult> {
     val merged = LinkedHashMap<Pair<String, String>, LookupResult>()
     for (result in this) {
-        val key = result.term.expression to result.term.reading
+        val key = result.term.expression to support.normalizeReading(result.term.reading)
         merged[key] = merged[key]?.joined(result.term, dictionaryOrder) ?: result
     }
     return merged.values.toList()
@@ -50,7 +51,8 @@ internal fun List<LookupResult>.inScript(
         val script = support.scriptOf(result.term.expression)
         if (script == null || script == tag) return null
         val spellings = support.inScript(MappedText.identity(result.term.expression), tag).map { it.text }.toSet()
-        return firstOrNull { it.term.expression in spellings && it.term.reading == result.term.reading }
+        val reading = support.normalizeReading(result.term.reading)
+        return firstOrNull { it.term.expression in spellings && support.normalizeReading(it.term.reading) == reading }
     }
     val counterparts = associateWith(::counterpart)
     // Keyed by the shown word; it takes the first place of itself and the words it replaces.

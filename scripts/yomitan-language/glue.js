@@ -33,7 +33,8 @@ function prepare(language) {
  */
 function candidates(text, language, searchResolution) {
     prepare(language);
-    const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]});
+    const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
+        .filter((d) => isWellFormed(d.originalText) && isWellFormed(d.transformedText) && isWellFormed(d.deinflectedText));
     return list.map((d) => ({
         o: d.originalText,
         t: d.transformedText,
@@ -42,6 +43,24 @@ function candidates(text, language, searchResolution) {
         c: d.conditions,
         r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
     }));
+}
+
+/**
+ * Whether [text] holds no half of a surrogate pair. The letter resolution shortens the text one UTF-16 unit at a time,
+ * which splits a character outside the BMP (𠮶); such a text matches no term, and the engine's JSON reader refuses it.
+ * @param {string} text
+ */
+function isWellFormed(text) {
+    for (let i = 0; i < text.length; i++) {
+        const unit = text.charCodeAt(i);
+        if (unit >= 0xdc00 && unit <= 0xdfff) { return false; }
+        if (unit >= 0xd800 && unit <= 0xdbff) {
+            const next = text.charCodeAt(i + 1);
+            if (!(next >= 0xdc00 && next <= 0xdfff)) { return false; }
+            i++;
+        }
+    }
+    return true;
 }
 
 /**

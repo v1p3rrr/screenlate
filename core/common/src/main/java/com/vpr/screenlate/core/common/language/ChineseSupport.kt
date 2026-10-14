@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 import com.vpr.screenlate.core.common.Language
+import java.text.Normalizer
 import java.util.Locale
 
 /** Chinese in both scripts: one profile covers Simplified and Traditional text. */
@@ -91,9 +92,23 @@ object ChineseSupport : LanguageSupport {
     override val spellingFormTags = setOf("Simplified-Chinese", "Traditional-Chinese")
 
     /** Wiktionary adds the numbered pinyin of single characters: "xíng (xing²)", "tou (tou⁵／tou⁰)". */
-    override fun displayReading(reading: String): String = NUMBERED_PINYIN.matchEntire(reading)?.groupValues?.get(1) ?: reading
+    override fun displayReading(reading: String): String =
+        if (!reading.endsWith(')')) reading else NUMBERED_PINYIN.matchEntire(reading)?.groupValues?.get(1) ?: reading
+
+    /** In lower case without spaces, apostrophes, hyphens, colons and `//`, as Yomitan's normalizer for Chinese. */
+    override fun normalizeReading(reading: String): String =
+        Normalizer.normalize(reading, Normalizer.Form.NFC).lowercase(Locale.ROOT).replace("//", "")
+            .filterNot { it.isWhitespace() || it in READING_SEPARATORS }
+
+    /** Pinyin typed with tone marks, tone numbers (ni3hao3) or no tones. */
+    override val readingSearch = true
+
+    override fun readingKey(reading: String): String? = ChinesePinyin.key(reading)
+
+    override fun readingMatch(query: String, reading: String): Int = ChinesePinyin.match(query, reading)
 
     private val TRADITIONAL_REGIONS = setOf("TW", "HK", "MO")
+    private const val READING_SEPARATORS = "・:'’-"
     private val NUMBERED_PINYIN = Regex("(\\S.*?) \\([A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+(?:[ ／][A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+)*\\)")
 
     /** Hanzi and 〇, the zero of numbers written in characters (二〇二四年). */

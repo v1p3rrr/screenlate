@@ -1,12 +1,14 @@
 package com.vpr.screenlate.dictionary.api.registry
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.preferenceKey
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
 import com.vpr.screenlate.dictionary.api.LookupOptions
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import com.vpr.screenlate.dictionary.api.imports.ReadingIndexBanks
 import com.vpr.screenlate.dictionary.api.imports.TagBanks
 import com.vpr.screenlate.dictionary.api.imports.TranscriptionTagBanks
 import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
@@ -78,7 +80,8 @@ class DictionaryRepository @Inject constructor(
      * entry, which knows them best (JMdict names none, Wiktionary's merged transcriptions name `all` as the source),
      * then from index.json, then from the replaced dictionary, then from the archive's content
      * ([DictionaryLanguageDetector]), so the dictionary is used for its language only. Frequency and pitch
-     * dictionaries keep only a source language.
+     * dictionaries keep only a source language. A term dictionary of a language with a reading search gets its
+     * [ReadingIndex].
      */
     suspend fun import(
         archive: File,
@@ -117,9 +120,19 @@ class DictionaryRepository @Inject constructor(
             } else {
                 null
             }
+            Log.i(TAG, "Languages of ${metadata.title}: ${source ?: detected?.source} → ${target ?: detected?.target}")
+            val support = Language.of(source ?: detected?.source)?.support
+            if (metadata.termCount > 0 && support?.readingSearch == true) {
+                val indexStarted = System.currentTimeMillis()
+                val readingIndex = runCatching { ReadingIndexBanks.read(archive, support) }
+                    .onFailure { Log.w(TAG, "Reading the readings failed", it) }
+                    .getOrNull()
+                runCatching { storage.writeReadingIndex(imported.directory, readingIndex) }
+                    .onFailure { Log.w(TAG, "Writing the reading index failed", it) }
+                Log.i(TAG, "Reading index of ${metadata.title} took ${System.currentTimeMillis() - indexStarted} ms")
+            }
             // The engine's step cannot be stopped; a cancelled import ends here instead of registering its dictionary.
             currentCoroutineContext().ensureActive()
-            Log.i(TAG, "Languages of ${metadata.title}: ${source ?: detected?.source} → ${target ?: detected?.target}")
             return mutex.withLock {
                 val existing = replaced(replaces, metadata.title, kind, bundled)
                 // An update may take the title of another installed dictionary, which it then replaces as well.
@@ -388,6 +401,11 @@ class DictionaryRepository @Inject constructor(
         dao.getAll().filter { it.enabled && it.pitchCount > 0 }.mapNotNull { dictionary ->
             storage.transcriptionTags(dictionary)?.let { dictionary.title to it }
         }.toMap()
+    }
+
+    /** The reading indexes of [language]'s enabled term dictionaries that have one, highest priority first. */
+    suspend fun readingIndexes(language: Language): List<ReadingIndex> = withContext(Dispatchers.IO) {
+        dao.getAll().filter { it.termCount > 0 && usable(it, language) }.mapNotNull { storage.readingIndex(it) }
     }
 
     /**

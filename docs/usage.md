@@ -79,6 +79,8 @@ When something breaks outside Screenlate (AnkiDroid removed or its permission re
 
 Text selected in any app can also be looked up through the "Look up in Screenlate" entry of the selection menu, and the Search screen accepts typed text.
 
+In Chinese, the Search screen also finds words by pinyin typed in Latin letters, with or without tones: "nihao", "ni hao", "ni3hao3" and "nǐhǎo" all find 你好, and ü can be typed as v. Typed tones and an apostrophe between syllables (xi'an) rank the words that have them first; otherwise the frequency dictionary decides. Words are shown in the script chosen on the Lookup page. A dictionary imported by an earlier version must be imported again for this.
+
 Lookups also try a common respelling of the text: digits as kanji numerals (1人 → 一人), a character before 々 written twice, ッ as っ, and middle dots, commas, hyphens, periods and spaces removed. The text as it is on the screen is always looked up too.
 
 ## Popup

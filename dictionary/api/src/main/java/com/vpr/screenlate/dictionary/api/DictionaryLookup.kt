@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api
 
+import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.LookupStart
@@ -11,6 +12,7 @@ import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.ReadingIndex
 import com.vpr.screenlate.dictionary.api.registry.TranscriptionTags
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
 import com.vpr.screenlate.dictionary.api.settings.LookupSettingsRepository
@@ -36,6 +38,7 @@ class DictionaryLookup @Inject constructor(
     private val cachedTagNotes = PerGeneration<List<DictionaryTagNotes>>()
     private val cachedFrequencyModes = PerGeneration<Map<String, String>>()
     private val cachedTranscriptionTags = PerGeneration<Map<String, TranscriptionTags>>()
+    private val cachedReadingIndexes = PerGeneration<Pair<Language, List<ReadingIndex>>>()
 
     /**
      * @param scanLength characters of [text] to consider; the scan length setting when null.
@@ -68,7 +71,7 @@ class DictionaryLookup @Inject constructor(
             val script = settings.script?.takeIf { settings.fixedScript }
             val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
-                .mergeSameWords(prepared.termDictionaries)
+                .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
@@ -85,10 +88,72 @@ class DictionaryLookup @Inject constructor(
 
     /**
      * A lookup of a whole query (the search field, a dictionary link) rather than of text at the aim point: the scan
-     * covers the query, up to [LookupSettings.MAX_SCAN_LENGTH] characters, instead of the scan length setting.
+     * covers the query, up to [LookupSettings.MAX_SCAN_LENGTH] characters, instead of the scan length setting. In a
+     * language with [LanguageSupport.readingSearch], the words whose reading the query spells (pinyin) follow.
      */
-    suspend fun lookupQuery(text: String, language: Language, primaryReading: String? = null): List<LookupResult> =
-        lookup(text, language, scanLength = queryScanLength(text), primaryReading = primaryReading)
+    suspend fun lookupQuery(text: String, language: Language, primaryReading: String? = null): List<LookupResult> {
+        val found = lookup(text, language, scanLength = queryScanLength(text), primaryReading = primaryReading)
+        val support = language.support
+        val query = text.trim()
+        val key = if (support.readingSearch) support.readingKey(query) else null
+        if (key == null) return found
+        // The engine finds a word whose reading is typed exactly as the dictionary writes it (匙 for "shi"); the reading
+        // search finds it as well, in its own order.
+        val spelled = found.filter { it.term.expression == it.matched }
+        val shown = spelled.mapTo(HashSet()) { it.term.expression to it.term.reading }
+        return spelled + readingMatches(query, key, language).filter { (it.term.expression to it.term.reading) !in shown }
+    }
+
+    /**
+     * Words whose reading has the [key] of [query]: the words the reading indexes list for it, each looked up in the
+     * chosen script, as typed pinyin has none of its own; the tones typed in the query rank first.
+     */
+    private suspend fun readingMatches(query: String, key: String, language: Language): List<LookupResult> {
+        val settings = lookupSettings.current(language)
+        val support = language.support
+        return repository.withLookup(language) { prepared ->
+            val started = System.currentTimeMillis()
+            val lists = readingIndexes(language).map { it.find(key) }
+            val words = readingWords(lists, settings.script, support).take(MAX_READING_WORDS)
+            val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
+            val options = prepared.options.copy(maxResults = limit, language = language)
+            val engineLimit = engineLimit(limit, prepared.termDictionaries.size)
+
+            suspend fun entriesOf(word: String): List<LookupResult> {
+                val engineOptions = options.copy(scanLength = word.codePointCount(0, word.length), maxResults = engineLimit)
+                return engine.lookup(word, engineOptions)
+                    .map { it.asShown(support) }
+                    .filter { it.term.expression == word && support.readingKey(it.term.reading) == key }
+                    // Each word matches the whole query, which the page marks as read.
+                    .map { it.copy(matched = query) }
+            }
+
+            val found = words.flatMap { word ->
+                entriesOf(word.spelling).ifEmpty { if (word.original != word.spelling) entriesOf(word.original) else emptyList() }
+            }
+            val script = settings.script
+            val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
+                .sortedByDescending { support.readingMatch(query, it.term.reading) }
+                .mergeSameWords(prepared.termDictionaries, support)
+                .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
+                .take(limit)
+                .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
+                .withTranscriptions(support)
+                .map { it.copy(lang = scriptTag(it.term.expression, null, settings, support)) }
+            Log.d(
+                TAG,
+                "Reading search: ${lists.sumOf { it.size }} words listed, ${words.size} looked up, ${results.size} shown " +
+                    "in ${System.currentTimeMillis() - started} ms",
+            )
+            results
+        }
+    }
+
+    /** The reading indexes of [language]'s dictionaries, kept for the generation of the language last asked. */
+    private suspend fun readingIndexes(language: Language): List<ReadingIndex> {
+        val cached = cachedReadingIndexes.get(repository.generation) { language to repository.readingIndexes(language) }
+        return if (cached.first == language) cached.second else repository.readingIndexes(language)
+    }
 
     /**
      * Entries for the characters of the longest match that the language gives entries of their own (kanji), as
@@ -213,6 +278,39 @@ internal fun scriptTag(word: String, context: String?, settings: LookupSettings,
     if (settings.fixedScript) return settings.script
     return support.scriptOf(word) ?: context ?: settings.script
 }
+
+/** A word to look up for a typed reading: its [spelling] in the chosen script, else the [original] listed word. */
+internal data class ReadingWord(val spelling: String, val original: String)
+
+/**
+ * The words of each dictionary's reading index list ([lists], highest priority first) in turns, so the likely common
+ * ones of each come first, each spelled in [script] where it is written in another, once.
+ */
+internal fun readingWords(lists: List<List<String>>, script: String?, support: LanguageSupport): List<ReadingWord> {
+    val words = LinkedHashMap<String, ReadingWord>()
+    val longest = lists.maxOfOrNull { it.size } ?: 0
+    for (index in 0 until longest) {
+        for (list in lists) {
+            val word = list.getOrNull(index) ?: continue
+            val written = support.scriptOf(word)
+            val spelling = if (script != null && written != null && written != script) {
+                support.inScript(MappedText.identity(word), script).firstOrNull()?.text ?: word
+            } else {
+                word
+            }
+            words.putIfAbsent(spelling, ReadingWord(spelling, word))
+        }
+    }
+    return words.values.toList()
+}
+
+/**
+ * Words looked up for one typed reading at most. A syllable lists a few hundred characters, the likely common ones
+ * first ([ReadingIndex]), and each takes a lookup.
+ */
+internal const val MAX_READING_WORDS = 80
+
+private const val TAG = "DictionaryLookup"
 
 /**
  * Results the engine returns for [limit] shown ones. The engine cuts its list without the dictionary order, so with

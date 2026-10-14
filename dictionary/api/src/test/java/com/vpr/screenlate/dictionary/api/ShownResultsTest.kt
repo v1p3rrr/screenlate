@@ -65,7 +65,7 @@ class ShownResultsTest {
             result("图书馆", "túshūguǎn", "CC-CEDICT", frequency = 3000),
         )
 
-        val merged = results.mergeSameWords(order)
+        val merged = results.mergeSameWords(order, chinese)
 
         assertThat(merged.map { it.term.expression }).containsExactly("图书馆", "图书").inOrder()
         assertThat(merged[0].term.glossaries.map { it.dictionary }).containsExactly("CC-CEDICT", "Wiktionary").inOrder()
@@ -73,10 +73,21 @@ class ShownResultsTest {
     }
 
     @Test
+    fun `readings spaced differently are one word`() {
+        val results = listOf(result("你好", "nǐhǎo", "CC-CEDICT"), result("你好", "nǐ hǎo", "Wiktionary"))
+
+        val merged = results.mergeSameWords(order, chinese)
+
+        assertThat(merged).hasSize(1)
+        assertThat(merged[0].term.reading).isEqualTo("nǐhǎo")
+        assertThat(merged[0].term.glossaries.map { it.dictionary }).containsExactly("CC-CEDICT", "Wiktionary").inOrder()
+    }
+
+    @Test
     fun `words of another reading stay apart`() {
         val results = listOf(result("行", "xíng", "CC-CEDICT"), result("行", "háng", "CC-CEDICT"))
 
-        assertThat(results.mergeSameWords(order)).hasSize(2)
+        assertThat(results.mergeSameWords(order, chinese)).hasSize(2)
     }
 
     @Test

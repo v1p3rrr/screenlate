@@ -146,6 +146,27 @@ interface LanguageSupport {
 
     /** A dictionary's reading as entries show it, without notations it adds ("xíng (xing²)" → "xíng"). */
     fun displayReading(reading: String): String = reading
+
+    /**
+     * The form of a reading ([displayReading]) under which results of one word join, as Yomitan's reading normalizer
+     * groups them: pinyin "nǐ hǎo" and "nǐhǎo" are one reading.
+     */
+    fun normalizeReading(reading: String): String = reading
+
+    /** Whether a typed search also finds words by their reading in Latin letters (pinyin), see [readingKey]. */
+    val readingSearch: Boolean get() = false
+
+    /**
+     * What a typed reading and a dictionary's reading ([displayReading]) of the same word share for [readingSearch]:
+     * for pinyin, its letters without tones, spaces or apostrophes. Null when [reading] is not one.
+     */
+    fun readingKey(reading: String): String? = null
+
+    /**
+     * How well what [query] types beyond the [readingKey] agrees with [reading] of the same key: for pinyin, one point
+     * for each tone and syllable break that matches, one off for each that does not; 0 when the query has none.
+     */
+    fun readingMatch(query: String, reading: String): Int = 0
 }
 
 /** Which matches a lookup accepts. */

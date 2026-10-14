@@ -53,6 +53,18 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
         if (tags != null) tags.write(File(directory, TRANSCRIPTION_TAGS))
     }
 
+    /** The [ReadingIndex] of the dictionary's words; null when its language has none or it was not built. */
+    fun readingIndex(dictionary: DictionaryEntity): ReadingIndex? {
+        val file = File(directoryOf(dictionary), READING_INDEX)
+        if (!file.exists()) return null
+        return runCatching { ReadingIndex.read(file) }.getOrNull()
+    }
+
+    /** Saves the reading index of a dictionary into its [directory]; nothing is written for null. */
+    fun writeReadingIndex(directory: File, index: ReadingIndex.Builder?) {
+        index?.write(File(directory, READING_INDEX))
+    }
+
     /** A fresh empty directory for one import; delete it when done. */
     fun newStagingDirectory(): File = File(staging, UUID.randomUUID().toString()).apply { mkdirs() }
 
@@ -94,6 +106,7 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
         /** Next to the engine's files, which it does not look at. */
         const val TAG_NOTES = "tag_notes.json"
         const val TRANSCRIPTION_TAGS = "transcription_tags.bin"
+        const val READING_INDEX = "reading_index.bin"
         val NOTES = MapSerializer(String.serializer(), String.serializer())
     }
 }
