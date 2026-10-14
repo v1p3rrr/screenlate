@@ -71,6 +71,8 @@ object SettingsKeys {
     private val perLanguage = setOf(
         "lookup_scan_length",
         "lookup_single_kanji",
+        "lookup_script",
+        "lookup_fixed_script",
         "popup_font",
         "popup_font_all_text",
         "popup_custom_css",

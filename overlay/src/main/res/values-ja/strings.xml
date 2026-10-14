@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">この文字はどの漢字辞書にもありません。漢字辞書は辞書画面からダウンロードできます。</string>
     <string name="overlay_kanji_onyomi">音</string>
     <string name="overlay_kanji_kunyomi">訓</string>
+    <string name="overlay_character_pinyin">ピンイン</string>
     <string name="overlay_kanji_strokes">画数</string>
     <string name="overlay_kanji_grade">学年</string>
     <string name="overlay_kanji_frequency">頻度</string>

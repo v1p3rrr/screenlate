@@ -49,6 +49,12 @@ The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
 `overlay`, whose unit test checks that every listed country has a drawable.
 
+The table of Simplified and Traditional Chinese characters (`ChineseScriptTable.kt` in `core:common`) is generated
+from the Unihan database (Unicode License V3) and CC-CEDICT (CC BY-SA 4.0):
+`python scripts/chinese-scripts/build.py <Unihan.zip> <CC-CEDICT.zip> core/common/src/main/java/com/vpr/screenlate/core/common/language/ChineseScriptTable.kt`,
+with `Unihan.zip` from `https://www.unicode.org/Public/<version>/ucd/` (kept in `testdata/unihan/`) and the Yomitan
+build of CC-CEDICT from the catalog. The table is CC BY-SA 4.0, like CC-CEDICT.
+
 ## Language bundles
 
 Languages other than Japanese are looked up through Yomitan's language code, built into one script per language in

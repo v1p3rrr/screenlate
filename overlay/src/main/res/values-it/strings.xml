@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">Nessun dizionario di kanji contiene questo carattere. I dizionari di kanji si possono scaricare nella schermata Dizionari.</string>
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
+    <string name="overlay_character_pinyin">Pinyin</string>
     <string name="overlay_kanji_strokes">Tratti</string>
     <string name="overlay_kanji_grade">Anno scolastico</string>
     <string name="overlay_kanji_frequency">Frequenza</string>

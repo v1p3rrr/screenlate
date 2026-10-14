@@ -17,7 +17,7 @@ class SettingsKeysTest {
         SettingsSection.BACKGROUND to listOf("overlay_keep_alive"),
         SettingsSection.LOOKUP to listOf(
             "lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji", "lookup_scan_length_en",
-            "lookup_single_kanji_en",
+            "lookup_single_kanji_en", "lookup_script_zh", "lookup_fixed_script_zh",
         ),
         SettingsSection.ANKI to listOf("anki_settings", "audio_settings", "audio_sources_chosen", "anki_settings_en", "audio_settings_en"),
         SettingsSection.POPUP to listOf(
@@ -84,6 +84,7 @@ class SettingsKeysTest {
         assertThat(SettingsKeys.languageOf("popup_font_all_text_en")).isEqualTo(Language.ENGLISH)
         assertThat(SettingsKeys.languageOf("popup_font_size")).isNull()
         assertThat(SettingsKeys.languageOf("lookup_max_results")).isNull()
+        assertThat(SettingsKeys.languageOf("lookup_script_zh")).isEqualTo(Language.CHINESE)
         assertThat(SettingsKeys.languageOf("anki_settings_xx")).isNull()
     }
 
@@ -96,5 +97,7 @@ class SettingsKeysTest {
             .containsExactly("lookup_max_results", "lookup_romaji", "lookup_scan_length_en", "lookup_single_kanji_en")
         assertThat(cleared(Language.JAPANESE))
             .containsExactly("lookup_scan_length", "lookup_max_results", "lookup_romaji", "lookup_single_kanji")
+        assertThat(cleared(Language.CHINESE))
+            .containsExactly("lookup_max_results", "lookup_romaji", "lookup_script_zh", "lookup_fixed_script_zh")
     }
 }

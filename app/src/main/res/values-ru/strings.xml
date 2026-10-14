@@ -259,6 +259,12 @@
     <string name="lookup_single_characters_hint">Под результатами показываются статьи остальных иероглифов найденного слова.</string>
     <string name="lookup_romaji">Искать ромадзи как японский</string>
     <string name="lookup_romaji_hint">Латиница дополнительно ищется как кана (taberu → たべる) — и на экране, и в поиске.</string>
+    <string name="lookup_script">Иероглифы</string>
+    <string name="lookup_script_simplified">Упрощённые</string>
+    <string name="lookup_script_traditional">Традиционные</string>
+    <string name="lookup_script_hint">Иероглифы, которые одинаковы в обеих системах, рисуются в начертании этой, если по тексту не видно, какая из них.</string>
+    <string name="lookup_fixed_script">Все слова в этих иероглифах</string>
+    <string name="lookup_fixed_script_hint">Текст в другой системе ищется и в этих иероглифах, а слова показываются в них, если словарь их так пишет.</string>
     <string name="problems_title">Требует внимания</string>
     <string name="problems_open_anki">Открыть настройки Anki</string>
     <string name="problems_dictionaries_missing">Пропали файлы словарей:</string>

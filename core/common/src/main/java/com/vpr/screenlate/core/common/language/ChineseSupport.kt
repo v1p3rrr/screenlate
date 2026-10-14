@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 import com.vpr.screenlate.core.common.Language
+import java.util.Locale
 
 /** Chinese in both scripts: one profile covers Simplified and Traditional text. */
 object ChineseSupport : LanguageSupport {
@@ -24,7 +25,7 @@ object ChineseSupport : LanguageSupport {
     override val iso639Part3 = "cmn"
     override val wikidataId = "Q9192"
 
-    /** Simplified; a match in Traditional characters sets its own tag where the text is shown. */
+    /** Simplified; each result carries the tag of its own script ([scriptTags]). */
     override val languageTag = "zh-Hans"
     override val fontSample = "汉字 漢字 · 骨 直 角 · 你好，世界"
     override val translationSample = "今天天气很好。我们去散步吧。"
@@ -71,6 +72,29 @@ object ChineseSupport : LanguageSupport {
         val codePoint = text.codePointAt(0)
         return if (CjkText.isHan(codePoint)) String(Character.toChars(codePoint)) else null
     }
+
+    override val scriptTags = listOf(ChineseScripts.SIMPLIFIED, ChineseScripts.TRADITIONAL)
+
+    override fun scriptOf(text: String): String? = ChineseScripts.scriptOf(text)
+
+    override fun inScript(text: MappedText, tag: String): List<MappedText> = ChineseScripts.convert(text, tag)
+
+    /** Traditional for an interface in Traditional Chinese, Simplified otherwise. */
+    override fun defaultScriptTag(locale: Locale): String =
+        if (locale.language == "zh" && (locale.script == "Hant" || locale.country in TRADITIONAL_REGIONS)) {
+            ChineseScripts.TRADITIONAL
+        } else {
+            ChineseScripts.SIMPLIFIED
+        }
+
+    /** Wiktionary links Simplified spellings to Traditional entries and some Traditional ones to others. */
+    override val spellingFormTags = setOf("Simplified-Chinese", "Traditional-Chinese")
+
+    /** Wiktionary adds the numbered pinyin of single characters: "xíng (xing²)", "tou (tou⁵／tou⁰)". */
+    override fun displayReading(reading: String): String = NUMBERED_PINYIN.matchEntire(reading)?.groupValues?.get(1) ?: reading
+
+    private val TRADITIONAL_REGIONS = setOf("TW", "HK", "MO")
+    private val NUMBERED_PINYIN = Regex("(\\S.*?) \\([A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+(?:[ ／][A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+)*\\)")
 
     /** Hanzi and 〇, the zero of numbers written in characters (二〇二四年). */
     private fun isChineseLetter(codePoint: Int): Boolean = CjkText.isHan(codePoint) || codePoint == 0x3007

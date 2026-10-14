@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.web
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
@@ -26,6 +27,7 @@ object PageState {
      * @param pending OCR is still refining the text; shows a spinner.
      * @param engine OCR engine label, empty to hide.
      * @param kanji shown instead of [results] and [message]: the first character's kanji entry when no word was found.
+     * @param language the language of the lookup, for the labels of [kanji]'s readings.
      */
     fun build(
         context: Context,
@@ -42,6 +44,7 @@ object PageState {
         kanji: KanjiResult? = null,
         sentence: String = "",
         installation: Boolean = false,
+        language: Language,
     ): String = json.encodeToString(
         StateDto(
             theme = theme.css,
@@ -50,11 +53,11 @@ object PageState {
             engine = engine,
             ocrError = ocrError,
             hideSource = hideSource,
-            source = SourceDto(text, matched),
+            source = SourceDto(text, matched, results.firstOrNull()?.lang ?: kanji?.lang),
             results = results,
             kanji = kanji,
             message = message.takeIf { kanji == null },
-            labels = if (kanji != null) labels(context) + kanjiLabels(context) else labels(context),
+            labels = if (kanji != null) labels(context) + kanjiLabels(context, language) else labels(context),
             sentence = sentence,
             installation = installation,
         ),
@@ -86,24 +89,32 @@ object PageState {
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
-    fun kanji(context: Context, theme: PageTheme, kanji: KanjiResult, message: String?): String = json.encodeToString(
-        StateDto(
-            theme = theme.css,
-            source = SourceDto(kanji.character, 1),
-            kanji = kanji.takeIf { it.entries.isNotEmpty() },
-            message = message.takeIf { kanji.entries.isEmpty() },
-            labels = labels(context) + kanjiLabels(context),
-        ),
-    )
+    fun kanji(context: Context, theme: PageTheme, kanji: KanjiResult, message: String?, language: Language): String =
+        json.encodeToString(
+            StateDto(
+                theme = theme.css,
+                source = SourceDto(kanji.character, 1, kanji.lang),
+                kanji = kanji.takeIf { it.entries.isNotEmpty() },
+                message = message.takeIf { kanji.entries.isEmpty() },
+                labels = labels(context) + kanjiLabels(context, language),
+            ),
+        )
 
-    private fun kanjiLabels(context: Context): Map<String, String> = mapOf(
-        "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
-        "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
+    private fun kanjiLabels(context: Context, language: Language): Map<String, String> = readingLabels(context, language) + mapOf(
         "stat_strokes" to context.getString(R.string.overlay_kanji_strokes),
         "stat_grade" to context.getString(R.string.overlay_kanji_grade),
         "stat_jlpt" to context.getString(R.string.overlay_kanji_jlpt),
         "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
     )
+
+    /** A character dictionary's two reading fields: on and kun readings of kanji, pinyin of Chinese characters. */
+    private fun readingLabels(context: Context, language: Language): Map<String, String> = when (language) {
+        Language.JAPANESE, Language.ENGLISH -> mapOf(
+            "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
+            "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
+        )
+        Language.CHINESE -> context.getString(R.string.overlay_character_pinyin).let { mapOf("onyomi" to it, "kunyomi" to it) }
+    }
 
     /** Length of the first result's match in code points, for highlighting; one character for a [kanji] entry. */
     fun matchedLength(results: List<LookupResult>, kanji: KanjiResult? = null): Int =
@@ -140,6 +151,7 @@ object PageState {
         val sentence: String = "",
     )
 
+    /** @property lang the script of [text] where the language has several, as the results' `lang`. */
     @Serializable
-    private data class SourceDto(val text: String, val matched: Int)
+    private data class SourceDto(val text: String, val matched: Int, val lang: String? = null)
 }

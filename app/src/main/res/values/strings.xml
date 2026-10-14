@@ -258,6 +258,12 @@
     <string name="lookup_single_characters_hint">Entries for the other characters of the found word are shown below the results.</string>
     <string name="lookup_romaji">Look up romaji as Japanese</string>
     <string name="lookup_romaji_hint">Latin text is also looked up as kana (taberu → たべる), on the screen and in search.</string>
+    <string name="lookup_script">Characters</string>
+    <string name="lookup_script_simplified">Simplified</string>
+    <string name="lookup_script_traditional">Traditional</string>
+    <string name="lookup_script_hint">Characters written alike in both scripts take this script’s shapes where the text does not show which one it is.</string>
+    <string name="lookup_fixed_script">All words in these characters</string>
+    <string name="lookup_fixed_script_hint">Text in the other script is also looked up in these characters, and words are shown in them where a dictionary spells them so.</string>
     <string name="problems_title">Needs attention</string>
     <string name="problems_open_anki">Open Anki settings</string>
     <string name="problems_dictionaries_missing">Dictionaries whose files are missing:</string>

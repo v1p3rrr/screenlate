@@ -252,6 +252,12 @@
     <string name="lookup_single_characters_hint">Mục của các chữ Hán khác trong từ tìm được hiển thị bên dưới kết quả.</string>
     <string name="lookup_romaji">Tra romaji như tiếng Nhật</string>
     <string name="lookup_romaji_hint">Chữ Latinh cũng được tra dưới dạng kana (taberu → たべる), trên màn hình và trong tìm kiếm.</string>
+    <string name="lookup_script">Dạng chữ</string>
+    <string name="lookup_script_simplified">Giản thể</string>
+    <string name="lookup_script_traditional">Phồn thể</string>
+    <string name="lookup_script_hint">Chữ viết giống nhau ở cả hai dạng sẽ lấy nét của dạng này khi văn bản không cho biết là dạng nào.</string>
+    <string name="lookup_fixed_script">Mọi từ theo dạng chữ này</string>
+    <string name="lookup_fixed_script_hint">Văn bản ở dạng kia cũng được tra theo dạng chữ này, và từ được hiển thị theo dạng này nếu từ điển viết như vậy.</string>
     <string name="problems_title">Cần chú ý</string>
     <string name="problems_open_anki">Mở cài đặt Anki</string>
     <string name="problems_dictionaries_missing">Từ điển bị thiếu tệp:</string>

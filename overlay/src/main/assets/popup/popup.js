@@ -9,7 +9,8 @@
  *   noteWait: boolean,             ➕ waits for the final text: it is grey, and a tap asks the app for a hint
  *   engine: string,                OCR engine label, empty to hide
  *   ocrError: string,              why cloud recognition failed, empty without a failure; ⚠ opens it in the panel
- *   source: { text, matched },     lookup text and the length of its matched prefix (code points)
+ *   source: { text, matched, lang }, lookup text, the length of its matched prefix (code points) and, for a language
+ *                                  written in several scripts, the tag of the text's script (as each result's lang)
  *   results: [LookupResult],       see dictionary.api.model.LookupResult
  *   kanji: KanjiResult,            a kanji entry shown instead of results: a tapped headword kanji, or the first
  *                                  character when no word was found
@@ -140,6 +141,7 @@ const Popup = (() => {
         drawTranslation(state);
 
         source.replaceChildren();
+        setLang(source, state.source?.lang);
         const text = state.source?.text || '';
         const chars = Array.from(text);
         const matched = Math.min(state.source?.matched || 0, chars.length);
@@ -349,10 +351,17 @@ const Popup = (() => {
         if (history.length === 0) drawTranslation(current);
     }
 
+    /** A script's tag picks the glyph forms of the language's fonts (zh-Hans, zh-Hant); without one the page's applies. */
+    function setLang(node, lang) {
+        if (lang) node.lang = lang;
+        else node.removeAttribute('lang');
+    }
+
     function entry(result, index, labels) {
         const term = result.term;
         const article = element('article', 'entry');
         article.dataset.index = String(index);
+        setLang(article, result.lang);
 
         const head = element('div', 'entry-head');
         const expression = element('span', 'expression');
@@ -628,6 +637,7 @@ const Popup = (() => {
     /** A kanji dictionary entry: the character, readings, meanings and a few statistics per dictionary. */
     function kanjiView(kanji, labels) {
         const view = element('article', 'entry kanji-entry');
+        setLang(view, kanji.lang);
         view.append(element('div', 'kanji-character', kanji.character));
         for (const entry of kanji.entries || []) {
             const section = element('section', 'dictionary');

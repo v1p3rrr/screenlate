@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 import com.vpr.screenlate.core.common.Language
+import java.util.Locale
 
 /**
  * Everything that differs between source languages. Code outside the implementations asks this class instead of
@@ -118,6 +119,33 @@ interface LanguageSupport {
      * kanji entry shown when no word is found there; null otherwise.
      */
     fun characterEntry(text: String): String?
+
+    /**
+     * BCP 47 tags of the scripts the language is written in, where it has several (Simplified and Traditional
+     * Chinese); empty otherwise. Each result of a lookup is tagged with one of them.
+     */
+    val scriptTags: List<String> get() = emptyList()
+
+    /** The script ([scriptTags]) [text] is written in; null where it reads the same in each. */
+    fun scriptOf(text: String): String? = null
+
+    /**
+     * [text] written in the script with [tag] ([scriptTags]), one spelling per likely conversion, the most likely
+     * first; empty when nothing in it changes.
+     */
+    fun inScript(text: MappedText, tag: String): List<MappedText> = emptyList()
+
+    /** The script for words written alike in each that an interface language ([locale]) suggests. */
+    fun defaultScriptTag(locale: Locale): String? = scriptTags.firstOrNull()
+
+    /**
+     * Tags of form-of entries that only spell a word in another script (Wiktionary's `Simplified-Chinese`); such a
+     * result is shown under the spelling that was read.
+     */
+    val spellingFormTags: Set<String> get() = emptySet()
+
+    /** A dictionary's reading as entries show it, without notations it adds ("xíng (xing²)" → "xíng"). */
+    fun displayReading(reading: String): String = reading
 }
 
 /** Which matches a lookup accepts. */

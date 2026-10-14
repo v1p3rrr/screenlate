@@ -252,6 +252,12 @@
     <string name="lookup_single_characters_hint">結果の下に、見つかった語のほかの漢字の項目を表示します。</string>
     <string name="lookup_romaji">ローマ字を日本語として調べる</string>
     <string name="lookup_romaji_hint">ラテン文字もかなとして調べます（taberu → たべる）。画面上でも検索でも有効です。</string>
+    <string name="lookup_script">字体</string>
+    <string name="lookup_script_simplified">簡体字</string>
+    <string name="lookup_script_traditional">繁体字</string>
+    <string name="lookup_script_hint">両方で同じ字は、テキストからどちらか分からないとき、この字体の字形で表示します。</string>
+    <string name="lookup_fixed_script">すべての語をこの字体で</string>
+    <string name="lookup_fixed_script_hint">もう一方の字体のテキストもこの字体で調べ、辞書がこの字体で載せていれば語をこの字体で表示します。</string>
     <string name="problems_title">確認が必要です</string>
     <string name="problems_open_anki">Anki の設定を開く</string>
     <string name="problems_dictionaries_missing">ファイルが見つからない辞書：</string>

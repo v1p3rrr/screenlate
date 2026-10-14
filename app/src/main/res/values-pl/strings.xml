@@ -258,6 +258,12 @@
     <string name="lookup_single_characters_hint">Pod wynikami wyświetlane są hasła pozostałych znaków znalezionego słowa.</string>
     <string name="lookup_romaji">Wyszukuj romaji jako japoński</string>
     <string name="lookup_romaji_hint">Tekst łaciński jest też wyszukiwany jako kana (taberu → たべる), na ekranie i w wyszukiwarce.</string>
+    <string name="lookup_script">Znaki</string>
+    <string name="lookup_script_simplified">Uproszczone</string>
+    <string name="lookup_script_traditional">Tradycyjne</string>
+    <string name="lookup_script_hint">Znaki pisane tak samo w obu systemach przyjmują kształty tego systemu, gdy tekst nie pokazuje, który to jest.</string>
+    <string name="lookup_fixed_script">Wszystkie słowa w tych znakach</string>
+    <string name="lookup_fixed_script_hint">Tekst w drugim systemie jest też wyszukiwany w tych znakach, a słowa są w nich pokazywane, jeśli słownik tak je zapisuje.</string>
     <string name="problems_title">Wymaga uwagi</string>
     <string name="problems_open_anki">Otwórz ustawienia Anki</string>
     <string name="problems_dictionaries_missing">Słowniki, którym brakuje plików:</string>

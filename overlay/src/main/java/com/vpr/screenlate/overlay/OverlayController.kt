@@ -1282,7 +1282,7 @@ class OverlayController(
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
         shownLookup = null
-        val page = if (installation) PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = true) else popupState(view)
+        val page = if (installation) PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = true, language = language) else popupState(view)
         popup.show(page, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
@@ -1420,7 +1420,7 @@ class OverlayController(
         return withContext(Dispatchers.Default) {
             PageState.build(
                 service, theme, view.text, view.matched, view.results, view.message, pending, engine, hideSource, ocrError,
-                noteWait, view.kanji, sentenceOf(view)?.text.orEmpty(),
+                noteWait, view.kanji, sentenceOf(view)?.text.orEmpty(), language = language,
             )
         }
     }
@@ -1471,6 +1471,7 @@ class OverlayController(
             noteWait = noteWaitsForText(pending, aimedEngine()),
             kanji = view.kanji,
             sentence = sentenceOf(view)?.text.orEmpty(),
+            language = language,
         )
     }
 
@@ -1551,7 +1552,7 @@ class OverlayController(
                     KanjiResult(character)
                 }
                 if (shownLookup !== shown) return@launch
-                popup.push(PageState.kanji(service, pageTheme(), result, service.getString(R.string.overlay_no_kanji)))
+                popup.push(PageState.kanji(service, pageTheme(), result, service.getString(R.string.overlay_no_kanji), language))
             }
         }
 

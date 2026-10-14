@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">Hiçbir kanji sözlüğünde bu karakter yok. Kanji sözlükleri Sözlükler ekranından indirilebilir.</string>
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
+    <string name="overlay_character_pinyin">Pinyin</string>
     <string name="overlay_kanji_strokes">Çizgi sayısı</string>
     <string name="overlay_kanji_grade">Sınıf</string>
     <string name="overlay_kanji_frequency">Sıklık</string>

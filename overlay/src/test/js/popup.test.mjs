@@ -209,6 +209,29 @@ test('kanji entries list readings and statistics', () => {
     assert.equal(content.querySelector('.frequency').textContent, 'Strokes11');
 });
 
+test('a script tag gives the source, its entries and a character view their glyph forms', () => {
+    Popup.render(state({
+        source: { text: '電腦', matched: 2, lang: 'zh-Hant' },
+        results: [{ ...result('電腦', 'diànnǎo'), lang: 'zh-Hant' }, result('電', 'diàn')],
+    }));
+    const source = page.document.getElementById('source');
+    assert.equal(source.lang, 'zh-Hant');
+    const entries = content.querySelectorAll('article.entry');
+    assert.equal(entries[0].lang, 'zh-Hant');
+    assert.equal(entries[1].hasAttribute('lang'), false);
+
+    Popup.render(state());
+    assert.equal(source.hasAttribute('lang'), false);
+
+    Popup.render({
+        theme: 'light',
+        source: { text: '骨', matched: 1, lang: 'zh-Hans' },
+        kanji: { character: '骨', lang: 'zh-Hans', entries: [{ dictionary: 'Hanzi', onyomi: 'gǔ', definitions: ['bone'] }] },
+        labels,
+    });
+    assert.equal(content.querySelector('.kanji-character').closest('[lang]').lang, 'zh-Hans');
+});
+
 test('appearance sets the language, fonts and custom css', () => {
     Popup.setAppearance({
         lang: 'ja',

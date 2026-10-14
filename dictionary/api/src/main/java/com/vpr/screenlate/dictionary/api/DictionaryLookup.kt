@@ -63,16 +63,23 @@ class DictionaryLookup @Inject constructor(
             )
             val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
             val found = LookupVariants.of(text, settings, support).flatMap { variant ->
-                engine.lookup(variant.text, engineOptions).map { it.inSource(text, variant) }
+                engine.lookup(variant.text, engineOptions).map { it.asShown(support).inSource(text, variant) }
             }
+            val script = settings.script?.takeIf { settings.fixedScript }
             val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
-                .distinctBy { it.term.expression to it.term.reading }
+                .mergeSameWords(prepared.termDictionaries)
+                .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
                 .withTranscriptions(support)
-            if (!extraEntries || !settings.singleKanji) return@withLookup results
-            results + singleCharacterEntries(results, language, options, prepared.termDictionaries)
+            val all = if (!extraEntries || !settings.singleKanji) {
+                results
+            } else {
+                results + singleCharacterEntries(results, language, options, prepared.termDictionaries, script != null)
+            }
+            val context = support.scriptOf(text)
+            all.map { it.copy(lang = scriptTag(it.term.expression, context, settings, support)) }
         }
     }
 
@@ -85,23 +92,29 @@ class DictionaryLookup @Inject constructor(
 
     /**
      * Entries for the characters of the longest match that the language gives entries of their own (kanji), as
-     * words of a term dictionary; terms already shown are skipped.
+     * words of a term dictionary; terms already shown are skipped. With [fixedScript] the characters are those of the
+     * word as shown, which may be the match in the other script.
      */
     private suspend fun singleCharacterEntries(
         results: List<LookupResult>,
         language: Language,
         options: LookupOptions,
         dictionaryOrder: List<String>,
+        fixedScript: Boolean,
     ): List<LookupResult> {
-        val longest = results.maxByOrNull { it.matched.length }?.matched ?: return emptyList()
+        val result = results.maxByOrNull { it.matched.length } ?: return emptyList()
+        val respelled = fixedScript && result.trace.isEmpty() && result.term.expression.length == result.matched.length
+        val longest = if (respelled) result.term.expression else result.matched
         val shown = results.mapTo(mutableSetOf()) { it.term.expression to it.term.reading }
-        return language.support.singleCharacterEntries(longest).flatMap { character ->
+        val support = language.support
+        return support.singleCharacterEntries(longest).flatMap { character ->
             val engineOptions = options.copy(
                 scanLength = 1,
                 primaryReading = null,
                 maxResults = engineLimit(options.maxResults, dictionaryOrder.size),
             )
             val entries = engine.lookup(character, engineOptions)
+                .map { it.asShown(support) }
                 .filter { it.term.expression == character && it.deinflected == character }
                 .filter { shown.add(it.term.expression to it.term.reading) }
             YomitanSorter.sort(entries, options, dictionaryOrder).take(options.maxResults)
@@ -134,8 +147,10 @@ class DictionaryLookup @Inject constructor(
     suspend fun tagNotes(): List<DictionaryTagNotes> = cachedTagNotes.get(repository.generation) { repository.tagNotes() }
 
     /** Entries for one character from the enabled kanji dictionaries; empty when there are none. */
-    suspend fun kanji(character: String, language: Language): KanjiResult = repository.withLookup(language) {
-        engine.kanji(character)
+    suspend fun kanji(character: String, language: Language): KanjiResult {
+        val found = repository.withLookup(language) { engine.kanji(character) }
+        if (language.support.scriptTags.isEmpty()) return found
+        return found.copy(lang = scriptTag(character, null, settings(language), language.support))
     }
 
     /**
@@ -187,6 +202,16 @@ enum class NoTermDictionary {
 
     /** Every dictionary with definitions for the language is off, deleted, or without its files. */
     NONE_ON,
+}
+
+/**
+ * The script a word of a language written in several is shown in: the chosen one when every word is, else the word's
+ * own, the script of the [context] around it, or the chosen one for words written alike; null for a language with one.
+ */
+internal fun scriptTag(word: String, context: String?, settings: LookupSettings, support: LanguageSupport): String? {
+    if (support.scriptTags.isEmpty()) return null
+    if (settings.fixedScript) return settings.script
+    return support.scriptOf(word) ?: context ?: settings.script
 }
 
 /**

@@ -256,6 +256,12 @@
     <string name="lookup_single_characters_hint">Debajo de los resultados se muestran entradas para los demás caracteres de la palabra encontrada.</string>
     <string name="lookup_romaji">Buscar el romaji como japonés</string>
     <string name="lookup_romaji_hint">El texto latino también se busca como kana (taberu → たべる), en la pantalla y en la búsqueda.</string>
+    <string name="lookup_script">Caracteres</string>
+    <string name="lookup_script_simplified">Simplificados</string>
+    <string name="lookup_script_traditional">Tradicionales</string>
+    <string name="lookup_script_hint">Los caracteres que se escriben igual en ambas escrituras toman las formas de esta cuando el texto no muestra cuál es.</string>
+    <string name="lookup_fixed_script">Todas las palabras en estos caracteres</string>
+    <string name="lookup_fixed_script_hint">El texto en la otra escritura también se busca en estos caracteres, y las palabras se muestran en ellos si un diccionario las escribe así.</string>
     <string name="problems_title">Requiere atención</string>
     <string name="problems_open_anki">Abrir ajustes de Anki</string>
     <string name="problems_dictionaries_missing">Diccionarios a los que les faltan archivos:</string>

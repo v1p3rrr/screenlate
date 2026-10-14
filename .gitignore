@@ -34,6 +34,9 @@ keystore.properties
 
 # wordfreq word lists for frequency dictionary tests (third-party data).
 /testdata/wordfreq/
+
+# The Unicode Han database, the source of generated character tables.
+/testdata/unihan/
 node_modules/
 
 # Written into source archives by the release workflow; builds from git read the version from tags.

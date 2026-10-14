@@ -12,6 +12,8 @@ import kotlinx.serialization.Serializable
  * @property otherTraces further chains of steps that lead to the same term (Yomitan lists every one), the shorter
  * first; only lookups through Yomitan's language code report them.
  * @property preprocessorSteps number of text normalizations applied (kana conversion, width, etc.).
+ * @property lang BCP 47 tag of the script the entry is shown in, for a language written in several
+ *   (`LanguageSupport.scriptTags`); null otherwise.
  */
 @Serializable
 data class LookupResult(
@@ -21,6 +23,7 @@ data class LookupResult(
     val otherTraces: List<List<Transform>> = emptyList(),
     val term: TermEntry,
     val preprocessorSteps: Int = 0,
+    val lang: String? = null,
 )
 
 /**
@@ -109,10 +112,12 @@ data class DictionaryTagNotes(
     val notes: Map<String, String>,
 )
 
+/** @property lang as [LookupResult.lang]. */
 @Serializable
 data class KanjiResult(
     val character: String,
     val entries: List<KanjiEntry> = emptyList(),
+    val lang: String? = null,
 )
 
 @Serializable

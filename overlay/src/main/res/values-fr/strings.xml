@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">Aucun dictionnaire de kanji ne contient ce caractère. Des dictionnaires de kanji peuvent être téléchargés sur l’écran Dictionnaires.</string>
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
+    <string name="overlay_character_pinyin">Pinyin</string>
     <string name="overlay_kanji_strokes">Traits</string>
     <string name="overlay_kanji_grade">Niveau scolaire</string>
     <string name="overlay_kanji_frequency">Fréquence</string>

@@ -45,6 +45,7 @@
     <string name="overlay_no_kanji">Этого кандзи нет в кандзи-словарях. Кандзи-словари можно скачать на экране «Словари».</string>
     <string name="overlay_kanji_onyomi">Он</string>
     <string name="overlay_kanji_kunyomi">Кун</string>
+    <string name="overlay_character_pinyin">Пиньинь</string>
     <string name="overlay_kanji_strokes">Черт</string>
     <string name="overlay_kanji_grade">Класс</string>
     <string name="overlay_kanji_frequency">Частота</string>

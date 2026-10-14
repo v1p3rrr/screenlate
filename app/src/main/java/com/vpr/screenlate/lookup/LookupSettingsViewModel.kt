@@ -37,6 +37,10 @@ class LookupSettingsViewModel @Inject constructor(
 
     fun setSingleKanji(enabled: Boolean) = launch { repository.setSingleKanji(language(), enabled) }
 
+    fun setScript(tag: String) = launch { repository.setScript(language(), tag) }
+
+    fun setFixedScript(enabled: Boolean) = launch { repository.setFixedScript(language(), enabled) }
+
     private fun language(): Language = shown.language.value
 
     private fun launch(block: suspend () -> Unit) {

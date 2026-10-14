@@ -140,7 +140,7 @@ fun SearchScreen(
                         val result = viewModel.kanji(character)
                         if (viewModel.results.value !== shown) return@launch
                         holder.page.push(
-                            PageState.kanji(context, currentTheme, result, noKanji),
+                            PageState.kanji(context, currentTheme, result, noKanji, viewModel.language.value),
                         )
                     }
                 }
@@ -310,4 +310,5 @@ private fun state(context: android.content.Context, theme: PageTheme, results: S
         else -> context.getString(noResultsText(results.noTermDictionary))
     },
     kanji = results.kanji,
+    language = results.language,
 )

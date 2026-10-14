@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">Żaden słownik kanji nie zawiera tego znaku. Słowniki kanji można pobrać na ekranie Słowniki.</string>
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
+    <string name="overlay_character_pinyin">Pinyin</string>
     <string name="overlay_kanji_strokes">Kreski</string>
     <string name="overlay_kanji_grade">Klasa</string>
     <string name="overlay_kanji_frequency">Częstość</string>

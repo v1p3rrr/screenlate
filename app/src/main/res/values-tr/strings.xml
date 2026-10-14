@@ -254,6 +254,12 @@
     <string name="lookup_single_characters_hint">Sonuçların altında, bulunan kelimenin diğer karakterlerinin maddeleri gösterilir.</string>
     <string name="lookup_romaji">Romajiyi Japonca olarak ara</string>
     <string name="lookup_romaji_hint">Latin metni kana olarak da aranır (taberu → たべる), ekranda ve aramada.</string>
+    <string name="lookup_script">Karakterler</string>
+    <string name="lookup_script_simplified">Basitleştirilmiş</string>
+    <string name="lookup_script_traditional">Geleneksel</string>
+    <string name="lookup_script_hint">İki yazıda aynı olan karakterler, metin hangisi olduğunu göstermediğinde bu yazının biçimlerini alır.</string>
+    <string name="lookup_fixed_script">Tüm kelimeler bu karakterlerle</string>
+    <string name="lookup_fixed_script_hint">Diğer yazıdaki metin bu karakterlerle de aranır ve bir sözlük kelimeleri böyle yazıyorsa bu karakterlerle gösterilir.</string>
     <string name="problems_title">İlgilenilmesi gerekenler</string>
     <string name="problems_open_anki">Anki ayarlarını aç</string>
     <string name="problems_dictionaries_missing">Dosyaları eksik olan sözlükler:</string>

@@ -44,6 +44,7 @@
     <string name="overlay_no_kanji">没有收录此字的汉字词典。可在词典页面下载汉字词典。</string>
     <string name="overlay_kanji_onyomi">音读</string>
     <string name="overlay_kanji_kunyomi">训读</string>
+    <string name="overlay_character_pinyin">拼音</string>
     <string name="overlay_kanji_strokes">笔画</string>
     <string name="overlay_kanji_grade">年级</string>
     <string name="overlay_kanji_frequency">频率</string>

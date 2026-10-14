@@ -252,6 +252,12 @@
     <string name="lookup_single_characters_hint">在結果下方顯示所查詞中其他漢字的詞條。</string>
     <string name="lookup_romaji">將羅馬字當作日語查詢</string>
     <string name="lookup_romaji_hint">拉丁字母也會作為假名查詢（taberu → たべる），適用於螢幕和搜尋。</string>
+    <string name="lookup_script">漢字</string>
+    <string name="lookup_script_simplified">簡體</string>
+    <string name="lookup_script_traditional">繁體</string>
+    <string name="lookup_script_hint">兩種寫法相同的字，在文字看不出是哪一種時，按此寫法的字形顯示。</string>
+    <string name="lookup_fixed_script">所有詞都用此寫法</string>
+    <string name="lookup_fixed_script_hint">另一種寫法的文字也會用此寫法查詢；詞典收有此寫法時，詞語以此寫法顯示。</string>
     <string name="problems_title">需要處理</string>
     <string name="problems_open_anki">開啟 Anki 設定</string>
     <string name="problems_dictionaries_missing">缺少檔案的詞典：</string>

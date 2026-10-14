@@ -74,6 +74,14 @@ val Language.characterEntryStrings: CharacterEntryStrings
             CharacterEntryStrings(R.string.lookup_single_characters, R.string.lookup_single_characters_hint)
     }
 
+/** The name of one of `LanguageSupport.scriptTags`. */
+@StringRes
+fun scriptName(tag: String): Int = when (tag) {
+    "zh-Hans" -> R.string.lookup_script_simplified
+    "zh-Hant" -> R.string.lookup_script_traditional
+    else -> error("No name for the script $tag")
+}
+
 val Language.fontStrings: FontStrings
     get() = when (this) {
         Language.JAPANESE -> FontStrings(

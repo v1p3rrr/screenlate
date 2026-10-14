@@ -254,6 +254,12 @@
     <string name="lookup_single_characters_hint">Unter den Ergebnissen werden Einträge zu den übrigen Schriftzeichen des gefundenen Wortes angezeigt.</string>
     <string name="lookup_romaji">Romaji als Japanisch nachschlagen</string>
     <string name="lookup_romaji_hint">Lateinischer Text wird auch als Kana nachgeschlagen (taberu → たべる), auf dem Bildschirm und in der Suche.</string>
+    <string name="lookup_script">Schriftzeichen</string>
+    <string name="lookup_script_simplified">Vereinfacht</string>
+    <string name="lookup_script_traditional">Traditionell</string>
+    <string name="lookup_script_hint">Zeichen, die in beiden Schriften gleich sind, erhalten die Formen dieser Schrift, wenn der Text nicht zeigt, welche es ist.</string>
+    <string name="lookup_fixed_script">Alle Wörter in diesen Zeichen</string>
+    <string name="lookup_fixed_script_hint">Text in der anderen Schrift wird auch in diesen Zeichen nachgeschlagen, und Wörter werden darin angezeigt, wenn ein Wörterbuch sie so schreibt.</string>
     <string name="problems_title">Braucht Aufmerksamkeit</string>
     <string name="problems_open_anki">Anki-Einstellungen öffnen</string>
     <string name="problems_dictionaries_missing">Wörterbücher, deren Dateien fehlen:</string>
