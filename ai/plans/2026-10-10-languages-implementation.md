@@ -195,6 +195,23 @@ Work that depends on an answer uses the recommended option or waits, as noted.
   (Apache 2.0, about 1 MB, bundled or downloaded with the list); (2) leave it Simplified only. The agent will decide
   this on the `languages/zh` branch with option 1 unless told otherwise.
 
+- Dragging the bubble on the phone (2026-10-14). On the emulator a drag runs at about 30 frames per second (82 % of
+  frames late), the same over text and over an empty area: most of each frame goes to the full-screen layer that draws
+  the aim and the highlight. The emulator draws slowly, so this says little about the phone. Question: does dragging
+  feel smooth on the phone? If not, the agent would cut what the layer redraws on each move (the whole screen for a
+  moved aim dot) and compare frame times from the phone.
+- English phrasal verbs in the past (2026-10-14). "pick up" and "look up" are found, but "picked up" and "looked up"
+  find only "pick" and "look". Yomitan's English rule turns "picked up" into "pick up" only for an entry marked as a
+  verb; the Russian Wiktionary dictionary (wty-en-ru) gives its phrases no part of speech, so the rule's result is
+  dropped. Yomitan does the same with this dictionary, and the decision table says "Phrases: as Yomitan does".
+  Options: (1, recommended) accept the phrasal-verb rule's result for an entry without a part of speech, a small
+  departure from Yomitan that only adds phrase matches; (2) keep Yomitan's behavior. The agent leaves it as is until
+  the owner answers.
+- Deleting a popup font (2026-10-14). Popup → font list: the bin next to a downloaded or added font deletes it at
+  once, while deleting a dictionary asks first. A downloaded font is 7–18 MB to fetch again. Options: (1, recommended)
+  ask "Delete <font>?" as for dictionaries; (2) keep deleting at once. The agent leaves it as is until the owner
+  answers.
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -608,3 +625,14 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   updated; fixed and checked on the emulator. Found by the emulator run and fixed: catalog downloads show the title
   the catalog lists them by; a download stopped after its retries says "connection lost" instead of the network
   library's message; on e-ink the bubble menu is black and white and the chosen language chip is filled.
+- 2026-10-14: the first run of the test model finished (`ai/test-model.md`, run log with the baselines). Further
+  fixes from it: home's audio card opens the Anki page at the audio section; a new audio source starts as the
+  language's first default kind; the download screen's definition-language menu is as wide as its button; the
+  Dictionaries page shows a progress indicator instead of empty sections on its first opening; a language chosen in
+  the system's app settings while the app runs also renames languages at once (the default locale follows the
+  configuration). Instrumented tests of every module pass (the app's Compose tests on API 30).
+- 2026-10-14: the full regression by the test model finished: every E and F case passed (NF4 on API 30 and OCR11 for
+  zh, ko and ru left for later). Two more fixes from it: a monolingual Japanese dictionary with loanword spellings is
+  no longer taken for Japanese → English (40 % foreign letters needed); the search screen opened from a selection menu
+  no longer flashes a white card in the dark theme. Two questions added (English phrasal verbs in the past, deleting
+  a font). Next: Chinese on `languages/zh`.
