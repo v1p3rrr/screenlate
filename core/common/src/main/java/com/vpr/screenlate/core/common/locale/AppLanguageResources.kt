@@ -53,4 +53,13 @@ object AppLanguage {
         }
         return locales
     }
+
+    /**
+     * Makes the default locale, which names languages and catalog entries and sorts lists, follow [config]. A language
+     * chosen in the system's app settings while the process runs reaches the configuration but not always the default.
+     */
+    fun followConfiguration(config: Configuration) {
+        val wanted = config.locales
+        if (!wanted.isEmpty && wanted != LocaleList.getDefault()) LocaleList.setDefault(wanted)
+    }
 }
