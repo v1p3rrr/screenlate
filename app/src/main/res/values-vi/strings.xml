@@ -382,6 +382,8 @@
     <string name="popup_show_source_hint">Tắt: cửa sổ bật lên bắt đầu từ mục từ đầu tiên, và ✕ nằm cạnh các nút của mục đó.</string>
     <string name="popup_pitch_colors">Màu trọng âm cao độ</string>
     <string name="popup_pitch_colors_hint">Từ và cách đọc mang màu của trọng âm cao độ đầu tiên, mỗi trọng âm có màu riêng: heiban xanh dương, atamadaka đỏ, nakadaka cam, odaka xanh lá, kifuku (động từ và tính từ đuôi i có chỗ hạ giọng) tím. Cần từ điển trọng âm cao độ.</string>
+    <string name="popup_tone_colors">Màu thanh điệu</string>
+    <string name="popup_tone_colors_hint">Âm tiết bính âm mang màu của thanh điệu: thanh 1 đỏ, thanh 2 cam, thanh 3 xanh lá, thanh 4 xanh dương, thanh nhẹ xám.</string>
     <string name="popup_font_title">Phông chữ cửa sổ bật lên</string>
     <string name="popup_font_hint">Dùng cho cửa sổ bật lên và trang tìm kiếm.</string>
     <string name="popup_font_system">Phông chữ tiếng Nhật của điện thoại</string>

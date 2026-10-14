@@ -40,7 +40,8 @@
  *
  * Pitch accent colors (setAppearance's pronunciationColors): the word carries the type of its first accent in
  * dictionary order and each accent button its own (data-pitch-category: heiban, atamadaka, nakadaka, odaka, kifuku);
- * popup.css colors them while the root's data-pronunciation-colors is on.
+ * popup.css colors them while the root's data-pronunciation-colors is on. The same switch colors Chinese pinyin: each
+ * syllable carries its tone (data-tone, 1 to 5) from HeadwordReading (reading.js).
  *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
  * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
@@ -64,6 +65,8 @@ const Popup = (() => {
     const HOLD_MS = 450;
     const SELECTION_GAP = 8;
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
+    /** Characters of a headword that open their own entry when tapped (drawSegments). */
+    const HAN_CHARACTER = /[\p{Script=Han}〇]/u;
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
     const SHOWN_ACCENTS = 2;
     /** Transcriptions that "+N" shows before "Show all". */
@@ -365,8 +368,10 @@ const Popup = (() => {
 
         const head = element('div', 'entry-head');
         const expression = element('span', 'expression');
-        if (renderer) {
-            renderer.furigana(expression, term.expression, term.reading, 'kanji-char');
+        const segments = HeadwordReading.segments(result.lang || document.documentElement.lang, term.expression, term.reading);
+        if (segments || renderer) {
+            if (segments) drawSegments(expression, segments);
+            else renderer.furigana(expression, term.expression, term.reading, 'kanji-char');
             expression.addEventListener('click', event => {
                 const target = event.target.closest('.kanji-char');
                 if (target) ScreenlateBridge.onKanji(target.textContent);
@@ -391,6 +396,31 @@ const Popup = (() => {
         }
         article.append(glossary);
         return article;
+    }
+
+    /** Ruby from HeadwordReading: characters tappable like kanji, syllables marked with their tone. */
+    function drawSegments(parent, segments) {
+        for (const [text, parts] of segments) {
+            const target = parts ? document.createElement('ruby') : parent;
+            for (const character of text) {
+                target.append(HAN_CHARACTER.test(character) ? element('span', 'kanji-char', character) : character);
+            }
+            if (!parts) continue;
+            const rt = document.createElement('rt');
+            rt.append(...syllableNodes(parts));
+            target.append(rt);
+            parent.append(target);
+        }
+    }
+
+    /** Syllables as spans with data-tone for the tone colors, the text between them as it is. */
+    function syllableNodes(parts) {
+        return parts.map(part => {
+            if (!part.tone) return part.text;
+            const span = element('span', 'syllable', part.text);
+            span.dataset.tone = String(part.tone);
+            return span;
+        });
     }
 
     function actionButtons(result, index) {
@@ -650,7 +680,7 @@ const Popup = (() => {
                 if (!value) continue;
                 const row = element('div', 'kanji-row');
                 row.append(element('span', 'kanji-label', label));
-                row.append(element('span', 'kanji-readings', value.split(' ').filter(Boolean).join('、')));
+                row.append(kanjiReadings(value, kanji.lang));
                 section.append(row);
             }
             if ((entry.definitions || []).length) {
@@ -671,6 +701,17 @@ const Popup = (() => {
             view.append(section);
         }
         return view;
+    }
+
+    /** A character's readings separated by 、; syllables marked with their tone where the language has them. */
+    function kanjiReadings(value, lang) {
+        const readings = element('span', 'kanji-readings');
+        value.split(' ').filter(Boolean).forEach((reading, i) => {
+            if (i > 0) readings.append('、');
+            const parts = HeadwordReading.syllables(lang || document.documentElement.lang, reading);
+            readings.append(...(parts ? syllableNodes(parts) : [reading]));
+        });
+        return readings;
     }
 
     /**
@@ -1241,7 +1282,7 @@ const Popup = (() => {
      * dictionaries' styles; preload names a font to load before it is first needed, for the characters of preloadText
      * (a face limited to the language's script loads only for them). See setHeavierText for the weight.
      * definitionCopy is the mode of the copy button next to each dictionary's name ('all' or 'meanings'); empty hides it.
-     * pronunciationColors turns on the pitch accent colors.
+     * pronunciationColors turns on the pitch accent colors, or the tone colors of Chinese.
      */
     function setAppearance(appearance) {
         const root = document.documentElement;

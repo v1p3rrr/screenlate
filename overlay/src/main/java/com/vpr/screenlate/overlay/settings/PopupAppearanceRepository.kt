@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.map
  * @property copyDefinitions a copy button next to each dictionary's name in an entry copies its definitions.
  * @property copyMode what that button copies.
  * @property pronunciationColors colors the word by its pronunciation where the language has such colors: Japanese by
- *   pitch accent type.
+ *   pitch accent type, Chinese pinyin by tone.
  */
 data class PopupAppearance(
     val fontId: String? = null,

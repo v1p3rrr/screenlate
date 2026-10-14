@@ -389,6 +389,8 @@
     <string name="popup_show_source_hint">Off: the popup starts with the first entry, and ✕ is placed next to its buttons.</string>
     <string name="popup_pitch_colors">Pitch accent colors</string>
     <string name="popup_pitch_colors_hint">The word and its reading take the color of its first pitch accent, and each accent its own: heiban blue, atamadaka red, nakadaka orange, odaka green, kifuku (verbs and i-adjectives with a downstep) purple. Needs a pitch accent dictionary.</string>
+    <string name="popup_tone_colors">Tone colors</string>
+    <string name="popup_tone_colors_hint">Pinyin syllables take the color of their tone: first red, second orange, third green, fourth blue, neutral grey.</string>
     <string name="popup_font_title">Popup font</string>
     <string name="popup_font_hint">Used by the popup and the search page.</string>
     <string name="popup_font_system">Phone\'s Japanese font</string>

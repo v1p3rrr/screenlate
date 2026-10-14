@@ -388,6 +388,8 @@
     <string name="popup_show_source_hint">Desactivado: la ventana emergente empieza por la primera entrada, y ✕ se sitúa junto a sus botones.</string>
     <string name="popup_pitch_colors">Colores del acento tonal</string>
     <string name="popup_pitch_colors_hint">La palabra y su lectura toman el color de su primer acento tonal, y cada acento el suyo: heiban azul, atamadaka rojo, nakadaka naranja, odaka verde, kifuku (verbos y adjetivos -i con descenso) morado. Requiere un diccionario de acento tonal.</string>
+    <string name="popup_tone_colors">Colores de los tonos</string>
+    <string name="popup_tone_colors_hint">Las sílabas del pinyin toman el color de su tono: primero rojo, segundo naranja, tercero verde, cuarto azul, neutro gris.</string>
     <string name="popup_font_title">Fuente de la ventana emergente</string>
     <string name="popup_font_hint">La usan la ventana emergente y la página de búsqueda.</string>
     <string name="popup_font_system">Fuente japonesa del teléfono</string>

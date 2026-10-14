@@ -391,6 +391,8 @@
     <string name="popup_show_source_hint">Wyłączone: okienko zaczyna się od pierwszego hasła, a ✕ znajduje się obok jego przycisków.</string>
     <string name="popup_pitch_colors">Kolory akcentu tonicznego</string>
     <string name="popup_pitch_colors_hint">Wyraz i jego odczyt mają kolor pierwszego akcentu tonicznego, a każdy akcent własny: heiban niebieski, atamadaka czerwony, nakadaka pomarańczowy, odaka zielony, kifuku (czasowniki i przymiotniki -i ze spadkiem) fioletowy. Wymaga słownika akcentu tonicznego.</string>
+    <string name="popup_tone_colors">Kolory tonów</string>
+    <string name="popup_tone_colors_hint">Sylaby pinyinu przyjmują kolor swojego tonu: pierwszy czerwony, drugi pomarańczowy, trzeci zielony, czwarty niebieski, neutralny szary.</string>
     <string name="popup_font_title">Czcionka okienka</string>
     <string name="popup_font_hint">Używana przez okienko i stronę wyszukiwania.</string>
     <string name="popup_font_system">Japońska czcionka telefonu</string>

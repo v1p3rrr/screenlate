@@ -209,6 +209,30 @@ test('kanji entries list readings and statistics', () => {
     assert.equal(content.querySelector('.frequency').textContent, 'Strokes11');
 });
 
+test('chinese headwords get a syllable above each character, marked with its tone', () => {
+    Popup.render(state({
+        source: { text: '图书馆', matched: 3, lang: 'zh-Hans' },
+        results: [{ ...result('图书馆', 'túshūguǎn'), lang: 'zh-Hans' }],
+    }));
+    const expression = content.querySelector('.expression');
+    assert.deepEqual([...expression.querySelectorAll('ruby')].map(ruby => ruby.textContent), ['图tú', '书shū', '馆guǎn']);
+    assert.deepEqual([...expression.querySelectorAll('rt .syllable')].map(span => span.dataset.tone), ['2', '1', '3']);
+    expression.querySelectorAll('.kanji-char')[1].dispatchEvent(new page.window.MouseEvent('click', { bubbles: true }));
+    assert.deepEqual(page.calls.at(-1), ['onKanji', '书']);
+});
+
+test('chinese character readings are marked with their tones', () => {
+    Popup.render({
+        theme: 'light',
+        source: { text: '行', matched: 1, lang: 'zh-Hans' },
+        kanji: { character: '行', lang: 'zh-Hans', entries: [{ dictionary: 'Hanzi', onyomi: 'xíng háng', definitions: ['walk'] }] },
+        labels,
+    });
+    const readings = content.querySelector('.kanji-readings');
+    assert.equal(readings.textContent, 'xíng、háng');
+    assert.deepEqual([...readings.querySelectorAll('.syllable')].map(span => span.dataset.tone), ['2', '2']);
+});
+
 test('a script tag gives the source, its entries and a character view their glyph forms', () => {
     Popup.render(state({
         source: { text: '電腦', matched: 2, lang: 'zh-Hant' },

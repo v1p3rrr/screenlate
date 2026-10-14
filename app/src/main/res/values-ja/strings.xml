@@ -382,6 +382,8 @@
     <string name="popup_show_source_hint">オフ：ポップアップは最初の項目から始まり、✕ はその項目のボタンの横に表示されます。</string>
     <string name="popup_pitch_colors">アクセントの色分け</string>
     <string name="popup_pitch_colors_hint">単語と読みは最初のアクセントの型の色、各アクセントはそれぞれの型の色で表示します：平板型は青、頭高型は赤、中高型はオレンジ、尾高型は緑、起伏型（下がり目のある動詞・イ形容詞）は紫。アクセント辞書が必要です。</string>
+    <string name="popup_tone_colors">声調の色分け</string>
+    <string name="popup_tone_colors_hint">ピンインの音節を声調の色で表示します：第1声は赤、第2声はオレンジ、第3声は緑、第4声は青、軽声はグレー。</string>
     <string name="popup_font_title">ポップアップのフォント</string>
     <string name="popup_font_hint">ポップアップと検索ページで使われます。</string>
     <string name="popup_font_system">端末の日本語フォント</string>

@@ -392,6 +392,8 @@
     <string name="popup_show_source_hint">Если выключено, попап начинается с первой статьи, а ✕ располагается рядом с её кнопками.</string>
     <string name="popup_pitch_colors">Цвета питч-акцента</string>
     <string name="popup_pitch_colors_hint">Слово и чтение окрашиваются в цвет первого ударения, а каждое ударение — в свой: хэйбан синий, атамадака красный, накадака оранжевый, одака зелёный, кифуку (глаголы и i-прилагательные с понижением) фиолетовый. Нужен словарь питч-акцента.</string>
+    <string name="popup_tone_colors">Цвета тонов</string>
+    <string name="popup_tone_colors_hint">Слоги пиньиня окрашиваются по тону: первый красный, второй оранжевый, третий зелёный, четвёртый синий, нейтральный серый.</string>
     <string name="popup_font_title">Шрифт попапа</string>
     <string name="popup_font_hint">Используется в попапе и на странице поиска.</string>
     <string name="popup_font_system">Японский шрифт телефона</string>

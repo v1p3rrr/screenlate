@@ -388,6 +388,8 @@
     <string name="popup_show_source_hint">Désactivé : la fenêtre contextuelle commence par la première entrée, et ✕ se trouve à côté de ses boutons.</string>
     <string name="popup_pitch_colors">Couleurs de l’accent de hauteur</string>
     <string name="popup_pitch_colors_hint">Le mot et sa lecture prennent la couleur de leur premier accent de hauteur, et chaque accent la sienne : heiban bleu, atamadaka rouge, nakadaka orange, odaka vert, kifuku (verbes et adjectifs en -i avec une descente) violet. Nécessite un dictionnaire d’accent de hauteur.</string>
+    <string name="popup_tone_colors">Couleurs des tons</string>
+    <string name="popup_tone_colors_hint">Les syllabes du pinyin prennent la couleur de leur ton : premier rouge, deuxième orange, troisième vert, quatrième bleu, neutre gris.</string>
     <string name="popup_font_title">Police de la fenêtre contextuelle</string>
     <string name="popup_font_hint">Utilisée par la fenêtre contextuelle et la page de recherche.</string>
     <string name="popup_font_system">Police japonaise du téléphone</string>

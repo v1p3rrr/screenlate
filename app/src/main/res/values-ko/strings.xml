@@ -382,6 +382,8 @@
     <string name="popup_show_source_hint">끄면 팝업이 첫 번째 항목으로 시작하고, ✕는 그 항목의 버튼 옆에 표시됩니다.</string>
     <string name="popup_pitch_colors">고저 악센트 색</string>
     <string name="popup_pitch_colors_hint">단어와 읽기는 첫 고저 악센트의 색으로, 각 악센트는 자기 유형의 색으로 표시됩니다: 헤이반 파랑, 아타마다카 빨강, 나카다카 주황, 오다카 초록, 기후쿠(내려가는 곳이 있는 동사·い형용사) 보라. 고저 악센트 사전이 필요합니다.</string>
+    <string name="popup_tone_colors">성조 색</string>
+    <string name="popup_tone_colors_hint">병음 음절이 성조의 색으로 표시됩니다: 1성 빨강, 2성 주황, 3성 초록, 4성 파랑, 경성 회색.</string>
     <string name="popup_font_title">팝업 글꼴</string>
     <string name="popup_font_hint">팝업과 검색 페이지에서 사용됩니다.</string>
     <string name="popup_font_system">휴대폰의 일본어 글꼴</string>

@@ -58,7 +58,8 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
 val Language.pronunciationColorStrings: PronunciationColorStrings?
     get() = when (this) {
         Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
-        Language.ENGLISH, Language.CHINESE -> null
+        Language.CHINESE -> PronunciationColorStrings(R.string.popup_tone_colors, R.string.popup_tone_colors_hint)
+        Language.ENGLISH -> null
     }
 
 /** The switch for entries of the other characters of a found word (`LanguageSupport.hasCharacterEntries`). */

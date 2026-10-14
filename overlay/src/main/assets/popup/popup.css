@@ -28,6 +28,17 @@
     --pitch-nakadaka-color: var(--pitch-nakadaka-default);
     --pitch-odaka-color: var(--pitch-odaka-default);
     --pitch-kifuku-color: var(--pitch-kifuku-default);
+    /* Chinese tones 1 to 4 and the neutral tone (5), when their colors are on; set like the pitch accent colors. */
+    --tone-1-default: #d32f2f;
+    --tone-2-default: #c95c00;
+    --tone-3-default: #2e7d32;
+    --tone-4-default: #1a5fd0;
+    --tone-5-default: #6b6475;
+    --tone-1-color: var(--tone-1-default);
+    --tone-2-color: var(--tone-2-default);
+    --tone-3-color: var(--tone-3-default);
+    --tone-4-color: var(--tone-4-default);
+    --tone-5-color: var(--tone-5-default);
     --matched-bg: rgba(124, 92, 255, 0.18);
     --border: rgba(124, 92, 255, 0.55);
     --divider: rgba(0, 0, 0, 0.08);
@@ -74,6 +85,11 @@
     --pitch-nakadaka-default: #ffb062;
     --pitch-odaka-default: #81d68a;
     --pitch-kifuku-default: #d79bf2;
+    --tone-1-default: #ff8a80;
+    --tone-2-default: #ffb062;
+    --tone-3-default: #81d68a;
+    --tone-4-default: #82b1ff;
+    --tone-5-default: #a59eb0;
     --matched-bg: rgba(179, 161, 255, 0.25);
     --border: rgba(179, 161, 255, 0.5);
     --divider: rgba(255, 255, 255, 0.1);
@@ -641,6 +657,27 @@ button.inflection-step {
 
 :root[data-pronunciation-colors="true"] .expression[data-pitch-category] rt {
     color: inherit;
+}
+
+/* Tone colors: each pinyin syllable in its tone's (see drawSegments in popup.js). */
+:root[data-pronunciation-colors="true"] [data-tone="1"] {
+    color: var(--tone-1-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-tone="2"] {
+    color: var(--tone-2-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-tone="3"] {
+    color: var(--tone-3-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-tone="4"] {
+    color: var(--tone-4-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-tone="5"] {
+    color: var(--tone-5-color);
 }
 
 .dictionary {

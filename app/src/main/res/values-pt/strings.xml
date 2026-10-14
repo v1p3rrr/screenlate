@@ -388,6 +388,8 @@
     <string name="popup_show_source_hint">Desativado: o pop-up começa pela primeira entrada, e o ✕ fica ao lado dos botões dela.</string>
     <string name="popup_pitch_colors">Cores do acento tonal</string>
     <string name="popup_pitch_colors_hint">A palavra e a leitura ficam com a cor do primeiro acento tonal, e cada acento com a sua: heiban azul, atamadaka vermelho, nakadaka laranja, odaka verde, kifuku (verbos e adjetivos -i com descida) roxo. Requer um dicionário de acento tonal.</string>
+    <string name="popup_tone_colors">Cores dos tons</string>
+    <string name="popup_tone_colors_hint">As sílabas do pinyin assumem a cor do seu tom: primeiro vermelho, segundo laranja, terceiro verde, quarto azul, neutro cinza.</string>
     <string name="popup_font_title">Fonte do pop-up</string>
     <string name="popup_font_hint">Usada pelo pop-up e pela página de pesquisa.</string>
     <string name="popup_font_system">Fonte japonesa do celular</string>
