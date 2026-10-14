@@ -5,7 +5,7 @@
 
     <string name="anki_problem_not_installed">未安装 AnkiDroid。</string>
     <string name="anki_problem_no_permission">Screenlate 失去了 AnkiDroid 的访问权限。</string>
-    <string name="anki_problem_model_missing">笔记类型已从 AnkiDroid 中消失。</string>
-    <string name="anki_problem_deck_missing">牌组已从 AnkiDroid 中消失。</string>
+    <string name="anki_problem_model_missing">在 AnkiDroid 中找不到笔记类型。</string>
+    <string name="anki_problem_deck_missing">在 AnkiDroid 中找不到牌组。</string>
     <string name="anki_problem_fields_changed">笔记类型的字段已更改。</string>
 </resources>
