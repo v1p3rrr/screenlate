@@ -74,8 +74,12 @@ internal object LanguageGuess {
     /** Less than this and a guess is noise. */
     private const val MIN_LETTERS = 40
 
-    /** Definitions with this much Latin or Cyrillic are in that language, even with Japanese examples among them. */
-    private const val FOREIGN_SHARE = 0.15f
+    /**
+     * Definitions with this much Latin, Cyrillic or Hangul are in that language. Bilingual dictionaries with many
+     * Japanese examples still have about half of their letters foreign; monolingual Japanese ones with loanword
+     * spellings and etymologies have up to a quarter Latin.
+     */
+    private const val FOREIGN_SHARE = 0.4f
     private const val JAPANESE_SHARE = 0.5f
     private const val MIN_KANA_SHARE = 0.05f
     private const val MIN_FUNCTION_SHARE = 0.05f

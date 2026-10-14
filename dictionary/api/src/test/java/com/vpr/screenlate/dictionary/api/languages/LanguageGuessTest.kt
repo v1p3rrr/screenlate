@@ -32,6 +32,25 @@ class LanguageGuessTest {
     }
 
     @Test
+    fun `loanword spellings and pinyin leave japanese definitions japanese`() {
+        // A monolingual dictionary that opens with loanwords: a quarter of the letters are Latin.
+        val loanwords = "ラジオ【radio】 無線で音声を送る放送。 ".repeat(3)
+        assertThat(LanguageGuess.of(loanwords) { "en" }).isEqualTo("ja")
+        // A Chinese-Japanese dictionary gives pinyin before the Japanese definition.
+        val pinyin = "吃饭【chīfàn】 ご飯を食べる。食事をする。 ".repeat(3)
+        assertThat(LanguageGuess.of(pinyin) { "en" }).isEqualTo("ja")
+    }
+
+    @Test
+    fun `bilingual definitions with many japanese examples keep their language`() {
+        // About half of the letters are Japanese examples.
+        val latin = "〜ばかりに just because; simply because 彼の一言ばかりに、計画が台無しになった。 ".repeat(2)
+        assertThat(LanguageGuess.of(latin) { "en" }).isEqualTo("en")
+        val cyrillic = "たべる【食べる】 есть; кушать; питаться 毎日ご飯を食べる。 ".repeat(2)
+        assertThat(LanguageGuess.of(cyrillic, unknown)).isEqualTo("ru")
+    }
+
+    @Test
     fun `kanji without kana are chinese, hangul is korean`() {
         assertThat(LanguageGuess.of("吃飯，進食，吃東西，用餐。".repeat(5), unknown)).isEqualTo("zh")
         assertThat(LanguageGuess.of("먹다, 식사하다, 음식을 먹다 ".repeat(5), unknown)).isEqualTo("ko")
