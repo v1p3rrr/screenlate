@@ -137,6 +137,11 @@ a {
     overflow: hidden;
 }
 
+/* Until the first render sets the theme, the light card would flash on a dark screen; the host shows through. */
+:root:not([data-theme]) .card {
+    visibility: hidden;
+}
+
 :root[data-embedded="true"] .card {
     border: none;
     border-radius: 0;

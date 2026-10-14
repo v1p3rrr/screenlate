@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { beforeEach, test } from 'node:test';
 import { popupPage } from '../../../../scripts/page-tests/harness.mjs';
 
@@ -37,6 +38,17 @@ const tap = button => {
 
 test('the page reports that it is ready', () => {
     assert.deepEqual(page.calls[0], ['onReady']);
+});
+
+test('the card stays hidden until the first render gives it a theme', () => {
+    const style = page.document.createElement('style');
+    style.textContent = readFileSync(new URL('../../main/assets/popup/popup.css', import.meta.url), 'utf8');
+    page.document.head.append(style);
+    const card = page.document.getElementById('card');
+    Popup.configure({ embedded: true });
+    assert.equal(page.window.getComputedStyle(card).visibility, 'hidden');
+    Popup.render(state());
+    assert.equal(page.window.getComputedStyle(card).visibility, 'visible');
 });
 
 test('renders the header and one card per result', () => {
