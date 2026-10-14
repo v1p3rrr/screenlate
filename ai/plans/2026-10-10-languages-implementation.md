@@ -91,6 +91,7 @@ Requests 1–19 are in the previous plan. New ones:
 43. (2026-10-15) After Chinese, before Korean: the frequency chip shows the dictionary's name shortened to one letter
     unless it is short; a tap on the chip shows the full name, another tap shortens it again. "+N" (more than one
     frequency value) also shows the first chip's full name. Decision row "Frequency chip names".
+44. (2026-10-15) Latvian joins group 3, the last one before "every other language".
 
 ## Decisions
 
@@ -98,7 +99,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 
 | Topic | Decision |
 |---|---|
-| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese; 4) every other language Yomitan supports, Ukrainian among them (owner, 2026-10-09; revised the same day with request 11) |
+| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese, and Latvian (request 44); 4) every other language Yomitan supports, Ukrainian among them (owner, 2026-10-09; revised the same day with request 11) |
 | Audience | Every user, not only the owner: the app goes to a community of learners of Japanese, where others learn other languages, mostly English and Chinese; later anyone with their own target language (owner, 2026-10-09) |
 | Depth | Full support (deinflection, on-device recognition, fonts, audio, Anki), if it is feasible without writing our own Yomitan from scratch (owner, 2026-10-09) |
 | Language profiles | Separate language profiles, switched on the home screen; dictionaries and the rest are set up within the profile (owner, 2026-10-09) |
@@ -136,7 +137,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Releases | No releases of new languages along the way: every language is built first, then one big release; testing in the meantime on debug builds (owner, 2026-10-10) |
 | Beta label | None: with a small audience a label would never come off (owner, 2026-10-10) |
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
-| Scope of the big release | Groups 1–3 (12 languages) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
+| Scope of the big release | Groups 1–3 (13 languages with Latvian) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
@@ -455,7 +456,7 @@ Per-language checklist (every language branch):
 - Checks: accents with the ML Kit Latin model; audio regions (Brazil, Latin America, Spain, France).
 - Questions per language: the recommended dictionaries; FreeDict deu-rus, fra-rus, ita-rus, spa-rus conversions.
 
-## Stage D: group 3 (ru, pl, tr, vi)
+## Stage D: group 3 (ru, pl, tr, vi, lv)
 
 - Before Russian: Paddle against Tesseract on real screenshots; MNN against ONNX Runtime by size and speed; the
   chosen engine fills the A11 slot (runtime in the APK, detector and the East Slavic recognizer as downloads).
@@ -466,6 +467,9 @@ Per-language checklist (every language branch):
   hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
 - Polish: forms from the dictionary (pl→en 22 MB). Turkish: dotted and dotless i in case folding. Vietnamese: words of
   several syllables through word resolution; diacritics with the ML Kit Latin model (else Paddle latin).
+- Latvian (request 44): Latin letters with macrons and cedillas (ā ē ī ū, ģ ķ ļ ņ, č š ž) through the ML Kit Latin
+  model; forms from the dictionary unless Yomitan has rules for it; check Yomitan's language list and the Wiktionary
+  editions (lv→en, lv→ru) when the group starts.
 - Questions per language: the recommended dictionaries; anything the comparison leaves open.
 
 ## Stage E: group 4 (decided when group 3 is done)
@@ -687,3 +691,9 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - 2026-10-15: the owner answered every open question (decision rows from "Chinese audio" to "Test model
   location"); new: the Chinese script setting moves to the Languages screen's Chinese card, request 43 (frequency
   chip names) comes after Chinese. Work items Z10–Z12 added.
+- 2026-10-15: Latvian joins group 3 at the owner's request (request 44); decision row "Languages and order" and the
+  big release's count updated.
+- 2026-10-15: Z10 done. The keys are `language_script` and `language_fixed_script` (Chinese is unreleased, nothing to
+  migrate); a backup carries them in its General part with the turned-on languages; no page reset clears them, the
+  full reset does (agent's choice: the Languages screen has no reset of its own). The hint names words found by pinyin;
+  the full reset's text names the Chinese characters and that turned-on languages stay.
