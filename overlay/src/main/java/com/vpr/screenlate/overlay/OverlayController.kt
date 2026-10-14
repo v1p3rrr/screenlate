@@ -717,7 +717,7 @@ class OverlayController(
                 }
             }
         }
-        bubbleMenu.show(items, bubbleBox(), usableBounds(), dark = !eInk && isDarkTheme(), chips = chips)
+        bubbleMenu.show(items, bubbleBox(), usableBounds(), dark = isDarkTheme(), eInk = eInk, chips = chips)
     }
 
     /** Brings the app to the front as the launcher does; the bubble docks so it does not hang over the app. */

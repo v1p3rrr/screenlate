@@ -4,8 +4,10 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SliderColors
@@ -62,6 +64,21 @@ object AccentDefaults {
     @Composable
     fun segmentedButtonColors(): SegmentedButtonColors = current.let {
         SegmentedButtonDefaults.colors(activeContainerColor = it.fill, activeContentColor = it.onFill)
+    }
+
+    /** On e-ink the chosen chip is filled: the default container there is the grey of the cards around it. */
+    @Composable
+    fun filterChipColors(): SelectableChipColors = if (LocalEInk.current) {
+        current.let {
+            FilterChipDefaults.filterChipColors(
+                selectedContainerColor = it.fill,
+                selectedLabelColor = it.onFill,
+                selectedLeadingIconColor = it.onFill,
+                selectedTrailingIconColor = it.onFill,
+            )
+        }
+    } else {
+        FilterChipDefaults.filterChipColors()
     }
 
     @Composable

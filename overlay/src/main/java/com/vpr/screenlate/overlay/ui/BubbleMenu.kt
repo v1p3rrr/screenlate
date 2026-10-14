@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -52,6 +53,9 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 
     /** Made again for each menu: a theme keeps the day or night look it was made with. */
     private var themed: Context = context
+
+    /** Black on white with a frame, without shadows or ripples, like the popup on e-ink screens. */
+    private var eInk = false
     private val density = context.resources.displayMetrics.density
     private var window: View? = null
 
@@ -65,13 +69,15 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
 
     /**
      * Shows [items] beside [anchor] (the bubble) where [bounds] (the usable screen) has room for them, with [chips] in a
-     * row above them; the row scrolls when it is wider than the menu. [dark] follows the app's theme, like the popup.
+     * row above them; the row scrolls when it is wider than the menu. [dark] and [eInk] follow the app's theme, like the
+     * popup.
      */
-    fun show(items: List<Item>, anchor: Box, bounds: Box, dark: Boolean, chips: List<Chip> = emptyList()) {
+    fun show(items: List<Item>, anchor: Box, bounds: Box, dark: Boolean, eInk: Boolean = false, chips: List<Chip> = emptyList()) {
         dismiss()
+        this.eInk = eInk
         val night = Configuration(context.resources.configuration).apply {
             uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or
-                if (dark) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+                if (dark && !eInk) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
         }
         themed = ContextThemeWrapper(context, android.R.style.Theme_DeviceDefault_DayNight).apply { applyOverrideConfiguration(night) }
         val margin = MARGIN_DP * density
@@ -125,7 +131,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
     private fun card(items: List<Item>, chips: List<Chip>) = LinearLayout(themed).apply {
         orientation = LinearLayout.VERTICAL
         background = popupBackground()
-        elevation = ELEVATION_DP * density
+        elevation = if (eInk) 0f else ELEVATION_DP * density
         clipToOutline = true
         minimumWidth = (MIN_WIDTH_DP * density).roundToInt()
         val padding = (LIST_PADDING_DP * density).roundToInt()
@@ -156,8 +162,8 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         isSelected = chip.selected
         isClickable = true
         isFocusable = true
-        val accent = color(android.R.attr.colorAccent)
-        val primary = color(android.R.attr.textColorPrimary)
+        val accent = if (eInk) Color.BLACK else color(android.R.attr.colorAccent)
+        val primary = if (eInk) Color.BLACK else color(android.R.attr.textColorPrimary)
         if (chip.selected) {
             background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
@@ -175,7 +181,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
                 isSingleLine = true
                 background = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
-                    setStroke(density.roundToInt(), ColorUtils.setAlphaComponent(primary, OUTLINE_ALPHA))
+                    setStroke(density.roundToInt(), if (eInk) primary else ColorUtils.setAlphaComponent(primary, OUTLINE_ALPHA))
                 }
             }
         }
@@ -231,7 +237,11 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         val horizontal = (ITEM_PADDING_DP * density).roundToInt()
         val vertical = (ITEM_VERTICAL_PADDING_DP * density).roundToInt()
         setPaddingRelative(horizontal, vertical, horizontal, vertical)
-        attr(android.R.attr.selectableItemBackground).resourceId.takeIf { it != 0 }?.let { background = themed.getDrawable(it) }
+        if (eInk) {
+            setTextColor(Color.BLACK)
+        } else {
+            attr(android.R.attr.selectableItemBackground).resourceId.takeIf { it != 0 }?.let { background = themed.getDrawable(it) }
+        }
         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         setOnClickListener {
             dismiss()
@@ -239,8 +249,18 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         }
     }
 
-    /** The system popup menu's background, so the menu looks like one; a plain rounded card if the theme has none. */
+    /**
+     * The system popup menu's background, so the menu looks like one; a plain rounded card if the theme has none, and a
+     * framed white one on e-ink.
+     */
     private fun popupBackground(): Drawable {
+        if (eInk) {
+            return GradientDrawable().apply {
+                setColor(Color.WHITE)
+                setStroke((E_INK_FRAME_DP * density).roundToInt(), Color.BLACK)
+                cornerRadius = CORNER_DP * density
+            }
+        }
         val styled = themed.obtainStyledAttributes(null, intArrayOf(android.R.attr.popupBackground), android.R.attr.popupMenuStyle, 0)
         val drawable = styled.getDrawable(0)
         styled.recycle()
@@ -274,6 +294,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
         const val CHIP_GAP_DP = 8f
         const val CHIP_TEXT_SP = 14f
         const val OUTLINE_ALPHA = 0x80
+        const val E_INK_FRAME_DP = 2f
     }
 }
 

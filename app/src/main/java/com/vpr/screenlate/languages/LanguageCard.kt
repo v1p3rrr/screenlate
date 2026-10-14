@@ -17,6 +17,7 @@ import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
+import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /**
  * A page's settings that belong to a language, in a card named after the [shown] language with chips that switch it.
@@ -49,6 +50,7 @@ fun LanguageChips(languages: List<Language>, shown: Language, onShow: (Language)
                 selected = language == shown,
                 onClick = { onShow(language) },
                 label = { Text(language.displayName()) },
+                colors = AccentDefaults.filterChipColors(),
             )
         }
     }
