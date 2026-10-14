@@ -300,6 +300,8 @@
     <string name="yomitan_collection_queued">正在后台导入 %1$d 个词典；可在词典页面查看进度。</string>
     <string name="popup_show_source">在词条上方显示识别出的文本</string>
     <string name="popup_show_source_hint">关闭时：弹窗直接从词条开始，✕ 位于词条按钮旁边。</string>
+    <string name="popup_pitch_colors">音调颜色</string>
+    <string name="popup_pitch_colors_hint">单词和读音显示为第一个音调的颜色，每个音调显示为其类型的颜色：平板型蓝色，头高型红色，中高型橙色，尾高型绿色，起伏型（有降调的动词和い形容词）紫色。需要音调词典。</string>
     <string name="popup_font_title">弹窗字体</string>
     <string name="popup_font_hint">用于弹窗和搜索页面。</string>
     <string name="popup_font_system">手机自带的日文字体</string>

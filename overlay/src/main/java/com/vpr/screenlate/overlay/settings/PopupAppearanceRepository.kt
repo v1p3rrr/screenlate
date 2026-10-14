@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.map
  * @property customCss the user's CSS, applied after the dictionaries' styles.
  * @property copyDefinitions a copy button next to each dictionary's name in an entry copies its definitions.
  * @property copyMode what that button copies.
+ * @property pronunciationColors colors the word by its pronunciation where the language has such colors: Japanese by
+ *   pitch accent type.
  */
 data class PopupAppearance(
     val fontId: String? = null,
@@ -37,6 +39,7 @@ data class PopupAppearance(
     val customCss: String = "",
     val copyDefinitions: Boolean = false,
     val copyMode: DefinitionCopyMode = DefinitionCopyMode.ALL,
+    val pronunciationColors: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_FONT_SIZE = 15
@@ -88,6 +91,7 @@ class PopupAppearanceRepository @Inject constructor(
             customCss = prefs[CUSTOM_CSS].orEmpty(),
             copyDefinitions = prefs[COPY_DEFINITIONS] ?: false,
             copyMode = DefinitionCopyMode.of(prefs[COPY_MODE]),
+            pronunciationColors = prefs[PRONUNCIATION_COLORS] ?: false,
         )
     }
 
@@ -126,6 +130,10 @@ class PopupAppearanceRepository @Inject constructor(
         dataStore.edit { it[LETTER_THICKNESS] = PopupAppearance.letterThickness(thickness) }
     }
 
+    suspend fun setPronunciationColors(enabled: Boolean) {
+        dataStore.edit { it[PRONUNCIATION_COLORS] = enabled }
+    }
+
     suspend fun setCustomCss(css: String) {
         // Empty is the default: a reset's pending save then leaves no key behind.
         dataStore.edit { if (css.isEmpty()) it.remove(CUSTOM_CSS) else it[CUSTOM_CSS] = css }
@@ -140,5 +148,6 @@ class PopupAppearanceRepository @Inject constructor(
         val CUSTOM_CSS = stringPreferencesKey("popup_custom_css")
         val COPY_DEFINITIONS = booleanPreferencesKey("popup_copy_definitions")
         val COPY_MODE = stringPreferencesKey("popup_copy_mode")
+        val PRONUNCIATION_COLORS = booleanPreferencesKey("popup_pronunciation_colors")
     }
 }

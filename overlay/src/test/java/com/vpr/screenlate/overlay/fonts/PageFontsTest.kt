@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.overlay.settings.DefinitionCopyMode
 import com.vpr.screenlate.overlay.settings.PopupAppearance
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
@@ -103,6 +104,16 @@ class PageFontsTest {
         assertThat(json["preloadText"]?.jsonPrimitive?.content).isEqualTo(JapaneseSupport.fontSample)
         assertThat(json["customCss"]?.jsonPrimitive?.content)
             .isEqualTo(".a { font-family: Meiryo, \"Screenlate Chosen\", \"Screenlate Sans\", sans-serif }")
+    }
+
+    @Test
+    fun `pronunciation colors reach the page`() {
+        assertThat(PageAppearance.build(JapaneseSupport, PopupAppearance(), emptyList())["pronunciationColors"]?.jsonPrimitive?.boolean)
+            .isFalse()
+        assertThat(
+            PageAppearance.build(JapaneseSupport, PopupAppearance(pronunciationColors = true), emptyList())["pronunciationColors"]
+                ?.jsonPrimitive?.boolean,
+        ).isTrue()
     }
 
     @Test

@@ -36,6 +36,10 @@
  * Heavier text (setAppearance) applies to the whole page, or only to the language's script: then runs of it are
  * wrapped in .script-run spans as text arrives in the page.
  *
+ * Pitch accent colors (setAppearance's pronunciationColors): the word carries the type of its first accent in
+ * dictionary order and each accent button its own (data-pitch-category: heiban, atamadaka, nakadaka, odaka, kifuku);
+ * popup.css colors them while the root's data-pronunciation-colors is on.
+ *
  * Note buttons: ➕ adds (hold: with a picture); after adding, or for a duplicate that may not be added again, the
  * button becomes 📖, which opens the note in AnkiDroid (hold: add anyway). Holding 🔊 lists the audio sources.
  */
@@ -354,6 +358,8 @@ const Popup = (() => {
                 ? `${term.expression}【${term.reading}】`
                 : term.expression;
         }
+        const category = firstPitchCategory(term);
+        if (category) expression.dataset.pitchCategory = category;
         head.append(expression);
         const details = entryInfo(result, labels);
         if (details) head.append(details);
@@ -677,6 +683,7 @@ const Popup = (() => {
             item.type = 'button';
             item.append(pitch.graph);
             item.append(element('span', 'pitch-position', `[${pitch.downsteps}]`));
+            if (pitch.category) item.dataset.pitchCategory = pitch.category;
             item.addEventListener('click', () => showInfo(labels.pitchDictionaries || '', pitch.dictionaries.join('\n')));
             return item;
         });
@@ -767,6 +774,7 @@ const Popup = (() => {
                     accents.set(key, {
                         graph: renderer.pitchElement(term.reading || term.expression, position, accent.nasal, accent.devoice),
                         downsteps: renderer.downsteps(position).join(', '),
+                        category: pitchCategory(term, accent),
                         dictionaries: [],
                     });
                 }
@@ -775,6 +783,18 @@ const Popup = (() => {
             }
         }
         return [...accents.values()];
+    }
+
+    /** The type of [accent] of the word (render.js pitchCategory); null when it has none, such as a verb's heiban. */
+    function pitchCategory(term, accent) {
+        return renderer.pitchCategory(term.reading || term.expression, accent.pattern || accent.position, term.rules) || null;
+    }
+
+    /** The type of the word's first pitch accent in dictionary order; null without one. */
+    function firstPitchCategory(term) {
+        if (!renderer) return null;
+        const accent = (term.pitches || []).flatMap(group => group.pitches || [])[0];
+        return accent ? pitchCategory(term, accent) : null;
     }
 
     function showInfo(title, text) {
@@ -1116,15 +1136,17 @@ const Popup = (() => {
 
     /**
      * Language, fonts, text weight and the user's CSS: { lang, fontFaces, fontFamily, fontSize, textWeight, textStroke,
-     * textScope, scriptPattern, customCss, preload, preloadText, definitionCopy }. The custom CSS comes after the
+     * textScope, scriptPattern, customCss, preload, preloadText, definitionCopy, pronunciationColors }. The custom CSS comes after the
      * dictionaries' styles; preload names a font to load before it is first needed, for the characters of preloadText
      * (a face limited to the language's script loads only for them). See setHeavierText for the weight.
      * definitionCopy is the mode of the copy button next to each dictionary's name ('all' or 'meanings'); empty hides it.
+     * pronunciationColors turns on the pitch accent colors.
      */
     function setAppearance(appearance) {
         const root = document.documentElement;
         root.lang = appearance.lang || '';
         root.dataset.definitionCopy = appearance.definitionCopy || '';
+        root.dataset.pronunciationColors = String(Boolean(appearance.pronunciationColors));
         fontFaces.textContent = appearance.fontFaces || '';
         root.style.setProperty('--font-family', appearance.fontFamily || 'sans-serif');
         if (appearance.fontSize) root.style.setProperty('--font-size-no-units', String(appearance.fontSize));

@@ -14,6 +14,12 @@
     --pitch-fg: #3453b8;
     --frequency-bg: #e6f4ea;
     --frequency-fg: #1e6b35;
+    /* Pitch accent types, when their colors are on; e-ink keeps these. */
+    --pitch-heiban-color: #1a5fd0;
+    --pitch-atamadaka-color: #d32f2f;
+    --pitch-nakadaka-color: #c95c00;
+    --pitch-odaka-color: #2e7d32;
+    --pitch-kifuku-color: #8e3bb5;
     --matched-bg: rgba(124, 92, 255, 0.18);
     --border: rgba(124, 92, 255, 0.55);
     --divider: rgba(0, 0, 0, 0.08);
@@ -42,6 +48,11 @@
     --pitch-fg: #b5c5ff;
     --frequency-bg: #233a2b;
     --frequency-fg: #a6dcb4;
+    --pitch-heiban-color: #82b1ff;
+    --pitch-atamadaka-color: #ff8a80;
+    --pitch-nakadaka-color: #ffb062;
+    --pitch-odaka-color: #81d68a;
+    --pitch-kifuku-color: #d79bf2;
     --matched-bg: rgba(179, 161, 255, 0.25);
     --border: rgba(179, 161, 255, 0.5);
     --divider: rgba(255, 255, 255, 0.1);
@@ -562,6 +573,31 @@ button.inflection-step {
     color: var(--muted);
     margin-left: 3px;
     font-size: 0.85em;
+}
+
+/* Pitch accent colors: the word in its first accent's type, each accent in its own (see popup.js). */
+:root[data-pronunciation-colors="true"] [data-pitch-category="heiban"] {
+    color: var(--pitch-heiban-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-pitch-category="atamadaka"] {
+    color: var(--pitch-atamadaka-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-pitch-category="nakadaka"] {
+    color: var(--pitch-nakadaka-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-pitch-category="odaka"] {
+    color: var(--pitch-odaka-color);
+}
+
+:root[data-pronunciation-colors="true"] [data-pitch-category="kifuku"] {
+    color: var(--pitch-kifuku-color);
+}
+
+:root[data-pronunciation-colors="true"] .expression[data-pitch-category] rt {
+    color: inherit;
 }
 
 .dictionary {

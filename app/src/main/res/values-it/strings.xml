@@ -300,6 +300,8 @@
     <string name="yomitan_collection_queued">Importazione di %1$d dizionari in background; la schermata Dizionari mostra l’avanzamento.</string>
     <string name="popup_show_source">Mostra il testo riconosciuto sopra le voci</string>
     <string name="popup_show_source_hint">Disattivato: il popup inizia direttamente con la voce, e ✕ sta accanto ai suoi pulsanti.</string>
+    <string name="popup_pitch_colors">Colori dell’accento tonale</string>
+    <string name="popup_pitch_colors_hint">La parola e la sua lettura prendono il colore del primo accento tonale, e ogni accento il proprio: heiban blu, atamadaka rosso, nakadaka arancione, odaka verde, kifuku (verbi e aggettivi in -i con discesa) viola. Serve un dizionario di accento tonale.</string>
     <string name="popup_font_title">Carattere del popup</string>
     <string name="popup_font_hint">Usato dal popup e dalla pagina di ricerca.</string>
     <string name="popup_font_system">Carattere giapponese del telefono</string>

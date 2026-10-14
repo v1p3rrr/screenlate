@@ -300,6 +300,8 @@
     <string name="yomitan_collection_queued">%1$d sözlük arka planda içe aktarılıyor; ilerleme Sözlükler ekranında görünür.</string>
     <string name="popup_show_source">Tanınan metni maddelerin üstünde göster</string>
     <string name="popup_show_source_hint">Kapalı: açılır pencere doğrudan maddeyle başlar ve ✕ onun düğmelerinin yanında durur.</string>
+    <string name="popup_pitch_colors">Ton vurgusu renkleri</string>
+    <string name="popup_pitch_colors_hint">Sözcük ve okunuşu ilk ton vurgusunun rengini, her vurgu da kendi rengini alır: heiban mavi, atamadaka kırmızı, nakadaka turuncu, odaka yeşil, kifuku (düşüşlü fiiller ve i-sıfatları) mor. Ton vurgusu sözlüğü gerekir.</string>
     <string name="popup_font_title">Açılır pencere yazı tipi</string>
     <string name="popup_font_hint">Açılır pencere ve arama sayfası tarafından kullanılır.</string>
     <string name="popup_font_system">Telefonun Japonca yazı tipi</string>

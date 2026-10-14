@@ -471,6 +471,54 @@ test('two accents both show; three or more show the first, "+N" the rest and "�
     assert.equal(row.querySelector('.pitch-more').textContent, '+3');
 });
 
+const categories = () => [...content.querySelectorAll('.pitch-item')].map(item => item.dataset.pitchCategory);
+
+test('the word takes the type of its first accent in dictionary order, and each accent its own', () => {
+    Popup.render(state({ results: [detailed()] }));
+    // The colors are off until the appearance turns them on; the types are there either way.
+    assert.notEqual(page.document.documentElement.dataset.pronunciationColors, 'true');
+    // 食べる without word classes counts as a noun: [2] of three morae is nakadaka.
+    assert.equal(content.querySelector('.expression').dataset.pitchCategory, 'nakadaka');
+    assert.deepEqual(categories(), ['nakadaka', 'heiban']);
+
+    Popup.setAppearance({ pronunciationColors: true });
+    assert.equal(page.document.documentElement.dataset.pronunciationColors, 'true');
+    const verb = detailed();
+    verb.term.rules = 'v1';
+    verb.term.pitches = [{ dictionary: 'NHK', pitches: [{ position: 0 }, { position: 2 }] }];
+    Popup.render(state({ results: [verb] }));
+    assert.equal(content.querySelector('.expression').dataset.pitchCategory, 'heiban');
+    assert.deepEqual(categories(), ['heiban', 'kifuku']);
+});
+
+test('a noun is atamadaka, nakadaka or odaka by where its downstep falls, and a pattern counts like a number', () => {
+    const noun = (reading, pitches) => {
+        const entry = result('語', reading);
+        entry.term.pitches = [{ dictionary: 'NHK', pitches }];
+        return entry;
+    };
+    Popup.render(state({
+        results: [
+            noun('はし', [{ position: 1 }, { position: 2 }]),
+            noun('しょくじ', [{ position: 0 }, { pattern: 'LHL' }]),
+        ],
+    }));
+    const entries = [...content.querySelectorAll('article.entry')];
+    const of = entry => [...entry.querySelectorAll('.pitch-item')].map(item => item.dataset.pitchCategory);
+    assert.equal(entries[0].querySelector('.expression').dataset.pitchCategory, 'atamadaka');
+    assert.deepEqual(of(entries[0]), ['atamadaka', 'odaka']);
+    // しょくじ is three morae; LHL falls after the second.
+    assert.equal(entries[1].querySelector('.expression').dataset.pitchCategory, 'heiban');
+    assert.deepEqual(of(entries[1]), ['heiban', 'nakadaka']);
+});
+
+test('a word without pitch accents has no type', () => {
+    Popup.setAppearance({ pronunciationColors: true });
+    Popup.render(state());
+    assert.equal(content.querySelector('.expression').dataset.pitchCategory, undefined);
+    assert.equal(content.querySelector('.pitch-item'), null);
+});
+
 test('an inflection step or an accent opens the info panel', () => {
     Popup.render(state({ results: [detailed()], labels: { ...labels, pitchDictionaries: 'Pitch from' } }));
     const info = page.document.getElementById('info');

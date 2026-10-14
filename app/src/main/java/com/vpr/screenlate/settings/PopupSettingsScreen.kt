@@ -24,8 +24,8 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.components.SwitchRow
 
 /**
- * The lookup page (popup and search): popup elements (the recognized text, the translation button, definition copying), auto-hide, its
- * font, text size and weight, and custom CSS.
+ * The lookup page (popup and search): popup elements (the recognized text, the translation button, pitch accent
+ * colors, definition copying), auto-hide, its font, text size and weight, and custom CSS.
  */
 @Composable
 fun PopupSettingsScreen(onBack: () -> Unit, viewModel: PopupAppearanceViewModel = hiltViewModel()) {
@@ -97,6 +97,12 @@ private fun PopupContentCard(
                 hint = stringResource(R.string.translation_button_hint),
             )
         }
+        SwitchRow(
+            label = stringResource(R.string.popup_pitch_colors),
+            checked = appearance.pronunciationColors,
+            onChange = viewModel::setPronunciationColors,
+            hint = stringResource(R.string.popup_pitch_colors_hint),
+        )
         SwitchRow(
             label = stringResource(R.string.popup_copy_switch),
             checked = appearance.copyDefinitions,
