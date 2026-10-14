@@ -594,3 +594,10 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   are CSS variables (`--pitch-heiban-color` …) the custom CSS can change; e-ink keeps the light theme's colors (the
   switch is off by default, and color e-ink screens show them); the info panel of an accent is unchanged. Checked in a
   desktop browser in light and dark themes; emulator check pending.
+- 2026-10-14: request 40 done (tone audit). About 90 strings rewritten: recognition hints and ⓘ texts, reset
+  confirmations, background work and the keep-alive card ("Persistent notification"), bubble state, logs, update and
+  notification texts, cloud recognition, translation and Anki errors; a change of meaning in all 14 locales, tone-only
+  fixes in English and Russian where the other locales were already neutral, first-person Russian progress texts
+  replaced. The usage guide follows the new wording, the README drops conversational phrases, and the release notes in
+  `.github/release-notes/` list features by area with fixes in one sentence (v0.2.3: one sentence). GitHub releases
+  are unchanged until the owner sees the drafts. Settled wording is in `ai/notes/translations.md` → Tone.

@@ -36,8 +36,31 @@ Inflection terms per language follow the school grammar of Japanese taught in th
   the lookup feature "Kanji of the word" is named the same in summaries; a dictionary from a backup "replaces its
   installed version".
 
+## Tone (2026-10-14 audit)
+
+UI texts, hints and docs use the dry tone of software documentation (request 40 of the languages plan). Wording
+settled in that audit, to reuse rather than reinvent:
+
+- Defaults: "are reset to their defaults" / «будут сброшены к значениям по умолчанию», never "go back to how they
+  were after installation".
+- Services are not people: "requests to it are paused for a few minutes" / «запросы к нему приостановлены на
+  несколько минут» (not "it rests"); "the next one is used" (not "takes over"); "was not found in AnkiDroid" (not "is
+  gone").
+- Progress texts are nouns, not first person: «Распознавание…», «Остановка импорта и удаление словарей…».
+- Purpose of an option: "Intended for …" / «Предназначено для …»; a recommendation: "Recommended: Both" / «Рекомендуется
+  «Оба»».
+- Errors: "Unknown error." / «Неизвестная ошибка.», "The request timed out." / «Время ожидания ответа истекло.»,
+  "Cloud recognition server error (%1$d)." / «Ошибка сервера облачного распознавания (%1$d).».
+- The keep-alive card is "Persistent notification" / «Постоянное уведомление»; its switch "Show a notification while
+  the service runs".
+- Dictionary languages: "Language of the words" / "Language of the definitions" («Язык слов» / «Язык толкований»).
+- A tone-only change to English may leave the other locales as they are when their wording is already neutral; a
+  change of meaning goes to all 14.
+
 ## Tools used for the 2026-10-01 audit
 
 Side-by-side dumps of English and the locales per key and a script that replaces whole string values were kept in
 the session scratchpad only; the steps are simple enough to redo: parse each `strings.xml`, compare by key, and write
-values back with `xml.sax.saxutils.escape` plus the Android escapes above.
+values back with `xml.sax.saxutils.escape` plus the Android escapes above. The 2026-10-14 tone audit did the same,
+with new texts kept in Python dicts (`{key: {locale: text}}`) and `¶` standing for the literal `\n\n` paragraph break,
+so no backslashes pass through tool inputs.
