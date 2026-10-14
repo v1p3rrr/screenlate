@@ -45,9 +45,9 @@ export function renderPage() {
     return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki] });
 }
 
-/** The note builder with the renderer, on an empty page. */
+/** The note builder with the renderer and the headword readings, on an empty page. */
 export function notePage() {
-    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note] });
+    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.reading, SCRIPTS.readingZh] });
 }
 
 /** The headword readings with the Chinese rules, on an empty page. */

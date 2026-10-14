@@ -17,7 +17,22 @@ object ChineseSupport : LanguageSupport {
     override val quotePairs = mapOf(
         '“' to '”', '‘' to '’', '「' to '」', '『' to '』', '《' to '》', '〈' to '〉', '（' to '）', '(' to ')', '【' to '】',
     )
-    override val ankiMarkers: List<String> = emptyList()
+
+    /** The word in Simplified and in Traditional characters, for note types with a field of each. */
+    override val scriptMarkers = mapOf(
+        "expression-simplified" to ChineseScripts.SIMPLIFIED,
+        "expression-traditional" to ChineseScripts.TRADITIONAL,
+    )
+    override val ankiMarkers: List<String> = scriptMarkers.keys.toList()
+
+    /** Fields of common Chinese note types: Hanzi, Simplified, Traditional, Pinyin, English. */
+    override val ankiFieldNames = mapOf(
+        "expression-simplified" to listOf("simplified", "简体", "簡體"),
+        "expression-traditional" to listOf("traditional", "繁体", "繁體"),
+        "expression" to listOf("hanzi", "chinese", "characters", "汉字", "漢字", "中文"),
+        "reading" to listOf("pinyin", "拼音"),
+        "glossary" to listOf("english"),
+    )
 
     /**
      * Wiktionary first: its recordings are titled by pinyin, so a word gets a clip of the reading it is shown with

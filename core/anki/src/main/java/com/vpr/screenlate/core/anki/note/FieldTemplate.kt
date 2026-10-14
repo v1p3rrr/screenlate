@@ -112,20 +112,27 @@ object FieldTemplate {
      * Templates for every field of a note type: a preset for well-known note types, otherwise Yomitan's rule — a
      * field whose whole name is a marker or one of its aliases gets that marker, the first field gets
      * `{expression}`, anything else stays empty. Matching whole names keeps flag fields such as `IsSentenceCard`
-     * empty.
+     * empty. Field names of note types made for [language] come first (`LanguageSupport.ankiFieldNames`).
      */
-    fun guess(modelName: String, fieldNames: List<String>): Map<String, String> {
+    fun guess(modelName: String, fieldNames: List<String>, language: Language): Map<String, String> {
         val preset = NoteTypePresets.find(modelName, fieldNames)
         return fieldNames.withIndex().associate { (index, field) ->
-            field to (preset?.get(field.normalizedFieldName()) ?: guessField(field, index))
+            field to (preset?.get(field.normalizedFieldName()) ?: guessField(field, index, language))
         }
     }
 
-    /** Yomitan's `_getDefaultFieldValue` for one field. */
-    fun guessField(fieldName: String, index: Int): String {
-        if (index == 0) return "{expression}"
+    /**
+     * Yomitan's `_getDefaultFieldValue` for one field, with [language]'s own field names first. The first field gets
+     * `{expression}` unless its name asks for the word in one script (Traditional).
+     */
+    fun guessField(fieldName: String, index: Int, language: Language): String {
         val name = fieldName.normalizedFieldName()
-        for (marker in MARKERS + APP_MARKERS + LANGUAGE_MARKERS) {
+        val support = language.support
+        val own = support.ankiFieldNames.entries
+            .firstOrNull { (_, names) -> names.any { it.normalizedFieldName() == name } }?.key
+        if (index == 0) return "{${own?.takeIf { it in support.scriptMarkers } ?: "expression"}}"
+        if (own != null) return "{$own}"
+        for (marker in markersFor(language)) {
             val names = listOf(marker) + ALIASES[marker].orEmpty()
             if (names.any { it.normalizedFieldName() == name }) return "{$marker}"
         }

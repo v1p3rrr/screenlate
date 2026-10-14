@@ -103,6 +103,26 @@ test('sentence furigana marks each looked-up term', () => {
     assert.equal(sentence.plain, '私は 食[た]べた');
 });
 
+test('chinese furigana put each pinyin syllable over its character', () => {
+    const word = (expression, reading) => NoteData.build({ lang: 'zh-Hans', term: { expression, reading, glossaries: [] } }, {}).values;
+    const hello = word('你好', 'nǐhǎo');
+    assert.equal(hello.furigana, '<ruby>你<rt>nǐ</rt></ruby><ruby>好<rt>hǎo</rt></ruby>');
+    assert.equal(hello['furigana-plain'], '你[nǐ] 好[hǎo]');
+    assert.equal(word('点儿', 'diǎnr')['furigana-plain'], '点[diǎn] 儿[r]');
+    // Letters the rules cannot split keep the whole reading over the whole word.
+    assert.equal(word('T恤', 'T xù').furigana, '<ruby>T恤<rt>T xù</rt></ruby>');
+    assert.equal(word('中文', '').furigana, '中文');
+});
+
+test('chinese sentence furigana spell the text with the syllables of its word', () => {
+    const sentence = NoteData.sentenceFurigana([
+        { text: '我' },
+        { text: '學習', expression: '学习', reading: 'xuéxí' },
+    ], 'zh-Hans');
+    assert.equal(sentence.html, '<span class="term">我</span><span class="term"><ruby>學<rt>xué</rt></ruby><ruby>習<rt>xí</rt></ruby></span>');
+    assert.equal(sentence.plain, '我 學[xué] 習[xí]');
+});
+
 test('dictionary names in marker names', () => {
     assert.equal(NoteData.kebab('Kanjium Pitch Accents'), 'kanjium-pitch-accents');
     assert.equal(NoteData.kebab('大辞林　第四版'), '大辞林-第四版');

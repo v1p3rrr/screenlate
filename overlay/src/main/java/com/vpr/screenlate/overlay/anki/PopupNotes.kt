@@ -331,6 +331,10 @@ class PopupNotes(
                     }
                 }
                 values["document-title"] = escapeHtml(context.documentTitle)
+                for ((marker, tag) in noteLanguage.support.scriptMarkers) {
+                    if (marker !in used) continue
+                    values[marker] = escapeHtml(lookup.inScript(data.term.expression, data.term.reading, tag, noteLanguage))
+                }
                 translated?.let { withTimeoutOrNull(SentenceTranslation.NOTE_WAIT_MS) { it.await() } }
                     ?.let { values[FieldTemplate.SENTENCE_TRANSLATION] = escapeHtml(it) }
                 resolveGlossaryMedia(data.media, values, used, noteLanguage)
@@ -472,7 +476,8 @@ class PopupNotes(
             lookup.lookup(text, language, extraEntries = false).firstOrNull()
         }
         val formatted = evaluateJson<Map<String, String>>(
-            "JSON.stringify(NoteData.sentenceFurigana(${json.encodeToString(parts)}))",
+            "JSON.stringify(NoteData.sentenceFurigana(${json.encodeToString(parts)}, " +
+                "${json.encodeToString(noteLanguage.support.languageTag)}))",
         ) ?: return null
         return formatted["html"].orEmpty() to formatted["plain"].orEmpty()
     }

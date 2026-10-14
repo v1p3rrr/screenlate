@@ -146,6 +146,7 @@ A translation is kept for 10 minutes, so adding a note after reading the transla
 
 1. Install AnkiDroid, open Anki and audio settings in Screenlate and allow access to AnkiDroid.
 2. Choose a deck and a note type. Field templates are pre-filled: Senren, Lapis, Kiku, JP Mining Note, Kaishi 1.5k and the Basic Mining Deck get the templates their authors recommend (a picture field gets the screenshot, a sentence translation field the translation), other note types are filled from the field names (Word, Reading, Meaning, Picture and the like); adjust them with the + button, which inserts markers such as `{expression}`, `{reading}`, `{furigana}`, `{glossary}`, `{sentence}`, `{sentence-translation}`, `{cloze-body}`, `{audio}` and `{screenshot}`.
+   - For Chinese, fields named Hanzi, Simplified, Traditional, Pinyin and English are recognized as well. `{expression-simplified}` and `{expression-traditional}` give the word in Simplified and in Traditional characters, whichever script the text was in; where a character has several forms (发: 發, 髮), the form a dictionary lists with the word's reading is used. `{furigana}` and `{sentence-furigana}` put each pinyin syllable over its character.
 3. The first field is used for the duplicate check. Duplicates can be searched in the collection, the deck or the deck's root, and be prevented (➕ becomes 📖, which opens the existing note; hold it to add anyway), overwritten field by field, or added again.
 
 ### Audio sources

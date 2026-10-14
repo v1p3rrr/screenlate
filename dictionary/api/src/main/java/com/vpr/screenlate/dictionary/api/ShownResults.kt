@@ -69,6 +69,33 @@ internal fun List<LookupResult>.inScript(
     return shown.values.toList()
 }
 
+/**
+ * [expression] read as [reading] spelled in the script [tag], for Anki's script markers: [expression] itself when it is
+ * written in [tag]; otherwise the first of its likely conversions ([LanguageSupport.inScript]), and of [expression]
+ * itself where it is written alike in both scripts, that [listed] finds as a word with the same reading. Characters
+ * with several forms are different words (干 gān: 乾 "dry", 幹 gàn "to do"), so the reading rules out some. Without
+ * such a word, the most likely conversion, or [expression] where it is written alike in both.
+ */
+internal suspend fun spelling(
+    expression: String,
+    reading: String,
+    tag: String,
+    support: LanguageSupport,
+    listed: suspend (String) -> List<LookupResult>,
+): String {
+    val script = support.scriptOf(expression)
+    if (script == tag) return expression
+    val conversions = support.inScript(MappedText.identity(expression), tag).map { it.text }
+    if (conversions.isEmpty()) return expression
+    val candidates = if (script == null) conversions + expression else conversions
+    val key = support.normalizeReading(support.displayReading(reading))
+    return candidates.firstOrNull { candidate ->
+        listed(candidate).any {
+            it.term.expression == candidate && support.normalizeReading(support.displayReading(it.term.reading)) == key
+        }
+    } ?: if (script == null) expression else conversions.first()
+}
+
 /** This result with [other]'s definitions, frequencies and pronunciations that it lacks. */
 private fun LookupResult.joined(other: TermEntry, dictionaryOrder: List<String>): LookupResult {
     val glossaries = other.glossaries.filter { it !in term.glossaries }

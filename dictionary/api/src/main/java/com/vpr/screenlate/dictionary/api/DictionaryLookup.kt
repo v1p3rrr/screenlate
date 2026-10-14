@@ -105,6 +105,20 @@ class DictionaryLookup @Inject constructor(
     }
 
     /**
+     * [expression] read as [reading] in the script [tag] (`LanguageSupport.scriptTags`), checked against the term
+     * dictionaries where a character has several forms; see [spelling].
+     */
+    suspend fun inScript(expression: String, reading: String, tag: String, language: Language): String {
+        val support = language.support
+        return repository.withLookup(language) { prepared ->
+            spelling(expression, reading, tag, support) { candidate ->
+                val options = prepared.options.copy(scanLength = candidate.codePointCount(0, candidate.length), language = language)
+                engine.lookup(candidate, options).map { it.asShown(support) }
+            }
+        }
+    }
+
+    /**
      * Words whose reading has the [key] of [query]: the words the reading indexes list for it, each looked up in the
      * chosen script, as typed pinyin has none of its own; the tones typed in the query rank first.
      */

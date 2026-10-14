@@ -47,7 +47,7 @@ class FieldTemplateTest {
             "Front", "Reading", "Sentence", "SentenceFurigana", "Meaning", "Word Audio", "Pitch Position",
             "FreqSort", "IsSentenceCard", "Notes",
         )
-        assertThat(FieldTemplate.guess("Custom", fields)).containsExactlyEntriesIn(
+        assertThat(FieldTemplate.guess("Custom", fields, Language.JAPANESE)).containsExactlyEntriesIn(
             mapOf(
                 "Front" to "{expression}",
                 "Reading" to "{reading}",
@@ -71,7 +71,7 @@ class FieldTemplateTest {
             "wordAudio", "sentenceAudio", "pitchPosition", "pitch", "notes", "hint", "frequency", "freqSort",
             "miscInfo", "sentenceCard", "selectionText", "audioCard", "dictionaryPreference", "wordFuriganaUnused",
         )
-        val templates = FieldTemplate.guess("Senren", fields)
+        val templates = FieldTemplate.guess("Senren", fields, Language.JAPANESE)
 
         assertThat(templates["word"]).isEqualTo("{expression}")
         assertThat(templates["sentence"]).contains("<span class=\"highlight\">{cloze-body}</span>")
@@ -88,7 +88,7 @@ class FieldTemplateTest {
 
     @Test
     fun senrenSentenceTranslationGetsTheTranslation() {
-        val templates = FieldTemplate.guess("Senren", listOf("Word", "Sentence", "SentenceTranslation"))
+        val templates = FieldTemplate.guess("Senren", listOf("Word", "Sentence", "SentenceTranslation"), Language.JAPANESE)
 
         assertThat(templates["SentenceTranslation"]).isEqualTo("{sentence-translation}")
     }
@@ -96,7 +96,7 @@ class FieldTemplateTest {
     @Test
     fun lapisPresetUsesPlainFurigana() {
         val fields = listOf("Expression", "ExpressionFurigana", "ExpressionReading", "MainDefinition", "Sentence", "IsClickCard")
-        val templates = FieldTemplate.guess("Lapis", fields)
+        val templates = FieldTemplate.guess("Lapis", fields, Language.JAPANESE)
 
         assertThat(templates["ExpressionFurigana"]).isEqualTo("{furigana-plain}")
         assertThat(templates["MainDefinition"]).isEqualTo("{glossary-first}")
@@ -107,7 +107,7 @@ class FieldTemplateTest {
     @Test
     fun kikuPresetAddsItsFieldsToLapis() {
         val fields = listOf("Expression", "MainDefinition", "Sentence", "SentenceFurigana", "SentenceTranslation", "RelatedExpression", "Picture")
-        val templates = FieldTemplate.guess("Kiku", fields)
+        val templates = FieldTemplate.guess("Kiku", fields, Language.JAPANESE)
 
         assertThat(templates["MainDefinition"]).isEqualTo("{glossary-first}")
         assertThat(templates["SentenceFurigana"]).isEqualTo("{sentence-furigana-plain}")
@@ -115,7 +115,7 @@ class FieldTemplateTest {
         assertThat(templates["RelatedExpression"]).isEmpty()
         assertThat(templates["Picture"]).isEqualTo("{screenshot}")
         // Lapis keeps the sentence furigana empty, as its authors advise.
-        assertThat(FieldTemplate.guess("Lapis", fields)["SentenceFurigana"]).isEmpty()
+        assertThat(FieldTemplate.guess("Lapis", fields, Language.JAPANESE)["SentenceFurigana"]).isEmpty()
     }
 
     @Test
@@ -125,7 +125,7 @@ class FieldTemplateTest {
             "WordAudio", "PAGraphs", "PAPositions", "PASilence", "WordReadingHiragana", "FrequenciesStylized",
             "FrequencySort", "SecondaryDefinition", "Comment",
         )
-        val templates = FieldTemplate.guess("JP Mining Note", fields)
+        val templates = FieldTemplate.guess("JP Mining Note", fields, Language.JAPANESE)
 
         assertThat(templates).containsExactlyEntriesIn(
             mapOf(
@@ -155,7 +155,7 @@ class FieldTemplateTest {
             "Word", "Word Reading", "Word Furigana", "Word Meaning", "Word Audio", "Sentence", "Sentence Meaning",
             "Sentence Furigana", "Sentence Audio", "Picture", "Notes", "Pitch Accent", "Pitch Accent Notes",
         )
-        val templates = FieldTemplate.guess("Kaishi 1.5k", fields)
+        val templates = FieldTemplate.guess("Kaishi 1.5k", fields, Language.JAPANESE)
 
         assertThat(templates["Word Furigana"]).isEqualTo("{furigana-plain}")
         assertThat(templates["Word Meaning"]).isEqualTo("{glossary-first-brief}")
@@ -169,14 +169,43 @@ class FieldTemplateTest {
     @Test
     fun basicMiningDeckIsKnownByItsFields() {
         val fields = listOf("Word", "Reading", "Glossary", "Sentence", "Picture", "Audio", "SentenceAudio", "Graph", "Hint")
-        val templates = FieldTemplate.guess("Mining", fields)
+        val templates = FieldTemplate.guess("Mining", fields, Language.JAPANESE)
 
         assertThat(templates["Glossary"]).isEqualTo("{glossary-no-dictionary}")
         assertThat(templates["Sentence"]).isEqualTo("{sentence}")
         assertThat(templates["Graph"]).isEqualTo("{pitch-accent-graphs}")
         assertThat(templates["SentenceAudio"]).isEmpty()
         // Without its fields the general rule applies.
-        assertThat(FieldTemplate.guess("Mining", listOf("Word", "Glossary"))["Glossary"]).isEqualTo("{glossary}")
+        assertThat(FieldTemplate.guess("Mining", listOf("Word", "Glossary"), Language.JAPANESE)["Glossary"]).isEqualTo("{glossary}")
+    }
+
+    @Test
+    fun chineseNoteTypesAreFilledByTheirFieldNames() {
+        val fields = listOf("Simplified", "Traditional", "Pinyin", "English", "Sound", "Classifier", "Pitch")
+        assertThat(FieldTemplate.guess("Chinese (Advanced)", fields, Language.CHINESE)).containsExactlyEntriesIn(
+            mapOf(
+                "Simplified" to "{expression-simplified}",
+                "Traditional" to "{expression-traditional}",
+                "Pinyin" to "{reading}",
+                "English" to "{glossary}",
+                "Sound" to "{audio}",
+                "Classifier" to "",
+                // Pitch accents are Japanese.
+                "Pitch" to "",
+            ),
+        )
+        assertThat(FieldTemplate.guess("Pleco", listOf("Hanzi", "Pinyin", "Meaning"), Language.CHINESE))
+            .containsExactly("Hanzi", "{expression}", "Pinyin", "{reading}", "Meaning", "{glossary}")
+        // The first field is the word; a script in its name chooses the spelling.
+        assertThat(FieldTemplate.guess("Custom", listOf("Pinyin", "Hanzi"), Language.CHINESE)["Pinyin"])
+            .isEqualTo("{expression}")
+        assertThat(FieldTemplate.guess("Custom", listOf("Traditional", "Simplified"), Language.CHINESE)["Traditional"])
+            .isEqualTo("{expression-traditional}")
+        // Other languages keep these names to themselves.
+        assertThat(FieldTemplate.guess("Custom", listOf("Word", "Pinyin", "Traditional"), Language.JAPANESE))
+            .containsExactly("Word", "{expression}", "Pinyin", "", "Traditional", "")
+        assertThat(FieldTemplate.markersFor(Language.CHINESE)).containsAtLeast("expression-simplified", "expression-traditional")
+        assertThat(FieldTemplate.isKnown("expression-traditional")).isTrue()
     }
 
     @Test
@@ -185,7 +214,7 @@ class FieldTemplateTest {
             "Front", "Image", "Frequency Sort", "PrimaryDefinition", "Sentence_English", "SentenceEng", "Sentence Meaning",
             "Translation", "Meaning", "Pitch Graph",
         )
-        assertThat(FieldTemplate.guess("Custom", fields)).containsExactlyEntriesIn(
+        assertThat(FieldTemplate.guess("Custom", fields, Language.JAPANESE)).containsExactlyEntriesIn(
             mapOf(
                 "Front" to "{expression}",
                 "Image" to "{screenshot}",

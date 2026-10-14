@@ -210,7 +210,7 @@ class AnkiSettingsViewModel @Inject constructor(
                     ?.let { settings.savedTemplates + (it to NoteTemplate(settings.fields, settings.overwriteModes)) }
                     ?: settings.savedTemplates
                 val restored = saved[model.name]
-                val suggested = FieldTemplate.guess(model.name, fields)
+                val suggested = FieldTemplate.guess(model.name, fields, language)
                 settings.copy(
                     modelId = model.id,
                     modelName = model.name,
@@ -235,7 +235,7 @@ class AnkiSettingsViewModel @Inject constructor(
             val modelId = current.modelId ?: return@launch
             val fields = anki.fields(modelId)
             if (fields.isEmpty()) return@launch
-            val suggested = FieldTemplate.guess(current.modelName.orEmpty(), fields)
+            val suggested = FieldTemplate.guess(current.modelName.orEmpty(), fields, language)
             settingsRepository.update(language) { settings ->
                 settings.copy(
                     fields = fields.associateWith { settings.fields[it] ?: suggested[it].orEmpty() },
@@ -249,8 +249,9 @@ class AnkiSettingsViewModel @Inject constructor(
     /** Replaces all field templates of the current note type with the suggested ones. */
     fun suggestTemplates() {
         val fields = connection.value.fieldNames
+        val language = shown.language.value
         updateSettings { settings ->
-            settings.copy(fields = FieldTemplate.guess(settings.modelName.orEmpty(), fields))
+            settings.copy(fields = FieldTemplate.guess(settings.modelName.orEmpty(), fields, language))
         }
     }
 

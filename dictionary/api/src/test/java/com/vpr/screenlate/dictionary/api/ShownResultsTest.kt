@@ -10,6 +10,7 @@ import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import com.vpr.screenlate.dictionary.api.model.Transform
 import com.vpr.screenlate.dictionary.api.settings.LookupSettings
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ShownResultsTest {
@@ -109,6 +110,27 @@ class ShownResultsTest {
         val results = listOf(result("头发", "tóufa", "CC-CEDICT"))
 
         assertThat(results.inScript("zh-Hant", chinese, order).map { it.term.expression }).containsExactly("头发")
+    }
+
+    @Test
+    fun `a word is spelled in the other script as the dictionaries list it with its reading`() = runTest {
+        val listed = mapOf("乾" to "gān", "幹" to "gàn", "干" to "gān", "干涉" to "gān shè", "髮" to "fà", "頭髮" to "tóu fa")
+        suspend fun spell(expression: String, reading: String, tag: String) = spelling(expression, reading, tag, chinese) {
+            listOfNotNull(listed[it]?.let { reading -> result(it, reading, "CC-CEDICT") })
+        }
+
+        // 干 has several Traditional forms; the reading tells them apart.
+        assertThat(spell("干", "gān", "zh-Hant")).isEqualTo("乾")
+        assertThat(spell("干", "gàn", "zh-Hant")).isEqualTo("幹")
+        // Written alike in both scripts: itself, as the dictionary lists it.
+        assertThat(spell("干涉", "gānshè", "zh-Hant")).isEqualTo("干涉")
+        assertThat(spell("头发", "tóufa", "zh-Hant")).isEqualTo("頭髮")
+        // Nothing listed: the most likely form.
+        assertThat(spell("发", "fā", "zh-Hant")).isEqualTo("發")
+        assertThat(spell("發", "fā", "zh-Hans")).isEqualTo("发")
+        // Already in the script, or the same in both.
+        assertThat(spell("發", "fā", "zh-Hant")).isEqualTo("發")
+        assertThat(spell("你好", "nǐhǎo", "zh-Hant")).isEqualTo("你好")
     }
 
     @Test

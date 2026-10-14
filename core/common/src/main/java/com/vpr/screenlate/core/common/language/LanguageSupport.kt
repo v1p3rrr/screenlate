@@ -40,6 +40,18 @@ interface LanguageSupport {
     /** Anki markers that exist only for this language (e.g. pitch accent), in addition to the common ones. */
     val ankiMarkers: List<String>
 
+    /**
+     * Anki markers ([ankiMarkers]) that spell the word in one of [scriptTags], to that script's tag:
+     * `{expression-traditional}` for a note type with a field for each script.
+     */
+    val scriptMarkers: Map<String, String> get() = emptyMap()
+
+    /**
+     * Field names of note types made for the language, by the marker such a field is pre-filled with (Pinyin →
+     * `reading`); they come before the names every language shares.
+     */
+    val ankiFieldNames: Map<String, List<String>> get() = emptyMap()
+
     /** Default audio sources, as `AudioSourceType` names, in priority order. */
     val defaultAudioSources: List<String>
 

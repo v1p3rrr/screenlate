@@ -13,8 +13,12 @@
  * Glossary images point at placeholders; Kotlin copies the files into AnkiDroid and substitutes the names. Sentence,
  * cloze, screenshot, audio and document title values come from Kotlin.
  *
- * NoteData.sentenceFurigana(parts) formats a sentence split into looked-up terms: { html, plain } for
- * {sentence-furigana} and {sentence-furigana-plain}. parts: [{ text, expression?, reading? }].
+ * NoteData.sentenceFurigana(parts, lang) formats a sentence split into looked-up terms: { html, plain } for
+ * {sentence-furigana} and {sentence-furigana-plain}. parts: [{ text, expression?, reading? }]; lang: the note
+ * language's tag.
+ *
+ * Furigana of a language whose readings give one syllable per character (Chinese pinyin, reading.js) put each
+ * syllable over its character; Japanese readings go through Yomitan's furigana distribution.
  */
 const NoteData = (() => {
     const render = window.YomitanRender || null;
@@ -74,8 +78,22 @@ const NoteData = (() => {
 
     // region Furigana
 
-    function segments(expression, reading) {
+    /**
+     * [[text, ruby], ...] of a word; [lang] picks the reading.js rules where the language has them. A reading those
+     * rules cannot split goes over the whole word.
+     */
+    function segments(expression, reading, lang) {
+        const syllables = typeof HeadwordReading === 'undefined' ? null : HeadwordReading.segments(lang, expression, reading);
+        if (syllables) {
+            if (syllables.length === 1 && !syllables[0][1]) return [[expression, reading && reading !== expression ? reading : '']];
+            return syllables.map(([text, parts]) => [text, parts ? parts.map(part => part.text).join('') : '']);
+        }
         return render ? render.furiganaSegments(expression, reading) : [[expression, '']];
+    }
+
+    /** Whether [lang] has reading.js rules, so its furigana do not go through Yomitan's Japanese distribution. */
+    function hasSyllableRules(lang) {
+        return typeof HeadwordReading !== 'undefined' && HeadwordReading.segments(lang, '', '') !== null;
     }
 
     /** Ruby markup of one piece; text and reading are escaped, as Yomitan's templates do. */
@@ -83,14 +101,14 @@ const NoteData = (() => {
         return ruby ? `<ruby>${escapeHtml(text)}<rt>${escapeHtml(ruby)}</rt></ruby>` : escapeHtml(text);
     }
 
-    function furiganaHtml(expression, reading) {
-        return segments(expression, reading).map(([text, ruby]) => rubyHtml(text, ruby)).join('');
+    function furiganaHtml(expression, reading, lang) {
+        return segments(expression, reading, lang).map(([text, ruby]) => rubyHtml(text, ruby)).join('');
     }
 
     /** Anki's `漢字[かんじ]` notation; a space separates a reading group from the text before it. */
-    function furiganaPlain(expression, reading) {
+    function furiganaPlain(expression, reading, lang) {
         let result = '';
-        for (const [text, ruby] of segments(expression, reading)) {
+        for (const [text, ruby] of segments(expression, reading, lang)) {
             if (ruby) {
                 if (result.length > 0) result += ' ';
                 result += `${escapeHtml(text)}[${escapeHtml(ruby)}]`;
@@ -101,13 +119,18 @@ const NoteData = (() => {
         return result;
     }
 
-    function sentenceFurigana(parts) {
+    function sentenceFurigana(parts, lang) {
+        const syllables = hasSyllableRules(lang);
         let html = '';
         let plain = '';
         for (const part of parts) {
-            const pieces = part.expression && anki
-                ? anki.distributeFuriganaInflected(part.expression, part.reading || part.expression, part.text)
-                : [[part.text, '']];
+            let pieces = [[part.text, '']];
+            if (part.expression && syllables) {
+                // The text may spell the word in the other script; its characters take the word's syllables.
+                pieces = segments(part.text, part.reading || '', lang);
+            } else if (part.expression && anki) {
+                pieces = anki.distributeFuriganaInflected(part.expression, part.reading || part.expression, part.text);
+            }
             html += '<span class="term">';
             for (const [text, ruby] of pieces) {
                 html += rubyHtml(text, ruby);
@@ -278,13 +301,14 @@ const NoteData = (() => {
         const wanted = markers ? new Set(markers) : null;
         const values = {};
         const reading = term.reading || term.expression;
+        const lang = result.lang || document.documentElement.lang;
         const wordClasses = (term.rules || '').split(' ').filter(Boolean);
 
         const standard = {
             expression: () => escapeHtml(term.expression),
             reading: () => escapeHtml(reading),
-            furigana: () => furiganaHtml(term.expression, term.reading),
-            'furigana-plain': () => furiganaPlain(term.expression, term.reading),
+            furigana: () => furiganaHtml(term.expression, term.reading, lang),
+            'furigana-plain': () => furiganaPlain(term.expression, term.reading, lang),
             glossary: () => glossary.all(glossaries, false, false),
             'glossary-brief': () => glossary.all(glossaries, true, false),
             'glossary-no-dictionary': () => glossary.all(glossaries, false, true),
