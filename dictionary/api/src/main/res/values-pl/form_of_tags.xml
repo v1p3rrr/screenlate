@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">twierdzący</string>
     <string name="form_of_tag_attributive">atrybutywny</string>
     <string name="form_of_tag_augmentative">zgrubienie</string>
+    <string name="form_of_tag_cantonese">kantoński</string>
     <string name="form_of_tag_causative">kauzatyw</string>
     <string name="form_of_tag_colloquial">potoczny</string>
     <string name="form_of_tag_comparative">stopień wyższy</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">ciągły</string>
     <string name="form_of_tag_contrastive">kontrastywny</string>
     <string name="form_of_tag_countable">policzalny</string>
+    <string name="form_of_tag_dated">dawny</string>
     <string name="form_of_tag_dative">celownik</string>
     <string name="form_of_tag_definite">określony</string>
     <string name="form_of_tag_dependent">zależny</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">gwarowy</string>
     <string name="form_of_tag_diminutive">zdrobnienie</string>
     <string name="form_of_tag_dual">liczba podwójna</string>
+    <string name="form_of_tag_euphemistic">eufemistyczny</string>
     <string name="form_of_tag_feminine">rodzaj żeński</string>
     <string name="form_of_tag_first_person">1. osoba</string>
     <string name="form_of_tag_formal">formalny</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">dopełniacz</string>
     <string name="form_of_tag_gerund">gerundium</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
+    <string name="form_of_tag_hakka">hakka</string>
     <string name="form_of_tag_historical">historyczny</string>
+    <string name="form_of_tag_hokkien">hokkien</string>
+    <string name="form_of_tag_hong_kong">Hongkong</string>
     <string name="form_of_tag_hortative">tryb zachęcający</string>
+    <string name="form_of_tag_humorous">żartobliwy</string>
     <string name="form_of_tag_idiomatic">idiomatyczny</string>
     <string name="form_of_tag_imperative">tryb rozkazujący</string>
     <string name="form_of_tag_imperfect">imperfectum</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">bezokolicznik</string>
     <string name="form_of_tag_informal">nieformalny</string>
     <string name="form_of_tag_instrumental">narzędnik</string>
+    <string name="form_of_tag_internet">internetowy</string>
     <string name="form_of_tag_interrogative">pytający</string>
     <string name="form_of_tag_intransitive">nieprzechodni</string>
     <string name="form_of_tag_literary">książkowy</string>
     <string name="form_of_tag_locative">miejscownik</string>
+    <string name="form_of_tag_mainland_china">Chiny kontynentalne</string>
+    <string name="form_of_tag_mandarin">mandaryński</string>
     <string name="form_of_tag_masculine">rodzaj męski</string>
+    <string name="form_of_tag_min">min</string>
+    <string name="form_of_tag_min_dong">mindong</string>
+    <string name="form_of_tag_min_nan">minnański</string>
     <string name="form_of_tag_misspelling">błędna pisownia</string>
     <string name="form_of_tag_mixed">mieszany</string>
+    <string name="form_of_tag_name">nazwa</string>
     <string name="form_of_tag_negative">przeczący</string>
     <string name="form_of_tag_neologism">neologizm</string>
     <string name="form_of_tag_neuter">rodzaj nijaki</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">rzadki</string>
     <string name="form_of_tag_reflexive">zwrotny</string>
     <string name="form_of_tag_second_person">2. osoba</string>
+    <string name="form_of_tag_second_round_simplified_chinese">druga reforma</string>
     <string name="form_of_tag_sequential">sekwencyjny</string>
     <string name="form_of_tag_short_form">forma krótka</string>
     <string name="form_of_tag_simple">prosty</string>
+    <string name="form_of_tag_simplified_chinese">uproszczony</string>
     <string name="form_of_tag_singular">liczba pojedyncza</string>
     <string name="form_of_tag_slang">slang</string>
+    <string name="form_of_tag_southern">południowy</string>
     <string name="form_of_tag_strong">mocny</string>
     <string name="form_of_tag_subjunctive">tryb łączący</string>
     <string name="form_of_tag_subjunctive_i">tryb łączący I</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">zdanie podrzędne</string>
     <string name="form_of_tag_superlative">stopień najwyższy</string>
     <string name="form_of_tag_supine">supinum</string>
+    <string name="form_of_tag_taiwan">Tajwan</string>
+    <string name="form_of_tag_teochew">teochew</string>
     <string name="form_of_tag_third_person">3. osoba</string>
+    <string name="form_of_tag_traditional_chinese">tradycyjny</string>
     <string name="form_of_tag_transitive">przechodni</string>
     <string name="form_of_tag_uncountable">niepoliczalny</string>
     <string name="form_of_tag_vocative">wołacz</string>
+    <string name="form_of_tag_vulgar">wulgarny</string>
     <string name="form_of_tag_weak">słaby</string>
+    <string name="form_of_tag_wu">wu</string>
 </resources>

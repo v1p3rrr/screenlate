@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">단정형</string>
     <string name="form_of_tag_attributive">관형형</string>
     <string name="form_of_tag_augmentative">확대형</string>
+    <string name="form_of_tag_cantonese">광둥어</string>
     <string name="form_of_tag_causative">사동</string>
     <string name="form_of_tag_colloquial">구어</string>
     <string name="form_of_tag_comparative">비교급</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">진행</string>
     <string name="form_of_tag_contrastive">대조</string>
     <string name="form_of_tag_countable">가산</string>
+    <string name="form_of_tag_dated">예스러운 말</string>
     <string name="form_of_tag_dative">여격</string>
     <string name="form_of_tag_definite">한정</string>
     <string name="form_of_tag_dependent">의존형</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">방언</string>
     <string name="form_of_tag_diminutive">지소형</string>
     <string name="form_of_tag_dual">쌍수</string>
+    <string name="form_of_tag_euphemistic">완곡</string>
     <string name="form_of_tag_feminine">여성</string>
     <string name="form_of_tag_first_person">1인칭</string>
     <string name="form_of_tag_formal">격식체</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">속격</string>
     <string name="form_of_tag_gerund">동명사</string>
     <string name="form_of_tag_gerundive">동형용사</string>
+    <string name="form_of_tag_hakka">객가어</string>
     <string name="form_of_tag_historical">역사적</string>
+    <string name="form_of_tag_hokkien">푸젠어</string>
+    <string name="form_of_tag_hong_kong">홍콩</string>
     <string name="form_of_tag_hortative">청유</string>
+    <string name="form_of_tag_humorous">익살</string>
     <string name="form_of_tag_idiomatic">관용</string>
     <string name="form_of_tag_imperative">명령형</string>
     <string name="form_of_tag_imperfect">미완료 과거</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">부정사</string>
     <string name="form_of_tag_informal">비격식체</string>
     <string name="form_of_tag_instrumental">도구격</string>
+    <string name="form_of_tag_internet">인터넷</string>
     <string name="form_of_tag_interrogative">의문</string>
     <string name="form_of_tag_intransitive">자동사</string>
     <string name="form_of_tag_literary">문어</string>
     <string name="form_of_tag_locative">처격</string>
+    <string name="form_of_tag_mainland_china">중국 대륙</string>
+    <string name="form_of_tag_mandarin">관화</string>
     <string name="form_of_tag_masculine">남성</string>
+    <string name="form_of_tag_min">민어</string>
+    <string name="form_of_tag_min_dong">민둥어</string>
+    <string name="form_of_tag_min_nan">민난어</string>
     <string name="form_of_tag_misspelling">오기</string>
     <string name="form_of_tag_mixed">혼합</string>
+    <string name="form_of_tag_name">명칭</string>
     <string name="form_of_tag_negative">부정</string>
     <string name="form_of_tag_neologism">신조어</string>
     <string name="form_of_tag_neuter">중성</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">드묾</string>
     <string name="form_of_tag_reflexive">재귀</string>
     <string name="form_of_tag_second_person">2인칭</string>
+    <string name="form_of_tag_second_round_simplified_chinese">제2차 간화</string>
     <string name="form_of_tag_sequential">계기</string>
     <string name="form_of_tag_short_form">짧은 형</string>
     <string name="form_of_tag_simple">단순</string>
+    <string name="form_of_tag_simplified_chinese">간체</string>
     <string name="form_of_tag_singular">단수</string>
     <string name="form_of_tag_slang">속어</string>
+    <string name="form_of_tag_southern">남부</string>
     <string name="form_of_tag_strong">강변화</string>
     <string name="form_of_tag_subjunctive">접속법</string>
     <string name="form_of_tag_subjunctive_i">접속법 1식</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">종속절</string>
     <string name="form_of_tag_superlative">최상급</string>
     <string name="form_of_tag_supine">목적분사</string>
+    <string name="form_of_tag_taiwan">대만</string>
+    <string name="form_of_tag_teochew">조주어</string>
     <string name="form_of_tag_third_person">3인칭</string>
+    <string name="form_of_tag_traditional_chinese">번체</string>
     <string name="form_of_tag_transitive">타동사</string>
     <string name="form_of_tag_uncountable">불가산</string>
     <string name="form_of_tag_vocative">호격</string>
+    <string name="form_of_tag_vulgar">비속어</string>
     <string name="form_of_tag_weak">약변화</string>
+    <string name="form_of_tag_wu">오어</string>
 </resources>

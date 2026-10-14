@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">斷定</string>
     <string name="form_of_tag_attributive">定語</string>
     <string name="form_of_tag_augmentative">指大</string>
+    <string name="form_of_tag_cantonese">粵語</string>
     <string name="form_of_tag_causative">使役</string>
     <string name="form_of_tag_colloquial">口語</string>
     <string name="form_of_tag_comparative">比較級</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">進行</string>
     <string name="form_of_tag_contrastive">對比</string>
     <string name="form_of_tag_countable">可數</string>
+    <string name="form_of_tag_dated">過時</string>
     <string name="form_of_tag_dative">與格</string>
     <string name="form_of_tag_definite">定指</string>
     <string name="form_of_tag_dependent">依附形</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">方言</string>
     <string name="form_of_tag_diminutive">指小</string>
     <string name="form_of_tag_dual">雙數</string>
+    <string name="form_of_tag_euphemistic">委婉</string>
     <string name="form_of_tag_feminine">陰性</string>
     <string name="form_of_tag_first_person">第一人稱</string>
     <string name="form_of_tag_formal">正式</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">屬格</string>
     <string name="form_of_tag_gerund">動名詞</string>
     <string name="form_of_tag_gerundive">動形容詞</string>
+    <string name="form_of_tag_hakka">客家話</string>
     <string name="form_of_tag_historical">歷史</string>
+    <string name="form_of_tag_hokkien">福建話</string>
+    <string name="form_of_tag_hong_kong">香港</string>
     <string name="form_of_tag_hortative">勸誘</string>
+    <string name="form_of_tag_humorous">詼諧</string>
     <string name="form_of_tag_idiomatic">習語</string>
     <string name="form_of_tag_imperative">命令式</string>
     <string name="form_of_tag_imperfect">未完成過去時</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">不定式</string>
     <string name="form_of_tag_informal">非正式</string>
     <string name="form_of_tag_instrumental">工具格</string>
+    <string name="form_of_tag_internet">網路</string>
     <string name="form_of_tag_interrogative">疑問</string>
     <string name="form_of_tag_intransitive">不及物</string>
     <string name="form_of_tag_literary">書面</string>
     <string name="form_of_tag_locative">方位格</string>
+    <string name="form_of_tag_mainland_china">中國大陸</string>
+    <string name="form_of_tag_mandarin">官話</string>
     <string name="form_of_tag_masculine">陽性</string>
+    <string name="form_of_tag_min">閩語</string>
+    <string name="form_of_tag_min_dong">閩東語</string>
+    <string name="form_of_tag_min_nan">閩南語</string>
     <string name="form_of_tag_misspelling">誤拼</string>
     <string name="form_of_tag_mixed">混合</string>
+    <string name="form_of_tag_name">名稱</string>
     <string name="form_of_tag_negative">否定</string>
     <string name="form_of_tag_neologism">新詞</string>
     <string name="form_of_tag_neuter">中性</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">罕用</string>
     <string name="form_of_tag_reflexive">反身</string>
     <string name="form_of_tag_second_person">第二人稱</string>
+    <string name="form_of_tag_second_round_simplified_chinese">二簡</string>
     <string name="form_of_tag_sequential">連續</string>
     <string name="form_of_tag_short_form">短形式</string>
     <string name="form_of_tag_simple">簡單</string>
+    <string name="form_of_tag_simplified_chinese">簡體</string>
     <string name="form_of_tag_singular">單數</string>
     <string name="form_of_tag_slang">俚語</string>
+    <string name="form_of_tag_southern">南方</string>
     <string name="form_of_tag_strong">強變化</string>
     <string name="form_of_tag_subjunctive">虛擬式</string>
     <string name="form_of_tag_subjunctive_i">虛擬式第一式</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">從句</string>
     <string name="form_of_tag_superlative">最高級</string>
     <string name="form_of_tag_supine">目的動名詞</string>
+    <string name="form_of_tag_taiwan">臺灣</string>
+    <string name="form_of_tag_teochew">潮州話</string>
     <string name="form_of_tag_third_person">第三人稱</string>
+    <string name="form_of_tag_traditional_chinese">繁體</string>
     <string name="form_of_tag_transitive">及物</string>
     <string name="form_of_tag_uncountable">不可數</string>
     <string name="form_of_tag_vocative">呼格</string>
+    <string name="form_of_tag_vulgar">粗俗</string>
     <string name="form_of_tag_weak">弱變化</string>
+    <string name="form_of_tag_wu">吳語</string>
 </resources>

@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">assertivo</string>
     <string name="form_of_tag_attributive">attributivo</string>
     <string name="form_of_tag_augmentative">accrescitivo</string>
+    <string name="form_of_tag_cantonese">cantonese</string>
     <string name="form_of_tag_causative">causativo</string>
     <string name="form_of_tag_colloquial">colloquiale</string>
     <string name="form_of_tag_comparative">comparativo</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">continuo</string>
     <string name="form_of_tag_contrastive">contrastivo</string>
     <string name="form_of_tag_countable">numerabile</string>
+    <string name="form_of_tag_dated">datato</string>
     <string name="form_of_tag_dative">dativo</string>
     <string name="form_of_tag_definite">determinato</string>
     <string name="form_of_tag_dependent">dipendente</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">dialettale</string>
     <string name="form_of_tag_diminutive">diminutivo</string>
     <string name="form_of_tag_dual">duale</string>
+    <string name="form_of_tag_euphemistic">eufemistico</string>
     <string name="form_of_tag_feminine">femminile</string>
     <string name="form_of_tag_first_person">prima persona</string>
     <string name="form_of_tag_formal">formale</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">genitivo</string>
     <string name="form_of_tag_gerund">gerundio</string>
     <string name="form_of_tag_gerundive">gerundivo</string>
+    <string name="form_of_tag_hakka">hakka</string>
     <string name="form_of_tag_historical">storico</string>
+    <string name="form_of_tag_hokkien">hokkien</string>
+    <string name="form_of_tag_hong_kong">Hong Kong</string>
     <string name="form_of_tag_hortative">esortativo</string>
+    <string name="form_of_tag_humorous">scherzoso</string>
     <string name="form_of_tag_idiomatic">idiomatico</string>
     <string name="form_of_tag_imperative">imperativo</string>
     <string name="form_of_tag_imperfect">imperfetto</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">infinito</string>
     <string name="form_of_tag_informal">informale</string>
     <string name="form_of_tag_instrumental">strumentale</string>
+    <string name="form_of_tag_internet">internet</string>
     <string name="form_of_tag_interrogative">interrogativo</string>
     <string name="form_of_tag_intransitive">intransitivo</string>
     <string name="form_of_tag_literary">letterario</string>
     <string name="form_of_tag_locative">locativo</string>
+    <string name="form_of_tag_mainland_china">Cina continentale</string>
+    <string name="form_of_tag_mandarin">mandarino</string>
     <string name="form_of_tag_masculine">maschile</string>
+    <string name="form_of_tag_min">min</string>
+    <string name="form_of_tag_min_dong">min dong</string>
+    <string name="form_of_tag_min_nan">min nan</string>
     <string name="form_of_tag_misspelling">errore di ortografia</string>
     <string name="form_of_tag_mixed">misto</string>
+    <string name="form_of_tag_name">nome</string>
     <string name="form_of_tag_negative">negativo</string>
     <string name="form_of_tag_neologism">neologismo</string>
     <string name="form_of_tag_neuter">neutro</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">raro</string>
     <string name="form_of_tag_reflexive">riflessivo</string>
     <string name="form_of_tag_second_person">seconda persona</string>
+    <string name="form_of_tag_second_round_simplified_chinese">seconda semplificazione</string>
     <string name="form_of_tag_sequential">sequenziale</string>
     <string name="form_of_tag_short_form">forma breve</string>
     <string name="form_of_tag_simple">semplice</string>
+    <string name="form_of_tag_simplified_chinese">semplificato</string>
     <string name="form_of_tag_singular">singolare</string>
     <string name="form_of_tag_slang">gergo</string>
+    <string name="form_of_tag_southern">meridionale</string>
     <string name="form_of_tag_strong">forte</string>
     <string name="form_of_tag_subjunctive">congiuntivo</string>
     <string name="form_of_tag_subjunctive_i">congiuntivo I</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">subordinata</string>
     <string name="form_of_tag_superlative">superlativo</string>
     <string name="form_of_tag_supine">supino</string>
+    <string name="form_of_tag_taiwan">Taiwan</string>
+    <string name="form_of_tag_teochew">teochew</string>
     <string name="form_of_tag_third_person">terza persona</string>
+    <string name="form_of_tag_traditional_chinese">tradizionale</string>
     <string name="form_of_tag_transitive">transitivo</string>
     <string name="form_of_tag_uncountable">non numerabile</string>
     <string name="form_of_tag_vocative">vocativo</string>
+    <string name="form_of_tag_vulgar">volgare</string>
     <string name="form_of_tag_weak">debole</string>
+    <string name="form_of_tag_wu">wu</string>
 </resources>

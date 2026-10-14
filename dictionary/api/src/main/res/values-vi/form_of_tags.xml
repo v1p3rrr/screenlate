@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">khẳng định</string>
     <string name="form_of_tag_attributive">định ngữ</string>
     <string name="form_of_tag_augmentative">dạng tăng nghĩa</string>
+    <string name="form_of_tag_cantonese">tiếng Quảng Đông</string>
     <string name="form_of_tag_causative">sai khiến</string>
     <string name="form_of_tag_colloquial">khẩu ngữ</string>
     <string name="form_of_tag_comparative">so sánh hơn</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">tiếp diễn</string>
     <string name="form_of_tag_contrastive">đối lập</string>
     <string name="form_of_tag_countable">đếm được</string>
+    <string name="form_of_tag_dated">cũ</string>
     <string name="form_of_tag_dative">tặng cách</string>
     <string name="form_of_tag_definite">xác định</string>
     <string name="form_of_tag_dependent">phụ thuộc</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">phương ngữ</string>
     <string name="form_of_tag_diminutive">dạng giảm nhẹ</string>
     <string name="form_of_tag_dual">số đôi</string>
+    <string name="form_of_tag_euphemistic">uyển ngữ</string>
     <string name="form_of_tag_feminine">giống cái</string>
     <string name="form_of_tag_first_person">ngôi thứ nhất</string>
     <string name="form_of_tag_formal">trang trọng</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">sở hữu cách</string>
     <string name="form_of_tag_gerund">danh động từ</string>
     <string name="form_of_tag_gerundive">tính động từ</string>
+    <string name="form_of_tag_hakka">tiếng Khách Gia</string>
     <string name="form_of_tag_historical">lịch sử</string>
+    <string name="form_of_tag_hokkien">tiếng Phúc Kiến</string>
+    <string name="form_of_tag_hong_kong">Hồng Kông</string>
     <string name="form_of_tag_hortative">rủ rê</string>
+    <string name="form_of_tag_humorous">đùa</string>
     <string name="form_of_tag_idiomatic">thành ngữ</string>
     <string name="form_of_tag_imperative">mệnh lệnh</string>
     <string name="form_of_tag_imperfect">quá khứ chưa hoàn thành</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">nguyên mẫu</string>
     <string name="form_of_tag_informal">thân mật</string>
     <string name="form_of_tag_instrumental">công cụ cách</string>
+    <string name="form_of_tag_internet">mạng</string>
     <string name="form_of_tag_interrogative">nghi vấn</string>
     <string name="form_of_tag_intransitive">nội động</string>
     <string name="form_of_tag_literary">văn chương</string>
     <string name="form_of_tag_locative">vị trí cách</string>
+    <string name="form_of_tag_mainland_china">Trung Quốc đại lục</string>
+    <string name="form_of_tag_mandarin">tiếng Quan thoại</string>
     <string name="form_of_tag_masculine">giống đực</string>
+    <string name="form_of_tag_min">tiếng Mân</string>
+    <string name="form_of_tag_min_dong">tiếng Mân Đông</string>
+    <string name="form_of_tag_min_nan">tiếng Mân Nam</string>
     <string name="form_of_tag_misspelling">viết sai</string>
     <string name="form_of_tag_mixed">hỗn hợp</string>
+    <string name="form_of_tag_name">tên gọi</string>
     <string name="form_of_tag_negative">phủ định</string>
     <string name="form_of_tag_neologism">từ mới</string>
     <string name="form_of_tag_neuter">giống trung</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">hiếm</string>
     <string name="form_of_tag_reflexive">phản thân</string>
     <string name="form_of_tag_second_person">ngôi thứ hai</string>
+    <string name="form_of_tag_second_round_simplified_chinese">giản thể đợt hai</string>
     <string name="form_of_tag_sequential">nối tiếp</string>
     <string name="form_of_tag_short_form">dạng ngắn</string>
     <string name="form_of_tag_simple">đơn</string>
+    <string name="form_of_tag_simplified_chinese">giản thể</string>
     <string name="form_of_tag_singular">số ít</string>
     <string name="form_of_tag_slang">tiếng lóng</string>
+    <string name="form_of_tag_southern">phương Nam</string>
     <string name="form_of_tag_strong">mạnh</string>
     <string name="form_of_tag_subjunctive">giả định</string>
     <string name="form_of_tag_subjunctive_i">giả định I</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">mệnh đề phụ</string>
     <string name="form_of_tag_superlative">so sánh nhất</string>
     <string name="form_of_tag_supine">thể supin</string>
+    <string name="form_of_tag_taiwan">Đài Loan</string>
+    <string name="form_of_tag_teochew">tiếng Triều Châu</string>
     <string name="form_of_tag_third_person">ngôi thứ ba</string>
+    <string name="form_of_tag_traditional_chinese">phồn thể</string>
     <string name="form_of_tag_transitive">ngoại động</string>
     <string name="form_of_tag_uncountable">không đếm được</string>
     <string name="form_of_tag_vocative">hô cách</string>
+    <string name="form_of_tag_vulgar">thô tục</string>
     <string name="form_of_tag_weak">yếu</string>
+    <string name="form_of_tag_wu">tiếng Ngô</string>
 </resources>

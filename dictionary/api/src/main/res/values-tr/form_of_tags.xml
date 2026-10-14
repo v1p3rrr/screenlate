@@ -15,6 +15,7 @@
     <string name="form_of_tag_assertive">kesinlik</string>
     <string name="form_of_tag_attributive">niteleme</string>
     <string name="form_of_tag_augmentative">büyütme</string>
+    <string name="form_of_tag_cantonese">Kantonca</string>
     <string name="form_of_tag_causative">ettirgen</string>
     <string name="form_of_tag_colloquial">konuşma dili</string>
     <string name="form_of_tag_comparative">karşılaştırma</string>
@@ -23,6 +24,7 @@
     <string name="form_of_tag_continuous">sürekli</string>
     <string name="form_of_tag_contrastive">karşıtlık</string>
     <string name="form_of_tag_countable">sayılabilir</string>
+    <string name="form_of_tag_dated">eskice</string>
     <string name="form_of_tag_dative">yönelme hâli</string>
     <string name="form_of_tag_definite">belirli</string>
     <string name="form_of_tag_dependent">bağımlı</string>
@@ -30,6 +32,7 @@
     <string name="form_of_tag_dialectal">yöresel</string>
     <string name="form_of_tag_diminutive">küçültme</string>
     <string name="form_of_tag_dual">ikil</string>
+    <string name="form_of_tag_euphemistic">örtmeceli</string>
     <string name="form_of_tag_feminine">dişil</string>
     <string name="form_of_tag_first_person">birinci şahıs</string>
     <string name="form_of_tag_formal">resmî</string>
@@ -37,8 +40,12 @@
     <string name="form_of_tag_genitive">tamlayan hâli</string>
     <string name="form_of_tag_gerund">ulaç</string>
     <string name="form_of_tag_gerundive">gerundivum</string>
+    <string name="form_of_tag_hakka">Hakka</string>
     <string name="form_of_tag_historical">tarihî</string>
+    <string name="form_of_tag_hokkien">Hokkien</string>
+    <string name="form_of_tag_hong_kong">Hong Kong</string>
     <string name="form_of_tag_hortative">istek kipi</string>
+    <string name="form_of_tag_humorous">şaka</string>
     <string name="form_of_tag_idiomatic">deyimsel</string>
     <string name="form_of_tag_imperative">emir kipi</string>
     <string name="form_of_tag_imperfect">bitmemiş geçmiş</string>
@@ -49,13 +56,20 @@
     <string name="form_of_tag_infinitive">mastar</string>
     <string name="form_of_tag_informal">gayriresmî</string>
     <string name="form_of_tag_instrumental">araç hâli</string>
+    <string name="form_of_tag_internet">internet</string>
     <string name="form_of_tag_interrogative">soru</string>
     <string name="form_of_tag_intransitive">geçişsiz</string>
     <string name="form_of_tag_literary">edebî</string>
     <string name="form_of_tag_locative">bulunma hâli</string>
+    <string name="form_of_tag_mainland_china">Anakara Çin</string>
+    <string name="form_of_tag_mandarin">Mandarin</string>
     <string name="form_of_tag_masculine">eril</string>
+    <string name="form_of_tag_min">Min</string>
+    <string name="form_of_tag_min_dong">Min Dong</string>
+    <string name="form_of_tag_min_nan">Min Nan</string>
     <string name="form_of_tag_misspelling">yazım yanlışı</string>
     <string name="form_of_tag_mixed">karma</string>
+    <string name="form_of_tag_name">ad</string>
     <string name="form_of_tag_negative">olumsuz</string>
     <string name="form_of_tag_neologism">yeni sözcük</string>
     <string name="form_of_tag_neuter">nötr</string>
@@ -87,11 +101,14 @@
     <string name="form_of_tag_rare">nadir</string>
     <string name="form_of_tag_reflexive">dönüşlü</string>
     <string name="form_of_tag_second_person">ikinci şahıs</string>
+    <string name="form_of_tag_second_round_simplified_chinese">ikinci sadeleştirme</string>
     <string name="form_of_tag_sequential">ardışık</string>
     <string name="form_of_tag_short_form">kısa biçim</string>
     <string name="form_of_tag_simple">basit</string>
+    <string name="form_of_tag_simplified_chinese">basitleştirilmiş</string>
     <string name="form_of_tag_singular">tekil</string>
     <string name="form_of_tag_slang">argo</string>
+    <string name="form_of_tag_southern">güney</string>
     <string name="form_of_tag_strong">güçlü</string>
     <string name="form_of_tag_subjunctive">dilek kipi</string>
     <string name="form_of_tag_subjunctive_i">dilek kipi I</string>
@@ -99,9 +116,14 @@
     <string name="form_of_tag_subordinate_clause">yan cümle</string>
     <string name="form_of_tag_superlative">enüstünlük</string>
     <string name="form_of_tag_supine">supin</string>
+    <string name="form_of_tag_taiwan">Tayvan</string>
+    <string name="form_of_tag_teochew">Teochew</string>
     <string name="form_of_tag_third_person">üçüncü şahıs</string>
+    <string name="form_of_tag_traditional_chinese">geleneksel</string>
     <string name="form_of_tag_transitive">geçişli</string>
     <string name="form_of_tag_uncountable">sayılamaz</string>
     <string name="form_of_tag_vocative">seslenme hâli</string>
+    <string name="form_of_tag_vulgar">kaba</string>
     <string name="form_of_tag_weak">zayıf</string>
+    <string name="form_of_tag_wu">Wu</string>
 </resources>

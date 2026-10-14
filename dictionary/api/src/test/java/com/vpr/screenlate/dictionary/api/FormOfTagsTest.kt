@@ -31,6 +31,15 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `scripts, varieties and regions of chinese entries are translated`() {
+        assertThat(label("alternative Traditional-Chinese Hokkien")).isEqualTo("alternative traditional_chinese hokkien")
+        assertThat(label("Second-Round-Simplified-Chinese Simplified-Chinese"))
+            .isEqualTo("second_round_simplified_chinese simplified_chinese")
+        assertThat(label("Hong-Kong")).isEqualTo("hong_kong")
+        assertThat(label("name")).isEqualTo("name")
+    }
+
+    @Test
     fun `other spellings share the word's string`() {
         assertThat(label("historic")).isEqualTo("historical")
         assertThat(label("short")).isEqualTo("short_form")
