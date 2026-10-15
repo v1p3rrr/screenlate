@@ -226,7 +226,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         }
         return bundled.pending { repository.getAll().map { BundledDictionaries.Copy(it.title, it.revision) } }.map { asset ->
             Log.i(TAG, "Installing ${asset.name} (${asset.size shr 10} KB)")
-            setProgress(workDataOf(KEY_NAME to asset.displayName, KEY_STAGE to STAGE_IMPORT))
+            // The dictionary's own title, as the Dictionaries screen will list it; the file name only if unreadable.
+            val name = bundled.titleOf(asset) ?: asset.displayName
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
             val archive = storage.newArchiveFile()
             try {
                 bundled.copy(asset, archive)
