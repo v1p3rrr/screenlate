@@ -29,8 +29,6 @@ import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
-import com.vpr.screenlate.core.common.language.ConvertedLatinAim
-import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
@@ -214,7 +212,6 @@ class OverlayController(
     private var settings = OverlaySettings()
     private var lastScreen: Box? = null
     private var scanLength = LookupSettings.DEFAULT_SCAN_LENGTH
-    private var romaji = false
     private var themeMode = ThemeMode.SYSTEM
     private var eInk = false
     private var state = State.DOCKED
@@ -263,12 +260,7 @@ class OverlayController(
         bubbleView.glyphLanguage = language.support.languageTag
         bubbleView.glyph = language.support.glyph
         scope.launch { overlaySettings.settings.collect(::applySettings) }
-        scope.launch {
-            lookup.settingsUpdates.collect {
-                scanLength = it.scanLength
-                romaji = it.romaji
-            }
-        }
+        scope.launch { lookup.settingsUpdates.collect { scanLength = it.scanLength } }
         scope.launch { pageAppearance.json(language).collect { popup.page.setAppearance(it) } }
         scope.launch {
             translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
@@ -1114,15 +1106,13 @@ class OverlayController(
     }
 
     private fun showLookup(layout: TextLayout, aimed: TextPosition) {
-        val wordStart = wordStart(layout, aimed)
+        val position = wordStart(layout, aimed)
+        val text = layout.textFrom(position, scanLength)
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
-            val found = mutableMapOf<String, List<LookupResult>>()
-            val position = if (wordStart == aimed) aimed else convertedStart(layout, wordStart, aimed, found)
-            val text = layout.textFrom(position, scanLength)
             val cached = shownLookup?.takeIf { it.text == text && popup.isShowing }
-            val results = cached?.results ?: found[text] ?: lookupResults(text)
+            val results = cached?.results ?: lookupResults(text)
             val kanji = if (cached != null) cached.kanji else if (results.isEmpty()) characterEntry(text) else null
             // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
             if (results.isEmpty() && kanji == null && lookup.hasTermDictionaries(language)) {
@@ -1235,36 +1225,6 @@ class OverlayController(
         val before = characters.subList(max(0, aimed.offset - WORD_LOOKBACK), aimed.offset).joinToString("") { it.text }
         val back = language.support.wordStartOffset(before, characters[aimed.offset].text)
         return if (back == 0) aimed else aimed.copy(offset = aimed.offset - back)
-    }
-
-    /**
-     * Where a lookup aimed inside a Latin word starts when the language reads it as its own script (romaji): at the
-     * word of it under the aim ([ConvertedLatinAim]); otherwise at [wordStart]. [found] keeps the lookups made on the
-     * way, by their text.
-     */
-    private suspend fun convertedStart(
-        layout: TextLayout,
-        wordStart: TextPosition,
-        aimed: TextPosition,
-        found: MutableMap<String, List<LookupResult>>,
-    ): TextPosition {
-        if (!romaji) return wordStart
-        // The aim moving along the word shown keeps it.
-        val shown = shownLookup?.takeIf { popup.isShowing && it.layout === layout }
-        val shownStart = shown?.start
-        if (shown != null && shownStart != null && shownStart.paragraphIndex == aimed.paragraphIndex &&
-            shownStart.offset in wordStart.offset..aimed.offset && aimed.offset < shownStart.offset + shown.matched
-        ) {
-            return shownStart
-        }
-        val back = aimed.offset - wordStart.offset
-        val word = layout.textFrom(wordStart, back + scanLength)
-        if (language.support.fromLatin(MappedText.identity(word)) == null) return wordStart
-        val offset = ConvertedLatinAim.start(language.support, word, back) { start ->
-            val text = layout.textFrom(wordStart.copy(offset = wordStart.offset + start), scanLength)
-            PageState.matchedLength(found.getOrPut(text) { lookupResults(text) })
-        }
-        return wordStart.copy(offset = wordStart.offset + offset)
     }
 
     /** Pushes OCR status and theme changes into the popup without a new lookup. */
