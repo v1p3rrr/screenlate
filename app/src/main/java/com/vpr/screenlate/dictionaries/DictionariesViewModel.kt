@@ -29,6 +29,7 @@ import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -119,6 +121,13 @@ data class DictionariesState(
 /** Result of the last update check; [updates] is null while checking. */
 data class UpdateCheck(val updates: List<DictionaryUpdate>?)
 
+/**
+ * The check after [started] updates were queued. Null once every update has started: the task cards show them, and an
+ * empty list would read as "all up to date" while they download.
+ */
+internal fun UpdateCheck?.without(started: List<DictionaryUpdate>): UpdateCheck? =
+    (this?.updates.orEmpty() - started.toSet()).takeIf { it.isNotEmpty() }?.let(::UpdateCheck)
+
 @HiltViewModel
 class DictionariesViewModel @Inject constructor(
     private val repository: DictionaryRepository,
@@ -174,6 +183,8 @@ class DictionariesViewModel @Inject constructor(
             loaded = true,
         )
     }
+        // Matching the catalog and checking the styles' CSS take milliseconds; the main thread only gets the result.
+        .flowOn(Dispatchers.Default)
         .onEach { cache.last = it }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), cache.last ?: DictionariesState())
 
@@ -296,7 +307,7 @@ class DictionariesViewModel @Inject constructor(
 
     fun update(items: List<DictionaryUpdate>) {
         items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
-        updateCheck.value = UpdateCheck(updateCheck.value?.updates.orEmpty() - items.toSet())
+        updateCheck.value = updateCheck.value.without(items)
     }
 
     fun delete(dictionary: DictionaryEntity) {

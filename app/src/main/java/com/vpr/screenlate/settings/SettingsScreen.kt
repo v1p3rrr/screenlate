@@ -33,7 +33,7 @@ import com.vpr.screenlate.ui.components.SettingsScaffold
 
 /** Destinations of the settings list. */
 enum class SettingsPage {
-    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND, YOMITAN_IMPORT, BACKUP, ABOUT,
+    BUBBLE, LOOKUP, DICTIONARIES, ANKI, POPUP, TRANSLATION, APPEARANCE, BACKGROUND, BACKUP, ABOUT,
 }
 
 /**
@@ -99,9 +99,6 @@ fun SettingsScreen(
                 stringResource(R.string.background_summary),
                 badge = backgroundBadge,
             ) { onOpen(SettingsPage.BACKGROUND) }
-            SettingsEntry(R.drawable.ic_upload_file, stringResource(R.string.yomitan_import_title), stringResource(R.string.settings_yomitan_summary)) {
-                onOpen(SettingsPage.YOMITAN_IMPORT)
-            }
             SettingsEntry(R.drawable.ic_backup, stringResource(R.string.backup_title), stringResource(R.string.settings_backup_summary)) {
                 onOpen(SettingsPage.BACKUP)
             }

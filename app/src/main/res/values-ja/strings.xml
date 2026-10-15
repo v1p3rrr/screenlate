@@ -25,6 +25,7 @@
 
     <string name="action_delete">削除</string>
     <string name="action_cancel">キャンセル</string>
+    <string name="action_next">次へ</string>
     <string name="action_resume">再開</string>
     <string name="action_dismiss">閉じる</string>
     <string name="action_ok">OK</string>
@@ -227,7 +228,6 @@
     <string name="settings_popup_summary">認識したテキスト、自動で閉じる、フォント、文字サイズと太さ、CSS、定義のコピー</string>
     <string name="settings_translation_summary">翻訳ボタン、ノート、サービス、言語</string>
     <string name="yomitan_import_title">Yomitan からインポート</string>
-    <string name="settings_yomitan_summary">Yomitan の設定と辞書</string>
     <string name="about_title">アプリについて</string>
     <string name="settings_about_summary">バージョン、アップデート、ライセンス、ログ</string>
     <string name="about_version">バージョン %1$s</string>
@@ -302,6 +302,29 @@
     <string name="anki_problem_fix_deck">デッキを選び直してください。</string>
     <string name="anki_problem_fix_fields">下のフィールドテンプレートを確認してください。</string>
     <string name="anki_update_fields">フィールド一覧を更新</string>
+    <string name="anki_check">接続を確認</string>
+    <string name="anki_checking">確認中…</string>
+    <string name="anki_check_installed">AnkiDroid はインストール済みです</string>
+    <string name="anki_check_not_installed">AnkiDroid がインストールされていません</string>
+    <string name="anki_check_access">アクセスは許可されています</string>
+    <string name="anki_check_access_item">アクセス</string>
+    <string name="anki_check_no_access">AnkiDroid へのアクセス権がありません</string>
+    <string name="anki_check_fix_access">上のボタンでアクセスを許可してください。</string>
+    <string name="anki_check_deck_found">デッキが見つかりました：%1$s</string>
+    <string name="anki_check_deck_missing">デッキが見つかりません：%1$s</string>
+    <string name="anki_check_deck_not_chosen">デッキが選ばれていません</string>
+    <string name="anki_check_model_found">ノートタイプが見つかりました：%1$s</string>
+    <string name="anki_check_model_missing">ノートタイプが見つかりません：%1$s</string>
+    <string name="anki_check_model_not_chosen">ノートタイプが選ばれていません</string>
+    <string name="anki_check_fix_choose">下で選んでください。</string>
+    <string name="anki_check_no_answer">%1$s：AnkiDroid から応答がありません</string>
+    <string name="anki_check_fix_no_answer">AnkiDroid を開いてから、もう一度確認してください。</string>
+    <string name="anki_check_fields_match">フィールドはテンプレートと一致しています</string>
+    <string name="anki_check_fields_differ">フィールドがテンプレートと一致しません</string>
+    <string name="anki_check_fields_missing">ノートタイプからなくなったフィールド：%1$s</string>
+    <string name="anki_check_fields_new">ノートタイプの新しいフィールド：%1$s</string>
+    <string name="anki_check_fix_fields">下でフィールド一覧を更新してください。</string>
+    <string name="anki_check_not_checked">%1$s：未確認</string>
     <string name="audio_sources">ソース</string>
     <string name="audio_reset_sources">デフォルトのソースに戻す</string>
     <string name="audio_regions">地域</string>
@@ -573,11 +596,15 @@
     <string name="dictionaries_website">ウェブサイト</string>
     <string name="dictionaries_download_link">ダウンロード</string>
     <string name="backup_title">バックアップと復元</string>
-    <string name="settings_backup_summary">設定と辞書をファイルに保存し、復元する</string>
+    <string name="settings_backup_summary">設定と辞書をファイルに保存し、復元する。Yomitan からのインポート</string>
     <string name="backup_create">バックアップを作成</string>
-    <string name="backup_create_hint">すべての設定、辞書の順番とオン・オフ、インストール済みのフォントを 1 つのファイルにまとめます。端末、メモリーカード、クラウドストレージなど、好きな場所に保管してください。</string>
-    <string name="backup_include_dictionaries">辞書を含める</string>
-    <string name="backup_include_dictionaries_hint">辞書そのものを含め、ダウンロードやインポートなしですぐ使えるようにします。ファイルはかなり大きくなります。</string>
+    <string name="backup_create_hint">選んだ部分（設定、フォント、辞書）を 1 つのファイルにまとめます。端末、メモリーカード、クラウドストレージなど、好きな場所に保管してください。</string>
+    <string name="backup_parts_save">保存する部分</string>
+    <string name="backup_section_fonts">フォント</string>
+    <string name="backup_files_chosen">%2$d 個中 %1$d 個を選択、%3$s</string>
+    <string name="backup_files_chosen_count">%2$d 個中 %1$d 個を選択</string>
+    <string name="backup_files_show">一覧を表示</string>
+    <string name="backup_files_hide">一覧を隠す</string>
     <string name="backup_create_button">バックアップを作成…</string>
     <string name="backup_creating">バックアップを作成中…</string>
     <string name="backup_created">バックアップを保存しました（%1$s）。</string>
@@ -594,7 +621,7 @@
     <string name="backup_read_failed">バックアップを読み込めませんでした。</string>
     <string name="backup_loaded">%1$s のバックアップ、バージョン %2$s</string>
     <string name="backup_sections">復元する部分</string>
-    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。バックアップ内の辞書は追加されるか、インストール済みの同じ辞書を置き換えます。ほかのインストール済みの辞書はそのまま残ります。</string>
+    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。バックアップ内のフォントと辞書は追加されるか、インストール済みの同じものを置き換えます。ほかのインストール済みのフォントと辞書はそのまま残ります。</string>
     <string name="backup_restore_button">チェックした部分を復元</string>
     <string name="backup_restored">復元しました</string>
     <string name="backup_section_general">全般</string>
@@ -604,7 +631,7 @@
     <string name="backup_section_lookup">検索</string>
     <string name="backup_section_lookup_hint">スキャン長、結果の数、ローマ字、語の漢字</string>
     <string name="backup_section_popup">ポップアップの外観</string>
-    <string name="backup_section_popup_hint">フォント、文字サイズ、カスタム CSS、インストール済みのフォント</string>
+    <string name="backup_section_popup_hint">フォント、文字サイズ、カスタム CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">デッキ、ノートタイプ、フィールド、重複の扱い</string>
     <string name="backup_section_audio">音声</string>
@@ -616,9 +643,6 @@
         <item quantity="other">辞書 %d 個：順番、オン・オフ、言語、並べ替えに使う辞書。インストール済みの辞書に適用されます。</item>
     </plurals>
     <string name="backup_section_dictionary_files">辞書</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">辞書 %d 個。追加されるか、インストール済みの版を置き換えます</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">フォント %d 個</item>
     </plurals>

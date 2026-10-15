@@ -25,6 +25,7 @@
 
     <string name="action_delete">Excluir</string>
     <string name="action_cancel">Cancelar</string>
+    <string name="action_next">Avançar</string>
     <string name="action_resume">Retomar</string>
     <string name="action_dismiss">Dispensar</string>
     <string name="action_ok">OK</string>
@@ -231,7 +232,6 @@
     <string name="settings_popup_summary">Texto reconhecido, ocultação automática, fonte, tamanho e peso do texto, CSS, cópia de definições</string>
     <string name="settings_translation_summary">Botão de tradução, notas, serviços, idioma</string>
     <string name="yomitan_import_title">Importar do Yomitan</string>
-    <string name="settings_yomitan_summary">Configurações e dicionários do Yomitan</string>
     <string name="about_title">Sobre</string>
     <string name="settings_about_summary">Versão, atualizações, licenças, registros</string>
     <string name="about_version">Versão %1$s</string>
@@ -308,6 +308,29 @@
     <string name="anki_problem_fix_deck">Escolha o baralho de novo.</string>
     <string name="anki_problem_fix_fields">Confira os modelos de campo abaixo.</string>
     <string name="anki_update_fields">Atualizar a lista de campos</string>
+    <string name="anki_check">Verificar a conexão</string>
+    <string name="anki_checking">Verificando…</string>
+    <string name="anki_check_installed">O AnkiDroid está instalado</string>
+    <string name="anki_check_not_installed">O AnkiDroid não está instalado</string>
+    <string name="anki_check_access">Acesso permitido</string>
+    <string name="anki_check_access_item">Acesso</string>
+    <string name="anki_check_no_access">Sem acesso ao AnkiDroid</string>
+    <string name="anki_check_fix_access">Permita o acesso com o botão acima.</string>
+    <string name="anki_check_deck_found">Baralho encontrado: %1$s</string>
+    <string name="anki_check_deck_missing">Baralho não encontrado: %1$s</string>
+    <string name="anki_check_deck_not_chosen">Nenhum baralho escolhido</string>
+    <string name="anki_check_model_found">Tipo de nota encontrado: %1$s</string>
+    <string name="anki_check_model_missing">Tipo de nota não encontrado: %1$s</string>
+    <string name="anki_check_model_not_chosen">Nenhum tipo de nota escolhido</string>
+    <string name="anki_check_fix_choose">Escolha abaixo.</string>
+    <string name="anki_check_no_answer">%1$s: o AnkiDroid não respondeu</string>
+    <string name="anki_check_fix_no_answer">Abra o AnkiDroid e verifique de novo.</string>
+    <string name="anki_check_fields_match">Os campos correspondem aos modelos</string>
+    <string name="anki_check_fields_differ">Os campos não correspondem aos modelos</string>
+    <string name="anki_check_fields_missing">Campos que o tipo de nota não tem mais: %1$s</string>
+    <string name="anki_check_fields_new">Campos novos do tipo de nota: %1$s</string>
+    <string name="anki_check_fix_fields">Atualize a lista de campos abaixo.</string>
+    <string name="anki_check_not_checked">%1$s: sem verificação</string>
     <string name="audio_sources">Fontes</string>
     <string name="audio_reset_sources">Restaurar as fontes padrão</string>
     <string name="audio_regions">Regiões</string>
@@ -579,11 +602,15 @@
     <string name="dictionaries_website">Site</string>
     <string name="dictionaries_download_link">Baixar</string>
     <string name="backup_title">Backup e restauração</string>
-    <string name="settings_backup_summary">Salvar configurações e dicionários em um arquivo, restaurá-los</string>
+    <string name="settings_backup_summary">Salvar configurações e dicionários em um arquivo, restaurá-los, importar do Yomitan</string>
     <string name="backup_create">Criar um backup</string>
-    <string name="backup_create_hint">Um único arquivo com todas as configurações, a ordem e as chaves dos dicionários e as fontes instaladas. Guarde onde quiser: no celular, em um cartão de memória ou na nuvem.</string>
-    <string name="backup_include_dictionaries">Incluir dicionários</string>
-    <string name="backup_include_dictionaries_hint">Os próprios dicionários, prontos para uso sem baixar nem importar. O arquivo fica muito maior.</string>
+    <string name="backup_create_hint">Um único arquivo com as partes escolhidas: configurações, fontes, dicionários. Guarde onde quiser: no celular, em um cartão de memória ou na nuvem.</string>
+    <string name="backup_parts_save">Partes a salvar</string>
+    <string name="backup_section_fonts">Fontes</string>
+    <string name="backup_files_chosen">Seleção: %1$d de %2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Seleção: %1$d de %2$d</string>
+    <string name="backup_files_show">Mostrar a lista</string>
+    <string name="backup_files_hide">Ocultar a lista</string>
     <string name="backup_create_button">Criar backup…</string>
     <string name="backup_creating">Criando o backup…</string>
     <string name="backup_created">Backup salvo (%1$s).</string>
@@ -602,7 +629,7 @@
     <string name="backup_read_failed">Não foi possível ler o backup.</string>
     <string name="backup_loaded">Backup de %1$s, versão %2$s</string>
     <string name="backup_sections">Partes a restaurar</string>
-    <string name="backup_replace_warning">As partes marcadas substituem as atuais. Os dicionários do backup são adicionados ou substituem a versão instalada deles; os outros dicionários instalados continuam.</string>
+    <string name="backup_replace_warning">As partes marcadas substituem as atuais. As fontes e os dicionários do backup são adicionados ou substituem a versão instalada deles; as outras fontes e dicionários instalados continuam.</string>
     <string name="backup_restore_button">Restaurar os marcados</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">Geral</string>
@@ -612,7 +639,7 @@
     <string name="backup_section_lookup">Pesquisa</string>
     <string name="backup_section_lookup_hint">Alcance da varredura, número de resultados, romaji, caracteres da palavra</string>
     <string name="backup_section_popup">Aparência do pop-up</string>
-    <string name="backup_section_popup_hint">Fonte, tamanho do texto, CSS personalizado e fontes instaladas</string>
+    <string name="backup_section_popup_hint">Fonte, tamanho do texto, CSS personalizado</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Baralho, tipo de nota, campos, tratamento de duplicatas</string>
     <string name="backup_section_audio">Áudio</string>
@@ -626,11 +653,6 @@
         <item quantity="other">%d dicionários: ordem, ativados ou não, idiomas e o usado para ordenação. Vale para os instalados.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Dicionários</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d dicionário: é adicionado ou substitui a versão instalada</item>
-        <item quantity="many">%d dicionários: são adicionados ou substituem a versão instalada</item>
-        <item quantity="other">%d dicionários: são adicionados ou substituem a versão instalada</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d fonte</item>
         <item quantity="many">%d fontes</item>

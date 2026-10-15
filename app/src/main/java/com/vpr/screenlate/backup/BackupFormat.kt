@@ -39,8 +39,11 @@ enum class BackupSection {
     BUBBLE,
     LOOKUP,
 
-    /** Popup font, text size, custom CSS and the installed fonts. */
+    /** Popup font, text size and custom CSS. Backups of older versions have the installed fonts here too. */
     POPUP,
+
+    /** The installed fonts; a backup of an older version has them with [POPUP]. */
+    FONTS,
     ANKI,
     AUDIO,
 
@@ -126,10 +129,10 @@ object BackupPreferences {
         else -> null
     }
 
-    /** The backed-up preferences as `{"key": {"type": "int", "value": 3}}`. */
-    fun encode(preferences: Preferences): JsonObject = buildJsonObject {
+    /** The backed-up preferences of [sections] as `{"key": {"type": "int", "value": 3}}`. */
+    fun encode(preferences: Preferences, sections: Set<BackupSection> = BackupSection.entries.toSet()): JsonObject = buildJsonObject {
         for ((key, value) in preferences.asMap().entries.sortedBy { it.key.name }) {
-            if (sectionOf(key.name) == null) continue
+            if (sectionOf(key.name) !in sections) continue
             val (type, json) = when (value) {
                 is Boolean -> "boolean" to JsonPrimitive(value)
                 is Int -> "int" to JsonPrimitive(value)
@@ -191,6 +194,7 @@ object BackupPreferences {
  * A dictionary as a backup keeps it: its registry entry without the local id and directory.
  *
  * @property files whether its files are in the archive.
+ * @property bytes the size of its files; 0 when they are not in the archive or the backup is older.
  */
 @Serializable
 data class BackupDictionary(
@@ -217,6 +221,7 @@ data class BackupDictionary(
     val bundled: Boolean = false,
     val importedAt: Long = 0,
     val files: Boolean = false,
+    val bytes: Long = 0,
 ) {
     /** A registry entry for [directory]; the id is left for the registry to assign. */
     fun toEntity(directory: String): DictionaryEntity = DictionaryEntity(
@@ -246,7 +251,7 @@ data class BackupDictionary(
     )
 
     companion object {
-        fun of(entity: DictionaryEntity, files: Boolean) = BackupDictionary(
+        fun of(entity: DictionaryEntity, files: Boolean, bytes: Long = 0) = BackupDictionary(
             title = entity.title,
             revision = entity.revision,
             kind = entity.kind.name,
@@ -270,6 +275,7 @@ data class BackupDictionary(
             bundled = entity.bundled,
             importedAt = entity.importedAt,
             files = files,
+            bytes = bytes,
         )
     }
 }

@@ -25,6 +25,7 @@
 
     <string name="action_delete">Löschen</string>
     <string name="action_cancel">Abbrechen</string>
+    <string name="action_next">Weiter</string>
     <string name="action_resume">Fortsetzen</string>
     <string name="action_dismiss">Ausblenden</string>
     <string name="action_ok">OK</string>
@@ -229,7 +230,6 @@
     <string name="settings_popup_summary">Erkannter Text, automatisches Ausblenden, Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
     <string name="settings_translation_summary">Übersetzungsschaltfläche, Notizen, Dienste, Sprache</string>
     <string name="yomitan_import_title">Aus Yomitan importieren</string>
-    <string name="settings_yomitan_summary">Einstellungen und Wörterbücher aus Yomitan</string>
     <string name="about_title">Über</string>
     <string name="settings_about_summary">Version, Updates, Lizenzen, Protokolle</string>
     <string name="about_version">Version %1$s</string>
@@ -305,6 +305,29 @@
     <string name="anki_problem_fix_deck">Wähle den Stapel erneut.</string>
     <string name="anki_problem_fix_fields">Prüfe die Feldvorlagen unten.</string>
     <string name="anki_update_fields">Feldliste aktualisieren</string>
+    <string name="anki_check">Verbindung prüfen</string>
+    <string name="anki_checking">Wird geprüft…</string>
+    <string name="anki_check_installed">AnkiDroid ist installiert</string>
+    <string name="anki_check_not_installed">AnkiDroid ist nicht installiert</string>
+    <string name="anki_check_access">Zugriff erlaubt</string>
+    <string name="anki_check_access_item">Zugriff</string>
+    <string name="anki_check_no_access">Kein Zugriff auf AnkiDroid</string>
+    <string name="anki_check_fix_access">Erlaube den Zugriff mit der Schaltfläche oben.</string>
+    <string name="anki_check_deck_found">Stapel gefunden: %1$s</string>
+    <string name="anki_check_deck_missing">Stapel nicht gefunden: %1$s</string>
+    <string name="anki_check_deck_not_chosen">Kein Stapel gewählt</string>
+    <string name="anki_check_model_found">Notiztyp gefunden: %1$s</string>
+    <string name="anki_check_model_missing">Notiztyp nicht gefunden: %1$s</string>
+    <string name="anki_check_model_not_chosen">Kein Notiztyp gewählt</string>
+    <string name="anki_check_fix_choose">Wähle ihn unten.</string>
+    <string name="anki_check_no_answer">%1$s: AnkiDroid hat nicht geantwortet</string>
+    <string name="anki_check_fix_no_answer">Öffne AnkiDroid und prüfe erneut.</string>
+    <string name="anki_check_fields_match">Die Felder passen zu den Vorlagen</string>
+    <string name="anki_check_fields_differ">Die Felder weichen von den Vorlagen ab</string>
+    <string name="anki_check_fields_missing">Felder, die der Notiztyp nicht mehr hat: %1$s</string>
+    <string name="anki_check_fields_new">Neue Felder des Notiztyps: %1$s</string>
+    <string name="anki_check_fix_fields">Aktualisiere die Feldliste unten.</string>
+    <string name="anki_check_not_checked">%1$s: nicht geprüft</string>
     <string name="audio_sources">Quellen</string>
     <string name="audio_reset_sources">Standardquellen wiederherstellen</string>
     <string name="audio_regions">Regionen</string>
@@ -576,11 +599,15 @@
     <string name="dictionaries_website">Website</string>
     <string name="dictionaries_download_link">Download</string>
     <string name="backup_title">Sichern und wiederherstellen</string>
-    <string name="settings_backup_summary">Einstellungen und Wörterbücher in einer Datei sichern und wiederherstellen</string>
+    <string name="settings_backup_summary">Einstellungen und Wörterbücher in einer Datei sichern und wiederherstellen, aus Yomitan importieren</string>
     <string name="backup_create">Sicherung erstellen</string>
-    <string name="backup_create_hint">Eine Datei mit allen Einstellungen, der Reihenfolge und den Schaltern der Wörterbücher und den installierten Schriften. Bewahre sie irgendwo auf: auf dem Telefon, einer Speicherkarte oder in einem Cloudspeicher.</string>
-    <string name="backup_include_dictionaries">Wörterbücher einschließen</string>
-    <string name="backup_include_dictionaries_hint">Die Wörterbücher selbst, sofort nutzbar ohne Download oder Import. Die Datei wird deutlich größer.</string>
+    <string name="backup_create_hint">Eine Datei mit den gewählten Teilen: Einstellungen, Schriften, Wörterbücher. Bewahre sie irgendwo auf: auf dem Telefon, einer Speicherkarte oder in einem Cloudspeicher.</string>
+    <string name="backup_parts_save">Zu sichernde Teile</string>
+    <string name="backup_section_fonts">Schriften</string>
+    <string name="backup_files_chosen">%1$d von %2$d gewählt, %3$s</string>
+    <string name="backup_files_chosen_count">%1$d von %2$d gewählt</string>
+    <string name="backup_files_show">Liste zeigen</string>
+    <string name="backup_files_hide">Liste ausblenden</string>
     <string name="backup_create_button">Sicherung erstellen…</string>
     <string name="backup_creating">Sicherung wird erstellt…</string>
     <string name="backup_created">Sicherung gespeichert (%1$s).</string>
@@ -598,7 +625,7 @@
     <string name="backup_read_failed">Die Sicherung konnte nicht gelesen werden.</string>
     <string name="backup_loaded">Sicherung vom %1$s, Version %2$s</string>
     <string name="backup_sections">Wiederherzustellende Teile</string>
-    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen. Wörterbücher aus der Sicherung kommen hinzu oder ersetzen ihre installierte Fassung; andere installierte Wörterbücher bleiben.</string>
+    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen. Schriften und Wörterbücher aus der Sicherung kommen hinzu oder ersetzen ihre installierte Fassung; andere installierte Schriften und Wörterbücher bleiben.</string>
     <string name="backup_restore_button">Markierte wiederherstellen</string>
     <string name="backup_restored">Wiederhergestellt</string>
     <string name="backup_section_general">Allgemein</string>
@@ -608,7 +635,7 @@
     <string name="backup_section_lookup">Nachschlagen</string>
     <string name="backup_section_lookup_hint">Scanlänge, Anzahl der Ergebnisse, Romaji, Schriftzeichen des Wortes</string>
     <string name="backup_section_popup">Popup-Darstellung</string>
-    <string name="backup_section_popup_hint">Schrift, Textgröße, eigenes CSS und installierte Schriften</string>
+    <string name="backup_section_popup_hint">Schrift, Textgröße, eigenes CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Stapel, Notiztyp, Felder, Umgang mit Duplikaten</string>
     <string name="backup_section_audio">Audio</string>
@@ -621,10 +648,6 @@
         <item quantity="other">%d Wörterbücher: Reihenfolge, an oder aus, Sprachen und Sortierwörterbuch. Gilt für die installierten.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Wörterbücher</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d Wörterbuch; kommt hinzu oder ersetzt seine installierte Fassung</item>
-        <item quantity="other">%d Wörterbücher; kommen hinzu oder ersetzen ihre installierte Fassung</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d Schrift</item>
         <item quantity="other">%d Schriften</item>

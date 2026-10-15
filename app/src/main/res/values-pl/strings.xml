@@ -25,6 +25,7 @@
 
     <string name="action_delete">Usuń</string>
     <string name="action_cancel">Anuluj</string>
+    <string name="action_next">Dalej</string>
     <string name="action_resume">Wznów</string>
     <string name="action_dismiss">Ukryj</string>
     <string name="action_ok">OK</string>
@@ -233,7 +234,6 @@
     <string name="settings_popup_summary">Rozpoznany tekst, automatyczne ukrywanie, czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
     <string name="settings_translation_summary">Przycisk tłumaczenia, notatki, usługi, język</string>
     <string name="yomitan_import_title">Import z Yomitan</string>
-    <string name="settings_yomitan_summary">Ustawienia i słowniki z Yomitan</string>
     <string name="about_title">O aplikacji</string>
     <string name="settings_about_summary">Wersja, aktualizacje, licencje, logi</string>
     <string name="about_version">Wersja %1$s</string>
@@ -311,6 +311,29 @@
     <string name="anki_problem_fix_deck">Wybierz talię ponownie.</string>
     <string name="anki_problem_fix_fields">Sprawdź szablony pól poniżej.</string>
     <string name="anki_update_fields">Odśwież listę pól</string>
+    <string name="anki_check">Sprawdź połączenie</string>
+    <string name="anki_checking">Sprawdzanie…</string>
+    <string name="anki_check_installed">AnkiDroid jest zainstalowany</string>
+    <string name="anki_check_not_installed">AnkiDroid nie jest zainstalowany</string>
+    <string name="anki_check_access">Dostęp przyznany</string>
+    <string name="anki_check_access_item">Dostęp</string>
+    <string name="anki_check_no_access">Brak dostępu do AnkiDroid</string>
+    <string name="anki_check_fix_access">Zezwól na dostęp przyciskiem powyżej.</string>
+    <string name="anki_check_deck_found">Znaleziono talię: %1$s</string>
+    <string name="anki_check_deck_missing">Nie znaleziono talii: %1$s</string>
+    <string name="anki_check_deck_not_chosen">Nie wybrano talii</string>
+    <string name="anki_check_model_found">Znaleziono typ notatki: %1$s</string>
+    <string name="anki_check_model_missing">Nie znaleziono typu notatki: %1$s</string>
+    <string name="anki_check_model_not_chosen">Nie wybrano typu notatki</string>
+    <string name="anki_check_fix_choose">Wybierz poniżej.</string>
+    <string name="anki_check_no_answer">%1$s: AnkiDroid nie odpowiedział</string>
+    <string name="anki_check_fix_no_answer">Otwórz AnkiDroid i sprawdź ponownie.</string>
+    <string name="anki_check_fields_match">Pola zgadzają się z szablonami</string>
+    <string name="anki_check_fields_differ">Pola nie zgadzają się z szablonami</string>
+    <string name="anki_check_fields_missing">Pola, których typ notatki już nie ma: %1$s</string>
+    <string name="anki_check_fields_new">Nowe pola typu notatki: %1$s</string>
+    <string name="anki_check_fix_fields">Odśwież listę pól poniżej.</string>
+    <string name="anki_check_not_checked">%1$s: bez sprawdzenia</string>
     <string name="audio_sources">Źródła</string>
     <string name="audio_reset_sources">Przywróć domyślne źródła</string>
     <string name="audio_regions">Regiony</string>
@@ -582,11 +605,15 @@
     <string name="dictionaries_website">Strona</string>
     <string name="dictionaries_download_link">Pobieranie</string>
     <string name="backup_title">Kopia zapasowa i przywracanie</string>
-    <string name="settings_backup_summary">Zapisz ustawienia i słowniki w pliku, przywróć je</string>
+    <string name="settings_backup_summary">Zapisz ustawienia i słowniki w pliku, przywróć je, importuj z Yomitan</string>
     <string name="backup_create">Utwórz kopię zapasową</string>
-    <string name="backup_create_hint">Jeden plik ze wszystkimi ustawieniami, kolejnością i przełącznikami słowników oraz zainstalowanymi czcionkami. Przechowuj go gdziekolwiek: w telefonie, na karcie pamięci lub w chmurze.</string>
-    <string name="backup_include_dictionaries">Dołącz słowniki</string>
-    <string name="backup_include_dictionaries_hint">Same słowniki, gotowe do użycia bez pobierania i importowania. Plik staje się znacznie większy.</string>
+    <string name="backup_create_hint">Jeden plik z wybranymi częściami: ustawieniami, czcionkami, słownikami. Przechowuj go gdziekolwiek: w telefonie, na karcie pamięci lub w chmurze.</string>
+    <string name="backup_parts_save">Części do zapisania</string>
+    <string name="backup_section_fonts">Czcionki</string>
+    <string name="backup_files_chosen">Wybrano %1$d z %2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Wybrano %1$d z %2$d</string>
+    <string name="backup_files_show">Pokaż listę</string>
+    <string name="backup_files_hide">Ukryj listę</string>
     <string name="backup_create_button">Utwórz kopię…</string>
     <string name="backup_creating">Tworzenie kopii zapasowej…</string>
     <string name="backup_created">Zapisano kopię (%1$s).</string>
@@ -606,7 +633,7 @@
     <string name="backup_read_failed">Nie udało się odczytać kopii.</string>
     <string name="backup_loaded">Kopia z %1$s, wersja %2$s</string>
     <string name="backup_sections">Części do przywrócenia</string>
-    <string name="backup_replace_warning">Zaznaczone części zastępują obecne. Słowniki z kopii są dodawane lub zastępują swoje zainstalowane wersje; pozostałe zainstalowane słowniki zostają.</string>
+    <string name="backup_replace_warning">Zaznaczone części zastępują obecne. Czcionki i słowniki z kopii są dodawane lub zastępują swoje zainstalowane wersje; pozostałe zainstalowane czcionki i słowniki zostają.</string>
     <string name="backup_restore_button">Przywróć zaznaczone</string>
     <string name="backup_restored">Przywrócono</string>
     <string name="backup_section_general">Ogólne</string>
@@ -616,7 +643,7 @@
     <string name="backup_section_lookup">Wyszukiwanie</string>
     <string name="backup_section_lookup_hint">Zasięg skanowania, liczba wyników, romaji, znaki słowa</string>
     <string name="backup_section_popup">Wygląd okienka</string>
-    <string name="backup_section_popup_hint">Czcionka, rozmiar tekstu, własny CSS i zainstalowane czcionki</string>
+    <string name="backup_section_popup_hint">Czcionka, rozmiar tekstu, własny CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Talia, typ notatki, pola, obsługa duplikatów</string>
     <string name="backup_section_audio">Dźwięk</string>
@@ -631,12 +658,6 @@
         <item quantity="other">%d słownika: kolejność, włączenie, języki i słownik do sortowania. Dotyczy zainstalowanych.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Słowniki</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d słownik: zostanie dodany lub zastąpi zainstalowaną wersję</item>
-        <item quantity="few">%d słowniki: zostaną dodane lub zastąpią zainstalowane wersje</item>
-        <item quantity="many">%d słowników: zostaną dodane lub zastąpią zainstalowane wersje</item>
-        <item quantity="other">%d słownika: zostaną dodane lub zastąpią zainstalowane wersje</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d czcionka</item>
         <item quantity="few">%d czcionki</item>

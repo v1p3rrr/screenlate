@@ -97,6 +97,8 @@ the engine module that holds them.
 
 GPL-licensed third-party code is kept in the last two modules so it can be replaced without touching the rest of the app. Every third-party addition gets an entry in [NOTICE](../NOTICE).
 
+Compose sees classes of modules built without it, and read-only collections, as unstable and recomposes whatever shows them on every update. `compose-stability.conf` declares such immutable types stable, so they are compared by value; add a model there when screens pass it to composables.
+
 ## Versions and releases
 
 The version comes from git tags: `vX.Y.Z` gives the version name X.Y.Z and the version code X·10000 + Y·100 + Z.

@@ -25,6 +25,7 @@
 
     <string name="action_delete">삭제</string>
     <string name="action_cancel">취소</string>
+    <string name="action_next">다음</string>
     <string name="action_resume">이어받기</string>
     <string name="action_dismiss">닫기</string>
     <string name="action_ok">확인</string>
@@ -227,7 +228,6 @@
     <string name="settings_popup_summary">인식된 텍스트, 자동 숨기기, 글꼴, 글자 크기와 굵기, CSS, 뜻풀이 복사</string>
     <string name="settings_translation_summary">번역 버튼, 노트, 서비스, 언어</string>
     <string name="yomitan_import_title">Yomitan에서 가져오기</string>
-    <string name="settings_yomitan_summary">Yomitan의 설정과 사전</string>
     <string name="about_title">정보</string>
     <string name="settings_about_summary">버전, 업데이트, 라이선스, 로그</string>
     <string name="about_version">버전 %1$s</string>
@@ -302,6 +302,29 @@
     <string name="anki_problem_fix_deck">덱을 다시 선택하세요.</string>
     <string name="anki_problem_fix_fields">아래 필드 템플릿을 확인하세요.</string>
     <string name="anki_update_fields">필드 목록 업데이트</string>
+    <string name="anki_check">연결 확인</string>
+    <string name="anki_checking">확인 중…</string>
+    <string name="anki_check_installed">AnkiDroid가 설치되어 있습니다</string>
+    <string name="anki_check_not_installed">AnkiDroid가 설치되어 있지 않습니다</string>
+    <string name="anki_check_access">접근이 허용되었습니다</string>
+    <string name="anki_check_access_item">접근 권한</string>
+    <string name="anki_check_no_access">AnkiDroid 접근 권한이 없습니다</string>
+    <string name="anki_check_fix_access">위 버튼으로 접근을 허용하세요.</string>
+    <string name="anki_check_deck_found">덱을 찾았습니다: %1$s</string>
+    <string name="anki_check_deck_missing">덱을 찾을 수 없습니다: %1$s</string>
+    <string name="anki_check_deck_not_chosen">선택한 덱이 없습니다</string>
+    <string name="anki_check_model_found">노트 유형을 찾았습니다: %1$s</string>
+    <string name="anki_check_model_missing">노트 유형을 찾을 수 없습니다: %1$s</string>
+    <string name="anki_check_model_not_chosen">선택한 노트 유형이 없습니다</string>
+    <string name="anki_check_fix_choose">아래에서 선택하세요.</string>
+    <string name="anki_check_no_answer">%1$s: AnkiDroid가 응답하지 않았습니다</string>
+    <string name="anki_check_fix_no_answer">AnkiDroid를 연 다음 다시 확인하세요.</string>
+    <string name="anki_check_fields_match">필드가 템플릿과 일치합니다</string>
+    <string name="anki_check_fields_differ">필드가 템플릿과 일치하지 않습니다</string>
+    <string name="anki_check_fields_missing">노트 유형에 더 이상 없는 필드: %1$s</string>
+    <string name="anki_check_fields_new">노트 유형의 새 필드: %1$s</string>
+    <string name="anki_check_fix_fields">아래에서 필드 목록을 업데이트하세요.</string>
+    <string name="anki_check_not_checked">%1$s: 확인 안 됨</string>
     <string name="audio_sources">소스</string>
     <string name="audio_reset_sources">기본 소스로 복원</string>
     <string name="audio_regions">지역</string>
@@ -573,11 +596,15 @@
     <string name="dictionaries_website">웹사이트</string>
     <string name="dictionaries_download_link">다운로드</string>
     <string name="backup_title">백업 및 복원</string>
-    <string name="settings_backup_summary">설정과 사전을 파일로 저장하고 복원</string>
+    <string name="settings_backup_summary">설정과 사전을 파일로 저장하고 복원, Yomitan에서 가져오기</string>
     <string name="backup_create">백업 만들기</string>
-    <string name="backup_create_hint">모든 설정, 사전 순서와 켜기/끄기, 설치된 글꼴을 파일 하나에 담습니다. 휴대폰, 메모리 카드, 클라우드 저장소 등 원하는 곳에 보관하세요.</string>
-    <string name="backup_include_dictionaries">사전 포함</string>
-    <string name="backup_include_dictionaries_hint">사전 자체를 포함해 다운로드나 가져오기 없이 바로 쓸 수 있습니다. 파일이 훨씬 커집니다.</string>
+    <string name="backup_create_hint">선택한 부분(설정, 글꼴, 사전)을 파일 하나에 담습니다. 휴대폰, 메모리 카드, 클라우드 저장소 등 원하는 곳에 보관하세요.</string>
+    <string name="backup_parts_save">저장할 부분</string>
+    <string name="backup_section_fonts">글꼴</string>
+    <string name="backup_files_chosen">%2$d개 중 %1$d개 선택, %3$s</string>
+    <string name="backup_files_chosen_count">%2$d개 중 %1$d개 선택</string>
+    <string name="backup_files_show">목록 보기</string>
+    <string name="backup_files_hide">목록 숨기기</string>
     <string name="backup_create_button">백업 만들기…</string>
     <string name="backup_creating">백업을 만드는 중…</string>
     <string name="backup_created">백업을 저장했습니다(%1$s).</string>
@@ -594,7 +621,7 @@
     <string name="backup_read_failed">백업을 읽지 못했습니다.</string>
     <string name="backup_loaded">%1$s 백업, 버전 %2$s</string>
     <string name="backup_sections">복원할 부분</string>
-    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체합니다. 백업의 사전은 새로 추가되거나 설치된 버전을 대체하며, 설치된 다른 사전은 그대로 남습니다.</string>
+    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체합니다. 백업의 글꼴과 사전은 새로 추가되거나 설치된 버전을 대체하며, 설치된 다른 글꼴과 사전은 그대로 남습니다.</string>
     <string name="backup_restore_button">선택한 부분 복원</string>
     <string name="backup_restored">복원됨</string>
     <string name="backup_section_general">일반</string>
@@ -604,7 +631,7 @@
     <string name="backup_section_lookup">검색</string>
     <string name="backup_section_lookup_hint">스캔 길이, 결과 수, 로마자, 단어의 한자</string>
     <string name="backup_section_popup">팝업 모양</string>
-    <string name="backup_section_popup_hint">글꼴, 글자 크기, 사용자 CSS, 설치된 글꼴</string>
+    <string name="backup_section_popup_hint">글꼴, 글자 크기, 사용자 CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">덱, 노트 유형, 필드, 중복 처리</string>
     <string name="backup_section_audio">오디오</string>
@@ -616,9 +643,6 @@
         <item quantity="other">사전 %d개: 순서, 켜기/끄기, 언어, 정렬에 쓰는 사전. 설치된 사전에 적용됩니다.</item>
     </plurals>
     <string name="backup_section_dictionary_files">사전</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">사전 %d개, 추가되거나 설치된 버전을 대체</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">글꼴 %d개</item>
     </plurals>

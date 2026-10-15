@@ -25,6 +25,7 @@
 
     <string name="action_delete">刪除</string>
     <string name="action_cancel">取消</string>
+    <string name="action_next">下一步</string>
     <string name="action_resume">繼續</string>
     <string name="action_dismiss">忽略</string>
     <string name="action_ok">確定</string>
@@ -227,7 +228,6 @@
     <string name="settings_popup_summary">辨識文字、自動隱藏、字型、文字大小與粗細、CSS、釋義複製</string>
     <string name="settings_translation_summary">翻譯按鈕、筆記、服務、語言</string>
     <string name="yomitan_import_title">從 Yomitan 匯入</string>
-    <string name="settings_yomitan_summary">Yomitan 的設定和詞典</string>
     <string name="about_title">關於</string>
     <string name="settings_about_summary">版本、更新、授權條款、日誌</string>
     <string name="about_version">版本 %1$s</string>
@@ -302,6 +302,29 @@
     <string name="anki_problem_fix_deck">請重新選擇牌組。</string>
     <string name="anki_problem_fix_fields">請檢查下方的欄位範本。</string>
     <string name="anki_update_fields">更新欄位清單</string>
+    <string name="anki_check">檢查連線</string>
+    <string name="anki_checking">正在檢查…</string>
+    <string name="anki_check_installed">已安裝 AnkiDroid</string>
+    <string name="anki_check_not_installed">未安裝 AnkiDroid</string>
+    <string name="anki_check_access">已取得存取權限</string>
+    <string name="anki_check_access_item">存取權限</string>
+    <string name="anki_check_no_access">無法存取 AnkiDroid</string>
+    <string name="anki_check_fix_access">請用上方的按鈕允許存取。</string>
+    <string name="anki_check_deck_found">已找到牌組：%1$s</string>
+    <string name="anki_check_deck_missing">找不到牌組：%1$s</string>
+    <string name="anki_check_deck_not_chosen">未選擇牌組</string>
+    <string name="anki_check_model_found">已找到筆記類型：%1$s</string>
+    <string name="anki_check_model_missing">找不到筆記類型：%1$s</string>
+    <string name="anki_check_model_not_chosen">未選擇筆記類型</string>
+    <string name="anki_check_fix_choose">請在下方選擇。</string>
+    <string name="anki_check_no_answer">%1$s：AnkiDroid 沒有回應</string>
+    <string name="anki_check_fix_no_answer">請開啟 AnkiDroid，然後再檢查一次。</string>
+    <string name="anki_check_fields_match">欄位與範本一致</string>
+    <string name="anki_check_fields_differ">欄位與範本不一致</string>
+    <string name="anki_check_fields_missing">筆記類型中已不存在的欄位：%1$s</string>
+    <string name="anki_check_fields_new">筆記類型的新欄位：%1$s</string>
+    <string name="anki_check_fix_fields">請在下方更新欄位清單。</string>
+    <string name="anki_check_not_checked">%1$s：未檢查</string>
     <string name="audio_sources">來源</string>
     <string name="audio_reset_sources">恢復預設來源</string>
     <string name="audio_regions">地區</string>
@@ -573,11 +596,15 @@
     <string name="dictionaries_website">網站</string>
     <string name="dictionaries_download_link">下載</string>
     <string name="backup_title">備份與恢復</string>
-    <string name="settings_backup_summary">將設定和詞典儲存到檔案，並從中恢復</string>
+    <string name="settings_backup_summary">將設定和詞典儲存到檔案，並從中恢復；從 Yomitan 匯入</string>
     <string name="backup_create">建立備份</string>
-    <string name="backup_create_hint">一個檔案包含所有設定、詞典的順序和開關以及已安裝的字型。可以存放在任何地方：手機、記憶卡或雲端儲存空間。</string>
-    <string name="backup_include_dictionaries">包含詞典</string>
-    <string name="backup_include_dictionaries_hint">包含詞典本身，無需下載或匯入即可使用。檔案會大很多。</string>
+    <string name="backup_create_hint">一個檔案包含所選部分：設定、字型、詞典。可以存放在任何地方：手機、記憶卡或雲端儲存空間。</string>
+    <string name="backup_parts_save">要儲存的部分</string>
+    <string name="backup_section_fonts">字型</string>
+    <string name="backup_files_chosen">已選 %1$d/%2$d，%3$s</string>
+    <string name="backup_files_chosen_count">已選 %1$d/%2$d</string>
+    <string name="backup_files_show">顯示清單</string>
+    <string name="backup_files_hide">隱藏清單</string>
     <string name="backup_create_button">建立備份…</string>
     <string name="backup_creating">正在建立備份…</string>
     <string name="backup_created">備份已儲存（%1$s）。</string>
@@ -594,7 +621,7 @@
     <string name="backup_read_failed">無法讀取備份。</string>
     <string name="backup_loaded">%1$s 的備份，版本 %2$s</string>
     <string name="backup_sections">要恢復的部分</string>
-    <string name="backup_replace_warning">勾選的部分會替換目前內容。備份中的詞典會被新增，或替換已安裝的同一詞典；其他已安裝的詞典保持不變。</string>
+    <string name="backup_replace_warning">勾選的部分會替換目前內容。備份中的字型和詞典會被新增，或替換已安裝的同一字型或詞典；其他已安裝的字型和詞典保持不變。</string>
     <string name="backup_restore_button">恢復所選</string>
     <string name="backup_restored">已恢復</string>
     <string name="backup_section_general">常規</string>
@@ -604,7 +631,7 @@
     <string name="backup_section_lookup">查詞</string>
     <string name="backup_section_lookup_hint">掃描長度、結果數量、羅馬字、詞中的漢字</string>
     <string name="backup_section_popup">彈出視窗外觀</string>
-    <string name="backup_section_popup_hint">字型、文字大小、自訂 CSS 和已安裝的字型</string>
+    <string name="backup_section_popup_hint">字型、文字大小、自訂 CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">牌組、筆記類型、欄位、重複處理</string>
     <string name="backup_section_audio">音訊</string>
@@ -616,9 +643,6 @@
         <item quantity="other">%d 個詞典：順序、開關、語言以及用於排序的詞典。應用於已安裝的詞典。</item>
     </plurals>
     <string name="backup_section_dictionary_files">詞典</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d 個詞典，新增或替換已安裝的版本</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d 個字型</item>
     </plurals>

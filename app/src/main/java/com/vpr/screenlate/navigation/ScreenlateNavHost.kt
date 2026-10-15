@@ -32,7 +32,6 @@ import com.vpr.screenlate.settings.PopupSettingsScreen
 import com.vpr.screenlate.settings.SettingsPage
 import com.vpr.screenlate.settings.SettingsScreen
 import com.vpr.screenlate.translate.TranslationSettingsScreen
-import com.vpr.screenlate.yomitan.YomitanImportScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -74,11 +73,9 @@ private object BackgroundRoute
 @Serializable
 private object AppearanceRoute
 
+/** @property yomitan opens the page at the Yomitan import. */
 @Serializable
-private object YomitanImportRoute
-
-@Serializable
-private object BackupRoute
+private data class BackupRoute(val yomitan: Boolean = false)
 
 @Serializable
 private object AboutRoute
@@ -180,8 +177,7 @@ fun ScreenlateNavHost(
                             SettingsPage.DICTIONARIES -> DictionariesRoute
                             SettingsPage.ANKI -> AnkiRoute()
                             SettingsPage.APPEARANCE -> AppearanceRoute
-                            SettingsPage.YOMITAN_IMPORT -> YomitanImportRoute
-                            SettingsPage.BACKUP -> BackupRoute
+                            SettingsPage.BACKUP -> BackupRoute()
                             SettingsPage.ABOUT -> AboutRoute
                         },
                     )
@@ -196,10 +192,13 @@ fun ScreenlateNavHost(
         composable<TranslationRoute> { TranslationSettingsScreen(onBack = back) }
         composable<BackgroundRoute> { BackgroundWorkScreen(onBack = back) }
         composable<AppearanceRoute> { AppearanceScreen(themeMode, onThemeModeChange, onBack = back) }
-        composable<YomitanImportRoute> {
-            YomitanImportScreen(onBack = back, onOpenDictionaries = { go(DictionariesRoute) })
+        composable<BackupRoute> { entry ->
+            BackupScreen(
+                onBack = back,
+                onOpenDictionaries = { go(DictionariesRoute) },
+                showYomitan = entry.toRoute<BackupRoute>().yomitan,
+            )
         }
-        composable<BackupRoute> { BackupScreen(onBack = back) }
         composable<AboutRoute> {
             AboutScreen(
                 onBack = back,
@@ -222,7 +221,7 @@ fun ScreenlateNavHost(
         composable<DictionariesRoute> {
             DictionariesScreen(
                 onBack = back,
-                onOpenYomitanImport = { go(YomitanImportRoute) },
+                onOpenYomitanImport = { go(BackupRoute(yomitan = true)) },
                 onOpenLanguages = { go(LanguagesRoute) },
             )
         }

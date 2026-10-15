@@ -25,6 +25,7 @@
 
     <string name="action_delete">Удалить</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_next">Далее</string>
     <string name="action_resume">Возобновить</string>
     <string name="action_dismiss">Скрыть</string>
     <string name="action_ok">ОК</string>
@@ -234,7 +235,6 @@
     <string name="settings_popup_summary">Распознанный текст, автоскрытие, шрифт, размер и жирность текста, CSS, копирование определений</string>
     <string name="settings_translation_summary">Кнопка перевода, карточки, сервисы, язык</string>
     <string name="yomitan_import_title">Импорт из Yomitan</string>
-    <string name="settings_yomitan_summary">Настройки и словари из Yomitan</string>
     <string name="about_title">О приложении</string>
     <string name="settings_about_summary">Версия, обновления, лицензии, логи</string>
     <string name="about_version">Версия %1$s</string>
@@ -312,6 +312,29 @@
     <string name="anki_problem_fix_deck">Выберите колоду заново.</string>
     <string name="anki_problem_fix_fields">Проверьте шаблоны полей ниже.</string>
     <string name="anki_update_fields">Обновить список полей</string>
+    <string name="anki_check">Проверить соединение</string>
+    <string name="anki_checking">Проверка…</string>
+    <string name="anki_check_installed">AnkiDroid установлен</string>
+    <string name="anki_check_not_installed">AnkiDroid не установлен</string>
+    <string name="anki_check_access">Доступ есть</string>
+    <string name="anki_check_access_item">Доступ</string>
+    <string name="anki_check_no_access">Нет доступа к AnkiDroid</string>
+    <string name="anki_check_fix_access">Разрешите доступ кнопкой выше.</string>
+    <string name="anki_check_deck_found">Колода найдена: %1$s</string>
+    <string name="anki_check_deck_missing">Колода не найдена: %1$s</string>
+    <string name="anki_check_deck_not_chosen">Колода не выбрана</string>
+    <string name="anki_check_model_found">Тип записи найден: %1$s</string>
+    <string name="anki_check_model_missing">Тип записи не найден: %1$s</string>
+    <string name="anki_check_model_not_chosen">Тип записи не выбран</string>
+    <string name="anki_check_fix_choose">Выберите ниже.</string>
+    <string name="anki_check_no_answer">%1$s: AnkiDroid не ответил</string>
+    <string name="anki_check_fix_no_answer">Откройте AnkiDroid и проверьте снова.</string>
+    <string name="anki_check_fields_match">Поля совпадают с шаблонами</string>
+    <string name="anki_check_fields_differ">Поля не совпадают с шаблонами</string>
+    <string name="anki_check_fields_missing">Поля, которых больше нет в типе записи: %1$s</string>
+    <string name="anki_check_fields_new">Новые поля типа записи: %1$s</string>
+    <string name="anki_check_fix_fields">Обновите список полей ниже.</string>
+    <string name="anki_check_not_checked">%1$s: без проверки</string>
     <string name="audio_sources">Источники</string>
     <string name="audio_reset_sources">Вернуть источники по умолчанию</string>
     <string name="audio_regions">Регионы</string>
@@ -583,11 +606,15 @@
     <string name="dictionaries_website">Сайт</string>
     <string name="dictionaries_download_link">Скачать</string>
     <string name="backup_title">Резервная копия</string>
-    <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их</string>
+    <string name="settings_backup_summary">Сохранить настройки и словари в файл, восстановить их, импорт из Yomitan</string>
     <string name="backup_create">Создать копию</string>
-    <string name="backup_create_hint">Один файл со всеми настройками, порядком и переключателями словарей и установленными шрифтами. Файл можно хранить в телефоне, на карте памяти или в облаке.</string>
-    <string name="backup_include_dictionaries">Добавить словари в копию</string>
-    <string name="backup_include_dictionaries_hint">Сами словари, готовые к работе без скачивания и импорта. Файл станет намного больше.</string>
+    <string name="backup_create_hint">Один файл с выбранными частями: настройками, шрифтами, словарями. Файл можно хранить в телефоне, на карте памяти или в облаке.</string>
+    <string name="backup_parts_save">Что сохранить</string>
+    <string name="backup_section_fonts">Шрифты</string>
+    <string name="backup_files_chosen">Выбрано %1$d из %2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Выбрано %1$d из %2$d</string>
+    <string name="backup_files_show">Показать список</string>
+    <string name="backup_files_hide">Скрыть список</string>
     <string name="backup_create_button">Создать копию…</string>
     <string name="backup_creating">Создаётся копия…</string>
     <string name="backup_created">Копия сохранена (%1$s).</string>
@@ -607,7 +634,7 @@
     <string name="backup_read_failed">Не удалось прочитать копию.</string>
     <string name="backup_loaded">Копия от %1$s, версия %2$s</string>
     <string name="backup_sections">Что восстановить</string>
-    <string name="backup_replace_warning">Отмеченные разделы заменят текущие. Словари из копии добавляются или заменяют установленные копии тех же словарей; остальные установленные словари сохраняются.</string>
+    <string name="backup_replace_warning">Отмеченные разделы заменят текущие. Шрифты и словари из копии добавляются или заменяют те же шрифты и словари; остальные установленные сохраняются.</string>
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
@@ -617,7 +644,7 @@
     <string name="backup_section_lookup">Поиск</string>
     <string name="backup_section_lookup_hint">Длина скана, число результатов, ромадзи, иероглифы слова</string>
     <string name="backup_section_popup">Оформление попапа</string>
-    <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS и установленные шрифты</string>
+    <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Колода, тип записи, поля, обработка дублей</string>
     <string name="backup_section_audio">Аудио</string>
@@ -632,12 +659,6 @@
         <item quantity="other">%d словаря: порядок, вкл/выкл, языки и словарь для сортировки. Применяется к установленным.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Словари</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d словарь: добавится или заменит установленную версию</item>
-        <item quantity="few">%d словаря: добавятся или заменят установленные версии</item>
-        <item quantity="many">%d словарей: добавятся или заменят установленные версии</item>
-        <item quantity="other">%d словаря: добавятся или заменят установленные версии</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d шрифт</item>
         <item quantity="few">%d шрифта</item>

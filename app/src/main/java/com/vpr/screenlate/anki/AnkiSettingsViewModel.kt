@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiAvailability
+import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDeck
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiModel
@@ -57,6 +58,14 @@ data class AnkiScreenState(
     val refreshing: Boolean = false,
 )
 
+/** The connection check in the page's AnkiDroid card. */
+data class ConnectionCheck(
+    /** Null until the check button was pressed. */
+    val result: AnkiCheck? = null,
+    /** While running, a shown result stays on the screen dimmed. */
+    val running: Boolean = false,
+)
+
 /** The [shown] language's note setup; the translation switch is shared by every language. */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -84,6 +93,15 @@ class AnkiSettingsViewModel @Inject constructor(
     private var refreshJob: Job? = null
 
     private val shownSettings = shown.language.flatMapLatest { language -> settingsRepository.settings(language).map { language to it } }
+
+    private val checkState = MutableStateFlow(ConnectionCheck())
+
+    /**
+     * Once shown, the check runs again with every refresh, so it follows a changed setup, a return from AnkiDroid and
+     * another shown language.
+     */
+    val check: StateFlow<ConnectionCheck> = checkState
+    private var checkJob: Job? = null
 
     val state: StateFlow<AnkiScreenState> = combine(
         connection,
@@ -133,7 +151,30 @@ class AnkiSettingsViewModel @Inject constructor(
     /** Re-reads AnkiDroid's decks, note types and fields, e.g. after the permission was granted. */
     fun refresh() = refresh(shown.language.value)
 
+    /** Asks AnkiDroid about every part of the shown language's setup; the page is read again with it. */
+    fun checkConnection() {
+        val language = shown.language.value
+        load(language)
+        runCheck(language)
+    }
+
     private fun refresh(language: Language) {
+        load(language)
+        if (checkState.value.result != null) runCheck(language)
+    }
+
+    private fun runCheck(language: Language) {
+        checkJob?.cancel()
+        checkState.value = checkState.value.copy(running = true)
+        checkJob = viewModelScope.launch {
+            val result = runCatching { notes.check(language) }
+                .onFailure { if (it is CancellationException) throw it }
+                .getOrNull()
+            checkState.value = ConnectionCheck(result ?: checkState.value.result)
+        }
+    }
+
+    private fun load(language: Language) {
         // The latest check wins: an earlier one may have read the note type the user just changed.
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {

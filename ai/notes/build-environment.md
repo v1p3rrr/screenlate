@@ -27,6 +27,12 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - To try a release build without the owner's key: sign `app-release-unsigned.apk` with `~/.android/debug.keystore` (`apksigner sign --ks ... --ks-key-alias androiddebugkey`, passwords `android`). Only one accessibility service should be enabled at a time (`settings put secure enabled_accessibility_services <pkg>/<service>`).
 - The AnkiDroid lint checks still reach `app`: `DirectDateInstantiation` fails `Date()` (use `java.time`, e.g. `LocalDate.now()`).
 - Compose: `ScreenlateTheme` must compose its content on one path for every mode (only the color scheme and locals change). A separate branch for e-ink mode rebuilt the NavHost and sent the app back to the home screen when the mode was switched.
+- Compose skipping (2026-10-15, the download lag): with strong skipping, a lambda that captures a value of uncertain
+  stability is compared by reference, so `onDownload = { ... item ... }` was a new lambda on every progress update and
+  every catalog card recomposed (about 2000 recompositions for one download). Pass the item to the lambda instead of
+  capturing it; give classes passed as parameters an `equals` (data class); declare models of non-Compose modules and
+  collections in `compose-stability.conf`. Measure with a `SideEffect` counter and `dumpsys gfxinfo` ("Slow UI
+  thread"), or the compiler reports (`reportsDestination` in the Compose convention plugin, not kept).
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
 
 ## Agent tooling gotchas

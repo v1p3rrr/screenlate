@@ -1,5 +1,6 @@
 package com.vpr.screenlate.backup
 
+import com.vpr.screenlate.overlay.fonts.FontBackup
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -20,19 +21,32 @@ object BackupArchive {
     private val json = Json { ignoreUnknownKeys = true }
 
     /**
-     * @property fonts font files and their list, stored under their own names.
+     * @property fontIndex the list of the fonts in [fonts], stored as [FontBackup.INDEX] before them.
+     * @property fonts font files, stored under their own names.
      * @property dictionaryFiles directories of the dictionaries whose files go in, by index in [dictionaries].
      */
     class Contents(
         val manifest: BackupManifest,
         val settings: JsonObject,
         val dictionaries: BackupDictionaryList,
+        val fontIndex: String? = null,
         val fonts: List<File> = emptyList(),
         val dictionaryFiles: Map<Int, File> = emptyMap(),
     )
 
-    /** What is read before any file: enough to offer the sections. */
-    class Head(val manifest: BackupManifest, val settings: JsonObject, val dictionaries: BackupDictionaryList)
+    /**
+     * What is read before any dictionary file: enough to offer the sections.
+     *
+     * @property fontIndex the font list, as [FontBackup.INDEX] holds it; [readHead] only.
+     * @property fontSizes the bytes of each font file by name; [readHead] only.
+     */
+    class Head(
+        val manifest: BackupManifest,
+        val settings: JsonObject,
+        val dictionaries: BackupDictionaryList,
+        val fontIndex: String? = null,
+        val fontSizes: Map<String, Long> = emptyMap(),
+    )
 
     class NotBackupException : IOException("Not a backup")
 
@@ -48,6 +62,7 @@ object BackupArchive {
             zip.putText(BackupLayout.MANIFEST, json.encodeToString(BackupManifest.serializer(), contents.manifest))
             zip.putText(BackupLayout.SETTINGS, contents.settings.toString())
             zip.putText(BackupLayout.DICTIONARIES, json.encodeToString(BackupDictionaryList.serializer(), contents.dictionaries))
+            contents.fontIndex?.let { zip.putText(BackupLayout.FONTS + FontBackup.INDEX, it) }
             contents.fonts.forEach { zip.putFile(BackupLayout.FONTS + it.name, it) }
             // Dictionary files are large and partly compressed already; speed matters more than size here.
             zip.setLevel(Deflater.BEST_SPEED)
@@ -63,25 +78,34 @@ object BackupArchive {
         }
     }
 
-    /** Reads the manifest, settings and dictionary list, which come first. */
+    /**
+     * Reads the manifest, settings and dictionary list, which come first, and goes through the fonts after them for
+     * their list and sizes. Stops at the first dictionary file.
+     */
     fun readHead(input: InputStream): Head {
         val zip = ZipInputStream(input.buffered())
         var manifest: BackupManifest? = null
         var settings: JsonObject? = null
         var dictionaries: BackupDictionaryList? = null
+        var fontIndex: String? = null
+        val fontSizes = linkedMapOf<String, Long>()
         while (true) {
             val entry = zip.nextEntry ?: break
             when (entry.name) {
                 BackupLayout.MANIFEST -> manifest = decodeManifest(zip.readText())
                 BackupLayout.SETTINGS -> settings = json.parseToJsonElement(zip.readText()) as? JsonObject
                 BackupLayout.DICTIONARIES -> dictionaries = json.decodeFromString(BackupDictionaryList.serializer(), zip.readText())
-                else -> break
+                else -> {
+                    if (manifest == null) throw NotBackupException()
+                    val font = BackupLayout.fontFile(entry.name) ?: break
+                    if (font == FontBackup.INDEX) fontIndex = zip.readText() else fontSizes[font] = zip.skip(Long.MAX_VALUE)
+                }
             }
             if (manifest == null) throw NotBackupException()
         }
         val found = manifest ?: throw NotBackupException()
         if (found.format > BackupLayout.FORMAT) throw NewerFormatException()
-        return Head(found, settings ?: JsonObject(emptyMap()), dictionaries ?: BackupDictionaryList(emptyList()))
+        return Head(found, settings ?: JsonObject(emptyMap()), dictionaries ?: BackupDictionaryList(emptyList()), fontIndex, fontSizes)
     }
 
     /** Receives the files of a backup while it is read. */

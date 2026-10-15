@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.vpr.screenlate.backup.BackupChoiceStore
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.preferenceKey
@@ -62,7 +63,7 @@ object SettingsKeys {
         "background_tip_seen",
         "notification_permission_asked",
         "accessibility_agreed",
-    )
+    ) + BackupChoiceStore.KEYS
 
     /**
      * Names of the keys whose value belongs to a language: Japanese's key carries the name alone, another language's
