@@ -92,6 +92,12 @@ Requests 1–19 are in the previous plan. New ones:
     unless it is short; a tap on the chip shows the full name, another tap shortens it again. "+N" (more than one
     frequency value) also shows the first chip's full name. Decision row "Frequency chip names".
 44. (2026-10-15) Latvian joins group 3, the last one before "every other language".
+45. (2026-10-15) The interface lags while dictionaries download; perhaps the main thread is busy.
+46. (2026-10-15) A check of the connection to Anki.
+47. (2026-10-15) Backups: choose which settings and which files (fonts, anything else) go into a backup.
+48. (2026-10-15) The import from Yomitan moves into the backup screen as a section of its own.
+49. (2026-10-15) Requests 45-48 and the bug fixes made on the language branches that do not depend on the new
+    features go into `main` as well. Plan and decisions: [2026-10-15-main-fixes-and-backups.md](2026-10-15-main-fixes-and-backups.md).
 
 ## Decisions
 
