@@ -3,6 +3,8 @@
 Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-languages-implementation.md) (phase 8,
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
 [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
+Work on `main` since 2026-10-15: [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md)
+(fixes and changes brought from the language branches, download lag, Anki check, backups).
 
 ## Next session (handoff, 2026-10-15)
 

@@ -1,0 +1,70 @@
+# Fixes, backups and Anki check on `main` (2026-10-15)
+
+Owner requests 45-49 of [the languages plan](2026-10-10-languages-implementation.md): download lag, an Anki connection
+check, choosing what a backup holds, the Yomitan import inside the backup screen, and the work of the language
+branches that does not depend on the new languages, all on `main`. The work is done on `main` and merged into
+`languages/main`; the language branch then adds the choice of languages in backups.
+
+## Decisions
+
+| Topic | Decision |
+|---|---|
+| Release | None for now; `main` only gets the changes (owner, 2026-10-15). |
+| Download lag | Seen by the owner on the Dictionaries screen of the languages test build (Japanese and English), maybe everywhere. Find what loads the main thread while a download or import runs and fix it on both branches. |
+| Anki connection check | A "Check connection" button on the Anki page asks AnkiDroid again and lists the result per item: AnkiDroid installed, access granted, deck found, note type found, fields match. |
+| Backup: settings | Chosen per section when creating, the same list as on restore; all ticked at first. |
+| Backup: files | "Fonts" and "Dictionaries" are items of their own (fonts leave the Popup section) that expand with an arrow into a list of files with their sizes, each with its own box. |
+| Backup: defaults | The first time every settings section and every font is ticked, the dictionaries are not. The screen remembers the last choice; a font or dictionary added since takes the mark of its item. |
+| Restore | The same expandable lists: fonts and dictionaries can be restored one by one. |
+| Backup: languages | `languages/main` only: an expandable "Languages" item lists the turned-on languages; a language left out takes out its own settings, its dictionaries, the fonts downloaded for it and its recognition models. Shared sections are chosen as before. Not on `main`, which has Japanese only. |
+| Backup: recognition models | Go into the backup with their language (`languages/main`). |
+| Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection). The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. |
+| Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, every rule chain behind "+N" (checked for false matches first), tags on kanji entries. |
+| Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
+
+## Bug fixes from the language branches
+
+1. The search screen opened from the selection menu showed a white card on the dark theme until its first result
+   (`fff2e6a`).
+2. The Dictionaries page's first opening showed empty sections for about 0.6 s (`8fab47d`).
+3. A language chosen in the system's app settings while the app ran left language names and catalog titles in the
+   previous language (`881177f`).
+4. Home's audio card opened the top of the Anki page instead of its audio section (`b75305e`); "Add audio source"
+   started as a URL source instead of the first default kind (`666162e`).
+5. The bubble's hold menu ignored e-ink and followed the system's day or night mode instead of the app's theme
+   (`73c6a57`, part of `e0231ba`).
+6. Catalog downloads and bundled installs were named by their archive, not by their title (`9aec26d`, part of
+   `e0231ba`).
+7. A monolingual Japanese dictionary with loanword spellings was taken for Japanese → English (`aca8a48`).
+8. A lookup starting at a radical look-alike (⽇ for 日) found nothing (Japanese part of `329dc62`).
+9. AnkiDroid's hidden default deck was missing from the deck list (`f9be87b`).
+10. A download that broke off showed its technical reason; it now says the connection was lost (`c3c1961`, with
+    resumable downloads).
+
+## Other changes brought over
+
+- Dry wording: `b8a6fc7`, `c7908d1` (strings in 14 locales, docs, README, release-note files), with the later wording
+  fixes that touch shared strings.
+- Translation button: `4719e6c`.
+- Font deletion confirmation: the dialog of `57381f8` without the Chinese fonts.
+- Pitch accent colors: `dd3e825`, `a430fec`.
+- Frequency chip names: `773c9a7`.
+- Resumable downloads: `4e9c785`, `c3c1961`.
+- Every rule chain: the chain part of `33fbbe8`, without transcriptions. Before it lands, check Japanese lookups for
+  chains that do not belong (a form read two ways that leads to different words gives separate entries, each with its
+  own chain; only chains of the same word share "+N").
+- Kanji entry tags: `d7f1509`.
+
+## Order
+
+1. Bring the fixes and changes above to `main` (cherry-picks where they apply, otherwise ported), with their tests.
+2. Download lag: measure on the emulator (debug and release builds), fix.
+3. Anki connection check.
+4. Backups: sections, fonts and dictionaries lists on creating and restoring, the remembered choice; the Yomitan
+   card.
+5. Docs (`docs/usage.md`, `docs/architecture.md`), strings in 14 locales, test model cases; emulator checks.
+6. Merge `main` into `languages/main`; the Languages item and models in backups there; checks on the emulator.
+
+## Changelog
+
+- 2026-10-15: plan written from the owner's answers.
