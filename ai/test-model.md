@@ -306,6 +306,15 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-15, `languages/main` at 18b634a (the form-of fix merged) with the shared item parser, Pixel_10_Pro (API 37)
+
+Scope: LK15 after the merge; the engine's instrumented tests (30, the language lookups with their form-of tables
+among them).
+
+Results: passed, the same entries as on `main`: じどう with its eight words and no じどう entry, 社會 with 社会
+"redirected from 社會", 豪州 with オーストラリア and its forms "alternative". No empty item (the only empty-text items are
+デジタル大辞泉's pictures). Lookups 34–67 ms.
+
 ### 2026-10-15, `main` after 4a92c96 (form-of rows followed, uncommitted build), Pixel_10_Pro (API 37)
 
 Scope: LK15 (new), with Wiktionary (ja–ja) downloaded from the catalog next to the nine other Japanese dictionaries.

@@ -15,8 +15,10 @@ recognition models added to backups (`9a8db2e`, SET12), the merge checked on the
 settings, SET11, SET3, DIC7 with the update check closing, the segment fill as SET13; run log at `99085b9`), pushed.
 The owner reviewed the choices made without asking: all stay. Item 13 of that plan (romaji inside a joined Latin
 word) was built, then rolled back by the owner's choice (single syllables and letters in the popup); `main` at
-`4a92c96`, `languages/main` at the merge `8145fc4`, both pushed. Open: item 14 (wty-ja-ja form-of rows show as empty
-numbered items in Japanese lookups), proposed as a separate task.
+`4a92c96`, `languages/main` at the merge `8145fc4`, both pushed. Item 14 (wty-ja-ja form-of rows shown as empty
+numbered items in Japanese lookups) is fixed: Japanese lookups follow form-of items as Yomitan does, with the
+dictionary's tags (owner's choice), also for Jitendex's and Kolobok's redirect rows; `main` `328c062`, merged into
+`languages/main` (`18b634a`), checked on the emulator (LK15), both pushed.
 Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on `main` the QuickJS submodule folder
 `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, which only `languages/main` tracks).
 

@@ -23,6 +23,7 @@ branches that does not depend on the new languages, all on `main`. The work is d
 | Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
 | Romaji inside a joined Latin word (item 13) | Left as it was: a Latin word is looked up from its start, so the second word of "jidoujisho" stays out of reach. The first choice (the word under the aim, with a lookup from the romaji syllable under the aim where nothing is found) was built and rolled back: the popup showed single syllables and letters (owner, 2026-10-15). |
 | Font restore | Chosen fonts are added to the installed ones, the same font replaced (confirmed by the owner, 2026-10-15). |
+| Form-of rows in Japanese lookups (item 14) | As in Yomitan: a form-of item leaves the definitions, an entry left without definitions goes, and the word it names is looked up (one step) and joins the results with the item's tags as its chain, unless the same word is found as well or better. The tags show as the dictionary writes them, untranslated. Japanese dictionaries are not split at import (owner, 2026-10-15). |
 
 ## Bug fixes from the language branches
 
@@ -56,11 +57,20 @@ Found by the owner on 2026-10-15 (both branches):
     for the "la" of "Screenlate") and chose to roll it back entirely (2026-10-15): a joined Latin word is looked up
     from its start again. Reverted on `main` in `ce6e7c8`, merged into `languages/main` (`8145fc4`). Closed.
 
-Found during the checks on 2026-10-15 (both branches, open):
+Found during the checks on 2026-10-15 (both branches):
 
 14. wty-ja-ja "non-lemma" rows (form-of rows whose glossary holds only `[lemma, [tags]]`) show in Japanese lookups
-    as an entry of numbered items with only the "non-lemma" tag, and rank first (じどう above 自動). Not looked into
-    yet; proposed as a separate task.
+    as an entry of numbered items with only the "non-lemma" tag, and rank first (じどう above 自動).
+    Cause: hoshidicts keeps glossary items `["lemma", ["tag", ...]]` in the glossary and never follows them, while
+    Yomitan's dictionary deinflection drops them from the definitions and looks the lemma up, for Japanese too. The
+    form row's headword equals the scanned text, so it outranked 自動, which matches only by its reading. On
+    `languages/main` the import split applies only to dictionaries whose source language is not Japanese.
+    Jitendex (12 K rows, "redirected from …") and Kolobok (137 K, "вариант написания: …") put such items next to a
+    visible "⟶ lemma" link, which drew an empty second bullet.
+    Fix (`main` `328c062`, merged into `languages/main` `18b634a`): `form_of.cpp` in the engine module follows the
+    items after hoshidicts' Japanese lookup as the decision row says; the bridge asks for every result and applies the
+    limit afterwards. `candidate_lookup.cpp` reuses its item parser. Checked on the emulator with Wiktionary (ja–ja)
+    (LK15, run log 2026-10-15). Closed.
 
 ## Other changes brought over
 
@@ -164,8 +174,10 @@ Kept current while the work runs so a new session can continue from the last lin
   shared audio values stay in Japanese's key.
 - Item 13 done on `main` (`94f5ed9`) and merged (`ec13e30`), then rolled back by the owner's choice (single
   syllables and letters in the popup). Reverted on `main` (`ce6e7c8`, run log kept in `4a92c96`), merged into
-  `languages/main` (`8145fc4`) and checked on the emulator (run log 2026-10-15 at 8145fc4). Next: item 14
-  (wty-ja-ja form-of rows shown empty), proposed to the owner as a separate task.
+  `languages/main` (`8145fc4`) and checked on the emulator (run log 2026-10-15 at 8145fc4).
+- Item 14 done: the owner chose Yomitan's behavior with the dictionary's own tags (decision row). Fixed on `main`
+  (`328c062`), merged into `languages/main` (`18b634a`), checked on the emulator on both branches (LK15). Nothing
+  open from this plan's bug list.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
@@ -193,3 +205,5 @@ Kept current while the work runs so a new session can continue from the last lin
   Languages item with two languages and the shared audio values (answers below in Progress).
 - 2026-10-15: the owner saw single syllables and letters in the popup after item 13 and chose to roll it back
   entirely; the decision row changed accordingly.
+- 2026-10-15: the owner chose how Japanese form-of rows behave (item 14): as in Yomitan, with the dictionary's tags;
+  decision row added.
