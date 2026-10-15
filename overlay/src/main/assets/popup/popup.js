@@ -674,6 +674,18 @@ const Popup = (() => {
         for (const entry of kanji.entries || []) {
             const section = element('section', 'dictionary');
             section.append(element('div', 'dictionary-name', entry.dictionary));
+            // Lists the character is on (jouyou, 교육용), as Yomitan shows them; a tap opens the tag's note.
+            const tags = (entry.tags || '').split(' ').filter(Boolean);
+            if (tags.length) {
+                const tagRow = element('div', 'tags kanji-tags');
+                tags.forEach(tag => {
+                    const chip = element('span', 'tag', tag);
+                    chip.dataset.dictionary = entry.dictionary;
+                    markTag(chip);
+                    tagRow.append(chip);
+                });
+                section.append(tagRow);
+            }
             const readings = [
                 [labels.onyomi || 'On', entry.onyomi],
                 [labels.kunyomi || 'Kun', entry.kunyomi],
