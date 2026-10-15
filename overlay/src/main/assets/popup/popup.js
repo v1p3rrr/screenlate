@@ -64,6 +64,8 @@ const Popup = (() => {
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
     const SHOWN_ACCENTS = 2;
+    /** The widest frequency dictionary name a chip shows whole, in Latin letters; a CJK character counts as two. */
+    const SHORT_NAME_WIDTH = 4;
     const ICONS = {
         add: '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
         copy: '<svg viewBox="0 0 24 24" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
@@ -672,7 +674,7 @@ const Popup = (() => {
             const hidden = frequencies.reduce((count, group) => count + group.values.length, 0) - 1;
             row.append(collapsible(
                 [frequencyChip(first.dictionary, first.values.slice(0, 1))],
-                frequencies.map(group => frequencyChip(group.dictionary, group.values)),
+                frequencies.map((group, i) => frequencyChip(group.dictionary, group.values, i === 0)),
                 hidden,
                 'frequency-more',
             ));
@@ -755,11 +757,49 @@ const Popup = (() => {
         return digits ? Number.parseInt(digits[0], 10) : 0;
     }
 
-    function frequencyChip(dictionary, values) {
-        const chip = element('span', 'frequency');
-        chip.append(element('span', 'frequency-dictionary', shortName(dictionary)));
-        chip.append(element('span', 'frequency-value', values.join(', ')));
+    /**
+     * The dictionary's name and [values]. A long name shows as its first character until a tap on the chip, which
+     * shows it whole and, tapped again, shortens it; [whole] shows it whole from the start.
+     */
+    function frequencyChip(dictionary, values, whole = false) {
+        const full = shortName(dictionary);
+        const short = chipName(full);
+        const value = element('span', 'frequency-value', values.join(', '));
+        if (short === full) {
+            const chip = element('span', 'frequency');
+            chip.append(element('span', 'frequency-dictionary', full), value);
+            return chip;
+        }
+        const chip = element('button', 'frequency');
+        chip.type = 'button';
+        chip.setAttribute('aria-label', `${full} ${value.textContent}`);
+        const name = element('span', 'frequency-dictionary', whole ? full : short);
+        let shown = whole;
+        chip.addEventListener('click', () => {
+            shown = !shown;
+            name.textContent = shown ? full : short;
+        });
+        chip.append(name, value);
         return chip;
+    }
+
+    /**
+     * [name] when it is up to [SHORT_NAME_WIDTH] wide (JPDB, NieR), else its first character in upper case (BCCWJ → B,
+     * 国語辞典 → 国).
+     */
+    function chipName(name) {
+        const characters = Array.from(name.trim());
+        const width = characters.reduce((sum, character) => sum + (isWide(character) ? 2 : 1), 0);
+        return width <= SHORT_NAME_WIDTH || !characters.length ? name : characters[0].toUpperCase();
+    }
+
+    /** Whether [character] takes the width of two Latin letters: CJK characters, kana, hangul, full-width forms. */
+    function isWide(character) {
+        const code = character.codePointAt(0);
+        return (code >= 0x1100 && code <= 0x115f) || (code >= 0x2e80 && code <= 0xa4cf)
+            || (code >= 0xac00 && code <= 0xd7a3) || (code >= 0xf900 && code <= 0xfaff)
+            || (code >= 0xfe30 && code <= 0xfe4f) || (code >= 0xff00 && code <= 0xff60)
+            || (code >= 0xffe0 && code <= 0xffe6) || (code >= 0x20000 && code <= 0x3fffd);
     }
 
     /** Distinct accents of the word; the dictionaries that list each one open from it. */
