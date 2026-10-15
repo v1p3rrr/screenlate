@@ -333,6 +333,8 @@
     <string name="audio_region_uk">영국</string>
     <string name="audio_region_latin_america">라틴아메리카</string>
     <string name="audio_region_spain">스페인</string>
+    <string name="audio_region_brazil">브라질</string>
+    <string name="audio_region_portugal">포르투갈</string>
     <string name="audio_region_germany">독일</string>
     <string name="audio_region_austria">오스트리아</string>
     <string name="audio_region_switzerland">스위스</string>
@@ -453,6 +455,7 @@
     <string name="popup_font_script_only_fr">프랑스어 텍스트에만 사용</string>
     <string name="popup_font_script_only_de">독일어 텍스트에만 사용</string>
     <string name="popup_font_script_only_it">이탈리아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_pt">포르투갈어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

@@ -15,6 +15,7 @@ enum class Language(val code: String) {
     FRENCH("fr"),
     GERMAN("de"),
     ITALIAN("it"),
+    PORTUGUESE("pt"),
     ;
 
     companion object {

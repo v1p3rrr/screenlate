@@ -76,4 +76,11 @@ class SentenceTest {
         assertThat(extract(paragraph, "Rossi", Language.ITALIAN).text).isEqualTo("Il sig. Rossi arriva.")
         assertThat(extract(paragraph, "disse", Language.ITALIAN).text).isEqualTo("«Resta qui.» disse lei.")
     }
+
+    @Test
+    fun portugueseSentenceKeepsAngleQuotesAndSenhora() {
+        val paragraph = "Chove. A Sra. Silva chegou. «Fica aqui.» disse ela."
+        assertThat(extract(paragraph, "Silva", Language.PORTUGUESE).text).isEqualTo("A Sra. Silva chegou.")
+        assertThat(extract(paragraph, "disse", Language.PORTUGUESE).text).isEqualTo("«Fica aqui.» disse ela.")
+    }
 }

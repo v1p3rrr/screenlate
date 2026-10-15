@@ -333,6 +333,8 @@
     <string name="audio_region_uk">Vương quốc Anh</string>
     <string name="audio_region_latin_america">Mỹ Latinh</string>
     <string name="audio_region_spain">Tây Ban Nha</string>
+    <string name="audio_region_brazil">Brazil</string>
+    <string name="audio_region_portugal">Bồ Đào Nha</string>
     <string name="audio_region_germany">Đức</string>
     <string name="audio_region_austria">Áo</string>
     <string name="audio_region_switzerland">Thụy Sĩ</string>
@@ -453,6 +455,7 @@
     <string name="popup_font_script_only_fr">Chỉ cho chữ tiếng Pháp</string>
     <string name="popup_font_script_only_de">Chỉ cho chữ tiếng Đức</string>
     <string name="popup_font_script_only_it">Chỉ cho chữ tiếng Ý</string>
+    <string name="popup_font_script_only_pt">Chỉ cho chữ tiếng Bồ Đào Nha</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

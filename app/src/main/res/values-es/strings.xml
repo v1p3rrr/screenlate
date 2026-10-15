@@ -339,6 +339,8 @@
     <string name="audio_region_uk">Reino Unido</string>
     <string name="audio_region_latin_america">Latinoamérica</string>
     <string name="audio_region_spain">España</string>
+    <string name="audio_region_brazil">Brasil</string>
+    <string name="audio_region_portugal">Portugal</string>
     <string name="audio_region_germany">Alemania</string>
     <string name="audio_region_austria">Austria</string>
     <string name="audio_region_switzerland">Suiza</string>
@@ -459,6 +461,7 @@
     <string name="popup_font_script_only_fr">Solo para texto en francés</string>
     <string name="popup_font_script_only_de">Solo para texto en alemán</string>
     <string name="popup_font_script_only_it">Solo para texto en italiano</string>
+    <string name="popup_font_script_only_pt">Solo para texto en portugués</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

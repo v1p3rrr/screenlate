@@ -343,6 +343,8 @@
     <string name="audio_region_uk">Великобритания</string>
     <string name="audio_region_latin_america">Латинская Америка</string>
     <string name="audio_region_spain">Испания</string>
+    <string name="audio_region_brazil">Бразилия</string>
+    <string name="audio_region_portugal">Португалия</string>
     <string name="audio_region_germany">Германия</string>
     <string name="audio_region_austria">Австрия</string>
     <string name="audio_region_switzerland">Швейцария</string>
@@ -463,6 +465,7 @@
     <string name="popup_font_script_only_fr">Только для французского текста</string>
     <string name="popup_font_script_only_de">Только для немецкого текста</string>
     <string name="popup_font_script_only_it">Только для итальянского текста</string>
+    <string name="popup_font_script_only_pt">Только для португальского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>
