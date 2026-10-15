@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import android.content.res.Resources
+import java.util.Locale
 
 /**
  * Grammatical tags of form-of entries (Wiktionary dictionaries: `["lemma", ["genitive", "plural"]]`) in the interface
@@ -16,18 +17,24 @@ object FormOfTags {
         "adjective" to R.string.form_of_tag_adjective,
         "adnominal" to R.string.form_of_tag_adnominal,
         "adverbial" to R.string.form_of_tag_adverbial,
+        "all-case" to R.string.form_of_tag_all_case,
+        "all-gender" to R.string.form_of_tag_all_gender,
         "alt-of" to R.string.form_of_tag_alt_of,
         "alternative" to R.string.form_of_tag_alternative,
         "animate" to R.string.form_of_tag_animate,
         "aorist" to R.string.form_of_tag_aorist,
+        "apocopic" to R.string.form_of_tag_apocopic,
         "archaic" to R.string.form_of_tag_archaic,
         "assertive" to R.string.form_of_tag_assertive,
         "attributive" to R.string.form_of_tag_attributive,
         "augmentative" to R.string.form_of_tag_augmentative,
+        "before-vowel" to R.string.form_of_tag_before_vowel,
+        "by-personal-gender" to R.string.form_of_tag_by_personal_gender,
         "cantonese" to R.string.form_of_tag_cantonese,
         "causative" to R.string.form_of_tag_causative,
         "china" to R.string.form_of_tag_china,
         "chinese" to R.string.form_of_tag_chinese,
+        "clipping" to R.string.form_of_tag_clipping,
         "colloquial" to R.string.form_of_tag_colloquial,
         "common" to R.string.form_of_tag_common,
         "comparative" to R.string.form_of_tag_comparative,
@@ -42,7 +49,9 @@ object FormOfTags {
         "dated" to R.string.form_of_tag_dated,
         "dative" to R.string.form_of_tag_dative,
         "definite" to R.string.form_of_tag_definite,
+        "demonym" to R.string.form_of_tag_demonym,
         "dependent" to R.string.form_of_tag_dependent,
+        "derogatory" to R.string.form_of_tag_derogatory,
         "determiner" to R.string.form_of_tag_determiner,
         "dialectal" to R.string.form_of_tag_dialectal,
         "diminutive" to R.string.form_of_tag_diminutive,
@@ -71,19 +80,28 @@ object FormOfTags {
         "idiomatic" to R.string.form_of_tag_idiomatic,
         "imperative" to R.string.form_of_tag_imperative,
         "imperfect" to R.string.form_of_tag_imperfect,
+        "imperfect-se" to R.string.form_of_tag_imperfect_se,
         "imperfective" to R.string.form_of_tag_imperfective,
+        "impersonal" to R.string.form_of_tag_impersonal,
         "inanimate" to R.string.form_of_tag_inanimate,
         "indefinite" to R.string.form_of_tag_indefinite,
         "indicative" to R.string.form_of_tag_indicative,
         "infinitive" to R.string.form_of_tag_infinitive,
+        "infinitive-zu" to R.string.form_of_tag_infinitive_zu,
         "informal" to R.string.form_of_tag_informal,
+        "initialism" to R.string.form_of_tag_initialism,
         "instrumental" to R.string.form_of_tag_instrumental,
         "internet" to R.string.form_of_tag_internet,
         "interrogative" to R.string.form_of_tag_interrogative,
         "intransitive" to R.string.form_of_tag_intransitive,
+        "invariable" to R.string.form_of_tag_invariable,
         "jeolla" to R.string.form_of_tag_jeolla,
+        "latin-america" to R.string.form_of_tag_latin_america,
         "literary" to R.string.form_of_tag_literary,
         "locative" to R.string.form_of_tag_locative,
+        "long-form" to R.string.form_of_tag_long_form,
+        "louisiana" to R.string.form_of_tag_louisiana,
+        "lowercase" to R.string.form_of_tag_lowercase,
         "mainland-china" to R.string.form_of_tag_mainland_china,
         "mandarin" to R.string.form_of_tag_mandarin,
         "masculine" to R.string.form_of_tag_masculine,
@@ -98,11 +116,13 @@ object FormOfTags {
         "negative" to R.string.form_of_tag_negative,
         "neologism" to R.string.form_of_tag_neologism,
         "neuter" to R.string.form_of_tag_neuter,
+        "no-plural" to R.string.form_of_tag_no_plural,
         "nominative" to R.string.form_of_tag_nominative,
         "non-past" to R.string.form_of_tag_non_past,
         "nonstandard" to R.string.form_of_tag_nonstandard,
         "north-korea" to R.string.form_of_tag_north_korea,
         "northern" to R.string.form_of_tag_northern,
+        "not-comparable" to R.string.form_of_tag_not_comparable,
         "noun-from-verb" to R.string.form_of_tag_noun_from_verb,
         "object-first-person" to R.string.form_of_tag_object_first_person,
         "object-plural" to R.string.form_of_tag_object_plural,
@@ -114,11 +134,14 @@ object FormOfTags {
         "partitive" to R.string.form_of_tag_partitive,
         "passive" to R.string.form_of_tag_passive,
         "past" to R.string.form_of_tag_past,
+        "pejorative" to R.string.form_of_tag_pejorative,
         "perfect" to R.string.form_of_tag_perfect,
         "perfective" to R.string.form_of_tag_perfective,
         "personal" to R.string.form_of_tag_personal,
         "pluperfect" to R.string.form_of_tag_pluperfect,
         "plural" to R.string.form_of_tag_plural,
+        "plural-only" to R.string.form_of_tag_plural_only,
+        "poetic" to R.string.form_of_tag_poetic,
         "polite" to R.string.form_of_tag_polite,
         "possessive" to R.string.form_of_tag_possessive,
         "predicative" to R.string.form_of_tag_predicative,
@@ -126,12 +149,17 @@ object FormOfTags {
         "present" to R.string.form_of_tag_present,
         "preterite" to R.string.form_of_tag_preterite,
         "progressive" to R.string.form_of_tag_progressive,
+        "pronunciation-spelling" to R.string.form_of_tag_pronunciation_spelling,
+        "proper-noun" to R.string.form_of_tag_proper_noun,
         "proscribed" to R.string.form_of_tag_proscribed,
+        "quebec" to R.string.form_of_tag_quebec,
         "rare" to R.string.form_of_tag_rare,
         "reflexive" to R.string.form_of_tag_reflexive,
+        "regional" to R.string.form_of_tag_regional,
         "revised" to R.string.form_of_tag_revised,
         "romanization" to R.string.form_of_tag_romanization,
         "second-person" to R.string.form_of_tag_second_person,
+        "second-person-semantically" to R.string.form_of_tag_second_person_semantically,
         "second-round-simplified-chinese" to R.string.form_of_tag_second_round_simplified_chinese,
         "seoul" to R.string.form_of_tag_seoul,
         "sequential" to R.string.form_of_tag_sequential,
@@ -153,25 +181,50 @@ object FormOfTags {
         "taiwan" to R.string.form_of_tag_taiwan,
         "teochew" to R.string.form_of_tag_teochew,
         "third-person" to R.string.form_of_tag_third_person,
+        "traditional" to R.string.form_of_tag_traditional,
         "traditional-chinese" to R.string.form_of_tag_traditional_chinese,
         "transitive" to R.string.form_of_tag_transitive,
+        "tuscany" to R.string.form_of_tag_tuscany,
         "uncommon" to R.string.form_of_tag_uncommon,
         "uncountable" to R.string.form_of_tag_uncountable,
+        "uppercase" to R.string.form_of_tag_uppercase,
         "vocative" to R.string.form_of_tag_vocative,
+        "vos-form" to R.string.form_of_tag_vos_form,
+        "voseo" to R.string.form_of_tag_voseo,
         "vulgar" to R.string.form_of_tag_vulgar,
         "weak" to R.string.form_of_tag_weak,
+        "with-tú" to R.string.form_of_tag_with_tu,
+        "with-vos" to R.string.form_of_tag_with_vos,
+        "without-article" to R.string.form_of_tag_without_article,
         "wu" to R.string.form_of_tag_wu,
         "yanbian" to R.string.form_of_tag_yanbian,
         "yukjin" to R.string.form_of_tag_yukjin,
+        "zu-infinitive" to R.string.form_of_tag_zu_infinitive,
         "historic" to R.string.form_of_tag_historical,
         "short" to R.string.form_of_tag_short_form,
     )
 
     /** Two-word tags translated as one: "hanja form" reads as "漢字表記", not word by word. */
     private val PHRASES: Map<String, Int> = mapOf(
+        "agent noun" to R.string.form_of_tag_agent_noun,
         "early modern" to R.string.form_of_tag_early_modern,
+        "female equivalent" to R.string.form_of_tag_female_equivalent,
         "hanja form" to R.string.form_of_tag_hanja_form,
         "verbal noun" to R.string.form_of_tag_verbal_noun,
+    )
+
+    /** Words a neighbor already says: "superlative degree" reads as the superlative. */
+    private val SILENT = setOf("degree")
+
+    /** Countries in regional tags, named in the interface language by the system. */
+    private val COUNTRIES: Map<String, String> = mapOf(
+        "angola" to "AO", "argentina" to "AR", "austria" to "AT", "belgium" to "BE", "bolivia" to "BO",
+        "brazil" to "BR", "canada" to "CA", "chile" to "CL", "colombia" to "CO", "costa-rica" to "CR", "cuba" to "CU",
+        "dominican-republic" to "DO", "ecuador" to "EC", "el-salvador" to "SV", "france" to "FR", "germany" to "DE",
+        "guatemala" to "GT", "honduras" to "HN", "italy" to "IT", "liechtenstein" to "LI", "luxembourg" to "LU",
+        "mexico" to "MX", "mozambique" to "MZ", "nicaragua" to "NI", "panama" to "PA", "paraguay" to "PY",
+        "peru" to "PE", "philippines" to "PH", "portugal" to "PT", "puerto-rico" to "PR", "spain" to "ES",
+        "switzerland" to "CH", "uruguay" to "UY", "us" to "US", "venezuela" to "VE",
     )
 
     private val SPACES = Regex("\\s+")
@@ -187,9 +240,15 @@ object FormOfTags {
     }
 
     /** [tag] in the interface language; null when none of its words is in the list. */
-    fun label(resources: Resources, tag: String): String? = label(tag) { resources.getString(it) }
+    fun label(resources: Resources, tag: String): String? {
+        val locale = resources.configuration.locales[0]
+        return label(tag, { resources.getString(it) }) {
+            Locale.Builder().setRegion(it).build().getDisplayCountry(locale)
+        }
+    }
 
-    internal fun label(tag: String, string: (Int) -> String): String? {
+    /** [country] names a region code (`ES`). */
+    internal fun label(tag: String, string: (Int) -> String, country: (String) -> String = { it }): String? {
         var translated = false
         val words = tag.trim().split(SPACES).filter { it.isNotEmpty() }
         val labels = mutableListOf<String>()
@@ -202,8 +261,15 @@ object FormOfTags {
                 index += 2
                 continue
             }
+            if (words[index].lowercase() in SILENT) {
+                index++
+                continue
+            }
             labels += expandPersons(words[index].split('/')).joinToString("/") { part ->
-                STRINGS[part.lowercase()]?.let { translated = true; string(it) } ?: part
+                val key = part.lowercase()
+                STRINGS[key]?.let { translated = true; string(it) }
+                    ?: COUNTRIES[key]?.let { translated = true; country(it) }
+                    ?: part
             }
             index++
         }
