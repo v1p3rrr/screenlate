@@ -223,7 +223,7 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_bubble_summary">Zielpunkt, Seite, Textquelle, ausgeblendete Apps</string>
     <string name="lookup_title">Nachschlagen</string>
-    <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Kanji des Wortes</string>
+    <string name="settings_lookup_summary">Scanlänge, Ergebnisse, Romaji, Schriftzeichen des Wortes</string>
     <string name="appearance_title">Darstellung</string>
     <string name="settings_appearance_summary">Design, Farben, E-Ink, Sprache</string>
     <string name="settings_popup_summary">Erkannter Text, automatisches Ausblenden, Schrift, Textgröße und -stärke, CSS, Definitionen kopieren</string>
@@ -603,7 +603,7 @@
     <string name="backup_section_bubble">Schwebende Blase und Erkennung</string>
     <string name="backup_section_bubble_hint">Größe, Zielpunkt, Erkennungs-Engines, App-Text, Apps, in denen die Blase ausgeblendet ist</string>
     <string name="backup_section_lookup">Nachschlagen</string>
-    <string name="backup_section_lookup_hint">Scanlänge, Anzahl der Ergebnisse, Romaji, Kanji des Wortes</string>
+    <string name="backup_section_lookup_hint">Scanlänge, Anzahl der Ergebnisse, Romaji, Schriftzeichen des Wortes</string>
     <string name="backup_section_popup">Popup-Darstellung</string>
     <string name="backup_section_popup_hint">Schrift, Textgröße, eigenes CSS und installierte Schriften</string>
     <string name="backup_section_anki">Anki</string>

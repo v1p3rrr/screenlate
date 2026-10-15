@@ -221,7 +221,7 @@
     <string name="settings_title">Cài đặt</string>
     <string name="settings_bubble_summary">Điểm ngắm, cạnh màn hình, nguồn văn bản, ứng dụng ẩn</string>
     <string name="lookup_title">Tra cứu</string>
-    <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, kanji của từ</string>
+    <string name="settings_lookup_summary">Độ dài quét, kết quả, romaji, chữ Hán của từ</string>
     <string name="appearance_title">Hiển thị</string>
     <string name="settings_appearance_summary">Giao diện, màu sắc, e-ink, ngôn ngữ</string>
     <string name="settings_popup_summary">Văn bản nhận dạng, tự động ẩn, phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
@@ -599,7 +599,7 @@
     <string name="backup_section_bubble">Bong bóng nổi và nhận dạng</string>
     <string name="backup_section_bubble_hint">Kích thước, điểm ngắm, công cụ nhận dạng, văn bản ứng dụng, các ứng dụng ẩn bong bóng</string>
     <string name="backup_section_lookup">Tra cứu</string>
-    <string name="backup_section_lookup_hint">Độ dài quét, số kết quả, romaji, kanji của từ</string>
+    <string name="backup_section_lookup_hint">Độ dài quét, số kết quả, romaji, chữ Hán của từ</string>
     <string name="backup_section_popup">Hiển thị cửa sổ bật lên</string>
     <string name="backup_section_popup_hint">Phông chữ, cỡ chữ, CSS tùy chỉnh và phông chữ đã cài</string>
     <string name="backup_section_anki">Anki</string>

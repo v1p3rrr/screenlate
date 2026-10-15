@@ -225,7 +225,7 @@
     <string name="settings_title">Configurações</string>
     <string name="settings_bubble_summary">Mira, lado, fonte do texto, apps ocultos</string>
     <string name="lookup_title">Pesquisa</string>
-    <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, kanji da palavra</string>
+    <string name="settings_lookup_summary">Alcance da varredura, resultados, romaji, caracteres da palavra</string>
     <string name="appearance_title">Aparência</string>
     <string name="settings_appearance_summary">Tema, cores, e-ink, idioma</string>
     <string name="settings_popup_summary">Texto reconhecido, ocultação automática, fonte, tamanho e peso do texto, CSS, cópia de definições</string>
@@ -607,7 +607,7 @@
     <string name="backup_section_bubble">Bolha flutuante e reconhecimento</string>
     <string name="backup_section_bubble_hint">Tamanho, mira, mecanismos de reconhecimento, texto dos apps, apps em que a bolha fica oculta</string>
     <string name="backup_section_lookup">Pesquisa</string>
-    <string name="backup_section_lookup_hint">Alcance da varredura, número de resultados, romaji, kanji da palavra</string>
+    <string name="backup_section_lookup_hint">Alcance da varredura, número de resultados, romaji, caracteres da palavra</string>
     <string name="backup_section_popup">Aparência do pop-up</string>
     <string name="backup_section_popup_hint">Fonte, tamanho do texto, CSS personalizado e fontes instaladas</string>
     <string name="backup_section_anki">Anki</string>

@@ -227,7 +227,7 @@
     <string name="settings_title">Settings</string>
     <string name="settings_bubble_summary">Aim, dock, text source, hidden apps</string>
     <string name="lookup_title">Lookup</string>
-    <string name="settings_lookup_summary">Scan length, results, romaji, kanji of the word</string>
+    <string name="settings_lookup_summary">Scan length, results, romaji, characters of the word</string>
     <string name="appearance_title">Appearance</string>
     <string name="settings_appearance_summary">Theme, colors, e-ink, language</string>
     <string name="settings_popup_summary">Recognized text, auto-hide, font, text size and weight, CSS, definition copying</string>
@@ -607,7 +607,7 @@
     <string name="backup_section_bubble">Floating bubble and recognition</string>
     <string name="backup_section_bubble_hint">Size, aim, recognition engines, app text, apps where the bubble is hidden</string>
     <string name="backup_section_lookup">Lookup</string>
-    <string name="backup_section_lookup_hint">Scan length, number of results, romaji, kanji of the word</string>
+    <string name="backup_section_lookup_hint">Scan length, number of results, romaji, characters of the word</string>
     <string name="backup_section_popup">Popup appearance</string>
     <string name="backup_section_popup_hint">Font, text size, custom CSS and installed fonts</string>
     <string name="backup_section_anki">Anki</string>

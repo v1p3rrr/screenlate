@@ -223,7 +223,7 @@
     <string name="settings_title">Ayarlar</string>
     <string name="settings_bubble_summary">Nişan, taraf, metin kaynağı, gizli uygulamalar</string>
     <string name="lookup_title">Arama</string>
-    <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin kanjileri</string>
+    <string name="settings_lookup_summary">Tarama uzunluğu, sonuçlar, romaji, kelimenin karakterleri</string>
     <string name="appearance_title">Görünüm</string>
     <string name="settings_appearance_summary">Tema, renkler, e-ink, dil</string>
     <string name="settings_popup_summary">Tanınan metin, otomatik gizleme, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
@@ -603,7 +603,7 @@
     <string name="backup_section_bubble">Yüzen baloncuk ve tanıma</string>
     <string name="backup_section_bubble_hint">Boyut, nişan, tanıma motorları, uygulama metni, baloncuğun gizlendiği uygulamalar</string>
     <string name="backup_section_lookup">Arama</string>
-    <string name="backup_section_lookup_hint">Tarama uzunluğu, sonuç sayısı, romaji, kelimenin kanjileri</string>
+    <string name="backup_section_lookup_hint">Tarama uzunluğu, sonuç sayısı, romaji, kelimenin karakterleri</string>
     <string name="backup_section_popup">Açılır pencere görünümü</string>
     <string name="backup_section_popup_hint">Yazı tipi, metin boyutu, özel CSS ve yüklü yazı tipleri</string>
     <string name="backup_section_anki">Anki</string>

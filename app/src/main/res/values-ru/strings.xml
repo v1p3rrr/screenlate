@@ -228,7 +228,7 @@
     <string name="settings_title">Настройки</string>
     <string name="settings_bubble_summary">Прицел, сторона, источник текста, скрытие в приложениях</string>
     <string name="lookup_title">Поиск</string>
-    <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, кандзи слова</string>
+    <string name="settings_lookup_summary">Длина скана, число статей, ромадзи, иероглифы слова</string>
     <string name="appearance_title">Оформление</string>
     <string name="settings_appearance_summary">Тема, цвета, e-ink, язык</string>
     <string name="settings_popup_summary">Распознанный текст, автоскрытие, шрифт, размер и жирность текста, CSS, копирование определений</string>
@@ -612,7 +612,7 @@
     <string name="backup_section_bubble">Плавающая кнопка и распознавание</string>
     <string name="backup_section_bubble_hint">Размер, прицел, движки распознавания, текст приложений, приложения, где кнопка скрыта</string>
     <string name="backup_section_lookup">Поиск</string>
-    <string name="backup_section_lookup_hint">Длина скана, число результатов, ромадзи, кандзи слова</string>
+    <string name="backup_section_lookup_hint">Длина скана, число результатов, ромадзи, иероглифы слова</string>
     <string name="backup_section_popup">Оформление попапа</string>
     <string name="backup_section_popup_hint">Шрифт, размер текста, свой CSS и установленные шрифты</string>
     <string name="backup_section_anki">Anki</string>

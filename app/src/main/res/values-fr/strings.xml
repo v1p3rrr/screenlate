@@ -225,7 +225,7 @@
     <string name="settings_title">Paramètres</string>
     <string name="settings_bubble_summary">Visée, côté, source du texte, applis masquées</string>
     <string name="lookup_title">Recherche</string>
-    <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, kanji du mot</string>
+    <string name="settings_lookup_summary">Longueur d’analyse, résultats, romaji, caractères du mot</string>
     <string name="appearance_title">Apparence</string>
     <string name="settings_appearance_summary">Thème, couleurs, e-ink, langue</string>
     <string name="settings_popup_summary">Texte reconnu, masquage automatique, police, taille et graisse du texte, CSS, copie des définitions</string>
@@ -607,7 +607,7 @@
     <string name="backup_section_bubble">Bulle flottante et reconnaissance</string>
     <string name="backup_section_bubble_hint">Taille, visée, moteurs de reconnaissance, texte des applis, applis où la bulle est masquée</string>
     <string name="backup_section_lookup">Recherche</string>
-    <string name="backup_section_lookup_hint">Longueur d’analyse, nombre de résultats, romaji, kanji du mot</string>
+    <string name="backup_section_lookup_hint">Longueur d’analyse, nombre de résultats, romaji, caractères du mot</string>
     <string name="backup_section_popup">Apparence de la fenêtre contextuelle</string>
     <string name="backup_section_popup_hint">Police, taille du texte, CSS personnalisé et polices installées</string>
     <string name="backup_section_anki">Anki</string>

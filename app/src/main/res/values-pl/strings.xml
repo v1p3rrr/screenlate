@@ -227,7 +227,7 @@
     <string name="settings_title">Ustawienia</string>
     <string name="settings_bubble_summary">Celownik, strona, źródło tekstu, ukryte aplikacje</string>
     <string name="lookup_title">Wyszukiwanie</string>
-    <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, kanji słowa</string>
+    <string name="settings_lookup_summary">Zasięg skanowania, wyniki, romaji, znaki słowa</string>
     <string name="appearance_title">Wygląd</string>
     <string name="settings_appearance_summary">Motyw, kolory, e-ink, język</string>
     <string name="settings_popup_summary">Rozpoznany tekst, automatyczne ukrywanie, czcionka, rozmiar i grubość tekstu, CSS, kopiowanie definicji</string>
@@ -611,7 +611,7 @@
     <string name="backup_section_bubble">Pływający dymek i rozpoznawanie</string>
     <string name="backup_section_bubble_hint">Rozmiar, celownik, silniki rozpoznawania, tekst aplikacji, aplikacje, w których dymek jest ukryty</string>
     <string name="backup_section_lookup">Wyszukiwanie</string>
-    <string name="backup_section_lookup_hint">Zasięg skanowania, liczba wyników, romaji, kanji słowa</string>
+    <string name="backup_section_lookup_hint">Zasięg skanowania, liczba wyników, romaji, znaki słowa</string>
     <string name="backup_section_popup">Wygląd okienka</string>
     <string name="backup_section_popup_hint">Czcionka, rozmiar tekstu, własny CSS i zainstalowane czcionki</string>
     <string name="backup_section_anki">Anki</string>
