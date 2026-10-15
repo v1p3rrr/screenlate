@@ -98,6 +98,8 @@ Requests 1–19 are in the previous plan. New ones:
 48. (2026-10-15) The import from Yomitan moves into the backup screen as a section of its own.
 49. (2026-10-15) Requests 45-48 and the bug fixes made on the language branches that do not depend on the new
     features go into `main` as well. Plan and decisions: [2026-10-15-main-fixes-and-backups.md](2026-10-15-main-fixes-and-backups.md).
+50. (2026-10-15) Order after group 1: ask the questions of groups 2 and 3 now; build everything possible for group 2;
+    then the OCR tests for groups 3 and 4 (Paddle against Tesseract, MNN against ONNX Runtime, on real screenshots).
 
 ## Decisions
 
@@ -145,7 +147,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
 | Scope of the big release | Groups 1–3 (13 languages with Latvian) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
-| First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
+| First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09). Changed 2026-10-15: on `languages/main` Japanese goes to its download screen too (row "Bundled Japanese dictionaries") |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
@@ -183,13 +185,23 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Phrasal verbs in the past | Yomitan's English phrasal-verb rule ("picked up" → "pick up") also accepts entries without a part of speech; checked for false matches before it ships (owner, 2026-10-15: "make sure there are no false positives") |
 | Frequency chip names | A name up to 4 characters (a CJK character counts as 2) is shown whole (JPDB, JLPT, NieR); a longer one as its first character in upper case (BCCWJ → B, wordfreq zh → W, 国語辞典 → 国). A tap on the chip toggles its full name, for that chip only; "+N" shows the first chip's full name too; every lookup starts shortened (owner, 2026-10-15, request 43) |
 | Test model location | `ai/test-model.md`, linked from AGENTS.md; no copy in `docs/` (owner, 2026-10-15) |
+| Font lists across languages | A language's font list shows the fonts downloaded for it and every added file; a catalog font also shows for every language whose script it covers without other glyph forms: a Latin font for all Latin-script languages whose letters it has (Vietnamese needs its diacritics), a font for several scripts (Latin and Cyrillic) for all of them. Japanese, Chinese and Korean fonts stay with their language. Built with the first Latin fonts in the catalog (stage C) (owner, 2026-10-15) |
+| Chinese script fields in Anki | `{expression-simplified}` and `{expression-traditional}`, converted with the character table, a character with several forms takes the one a dictionary lists with the word's reading; such fields are pre-filled with them (owner, 2026-10-15) |
+| Phrasal verbs: particles only | A phrase without a part of speech matches a verb form only when an adverb particle follows the verb; prepositions do not ("closed to traffic" stays "close", not "close to", near); the interposed-object rule stays typed only (owner, 2026-10-15, after the explanation) |
+| KRDICT packaging | The one with example sentences (owner, 2026-10-15) |
+| Korean fonts | Noto Sans KR, Noto Serif KR, Nanum Gothic, Nanum Myeongjo (owner, 2026-10-15) |
+| Korean audio | Wiktionary, Lingua Libre, text to speech (owner, 2026-10-15) |
+| Hanja dictionary in the APK | Stays in the APK for good (168 KB), also once our own hosting exists; a catalog entry ticked on the download screen, can be unticked or deleted (owner, 2026-10-15) |
+| HTML entities in dictionary text | The lookup page turns `&quot;` and `&apos;` left as text into quote marks in any dictionary's text (KRDICT has 496 such entries) (owner, 2026-10-15) |
+| Character entry tags | Chips next to the dictionary name, a tap opens the tag's note, for every language (owner, 2026-10-15) |
+| STDICT | Listed for Korean, not ticked (owner, 2026-10-15) |
+| Text to speech note | The hint under the text-to-speech source ("Playback only; notes take audio from the other sources") is enough; the Sources hint stays as it is (owner, 2026-10-15) |
+| Bundled Japanese dictionaries | Downloaded when Japanese is turned on, the first run included, from the catalog like any language's; the APK no longer carries them (about 25 MB). Only on `languages/main`: `main` keeps them bundled until the big release. Installed copies stay after an upgrade (owner, 2026-10-15; settles the postponed item) |
 
 ## Open items (postponed by the owner)
 
 Decided when the first language or group 1 is ready, before it is merged into the multi-language branch.
 
-- Bundled Japanese dictionaries (25 MB in the APK): keep them bundled or download them when Japanese is turned on;
-  the owner leans to keeping them bundled.
 - Hosting the files we build or mirror (OCR runtime models, dictionaries without releases such as OpenRussian and
   FreeDict conversions; wordfreq frequency dictionaries are built on the phone since 2026-10-14): likely a public repository of our own; Hugging Face to be
   looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
@@ -203,7 +215,8 @@ are decision rows (Chinese audio, pinyin search order, Chinese main dictionary, 
 script, readings, fonts, deleting a font, phrasal verbs, test model location). Dragging the bubble is smooth on the
 phone in the release, and the drag and drawing code has not changed since v0.2.3, so nothing to do.
 
-Collected after that (autonomous work, 2026-10-15); the recommended option is in use until the owner answers:
+Collected after that (autonomous work, 2026-10-15); answered on 2026-10-15, see the decision rows from "Font lists
+across languages" on (the HTML entities and the font rule differ from the option that was in use):
 
 1. Fonts downloaded for another language on a language's font list. With Chinese fonts in the catalog, the Chinese
    list also showed M PLUS 1p, a Japanese font (Japanese glyph forms, no Simplified-only characters), and the
@@ -228,7 +241,7 @@ Collected after that (autonomous work, 2026-10-15); the recommended option is in
    marked as third person; (b) prepositions too: "look for" and "deal with" as well, with the false matches above;
    (c) as Yomitan: such phrases never match a verb form.
 
-Collected during the Korean work (autonomous, 2026-10-15); the recommended option is in use:
+Collected during the Korean work (autonomous, 2026-10-15); answered on 2026-10-15 (decision rows):
 
 4. KRDICT comes in two packagings per gloss language, with and without example sentences (KO-EN 16 MB with
    examples). Both have the same title ("KRDICT EN"), so installing one replaces the other. Options: (a, recommended,
@@ -518,7 +531,8 @@ Per-language checklist (every language branch):
 
 ### Before group 1 is merged
 
-- The postponed items (bundled Japanese dictionaries, hosting).
+- The postponed items: bundled Japanese dictionaries (decided 2026-10-15: downloaded, row "Bundled Japanese
+  dictionaries"); hosting (still postponed).
 - A look at the APK size per ABI against v0.2.2 (48.4 MB arm64). Done 2026-10-15 against v0.2.3 (the same 48.4 MB):
   arm64-v8a 51.2 MB with English, Chinese and Korean (`ai/test-model.md`, NF9).
 
@@ -529,6 +543,8 @@ Per-language checklist (every language branch):
   (best editions: fr-fr 19.2, de-de 12.7, es-es 10 MB, it-en 1.3, pt-en 2.8), frequency.
 - Checks: accents with the ML Kit Latin model; audio regions (Brazil, Latin America, Spain, France).
 - Questions per language: the recommended dictionaries; FreeDict deu-rus, fra-rus, ita-rus, spa-rus conversions.
+- Fonts: the first Latin fonts in the catalog, shown for every Latin-script language they cover (decision row "Font
+  lists across languages"); which fonts, asked first.
 
 ## Stage D: group 3 (ru, pl, tr, vi, lv)
 
@@ -813,3 +829,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   The engine's instrumented suite passed (29); release APKs: arm64-v8a 51.2 MB, armeabi-v7a 46.0, x86_64 52.0,
   universal 76.8 (v0.2.3: 48.4, 43.6, 49.1, 71.8). Left before group 1 counts as done: the postponed items
   (bundled Japanese dictionaries, hosting) and questions 1-10.
+- 2026-10-15: the owner answered questions 1-10: the recommended options stay, except the HTML entities (the page
+  turns `&quot;` and `&apos;` into quote marks, on `main` first) and the font lists (a catalog font also shows for
+  every language whose script it covers, built with the first Latin fonts). Asked along the way: why the hanja
+  dictionary is in the APK (it stays there for good) and a note that text to speech never goes into notes (the hint
+  under the source is enough).
+- 2026-10-15: the owner settled the bundled Japanese dictionaries (downloaded when Japanese is turned on, on
+  `languages/main` only; changes the row "First run") and the order of the work (request 50): the questions of
+  groups 2 and 3 now, then group 2, then the OCR tests for groups 3 and 4.
