@@ -80,9 +80,9 @@ Kept current while the work runs so a new session can continue from the last lin
 - Step 1 done: every fix and change above is on `main` with tests (commits up to `a617538`).
 - Step 2 done: `f782837` (progress throttle, Compose stability config, catalog card lambdas), notes `0a3951f`.
 - Items 11-12 done: `884a932`, `c0df4b2`.
-- Step 3 in progress: `core/anki` has `AnkiCheck.kt` and `AnkiNotes.check()` with tests (uncommitted). Next: the
-  ViewModel state, the "Connection" card at the top of `AnkiSettingsScreen`, strings in 14 locales, `docs/usage.md`,
-  test model cases, an emulator check.
+- Step 3 done: `73bba6a`, checked on the emulator in English and Russian (all passed; no access; a stale note type),
+  test model ANK11. Made without asking (for the owner to review): once shown, the check runs again after a setup
+  change and when the page comes back; "not chosen" counts as a failure (a cross with "Choose it below").
 - Steps 4-6: not started.
 - Questions for the owner (asked when the owner is back): none yet.
 

@@ -192,6 +192,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK7 | `{sentence-translation}` filled from the popup's translation or fetched within 5 s | O | M | |
 | ANK8 | Docking during a note keeps the note; rotation or docking closes an open crop editor as cancelled | O | M | |
 | ANK9 | Chinese note type with Simplified, Traditional, Pinyin, English, Sound: pre-filled with `{expression-simplified}`, `{expression-traditional}`, `{reading}`, `{glossary}`, `{audio}`; the + list has both script markers; a note for 头发 gets 頭髮 (not 頭發) in Traditional; `{furigana}` puts tóu over 头 and fa over 发 | F | U FieldTemplateTest, ShownResultsTest, P, M | 2026-10-15 |
+| ANK11 | Check connection: the AnkiDroid card lists installed, access, deck and note type by name, fields with the missing and new ones; a failure gives its fix and the items after it are not checked; checked again after a setup change and on return to the page; in Russian | O | U AnkiNotesTest, M | 2026-10-15 |
 | ANK10 | Korean note in the emulator's local collection: Basic with `{expression}` and `{glossary}`, 마시다 added to the test deck | O | M | 2026-10-15 |
 
 ### TR: sentence translation
