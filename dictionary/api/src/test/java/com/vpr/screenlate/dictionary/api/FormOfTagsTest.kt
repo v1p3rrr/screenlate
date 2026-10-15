@@ -52,6 +52,14 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `gloss left after two spaces is cut off`() {
+        assertThat(FormOfTags.clean("hanja form   the Korean language”)")).isEqualTo("hanja form")
+        assertThat(FormOfTags.clean("hanja form  ”)")).isEqualTo("hanja form")
+        assertThat(FormOfTags.clean(" present adnominal   see -는")).isEqualTo("present adnominal")
+        assertThat(FormOfTags.clean("genitive plural")).isEqualTo("genitive plural")
+    }
+
+    @Test
     fun `other spellings share the word's string`() {
         assertThat(label("historic")).isEqualTo("historical")
         assertThat(label("short")).isEqualTo("short_form")

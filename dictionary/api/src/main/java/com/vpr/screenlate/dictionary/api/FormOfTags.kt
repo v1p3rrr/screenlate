@@ -176,6 +176,16 @@ object FormOfTags {
 
     private val SPACES = Regex("\\s+")
 
+    /**
+     * [tag] without a piece of gloss that a dictionary's converter left after two or more spaces ("hanja form   the
+     * Korean language”)" in Wiktionary's Korean dictionary); tags have single spaces only.
+     */
+    fun clean(tag: String): String {
+        val trimmed = tag.trim()
+        val end = trimmed.indexOf("  ")
+        return if (end < 0) trimmed else trimmed.substring(0, end)
+    }
+
     /** [tag] in the interface language; null when none of its words is in the list. */
     fun label(resources: Resources, tag: String): String? = label(tag) { resources.getString(it) }
 

@@ -74,6 +74,9 @@ class KoreanLookupTest {
         val form = engine.lookup("犬", korean).first()
         assertThat(form.term.expression).isEqualTo("견")
         assertThat(form.trace.map { it.name }).containsExactly("hanja form")
+        // The export left a piece of gloss in this tag.
+        val spelled = engine.lookup("韓國語", korean).first { it.term.expression == "한국어" }
+        assertThat(spelled.trace.map { it.name }).containsExactly("hanja form")
     }
 
     @Test
@@ -115,14 +118,15 @@ class KoreanLookupTest {
         """.trimIndent(),
     )
 
-    /** A Wiktionary export: a lemma and a form-of entry for its hanja spelling. */
+    /** A Wiktionary export: lemmas and form-of entries for their hanja spellings. */
     private fun wiktionary(): File = zip(
         "wty.zip",
         "index.json" to """{"title":"Test wty-ko-en","revision":"1","format":3,"sourceLanguage":"ko","targetLanguage":"en"}""",
         "term_bank_1.json" to """
             [
               ["견","","n","",0,["dog"],1,""],
-              ["犬","","non-lemma","",0,[["견",["hanja form"]]],0,""]
+              ["犬","","non-lemma","",0,[["견",["hanja form"]]],0,""],
+              ["韓國語","","non-lemma","",0,[["한국어",["hanja form   the Korean language”)"]]],0,""]
             ]
         """.trimIndent(),
     )

@@ -130,11 +130,15 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         }
     }
 
-    /** A rule of the language's deinflection, else a tag of a form-of entry; unknown names stay as they are. */
-    private fun localize(language: Language, transform: Transform): Transform =
-        YomitanInflections.localize(context.resources, language.code, transform)
-            ?: FormOfTags.label(context.resources, transform.name)?.let { transform.copy(label = it) }
-            ?: transform
+    /**
+     * A rule of the language's deinflection, else a tag of a form-of entry, cleaned of leftover gloss; unknown names
+     * stay as they are.
+     */
+    private fun localize(language: Language, transform: Transform): Transform {
+        YomitanInflections.localize(context.resources, language.code, transform)?.let { return it }
+        val tag = transform.copy(name = FormOfTags.clean(transform.name))
+        return FormOfTags.label(context.resources, tag.name)?.let { tag.copy(label = it) } ?: tag
+    }
 
     override suspend fun styles(): List<DictionaryStyle> = session { handle ->
         json.decodeFromString<List<DictionaryStyle>>(HoshidictsNative.styles(handle).decodeToString())
