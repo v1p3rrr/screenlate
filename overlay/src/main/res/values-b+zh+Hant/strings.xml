@@ -45,6 +45,7 @@
     <string name="overlay_kanji_onyomi">音讀</string>
     <string name="overlay_kanji_kunyomi">訓讀</string>
     <string name="overlay_character_pinyin">拼音</string>
+    <string name="overlay_character_korean_reading">韓語讀音</string>
     <string name="overlay_kanji_strokes">筆畫</string>
     <string name="overlay_kanji_grade">年級</string>
     <string name="overlay_kanji_frequency">頻率</string>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_ko.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ko_stem">Основа</string>
+</resources>

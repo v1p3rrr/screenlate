@@ -107,13 +107,18 @@ object PageState {
         "stat_freq" to context.getString(R.string.overlay_kanji_frequency),
     )
 
-    /** A character dictionary's two reading fields: on and kun readings of kanji, pinyin of Chinese characters. */
+    /**
+     * A character dictionary's two reading fields: on and kun readings of kanji, pinyin of Chinese characters, the
+     * Korean reading of Hanja.
+     */
     private fun readingLabels(context: Context, language: Language): Map<String, String> = when (language) {
         Language.JAPANESE, Language.ENGLISH -> mapOf(
             "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
             "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
         )
         Language.CHINESE -> context.getString(R.string.overlay_character_pinyin).let { mapOf("onyomi" to it, "kunyomi" to it) }
+        Language.KOREAN ->
+            context.getString(R.string.overlay_character_korean_reading).let { mapOf("onyomi" to it, "kunyomi" to it) }
     }
 
     /** Length of the first result's match in code points, for highlighting; one character for a [kanji] entry. */

@@ -48,6 +48,11 @@ function hasLabel(name) {
     return /[a-z]/i.test(name) && !name.startsWith('-') && !name.endsWith('-');
 }
 
+/** [text] as a resource name part; empty when it has no Latin letters or digits (a rule named in Hangul). */
+function slugOf(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
 function xml(text) {
     return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
         .replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/"/g, '\\"').replace(/\n/g, '\\n');
@@ -70,7 +75,7 @@ for (const iso of languages) {
     const expected = new Set();
     const rows = [];
     for (const [id, {name, description}] of transforms) {
-        let slug = `inflection_${iso}_` + (id.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'rule');
+        let slug = `inflection_${iso}_` + (slugOf(id) || slugOf(description ?? '') || 'rule');
         while ([...keys.values()].includes(slug)) slug += '_';
         keys.set(id, slug);
         const label = hasLabel(name);

@@ -41,6 +41,8 @@ Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Author
   Yomitan's japanese-transforms.js through hoshidicts; their translations are under the same license.
   The text processors and inflection rules of the other languages are Yomitan's own language code,
   bundled by scripts/yomitan-language into dictionary/engine-hoshidicts/src/main/assets/yomitan-language.
+  The Korean bundle includes hangul-js (https://github.com/e-/Hangul.js), MIT License,
+  Copyright (c) 2012-2018 Jaemin Jo, which Yomitan's Korean text processors use.
 
 AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
 Copyright (c) AnkiDroid contributors.

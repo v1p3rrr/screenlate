@@ -45,6 +45,7 @@
     <string name="overlay_kanji_onyomi">On</string>
     <string name="overlay_kanji_kunyomi">Kun</string>
     <string name="overlay_character_pinyin">Bính âm</string>
+    <string name="overlay_character_korean_reading">Âm đọc tiếng Hàn</string>
     <string name="overlay_kanji_strokes">Số nét</string>
     <string name="overlay_kanji_grade">Lớp</string>
     <string name="overlay_kanji_frequency">Tần suất</string>

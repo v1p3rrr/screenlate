@@ -417,6 +417,7 @@
     <string name="popup_font_download_failed">Download failed. Check the connection and try again.</string>
     <string name="popup_font_proprietary">Fonts that come with Windows or macOS, such as Meiryo or Yu Gothic, are not offered: their licenses do not allow sharing them. In custom CSS their names stand for the phone\'s Japanese fonts.</string>
     <string name="popup_font_proprietary_zh">Fonts that come with Windows or macOS, such as Microsoft YaHei or PingFang, are not offered: their licenses do not allow sharing them. In custom CSS their names stand for the phone\'s Chinese fonts.</string>
+    <string name="popup_font_proprietary_ko">Fonts that come with Windows or macOS, such as Malgun Gothic or Apple SD Gothic Neo, are not offered: their licenses do not allow sharing them. In custom CSS their names stand for the phone\'s Korean fonts.</string>
     <string name="popup_font_add_file">Add a font file (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">This file is not a font.</string>
     <string name="popup_font_too_large">The file is too large for a font (over 64 MB).</string>
@@ -426,7 +427,9 @@
     <string name="popup_font_system_default">Phone\'s font</string>
     <string name="popup_font_script_only_en">Only for English text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
+    <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>
+    <string name="popup_font_script_only_ko">Only for Korean text</string>
     <string name="popup_font_script_only_hint_any">Other scripts use the phone’s font. Applies to downloaded and added fonts.</string>
     <string name="popup_text_weight_info_languages">Makes thin text easier to read. With a language\'s “Only for … text” switch on, or with the phone\'s font, only that language\'s letters get heavier; with it off, all text does.\n\nThe weight uses the font\'s own weights. A font with only one weight goes from normal straight to bold, so medium looks like normal.\n\nLetter thickness draws a thin outline around each letter: it works with any font and adds to the weight.</string>
     <string name="languages_settings_hint">The settings below apply to the chosen language; the rest of the page applies to all languages.</string>
