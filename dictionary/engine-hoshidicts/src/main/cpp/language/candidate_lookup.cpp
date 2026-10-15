@@ -7,9 +7,10 @@
 #include <map>
 #include <sstream>
 #include <stdexcept>
-#include <tuple>
 
 #include <glaze/glaze.hpp>
+
+#include "../form_of.hpp"
 
 namespace screenlate_language {
 // glaze reflection needs types with linkage.
@@ -71,32 +72,13 @@ bool fits(const Pending& p, const std::string& rules,
   return p.untyped && std::all_of(rules.begin(), rules.end(), is_space);
 }
 
-// Removes form-of items (`["lemma", ["rule", ...]]`) from a glossary, as Yomitan drops them from definitions, and
-// collects them. Dictionaries imported before the form-of table, and Japanese ones, still hold such items. Returns the
-// remaining JSON array, or an empty string when nothing remains.
+// Removes form-of items from a glossary (`screenlate_form_of::strip_form_of`) and collects them with the row's rules.
+// Dictionaries imported before the form-of table, and Japanese ones, still hold such items.
 std::string strip_form_of(const std::string& glossary, const std::string& rules, std::vector<FormOf>& form_of) {
-  if (glossary.find('[', 1) == std::string::npos) return glossary;
-  std::vector<glz::raw_json> items;
-  if (glz::read_json(items, glossary)) return glossary;
-  std::string rest = "[";
-  bool removed = false;
-  bool empty = true;
-  for (const auto& item : items) {
-    const std::string& raw = item.str;
-    size_t first = 0;
-    while (first < raw.size() && is_space(raw[first])) first++;
-    std::tuple<std::string, std::vector<std::string>> parsed;
-    if (first < raw.size() && raw[first] == '[' && !glz::read_json(parsed, raw) && !std::get<0>(parsed).empty()) {
-      removed = true;
-      form_of.push_back({std::move(std::get<0>(parsed)), std::move(std::get<1>(parsed)), rules});
-      continue;
-    }
-    if (!empty) rest += ',';
-    rest += raw;
-    empty = false;
-  }
-  if (!removed) return glossary;
-  return empty ? std::string() : rest + "]";
+  std::vector<screenlate_form_of::FormOfItem> items;
+  std::string rest = screenlate_form_of::strip_form_of(glossary, items);
+  for (auto& item : items) form_of.push_back({std::move(item.lemma), std::move(item.tags), rules});
+  return rest;
 }
 
 std::optional<int> frequency_in(const TermResult& term, const std::string& dictionary, bool descending) {
