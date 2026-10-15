@@ -113,6 +113,28 @@ Kept current while the work runs so a new session can continue from the last lin
   `settleInstall` and its test dropped (`settleFirstRun` stays). Builds; 805 unit tests and 127 page tests pass.
   Next: the Languages item with models in backups (design below), then emulator checks of the merge (Anki check
   per language, backup dialog, Yomitan card, update check, download lag measured again), push.
+- Languages item design (`languages/main`; choices made without asking are marked "review"):
+  - The item is shown when two or more languages are listed: on create the turned-on languages, on restore the
+    backup's. With one language it is always included (review). It comes first in the list (review). Each language
+    row shows the size of its recognition models when it has any.
+  - A language left out takes out: its per-language settings keys (`SettingsKeys.languageOf`), its dictionaries
+    (files and list entries, by `sourceLanguage`) and sort dictionary, catalog fonts whose `CatalogFont.language` is
+    its code, and the models used only by left-out languages. Dictionaries without a language and fonts of the
+    user's own are shared. Dictionaries of languages that are not turned on are not offered on create (review).
+  - Audio autoplay and volume live in Japanese's `audio_settings`: with Japanese left out and Audio chosen, the backup
+    keeps only those two values in it; restoring Audio without Japanese takes only those two (review).
+  - Turned-on languages stay a General setting. Create writes the profile limited to the chosen languages (active one
+    moves to the first chosen if left out). Restoring General no longer replaces the turned-on list: the chosen
+    languages are added to it, the backup's active language, stars and flags apply when that language is chosen;
+    nothing is turned off (review). A backup without the profile only turns its chosen languages on.
+  - Models: the manifest lists `models` (id, version, engine, languages, bytes) and `languages` (codes). Files go
+    under `models/<id>/` after the fonts and before `dictionary-files/` (older versions skip them). Restoring installs
+    a chosen language's model only when no version of it is installed (review); `OcrModelStore.restore` takes a staged
+    directory. No catalog model exists yet, so this path is covered by unit tests only.
+  - Older backups (no `languages` in the manifest): the languages are the backup's turned-on list (Japanese alone
+    without one) plus the supported languages of its dictionaries and fonts.
+  - Remembered choice: `backup_languages_on`, `backup_languages_flipped` (app state, cleared by the full reset).
+  - The restore summary adds the models restored and the languages turned on.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all.
