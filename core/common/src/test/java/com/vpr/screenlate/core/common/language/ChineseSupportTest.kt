@@ -16,6 +16,13 @@ class ChineseSupportTest {
     }
 
     @Test
+    fun `radical look-alikes of characters start a lookup`() {
+        // KANGXI RADICAL SUN (looks like 日) and CJK RADICAL C-SIMPLIFIED SEE (looks like 见).
+        assertThat(start(String(Character.toChars(0x2F47)) + "本")).isEqualTo(LookupStart.Any)
+        assertThat(start(String(Character.toChars(0x2EC5)))).isEqualTo(LookupStart.Any)
+    }
+
+    @Test
     fun `latin text that chinese follows takes any match`() {
         assertThat(start("T恤衫")).isEqualTo(LookupStart.Any)
         assertThat(start("3月")).isEqualTo(LookupStart.Any)

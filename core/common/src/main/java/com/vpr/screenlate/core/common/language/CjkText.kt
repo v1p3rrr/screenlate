@@ -9,6 +9,12 @@ internal object CjkText {
             codePoint in 0xF900..0xFAFF ||
             codePoint in 0x20000..0x2FA1F
 
+    /**
+     * Kangxi radicals and the CJK radicals supplement: look-alikes of ideographs (⽇ for 日) that text copied from PDFs
+     * often has. The lookup reads them as their ideographs (Yomitan's radical normalization).
+     */
+    fun isRadical(codePoint: Int): Boolean = codePoint in 0x2E80..0x2EF3 || codePoint in 0x2F00..0x2FD5
+
     fun isLatinLetter(codePoint: Int): Boolean =
         codePoint in 'a'.code..'z'.code ||
             codePoint in 'A'.code..'Z'.code ||

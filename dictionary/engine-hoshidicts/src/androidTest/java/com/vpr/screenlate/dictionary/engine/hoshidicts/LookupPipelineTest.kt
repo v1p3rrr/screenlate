@@ -85,6 +85,17 @@ class LookupPipelineTest {
     }
 
     @Test
+    fun radicalCharactersAreReadAsTheirKanji() = runTest {
+        // KANGXI RADICAL MAN and KANGXI RADICAL EAT, look-alikes of 人 and 食 in text copied from PDFs.
+        val person = String(Character.toChars(0x2F08))
+        assertThat(lookUp(person + "で").first().term.expression).isEqualTo("人")
+        val eat = String(Character.toChars(0x2FB7)) + "べる"
+        val first = lookUp(eat).first()
+        assertThat(first.term.expression).isEqualTo("食べる")
+        assertThat(first.matched).isEqualTo(eat)
+    }
+
+    @Test
     fun romajiNeedsTheSetting() = runTest {
         assertThat(lookUp("taberu")).isEmpty()
         settings.setRomaji(true)

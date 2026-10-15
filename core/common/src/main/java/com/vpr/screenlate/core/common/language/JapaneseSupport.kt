@@ -150,9 +150,9 @@ object JapaneseSupport : LanguageSupport {
             codePoint in 0x31F0..0x31FF ||
             codePoint in 0xFF66..0xFF9F
 
-    /** Kana, kanji and the marks 々〆〇. */
+    /** Kana, kanji, their radical look-alikes and the marks 々〆〇. */
     private fun isJapaneseLetter(codePoint: Int): Boolean =
-        isKana(codePoint) || isKanji(codePoint) || codePoint in 0x3005..0x3007
+        isKana(codePoint) || isKanji(codePoint) || CjkText.isRadical(codePoint) || codePoint in 0x3005..0x3007
 
     /** ASCII and full-width Latin letters to lower-case ASCII; other characters unchanged. */
     private fun asciiLower(c: Char): Char = when (c) {

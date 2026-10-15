@@ -138,6 +138,7 @@ object ChineseSupport : LanguageSupport {
     private const val READING_SEPARATORS = "・:'’-"
     private val NUMBERED_PINYIN = Regex("(\\S.*?) \\([A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+(?:[ ／][A-Za-zü:ê]+[0-9¹²³⁴⁵⁰]+)*\\)")
 
-    /** Hanzi and 〇, the zero of numbers written in characters (二〇二四年). */
-    private fun isChineseLetter(codePoint: Int): Boolean = CjkText.isHan(codePoint) || codePoint == 0x3007
+    /** Hanzi, their radical look-alikes and 〇, the zero of numbers written in characters (二〇二四年). */
+    private fun isChineseLetter(codePoint: Int): Boolean =
+        CjkText.isHan(codePoint) || CjkText.isRadical(codePoint) || codePoint == 0x3007
 }
