@@ -98,8 +98,19 @@ Kept current while the work runs so a new session can continue from the last lin
     section replaced the whole font set). For review by the owner.
   - Yomitan: `YomitanImportScreen` becomes a card on the backup screen (last); the route, the Settings item and
     `SettingsPage.YOMITAN_IMPORT` go; the Dictionaries button opens the backup screen scrolled to the card.
+  - State: code and strings written, unit tests pass (`BackupChoiceTest`, `FontBackupTest`, archive and format
+    tests); uncommitted until checked on the emulator. Checked on the emulator: the create lists, sizes, the
+    tri-state boxes and the remembered choice; a backup without Anki, with 1 font and 2 of 30 dictionaries
+    (`/sdcard/Download/sl-choice-test.zip`) holds no Anki keys, the 30-entry list, `fonts/fonts.json` and the two
+    dictionaries' files. The hint now shows a size only when something is chosen (built and installed, not yet
+    looked at). Next: restore from `sl-choice-test.zip` with one dictionary unticked, an older backup with fonts
+    under Popup, the Yomitan card from Settings and from the Dictionaries button, the Russian layout,
+    `docs/usage.md` and `docs/architecture.md` (Yomitan import now on the backup screen), test model cases
+    (SET2, SET3 and new ones), commit.
 - Steps 5-6: not started.
-- Questions for the owner (asked when the owner is back): none yet.
+- Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
+  owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
+  restoring fonts merges them into the installed ones instead of replacing all.
 
 ## Changelog
 
