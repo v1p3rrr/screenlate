@@ -90,8 +90,11 @@ window.YomitanRender = (() => {
         }
     }
 
+    /** Quote entities some packagings leave in plain text (KRDICT); Yomitan shows them as typed. */
+    const QUOTE_ENTITIES = /&(quot|apos);/g;
+
     function appendText(parent, text) {
-        const lines = String(text).split(/\r?\n/);
+        const lines = String(text).replace(QUOTE_ENTITIES, (_, name) => (name === 'quot' ? '"' : "'")).split(/\r?\n/);
         lines.forEach((line, index) => {
             if (index > 0) parent.appendChild(document.createElement('br'));
             if (line) parent.appendChild(document.createTextNode(line));

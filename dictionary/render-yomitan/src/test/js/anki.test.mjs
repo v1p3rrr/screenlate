@@ -185,3 +185,12 @@ test('structured content keeps only the style properties Yomitan allows', () => 
     assert.equal(span.style.position, '');
     assert.equal(span.style.marginTop, '1em');
 });
+
+test('quote entities left in plain text show as quote marks', () => {
+    const parent = window.document.createElement('div');
+    const text = 'a &quot;b&quot; &apos;c&apos; &amp;';
+    const node = { type: 'structured-content', content: { tag: 'span', content: text } };
+    window.YomitanRender.renderGlossary(parent, [text, { type: 'text', text }, node], 'D', {});
+    const items = [...parent.querySelectorAll('.glossary-item')].map(item => item.textContent);
+    assert.deepEqual(items, Array(3).fill('a "b" ' + "'c' &amp;"));
+});
