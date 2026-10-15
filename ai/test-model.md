@@ -36,8 +36,9 @@ A case marked I and M has its logic in the test and keeps a short look on the em
 - Start: `emulator -avd Pixel_10_Pro -no-snapshot-save -no-boot-anim -crash-report-mode never`. Without
   `-crash-report-mode never` an earlier emulator crash leaves a consent dialog that blocks the boot on the desktop
   (it looks like a crash at boot: the log ends with the old crash's annotations).
-- `-no-snapshot-save` discards the run's state on exit; check `dumpsys package com.vpr.screenlate.debug` before
-  relying on an earlier run.
+- The AVD has no quick-boot snapshot (saving one hangs, see `ai/notes/build-environment.md`): it cold-boots and keeps
+  the state of earlier runs. Check `dumpsys package com.vpr.screenlate.debug` before relying on an earlier run, and
+  shut it down with `adb shell reboot -p`.
 - Install: `scripts/debug-device.sh install` (also enables the accessibility service). Test images:
   `scripts/debug-device.sh images`, then `show <file> [default|swipe]` as the backdrop. `scripts/text-image.py` renders
   new ones. `zh-traditional.png` and `zh-vertical.png` are its output with `FONT=C:/Windows/Fonts/msjh.ttc`: the four
