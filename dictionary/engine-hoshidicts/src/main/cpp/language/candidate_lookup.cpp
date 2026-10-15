@@ -23,6 +23,7 @@ struct RawCandidate {
   int s = 0;
   int64_t c = 0;
   std::vector<std::vector<std::string>> r;
+  bool u = false;
 };
 
 }  // namespace candidate_json
@@ -38,6 +39,7 @@ struct Pending {
   uint32_t conditions = 0;
   std::vector<std::vector<std::string>> chains;
   std::string text;
+  bool untyped = false;
 };
 
 struct Match {
@@ -60,6 +62,14 @@ uint32_t flags_of(const std::string& rules, const std::unordered_map<std::string
 }
 
 bool is_space(char c) { return c == ' ' || c == 9 || c == 10 || c == 13; }
+
+// Whether an entry with part of speech [rules] fits the conditions of [p]; an entry without one fits an untyped
+// candidate too (see `isUntypedPhrasalVerb` in the language script).
+bool fits(const Pending& p, const std::string& rules,
+          const std::unordered_map<std::string, uint32_t>& part_of_speech_flags) {
+  if (p.conditions == 0 || (p.conditions & flags_of(rules, part_of_speech_flags)) != 0) return true;
+  return p.untyped && std::all_of(rules.begin(), rules.end(), is_space);
+}
 
 // Removes form-of items (`["lemma", ["rule", ...]]`) from a glossary, as Yomitan drops them from definitions, and
 // collects them. Dictionaries imported before the form-of table, and Japanese ones, still hold such items. Returns the
@@ -137,7 +147,8 @@ std::vector<LanguageCandidate> parse_candidates(const std::string& json) {
   std::vector<LanguageCandidate> result;
   result.reserve(raw.size());
   for (auto& c : raw) {
-    result.push_back({std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r)});
+    result.push_back(
+        {std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r), c.u});
   }
   return result;
 }
@@ -170,7 +181,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     bool has_definitions = false;
     std::vector<FormOf> form_of;
     for (const auto& term : terms_for(p.text)) {
-      if (p.conditions != 0 && (p.conditions & flags_of(term.rules, part_of_speech_flags)) == 0) continue;
+      if (!fits(p, term.rules, part_of_speech_flags)) continue;
       TermResult copy = term;
       for (auto& glossary : copy.glossaries) glossary.glossary = strip_form_of(glossary.glossary, copy.rules, form_of);
       std::erase_if(copy.glossaries, [](const GlossaryEntry& g) { return g.glossary.empty(); });
@@ -180,12 +191,12 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     }
     for (const FormOfTable* table : tables) {
       for (auto& item : table->find(p.text)) {
-        if (p.conditions != 0 && (p.conditions & flags_of(item.rules, part_of_speech_flags)) == 0) continue;
+        if (!fits(p, item.rules, part_of_speech_flags)) continue;
         form_of.push_back(std::move(item));
       }
     }
     for (const auto& item : form_of) {
-      Pending lemma{p.matched, p.steps, 0, {}, item.lemma};
+      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());
@@ -198,7 +209,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
 
   std::vector<Pending> lemmas;
   for (const auto& candidate : candidates) {
-    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d};
+    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u};
     if (p.chains.empty()) p.chains.emplace_back();
     visit(p, lemmas);
   }

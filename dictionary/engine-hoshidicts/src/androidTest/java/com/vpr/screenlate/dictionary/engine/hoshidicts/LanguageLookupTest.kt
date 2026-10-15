@@ -60,6 +60,33 @@ class LanguageLookupTest {
     }
 
     @Test
+    fun phrasalVerbsWithoutPartOfSpeechMatchTheirFormsWithAdverbParticles() = runTest {
+        val imported = engine.import(phrasalDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+
+        val past = engine.lookup("picked up the phone", english).first()
+        assertThat(past.term.expression).isEqualTo("pick up")
+        assertThat(past.matched).isEqualTo("picked up")
+        assertThat(past.trace.map { it.name }).containsExactly("past")
+        assertThat(engine.lookup("picking up", english).first().term.expression).isEqualTo("pick up")
+        assertThat(engine.lookup("picks up", english).first().term.expression).isEqualTo("pick up")
+
+        // A preposition after the verb is mostly its object, not a particle: "close to" means "near".
+        val preposition = engine.lookup("closed to traffic", english)
+        assertThat(preposition.first().term.expression).isEqualTo("close")
+        assertThat(preposition.map { it.term.expression }).doesNotContain("close to")
+        assertThat(engine.lookup("looked for it", english).map { it.term.expression }).doesNotContain("look for")
+
+        // The interposed-object rule drops any words in between; it matches typed phrasal verbs only, as in Yomitan.
+        val long = english.copy(scanLength = 32)
+        assertThat(engine.lookup("picked the book up", long).map { it.term.expression }).doesNotContain("pick up")
+        assertThat(engine.lookup("time is running out", long).map { it.term.expression }).doesNotContain("time out")
+        val typed = engine.lookup("turned the light off", long).first()
+        assertThat(typed.term.expression).isEqualTo("turn off")
+        assertThat(typed.trace.map { it.name }).contains("interposed object")
+    }
+
+    @Test
     fun cutTableFailsTheCompletenessCheck() = runTest {
         val imported = engine.import(englishDictionary(), File(root, "out"))
         val table = File(imported.directory, FORM_OF_TABLE)
@@ -92,6 +119,26 @@ class LanguageLookupTest {
               ["give up","","","v",0,["to surrender"],3,""],
               ["blorf","","","v",0,["to do a made-up thing"],4,""],
               ["blorft","","non-lemma","v",0,[["blorf",["past"]]],5,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Phrases without a part of speech, as Wiktionary exports often have them, and one typed phrasal verb. */
+    private fun phrasalDictionary(): File = zip(
+        "phrasal.zip",
+        "index.json" to """{"title":"Test Phrases","revision":"1","format":3,"sourceLanguage":"en"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["pick","","","v",0,["to choose"],1,""],
+              ["pick up","","","",0,["to lift"],2,""],
+              ["close","","","v",0,["to shut"],3,""],
+              ["close to","","","",0,["near"],4,""],
+              ["look","","","v",0,["to see"],5,""],
+              ["look for","","","",0,["to search"],6,""],
+              ["time","","","n",0,["duration"],7,""],
+              ["time out","","","",0,["a break"],8,""],
+              ["turn","","","v",0,["to rotate"],9,""],
+              ["turn off","","","v",0,["to switch off"],10,""]
             ]
         """.trimIndent().toByteArray(),
     )

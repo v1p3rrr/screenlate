@@ -22,6 +22,7 @@ struct LanguageCandidate {
   int s = 0;      // preprocessor steps
   uint32_t c = 0;  // condition flags; 0 matches any entry
   std::vector<std::vector<std::string>> r;  // inflection rule chains
+  bool u = false;  // an entry without a part of speech matches despite [c]
 };
 
 std::vector<LanguageCandidate> parse_candidates(const std::string& json);

@@ -26,7 +26,8 @@ function prepare(language) {
 
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
- * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains.
+ * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, and
+ * whether an entry without a part of speech may match despite the conditions.
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
@@ -35,6 +36,7 @@ function candidates(text, language, searchResolution) {
     prepare(language);
     const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
         .filter((d) => isWellFormed(d.originalText) && isWellFormed(d.transformedText) && isWellFormed(d.deinflectedText));
+    const verb = englishVerbFlags(language);
     return list.map((d) => ({
         o: d.originalText,
         t: d.transformedText,
@@ -42,7 +44,48 @@ function candidates(text, language, searchResolution) {
         s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
         c: d.conditions,
         r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
+        u: verb !== 0 && isUntypedPhrasalVerb(d, verb),
     }));
+}
+
+/**
+ * Adverb particles of English phrasal verbs (`phrasalVerbParticles` of Yomitan's english-transforms.js). Prepositions
+ * are left out: "closed to" would reach the phrase "close to" (near), "saved for" the phrase "save for" (except).
+ */
+const englishAdverbParticles = new Set([
+    'aboard', 'about', 'above', 'across', 'ahead', 'alongside', 'apart', 'around', 'aside', 'astray', 'away', 'back',
+    'before', 'behind', 'below', 'beneath', 'besides', 'between', 'beyond', 'by', 'close', 'down', 'east', 'west',
+    'north', 'south', 'eastward', 'westward', 'northward', 'southward', 'forward', 'backward', 'backwards', 'forwards',
+    'home', 'in', 'inside', 'instead', 'near', 'off', 'on', 'opposite', 'out', 'outside', 'over', 'overhead', 'past',
+    'round', 'since', 'through', 'throughout', 'together', 'under', 'underneath', 'up', 'within', 'without',
+]);
+
+/**
+ * Condition flags of an English verb, or 0 for other languages. A verb and a phrasal verb have the same flags: the
+ * verb condition only groups its sub-condition.
+ * @param {string} language
+ */
+function englishVerbFlags(language) {
+    if (language !== 'en') { return 0; }
+    const transformer = translator._multiLanguageTransformer._languageTransformers.get(language);
+    return transformer?._conditionTypeToConditionFlagsMap.get('v') ?? 0;
+}
+
+/**
+ * Whether [d] is a verb form of a phrase whose second word is an adverb particle ("picked up" for "pick up").
+ * Dictionaries such as Wiktionary exports often give phrases no part of speech, and Yomitan's conditions then reject
+ * them; this case lets such entries match. The interposed-object rule ("picked the book up") stays typed only: it
+ * drops arbitrary words and would reach phrases like "time out" from "time is running out".
+ * @param {{conditions: number, deinflectedText: string, inflectionRuleChainCandidates: {inflectionRules: string[]}[]}} d
+ * @param {number} verb
+ */
+function isUntypedPhrasalVerb(d, verb) {
+    if (d.conditions !== verb) { return false; }
+    if (d.inflectionRuleChainCandidates.some(({inflectionRules}) => inflectionRules.includes('interposed object'))) {
+        return false;
+    }
+    const words = d.deinflectedText.split(' ');
+    return words.length >= 2 && englishAdverbParticles.has(words[1]);
 }
 
 /**
