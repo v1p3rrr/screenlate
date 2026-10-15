@@ -416,6 +416,7 @@
     <string name="popup_font_download_failed">Falha no download. Verifique a conexão e tente de novo.</string>
     <string name="popup_font_proprietary">Fontes que vêm com o Windows ou o macOS, como Meiryo ou Yu Gothic, não são oferecidas: as licenças delas não permitem compartilhá-las. No CSS personalizado, os nomes delas representam as fontes japonesas do celular.</string>
     <string name="popup_font_proprietary_zh">Fontes que vêm com o Windows ou o macOS, como Microsoft YaHei ou PingFang, não são oferecidas: as licenças delas não permitem compartilhá-las. No CSS personalizado, os nomes delas representam as fontes chinesas do celular.</string>
+    <string name="popup_font_proprietary_ko">Fontes que vêm com o Windows ou o macOS, como Malgun Gothic ou Apple SD Gothic Neo, não são oferecidas: as licenças delas não permitem compartilhá-las. No CSS personalizado, os nomes delas representam as fontes coreanas do celular.</string>
     <string name="popup_font_add_file">Adicionar um arquivo de fonte (.ttf, .otf, .ttc)</string>
     <string name="popup_font_not_a_font">Este arquivo não é uma fonte.</string>
     <string name="popup_font_too_large">O arquivo é grande demais para uma fonte (mais de 64 MB).</string>
@@ -425,7 +426,9 @@
     <string name="popup_font_system_default">Fonte do celular</string>
     <string name="popup_font_script_only_en">Só para texto em inglês</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
+    <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>
+    <string name="popup_font_script_only_ko">Só para texto em coreano</string>
     <string name="popup_font_script_only_hint_any">As outras escritas usam a fonte do celular. Vale para fontes baixadas e adicionadas.</string>
     <string name="popup_text_weight_info_languages">Deixa o texto fino mais fácil de ler. Com “Só para texto em …” ativado em um idioma, ou com a fonte do celular, só os caracteres desse idioma ficam mais grossos; com ele desativado, todo o texto.\n\nO peso usa os pesos da própria fonte. Uma fonte com um só peso passa direto de normal para negrito, então médio fica igual a normal.\n\nA espessura das letras desenha um contorno fino em volta de cada letra: funciona com qualquer fonte e se soma ao peso.</string>
     <string name="languages_settings_hint">As configurações abaixo valem para o idioma escolhido; o resto da página vale para todos os idiomas.</string>

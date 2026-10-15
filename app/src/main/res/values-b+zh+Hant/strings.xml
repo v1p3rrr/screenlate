@@ -410,6 +410,7 @@
     <string name="popup_font_download_failed">下載失敗。請檢查網路連線後重試。</string>
     <string name="popup_font_proprietary">不提供 Windows 或 macOS 自帶的字型（如 Meiryo 或 Yu Gothic）：其授權條款不允許分發。在自訂 CSS 中，這些名稱代表手機的日文字型。</string>
     <string name="popup_font_proprietary_zh">不提供 Windows 或 macOS 自帶的字型（如微軟正黑體或蘋方）：其授權條款不允許分發。在自訂 CSS 中，這些名稱代表手機的中文字型。</string>
+    <string name="popup_font_proprietary_ko">不提供 Windows 或 macOS 自帶的字型（如 Malgun Gothic 或 Apple SD Gothic Neo）：其授權條款不允許分發。在自訂 CSS 中，這些名稱代表手機的韓文字型。</string>
     <string name="popup_font_add_file">新增字型檔案（.ttf、.otf、.ttc）</string>
     <string name="popup_font_not_a_font">此檔案不是字型。</string>
     <string name="popup_font_too_large">檔案太大，不像是字型（超過 64 MB）。</string>
@@ -419,7 +420,9 @@
     <string name="popup_font_system_default">手機自帶的字型</string>
     <string name="popup_font_script_only_en">僅用於英文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
+    <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>
+    <string name="popup_font_script_only_ko">僅用於韓文文字</string>
     <string name="popup_font_script_only_hint_any">其他書寫系統使用手機字型。適用於下載或新增的字型。</string>
     <string name="popup_text_weight_info_languages">讓纖細的文字更易讀。某種語言開啟「僅用於…文字」或使用手機字型時，只有該語言的字元變粗；關閉時，所有文字都會變粗。\n\n粗細使用字型本身的字重。只有一種字重的字型會從標準直接變為粗體，因此「中等」看起來與標準相同。\n\n文字描邊會在每個字周圍畫一圈細輪廓：適用於任何字型，並疊加在粗細之上。</string>
     <string name="languages_settings_hint">下面的設定適用於所選語言；頁面上的其他設定適用於所有語言。</string>

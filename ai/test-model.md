@@ -114,12 +114,13 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR8 | A secure window → "This app does not allow screenshots." | O | M | |
 | OCR9 | Vertical text (`manga-page.webp`) → the word under the aim, a word continued in the next column found whole | E | U ReadingOrderTest, M | 2026-10-14 |
 | OCR10 | A word broken at a line end is looked up whole (Japanese; English "give up") | F | U TextLayoutTest, M | 2026-10-14 |
-| OCR11 | On-device recognition per script: Japanese, English, Chinese, Korean and Russian samples with the matching language active | F | U DeviceOcrTest, M | 2026-10-14 (ja, en), 2026-10-15 (zh) |
+| OCR11 | On-device recognition per script: Japanese, English, Chinese, Korean and Russian samples with the matching language active | F | U DeviceOcrTest, M | 2026-10-14 (ja, en), 2026-10-15 (zh, ko) |
 | OCR12 | A language the device cannot read → scanned by the cloud alone; with device only → the message that the device does not support it | O | U DeviceOcrTest, M | |
 | OCR13 | Character highlight lines up with the characters (corrected on-device boxes) | O | M | |
 | OCR14 | No word at the aim on a kanji (`kanji-fallback.png`) → its kanji entry | F | M | 2026-10-14 |
 | OCR15 | A language that is not ready → the scan shows the explanation and the installation link before capturing | F | I InstallationPopupTest, M | 2026-10-14 |
 | OCR16 | Chinese with cloud recognition: Simplified (`zh-sample.png`, 图书馆 with pinyin), Traditional (`zh-traditional.png`, 沒有關係) and vertical columns read right to left (`zh-vertical.png`: 館 alone, 意思 highlighted down its column). Rescan with a tap after changing the picture: a floating bubble keeps its scan | F | U TextLayoutTest, ReadingOrderTest, M | 2026-10-15 |
+| OCR17 | Korean (`ko-mixed.png`): the cloud reads Hangul, hanja (韓國語, 大學校, 歷史) and Latin (TV, PC); the device recognizer reads Hangul and Latin but not hanja (大學校에서 → 푸에서), shown with the "On-device" chip | F | M | 2026-10-15 |
 
 ### LK: lookup
 
@@ -137,6 +138,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK10 | Chinese Wiktionary form-of tags in the interface language: 吓 lists 下 with "alternative Simplified Cantonese", in Russian "альтернативное упрощённое кантонское"; 哄 with Hokkien | O | U FormOfTagsTest, M | 2026-10-15 |
 | LK11 | Chinese lookups: the longest word in the text's script (图书馆看书 → 图书馆, 圖書館看書 → 圖書館, each with its `lang`), a radical look-alike (U+2F47 for 日), a fixed Traditional script shows 图书馆 as 圖書館, typed pinyin in the chosen script, typed tones first | E | I ChineseLookupTest, U ChineseSupportTest | 2026-10-15 |
 | LK12 | English phrasal verbs with wty-en-ru (phrases without a part of speech), testdata/ocr/en-phrasal.png: "picked up" → "pick up" with "past", "gives up" → "give up" with "3rd pers. sing. pres"; "closed to" shows "closed", "close", no "close to"; "looked for" shows "look", no "look for" | F | I LanguageLookupTest, M | 2026-10-15 |
+| LK13 | Korean lookups: 먹었습니다 → 먹다, 공부하고 → 공부하다 and 가르친다 → 가르치다 with their endings; the aim inside a spaced word starts at its first syllable (보면서 → 보다); 한국어를 → 한국어; TV를 → TV (Latin letters belong to the word), 3월에 → 월 (digits do not); 韓國語 and 大學校 from KRDICT, their Hangul words through Wiktionary's "hanja spelling", the word's hanja below the results; 마셨어요 lists 마시다 among Wiktionary's three lemmas | E | I KoreanLookupTest, U KoreanSupportTest, M | 2026-10-15 |
+| LK14 | Korean Wiktionary form-of tags in the interface language ("hanja form" → "hanja spelling", "informal past indicative/interrogative polite"); a tag with leftover gloss ("hanja form   the Korean language”)", about 1,000 entries) shows the tag alone, in Anki's `{conjugation}` too | O | U FormOfTagsTest, I KoreanLookupTest, M | 2026-10-15 |
 
 ### POP: the popup
 
@@ -161,6 +164,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | O | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
 | POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | O | M | 2026-10-15 |
 | POP19 | Frequency chip names: up to four letters whole (a CJK character counts as two), longer as the first letter in upper case ("wordfreq en" → W); a tap shows the whole name, another tap shortens it; "+N" shows the first chip's name whole; the next lookup starts shortened | F | P, M | 2026-10-15 |
+| POP20 | Character entry tags: 韓 in Unihan Hanja shows 교육용 next to the dictionary name, a tap opens "On the list of basic hanja for education (2007)"; KANJIDIC's jouyou and jinmeiyou show the same way | F | P, M | 2026-10-15 |
+| POP21 | Korean fonts: four to download (Noto Sans KR, Noto Serif KR, Nanum Gothic, Nanum Myeongjo); Nanum Gothic downloads, is chosen and loads on the page in its two weights; with the phone's font the page loads `NotoSansCJKkr-Regular` and `NotoSerifCJKkr-Regular`, and 次 takes its Korean form | O | U FontCatalogFileTest, M | 2026-10-15 |
 
 ### AUD: audio
 
@@ -172,6 +177,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD4 | A custom URL source on `http://10.0.2.2:<port>` asks for the local network permission (API 37) and plays | O | U LocalNetworkTest, M | |
 | AUD5 | Home's audio card "Audio settings" opens the Anki page at the audio section; "Add audio source" starts as the language's first default kind (English: Lingua Libre) | O | M | 2026-10-14 |
 | AUD6 | Chinese: 🔊 on 朋友 plays Wiktionary's `Zh-péngyou.ogg` (found by pinyin), holding it lists Wiktionary, Lingua Libre, then text-to-speech; text-to-speech reads the characters | F | U AudioFinderTest, ChineseSupportTest, M | 2026-10-15 |
+| AUD7 | Korean: 🔊 on 가르치다 plays a clip; a hanja headword from KRDICT (大) has no reading and finds no clip, as in Yomitan, while its Hangul entry plays | F | M | 2026-10-15 |
 
 ### ANK: Anki
 
@@ -186,6 +192,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK7 | `{sentence-translation}` filled from the popup's translation or fetched within 5 s | O | M | |
 | ANK8 | Docking during a note keeps the note; rotation or docking closes an open crop editor as cancelled | O | M | |
 | ANK9 | Chinese note type with Simplified, Traditional, Pinyin, English, Sound: pre-filled with `{expression-simplified}`, `{expression-traditional}`, `{reading}`, `{glossary}`, `{audio}`; the + list has both script markers; a note for 头发 gets 頭髮 (not 頭發) in Traditional; `{furigana}` puts tóu over 头 and fa over 发 | F | U FieldTemplateTest, ShownResultsTest, P, M | 2026-10-15 |
+| ANK10 | Korean note in the emulator's local collection: Basic with `{expression}` and `{glossary}`, 마시다 added to the test deck | O | M | 2026-10-15 |
 
 ### TR: sentence translation
 
@@ -217,6 +224,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC15 | The notification permission: the explanation dialog, then the system request, on the first import (API 33+) | O | M | |
 | DIC16 | With several languages: language chips on the page, "Other languages" links to the Languages screen | F | M | 2026-10-14 |
 | DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | O | U WordfreqDictionaryTest, M | 2026-10-15 |
+| DIC18 | Korean download screen: KRDICT (ko–en) ticked, Wiktionary not, wordfreq, transcription and Unihan Hanja ("Comes with the app") ticked; the download total leaves the hanja archive out; everything installs and Korean is ready | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-15 |
 
 ### LNG: languages
 
@@ -290,6 +298,23 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, builds 7a6121f to d7f1509 (`languages/ko`), Pixel_10_Pro (API 37)
+
+Scope: the new Korean cases; the engine's `KoreanLookupTest` (4) and the page tests.
+
+Results: every case passed; the dates are in the Checked column.
+
+New cases, checked when written: LK13 (E); OCR17, POP20, AUD7 and DIC18 (F); LK14, POP21 and ANK10 (O). OCR11
+checked for Korean.
+
+Findings, fixed: the download total counted the hanja archive the app carries; about 1,000 Korean Wiktionary form-of
+tags showed a piece of their gloss; character entries did not show their tags (question 9 in the plan).
+
+Known limits, as in Yomitan or in the data: 수업은 lists 수없다 first (the ㅅ-irregular rule reaches it, and the
+longer match sorts first); 마셨어요 lists 마다 before 마시다 (Wiktionary gives both, and wordfreq ranks 마다 high from
+the particle); 496 KRDICT entries show `&quot;` and `&apos;` as text (question 8). The device recognizer does not
+read hanja.
 
 ### 2026-10-15, builds 16aa855 to the frequency chip names, Pixel_10_Pro (API 37)
 

@@ -27,7 +27,12 @@ class CatalogFileTest {
         assertThat(all.map { it.id }).containsNoDuplicates()
         assertThat(all.map { it.title }).containsNoDuplicates()
         for (entry in all) {
-            assertThat(entry.downloadUrl).startsWith("https://")
+            if (entry.downloadUrl.startsWith(ASSET_URL_PREFIX)) {
+                val asset = File("src/main/assets", entry.downloadUrl.removePrefix(ASSET_URL_PREFIX))
+                assertThat(entry.downloadSize).isEqualTo(asset.length())
+            } else {
+                assertThat(entry.downloadUrl).startsWith("https://")
+            }
             assertThat(entry.installedTitle != null || entry.oldTitles.isNotEmpty()).isTrue()
             assertThat(entry.sourceLanguage).isNotEmpty()
             assertThat(entry.description.keys).containsAtLeastElementsIn(locales)
@@ -88,6 +93,30 @@ class CatalogFileTest {
         assertThat(main.first { it.sourceLanguage == "ja" && it.targetLanguage == "en" }.id).isEqualTo("jitendex")
         assertThat(pairs).contains("en" to "en")
         assertThat(catalog.mandatory("en")).containsExactly(CatalogCategory.MAIN)
+    }
+
+    @Test
+    fun `korean has KRDICT ticked for its gloss languages and the hanja dictionary from the app`() {
+        val korean = catalog!!.entries.filter { it.sourceLanguage == "ko" }
+        val krdict = korean.filter { it.template == "krdict" }
+        assertThat(krdict.map { it.targetLanguage })
+            .containsExactly("ar", "en", "es", "fr", "id", "ja", "mn", "ru", "th", "vi", "zh", "ko")
+        assertThat(krdict.all { it.recommended && it.category == CatalogCategory.MAIN }).isTrue()
+        assertThat(korean.first { it.id == "wiktionary-ko-en" }.recommended).isFalse()
+        assertThat(krdict.first { it.id == "krdict-ru" }.displayTitle(Locale.ENGLISH)).isEqualTo("KRDICT (ko–ru)")
+        assertThat(krdict.first { it.id == "krdict-ru" }.description(Locale.ENGLISH)).contains("Korean → Russian")
+        val hanja = korean.single { it.kind == DictionaryKind.KANJI }
+        assertThat(hanja.downloadUrl).isEqualTo("${ASSET_URL_PREFIX}catalog/unihan-hanja.zip")
+        assertThat(hanja.recommended).isTrue()
+        // KRDICT's archives all name themselves "KRDICT ..."; the monolingual one matches its whole title only.
+        fun installed(title: String) = DictionaryEntity(
+            title = title, revision = "1", kind = DictionaryKind.TERM, sourceLanguage = "ko", targetLanguage = null,
+            frequencyMode = null, enabled = true, priority = 0, directory = "d", termCount = 1, frequencyCount = 0,
+            pitchCount = 0, kanjiCount = 0, mediaCount = 0, isUpdatable = false, indexUrl = null, downloadUrl = null,
+            author = null, url = null, description = null, attribution = null, bundled = false, importedAt = 0,
+        )
+        assertThat(korean.filter { it.matches(installed("KRDICT EN")) }.map { it.id }).containsExactly("krdict-en")
+        assertThat(korean.filter { it.matches(installed("KRDICT")) }.map { it.id }).containsExactly("krdict-ko")
     }
 
     @Test

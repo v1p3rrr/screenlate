@@ -24,9 +24,10 @@ class LanguageSetupTest {
         recommended: Boolean = false,
         size: Long = 1_000_000,
         source: String = "en",
+        url: String = "https://example.org/$id.zip",
     ) = CatalogEntry(
         id = id, title = id, installedTitle = id, kind = kind, declaredCategory = category, sourceLanguage = source,
-        targetLanguage = target, recommended = recommended, downloadUrl = "https://example.org/$id.zip", downloadSize = size,
+        targetLanguage = target, recommended = recommended, downloadUrl = url, downloadSize = size,
     )
 
     private fun installed(title: String, source: String? = "en", terms: Long = 1, kind: DictionaryKind = DictionaryKind.TERM) =
@@ -121,6 +122,14 @@ class LanguageSetupTest {
         assertThat(totals.downloadBytes).isEqualTo(40)
         assertThat(totals.installedBytes).isEqualTo(120)
         assertThat(totals.neededBytes).isEqualTo(150)
+    }
+
+    @Test
+    fun `an archive the app carries takes space but is not downloaded`() {
+        val bundled = entry("hanja", "en", size = 20, url = "asset:///catalog/hanja.zip")
+        val totals = setupTotals(listOf(entry("a", "ru", size = 10), bundled))
+        assertThat(totals.downloadBytes).isEqualTo(10)
+        assertThat(totals.installedBytes).isEqualTo(90)
     }
 
     @Test

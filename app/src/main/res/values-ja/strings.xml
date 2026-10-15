@@ -410,6 +410,7 @@
     <string name="popup_font_download_failed">ダウンロードに失敗しました。接続を確認してもう一度お試しください。</string>
     <string name="popup_font_proprietary">メイリオや游ゴシックなど、Windows や macOS に付属するフォントは提供していません。ライセンスで再配布が認められていないためです。カスタム CSS では、これらの名前は端末の日本語フォントを指します。</string>
     <string name="popup_font_proprietary_zh">Microsoft YaHei や PingFang など、Windows や macOS に付属するフォントは提供していません。ライセンスで再配布が認められていないためです。カスタム CSS では、これらの名前は端末の中国語フォントを指します。</string>
+    <string name="popup_font_proprietary_ko">Malgun Gothic や Apple SD Gothic Neo など、Windows や macOS に付属するフォントは提供していません。ライセンスで再配布が認められていないためです。カスタム CSS では、これらの名前は端末の韓国語フォントを指します。</string>
     <string name="popup_font_add_file">フォントファイルを追加（.ttf、.otf、.ttc）</string>
     <string name="popup_font_not_a_font">このファイルはフォントではありません。</string>
     <string name="popup_font_too_large">フォントとしてはファイルが大きすぎます（64 MB 超）。</string>
@@ -419,7 +420,9 @@
     <string name="popup_font_system_default">端末のフォント</string>
     <string name="popup_font_script_only_en">英語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
+    <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>
+    <string name="popup_font_script_only_ko">韓国語の文字だけに使う</string>
     <string name="popup_font_script_only_hint_any">ほかの文字体系には端末のフォントを使います。ダウンロードまたは追加したフォントに適用されます。</string>
     <string name="popup_text_weight_info_languages">細い文字を読みやすくします。言語の「…の文字だけに使う」がオンのとき、または端末のフォントのときはその言語の文字だけが太くなり、オフのときはすべての文字が太くなります。\n\n太さはフォント自身のウェイトを使います。ウェイトが一つだけのフォントは標準から太字に切り替わるだけなので、「中」は標準と同じに見えます。\n\n縁取りは各文字の周りに細い輪郭を描きます。どのフォントでも使え、太さに加わります。</string>
     <string name="languages_settings_hint">以下の設定は選んだ言語に適用されます。ページのほかの設定はすべての言語で共通です。</string>

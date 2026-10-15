@@ -55,6 +55,12 @@ from the Unihan database (Unicode License V3) and CC-CEDICT (CC BY-SA 4.0):
 with `Unihan.zip` from `https://www.unicode.org/Public/<version>/ucd/` (kept in `testdata/unihan/`) and the Yomitan
 build of CC-CEDICT from the catalog. The table is CC BY-SA 4.0, like CC-CEDICT.
 
+The Korean hanja dictionary (`dictionary/api/src/main/assets/catalog/unihan-hanja.zip`, installed from the APK through
+its `asset:///` catalog URL) is built from the same Unihan archive:
+`python scripts/hanja/unihan_hanja.py <Unihan.zip> dictionary/api/src/main/assets/catalog/unihan-hanja.zip`. The
+archive is reproducible: the same Unihan gives the same bytes. Its catalog entry's size must follow a rebuild
+(`CatalogFileTest` checks it against the asset).
+
 ## Language bundles
 
 Languages other than Japanese are looked up through Yomitan's language code, built into one script per language in
@@ -69,7 +75,7 @@ the engine module that holds them.
 ## Tests
 
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
-- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`) in a simulated DOM.
+- `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`, `reading.js`) in a simulated DOM.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
 - `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
 - `python -m unittest discover scripts/flags`: the flag converter.

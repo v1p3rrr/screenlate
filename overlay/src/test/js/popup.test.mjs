@@ -209,6 +209,19 @@ test('kanji entries list readings and statistics', () => {
     assert.equal(content.querySelector('.frequency').textContent, 'Strokes11');
 });
 
+test('a character entry shows its tags, and a tap opens a tag note', () => {
+    Popup.render({
+        theme: 'light',
+        kanji: { character: '國', lang: 'ko', entries: [{ dictionary: 'Unihan Hanja', onyomi: '국', tags: '교육용 인명용', definitions: ['nation'] }] },
+        labels: {},
+    });
+    Popup.setTagNotes([{ dictionary: 'Unihan Hanja', notes: { 교육용: 'On the list of basic hanja for education (2007)' } }]);
+    const tags = [...content.querySelectorAll('.kanji-tags .tag')];
+    assert.deepEqual(tags.map(tag => tag.textContent), ['교육용', '인명용']);
+    tags[0].click();
+    assert.equal(page.document.getElementById('info-text').textContent, 'On the list of basic hanja for education (2007)');
+});
+
 test('chinese headwords get a syllable above each character, marked with its tone', () => {
     Popup.render(state({
         source: { text: '图书馆', matched: 3, lang: 'zh-Hans' },

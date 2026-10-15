@@ -28,6 +28,14 @@ class IndexLanguageTest {
     }
 
     @Test
+    fun `a target language without a source language is left to detection`() {
+        assertThat(indexTargetLanguage("ja", "en")).isEqualTo("en")
+        assertThat(indexTargetLanguage(null, "ko")).isNull()
+        assertThat(indexTargetLanguage("all", "ko")).isNull()
+        assertThat(indexTargetLanguage("en", "all")).isNull()
+    }
+
+    @Test
     fun `a dictionary registered under all takes its catalog entry's language, or none`() {
         assertThat(withoutIndexAll(dictionary("wty-en-ipa", "all"), catalog).sourceLanguage).isEqualTo("en")
         assertThat(withoutIndexAll(dictionary("wty-fr-ipa", "all"), catalog).sourceLanguage).isNull()

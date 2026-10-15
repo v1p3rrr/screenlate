@@ -329,6 +329,116 @@
       "sizeMb": 26.0,
       "license": "SIL OFL 1.1",
       "homepage": "https://fonts.google.com/specimen/LXGW+WenKai+TC"
+    },
+    {
+      "id": "noto-sans-kr",
+      "family": "Noto Sans KR",
+      "language": "ko",
+      "description": {
+        "en": "Clean gothic (sans-serif) in every weight with Korean forms of hanja, the web version of the phone's Korean font.",
+        "ru": "Аккуратная готика (без засечек) во всех начертаниях, с корейскими формами ханча, веб-версия корейского шрифта телефона.",
+        "de": "Klare Gothic (serifenlos) in allen Strichstärken mit koreanischen Hanja-Formen, die Webfassung der koreanischen Schrift des Telefons.",
+        "es": "Gótica (sin serifa) limpia en todos los pesos, con las formas coreanas de los hanja; la versión web de la fuente coreana del teléfono.",
+        "fr": "Gothique (sans empattement) nette dans toutes les graisses, aux formes coréennes des hanja ; la version web de la police coréenne du téléphone.",
+        "it": "Gotico (senza grazie) pulito in tutti i pesi, con le forme coreane degli hanja; la versione web del carattere coreano del telefono.",
+        "ja": "すべてのウェイトがそろった端正なゴシック体。漢字は韓国の字形で、端末の韓国語フォントの Web 版。",
+        "ko": "모든 굵기를 갖춘 깔끔한 고딕(산세리프)으로, 한자는 한국 자형입니다. 휴대폰 한국어 글꼴의 웹 버전입니다.",
+        "pl": "Czysty krój gotycki (bezszeryfowy) we wszystkich grubościach, z koreańskimi formami hanja; wersja webowa koreańskiej czcionki telefonu.",
+        "pt": "Gótica (sem serifa) limpa em todos os pesos, com as formas coreanas dos hanja; a versão web da fonte coreana do celular.",
+        "tr": "Her kalınlıkta sade gotik (tırnaksız), hanjaların Kore biçimleriyle; telefonun Korece yazı tipinin web sürümü.",
+        "vi": "Kiểu gothic (không chân) gọn gàng với mọi độ đậm, chữ Hán theo dạng Hàn Quốc; bản web của phông chữ tiếng Hàn trên điện thoại.",
+        "zh": "各种字重齐全的简洁黑体（无衬线），汉字采用韩国字形，手机韩文字体的网页版。",
+        "zh-Hant": "各種字重齊全的簡潔黑體（無襯線），漢字採用韓國字形，手機韓文字型的網頁版。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskr/NotoSansKR%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 10.4,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+KR"
+    },
+    {
+      "id": "noto-serif-kr",
+      "family": "Noto Serif KR",
+      "language": "ko",
+      "description": {
+        "en": "Myeongjo (serif) in every weight, to match Noto Sans KR.",
+        "ru": "Мёнджо (с засечками) во всех начертаниях, в пару к Noto Sans KR.",
+        "de": "Myeongjo (mit Serifen) in allen Strichstärken, passend zu Noto Sans KR.",
+        "es": "Myeongjo (con serifa) en todos los pesos, a juego con Noto Sans KR.",
+        "fr": "Myeongjo (à empattements) dans toutes les graisses, assortie à Noto Sans KR.",
+        "it": "Myeongjo (con grazie) in tutti i pesi, abbinato a Noto Sans KR.",
+        "ja": "すべてのウェイトがそろった明朝体。Noto Sans KR と対になる。",
+        "ko": "모든 굵기를 갖춘 명조(세리프)로, Noto Sans KR과 짝을 이룹니다.",
+        "pl": "Myeongjo (szeryfowy) we wszystkich grubościach, do pary z Noto Sans KR.",
+        "pt": "Myeongjo (com serifa) em todos os pesos, combinando com Noto Sans KR.",
+        "tr": "Her kalınlıkta myeongjo (tırnaklı); Noto Sans KR ile uyumlu.",
+        "vi": "Kiểu myeongjo (có chân) với mọi độ đậm, đi cặp với Noto Sans KR.",
+        "zh": "各种字重齐全的明朝体（衬线），与 Noto Sans KR 配套。",
+        "zh-Hant": "各種字重齊全的明朝體（襯線），與 Noto Sans KR 配套。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifkr/NotoSerifKR%5Bwght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 23.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Serif+KR"
+    },
+    {
+      "id": "nanum-gothic",
+      "family": "Nanum Gothic",
+      "language": "ko",
+      "description": {
+        "en": "Gothic by Naver, common on Korean websites; regular and bold, a small download.",
+        "ru": "Готика Naver, частая на корейских сайтах; обычное и жирное начертания, небольшая загрузка.",
+        "de": "Gothic von Naver, verbreitet auf koreanischen Websites; normal und fett, ein kleiner Download.",
+        "es": "Gótica de Naver, habitual en los sitios web coreanos; normal y negrita, una descarga pequeña.",
+        "fr": "Gothique de Naver, courante sur les sites coréens ; normale et grasse, un petit téléchargement.",
+        "it": "Gotico di Naver, diffuso sui siti coreani; normale e grassetto, un download leggero.",
+        "ja": "韓国のウェブサイトでよく使われる Naver のゴシック体。標準と太字のみで、ダウンロードが小さい。",
+        "ko": "한국 웹사이트에서 흔히 쓰이는 네이버의 고딕으로, 보통과 굵게만 있어 다운로드 크기가 작습니다.",
+        "pl": "Krój gotycki Navera, częsty na koreańskich stronach; zwykły i pogrubiony, mały do pobrania.",
+        "pt": "Gótica da Naver, comum em sites coreanos; normal e negrito, um download pequeno.",
+        "tr": "Kore sitelerinde yaygın, Naver'ın gotiği; normal ve kalın, küçük bir indirme.",
+        "vi": "Kiểu gothic của Naver, phổ biến trên các trang web Hàn Quốc; thường và đậm, dung lượng tải nhỏ.",
+        "zh": "Naver 出品的黑体，韩国网站上常见；仅常规和粗体，下载较小。",
+        "zh-Hant": "Naver 出品的黑體，韓國網站上常見；僅常規和粗體，下載較小。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/nanumgothic/NanumGothic-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 4.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Nanum+Gothic"
+    },
+    {
+      "id": "nanum-myeongjo",
+      "family": "Nanum Myeongjo",
+      "language": "ko",
+      "description": {
+        "en": "Myeongjo (serif) by Naver for long texts; regular and bold.",
+        "ru": "Мёнджо (с засечками) Naver для длинных текстов; обычное и жирное начертания.",
+        "de": "Myeongjo (mit Serifen) von Naver für lange Texte; normal und fett.",
+        "es": "Myeongjo (con serifa) de Naver para textos largos; normal y negrita.",
+        "fr": "Myeongjo (à empattements) de Naver pour les longs textes ; normale et grasse.",
+        "it": "Myeongjo (con grazie) di Naver per testi lunghi; normale e grassetto.",
+        "ja": "長文向けの Naver の明朝体。標準と太字。",
+        "ko": "긴 글에 알맞은 네이버의 명조(세리프)로, 보통과 굵게가 있습니다.",
+        "pl": "Myeongjo (szeryfowy) Navera do długich tekstów; zwykły i pogrubiony.",
+        "pt": "Myeongjo (com serifa) da Naver para textos longos; normal e negrito.",
+        "tr": "Uzun metinler için Naver'ın myeongjo (tırnaklı) yazı tipi; normal ve kalın.",
+        "vi": "Kiểu myeongjo (có chân) của Naver cho văn bản dài; thường và đậm.",
+        "zh": "Naver 出品的明朝体（衬线），适合长文；常规和粗体。",
+        "zh-Hant": "Naver 出品的明朝體（襯線），適合長文；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/nanummyeongjo/NanumMyeongjo-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/nanummyeongjo/NanumMyeongjo-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 6.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Nanum+Myeongjo"
     }
   ]
 }

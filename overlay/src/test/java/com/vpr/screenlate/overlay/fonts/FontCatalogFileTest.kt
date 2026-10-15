@@ -41,6 +41,12 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `korean has gothic and myeongjo fonts`() {
+        val korean = fonts.filter { it.language == Language.KOREAN.code }.map { it.family }
+        assertThat(korean).containsExactly("Noto Sans KR", "Noto Serif KR", "Nanum Gothic", "Nanum Myeongjo")
+    }
+
+    @Test
     fun `the description follows the interface locale, traditional chinese included`() {
         val font = fonts.first { it.id == "noto-sans-tc" }
         assertThat(font.description(Locale.forLanguageTag("zh-TW"))).isEqualTo(font.description["zh-Hant"])

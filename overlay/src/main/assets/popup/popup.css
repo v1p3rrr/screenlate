@@ -517,6 +517,11 @@ a {
     color: var(--muted);
 }
 
+.kanji-tags {
+    display: flex;
+    margin: 2px 0 4px;
+}
+
 .kanji-stats {
     display: flex;
     flex-wrap: wrap;

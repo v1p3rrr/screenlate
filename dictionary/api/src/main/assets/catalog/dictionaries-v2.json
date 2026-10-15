@@ -137,6 +137,40 @@
         "zh": "wordfreq，{source}：单词的使用频率，搜索结果按此排序。在设备上由 wordfreq 的词表生成。",
         "zh-Hant": "wordfreq，{source}：單詞的使用頻率，搜尋結果按此排序。在裝置上由 wordfreq 的詞表產生。"
       }
+    },
+    "krdict": {
+      "title": {
+        "en": "KRDICT ({src}–{tgt})",
+        "ru": "KRDICT ({src}–{tgt})",
+        "de": "KRDICT ({src}–{tgt})",
+        "es": "KRDICT ({src}–{tgt})",
+        "fr": "KRDICT ({src}–{tgt})",
+        "it": "KRDICT ({src}–{tgt})",
+        "ja": "KRDICT ({src}–{tgt})",
+        "ko": "KRDICT ({src}–{tgt})",
+        "pl": "KRDICT ({src}–{tgt})",
+        "pt": "KRDICT ({src}–{tgt})",
+        "tr": "KRDICT ({src}–{tgt})",
+        "vi": "KRDICT ({src}–{tgt})",
+        "zh": "KRDICT ({src}–{tgt})",
+        "zh-Hant": "KRDICT ({src}–{tgt})"
+      },
+      "description": {
+        "en": "Learners' dictionary of the National Institute of Korean Language, {source} → {target}: translations and definitions of about 50,000 words, with examples, hanja spellings and proverbs.",
+        "ru": "Учебный словарь Национального института корейского языка, {source} → {target}: переводы и толкования около 50 000 слов, с примерами, записью ханча и пословицами.",
+        "de": "Lernwörterbuch des Nationalen Instituts für koreanische Sprache, {source} → {target}: Übersetzungen und Bedeutungsangaben von etwa 50.000 Wörtern, mit Beispielen, Hanja-Schreibungen und Sprichwörtern.",
+        "es": "Diccionario para estudiantes del Instituto Nacional de la Lengua Coreana, {source} → {target}: traducciones y definiciones de unas 50 000 palabras, con ejemplos, escrituras en hanja y refranes.",
+        "fr": "Dictionnaire pour apprenants de l’Institut national de la langue coréenne, {source} → {target} : traductions et définitions d’environ 50 000 mots, avec exemples, graphies en hanja et proverbes.",
+        "it": "Dizionario per studenti dell’Istituto nazionale della lingua coreana, {source} → {target}: traduzioni e definizioni di circa 50.000 parole, con esempi, grafie in hanja e proverbi.",
+        "ja": "国立国語院の学習者向け辞典（{source} → {target}）：約5万語の訳語と語義。用例、漢字表記、ことわざつき。",
+        "ko": "국립국어원 한국어기초사전, {source} → {target}: 약 5만 단어의 번역과 뜻풀이, 예문, 한자 표기, 속담.",
+        "pl": "Słownik dla uczących się Narodowego Instytutu Języka Koreańskiego, {source} → {target}: tłumaczenia i definicje około 50 000 wyrazów, z przykładami, zapisem w hanja i przysłowiami.",
+        "pt": "Dicionário para estudantes do Instituto Nacional da Língua Coreana, {source} → {target}: traduções e definições de cerca de 50 000 palavras, com exemplos, grafias em hanja e provérbios.",
+        "tr": "Ulusal Kore Dili Enstitüsü’nün öğrenci sözlüğü, {source} → {target}: yaklaşık 50.000 sözcüğün çevirileri ve tanımları; örnekler, hanja yazımları ve atasözleriyle.",
+        "vi": "Từ điển cho người học của Viện Quốc ngữ Hàn Quốc, {source} → {target}: bản dịch và định nghĩa của khoảng 50.000 từ, có ví dụ, cách viết Hanja và tục ngữ.",
+        "zh": "韩国国立国语院学习词典，{source} → {target}：约 5 万个词的译词和释义，附例句、汉字写法和俗语。",
+        "zh-Hant": "韓國國立國語院學習詞典，{source} → {target}：約 5 萬個詞的譯詞和釋義，附例句、漢字寫法和俗語。"
+      }
     }
   },
   "dictionaries": [
@@ -1110,6 +1144,286 @@
       "version": "3.2",
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "krdict-ar",
+      "title": "KRDICT (ko–ar)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT AR"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "ar",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-AR.KRDICT.zip",
+      "downloadSize": 16237631,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-en",
+      "title": "KRDICT (ko–en)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT EN"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "en",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-EN.KRDICT.zip",
+      "downloadSize": 16342565,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-es",
+      "title": "KRDICT (ko–es)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT ES"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "es",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-ES.KRDICT.zip",
+      "downloadSize": 16638048,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-fr",
+      "title": "KRDICT (ko–fr)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT FR"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-FR.KRDICT.zip",
+      "downloadSize": 16938731,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-id",
+      "title": "KRDICT (ko–id)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT ID"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "id",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-ID.KRDICT.zip",
+      "downloadSize": 16274473,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-ja",
+      "title": "KRDICT (ko–ja)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT JA"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "ja",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-JA.KRDICT.zip",
+      "downloadSize": 16373697,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-mn",
+      "title": "KRDICT (ko–mn)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT MN"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "mn",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-MN.KRDICT.zip",
+      "downloadSize": 16673127,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-ru",
+      "title": "KRDICT (ko–ru)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT RU"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-RU.KRDICT.zip",
+      "downloadSize": 17328978,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-th",
+      "title": "KRDICT (ko–th)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT TH"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "th",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-TH.KRDICT.zip",
+      "downloadSize": 17490230,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-vi",
+      "title": "KRDICT (ko–vi)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT VI"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "vi",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-VI.KRDICT.zip",
+      "downloadSize": 16640050,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-zh",
+      "title": "KRDICT (ko–zh)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT ZH"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/KO-ZH.KRDICT.zip",
+      "downloadSize": 15746892,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "krdict-ko",
+      "title": "KRDICT (ko–ko)",
+      "template": "krdict",
+      "oldTitles": [
+        "KRDICT"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "ko",
+      "recommended": true,
+      "description": {
+        "en": "Learners' dictionary of the National Institute of Korean Language, Korean → Korean: simple definitions of about 50,000 words, with examples, hanja spellings and proverbs.",
+        "ru": "Учебный словарь Национального института корейского языка, корейский → корейский: простые толкования около 50 000 слов, с примерами, записью ханча и пословицами.",
+        "de": "Lernwörterbuch des Nationalen Instituts für koreanische Sprache, Koreanisch → Koreanisch: einfache Bedeutungsangaben von etwa 50.000 Wörtern, mit Beispielen, Hanja-Schreibungen und Sprichwörtern.",
+        "es": "Diccionario para estudiantes del Instituto Nacional de la Lengua Coreana, coreano → coreano: definiciones sencillas de unas 50 000 palabras, con ejemplos, escrituras en hanja y refranes.",
+        "fr": "Dictionnaire pour apprenants de l’Institut national de la langue coréenne, coréen → coréen : définitions simples d’environ 50 000 mots, avec exemples, graphies en hanja et proverbes.",
+        "it": "Dizionario per studenti dell’Istituto nazionale della lingua coreana, coreano → coreano: definizioni semplici di circa 50.000 parole, con esempi, grafie in hanja e proverbi.",
+        "ja": "国立国語院の学習者向け辞典（韓国語 → 韓国語）：約5万語のやさしい語義。用例、漢字表記、ことわざつき。",
+        "ko": "국립국어원 한국어기초사전, 한국어 → 한국어: 약 5만 단어의 쉬운 뜻풀이, 예문, 한자 표기, 속담.",
+        "pl": "Słownik dla uczących się Narodowego Instytutu Języka Koreańskiego, koreański → koreański: proste definicje około 50 000 wyrazów, z przykładami, zapisem w hanja i przysłowiami.",
+        "pt": "Dicionário para estudantes do Instituto Nacional da Língua Coreana, coreano → coreano: definições simples de cerca de 50 000 palavras, com exemplos, grafias em hanja e provérbios.",
+        "tr": "Ulusal Kore Dili Enstitüsü’nün öğrenci sözlüğü, Korece → Korece: yaklaşık 50.000 sözcüğün basit tanımları; örnekler, hanja yazımları ve atasözleriyle.",
+        "vi": "Từ điển cho người học của Viện Quốc ngữ Hàn Quốc, tiếng Hàn → tiếng Hàn: định nghĩa đơn giản của khoảng 50.000 từ, có ví dụ, cách viết Hanja và tục ngữ.",
+        "zh": "韩国国立国语院学习词典，韩语 → 韩语：约 5 万个词的浅显释义，附例句、汉字写法和俗语。",
+        "zh-Hant": "韓國國立國語院學習詞典，韓語 → 韓語：約 5 萬個詞的淺顯釋義，附例句、漢字寫法和俗語。"
+      },
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/Monolingual.KRDICT.zip",
+      "downloadSize": 14663600,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://krdict.korean.go.kr/"
+    },
+    {
+      "id": "stdict",
+      "title": "STDICT",
+      "oldTitles": [
+        "STDICT"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ko",
+      "targetLanguage": "ko",
+      "description": {
+        "en": "Standard Korean Language Dictionary of the National Institute of Korean Language: the full monolingual dictionary, with examples and hanja spellings.",
+        "ru": "Стандартный словарь корейского языка Национального института корейского языка: полный толковый словарь с примерами и записью ханча.",
+        "de": "Standardwörterbuch der koreanischen Sprache des Nationalen Instituts für koreanische Sprache: das vollständige einsprachige Wörterbuch, mit Beispielen und Hanja-Schreibungen.",
+        "es": "Diccionario estándar de la lengua coreana del Instituto Nacional de la Lengua Coreana: el diccionario monolingüe completo, con ejemplos y escrituras en hanja.",
+        "fr": "Dictionnaire standard de la langue coréenne de l’Institut national de la langue coréenne : le dictionnaire unilingue complet, avec exemples et graphies en hanja.",
+        "it": "Dizionario standard della lingua coreana dell’Istituto nazionale della lingua coreana: il dizionario monolingue completo, con esempi e grafie in hanja.",
+        "ja": "国立国語院の標準国語大辞典：用例と漢字表記つきの完全な国語辞典。",
+        "ko": "국립국어원 표준국어대사전: 예문과 한자 표기가 있는 종합 국어사전.",
+        "pl": "Standardowy słownik języka koreańskiego Narodowego Instytutu Języka Koreańskiego: pełny słownik jednojęzyczny z przykładami i zapisem w hanja.",
+        "pt": "Dicionário padrão da língua coreana do Instituto Nacional da Língua Coreana: o dicionário monolíngue completo, com exemplos e grafias em hanja.",
+        "tr": "Ulusal Kore Dili Enstitüsü’nün Standart Kore Dili Sözlüğü: örnekler ve hanja yazımlarıyla tam tek dilli sözlük.",
+        "vi": "Từ điển tiếng Hàn chuẩn của Viện Quốc ngữ Hàn Quốc: từ điển đơn ngữ đầy đủ, có ví dụ và cách viết Hanja.",
+        "zh": "韩国国立国语院《标准国语大辞典》：完整的单语词典，附例句和汉字写法。",
+        "zh-Hant": "韓國國立國語院《標準國語大辭典》：完整的單語詞典，附例句和漢字寫法。"
+      },
+      "downloadUrl": "https://github.com/Lyroxide/yomitan-ko-dic/releases/download/1.0.0/Monolingual.STDICT.zip",
+      "downloadSize": 58444023,
+      "license": "CC BY-SA 2.0 KR",
+      "homepage": "https://stdict.korean.go.kr/"
+    },
+    {
+      "id": "unihan-hanja",
+      "title": "Unihan Hanja",
+      "installedTitle": "Unihan Hanja",
+      "kind": "KANJI",
+      "sourceLanguage": "ko",
+      "targetLanguage": "en",
+      "recommended": true,
+      "description": {
+        "en": "Korean readings, English meanings and stroke counts of about 8,500 hanja, from the Unicode Han Database. Shown for a hanja tapped in an entry's headword, and for a hanja where no word is found. Comes with the app.",
+        "ru": "Корейские чтения, значения на английском и число черт примерно для 8 500 ханча, из базы иероглифов Unicode. Открывается по нажатию на ханча в заголовке статьи и для ханча, с которого не начинается ни одно слово. Входит в приложение.",
+        "de": "Koreanische Lesungen, englische Bedeutungen und Strichzahlen von etwa 8.500 Hanja aus der Unicode-Han-Datenbank. Erscheint für ein im Stichwort angetipptes Hanja und für ein Hanja, mit dem kein Wort beginnt. In der App enthalten.",
+        "es": "Lecturas coreanas, significados en inglés y número de trazos de unos 8500 hanja, de la base de datos Han de Unicode. Se muestra para un hanja tocado en el lema de una entrada y para un hanja con el que no empieza ninguna palabra. Incluido en la aplicación.",
+        "fr": "Lectures coréennes, sens en anglais et nombre de traits d’environ 8 500 hanja, tirés de la base de données Han d’Unicode. Affiché pour un hanja touché dans la vedette d’une entrée et pour un hanja par lequel aucun mot ne commence. Fourni avec l’application.",
+        "it": "Letture coreane, significati in inglese e numero di tratti di circa 8.500 hanja, dal database Han di Unicode. Mostrato per un hanja toccato nel lemma di una voce e per un hanja con cui non inizia alcuna parola. Incluso nell’app.",
+        "ja": "Unicode 漢字データベースによる約 8,500 字の漢字の韓国語の読み、英語の意味、画数。見出し語の漢字をタップしたときと、単語が見つからない漢字に表示されます。アプリに同梱。",
+        "ko": "유니코드 한자 데이터베이스에서 가져온 한자 약 8,500자의 한국어 음, 영어 뜻, 획수. 표제어의 한자를 누를 때와 단어가 시작되지 않는 한자에 표시됩니다. 앱에 포함되어 있습니다.",
+        "pl": "Koreańskie czytania, znaczenia po angielsku i liczba kresek około 8500 znaków hanja z bazy znaków Han Unicode. Wyświetlane po dotknięciu hanja w haśle i dla hanja, od którego nie zaczyna się żaden wyraz. Dołączone do aplikacji.",
+        "pt": "Leituras coreanas, significados em inglês e número de traços de cerca de 8500 hanja, da base de dados Han do Unicode. Mostrado para um hanja tocado no lema de um verbete e para um hanja com que nenhuma palavra começa. Incluído no aplicativo.",
+        "tr": "Unicode Han Veritabanı’ndan yaklaşık 8.500 hanjanın Korece okunuşları, İngilizce anlamları ve çizgi sayıları. Bir maddenin başlığında dokunulan hanja ve hiçbir sözcüğün başlamadığı hanja için gösterilir. Uygulamayla gelir.",
+        "vi": "Âm đọc tiếng Hàn, nghĩa tiếng Anh và số nét của khoảng 8.500 chữ Hanja, lấy từ cơ sở dữ liệu chữ Hán của Unicode. Hiển thị khi chạm vào một chữ Hanja trong mục từ và cho chữ Hanja không mở đầu từ nào. Có sẵn trong ứng dụng.",
+        "zh": "来自 Unicode 汉字数据库的约 8,500 个汉字的韩语读音、英语释义和笔画数。点按词条标题中的汉字时显示，找不到词语的汉字也会显示。随应用附带。",
+        "zh-Hant": "來自 Unicode 漢字資料庫的約 8,500 個漢字的韓語讀音、英語釋義和筆畫數。點按詞條標題中的漢字時顯示，找不到詞語的漢字也會顯示。隨應用程式附帶。"
+      },
+      "downloadUrl": "asset:///catalog/unihan-hanja.zip",
+      "downloadSize": 168500,
+      "license": "Unicode License v3",
+      "homepage": "https://www.unicode.org/charts/unihan.html"
     },
     {
       "id": "wordfreq-ko",
@@ -2114,7 +2428,7 @@
       "category": "MAIN",
       "sourceLanguage": "ko",
       "targetLanguage": "en",
-      "recommended": true,
+      "recommended": false,
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-en-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/en/wty-ko-en.zip?download=true",
       "resolveLatest": true,
@@ -2134,7 +2448,7 @@
       "category": "MAIN",
       "sourceLanguage": "ko",
       "targetLanguage": "fr",
-      "recommended": true,
+      "recommended": false,
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-fr-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/fr/wty-ko-fr.zip?download=true",
       "resolveLatest": true,
@@ -2154,7 +2468,7 @@
       "category": "MAIN",
       "sourceLanguage": "ko",
       "targetLanguage": "ja",
-      "recommended": true,
+      "recommended": false,
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-ja-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/ja/wty-ko-ja.zip?download=true",
       "resolveLatest": true,
@@ -2174,7 +2488,7 @@
       "category": "MAIN",
       "sourceLanguage": "ko",
       "targetLanguage": "ko",
-      "recommended": true,
+      "recommended": false,
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-ko-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/ko/wty-ko-ko.zip?download=true",
       "resolveLatest": true,
@@ -2194,7 +2508,7 @@
       "category": "MAIN",
       "sourceLanguage": "ko",
       "targetLanguage": "zh",
-      "recommended": true,
+      "recommended": false,
       "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ko-zh-index.json?download=true",
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ko/zh/wty-ko-zh.zip?download=true",
       "resolveLatest": true,

@@ -21,6 +21,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
+import com.vpr.screenlate.dictionary.api.catalog.ASSET_URL_PREFIX
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -407,6 +408,7 @@ class DictionaryImportWorker @AssistedInject constructor(
      * installed or when the install fails.
      */
     private suspend fun download(url: String, name: String, install: suspend (File) -> String): String {
+        if (url.startsWith(ASSET_URL_PREFIX)) return installAsset(url.removePrefix(ASSET_URL_PREFIX), name, install)
         // Queued by an older version: no archive of its own to continue.
         val archive = inputData.getString(KEY_ARCHIVE)?.let(storage::downloadFile) ?: storage.newArchiveFile()
         val state = storage.downloadState(archive)
@@ -436,6 +438,21 @@ class DictionaryImportWorker @AssistedInject constructor(
         } finally {
             archive.delete()
             state.delete()
+        }
+    }
+
+    /** Copies the archive the app carries at [path] in its assets into a new archive file, which [install] gets. */
+    private suspend fun installAsset(path: String, name: String, install: suspend (File) -> String): String {
+        val archive = storage.newArchiveFile()
+        try {
+            withContext(Dispatchers.IO) {
+                applicationContext.assets.open(path).use { input -> archive.outputStream().use { input.copyTo(it) } }
+            }
+            Log.i(TAG, "Copied the bundled archive $path, ${archive.length() shr 10} KB")
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+            return install(archive)
+        } finally {
+            archive.delete()
         }
     }
 

@@ -95,11 +95,14 @@ internal fun setupInstalled(
     return installed.filter { dictionary -> selected.any { it.entry.matches(dictionary) } }.mapTo(linkedSetOf()) { it.id }
 }
 
-/** Downloads come one at a time: the largest archive lies next to everything imported before it is unpacked. */
+/**
+ * Downloads come one at a time: the largest archive lies next to everything imported before it is unpacked. Archives
+ * the app carries count for space, not for the download.
+ */
 internal fun setupTotals(downloads: List<CatalogEntry>): SetupTotals {
     val installed = downloads.sumOf { it.installedBytes }
     return SetupTotals(
-        downloadBytes = downloads.sumOf { it.downloadBytes },
+        downloadBytes = downloads.filterNot { it.isBundled }.sumOf { it.downloadBytes },
         installedBytes = installed,
         neededBytes = installed + (downloads.maxOfOrNull { it.downloadBytes } ?: 0L),
     )

@@ -111,8 +111,8 @@ class DictionaryRepository @Inject constructor(
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
             val known = replaced(replaces, metadata.title, kind, bundled)
             val source = listed?.sourceLanguage ?: indexLanguage(metadata.sourceLanguage) ?: known?.sourceLanguage
-            val target = (listed?.targetLanguage ?: indexLanguage(metadata.targetLanguage) ?: known?.targetLanguage)
-                .takeIf { kind.hasTarget }
+            val indexTarget = indexTargetLanguage(metadata.sourceLanguage, metadata.targetLanguage)
+            val target = (listed?.targetLanguage ?: indexTarget ?: known?.targetLanguage).takeIf { kind.hasTarget }
             val detected = if (source == null || (target == null && kind.hasTarget)) {
                 runCatching { languageDetector.detect(DictionarySample.of(archive)) }
                     .onFailure { Log.w(TAG, "Detecting the languages failed", it) }
@@ -144,7 +144,8 @@ class DictionaryRepository @Inject constructor(
                     revision = metadata.revision,
                     kind = kind,
                     sourceLanguage = source ?: detected?.source,
-                    targetLanguage = (target ?: detected?.target).takeIf { kind.hasTarget },
+                    targetLanguage = (target ?: detected?.target ?: indexLanguage(metadata.targetLanguage))
+                        .takeIf { kind.hasTarget },
                     frequencyMode = metadata.frequencyMode,
                     enabled = existing?.enabled ?: true,
                     priority = existing?.priority ?: (dao.maxPriority() + 1),
@@ -481,6 +482,14 @@ private const val TAG = "DictionaryRepository"
 
 /** A language code from index.json; `all`, which Wiktionary's merged dictionaries give, names no single language. */
 internal fun indexLanguage(code: String?): String? = code?.takeUnless { it.isBlank() || it == INDEX_ALL }
+
+/**
+ * The definitions' language an index names, or null when detection should decide: an index with a target language
+ * but no source one (KRDICT for Yomitan says only "ko" in every gloss language) names the language the dictionary is
+ * for. Such a target is still used when detection cannot tell.
+ */
+internal fun indexTargetLanguage(source: String?, target: String?): String? =
+    indexLanguage(target).takeIf { indexLanguage(source) != null }
 
 /** [dictionary] with a language `all` replaced by its [catalog] entry's, or by none. */
 internal fun withoutIndexAll(dictionary: DictionaryEntity, catalog: List<CatalogEntry>): DictionaryEntity {
