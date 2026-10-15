@@ -13,7 +13,7 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val translationSample = "The weather is nice today. Let's go for a walk."
     override val audioTestWord = "read"
     override val pronunciationSample = "water → /ˈwɔːtər/"
-    override val flagCountries = listOf("us", "gb", "au", "ca", "nz", "ie")
+    override val flagCountries = listOf("us", "gb")
     override val audioRegions = listOf(AudioRegion("us", setOf("us")), AudioRegion("uk", setOf("uk", "gb")), AudioRegion.OTHER)
 
     /** Single accent names only; tags that list several places (`Southern US, Australia`) are left out. */

@@ -222,9 +222,9 @@ class LanguageProfilesTest {
     @Test
     fun `a flag chosen for a language that is off stays`() = runBlocking<Unit> {
         profiles.turnOn(Language.ENGLISH)
-        profiles.setFlag(Language.ENGLISH, "au")
+        profiles.setFlag(Language.ENGLISH, "gb")
         profiles.turnOff(Language.ENGLISH)
-        assertThat(profiles.current().flagCountry(Language.ENGLISH)).isEqualTo("au")
+        assertThat(profiles.current().flagCountry(Language.ENGLISH)).isEqualTo("gb")
     }
 
     @Test

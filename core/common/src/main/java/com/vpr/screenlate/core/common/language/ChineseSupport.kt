@@ -10,7 +10,7 @@ object ChineseSupport : LanguageSupport {
     override val glyph = "中"
     override val wordSeparator = ""
     override val ocrScript = OcrScript.CHINESE
-    override val flagCountries = listOf("cn", "tw", "hk", "sg")
+    override val flagCountries = listOf("cn")
     override val searchResolution = SearchResolution.LETTER
     override val hasCharacterEntries = true
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
