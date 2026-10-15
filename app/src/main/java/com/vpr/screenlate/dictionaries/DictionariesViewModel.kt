@@ -94,6 +94,13 @@ data class DictionariesState(
 /** Result of the last update check; [updates] is null while checking. */
 data class UpdateCheck(val updates: List<DictionaryUpdate>?)
 
+/**
+ * The check after [started] updates were queued. Null once every update has started: the task cards show them, and an
+ * empty list would read as "all up to date" while they download.
+ */
+internal fun UpdateCheck?.without(started: List<DictionaryUpdate>): UpdateCheck? =
+    (this?.updates.orEmpty() - started.toSet()).takeIf { it.isNotEmpty() }?.let(::UpdateCheck)
+
 @HiltViewModel
 class DictionariesViewModel @Inject constructor(
     private val repository: DictionaryRepository,
@@ -249,7 +256,7 @@ class DictionariesViewModel @Inject constructor(
 
     fun update(items: List<DictionaryUpdate>) {
         items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
-        updateCheck.value = UpdateCheck(updateCheck.value?.updates.orEmpty() - items.toSet())
+        updateCheck.value = updateCheck.value.without(items)
     }
 
     fun delete(dictionary: DictionaryEntity) {
