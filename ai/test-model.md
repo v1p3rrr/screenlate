@@ -308,6 +308,19 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-15, `languages/main` at 0116c88 (quote entities, `main` merged), Pixel_10_Pro (API 37)
+
+Scope: POP22 (new); the AVD cold-booted from its disk (Japanese only turned on), so Korean was turned on from the
+Languages screen (KRDICT ko-en and wordfreq, 18 MB, ready in under a minute).
+
+Results: passed. 커녕 in the search screen shows KRDICT's second sense as "A postpositional particle meaning "on the
+contrary, not to mention"." with quote marks; the archive holds `&quot;` there. Page tests: 128 pass, the new one
+covers strings, text items and structured content through the renderer that Anki fields use too.
+
+New cases, checked when written: POP22 (O).
+
+Emulator state since this run: Japanese active, Korean turned on, romaji off.
+
 ### 2026-10-15, `languages/main` at 18b634a (the form-of fix merged) with the shared item parser, Pixel_10_Pro (API 37)
 
 Scope: LK15 after the merge; the engine's instrumented tests (30, the language lookups with their form-of tables

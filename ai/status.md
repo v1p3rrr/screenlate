@@ -19,6 +19,12 @@ word) was built, then rolled back by the owner's choice (single syllables and le
 numbered items in Japanese lookups) is fixed: Japanese lookups follow form-of items as Yomitan does, with the
 dictionary's tags (owner's choice), also for Jitendex's and Kolobok's redirect rows; `main` `328c062`, merged into
 `languages/main` (`18b634a`), checked on the emulator (LK15), both pushed.
+The owner answered the ten questions of the languages plan (decision rows from "Font lists across languages" on):
+the recommended options stay, except that the lookup page turns `&quot;` and `&apos;` left in dictionary text into
+quote marks (`main` `35863a4`, merged `0116c88`, POP22) and that a catalog font will also show for every language
+whose script it covers (built with the first Latin fonts, stage C). The hanja dictionary stays in the APK for good.
+The full code review by module (`ai/notes/module-map.md`, code-review at xhigh) runs in its own session, started
+2026-10-15; its plan and progress go into a new file in `ai/plans/`.
 Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on `main` the QuickJS submodule folder
 `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, which only `languages/main` tracks).
 
@@ -28,7 +34,7 @@ Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on
   branches merged. Every case of `ai/test-model.md` passed on the emulator in its last run; the run log lists the
   known limits. Upgrades from v0.2.3 and v0.2.3 backups were checked on the emulator (request 32: FR4 to FR7).
 - Open for the owner:
-  - questions 1 to 10 in the plan's "Questions for the owner" (font lists across languages, Chinese script fields in
+  - (answered 2026-10-15) questions 1 to 10 in the plan's "Questions for the owner" (font lists across languages, Chinese script fields in
     Anki, phrasal verbs, and seven from the Korean work); the recommended options are in use;
   - the postponed items before group 1 counts as done: bundled Japanese dictionaries, and hosting (request 30;
     FreeDict zho-rus and eng-rus, Mueller and OpenRussian wait for it);
