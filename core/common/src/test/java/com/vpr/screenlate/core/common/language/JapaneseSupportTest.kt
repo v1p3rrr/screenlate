@@ -17,6 +17,13 @@ class JapaneseSupportTest {
     }
 
     @Test
+    fun `radical look-alikes of kanji start a lookup`() {
+        // KANGXI RADICAL MAN (looks like 人) and KANGXI RADICAL EAT (looks like 食).
+        assertThat(start(String(Character.toChars(0x2F08)) + "で")).isEqualTo(LookupStart.Any)
+        assertThat(start(String(Character.toChars(0x2FB7)) + "べる")).isEqualTo(LookupStart.Any)
+    }
+
+    @Test
     fun `latin text that japanese follows takes any match`() {
         assertThat(start("Tシャツを")).isEqualTo(LookupStart.Any)
         assertThat(start("ＣＤプレーヤー")).isEqualTo(LookupStart.Any)

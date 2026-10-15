@@ -195,9 +195,15 @@ object JapaneseSupport : LanguageSupport {
             codePoint in 0x31F0..0x31FF ||
             codePoint in 0xFF66..0xFF9F
 
-    /** Kana, kanji and the marks 々〆〇. */
+    /** Kana, kanji, their radical look-alikes and the marks 々〆〇. */
     private fun isJapaneseLetter(codePoint: Int): Boolean =
-        isKana(codePoint) || isKanji(codePoint) || codePoint in 0x3005..0x3007
+        isKana(codePoint) || isKanji(codePoint) || isRadical(codePoint) || codePoint in 0x3005..0x3007
+
+    /**
+     * Kangxi radicals and the CJK radicals supplement: look-alikes of kanji (⽇ for 日) that text copied from PDFs often
+     * has. The lookup reads them as their kanji (Yomitan's radical normalization).
+     */
+    private fun isRadical(codePoint: Int): Boolean = codePoint in 0x2E80..0x2EF3 || codePoint in 0x2F00..0x2FD5
 
     private fun isLatinLetter(codePoint: Int): Boolean =
         codePoint in 'a'.code..'z'.code ||
