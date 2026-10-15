@@ -10,11 +10,11 @@ Work on `main` since 2026-10-15: [plans/2026-10-15-main-fixes-and-backups.md](pl
 
 The owner asked to work on autonomously and keep questions until they are back. Resume from the "Progress" section
 of [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md). Steps 1-5 are done on
-`main` and pushed (`e6e20bf`). Step 6 on `languages/main`: `main` merged (`41bf4ff`), the Languages item with
-recognition models added to backups (`9a8db2e`) and checked on the emulator (SET12), download lag measured, notes
-committed (`478c23e`), all pushed. Left: emulator checks of the merge (ANK11 with the English Anki settings, SET11,
-the update check closing once every update started, the segment fill without a check mark), then the run log entry;
-when the owner is back, show the choices made without asking (listed in the plan's Progress).
+`main` and pushed (`e6e20bf`). Step 6 is done on `languages/main`: `main` merged (`41bf4ff`), the Languages item with
+recognition models added to backups (`9a8db2e`, SET12), the merge checked on the emulator (ANK11 with the English Anki
+settings, SET11, SET3, DIC7 with the update check closing, the segment fill as SET13; run log at `99085b9`), pushed.
+Left: show the owner the choices made without asking (listed in the plan's Progress); item 13 of that plan (romaji
+lookup reaches only the first word of a joined Latin word) is open.
 Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on `main` the QuickJS submodule folder
 `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, which only `languages/main` tracks).
 

@@ -47,6 +47,9 @@ Found by the owner on 2026-10-15 (both branches):
     check now closes once every found update has started.
 12. The chosen segment's check mark pushed long labels to the edge or cut them (Russian: "По требованию",
     "Системная"). The owner chose to drop the check mark; the fill marks the choice.
+13. Japanese with romaji lookup on: a Latin word made of two words ("jidoujisho", an app label) is looked up only from
+    its start. 自動 is found for "jidou", and aiming at "jisho" still starts at the word's first letter, so 辞書 cannot
+    be reached (reported from the phone; open).
 
 ## Other changes brought over
 
@@ -140,6 +143,9 @@ Kept current while the work runs so a new session can continue from the last lin
   stall: median frame 57 ms during download and import against 46 ms idle). Also fixed on the way: `docs/architecture.md`
   had main's `settleInstall` sentence after the merge. Next: emulator checks of the Anki check per language, the
   Yomitan card, the update check and the segment fill; then push `languages/main`.
+- Step 6 done: the merge checked on the emulator at `99085b9` (run log 2026-10-15): the Anki check with the English
+  settings and per language (ANK11), the Yomitan card (SET11, SET3), the update check closing (DIC7), the segment
+  fill (new case SET13). `languages/main` pushed. Left: show the owner the choices below.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
@@ -162,3 +168,4 @@ Kept current while the work runs so a new session can continue from the last lin
 - 2026-10-15: the owner moved the create checklist from the Create card into a dialog after "Create backup…"
   (scrolling list, buttons always in view); the restore list stays on the screen.
 - 2026-10-15: the owner asked for the backup list items' titles in semibold.
+- 2026-10-15: the owner reported item 13 (romaji lookup reaches only the first word of a joined Latin word).
