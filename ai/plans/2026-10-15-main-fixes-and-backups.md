@@ -135,9 +135,17 @@ Kept current while the work runs so a new session can continue from the last lin
     without one) plus the supported languages of its dictionaries and fonts.
   - Remembered choice: `backup_languages_on`, `backup_languages_flipped` (app state, cleared by the full reset).
   - The restore summary adds the models restored and the languages turned on.
+- Languages item done: `9a8db2e` (823 unit tests pass), checked on the emulator with Japanese and English (test model
+  SET12, run log 2026-10-15 `languages/main`); the English download was measured for lag at the same time (no gross
+  stall: median frame 57 ms during download and import against 46 ms idle). Also fixed on the way: `docs/architecture.md`
+  had main's `settleInstall` sentence after the merge. Next: emulator checks of the Anki check per language, the
+  Yomitan card, the update check and the segment fill; then push `languages/main`.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
-  restoring fonts merges them into the installed ones instead of replacing all.
+  restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
+  "review" in its design above (shown only with two or more languages or models, first in the list, languages not
+  turned on are not offered, Japanese's shared audio values, restoring General adds languages and never turns one
+  off, a model installed in the same version is skipped).
 
 ## Changelog
 

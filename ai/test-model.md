@@ -260,6 +260,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | SET9 | Backup parts dialog: the list scrolls while Cancel and Next stay in view; Fonts and Dictionaries expand into files with sizes; an item's box is ✓, — or empty for all, some or none of its files; Cancel drops the changes; the next backup starts with the last accepted choice; in Russian | F | U BackupChoiceTest, M | 2026-10-15 |
 | SET10 | Restore of one font and some of the dictionaries: only those are written, files of the replaced font are not left behind; a backup whose manifest has no Fonts section (older format) still lists its fonts with sizes and restores them | F | U FontBackupTest, BackupArchiveTest, M | 2026-10-15 |
 | SET11 | The Dictionaries screen's Yomitan collection button opens the backup screen at the Yomitan card; Settings has no separate Yomitan item, and the backup item's subtitle names the import | O | M | 2026-10-15 |
+| SET12 | Languages in backups (two languages on): the parts dialog starts with Languages; a language left out hides its dictionaries and catalog fonts and lowers the dictionary order count; the file's manifest lists the chosen languages, its settings hold no keys of the left-out ones and the turned-on list is limited to the chosen; without Japanese its audio key keeps only volume and autoplay. Restore: one language and no models, no Languages item; General turns the backup's language on after the others ("Turned on" in the summary); a language left unchecked keeps its settings, files and turned-on state. Recognition models in the archive are covered by unit tests until the catalog has one | F | U BackupLanguagesTest, BackupFormatTest, BackupArchiveTest, BackupChoiceTest, OcrModelStoreTest, M | 2026-10-15 |
 
 ### UPD: About, logs, updates
 
@@ -302,6 +303,22 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, `languages/main` after d37b87c (languages in backups, uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: SET12 (new), SET2 and SET9 through it; the English download (DIC2) with frames measured.
+
+Results: every case passed. English turned on from the Languages screen downloaded and imported 113 MB in about 20 s.
+`dumpsys gfxinfo` while scrolling home during that download and import: median frame 57 ms, 90th percentile 85 ms,
+143 slow UI thread frames of 368; idle on the same screen: 46 ms, 65 ms, 67 of 370 (the emulator is janky at rest,
+see NF3). A backup without Japanese held `languages: ["en"]`, no Japanese keys, `audio_settings` with only autoplay
+and volume, the three English dictionaries in the list and the English sort dictionary only; the Fonts item (a
+Japanese catalog font) disappeared from the dialog. English turned off with its files kept, then restored from that
+backup: "Turned on: English", English active again, Japanese kept. A backup of both restored with English unchecked:
+30 of 33 dictionaries in the order item, no Dictionaries item (its only file was English), English stayed on and
+active. The dialog in Russian wraps; all languages unchecked gives "0 of 2" and "0 dictionaries".
+
+New cases, checked when written: SET12 (F).
 
 ### 2026-10-15, `main` after a24171b (backup choice, uncommitted build), Pixel_10_Pro (API 37)
 
