@@ -19,7 +19,7 @@ branches that does not depend on the new languages, all on `main`. The work is d
 | Backup: languages | `languages/main` only: an expandable "Languages" item lists the turned-on languages; a language left out takes out its own settings, its dictionaries, the fonts downloaded for it and its recognition models. Shared sections are chosen as before. Not on `main`, which has Japanese only. |
 | Backup: recognition models | Go into the backup with their language (`languages/main`). |
 | Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection). The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. |
-| Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, every rule chain behind "+N" (checked for false matches first), tags on kanji entries. |
+| Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, tags on kanji entries. Every rule chain behind "+N" turned out to exist only for the languages run through Yomitan's code; for Japanese it moves to the far backlog (owner, 2026-10-15). |
 | Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
 
 ## Bug fixes from the language branches
@@ -29,12 +29,12 @@ branches that does not depend on the new languages, all on `main`. The work is d
 2. The Dictionaries page's first opening showed empty sections for about 0.6 s (`8fab47d`).
 3. A language chosen in the system's app settings while the app ran left language names and catalog titles in the
    previous language (`881177f`).
-4. Home's audio card opened the top of the Anki page instead of its audio section (`b75305e`); "Add audio source"
-   started as a URL source instead of the first default kind (`666162e`).
+4. Home's audio card opened the top of the Anki page instead of its audio section (`b75305e`). ("Add audio source"
+   starting as JapanesePod101 for English, `666162e`, does not concern `main`.)
 5. The bubble's hold menu ignored e-ink and followed the system's day or night mode instead of the app's theme
    (`73c6a57`, part of `e0231ba`).
-6. Catalog downloads and bundled installs were named by their archive, not by their title (`9aec26d`, part of
-   `e0231ba`).
+6. Bundled installs were named by their archive, not by their title (part of `e0231ba`). (Catalog downloads named
+   by the catalog's localized titles, `9aec26d`, need the language branch's catalog.)
 7. A monolingual Japanese dictionary with loanword spellings was taken for Japanese → English (`aca8a48`).
 8. A lookup starting at a radical look-alike (⽇ for 日) found nothing (Japanese part of `329dc62`).
 9. AnkiDroid's hidden default deck was missing from the deck list (`f9be87b`).
@@ -50,9 +50,9 @@ branches that does not depend on the new languages, all on `main`. The work is d
 - Pitch accent colors: `dd3e825`, `a430fec`.
 - Frequency chip names: `773c9a7`.
 - Resumable downloads: `4e9c785`, `c3c1961`.
-- Every rule chain: the chain part of `33fbbe8`, without transcriptions. Before it lands, check Japanese lookups for
-  chains that do not belong (a form read two ways that leads to different words gives separate entries, each with its
-  own chain; only chains of the same word share "+N").
+- Every rule chain: not brought over. On the language branches the other chains come only from the lookup through
+  Yomitan's code; hoshidicts keeps the first chain to a word and drops the others (見られる → 見る as passive, not
+  also as potential). Collecting the dropped chains for Japanese is in the far backlog.
 - Kanji entry tags: `d7f1509`.
 
 ## Order
@@ -68,3 +68,6 @@ branches that does not depend on the new languages, all on `main`. The work is d
 ## Changelog
 
 - 2026-10-15: plan written from the owner's answers.
+- 2026-10-15: the owner asked to bring everything new into `languages/main` after `main` (step 6). Rule chains for
+  Japanese moved to the far backlog (owner); `666162e` and the catalog part of `9aec26d` left out as language-branch
+  only.
