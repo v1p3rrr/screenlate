@@ -13,6 +13,7 @@ add_compile_options(-O2)
 add_subdirectory(hoshidicts)
 
 add_library(screenlate_hoshidicts SHARED
+    form_of.cpp
     jni_bridge.cpp
 )
 

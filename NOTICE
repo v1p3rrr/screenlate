@@ -34,6 +34,8 @@ Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Author
   dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
   The Japanese inflection names and descriptions in dictionary/engine-hoshidicts come from
   Yomitan's japanese-transforms.js through hoshidicts; their translations are under the same license.
+  The lookup in dictionary/engine-hoshidicts follows form-of entries as Yomitan's dictionary
+  deinflections do (form_of.cpp).
 
 AnkiDroid API (https://github.com/ankidroid/Anki-Android, api/), LGPL-3.0,
 Copyright (c) AnkiDroid contributors.

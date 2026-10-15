@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.LookupOptions
+import com.vpr.screenlate.dictionary.api.model.Glossary
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -67,6 +68,44 @@ class HoshidictsEngineTest {
         assertThat(engine.media("Test Terms", "img/missing.png")).isNull()
     }
 
+    @Test
+    fun followsFormOfEntriesToTheirLemmas() = runTest {
+        val forms = engine.import(formOfDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(forms.directory)))
+
+        // Rows holding only forms give way to the words they name; a word also found by its reading keeps no chain.
+        val reading = engine.lookup("じどう")
+        assertThat(reading.map { it.term.expression }).containsExactly("自動", "児童")
+        assertThat(reading.flatMap { it.trace }).isEmpty()
+        assertThat(reading.map { it.term.glossaries.single().texts() }).containsExactly(listOf("automatic"), listOf("child"))
+        // The form rows do not take the places of the words.
+        assertThat(engine.lookup("じどう", LookupOptions(maxResults = 1)).single().term.expression).isAnyOf("自動", "児童")
+
+        // A word reached only through a form: the form's text matched, the item's tag as the chain.
+        val old = engine.lookup("社會").single()
+        assertThat(old.term.expression).isEqualTo("社会")
+        assertThat(old.matched).isEqualTo("社會")
+        assertThat(old.deinflected).isEqualTo("社会")
+        assertThat(old.trace.map { it.name }).containsExactly("kyūjitai")
+        assertThat(old.term.glossaries.single().texts()).containsExactly("society")
+
+        // A lemma without definitions of its own leaves nothing.
+        assertThat(engine.lookup("睦")).isEmpty()
+
+        // The deinflection's chain stays when the form leads to the same word with the same match.
+        val negative = engine.lookup("混ぜない").first()
+        assertThat(negative.term.expression).isEqualTo("混ぜる")
+        assertThat(negative.trace).isNotEmpty()
+        assertThat(negative.trace.map { it.name }).doesNotContain("imperfective negative")
+
+        // A row with definitions keeps them without the form item, and the lemma joins the results.
+        val mixed = engine.lookup("書")
+        assertThat(mixed.single { it.term.expression == "書" }.term.glossaries.single().texts()).containsExactly("writing")
+        val lemma = mixed.single { it.term.expression == "書く" }
+        assertThat(lemma.matched).isEqualTo("書")
+        assertThat(lemma.trace.map { it.name }).containsExactly("stem")
+    }
+
     @Test(expected = DictionaryImportException::class)
     fun rejectsArchiveWithoutIndex() = runTest {
         val archive = zip("broken.zip", "term_bank_1.json" to "[]".toByteArray())
@@ -112,12 +151,35 @@ class HoshidictsEngineTest {
         "img/dot.png" to PNG_BYTES,
     )
 
+    // Rows in the shape of Wiktionary's "non-lemma" rows.
+    private fun formOfDictionary(): File = zip(
+        "forms.zip",
+        "index.json" to """{"title":"Test Forms","revision":"1","format":3,"sourceLanguage":"ja"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["自動","じどう","","n",0,["automatic"],1,""],
+              ["児童","じどう","","n",0,["child"],2,""],
+              ["じどう","","non-lemma","",0,[["自動",["transliteration"]]],3,""],
+              ["じどう","","non-lemma","",0,[["児童",["transliteration"]]],4,""],
+              ["社会","しゃかい","","n",0,["society"],5,""],
+              ["社會","","non-lemma","",0,[["社会",["kyūjitai"]]],6,""],
+              ["睦","","non-lemma","",0,[["睦月",["transliteration"]]],7,""],
+              ["混ぜる","まぜる","","v1",0,["to mix"],8,""],
+              ["混ぜない","","non-lemma","v",0,[["混ぜる",["imperfective negative"]]],9,""],
+              ["書","しょ","","n",0,["writing",["書く",["stem"]]],10,""],
+              ["書く","かく","","v5",0,["to write"],11,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun frequencyDictionary(): File = zip(
         "freq.zip",
         "index.json" to """{"title":"Test Frequency","revision":"1","format":3,"frequencyMode":"rank-based"}"""
             .toByteArray(),
         "term_meta_bank_1.json" to """[["食べる","freq",100],["点","freq",200]]""".toByteArray(),
     )
+
+    private fun Glossary.texts(): List<String> = Json.parseToJsonElement(content).jsonArray.map { it.jsonPrimitive.content }
 
     private fun zip(name: String, vararg entries: Pair<String, ByteArray>): File {
         val file = File(root, name)

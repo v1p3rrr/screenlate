@@ -140,6 +140,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK12 | English phrasal verbs with wty-en-ru (phrases without a part of speech), testdata/ocr/en-phrasal.png: "picked up" → "pick up" with "past", "gives up" → "give up" with "3rd pers. sing. pres"; "closed to" shows "closed", "close", no "close to"; "looked for" shows "look", no "look for" | F | I LanguageLookupTest, M | 2026-10-15 |
 | LK13 | Korean lookups: 먹었습니다 → 먹다, 공부하고 → 공부하다 and 가르친다 → 가르치다 with their endings; the aim inside a spaced word starts at its first syllable (보면서 → 보다); 한국어를 → 한국어; TV를 → TV (Latin letters belong to the word), 3월에 → 월 (digits do not); 韓國語 and 大學校 from KRDICT, their Hangul words through Wiktionary's "hanja spelling", the word's hanja below the results; 마셨어요 lists 마시다 among Wiktionary's three lemmas | E | I KoreanLookupTest, U KoreanSupportTest, M | 2026-10-15 |
 | LK14 | Korean Wiktionary form-of tags in the interface language ("hanja form" → "hanja spelling", "informal past indicative/interrogative polite"); a tag with leftover gloss ("hanja form   the Korean language”)", about 1,000 entries) shows the tag alone, in Anki's `{conjugation}` too | O | U FormOfTagsTest, I KoreanLookupTest, M | 2026-10-15 |
+| LK15 | Japanese form-of rows with wty-ja-ja (`testdata/ocr/form-of-ja.png`: `scripts/text-image.py` with "じどうで動く" "社會の仕組み" "豪州へ行く"): じどう lists 自動, 児童 and the other kanji, no じどう entry of empty items with "non-lemma"; 社會 shows the old-form entries with their "⟶ 社会" links and no empty bullet, then 社会 with the tag of the first dictionary that leads there ("redirected from 社會" with Jitendex); 豪州 brings オーストラリア with "alternative"; a deinflected form keeps its own chain | E | I HoshidictsEngineTest, M | 2026-10-15 |
 
 ### POP: the popup
 
@@ -302,6 +303,16 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, `main` after 4a92c96 (form-of rows followed, uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: LK15 (new), with Wiktionary (ja–ja) downloaded from the catalog next to the nine other Japanese dictionaries.
+
+Results: passed; LK15 moved from N to E. じどう listed 自動, 児童, 自働, 慈童, 侍童, 兒童, 自仂 and 慈堂 (the last from
+wty-ja-ja only), none with a chain and no じどう entry. 社會 showed Jitendex's and Kolobok's old-form entries without the
+empty bullet, then 社会 with "redirected from 社會" (Jitendex's item; wty-ja-ja's "kyūjitai" and Kolobok's tag lead to
+the same term). 豪州 showed its own entry first, then オーストラリア, 濠洲 and the other forms with "alternative".
+Lookups took 10–22 ms warm and 681 ms for the first 豪州 after start.
 
 ### 2026-10-15, `main` after e6e20bf (romaji inside a joined Latin word, uncommitted build), Pixel_10_Pro (API 37)
 
