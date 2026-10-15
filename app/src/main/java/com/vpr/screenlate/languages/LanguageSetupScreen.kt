@@ -280,7 +280,7 @@ private fun ConfirmBar(state: LanguageSetupState, enabled: Boolean, onConfirm: (
         ) {
             Button(onClick = onConfirm, enabled = enabled, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                 Text(
-                    if (state.downloads.isEmpty()) {
+                    if (state.downloads.all { it.isBundled }) {
                         stringResource(R.string.language_setup_turn_on)
                     } else {
                         stringResource(R.string.language_setup_download, size(state.totals.downloadBytes))

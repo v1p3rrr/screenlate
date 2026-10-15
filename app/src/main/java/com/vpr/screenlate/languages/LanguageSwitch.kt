@@ -83,7 +83,7 @@ class LanguageSwitch @Inject constructor(
                     imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
                 }
             }
-            val bytes = downloads.sumOf { it.downloadBytes }
+            val bytes = downloads.filterNot { it.isBundled }.sumOf { it.downloadBytes }
             val models = downloads.count { it.isModel }
             Log.i(TAG, "Turned on ${language.code}${if (firstRun) " (first run)" else ""}: ${downloads.size} downloads " +
                 "($models models, ${bytes shr 20} MB)")

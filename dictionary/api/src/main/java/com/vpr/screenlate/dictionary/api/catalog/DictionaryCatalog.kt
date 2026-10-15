@@ -131,6 +131,9 @@ data class CatalogEntry(
 
     val downloadBytes: Long get() = if (downloadSize > 0) downloadSize else sizeMb * MIB
 
+    /** The archive comes with the app ([ASSET_URL_PREFIX]): installing it downloads nothing. */
+    val isBundled: Boolean get() = downloadUrl.startsWith(ASSET_URL_PREFIX)
+
     /**
      * The space the dictionary takes once imported: measured, or a cautious guess from the archive size. A model is
      * stored as downloaded or unpacked, which compressed weights barely shrink.
