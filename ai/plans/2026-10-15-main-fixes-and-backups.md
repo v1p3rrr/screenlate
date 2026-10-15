@@ -105,7 +105,14 @@ Kept current while the work runs so a new session can continue from the last lin
     in semibold (owner); also the Yomitan card's section and dictionary rows, the same kind of list on that screen.
 - Step 5 done along the way: `docs/usage.md` and `docs/architecture.md` describe the Anki check, the backup choice
   and the Yomitan card; strings in 14 locales; test model ANK11, SET2, SET9-SET11 and the run log.
-- Next: push `main`, then step 6 (merge `main` into `languages/main`; the Languages item with models in backups).
+- `main` pushed (`e6e20bf`).
+- Step 6 in progress on `languages/main`: merge commit `41bf4ff` (not pushed). Conflicts resolved with this branch's
+  versions wherever main only carried a port; main's new work merged in: the Anki check (`AnkiNotes.check(language)`,
+  the check card below the language card, re-run when the shown language changes), the backup choice dialog and
+  Yomitan card, the update check fix, the segment fill, the progress throttle and catalog card lambdas. Main's
+  `settleInstall` and its test dropped (`settleFirstRun` stays). Builds; 805 unit tests and 127 page tests pass.
+  Next: the Languages item with models in backups (design below), then emulator checks of the merge (Anki check
+  per language, backup dialog, Yomitan card, update check, download lag measured again), push.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all.
