@@ -197,6 +197,19 @@ test('kanji entries list readings and statistics', () => {
     assert.equal(content.querySelector('.frequency').textContent, 'Strokes11');
 });
 
+test('a character entry shows its tags, and a tap opens a tag note', () => {
+    Popup.render({
+        theme: 'light',
+        kanji: { character: '国', entries: [{ dictionary: 'KANJIDIC', onyomi: 'コク', tags: 'jouyou kyouiku', definitions: ['country'] }] },
+        labels: {},
+    });
+    Popup.setTagNotes([{ dictionary: 'KANJIDIC', notes: { jouyou: 'included in list of regular-use characters' } }]);
+    const tags = [...content.querySelectorAll('.kanji-tags .tag')];
+    assert.deepEqual(tags.map(tag => tag.textContent), ['jouyou', 'kyouiku']);
+    tags[0].click();
+    assert.equal(page.document.getElementById('info-text').textContent, 'included in list of regular-use characters');
+});
+
 test('appearance sets the language, fonts and custom css', () => {
     Popup.setAppearance({
         lang: 'ja',
