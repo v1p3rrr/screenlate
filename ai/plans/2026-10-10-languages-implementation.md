@@ -108,6 +108,9 @@ Requests 1–19 are in the previous plan. New ones:
     through the app; either way the files end up on the phone, so the owner leans to doing it in the app.
 53. (2026-10-16) Ask every remaining question now; then the agent works on alone through the whole plan until the
     implementation and the OCR tests are done (rows from "OCR engine choice" to "Diacritics of Latin-script languages").
+54. (2026-10-16) While the owner is away: questions that come up wait until everything possible is done; a blocking
+    question postpones the task or the part of it that depends on it, without taking the recommended option in
+    advance when the question is important or another answer would mean a large rework.
 
 ## Decisions
 
