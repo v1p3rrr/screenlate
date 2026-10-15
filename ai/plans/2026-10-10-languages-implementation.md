@@ -222,6 +222,31 @@ Collected after that (autonomous work, 2026-10-15); the recommended option is in
    marked as third person; (b) prepositions too: "look for" and "deal with" as well, with the false matches above;
    (c) as Yomitan: such phrases never match a verb form.
 
+Collected during the Korean work (autonomous, 2026-10-15); the recommended option is in use:
+
+4. KRDICT comes in two packagings per gloss language, with and without example sentences (KO-EN 16 MB with
+   examples). Both have the same title ("KRDICT EN"), so installing one replaces the other. Options: (a, recommended,
+   in use) list the one with examples; (b) list the one without examples (smaller, faster to import); (c) both, the
+   one installed last stays.
+5. Popup fonts for Korean. Options: (a, recommended, in use) Noto Sans KR and Noto Serif KR (every weight, Korean
+   hanja forms), Nanum Gothic and Nanum Myeongjo (regular and bold, small, common on Korean websites); (b) Noto only;
+   (c) more, e.g. a handwritten font (Nanum Pen Script) or Gowun Dodum.
+6. Korean audio sources by default: (a, recommended, in use) Wiktionary, Lingua Libre, text to speech (Wiktionary
+   has recordings of more common words); (b) Lingua Libre first.
+7. The hanja dictionary (decision row "Hanja dictionary"): it is a catalog entry whose archive comes with the app,
+   ticked on the download screen ("Comes with the app") and installed without a download; it can be unticked or
+   deleted like any dictionary, and the download total leaves it out. Options: (a, recommended, in use) as described;
+   (b) always installed with Korean, without a box on the download screen, like the bundled Japanese dictionaries.
+8. 496 of KRDICT's 85,000 ko–en entries show `&quot;` and `&apos;` as text: the packaging left HTML entities in
+   plain text. Yomitan shows them the same way. Options: (a, recommended, in use) leave them, the fix belongs to the
+   packaging; (b) turn these two entities into quote marks in any dictionary's text on the lookup page.
+9. Character entries showed their dictionary's tags nowhere: KANJIDIC tags kanji jouyou or jinmeiyou, the hanja
+   dictionary 교육용 (basic hanja for education) or 인명용 (names). Options: (a, recommended, in use) show them as
+   chips next to the dictionary name, a tap opens the tag's note, for every language, as Yomitan does (Japanese
+   kanji entries get them too); (b) Korean only; (c) not at all.
+10. STDICT, the monolingual standard dictionary (58 MB, CC BY-SA 2.0 KR like KRDICT): (a, recommended, in use)
+    listed for Korean, not ticked; (b) not listed.
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -466,7 +491,24 @@ Per-language checklist (every language branch):
   frequency (wordfreq if it has Korean, else CC100 with its license checked).
 - The lookup start at the spaced word, the Korean recognizer; rule names are endings and need no translation.
 - Questions: KRDICT's packaging has no license of its own (the data is CC BY-SA): list it as usable or not; Hanja
-  entries (single characters) if a licensed source exists.
+  entries (single characters) if a licensed source exists. Both answered by decision rows ("KRDICT", "Hanja
+  dictionary"); the questions that came up during the work are 4-10 in "Questions for the owner".
+- Done on `languages/ko` (2026-10-15):
+  - `Language.KOREAN` and `KoreanSupport`: glyph 한, space-separated words, the Korean recognizer, letter resolution,
+    the lookup start at the spaced word (Latin letters belong to it, digits do not), hanja of the word as entries of
+    their own, the phone's Noto CJK KR faces with Korean, Windows and macOS font names; Yomitan's `ko` bundle with
+    hangul-js; its only described rule (어간, stem) in 14 locales; the flag of South Korea.
+  - Catalog: KRDICT in 11 gloss languages and monolingual (recommended), STDICT, Wiktionary ko-en and others (not
+    ticked), transcription, wordfreq; the hanja dictionary built by `scripts/hanja/unihan_hanja.py` from Unihan
+    17.0.0 (8,500 characters, 169 kB) carried as an asset and installed through an `asset:///` catalog URL (question
+    7). An index that names only its target language (KRDICT says "ko") no longer sets the gloss language on import.
+  - Korean Wiktionary form-of tags in 14 locales (hanja form, hangeul, honorific, regions…); tags that carry a piece
+    of gloss after two spaces are cut (about 1,000 entries).
+  - Popup fonts (question 5); character entries show their tags (question 9).
+  - Tests: `KoreanSupportTest`, `KoreanLookupTest` (instrumented), the catalog and font catalog tests, a page test;
+    test model cases OCR17, LK13, LK14, POP20, POP21, AUD7, ANK10, DIC18.
+  - Known limits (`ai/notes/languages.md`): the device recognizer does not read hanja; KRDICT's hanja headwords have
+    no reading, so audio finds nothing for them; some forms reach unrelated lemmas as in Yomitan (수업은 → 수없다).
 
 ### Before group 1 is merged
 
@@ -756,3 +798,7 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - 2026-10-15: Request 43 done (decision row "Frequency chip names"): `popup.js` shortens a frequency dictionary's
   name wider than four Latin letters to its first character in upper case; the chip becomes a button that toggles
   the whole name, "+N" shows the first one whole, TalkBack reads the whole name. Page test and emulator (POP19).
+- 2026-10-15: the Chinese branch merged into `languages/main` (with `main`, v0.2.3 included); `languages/ko` started
+  from it. Korean done on the branch (section "Korean"): support class, catalog with KRDICT and the hanja dictionary
+  from the app, form-of tags, fonts, character entry tags, emulator checks by the test model. Questions 4-10 logged
+  with their recommended options in use.

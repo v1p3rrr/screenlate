@@ -413,3 +413,35 @@ mostly participle forms (шокирующее → шокирующий → шо�
 690 K with one step, 1.34 M with two (noise: кошки → кот, aspect partners принуждали → принудить, pronoun tables),
 1.01 M with a second step only from lemmas without definitions, which finds 315,469 of the 327,148 dead ends and
 leaves every form that already finds something as it was.
+
+## Chinese on `languages/zh` (2026-10-14/15)
+
+- Scripts: `scripts/chinese-scripts/build.py` builds `ChineseScriptTable.kt` from Unihan (variants, GB 2312, the 2013
+  general standard, Big5) and CC-CEDICT's headword pairs (OpenCC is not on the allowed downloads). A character is
+  Simplified only when no Traditional spelling in CC-CEDICT uses it and it replaces a Traditional character there or
+  Unihan lists it in the mainland sets but not Big5; Traditional only the other way round; shared characters (后, 里,
+  着) are in neither. The other script's forms are ordered by how many CC-CEDICT words use them (头发 → 頭髮, not 頭發).
+- Pinyin over characters: `reading-zh.js` splits a tone-marked reading into syllables by a regex of initials and
+  finals (plus hng, hm, ng, m, n and erhua r) and gives each syllable a tone (5 = neutral); where the syllables do not
+  match the Han characters one to one (letters in the word, odd readings) the word gets one ruby. 儿 takes the erhua r.
+- Typed pinyin: the engine cannot search readings in Latin letters, so the import writes a `ReadingIndex` next to the
+  dictionary: 64-bit hashes of toneless keys (`ChinesePinyin.key`, "ni3hao3", "nǐhǎo" and "nihao" give the same key),
+  each with its words, the likely common ones first (a character in more of the dictionary's words counts as more
+  common, a word as common as its rarest character). The banks are read on several threads; the file is mapped.
+  `readingMatch` ranks exact tones first.
+
+## Korean on `languages/ko` (2026-10-15)
+
+- KRDICT (Lyroxide 1.0.0): index titles "KRDICT EN", "KRDICT RU", … (the variants with and without examples share
+  them), `targetLanguage` "ko" and no `sourceLanguage`, so an index naming only its target no longer sets the gloss
+  language (`indexTargetLanguage`). KO-EN: 85,415 headwords, 32 K of them hanja spellings, 6 K phrases; parts of speech
+  v, adj or none. Hanja headwords have no reading (the Hangul is only in the glossary), so audio finds nothing for them;
+  Wiktionary's form-of entry gives the Hangul word next to it. 496 entries hold `&quot;` and `&apos;` as text.
+- The hanja dictionary: `scripts/hanja/unihan_hanja.py` reads Unihan 17.0.0 (`kHangul` "락:0E 낙:0", where E marks a
+  reading on the 2007 education list; `kDefinition`, `kTotalStrokes`; tags 교육용 and 인명용 from
+  `kKoreanEducationHanja` and `kKoreanName`), readings on the education list first, 8,500 characters in 169 kB;
+  reproducible zip. It ships in
+  `dictionary/api/src/main/assets/catalog/` and installs through `asset:///` (no network constraint on the job).
+- Wiktionary ko-en: 387 K form-of rows with tags like "formal past indicative", "hanja form", "hangeul"; about 1,000
+  tags carry leftover gloss after two spaces (cut by `FormOfTags.clean`).
+- The device recognizer does not read hanja (`ocr-engines.md`).
