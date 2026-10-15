@@ -61,7 +61,7 @@ class PopupFonts @Inject constructor(
     private val client: OkHttpClient,
 ) {
     private val directory = File(context.filesDir, PageFonts.DIRECTORY)
-    private val index = File(directory, INDEX)
+    private val index = File(directory, FontBackup.INDEX)
     private val json = Json { ignoreUnknownKeys = true }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val lock = Mutex()
@@ -161,29 +161,50 @@ class PopupFonts @Inject constructor(
 
     fun file(file: FontFile): File = File(directory, file.name)
 
-    /** The font files and their list, for a backup; empty when no font is installed. */
-    fun backupFiles(): List<File> {
-        val fonts = mutableInstalled.value
-        if (fonts.isEmpty()) return emptyList()
-        return listOf(index) + fonts.flatMap { font -> font.files.map { File(directory, it.name) } }.filter { it.exists() }
+    /** The installed fonts [ids] with their list, for a backup; null when none of them is installed. */
+    fun backup(ids: Set<String>): FontBackup.Files? {
+        val fonts = mutableInstalled.value.filter { it.id in ids }
+        if (fonts.isEmpty()) return null
+        return FontBackup.Files(
+            index = FontBackup.encode(fonts),
+            files = fonts.flatMap { font -> font.files.map { File(directory, it.name) } }.filter { it.exists() },
+        )
     }
 
+    /** The bytes of each installed font's files, by font id. */
+    fun sizes(): Map<String, Long> =
+        mutableInstalled.value.associate { font -> font.id to font.files.sumOf { File(directory, it.name).length() } }
+
     /**
-     * Replaces the installed fonts with the files in [source] (as [backupFiles] lists them).
+     * Adds the fonts [ids] from [source], a folder with a backup's font list and files; each replaces the same
+     * installed font ([FontBackup.merge]), other installed fonts stay.
      *
-     * @return the number of fonts installed now.
+     * @return the number of fonts restored.
      */
-    suspend fun restore(source: File): Int = withContext(Dispatchers.IO) {
+    suspend fun restore(source: File, ids: Set<String>): Int = withContext(Dispatchers.IO) {
         lock.withLock {
-            directory.listFiles()?.forEach { it.deleteRecursively() }
+            val listed = runCatching { FontBackup.decode(File(source, FontBackup.INDEX).readText()) }
+                .onFailure { Log.w(TAG, "Backup font list unreadable", it.redacted()) }
+                .getOrDefault(emptyList())
+            val restored = usable(listed.filter { it.id in ids }, source)
+            if (restored.isEmpty()) return@withLock 0
             directory.mkdirs()
+            val before = mutableInstalled.value.flatMap { it.files }.mapTo(hashSetOf()) { it.name }
+            val copied = mutableListOf<File>()
             try {
-                source.listFiles()?.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
-            } finally {
-                // The old files are gone already: a failed copy must not leave them listed.
-                mutableInstalled.value = readIndex()
+                restored.flatMap { it.files }.forEach { file ->
+                    val target = File(directory, file.name)
+                    File(source, file.name).copyTo(target, overwrite = true)
+                    copied += target
+                }
+                val (fonts, unused) = FontBackup.merge(mutableInstalled.value, restored)
+                save(fonts)
+                unused.forEach { File(directory, it).delete() }
+            } catch (e: IOException) {
+                copied.filter { it.name !in before }.forEach { it.delete() }
+                throw e
             }
-            mutableInstalled.value.size
+            restored.size
         }
     }
 
@@ -253,17 +274,20 @@ class PopupFonts @Inject constructor(
      */
     private fun readIndex(): List<InstalledFont> = runCatching {
         if (!index.exists()) return emptyList()
-        json.decodeFromString<List<InstalledFont>>(index.readText())
-            .filter { font -> font.family.isNotBlank() && font.files.isNotEmpty() }
-            .filter { font -> font.files.all { FontFiles.isFileName(it.name) && File(directory, it.name).exists() } }
-            .map { font ->
-                font.copy(files = font.files.map { if (PageFonts.isWeight(it.weight)) it else it.copy(weight = DEFAULT_WEIGHT) })
-            }
+        usable(FontBackup.decode(index.readText()), directory)
     }.onFailure { Log.w(TAG, "Font list unreadable", it.redacted()) }.getOrDefault(emptyList())
+
+    /** The fonts of a list whose files are all in [folder]; see [readIndex]. */
+    private fun usable(fonts: List<InstalledFont>, folder: File): List<InstalledFont> = fonts
+        .filter { font -> font.family.isNotBlank() && font.files.isNotEmpty() }
+        .filter { font -> font.files.all { FontFiles.isFileName(it.name) && File(folder, it.name).exists() } }
+        .map { font ->
+            font.copy(files = font.files.map { if (PageFonts.isWeight(it.weight)) it else it.copy(weight = DEFAULT_WEIGHT) })
+        }
 
     private fun save(fonts: List<InstalledFont>) {
         directory.mkdirs()
-        val temporary = File(directory, "$INDEX.tmp")
+        val temporary = File(directory, "${FontBackup.INDEX}.tmp")
         temporary.writeText(json.encodeToString(fonts))
         // The rename replaces the old list in one step; deleting it first only where the rename cannot replace.
         if (!temporary.renameTo(index)) {
@@ -307,7 +331,6 @@ class PopupFonts @Inject constructor(
 
     private companion object {
         const val TAG = "PopupFonts"
-        const val INDEX = "fonts.json"
         const val CATALOG = "fonts/catalog.json"
         const val BUFFER = 64 * 1024
         const val HEAD = 12

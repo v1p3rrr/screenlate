@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.vpr.screenlate.backup.BackupChoiceStore
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.overlay.BubbleKeepAliveService
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -53,7 +54,7 @@ object SettingsKeys {
         "background_tip_seen",
         "notification_permission_asked",
         "accessibility_agreed",
-    )
+    ) + BackupChoiceStore.KEYS
 
     /** The page a key belongs to; null for keys no page resets. */
     fun sectionOf(key: String): SettingsSection? = when {

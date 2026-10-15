@@ -25,6 +25,7 @@
 
     <string name="action_delete">删除</string>
     <string name="action_cancel">取消</string>
+    <string name="action_next">下一步</string>
     <string name="action_resume">继续</string>
     <string name="action_dismiss">忽略</string>
     <string name="action_ok">确定</string>
@@ -188,7 +189,6 @@
     <string name="settings_popup_summary">识别文本、自动隐藏、字体、文字大小与粗细、CSS、释义复制</string>
     <string name="settings_translation_summary">翻译按钮、笔记、服务、语言</string>
     <string name="yomitan_import_title">从 Yomitan 导入</string>
-    <string name="settings_yomitan_summary">Yomitan 的设置和词典</string>
     <string name="about_title">关于</string>
     <string name="settings_about_summary">版本、更新、许可证、日志</string>
     <string name="about_version">版本 %1$s</string>
@@ -499,11 +499,15 @@
     <string name="dictionaries_website">网站</string>
     <string name="dictionaries_download_link">下载</string>
     <string name="backup_title">备份与恢复</string>
-    <string name="settings_backup_summary">将设置和词典保存到文件，并从中恢复</string>
+    <string name="settings_backup_summary">将设置和词典保存到文件，并从中恢复；从 Yomitan 导入</string>
     <string name="backup_create">创建备份</string>
-    <string name="backup_create_hint">一个文件包含所有设置、词典的顺序和开关以及已安装的字体。可以存放在任何地方：手机、存储卡或云存储。</string>
-    <string name="backup_include_dictionaries">包含词典</string>
-    <string name="backup_include_dictionaries_hint">包含词典本身，无需下载或导入即可使用。文件会大很多。</string>
+    <string name="backup_create_hint">一个文件包含所选部分：设置、字体、词典。可以存放在任何地方：手机、存储卡或云存储。</string>
+    <string name="backup_parts_save">要保存的部分</string>
+    <string name="backup_section_fonts">字体</string>
+    <string name="backup_files_chosen">已选 %1$d/%2$d，%3$s</string>
+    <string name="backup_files_chosen_count">已选 %1$d/%2$d</string>
+    <string name="backup_files_show">显示列表</string>
+    <string name="backup_files_hide">隐藏列表</string>
     <string name="backup_create_button">创建备份…</string>
     <string name="backup_creating">正在创建备份…</string>
     <string name="backup_created">备份已保存（%1$s）。</string>
@@ -520,7 +524,7 @@
     <string name="backup_read_failed">无法读取备份。</string>
     <string name="backup_loaded">%1$s 的备份，版本 %2$s</string>
     <string name="backup_sections">要恢复的部分</string>
-    <string name="backup_replace_warning">勾选的部分会替换当前内容。备份中的词典会被添加，或替换已安装的同一词典；其他已安装的词典保持不变。</string>
+    <string name="backup_replace_warning">勾选的部分会替换当前内容。备份中的字体和词典会被添加，或替换已安装的同一字体或词典；其他已安装的字体和词典保持不变。</string>
     <string name="backup_restore_button">恢复所选</string>
     <string name="backup_restored">已恢复</string>
     <string name="backup_section_general">常规</string>
@@ -530,7 +534,7 @@
     <string name="backup_section_lookup">查词</string>
     <string name="backup_section_lookup_hint">扫描长度、结果数量、罗马字、词中的汉字</string>
     <string name="backup_section_popup">弹窗外观</string>
-    <string name="backup_section_popup_hint">字体、文字大小、自定义 CSS 和已安装的字体</string>
+    <string name="backup_section_popup_hint">字体、文字大小、自定义 CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">牌组、笔记类型、字段、重复处理</string>
     <string name="backup_section_audio">音频</string>
@@ -542,9 +546,6 @@
         <item quantity="other">%d 个词典：顺序、开关、语言以及用于排序的词典。应用于已安装的词典。</item>
     </plurals>
     <string name="backup_section_dictionary_files">词典</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d 个词典，添加或替换已安装的版本</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d 个字体</item>
     </plurals>

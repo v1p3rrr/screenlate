@@ -30,7 +30,19 @@ class BackupFormatTest {
             "e_ink_hint_seen", "update_last_check", "update_announced_tag", "sort_dictionary_id", "index_texts_decoded",
             "bundled_dictionaries_installed", "background_tip_seen", "notification_permission_asked",
             "installed_languages_filled", "e_ink_bubble_before", "e_ink_font_after", "accessibility_agreed",
+            "backup_sections_off", "backup_fonts_flipped",
         ).forEach { assertThat(BackupPreferences.sectionOf(it)).isNull() }
+    }
+
+    @Test
+    fun `only the chosen sections go into the settings`() {
+        val prefs = mutablePreferencesOf(
+            stringPreferencesKey("theme_mode") to "DARK",
+            stringPreferencesKey("anki_settings") to "{}",
+            intPreferencesKey("popup_font_size") to 18,
+        )
+        val encoded = BackupPreferences.encode(prefs, setOf(BackupSection.GENERAL, BackupSection.POPUP))
+        assertThat(encoded.keys).containsExactly("popup_font_size", "theme_mode")
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import com.vpr.screenlate.dictionary.api.registry.keptTermDictionaries
+import com.vpr.screenlate.overlay.fonts.FontBackup
 import com.vpr.screenlate.overlay.fonts.PopupFonts
 import com.vpr.screenlate.settings.EInkSizes
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed interface BackupState {
     data object Idle : BackupState
@@ -44,13 +46,18 @@ sealed interface BackupState {
     /**
      * A backup chosen for restoring.
      *
-     * @property dictionaryFiles titles of the dictionaries whose files it holds.
+     * @property sections what it offers: the manifest's sections, and the fonts of an older backup, which has them
+     *   with the popup settings.
+     * @property fonts its fonts, keyed by id.
+     * @property dictionaryFiles the dictionaries whose files it holds, keyed by their index in its list.
      */
     data class Loaded(
         val uri: Uri,
         val manifest: BackupManifest,
+        val sections: List<BackupSection>,
         val dictionaries: Int,
-        val dictionaryFiles: List<String>,
+        val fonts: List<BackupFile>,
+        val dictionaryFiles: List<BackupFile>,
     ) : BackupState
 
     data class Restored(val summary: RestoreSummary) : BackupState
@@ -59,6 +66,21 @@ sealed interface BackupState {
 }
 
 enum class BackupFailure { NOT_BACKUP, NEWER_VERSION, WRITE, READ }
+
+/**
+ * A font or dictionary a backup can hold.
+ *
+ * @property key what a [FileChoice] keeps: a font's id, a dictionary's title, or its index in a backup's list.
+ * @property bytes null when unknown (dictionaries in backups of older versions).
+ */
+data class BackupFile(val key: String, val name: String, val bytes: Long?)
+
+/**
+ * The installed fonts and the dictionaries with files, which a backup can hold, in their order on screen.
+ *
+ * @property listed the number of installed dictionaries, for the dictionary list.
+ */
+data class BackupFiles(val fonts: List<BackupFile>, val dictionaries: List<BackupFile>, val listed: Int)
 
 /**
  * @property settings sections restored from the settings file.
@@ -77,8 +99,8 @@ data class RestoreSummary(
 )
 
 /**
- * Creates and restores backups: the settings, the dictionary list and installed fonts, and optionally the
- * dictionaries in the app's own format. Runs in its own scope, so leaving the screen does not stop it.
+ * Creates and restores backups of the chosen parts: settings sections, the dictionary list, fonts, and dictionaries
+ * in the app's own format. Runs in its own scope, so leaving the screen does not stop it.
  */
 @Singleton
 class BackupManager @Inject constructor(
@@ -101,25 +123,63 @@ class BackupManager @Inject constructor(
         if (!busy) mutableState.value = BackupState.Idle
     }
 
-    /** Writes a backup into the document at [uri]; [includeDictionaries] adds the dictionary files. */
-    fun create(uri: Uri, includeDictionaries: Boolean) {
+    /** The fonts and dictionaries a backup can hold now, with their sizes. */
+    suspend fun files(): BackupFiles = withContext(Dispatchers.IO) {
+        val sizes = fonts.sizes()
+        val installed = dictionaries.getAll()
+        BackupFiles(
+            fonts = fonts.installed.value.map { BackupFile(it.id, it.family, sizes[it.id]) },
+            dictionaries = installed.filter { storage.hasFiles(it) }.map {
+                BackupFile(it.title, it.title, bytesOf(storage.directoryOf(it)))
+            },
+            listed = installed.size,
+        )
+    }
+
+    /**
+     * Writes a backup of [sections] into the document at [uri], with the fonts [fontIds] and the files of the
+     * dictionaries titled [dictionaryTitles]. Without the dictionary list, only the dictionaries whose files go in
+     * are listed.
+     */
+    fun create(uri: Uri, sections: Set<BackupSection>, fontIds: Set<String>, dictionaryTitles: Set<String>) {
         if (busy) return
         job = scope.launch {
             mutableState.value = BackupState.Working(restoring = false, progress = null)
             val result = runCatching {
                 val installed = dictionaries.getAll()
                 val sortId = dictionaries.sortDictionaryId.first()
-                val withFiles = if (includeDictionaries) installed.filter { storage.hasFiles(it) }.map { it.id }.toSet() else emptySet()
-                val sections = BackupSection.entries.filter { it != BackupSection.DICTIONARY_FILES || withFiles.isNotEmpty() }
+                val withFiles = if (BackupSection.DICTIONARY_FILES in sections) {
+                    installed.filter { it.title in dictionaryTitles && storage.hasFiles(it) }.map { it.id }.toSet()
+                } else {
+                    emptySet()
+                }
+                val withList = BackupSection.DICTIONARY_LIST in sections
+                val listed = if (withList) installed else installed.filter { it.id in withFiles }
+                val fontFiles = if (BackupSection.FONTS in sections) fonts.backup(fontIds) else null
+                val included = sections.filterTo(linkedSetOf()) {
+                    when (it) {
+                        BackupSection.FONTS -> fontFiles != null
+                        BackupSection.DICTIONARY_FILES -> withFiles.isNotEmpty()
+                        else -> true
+                    }
+                }
                 val contents = BackupArchive.Contents(
-                    manifest = BackupManifest(appVersion = BuildConfig.VERSION_NAME, createdAt = System.currentTimeMillis(), sections = sections),
-                    settings = BackupPreferences.encode(TranslationSettingsRepository.withButton(preferences.data.first())),
-                    dictionaries = BackupDictionaryList(
-                        dictionaries = installed.map { BackupDictionary.of(it, files = it.id in withFiles) },
-                        sortDictionary = installed.firstOrNull { it.id == sortId }?.title,
+                    manifest = BackupManifest(
+                        appVersion = BuildConfig.VERSION_NAME,
+                        createdAt = System.currentTimeMillis(),
+                        sections = BackupSection.entries.filter { it in included },
                     ),
-                    fonts = fonts.backupFiles(),
-                    dictionaryFiles = installed.withIndex()
+                    settings = BackupPreferences.encode(TranslationSettingsRepository.withButton(preferences.data.first()), included),
+                    dictionaries = BackupDictionaryList(
+                        dictionaries = listed.map { dictionary ->
+                            val files = dictionary.id in withFiles
+                            BackupDictionary.of(dictionary, files, bytes = if (files) bytesOf(storage.directoryOf(dictionary)) else 0)
+                        },
+                        sortDictionary = if (withList) installed.firstOrNull { it.id == sortId }?.title else null,
+                    ),
+                    fontIndex = fontFiles?.index,
+                    fonts = fontFiles?.files.orEmpty(),
+                    dictionaryFiles = listed.withIndex()
                         .filter { it.value.id in withFiles }
                         .associate { it.index to storage.directoryOf(it.value) },
                 )
@@ -148,11 +208,22 @@ class BackupManager @Inject constructor(
             mutableState.value = BackupState.Working(restoring = true, progress = null)
             mutableState.value = runCatching {
                 val head = context.contentResolver.openInputStream(uri)?.use { BackupArchive.readHead(it) } ?: error("No input")
+                val backupFonts = head.fontIndex?.let { index ->
+                    runCatching { FontBackup.decode(index) }.getOrDefault(emptyList())
+                }.orEmpty().filter { font -> font.files.all { it.name in head.fontSizes } }
                 BackupState.Loaded(
                     uri = uri,
                     manifest = head.manifest,
+                    sections = BackupSection.entries.filter {
+                        it in head.manifest.sections || (it == BackupSection.FONTS && backupFonts.isNotEmpty())
+                    },
                     dictionaries = head.dictionaries.dictionaries.size,
-                    dictionaryFiles = head.dictionaries.dictionaries.filter { it.files }.map { it.title },
+                    fonts = backupFonts.map { font ->
+                        BackupFile(font.id, font.family, font.files.sumOf { head.fontSizes[it.name] ?: 0 })
+                    },
+                    dictionaryFiles = head.dictionaries.dictionaries.withIndex().filter { it.value.files }.map {
+                        BackupFile(it.index.toString(), it.value.title, it.value.bytes.takeIf { bytes -> bytes > 0 })
+                    },
                 )
             }.getOrElse { error ->
                 Log.w(TAG, "Reading the backup failed", error.redacted())
@@ -161,19 +232,29 @@ class BackupManager @Inject constructor(
         }
     }
 
-    /** Replaces the chosen [sections] with the backup's. */
-    fun restore(uri: Uri, sections: Set<BackupSection>) {
+    /**
+     * Replaces the chosen [sections] with the backup's; of its fonts and dictionaries, [fontIds] and the files of
+     * the dictionaries at [dictionaryIndices] in its list are added or replace the same ones.
+     */
+    fun restore(uri: Uri, sections: Set<BackupSection>, fontIds: Set<String>, dictionaryIndices: Set<Int>) {
         if (busy) return
         job = scope.launch {
             mutableState.value = BackupState.Working(restoring = true, progress = null)
-            mutableState.value = runCatching { BackupState.Restored(restoreFrom(uri, sections)) }.getOrElse { error ->
+            mutableState.value = runCatching {
+                BackupState.Restored(restoreFrom(uri, sections, fontIds, dictionaryIndices))
+            }.getOrElse { error ->
                 Log.w(TAG, "Restoring the backup failed", error.redacted())
                 BackupState.Failed(failure(error))
             }
         }
     }
 
-    private suspend fun restoreFrom(uri: Uri, sections: Set<BackupSection>): RestoreSummary {
+    private suspend fun restoreFrom(
+        uri: Uri,
+        sections: Set<BackupSection>,
+        fontIds: Set<String>,
+        dictionaryIndices: Set<Int>,
+    ): RestoreSummary {
         val total = size(uri)
         val fontDirectory = File(context.cacheDir, "backup-fonts-${UUID.randomUUID()}").apply { mkdirs() }
         val staging = mutableMapOf<Int, File>()
@@ -188,15 +269,15 @@ class BackupManager @Inject constructor(
             }.use { counted ->
                 BackupArchive.read(
                     counted,
-                    dictionaryFiles = BackupSection.DICTIONARY_FILES in sections,
+                    dictionaryFiles = BackupSection.DICTIONARY_FILES in sections && dictionaryIndices.isNotEmpty(),
                     reader = object : BackupArchive.Reader {
                         override suspend fun font(name: String, input: InputStream) {
-                            if (BackupSection.POPUP !in sections) return
+                            if (BackupSection.FONTS !in sections) return
                             File(fontDirectory, name).outputStream().use { input.copyTo(it) }
                         }
 
                         override suspend fun dictionaryFile(index: Int, path: String, input: InputStream) {
-                            if (BackupSection.DICTIONARY_FILES !in sections) return
+                            if (BackupSection.DICTIONARY_FILES !in sections || index !in dictionaryIndices) return
                             val directory = staging.getOrPut(index) { storage.newStagingDirectory() }
                             val file = File(directory, path)
                             file.parentFile?.mkdirs()
@@ -226,7 +307,7 @@ class BackupManager @Inject constructor(
                     },
                 )
             }
-            if (BackupSection.POPUP in sections) fontCount = fonts.restore(fontDirectory)
+            if (BackupSection.FONTS in sections) fontCount = fonts.restore(fontDirectory, fontIds)
             var missing = emptyList<String>()
             var keptOn = emptyList<String>()
             if (BackupSection.DICTIONARY_LIST in sections) {
@@ -267,6 +348,8 @@ class BackupManager @Inject constructor(
         is BackupArchive.NewerFormatException -> BackupFailure.NEWER_VERSION
         else -> BackupFailure.READ
     }
+
+    private fun bytesOf(directory: File): Long = directory.walkTopDown().filter { it.isFile }.sumOf { it.length() }
 
     private fun size(uri: Uri): Long? = runCatching {
         context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use { cursor ->

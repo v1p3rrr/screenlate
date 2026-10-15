@@ -25,6 +25,7 @@
 
     <string name="action_delete">Sil</string>
     <string name="action_cancel">İptal</string>
+    <string name="action_next">İleri</string>
     <string name="action_resume">Sürdür</string>
     <string name="action_dismiss">Kapat</string>
     <string name="action_ok">Tamam</string>
@@ -188,7 +189,6 @@
     <string name="settings_popup_summary">Tanınan metin, otomatik gizleme, yazı tipi, metin boyutu ve kalınlığı, CSS, tanım kopyalama</string>
     <string name="settings_translation_summary">Çeviri düğmesi, notlar, hizmetler, dil</string>
     <string name="yomitan_import_title">Yomitan’dan içe aktar</string>
-    <string name="settings_yomitan_summary">Yomitan’daki ayarlar ve sözlükler</string>
     <string name="about_title">Hakkında</string>
     <string name="settings_about_summary">Sürüm, güncellemeler, lisanslar, günlükler</string>
     <string name="about_version">Sürüm %1$s</string>
@@ -499,11 +499,15 @@
     <string name="dictionaries_website">Web sitesi</string>
     <string name="dictionaries_download_link">İndirme</string>
     <string name="backup_title">Yedekleme ve geri yükleme</string>
-    <string name="settings_backup_summary">Ayarları ve sözlükleri bir dosyaya kaydet, geri yükle</string>
+    <string name="settings_backup_summary">Ayarları ve sözlükleri bir dosyaya kaydet, geri yükle; Yomitan verilerini içe aktar</string>
     <string name="backup_create">Yedek oluştur</string>
-    <string name="backup_create_hint">Tüm ayarları, sözlük sırasını ve anahtarlarını ve yüklü yazı tiplerini içeren tek bir dosya. İstediğiniz yerde saklayın: telefonda, hafıza kartında veya bulut depolamada.</string>
-    <string name="backup_include_dictionaries">Sözlükleri dahil et</string>
-    <string name="backup_include_dictionaries_hint">Sözlüklerin kendileri; indirmeden veya içe aktarmadan kullanıma hazır. Dosya çok daha büyük olur.</string>
+    <string name="backup_create_hint">Seçtiğiniz bölümleri içeren tek bir dosya: ayarlar, yazı tipleri, sözlükler. İstediğiniz yerde saklayın: telefonda, hafıza kartında veya bulut depolamada.</string>
+    <string name="backup_parts_save">Kaydedilecek bölümler</string>
+    <string name="backup_section_fonts">Yazı tipleri</string>
+    <string name="backup_files_chosen">%2$d içinden %1$d seçili, %3$s</string>
+    <string name="backup_files_chosen_count">%2$d içinden %1$d seçili</string>
+    <string name="backup_files_show">Listeyi göster</string>
+    <string name="backup_files_hide">Listeyi gizle</string>
     <string name="backup_create_button">Yedek oluştur…</string>
     <string name="backup_creating">Yedek oluşturuluyor…</string>
     <string name="backup_created">Yedek kaydedildi (%1$s).</string>
@@ -521,7 +525,7 @@
     <string name="backup_read_failed">Yedek okunamadı.</string>
     <string name="backup_loaded">%1$s tarihli yedek, sürüm %2$s</string>
     <string name="backup_sections">Geri yüklenecek bölümler</string>
-    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır. Yedekteki sözlükler eklenir veya yüklü sürümlerinin yerini alır; diğer yüklü sözlükler kalır.</string>
+    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır. Yedekteki yazı tipleri ve sözlükler eklenir veya yüklü sürümlerinin yerini alır; diğer yüklü yazı tipleri ve sözlükler kalır.</string>
     <string name="backup_restore_button">İşaretlileri geri yükle</string>
     <string name="backup_restored">Geri yüklendi</string>
     <string name="backup_section_general">Genel</string>
@@ -531,7 +535,7 @@
     <string name="backup_section_lookup">Arama</string>
     <string name="backup_section_lookup_hint">Tarama uzunluğu, sonuç sayısı, romaji, kelimenin kanjileri</string>
     <string name="backup_section_popup">Açılır pencere görünümü</string>
-    <string name="backup_section_popup_hint">Yazı tipi, metin boyutu, özel CSS ve yüklü yazı tipleri</string>
+    <string name="backup_section_popup_hint">Yazı tipi, metin boyutu, özel CSS</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Deste, not türü, alanlar, yinelenen yönetimi</string>
     <string name="backup_section_audio">Ses</string>
@@ -544,10 +548,6 @@
         <item quantity="other">%d sözlük: sıra, açık/kapalı durumu, diller ve sıralama sözlüğü. Yüklü olanlara uygulanır.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Sözlükler</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d sözlük; eklenir veya yüklü sürümünün yerini alır</item>
-        <item quantity="other">%d sözlük; eklenir veya yüklü sürümlerinin yerini alır</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d yazı tipi</item>
         <item quantity="other">%d yazı tipi</item>

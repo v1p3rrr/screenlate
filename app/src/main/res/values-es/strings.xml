@@ -25,6 +25,7 @@
 
     <string name="action_delete">Eliminar</string>
     <string name="action_cancel">Cancelar</string>
+    <string name="action_next">Siguiente</string>
     <string name="action_resume">Reanudar</string>
     <string name="action_dismiss">Descartar</string>
     <string name="action_ok">Aceptar</string>
@@ -188,7 +189,6 @@
     <string name="settings_popup_summary">Texto reconocido, ocultación automática, fuente, tamaño y peso del texto, CSS, copia de definiciones</string>
     <string name="settings_translation_summary">Botón de traducción, notas, servicios, idioma</string>
     <string name="yomitan_import_title">Importar desde Yomitan</string>
-    <string name="settings_yomitan_summary">Ajustes y diccionarios de Yomitan</string>
     <string name="about_title">Acerca de</string>
     <string name="settings_about_summary">Versión, actualizaciones, licencias, registros</string>
     <string name="about_version">Versión %1$s</string>
@@ -499,11 +499,15 @@
     <string name="dictionaries_website">Sitio web</string>
     <string name="dictionaries_download_link">Descarga</string>
     <string name="backup_title">Copia de seguridad y restauración</string>
-    <string name="settings_backup_summary">Guardar ajustes y diccionarios en un archivo, restaurarlos</string>
+    <string name="settings_backup_summary">Guardar ajustes y diccionarios en un archivo, restaurarlos, importar de Yomitan</string>
     <string name="backup_create">Crear una copia de seguridad</string>
-    <string name="backup_create_hint">Un solo archivo con todos los ajustes, el orden e interruptores de los diccionarios y las fuentes instaladas. Guárdalo donde quieras: en el teléfono, una tarjeta de memoria o la nube.</string>
-    <string name="backup_include_dictionaries">Incluir diccionarios</string>
-    <string name="backup_include_dictionaries_hint">Los propios diccionarios, listos para usar sin descargar ni importar. El archivo se vuelve mucho más grande.</string>
+    <string name="backup_create_hint">Un solo archivo con las partes que elijas: ajustes, fuentes, diccionarios. Guárdalo donde quieras: en el teléfono, una tarjeta de memoria o la nube.</string>
+    <string name="backup_parts_save">Partes que guardar</string>
+    <string name="backup_section_fonts">Fuentes</string>
+    <string name="backup_files_chosen">Selección: %1$d de %2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Selección: %1$d de %2$d</string>
+    <string name="backup_files_show">Mostrar la lista</string>
+    <string name="backup_files_hide">Ocultar la lista</string>
     <string name="backup_create_button">Crear copia…</string>
     <string name="backup_creating">Creando la copia de seguridad…</string>
     <string name="backup_created">Copia guardada (%1$s).</string>
@@ -522,7 +526,7 @@
     <string name="backup_read_failed">No se pudo leer la copia.</string>
     <string name="backup_loaded">Copia del %1$s, versión %2$s</string>
     <string name="backup_sections">Partes que restaurar</string>
-    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales. Los diccionarios de la copia se añaden o sustituyen a su versión instalada; los demás diccionarios instalados se mantienen.</string>
+    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales. Las fuentes y los diccionarios de la copia se añaden o sustituyen a su versión instalada; las demás fuentes y diccionarios instalados se mantienen.</string>
     <string name="backup_restore_button">Restaurar lo marcado</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">General</string>
@@ -532,7 +536,7 @@
     <string name="backup_section_lookup">Búsqueda</string>
     <string name="backup_section_lookup_hint">Longitud de análisis, número de resultados, romaji, kanji de la palabra</string>
     <string name="backup_section_popup">Apariencia de la ventana emergente</string>
-    <string name="backup_section_popup_hint">Fuente, tamaño del texto, CSS personalizado y fuentes instaladas</string>
+    <string name="backup_section_popup_hint">Fuente, tamaño del texto, CSS personalizado</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Mazo, tipo de nota, campos, gestión de duplicados</string>
     <string name="backup_section_audio">Audio</string>
@@ -546,11 +550,6 @@
         <item quantity="other">%d diccionarios: orden, activados o no, idiomas y el que se usa para ordenar. Se aplica a los instalados.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Diccionarios</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d diccionario: se añade o sustituye a su versión instalada</item>
-        <item quantity="many">%d diccionarios: se añaden o sustituyen a su versión instalada</item>
-        <item quantity="other">%d diccionarios: se añaden o sustituyen a su versión instalada</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d fuente</item>
         <item quantity="many">%d fuentes</item>

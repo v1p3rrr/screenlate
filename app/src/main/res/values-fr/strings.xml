@@ -25,6 +25,7 @@
 
     <string name="action_delete">Supprimer</string>
     <string name="action_cancel">Annuler</string>
+    <string name="action_next">Suivant</string>
     <string name="action_resume">Reprendre</string>
     <string name="action_dismiss">Ignorer</string>
     <string name="action_ok">OK</string>
@@ -188,7 +189,6 @@
     <string name="settings_popup_summary">Texte reconnu, masquage automatique, police, taille et graisse du texte, CSS, copie des définitions</string>
     <string name="settings_translation_summary">Bouton de traduction, notes, services, langue</string>
     <string name="yomitan_import_title">Importer depuis Yomitan</string>
-    <string name="settings_yomitan_summary">Paramètres et dictionnaires de Yomitan</string>
     <string name="about_title">À propos</string>
     <string name="settings_about_summary">Version, mises à jour, licences, journaux</string>
     <string name="about_version">Version %1$s</string>
@@ -499,11 +499,15 @@
     <string name="dictionaries_website">Site web</string>
     <string name="dictionaries_download_link">Téléchargement</string>
     <string name="backup_title">Sauvegarde et restauration</string>
-    <string name="settings_backup_summary">Enregistrer paramètres et dictionnaires dans un fichier, les restaurer</string>
+    <string name="settings_backup_summary">Enregistrer paramètres et dictionnaires dans un fichier, les restaurer, importer depuis Yomitan</string>
     <string name="backup_create">Créer une sauvegarde</string>
-    <string name="backup_create_hint">Un seul fichier avec tous les paramètres, l’ordre et les interrupteurs des dictionnaires, et les polices installées. Gardez-le où vous voulez : sur le téléphone, une carte mémoire ou un stockage en ligne.</string>
-    <string name="backup_include_dictionaries">Inclure les dictionnaires</string>
-    <string name="backup_include_dictionaries_hint">Les dictionnaires eux-mêmes, prêts à l’emploi sans téléchargement ni import. Le fichier devient beaucoup plus gros.</string>
+    <string name="backup_create_hint">Un seul fichier avec les parties choisies : paramètres, polices, dictionnaires. Gardez-le où vous voulez : sur le téléphone, une carte mémoire ou un stockage en ligne.</string>
+    <string name="backup_parts_save">Parties à enregistrer</string>
+    <string name="backup_section_fonts">Polices</string>
+    <string name="backup_files_chosen">Sélection : %1$d sur %2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Sélection : %1$d sur %2$d</string>
+    <string name="backup_files_show">Afficher la liste</string>
+    <string name="backup_files_hide">Masquer la liste</string>
     <string name="backup_create_button">Créer une sauvegarde…</string>
     <string name="backup_creating">Création de la sauvegarde…</string>
     <string name="backup_created">Sauvegarde enregistrée (%1$s).</string>
@@ -522,7 +526,7 @@
     <string name="backup_read_failed">La sauvegarde n’a pas pu être lue.</string>
     <string name="backup_loaded">Sauvegarde du %1$s, version %2$s</string>
     <string name="backup_sections">Parties à restaurer</string>
-    <string name="backup_replace_warning">Les parties cochées remplacent les actuelles. Les dictionnaires de la sauvegarde sont ajoutés ou remplacent leur version installée ; les autres dictionnaires installés restent.</string>
+    <string name="backup_replace_warning">Les parties cochées remplacent les actuelles. Les polices et dictionnaires de la sauvegarde sont ajoutés ou remplacent leur version installée ; les autres polices et dictionnaires installés restent.</string>
     <string name="backup_restore_button">Restaurer la sélection</string>
     <string name="backup_restored">Restauré</string>
     <string name="backup_section_general">Général</string>
@@ -532,7 +536,7 @@
     <string name="backup_section_lookup">Recherche</string>
     <string name="backup_section_lookup_hint">Longueur d’analyse, nombre de résultats, romaji, kanji du mot</string>
     <string name="backup_section_popup">Apparence de la fenêtre contextuelle</string>
-    <string name="backup_section_popup_hint">Police, taille du texte, CSS personnalisé et polices installées</string>
+    <string name="backup_section_popup_hint">Police, taille du texte, CSS personnalisé</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Paquet, type de note, champs, gestion des doublons</string>
     <string name="backup_section_audio">Audio</string>
@@ -546,11 +550,6 @@
         <item quantity="other">%d dictionnaires : ordre, activés ou non, langues et celui qui sert au tri. S’applique aux dictionnaires installés.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Dictionnaires</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="one">%d dictionnaire : il s’ajoute ou remplace sa version installée</item>
-        <item quantity="many">%d dictionnaires : ils s’ajoutent ou remplacent leur version installée</item>
-        <item quantity="other">%d dictionnaires : ils s’ajoutent ou remplacent leur version installée</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="one">%d police</item>
         <item quantity="many">%d polices</item>

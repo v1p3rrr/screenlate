@@ -25,6 +25,7 @@
 
     <string name="action_delete">Xóa</string>
     <string name="action_cancel">Hủy</string>
+    <string name="action_next">Tiếp</string>
     <string name="action_resume">Tiếp tục</string>
     <string name="action_dismiss">Bỏ qua</string>
     <string name="action_ok">OK</string>
@@ -188,7 +189,6 @@
     <string name="settings_popup_summary">Văn bản nhận dạng, tự động ẩn, phông chữ, cỡ và độ đậm chữ, CSS, sao chép định nghĩa</string>
     <string name="settings_translation_summary">Nút dịch, ghi chú, dịch vụ, ngôn ngữ</string>
     <string name="yomitan_import_title">Nhập từ Yomitan</string>
-    <string name="settings_yomitan_summary">Cài đặt và từ điển từ Yomitan</string>
     <string name="about_title">Giới thiệu</string>
     <string name="settings_about_summary">Phiên bản, cập nhật, giấy phép, nhật ký</string>
     <string name="about_version">Phiên bản %1$s</string>
@@ -499,11 +499,15 @@
     <string name="dictionaries_website">Trang web</string>
     <string name="dictionaries_download_link">Tải xuống</string>
     <string name="backup_title">Sao lưu và khôi phục</string>
-    <string name="settings_backup_summary">Lưu cài đặt và từ điển vào tệp, khôi phục chúng</string>
+    <string name="settings_backup_summary">Lưu cài đặt và từ điển vào tệp, khôi phục chúng, nhập từ Yomitan</string>
     <string name="backup_create">Tạo bản sao lưu</string>
-    <string name="backup_create_hint">Một tệp duy nhất chứa mọi cài đặt, thứ tự và công tắc của từ điển, cùng các phông chữ đã cài. Lưu ở đâu cũng được: trên điện thoại, thẻ nhớ hoặc bộ nhớ đám mây.</string>
-    <string name="backup_include_dictionaries">Bao gồm từ điển</string>
-    <string name="backup_include_dictionaries_hint">Bản thân các từ điển, dùng được ngay mà không cần tải hay nhập. Tệp sẽ lớn hơn nhiều.</string>
+    <string name="backup_create_hint">Một tệp duy nhất chứa các phần bạn chọn: cài đặt, phông chữ, từ điển. Lưu ở đâu cũng được: trên điện thoại, thẻ nhớ hoặc bộ nhớ đám mây.</string>
+    <string name="backup_parts_save">Các phần cần lưu</string>
+    <string name="backup_section_fonts">Phông chữ</string>
+    <string name="backup_files_chosen">Đã chọn %1$d/%2$d, %3$s</string>
+    <string name="backup_files_chosen_count">Đã chọn %1$d/%2$d</string>
+    <string name="backup_files_show">Hiện danh sách</string>
+    <string name="backup_files_hide">Ẩn danh sách</string>
     <string name="backup_create_button">Tạo bản sao lưu…</string>
     <string name="backup_creating">Đang tạo bản sao lưu…</string>
     <string name="backup_created">Đã lưu bản sao lưu (%1$s).</string>
@@ -520,7 +524,7 @@
     <string name="backup_read_failed">Không đọc được bản sao lưu.</string>
     <string name="backup_loaded">Bản sao lưu từ %1$s, phiên bản %2$s</string>
     <string name="backup_sections">Các phần cần khôi phục</string>
-    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại. Từ điển trong bản sao lưu được thêm vào hoặc thay thế bản đã cài của chúng; các từ điển đã cài khác vẫn giữ nguyên.</string>
+    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại. Phông chữ và từ điển trong bản sao lưu được thêm vào hoặc thay thế bản đã cài của chúng; các phông chữ và từ điển đã cài khác vẫn giữ nguyên.</string>
     <string name="backup_restore_button">Khôi phục phần đã chọn</string>
     <string name="backup_restored">Đã khôi phục</string>
     <string name="backup_section_general">Chung</string>
@@ -530,7 +534,7 @@
     <string name="backup_section_lookup">Tra cứu</string>
     <string name="backup_section_lookup_hint">Độ dài quét, số kết quả, romaji, kanji của từ</string>
     <string name="backup_section_popup">Hiển thị cửa sổ bật lên</string>
-    <string name="backup_section_popup_hint">Phông chữ, cỡ chữ, CSS tùy chỉnh và phông chữ đã cài</string>
+    <string name="backup_section_popup_hint">Phông chữ, cỡ chữ, CSS tùy chỉnh</string>
     <string name="backup_section_anki">Anki</string>
     <string name="backup_section_anki_hint">Bộ thẻ, loại ghi chú, trường, xử lý trùng lặp</string>
     <string name="backup_section_audio">Âm thanh</string>
@@ -542,9 +546,6 @@
         <item quantity="other">%d từ điển: thứ tự, bật hay tắt, ngôn ngữ và từ điển dùng để sắp xếp. Áp dụng cho các từ điển đã cài.</item>
     </plurals>
     <string name="backup_section_dictionary_files">Từ điển</string>
-    <plurals name="backup_section_dictionary_files_hint">
-        <item quantity="other">%d từ điển; được thêm vào hoặc thay thế bản đã cài</item>
-    </plurals>
     <plurals name="backup_summary_fonts">
         <item quantity="other">%d phông chữ</item>
     </plurals>

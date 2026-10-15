@@ -3,18 +3,14 @@ package com.vpr.screenlate.yomitan
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -33,16 +29,18 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
-import com.vpr.screenlate.ui.components.SettingsScaffold
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 private val JSON_TYPES = arrayOf("application/json", "application/octet-stream", "*/*")
 
-/** Imports from Yomitan: one profile of its settings export, and its dictionary collection export. */
+/**
+ * Imports from Yomitan, a card of the backup screen: one profile of its settings export, and its dictionary
+ * collection export.
+ */
 @Composable
-fun YomitanImportScreen(
-    onBack: () -> Unit,
+fun YomitanImportCard(
     onOpenDictionaries: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: YomitanImportViewModel = hiltViewModel(),
     collection: CollectionImportViewModel = hiltViewModel(),
 ) {
@@ -54,65 +52,55 @@ fun YomitanImportScreen(
     val collectionPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) collection.load(uri)
     }
-    SettingsScaffold(stringResource(R.string.yomitan_import_title), onBack) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            SectionCard(title = stringResource(R.string.yomitan_import_settings)) {
-                when (val current = state) {
-                    SettingsImportState.Idle, SettingsImportState.NotSettings, SettingsImportState.Failed -> {
-                        Text(stringResource(R.string.yomitan_import_settings_hint))
-                        if (current == SettingsImportState.NotSettings) {
-                            Text(stringResource(R.string.yomitan_import_not_settings), color = MaterialTheme.colorScheme.error)
-                        }
-                        if (current == SettingsImportState.Failed) {
-                            Text(stringResource(R.string.yomitan_import_failed), color = MaterialTheme.colorScheme.error)
-                        }
-                        Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
-                            Text(stringResource(R.string.yomitan_import_choose_settings), textAlign = TextAlign.Center)
-                        }
-                    }
-                    SettingsImportState.Reading -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
-                    is SettingsImportState.Loaded -> ProfileChoice(current, viewModel)
-                    is SettingsImportState.Done -> {
-                        Summary(current)
-                        OutlinedButton(onClick = viewModel::reset, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.yomitan_import_another), textAlign = TextAlign.Center)
-                        }
-                    }
+    SectionCard(title = stringResource(R.string.yomitan_import_title), modifier = modifier) {
+        Text(stringResource(R.string.yomitan_import_settings), style = MaterialTheme.typography.titleSmall)
+        when (val current = state) {
+            SettingsImportState.Idle, SettingsImportState.NotSettings, SettingsImportState.Failed -> {
+                Hint(stringResource(R.string.yomitan_import_settings_hint))
+                if (current == SettingsImportState.NotSettings) {
+                    Text(stringResource(R.string.yomitan_import_not_settings), color = MaterialTheme.colorScheme.error)
+                }
+                if (current == SettingsImportState.Failed) {
+                    Text(stringResource(R.string.yomitan_import_failed), color = MaterialTheme.colorScheme.error)
+                }
+                Button(onClick = { settingsPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+                    Text(stringResource(R.string.yomitan_import_choose_settings), textAlign = TextAlign.Center)
                 }
             }
-            SectionCard(title = stringResource(R.string.yomitan_import_dictionaries)) {
-                when (val current = collectionState) {
-                    CollectionState.Idle, CollectionState.NotCollection, CollectionState.Failed -> {
-                        Text(stringResource(R.string.yomitan_import_dictionaries_hint))
-                        if (current == CollectionState.NotCollection) {
-                            Text(stringResource(R.string.yomitan_collection_not_collection), color = MaterialTheme.colorScheme.error)
-                        }
-                        if (current == CollectionState.Failed) {
-                            Text(stringResource(R.string.yomitan_collection_failed), color = MaterialTheme.colorScheme.error)
-                        }
-                        OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.dictionaries_import_yomitan_backup), textAlign = TextAlign.Center)
-                        }
-                        Hint(stringResource(R.string.yomitan_import_single_hint))
-                        TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
-                    }
-                    CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
-                    is CollectionState.Listed -> CollectionChecklist(current, collection)
-                    is CollectionState.Queued -> {
-                        Text(stringResource(R.string.yomitan_collection_queued, current.count))
-                        Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
-                            Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center)
-                        }
-                        TextButton(onClick = collection::reset) { Text(stringResource(R.string.yomitan_import_another)) }
-                    }
+            SettingsImportState.Reading -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
+            is SettingsImportState.Loaded -> ProfileChoice(current, viewModel)
+            is SettingsImportState.Done -> {
+                Summary(current)
+                OutlinedButton(onClick = viewModel::reset, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.yomitan_import_another), textAlign = TextAlign.Center)
                 }
+            }
+        }
+        HorizontalDivider()
+        Text(stringResource(R.string.yomitan_import_dictionaries), style = MaterialTheme.typography.titleSmall)
+        when (val current = collectionState) {
+            CollectionState.Idle, CollectionState.NotCollection, CollectionState.Failed -> {
+                Hint(stringResource(R.string.yomitan_import_dictionaries_hint))
+                if (current == CollectionState.NotCollection) {
+                    Text(stringResource(R.string.yomitan_collection_not_collection), color = MaterialTheme.colorScheme.error)
+                }
+                if (current == CollectionState.Failed) {
+                    Text(stringResource(R.string.yomitan_collection_failed), color = MaterialTheme.colorScheme.error)
+                }
+                OutlinedButton(onClick = { collectionPicker.launch(JSON_TYPES) }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.dictionaries_import_yomitan_backup), textAlign = TextAlign.Center)
+                }
+                Hint(stringResource(R.string.yomitan_import_single_hint))
+                TextButton(onClick = onOpenDictionaries) { Text(stringResource(R.string.home_dictionaries_open)) }
+            }
+            CollectionState.Scanning -> CircularProgressIndicator(modifier = Modifier.size(32.dp), color = AccentDefaults.progress)
+            is CollectionState.Listed -> CollectionChecklist(current, collection)
+            is CollectionState.Queued -> {
+                Text(stringResource(R.string.yomitan_collection_queued, current.count))
+                Button(onClick = onOpenDictionaries, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+                    Text(stringResource(R.string.home_dictionaries_open), textAlign = TextAlign.Center)
+                }
+                TextButton(onClick = collection::reset) { Text(stringResource(R.string.yomitan_import_another)) }
             }
         }
     }

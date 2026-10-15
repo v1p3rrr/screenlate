@@ -35,6 +35,7 @@ class BackupArchiveTest {
                 listOf(dictionary("A", files = true), dictionary("B", files = false), dictionary("C", files = true)),
                 sortDictionary = "B",
             ),
+            fontIndex = "[]",
             fonts = listOf(font),
             dictionaryFiles = mapOf(0 to first, 2 to third),
         )
@@ -43,12 +44,15 @@ class BackupArchiveTest {
         val head = BackupArchive.readHead(ByteArrayInputStream(bytes))
         assertThat(head.manifest.appVersion).isEqualTo("1.0")
         assertThat(head.dictionaries.sortDictionary).isEqualTo("B")
+        assertThat(head.fontIndex).isEqualTo("[]")
+        assertThat(head.fontSizes).containsExactly("font-0.ttf", 4L)
 
         val reader = Recorder()
         var headFirst = false
         BackupArchive.read(ByteArrayInputStream(bytes), reader) { headFirst = reader.events.isEmpty() && it.settings.isNotEmpty() }
         assertThat(headFirst).isTrue()
         assertThat(reader.events).containsExactly(
+            "font fonts.json=[]",
             "font font-0.ttf=font",
             "file 0 index.json={}",
             "file 0 terms/bank.bin=terms of a",
