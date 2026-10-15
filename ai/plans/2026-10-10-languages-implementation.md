@@ -46,13 +46,60 @@ Requests 1–19 are in the previous plan. New ones:
 29. (2026-10-11) After all checks, close the emulator started for this session and verify that its processes ended,
     so it does not keep consuming the owner's computer resources. Leave unrelated emulator instances alone.
 
+30. (2026-10-13) Hosting of the files we build or mirror (dictionaries the app cannot download from their authors) is
+    postponed with no date. Keep it in the open items and remind the owner of it whenever they ask what is left open
+    or unfinished in this task.
+31. (2026-10-13) The agent compares the APK size per ABI with the last release itself.
+32. (2026-10-13) The agent tests on the emulator itself what the stage's "Done when" left to the owner: Japanese
+    behaves as before (regression), an upgrade from the last release keeps every setting and dictionary, and a backup
+    made by the last release restores. The owner cannot check the upgrade on the phone: the release and the debug
+    build are different apps.
+33. (2026-10-13) Check that the translation button (sentence translation) is off by default, after an upgrade and on a fresh
+    install. Found: it is on by default, as the decision table of `2026-09-29-feedback-after-0.1.4.md` says; asked.
+34. (2026-10-13) Language profiles: a section on the home screen or a screen of its own (not the general settings)
+    with every language profile, turned on or not; a turned-off one shows the dictionaries and technical files (OCR
+    models) it left behind. There up to three languages are chosen for quick switching, shown as flags (emoji or SVG)
+    in the bubble's hold menu; more languages may be turned on.
+35. (2026-10-13) Check what happens when a new language is activated before its dictionaries have downloaded
+    (request 27 built the readiness status; verify it).
+36. (2026-10-13) Downloads must finish after the app is closed, killed or has crashed, or the user can retry them by
+    hand.
+37. (2026-10-13) The items "noticed, not addressed" (transcription variants, IPA tags, odd form-of tags, "walke"
+    before "walk") and the review's skipped navigation callback lost on activity recreation: say what can be done and
+    fix what is ours. Done 2026-10-14: the navigation of the first run and "Add a language" now goes through one-shot
+    events; the odd form-of tags were an earlier wty revision (the current one is clean); "walke" before "walk" is
+    Yomitan's order without a frequency dictionary, fixed by the wordfreq sort dictionary; transcriptions follow the
+    "Transcriptions" decision.
+38. (2026-10-13) Ask the Chinese and Korean questions now; build both after the agent's own emulator testing and the
+    fixes above.
+39. (2026-10-14) The sentence translation button is "the translation button" everywhere (UI strings in 14 locales,
+    docs, KDoc, notes, plans); "文A" was only the owner's hint for the icon.
+40. (2026-10-14) Audit every user-facing text (UI strings in all 14 locales, Russian first; hints and ⓘ texts; docs;
+    release notes) for literal, naive, wordy or storytelling phrasing and rewrite it in the dry tone of software
+    documentation; detailed explanations stay where needed, in the same tone. The v0.2.3 notes are the example of what
+    not to write ("follows the finger again; in 0.2.2 it lagged"): "Fixed the bubble freezing when pulled out from the
+    edge" is enough.
+41. (2026-10-14) Pitch accent colors for Japanese, like the Chinese tone colors (a switch, off by default).
+42. (2026-10-14) A test model of the whole app: test cases for everything that can be checked on the emulator, old
+    and new, including non-functional ones (nothing lags, timings). Each case gets a category: checked once; checked
+    once and again in a full regression; checked in every regression (large changes, before a release); new (moved
+    into one of the others once checked). Cover with integration (instrumented) tests whatever they can cover, so the
+    agent does not click through it every time; the rest is checked by hand on the emulator. Order: after all the
+    improvements, before the full emulator testing, write the model; then test by it. The agent may install and set
+    up AnkiDroid, decks and whatever else the emulator needs, and open harmless, lawful websites in the emulator's
+    browser to check recognition through the app (without reading their content beyond that).
+43. (2026-10-15) After Chinese, before Korean: the frequency chip shows the dictionary's name shortened to one letter
+    unless it is short; a tap on the chip shows the full name, another tap shortens it again. "+N" (more than one
+    frequency value) also shows the first chip's full name. Decision row "Frequency chip names".
+44. (2026-10-15) Latvian joins group 3, the last one before "every other language".
+
 ## Decisions
 
 Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); later rows at the end.
 
 | Topic | Decision |
 |---|---|
-| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese; 4) every other language Yomitan supports, Ukrainian among them (owner, 2026-10-09; revised the same day with request 11) |
+| Languages and order | 1) English, Chinese, Korean (English and Chinese before Korean); 2) Spanish, French, German, Italian, Portuguese, the most learned languages after them (request 11); 3) the other interface languages: Russian, Polish, Turkish, Vietnamese, and Latvian (request 44); 4) every other language Yomitan supports (owner, 2026-10-09; revised the same day with request 11) |
 | Audience | Every user, not only the owner: the app goes to a community of learners of Japanese, where others learn other languages, mostly English and Chinese; later anyone with their own target language (owner, 2026-10-09) |
 | Depth | Full support (deinflection, on-device recognition, fonts, audio, Anki), if it is feasible without writing our own Yomitan from scratch (owner, 2026-10-09) |
 | Language profiles | Separate language profiles, switched on the home screen; dictionaries and the rest are set up within the profile (owner, 2026-10-09) |
@@ -81,28 +128,55 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Settings layout | Language-bound settings stay on today's pages (Lookup, Popup, Anki and audio, Dictionaries) in a block named after the profile with a language switch; with one language turned on the pages look as today (owner, 2026-10-09) |
 | Popup text size | Global, as today; a bigger size for one language goes into that language's CSS (owner, 2026-10-09) |
 | Switching the language | The home screen's chips and a row of language chips in the bubble's hold menu, shown when more than one language is turned on; no automatic switching by app (owner, 2026-10-09) |
-| Branches per language | The shared base (profiles, settings split, QuickJS, form-of table, model downloads) is built first in the multi-language branch; then a branch per language (`languages/en`, `languages/zh`, …) merged into it when the language works on the phone (owner, 2026-10-09) |
+| Branches per language | The shared base (profiles, settings split, QuickJS, form-of table, model downloads) is built first in the multi-language branch; then a branch per language (`languages/en`, `languages/zh`, …) merged into it once the language is tested thoroughly on the emulator (owner, 2026-10-14; was "when the language works on the phone", 2026-10-09) |
+| Downloads by the agent | While the owner is away the agent may download, without asking, data from the authors' official sources for building and testing: circle-flags SVGs, wordfreq word lists, Unihan, CC-CEDICT, Wiktionary zh/ko (Hugging Face), KRDICT (Lyroxide); listed in the status afterwards (owner, 2026-10-14) |
+| Published release notes | Rewritten only in `.github/release-notes/`; the texts of published GitHub releases change only after the owner has seen the drafts (owner, 2026-10-14) |
 | Unofficial collection | If the owner keeps a separate collection of unlicensed dictionaries, the app and its repository do not link to it (owner, 2026-10-09, preliminary) |
 | Audio regions | A per-language order of regions in the audio settings, used for Wiktionary clips whose file names carry the region; defaults: English US, UK, others; Portuguese Brazil; Spanish Latin America, Spain; French France (owner, 2026-10-09) |
 | Turning on a language | After the target language, a download screen (request 19). Gloss languages: the interface language and English, at most two; when the interface language is English or is the target language, the user picks another one in its place. Each category lists every dictionary for the chosen gloss languages with the recommended one ticked; a mandatory category (the main dictionary; the forms dictionary for languages whose forms are only in dictionaries) needs at least one ticked, else Confirm is disabled with a hint; a mandatory item without a choice is a preselected radio button. Optional items ticked by default: the frequency dictionary, the pronunciation dictionary (except Chinese) and the on-device OCR model where the script needs one; glossaries and character dictionaries are not. Every item shows its size; the button shows the download total and, under it, the space after import; not enough free space disables it and says how much is needed; on mobile data a total over 50 MB asks first (owner, 2026-10-10) |
 | Releases | No releases of new languages along the way: every language is built first, then one big release; testing in the meantime on debug builds (owner, 2026-10-10) |
 | Beta label | None: with a small audience a label would never come off (owner, 2026-10-10) |
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
-| Scope of the big release | Groups 1–3 (12 languages) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
+| Scope of the big release | Groups 1–3 (13 languages with Latvian) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
-| Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings") |
+| Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
 | Turning a language off | A dialog with "Delete its dictionaries and models (N MB)", ticked by default; the language's settings are kept, so turning it on again restores the deck, fonts and the rest, and without the files deleted it turns on at once. The Dictionaries page lists turned-off languages that still have files, with their size and a button that deletes them all; single dictionaries are deleted as today (owner, 2026-10-10, request 22; the place on the Dictionaries page is the agent's choice, delegated) |
 | Catalog threshold | Wiktionary pairs are listed from 0.5 MB of archive up (a few thousand words); nearly empty pairs (es→vi 0.0 MB, zh→de 0.1 MB) are left out, and the catalog script adds a pair once it grows past the threshold (owner, 2026-10-10) |
 | Recommended dictionaries | On the download screen the main dictionary of each chosen gloss language is ticked (both, each can be unticked while one stays). Within one gloss language and category one entry is ticked when there are several (Jitendex or JMdict): the catalog marks it, chosen by quality and coverage (Jitendex over JMdict, KRDICT over Wiktionary for Korean), size only breaking ties (owner, 2026-10-10; the rule within a gloss language delegated to the agent) |
 | First language branch | English: fewer open questions than Chinese and the simpler lookup; it is also the vehicle of the shared stage (agent's choice, delegated by the owner, 2026-10-10) |
-| Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan; the open scan keeps its language until the bubble is docked (owner, 2026-10-10) |
+| Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan, a tap on the floating bubble included; the open scan keeps its language until then or until the bubble is docked (owner, 2026-10-10; tap rescans owner, 2026-10-14) |
 | Transcription file | The merged transcription dictionary of all Wiktionary editions (`dict/all/<language>`, e.g. en 3.8 MB against en-en 2.8, ru 10.4 against 6.5) instead of the edition with the most entries; still one item per language (owner, 2026-10-10; changes the "Pronunciation dictionaries" row) |
 | A language confirmed on the download screen | Turned on and made active at once; until its main dictionary is installed the home screen shows the missing-dictionary card with the download progress (owner, 2026-10-10) |
 | Installation status placement | The home screen shows the active language's status and a link to the queue; Search and the popup show an explanation and the same link while the language is not ready (owner, 2026-10-11, request 27) |
 | Scanning before installation is ready | Do not start recognition until the mandatory components are ready; show status and a link to the queue immediately (owner, 2026-10-11, request 27) |
+| Languages screen | A screen of its own, "Languages", opened from the home screen. Home keeps a compact card: the quick languages' flags (the active one marked), the active language's installation status and an "All languages" button. The screen lists turned-on languages (status, quick-switch star, turn off), turned-off languages with files (their dictionaries and OCR models with sizes, delete all, turn on) and the rest (turn on, which opens the download screen). The block of turned-off languages moves there from the Dictionaries page, which keeps a link (owner, 2026-10-13, request 34) |
+| Quick languages | At most three: the active language has a star of its own, at most two more are starred on the Languages screen. Making a starred language active swaps the roles (the old active one keeps a star as an ordinary starred language); making an unstarred one active (also a language just turned on) moves the active language's star to it, and the old active one loses its star even when a place is free (owner, 2026-10-13/14) |
+| Flags | Round SVG flags bundled in the app (circle-flags, MIT, with a NOTICE entry; owner, 2026-10-13: "if you want to take someone else's, fine"); with e-ink on, the language's two-letter code replaces the flag (owner, 2026-10-13) |
+| Flag country | A default flag per language (English US, Spanish Spain, Portuguese Brazil, Chinese China, French France); for languages of several countries the Languages screen offers another country (owner, 2026-10-13) |
+| Downloads that stop | A download waits for the network and retries by itself up to three times, resuming where it broke off when the server allows it; dying while downloading (not importing) does not count towards the two-deaths limit. A download that continues or restarts by itself (WorkManager after a crash, a system kill or a force stop) shows no button; one that has stopped for any reason shows "Resume" (from where it broke off when possible) and "Cancel". Cancel stays available at all times (owner, 2026-10-14, request 36) |
+| Transcriptions | Region tags (US, UK, …) are read at import into our own small table (hoshidicts unchanged) and shown in the language's audio region order; duplicates (the same transcription in /…/ and […]) are removed; the list shows the first five and "Show all" (owner, 2026-10-14) |
+| Frequency dictionaries | Built on the phone when a language is turned on: the frequency item downloads wordfreq's word list from the author's GitHub (a pinned commit, checked by SHA-256), converts it into a Yomitan frequency dictionary (top ~100 K, as `scripts/frequency/`) and imports it; no hosting needed (owner, 2026-10-14; replaces the hosting of wordfreq dictionaries in the open items) |
+| Chinese tone colors | Pinyin colored by tone (1 red, 2 orange, 3 green, 4 blue, neutral grey) behind a switch in the Chinese block of the Popup settings, off by default (owner, 2026-10-14) |
+| Japanese pitch accent colors | Headword and reading colored by the first pitch accent in dictionary order, and each accent button in its own color: heiban blue, atamadaka red, nakadaka orange, odaka green, kifuku (a downstep in a verb or i-adjective) purple. A switch in the Japanese block of the Popup settings, off by default; needs a pitch accent dictionary (owner, 2026-10-14, request 41) |
+| Chinese script default | Simplified; Traditional when the interface language is Traditional Chinese (owner, 2026-10-14) |
+| KRDICT | Listed as CC BY-SA (a derivative of the NIKL data, ShareAlike), with its source; the recommended Korean dictionary (owner, 2026-10-14) |
+| Hanja dictionary | Built by our script from Unihan (Unicode License; Korean readings and English meanings) and bundled in the APK (~0.2 MB estimated); installed when Korean is turned on (owner, 2026-10-14) |
+| Typed pinyin in search | Found in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"); our own toneless pinyin index built at import; exact tones rank higher (owner, 2026-10-14) |
+| Translation button default | Off for new installs; an upgrade keeps it on for users who never touched the switch (the value is written as on during the upgrade). The Anki field switch is unchanged (owner, 2026-10-13, request 33; changes the "Translation settings" row of `2026-09-29-feedback-after-0.1.4.md`, "both on by default") |
+| Bubble menu languages | Only flags (the active one ringed, the language name for TalkBack); codes on e-ink (owner, 2026-10-13) |
+| Chinese audio | Wiktionary (searched by tone-marked pinyin), Lingua Libre, text to speech (reads the characters) (owner, 2026-10-15) |
+| Pinyin search order | By the frequency dictionary, as Yomitan, also for a common character under a rare reading (owner, 2026-10-15) |
+| Chinese main dictionary | CC-CEDICT ticked for English glosses; Wiktionary zh–en listed unticked (owner, 2026-10-15) |
+| Chinese frequency in Traditional | The wordfreq dictionary built on the phone adds each word's Traditional spellings with its rank (owner, 2026-10-15) |
+| Chinese readings | Tone marks only ("xíng"); Wiktionary's numbered copy "(xing²)" is dropped; tone colors stay behind their switch (owner, 2026-10-15) |
+| Chinese fonts | Noto Sans SC, Noto Serif SC, Noto Sans TC, Noto Serif TC, LXGW WenKai TC to download (owner, 2026-10-15) |
+| Deleting a font | The bin next to a downloaded or added popup font asks "Delete <font>?" first, as for dictionaries (owner, 2026-10-15) |
+| Phrasal verbs in the past | Yomitan's English phrasal-verb rule ("picked up" → "pick up") also accepts entries without a part of speech; checked for false matches before it ships (owner, 2026-10-15: "make sure there are no false positives") |
+| Frequency chip names | A name up to 4 characters (a CJK character counts as 2) is shown whole (JPDB, JLPT, NieR); a longer one as its first character in upper case (BCCWJ → B, wordfreq zh → W, 国語辞典 → 国). A tap on the chip toggles its full name, for that chip only; "+N" shows the first chip's full name too; every lookup starts shortened (owner, 2026-10-15, request 43) |
+| Test model location | `ai/test-model.md`, linked from AGENTS.md; no copy in `docs/` (owner, 2026-10-15) |
 
 ## Open items (postponed by the owner)
 
@@ -110,18 +184,76 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 - Bundled Japanese dictionaries (25 MB in the APK): keep them bundled or download them when Japanese is turned on;
   the owner leans to keeping them bundled.
-- Hosting the files we build or mirror (OCR runtime models, wordfreq frequency dictionaries, dictionaries without
-  releases such as OpenRussian and FreeDict conversions): likely a public repository of our own; Hugging Face to be
-  looked at. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
+- Hosting the files we build or mirror (OCR runtime models, dictionaries without releases such as OpenRussian and
+  FreeDict conversions; wordfreq frequency dictionaries are built on the phone since 2026-10-14): likely a public repository of our own; Hugging Face to be
+  looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
+  left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
+
+## Questions for the owner
+
+The questions collected while the owner was away (2026-10-14) were answered on 2026-10-15; the answers
+are decision rows (Chinese audio, pinyin search order, Chinese main dictionary, frequency in Traditional, Chinese
+script, readings, fonts, deleting a font, phrasal verbs, test model location). Dragging the bubble is smooth on the
+phone in the release, and the drag and drawing code has not changed since v0.2.3, so nothing to do.
+
+Collected after that (autonomous work, 2026-10-15); the recommended option is in use until the owner answers:
+
+1. Fonts downloaded for another language on a language's font list. With Chinese fonts in the catalog, the Chinese
+   list also showed M PLUS 1p, a Japanese font (Japanese glyph forms, no Simplified-only characters), and the
+   Japanese list would show Noto Sans TC. Options: (a, recommended, in use) a language lists the fonts downloaded
+   for it and every added file; another language's font shows only while it is the chosen one; (b) every installed
+   font on every list, as before; (c) every installed font, with the other language's ones marked "Downloaded for
+   Japanese".
+2. Simplified and Traditional fields in Chinese note types. Many Chinese note types have a field for each script
+   (Simplified, Traditional), and Yomitan has no marker for either. Options: (a, recommended, in use) two markers,
+   `{expression-simplified}` and `{expression-traditional}`, the word converted with the character table, where a
+   character has several forms the one a dictionary lists with the word's reading (头发 → 頭髮, not 頭發); such
+   fields are pre-filled with them, the first field too; (b) `{expression}` in both fields, the user fixes one by
+   hand; (c) leave such fields empty.
+3. English phrasal verbs in the past with dictionaries that give phrases no part of speech (decision row "Phrasal
+   verbs in the past"). The false-match check over the 20,562 English example sentences of wty-en-ru found that a
+   preposition after the verb brings wrong phrases ("closed to traffic" → "close to", near; "saved for" → "save for",
+   except) and that the interposed-object rule ("picked the book up") would bring "time is running out" → "time
+   out". Options: (a, recommended, in use) a phrase without a part of speech matches a verb form only when the word
+   after the verb is an adverb particle (up, out, off, back and the like), and the interposed-object rule keeps
+   matching only phrases marked as verbs: 291 of wty-en-ru's 309 verbal phrases are reached, the 18 with a
+   preposition only are not (look for, deal with, apply to, …); the one wrong label seen is "ways out" → "way out"
+   marked as third person; (b) prepositions too: "look for" and "deal with" as well, with the false matches above;
+   (c) as Yomitan: such phrases never match a verb form.
+
+Collected during the Korean work (autonomous, 2026-10-15); the recommended option is in use:
+
+4. KRDICT comes in two packagings per gloss language, with and without example sentences (KO-EN 16 MB with
+   examples). Both have the same title ("KRDICT EN"), so installing one replaces the other. Options: (a, recommended,
+   in use) list the one with examples; (b) list the one without examples (smaller, faster to import); (c) both, the
+   one installed last stays.
+5. Popup fonts for Korean. Options: (a, recommended, in use) Noto Sans KR and Noto Serif KR (every weight, Korean
+   hanja forms), Nanum Gothic and Nanum Myeongjo (regular and bold, small, common on Korean websites); (b) Noto only;
+   (c) more, e.g. a handwritten font (Nanum Pen Script) or Gowun Dodum.
+6. Korean audio sources by default: (a, recommended, in use) Wiktionary, Lingua Libre, text to speech (Wiktionary
+   has recordings of more common words); (b) Lingua Libre first.
+7. The hanja dictionary (decision row "Hanja dictionary"): it is a catalog entry whose archive comes with the app,
+   ticked on the download screen ("Comes with the app") and installed without a download; it can be unticked or
+   deleted like any dictionary, and the download total leaves it out. Options: (a, recommended, in use) as described;
+   (b) always installed with Korean, without a box on the download screen, like the bundled Japanese dictionaries.
+8. 496 of KRDICT's 85,000 ko–en entries show `&quot;` and `&apos;` as text: the packaging left HTML entities in
+   plain text. Yomitan shows them the same way. Options: (a, recommended, in use) leave them, the fix belongs to the
+   packaging; (b) turn these two entities into quote marks in any dictionary's text on the lookup page.
+9. Character entries showed their dictionary's tags nowhere: KANJIDIC tags kanji jouyou or jinmeiyou, the hanja
+   dictionary 교육용 (basic hanja for education) or 인명용 (names). Options: (a, recommended, in use) show them as
+   chips next to the dictionary name, a tap opens the tag's note, for every language, as Yomitan does (Japanese
+   kanji entries get them too); (b) Korean only; (c) not at all.
+10. STDICT, the monolingual standard dictionary (58 MB, CC BY-SA 2.0 KR like KRDICT): (a, recommended, in use)
+    listed for Korean, not ticked; (b) not listed.
 
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
   `languages/en`, hence the name.) `main` stays releasable for Japanese fixes and is merged into `languages/main`
   regularly, at least after every release and before every language branch starts.
-- `languages/<code>`: one branch per language off `languages/main`, merged back when the language works on the
-  phone; the next language starts from the merged state.
+- `languages/<code>`: one branch per language off `languages/main`, merged back once tested thoroughly on the emulator (owner, 2026-10-14; was: when it works
+  on the phone); the next language starts from the merged state.
 - `experiment/languages`: reference only; pieces may be reused (QuickJS submodule, `scripts/yomitan-language/`
   bundles, harness and tools). Deleted with the owner's OK after group 1 is merged.
 - `ai/` commits (plans, status, notes) are also cherry-picked to `main`, so the plan on `main` is current.
@@ -323,6 +455,35 @@ Per-language checklist (every language branch):
 - The script setting (decision row), SC/TC glyph forms, audio by pinyin, the Chinese recognizer.
 - Questions: tone colors for pinyin; FreeDict zho-rus (WikDict, 157 K headwords) converted and hosted, as the only
   real Chinese–Russian dictionary; typed pinyin in search.
+- Work items (written 2026-10-14 when the branch started; the test dictionaries are in `testdata/dictionaries/zh/`):
+  - Z1. `Language.CHINESE` and `ChineseSupport`: glyph 中, no word separator, the Chinese recognizer, letter
+    resolution, sentence ends and quotes of Chinese text, Lingua Libre's Mandarin (`cmn`, Q9192), flags cn, tw, hk,
+    sg, the phone's Noto CJK SC/TC faces, Hanzi entries below the results ("Characters of the word") and as the
+    fallback where no word is found; Yomitan's `zh` bundle (radical normalization, pinyin reading normalizer).
+  - Z2. Catalog: CC-CEDICT (terms, both scripts as headwords, pinyin with tone marks) and CC-CEDICT Hanzi
+    (characters) from MarvNC's releases, next to the Wiktionary entries already listed.
+  - Z3. Scripts: each match is Simplified, Traditional or either, by a character table built from Unihan and CC-CEDICT
+    (`scripts/chinese-scripts/build.py`; replaces OpenCC, which is not on the allowed downloads);
+    the page's `lang` (zh-Hans or zh-Hant) and the headword spelling follow it, the setting decides for text written
+    alike in both and for typed searches, and may fix one script for everything. Wiktionary's Traditional headwords
+    found through a Simplified form show the form that was read.
+  - Z4. Pinyin: readings shown with tone marks ("xíng (xing²)" → "xíng"); tone colors behind the switch in the
+    Popup's Chinese block (decision row).
+  - Z5. Typed pinyin in search (decision row): a toneless pinyin index written at import next to the dictionary;
+    tone marks or numbers in the query rank exact tones first.
+  - Z6. Audio: Wiktionary clips searched by pinyin with tone marks, Lingua Libre's Mandarin, text to speech.
+  - Z7. Frequency: the wordfreq list is Simplified; Traditional forms added with Z3's character table when the frequency
+    dictionary is built (question "Chinese frequency in Traditional characters", option 1).
+  - Z8. Popup fonts for Chinese (free fonts to download, "Only for Chinese text"), Anki first guesses by Chinese
+    field names (Hanzi, Pinyin, …), the Wiktionary tags of Chinese entries (Simplified-Chinese, …) translated.
+  - Z9. Strings in all 14 locales, docs, NOTICE, unit, page and instrumented tests, test model cases (N), emulator
+    checks with Simplified and Traditional screenshots, vertical text included.
+  - Z10. The script setting moves from the Lookup page's Chinese block to the Chinese card of the Languages screen
+    (decision row "Chinese script"); backup and reset follow it.
+  - Z11. Deleting a popup font asks first (decision row "Deleting a font"; all languages).
+  - Z12. English phrasal verbs in the past for dictionaries without parts of speech (decision row), with a check for
+    false matches over sample text.
+  - Then request 43 (frequency chip names), before Korean.
 
 ### Korean (`languages/ko`)
 
@@ -330,12 +491,30 @@ Per-language checklist (every language branch):
   frequency (wordfreq if it has Korean, else CC100 with its license checked).
 - The lookup start at the spaced word, the Korean recognizer; rule names are endings and need no translation.
 - Questions: KRDICT's packaging has no license of its own (the data is CC BY-SA): list it as usable or not; Hanja
-  entries (single characters) if a licensed source exists.
+  entries (single characters) if a licensed source exists. Both answered by decision rows ("KRDICT", "Hanja
+  dictionary"); the questions that came up during the work are 4-10 in "Questions for the owner".
+- Done on `languages/ko` (2026-10-15):
+  - `Language.KOREAN` and `KoreanSupport`: glyph 한, space-separated words, the Korean recognizer, letter resolution,
+    the lookup start at the spaced word (Latin letters belong to it, digits do not), hanja of the word as entries of
+    their own, the phone's Noto CJK KR faces with Korean, Windows and macOS font names; Yomitan's `ko` bundle with
+    hangul-js; its only described rule (어간, stem) in 14 locales; the flag of South Korea.
+  - Catalog: KRDICT in 11 gloss languages and monolingual (recommended), STDICT, Wiktionary ko-en and others (not
+    ticked), transcription, wordfreq; the hanja dictionary built by `scripts/hanja/unihan_hanja.py` from Unihan
+    17.0.0 (8,500 characters, 169 kB) carried as an asset and installed through an `asset:///` catalog URL (question
+    7). An index that names only its target language (KRDICT says "ko") no longer sets the gloss language on import.
+  - Korean Wiktionary form-of tags in 14 locales (hanja form, hangeul, honorific, regions…); tags that carry a piece
+    of gloss after two spaces are cut (about 1,000 entries).
+  - Popup fonts (question 5); character entries show their tags (question 9).
+  - Tests: `KoreanSupportTest`, `KoreanLookupTest` (instrumented), the catalog and font catalog tests, a page test;
+    test model cases OCR17, LK13, LK14, POP20, POP21, AUD7, ANK10, DIC18.
+  - Known limits (`ai/notes/languages.md`): the device recognizer does not read hanja; KRDICT's hanja headwords have
+    no reading, so audio finds nothing for them; some forms reach unrelated lemmas as in Yomitan (수업은 → 수없다).
 
 ### Before group 1 is merged
 
 - The postponed items (bundled Japanese dictionaries, hosting).
-- A look at the APK size per ABI against v0.2.2 (48.4 MB arm64).
+- A look at the APK size per ABI against v0.2.2 (48.4 MB arm64). Done 2026-10-15 against v0.2.3 (the same 48.4 MB):
+  arm64-v8a 51.2 MB with English, Chinese and Korean (`ai/test-model.md`, NF9).
 
 ## Stage C: group 2 (es, fr, de, it, pt)
 
@@ -345,7 +524,7 @@ Per-language checklist (every language branch):
 - Checks: accents with the ML Kit Latin model; audio regions (Brazil, Latin America, Spain, France).
 - Questions per language: the recommended dictionaries; FreeDict deu-rus, fra-rus, ita-rus, spa-rus conversions.
 
-## Stage D: group 3 (ru, pl, tr, vi)
+## Stage D: group 3 (ru, pl, tr, vi, lv)
 
 - Before Russian: Paddle against Tesseract on real screenshots; MNN against ONNX Runtime by size and speed; the
   chosen engine fills the A11 slot (runtime in the APK, detector and the East Slavic recognizer as downloads).
@@ -356,6 +535,9 @@ Per-language checklist (every language branch):
   hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
 - Polish: forms from the dictionary (pl→en 22 MB). Turkish: dotted and dotless i in case folding. Vietnamese: words of
   several syllables through word resolution; diacritics with the ML Kit Latin model (else Paddle latin).
+- Latvian (request 44): Latin letters with macrons and cedillas (ā ē ī ū, ģ ķ ļ ņ, č š ž) through the ML Kit Latin
+  model; forms from the dictionary unless Yomitan has rules for it; check Yomitan's language list and the Wiktionary
+  editions (lv→en, lv→ru) when the group starts.
 - Questions per language: the recommended dictionaries; anything the comparison leaves open.
 
 ## Stage E: group 4 (decided when group 3 is done)
@@ -383,6 +565,22 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - Dictionaries whose packaging has no license (KRDICT for Yomitan): decided per language.
 
 ## Changelog
+
+- 2026-10-14: request 31: release APKs of `languages/main` (0e24b51, built locally with `-Pscreenlate.splitAbis`)
+  against v0.2.3: arm64-v8a 50.6 MB (48.4, +2.2), armeabi-v7a 45.4 MB (43.6, +1.9), x86_64 51.4 MB (49.1, +2.3),
+  universal 76.2 MB (71.8, +4.5). Of the arm64 growth: native code +1.23 MB (QuickJS and the language bundles in
+  the engine library), ML Kit's Chinese and Korean models +0.53 MB (already bundled by A11), resources +0.22 MB, dex
+  +0.19 MB, the catalog +0.04 MB. Chinese and Korean will add little more (the hanja dictionary, ~0.2 MB).
+
+- 2026-10-14: requests 30–41 and the owner's answers: the Languages screen with quick languages and flags, downloads
+  that resume or offer "Resume", transcription regions, frequency dictionaries built on the phone from wordfreq (no
+  hosting), Chinese tone colors and typed pinyin, Japanese pitch accent colors, the Chinese script default, KRDICT
+  as CC BY-SA, a bundled hanja dictionary, the translation button off for new installs only (changes a row of
+  `2026-09-29-feedback-after-0.1.4.md`), "translation button" instead of "文A button", and a tone audit of all texts.
+  Hosting is postponed with no date. Order of work (revised the same day with request 42): the APK size; requests
+  33–41 and our own items of request 37; the test model (request 42) with integration tests; the full emulator
+  testing by it (Japanese regression, upgrade and backup from v0.2.3, requests 35 and 36); then Chinese and Korean,
+  each tested by the model and merged.
 
 - 2026-10-11: request 25 implemented: bundled imports are identified by source and cancelled before file deletion;
   dictionary media reads select and lock their language; sentence parsing uses the captured note language; the audio
@@ -457,3 +655,155 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   Catalog tasks retain language/entry tags; Search observes readiness and reruns when dictionaries arrive.
   Checked JVM tests, page tests (103/103), five Android scenarios and lint; Home and popup checked visually.
   Requests 28–29: explained headless checks, closed the session's emulator and verified its processes gone.
+- 2026-10-14: requests 33 and 39 built: "translation button" in the 14 locales, docs, comments and plans (the glyph
+  stays only where the icon's shape is meant); the button is off on new installs. The upgrade from a version before
+  languages writes it as on in the same write that settles the first run, and restoring an older backup without the
+  setting keeps it on too (backups now always carry it). Request 37: one-shot navigation events; the form-of tags and
+  "walke" explained in `ai/notes/languages.md`.
+- 2026-10-14: request 36 built: downloads wait for the network, retry by themselves three times and resume with Range
+  where the server allows it; stopped ones show Resume and Cancel, and the notification has Cancel. Emulator check
+  pending (testing phase).
+- 2026-10-14: request 34 built: the Languages screen (turned on with active radio, star, flag country and Turn off;
+  turned off with files, per-dictionary delete and language change, Delete all, Turn on; not turned on), the compact
+  home card with quick flags, flags in the bubble menu (codes on e-ink), stars and flag countries in `LanguageProfiles`
+  (backed up with the general settings), circle-flags converted by `scripts/flags/` with a NOTICE entry. The active
+  language turned off gives way to the first starred one (agent's choice, within the star rules). Emulator check
+  pending.
+- 2026-10-14: the "Transcriptions" decision built. The import keeps the tags of tagged transcriptions in
+  `transcription_tags.bin` next to the engine's files (a sorted 64-bit hash of term and transcription to a tag set;
+  2.5 MB and 30 ms to load for wty-en-ipa), not in Room; a lookup maps flag emoji and per-language accent names
+  (`LanguageSupport.transcriptionRegionNames`) to regions, and the page orders by the user's audio regions and labels
+  them US/UK/AU. Agent's choices within "regions and cleanup": SAMPA/X-SAMPA-tagged transcriptions and ones with quoted
+  text are dropped; a list in one string (`/a/, /b/`) is split; /…/ and […] merge when equal apart from syllable dots
+  too; the cleanup happens at lookup, so the `{phonetic-transcriptions}` marker gets the cleaned list as well. water:
+  89 → 66, American first. Dictionaries imported earlier show no regions until imported again (on this branch only).
+- 2026-10-14: the "Frequency dictionaries" decision built. Catalog entries with `"build": "wordfreq"` (template
+  `wordfreq`, one per source language except Japanese, written by `scripts/frequency/wordfreq_catalog.py`) point at
+  wordfreq 3.2's lists at commit 912caf6 (large where there is one, small for ko, tr, vi; 0.04–4.5 MB) with SHA-256;
+  the import job checks and converts them (`WordfreqDictionary`, 0.4 s for English on a desktop) and imports the
+  result. Agent's choices: the built dictionary becomes the sort dictionary only when none was chosen or the chosen
+  one is gone (`preferSortDictionary`); capitals follow the language (Turkish i → İ), unlike the Python builder; a
+  built dictionary has no update path, so a newer pinned commit reaches only new downloads; the zh entry is wordfreq's
+  Simplified list (Traditional text: see the Chinese questions). Emulator check of the whole path pending.
+- 2026-10-14: request 41 built (Japanese pitch accent colors). A per-language preference
+  `popup_pronunciation_colors` (Japanese keeps the bare key; the Chinese tone colors will reuse it as `_zh`) reaches the
+  page as `pronunciationColors`; popup.js marks the headword (first accent of the first dictionary that has one) and
+  each accent button with `data-pitch-category` from render.js `pitchCategory`, and popup.css colors them while the
+  root's `data-pronunciation-colors` is on. Agent's choices: with one language the switch sits in the Popup elements
+  card (there is no language card then), with several in the Japanese card; the reading takes the word's color; colors
+  are CSS variables (`--pitch-heiban-color` …) the custom CSS can change; e-ink keeps the light theme's colors (the
+  switch is off by default, and color e-ink screens show them); the info panel of an accent is unchanged. Checked in a
+  desktop browser in light and dark themes; emulator check pending.
+- 2026-10-14: request 40 done (tone audit). About 90 strings rewritten: recognition hints and ⓘ texts, reset
+  confirmations, background work and the keep-alive card ("Persistent notification"), bubble state, logs, update and
+  notification texts, cloud recognition, translation and Anki errors; a change of meaning in all 14 locales, tone-only
+  fixes in English and Russian where the other locales were already neutral, first-person Russian progress texts
+  replaced. The usage guide follows the new wording, the README drops conversational phrases, and the release notes in
+  `.github/release-notes/` list features by area with fixes in one sentence (v0.2.3: one sentence). GitHub releases
+  are unchanged until the owner sees the drafts. Settled wording is in `ai/notes/translations.md` → Tone.
+- 2026-10-14: request 42 started. Test model in `ai/test-model.md` (categories E/F/O/N, coverage codes, setup, cases
+  by area, non-functional baselines, run log). Found and fixed on the way: custom CSS could not set the pitch accent
+  colors in the dark theme; the overlay page tests lacked the renderer's assets. Emulator results go to the model's
+  run log.
+- 2026-10-14: owner: a tap rescan after a switch in the hold menu takes the new language (it kept the old one until
+  the bubble docked, and Japanese text scanned as English found nothing). Decision row "Switching during a scan"
+  updated; fixed and checked on the emulator. Found by the emulator run and fixed: catalog downloads show the title
+  the catalog lists them by; a download stopped after its retries says "connection lost" instead of the network
+  library's message; on e-ink the bubble menu is black and white and the chosen language chip is filled.
+- 2026-10-14: the first run of the test model finished (`ai/test-model.md`, run log with the baselines). Further
+  fixes from it: home's audio card opens the Anki page at the audio section; a new audio source starts as the
+  language's first default kind; the download screen's definition-language menu is as wide as its button; the
+  Dictionaries page shows a progress indicator instead of empty sections on its first opening; a language chosen in
+  the system's app settings while the app runs also renames languages at once (the default locale follows the
+  configuration). Instrumented tests of every module pass (the app's Compose tests on API 30).
+- 2026-10-14: the full regression by the test model finished: every E and F case passed (NF4 on API 30 and OCR11 for
+  zh, ko and ru left for later). Two more fixes from it: a monolingual Japanese dictionary with loanword spellings is
+  no longer taken for Japanese → English (40 % foreign letters needed); the search screen opened from a selection menu
+  no longer flashes a white card in the dark theme. Two questions added (English phrasal verbs in the past, deleting
+  a font). Next: Chinese on `languages/zh`.
+- 2026-10-14: Z3 built. `ChineseScripts` (`core:common`) reads a generated table (`ChineseScriptTable.kt`, 82 KB:
+  2,775 Simplified-only and 4,314 Traditional-only characters, the other script's forms by frequency) that
+  `scripts/chinese-scripts/build.py` makes from Unihan 17.0.0 (Unicode License V3, in NOTICE with its text) and
+  CC-CEDICT's word pairs; Unihan alone marks 图 and 体 as their own Traditional variants. OpenCC is replaced by it
+  (not on the allowed downloads; the Z7 question now names this table). Each result carries `lang` (the word's
+  script, else the text's, else the setting), which the page sets on the source, entries and character views.
+  Wiktionary's `Simplified-Chinese` form-of results show the spelling read and merge with CC-CEDICT's entry; results
+  of the same expression and reading merge in general. Lookup page's Chinese block: "Characters" (Simplified /
+  Traditional) and "All words in these characters" (off), per language, reset with the Lookup page (question
+  "Chinese script setting", option 1). Readings drop Wiktionary's numbered pinyin (question "Chinese readings",
+  option 1); character views label both reading fields "Pinyin".
+- 2026-10-14: Z4 built. Chinese headwords show pinyin one syllable above each character (`reading.js` registry,
+  `reading-zh.js`: own pinyin splitter over a syllable pattern, fewest syllables, no vowel-initial syllable after
+  another, erhua r over 儿; a word with letters or a reading that does not match keeps one ruby). The Popup page's
+  Chinese block has "Tone colors" (off), reusing `popup_pronunciation_colors_zh`; syllables carry `data-tone` 1–5
+  and popup.css colors them with `--tone-N-color` (decision row colors; dark theme variants; e-ink keeps light).
+  Agent's choices: only the pinyin is colored, not the characters (the decision row says pinyin); character views
+  color their readings too; Anki's `{furigana}` for Chinese is left to Z8.
+- 2026-10-14: Z5 built. Typed pinyin finds Chinese words in any form ("nihao", "ni hao", "ni3hao3", "nǐhǎo"; ü as
+  v, u: or ü): at import a term dictionary of a language with a reading search gets `reading_index.bin`
+  (`ReadingIndex`: words by a 64-bit hash of the toneless key, memory-mapped; the banks are read on up to four
+  threads), and `lookupQuery` looks up the first 80 words of the key in the Lookup setting's script and ranks typed
+  tones and apostrophes (xi'an → 西安) first, then Yomitan's order. Agent's choices: a key lists its likely common
+  words first (a character in more of the dictionary's words counts as more common, a word as its rarest character),
+  so the 80 cover a syllable's common characters; words the engine found by an exact reading join the reading
+  search's order. Fixes found on the way: results whose readings differ only in spaces merge, as Yomitan's reading
+  normalizer for Chinese does (CC-CEDICT "nǐhǎo" and Wiktionary "nǐ hǎo" were two entries); a lookup through
+  Yomitan's code no longer fails when its letter resolution splits a character outside the BMP (𣱘), as the engine's
+  JSON reader refused the half surrogate.
+- 2026-10-15: Z6 built. Wiktionary's Mandarin recordings are searched by the reading's pinyin without spaces
+  (`LanguageSupport.recordingTitle`; `Zh-péngyou.ogg`), so a word read several ways gets the clip of the reading shown;
+  Lingua Libre's by the characters. Measured on 30 common words: Wiktionary by pinyin 25, Lingua Libre 18, both 28
+  (`ai/notes/languages.md`). Agent's choice: Chinese defaults to Wiktionary, Lingua Libre, text to speech (Z1 had
+  Lingua Libre first; Chinese is unreleased, nothing to migrate). Fix: text to speech read the reading, which for
+  Chinese is pinyin; it now reads the characters (`speechText`), also in the clip menu and the audio source test.
+- 2026-10-15: the owner answered every open question (decision rows from "Chinese audio" to "Test model
+  location"); new: the Chinese script setting moves to the Languages screen's Chinese card, request 43 (frequency
+  chip names) comes after Chinese. Work items Z10–Z12 added.
+- 2026-10-15: Latvian joins group 3 at the owner's request (request 44); decision row "Languages and order" and the
+  big release's count updated.
+- 2026-10-15: Z10 done. The keys are `language_script` and `language_fixed_script` (Chinese is unreleased, nothing to
+  migrate); a backup carries them in its General part with the turned-on languages; no page reset clears them, the
+  full reset does (agent's choice: the Languages screen has no reset of its own). The hint names words found by pinyin;
+  the full reset's text names the Chinese characters and that turned-on languages stay.
+- 2026-10-15: Chinese fonts and the font delete confirmation (Z8's fonts, Z11) done: five fonts in the catalog
+  (`language` is now the language code, the filter used the BCP 47 tag, which is zh-Hans for Chinese), font
+  descriptions in all 14 locales (the Japanese ones had en and ru only), Traditional Chinese interfaces get the
+  zh-Hant text (`localeKey`). Deleting a font asks "Delete <font>?" (shared `ConfirmDelete`). Question 1 above
+  (other languages' fonts) logged with option (a) in use.
+- 2026-10-15: Chinese Anki (Z8's Anki part) done. `{furigana}` and `{sentence-furigana}` of Chinese put a pinyin
+  syllable over each character (reading.js rules, as the popup's headwords); Japanese keeps Yomitan's distribution.
+  Field guesses take the note language: `LanguageSupport.ankiFieldNames` (Chinese: Simplified, Traditional, Hanzi,
+  Chinese, Characters, Pinyin, English and the Chinese names) come before the shared names, and only the language's
+  own markers match by name (a "Pitch" field of a Chinese note type stays empty). Question 2 above (Simplified and
+  Traditional fields) logged with option (a) in use: `LanguageSupport.scriptMarkers`, filled by
+  `DictionaryLookup.inScript`.
+- 2026-10-15: Wiktionary tags of Chinese entries translated (Z8's last part): 22 tag words of wty-zh-en's form-of
+  items in all 14 locales (scripts: Simplified, Traditional, second-round Simplified; varieties: Cantonese, Hokkien,
+  Min Nan, Min, Min Dong, Hakka, Teochew, Wu, Mandarin; regions: mainland China, Taiwan, Hong Kong, southern;
+  name, Internet, humorous, euphemistic, dated, vulgar). With the words already translated they cover 99.5% of the
+  form-of tag words (counted over the 2026-10-14 revision). `lintDebug` fails in `dictionary:api` on three
+  RestrictedApi errors about WorkManager (`Result.Retry`, `Data.Builder.put`), older than this branch.
+- 2026-10-15: Z9 done. Checked on the emulator: Simplified, Traditional and vertical Chinese with cloud recognition
+  (a vertical miss turned out to be the floating bubble's old scan of another picture: a floating bubble keeps its
+  scan until tapped, as designed), Simplified on the device recognizer (the emulator was short of memory, its
+  timings are not comparable), deleting a downloaded font that was in use (the phone's font takes over). NOTICE
+  names the downloadable fonts; the Lookup summaries say "characters of the word" in all locales. Instrumented
+  `ChineseLookupTest` on the real engine. Fix found by it: a lookup starting at a radical look-alike (⽇ for 日, from
+  PDFs) was dropped before the engine, which reads radicals as ideographs; Japanese and Chinese now start a word
+  there. `scripts/text-image.py --vertical` renders the vertical test picture.
+- 2026-10-15: Z12 done. Phrases without a part of speech match English verb forms when the word after the verb is
+  an adverb particle; the interposed-object rule stays typed only (question 3, option a in use). Checked over
+  wty-en-ru's example sentences, with instrumented tests and on the emulator (test model LK12). The N cases of the
+  Chinese work moved to E, F and O in the test model's run log. `docs/usage.md` said the Chinese script is chosen on
+  the Lookup page; it is the Languages screen since Z10.
+- 2026-10-15: Request 43 done (decision row "Frequency chip names"): `popup.js` shortens a frequency dictionary's
+  name wider than four Latin letters to its first character in upper case; the chip becomes a button that toggles
+  the whole name, "+N" shows the first one whole, TalkBack reads the whole name. Page test and emulator (POP19).
+- 2026-10-15: the Chinese branch merged into `languages/main` (with `main`, v0.2.3 included); `languages/ko` started
+  from it. Korean done on the branch (section "Korean"): support class, catalog with KRDICT and the hanja dictionary
+  from the app, form-of tags, fonts, character entry tags, emulator checks by the test model. Questions 4-10 logged
+  with their recommended options in use.
+- 2026-10-15: `languages/ko` merged into `languages/main` (0805427): group 1 (English, Chinese, Korean) is built.
+  The engine's instrumented suite passed (29); release APKs: arm64-v8a 51.2 MB, armeabi-v7a 46.0, x86_64 52.0,
+  universal 76.8 (v0.2.3: 48.4, 43.6, 49.1, 71.8). Left before group 1 counts as done: the postponed items
+  (bundled Japanese dictionaries, hosting) and questions 1-10.

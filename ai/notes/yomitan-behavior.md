@@ -7,11 +7,41 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
 1. Take up to `scanLength` (16) characters from the cursor. Try prefixes from longest to shortest.
 2. For each prefix, build text variants with preprocessors (width conversion, hiragana ↔ katakana, collapsing emphatic sequences, …), deinflect each variant with the language transforms (keeping the rule chain), post-process.
 3. Query all candidates at once, matching term or reading exactly. Drop matches whose part-of-speech rules do not satisfy the deinflection conditions.
-4. No term found: the scanner looks up the first character in the kanji dictionaries and shows its kanji entry, highlighting one character (`TextScanner._findDictionaryEntries` in `ext/js/language/text-scanner.js`; `searchKanji` is on by default for every scanning input). Screenlate does the same in the popup, popup links and the Search screen (`DictionaryLookup.characterEntry`).
+4. No term found: the scanner looks up the first character in the kanji dictionaries and shows its kanji entry, highlighting one character (`TextScanner._findDictionaryEntries` in `ext/js/language/text-scanner.js`; `searchKanji` is on by default for every scanning input). Screenlate does the same in the popup, popup links and the Search screen (`DictionaryLookup.characterEntry`). A kanji entry shows the dictionary's tags for the character (KANJIDIC jouyou, jinmeiyou; the hanja dictionary's 교육용, 인명용); Screenlate's character view shows them since 2026-10-15.
+5. Radical look-alikes (Kangxi radicals U+2F00–2FD5, the supplement U+2E80–2EF3; ⽇ for 日, common in text copied
+   from PDFs) are read as their ideographs: Yomitan's `normalizeRadicalCharacters` for zh, and the Japanese path
+   does the same. Screenlate's `lookupStart` dropped a lookup starting at one before the engine saw it; since
+   2026-10-15 `CjkText.isRadical` lets it start a word (instrumented: `ChineseLookupTest`, `LookupPipelineTest`).
+6. English phrasal verbs: the past, -ing and third-person rules have phrasal variants ("picked up" → "pick up",
+   conditions `v_phr`), and the interposed-object rule drops the words between a verb and an adverb particle
+   ("picked the book up" → "picked up"). `v` only groups its sub-condition `v_phr`, so both have flag 1, and an entry
+   without a part of speech (wty-en-ru: 333 "word particle" phrases, all with empty rules and the dtag "phrase")
+   never matches. Screenlate's own deviation since 2026-10-15: `glue.js` marks a candidate `u` when its conditions are
+   the verb flags, no chain has "interposed object" and the deinflected text's second word is one of Yomitan's
+   adverb particles (`phrasalVerbParticles`; prepositions such as to, for, with left out); `candidate_lookup.cpp`
+   then also accepts entries and form-of items with blank rules. Checked over the 20,562 English example sentences
+   of wty-en-ru: every hit was a real phrasal verb except "ways out" → "way out" (right entry, labelled
+   "3rd pers. sing. pres"); plural nouns like "sons in law" behave the same. Prepositions would have added "closed
+   to" → "close to" (near), "saved for" → "save for" (except), "puts upon"; the interposed-object rule would have
+   added "time is running out" → "time out" and "way the money ran out" → "way out". Lost by the strict rule: 18
+   verbal phrases ending in a preposition (look for, deal with, apply to, …). Instrumented:
+   `LanguageLookupTest.phrasalVerbsWithoutPartOfSpeechMatchTheirFormsWithAdverbParticles`.
+7. The letter resolution shortens the text one UTF-16 unit at a time, which splits a character outside the BMP
+   (𠮶, CJK Extension B). Such a candidate matches no term, and the engine's JSON reader refuses an unpaired
+   surrogate, so `glue.js` (`isWellFormed`) drops candidates whose original, transformed or deinflected text holds
+   half a pair.
+8. Form-of entries (a glossary item `[lemma, [tags]]`, Yomitan's dictionary deinflections) give a chain of one step
+   with no conditions, so a form that names several lemmas lists them all, ordered by frequency: Korean Wiktionary
+   gives 마셨어요 as a form of 마시다, 말다 and 마다, and wordfreq ranks 마다 high from the particle, so 마다 comes
+   first; a particle entry of 마다 in another dictionary joins its group. Screenlate does the same. It cuts a tag at
+   two or more spaces (`FormOfTags.clean`): about 1,000 Korean Wiktionary tags carry a piece of gloss there ("hanja
+   form   the Korean language”)").
+9. Korean irregular-stem rules reach unrelated words: 수업은 deinflects to 수없다 (ㅅ-irregular, -(으)ㄴ) as well as
+   to 수업, and the longer match sorts first; Yomitan's candidates are the same (checked with the bundle in Node).
 
 ## Result modes (`resultOutputMode`, default `group`)
 
-- `group`: one entry per term + normalized reading + inflection chain; definitions from all dictionaries inside.
+- `group`: one entry per term + normalized reading + inflection chain; definitions from all dictionaries inside. The reading is normalized by the language's `readingNormalizer` (Chinese: NFC, lower case, without spaces, apostrophes, hyphens, colons and `//`), so "Xi'an" and "xī ān" readings of one word group together; Screenlate's `LanguageSupport.normalizeReading`.
 - `merge`: entries sharing a sequence number in the main dictionary are merged (all spellings of a JMdict entry in one card).
 - `split`: one entry per dictionary. `term`: group by term only.
 

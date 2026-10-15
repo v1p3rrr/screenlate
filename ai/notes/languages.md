@@ -338,6 +338,14 @@ language from the PC (`scripts/yomitan-language/tools/commons_audio.py` in the e
   `Zh-māo.oga`), some with tone numbers (`Cmn-shan1.flac`), dialects add a place (`Zh-Chengdu-mao1.ogg`). So the
   Wiktionary source must search Chinese by the reading in pinyin (wty readings look like "nǎo (nao³)", CC-CEDICT's
   have tone marks), not by the characters.
+- Measured again 2026-10-15 for 30 common words (`<scratchpad>/zh/audio/measure.py`, not kept): Lingua Libre
+  `LL-Q9192 (cmn)` by characters 18/30 (Traditional 書 has its own file), Wiktionary by tone-marked pinyin without
+  spaces (`Zh-péngyou.ogg`) 25/30, Wiktionary by characters 1/30 (a redirect `Zh-北京` → `Zh-Beijing.ogg`); both
+  sources together 28/30 (电脑 has none). Commons title shapes: about 5,300 `Zh-<pinyin>.ogg/oga`, about 140 with a space
+  (`Zh nǐ hǎo.ogg`, dialect samples), 4 `Cmn-<numbered>.flac`, a few `Zh-cmn-<characters>.opus` and Cantonese
+  `Zh-yue-…`, which the 2-letter region group of the Wiktionary pattern does not match. A case-insensitive regex
+  (`/…/i`) found nothing more. So Chinese defaults to Wiktionary first (`LanguageSupport.recordingTitle` gives the
+  pinyin), then Lingua Libre; text to speech reads the characters (`speechText`), as a voice reads pinyin as Latin.
 - Lingua Libre's pattern `-.*-term.wav` also matches compounds and phrases ending in the word: "kitty-cat",
   "she-cat", "summer-house", "акула-кошка", "транс-человек"; the first result may be one of them. Japanese never had
   hyphens, so it did not show. A title whose part before `-term.wav` still contains a hyphen after the speaker is
@@ -386,6 +394,15 @@ dictionaries (en→ru; ru, ko, zh, es, de, fr, it, pt →en).
   nine dictionaries (ru 37 words, de 53, fr 26, it 25, pt 28, ko 29, zh 19); about 25 of them are names of dialects,
   scripts and romanizations (Cantonese, Hokkien, Simplified-Chinese, Yale, hanja). The last 1% is a long tail of
   noise: es→en alone has 9,712 distinct tag words, mostly text that leaked into tags.
+- wty en→ru revision 2026.10.11 (checked 2026-10-14): 13,664 form-of rows, each item with one tag: plural 7,728,
+  gerund 2,614, third-person singular 2,598, past participle 2,592, past 96, plus a few "redirected from …"
+  (spelling redirects such as learnt → learn). The odd "past past participle simple and" seen on the emulator on
+  2026-10-10 came from an earlier revision; the current data has no "simple" or "and" tags. Regular past forms carry
+  only "past participle" (walked → walk), which is wty's data, not our order. The tags of an item are shown in the
+  dictionary's order, and Yomitan's own rule ("past" for -ed) is a separate chain.
+- "walke" before "walk" for "walked": with no frequency dictionary Yomitan sorts by the matched length and then the
+  term length, so the candidate "walke" (from the rule -d) that some dictionary has comes before "walk". A frequency
+  sort dictionary puts "walk" first; the planned wordfreq dictionary is set as the language's sort dictionary.
 - Total for groups 1 and 2: about 200 strings (45 names, 45 descriptions, ~105 tag words), as many as the Japanese
   names and descriptions translated today; all languages: about 630 strings.
 
@@ -396,3 +413,35 @@ mostly participle forms (шокирующее → шокирующий → шо�
 690 K with one step, 1.34 M with two (noise: кошки → кот, aspect partners принуждали → принудить, pronoun tables),
 1.01 M with a second step only from lemmas without definitions, which finds 315,469 of the 327,148 dead ends and
 leaves every form that already finds something as it was.
+
+## Chinese on `languages/zh` (2026-10-14/15)
+
+- Scripts: `scripts/chinese-scripts/build.py` builds `ChineseScriptTable.kt` from Unihan (variants, GB 2312, the 2013
+  general standard, Big5) and CC-CEDICT's headword pairs (OpenCC is not on the allowed downloads). A character is
+  Simplified only when no Traditional spelling in CC-CEDICT uses it and it replaces a Traditional character there or
+  Unihan lists it in the mainland sets but not Big5; Traditional only the other way round; shared characters (后, 里,
+  着) are in neither. The other script's forms are ordered by how many CC-CEDICT words use them (头发 → 頭髮, not 頭發).
+- Pinyin over characters: `reading-zh.js` splits a tone-marked reading into syllables by a regex of initials and
+  finals (plus hng, hm, ng, m, n and erhua r) and gives each syllable a tone (5 = neutral); where the syllables do not
+  match the Han characters one to one (letters in the word, odd readings) the word gets one ruby. 儿 takes the erhua r.
+- Typed pinyin: the engine cannot search readings in Latin letters, so the import writes a `ReadingIndex` next to the
+  dictionary: 64-bit hashes of toneless keys (`ChinesePinyin.key`, "ni3hao3", "nǐhǎo" and "nihao" give the same key),
+  each with its words, the likely common ones first (a character in more of the dictionary's words counts as more
+  common, a word as common as its rarest character). The banks are read on several threads; the file is mapped.
+  `readingMatch` ranks exact tones first.
+
+## Korean on `languages/ko` (2026-10-15)
+
+- KRDICT (Lyroxide 1.0.0): index titles "KRDICT EN", "KRDICT RU", … (the variants with and without examples share
+  them), `targetLanguage` "ko" and no `sourceLanguage`, so an index naming only its target no longer sets the gloss
+  language (`indexTargetLanguage`). KO-EN: 85,415 headwords, 32 K of them hanja spellings, 6 K phrases; parts of speech
+  v, adj or none. Hanja headwords have no reading (the Hangul is only in the glossary), so audio finds nothing for them;
+  Wiktionary's form-of entry gives the Hangul word next to it. 496 entries hold `&quot;` and `&apos;` as text.
+- The hanja dictionary: `scripts/hanja/unihan_hanja.py` reads Unihan 17.0.0 (`kHangul` "락:0E 낙:0", where E marks a
+  reading on the 2007 education list; `kDefinition`, `kTotalStrokes`; tags 교육용 and 인명용 from
+  `kKoreanEducationHanja` and `kKoreanName`), readings on the education list first, 8,500 characters in 169 kB;
+  reproducible zip. It ships in
+  `dictionary/api/src/main/assets/catalog/` and installs through `asset:///` (no network constraint on the job).
+- Wiktionary ko-en: 387 K form-of rows with tags like "formal past indicative", "hanja form", "hangeul"; about 1,000
+  tags carry leftover gloss after two spaces (cut by `FormOfTags.clean`).
+- The device recognizer does not read hanja (`ocr-engines.md`).

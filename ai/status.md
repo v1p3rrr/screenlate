@@ -4,7 +4,23 @@ Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-la
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
 [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 
-## Next session (handoff, 2026-10-11)
+## Next session (handoff, 2026-10-15)
+
+- Group 1 is built on `languages/main`: English, Chinese (`languages/zh`) and Korean (`languages/ko`), both language
+  branches merged. Every case of `ai/test-model.md` passed on the emulator in its last run; the run log lists the
+  known limits. Upgrades from v0.2.3 and v0.2.3 backups were checked on the emulator (request 32: FR4 to FR7).
+- Open for the owner:
+  - questions 1 to 10 in the plan's "Questions for the owner" (font lists across languages, Chinese script fields in
+    Anki, phrasal verbs, and seven from the Korean work); the recommended options are in use;
+  - the postponed items before group 1 counts as done: bundled Japanese dictionaries, and hosting (request 30;
+    FreeDict zho-rus and eng-rus, Mueller and OpenRussian wait for it);
+  - a test of `languages/main` on the phone (timings, real screenshots from apps).
+- Next: stage C (es, fr, de, it, pt), each on its own `languages/<code>` branch, its questions asked first (the
+  plan's per-language checklist).
+- Emulator: the AVD `Pixel_10_Pro` holds the debug build with Japanese, English, Chinese and Korean installed,
+  AnkiDroid with a local collection (no account) and test zips in `/sdcard/Download`.
+
+## Earlier handoff (2026-10-11)
 
 - Stage A (shared base) and English are built on `languages/main`, checked on the emulator, and both review runs of
   request 23 are done (see the log entry "languages: stage A, English, two reviews"). Next: the owner tests the debug
@@ -117,9 +133,28 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 - [x] Phase 5 — first phone test feedback
 - [x] Phase 6 — build and publishing (first release v0.1.0 published 2026-09-27)
 - [x] Phase 7 — release readiness (the owner's open questions pending)
-- [ ] Phase 8 — languages beyond Japanese: stage A and English built and reviewed, stages B to E open
+- [ ] Phase 8 — languages beyond Japanese: stage A and group 1 (English, Chinese, Korean) built, stages C to E open
 
 ## Log
+
+### 2026-10-13 to 2026-10-15 (group 1: Languages screen, Chinese, Korean; languages/main, languages/zh, languages/ko)
+
+- Requests 30 to 44 of the languages plan, with the owner's answers as decision rows; details in its changelog.
+- Shared work on `languages/main`: the Languages screen (turned-on languages, active one, two quick languages,
+  flags), downloads that wait for the network, retry and resume, transcription regions, wordfreq frequency
+  dictionaries built on the phone, Japanese pitch accent colors, the tone audit of every text, the test model
+  (`ai/test-model.md`) with a full regression on 2026-10-14.
+- Chinese: Simplified and Traditional from a generated character table, pinyin over each character, typed pinyin
+  through a reading index, Mandarin audio by pinyin, fonts, Anki fields per script, Wiktionary tags, radical
+  look-alikes. English: phrasal verbs in the past with dictionaries that give phrases no part of speech. Frequency
+  chips show the dictionary's short name (request 43).
+- Korean: support class, KRDICT and other catalog entries, the hanja dictionary carried in the APK and installed
+  through an `asset:///` catalog URL, Korean Wiktionary form-of tags, fonts, tags on character entries.
+- Tests at the merge of Korean (`0805427`): JVM 782 (4 skipped), page tests 127, engine instrumented 29; every new
+  test model case passed on the emulator.
+- Notes: `languages.md` (Chinese and Korean sections), `yomitan-behavior.md` (surrogates, form-of lemmas by
+  frequency, Korean irregular rules, reading normalizer), `ocr-engines.md` (Korean on-device recognition),
+  `webview-fonts.md` (Korean local font names).
 
 ### 2026-10-11 (language installation readiness; languages/main)
 
@@ -887,7 +922,7 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 
 - Request 48: before the accessibility settings open, a dialog says what the service reads (a screenshot on a tap or
   pull, app text when on, the app in front, the keyboard and bars) and where it goes (cloud recognition unless the
-  engines are set to the device, the online translator for 文A and note translations, audio sources, AnkiDroid).
+  engines are set to the device, the online translator for the translation button and note translations, audio sources, AnkiDroid).
   "Agree" stores `accessibility_agreed` and opens the settings; later taps open them at once. The flag is cleared by
   the full settings reset only and is not backed up (owner). About → "What the service reads and sends" shows the
   same text with Close. All three home buttons that open the settings go through it. 14 locales; the Russian text says

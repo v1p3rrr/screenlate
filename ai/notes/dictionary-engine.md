@@ -131,6 +131,8 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   `..` segment or an absolute title leave `outputDir`. `ArchiveTitles` refuses such titles (checked on every
   `index.json` of the zip) before the native import.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
-  it whole; `LanguageGuess` decides by script shares (Latin or Cyrillic ≥ 15% of letters is the target language even
-  with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese), with Android's `TextClassifier`
+  it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
+  even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test
+  dictionaries: bilinguals have 53–100% foreign letters in their definitions, Japanese monolinguals up to 26% Latin
+  (デジタル大辞泉 opens with loanwords and their etymologies; at the former 15% it was taken for ja → en), with Android's `TextClassifier`
   naming Latin and Cyrillic languages. Installed dictionaries were sampled once through lookups of ~80 common words.
