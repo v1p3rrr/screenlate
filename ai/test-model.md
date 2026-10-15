@@ -140,6 +140,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK12 | English phrasal verbs with wty-en-ru (phrases without a part of speech), testdata/ocr/en-phrasal.png: "picked up" → "pick up" with "past", "gives up" → "give up" with "3rd pers. sing. pres"; "closed to" shows "closed", "close", no "close to"; "looked for" shows "look", no "look for" | F | I LanguageLookupTest, M | 2026-10-15 |
 | LK13 | Korean lookups: 먹었습니다 → 먹다, 공부하고 → 공부하다 and 가르친다 → 가르치다 with their endings; the aim inside a spaced word starts at its first syllable (보면서 → 보다); 한국어를 → 한국어; TV를 → TV (Latin letters belong to the word), 3월에 → 월 (digits do not); 韓國語 and 大學校 from KRDICT, their Hangul words through Wiktionary's "hanja spelling", the word's hanja below the results; 마셨어요 lists 마시다 among Wiktionary's three lemmas | E | I KoreanLookupTest, U KoreanSupportTest, M | 2026-10-15 |
 | LK14 | Korean Wiktionary form-of tags in the interface language ("hanja form" → "hanja spelling", "informal past indicative/interrogative polite"); a tag with leftover gloss ("hanja form   the Korean language”)", about 1,000 entries) shows the tag alone, in Anki's `{conjugation}` too | O | U FormOfTagsTest, I KoreanLookupTest, M | 2026-10-15 |
+| LK15 | Japanese with romaji on, `testdata/ocr/romaji-joined.png`: the aim inside "jidoujisho" shows the word under it ("jidou" → 自動, "jisho" → 辞書 among the results); moving along the word shown looks nothing up again; "kitte" → 切手; a word with nothing found from its start ("Screenlate") is looked up from the syllable under the aim | O | U ConvertedLatinAimTest, M | 2026-10-15 |
 
 ### POP: the popup
 
@@ -302,6 +303,18 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, `main` after e6e20bf (romaji inside a joined Latin word, uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: LK15 (new), with `testdata/ocr/romaji-joined.png`.
+
+Results: passed. With romaji on, the aim on "d" of "jidoujisho" showed "jidou" (自動, one lookup in 189 ms); on "o"
+it showed "jisho" (辞書 among じし, じしょ: both cover "jisho", as in Yomitan), two lookups of 107 and 122 ms; moving
+along "jisho" looked nothing up again. "kitte" showed 切手. "Screenlate" finds nothing from its start, so the aim on
+its "a" looked up "la" (ぁ). Seen on the way: wty-ja-* "non-lemma" entries (じし, じどう) showed numbered items without
+glosses; compared on `languages/main` after the merge.
+
+New cases, checked when written: LK15 (O).
 
 ### 2026-10-15, `main` after a24171b (backup choice, uncommitted build), Pixel_10_Pro (API 37)
 
