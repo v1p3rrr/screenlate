@@ -12,7 +12,7 @@ branches that does not depend on the new languages, all on `main`. The work is d
 | Release | None for now; `main` only gets the changes (owner, 2026-10-15). |
 | Download lag | Seen by the owner on the Dictionaries screen of the languages test build (Japanese and English), maybe everywhere. Find what loads the main thread while a download or import runs and fix it on both branches. |
 | Anki connection check | A "Check connection" button on the Anki page asks AnkiDroid again and lists the result per item: AnkiDroid installed, access granted, deck found, note type found, fields match. It sits in a "Connection" card at the top of the page, shown in every state (the not-installed and no-access texts move into it); the list shows ✓/✗ with how to fix a failure, the deck and note type by name, missing and new fields by name; items after a failure are "not checked". Read-only. |
-| Backup: settings | Chosen per section when creating, the same list as on restore; all ticked at first. The list stays on the screen in the "Create a backup" card, in place of "Include dictionaries", above the Create button. |
+| Backup: settings | Chosen per section when creating, the same list as on restore; all ticked at first. Shown as a step after "Create backup…": a large dialog whose list scrolls while its buttons (Cancel, Next) stay in view; Next opens the file picker. The restore list stays on the screen, as it appears only after a file is chosen. |
 | Backup: files | "Fonts" and "Dictionaries" are items of their own (fonts leave the Popup section) that expand with an arrow into a list of files with their sizes, each with its own box. |
 | Backup: defaults | The first time every settings section and every font is ticked, the dictionaries are not. The screen remembers the last choice; a font or dictionary added since takes the mark of its item. |
 | Restore | The same expandable lists: fonts and dictionaries can be restored one by one. |
@@ -83,12 +83,12 @@ Kept current while the work runs so a new session can continue from the last lin
 - Step 3 done: `73bba6a`, checked on the emulator in English and Russian (all passed; no access; a stale note type),
   test model ANK11. Made without asking (for the owner to review): once shown, the check runs again after a setup
   change and when the page comes back; "not chosen" counts as a failure (a cross with "Choose it below").
-- Step 4 in progress. Design (from the decisions; choices made without asking are marked for the owner's review):
+- Step 4 done: `9d109bf`, `0192771`, checked on the emulator (test model SET2, SET9-SET11). Design (from the decisions; choices made without asking are marked for the owner's review):
   - `BackupSection.FONTS` is new, after POPUP; POPUP keeps only the settings. A backup of an older version has its
     fonts under POPUP: reading the head goes on through the font entries (`fonts/fonts.json` and the files, which
     come before any dictionary file), so the restore list shows its fonts with their sizes as a Fonts item.
-  - Create: the same checklist as restore, inline in the Create card; Fonts and Dictionaries expand into files with
-    sizes. Only the chosen settings sections go into `settings.json`; without the dictionary list `dictionaries.json`
+  - Create: the same checklist as restore, in a dialog after "Create backup…" (first inline in the Create card,
+    changed by the owner); Fonts and Dictionaries expand into files with sizes. Only the chosen settings sections go into `settings.json`; without the dictionary list `dictionaries.json`
     holds only the dictionaries whose files go in. `BackupDictionary.bytes` is new (the size of its files), so the
     restore list shows dictionary sizes for new backups (older backups: no size).
   - The remembered choice: preference keys `backup_sections_off`, `backup_fonts_on`, `backup_fonts_flipped`,
@@ -98,16 +98,14 @@ Kept current while the work runs so a new session can continue from the last lin
     section replaced the whole font set). For review by the owner.
   - Yomitan: `YomitanImportScreen` becomes a card on the backup screen (last); the route, the Settings item and
     `SettingsPage.YOMITAN_IMPORT` go; the Dictionaries button opens the backup screen scrolled to the card.
-  - State: code and strings written, unit tests pass (`BackupChoiceTest`, `FontBackupTest`, archive and format
-    tests); uncommitted until checked on the emulator. Checked on the emulator: the create lists, sizes, the
-    tri-state boxes and the remembered choice; a backup without Anki, with 1 font and 2 of 30 dictionaries
-    (`/sdcard/Download/sl-choice-test.zip`) holds no Anki keys, the 30-entry list, `fonts/fonts.json` and the two
-    dictionaries' files. The hint now shows a size only when something is chosen (built and installed, not yet
-    looked at). Next: restore from `sl-choice-test.zip` with one dictionary unticked, an older backup with fonts
-    under Popup, the Yomitan card from Settings and from the Dictionaries button, the Russian layout,
-    `docs/usage.md` and `docs/architecture.md` (Yomitan import now on the backup screen), test model cases
-    (SET2, SET3 and new ones), commit.
-- Steps 5-6: not started.
+  - Owner feedback (2026-10-15): the create checklist must not hang open all the time: either fold it under one
+    header or show it as a separate step after "Create backup" is pressed. The owner chose the step: a large
+    dialog, scrolling list, buttons always in view; the restore list stays as it is. A file item's box is
+    ✓ when all its files are chosen, — for some, empty for none (already so: `FileChoice.state`). Then: item titles
+    in semibold (owner); also the Yomitan card's section and dictionary rows, the same kind of list on that screen.
+- Step 5 done along the way: `docs/usage.md` and `docs/architecture.md` describe the Anki check, the backup choice
+  and the Yomitan card; strings in 14 locales; test model ANK11, SET2, SET9-SET11 and the run log.
+- Next: push `main`, then step 6 (merge `main` into `languages/main`; the Languages item with models in backups).
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all.
@@ -124,3 +122,6 @@ Kept current while the work runs so a new session can continue from the last lin
   only.
 - 2026-10-15: the owner asked to work on without them, to keep questions until they are back and to keep the
   progress written down; the "Progress" section above is the resume point.
+- 2026-10-15: the owner moved the create checklist from the Create card into a dialog after "Create backup…"
+  (scrolling list, buttons always in view); the restore list stays on the screen.
+- 2026-10-15: the owner asked for the backup list items' titles in semibold.

@@ -250,13 +250,16 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | SET1 | Page resets and the full reset ask first and keep what they promise (dictionaries, fonts, interface language) | F | U SettingsKeysTest, M | 2026-10-14 |
-| SET2 | Backup with and without dictionaries through the file picker; restore lists parts, checked parts replace | F | U BackupArchiveTest, BackupFormatTest, M | 2026-10-14 |
-| SET3 | Yomitan settings import: the summary, applied to the profile's language | F | U YomitanSettingsTest, M | 2026-10-14 |
+| SET2 | Backup with a choice through the file picker ("Create backup…" → the parts dialog → Next); the file holds only the chosen sections, fonts and dictionaries; restore lists the parts, checked parts replace, the summary counts the fonts and dictionaries restored | F | U BackupArchiveTest, BackupFormatTest, BackupChoiceTest, M | 2026-10-15 |
+| SET3 | Yomitan settings import from the last card of the backup screen: the summary, applied to the profile's language | F | U YomitanSettingsTest, M | 2026-10-14 |
 | SET4 | Theme (system, light, dark) and colors (own, system) | O | U ThemeModeTest, M | |
 | SET5 | E-ink mode: black and white, larger sizes offered, turning off restores them | O | U EInkSizesTest, EInkEnlargementTest, M | |
 | SET6 | Interface language: each of the 14 locales; the bubble, popup and notifications follow it; a language chosen in the system's app settings while the app runs renames languages at once (`cmd locale set-app-locales`) | F | I AppLanguageResourcesTest, U TranslationsTest, M | 2026-10-14 |
 | SET7 | Background work: battery optimization status and request, persistent notification switch, notifications-off note | O | M | |
 | SET8 | Holding an icon button shows its description | O | M | |
+| SET9 | Backup parts dialog: the list scrolls while Cancel and Next stay in view; Fonts and Dictionaries expand into files with sizes; an item's box is ✓, — or empty for all, some or none of its files; Cancel drops the changes; the next backup starts with the last accepted choice; in Russian | F | U BackupChoiceTest, M | 2026-10-15 |
+| SET10 | Restore of one font and some of the dictionaries: only those are written, files of the replaced font are not left behind; a backup whose manifest has no Fonts section (older format) still lists its fonts with sizes and restores them | F | U FontBackupTest, BackupArchiveTest, M | 2026-10-15 |
+| SET11 | The Dictionaries screen's Yomitan collection button opens the backup screen at the Yomitan card; Settings has no separate Yomitan item, and the backup item's subtitle names the import | O | M | 2026-10-15 |
 
 ### UPD: About, logs, updates
 
@@ -299,6 +302,20 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, `main` after a24171b (backup choice, uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: SET2, SET9 to SET11; ANK11 earlier the same day.
+
+Results: every case passed. A backup without Anki, with 1 font and 2 of 30 dictionaries held no Anki keys, the full
+dictionary list, `fonts/fonts.json` and the files of the two dictionaries only. Restoring one of the two dictionaries
+and the font: the summary named 1 font and 1 dictionary; the font folder held only the font's files. The older format
+was made by removing `FONTS` from that backup's manifest.
+
+New cases, checked when written: SET9 and SET10 (F), SET11 (O).
+
+Findings, fixed: rows with two-line hints touched the next row (4 dp of padding added); the Yomitan card's
+explanations used body text instead of the hint style; the files hint showed "0 B" with nothing chosen.
 
 ### 2026-10-15, builds 7a6121f to d7f1509 (`languages/ko`), Pixel_10_Pro (API 37)
 
