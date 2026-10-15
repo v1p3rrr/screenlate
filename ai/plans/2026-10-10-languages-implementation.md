@@ -98,6 +98,8 @@ Requests 1–19 are in the previous plan. New ones:
 48. (2026-10-15) The import from Yomitan moves into the backup screen as a section of its own.
 49. (2026-10-15) Requests 45-48 and the bug fixes made on the language branches that do not depend on the new
     features go into `main` as well. Plan and decisions: [2026-10-15-main-fixes-and-backups.md](2026-10-15-main-fixes-and-backups.md).
+50. (2026-10-15) Order after group 1: ask the questions of groups 2 and 3 now; build everything possible for group 2;
+    then the OCR tests for groups 3 and 4 (Paddle against Tesseract, MNN against ONNX Runtime, on real screenshots).
 
 ## Decisions
 
@@ -145,7 +147,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
 | Scope of the big release | Groups 1–3 (13 languages with Latvian) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
-| First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09) |
+| First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09). Changed 2026-10-15: on `languages/main` Japanese goes to its download screen too (row "Bundled Japanese dictionaries") |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
@@ -194,13 +196,12 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Character entry tags | Chips next to the dictionary name, a tap opens the tag's note, for every language (owner, 2026-10-15) |
 | STDICT | Listed for Korean, not ticked (owner, 2026-10-15) |
 | Text to speech note | The hint under the text-to-speech source ("Playback only; notes take audio from the other sources") is enough; the Sources hint stays as it is (owner, 2026-10-15) |
+| Bundled Japanese dictionaries | Downloaded when Japanese is turned on, the first run included, from the catalog like any language's; the APK no longer carries them (about 25 MB). Only on `languages/main`: `main` keeps them bundled until the big release. Installed copies stay after an upgrade (owner, 2026-10-15; settles the postponed item) |
 
 ## Open items (postponed by the owner)
 
 Decided when the first language or group 1 is ready, before it is merged into the multi-language branch.
 
-- Bundled Japanese dictionaries (25 MB in the APK): keep them bundled or download them when Japanese is turned on;
-  the owner leans to keeping them bundled.
 - Hosting the files we build or mirror (OCR runtime models, dictionaries without releases such as OpenRussian and
   FreeDict conversions; wordfreq frequency dictionaries are built on the phone since 2026-10-14): likely a public repository of our own; Hugging Face to be
   looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
@@ -530,7 +531,8 @@ Per-language checklist (every language branch):
 
 ### Before group 1 is merged
 
-- The postponed items (bundled Japanese dictionaries, hosting).
+- The postponed items: bundled Japanese dictionaries (decided 2026-10-15: downloaded, row "Bundled Japanese
+  dictionaries"); hosting (still postponed).
 - A look at the APK size per ABI against v0.2.2 (48.4 MB arm64). Done 2026-10-15 against v0.2.3 (the same 48.4 MB):
   arm64-v8a 51.2 MB with English, Chinese and Korean (`ai/test-model.md`, NF9).
 
@@ -832,3 +834,6 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   every language whose script it covers, built with the first Latin fonts). Asked along the way: why the hanja
   dictionary is in the APK (it stays there for good) and a note that text to speech never goes into notes (the hint
   under the source is enough).
+- 2026-10-15: the owner settled the bundled Japanese dictionaries (downloaded when Japanese is turned on, on
+  `languages/main` only; changes the row "First run") and the order of the work (request 50): the questions of
+  groups 2 and 3 now, then group 2, then the OCR tests for groups 3 and 4.
