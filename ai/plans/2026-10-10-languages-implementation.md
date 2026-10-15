@@ -753,3 +753,6 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   wty-en-ru's example sentences, with instrumented tests and on the emulator (test model LK12). The N cases of the
   Chinese work moved to E, F and O in the test model's run log. `docs/usage.md` said the Chinese script is chosen on
   the Lookup page; it is the Languages screen since Z10.
+- 2026-10-15: Request 43 done (decision row "Frequency chip names"): `popup.js` shortens a frequency dictionary's
+  name wider than four Latin letters to its first character in upper case; the chip becomes a button that toggles
+  the whole name, "+N" shows the first one whole, TalkBack reads the whole name. Page test and emulator (POP19).

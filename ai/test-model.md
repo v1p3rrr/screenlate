@@ -160,6 +160,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP16 | The installation link in the popup while the language is not ready | F | I InstallationPopupTest | 2026-10-14 |
 | POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | O | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
 | POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | O | M | 2026-10-15 |
+| POP19 | Frequency chip names: up to four letters whole (a CJK character counts as two), longer as the first letter in upper case ("wordfreq en" → W); a tap shows the whole name, another tap shortens it; "+N" shows the first chip's name whole; the next lookup starts shortened | F | P, M | 2026-10-15 |
 
 ### AUD: audio
 
@@ -290,20 +291,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
-### 2026-10-15, builds 16aa855 to the phrasal-verb change, Pixel_10_Pro (API 37)
+### 2026-10-15, builds 16aa855 to the frequency chip names, Pixel_10_Pro (API 37)
 
-Scope: the new Chinese cases on `languages/zh` and English phrasal verbs (LK12); the engine's instrumented tests (25).
+Scope: the new Chinese cases on `languages/zh`, English phrasal verbs (LK12) and frequency chip names (POP19); the
+engine's instrumented tests (25).
 
 Results: every case passed; the dates are in the Checked column.
 
-Moved from N: OCR16, LK9, LK12, AUD6, ANK9 and LNG13 to F; LK11 to E (instrumented only); LK10, POP17, POP18 and
+Moved from N: OCR16, LK9, LK12, POP19, AUD6, ANK9 and LNG13 to F; LK11 to E (instrumented only); LK10, POP17, POP18 and
 DIC17 to O.
 
 Findings, fixed: a lookup starting at a radical look-alike (⽇ for 日) found nothing in Japanese and Chinese.
 
 Changed by decision rows: deleting a popup font asks first (POP18); English phrasal verbs in the past found only the
 verb with wty-en-ru, whose phrases have no part of speech, and now find phrases with an adverb particle (LK12,
-`yomitan-behavior.md` Lookup item 6).
+`yomitan-behavior.md` Lookup item 6); frequency chips shorten long dictionary names (POP19).
 
 ### 2026-10-14, builds a430fec to fff2e6a, Pixel_10_Pro (API 37)
 
