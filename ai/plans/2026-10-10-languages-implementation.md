@@ -183,6 +183,17 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Phrasal verbs in the past | Yomitan's English phrasal-verb rule ("picked up" → "pick up") also accepts entries without a part of speech; checked for false matches before it ships (owner, 2026-10-15: "make sure there are no false positives") |
 | Frequency chip names | A name up to 4 characters (a CJK character counts as 2) is shown whole (JPDB, JLPT, NieR); a longer one as its first character in upper case (BCCWJ → B, wordfreq zh → W, 国語辞典 → 国). A tap on the chip toggles its full name, for that chip only; "+N" shows the first chip's full name too; every lookup starts shortened (owner, 2026-10-15, request 43) |
 | Test model location | `ai/test-model.md`, linked from AGENTS.md; no copy in `docs/` (owner, 2026-10-15) |
+| Font lists across languages | A language's font list shows the fonts downloaded for it and every added file; a catalog font also shows for every language whose script it covers without other glyph forms: a Latin font for all Latin-script languages whose letters it has (Vietnamese needs its diacritics), a font for several scripts (Latin and Cyrillic) for all of them. Japanese, Chinese and Korean fonts stay with their language. Built with the first Latin fonts in the catalog (stage C) (owner, 2026-10-15) |
+| Chinese script fields in Anki | `{expression-simplified}` and `{expression-traditional}`, converted with the character table, a character with several forms takes the one a dictionary lists with the word's reading; such fields are pre-filled with them (owner, 2026-10-15) |
+| Phrasal verbs: particles only | A phrase without a part of speech matches a verb form only when an adverb particle follows the verb; prepositions do not ("closed to traffic" stays "close", not "close to", near); the interposed-object rule stays typed only (owner, 2026-10-15, after the explanation) |
+| KRDICT packaging | The one with example sentences (owner, 2026-10-15) |
+| Korean fonts | Noto Sans KR, Noto Serif KR, Nanum Gothic, Nanum Myeongjo (owner, 2026-10-15) |
+| Korean audio | Wiktionary, Lingua Libre, text to speech (owner, 2026-10-15) |
+| Hanja dictionary in the APK | Stays in the APK for good (168 KB), also once our own hosting exists; a catalog entry ticked on the download screen, can be unticked or deleted (owner, 2026-10-15) |
+| HTML entities in dictionary text | The lookup page turns `&quot;` and `&apos;` left as text into quote marks in any dictionary's text (KRDICT has 496 such entries) (owner, 2026-10-15) |
+| Character entry tags | Chips next to the dictionary name, a tap opens the tag's note, for every language (owner, 2026-10-15) |
+| STDICT | Listed for Korean, not ticked (owner, 2026-10-15) |
+| Text to speech note | The hint under the text-to-speech source ("Playback only; notes take audio from the other sources") is enough; the Sources hint stays as it is (owner, 2026-10-15) |
 
 ## Open items (postponed by the owner)
 
@@ -203,7 +214,8 @@ are decision rows (Chinese audio, pinyin search order, Chinese main dictionary, 
 script, readings, fonts, deleting a font, phrasal verbs, test model location). Dragging the bubble is smooth on the
 phone in the release, and the drag and drawing code has not changed since v0.2.3, so nothing to do.
 
-Collected after that (autonomous work, 2026-10-15); the recommended option is in use until the owner answers:
+Collected after that (autonomous work, 2026-10-15); answered on 2026-10-15, see the decision rows from "Font lists
+across languages" on (the HTML entities and the font rule differ from the option that was in use):
 
 1. Fonts downloaded for another language on a language's font list. With Chinese fonts in the catalog, the Chinese
    list also showed M PLUS 1p, a Japanese font (Japanese glyph forms, no Simplified-only characters), and the
@@ -228,7 +240,7 @@ Collected after that (autonomous work, 2026-10-15); the recommended option is in
    marked as third person; (b) prepositions too: "look for" and "deal with" as well, with the false matches above;
    (c) as Yomitan: such phrases never match a verb form.
 
-Collected during the Korean work (autonomous, 2026-10-15); the recommended option is in use:
+Collected during the Korean work (autonomous, 2026-10-15); answered on 2026-10-15 (decision rows):
 
 4. KRDICT comes in two packagings per gloss language, with and without example sentences (KO-EN 16 MB with
    examples). Both have the same title ("KRDICT EN"), so installing one replaces the other. Options: (a, recommended,
@@ -529,6 +541,8 @@ Per-language checklist (every language branch):
   (best editions: fr-fr 19.2, de-de 12.7, es-es 10 MB, it-en 1.3, pt-en 2.8), frequency.
 - Checks: accents with the ML Kit Latin model; audio regions (Brazil, Latin America, Spain, France).
 - Questions per language: the recommended dictionaries; FreeDict deu-rus, fra-rus, ita-rus, spa-rus conversions.
+- Fonts: the first Latin fonts in the catalog, shown for every Latin-script language they cover (decision row "Font
+  lists across languages"); which fonts, asked first.
 
 ## Stage D: group 3 (ru, pl, tr, vi, lv)
 
@@ -813,3 +827,8 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   The engine's instrumented suite passed (29); release APKs: arm64-v8a 51.2 MB, armeabi-v7a 46.0, x86_64 52.0,
   universal 76.8 (v0.2.3: 48.4, 43.6, 49.1, 71.8). Left before group 1 counts as done: the postponed items
   (bundled Japanese dictionaries, hosting) and questions 1-10.
+- 2026-10-15: the owner answered questions 1-10: the recommended options stay, except the HTML entities (the page
+  turns `&quot;` and `&apos;` into quote marks, on `main` first) and the font lists (a catalog font also shows for
+  every language whose script it covers, built with the first Latin fonts). Asked along the way: why the hanja
+  dictionary is in the APK (it stays there for good) and a note that text to speech never goes into notes (the hint
+  under the source is enough).
