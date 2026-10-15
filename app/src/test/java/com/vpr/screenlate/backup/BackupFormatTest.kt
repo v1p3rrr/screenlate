@@ -75,6 +75,104 @@ class BackupFormatTest {
     }
 
     @Test
+    fun `a language left out takes its own settings out`() {
+        val prefs = mutablePreferencesOf(
+            stringPreferencesKey("theme_mode") to "DARK",
+            stringPreferencesKey("anki_settings") to "ja",
+            stringPreferencesKey("anki_settings_en") to "en",
+            intPreferencesKey("lookup_scan_length_en") to 20,
+            stringPreferencesKey("language_script_zh") to "HANT",
+        )
+        val sections = setOf(BackupSection.GENERAL, BackupSection.ANKI, BackupSection.LOOKUP)
+        assertThat(BackupPreferences.encode(prefs, sections, setOf(Language.JAPANESE)).keys).containsExactly("anki_settings", "theme_mode")
+        assertThat(BackupPreferences.encode(prefs, sections, setOf(Language.ENGLISH, Language.CHINESE)).keys)
+            .containsExactly("anki_settings_en", "language_script_zh", "lookup_scan_length_en", "theme_mode")
+    }
+
+    @Test
+    fun `without Japanese its audio settings keep only the values every language shares`() {
+        val prefs = mutablePreferencesOf(
+            stringPreferencesKey("audio_settings") to """{"sources":[{"type":"FORVO"}],"autoPlay":true,"volume":70}""",
+            stringPreferencesKey("audio_settings_en") to """{"sources":[]}""",
+            booleanPreferencesKey("audio_sources_chosen") to true,
+        )
+        val encoded = BackupPreferences.decode(BackupPreferences.encode(prefs, setOf(BackupSection.AUDIO), setOf(Language.ENGLISH)))
+        assertThat(encoded).containsExactly(
+            stringPreferencesKey("audio_settings"), """{"autoPlay":true,"volume":70}""",
+            stringPreferencesKey("audio_settings_en"), """{"sources":[]}""",
+        )
+        assertThat(BackupPreferences.encode(prefs, setOf(BackupSection.BUBBLE), setOf(Language.ENGLISH))).isEmpty()
+    }
+
+    @Test
+    fun `restoring leaves the settings of languages not chosen`() {
+        val current = mutablePreferencesOf(
+            stringPreferencesKey("anki_settings") to "old ja",
+            stringPreferencesKey("anki_settings_en") to "old en",
+            stringPreferencesKey("anki_settings_zh") to "old zh",
+        )
+        val backup = BackupPreferences.decode(
+            BackupPreferences.encode(
+                mutablePreferencesOf(
+                    stringPreferencesKey("anki_settings") to "new ja",
+                    stringPreferencesKey("anki_settings_en") to "new en",
+                ),
+            ),
+        )
+        BackupPreferences.restore(current, backup, setOf(BackupSection.ANKI), setOf(Language.JAPANESE, Language.CHINESE))
+        assertThat(current[stringPreferencesKey("anki_settings")]).isEqualTo("new ja")
+        assertThat(current[stringPreferencesKey("anki_settings_en")]).isEqualTo("old en")
+        // Chosen but not in the backup: back to its defaults, as a restored section is exactly the backup's.
+        assertThat(current[stringPreferencesKey("anki_settings_zh")]).isNull()
+    }
+
+    @Test
+    fun `restoring audio without Japanese takes only the shared values`() {
+        val key = stringPreferencesKey("audio_settings")
+        val current = mutablePreferencesOf(key to """{"sources":[{"type":"FORVO"}],"volume":50}""")
+        val backup = BackupPreferences.decode(
+            BackupPreferences.encode(mutablePreferencesOf(key to """{"sources":[],"autoPlay":true,"volume":80}""")),
+        )
+        BackupPreferences.restore(current, backup, setOf(BackupSection.AUDIO), setOf(Language.ENGLISH))
+        assertThat(current[key]).isEqualTo("""{"sources":[{"type":"FORVO"}],"autoPlay":true,"volume":80}""")
+    }
+
+    @Test
+    fun `restoring General adds the chosen languages to the turned-on ones`() {
+        val current = mutablePreferencesOf(
+            stringPreferencesKey("languages_turned_on") to "ja",
+            stringPreferencesKey("language_active") to "ja",
+            stringPreferencesKey("theme_mode") to "LIGHT",
+        )
+        val backup = BackupPreferences.decode(
+            BackupPreferences.encode(
+                mutablePreferencesOf(
+                    stringPreferencesKey("languages_turned_on") to "en,zh",
+                    stringPreferencesKey("language_active") to "zh",
+                    stringPreferencesKey("theme_mode") to "DARK",
+                ),
+            ),
+        )
+        BackupPreferences.restore(current, backup, setOf(BackupSection.GENERAL), setOf(Language.ENGLISH, Language.CHINESE))
+        assertThat(current[stringPreferencesKey("languages_turned_on")]).isEqualTo("ja,en,zh")
+        assertThat(current[stringPreferencesKey("language_active")]).isEqualTo("zh")
+        assertThat(current[stringPreferencesKey("theme_mode")]).isEqualTo("DARK")
+
+        val untouched = mutablePreferencesOf(stringPreferencesKey("languages_turned_on") to "ja")
+        BackupPreferences.restore(untouched, backup, setOf(BackupSection.BUBBLE), setOf(Language.ENGLISH))
+        assertThat(untouched[stringPreferencesKey("languages_turned_on")]).isEqualTo("ja")
+    }
+
+    @Test
+    fun `restoring General on a first run turns on the chosen languages alone`() {
+        val current = mutablePreferencesOf(booleanPreferencesKey("languages_first_run") to true)
+        val backup = BackupPreferences.decode(BackupPreferences.encode(mutablePreferencesOf(stringPreferencesKey("languages_turned_on") to "ja,en")))
+        BackupPreferences.restore(current, backup, setOf(BackupSection.GENERAL), setOf(Language.ENGLISH))
+        assertThat(current[stringPreferencesKey("languages_turned_on")]).isEqualTo("en")
+        assertThat(current[booleanPreferencesKey("languages_first_run")]).isNull()
+    }
+
+    @Test
     fun `preferences survive encoding with their types`() {
         val prefs = mutablePreferencesOf(
             booleanPreferencesKey("overlay_haptics") to true,
@@ -176,6 +274,10 @@ class BackupFormatTest {
         assertThat(BackupLayout.fontFile("fonts/noto.ttf")).isEqualTo("noto.ttf")
         assertThat(BackupLayout.fontFile("fonts/sub/noto.ttf")).isNull()
         assertThat(BackupLayout.fontFile("fonts/..")).isNull()
+        assertThat(BackupLayout.modelFile("models/det/dict/keys.txt")).isEqualTo("det" to "dict/keys.txt")
+        assertThat(BackupLayout.modelFile("models/det/../../evil")).isNull()
+        assertThat(BackupLayout.modelFile("models/../x")).isNull()
+        assertThat(BackupLayout.modelFile("models/det/")).isNull()
     }
 
     @Test

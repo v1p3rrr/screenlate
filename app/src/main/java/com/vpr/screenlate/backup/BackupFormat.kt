@@ -7,8 +7,10 @@ import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.vpr.screenlate.core.anki.audio.SharedAudioSettings
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
@@ -58,8 +60,9 @@ enum class BackupSection {
 }
 
 /**
- * Archive layout: [MANIFEST] first, then [SETTINGS], [DICTIONARIES], the font files under [FONTS] and the files of
- * each dictionary under `dictionary-files/<index in the list>/`.
+ * Archive layout: [MANIFEST] first, then [SETTINGS], [DICTIONARIES], the font files under [FONTS], the files of each
+ * recognition model under `models/<id>/` and the files of each dictionary under `dictionary-files/<index in the list>/`.
+ * Versions before the models skip their entries.
  */
 object BackupLayout {
     const val FORMAT = 1
@@ -67,6 +70,7 @@ object BackupLayout {
     const val SETTINGS = "settings.json"
     const val DICTIONARIES = "dictionaries.json"
     const val FONTS = "fonts/"
+    const val MODELS = "models/"
     const val DICTIONARY_FILES = "dictionary-files/"
 
     /** The list index and the path inside the dictionary directory, or null for other entries. */
@@ -76,6 +80,15 @@ object BackupLayout {
         val index = rest.substringBefore('/').toIntOrNull() ?: return null
         val path = rest.substringAfter('/', "")
         return if (safePath(path)) index to path else null
+    }
+
+    /** The model id and the path inside the model's directory, or null for other entries. */
+    fun modelFile(entry: String): Pair<String, String>? {
+        if (!entry.startsWith(MODELS)) return null
+        val rest = entry.removePrefix(MODELS)
+        val id = rest.substringBefore('/')
+        val path = rest.substringAfter('/', "")
+        return if (safePath(id) && safePath(path)) id to path else null
     }
 
     /** The font file name, or null for other entries. */
@@ -89,6 +102,9 @@ object BackupLayout {
 
 /**
  * @property sections what the backup holds; [BackupSection.DICTIONARY_FILES] only when the dictionaries were included.
+ * @property languages codes of the languages whose own settings and files it holds, in the order they were turned on;
+ *   null in a backup of an older version (see [BackupLanguages.of]).
+ * @property models the recognition models in the archive.
  */
 @Serializable
 data class BackupManifest(
@@ -96,7 +112,17 @@ data class BackupManifest(
     val appVersion: String,
     val createdAt: Long,
     val sections: List<BackupSection>,
+    val languages: List<String>? = null,
+    val models: List<BackupModel> = emptyList(),
 )
+
+/**
+ * A recognition model in a backup, with its files under `models/<id>/`.
+ *
+ * @property languages codes of the backup's languages that use it.
+ */
+@Serializable
+data class BackupModel(val id: String, val version: String, val engine: String, val languages: List<String>, val bytes: Long = 0)
 
 /** Settings kept in the shared preferences file, grouped by the section each key belongs to. */
 object BackupPreferences {
@@ -106,6 +132,17 @@ object BackupPreferences {
         "theme_colors",
         E_INK,
         "update_announce",
+        LanguageProfiles.TURNED_ON.name,
+        LanguageProfiles.ACTIVE.name,
+        LanguageProfiles.STARRED.name,
+        LanguageProfiles.FLAGS.name,
+    )
+
+    /** Japanese's audio settings, which also hold the values every language shares ([SharedAudioSettings]). */
+    private const val AUDIO = "audio_settings"
+
+    /** The turned-on languages, which [restore] adds to rather than replaces. */
+    private val profile = setOf(
         LanguageProfiles.TURNED_ON.name,
         LanguageProfiles.ACTIVE.name,
         LanguageProfiles.STARRED.name,
@@ -129,10 +166,23 @@ object BackupPreferences {
         else -> null
     }
 
-    /** The backed-up preferences of [sections] as `{"key": {"type": "int", "value": 3}}`. */
-    fun encode(preferences: Preferences, sections: Set<BackupSection> = BackupSection.entries.toSet()): JsonObject = buildJsonObject {
-        for ((key, value) in preferences.asMap().entries.sortedBy { it.key.name }) {
-            if (sectionOf(key.name) !in sections) continue
+    /** Whether [key] belongs to one of [sections] and is shared or one of [languages]' own. */
+    fun includes(key: String, sections: Set<BackupSection>, languages: Set<Language>): Boolean =
+        sectionOf(key) in sections && SettingsKeys.languageOf(key).let { it == null || it in languages }
+
+    /**
+     * The backed-up preferences of [sections] and [languages] as `{"key": {"type": "int", "value": 3}}`. Without
+     * Japanese, its audio settings keep only the values every language shares.
+     */
+    fun encode(
+        preferences: Preferences,
+        sections: Set<BackupSection> = BackupSection.entries.toSet(),
+        languages: Set<Language> = Language.entries.toSet(),
+    ): JsonObject = buildJsonObject {
+        for ((key, stored) in preferences.asMap().entries.sortedBy { it.key.name }) {
+            val sharedAudio = key.name == AUDIO && BackupSection.AUDIO in sections && Language.JAPANESE !in languages
+            if (!sharedAudio && !includes(key.name, sections, languages)) continue
+            val value = if (sharedAudio && stored is String) SharedAudioSettings.only(stored) else stored
             val (type, json) = when (value) {
                 is Boolean -> "boolean" to JsonPrimitive(value)
                 is Int -> "int" to JsonPrimitive(value)
@@ -174,14 +224,39 @@ object BackupPreferences {
         backup.entries.firstOrNull { it.key.name == E_INK }?.value as? Boolean ?: false
 
     /**
-     * Replaces the keys of [sections]: the app's own values go, the backup's come in. A backup of an older version without
-     * the translation button keeps it on, as that version had it.
+     * Replaces the keys of [sections] that are shared or [languages]' own: the app's own values go, the backup's come
+     * in; other languages keep theirs. Without Japanese, only the shared values of its audio settings come in. The
+     * General section turns [languages] on and takes the backup's active language, stars and flags for them
+     * ([BackupLanguages.merged]); no language is turned off. A backup of an older version without the translation
+     * button keeps it on, as that version had it.
      */
     @Suppress("UNCHECKED_CAST")
-    fun restore(preferences: MutablePreferences, backup: Map<Preferences.Key<*>, Any>, sections: Set<BackupSection>) {
-        preferences.asMap().keys.filter { sectionOf(it.name) in sections }.toList().forEach { preferences.remove(it) }
+    fun restore(
+        preferences: MutablePreferences,
+        backup: Map<Preferences.Key<*>, Any>,
+        sections: Set<BackupSection>,
+        languages: Set<Language> = Language.entries.toSet(),
+    ) {
+        val current = if (preferences[LanguageProfiles.FIRST_RUN] == true) null else LanguageProfiles.read(preferences)
+        fun restores(key: String) = key !in profile && includes(key, sections, languages)
+        preferences.asMap().keys.filter { restores(it.name) }.toList().forEach { preferences.remove(it) }
         for ((key, value) in backup) {
-            if (sectionOf(key.name) in sections) preferences[key as Preferences.Key<Any>] = value
+            if (restores(key.name)) preferences[key as Preferences.Key<Any>] = value
+        }
+        if (BackupSection.AUDIO in sections && Language.JAPANESE !in languages) {
+            val shared = backup.entries.firstOrNull { it.key.name == AUDIO }?.value as? String
+            val key = stringPreferencesKey(AUDIO)
+            if (shared != null) preferences[key] = SharedAudioSettings.with(preferences[key], shared)
+        }
+        if (BackupSection.GENERAL in sections && languages.isNotEmpty()) {
+            val stored = backup.filterKeys { it.name in profile }
+            val saved = if (stored.keys.none { it.name == LanguageProfiles.TURNED_ON.name }) {
+                null
+            } else {
+                LanguageProfiles.read(mutablePreferencesOf().apply { stored.forEach { (key, value) -> this[key as Preferences.Key<Any>] = value } })
+            }
+            preferences.remove(LanguageProfiles.FIRST_RUN)
+            LanguageProfiles.write(preferences, BackupLanguages.merged(current, saved, languages))
         }
         if (BackupSection.TRANSLATION in sections) TranslationSettingsRepository.keepButtonOn(preferences)
     }

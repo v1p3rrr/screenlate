@@ -605,6 +605,9 @@
     <string name="backup_files_chosen_count">Đã chọn %1$d/%2$d</string>
     <string name="backup_files_show">Hiện danh sách</string>
     <string name="backup_files_hide">Ẩn danh sách</string>
+    <string name="backup_languages">Ngôn ngữ</string>
+    <string name="backup_languages_hint">Cài đặt riêng, từ điển, phông chữ và mô hình nhận dạng của từng ngôn ngữ</string>
+    <string name="backup_language_models">Mô hình nhận dạng · %1$s</string>
     <string name="backup_create_button">Tạo bản sao lưu…</string>
     <string name="backup_creating">Đang tạo bản sao lưu…</string>
     <string name="backup_created">Đã lưu bản sao lưu (%1$s).</string>
@@ -621,7 +624,7 @@
     <string name="backup_read_failed">Không đọc được bản sao lưu.</string>
     <string name="backup_loaded">Bản sao lưu từ %1$s, phiên bản %2$s</string>
     <string name="backup_sections">Các phần cần khôi phục</string>
-    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại. Phông chữ và từ điển trong bản sao lưu được thêm vào hoặc thay thế bản đã cài của chúng; các phông chữ và từ điển đã cài khác vẫn giữ nguyên.</string>
+    <string name="backup_replace_warning">Các phần được chọn sẽ thay thế phần hiện tại; các ngôn ngữ không được chọn giữ cài đặt riêng. Phông chữ, từ điển và mô hình nhận dạng trong bản sao lưu được thêm vào hoặc thay thế bản đã cài của chúng; các mục đã cài khác vẫn giữ nguyên. Khi khôi phục phần Chung, các ngôn ngữ được chọn sẽ được bật.</string>
     <string name="backup_restore_button">Khôi phục phần đã chọn</string>
     <string name="backup_restored">Đã khôi phục</string>
     <string name="backup_section_general">Chung</string>
@@ -651,6 +654,7 @@
     </plurals>
     <string name="backup_summary_failed">Chưa khôi phục: %1$s</string>
     <string name="backup_summary_missing">Chưa cài, nên cài đặt của chúng bị bỏ qua: %1$s</string>
+    <string name="backup_summary_languages">Đã bật: %1$s</string>
     <string name="dictionaries_kept_on">Vẫn bật để có ít nhất một từ điển có định nghĩa được bật: %1$s</string>
     <string name="home_bubble_shown">Bong bóng đang ở trên màn hình</string>
     <string name="home_bubble_hidden">Bong bóng đang bị ẩn</string>

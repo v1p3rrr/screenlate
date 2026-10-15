@@ -81,6 +81,74 @@ class BackupArchiveTest {
     }
 
     @Test
+    fun `model files come between the fonts and the dictionary files`() = runTest {
+        val font = temp.newFile("font-0.ttf").apply { writeText("font") }
+        val model = temp.newFolder("detector").apply {
+            File(this, "inference.onnx").writeText("weights")
+            File(this, "dict").mkdirs()
+            File(this, "dict/keys.txt").writeText("abc")
+        }
+        val dictionary = temp.newFolder("a").apply { File(this, "data.bin").writeText("a") }
+        val manifest = BackupManifest(
+            appVersion = "1.0",
+            createdAt = 1,
+            sections = BackupSection.entries,
+            languages = listOf("ko"),
+            models = listOf(BackupModel("detector", "2", "paddle", listOf("ko"), bytes = 10)),
+        )
+        val contents = BackupArchive.Contents(
+            manifest = manifest,
+            settings = JsonObject(emptyMap()),
+            dictionaries = BackupDictionaryList(listOf(dictionary("A", files = true))),
+            fontIndex = "[]",
+            fonts = listOf(font),
+            models = mapOf("detector" to (model to listOf(File(model, "dict/keys.txt"), File(model, "inference.onnx")))),
+            dictionaryFiles = mapOf(0 to dictionary),
+        )
+        assertThat(BackupArchive.size(contents)).isEqualTo(11)
+        val progress = mutableListOf<Long>()
+        val bytes = ByteArrayOutputStream().also { BackupArchive.write(it, contents) { written -> progress += written } }.toByteArray()
+        assertThat(progress).containsExactly(3L, 10L, 11L).inOrder()
+
+        val head = BackupArchive.readHead(ByteArrayInputStream(bytes))
+        assertThat(head.manifest).isEqualTo(manifest)
+        assertThat(head.fontSizes).containsExactly("font-0.ttf", 4L)
+
+        val reader = Recorder()
+        BackupArchive.read(ByteArrayInputStream(bytes), reader)
+        assertThat(reader.events).containsExactly(
+            "font fonts.json=[]",
+            "font font-0.ttf=font",
+            "model detector dict/keys.txt=abc",
+            "model detector inference.onnx=weights",
+            "file 0 data.bin=a",
+            "done 0",
+        ).inOrder()
+
+        val withoutModels = Recorder()
+        BackupArchive.read(ByteArrayInputStream(bytes), withoutModels, models = false)
+        assertThat(withoutModels.events).containsExactly("font fonts.json=[]", "font font-0.ttf=font", "file 0 data.bin=a", "done 0").inOrder()
+
+        val settingsOnly = Recorder()
+        BackupArchive.read(ByteArrayInputStream(bytes), settingsOnly, dictionaryFiles = false, models = false)
+        assertThat(settingsOnly.events).containsExactly("font fonts.json=[]", "font font-0.ttf=font").inOrder()
+    }
+
+    @Test
+    fun `a backup of an older version has no languages`() {
+        val zip = ByteArrayOutputStream().also { out ->
+            ZipOutputStream(out).use {
+                it.putNextEntry(ZipEntry(BackupLayout.MANIFEST))
+                it.write("""{"format":1,"appVersion":"1","createdAt":0,"sections":["GENERAL"]}""".toByteArray())
+                it.closeEntry()
+            }
+        }.toByteArray()
+        val manifest = BackupArchive.readHead(ByteArrayInputStream(zip)).manifest
+        assertThat(manifest.languages).isNull()
+        assertThat(manifest.models).isEmpty()
+    }
+
+    @Test
     fun `sections of a newer version are left out`() {
         val zip = ByteArrayOutputStream().also { out ->
             ZipOutputStream(out).use {
@@ -122,6 +190,10 @@ class BackupArchiveTest {
 
         override suspend fun font(name: String, input: InputStream) {
             events += "font $name=${input.readBytes().decodeToString()}"
+        }
+
+        override suspend fun modelFile(id: String, path: String, input: InputStream) {
+            events += "model $id $path=${input.readBytes().decodeToString()}"
         }
 
         override suspend fun dictionaryFile(index: Int, path: String, input: InputStream) {

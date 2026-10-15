@@ -83,13 +83,14 @@ class BackupViewModel @Inject constructor(
     fun create(uri: Uri) {
         val choice = mutableCreateChoice.value ?: return
         val files = mutableFiles.value ?: return
-        val fonts = files.fonts.map { it.key }
-        val dictionaries = files.dictionaries.map { it.key }
+        val fonts = choice.visible(files.fonts, files.languages).map { it.key }
+        val dictionaries = choice.visible(files.dictionaries, files.languages).map { it.key }
         manager.create(
             uri,
             sections = choice.sections(BackupSection.entries, fonts, dictionaries),
             fontIds = choice.fonts.chosen(fonts),
             dictionaryTitles = choice.dictionaries.chosen(dictionaries),
+            languages = choice.chosenLanguages(files.languages),
         )
     }
 
@@ -98,13 +99,14 @@ class BackupViewModel @Inject constructor(
     fun restore() {
         val loaded = state.value as? BackupState.Loaded ?: return
         val choice = mutableRestoreChoice.value
-        val fonts = loaded.fonts.map { it.key }
-        val dictionaries = loaded.dictionaryFiles.map { it.key }
+        val fonts = choice.visible(loaded.fonts, loaded.languages).map { it.key }
+        val dictionaries = choice.visible(loaded.dictionaryFiles, loaded.languages).map { it.key }
         manager.restore(
             loaded.uri,
             sections = choice.sections(loaded.sections, fonts, dictionaries),
             fontIds = choice.fonts.chosen(fonts),
             dictionaryIndices = choice.dictionaries.chosen(dictionaries).mapTo(hashSetOf()) { it.toInt() },
+            languages = choice.chosenLanguages(loaded.languages),
         )
     }
 

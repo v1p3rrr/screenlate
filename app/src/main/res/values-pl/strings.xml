@@ -614,6 +614,9 @@
     <string name="backup_files_chosen_count">Wybrano %1$d z %2$d</string>
     <string name="backup_files_show">Pokaż listę</string>
     <string name="backup_files_hide">Ukryj listę</string>
+    <string name="backup_languages">Języki</string>
+    <string name="backup_languages_hint">Własne ustawienia, słowniki, czcionki i modele rozpoznawania każdego języka</string>
+    <string name="backup_language_models">Modele rozpoznawania · %1$s</string>
     <string name="backup_create_button">Utwórz kopię…</string>
     <string name="backup_creating">Tworzenie kopii zapasowej…</string>
     <string name="backup_created">Zapisano kopię (%1$s).</string>
@@ -633,7 +636,7 @@
     <string name="backup_read_failed">Nie udało się odczytać kopii.</string>
     <string name="backup_loaded">Kopia z %1$s, wersja %2$s</string>
     <string name="backup_sections">Części do przywrócenia</string>
-    <string name="backup_replace_warning">Zaznaczone części zastępują obecne. Czcionki i słowniki z kopii są dodawane lub zastępują swoje zainstalowane wersje; pozostałe zainstalowane czcionki i słowniki zostają.</string>
+    <string name="backup_replace_warning">Zaznaczone części zastępują obecne; niezaznaczone języki zachowują własne ustawienia. Czcionki, słowniki i modele rozpoznawania z kopii są dodawane lub zastępują swoje zainstalowane wersje; pozostałe zainstalowane zostają. Razem z częścią Ogólne włączane są zaznaczone języki.</string>
     <string name="backup_restore_button">Przywróć zaznaczone</string>
     <string name="backup_restored">Przywrócono</string>
     <string name="backup_section_general">Ogólne</string>
@@ -672,6 +675,7 @@
     </plurals>
     <string name="backup_summary_failed">Nie przywrócono: %1$s</string>
     <string name="backup_summary_missing">Niezainstalowane, więc ich ustawienia pominięto: %1$s</string>
+    <string name="backup_summary_languages">Włączone: %1$s</string>
     <string name="dictionaries_kept_on">Pozostawione włączone, aby włączony był co najmniej jeden słownik z definicjami: %1$s</string>
     <string name="home_bubble_shown">Dymek jest na ekranie</string>
     <string name="home_bubble_hidden">Dymek jest ukryty</string>

@@ -608,6 +608,9 @@
     <string name="backup_files_chosen_count">%2$d içinden %1$d seçili</string>
     <string name="backup_files_show">Listeyi göster</string>
     <string name="backup_files_hide">Listeyi gizle</string>
+    <string name="backup_languages">Diller</string>
+    <string name="backup_languages_hint">Her dilin kendi ayarları, sözlükleri, yazı tipleri ve tanıma modelleri</string>
+    <string name="backup_language_models">Tanıma modelleri · %1$s</string>
     <string name="backup_create_button">Yedek oluştur…</string>
     <string name="backup_creating">Yedek oluşturuluyor…</string>
     <string name="backup_created">Yedek kaydedildi (%1$s).</string>
@@ -625,7 +628,7 @@
     <string name="backup_read_failed">Yedek okunamadı.</string>
     <string name="backup_loaded">%1$s tarihli yedek, sürüm %2$s</string>
     <string name="backup_sections">Geri yüklenecek bölümler</string>
-    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır. Yedekteki yazı tipleri ve sözlükler eklenir veya yüklü sürümlerinin yerini alır; diğer yüklü yazı tipleri ve sözlükler kalır.</string>
+    <string name="backup_replace_warning">İşaretli bölümler mevcut olanların yerini alır; işaretsiz diller kendi ayarlarını korur. Yedekteki yazı tipleri, sözlükler ve tanıma modelleri eklenir veya yüklü sürümlerinin yerini alır; diğer yüklü olanlar kalır. Genel geri yüklenince işaretli diller açılır.</string>
     <string name="backup_restore_button">İşaretlileri geri yükle</string>
     <string name="backup_restored">Geri yüklendi</string>
     <string name="backup_section_general">Genel</string>
@@ -658,6 +661,7 @@
     </plurals>
     <string name="backup_summary_failed">Geri yüklenmedi: %1$s</string>
     <string name="backup_summary_missing">Yüklü değil, bu yüzden ayarları atlandı: %1$s</string>
+    <string name="backup_summary_languages">Açılan diller: %1$s</string>
     <string name="dictionaries_kept_on">En az bir tanımlı sözlük açık kalsın diye açık bırakıldı: %1$s</string>
     <string name="home_bubble_shown">Baloncuk ekranda</string>
     <string name="home_bubble_hidden">Baloncuk gizli</string>

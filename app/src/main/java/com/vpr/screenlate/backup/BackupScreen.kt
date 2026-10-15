@@ -46,6 +46,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.SectionCard
 import com.vpr.screenlate.ui.components.SettingsScaffold
@@ -193,7 +194,9 @@ private fun CreateChoiceDialog(
     onNext: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val sections = choice.sections(BackupSection.entries, files.fonts.map { it.key }, files.dictionaries.map { it.key })
+    val fonts = choice.visible(files.fonts, files.languages)
+    val dictionaries = choice.visible(files.dictionaries, files.languages)
+    val sections = choice.sections(BackupSection.entries, fonts.map { it.key }, dictionaries.map { it.key })
     AlertDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.padding(16.dp),
@@ -204,16 +207,19 @@ private fun CreateChoiceDialog(
                 ChoiceList(
                     sections = BackupSection.entries,
                     choice = choice,
-                    fonts = files.fonts,
-                    dictionaries = files.dictionaries,
+                    fonts = fonts,
+                    dictionaries = dictionaries,
                     listed = files.listed,
+                    languages = files.languages,
                     enabled = true,
                     onChange = onChange,
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = onNext, enabled = sections.isNotEmpty()) { Text(stringResource(R.string.action_next)) }
+            TextButton(onClick = onNext, enabled = sections.isNotEmpty() || choice.takesModels(files.languages)) {
+                Text(stringResource(R.string.action_next))
+            }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
@@ -236,28 +242,37 @@ private fun Checklist(state: BackupState.Loaded, choice: BackupChoice, viewModel
     val date = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(state.manifest.createdAt))
     Text(stringResource(R.string.backup_loaded, date, state.manifest.appVersion), style = MaterialTheme.typography.titleSmall)
     Text(stringResource(R.string.backup_sections), style = MaterialTheme.typography.labelLarge)
+    val fonts = choice.visible(state.fonts, state.languages)
+    val dictionaries = choice.visible(state.dictionaryFiles, state.languages)
     ChoiceList(
         sections = state.sections,
         choice = choice,
-        fonts = state.fonts,
-        dictionaries = state.dictionaryFiles,
-        listed = state.dictionaries,
+        fonts = fonts,
+        dictionaries = dictionaries,
+        listed = state.listed,
+        languages = state.languages,
         enabled = true,
         onChange = viewModel::changeRestoreChoice,
     )
     Hint(stringResource(R.string.backup_replace_warning))
-    val sections = choice.sections(state.sections, state.fonts.map { it.key }, state.dictionaryFiles.map { it.key })
-    Button(onClick = viewModel::restore, enabled = sections.isNotEmpty(), modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+    val sections = choice.sections(state.sections, fonts.map { it.key }, dictionaries.map { it.key })
+    Button(
+        onClick = viewModel::restore,
+        enabled = sections.isNotEmpty() || choice.takesModels(state.languages),
+        modifier = Modifier.fillMaxWidth(),
+        colors = AccentDefaults.buttonColors(),
+    ) {
         Text(stringResource(R.string.backup_restore_button), textAlign = TextAlign.Center)
     }
     TextButton(onClick = viewModel::reset) { Text(stringResource(R.string.action_cancel)) }
 }
 
 /**
- * The parts to save or restore: a box per section; fonts and dictionaries have a box for all and expand into a box
- * per file. Items without files are left out.
+ * The parts to save or restore: the languages when there is a choice among them, then a box per section; languages,
+ * fonts and dictionaries have a box for all and expand into a box per language or file. Items without files are left
+ * out. [fonts] and [dictionaries] are those of the chosen languages.
  *
- * @param listed the dictionaries in the dictionary list.
+ * @param listed the language of each dictionary in the dictionary list.
  */
 @Composable
 private fun ChoiceList(
@@ -265,10 +280,16 @@ private fun ChoiceList(
     choice: BackupChoice,
     fonts: List<BackupFile>,
     dictionaries: List<BackupFile>,
-    listed: Int,
+    listed: List<String?>,
+    languages: List<BackupFile>,
     enabled: Boolean,
     onChange: (BackupChoice) -> Unit,
 ) {
+    if (choice.offersLanguages(languages)) {
+        LanguagesItem(languages, choice.languages, enabled) { onChange(choice.copy(languages = it)) }
+    }
+    val chosenLanguages = choice.chosenLanguages(languages)
+    val listCount = listed.count { it == null || it in chosenLanguages }
     sections.forEach { section ->
         when (section) {
             BackupSection.FONTS -> if (fonts.isNotEmpty()) {
@@ -281,7 +302,7 @@ private fun ChoiceList(
                 state = ToggleableState(section !in choice.off),
                 title = stringResource(sectionTitle(section)),
                 hint = if (section == BackupSection.DICTIONARY_LIST) {
-                    pluralStringResource(R.plurals.backup_section_dictionary_list_hint, listed, listed)
+                    pluralStringResource(R.plurals.backup_section_dictionary_list_hint, listCount, listCount)
                 } else {
                     stringResource(sectionHint(section))
                 },
@@ -294,8 +315,6 @@ private fun ChoiceList(
 
 @Composable
 private fun FileItem(section: BackupSection, files: List<BackupFile>, choice: FileChoice, enabled: Boolean, onChange: (FileChoice) -> Unit) {
-    var expanded by rememberSaveable(section) { mutableStateOf(false) }
-    val keys = files.map { it.key }
     val chosen = files.filter { choice.isOn(it.key) }
     val context = LocalContext.current
     val hint = if (chosen.isNotEmpty() && chosen.all { it.bytes != null }) {
@@ -303,9 +322,55 @@ private fun FileItem(section: BackupSection, files: List<BackupFile>, choice: Fi
     } else {
         stringResource(R.string.backup_files_chosen_count, chosen.size, files.size)
     }
+    ExpandableItem(
+        id = section.name,
+        title = stringResource(sectionTitle(section)),
+        hint = hint,
+        files = files,
+        choice = choice,
+        enabled = enabled,
+        rowHint = { file -> file.bytes?.let { Formatter.formatShortFileSize(context, it) } },
+        onChange = onChange,
+    )
+}
+
+/** The languages, keyed by code; a language's row shows the size of its recognition models. */
+@Composable
+private fun LanguagesItem(languages: List<BackupFile>, choice: FileChoice, enabled: Boolean, onChange: (FileChoice) -> Unit) {
+    val context = LocalContext.current
+    val chosen = languages.count { choice.isOn(it.key) }
+    ExpandableItem(
+        id = "LANGUAGES",
+        title = stringResource(R.string.backup_languages),
+        hint = stringResource(R.string.backup_languages_hint) + "\n" +
+            stringResource(R.string.backup_files_chosen_count, chosen, languages.size),
+        files = languages,
+        choice = choice,
+        enabled = enabled,
+        rowHint = { language ->
+            language.bytes?.let { stringResource(R.string.backup_language_models, Formatter.formatShortFileSize(context, it)) }
+        },
+        onChange = onChange,
+    )
+}
+
+/** A box for all [files] that expands into a box per file; [id] keeps the expanded state apart from other items. */
+@Composable
+private fun ExpandableItem(
+    id: String,
+    title: String,
+    hint: String,
+    files: List<BackupFile>,
+    choice: FileChoice,
+    enabled: Boolean,
+    rowHint: @Composable (BackupFile) -> String?,
+    onChange: (FileChoice) -> Unit,
+) {
+    var expanded by rememberSaveable(id) { mutableStateOf(false) }
+    val keys = files.map { it.key }
     CheckRow(
         state = choice.state(keys),
-        title = stringResource(sectionTitle(section)),
+        title = title,
         hint = hint,
         enabled = enabled,
         onClick = { onChange(choice.toggleAll(keys)) },
@@ -322,7 +387,7 @@ private fun FileItem(section: BackupSection, files: List<BackupFile>, choice: Fi
                 CheckRow(
                     state = ToggleableState(choice.isOn(file.key)),
                     title = file.name,
-                    hint = file.bytes?.let { Formatter.formatShortFileSize(context, it) },
+                    hint = rowHint(file),
                     enabled = enabled,
                     onClick = { onChange(choice.toggle(file.key, keys)) },
                 )
@@ -362,6 +427,10 @@ private fun Summary(summary: RestoreSummary) {
     summary.settings.forEach { SummaryLine(stringResource(sectionTitle(it))) }
     summary.fonts?.let { if (it > 0) SummaryLine(pluralStringResource(R.plurals.backup_summary_fonts, it, it)) }
     summary.dictionaryFiles?.let { SummaryLine(pluralStringResource(R.plurals.backup_summary_dictionaries, it, it)) }
+    if (summary.models > 0) SummaryLine(pluralStringResource(R.plurals.languages_model_count, summary.models, summary.models))
+    if (summary.turnedOn.isNotEmpty()) {
+        SummaryLine(stringResource(R.string.backup_summary_languages, summary.turnedOn.joinToString(", ") { it.displayName() }))
+    }
     if (summary.listApplied) SummaryLine(stringResource(R.string.backup_section_dictionary_list))
     if (summary.failed.isNotEmpty()) {
         SummaryLine(stringResource(R.string.backup_summary_failed, summary.failed.joinToString(", ")), warning = true)

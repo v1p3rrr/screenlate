@@ -611,6 +611,9 @@
     <string name="backup_files_chosen_count">%1$d di %2$d scelti</string>
     <string name="backup_files_show">Mostra l’elenco</string>
     <string name="backup_files_hide">Nascondi l’elenco</string>
+    <string name="backup_languages">Lingue</string>
+    <string name="backup_languages_hint">Impostazioni proprie, dizionari, caratteri e modelli di riconoscimento di ogni lingua</string>
+    <string name="backup_language_models">Modelli di riconoscimento · %1$s</string>
     <string name="backup_create_button">Crea backup…</string>
     <string name="backup_creating">Creazione del backup…</string>
     <string name="backup_created">Backup salvato (%1$s).</string>
@@ -629,7 +632,7 @@
     <string name="backup_read_failed">Impossibile leggere il backup.</string>
     <string name="backup_loaded">Backup del %1$s, versione %2$s</string>
     <string name="backup_sections">Parti da ripristinare</string>
-    <string name="backup_replace_warning">Le parti selezionate sostituiscono quelle attuali. I caratteri e i dizionari del backup vengono aggiunti o sostituiscono la loro versione installata; gli altri caratteri e dizionari installati restano.</string>
+    <string name="backup_replace_warning">Le parti selezionate sostituiscono quelle attuali; le lingue non selezionate mantengono le proprie impostazioni. I caratteri, i dizionari e i modelli di riconoscimento del backup vengono aggiunti o sostituiscono la loro versione installata; gli altri installati restano. Con Generale vengono attivate le lingue selezionate.</string>
     <string name="backup_restore_button">Ripristina la selezione</string>
     <string name="backup_restored">Ripristinato</string>
     <string name="backup_section_general">Generale</string>
@@ -665,6 +668,7 @@
     </plurals>
     <string name="backup_summary_failed">Non ripristinato: %1$s</string>
     <string name="backup_summary_missing">Non installati, quindi le loro impostazioni sono state saltate: %1$s</string>
+    <string name="backup_summary_languages">Attivate: %1$s</string>
     <string name="dictionaries_kept_on">Lasciati attivi perché resti attivo almeno un dizionario con definizioni: %1$s</string>
     <string name="home_bubble_shown">La bolla è sullo schermo</string>
     <string name="home_bubble_hidden">La bolla è nascosta</string>

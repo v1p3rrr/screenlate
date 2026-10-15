@@ -23,6 +23,7 @@ object BackupArchive {
     /**
      * @property fontIndex the list of the fonts in [fonts], stored as [FontBackup.INDEX] before them.
      * @property fonts font files, stored under their own names.
+     * @property models the files of each recognition model by id, with the directory they are relative to.
      * @property dictionaryFiles directories of the dictionaries whose files go in, by index in [dictionaries].
      */
     class Contents(
@@ -31,6 +32,7 @@ object BackupArchive {
         val dictionaries: BackupDictionaryList,
         val fontIndex: String? = null,
         val fonts: List<File> = emptyList(),
+        val models: Map<String, Pair<File, List<File>>> = emptyMap(),
         val dictionaryFiles: Map<Int, File> = emptyMap(),
     )
 
@@ -52,11 +54,12 @@ object BackupArchive {
 
     class NewerFormatException : IOException("Backup from a newer version")
 
-    /** Bytes the dictionary files of [contents] take, for progress. */
+    /** Bytes the model and dictionary files of [contents] take, for progress. */
     fun size(contents: Contents): Long =
-        contents.dictionaryFiles.values.sumOf { directory -> directory.walkTopDown().filter { it.isFile }.sumOf { it.length() } }
+        contents.models.values.sumOf { (_, files) -> files.sumOf { it.length() } } +
+            contents.dictionaryFiles.values.sumOf { directory -> directory.walkTopDown().filter { it.isFile }.sumOf { it.length() } }
 
-    /** Writes [contents]; [onProgress] gets the bytes of dictionary files written so far. */
+    /** Writes [contents]; [onProgress] gets the bytes of model and dictionary files written so far. */
     fun write(output: OutputStream, contents: Contents, onProgress: (Long) -> Unit = {}) {
         ZipOutputStream(output.buffered()).use { zip ->
             zip.putText(BackupLayout.MANIFEST, json.encodeToString(BackupManifest.serializer(), contents.manifest))
@@ -64,9 +67,17 @@ object BackupArchive {
             zip.putText(BackupLayout.DICTIONARIES, json.encodeToString(BackupDictionaryList.serializer(), contents.dictionaries))
             contents.fontIndex?.let { zip.putText(BackupLayout.FONTS + FontBackup.INDEX, it) }
             contents.fonts.forEach { zip.putFile(BackupLayout.FONTS + it.name, it) }
-            // Dictionary files are large and partly compressed already; speed matters more than size here.
+            // Model and dictionary files are large and partly compressed already; speed matters more than size here.
             zip.setLevel(Deflater.BEST_SPEED)
             var written = 0L
+            for ((id, model) in contents.models.toSortedMap()) {
+                val (directory, files) = model
+                files.forEach { file ->
+                    zip.putFile("${BackupLayout.MODELS}$id/${file.relativeTo(directory).invariantSeparatorsPath}", file)
+                    written += file.length()
+                    onProgress(written)
+                }
+            }
             for ((index, directory) in contents.dictionaryFiles.toSortedMap()) {
                 directory.walkTopDown().filter { it.isFile }.sortedBy { it.path }.forEach { file ->
                     val path = file.relativeTo(directory).invariantSeparatorsPath
@@ -80,7 +91,7 @@ object BackupArchive {
 
     /**
      * Reads the manifest, settings and dictionary list, which come first, and goes through the fonts after them for
-     * their list and sizes. Stops at the first dictionary file.
+     * their list and sizes. Stops at the first model or dictionary file.
      */
     fun readHead(input: InputStream): Head {
         val zip = ZipInputStream(input.buffered())
@@ -112,6 +123,9 @@ object BackupArchive {
     interface Reader {
         suspend fun font(name: String, input: InputStream)
 
+        /** Every file of each model comes before any dictionary file. */
+        suspend fun modelFile(id: String, path: String, input: InputStream)
+
         /** Every file of dictionary [index] comes before the next dictionary's. */
         suspend fun dictionaryFile(index: Int, path: String, input: InputStream)
 
@@ -121,12 +135,14 @@ object BackupArchive {
 
     /**
      * Streams the files to [reader]; [onHead] gets the [Head] before the first file. Without [dictionaryFiles] reading
-     * stops where they start, which saves reading gigabytes when only settings are restored.
+     * stops where they start, and without [models] too where those start, which saves reading gigabytes when only
+     * settings are restored.
      */
     suspend fun read(
         input: InputStream,
         reader: Reader,
         dictionaryFiles: Boolean = true,
+        models: Boolean = true,
         onHead: suspend (Head) -> Unit = {},
     ): Head {
         val zip = ZipInputStream(input.buffered())
@@ -166,6 +182,11 @@ object BackupArchive {
                     if (entry.isDirectory) continue
                     BackupLayout.fontFile(entry.name)?.let { name ->
                         reader.font(name, zip)
+                        continue
+                    }
+                    BackupLayout.modelFile(entry.name)?.let { (id, path) ->
+                        if (!models && !dictionaryFiles) break
+                        if (models) reader.modelFile(id, path, zip)
                         continue
                     }
                     val (index, path) = BackupLayout.dictionaryFile(entry.name) ?: continue

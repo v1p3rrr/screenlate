@@ -7,6 +7,7 @@ import java.io.File
 import java.io.IOException
 import java.security.MessageDigest
 import java.util.Properties
+import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,6 +31,10 @@ data class InstalledOcrModel(val id: String, val version: String, val engine: St
 
     /** Bytes the model takes on disk. */
     val bytes: Long get() = directory.walkBottomUp().filter { it.isFile }.sumOf { it.length() }
+
+    /** The model's own files, without the store's description of it; what [OcrModelStore.restore] takes back. */
+    val files: List<File>
+        get() = directory.walkTopDown().filter { it.isFile && it != File(directory, OcrModelStore.MANIFEST) }.sortedBy { it.path }.toList()
 }
 
 /** The downloaded archive is not the file the catalog pinned. */
@@ -65,26 +70,48 @@ class OcrModelStore internal constructor(private val root: File) {
             try {
                 staging.mkdirs()
                 if (isZip(archive)) unzip(archive, staging) else archive.copyTo(File(staging, MODEL_FILE))
-                Properties().apply {
-                    setProperty(KEY_ID, spec.id)
-                    setProperty(KEY_VERSION, spec.version)
-                    setProperty(KEY_ENGINE, spec.engine)
-                }.let { manifest -> File(staging, MANIFEST).outputStream().use { manifest.store(it, null) } }
-                val target = File(root, spec.id)
-                val old = File(root, ".${spec.id}.old").apply { deleteRecursively() }
-                if (target.exists() && !target.renameTo(old)) throw IOException("Cannot replace the model")
-                if (!staging.renameTo(target)) {
-                    old.renameTo(target)
-                    throw IOException("Cannot install the model")
-                }
-                old.deleteRecursively()
-                Log.i(TAG, "Model ${spec.id} ${spec.version} installed for ${spec.engine}")
-                installed.value = read()
-                requireNotNull(model(spec.id))
+                place(spec.id, spec.version, spec.engine, staging)
             } finally {
                 staging.deleteRecursively()
             }
         }
+    }
+
+    /** A new empty directory inside the store, for [restore]. */
+    fun newStagingDirectory(): File = File(root, ".restore-${UUID.randomUUID()}").apply { mkdirs() }
+
+    /**
+     * Installs the files in [staging] (from [newStagingDirectory], laid out as [InstalledOcrModel.files] gave them) as
+     * the model [id] in place of an installed version. For a backup, which has no checksum to check; [staging] is
+     * moved or deleted.
+     */
+    suspend fun restore(id: String, version: String, engine: String, staging: File): InstalledOcrModel = withContext(Dispatchers.IO) {
+        try {
+            require(id.isSafeName()) { "Bad model id" }
+            mutex.withLock { place(id, version, engine, staging) }
+        } finally {
+            staging.deleteRecursively()
+        }
+    }
+
+    /** Describes the model in [staging] and swaps it in for [id]'s directory. */
+    private fun place(id: String, version: String, engine: String, staging: File): InstalledOcrModel {
+        Properties().apply {
+            setProperty(KEY_ID, id)
+            setProperty(KEY_VERSION, version)
+            setProperty(KEY_ENGINE, engine)
+        }.let { manifest -> File(staging, MANIFEST).outputStream().use { manifest.store(it, null) } }
+        val target = File(root, id)
+        val old = File(root, ".$id.old").apply { deleteRecursively() }
+        if (target.exists() && !target.renameTo(old)) throw IOException("Cannot replace the model")
+        if (!staging.renameTo(target)) {
+            old.renameTo(target)
+            throw IOException("Cannot install the model")
+        }
+        old.deleteRecursively()
+        Log.i(TAG, "Model $id $version installed for $engine")
+        installed.value = read()
+        return requireNotNull(model(id))
     }
 
     /** Deletes the models [ids]; unknown ids are skipped. */
@@ -138,7 +165,7 @@ class OcrModelStore internal constructor(private val root: File) {
     companion object {
         private const val TAG = "OcrModelStore"
         private const val DIRECTORY = "ocr-models"
-        private const val MANIFEST = "model.properties"
+        internal const val MANIFEST = "model.properties"
 
         /** The name a model that is not a zip archive gets. */
         const val MODEL_FILE = "model.bin"

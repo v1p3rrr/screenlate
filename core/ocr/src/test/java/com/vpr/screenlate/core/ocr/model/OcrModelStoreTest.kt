@@ -48,6 +48,28 @@ class OcrModelStoreTest {
     }
 
     @Test
+    fun `a model's files come back from a staged copy`() = runTest {
+        val archive = zip("rec.zip", mapOf("rec.onnx" to "net", "dict/labels.txt" to "a\nb"))
+        val installed = store.install(spec(archive, id = "rec"), archive)
+        assertThat(installed.files.map { it.relativeTo(installed.directory).invariantSeparatorsPath })
+            .containsExactly("dict/labels.txt", "rec.onnx").inOrder()
+
+        val staging = store.newStagingDirectory()
+        installed.files.forEach { file ->
+            val target = File(staging, file.relativeTo(installed.directory).path)
+            target.parentFile?.mkdirs()
+            file.copyTo(target)
+        }
+        store.delete(listOf("rec"))
+        assertThat(store.models.value).isEmpty()
+        val restored = store.restore("rec", "3", "fake", staging)
+        assertThat(restored.version).isEqualTo("3")
+        assertThat(restored.file("dict/labels.txt").readText()).isEqualTo("a\nb")
+        assertThat(staging.exists()).isFalse()
+        assertThat(OcrModelStore(root).models.value.map { it.id to it.version }).containsExactly("rec" to "3")
+    }
+
+    @Test
     fun `a zip archive is unpacked`() = runTest {
         val archive = zip("rec.zip", mapOf("rec.onnx" to "net", "dict/labels.txt" to "a\nb"))
         val model = store.install(spec(archive, id = "rec"), archive)

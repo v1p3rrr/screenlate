@@ -612,6 +612,9 @@
     <string name="backup_files_chosen_count">%1$d of %2$d chosen</string>
     <string name="backup_files_show">Show the list</string>
     <string name="backup_files_hide">Hide the list</string>
+    <string name="backup_languages">Languages</string>
+    <string name="backup_languages_hint">Own settings, dictionaries, fonts and recognition models of each language</string>
+    <string name="backup_language_models">Recognition models · %1$s</string>
     <string name="backup_create_button">Create backup…</string>
     <string name="backup_creating">Creating the backup…</string>
     <string name="backup_created">Backup saved (%1$s).</string>
@@ -629,7 +632,7 @@
     <string name="backup_read_failed">The backup could not be read.</string>
     <string name="backup_loaded">Backup from %1$s, version %2$s</string>
     <string name="backup_sections">Parts to restore</string>
-    <string name="backup_replace_warning">Checked sections replace the current ones. Fonts and dictionaries from the backup are added or replace the same ones; other installed fonts and dictionaries are kept.</string>
+    <string name="backup_replace_warning">Checked sections replace the current ones; unchecked languages keep their own settings. Fonts, dictionaries and recognition models from the backup are added or replace the same ones; other installed ones are kept. With General, the checked languages are turned on.</string>
     <string name="backup_restore_button">Restore checked</string>
     <string name="backup_restored">Restored</string>
     <string name="backup_section_general">General</string>
@@ -662,6 +665,7 @@
     </plurals>
     <string name="backup_summary_failed">Not restored: %1$s</string>
     <string name="backup_summary_missing">Not installed, so their settings were skipped: %1$s</string>
+    <string name="backup_summary_languages">Turned on: %1$s</string>
     <string name="dictionaries_kept_on">Kept on so that at least one dictionary with definitions stays on: %1$s</string>
     <string name="home_bubble_shown">The bubble is on the screen</string>
     <string name="home_bubble_hidden">The bubble is hidden</string>

@@ -165,3 +165,22 @@ class AudioSettingsRepository @Inject constructor(private val dataStore: DataSto
         val LEGACY_DEFAULT = listOf(AudioSource(AudioSourceType.JAPANESE_POD_101))
     }
 }
+
+/**
+ * The values of Japanese's audio key that every language shares ([AudioSettings.autoPlay], [AudioSettings.volume]), for
+ * a backup that leaves Japanese out. A value missing from the stored JSON is the default.
+ */
+object SharedAudioSettings {
+    private val names = setOf("autoPlay", "volume")
+
+    /** Japanese's stored settings [raw] with only the shared values. */
+    fun only(raw: String): String = runCatching {
+        JsonObject(Json.parseToJsonElement(raw).jsonObject.filterKeys { it in names }).toString()
+    }.getOrDefault("{}")
+
+    /** Japanese's stored settings [own] (null when not set) with the shared values of [from]. */
+    fun with(own: String?, from: String): String = runCatching {
+        val kept = own?.let { Json.parseToJsonElement(it).jsonObject.filterKeys { name -> name !in names } }.orEmpty()
+        JsonObject(kept + Json.parseToJsonElement(from).jsonObject.filterKeys { it in names }).toString()
+    }.getOrElse { own ?: only(from) }
+}

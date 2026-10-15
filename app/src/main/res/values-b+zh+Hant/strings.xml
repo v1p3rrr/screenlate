@@ -605,6 +605,9 @@
     <string name="backup_files_chosen_count">已選 %1$d/%2$d</string>
     <string name="backup_files_show">顯示清單</string>
     <string name="backup_files_hide">隱藏清單</string>
+    <string name="backup_languages">語言</string>
+    <string name="backup_languages_hint">每種語言自己的設定、詞典、字型和辨識模型</string>
+    <string name="backup_language_models">辨識模型 · %1$s</string>
     <string name="backup_create_button">建立備份…</string>
     <string name="backup_creating">正在建立備份…</string>
     <string name="backup_created">備份已儲存（%1$s）。</string>
@@ -621,7 +624,7 @@
     <string name="backup_read_failed">無法讀取備份。</string>
     <string name="backup_loaded">%1$s 的備份，版本 %2$s</string>
     <string name="backup_sections">要恢復的部分</string>
-    <string name="backup_replace_warning">勾選的部分會替換目前內容。備份中的字型和詞典會被新增，或替換已安裝的同一字型或詞典；其他已安裝的字型和詞典保持不變。</string>
+    <string name="backup_replace_warning">勾選的部分會替換目前內容；未勾選的語言保留各自的設定。備份中的字型、詞典和辨識模型會被新增，或替換已安裝的同一項；其他已安裝的保持不變。還原「常規」時會啟用勾選的語言。</string>
     <string name="backup_restore_button">恢復所選</string>
     <string name="backup_restored">已恢復</string>
     <string name="backup_section_general">常規</string>
@@ -651,6 +654,7 @@
     </plurals>
     <string name="backup_summary_failed">未恢復：%1$s</string>
     <string name="backup_summary_missing">未安裝，因此跳過了其設定：%1$s</string>
+    <string name="backup_summary_languages">已啟用：%1$s</string>
     <string name="dictionaries_kept_on">已保持開啟，以確保至少有一個附釋義的詞典處於開啟狀態：%1$s</string>
     <string name="home_bubble_shown">懸浮球在螢幕上</string>
     <string name="home_bubble_hidden">懸浮球已隱藏</string>

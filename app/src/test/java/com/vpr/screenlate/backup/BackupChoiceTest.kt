@@ -59,6 +59,30 @@ class BackupChoiceTest {
     }
 
     @Test
+    fun `languages are offered when there are several or one has models`() {
+        val japanese = BackupFile("ja", "Japanese", null)
+        val english = BackupFile("en", "English", null)
+        val choice = BackupChoice(languages = FileChoice(on = true, flipped = setOf("ja")))
+        // A single language without models is always taken, whatever an earlier choice said.
+        assertThat(choice.offersLanguages(listOf(japanese))).isFalse()
+        assertThat(choice.chosenLanguages(listOf(japanese))).containsExactly("ja")
+        assertThat(choice.offersLanguages(listOf(japanese.copy(bytes = 10)))).isTrue()
+        assertThat(choice.chosenLanguages(listOf(japanese.copy(bytes = 10)))).isEmpty()
+        assertThat(choice.chosenLanguages(listOf(japanese, english))).containsExactly("en")
+    }
+
+    @Test
+    fun `files of a language left out are not offered`() {
+        val languages = listOf(BackupFile("ja", "Japanese", 10), BackupFile("en", "English", null))
+        val files = listOf(BackupFile("a", "A", 1, "ja"), BackupFile("b", "B", 1, "en"), BackupFile("c", "C", 1, null))
+        val withoutJapanese = BackupChoice(languages = FileChoice(on = true).toggle("ja", listOf("ja", "en")))
+        assertThat(withoutJapanese.visible(files, languages).map { it.key }).containsExactly("b", "c").inOrder()
+        assertThat(withoutJapanese.takesModels(languages)).isFalse()
+        assertThat(BackupChoice().visible(files, languages).map { it.key }).containsExactly("a", "b", "c").inOrder()
+        assertThat(BackupChoice().takesModels(languages)).isTrue()
+    }
+
+    @Test
     fun `the first choice has settings and fonts but no dictionaries`() {
         val first = BackupChoiceStore.read(mutablePreferencesOf())
         assertThat(first).isEqualTo(BackupChoice(fonts = FileChoice(on = true), dictionaries = FileChoice(on = false)))
@@ -66,9 +90,14 @@ class BackupChoiceTest {
             stringSetPreferencesKey("backup_sections_off") to setOf("ANKI", "REMOVED_SECTION"),
             booleanPreferencesKey("backup_dictionaries_on") to true,
             stringSetPreferencesKey("backup_dictionaries_flipped") to setOf("JMdict"),
+            stringSetPreferencesKey("backup_languages_flipped") to setOf("en"),
         )
         assertThat(BackupChoiceStore.read(stored)).isEqualTo(
-            BackupChoice(off = setOf(BackupSection.ANKI), dictionaries = FileChoice(on = true, flipped = setOf("JMdict"))),
+            BackupChoice(
+                off = setOf(BackupSection.ANKI),
+                dictionaries = FileChoice(on = true, flipped = setOf("JMdict")),
+                languages = FileChoice(on = true, flipped = setOf("en")),
+            ),
         )
     }
 }

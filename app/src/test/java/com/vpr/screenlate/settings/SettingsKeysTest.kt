@@ -35,7 +35,8 @@ class SettingsKeysTest {
     private val globalOnly = listOf(
         "update_announce", "update_announced_tag", "e_ink_hint_seen", "background_tip_seen", "notification_permission_asked",
         "accessibility_agreed", "language_script_zh", "language_fixed_script_zh", "backup_sections_off", "backup_fonts_on",
-        "backup_fonts_flipped", "backup_dictionaries_on", "backup_dictionaries_flipped",
+        "backup_fonts_flipped", "backup_dictionaries_on", "backup_dictionaries_flipped", "backup_languages_on",
+        "backup_languages_flipped",
     )
     /** Turned-on languages: kept like the dictionaries they need. */
     private val languages = listOf("languages_turned_on", "language_active", "languages_starred", "language_flags")

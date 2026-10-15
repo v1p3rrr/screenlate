@@ -605,6 +605,9 @@
     <string name="backup_files_chosen_count">%2$d 個中 %1$d 個を選択</string>
     <string name="backup_files_show">一覧を表示</string>
     <string name="backup_files_hide">一覧を隠す</string>
+    <string name="backup_languages">言語</string>
+    <string name="backup_languages_hint">言語ごとの設定、辞書、フォント、認識モデル</string>
+    <string name="backup_language_models">認識モデル · %1$s</string>
     <string name="backup_create_button">バックアップを作成…</string>
     <string name="backup_creating">バックアップを作成中…</string>
     <string name="backup_created">バックアップを保存しました（%1$s）。</string>
@@ -621,7 +624,7 @@
     <string name="backup_read_failed">バックアップを読み込めませんでした。</string>
     <string name="backup_loaded">%1$s のバックアップ、バージョン %2$s</string>
     <string name="backup_sections">復元する部分</string>
-    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。バックアップ内のフォントと辞書は追加されるか、インストール済みの同じものを置き換えます。ほかのインストール済みのフォントと辞書はそのまま残ります。</string>
+    <string name="backup_replace_warning">チェックした部分は現在のものを置き換えます。チェックしていない言語の設定はそのまま残ります。バックアップ内のフォント、辞書、認識モデルは追加されるか、インストール済みの同じものを置き換えます。ほかのインストール済みのものはそのまま残ります。「全般」を復元すると、チェックした言語がオンになります。</string>
     <string name="backup_restore_button">チェックした部分を復元</string>
     <string name="backup_restored">復元しました</string>
     <string name="backup_section_general">全般</string>
@@ -651,6 +654,7 @@
     </plurals>
     <string name="backup_summary_failed">復元されなかった部分：%1$s</string>
     <string name="backup_summary_missing">インストールされていないため、設定をスキップしました：%1$s</string>
+    <string name="backup_summary_languages">オンにした言語：%1$s</string>
     <string name="dictionaries_kept_on">定義のある辞書を少なくとも 1 つオンにしておくため、オンのままにしました：%1$s</string>
     <string name="home_bubble_shown">バブルは画面に表示されています</string>
     <string name="home_bubble_hidden">バブルは非表示です</string>

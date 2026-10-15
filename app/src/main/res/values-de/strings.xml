@@ -608,6 +608,9 @@
     <string name="backup_files_chosen_count">%1$d von %2$d gewählt</string>
     <string name="backup_files_show">Liste zeigen</string>
     <string name="backup_files_hide">Liste ausblenden</string>
+    <string name="backup_languages">Sprachen</string>
+    <string name="backup_languages_hint">Eigene Einstellungen, Wörterbücher, Schriften und Erkennungsmodelle jeder Sprache</string>
+    <string name="backup_language_models">Erkennungsmodelle · %1$s</string>
     <string name="backup_create_button">Sicherung erstellen…</string>
     <string name="backup_creating">Sicherung wird erstellt…</string>
     <string name="backup_created">Sicherung gespeichert (%1$s).</string>
@@ -625,7 +628,7 @@
     <string name="backup_read_failed">Die Sicherung konnte nicht gelesen werden.</string>
     <string name="backup_loaded">Sicherung vom %1$s, Version %2$s</string>
     <string name="backup_sections">Wiederherzustellende Teile</string>
-    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen. Schriften und Wörterbücher aus der Sicherung kommen hinzu oder ersetzen ihre installierte Fassung; andere installierte Schriften und Wörterbücher bleiben.</string>
+    <string name="backup_replace_warning">Markierte Teile ersetzen die aktuellen; nicht markierte Sprachen behalten ihre eigenen Einstellungen. Schriften, Wörterbücher und Erkennungsmodelle aus der Sicherung kommen hinzu oder ersetzen ihre installierte Fassung; andere installierte bleiben. Mit „Allgemein“ werden die markierten Sprachen eingeschaltet.</string>
     <string name="backup_restore_button">Markierte wiederherstellen</string>
     <string name="backup_restored">Wiederhergestellt</string>
     <string name="backup_section_general">Allgemein</string>
@@ -658,6 +661,7 @@
     </plurals>
     <string name="backup_summary_failed">Nicht wiederhergestellt: %1$s</string>
     <string name="backup_summary_missing">Nicht installiert, daher wurden ihre Einstellungen übersprungen: %1$s</string>
+    <string name="backup_summary_languages">Eingeschaltet: %1$s</string>
     <string name="dictionaries_kept_on">Bleiben an, damit mindestens ein Wörterbuch mit Definitionen an ist: %1$s</string>
     <string name="home_bubble_shown">Die Blase ist auf dem Bildschirm</string>
     <string name="home_bubble_hidden">Die Blase ist ausgeblendet</string>

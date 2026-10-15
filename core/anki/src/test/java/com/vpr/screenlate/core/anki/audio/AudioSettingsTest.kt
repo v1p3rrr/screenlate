@@ -19,6 +19,17 @@ import org.junit.Test
 
 class AudioSettingsTest {
     @Test
+    fun `the shared audio values travel without Japanese's sources`() {
+        val japanese = """{"sources":[{"type":"FORVO"}],"autoPlay":true,"volume":70}"""
+        assertThat(SharedAudioSettings.only(japanese)).isEqualTo("""{"autoPlay":true,"volume":70}""")
+        assertThat(SharedAudioSettings.only("not json")).isEqualTo("{}")
+        // A value missing from the backup is the default, so it goes.
+        assertThat(SharedAudioSettings.with("""{"sources":[],"autoPlay":true,"volume":70}""", """{"volume":40}"""))
+            .isEqualTo("""{"sources":[],"volume":40}""")
+        assertThat(SharedAudioSettings.with(null, japanese)).isEqualTo("""{"autoPlay":true,"volume":70}""")
+    }
+
+    @Test
     fun `every default source of every language is a known source type`() {
         for (language in Language.entries) {
             assertThat(AudioSettings.defaultSources(language).map { it.type.name })

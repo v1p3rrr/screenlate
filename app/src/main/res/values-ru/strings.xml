@@ -615,6 +615,9 @@
     <string name="backup_files_chosen_count">Выбрано %1$d из %2$d</string>
     <string name="backup_files_show">Показать список</string>
     <string name="backup_files_hide">Скрыть список</string>
+    <string name="backup_languages">Языки</string>
+    <string name="backup_languages_hint">Собственные настройки, словари, шрифты и модели распознавания каждого языка</string>
+    <string name="backup_language_models">Модели распознавания · %1$s</string>
     <string name="backup_create_button">Создать копию…</string>
     <string name="backup_creating">Создаётся копия…</string>
     <string name="backup_created">Копия сохранена (%1$s).</string>
@@ -634,7 +637,7 @@
     <string name="backup_read_failed">Не удалось прочитать копию.</string>
     <string name="backup_loaded">Копия от %1$s, версия %2$s</string>
     <string name="backup_sections">Что восстановить</string>
-    <string name="backup_replace_warning">Отмеченные разделы заменят текущие. Шрифты и словари из копии добавляются или заменяют те же шрифты и словари; остальные установленные сохраняются.</string>
+    <string name="backup_replace_warning">Отмеченные разделы заменят текущие; неотмеченные языки сохранят свои настройки. Шрифты, словари и модели распознавания из копии добавляются или заменяют те же; остальные установленные сохраняются. Вместе с разделом «Общие» включаются отмеченные языки.</string>
     <string name="backup_restore_button">Восстановить отмеченное</string>
     <string name="backup_restored">Восстановлено</string>
     <string name="backup_section_general">Общие</string>
@@ -673,6 +676,7 @@
     </plurals>
     <string name="backup_summary_failed">Не восстановлены: %1$s</string>
     <string name="backup_summary_missing">Не установлены, их настройки пропущены: %1$s</string>
+    <string name="backup_summary_languages">Включены: %1$s</string>
     <string name="dictionaries_kept_on">Оставлены включёнными, чтобы был включён хотя бы один словарь с определениями: %1$s</string>
     <string name="home_bubble_shown">Плавающая кнопка на экране</string>
     <string name="home_bubble_hidden">Плавающая кнопка скрыта</string>

@@ -189,17 +189,6 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
         }
     }
 
-    private fun write(prefs: MutablePreferences, state: LanguageProfilesState) {
-        prefs[TURNED_ON] = state.turnedOn.joinToString(",") { it.code }
-        val active = state.active.takeIf { it in state.turnedOn } ?: state.turnedOn.first()
-        prefs[ACTIVE] = active.code
-        val starred = state.turnedOn.filter { it in state.starred && it != active }.take(LanguageProfilesState.MAX_STARRED)
-        if (starred.isEmpty()) prefs.remove(STARRED) else prefs[STARRED] = starred.joinToString(",") { it.code }
-        // Choices of languages turned off stay, so turning one on again brings its flag back.
-        val flags = state.flags.filter { (language, country) -> country in language.support.flagCountries.drop(1) }
-        if (flags.isEmpty()) prefs.remove(FLAGS) else prefs[FLAGS] = flags.entries.joinToString(",") { "${it.key.code}:${it.value}" }
-    }
-
     companion object {
         val TURNED_ON = stringPreferencesKey("languages_turned_on")
         val ACTIVE = stringPreferencesKey("language_active")
@@ -211,8 +200,20 @@ class LanguageProfiles @Inject constructor(private val dataStore: DataStore<Pref
         /** Set on a fresh install until the user says which language they learn; see [settleFirstRun]. */
         val FIRST_RUN = booleanPreferencesKey("languages_first_run")
 
+        /** Stores [state]; stars past the limit and flags a language does not offer are dropped. */
+        fun write(prefs: MutablePreferences, state: LanguageProfilesState) {
+            prefs[TURNED_ON] = state.turnedOn.joinToString(",") { it.code }
+            val active = state.active.takeIf { it in state.turnedOn } ?: state.turnedOn.first()
+            prefs[ACTIVE] = active.code
+            val starred = state.turnedOn.filter { it in state.starred && it != active }.take(LanguageProfilesState.MAX_STARRED)
+            if (starred.isEmpty()) prefs.remove(STARRED) else prefs[STARRED] = starred.joinToString(",") { it.code }
+            // Choices of languages turned off stay, so turning one on again brings its flag back.
+            val flags = state.flags.filter { (language, country) -> country in language.support.flagCountries.drop(1) }
+            if (flags.isEmpty()) prefs.remove(FLAGS) else prefs[FLAGS] = flags.entries.joinToString(",") { "${it.key.code}:${it.value}" }
+        }
+
         /** Codes this version does not know (written by a newer one) are skipped; nothing usable means the default. */
-        internal fun read(prefs: Preferences): LanguageProfilesState {
+        fun read(prefs: Preferences): LanguageProfilesState {
             val turnedOn = codes(prefs[TURNED_ON])
             if (turnedOn.isEmpty()) return LanguageProfilesState.DEFAULT
             val active = Language.of(prefs[ACTIVE])?.takeIf { it in turnedOn } ?: turnedOn.first()

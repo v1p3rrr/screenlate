@@ -605,6 +605,9 @@
     <string name="backup_files_chosen_count">%2$d개 중 %1$d개 선택</string>
     <string name="backup_files_show">목록 보기</string>
     <string name="backup_files_hide">목록 숨기기</string>
+    <string name="backup_languages">언어</string>
+    <string name="backup_languages_hint">언어별 설정, 사전, 글꼴, 인식 모델</string>
+    <string name="backup_language_models">인식 모델 · %1$s</string>
     <string name="backup_create_button">백업 만들기…</string>
     <string name="backup_creating">백업을 만드는 중…</string>
     <string name="backup_created">백업을 저장했습니다(%1$s).</string>
@@ -621,7 +624,7 @@
     <string name="backup_read_failed">백업을 읽지 못했습니다.</string>
     <string name="backup_loaded">%1$s 백업, 버전 %2$s</string>
     <string name="backup_sections">복원할 부분</string>
-    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체합니다. 백업의 글꼴과 사전은 새로 추가되거나 설치된 버전을 대체하며, 설치된 다른 글꼴과 사전은 그대로 남습니다.</string>
+    <string name="backup_replace_warning">선택한 부분은 현재 설정을 대체하며, 선택하지 않은 언어는 자체 설정을 유지합니다. 백업의 글꼴, 사전, 인식 모델은 새로 추가되거나 설치된 버전을 대체하며, 설치된 다른 항목은 그대로 남습니다. 일반을 복원하면 선택한 언어가 켜집니다.</string>
     <string name="backup_restore_button">선택한 부분 복원</string>
     <string name="backup_restored">복원됨</string>
     <string name="backup_section_general">일반</string>
@@ -651,6 +654,7 @@
     </plurals>
     <string name="backup_summary_failed">복원되지 않음: %1$s</string>
     <string name="backup_summary_missing">설치되지 않아 설정을 건너뜀: %1$s</string>
+    <string name="backup_summary_languages">켠 언어: %1$s</string>
     <string name="dictionaries_kept_on">정의가 있는 사전을 하나 이상 켜 두기 위해 켜진 상태로 두었습니다: %1$s</string>
     <string name="home_bubble_shown">버블이 화면에 있습니다</string>
     <string name="home_bubble_hidden">버블이 숨겨져 있습니다</string>

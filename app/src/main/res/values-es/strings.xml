@@ -611,6 +611,9 @@
     <string name="backup_files_chosen_count">Selección: %1$d de %2$d</string>
     <string name="backup_files_show">Mostrar la lista</string>
     <string name="backup_files_hide">Ocultar la lista</string>
+    <string name="backup_languages">Idiomas</string>
+    <string name="backup_languages_hint">Ajustes propios, diccionarios, fuentes y modelos de reconocimiento de cada idioma</string>
+    <string name="backup_language_models">Modelos de reconocimiento · %1$s</string>
     <string name="backup_create_button">Crear copia…</string>
     <string name="backup_creating">Creando la copia de seguridad…</string>
     <string name="backup_created">Copia guardada (%1$s).</string>
@@ -629,7 +632,7 @@
     <string name="backup_read_failed">No se pudo leer la copia.</string>
     <string name="backup_loaded">Copia del %1$s, versión %2$s</string>
     <string name="backup_sections">Partes que restaurar</string>
-    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales. Las fuentes y los diccionarios de la copia se añaden o sustituyen a su versión instalada; las demás fuentes y diccionarios instalados se mantienen.</string>
+    <string name="backup_replace_warning">Las partes marcadas reemplazan a las actuales; los idiomas sin marcar conservan sus propios ajustes. Las fuentes, los diccionarios y los modelos de reconocimiento de la copia se añaden o sustituyen a su versión instalada; los demás instalados se mantienen. Con General se activan los idiomas marcados.</string>
     <string name="backup_restore_button">Restaurar lo marcado</string>
     <string name="backup_restored">Restaurado</string>
     <string name="backup_section_general">General</string>
@@ -665,6 +668,7 @@
     </plurals>
     <string name="backup_summary_failed">No restaurado: %1$s</string>
     <string name="backup_summary_missing">No instalados, así que se omitieron sus ajustes: %1$s</string>
+    <string name="backup_summary_languages">Activados: %1$s</string>
     <string name="dictionaries_kept_on">Se mantienen activados para que quede activo al menos un diccionario con definiciones: %1$s</string>
     <string name="home_bubble_shown">La burbuja está en la pantalla</string>
     <string name="home_bubble_hidden">La burbuja está oculta</string>
