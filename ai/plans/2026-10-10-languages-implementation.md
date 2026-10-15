@@ -100,6 +100,12 @@ Requests 1–19 are in the previous plan. New ones:
     features go into `main` as well. Plan and decisions: [2026-10-15-main-fixes-and-backups.md](2026-10-15-main-fixes-and-backups.md).
 50. (2026-10-15) Order after group 1: ask the questions of groups 2 and 3 now; build everything possible for group 2;
     then the OCR tests for groups 3 and 4 (Paddle against Tesseract, MNN against ONNX Runtime, on real screenshots).
+51. (2026-10-16) Group 4 candidates, so they are not forgotten: Hindi, Dutch, Malay, Filipino, Indonesian, Serbian,
+    Georgian, Kazakh, Armenian, Czech, Greek, Bengali, Thai, Belarusian, Kyrgyz. Yomitan support and dictionaries are
+    checked when group 4 starts; a language without them may be skipped.
+52. (2026-10-16) Backlog: word audio kept on the phone, optional (several GB, more with more languages). Like
+    Yomitan's local audio server (on a server or in Anki on a computer), or simpler, audio collections downloaded
+    through the app; either way the files end up on the phone, so the owner leans to doing it in the app.
 
 ## Decisions
 
@@ -196,6 +202,13 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Character entry tags | Chips next to the dictionary name, a tap opens the tag's note, for every language (owner, 2026-10-15) |
 | STDICT | Listed for Korean, not ticked (owner, 2026-10-15) |
 | Text to speech note | The hint under the text-to-speech source ("Playback only; notes take audio from the other sources") is enough; the Sources hint stays as it is (owner, 2026-10-15) |
+| Latin fonts | Literata and Inter (Latin, Cyrillic, Greek, Vietnamese), Atkinson Hyperlegible Next (Latin) and Lexend (Latin, Vietnamese), PT Serif and PT Sans (Latin, Cyrillic) to download; each shows for every language whose letters it covers (owner, 2026-10-16) |
+| German compounds | When the whole word has no entry, the popup shows its parts in order: the longest dictionary word from the start, then the longest in the rest, linking -s-, -es-, -n- skipped (Haustürschlüssel → Haus, Tür, Schlüssel); a word with its own entry as now. Later the same for other languages with compounds (Dutch, Swedish) (owner, 2026-10-16) |
+| Dictionaries we convert | The converter for FreeDict's pairs (de, fr, it, es, pl, en, zh → ru) and OpenRussian is written now; its files are checked on the emulator (adb, a local address) and join the catalog once hosting exists (owner, 2026-10-16) |
+| Character dictionaries ticked | KANJIDIC for Japanese, CC-CEDICT Hanzi for Chinese and the hanja dictionary for Korean are ticked on the download screen (an exception to "Turning on a language", where character dictionaries are not) (owner, 2026-10-16) |
+| Audio order, groups 2 and 3 | By the measured coverage of ten common words: Wiktionary first for Russian and Polish, Lingua Libre first for Spanish, French, German, Italian, Portuguese, Turkish, Vietnamese and Latvian; text to speech last. A source without the word falls through to the next, so the order only picks whose clip plays and goes into notes when several have one (owner, 2026-10-16) |
+| Vietnamese words of several syllables | The lookup also starts one and two syllables before the aimed one; a word that covers the aimed syllable comes first (học sinh), then the syllable's own entries (owner, 2026-10-16) |
+| Audio collections | Word audio on the phone (request 52): the app imports a collection the user brings (Local Audio's export for phones) as an offline audio source; our own packs from Wiktionary and Lingua Libre per language, downloaded in the app, come once hosting exists (owner, 2026-10-16) |
 | Bundled Japanese dictionaries | Downloaded when Japanese is turned on, the first run included, from the catalog like any language's; the APK no longer carries them (about 25 MB). Only on `languages/main`: `main` keeps them bundled until the big release. Installed copies stay after an upgrade (owner, 2026-10-15; settles the postponed item) |
 
 ## Open items (postponed by the owner)
@@ -207,6 +220,11 @@ Decided when the first language or group 1 is ready, before it is merged into th
   looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
   left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
+
+## Backlog
+
+- Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
+  imported; our packs once hosting exists).
 
 ## Questions for the owner
 
@@ -568,6 +586,11 @@ Whether it joins the big release (decision row). It would bring right-to-left hi
 Paddle's Arabic, Cyrillic, Greek and Thai models, cloud-only scripts (Hebrew, Georgian, Armenian, Khmer, Lao,
 Kannada, Syriac) and Ukrainian's 35 rule names.
 
+Candidates named by the owner (request 51): Hindi, Dutch, Malay, Filipino, Indonesian, Serbian, Georgian, Kazakh,
+Armenian, Czech, Greek, Bengali, Thai, Belarusian, Kyrgyz. Yomitan (e7334a9) describes hi, nl, tl, id, ka, hy, cs,
+el, th, be (transforms for tl, ka, el); it has none for ms, kk, bn, ky, and Serbian only as Serbo-Croatian (sh).
+Dictionaries are checked when the group starts; a language without support or dictionaries may be skipped.
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -837,3 +860,7 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
 - 2026-10-15: the owner settled the bundled Japanese dictionaries (downloaded when Japanese is turned on, on
   `languages/main` only; changes the row "First run") and the order of the work (request 50): the questions of
   groups 2 and 3 now, then group 2, then the OCR tests for groups 3 and 4.
+- 2026-10-16: requests 51 (group 4 candidates) and 52 (word audio on the phone, backlog). Group 2 and 3 answers:
+  Latin fonts, German compounds, the converter for our own dictionaries, character dictionaries ticked for Japanese,
+  Chinese and Korean (changes the row "Turning on a language" for them), audio order by measured coverage,
+  Vietnamese words of several syllables, the approach to audio collections.
