@@ -663,7 +663,7 @@ class OverlayController(
             if (all.isNotEmpty()) add(BubbleMenu.Item(service.getString(R.string.overlay_copy_all)) { copyText(all) })
             add(BubbleMenu.Item(service.getString(R.string.overlay_menu_open_app), ::openApp))
         }
-        bubbleMenu.show(items, bubbleBox(), usableBounds())
+        bubbleMenu.show(items, bubbleBox(), usableBounds(), dark = isDarkTheme(), eInk = eInk)
     }
 
     /** Brings the app to the front as the launcher does; the bubble docks so it does not hang over the app. */
