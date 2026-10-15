@@ -66,12 +66,23 @@ internal object AudioPages {
     fun linguaLibreSearch(term: String, wikidataId: String, iso639Part3: String): String =
         titleWord(term) + """intitle:/LL-$wikidataId \($iso639Part3\)-.*-${luceneEscape(term)}\.wav/"""
 
-    /** Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`. */
-    fun wiktionarySearch(term: String, languageCode: String): String {
+    /**
+     * Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`, and with a region code of
+     * [regions] longer than two letters, `Es-am-lat-agua.ogg`.
+     */
+    fun wiktionarySearch(term: String, languageCode: String, regions: List<AudioRegion> = emptyList()): String {
         val prefix = languageCode.take(1).let { "[${it.uppercase()}${it.lowercase()}]" } + languageCode.drop(1)
+        val longCodes = longCodes(regions)
+        val region = if (longCodes.isEmpty()) "[a-zA-Z]{2}" else {
+            "(${(longCodes.map(::luceneEscape) + "[a-zA-Z]{2}").joinToString("|")})"
+        }
         return titleWord(term) +
-            """intitle:/$prefix(-[a-zA-Z]{2})?-${luceneEscape(term)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
+            """intitle:/$prefix(-$region)?-${luceneEscape(term)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
     }
+
+    /** Region codes of more than two letters (`am-lat`), which file titles hold as well as two-letter ones. */
+    private fun longCodes(regions: List<AudioRegion>): List<String> =
+        regions.flatMap { it.codes }.filter { it.length > 2 }.distinct()
 
     /** File titles of a Commons `list=search` answer. */
     fun commonsTitles(answer: JsonElement): List<String> =
@@ -105,10 +116,19 @@ internal object AudioPages {
     fun linguaLibre(files: List<Pair<String, String>>, term: String): List<Found> =
         files.map { (title, url) -> Found(url, linguaLibreSpeaker(title, term)) }.sortedBy { '-' in it.name }
 
-    /** The region code in a Wiktionary file title (`File:En-us-water.ogg` gives `us`); null when it names none. */
-    fun wiktionaryRegion(title: String, term: String, languageCode: String): String? {
+    /**
+     * The region code in a Wiktionary file title (`File:En-us-water.ogg` gives `us`, `File:Es-am-lat-agua.ogg` gives
+     * `am-lat` when [regions] list it); null when it names none.
+     */
+    fun wiktionaryRegion(
+        title: String,
+        term: String,
+        languageCode: String,
+        regions: List<AudioRegion> = emptyList(),
+    ): String? {
+        val codes = (longCodes(regions).map(Regex::escape) + "[a-z]{2}").joinToString("|")
         val pattern = Regex(
-            """^${Regex.escape(languageCode)}-(?:([a-z]{2})-)?${Regex.escape(term)}[0-9]*\.[a-z0-9]+$""",
+            """^${Regex.escape(languageCode)}-(?:($codes)-)?${Regex.escape(term)}[0-9]*\.[a-z0-9]+$""",
             RegexOption.IGNORE_CASE,
         )
         return pattern.find(title.removePrefix("File:"))?.groupValues?.get(1)?.lowercase()?.ifEmpty { null }
@@ -122,7 +142,7 @@ internal object AudioPages {
         if (regions.isEmpty()) return files
         val other = regions.indexOf(AudioRegion.OTHER).takeIf { it >= 0 } ?: regions.size
         return files.sortedBy { (title, _) ->
-            val code = wiktionaryRegion(title, term, languageCode)
+            val code = wiktionaryRegion(title, term, languageCode, regions)
             regions.indexOfFirst { code != null && code in it.codes }.takeIf { it >= 0 } ?: other
         }
     }

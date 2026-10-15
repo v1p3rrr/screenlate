@@ -334,6 +334,8 @@
     <string name="audio_regions_hint">Wiktionary-Aufnahmen aus Regionen weiter oben in der Liste werden zuerst abgespielt.</string>
     <string name="audio_region_us">USA</string>
     <string name="audio_region_uk">Vereinigtes Königreich</string>
+    <string name="audio_region_latin_america">Lateinamerika</string>
+    <string name="audio_region_spain">Spanien</string>
     <string name="audio_region_other">Andere Regionen</string>
     <string name="audio_url_missing">Keine URL</string>
     <string name="audio_tts_hint">Nur Wiedergabe; Notizen erhalten Audio aus den anderen Quellen.</string>
@@ -445,6 +447,7 @@
     <string name="popup_text_title">Textgröße und -stärke</string>
     <string name="popup_font_system_default">Schrift des Telefons</string>
     <string name="popup_font_script_only_en">Nur für englischen Text</string>
+    <string name="popup_font_script_only_es">Nur für spanischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

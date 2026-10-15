@@ -172,6 +172,8 @@ private fun RegionRow(index: Int, region: AudioRegion, isLast: Boolean, onMove: 
 private fun regionName(region: AudioRegion): String = when (region.id) {
     "us" -> stringResource(R.string.audio_region_us)
     "uk" -> stringResource(R.string.audio_region_uk)
+    "latam" -> stringResource(R.string.audio_region_latin_america)
+    "es" -> stringResource(R.string.audio_region_spain)
     AudioRegion.OTHER.id -> stringResource(R.string.audio_region_other)
     else -> region.id.uppercase()
 }

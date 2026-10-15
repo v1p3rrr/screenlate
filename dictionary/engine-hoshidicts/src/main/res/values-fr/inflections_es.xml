@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">pluriel</string>
+    <string name="inflection_es_plural">Forme plurielle d’un nom</string>
+    <string name="inflection_es_feminine_adjective_label">féminin</string>
+    <string name="inflection_es_feminine_adjective">Forme féminine d’un adjectif</string>
+    <string name="inflection_es_present_indicative_label">présent de l’indicatif</string>
+    <string name="inflection_es_present_indicative">Présent de l’indicatif d’un verbe</string>
+    <string name="inflection_es_preterite_label">passé simple</string>
+    <string name="inflection_es_preterite">Passé simple (prétérit) d’un verbe</string>
+    <string name="inflection_es_imperfect_label">imparfait</string>
+    <string name="inflection_es_imperfect">Imparfait d’un verbe</string>
+    <string name="inflection_es_progressive_label">gérondif</string>
+    <string name="inflection_es_progressive">Gérondif d’un verbe (forme progressive)</string>
+    <string name="inflection_es_imperative_label">impératif</string>
+    <string name="inflection_es_imperative">Impératif d’un verbe</string>
+    <string name="inflection_es_conditional_label">conditionnel</string>
+    <string name="inflection_es_conditional">Conditionnel d’un verbe</string>
+    <string name="inflection_es_future_label">futur</string>
+    <string name="inflection_es_future">Futur d’un verbe</string>
+    <string name="inflection_es_present_subjunctive_label">subjonctif présent</string>
+    <string name="inflection_es_present_subjunctive">Subjonctif présent d’un verbe</string>
+    <string name="inflection_es_imperfect_subjunctive_label">subjonctif imparfait</string>
+    <string name="inflection_es_imperfect_subjunctive">Subjonctif imparfait d’un verbe</string>
+    <string name="inflection_es_participle_label">participe passé</string>
+    <string name="inflection_es_participle">Participe passé d’un verbe</string>
+    <string name="inflection_es_reflexive_label">réfléchi</string>
+    <string name="inflection_es_reflexive">Forme réfléchie d’un verbe</string>
+    <string name="inflection_es_pronoun_substitution_label">autre pronom</string>
+    <string name="inflection_es_pronoun_substitution">Verbe réfléchi avec un autre pronom</string>
+    <string name="inflection_es_pronominal_label">pronom devant</string>
+    <string name="inflection_es_pronominal">Verbe précédé du pronom réfléchi</string>
+</resources>

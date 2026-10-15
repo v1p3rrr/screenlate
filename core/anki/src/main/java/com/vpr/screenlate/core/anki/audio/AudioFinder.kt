@@ -295,7 +295,8 @@ class AudioFinder internal constructor(
             }
             AudioSourceType.WIKTIONARY -> {
                 val title = language.support.recordingTitle(term, reading)
-                val files = AudioPages.byRegion(commonsFiles(AudioPages.wiktionarySearch(title, language.code), deadline), title, language.code, regions)
+                val search = AudioPages.wiktionarySearch(title, language.code, regions)
+                val files = AudioPages.byRegion(commonsFiles(search, deadline), title, language.code, regions)
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">số nhiều</string>
+    <string name="inflection_es_plural">Dạng số nhiều của danh từ</string>
+    <string name="inflection_es_feminine_adjective_label">giống cái</string>
+    <string name="inflection_es_feminine_adjective">Dạng giống cái của tính từ</string>
+    <string name="inflection_es_present_indicative_label">hiện tại trình bày</string>
+    <string name="inflection_es_present_indicative">Thì hiện tại thức trình bày của động từ</string>
+    <string name="inflection_es_preterite_label">quá khứ đơn</string>
+    <string name="inflection_es_preterite">Thì quá khứ đơn (indefinido) của động từ</string>
+    <string name="inflection_es_imperfect_label">quá khứ chưa hoàn thành</string>
+    <string name="inflection_es_imperfect">Thì quá khứ chưa hoàn thành (imperfecto) của động từ</string>
+    <string name="inflection_es_progressive_label">danh động từ</string>
+    <string name="inflection_es_progressive">Danh động từ (gerundio) của động từ, dạng tiếp diễn</string>
+    <string name="inflection_es_imperative_label">mệnh lệnh</string>
+    <string name="inflection_es_imperative">Thức mệnh lệnh của động từ</string>
+    <string name="inflection_es_conditional_label">điều kiện</string>
+    <string name="inflection_es_conditional">Thức điều kiện của động từ</string>
+    <string name="inflection_es_future_label">tương lai</string>
+    <string name="inflection_es_future">Thì tương lai của động từ</string>
+    <string name="inflection_es_present_subjunctive_label">hiện tại giả định</string>
+    <string name="inflection_es_present_subjunctive">Thì hiện tại thức giả định của động từ</string>
+    <string name="inflection_es_imperfect_subjunctive_label">quá khứ giả định</string>
+    <string name="inflection_es_imperfect_subjunctive">Thì quá khứ thức giả định của động từ</string>
+    <string name="inflection_es_participle_label">phân từ</string>
+    <string name="inflection_es_participle">Phân từ quá khứ của động từ</string>
+    <string name="inflection_es_reflexive_label">phản thân</string>
+    <string name="inflection_es_reflexive">Dạng phản thân của động từ</string>
+    <string name="inflection_es_pronoun_substitution_label">đại từ khác</string>
+    <string name="inflection_es_pronoun_substitution">Động từ phản thân với đại từ khác</string>
+    <string name="inflection_es_pronominal_label">đại từ đứng trước</string>
+    <string name="inflection_es_pronominal">Động từ có đại từ phản thân đứng trước</string>
+</resources>

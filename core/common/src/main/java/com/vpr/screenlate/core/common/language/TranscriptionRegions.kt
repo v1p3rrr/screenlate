@@ -3,7 +3,7 @@ package com.vpr.screenlate.core.common.language
 /**
  * Regions named by the tags of a phonetic transcription in a Wiktionary dictionary: flag emoji, which every
  * language's dictionary uses, and accent names that [LanguageSupport.transcriptionRegionNames] maps per language.
- * Regions are ISO 3166-1 alpha-2 codes in lower case.
+ * Regions are ISO 3166-1 alpha-2 codes in lower case, or a code of a language's audio regions (`am-lat`).
  */
 object TranscriptionRegions {
 

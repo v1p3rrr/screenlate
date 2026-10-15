@@ -485,6 +485,23 @@ internal object YomitanInflections {
             "-지만서도" to Strings(null, null),
             "-지요" to Strings(null, null),
         ),
+        "es" to mapOf(
+            "plural" to Strings(R.string.inflection_es_plural_label, R.string.inflection_es_plural),
+            "feminine adjective" to Strings(R.string.inflection_es_feminine_adjective_label, R.string.inflection_es_feminine_adjective),
+            "present indicative" to Strings(R.string.inflection_es_present_indicative_label, R.string.inflection_es_present_indicative),
+            "preterite" to Strings(R.string.inflection_es_preterite_label, R.string.inflection_es_preterite),
+            "imperfect" to Strings(R.string.inflection_es_imperfect_label, R.string.inflection_es_imperfect),
+            "progressive" to Strings(R.string.inflection_es_progressive_label, R.string.inflection_es_progressive),
+            "imperative" to Strings(R.string.inflection_es_imperative_label, R.string.inflection_es_imperative),
+            "conditional" to Strings(R.string.inflection_es_conditional_label, R.string.inflection_es_conditional),
+            "future" to Strings(R.string.inflection_es_future_label, R.string.inflection_es_future),
+            "present subjunctive" to Strings(R.string.inflection_es_present_subjunctive_label, R.string.inflection_es_present_subjunctive),
+            "imperfect subjunctive" to Strings(R.string.inflection_es_imperfect_subjunctive_label, R.string.inflection_es_imperfect_subjunctive),
+            "participle" to Strings(R.string.inflection_es_participle_label, R.string.inflection_es_participle),
+            "reflexive" to Strings(R.string.inflection_es_reflexive_label, R.string.inflection_es_reflexive),
+            "pronoun substitution" to Strings(R.string.inflection_es_pronoun_substitution_label, R.string.inflection_es_pronoun_substitution),
+            "pronominal" to Strings(R.string.inflection_es_pronominal_label, R.string.inflection_es_pronominal),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

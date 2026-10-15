@@ -337,6 +337,8 @@
     <string name="audio_regions_hint">Le registrazioni di Wiktionary delle regioni più in alto nell’elenco vengono riprodotte per prime.</string>
     <string name="audio_region_us">Stati Uniti</string>
     <string name="audio_region_uk">Regno Unito</string>
+    <string name="audio_region_latin_america">America Latina</string>
+    <string name="audio_region_spain">Spagna</string>
     <string name="audio_region_other">Altre regioni</string>
     <string name="audio_url_missing">Nessun URL</string>
     <string name="audio_tts_hint">Solo riproduzione; le note prendono l’audio dalle altre fonti.</string>
@@ -448,6 +450,7 @@
     <string name="popup_text_title">Dimensione e peso del testo</string>
     <string name="popup_font_system_default">Carattere del telefono</string>
     <string name="popup_font_script_only_en">Solo per il testo inglese</string>
+    <string name="popup_font_script_only_es">Solo per il testo spagnolo</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

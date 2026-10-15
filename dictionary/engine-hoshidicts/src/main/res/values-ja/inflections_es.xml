@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">複数</string>
+    <string name="inflection_es_plural">名詞の複数形</string>
+    <string name="inflection_es_feminine_adjective_label">女性形</string>
+    <string name="inflection_es_feminine_adjective">形容詞の女性形</string>
+    <string name="inflection_es_present_indicative_label">直説法現在</string>
+    <string name="inflection_es_present_indicative">動詞の直説法現在形</string>
+    <string name="inflection_es_preterite_label">点過去</string>
+    <string name="inflection_es_preterite">動詞の点過去形</string>
+    <string name="inflection_es_imperfect_label">線過去</string>
+    <string name="inflection_es_imperfect">動詞の線過去形</string>
+    <string name="inflection_es_progressive_label">現在分詞</string>
+    <string name="inflection_es_progressive">動詞の現在分詞（進行形）</string>
+    <string name="inflection_es_imperative_label">命令形</string>
+    <string name="inflection_es_imperative">動詞の命令形</string>
+    <string name="inflection_es_conditional_label">過去未来</string>
+    <string name="inflection_es_conditional">動詞の過去未来形（条件法）</string>
+    <string name="inflection_es_future_label">未来</string>
+    <string name="inflection_es_future">動詞の未来形</string>
+    <string name="inflection_es_present_subjunctive_label">接続法現在</string>
+    <string name="inflection_es_present_subjunctive">動詞の接続法現在形</string>
+    <string name="inflection_es_imperfect_subjunctive_label">接続法過去</string>
+    <string name="inflection_es_imperfect_subjunctive">動詞の接続法過去形</string>
+    <string name="inflection_es_participle_label">過去分詞</string>
+    <string name="inflection_es_participle">動詞の過去分詞</string>
+    <string name="inflection_es_reflexive_label">再帰形</string>
+    <string name="inflection_es_reflexive">動詞の再帰形</string>
+    <string name="inflection_es_pronoun_substitution_label">代名詞の交替</string>
+    <string name="inflection_es_pronoun_substitution">再帰代名詞が別の人称になった再帰動詞</string>
+    <string name="inflection_es_pronominal_label">代名詞が前</string>
+    <string name="inflection_es_pronominal">再帰代名詞が前に置かれた動詞</string>
+</resources>

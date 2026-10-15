@@ -334,6 +334,8 @@
     <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları önce çalınır.</string>
     <string name="audio_region_us">ABD</string>
     <string name="audio_region_uk">Birleşik Krallık</string>
+    <string name="audio_region_latin_america">Latin Amerika</string>
+    <string name="audio_region_spain">İspanya</string>
     <string name="audio_region_other">Diğer bölgeler</string>
     <string name="audio_url_missing">URL yok</string>
     <string name="audio_tts_hint">Yalnızca oynatma; notlar sesi diğer kaynaklardan alır.</string>
@@ -445,6 +447,7 @@
     <string name="popup_text_title">Metin boyutu ve kalınlığı</string>
     <string name="popup_font_system_default">Telefonun yazı tipi</string>
     <string name="popup_font_script_only_en">Yalnızca İngilizce metin için</string>
+    <string name="popup_font_script_only_es">Yalnızca İspanyolca metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

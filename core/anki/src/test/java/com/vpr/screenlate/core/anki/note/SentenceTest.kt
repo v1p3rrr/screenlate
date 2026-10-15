@@ -47,4 +47,11 @@ class SentenceTest {
         assertThat(sentence.text).isEqualTo("“Go home.” he said.")
         assertThat(extract("It was late... Then it rained.", "rained", Language.ENGLISH).text).isEqualTo("Then it rained.")
     }
+
+    @Test
+    fun spanishSentenceStartsAtInvertedMarksAndKeepsAngleQuotes() {
+        val paragraph = "Llegó tarde. ¿Dónde está el Sr. García? No sé. «Ven aquí.» dijo ella."
+        assertThat(extract(paragraph, "García", Language.SPANISH).text).isEqualTo("¿Dónde está el Sr. García?")
+        assertThat(extract(paragraph, "dijo", Language.SPANISH).text).isEqualTo("«Ven aquí.» dijo ella.")
+    }
 }
