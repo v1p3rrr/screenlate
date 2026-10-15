@@ -6,6 +6,13 @@ languages beyond Japanese, branch `languages/main`); the earlier phases followed
 Work on `main` since 2026-10-15: [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md)
 (fixes and changes brought from the language branches, download lag, Anki check, backups).
 
+## Work in progress on `main` (2026-10-15)
+
+The owner asked to work on autonomously and keep questions until they are back. Resume from the "Progress" section
+of [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md); it lists what is
+committed, what is uncommitted and the next step. Branch `main`, nothing pushed since `2bdd47d`. Untracked items that
+stay out of commits: `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, `testdata/apk|unihan|wordfreq`.
+
 ## Next session (handoff, 2026-10-15)
 
 - Group 1 is built on `languages/main`: English, Chinese (`languages/zh`) and Korean (`languages/ko`), both language

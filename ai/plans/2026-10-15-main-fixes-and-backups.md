@@ -11,14 +11,14 @@ branches that does not depend on the new languages, all on `main`. The work is d
 |---|---|
 | Release | None for now; `main` only gets the changes (owner, 2026-10-15). |
 | Download lag | Seen by the owner on the Dictionaries screen of the languages test build (Japanese and English), maybe everywhere. Find what loads the main thread while a download or import runs and fix it on both branches. |
-| Anki connection check | A "Check connection" button on the Anki page asks AnkiDroid again and lists the result per item: AnkiDroid installed, access granted, deck found, note type found, fields match. |
-| Backup: settings | Chosen per section when creating, the same list as on restore; all ticked at first. |
+| Anki connection check | A "Check connection" button on the Anki page asks AnkiDroid again and lists the result per item: AnkiDroid installed, access granted, deck found, note type found, fields match. It sits in a "Connection" card at the top of the page, shown in every state (the not-installed and no-access texts move into it); the list shows ✓/✗ with how to fix a failure, the deck and note type by name, missing and new fields by name; items after a failure are "not checked". Read-only. |
+| Backup: settings | Chosen per section when creating, the same list as on restore; all ticked at first. The list stays on the screen in the "Create a backup" card, in place of "Include dictionaries", above the Create button. |
 | Backup: files | "Fonts" and "Dictionaries" are items of their own (fonts leave the Popup section) that expand with an arrow into a list of files with their sizes, each with its own box. |
 | Backup: defaults | The first time every settings section and every font is ticked, the dictionaries are not. The screen remembers the last choice; a font or dictionary added since takes the mark of its item. |
 | Restore | The same expandable lists: fonts and dictionaries can be restored one by one. |
 | Backup: languages | `languages/main` only: an expandable "Languages" item lists the turned-on languages; a language left out takes out its own settings, its dictionaries, the fonts downloaded for it and its recognition models. Shared sections are chosen as before. Not on `main`, which has Japanese only. |
 | Backup: recognition models | Go into the backup with their language (`languages/main`). |
-| Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection). The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. |
+| Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection), last, after Restore. The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. The Settings item keeps its title "Backup and restore"; its subtitle adds the import from Yomitan. |
 | Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, tags on kanji entries. Every rule chain behind "+N" turned out to exist only for the languages run through Yomitan's code; for Japanese it moves to the far backlog (owner, 2026-10-15). |
 | Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
 
@@ -40,6 +40,13 @@ branches that does not depend on the new languages, all on `main`. The work is d
 9. AnkiDroid's hidden default deck was missing from the deck list (`f9be87b`).
 10. A download that broke off showed its technical reason; it now says the connection was lost (`c3c1961`, with
     resumable downloads).
+
+Found by the owner on 2026-10-15 (both branches):
+
+11. After "Update" the update check said "All dictionaries are up to date" while the updates still downloaded. The
+    check now closes once every found update has started.
+12. The chosen segment's check mark pushed long labels to the edge or cut them (Russian: "По требованию",
+    "Системная"). The owner chose to drop the check mark; the fill marks the choice.
 
 ## Other changes brought over
 
@@ -65,9 +72,29 @@ branches that does not depend on the new languages, all on `main`. The work is d
 5. Docs (`docs/usage.md`, `docs/architecture.md`), strings in 14 locales, test model cases; emulator checks.
 6. Merge `main` into `languages/main`; the Languages item and models in backups there; checks on the emulator.
 
+## Progress (resume here)
+
+Kept current while the work runs so a new session can continue from the last line. Commits on `main` since
+`2bdd47d` are local until pushed (nothing pushed yet).
+
+- Step 1 done: every fix and change above is on `main` with tests (commits up to `a617538`).
+- Step 2 done: `f782837` (progress throttle, Compose stability config, catalog card lambdas), notes `0a3951f`.
+- Items 11-12 done: `884a932`, `c0df4b2`.
+- Step 3 in progress: `core/anki` has `AnkiCheck.kt` and `AnkiNotes.check()` with tests (uncommitted). Next: the
+  ViewModel state, the "Connection" card at the top of `AnkiSettingsScreen`, strings in 14 locales, `docs/usage.md`,
+  test model cases, an emulator check.
+- Steps 4-6: not started.
+- Questions for the owner (asked when the owner is back): none yet.
+
 ## Changelog
 
 - 2026-10-15: plan written from the owner's answers.
+- 2026-10-15: the owner reported the update check's "up to date" during updates and the segment check mark; both
+  fixed (items 11-12), the check mark removed by the owner's choice.
+- 2026-10-15: the owner chose the Anki check's place (a card at the top), the backup checklist on the screen, the
+  Yomitan card after Restore and the Settings item's title.
 - 2026-10-15: the owner asked to bring everything new into `languages/main` after `main` (step 6). Rule chains for
   Japanese moved to the far backlog (owner); `666162e` and the catalog part of `9aec26d` left out as language-branch
   only.
+- 2026-10-15: the owner asked to work on without them, to keep questions until they are back and to keep the
+  progress written down; the "Progress" section above is the resume point.
