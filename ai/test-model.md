@@ -40,7 +40,9 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   relying on an earlier run.
 - Install: `scripts/debug-device.sh install` (also enables the accessibility service). Test images:
   `scripts/debug-device.sh images`, then `show <file> [default|swipe]` as the backdrop. `scripts/text-image.py` renders
-  new ones.
+  new ones. `zh-traditional.png` and `zh-vertical.png` are its output with `FONT=C:/Windows/Fonts/msjh.ttc`: the four
+  sentences of `zh-sample.png` in Traditional characters, plus 這個問題沒有關係。 in the first, as columns
+  (`--vertical`) in the second.
 - AnkiDroid: the emulator's local collection without an account (never sync, never log in). The owner's deck
   `testdata/anki-backup/3 Mining.apkg` may be imported into it.
 - Dictionaries for imports: `testdata/dictionaries/` (Japanese, wty for English). Settings import:
@@ -112,11 +114,12 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR8 | A secure window → "This app does not allow screenshots." | O | M | |
 | OCR9 | Vertical text (`manga-page.webp`) → the word under the aim, a word continued in the next column found whole | E | U ReadingOrderTest, M | 2026-10-14 |
 | OCR10 | A word broken at a line end is looked up whole (Japanese; English "give up") | F | U TextLayoutTest, M | 2026-10-14 |
-| OCR11 | On-device recognition per script: Japanese, English, Chinese, Korean and Russian samples with the matching language active | F | U DeviceOcrTest, M | 2026-10-14 (ja, en) |
+| OCR11 | On-device recognition per script: Japanese, English, Chinese, Korean and Russian samples with the matching language active | F | U DeviceOcrTest, M | 2026-10-14 (ja, en), 2026-10-15 (zh) |
 | OCR12 | A language the device cannot read → scanned by the cloud alone; with device only → the message that the device does not support it | O | U DeviceOcrTest, M | |
 | OCR13 | Character highlight lines up with the characters (corrected on-device boxes) | O | M | |
 | OCR14 | No word at the aim on a kanji (`kanji-fallback.png`) → its kanji entry | F | M | 2026-10-14 |
 | OCR15 | A language that is not ready → the scan shows the explanation and the installation link before capturing | F | I InstallationPopupTest, M | 2026-10-14 |
+| OCR16 | Chinese with cloud recognition: Simplified (`zh-sample.png`, 图书馆 with pinyin), Traditional (`zh-traditional.png`, 沒有關係) and vertical columns read right to left (`zh-vertical.png`: 館 alone, 意思 highlighted down its column). Rescan with a tap after changing the picture: a floating bubble keeps its scan | N | U TextLayoutTest, ReadingOrderTest, M | 2026-10-15 |
 
 ### LK: lookup
 
@@ -154,7 +157,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP15 | Light and dark popup; e-ink frames and black border | F | M | 2026-10-14 |
 | POP16 | The installation link in the popup while the language is not ready | F | I InstallationPopupTest | 2026-10-14 |
 | POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | N | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
-| POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | N | M | 2026-10-15 (Cancel) |
+| POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | N | M | 2026-10-15 |
 
 ### AUD: audio
 
