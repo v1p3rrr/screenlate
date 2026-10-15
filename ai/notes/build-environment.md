@@ -56,7 +56,15 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   the final APK needed temporarily setting the storage threshold to 1%/100 MiB, then deleting those settings again.
 
 - Emulator AVD `Pixel_10_Pro`: 1280×2856, density 480 (3.0), Android 17 (API 37.2), Play Store image with 16 KB pages. Native libraries (hoshidicts) must be 16 KB aligned: use NDK r28+ or the equivalent linker flags.
-- Starting the emulator with `-no-snapshot-save` boots from its quick-boot snapshot and discards everything done since when it exits: installed builds, app data and settings changed in that run are gone after a restart. Check `dumpsys package <pkg>` (versionName, lastUpdateTime) before relying on a state from an earlier run; on 2026-10-01 the snapshot still held the published v0.1.0 release (`com.vpr.screenlate`) with default settings.
+- `Pixel_10_Pro` has no quick-boot snapshot since 2026-10-15: saving one (`adb emu avd snapshot save default_boot`)
+  hung in its textures step (window not responding, no CPU or disk activity; the log showed the fallback to system
+  OpenGL), and the emulator had to be killed. The save had already dropped the disk's internal snapshot, so the old
+  one could not load any more; its folder was moved next to the AVD (`Pixel_10_Pro.default_boot.broken-2026-10-15`,
+  safe to delete). The AVD now cold-boots from its disk and keeps the state of earlier runs (not booted yet since):
+  AnkiDroid 2.24.1 with a local collection, the `languages/main` debug build 0.2.3-a62b900 with ten Japanese
+  dictionaries including Wiktionary (ja–ja), the test images. Keep `-no-snapshot-save` (a snapshot at exit may hang
+  the same way) and shut it down with `adb shell reboot -p`: killing the process is a power cut for its file systems.
+  Check `dumpsys package <pkg>` (versionName, lastUpdateTime) before relying on a state from an earlier run.
 - Start the AVD with `-crash-report-mode never` (e.g. `emulator -avd Pixel_10_Pro -no-snapshot-save -no-boot-anim -crash-report-mode never`), in the background from the session so it can be stopped by its own task. After any emulator crash, the next start shows a crash-report consent dialog that blocks the boot; it looks like a new crash at boot.
 - Builds from a branch without the latest release tag get a lower version code (the code is derived from tags): installing over a newer release needs `adb install -r -d`. No app logic reads the version code.
 - `adb`: `D:\Android\Sdk\platform-tools\adb.exe`. In Git Bash set `MSYS_NO_PATHCONV=1`, otherwise device paths like `/sdcard/...` get rewritten to Windows paths.
