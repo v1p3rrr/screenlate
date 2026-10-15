@@ -83,7 +83,22 @@ Kept current while the work runs so a new session can continue from the last lin
 - Step 3 done: `73bba6a`, checked on the emulator in English and Russian (all passed; no access; a stale note type),
   test model ANK11. Made without asking (for the owner to review): once shown, the check runs again after a setup
   change and when the page comes back; "not chosen" counts as a failure (a cross with "Choose it below").
-- Steps 4-6: not started.
+- Step 4 in progress. Design (from the decisions; choices made without asking are marked for the owner's review):
+  - `BackupSection.FONTS` is new, after POPUP; POPUP keeps only the settings. A backup of an older version has its
+    fonts under POPUP: reading the head goes on through the font entries (`fonts/fonts.json` and the files, which
+    come before any dictionary file), so the restore list shows its fonts with their sizes as a Fonts item.
+  - Create: the same checklist as restore, inline in the Create card; Fonts and Dictionaries expand into files with
+    sizes. Only the chosen settings sections go into `settings.json`; without the dictionary list `dictionaries.json`
+    holds only the dictionaries whose files go in. `BackupDictionary.bytes` is new (the size of its files), so the
+    restore list shows dictionary sizes for new backups (older backups: no size).
+  - The remembered choice: preference keys `backup_sections_off`, `backup_fonts_on`, `backup_fonts_flipped`,
+    `backup_dictionaries_on`, `backup_dictionaries_flipped` (not backed up, cleared by the full reset). A file item
+    stores its mark and the files marked otherwise, so a new file takes the item's mark (`FileChoice`).
+  - Restore of fonts now adds the chosen fonts or replaces the same font; installed fonts stay (before: the POPUP
+    section replaced the whole font set). For review by the owner.
+  - Yomitan: `YomitanImportScreen` becomes a card on the backup screen (last); the route, the Settings item and
+    `SettingsPage.YOMITAN_IMPORT` go; the Dictionaries button opens the backup screen scrolled to the card.
+- Steps 5-6: not started.
 - Questions for the owner (asked when the owner is back): none yet.
 
 ## Changelog
