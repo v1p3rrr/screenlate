@@ -333,6 +333,8 @@
     <string name="audio_region_uk">Vương quốc Anh</string>
     <string name="audio_region_latin_america">Mỹ Latinh</string>
     <string name="audio_region_spain">Tây Ban Nha</string>
+    <string name="audio_region_france">Pháp</string>
+    <string name="audio_region_canada">Canada</string>
     <string name="audio_region_other">Khu vực khác</string>
     <string name="audio_url_missing">Không có URL</string>
     <string name="audio_tts_hint">Chỉ phát; ghi chú lấy âm thanh từ các nguồn khác.</string>
@@ -445,6 +447,7 @@
     <string name="popup_font_system_default">Phông chữ của điện thoại</string>
     <string name="popup_font_script_only_en">Chỉ cho chữ tiếng Anh</string>
     <string name="popup_font_script_only_es">Chỉ cho chữ tiếng Tây Ban Nha</string>
+    <string name="popup_font_script_only_fr">Chỉ cho chữ tiếng Pháp</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

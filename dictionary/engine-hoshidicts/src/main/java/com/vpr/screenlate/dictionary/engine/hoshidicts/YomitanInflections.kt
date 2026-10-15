@@ -502,6 +502,17 @@ internal object YomitanInflections {
             "pronoun substitution" to Strings(R.string.inflection_es_pronoun_substitution_label, R.string.inflection_es_pronoun_substitution),
             "pronominal" to Strings(R.string.inflection_es_pronominal_label, R.string.inflection_es_pronominal),
         ),
+        "fr" to mapOf(
+            "present indicative" to Strings(R.string.inflection_fr_present_indicative_label, R.string.inflection_fr_present_indicative),
+            "imperfect indicative" to Strings(R.string.inflection_fr_imperfect_indicative_label, R.string.inflection_fr_imperfect_indicative),
+            "future" to Strings(R.string.inflection_fr_future_label, R.string.inflection_fr_future),
+            "imperative present" to Strings(R.string.inflection_fr_imperative_present_label, R.string.inflection_fr_imperative_present),
+            "Conditional" to Strings(R.string.inflection_fr_conditional_label, R.string.inflection_fr_conditional),
+            "Preterite" to Strings(R.string.inflection_fr_preterite_label, R.string.inflection_fr_preterite),
+            "plural" to Strings(R.string.inflection_fr_plural_label, R.string.inflection_fr_plural),
+            "present participle" to Strings(R.string.inflection_fr_present_participle_label, R.string.inflection_fr_present_participle),
+            "present subjunctive" to Strings(R.string.inflection_fr_present_subjunctive_label, R.string.inflection_fr_present_subjunctive),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

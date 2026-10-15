@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">czas teraźniejszy</string>
+    <string name="inflection_fr_present_indicative">Czas teraźniejszy trybu oznajmującego czasownika</string>
+    <string name="inflection_fr_imperfect_indicative_label">imparfait</string>
+    <string name="inflection_fr_imperfect_indicative">Czas przeszły niedokonany (imparfait) czasownika</string>
+    <string name="inflection_fr_future_label">czas przyszły</string>
+    <string name="inflection_fr_future">Czas przyszły prosty czasownika</string>
+    <string name="inflection_fr_imperative_present_label">tryb rozkazujący</string>
+    <string name="inflection_fr_imperative_present">Tryb rozkazujący czasownika</string>
+    <string name="inflection_fr_conditional_label">tryb warunkowy</string>
+    <string name="inflection_fr_conditional">Tryb warunkowy czasownika</string>
+    <string name="inflection_fr_preterite_label">passé simple</string>
+    <string name="inflection_fr_preterite">Czas przeszły prosty (passé simple) czasownika</string>
+    <string name="inflection_fr_plural_label">liczba mnoga</string>
+    <string name="inflection_fr_plural">Liczba mnoga rzeczownika</string>
+    <string name="inflection_fr_present_participle_label">imiesłów czynny</string>
+    <string name="inflection_fr_present_participle">Imiesłów czasu teraźniejszego czasownika</string>
+    <string name="inflection_fr_present_subjunctive_label">subjonctif teraźniejszy</string>
+    <string name="inflection_fr_present_subjunctive">Czas teraźniejszy trybu subjonctif czasownika</string>
+</resources>

@@ -343,6 +343,8 @@
     <string name="audio_region_uk">Великобритания</string>
     <string name="audio_region_latin_america">Латинская Америка</string>
     <string name="audio_region_spain">Испания</string>
+    <string name="audio_region_france">Франция</string>
+    <string name="audio_region_canada">Канада</string>
     <string name="audio_region_other">Другие регионы</string>
     <string name="audio_url_missing">Нет URL</string>
     <string name="audio_tts_hint">Только воспроизведение; в карточки добавляется аудио из других источников.</string>
@@ -455,6 +457,7 @@
     <string name="popup_font_system_default">Шрифт телефона</string>
     <string name="popup_font_script_only_en">Только для английского текста</string>
     <string name="popup_font_script_only_es">Только для испанского текста</string>
+    <string name="popup_font_script_only_fr">Только для французского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

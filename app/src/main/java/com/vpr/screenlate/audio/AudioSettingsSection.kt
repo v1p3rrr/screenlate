@@ -174,6 +174,8 @@ private fun regionName(region: AudioRegion): String = when (region.id) {
     "uk" -> stringResource(R.string.audio_region_uk)
     "latam" -> stringResource(R.string.audio_region_latin_america)
     "es" -> stringResource(R.string.audio_region_spain)
+    "fr" -> stringResource(R.string.audio_region_france)
+    "ca" -> stringResource(R.string.audio_region_canada)
     AudioRegion.OTHER.id -> stringResource(R.string.audio_region_other)
     else -> region.id.uppercase()
 }

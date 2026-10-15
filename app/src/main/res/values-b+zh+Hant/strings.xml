@@ -333,6 +333,8 @@
     <string name="audio_region_uk">英國</string>
     <string name="audio_region_latin_america">拉丁美洲</string>
     <string name="audio_region_spain">西班牙</string>
+    <string name="audio_region_france">法國</string>
+    <string name="audio_region_canada">加拿大</string>
     <string name="audio_region_other">其他地區</string>
     <string name="audio_url_missing">無 URL</string>
     <string name="audio_tts_hint">僅播放；筆記使用其他來源的音訊。</string>
@@ -445,6 +447,7 @@
     <string name="popup_font_system_default">手機自帶的字型</string>
     <string name="popup_font_script_only_en">僅用於英文文字</string>
     <string name="popup_font_script_only_es">僅用於西班牙文文字</string>
+    <string name="popup_font_script_only_fr">僅用於法文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

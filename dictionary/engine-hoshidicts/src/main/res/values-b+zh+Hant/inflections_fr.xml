@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">直陳式現在時</string>
+    <string name="inflection_fr_present_indicative">動詞的直陳式現在時</string>
+    <string name="inflection_fr_imperfect_indicative_label">直陳式未完成過去時</string>
+    <string name="inflection_fr_imperfect_indicative">動詞的直陳式未完成過去時</string>
+    <string name="inflection_fr_future_label">簡單將來時</string>
+    <string name="inflection_fr_future">動詞的簡單將來時</string>
+    <string name="inflection_fr_imperative_present_label">命令式</string>
+    <string name="inflection_fr_imperative_present">動詞的命令式</string>
+    <string name="inflection_fr_conditional_label">條件式</string>
+    <string name="inflection_fr_conditional">動詞的條件式現在時</string>
+    <string name="inflection_fr_preterite_label">簡單過去時</string>
+    <string name="inflection_fr_preterite">動詞的簡單過去時</string>
+    <string name="inflection_fr_plural_label">複數</string>
+    <string name="inflection_fr_plural">名詞的複數形式</string>
+    <string name="inflection_fr_present_participle_label">現在分詞</string>
+    <string name="inflection_fr_present_participle">動詞的現在分詞</string>
+    <string name="inflection_fr_present_subjunctive_label">虛擬式現在時</string>
+    <string name="inflection_fr_present_subjunctive">動詞的虛擬式現在時</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">直説法現在</string>
+    <string name="inflection_fr_present_indicative">動詞の直説法現在形</string>
+    <string name="inflection_fr_imperfect_indicative_label">直説法半過去</string>
+    <string name="inflection_fr_imperfect_indicative">動詞の直説法半過去形</string>
+    <string name="inflection_fr_future_label">単純未来</string>
+    <string name="inflection_fr_future">動詞の単純未来形</string>
+    <string name="inflection_fr_imperative_present_label">命令法現在</string>
+    <string name="inflection_fr_imperative_present">動詞の命令法現在形</string>
+    <string name="inflection_fr_conditional_label">条件法</string>
+    <string name="inflection_fr_conditional">動詞の条件法現在形</string>
+    <string name="inflection_fr_preterite_label">単純過去</string>
+    <string name="inflection_fr_preterite">動詞の単純過去形</string>
+    <string name="inflection_fr_plural_label">複数</string>
+    <string name="inflection_fr_plural">名詞の複数形</string>
+    <string name="inflection_fr_present_participle_label">現在分詞</string>
+    <string name="inflection_fr_present_participle">動詞の現在分詞</string>
+    <string name="inflection_fr_present_subjunctive_label">接続法現在</string>
+    <string name="inflection_fr_present_subjunctive">動詞の接続法現在形</string>
+</resources>

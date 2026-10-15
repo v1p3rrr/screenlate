@@ -143,6 +143,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK14 | Korean Wiktionary form-of tags in the interface language ("hanja form" → "hanja spelling", "informal past indicative/interrogative polite"); a tag with leftover gloss ("hanja form   the Korean language”)", about 1,000 entries) shows the tag alone, in Anki's `{conjugation}` too | O | U FormOfTagsTest, I KoreanLookupTest, M | 2026-10-15 |
 | LK15 | Japanese form-of rows with wty-ja-ja (`testdata/ocr/form-of-ja.png`: `scripts/text-image.py` with "じどうで動く" "社會の仕組み" "豪州へ行く"): じどう lists 自動, 児童 and the other kanji, no じどう entry of empty items with "non-lemma"; 社會 shows the old-form entries with their "⟶ 社会" links and no empty bullet, then 社会 with the tag of the first dictionary that leads there ("redirected from 社會" with Jitendex); 豪州 brings オーストラリア with "alternative"; a deinflected form keeps its own chain | E | I HoshidictsEngineTest, M | 2026-10-15 |
 | LK16 | Spanish lookups (`testdata/ocr/es-sample.png`, `scripts/text-image.py` with Segoe UI): comieron → comer with "preterite"; agua with its wordfreq rank and transcriptions; typed tenés → tener with "informal second person singular present indicative vos form"; ¿ and ¡ start a sentence, «» are quotes, "p. ej." and "Sra." do not end one | E | U SpanishSupportTest, SentenceTest, FormOfTagsTest, M | 2026-10-16 |
+| LK17 | French lookups (`testdata/ocr/fr-sample.png`): L’eau → eau (an elided article starts a new word; aujourd’hui and presqu’île stay whole), mangions → manger with "imperfect indicative", finirent → finir with "Preterite"; « » are quotes, "M." and "p. ex." do not end a sentence | E | U FrenchSupportTest, SentenceTest, M | 2026-10-16 |
 
 ### POP: the popup
 
@@ -183,6 +184,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD6 | Chinese: 🔊 on 朋友 plays Wiktionary's `Zh-péngyou.ogg` (found by pinyin), holding it lists Wiktionary, Lingua Libre, then text-to-speech; text-to-speech reads the characters | F | U AudioFinderTest, ChineseSupportTest, M | 2026-10-15 |
 | AUD7 | Korean: 🔊 on 가르치다 plays a clip; a hanja headword from KRDICT (大) has no reading and finds no clip, as in Yomitan, while its Hangul entry plays | F | M | 2026-10-15 |
 | AUD8 | Spanish regions: Latin America, Spain, Other regions; holding 🔊 on agua lists Lingua Libre, then Wiktionary's `Es-am-lat-agua.ogg` before `Es-agua.oga`, then text-to-speech | F | U AudioPagesTest, M | 2026-10-16 |
+| AUD9 | French regions: France (titles `Fr-fr-paris-…` and `Fr-fr-…`), Canada, Other regions; Quebec and Paris transcription tags take the region labels | F | U FrenchSupportTest | |
 
 ### ANK: Anki
 
@@ -310,6 +312,12 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-16, `languages/fr` (French, uncommitted build), Pixel_10_Pro (API 37)
+
+Scope: LK17 (new). Results: passed. French turned on with Ç and the French flag; Wiktionary (fr–en), wordfreq and the
+transcription dictionary (29 MB) installed in under a minute. Yomitan names the passé simple "Preterite" with a capital
+in English; the other locales have their own names.
 
 ### 2026-10-16, `languages/es` (Spanish, uncommitted build), Pixel_10_Pro (API 37)
 

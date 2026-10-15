@@ -28,6 +28,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val abbreviations: Set<String> = emptySet()
 
     /**
+     * Words written joined to the next one with an apostrophe without being part of it (French l', qu'), lowercase: a
+     * word aimed after the apostrophe is looked up from there ("l'eau" → "eau").
+     */
+    open val elisions: Set<String> = emptySet()
+
+    /**
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com) or it closes an
      * abbreviation. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
      */
@@ -53,6 +59,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         while (index > 0) {
             val codePoint = before.codePointBefore(index)
             val size = Character.charCount(codePoint)
+            if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size)) break
             val inWord = isWordCharacter(codePoint) ||
                 (codePoint.toChar() in WORD_CONNECTORS && index > size && isWordCharacter(before.codePointBefore(index - size)))
             if (!inWord) break
@@ -82,11 +89,20 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         return text.substring(start, index).lowercase()
     }
 
+    /** Whether the word ending at [end], just before an apostrophe, is one of [elisions]. */
+    private fun isElision(text: String, end: Int): Boolean {
+        if (elisions.isEmpty()) return false
+        var start = end
+        while (start > 0 && text[start - 1].isLetter()) start--
+        return text.substring(start, end).lowercase() in elisions
+    }
+
     private fun isWordCharacter(codePoint: Int): Boolean =
         Character.isLetterOrDigit(codePoint) || Character.getType(codePoint) == Character.NON_SPACING_MARK.toInt()
 
     private companion object {
         /** Characters inside one word: don't, rock'n'roll, well-known. */
         const val WORD_CONNECTORS = "'’-"
+        const val APOSTROPHES = "'’"
     }
 }

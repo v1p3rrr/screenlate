@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">Präsens Indikativ</string>
+    <string name="inflection_fr_present_indicative">Präsens Indikativ eines Verbs</string>
+    <string name="inflection_fr_imperfect_indicative_label">Imperfekt</string>
+    <string name="inflection_fr_imperfect_indicative">Imperfekt (Imparfait) eines Verbs</string>
+    <string name="inflection_fr_future_label">Futur</string>
+    <string name="inflection_fr_future">Futur eines Verbs</string>
+    <string name="inflection_fr_imperative_present_label">Imperativ</string>
+    <string name="inflection_fr_imperative_present">Imperativ eines Verbs</string>
+    <string name="inflection_fr_conditional_label">Konditional</string>
+    <string name="inflection_fr_conditional">Konditional eines Verbs</string>
+    <string name="inflection_fr_preterite_label">Passé simple</string>
+    <string name="inflection_fr_preterite">Passé simple (historische Vergangenheit) eines Verbs</string>
+    <string name="inflection_fr_plural_label">Plural</string>
+    <string name="inflection_fr_plural">Pluralform eines Substantivs</string>
+    <string name="inflection_fr_present_participle_label">Partizip Präsens</string>
+    <string name="inflection_fr_present_participle">Partizip Präsens eines Verbs</string>
+    <string name="inflection_fr_present_subjunctive_label">Subjonctif Präsens</string>
+    <string name="inflection_fr_present_subjunctive">Subjonctif Präsens eines Verbs</string>
+</resources>

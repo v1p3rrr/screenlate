@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">직설법 현재</string>
+    <string name="inflection_fr_present_indicative">동사의 직설법 현재형</string>
+    <string name="inflection_fr_imperfect_indicative_label">직설법 반과거</string>
+    <string name="inflection_fr_imperfect_indicative">동사의 직설법 반과거형</string>
+    <string name="inflection_fr_future_label">단순미래</string>
+    <string name="inflection_fr_future">동사의 단순미래형</string>
+    <string name="inflection_fr_imperative_present_label">명령법 현재</string>
+    <string name="inflection_fr_imperative_present">동사의 명령법 현재형</string>
+    <string name="inflection_fr_conditional_label">조건법</string>
+    <string name="inflection_fr_conditional">동사의 조건법 현재형</string>
+    <string name="inflection_fr_preterite_label">단순과거</string>
+    <string name="inflection_fr_preterite">동사의 단순과거형</string>
+    <string name="inflection_fr_plural_label">복수</string>
+    <string name="inflection_fr_plural">명사의 복수형</string>
+    <string name="inflection_fr_present_participle_label">현재분사</string>
+    <string name="inflection_fr_present_participle">동사의 현재분사</string>
+    <string name="inflection_fr_present_subjunctive_label">접속법 현재</string>
+    <string name="inflection_fr_present_subjunctive">동사의 접속법 현재형</string>
+</resources>

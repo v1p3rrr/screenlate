@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">présent de l’indicatif</string>
+    <string name="inflection_fr_present_indicative">Présent de l’indicatif d’un verbe</string>
+    <string name="inflection_fr_imperfect_indicative_label">imparfait de l’indicatif</string>
+    <string name="inflection_fr_imperfect_indicative">Imparfait de l’indicatif d’un verbe</string>
+    <string name="inflection_fr_future_label">futur</string>
+    <string name="inflection_fr_future">Futur simple d’un verbe</string>
+    <string name="inflection_fr_imperative_present_label">impératif présent</string>
+    <string name="inflection_fr_imperative_present">Impératif présent d’un verbe</string>
+    <string name="inflection_fr_conditional_label">conditionnel</string>
+    <string name="inflection_fr_conditional">Conditionnel présent d’un verbe</string>
+    <string name="inflection_fr_preterite_label">passé simple</string>
+    <string name="inflection_fr_preterite">Passé simple d’un verbe</string>
+    <string name="inflection_fr_plural_label">pluriel</string>
+    <string name="inflection_fr_plural">Forme plurielle d’un nom</string>
+    <string name="inflection_fr_present_participle_label">participe présent</string>
+    <string name="inflection_fr_present_participle">Participe présent d’un verbe</string>
+    <string name="inflection_fr_present_subjunctive_label">subjonctif présent</string>
+    <string name="inflection_fr_present_subjunctive">Subjonctif présent d’un verbe</string>
+</resources>

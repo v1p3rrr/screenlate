@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">presente do indicativo</string>
+    <string name="inflection_fr_present_indicative">Presente do indicativo de um verbo</string>
+    <string name="inflection_fr_imperfect_indicative_label">imperfeito do indicativo</string>
+    <string name="inflection_fr_imperfect_indicative">Pretérito imperfeito do indicativo de um verbo</string>
+    <string name="inflection_fr_future_label">futuro</string>
+    <string name="inflection_fr_future">Futuro de um verbo</string>
+    <string name="inflection_fr_imperative_present_label">imperativo</string>
+    <string name="inflection_fr_imperative_present">Imperativo de um verbo</string>
+    <string name="inflection_fr_conditional_label">condicional</string>
+    <string name="inflection_fr_conditional">Condicional de um verbo</string>
+    <string name="inflection_fr_preterite_label">pretérito perfeito</string>
+    <string name="inflection_fr_preterite">Pretérito perfeito simples (passé simple) de um verbo</string>
+    <string name="inflection_fr_plural_label">plural</string>
+    <string name="inflection_fr_plural">Forma plural de um substantivo</string>
+    <string name="inflection_fr_present_participle_label">particípio presente</string>
+    <string name="inflection_fr_present_participle">Particípio presente de um verbo</string>
+    <string name="inflection_fr_present_subjunctive_label">presente do subjuntivo</string>
+    <string name="inflection_fr_present_subjunctive">Presente do subjuntivo de um verbo</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">presente indicativo</string>
+    <string name="inflection_fr_present_indicative">Presente indicativo di un verbo</string>
+    <string name="inflection_fr_imperfect_indicative_label">imperfetto indicativo</string>
+    <string name="inflection_fr_imperfect_indicative">Imperfetto indicativo di un verbo</string>
+    <string name="inflection_fr_future_label">futuro</string>
+    <string name="inflection_fr_future">Futuro di un verbo</string>
+    <string name="inflection_fr_imperative_present_label">imperativo presente</string>
+    <string name="inflection_fr_imperative_present">Imperativo presente di un verbo</string>
+    <string name="inflection_fr_conditional_label">condizionale</string>
+    <string name="inflection_fr_conditional">Condizionale di un verbo</string>
+    <string name="inflection_fr_preterite_label">passato remoto</string>
+    <string name="inflection_fr_preterite">Passato remoto (passé simple) di un verbo</string>
+    <string name="inflection_fr_plural_label">plurale</string>
+    <string name="inflection_fr_plural">Forma plurale di un sostantivo</string>
+    <string name="inflection_fr_present_participle_label">participio presente</string>
+    <string name="inflection_fr_present_participle">Participio presente di un verbo</string>
+    <string name="inflection_fr_present_subjunctive_label">congiuntivo presente</string>
+    <string name="inflection_fr_present_subjunctive">Congiuntivo presente di un verbo</string>
+</resources>

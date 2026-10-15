@@ -227,4 +227,5 @@ val Language.support: LanguageSupport
         Language.CHINESE -> ChineseSupport
         Language.KOREAN -> KoreanSupport
         Language.SPANISH -> SpanishSupport
+        Language.FRENCH -> FrenchSupport
     }

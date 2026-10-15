@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">настоящее время</string>
+    <string name="inflection_fr_present_indicative">Настоящее время изъявительного наклонения глагола</string>
+    <string name="inflection_fr_imperfect_indicative_label">имперфект</string>
+    <string name="inflection_fr_imperfect_indicative">Имперфект (прошедшее несовершенное) изъявительного наклонения глагола</string>
+    <string name="inflection_fr_future_label">будущее время</string>
+    <string name="inflection_fr_future">Будущее время глагола</string>
+    <string name="inflection_fr_imperative_present_label">повелительное наклонение</string>
+    <string name="inflection_fr_imperative_present">Повелительное наклонение глагола</string>
+    <string name="inflection_fr_conditional_label">условное наклонение</string>
+    <string name="inflection_fr_conditional">Условное наклонение глагола</string>
+    <string name="inflection_fr_preterite_label">простое прошедшее</string>
+    <string name="inflection_fr_preterite">Простое прошедшее время (passé simple) глагола</string>
+    <string name="inflection_fr_plural_label">множественное число</string>
+    <string name="inflection_fr_plural">Множественное число существительного</string>
+    <string name="inflection_fr_present_participle_label">причастие настоящего времени</string>
+    <string name="inflection_fr_present_participle">Причастие настоящего времени глагола</string>
+    <string name="inflection_fr_present_subjunctive_label">сослагательное наклонение</string>
+    <string name="inflection_fr_present_subjunctive">Настоящее время сослагательного наклонения глагола</string>
+</resources>

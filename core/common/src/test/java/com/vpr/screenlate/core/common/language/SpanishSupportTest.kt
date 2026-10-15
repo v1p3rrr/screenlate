@@ -31,7 +31,8 @@ class SpanishSupportTest {
     @Test
     fun `transcription tags of Latin America and Spain are regions of the audio order`() {
         val flagMexico = String(Character.toChars(0x1F1F2)) + String(Character.toChars(0x1F1FD))
-        val regions = TranscriptionRegions.of(listOf(flagMexico, "Latin-America", "Spain"), SpanishSupport.transcriptionRegionNames)
+        val names = SpanishSupport.transcriptionRegionNames
+        val regions = TranscriptionRegions.of(listOf(flagMexico, "Latin-America", "Spain"), names)
         assertThat(regions).containsExactly("mx", "am-lat", "es").inOrder()
         val latinAmerica = SpanishSupport.audioRegions.first()
         assertThat(latinAmerica.codes).containsAtLeast("am-lat", "mx", "ar", "us")

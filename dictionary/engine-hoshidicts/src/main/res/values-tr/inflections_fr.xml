@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">şimdiki zaman</string>
+    <string name="inflection_fr_present_indicative">Fiilin bildirme kipi şimdiki zamanı</string>
+    <string name="inflection_fr_imperfect_indicative_label">imparfait</string>
+    <string name="inflection_fr_imperfect_indicative">Fiilin bildirme kipi süregelen geçmiş zamanı (imparfait)</string>
+    <string name="inflection_fr_future_label">gelecek zaman</string>
+    <string name="inflection_fr_future">Fiilin gelecek zamanı</string>
+    <string name="inflection_fr_imperative_present_label">emir kipi</string>
+    <string name="inflection_fr_imperative_present">Fiilin emir kipi</string>
+    <string name="inflection_fr_conditional_label">koşul kipi</string>
+    <string name="inflection_fr_conditional">Fiilin koşul kipi</string>
+    <string name="inflection_fr_preterite_label">passé simple</string>
+    <string name="inflection_fr_preterite">Fiilin basit geçmiş zamanı (passé simple)</string>
+    <string name="inflection_fr_plural_label">çoğul</string>
+    <string name="inflection_fr_plural">İsmin çoğul biçimi</string>
+    <string name="inflection_fr_present_participle_label">şimdiki zaman ortacı</string>
+    <string name="inflection_fr_present_participle">Fiilin şimdiki zaman ortacı</string>
+    <string name="inflection_fr_present_subjunctive_label">subjonctif şimdiki</string>
+    <string name="inflection_fr_present_subjunctive">Fiilin subjonctif kipi şimdiki zamanı</string>
+</resources>

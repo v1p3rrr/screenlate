@@ -339,6 +339,8 @@
     <string name="audio_region_uk">Regno Unito</string>
     <string name="audio_region_latin_america">America Latina</string>
     <string name="audio_region_spain">Spagna</string>
+    <string name="audio_region_france">Francia</string>
+    <string name="audio_region_canada">Canada</string>
     <string name="audio_region_other">Altre regioni</string>
     <string name="audio_url_missing">Nessun URL</string>
     <string name="audio_tts_hint">Solo riproduzione; le note prendono l’audio dalle altre fonti.</string>
@@ -451,6 +453,7 @@
     <string name="popup_font_system_default">Carattere del telefono</string>
     <string name="popup_font_script_only_en">Solo per il testo inglese</string>
     <string name="popup_font_script_only_es">Solo per il testo spagnolo</string>
+    <string name="popup_font_script_only_fr">Solo per il testo francese</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

@@ -333,6 +333,8 @@
     <string name="audio_region_uk">영국</string>
     <string name="audio_region_latin_america">라틴아메리카</string>
     <string name="audio_region_spain">스페인</string>
+    <string name="audio_region_france">프랑스</string>
+    <string name="audio_region_canada">캐나다</string>
     <string name="audio_region_other">기타 지역</string>
     <string name="audio_url_missing">URL 없음</string>
     <string name="audio_tts_hint">재생만 합니다. 노트에는 다른 소스의 오디오가 들어갑니다.</string>
@@ -445,6 +447,7 @@
     <string name="popup_font_system_default">휴대폰 글꼴</string>
     <string name="popup_font_script_only_en">영어 텍스트에만 사용</string>
     <string name="popup_font_script_only_es">스페인어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_fr">프랑스어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

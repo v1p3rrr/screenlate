@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_fr.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_fr_present_indicative_label">hiện tại trình bày</string>
+    <string name="inflection_fr_present_indicative">Thì hiện tại thức trình bày của động từ</string>
+    <string name="inflection_fr_imperfect_indicative_label">quá khứ chưa hoàn thành</string>
+    <string name="inflection_fr_imperfect_indicative">Thì quá khứ chưa hoàn thành (imparfait) của động từ</string>
+    <string name="inflection_fr_future_label">tương lai</string>
+    <string name="inflection_fr_future">Thì tương lai đơn của động từ</string>
+    <string name="inflection_fr_imperative_present_label">mệnh lệnh</string>
+    <string name="inflection_fr_imperative_present">Thức mệnh lệnh của động từ</string>
+    <string name="inflection_fr_conditional_label">điều kiện</string>
+    <string name="inflection_fr_conditional">Thức điều kiện của động từ</string>
+    <string name="inflection_fr_preterite_label">quá khứ đơn</string>
+    <string name="inflection_fr_preterite">Thì quá khứ đơn (passé simple) của động từ</string>
+    <string name="inflection_fr_plural_label">số nhiều</string>
+    <string name="inflection_fr_plural">Dạng số nhiều của danh từ</string>
+    <string name="inflection_fr_present_participle_label">phân từ hiện tại</string>
+    <string name="inflection_fr_present_participle">Phân từ hiện tại của động từ</string>
+    <string name="inflection_fr_present_subjunctive_label">giả định hiện tại</string>
+    <string name="inflection_fr_present_subjunctive">Thì hiện tại thức giả định của động từ</string>
+</resources>

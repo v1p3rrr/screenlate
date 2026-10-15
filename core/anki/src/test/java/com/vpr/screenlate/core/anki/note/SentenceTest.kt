@@ -54,4 +54,11 @@ class SentenceTest {
         assertThat(extract(paragraph, "García", Language.SPANISH).text).isEqualTo("¿Dónde está el Sr. García?")
         assertThat(extract(paragraph, "dijo", Language.SPANISH).text).isEqualTo("«Ven aquí.» dijo ella.")
     }
+
+    @Test
+    fun frenchSentenceKeepsSpacedGuillemetsAndMonsieur() {
+        val paragraph = "Il pleut. M. Dupont arrive. « Restez ici. » dit-il."
+        assertThat(extract(paragraph, "Dupont", Language.FRENCH).text).isEqualTo("M. Dupont arrive.")
+        assertThat(extract(paragraph, "dit", Language.FRENCH).text).isEqualTo("« Restez ici. » dit-il.")
+    }
 }
