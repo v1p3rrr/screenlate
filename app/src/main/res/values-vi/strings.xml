@@ -452,6 +452,7 @@
     <string name="popup_font_script_only_es">Chỉ cho chữ tiếng Tây Ban Nha</string>
     <string name="popup_font_script_only_fr">Chỉ cho chữ tiếng Pháp</string>
     <string name="popup_font_script_only_de">Chỉ cho chữ tiếng Đức</string>
+    <string name="popup_font_script_only_it">Chỉ cho chữ tiếng Ý</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

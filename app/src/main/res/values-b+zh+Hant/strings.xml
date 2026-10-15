@@ -452,6 +452,7 @@
     <string name="popup_font_script_only_es">僅用於西班牙文文字</string>
     <string name="popup_font_script_only_fr">僅用於法文文字</string>
     <string name="popup_font_script_only_de">僅用於德文文字</string>
+    <string name="popup_font_script_only_it">僅用於義大利文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

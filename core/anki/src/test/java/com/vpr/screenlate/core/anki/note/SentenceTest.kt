@@ -69,4 +69,11 @@ class SentenceTest {
             .isEqualTo("Am 3. Oktober kommt er, z. B. mit dem Zug.")
         assertThat(extract(paragraph, "sagte", Language.GERMAN).text).isEqualTo("„Bleib hier.“ sagte sie.")
     }
+
+    @Test
+    fun italianSentenceKeepsAngleQuotesAndSignore() {
+        val paragraph = "Piove. Il sig. Rossi arriva. «Resta qui.» disse lei."
+        assertThat(extract(paragraph, "Rossi", Language.ITALIAN).text).isEqualTo("Il sig. Rossi arriva.")
+        assertThat(extract(paragraph, "disse", Language.ITALIAN).text).isEqualTo("«Resta qui.» disse lei.")
+    }
 }

@@ -112,7 +112,7 @@ object PageState {
      * Korean reading of Hanja.
      */
     private fun readingLabels(context: Context, language: Language): Map<String, String> = when (language) {
-        Language.JAPANESE, Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN -> mapOf(
+        Language.JAPANESE, Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN -> mapOf(
             "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
             "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
         )

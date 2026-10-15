@@ -229,4 +229,5 @@ val Language.support: LanguageSupport
         Language.SPANISH -> SpanishSupport
         Language.FRENCH -> FrenchSupport
         Language.GERMAN -> GermanSupport
+        Language.ITALIAN -> ItalianSupport
     }
