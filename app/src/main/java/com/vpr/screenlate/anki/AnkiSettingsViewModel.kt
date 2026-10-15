@@ -3,6 +3,7 @@ package com.vpr.screenlate.anki
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.anki.AnkiAvailability
+import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDeck
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiModel
@@ -50,6 +51,14 @@ data class AnkiScreenState(
     val refreshing: Boolean = false,
 )
 
+/** The connection check in the page's AnkiDroid card. */
+data class ConnectionCheck(
+    /** Null until the check button was pressed. */
+    val result: AnkiCheck? = null,
+    /** While running, a shown result stays on the screen dimmed. */
+    val running: Boolean = false,
+)
+
 @HiltViewModel
 class AnkiSettingsViewModel @Inject constructor(
     private val anki: AnkiDroid,
@@ -74,6 +83,12 @@ class AnkiSettingsViewModel @Inject constructor(
         ),
     )
     private var refreshJob: Job? = null
+
+    private val checkState = MutableStateFlow(ConnectionCheck())
+
+    /** Once shown, the check runs again with every refresh, so it follows a changed setup and a return from AnkiDroid. */
+    val check: StateFlow<ConnectionCheck> = checkState
+    private var checkJob: Job? = null
 
     private val dictionaryMarkers = dictionaries.dictionaries.map { list ->
         val glossaries = list.filter { it.termCount > 0 }.map { FieldTemplate.singleGlossaryMarker(it.title) }
@@ -102,6 +117,28 @@ class AnkiSettingsViewModel @Inject constructor(
 
     /** Re-reads AnkiDroid's decks, note types and fields, e.g. after the permission was granted. */
     fun refresh() {
+        load()
+        if (checkState.value.result != null) runCheck()
+    }
+
+    /** Asks AnkiDroid about every part of the setup; the page is read again with it. */
+    fun checkConnection() {
+        load()
+        runCheck()
+    }
+
+    private fun runCheck() {
+        checkJob?.cancel()
+        checkState.value = checkState.value.copy(running = true)
+        checkJob = viewModelScope.launch {
+            val result = runCatching { notes.check() }
+                .onFailure { if (it is CancellationException) throw it }
+                .getOrNull()
+            checkState.value = ConnectionCheck(result ?: checkState.value.result)
+        }
+    }
+
+    private fun load() {
         // The latest check wins: an earlier one may have read the note type the user just changed.
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {

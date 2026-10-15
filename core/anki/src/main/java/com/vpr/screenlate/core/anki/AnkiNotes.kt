@@ -91,6 +91,57 @@ class AnkiNotes @Inject constructor(
         return AnkiStatus.Ready
     }
 
+    /**
+     * Asks AnkiDroid about every part of the setup, for the connection check on the Anki page. Only reads: nothing is
+     * added to the collection. Items that need a failed one (decks need access) are not checked.
+     */
+    suspend fun check(): AnkiCheck {
+        when (anki.availability()) {
+            AnkiAvailability.NOT_INSTALLED -> return AnkiCheck(installed = CheckOutcome.FAILED)
+            AnkiAvailability.NO_PERMISSION -> return AnkiCheck(installed = CheckOutcome.PASSED, access = CheckOutcome.FAILED)
+            AnkiAvailability.READY -> Unit
+        }
+        val settings = settings()
+        val deckId = settings.deckId
+        val modelId = settings.modelId
+        val decks = if (deckId != null) anki.decks() else emptyList()
+        val deck = decks.firstOrNull { it.id == deckId }
+        val models = if (modelId != null) anki.models() else emptyList()
+        val fields = if (modelId != null) anki.fields(modelId) else emptyList()
+        if (modelId != null) {
+            synchronized(fieldCache) { if (fields.isEmpty()) fieldCache.remove(modelId) else fieldCache[modelId] = fields }
+        }
+        val model = when {
+            modelId == null -> CheckOutcome.NOT_CHOSEN
+            fields.isNotEmpty() -> CheckOutcome.PASSED
+            models.isEmpty() -> CheckOutcome.NO_ANSWER
+            else -> CheckOutcome.FAILED
+        }
+        val missing = settings.fields.keys.filter { it !in fields }
+        val new = fields.filter { it !in settings.fields.keys }
+        return AnkiCheck(
+            installed = CheckOutcome.PASSED,
+            access = CheckOutcome.PASSED,
+            deck = when {
+                deckId == null -> CheckOutcome.NOT_CHOSEN
+                deck != null -> CheckOutcome.PASSED
+                // AnkiDroid always has a deck; an empty list means it did not answer.
+                decks.isEmpty() -> CheckOutcome.NO_ANSWER
+                else -> CheckOutcome.FAILED
+            },
+            model = model,
+            fields = when {
+                model != CheckOutcome.PASSED -> CheckOutcome.NOT_CHECKED
+                missing.isEmpty() && new.isEmpty() -> CheckOutcome.PASSED
+                else -> CheckOutcome.FAILED
+            },
+            deckName = deck?.name ?: settings.deckName,
+            modelName = models.firstOrNull { it.id == modelId }?.name ?: settings.modelName,
+            missingFields = if (model == CheckOutcome.PASSED) missing else emptyList(),
+            newFields = if (model == CheckOutcome.PASSED) new else emptyList(),
+        )
+    }
+
     /** Markers used by any field template; callers skip expensive markers (audio, screenshot) that are unused. */
     suspend fun usedMarkers(): Set<String> =
         settings().fields.values.flatMapTo(mutableSetOf()) { FieldTemplate.markersIn(it) }

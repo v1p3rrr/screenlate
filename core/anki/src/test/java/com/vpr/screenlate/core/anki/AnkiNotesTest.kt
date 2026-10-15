@@ -130,6 +130,70 @@ class AnkiNotesTest {
     }
 
     @Test
+    fun `the connection check stops at a missing AnkiDroid or access`() = runBlocking<Unit> {
+        configure()
+        anki.availability = AnkiAvailability.NOT_INSTALLED
+        assertThat(notes.check()).isEqualTo(AnkiCheck(installed = CheckOutcome.FAILED))
+        anki.availability = AnkiAvailability.NO_PERMISSION
+        assertThat(notes.check()).isEqualTo(AnkiCheck(installed = CheckOutcome.PASSED, access = CheckOutcome.FAILED))
+    }
+
+    @Test
+    fun `the connection check names the deck and note type`() = runBlocking<Unit> {
+        configure { it.copy(deckName = "Old name", modelName = "Old model") }
+        val check = notes.check()
+        assertThat(check).isEqualTo(
+            AnkiCheck(
+                installed = CheckOutcome.PASSED,
+                access = CheckOutcome.PASSED,
+                deck = CheckOutcome.PASSED,
+                model = CheckOutcome.PASSED,
+                fields = CheckOutcome.PASSED,
+                deckName = "Mining",
+                modelName = "Model $MODEL",
+            ),
+        )
+    }
+
+    @Test
+    fun `the connection check lists the fields that differ`() = runBlocking<Unit> {
+        configure()
+        anki.models[MODEL] = listOf("Word", "Meaning", "Sentence", "Notes")
+        val check = notes.check()
+        assertThat(check.fields).isEqualTo(CheckOutcome.FAILED)
+        assertThat(check.missingFields).containsExactly("Picture")
+        assertThat(check.newFields).containsExactly("Notes")
+    }
+
+    @Test
+    fun `the connection check reports a missing deck and note type`() = runBlocking<Unit> {
+        configure { it.copy(deckName = "Mining", modelName = "Lapis") }
+        anki.decks.clear()
+        anki.decks += AnkiDeck(99, "Other")
+        anki.models.remove(MODEL)
+        anki.models[7L] = listOf("Front")
+        val check = notes.check()
+        assertThat(check.deck).isEqualTo(CheckOutcome.FAILED)
+        assertThat(check.deckName).isEqualTo("Mining")
+        assertThat(check.model).isEqualTo(CheckOutcome.FAILED)
+        assertThat(check.modelName).isEqualTo("Lapis")
+        assertThat(check.fields).isEqualTo(CheckOutcome.NOT_CHECKED)
+        assertThat(check.missingFields).isEmpty()
+    }
+
+    @Test
+    fun `the connection check tells an empty answer and an empty setup apart`() = runBlocking<Unit> {
+        assertThat(notes.check().deck).isEqualTo(CheckOutcome.NOT_CHOSEN)
+        assertThat(notes.check().model).isEqualTo(CheckOutcome.NOT_CHOSEN)
+        configure()
+        anki.decks.clear()
+        anki.models.clear()
+        val check = notes.check()
+        assertThat(check.deck).isEqualTo(CheckOutcome.NO_ANSWER)
+        assertThat(check.model).isEqualTo(CheckOutcome.NO_ANSWER)
+    }
+
+    @Test
     fun `adds a note with rendered fields and tags`() = runBlocking<Unit> {
         assertThat(notes.add(request)).isEqualTo(AddResult.NotConfigured)
         configure()

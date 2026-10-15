@@ -5,9 +5,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -15,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -37,7 +40,9 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,9 +53,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.audio.AudioSettingsSection
 import com.vpr.screenlate.core.anki.AnkiAvailability
+import com.vpr.screenlate.core.anki.AnkiCheck
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
+import com.vpr.screenlate.core.anki.CheckOutcome
 import com.vpr.screenlate.core.anki.message
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
@@ -112,16 +119,15 @@ fun AnkiSettingsScreen(onBack: () -> Unit, showAudio: Boolean = false, viewModel
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            val check by viewModel.check.collectAsStateWithLifecycle()
+            ConnectionCard(
+                availability = state.availability,
+                check = check,
+                onCheck = viewModel::checkConnection,
+                onGrant = { permission.launch(AnkiDroid.PERMISSION) },
+            )
             when (state.availability) {
-                AnkiAvailability.NOT_INSTALLED -> SectionCard(title = stringResource(R.string.anki_connection)) {
-                    Text(stringResource(R.string.anki_not_installed))
-                }
-                AnkiAvailability.NO_PERMISSION -> SectionCard(title = stringResource(R.string.anki_connection)) {
-                    Text(stringResource(R.string.anki_permission_explanation))
-                    Button(onClick = { permission.launch(AnkiDroid.PERMISSION) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
-                        Text(stringResource(R.string.anki_grant_permission), textAlign = TextAlign.Center)
-                    }
-                }
+                AnkiAvailability.NOT_INSTALLED, AnkiAvailability.NO_PERMISSION -> Unit
                 // Drawn from the last answer or the saved setup until AnkiDroid answers, dimmed and without taps.
                 AnkiAvailability.READY -> Column(
                     modifier = Modifier.pending(state.refreshing),
@@ -135,6 +141,121 @@ fun AnkiSettingsScreen(onBack: () -> Unit, showAudio: Boolean = false, viewModel
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             if (state.availability != null) {
                 Box(Modifier.onGloballyPositioned { audioTop = it.positionInParent().y.roundToInt() }) { AudioSettingsSection() }
+            }
+        }
+    }
+}
+
+/** Whether AnkiDroid can be reached, with the way to fix it and the check of the whole setup. */
+@Composable
+private fun ConnectionCard(availability: AnkiAvailability?, check: ConnectionCheck, onCheck: () -> Unit, onGrant: () -> Unit) {
+    SectionCard(title = stringResource(R.string.anki_connection)) {
+        when (availability) {
+            AnkiAvailability.NOT_INSTALLED -> Text(stringResource(R.string.anki_not_installed))
+            AnkiAvailability.NO_PERMISSION -> {
+                Text(stringResource(R.string.anki_permission_explanation))
+                Button(onClick = onGrant, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+                    Text(stringResource(R.string.anki_grant_permission), textAlign = TextAlign.Center)
+                }
+            }
+            AnkiAvailability.READY, null -> Unit
+        }
+        OutlinedButton(onClick = onCheck, enabled = !check.running, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(if (check.running) R.string.anki_checking else R.string.anki_check), textAlign = TextAlign.Center)
+        }
+        check.result?.let { CheckList(it, Modifier.pending(check.running)) }
+    }
+}
+
+@Composable
+private fun CheckList(check: AnkiCheck, modifier: Modifier = Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        CheckRow(
+            check.installed,
+            stringResource(if (check.installed == CheckOutcome.PASSED) R.string.anki_check_installed else R.string.anki_check_not_installed),
+        )
+        when (check.access) {
+            CheckOutcome.PASSED -> CheckRow(check.access, stringResource(R.string.anki_check_access))
+            CheckOutcome.FAILED -> CheckRow(
+                check.access,
+                stringResource(R.string.anki_check_no_access),
+                stringResource(R.string.anki_check_fix_access),
+            )
+            else -> CheckRow(check.access, notChecked(R.string.anki_check_access_item))
+        }
+        val deck = check.deckName.orEmpty()
+        when (check.deck) {
+            CheckOutcome.PASSED -> CheckRow(check.deck, stringResource(R.string.anki_check_deck_found, deck))
+            CheckOutcome.FAILED -> CheckRow(
+                check.deck,
+                stringResource(R.string.anki_check_deck_missing, deck),
+                stringResource(R.string.anki_problem_fix_deck),
+            )
+            CheckOutcome.NOT_CHOSEN -> CheckRow(
+                check.deck,
+                stringResource(R.string.anki_check_deck_not_chosen),
+                stringResource(R.string.anki_check_fix_choose),
+            )
+            CheckOutcome.NO_ANSWER -> CheckRow(check.deck, noAnswer(R.string.anki_deck), stringResource(R.string.anki_check_fix_no_answer))
+            CheckOutcome.NOT_CHECKED -> CheckRow(check.deck, notChecked(R.string.anki_deck))
+        }
+        val model = check.modelName.orEmpty()
+        when (check.model) {
+            CheckOutcome.PASSED -> CheckRow(check.model, stringResource(R.string.anki_check_model_found, model))
+            CheckOutcome.FAILED -> CheckRow(
+                check.model,
+                stringResource(R.string.anki_check_model_missing, model),
+                stringResource(R.string.anki_problem_fix_model),
+            )
+            CheckOutcome.NOT_CHOSEN -> CheckRow(
+                check.model,
+                stringResource(R.string.anki_check_model_not_chosen),
+                stringResource(R.string.anki_check_fix_choose),
+            )
+            CheckOutcome.NO_ANSWER -> CheckRow(check.model, noAnswer(R.string.anki_model), stringResource(R.string.anki_check_fix_no_answer))
+            CheckOutcome.NOT_CHECKED -> CheckRow(check.model, notChecked(R.string.anki_model))
+        }
+        when (check.fields) {
+            CheckOutcome.PASSED -> CheckRow(check.fields, stringResource(R.string.anki_check_fields_match))
+            CheckOutcome.FAILED -> CheckRow(
+                check.fields,
+                stringResource(R.string.anki_check_fields_differ),
+                *listOfNotNull(
+                    check.missingFields.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(R.string.anki_check_fields_missing, it.joinToString(", ")) },
+                    check.newFields.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(R.string.anki_check_fields_new, it.joinToString(", ")) },
+                    stringResource(R.string.anki_check_fix_fields),
+                ).toTypedArray(),
+            )
+            else -> CheckRow(check.fields, notChecked(R.string.anki_fields))
+        }
+    }
+}
+
+@Composable
+private fun notChecked(item: Int) = stringResource(R.string.anki_check_not_checked, stringResource(item))
+
+@Composable
+private fun noAnswer(item: Int) = stringResource(R.string.anki_check_no_answer, stringResource(item))
+
+/** One item of the check: a check mark when it passed, a cross with the fix under it, a dash when not checked. */
+@Composable
+private fun CheckRow(outcome: CheckOutcome, text: String, vararg hints: String) {
+    Row(
+        modifier = Modifier.semantics(mergeDescendants = true) {},
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        val (icon, tint) = when (outcome) {
+            CheckOutcome.PASSED -> R.drawable.ic_check to MaterialTheme.colorScheme.primary
+            CheckOutcome.FAILED, CheckOutcome.NOT_CHOSEN, CheckOutcome.NO_ANSWER -> R.drawable.ic_close to MaterialTheme.colorScheme.error
+            CheckOutcome.NOT_CHECKED -> R.drawable.ic_remove to MaterialTheme.colorScheme.onSurfaceVariant
+        }
+        Icon(painterResource(icon), contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(text, style = MaterialTheme.typography.bodyMedium)
+            hints.forEach {
+                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
