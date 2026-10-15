@@ -730,3 +730,11 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   name, Internet, humorous, euphemistic, dated, vulgar). With the words already translated they cover 99.5% of the
   form-of tag words (counted over the 2026-10-14 revision). `lintDebug` fails in `dictionary:api` on three
   RestrictedApi errors about WorkManager (`Result.Retry`, `Data.Builder.put`), older than this branch.
+- 2026-10-15: Z9 done. Checked on the emulator: Simplified, Traditional and vertical Chinese with cloud recognition
+  (a vertical miss turned out to be the floating bubble's old scan of another picture: a floating bubble keeps its
+  scan until tapped, as designed), Simplified on the device recognizer (the emulator was short of memory, its
+  timings are not comparable), deleting a downloaded font that was in use (the phone's font takes over). NOTICE
+  names the downloadable fonts; the Lookup summaries say "characters of the word" in all locales. Instrumented
+  `ChineseLookupTest` on the real engine. Fix found by it: a lookup starting at a radical look-alike (⽇ for 日, from
+  PDFs) was dropped before the engine, which reads radicals as ideographs; Japanese and Chinese now start a word
+  there. `scripts/text-image.py --vertical` renders the vertical test picture.

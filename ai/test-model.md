@@ -125,7 +125,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| LK1 | Japanese: deinflection, respellings (1人, 々, ッ, dots and spaces), romaji when on, Latin entries (ＯＬ, Tシャツ) | E | I LookupPipelineTest, HoshidictsEngineTest, U LookupVariantsTest | 2026-10-14 |
+| LK1 | Japanese: deinflection, respellings (1人, 々, ッ, dots and spaces, radical look-alikes such as U+2F08 for 人), romaji when on, Latin entries (ＯＬ, Tシャツ) | E | I LookupPipelineTest, HoshidictsEngineTest, U LookupVariantsTest, JapaneseSupportTest | 2026-10-14 |
 | LK2 | Sorting by the sort dictionary and dictionary order, as Yomitan | F | U YomitanSorterTest, SortFrequencyTest | 2026-10-14 |
 | LK3 | Scan length and entries per lookup apply | O | U QueryScanLengthTest, M | |
 | LK4 | "Kanji of the word" adds the kanji entries below the results | O | M | |
@@ -135,6 +135,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK8 | No enabled dictionary with definitions → the popup and search say so, search offers "Manage dictionaries" | O | M | |
 | LK9 | Chinese search by typed pinyin: "nihao", "ni hao", "ni3hao3", "nǐhǎo" find 你好; "shi" lists 是 时 事 first; "shi4" puts fourth-tone words first; "lv", "nü3" (ü); "xi'an" puts 西安 first; words show in the script chosen on the Languages screen; a dictionary imported again builds its index | N | U ChinesePinyinTest, ReadingIndexTest, ReadingIndexBanksTest, ReadingWordsTest, M | 2026-10-14 |
 | LK10 | Chinese Wiktionary form-of tags in the interface language: 吓 lists 下 with "alternative Simplified Cantonese", in Russian "альтернативное упрощённое кантонское"; 哄 with Hokkien | N | U FormOfTagsTest, M | 2026-10-15 |
+| LK11 | Chinese lookups: the longest word in the text's script (图书馆看书 → 图书馆, 圖書館看書 → 圖書館, each with its `lang`), a radical look-alike (U+2F47 for 日), a fixed Traditional script shows 图书馆 as 圖書館, typed pinyin in the chosen script, typed tones first | N | I ChineseLookupTest, U ChineseSupportTest | 2026-10-15 |
 
 ### POP: the popup
 
