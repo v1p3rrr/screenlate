@@ -40,6 +40,18 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `korean scripts, forms and regions are translated, two-word tags as one`() {
+        assertThat(label("hanja form")).isEqualTo("hanja_form")
+        assertThat(label("first hanja form")).isEqualTo("first hanja_form")
+        assertThat(label("formal past noun-from-verb")).isEqualTo("formal past noun_from_verb")
+        assertThat(label("present verbal noun")).isEqualTo("present verbal_noun")
+        assertThat(label("alternative Early Modern")).isEqualTo("alternative early_modern")
+        assertThat(label("alternative North-Korea Yanbian dialectal")).isEqualTo("alternative north_korea yanbian dialectal")
+        assertThat(label("hangeul")).isEqualTo("hangeul")
+        assertThat(label("Yale")).isNull()
+    }
+
+    @Test
     fun `other spellings share the word's string`() {
         assertThat(label("historic")).isEqualTo("historical")
         assertThat(label("short")).isEqualTo("short_form")
