@@ -334,6 +334,15 @@ language from the PC (`scripts/yomitan-language/tools/commons_audio.py` in the e
 | ru | 6/10 | 10/10 | `Ru-кошка.ogg`, by the lemma without stress marks |
 | ko | 5/10 | 7/10 | `Ko-먹다.ogg`; 공부하다 has none |
 | zh | 2/10 with Q727694, 4/6 with Q9192 | 0/10 by characters | see below |
+| es | 9/10 | 4/10 | measured 2026-10-16 with the app's queries (`Q1321 (spa)`, `Es-`), as the rows below |
+| fr | 8/10 | 8/10 | `Q150 (fra)`; Lingua Libre has 20+ speakers for common words |
+| de | 9/10 | 8/10 | `Q188 (deu)` |
+| it | 9/10 | 9/10 | `Q652 (ita)` |
+| pt | 8/10 | 3/10 | `Q5146 (por)` |
+| pl | 4/10 | 10/10 | `Q809 (pol)` |
+| tr | 8/10 | 1/10 | `Q256 (tur)` |
+| vi | 8/10 | 0/10 | `Q9199 (vie)`, one-syllable words |
+| lv | 0/10 | 1/10 | `Q9078 (lav)`: text to speech only, in practice |
 
 - Mandarin: Lingua Libre files it as `LL-Q9192 (cmn)-…` (Q727694 has one speaker); Cantonese as `LL-Q9186 (yue)`.
   Wiktionary's Mandarin clips are named by pinyin with tone marks (`Zh-péngyou.ogg`, `Zh-shuǐ.ogg`, `Zh-tiānqì.ogg`,
