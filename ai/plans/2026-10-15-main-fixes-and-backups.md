@@ -21,6 +21,8 @@ branches that does not depend on the new languages, all on `main`. The work is d
 | Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection), last, after Restore. The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. The Settings item keeps its title "Backup and restore"; its subtitle adds the import from Yomitan. |
 | Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, tags on kanji entries. Every rule chain behind "+N" turned out to exist only for the languages run through Yomitan's code; for Japanese it moves to the far backlog (owner, 2026-10-15). |
 | Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
+| Romaji inside a joined Latin word (item 13) | The word under the aim: the Latin word is split from its start into the words the lookup finds (jidou, jisho) and the one under the aim is shown; where nothing is found for the aimed part, the lookup starts at the romaji syllable under the aim. Both branches (owner, 2026-10-15). |
+| Font restore | Chosen fonts are added to the installed ones, the same font replaced (confirmed by the owner, 2026-10-15). |
 
 ## Bug fixes from the language branches
 
@@ -146,6 +148,12 @@ Kept current while the work runs so a new session can continue from the last lin
 - Step 6 done: the merge checked on the emulator at `99085b9` (run log 2026-10-15): the Anki check with the English
   settings and per language (ANK11), the Yomitan card (SET11, SET3), the update check closing (DIC7), the segment
   fill (new case SET13). `languages/main` pushed. Left: show the owner the choices below.
+- The owner reviewed the choices below (2026-10-15): all stay. Answered along the way: the check's result shows
+  only in the AnkiDroid card ("Checking…" and a dimmed list while it runs again), a broken setup also on home, in the
+  popup's ➕ and the "Anki setup" card; no Anki switch, as Anki stays off until a deck and a note type are chosen and
+  the page reset clears them; "not chosen" keeps its cross; the Languages item stays hidden with one language; the
+  shared audio values stay in Japanese's key.
+- Next: item 13 (romaji in a joined Latin word) on `main`, then merged into `languages/main`.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
@@ -168,4 +176,6 @@ Kept current while the work runs so a new session can continue from the last lin
 - 2026-10-15: the owner moved the create checklist from the Create card into a dialog after "Create backup…"
   (scrolling list, buttons always in view); the restore list stays on the screen.
 - 2026-10-15: the owner asked for the backup list items' titles in semibold.
-- 2026-10-15: the owner reported item 13 (romaji lookup reaches only the first word of a joined Latin word).
+- 2026-10-15: the owner reported item 13 (romaji lookup reaches only the first word of a joined Latin word) and chose
+  the word under the aim; confirmed the font restore. Asked about the Anki check's status, an Anki switch, the
+  Languages item with two languages and the shared audio values (answers below in Progress).
