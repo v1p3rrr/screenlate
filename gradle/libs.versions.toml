@@ -72,6 +72,7 @@ androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espres
 # Gradle plugins used by build-logic convention plugins.
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

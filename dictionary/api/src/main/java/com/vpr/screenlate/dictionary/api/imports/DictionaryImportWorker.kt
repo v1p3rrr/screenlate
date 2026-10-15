@@ -308,12 +308,17 @@ class DictionaryImportWorker @AssistedInject constructor(
         fun open() = uri?.let { applicationContext.contentResolver.openInputStream(it) }
             ?: copy?.inputStream()
             ?: throw IOException("Cannot open the file")
-        fun progress(stage: String): (Long) -> Unit = { read ->
-            // Called every few megabytes from blocking reads, which otherwise run to the end of a cancelled import.
-            job.ensureActive()
-            if (size > 0) {
-                val percent = (read * 100 / size).toInt().coerceIn(0, 100)
-                setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to stage, KEY_PERCENT to percent))
+        fun progress(stage: String): (Long) -> Unit {
+            val throttle = ProgressThrottle()
+            return { read ->
+                // Called every few megabytes from blocking reads, which otherwise run to the end of a cancelled import.
+                job.ensureActive()
+                if (size > 0) {
+                    val percent = (read * 100 / size).toInt().coerceIn(0, 100)
+                    if (throttle.pass(percent)) {
+                        setProgressAsync(workDataOf(KEY_NAME to name, KEY_STAGE to stage, KEY_PERCENT to percent))
+                    }
+                }
             }
         }
         try {
@@ -384,12 +389,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         val started = System.currentTimeMillis()
         val before = if (archive.exists()) archive.length() else 0L
         Log.i(TAG, "Downloading $url" + if (before > 0) ", ${before shr 10} KB already there" else "")
-        var reported = -1
+        val throttle = ProgressThrottle()
         try {
             ResumableDownload(downloadClient).fetch(url, archive, state) { copied, total ->
                 val percent = if (total > 0) (copied * 100 / total).toInt() else -1
-                if (percent != reported) {
-                    reported = percent
+                if (throttle.pass(percent)) {
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD, KEY_PERCENT to percent))
                 }
             }

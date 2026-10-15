@@ -248,6 +248,12 @@ fun DictionariesScreen(
             }
 
             SectionTitle(stringResource(R.string.dictionaries_catalog), anchors.at(1))
+            // Takes the item instead of capturing it, so the cards whose item did not change skip a progress update.
+            val download = { item: CatalogItem ->
+                askNotifications()
+                val outdated = item.outdated
+                if (outdated != null) viewModel.replace(item.entry, outdated) else viewModel.download(item.entry)
+            }
             state.catalog.forEach { group ->
                 SubsectionTitle(languageName(group.sourceLanguage))
                 group.sections.forEach { section ->
@@ -258,15 +264,7 @@ fun DictionariesScreen(
                     )
                     section.items.forEach { item ->
                         key(item.entry.title) {
-                            CatalogCard(
-                                item,
-                                onDownload = {
-                                    askNotifications()
-                                    val outdated = item.outdated
-                                    if (outdated != null) viewModel.replace(item.entry, outdated) else viewModel.download(item.entry)
-                                },
-                                onCancel = viewModel::cancel,
-                            )
+                            CatalogCard(item, onDownload = download, onCancel = viewModel::cancel)
                         }
                     }
                 }
@@ -449,8 +447,8 @@ private fun LinkButtons(links: DictionaryLinks) {
     }
 }
 
-/** The "sort by this dictionary" radio of a frequency dictionary. */
-private class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
+/** The "sort by this dictionary" radio of a frequency dictionary; equal choices let its card skip an update. */
+private data class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
 
 @Composable
 private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -> Unit) {
@@ -651,7 +649,7 @@ private fun ErrorCard(
 }
 
 @Composable
-private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (ImportTask) -> Unit) {
+private fun CatalogCard(item: CatalogItem, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
     val entry = item.entry
     val task = item.task
     // The ring replaces Download at the tap, before the queued task shows up, so a double tap cannot queue it twice.
@@ -713,7 +711,7 @@ private fun CatalogCard(item: CatalogItem, onDownload: () -> Unit, onCancel: (Im
                     onClick = {
                         cancelFrom = SystemClock.uptimeMillis() + CANCEL_GUARD_MS
                         requested = true
-                        onDownload()
+                        onDownload(item)
                     },
                 )
             }

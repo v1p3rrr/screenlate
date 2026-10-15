@@ -23,11 +23,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -139,6 +141,8 @@ class DictionariesViewModel @Inject constructor(
             loaded = true,
         )
     }
+        // Matching the catalog and checking the styles' CSS take milliseconds; the main thread only gets the result.
+        .flowOn(Dispatchers.Default)
         .onEach { cache.last = it }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), cache.last ?: DictionariesState())
 
