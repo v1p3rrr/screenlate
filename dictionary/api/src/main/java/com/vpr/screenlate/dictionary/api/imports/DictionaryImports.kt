@@ -20,6 +20,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.await
 import androidx.work.workDataOf
+import com.vpr.screenlate.dictionary.api.catalog.ASSET_URL_PREFIX
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ARCHIVE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_CANCELLED
@@ -455,7 +456,7 @@ class DictionaryImports @Inject constructor(
                     addTag(LANGUAGE_TAG_PREFIX + language)
                     addTag(ENTRY_TAG_PREFIX + entryId)
                 }
-                if (download) {
+                if (download && data.getString(KEY_URL)?.startsWith(ASSET_URL_PREFIX) != true) {
                     // Waits for a network; one that broke off tries again (DictionaryImportWorker.MAX_RETRIES).
                     setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                     setBackoffCriteria(BackoffPolicy.EXPONENTIAL, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)

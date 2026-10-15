@@ -182,6 +182,12 @@ data class CatalogEntry(
 
 private const val MIB = 1024L * 1024L
 
+/**
+ * [CatalogEntry.downloadUrl] prefix of an archive the app carries in its assets (the path follows): installing it copies
+ * the archive and needs no network.
+ */
+const val ASSET_URL_PREFIX = "asset:///"
+
 /** [CatalogEntry.build] of a frequency dictionary built from a wordfreq word list. */
 const val BUILD_WORDFREQ = "wordfreq"
 
