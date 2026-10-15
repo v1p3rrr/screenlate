@@ -14,13 +14,13 @@
     <string name="overlay_error_offline">沒有網路，且設定中已關閉裝置端辨識。</string>
     <string name="overlay_ocr_error_title">雲端辨識</string>
     <string name="overlay_ocr_error_offline">未連線網路。</string>
-    <string name="overlay_ocr_error_paused">雲端辨識拒絕了最近的請求，因此暫停幾分鐘。</string>
+    <string name="overlay_ocr_error_paused">雲端辨識拒絕了最近的請求，對其請求將暫停幾分鐘。</string>
     <string name="overlay_ocr_error_timeout">雲端辨識在 15 秒內沒有回應。</string>
     <string name="overlay_ocr_error_http">雲端辨識回傳了錯誤 %1$d。</string>
     <string name="overlay_ocr_error_network">無法連線到雲端辨識。</string>
-    <string name="overlay_ocr_error_too_many">雲端辨識收到的請求過多，因此暫停幾分鐘。</string>
-    <string name="overlay_ocr_error_refused">雲端辨識拒絕了請求，因此暫停幾分鐘。</string>
-    <string name="overlay_ocr_error_server">雲端辨識的伺服器出現問題（錯誤 %1$d）。</string>
+    <string name="overlay_ocr_error_too_many">雲端辨識收到的請求過多，對其請求將暫停幾分鐘。</string>
+    <string name="overlay_ocr_error_refused">雲端辨識拒絕了請求，對其請求將暫停幾分鐘。</string>
+    <string name="overlay_ocr_error_server">雲端辨識伺服器錯誤（%1$d）。</string>
     <string name="overlay_ocr_error_other">雲端辨識失敗。</string>
     <string name="overlay_ocr_error_fallback">文字由裝置辨識，準確度較低。</string>
     <string name="overlay_no_results">未找到詞條。</string>
@@ -72,16 +72,16 @@
     <string name="translation_no_sentence">沒有可翻譯的句子。</string>
     <string name="translation_service_error">%1$s：%2$s</string>
     <string name="translation_error_offline">未連線網路。</string>
-    <string name="translation_error_timeout">未能及時回應。</string>
+    <string name="translation_error_timeout">請求逾時。</string>
     <string name="translation_error_clock">伺服器憑證在裝置目前日期下無效：請檢查日期和時間。</string>
     <string name="translation_error_secure">安全連線失敗（證書或 TLS）。</string>
     <string name="translation_error_network">無法連線到伺服器。</string>
     <string name="translation_error_http">伺服器回傳了錯誤 %1$d。</string>
     <string name="translation_error_limited">請求過多，請稍後再試。</string>
-    <string name="translation_error_captcha">要求完成驗證碼，請稍後再試。</string>
+    <string name="translation_error_captcha">服務要求完成驗證碼，請稍後再試。</string>
     <string name="translation_error_rejected">請求遭到拒絕。</string>
     <string name="translation_error_language">不支援此語言。</string>
     <string name="translation_error_too_long">文字太長。</string>
     <string name="translation_error_bad_answer">無法讀取回應。</string>
-    <string name="translation_error_other">發生問題。</string>
+    <string name="translation_error_other">未知錯誤。</string>
 </resources>

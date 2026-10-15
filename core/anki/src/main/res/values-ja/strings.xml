@@ -5,7 +5,7 @@
 
     <string name="anki_problem_not_installed">AnkiDroid がインストールされていません。</string>
     <string name="anki_problem_no_permission">Screenlate が AnkiDroid へのアクセス権を失いました。</string>
-    <string name="anki_problem_model_missing">ノートタイプが AnkiDroid からなくなりました。</string>
-    <string name="anki_problem_deck_missing">デッキが AnkiDroid からなくなりました。</string>
+    <string name="anki_problem_model_missing">ノートタイプが AnkiDroid に見つかりません。</string>
+    <string name="anki_problem_deck_missing">デッキが AnkiDroid に見つかりません。</string>
     <string name="anki_problem_fields_changed">ノートタイプのフィールドが変わりました。</string>
 </resources>
