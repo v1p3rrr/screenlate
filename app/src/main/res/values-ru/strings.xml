@@ -312,6 +312,8 @@
     <string name="popup_font_downloaded">Скачан</string>
     <string name="popup_font_own_file">Ваш файл</string>
     <string name="popup_font_delete">Удалить %1$s</string>
+    <string name="popup_font_delete_title">Удалить %1$s?</string>
+    <string name="popup_font_delete_text">Шрифт будет удалён с устройства. Если он выбран, попап вернётся к шрифту телефона.</string>
     <string name="popup_font_size">Размер текста: %1$d</string>
     <string name="popup_text_weight">Жирность текста: %1$s</string>
     <string name="popup_text_weight_normal">обычная</string>

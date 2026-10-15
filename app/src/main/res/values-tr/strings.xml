@@ -311,6 +311,8 @@
     <string name="popup_font_downloaded">İndirilenler</string>
     <string name="popup_font_own_file">Kendi dosyanız</string>
     <string name="popup_font_delete">%1$s yazı tipini sil</string>
+    <string name="popup_font_delete_title">%1$s silinsin mi?</string>
+    <string name="popup_font_delete_text">Yazı tipi bu cihazdan kaldırılır. Seçili yazı tipiyse açılır pencere telefonun yazı tipine döner.</string>
     <string name="popup_font_size">Metin boyutu: %1$d</string>
     <string name="popup_text_weight">Yazı kalınlığı: %1$s</string>
     <string name="popup_text_weight_normal">normal</string>

@@ -315,6 +315,8 @@
     <string name="popup_font_downloaded">Downloaded</string>
     <string name="popup_font_own_file">Your file</string>
     <string name="popup_font_delete">Delete %1$s</string>
+    <string name="popup_font_delete_title">Delete %1$s?</string>
+    <string name="popup_font_delete_text">The font is removed from this device. If it is the chosen font, the popup goes back to the phone\'s font.</string>
     <string name="popup_font_size">Text size: %1$d</string>
     <string name="popup_text_weight">Text weight: %1$s</string>
     <string name="popup_text_weight_normal">normal</string>

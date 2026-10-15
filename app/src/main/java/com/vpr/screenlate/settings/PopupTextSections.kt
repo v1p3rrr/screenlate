@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import com.vpr.screenlate.overlay.fonts.FontDownload
 import com.vpr.screenlate.overlay.fonts.FontImport
 import com.vpr.screenlate.overlay.fonts.InstalledFont
 import com.vpr.screenlate.overlay.settings.PopupAppearance
+import com.vpr.screenlate.ui.components.ConfirmDelete
 import com.vpr.screenlate.ui.components.Hint
 import com.vpr.screenlate.ui.components.InfoButton
 import com.vpr.screenlate.ui.components.LabelWithInfo
@@ -95,6 +97,7 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
         if (uri != null) viewModel.import(uri)
     }
     val selected = installed.firstOrNull { it.id == appearance.fontId }
+    var deleting by rememberSaveable { mutableStateOf<String?>(null) }
     SectionCard(title = stringResource(R.string.popup_font_title)) {
         Hint(stringResource(R.string.popup_font_hint))
         FontOption(
@@ -114,7 +117,15 @@ private fun FontCard(appearance: PopupAppearance, installed: List<InstalledFont>
                 selected = font == selected,
                 typeface = typefaces[font.id],
                 onSelect = { viewModel.selectFont(font.id) },
+                onDelete = { deleting = font.id },
+            )
+        }
+        installed.firstOrNull { it.id == deleting }?.let { font ->
+            ConfirmDelete(
+                title = stringResource(R.string.popup_font_delete_title, font.family),
+                text = stringResource(R.string.popup_font_delete_text),
                 onDelete = { viewModel.delete(font) },
+                onDismiss = { deleting = null },
             )
         }
         // The phone's font is always limited to the script, so the disabled switch shows on; it applies to installed fonts.

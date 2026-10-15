@@ -311,6 +311,8 @@
     <string name="popup_font_downloaded">ダウンロード済み</string>
     <string name="popup_font_own_file">自分のファイル</string>
     <string name="popup_font_delete">%1$s を削除</string>
+    <string name="popup_font_delete_title">%1$s を削除しますか？</string>
+    <string name="popup_font_delete_text">フォントをこの端末から削除します。選択中のフォントの場合、ポップアップは端末のフォントに戻ります。</string>
     <string name="popup_font_size">文字サイズ：%1$d</string>
     <string name="popup_text_weight">文字の太さ：%1$s</string>
     <string name="popup_text_weight_normal">標準</string>
