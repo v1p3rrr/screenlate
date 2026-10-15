@@ -61,4 +61,12 @@ class SentenceTest {
         assertThat(extract(paragraph, "Dupont", Language.FRENCH).text).isEqualTo("M. Dupont arrive.")
         assertThat(extract(paragraph, "dit", Language.FRENCH).text).isEqualTo("« Restez ici. » dit-il.")
     }
+
+    @Test
+    fun germanSentenceKeepsOrdinalsAndLowQuotes() {
+        val paragraph = "Es regnet. Am 3. Oktober kommt er, z. B. mit dem Zug. „Bleib hier.“ sagte sie."
+        assertThat(extract(paragraph, "Oktober", Language.GERMAN).text)
+            .isEqualTo("Am 3. Oktober kommt er, z. B. mit dem Zug.")
+        assertThat(extract(paragraph, "sagte", Language.GERMAN).text).isEqualTo("„Bleib hier.“ sagte sie.")
+    }
 }

@@ -13,6 +13,7 @@ enum class Language(val code: String) {
     KOREAN("ko"),
     SPANISH("es"),
     FRENCH("fr"),
+    GERMAN("de"),
     ;
 
     companion object {

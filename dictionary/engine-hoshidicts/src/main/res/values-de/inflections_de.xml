@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">Nominalisierung</string>
+    <string name="inflection_de_nominalization">Aus einem Verb gebildetes Substantiv</string>
+    <string name="inflection_de_bar">Adjektiv auf -bar aus einem Verb</string>
+    <string name="inflection_de_negative_label">Verneinung</string>
+    <string name="inflection_de_negative">Verneinung mit un-</string>
+    <string name="inflection_de_past_participle_label">Partizip II</string>
+    <string name="inflection_de_separated_prefix_label">abgetrenntes Präfix</string>
+    <string name="inflection_de_zu_infinitive_label">zu-Infinitiv</string>
+    <string name="inflection_de_heit">1. Macht aus einem Adjektiv ein Substantiv, meist eine abstrakte Eigenschaft: schön → Schönheit, neu → Neuheit.\n2. Macht aus konkreten Substantiven abstrakte: Kind → Kindheit, Christ → Christenheit.</string>
+</resources>

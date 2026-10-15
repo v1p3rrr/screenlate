@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">nominalização</string>
+    <string name="inflection_de_nominalization">Substantivo formado a partir de um verbo</string>
+    <string name="inflection_de_bar">Adjetivo em -bar («-vel») formado a partir de um verbo</string>
+    <string name="inflection_de_negative_label">negação</string>
+    <string name="inflection_de_negative">Negação com o prefixo un-</string>
+    <string name="inflection_de_past_participle_label">particípio passado</string>
+    <string name="inflection_de_separated_prefix_label">prefixo separado</string>
+    <string name="inflection_de_zu_infinitive_label">infinitivo com zu</string>
+    <string name="inflection_de_heit">1. Forma um substantivo a partir de um adjetivo, geralmente uma qualidade abstrata: schön («bonito») → Schönheit («beleza»), neu («novo») → Neuheit («novidade»).\n2. Forma substantivos abstratos a partir de concretos: Kind («criança») → Kindheit («infância»), Christ («cristão») → Christenheit («cristandade»).</string>
+</resources>

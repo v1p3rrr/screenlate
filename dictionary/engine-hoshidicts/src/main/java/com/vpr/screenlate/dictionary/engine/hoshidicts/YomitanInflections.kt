@@ -513,6 +513,15 @@ internal object YomitanInflections {
             "present participle" to Strings(R.string.inflection_fr_present_participle_label, R.string.inflection_fr_present_participle),
             "present subjunctive" to Strings(R.string.inflection_fr_present_subjunctive_label, R.string.inflection_fr_present_subjunctive),
         ),
+        "de" to mapOf(
+            "nominalization" to Strings(R.string.inflection_de_nominalization_label, R.string.inflection_de_nominalization),
+            "-bar" to Strings(null, R.string.inflection_de_bar),
+            "negative" to Strings(R.string.inflection_de_negative_label, R.string.inflection_de_negative),
+            "past participle" to Strings(R.string.inflection_de_past_participle_label, null),
+            "separated prefix" to Strings(R.string.inflection_de_separated_prefix_label, null),
+            "zu-infinitive" to Strings(R.string.inflection_de_zu_infinitive_label, null),
+            "-heit" to Strings(null, R.string.inflection_de_heit),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

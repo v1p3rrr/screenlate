@@ -342,6 +342,9 @@
     <string name="audio_region_uk">Wielka Brytania</string>
     <string name="audio_region_latin_america">Ameryka Łacińska</string>
     <string name="audio_region_spain">Hiszpania</string>
+    <string name="audio_region_germany">Niemcy</string>
+    <string name="audio_region_austria">Austria</string>
+    <string name="audio_region_switzerland">Szwajcaria</string>
     <string name="audio_region_france">Francja</string>
     <string name="audio_region_canada">Kanada</string>
     <string name="audio_region_other">Inne regiony</string>
@@ -457,6 +460,7 @@
     <string name="popup_font_script_only_en">Tylko dla tekstu angielskiego</string>
     <string name="popup_font_script_only_es">Tylko dla tekstu hiszpańskiego</string>
     <string name="popup_font_script_only_fr">Tylko dla tekstu francuskiego</string>
+    <string name="popup_font_script_only_de">Tylko dla tekstu niemieckiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

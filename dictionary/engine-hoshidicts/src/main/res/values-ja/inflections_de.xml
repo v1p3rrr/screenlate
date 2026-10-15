@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">名詞化</string>
+    <string name="inflection_de_nominalization">動詞から作られた名詞</string>
+    <string name="inflection_de_bar">動詞から作られた -bar（〜できる）の形容詞</string>
+    <string name="inflection_de_negative_label">否定</string>
+    <string name="inflection_de_negative">接頭辞 un- による否定</string>
+    <string name="inflection_de_past_participle_label">過去分詞</string>
+    <string name="inflection_de_separated_prefix_label">分離前つづり</string>
+    <string name="inflection_de_zu_infinitive_label">zu 不定詞</string>
+    <string name="inflection_de_heit">1. 形容詞から名詞を作り、多くは抽象的な性質を表す：schön（美しい）→ Schönheit（美しさ）、neu（新しい）→ Neuheit（新しさ）。\n2. 具体的な名詞から抽象名詞を作る：Kind（子ども）→ Kindheit（子ども時代）、Christ（キリスト教徒）→ Christenheit（キリスト教世界）。</string>
+</resources>

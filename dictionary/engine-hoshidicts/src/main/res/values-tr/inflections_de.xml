@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">adlaştırma</string>
+    <string name="inflection_de_nominalization">Fiilden türetilmiş isim</string>
+    <string name="inflection_de_bar">Fiilden türetilmiş -bar (“-ebilir”) sıfatı</string>
+    <string name="inflection_de_negative_label">olumsuzluk</string>
+    <string name="inflection_de_negative">un- önekiyle olumsuzluk</string>
+    <string name="inflection_de_past_participle_label">geçmiş zaman ortacı</string>
+    <string name="inflection_de_separated_prefix_label">ayrılmış önek</string>
+    <string name="inflection_de_zu_infinitive_label">zu ile mastar</string>
+    <string name="inflection_de_heit">1. Sıfattan isim türetir, genellikle soyut bir nitelik: schön (“güzel”) → Schönheit (“güzellik”), neu (“yeni”) → Neuheit (“yenilik”).\n2. Somut isimlerden soyut isim türetir: Kind (“çocuk”) → Kindheit (“çocukluk”), Christ (“Hristiyan”) → Christenheit (“Hristiyan dünyası”).</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">отглагольное существительное</string>
+    <string name="inflection_de_nominalization">Существительное, образованное от глагола</string>
+    <string name="inflection_de_bar">Прилагательное на -bar («-емый», «можно сделать») от глагола</string>
+    <string name="inflection_de_negative_label">отрицание</string>
+    <string name="inflection_de_negative">Отрицание приставкой un-</string>
+    <string name="inflection_de_past_participle_label">причастие прошедшего времени</string>
+    <string name="inflection_de_separated_prefix_label">отделённая приставка</string>
+    <string name="inflection_de_zu_infinitive_label">инфинитив с zu</string>
+    <string name="inflection_de_heit">1. Существительное от прилагательного, обычно отвлечённое качество: schön («красивый») → Schönheit («красота»), neu («новый») → Neuheit («новинка»).\n2. Отвлечённое существительное от конкретного: Kind («ребёнок») → Kindheit («детство»), Christ («христианин») → Christenheit («христианский мир»).</string>
+</resources>

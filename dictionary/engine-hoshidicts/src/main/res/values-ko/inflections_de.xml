@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_de.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_de_nominalization_label">명사화</string>
+    <string name="inflection_de_nominalization">동사에서 만든 명사</string>
+    <string name="inflection_de_bar">동사에서 만든 -bar(~할 수 있는) 형용사</string>
+    <string name="inflection_de_negative_label">부정</string>
+    <string name="inflection_de_negative">접두사 un-에 의한 부정</string>
+    <string name="inflection_de_past_participle_label">과거분사</string>
+    <string name="inflection_de_separated_prefix_label">분리된 전철</string>
+    <string name="inflection_de_zu_infinitive_label">zu 부정사</string>
+    <string name="inflection_de_heit">1. 형용사에서 명사를 만들며 대개 추상적인 성질을 나타낸다: schön(아름다운) → Schönheit(아름다움), neu(새로운) → Neuheit(새로움).\n2. 구체 명사에서 추상 명사를 만든다: Kind(아이) → Kindheit(어린 시절), Christ(기독교인) → Christenheit(기독교 세계).</string>
+</resources>
