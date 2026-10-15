@@ -337,6 +337,8 @@
     <string name="audio_regions_hint">Les enregistrements Wiktionary des régions placées plus haut dans la liste passent en premier.</string>
     <string name="audio_region_us">États-Unis</string>
     <string name="audio_region_uk">Royaume-Uni</string>
+    <string name="audio_region_latin_america">Amérique latine</string>
+    <string name="audio_region_spain">Espagne</string>
     <string name="audio_region_other">Autres régions</string>
     <string name="audio_url_missing">Pas d’URL</string>
     <string name="audio_tts_hint">Lecture seule ; les notes reçoivent l’audio des autres sources.</string>
@@ -448,6 +450,7 @@
     <string name="popup_text_title">Taille et graisse du texte</string>
     <string name="popup_font_system_default">Police du téléphone</string>
     <string name="popup_font_script_only_en">Seulement pour le texte anglais</string>
+    <string name="popup_font_script_only_es">Seulement pour le texte espagnol</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

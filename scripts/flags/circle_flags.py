@@ -18,7 +18,7 @@ COMMIT = "379588b5da95482d6bbf10bd45644a35b0609ea6"
 URL = "https://raw.githubusercontent.com/HatScripts/circle-flags/{commit}/flags/{country}.svg"
 
 # The countries LanguageSupport.flagCountries names, in the order of the languages.
-COUNTRIES = ["jp", "us", "gb", "au", "ca", "nz", "ie", "cn", "tw", "hk", "sg", "kr"]
+COUNTRIES = ["jp", "us", "gb", "cn", "kr", "es"]
 
 SVG = "{http://www.w3.org/2000/svg}"
 SIZE = 512

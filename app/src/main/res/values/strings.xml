@@ -338,6 +338,8 @@
     <string name="audio_regions_hint">Wiktionary recordings from the regions higher in the list play first.</string>
     <string name="audio_region_us">United States</string>
     <string name="audio_region_uk">United Kingdom</string>
+    <string name="audio_region_latin_america">Latin America</string>
+    <string name="audio_region_spain">Spain</string>
     <string name="audio_region_other">Other regions</string>
     <string name="audio_url_missing">No URL</string>
     <string name="audio_tts_hint">Playback only; notes take audio from the other sources.</string>
@@ -449,6 +451,7 @@
     <string name="popup_text_title">Text size and weight</string>
     <string name="popup_font_system_default">Phone\'s font</string>
     <string name="popup_font_script_only_en">Only for English text</string>
+    <string name="popup_font_script_only_es">Only for Spanish text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

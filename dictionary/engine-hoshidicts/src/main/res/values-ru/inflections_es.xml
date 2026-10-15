@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">множественное число</string>
+    <string name="inflection_es_plural">Множественное число существительного</string>
+    <string name="inflection_es_feminine_adjective_label">женский род</string>
+    <string name="inflection_es_feminine_adjective">Форма женского рода прилагательного</string>
+    <string name="inflection_es_present_indicative_label">настоящее время</string>
+    <string name="inflection_es_present_indicative">Настоящее время изъявительного наклонения глагола</string>
+    <string name="inflection_es_preterite_label">претерит</string>
+    <string name="inflection_es_preterite">Претерит (простое прошедшее время) глагола</string>
+    <string name="inflection_es_imperfect_label">имперфект</string>
+    <string name="inflection_es_imperfect">Имперфект (прошедшее несовершенное) глагола</string>
+    <string name="inflection_es_progressive_label">герундий</string>
+    <string name="inflection_es_progressive">Герундий глагола (длительная форма)</string>
+    <string name="inflection_es_imperative_label">повелительное наклонение</string>
+    <string name="inflection_es_imperative">Повелительное наклонение глагола</string>
+    <string name="inflection_es_conditional_label">условное наклонение</string>
+    <string name="inflection_es_conditional">Условное наклонение глагола</string>
+    <string name="inflection_es_future_label">будущее время</string>
+    <string name="inflection_es_future">Будущее время глагола</string>
+    <string name="inflection_es_present_subjunctive_label">настоящее сослагательного</string>
+    <string name="inflection_es_present_subjunctive">Настоящее время сослагательного наклонения глагола</string>
+    <string name="inflection_es_imperfect_subjunctive_label">имперфект сослагательного</string>
+    <string name="inflection_es_imperfect_subjunctive">Имперфект сослагательного наклонения глагола</string>
+    <string name="inflection_es_participle_label">причастие</string>
+    <string name="inflection_es_participle">Причастие прошедшего времени глагола</string>
+    <string name="inflection_es_reflexive_label">возвратная форма</string>
+    <string name="inflection_es_reflexive">Возвратная форма глагола</string>
+    <string name="inflection_es_pronoun_substitution_label">замена местоимения</string>
+    <string name="inflection_es_pronoun_substitution">Возвратный глагол с другим местоимением</string>
+    <string name="inflection_es_pronominal_label">местоимение перед глаголом</string>
+    <string name="inflection_es_pronominal">Глагол с возвратным местоимением перед ним</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">복수</string>
+    <string name="inflection_es_plural">명사의 복수형</string>
+    <string name="inflection_es_feminine_adjective_label">여성형</string>
+    <string name="inflection_es_feminine_adjective">형용사의 여성형</string>
+    <string name="inflection_es_present_indicative_label">직설법 현재</string>
+    <string name="inflection_es_present_indicative">동사의 직설법 현재형</string>
+    <string name="inflection_es_preterite_label">단순과거</string>
+    <string name="inflection_es_preterite">동사의 단순과거형</string>
+    <string name="inflection_es_imperfect_label">불완료과거</string>
+    <string name="inflection_es_imperfect">동사의 불완료과거형</string>
+    <string name="inflection_es_progressive_label">현재분사</string>
+    <string name="inflection_es_progressive">동사의 현재분사(진행형)</string>
+    <string name="inflection_es_imperative_label">명령형</string>
+    <string name="inflection_es_imperative">동사의 명령형</string>
+    <string name="inflection_es_conditional_label">조건법</string>
+    <string name="inflection_es_conditional">동사의 조건법</string>
+    <string name="inflection_es_future_label">미래</string>
+    <string name="inflection_es_future">동사의 미래형</string>
+    <string name="inflection_es_present_subjunctive_label">접속법 현재</string>
+    <string name="inflection_es_present_subjunctive">동사의 접속법 현재형</string>
+    <string name="inflection_es_imperfect_subjunctive_label">접속법 과거</string>
+    <string name="inflection_es_imperfect_subjunctive">동사의 접속법 과거형</string>
+    <string name="inflection_es_participle_label">과거분사</string>
+    <string name="inflection_es_participle">동사의 과거분사</string>
+    <string name="inflection_es_reflexive_label">재귀형</string>
+    <string name="inflection_es_reflexive">동사의 재귀형</string>
+    <string name="inflection_es_pronoun_substitution_label">대명사 교체</string>
+    <string name="inflection_es_pronoun_substitution">다른 대명사를 쓴 재귀동사</string>
+    <string name="inflection_es_pronominal_label">대명사 앞</string>
+    <string name="inflection_es_pronominal">재귀대명사가 앞에 오는 동사</string>
+</resources>

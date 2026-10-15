@@ -13,7 +13,7 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val translationSample = "The weather is nice today. Let's go for a walk."
     override val audioTestWord = "read"
     override val pronunciationSample = "water → /ˈwɔːtər/"
-    override val flagCountries = listOf("us", "gb", "au", "ca", "nz", "ie")
+    override val flagCountries = listOf("us", "gb")
     override val audioRegions = listOf(AudioRegion("us", setOf("us")), AudioRegion("uk", setOf("uk", "gb")), AudioRegion.OTHER)
 
     /** Single accent names only; tags that list several places (`Southern US, Australia`) are left out. */
@@ -46,14 +46,5 @@ object EnglishSupport : SpacedLanguageSupport() {
         "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec", "a.m", "p.m", "u.s", "u.k",
     )
 
-    /**
-     * Latin text keeps the phone's own font, so no sans-serif face is named; the serif one is Noto Serif, which
-     * Android ships.
-     */
-    override val systemFonts = SystemFonts(
-        sans = emptyList(),
-        serif = listOf("NotoSerif-Regular", "Noto Serif"),
-        unicodeRange = "U+0000-024F, U+1E00-1EFF, U+2000-206F",
-        aliases = emptyMap(),
-    )
+    override val systemFonts = LATIN_SYSTEM_FONTS
 }

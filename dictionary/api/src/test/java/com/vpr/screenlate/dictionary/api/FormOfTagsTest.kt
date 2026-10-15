@@ -7,7 +7,8 @@ class FormOfTagsTest {
     /** Resource names instead of the texts, so the test shows which string each word took. */
     private val names: Map<Int, String> = R.string::class.java.fields.associate { it.getInt(null) to it.name }
 
-    private fun label(tag: String) = FormOfTags.label(tag) { names.getValue(it).removePrefix("form_of_tag_") }
+    private fun label(tag: String) =
+        FormOfTags.label(tag, { names.getValue(it).removePrefix("form_of_tag_") }) { "country:$it" }
 
     @Test
     fun `every word of a tag is translated`() {
@@ -73,5 +74,30 @@ class FormOfTagsTest {
             .containsExactly("object-first", "second-person").inOrder()
         assertThat(FormOfTags.expandPersons(listOf("dative", "accusative"))).containsExactly("dative", "accusative").inOrder()
         assertThat(FormOfTags.expandPersons(listOf("third-person"))).containsExactly("third-person")
+    }
+
+    @Test
+    fun `spanish, german and other european tags are translated`() {
+        assertThat(label("informal second-person singular imperative with-tú"))
+            .isEqualTo("informal second_person singular imperative with_tu")
+        assertThat(label("third-person plural imperfect subjunctive imperfect-se"))
+            .isEqualTo("third_person plural imperfect subjunctive imperfect_se")
+        assertThat(label("dative plural strong without-article")).isEqualTo("dative plural strong without_article")
+        assertThat(label("female equivalent")).isEqualTo("female_equivalent")
+        assertThat(label("agent noun")).isEqualTo("agent_noun")
+    }
+
+    @Test
+    fun `a word its neighbor already says is left out`() {
+        assertThat(label("dative plural superlative strong degree")).isEqualTo("dative plural superlative strong")
+        assertThat(label("degree")).isNull()
+    }
+
+    @Test
+    fun `countries take the system's name, other regions a string`() {
+        assertThat(label("alternative Brazil pronunciation-spelling"))
+            .isEqualTo("alternative country:BR pronunciation_spelling")
+        assertThat(label("alternative Liechtenstein Switzerland")).isEqualTo("alternative country:LI country:CH")
+        assertThat(label("Latin-America")).isEqualTo("latin_america")
     }
 }

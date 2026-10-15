@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">çoğul</string>
+    <string name="inflection_es_plural">Bir ismin çoğul biçimi</string>
+    <string name="inflection_es_feminine_adjective_label">dişil</string>
+    <string name="inflection_es_feminine_adjective">Bir sıfatın dişil biçimi</string>
+    <string name="inflection_es_present_indicative_label">şimdiki zaman</string>
+    <string name="inflection_es_present_indicative">Bir fiilin bildirme kipinde şimdiki zaman biçimi</string>
+    <string name="inflection_es_preterite_label">belirli geçmiş zaman</string>
+    <string name="inflection_es_preterite">Bir fiilin belirli geçmiş zaman (indefinido) biçimi</string>
+    <string name="inflection_es_imperfect_label">sürekli geçmiş zaman</string>
+    <string name="inflection_es_imperfect">Bir fiilin sürekli geçmiş zaman (imperfecto) biçimi</string>
+    <string name="inflection_es_progressive_label">ulaç</string>
+    <string name="inflection_es_progressive">Bir fiilin ulaç (gerundio) biçimi</string>
+    <string name="inflection_es_imperative_label">emir kipi</string>
+    <string name="inflection_es_imperative">Bir fiilin emir kipi</string>
+    <string name="inflection_es_conditional_label">şart kipi</string>
+    <string name="inflection_es_conditional">Bir fiilin şart kipi</string>
+    <string name="inflection_es_future_label">gelecek zaman</string>
+    <string name="inflection_es_future">Bir fiilin gelecek zaman biçimi</string>
+    <string name="inflection_es_present_subjunctive_label">dilek kipi, şimdiki</string>
+    <string name="inflection_es_present_subjunctive">Bir fiilin dilek kipinde (subjuntivo) şimdiki zaman biçimi</string>
+    <string name="inflection_es_imperfect_subjunctive_label">dilek kipi, geçmiş</string>
+    <string name="inflection_es_imperfect_subjunctive">Bir fiilin dilek kipinde (subjuntivo) geçmiş zaman biçimi</string>
+    <string name="inflection_es_participle_label">ortaç</string>
+    <string name="inflection_es_participle">Bir fiilin geçmiş zaman ortacı</string>
+    <string name="inflection_es_reflexive_label">dönüşlü</string>
+    <string name="inflection_es_reflexive">Bir fiilin dönüşlü biçimi</string>
+    <string name="inflection_es_pronoun_substitution_label">başka zamir</string>
+    <string name="inflection_es_pronoun_substitution">Başka bir zamirle kullanılan dönüşlü fiil</string>
+    <string name="inflection_es_pronominal_label">önde zamir</string>
+    <string name="inflection_es_pronominal">Dönüşlü zamiri önünde olan fiil</string>
+</resources>

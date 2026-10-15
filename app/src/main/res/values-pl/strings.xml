@@ -340,6 +340,8 @@
     <string name="audio_regions_hint">Nagrania z Wiktionary z regionów wyżej na liście są odtwarzane jako pierwsze.</string>
     <string name="audio_region_us">Stany Zjednoczone</string>
     <string name="audio_region_uk">Wielka Brytania</string>
+    <string name="audio_region_latin_america">Ameryka Łacińska</string>
+    <string name="audio_region_spain">Hiszpania</string>
     <string name="audio_region_other">Inne regiony</string>
     <string name="audio_url_missing">Brak URL</string>
     <string name="audio_tts_hint">Tylko odtwarzanie; notatki otrzymują dźwięk z innych źródeł.</string>
@@ -451,6 +453,7 @@
     <string name="popup_text_title">Rozmiar i grubość tekstu</string>
     <string name="popup_font_system_default">Czcionka telefonu</string>
     <string name="popup_font_script_only_en">Tylko dla tekstu angielskiego</string>
+    <string name="popup_font_script_only_es">Tylko dla tekstu hiszpańskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

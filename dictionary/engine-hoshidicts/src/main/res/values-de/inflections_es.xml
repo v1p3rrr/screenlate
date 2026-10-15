@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">Plural</string>
+    <string name="inflection_es_plural">Pluralform eines Substantivs</string>
+    <string name="inflection_es_feminine_adjective_label">Femininum</string>
+    <string name="inflection_es_feminine_adjective">Feminine Form eines Adjektivs</string>
+    <string name="inflection_es_present_indicative_label">Präsens Indikativ</string>
+    <string name="inflection_es_present_indicative">Präsens Indikativ eines Verbs</string>
+    <string name="inflection_es_preterite_label">Indefinido</string>
+    <string name="inflection_es_preterite">Indefinido (einfache Vergangenheit) eines Verbs</string>
+    <string name="inflection_es_imperfect_label">Imperfekt</string>
+    <string name="inflection_es_imperfect">Imperfekt eines Verbs</string>
+    <string name="inflection_es_progressive_label">Gerundium</string>
+    <string name="inflection_es_progressive">Gerundium eines Verbs (Verlaufsform)</string>
+    <string name="inflection_es_imperative_label">Imperativ</string>
+    <string name="inflection_es_imperative">Imperativ eines Verbs</string>
+    <string name="inflection_es_conditional_label">Konditional</string>
+    <string name="inflection_es_conditional">Konditional eines Verbs</string>
+    <string name="inflection_es_future_label">Futur</string>
+    <string name="inflection_es_future">Futur eines Verbs</string>
+    <string name="inflection_es_present_subjunctive_label">Präsens Subjuntivo</string>
+    <string name="inflection_es_present_subjunctive">Präsens Subjuntivo eines Verbs</string>
+    <string name="inflection_es_imperfect_subjunctive_label">Imperfekt Subjuntivo</string>
+    <string name="inflection_es_imperfect_subjunctive">Imperfekt Subjuntivo eines Verbs</string>
+    <string name="inflection_es_participle_label">Partizip</string>
+    <string name="inflection_es_participle">Partizip Perfekt eines Verbs</string>
+    <string name="inflection_es_reflexive_label">Reflexiv</string>
+    <string name="inflection_es_reflexive">Reflexive Form eines Verbs</string>
+    <string name="inflection_es_pronoun_substitution_label">Pronomenwechsel</string>
+    <string name="inflection_es_pronoun_substitution">Reflexives Verb mit einem anderen Pronomen</string>
+    <string name="inflection_es_pronominal_label">Pronomen davor</string>
+    <string name="inflection_es_pronominal">Verb mit dem Reflexivpronomen davor</string>
+</resources>

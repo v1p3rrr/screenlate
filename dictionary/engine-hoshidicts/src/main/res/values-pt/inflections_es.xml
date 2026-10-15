@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">plural</string>
+    <string name="inflection_es_plural">Forma plural de um substantivo</string>
+    <string name="inflection_es_feminine_adjective_label">feminino</string>
+    <string name="inflection_es_feminine_adjective">Forma feminina de um adjetivo</string>
+    <string name="inflection_es_present_indicative_label">presente do indicativo</string>
+    <string name="inflection_es_present_indicative">Presente do indicativo de um verbo</string>
+    <string name="inflection_es_preterite_label">pretérito perfeito</string>
+    <string name="inflection_es_preterite">Pretérito perfeito (indefinido) de um verbo</string>
+    <string name="inflection_es_imperfect_label">pretérito imperfeito</string>
+    <string name="inflection_es_imperfect">Pretérito imperfeito de um verbo</string>
+    <string name="inflection_es_progressive_label">gerúndio</string>
+    <string name="inflection_es_progressive">Gerúndio de um verbo (forma progressiva)</string>
+    <string name="inflection_es_imperative_label">imperativo</string>
+    <string name="inflection_es_imperative">Imperativo de um verbo</string>
+    <string name="inflection_es_conditional_label">condicional</string>
+    <string name="inflection_es_conditional">Condicional (futuro do pretérito) de um verbo</string>
+    <string name="inflection_es_future_label">futuro</string>
+    <string name="inflection_es_future">Futuro de um verbo</string>
+    <string name="inflection_es_present_subjunctive_label">presente do subjuntivo</string>
+    <string name="inflection_es_present_subjunctive">Presente do subjuntivo de um verbo</string>
+    <string name="inflection_es_imperfect_subjunctive_label">imperfeito do subjuntivo</string>
+    <string name="inflection_es_imperfect_subjunctive">Pretérito imperfeito do subjuntivo de um verbo</string>
+    <string name="inflection_es_participle_label">particípio</string>
+    <string name="inflection_es_participle">Particípio de um verbo</string>
+    <string name="inflection_es_reflexive_label">reflexivo</string>
+    <string name="inflection_es_reflexive">Forma reflexiva de um verbo</string>
+    <string name="inflection_es_pronoun_substitution_label">outro pronome</string>
+    <string name="inflection_es_pronoun_substitution">Verbo reflexivo com outro pronome</string>
+    <string name="inflection_es_pronominal_label">pronome antes</string>
+    <string name="inflection_es_pronominal">Verbo com o pronome reflexivo antes dele</string>
+</resources>

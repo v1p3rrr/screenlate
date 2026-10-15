@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.anki.audio
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.AudioRegion
+import com.vpr.screenlate.core.common.language.SpanishSupport
 import kotlinx.serialization.json.Json
 import org.junit.Test
 
@@ -96,6 +97,24 @@ class AudioPagesTest {
         assertThat(AudioPages.wiktionaryRegion("File:En-water.ogg", "water", "en")).isNull()
         // A term that starts like a region code is not taken for one.
         assertThat(AudioPages.wiktionaryRegion("File:En-up-to.ogg", "up-to", "en")).isNull()
+    }
+
+    @Test
+    fun `Wiktionary titles may name a region with a longer code the language lists`() {
+        val regions = SpanishSupport.audioRegions
+        assertThat(AudioPages.wiktionaryRegion("File:Es-am-lat-agua.ogg", "agua", "es", regions)).isEqualTo("am-lat")
+        assertThat(AudioPages.wiktionaryRegion("File:Es-mx-agua.ogg", "agua", "es", regions)).isEqualTo("mx")
+        assertThat(AudioPages.wiktionaryRegion("File:Es-am-lat-agua.ogg", "agua", "es")).isNull()
+        val search = """intitle:/[Ee]s(-(am-lat|[a-zA-Z]{2}))?-agua[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
+        assertThat(AudioPages.wiktionarySearch("agua", "es", regions)).isEqualTo("intitle:\"agua\" $search")
+
+        val files = listOf("File:Es-agua.ogg", "File:Es-es-agua.ogg", "File:Es-am-lat-agua.ogg", "File:Es-mx-agua.ogg")
+            .map { it to it }
+        assertThat(AudioPages.byRegion(files, "agua", "es", regions).map { it.first })
+            .containsExactly(
+                "File:Es-am-lat-agua.ogg", "File:Es-mx-agua.ogg", "File:Es-es-agua.ogg", "File:Es-agua.ogg",
+            )
+            .inOrder()
     }
 
     @Test

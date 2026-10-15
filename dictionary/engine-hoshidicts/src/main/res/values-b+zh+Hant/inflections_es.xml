@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_es.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_es_plural_label">複數</string>
+    <string name="inflection_es_plural">名詞的複數形式</string>
+    <string name="inflection_es_feminine_adjective_label">陰性</string>
+    <string name="inflection_es_feminine_adjective">形容詞的陰性形式</string>
+    <string name="inflection_es_present_indicative_label">陳述式現在時</string>
+    <string name="inflection_es_present_indicative">動詞的陳述式現在時</string>
+    <string name="inflection_es_preterite_label">簡單過去時</string>
+    <string name="inflection_es_preterite">動詞的簡單過去時</string>
+    <string name="inflection_es_imperfect_label">過去未完成時</string>
+    <string name="inflection_es_imperfect">動詞的過去未完成時</string>
+    <string name="inflection_es_progressive_label">副動詞</string>
+    <string name="inflection_es_progressive">動詞的副動詞（進行形式）</string>
+    <string name="inflection_es_imperative_label">命令式</string>
+    <string name="inflection_es_imperative">動詞的命令式</string>
+    <string name="inflection_es_conditional_label">條件式</string>
+    <string name="inflection_es_conditional">動詞的條件式</string>
+    <string name="inflection_es_future_label">未來時</string>
+    <string name="inflection_es_future">動詞的未來時</string>
+    <string name="inflection_es_present_subjunctive_label">虛擬式現在時</string>
+    <string name="inflection_es_present_subjunctive">動詞的虛擬式現在時</string>
+    <string name="inflection_es_imperfect_subjunctive_label">虛擬式過去未完成時</string>
+    <string name="inflection_es_imperfect_subjunctive">動詞的虛擬式過去未完成時</string>
+    <string name="inflection_es_participle_label">過去分詞</string>
+    <string name="inflection_es_participle">動詞的過去分詞</string>
+    <string name="inflection_es_reflexive_label">自復形式</string>
+    <string name="inflection_es_reflexive">動詞的自復形式</string>
+    <string name="inflection_es_pronoun_substitution_label">換用代詞</string>
+    <string name="inflection_es_pronoun_substitution">換用其他代詞的自復動詞</string>
+    <string name="inflection_es_pronominal_label">代詞在前</string>
+    <string name="inflection_es_pronominal">自復代詞放在前面的動詞</string>
+</resources>

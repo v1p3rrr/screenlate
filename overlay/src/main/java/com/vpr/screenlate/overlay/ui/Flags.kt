@@ -15,15 +15,9 @@ object Flags {
         "jp" to R.drawable.flag_jp,
         "us" to R.drawable.flag_us,
         "gb" to R.drawable.flag_gb,
-        "au" to R.drawable.flag_au,
-        "ca" to R.drawable.flag_ca,
-        "nz" to R.drawable.flag_nz,
-        "ie" to R.drawable.flag_ie,
         "cn" to R.drawable.flag_cn,
-        "tw" to R.drawable.flag_tw,
-        "hk" to R.drawable.flag_hk,
-        "sg" to R.drawable.flag_sg,
         "kr" to R.drawable.flag_kr,
+        "es" to R.drawable.flag_es,
     )
 
     /** The flag of [country]; null for a country without one. */
