@@ -92,7 +92,7 @@ the engine module that holds them.
 | `core:anki` | AnkiDroid integration, note templates, audio sources |
 | `core:translate` | Sentence translation through free online services |
 | `dictionary:api` | Dictionary engine interface, dictionary registry |
-| `dictionary:engine-hoshidicts` | Engine based on hoshidicts (GPL-3.0) |
+| `dictionary:engine-hoshidicts` | Engine based on hoshidicts, Yomitan's language code in QuickJS (GPL-3.0) |
 | `dictionary:render-yomitan` | Yomitan-style entry renderer (GPL-3.0) |
 
 GPL-licensed third-party code is kept in the last two modules so it can be replaced without touching the rest of the app. Every third-party addition gets an entry in [NOTICE](../NOTICE).
