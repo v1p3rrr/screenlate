@@ -568,6 +568,13 @@ button.inflection-step {
     color: var(--tag-text-color, var(--frequency-fg));
 }
 
+button.frequency {
+    font: inherit;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
 .frequency-dictionary {
     padding: 0 5px;
     font-weight: var(--bold-weight);

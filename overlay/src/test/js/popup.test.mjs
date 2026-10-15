@@ -438,7 +438,7 @@ test('details sit in one row: inflection, the first frequency and distinct accen
     const row = head.querySelector('.entry-info');
     assert.ok(row);
     assert.equal(row.querySelectorAll('.frequency').length, 1);
-    assert.equal(row.querySelector('.frequency').textContent, 'Jiten500');
+    assert.equal(row.querySelector('.frequency').textContent, 'J500');
     assert.equal(row.querySelectorAll('.pitch-item').length, 2);
     assert.equal(row.querySelector('.pitch-dictionary'), null);
 
@@ -464,7 +464,7 @@ test('one frequency value shows, the most frequent; "+N" counts the hidden value
         ])],
     }));
     const row = content.querySelector('.entry-info');
-    assert.deepEqual(chips(row), ['Jiten39']);
+    assert.deepEqual(chips(row), ['J39']);
     const more = row.querySelector('.frequency-more');
     assert.equal(more.textContent, '+3');
 
@@ -475,14 +475,44 @@ test('one frequency value shows, the most frequent; "+N" counts the hidden value
     assert.equal(row.lastElementChild.lastElementChild, less);
 
     less.click();
-    assert.deepEqual(chips(row), ['Jiten39']);
+    assert.deepEqual(chips(row), ['J39']);
     assert.equal(row.querySelector('.frequency-more').textContent, '+3');
+});
+
+test('a long dictionary name shows its first letter until the chip is tapped; "+N" shows the first one whole', () => {
+    Popup.render(state({
+        results: [frequent([
+            { dictionary: 'BCCWJ', values: [{ value: 39, displayValue: '' }] },
+            { dictionary: 'wordfreq zh [2026]', values: [{ value: 120, displayValue: '' }] },
+            { dictionary: 'NieR', values: [{ value: 5, displayValue: '' }] },
+            { dictionary: '国語辞典', values: [{ value: 7, displayValue: '' }] },
+            { dictionary: '頻度', values: [{ value: 8, displayValue: '' }] },
+        ])],
+    }));
+    const row = content.querySelector('.entry-info');
+    assert.deepEqual(chips(row), ['B39']);
+    const first = row.querySelector('.frequency');
+    assert.equal(first.getAttribute('aria-label'), 'BCCWJ 39');
+    first.click();
+    assert.deepEqual(chips(row), ['BCCWJ39']);
+    first.click();
+    assert.deepEqual(chips(row), ['B39']);
+
+    row.querySelector('.frequency-more').click();
+    assert.deepEqual(chips(row), ['BCCWJ39', 'W120', 'NieR5', '国7', '頻度8']);
+    const expanded = [...row.querySelectorAll('.frequency')];
+    expanded[1].click();
+    assert.deepEqual(chips(row), ['BCCWJ39', 'wordfreq zh120', 'NieR5', '国7', '頻度8']);
+    assert.equal(expanded[2].tagName, 'SPAN');
+
+    Popup.render(state({ results: [frequent([{ dictionary: 'BCCWJ', values: [{ value: 39, displayValue: '' }] }])] }));
+    assert.deepEqual(chips(content.querySelector('.entry-info')), ['B39']);
 });
 
 test('a kana value alone in its dictionary needs no "+N"', () => {
     Popup.render(state({ results: [frequent([{ dictionary: 'Jiten', values: [{ value: 10, displayValue: '10㋕' }] }])] }));
     const row = content.querySelector('.entry-info');
-    assert.deepEqual(chips(row), ['Jiten10㋕']);
+    assert.deepEqual(chips(row), ['J10㋕']);
     assert.equal(row.querySelector('.frequency-more'), null);
 });
 
@@ -494,7 +524,7 @@ test('a dictionary counting occurrences shows its highest value first; values wi
         ])],
     }));
     const row = content.querySelector('.entry-info');
-    assert.deepEqual(chips(row), ['Counts90']);
+    assert.deepEqual(chips(row), ['C90']);
     row.querySelector('.frequency-more').click();
     assert.deepEqual(chips(row), ['Counts90, 3, ★']);
 });
