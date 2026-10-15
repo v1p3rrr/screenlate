@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -120,7 +121,7 @@ private fun CollectionChecklist(state: CollectionState.Listed, viewModel: Collec
         ) {
             Checkbox(checked = item.checked, onCheckedChange = { viewModel.toggle(dictionary.title) }, colors = AccentDefaults.checkboxColors())
             Column {
-                Text(dictionary.title)
+                Text(dictionary.title, fontWeight = FontWeight.SemiBold)
                 Hint(
                     listOfNotNull(
                         stringResource(R.string.yomitan_collection_entries, dictionary.entries),
@@ -173,7 +174,7 @@ private fun ProfileChoice(state: SettingsImportState.Loaded, viewModel: YomitanI
         ) {
             Checkbox(checked = section in state.sections, onCheckedChange = { viewModel.toggleSection(section) }, colors = AccentDefaults.checkboxColors())
             Column {
-                Text(stringResource(sectionTitle(section)))
+                Text(stringResource(sectionTitle(section)), fontWeight = FontWeight.SemiBold)
                 Hint(stringResource(sectionHint(section)))
             }
         }
