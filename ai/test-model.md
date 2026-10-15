@@ -280,7 +280,7 @@ the same AVD is a finding. The first run of this model records them in the run l
 | NF6 | Cold start: the splash until the settings are read, then content, no empty frame; `am start -W` TotalTime | F | M | 2026-10-14 |
 | NF7 | Settings pages open with the current values, no defaults shown first; the Dictionaries page's first opening in a process shows a progress indicator in place of the lists, not empty sections (screen recording after a restart) | F | M | 2026-10-14 |
 | NF8 | Memory: PSS docked, after a scan, and after 20 scans back near the docked value (no growth) | F | M | 2026-10-14 |
-| NF9 | Sizes: APK per ABI against the last release; installed size (app, data) after a fresh install with Japanese | F | M | 2026-10-14 |
+| NF9 | Sizes: APK per ABI against the last release; installed size (app, data) after a fresh install with Japanese | F | M | 2026-10-14, 2026-10-15 (APK) |
 | NF10 | Long texts wrap and screens scroll in all 14 locales (download screen, Languages, settings hints; spot checks in de, ru, vi, ja) | F | M | 2026-10-14 |
 | NF11 | Import times: JMdict from a file, the bundled set on first run | O | M | 2026-10-14 (bundled) |
 | NF12 | Search updates while typing without visible lag | O | M | 2026-10-14 |
@@ -315,6 +315,11 @@ Known limits, as in Yomitan or in the data: 수업은 lists 수없다 first (the
 longer match sorts first); 마셨어요 lists 마다 before 마시다 (Wiktionary gives both, and wordfreq ranks 마다 high from
 the particle); 496 KRDICT entries show `&quot;` and `&apos;` as text (question 8). The device recognizer does not
 read hanja.
+
+Merge build 0805427 (`languages/main`): the engine's instrumented suite (29) passed. NF9 release APKs against v0.2.3:
+arm64-v8a 51.2 MB (48.4), armeabi-v7a 46.0 MB (43.6), x86_64 52.0 MB (49.1), universal 76.8 MB (71.8); of the
+2.9 MB (x86_64): engine library +1.34, ML Kit models +0.52, dex +0.41, resources +0.33, the hanja dictionary
++0.17, language bundles and catalog +0.06; since 2026-10-14 +0.5 MB per ABI.
 
 ### 2026-10-15, builds 16aa855 to the frequency chip names, Pixel_10_Pro (API 37)
 

@@ -513,7 +513,8 @@ Per-language checklist (every language branch):
 ### Before group 1 is merged
 
 - The postponed items (bundled Japanese dictionaries, hosting).
-- A look at the APK size per ABI against v0.2.2 (48.4 MB arm64).
+- A look at the APK size per ABI against v0.2.2 (48.4 MB arm64). Done 2026-10-15 against v0.2.3 (the same 48.4 MB):
+  arm64-v8a 51.2 MB with English, Chinese and Korean (`ai/test-model.md`, NF9).
 
 ## Stage C: group 2 (es, fr, de, it, pt)
 
@@ -802,3 +803,7 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   from it. Korean done on the branch (section "Korean"): support class, catalog with KRDICT and the hanja dictionary
   from the app, form-of tags, fonts, character entry tags, emulator checks by the test model. Questions 4-10 logged
   with their recommended options in use.
+- 2026-10-15: `languages/ko` merged into `languages/main` (0805427): group 1 (English, Chinese, Korean) is built.
+  The engine's instrumented suite passed (29); release APKs: arm64-v8a 51.2 MB, armeabi-v7a 46.0, x86_64 52.0,
+  universal 76.8 (v0.2.3: 48.4, 43.6, 49.1, 71.8). Left before group 1 counts as done: the postponed items
+  (bundled Japanese dictionaries, hosting) and questions 1-10.
