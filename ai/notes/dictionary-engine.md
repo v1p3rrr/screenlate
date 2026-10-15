@@ -1,6 +1,6 @@
 # Dictionary engine (hoshidicts) — findings for the dictionaries work
 
-Implemented: submodule at `dictionary/engine-hoshidicts/src/main/cpp/hoshidicts`, JNI in `src/main/cpp/jni_bridge.cpp`, Kotlin side `HoshidictsEngine`. Instrumented test `HoshidictsEngineTest` covers import, deinflection, frequency, non-BMP text, styles and media.
+Implemented: submodule at `dictionary/engine-hoshidicts/src/main/cpp/hoshidicts`, JNI in `src/main/cpp/jni_bridge.cpp`, form-of entries in `form_of.cpp`, Kotlin side `HoshidictsEngine`. Instrumented test `HoshidictsEngineTest` covers import, deinflection, form-of entries, frequency, non-BMP text, styles and media.
 
 ## Toolchain
 
@@ -130,6 +130,26 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - The importer writes into `outputDir / title` and removes that path when an import fails; `std::filesystem` lets a
   `..` segment or an absolute title leave `outputDir`. `ArchiveTitles` refuses such titles (checked on every
   `index.json` of the zip) before the native import.
+- Form-of entries (2026-10-15): hoshidicts keeps glossary items `["lemma", ["tag", ...]]` in the glossary and does not
+  follow them (the record's "redirects" field is written as 0). The popup drew such rows as numbered items with only
+  their "non-lemma" tag, and the row ranked first, as its headword equals the scanned text while the real word matches
+  only by its reading (じどう with six empty items above 自動). `form_of.cpp` follows them after hoshidicts' lookup, as
+  Yomitan's `_getDictionaryDeinflections` does for every language (Japanese too): one step, the items leave the
+  glossary, entries without definitions go, a lemma's terms join with the matched text and the chain plus the tags
+  (shown as the dictionary writes them, owner 2026-10-15), and a term found as well or better keeps its result (so
+  じどう → 自動 by its reading and 混ぜない → 混ぜる by deinflection look as before). The bridge asks hoshidicts for
+  every result and cuts to `maxResults` afterwards, so form rows do not take places. The Japanese Wiktionary
+  dictionaries are mostly such rows: wty-ja-ja (2026.10.11) 170,552 of 314,082 rows, wty-ja-en 540,043 of 647,190,
+  wty-ja-ru none. wty-ja-ja's items: 106 K inflections (`imperfective godan`, `polite continuative`; the deinflector
+  covers the full forms, the bare stems such as まぜ only exist there), 68 K `transliteration` (kana → kanji; 89% of the
+  lemmas have that kana as their reading anyway; the rest are on and kun readings of single kanji and readings missing
+  from the entry, にっぽんご → 日本語), 4.8 K `alternative` (豪州 → オーストラリア), 1 K `kyūjitai` (社會 → 社会). No row
+  mixes definitions and items there. Jitendex (12 K rows, `redirected from 飴とムチ`) and Kolobok (137 K, `вариант
+  написания: 社會`) add an item to rows that also show a "⟶ lemma" link; such rows drew an empty second bullet before,
+  and now their lemma joins the results with that tag (the first dictionary in order wins when several lead to one
+  term; 社會 shows 社会 with Jitendex's tag). Warm lookups on the emulator with ten dictionaries stay at 10–22 ms; the
+  first one after start reads the lemmas' pages (681 ms for 豪州). Installed on the emulator: wty-ja-ja 48 MB, wty-ja-en 94 MB; splitting the rows into a
+  compact table at import (as `languages/main` does for other languages) would cut them to roughly 22 and 10 MB.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

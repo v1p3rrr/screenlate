@@ -47,8 +47,10 @@ questions: `plans/2026-10-09-more-languages.md`.
 - Prefixes are shortened one code point at a time (Yomitan's "letter" search resolution).
 - `query_raw` matches the expression or the reading exactly: no case folding, no diacritics removal.
 - Form-of entries are not followed: the term record has a "redirects" field (format version ≥ 2), but the importer
-  writes 0 and the query skips it. The glossary JSON keeps the `["lemma", ["rule", …]]` items as they are, so the
-  renderer gets them raw.
+  writes 0 and the query skips it. The glossary JSON keeps the `["lemma", ["rule", …]]` items as they are. Since
+  2026-10-15 the JNI bridge follows them after hoshidicts' Japanese lookup (`form_of.cpp`, see
+  `dictionary-engine.md`); before, the popup drew them as empty items with the "non-lemma" tag (and as an empty
+  second bullet in Jitendex's and Kolobok's redirect rows).
 
 ## How Yomitan supports languages
 

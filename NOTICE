@@ -39,6 +39,8 @@ Copyright (c) 2023-2025 Yomitan Authors, Copyright (c) 2021-2022 Yomichan Author
   dictionary CSS scoping in dictionary/render-yomitan are derived from these projects.
   The Japanese inflection names and descriptions in dictionary/engine-hoshidicts come from
   Yomitan's japanese-transforms.js through hoshidicts; their translations are under the same license.
+  The lookup in dictionary/engine-hoshidicts follows form-of entries as Yomitan's dictionary
+  deinflections do (form_of.cpp).
   The text processors and inflection rules of the other languages are Yomitan's own language code,
   bundled by scripts/yomitan-language into dictionary/engine-hoshidicts/src/main/assets/yomitan-language.
   The Korean bundle includes hangul-js (https://github.com/e-/Hangul.js), MIT License,

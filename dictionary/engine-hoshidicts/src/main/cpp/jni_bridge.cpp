@@ -4,8 +4,9 @@
 // BMP (for example U+20B9F) as surrogate pairs, which hoshidicts would not match.
 // Structured results are returned as UTF-8 JSON produced with glaze.
 //
-// Japanese is looked up by hoshidicts itself. Other languages take their deinflection candidates from Yomitan's
-// language code running in QuickJS and follow form-of entries through the tables in language/.
+// Japanese is looked up by hoshidicts itself, then form-of entries are followed to their lemmas as Yomitan does
+// (form_of.hpp). Other languages take their deinflection candidates from Yomitan's language code running in
+// QuickJS and follow form-of entries through the tables in language/.
 
 #include <android/log.h>
 #include <jni.h>
@@ -13,6 +14,7 @@
 #include <algorithm>
 #include <exception>
 #include <filesystem>
+#include <limits>
 #include <memory>
 #include <optional>
 #include <string>
@@ -22,6 +24,7 @@
 #include <glaze/glaze.hpp>
 #include <utf8.h>
 
+#include "form_of.hpp"
 #include "hoshidicts/deinflector.hpp"
 #include "hoshidicts/importer.hpp"
 #include "hoshidicts/lookup.hpp"
@@ -362,8 +365,13 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
     options.primary_reading = to_optional_string(env, primary_reading);
 
     Lookup lookup(s->query, s->deinflector);
-    std::vector<LookupResult> results =
-        lookup.lookup(to_string(env, text), max_results, static_cast<size_t>(scan_length), options);
+    // Every result first: form-of entries give way to their lemmas and must not take the places of other terms.
+    std::vector<LookupResult> results = screenlate_form_of::follow_form_of(
+        s->query, lookup.lookup(to_string(env, text), std::numeric_limits<int>::max(),
+                                static_cast<size_t>(scan_length), options));
+    if (max_results >= 0 && results.size() > static_cast<size_t>(max_results)) {
+      results.resize(static_cast<size_t>(max_results));
+    }
     std::vector<LookupDto> dtos;
     dtos.reserve(results.size());
     for (auto& result : results) {

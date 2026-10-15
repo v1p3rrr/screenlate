@@ -36,6 +36,12 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
    first; a particle entry of 마다 in another dictionary joins its group. Screenlate does the same. It cuts a tag at
    two or more spaces (`FormOfTags.clean`): about 1,000 Korean Wiktionary tags carry a piece of gloss there ("hanja
    form   the Korean language”)").
+   Yomitan follows them for Japanese as well (Wiktionary's "non-lemma" rows: じどう → 自動 "transliteration", 社會 →
+   社会 "kyūjitai"); Screenlate's Japanese lookup does since 2026-10-15 (`form_of.cpp` in the engine module), with the
+   tags as the dictionary writes them and one chain per term: a term also found by its reading or by deinflection
+   keeps that match. Jitendex and Kolobok put such an item next to a visible "⟶ lemma" link (Jitendex "redirected
+   from 社會", Kolobok "вариант написания: 社會"), so 社會 also brings 社会 with that tag; when several dictionaries
+   lead to the same term, the tag of the first one in the user's order shows.
 9. Korean irregular-stem rules reach unrelated words: 수업은 deinflects to 수없다 (ㅅ-irregular, -(으)ㄴ) as well as
    to 수업, and the longer match sorts first; Yomitan's candidates are the same (checked with the bundle in Node).
 

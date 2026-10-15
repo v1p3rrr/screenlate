@@ -24,6 +24,7 @@ target_compile_options(quickjs PRIVATE -w)
 target_include_directories(quickjs PUBLIC quickjs)
 
 add_library(screenlate_hoshidicts SHARED
+    form_of.cpp
     jni_bridge.cpp
     language/archive_split.cpp
     language/candidate_lookup.cpp
