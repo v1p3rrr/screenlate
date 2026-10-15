@@ -12,6 +12,20 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
    from PDFs) are read as their ideographs: Yomitan's `normalizeRadicalCharacters` for zh, and the Japanese path
    does the same. Screenlate's `lookupStart` dropped a lookup starting at one before the engine saw it; since
    2026-10-15 `CjkText.isRadical` lets it start a word (instrumented: `ChineseLookupTest`, `LookupPipelineTest`).
+6. English phrasal verbs: the past, -ing and third-person rules have phrasal variants ("picked up" → "pick up",
+   conditions `v_phr`), and the interposed-object rule drops the words between a verb and an adverb particle
+   ("picked the book up" → "picked up"). `v` only groups its sub-condition `v_phr`, so both have flag 1, and an entry
+   without a part of speech (wty-en-ru: 333 "word particle" phrases, all with empty rules and the dtag "phrase")
+   never matches. Screenlate's own deviation since 2026-10-15: `glue.js` marks a candidate `u` when its conditions are
+   the verb flags, no chain has "interposed object" and the deinflected text's second word is one of Yomitan's
+   adverb particles (`phrasalVerbParticles`; prepositions such as to, for, with left out); `candidate_lookup.cpp`
+   then also accepts entries and form-of items with blank rules. Checked over the 20,562 English example sentences
+   of wty-en-ru: every hit was a real phrasal verb except "ways out" → "way out" (right entry, labelled
+   "3rd pers. sing. pres"); plural nouns like "sons in law" behave the same. Prepositions would have added "closed
+   to" → "close to" (near), "saved for" → "save for" (except), "puts upon"; the interposed-object rule would have
+   added "time is running out" → "time out" and "way the money ran out" → "way out". Lost by the strict rule: 18
+   verbal phrases ending in a preposition (look for, deal with, apply to, …). Instrumented:
+   `LanguageLookupTest.phrasalVerbsWithoutPartOfSpeechMatchTheirFormsWithAdverbParticles`.
 
 ## Result modes (`resultOutputMode`, default `group`)
 

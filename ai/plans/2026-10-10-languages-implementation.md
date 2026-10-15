@@ -211,6 +211,16 @@ Collected after that (autonomous work, 2026-10-15); the recommended option is in
    character has several forms the one a dictionary lists with the word's reading (头发 → 頭髮, not 頭發); such
    fields are pre-filled with them, the first field too; (b) `{expression}` in both fields, the user fixes one by
    hand; (c) leave such fields empty.
+3. English phrasal verbs in the past with dictionaries that give phrases no part of speech (decision row "Phrasal
+   verbs in the past"). The false-match check over the 20,562 English example sentences of wty-en-ru found that a
+   preposition after the verb brings wrong phrases ("closed to traffic" → "close to", near; "saved for" → "save for",
+   except) and that the interposed-object rule ("picked the book up") would bring "time is running out" → "time
+   out". Options: (a, recommended, in use) a phrase without a part of speech matches a verb form only when the word
+   after the verb is an adverb particle (up, out, off, back and the like), and the interposed-object rule keeps
+   matching only phrases marked as verbs: 291 of wty-en-ru's 309 verbal phrases are reached, the 18 with a
+   preposition only are not (look for, deal with, apply to, …); the one wrong label seen is "ways out" → "way out"
+   marked as third person; (b) prepositions too: "look for" and "deal with" as well, with the false matches above;
+   (c) as Yomitan: such phrases never match a verb form.
 
 ## Branches and workflow
 
@@ -738,3 +748,8 @@ Kannada, Syriac) and Ukrainian's 35 rule names.
   `ChineseLookupTest` on the real engine. Fix found by it: a lookup starting at a radical look-alike (⽇ for 日, from
   PDFs) was dropped before the engine, which reads radicals as ideographs; Japanese and Chinese now start a word
   there. `scripts/text-image.py --vertical` renders the vertical test picture.
+- 2026-10-15: Z12 done. Phrases without a part of speech match English verb forms when the word after the verb is
+  an adverb particle; the interposed-object rule stays typed only (question 3, option a in use). Checked over
+  wty-en-ru's example sentences, with instrumented tests and on the emulator (test model LK12). The N cases of the
+  Chinese work moved to E, F and O in the test model's run log. `docs/usage.md` said the Chinese script is chosen on
+  the Lookup page; it is the Languages screen since Z10.

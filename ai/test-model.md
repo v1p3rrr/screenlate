@@ -119,7 +119,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR13 | Character highlight lines up with the characters (corrected on-device boxes) | O | M | |
 | OCR14 | No word at the aim on a kanji (`kanji-fallback.png`) → its kanji entry | F | M | 2026-10-14 |
 | OCR15 | A language that is not ready → the scan shows the explanation and the installation link before capturing | F | I InstallationPopupTest, M | 2026-10-14 |
-| OCR16 | Chinese with cloud recognition: Simplified (`zh-sample.png`, 图书馆 with pinyin), Traditional (`zh-traditional.png`, 沒有關係) and vertical columns read right to left (`zh-vertical.png`: 館 alone, 意思 highlighted down its column). Rescan with a tap after changing the picture: a floating bubble keeps its scan | N | U TextLayoutTest, ReadingOrderTest, M | 2026-10-15 |
+| OCR16 | Chinese with cloud recognition: Simplified (`zh-sample.png`, 图书馆 with pinyin), Traditional (`zh-traditional.png`, 沒有關係) and vertical columns read right to left (`zh-vertical.png`: 館 alone, 意思 highlighted down its column). Rescan with a tap after changing the picture: a floating bubble keeps its scan | F | U TextLayoutTest, ReadingOrderTest, M | 2026-10-15 |
 
 ### LK: lookup
 
@@ -133,9 +133,10 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK6 | Search screen with typed text; "Look up in Screenlate" in a selection menu opens it | E | I ProcessTextTest, M | 2026-10-14 |
 | LK7 | Search while the language is not ready → status and link; it searches once the dictionary is ready | F | I SearchLanguageTest | 2026-10-14 |
 | LK8 | No enabled dictionary with definitions → the popup and search say so, search offers "Manage dictionaries" | O | M | |
-| LK9 | Chinese search by typed pinyin: "nihao", "ni hao", "ni3hao3", "nǐhǎo" find 你好; "shi" lists 是 时 事 first; "shi4" puts fourth-tone words first; "lv", "nü3" (ü); "xi'an" puts 西安 first; words show in the script chosen on the Languages screen; a dictionary imported again builds its index | N | U ChinesePinyinTest, ReadingIndexTest, ReadingIndexBanksTest, ReadingWordsTest, M | 2026-10-14 |
-| LK10 | Chinese Wiktionary form-of tags in the interface language: 吓 lists 下 with "alternative Simplified Cantonese", in Russian "альтернативное упрощённое кантонское"; 哄 with Hokkien | N | U FormOfTagsTest, M | 2026-10-15 |
-| LK11 | Chinese lookups: the longest word in the text's script (图书馆看书 → 图书馆, 圖書館看書 → 圖書館, each with its `lang`), a radical look-alike (U+2F47 for 日), a fixed Traditional script shows 图书馆 as 圖書館, typed pinyin in the chosen script, typed tones first | N | I ChineseLookupTest, U ChineseSupportTest | 2026-10-15 |
+| LK9 | Chinese search by typed pinyin: "nihao", "ni hao", "ni3hao3", "nǐhǎo" find 你好; "shi" lists 是 时 事 first; "shi4" puts fourth-tone words first; "lv", "nü3" (ü); "xi'an" puts 西安 first; words show in the script chosen on the Languages screen; a dictionary imported again builds its index | F | U ChinesePinyinTest, ReadingIndexTest, ReadingIndexBanksTest, ReadingWordsTest, M | 2026-10-14 |
+| LK10 | Chinese Wiktionary form-of tags in the interface language: 吓 lists 下 with "alternative Simplified Cantonese", in Russian "альтернативное упрощённое кантонское"; 哄 with Hokkien | O | U FormOfTagsTest, M | 2026-10-15 |
+| LK11 | Chinese lookups: the longest word in the text's script (图书馆看书 → 图书馆, 圖書館看書 → 圖書館, each with its `lang`), a radical look-alike (U+2F47 for 日), a fixed Traditional script shows 图书馆 as 圖書館, typed pinyin in the chosen script, typed tones first | E | I ChineseLookupTest, U ChineseSupportTest | 2026-10-15 |
+| LK12 | English phrasal verbs with wty-en-ru (phrases without a part of speech), testdata/ocr/en-phrasal.png: "picked up" → "pick up" with "past", "gives up" → "give up" with "3rd pers. sing. pres"; "closed to" shows "closed", "close", no "close to"; "looked for" shows "look", no "look for" | F | I LanguageLookupTest, M | 2026-10-15 |
 
 ### POP: the popup
 
@@ -157,8 +158,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP14 | Pitch accent colors: off by default; on → the headword and reading take the first accent's color, each accent button its own; light and dark themes; `--pitch-*-color` in custom CSS overrides | F | P, I LookupPageTest, M | 2026-10-14 |
 | POP15 | Light and dark popup; e-ink frames and black border | F | M | 2026-10-14 |
 | POP16 | The installation link in the popup while the language is not ready | F | I InstallationPopupTest | 2026-10-14 |
-| POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | N | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
-| POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | N | M | 2026-10-15 |
+| POP17 | Chinese fonts: five to download with descriptions in the interface language (zh-TW gets the Traditional text); Noto Sans TC downloads, is chosen and loads on the page; a font downloaded for Japanese (M PLUS 1p) is not on the Chinese list and the other way round | O | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-15 |
+| POP18 | Deleting a font asks "Delete <font>?": Cancel keeps it, Delete removes it and languages that used it go back to the phone's font | O | M | 2026-10-15 |
 
 ### AUD: audio
 
@@ -169,7 +170,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD3 | English Wiktionary clips follow the Regions order; a changed order applies to the next selection | O | U AudioFinderTest, M | |
 | AUD4 | A custom URL source on `http://10.0.2.2:<port>` asks for the local network permission (API 37) and plays | O | U LocalNetworkTest, M | |
 | AUD5 | Home's audio card "Audio settings" opens the Anki page at the audio section; "Add audio source" starts as the language's first default kind (English: Lingua Libre) | O | M | 2026-10-14 |
-| AUD6 | Chinese: 🔊 on 朋友 plays Wiktionary's `Zh-péngyou.ogg` (found by pinyin), holding it lists Wiktionary, Lingua Libre, then text-to-speech; text-to-speech reads the characters | N | U AudioFinderTest, ChineseSupportTest, M | 2026-10-15 |
+| AUD6 | Chinese: 🔊 on 朋友 plays Wiktionary's `Zh-péngyou.ogg` (found by pinyin), holding it lists Wiktionary, Lingua Libre, then text-to-speech; text-to-speech reads the characters | F | U AudioFinderTest, ChineseSupportTest, M | 2026-10-15 |
 
 ### ANK: Anki
 
@@ -183,7 +184,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK6 | Anki settings are per language (English deck apart from Japanese) | F | I AnkiProfileEditorsTest, M | 2026-10-14 |
 | ANK7 | `{sentence-translation}` filled from the popup's translation or fetched within 5 s | O | M | |
 | ANK8 | Docking during a note keeps the note; rotation or docking closes an open crop editor as cancelled | O | M | |
-| ANK9 | Chinese note type with Simplified, Traditional, Pinyin, English, Sound: pre-filled with `{expression-simplified}`, `{expression-traditional}`, `{reading}`, `{glossary}`, `{audio}`; the + list has both script markers; a note for 头发 gets 頭髮 (not 頭發) in Traditional; `{furigana}` puts tóu over 头 and fa over 发 | N | U FieldTemplateTest, ShownResultsTest, P, M | 2026-10-15 |
+| ANK9 | Chinese note type with Simplified, Traditional, Pinyin, English, Sound: pre-filled with `{expression-simplified}`, `{expression-traditional}`, `{reading}`, `{glossary}`, `{audio}`; the + list has both script markers; a note for 头发 gets 頭髮 (not 頭發) in Traditional; `{furigana}` puts tóu over 头 and fa over 发 | F | U FieldTemplateTest, ShownResultsTest, P, M | 2026-10-15 |
 
 ### TR: sentence translation
 
@@ -214,7 +215,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC14 | Importing wty-en-ipa writes the transcription regions (shown in POP6) | O | U TranscriptionTagBanksTest, M | 2026-10-14 |
 | DIC15 | The notification permission: the explanation dialog, then the system request, on the first import (API 33+) | O | M | |
 | DIC16 | With several languages: language chips on the page, "Other languages" links to the Languages screen | F | M | 2026-10-14 |
-| DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | N | U WordfreqDictionaryTest, M | 2026-10-15 |
+| DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | O | U WordfreqDictionaryTest, M | 2026-10-15 |
 
 ### LNG: languages
 
@@ -232,7 +233,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG10 | Settings per language stay apart (lookup, popup, Anki, audio, dictionary switches) | F | I AnkiProfileEditorsTest, U LookupSettingsRepositoryTest, M | 2026-10-14 |
 | LNG11 | Switching from home's flags; switching during a scan applies from the next scan, a tap on the floating bubble included | F | M | 2026-10-14 |
 | LNG12 | Japanese turned off with its files and on again → the bundled dictionaries install again | O | M | |
-| LNG13 | Chinese card: "Characters" Simplified or Traditional with its hint, "All words in these characters" off by default; Traditional makes "xuexi" show 學習; the Lookup page has no such block; a backup's General part carries it, only the full reset clears it | N | U SettingsKeysTest, M | 2026-10-15 |
+| LNG13 | Chinese card: "Characters" Simplified or Traditional with its hint, "All words in these characters" off by default; Traditional makes "xuexi" show 學習; the Lookup page has no such block; a backup's General part carries it, only the full reset clears it | F | U SettingsKeysTest, M | 2026-10-15 |
 
 ### SET: settings, backup, appearance
 
@@ -288,6 +289,21 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-15, builds 16aa855 to the phrasal-verb change, Pixel_10_Pro (API 37)
+
+Scope: the new Chinese cases on `languages/zh` and English phrasal verbs (LK12); the engine's instrumented tests (25).
+
+Results: every case passed; the dates are in the Checked column.
+
+Moved from N: OCR16, LK9, LK12, AUD6, ANK9 and LNG13 to F; LK11 to E (instrumented only); LK10, POP17, POP18 and
+DIC17 to O.
+
+Findings, fixed: a lookup starting at a radical look-alike (⽇ for 日) found nothing in Japanese and Chinese.
+
+Changed by decision rows: deleting a popup font asks first (POP18); English phrasal verbs in the past found only the
+verb with wty-en-ru, whose phrases have no part of speech, and now find phrases with an adverb particle (LK12,
+`yomitan-behavior.md` Lookup item 6).
 
 ### 2026-10-14, builds a430fec to fff2e6a, Pixel_10_Pro (API 37)
 
@@ -372,6 +388,6 @@ Observations, not changed:
 - One ANR right after `svc wifi disable`: the home window waited 19 s for a focus event while the composer and
   allocator HALs, SystemUI and the app were all busy in the kernel; not reproduced in three tries. The system then
   showed the ANR dialog again about 15 s after each "Wait", even for a restarted process, until "Close app".
-- English phrasal verbs in the past ("picked up") find only the verb: wty-en-ru gives phrases no part of speech, and
-  Yomitan's phrasal-verb rule needs a verb entry. Yomitan behaves the same; asked in the plan.
+- English phrasal verbs with a preposition ("looked for") find only the verb when the dictionary gives the phrase no
+  part of speech (wty-en-ru); phrases with an adverb particle are found since 2026-10-15 (LK12). Asked in the plan.
 - Deleting a downloaded or added popup font does not ask first, unlike a dictionary; asked in the plan (now asks, POP18).
