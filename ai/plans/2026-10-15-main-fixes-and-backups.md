@@ -21,7 +21,7 @@ branches that does not depend on the new languages, all on `main`. The work is d
 | Yomitan import | A card "Import from Yomitan" on the backup screen with its two parts (settings export, dictionary collection), last, after Restore. The Settings list loses its item; the Dictionaries screen's button opens the backup screen at that card. The Settings item keeps its title "Backup and restore"; its subtitle adds the import from Yomitan. |
 | Brought to `main` | The bug fixes below, and of the other changes: the dry wording (strings, README, docs, release-note files), the translation button named in words and off on new installs, the confirmation before deleting a font, Japanese pitch accent colors, short frequency chip names, resumable downloads, tags on kanji entries. Every rule chain behind "+N" turned out to exist only for the languages run through Yomitan's code; for Japanese it moves to the far backlog (owner, 2026-10-15). |
 | Testing | Every change on `main` is checked on the emulator, with what it may touch (test model cases), before the merge into `languages/main`. |
-| Romaji inside a joined Latin word (item 13) | The word under the aim: the Latin word is split from its start into the words the lookup finds (jidou, jisho) and the one under the aim is shown; where nothing is found for the aimed part, the lookup starts at the romaji syllable under the aim. Both branches (owner, 2026-10-15). |
+| Romaji inside a joined Latin word (item 13) | Left as it was: a Latin word is looked up from its start, so the second word of "jidoujisho" stays out of reach. The first choice (the word under the aim, with a lookup from the romaji syllable under the aim where nothing is found) was built and rolled back: the popup showed single syllables and letters (owner, 2026-10-15). |
 | Font restore | Chosen fonts are added to the installed ones, the same font replaced (confirmed by the owner, 2026-10-15). |
 
 ## Bug fixes from the language branches
@@ -51,7 +51,9 @@ Found by the owner on 2026-10-15 (both branches):
     "Системная"). The owner chose to drop the check mark; the fill marks the choice.
 13. Japanese with romaji lookup on: a Latin word made of two words ("jidoujisho", an app label) is looked up only from
     its start. 自動 is found for "jidou", and aiming at "jisho" still starts at the word's first letter, so 辞書 cannot
-    be reached (reported from the phone; open).
+    be reached (reported from the phone). Done on `main` in `94f5ed9`, merged into `languages/main` (`ec13e30`).
+    The owner then saw single syllables or letters in the popup during the checks (the syllable fallback gives ぁ
+    for the "la" of "Screenlate") and chose to roll it back entirely (2026-10-15): a joined Latin word is looked up from its start again. Closed.
 
 ## Other changes brought over
 
@@ -153,7 +155,8 @@ Kept current while the work runs so a new session can continue from the last lin
   popup's ➕ and the "Anki setup" card; no Anki switch, as Anki stays off until a deck and a note type are chosen and
   the page reset clears them; "not chosen" keeps its cross; the Languages item stays hidden with one language; the
   shared audio values stay in Japanese's key.
-- Next: item 13 (romaji in a joined Latin word) on `main`, then merged into `languages/main`.
+- Item 13 done on `main` (`94f5ed9`) and merged (`ec13e30`), then rolled back by the owner's choice (single
+  syllables and letters in the popup). Next: the revert on `main`, merged into `languages/main`.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
@@ -179,3 +182,5 @@ Kept current while the work runs so a new session can continue from the last lin
 - 2026-10-15: the owner reported item 13 (romaji lookup reaches only the first word of a joined Latin word) and chose
   the word under the aim; confirmed the font restore. Asked about the Anki check's status, an Anki switch, the
   Languages item with two languages and the shared audio values (answers below in Progress).
+- 2026-10-15: the owner saw single syllables and letters in the popup after item 13 and chose to roll it back
+  entirely; the decision row changed accordingly.
