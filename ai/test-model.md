@@ -305,6 +305,16 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-15, `languages/main` at 8145fc4 (the romaji rollback merged), Pixel_10_Pro (API 37)
+
+Scope: the rollback of the romaji lookup inside a joined Latin word, with `testdata/ocr/romaji-joined.png`.
+
+Results: as before the change. With romaji on, the aim on "jisho" of "jidoujisho" showed "jidou" (じどう, 自動); the
+aim on "la" of "Screenlate" looked up from the word's start ("S", エス). Found on the way, the same as on `main`:
+wty-ja-ja "non-lemma" rows (じどう) show as the first result with six numbered items holding only the tag, above 自動.
+
+Emulator state since this run: Japanese active, romaji off.
+
 ### 2026-10-15, `main` after e6e20bf (romaji inside a joined Latin word, uncommitted build), Pixel_10_Pro (API 37)
 
 Scope: a new case for the romaji lookup inside a joined Latin word, with `testdata/ocr/romaji-joined.png`.

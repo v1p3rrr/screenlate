@@ -53,7 +53,14 @@ Found by the owner on 2026-10-15 (both branches):
     its start. 自動 is found for "jidou", and aiming at "jisho" still starts at the word's first letter, so 辞書 cannot
     be reached (reported from the phone). Done on `main` in `94f5ed9`, merged into `languages/main` (`ec13e30`).
     The owner then saw single syllables or letters in the popup during the checks (the syllable fallback gives ぁ
-    for the "la" of "Screenlate") and chose to roll it back entirely (2026-10-15): a joined Latin word is looked up from its start again. Closed.
+    for the "la" of "Screenlate") and chose to roll it back entirely (2026-10-15): a joined Latin word is looked up
+    from its start again. Reverted on `main` in `ce6e7c8`, merged into `languages/main` (`8145fc4`). Closed.
+
+Found during the checks on 2026-10-15 (both branches, open):
+
+14. wty-ja-ja "non-lemma" rows (form-of rows whose glossary holds only `[lemma, [tags]]`) show in Japanese lookups
+    as an entry of numbered items with only the "non-lemma" tag, and rank first (じどう above 自動). Not looked into
+    yet; proposed as a separate task.
 
 ## Other changes brought over
 
@@ -156,7 +163,9 @@ Kept current while the work runs so a new session can continue from the last lin
   the page reset clears them; "not chosen" keeps its cross; the Languages item stays hidden with one language; the
   shared audio values stay in Japanese's key.
 - Item 13 done on `main` (`94f5ed9`) and merged (`ec13e30`), then rolled back by the owner's choice (single
-  syllables and letters in the popup). Next: the revert on `main`, merged into `languages/main`.
+  syllables and letters in the popup). Reverted on `main` (`ce6e7c8`, run log kept in `4a92c96`), merged into
+  `languages/main` (`8145fc4`) and checked on the emulator (run log 2026-10-15 at 8145fc4). Next: item 14
+  (wty-ja-ja form-of rows shown empty), proposed to the owner as a separate task.
 - Questions for the owner (asked when the owner is back): none yet. Choices made without asking, to show the
   owner: the Anki check re-runs after a setup change and on resume; "not chosen" counts as a failed item;
   restoring fonts merges them into the installed ones instead of replacing all; the Languages item's choices marked
