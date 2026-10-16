@@ -326,6 +326,21 @@ Collected during group 2 (autonomous, 2026-10-16); the option marked "in use" is
     editions (about 1 MB each); with the character dictionaries ticked, a French interface ticks the French and the
     English one, and a kanji then shows two entries. Options: (a, in use) every KANJIDIC edition of the chosen gloss
     languages; (b) the English one only; (c) the interface language's edition where there is one, else English.
+18. FreeDict into Russian, quality. The converted pairs (WikDict, from Wiktionary translation tables) are mostly
+    clean, but in Chinese→Russian 74% of the senses are lists of single Russian words in alphabetical order that mix
+    unrelated meanings, and almost every entry is tagged as a noun; English→Russian has 10% such senses (the other
+    pairs about 1%). Chinese→Russian otherwise has only the Wiktionary glossary (7.6 MB); English→Russian has the
+    Wiktionary dictionary (4.8 MB). Options: (a, recommended) list German, French, Italian, Spanish, Polish and English
+    into Russian, unticked, and leave Chinese→Russian out; (b) list all seven, Chinese→Russian with a description that
+    says the translations are collected automatically; (c) only the five without English and Chinese. Waits for
+    hosting anyway.
+19. OpenRussian's data age. The converter reads the site's own CSV export on GitHub, dated 2020-09-09; the official
+    SQL dump link is gone (404), and the online database the site points at did not load. A copy of the SQL dump from
+    2021-04-20 sits in openrussian-cli, a third-party console dictionary (same license). Options: (a, recommended, in
+    use) the 2020 export from the site's GitHub; (b) the 2021 dump from openrussian-cli (the converter would read
+    MySQL dumps); (c) you export the current tables from the online database (TogetherDB) yourself, and the converter
+    follows its columns. Also built, provisionally: Russian→German beside Russian→English (the CSVs have both), and
+    a verb's aspect partner as its last definition ("perfective: сказать").
 
 ## Branches and workflow
 
@@ -613,7 +628,8 @@ Per-language checklist (every language branch):
 Progress (2026-10-16): Spanish, French, German, Italian and Portuguese built on their branches, checked on the
 emulator (LK16-LK20, AUD8-AUD11, LNG4) and merged into `languages/main` (`12a5ecc`). The Latin fonts (POP23) and
 German compounds (LK21) are on `languages/latin-fonts` (`8ac9332`), checked on the emulator, not yet merged: the
-module review session holds the root checkout and the emulator. FreeDict conversions: the converter step below.
+module review session holds the root checkout and the emulator. FreeDict conversions: `scripts/freedict/`
+(seven pairs into Russian, 0.7-5.5 MB), not yet checked on the emulator (question 18).
 
 ## Stage D: group 3 (ru, pl, tr, vi, lv)
 
@@ -622,8 +638,8 @@ module review session holds the root checkout and the emulator. FreeDict convers
 - With the first downloadable model: the Dictionaries page block of turned-off languages lists only languages with
   dictionaries, and its size and delete text leave models out, although the delete removes them; count the models in
   (the wording needs all 14 locales).
-- Russian: forms from the dictionaries, the second form-of step, stress marks in readings, OpenRussian built and
-  hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
+- Russian: forms from the dictionaries, the second form-of step, stress marks in readings, OpenRussian built
+  (`scripts/openrussian/`, ru→en 6.7 MB and ru→de 8.2 MB with form-of rows; question 19) and hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
 - Polish: forms from the dictionary (pl→en 22 MB). Turkish: dotted and dotless i in case folding. Vietnamese: words of
   several syllables through word resolution; diacritics with the ML Kit Latin model (else Paddle latin).
 - Latvian (request 44): Latin letters with macrons and cedillas (ā ē ī ū, ģ ķ ļ ņ, č š ž) through the ML Kit Latin
@@ -927,3 +943,6 @@ Dictionaries are checked when the group starts; a language without support or di
 - 2026-10-16: character dictionaries ticked (KANJIDIC editions, CC-CEDICT Hanzi; Unihan Hanja already was) and the
   Japanese dictionaries downloaded instead of shipped, on `languages/ja-downloads`. Questions 16 (the reset without
   bundled dictionaries, postponed) and 17 (KANJIDIC editions) logged.
+- 2026-10-16: the converters for FreeDict's pairs into Russian and for OpenRussian (ru→en, ru→de) written with unit
+  tests; the official OpenRussian dump is gone, so the site's 2020 CSV export is used. Questions 18 (FreeDict quality)
+  and 19 (OpenRussian data age) logged.

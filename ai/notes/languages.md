@@ -97,7 +97,8 @@ questions: `plans/2026-10-09-more-languages.md`.
 - Korean: KRDICT/STDICT (Lyroxide/yomitan-ko-dic releases): KO-EN KRDICT 15.6 MB (4.3 MB without examples), CC100
   frequency 1.85 MB, IPA 6.6 MB, STDICT, KRDICT for 11 gloss languages. No license stated in the repo; third parties
   say the source data is CC BY-SA 2.0 KR (unconfirmed).
-- English–Russian outside Wiktionary: Mueller 7 and FreeDict eng-rus are GPL-2+.
+- English–Russian outside Wiktionary: Mueller 7 is GPL-2+; FreeDict eng-rus was too before WikDict regenerated it
+  (the 2025.11.23 edition is CC BY-SA 3.0, see "Converted dictionaries").
 - Licenses per dictionary: "Catalog candidates and licenses" below.
 
 ## Catalog candidates and licenses (checked 2026-10-09)
@@ -456,3 +457,33 @@ leaves every form that already finds something as it was.
 - Wiktionary ko-en: 387 K form-of rows with tags like "formal past indicative", "hanja form", "hangeul"; about 1,000
   tags carry leftover gloss after two spaces (cut by `FormOfTags.clean`).
 - The device recognizer does not read hanja (`ocr-engines.md`).
+
+## Converted dictionaries: FreeDict and OpenRussian (2026-10-16)
+
+- FreeDict pairs into Russian (edition 2025.11.23, all by WikDict, CC BY-SA 3.0 Unported per the TEI header):
+  `scripts/freedict/freedict_yomitan.py` reads the TEI (`entry/form/orth`, `pron`, `gramGrp/pos`, `gen`,
+  `sense/cit[@type=trans]/quote`, a nested `sense/def` as the source-language definition of the sense) and writes
+  wty-like structured content: per sense a `sense-label` div with the definition, then a `glossary` list. Chinese
+  `pron` holds the pinyin as `-{-{xīnyōu}-}-`. Archive sizes: de 1.7 MB, fr 0.9, it 0.7, es 0.7, pl 1.5, en 4.7,
+  zh 5.5.
+- Quality: zh→ru has 74% of its senses as lists of single Russian words in alphabetical order that mix unrelated
+  meanings, and nearly every entry tagged as a noun; en→ru 10% such senses; the others about 1%. Senses with a
+  source-language definition above them: de and pl 100%, en 96%, it 65%, es 58%, fr 32% (question 18 in the plan).
+- OpenRussian: the official SQL dump URL (`api.openrussian.org/downloads/openrussian-sql.zip`, from openrussian-cli's
+  Makefile) returns 404 "Route not found"; the TogetherDB database the site's GitHub README points at
+  (`app.togetherdb.com/db/o9puugtgtauo1ih5/russian3/words`) loads with "Request failed". The CSVs in
+  `github.com/Badestrand/russian-dictionary` (the site's own backup, export of 2020-09-09, CC BY-SA 4.0) are what the
+  converter reads; openrussian-cli (git.fmsbw.de) keeps a copy of the SQL dump from 2021-04-20 (question 19).
+- The CSVs: nouns 26,982 rows, verbs 14,871, adjectives 11,941, others 5,031 (one row there has a tab inside a
+  translation); English translations for 46 K words, German for 57 K. Stress is an apostrophe after the vowel,
+  secondary stress a backtick; one bare form even holds U+0300. Table cells hold alternatives (`зверя'ми//зверьми'`,
+  `до'лжной,(до'лжною)`, `но'вы / новы'`), an asterisk before rare forms, `—` for none, and notes or junk
+  (`застону'//_устар._застона'ю`, `взъе'лась$II(…`, `серёг=>`, `[[са'мый]] [[лени'вый]]`); the converter drops a cell
+  with any symbol besides letters, stress marks, separators, the asterisk and brackets. German translations bracket
+  asides with box corners (`└ seinen / ihren┘`, about 1,100 times), turned into parentheses. Gender `both` (28 nouns)
+  gets both tags; aspect `both` (567 verbs) gives "present/future" forms.
+- Result (`scripts/openrussian/openrussian_yomitan.py`): ru→en 45,968 words and 440,837 form-of rows (597 K form items),
+  6.7 MB; ru→de 56,901 words, 517,227 form-of rows, 8.2 MB. Form-of lemmas are stressed (`ко́шка`), so homographs
+  resolve to the right one (`за́мка` → `за́мок`); forms whose stress differs get separate rows (`руки́`
+  genitive singular, `ру́ки` nominative plural). Verbs get their aspect partner as a last definition
+  ("perfective: сказать").
