@@ -16,6 +16,7 @@ object PortugueseSupport : SpacedLanguageSupport() {
     override val pronunciationSample = "água → /ˈa.ɡwɐ/"
     override val flagCountries = listOf("br", "pt")
     override val systemFonts = LATIN_SYSTEM_FONTS
+    override val fontSubsets = LATIN_FONT_SUBSETS
 
     override val quotePairs = super.quotePairs + ('«' to '»')
 

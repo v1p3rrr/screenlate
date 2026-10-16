@@ -76,6 +76,13 @@ interface LanguageSupport {
     /** The phone's fonts for the language, used by the lookup page unless the user picks another font. */
     val systemFonts: SystemFonts
 
+    /**
+     * Google Fonts subsets (`latin`, `latin-ext`, `vietnamese`, `cyrillic`) a font needs for the language's letters: a
+     * downloadable font made for no language in particular is offered for every language whose subsets it has. Empty:
+     * only fonts made for this language are offered (Japanese, Chinese and Korean glyph forms differ).
+     */
+    val fontSubsets: Set<String> get() = emptySet()
+
     /** Sample text for font previews, with characters whose forms differ between fonts or regions. */
     val fontSample: String
 

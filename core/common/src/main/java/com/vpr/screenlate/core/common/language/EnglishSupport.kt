@@ -47,4 +47,5 @@ object EnglishSupport : SpacedLanguageSupport() {
     )
 
     override val systemFonts = LATIN_SYSTEM_FONTS
+    override val fontSubsets = LATIN_FONT_SUBSETS
 }

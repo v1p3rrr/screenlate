@@ -15,6 +15,7 @@ object SpanishSupport : SpacedLanguageSupport() {
     override val pronunciationSample = "agua → /ˈaɡwa/"
     override val flagCountries = listOf("es")
     override val systemFonts = LATIN_SYSTEM_FONTS
+    override val fontSubsets = LATIN_FONT_SUBSETS
 
     private const val LATIN_AMERICA = "am-lat"
 

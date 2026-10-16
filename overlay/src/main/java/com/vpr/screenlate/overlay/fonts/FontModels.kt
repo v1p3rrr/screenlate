@@ -1,5 +1,8 @@
 package com.vpr.screenlate.overlay.fonts
 
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.LanguageSupport
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.catalog.localeKey
 import java.util.Locale
 import kotlinx.serialization.Serializable
@@ -32,14 +35,18 @@ data class CatalogFontFile(val url: String, val weight: String = "400")
 /**
  * A freely licensed font offered for download.
  *
- * @param language the code of the language whose page offers it (`Language.code`).
+ * @param language the code of the language whose page alone offers it (`Language.code`); null for a font offered by
+ *   the letters it has.
+ * @param subsets the Google Fonts subsets the font covers; a font without [language] is offered for every language
+ *   whose [LanguageSupport.fontSubsets] are among them.
  * @param description by the key of an interface locale (`localeKey`: the language, `zh-Hant` for Traditional Chinese).
  */
 @Serializable
 data class CatalogFont(
     val id: String,
     val family: String,
-    val language: String,
+    val language: String? = null,
+    val subsets: List<String> = emptyList(),
     val description: Map<String, String> = emptyMap(),
     val files: List<CatalogFontFile>,
     val sizeMb: Double,
@@ -47,6 +54,12 @@ data class CatalogFont(
     val homepage: String,
 ) {
     fun description(locale: Locale): String = description[localeKey(locale)] ?: description["en"].orEmpty()
+
+    fun isOfferedFor(language: Language): Boolean {
+        this.language?.let { return it == language.code }
+        val needed = language.support.fontSubsets
+        return needed.isNotEmpty() && subsets.containsAll(needed)
+    }
 }
 
 @Serializable

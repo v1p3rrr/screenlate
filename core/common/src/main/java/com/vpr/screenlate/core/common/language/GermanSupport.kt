@@ -15,6 +15,7 @@ object GermanSupport : SpacedLanguageSupport() {
     override val pronunciationSample = "Wasser → /ˈvasɐ/"
     override val flagCountries = listOf("de")
     override val systemFonts = LATIN_SYSTEM_FONTS
+    override val fontSubsets = LATIN_FONT_SUBSETS
 
     /** „…“ and ‚…‘ close with the characters English opens with; »…« point inwards. */
     override val quotePairs = mapOf('„' to '“', '‚' to '‘', '»' to '«', '(' to ')', '[' to ']')

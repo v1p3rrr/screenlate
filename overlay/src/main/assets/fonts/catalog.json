@@ -439,6 +439,170 @@
       "sizeMb": 6.1,
       "license": "SIL OFL 1.1",
       "homepage": "https://fonts.google.com/specimen/Nanum+Myeongjo"
+    },
+    {
+      "id": "literata",
+      "family": "Literata",
+      "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],
+      "description": {
+        "en": "Serif made for reading books on screens, in every weight. Latin, Cyrillic, Greek and Vietnamese.",
+        "ru": "Шрифт с засечками для чтения книг с экрана, во всех начертаниях. Латиница, кириллица, греческий и вьетнамский.",
+        "de": "Serifenschrift zum Lesen von Büchern am Bildschirm, in allen Strichstärken. Lateinisch, Kyrillisch, Griechisch und Vietnamesisch.",
+        "es": "Fuente con serifa para leer libros en pantalla, en todos los pesos. Latino, cirílico, griego y vietnamita.",
+        "fr": "Police à empattements pour lire des livres à l’écran, dans toutes les graisses. Latin, cyrillique, grec et vietnamien.",
+        "it": "Carattere con grazie per leggere libri sullo schermo, in tutti i pesi. Latino, cirillico, greco e vietnamita.",
+        "ja": "画面で本を読むための明朝系（セリフ）フォント。すべてのウェイト。ラテン文字、キリル文字、ギリシャ文字、ベトナム語。",
+        "ko": "화면으로 책을 읽기 위한 세리프 글꼴로, 모든 굵기를 갖추었습니다. 라틴 문자, 키릴 문자, 그리스 문자, 베트남어.",
+        "pl": "Krój szeryfowy do czytania książek na ekranie, we wszystkich grubościach. Łacinka, cyrylica, greka i wietnamski.",
+        "pt": "Fonte com serifa para ler livros na tela, em todos os pesos. Latino, cirílico, grego e vietnamita.",
+        "tr": "Ekranda kitap okumak için tırnaklı yazı tipi, her kalınlıkta. Latin, Kiril, Yunan alfabeleri ve Vietnamca.",
+        "vi": "Phông có chân để đọc sách trên màn hình, đủ mọi độ đậm. Chữ Latinh, Kirin, Hy Lạp và tiếng Việt.",
+        "zh": "为屏幕阅读书籍设计的衬线字体，各种字重齐全。拉丁字母、西里尔字母、希腊字母和越南语。",
+        "zh-Hant": "為螢幕閱讀書籍設計的襯線字型，各種字重齊全。拉丁字母、西里爾字母、希臘字母和越南語。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/literata/Literata%5Bopsz,wght%5D.ttf", "weight": "200 900"}
+      ],
+      "sizeMb": 1.0,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Literata"
+    },
+    {
+      "id": "inter",
+      "family": "Inter",
+      "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],
+      "description": {
+        "en": "Neutral sans-serif made for screens, in every weight. Latin, Cyrillic, Greek and Vietnamese.",
+        "ru": "Нейтральный шрифт без засечек для экранов, во всех начертаниях. Латиница, кириллица, греческий и вьетнамский.",
+        "de": "Neutrale serifenlose Schrift für Bildschirme, in allen Strichstärken. Lateinisch, Kyrillisch, Griechisch und Vietnamesisch.",
+        "es": "Fuente sin serifa neutra para pantallas, en todos los pesos. Latino, cirílico, griego y vietnamita.",
+        "fr": "Police sans empattement neutre pour les écrans, dans toutes les graisses. Latin, cyrillique, grec et vietnamien.",
+        "it": "Carattere senza grazie neutro per gli schermi, in tutti i pesi. Latino, cirillico, greco e vietnamita.",
+        "ja": "画面向けの癖のないサンセリフ。すべてのウェイト。ラテン文字、キリル文字、ギリシャ文字、ベトナム語。",
+        "ko": "화면을 위한 담백한 산세리프로, 모든 굵기를 갖추었습니다. 라틴 문자, 키릴 문자, 그리스 문자, 베트남어.",
+        "pl": "Neutralny krój bezszeryfowy do ekranów, we wszystkich grubościach. Łacinka, cyrylica, greka i wietnamski.",
+        "pt": "Fonte sem serifa neutra para telas, em todos os pesos. Latino, cirílico, grego e vietnamita.",
+        "tr": "Ekranlar için yalın tırnaksız yazı tipi, her kalınlıkta. Latin, Kiril, Yunan alfabeleri ve Vietnamca.",
+        "vi": "Phông không chân trung tính cho màn hình, đủ mọi độ đậm. Chữ Latinh, Kirin, Hy Lạp và tiếng Việt.",
+        "zh": "为屏幕设计的中性无衬线字体，各种字重齐全。拉丁字母、西里尔字母、希腊字母和越南语。",
+        "zh-Hant": "為螢幕設計的中性無襯線字型，各種字重齊全。拉丁字母、西里爾字母、希臘字母和越南語。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz,wght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Inter"
+    },
+    {
+      "id": "atkinson-hyperlegible-next",
+      "family": "Atkinson Hyperlegible Next",
+      "subsets": ["latin", "latin-ext"],
+      "description": {
+        "en": "Sans-serif by the Braille Institute for low vision, with letters that are hard to confuse; every weight. Latin only.",
+        "ru": "Шрифт без засечек от Braille Institute для слабовидящих, с буквами, которые трудно спутать; все начертания. Только латиница.",
+        "de": "Serifenlose Schrift des Braille Institute für Sehbehinderte, mit schwer verwechselbaren Buchstaben; alle Strichstärken. Nur Lateinisch.",
+        "es": "Fuente sin serifa del Braille Institute para baja visión, con letras difíciles de confundir; todos los pesos. Solo latino.",
+        "fr": "Police sans empattement du Braille Institute pour la basse vision, aux lettres difficiles à confondre ; toutes les graisses. Latin seulement.",
+        "it": "Carattere senza grazie del Braille Institute per l’ipovisione, con lettere difficili da confondere; tutti i pesi. Solo latino.",
+        "ja": "Braille Institute によるロービジョン向けのサンセリフで、紛らわしい字形を避けている。すべてのウェイト。ラテン文字のみ。",
+        "ko": "Braille Institute가 저시력자를 위해 만든 산세리프로, 헷갈리기 쉬운 글자를 구별하기 쉽게 했습니다. 모든 굵기. 라틴 문자만.",
+        "pl": "Krój bezszeryfowy Braille Institute dla słabowidzących, z literami trudnymi do pomylenia; wszystkie grubości. Tylko łacinka.",
+        "pt": "Fonte sem serifa do Braille Institute para baixa visão, com letras difíceis de confundir; todos os pesos. Só latino.",
+        "tr": "Braille Institute’un az görenler için tırnaksız yazı tipi, harfleri birbirine karışmaz; her kalınlıkta. Yalnızca Latin.",
+        "vi": "Phông không chân của Braille Institute cho người thị lực kém, các chữ khó nhầm lẫn; đủ mọi độ đậm. Chỉ chữ Latinh.",
+        "zh": "Braille Institute 为低视力者设计的无衬线字体，字母不易混淆；各种字重。仅拉丁字母。",
+        "zh-Hant": "Braille Institute 為低視力者設計的無襯線字型，字母不易混淆；各種字重。僅拉丁字母。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext%5Bwght%5D.ttf", "weight": "200 800"}
+      ],
+      "sizeMb": 0.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Atkinson+Hyperlegible+Next"
+    },
+    {
+      "id": "lexend",
+      "family": "Lexend",
+      "subsets": ["latin", "latin-ext", "vietnamese"],
+      "description": {
+        "en": "Wide sans-serif with open letter spacing, made to ease reading; every weight. Latin and Vietnamese.",
+        "ru": "Широкий шрифт без засечек с просторным межбуквенным интервалом, сделан для лёгкого чтения; все начертания. Латиница и вьетнамский.",
+        "de": "Breite serifenlose Schrift mit weiter Laufweite, die das Lesen erleichtern soll; alle Strichstärken. Lateinisch und Vietnamesisch.",
+        "es": "Fuente sin serifa ancha con espaciado amplio, hecha para facilitar la lectura; todos los pesos. Latino y vietnamita.",
+        "fr": "Police sans empattement large à l’approche aérée, faite pour faciliter la lecture ; toutes les graisses. Latin et vietnamien.",
+        "it": "Carattere senza grazie largo con spaziatura ampia, fatto per facilitare la lettura; tutti i pesi. Latino e vietnamita.",
+        "ja": "字間を広く取った幅広のサンセリフで、読みやすさのために作られた。すべてのウェイト。ラテン文字とベトナム語。",
+        "ko": "자간을 넓게 둔 넓은 산세리프로, 읽기 쉽게 만들었습니다. 모든 굵기. 라틴 문자와 베트남어.",
+        "pl": "Szeroki krój bezszeryfowy z luźnym odstępem między literami, ułatwiający czytanie; wszystkie grubości. Łacinka i wietnamski.",
+        "pt": "Fonte sem serifa larga com espaçamento amplo, feita para facilitar a leitura; todos os pesos. Latino e vietnamita.",
+        "tr": "Geniş harf aralıklı, okumayı kolaylaştırmak için yapılmış geniş tırnaksız yazı tipi; her kalınlıkta. Latin ve Vietnamca.",
+        "vi": "Phông không chân rộng, giãn chữ thoáng, làm ra để dễ đọc; đủ mọi độ đậm. Chữ Latinh và tiếng Việt.",
+        "zh": "字距宽松的宽体无衬线字体，旨在让阅读更轻松；各种字重。拉丁字母和越南语。",
+        "zh-Hant": "字距寬鬆的寬體無襯線字型，旨在讓閱讀更輕鬆；各種字重。拉丁字母和越南語。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lexend/Lexend%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Lexend"
+    },
+    {
+      "id": "pt-serif",
+      "family": "PT Serif",
+      "subsets": ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+      "description": {
+        "en": "Serif by ParaType for Latin and Cyrillic; regular and bold.",
+        "ru": "Шрифт с засечками ParaType для латиницы и кириллицы; обычное и жирное начертания.",
+        "de": "Serifenschrift von ParaType für Lateinisch und Kyrillisch; normal und fett.",
+        "es": "Fuente con serifa de ParaType para latino y cirílico; normal y negrita.",
+        "fr": "Police à empattements de ParaType pour le latin et le cyrillique ; normale et grasse.",
+        "it": "Carattere con grazie di ParaType per latino e cirillico; normale e grassetto.",
+        "ja": "ParaType によるラテン文字とキリル文字のセリフ体。標準と太字。",
+        "ko": "ParaType이 만든 라틴 문자와 키릴 문자용 세리프로, 보통과 굵게가 있습니다.",
+        "pl": "Krój szeryfowy ParaType dla łacinki i cyrylicy; zwykły i pogrubiony.",
+        "pt": "Fonte com serifa da ParaType para latino e cirílico; normal e negrito.",
+        "tr": "ParaType’ın Latin ve Kiril alfabeleri için tırnaklı yazı tipi; normal ve kalın.",
+        "vi": "Phông có chân của ParaType cho chữ Latinh và Kirin; thường và đậm.",
+        "zh": "ParaType 出品的拉丁字母和西里尔字母衬线字体；常规和粗体。",
+        "zh-Hant": "ParaType 出品的拉丁字母和西里爾字母襯線字型；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ptserif/PT_Serif-Web-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ptserif/PT_Serif-Web-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.7,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/PT+Serif"
+    },
+    {
+      "id": "pt-sans",
+      "family": "PT Sans",
+      "subsets": ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+      "description": {
+        "en": "Sans-serif by ParaType for Latin and Cyrillic, in pair with PT Serif; regular and bold.",
+        "ru": "Шрифт без засечек ParaType для латиницы и кириллицы, в пару к PT Serif; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von ParaType für Lateinisch und Kyrillisch, passend zu PT Serif; normal und fett.",
+        "es": "Fuente sin serifa de ParaType para latino y cirílico, a juego con PT Serif; normal y negrita.",
+        "fr": "Police sans empattement de ParaType pour le latin et le cyrillique, assortie à PT Serif ; normale et grasse.",
+        "it": "Carattere senza grazie di ParaType per latino e cirillico, abbinato a PT Serif; normale e grassetto.",
+        "ja": "ParaType によるラテン文字とキリル文字のサンセリフ。PT Serif と対になる。標準と太字。",
+        "ko": "ParaType이 만든 라틴 문자와 키릴 문자용 산세리프로, PT Serif와 짝을 이룹니다. 보통과 굵게.",
+        "pl": "Krój bezszeryfowy ParaType dla łacinki i cyrylicy, w parze z PT Serif; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da ParaType para latino e cirílico, par da PT Serif; normal e negrito.",
+        "tr": "ParaType’ın Latin ve Kiril alfabeleri için tırnaksız yazı tipi, PT Serif ile takım; normal ve kalın.",
+        "vi": "Phông không chân của ParaType cho chữ Latinh và Kirin, cặp với PT Serif; thường và đậm.",
+        "zh": "ParaType 出品的拉丁字母和西里尔字母无衬线字体，与 PT Serif 配套；常规和粗体。",
+        "zh-Hant": "ParaType 出品的拉丁字母和西里爾字母無襯線字型，與 PT Serif 配套；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ptsans/PT_Sans-Web-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ptsans/PT_Sans-Web-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/PT+Sans"
     }
   ]
 }

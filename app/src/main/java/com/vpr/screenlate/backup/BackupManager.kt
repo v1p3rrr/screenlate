@@ -178,7 +178,7 @@ class BackupManager @Inject constructor(
         return { id -> entries.filter { it.model == id }.map { it.sourceLanguage }.distinct() }
     }
 
-    /** The language a catalog font was downloaded for; null for the user's own fonts. */
+    /** The language a catalog font was made for; null for the user's own fonts and fonts offered by their letters. */
     private fun fontLanguage(font: InstalledFont): String? =
         font.catalogId?.let { id -> fonts.catalog.firstOrNull { it.id == id }?.language }
 

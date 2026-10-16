@@ -10,10 +10,11 @@ import org.junit.Test
 
 class FontsForLanguageTest {
 
-    private fun catalog(id: String, language: String) = CatalogFont(
+    private fun catalog(id: String, language: String?, subsets: List<String> = emptyList()) = CatalogFont(
         id = id,
         family = id,
         language = language,
+        subsets = subsets,
         files = listOf(CatalogFontFile("https://example.org/$id.ttf")),
         sizeMb = 1.0,
         license = "SIL OFL 1.1",
@@ -22,12 +23,17 @@ class FontsForLanguageTest {
 
     private fun installed(id: String, catalogId: String?) = InstalledFont(id, id, listOf(FontFile("$id.ttf")), catalogId)
 
-    private val catalog = listOf(catalog("klee-one", "ja"), catalog("noto-sans-sc", "zh"))
+    private val catalog = listOf(
+        catalog("klee-one", "ja"),
+        catalog("noto-sans-sc", "zh"),
+        catalog("lexend", null, listOf("latin", "latin-ext", "vietnamese")),
+    )
     private val klee = installed("klee-one", "klee-one")
     private val notoSc = installed("noto-sans-sc", "noto-sans-sc")
+    private val lexend = installed("lexend", "lexend")
     private val own = installed("own", null)
     private val dropped = installed("dropped", "no-longer-in-the-catalog")
-    private val all = listOf(klee, notoSc, own, dropped)
+    private val all = listOf(klee, notoSc, lexend, own, dropped)
 
     @Test
     fun `a language lists its own catalog's fonts, the user's files and fonts the catalog no longer has`() {
@@ -36,7 +42,14 @@ class FontsForLanguageTest {
         assertThat(PopupAppearanceViewModel.fontsFor(Language.JAPANESE, all, catalog, chosen = null))
             .containsExactly(klee, own, dropped).inOrder()
         assertThat(PopupAppearanceViewModel.fontsFor(Language.ENGLISH, all, catalog, chosen = null))
-            .containsExactly(own, dropped).inOrder()
+            .containsExactly(lexend, own, dropped).inOrder()
+    }
+
+    @Test
+    fun `a font offered by its letters shows for every language it covers`() {
+        assertThat(PopupAppearanceViewModel.fontsFor(Language.FRENCH, all, catalog, chosen = null)).contains(lexend)
+        assertThat(PopupAppearanceViewModel.fontsFor(Language.PORTUGUESE, all, catalog, chosen = null)).contains(lexend)
+        assertThat(PopupAppearanceViewModel.fontsFor(Language.KOREAN, all, catalog, chosen = null)).doesNotContain(lexend)
     }
 
     @Test

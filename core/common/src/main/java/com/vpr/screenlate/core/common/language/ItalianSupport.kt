@@ -17,6 +17,7 @@ object ItalianSupport : SpacedLanguageSupport() {
     override val pronunciationSample = "acqua → /ˈak.kwa/"
     override val flagCountries = listOf("it")
     override val systemFonts = LATIN_SYSTEM_FONTS
+    override val fontSubsets = LATIN_FONT_SUBSETS
 
     override val quotePairs = super.quotePairs + ('«' to '»')
 
