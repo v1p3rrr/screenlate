@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">counter</string>
     <string name="form_of_tag_dated">dated</string>
     <string name="form_of_tag_dative">dative</string>
+    <string name="form_of_tag_debitive">debitive</string>
     <string name="form_of_tag_definite">definite</string>
     <string name="form_of_tag_demonym">demonym</string>
     <string name="form_of_tag_dependent">dependent</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">reflexive</string>
     <string name="form_of_tag_regional">regional</string>
     <string name="form_of_tag_relational">relational</string>
+    <string name="form_of_tag_renarrative">renarrative</string>
     <string name="form_of_tag_revised">Revised Romanization</string>
     <string name="form_of_tag_romanization">romanization</string>
     <string name="form_of_tag_second_person">second person</string>

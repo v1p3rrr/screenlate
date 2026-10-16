@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">단위 명사</string>
     <string name="form_of_tag_dated">예스러운 말</string>
     <string name="form_of_tag_dative">여격</string>
+    <string name="form_of_tag_debitive">의무법</string>
     <string name="form_of_tag_definite">한정</string>
     <string name="form_of_tag_demonym">주민 명칭</string>
     <string name="form_of_tag_dependent">의존형</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">재귀</string>
     <string name="form_of_tag_regional">지역어</string>
     <string name="form_of_tag_relational">관계</string>
+    <string name="form_of_tag_renarrative">전언법</string>
     <string name="form_of_tag_revised">개정 로마자 표기</string>
     <string name="form_of_tag_romanization">로마자 표기</string>
     <string name="form_of_tag_second_person">2인칭</string>

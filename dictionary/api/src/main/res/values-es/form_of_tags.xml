@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">clasificador</string>
     <string name="form_of_tag_dated">anticuado</string>
     <string name="form_of_tag_dative">dativo</string>
+    <string name="form_of_tag_debitive">debitivo</string>
     <string name="form_of_tag_definite">definido</string>
     <string name="form_of_tag_demonym">gentilicio</string>
     <string name="form_of_tag_dependent">dependiente</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">reflexivo</string>
     <string name="form_of_tag_regional">regional</string>
     <string name="form_of_tag_relational">relacional</string>
+    <string name="form_of_tag_renarrative">renarrativo</string>
     <string name="form_of_tag_revised">romanización revisada</string>
     <string name="form_of_tag_romanization">romanización</string>
     <string name="form_of_tag_second_person">segunda persona</string>

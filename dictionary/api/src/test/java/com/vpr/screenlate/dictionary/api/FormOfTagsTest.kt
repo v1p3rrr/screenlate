@@ -106,6 +106,14 @@ class FormOfTagsTest {
     fun `a word its neighbor already says is left out`() {
         assertThat(label("dative plural superlative strong degree")).isEqualTo("dative plural superlative strong")
         assertThat(label("degree")).isNull()
+        assertThat(label("adverbial form")).isEqualTo("adverbial")
+        assertThat(label("hanja form")).isEqualTo("hanja_form")
+    }
+
+    @Test
+    fun `latvian moods are translated`() {
+        assertThat(label("indicative debitive")).isEqualTo("indicative debitive")
+        assertThat(label("past renarrative")).isEqualTo("past renarrative")
     }
 
     @Test

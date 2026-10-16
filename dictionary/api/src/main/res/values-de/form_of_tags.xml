@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">Zählwort</string>
     <string name="form_of_tag_dated">veraltend</string>
     <string name="form_of_tag_dative">Dativ</string>
+    <string name="form_of_tag_debitive">Debitiv</string>
     <string name="form_of_tag_definite">bestimmt</string>
     <string name="form_of_tag_demonym">Einwohnerbezeichnung</string>
     <string name="form_of_tag_dependent">abhängig</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">reflexiv</string>
     <string name="form_of_tag_regional">regional</string>
     <string name="form_of_tag_relational">relational</string>
+    <string name="form_of_tag_renarrative">Renarrativ</string>
     <string name="form_of_tag_revised">revidierte Romanisierung</string>
     <string name="form_of_tag_romanization">Romanisierung</string>
     <string name="form_of_tag_second_person">2. Person</string>

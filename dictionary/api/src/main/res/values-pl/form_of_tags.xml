@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">klasyfikator</string>
     <string name="form_of_tag_dated">dawny</string>
     <string name="form_of_tag_dative">celownik</string>
+    <string name="form_of_tag_debitive">tryb powinności</string>
     <string name="form_of_tag_definite">określony</string>
     <string name="form_of_tag_demonym">nazwa mieszkańców</string>
     <string name="form_of_tag_dependent">zależny</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">zwrotny</string>
     <string name="form_of_tag_regional">regionalny</string>
     <string name="form_of_tag_relational">relacyjny</string>
+    <string name="form_of_tag_renarrative">tryb relacji</string>
     <string name="form_of_tag_revised">latynizacja poprawiona</string>
     <string name="form_of_tag_romanization">latynizacja</string>
     <string name="form_of_tag_second_person">2. osoba</string>

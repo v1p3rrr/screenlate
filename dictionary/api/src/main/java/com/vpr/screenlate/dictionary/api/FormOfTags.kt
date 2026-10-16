@@ -57,6 +57,7 @@ object FormOfTags {
         "counter" to R.string.form_of_tag_counter,
         "dated" to R.string.form_of_tag_dated,
         "dative" to R.string.form_of_tag_dative,
+        "debitive" to R.string.form_of_tag_debitive,
         "definite" to R.string.form_of_tag_definite,
         "demonym" to R.string.form_of_tag_demonym,
         "dependent" to R.string.form_of_tag_dependent,
@@ -184,6 +185,7 @@ object FormOfTags {
         "reflexive" to R.string.form_of_tag_reflexive,
         "regional" to R.string.form_of_tag_regional,
         "relational" to R.string.form_of_tag_relational,
+        "renarrative" to R.string.form_of_tag_renarrative,
         "revised" to R.string.form_of_tag_revised,
         "romanization" to R.string.form_of_tag_romanization,
         "second-person" to R.string.form_of_tag_second_person,
@@ -248,8 +250,8 @@ object FormOfTags {
         "verbal noun" to R.string.form_of_tag_verbal_noun,
     )
 
-    /** Words a neighbor already says: "superlative degree" reads as the superlative. */
-    private val SILENT = setOf("degree")
+    /** Words a neighbor already says: "superlative degree" reads as the superlative, "rare form" as rare. */
+    private val SILENT = setOf("degree", "form")
 
     /** Countries in regional tags, named in the interface language by the system. */
     private val COUNTRIES: Map<String, String> = mapOf(

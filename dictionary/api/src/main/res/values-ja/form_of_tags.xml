@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">助数詞</string>
     <string name="form_of_tag_dated">古風</string>
     <string name="form_of_tag_dative">与格</string>
+    <string name="form_of_tag_debitive">義務法</string>
     <string name="form_of_tag_definite">定</string>
     <string name="form_of_tag_demonym">住民名</string>
     <string name="form_of_tag_dependent">従属形</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">再帰</string>
     <string name="form_of_tag_regional">地域的</string>
     <string name="form_of_tag_relational">関係</string>
+    <string name="form_of_tag_renarrative">伝聞法</string>
     <string name="form_of_tag_revised">文化観光部式</string>
     <string name="form_of_tag_romanization">ローマ字表記</string>
     <string name="form_of_tag_second_person">二人称</string>

@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">sınıflandırıcı</string>
     <string name="form_of_tag_dated">eskice</string>
     <string name="form_of_tag_dative">yönelme hâli</string>
+    <string name="form_of_tag_debitive">gereklilik kipi</string>
     <string name="form_of_tag_definite">belirli</string>
     <string name="form_of_tag_demonym">halk adı</string>
     <string name="form_of_tag_dependent">bağımlı</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">dönüşlü</string>
     <string name="form_of_tag_regional">bölgesel</string>
     <string name="form_of_tag_relational">ilişkisel</string>
+    <string name="form_of_tag_renarrative">aktarma kipi</string>
     <string name="form_of_tag_revised">gözden geçirilmiş Latinizasyon</string>
     <string name="form_of_tag_romanization">Latinizasyon</string>
     <string name="form_of_tag_second_person">ikinci şahıs</string>

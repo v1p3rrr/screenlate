@@ -49,6 +49,7 @@
     <string name="form_of_tag_counter">lượng từ</string>
     <string name="form_of_tag_dated">cũ</string>
     <string name="form_of_tag_dative">tặng cách</string>
+    <string name="form_of_tag_debitive">thức bắt buộc</string>
     <string name="form_of_tag_definite">xác định</string>
     <string name="form_of_tag_demonym">tên gọi cư dân</string>
     <string name="form_of_tag_dependent">phụ thuộc</string>
@@ -181,6 +182,7 @@
     <string name="form_of_tag_reflexive">phản thân</string>
     <string name="form_of_tag_regional">địa phương</string>
     <string name="form_of_tag_relational">quan hệ</string>
+    <string name="form_of_tag_renarrative">thức tường thuật</string>
     <string name="form_of_tag_revised">Romaja quốc ngữ</string>
     <string name="form_of_tag_romanization">chuyển tự Latinh</string>
     <string name="form_of_tag_second_person">ngôi thứ hai</string>
