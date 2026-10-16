@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Known text in several fonts and sizes for the OCR comparison: page.html?lang=ru&theme=dark. Serve this folder from
+  Known text in several fonts and sizes for the OCR comparison: page.html?lang=ru&theme=dark (javert: Japanese in columns). Serve this folder from
   the computer (python -m http.server 8000) and open it on the emulator after `adb reverse tcp:8000 tcp:8000`.
 -->
 <html>
@@ -20,6 +20,8 @@
   .link { font: 16px/1.5 sans-serif; color: #1a73e8; }
   body.dark .link { color: #8ab4f8; }
   p { margin: 0 0 12px; }
+  html.vertical { writing-mode: vertical-rl; }
+  html.vertical h2, html.vertical p { margin: 0 0 0 16px; }
 </style>
 </head>
 <body>
@@ -83,18 +85,93 @@ const TEXTS = {
     'Bērni spēlējās dārzā zem vecajiem kokiem.',
     'Tirgū pārdeva svaigas zivis, ķiplokus un ogas. Ģimene ēda ļoti garšīgu zupu.',
   ],
+  ja: [
+    '朝から雨が降っていたので、駅まで傘をさして歩いた。',
+    '図書館の二階に新しい読書室ができました。',
+    '東京行きの電車は十五分遅れて到着した。',
+    '猫が窓のそばで気持ちよさそうに眠っている。',
+    'コーヒーを飲みながら、今朝のニュースを読んだ。',
+    '週末に友達と山へ紅葉を見に行く予定です。',
+  ],
+  zh: [
+    '今天早上下了一场大雨，街道上到处都是积水。',
+    '图书馆二楼新开了一个阅览室。',
+    '从北京开来的火车晚点了二十分钟。',
+    '妈妈在市场买了新鲜的蔬菜和水果。',
+    '学生们正在读一本关于中国历史的书。',
+  ],
+  zht: [
+    '今天早上下了一場大雨，街道上到處都是積水。',
+    '圖書館二樓新開了一個閱覽室。',
+    '從臺北開來的火車誤點了二十分鐘。',
+    '媽媽在市場買了新鮮的蔬菜和水果。',
+    '學生們正在讀一本關於臺灣歷史的書。',
+  ],
+  ko: [
+    '오늘 아침에는 안개가 짙게 끼어 있었다.',
+    '도서관은 아침 아홉 시에 문을 엽니다.',
+    '부산에서 오는 기차가 삼십 분 늦게 도착했다.',
+    '어머니는 시장에서 신선한 채소와 과일을 샀다.',
+    '학생들은 한국 역사에 관한 책을 읽었다.',
+  ],
+  en: [
+    'The morning fog lay thick over the river as the town slowly woke up.',
+    'A new reading room has opened on the second floor of the library.',
+    'The train from Edinburgh arrived forty minutes late.',
+    'Prices of vegetables went up, while milk became three percent cheaper.',
+    "Our neighbour baked cherry pies for the children next door, didn't she?",
+  ],
+  es: [
+    'Por la mañana una niebla espesa cubría el río.',
+    'La biblioteca abre a las nueve y cierra a las seis.',
+    'El tren de Córdoba llegó con media hora de retraso.',
+    '¿Quién compró pan, queso y aceitunas en el mercado?',
+    'Los niños jugaron bajo los árboles del jardín. ¡Qué día tan bonito!',
+  ],
+  fr: [
+    'Ce matin, un épais brouillard couvrait la rivière.',
+    'La bibliothèque ouvre à neuf heures et ferme à dix-huit heures.',
+    'Le train de Besançon est arrivé avec une demi-heure de retard.',
+    'Les enfants ont joué sous les arbres du jardin, près du château.',
+    "Au marché, on vendait du poisson frais et des olives. Noël approche, l'œuvre est finie.",
+  ],
+  de: [
+    'Am Morgen lag dichter Nebel über dem See.',
+    'Die Bibliothek öffnet um neun Uhr und schließt um achtzehn Uhr.',
+    'Der Zug aus Düsseldorf kam mit einer halben Stunde Verspätung an.',
+    'Die Kinder spielten im Garten unter den alten Bäumen.',
+    'Auf dem Markt gab es frischen Fisch, Käse und Äpfel. Übermorgen fährt Jürgen weg.',
+  ],
+  it: [
+    'Al mattino una fitta nebbia copriva il lago.',
+    'La biblioteca apre alle nove e chiude alle diciotto.',
+    "Il treno da Firenze è arrivato con mezz'ora di ritardo.",
+    'I bambini giocavano in giardino sotto gli alberi più vecchi.',
+    'Al mercato vendevano pesce fresco, olive e formaggio. Perché no? È così.',
+  ],
+  pt: [
+    'De manhã, uma névoa espessa cobria o lago.',
+    'A biblioteca abre às nove horas e fecha às dezoito.',
+    'O trem de São Paulo chegou com meia hora de atraso.',
+    'As crianças brincavam no jardim sob as árvores.',
+    'Na feira vendiam peixe fresco, azeitonas e queijo. Não há pressa, irmão.',
+  ],
 };
 const params = new URLSearchParams(location.search);
 const lang = params.get('lang') || 'ru';
-const texts = TEXTS[lang];
-document.documentElement.lang = lang;
+// javert: the Japanese texts in vertical columns; zht: Traditional Chinese.
+const vertical = lang === 'javert';
+const texts = TEXTS[vertical ? 'ja' : lang];
+const spaced = !['ja', 'javert', 'zh', 'zht'].includes(lang);
+document.documentElement.lang = { javert: 'ja', zh: 'zh-CN', zht: 'zh-TW' }[lang] || lang;
+if (vertical) document.documentElement.classList.add('vertical');
 if (lang === 'ar') document.documentElement.dir = 'rtl';
 if (params.get('theme') === 'dark') document.body.classList.add('dark');
 const blocks = [['h2', ''], ['p', 'sans'], ['p', 'serif'], ['p', 'mono'], ['p', 'link'], ['p', 'small']];
 blocks.forEach(([tag, style], i) => {
   const element = document.createElement(tag);
   if (style) element.className = style;
-  element.textContent = tag === 'h2' ? texts[0] : [texts[i % texts.length], texts[(i + 2) % texts.length]].join(' ');
+  element.textContent = tag === 'h2' ? texts[0] : [texts[i % texts.length], texts[(i + 2) % texts.length]].join(spaced ? ' ' : '');
   document.body.appendChild(element);
 });
 </script>

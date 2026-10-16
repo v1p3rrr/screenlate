@@ -56,6 +56,33 @@ class TextRecognitionTest {
     }
 
     @Test
+    fun `characters reach halfway to their neighbours inside the word`() {
+        val line = DecodedLine(listOf("а", "б", " ", "в"), listOf(0.1f, 0.2f, 0.3f, 0.4f), 1f)
+        val words = TextRecognition.words(line, Box(0f, 10f, 100f, 30f), contentShare = 0.5f)
+        val first = words[0].characterBoxes!!
+        assertThat(first).hasSize(2)
+        assertThat(first[0].left).isEqualTo(0f)
+        assertThat(first[0].right).isWithin(1e-4f).of(30f)
+        assertThat(first[1].left).isWithin(1e-4f).of(30f)
+        assertThat(first[1].right).isWithin(1e-4f).of(50f)
+        assertThat(words[1].characterBoxes!!.single()).isEqualTo(words[1].box)
+    }
+
+    @Test
+    fun `a vertical line spreads its characters down the box`() {
+        val line = DecodedLine(listOf("а", "б", " ", "в"), listOf(0.1f, 0.2f, 0.3f, 0.4f), 1f)
+        val words = TextRecognition.words(line, Box(10f, 0f, 30f, 100f), contentShare = 0.5f, vertical = true)
+        assertThat(words.map { it.text }).containsExactly("аб", "в").inOrder()
+        assertThat(words[0].box.top).isEqualTo(0f)
+        assertThat(words[0].box.bottom).isWithin(1e-4f).of(50f)
+        assertThat(words[0].box.left).isEqualTo(10f)
+        assertThat(words[0].box.right).isEqualTo(30f)
+        assertThat(words[0].characterBoxes!![1].top).isWithin(1e-4f).of(30f)
+        assertThat(words[1].box.top).isWithin(1e-4f).of(70f)
+        assertThat(words[1].box.bottom).isEqualTo(100f)
+    }
+
+    @Test
     fun `a line of spaces has no words`() {
         val line = DecodedLine(listOf(" ", " "), listOf(0.1f, 0.2f), 1f)
         assertThat(TextRecognition.words(line, Box(0f, 0f, 10f, 10f), 1f)).isEmpty()

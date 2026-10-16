@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrPage
 import java.io.File
@@ -13,10 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Runs each engine over the screenshots in the test assets (`images/<language>-<name>.png`) and writes what it read
- * and how long it took to `<external files>/ocr-compare/<engine>.json`, for `scripts/ocr-compare/score.py`.
+ * Runs each engine over the screenshots (`<language>-<name>.png`) and writes what it read and how long it took to
+ * `<external files>/ocr-compare/<engine>.json`, for `scripts/ocr-compare/score.py`. The screenshots are those copied
+ * to `<files>/images/` (`run-as`: files that adb pushes to external storage are not readable here), or else the test
+ * assets' `images/`.
  *
- * ML Kit runs only on Latin-script languages.
+ * `mlkit` is ML Kit as the app uses it (Japanese, Chinese, Korean and Latin text), `mlkit-latin` its Latin model.
+ * Image names start with the language: `javert` is vertical Japanese, `zht` Traditional Chinese.
  *
  * Instrumentation arguments: `engines` (comma-separated, default all), `images` (a name prefix), `runs` (timed runs
  * after a warm-up, default 3), `threads` (default 4), `detWidth` (default 960).
@@ -37,15 +41,19 @@ class OcrCompareTest {
         val engines = (arguments.getString("engines") ?: ENGINES.joinToString(",")).split(",")
         val runs = arguments.getString("runs")?.toInt() ?: 3
         val prefix = arguments.getString("images") ?: ""
-        val images = assets.list("images").orEmpty().filter { it.endsWith(".png") && it.startsWith(prefix) }.sorted()
         val out = File(context.getExternalFilesDir(null), "ocr-compare").apply { mkdirs() }
+        val copied = File(context.filesDir, "images")
+        val pushed = copied.list().orEmpty().toList()
+        val names = pushed.ifEmpty { assets.list("images").orEmpty().toList() }
+        val images = names.filter { it.endsWith(".png") && it.startsWith(prefix) }.sorted()
+        fun open(file: String) = if (pushed.isEmpty()) assets.open("images/$file") else File(copied, file).inputStream()
         for (engine in engines) {
             val results = JSONArray()
             for ((language, files) in images.groupBy { it.substringBefore('-') }) {
                 val reader = reader(engine, language) ?: continue
                 reader.use {
                     for (file in files) {
-                        val image = assets.open("images/$file").use { stream ->
+                        val image = open(file).use { stream ->
                             BitmapFactory.decodeStream(stream, null, BitmapFactory.Options().apply {
                                 inPreferredConfig = Bitmap.Config.ARGB_8888
                             })
@@ -78,6 +86,7 @@ class OcrCompareTest {
                         OrtModel(File(models, "$recognizer/inference.onnx").readBytes(), threads),
                         dictionary,
                         detectionWidth,
+                        rightToLeft = language == "ar",
                     )
                 } else {
                     PaddleReader(
@@ -85,10 +94,12 @@ class OcrCompareTest {
                         MnnModel(File(models, "$recognizer/model.mnn").path, threads),
                         dictionary,
                         detectionWidth,
+                        rightToLeft = language == "ar",
                     )
                 }
             }
-            "mlkit" -> if (script.paddle.startsWith("latin")) MlKitReader() else null
+            "mlkit" -> script.mlKit?.let { MlKitReader(it) }
+            "mlkit-latin" -> if (script.paddle == LATIN) MlKitLatinReader() else null
             "tesseract-fast" -> TesseractReader(File(models, "tessdata_fast").path, script.tesseract)
             "tesseract-best" -> TesseractReader(File(models, "tessdata_best").path, script.tesseract)
             else -> error("Unknown engine $engine")
@@ -105,10 +116,12 @@ class OcrCompareTest {
             JSONObject().apply {
                 put("box", box(line.box))
                 put("text", line.text)
+                put("vertical", line.vertical)
                 put("words", JSONArray(line.words.map { word ->
                     JSONObject().apply {
                         put("text", word.text)
                         put("box", box(word.box))
+                        word.characterBoxes?.let { boxes -> put("chars", JSONArray(boxes.map(::box))) }
                     }
                 }))
             }
@@ -131,17 +144,31 @@ class OcrCompareTest {
         return target
     }
 
-    private class Script(val paddle: String, val tesseract: String)
+    /** The Paddle recognizer, the Tesseract model and the language ML Kit reads it as (null: no ML Kit model). */
+    private class Script(val paddle: String, val tesseract: String, val mlKit: Language? = null)
 
     private companion object {
         const val DETECTOR = "PP-OCRv5_mobile_det"
-        val ENGINES = listOf("paddle-ort", "paddle-mnn", "tesseract-fast", "tesseract-best", "mlkit")
+        const val MAIN = "PP-OCRv5_mobile_rec"
+        const val LATIN = "latin_PP-OCRv5_mobile_rec"
+        val ENGINES = listOf("paddle-ort", "paddle-mnn", "tesseract-fast", "tesseract-best", "mlkit", "mlkit-latin")
         val SCRIPTS = mapOf(
+            "ja" to Script(MAIN, "jpn", Language.JAPANESE),
+            "javert" to Script(MAIN, "jpn_vert", Language.JAPANESE),
+            "zh" to Script(MAIN, "chi_sim", Language.CHINESE),
+            "zht" to Script(MAIN, "chi_tra", Language.CHINESE),
+            "ko" to Script("korean_PP-OCRv5_mobile_rec", "kor", Language.KOREAN),
+            "en" to Script(LATIN, "eng", Language.ENGLISH),
+            "es" to Script(LATIN, "spa", Language.ENGLISH),
+            "fr" to Script(LATIN, "fra", Language.ENGLISH),
+            "de" to Script(LATIN, "deu", Language.ENGLISH),
+            "it" to Script(LATIN, "ita", Language.ENGLISH),
+            "pt" to Script(LATIN, "por", Language.ENGLISH),
+            "pl" to Script(LATIN, "pol", Language.ENGLISH),
+            "tr" to Script(LATIN, "tur", Language.ENGLISH),
+            "vi" to Script(LATIN, "vie", Language.ENGLISH),
+            "lv" to Script(LATIN, "lav", Language.ENGLISH),
             "ru" to Script("eslav_PP-OCRv5_mobile_rec", "rus"),
-            "pl" to Script("latin_PP-OCRv5_mobile_rec", "pol"),
-            "tr" to Script("latin_PP-OCRv5_mobile_rec", "tur"),
-            "vi" to Script("latin_PP-OCRv5_mobile_rec", "vie"),
-            "lv" to Script("latin_PP-OCRv5_mobile_rec", "lav"),
             "el" to Script("el_PP-OCRv5_mobile_rec", "ell"),
             "th" to Script("th_PP-OCRv5_mobile_rec", "tha"),
             "ar" to Script("arabic_PP-OCRv5_mobile_rec", "ara"),

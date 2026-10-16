@@ -10,6 +10,12 @@ The results folder holds `<engine>.json` as OcrCompareTest writes them. Per engi
 - words read whole: the region's words found among those words, punctuation around them ignored;
 - taps (web pages only): a tap at the center of each word lands in a word box the engine read as that word;
 - time: the median of the timed runs per screen, averaged over the screens.
+
+Japanese and Chinese are scored by characters: each word the engine read is split into its characters (by the
+engine's character boxes, or evenly along the word), the error rate ignores spaces, a tap is on a character, and
+words read whole are not counted. Thai's error rate ignores spaces too, and its words and taps are not counted (its
+engines split words at spaces only, between phrases). Vertical Japanese (javert) reads each region from top to
+bottom.
 """
 
 import argparse
@@ -23,11 +29,20 @@ from pathlib import Path
 #: Pixels a word's center may lie outside a region and still count as in it.
 MARGIN = 8
 
-PUNCTUATION = " \t.,;:!?«»\"'“”„()[]{}—–-…·•"
+#: Languages scored by characters; their image names start with these.
+BY_CHARACTER = {"ja", "javert", "zh", "zht"}
+
+#: Languages whose error rate ignores spaces.
+UNSPACED = BY_CHARACTER | {"th"}
+
+#: Languages scored by their error rate alone.
+NO_WORDS = {"th"}
+
+PUNCTUATION = " \t.,;:!?«»\"'“”„()[]{}—–-…·•、。，．・「」『』（）！？：；"
 
 
-def normalize(text):
-    return " ".join(unicodedata.normalize("NFC", text).split())
+def normalize(text, spaced=True):
+    return (" " if spaced else "").join(unicodedata.normalize("NFC", text).split())
 
 
 def bare(word):
@@ -52,27 +67,52 @@ def center(box):
     return (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
 
 
+def characters(word, vertical):
+    """The characters of an engine's word with their boxes: the engine's own, or the word's box cut evenly."""
+    text = [c for c in unicodedata.normalize("NFC", word["text"]) if not c.isspace()]
+    boxes = word.get("chars")
+    if not boxes or len(boxes) != len(text):
+        l, t, r, b = word["box"]
+        n = max(1, len(text))
+        if vertical:
+            boxes = [[l, t + (b - t) * i / n, r, t + (b - t) * (i + 1) / n] for i in range(n)]
+        else:
+            boxes = [[l + (r - l) * i / n, t, l + (r - l) * (i + 1) / n, b] for i in range(n)]
+    return [{"text": c, "box": box} for c, box in zip(text, boxes)]
+
+
 def score_image(truth, result):
     """Edits, characters, words found, words, taps right, taps for one screen."""
+    language = result.get("language", "")
+    by_character = language in BY_CHARACTER
+    spaced = language not in UNSPACED
+    columns = language == "javert"
     words = []
     for order, line in enumerate(sorted(result["lines"], key=lambda l: (l["box"][1], l["box"][0]))):
         for position, word in enumerate(line["words"]):
-            words.append((order, position, word))
+            if by_character:
+                vertical = line.get("vertical", False)
+                for offset, character in enumerate(characters(word, vertical)):
+                    words.append((order, (position, offset), character))
+            else:
+                words.append((order, position, word))
     totals = Counter()
     for region in truth["regions"]:
-        found = sorted(
-            (w for w in words if inside(region["box"], *center(w[2]["box"]), MARGIN)),
-            key=lambda w: (w[0], w[1]),
-        )
-        read = normalize(" ".join(w[2]["text"] for w in found))
-        expected = normalize(region["text"])
+        found = [w for w in words if inside(region["box"], *center(w[2]["box"]), MARGIN)]
+        if columns:
+            found.sort(key=lambda w: center(w[2]["box"])[1])
+        else:
+            found.sort(key=lambda w: (w[0], w[1]))
+        read = normalize(" ".join(w[2]["text"] for w in found), spaced)
+        expected = normalize(region["text"], spaced)
         totals["edits"] += distance(read, expected)
         totals["chars"] += len(expected)
-        expected_words = Counter(bare(w) for w in expected.split() if bare(w))
-        read_words = Counter(bare(w[2]["text"]) for w in found if bare(w[2]["text"]))
-        totals["words_found"] += sum((expected_words & read_words).values())
-        totals["words"] += sum(expected_words.values())
-        for word in region.get("words", []):
+        if not by_character and language not in NO_WORDS:
+            expected_words = Counter(bare(w) for w in expected.split() if bare(w))
+            read_words = Counter(bare(w[2]["text"]) for w in found if bare(w[2]["text"]))
+            totals["words_found"] += sum((expected_words & read_words).values())
+            totals["words"] += sum(expected_words.values())
+        for word in [] if language in NO_WORDS else region.get("words", []):
             target = bare(word["text"])
             if not target:
                 continue
@@ -105,22 +145,23 @@ def main(argv=None):
             entry["times"].append(statistics.median(result["times_ms"]))
             entry["screens"] += 1
             if args.details:
+                words = f"{totals['words_found'] / totals['words']:6.1%}" if totals["words"] else f"{'-':>6}"
                 print(f"  {engine:<22} {result['image']:<32} CER {totals['edits'] / max(1, totals['chars']):6.1%}  "
-                      f"words {totals['words_found'] / max(1, totals['words']):6.1%}  "
-                      f"{statistics.median(result['times_ms']):6.0f} ms")
+                      f"words {words}  {statistics.median(result['times_ms']):6.0f} ms")
         for language, entry in sorted(by_language.items()):
             t = entry["totals"]
             rows.append((
                 engine, language, entry["screens"],
                 t["edits"] / max(1, t["chars"]),
-                t["words_found"] / max(1, t["words"]),
+                t["words_found"] / t["words"] if t["words"] else None,
                 t["taps_right"] / t["taps"] if t["taps"] else None,
                 statistics.mean(entry["times"]),
             ))
-    print(f"{'engine':<22} {'lang':<5} {'screens':>7} {'CER':>7} {'words':>7} {'taps':>7} {'ms/screen':>10}")
+    print(f"{'engine':<22} {'lang':<6} {'screens':>7} {'CER':>7} {'words':>7} {'taps':>7} {'ms/screen':>10}")
     for engine, language, screens, cer, words, taps, ms in sorted(rows, key=lambda r: (r[1], r[0])):
         taps_text = f"{taps:7.1%}" if taps is not None else f"{'-':>7}"
-        print(f"{engine:<22} {language:<5} {screens:>7} {cer:7.1%} {words:7.1%} {taps_text} {ms:10.0f}")
+        words_text = f"{words:7.1%}" if words is not None else f"{'-':>7}"
+        print(f"{engine:<22} {language:<6} {screens:>7} {cer:7.1%} {words_text} {taps_text} {ms:10.0f}")
 
 
 if __name__ == "__main__":

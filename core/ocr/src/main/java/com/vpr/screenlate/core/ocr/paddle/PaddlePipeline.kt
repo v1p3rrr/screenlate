@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.ocr.paddle
 
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
@@ -34,19 +35,29 @@ class PaddlePipeline(
         val right = ceil(box.right).toInt().coerceAtMost(image.width)
         val bottom = ceil(box.bottom).toInt().coerceAtMost(image.height)
         if (right - left < 2 || bottom - top < 2) return null
-        val crop = Bitmap.createBitmap(image, left, top, right - left, bottom - top)
+        // A column is read turned a quarter counterclockwise, its top first, as PP-OCR does for tall crops.
+        val vertical = bottom - top >= VERTICAL_RATIO * (right - left)
+        val crop = if (vertical) {
+            val turn = Matrix().apply { postRotate(-90f) }
+            Bitmap.createBitmap(image, left, top, right - left, bottom - top, turn, true)
+        } else {
+            Bitmap.createBitmap(image, left, top, right - left, bottom - top)
+        }
         val (content, width) = TextRecognition.widths(crop.width, crop.height)
         val pixels = pixels(crop, content, TextRecognition.HEIGHT)
         if (crop !== image) crop.recycle()
         val output = recognizer.run(TextRecognition.input(pixels, content, width))
         val decoded = TextRecognition.decode(output, dictionary)
         val lineBox = Box(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
-        val words = TextRecognition.words(decoded, lineBox, content.toFloat() / width)
-        return if (words.isEmpty()) null else OcrLine(words, lineBox, vertical = false)
+        val words = TextRecognition.words(decoded, lineBox, content.toFloat() / width, vertical)
+        return if (words.isEmpty()) null else OcrLine(words, lineBox, vertical)
     }
 
     companion object {
         const val DETECTION_WIDTH = 960
+
+        /** A line at least this many times taller than wide is a column. */
+        const val VERTICAL_RATIO = 1.5f
 
         /** The recognizer's classes from its dictionary file's lines (one character each): blank, those, space. */
         fun dictionary(characters: List<String>): List<String> = listOf("") + characters + " "

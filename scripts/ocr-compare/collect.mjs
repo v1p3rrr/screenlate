@@ -6,6 +6,9 @@
 // Without --web the regions are the text views of the Android interface (uiautomator). With --web the regions are the
 // lines of the page open in Chrome, from the page itself through the DevTools protocol, with a box per word; run
 // `adb forward tcp:9222 localabstract:chrome_devtools_remote` first. Text Chrome draws in its own toolbar is left out.
+// Japanese and Chinese (names starting with ja, javert, zh, zht) have a box per character instead, and javert's lines
+// are columns, right to left. Thai has a box per word as the browser splits it (it has no spaces between words), and
+// Arabic lines read right to left.
 // ADB names the adb binary (default: adb on the PATH).
 
 import { execFileSync } from 'node:child_process';
@@ -19,6 +22,11 @@ if (!outDir || !name) {
   process.exit(2);
 }
 const web = flags.includes('--web');
+const language = name.split('-')[0];
+const perCharacter = ['ja', 'javert', 'zh', 'zht'].includes(language);
+const vertical = language === 'javert';
+const segmented = language === 'th';
+const rightToLeft = language === 'ar';
 
 function run(...args) {
   return execFileSync(adb, args, { maxBuffer: 64 << 20 });
@@ -70,8 +78,10 @@ async function evaluate(expression) {
   return message.result.result.value;
 }
 
-// Words fully inside the viewport, drawn by their own element (not covered), in CSS pixels.
+// Words (or characters) fully inside the viewport, drawn by their own element (not covered), in CSS pixels.
 const WORDS = `(() => {
+  const PER_CHARACTER = ${perCharacter};
+  const SEGMENTER = ${segmented} ? new Intl.Segmenter('${language}', { granularity: 'word' }) : null;
   const words = [];
   const width = innerWidth, height = innerHeight;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -83,19 +93,33 @@ const WORDS = `(() => {
     if (style.visibility !== 'visible' || parseFloat(style.opacity) === 0) continue;
     if (/rgba\\(.*, 0\\)$/.test(style.color)) continue;
     if (style.textTransform === 'capitalize') continue;
-    const pattern = /\\S+/g;
-    let match;
-    while ((match = pattern.exec(node.data))) {
+    const tokens = [];
+    if (SEGMENTER) {
+      for (const { segment, index } of SEGMENTER.segment(node.data)) {
+        if (segment.trim()) tokens.push([index, segment]);
+      }
+    } else if (PER_CHARACTER) {
+      let index = 0;
+      for (const character of node.data) {
+        if (character.trim()) tokens.push([index, character]);
+        index += character.length;
+      }
+    } else {
+      const pattern = /\\S+/g;
+      let match;
+      while ((match = pattern.exec(node.data))) tokens.push([match.index, match[0]]);
+    }
+    for (const [index, token] of tokens) {
       const range = document.createRange();
-      range.setStart(node, match.index);
-      range.setEnd(node, match.index + match[0].length);
+      range.setStart(node, index);
+      range.setEnd(node, index + token.length);
       const rects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0);
       if (rects.length !== 1) continue;
       const r = rects[0];
       if (r.left < 0 || r.top < 0 || r.right > width || r.bottom > height) continue;
       const hit = document.elementFromPoint((r.left + r.right) / 2, (r.top + r.bottom) / 2);
       if (!hit || !(hit === element || element.contains(hit) || hit.contains(element))) continue;
-      let text = match[0];
+      let text = token;
       if (style.textTransform === 'uppercase') text = text.toUpperCase();
       if (style.textTransform === 'lowercase') text = text.toLowerCase();
       words.push({ text, box: [r.left, r.top, r.right, r.bottom] });
@@ -104,8 +128,21 @@ const WORDS = `(() => {
   return { dpr: devicePixelRatio, words };
 })()`;
 
-/** Words grouped into lines: overlapping vertically and close horizontally, left to right. */
-function lines(words) {
+/**
+ * Words grouped into lines: overlapping vertically and close horizontally, left to right. Columns when [vertical]:
+ * the boxes are turned a quarter clockwise, grouped as lines and turned back, so columns read top to bottom, right to
+ * left.
+ */
+function lines(words, vertical) {
+  if (vertical) {
+    const turn = ([l, t, r, b]) => [t, -r, b, -l];
+    const back = ([l, t, r, b]) => [-b, l, -t, r];
+    return lines(words.map((w) => ({ ...w, box: turn(w.box) })), false).map((line) => ({
+      ...line,
+      box: back(line.box),
+      words: line.words.map((w) => ({ ...w, box: back(w.box) })),
+    }));
+  }
   const sorted = [...words].sort((a, b) => a.box[1] - b.box[1] || a.box[0] - b.box[0]);
   const result = [];
   for (const word of sorted) {
@@ -126,7 +163,8 @@ function lines(words) {
   }
   for (const line of result) {
     line.words.sort((a, b) => a.box[0] - b.box[0]);
-    line.text = line.words.map((w) => w.text).join(' ');
+    if (rightToLeft) line.words.reverse();
+    line.text = line.words.map((w) => w.text).join(perCharacter || segmented ? '' : ' ');
   }
   return result;
 }
@@ -139,10 +177,14 @@ if (web) {
   const { dpr, words } = await evaluate(WORDS);
   const [left, top] = view.box;
   const toScreen = ([l, t, r, b]) => [left + l * dpr, top + t * dpr, left + r * dpr, top + b * dpr].map((v) => Math.round(v));
-  regions = lines(words.map((w) => ({ text: w.text, box: toScreen(w.box) })));
+  regions = lines(words.map((w) => ({ text: w.text, box: toScreen(w.box) })), vertical);
 } else {
+  // A text view cut off at the edge of a scrolling container shows only part of its text.
+  const scrollers = nodes.filter((n) => n.scrollable === 'true');
+  const cut = (n) => scrollers.some((s) => n.box[0] >= s.box[0] && n.box[2] <= s.box[2] && n.box[1] >= s.box[1] &&
+    n.box[3] <= s.box[3] && (n.box[1] <= s.box[1] + 1 || n.box[3] >= s.box[3] - 1));
   regions = nodes
-    .filter((n) => (n.text || '').trim() && n.box[2] > n.box[0] && n.box[3] > n.box[1])
+    .filter((n) => (n.text || '').trim() && n.box[2] > n.box[0] && n.box[3] > n.box[1] && !cut(n))
     .map((n) => ({ box: n.box, text: n.text.trim() }));
 }
 

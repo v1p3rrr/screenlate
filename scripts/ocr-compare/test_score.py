@@ -54,6 +54,40 @@ class ScoreTest(unittest.TestCase):
         ]}
         self.assertEqual(score.score_image(truth, result)["edits"], 0)
 
+    def test_japanese_is_scored_by_characters_without_spaces(self):
+        truth = {"regions": [{
+            "box": [0, 0, 60, 20], "text": "猫が寝た",
+            "words": [{"text": c, "box": [i * 15, 0, i * 15 + 15, 20]} for i, c in enumerate("猫が寝た")],
+        }]}
+        # One word for the whole line, cut evenly; a space the engine put in does not count.
+        result = {"language": "ja", "lines": [
+            {"box": [0, 0, 60, 20], "words": [word("猫が 寝た", [0, 0, 60, 20])]},
+        ]}
+        totals = score.score_image(truth, result)
+        self.assertEqual(totals["edits"], 0)
+        self.assertEqual(totals["chars"], 4)
+        self.assertEqual(totals["words"], 0)
+        self.assertEqual((totals["taps_right"], totals["taps"]), (4, 4))
+
+    def test_character_boxes_of_the_engine_decide_the_taps(self):
+        truth = {"regions": [{
+            "box": [0, 0, 40, 20], "text": "日本",
+            "words": [{"text": "日", "box": [0, 0, 10, 20]}, {"text": "本", "box": [10, 0, 40, 20]}],
+        }]}
+        line = {"box": [0, 0, 40, 20], "words": [
+            {"text": "日本", "box": [0, 0, 40, 20], "chars": [[0, 0, 10, 20], [10, 0, 40, 20]]},
+        ]}
+        totals = score.score_image(truth, {"language": "zh", "lines": [line]})
+        self.assertEqual((totals["taps_right"], totals["taps"]), (2, 2))
+
+    def test_columns_read_top_to_bottom(self):
+        truth = {"regions": [{"box": [0, 0, 20, 60], "text": "上中下"}]}
+        result = {"language": "javert", "lines": [
+            {"box": [0, 40, 20, 60], "vertical": True, "words": [word("下", [0, 40, 20, 60])]},
+            {"box": [1, 0, 20, 40], "vertical": True, "words": [word("上中", [1, 0, 20, 40])]},
+        ]}
+        self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

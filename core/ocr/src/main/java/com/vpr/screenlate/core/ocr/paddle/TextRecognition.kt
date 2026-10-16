@@ -67,26 +67,32 @@ internal object TextRecognition {
     }
 
     /**
-     * The words of [line] inside its [box]: the characters between spaces, each word reaching halfway to the
-     * character before it and after it. [contentShare] is the part of the input width the crop took.
+     * The words of [line] inside its [box]: the characters between spaces, each word and each character reaching
+     * halfway to the character before it and after it. [contentShare] is the part of the input width the crop took.
+     * A [vertical] line was read turned a quarter counterclockwise, so the input's width runs down the box.
      */
-    fun words(line: DecodedLine, box: Box, contentShare: Float): List<OcrWord> {
+    fun words(line: DecodedLine, box: Box, contentShare: Float, vertical: Boolean = false): List<OcrWord> {
         val characters = line.characters
-        val xs = line.positions.map { (box.left + it / contentShare * box.width).coerceAtMost(box.right) }
+        val start = if (vertical) box.top else box.left
+        val end = if (vertical) box.bottom else box.right
+        val at = line.positions.map { (start + it / contentShare * (end - start)).coerceAtMost(end) }
+        fun before(i: Int) = if (i == 0) start else (at[i - 1] + at[i]) / 2
+        fun after(i: Int) = if (i == characters.lastIndex) end else (at[i] + at[i + 1]) / 2
+        fun span(from: Float, to: Float) =
+            if (vertical) Box(box.left, from, box.right, to) else Box(from, box.top, to, box.bottom)
         val words = ArrayList<OcrWord>()
-        var start = -1
+        var first = -1
         for (i in 0..characters.size) {
             val space = i == characters.size || characters[i].isBlank()
-            if (!space && start < 0) start = i
-            if (!space || start < 0) continue
-            val left = if (start == 0) box.left else (xs[start - 1] + xs[start]) / 2
-            val right = if (i == characters.size) box.right else (xs[i - 1] + xs[i]) / 2
+            if (!space && first < 0) first = i
+            if (!space || first < 0) continue
             words += OcrWord(
-                text = characters.subList(start, i).joinToString(""),
+                text = characters.subList(first, i).joinToString(""),
                 separator = if (i < characters.size) " " else "",
-                box = Box(left, box.top, right, box.bottom),
+                box = span(before(first), after(i - 1)),
+                characterBoxes = (first until i).map { span(before(it), after(it)) },
             )
-            start = -1
+            first = -1
         }
         return words
     }

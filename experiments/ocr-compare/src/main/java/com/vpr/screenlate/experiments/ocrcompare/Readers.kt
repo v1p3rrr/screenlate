@@ -2,6 +2,11 @@ package com.vpr.screenlate.experiments.ocrcompare
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Rect
+import com.google.android.gms.tasks.Tasks
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
@@ -20,15 +25,33 @@ interface Reader : AutoCloseable {
     fun recognize(image: Bitmap): OcrPage
 }
 
+/**
+ * PP-OCR. A [rightToLeft] recognizer (Arabic) reads its crop from left to right, so each line's words and their
+ * letters are turned into reading order, as PaddleOCR does.
+ */
 class PaddleReader(
     private val detector: PaddleModel,
     private val recognizer: PaddleModel,
     dictionary: List<String>,
     detectionWidth: Int,
+    private val rightToLeft: Boolean = false,
 ) : Reader {
     private val pipeline = PaddlePipeline(detector, recognizer, PaddlePipeline.dictionary(dictionary), detectionWidth)
 
-    override fun recognize(image: Bitmap): OcrPage = pipeline.recognize(image)
+    override fun recognize(image: Bitmap): OcrPage {
+        val page = pipeline.recognize(image)
+        if (!rightToLeft) return page
+        return page.copy(paragraphs = page.paragraphs.map { paragraph ->
+            paragraph.copy(lines = paragraph.lines.map { line ->
+                line.copy(
+                    words = line.words.reversed().map { word ->
+                        word.copy(text = word.text.reversed(), characterBoxes = word.characterBoxes?.reversed())
+                    },
+                    rightToLeft = true,
+                )
+            })
+        })
+    }
 
     override fun close() {
         detector.close()
@@ -36,22 +59,53 @@ class PaddleReader(
     }
 }
 
-/** ML Kit as the app uses it for Latin text: its bundled Japanese model, which also reads Latin letters. */
-class MlKitReader : Reader {
+/**
+ * ML Kit as the app uses it for [language]: the Japanese, Chinese or Korean model; Latin text (English) goes to the
+ * Japanese model, which also reads Latin letters.
+ */
+class MlKitReader(private val language: Language) : Reader {
     private val engine = MlKitOcrEngine()
 
-    override fun recognize(image: Bitmap): OcrPage = runBlocking { engine.recognize(image, Language.ENGLISH) }
+    override fun recognize(image: Bitmap): OcrPage = runBlocking { engine.recognize(image, language) }
 
     override fun close() = engine.release()
+}
+
+/** ML Kit's Latin model, which the app does not carry. Symbol boxes as ML Kit gives them, without the app's checks. */
+class MlKitLatinReader : Reader {
+    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+    override fun recognize(image: Bitmap): OcrPage {
+        val text = Tasks.await(recognizer.process(InputImage.fromBitmap(image, 0)))
+        val paragraphs = text.textBlocks.map { block ->
+            OcrParagraph(block.lines.mapNotNull { line ->
+                val lineBox = line.boundingBox?.toBox() ?: return@mapNotNull null
+                val words = line.elements.mapNotNull { element ->
+                    val box = element.boundingBox?.toBox() ?: return@mapNotNull null
+                    val symbols = element.symbols.mapNotNull { it.boundingBox?.toBox() }
+                    val count = element.text.codePointCount(0, element.text.length)
+                    OcrWord(element.text, " ", box, symbols.takeIf { it.size == count })
+                }
+                if (words.isEmpty()) null else OcrLine(words, lineBox, vertical = false)
+            })
+        }.filter { it.lines.isNotEmpty() }
+        return OcrPage(image.width, image.height, paragraphs, OcrEngineType.ML_KIT)
+    }
+
+    override fun close() = recognizer.close()
 }
 
 /**
  * Tesseract with its LSTM models and automatic page segmentation. A dark screen (mean luminance below half) is
  * inverted first, as Tesseract expects dark text on a light background.
  *
+ * Words come with their symbols' boxes. With a `_vert` model a line clearly taller than wide is a column.
+ *
  * @param dataPath the folder holding `tessdata/<language>.traineddata`.
  */
 class TesseractReader(dataPath: String, language: String) : Reader {
+    private val vertical = language.endsWith("_vert")
+
     private val api = TessBaseAPI().apply {
         check(init(dataPath, language, TessBaseAPI.OEM_LSTM_ONLY)) { "Tesseract could not load $language" }
         pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO
@@ -62,29 +116,45 @@ class TesseractReader(dataPath: String, language: String) : Reader {
         api.setImage(input)
         api.getUTF8Text()
         if (input !== image) input.recycle()
-        val lines = ArrayList<OcrLine>()
         val iterator = api.resultIterator ?: return OcrPage(image.width, image.height, emptyList(), OcrEngineType.DEVICE_MODEL)
+        val lines = ArrayList<OcrLine>()
         val words = ArrayList<OcrWord>()
         var lineBox: Box? = null
+        var wordText: String? = null
+        var wordBox: Box? = null
+        val symbols = ArrayList<Box>()
+        fun endWord() {
+            val text = wordText
+            if (!text.isNullOrBlank() && wordBox != null) {
+                val count = text.codePointCount(0, text.length)
+                words += OcrWord(text, " ", wordBox!!, symbols.toList().takeIf { it.size == count })
+            }
+            wordText = null
+            symbols.clear()
+        }
+        fun endLine() {
+            endWord()
+            if (words.isEmpty()) return
+            val box = lineBox ?: words.map { it.box }.reduce(Box::union)
+            val text = words.joinToString("") { it.text }
+            val vertical = this.vertical && text.codePointCount(0, text.length) >= 2 && box.height > box.width
+            lines += OcrLine(words.toList(), box, vertical)
+            words.clear()
+        }
         iterator.begin()
         do {
             if (iterator.isAtBeginningOf(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE)) {
-                lineBox = iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE).let {
-                    Box(it.left.toFloat(), it.top.toFloat(), it.right.toFloat(), it.bottom.toFloat())
-                }
+                endLine()
+                lineBox = iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE).toBox()
             }
-            val text = iterator.getUTF8Text(TessBaseAPI.PageIteratorLevel.RIL_WORD)
-            val rect = iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_WORD)
-            val last = iterator.isAtFinalElement(TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE, TessBaseAPI.PageIteratorLevel.RIL_WORD)
-            if (!text.isNullOrBlank()) {
-                val box = Box(rect.left.toFloat(), rect.top.toFloat(), rect.right.toFloat(), rect.bottom.toFloat())
-                words += OcrWord(text, if (last) "" else " ", box)
+            if (iterator.isAtBeginningOf(TessBaseAPI.PageIteratorLevel.RIL_WORD)) {
+                endWord()
+                wordText = iterator.getUTF8Text(TessBaseAPI.PageIteratorLevel.RIL_WORD)
+                wordBox = iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_WORD).toBox()
             }
-            if (last && words.isNotEmpty()) {
-                lines += OcrLine(words.toList(), lineBox ?: words.map { it.box }.reduce(Box::union), vertical = false)
-                words.clear()
-            }
-        } while (iterator.next(TessBaseAPI.PageIteratorLevel.RIL_WORD))
+            symbols += iterator.getBoundingRect(TessBaseAPI.PageIteratorLevel.RIL_SYMBOL).toBox()
+        } while (iterator.next(TessBaseAPI.PageIteratorLevel.RIL_SYMBOL))
+        endLine()
         iterator.delete()
         return OcrPage(image.width, image.height, lines.map { OcrParagraph(listOf(it)) }, OcrEngineType.DEVICE_MODEL)
     }
@@ -112,3 +182,5 @@ class TesseractReader(dataPath: String, language: String) : Reader {
         return Bitmap.createBitmap(pixels, image.width, image.height, Bitmap.Config.ARGB_8888)
     }
 }
+
+private fun Rect.toBox() = Box(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
