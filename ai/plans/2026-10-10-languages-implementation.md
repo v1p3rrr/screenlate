@@ -138,6 +138,11 @@ Requests 1–19 are in the previous plan. New ones:
 63. (2026-10-16) A model a new language would use that is already installed (the Latin model for a second
     Latin-script language) is not offered again: it shows as installed, ticked and locked; the other models stay
     optional.
+64. (2026-10-17) Add PaddleOCR PP-OCRv6 small (one recognizer for Chinese, Japanese, English and 46 Latin-script
+    languages, June 2026) to the comparison; it replaces PP-OCRv5's main and Latin recognizers where the
+    recommendation rule says it is better (row "PP-OCRv6").
+65. (2026-10-17) Paddle's Cyrillic recognizers write Russian words with Latin look-alike letters: fix it where it
+    gives no false hits (row "Latin look-alikes in Cyrillic text").
 
 ## Decisions
 
@@ -273,6 +278,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Paddle model hosting | The converted MNN models with their character lists, Apache-2.0 license and a note that we converted them are assets of a release of the screenlate repository that holds only model files and is kept out of the update check; uploaded only after the owner approves the file list. Tesseract's traineddata come straight from the tesseract-ocr repositories at a pinned commit (owner, 2026-10-17, question 31) |
 | Installed shared OCR models | On the download screen, a model the language uses that is already installed (the Latin recognizer for a second Latin-script language, the Paddle detector) shows ticked and locked, marked as installed, and adds nothing to the total (owner, 2026-10-16, request 63) |
 | Deleting OCR models | A language's active model cannot be deleted, only replaced: another one downloaded and chosen, then the old one can go; all of a language's models go when the language's files are deleted. A model another language also lists can be deleted only when no language uses it as its active model; the dialog says that it goes for those languages too. With an active model it cannot be deleted, and the row says which language uses it. The Paddle detector is not listed on its own: it goes with the last Paddle recognizer (owner, 2026-10-16, questions 32 and 33) |
+| PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
+| Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
 
 ## Open items (postponed by the owner)
 
@@ -1172,3 +1179,5 @@ Dictionaries are checked when the group starts; a language without support or di
   approves the file list); rows "OCR model names", "Several OCR models at setup" and "Last dictionary with
   definitions" (kept as built) added, "OCR model choice placement" detailed. Outside research on the engines runs in a separate
   session; the OCR engines get their own plan, `2026-10-17-ocr-engines.md`.
+- 2026-10-17: the outside research is in `notes/ocr-engine-research.md`. Requests 64 (PP-OCRv6 small joins the
+  comparison) and 65 (Latin look-alikes in Cyrillic words); rows "PP-OCRv6" and "Latin look-alikes in Cyrillic text".

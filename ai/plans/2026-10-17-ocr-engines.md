@@ -21,7 +21,8 @@ APK growth per arm64 APK: Tesseract 8.3 MB, MNN 2.1 MB (universal APK about 29 M
 Rows of the languages plan: "On-device OCR engines", "ML Kit Latin model", "Tesseract models", "Chinese
 recognition", "OCR engine choice" (the recommendation rule), "OCR model choice placement", "OCR model names",
 "Several OCR models at setup", "Installed shared OCR models", "Deleting OCR models", "Paddle model hosting", "Last
-dictionary with definitions", "OCR runtime and models", "Turning on a language".
+dictionary with definitions", "OCR runtime and models", "Turning on a language", "PP-OCRv6", "Latin look-alikes in
+Cyrillic text".
 
 Technical choices of the agent (the owner may object; recorded in the changelog when changed):
 
@@ -36,6 +37,7 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Model ids | `tesseract-fast-<code>`, `tesseract-best-<code>` (Tesseract's language code, e.g. `rus`), `paddle-<script>`, `paddle-detector`; versions pinned (tessdata by commit, Paddle by our release number). |
 | Which models a language has | The catalog: a language's model entries (its source language) name the models it may use, with the recommended one marked. `core:ocr` cannot read the catalog, so it gets them through an interface (`LanguageModels`) the app implements. |
 | Choice per language | Stored in the preferences per language (the model id, or `mlkit`); absent means the recommended model when installed, else ML Kit where it reads the script, else the best installed one. |
+| Choice key | `ocr_model` (another language adds its code); reset with the bubble settings, where the choice is made, and backed up with them, per language. |
 | Device selection | `DeviceOcr` uses the language's chosen model when it is installed, else falls back as above; no installed model and no ML Kit model means no on-device recognition, as today (cloud only on Both, an error with a hint on Device). |
 | Right to left | Paddle's Arabic recognizer reads its crop left to right; the engine turns words and letters into reading order (as the comparison does). Mirrored hit testing and highlight stay in group 4d. |
 
@@ -57,7 +59,9 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
    loaded on first use and freed on `release`; `scripts/ocr-models/` converts the pinned ONNX files from PaddlePaddle's
    Hugging Face repositories (MNN's converter, the character list from `inference.yml`), adds the license and the
    conversion note, zips each model and prints the catalog fields. On the emulator the archives come from a local
-   URL; the release is uploaded only after the owner approves the file list.
+   URL; the release is uploaded only after the owner approves the file list. PP-OCRv6 small replaces v5's main and
+   Latin recognizers if the comparison says so. Latin look-alikes in Cyrillic words become Cyrillic (for every
+   engine, in the language's support class).
 5. Recommendations: the rule over the clean and hard screens fills the catalog's recommended marks and the
    unusable list; ⓘ texts from the measurements and `notes/ocr-engine-research.md`.
 6. Missing parts (request 62, below), docs (`architecture.md`, `usage.md`, `development.md`: MNN build, model
@@ -90,3 +94,5 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 
 - 2026-10-17: plan written from requests 60-63 and the answers to questions 31-34 of the languages plan.
 - 2026-10-17: question 35 answered (model updates listed by "Check for updates" with the dictionaries).
+- 2026-10-17: requests 64 and 65 of the languages plan (PP-OCRv6 small in the comparison; Latin look-alikes in
+  Cyrillic words) added to step 4.
