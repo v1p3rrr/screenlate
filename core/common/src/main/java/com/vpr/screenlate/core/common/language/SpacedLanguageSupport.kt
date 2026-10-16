@@ -34,14 +34,22 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val elisions: Set<String> = emptySet()
 
     /**
-     * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com) or it closes an
-     * abbreviation. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     * Whether a period after a number of one or two digits makes it an ordinal (German "am 3. Oktober"), so it does
+     * not end the sentence; a year at the end of a sentence still does.
+     */
+    open val ordinalPeriod: Boolean = false
+
+    /**
+     * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
+     * abbreviation or, with [ordinalPeriod], an ordinal number. An abbreviation at the real end of a sentence keeps it
+     * running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
         if (character !in sentenceTerminators) return false
         if (character != '.') return true
         if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
+        if (ordinalPeriod && digitsBefore(text, index) in 1..2) return false
         return wordBefore(text, index) !in abbreviations
     }
 
@@ -87,6 +95,14 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             start--
         }
         return text.substring(start, index).lowercase()
+    }
+
+    /** The number of digits right before [index]; 0 when they follow a letter (A4). */
+    private fun digitsBefore(text: String, index: Int): Int {
+        var start = index
+        while (start > 0 && text[start - 1].isDigit()) start--
+        if (start > 0 && text[start - 1].isLetter()) return 0
+        return index - start
     }
 
     /** Whether the word ending at [end], just before an apostrophe, is one of [elisions]. */

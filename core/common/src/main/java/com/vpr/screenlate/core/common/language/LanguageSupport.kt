@@ -244,4 +244,5 @@ val Language.support: LanguageSupport
         Language.GERMAN -> GermanSupport
         Language.ITALIAN -> ItalianSupport
         Language.PORTUGUESE -> PortugueseSupport
+        Language.POLISH -> PolishSupport
     }

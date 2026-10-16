@@ -54,19 +54,6 @@ object GermanSupport : SpacedLanguageSupport() {
         "apr", "aug", "sept", "okt", "nov", "dez",
     )
 
-    /**
-     * A period after a number of one or two digits makes it an ordinal ("am 3. Oktober", "im 19. Jahrhundert") and
-     * does not end the sentence; a year at the end of a sentence still does.
-     */
-    override fun endsSentence(text: String, index: Int): Boolean {
-        if (text[index] == '.' && digitsBefore(text, index) in 1..2) return false
-        return super.endsSentence(text, index)
-    }
-
-    private fun digitsBefore(text: String, index: Int): Int {
-        var start = index
-        while (start > 0 && text[start - 1].isDigit()) start--
-        if (start > 0 && text[start - 1].isLetter()) return 0
-        return index - start
-    }
+    /** "am 3. Oktober", "im 19. Jahrhundert". */
+    override val ordinalPeriod = true
 }

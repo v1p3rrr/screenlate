@@ -459,6 +459,7 @@
     <string name="popup_font_script_only_de">Nur für deutschen Text</string>
     <string name="popup_font_script_only_it">Nur für italienischen Text</string>
     <string name="popup_font_script_only_pt">Nur für portugiesischen Text</string>
+    <string name="popup_font_script_only_pl">Nur für polnischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

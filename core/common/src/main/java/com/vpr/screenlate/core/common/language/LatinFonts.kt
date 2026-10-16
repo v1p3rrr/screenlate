@@ -13,3 +13,6 @@ internal val LATIN_SYSTEM_FONTS = SystemFonts(
 
 /** The Google Fonts subset with the letters of English and the Western European languages (Latin-1, œ). */
 internal val LATIN_FONT_SUBSETS = setOf("latin")
+
+/** Latin letters with the marks of Central and Eastern European languages and Turkish (ł, ğ, ā, č). */
+internal val LATIN_EXT_FONT_SUBSETS = setOf("latin", "latin-ext")

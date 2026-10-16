@@ -83,4 +83,12 @@ class SentenceTest {
         assertThat(extract(paragraph, "Silva", Language.PORTUGUESE).text).isEqualTo("A Sra. Silva chegou.")
         assertThat(extract(paragraph, "disse", Language.PORTUGUESE).text).isEqualTo("«Fica aqui.» disse ela.")
     }
+
+    @Test
+    fun polishSentenceKeepsLowQuotesOrdinalsAndAbbreviations() {
+        val paragraph = "Pada. W XX w. powstał np. ten dom. „Zostań tu.” powiedziała. To 5. piętro."
+        assertThat(extract(paragraph, "powstał", Language.POLISH).text).isEqualTo("W XX w. powstał np. ten dom.")
+        assertThat(extract(paragraph, "powiedziała", Language.POLISH).text).isEqualTo("„Zostań tu.” powiedziała.")
+        assertThat(extract(paragraph, "piętro", Language.POLISH).text).isEqualTo("To 5. piętro.")
+    }
 }
