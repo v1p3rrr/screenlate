@@ -639,13 +639,24 @@ module review session holds the root checkout and the emulator. FreeDict convers
   dictionaries, and its size and delete text leave models out, although the delete removes them; count the models in
   (the wording needs all 14 locales).
 - Russian: forms from the dictionaries, the second form-of step, stress marks in readings, OpenRussian built
-  (`scripts/openrussian/`, ru→en 6.7 MB and ru→de 8.2 MB with form-of rows; question 19) and hosted, the Zaliznyak meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
+  (`scripts/openrussian/`, ru→en 6.7 MB and ru→de 8.2 MB with form-of rows; question 19) and hosted, the Zaliznyak
+  meta dictionary with its non-commercial mark, pronunciation ru 6.1–6.5 MB.
 - Polish: forms from the dictionary (pl→en 22 MB). Turkish: dotted and dotless i in case folding. Vietnamese: words of
   several syllables through word resolution; diacritics with the ML Kit Latin model (else Paddle latin).
 - Latvian (request 44): Latin letters with macrons and cedillas (ā ē ī ū, ģ ķ ļ ņ, č š ž) through the ML Kit Latin
   model; forms from the dictionary unless Yomitan has rules for it; check Yomitan's language list and the Wiktionary
   editions (lv→en, lv→ru) when the group starts.
 - Questions per language: the recommended dictionaries; anything the comparison leaves open.
+
+Progress (2026-10-16): the OCR comparison is prepared on `languages/ocr-compare`, a branch not merged as it is: the
+PP-OCR pipeline in `core:ocr` (to be taken over if Paddle wins), PP-OCRv5 mobile models from PaddlePaddle's own ONNX
+exports, MNN 3.6.1 built from source (no x86_64 Android build is published), Tesseract4Android 4.9.0 (OpenMP) with
+tessdata fast and best, ML Kit for the Latin languages, the harness in `experiments/ocr-compare`, ground truth and
+scoring in `scripts/ocr-compare` (a test page with known text, Chrome through DevTools, the interface through
+uiautomator). Native code per ABI (arm64-v8a / armeabi-v7a / x86_64): MNN 2.1 / 1.3 / 2.6 MB, ONNX Runtime 19.4 /
+14.0 / 23.2 MB, Tesseract with Leptonica 8.3 / 6.2 / 8.8 MB; so MNN unless ONNX Runtime is 30% faster. PP-OCRv5's
+Latin model has no Vietnamese letters with tone marks (ạ, ấ, ộ…), so Paddle cannot read Vietnamese. On the computer
+both runtimes read `ru-sample.png` without an error. The run on the emulator waits for the module review session.
 
 ## Stage E: group 4 (decided when group 3 is done)
 
@@ -946,3 +957,5 @@ Dictionaries are checked when the group starts; a language without support or di
 - 2026-10-16: the converters for FreeDict's pairs into Russian and for OpenRussian (ru→en, ru→de) written with unit
   tests; the official OpenRussian dump is gone, so the site's 2020 CSV export is used. Questions 18 (FreeDict quality)
   and 19 (OpenRussian data age) logged.
+- 2026-10-16: the OCR comparison prepared on `languages/ocr-compare` (pipeline, harness, ground truth and scoring);
+  native code sizes measured; PP-OCRv5's Latin model lacks Vietnamese tone letters. The run waits for the emulator.
