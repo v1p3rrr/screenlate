@@ -2,12 +2,14 @@ package com.vpr.screenlate.experiments.ocrcompare
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrPage
+import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import java.io.File
 import org.json.JSONArray
 import org.json.JSONObject
@@ -24,8 +26,13 @@ import org.junit.runner.RunWith
  * model; `mlkit-latin` its Latin model. Image names start with the language: `javert` is vertical Japanese, `zht`
  * Traditional Chinese, `shc` Serbo-Croatian in Cyrillic (`sh` in Latin).
  *
- * Instrumentation arguments: `engines` (comma-separated, default all), `images` (a name prefix), `runs` (timed runs
- * after a warm-up, default 3), `threads` (default 4), `detWidth` (default 960).
+ * `lens` is cloud recognition; it runs only when named. It sends one request per screen, without warm-up, a
+ * [LENS_PAUSE_MS] pause before each, and waits [LENS_REFUSED_WAIT_MS] (then twice that) when the service refuses one;
+ * its time is the round trip, so it depends on the network.
+ *
+ * Instrumentation arguments: `engines` (comma-separated, default all but `lens`), `images` (a name prefix), `dir` (the
+ * folder under `<files>` with the screenshots, default `images`), `runs` (timed runs after a warm-up, default 3),
+ * `threads` (default 4), `detWidth` (default 960).
  */
 @RunWith(AndroidJUnit4::class)
 class OcrCompareTest {
@@ -44,7 +51,7 @@ class OcrCompareTest {
         val runs = arguments.getString("runs")?.toInt() ?: 3
         val prefix = arguments.getString("images") ?: ""
         val out = File(context.getExternalFilesDir(null), "ocr-compare").apply { mkdirs() }
-        val copied = File(context.filesDir, "images")
+        val copied = File(context.filesDir, arguments.getString("dir") ?: "images")
         val pushed = copied.list().orEmpty().toList()
         val names = pushed.ifEmpty { assets.list("images").orEmpty().toList() }
         val images = names.filter { it.endsWith(".png") && it.startsWith(prefix) }.sorted()
@@ -60,20 +67,45 @@ class OcrCompareTest {
                                 inPreferredConfig = Bitmap.Config.ARGB_8888
                             })
                         }!!
-                        reader.recognize(image)
                         var page: OcrPage? = null
-                        val times = (1..runs).map {
-                            val start = System.nanoTime()
-                            page = reader.recognize(image)
-                            (System.nanoTime() - start) / 1_000_000
+                        val times = if (engine == "lens") {
+                            listOf(askLens(reader, image) { page = it })
+                        } else {
+                            reader.recognize(image)
+                            (1..runs).map {
+                                val start = System.nanoTime()
+                                page = reader.recognize(image)
+                                (System.nanoTime() - start) / 1_000_000
+                            }
                         }
                         results.put(result(file, language, page!!, times))
                         image.recycle()
                     }
                 }
+                // Written after each language too, so a run that stops keeps what was read.
+                File(out, "$engine.json").writeText(results.toString())
             }
             File(out, "$engine.json").writeText(results.toString())
         }
+    }
+
+    /** One cloud request after a pause; a refusal waits several minutes before the next try. Returns its time. */
+    private fun askLens(reader: Reader, image: Bitmap, onPage: (OcrPage) -> Unit): Long {
+        var wait = LENS_REFUSED_WAIT_MS
+        repeat(3) { attempt ->
+            Thread.sleep(LENS_PAUSE_MS)
+            val start = System.nanoTime()
+            try {
+                onPage(reader.recognize(image))
+                return (System.nanoTime() - start) / 1_000_000
+            } catch (e: LensHttpException) {
+                if (!e.refused || attempt == 2) throw e
+                Log.w(TAG, "Lens refused with HTTP ${e.code}; waiting ${wait / 60_000} min")
+                Thread.sleep(wait)
+                wait *= 2
+            }
+        }
+        error("unreachable")
     }
 
     private fun reader(engine: String, language: String): Reader? {
@@ -108,6 +140,7 @@ class OcrCompareTest {
             "mlkit-latin" -> if (script.paddle == LATIN) MlKitScriptReader() else null
             "tesseract-fast" -> TesseractReader(File(models, "tessdata_fast").path, script.tesseract)
             "tesseract-best" -> TesseractReader(File(models, "tessdata_best").path, script.tesseract)
+            "lens" -> LensReader(LENS_LANGUAGES[language] ?: language)
             else -> error("Unknown engine $engine")
         }
     }
@@ -126,6 +159,7 @@ class OcrCompareTest {
                 put("words", JSONArray(line.words.map { word ->
                     JSONObject().apply {
                         put("text", word.text)
+                        put("separator", word.separator)
                         put("box", box(word.box))
                         word.characterBoxes?.let { boxes -> put("chars", JSONArray(boxes.map(::box))) }
                     }
@@ -157,6 +191,12 @@ class OcrCompareTest {
     private class Script(val paddle: String?, val tesseract: String, val mlKit: Language? = null)
 
     private companion object {
+        const val TAG = "OcrCompare"
+        const val LENS_PAUSE_MS = 1_500L
+        const val LENS_REFUSED_WAIT_MS = 5 * 60_000L
+
+        /** The code sent to cloud recognition where it is not the image name's prefix. */
+        val LENS_LANGUAGES = mapOf("javert" to "ja", "zht" to "zh-TW", "shc" to "sr", "sh" to "hr")
         const val DETECTOR = "PP-OCRv5_mobile_det"
         const val MAIN = "PP-OCRv5_mobile_rec"
         const val LATIN = "latin_PP-OCRv5_mobile_rec"

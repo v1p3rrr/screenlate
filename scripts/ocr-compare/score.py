@@ -2,8 +2,10 @@
 """Scores the engines of the on-device OCR comparison against the ground truth that collect.mjs wrote.
 
     python scripts/ocr-compare/score.py <ground truth folder> <results folder> [--details | --show <screen>]
+        [--by language|style|language-style]
 
-The results folder holds `<engine>.json` as OcrCompareTest writes them. Per engine and language:
+The results folder holds `<engine>.json` as OcrCompareTest writes them. Per engine and language (or the style of the
+regions, as hard.html marks them, or both):
 
 - character error rate: for each ground-truth region, the words the engine read whose centers lie inside it, in
   reading order, against the region's text (edit distance over the region's characters). Reading order puts the
@@ -13,6 +15,12 @@ The results folder holds `<engine>.json` as OcrCompareTest writes them. Per engi
 - words read whole: the region's words found among those words, punctuation around them ignored;
 - taps (web pages only): a tap at the center of each word lands in a word box the engine read as that word;
 - time: the median of the timed runs per screen, averaged over the screens.
+
+A region turned by an angle (a tilted line of hard.html) holds the words whose centers lie inside its turned
+rectangle, read along its direction.
+
+Words an engine glued together (an empty separator after the first: cloud recognition gives punctuation and Korean
+particles as words of their own) count as one word, as in the app's line text.
 
 Text is compared after NFKC, so full-width and half-width forms (，and ,) count as the same character, and so do the
 LOOKALIKES below.
@@ -26,6 +34,7 @@ bottom.
 
 import argparse
 import json
+import math
 import statistics
 import sys
 import unicodedata
@@ -85,6 +94,19 @@ def center(box):
     return (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
 
 
+def in_region(region, x, y):
+    """Whether (x, y) lies in [region], or within MARGIN of it; in its turned rectangle if it has an angle."""
+    if "angle" not in region:
+        return inside(region["box"], x, y, MARGIN)
+    quad = region["quad"]
+    cx, cy = sum(p[0] for p in quad) / 4, sum(p[1] for p in quad) / 4
+    a = math.radians(region["angle"])
+    along = (x - cx) * math.cos(a) + (y - cy) * math.sin(a)
+    across = -(x - cx) * math.sin(a) + (y - cy) * math.cos(a)
+    return (abs(along) <= math.dist(quad[0], quad[1]) / 2 + MARGIN and
+            abs(across) <= math.dist(quad[1], quad[2]) / 2 + MARGIN)
+
+
 def reading_order(found, right_to_left=False):
     """[found] ((line box, position, word) entries) by rows of lines from the top, each row along its direction."""
     rows = []
@@ -127,12 +149,26 @@ def characters(word, vertical):
     return [{"text": c, "box": box} for c, box in zip(text, boxes)]
 
 
+def glued(words):
+    """[words] with each run the engine joined by empty separators made into one word."""
+    result = []
+    for word in words:
+        if result and result[-1].get("separator") == "":
+            previous = result[-1]
+            box = [min(previous["box"][0], word["box"][0]), min(previous["box"][1], word["box"][1]),
+                   max(previous["box"][2], word["box"][2]), max(previous["box"][3], word["box"][3])]
+            result[-1] = {"text": previous["text"] + word["text"], "box": box, "separator": word.get("separator")}
+        else:
+            result.append(word)
+    return result
+
+
 def engine_words(result):
     """The engine's words as (line box, position, word), characters instead of words where scored by character."""
     by_character = result.get("language", "") in BY_CHARACTER
     words = []
     for line in result["lines"]:
-        for position, word in enumerate(line["words"]):
+        for position, word in enumerate(line["words"] if by_character else glued(line["words"])):
             if by_character:
                 vertical = line.get("vertical", False)
                 for offset, character in enumerate(characters(word, vertical)):
@@ -147,22 +183,32 @@ def region_reads(truth, result, words):
     language = result.get("language", "")
     spaced = language not in UNSPACED
     for region in truth["regions"]:
-        found = [w for w in words if inside(region["box"], *center(w[2]["box"]), MARGIN)]
+        found = [w for w in words if in_region(region, *center(w[2]["box"]))]
         if language == "javert":
             found.sort(key=lambda w: center(w[2]["box"])[1])
+        elif "angle" in region:
+            a, sign = math.radians(region["angle"]), -1 if language in RIGHT_TO_LEFT else 1
+
+            def along(w):
+                x, y = center(w[2]["box"])
+                return sign * (x * math.cos(a) + y * math.sin(a))
+
+            found.sort(key=along)
         else:
             found = reading_order(found, language in RIGHT_TO_LEFT)
         read = normalize(" ".join(w[2]["text"] for w in found), spaced, language)
         yield region, found, read, normalize(region["text"], spaced, language)
 
 
-def score_image(truth, result):
-    """Edits, characters, words found, words, taps right, taps for one screen."""
+def score_image(truth, result, style=None):
+    """Edits, characters, words found, words, taps right, taps for one screen; only its [style] regions if given."""
     language = result.get("language", "")
     by_character = language in BY_CHARACTER
     words = engine_words(result)
     totals = Counter()
     for region, found, read, expected in region_reads(truth, result, words):
+        if style is not None and region.get("style") != style:
+            continue
         totals["edits"] += distance(read, expected)
         totals["chars"] += len(expected)
         if not by_character and language not in NO_WORDS:
@@ -200,6 +246,8 @@ def main(argv=None):
     parser.add_argument("results", type=Path)
     parser.add_argument("--details", action="store_true", help="a line per screen too")
     parser.add_argument("--show", metavar="SCREEN", help="each engine's misread regions on this screen (image name)")
+    parser.add_argument("--by", choices=["language", "style", "language-style"], default="language",
+                        help="what a row of the table stands for")
     args = parser.parse_args(argv)
     sys.stdout.reconfigure(encoding="utf-8")
     truths = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in args.truth.glob("*.json")}
@@ -214,11 +262,12 @@ def main(argv=None):
             truth = truths.get(Path(result["image"]).stem)
             if truth is None:
                 continue
+            for key, totals in group_scores(truth, result, args.by):
+                entry = by_language[key]
+                entry["totals"] += totals
+                entry["times"].append(statistics.median(result["times_ms"]))
+                entry["screens"] += 1
             totals = score_image(truth, result)
-            entry = by_language[result["language"]]
-            entry["totals"] += totals
-            entry["times"].append(statistics.median(result["times_ms"]))
-            entry["screens"] += 1
             if args.details:
                 words = f"{totals['words_found'] / totals['words']:6.1%}" if totals["words"] else f"{'-':>6}"
                 print(f"  {engine:<22} {result['image']:<32} CER {totals['edits'] / max(1, totals['chars']):6.1%}  "
@@ -232,11 +281,21 @@ def main(argv=None):
                 t["taps_right"] / t["taps"] if t["taps"] else None,
                 statistics.mean(entry["times"]),
             ))
-    print(f"{'engine':<22} {'lang':<6} {'screens':>7} {'CER':>7} {'words':>7} {'taps':>7} {'ms/screen':>10}")
+    print(f"{'engine':<22} {args.by:<6} {'screens':>7} {'CER':>7} {'words':>7} {'taps':>7} {'ms/screen':>10}")
     for engine, language, screens, cer, words, taps, ms in sorted(rows, key=lambda r: (r[1], r[0])):
         taps_text = f"{taps:7.1%}" if taps is not None else f"{'-':>7}"
         words_text = f"{words:7.1%}" if words is not None else f"{'-':>7}"
         print(f"{engine:<22} {language:<6} {screens:>7} {cer:7.1%} {words_text} {taps_text} {ms:10.0f}")
+
+
+def group_scores(truth, result, by):
+    """(row key, totals) of one screen: one row for its language, or one per style of its regions."""
+    language = result["language"]
+    if by == "language":
+        return [(language, score_image(truth, result))]
+    styles = sorted({region.get("style") or "-" for region in truth["regions"]})
+    return [(style if by == "style" else f"{language}/{style}",
+             score_image(truth, result, None if style == "-" else style)) for style in styles]
 
 
 if __name__ == "__main__":

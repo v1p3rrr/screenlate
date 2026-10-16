@@ -1,3 +1,4 @@
+import math
 import unittest
 
 import score
@@ -126,6 +127,67 @@ class ScoreTest(unittest.TestCase):
             {"box": [1, 0, 20, 40], "vertical": True, "words": [word("上中", [1, 0, 20, 40])]},
         ]}
         self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
+    def test_words_glued_by_the_engine_read_as_one(self):
+        truth = {"regions": [{
+            "box": [0, 0, 200, 20], "text": "도서관은 문을 엽니다.",
+            "words": [{"text": "도서관은", "box": [0, 0, 60, 20]}, {"text": "문을", "box": [70, 0, 110, 20]},
+                      {"text": "엽니다.", "box": [120, 0, 200, 20]}],
+        }]}
+        words = [("도서관", "", [0, 0, 45, 20]), ("은", " ", [45, 0, 60, 20]), ("문", "", [70, 0, 95, 20]),
+                 ("을", " ", [95, 0, 110, 20]), ("엽니다", "", [120, 0, 190, 20]), (".", "", [190, 0, 200, 20])]
+        result = {"language": "ko", "lines": [{"box": [0, 0, 200, 20], "words": [
+            {"text": text, "separator": separator, "box": box} for text, separator, box in words]}]}
+        totals = score.score_image(truth, result)
+        self.assertEqual(totals["edits"], 0)
+        self.assertEqual((totals["words_found"], totals["taps_right"]), (3, 3))
+
+    def test_a_turned_line_holds_the_words_inside_its_turned_rectangle(self):
+        # A 200 x 20 line turned by 10° about (100, 10); a word of the next line lies in its bounds but not in it.
+        a = math.radians(10)
+
+        def turned(x, y):
+            dx, dy = x - 100, y - 10
+            return [100 + dx * math.cos(a) - dy * math.sin(a), 10 + dx * math.sin(a) + dy * math.cos(a)]
+
+        quad = [turned(0, 0), turned(200, 0), turned(200, 20), turned(0, 20)]
+        xs, ys = [p[0] for p in quad], [p[1] for p in quad]
+        region = {"box": [min(xs), min(ys), max(xs), max(ys)], "quad": quad, "angle": 10, "text": "один два"}
+        truth = {"regions": [region]}
+
+        def at(text, x, y):
+            cx, cy = turned(x, y)
+            return word(text, [cx - 10, cy - 8, cx + 10, cy + 8])
+
+        # The engine gives the second word first and a word from the line below (30 px down) in the bounds.
+        result = {"language": "ru", "lines": [
+            {"box": [0, 0, 200, 60], "words": [at("два", 150, 10), at("один", 50, 10), at("три", 20, 40)]},
+        ]}
+        self.assertTrue(score.inside(truth["regions"][0]["box"], *score.center(at("три", 20, 40)["box"])))
+        self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
+    def test_a_style_counts_only_its_own_regions(self):
+        truth = {"regions": [
+            {"box": [0, 0, 100, 20], "text": "один", "style": "photo"},
+            {"box": [0, 50, 100, 70], "text": "два", "style": "small"},
+        ]}
+        result = {"language": "ru", "lines": [{"box": [0, 0, 100, 20], "words": [word("одни", [0, 0, 100, 20])]}]}
+        photo = score.score_image(truth, result, style="photo")
+        self.assertEqual((photo["edits"], photo["chars"]), (2, 4))
+        small = score.score_image(truth, result, style="small")
+        self.assertEqual((small["edits"], small["chars"]), (3, 3))
+
+    def test_rows_by_style_and_by_language_and_style(self):
+        truth = {"regions": [
+            {"box": [0, 0, 100, 20], "text": "один", "style": "photo"},
+            {"box": [0, 50, 100, 70], "text": "два", "style": "small"},
+        ]}
+        result = {"language": "ru", "lines": [{"box": [0, 0, 100, 20], "words": [word("один", [0, 0, 100, 20])]}]}
+        rows = score.group_scores(truth, result, "language-style")
+        self.assertEqual([(key, totals["edits"]) for key, totals in rows], [("ru/photo", 0), ("ru/small", 3)])
+        self.assertEqual([key for key, _ in score.group_scores(truth, result, "style")], ["photo", "small"])
+        [(key, totals)] = score.group_scores(truth, result, "language")
+        self.assertEqual((key, totals["chars"]), ("ru", 7))
 
 
 if __name__ == "__main__":

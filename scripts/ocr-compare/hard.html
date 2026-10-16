@@ -1,0 +1,311 @@
+<!doctype html>
+<!--
+  The texts of page.html in styles that are hard to read, for the OCR comparison. hard.html?lang=ru&set=scene: text
+  over a photo-like background, over a strong gradient, and outlined subtitles over a busy background; set=font: a
+  handwritten font, a comic or display font, small grey text on light grey; set=italic: italics of a sans-serif, a
+  serif and the comic or display font; set=tilt: lines turned by -5° (sans-serif), 5° (serif) and -10° (the
+  handwritten font); lang=javert&set=manga: bold vertical text in speech bubbles over screentone. A script without a
+  handwritten or display font takes the next one, or monospace. Backgrounds are drawn here from a seed, so a screen
+  looks the same every time; fonts come from Google Fonts. Each block's data-style names its style (collect.mjs keeps
+  it per region), and data-angle the angle it is turned by. The body loses data-loading once fonts and backgrounds
+  are in; window.ocrPageInfo then lists the fonts and the characters each lacks (those are drawn in a fallback font).
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCR hard page</title>
+<style>
+  body { margin: 0; padding: 12px 16px; background: #fff; color: #202124; font-family: sans-serif; }
+  .block { margin: 0 0 16px; padding: 10px 12px; background-size: 100% 100%; }
+  .photo { font: 19px/1.5 sans-serif; color: #fff; }
+  .gradient { font: bold 18px/1.55 sans-serif; color: #fff;
+    background: linear-gradient(100deg, #0b1d51, #6a1b9a 30%, #e91e63 60%, #ffa726); }
+  .subtitle { font: bold 20px/1.45 sans-serif; color: #fff; text-align: center;
+    text-shadow: -2px -2px 0 #000, 0 -2px 0 #000, 2px -2px 0 #000, 2px 0 0 #000, 2px 2px 0 #000, 0 2px 0 #000,
+      -2px 2px 0 #000, -2px 0 0 #000; }
+  .hand { font-size: 24px; line-height: 1.35; color: #1d3f8f; background: #fbf6e9; }
+  .display { font-size: 20px; line-height: 1.45; color: #1a1a1a; background: #ffe680; border: 2px solid #1a1a1a; }
+  .small { font: 11px/1.4 sans-serif; color: #8e8e8e; background: #e4e4e4; }
+  .italic-sans { font: italic 18px/1.5 sans-serif; }
+  .italic-serif { font: italic 19px/1.5 serif; }
+  .italic-display { font-size: 19px; line-height: 1.5; font-style: italic; }
+  .tilt { width: 84%; margin: 40px auto; padding: 0; font-size: 18px; line-height: 1.5; }
+  .tilt-serif { font-family: serif; font-size: 19px; }
+  .tilt-hand { font-size: 22px; }
+  .monospace { font-family: monospace; }
+  body.manga { padding: 0; height: 100vh; position: relative; overflow: hidden; background-size: 100% 100%; }
+  .bubble { position: absolute; writing-mode: vertical-rl; height: 7.2em; background: #fff; border: 3px solid #111;
+    border-radius: 50%; padding: 34px 30px; color: #111; font-size: 21px; line-height: 1.3; }
+</style>
+</head>
+<body data-loading>
+<script src="texts.js"></script>
+<script>
+// [handwritten, comic or display] per script; null where Google Fonts has none.
+const FONTS = {
+  latin: ['Caveat', 'Comic Relief'],
+  vi: ['Patrick Hand', 'Lobster'],
+  cyrillic: ['Caveat', 'Balsamiq Sans'],
+  el: ['Playpen Sans', 'Comic Relief'],
+  ar: ['Playpen Sans Arabic', 'Lemonada'],
+  he: ['Gveret Levin', 'Karantina'],
+  hi: ['Kalam', 'Yatra One'],
+  bn: ['Galada', 'Atma'],
+  th: ['Sriracha', 'Chonburi'],
+  km: ['Fasthand', 'Koulen'],
+  hy: [null, 'Handjet'],
+  ka: [null, null],
+  lo: [null, null],
+  ja: ['Hachi Maru Pop', 'Dela Gothic One'],
+  zh: ['Ma Shan Zheng', 'ZCOOL KuaiLe'],
+  zht: ['LXGW WenKai TC', 'Huninn'],
+  ko: ['Nanum Pen Script', 'Jua'],
+};
+const SCRIPTS = { ru: 'cyrillic', uk: 'cyrillic', kk: 'cyrillic', shc: 'cyrillic', fa: 'ar' };
+// The bubbles' fonts as [family, weight]: antique dialogue, heavy gothic, a brush display face.
+const MANGA_FONTS = [['Zen Antique', 400], ['M PLUS 1p', 800], ['Dela Gothic One', 400], ['Zen Antique', 400],
+  ['M PLUS 1p', 800], ['Potta One', 400]];
+// Bubbles' places in CSS pixels: [left or right, offset, top].
+const BUBBLES = [['right', 18, 24], ['left', 26, 70], ['right', 40, 318], ['left', 14, 380], ['right', 22, 596],
+  ['left', 36, 630]];
+
+const params = new URLSearchParams(location.search);
+const lang = params.get('lang') || 'ru';
+const set = params.get('set') || 'scene';
+const texts = TEXTS[lang === 'javert' ? 'ja' : lang];
+const spaced = !['ja', 'javert', 'zh', 'zht'].includes(lang);
+document.documentElement.lang = { javert: 'ja', zh: 'zh-CN', zht: 'zh-TW', shc: 'sr-Cyrl', sh: 'hr' }[lang] || lang;
+if (['ar', 'fa', 'he'].includes(lang)) document.documentElement.dir = 'rtl';
+
+/** A seeded generator of numbers in [0, 1) (mulberry32). */
+function generator(text) {
+  let seed = 2166136261;
+  for (const c of text) seed = Math.imul(seed ^ c.codePointAt(0), 16777619);
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function grain(c, w, h, random, amount) {
+  const image = c.getImageData(0, 0, w, h);
+  const data = image.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const n = (random() - 0.5) * amount;
+    data[i] += n;
+    data[i + 1] += n;
+    data[i + 2] += n;
+  }
+  c.putImageData(image, 0, 0);
+}
+
+/** A blurred outdoor scene: sky to ground, soft colour blobs of every lightness, a few sharper edges, grain. */
+function photo(c, w, h, random) {
+  const sky = c.createLinearGradient(0, 0, 0, h);
+  sky.addColorStop(0, '#36577a');
+  sky.addColorStop(0.55, '#8a9a7b');
+  sky.addColorStop(1, '#4a3b2a');
+  c.fillStyle = sky;
+  c.fillRect(0, 0, w, h);
+  c.filter = `blur(${Math.round(w / 40)}px)`;
+  for (let i = 0; i < 40; i++) {
+    const x = random() * w, y = random() * h, r = (0.05 + random() * 0.25) * w;
+    const hue = random() * 360, light = 25 + random() * 55;
+    const blob = c.createRadialGradient(x, y, 0, x, y, r);
+    blob.addColorStop(0, `hsla(${hue}, 55%, ${light}%, 0.9)`);
+    blob.addColorStop(1, `hsla(${hue}, 55%, ${light}%, 0)`);
+    c.fillStyle = blob;
+    c.fillRect(0, 0, w, h);
+  }
+  c.filter = 'blur(2px)';
+  for (let i = 0; i < 25; i++) {
+    c.strokeStyle = `hsla(${random() * 360}, 30%, ${10 + random() * 80}%, 0.7)`;
+    c.lineWidth = 2 + random() * 8;
+    c.beginPath();
+    c.moveTo(random() * w, random() * h);
+    c.bezierCurveTo(random() * w, random() * h, random() * w, random() * h, random() * w, random() * h);
+    c.stroke();
+  }
+  c.filter = 'none';
+  grain(c, w, h, random, 28);
+}
+
+/** A busy video frame: many sharp shapes from black to white in saturated colours, stripes, grain. */
+function busy(c, w, h, random) {
+  c.fillStyle = '#2b2f36';
+  c.fillRect(0, 0, w, h);
+  for (let i = 0; i < 160; i++) {
+    c.fillStyle = `hsl(${random() * 360}, ${30 + random() * 60}%, ${10 + random() * 85}%)`;
+    const x = random() * w, y = random() * h, s = (0.01 + random() * 0.12) * w;
+    if (random() < 0.5) {
+      c.fillRect(x, y, s * (0.3 + random() * 2), s * (0.3 + random() * 2));
+    } else {
+      c.beginPath();
+      c.arc(x, y, s / 2, 0, 2 * Math.PI);
+      c.fill();
+    }
+  }
+  for (let i = 0; i < 30; i++) {
+    c.strokeStyle = random() < 0.5 ? '#f5f5f5' : '#0a0a0a';
+    c.lineWidth = 1 + random() * 4;
+    c.beginPath();
+    c.moveTo(random() * w, random() * h);
+    c.lineTo(random() * w, random() * h);
+    c.stroke();
+  }
+  grain(c, w, h, random, 20);
+}
+
+/** Manga screentone: halftone dots of varying tone, speed lines towards a focus, panel borders. */
+function screentone(c, w, h, random) {
+  c.fillStyle = '#fff';
+  c.fillRect(0, 0, w, h);
+  const step = 6 * devicePixelRatio;
+  c.fillStyle = '#000';
+  for (let y = 0, row = 0; y < h; y += step, row++) {
+    for (let x = row % 2 ? step / 2 : 0; x < w; x += step) {
+      const tone = 0.1 + 0.5 * (0.5 + 0.5 * Math.sin(x / w * 3 + y / h * 5));
+      c.beginPath();
+      c.arc(x, y, step / 2 * Math.sqrt(tone), 0, 2 * Math.PI);
+      c.fill();
+    }
+  }
+  const fx = w * 0.35, fy = h * 0.45;
+  c.strokeStyle = '#000';
+  for (let i = 0; i < 90; i++) {
+    const a = random() * 2 * Math.PI, from = (0.25 + random() * 0.2) * h;
+    c.lineWidth = 1 + random() * 3;
+    c.beginPath();
+    c.moveTo(fx + Math.cos(a) * from, fy + Math.sin(a) * from);
+    c.lineTo(fx + Math.cos(a) * h * 1.5, fy + Math.sin(a) * h * 1.5);
+    c.stroke();
+  }
+  c.lineWidth = 5 * devicePixelRatio;
+  c.strokeRect(c.lineWidth, c.lineWidth, w - 2 * c.lineWidth, h * 0.48);
+  c.strokeRect(c.lineWidth, h * 0.5, w - 2 * c.lineWidth, h * 0.5 - c.lineWidth);
+}
+
+function paint(element, draw) {
+  const box = element.getBoundingClientRect();
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(box.width * devicePixelRatio);
+  canvas.height = Math.round(box.height * devicePixelRatio);
+  draw(canvas.getContext('2d', { willReadFrequently: true }), canvas.width, canvas.height,
+    generator(`${lang}-${element.dataset.style || set}`));
+  element.style.backgroundImage = `url(${canvas.toDataURL()})`;
+}
+
+/** The characters of [text] that [family] lacks: drawn the same with it as with the fallback alone. */
+function lacking(family, weight, text) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 64;
+  const c = canvas.getContext('2d', { willReadFrequently: true });
+  const draw = (font, character) => {
+    c.clearRect(0, 0, 64, 64);
+    c.font = font;
+    c.fillText(character, 8, 44);
+    return c.getImageData(0, 0, 64, 64).data.join();
+  };
+  const missing = [...new Set(text)].filter((character) => character.trim() &&
+    draw(`${weight} 40px "${family}", sans-serif`, character) === draw(`${weight} 40px sans-serif`, character));
+  return missing.join('');
+}
+
+function block(style, text, font) {
+  const element = document.createElement('p');
+  element.className = `block ${style}`;
+  element.dataset.style = style;
+  element.textContent = text;
+  if (font) element.style.fontFamily = `"${font}", sans-serif`;
+  document.body.appendChild(element);
+  return element;
+}
+
+function sentences(first) {
+  return [0, 1, 2].map((k) => texts[(first + k) % texts.length]).join(spaced ? ' ' : '');
+}
+
+/** A block in [font], or in monospace when the script has no such font; its font goes into [fonts]. */
+function fontBlock(fonts, style, text, font) {
+  const element = block(style, text, font);
+  if (font) fonts.push([font, 400, element]);
+  else element.classList.add('monospace');
+  return element;
+}
+
+function turn(element, angle) {
+  element.classList.add('tilt');
+  element.dataset.angle = angle;
+  element.style.transform = `rotate(${angle}deg)`;
+}
+
+async function main() {
+  const fonts = []; // [family, weight, element]
+  if (set === 'manga') {
+    document.body.className = 'manga';
+    texts.forEach((text, i) => {
+      const [family, weight] = MANGA_FONTS[i % MANGA_FONTS.length];
+      const [side, offset, top] = BUBBLES[i % BUBBLES.length];
+      const element = block('manga', text, family);
+      element.className = 'bubble';
+      element.style.fontWeight = weight;
+      element.style[side] = `${offset}px`;
+      element.style.top = `${top}px`;
+      fonts.push([family, weight, element]);
+    });
+  } else if (set === 'font') {
+    const [hand, display] = FONTS[SCRIPTS[lang] || lang] || FONTS.latin;
+    if (hand) fonts.push([hand, 400, block('hand', sentences(1), hand)]);
+    if (display) fonts.push([display, 400, block('display', sentences(4), display)]);
+    block('small', sentences(7));
+  } else if (set === 'italic') {
+    const [hand, display] = FONTS[SCRIPTS[lang] || lang] || FONTS.latin;
+    block('italic-sans', sentences(0));
+    block('italic-serif', sentences(3));
+    fontBlock(fonts, 'italic-display', sentences(6), display || hand);
+  } else if (set === 'tilt') {
+    const [hand, display] = FONTS[SCRIPTS[lang] || lang] || FONTS.latin;
+    turn(block('tilt-sans', sentences(1)), -5);
+    turn(block('tilt-serif', sentences(4)), 5);
+    turn(fontBlock(fonts, 'tilt-hand', sentences(7), hand || display), -10);
+  } else {
+    block('photo', sentences(0));
+    block('gradient', sentences(3));
+    block('subtitle', sentences(6));
+  }
+  if (fonts.length) {
+    const families = [...new Set(fonts.map(([family, weight]) => `family=${family.replace(/ /g, '+')}` +
+      (weight === 400 ? '' : `:wght@${weight}`)))];
+    const characters = [...new Set(fonts.map(([, , element]) => element.textContent).join(''))].join('');
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?${families.join('&')}&text=${encodeURIComponent(characters)}` +
+      '&display=block';
+    await new Promise((resolve) => {
+      link.onload = link.onerror = resolve;
+      document.head.appendChild(link);
+    });
+    await Promise.all(fonts.map(([family, weight, element]) =>
+      document.fonts.load(`${weight} 20px "${family}"`, element.textContent).catch(() => null)));
+    await document.fonts.ready;
+  }
+  if (set === 'manga') {
+    paint(document.body, screentone);
+  } else {
+    for (const element of document.querySelectorAll('.photo')) paint(element, photo);
+    for (const element of document.querySelectorAll('.subtitle')) paint(element, busy);
+  }
+  window.ocrPageInfo = {
+    fonts: fonts.map(([family, weight, element]) => ({
+      style: element.dataset.style, family, weight, lacking: lacking(family, weight, element.textContent),
+    })),
+  };
+  delete document.body.dataset.loading;
+}
+main();
+</script>
+</body>
+</html>

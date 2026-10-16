@@ -8,7 +8,11 @@
 // `adb forward tcp:9222 localabstract:chrome_devtools_remote` first. Text Chrome draws in its own toolbar is left out.
 // Japanese and Chinese (names starting with ja, javert, zh, zht) have a box per character instead, and javert's lines
 // are columns, right to left. Thai, Lao and Khmer have a box per word as the browser splits it (they have no spaces
-// between words), and Arabic, Persian and Hebrew lines read right to left.
+// between words), and Arabic, Persian and Hebrew lines read right to left. On a page that marks its parts with
+// data-style (hard.html), each line keeps the style of its words; the page's window.ocrPageInfo, if any, is saved as
+// "page". A page whose body has data-loading is read once it drops it. A part turned by data-angle degrees (about its
+// center) is read as it is laid out before the turn; its lines get the angle and the turned corners ("quad"), and
+// every box becomes the bounds of the turned box.
 // ADB names the adb binary (default: adb on the PATH).
 
 import { execFileSync } from 'node:child_process';
@@ -84,6 +88,14 @@ const WORDS = `(() => {
   const SEGMENTER = ${segmented} ? new Intl.Segmenter('${language}', { granularity: 'word' }) : null;
   const words = [];
   const width = innerWidth, height = innerHeight;
+  const turned = [...document.querySelectorAll('[data-angle]')];
+  const transforms = turned.map((element) => element.style.transform);
+  turned.forEach((element) => { element.style.transform = 'none'; });
+  const turns = new Map(turned.map((element) => {
+    const r = element.getBoundingClientRect();
+    const center = [(r.left + r.right) / 2, (r.top + r.bottom) / 2];
+    return [element, { angle: Number(element.dataset.angle), center }];
+  }));
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
     const node = walker.currentNode;
@@ -122,9 +134,16 @@ const WORDS = `(() => {
       let text = token;
       if (style.textTransform === 'uppercase') text = text.toUpperCase();
       if (style.textTransform === 'lowercase') text = text.toLowerCase();
-      words.push({ text, box: [r.left, r.top, r.right, r.bottom] });
+      const part = element.closest('[data-style]');
+      words.push({
+        text,
+        box: [r.left, r.top, r.right, r.bottom],
+        style: part ? part.dataset.style : undefined,
+        turn: part ? turns.get(part) : undefined,
+      });
     }
   }
+  turned.forEach((element, i) => { element.style.transform = transforms[i]; });
   return { dpr: devicePixelRatio, words };
 })()`;
 
@@ -165,19 +184,68 @@ function lines(words, vertical) {
     line.words.sort((a, b) => a.box[0] - b.box[0]);
     if (rightToLeft) line.words.reverse();
     line.text = line.words.map((w) => w.text).join(perCharacter || segmented ? '' : ' ');
+    const styles = line.words.map((w) => w.style).filter(Boolean);
+    if (styles.length) line.style = mostCommon(styles);
+    const turn = line.words[0].turn;
+    if (turn) {
+      line.angle = turn.angle;
+      line.quad = corners(line.box).map((point) => rotate(point, turn)).map((point) => point.map(Math.round));
+      line.box = bounds(line.quad);
+      for (const word of line.words) word.box = bounds(corners(word.box).map((point) => rotate(point, turn)));
+    }
+    for (const word of line.words) {
+      delete word.style;
+      delete word.turn;
+    }
   }
   return result;
 }
 
+function mostCommon(values) {
+  const counts = new Map();
+  for (const value of values) counts.set(value, (counts.get(value) || 0) + 1);
+  return [...counts].sort((a, b) => b[1] - a[1])[0][0];
+}
+
+function corners([l, t, r, b]) {
+  return [[l, t], [r, t], [r, b], [l, b]];
+}
+
+/** [point] turned by [angle] degrees clockwise (as CSS rotate) about [center]. */
+function rotate([x, y], { angle, center: [cx, cy] }) {
+  const a = (angle * Math.PI) / 180;
+  const dx = x - cx, dy = y - cy;
+  return [cx + dx * Math.cos(a) - dy * Math.sin(a), cy + dx * Math.sin(a) + dy * Math.cos(a)];
+}
+
+function bounds(points) {
+  const xs = points.map((p) => p[0]), ys = points.map((p) => p[1]);
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)].map(Math.round);
+}
+
+/** Waits until the page has no element with data-loading, at most [seconds]. */
+async function waitUntilLoaded(seconds) {
+  for (let i = 0; i < seconds * 4; i++) {
+    if (await evaluate("document.readyState === 'complete' && !document.querySelector('[data-loading]')")) return;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error('The page is still loading');
+}
+
 const nodes = dumpNodes();
 let regions;
+let page = null;
 if (web) {
   const view = nodes.find((n) => n.class === 'android.webkit.WebView');
   if (!view) throw new Error('No WebView on screen');
+  await waitUntilLoaded(30);
+  page = await evaluate('window.ocrPageInfo || null');
   const { dpr, words } = await evaluate(WORDS);
   const [left, top] = view.box;
   const toScreen = ([l, t, r, b]) => [left + l * dpr, top + t * dpr, left + r * dpr, top + b * dpr].map((v) => Math.round(v));
-  regions = lines(words.map((w) => ({ text: w.text, box: toScreen(w.box) })), vertical);
+  const toScreenTurn = (turn) =>
+    turn && { angle: turn.angle, center: toScreen([...turn.center, ...turn.center]).slice(0, 2) };
+  regions = lines(words.map((w) => ({ ...w, box: toScreen(w.box), turn: toScreenTurn(w.turn) })), vertical);
 } else {
   // A text view cut off at the edge of a scrolling container shows only part of its text.
   const scrollers = nodes.filter((n) => n.scrollable === 'true');
@@ -190,5 +258,7 @@ if (web) {
 
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, `${name}.png`), run('exec-out', 'screencap', '-p'));
-writeFileSync(join(outDir, `${name}.json`), JSON.stringify({ image: `${name}.png`, source: web ? 'web' : 'ui', regions }, null, 1));
+const truth = { image: `${name}.png`, source: web ? 'web' : 'ui', regions };
+if (page) truth.page = page;
+writeFileSync(join(outDir, `${name}.json`), JSON.stringify(truth, null, 1));
 console.log(`${name}: ${regions.length} regions`);
