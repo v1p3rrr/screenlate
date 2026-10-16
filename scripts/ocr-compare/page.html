@@ -1,0 +1,102 @@
+<!doctype html>
+<!--
+  Known text in several fonts and sizes for the OCR comparison: page.html?lang=ru&theme=dark. Serve this folder from
+  the computer (python -m http.server 8000) and open it on the emulator after `adb reverse tcp:8000 tcp:8000`.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCR page</title>
+<style>
+  body { margin: 16px; background: #fff; color: #202124; font-family: sans-serif; }
+  body.dark { background: #121212; color: #e8eaed; }
+  h2 { font: bold 22px sans-serif; margin: 0 0 12px; }
+  .sans { font: 16px/1.5 sans-serif; }
+  .serif { font: 18px/1.5 serif; }
+  .mono { font: 14px/1.5 monospace; }
+  .small { font: 12px/1.4 sans-serif; color: #5f6368; }
+  body.dark .small { color: #9aa0a6; }
+  .link { font: 16px/1.5 sans-serif; color: #1a73e8; }
+  body.dark .link { color: #8ab4f8; }
+  p { margin: 0 0 12px; }
+</style>
+</head>
+<body>
+<script>
+const TEXTS = {
+  ru: [
+    'Утром над рекой поднялся густой туман, и город медленно просыпался.',
+    'В библиотеке на втором этаже открыли новый зал для чтения.',
+    'Поезд из Новосибирска прибыл с опозданием на сорок минут.',
+    'Ёжик пробежал по тропинке и спрятался под старой елью.',
+    'Цены на овощи выросли, а молоко подешевело на три процента.',
+    'Щедрый сосед угостил детей вкусными пирожками с вишней.',
+    'У подъезда висело объявление о собрании жильцов в пятницу.',
+  ],
+  el: [
+    'Το πρωί η θάλασσα ήταν ήρεμη και ο ουρανός καθαρός.',
+    'Η βιβλιοθήκη του δήμου ανοίγει στις εννέα το πρωί.',
+    'Οι μαθητές διάβασαν ένα ποίημα για την άνοιξη.',
+    'Το τρένο από τη Θεσσαλονίκη έφτασε με καθυστέρηση.',
+    'Στην αγορά πουλούσαν φρέσκα ψάρια, ελιές και τυρί.',
+  ],
+  th: [
+    'วันนี้อากาศดีมาก เราไปเดินเล่นที่สวนสาธารณะ',
+    'ห้องสมุดเปิดตั้งแต่เก้าโมงเช้าถึงห้าโมงเย็น',
+    'รถไฟจากเชียงใหม่มาถึงกรุงเทพช้ากว่ากำหนด',
+    'แม่ซื้อผลไม้และผักสดจากตลาดตอนเช้า',
+    'นักเรียนอ่านหนังสือเกี่ยวกับประวัติศาสตร์ไทย',
+  ],
+  ar: [
+    'الطقس جميل اليوم وذهبنا إلى الحديقة العامة.',
+    'تفتح المكتبة أبوابها في الساعة التاسعة صباحا.',
+    'وصل القطار من القاهرة متأخرا نصف ساعة.',
+    'اشترت أمي الخضار والفواكه من السوق.',
+    'قرأ الطلاب كتابا عن تاريخ المدينة القديمة.',
+  ],
+  pl: [
+    'Rano nad jeziorem unosiła się gęsta mgła, a łódki stały przy brzegu.',
+    'Źródło wody znajduje się za starym młynem.',
+    'Pociąg z Gdańska przyjechał z półgodzinnym opóźnieniem.',
+    'Żółta ćma usiadła na ścianie obok okna.',
+    'W sklepie sprzedawano świeże pieczywo i miód.',
+  ],
+  tr: [
+    'Sabah gölün üzerinde yoğun bir sis vardı.',
+    'Kütüphane dokuzda açılıyor ve akşam altıda kapanıyor.',
+    'İstanbul\'dan gelen tren yarım saat gecikti.',
+    'Çocuklar bahçede ağaçların altında oyun oynadı.',
+    'Pazarda taze balık, zeytin ve peynir satılıyordu.',
+  ],
+  vi: [
+    'Buổi sáng sương mù dày đặc phủ kín mặt hồ.',
+    'Thư viện mở cửa lúc chín giờ sáng.',
+    'Chuyến tàu từ Hà Nội đến muộn nửa tiếng.',
+    'Mẹ mua rau và trái cây tươi ở chợ.',
+    'Học sinh đọc một cuốn sách về lịch sử Việt Nam.',
+  ],
+  lv: [
+    'No rīta virs ezera bija biezs miglas slānis.',
+    'Bibliotēka ir atvērta no deviņiem rītā līdz sešiem vakarā.',
+    'Vilciens no Rīgas kavējās pusstundu.',
+    'Bērni spēlējās dārzā zem vecajiem kokiem.',
+    'Tirgū pārdeva svaigas zivis, ķiplokus un ogas. Ģimene ēda ļoti garšīgu zupu.',
+  ],
+};
+const params = new URLSearchParams(location.search);
+const lang = params.get('lang') || 'ru';
+const texts = TEXTS[lang];
+document.documentElement.lang = lang;
+if (lang === 'ar') document.documentElement.dir = 'rtl';
+if (params.get('theme') === 'dark') document.body.classList.add('dark');
+const blocks = [['h2', ''], ['p', 'sans'], ['p', 'serif'], ['p', 'mono'], ['p', 'link'], ['p', 'small']];
+blocks.forEach(([tag, style], i) => {
+  const element = document.createElement(tag);
+  if (style) element.className = style;
+  element.textContent = tag === 'h2' ? texts[0] : [texts[i % texts.length], texts[(i + 2) % texts.length]].join(' ');
+  document.body.appendChild(element);
+});
+</script>
+</body>
+</html>
