@@ -82,6 +82,8 @@ In Chinese, the Search screen also finds words by pinyin typed in Latin letters,
 
 In English, a phrasal verb in the past, -ing or third-person form ("picked up", "gives up") finds its phrase even when the dictionary gives the phrase no part of speech, as Wiktionary dictionaries often do, when the word after the verb is an adverb particle (up, out, off, back and the like). After a preposition (to, for, with) the phrase is found only when the dictionary marks it as a verb, so "closed to traffic" does not give "close to" (near). A phrase with an object in between ("picked the phone up") is found only when the dictionary marks it as a verb.
 
+In German, a compound without an entry of its own is shown as its parts in order: the longest dictionary word at its start, then the longest in the rest (Küchentischlampenschirm → Küchentisch, Lampenschirm). A linking -s-, -es- or -n- between two parts is skipped (Arbeitsschreibtisch → Arbeit, Schreibtisch). Parts are at least three letters long; a compound with its own entry is shown as it is.
+
 Lookups also try a common respelling of the text: digits as kanji numerals (1人 → 一人), a character before 々 written twice, ッ as っ, and middle dots, commas, hyphens, periods and spaces removed. The text as it is on the screen is always looked up too.
 
 ## Popup

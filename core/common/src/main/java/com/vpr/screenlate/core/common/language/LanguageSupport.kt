@@ -28,6 +28,12 @@ interface LanguageSupport {
     /** Whether lines run from right to left. */
     val rightToLeft: Boolean get() = false
 
+    /**
+     * Linking elements between the parts of a compound written as one word (German -s- in Arbeitszimmer), lowercase:
+     * a word without an entry of its own is shown as its parts. Null for a language whose words are not split.
+     */
+    val compoundLinks: List<String>? get() = null
+
     /** Characters that may end a sentence, for `{sentence}` and cloze markers; [endsSentence] has the final say. */
     val sentenceTerminators: Set<Char>
 

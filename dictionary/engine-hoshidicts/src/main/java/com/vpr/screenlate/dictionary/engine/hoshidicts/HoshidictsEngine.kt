@@ -103,7 +103,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         }
         val frequencyDictionary = options.frequencyDictionary
             ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
-        val resolution = when (language.support.searchResolution) {
+        val resolution = when (options.searchResolution ?: language.support.searchResolution) {
             SearchResolution.WORD -> "word"
             SearchResolution.LETTER -> "letter"
         }

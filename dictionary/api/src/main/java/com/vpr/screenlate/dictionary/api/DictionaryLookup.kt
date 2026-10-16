@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
+import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
@@ -69,13 +70,27 @@ class DictionaryLookup @Inject constructor(
                 engine.lookup(variant.text, engineOptions).map { it.asShown(support).inSource(text, variant) }
             }
             val script = settings.script?.takeIf { settings.fixedScript }
-            val results = YomitanSorter.sort(found, options, prepared.termDictionaries)
+
+            suspend fun shown(found: List<LookupResult>): List<LookupResult> = YomitanSorter
+                .sort(found, options, prepared.termDictionaries)
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
                 .withTranscriptions(support)
+
+            val whole = shown(found)
+            val results = support.compoundLinks?.let { links ->
+                compoundParts(text, whole, links) { part ->
+                    // Every word the rest starts with, not only whole words.
+                    val partOptions = engineOptions.copy(
+                        scanLength = part.codePointCount(0, part.length),
+                        searchResolution = SearchResolution.LETTER,
+                    )
+                    engine.lookup(part, partOptions).map { it.asShown(support) }
+                }
+            }?.flatMap { shown(it) } ?: whole
             val all = if (!extraEntries || !settings.singleKanji) {
                 results
             } else {
