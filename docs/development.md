@@ -76,7 +76,8 @@ check out Yomitan at the commit in `scripts/yomitan-language/yomitan-commit.txt`
 `npm --prefix scripts/yomitan-language ci` and `node scripts/yomitan-language/build.mjs <yomitan checkout> <out dir>
 <iso>...`. `node scripts/yomitan-language/generate-inflections.mjs <yomitan checkout> <iso>...` regenerates the
 inflection rule names (`res/values/inflections_<iso>.xml` and `YomitanInflections.kt`) and lists the translations
-that are missing or no longer needed; translations are edited by hand. The bundles and the strings are GPL-3.0, like
+that are missing or no longer needed; translations are edited by hand. `glue.js` may replace a language's case
+processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). The bundles and the strings are GPL-3.0, like
 the engine module that holds them.
 
 ## Tests
@@ -84,6 +85,8 @@ the engine module that holds them.
 - `./gradlew testDebugUnitTest`: JVM unit tests of every module.
 - `npm --prefix scripts/page-tests ci && npm --prefix scripts/page-tests test`: the popup page scripts (`popup.js`, `anki.js`, `note.js`, `definition.js`, `reading.js`) in a simulated DOM.
 - `node --test scripts/catalog/generate.test.mjs`: the catalog generator, against a recorded listing.
+- `node --test scripts/yomitan-language/glue.test.mjs`: the committed language bundles, called as the engine calls them
+  (Turkish case pairs).
 - `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
 - `python -m unittest discover scripts/flags`: the flag converter.
 - `python -m unittest discover scripts/freedict` and `python -m unittest discover scripts/openrussian`: the dictionary

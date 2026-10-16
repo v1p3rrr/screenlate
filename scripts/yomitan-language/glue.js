@@ -20,9 +20,40 @@ function prepare(language) {
         translator._multiLanguageTransformer._languageTransformers.set(language, transformer);
     }
     for (const {iso, textPreprocessors = [], textPostprocessors = []} of getAllLanguageTextProcessors()) {
-        if (iso === language) { translator._textProcessors.set(iso, {textPreprocessors, textPostprocessors}); }
+        if (iso !== language) { continue; }
+        const preprocessors = textPreprocessors.map((p) => ({...p, textProcessor: caseProcessors[iso]?.[p.id] ?? p.textProcessor}));
+        translator._textProcessors.set(iso, {textPreprocessors: preprocessors, textPostprocessors});
     }
 }
+
+/**
+ * Turkish upper case of [text]: i ↔ İ and ı ↔ I are the Turkish letter pairs.
+ * @param {string} text
+ */
+function turkishUpperCase(text) {
+    return text.replace(/i/g, 'İ').replace(/ı/g, 'I').toUpperCase();
+}
+
+/**
+ * Case processors that replace Yomitan's by id for a language whose letter pairs differ from the default. Without a
+ * locale (QuickJS has none) JavaScript lowercases I to i and İ to i with a combining dot, so a Turkish word written in
+ * capitals (IŞIK, İSTANBUL) would find no entry.
+ * @type {Record<string, Record<string, import('language').TextProcessor>>}
+ */
+const caseProcessors = {
+    tr: {
+        decapitalize: {
+            name: 'Decapitalize text',
+            description: 'IŞIK → ışık, İSTANBUL → istanbul',
+            process: (str) => [str, str.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase()],
+        },
+        capitalizeFirstLetter: {
+            name: 'Capitalize first letter',
+            description: 'istanbul → İstanbul, ılık → Ilık',
+            process: (str) => [str, turkishUpperCase(str.charAt(0)) + str.slice(1)],
+        },
+    },
+};
 
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
