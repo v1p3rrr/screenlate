@@ -23,6 +23,15 @@ internal fun LookupResult.asShown(support: LanguageSupport): LookupResult {
 }
 
 /**
+ * Whether every chain of steps to the result goes through a form-of entry with one of [tags]
+ * (`LanguageSupport.ignoredFormTags`), so it is left out.
+ */
+internal fun LookupResult.onlyThrough(tags: Set<String>): Boolean {
+    if (tags.isEmpty() || trace.isEmpty()) return false
+    return (listOf(trace) + otherTraces).all { chain -> chain.any { it.name in tags } }
+}
+
+/**
  * Results of the same word (expression and reading, see [LanguageSupport.normalizeReading]) as one entry in the place
  * of the first: a respelled word ([asShown]) meets the dictionaries that list its spelling itself, spellings of the
  * text may find a word twice, and dictionaries space readings differently. Definitions, frequencies and

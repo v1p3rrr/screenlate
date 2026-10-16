@@ -142,4 +142,17 @@ class ShownResultsTest {
         assertThat(scriptTag("電腦", null, settings.copy(fixedScript = true), chinese)).isEqualTo("zh-Hans")
         assertThat(scriptTag("water", null, LookupSettings(), Language.ENGLISH.support)).isNull()
     }
+
+    @Test
+    fun `a word reached only through an ignored form tag is left out`() {
+        val classifier = Transform("classifier")
+        val tags = setOf("classifier")
+        val noun = result("bàn", "", "Wiktionary", matched = "cái", trace = listOf(classifier))
+        assertThat(noun.onlyThrough(tags)).isTrue()
+        assertThat(noun.copy(otherTraces = listOf(listOf(Transform("alt-of")))).onlyThrough(tags)).isFalse()
+        assertThat(result("cái", "", "Wiktionary").onlyThrough(tags)).isFalse()
+        assertThat(result("車", "", "Wiktionary", matched = "xa", trace = listOf(Transform("Hán-Nôm"))).onlyThrough(tags))
+            .isFalse()
+        assertThat(noun.onlyThrough(emptySet())).isFalse()
+    }
 }

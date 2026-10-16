@@ -459,6 +459,7 @@
     <string name="popup_font_script_only_pl">僅用於波蘭文文字</string>
     <string name="popup_font_script_only_tr">僅用於土耳其文文字</string>
     <string name="popup_font_script_only_lv">僅用於拉脫維亞文文字</string>
+    <string name="popup_font_script_only_vi">僅用於越南文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

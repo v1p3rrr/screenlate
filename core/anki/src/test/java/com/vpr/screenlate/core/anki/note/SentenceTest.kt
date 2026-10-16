@@ -106,4 +106,10 @@ class SentenceTest {
         assertThat(extract(paragraph, "teica", Language.LATVIAN).text).isEqualTo("„Nāc šurp.“ viņa teica.")
         assertThat(extract(paragraph, "augļi", Language.LATVIAN).text).isEqualTo("Āboli u.c. augļi auga.")
     }
+
+    @Test
+    fun vietnameseSentenceKeepsCityAbbreviation() {
+        val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
+        assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")
+    }
 }

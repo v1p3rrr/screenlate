@@ -78,6 +78,31 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         return count
     }
 
+    /** Words before the aimed one that the lookup starts at as well; see [earlierStartOffset]. */
+    open val earlierWords: Int = 0
+
+    /** The start of the [earlierWords]-th word before, or of the furthest one that only spaces separate. */
+    override fun earlierStartOffset(before: String): Int {
+        var index = before.length
+        var count = 0
+        var offset = 0
+        repeat(earlierWords) {
+            val end = count
+            while (index > 0 && Character.isSpaceChar(before[index - 1])) {
+                index--
+                count++
+            }
+            val spaces = count - end
+            while (index > 0 && isWordCharacter(before.codePointBefore(index))) {
+                index -= Character.charCount(before.codePointBefore(index))
+                count++
+            }
+            if (spaces == 0 || count == end + spaces) return offset
+            offset = count
+        }
+        return offset
+    }
+
     override fun spellingVariants(text: MappedText): List<MappedText> = emptyList()
 
     override fun fromLatin(text: MappedText): MappedText? = null

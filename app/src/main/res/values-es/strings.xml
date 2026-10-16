@@ -465,6 +465,7 @@
     <string name="popup_font_script_only_pl">Solo para texto en polaco</string>
     <string name="popup_font_script_only_tr">Solo para texto en turco</string>
     <string name="popup_font_script_only_lv">Solo para texto en letón</string>
+    <string name="popup_font_script_only_vi">Solo para texto en vietnamita</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

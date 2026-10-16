@@ -14,6 +14,8 @@ import kotlinx.serialization.Serializable
  * @property preprocessorSteps number of text normalizations applied (kana conversion, width, etc.).
  * @property lang BCP 47 tag of the script the entry is shown in, for a language written in several
  *   (`LanguageSupport.scriptTags`); null otherwise.
+ * @property start UTF-16 index in the lookup string where [matched] begins: after the start for a lookup that also
+ *   starts at words before the aimed one (`LanguageSupport.earlierStartOffset`).
  */
 @Serializable
 data class LookupResult(
@@ -24,6 +26,7 @@ data class LookupResult(
     val term: TermEntry,
     val preprocessorSteps: Int = 0,
     val lang: String? = null,
+    val start: Int = 0,
 )
 
 /**

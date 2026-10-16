@@ -148,7 +148,7 @@ class OverlayController(
 
     /**
      * What the popup shows for one lookup; kept to re-render on theme or OCR status changes. [start] is where the
-     * looked-up text begins on screen, which is before the aimed character inside a Latin word.
+     * shown text begins on screen, which is before the aimed character inside a Latin word.
      */
     private data class LookupView(
         val text: String,
@@ -162,6 +162,8 @@ class OverlayController(
         val kanji: KanjiResult? = null,
         /** The looked-up word on screen. */
         val anchor: Box? = null,
+        /** The text the lookup ran on; it starts before [text] where the words before the aimed one were looked up too. */
+        val query: String = text,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -1172,13 +1174,20 @@ class OverlayController(
     }
 
     private fun showLookup(layout: TextLayout, aimed: TextPosition) {
-        val position = wordStart(layout, aimed)
-        val text = layout.textFrom(position, scanLength)
+        val word = wordStart(layout, aimed)
+        val earliest = earliestStart(layout, word)
+        val earlier = word.offset - earliest.offset
+        val query = layout.textFrom(earliest, scanLength + earlier)
+        val aimedAt = layout.textFrom(earliest, earlier).length
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
-            val cached = shownLookup?.takeIf { it.text == text && popup.isShowing }
-            val results = cached?.results ?: lookupResults(text)
+            val cached = shownLookup?.takeIf { it.query == query && popup.isShowing }
+            val results = cached?.results ?: lookupResults(query, aimedAt = aimedAt)
+            // The first result may be a word that starts before the aimed one.
+            val shownAt = results.firstOrNull()?.start ?: aimedAt
+            val position = earliest.copy(offset = earliest.offset + query.codePointCount(0, shownAt))
+            val text = query.substring(shownAt)
             val kanji = if (cached != null) cached.kanji else if (results.isEmpty()) characterEntry(text) else null
             // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
             if (results.isEmpty() && kanji == null && lookup.hasTermDictionaries(language)) {
@@ -1203,6 +1212,7 @@ class OverlayController(
                 layout = layout,
                 kanji = kanji,
                 anchor = anchor,
+                query = query,
             )
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading } ?: kanji?.let { it.character to "" }
@@ -1215,17 +1225,21 @@ class OverlayController(
         }
     }
 
-    /** @param link [text] is a dictionary link's term, looked up whole rather than as text at the aim point. */
+    /**
+     * @param link [text] is a dictionary link's term, looked up whole rather than as text at the aim point.
+     * @param aimedAt where the aimed word starts in [text], after the words before it that the language looks up from.
+     */
     private suspend fun lookupResults(
         text: String,
         link: Boolean = false,
         primaryReading: String? = null,
+        aimedAt: Int = 0,
     ): List<LookupResult> = try {
         val started = System.currentTimeMillis()
         val results = if (link) {
             lookup.lookupQuery(text, language, primaryReading)
         } else {
-            lookup.lookup(text, language, primaryReading = primaryReading)
+            lookup.lookup(text, language, primaryReading = primaryReading, aimedAt = aimedAt)
         }
         results.also {
             Log.d(TAG, "Lookup found ${it.size} entries in ${System.currentTimeMillis() - started} ms")
@@ -1292,6 +1306,17 @@ class OverlayController(
         val before = characters.subList(max(0, aimed.offset - WORD_LOOKBACK), aimed.offset).joinToString("") { it.text }
         val back = language.support.wordStartOffset(before, characters[aimed.offset].text)
         return if (back == 0) aimed else aimed.copy(offset = aimed.offset - back)
+    }
+
+    /**
+     * Where the lookup of the word at [word] begins: at the words before it that the language looks up from as well
+     * (`LanguageSupport.earlierStartOffset`), else at the word.
+     */
+    private fun earliestStart(layout: TextLayout, word: TextPosition): TextPosition {
+        val characters = layout.paragraphs[word.paragraphIndex]
+        val before = characters.subList(max(0, word.offset - WORD_LOOKBACK), word.offset).joinToString("") { it.text }
+        val back = language.support.earlierStartOffset(before)
+        return if (back == 0) word else word.copy(offset = word.offset - back)
     }
 
     /** Pushes OCR status and theme changes into the popup without a new lookup. */

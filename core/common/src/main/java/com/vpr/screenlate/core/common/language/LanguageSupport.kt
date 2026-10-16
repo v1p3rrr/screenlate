@@ -133,6 +133,13 @@ interface LanguageSupport {
      */
     fun wordStartOffset(before: String, aimed: String): Int
 
+    /**
+     * How many code points before the aimed word the lookup starts as well, for a language that writes the syllables
+     * of a word apart (Vietnamese "học sinh"): a word found from an earlier start that reaches the aimed one comes
+     * before the aimed word's own results. [before] is the text before the aimed word; 0 when lookups start only there.
+     */
+    fun earlierStartOffset(before: String): Int = 0
+
     /** Other spellings of [text] that are looked up as well; the original is always looked up. */
     fun spellingVariants(text: MappedText): List<MappedText>
 
@@ -177,6 +184,12 @@ interface LanguageSupport {
      * result is shown under the spelling that was read.
      */
     val spellingFormTags: Set<String> get() = emptySet()
+
+    /**
+     * Tags of form-of entries whose results are left out: Wiktionary's Vietnamese dictionary lists "cái" as the
+     * `classifier` form of hundreds of nouns.
+     */
+    val ignoredFormTags: Set<String> get() = emptySet()
 
     /** A dictionary's reading as entries show it, without notations it adds ("xíng (xing²)" → "xíng"). */
     fun displayReading(reading: String): String = reading
@@ -247,4 +260,5 @@ val Language.support: LanguageSupport
         Language.POLISH -> PolishSupport
         Language.TURKISH -> TurkishSupport
         Language.LATVIAN -> LatvianSupport
+        Language.VIETNAMESE -> VietnameseSupport
     }

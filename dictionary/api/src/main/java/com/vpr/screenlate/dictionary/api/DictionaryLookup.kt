@@ -45,6 +45,8 @@ class DictionaryLookup @Inject constructor(
      * @param scanLength characters of [text] to consider; the scan length setting when null.
      * @param primaryReading terms with this reading come first, as for Yomitan's `primary_reading` links.
      * @param extraEntries add the single kanji entries below the results when that setting is on.
+     * @param aimedAt UTF-16 index in [text] where the aimed word starts, after the words before it that the language
+     *   looks up from as well (`LanguageSupport.earlierStartOffset`); see [fromEarlierStarts].
      */
     suspend fun lookup(
         text: String,
@@ -52,11 +54,12 @@ class DictionaryLookup @Inject constructor(
         scanLength: Int? = null,
         primaryReading: String? = null,
         extraEntries: Boolean = true,
+        aimedAt: Int = 0,
     ): List<LookupResult> {
         if (text.isBlank()) return emptyList()
         val settings = lookupSettings.current(language)
         val support = language.support
-        val start = support.lookupStart(text, latinAsNative = settings.romaji) ?: return emptyList()
+        support.lookupStart(text.substring(aimedAt), latinAsNative = settings.romaji) ?: return emptyList()
         return repository.withLookup(language) { prepared ->
             val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
             val options = prepared.options.copy(
@@ -66,31 +69,41 @@ class DictionaryLookup @Inject constructor(
                 language = language,
             )
             val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
-            val found = LookupVariants.of(text, settings, support).flatMap { variant ->
-                engine.lookup(variant.text, engineOptions).map { it.asShown(support).inSource(text, variant) }
-            }
             val script = settings.script?.takeIf { settings.fixedScript }
 
-            suspend fun shown(found: List<LookupResult>): List<LookupResult> = YomitanSorter
+            suspend fun shown(found: List<LookupResult>, start: LookupStart): List<LookupResult> = YomitanSorter
                 .sort(found, options, prepared.termDictionaries)
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
+                .filterNot { it.onlyThrough(support.ignoredFormTags) }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)
                 .map { it.withSortFrequencyFirst(options.frequencyDictionary) }
                 .withTranscriptions(support)
 
-            val whole = shown(found)
-            val results = support.compoundLinks?.let { links ->
-                compoundParts(text, whole, links) { part ->
-                    // Every word the rest starts with, not only whole words.
-                    val partOptions = engineOptions.copy(
-                        scanLength = part.codePointCount(0, part.length),
-                        searchResolution = SearchResolution.LETTER,
-                    )
-                    engine.lookup(part, partOptions).map { it.asShown(support) }
+            suspend fun from(source: String): List<LookupResult> {
+                val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
+                val found = LookupVariants.of(source, settings, support).flatMap { variant ->
+                    engine.lookup(variant.text, engineOptions).map { it.asShown(support).inSource(source, variant) }
                 }
-            }?.flatMap { shown(it) } ?: whole
+                val whole = shown(found, start)
+                return support.compoundLinks?.let { links ->
+                    compoundParts(source, whole, links) { part ->
+                        // Every word the rest starts with, not only whole words.
+                        val partOptions = engineOptions.copy(
+                            scanLength = part.codePointCount(0, part.length),
+                            searchResolution = SearchResolution.LETTER,
+                        )
+                        engine.lookup(part, partOptions).map { it.asShown(support) }
+                    }
+                }?.flatMap { shown(it, start) } ?: whole
+            }
+
+            val results = if (aimedAt == 0) {
+                from(text)
+            } else {
+                fromEarlierStarts(text, aimedAt) { from(text.substring(it)) }.take(limit)
+            }
             val all = if (!extraEntries || !settings.singleKanji) {
                 results
             } else {
