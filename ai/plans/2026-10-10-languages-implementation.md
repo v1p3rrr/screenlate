@@ -118,6 +118,26 @@ Requests 1–19 are in the previous plan. New ones:
 57. (2026-10-16) Yomitan's languages listed with their status here (done, on branches, planned, planned without
     Yomitan support, the rest by number of speakers): `notes/languages.md`. Group 4 is too large for one stage;
     split it by script into batches (question 30).
+58. (2026-10-16) The release waits until every language is covered, group 4 included; then a large code review, then
+    the owner uses the build for a while. Asked whether a prerelease can be offered as a beta that users download
+    separately and that stays out of the main releases and their automatic updates (row "Beta builds").
+59. (2026-10-16) The OCR comparison covers the later languages too, above all the scripts that differ (Arabic,
+    Hebrew and the like), not only groups 1-3 (row "OCR comparison scope").
+60. (2026-10-16) Keep all three on-device engines (ML Kit, Tesseract, Paddle): per language, offer the models of
+    the engines that read it, the measured best ticked by default and the others downloadable, switchable in the
+    recognition settings; ML Kit's Latin model for Latin-script languages; Tesseract fast and best both offered,
+    fast recommended where it copes as well (best may be better on stylized text such as comics); Chinese stays on
+    ML Kit, which reads Simplified and Traditional in one model. Add the cloud recognition and harder, stylized
+    screens to the comparison (run in a separate session). Write the plan, ask, and start the implementation in
+    parallel (rows from "On-device OCR engines" on).
+61. (2026-10-16) Later: review where the settings live. Anki and audio are different things shown in one place;
+    the bubble settings and the recognition settings should be separated or regrouped.
+62. (2026-10-16) Think through every case where something the app depends on is missing: no dictionaries (all
+    of a language can be deleted), no on-device model (no offline recognition and no draft; settings that need it
+    disabled), and anything else; list the limits and the cases to handle (plan `2026-10-17-ocr-engines.md`).
+63. (2026-10-16) A model a new language would use that is already installed (the Latin model for a second
+    Latin-script language) is not offered again: it shows as installed, ticked and locked; the other models stay
+    optional.
 
 ## Decisions
 
@@ -147,7 +167,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | ML Kit Chinese and Korean | Bundled (+0.56 MB for both); anything within a few MB may be bundled, large files are not carried in the APK (owner, 2026-10-09, request 12) |
 | Chinese profiles | One profile for both scripts (owner, 2026-10-09) |
 | Frequency dictionaries | Built by us from wordfreq (CC BY-SA 4.0) for the supported languages, one per language (top ~100 K words), in the catalog and offered with the main dictionary when a profile is turned on, declinable; hosting is an open item (owner, 2026-10-09) |
-| On-device OCR beyond ML Kit | PaddleOCR only, for Cyrillic, Arabic, Greek and Thai; the scripts it lacks (Hebrew, Georgian, Armenian, Khmer, Lao, Kannada, Syriac) use the cloud for now. Before the Russian stage Paddle is compared with Tesseract on real screenshots and the runtime (MNN or ONNX Runtime) is picked by size and speed; Tesseract alone if Paddle is not clearly better. The OCR layer is built so that Tesseract can be added later without rework (owner, 2026-10-09, requests 15 and 17) |
+| On-device OCR beyond ML Kit | PaddleOCR only, for Cyrillic, Arabic, Greek and Thai; the scripts it lacks (Hebrew, Georgian, Armenian, Khmer, Lao, Kannada, Syriac) use the cloud for now. Before the Russian stage Paddle is compared with Tesseract on real screenshots and the runtime (MNN or ONNX Runtime) is picked by size and speed; Tesseract alone if Paddle is not clearly better. The OCR layer is built so that Tesseract can be added later without rework (owner, 2026-10-09, requests 15 and 17). Superseded on 2026-10-16 by "On-device OCR engines" |
 | OCR runtime and models | The runtime (native code) goes into the APK; the detector and the per-script recognizers are downloads checked against pinned SHA-256 hashes, fetched when a language that needs them is turned on (owner, 2026-10-09) |
 | Risky dictionaries | The catalog offers dictionaries with open licenses and non-commercial ones (words.hk, the Zaliznyak meta dictionary), the latter marked with their license and removed if the app ever becomes paid, ad-supported or goes to Google Play; dictionaries without a license are not linked anywhere for now (owner, 2026-10-10; was "only as a link to the author's page in the help"); conversions of commercial dictionaries nowhere; no БКРС for now (owner, 2026-10-09, request 16) |
 | Korean lookup start | The lookup starts at the start of the space-separated word, not at the aimed syllable as in Yomitan: a finger aim on a phone often lands on a neighboring syllable, and a start mid-word finds endings or unrelated words (부하 in 공부하고); shorter matches from the start still show, compound parts are found by search (agent's choice, delegated by the owner, 2026-10-09) |
@@ -163,7 +183,9 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Releases | No releases of new languages along the way: every language is built first, then one big release; testing in the meantime on debug builds (owner, 2026-10-10) |
 | Beta label | None: with a small audience a label would never come off (owner, 2026-10-10) |
 | Pronunciation dictionaries | Wiktionary IPA dictionaries are named for users: the category "Pronunciation", the item "Transcription (Wiktionary)" with an ⓘ example (`water → /ˈwɔːtər/`), never "IPA". One item per language, not per gloss language (the transcription is the same in every edition): the edition with the most entries. Ticked by default for every language except Chinese (30 MB, pinyin is already in its main dictionaries) (owner, 2026-10-10; changes the "Turning on a language" row, which had IPA unticked) |
-| Scope of the big release | Groups 1–3 (13 languages with Latvian) at least; group 4 joins the same release if it turns out easy to add, decided when group 3 is done. The shared base is built for group 4 from the start (right-to-left text, further OCR models) (owner, 2026-10-10: "we'll see how it goes") |
+| Scope of the big release | Groups 1–4: the release waits until every batch of group 4 is done, then a code review of all modules, then the owner's own use of the build, then the beta (row "Beta builds"). Group 4 is built in batches by script in the order 4a–4e, each its own branch and emulator checks (owner, 2026-10-16, question 30; was: groups 1–3 at least, group 4 if easy) |
+| Beta builds | A separate app next to the regular one: package `com.vpr.screenlate.beta`, named "Screenlate Beta", the icon with a "BETA" ribbon at the bottom; its own dictionaries, settings, bubble and accessibility service. Tags `v1.0.0-beta.N` publish GitHub prereleases, which the regular build's update check and the README's latest-release link never see. A beta build's update check offers newer betas only and says nothing when the final release is out. Published when the owner says, after everything above (owner, 2026-10-16) |
+| Version of the big release | 1.0.0; betas 1.0.0-beta.N (owner, 2026-10-16) |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09). Changed 2026-10-15: on `languages/main` Japanese goes to its download screen too (row "Bundled Japanese dictionaries") |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
@@ -222,7 +244,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Vietnamese words of several syllables | The lookup also starts one and two syllables before the aimed one; a word that covers the aimed syllable comes first (học sinh), then the syllable's own entries (owner, 2026-10-16) |
 | Audio collections | Word audio on the phone (request 52): the app imports a collection the user brings (Local Audio's export for phones) as an offline audio source; our own packs from Wiktionary and Lingua Libre per language, downloaded in the app, come once hosting exists (owner, 2026-10-16) |
 | Bundled Japanese dictionaries | Downloaded when Japanese is turned on, the first run included, from the catalog like any language's; the APK no longer carries them (about 25 MB). Only on `languages/main`: `main` keeps them bundled until the big release. Installed copies stay after an upgrade (owner, 2026-10-15; settles the postponed item) |
-| OCR engine choice | Paddle and Tesseract are compared on the emulator, inside a debug build, on screenshots taken there with known text, for the scripts ML Kit lacks (Cyrillic, Greek, Thai, Arabic). Measured: the share of wrong characters, the share of words read whole, and whether a tap lands in the right word box. Paddle is chosen when on the Russian screenshots it makes at least a third fewer character errors than Tesseract, is not clearly worse on any script and takes at most twice as long per screen; otherwise Tesseract. With Paddle, MNN or ONNX Runtime by the smaller addition to the APK, unless the other is at least 30% faster per screen. Speed is measured on the emulator; one run on the phone once the owner is back, and the choice changes only if the phone shows a clearly different picture (owner, 2026-10-16) |
+| OCR engine choice | Paddle and Tesseract are compared on the emulator, inside a debug build, on screenshots taken there with known text, for the scripts ML Kit lacks (Cyrillic, Greek, Thai, Arabic). Measured: the share of wrong characters, the share of words read whole, and whether a tap lands in the right word box. Paddle is chosen when on the Russian screenshots it makes at least a third fewer character errors than Tesseract, is not clearly worse on any script and takes at most twice as long per screen; otherwise Tesseract. With Paddle, MNN or ONNX Runtime by the smaller addition to the APK, unless the other is at least 30% faster per screen. Speed is measured on the emulator; one run on the phone once the owner is back, and the choice changes only if the phone shows a clearly different picture (owner, 2026-10-16). Since request 60 every engine is kept, and the rule picks each language's recommended model: the fewest errors over the clean and hard screens together; another model replaces the bundled or smallest one only with at least a third fewer errors and at least 0.5 percentage points fewer; time does not count while every engine stays under the 1.6 s of ML Kit's Japanese model. Applied once the hard-screen results are in (owner, 2026-10-16, question 34) |
 | Work while the owner is away | After group 2 and the OCR comparison the agent picks the engine by the row above, builds it in and does group 3 (Russian, Polish, Turkish, Vietnamese, Latvian), each language on its own branch merged after the emulator checks; group 4 is not started (owner, 2026-10-16) |
 | OCR screenshots | Taken by the agent on the emulator: Wikipedia and news sites in the browser, the Android interface in the language, several fonts, light and dark themes; kept in `testdata/ocr/` (owner, 2026-10-16) |
 | Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16) |
@@ -232,7 +254,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Dictionary reset | No reset button on the Dictionaries screen: each dictionary has its own delete, and the screen's settings (order, switches, sorting) are changed one by one (owner, 2026-10-16; questions 16 and 26) |
 | OpenRussian source | The CSV export on the site's own GitHub (2020-09-09): the source least likely to vanish; the 2021 dump differs little (owner, 2026-10-16; question 19) |
 | Russian text to speech | Given the stressed reading (ко́шка), unless the emulator check shows the voice reads the mark wrongly; then the word without marks (owner, 2026-10-16; question 25) |
-| OCR comparison scope | Every engine (ML Kit, Paddle on MNN and on ONNX Runtime, Tesseract fast and best) on every language of groups 1-3 and the group 4 scripts named in "OCR engine choice". The results go to the owner before an engine is built in, with the option of two engines split by language and the sizes of each combination (owner, 2026-10-16; replaces the agent's own pick in "Work while the owner is away") |
+| OCR comparison scope | Every engine (ML Kit, Paddle on MNN and on ONNX Runtime, Tesseract fast and best) that reads the script, on every language of groups 1-3, the group 4 scripts named in "OCR engine choice", and the later languages whose script or letters differ: Hebrew, Persian, Hindi, Bengali, Georgian, Armenian, Ukrainian, Kazakh, Serbo-Croatian in Cyrillic and in Latin, Czech, Lao, Khmer (request 59; web pages only, as they have no interface translation). Since request 60 also the app's cloud recognition, and a second set of hard screens per language: text over a photo-like background and a gradient, white subtitles with an outline, handwritten and comic fonts, small low-contrast text, manga-style vertical Japanese. The results go to the owner before an engine is built in, with the option of two engines split by language and the sizes of each combination (owner, 2026-10-16; replaces the agent's own pick in "Work while the owner is away") |
 | Audio regions of German, French, Portuguese | As built: German Germany, Other regions, Austria, Switzerland; French France, Canada, Other regions; Portuguese Brazil, Portugal, Other regions (owner, 2026-10-16, questions 11-13: "the most logical, tried it, fine") |
 | German compounds | A word found only as parts gets a line above the entries: "Compound: Küchentisch + Lampenschirm" (the label in every interface language). The order of a part's entries is question 29 (owner, 2026-10-16, question 15) |
 | KANJIDIC editions | Every KANJIDIC edition of the chosen gloss languages is ticked when the character dictionaries are; English fills the kanji the others lack (owner, 2026-10-16, question 17) |
@@ -240,13 +262,25 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Vietnamese classifiers | Rows that only name a noun's classifier (cái → bàn, ghế, …) are left out; cái shows its own entries (owner, 2026-10-16, question 21) |
 | Vietnamese Hán-Nôm rows | Kept, after the syllable's own entries, labelled "Hán-Nôm spelling" (owner, 2026-10-16, question 22) |
 | Ordinals with a period | A number of any length with a period before a lowercase word is no sentence end in German, Polish, Turkish and Latvian, the languages whose ordinals take a period (agent's choice at the owner's request, 2026-10-16, question 24) |
+| On-device OCR engines | ML Kit (bundled: Japanese, Chinese, Korean, Latin), Tesseract and PaddleOCR on MNN (runtimes in the APK, models downloaded) are all kept. Per language the download screen ticks the recommended model and lists the other usable ones of that language, unticked; the recognition settings switch between the downloaded ones. Models measured as unusable for a language are not offered (on the clean screens: Tesseract for Japanese, Chinese and Korean, Paddle's Latin model for Vietnamese, Tesseract for Persian) (owner, 2026-10-16, request 60; replaces "On-device OCR beyond ML Kit") |
+| ML Kit Latin model | ML Kit's Latin model (about 27 KB; its recognizer is already in the Japanese AAR) reads Latin-script languages instead of the Japanese model (owner, 2026-10-16) |
+| Tesseract models | tessdata_fast and tessdata_best are both offered where Tesseract is usable; fast is recommended where it is as accurate as best on the comparison, best where it is clearly better (owner, 2026-10-16) |
+| Chinese recognition | ML Kit by default: one model reads Simplified and Traditional (as Paddle's main model does); Paddle's main model is offered as an alternative (owner, 2026-10-16) |
+| OCR model choice placement | The per-language model choice is in the recognition settings (for now the Recognition section of the bubble settings): a row per turned-on language with its active model; the row opens the language's models, where one is chosen, others downloaded and deleted. Where settings live is reviewed later (request 61) (owner, 2026-10-16) |
+| OCR model names | By engine: "ML Kit (built in)", "Tesseract, fast", "Tesseract, accurate", "PaddleOCR"; an ⓘ says in a sentence what each is good at, from our measurements and outside sources (`notes/ocr-engine-research.md`) (owner, 2026-10-17) |
+| Several OCR models at setup | On the download screen every ticked model of the on-device recognition category gets a "main" switch; the recommended one is preselected when ticked, else the best measured of the ticked ones (owner, 2026-10-17) |
+| Last dictionary with definitions | As built: a turned-on language's last dictionary with definitions can be neither turned off nor deleted, and a hint says why; the same rule as for a language's active OCR model (owner, 2026-10-17, request 62) |
+| Paddle model hosting | The converted MNN models with their character lists, Apache-2.0 license and a note that we converted them are assets of a release of the screenlate repository that holds only model files and is kept out of the update check; uploaded only after the owner approves the file list. Tesseract's traineddata come straight from the tesseract-ocr repositories at a pinned commit (owner, 2026-10-17, question 31) |
+| Installed shared OCR models | On the download screen, a model the language uses that is already installed (the Latin recognizer for a second Latin-script language, the Paddle detector) shows ticked and locked, marked as installed, and adds nothing to the total (owner, 2026-10-16, request 63) |
+| Deleting OCR models | A language's active model cannot be deleted, only replaced: another one downloaded and chosen, then the old one can go; all of a language's models go when the language's files are deleted. A model another language also lists can be deleted only when no language uses it as its active model; the dialog says that it goes for those languages too. With an active model it cannot be deleted, and the row says which language uses it. The Paddle detector is not listed on its own: it goes with the last Paddle recognizer (owner, 2026-10-16, questions 32 and 33) |
 
 ## Open items (postponed by the owner)
 
 Decided when the first language or group 1 is ready, before it is merged into the multi-language branch.
 
-- Hosting the files we build or mirror (OCR runtime models, dictionaries without releases such as OpenRussian and
-  FreeDict conversions; wordfreq frequency dictionaries are built on the phone since 2026-10-14): likely a public repository of our own; Hugging Face to be
+- Hosting the files we build or mirror (dictionaries without releases such as OpenRussian and FreeDict conversions;
+  wordfreq frequency dictionaries are built on the phone since 2026-10-14; Paddle's OCR models are decided, row
+  "Paddle model hosting"): likely a public repository of our own; Hugging Face to be
   looked at. Postponed with no date (owner, 2026-10-13, request 30): remind the owner whenever they ask what is
   left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
@@ -405,6 +439,9 @@ regions" goes. Raised by the answers:
     hold 1,000 words or more and about 120 hold 3,000 or more (estimated from sizes). Options: (a, recommended) list
     from 1,000 words with their own meaning; (b) from 3,000; (c) keep 0.5 MB, with lv→ru as the only exception.
 
+Question 30 answered on 2026-10-16: (b), every batch in the big release (row "Scope of the big release"). Questions 28
+and 29 are still open.
+
 Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the line, with the word "Compound"), 17
 (every edition), 18 (without Chinese→Russian), 21 (left out), 22 (kept), 24 (left to the agent: all four languages),
 26 (no button), 27 (from 1,500 words). Raised by the answers:
@@ -428,6 +465,28 @@ Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the 
     recommended) batches in the order 4a, 4b, 4c, 4d, 4e; the big release ships groups 1-3, each batch comes in a
     later release (changes the row "Scope of the big release"); (b) the same batches, all in the big release; (c)
     group 4 as one stage.
+31. Answered on 2026-10-17: (a), row "Paddle model hosting". Hosting the converted Paddle models (about 100 MB: the detector and about ten recognizers). Paddle publishes
+    ONNX; MNN (2.1 MB in the APK against 19.4 MB for ONNX Runtime) reads only its own format, so the models are
+    converted once on a computer and must be downloaded from somewhere. Options: (a, recommended) a release of
+    our repository that holds only the model files, kept out of the update check; (b) a separate public repository
+    for every file we build (models, FreeDict and OpenRussian conversions); (c) ONNX Runtime with the official
+    files from Hugging Face, no hosting but 19 MB more in the APK and 5-20% slower; (d) still postponed: phone
+    builds offer no Paddle models until it is decided.
+32. Answered on 2026-10-16 (not allowed; row "Deleting OCR models"). Deleting the last downloaded model of a language. Today a language without an on-device model goes to the
+    cloud alone with Engines on Both (no draft, nothing offline), and a scan fails with a hint with Engines on
+    Device; home lists the missing model. Options: (a, recommended) allowed after a dialog that says so; home
+    lists it with a download button, as for missing dictionaries; (b) allowed, the same dialog, home does not
+    list it; (c) not allowed: the last model is only replaced or deleted with the language.
+33. Answered on 2026-10-16 (only while no language uses it as its active model; row "Deleting OCR models"). Deleting a model several languages use (Paddle's Latin recognizer for Polish, Turkish and Czech; the Paddle
+    detector for every Paddle language). Options: (a, recommended) delete removes it from that language; the file
+    stays while another language uses it, and the dialog says which; (b) delete removes the file for every
+    language, and the dialog lists the languages that lose it.
+34. Answered on 2026-10-16: (a), row "OCR engine choice". The rule for the recommended model. The plan's rule (at least a third fewer errors, at most twice the time)
+    would, on the clean screens, pick Tesseract for English (0.0% against ML Kit's 0.1%) and rule out Paddle for
+    Russian and Greek by time alone (1.2 s against 0.5 s). Options: (a, recommended) fewest errors over the clean
+    and hard screens; another model replaces the bundled or smallest one only with at least a third fewer errors
+    and at least 0.5 percentage points fewer; time does not count while every engine stays under the 1.6 s of
+    ML Kit's Japanese model; (b) the plan's rule with the 0.5-point floor added (time counts).
 
 ## Branches and workflow
 
@@ -797,8 +856,12 @@ Dictionaries are checked when the group starts; a language without support or di
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
   asked from the owner.
-- Before it: the owner decides whether the module reviews run on the changed modules; an upgrade test from the last
-  release on the phone; the catalog regenerated (wty is rebuilt weekly).
+- Before it, in this order: every batch of group 4 merged; the code review of all modules (one run per module, see
+  `notes/module-map.md`) with its fixes; the owner uses the build for a while; then, when the owner says, betas
+  (row "Beta builds"): the build type or flavor for `com.vpr.screenlate.beta` with its name and icon, `release.yml`
+  publishing `vX.Y.Z-beta.N` tags as prereleases, the beta build's update feed listing releases and taking the
+  newest prerelease, version codes for beta tags. Then an upgrade test from the last release on the phone and the
+  catalog regenerated (wty is rebuilt weekly).
 
 ## Risks
 
@@ -1094,3 +1157,18 @@ Dictionaries are checked when the group starts; a language without support or di
   French, Portuguese" to "Ordinals with a period", rows "Dictionary reset" and "Catalog threshold" changed). Requests
   55-57 (region order shown only while used, audio sources per language, Yomitan's languages and group 4 in
   batches); questions 28-30 logged.
+- 2026-10-16: question 30 answered (every batch of group 4 in the big release); request 58 (release after all
+  languages, the code review and the owner's own use; betas). New rows "Beta builds" and "Version of the big
+  release"; row "Scope of the big release" changed; the big release section lists the order.
+- 2026-10-16: request 59 (the OCR comparison takes in the later languages); row "OCR comparison scope" extended.
+- 2026-10-16: requests 60-63 (all three OCR engines kept with per-language models, settings placement review,
+  missing dependencies, installed shared models). New rows from "On-device OCR engines" to "Deleting OCR models";
+  "On-device OCR beyond ML Kit" superseded; "OCR comparison scope" takes in the cloud and hard screens.
+  Questions 31-34 asked. The cloud and hard-screen comparison runs in a separate session on `languages/ocr-compare`.
+- 2026-10-16: questions 32-34 answered: rows "Deleting OCR models" (active models only replaced; shared ones only
+  while no language uses them as active) and "OCR engine choice" (the recommendation rule). Question 31 explained
+  and asked again.
+- 2026-10-17: question 31 answered (Paddle's MNN models in a release of our repository, uploaded after the owner
+  approves the file list); rows "OCR model names", "Several OCR models at setup" and "Last dictionary with
+  definitions" (kept as built) added, "OCR model choice placement" detailed. Outside research on the engines runs in a separate
+  session; the OCR engines get their own plan, `2026-10-17-ocr-engines.md`.
