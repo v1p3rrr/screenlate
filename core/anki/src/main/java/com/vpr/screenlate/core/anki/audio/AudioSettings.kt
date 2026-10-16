@@ -22,16 +22,20 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 
-/** Yomitan's audio sources. */
-enum class AudioSourceType(val hasUrl: Boolean = false) {
+/**
+ * Yomitan's audio sources.
+ *
+ * @property languages the languages the source has recordings of; null for any language.
+ */
+enum class AudioSourceType(val hasUrl: Boolean = false, val languages: Set<Language>? = null) {
     /** JapanesePod101 word audio by kana and kanji. */
-    JAPANESE_POD_101,
+    JAPANESE_POD_101(languages = setOf(Language.JAPANESE)),
 
     /** The JapanesePod101 dictionary search, which has recordings JapanesePod101's word audio lacks. */
-    LANGUAGE_POD_101,
+    LANGUAGE_POD_101(languages = setOf(Language.JAPANESE)),
 
     /** Recordings shown on jisho.org. */
-    JISHO,
+    JISHO(languages = setOf(Language.JAPANESE)),
 
     /** Lingua Libre recordings on Wikimedia Commons, by speaker. */
     LINGUA_LIBRE,
@@ -47,6 +51,9 @@ enum class AudioSourceType(val hasUrl: Boolean = false) {
 
     /** A URL template that returns Yomitan's `audioSourceList` JSON. */
     CUSTOM_JSON(hasUrl = true),
+    ;
+
+    fun covers(language: Language): Boolean = languages == null || language in languages
 }
 
 @Serializable

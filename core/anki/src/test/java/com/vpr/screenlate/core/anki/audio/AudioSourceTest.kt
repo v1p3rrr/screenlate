@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.audio
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import org.junit.Test
 
 class AudioSourceTest {
@@ -20,5 +21,13 @@ class AudioSourceTest {
     fun `built-in sources and malformed templates have no address`() {
         assertThat(AudioSource(AudioSourceType.JISHO).address).isNull()
         assertThat(AudioSource(AudioSourceType.URL, "{term}.mp3").address).isNull()
+    }
+
+    @Test
+    fun `the Japanese sites are offered for Japanese only, the others for every language`() {
+        val german = AudioSourceType.entries.filter { it.covers(Language.GERMAN) }
+        assertThat(german).containsNoneOf(AudioSourceType.JAPANESE_POD_101, AudioSourceType.LANGUAGE_POD_101, AudioSourceType.JISHO)
+        assertThat(german).containsAtLeast(AudioSourceType.WIKTIONARY, AudioSourceType.LINGUA_LIBRE, AudioSourceType.URL)
+        assertThat(AudioSourceType.entries.filter { it.covers(Language.JAPANESE) }).isEqualTo(AudioSourceType.entries)
     }
 }

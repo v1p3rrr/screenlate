@@ -104,6 +104,7 @@ fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel =
     editing?.let { (index, source) ->
         SourceDialog(
             initial = source,
+            language = language,
             viewModel = viewModel,
             onDismiss = {
                 editing = null
@@ -258,10 +259,14 @@ private fun CandidateRow(candidate: AudioCandidate, playedNow: Boolean, missing:
     }
 }
 
-/** Adds or edits a source; "Test" asks the source for the test word and plays its first clip. */
+/**
+ * Adds or edits a source; "Test" asks the source for the test word and plays its first clip. The kinds offered are
+ * those that have [language]'s recordings.
+ */
 @Composable
 private fun SourceDialog(
     initial: AudioSource,
+    language: Language,
     viewModel: AudioSettingsViewModel,
     onDismiss: () -> Unit,
     onSave: (AudioSource) -> Unit,
@@ -283,7 +288,7 @@ private fun SourceDialog(
                         Text(stringResource(type.label), textAlign = TextAlign.Center)
                     }
                     DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                        AudioSourceType.entries.forEach { option ->
+                        AudioSourceType.entries.filter { it.covers(language) }.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(stringResource(option.label)) },
                                 onClick = {
