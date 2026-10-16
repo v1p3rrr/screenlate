@@ -34,8 +34,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val elisions: Set<String> = emptySet()
 
     /**
-     * Whether a period after a number of one or two digits makes it an ordinal (German "am 3. Oktober"), so it does
-     * not end the sentence; a year at the end of a sentence still does.
+     * Whether a period after a number makes it an ordinal, so it does not end the sentence: a number of one or two
+     * digits (German "am 3. Oktober"), or a longer one followed by a lowercase word (Latvian "1918. gada"). A year at
+     * the end of a sentence still ends it.
      */
     open val ordinalPeriod: Boolean = false
 
@@ -49,7 +50,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (character !in sentenceTerminators) return false
         if (character != '.') return true
         if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
-        if (ordinalPeriod && digitsBefore(text, index) in 1..2) return false
+        if (ordinalPeriod && isOrdinal(text, index)) return false
         return wordBefore(text, index) !in abbreviations
     }
 
@@ -95,6 +96,16 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             start--
         }
         return text.substring(start, index).lowercase()
+    }
+
+    /** Whether the period at [index] closes an ordinal number (see [ordinalPeriod]). */
+    private fun isOrdinal(text: String, index: Int): Boolean {
+        val digits = digitsBefore(text, index)
+        if (digits == 0) return false
+        if (digits <= 2) return true
+        var next = index + 1
+        while (next < text.length && text[next] != '\n' && text[next].isWhitespace()) next++
+        return next < text.length && text[next].isLowerCase()
     }
 
     /** The number of digits right before [index]; 0 when they follow a letter (A4). */

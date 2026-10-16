@@ -46,7 +46,7 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
         kanjiKind = R.string.dictionaries_kind_kanji,
         kanjiCount = R.string.dictionaries_count_kanji,
     )
-    Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH,
+    Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN,
     null,
     -> DictionaryStrings(
         pitchKind = R.string.dictionaries_kind_pronunciation,
@@ -61,7 +61,7 @@ val Language.pronunciationColorStrings: PronunciationColorStrings?
     get() = when (this) {
         Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
         Language.CHINESE -> PronunciationColorStrings(R.string.popup_tone_colors, R.string.popup_tone_colors_hint)
-        Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH -> null
+        Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN -> null
     }
 
 /** The switch for entries of the other characters of a found word (`LanguageSupport.hasCharacterEntries`). */
@@ -73,7 +73,7 @@ class CharacterEntryStrings(
 val Language.characterEntryStrings: CharacterEntryStrings
     get() = when (this) {
         Language.JAPANESE -> CharacterEntryStrings(R.string.lookup_single_kanji, R.string.lookup_single_kanji_hint)
-        Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH ->
+        Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN ->
             CharacterEntryStrings(R.string.lookup_single_characters, R.string.lookup_single_characters_hint)
     }
 
@@ -170,6 +170,14 @@ val Language.fontStrings: FontStrings
         Language.TURKISH -> FontStrings(
             system = R.string.popup_font_system_default,
             scriptOnly = R.string.popup_font_script_only_tr,
+            scriptOnlyHint = R.string.popup_font_script_only_hint_any,
+            systemMissing = null,
+            catalogInfo = null,
+            weightInfo = R.string.popup_text_weight_info_languages,
+        )
+        Language.LATVIAN -> FontStrings(
+            system = R.string.popup_font_system_default,
+            scriptOnly = R.string.popup_font_script_only_lv,
             scriptOnlyHint = R.string.popup_font_script_only_hint_any,
             systemMissing = null,
             catalogInfo = null,

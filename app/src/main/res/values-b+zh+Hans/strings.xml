@@ -458,6 +458,7 @@
     <string name="popup_font_script_only_pt">仅用于葡萄牙文文字</string>
     <string name="popup_font_script_only_pl">仅用于波兰文文字</string>
     <string name="popup_font_script_only_tr">仅用于土耳其文文字</string>
+    <string name="popup_font_script_only_lv">仅用于拉脱维亚文文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>

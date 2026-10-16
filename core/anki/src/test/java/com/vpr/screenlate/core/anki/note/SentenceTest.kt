@@ -97,4 +97,13 @@ class SentenceTest {
         val paragraph = "Yağmur yağdı. 15. yüzyılda Dr. Ayşe yaşadı. Sonra gitti."
         assertThat(extract(paragraph, "Ayşe", Language.TURKISH).text).isEqualTo("15. yüzyılda Dr. Ayşe yaşadı.")
     }
+
+    @Test
+    fun latvianSentenceKeepsYearsLowQuotesAndAbbreviations() {
+        val paragraph = "Lija. 1918. gada 18. novembrī dibināja valsti. „Nāc šurp.“ viņa teica. Āboli u.c. augļi auga."
+        assertThat(extract(paragraph, "dibināja", Language.LATVIAN).text)
+            .isEqualTo("1918. gada 18. novembrī dibināja valsti.")
+        assertThat(extract(paragraph, "teica", Language.LATVIAN).text).isEqualTo("„Nāc šurp.“ viņa teica.")
+        assertThat(extract(paragraph, "augļi", Language.LATVIAN).text).isEqualTo("Āboli u.c. augļi auga.")
+    }
 }

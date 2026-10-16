@@ -464,6 +464,7 @@
     <string name="popup_font_script_only_pt">Seulement pour le texte portugais</string>
     <string name="popup_font_script_only_pl">Seulement pour le texte polonais</string>
     <string name="popup_font_script_only_tr">Seulement pour le texte turc</string>
+    <string name="popup_font_script_only_lv">Seulement pour le texte letton</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>
