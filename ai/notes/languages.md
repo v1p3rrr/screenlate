@@ -34,8 +34,9 @@ questions: `plans/2026-10-09-more-languages.md`.
   `DictionariesViewModel`, the catalog (only `ja` sources), the bundled dictionaries.
 - The page: `definition-ja.js` (markup of Japanese dictionaries), furigana and pitch graphs in `render-yomitan`,
   the "Only for Japanese text" font switch.
-- ML Kit: only the bundled Japanese model (`text-recognition-japanese`), used for every `OcrScript`; it reads Latin
-  too.
+- ML Kit: the bundled Latin, Japanese, Chinese and Korean models, one per `OcrScript` that has one (since
+  2026-10-17 Latin-script languages use the Latin model, not the Japanese one); other scripts need a downloaded
+  model (`notes/ocr-engines.md`, plan `2026-10-17-ocr-engines.md`).
 
 ## hoshidicts: what is Japanese-only
 

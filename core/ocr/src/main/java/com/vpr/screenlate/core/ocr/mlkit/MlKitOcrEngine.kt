@@ -12,6 +12,7 @@ import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.OcrScript
@@ -35,8 +36,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 /**
- * On-device OCR with ML Kit. The Japanese, Chinese and Korean models are bundled; the Japanese one also reads Latin
- * text, so the Latin model is not. Fast but weaker on vertical text and manga.
+ * On-device OCR with ML Kit. The Latin, Japanese, Chinese and Korean models are bundled (the Latin one adds little: the
+ * Japanese model carries its recognizer). Latin-script languages use the Latin model, which reads them as well as the
+ * Japanese one in less than half the time. Fast but weaker on vertical text and manga.
  */
 @Singleton
 class MlKitOcrEngine @Inject constructor() : OcrEngine {
@@ -47,9 +49,10 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
 
     override fun reads(language: Language): Boolean = model(language.support.ocrScript) != null
 
-    /** The bundled model that reads [script]: the Japanese one also reads Latin text. */
+    /** The bundled model that reads [script]. */
     private fun model(script: OcrScript): OcrScript? = when (script) {
-        OcrScript.JAPANESE, OcrScript.LATIN -> OcrScript.JAPANESE
+        OcrScript.LATIN -> OcrScript.LATIN
+        OcrScript.JAPANESE -> OcrScript.JAPANESE
         OcrScript.CHINESE -> OcrScript.CHINESE
         OcrScript.KOREAN -> OcrScript.KOREAN
         OcrScript.CYRILLIC, OcrScript.DEVANAGARI -> null
@@ -67,6 +70,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     private fun options(model: OcrScript): TextRecognizerOptionsInterface = when (model) {
         OcrScript.CHINESE -> ChineseTextRecognizerOptions.Builder().build()
         OcrScript.KOREAN -> KoreanTextRecognizerOptions.Builder().build()
+        OcrScript.LATIN -> TextRecognizerOptions.DEFAULT_OPTIONS
         else -> JapaneseTextRecognizerOptions.Builder().build()
     }
 

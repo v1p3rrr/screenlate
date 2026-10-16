@@ -11,6 +11,7 @@ dependencies {
     api(project(":core:common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.okhttp)
+    implementation(libs.mlkit.text.recognition.latin)
     implementation(libs.mlkit.text.recognition.japanese)
     implementation(libs.mlkit.text.recognition.chinese)
     implementation(libs.mlkit.text.recognition.korean)
