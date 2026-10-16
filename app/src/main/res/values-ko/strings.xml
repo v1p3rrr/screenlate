@@ -457,6 +457,7 @@
     <string name="popup_font_script_only_it">이탈리아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_pt">포르투갈어 텍스트에만 사용</string>
     <string name="popup_font_script_only_pl">폴란드어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_tr">튀르키예어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

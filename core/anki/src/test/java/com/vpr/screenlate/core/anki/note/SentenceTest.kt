@@ -91,4 +91,10 @@ class SentenceTest {
         assertThat(extract(paragraph, "powiedziała", Language.POLISH).text).isEqualTo("„Zostań tu.” powiedziała.")
         assertThat(extract(paragraph, "piętro", Language.POLISH).text).isEqualTo("To 5. piętro.")
     }
+
+    @Test
+    fun turkishSentenceKeepsOrdinalsAndAbbreviations() {
+        val paragraph = "Yağmur yağdı. 15. yüzyılda Dr. Ayşe yaşadı. Sonra gitti."
+        assertThat(extract(paragraph, "Ayşe", Language.TURKISH).text).isEqualTo("15. yüzyılda Dr. Ayşe yaşadı.")
+    }
 }

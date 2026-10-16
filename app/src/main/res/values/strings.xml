@@ -464,6 +464,7 @@
     <string name="popup_font_script_only_it">Only for Italian text</string>
     <string name="popup_font_script_only_pt">Only for Portuguese text</string>
     <string name="popup_font_script_only_pl">Only for Polish text</string>
+    <string name="popup_font_script_only_tr">Only for Turkish text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

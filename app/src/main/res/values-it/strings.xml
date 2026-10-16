@@ -463,6 +463,7 @@
     <string name="popup_font_script_only_it">Solo per il testo italiano</string>
     <string name="popup_font_script_only_pt">Solo per il testo portoghese</string>
     <string name="popup_font_script_only_pl">Solo per il testo polacco</string>
+    <string name="popup_font_script_only_tr">Solo per il testo turco</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

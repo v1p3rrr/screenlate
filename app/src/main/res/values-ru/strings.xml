@@ -467,6 +467,7 @@
     <string name="popup_font_script_only_it">Только для итальянского текста</string>
     <string name="popup_font_script_only_pt">Только для португальского текста</string>
     <string name="popup_font_script_only_pl">Только для польского текста</string>
+    <string name="popup_font_script_only_tr">Только для турецкого текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>
