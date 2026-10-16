@@ -81,7 +81,9 @@ for (const iso of languages) {
         const label = hasLabel(name);
         lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
         if (label) {
-            lines.push(`    <string name="${slug}_label">${xml(name)}</string>`);
+            // Labels are lowercase like the other rule names; Yomitan capitalizes a few (French "Preterite").
+            const shown = /^[A-Z][a-z]+$/.test(name) ? name.toLowerCase() : name;
+            lines.push(`    <string name="${slug}_label">${xml(shown)}</string>`);
             expected.add(`${slug}_label`);
         }
         if (description) {

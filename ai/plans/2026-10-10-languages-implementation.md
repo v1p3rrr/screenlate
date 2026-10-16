@@ -295,6 +295,24 @@ Collected during the Korean work (autonomous, 2026-10-15); answered on 2026-10-1
 10. STDICT, the monolingual standard dictionary (58 MB, CC BY-SA 2.0 KR like KRDICT): (a, recommended, in use)
     listed for Korean, not ticked; (b) not listed.
 
+Collected during group 2 (autonomous, 2026-10-16); the option marked "in use" is built and stays until answered:
+
+11. German audio regions. Wiktionary's recordings from Germany carry no country code in their file names
+    (`De-Wasser.ogg`), Austrian ones do (`De-at-…`), so recordings from Germany play as "Other regions" and the
+    Germany item only orders transcriptions. The audio settings list Germany, Other regions, Austria, Switzerland.
+    Options: (a, in use) as listed; (b) without the Germany item: Other regions, Austria, Switzerland; (c) Germany,
+    Austria, Switzerland, Other regions.
+12. French audio regions. The decision row "Audio regions" names France only; Canada was added because Wiktionary
+    titles Quebec recordings `Fr-ca-…`. Options: (a, in use) France, Canada, Other regions; (b) France, Other regions.
+13. Portuguese audio regions. The row names Brazil only; Portugal was added (recordings titled `Pt-pt-…`, and the
+    Portuguese flag is offered). Options: (a, in use) Brazil, Portugal, Other regions; (b) Brazil, Other regions.
+14. The German flag's black stripe barely shows on the dark theme's cards (Languages screen, Home). Options: (a, in
+    use) as it is; (b) a thin light outline around every round flag in the dark theme.
+15. German compounds without an entry: the popup shows the entries of each part one after another (Küchentisch, then
+    Lampenschirm) and marks the whole word in the recognized text; nothing says the word was split. A part brings
+    every entry that spells it, as any lookup does (Arbeit also brings the imperative of arbeiten). Options: (a, in
+    use) as it is; (b) a line above the entries: "Küchentisch + Lampenschirm".
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -574,6 +592,11 @@ Per-language checklist (every language branch):
 - Questions per language: the recommended dictionaries; FreeDict deu-rus, fra-rus, ita-rus, spa-rus conversions.
 - Fonts: the first Latin fonts in the catalog, shown for every Latin-script language they cover (decision row "Font
   lists across languages"); which fonts, asked first.
+
+Progress (2026-10-16): Spanish, French, German, Italian and Portuguese built on their branches, checked on the
+emulator (LK16-LK20, AUD8-AUD11, LNG4) and merged into `languages/main` (`12a5ecc`). The Latin fonts (POP23) and
+German compounds (LK21) are on `languages/latin-fonts` (`8ac9332`), checked on the emulator, not yet merged: the
+module review session holds the root checkout and the emulator. FreeDict conversions: the converter step below.
 
 ## Stage D: group 3 (ru, pl, tr, vi, lv)
 
@@ -880,3 +903,7 @@ Dictionaries are checked when the group starts; a language without support or di
   for groups 2 and 3, Russian stress in the headword, the chosen engine for Latin diacritics ML Kit loses. Row "Flag
   country" changed: only English and Portuguese keep a second flag; Australia, Canada, New Zealand, Ireland, Taiwan,
   Hong Kong and Singapore are removed.
+- 2026-10-16: request 54 (questions wait while the owner is away). Group 2 built and merged into `languages/main`;
+  the Latin fonts and German compounds built on `languages/latin-fonts` (compound parts are looked up letter by
+  letter, through a new lookup option). Questions 11-15 logged with the options in use. The French rule label
+  "Preterite" is lowercase like the other labels (the generator lowercases a single capitalized word).

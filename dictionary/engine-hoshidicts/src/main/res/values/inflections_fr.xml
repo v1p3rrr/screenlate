@@ -18,7 +18,7 @@
     <string name="inflection_fr_conditional_label">conditional</string>
     <string name="inflection_fr_conditional">Conditional form of a verb</string>
     <!-- Preterite -->
-    <string name="inflection_fr_preterite_label">Preterite</string>
+    <string name="inflection_fr_preterite_label">preterite</string>
     <string name="inflection_fr_preterite">Preterite (simple past) form of a verb</string>
     <!-- plural -->
     <string name="inflection_fr_plural_label">plural</string>
