@@ -70,7 +70,7 @@ Translations of the interface were made with AI and have not been reviewed by na
 
 Screenlate is free software under the GPL-3.0 ([LICENSE](LICENSE)). [NOTICE](NOTICE) lists the third-party code and data with their licenses; the app shows the same under About.
 
-The bundled dictionaries keep their own licenses: JMdict and KANJIDIC by the Electronic Dictionary Research and Development Group, the Jiten frequency list and the Kanjium pitch accents, all under CC BY-SA 4.0. Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; imported dictionaries are subject to their own licenses.
+Dictionaries from the catalog are downloaded from their authors' releases and show their license before downloading; imported dictionaries are subject to their own licenses.
 
 Screenlate is an independent project, not affiliated with the dictionary authors, Anki, AnkiDroid, Yomitan or the cloud recognition provider.
 

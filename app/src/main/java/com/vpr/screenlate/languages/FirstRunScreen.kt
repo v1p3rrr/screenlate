@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class FirstRunViewModel @Inject constructor(private val switch: LanguageSwitch) : ViewModel() {
-    /** The bundled dictionaries' language first, as it needs no downloads; then the others by name. */
+    /** The preselected language first ([LanguageSwitch.bundledLanguage]); then the others by name. */
     val languages: List<Language> = Language.entries.sortedWith(
         compareBy<Language> { it != switch.bundledLanguage }.thenBy(Collator.getInstance()) { it.displayName() },
     )

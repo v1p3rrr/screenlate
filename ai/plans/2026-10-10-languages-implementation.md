@@ -312,6 +312,20 @@ Collected during group 2 (autonomous, 2026-10-16); the option marked "in use" is
     Lampenschirm) and marks the whole word in the recognized text; nothing says the word was split. A part brings
     every entry that spells it, as any lookup does (Arbeit also brings the imperative of arbeiten). Options: (a, in
     use) as it is; (b) a line above the entries: "Küchentisch + Lampenschirm".
+16. Dictionary reset (⟲ on the Dictionaries screen) once the APK carries no dictionaries. Today it deletes every
+    dictionary and reinstalls the bundled Japanese set. On `languages/main` there is no such set, so after a reset
+    every turned-on language is left without dictionaries, and the start screen only says they are missing: a
+    language that is already on has no button that opens its download screen (turning it off and on again does).
+    Options: (a, recommended) the reset deletes; each turned-on language without its mandatory dictionaries gets a
+    start-screen card with a button that opens its download screen (it helps whenever they are gone, not only after
+    a reset); (b) the reset also queues the ticked-by-default dictionaries of every turned-on language, with the
+    download size in its confirmation; (c) the reset deletes and opens the active language's download screen, the
+    other languages as in (a). Postponed, as the answer decides new UI: until then the reset on `languages/main`
+    works and reads as on `main` (it reinstalls a bundled set that is empty there).
+17. KANJIDIC in other gloss languages. Besides the English KANJIDIC, the catalog has French, Spanish and Portuguese
+    editions (about 1 MB each); with the character dictionaries ticked, a French interface ticks the French and the
+    English one, and a kanji then shows two entries. Options: (a, in use) every KANJIDIC edition of the chosen gloss
+    languages; (b) the English one only; (c) the interface language's edition where there is one, else English.
 
 ## Branches and workflow
 
@@ -579,7 +593,10 @@ Per-language checklist (every language branch):
 ### Before group 1 is merged
 
 - The postponed items: bundled Japanese dictionaries (decided 2026-10-15: downloaded, row "Bundled Japanese
-  dictionaries"); hosting (still postponed).
+  dictionaries"); hosting (still postponed). Built 2026-10-16 on `languages/ja-downloads`: the build no longer downloads the
+  archives into the APK and Japanese opens its download screen like any language; `BundledDictionaries`, the
+  build-logic `DownloadAssetsTask` and the bundled-install code stay while `main` ships the archives (removed at the
+  big release). The reset is question 16.
 - A look at the APK size per ABI against v0.2.2 (48.4 MB arm64). Done 2026-10-15 against v0.2.3 (the same 48.4 MB):
   arm64-v8a 51.2 MB with English, Chinese and Korean (`ai/test-model.md`, NF9).
 
@@ -907,3 +924,6 @@ Dictionaries are checked when the group starts; a language without support or di
   the Latin fonts and German compounds built on `languages/latin-fonts` (compound parts are looked up letter by
   letter, through a new lookup option). Questions 11-15 logged with the options in use. The French rule label
   "Preterite" is lowercase like the other labels (the generator lowercases a single capitalized word).
+- 2026-10-16: character dictionaries ticked (KANJIDIC editions, CC-CEDICT Hanzi; Unihan Hanja already was) and the
+  Japanese dictionaries downloaded instead of shipped, on `languages/ja-downloads`. Questions 16 (the reset without
+  bundled dictionaries, postponed) and 17 (KANJIDIC editions) logged.

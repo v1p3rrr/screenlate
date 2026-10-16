@@ -1,5 +1,4 @@
 import com.vpr.screenlate.buildlogic.CopyAssetTask
-import com.vpr.screenlate.buildlogic.DownloadAssetsTask
 import com.vpr.screenlate.buildlogic.disableAnkiDroidLintChecks
 import com.vpr.screenlate.buildlogic.screenlateVersion
 import java.util.Properties
@@ -72,26 +71,6 @@ android {
     }
 }
 
-// Dictionaries installed on first launch. Numeric prefixes set their initial priority. Versions are pinned where
-// the publisher offers stable URLs; see NOTICE for licenses.
-val bundledDictionaries = tasks.register<DownloadAssetsTask>("downloadBundledDictionaries") {
-    assetPath.set("dictionaries")
-    files.putAll(
-        mapOf(
-            "10-jmdict-english.zip" to
-                "https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/JMdict_english.zip",
-            "20-jiten-global-frequency.zip" to
-                "https://api.jiten.moe/api/frequency-list/download?downloadType=yomitan",
-            "30-kanjium-pitch-accents.zip" to
-                "https://github.com/toasted-nutbread/yomichan-pitch-accent-dictionary/releases/download/1.0.0/" +
-                "kanjium_pitch_accents.zip",
-            "40-kanjidic-english.zip" to
-                "https://github.com/yomidevs/jmdict-yomitan/releases/download/2026-09-27/KANJIDIC_english.zip",
-        ),
-    )
-    cacheDir.set(rootProject.layout.projectDirectory.dir("dicts/bundled"))
-}
-
 // The About screen shows NOTICE as it is in the repository.
 val noticeAsset = tasks.register<CopyAssetTask>("copyNoticeAsset") {
     source.set(rootProject.layout.projectDirectory.file("NOTICE"))
@@ -100,7 +79,6 @@ val noticeAsset = tasks.register<CopyAssetTask>("copyNoticeAsset") {
 
 androidComponents {
     onVariants { variant ->
-        variant.sources.assets?.addGeneratedSourceDirectory(bundledDictionaries, DownloadAssetsTask::outputDir)
         variant.sources.assets?.addGeneratedSourceDirectory(noticeAsset, CopyAssetTask::outputDir)
     }
 }

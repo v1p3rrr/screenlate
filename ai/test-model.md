@@ -72,8 +72,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
-| FR1 | Fresh install → the first run asks for the language, Japanese preselected; Japanese → bundled JMdict, KANJIDIC, frequency and pitch dictionaries install in the background, home shows them ready | E | U LanguageProfilesTest, M | 2026-10-14 |
-| FR2 | Fresh install, English chosen → the download screen opens; Japanese stays off and its bundled dictionaries are not installed | F | M | 2026-10-14 (API 30) |
+| FR1 | Fresh install → the first run asks for the language, Japanese preselected; Japanese → its download screen with the main dictionary (Jitendex for English), Jiten, Kanjium pitch accents, the transcription and KANJIDIC ticked; after Confirm they download and install, home shows them ready; the APK carries no dictionaries (`main`: the bundled set installs without the screen) | E | U LanguageProfilesTest, M | |
+| FR2 | Fresh install, English chosen → the download screen opens; Japanese stays off and none of its dictionaries are installed | F | M | 2026-10-14 (API 30) |
 | FR3 | Fresh install → the translation button is off, "Translation in Anki notes" on | E | U TranslationSettingsTest, M | 2026-10-14 |
 | FR4 | Upgrade from v0.2.3 with changed settings (bubble size and side, scan length, Anki deck and templates, audio sources, popup font and CSS, theme, hidden apps, dictionary order, switches and sort dictionary) → no first-run question, Japanese on, everything kept | E | M | 2026-10-14 |
 | FR5 | Upgrade from v0.2.3 with the translation button untouched → on; turned off in v0.2.3 → stays off | E | U TranslationSettingsTest, M | 2026-10-14 |
@@ -230,9 +230,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC6 | Order by drag, switches, sort dictionary; the last dictionary with definitions cannot be switched off or deleted | F | M | 2026-10-14 |
 | DIC7 | Check for updates; an old bundled copy updates from the catalog; "Update" on one keeps the others listed; once every found update has started the list closes and the task cards show them, never "All dictionaries are up to date" while they download | O | U OutdatedCopiesTest, UpdateCheckTest, M | 2026-10-15 |
 | DIC8 | A Yomitan collection export: list, checks, space check, import | O | U CollectionSpaceTest, YomitanBackupJvmTest, I YomitanBackupTest, M | 2026-10-14 (I) |
-| DIC9 | ⟲: cancels running tasks, deletes all, reinstalls the bundled ones (spinner until done) | F | U DictionaryResetTest, M | 2026-10-14 |
-| DIC10 | A deleted bundled dictionary stays deleted after an app update | F | U BundledDictionariesTest, M | 2026-10-14 |
-| DIC11 | Missing dictionary files → the home card; bundled ones restored, catalog ones downloaded again | O | M | |
+| DIC9 | ⟲: cancels running tasks, deletes all, reinstalls the bundled ones (spinner until done); on `languages/main`, which carries none, nothing is reinstalled until the owner settles what a reset brings back | F | U DictionaryResetTest, M | 2026-10-14 |
+| DIC10 | A deleted bundled dictionary stays deleted after an app update (`main` only) | F | U BundledDictionariesTest, M | 2026-10-14 |
+| DIC11 | Missing dictionary files → the home card; catalog ones downloaded again, copies an earlier version bundled too (`main`: bundled ones restored from the APK) | O | M | |
 | DIC12 | Dictionary languages shown and changed by hand; a dictionary is used only for its word language | O | U DictionaryLanguagesTest, M | |
 | DIC13 | wordfreq frequency dictionary built on the device: the list downloads, the checksum passes, the dictionary imports and sorts English | O | U WordfreqDictionaryTest, M | 2026-10-14 |
 | DIC14 | Importing wty-en-ipa writes the transcription regions (shown in POP6) | O | U TranscriptionTagBanksTest, M | 2026-10-14 |
@@ -257,8 +257,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG9 | Turning a language on again with kept files: on at once, its settings back | F | I LanguageReactivationTest, M | 2026-10-14 |
 | LNG10 | Settings per language stay apart (lookup, popup, Anki, audio, dictionary switches) | F | I AnkiProfileEditorsTest, U LookupSettingsRepositoryTest, M | 2026-10-14 |
 | LNG11 | Switching from home's flags; switching during a scan applies from the next scan, a tap on the floating bubble included | F | M | 2026-10-14 |
-| LNG12 | Japanese turned off with its files and on again → the bundled dictionaries install again | O | M | |
+| LNG12 | Japanese turned off with its files and on again → its download screen opens (`main`: the bundled dictionaries install again) | O | M | |
 | LNG13 | Chinese card: "Characters" Simplified or Traditional with its hint, "All words in these characters" off by default; Traditional makes "xuexi" show 學習; the Lookup page has no such block; a backup's General part carries it, only the full reset clears it | F | U SettingsKeysTest, M | 2026-10-15 |
+| LNG14 | Character dictionaries ticked on the download screen: KANJIDIC for Japanese (in each chosen gloss language that has one), CC-CEDICT Hanzi for Chinese, Unihan Hanja for Korean; each can be unticked | F | M | |
 
 ### SET: settings, backup, appearance
 
@@ -303,7 +304,7 @@ the same AVD is a finding. The first run of this model records them in the run l
 | NF8 | Memory: PSS docked, after a scan, and after 20 scans back near the docked value (no growth) | F | M | 2026-10-14 |
 | NF9 | Sizes: APK per ABI against the last release; installed size (app, data) after a fresh install with Japanese | F | M | 2026-10-14, 2026-10-15 (APK) |
 | NF10 | Long texts wrap and screens scroll in all 14 locales (download screen, Languages, settings hints; spot checks in de, ru, vi, ja) | F | M | 2026-10-14 |
-| NF11 | Import times: JMdict from a file, the bundled set on first run | O | M | 2026-10-14 (bundled) |
+| NF11 | Import times: JMdict from a file, the Japanese defaults on first run (download and import) | O | M | 2026-10-14 (bundled) |
 | NF12 | Search updates while typing without visible lag | O | M | 2026-10-14 |
 
 ## Not on the emulator

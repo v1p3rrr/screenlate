@@ -329,7 +329,8 @@
       "resolveLatest": true,
       "downloadSize": 1048576,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project",
+      "recommended": true
     },
     {
       "id": "jmdict-english",
@@ -670,7 +671,8 @@
       "resolveLatest": true,
       "downloadSize": 1048576,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project",
+      "recommended": true
     },
     {
       "id": "kanjidic-spanish",
@@ -700,7 +702,8 @@
       "resolveLatest": true,
       "downloadSize": 1048576,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project",
+      "recommended": true
     },
     {
       "id": "kanjidic-portuguese",
@@ -730,7 +733,8 @@
       "resolveLatest": true,
       "downloadSize": 1048576,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+      "homepage": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project",
+      "recommended": true
     },
     {
       "id": "jpdb-v2",
@@ -1124,7 +1128,8 @@
       "resolveLatest": true,
       "downloadSize": 4352554,
       "license": "CC BY-SA 4.0",
-      "homepage": "https://cc-cedict.org/wiki/"
+      "homepage": "https://cc-cedict.org/wiki/",
+      "recommended": true
     },
     {
       "id": "wordfreq-zh",

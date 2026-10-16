@@ -42,15 +42,15 @@ class LanguageSwitch @Inject constructor(
     private val imports: DictionaryImports,
     private val catalog: DictionaryCatalog,
 ) {
-    /** The language whose dictionaries ship with the app; it needs no downloads, so the first run preselects it. */
+    /** The language the first run preselects: Japanese, whose dictionaries earlier versions shipped with the app. */
     val bundledLanguage: Language get() = bundled.language
 
     /**
      * Whether turning [language] on goes through its download screen: its own mandatory dictionaries are not installed.
-     * The bundled dictionaries' language needs none.
+     * The bundled dictionaries' language needs none while the app carries their archives.
      */
     suspend fun needsDownloads(language: Language): Boolean {
-        if (language == bundled.language) return false
+        if (language == bundled.language && bundled.all().isNotEmpty()) return false
         val own = repository.getAll().filter { it.sourceLanguage == language.code }
         val catalog = withContext(Dispatchers.IO) { catalog.localCatalog() }
         return missingCategories(language, own, catalog).isNotEmpty()
