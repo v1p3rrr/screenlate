@@ -22,7 +22,10 @@ dependencyResolutionManagement {
         mavenCentral()
         // AnkiDroid publishes its API only through JitPack.
         maven("https://jitpack.io") {
-            content { includeGroup("com.github.ankidroid") }
+            content {
+                includeGroup("com.github.ankidroid")
+                includeGroup("cz.adaptech.tesseract4android")
+            }
         }
     }
 }
@@ -38,3 +41,4 @@ include(":core:translate")
 include(":dictionary:api")
 include(":dictionary:engine-hoshidicts")
 include(":dictionary:render-yomitan")
+include(":experiments:ocr-compare")
