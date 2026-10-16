@@ -90,7 +90,9 @@ class LanguageInstallationTest {
         val result = status(listOf(dictionary()), catalog = catalog)
         assertThat(result.dictionaryReady).isTrue()
         assertThat(result.scanReady).isFalse()
-        assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "1", "test", File("old")))).scanReady).isFalse()
+        // An older version keeps working until the newer one is installed.
+        assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "1", "test", File("old")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "2", "test", File("ready")))).scanReady).isTrue()
+        assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("other", "2", "test", File("other")))).scanReady).isFalse()
     }
 }

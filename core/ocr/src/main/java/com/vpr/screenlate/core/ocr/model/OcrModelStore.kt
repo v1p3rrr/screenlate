@@ -22,8 +22,9 @@ import kotlinx.coroutines.withContext
 /**
  * A model to install: [id] names it in the store (several catalog entries may share one model, such as a text detector
  * used by many languages), [engine] is the [ModelOcrEngine] that reads it, [sha256] the archive's pinned checksum.
+ * [file] is the path a download that is not a zip archive is kept under, [OcrModelStore.MODEL_FILE] without it.
  */
-data class OcrModelSpec(val id: String, val version: String, val engine: String, val sha256: String)
+data class OcrModelSpec(val id: String, val version: String, val engine: String, val sha256: String, val file: String? = null)
 
 /** An installed model: its files lie in [directory], named as in the downloaded archive. */
 data class InstalledOcrModel(val id: String, val version: String, val engine: String, val directory: File) {
@@ -42,7 +43,8 @@ class ModelChecksumException : IOException("The downloaded model does not match 
 
 /**
  * Downloaded OCR models, one directory per model under [root]. A download is installed only when its SHA-256 matches
- * the pinned one; a zip archive is unpacked, any other file is kept as it is. A new version replaces the old one.
+ * the pinned one; a zip archive is unpacked, any other file is kept as it is under its [OcrModelSpec.file] name. A new
+ * version replaces the old one.
  */
 @Singleton
 class OcrModelStore internal constructor(private val root: File) {
@@ -63,13 +65,15 @@ class OcrModelStore internal constructor(private val root: File) {
     /** Checks [archive] against [spec] and installs it in place of an installed version; [archive] stays. */
     suspend fun install(spec: OcrModelSpec, archive: File): InstalledOcrModel = withContext(Dispatchers.IO) {
         require(spec.id.isSafeName()) { "Bad model id" }
+        val name = spec.file ?: MODEL_FILE
+        require(name.split('/').all { it.isSafeName() }) { "Bad model file name" }
         if (!sha256(archive).equals(spec.sha256, ignoreCase = true)) throw ModelChecksumException()
         mutex.withLock {
             root.mkdirs()
             val staging = File(root, ".${spec.id}.new").apply { deleteRecursively() }
             try {
                 staging.mkdirs()
-                if (isZip(archive)) unzip(archive, staging) else archive.copyTo(File(staging, MODEL_FILE))
+                if (isZip(archive)) unzip(archive, staging) else archive.copyTo(File(staging, name))
                 place(spec.id, spec.version, spec.engine, staging)
             } finally {
                 staging.deleteRecursively()
@@ -167,7 +171,7 @@ class OcrModelStore internal constructor(private val root: File) {
         private const val DIRECTORY = "ocr-models"
         internal const val MANIFEST = "model.properties"
 
-        /** The name a model that is not a zip archive gets. */
+        /** The name a model that is not a zip archive gets when its spec names no file. */
         const val MODEL_FILE = "model.bin"
 
         private const val KEY_ID = "id"

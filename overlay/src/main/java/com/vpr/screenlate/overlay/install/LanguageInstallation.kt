@@ -97,9 +97,9 @@ internal fun installationStatus(
     val missing = catalog.mandatory(language.code).filterTo(linkedSetOf()) { category ->
         when (category) {
             CatalogCategory.MAIN -> enabled.none { it.termCount > 0 }
-            CatalogCategory.OCR_MODEL -> entries.filter { it.isModel }.none { entry ->
-                models.any { it.id == entry.model && it.version == entry.version }
-            } && settings.textSource != TextSource.APP_TEXT_ONLY
+            // Any version counts: an installed model keeps working until a newer one replaces it.
+            CatalogCategory.OCR_MODEL -> entries.filter { it.isModel }.none { entry -> models.any { it.id == entry.model } } &&
+                settings.textSource != TextSource.APP_TEXT_ONLY
             else -> entries.filter { it.category == category }.none { entry -> enabled.any(entry::matches) }
         }
     }

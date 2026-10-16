@@ -21,6 +21,7 @@ import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
+import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import com.vpr.screenlate.overlay.install.LanguageInstallation
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
@@ -98,7 +99,7 @@ internal class LanguageTestFixture : AutoCloseable {
             audioSettings, AudioPlayer(context, audioSettings),
             SentenceTranslation(SentenceTranslator(context, client, translationSettings), translationSettings),
             AppSettingsRepository(preferences), PageAppearance(PopupAppearanceRepository(preferences), PopupFonts(context, client)), profiles,
-            LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models), OverlaySettingsRepository(preferences)),
+            LanguageInstallation(repository, imports, catalog, bundled, models, DeviceOcr(MlKitOcrEngine(), emptySet(), models, CatalogLanguageModels(catalog), OcrModelChoices(preferences)), OverlaySettingsRepository(preferences)),
         ).also { viewModels.put("search", it) }
     }
 

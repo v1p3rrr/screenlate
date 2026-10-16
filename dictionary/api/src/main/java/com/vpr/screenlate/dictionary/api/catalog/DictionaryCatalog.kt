@@ -79,6 +79,9 @@ enum class CatalogCategory {
  * @property model a model's id in the OCR model store; entries of several languages may share one model, such as a
  *   text detector.
  * @property engine the on-device engine that reads [model].
+ * @property file where a model downloaded as a single file is kept inside the model's directory, such as
+ *   `tessdata/rus.traineddata`, the layout its engine reads; a zip archive is unpacked instead.
+ * @property requires ids of other models [model] reads only together with, such as a text detector.
  * @property version [model]'s version; an installed copy of another version is replaced. For [build], the version of
  *   the data the downloaded file holds.
  * @property build how the app builds the dictionary from the downloaded file instead of importing it as it is:
@@ -111,6 +114,8 @@ data class CatalogEntry(
     val sha256: String? = null,
     val model: String? = null,
     val engine: String? = null,
+    val file: String? = null,
+    val requires: List<String> = emptyList(),
     val version: String? = null,
     val build: String? = null,
 ) {
@@ -265,8 +270,15 @@ class DictionaryCatalog @Inject constructor(
 
     fun entries(): Flow<List<CatalogEntry>> = catalog().map { it.entries }
 
-    /** The last fetched or the bundled catalog, without network access. */
-    fun localCatalog(): Catalog = cached() ?: bundled()
+    /** The last fetched or the bundled catalog, without network access; parsed again only when a fetch changed it. */
+    fun localCatalog(): Catalog {
+        val stamp = cacheFile.lastModified()
+        parsed?.takeIf { it.first == stamp }?.let { return it.second }
+        return (cached() ?: bundled()).also { parsed = stamp to it }
+    }
+
+    @Volatile
+    private var parsed: Pair<Long, Catalog>? = null
 
     fun local(): List<CatalogEntry> = localCatalog().entries
 

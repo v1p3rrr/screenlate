@@ -8,6 +8,7 @@ import com.vpr.screenlate.backup.BackupChoiceStore
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.preferenceKey
+import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.overlay.BubbleKeepAliveService
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -82,6 +83,7 @@ object SettingsKeys {
         "audio_settings",
         "audio_sources_chosen",
         "sort_dictionary_id",
+        OcrModelChoices.KEY,
     )
 
     /** Per-language keys set on the Languages screen, which has no reset of its own: only the full reset clears them. */
@@ -99,7 +101,7 @@ object SettingsKeys {
     fun sectionOf(key: String): SettingsSection? = when {
         key == "overlay_keep_alive" -> SettingsSection.BACKGROUND
         key == SHOW_SOURCE_TEXT_KEY -> SettingsSection.POPUP
-        key.startsWith("overlay_") -> SettingsSection.BUBBLE
+        key.startsWith("overlay_") || key.startsWith(OcrModelChoices.KEY) -> SettingsSection.BUBBLE
         key.startsWith("lookup_") -> SettingsSection.LOOKUP
         languageOf(key) != null && key.startsWith("anki_settings") || key.startsWith("audio_") -> SettingsSection.ANKI
         key.startsWith("popup_") -> SettingsSection.POPUP

@@ -48,6 +48,20 @@ class OcrModelStoreTest {
     }
 
     @Test
+    fun `a single file can be kept under its own path`() = runTest {
+        val archive = file("rus.traineddata", "lstm")
+        val model = store.install(spec(archive, id = "tesseract-fast-rus").copy(file = "tessdata/rus.traineddata"), archive)
+        assertThat(model.file("tessdata/rus.traineddata").readText()).isEqualTo("lstm")
+        assertThat(model.files.map { it.relativeTo(model.directory).invariantSeparatorsPath }).containsExactly("tessdata/rus.traineddata")
+
+        for (bad in listOf("../rus.traineddata", "/rus.traineddata", "tessdata/../../x", "")) {
+            assertThrows(IllegalArgumentException::class.java) {
+                kotlinx.coroutines.runBlocking { store.install(spec(archive, id = "other").copy(file = bad), archive) }
+            }
+        }
+    }
+
+    @Test
     fun `a model's files come back from a staged copy`() = runTest {
         val archive = zip("rec.zip", mapOf("rec.onnx" to "net", "dict/labels.txt" to "a\nb"))
         val installed = store.install(spec(archive, id = "rec"), archive)

@@ -13,7 +13,7 @@ class SettingsKeysTest {
             "overlay_bubble_visible", "overlay_dock_side", "overlay_dock_y", "overlay_aim_mode", "overlay_highlight_word",
             "overlay_haptics", "overlay_hidden_packages", "overlay_text_source", "overlay_bubble_size_dp",
             "overlay_small_text", "overlay_ocr_engines", "overlay_ocr_saving", "overlay_dock_top_bottom",
-            "e_ink_bubble_before", "e_ink_bubble_after",
+            "e_ink_bubble_before", "e_ink_bubble_after", "ocr_model", "ocr_model_en",
         ),
         SettingsSection.BACKGROUND to listOf("overlay_keep_alive"),
         SettingsSection.LOOKUP to listOf(

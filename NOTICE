@@ -67,6 +67,19 @@ Copyright (c) 2026 HatScripts.
   The round flags in overlay/src/main/res/drawable/flag_*.xml, converted from its SVG files
   by scripts/flags/circle_flags.py.
 
+Tesseract4Android (https://github.com/adaptech-cz/Tesseract4Android), Apache License 2.0,
+Copyright (c) Adaptech s.r.o., Robert Pösel; based on tess-two (https://github.com/rmtheis/tess-two),
+Copyright (c) Google Inc., Robert Theis. It bundles native builds of:
+  Tesseract 5.5.1 (https://github.com/tesseract-ocr/tesseract), Apache License 2.0, Copyright (c) Google Inc.
+  and the Tesseract contributors;
+  Leptonica (http://www.leptonica.org), BSD 2-Clause-style Leptonica license, Copyright (c) Dan Bloomberg;
+  libjpeg 9f (https://www.ijg.org), IJG license, Copyright (c) Thomas G. Lane, Guido Vollbeding. This software is
+  based in part on the work of the Independent JPEG Group;
+  libpng 1.6.48 (http://www.libpng.org), PNG Reference Library License version 2, Copyright (c) the PNG Reference
+  Library Authors.
+  The on-device recognition models it reads are downloaded unchanged from the tesseract-ocr repositories
+  (tessdata_fast, tessdata_best), Apache License 2.0, and are not part of the APK.
+
 Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
 licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
 (https://github.com/mikepenz/AboutLibraries), Apache License 2.0.

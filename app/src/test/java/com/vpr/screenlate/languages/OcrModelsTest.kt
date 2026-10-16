@@ -30,6 +30,17 @@ class OcrModelsTest {
     }
 
     @Test
+    fun `a language reads with its model entries, each model once`() {
+        val tesseract = model("ru-tess", "ru", "tesseract-fast-rus").copy(engine = "tesseract", recommended = false, file = "tessdata/rus.traineddata")
+        val recognizer = model("ru-rec", "ru", "eslav").copy(requires = listOf("det"))
+        val models = languageModels("ru", listOf(recognizer, tesseract, model("ru-rec-again", "ru", "eslav"), model("uk-rec", "uk", "eslav")))
+        assertThat(models.map { Triple(it.id, it.engine, it.requires) })
+            .containsExactly(Triple("eslav", "paddle", listOf("det")), Triple("tesseract-fast-rus", "tesseract", emptyList<String>())).inOrder()
+        assertThat(models.map { it.recommended }).containsExactly(true, false).inOrder()
+        assertThat(tesseract.modelSpec().file).isEqualTo("tessdata/rus.traineddata")
+    }
+
+    @Test
     fun `models are listed on the download screen and an installed one stays ticked`() {
         val categories = setupCategories(Catalog(entries), "ru", glosses = listOf("en"), installed = emptyList()) {
             it.model == "det"

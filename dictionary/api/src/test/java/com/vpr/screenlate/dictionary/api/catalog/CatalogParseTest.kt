@@ -33,17 +33,24 @@ class CatalogParseTest {
             """{"format": 2, "dictionaries": [
                 {"id": "ru-ocr", "title": "Cyrillic recognition", "category": "OCR_MODEL", "sourceLanguage": "ru",
                  "model": "eslav-rec", "engine": "paddle", "version": "5", "sha256": "ab", "recommended": true,
-                 "downloadUrl": "https://example.org/eslav.zip", "downloadSize": 8000},
+                 "requires": ["detector"], "downloadUrl": "https://example.org/eslav.zip", "downloadSize": 8000},
+                {"id": "ru-tess", "title": "Tesseract", "category": "OCR_MODEL", "sourceLanguage": "ru",
+                 "model": "tesseract-fast-rus", "engine": "tesseract", "version": "1", "sha256": "cd",
+                 "file": "tessdata/rus.traineddata", "downloadUrl": "https://example.org/rus.traineddata"},
                 {"id": "uk-ocr", "title": "No checksum", "category": "OCR_MODEL", "sourceLanguage": "uk",
                  "model": "eslav-rec", "engine": "paddle", "version": "5", "downloadUrl": "https://example.org/eslav.zip"},
                 {"id": "d", "title": "No kind", "sourceLanguage": "ru", "downloadUrl": "https://example.org/d.zip"}
             ]}""",
         )!!
-        val model = catalog.entries.single()
+        val (model, file) = catalog.entries
         assertThat(model.isModel).isTrue()
         assertThat(model.kind).isNull()
         assertThat(model.category).isEqualTo(CatalogCategory.OCR_MODEL)
         assertThat(model.installedBytes).isEqualTo(8000L)
+        assertThat(model.requires).containsExactly("detector")
+        assertThat(model.file).isNull()
+        assertThat(file.file).isEqualTo("tessdata/rus.traineddata")
+        assertThat(file.requires).isEmpty()
     }
 
     @Test

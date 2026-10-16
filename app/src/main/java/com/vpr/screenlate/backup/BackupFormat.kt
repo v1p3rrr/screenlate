@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.core.anki.audio.SharedAudioSettings
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
+import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -157,7 +158,7 @@ object BackupPreferences {
     fun sectionOf(key: String): BackupSection? = when {
         key in general || SettingsKeys.onLanguagesScreen(key) -> BackupSection.GENERAL
         key == SHOW_SOURCE_TEXT_KEY -> BackupSection.POPUP
-        key.startsWith("overlay_") -> BackupSection.BUBBLE
+        key.startsWith("overlay_") || key.startsWith(OcrModelChoices.KEY) -> BackupSection.BUBBLE
         key.startsWith("lookup_") -> BackupSection.LOOKUP
         key.startsWith("popup_") -> BackupSection.POPUP
         key.startsWith("anki_settings") && SettingsKeys.languageOf(key) != null -> BackupSection.ANKI

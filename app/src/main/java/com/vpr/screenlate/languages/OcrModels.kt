@@ -1,8 +1,12 @@
 package com.vpr.screenlate.languages
 
+import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.ocr.model.LanguageModel
+import com.vpr.screenlate.core.ocr.model.LanguageModels
 import com.vpr.screenlate.core.ocr.model.OcrModelSpec
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.ModelInstaller
 import dagger.Binds
 import dagger.Module
@@ -20,9 +24,27 @@ class OcrModelInstaller @Inject constructor(private val store: OcrModelStore) : 
     }
 }
 
+/** A language reads with the models of its catalog entries. */
+@Singleton
+class CatalogLanguageModels @Inject constructor(private val catalog: DictionaryCatalog) : LanguageModels {
+    override fun of(language: Language): List<LanguageModel> = languageModels(language.code, catalog.localCatalog().entries)
+}
+
+/** [language]'s model entries in catalog order; a model several entries of the language name is listed once. */
+internal fun languageModels(language: String, entries: List<CatalogEntry>): List<LanguageModel> =
+    entries.filter { it.isModel && it.sourceLanguage == language }
+        .distinctBy { it.model }
+        .map { LanguageModel(requireNotNull(it.model), requireNotNull(it.engine), it.requires, it.recommended) }
+
 /** The store's description of a catalog model; the catalog leaves out incomplete model entries. */
 internal fun CatalogEntry.modelSpec(): OcrModelSpec =
-    OcrModelSpec(id = requireNotNull(model), version = requireNotNull(version), engine = requireNotNull(engine), sha256 = requireNotNull(sha256))
+    OcrModelSpec(
+        id = requireNotNull(model),
+        version = requireNotNull(version),
+        engine = requireNotNull(engine),
+        sha256 = requireNotNull(sha256),
+        file = file,
+    )
 
 /** Whether [store] holds this model entry's version. */
 internal fun CatalogEntry.isInstalledIn(store: OcrModelStore): Boolean {
@@ -45,4 +67,7 @@ internal fun modelsOnlyFor(language: String, others: Collection<String>, entries
 internal abstract class OcrModelsModule {
     @Binds
     abstract fun bindInstaller(installer: OcrModelInstaller): ModelInstaller
+
+    @Binds
+    abstract fun bindLanguageModels(models: CatalogLanguageModels): LanguageModels
 }
