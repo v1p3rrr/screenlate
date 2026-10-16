@@ -7,8 +7,8 @@
 // lines of the page open in Chrome, from the page itself through the DevTools protocol, with a box per word; run
 // `adb forward tcp:9222 localabstract:chrome_devtools_remote` first. Text Chrome draws in its own toolbar is left out.
 // Japanese and Chinese (names starting with ja, javert, zh, zht) have a box per character instead, and javert's lines
-// are columns, right to left. Thai has a box per word as the browser splits it (it has no spaces between words), and
-// Arabic lines read right to left.
+// are columns, right to left. Thai, Lao and Khmer have a box per word as the browser splits it (they have no spaces
+// between words), and Arabic, Persian and Hebrew lines read right to left.
 // ADB names the adb binary (default: adb on the PATH).
 
 import { execFileSync } from 'node:child_process';
@@ -25,8 +25,8 @@ const web = flags.includes('--web');
 const language = name.split('-')[0];
 const perCharacter = ['ja', 'javert', 'zh', 'zht'].includes(language);
 const vertical = language === 'javert';
-const segmented = language === 'th';
-const rightToLeft = language === 'ar';
+const segmented = ['th', 'lo', 'km'].includes(language);
+const rightToLeft = ['ar', 'fa', 'he'].includes(language);
 
 function run(...args) {
   return execFileSync(adb, args, { maxBuffer: 64 << 20 });

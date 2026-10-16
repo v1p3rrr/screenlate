@@ -6,6 +6,7 @@ import android.graphics.Rect
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.vpr.screenlate.core.common.Language
@@ -71,9 +72,12 @@ class MlKitReader(private val language: Language) : Reader {
     override fun close() = engine.release()
 }
 
-/** ML Kit's Latin model, which the app does not carry. Symbol boxes as ML Kit gives them, without the app's checks. */
-class MlKitLatinReader : Reader {
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+/**
+ * One of ML Kit's models the app does not carry: Latin by default, or Devanagari. Symbol boxes as ML Kit gives them,
+ * without the app's checks.
+ */
+class MlKitScriptReader(options: TextRecognizerOptionsInterface = TextRecognizerOptions.DEFAULT_OPTIONS) : Reader {
+    private val recognizer = TextRecognition.getClient(options)
 
     override fun recognize(image: Bitmap): OcrPage {
         val text = Tasks.await(recognizer.process(InputImage.fromBitmap(image, 0)))

@@ -40,6 +40,79 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   from `.catch`, so the scan ends silently with the spinner on. Lens timeouts become `SocketTimeoutException`
   (`askLens`), a cancelled ML Kit task fails with an ordinary exception.
 
+## Engine comparison (2026-10-16)
+
+Harness `experiments/ocr-compare` (instrumented test), ground truth and scoring in `scripts/ocr-compare/`. Emulator
+Pixel_10_Pro (x86_64, 1280×2856), screenshots of a test page in six styles (heading, sans, serif, mono, link, small
+grey) in light and dark, plus the home and settings screens in each interface language; 92 screens in 33 language
+variants. Time: median of three runs after a warm-up, 4 threads, detector width 960; host CPU, so only the ratios
+mean something until the phone run.
+
+CER (character errors, %) / words read whole / taps on the right word / seconds per screen. CJK: by characters, taps
+on characters; Thai, Lao, Khmer: CER only. `mlkit` is the app's path (Japanese model for Latin text), `mlkit-latin`
+ML Kit's Latin model, Paddle is PP-OCRv5 mobile on MNN (ONNX Runtime gives the same text, 5–20% slower).
+
+| lang | mlkit | mlkit-latin | paddle (model) | tesseract fast | tesseract best |
+|---|---|---|---|---|---|
+| ja | 0.2 – 99.8 1.6 | | 0.1 – 100 1.4 (main) | 1.0 – 57 0.5 | 0.8 – 41 2.7 |
+| ja vertical | 6.3 – 94 1.5 | | 10.1 – 96 1.1 (main) | 9.3 – 26 0.6 | 1.5 – 27 1.5 |
+| zh | 3.2 – 95 1.3 | | 0.1 – 100 1.5 (main) | 3.6 – 57 0.5 | 1.1 – 59 1.2 |
+| zh-Hant | 3.8 – 94 1.4 | | 4.3 – 100 1.5 (main) | 4.5 – 62 0.5 | 2.3 – 59 1.2 |
+| ko | 0.3 99 99 1.3 | | 4.8 75 86 1.2 (korean) | 58.5 32 17 0.4 | 61.1 29 17 1.0 |
+| en | 0.1 99 100 2.5 | 0.1 100 100 1.1 | 0.0 100 100 0.9 (latin) | 0.0 100 100 0.4 | 0.0 100 100 1.5 |
+| de | 0.4 98 98 2.6 | 0.2 99 99 1.1 | 0.3 100 100 1.0 | 0.0 100 100 0.4 | 0.0 100 100 1.5 |
+| fr | 0.7 96 95 2.6 | 0.6 97 95 1.1 | 0.0 100 100 0.9 | 0.3 98 100 0.4 | 0.3 98 100 0.6 |
+| es | 0.4 98 99 2.5 | 0.3 98 99 1.1 | 0.2 99 98 0.9 | 0.0 100 97 0.4 | 0.0 100 99 1.4 |
+| it | 0.5 97 92 2.4 | 0.4 97 92 1.1 | 0.0 100 100 1.0 | 0.2 99 97 0.4 | 0.1 100 99 1.3 |
+| pt | 0.6 98 97 2.4 | 0.2 99 97 1.0 | 0.2 99 99 1.0 | 0.2 100 100 0.4 | 0.3 100 100 1.5 |
+| pl | 1.1 93 92 2.2 | 1.0 93 92 1.0 | 0.2 99 98 0.9 | 0.0 100 100 0.4 | 0.0 100 100 1.1 |
+| tr | 1.8 88 86 2.0 | 1.7 89 86 0.9 | 0.5 97 97 0.9 | 0.1 100 100 0.4 | 0.1 100 100 0.8 |
+| lv | 1.1 93 93 2.1 | 1.1 93 93 0.9 | 0.9 97 97 0.8 | 0.0 100 100 0.4 | 0.0 100 100 0.9 |
+| vi | 2.2 93 89 2.0 | 1.1 96 94 0.9 | 13.5 44 42 0.9 | 0.6 99 100 0.4 | 0.7 99 99 1.2 |
+| cs | 2.2 89 86 2.1 | 0.9 95 92 0.9 | 1.2 95 95 0.9 | 0.1 99 97 0.4 | 0.1 99 99 1.3 |
+| sh (Latin) | 0.5 96 93 2.0 | 0.2 98 95 0.9 | 0.0 100 100 1.0 | 0.0 100 99 0.4 | 0.0 100 99 1.0 |
+| ru | | | 1.9 94 92 1.0 (eslav); 1.1 98 97 1.2 (cyrillic) | 1.9 97 99 0.5 | 2.3 97 98 1.5 |
+| uk | | | 2.3 92 92 1.3 (eslav); 2.2 97 97 1.3 (cyrillic) | 0.6 96 95 0.5 | 0.4 97 97 1.6 |
+| kk | | | 0.2 100 100 1.2 (cyrillic) | 0.0 100 100 0.5 | 0.0 100 100 0.8 |
+| sh (Cyrillic) | | | 1.0 97 97 1.0 (cyrillic) | 0.0 100 98 0.4 | 0.1 99 98 0.9 |
+| el | | | 0.6 98 98 0.9 (el) | 1.6 90 90 0.4 | 0.8 95 95 1.1 |
+| ar | | | 2.4 99 99 0.7 (arabic) | 5.8 94 94 0.4 | 5.9 94 93 1.0 |
+| fa | | | 2.6 93 93 0.9 (arabic) | 26.4 72 67 0.3 | 26.5 71 67 0.6 |
+| he | | | | 0.0 100 100 0.3 | 0.0 100 100 0.6 |
+| hi | 0.6 97 97 1.0 (Devanagari model) | | 1.7 93 91 0.9 (devanagari) | 0.2 99 96 0.5 | 0.4 98 96 1.4 |
+| bn | | | | 6.3 91 88 0.3 | 0.5 99 99 1.9 |
+| ka | | | | 1.1 98 98 0.6 | 1.1 98 98 0.9 |
+| hy | | | | 2.9 86 86 0.4 | 2.0 91 91 0.7 |
+| th | | | 0.7 – – 0.8 (th) | 0.8 – – 0.5 | 0.9 – – 0.9 |
+| lo | | | | 16.8 – – 0.3 | 17.0 – – 1.1 |
+| km | | | | 8.9 – – 0.6 | 8.9 – – 1.2 |
+
+Findings:
+
+- PP-OCRv5 has no recognizer for Hebrew, Georgian, Armenian, Bengali, Lao or Khmer; ML Kit has none for Cyrillic,
+  Greek, Arabic or Thai (it has Devanagari). Tesseract has every one.
+- Paddle's Latin model lacks Vietnamese letters with two marks (ổ, ộ, ữ…): it drops them. Its Cyrillic models
+  sometimes write a whole word in Latin look-alikes ("Mama", "sosed"), which no lookup finds. Its Arabic model writes
+  Persian ye and kaf as the Arabic letters (scored as equal; a Persian lookup would fold them). In vertical Japanese
+  it drops ー and 、。 (the rotated crop).
+- Tesseract's symbol boxes in CJK are off by up to a character and its vertical model reports them in rotated
+  coordinates; its word boxes overlap neighbours. Taps on CJK land right 26–62% of the time, so Tesseract is no use
+  for CJK. With automatic page segmentation it loses whole lines of Korean, the heading of the Bengali page with the
+  fast model and part of the Persian page; on Lao it reads the marks above a line as a separate line of garbage.
+- ML Kit's Latin model reads Latin text as well as the app's path through the Japanese model, in less than half the
+  time (0.9–1.1 s against 2.0–2.6 s), and adds ~27 KB to the APK (the Japanese AAR already holds `Latn_ctc`).
+- tessdata_fast is as accurate as tessdata_best on Latin, Cyrillic, Hebrew, Georgian, Thai, Lao and Khmer and 2–3
+  times faster; best is clearly better on Bengali (0.5% against 6.3%), Greek and Armenian.
+- MNN and ONNX Runtime read identically; MNN is a little faster and its native library is 2.1 MB per arm64 APK
+  against 19.4 MB.
+
+Sizes (arm64 APK; armeabi-v7a, x86_64): Tesseract4Android 8.3 MB (6.2, 8.8), MNN 2.1 MB (1.3, 2.6), ONNX Runtime
+19.4 MB (14.0, 23.2). Downloads per language, tessdata_fast / best in MB: rus 3.7/14.6, ukr 3.6/10.4, kaz 4.5/7.2,
+srp 2.1/8.9, ell 1.4/8.5, tha 1.0/7.3, ara 1.4/12.0, fas 0.4/3.2, heb 0.9/3.5, hin 1.1/11.3, ben 0.8/10.5, kat
+2.4/4.3, hye 3.3/6.1, pol 4.5/11.4, tur 4.3/7.1, lav 2.6/5.4, vie 0.5/11.9, ces 3.6/10.4, hrv 3.9/10.7, lao 6.1/12.9,
+khm 1.4/7.7. Paddle: detector 4.5 MB once plus one recognizer per script, 7.4–7.9 MB (cyrillic, eslav, el, th,
+arabic, devanagari, latin), 12.8 korean, 15.8 main.
+
 ## Screenshot lifetime (overlay)
 
 - `Bitmap.createBitmap(src, 0, 0, w, h)` returns `src` itself for an immutable source and the full rectangle; code that

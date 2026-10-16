@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 """Scores the engines of the on-device OCR comparison against the ground truth that collect.mjs wrote.
 
-    python scripts/ocr-compare/score.py <ground truth folder> <results folder> [--details]
+    python scripts/ocr-compare/score.py <ground truth folder> <results folder> [--details | --show <screen>]
 
 The results folder holds `<engine>.json` as OcrCompareTest writes them. Per engine and language:
 
 - character error rate: for each ground-truth region, the words the engine read whose centers lie inside it, in
-  reading order, against the region's text (edit distance over the region's characters);
+  reading order, against the region's text (edit distance over the region's characters). Reading order puts the
+  engine's lines into rows (a line whose center lies within half a line's height of the row's first line joins
+  it), each row's lines left to right (right to left for Arabic, Persian and Hebrew), each line's words in the engine's order; so a
+  line the engine split into several boxes reads as one;
 - words read whole: the region's words found among those words, punctuation around them ignored;
 - taps (web pages only): a tap at the center of each word lands in a word box the engine read as that word;
 - time: the median of the timed runs per screen, averaged over the screens.
 
+Text is compared after NFKC, so full-width and half-width forms (，and ,) count as the same character, and so do the
+LOOKALIKES below.
+
 Japanese and Chinese are scored by characters: each word the engine read is split into its characters (by the
 engine's character boxes, or evenly along the word), the error rate ignores spaces, a tap is on a character, and
-words read whole are not counted. Thai's error rate ignores spaces too, and its words and taps are not counted (its
-engines split words at spaces only, between phrases). Vertical Japanese (javert) reads each region from top to
+words read whole are not counted. The error rate of Thai, Lao and Khmer ignores spaces too, and their words and taps
+are not counted (their engines split words at spaces only, between phrases). Vertical Japanese (javert) reads each region from top to
 bottom.
 """
 
@@ -33,20 +39,32 @@ MARGIN = 8
 BY_CHARACTER = {"ja", "javert", "zh", "zht"}
 
 #: Languages whose error rate ignores spaces.
-UNSPACED = BY_CHARACTER | {"th"}
+UNSPACED = BY_CHARACTER | {"th", "lo", "km"}
 
 #: Languages scored by their error rate alone.
-NO_WORDS = {"th"}
+NO_WORDS = {"th", "lo", "km"}
 
-PUNCTUATION = " \t.,;:!?«»\"'“”„()[]{}—–-…·•、。，．・「」『』（）！？：；"
+#: Languages whose rows read right to left.
+RIGHT_TO_LEFT = {"ar", "fa", "he"}
+
+PUNCTUATION = " \t.,;:!?«»\"'“”„()[]{}—–-…·•、。，．・「」『』（）！？：；։՝՞।॥،؟؛|"
+
+#: Punctuation that looks the same as another sign and is read as it: the Armenian full stop as a colon, the
+#: Devanagari danda as a vertical bar.
+LOOKALIKES = str.maketrans({"։": ":", "|": "।"})
+
+#: Letters of one language that engines read as their look-alikes from another: Persian ye and kaf as the Arabic ones
+#: (the same shapes inside a word; a Persian lookup folds them anyway).
+LANGUAGE_LOOKALIKES = {"fa": str.maketrans({"ي": "ی", "ى": "ی", "ك": "ک"})}
 
 
-def normalize(text, spaced=True):
-    return (" " if spaced else "").join(unicodedata.normalize("NFC", text).split())
+def normalize(text, spaced=True, language=""):
+    text = unicodedata.normalize("NFKC", text).translate(LOOKALIKES).translate(LANGUAGE_LOOKALIKES.get(language, {}))
+    return (" " if spaced else "").join(text.split())
 
 
-def bare(word):
-    return unicodedata.normalize("NFC", word).strip(PUNCTUATION)
+def bare(word, language=""):
+    return normalize(word, language=language).strip(PUNCTUATION)
 
 
 def distance(a, b):
@@ -67,60 +85,113 @@ def center(box):
     return (box[0] + box[2]) / 2, (box[1] + box[3]) / 2
 
 
+def reading_order(found, right_to_left=False):
+    """[found] ((line box, position, word) entries) by rows of lines from the top, each row along its direction."""
+    rows = []
+    for box in sorted({tuple(e[0]) for e in found}, key=lambda b: center(b)[1]):
+        y, height = center(box)[1], box[3] - box[1]
+        if rows and abs(y - rows[-1][0]) <= max(height, rows[-1][1]) / 2:
+            rows[-1][2].append(box)
+        else:
+            rows.append((y, height, [box]))
+    sign = -1 if right_to_left else 1
+    rank = {box: (r, sign * center(box)[0]) for r, (_, _, boxes) in enumerate(rows) for box in boxes}
+    return sorted(found, key=lambda e: (rank[tuple(e[0])], e[1]))
+
+
 def characters(word, vertical):
-    """The characters of an engine's word with their boxes: the engine's own, or the word's box cut evenly."""
-    text = [c for c in unicodedata.normalize("NFC", word["text"]) if not c.isspace()]
+    """The characters of an engine's word with their boxes: the engine's own, or the word's box cut evenly.
+
+    The engine's boxes are used only when there is one per character and each has an area and lies inside the word's
+    box (Tesseract's vertical models report symbol boxes in rotated coordinates). They are widened to the word's
+    height (width for vertical text) and along the line to halfway to their neighbours, as the app does for taps.
+    """
+    text = [c for c in unicodedata.normalize("NFKC", word["text"]) if not c.isspace()]
     boxes = word.get("chars")
-    if not boxes or len(boxes) != len(text):
-        l, t, r, b = word["box"]
+    l, t, r, b = word["box"]
+    usable = boxes and len(boxes) == len(text) and all(
+        x0 < x1 and y0 < y1 and inside(word["box"], *center([x0, y0, x1, y1]), MARGIN) for x0, y0, x1, y1 in boxes)
+    if not usable:
         n = max(1, len(text))
         if vertical:
             boxes = [[l, t + (b - t) * i / n, r, t + (b - t) * (i + 1) / n] for i in range(n)]
         else:
             boxes = [[l + (r - l) * i / n, t, l + (r - l) * (i + 1) / n, b] for i in range(n)]
+    else:
+        a, z = (1, 3) if vertical else (0, 2)
+        edges = [word["box"][a]] + [(boxes[i][z] + boxes[i + 1][a]) / 2 for i in range(len(boxes) - 1)] + [word["box"][z]]
+        if vertical:
+            boxes = [[l, edges[i], r, edges[i + 1]] for i in range(len(boxes))]
+        else:
+            boxes = [[edges[i], t, edges[i + 1], b] for i in range(len(boxes))]
     return [{"text": c, "box": box} for c, box in zip(text, boxes)]
+
+
+def engine_words(result):
+    """The engine's words as (line box, position, word), characters instead of words where scored by character."""
+    by_character = result.get("language", "") in BY_CHARACTER
+    words = []
+    for line in result["lines"]:
+        for position, word in enumerate(line["words"]):
+            if by_character:
+                vertical = line.get("vertical", False)
+                for offset, character in enumerate(characters(word, vertical)):
+                    words.append((line["box"], (position, offset), character))
+            else:
+                words.append((line["box"], position, word))
+    return words
+
+
+def region_reads(truth, result, words):
+    """Per ground-truth region: the region, the engine's words in it in reading order, what they read, the truth."""
+    language = result.get("language", "")
+    spaced = language not in UNSPACED
+    for region in truth["regions"]:
+        found = [w for w in words if inside(region["box"], *center(w[2]["box"]), MARGIN)]
+        if language == "javert":
+            found.sort(key=lambda w: center(w[2]["box"])[1])
+        else:
+            found = reading_order(found, language in RIGHT_TO_LEFT)
+        read = normalize(" ".join(w[2]["text"] for w in found), spaced, language)
+        yield region, found, read, normalize(region["text"], spaced, language)
 
 
 def score_image(truth, result):
     """Edits, characters, words found, words, taps right, taps for one screen."""
     language = result.get("language", "")
     by_character = language in BY_CHARACTER
-    spaced = language not in UNSPACED
-    columns = language == "javert"
-    words = []
-    for order, line in enumerate(sorted(result["lines"], key=lambda l: (l["box"][1], l["box"][0]))):
-        for position, word in enumerate(line["words"]):
-            if by_character:
-                vertical = line.get("vertical", False)
-                for offset, character in enumerate(characters(word, vertical)):
-                    words.append((order, (position, offset), character))
-            else:
-                words.append((order, position, word))
+    words = engine_words(result)
     totals = Counter()
-    for region in truth["regions"]:
-        found = [w for w in words if inside(region["box"], *center(w[2]["box"]), MARGIN)]
-        if columns:
-            found.sort(key=lambda w: center(w[2]["box"])[1])
-        else:
-            found.sort(key=lambda w: (w[0], w[1]))
-        read = normalize(" ".join(w[2]["text"] for w in found), spaced)
-        expected = normalize(region["text"], spaced)
+    for region, found, read, expected in region_reads(truth, result, words):
         totals["edits"] += distance(read, expected)
         totals["chars"] += len(expected)
         if not by_character and language not in NO_WORDS:
-            expected_words = Counter(bare(w) for w in expected.split() if bare(w))
-            read_words = Counter(bare(w[2]["text"]) for w in found if bare(w[2]["text"]))
+            expected_words = Counter(bare(w, language) for w in expected.split() if bare(w, language))
+            read_words = Counter(bare(w[2]["text"], language) for w in found if bare(w[2]["text"], language))
             totals["words_found"] += sum((expected_words & read_words).values())
             totals["words"] += sum(expected_words.values())
         for word in [] if language in NO_WORDS else region.get("words", []):
-            target = bare(word["text"])
+            target = bare(word["text"], language)
             if not target:
                 continue
             x, y = center(word["box"])
             hit = next((w[2] for w in words if inside(w[2]["box"], x, y)), None)
             totals["taps"] += 1
-            totals["taps_right"] += hit is not None and bare(hit["text"]) == target
+            totals["taps_right"] += hit is not None and bare(hit["text"], language) == target
     return totals
+
+
+def show(truth, screen, results):
+    for path in sorted(results.glob("*.json")):
+        result = next((r for r in json.loads(path.read_text(encoding="utf-8")) if Path(r["image"]).stem == screen), None)
+        if result is None:
+            continue
+        reads = list(region_reads(truth, result, engine_words(result)))
+        wrong = sorted(((distance(read, expected), read, expected) for _, _, read, expected in reads), reverse=True)
+        print(f"== {path.stem}: {sum(1 for w in wrong if w[0])} of {len(reads)} regions misread")
+        for edits, read, expected in [w for w in wrong if w[0]][:5]:
+            print(f"   {edits:3}  truth: {expected}")
+            print(f"        read:  {read}")
 
 
 def main(argv=None):
@@ -128,9 +199,13 @@ def main(argv=None):
     parser.add_argument("truth", type=Path)
     parser.add_argument("results", type=Path)
     parser.add_argument("--details", action="store_true", help="a line per screen too")
+    parser.add_argument("--show", metavar="SCREEN", help="each engine's misread regions on this screen (image name)")
     args = parser.parse_args(argv)
     sys.stdout.reconfigure(encoding="utf-8")
     truths = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in args.truth.glob("*.json")}
+    if args.show:
+        show(truths[args.show], args.show, args.results)
+        return 0
     rows = []
     for path in sorted(args.results.glob("*.json")):
         engine = path.stem

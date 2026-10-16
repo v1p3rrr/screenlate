@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.ocr.OcrPage
@@ -19,8 +20,9 @@ import org.junit.runner.RunWith
  * to `<files>/images/` (`run-as`: files that adb pushes to external storage are not readable here), or else the test
  * assets' `images/`.
  *
- * `mlkit` is ML Kit as the app uses it (Japanese, Chinese, Korean and Latin text), `mlkit-latin` its Latin model.
- * Image names start with the language: `javert` is vertical Japanese, `zht` Traditional Chinese.
+ * `mlkit` is ML Kit as the app uses it (Japanese, Chinese, Korean and Latin text) or, for Hindi, its Devanagari
+ * model; `mlkit-latin` its Latin model. Image names start with the language: `javert` is vertical Japanese, `zht`
+ * Traditional Chinese, `shc` Serbo-Croatian in Cyrillic (`sh` in Latin).
  *
  * Instrumentation arguments: `engines` (comma-separated, default all), `images` (a name prefix), `runs` (timed runs
  * after a warm-up, default 3), `threads` (default 4), `detWidth` (default 960).
@@ -79,6 +81,7 @@ class OcrCompareTest {
         return when (engine) {
             "paddle-ort", "paddle-mnn", "paddle-ort-cyrillic", "paddle-mnn-cyrillic" -> {
                 val recognizer = if (engine.endsWith("cyrillic")) "cyrillic_PP-OCRv5_mobile_rec" else script.paddle
+                if (recognizer == null) return null
                 val dictionary = File(models, "$recognizer/dict.txt").readLines(Charsets.UTF_8)
                 if (engine.startsWith("paddle-ort")) {
                     PaddleReader(
@@ -86,7 +89,7 @@ class OcrCompareTest {
                         OrtModel(File(models, "$recognizer/inference.onnx").readBytes(), threads),
                         dictionary,
                         detectionWidth,
-                        rightToLeft = language == "ar",
+                        rightToLeft = language in RIGHT_TO_LEFT,
                     )
                 } else {
                     PaddleReader(
@@ -94,12 +97,15 @@ class OcrCompareTest {
                         MnnModel(File(models, "$recognizer/model.mnn").path, threads),
                         dictionary,
                         detectionWidth,
-                        rightToLeft = language == "ar",
+                        rightToLeft = language in RIGHT_TO_LEFT,
                     )
                 }
             }
-            "mlkit" -> script.mlKit?.let { MlKitReader(it) }
-            "mlkit-latin" -> if (script.paddle == LATIN) MlKitLatinReader() else null
+            "mlkit" -> when {
+                language == "hi" -> MlKitScriptReader(DevanagariTextRecognizerOptions.Builder().build())
+                else -> script.mlKit?.let { MlKitReader(it) }
+            }
+            "mlkit-latin" -> if (script.paddle == LATIN) MlKitScriptReader() else null
             "tesseract-fast" -> TesseractReader(File(models, "tessdata_fast").path, script.tesseract)
             "tesseract-best" -> TesseractReader(File(models, "tessdata_best").path, script.tesseract)
             else -> error("Unknown engine $engine")
@@ -144,13 +150,18 @@ class OcrCompareTest {
         return target
     }
 
-    /** The Paddle recognizer, the Tesseract model and the language ML Kit reads it as (null: no ML Kit model). */
-    private class Script(val paddle: String, val tesseract: String, val mlKit: Language? = null)
+    /**
+     * The Paddle recognizer (null: none for this script), the Tesseract model and the language ML Kit reads it as
+     * (null: no ML Kit model).
+     */
+    private class Script(val paddle: String?, val tesseract: String, val mlKit: Language? = null)
 
     private companion object {
         const val DETECTOR = "PP-OCRv5_mobile_det"
         const val MAIN = "PP-OCRv5_mobile_rec"
         const val LATIN = "latin_PP-OCRv5_mobile_rec"
+        const val CYRILLIC = "cyrillic_PP-OCRv5_mobile_rec"
+        val RIGHT_TO_LEFT = setOf("ar", "fa", "he")
         val ENGINES = listOf("paddle-ort", "paddle-mnn", "tesseract-fast", "tesseract-best", "mlkit", "mlkit-latin")
         val SCRIPTS = mapOf(
             "ja" to Script(MAIN, "jpn", Language.JAPANESE),
@@ -172,6 +183,19 @@ class OcrCompareTest {
             "el" to Script("el_PP-OCRv5_mobile_rec", "ell"),
             "th" to Script("th_PP-OCRv5_mobile_rec", "tha"),
             "ar" to Script("arabic_PP-OCRv5_mobile_rec", "ara"),
+            "fa" to Script("arabic_PP-OCRv5_mobile_rec", "fas"),
+            "he" to Script(null, "heb"),
+            "hi" to Script("devanagari_PP-OCRv5_mobile_rec", "hin"),
+            "bn" to Script(null, "ben"),
+            "ka" to Script(null, "kat"),
+            "hy" to Script(null, "hye"),
+            "uk" to Script("eslav_PP-OCRv5_mobile_rec", "ukr"),
+            "kk" to Script(CYRILLIC, "kaz"),
+            "shc" to Script(CYRILLIC, "srp"),
+            "sh" to Script(LATIN, "hrv", Language.ENGLISH),
+            "cs" to Script(LATIN, "ces", Language.ENGLISH),
+            "lo" to Script(null, "lao"),
+            "km" to Script(null, "khm"),
         )
     }
 }

@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Known text in several fonts and sizes for the OCR comparison: page.html?lang=ru&theme=dark (javert: Japanese in columns). Serve this folder from
+  Known text in several fonts and sizes for the OCR comparison: page.html?lang=ru&theme=dark (javert: Japanese in columns; shc: Serbo-Croatian in Cyrillic, sh in Latin). Serve this folder from
   the computer (python -m http.server 8000) and open it on the emulator after `adb reverse tcp:8000 tcp:8000`.
 -->
 <html>
@@ -56,6 +56,101 @@ const TEXTS = {
     'وصل القطار من القاهرة متأخرا نصف ساعة.',
     'اشترت أمي الخضار والفواكه من السوق.',
     'قرأ الطلاب كتابا عن تاريخ المدينة القديمة.',
+  ],
+  he: [
+    'הבוקר היה ערפל כבד מעל האגם.',
+    'הספרייה נפתחת בשעה תשע בבוקר.',
+    'הרכבת מחיפה הגיעה באיחור של חצי שעה.',
+    'אמא קנתה ירקות ופירות טריים בשוק.',
+    'התלמידים קראו ספר על ההיסטוריה של ירושלים.',
+  ],
+  fa: [
+    'امروز صبح مه غلیظی روی دریاچه بود.',
+    'کتابخانه از ساعت نه صبح باز است.',
+    'قطار از تبریز با نیم ساعت تأخیر رسید.',
+    'مادرم از بازار میوه و سبزی تازه خرید.',
+    'شاگردان کتابی درباره تاریخ ژاپن و چین خواندند.',
+    'پدربزرگ با گربه در باغ نشسته بود.',
+  ],
+  hi: [
+    'आज सुबह झील के ऊपर घना कोहरा था।',
+    'पुस्तकालय सुबह नौ बजे खुलता है।',
+    'दिल्ली से आने वाली ट्रेन आधा घंटा देर से पहुँची।',
+    'माँ ने बाज़ार से ताज़े फल और सब्ज़ियाँ खरीदीं।',
+    'छात्रों ने भारत के इतिहास के बारे में एक किताब पढ़ी।',
+  ],
+  bn: [
+    'আজ সকালে নদীর উপর ঘন কুয়াশা ছিল।',
+    'গ্রন্থাগারটি সকাল নয়টায় খোলে।',
+    'ঢাকা থেকে ট্রেনটি আধা ঘণ্টা দেরিতে পৌঁছেছে।',
+    'মা বাজার থেকে তাজা ফল ও সবজি কিনেছেন।',
+    'ছাত্ররা বাংলার ইতিহাস নিয়ে একটি বই পড়েছে।',
+  ],
+  ka: [
+    'დილით ტბაზე სქელი ნისლი იდგა.',
+    'ბიბლიოთეკა დილის ცხრა საათზე იხსნება.',
+    'მატარებელი ბათუმიდან ნახევარი საათით დაგვიანდა.',
+    'დედამ ბაზარში ახალი ხილი და ბოსტნეული იყიდა.',
+    'მოსწავლეებმა საქართველოს ისტორიის წიგნი წაიკითხეს.',
+  ],
+  hy: [
+    'Առավոտյան լճի վրա թանձր մառախուղ էր։',
+    'Գրադարանը բացվում է ժամը իննին։',
+    'Գյումրիից գնացքը կես ժամ ուշացավ։',
+    'Մայրիկը շուկայից թարմ մրգեր և բանջարեղեն գնեց։',
+    'Աշակերտները կարդացին Հայաստանի պատմության մասին գիրք։',
+  ],
+  uk: [
+    'Уранці над річкою стояв густий туман.',
+    "Бібліотека відчиняється о дев'ятій ранку.",
+    'Потяг із Львова прибув із запізненням на пів години.',
+    'Мама купила на ринку свіжі овочі, яйця та ґудзики.',
+    'Їжачок сховався під старою ялиною, а діти пішли додому.',
+    'Євген читає газету щоранку.',
+  ],
+  kk: [
+    'Таңертең көлдің үстінде қалың тұман болды.',
+    'Кітапхана таңғы сағат тоғызда ашылады.',
+    'Алматыдан келген пойыз жарты сағатқа кешікті.',
+    'Анам базардан жаңа жемістер мен көкөністер сатып алды.',
+    'Оқушылар Қазақстан тарихы туралы кітап оқыды.',
+    'Гаухар қаһарман туралы әңгіме жазды.',
+  ],
+  shc: [
+    'Јутрос је густа магла прекрила језеро.',
+    'Библиотека се отвара у девет сати ујутру.',
+    'Воз из Ниша је стигао са пола сата закашњења.',
+    'Мајка је на пијаци купила свеже воће и поврће.',
+    'Ђаци су читали књигу о историји Београда.',
+    'Љубица је донела џак кромпира и ћуфте.',
+  ],
+  sh: [
+    'Jutros je gusta magla prekrila jezero.',
+    'Knjižnica se otvara u devet sati ujutro.',
+    'Vlak iz Splita stigao je s pola sata kašnjenja.',
+    'Majka je na tržnici kupila svježe voće i povrće.',
+    'Đaci su čitali knjigu o povijesti Zagreba. Ljubica je donijela ćevape.',
+  ],
+  cs: [
+    'Ráno ležela nad řekou hustá mlha.',
+    'Knihovna otevírá v devět hodin ráno.',
+    'Vlak z Brna přijel s půlhodinovým zpožděním.',
+    'Maminka koupila na trhu čerstvé ovoce a zeleninu.',
+    'Žáci četli knihu o dějinách Prahy. Ťukání na dveře přerušilo ďábelský smích.',
+  ],
+  lo: [
+    'ມື້ນີ້ອາກາດດີຫຼາຍ ພວກເຮົາໄປຍ່າງຫຼິ້ນຢູ່ສວນສາທາລະນະ',
+    'ຫໍສະໝຸດເປີດຕັ້ງແຕ່ເກົ້າໂມງເຊົ້າ',
+    'ລົດໄຟຈາກວຽງຈັນມາຮອດຊ້າ',
+    'ແມ່ຊື້ໝາກໄມ້ ແລະ ຜັກສົດຈາກຕະຫຼາດ',
+    'ນັກຮຽນອ່ານປຶ້ມກ່ຽວກັບປະຫວັດສາດລາວ',
+  ],
+  km: [
+    'ថ្ងៃនេះអាកាសធាតុល្អណាស់ យើងទៅដើរលេងនៅសួនច្បារ',
+    'បណ្ណាល័យបើកនៅម៉ោងប្រាំបួនព្រឹក',
+    'រថភ្លើងពីបាត់ដំបងមកដល់យឺត',
+    'ម្តាយទិញផ្លែឈើ និងបន្លែស្រស់ពីផ្សារ',
+    'សិស្សអានសៀវភៅអំពីប្រវត្តិសាស្ត្រខ្មែរ',
   ],
   pl: [
     'Rano nad jeziorem unosiła się gęsta mgła, a łódki stały przy brzegu.',
@@ -163,9 +258,9 @@ const lang = params.get('lang') || 'ru';
 const vertical = lang === 'javert';
 const texts = TEXTS[vertical ? 'ja' : lang];
 const spaced = !['ja', 'javert', 'zh', 'zht'].includes(lang);
-document.documentElement.lang = { javert: 'ja', zh: 'zh-CN', zht: 'zh-TW' }[lang] || lang;
+document.documentElement.lang = { javert: 'ja', zh: 'zh-CN', zht: 'zh-TW', shc: 'sr-Cyrl', sh: 'hr' }[lang] || lang;
 if (vertical) document.documentElement.classList.add('vertical');
-if (lang === 'ar') document.documentElement.dir = 'rtl';
+if (['ar', 'fa', 'he'].includes(lang)) document.documentElement.dir = 'rtl';
 if (params.get('theme') === 'dark') document.body.classList.add('dark');
 const blocks = [['h2', ''], ['p', 'sans'], ['p', 'serif'], ['p', 'mono'], ['p', 'link'], ['p', 'small']];
 blocks.forEach(([tag, style], i) => {

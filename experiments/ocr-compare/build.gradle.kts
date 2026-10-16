@@ -51,4 +51,5 @@ dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
     implementation("cz.adaptech.tesseract4android:tesseract4android-openmp:4.9.0")
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
 }

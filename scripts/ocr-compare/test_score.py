@@ -54,6 +54,45 @@ class ScoreTest(unittest.TestCase):
         ]}
         self.assertEqual(score.score_image(truth, result)["edits"], 0)
 
+    def test_a_line_split_into_boxes_reads_left_to_right(self):
+        truth = {"regions": [{"box": [0, 0, 300, 20], "text": "один два три"}]}
+        # The engine split the line in two; the second box starts a pixel higher.
+        result = {"lines": [
+            {"box": [0, 1, 90, 20], "words": [word("один", [0, 1, 40, 20]), word("два", [50, 1, 90, 20])]},
+            {"box": [100, 0, 140, 19], "words": [word("три", [100, 0, 140, 19])]},
+        ]}
+        self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
+    def test_arabic_rows_read_right_to_left(self):
+        truth = {"regions": [{"box": [0, 0, 200, 20], "text": "كتب الولد"}]}
+        # One line split in two boxes, the left one listed first.
+        result = {"language": "ar", "lines": [
+            {"box": [0, 0, 80, 20], "words": [word("الولد", [0, 0, 80, 20])]},
+            {"box": [120, 0, 200, 20], "words": [word("كتب", [120, 0, 200, 20])]},
+        ]}
+        self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
+    def test_character_boxes_outside_the_word_are_replaced_by_an_even_split(self):
+        word_ = {"text": "東京", "box": [900, 200, 950, 300], "chars": [[0, 1904, 0, 1953], [0, 1906, 0, 1952]]}
+        boxes = [c["box"] for c in score.characters(word_, vertical=True)]
+        self.assertEqual(boxes, [[900, 200, 950, 250], [900, 250, 950, 300]])
+
+    def test_character_boxes_reach_halfway_to_their_neighbours(self):
+        word_ = {"text": "気持", "box": [200, 520, 330, 566], "chars": [[205, 521, 286, 565], [294, 523, 329, 563]]}
+        boxes = [c["box"] for c in score.characters(word_, vertical=False)]
+        self.assertEqual(boxes, [[200, 520, 290, 566], [290, 520, 330, 566]])
+
+    def test_persian_letters_match_their_arabic_look_alikes(self):
+        truth = {"regions": [{"box": [0, 0, 100, 20], "text": "کتابی"}]}
+        result = {"language": "fa", "lines": [{"box": [0, 0, 100, 20], "words": [word("كتابى", [0, 0, 100, 20])]}]}
+        totals = score.score_image(truth, result)
+        self.assertEqual((totals["edits"], totals["words_found"]), (0, 1))
+
+    def test_full_width_punctuation_matches_half_width(self):
+        truth = {"regions": [{"box": [0, 0, 100, 20], "text": "大雨，街"}]}
+        result = {"language": "zh", "lines": [{"box": [0, 0, 100, 20], "words": [word("大雨,街", [0, 0, 100, 20])]}]}
+        self.assertEqual(score.score_image(truth, result)["edits"], 0)
+
     def test_japanese_is_scored_by_characters_without_spaces(self):
         truth = {"regions": [{
             "box": [0, 0, 60, 20], "text": "猫が寝た",
