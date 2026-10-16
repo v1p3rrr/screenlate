@@ -16,7 +16,7 @@ const CATALOG = path.join(ROOT, 'dictionary/api/src/main/assets/catalog/dictiona
 const LEGACY = path.join(ROOT, 'dictionary/api/src/main/assets/catalog/dictionaries.json');
 
 /** Source languages of the app's language groups; the app shows those it supports. */
-export const SOURCES = ['ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi'];
+export const SOURCES = ['ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv'];
 
 /** Gloss languages: the interface languages that have a Wiktionary edition. */
 export const GLOSSES = ['en', 'ru', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt', 'tr', 'vi', 'zh'];
