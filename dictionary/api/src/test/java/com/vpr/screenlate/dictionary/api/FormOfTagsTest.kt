@@ -88,6 +88,21 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `polish, russian, turkish and vietnamese tags are translated`() {
+        assertThat(label("plural conditional virile")).isEqualTo("plural conditional virile")
+        assertThat(label("alternative Middle Polish Łowicz")).isEqualTo("alternative middle_polish Łowicz")
+        assertThat(label("adverb derived")).isEqualTo("derived_adverb")
+        assertThat(label("adjective relational")).isEqualTo("adjective relational")
+        assertThat(label("imperfective determinate")).isEqualTo("imperfective determinate")
+        assertThat(label("accusative second/third-person singular definite possessed-many possessive"))
+            .isEqualTo("accusative second_person/third_person singular definite possessed_many possessive")
+        assertThat(label("third-person singular continuative")).isEqualTo("third_person singular continuous")
+        assertThat(label("Hán-Nôm")).isEqualTo("han_nom")
+        assertThat(label("CJK")).isEqualTo("cjk")
+        assertThat(label("alternative Central North Vietnam")).isEqualTo("alternative central northern country:VN")
+    }
+
+    @Test
     fun `a word its neighbor already says is left out`() {
         assertThat(label("dative plural superlative strong degree")).isEqualTo("dative plural superlative strong")
         assertThat(label("degree")).isNull()
