@@ -21,6 +21,9 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
 
 - The Korean recognizer reads Hangul and Latin but not hanja: 大學校에서 歷史를 came out as 푸에서 끗을 (2026-10-15,
   `testdata/ocr/ko-mixed.png`). Cloud recognition reads them.
+- ML Kit has no Cyrillic recognizer: `MlKitOcrEngine` returns no recognizer for `OcrScript.CYRILLIC` (Russian,
+  `languages/ru`, 2026-10-16), so only cloud recognition and app text read Russian until an on-device engine for it
+  is built in (the OCR comparison in the languages plan).
 - A running ML Kit task cannot be cancelled: it keeps reading its bitmap after the scan is cancelled. The on-device pass
   owns a copy of the screenshot and frees it when the task ends (before this, a recycled bitmap was read).
 - Symbol boxes: exact in many words, but in some every inner boundary lags ~0.4 character along the reading direction

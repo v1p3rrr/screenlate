@@ -28,6 +28,37 @@ The full code review by module (`ai/notes/module-map.md`, code-review at xhigh) 
 Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on `main` the QuickJS submodule folder
 `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, which only `languages/main` tracks).
 
+## Work in progress on the language branches (2026-10-16)
+
+The owner asked to work on autonomously (groups 2 and 3, fonts, Japanese downloads, the converters, the OCR
+comparison), keep questions in the plan and leave group 4 alone. The module review session holds the root checkout,
+`.worktrees/main` and the emulator, so this work is in `.worktrees/lang` only, nothing merged into
+`languages/main` and nothing checked on the emulator since the review started. Each branch is stacked on the
+previous one and pushed:
+
+- `languages/latin-fonts` (Latin fonts, German compounds), `languages/ja-downloads` (Japanese dictionaries
+  downloaded, character dictionaries ticked), `languages/converters` (FreeDict and OpenRussian converters, the OCR
+  comparison's setup in the plan);
+- `languages/pl`, `languages/tr`, `languages/lv`, `languages/vi`, `languages/ru`: group 3, one language each (see the
+  plan's stage D progress paragraph); `languages/lv` also stops tracking two Python bytecode files committed by
+  mistake and adds `__pycache__/` to `.gitignore`;
+- `languages/ocr-compare`: the OCR comparison's harness, not to be merged as it is.
+
+When the review is done: run the OCR comparison on the emulator and build in the chosen engine (Cyrillic has an
+`OcrScript` that no on-device engine reads yet); fast-forward `languages/main` through the stack in the order above
+after the emulator checks (FR1, LNG12, LNG14, DIC9, the FreeDict and OpenRussian imports, LK22-LK26); copy
+`.worktrees/lang/testdata/ocr/{pl,tr,lv,vi}-sample.png` into `testdata/ocr/`. Questions 11-25 of the plan wait for
+the owner; 16 and 23 postpone their part.
+
+Downloaded for building and testing (official sources, in the session scratchpad, nothing installed system-wide):
+Wiktionary (wty) dictionaries es, fr, de, it, pt → en with the transcriptions of de, es, fr, it, pt; pl, tr, lv, vi,
+ru → en; the vi transcriptions; the Hugging Face file listing of wty-release; wordfreq lists (large de, en, es, fr,
+it, pl, pt, ru, zh; small ko, lv, tr); FreeDict deu, eng, fra, ita, pol, spa, zho → rus and its database listing;
+OpenRussian's CSV export; the Latin and Cyrillic fonts (Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Sans,
+PT Serif); PP-OCRv5 mobile detector and recognizers (Latin, Cyrillic, East Slavic, Greek, Arabic, Thai); Tesseract
+tessdata fast and best; MNN 3.6.1 source; a Python virtual environment with mnn 3.6.1, onnxruntime 1.23.2, numpy,
+pillow; a Yomitan checkout at the pinned commit for the language bundles.
+
 ## Next session (handoff, 2026-10-15)
 
 - Group 1 is built on `languages/main`: English, Chinese (`languages/zh`) and Korean (`languages/ko`), both language

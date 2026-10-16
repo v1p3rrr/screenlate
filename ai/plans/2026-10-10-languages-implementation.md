@@ -342,6 +342,28 @@ Collected during group 2 (autonomous, 2026-10-16); the option marked "in use" is
     follows its columns. Also built, provisionally: Russian→German beside Russian→English (the CSVs have both), and
     a verb's aspect partner as its last definition ("perfective: сказать").
 
+Collected during group 3 (autonomous, 2026-10-16); the option marked "in use" is built and stays until answered:
+
+20. Latvian into Russian. Wiktionary's lv→ru dictionary is 520,903 bytes, 3 KB under the catalog's 0.5 MB threshold
+    (decision row "Catalog threshold"), so Latvian has no dictionary into Russian in the catalog. Options: (a, in
+    use) leave it out by the rule; (b) list it, as an exception for a language with nothing else into Russian.
+21. Vietnamese classifiers. Wiktionary lists "cái" as the classifier form of hundreds of nouns (cái → bàn, ghế,
+    …), so looking up cái brought every one of them. Options: (a, in use) such rows are left out and cái shows its
+    own entries; (b) they stay, after cái's own entries.
+22. Vietnamese Hán-Nôm rows. Wiktionary links many syllables to the characters that wrote them in chữ Nôm (xa → 車,
+    佘, 奢; học → 𭓕); each shows as the character's entry labelled "Hán-Nôm spelling". Options: (a, in use) keep
+    them; (b) leave them out like the classifiers; (c) a lookup setting, off by default.
+23. Vietnamese on the device. Paddle's Latin model has no letters with tone marks, so if Paddle wins the comparison,
+    Vietnamese stays with ML Kit's Latin reading (the decision row on diacritics compares the error rates) or would
+    need Tesseract's Vietnamese model beside Paddle (6-9 MB more native code per ABI). Postponed until the
+    comparison has run; options: (a) ML Kit and the cloud; (b) Tesseract for Vietnamese as a download.
+24. Ordinals with a period. For Latvian years ("1918. gada") a number of three or more digits before a lowercase
+    word now counts as an ordinal too. Options: (a, in use) in every language whose ordinals take a period (German,
+    Polish, Turkish, Latvian); (b) in Latvian only.
+25. Russian text to speech is given the stressed reading (ко́шка), which tells the voice where the stress falls in
+    words such as замок; to be checked on the emulator that the voice does not read the mark. Options: (a, in use)
+    the stressed reading; (b) the word without stress marks.
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -658,6 +680,17 @@ uiautomator). Native code per ABI (arm64-v8a / armeabi-v7a / x86_64): MNN 2.1 / 
 Latin model has no Vietnamese letters with tone marks (ạ, ấ, ộ…), so Paddle cannot read Vietnamese. On the computer
 both runtimes read `ru-sample.png` without an error. The run on the emulator waits for the module review session.
 
+Group 3 code (2026-10-16), each language on its own branch stacked on the previous one and pushed, none merged or
+checked on the emulator yet (the module review session holds it): `languages/pl` (Polish; the form-of tags of
+Polish, Russian, Turkish and Vietnamese translated), `languages/tr` (Turkish; dotted and dotless i in the language
+bundle's case processors), `languages/lv` (Latvian; catalog entries, debitive and renarrative tags, ordinals before
+a lowercase word such as "1918. gada"), `languages/vi` (Vietnamese; the lookup also starts one and two syllables
+before the aim, classifier form-of rows left out), `languages/ru` (Russian; the stressed reading in the headword's
+place through `reading-ru.js`, Cyrillic as an OCR script that only the cloud reads until the chosen engine is
+built in). Yomitan has no transforms for any of the five, so forms come from the dictionaries' form-of rows; the
+second form-of step was already in the engine. Emulator cases LK22-LK26 wait for the emulator; the sample images
+(pl, tr, lv, vi) wait in the session scratchpad until `testdata/` is free.
+
 ## Stage E: group 4 (decided when group 3 is done)
 
 Whether it joins the big release (decision row). It would bring right-to-left hit testing (Arabic, Hebrew, Persian),
@@ -959,3 +992,5 @@ Dictionaries are checked when the group starts; a language without support or di
   and 19 (OpenRussian data age) logged.
 - 2026-10-16: the OCR comparison prepared on `languages/ocr-compare` (pipeline, harness, ground truth and scoring);
   native code sizes measured; PP-OCRv5's Latin model lacks Vietnamese tone letters. The run waits for the emulator.
+- 2026-10-16: group 3 written on `languages/pl`, `tr`, `lv`, `vi` and `ru` (each stacked on the previous one), unit
+  and page tests passing, emulator checks pending. Questions 20-25 logged.

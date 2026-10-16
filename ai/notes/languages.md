@@ -214,9 +214,9 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
   (`eslav_PP-OCRv5_mobile_rec`) ~7.5 MB. ncnn or MNN builds of PP-OCR are smaller but not packaged. Native
   libraries cannot be downloaded later in a clean way, so the runtime goes into the APK and only the models can be
   catalog downloads. Recognition quality on real screenshots not compared yet.
-- PP-OCRv5 recognizers (2026-10-09, PaddleOCR's multi-language page): korean, latin (~47 languages, Vietnamese
-  included), eslav (ru, be, uk), cyrillic (~33 languages incl. bg, sr, mn, kk), arabic (ar, fa, ur, ug, ps, ku, sd),
-  devanagari, th, el, te, ta, en. None for Hebrew, Georgian, Armenian, Khmer, Lao, Syriac or Kannada; PP-OCRv6
+- PP-OCRv5 recognizers (2026-10-09, PaddleOCR's multi-language page): korean, latin (~47 languages; its character
+  list has no Vietnamese letters with tone marks such as ạ, ấ, ộ, checked 2026-10-16), eslav (ru, be, uk), cyrillic
+  (~33 languages incl. bg, sr, mn, kk), arabic (ar, fa, ur, ug, ps, ku, sd), devanagari, th, el, te, ta, en. None for Hebrew, Georgian, Armenian, Khmer, Lao, Syriac or Kannada; PP-OCRv6
   exists, its languages not checked. Yomitan languages whose script neither ML Kit nor Paddle reads: he, yi, ka, hy,
   km, lo, kn, aii (Tesseract has all of them).
 - Prior art: PlayTranslate (an Android screen translator) runs PP-OCRv5 on MNN: the detector is bundled in its APK,
@@ -487,3 +487,31 @@ leaves every form that already finds something as it was.
   resolve to the right one (`за́мка` → `за́мок`); forms whose stress differs get separate rows (`руки́`
   genitive singular, `ру́ки` nominative plural). Verbs get their aspect partner as a last definition
   ("perfective: сказать").
+
+## Group 3: Polish, Turkish, Latvian, Vietnamese, Russian (2026-10-16)
+
+- Yomitan has no transforms for pl, tr, lv, vi or ru; their bundles carry text processors only, so inflected forms
+  come from the dictionaries' form-of rows. Yomitan's ru processors drop stress marks (ко́шка → кошка) and turn ё
+  into е and back (еж → ёж); vi's move the tone mark between the old and new places (hoà ↔ hòa).
+- Turkish case: Yomitan's `decapitalize` and `capitalizeFirstLetter` use JavaScript's case mapping, which turns I
+  into i and i into I. `scripts/yomitan-language/glue.js` swaps in Turkish versions for `tr` (`caseProcessors`):
+  I ↔ ı, İ ↔ i. `glue.test.mjs` runs the built bundles under node:vm.
+- wty pl-en, tr-en, lv-en: lemma rows have no reading. Sample forms: koty → kot, czytaliśmy → czytać, oknie → okno;
+  gittik → gitmek, kitabı → kitap, okuyorum → okumak (İstanbul and ışık are lemmas); grāmatu → grāmata, lasīju →
+  lasīt, jālasa → lasīt ("indicative debitive"). lv-en's tags add debitive (1,822 items), renarrative (2,716) and
+  "form" after a word ("adverbial form", "rare form"), now silent like "degree".
+- Latvian writes years as ordinals ("1918. gada 18. novembrī"), so a number of any length followed by a period and a
+  lowercase word counts as an ordinal in every language with `ordinalPeriod` (plan question 24).
+- wty vi-en: lemma rows have no reading. "cái" is a non-lemma row with 924 items tagged `classifier`
+  (cái → bàn, ghế, áo, …); `VietnameseSupport.ignoredFormTags` drops results reached only through them. Many
+  syllables are also non-lemma rows pointing to Hán-Nôm characters (`Hán-Nôm` tag: xa → 車, 佘, 奢; học → 𭓕), kept
+  and labelled (plan questions 21, 22). Multi-syllable words are lemmas of their own (học sinh, sinh viên); the
+  lookup starts one and two syllables before the aim (`earlierStartOffset`, `fromEarlierStarts`) and each
+  result's `start` says where its match begins. wty-vi-ipa tags transcriptions with cities (Hanoi, Hue, Saigon,
+  Vinh), not countries, so Vietnamese has no transcription regions.
+- wty ru-en: lemma rows put the stressed form in the reading (кошка read ко́шка; one-syllable words and words with ё
+  have none). Form-of items point to the lemma both unstressed and stressed (кошки → кошка and → ко́шка, in separate
+  rows), and some lemmas are themselves forms (кошка → кот "feminine"). The lookup page shows a reading that only
+  adds U+0300 or U+0301 in the word's place (`reading-ru.js`); a different reading (еж read ёж) stays ruby.
+- Catalog: lv-ru (Wiktionary) is 520,903 bytes, under the 0.5 MiB threshold (plan question 20). The transcription
+  dictionaries of Turkish (303 KB) and Latvian (33 KB) are under it too, so neither language has one in the catalog.
