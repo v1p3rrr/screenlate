@@ -460,6 +460,7 @@
     <string name="popup_font_script_only_tr">튀르키예어 텍스트에만 사용</string>
     <string name="popup_font_script_only_lv">라트비아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_vi">베트남어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_ru">러시아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

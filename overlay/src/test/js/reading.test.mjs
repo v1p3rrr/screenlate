@@ -53,3 +53,18 @@ test('a language without rules has no segments', () => {
     assert.equal(HeadwordReading.segments('ja', '猫', 'ねこ'), null);
     assert.equal(HeadwordReading.segments('', '猫', 'ねこ'), null);
 });
+
+const russian = (expression, reading) => Array.from(HeadwordReading.segments('ru', expression, reading),
+    ([text, parts]) => parts ? `${text}[${parts.map(part => part.text).join('')}]` : text);
+
+test('a russian reading that only adds stress marks takes the word\'s place', () => {
+    assert.deepEqual(russian('кошка', 'ко́шка'), ['ко́шка']);
+    assert.deepEqual(russian('пароход', 'парохо́д'), ['парохо́д']);
+    assert.deepEqual(russian('ёж', ''), ['ёж']);
+    assert.deepEqual(russian('что', 'что'), ['что']);
+});
+
+test('another russian reading goes over the word', () => {
+    assert.deepEqual(russian('еж', 'ёж'), ['еж[ёж]']);
+    assert.equal(HeadwordReading.syllables('ru', 'ко́шка'), null);
+});

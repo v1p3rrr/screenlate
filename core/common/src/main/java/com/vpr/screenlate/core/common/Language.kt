@@ -20,6 +20,7 @@ enum class Language(val code: String) {
     TURKISH("tr"),
     LATVIAN("lv"),
     VIETNAMESE("vi"),
+    RUSSIAN("ru"),
     ;
 
     companion object {

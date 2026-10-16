@@ -469,6 +469,7 @@
     <string name="popup_font_script_only_tr">Tylko dla tekstu tureckiego</string>
     <string name="popup_font_script_only_lv">Tylko dla tekstu łotewskiego</string>
     <string name="popup_font_script_only_vi">Tylko dla tekstu wietnamskiego</string>
+    <string name="popup_font_script_only_ru">Tylko dla tekstu rosyjskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

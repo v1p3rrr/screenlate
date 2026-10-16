@@ -234,6 +234,14 @@ test('chinese headwords get a syllable above each character, marked with its ton
     assert.deepEqual(page.calls.at(-1), ['onKanji', '书']);
 });
 
+test("russian headwords show the stressed form in the word's place", () => {
+    Popup.setAppearance({ lang: 'ru' });
+    Popup.render(state({ source: { text: 'кошки', matched: 5 }, results: [result('кошка', 'ко́шка')] }));
+    const expression = content.querySelector('.expression');
+    assert.equal(expression.textContent, 'ко́шка');
+    assert.equal(expression.querySelector('ruby'), null);
+});
+
 test('chinese character readings are marked with their tones', () => {
     Popup.render({
         theme: 'light',

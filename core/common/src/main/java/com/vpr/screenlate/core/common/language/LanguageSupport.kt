@@ -244,7 +244,7 @@ data class SystemFonts(
 enum class SearchResolution { WORD, LETTER }
 
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, CHINESE, DEVANAGARI, JAPANESE, KOREAN }
+enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, JAPANESE, KOREAN }
 
 val Language.support: LanguageSupport
     get() = when (this) {
@@ -261,4 +261,5 @@ val Language.support: LanguageSupport
         Language.TURKISH -> TurkishSupport
         Language.LATVIAN -> LatvianSupport
         Language.VIETNAMESE -> VietnameseSupport
+        Language.RUSSIAN -> RussianSupport
     }

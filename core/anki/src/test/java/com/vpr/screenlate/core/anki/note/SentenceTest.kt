@@ -112,4 +112,11 @@ class SentenceTest {
         val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
         assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")
     }
+
+    @Test
+    fun russianSentenceKeepsQuotesAndAbbreviations() {
+        val paragraph = "Шёл дождь. В 1999 г. он сказал: «Я приду. Обязательно». Потом ушёл."
+        assertThat(extract(paragraph, "сказал", Language.RUSSIAN).text)
+            .isEqualTo("В 1999 г. он сказал: «Я приду. Обязательно».")
+    }
 }

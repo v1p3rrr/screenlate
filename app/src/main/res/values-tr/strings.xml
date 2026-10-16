@@ -463,6 +463,7 @@
     <string name="popup_font_script_only_tr">Yalnızca Türkçe metin için</string>
     <string name="popup_font_script_only_lv">Yalnızca Letonca metin için</string>
     <string name="popup_font_script_only_vi">Yalnızca Vietnamca metin için</string>
+    <string name="popup_font_script_only_ru">Yalnızca Rusça metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

@@ -463,6 +463,7 @@
     <string name="popup_font_script_only_tr">Nur für türkischen Text</string>
     <string name="popup_font_script_only_lv">Nur für lettischen Text</string>
     <string name="popup_font_script_only_vi">Nur für vietnamesischen Text</string>
+    <string name="popup_font_script_only_ru">Nur für russischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

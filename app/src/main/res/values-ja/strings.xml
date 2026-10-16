@@ -460,6 +460,7 @@
     <string name="popup_font_script_only_tr">トルコ語の文字だけに使う</string>
     <string name="popup_font_script_only_lv">ラトビア語の文字だけに使う</string>
     <string name="popup_font_script_only_vi">ベトナム語の文字だけに使う</string>
+    <string name="popup_font_script_only_ru">ロシア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

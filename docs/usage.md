@@ -84,6 +84,8 @@ In English, a phrasal verb in the past, -ing or third-person form ("picked up", 
 
 In German, a compound without an entry of its own is shown as its parts in order: the longest dictionary word at its start, then the longest in the rest (Küchentischlampenschirm → Küchentisch, Lampenschirm). A linking -s-, -es- or -n- between two parts is skipped (Arbeitsschreibtisch → Arbeit, Schreibtisch). Parts are at least three letters long; a compound with its own entry is shown as it is.
 
+In Russian, the headword shows the word with its stress marked as the dictionary gives it (ко́шка) instead of a separate reading; a note gets the word without stress marks as `{expression}` and the stressed form as `{reading}`. Text written with stress marks, or with е for ё, finds the word. Russian text is read by cloud recognition only: no on-device recognizer reads Cyrillic yet.
+
 In Vietnamese, where each syllable is written apart, the lookup starts at the aimed syllable and at the one and two syllables before it: a word that reaches the aimed syllable is shown first (học sinh when aiming at sinh), then the syllable's own entries, and the word is highlighted from its first syllable. The old and new places of the tone mark (hoà, hòa) find the same word. Entries that only name "cái" as the classifier of a noun are left out, so "cái" shows its own entries.
 
 Lookups also try a common respelling of the text: digits as kanji numerals (1人 → 一人), a character before 々 written twice, ッ as っ, and middle dots, commas, hyphens, periods and spaces removed. The text as it is on the screen is always looked up too.

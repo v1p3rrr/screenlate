@@ -16,6 +16,7 @@ export const SCRIPTS = {
     definitionJa: path.join(POPUP, 'definition-ja.js'),
     reading: path.join(POPUP, 'reading.js'),
     readingZh: path.join(POPUP, 'reading-zh.js'),
+    readingRu: path.join(POPUP, 'reading-ru.js'),
     popup: path.join(POPUP, 'popup.js'),
 };
 
@@ -47,12 +48,12 @@ export function renderPage() {
 
 /** The note builder with the renderer and the headword readings, on an empty page. */
 export function notePage() {
-    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.reading, SCRIPTS.readingZh] });
+    return loadPage({ scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu] });
 }
 
-/** The headword readings with the Chinese rules, on an empty page. */
+/** The headword readings with the Chinese and Russian rules, on an empty page. */
 export function readingPage() {
-    return loadPage({ scripts: [SCRIPTS.reading, SCRIPTS.readingZh] });
+    return loadPage({ scripts: [SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu] });
 }
 
 /** The definition copier with the renderer and the Japanese rules, on an empty page. */
@@ -64,5 +65,5 @@ export function definitionPage() {
 export function popupPage() {
     const html = readFileSync(path.join(POPUP, 'popup.html'), 'utf8').replace(/<script[^>]*><\/script>\s*/g, '');
     return loadPage({ html, scripts: [SCRIPTS.render, SCRIPTS.anki, SCRIPTS.note, SCRIPTS.definition, SCRIPTS.definitionJa,
-        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.popup] });
+        SCRIPTS.reading, SCRIPTS.readingZh, SCRIPTS.readingRu, SCRIPTS.popup] });
 }
