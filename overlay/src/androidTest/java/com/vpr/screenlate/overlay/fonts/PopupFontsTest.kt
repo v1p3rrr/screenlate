@@ -109,7 +109,7 @@ class PopupFontsTest {
         )
         File(backup, "fonts.json").writeText(Json.encodeToString(list))
 
-        val count = runBlocking { fonts.restore(backup) }
+        val count = runBlocking { fonts.restore(backup, list.map { it.id }.toSet()) }
 
         assertThat(count).isEqualTo(1)
         assertThat(fonts.installed.value).containsExactly(InstalledFont("good", "Good", listOf(FontFile("good-0.ttf", "400"))))

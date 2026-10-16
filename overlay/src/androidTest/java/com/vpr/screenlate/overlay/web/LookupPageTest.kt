@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.dictionary.api.model.Glossary
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -111,7 +112,7 @@ class LookupPageTest {
             emptyList(),
         )
         page.setAppearance(appearance)
-        page.render(PageState.build(context, theme = PageTheme.DARK, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat"), result("猫", "ねこ", "cat")), message = null))
+        page.render(PageState.build(context, theme = PageTheme.DARK, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat"), result("猫", "ねこ", "cat")), message = null, language = Language.JAPANESE))
 
         awaitValue("document.querySelectorAll('article.entry').length", "2")
         assertThat(evaluate("document.documentElement.lang")).isEqualTo("\"ja\"")
@@ -127,7 +128,7 @@ class LookupPageTest {
     fun heavierTextAppliesToTheScriptOrToAllText() = onMain {
         val heavier = PopupAppearance(textWeight = 700, letterThickness = 2)
         page.setAppearance(PageAppearance.build(JapaneseSupport, heavier, emptyList()))
-        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat")), message = null))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫舌", matched = 2, results = listOf(result("猫舌", "ねこじた", "sensitive to heat")), message = null, language = Language.JAPANESE))
 
         awaitValue("document.querySelectorAll('.expression .script-run').length > 0", "true")
         assertThat(evaluate("getComputedStyle(document.querySelector('.expression .script-run')).fontWeight")).isEqualTo("\"700\"")
@@ -152,7 +153,7 @@ class LookupPageTest {
             it.copy(term = it.term.copy(pitches = listOf(PitchGroup("Pitch", listOf(PitchAccent(1), PitchAccent(0))))))
         }
         fun state(theme: PageTheme) =
-            PageState.build(context, theme = theme, text = "箸", matched = 1, results = listOf(chopsticks), message = null)
+            PageState.build(context, theme = theme, text = "箸", matched = 1, results = listOf(chopsticks), message = null, language = Language.JAPANESE)
         val expression = "getComputedStyle(document.querySelector('.expression')).color"
         val reading = "getComputedStyle(document.querySelector('.expression rt')).color"
         val buttons = "Array.from(document.querySelectorAll('.pitch-item')).map(item => item.dataset.pitchCategory + ' ' + getComputedStyle(item).color).join('; ')"
@@ -184,7 +185,7 @@ class LookupPageTest {
 
     @Test
     fun bridgeCallsReachTheHost() = onMain {
-        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫", matched = 1, results = listOf(result("猫", "ねこ", "cat")), message = null))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "猫", matched = 1, results = listOf(result("猫", "ねこ", "cat")), message = null, language = Language.JAPANESE))
         awaitValue("document.querySelectorAll('article.entry').length", "1")
         evaluate("document.querySelector('.action-copy').click(); document.getElementById('close').click(); true")
         withTimeout(TIMEOUT_MS) { while (events.size < 2) delay(POLL_MS) }
@@ -193,7 +194,7 @@ class LookupPageTest {
 
     @Test
     fun servesInstalledFontsOnly() = onMain {
-        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "", matched = 0, results = emptyList(), message = "-"))
+        page.render(PageState.build(context, theme = PageTheme.LIGHT, text = "", matched = 0, results = emptyList(), message = "-", language = Language.JAPANESE))
         evaluate(
             """
             window.fontStatus = null;

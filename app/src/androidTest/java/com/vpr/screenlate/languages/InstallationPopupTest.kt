@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.overlay.OverlayIntents
 import com.vpr.screenlate.overlay.web.LookupPage
 import com.vpr.screenlate.overlay.web.PageState
@@ -39,7 +40,7 @@ class InstallationPopupTest {
                     override fun media(dictionary: String, path: String): ByteArray? = null
                 })
                 screen.setContentView(page.container)
-                page.render(PageState.build(screen, PageTheme.DARK, "", 0, emptyList(), screen.getString(OverlayR.string.installation_running), installation = true))
+                page.render(PageState.build(screen, PageTheme.DARK, "", 0, emptyList(), screen.getString(OverlayR.string.installation_running), installation = true, language = Language.JAPANESE))
             }
             val deadline = SystemClock.elapsedRealtime() + 15_000
             while (opened.get() == null && SystemClock.elapsedRealtime() < deadline) {
