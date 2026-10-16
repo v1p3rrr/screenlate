@@ -163,7 +163,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
 | Turning a language off | A dialog with "Delete its dictionaries and models (N MB)", ticked by default; the language's settings are kept, so turning it on again restores the deck, fonts and the rest, and without the files deleted it turns on at once. The Dictionaries page lists turned-off languages that still have files, with their size and a button that deletes them all; single dictionaries are deleted as today (owner, 2026-10-10, request 22; the place on the Dictionaries page is the agent's choice, delegated) |
-| Catalog threshold | Wiktionary pairs are listed from 0.5 MB of archive up (a few thousand words); nearly empty pairs (es→vi 0.0 MB, zh→de 0.1 MB) are left out, and the catalog script adds a pair once it grows past the threshold (owner, 2026-10-10) |
+| Catalog threshold | Wiktionary pairs are listed from 0.5 MB of archive up (a few thousand words); nearly empty pairs (es→vi 0.0 MB, zh→de 0.1 MB) are left out, and the catalog script adds a pair once it grows past the threshold (owner, 2026-10-10); changed 2026-10-16 (owner): the size is only a rough guide, what counts is a substantial set of words; lv→ru (520 KB, 9,284 words) is listed, the rule for the rest is question 27 |
 | Recommended dictionaries | On the download screen the main dictionary of each chosen gloss language is ticked (both, each can be unticked while one stays). Within one gloss language and category one entry is ticked when there are several (Jitendex or JMdict): the catalog marks it, chosen by quality and coverage (Jitendex over JMdict, KRDICT over Wiktionary for Korean), size only breaking ties (owner, 2026-10-10; the rule within a gloss language delegated to the agent) |
 | First language branch | English: fewer open questions than Chinese and the simpler lookup; it is also the vehicle of the shared stage (agent's choice, delegated by the owner, 2026-10-10) |
 | Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan, a tap on the floating bubble included; the open scan keeps its language until then or until the bubble is docked (owner, 2026-10-10; tap rescans owner, 2026-10-14) |
@@ -221,6 +221,11 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16) |
 | Russian stress | The headword shows the dictionary's stressed form (ко́шка) with no separate reading line; Anki's `{expression}` is the word without stress, `{reading}` the stressed form as in the dictionary (owner, 2026-10-16) |
 | Diacritics of Latin-script languages | Where ML Kit's Latin model loses a language's diacritics (Vietnamese tones, Polish ł, Turkish ğ, Latvian macrons), that language uses the chosen engine's model instead, downloaded when the language is turned on, but only when it makes at least a third fewer character errors than ML Kit on that language's screenshots (owner, 2026-10-16) |
+| Flag outlines | Every round flag gets a thin outline: light in the dark theme, dark in the light theme, so a stripe of the background's color (Germany's black, Poland's or Japan's white) stays visible (owner, 2026-10-16; question 14) |
+| Dictionary reset | The reset on the Dictionaries screen no longer deletes or reinstalls dictionaries: each one has its own delete. It resets only the screen's settings (what they are: question 26) (owner, 2026-10-16; question 16) |
+| OpenRussian source | The CSV export on the site's own GitHub (2020-09-09): the source least likely to vanish; the 2021 dump differs little (owner, 2026-10-16; question 19) |
+| Russian text to speech | Given the stressed reading (ко́шка), unless the emulator check shows the voice reads the mark wrongly; then the word without marks (owner, 2026-10-16; question 25) |
+| OCR comparison scope | Every engine (ML Kit, Paddle on MNN and on ONNX Runtime, Tesseract fast and best) on every language of groups 1-3 and the group 4 scripts named in "OCR engine choice". The results go to the owner before an engine is built in, with the option of two engines split by language and the sizes of each combination (owner, 2026-10-16; replaces the agent's own pick in "Work while the owner is away") |
 
 ## Open items (postponed by the owner)
 
@@ -234,6 +239,9 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Backlog
 
+- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
+  to, and those we plan to host, and keep them outside the repository (on the owner's computer) in case their
+  sources remove them; served from our hosting once it exists.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
 
@@ -363,6 +371,25 @@ Collected during group 3 (autonomous, 2026-10-16); the option marked "in use" is
 25. Russian text to speech is given the stressed reading (ко́шка), which tells the voice where the stress falls in
     words such as замок; to be checked on the emulator that the voice does not read the mark. Options: (a, in use)
     the stressed reading; (b) the word without stress marks.
+
+Answered on 2026-10-16: 14 (row "Flag outlines"), 16 (row "Dictionary reset"), 19 (row "OpenRussian source"),
+20 (listed, row "Catalog threshold"), 23 (the comparison starts now), 25 (row "Russian text to speech"). The
+branch `experiment/languages` is left to the agent. The owner asked for more context on 11, 12, 13, 15, 17, 18, 21,
+22 and 24 (given in chat on 2026-10-16, with screenshots for the Vietnamese ones); 11 to 13 gain an option: (d)
+recordings without a region code count as the language's main country (Germany, France, Brazil), and "Other
+regions" goes. Raised by the answers:
+
+26. What the reset on the Dictionaries screen resets. Its settings are the order of the dictionaries, their
+    switches and the dictionary results are sorted by. Options: (a, recommended) all three: catalog dictionaries in
+    the order the download screen gives them, added ones after them in the order they were installed, every
+    dictionary on, the sorting back to the default; (b) no reset button at all.
+27. The catalog threshold in words. Counted on samples: Latvian→Russian 9,284 words with their own meaning (520 KB),
+    Portuguese→Spanish 4,669 (358 KB), Korean→Polish 4,150 (267 KB), Japanese→Italian 2,844 (170 KB),
+    Vietnamese→Russian 1,868 (102 KB), Turkish→Japanese 979 (57 KB), Latvian→Spanish 169 (16 KB); glossaries are
+    denser (Polish→Russian glossary 29,139 words in 495 KB, Turkish→Russian 5,120), transcriptions too (Turkish
+    16,425 in 303 KB, Latvian 1,700 in 33 KB). Of the 346 pairs among the 14 languages under 0.5 MB, about 210
+    hold 1,000 words or more and about 120 hold 3,000 or more (estimated from sizes). Options: (a, recommended) list
+    from 1,000 words with their own meaning; (b) from 3,000; (c) keep 0.5 MB, with lv→ru as the only exception.
 
 ## Branches and workflow
 
@@ -680,6 +707,32 @@ uiautomator). Native code per ABI (arm64-v8a / armeabi-v7a / x86_64): MNN 2.1 / 
 Latin model has no Vietnamese letters with tone marks (ạ, ấ, ộ…), so Paddle cannot read Vietnamese. On the computer
 both runtimes read `ru-sample.png` without an error. The run on the emulator waits for the module review session.
 
+### The OCR comparison (plan of 2026-10-16, row "OCR comparison scope")
+
+- Engines: ML Kit as the app uses it (its Japanese model also for Latin text, the Chinese and Korean models) and
+  ML Kit's Latin model, which the app does not carry yet; Paddle PP-OCRv5 mobile (one detector; the recognizers
+  main (Chinese, Japanese, English), korean, latin, eslav, cyrillic, el, th, arabic), each on MNN and on ONNX
+  Runtime (same models, so the two must read alike and differ in speed and size); Tesseract 5 with tessdata_fast
+  and tessdata_best (jpn, jpn_vert, chi_sim, chi_tra, kor, eng, spa, fra, deu, ita, por, pol, tur, lav, vie, rus,
+  ell, tha, ara).
+- Languages: the 14 of groups 1-3, Japanese also vertical, Chinese Simplified and Traditional; Greek, Thai and
+  Arabic for group 4.
+- Screenshots taken on the emulator with their text and boxes known (`scripts/ocr-compare/collect.mjs`): the test
+  page in Chrome per language (sans, serif, monospace, small grey text, links; light and dark), and Screenlate's
+  own screens in each of its interface languages through uiautomator. The real screenshots in `testdata/ocr/` are
+  read for a look, not scored (no known text).
+- Measured (`score.py`): wrong characters, words read whole, a tap on each word landing in the right word box
+  (for Japanese and Chinese, on the right character), the time per screen (median of three runs after a warm-up,
+  four threads), native code per ABI and model downloads per language. Emulator times only rank the engines; one
+  run on the phone later.
+- Decided by the rows "OCR engine choice" and "Diacritics of Latin-script languages"; then, per language, the best
+  engine, and combinations with their APK addition per ABI and downloads: ML Kit + Paddle, ML Kit + Tesseract, ML
+  Kit + Paddle + Tesseract (Tesseract only where Paddle has no model or lacks letters, e.g. Vietnamese tones),
+  and, should Paddle beat ML Kit everywhere, Paddle alone. The results go to the owner before anything is built in.
+- Steps: extend the harness (`languages/ocr-compare`) to every language and engine above; download the missing
+  models (Paddle main and korean ONNX exports, tessdata of the new languages) and convert them for MNN; take the
+  screenshots; run; score; summary table in `ai/notes/ocr-engines.md`; report.
+
 Group 3 code (2026-10-16), each language on its own branch stacked on the previous one and pushed, none merged or
 checked on the emulator yet (the module review session holds it): `languages/pl` (Polish; the form-of tags of
 Polish, Russian, Turkish and Vietnamese translated), `languages/tr` (Turkish; dotted and dotless i in the language
@@ -994,3 +1047,8 @@ Dictionaries are checked when the group starts; a language without support or di
   native code sizes measured; PP-OCRv5's Latin model lacks Vietnamese tone letters. The run waits for the emulator.
 - 2026-10-16: group 3 written on `languages/pl`, `tr`, `lv`, `vi` and `ru` (each stacked on the previous one), unit
   and page tests passing, emulator checks pending. Questions 20-25 logged.
+- 2026-10-16: the owner answered questions 14, 16, 19, 20, 23 and 25 (rows "Flag outlines", "Dictionary reset",
+  "OpenRussian source", "Russian text to speech", "Catalog threshold" changed), asked for more context on the
+  others, put the module review off, freed the emulator and asked for the OCR comparison over every engine and
+  language, with two engines split by language as an option (row "OCR comparison scope"). Backlog: own copies of
+  the dictionaries. Questions 26 and 27 logged.
