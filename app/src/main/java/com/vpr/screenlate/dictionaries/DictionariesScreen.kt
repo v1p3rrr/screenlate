@@ -71,7 +71,6 @@ import com.vpr.screenlate.languages.dictionaryStrings
 import com.vpr.screenlate.ui.components.BackButton
 import com.vpr.screenlate.ui.components.ReorderableColumn
 import com.vpr.screenlate.ui.components.IconButtonProgress
-import com.vpr.screenlate.ui.components.ResetButton
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
@@ -113,16 +112,9 @@ fun DictionariesScreen(
                     BackButton(onBack)
                 },
                 actions = {
-                    if (resetPhase != null) {
-                        IconButtonProgress(stringResource(R.string.reset_dictionaries_busy))
-                    } else {
-                        ResetButton(
-                            tooltip = stringResource(R.string.reset_dictionaries_tooltip),
-                            title = stringResource(R.string.reset_dictionaries_title),
-                            text = stringResource(R.string.reset_dictionaries_text),
-                            onReset = viewModel::resetDictionaries,
-                        )
-                    }
+                    // No reset button: each dictionary is deleted on its own. A reset an earlier version left
+                    // unfinished still completes at start-up and shows here.
+                    if (resetPhase != null) IconButtonProgress(stringResource(R.string.reset_dictionaries_busy))
                 },
             )
         },

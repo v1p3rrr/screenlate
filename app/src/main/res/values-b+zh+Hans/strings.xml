@@ -705,9 +705,6 @@
     <string name="reset_translation_text">翻译按钮、笔记中的译文、服务的顺序和开关、语言以及收藏的语言将重置为默认值。</string>
     <string name="reset_appearance_text">主题重新跟随系统，颜色重置为 Screenlate 的默认配色，墨水屏模式关闭，并恢复该模式放大过的尺寸。应用语言保持不变。</string>
     <string name="reset_background_text">常驻通知将关闭。电池和自启动设置属于 Android，不会更改。</string>
-    <string name="reset_dictionaries_tooltip">重置词典</string>
-    <string name="reset_dictionaries_title">要重置词典吗？</string>
-    <string name="reset_dictionaries_text">所有词典（包括添加的词典）都将被删除，内置词典将以默认顺序和开关重新安装。正在进行的导入和下载会被取消。安装最多需要一分钟，完成前查词结果不完整。</string>
     <string name="reset_dictionaries_running">正在停止导入并删除词典…</string>
     <string name="reset_dictionaries_busy">正在重置词典…</string>
     <string name="reset_dictionaries_failed">重置词典失败（%1$s）</string>

@@ -705,9 +705,6 @@
     <string name="reset_translation_text">翻訳ボタン、ノートの翻訳、サービスの順序とスイッチ、言語、お気に入りの言語が初期値にリセットされます。</string>
     <string name="reset_appearance_text">テーマはシステムに従う設定に戻り、カラーは Screenlate の初期配色にリセットされます。E Ink モードはオフになり、このモードで拡大したサイズも元に戻ります。アプリの言語は保持されます。</string>
     <string name="reset_background_text">常駐通知がオフになります。バッテリーと自動起動の設定は Android 側のもので、変更されません。</string>
-    <string name="reset_dictionaries_tooltip">辞書をリセット</string>
-    <string name="reset_dictionaries_title">辞書をリセットしますか？</string>
-    <string name="reset_dictionaries_text">追加した辞書を含むすべての辞書が削除され、同梱の辞書が初期の順序とスイッチで再インストールされます。実行中のインポートとダウンロードは中止されます。インストールには最大 1 分かかり、完了するまで検索結果は不完全です。</string>
     <string name="reset_dictionaries_running">インポートを止めて辞書を削除しています…</string>
     <string name="reset_dictionaries_busy">辞書をリセットしています…</string>
     <string name="reset_dictionaries_failed">辞書のリセットに失敗しました（%1$s）</string>

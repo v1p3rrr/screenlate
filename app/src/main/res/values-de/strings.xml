@@ -712,9 +712,6 @@
     <string name="reset_translation_text">Die Übersetzungsschaltfläche, die Übersetzung in Notizen, Reihenfolge und Schalter der Dienste, die Sprache und die Lieblingssprachen werden auf die Standardwerte zurückgesetzt.</string>
     <string name="reset_appearance_text">Das Design folgt wieder dem System, die Farben werden auf die Standardfarben von Screenlate zurückgesetzt, und der E-Ink-Modus wird ausgeschaltet, wodurch die von ihm vergrößerten Größen wiederhergestellt werden. Die App-Sprache bleibt erhalten.</string>
     <string name="reset_background_text">Die dauerhafte Benachrichtigung wird ausgeschaltet. Akku- und Autostart-Einstellungen gehören zu Android und werden nicht geändert.</string>
-    <string name="reset_dictionaries_tooltip">Wörterbücher zurücksetzen</string>
-    <string name="reset_dictionaries_title">Wörterbücher zurücksetzen?</string>
-    <string name="reset_dictionaries_text">Alle Wörterbücher werden gelöscht, auch hinzugefügte, und die mitgelieferten Wörterbücher werden mit der Standardreihenfolge und den Standardschaltern neu installiert. Laufende Importe und Downloads werden abgebrochen. Die Installation dauert bis zu einer Minute; bis dahin sind die Suchergebnisse unvollständig.</string>
     <string name="reset_dictionaries_running">Importe werden gestoppt und Wörterbücher gelöscht…</string>
     <string name="reset_dictionaries_busy">Wörterbücher werden zurückgesetzt…</string>
     <string name="reset_dictionaries_failed">Zurücksetzen der Wörterbücher fehlgeschlagen: %1$s</string>

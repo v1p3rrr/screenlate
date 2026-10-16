@@ -223,11 +223,6 @@ class DictionariesViewModel @Inject constructor(
     /** The step of a running dictionary reset; null when none runs. */
     val resetPhase: StateFlow<DictionaryReset.Phase?> = dictionaryReset.phase
 
-    /** Returns the dictionaries to a fresh install; leaving the screen does not stop it. */
-    fun resetDictionaries() {
-        viewModelScope.launch { withContext(NonCancellable) { dictionaryReset.reset() } }
-    }
-
     /** Why the last dictionary reset failed; null when it did not or the message was dismissed. */
     val resetError: StateFlow<String?> = dictionaryReset.error
 

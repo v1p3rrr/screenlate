@@ -719,9 +719,6 @@
     <string name="reset_translation_text">O botão de tradução, a tradução nas notas, a ordem e as chaves dos serviços, o idioma e os idiomas favoritos são redefinidos para os valores padrão.</string>
     <string name="reset_appearance_text">O tema volta a seguir o sistema, as cores são redefinidas para as padrão do Screenlate e o modo e-ink é desativado, o que restaura os tamanhos que ele aumentou. O idioma do app é mantido.</string>
     <string name="reset_background_text">A notificação persistente é desativada. As configurações de bateria e de inicialização são do Android e não são alteradas.</string>
-    <string name="reset_dictionaries_tooltip">Redefinir dicionários</string>
-    <string name="reset_dictionaries_title">Redefinir os dicionários?</string>
-    <string name="reset_dictionaries_text">Todos os dicionários são excluídos, incluindo os adicionados, e os dicionários incluídos são reinstalados com a ordem e as chaves padrão. Importações e downloads em andamento são cancelados. A instalação leva até um minuto; até lá, os resultados da pesquisa ficam incompletos.</string>
     <string name="reset_dictionaries_running">Parando importações e excluindo dicionários…</string>
     <string name="reset_dictionaries_busy">Redefinindo os dicionários…</string>
     <string name="reset_dictionaries_failed">Falha ao redefinir os dicionários: %1$s</string>

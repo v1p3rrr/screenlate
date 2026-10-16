@@ -727,9 +727,6 @@
     <string name="reset_translation_text">Кнопка перевода, перевод в карточках, порядок и переключатели сервисов, язык и избранные языки будут сброшены к значениям по умолчанию.</string>
     <string name="reset_appearance_text">Тема снова будет следовать системе, цвета вернутся к цветам Screenlate по умолчанию, режим e-ink выключится, а увеличенные им размеры вернутся к прежним. Язык приложения сохранится.</string>
     <string name="reset_background_text">Постоянное уведомление будет выключено. Настройки батареи и автозапуска относятся к Android и не изменятся.</string>
-    <string name="reset_dictionaries_tooltip">Сбросить словари</string>
-    <string name="reset_dictionaries_title">Сбросить словари?</string>
-    <string name="reset_dictionaries_text">Все словари будут удалены, включая добавленные, а встроенные словари будут установлены заново с исходным порядком и переключателями. Текущие импорты и скачивания будут отменены. Установка занимает до минуты; до её завершения результаты поиска будут неполными.</string>
     <string name="reset_dictionaries_running">Остановка импорта и удаление словарей…</string>
     <string name="reset_dictionaries_busy">Словари сбрасываются…</string>
     <string name="reset_dictionaries_failed">Не удалось сбросить словари: %1$s</string>
