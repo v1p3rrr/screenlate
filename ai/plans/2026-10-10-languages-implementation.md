@@ -111,6 +111,13 @@ Requests 1–19 are in the previous plan. New ones:
 54. (2026-10-16) While the owner is away: questions that come up wait until everything possible is done; a blocking
     question postpones the task or the part of it that depends on it, without taking the recommended option in
     advance when the question is important or another answer would mean a large rework.
+55. (2026-10-16) The region order in the audio settings shows only while something uses it: removing the source it
+    exists for (Wiktionary) hides it, unless another source needs it too (question 28: transcriptions use it).
+56. (2026-10-16) The audio source picker offers a language only the sources that have it: JapanesePod101, its
+    dictionary search and Jisho are Japanese only (German offered JapanesePod101).
+57. (2026-10-16) Yomitan's languages listed with their status here (done, on branches, planned, planned without
+    Yomitan support, the rest by number of speakers): `notes/languages.md`. Group 4 is too large for one stage;
+    split it by script into batches (question 30).
 
 ## Decisions
 
@@ -163,7 +170,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Inflection names and tags | Translated into all 14 interface languages, a language's rule names and descriptions when that language is added; the Wiktionary tag list (~105 words) with the first group and extended per language; tags outside the list show as in the dictionary; Anki's `{conjugation}` keeps the English name (owner, 2026-10-09) |
 | Chinese script | Glyph forms (SC/TC `lang` tag) and the headword spelling follow the text under the aim; a setting gives the script for words written alike in both and for typed searches, and may fix one script for everything (owner, 2026-10-09: "1 + a choice in settings"). The setting ("Characters" and the switch "All words in these characters", off by default) is on the Chinese card of the Languages screen, an exception to "Settings layout"; a word found in both spellings is one entry, headed by the chosen script with the switch on and by the text's otherwise, with the definitions of both (owner, 2026-10-15) |
 | Turning a language off | A dialog with "Delete its dictionaries and models (N MB)", ticked by default; the language's settings are kept, so turning it on again restores the deck, fonts and the rest, and without the files deleted it turns on at once. The Dictionaries page lists turned-off languages that still have files, with their size and a button that deletes them all; single dictionaries are deleted as today (owner, 2026-10-10, request 22; the place on the Dictionaries page is the agent's choice, delegated) |
-| Catalog threshold | Wiktionary pairs are listed from 0.5 MB of archive up (a few thousand words); nearly empty pairs (es→vi 0.0 MB, zh→de 0.1 MB) are left out, and the catalog script adds a pair once it grows past the threshold (owner, 2026-10-10); changed 2026-10-16 (owner): the size is only a rough guide, what counts is a substantial set of words; lv→ru (520 KB, 9,284 words) is listed, the rule for the rest is question 27 |
+| Catalog threshold | A Wiktionary pair is listed when it holds at least 1,500 words with their own meaning (inflected-form rows not counted), whatever its size; the catalog script counts them and adds a pair once it passes (owner, 2026-10-16, question 27; was 0.5 MB of archive, 2026-10-10) |
 | Recommended dictionaries | On the download screen the main dictionary of each chosen gloss language is ticked (both, each can be unticked while one stays). Within one gloss language and category one entry is ticked when there are several (Jitendex or JMdict): the catalog marks it, chosen by quality and coverage (Jitendex over JMdict, KRDICT over Wiktionary for Korean), size only breaking ties (owner, 2026-10-10; the rule within a gloss language delegated to the agent) |
 | First language branch | English: fewer open questions than Chinese and the simpler lookup; it is also the vehicle of the shared stage (agent's choice, delegated by the owner, 2026-10-10) |
 | Switching during a scan | A language chosen in the bubble's hold menu applies from the next scan, a tap on the floating bubble included; the open scan keeps its language until then or until the bubble is docked (owner, 2026-10-10; tap rescans owner, 2026-10-14) |
@@ -222,10 +229,17 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Russian stress | The headword shows the dictionary's stressed form (ко́шка) with no separate reading line; Anki's `{expression}` is the word without stress, `{reading}` the stressed form as in the dictionary (owner, 2026-10-16) |
 | Diacritics of Latin-script languages | Where ML Kit's Latin model loses a language's diacritics (Vietnamese tones, Polish ł, Turkish ğ, Latvian macrons), that language uses the chosen engine's model instead, downloaded when the language is turned on, but only when it makes at least a third fewer character errors than ML Kit on that language's screenshots (owner, 2026-10-16) |
 | Flag outlines | Every round flag gets a thin outline: light in the dark theme, dark in the light theme, so a stripe of the background's color (Germany's black, Poland's or Japan's white) stays visible (owner, 2026-10-16; question 14) |
-| Dictionary reset | The reset on the Dictionaries screen no longer deletes or reinstalls dictionaries: each one has its own delete. It resets only the screen's settings (what they are: question 26) (owner, 2026-10-16; question 16) |
+| Dictionary reset | No reset button on the Dictionaries screen: each dictionary has its own delete, and the screen's settings (order, switches, sorting) are changed one by one (owner, 2026-10-16; questions 16 and 26) |
 | OpenRussian source | The CSV export on the site's own GitHub (2020-09-09): the source least likely to vanish; the 2021 dump differs little (owner, 2026-10-16; question 19) |
 | Russian text to speech | Given the stressed reading (ко́шка), unless the emulator check shows the voice reads the mark wrongly; then the word without marks (owner, 2026-10-16; question 25) |
 | OCR comparison scope | Every engine (ML Kit, Paddle on MNN and on ONNX Runtime, Tesseract fast and best) on every language of groups 1-3 and the group 4 scripts named in "OCR engine choice". The results go to the owner before an engine is built in, with the option of two engines split by language and the sizes of each combination (owner, 2026-10-16; replaces the agent's own pick in "Work while the owner is away") |
+| Audio regions of German, French, Portuguese | As built: German Germany, Other regions, Austria, Switzerland; French France, Canada, Other regions; Portuguese Brazil, Portugal, Other regions (owner, 2026-10-16, questions 11-13: "the most logical, tried it, fine") |
+| German compounds | A word found only as parts gets a line above the entries: "Compound: Küchentisch + Lampenschirm" (the label in every interface language). The order of a part's entries is question 29 (owner, 2026-10-16, question 15) |
+| KANJIDIC editions | Every KANJIDIC edition of the chosen gloss languages is ticked when the character dictionaries are; English fills the kanji the others lack (owner, 2026-10-16, question 17) |
+| FreeDict into Russian | German, French, Italian, Spanish, Polish and English into Russian are listed, unticked, once they are hosted; Chinese→Russian (74% broken senses) is left out (owner, 2026-10-16, question 18) |
+| Vietnamese classifiers | Rows that only name a noun's classifier (cái → bàn, ghế, …) are left out; cái shows its own entries (owner, 2026-10-16, question 21) |
+| Vietnamese Hán-Nôm rows | Kept, after the syllable's own entries, labelled "Hán-Nôm spelling" (owner, 2026-10-16, question 22) |
+| Ordinals with a period | A number of any length with a period before a lowercase word is no sentence end in German, Polish, Turkish and Latvian, the languages whose ordinals take a period (agent's choice at the owner's request, 2026-10-16, question 24) |
 
 ## Open items (postponed by the owner)
 
@@ -390,6 +404,30 @@ regions" goes. Raised by the answers:
     16,425 in 303 KB, Latvian 1,700 in 33 KB). Of the 346 pairs among the 14 languages under 0.5 MB, about 210
     hold 1,000 words or more and about 120 hold 3,000 or more (estimated from sizes). Options: (a, recommended) list
     from 1,000 words with their own meaning; (b) from 3,000; (c) keep 0.5 MB, with lv→ru as the only exception.
+
+Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the line, with the word "Compound"), 17
+(every edition), 18 (without Chinese→Russian), 21 (left out), 22 (kept), 24 (left to the agent: all four languages),
+26 (no button), 27 (from 1,500 words). Raised by the answers:
+
+28. The region order in the audio settings (request 55). Only the Wiktionary source uses it for recordings, but the
+    popup also orders transcriptions by it (English US before UK), and its hint names only Wiktionary recordings.
+    Options: (a, recommended) show it while Wiktionary is among the language's audio sources or a transcription
+    dictionary of the language is installed, with a hint that names both; (b) only while Wiktionary is a source,
+    transcriptions keep the last order; (c) always, with the hint that names both.
+29. Parts of a German compound are looked up like any word, so a part brings every entry spelled like it, in the
+    usual order: "lampe" brings the Swiss verb lampen ("to hang down", whose form it is) above the noun Lampe, since
+    the part is looked up in lowercase and the noun is capitalized. Options: (a, recommended) for a part of a
+    compound, entries whose headword is the part capitalized (nouns) come first; (b) the usual order.
+30. Group 4 in batches by script (request 57), each batch its own branch and emulator checks:
+    4a like group 3 (Latin, Cyrillic, Greek, spaces): Dutch, Czech, Indonesian with Malay, Filipino (Tagalog),
+    Serbo-Croatian, Ukrainian, Belarusian, Greek; 4b new scripts written left to right with spaces: Hindi,
+    Georgian, Armenian, Bengali (fonts, OCR per script: ML Kit and Paddle read Devanagari, the others only
+    Tesseract or the cloud); 4c no spaces between words: Thai (later Lao, Khmer), the word found as the longest
+    match from the tap as in Japanese; 4d right to left: Arabic (later Persian, Hebrew), hit testing, highlight and
+    popup layout mirrored; 4e Kazakh and Kyrgyz (Cyrillic, no Yomitan support, found like Turkish). Options: (a,
+    recommended) batches in the order 4a, 4b, 4c, 4d, 4e; the big release ships groups 1-3, each batch comes in a
+    later release (changes the row "Scope of the big release"); (b) the same batches, all in the big release; (c)
+    group 4 as one stage.
 
 ## Branches and workflow
 
@@ -1052,3 +1090,7 @@ Dictionaries are checked when the group starts; a language without support or di
   others, put the module review off, freed the emulator and asked for the OCR comparison over every engine and
   language, with two engines split by language as an option (row "OCR comparison scope"). Backlog: own copies of
   the dictionaries. Questions 26 and 27 logged.
+- 2026-10-16: second round of answers (11-13, 15, 17, 18, 21, 22, 24, 26, 27; new rows from "Audio regions of German,
+  French, Portuguese" to "Ordinals with a period", rows "Dictionary reset" and "Catalog threshold" changed). Requests
+  55-57 (region order shown only while used, audio sources per language, Yomitan's languages and group 4 in
+  batches); questions 28-30 logged.

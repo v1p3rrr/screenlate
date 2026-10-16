@@ -76,6 +76,25 @@ questions: `plans/2026-10-09-more-languages.md`.
   This is how languages without transforms (Russian, Polish, …) still get deinflection.
 - Docs: `docs/development/language-features.md`; dictionary list at yomitan.wiki/dictionaries.
 
+### Yomitan's languages and our status (master e7334a9, 2026-10-16)
+
+60 languages plus "Any / Unknown" (`xxx`: lookup as written, no language rules). T: Yomitan has transforms.
+
+- Done on `languages/main`: ja T, en T, zh, ko T, es T, fr T, de T, it, pt. On branches (group 3): ru, pl, tr, vi, lv.
+- Group 4 candidates Yomitan describes: hi, ar T (in the plan from the start, not in request 51), id, tl T (Filipino),
+  th, uk T, nl, el T, cs, hy, be, ka T, sh (Serbian is Serbo-Croatian there and in English Wiktionary: one language,
+  four standards, Cyrillic and Latin).
+- Candidates Yomitan lacks (bn, ms, kk, ky) have wty dictionaries from English Wiktionary: ms→en 1.7 MB, kk→en
+  1.7, bn→en 1.7, ky→en 0.6; into Russian kk 0.8, ky 0.3, ms and bn 0.1 (for scale: id→en 3.9, hi→en 5.6, de→en
+  16.3). They work like group 3: form-of rows plus the longest matching start of the word (Kazakh and Kyrgyz like
+  Turkish). Paddle's `cyrillic` recognizer has every Kazakh and Kyrgyz letter (ә ғ қ ң ө ұ ү һ і), `eslav` does not;
+  Bengali has no ML Kit or Paddle model (Tesseract `ben`, cloud).
+- The rest, by speakers: arz T (Egyptian Arabic, spoken variety; Wiktionary's own language, same script), yue, fa,
+  kn, ro, km, hu, sv, he, bg, sq T, lo, da, fi, no, mn, et, cy, eu T, yi T, mt, aii, ga T, br, gd, haw, gv, kw;
+  constructed eo T, tok; historical la T, grc T, sga T.
+- PP-OCRv5 mobile recognizers on Hugging Face (PaddlePaddle): main (zh/ja/en), en, latin, eslav, cyrillic, korean,
+  el, th, arabic, devanagari, ta, te.
+
 ## Dictionaries for other languages
 
 - Wiktionary (wiktionary-to-yomitan, "wty", data from kaikki/wiktextract), hosted on Hugging Face
