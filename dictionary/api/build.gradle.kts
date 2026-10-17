@@ -19,3 +19,8 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     testImplementation(libs.mockwebserver)
 }
+
+// CatalogFileTest reads the catalog files directly; a changed catalog reruns the tests.
+tasks.withType<Test>().configureEach {
+    inputs.dir("src/main/assets/catalog").withPathSensitivity(PathSensitivity.RELATIVE)
+}

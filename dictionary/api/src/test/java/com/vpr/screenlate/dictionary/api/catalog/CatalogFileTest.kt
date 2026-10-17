@@ -175,8 +175,9 @@ class CatalogFileTest {
         val entries = legacy!!.entries
         assertThat(entries.map { it.sourceLanguage }.distinct()).containsExactly("ja")
         assertThat(entries.all { it.installedTitle != null && it.sizeMb > 0 }).isTrue()
+        // Older versions read no recognition models.
         val v2Japanese = catalog!!.entries.filter { it.sourceLanguage == "ja" && it.category != CatalogCategory.GLOSSARY }
-            .filter { it.template != "wiktionary-transcription" }
+            .filter { it.template != "wiktionary-transcription" && !it.isModel }
         assertThat(entries.map { it.id }).containsExactlyElementsIn(v2Japanese.map { it.id })
     }
 }
