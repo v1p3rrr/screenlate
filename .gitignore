@@ -35,6 +35,9 @@ keystore.properties
 # wordfreq word lists for frequency dictionary tests (third-party data).
 /testdata/wordfreq/
 
+# Tesseract models downloaded by scripts/ocr-models/tessdata_catalog.py
+/testdata/tessdata/
+
 # The Unicode Han database, the source of generated character tables.
 /testdata/unihan/
 node_modules/

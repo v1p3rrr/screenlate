@@ -42,6 +42,13 @@ dictionary can be built on a computer: `pip install wordfreq`, then
 `python scripts/frequency/wordfreq_dictionary.py <language> <out.zip>` (`--size` changes the number of words). Its data
 is CC BY-SA 4.0, and so is the dictionary.
 
+On-device recognition models are catalog entries of the category `OCR_MODEL` with the model's id, engine, version and
+SHA-256. Tesseract's models are the traineddata files of `tessdata_fast` and `tessdata_best` at a pinned commit,
+downloaded unchanged and kept as `tessdata/<code>.traineddata` (the entry's `file`):
+`python -I scripts/ocr-models/tessdata_catalog.py` writes their entries (templates `tesseract-fast` and
+`tesseract-best`) for a new commit or language and keeps the downloads in `testdata/tessdata/`. A model's version is the
+start of its SHA-256, so moving the pin offers an update only for the files that changed.
+
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in
@@ -89,6 +96,7 @@ the engine module that holds them.
   (Turkish case pairs).
 - `python -m unittest discover scripts/frequency`: the frequency dictionary builder (wordfreq itself is not needed).
 - `python -m unittest discover scripts/flags`: the flag converter.
+- `python -m unittest discover scripts/ocr-models`: the catalog entries of the recognition models.
 - `python -m unittest discover scripts/freedict` and `python -m unittest discover scripts/openrussian`: the dictionary
   converters.
 - `./gradlew connectedDebugAndroidTest`: instrumented tests on a device or emulator. The AnkiDroid test runs only where AnkiDroid is installed and adds notes to a "Screenlate Test" deck, so use a device whose AnkiDroid is not synced with a real account.
