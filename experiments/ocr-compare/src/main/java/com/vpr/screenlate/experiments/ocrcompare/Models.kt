@@ -34,6 +34,30 @@ class OrtModel(model: ByteArray, threads: Int) : PaddleModel {
     }
 }
 
+/**
+ * A text detector whose probabilities are mapped linearly so that the pipeline's fixed thresholds (0.3 for a pixel,
+ * 0.6 for a line's mean) stand for [threshold] and [boxThreshold], the values the detector was trained for.
+ */
+class RescaledDetector(private val model: PaddleModel, threshold: Float, boxThreshold: Float) : PaddleModel {
+    private val scale = (PIPELINE_BOX_THRESHOLD - PIPELINE_THRESHOLD) / (boxThreshold - threshold)
+    private val offset = PIPELINE_THRESHOLD - threshold * scale
+
+    override fun run(input: Tensor): Tensor {
+        val output = model.run(input)
+        val data = output.data
+        for (i in data.indices) data[i] = data[i] * scale + offset
+        return output
+    }
+
+    override fun close() = model.close()
+
+    private companion object {
+        /** core:ocr's TextDetection.THRESHOLD and BOX_THRESHOLD. */
+        const val PIPELINE_THRESHOLD = 0.3f
+        const val PIPELINE_BOX_THRESHOLD = 0.6f
+    }
+}
+
 /** A PP-OCR network on MNN's CPU backend, at fp32. */
 class MnnModel(path: String, threads: Int) : PaddleModel {
     private var handle = nativeLoad(path, threads).also { check(it != 0L) { "MNN could not load $path" } }

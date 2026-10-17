@@ -2,20 +2,22 @@ import com.vpr.screenlate.buildlogic.ScreenlateSdk
 
 // The on-device OCR comparison (PP-OCR on ONNX Runtime and on MNN, Tesseract, ML Kit) as instrumented tests. Not part of the
 // app. Gradle properties: `ocrCompareMnn`, a folder with MNN's source in `mnn-src/MNN-<version>` and a static build per
-// ABI in `mnn-<abi>`; `ocrCompareData`, the test assets (`models/`, `images/`).
+// ABI in `mnn-<abi>`; `ocrCompareData`, the test assets (`models/`, `images/`); `ocrCompareAbis`, comma-separated ABIs
+// to package instead of all (a smaller APK for one device).
 plugins {
     alias(libs.plugins.screenlate.android.library)
 }
 
 val mnnRoot = providers.gradleProperty("ocrCompareMnn").orNull
 val dataRoot = providers.gradleProperty("ocrCompareData").orNull
+val abis = providers.gradleProperty("ocrCompareAbis").orNull?.split(",")
 
 android {
     namespace = "com.vpr.screenlate.experiments.ocrcompare"
 
     defaultConfig {
         ndk {
-            abiFilters += ScreenlateSdk.ABIS
+            abiFilters += abis ?: ScreenlateSdk.ABIS
         }
         if (mnnRoot != null) {
             externalNativeBuild {

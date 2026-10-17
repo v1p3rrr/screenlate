@@ -166,6 +166,24 @@ class ScoreTest(unittest.TestCase):
         self.assertTrue(score.inside(truth["regions"][0]["box"], *score.center(at("три", 20, 40)["box"])))
         self.assertEqual(score.score_image(truth, result)["edits"], 0)
 
+    def test_characters_of_a_turned_word_lie_on_its_slope(self):
+        # Two lines of four characters turned by 10°; the engine read each line as one word (its bounds).
+        a = math.radians(10)
+
+        def quad(top):
+            corners = [(0, top), (80, top), (80, top + 20), (0, top + 20)]
+            return [[x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a)] for x, y in corners]
+
+        def bounds(points):
+            return [min(p[0] for p in points), min(p[1] for p in points), max(p[0] for p in points),
+                    max(p[1] for p in points)]
+
+        regions = [{"box": bounds(quad(top)), "quad": quad(top), "angle": 10, "text": text}
+                   for top, text in [(0, "図書館の"), (24, "二階に新")]]
+        result = {"language": "ja", "lines": [
+            {"box": bounds(r["quad"]), "words": [word(r["text"], bounds(r["quad"]))]} for r in regions]}
+        self.assertEqual(score.score_image({"regions": regions}, result)["edits"], 0)
+
     def test_a_style_counts_only_its_own_regions(self):
         truth = {"regions": [
             {"box": [0, 0, 100, 20], "text": "один", "style": "photo"},

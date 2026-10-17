@@ -23,7 +23,9 @@ import org.junit.runner.RunWith
  * assets' `images/`.
  *
  * `mlkit` is ML Kit as the app uses it (Japanese, Chinese, Korean and Latin text) or, for Hindi, its Devanagari
- * model; `mlkit-latin` its Latin model. Image names start with the language: `javert` is vertical Japanese, `zht`
+ * model; `mlkit-latin` its Latin model. `paddle6-mnn` is PP-OCRv6 small (its detector and recognizer, Chinese,
+ * Japanese and Latin scripts only), `paddle6-v5det-mnn` its recognizer after the PP-OCRv5 mobile detector; both run
+ * only when named, from models pushed to `<files>/models/`. Image names start with the language: `javert` is vertical Japanese, `zht`
  * Traditional Chinese, `shc` Serbo-Croatian in Cyrillic (`sh` in Latin).
  *
  * `lens` is cloud recognition; it runs only when named. It sends one request per screen, without warm-up, a
@@ -133,6 +135,24 @@ class OcrCompareTest {
                     )
                 }
             }
+            "paddle6-mnn", "paddle6-v5det-mnn" -> {
+                if (script.paddle != MAIN && script.paddle != LATIN) return null
+                val detector = if (engine == "paddle6-mnn") {
+                    RescaledDetector(
+                        MnnModel(File(models, "$V6_DETECTOR/model.mnn").path, threads),
+                        V6_THRESHOLD,
+                        V6_BOX_THRESHOLD,
+                    )
+                } else {
+                    MnnModel(File(models, "$DETECTOR/model.mnn").path, threads)
+                }
+                PaddleReader(
+                    detector,
+                    MnnModel(File(models, "$V6_RECOGNIZER/model.mnn").path, threads),
+                    File(models, "$V6_RECOGNIZER/dict.txt").readLines(Charsets.UTF_8),
+                    detectionWidth,
+                )
+            }
             "mlkit" -> when {
                 language == "hi" -> MlKitScriptReader(DevanagariTextRecognizerOptions.Builder().build())
                 else -> script.mlKit?.let { MlKitReader(it) }
@@ -201,6 +221,15 @@ class OcrCompareTest {
         const val MAIN = "PP-OCRv5_mobile_rec"
         const val LATIN = "latin_PP-OCRv5_mobile_rec"
         const val CYRILLIC = "cyrillic_PP-OCRv5_mobile_rec"
+
+        /**
+         * PP-OCRv6 small: one recognizer for Chinese, Japanese and Latin scripts. Its detector's post-processing
+         * thresholds are 0.2 and 0.45 (v5: 0.3 and 0.6); its unclip ratio, 1.4, stays at the pipeline's 1.5.
+         */
+        const val V6_DETECTOR = "PP-OCRv6_small_det"
+        const val V6_RECOGNIZER = "PP-OCRv6_small_rec"
+        const val V6_THRESHOLD = 0.2f
+        const val V6_BOX_THRESHOLD = 0.45f
         val RIGHT_TO_LEFT = setOf("ar", "fa", "he")
         val ENGINES = listOf("paddle-ort", "paddle-mnn", "tesseract-fast", "tesseract-best", "mlkit", "mlkit-latin")
         val SCRIPTS = mapOf(

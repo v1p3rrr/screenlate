@@ -17,7 +17,7 @@ regions, as hard.html marks them, or both):
 - time: the median of the timed runs per screen, averaged over the screens.
 
 A region turned by an angle (a tilted line of hard.html) holds the words whose centers lie inside its turned
-rectangle, read along its direction.
+rectangle, read along its direction; a character cut from a word lies on the word's slope, not at its middle height.
 
 Words an engine glued together (an empty separator after the first: cloud recognition gives punctuation and Korean
 particles as words of their own) count as one word, as in the app's line text.
@@ -107,6 +107,15 @@ def in_region(region, x, y):
             abs(across) <= math.dist(quad[1], quad[2]) / 2 + MARGIN)
 
 
+def sloped_center(word, angle):
+    """[word]'s center; for a character cut from a word of a line turned by [angle], on the word's slope."""
+    x, y = center(word["box"])
+    if not angle or "word_box" not in word:
+        return x, y
+    wx, wy = center(word["word_box"])
+    return x, wy + (x - wx) * math.tan(math.radians(angle))
+
+
 def reading_order(found, right_to_left=False):
     """[found] ((line box, position, word) entries) by rows of lines from the top, each row along its direction."""
     rows = []
@@ -146,7 +155,7 @@ def characters(word, vertical):
             boxes = [[l, edges[i], r, edges[i + 1]] for i in range(len(boxes))]
         else:
             boxes = [[edges[i], t, edges[i + 1], b] for i in range(len(boxes))]
-    return [{"text": c, "box": box} for c, box in zip(text, boxes)]
+    return [{"text": c, "box": box, "word_box": word["box"]} for c, box in zip(text, boxes)]
 
 
 def glued(words):
@@ -183,7 +192,7 @@ def region_reads(truth, result, words):
     language = result.get("language", "")
     spaced = language not in UNSPACED
     for region in truth["regions"]:
-        found = [w for w in words if in_region(region, *center(w[2]["box"]))]
+        found = [w for w in words if in_region(region, *sloped_center(w[2], region.get("angle")))]
         if language == "javert":
             found.sort(key=lambda w: center(w[2]["box"])[1])
         elif "angle" in region:
