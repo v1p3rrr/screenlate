@@ -102,7 +102,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                         removeLeftovers()
                         imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled(started = true)
                     }
-                }.also { if (it !is Result.Retry) imports.forgetStops(id) }
+                }.also { if (it != Result.retry()) imports.forgetStops(id) }
             }
         } catch (e: CancellationException) {
             if (!isStopped) throw e
@@ -199,7 +199,7 @@ class DictionaryImportWorker @AssistedInject constructor(
         val source = inputData.getString(KEY_SOURCE)
         if (source != SOURCE_URL) return output
         return Data.Builder()
-            .apply { DictionaryImports.RESUME_KEYS.forEach { key -> inputData.keyValueMap[key]?.let { put(key, it) } } }
+            .putAll(inputData.keyValueMap.filterKeys { it in DictionaryImports.RESUME_KEYS })
             .putAll(output)
             .putBoolean(KEY_RESUMABLE, true)
             .build()

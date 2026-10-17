@@ -249,9 +249,7 @@ class DictionaryImports @Inject constructor(
         val info = workManager.getWorkInfoByIdFlow(id).first() ?: return
         val output = info.outputData
         if (!output.getBoolean(KEY_RESUMABLE, false)) return
-        val data = Data.Builder().apply {
-            RESUME_KEYS.forEach { key -> output.keyValueMap[key]?.let { put(key, it) } }
-        }.build()
+        val data = Data.Builder().putAll(output.keyValueMap.filterKeys { it in RESUME_KEYS }).build()
         preferences.edit { it[DISMISSED] = it[DISMISSED].orEmpty() + id.toString() }
         Log.i(LOG_TAG, "Task $id resumed")
         enqueue(data, name = data.getString(KEY_NAME).orEmpty())
