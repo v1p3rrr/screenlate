@@ -122,6 +122,10 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR15 | A language that is not ready → the scan shows the explanation and the installation link before capturing | F | I InstallationPopupTest, M | 2026-10-14 |
 | OCR16 | Chinese with cloud recognition: Simplified (`zh-sample.png`, 图书馆 with pinyin), Traditional (`zh-traditional.png`, 沒有關係) and vertical columns read right to left (`zh-vertical.png`: 館 alone, 意思 highlighted down its column). Rescan with a tap after changing the picture: a floating bubble keeps its scan | F | U TextLayoutTest, ReadingOrderTest, M | 2026-10-15 |
 | OCR17 | Korean (`ko-mixed.png`): the cloud reads Hangul, hanja (韓國語, 大學校, 歷史) and Latin (TV, PC); the device recognizer reads Hangul and Latin but not hanja (大學校에서 → 푸에서), shown with the "On-device" chip | F | M | 2026-10-15 |
+| OCR18 | Turning on a language with a recommended Paddle model (Russian): the download screen ticks PaddleOCR with the "main" switch, does not list the detector, and the model's size and the total include it; after the download both model directories exist | E | U LanguageSetupTest, M | 2026-10-17 |
+| OCR19 | A scan with a Paddle model active: the draft comes from DEVICE_MODEL (log `OCR draft from DEVICE_MODEL`) and the lookup runs on it (Russian, `ru-page-light.png`) | E | M | 2026-10-17 |
+| OCR20 | The on-device model dialog (Bubble settings, On-device model, a language): download PaddleOCR v6 with its detector (size with it), `detector.properties` unpacked; languages without an explicit choice that recommend it switch to it | F | U OcrModelListTest, M | 2026-10-17 |
+| OCR21 | Offline scan with PaddleOCR v6 (Japanese, `ja-page-light.png`, Wi-Fi and data off): the draft and the final page come from the device, Lens fails with OfflineException; words are found | F | M | 2026-10-17 |
 
 ### LK: lookup
 
@@ -325,6 +329,14 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-17, `languages/ocr-engines` (`79258c9` with the setup fix built locally), Pixel_10_Pro (API 37)
+
+Scope: OCR18-OCR21 (new). Results: passed after one fix: the download screen listed the Paddle detector as its own
+item and left it out of the download (fixed in `79258c9`). Emulator state since this run: Russian turned on with
+PaddleOCR v5 Cyrillic; PaddleOCR v6 installed and chosen for Japanese, French, German and Italian; Japanese active.
+Chrome on the emulator asks to accept its terms on first start (not accepted): pictures are opened in Photos instead
+(push to `/sdcard/Pictures`, `content call --uri content://media --method scan_volume --arg external_primary`).
 
 ### 2026-10-16, `languages/latin-fonts` (uncommitted build), Pixel_10_Pro (API 37)
 

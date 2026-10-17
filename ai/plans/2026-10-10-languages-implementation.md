@@ -1189,3 +1189,6 @@ Dictionaries are checked when the group starts; a language without support or di
   recognize; a download does not change the chosen model).
 - 2026-10-17: request 66, row "Build of groups 1-3" (a debug build of the 14 languages with Paddle for the owner
   before group 4; no prerelease; the code review after it).
+- 2026-10-17: build of groups 1-3 made from `languages/ocr-engines` (the stack of groups 1-3 with the OCR engines and
+  Paddle) by CI as the "Screenlate Dev" debug APK; merging the stack into `languages/main` waits for the emulator
+  checks (row "Build of groups 1-3").

@@ -1,5 +1,16 @@
 # Status
 
+## Work in progress (2026-10-17): OCR engines and the owner's build
+
+Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
+`languages/ocr-engines` (pushed) holds the whole group 1-3 stack plus ML Kit Latin, Tesseract, the model choice per
+language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Screenlate Dev" APK (artifact
+`screenlate-debug-<sha7>`). The Paddle model archives are on the prerelease `ocr-models-1`. Next: docs (`usage.md`,
+`architecture.md`), the remaining test-model cases, the emulator checks of groups 1-3 and the OCR cases, a phone timing
+run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
+comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
+http server on port 8000, `/data/local/tmp` on the emulator, the scratchpad's `venv-ocr`.
+
 Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-languages-implementation.md) (phase 8,
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
 [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).

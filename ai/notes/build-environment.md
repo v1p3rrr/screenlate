@@ -127,3 +127,14 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Running every module's unit tests at once can crash a test executor with "insufficient memory" (G1 virtual space
   mmap) while the emulator runs; Gradle reports "Test process encountered an unexpected problem" and the JVM leaves
   `hs_err_pid*.log` in the module (ignored by git). Rerun; it passes when memory is free.
+
+## MNN (2026-10-17)
+
+- `core:ocr-mnn` builds MNN 3.6.1 from the submodule `core/ocr-mnn/src/main/cpp/MNN` (shallow) with CMake
+  `add_subdirectory`, CPU backend only, always at `-O3` (also in debug builds), into `libscreenlate_mnn.so`. A clean
+  native build of all four ABIs takes several minutes; the debug APK with every ABI is about 124 MB.
+- CI's Gradle wrapper validation scans the submodules too: MNN's flatbuffers sample carries a wrapper JAR it does not
+  know. `.github/actions/setup` runs `gradle/actions/wrapper-validation` with that checksum allowed
+  (`setup-gradle@v6` has no `allow-checksums` input) and turns off setup-gradle's own validation.
+- The model converter is the pip package `mnn` of the same version (`mnnconvert`); it pip-installs a logging SDK on
+  start. Paddle archives: `scripts/ocr-models/paddle_models.py` (see `docs/development.md`).

@@ -97,6 +97,40 @@ From `languages/ocr-compare` (commits d27009b and 07f4213), character error rate
   larger (detector 9.8 MB, recognizer 21.1 MB), slower on Latin, no Vietnamese stacked diacritics. The v5/v6 choice
   is put to the owner after the re-measurement with rotated crops.
 
+## Progress (2026-10-17, end of session)
+
+Branch `languages/ocr-engines`, stacked on the whole group 1-3 stack (`languages/main` … `languages/ru`), pushed.
+
+- Steps 1-4 done. Paddle runs on MNN 3.6.1 (`core:ocr-mnn`, submodule, CPU only); the engine takes a detector's
+  thresholds from `detector.properties` in its archive (v6: 0.2 / 0.45, unclip 1.5 as measured; v5 defaults) and
+  puts right-to-left recognizers' lines into reading order. Latin look-alikes in Cyrillic words become Cyrillic for
+  every engine (`LanguageSupport.ocrWord`).
+- Models: six archives built by `scripts/ocr-models/paddle_models.py` from the pinned ONNX files (the converted files
+  the comparison measured), uploaded with the owner's approval to the GitHub prerelease `ocr-models-1` (not latest;
+  the latest release stays v0.2.3). Offered per language: v6 for ja, zh and the Latin languages, v5 Latin for the
+  Latin languages, v5 Cyrillic for ru, v5 Korean for ko; vi has none.
+- Step 5 done for the 14 languages: recommended marks by the rule (v6 ja, zh, de, fr, it, pl, lv; v5 Latin en, es,
+  pt, tr; Cyrillic ru; ko and vi keep ML Kit; Tesseract recommends none of them). The ⓘ of a catalog model is its
+  template description (written in all 14 locales).
+- Fixed on the way: the language download screen listed the Paddle detector as its own item and left it out of the
+  download; now it comes with the ticked model and is counted in its size (`setupDownloads`, LanguageSetupTest). The
+  catalog test no longer expects an installed title from model entries. CI: Gradle wrapper validation in its own
+  step that allows the wrapper JAR of a sample inside the MNN submodule.
+- Checked on the emulator (Dev build): Russian turned on → PaddleOCR v5 ticked as main, 12 MB with the detector,
+  downloaded and unpacked; a scan's draft came from Paddle (1.8 s) and the lookup ran on it. Japanese: PaddleOCR v6
+  downloaded from the model dialog (26 MB with its detector, `detector.properties` unpacked); offline scan: draft
+  1.4 s, whole screen 21 paragraphs in 6.1 s on the x86 emulator. With no explicit choice, French, German and
+  Italian switched to v6 as soon as it was installed (decision "Choice per language").
+
+Left:
+
+- Step 6: `docs/usage.md` and `docs/architecture.md` for Paddle (development.md and NOTICE are done); check each row
+  of "Missing parts" on the emulator; test-model cases OCR18-OCR21 added, others for request 62 still to write.
+- Step 7: emulator checks of every case (the group 3 checks of the languages plan included), a timing run on the
+  phone (the v6 whole screen took 6.1 s on the emulator: compare with ML Kit's 1.6 s rule on the phone), then
+  fast-forward `languages/main` through the stack and this branch.
+- The code review of all modules after the owner's build (languages plan, row "Build of groups 1-3").
+
 ## Questions
 
 35. Answered on 2026-10-17: (a). Model updates: when the catalog names a newer version of an installed model (a new tessdata commit, a new
@@ -112,3 +146,5 @@ From `languages/ocr-compare` (commits d27009b and 07f4213), character error rate
   Cyrillic words) added to step 4.
 - 2026-10-17: step 3 done; comparison results recorded; rotated Paddle crops handed to the comparison session.
   Paddle stays in this plan before the owner's build of groups 1-3 (languages plan, row "Build of groups 1-3").
+- 2026-10-17: step 4 done (Paddle on MNN, models on the prerelease `ocr-models-1` approved by the owner) and step 5 for
+  the 14 languages; the owner's build comes from this branch's CI run. Progress section added.
