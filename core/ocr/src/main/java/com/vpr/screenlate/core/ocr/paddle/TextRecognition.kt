@@ -19,8 +19,8 @@ internal object TextRecognition {
     const val WIDTH_STEP = 32
 
     /** The width a crop of [width] × [height] is scaled to, and the input width with the padding. */
-    fun widths(width: Int, height: Int): Pair<Int, Int> {
-        val content = maxOf(1, ceil(HEIGHT * width.toFloat() / height).toInt())
+    fun widths(width: Float, height: Float): Pair<Int, Int> {
+        val content = maxOf(1, ceil(HEIGHT * width / height).toInt())
         val padded = maxOf(MIN_WIDTH, (content + WIDTH_STEP - 1) / WIDTH_STEP * WIDTH_STEP)
         return content to padded
     }
@@ -67,19 +67,17 @@ internal object TextRecognition {
     }
 
     /**
-     * The words of [line] inside its [box]: the characters between spaces, each word and each character reaching
-     * halfway to the character before it and after it. [contentShare] is the part of the input width the crop took.
-     * A [vertical] line was read turned a quarter counterclockwise, so the input's width runs down the box.
+     * The words of [line] read in [area]: the characters between spaces, each word and each character reaching
+     * halfway to the character before it and after it, as bounding boxes cut to [limit]. [contentShare] is the part
+     * of the input width the crop took; the input's width runs along the area.
      */
-    fun words(line: DecodedLine, box: Box, contentShare: Float, vertical: Boolean = false): List<OcrWord> {
+    fun words(line: DecodedLine, area: OrientedBox, contentShare: Float, limit: Box): List<OcrWord> {
         val characters = line.characters
-        val start = if (vertical) box.top else box.left
-        val end = if (vertical) box.bottom else box.right
-        val at = line.positions.map { (start + it / contentShare * (end - start)).coerceAtMost(end) }
-        fun before(i: Int) = if (i == 0) start else (at[i - 1] + at[i]) / 2
+        val end = area.length
+        val at = line.positions.map { (it / contentShare * end).coerceAtMost(end) }
+        fun before(i: Int) = if (i == 0) 0f else (at[i - 1] + at[i]) / 2
         fun after(i: Int) = if (i == characters.lastIndex) end else (at[i] + at[i + 1]) / 2
-        fun span(from: Float, to: Float) =
-            if (vertical) Box(box.left, from, box.right, to) else Box(from, box.top, to, box.bottom)
+        fun span(from: Float, to: Float) = area.part(from, to).within(limit)
         val words = ArrayList<OcrWord>()
         var first = -1
         for (i in 0..characters.size) {
