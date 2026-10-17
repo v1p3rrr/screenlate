@@ -31,6 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -82,7 +83,10 @@ class CompositeOcr internal constructor(
     constructor(lens: LensOcrEngine, device: DeviceOcr, networkStatus: NetworkStatus) :
         this(lens, device, networkStatus::isOnline)
 
-    /** @param focus the aim's row in [image] at the moment, or null without an aim. */
+    /**
+     * @param focus the aim's row in [image] at the moment, or null without an aim.
+     * @return pages with their words as [language] writes them ([inLanguage]).
+     */
     fun recognize(
         image: Bitmap,
         language: Language,
@@ -144,6 +148,11 @@ class CompositeOcr internal constructor(
         } finally {
             draft.cancel()
             coroutineContext.job.cancelChildren()
+        }
+    }.map { update ->
+        when (update) {
+            is OcrUpdate.Draft -> update.copy(page = update.page.inLanguage(language))
+            is OcrUpdate.Final -> update.copy(page = update.page.inLanguage(language))
         }
     }
 
@@ -258,6 +267,7 @@ class CompositeOcr internal constructor(
             .onFailure { if (it is CancellationException) throw it }
             .onFailure(::noteLensFailure)
             .getOrNull()
+            ?.inLanguage(language)
     }
 
     @Volatile

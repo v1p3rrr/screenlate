@@ -20,6 +20,13 @@ interface LanguageSupport {
     val ocrScript: OcrScript
 
     /**
+     * A word as OCR read it, with letters that engines take from another script written in the language's own; one
+     * character for one, so character boxes stay valid. In a Cyrillic-script language, Latin look-alikes in a word with
+     * Cyrillic letters become Cyrillic ([CyrillicLookAlikes]).
+     */
+    fun ocrWord(text: String): String = if (ocrScript == OcrScript.CYRILLIC) CyrillicLookAlikes.fix(text) else text
+
+    /**
      * How the lookup shortens the text after the aim when a longer match fails: by words for languages written with
      * spaces ("look up to" → "look up" → "look"), by characters otherwise (Yomitan's search resolution).
      */

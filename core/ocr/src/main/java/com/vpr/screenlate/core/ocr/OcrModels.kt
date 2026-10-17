@@ -1,6 +1,9 @@
 package com.vpr.screenlate.core.ocr
 
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.language.LanguageSupport
+import com.vpr.screenlate.core.common.language.support
 
 enum class OcrEngineType {
     LENS,
@@ -40,6 +43,25 @@ data class OcrPage(
             )
         },
     )
+}
+
+/** The page with every word as [language] writes it ([LanguageSupport.ocrWord]); the same page when nothing changes. */
+fun OcrPage.inLanguage(language: Language): OcrPage {
+    val support = language.support
+    var changed = false
+    val fixed = paragraphs.map { paragraph ->
+        paragraph.copy(
+            lines = paragraph.lines.map { line ->
+                line.copy(
+                    words = line.words.map { word ->
+                        val text = support.ocrWord(word.text)
+                        if (text == word.text) word else word.copy(text = text).also { changed = true }
+                    },
+                )
+            },
+        )
+    }
+    return if (changed) copy(paragraphs = fixed) else this
 }
 
 /**
