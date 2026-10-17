@@ -9,11 +9,15 @@ runs:
         distribution: temurin
         java-version: 21
 
+    # A sample in MNN's flatbuffers copy (submodule core/ocr-mnn/src/main/cpp/MNN) ships a wrapper JAR the
+    # validation does not know; the build never runs it.
+    - uses: gradle/actions/wrapper-validation@v6
+      with:
+        allow-checksums: ee3739525a995bcb5601621a6e2daec1f183bbefc375743acc235cec33547e04
+
     - uses: gradle/actions/setup-gradle@v6
       with:
-        # A sample in MNN's flatbuffers copy (submodule core/ocr-mnn/src/main/cpp/MNN) ships a wrapper JAR the
-        # validation does not know; the build never runs it.
-        allow-checksums: ee3739525a995bcb5601621a6e2daec1f183bbefc375743acc235cec33547e04
+        validate-wrappers: false
 
     - name: Install SDK packages
       shell: bash
