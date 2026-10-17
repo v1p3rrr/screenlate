@@ -14,7 +14,7 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(entry["sha256"], hashlib.sha256(b"lstm").hexdigest())
         self.assertEqual(entry["version"], entry["sha256"][:12])
         self.assertEqual(entry["downloadSize"], 4)
-        self.assertTrue(entry["recommended"])
+        self.assertFalse(entry["recommended"])
         self.assertIn("/tessdata_fast/", entry["downloadUrl"])
         self.assertFalse(catalog.entry("ru", "rus", "best", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("en", "eng", "fast", b"lstm")["recommended"])

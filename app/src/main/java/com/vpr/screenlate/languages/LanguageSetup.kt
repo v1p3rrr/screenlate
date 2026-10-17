@@ -5,8 +5,14 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 
-/** A catalog entry on the download screen; an [installed] one stays ticked and is not downloaded again. */
-data class SetupItem(val entry: CatalogEntry, val installed: Boolean)
+/**
+ * A catalog entry on the download screen; an [installed] one stays ticked and is not downloaded again. [requires] are
+ * the models it reads only together with (the Paddle detector), downloaded with it when missing and not listed.
+ */
+data class SetupItem(val entry: CatalogEntry, val installed: Boolean, val requires: List<SetupItem> = emptyList()) {
+    /** What ticking it downloads: the entry and the missing models it requires. */
+    val downloadBytes: Long get() = entry.downloadBytes + requires.filterNot { it.installed }.sumOf { it.entry.downloadBytes }
+}
 
 /**
  * One category of the download screen. A [mandatory] category needs a ticked item; its only item is a preselected
@@ -52,7 +58,8 @@ internal fun glossChoices(
  * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them,
  * and those without a gloss language (frequency, transcription, recognition models). Categories go in their declared
  * order, a mandatory one even when empty; within one, in the order of [glosses], the recommended first. A model counts
- * as installed when [modelInstalled] says so.
+ * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
+ * ([SetupItem.requires]).
  */
 internal fun setupCategories(
     catalog: Catalog,
@@ -63,13 +70,24 @@ internal fun setupCategories(
 ): List<SetupCategory> {
     val entries = catalog.entries.filter { it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses) }
     val mandatory = catalog.mandatory(language)
+    val required = catalog.entries.flatMapTo(hashSetOf()) { it.requires }
+    fun requiredItems(entry: CatalogEntry) = entry.requires.mapNotNull { id ->
+        val model = entries.firstOrNull { it.isModel && it.model == id } ?: catalog.entries.firstOrNull { it.isModel && it.model == id }
+        model?.let { SetupItem(it, modelInstalled(it)) }
+    }
     return CatalogCategory.entries.mapNotNull { category ->
-        val items = entries.filter { it.category == category }
+        val items = entries.filter { it.category == category && !(it.isModel && it.model in required) }
             .sortedWith(
                 compareBy<CatalogEntry> { entry -> entry.targetLanguage?.let(glosses::indexOf) ?: glosses.size }
                     .thenBy { !it.recommended },
             )
-            .map { entry -> SetupItem(entry, if (entry.isModel) modelInstalled(entry) else installed.any(entry::matches)) }
+            .map { entry ->
+                if (entry.isModel) {
+                    SetupItem(entry, modelInstalled(entry), requiredItems(entry))
+                } else {
+                    SetupItem(entry, installed.any(entry::matches))
+                }
+            }
         SetupCategory(category, items, category in mandatory).takeIf { items.isNotEmpty() || it.mandatory }
     }
 }
@@ -101,10 +119,16 @@ data class MainModelPick(val model: String?)
 internal fun missingChoices(categories: List<SetupCategory>, choices: Map<String, Boolean>): List<CatalogCategory> =
     categories.filter { category -> category.mandatory && category.items.none { category.ticked(it, choices) } }.map { it.category }
 
-/** The ticked entries to download, by category and within one the smallest first, so the language works soonest. */
+/**
+ * The ticked entries to download with the missing models they require, by category and within one the smallest
+ * first, so the language works soonest; a model shared by several is downloaded once.
+ */
 internal fun setupDownloads(categories: List<SetupCategory>, choices: Map<String, Boolean>): List<CatalogEntry> =
     categories.flatMap { category ->
-        category.items.filter { !it.installed && category.ticked(it, choices) }.map { it.entry }.sortedBy { it.downloadBytes }
+        category.items.filter { category.ticked(it, choices) }
+            .flatMap { item -> (listOf(item) + item.requires).filterNot { it.installed }.map { it.entry } }
+            .distinctBy { it.model ?: it.id }
+            .sortedBy { it.downloadBytes }
     }
 
 /** Installed copies of ticked entries to enable on confirmation; no archive is downloaded for them. */

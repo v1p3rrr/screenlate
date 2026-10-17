@@ -49,6 +49,18 @@ downloaded unchanged and kept as `tessdata/<code>.traineddata` (the entry's `fil
 `tesseract-best`) for a new commit or language and keeps the downloads in `testdata/tessdata/`. A model's version is the
 start of its SHA-256, so moving the pin offers an update only for the files that changed.
 
+PaddleOCR models run on MNN, built from the submodule `core/ocr-mnn/src/main/cpp/MNN` (CPU backend only) into
+`libscreenlate_mnn.so`. Their archives are built by `python -I scripts/ocr-models/paddle_models.py --mnnconvert <path>`:
+it downloads PaddlePaddle's ONNX models from Hugging Face at pinned commits (checked by SHA-256), converts them with
+MNN's converter (pip package `mnn` of the same version as the submodule), takes a recognizer's character list from
+its `inference.yml` into `dict.txt`, and zips each model with the Apache License and a note on its source; a detector
+with its own thresholds gets `detector.properties`. It writes the archives to `testdata/ocr/paddle/archives` and the
+catalog entries (templates `paddle-v5`, `paddle-v6`, `paddle-detector-v5`, `paddle-detector-v6`), whose download URLs
+point at the GitHub prerelease `ocr-models-1`; new archives go into a new prerelease, never the latest release, so
+the update check and the README link keep pointing at the app. A recognizer requires its detector (`requires`); the
+detector is downloaded with it and not listed on its own. The recommended marks follow the measurements in
+`ai/notes/ocr-engines.md`.
+
 The round flags that stand for languages (`overlay/src/main/res/drawable/flag_*.xml`) are generated from circle-flags
 (MIT) at a pinned commit: `python scripts/flags/circle_flags.py overlay/src/main/res/drawable`. A language support
 class lists its flag countries (`flagCountries`); add a new country to `COUNTRIES` in the script and to `Flags` in

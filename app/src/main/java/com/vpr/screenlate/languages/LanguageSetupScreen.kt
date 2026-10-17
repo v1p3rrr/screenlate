@@ -277,7 +277,7 @@ private fun SetupItemRow(
             val size = if (item.installed) {
                 stringResource(R.string.dictionaries_installed_mark)
             } else {
-                Formatter.formatShortFileSize(LocalContext.current, entry.downloadBytes)
+                Formatter.formatShortFileSize(LocalContext.current, item.downloadBytes)
             }
             Text(
                 listOf(size, entry.license).filter { it.isNotEmpty() }.joinToString(" · "),

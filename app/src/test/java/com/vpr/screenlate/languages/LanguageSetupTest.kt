@@ -87,6 +87,31 @@ class LanguageSetupTest {
     }
 
     @Test
+    fun `a required model is not listed and is downloaded once with the ticked models that need it`() {
+        fun model(id: String, model: String, size: Long, recommended: Boolean = false, requires: List<String> = emptyList()) =
+            CatalogEntry(
+                id = id, title = id, declaredCategory = CatalogCategory.OCR_MODEL, sourceLanguage = "en",
+                recommended = recommended, downloadUrl = "https://example.org/$model.zip", downloadSize = size,
+                sha256 = "0".repeat(64), model = model, engine = "paddle", requires = requires, version = "1",
+            )
+        val models = Catalog(
+            listOf(
+                model("latin-en", "latin", 7, recommended = true, requires = listOf("detector")),
+                model("v6-en", "v6", 18, requires = listOf("detector")),
+                model("detector-en", "detector", 4),
+            ),
+        )
+        val categories = setupCategories(models, "en", listOf("en"), installed = emptyList())
+        val items = categories.single { it.category == CatalogCategory.OCR_MODEL }.items
+        assertThat(items.map { it.entry.id }).containsExactly("latin-en", "v6-en").inOrder()
+        assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("detector-en", "latin-en").inOrder()
+        assertThat(setupDownloads(categories, mapOf("v6-en" to true)).map { it.id })
+            .containsExactly("detector-en", "latin-en", "v6-en").inOrder()
+        val withDetector = setupCategories(models, "en", listOf("en"), installed = emptyList()) { it.model == "detector" }
+        assertThat(setupDownloads(withDetector, emptyMap()).map { it.id }).containsExactly("latin-en")
+    }
+
+    @Test
     fun `a single mandatory item is fixed and installed items are not downloaded again`() {
         val categories = setupCategories(catalog, "en", listOf("de"), installed = listOf(installed("en-ipa", kind = DictionaryKind.PITCH)))
         val main = categories.first { it.category == CatalogCategory.MAIN }

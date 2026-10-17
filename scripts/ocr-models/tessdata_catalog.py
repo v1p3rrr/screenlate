@@ -25,9 +25,9 @@ LANGUAGES = {
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus",
 }
 
-# Recommended per language until the comparison of the clean and hard screens decides: languages that ML Kit reads
-# keep ML Kit, the others get the fast model.
-RECOMMENDED = {"ru": "fast"}
+# Recommended per language by the rule over the clean and hard screens (ai/notes/ocr-engines.md): none of the app's
+# languages, which Paddle or ML Kit read better; paddle_models.py marks theirs.
+RECOMMENDED = {}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")
