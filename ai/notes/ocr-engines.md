@@ -56,45 +56,50 @@ Time: median of three runs after a warm-up, 4 threads, detector width 960; host 
 until the phone run. `lens` is cloud recognition: one request per screen, 1.5 s apart; its time is the round trip from
 the emulator (median 0.57 s, 0.37–4.7 s over 336 screens), so only its errors are compared.
 
+Paddle (v5 and v6) is `core:ocr`'s pipeline with lines cropped along their rotated rectangles (below, "Rotated
+crop"); its earlier numbers, with axis-aligned crops, are quoted only where they show the change.
+
 ### Clean screens
 
 CER (character errors, %) / words read whole / taps on the right word / seconds per screen. CJK: by characters, taps
 on characters; Thai, Lao, Khmer: CER only. `mlkit` is the app's path (Japanese model for Latin text), `mlkit-latin`
 ML Kit's Latin model, Paddle is PP-OCRv5 mobile on MNN (ONNX Runtime gives the same text, 5–20% slower), `paddle v6`
 PP-OCRv6 small with its own detector (below). Lens: CER only; its words and taps are 98–100% in every language.
+Paddle's seconds are from the run before the rotated crop: the re-run shared the emulator with other work and took
+1.0–2.2 s per screen, while the crop itself costs what the old one did (below).
 
 | lang | mlkit | mlkit-latin | paddle (model) | paddle v6 | tesseract fast | tesseract best | lens |
 |---|---|---|---|---|---|---|---|
-| ja | 0.2 – 99.8 1.6 | | 0.1 – 100 1.4 (main) | 0.0 – 100 1.5 | 1.0 – 57 0.5 | 0.8 – 41 2.7 | 0.0 |
-| ja vertical | 6.3 – 94 1.5 | | 10.1 – 96 1.1 (main) | 9.3 – 96 1.3 | 9.3 – 26 0.6 | 1.5 – 27 1.5 | 0.0 |
+| ja | 0.2 – 99.8 1.6 | | 0.1 – 100 1.4 (main) | 0.1 – 100 1.5 | 1.0 – 57 0.5 | 0.8 – 41 2.7 | 0.0 |
+| ja vertical | 6.3 – 94 1.5 | | 9.7 – 96 1.1 (main) | 9.3 – 96 1.3 | 9.3 – 26 0.6 | 1.5 – 27 1.5 | 0.0 |
 | zh | 3.2 – 95 1.3 | | 0.1 – 100 1.5 (main) | 0.1 – 100 1.4 | 3.6 – 57 0.5 | 1.1 – 59 1.2 | 0.0 |
-| zh-Hant | 3.8 – 94 1.4 | | 4.3 – 100 1.5 (main) | 3.0 – 100 1.5 | 4.5 – 62 0.5 | 2.3 – 59 1.2 | 0.0 |
-| ko | 0.3 99 99 1.3 | | 4.8 75 86 1.2 (korean) | | 58.5 32 17 0.4 | 61.1 29 17 1.0 | 0.1 |
+| zh-Hant | 3.8 – 94 1.4 | | 4.5 – 100 1.5 (main) | 2.9 – 100 1.5 | 4.5 – 62 0.5 | 2.3 – 59 1.2 | 0.0 |
+| ko | 0.3 99 99 1.3 | | 4.6 75 86 1.2 (korean) | | 58.5 32 17 0.4 | 61.1 29 17 1.0 | 0.1 |
 | en | 0.1 99 100 2.5 | 0.1 100 100 1.1 | 0.0 100 100 0.9 (latin) | 0.0 100 100 1.5 | 0.0 100 100 0.4 | 0.0 100 100 1.5 | 0.0 |
 | de | 0.4 98 98 2.6 | 0.2 99 99 1.1 | 0.3 100 100 1.0 | 0.0 100 100 1.6 | 0.0 100 100 0.4 | 0.0 100 100 1.5 | 0.0 |
 | fr | 0.7 96 95 2.6 | 0.6 97 95 1.1 | 0.0 100 100 0.9 | 0.0 100 100 1.6 | 0.3 98 100 0.4 | 0.3 98 100 0.6 | 0.4 |
 | es | 0.4 98 99 2.5 | 0.3 98 99 1.1 | 0.2 99 98 0.9 | 0.2 99 98 1.6 | 0.0 100 97 0.4 | 0.0 100 99 1.4 | 0.0 |
 | it | 0.5 97 92 2.4 | 0.4 97 92 1.1 | 0.0 100 100 1.0 | 0.0 100 100 1.6 | 0.2 99 97 0.4 | 0.1 100 99 1.3 | 0.0 |
-| pt | 0.6 98 97 2.4 | 0.2 99 97 1.0 | 0.2 99 99 1.0 | 0.0 100 100 1.6 | 0.2 100 100 0.4 | 0.3 100 100 1.5 | 0.0 |
+| pt | 0.6 98 97 2.4 | 0.2 99 97 1.0 | 0.0 100 100 1.0 | 0.0 100 100 1.6 | 0.2 100 100 0.4 | 0.3 100 100 1.5 | 0.0 |
 | pl | 1.1 93 92 2.2 | 1.0 93 92 1.0 | 0.2 99 98 0.9 | 0.2 98 97 1.5 | 0.0 100 100 0.4 | 0.0 100 100 1.1 | 0.0 |
-| tr | 1.8 88 86 2.0 | 1.7 89 86 0.9 | 0.5 97 97 0.9 | 0.7 95 93 1.6 | 0.1 100 100 0.4 | 0.1 100 100 0.8 | 0.1 |
-| lv | 1.1 93 93 2.1 | 1.1 93 93 0.9 | 0.9 97 97 0.8 | 0.5 97 97 1.3 | 0.0 100 100 0.4 | 0.0 100 100 0.9 | 0.0 |
-| vi | 2.2 93 89 2.0 | 1.1 96 94 0.9 | 13.5 44 42 0.9 | 12.8 46 46 1.5 | 0.6 99 100 0.4 | 0.7 99 99 1.2 | 0.0 |
-| cs | 2.2 89 86 2.1 | 0.9 95 92 0.9 | 1.2 95 95 0.9 | 1.0 95 95 1.2 | 0.1 99 97 0.4 | 0.1 99 99 1.3 | 0.0 |
+| tr | 1.8 88 86 2.0 | 1.7 89 86 0.9 | 0.5 96 96 0.9 | 0.7 95 94 1.6 | 0.1 100 100 0.4 | 0.1 100 100 0.8 | 0.1 |
+| lv | 1.1 93 93 2.1 | 1.1 93 93 0.9 | 0.8 97 97 0.8 | 0.5 97 97 1.3 | 0.0 100 100 0.4 | 0.0 100 100 0.9 | 0.0 |
+| vi | 2.2 93 89 2.0 | 1.1 96 94 0.9 | 13.4 44 41 0.9 | 12.7 46 46 1.5 | 0.6 99 100 0.4 | 0.7 99 99 1.2 | 0.0 |
+| cs | 2.2 89 86 2.1 | 0.9 95 92 0.9 | 1.0 95 95 0.9 | 1.0 95 95 1.2 | 0.1 99 97 0.4 | 0.1 99 99 1.3 | 0.0 |
 | sh (Latin) | 0.5 96 93 2.0 | 0.2 98 95 0.9 | 0.0 100 100 1.0 | 0.0 100 100 1.3 | 0.0 100 99 0.4 | 0.0 100 99 1.0 | 0.0 |
-| ru | | | 1.9 94 92 1.0 (eslav); 1.1 98 97 1.2 (cyrillic) | | 1.9 97 99 0.5 | 2.3 97 98 1.5 | 0.0 |
-| uk | | | 2.3 92 92 1.3 (eslav); 2.2 97 97 1.3 (cyrillic) | | 0.6 96 95 0.5 | 0.4 97 97 1.6 | 0.0 |
+| ru | | | 1.6 94 93 1.0 (eslav); 1.0 97 97 1.2 (cyrillic) | | 1.9 97 99 0.5 | 2.3 97 98 1.5 | 0.0 |
+| uk | | | 2.6 90 90 1.3 (eslav); 1.8 97 97 1.3 (cyrillic) | | 0.6 96 95 0.5 | 0.4 97 97 1.6 | 0.0 |
 | kk | | | 0.2 100 100 1.2 (cyrillic) | | 0.0 100 100 0.5 | 0.0 100 100 0.8 | 0.0 |
-| sh (Cyrillic) | | | 1.0 97 97 1.0 (cyrillic) | | 0.0 100 98 0.4 | 0.1 99 98 0.9 | 0.0 |
-| el | | | 0.6 98 98 0.9 (el) | | 1.6 90 90 0.4 | 0.8 95 95 1.1 | 0.0 |
-| ar | | | 2.4 99 99 0.7 (arabic) | | 5.8 94 94 0.4 | 5.9 94 93 1.0 | 0.4 |
-| fa | | | 2.6 93 93 0.9 (arabic) | | 26.4 72 67 0.3 | 26.5 71 67 0.6 | 1.4 |
+| sh (Cyrillic) | | | 1.3 96 96 1.0 (cyrillic) | | 0.0 100 98 0.4 | 0.1 99 98 0.9 | 0.0 |
+| el | | | 0.7 98 98 0.9 (el) | | 1.6 90 90 0.4 | 0.8 95 95 1.1 | 0.0 |
+| ar | | | 2.4 100 100 0.7 (arabic) | | 5.8 94 94 0.4 | 5.9 94 93 1.0 | 0.4 |
+| fa | | | 2.2 96 96 0.9 (arabic) | | 26.4 72 67 0.3 | 26.5 71 67 0.6 | 1.4 |
 | he | | | | | 0.0 100 100 0.3 | 0.0 100 100 0.6 | 0.0 |
-| hi | 0.6 97 97 1.0 (Devanagari model) | | 1.7 93 91 0.9 (devanagari) | | 0.2 99 96 0.5 | 0.4 98 96 1.4 | 0.0 |
+| hi | 0.6 97 97 1.0 (Devanagari model) | | 0.9 96 96 0.9 (devanagari) | | 0.2 99 96 0.5 | 0.4 98 96 1.4 | 0.0 |
 | bn | | | | | 6.3 91 88 0.3 | 0.5 99 99 1.9 | 0.0 |
 | ka | | | | | 1.1 98 98 0.6 | 1.1 98 98 0.9 | 0.0 |
 | hy | | | | | 2.9 86 86 0.4 | 2.0 91 91 0.7 | 0.0 |
-| th | | | 0.7 – – 0.8 (th) | | 0.8 – – 0.5 | 0.9 – – 0.9 | 0.0 |
+| th | | | 0.4 – – 0.8 (th) | | 0.8 – – 0.5 | 0.9 – – 0.9 | 0.0 |
 | lo | | | | | 16.8 – – 0.3 | 17.0 – – 1.1 | 4.3 |
 | km | | | | | 8.9 – – 0.6 | 8.9 – – 1.2 | 0.0 |
 
@@ -105,7 +110,7 @@ Findings on clean screens:
 - Paddle's Latin model lacks Vietnamese letters with two marks (ổ, ộ, ữ…): it drops them. Its Cyrillic models
   sometimes write a whole word in Latin look-alikes ("Mama", "sosed"), which no lookup finds. Its Arabic model writes
   Persian ye and kaf as the Arabic letters (scored as equal; a Persian lookup would fold them). In vertical Japanese
-  it drops ー and 、。 (the rotated crop).
+  it drops ー and 、。 (the column is read turned a quarter).
 - Tesseract's symbol boxes in CJK are off by up to a character and its vertical model reports them in rotated
   coordinates; its word boxes overlap neighbours. Taps on CJK land right 26–62% of the time, so Tesseract is no use
   for CJK. With automatic page segmentation it loses whole lines of Korean, the heading of the Bengali page with the
@@ -134,36 +139,36 @@ CER % per language:
 
 | lang | mlkit | mlkit-latin | paddle | paddle cyrillic | paddle v6 | v6 + v5 det | tess fast | tess best | lens |
 |---|---|---|---|---|---|---|---|---|---|
-| ja | 6.6 |  | 20.7 |  | 15.5 | 16.3 | 63.8 | 70.3 | 0.8 |
-| javert | 8.6 |  | 7.8 |  | 3.9 | 4.7 | 72.7 | 34.4 | 0.8 |
-| zh | 5.7 |  | 17.1 |  | 15.4 | 15.6 | 56.5 | 54.4 | 0.0 |
-| zht | 5.7 |  | 20.6 |  | 18.8 | 16.9 | 60.4 | 59.9 | 0.2 |
-| ko | 8.8 |  | 25.9 |  |  |  | 73.9 | 75.2 | 0.3 |
-| en | 1.5 | 1.0 | 22.7 |  | 20.6 | 19.8 | 28.7 | 29.4 | 0.0 |
-| de | 2.0 | 1.0 | 23.4 |  | 21.3 | 22.5 | 36.3 | 36.3 | 0.0 |
-| fr | 2.1 | 1.7 | 24.5 |  | 21.2 | 21.6 | 33.5 | 34.1 | 0.1 |
-| es | 2.0 | 2.0 | 22.6 |  | 20.6 | 20.8 | 37.9 | 38.1 | 0.0 |
-| it | 1.9 | 1.9 | 24.3 |  | 20.6 | 22.3 | 43.1 | 43.4 | 0.1 |
-| pt | 1.4 | 1.0 | 23.1 |  | 19.9 | 20.5 | 31.5 | 31.7 | 0.0 |
-| pl | 6.2 | 5.1 | 22.8 |  | 20.0 | 20.8 | 38.4 | 37.5 | 0.2 |
-| tr | 3.6 | 3.2 | 22.9 |  | 18.6 | 20.5 | 41.1 | 38.7 | 0.0 |
-| lv | 4.0 | 3.8 | 23.9 |  | 19.5 | 21.6 | 40.6 | 40.0 | 0.0 |
-| vi | 8.2 | 3.6 | 34.6 |  | 31.4 | 32.3 | 44.4 | 44.3 | 0.0 |
-| cs | 5.6 | 2.9 | 25.2 |  | 22.2 | 22.9 | 45.0 | 45.3 | 0.2 |
-| sh | 2.4 | 1.6 | 23.8 |  | 19.4 | 20.8 | 26.4 | 31.2 | 0.1 |
-| ru |  |  | 20.5 | 21.8 |  |  | 31.2 | 31.2 | 0.0 |
-| uk |  |  | 24.6 | 24.2 |  |  | 30.1 | 31.5 | 0.0 |
-| kk |  |  | 23.7 |  |  |  | 38.6 | 36.7 | 0.0 |
-| shc |  |  | 24.2 |  |  |  | 35.4 | 33.5 | 0.2 |
-| el |  |  | 22.5 |  |  |  | 40.1 | 40.6 | 0.0 |
-| ar |  |  | 26.6 |  |  |  | 58.8 | 56.1 | 0.5 |
-| fa |  |  | 30.7 |  |  |  | 49.9 | 49.4 | 0.7 |
+| ja | 6.6 |  | 1.3 |  | 0.4 | 1.1 | 63.8 | 70.3 | 0.8 |
+| javert | 8.6 |  | 8.6 |  | 3.9 | 5.5 | 72.7 | 34.4 | 0.8 |
+| zh | 5.7 |  | 0.2 |  | 0.0 | 0.2 | 56.5 | 54.4 | 0.0 |
+| zht | 5.7 |  | 2.3 |  | 0.3 | 1.2 | 60.4 | 59.9 | 0.2 |
+| ko | 8.8 |  | 4.5 |  |  |  | 73.9 | 75.2 | 0.3 |
+| en | 1.5 | 1.0 | 0.3 |  | 0.3 | 0.7 | 28.7 | 29.4 | 0.0 |
+| de | 2.0 | 1.0 | 0.6 |  | 0.3 | 0.9 | 36.3 | 36.3 | 0.0 |
+| fr | 2.1 | 1.7 | 0.7 |  | 0.4 | 0.9 | 33.5 | 34.1 | 0.1 |
+| es | 2.0 | 2.0 | 0.6 |  | 1.0 | 1.1 | 37.9 | 38.1 | 0.0 |
+| it | 1.9 | 1.9 | 0.5 |  | 0.3 | 1.0 | 43.1 | 43.4 | 0.1 |
+| pt | 1.4 | 1.0 | 0.2 |  | 0.3 | 0.3 | 31.5 | 31.7 | 0.0 |
+| pl | 6.2 | 5.1 | 2.0 |  | 1.7 | 1.9 | 38.4 | 37.5 | 0.2 |
+| tr | 3.6 | 3.2 | 1.7 |  | 1.9 | 2.3 | 41.1 | 38.7 | 0.0 |
+| lv | 4.0 | 3.8 | 1.5 |  | 1.0 | 1.8 | 40.6 | 40.0 | 0.0 |
+| vi | 8.2 | 3.6 | 15.3 |  | 14.5 | 15.1 | 44.4 | 44.3 | 0.0 |
+| cs | 5.6 | 2.9 | 1.9 |  | 1.6 | 2.1 | 45.0 | 45.3 | 0.2 |
+| sh | 2.4 | 1.6 | 1.0 |  | 0.5 | 1.0 | 26.4 | 31.2 | 0.1 |
+| ru |  |  | 3.1 | 2.7 |  |  | 31.2 | 31.2 | 0.0 |
+| uk |  |  | 5.4 | 4.3 |  |  | 30.1 | 31.5 | 0.0 |
+| kk |  |  | 3.4 |  |  |  | 38.6 | 36.7 | 0.0 |
+| shc |  |  | 3.7 |  |  |  | 35.4 | 33.5 | 0.2 |
+| el |  |  | 1.8 |  |  |  | 40.1 | 40.6 | 0.0 |
+| ar |  |  | 3.5 |  |  |  | 58.8 | 56.1 | 0.5 |
+| fa |  |  | 5.2 |  |  |  | 49.9 | 49.4 | 0.7 |
 | he |  |  |  |  |  |  | 48.5 | 43.7 | 5.1 |
-| hi | 2.5 |  | 26.4 |  |  |  | 39.5 | 39.7 | 0.1 |
+| hi | 2.5 |  | 3.7 |  |  |  | 39.5 | 39.7 | 0.1 |
 | bn |  |  |  |  |  |  | 52.0 | 43.3 | 0.0 |
 | ka |  |  |  |  |  |  | 38.3 | 38.2 | 0.5 |
 | hy |  |  |  |  |  |  | 44.9 | 43.6 | 0.0 |
-| th |  |  | 21.1 |  |  |  | 33.2 | 33.4 | 0.0 |
+| th |  |  | 1.8 |  |  |  | 33.2 | 33.4 | 0.0 |
 | lo |  |  |  |  |  |  | 53.9 | 53.3 | 3.0 |
 | km |  |  |  |  |  |  | 57.1 | 56.6 | 0.2 |
 
@@ -172,28 +177,26 @@ Hindi and Thai; v6 only CJK and Latin):
 
 | style | mlkit | mlkit-latin | paddle | paddle cyrillic | paddle v6 | v6 + v5 det | tess fast | tess best | lens |
 |---|---|---|---|---|---|---|---|---|---|
-| display | 2.0 | 1.5 | 2.9 | 1.4 | 1.2 | 1.9 | 48.4 | 48.3 | 0.1 |
-| gradient | 1.0 | 0.7 | 4.6 | 8.8 | 1.0 | 4.2 | 72.9 | 72.4 | 0.2 |
-| hand | 6.3 | 4.1 | 3.9 | 5.5 | 2.2 | 2.8 | 10.2 | 9.1 | 1.1 |
-| italic-display | 6.0 | 1.9 | 1.4 | 0.0 | 0.9 | 0.9 | 15.3 | 14.6 | 0.1 |
-| italic-sans | 0.8 | 0.9 | 1.1 | 0.0 | 0.9 | 0.8 | 6.2 | 5.3 | 0.1 |
-| italic-serif | 1.9 | 1.8 | 1.5 | 0.0 | 1.0 | 1.0 | 6.2 | 6.4 | 0.1 |
-| manga | 8.6 |  | 7.8 |  | 3.9 | 4.7 | 72.7 | 34.4 | 0.8 |
-| photo | 3.1 | 1.5 | 4.1 | 11.0 | 1.0 | 2.3 | 80.2 | 78.8 | 0.1 |
-| small | 0.8 | 0.7 | 1.4 | 0.0 | 1.1 | 1.1 | 50.0 | 50.0 | 0.4 |
-| subtitle | 12.1 | 9.6 | 5.6 | 9.7 | 4.3 | 4.6 | 73.9 | 76.6 | 0.3 |
-| tilt-hand | 6.8 | 3.8 | 96.1 | 98.4 | 97.0 | 97.1 | 72.3 | 72.1 | 1.2 |
-| tilt-sans | 0.6 | 0.4 | 84.5 | 68.7 | 66.9 | 66.6 | 14.8 | 12.4 | 0.1 |
-| tilt-serif | 1.3 | 1.0 | 77.5 | 69.1 | 66.1 | 69.2 | 36.4 | 36.3 | 0.0 |
+| display | 2.0 | 1.5 | 2.8 | 1.7 | 1.2 | 1.7 | 48.4 | 48.3 | 0.1 |
+| gradient | 1.0 | 0.7 | 3.8 | 8.8 | 1.0 | 3.5 | 72.9 | 72.4 | 0.2 |
+| hand | 6.3 | 4.1 | 3.9 | 5.2 | 2.1 | 2.7 | 10.2 | 9.1 | 1.1 |
+| italic-display | 6.0 | 1.9 | 1.2 | 0.0 | 0.9 | 0.9 | 15.3 | 14.6 | 0.1 |
+| italic-sans | 0.8 | 0.9 | 1.0 | 0.0 | 0.9 | 0.8 | 6.2 | 5.3 | 0.1 |
+| italic-serif | 1.9 | 1.8 | 1.4 | 0.3 | 1.0 | 1.0 | 6.2 | 6.4 | 0.1 |
+| manga | 8.6 |  | 8.6 |  | 3.9 | 5.5 | 72.7 | 34.4 | 0.8 |
+| photo | 3.1 | 1.5 | 3.6 | 10.7 | 1.1 | 2.4 | 80.2 | 78.8 | 0.1 |
+| small | 0.8 | 0.7 | 1.2 | 0.0 | 1.1 | 1.1 | 50.0 | 50.0 | 0.4 |
+| subtitle | 12.1 | 9.6 | 5.6 | 9.1 | 4.3 | 5.1 | 73.9 | 76.6 | 0.3 |
+| tilt-hand | 6.8 | 3.8 | 3.0 | 5.0 | 2.7 | 2.6 | 72.3 | 72.1 | 1.2 |
+| tilt-sans | 0.6 | 0.4 | 0.9 | 0.0 | 0.9 | 0.9 | 14.8 | 12.4 | 0.1 |
+| tilt-serif | 1.3 | 1.0 | 1.1 | 0.0 | 1.1 | 1.1 | 36.4 | 36.3 | 0.0 |
 
 Findings on hard screens:
 
-- Paddle fails on turned lines, v5 and v6 alike: 66–98% CER. Its detector's boxes are axis-aligned, and the bounding
-  box of a line turned by 5–10° is several lines tall and takes in parts of its neighbours; squeezed to 48 px, the
-  crop is unreadable. ML Kit stays at 0.4–6.8% on the same lines, Tesseract at 12–72%, Lens at 0–1.2%. Cropping
-  along the detector's rotated rectangle instead of its bounding box would be the fix in `core:ocr`.
-- ML Kit's weak spots are outlined subtitles (9.6–12.1%) and, in CJK, handwriting (21.0% against Paddle's 5.5% and
-  v6's 0.7%); Paddle v5's are text over photos and gradients (Latin and CJK: 1.7–4.4%; v6: 0.0–1.1%).
+- Turned lines: Paddle reads them at 0.9–3.0% (v5) and 0.9–2.7% (v6) per style, ML Kit at 0.4–6.8%, Tesseract at
+  12–72%, Lens at 0–1.2%. With axis-aligned crops Paddle was at 66–98% (below).
+- ML Kit's weak spots are outlined subtitles (9.6–12.1%) and, in CJK, handwriting (21.0% against Paddle's 5.9% and
+  v6's 0.7%); Paddle v5's are text over photos and gradients (Latin and CJK: 1.8–3.3%; v6: 0.0–1.1%).
 - Tesseract loses whole blocks: small grey text 50%, text over photos 79–80%, gradients 72–73%, outlined subtitles
   74–77%; its page segmentation drops a low-contrast block entirely.
 - Lens: 0–0.8% in every language except Hebrew (5.1%: 27–33% on the handwritten font, a Hebrew cursive) and Lao
@@ -205,54 +208,80 @@ Findings on hard screens:
   never replaces fast: where it is clearly better, ML Kit or Paddle is better still (vertical Japanese) or the
   difference stays under a third (Bengali).
 
+### Rotated crop
+
+`core:ocr` used to crop each detected region by its axis-aligned bounding box. For a line turned by 5–10° that box
+is several lines tall and takes in parts of the neighbours; squeezed to 48 px, the crop was unreadable: 66–98% CER on
+the turned lines, v5 and v6 alike, and 2–9% of taps on the right word. Now `TextDetection` takes each region's
+smallest enclosing rectangle at any angle (`OrientedBox`: rotating calipers over the hull of the region's row ends),
+unclips it as before, and `PaddlePipeline` warps it upright into the recognizer's input: an affine map through a
+`BitmapShader` with clamped edges, as PaddleOCR's `get_rotate_crop_image` does with replicated borders. A rectangle
+at least 1.5 times as tall as long is read as a column, top first. Word and character boxes are the bounding boxes of
+their stretches along the rectangle, cut to the image.
+
+- Turned lines, CER % per style, before → after: v5 hand 96.1 → 3.0, sans 84.5 → 0.9, serif 77.5 → 1.1; v6 97.0 →
+  2.7, 66.9 → 0.9, 66.1 → 1.1; the Cyrillic model 68.7–98.4 → 0.0–5.0. The other styles move by at most 0.8 points
+  either way (v5 on the manga page 7.8 → 8.6).
+- Taps on turned lines land on the right word 75–92% of the time (ML Kit 68–91%, its Latin model 81–97%), against
+  95–96% on straight italic: the bounding box of a slanted word overlaps the lines above and below.
+- Photos and comic pages gain the most (pooled, below): v5 23.4 → 12.4% in CJK and 23.1 → 14.0% in Latin, v6 16.4 →
+  8.1% and 17.9 → 10.6%. A Latvian tram poster in slanted lettering goes from 94.2% (v5) and 73.3% (v6) to 0.0%, a
+  Korean café menu from 15.5% to 3.4%.
+- Cost: the warp takes what the axis-aligned crop and scale took, ~2.5 ms per line on the emulator, upright or
+  turned by 5° (`CropTimingTest` in the harness: 30 lines on a 1280×2856 screen, 10 rounds after a warm-up).
+- The re-run also fixed the harness's right-to-left order: reversed Arabic and Persian words kept their own
+  separators, so the first two words of each line came out glued. That affected the earlier hard and wild numbers
+  for ar and fa; the clean run predates separators in the output.
+
 ### Recommendation under the plan's rule
 
 Fewest errors over clean + hard; another model replaces the base (ML Kit as the app uses it for CJK and Latin,
 tessdata_fast elsewhere) only with at least a third fewer errors and at least 0.5 points fewer. "Without tilt" leaves
-out the turned lines, which are rare on a phone screen and the one style Paddle cannot read. CER %:
+out the turned lines, which are rare on a phone screen. CER %:
 
 | lang | fewest errors, clean + hard | base | recommended | without tilt: fewest | recommended | lens |
 |---|---|---|---|---|---|---|
-| ja | mlkit 3.1, paddle v6 7.0 | mlkit 3.1 | mlkit | paddle v6 0.1, v6 + v5 det 0.3 | paddle v6 | 0.4 |
+| ja | paddle v6 0.2, v6 + v5 det 0.5 | mlkit 3.1 | paddle v6 | paddle v6 0.1, v6 + v5 det 0.4 | paddle v6 | 0.4 |
 | javert | mlkit 6.8, v6 + v5 det 7.6 | mlkit 6.8 | mlkit | mlkit 6.8, v6 + v5 det 7.6 | mlkit | 0.2 |
-| zh | mlkit 4.3, paddle v6 6.9 | mlkit 4.3 | mlkit | paddle v6 0.1, paddle 0.2 | paddle v6 | 0.0 |
-| zht | mlkit 4.7, v6 + v5 det 9.9 | mlkit 4.7 | mlkit | paddle v6 2.0, v6 + v5 det 3.0 | paddle v6 | 0.1 |
-| ko | mlkit 4.2, paddle 14.5 | mlkit 4.2 | mlkit | mlkit 3.2, paddle 4.8 | mlkit | 0.2 |
-| en | mlkit-latin 0.6, mlkit 0.8 | mlkit 0.8 | mlkit | paddle 0.1, paddle v6 0.2 | mlkit | 0.0 |
-| de | mlkit-latin 0.6, mlkit 1.2 | mlkit 1.2 | mlkit-latin | paddle v6 0.3, paddle 0.4 | paddle v6 | 0.0 |
-| fr | mlkit-latin 1.2, mlkit 1.4 | mlkit 1.4 | mlkit | paddle v6 0.1, paddle 0.4 | paddle v6 | 0.3 |
-| es | mlkit 1.1, mlkit-latin 1.1 | mlkit 1.1 | mlkit | paddle 0.3, paddle v6 0.4 | paddle | 0.0 |
-| it | mlkit-latin 1.1, mlkit 1.2 | mlkit 1.2 | mlkit | paddle v6 0.1, paddle 0.4 | paddle v6 | 0.0 |
-| pt | mlkit-latin 0.6, mlkit 1.0 | mlkit 1.0 | mlkit | paddle 0.2, paddle v6 0.2 | paddle | 0.0 |
-| pl | mlkit-latin 2.9, mlkit 3.4 | mlkit 3.4 | mlkit | paddle v6 0.7, paddle 0.9 | paddle v6 | 0.1 |
-| tr | mlkit-latin 2.4, mlkit 2.6 | mlkit 2.6 | mlkit | paddle 0.9, paddle v6 1.0 | paddle | 0.0 |
-| lv | mlkit-latin 2.8, mlkit 2.9 | mlkit 2.9 | mlkit | paddle v6 0.7, paddle 1.3 | paddle v6 | 0.0 |
+| zh | paddle 0.1, paddle v6 0.1 | mlkit 4.3 | paddle v6 | paddle v6 0.1, paddle 0.2 | paddle v6 | 0.0 |
+| zht | paddle v6 1.7, v6 + v5 det 2.6 | mlkit 4.7 | paddle v6 | paddle v6 1.9, v6 + v5 det 2.8 | paddle v6 | 0.1 |
+| ko | mlkit 4.2, paddle 4.6 | mlkit 4.2 | mlkit | mlkit 3.2, paddle 4.8 | mlkit | 0.2 |
+| en | paddle 0.2, paddle v6 0.2 | mlkit 0.8 | paddle | paddle 0.2, paddle v6 0.2 | mlkit | 0.0 |
+| de | paddle v6 0.2, paddle 0.4 | mlkit 1.2 | paddle v6 | paddle v6 0.2, paddle 0.4 | paddle v6 | 0.0 |
+| fr | paddle v6 0.2, paddle 0.4 | mlkit 1.4 | paddle v6 | paddle v6 0.1, paddle 0.3 | paddle v6 | 0.3 |
+| es | paddle 0.4, paddle v6 0.5 | mlkit 1.1 | paddle | paddle 0.3, paddle v6 0.5 | paddle | 0.0 |
+| it | paddle v6 0.1, paddle 0.2 | mlkit 1.2 | paddle v6 | paddle v6 0.1, paddle 0.2 | paddle v6 | 0.0 |
+| pt | paddle 0.1, paddle v6 0.2 | mlkit 1.0 | paddle | paddle 0.1, paddle v6 0.2 | paddle | 0.0 |
+| pl | paddle v6 0.9, paddle 1.0 | mlkit 3.4 | paddle v6 | paddle v6 0.7, paddle 0.8 | paddle v6 | 0.1 |
+| tr | paddle 1.1, paddle v6 1.3 | mlkit 2.6 | paddle | paddle 1.0, paddle v6 1.0 | paddle | 0.0 |
+| lv | paddle v6 0.8, paddle 1.2 | mlkit 2.9 | paddle v6 | paddle v6 0.7, paddle 1.2 | paddle v6 | 0.0 |
 | vi | mlkit-latin 2.2, mlkit 4.9 | mlkit 4.9 | mlkit-latin | mlkit-latin 2.3, mlkit 4.9 | mlkit-latin | 0.0 |
-| cs | mlkit-latin 2.2, mlkit 4.3 | mlkit 4.3 | mlkit-latin | paddle v6 1.3, paddle 1.7 | paddle v6 | 0.1 |
-| sh | mlkit-latin 1.1, mlkit 1.7 | mlkit 1.7 | mlkit-latin | paddle v6 0.4, paddle 0.7 | paddle v6 | 0.0 |
-| ru | paddle 10.9, paddle cyrillic 11.1 | tess fast 16.1 | tess fast | paddle cyrillic 2.2, paddle 2.6 | paddle cyrillic | 0.0 |
-| uk | paddle cyrillic 16.0, paddle 16.3 | tess fast 19.1 | tess fast | paddle cyrillic 3.4, paddle 4.0 | paddle cyrillic | 0.0 |
-| kk | paddle 14.8, tess best 22.8 | tess fast 24.0 | paddle | paddle 2.2, tess best 16.5 | paddle | 0.0 |
-| shc | paddle 15.5, tess best 21.0 | tess fast 22.1 | tess fast | paddle 2.8, tess best 16.1 | paddle | 0.1 |
-| el | paddle 14.1, tess fast 25.4 | tess fast 25.4 | paddle | paddle 1.7, tess best 23.5 | paddle | 0.0 |
-| ar | paddle 17.4, tess best 36.9 | tess fast 38.5 | paddle | paddle 4.5, tess best 31.4 | paddle | 0.5 |
-| fa | paddle 20.0, tess best 40.6 | tess fast 40.9 | paddle | paddle 6.2, tess fast 41.0 | paddle | 1.0 |
+| cs | paddle v6 1.4, paddle 1.6 | mlkit 4.3 | paddle v6 | paddle v6 1.2, paddle 1.4 | paddle v6 | 0.1 |
+| sh | paddle v6 0.3, paddle 0.6 | mlkit 1.7 | paddle v6 | paddle v6 0.3, paddle 0.6 | paddle v6 | 0.0 |
+| ru | paddle cyrillic 1.9, paddle 2.3 | tess fast 16.1 | paddle cyrillic | paddle cyrillic 2.1, paddle 2.5 | paddle cyrillic | 0.0 |
+| uk | paddle cyrillic 3.4, paddle 4.4 | tess fast 19.1 | paddle cyrillic | paddle cyrillic 3.3, paddle 4.4 | paddle cyrillic | 0.0 |
+| kk | paddle 2.2, tess best 22.8 | tess fast 24.0 | paddle | paddle 2.1, tess best 16.5 | paddle | 0.0 |
+| shc | paddle 2.8, tess best 21.0 | tess fast 22.1 | paddle | paddle 3.0, tess best 16.1 | paddle | 0.1 |
+| el | paddle 1.4, tess fast 25.4 | tess fast 25.4 | paddle | paddle 1.7, tess best 23.5 | paddle | 0.0 |
+| ar | paddle 3.1, tess best 36.9 | tess fast 38.5 | paddle | paddle 3.3, tess best 31.4 | paddle | 0.5 |
+| fa | paddle 4.0, tess best 40.6 | tess fast 40.9 | paddle | paddle 4.3, tess fast 41.0 | paddle | 1.0 |
 | he | tess best 27.2, tess fast 30.2 | tess fast 30.2 | tess fast | tess best 24.6, tess fast 26.9 | tess fast | 3.2 |
-| hi | mlkit 1.8, paddle 17.1 | tess fast 24.8 | mlkit | mlkit 1.5, paddle 3.4 | mlkit | 0.0 |
+| hi | mlkit 1.8, paddle 2.7 | tess fast 24.8 | mlkit | mlkit 1.5, paddle 2.9 | mlkit | 0.0 |
 | bn | tess best 27.2, tess fast 34.7 | tess fast 34.7 | tess fast | tess best 22.1, tess fast 28.7 | tess fast | 0.0 |
 | ka | tess best 22.8, tess fast 22.9 | tess fast 22.9 | tess fast | tess fast 17.8, tess best 17.8 | tess fast | 0.3 |
 | hy | tess best 26.9, tess fast 28.1 | tess fast 28.1 | tess fast | tess best 24.5, tess fast 25.9 | tess fast | 0.0 |
-| th | paddle 13.3, tess fast 20.8 | tess fast 20.8 | paddle | paddle 1.6, tess fast 20.7 | paddle | 0.0 |
+| th | paddle 1.3, tess fast 20.8 | tess fast 20.8 | paddle | paddle 1.4, tess fast 20.7 | paddle | 0.0 |
 | lo | tess best 37.3, tess fast 37.6 | tess fast 37.6 | tess fast | tess fast 34.0, tess best 34.7 | tess fast | 3.6 |
 | km | tess best 37.9, tess fast 38.3 | tess fast 38.3 | tess fast | tess best 35.3, tess fast 35.5 | tess fast | 0.1 |
 
-- With the turned lines ML Kit stays in CJK and Latin; its Latin model replaces the app's path in de, vi, cs and sh;
-  Paddle replaces Tesseract in kk, el, ar, fa and th, ML Kit's Devanagari model in hi; tessdata_fast stays in ru, uk,
-  shc, he, bn, ka, hy, lo and km.
-- Without them Paddle takes ja, zh, zht, every Latin language but en and vi, and ru, uk, kk, shc (the Cyrillic model
-  in ru and uk). Between Paddle v5 and v6 the rule picks the lower; they are 0.0–1.8 points apart (zht 3.8 against
-  2.0), and v6 costs more (below). ML Kit stays in en (Paddle 0.1 against 0.6: just under the 0.5 points), vertical
-  Japanese and Korean.
+- Paddle takes ja, zh, zht and every Latin language but Vietnamese: v6 in ja, zh, zht, de, fr, it, pl, lv, cs and
+  sh, v5 in en, es, pt and tr; the Cyrillic model in ru and uk; v5's script models in kk, shc, el, ar, fa and th.
+  ML Kit stays in vertical Japanese and Korean, its Latin model replaces the app's path in vi, its Devanagari model
+  takes hi; tessdata_fast stays in he, bn, ka, hy, lo and km.
+- Without the turned lines only English changes: ML Kit stays (0.6 against Paddle's 0.2, under the 0.5 points).
+- v5 against v6, clean + hard: v6 is lower in CJK (ja 0.2 / 0.7, vertical Japanese 8.1 / 9.5, zht 1.7 / 3.5; zh
+  0.1 both) and by 0.1–0.4 points in the other Latin languages it takes (vi 13.5 / 14.3); v5 is lower by 0.1–0.2 in
+  es, pt and tr, and ties in en (0.2). On photos and comic pages v6 is lower in most languages (below); it costs more.
 
 ### Real screenshots
 
@@ -262,12 +291,12 @@ more than half of it is wrong (`testdata/ocr/compare/scripts/real.py`). One run 
 
 | lang (screens) | mlkit | paddle | paddle v6 | v6 + v5 det | tess fast | tess best | lens |
 |---|---|---|---|---|---|---|---|
-| ja (3) | 0.9 (0/58) | 1.8 (1/58) | 1.1 (0/58) | 1.1 (0/58) | 15.7 (9/58) | 21.1 (15/58) | 0.2 (0/58) |
-| javert (2) | 10.2 (0/42) | 19.3 (4/42) | 0.7 (0/42) | 1.5 (0/42) | 34.3 (21/42) | 35.4 (22/42) | 0.0 (0/42) |
-| ko (1) | 13.7 (0/5) | 13.7 (0/5) | | | 100.0 (5/5) | 76.5 (4/5) | 0.0 (0/5) |
+| ja (3) | 0.9 (0/58) | 1.4 (0/58) | 0.9 (0/58) | 1.3 (0/58) | 15.7 (9/58) | 21.1 (15/58) | 0.2 (0/58) |
+| javert (2) | 10.2 (0/42) | 19.3 (4/42) | 1.5 (0/42) | 1.5 (0/42) | 34.3 (21/42) | 35.4 (22/42) | 0.0 (0/42) |
+| ko (1) | 13.7 (0/5) | 13.7 (0/5) |  |  | 100.0 (5/5) | 76.5 (4/5) | 0.0 (0/5) |
 | zht (1) | 6.1 (0/5) | 0.0 (0/5) | 0.0 (0/5) | 0.0 (0/5) | 93.9 (5/5) | 97.0 (5/5) | 0.0 (0/5) |
 
-Paddle v5's 19.3% in vertical Japanese is the reader app's page (37.0%; v6 0.8%). ML Kit and Paddle both miss the
+Paddle v5's 19.3% in vertical Japanese is the reader app's page (36.2%; v6 2.4%). ML Kit and Paddle both miss the
 hanja of the Korean screenshot; Lens reads them.
 
 ### Photos and comic pages
@@ -281,51 +310,52 @@ points (Arabic 72.7 against 82.7) and misses as many phrases.
 
 | lang (screens) | mlkit | mlkit-latin | paddle | paddle v6 | v6 + v5 det | tess fast | lens |
 |---|---|---|---|---|---|---|---|
-| ar (5) |  |  | 29.5 (2/17) |  |  | 82.7 (16/17) | 4.1 (0/17) |
+| ar (5) |  |  | 25.5 (1/17) |  |  | 82.7 (16/17) | 4.1 (0/17) |
 | bn (4) |  |  |  |  |  | 62.8 (6/10) | 0.0 (0/10) |
-| cs (1) | 42.8 (6/13) | 30.2 (2/13) | 20.9 (1/13) | 15.8 (0/13) | 15.8 (0/13) | 24.7 (1/13) | 5.6 (0/13) |
-| de (3) | 24.2 (7/62) | 21.7 (5/62) | 20.6 (5/62) | 14.2 (2/62) | 16.7 (2/62) | 23.8 (8/62) | 1.2 (0/62) |
-| el (4) |  |  | 11.1 (2/15) |  |  | 76.3 (11/15) | 2.5 (1/15) |
-| en (3) | 39.7 (14/50) | 31.5 (10/50) | 19.3 (2/50) | 18.8 (2/50) | 17.5 (1/50) | 74.7 (48/50) | 4.6 (0/50) |
-| es (3) | 26.4 (4/17) | 17.2 (1/17) | 10.9 (1/17) | 4.6 (0/17) | 7.5 (1/17) | 79.3 (15/17) | 2.3 (0/17) |
-| fa (4) |  |  | 14.3 (1/14) |  |  | 99.4 (14/14) | 1.9 (1/14) |
-| fr (3) | 52.8 (33/73) | 36.2 (18/73) | 30.8 (16/73) | 25.1 (13/73) | 25.4 (12/73) | 57.7 (33/73) | 10.6 (1/73) |
+| cs (1) | 42.8 (6/13) | 30.2 (2/13) | 13.5 (0/13) | 13.5 (0/13) | 15.3 (0/13) | 24.7 (1/13) | 5.6 (0/13) |
+| de (3) | 24.2 (7/62) | 21.7 (5/62) | 14.7 (2/62) | 10.4 (1/62) | 12.9 (2/62) | 23.8 (8/62) | 1.2 (0/62) |
+| el (4) |  |  | 11.6 (2/15) |  |  | 76.3 (11/15) | 2.5 (1/15) |
+| en (3) | 39.7 (14/50) | 31.5 (10/50) | 12.8 (0/50) | 12.2 (0/50) | 11.0 (0/50) | 74.7 (48/50) | 4.6 (0/50) |
+| es (3) | 26.4 (4/17) | 17.2 (1/17) | 8.6 (1/17) | 2.9 (0/17) | 8.0 (1/17) | 79.3 (15/17) | 2.3 (0/17) |
+| fa (4) |  |  | 9.3 (1/14) |  |  | 99.4 (14/14) | 1.9 (1/14) |
+| fr (3) | 52.8 (33/73) | 36.2 (18/73) | 19.4 (7/73) | 14.1 (1/73) | 14.7 (1/73) | 57.7 (33/73) | 10.6 (1/73) |
 | he (4) |  |  |  |  |  | 75.7 (18/20) | 0.7 (0/20) |
-| hi (4) | 2.2 (0/6) |  | 35.5 (0/6) |  |  | 100.0 (6/6) | 0.0 (0/6) |
+| hi (4) | 2.2 (0/6) |  | 36.6 (0/6) |  |  | 100.0 (6/6) | 0.0 (0/6) |
 | hy (4) |  |  |  |  |  | 60.0 (3/6) | 0.0 (0/6) |
-| it (2) | 52.0 (9/13) | 47.4 (7/13) | 27.6 (1/13) | 23.7 (1/13) | 24.3 (1/13) | 82.9 (13/13) | 16.4 (1/13) |
-| ja (7) | 45.1 (18/32) |  | 29.6 (9/32) | 22.5 (9/32) | 26.3 (10/32) | 93.9 (30/32) | 11.3 (6/32) |
-| javert (3) | 90.4 (18/19) |  | 27.9 (4/19) | 20.2 (2/19) | 17.3 (1/19) | 92.3 (19/19) | 1.0 (0/19) |
+| it (2) | 52.0 (9/13) | 47.4 (7/13) | 20.4 (0/13) | 13.2 (0/13) | 14.5 (0/13) | 82.9 (13/13) | 16.4 (1/13) |
+| ja (7) | 45.1 (18/32) |  | 22.5 (7/32) | 16.4 (6/32) | 16.4 (7/32) | 93.9 (30/32) | 11.3 (6/32) |
+| javert (3) | 90.4 (18/19) |  | 26.0 (4/19) | 17.3 (2/19) | 14.4 (1/19) | 92.3 (19/19) | 1.0 (0/19) |
 | ka (4) |  |  |  |  |  | 63.3 (6/8) | 29.7 (3/8) |
-| kk (3) |  |  | 17.9 (0/14) |  |  | 28.4 (5/14) | 6.3 (1/14) |
+| kk (3) |  |  | 17.4 (0/14) |  |  | 28.4 (5/14) | 6.3 (1/14) |
 | km (3) |  |  |  |  |  | 100.0 (6/6) | 0.0 (0/6) |
-| ko (3) | 36.3 (13/35) |  | 16.5 (3/35) |  |  | 100.0 (35/35) | 25.6 (6/35) |
+| ko (3) | 36.3 (13/35) |  | 5.9 (0/35) |  |  | 100.0 (35/35) | 25.6 (6/35) |
 | lo (4) |  |  |  |  |  | 51.0 (4/8) | 1.0 (0/8) |
-| lv (5) | 5.2 (0/17) | 5.2 (0/17) | 30.9 (2/17) | 24.2 (2/17) | 29.1 (2/17) | 62.4 (10/17) | 1.8 (0/17) |
-| pl (3) | 17.5 (6/30) | 9.8 (0/30) | 4.1 (0/30) | 3.1 (0/30) | 2.9 (0/30) | 82.8 (23/30) | 1.7 (0/30) |
-| pt (3) | 43.6 (10/17) | 33.1 (7/17) | 25.2 (5/17) | 24.5 (4/17) | 20.9 (4/17) | 100.0 (17/17) | 10.4 (0/17) |
-| ru (4) |  |  | 24.6 (3/12) |  |  | 63.7 (10/12) | 1.2 (0/12) |
-| sh (3) | 2.4 (1/12) | 0.0 (0/12) | 0.0 (0/12) | 0.0 (0/12) | 0.0 (0/12) | 21.4 (3/12) | 0.0 (0/12) |
-| shc (4) |  |  | 11.2 (1/10) |  |  | 100.0 (10/10) | 3.7 (1/10) |
-| th (4) |  |  | 8.0 (2/10) |  |  | 25.5 (5/10) | 1.6 (0/10) |
-| tr (3) | 8.6 (1/16) | 7.5 (0/16) | 33.9 (2/16) | 10.2 (0/16) | 24.7 (1/16) | 100.0 (16/16) | 3.2 (1/16) |
-| uk (2) |  |  | 42.2 (2/7) |  |  | 87.5 (7/7) | 35.9 (3/7) |
-| vi (3) | 31.7 (7/19) | 26.2 (6/19) | 35.8 (4/19) | 28.3 (3/19) | 23.8 (2/19) | 96.2 (19/19) | 17.1 (6/19) |
-| zh (3) | 7.4 (1/42) |  | 20.8 (5/42) | 14.5 (2/42) | 11.9 (1/42) | 91.7 (38/42) | 3.6 (1/42) |
-| zht (4) | 49.0 (13/33) |  | 17.2 (0/33) | 9.0 (0/33) | 6.2 (0/33) | 96.6 (33/33) | 3.4 (0/33) |
+| lv (5) | 5.2 (0/17) | 5.2 (0/17) | 5.5 (0/17) | 4.9 (0/17) | 6.7 (0/17) | 62.4 (10/17) | 1.8 (0/17) |
+| pl (3) | 17.5 (6/30) | 9.8 (0/30) | 3.1 (0/30) | 2.4 (0/30) | 2.6 (0/30) | 82.8 (23/30) | 1.7 (0/30) |
+| pt (3) | 43.6 (10/17) | 33.1 (7/17) | 15.3 (1/17) | 8.6 (1/17) | 11.7 (1/17) | 100.0 (17/17) | 10.4 (0/17) |
+| ru (4) |  |  | 15.2 (1/12) |  |  | 63.7 (10/12) | 1.2 (0/12) |
+| sh (3) | 2.4 (1/12) | 0.0 (0/12) | 0.0 (0/12) | 1.6 (0/12) | 0.0 (0/12) | 21.4 (3/12) | 0.0 (0/12) |
+| shc (4) |  |  | 9.7 (1/10) |  |  | 100.0 (10/10) | 3.7 (1/10) |
+| th (4) |  |  | 8.5 (2/10) |  |  | 25.5 (5/10) | 1.6 (0/10) |
+| tr (3) | 8.6 (1/16) | 7.5 (0/16) | 20.4 (1/16) | 8.1 (0/16) | 21.0 (1/16) | 100.0 (16/16) | 3.2 (1/16) |
+| uk (2) |  |  | 39.1 (2/7) |  |  | 87.5 (7/7) | 35.9 (3/7) |
+| vi (3) | 31.7 (7/19) | 26.2 (6/19) | 21.7 (1/19) | 22.1 (1/19) | 17.1 (1/19) | 96.2 (19/19) | 17.1 (6/19) |
+| zh (3) | 7.4 (1/42) |  | 1.5 (0/42) | 1.5 (1/42) | 1.2 (0/42) | 91.7 (38/42) | 3.6 (1/42) |
+| zht (4) | 49.0 (13/33) |  | 13.1 (0/33) | 4.8 (0/33) | 6.9 (0/33) | 96.6 (33/33) | 3.4 (0/33) |
 
 Findings on photos and comic pages:
 
-- Lens has the lowest CER in every language but Korean (25.6% against Paddle's 16.5%; 38.5% against 15.5% on a café
-  menu). Its weak results are Georgian (29.7%: a stylized name comes back in Armenian letters) and Ukrainian (35.9%
-  over two signs; of one it returns a single word). Neither it nor any other engine reads the two manga sound effects
-  (100% each).
-- Pooled by characters over the languages PP-OCRv6 reads: CJK (799 characters) ML Kit 35.8%, Paddle v5 23.4%, v6
-  16.4%, v6 + v5 det 15.4%, Lens 5.3%; Latin (4461 characters) ML Kit 33.4%, its Latin model 25.0%, Paddle v5 23.1%,
-  v6 17.9%, v6 + v5 det 18.9%, Lens 6.2%. Paddle beats ML Kit in every CJK and Latin language except Chinese (7.4%
-  against 11.9–20.8%), Latvian (5.2% against 24.2–30.9%: on a tram poster ML Kit 3.5%, Paddle v5 94.2%, v6 73.3%)
-  and Turkish (7.5% against 10.2–33.9%); in Serbo-Croatian both read 0.0%. ML Kit's Devanagari model beats Paddle in
-  Hindi (2.2% / 35.5%).
+- Lens has the lowest CER in most languages. Paddle is lower in Korean (5.9% against 25.6%; 3.4% against 38.5% on a
+  café menu), Chinese (1.2–1.5% / 3.6%), Italian (v6 13.2% / 16.4%) and Portuguese (v6 8.6% / 10.4%); they tie in
+  Vietnamese (17.1%, v6 + v5 det) and Serbo-Croatian (0.0%). Lens's weak results are Georgian (29.7%: a stylized name
+  comes back in Armenian letters) and Ukrainian (35.9% over two signs; of one it returns a single word). Neither it
+  nor any other engine reads the two manga sound effects (100% each).
+- Pooled by characters over the languages PP-OCRv6 reads: CJK (799 characters) ML Kit 35.8%, Paddle v5 12.4%, v6
+  8.1%, v6 + v5 det 8.0%, Lens 5.3%; Latin (4461 characters) ML Kit 33.4%, its Latin model 25.0%, Paddle v5 14.0%,
+  v6 10.6%, v6 + v5 det 11.8%, Lens 6.2%. Paddle beats ML Kit in every CJK and Latin language except Turkish (ML
+  Kit's Latin model 7.5% against v6's 8.1% and v5's 20.4%: v5 misreads a shop window, 24.3% against v6's 4.9%) and
+  Latvian, where they are even (5.2% against 4.9–6.7%); in Serbo-Croatian both read 0.0%. ML Kit's Devanagari model
+  beats Paddle in Hindi (2.2% / 36.6%).
 - Tesseract is at 60–100% in 25 of the 32 language variants and misses most phrases in them; its lowest are
   Serbo-Croatian 21.4%, German 23.8%, Czech 24.7% and Thai 25.5%.
 
@@ -346,16 +376,18 @@ per-model thresholds.
 
 CER %, v6 against v5:
 
-- clean: CJK 2.3 against 2.8, Latin 1.2 against 1.3 (Vietnamese 12.8 / 13.5, the rest 0.2 / 0.2);
-- hard: CJK 15.7 against 18.8, Latin 21.1 against 24.2; per style photo 1.0 / 4.1, gradient 1.0 / 4.6, handwriting
-  2.2 / 3.9, subtitles 4.3 / 5.6, manga page 3.9 / 7.8; turned lines 66–97 either way;
-- real: vertical Japanese 0.7 against 19.3, the rest 0.0–1.1 against 0.0–1.8;
-- photos and comic pages: CJK 16.4 against 23.4, Latin 17.9 against 23.1.
+- clean: CJK 2.3 against 2.8, Latin 1.2 against 1.2 (Vietnamese 12.7 / 13.4, the rest 0.2 / 0.2);
+- hard: CJK 0.5 against 1.7, Latin 1.6 against 1.8 (without Vietnamese 0.8 / 0.9); per style photo 1.1 / 3.6,
+  gradient 1.0 / 3.8, handwriting 2.1 / 3.9, subtitles 4.3 / 5.6, manga page 3.9 / 8.6, turned lines 0.9–2.7 /
+  0.9–3.0;
+- real: vertical Japanese 1.5 against 19.3, the rest 0.0–0.9 against 0.0–1.4;
+- photos and comic pages: CJK 8.1 against 12.4, Latin 10.6 against 14.0.
 
-v6's recognizer after v5's detector stays within 2.1 points of v6 alone on screens (clean and hard); on photos it goes
-both ways (Turkish 24.7 against 10.2, Traditional Chinese 6.2 against 9.0, pooled 15.4 / 16.4 in CJK and 18.9 / 17.9
-in Latin). It saves 4.9 MB (v6's detector against v5's). Time on the emulator: CJK 1.3–1.5 s against v5's 1.1–1.5 s,
-Latin 1.2–1.6 s against 0.8–1.0 s (the larger recognizer replaces v5's small Latin one).
+v6's recognizer after v5's detector stays within 1.6 points of v6 alone per language on screens (clean and hard), but
+reads gradients worse (3.5 against 1.0); on photos it goes both ways (Turkish 21.0 against 8.1, Vietnamese 17.1
+against 22.1; pooled 8.0 / 8.1 in CJK and 11.8 / 10.6 in Latin). It saves 4.9 MB (v6's detector against v5's). Time
+on the emulator, before the rotated crop: CJK 1.3–1.5 s against v5's 1.1–1.5 s, Latin 1.2–1.6 s against 0.8–1.0 s
+(the larger recognizer replaces v5's small Latin one).
 
 Sizes (arm64 APK; armeabi-v7a, x86_64): Tesseract4Android 8.3 MB (6.2, 8.8), MNN 2.1 MB (1.3, 2.6), ONNX Runtime
 19.4 MB (14.0, 23.2). Downloads per language, tessdata_fast / best in MB: rus 3.7/14.6, ukr 3.6/10.4, kaz 4.5/7.2,

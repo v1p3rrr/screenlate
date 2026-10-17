@@ -43,14 +43,7 @@ class PaddleReader(
         val page = pipeline.recognize(image)
         if (!rightToLeft) return page
         return page.copy(paragraphs = page.paragraphs.map { paragraph ->
-            paragraph.copy(lines = paragraph.lines.map { line ->
-                line.copy(
-                    words = line.words.reversed().map { word ->
-                        word.copy(text = word.text.reversed(), characterBoxes = word.characterBoxes?.reversed())
-                    },
-                    rightToLeft = true,
-                )
-            })
+            paragraph.copy(lines = paragraph.lines.map(::inReadingOrder))
         })
     }
 
@@ -58,6 +51,25 @@ class PaddleReader(
         detector.close()
         recognizer.close()
     }
+}
+
+/**
+ * A [line] a right-to-left recognizer read from left to right, in reading order: its words and their letters reversed,
+ * each word followed by the separator that follows it in reading order, the one before it on the screen.
+ */
+internal fun inReadingOrder(line: OcrLine): OcrLine {
+    val words = line.words
+    return line.copy(
+        words = words.indices.reversed().map { i ->
+            val word = words[i]
+            word.copy(
+                text = word.text.reversed(),
+                separator = if (i > 0) words[i - 1].separator else words.last().separator,
+                characterBoxes = word.characterBoxes?.reversed(),
+            )
+        },
+        rightToLeft = true,
+    )
 }
 
 /**
