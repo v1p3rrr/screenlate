@@ -738,4 +738,20 @@
     <string name="accessibility_disclosure_agree">Accepter</string>
     <string name="accessibility_disclosure_later">Plus tard</string>
     <string name="about_accessibility_disclosure">Ce que le service lit et envoie</string>
+    <string name="ocr_models_heading">Modèle sur l’appareil</string>
+    <string name="ocr_models_info">Chaque langue est reconnue sur l’appareil par son propre modèle. ML Kit est intégré à l’appli ; les autres modèles sont téléchargés. Un modèle téléchargé est utilisé une fois choisi dans la liste de la langue. La reconnaissance dans le cloud n’utilise pas ces modèles.</string>
+    <string name="ocr_models_none">Aucun</string>
+    <string name="ocr_models_dialog_title">%1$s : modèle sur l’appareil</string>
+    <string name="ocr_models_empty">Aucun modèle sur l’appareil ne reconnaît cette langue.</string>
+    <string name="ocr_models_dialog_hint">Un modèle téléchargé est utilisé une fois choisi. Un modèle utilisé peut être supprimé après en avoir choisi un autre.</string>
+    <string name="ocr_models_mlkit">ML Kit (intégré)</string>
+    <string name="ocr_models_mlkit_info">Intégré à l’appli, rien à télécharger. Reconnaît le chinois, le japonais, le coréen et les textes en alphabet latin.</string>
+    <string name="ocr_models_recommended">Recommandé</string>
+    <string name="ocr_models_installed_size">Installé · %1$s</string>
+    <string name="ocr_models_in_use">Utilisé par : %1$s</string>
+    <string name="ocr_models_delete_title">Supprimer le modèle ?</string>
+    <string name="ocr_models_delete_text">Le modèle « %1$s » (%2$s) sera supprimé.</string>
+    <string name="ocr_models_delete_shared">Il est aussi supprimé pour ces langues : %1$s.</string>
+    <string name="language_setup_main_model">Modèle principal</string>
+    <string name="language_setup_models_info">Le modèle principal reconnaît la langue sur l’appareil. Les autres modèles cochés sont aussi téléchargés ; ils peuvent être choisis plus tard dans les paramètres de reconnaissance de l’écran. ML Kit, intégré à l’appli, reconnaît le chinois, le japonais, le coréen et les textes en alphabet latin ; pour ces langues, il est utilisé tant qu’aucun modèle n’est principal.</string>
 </resources>

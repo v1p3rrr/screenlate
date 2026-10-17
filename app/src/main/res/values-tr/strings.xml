@@ -731,4 +731,20 @@
     <string name="accessibility_disclosure_agree">Kabul et</string>
     <string name="accessibility_disclosure_later">Şimdi değil</string>
     <string name="about_accessibility_disclosure">Hizmet neyi okur ve gönderir</string>
+    <string name="ocr_models_heading">Cihazdaki model</string>
+    <string name="ocr_models_info">Her dil cihazda kendi modeliyle tanınır. ML Kit uygulamayla gelir; diğer modeller indirilir. İndirilen bir model, dilin listesinde seçildiğinde kullanılır. Bulut tanıma bu modelleri kullanmaz.</string>
+    <string name="ocr_models_none">Yok</string>
+    <string name="ocr_models_dialog_title">%1$s: cihazdaki model</string>
+    <string name="ocr_models_empty">Bu dili tanıyan bir cihaz modeli yok.</string>
+    <string name="ocr_models_dialog_hint">İndirilen model seçildiğinde kullanılır. Kullanılan model, başka bir model seçildikten sonra silinebilir.</string>
+    <string name="ocr_models_mlkit">ML Kit (yerleşik)</string>
+    <string name="ocr_models_mlkit_info">Uygulamayla gelir, indirme gerekmez. Çince, Japonca, Korece ve Latin alfabesiyle yazılmış metni tanır.</string>
+    <string name="ocr_models_recommended">Önerilen</string>
+    <string name="ocr_models_installed_size">Yüklü · %1$s</string>
+    <string name="ocr_models_in_use">Kullanan: %1$s</string>
+    <string name="ocr_models_delete_title">Model silinsin mi?</string>
+    <string name="ocr_models_delete_text">“%1$s” modeli (%2$s) silinecek.</string>
+    <string name="ocr_models_delete_shared">Bu diller için de silinir: %1$s.</string>
+    <string name="language_setup_main_model">Ana model</string>
+    <string name="language_setup_models_info">Ana model dili cihazda tanır. İşaretlenen diğer modeller de indirilir; bunlar daha sonra ekran tanıma ayarlarından seçilebilir. Uygulamaya yerleşik ML Kit Çince, Japonca, Korece ve Latin alfabesiyle yazılmış metni tanır; bu dillerde hiçbir model ana model değilken ML Kit kullanılır.</string>
 </resources>

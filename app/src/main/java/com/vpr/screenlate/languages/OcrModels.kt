@@ -30,11 +30,16 @@ class CatalogLanguageModels @Inject constructor(private val catalog: DictionaryC
     override fun of(language: Language): List<LanguageModel> = languageModels(language.code, catalog.localCatalog().entries)
 }
 
-/** [language]'s model entries in catalog order; a model several entries of the language name is listed once. */
-internal fun languageModels(language: String, entries: List<CatalogEntry>): List<LanguageModel> =
-    entries.filter { it.isModel && it.sourceLanguage == language }
+/**
+ * [language]'s model entries in catalog order; a model several entries of the language name is listed once. A model
+ * that others require (the Paddle detector) reads nothing alone and is left out.
+ */
+internal fun languageModels(language: String, entries: List<CatalogEntry>): List<LanguageModel> {
+    val required = entries.flatMapTo(hashSetOf()) { it.requires }
+    return entries.filter { it.isModel && it.sourceLanguage == language && it.model !in required }
         .distinctBy { it.model }
         .map { LanguageModel(requireNotNull(it.model), requireNotNull(it.engine), it.requires, it.recommended) }
+}
 
 /** The store's description of a catalog model; the catalog leaves out incomplete model entries. */
 internal fun CatalogEntry.modelSpec(): OcrModelSpec =

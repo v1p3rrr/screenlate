@@ -724,4 +724,20 @@
     <string name="accessibility_disclosure_agree">Đồng ý</string>
     <string name="accessibility_disclosure_later">Để sau</string>
     <string name="about_accessibility_disclosure">Dịch vụ đọc và gửi gì</string>
+    <string name="ocr_models_heading">Mô hình trên thiết bị</string>
+    <string name="ocr_models_info">Mỗi ngôn ngữ được nhận dạng trên thiết bị bằng mô hình riêng. ML Kit có sẵn trong ứng dụng; các mô hình khác cần tải xuống. Mô hình đã tải được dùng khi được chọn trong danh sách của ngôn ngữ. Nhận dạng đám mây không dùng các mô hình này.</string>
+    <string name="ocr_models_none">Không có</string>
+    <string name="ocr_models_dialog_title">%1$s: mô hình trên thiết bị</string>
+    <string name="ocr_models_empty">Không có mô hình trên thiết bị nào nhận dạng ngôn ngữ này.</string>
+    <string name="ocr_models_dialog_hint">Mô hình đã tải được dùng khi được chọn. Mô hình đang dùng có thể xóa sau khi chọn mô hình khác.</string>
+    <string name="ocr_models_mlkit">ML Kit (tích hợp)</string>
+    <string name="ocr_models_mlkit_info">Có sẵn trong ứng dụng, không cần tải. Nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn và chữ Latinh.</string>
+    <string name="ocr_models_recommended">Khuyến nghị</string>
+    <string name="ocr_models_installed_size">Đã cài · %1$s</string>
+    <string name="ocr_models_in_use">Đang dùng cho: %1$s</string>
+    <string name="ocr_models_delete_title">Xóa mô hình?</string>
+    <string name="ocr_models_delete_text">Mô hình “%1$s” (%2$s) sẽ bị xóa.</string>
+    <string name="ocr_models_delete_shared">Mô hình cũng bị xóa cho các ngôn ngữ này: %1$s.</string>
+    <string name="language_setup_main_model">Mô hình chính</string>
+    <string name="language_setup_models_info">Mô hình chính nhận dạng ngôn ngữ trên thiết bị. Các mô hình khác đã đánh dấu cũng được tải xuống và có thể chọn sau trong cài đặt nhận dạng màn hình. ML Kit có sẵn trong ứng dụng, nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn và chữ Latinh; với các ngôn ngữ này, ML Kit được dùng khi chưa có mô hình chính.</string>
 </resources>

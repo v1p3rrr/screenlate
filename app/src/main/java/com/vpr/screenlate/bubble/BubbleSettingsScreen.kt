@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
 import com.vpr.screenlate.core.ocr.OcrEngines
+import com.vpr.screenlate.languages.OcrModelRows
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.BackButton
@@ -265,6 +266,7 @@ fun BubbleSettingsScreen(
                         hint = stringResource(R.string.bubble_ocr_saving_hint),
                         enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH,
                     )
+                    OcrModelRows(enabled = recognizes && settings.ocrEngines != OcrEngines.CLOUD)
                 }
             }
             item(key = APP_TEXT_KEY) {

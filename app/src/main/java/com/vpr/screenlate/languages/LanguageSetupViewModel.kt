@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
+import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionaries.catalogTargetOrder
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
@@ -21,11 +23,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
  * @property glosses the gloss language slots; the one at [choosable] is the user's to fill, null for none.
  * @property choices the user's ticks by entry id; unset items follow [SetupCategory.ticked].
+ * @property mainCandidates the ticked models with a "main" switch, by model id; [mainModel] is the one switched on.
  */
 data class LanguageSetupState(
     val language: Language,
@@ -37,6 +41,8 @@ data class LanguageSetupState(
     val missing: List<CatalogCategory> = emptyList(),
     val downloads: List<CatalogEntry> = emptyList(),
     val enableDictionaries: Set<Long> = emptySet(),
+    val mainCandidates: List<String> = emptyList(),
+    val mainModel: String? = null,
     val totals: SetupTotals = SetupTotals(0, 0, 0),
     val freeBytes: Long = Long.MAX_VALUE,
     val loaded: Boolean = false,
@@ -55,6 +61,8 @@ class LanguageSetupViewModel @Inject constructor(
     private val storage: DictionaryStorage,
     private val switch: LanguageSwitch,
     private val models: OcrModelStore,
+    private val modelChoices: OcrModelChoices,
+    private val mlKit: MlKitOcrEngine,
 ) : ViewModel() {
     val language: Language = requireNotNull(Language.of(savedState.get<String>(ARG_CODE)))
     private val firstRun: Boolean = savedState.get<Boolean>(ARG_FIRST_RUN) ?: false
@@ -62,24 +70,28 @@ class LanguageSetupViewModel @Inject constructor(
 
     /** The user's pick for the slot they fill, [GlossPick.code] null for none; null until they pick. */
     private val chosenGloss = MutableStateFlow<GlossPick?>(null)
-    private val choices = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    private val picks = MutableStateFlow(Picks())
+
+    /** The user's ticks by entry id and main model. */
+    private data class Picks(val ticks: Map<String, Boolean> = emptyMap(), val main: MainModelPick? = null)
 
     val state: StateFlow<LanguageSetupState> = combine(
         catalog.catalog(),
         repository.dictionaries,
         models.models,
         chosenGloss,
-        choices,
-    ) { catalog, installed, _, chosen, choices ->
-        build(catalog, installed, chosen, choices)
+        picks,
+    ) { catalog, installed, _, chosen, picks ->
+        build(catalog, installed, chosen, picks)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LanguageSetupState(language))
 
     private fun build(
         catalog: Catalog,
         installed: List<DictionaryEntity>,
         chosen: GlossPick?,
-        choices: Map<String, Boolean>,
+        picks: Picks,
     ): LanguageSetupState {
+        val choices = picks.ticks
         val order = catalogTargetOrder(language.code, Locale.getDefault())
         val available = glossChoices(catalog.entries, language.code, taken = emptyList(), order)
         val slots = glossSlots(language.code, interfaceLanguage, available)
@@ -87,6 +99,7 @@ class LanguageSetupViewModel @Inject constructor(
         val glosses = if (choosable == null || chosen == null) slots else slots.toMutableList().also { it[choosable] = chosen.code }
         val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed) { it.isInstalledIn(models) }
         val downloads = setupDownloads(categories, choices)
+        val candidates = mainModelCandidates(categories, choices, catalog.entries.flatMapTo(hashSetOf()) { it.requires })
         return LanguageSetupState(
             language = language,
             glosses = glosses,
@@ -98,6 +111,8 @@ class LanguageSetupViewModel @Inject constructor(
             missing = missingChoices(categories, choices),
             downloads = downloads,
             enableDictionaries = setupInstalled(categories, choices, installed),
+            mainCandidates = candidates.mapNotNull { it.model },
+            mainModel = mainModel(candidates, picks.main, mlKit.reads(language)),
             totals = setupTotals(downloads),
             freeBytes = freeBytes(),
             loaded = true,
@@ -112,7 +127,12 @@ class LanguageSetupViewModel @Inject constructor(
     }
 
     fun tick(item: SetupItem, ticked: Boolean) {
-        choices.value += item.entry.id to ticked
+        picks.update { it.copy(ticks = it.ticks + (item.entry.id to ticked)) }
+    }
+
+    /** Switches model [model] on as the main one, or off, which leaves ML Kit where it reads the language. */
+    fun setMain(model: String, main: Boolean) {
+        picks.update { it.copy(main = MainModelPick(model.takeIf { main })) }
     }
 
     private val confirmation = MutableStateFlow(Confirmation.NONE)
@@ -120,12 +140,17 @@ class LanguageSetupViewModel @Inject constructor(
     /** How far the confirmation got; it outlives the screen's recreation, e.g. on rotation. */
     val confirmed: StateFlow<Confirmation> = confirmation
 
-    /** Enables ticked installed dictionaries and queues the other choices, once; later calls do nothing. */
+    /**
+     * Enables ticked installed dictionaries, queues the other choices and makes the main model the language's, once;
+     * later calls do nothing. With no main model, ML Kit stays the language's model where it reads it.
+     */
     fun confirm() {
         if (!confirmation.compareAndSet(Confirmation.NONE, Confirmation.TURNING_ON)) return
         val selected = state.value
         viewModelScope.launch {
             switch.turnOn(language, selected.downloads, firstRun, selected.enableDictionaries)
+            val main = selected.mainModel ?: OcrModelChoices.ML_KIT.takeIf { selected.mainCandidates.isNotEmpty() && mlKit.reads(language) }
+            if (main != null) modelChoices.choose(language, main)
             confirmation.value = Confirmation.QUEUED
         }
     }

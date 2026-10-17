@@ -738,4 +738,20 @@
     <string name="accessibility_disclosure_agree">Aceptar</string>
     <string name="accessibility_disclosure_later">Ahora no</string>
     <string name="about_accessibility_disclosure">Qué lee y envía el servicio</string>
+    <string name="ocr_models_heading">Modelo en el dispositivo</string>
+    <string name="ocr_models_info">Cada idioma se reconoce en el dispositivo con su propio modelo. ML Kit viene con la app; los demás modelos se descargan. Un modelo descargado se usa cuando se elige en la lista del idioma. El reconocimiento en la nube no usa estos modelos.</string>
+    <string name="ocr_models_none">Ninguno</string>
+    <string name="ocr_models_dialog_title">%1$s: modelo en el dispositivo</string>
+    <string name="ocr_models_empty">Ningún modelo en el dispositivo reconoce este idioma.</string>
+    <string name="ocr_models_dialog_hint">Un modelo descargado se usa cuando se elige. Un modelo en uso se puede eliminar después de elegir otro.</string>
+    <string name="ocr_models_mlkit">ML Kit (integrado)</string>
+    <string name="ocr_models_mlkit_info">Viene con la app; no hay nada que descargar. Reconoce texto en chino, japonés, coreano y alfabeto latino.</string>
+    <string name="ocr_models_recommended">Recomendado</string>
+    <string name="ocr_models_installed_size">Instalado · %1$s</string>
+    <string name="ocr_models_in_use">En uso en: %1$s</string>
+    <string name="ocr_models_delete_title">¿Eliminar el modelo?</string>
+    <string name="ocr_models_delete_text">Se eliminará el modelo «%1$s» (%2$s).</string>
+    <string name="ocr_models_delete_shared">También se elimina para estos idiomas: %1$s.</string>
+    <string name="language_setup_main_model">Modelo principal</string>
+    <string name="language_setup_models_info">El modelo principal reconoce el idioma en el dispositivo. Los demás modelos marcados también se descargan y se pueden elegir más tarde en los ajustes de reconocimiento de pantalla. ML Kit viene con la app y reconoce texto en chino, japonés, coreano y alfabeto latino; para esos idiomas se usa mientras ningún modelo sea el principal.</string>
 </resources>

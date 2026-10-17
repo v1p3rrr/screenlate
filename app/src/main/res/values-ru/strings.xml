@@ -746,4 +746,20 @@
     <string name="accessibility_disclosure_agree">Согласиться</string>
     <string name="accessibility_disclosure_later">Не сейчас</string>
     <string name="about_accessibility_disclosure">Что служба читает и отправляет</string>
+    <string name="ocr_models_heading">Модель на устройстве</string>
+    <string name="ocr_models_info">Каждый язык распознаётся на устройстве своей моделью. ML Kit встроен в приложение, остальные модели скачиваются. Скачанная модель используется, когда она выбрана в списке языка. Облачное распознавание эти модели не использует.</string>
+    <string name="ocr_models_none">Нет</string>
+    <string name="ocr_models_dialog_title">%1$s: модель на устройстве</string>
+    <string name="ocr_models_empty">Для этого языка нет моделей распознавания на устройстве.</string>
+    <string name="ocr_models_dialog_hint">Скачанная модель используется после выбора. Используемую модель можно удалить, когда выбрана другая.</string>
+    <string name="ocr_models_mlkit">ML Kit (встроенная)</string>
+    <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский и текст на латинице.</string>
+    <string name="ocr_models_recommended">Рекомендуется</string>
+    <string name="ocr_models_installed_size">Установлена · %1$s</string>
+    <string name="ocr_models_in_use">Используется: %1$s</string>
+    <string name="ocr_models_delete_title">Удалить модель?</string>
+    <string name="ocr_models_delete_text">Модель «%1$s» (%2$s) будет удалена.</string>
+    <string name="ocr_models_delete_shared">Она удалится и для этих языков: %1$s.</string>
+    <string name="language_setup_main_model">Основная модель</string>
+    <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский и текст на латинице; для этих языков он используется, пока ни одна модель не основная.</string>
 </resources>

@@ -74,6 +74,29 @@ internal fun setupCategories(
     }
 }
 
+/**
+ * The ticked on-device models that read the language themselves, each with a "main" switch; a model others require
+ * (the Paddle detector) is left out.
+ */
+internal fun mainModelCandidates(categories: List<SetupCategory>, choices: Map<String, Boolean>, required: Set<String>): List<CatalogEntry> =
+    categories.filter { it.category == CatalogCategory.OCR_MODEL }.flatMap { category ->
+        category.items.filter { category.ticked(it, choices) && it.entry.model != null && it.entry.model !in required }.map { it.entry }
+    }.distinctBy { it.model }
+
+/**
+ * The model of [candidates] that becomes the language's on-device model: the user's [pick] (a model id, or null for
+ * none) while it is still a candidate; else the recommended one; else none where ML Kit reads the language, which then
+ * stays its model; else the first one. Without ML Kit one of the candidates is always main.
+ */
+internal fun mainModel(candidates: List<CatalogEntry>, pick: MainModelPick?, mlKitReads: Boolean): String? {
+    val ids = candidates.mapNotNull { it.model }
+    if (pick != null && (pick.model in ids || (pick.model == null && mlKitReads))) return pick.model
+    return candidates.firstOrNull { it.recommended }?.model ?: if (mlKitReads) null else ids.firstOrNull()
+}
+
+/** The user's main model on the download screen: a model id, or null for none. */
+data class MainModelPick(val model: String?)
+
 /** Mandatory categories without a ticked item; Confirm stays disabled while there are any. */
 internal fun missingChoices(categories: List<SetupCategory>, choices: Map<String, Boolean>): List<CatalogCategory> =
     categories.filter { category -> category.mandatory && category.items.none { category.ticked(it, choices) } }.map { it.category }

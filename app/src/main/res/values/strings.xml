@@ -735,4 +735,20 @@
     <string name="accessibility_disclosure_agree">Agree</string>
     <string name="accessibility_disclosure_later">Not now</string>
     <string name="about_accessibility_disclosure">What the service reads and sends</string>
+    <string name="ocr_models_heading">On-device model</string>
+    <string name="ocr_models_info">Each language is read on the device by its own model. ML Kit comes with the app; the other models are downloaded. A downloaded model is used once it is chosen in the language list. Cloud recognition does not use these models.</string>
+    <string name="ocr_models_none">None</string>
+    <string name="ocr_models_dialog_title">%1$s: on-device model</string>
+    <string name="ocr_models_empty">No on-device model reads this language.</string>
+    <string name="ocr_models_dialog_hint">A downloaded model is used once it is chosen. A model in use can be deleted after another one is chosen.</string>
+    <string name="ocr_models_mlkit">ML Kit (built in)</string>
+    <string name="ocr_models_mlkit_info">Comes with the app; nothing to download. Reads Chinese, Japanese, Korean and Latin-script text.</string>
+    <string name="ocr_models_recommended">Recommended</string>
+    <string name="ocr_models_installed_size">Installed · %1$s</string>
+    <string name="ocr_models_in_use">Used by: %1$s</string>
+    <string name="ocr_models_delete_title">Delete the model?</string>
+    <string name="ocr_models_delete_text">The model “%1$s” (%2$s) will be deleted.</string>
+    <string name="ocr_models_delete_shared">It is deleted for these languages too: %1$s.</string>
+    <string name="language_setup_main_model">Main model</string>
+    <string name="language_setup_models_info">The main model reads the language on the device. The other ticked models are downloaded too; they can be chosen later in the screen recognition settings. ML Kit, built into the app, reads Chinese, Japanese, Korean and Latin-script text; for those languages it is used while no model is main.</string>
 </resources>

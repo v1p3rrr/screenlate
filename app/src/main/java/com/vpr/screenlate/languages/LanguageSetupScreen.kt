@@ -26,6 +26,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -129,7 +130,7 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
             Hint(stringResource(R.string.language_setup_hint))
             GlossCard(state, viewModel::chooseGloss)
             state.categories.forEach { category ->
-                CategoryCard(state, category, onTick = viewModel::tick)
+                CategoryCard(state, category, onTick = viewModel::tick, onMain = viewModel::setMain)
             }
         }
     }
@@ -203,20 +204,35 @@ private fun GlossPicker(chosen: String?, choices: List<String>, onChoose: (Strin
 }
 
 @Composable
-private fun CategoryCard(state: LanguageSetupState, category: SetupCategory, onTick: (SetupItem, Boolean) -> Unit) {
+private fun CategoryCard(
+    state: LanguageSetupState,
+    category: SetupCategory,
+    onTick: (SetupItem, Boolean) -> Unit,
+    onMain: (String, Boolean) -> Unit,
+) {
     val title = stringResource(category.category.label)
     val sample = state.language.support.pronunciationSample
     SectionCard(
         title = title,
-        info = if (category.category == CatalogCategory.PRONUNCIATION && sample != null) {
-            stringResource(R.string.language_setup_pronunciation_info, sample)
-        } else {
-            null
+        info = when {
+            category.category == CatalogCategory.PRONUNCIATION && sample != null ->
+                stringResource(R.string.language_setup_pronunciation_info, sample)
+            category.category == CatalogCategory.OCR_MODEL && state.mainCandidates.isNotEmpty() ->
+                stringResource(R.string.language_setup_models_info)
+            else -> null
         },
     ) {
         category.items.forEachIndexed { index, item ->
             if (index > 0) HorizontalDivider()
-            SetupItemRow(item, ticked = category.ticked(item, state.choices), radio = category.fixed, onTick = { onTick(item, it) })
+            val model = item.entry.model?.takeIf { it in state.mainCandidates }
+            SetupItemRow(
+                item,
+                ticked = category.ticked(item, state.choices),
+                radio = category.fixed,
+                onTick = { onTick(item, it) },
+                main = model?.let { it == state.mainModel },
+                onMain = { main -> model?.let { onMain(it, main) } },
+            )
         }
         when {
             category.items.isEmpty() -> Text(
@@ -233,8 +249,16 @@ private fun CategoryCard(state: LanguageSetupState, category: SetupCategory, onT
     }
 }
 
+/** [main] is set on a ticked on-device model: whether it is the language's main model, with a switch for it. */
 @Composable
-private fun SetupItemRow(item: SetupItem, ticked: Boolean, radio: Boolean, onTick: (Boolean) -> Unit) {
+private fun SetupItemRow(
+    item: SetupItem,
+    ticked: Boolean,
+    radio: Boolean,
+    onTick: (Boolean) -> Unit,
+    main: Boolean? = null,
+    onMain: (Boolean) -> Unit = {},
+) {
     val entry = item.entry
     val changeable = !item.installed && !radio
     Row(
@@ -261,6 +285,12 @@ private fun SetupItemRow(item: SetupItem, ticked: Boolean, radio: Boolean, onTic
                 color = if (item.installed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             )
             entry.description().takeIf { it.isNotEmpty() }?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+            if (main != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.language_setup_main_model), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                    Switch(checked = main, onCheckedChange = onMain, colors = AccentDefaults.switchColors())
+                }
+            }
         }
     }
 }

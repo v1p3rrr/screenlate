@@ -738,4 +738,20 @@
     <string name="accessibility_disclosure_agree">Concordar</string>
     <string name="accessibility_disclosure_later">Agora não</string>
     <string name="about_accessibility_disclosure">O que o serviço lê e envia</string>
+    <string name="ocr_models_heading">Modelo no dispositivo</string>
+    <string name="ocr_models_info">Cada idioma é reconhecido no dispositivo pelo próprio modelo. O ML Kit vem com o app; os outros modelos são baixados. Um modelo baixado é usado quando escolhido na lista do idioma. O reconhecimento na nuvem não usa esses modelos.</string>
+    <string name="ocr_models_none">Nenhum</string>
+    <string name="ocr_models_dialog_title">%1$s: modelo no dispositivo</string>
+    <string name="ocr_models_empty">Nenhum modelo no dispositivo reconhece este idioma.</string>
+    <string name="ocr_models_dialog_hint">Um modelo baixado é usado quando escolhido. Um modelo em uso pode ser excluído depois que outro for escolhido.</string>
+    <string name="ocr_models_mlkit">ML Kit (integrado)</string>
+    <string name="ocr_models_mlkit_info">Vem com o app, nada para baixar. Reconhece texto em chinês, japonês, coreano e no alfabeto latino.</string>
+    <string name="ocr_models_recommended">Recomendado</string>
+    <string name="ocr_models_installed_size">Instalado · %1$s</string>
+    <string name="ocr_models_in_use">Em uso por: %1$s</string>
+    <string name="ocr_models_delete_title">Excluir o modelo?</string>
+    <string name="ocr_models_delete_text">O modelo “%1$s” (%2$s) será excluído.</string>
+    <string name="ocr_models_delete_shared">Ele também é excluído para estes idiomas: %1$s.</string>
+    <string name="language_setup_main_model">Modelo principal</string>
+    <string name="language_setup_models_info">O modelo principal reconhece o idioma no dispositivo. Os outros modelos marcados também são baixados e podem ser escolhidos depois nas configurações de reconhecimento de tela. O ML Kit vem com o app e reconhece texto em chinês, japonês, coreano e no alfabeto latino; nesses idiomas, ele é usado enquanto nenhum modelo for o principal.</string>
 </resources>

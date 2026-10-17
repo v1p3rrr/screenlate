@@ -37,6 +37,11 @@ fun interface LanguageModels {
 class OcrModelChoices @Inject constructor(private val dataStore: DataStore<Preferences>) {
     fun chosen(language: Language): Flow<String?> = dataStore.data.map { it[key(language)] }.distinctUntilChanged()
 
+    /** The choice of every language that has one. */
+    val all: Flow<Map<Language, String>> = dataStore.data.map { preferences ->
+        Language.entries.mapNotNull { language -> preferences[key(language)]?.let { language to it } }.toMap()
+    }.distinctUntilChanged()
+
     suspend fun choose(language: Language, id: String) {
         dataStore.edit { it[key(language)] = id }
     }
@@ -57,7 +62,7 @@ class OcrModelChoices @Inject constructor(private val dataStore: DataStore<Prefe
  * the script, else the first listed model that can. A listed model can read when [usable] says so (it and the models
  * it requires are installed and its engine is in the app). Null when nothing can.
  */
-internal fun selectDeviceModel(
+fun selectDeviceModel(
     chosen: String?,
     listed: List<LanguageModel>,
     mlKitReads: Boolean,

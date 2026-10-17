@@ -724,4 +724,20 @@
     <string name="accessibility_disclosure_agree">同意</string>
     <string name="accessibility_disclosure_later">暫不</string>
     <string name="about_accessibility_disclosure">服務讀取和傳送的內容</string>
+    <string name="ocr_models_heading">裝置端模型</string>
+    <string name="ocr_models_info">每種語言在裝置上由各自的模型辨識。ML Kit 內建於應用程式中，其他模型需要下載。下載的模型在該語言的清單中選取後使用。雲端辨識不使用這些模型。</string>
+    <string name="ocr_models_none">無</string>
+    <string name="ocr_models_dialog_title">%1$s：裝置端模型</string>
+    <string name="ocr_models_empty">沒有可辨識此語言的裝置端模型。</string>
+    <string name="ocr_models_dialog_hint">下載的模型選取後使用。使用中的模型需先選擇其他模型才能刪除。</string>
+    <string name="ocr_models_mlkit">ML Kit（內建）</string>
+    <string name="ocr_models_mlkit_info">內建於應用程式中，無需下載。可辨識中文、日文、韓文和拉丁字母文字。</string>
+    <string name="ocr_models_recommended">建議</string>
+    <string name="ocr_models_installed_size">已安裝 · %1$s</string>
+    <string name="ocr_models_in_use">使用中：%1$s</string>
+    <string name="ocr_models_delete_title">刪除模型？</string>
+    <string name="ocr_models_delete_text">將刪除模型「%1$s」（%2$s）。</string>
+    <string name="ocr_models_delete_shared">以下語言也會失去此模型：%1$s。</string>
+    <string name="language_setup_main_model">主要模型</string>
+    <string name="language_setup_models_info">主要模型在裝置上辨識該語言。其他勾選的模型也會下載，之後可在螢幕辨識設定中選擇。ML Kit 內建於應用程式中，可辨識中文、日文、韓文和拉丁字母文字；對於這些語言，沒有主要模型時使用 ML Kit。</string>
 </resources>

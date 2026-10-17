@@ -738,4 +738,20 @@
     <string name="accessibility_disclosure_agree">Accetto</string>
     <string name="accessibility_disclosure_later">Non ora</string>
     <string name="about_accessibility_disclosure">Cosa legge e invia il servizio</string>
+    <string name="ocr_models_heading">Modello sul dispositivo</string>
+    <string name="ocr_models_info">Ogni lingua viene riconosciuta sul dispositivo dal proprio modello. ML Kit è incluso nell’app; gli altri modelli si scaricano. Un modello scaricato viene usato quando è scelto nell’elenco della lingua. Il riconoscimento nel cloud non usa questi modelli.</string>
+    <string name="ocr_models_none">Nessuno</string>
+    <string name="ocr_models_dialog_title">%1$s: modello sul dispositivo</string>
+    <string name="ocr_models_empty">Nessun modello sul dispositivo riconosce questa lingua.</string>
+    <string name="ocr_models_dialog_hint">Un modello scaricato viene usato quando è scelto. Un modello in uso si può eliminare dopo averne scelto un altro.</string>
+    <string name="ocr_models_mlkit">ML Kit (incluso)</string>
+    <string name="ocr_models_mlkit_info">Incluso nell’app, niente da scaricare. Riconosce testo cinese, giapponese, coreano e in alfabeto latino.</string>
+    <string name="ocr_models_recommended">Consigliato</string>
+    <string name="ocr_models_installed_size">Installato · %1$s</string>
+    <string name="ocr_models_in_use">In uso per: %1$s</string>
+    <string name="ocr_models_delete_title">Eliminare il modello?</string>
+    <string name="ocr_models_delete_text">Il modello “%1$s” (%2$s) verrà eliminato.</string>
+    <string name="ocr_models_delete_shared">Viene eliminato anche per queste lingue: %1$s.</string>
+    <string name="language_setup_main_model">Modello principale</string>
+    <string name="language_setup_models_info">Il modello principale riconosce la lingua sul dispositivo. Anche gli altri modelli selezionati vengono scaricati e si possono scegliere più tardi nelle impostazioni del riconoscimento dello schermo. ML Kit è incluso nell’app e riconosce testo cinese, giapponese, coreano e in alfabeto latino; per queste lingue viene usato finché nessun modello è principale.</string>
 </resources>
