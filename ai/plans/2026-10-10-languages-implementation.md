@@ -143,6 +143,8 @@ Requests 1–19 are in the previous plan. New ones:
     recommendation rule says it is better (row "PP-OCRv6").
 65. (2026-10-17) Paddle's Cyrillic recognizers write Russian words with Latin look-alike letters: fix it where it
     gives no false hits (row "Latin look-alikes in Cyrillic text").
+66. (2026-10-17) Pause new languages after group 3 for a build of the 14 languages to use on the phone; no published
+    prerelease for now. Paddle goes into that build; the code review comes after it (row "Build of groups 1-3").
 
 ## Decisions
 
@@ -191,6 +193,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Scope of the big release | Groups 1–4: the release waits until every batch of group 4 is done, then a code review of all modules, then the owner's own use of the build, then the beta (row "Beta builds"). Group 4 is built in batches by script in the order 4a–4e, each its own branch and emulator checks (owner, 2026-10-16, question 30; was: groups 1–3 at least, group 4 if easy) |
 | Beta builds | A separate app next to the regular one: package `com.vpr.screenlate.beta`, named "Screenlate Beta", the icon with a "BETA" ribbon at the bottom; its own dictionaries, settings, bubble and accessibility service. Tags `v1.0.0-beta.N` publish GitHub prereleases, which the regular build's update check and the README's latest-release link never see. A beta build's update check offers newer betas only and says nothing when the final release is out. Published when the owner says, after everything above (owner, 2026-10-16) |
 | Version of the big release | 1.0.0; betas 1.0.0-beta.N (owner, 2026-10-16) |
+| Build of groups 1-3 | Before group 4: the OCR engines plan with Paddle, then groups 1-3 merged into `languages/main` with their emulator checks, then a debug build ("Screenlate Dev", next to the regular app with its own data) for the owner's phone, sent as an APK file. Not published; the code review of all modules comes after it (owner, 2026-10-17, request 66) |
 | Postponed items | The open items (bundled Japanese dictionaries, hosting) are decided when the first language or group 1 is ready, before it is merged (owner, 2026-10-10) |
 | First run | Asks which language the user learns, Japanese preselected; another language goes straight to turning it on with its downloads; Japanese needs no downloads as today (owner, 2026-10-09). Changed 2026-10-15: on `languages/main` Japanese goes to its download screen too (row "Bundled Japanese dictionaries") |
 | Text to speech | The last default audio source for languages other than Japanese; played only, never put into notes (owner, 2026-10-09) |
@@ -1184,3 +1187,5 @@ Dictionaries are checked when the group starts; a language without support or di
   comparison) and 65 (Latin look-alikes in Cyrillic words); rows "PP-OCRv6" and "Latin look-alikes in Cyrillic text".
 - 2026-10-17: row "OCR model list" (a dialog; rows under the engine choice, disabled when the device does not
   recognize; a download does not change the chosen model).
+- 2026-10-17: request 66, row "Build of groups 1-3" (a debug build of the 14 languages with Paddle for the owner
+  before group 4; no prerelease; the code review after it).

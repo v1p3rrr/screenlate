@@ -83,6 +83,20 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Network or the cloud | Messages, the device result is kept | Kept |
 | A model deleted during a scan | (none) | Deleted once the scan has released it |
 
+## Comparison results for step 4 and 5
+
+From `languages/ocr-compare` (commits d27009b and 07f4213), character error rate on clean and hard screens:
+
+- Lowest error: ML Kit for ja, zh, ko, es, hi; ML Kit Latin for en, de, fr, it, pt, pl, tr, lv, vi; Paddle v5 for
+  ru, kk, el, ar, fa, th; tessdata_best for he, bn, hy, ka. By the recommendation rule (tilted screens count) ru
+  stays on tessdata_fast.
+- Paddle reads tilted lines at 66-98% error: its line crops are not rotated. The comparison session adds rotated
+  crops to `core/ocr/.../paddle` in its own commit, which this branch takes over; step 4 does not touch that package
+  until then.
+- PP-OCRv6 small against v5: hard screens CJK 15.7 vs 18.8%, Latin 21.1 vs 24.2%, vertical Japanese 0.8 vs 37.0%;
+  larger (detector 9.8 MB, recognizer 21.1 MB), slower on Latin, no Vietnamese stacked diacritics. The v5/v6 choice
+  is put to the owner after the re-measurement with rotated crops.
+
 ## Questions
 
 35. Answered on 2026-10-17: (a). Model updates: when the catalog names a newer version of an installed model (a new tessdata commit, a new
@@ -96,3 +110,5 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 - 2026-10-17: question 35 answered (model updates listed by "Check for updates" with the dictionaries).
 - 2026-10-17: requests 64 and 65 of the languages plan (PP-OCRv6 small in the comparison; Latin look-alikes in
   Cyrillic words) added to step 4.
+- 2026-10-17: step 3 done; comparison results recorded; rotated Paddle crops handed to the comparison session.
+  Paddle stays in this plan before the owner's build of groups 1-3 (languages plan, row "Build of groups 1-3").
