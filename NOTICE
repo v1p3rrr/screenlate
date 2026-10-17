@@ -80,6 +80,13 @@ Copyright (c) Google Inc., Robert Theis. It bundles native builds of:
   The on-device recognition models it reads are downloaded unchanged from the tesseract-ocr repositories
   (tessdata_fast, tessdata_best), Apache License 2.0, and are not part of the APK.
 
+MNN 3.6.1 (https://github.com/alibaba/MNN), Apache License 2.0, Copyright (c) Alibaba Group Holding Limited. Built
+from source (git submodule core/ocr-mnn/src/main/cpp/MNN) with its CPU backend only.
+  The PaddleOCR models it runs (PP-OCRv5 and PP-OCRv6 text detection and recognition,
+  https://github.com/PaddlePaddle/PaddleOCR), Apache License 2.0, Copyright (c) PaddlePaddle Authors, are downloaded
+  separately and are not part of the APK; they are converted from the published ONNX files to MNN's format, each
+  archive with the license and a note on the conversion.
+
 Libraries from Maven repositories (AndroidX, Kotlin, Hilt, OkHttp, ML Kit and others) are listed with their
 licenses in the app under About → Open-source libraries; the list is generated at build time by AboutLibraries
 (https://github.com/mikepenz/AboutLibraries), Apache License 2.0.

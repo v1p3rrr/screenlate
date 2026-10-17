@@ -18,17 +18,19 @@ import com.vpr.screenlate.core.ocr.OcrParagraph
  * characters get the bounding boxes of their parts of it. One line per paragraph. Not for concurrent use.
  *
  * @param detectionWidth the width the image is scaled down to for the detector.
+ * @param thresholds how the detector's map becomes lines.
  */
 class PaddlePipeline(
     private val detector: PaddleModel,
     private val recognizer: PaddleModel,
     private val dictionary: List<String>,
     private val detectionWidth: Int = DETECTION_WIDTH,
+    private val thresholds: DetectionThresholds = DetectionThresholds(),
 ) {
     fun recognize(image: Bitmap): OcrPage {
         val (width, height) = TextDetection.inputSize(image.width, image.height, detectionWidth)
         val map = detector.run(TextDetection.input(pixels(image, width, height), width, height))
-        val lines = TextDetection.lines(map.data, map.shape[3], map.shape[2], image.width, image.height)
+        val lines = TextDetection.lines(map.data, map.shape[3], map.shape[2], image.width, image.height, thresholds)
         val bounds = Box(0f, 0f, image.width.toFloat(), image.height.toFloat())
         val read = lines.mapNotNull { read(image, it, bounds) }
         return OcrPage(image.width, image.height, read.map { OcrParagraph(listOf(it)) }, OcrEngineType.DEVICE_MODEL)

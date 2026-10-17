@@ -33,11 +33,16 @@ class CatalogFileTest {
             } else {
                 assertThat(entry.downloadUrl).startsWith("https://")
             }
-            assertThat(entry.installedTitle != null || entry.oldTitles.isNotEmpty()).isTrue()
             assertThat(entry.sourceLanguage).isNotEmpty()
             assertThat(entry.description.keys).containsAtLeastElementsIn(locales)
             assertThat(entry.license).isNotEmpty()
             assertThat(entry.downloadSize).isGreaterThan(0L)
+            // A model is found in the model store by its id, not among installed dictionaries by title.
+            if (entry.isModel) {
+                assertThat(entry.targetLanguage).isNull()
+                continue
+            }
+            assertThat(entry.installedTitle != null || entry.oldTitles.isNotEmpty()).isTrue()
             if (entry.kind == DictionaryKind.FREQUENCY || entry.kind == DictionaryKind.PITCH) {
                 assertThat(entry.targetLanguage).isNull()
             } else {

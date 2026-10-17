@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.ocr.paddle
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.geometry.Box
+import java.util.Properties
 import org.junit.Test
 import kotlin.math.cos
 import kotlin.math.sin
@@ -89,5 +90,23 @@ class TextDetectionTest {
             intArrayOf(8, 4, 16, 8) to 0.9f,
         )
         assertThat(TextDetection.lines(map, 20, 10, 20, 10)).hasSize(1)
+    }
+
+    @Test
+    fun `a lower threshold keeps fainter regions`() {
+        val map = map(30, 10, intArrayOf(1, 1, 20, 6) to 0.5f)
+        val thresholds = DetectionThresholds(threshold = 0.2f, boxThreshold = 0.45f)
+        assertThat(TextDetection.lines(map, 30, 10, 30, 10, thresholds)).hasSize(1)
+    }
+
+    @Test
+    fun `thresholds come from properties and invalid ones keep the defaults`() {
+        val properties = Properties().apply {
+            setProperty("threshold", "0.2")
+            setProperty("box_threshold", "1.5")
+            setProperty("unclip_ratio", "x")
+        }
+        assertThat(DetectionThresholds.parse(properties)).isEqualTo(DetectionThresholds(threshold = 0.2f))
+        assertThat(DetectionThresholds.parse(Properties())).isEqualTo(DetectionThresholds())
     }
 }

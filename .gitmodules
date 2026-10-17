@@ -4,3 +4,7 @@
 [submodule "dictionary/engine-hoshidicts/src/main/cpp/quickjs"]
 	path = dictionary/engine-hoshidicts/src/main/cpp/quickjs
 	url = https://github.com/quickjs-ng/quickjs.git
+[submodule "core/ocr-mnn/src/main/cpp/MNN"]
+	path = core/ocr-mnn/src/main/cpp/MNN
+	url = https://github.com/alibaba/MNN.git
+	shallow = true

@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.ocr.paddle
 
 import com.vpr.screenlate.core.common.geometry.Box
+import java.util.Properties
 import kotlin.math.roundToInt
 
 /**
@@ -10,16 +11,37 @@ import kotlin.math.roundToInt
 internal data class DetectedLine(val area: OrientedBox, val box: Box, val score: Float)
 
 /**
+ * How a detector's probability map becomes lines: regions above [threshold], kept when their mean reaches
+ * [boxThreshold], widened by [unclipRatio]. The defaults are PP-OCRv5's; a detector may set its own in
+ * `detector.properties` ([parse]).
+ */
+data class DetectionThresholds(
+    val threshold: Float = 0.3f,
+    val boxThreshold: Float = 0.6f,
+    val unclipRatio: Float = 1.5f,
+) {
+    companion object {
+        /** `threshold`, `box_threshold` and `unclip_ratio` from [properties]; a missing or invalid one keeps the default. */
+        fun parse(properties: Properties): DetectionThresholds {
+            val default = DetectionThresholds()
+            fun value(key: String, fallback: Float, valid: (Float) -> Boolean) =
+                properties.getProperty(key)?.trim()?.toFloatOrNull()?.takeIf(valid) ?: fallback
+            return DetectionThresholds(
+                threshold = value("threshold", default.threshold) { it > 0f && it < 1f },
+                boxThreshold = value("box_threshold", default.boxThreshold) { it > 0f && it < 1f },
+                unclipRatio = value("unclip_ratio", default.unclipRatio) { it > 0f && it <= 4f },
+            )
+        }
+    }
+}
+
+/**
  * Input and output of PP-OCR's text detector (DB). The input is the image scaled to a width limit, as normalized BGR
- * planes; the output is a map of text probabilities at the input's size. Its regions above [THRESHOLD] are the lines:
- * each region's smallest enclosing rectangle at any angle, widened by [UNCLIP_RATIO] the way PP-OCR's post-processing
- * unclips its polygons, kept when the region's mean probability reaches [BOX_THRESHOLD].
+ * planes; the output is a map of text probabilities at the input's size. Its regions above the threshold are the lines:
+ * each region's smallest enclosing rectangle at any angle, widened the way PP-OCR's post-processing unclips its
+ * polygons, kept when the region's mean probability reaches the box threshold ([DetectionThresholds]).
  */
 internal object TextDetection {
-    const val THRESHOLD = 0.3f
-    const val BOX_THRESHOLD = 0.6f
-    const val UNCLIP_RATIO = 1.5f
-
     /** Regions narrower or lower than this many map pixels are noise. */
     private const val MIN_SIDE = 3
 
@@ -51,7 +73,15 @@ internal object TextDetection {
      * The lines of a probability [map] of [width] × [height], in the coordinates of an image of [imageWidth] ×
      * [imageHeight], top to bottom.
      */
-    fun lines(map: FloatArray, width: Int, height: Int, imageWidth: Int, imageHeight: Int): List<DetectedLine> {
+    fun lines(
+        map: FloatArray,
+        width: Int,
+        height: Int,
+        imageWidth: Int,
+        imageHeight: Int,
+        thresholds: DetectionThresholds = DetectionThresholds(),
+    ): List<DetectedLine> {
+        val threshold = thresholds.threshold
         val scaleX = imageWidth.toFloat() / width
         val scaleY = imageHeight.toFloat() / height
         val image = Box(0f, 0f, imageWidth.toFloat(), imageHeight.toFloat())
@@ -62,7 +92,7 @@ internal object TextDetection {
         var stack = IntArray(256)
         val lines = ArrayList<DetectedLine>()
         for (start in map.indices) {
-            if (visited[start] || map[start] <= THRESHOLD) continue
+            if (visited[start] || map[start] <= threshold) continue
             visited[start] = true
             stack[0] = start
             var size = 1
@@ -87,7 +117,7 @@ internal object TextDetection {
                         val nx = x + dx
                         if (nx < 0 || nx >= width) continue
                         val next = ny * width + nx
-                        if (visited[next] || map[next] <= THRESHOLD) continue
+                        if (visited[next] || map[next] <= threshold) continue
                         visited[next] = true
                         if (size == stack.size) stack = stack.copyOf(size * 2)
                         stack[size++] = next
@@ -109,8 +139,8 @@ internal object TextDetection {
             val region = OrientedBox.enclosing(corners)
             if (minOf(region.length, region.thickness) < MIN_SIDE * (scaleX + scaleY) / 2) continue
             val score = (sum / count).toFloat()
-            if (score < BOX_THRESHOLD) continue
-            val distance = region.length * region.thickness * UNCLIP_RATIO / (2f * (region.length + region.thickness))
+            if (score < thresholds.boxThreshold) continue
+            val distance = region.length * region.thickness * thresholds.unclipRatio / (2f * (region.length + region.thickness))
             val area = region.widened(distance)
             lines += DetectedLine(area, area.bounds().within(image), score)
         }
