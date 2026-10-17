@@ -3,6 +3,8 @@ package com.vpr.screenlate.core.ocr.paddle
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.geometry.Box
 import org.junit.Test
+import kotlin.math.cos
+import kotlin.math.sin
 
 class TextDetectionTest {
 
@@ -54,6 +56,29 @@ class TextDetectionTest {
             intArrayOf(22, 1, 30, 3) to 0.95f,
         )
         assertThat(TextDetection.lines(map, 30, 10, 30, 10)).isEmpty()
+    }
+
+    @Test
+    fun `a turned line becomes a turned rectangle and its bounding box`() {
+        // A band 80 long and 6 thick from (10, 10), turned 10 degrees clockwise.
+        val width = 100
+        val height = 40
+        val c = cos(Math.toRadians(10.0)).toFloat()
+        val s = sin(Math.toRadians(10.0)).toFloat()
+        val map = FloatArray(width * height) { i ->
+            val x = i % width + 0.5f - 10f
+            val y = i / width + 0.5f - 10f
+            val along = x * c + y * s
+            val across = -x * s + y * c
+            if (along in 0f..80f && across in 0f..6f) 0.9f else 0f
+        }
+        val line = TextDetection.lines(map, width, height, width, height).single()
+        assertThat(line.area.alongX).isWithin(0.02f).of(c)
+        assertThat(line.area.alongY).isWithin(0.02f).of(s)
+        // The pixels' edges make the region about 81 × 7; unclipped by 81 * 7 * 1.5 / 176 = 4.8 on each side.
+        assertThat(line.area.length).isWithin(1.5f).of(90.6f)
+        assertThat(line.area.thickness).isWithin(1.5f).of(16.6f)
+        assertThat(line.box).isEqualTo(line.area.bounds().within(Box(0f, 0f, 100f, 40f)))
     }
 
     @Test
