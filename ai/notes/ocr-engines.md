@@ -17,6 +17,77 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   `TYPE_APPLICATION` windows are read).
 - Phone timings are unknown until the owner shares logs ("OCR draft/final … ms", "ML Kit band … ms", "App text: … ms").
 
+## Scan times in the app (emulator x86_64, debug build 2f698a8, 2026-10-18)
+
+Pixel 10 Pro AVD, 4 cores, 4 GB. Scans of test images in the debug viewer (`testdata/ocr`) and of the launcher's home
+screen, a tap on the bubble per scan; medians of 2–4 warm scans per cell, in seconds from the capture start (the
+`OverlayController` lines "OCR draft/final from ENGINE: N paragraphs in X ms"). The phone (arm64) is faster or slower
+per engine; compare ratios. Draft = the band around the aim; the spinner stops at the final: the whole-screen pass in
+"On device", the cloud result in "Both". In brackets: how long the spinner turns after the first text. "–" in Both: the
+cloud result came first and the band's draft was dropped.
+
+| Screen | Engine | On device: draft / final | Both: draft / final |
+|---|---|---|---|
+| `en-sample` | ML Kit Latin | 0.38 / 0.98 (+0.61) | 0.29 / 0.58 (+0.29) |
+| | Tesseract fast | 0.20 / 0.57 (+0.37) | 0.31 / 0.64 (+0.29) |
+| | PaddleOCR v5 Latin | 0.48 / 1.61 (+1.13) | 0.45 / 0.68 (+0.25) |
+| | PaddleOCR v6 | 0.42 / 1.66 (+1.24) | 0.51 / 0.76 (+0.20) |
+| | cloud only | final 0.51 | |
+| `en-page-light` | ML Kit Latin | 0.73 / 2.82 (+1.95) | – / 0.76 |
+| | Tesseract fast | 0.58 / 1.51 (+0.93) | 0.69 / 0.81 (+0.11) |
+| | PaddleOCR v5 Latin | 0.71 / 2.84 (+2.15) | – / 0.76 |
+| | PaddleOCR v6 | 1.02 / 4.06 (+2.99) | – / 0.73 |
+| | cloud only | final 0.65 | |
+| home screen | ML Kit Latin | 0.13 / 0.57 (+0.44) | 0.21 / 0.81 (+0.56) |
+| | Tesseract fast | 0.12 / 0.39 (+0.26) | 0.20 / 0.73 (+0.54) |
+| | PaddleOCR v5 Latin | 0.24 / 1.34 (+1.10) | 0.35 / 0.77 (+0.46) |
+| | PaddleOCR v6 | 0.26 / 1.49 (+1.27) | 0.41 / 0.79 (+0.36) |
+| | cloud only | final 0.59 | |
+| `de-sample` | ML Kit Latin | 0.89 / 1.99 (+1.18) | 0.73 / 0.82 (2 of 3 drafts) |
+| | PaddleOCR v5 Latin | 0.61 / 1.98 (+1.35) | 0.56 / 0.81 (+0.31) |
+| | PaddleOCR v6 | 0.66 / 2.68 (+1.99) | 0.73 / 0.89 (2 of 3 drafts) |
+| `ru-sample` | Tesseract fast | 0.59 / 1.28 (+0.67) | 0.68 / 0.81 (+0.12) |
+| | PaddleOCR v5 Cyrillic | 0.56 / 2.21 (+1.67) | 0.63 / 0.91 (+0.28) |
+| `ru-page-light` | Tesseract fast | 0.78 / 2.78 (+2.12) | 0.65 / 0.99 (+0.36) |
+| | PaddleOCR v5 Cyrillic | 0.63 / 4.33 (+3.54) | 0.80 / 0.80 (1 of 3 drafts) |
+| `ja-page-light` | ML Kit Japanese | 1.02 / 3.68 (+2.78) | – / 0.70 |
+| | PaddleOCR v6 | 0.99 / 3.79 (+2.90) | – / 0.64 |
+| | cloud only | final 0.60 | |
+| `x-game.jpg` (39–60 paragraphs) | ML Kit Japanese | 1.23 / 6.00 (+4.80) | – / 0.87 |
+| | PaddleOCR v6 | 0.84 / 5.72 (+4.87) | – / 0.89 |
+| | cloud only | final 0.85 | |
+| `ko-sample` | ML Kit Korean | 0.83 / 1.87 (+0.94) | – / 0.62 (1 of 4 drafts) |
+
+- "On device": the spinner after the first text waits for the whole-screen pass, which runs after the band on the same
+  engine: +0.3–1.2 s on short screens, +1–3.5 s on full pages, ~+5 s on the game screen. Tesseract fast has the
+  shortest whole pass, PaddleOCR the longest (v6 > v5), ML Kit Latin is in between. On the clean sample the whole pass
+  alone matches the offline comparison (`testdata/ocr/compare/ocr-score.txt`): v5 1.13 s vs 0.93, ML Kit Latin 0.60 vs
+  1.13, Tesseract fast 0.36 vs 0.40; the user waits band + whole pass, and full pages take 2–3 times longer.
+- "Both": the cloud result comes 0.6–0.9 s after the capture (HTTP 0.35–0.6 s, parsing ~80 ms). A PaddleOCR band
+  arrives 0.2–0.3 s before it on short screens and after it on full pages, so it shows nothing; ML Kit Latin and
+  Tesseract bands come 0.3–0.5 s earlier. The first cloud request after a few idle minutes takes ~2 s (2.0–2.2 s,
+  seen four times, once after 8 minutes docked), probably a new connection.
+- The cloud result's parsing competes for the 4 cores with a running band: usually ~80 ms after the HTTP response,
+  up to 1.4 s when ML Kit Japanese ran a band at the same time.
+- Model lifecycle: nothing is released between scans or while docked (8 minutes docked: same native heap); "Released
+  the on-device model" only when Engines becomes cloud or the text source app text only. A model chosen in the
+  dialog is loaded by the next scan, not at the choice: v5 Latin detector and recognizer ~0.1 s; v6 ~0.2 s plus a slow
+  first inference (band 1.47 s instead of 0.86 s).
+- Native memory: a PaddleOCR model's first whole-screen pass raises the native heap by ~370 MB (v5) to ~410 MB (v6)
+  and keeps it until the model is released; repeated scans of the same screen stay flat, so this is MNN's session
+  memory for the largest input (the detector's 960 × 2144 input for a 1280 × 2856 screen), not a per-scan leak. ML Kit
+  Latin adds ~50 MB, Tesseract fast ~38 MB. Switching the active language to one that reads with ML Kit keeps the
+  PaddleOCR model and its memory. With it the emulator's main process held 700–760 MB PSS and swapped.
+- From the tap to the capture start: 10–20 ms. When the popup's WebView is gone (the service was
+  reconnected, or the renderer was reclaimed), `LookupPage.prepare()` creates it on the main thread at the scan start:
+  0.75–0.9 s of skipped frames before the capture ("Skipped 49 frames", "Davey! duration=744ms"). The logged OCR times
+  do not include it.
+- The spinner stopped at every final (checked in the logs of every scan and once on screenshots); rapid rescans in
+  "Both" with PaddleOCR v6 (the next tap right after the final) kept the cloud final at 0.69–1.0 s. Chinese was not
+  measured (not turned on in the emulator).
+- The emulator drifts: after ~1.5 h of scans with PaddleOCR memory held, captures went from 0.1 s to 0.4–2.9 s and
+  ML Kit Japanese bands from 0.9 s to 3–5 s; a cold boot restored it. The table uses runs from healthy states only.
+
 ## ML Kit
 
 - The Korean recognizer reads Hangul and Latin but not hanja: 大學校에서 歷史를 came out as 푸에서 끗을 (2026-10-15,
