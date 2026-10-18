@@ -81,3 +81,15 @@ test('russian and chinese rules stay with their languages', () => {
         assert.equal(HeadwordReading.syllables(lang, 'túshūguǎn'), null, lang);
     }
 });
+
+test('a russian word in a sentence takes the stress only in its dictionary form', () => {
+    const inSentence = (text, expression, reading) =>
+        Array.from(HeadwordReading.sentenceSegments('ru', text, expression, reading), ([part, parts]) => parts ? `${part}[]` : part);
+    assert.deepEqual(inSentence('Кошка', 'кошка', 'ко\u0301шка'), ['Ко\u0301шка']);
+    assert.deepEqual(inSentence('руки', 'рука', 'рука\u0301'), ['руки']);
+    assert.deepEqual(inSentence('еж', 'ёж', 'ёж'), ['еж']);
+    assert.deepEqual(inSentence('кошка', 'кошка', ''), ['кошка']);
+    // Chinese and languages without rules have no sentence rules.
+    assert.equal(HeadwordReading.sentenceSegments('zh', '学习', '学习', 'xuéxí'), null);
+    assert.equal(HeadwordReading.sentenceSegments('ja', '猫', '猫', 'ねこ'), null);
+});

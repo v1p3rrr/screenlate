@@ -84,8 +84,11 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ru | A reading that only adds stress replaces the headword (ко́шка); another reading goes over it | `popup/reading-ru.js:5` | reading.mjs, popup.mjs | reading.mjs `russian and chinese rules stay with their languages` (uk, be, bg, en, de) | ok |
 | zh | Pinyin split into syllables, one over each character, with tone colors | `popup/reading-zh.js:5`, `popup/popup.js:383`, `:735` | reading.mjs, popup.mjs | reading.mjs (ja, vi, ko get no syllables) | ok |
 | ja | Definition copy rules of Japanese dictionaries | `popup/definition-ja.js:5` | definition.mjs | definition.mjs `a language without rules of its own…` | ok |
-| ja (default) | Furigana by Yomitan's Japanese distribution for every language without reading rules | `popup/note.js:84`, `render/render.js:570` | note.mjs, anki.test.mjs | — | limit |
-| ru | `{furigana}`, `{furigana-plain}`, `{sentence-furigana}` put the stressed reading over the word | `popup/note.js:84`, `:122` | note.mjs | — | ask |
+| ja (default) | Furigana by Yomitan's Japanese distribution for every language without reading rules | `popup/note.js:86`, `render/render.js:570` | note.mjs, anki.test.mjs | — | limit |
+| ja, zh, ru | Furigana markers (`{furigana}`, `{sentence-furigana}`, their plain forms) offered in the + menu only where readings go over or into words; a field that has them is still filled | `LanguageSupport.kt:67`, `FieldTemplate.kt:78` | FieldTemplateTest `offersFuriganaMarkersOnlyWhereReadingsGoOverOrIntoWords` | the same test (en, ko and the others get none; `guessField` gives none for English) | decided |
+| zh, ru | A second line under each furigana marker in the + menu says what it gives (pinyin, stress marks) | `languages/LanguageStrings.kt:71`, `anki/AnkiSettingsScreen.kt:467` | FuriganaMarkerHintsTest | the same test (ja and the others get none) | decided |
+| ru | `{furigana}`, `{furigana-plain}`: the stressed word itself (ко́шка), no ruby; another reading (ёж for еж) goes over the word | `popup/note.js:86`, `:99` | note.mjs `russian furigana put the stress into the word` | note.mjs (zh, ja keep their ruby) | decided |
+| ru | `{sentence-furigana}`: stress marks only in words written in their dictionary form; inflected forms stay as written (рука́, ру́ки) | `popup/reading-ru.js:34`, `popup/note.js:138` | note.mjs `russian sentence furigana…`, reading.mjs `a russian word in a sentence…` | reading.mjs (zh, ja have no sentence rules) | decided |
 | ja | `{cloze-body-kana}`, pitch-accent markers offered only for Japanese | `JapaneseSupport.kt:19`, `popup/note.js:320`, `:354` | FieldTemplateTest, note.mjs | `SpacedLanguageSupport.kt:21` (no markers) | ok |
 | zh | `{expression-simplified}`, `{expression-traditional}` | `ChineseSupport.kt:24` | FieldTemplateTest, ShownResultsTest | other languages have no script markers | ok |
 | spaced | `{sentence-furigana}`: unknown text is passed over a word at a time, so no match starts inside a word | `overlay/anki/SentenceParser.kt:54` | SentenceParserTest `in a language looked up by words…` | the same test (ja, ko still step by character) | fixed |
@@ -132,14 +135,20 @@ as it is; see below), **ask** (a behavior choice for the owner).
 - No tests for `MlKitOcrEngine.model()`, the overlay's `wordStart`/`earliestStart` (WORD_LOOKBACK 32), or a
   `{phonetic-transcriptions}` note; Korean and Chinese have no SentenceTest case.
 
-## Open questions
+## Owner decisions in this review
 
-- Russian furigana markers: `{furigana}` gives `<ruby>кошка<rt>ко́шка</rt></ruby>`, `{furigana-plain}` `кошка[ко́шка]`,
-  and `{sentence-furigana}` puts the lemma's stressed form over an inflected word (кошки[ко́шка]). The decision table
-  settles only `{expression}` кошка and `{reading}` ко́шка.
+Furigana markers outside Japanese (to be recorded in the plan's decision table):
+
+- The names stay Yomitan's (`{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}`).
+- They are offered only for Japanese, Chinese and Russian: languages whose readings go over or into the words. Korean
+  is left out (hanja are rare in modern text). A field that already has them keeps getting them in any language.
+- Chinese and Russian show what the markers give as a second line under each name in the + menu.
+- Russian: the stress goes into the text. `{furigana}` and `{furigana-plain}` give ко́шка; in a sentence only words
+  written in their dictionary form get stress marks, since an inflected form may stress another syllable.
+  Before: `<ruby>кошка<rt>ко́шка</rt></ruby>`, `кошка[ко́шка]`, and the lemma's stress over an inflected word.
 
 ## Device checks
 
 `test-model.md`: LK28 (stress and tone marks typed apart), LK29 (rock’n’roll), OCR26 (app text across a wrap),
 ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with English quotes), ANK13 (sentence furigana in a
-language looked up by words).
+language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text).

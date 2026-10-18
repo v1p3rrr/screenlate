@@ -126,6 +126,14 @@
     <string name="anki_fields">フィールド</string>
     <string name="anki_fields_hint">テンプレートでは {expression}、{reading}、{glossary}、{sentence}、{audio}、{screenshot} などのマーカーを使います。＋ボタンで挿入できます。重複チェックには最初のフィールドが使われます。</string>
     <string name="anki_insert_marker">マーカーを挿入</string>
+    <string name="anki_marker_furigana_zh">漢字の上にピンイン</string>
+    <string name="anki_marker_furigana_plain_zh">ピンイン（テキスト）：你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">漢字の上にピンインを付けた文</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">ピンインをテキストで付けた文</string>
+    <string name="anki_marker_furigana_ru">強勢記号付きの単語</string>
+    <string name="anki_marker_furigana_plain_ru">強勢記号付きの単語（テキスト）</string>
+    <string name="anki_marker_sentence_furigana_ru">辞書形の単語に強勢記号を付けた文</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">辞書形の単語に強勢記号を付けた文（テキスト）</string>
     <string name="anki_duplicates">重複</string>
     <string name="anki_duplicate_check">重複をチェック</string>
     <string name="anki_duplicate_scope">検索範囲</string>

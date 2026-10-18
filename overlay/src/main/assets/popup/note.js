@@ -18,7 +18,8 @@
  * language's tag.
  *
  * Furigana of a language whose readings give one syllable per character (Chinese pinyin, reading.js) put each
- * syllable over its character; Japanese readings go through Yomitan's furigana distribution.
+ * syllable over its character; Russian stress marks go into the word, in a sentence only into words written in their
+ * dictionary form; Japanese readings go through Yomitan's furigana distribution.
  */
 const NoteData = (() => {
     const render = window.YomitanRender || null;
@@ -85,10 +86,18 @@ const NoteData = (() => {
     function segments(expression, reading, lang) {
         const syllables = typeof HeadwordReading === 'undefined' ? null : HeadwordReading.segments(lang, expression, reading);
         if (syllables) {
-            if (syllables.length === 1 && !syllables[0][1]) return [[expression, reading && reading !== expression ? reading : '']];
-            return syllables.map(([text, parts]) => [text, parts ? parts.map(part => part.text).join('') : '']);
+            // A single segment that keeps the word gets the whole reading over it; one that respells the word (Russian
+            // stress marks) takes its place.
+            const kept = syllables.length === 1 && !syllables[0][1] && syllables[0][0] === expression;
+            if (kept) return [[expression, reading && reading !== expression ? reading : '']];
+            return rubyPieces(syllables);
         }
         return render ? render.furiganaSegments(expression, reading) : [[expression, '']];
+    }
+
+    /** [[text, ruby], ...] of reading.js segments. */
+    function rubyPieces(syllables) {
+        return syllables.map(([text, parts]) => [text, parts ? parts.map(part => part.text).join('') : '']);
     }
 
     /** Whether [lang] has reading.js rules, so its furigana do not go through Yomitan's Japanese distribution. */
@@ -126,8 +135,9 @@ const NoteData = (() => {
         for (const part of parts) {
             let pieces = [[part.text, '']];
             if (part.expression && syllables) {
+                const own = HeadwordReading.sentenceSegments(lang, part.text, part.expression, part.reading || '');
                 // The text may spell the word in the other script; its characters take the word's syllables.
-                pieces = segments(part.text, part.reading || '', lang);
+                pieces = own ? rubyPieces(own) : segments(part.text, part.reading || '', lang);
             } else if (part.expression && anki) {
                 pieces = anki.distributeFuriganaInflected(part.expression, part.reading || part.expression, part.text);
             }

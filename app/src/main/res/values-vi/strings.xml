@@ -126,6 +126,14 @@
     <string name="anki_fields">Trường</string>
     <string name="anki_fields_hint">Mẫu dùng các mã chèn như {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Dùng nút + để chèn. Trường đầu tiên được dùng để kiểm tra trùng lặp.</string>
     <string name="anki_insert_marker">Chèn mã</string>
+    <string name="anki_marker_furigana_zh">Pinyin trên chữ Hán</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin dạng văn bản: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Câu có pinyin trên chữ Hán</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Câu có pinyin dạng văn bản</string>
+    <string name="anki_marker_furigana_ru">Từ có dấu trọng âm</string>
+    <string name="anki_marker_furigana_plain_ru">Từ có dấu trọng âm, dạng văn bản</string>
+    <string name="anki_marker_sentence_furigana_ru">Câu có dấu trọng âm ở các từ dạng từ điển</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Câu có dấu trọng âm ở các từ dạng từ điển, dạng văn bản</string>
     <string name="anki_duplicates">Trùng lặp</string>
     <string name="anki_duplicate_check">Kiểm tra trùng lặp</string>
     <string name="anki_duplicate_scope">Tìm trong</string>
