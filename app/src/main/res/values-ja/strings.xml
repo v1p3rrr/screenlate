@@ -734,6 +734,7 @@
     <string name="ocr_models_mlkit">ML Kit（内蔵）</string>
     <string name="ocr_models_mlkit_info">アプリに含まれ、ダウンロードは不要です。中国語、日本語、韓国語とラテン文字のテキストを認識します。</string>
     <string name="ocr_models_recommended">推奨</string>
+    <string name="ocr_models_more_accurate">より正確</string>
     <string name="ocr_models_installed_size">インストール済み · %1$s</string>
     <string name="ocr_models_in_use">使用中：%1$s</string>
     <string name="ocr_models_delete_title">モデルを削除しますか？</string>

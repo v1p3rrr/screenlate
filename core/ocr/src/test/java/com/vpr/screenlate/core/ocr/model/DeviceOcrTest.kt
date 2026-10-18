@@ -91,7 +91,7 @@ class DeviceOcrTest {
     }
 
     @Test
-    fun `the choice falls back to the recommended model, then ml kit, then any usable one`() {
+    fun `the choice falls back to ml kit, then the recommended model, then any usable one`() {
         val fast = LanguageModel("fast", "tesseract")
         val best = LanguageModel("best", "tesseract", recommended = true)
         val models = listOf(fast, best)
@@ -100,7 +100,9 @@ class DeviceOcrTest {
 
         assertThat(select("fast", mlKit = true, fast, best)).isEqualTo("fast")
         assertThat(select("mlkit", mlKit = true, fast, best)).isEqualTo("mlkit")
-        assertThat(select(null, mlKit = true, fast, best)).isEqualTo("best")
+        assertThat(select(null, mlKit = true, fast, best)).isEqualTo("mlkit")
+        assertThat(select(null, mlKit = false, fast, best)).isEqualTo("best")
+        assertThat(select(null, mlKit = false, fast)).isEqualTo("fast")
         assertThat(select("gone", mlKit = true, fast)).isEqualTo("mlkit")
         assertThat(select("mlkit", mlKit = false, fast)).isEqualTo("fast")
         assertThat(select(null, mlKit = false)).isNull()

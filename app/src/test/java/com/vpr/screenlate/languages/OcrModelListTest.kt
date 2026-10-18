@@ -71,14 +71,15 @@ class OcrModelListTest {
     fun `the active model cannot be deleted and a shared one goes for every language listing it`() {
         val installed = mapOf("paddle-detector" to 6L, "paddle-latin" to 11L, "tesseract-fast-eng" to 2L)
 
-        // German reads with its recommended Paddle model, so nobody can delete it.
-        val recommended = lists(installed).getValue(Language.ENGLISH).options.single { it.id == "paddle-latin" }
-        assertThat(recommended.installed).isTrue()
-        assertThat(recommended.bytes).isEqualTo(11)
-        assertThat(recommended.deletion).isEqualTo(ModelDeletion.InUse(listOf(Language.GERMAN)))
+        // German reads with the Paddle model it chose, so nobody can delete it.
+        val inUse = lists(installed, chosen = mapOf(Language.GERMAN to "paddle-latin")).getValue(Language.ENGLISH).options
+            .single { it.id == "paddle-latin" }
+        assertThat(inUse.installed).isTrue()
+        assertThat(inUse.bytes).isEqualTo(11)
+        assertThat(inUse.deletion).isEqualTo(ModelDeletion.InUse(listOf(Language.GERMAN)))
 
-        // Once German reads with ML Kit, deleting it from English's list takes it from German too.
-        val free = lists(installed, chosen = mapOf(Language.GERMAN to "mlkit"))
+        // Without a choice German reads with ML Kit: deleting the model from English's list takes it from German too.
+        val free = lists(installed)
         assertThat(free.getValue(Language.ENGLISH).options.single { it.id == "paddle-latin" }.deletion)
             .isEqualTo(ModelDeletion.Allowed(listOf(Language.GERMAN)))
         assertThat(free.getValue(Language.ENGLISH).options.single { it.id == "tesseract-fast-eng" }.deletion)

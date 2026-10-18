@@ -734,6 +734,7 @@
     <string name="ocr_models_mlkit">ML Kit（內建）</string>
     <string name="ocr_models_mlkit_info">內建於應用程式中，無需下載。可辨識中文、日文、韓文和拉丁字母文字。</string>
     <string name="ocr_models_recommended">建議</string>
+    <string name="ocr_models_more_accurate">更準確</string>
     <string name="ocr_models_installed_size">已安裝 · %1$s</string>
     <string name="ocr_models_in_use">使用中：%1$s</string>
     <string name="ocr_models_delete_title">刪除模型？</string>

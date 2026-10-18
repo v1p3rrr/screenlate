@@ -36,8 +36,8 @@ interface ModelOcrEngine {
 }
 
 /**
- * On-device recognition with the model each language reads with ([selectDeviceModel]): the user's choice, the
- * recommended downloaded model, or ML Kit's bundled one for its scripts.
+ * On-device recognition with the model each language reads with ([selectDeviceModel]): the user's choice, ML Kit's
+ * bundled one for its scripts, or the recommended downloaded model.
  *
  * A downloaded model is [held][OcrModelStore.hold] while it reads, so that deleting it waits for the scan; one whose
  * engine fails is [verified][OcrModelStore.verify].

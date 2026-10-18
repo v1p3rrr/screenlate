@@ -756,6 +756,7 @@
     <string name="ocr_models_mlkit">ML Kit (встроенная)</string>
     <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский и текст на латинице.</string>
     <string name="ocr_models_recommended">Рекомендуется</string>
+    <string name="ocr_models_more_accurate">Точнее</string>
     <string name="ocr_models_installed_size">Установлена · %1$s</string>
     <string name="ocr_models_in_use">Используется: %1$s</string>
     <string name="ocr_models_delete_title">Удалить модель?</string>

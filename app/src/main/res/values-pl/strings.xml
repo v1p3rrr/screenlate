@@ -755,6 +755,7 @@
     <string name="ocr_models_mlkit">ML Kit (wbudowany)</string>
     <string name="ocr_models_mlkit_info">Wbudowany w aplikację, nic nie trzeba pobierać. Rozpoznaje tekst chiński, japoński, koreański i w alfabecie łacińskim.</string>
     <string name="ocr_models_recommended">Zalecany</string>
+    <string name="ocr_models_more_accurate">Dokładniejszy</string>
     <string name="ocr_models_installed_size">Zainstalowany · %1$s</string>
     <string name="ocr_models_in_use">Używany przez: %1$s</string>
     <string name="ocr_models_delete_title">Usunąć model?</string>

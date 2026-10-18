@@ -68,9 +68,30 @@ class OcrModelsTest {
         val withoutRecommended = mainModelCandidates(categories, mapOf("ru-rec" to false, "ru-best" to true), required)
         assertThat(mainModel(withoutRecommended, MainModelPick("eslav"), mlKitReads = false)).isEqualTo("tesseract-best-rus")
 
-        // Where ML Kit reads the language, no main model leaves it ML Kit's.
+        // Where ML Kit reads the language, no main model leaves it ML Kit's; a model the user ticked becomes main,
+        // one ticked because it is installed does not.
         assertThat(mainModel(all, MainModelPick(null), mlKitReads = true)).isNull()
         assertThat(mainModel(withoutRecommended, pick = null, mlKitReads = true)).isNull()
+        assertThat(mainModel(withoutRecommended, pick = null, mlKitReads = true, ticked = setOf("ru-best"))).isEqualTo("tesseract-best-rus")
+        assertThat(mainModel(all, pick = null, mlKitReads = true, ticked = setOf("ru-fast", "ru-rec"))).isEqualTo("eslav")
+    }
+
+    @Test
+    fun `beside ml kit no model is ticked by default and nothing is missing`() {
+        val recognizer = model("de-rec", "de", "latin")
+        val catalog = Catalog(listOf(recognizer), mapOf("de" to setOf(CatalogCategory.OCR_MODEL)))
+        val builtIn = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList(), mlKitReads = true)
+            .single { it.category == CatalogCategory.OCR_MODEL }
+        assertThat(builtIn.builtIn).isTrue()
+        assertThat(builtIn.fixed).isFalse()
+        assertThat(builtIn.ticked(builtIn.items.single(), emptyMap())).isFalse()
+        assertThat(missingChoices(listOf(builtIn), emptyMap())).isEmpty()
+        assertThat(setupDownloads(listOf(builtIn), emptyMap())).isEmpty()
+        assertThat(setupDownloads(listOf(builtIn), mapOf("de-rec" to true)).map { it.id }).containsExactly("de-rec")
+
+        val without = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList())
+            .single { it.category == CatalogCategory.OCR_MODEL }
+        assertThat(without.ticked(without.items.single(), emptyMap())).isTrue()
     }
 
     @Test

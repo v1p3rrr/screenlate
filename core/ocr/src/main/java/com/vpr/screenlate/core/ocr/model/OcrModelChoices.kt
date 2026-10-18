@@ -58,8 +58,8 @@ class OcrModelChoices @Inject constructor(private val dataStore: DataStore<Prefe
 }
 
 /**
- * What reads a language on the device: [chosen] when it can, else the recommended model, else ML Kit where it reads
- * the script, else the first listed model that can. A listed model can read when [usable] says so (it and the models
+ * What reads a language on the device: [chosen] when it can, else ML Kit where it reads the script, else the
+ * recommended model, else the first listed model that can. A downloaded model replaces ML Kit only when chosen. A listed model can read when [usable] says so (it and the models
  * it requires are installed and its engine is in the app). Null when nothing can.
  */
 fun selectDeviceModel(
@@ -71,9 +71,8 @@ fun selectDeviceModel(
     val candidates = listed.filter(usable)
     if (chosen == OcrModelChoices.ML_KIT && mlKitReads) return DeviceModel.MlKit
     candidates.firstOrNull { it.id == chosen }?.let { return DeviceModel.Listed(it) }
-    candidates.firstOrNull { it.recommended }?.let { return DeviceModel.Listed(it) }
     if (mlKitReads) return DeviceModel.MlKit
-    return candidates.firstOrNull()?.let(DeviceModel::Listed)
+    return (candidates.firstOrNull { it.recommended } ?: candidates.firstOrNull())?.let(DeviceModel::Listed)
 }
 
 /** The model [selectDeviceModel] picked. */
