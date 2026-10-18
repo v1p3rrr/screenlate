@@ -145,6 +145,15 @@ Requests 1–19 are in the previous plan. New ones:
     gives no false hits (row "Latin look-alikes in Cyrillic text").
 66. (2026-10-17) Pause new languages after group 3 for a build of the 14 languages to use on the phone; no published
     prerelease for now. Paddle goes into that build; the code review comes after it (row "Build of groups 1-3").
+67. (2026-10-18) On the phone Jiten does not download, and every retry seems to add more attempts: many "Waiting:
+    Jiten" cards under one "Downloading Jiten". Waiting tasks should share one card instead of a card each. Analyze
+    briefly, put it in the backlog and do it after the current plan (Backlog, "Download queue").
+68. (2026-10-18) On the phone the downloaded on-device models seem about as slow as cloud recognition and ML Kit
+    clearly faster; after Paddle's text is shown the spinner keeps turning. Measure scan times in the app per engine
+    (the generated screens, the home screen); reconsider the default engines (cloud by default, Both or the device
+    alone offered); say that ML Kit is built in for the languages it reads instead of offering a download as the
+    default; mark ML Kit as faster where the measurements show it, above all for the draft with Engines on Both
+    (plan `2026-10-17-ocr-engines.md`, questions 36-39).
 
 ## Decisions
 
@@ -284,6 +293,11 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
 | Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
 | OCR model list | A language's models open in a dialog (scrolls when long): ML Kit where it reads the language, then the catalog's models, each with its size, a recommended mark, an ⓘ and Download or Delete. The language rows stand in the Recognition section under the engine choice, below a subheading; with Cloud only or app text only they stay visible but disabled, as the other recognition settings do. Downloading a model only adds it: it becomes the language's model when chosen in the list (owner, 2026-10-17) |
+| Region order display | The audio settings show a language's region order while Wiktionary is among its audio sources or a transcription dictionary of the language is installed; the hint names both uses (recordings and transcriptions) (owner, 2026-10-18, question 28; request 55) |
+| Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
+| ML Kit at setup | For a language ML Kit reads (Japanese, Chinese, Korean, the Latin-script languages), the download screen's on-device category lists ML Kit first, marked as built in with no download, and chosen as the main model. The other models are offered unticked, marked "more accurate" where the comparison shows it; a model is ticked by default only for languages ML Kit does not read. A model ticked at setup becomes the main one unless the "main" switch stays on ML Kit; one downloaded later from the model list is only added; with no choice ML Kit is used (owner, 2026-10-18, questions 38 and 40 of the OCR engines plan; changes "On-device OCR engines" and "Several OCR models at setup" for these languages) |
+| OCR speed marks | Speed is shown in words only ("faster", "more accurate"), from the timing run and the comparison; no figures for the user. With Engines on Both, a hint says that the on-device model only gives the draft (owner, 2026-10-18, question 39 of the OCR engines plan) |
+| Compound part order | For a part of a German compound, entries whose headword is the part capitalized (nouns) come first: Lampe before the verb lampen; ordinary lookups keep the usual order (owner, 2026-10-18, question 29) |
 
 ## Open items (postponed by the owner)
 
@@ -296,6 +310,9 @@ Decided when the first language or group 1 is ready, before it is merged into th
   left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
 
+- Where the OCR engine choice is offered (Both for a draft and offline scans, the device alone for no cloud): it
+  becomes a separate setting, discussed later (owner, 2026-10-18, question 37 of the OCR engines plan).
+
 ## Backlog
 
 - Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
@@ -303,6 +320,23 @@ Decided when the first language or group 1 is ready, before it is merged into th
   sources remove them; served from our hosting once it exists.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
+- Download queue (request 67), after the current plan:
+  - Jiten (`jiten-global`, resolved through its index `api.jiten.moe/api/frequency-list/index`) fails on the phone;
+    the cause is unknown. The failed card's error and the log (`Task … failed`, `HTTP …`, `broke off`) tell whether
+    the index request, the download or the import fails; check the same entry on the emulator first.
+  - Why the cards multiply: every import is one WorkManager chain (`enqueueUniqueWork`, `APPEND_OR_REPLACE`), so
+    each task behind the running one is "Waiting". A download that stalls holds the head: 60 s read timeout, then
+    `Result.retry()` with a 30 s exponential backoff up to `MAX_RETRIES` = 3, minutes in all. WorkManager's own
+    retries keep the task id and add no card. New cards come from the entry points that queue a download without
+    looking for an unfinished task of the same catalog entry: the task card's Retry (`resume` dismisses the failed
+    task and queues a new one), Home's "Download again", the language setup (`LanguageSwitch.turnOn`) and Update
+    after "Check for updates". Only the catalog card (`catalogItems`, by name) and the OCR model rows (by entry)
+    check. Every tap while the head is stuck adds one more waiting task.
+  - To build: `DictionaryImports.enqueue` returns the unfinished task of the same catalog entry (or URL) instead of
+    queueing another; a stalled download fails or retries without holding up the downloads behind it (to decide:
+    downloads of other hosts may pass it, or downloads run apart from the one-at-a-time import); tasks that only
+    wait share one card ("Waiting: Jiten, PaddleOCR v6, Wiktionary (en-ru)", with their count). Questions when it is
+    built: whether the shared card cancels each task or all of them, and whether it opens a list.
 
 ## Questions for the owner
 
@@ -451,7 +485,7 @@ regions" goes. Raised by the answers:
     from 1,000 words with their own meaning; (b) from 3,000; (c) keep 0.5 MB, with lv→ru as the only exception.
 
 Question 30 answered on 2026-10-16: (b), every batch in the big release (row "Scope of the big release"). Questions 28
-and 29 are still open.
+and 29 answered on 2026-10-18: (a) both (rows "Region order display" and "Compound part order").
 
 Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the line, with the word "Compound"), 17
 (every edition), 18 (without Chinese→Russian), 21 (left out), 22 (kept), 24 (left to the agent: all four languages),
@@ -1192,3 +1226,10 @@ Dictionaries are checked when the group starts; a language without support or di
 - 2026-10-17: build of groups 1-3 made from `languages/ocr-engines` (the stack of groups 1-3 with the OCR engines and
   Paddle) by CI as the "Screenlate Dev" debug APK; merging the stack into `languages/main` waits for the emulator
   checks (row "Build of groups 1-3").
+- 2026-10-18: questions 28 and 29 answered (rows "Region order display" and "Compound part order"); the emulator
+  checks of groups 1-3 and the OCR engines run in a separate session on `languages/checks` (`.worktrees/lang`).
+- 2026-10-18: requests 67 (download queue, in the backlog) and 68 (scan times and default engines; questions 36-39
+  of the OCR engines plan).
+- 2026-10-18: questions 36-40 of the OCR engines plan answered: rows "Default OCR engines", "ML Kit at setup" (changes
+  "On-device OCR engines" and "Several OCR models at setup" for the languages ML Kit reads), "OCR speed marks"; where
+  the engine choice is offered is postponed (Open items).

@@ -263,6 +263,7 @@
     <string name="problems_title">Braucht Aufmerksamkeit</string>
     <string name="problems_open_anki">Anki-Einstellungen öffnen</string>
     <string name="problems_dictionaries_missing">Wörterbücher, deren Dateien fehlen:</string>
+    <string name="problems_models_damaged">Erkennungsmodelle, deren Dateien beschädigt sind:</string>
     <string name="problems_download_again">Erneut herunterladen</string>
     <string name="problems_import_again">Importiere seine Datei erneut.</string>
     <string name="problems_remove">Entfernen</string>

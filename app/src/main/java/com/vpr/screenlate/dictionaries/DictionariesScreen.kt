@@ -162,9 +162,9 @@ fun DictionariesScreen(
             updateCheck?.let { check ->
                 UpdatesCard(
                     check,
-                    onUpdate = { items ->
+                    onUpdate = { items, models ->
                         askNotifications()
-                        viewModel.update(items)
+                        viewModel.update(items, models)
                     },
                 )
             }
@@ -492,7 +492,7 @@ private fun LinkButtons(links: DictionaryLinks) {
 private data class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
 
 @Composable
-private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -> Unit) {
+private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>, List<ModelUpdate>) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val updates = check.updates
@@ -501,7 +501,7 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                     Text(stringResource(R.string.dictionaries_checking_updates))
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
                 }
-                updates.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
+                updates.isEmpty() && check.models.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
                 else -> {
                     updates.forEach { update ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -513,13 +513,29 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
-                            TextButton(onClick = { onUpdate(listOf(update)) }) {
+                            TextButton(onClick = { onUpdate(listOf(update), emptyList()) }) {
                                 Text(stringResource(R.string.dictionaries_update))
                             }
                         }
                     }
-                    if (updates.size > 1) {
-                        Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+                    check.models.forEach { update ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(update.entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
+                                // Model versions are build hashes; the size says more.
+                                Text(
+                                    Formatter.formatShortFileSize(LocalContext.current, update.entry.downloadBytes),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            TextButton(onClick = { onUpdate(emptyList(), listOf(update)) }) {
+                                Text(stringResource(R.string.dictionaries_update))
+                            }
+                        }
+                    }
+                    if (updates.size + check.models.size > 1) {
+                        Button(onClick = { onUpdate(updates, check.models) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                             Text(stringResource(R.string.dictionaries_update_all), textAlign = TextAlign.Center)
                         }
                     }

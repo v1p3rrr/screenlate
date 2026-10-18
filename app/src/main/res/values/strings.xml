@@ -267,6 +267,7 @@
     <string name="problems_title">Needs attention</string>
     <string name="problems_open_anki">Open Anki settings</string>
     <string name="problems_dictionaries_missing">Dictionaries whose files are missing:</string>
+    <string name="problems_models_damaged">Recognition models whose files are damaged:</string>
     <string name="problems_download_again">Download again</string>
     <string name="problems_import_again">Import its file again.</string>
     <string name="problems_remove">Remove</string>

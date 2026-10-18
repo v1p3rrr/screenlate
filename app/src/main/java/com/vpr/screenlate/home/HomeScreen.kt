@@ -348,6 +348,25 @@ private fun ProblemsCard(
                                 )
                             }
                         }
+                        is HomeProblem.DamagedModels -> {
+                            Text(stringResource(R.string.problems_models_damaged))
+                            problem.models.forEach { model ->
+                                Text("• " + (model.catalogEntry?.displayTitle() ?: model.id), style = MaterialTheme.typography.bodyMedium)
+                                Row {
+                                    if (model.catalogEntry != null) {
+                                        TextButton(onClick = {
+                                            askNotifications()
+                                            viewModel.downloadAgain(model)
+                                        }) {
+                                            Text(stringResource(R.string.problems_download_again))
+                                        }
+                                    }
+                                    TextButton(onClick = { viewModel.remove(model) }) {
+                                        Text(stringResource(R.string.problems_remove))
+                                    }
+                                }
+                            }
+                        }
                         is HomeProblem.NoTermDictionaries -> {
                             problem.languages.forEach { (language, categories) ->
                                 if (CatalogCategory.MAIN in categories) {

@@ -261,6 +261,7 @@
     <string name="problems_title">需要處理</string>
     <string name="problems_open_anki">開啟 Anki 設定</string>
     <string name="problems_dictionaries_missing">缺少檔案的詞典：</string>
+    <string name="problems_models_damaged">檔案已損壞的辨識模型：</string>
     <string name="problems_download_again">重新下載</string>
     <string name="problems_import_again">請重新匯入其檔案。</string>
     <string name="problems_remove">移除</string>

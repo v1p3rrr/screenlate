@@ -265,6 +265,7 @@
     <string name="problems_title">Requiere atención</string>
     <string name="problems_open_anki">Abrir ajustes de Anki</string>
     <string name="problems_dictionaries_missing">Diccionarios a los que les faltan archivos:</string>
+    <string name="problems_models_damaged">Modelos de reconocimiento con archivos dañados:</string>
     <string name="problems_download_again">Volver a descargar</string>
     <string name="problems_import_again">Vuelve a importar su archivo.</string>
     <string name="problems_remove">Quitar</string>

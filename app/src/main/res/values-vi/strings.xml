@@ -261,6 +261,7 @@
     <string name="problems_title">Cần chú ý</string>
     <string name="problems_open_anki">Mở cài đặt Anki</string>
     <string name="problems_dictionaries_missing">Từ điển bị thiếu tệp:</string>
+    <string name="problems_models_damaged">Mô hình nhận dạng bị hỏng tệp:</string>
     <string name="problems_download_again">Tải lại</string>
     <string name="problems_import_again">Hãy nhập lại tệp của nó.</string>
     <string name="problems_remove">Gỡ bỏ</string>

@@ -261,6 +261,7 @@
     <string name="problems_title">확인 필요</string>
     <string name="problems_open_anki">Anki 설정 열기</string>
     <string name="problems_dictionaries_missing">파일이 없는 사전:</string>
+    <string name="problems_models_damaged">파일이 손상된 인식 모델:</string>
     <string name="problems_download_again">다시 다운로드</string>
     <string name="problems_import_again">해당 파일을 다시 가져오세요.</string>
     <string name="problems_remove">제거</string>

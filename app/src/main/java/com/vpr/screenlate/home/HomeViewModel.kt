@@ -15,6 +15,8 @@ import com.vpr.screenlate.core.anki.settings.AnkiSettingsRepository
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
+import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -54,6 +56,18 @@ data class AnkiSummary(val deck: String, val model: String)
 
 /** Files of a downloaded or imported dictionary are gone; [catalogEntry] allows downloading it again. */
 data class MissingDictionary(val dictionary: DictionaryEntity, val catalogEntry: CatalogEntry?)
+
+/** A downloaded recognition model whose files are damaged; [catalogEntry] downloads it again. */
+data class DamagedModel(val id: String, val catalogEntry: CatalogEntry?)
+
+/** The [damaged] models with an entry of [entries] that downloads each again; a model downloading again is left out. */
+internal fun damagedModels(damaged: List<InstalledOcrModel>, entries: List<CatalogEntry>, tasks: List<ImportTask>): List<DamagedModel> {
+    val downloading = tasks.filter { !it.finished }.mapNotNullTo(hashSetOf()) { it.catalogEntry }
+    return damaged.mapNotNull { model ->
+        val its = entries.filter { it.isModel && it.model == model.id }
+        if (its.any { it.id in downloading }) null else DamagedModel(model.id, its.firstOrNull())
+    }
+}
 
 /**
  * Failures of the configured [sources] in their order; those of sources edited or removed since, or only tested in
@@ -96,6 +110,9 @@ sealed interface HomeProblem {
     /** Downloaded or imported dictionaries whose files are gone, in one card. */
     data class MissingDictionaries(val dictionaries: List<MissingDictionary>) : HomeProblem
 
+    /** Downloaded recognition models whose files are damaged or gone, in one card. */
+    data class DamagedModels(val models: List<DamagedModel>) : HomeProblem
+
     /**
      * Turned-on languages without a dictionary they cannot work without, with the categories they lack (the main one:
      * no enabled dictionary with definitions); [several] languages are turned on.
@@ -125,6 +142,7 @@ class HomeViewModel @Inject constructor(
     ankiSettings: AnkiSettingsRepository,
     private val profiles: LanguageProfiles,
     private val installs: LanguageInstallation,
+    private val models: OcrModelStore,
 ) : ViewModel() {
     val installation: StateFlow<InstallationStatus?> = profiles.active.flatMapLatest(installs::observe)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -195,12 +213,16 @@ class HomeViewModel @Inject constructor(
     /** Why removing a dictionary from the missing files card failed; cleared by the next removal or check. */
     val removeError: StateFlow<String?> = mutableRemoveError
 
-    /** Problems found by the last [refresh], plus each turned-on language's missing mandatory components. */
+    /**
+     * Problems found by the last [refresh], damaged recognition models, and each turned-on language's missing
+     * mandatory components.
+     */
     val problems: StateFlow<List<HomeProblem>> =
-        combine(checked, languageInstallations) { found, (languages, statuses) ->
+        combine(checked, languageInstallations, models.damaged, catalogEntries, imports.tasks) { found, (languages, statuses), damaged, entries, tasks ->
             val without = statuses.associate { it.language to it.missing }.filterValues { it.isNotEmpty() }
             val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
-            found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(noTerms)
+            val broken = damagedModels(damaged, entries, tasks).takeIf { it.isNotEmpty() }?.let(HomeProblem::DamagedModels)
+            found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(broken, noTerms)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Checks AnkiDroid, dictionary files and audio sources again; call when the screen is shown. */
@@ -225,6 +247,13 @@ class HomeViewModel @Inject constructor(
                 Log.w(TAG, "Dictionary check failed: ${e.javaClass.simpleName}")
                 emptyList()
             }.filterNot { it.id in downloading }
+            try {
+                models.recheck()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "Model check failed: ${e.javaClass.simpleName}")
+            }
             if (missing.isNotEmpty()) {
                 val entries = try {
                     catalog.entries().first()
@@ -275,6 +304,23 @@ class HomeViewModel @Inject constructor(
                 }
             }
             if (deleted) resolved(missing)
+        }
+    }
+
+    fun downloadAgain(model: DamagedModel) {
+        imports.downloadModel(model.catalogEntry ?: return)
+    }
+
+    fun remove(model: DamagedModel) {
+        viewModelScope.launch {
+            try {
+                withContext(NonCancellable) { models.delete(listOf(model.id)) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // The card stays while the model is there.
+                Log.w(TAG, "Removing a model failed", e)
+            }
         }
     }
 

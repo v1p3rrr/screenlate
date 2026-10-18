@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -33,6 +34,8 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +44,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -128,15 +132,28 @@ data class DictionariesState(
     val languages: List<Language> get() = profiles.turnedOn
 }
 
-/** Result of the last update check; [updates] is null while checking. */
-data class UpdateCheck(val updates: List<DictionaryUpdate>?)
+/** A newer version of an installed recognition model; [entry] downloads it, the installed one works until then. */
+data class ModelUpdate(val entry: CatalogEntry, val installedVersion: String)
+
+/** Result of the last update check; [updates] is null while checking, [models] are the recognition models'. */
+data class UpdateCheck(val updates: List<DictionaryUpdate>?, val models: List<ModelUpdate> = emptyList())
 
 /**
  * The check after [started] updates were queued. Null once every update has started: the task cards show them, and an
  * empty list would read as "all up to date" while they download.
  */
-internal fun UpdateCheck?.without(started: List<DictionaryUpdate>): UpdateCheck? =
-    (this?.updates.orEmpty() - started.toSet()).takeIf { it.isNotEmpty() }?.let(::UpdateCheck)
+internal fun UpdateCheck?.without(started: List<DictionaryUpdate>, startedModels: List<ModelUpdate> = emptyList()): UpdateCheck? {
+    val updates = this?.updates.orEmpty() - started.toSet()
+    val models = this?.models.orEmpty() - startedModels.toSet()
+    return if (updates.isEmpty() && models.isEmpty()) null else UpdateCheck(updates, models)
+}
+
+/** Installed models whose catalog entry names another version; a model of several entries takes the first one. */
+internal fun modelUpdates(entries: List<CatalogEntry>, installed: List<InstalledOcrModel>): List<ModelUpdate> =
+    installed.mapNotNull { model ->
+        val entry = entries.firstOrNull { it.isModel && it.model == model.id } ?: return@mapNotNull null
+        ModelUpdate(entry, model.version).takeIf { entry.version != model.version }
+    }
 
 @HiltViewModel
 class DictionariesViewModel @Inject constructor(
@@ -312,12 +329,20 @@ class DictionariesViewModel @Inject constructor(
 
     fun checkUpdates() {
         updateCheck.value = UpdateCheck(null)
-        viewModelScope.launch { updateCheck.value = UpdateCheck(dictionaryUpdates.check()) }
+        viewModelScope.launch {
+            updateCheck.value = coroutineScope {
+                val dictionaries = async { dictionaryUpdates.check() }
+                // The fetched catalog when the network allows, else the last one.
+                val models = async { modelUpdates(catalog.entries().last(), store.models.value) }
+                UpdateCheck(dictionaries.await(), models.await())
+            }
+        }
     }
 
-    fun update(items: List<DictionaryUpdate>) {
+    fun update(items: List<DictionaryUpdate>, models: List<ModelUpdate> = emptyList()) {
         items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
-        updateCheck.value = updateCheck.value.without(items)
+        models.forEach { imports.downloadModel(it.entry) }
+        updateCheck.value = updateCheck.value.without(items, models)
     }
 
     fun delete(dictionary: DictionaryEntity) {

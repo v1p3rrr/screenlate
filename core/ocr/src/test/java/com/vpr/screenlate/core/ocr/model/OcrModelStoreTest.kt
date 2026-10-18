@@ -128,4 +128,85 @@ class OcrModelStoreTest {
         store.delete(listOf("a", "missing", "../escape"))
         assertThat(store.models.value.map { it.id }).containsExactly("b")
     }
+
+    @Test
+    fun `a model deleted during a scan goes once the scan releases it`() = runTest {
+        val archive = file("det.bin", "weights")
+        val model = store.install(spec(archive), archive)
+        val held = requireNotNull(store.hold(listOf("det")))
+        store.delete(listOf("det"))
+        assertThat(store.models.value).isEmpty()
+        assertThat(model.file(OcrModelStore.MODEL_FILE).exists()).isTrue()
+        assertThat(store.hold(listOf("det"))).isNull()
+        held.close()
+        assertThat(model.directory.exists()).isFalse()
+    }
+
+    @Test
+    fun `a model left by a scan that never ended goes at the next start`() = runTest {
+        val archive = file("det.bin", "weights")
+        val model = store.install(spec(archive), archive)
+        store.hold(listOf("det"))
+        store.delete(listOf("det"))
+        assertThat(OcrModelStore(root).models.value).isEmpty()
+        assertThat(model.directory.exists()).isFalse()
+    }
+
+    @Test
+    fun `a hold needs every model and each hold ends once`() = runTest {
+        val archive = file("det.bin", "weights")
+        store.install(spec(archive), archive)
+        assertThat(store.hold(listOf("det", "rec"))).isNull()
+        val first = requireNotNull(store.hold(listOf("det")))
+        val second = requireNotNull(store.hold(listOf("det")))
+        store.delete(listOf("det"))
+        first.close()
+        first.close()
+        assertThat(File(root, "det").exists()).isTrue()
+        second.close()
+        assertThat(File(root, "det").exists()).isFalse()
+    }
+
+    @Test
+    fun `missing or cut files make a model damaged until it is installed again`() = runTest {
+        val archive = zip("rec.zip", mapOf("rec.mnn" to "net", "dict.txt" to "a\nb"))
+        val model = store.install(spec(archive, id = "rec"), archive)
+        model.file("dict.txt").writeText("a")
+        store.recheck()
+        assertThat(store.models.value).isEmpty()
+        assertThat(store.damaged.value.map { it.id }).containsExactly("rec")
+        model.file("rec.mnn").delete()
+        assertThat(OcrModelStore(root).damaged.value.map { it.id }).containsExactly("rec")
+
+        store.install(spec(archive, id = "rec"), archive)
+        assertThat(store.models.value.map { it.id }).containsExactly("rec")
+        assertThat(store.damaged.value).isEmpty()
+    }
+
+    @Test
+    fun `a file changed in place is found when the model is verified`() = runTest {
+        val archive = zip("rec.zip", mapOf("rec.mnn" to "net"))
+        val model = store.install(spec(archive, id = "rec"), archive)
+        model.file("rec.mnn").writeText("bad")
+        store.recheck()
+        assertThat(store.models.value.map { it.id }).containsExactly("rec")
+        assertThat(store.verify(listOf("rec"))).isTrue()
+        assertThat(store.damaged.value.map { it.id }).containsExactly("rec")
+        assertThat(OcrModelStore(root).damaged.value.map { it.id }).containsExactly("rec")
+        assertThat(store.verify(listOf("other"))).isFalse()
+    }
+
+    @Test
+    fun `a model installed before its files were recorded is recorded at the next check`() = runTest {
+        val archive = zip("rec.zip", mapOf("rec.mnn" to "net"))
+        val model = store.install(spec(archive, id = "rec"), archive)
+        val manifest = model.file(OcrModelStore.MANIFEST)
+        manifest.writeText(manifest.readLines().filterNot { it.startsWith("file.") }.joinToString("\n"))
+        model.file("rec.mnn").writeText("changed")
+        store.recheck()
+        assertThat(store.models.value.map { it.id }).containsExactly("rec")
+        model.file("rec.mnn").writeText("cut")
+        store.recheck()
+        assertThat(store.damaged.value.map { it.id }).containsExactly("rec")
+    }
 }

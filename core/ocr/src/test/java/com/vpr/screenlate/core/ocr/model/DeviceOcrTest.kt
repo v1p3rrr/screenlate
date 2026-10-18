@@ -105,4 +105,51 @@ class DeviceOcrTest {
         assertThat(select("mlkit", mlKit = false, fast)).isEqualTo("fast")
         assertThat(select(null, mlKit = false)).isNull()
     }
+
+    @Test
+    fun `a model deleted before the scan holds it gives way to the next one`() = runTest {
+        install("paddle-cyrillic", "paddle-detector", "tesseract-fast-rus")
+        var refused = 0
+        val device = DeviceOcr(
+            FakeMlKit(emptySet()), setOf(paddle, tesseract), { installed }, { listed[it].orEmpty() }, { chosen },
+            hold = { ids ->
+                if ("paddle-cyrillic" in ids) {
+                    refused++
+                    installed = installed.filterNot { it.id == "paddle-cyrillic" }
+                    null
+                } else {
+                    AutoCloseable {}
+                }
+            },
+        )
+        device.recognize(image, Language.RUSSIAN)
+        assertThat(refused).isEqualTo(1)
+        assertThat(tesseract.seen).containsExactly("tesseract-fast-rus")
+    }
+
+    @Test
+    fun `a model is held while it reads and verified when its engine fails`() = runTest {
+        val failing = object : ModelOcrEngine {
+            override val id = "paddle"
+
+            override suspend fun recognize(image: Bitmap, language: Language, model: InstalledOcrModel, required: List<InstalledOcrModel>): OcrPage =
+                throw IllegalStateException("unreadable model")
+        }
+        val held = mutableListOf<String>()
+        var closed = 0
+        val verified = mutableListOf<List<String>>()
+        install("paddle-cyrillic", "paddle-detector")
+        val device = DeviceOcr(
+            FakeMlKit(emptySet()), setOf(failing), { installed }, { listed[it].orEmpty() }, { chosen },
+            hold = { ids ->
+                held += ids
+                AutoCloseable { closed++ }
+            },
+            verify = { verified += it },
+        )
+        assertThrows(IllegalStateException::class.java) { kotlinx.coroutines.runBlocking { device.recognize(image, Language.RUSSIAN) } }
+        assertThat(held).containsExactly("paddle-cyrillic", "paddle-detector").inOrder()
+        assertThat(closed).isEqualTo(1)
+        assertThat(verified).containsExactly(listOf("paddle-cyrillic", "paddle-detector"))
+    }
 }

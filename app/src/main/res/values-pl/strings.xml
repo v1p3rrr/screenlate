@@ -267,6 +267,7 @@
     <string name="problems_title">Wymaga uwagi</string>
     <string name="problems_open_anki">Otwórz ustawienia Anki</string>
     <string name="problems_dictionaries_missing">Słowniki, którym brakuje plików:</string>
+    <string name="problems_models_damaged">Modele rozpoznawania, których pliki są uszkodzone:</string>
     <string name="problems_download_again">Pobierz ponownie</string>
     <string name="problems_import_again">Zaimportuj jego plik ponownie.</string>
     <string name="problems_remove">Usuń</string>

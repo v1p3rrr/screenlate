@@ -261,6 +261,7 @@
     <string name="problems_title">確認が必要です</string>
     <string name="problems_open_anki">Anki の設定を開く</string>
     <string name="problems_dictionaries_missing">ファイルが見つからない辞書：</string>
+    <string name="problems_models_damaged">ファイルが壊れている認識モデル：</string>
     <string name="problems_download_again">再ダウンロード</string>
     <string name="problems_import_again">ファイルをもう一度インポートしてください。</string>
     <string name="problems_remove">削除</string>

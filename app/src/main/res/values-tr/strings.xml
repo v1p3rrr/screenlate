@@ -263,6 +263,7 @@
     <string name="problems_title">İlgilenilmesi gerekenler</string>
     <string name="problems_open_anki">Anki ayarlarını aç</string>
     <string name="problems_dictionaries_missing">Dosyaları eksik olan sözlükler:</string>
+    <string name="problems_models_damaged">Dosyaları bozuk olan tanıma modelleri:</string>
     <string name="problems_download_again">Yeniden indir</string>
     <string name="problems_import_again">Dosyasını yeniden içe aktarın.</string>
     <string name="problems_remove">Kaldır</string>

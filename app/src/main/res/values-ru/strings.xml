@@ -268,6 +268,7 @@
     <string name="problems_title">Требует внимания</string>
     <string name="problems_open_anki">Открыть настройки Anki</string>
     <string name="problems_dictionaries_missing">Пропали файлы словарей:</string>
+    <string name="problems_models_damaged">Повреждены файлы моделей распознавания:</string>
     <string name="problems_download_again">Скачать заново</string>
     <string name="problems_import_again">Импортируйте его файл заново.</string>
     <string name="problems_remove">Удалить</string>

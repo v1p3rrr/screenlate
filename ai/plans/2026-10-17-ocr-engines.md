@@ -22,7 +22,7 @@ Rows of the languages plan: "On-device OCR engines", "ML Kit Latin model", "Tess
 recognition", "OCR engine choice" (the recommendation rule), "OCR model choice placement", "OCR model names",
 "Several OCR models at setup", "Installed shared OCR models", "Deleting OCR models", "Paddle model hosting", "Last
 dictionary with definitions", "OCR runtime and models", "Turning on a language", "PP-OCRv6", "Latin look-alikes in
-Cyrillic text".
+Cyrillic text", "Default OCR engines", "ML Kit at setup", "OCR speed marks".
 
 Technical choices of the agent (the owner may object; recorded in the changelog when changed):
 
@@ -36,7 +36,7 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Paddle detector | A model entry of its own, named by each Paddle recognizer entry (`requires`); never listed to the user; installed with the first Paddle recognizer, deleted with the last one. |
 | Model ids | `tesseract-fast-<code>`, `tesseract-best-<code>` (Tesseract's language code, e.g. `rus`), `paddle-<script>`, `paddle-detector`; versions pinned (tessdata by commit, Paddle by our release number). |
 | Which models a language has | The catalog: a language's model entries (its source language) name the models it may use, with the recommended one marked. `core:ocr` cannot read the catalog, so it gets them through an interface (`LanguageModels`) the app implements. |
-| Choice per language | Stored in the preferences per language (the model id, or `mlkit`); absent means the recommended model when installed, else ML Kit where it reads the script, else the best installed one. |
+| Choice per language | Stored in the preferences per language (the model id, or `mlkit`); absent means ML Kit where it reads the script, else the recommended model when installed, else the best installed one. The main model ticked at setup is stored as the choice (owner, 2026-10-18, question 40; before, an installed recommended model came first). |
 | Choice key | `ocr_model` (another language adds its code); reset with the bubble settings, where the choice is made, and backed up with them, per language. |
 | Device selection | `DeviceOcr` uses the language's chosen model when it is installed, else falls back as above; no installed model and no ML Kit model means no on-device recognition, as today (cloud only on Both, an error with a hint on Device). |
 | Right to left | Paddle's Arabic recognizer reads its crop left to right; the engine turns words and letters into reading order (as the comparison does). Mirrored hit testing and highlight stay in group 4d. |
@@ -138,6 +138,38 @@ Left:
     dictionaries, the old version working until the new one is installed; (b) downloaded by itself on Wi-Fi; (c)
     not offered: a model keeps its version until it is deleted and downloaded again.
 
+Request 68 of the languages plan (2026-10-18): on the phone the downloaded models seem about as slow as cloud
+recognition and ML Kit clearly faster. The comparison measured per clean screen on the emulator: cloud ~0.8 s,
+ML Kit Latin ~1.0 s, Paddle v5 ~0.9 s, Paddle Japanese 1.4 s, ML Kit Japanese 1.6 s; a whole screen of 21 paragraphs
+took Paddle v6 6.1 s. The in-app timing run (emulator, then the phone) is with the test session.
+
+36. Default engines for new installs. Today Both: the device gives a draft, the cloud the final text, the device's
+    whole screen becomes final offline. Options: (a, recommended) decided by the in-app timing run: Cloud by default
+    when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays; with Cloud
+    by default, turning a language on downloads no on-device model; (b) Cloud by default now; (c) Both stays.
+37. Where the other engine settings are offered (Both for a draft and offline scans, the device alone for no
+    cloud). Options: (a, recommended) the first run and the language download screen show the engine choice with
+    one line per option, and the on-device model category says it is needed for Both and the device alone; (b) only
+    the bubble settings, with a hint; (c) the first run only.
+38. ML Kit as the built-in model. ML Kit reads Japanese, Chinese, Korean and the Latin-script languages without a
+    download, but the download screen ticks the recommended Paddle model and says nothing about ML Kit. Options:
+    (a, recommended) the on-device category lists ML Kit first as built in, needing no download, and chosen by
+    default; the other models are offered unticked, marked "more accurate" where the comparison shows it; a model is
+    ticked by default only for languages ML Kit does not read (Russian); (b) the recommended model stays ticked, with
+    a line that ML Kit is built in and the tick can be removed; (c) as now.
+39. Speed in the model choice. Options: (a, recommended) the model list marks each model "faster" or "more
+    accurate" from the timing run, and with Engines on Both a hint says that the device model only gives the draft,
+    so a faster one helps more; (b) with Engines on Both the draft always uses ML Kit where it reads the language,
+    and the chosen model is used for the device alone and offline; (c) no marks.
+40. Which model is active when ML Kit reads the language and another one is downloaded. Options: (a, recommended) a
+    model ticked at setup becomes the main one (the "main" switch can stay on ML Kit); one downloaded from the model
+    list is only added; with no choice ML Kit is used; (b) always ML Kit until another is chosen in the list; (c) as
+    now (an installed recommended model is used when nothing was chosen).
+
+Answered on 2026-10-18: 36 (a), row "Default OCR engines"; 37 postponed by the owner: the engine choice becomes a
+separate setting, discussed later (languages plan, "Open items"); 38 (a), row "ML Kit at setup"; 39: speed only in
+words, no figures for the user, row "OCR speed marks"; 40 (a), rows "ML Kit at setup" and "Choice per language".
+
 ## Changelog
 
 - 2026-10-17: plan written from requests 60-63 and the answers to questions 31-34 of the languages plan.
@@ -148,3 +180,6 @@ Left:
   Paddle stays in this plan before the owner's build of groups 1-3 (languages plan, row "Build of groups 1-3").
 - 2026-10-17: step 4 done (Paddle on MNN, models on the prerelease `ocr-models-1` approved by the owner) and step 5 for
   the 14 languages; the owner's build comes from this branch's CI run. Progress section added.
+- 2026-10-18: questions 36-39 from request 68 of the languages plan (default engines, where they are offered, ML Kit
+  as the built-in model, speed marks); the in-app timing run is with the test session.
+- 2026-10-18: questions 36-40 answered (37 postponed); row "Choice per language" changed by question 40.
