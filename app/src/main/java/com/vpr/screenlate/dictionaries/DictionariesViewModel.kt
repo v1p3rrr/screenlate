@@ -8,6 +8,8 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
+import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -21,7 +23,9 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.languages.LeftoverModel
 import com.vpr.screenlate.languages.ShownLanguage
+import com.vpr.screenlate.languages.leftoverModels
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.Collator
@@ -30,6 +34,8 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +44,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -73,6 +80,36 @@ internal fun catalogItems(
     }
 }
 
+/** A task's card, or the card the tasks that wait for their turn share. */
+internal sealed interface TaskItem {
+    val key: Any
+
+    data class One(val task: ImportTask) : TaskItem {
+        override val key: Any get() = task.id
+    }
+
+    data class Waiting(val tasks: List<ImportTask>) : TaskItem {
+        override val key: Any get() = "waiting"
+    }
+}
+
+/**
+ * The cards of [tasks], in their order: two or more that wait for their turn share one card in the place of the
+ * first. A download waiting for its retry keeps its own card, which tells so.
+ */
+internal fun taskItems(tasks: List<ImportTask>): List<TaskItem> {
+    val waiting = tasks.filter { it.state == ImportTask.State.QUEUED && it.retries == 0 }
+    if (waiting.size < 2) return tasks.map(TaskItem::One)
+    val ids = waiting.mapTo(hashSetOf()) { it.id }
+    return tasks.mapNotNull { task ->
+        when {
+            task.id == waiting.first().id -> TaskItem.Waiting(waiting)
+            task.id in ids -> null
+            else -> TaskItem.One(task)
+        }
+    }
+}
+
 /**
  * Catalog entries of one kind and language pair. [targetLanguage] is set for term dictionaries only; frequency,
  * pitch and kanji dictionaries are grouped by source language alone.
@@ -85,10 +122,15 @@ data class CatalogGroup(val sourceLanguage: String, val sections: List<CatalogSe
 data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<DictionaryEntity>)
 
 /**
- * Installed dictionaries of a language that is not turned on, or that the app does not support; lookups do not use
- * them. [bytes] is null until their files are measured.
+ * Installed dictionaries and recognition models of a language that is not turned on, or that the app does not support;
+ * lookups do not use them. [bytes] is what the dictionaries take, null until their files are measured.
  */
-data class OtherLanguage(val code: String, val dictionaries: List<DictionaryEntity>, val bytes: Long?)
+data class OtherLanguage(
+    val code: String,
+    val dictionaries: List<DictionaryEntity>,
+    val bytes: Long?,
+    val models: List<LeftoverModel> = emptyList(),
+)
 
 data class DictionariesState(
     /** Every installed dictionary, in priority order. */
@@ -111,6 +153,8 @@ data class DictionariesState(
     val withoutFiles: Set<Long> = emptySet(),
     /** Bytes on disk by dictionary id, for the dictionaries in [others]; empty until measured. */
     val sizes: Map<Long, Long> = emptyMap(),
+    /** The recognition models in [others], by language code. */
+    val otherModels: Map<String, List<LeftoverModel>> = emptyMap(),
     val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
     val loaded: Boolean = false,
 ) {
@@ -118,15 +162,28 @@ data class DictionariesState(
     val languages: List<Language> get() = profiles.turnedOn
 }
 
-/** Result of the last update check; [updates] is null while checking. */
-data class UpdateCheck(val updates: List<DictionaryUpdate>?)
+/** A newer version of an installed recognition model; [entry] downloads it, the installed one works until then. */
+data class ModelUpdate(val entry: CatalogEntry, val installedVersion: String)
+
+/** Result of the last update check; [updates] is null while checking, [models] are the recognition models'. */
+data class UpdateCheck(val updates: List<DictionaryUpdate>?, val models: List<ModelUpdate> = emptyList())
 
 /**
  * The check after [started] updates were queued. Null once every update has started: the task cards show them, and an
  * empty list would read as "all up to date" while they download.
  */
-internal fun UpdateCheck?.without(started: List<DictionaryUpdate>): UpdateCheck? =
-    (this?.updates.orEmpty() - started.toSet()).takeIf { it.isNotEmpty() }?.let(::UpdateCheck)
+internal fun UpdateCheck?.without(started: List<DictionaryUpdate>, startedModels: List<ModelUpdate> = emptyList()): UpdateCheck? {
+    val updates = this?.updates.orEmpty() - started.toSet()
+    val models = this?.models.orEmpty() - startedModels.toSet()
+    return if (updates.isEmpty() && models.isEmpty()) null else UpdateCheck(updates, models)
+}
+
+/** Installed models whose catalog entry names another version; a model of several entries takes the first one. */
+internal fun modelUpdates(entries: List<CatalogEntry>, installed: List<InstalledOcrModel>): List<ModelUpdate> =
+    installed.mapNotNull { model ->
+        val entry = entries.firstOrNull { it.isModel && it.model == model.id } ?: return@mapNotNull null
+        ModelUpdate(entry, model.version).takeIf { entry.version != model.version }
+    }
 
 @HiltViewModel
 class DictionariesViewModel @Inject constructor(
@@ -137,8 +194,9 @@ class DictionariesViewModel @Inject constructor(
     private val lookup: DictionaryLookup,
     private val dictionaryReset: DictionaryReset,
     private val cache: DictionariesStateCache,
-    catalog: DictionaryCatalog,
+    private val catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
+    private val store: OcrModelStore,
 ) : ViewModel() {
     private val shownLanguage = ShownLanguage(profiles, viewModelScope)
     private val copyError = MutableStateFlow<String?>(null)
@@ -154,11 +212,14 @@ class DictionariesViewModel @Inject constructor(
         catalog.entries(),
         combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
-        combine(repository.dictionaries, profiles.state.map { it.turnedOn }.distinctUntilChanged(), ::Pair)
-            .map { (dictionaries, turnedOn) ->
-                FileChecks(remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)))
+        combine(repository.dictionaries, profiles.state.map { it.turnedOn }.distinctUntilChanged(), store.models, ::Triple)
+            .map { (dictionaries, turnedOn, models) ->
+                FileChecks(
+                    remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)),
+                    leftoverModels(turnedOn.map { it.code }, catalog.local(), models, Locale.getDefault()),
+                )
             }
-            .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes) } ?: FileChecks()) },
+            .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
     ) { dictionaries, tasks, entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
         val shownDictionaries = dictionaries.filter { it.isFor(shown) }
@@ -167,7 +228,7 @@ class DictionariesViewModel @Inject constructor(
             installed = DictionaryKind.entries.mapNotNull { kind ->
                 shownDictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
             },
-            others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes),
+            others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes, checks.models),
             shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
@@ -179,6 +240,7 @@ class DictionariesViewModel @Inject constructor(
             remoteCss = checks.remoteCss,
             withoutFiles = checks.withoutFiles,
             sizes = checks.sizes,
+            otherModels = checks.models,
             profiles = profileState,
             loaded = true,
         )
@@ -257,18 +319,22 @@ class DictionariesViewModel @Inject constructor(
     }
 
     fun download(entry: CatalogEntry) {
-        imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
+        viewModelScope.launch {
+            imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
+        }
     }
 
     /** Replaces [copy], an old build of [entry], with the current build in its place. */
     fun replace(entry: CatalogEntry, copy: DictionaryEntity) {
-        imports.download(
-            entry.downloadUrl,
-            copy.title,
-            indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
-            replaces = copy.id,
-            entry = entry,
-        )
+        viewModelScope.launch {
+            imports.download(
+                entry.downloadUrl,
+                copy.title,
+                indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
+                replaces = copy.id,
+                entry = entry,
+            )
+        }
     }
 
     fun setEnabled(dictionary: DictionaryEntity, enabled: Boolean) {
@@ -297,12 +363,22 @@ class DictionariesViewModel @Inject constructor(
 
     fun checkUpdates() {
         updateCheck.value = UpdateCheck(null)
-        viewModelScope.launch { updateCheck.value = UpdateCheck(dictionaryUpdates.check()) }
+        viewModelScope.launch {
+            updateCheck.value = coroutineScope {
+                val dictionaries = async { dictionaryUpdates.check() }
+                // The fetched catalog when the network allows, else the last one.
+                val models = async { modelUpdates(catalog.entries().last(), store.models.value) }
+                UpdateCheck(dictionaries.await(), models.await())
+            }
+        }
     }
 
-    fun update(items: List<DictionaryUpdate>) {
-        items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
-        updateCheck.value = updateCheck.value.without(items)
+    fun update(items: List<DictionaryUpdate>, models: List<ModelUpdate> = emptyList()) {
+        viewModelScope.launch {
+            items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
+            models.forEach { imports.downloadModel(it.entry) }
+        }
+        updateCheck.value = updateCheck.value.without(items, models)
     }
 
     fun delete(dictionary: DictionaryEntity) {
@@ -346,6 +422,11 @@ class DictionariesViewModel @Inject constructor(
     fun cancel(task: ImportTask) {
         viewModelScope.launch { imports.cancel(task.id) }
     }
+
+    /** Cancels the [tasks] of the waiting card; the others go on. */
+    fun cancelAll(tasks: List<ImportTask>) {
+        viewModelScope.launch { tasks.forEach { imports.cancel(it.id) } }
+    }
 }
 
 private const val TAG = "Dictionaries"
@@ -355,6 +436,7 @@ private data class FileChecks(
     val remoteCss: Map<String, List<String>> = emptyMap(),
     val withoutFiles: Set<Long> = emptySet(),
     val sizes: Map<Long, Long> = emptyMap(),
+    val models: Map<String, List<LeftoverModel>> = emptyMap(),
 )
 
 /**
@@ -382,18 +464,23 @@ private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: Lis
     return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
 }
 
-/** Dictionaries with a source language that is not turned on, by language, ordered by the language's name. */
+/**
+ * Dictionaries with a source language that is not turned on and the [models] left by such languages, by language,
+ * ordered by the language's name.
+ */
 internal fun otherLanguages(
     dictionaries: List<DictionaryEntity>,
     turnedOn: List<Language>,
     sizes: Map<Long, Long>,
+    models: Map<String, List<LeftoverModel>> = emptyMap(),
 ): List<OtherLanguage> {
     val locale = Locale.getDefault()
-    return ofOtherLanguages(dictionaries, turnedOn)
-        .groupBy { it.sourceLanguage!! }
-        .map { (code, list) ->
+    val byLanguage = ofOtherLanguages(dictionaries, turnedOn).groupBy { it.sourceLanguage!! }
+    return (byLanguage.keys + models.keys)
+        .map { code ->
+            val list = byLanguage[code].orEmpty()
             val bytes = list.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
-            OtherLanguage(code, list, bytes)
+            OtherLanguage(code, list, bytes, models[code].orEmpty())
         }
         .sortedWith(compareBy(Collator.getInstance(locale)) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) })
 }

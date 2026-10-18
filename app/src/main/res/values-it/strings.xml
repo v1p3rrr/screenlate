@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">caratteri: %1$d</string>
     <string name="dictionaries_languages_hint">I dizionari installati e quelli disponibili per il download qui sotto sono quelli della lingua scelta. I dizionari senza lingua valgono per tutte le lingue.</string>
     <string name="dictionaries_other_languages">Altre lingue</string>
-    <string name="dictionaries_other_languages_hint">Dizionari delle lingue disattivate. Non vengono usati nelle ricerche e occupano solo spazio.</string>
+    <string name="dictionaries_other_languages_hint">Dizionari e modelli di riconoscimento delle lingue disattivate. Non vengono usati e occupano solo spazio.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d dizionario</item>
         <item quantity="many">%1$d dizionari</item>
@@ -107,6 +107,11 @@
     <string name="dictionaries_task_queued">In attesa: %1$s</string>
     <string name="dictionaries_task_downloading">Download di %1$s</string>
     <string name="dictionaries_task_retrying">Nuovo tentativo di download (%2$d di %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">In attesa (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">In attesa (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Annulla tutto</string>
+    <string name="dictionaries_tasks_show">Mostra l’elenco</string>
+    <string name="dictionaries_tasks_hide">Nascondi l’elenco</string>
     <string name="dictionaries_download_stopped">%1$s: download interrotto — %2$s</string>
     <string name="dictionaries_connection_lost">connessione interrotta</string>
     <string name="dictionaries_task_importing">Importazione di %1$s</string>
@@ -265,6 +270,7 @@
     <string name="problems_title">Richiede attenzione</string>
     <string name="problems_open_anki">Apri le impostazioni di Anki</string>
     <string name="problems_dictionaries_missing">Dizionari a cui mancano dei file:</string>
+    <string name="problems_models_damaged">Modelli di riconoscimento con file danneggiati:</string>
     <string name="problems_download_again">Scarica di nuovo</string>
     <string name="problems_import_again">Importa di nuovo il suo file.</string>
     <string name="problems_remove">Rimuovi</string>
@@ -334,7 +340,7 @@
     <string name="audio_sources">Fonti</string>
     <string name="audio_reset_sources">Ripristina le fonti predefinite</string>
     <string name="audio_regions">Regioni</string>
-    <string name="audio_regions_hint">Le registrazioni di Wiktionary delle regioni più in alto nell’elenco vengono riprodotte per prime.</string>
+    <string name="audio_regions_hint">Le registrazioni di Wiktionary e le trascrizioni delle regioni più in alto nell’elenco vengono per prime.</string>
     <string name="audio_region_us">Stati Uniti</string>
     <string name="audio_region_uk">Regno Unito</string>
     <string name="audio_region_latin_america">America Latina</string>
@@ -747,6 +753,7 @@
     <string name="ocr_models_mlkit">ML Kit (incluso)</string>
     <string name="ocr_models_mlkit_info">Incluso nell’app, niente da scaricare. Riconosce testo cinese, giapponese, coreano e in alfabeto latino.</string>
     <string name="ocr_models_recommended">Consigliato</string>
+    <string name="ocr_models_more_accurate">Più preciso</string>
     <string name="ocr_models_installed_size">Installato · %1$s</string>
     <string name="ocr_models_in_use">In uso per: %1$s</string>
     <string name="ocr_models_delete_title">Eliminare il modello?</string>

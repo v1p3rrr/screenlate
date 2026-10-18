@@ -16,6 +16,7 @@
  *                                  character when no word was found
  *   message: string,               shown instead of results
  *   installation: boolean,         opens the installation queue from the message
+ *   ocrModels: boolean,            opens the language's on-device models from the message
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
  *   labels: { ... }                localized strings
  * }
@@ -163,10 +164,18 @@ const Popup = (() => {
             compact(state),
             state.message,
             state.installation,
+            state.ocrModels,
             state.source,
             state.kanji?.character,
             (state.results || []).map(r => [r.term.expression, r.term.reading]),
         ]);
+    }
+
+    /** A button under a message that opens a screen of the app. */
+    function messageLink(label, url) {
+        const button = element('button', 'message-link', label);
+        button.addEventListener('click', () => ScreenlateBridge.onOpenUrl(url));
+        return button;
     }
 
     function termsKey(state) {
@@ -190,9 +199,10 @@ const Popup = (() => {
         if (state.message || results.length === 0) {
             content.replaceChildren(element('div', 'message', state.message || state.labels?.noResults || ''));
             if (state.installation) {
-                const status = element('button', 'installation-status', state.labels?.installation || 'Installation status');
-                status.addEventListener('click', () => ScreenlateBridge.onOpenUrl('screenlate://installation'));
-                content.append(status);
+                content.append(messageLink(state.labels?.installation || 'Installation status', 'screenlate://installation'));
+            }
+            if (state.ocrModels) {
+                content.append(messageLink(state.labels?.ocrModels || 'On-device model', 'screenlate://ocr-models'));
             }
             return;
         }

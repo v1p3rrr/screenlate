@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">漢字：%1$d</string>
     <string name="dictionaries_languages_hint">下のインストール済みの辞書とダウンロード可能な辞書は、選んだ言語のものです。言語のない辞書はすべての言語で使われます。</string>
     <string name="dictionaries_other_languages">その他の言語</string>
-    <string name="dictionaries_other_languages_hint">オフにした言語の辞書です。検索には使われず、容量のみを占有します。</string>
+    <string name="dictionaries_other_languages_hint">オフにした言語の辞書と認識モデルです。使われず、容量のみを占有します。</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="other">辞書 %1$d 件</item>
     </plurals>
@@ -103,6 +103,11 @@
     <string name="dictionaries_task_queued">待機中：%1$s</string>
     <string name="dictionaries_task_downloading">%1$s をダウンロード中</string>
     <string name="dictionaries_task_retrying">ダウンロードを再試行中（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_tasks_waiting">待機中（%1$d）：%2$s</string>
+    <string name="dictionaries_tasks_waiting_count">待機中（%1$d）</string>
+    <string name="dictionaries_tasks_cancel_all">すべてキャンセル</string>
+    <string name="dictionaries_tasks_show">一覧を表示</string>
+    <string name="dictionaries_tasks_hide">一覧を隠す</string>
     <string name="dictionaries_download_stopped">%1$s：ダウンロードが停止しました（%2$s）</string>
     <string name="dictionaries_connection_lost">接続が切れました</string>
     <string name="dictionaries_task_importing">%1$s をインポート中</string>
@@ -261,6 +266,7 @@
     <string name="problems_title">確認が必要です</string>
     <string name="problems_open_anki">Anki の設定を開く</string>
     <string name="problems_dictionaries_missing">ファイルが見つからない辞書：</string>
+    <string name="problems_models_damaged">ファイルが壊れている認識モデル：</string>
     <string name="problems_download_again">再ダウンロード</string>
     <string name="problems_import_again">ファイルをもう一度インポートしてください。</string>
     <string name="problems_remove">削除</string>
@@ -328,7 +334,7 @@
     <string name="audio_sources">ソース</string>
     <string name="audio_reset_sources">デフォルトのソースに戻す</string>
     <string name="audio_regions">地域</string>
-    <string name="audio_regions_hint">リストの上にある地域の Wiktionary の録音から再生します。</string>
+    <string name="audio_regions_hint">リストの上にある地域の Wiktionary の録音と発音記号が先に来ます。</string>
     <string name="audio_region_us">アメリカ</string>
     <string name="audio_region_uk">イギリス</string>
     <string name="audio_region_latin_america">ラテンアメリカ</string>
@@ -733,6 +739,7 @@
     <string name="ocr_models_mlkit">ML Kit（内蔵）</string>
     <string name="ocr_models_mlkit_info">アプリに含まれ、ダウンロードは不要です。中国語、日本語、韓国語とラテン文字のテキストを認識します。</string>
     <string name="ocr_models_recommended">推奨</string>
+    <string name="ocr_models_more_accurate">より正確</string>
     <string name="ocr_models_installed_size">インストール済み · %1$s</string>
     <string name="ocr_models_in_use">使用中：%1$s</string>
     <string name="ocr_models_delete_title">モデルを削除しますか？</string>

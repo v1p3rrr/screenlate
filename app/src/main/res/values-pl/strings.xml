@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">znaki: %1$d</string>
     <string name="dictionaries_languages_hint">Zainstalowane i dostępne do pobrania słowniki poniżej dotyczą wybranego języka. Słowniki bez języka służą wszystkim językom.</string>
     <string name="dictionaries_other_languages">Inne języki</string>
-    <string name="dictionaries_other_languages_hint">Słowniki wyłączonych języków. Nie są używane w wyszukiwaniu i zajmują tylko miejsce.</string>
+    <string name="dictionaries_other_languages_hint">Słowniki i modele rozpoznawania wyłączonych języków. Nie są używane i zajmują tylko miejsce.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d słownik</item>
         <item quantity="few">%1$d słowniki</item>
@@ -109,6 +109,11 @@
     <string name="dictionaries_task_queued">Oczekuje: %1$s</string>
     <string name="dictionaries_task_downloading">Pobieranie: %1$s</string>
     <string name="dictionaries_task_retrying">Ponawianie pobierania (%2$d z %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">W kolejce (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">W kolejce (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Anuluj wszystkie</string>
+    <string name="dictionaries_tasks_show">Pokaż listę</string>
+    <string name="dictionaries_tasks_hide">Ukryj listę</string>
     <string name="dictionaries_download_stopped">%1$s: pobieranie zatrzymane — %2$s</string>
     <string name="dictionaries_connection_lost">połączenie przerwane</string>
     <string name="dictionaries_task_importing">Importowanie: %1$s</string>
@@ -267,6 +272,7 @@
     <string name="problems_title">Wymaga uwagi</string>
     <string name="problems_open_anki">Otwórz ustawienia Anki</string>
     <string name="problems_dictionaries_missing">Słowniki, którym brakuje plików:</string>
+    <string name="problems_models_damaged">Modele rozpoznawania, których pliki są uszkodzone:</string>
     <string name="problems_download_again">Pobierz ponownie</string>
     <string name="problems_import_again">Zaimportuj jego plik ponownie.</string>
     <string name="problems_remove">Usuń</string>
@@ -337,7 +343,7 @@
     <string name="audio_sources">Źródła</string>
     <string name="audio_reset_sources">Przywróć domyślne źródła</string>
     <string name="audio_regions">Regiony</string>
-    <string name="audio_regions_hint">Nagrania z Wiktionary z regionów wyżej na liście są odtwarzane jako pierwsze.</string>
+    <string name="audio_regions_hint">Nagrania z Wiktionary i transkrypcje z regionów wyżej na liście są pierwsze.</string>
     <string name="audio_region_us">Stany Zjednoczone</string>
     <string name="audio_region_uk">Wielka Brytania</string>
     <string name="audio_region_latin_america">Ameryka Łacińska</string>
@@ -754,6 +760,7 @@
     <string name="ocr_models_mlkit">ML Kit (wbudowany)</string>
     <string name="ocr_models_mlkit_info">Wbudowany w aplikację, nic nie trzeba pobierać. Rozpoznaje tekst chiński, japoński, koreański i w alfabecie łacińskim.</string>
     <string name="ocr_models_recommended">Zalecany</string>
+    <string name="ocr_models_more_accurate">Dokładniejszy</string>
     <string name="ocr_models_installed_size">Zainstalowany · %1$s</string>
     <string name="ocr_models_in_use">Używany przez: %1$s</string>
     <string name="ocr_models_delete_title">Usunąć model?</string>

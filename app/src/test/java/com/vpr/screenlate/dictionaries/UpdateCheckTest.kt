@@ -1,8 +1,13 @@
 package com.vpr.screenlate.dictionaries
 
+import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
+import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
+import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -31,5 +36,28 @@ class UpdateCheckTest {
     fun `the check closes once every update has started instead of saying all are up to date`() {
         assertNull(UpdateCheck(listOf(a, b)).without(listOf(a, b)))
         assertNull(UpdateCheck(listOf(a)).without(listOf(a)))
+    }
+
+    private fun model(id: String, model: String, version: String) = CatalogEntry(
+        id, id, installedTitle = id, kind = DictionaryKind.TERM, declaredCategory = CatalogCategory.OCR_MODEL,
+        sourceLanguage = "ru", downloadUrl = "https://example.org/$id.zip", model = model, version = version, engine = "paddle", sha256 = "hash",
+    )
+
+    @Test
+    fun `an installed model whose catalog entry names another version has an update`() {
+        val entries = listOf(model("paddle-cyrillic-ru", "paddle-cyrillic", "2"), model("paddle-detector-ru", "paddle-detector", "1"))
+        val installed = listOf(
+            InstalledOcrModel("paddle-cyrillic", "1", "paddle", File("c")),
+            InstalledOcrModel("paddle-detector", "1", "paddle", File("d")),
+            InstalledOcrModel("tesseract-fast-rus", "1", "tesseract", File("t")),
+        )
+        assertThat(modelUpdates(entries, installed)).containsExactly(ModelUpdate(entries[0], "1"))
+    }
+
+    @Test
+    fun `started model updates leave the check too`() {
+        val update = ModelUpdate(model("paddle-cyrillic-ru", "paddle-cyrillic", "2"), "1")
+        assertEquals(UpdateCheck(emptyList(), listOf(update)), UpdateCheck(listOf(a), listOf(update)).without(listOf(a)))
+        assertNull(UpdateCheck(listOf(a), listOf(update)).without(listOf(a), listOf(update)))
     }
 }

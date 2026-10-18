@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
+import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
@@ -62,6 +63,27 @@ data class LanguageLeftovers(
 }
 
 /**
+ * By language code, the [installed] models of the languages not in [turnedOn] that no turned-on language uses; a model
+ * several such languages list is under each of them. Reads the models' sizes from disk.
+ */
+internal fun leftoverModels(
+    turnedOn: Collection<String>,
+    entries: List<CatalogEntry>,
+    installed: List<InstalledOcrModel>,
+    locale: Locale,
+): Map<String, List<LeftoverModel>> {
+    if (installed.isEmpty()) return emptyMap()
+    return entries.filter { it.isModel && it.sourceLanguage !in turnedOn }.map { it.sourceLanguage }.distinct()
+        .associateWith { code ->
+            val ids = modelsOnlyFor(code, turnedOn, entries)
+            installed.filter { it.id in ids }.map { model ->
+                LeftoverModel(model.id, entries.firstOrNull { it.model == model.id }?.displayTitle(locale) ?: model.id, model.bytes)
+            }
+        }
+        .filterValues { it.isNotEmpty() }
+}
+
+/**
  * The files a language brings: the dictionaries whose source language it is, and the recognition models of its catalog
  * entries that no other turned-on language uses. Dictionaries without a language serve every language and never
  * count.
@@ -93,22 +115,13 @@ class LanguageFiles @Inject constructor(
         val on = turnedOn.map { it.code }
         val dictionaries = repository.getAll().filter { it.sourceLanguage != null && it.sourceLanguage !in on }
         val entries = withContext(Dispatchers.IO) { catalog.localCatalog() }.entries
-        val installed = store.models.value
-        val codes = (dictionaries.mapNotNull { it.sourceLanguage } + entries.filter { it.isModel }.map { it.sourceLanguage })
-            .filter { it !in on }
-            .distinct()
         val sizes = repository.sizes(dictionaries)
         val locale = Locale.getDefault()
         val collator = Collator.getInstance(locale)
-        return withContext(Dispatchers.IO) {
-            codes.mapNotNull { code ->
-                val ids = modelsOnlyFor(code, on, entries)
-                val models = installed.filter { it.id in ids }.map { model ->
-                    LeftoverModel(model.id, entries.firstOrNull { it.model == model.id }?.displayTitle(locale) ?: model.id, model.bytes)
-                }
-                val own = dictionaries.filter { it.sourceLanguage == code }
-                if (own.isEmpty() && models.isEmpty()) null else LanguageLeftovers(code, own, models, sizes)
-            }
+        val models = withContext(Dispatchers.IO) { leftoverModels(on, entries, store.models.value, locale) }
+        val codes = (dictionaries.mapNotNull { it.sourceLanguage } + models.keys).distinct()
+        return codes.map { code ->
+            LanguageLeftovers(code, dictionaries.filter { it.sourceLanguage == code }, models[code].orEmpty(), sizes)
         }.sortedWith(
             compareBy<LanguageLeftovers> { it.language == null }
                 .thenBy(collator) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) },

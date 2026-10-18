@@ -56,13 +56,14 @@ import com.vpr.screenlate.ui.components.doneClearsFocus
 import com.vpr.screenlate.ui.theme.AccentDefaults
 
 /**
- * Auto-play, volume, the audio sources of [language] in priority order, the order of its regions for Wiktionary
- * recordings where it has them, and a test of every source with a sample word.
+ * Auto-play, volume, the audio sources of [language] in priority order, the order of its regions where it has them and
+ * Wiktionary recordings or transcriptions use it, and a test of every source with a sample word.
  */
 @Composable
 fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel = hiltViewModel()) {
     LaunchedEffect(language) { viewModel.show(language) }
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val transcriptions by viewModel.hasTranscriptions.collectAsStateWithLifecycle()
     val audio = settings ?: return
     var editing by remember { mutableStateOf<Pair<Int?, AudioSource>?>(null) }
 
@@ -89,7 +90,7 @@ fun AudioSettingsSection(language: Language, viewModel: AudioSettingsViewModel =
         ) { Text(stringResource(R.string.audio_add_source), textAlign = TextAlign.Center) }
         TextButton(onClick = viewModel::resetSources) { Text(stringResource(R.string.audio_reset_sources)) }
         val regions = AudioRegion.ordered(audio.regions, language.support.audioRegions)
-        if (regions.isNotEmpty()) {
+        if (regions.isNotEmpty() && regionsUsed(audio.sources, transcriptions)) {
             HorizontalDivider()
             Text(stringResource(R.string.audio_regions), style = MaterialTheme.typography.labelLarge)
             Hint(stringResource(R.string.audio_regions_hint))

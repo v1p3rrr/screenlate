@@ -22,6 +22,11 @@ a kept-open connection hangs (JapanesePod101 played once in the test, then not).
 opens a new connection for every audio request (`ConnectionPool(0, ...)` in `AudioFinder`), asks all sources at once
 with a 5 s budget per source, and keeps found clips for a minute.
 
+Downloads hit the same networks. Jiten (`api.jiten.moe`, Hetzner) never finished on the owner's phone on mobile data
+(2026-10-18); from a computer it answers in 0.4 s and sends its 7.5 MB in under a second, but it answers a range
+request with the whole file and no ETag or Last-Modified, so every try starts over. The import queue therefore breaks a
+download off after 20 s without data and retries it at the end of the queue (`docs/architecture.md`).
+
 ## The owner's server
 
 A Yomitan local-audio style server (`?term={term}&reading={reading}`) answering `audioSourceList` JSON with NHK16,

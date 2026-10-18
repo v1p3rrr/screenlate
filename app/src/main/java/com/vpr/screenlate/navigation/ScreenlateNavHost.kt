@@ -56,7 +56,10 @@ private data class AnkiRoute(val language: String? = null, val audio: Boolean = 
 
 /** @property showAppText scrolls to the app text switches. */
 @Serializable
-private data class BubbleRoute(val showAppText: Boolean = false)
+private data class BubbleRoute(val showAppText: Boolean = false, val ocrModels: String? = null)
+
+/** Opens the on-device models of the language with [language] (its code); [number] tells repeated requests apart. */
+data class OcrModelsRequest(val language: String, val number: Int)
 
 @Serializable
 private object LookupRoute
@@ -107,6 +110,7 @@ private data class ImageViewerRoute(val path: String, val caption: String = "")
  * @param debugImageCaption text shown above the debug image, to test app text next to text in an image.
  * @param ankiSettingsRequests each increment opens the Anki settings (from the overlay's grey ➕).
  * @param dictionariesRequests each increment opens the Dictionaries screen (from search without a dictionary).
+ * @param ocrModelsRequest opens a language's on-device models (from the overlay's message that the device cannot read).
  * @param firstRun starts on the question which language the user learns.
  */
 @Composable
@@ -118,6 +122,7 @@ fun ScreenlateNavHost(
     debugImageCaption: String = "",
     ankiSettingsRequests: Int = 0,
     dictionariesRequests: Int = 0,
+    ocrModelsRequest: OcrModelsRequest? = null,
 ) {
     val navController = rememberNavController()
     val start: Any = debugImagePath?.let { ImageViewerRoute(it, debugImageCaption) } ?: if (firstRun) FirstRunRoute else HomeRoute
@@ -130,6 +135,9 @@ fun ScreenlateNavHost(
     }
     LaunchedEffect(dictionariesRequests) {
         if (dictionariesRequests > 0) navController.navigate(DictionariesRoute) { launchSingleTop = true }
+    }
+    LaunchedEffect(ocrModelsRequest) {
+        ocrModelsRequest?.let { navController.navigate(BubbleRoute(ocrModels = it.language)) }
     }
     // Screens switch at once. A cross-fade let the window's background shine through both half-transparent screens
     // (a white flash in the dark theme), showed the old screen over the new one, and held taps until it ended, as the
@@ -185,7 +193,8 @@ fun ScreenlateNavHost(
             )
         }
         composable<BubbleRoute> { entry ->
-            BubbleSettingsScreen(onBack = back, showAppText = entry.toRoute<BubbleRoute>().showAppText)
+            val route = entry.toRoute<BubbleRoute>()
+            BubbleSettingsScreen(onBack = back, showAppText = route.showAppText, ocrModels = route.ocrModels)
         }
         composable<LookupRoute> { LookupSettingsScreen(onBack = back) }
         composable<PopupRoute> { PopupSettingsScreen(onBack = back) }

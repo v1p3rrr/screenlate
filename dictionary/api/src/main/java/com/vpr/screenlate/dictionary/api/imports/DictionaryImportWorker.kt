@@ -67,14 +67,16 @@ class DictionaryImportWorker @AssistedInject constructor(
     private val models: ModelInstaller,
     httpClient: OkHttpClient,
 ) : CoroutineWorker(context, params) {
-    private val downloadClient = httpClient.newBuilder().readTimeout(60, TimeUnit.SECONDS).build()
+    // Some mobile networks freeze a connection to a foreign host; after 20 s without data the download counts as
+    // broken off and queues its next try behind the other tasks.
+    private val downloadClient = httpClient.newBuilder().readTimeout(20, TimeUnit.SECONDS).build()
 
     /** Languages for dictionaries whose index.json names none. */
     private val catalogEntries: List<CatalogEntry> by lazy { catalog.local() }
 
     /**
      * Whether this run is counted as one the app did not die in ([DictionaryImports.markStopped]): set while it
-     * downloads, so that a death then does not count towards [MAX_RUN_ATTEMPTS], and kept when it ends for a retry.
+     * downloads or waits for another task's import, so that a death then does not count towards [MAX_RUN_ATTEMPTS].
      */
     private var uncounted = false
 
@@ -111,7 +113,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                         removeLeftovers()
                         imports.cancellable(id) { work() }?.also { imports.forgetCancel(id) } ?: cancelled(started = true)
                     }
-                }.also { if (it != Result.retry()) imports.forgetStops(id) }
+                }.also { imports.forgetStops(id) }
             }
         } catch (e: CancellationException) {
             if (!isStopped) throw e
@@ -163,9 +165,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         // Failures are results with an error: a failed work would fail every import queued after it unrun.
         val output = try {
             val titles = when (inputData.getString(KEY_SOURCE)) {
-                SOURCE_BUNDLED -> installBundled()
-                SOURCE_FILE -> listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH)))))
-                SOURCE_YOMITAN_BACKUP -> importCollection(name)
+                SOURCE_BUNDLED -> oneImportAtATime(name) { installBundled() }
+                SOURCE_FILE -> oneImportAtATime(name) { listOf(importFile(File(requireNotNull(inputData.getString(KEY_PATH))))) }
+                SOURCE_YOMITAN_BACKUP -> oneImportAtATime(name) { importCollection(name) }
                 SOURCE_URL -> {
                     // Reading the index and connecting take a moment; the task says it is downloading meanwhile.
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD))
@@ -197,12 +199,12 @@ class DictionaryImportWorker @AssistedInject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: DownloadBrokeOffException) {
-            val retries = imports.retriesOf(id)
+            val retries = inputData.getInt(KEY_RETRIES, 0)
             if (retries < MAX_RETRIES) {
-                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES")
-                imports.markRetry(id)
-                countRunAsStopped()
-                return Result.retry()
+                // Queued again at the end: the tasks behind it do not wait for a host that does not answer.
+                val next = imports.requeue(id, inputData, tags, retries + 1) { isStopped }
+                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES queued as $next")
+                return Result.success(workDataOf(KEY_REQUEUED to true))
             }
             Log.w(TAG, "Task $id: the download broke off $MAX_RETRIES times; stopped", e.cause)
             resumable(workDataOf(KEY_ERROR to e.reason().take(MAX_ERROR_LENGTH), KEY_DOWNLOAD_STOPPED to true, KEY_CONNECTION_LOST to true))
@@ -243,6 +245,21 @@ class DictionaryImportWorker @AssistedInject constructor(
         if (!uncounted) return
         imports.unmarkStopped(id)
         uncounted = false
+    }
+
+    /**
+     * Runs the import step [block] once no other task imports ([DictionaryImports.importing]). While it waits, the
+     * task shows as waiting, and a death of the app, likely caused by the other import, does not count against it.
+     */
+    private suspend fun <T> oneImportAtATime(name: String, block: suspend () -> T): T = imports.importing(
+        onWait = {
+            Log.i(TAG, "Task $id waits for another import")
+            countRunAsStopped()
+            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_WAIT))
+        },
+    ) {
+        countRunAgain()
+        block()
     }
 
     private suspend fun installBundled(): List<String> {
@@ -435,10 +452,11 @@ class DictionaryImportWorker @AssistedInject constructor(
             throw DownloadBrokeOffException(e)
         }
         Log.i(TAG, "Downloaded ${(archive.length() - before) shr 10} KB of ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
-        countRunAgain()
-        setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
         try {
-            return install(archive)
+            return oneImportAtATime(name) {
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+                install(archive)
+            }
         } finally {
             archive.delete()
             state.delete()
@@ -453,8 +471,10 @@ class DictionaryImportWorker @AssistedInject constructor(
                 applicationContext.assets.open(path).use { input -> archive.outputStream().use { input.copyTo(it) } }
             }
             Log.i(TAG, "Copied the bundled archive $path, ${archive.length() shr 10} KB")
-            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
-            return install(archive)
+            return oneImportAtATime(name) {
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
+                install(archive)
+            }
         } finally {
             archive.delete()
         }
@@ -520,7 +540,9 @@ class DictionaryImportWorker @AssistedInject constructor(
             .setSilent(true)
             .addAction(0, applicationContext.getString(R.string.dictionary_import_cancel), ImportCancelReceiver.intent(applicationContext, id))
             .build()
-        return ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        // One notification per chain: two tasks run at a time.
+        val chain = tags.tagValue(DictionaryImports.CHAIN_TAG_PREFIX)?.toIntOrNull() ?: 0
+        return ForegroundInfo(NOTIFICATION_ID + chain, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
 
     companion object {
@@ -557,6 +579,12 @@ class DictionaryImportWorker @AssistedInject constructor(
 
         /** Output of a download stopped because the connection broke off ([MAX_RETRIES] times), not by the server. */
         const val KEY_CONNECTION_LOST = "connection_lost"
+
+        /** Input of a download queued again after it broke off: its retry number; see [DictionaryImports.requeue]. */
+        const val KEY_RETRIES = "retries"
+
+        /** Output of a download that broke off and was queued again as a new task. */
+        const val KEY_REQUEUED = "requeued"
         const val KEY_STAGE = "stage"
         const val KEY_PERCENT = "percent"
         const val KEY_URI = "uri"
@@ -576,6 +604,9 @@ class DictionaryImportWorker @AssistedInject constructor(
         const val STAGE_CONVERT = "convert"
         const val STAGE_CHECK = "check"
 
+        /** A task waiting for another task's import; see [DictionaryImports.importing]. */
+        const val STAGE_WAIT = "wait"
+
         private const val TAG = "DictionaryImport"
         private const val CHANNEL_ID = "dictionary_imports"
         private const val NOTIFICATION_ID = 1001
@@ -584,7 +615,10 @@ class DictionaryImportWorker @AssistedInject constructor(
         /** Runs of one import: the first, and one more after the app died during it (owner). */
         private const val MAX_RUN_ATTEMPTS = 2
 
-        /** Automatic retries of a download that broke off, after which it waits for the user (owner). */
+        /**
+         * Automatic retries of a download that broke off, each queued at the end ([DictionaryImports.requeue]), after
+         * which it waits for the user (owner).
+         */
         const val MAX_RETRIES = 3
 
         /**

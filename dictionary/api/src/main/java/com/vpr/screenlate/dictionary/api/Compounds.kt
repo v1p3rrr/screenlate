@@ -26,6 +26,10 @@ internal suspend fun compoundParts(
     }
 }
 
+/** The results with a capitalized headword (German nouns) first, the others after them, each in their order. */
+internal fun List<LookupResult>.capitalizedFirst(): List<LookupResult> =
+    sortedBy { it.term.expression.firstOrNull()?.isUpperCase() != true }
+
 /**
  * Splits a compound written as one word (Haustürschlüssel) into dictionary words: the longest word the dictionaries
  * have at the start, then the longest in the rest, a linking element between two parts skipped (Arbeit-s-zimmer).

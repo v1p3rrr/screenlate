@@ -44,6 +44,7 @@ object PageState {
         kanji: KanjiResult? = null,
         sentence: String = "",
         installation: Boolean = false,
+        ocrModels: Boolean = false,
         language: Language,
     ): String = json.encodeToString(
         StateDto(
@@ -60,6 +61,7 @@ object PageState {
             labels = if (kanji != null) labels(context) + kanjiLabels(context, language) else labels(context),
             sentence = sentence,
             installation = installation,
+            ocrModels = ocrModels,
         ),
     )
 
@@ -86,6 +88,7 @@ object PageState {
         "translate" to context.getString(R.string.overlay_translate),
         "translating" to context.getString(R.string.overlay_translating),
         "installation" to context.getString(R.string.installation_open),
+        "ocrModels" to context.getString(R.string.overlay_open_ocr_models),
     )
 
     /** A kanji view; [kanji] without entries shows [message] instead. */
@@ -139,6 +142,8 @@ object PageState {
     private data class StateDto(
         val theme: String,
         val installation: Boolean = false,
+        /** The message has a button to the language's on-device models. */
+        val ocrModels: Boolean = false,
         val pending: Boolean = false,
         /** ➕ is grey and only explains itself until the scan's final text (`noteWaitsForText`). */
         val noteWait: Boolean = false,

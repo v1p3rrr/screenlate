@@ -39,13 +39,13 @@ import com.vpr.screenlate.ui.components.InfoDialog
 import com.vpr.screenlate.ui.components.LabelWithInfo
 
 /**
- * The on-device model of each turned-on language, under a subheading; a row opens the language's models. Disabled
- * rows stay visible while on-device recognition is off.
+ * The on-device model of each turned-on language, under a subheading; a row opens the language's models, and so does
+ * [openLanguage] (a language code) at first. Disabled rows stay visible while on-device recognition is off.
  */
 @Composable
-fun OcrModelRows(enabled: Boolean, viewModel: OcrModelsViewModel = hiltViewModel()) {
+fun OcrModelRows(enabled: Boolean, openLanguage: String? = null, viewModel: OcrModelsViewModel = hiltViewModel()) {
     val lists by viewModel.lists.collectAsStateWithLifecycle()
-    var opened by rememberSaveable { mutableStateOf<String?>(null) }
+    var opened by rememberSaveable { mutableStateOf(openLanguage) }
     LabelWithInfo(
         stringResource(R.string.ocr_models_heading),
         stringResource(R.string.ocr_models_info),

@@ -97,7 +97,8 @@ class LanguageSetupViewModel @Inject constructor(
         val slots = glossSlots(language.code, interfaceLanguage, available)
         val choosable = slots.indexOf(null).takeIf { it >= 0 }
         val glosses = if (choosable == null || chosen == null) slots else slots.toMutableList().also { it[choosable] = chosen.code }
-        val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed) { it.isInstalledIn(models) }
+        val mlKitReads = mlKit.reads(language)
+        val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed, mlKitReads) { it.isInstalledIn(models) }
         val downloads = setupDownloads(categories, choices)
         val candidates = mainModelCandidates(categories, choices, catalog.entries.flatMapTo(hashSetOf()) { it.requires })
         return LanguageSetupState(
@@ -112,7 +113,7 @@ class LanguageSetupViewModel @Inject constructor(
             downloads = downloads,
             enableDictionaries = setupInstalled(categories, choices, installed),
             mainCandidates = candidates.mapNotNull { it.model },
-            mainModel = mainModel(candidates, picks.main, mlKit.reads(language)),
+            mainModel = mainModel(candidates, picks.main, mlKitReads, choices.filterValues { it }.keys),
             totals = setupTotals(downloads),
             freeBytes = freeBytes(),
             loaded = true,
@@ -133,6 +134,12 @@ class LanguageSetupViewModel @Inject constructor(
     /** Switches model [model] on as the main one, or off, which leaves ML Kit where it reads the language. */
     fun setMain(model: String, main: Boolean) {
         picks.update { it.copy(main = MainModelPick(model.takeIf { main })) }
+    }
+
+    /** Makes ML Kit the main model, or, switched off, the first ticked model. */
+    fun setMlKitMain(main: Boolean) {
+        val model = if (main) null else state.value.mainCandidates.firstOrNull() ?: return
+        picks.update { it.copy(main = MainModelPick(model)) }
     }
 
     private val confirmation = MutableStateFlow(Confirmation.NONE)

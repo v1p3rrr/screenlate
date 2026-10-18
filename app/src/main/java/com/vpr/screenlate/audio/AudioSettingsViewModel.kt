@@ -9,12 +9,15 @@ import com.vpr.screenlate.core.anki.audio.AudioPlayer
 import com.vpr.screenlate.core.anki.audio.AudioSettings
 import com.vpr.screenlate.core.anki.audio.AudioSettingsRepository
 import com.vpr.screenlate.core.anki.audio.AudioSource
+import com.vpr.screenlate.core.anki.audio.AudioSourceType
 import com.vpr.screenlate.core.anki.audio.Pronunciation
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.languages.ShownLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -23,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -39,6 +43,10 @@ data class SourceTest(
     val error: AudioError? = null,
 )
 
+/** Whether the region order is used: Wiktionary is among the [sources], or the popup orders transcriptions by it. */
+internal fun regionsUsed(sources: List<AudioSource>, hasTranscriptions: Boolean): Boolean =
+    hasTranscriptions || sources.any { it.type == AudioSourceType.WIKTIONARY }
+
 /** A played test clip: which candidate, and whether it turned out to have no audio. */
 data class PlayState(val candidateId: String? = null, val sourceIndex: Int = -1, val missing: Boolean = false)
 
@@ -50,6 +58,7 @@ class AudioSettingsViewModel @Inject constructor(
     private val finder: AudioFinder,
     private val player: AudioPlayer,
     private val lookup: DictionaryLookup,
+    dictionaries: DictionaryRepository,
     profiles: LanguageProfiles,
 ) : ViewModel() {
     private val shown = ShownLanguage(profiles, viewModelScope)
@@ -57,6 +66,11 @@ class AudioSettingsViewModel @Inject constructor(
     val settings: StateFlow<AudioSettings?> = shown.language
         .flatMapLatest { repository.settings(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, repository.cachedSettings(shown.language.value))
+
+    /** Whether a transcription dictionary of the shown language is installed. */
+    val hasTranscriptions: StateFlow<Boolean> = combine(shown.language, dictionaries.dictionaries) { language, installed ->
+        installed.any { it.kind == DictionaryKind.PITCH && it.sourceLanguage == language.code }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val testWord = MutableStateFlow(shown.language.value.support.audioTestWord)
     val tests = MutableStateFlow<List<SourceTest>>(emptyList())

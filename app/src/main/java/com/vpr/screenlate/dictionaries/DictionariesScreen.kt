@@ -74,6 +74,7 @@ import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 
@@ -162,9 +163,9 @@ fun DictionariesScreen(
             updateCheck?.let { check ->
                 UpdatesCard(
                     check,
-                    onUpdate = { items ->
+                    onUpdate = { items, models ->
                         askNotifications()
-                        viewModel.update(items)
+                        viewModel.update(items, models)
                     },
                 )
             }
@@ -172,21 +173,31 @@ fun DictionariesScreen(
             importError?.let { error ->
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
             }
-            state.tasks.forEach { task ->
-                TaskCard(
-                    task,
-                    name = state.taskNames[task.id] ?: task.name,
-                    onDismiss = { viewModel.dismiss(task) },
-                    onCancel = { viewModel.cancel(task) },
-                    onResume = {
-                        askNotifications()
-                        viewModel.resume(task)
-                    },
-                    onRetryBundled = {
-                        askNotifications()
-                        viewModel.retryBundledInstall(task)
-                    },
-                )
+            taskItems(state.tasks).forEach { item ->
+                key(item.key) {
+                    when (item) {
+                        is TaskItem.Waiting -> WaitingTasksCard(
+                            item.tasks,
+                            state.taskNames,
+                            onCancel = viewModel::cancel,
+                            onCancelAll = { viewModel.cancelAll(item.tasks) },
+                        )
+                        is TaskItem.One -> TaskCard(
+                            item.task,
+                            name = state.taskNames[item.task.id] ?: item.task.name,
+                            onDismiss = { viewModel.dismiss(item.task) },
+                            onCancel = { viewModel.cancel(item.task) },
+                            onResume = {
+                                askNotifications()
+                                viewModel.resume(item.task)
+                            },
+                            onRetryBundled = {
+                                askNotifications()
+                                viewModel.retryBundledInstall(item.task)
+                            },
+                        )
+                    }
+                }
             }
             ImportNotificationsCard()
 
@@ -351,19 +362,22 @@ private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String)
 private fun sectionLabel(kind: DictionaryKind, code: String): Int =
     if (kind == DictionaryKind.TERM) R.string.dictionaries_section_terms else kindLabel(kind, code)
 
-/** The dictionaries of languages that are not turned on, counted; the Languages screen lists them. */
+/** The dictionaries and recognition models of languages that are not turned on, counted; the Languages screen lists them. */
 @Composable
 private fun OtherLanguagesCard(others: List<OtherLanguage>, onOpenLanguages: () -> Unit) {
     val context = LocalContext.current
     val count = others.sumOf { it.dictionaries.size }
-    val bytes = others.map { it.bytes }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
+    // A model several such languages list is counted once.
+    val models = others.flatMap { it.models }.distinctBy { it.id }
+    val bytes = others.map { it.bytes }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }?.plus(models.sumOf { it.bytes })
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 12.dp)) {
             Text(stringResource(R.string.dictionaries_other_languages), style = MaterialTheme.typography.titleMedium)
             Text(
                 listOfNotNull(
                     others.joinToString(", ") { languageName(it.code) },
-                    pluralStringResource(R.plurals.dictionaries_other_language_count, count, count),
+                    pluralStringResource(R.plurals.dictionaries_other_language_count, count, count).takeIf { count > 0 },
+                    pluralStringResource(R.plurals.languages_model_count, models.size, models.size).takeIf { models.isNotEmpty() },
                     bytes?.let { Formatter.formatShortFileSize(context, it) },
                 ).joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall,
@@ -489,7 +503,7 @@ private fun LinkButtons(links: DictionaryLinks) {
 private data class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
 
 @Composable
-private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -> Unit) {
+private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>, List<ModelUpdate>) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val updates = check.updates
@@ -498,7 +512,7 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                     Text(stringResource(R.string.dictionaries_checking_updates))
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
                 }
-                updates.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
+                updates.isEmpty() && check.models.isEmpty() -> Text(stringResource(R.string.dictionaries_up_to_date))
                 else -> {
                     updates.forEach { update ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -510,13 +524,29 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>) -
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
-                            TextButton(onClick = { onUpdate(listOf(update)) }) {
+                            TextButton(onClick = { onUpdate(listOf(update), emptyList()) }) {
                                 Text(stringResource(R.string.dictionaries_update))
                             }
                         }
                     }
-                    if (updates.size > 1) {
-                        Button(onClick = { onUpdate(updates) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
+                    check.models.forEach { update ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(update.entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
+                                // Model versions are build hashes; the size says more.
+                                Text(
+                                    Formatter.formatShortFileSize(LocalContext.current, update.entry.downloadBytes),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            TextButton(onClick = { onUpdate(emptyList(), listOf(update)) }) {
+                                Text(stringResource(R.string.dictionaries_update))
+                            }
+                        }
+                    }
+                    if (updates.size + check.models.size > 1) {
+                        Button(onClick = { onUpdate(updates, check.models) }, modifier = Modifier.fillMaxWidth(), colors = AccentDefaults.buttonColors()) {
                             Text(stringResource(R.string.dictionaries_update_all), textAlign = TextAlign.Center)
                         }
                     }
@@ -630,6 +660,45 @@ private fun TaskCard(
             }
             TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.End)) {
                 Text(stringResource(R.string.action_cancel))
+            }
+        }
+    }
+}
+
+/** The tasks that wait for their turn, named in one line; the list shows each with its own Cancel. */
+@Composable
+private fun WaitingTasksCard(
+    tasks: List<ImportTask>,
+    names: Map<UUID, String>,
+    onCancel: (ImportTask) -> Unit,
+    onCancelAll: () -> Unit,
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val bundled = stringResource(R.string.dictionaries_bundled)
+    val shown = tasks.map { (names[it.id] ?: it.name).ifEmpty { bundled } }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 4.dp)) {
+            val title = if (expanded) {
+                stringResource(R.string.dictionaries_tasks_waiting_count, tasks.size)
+            } else {
+                stringResource(R.string.dictionaries_tasks_waiting, tasks.size, shown.joinToString(", "))
+            }
+            Text(title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(end = 8.dp))
+            if (expanded) {
+                tasks.forEachIndexed { index, task ->
+                    key(task.id) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(shown[index], style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                            TextButton(onClick = { onCancel(task) }) { Text(stringResource(R.string.action_cancel)) }
+                        }
+                    }
+                }
+            }
+            FlowRow(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { expanded = !expanded }) {
+                    Text(stringResource(if (expanded) R.string.dictionaries_tasks_hide else R.string.dictionaries_tasks_show))
+                }
+                TextButton(onClick = onCancelAll) { Text(stringResource(R.string.dictionaries_tasks_cancel_all)) }
             }
         }
     }

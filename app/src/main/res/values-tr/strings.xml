@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">karakterler: %1$d</string>
     <string name="dictionaries_languages_hint">Aşağıdaki yüklü ve indirilebilir sözlükler seçilen dile aittir. Dili olmayan sözlükler tüm diller için kullanılır.</string>
     <string name="dictionaries_other_languages">Diğer diller</string>
-    <string name="dictionaries_other_languages_hint">Kapalı dillerin sözlükleri. Aramalarda kullanılmaz, yalnızca yer kaplar.</string>
+    <string name="dictionaries_other_languages_hint">Kapalı dillerin sözlükleri ve tanıma modelleri. Kullanılmaz, yalnızca yer kaplar.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d sözlük</item>
         <item quantity="other">%1$d sözlük</item>
@@ -105,6 +105,11 @@
     <string name="dictionaries_task_queued">Bekliyor: %1$s</string>
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>
     <string name="dictionaries_task_retrying">İndirme yeniden deneniyor (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">Sırada (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">Sırada (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Tümünü iptal et</string>
+    <string name="dictionaries_tasks_show">Listeyi göster</string>
+    <string name="dictionaries_tasks_hide">Listeyi gizle</string>
     <string name="dictionaries_download_stopped">%1$s: indirme durdu — %2$s</string>
     <string name="dictionaries_connection_lost">bağlantı kesildi</string>
     <string name="dictionaries_task_importing">İçe aktarılıyor: %1$s</string>
@@ -263,6 +268,7 @@
     <string name="problems_title">İlgilenilmesi gerekenler</string>
     <string name="problems_open_anki">Anki ayarlarını aç</string>
     <string name="problems_dictionaries_missing">Dosyaları eksik olan sözlükler:</string>
+    <string name="problems_models_damaged">Dosyaları bozuk olan tanıma modelleri:</string>
     <string name="problems_download_again">Yeniden indir</string>
     <string name="problems_import_again">Dosyasını yeniden içe aktarın.</string>
     <string name="problems_remove">Kaldır</string>
@@ -331,7 +337,7 @@
     <string name="audio_sources">Kaynaklar</string>
     <string name="audio_reset_sources">Varsayılan kaynakları geri yükle</string>
     <string name="audio_regions">Bölgeler</string>
-    <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları önce çalınır.</string>
+    <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları ve fonetik yazımları önce gelir.</string>
     <string name="audio_region_us">ABD</string>
     <string name="audio_region_uk">Birleşik Krallık</string>
     <string name="audio_region_latin_america">Latin Amerika</string>
@@ -740,6 +746,7 @@
     <string name="ocr_models_mlkit">ML Kit (yerleşik)</string>
     <string name="ocr_models_mlkit_info">Uygulamayla gelir, indirme gerekmez. Çince, Japonca, Korece ve Latin alfabesiyle yazılmış metni tanır.</string>
     <string name="ocr_models_recommended">Önerilen</string>
+    <string name="ocr_models_more_accurate">Daha doğru</string>
     <string name="ocr_models_installed_size">Yüklü · %1$s</string>
     <string name="ocr_models_in_use">Kullanan: %1$s</string>
     <string name="ocr_models_delete_title">Model silinsin mi?</string>

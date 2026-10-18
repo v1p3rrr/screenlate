@@ -84,6 +84,18 @@ class LanguageInstallationTest {
     }
 
     @Test
+    fun `only a missing on-device model points the scan message to the models`() {
+        val device = OverlaySettings(ocrEngines = OcrEngines.DEVICE)
+        assertThat(status(listOf(dictionary()), device = false, settings = device).needsDeviceModel).isTrue()
+        assertThat(status(listOf(dictionary()), device = true, settings = device).needsDeviceModel).isFalse()
+        assertThat(status(listOf(dictionary()), device = false).needsDeviceModel).isFalse()
+        // A download in progress may bring the model; the message points to the queue.
+        assertThat(status(listOf(dictionary()), listOf(task()), device = false, settings = device).needsDeviceModel).isFalse()
+        val mandatory = Catalog(listOf(entry("English")), mapOf("en" to setOf(CatalogCategory.MAIN)))
+        assertThat(status(emptyList(), catalog = mandatory, device = false, settings = device).needsDeviceModel).isFalse()
+    }
+
+    @Test
     fun `a mandatory OCR model blocks scanning but not typed lookup`() {
         val model = entry("OCR", CatalogCategory.OCR_MODEL).copy(model = "latin", version = "2", engine = "test", sha256 = "hash")
         val catalog = Catalog(listOf(model), mapOf("en" to setOf(CatalogCategory.MAIN, CatalogCategory.OCR_MODEL)))
@@ -94,5 +106,17 @@ class LanguageInstallationTest {
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "1", "test", File("old")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("latin", "2", "test", File("ready")))).scanReady).isTrue()
         assertThat(status(listOf(dictionary()), catalog = catalog, models = listOf(InstalledOcrModel("other", "2", "test", File("other")))).scanReady).isFalse()
+    }
+
+    @Test
+    fun `a detector installed for another language is not the language's model`() {
+        val recognizer = entry("Paddle", CatalogCategory.OCR_MODEL)
+            .copy(model = "paddle-latin", version = "1", engine = "paddle", sha256 = "hash", requires = listOf("paddle-detector"))
+        val detector = entry("Detector", CatalogCategory.OCR_MODEL).copy(model = "paddle-detector", version = "1", engine = "paddle", sha256 = "hash")
+        val catalog = Catalog(listOf(recognizer, detector), mapOf("en" to setOf(CatalogCategory.MAIN, CatalogCategory.OCR_MODEL)))
+        val detectorOnly = listOf(InstalledOcrModel("paddle-detector", "1", "paddle", File("detector")))
+        assertThat(status(listOf(dictionary()), catalog = catalog, models = detectorOnly).scanReady).isFalse()
+        val both = detectorOnly + InstalledOcrModel("paddle-latin", "1", "paddle", File("latin"))
+        assertThat(status(listOf(dictionary()), catalog = catalog, models = both).scanReady).isTrue()
     }
 }

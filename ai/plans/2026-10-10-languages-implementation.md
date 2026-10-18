@@ -145,6 +145,15 @@ Requests 1–19 are in the previous plan. New ones:
     gives no false hits (row "Latin look-alikes in Cyrillic text").
 66. (2026-10-17) Pause new languages after group 3 for a build of the 14 languages to use on the phone; no published
     prerelease for now. Paddle goes into that build; the code review comes after it (row "Build of groups 1-3").
+67. (2026-10-18) On the phone Jiten does not download, and every retry seems to add more attempts: many "Waiting:
+    Jiten" cards under one "Downloading Jiten". Waiting tasks should share one card instead of a card each. Analyze
+    briefly, put it in the backlog and do it after the current plan (Backlog, "Download queue").
+68. (2026-10-18) On the phone the downloaded on-device models seem about as slow as cloud recognition and ML Kit
+    clearly faster; after Paddle's text is shown the spinner keeps turning. Measure scan times in the app per engine
+    (the generated screens, the home screen); reconsider the default engines (cloud by default, Both or the device
+    alone offered); say that ML Kit is built in for the languages it reads instead of offering a download as the
+    default; mark ML Kit as faster where the measurements show it, above all for the draft with Engines on Both
+    (plan `2026-10-17-ocr-engines.md`, questions 36-39).
 
 ## Decisions
 
@@ -255,7 +264,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | OCR engine choice | Paddle and Tesseract are compared on the emulator, inside a debug build, on screenshots taken there with known text, for the scripts ML Kit lacks (Cyrillic, Greek, Thai, Arabic). Measured: the share of wrong characters, the share of words read whole, and whether a tap lands in the right word box. Paddle is chosen when on the Russian screenshots it makes at least a third fewer character errors than Tesseract, is not clearly worse on any script and takes at most twice as long per screen; otherwise Tesseract. With Paddle, MNN or ONNX Runtime by the smaller addition to the APK, unless the other is at least 30% faster per screen. Speed is measured on the emulator; one run on the phone once the owner is back, and the choice changes only if the phone shows a clearly different picture (owner, 2026-10-16). Since request 60 every engine is kept, and the rule picks each language's recommended model: the fewest errors over the clean and hard screens together; another model replaces the bundled or smallest one only with at least a third fewer errors and at least 0.5 percentage points fewer; time does not count while every engine stays under the 1.6 s of ML Kit's Japanese model. Applied once the hard-screen results are in (owner, 2026-10-16, question 34) |
 | Work while the owner is away | After group 2 and the OCR comparison the agent picks the engine by the row above, builds it in and does group 3 (Russian, Polish, Turkish, Vietnamese, Latvian), each language on its own branch merged after the emulator checks; group 4 is not started (owner, 2026-10-16) |
 | OCR screenshots | Taken by the agent on the emulator: Wikipedia and news sites in the browser, the Android interface in the language, several fonts, light and dark themes; kept in `testdata/ocr/` (owner, 2026-10-16) |
-| Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16) |
+| Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16); Dutch Ĳ, Czech Ř, Indonesian "ID", Malay "MS", Filipino Ng, Serbo-Croatian Đ (Latin) and Ћ (Cyrillic), Ukrainian Ї, Belarusian Ў, Greek Ω (owner, 2026-10-18, question 52) |
 | Russian stress | The headword shows the dictionary's stressed form (ко́шка) with no separate reading line; Anki's `{expression}` is the word without stress, `{reading}` the stressed form as in the dictionary (owner, 2026-10-16) |
 | Diacritics of Latin-script languages | Where ML Kit's Latin model loses a language's diacritics (Vietnamese tones, Polish ł, Turkish ğ, Latvian macrons), that language uses the chosen engine's model instead, downloaded when the language is turned on, but only when it makes at least a third fewer character errors than ML Kit on that language's screenshots (owner, 2026-10-16) |
 | Flag outlines | Every round flag gets a thin outline: light in the dark theme, dark in the light theme, so a stripe of the background's color (Germany's black, Poland's or Japan's white) stays visible (owner, 2026-10-16; question 14) |
@@ -284,6 +293,21 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
 | Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
 | OCR model list | A language's models open in a dialog (scrolls when long): ML Kit where it reads the language, then the catalog's models, each with its size, a recommended mark, an ⓘ and Download or Delete. The language rows stand in the Recognition section under the engine choice, below a subheading; with Cloud only or app text only they stay visible but disabled, as the other recognition settings do. Downloading a model only adds it: it becomes the language's model when chosen in the list (owner, 2026-10-17) |
+| Region order display | The audio settings show a language's region order while Wiktionary is among its audio sources or a transcription dictionary of the language is installed; the hint names both uses (recordings and transcriptions) (owner, 2026-10-18, question 28; request 55) |
+| Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
+| ML Kit at setup | For a language ML Kit reads (Japanese, Chinese, Korean, the Latin-script languages), the download screen's on-device category lists ML Kit first, marked as built in with no download, and chosen as the main model. The other models are offered unticked, marked "more accurate" where the comparison shows it; a model is ticked by default only for languages ML Kit does not read. A model ticked at setup becomes the main one unless the "main" switch stays on ML Kit; one downloaded later from the model list is only added; with no choice ML Kit is used (owner, 2026-10-18, questions 38 and 40 of the OCR engines plan; changes "On-device OCR engines" and "Several OCR models at setup" for these languages) |
+| OCR speed marks | Speed is shown in words only ("faster", "more accurate"), from the timing run and the comparison; no figures for the user. With Engines on Both, a hint says that the on-device model only gives the draft (owner, 2026-10-18, question 39 of the OCR engines plan) |
+| Serbo-Croatian | One language as in Yomitan, Wiktionary and wordfreq (not Serbian, Croatian and Bosnian apart), shown as two entries by script: "Serbo-Croatian (Latin)" with the Croatian flag and "Serbo-Croatian (Cyrillic)" with the Serbian flag. Each entry is a language of its own in the app (on-device model, voice, Anki, audio and popup settings, turned on by itself, switched from the bubble); the dictionaries are downloaded once and shared by both. The voice follows the script: Croatian for Latin, Serbian for Cyrillic (owner, 2026-10-18, questions 41-44 and 54; what the entries share is the agent's choice at the owner's request, question 53) |
+| Indonesian and Malay | Two languages, each with its own dictionaries, frequency list, voice and flag (owner, 2026-10-18, question 45) |
+| Filipino name | "Filipino (Tagalog)" in the interface; the code tl inside (Yomitan, Wiktionary, Lingua Libre), fil where ML Kit, tessdata, wordfreq and the voice need it (owner, 2026-10-18, question 46) |
+| Own-language dictionaries | Every source language lists its own Wiktionary edition (nl-nl, el-el, cs-cs, id-id, ms-ms, and any later one that passes the threshold) on the download screen, unticked, as if the language were among its gloss languages (owner, 2026-10-18, question 47) |
+| Transcription threshold | Transcription dictionaries follow the "Catalog threshold" rule of 1,500 words, not 0.5 MiB: Indonesian, Malay and Belarusian get one; Turkish and Latvian are rechecked (owner, 2026-10-18, question 48) |
+| Greek accents | A word written without any tonos also matches headwords that have one (ΣΚΥΛΟΣ, σκυλος → σκύλος; ποτέ and πότε both show for ποτε); a word with tonos matches exactly (agent's choice at the owner's request, 2026-10-18, question 49) |
+| Article and pronoun tables | Left as is: a form listed as a form of the other forms of its table shows them (Greek της, Russian он) (owner, 2026-10-18, question 50) |
+| Belarusian flag | The official flag from circle-flags (owner, 2026-10-18, question 51) |
+| Compound part order | For a part of a German compound, entries whose headword is the part capitalized (nouns) come first: Lampe before the verb lampen; ordinary lookups keep the usual order (owner, 2026-10-18, question 29) |
+| Download queue | Two tasks run at a time on two chains, their import steps one at a time (owner: "two at once, imports one by one"); a download that breaks off (no data for 20 s) goes to the end of the queue for each of its three retries (owner); a download of the same catalog entry or URL is queued once, and a stopped one still listed is continued instead (a plain fix) (2026-10-19, request 67) |
+| Waiting tasks card | Two or more tasks waiting for their turn share one card ("Waiting (N): …") with "Show the list", a Cancel for each, and "Cancel all" for the waiting ones; the running tasks and a download waiting for its retry keep their own cards. A stopped download gets no Wi-Fi hint, and Jiten no copy on our hosting for now (owner, 2026-10-19, request 67) |
 
 ## Open items (postponed by the owner)
 
@@ -296,6 +320,9 @@ Decided when the first language or group 1 is ready, before it is merged into th
   left open. Until then test builds download them from wherever is handy (for the emulator, `adb push` and a local
   URL are enough; for the owner's phone, ask before putting anything on a public host).
 
+- Where the OCR engine choice is offered (Both for a draft and offline scans, the device alone for no cloud): it
+  becomes a separate setting, discussed later (owner, 2026-10-18, question 37 of the OCR engines plan).
+
 ## Backlog
 
 - Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
@@ -303,6 +330,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   sources remove them; served from our hosting once it exists.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
+- Download queue (request 67): built on 2026-10-19, rows "Download queue" and "Waiting tasks card". Jiten fails on
+  the phone on mobile data: its host (Hetzner) gives no range support, so every try starts over, and the mobile
+  network freezes the connection (`ai/notes/audio-sources.md`). The cards multiplied because the entry points queued a
+  download without looking for an unfinished task of the same entry while the stalled one held the single chain.
 
 ## Questions for the owner
 
@@ -451,7 +482,7 @@ regions" goes. Raised by the answers:
     from 1,000 words with their own meaning; (b) from 3,000; (c) keep 0.5 MB, with lv→ru as the only exception.
 
 Question 30 answered on 2026-10-16: (b), every batch in the big release (row "Scope of the big release"). Questions 28
-and 29 are still open.
+and 29 answered on 2026-10-18: (a) both (rows "Region order display" and "Compound part order").
 
 Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the line, with the word "Compound"), 17
 (every edition), 18 (without Chinese→Russian), 21 (left out), 22 (kept), 24 (left to the agent: all four languages),
@@ -498,6 +529,44 @@ Answered on 2026-10-16 (second round), decision rows: 11-13 (as built), 15 (the 
     and hard screens; another model replaces the bundled or smallest one only with at least a third fewer errors
     and at least 0.5 percentage points fewer; time does not count while every engine stays under the 1.6 s of
     ML Kit's Japanese model; (b) the plan's rule with the 0.5-point floor added (time counts).
+
+Group 4a, from the research of 2026-10-18 (`notes/languages.md`, "Group 4a research"); answered on 2026-10-18, see the
+decision rows from "Serbo-Croatian" on:
+
+41. Answered: (a). Serbo-Croatian as one language with both scripts, as Yomitan, Wiktionary and wordfreq treat it;
+    or Serbian, Croatian and Bosnian as three languages sharing the sh dictionaries; or one language, Latin only.
+42. Answered: (b). Serbo-Croatian script for recognition (no model reads both): one model list with the Latin models
+    and the Cyrillic one, picked once; or two entries, "Serbo-Croatian (Latin)" and "(Cyrillic)", sharing the
+    dictionaries and switched from the bubble like languages.
+43. Answered: by script (asked again after "Serbia and Croatia"). Serbo-Croatian flag: Serbia by default with
+    Croatia, Bosnia and Herzegovina and Montenegro offered; the code "SH" in a badge; Serbia only. With two entries:
+    the Croatian flag on the Latin entry and the Serbian one on the Cyrillic entry; or Serbia on both, Croatia offered.
+44. Answered: (a). Serbo-Croatian voice by the text's script (Croatian for Latin, Serbian for Cyrillic); or one voice
+    chosen in the audio settings.
+45. Answered: two languages ("whichever is more logical, if they are separate"). Indonesian and Malay as two
+    languages (own dictionaries, frequency lists, voices, flags) or one entry with both dictionaries.
+46. Answered: (c). The name of tl: "Filipino" (Android, ML Kit, tessdata, wordfreq, the voice), "Tagalog" (Yomitan,
+    Wiktionary) or "Filipino (Tagalog)".
+47. Answered: (a), "for every language, the language itself for its dictionaries". Own-language Wiktionary editions
+    (nl-nl 27.4 MB, el-el 37.8, cs-cs 8.4, id-id 2.1, ms-ms 0.8), listed only for gloss languages today: listed,
+    unticked, for every source language that has one; or left out.
+48. Answered: (a). Transcriptions under 0.5 MiB (id 25.4k words, ms 9.0k, be 14.3k): the 1,500-word rule as for
+    pairs; or 0.5 MiB kept for transcriptions.
+49. Answered: (a), the agent's choice at the owner's request. Greek text without tonos (capitals, careless typing):
+    a word without any tonos also matches headwords with one, a word with tonos only exactly; every word matched
+    without tonos; or exact accents only.
+50. Answered: (a). Article and pronoun tables (Greek της lists 13 article forms, as Russian он lists вы, его): left as
+    is; or form links between two forms that list each other dropped.
+51. Answered: (a). Belarusian flag: the official flag from circle-flags; the white-red-white flag drawn by us; or the
+    code "BE".
+52. Answered: (a). Bubble letters: nl Ĳ, cs Ř, id "ID", ms "MS", tl Ng, sh Đ (Latin) and Ћ (Cyrillic), uk Ї, be Ў,
+    el Ω; or IJ, Ů, Ñ, Ґ, Λ.
+53. Answered: the agent's choice at the owner's request ("I don't know these languages well"). What the two
+    Serbo-Croatian entries share: only the dictionaries, downloaded once; the rest (Anki, audio, popup settings, OCR
+    model) their own as for separate languages, each turned on by itself. Or everything but the OCR model and the
+    voice, one language whose script switches like a language.
+54. Answered: (a). The entries' names: "Serbo-Croatian (Latin)" and "Serbo-Croatian (Cyrillic)"; or "Croatian" and
+    "Serbian" (Serbian Latin text would then go through "Croatian").
 
 ## Branches and workflow
 
@@ -863,6 +932,32 @@ Armenian, Czech, Greek, Bengali, Thai, Belarusian, Kyrgyz. Yomitan (e7334a9) des
 el, th, be (transforms for tl, ka, el); it has none for ms, kk, bn, ky, and Serbian only as Serbo-Croatian (sh).
 Dictionaries are checked when the group starts; a language without support or dictionaries may be skipped.
 
+### Group 4a (nl, cs, id, ms, tl, sh, uk, be, el)
+
+Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build of groups 1-3"). Research:
+`notes/languages.md`, "Group 4a research"; decisions from the row "Serbo-Croatian" on.
+
+- Shared pieces first, on `languages/main`:
+  - the catalog script counts words for the threshold (row "Catalog threshold", not built yet; 51 4a files pass by
+    words only) and applies it to transcriptions;
+  - own-language editions listed;
+  - headwords indexed without stress marks as well (U+0301, U+0300; for sh also U+030F, U+0311, U+0304, U+0302 on
+    vowels and r) for be, uk and sh;
+  - `OcrScript.GREEK`;
+  - the Paddle sets of `paddle_models.py` for the 4a languages: v6 and `latin` for the Latin ones, `cyrillic` for uk,
+    be and Serbo-Croatian Cyrillic; `el` converted (its hosting needs the owner's OK of the file list);
+  - language codes compared as language tags (`Locale("id").language` is "in"; Android's Filipino is fil).
+- Then one branch per language, in this order: nl, cs, id, ms, tl (Latin, as group 3), sh (both entries on one
+  branch), uk, be, el.
+- Per language, from the research: Yomitan's text processors and transforms (tl, uk, el), abbreviations, quotes,
+  `ordinalPeriod` for cs and sh, Greek ; as a sentence end and · not, the apostrophe variants for uk and be, the
+  frequency builder fixes (Greek word-final σ → ς, sh Cyrillic spellings by transliteration), dropped tags
+  (Serbo-Croatian `Cyrillic` form rows, Baybayin and Jawi alt-of rows), sh audio through Wiktionary's `Sr-` files
+  (Latin words transliterated), a Serbian `lang` on Serbo-Croatian text for Noto's glyph forms, the Greek accent
+  rule, the audio order by measured coverage, OCR and the test screenshots.
+- To time on the emulator: Yomitan's `addSerboCroatianDiacritics` on long Latin lines (3^n variants per substring,
+  capped at 4096).
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -1192,3 +1287,14 @@ Dictionaries are checked when the group starts; a language without support or di
 - 2026-10-17: build of groups 1-3 made from `languages/ocr-engines` (the stack of groups 1-3 with the OCR engines and
   Paddle) by CI as the "Screenlate Dev" debug APK; merging the stack into `languages/main` waits for the emulator
   checks (row "Build of groups 1-3").
+- 2026-10-18: questions 28 and 29 answered (rows "Region order display" and "Compound part order"); the emulator
+  checks of groups 1-3 and the OCR engines run in a separate session on `languages/checks` (`.worktrees/lang`).
+- 2026-10-18: requests 67 (download queue, in the backlog) and 68 (scan times and default engines; questions 36-39
+  of the OCR engines plan).
+- 2026-10-18: questions 36-40 of the OCR engines plan answered: rows "Default OCR engines", "ML Kit at setup" (changes
+  "On-device OCR engines" and "Several OCR models at setup" for the languages ML Kit reads), "OCR speed marks"; where
+  the engine choice is offered is postponed (Open items).
+- 2026-10-18: group 4a questions 41-54 answered: rows "Serbo-Croatian" to "Belarusian flag" added, "Bubble letters"
+  extended; Stage E has the group 4a work list.
+- 2026-10-19: request 67 answered and built: rows "Download queue" and "Waiting tasks card"; the backlog item now
+  records the cause.

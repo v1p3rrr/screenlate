@@ -130,7 +130,7 @@ fun LanguageSetupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: Langu
             Hint(stringResource(R.string.language_setup_hint))
             GlossCard(state, viewModel::chooseGloss)
             state.categories.forEach { category ->
-                CategoryCard(state, category, onTick = viewModel::tick, onMain = viewModel::setMain)
+                CategoryCard(state, category, onTick = viewModel::tick, onMain = viewModel::setMain, onMlKitMain = viewModel::setMlKitMain)
             }
         }
     }
@@ -209,6 +209,7 @@ private fun CategoryCard(
     category: SetupCategory,
     onTick: (SetupItem, Boolean) -> Unit,
     onMain: (String, Boolean) -> Unit,
+    onMlKitMain: (Boolean) -> Unit,
 ) {
     val title = stringResource(category.category.label)
     val sample = state.language.support.pronunciationSample
@@ -222,8 +223,11 @@ private fun CategoryCard(
             else -> null
         },
     ) {
+        if (category.builtIn) {
+            MlKitRow(main = state.mainModel == null, switchable = state.mainCandidates.isNotEmpty(), onMain = onMlKitMain)
+        }
         category.items.forEachIndexed { index, item ->
-            if (index > 0) HorizontalDivider()
+            if (index > 0 || category.builtIn) HorizontalDivider()
             val model = item.entry.model?.takeIf { it in state.mainCandidates }
             SetupItemRow(
                 item,
@@ -232,6 +236,7 @@ private fun CategoryCard(
                 onTick = { onTick(item, it) },
                 main = model?.let { it == state.mainModel },
                 onMain = { main -> model?.let { onMain(it, main) } },
+                moreAccurate = category.builtIn && item.entry.recommended,
             )
         }
         when {
@@ -249,7 +254,28 @@ private fun CategoryCard(
     }
 }
 
-/** [main] is set on a ticked on-device model: whether it is the language's main model, with a switch for it. */
+/** ML Kit, built in: always there, ticked, with the main switch while another model is ticked ([switchable]). */
+@Composable
+private fun MlKitRow(main: Boolean, switchable: Boolean, onMain: (Boolean) -> Unit) {
+    Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()) {
+        Checkbox(checked = true, onCheckedChange = null, enabled = false, modifier = Modifier.padding(12.dp))
+        Column(modifier = Modifier.weight(1f).padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(stringResource(R.string.ocr_models_mlkit), style = MaterialTheme.typography.bodyLarge)
+            Text(stringResource(R.string.ocr_models_mlkit_info), style = MaterialTheme.typography.bodySmall)
+            if (switchable) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.language_setup_main_model), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                    Switch(checked = main, onCheckedChange = onMain, colors = AccentDefaults.switchColors())
+                }
+            }
+        }
+    }
+}
+
+/**
+ * [main] is set on a ticked on-device model: whether it is the language's main model, with a switch for it.
+ * [moreAccurate] marks a model the comparison found more accurate than ML Kit.
+ */
 @Composable
 private fun SetupItemRow(
     item: SetupItem,
@@ -258,6 +284,7 @@ private fun SetupItemRow(
     onTick: (Boolean) -> Unit,
     main: Boolean? = null,
     onMain: (Boolean) -> Unit = {},
+    moreAccurate: Boolean = false,
 ) {
     val entry = item.entry
     val changeable = !item.installed && !radio
@@ -274,6 +301,9 @@ private fun SetupItemRow(
         }
         Column(modifier = Modifier.weight(1f).padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
+            if (moreAccurate) {
+                Text(stringResource(R.string.ocr_models_more_accurate), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+            }
             val size = if (item.installed) {
                 stringResource(R.string.dictionaries_installed_mark)
             } else {

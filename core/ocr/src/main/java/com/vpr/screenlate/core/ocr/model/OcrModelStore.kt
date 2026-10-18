@@ -8,6 +8,7 @@ import java.io.IOException
 import java.security.MessageDigest
 import java.util.Properties
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,6 +46,9 @@ class ModelChecksumException : IOException("The downloaded model does not match 
  * Downloaded OCR models, one directory per model under [root]. A download is installed only when its SHA-256 matches
  * the pinned one; a zip archive is unpacked, any other file is kept as it is under its [OcrModelSpec.file] name. A new
  * version replaces the old one.
+ *
+ * The manifest records each file's size and SHA-256. A model whose files are gone or cut short, or changed when
+ * [verify] reads them, is [damaged] and counts as not installed.
  */
 @Singleton
 class OcrModelStore internal constructor(private val root: File) {
@@ -52,10 +56,24 @@ class OcrModelStore internal constructor(private val root: File) {
     constructor(@ApplicationContext context: Context) : this(File(context.filesDir, DIRECTORY))
 
     private val mutex = Mutex()
-    private val installed = MutableStateFlow(read())
+
+    /** Guards [holds] and the deletion of held models. */
+    private val lock = Any()
+    private val holds = HashMap<String, Int>()
+    private val installed = MutableStateFlow<List<InstalledOcrModel>>(emptyList())
+    private val broken = MutableStateFlow<List<InstalledOcrModel>>(emptyList())
+
+    init {
+        // Deleted during a scan that never ended: the process was gone before the model was released.
+        root.listFiles().orEmpty().filter { File(it, DELETED).exists() }.forEach { it.deleteRecursively() }
+        scan()
+    }
 
     /** The installed models. */
     val models: StateFlow<List<InstalledOcrModel>> = installed.asStateFlow()
+
+    /** Models whose files are gone, cut short or changed; downloading one again replaces it. */
+    val damaged: StateFlow<List<InstalledOcrModel>> = broken.asStateFlow()
 
     fun model(id: String): InstalledOcrModel? = installed.value.firstOrNull { it.id == id }
 
@@ -104,6 +122,7 @@ class OcrModelStore internal constructor(private val root: File) {
             setProperty(KEY_ID, id)
             setProperty(KEY_VERSION, version)
             setProperty(KEY_ENGINE, engine)
+            record(staging)
         }.let { manifest -> File(staging, MANIFEST).outputStream().use { manifest.store(it, null) } }
         val target = File(root, id)
         val old = File(root, ".$id.old").apply { deleteRecursively() }
@@ -114,32 +133,140 @@ class OcrModelStore internal constructor(private val root: File) {
         }
         old.deleteRecursively()
         Log.i(TAG, "Model $id $version installed for $engine")
-        installed.value = read()
+        scan()
         return requireNotNull(model(id))
     }
 
-    /** Deletes the models [ids]; unknown ids are skipped. */
-    suspend fun delete(ids: Collection<String>) = withContext(Dispatchers.IO) {
-        mutex.withLock {
-            ids.filter { it.isSafeName() }.forEach { id ->
-                if (File(root, id).deleteRecursively()) Log.i(TAG, "Model $id deleted")
+    /**
+     * Keeps the installed models [ids] from being deleted until the returned handle is closed; a deletion meanwhile
+     * takes them out of [models] at once and deletes their files at the close. Null when one of them is not installed.
+     */
+    fun hold(ids: Collection<String>): AutoCloseable? = synchronized(lock) {
+        val present = installed.value.mapTo(hashSetOf()) { it.id }
+        if (!present.containsAll(ids)) return null
+        ids.forEach { holds[it] = (holds[it] ?: 0) + 1 }
+        val closed = AtomicBoolean(false)
+        AutoCloseable { if (closed.compareAndSet(false, true)) release(ids) }
+    }
+
+    private fun release(ids: Collection<String>) = synchronized(lock) {
+        ids.forEach { id ->
+            val left = (holds[id] ?: 1) - 1
+            if (left > 0) {
+                holds[id] = left
+            } else {
+                holds -= id
+                val directory = File(root, id)
+                if (File(directory, DELETED).exists() && directory.deleteRecursively()) Log.i(TAG, "Model $id deleted after its scan")
             }
-            installed.value = read()
         }
     }
 
-    private fun read(): List<InstalledOcrModel> =
-        root.listFiles().orEmpty().filter { it.isDirectory && !it.name.startsWith('.') }.mapNotNull { directory ->
-            val manifest = File(directory, MANIFEST).takeIf { it.isFile } ?: return@mapNotNull null
-            val properties = runCatching { Properties().apply { manifest.inputStream().use(::load) } }.getOrNull()
-                ?: return@mapNotNull null
-            InstalledOcrModel(
-                id = properties.getProperty(KEY_ID) ?: return@mapNotNull null,
+    /** Deletes the models [ids]; unknown ids are skipped. A held model ([hold]) goes when it is released. */
+    suspend fun delete(ids: Collection<String>) = withContext(Dispatchers.IO) {
+        mutex.withLock {
+            ids.filter { it.isSafeName() }.forEach { id ->
+                val directory = File(root, id)
+                if (!directory.exists()) return@forEach
+                synchronized(lock) {
+                    if ((holds[id] ?: 0) > 0) {
+                        File(directory, DELETED).createNewFile()
+                        Log.i(TAG, "Model $id deleted once its scan ends")
+                    } else if (directory.deleteRecursively()) {
+                        Log.i(TAG, "Model $id deleted")
+                    }
+                }
+            }
+            scan()
+        }
+    }
+
+    /**
+     * Checks again whether each model's files are there with their sizes; records the files of a model installed
+     * before the store recorded them, as they are now.
+     */
+    suspend fun recheck() = withContext(Dispatchers.IO) {
+        mutex.withLock {
+            directories().forEach { directory ->
+                val properties = manifest(directory) ?: return@forEach
+                if (recorded(properties).isEmpty()) {
+                    properties.record(directory)
+                    write(directory, properties)
+                }
+            }
+            scan()
+        }
+    }
+
+    /**
+     * Reads the files of the models [ids] and marks a model [damaged] when one differs from what was installed;
+     * for an engine that failed to read a model. True when one was damaged.
+     */
+    suspend fun verify(ids: Collection<String>): Boolean = withContext(Dispatchers.IO) {
+        mutex.withLock {
+            val damaged = ids.filter { it.isSafeName() }.mapNotNull { id -> File(root, id).takeIf { it.isDirectory } }.filter { directory ->
+                val properties = manifest(directory) ?: return@filter false
+                val intact = recorded(properties).all { (path, file) ->
+                    File(directory, path).let { it.isFile && it.length() == file.size && sha256(it).equals(file.sha256, ignoreCase = true) }
+                }
+                if (!intact) {
+                    properties.setProperty(KEY_DAMAGED, true.toString())
+                    write(directory, properties)
+                    Log.w(TAG, "Model ${directory.name} is damaged")
+                }
+                !intact
+            }
+            scan()
+            damaged.isNotEmpty()
+        }
+    }
+
+    /** Reads every model into [models] and [damaged]; a model deleted during a scan is in neither. */
+    private fun scan() {
+        val healthy = mutableListOf<InstalledOcrModel>()
+        val damaged = mutableListOf<InstalledOcrModel>()
+        directories().forEach { directory ->
+            if (File(directory, DELETED).exists()) return@forEach
+            val properties = manifest(directory) ?: return@forEach
+            val model = InstalledOcrModel(
+                id = properties.getProperty(KEY_ID) ?: return@forEach,
                 version = properties.getProperty(KEY_VERSION).orEmpty(),
                 engine = properties.getProperty(KEY_ENGINE).orEmpty(),
                 directory = directory,
             )
-        }.sortedBy { it.id }
+            val whole = properties.getProperty(KEY_DAMAGED) != true.toString() &&
+                recorded(properties).all { (path, file) -> File(directory, path).let { it.isFile && it.length() == file.size } }
+            if (whole) healthy += model else damaged += model
+        }
+        installed.value = healthy.sortedBy { it.id }
+        broken.value = damaged.sortedBy { it.id }
+    }
+
+    private fun directories(): List<File> = root.listFiles().orEmpty().filter { it.isDirectory && !it.name.startsWith('.') }
+
+    private fun manifest(directory: File): Properties? {
+        val manifest = File(directory, MANIFEST).takeIf { it.isFile } ?: return null
+        return runCatching { Properties().apply { manifest.inputStream().use(::load) } }.getOrNull()
+    }
+
+    private fun write(directory: File, properties: Properties) {
+        File(directory, MANIFEST).outputStream().use { properties.store(it, null) }
+    }
+
+    /** The size and SHA-256 of each file of the model in [directory], under its path inside it. */
+    private fun Properties.record(directory: File) {
+        directory.walkTopDown().filter { it.isFile && it.name != MANIFEST && it.name != DELETED }.forEach { file ->
+            setProperty(FILE_PREFIX + file.relativeTo(directory).invariantSeparatorsPath, "${file.length()}:${sha256(file)}")
+        }
+    }
+
+    private fun recorded(properties: Properties): Map<String, RecordedFile> =
+        properties.stringPropertyNames().filter { it.startsWith(FILE_PREFIX) }.mapNotNull { key ->
+            val (size, hash) = properties.getProperty(key).split(':').takeIf { it.size == 2 } ?: return@mapNotNull null
+            key.removePrefix(FILE_PREFIX) to RecordedFile(size.toLongOrNull() ?: return@mapNotNull null, hash)
+        }.toMap()
+
+    private data class RecordedFile(val size: Long, val sha256: String)
 
     /** Entries go only below [target]: names with `..` or absolute paths are refused. */
     private fun unzip(archive: File, target: File) {
@@ -177,6 +304,13 @@ class OcrModelStore internal constructor(private val root: File) {
         private const val KEY_ID = "id"
         private const val KEY_VERSION = "version"
         private const val KEY_ENGINE = "engine"
+        private const val KEY_DAMAGED = "damaged"
+
+        /** A file of the model: `file.<path>=<size>:<sha256>`. */
+        private const val FILE_PREFIX = "file."
+
+        /** Marks a model deleted while a scan held it; [scan] skips it, the release or the next start deletes it. */
+        private const val DELETED = ".deleted"
         private val ZIP_MAGIC = byteArrayOf(0x50, 0x4B, 0x03, 0x04)
 
         fun sha256(file: File): String {

@@ -69,7 +69,7 @@
     <string name="dictionaries_count_characters">characters: %1$d</string>
     <string name="dictionaries_languages_hint">The installed dictionaries and those available for download below belong to the chosen language. Dictionaries without a language serve every language.</string>
     <string name="dictionaries_other_languages">Other languages</string>
-    <string name="dictionaries_other_languages_hint">Dictionaries of languages that are turned off. They are not used in lookups and only take up storage.</string>
+    <string name="dictionaries_other_languages_hint">Dictionaries and recognition models of languages that are turned off. They are not used and only take up storage.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d dictionary</item>
         <item quantity="other">%1$d dictionaries</item>
@@ -108,6 +108,11 @@
     <string name="dictionaries_task_queued">Waiting: %1$s</string>
     <string name="dictionaries_task_downloading">Downloading %1$s</string>
     <string name="dictionaries_task_retrying">Retrying the download (%2$d of %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">Waiting (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">Waiting (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Cancel all</string>
+    <string name="dictionaries_tasks_show">Show the list</string>
+    <string name="dictionaries_tasks_hide">Hide the list</string>
     <string name="dictionaries_download_stopped">%1$s: download stopped — %2$s</string>
     <string name="dictionaries_connection_lost">connection lost</string>
     <string name="dictionaries_task_importing">Importing %1$s</string>
@@ -267,6 +272,7 @@
     <string name="problems_title">Needs attention</string>
     <string name="problems_open_anki">Open Anki settings</string>
     <string name="problems_dictionaries_missing">Dictionaries whose files are missing:</string>
+    <string name="problems_models_damaged">Recognition models whose files are damaged:</string>
     <string name="problems_download_again">Download again</string>
     <string name="problems_import_again">Import its file again.</string>
     <string name="problems_remove">Remove</string>
@@ -335,7 +341,7 @@
     <string name="audio_sources">Sources</string>
     <string name="audio_reset_sources">Restore the default sources</string>
     <string name="audio_regions">Regions</string>
-    <string name="audio_regions_hint">Wiktionary recordings from the regions higher in the list play first.</string>
+    <string name="audio_regions_hint">Wiktionary recordings and transcriptions from the regions higher in the list come first.</string>
     <string name="audio_region_us">United States</string>
     <string name="audio_region_uk">United Kingdom</string>
     <string name="audio_region_latin_america">Latin America</string>
@@ -744,6 +750,7 @@
     <string name="ocr_models_mlkit">ML Kit (built in)</string>
     <string name="ocr_models_mlkit_info">Comes with the app; nothing to download. Reads Chinese, Japanese, Korean and Latin-script text.</string>
     <string name="ocr_models_recommended">Recommended</string>
+    <string name="ocr_models_more_accurate">More accurate</string>
     <string name="ocr_models_installed_size">Installed · %1$s</string>
     <string name="ocr_models_in_use">Used by: %1$s</string>
     <string name="ocr_models_delete_title">Delete the model?</string>

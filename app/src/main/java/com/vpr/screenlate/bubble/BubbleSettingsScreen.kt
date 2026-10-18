@@ -122,12 +122,14 @@ private data class LaunchableApp(val packageName: String, val label: String, val
  * Aim point, dock side, screen recognition and app text, highlight, haptics, and the apps where the bubble stays hidden.
  *
  * @param showAppText scrolls to the app text switches, for the e-ink hint.
+ * @param ocrModels opens the on-device models of the language with this code.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BubbleSettingsScreen(
     onBack: () -> Unit,
     showAppText: Boolean = false,
+    ocrModels: String? = null,
     viewModel: BubbleSettingsViewModel = hiltViewModel(),
 ) {
     val stored by viewModel.settings.collectAsStateWithLifecycle()
@@ -266,7 +268,7 @@ fun BubbleSettingsScreen(
                         hint = stringResource(R.string.bubble_ocr_saving_hint),
                         enabled = recognizes && settings.ocrEngines == OcrEngines.BOTH,
                     )
-                    OcrModelRows(enabled = recognizes && settings.ocrEngines != OcrEngines.CLOUD)
+                    OcrModelRows(enabled = recognizes && settings.ocrEngines != OcrEngines.CLOUD, openLanguage = ocrModels)
                 }
             }
             item(key = APP_TEXT_KEY) {

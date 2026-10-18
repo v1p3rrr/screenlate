@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">иероглифы: %1$d</string>
     <string name="dictionaries_languages_hint">Установленные и доступные для загрузки словари ниже относятся к выбранному языку. Словари без языка используются для всех языков.</string>
     <string name="dictionaries_other_languages">Другие языки</string>
-    <string name="dictionaries_other_languages_hint">Словари выключенных языков. В поиске не используются и только занимают место.</string>
+    <string name="dictionaries_other_languages_hint">Словари и модели распознавания выключенных языков. Не используются и только занимают место.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d словарь</item>
         <item quantity="few">%1$d словаря</item>
@@ -109,6 +109,11 @@
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
     <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">В очереди (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">В очереди (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Отменить все</string>
+    <string name="dictionaries_tasks_show">Показать список</string>
+    <string name="dictionaries_tasks_hide">Скрыть список</string>
     <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
     <string name="dictionaries_connection_lost">соединение прервалось</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>
@@ -268,6 +273,7 @@
     <string name="problems_title">Требует внимания</string>
     <string name="problems_open_anki">Открыть настройки Anki</string>
     <string name="problems_dictionaries_missing">Пропали файлы словарей:</string>
+    <string name="problems_models_damaged">Повреждены файлы моделей распознавания:</string>
     <string name="problems_download_again">Скачать заново</string>
     <string name="problems_import_again">Импортируйте его файл заново.</string>
     <string name="problems_remove">Удалить</string>
@@ -338,7 +344,7 @@
     <string name="audio_sources">Источники</string>
     <string name="audio_reset_sources">Вернуть источники по умолчанию</string>
     <string name="audio_regions">Регионы</string>
-    <string name="audio_regions_hint">Записи Wiktionary из регионов выше в списке звучат первыми.</string>
+    <string name="audio_regions_hint">Записи Wiktionary и транскрипции из регионов выше в списке идут первыми.</string>
     <string name="audio_region_us">США</string>
     <string name="audio_region_uk">Великобритания</string>
     <string name="audio_region_latin_america">Латинская Америка</string>
@@ -755,6 +761,7 @@
     <string name="ocr_models_mlkit">ML Kit (встроенная)</string>
     <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский и текст на латинице.</string>
     <string name="ocr_models_recommended">Рекомендуется</string>
+    <string name="ocr_models_more_accurate">Точнее</string>
     <string name="ocr_models_installed_size">Установлена · %1$s</string>
     <string name="ocr_models_in_use">Используется: %1$s</string>
     <string name="ocr_models_delete_title">Удалить модель?</string>

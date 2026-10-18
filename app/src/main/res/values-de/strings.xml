@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">Schriftzeichen: %1$d</string>
     <string name="dictionaries_languages_hint">Die installierten und die zum Herunterladen angebotenen Wörterbücher unten gehören zur gewählten Sprache. Wörterbücher ohne Sprache gelten für alle Sprachen.</string>
     <string name="dictionaries_other_languages">Andere Sprachen</string>
-    <string name="dictionaries_other_languages_hint">Wörterbücher ausgeschalteter Sprachen. Sie werden bei der Suche nicht verwendet und belegen nur Speicherplatz.</string>
+    <string name="dictionaries_other_languages_hint">Wörterbücher und Erkennungsmodelle ausgeschalteter Sprachen. Sie werden nicht verwendet und belegen nur Speicherplatz.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d Wörterbuch</item>
         <item quantity="other">%1$d Wörterbücher</item>
@@ -105,6 +105,11 @@
     <string name="dictionaries_task_queued">Wartet: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s wird heruntergeladen</string>
     <string name="dictionaries_task_retrying">Download wird wiederholt (%2$d von %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">In der Warteschlange (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">In der Warteschlange (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Alle abbrechen</string>
+    <string name="dictionaries_tasks_show">Liste zeigen</string>
+    <string name="dictionaries_tasks_hide">Liste ausblenden</string>
     <string name="dictionaries_download_stopped">%1$s: Download angehalten – %2$s</string>
     <string name="dictionaries_connection_lost">Verbindung unterbrochen</string>
     <string name="dictionaries_task_importing">%1$s wird importiert</string>
@@ -263,6 +268,7 @@
     <string name="problems_title">Braucht Aufmerksamkeit</string>
     <string name="problems_open_anki">Anki-Einstellungen öffnen</string>
     <string name="problems_dictionaries_missing">Wörterbücher, deren Dateien fehlen:</string>
+    <string name="problems_models_damaged">Erkennungsmodelle, deren Dateien beschädigt sind:</string>
     <string name="problems_download_again">Erneut herunterladen</string>
     <string name="problems_import_again">Importiere seine Datei erneut.</string>
     <string name="problems_remove">Entfernen</string>
@@ -331,7 +337,7 @@
     <string name="audio_sources">Quellen</string>
     <string name="audio_reset_sources">Standardquellen wiederherstellen</string>
     <string name="audio_regions">Regionen</string>
-    <string name="audio_regions_hint">Wiktionary-Aufnahmen aus Regionen weiter oben in der Liste werden zuerst abgespielt.</string>
+    <string name="audio_regions_hint">Wiktionary-Aufnahmen und Lautschriften aus Regionen weiter oben in der Liste kommen zuerst.</string>
     <string name="audio_region_us">USA</string>
     <string name="audio_region_uk">Vereinigtes Königreich</string>
     <string name="audio_region_latin_america">Lateinamerika</string>
@@ -740,6 +746,7 @@
     <string name="ocr_models_mlkit">ML Kit (integriert)</string>
     <string name="ocr_models_mlkit_info">In der App enthalten, kein Download nötig. Erkennt chinesischen, japanischen und koreanischen Text sowie Text in lateinischer Schrift.</string>
     <string name="ocr_models_recommended">Empfohlen</string>
+    <string name="ocr_models_more_accurate">Genauer</string>
     <string name="ocr_models_installed_size">Installiert · %1$s</string>
     <string name="ocr_models_in_use">Verwendet von: %1$s</string>
     <string name="ocr_models_delete_title">Modell löschen?</string>

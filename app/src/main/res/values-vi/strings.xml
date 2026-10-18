@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">chữ Hán: %1$d</string>
     <string name="dictionaries_languages_hint">Các từ điển đã cài và có thể tải xuống bên dưới thuộc về ngôn ngữ đã chọn. Từ điển không có ngôn ngữ được dùng cho mọi ngôn ngữ.</string>
     <string name="dictionaries_other_languages">Ngôn ngữ khác</string>
-    <string name="dictionaries_other_languages_hint">Từ điển của các ngôn ngữ đã tắt. Không được dùng khi tra cứu và chỉ chiếm dung lượng.</string>
+    <string name="dictionaries_other_languages_hint">Từ điển và mô hình nhận dạng của các ngôn ngữ đã tắt. Không được dùng và chỉ chiếm dung lượng.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="other">%1$d từ điển</item>
     </plurals>
@@ -103,6 +103,11 @@
     <string name="dictionaries_task_queued">Đang chờ: %1$s</string>
     <string name="dictionaries_task_downloading">Đang tải %1$s</string>
     <string name="dictionaries_task_retrying">Đang thử tải lại (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">Đang chờ (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">Đang chờ (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Hủy tất cả</string>
+    <string name="dictionaries_tasks_show">Hiện danh sách</string>
+    <string name="dictionaries_tasks_hide">Ẩn danh sách</string>
     <string name="dictionaries_download_stopped">%1$s: đã dừng tải — %2$s</string>
     <string name="dictionaries_connection_lost">mất kết nối</string>
     <string name="dictionaries_task_importing">Đang nhập %1$s</string>
@@ -261,6 +266,7 @@
     <string name="problems_title">Cần chú ý</string>
     <string name="problems_open_anki">Mở cài đặt Anki</string>
     <string name="problems_dictionaries_missing">Từ điển bị thiếu tệp:</string>
+    <string name="problems_models_damaged">Mô hình nhận dạng bị hỏng tệp:</string>
     <string name="problems_download_again">Tải lại</string>
     <string name="problems_import_again">Hãy nhập lại tệp của nó.</string>
     <string name="problems_remove">Gỡ bỏ</string>
@@ -328,7 +334,7 @@
     <string name="audio_sources">Nguồn</string>
     <string name="audio_reset_sources">Khôi phục nguồn mặc định</string>
     <string name="audio_regions">Khu vực</string>
-    <string name="audio_regions_hint">Bản ghi Wiktionary của các khu vực ở cao hơn trong danh sách được phát trước.</string>
+    <string name="audio_regions_hint">Bản ghi Wiktionary và phiên âm của các khu vực ở cao hơn trong danh sách được ưu tiên.</string>
     <string name="audio_region_us">Hoa Kỳ</string>
     <string name="audio_region_uk">Vương quốc Anh</string>
     <string name="audio_region_latin_america">Mỹ Latinh</string>
@@ -733,6 +739,7 @@
     <string name="ocr_models_mlkit">ML Kit (tích hợp)</string>
     <string name="ocr_models_mlkit_info">Có sẵn trong ứng dụng, không cần tải. Nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn và chữ Latinh.</string>
     <string name="ocr_models_recommended">Khuyến nghị</string>
+    <string name="ocr_models_more_accurate">Chính xác hơn</string>
     <string name="ocr_models_installed_size">Đã cài · %1$s</string>
     <string name="ocr_models_in_use">Đang dùng cho: %1$s</string>
     <string name="ocr_models_delete_title">Xóa mô hình?</string>

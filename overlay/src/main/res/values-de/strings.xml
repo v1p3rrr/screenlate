@@ -12,7 +12,8 @@
     <string name="overlay_error_capture">Screenshot konnte nicht aufgenommen werden.</string>
     <string name="overlay_error_ocr">Texterkennung fehlgeschlagen.</string>
     <string name="overlay_error_offline">Kein Netz, und die Erkennung auf dem Gerät ist in den Einstellungen ausgeschaltet.</string>
-    <string name="overlay_error_no_device_ocr">Die Erkennung auf dem Gerät unterstützt diese Sprache nicht. Stelle in den Blase-Einstellungen unter Engines „Beide“ oder „Cloud“ ein.</string>
+    <string name="overlay_error_no_device_ocr">Für diese Sprache gibt es kein Modell auf dem Gerät. Lade eines herunter oder stelle in den Blase-Einstellungen unter Engines „Beide“ oder „Cloud“ ein.</string>
+    <string name="overlay_open_ocr_models">Modell auf dem Gerät</string>
     <string name="overlay_error_offline_no_device">Keine Netzverbindung, und die Erkennung auf dem Gerät unterstützt diese Sprache nicht.</string>
     <string name="overlay_ocr_error_title">Cloud-Erkennung</string>
     <string name="overlay_ocr_error_offline">Es gibt keine Netzwerkverbindung.</string>

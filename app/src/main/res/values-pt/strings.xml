@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">caracteres: %1$d</string>
     <string name="dictionaries_languages_hint">Os dicionários instalados e os disponíveis para download abaixo são os do idioma escolhido. Dicionários sem idioma servem para todos os idiomas.</string>
     <string name="dictionaries_other_languages">Outros idiomas</string>
-    <string name="dictionaries_other_languages_hint">Dicionários de idiomas desativados. Não são usados nas buscas e só ocupam espaço.</string>
+    <string name="dictionaries_other_languages_hint">Dicionários e modelos de reconhecimento de idiomas desativados. Não são usados e só ocupam espaço.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d dicionário</item>
         <item quantity="many">%1$d dicionários</item>
@@ -107,6 +107,11 @@
     <string name="dictionaries_task_queued">Aguardando: %1$s</string>
     <string name="dictionaries_task_downloading">Baixando %1$s</string>
     <string name="dictionaries_task_retrying">Tentando baixar de novo (%2$d de %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">Aguardando (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">Aguardando (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Cancelar tudo</string>
+    <string name="dictionaries_tasks_show">Mostrar a lista</string>
+    <string name="dictionaries_tasks_hide">Ocultar a lista</string>
     <string name="dictionaries_download_stopped">%1$s: download interrompido — %2$s</string>
     <string name="dictionaries_connection_lost">conexão interrompida</string>
     <string name="dictionaries_task_importing">Importando %1$s</string>
@@ -265,6 +270,7 @@
     <string name="problems_title">Requer atenção</string>
     <string name="problems_open_anki">Abrir configurações do Anki</string>
     <string name="problems_dictionaries_missing">Dicionários com arquivos faltando:</string>
+    <string name="problems_models_damaged">Modelos de reconhecimento com arquivos danificados:</string>
     <string name="problems_download_again">Baixar de novo</string>
     <string name="problems_import_again">Importe o arquivo dele de novo.</string>
     <string name="problems_remove">Remover</string>
@@ -334,7 +340,7 @@
     <string name="audio_sources">Fontes</string>
     <string name="audio_reset_sources">Restaurar as fontes padrão</string>
     <string name="audio_regions">Regiões</string>
-    <string name="audio_regions_hint">As gravações do Wiktionary das regiões mais acima na lista tocam primeiro.</string>
+    <string name="audio_regions_hint">As gravações do Wiktionary e as transcrições das regiões mais acima na lista vêm primeiro.</string>
     <string name="audio_region_us">Estados Unidos</string>
     <string name="audio_region_uk">Reino Unido</string>
     <string name="audio_region_latin_america">América Latina</string>
@@ -747,6 +753,7 @@
     <string name="ocr_models_mlkit">ML Kit (integrado)</string>
     <string name="ocr_models_mlkit_info">Vem com o app, nada para baixar. Reconhece texto em chinês, japonês, coreano e no alfabeto latino.</string>
     <string name="ocr_models_recommended">Recomendado</string>
+    <string name="ocr_models_more_accurate">Mais preciso</string>
     <string name="ocr_models_installed_size">Instalado · %1$s</string>
     <string name="ocr_models_in_use">Em uso por: %1$s</string>
     <string name="ocr_models_delete_title">Excluir o modelo?</string>

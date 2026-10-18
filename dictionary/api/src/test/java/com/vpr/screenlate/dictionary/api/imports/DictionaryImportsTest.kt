@@ -10,11 +10,20 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_FREE_BYTES
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_INTERRUPTED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_NEEDED_BYTES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_ENTRY_ID
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PAUSED
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_PATH
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_REQUEUED
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_RESUMABLE
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_SOURCE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_STAGE
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_TITLES
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.KEY_URL
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_FILE
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_MODEL
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_WAIT
 import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
@@ -47,6 +56,9 @@ class DictionaryImportsTest {
         source: String? = null,
         language: String? = null,
         entry: String? = null,
+        download: String? = null,
+        chain: Int? = null,
+        retry: Int? = null,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -58,6 +70,9 @@ class DictionaryImportsTest {
             source?.let { DictionaryImports.SOURCE_TAG_PREFIX + it },
             language?.let { DictionaryImports.LANGUAGE_TAG_PREFIX + it },
             entry?.let { DictionaryImports.ENTRY_TAG_PREFIX + it },
+            download?.let { DictionaryImports.DOWNLOAD_TAG_PREFIX + it },
+            chain?.let { DictionaryImports.CHAIN_TAG_PREFIX + it },
+            retry?.let { DictionaryImports.RETRY_TAG_PREFIX + it },
         ),
         outputData = output,
         progress = progress,
@@ -249,16 +264,13 @@ class DictionaryImportsTest {
             WorkInfo.State.SUCCEEDED,
             1,
             output = workDataOf(KEY_ERROR to "timeout", KEY_RESUMABLE to true, KEY_DOWNLOAD_STOPPED to true, KEY_CONNECTION_LOST to true),
+            retry = 3,
         )
         val importFailed = work("Broken", WorkInfo.State.SUCCEEDED, 2, output = workDataOf(KEY_ERROR to "bad zip", KEY_RESUMABLE to true))
         val dismissed = work("Dismissed", WorkInfo.State.SUCCEEDED, 3, output = workDataOf(KEY_ERROR to "x"))
-        val retrying = work("Retrying", WorkInfo.State.ENQUEUED, 4)
+        val retrying = work("Retrying", WorkInfo.State.ENQUEUED, 4, retry = 2)
 
-        val tasks = importTasks(
-            listOf(stopped, importFailed, dismissed, retrying),
-            dismissed = setOf(dismissed.id.toString()),
-            retries = mapOf(retrying.id.toString() to 2, stopped.id.toString() to 3),
-        )
+        val tasks = importTasks(listOf(stopped, importFailed, dismissed, retrying), dismissed = setOf(dismissed.id.toString()))
 
         assertThat(tasks.map { it.name }).containsExactly("Stopped", "Broken", "Retrying").inOrder()
         assertThat(tasks.map { it.resumable }).containsExactly(true, true, false).inOrder()
@@ -318,5 +330,69 @@ class DictionaryImportsTest {
         assertThat(shownImportName("my.zip", null, entries, Locale.ENGLISH)).isEqualTo("my.zip")
         assertThat(shownImportName("Old title", entry.id, entries, Locale.ENGLISH)).isEqualTo("Old title")
         assertThat(shownImportName(entry.title, entry.id, emptyList(), Locale.ENGLISH)).isEqualTo(entry.title)
+    }
+
+    @Test
+    fun `a download queued again for a retry leaves the list, the retry shows while it waits`() {
+        val requeued = work("Jiten", WorkInfo.State.SUCCEEDED, 1, output = workDataOf(KEY_REQUEUED to true))
+        val waiting = work("Jiten", WorkInfo.State.BLOCKED, 3, retry = 1)
+        val downloading = work("Model", WorkInfo.State.RUNNING, 2, retry = 2, progress = workDataOf(KEY_STAGE to STAGE_DOWNLOAD))
+        val downloaded = work("Wiktionary", WorkInfo.State.RUNNING, 4, progress = workDataOf(KEY_STAGE to STAGE_WAIT))
+
+        val tasks = importTasks(listOf(requeued, waiting, downloading, downloaded))
+
+        assertThat(tasks.map { it.name }).containsExactly("Model", "Jiten", "Wiktionary").inOrder()
+        assertThat(tasks.map { it.state })
+            .containsExactly(ImportTask.State.DOWNLOADING, ImportTask.State.QUEUED, ImportTask.State.QUEUED).inOrder()
+        // A running try is not a waiting retry.
+        assertThat(tasks.map { it.retries }).containsExactly(0, 1, 0).inOrder()
+    }
+
+    @Test
+    fun `downloads of one entry or URL share a key, other imports have none`() {
+        val entry = workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/a.zip", KEY_ENTRY_ID to "jiten-global")
+        assertThat(downloadKey(entry)).isEqualTo("entry:jiten-global")
+        assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_MODEL, KEY_ENTRY_ID to "paddle"))).isEqualTo("entry:paddle")
+        assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/a.zip")))
+            .isEqualTo("url:https://example.org/a.zip")
+        assertThat(downloadKey(workDataOf(KEY_SOURCE to SOURCE_FILE, KEY_PATH to "/a.zip"))).isNull()
+    }
+
+    @Test
+    fun `the same download is the unfinished task, else the last stopped one`() {
+        val key = "entry:jiten-global"
+        val resumable = workDataOf(KEY_ERROR to "timeout", KEY_RESUMABLE to true)
+        val installed = work("Jiten", WorkInfo.State.SUCCEEDED, 1, download = key)
+        val stoppedFirst = work("Jiten", WorkInfo.State.SUCCEEDED, 2, output = resumable, download = key)
+        val stoppedLast = work("Jiten", WorkInfo.State.SUCCEEDED, 3, output = resumable, download = key)
+        val dismissed = work("Jiten", WorkInfo.State.SUCCEEDED, 4, output = resumable, download = key)
+        val cancelled = work("Jiten", WorkInfo.State.ENQUEUED, 5, download = key)
+        val other = work("Model", WorkInfo.State.RUNNING, 6, download = "entry:paddle")
+        val works = listOf(installed, stoppedFirst, stoppedLast, dismissed, cancelled, other)
+        val cancelledIds = setOf(cancelled.id.toString())
+        val dismissedIds = setOf(dismissed.id.toString())
+
+        assertThat(sameDownload(works, key, cancelledIds, dismissedIds)).isEqualTo(stoppedLast)
+        val queued = work("Jiten", WorkInfo.State.BLOCKED, 7, download = key, retry = 1)
+        assertThat(sameDownload(works + queued, key, cancelledIds, dismissedIds)).isEqualTo(queued)
+        assertThat(sameDownload(listOf(installed, other), key, emptySet(), emptySet())).isNull()
+        assertThat(sameDownload(works, null, emptySet(), emptySet())).isNull()
+    }
+
+    @Test
+    fun `a task goes to the chain with fewer unfinished tasks`() {
+        val old = work("old", WorkInfo.State.RUNNING, 1)
+        val first = work("a", WorkInfo.State.BLOCKED, 2, chain = 0)
+        val second = work("b", WorkInfo.State.RUNNING, 3, chain = 1)
+        val done = work("c", WorkInfo.State.SUCCEEDED, 4, chain = 1)
+        val cancelled = work("d", WorkInfo.State.ENQUEUED, 5, chain = 1)
+
+        // Tasks queued before there were two chains ran on the first.
+        assertThat(leastLoadedChain(listOf(old, first, second, done, cancelled), setOf(cancelled.id.toString()))).isEqualTo(1)
+        assertThat(leastLoadedChain(listOf(first, second, done), emptySet())).isEqualTo(0)
+        assertThat(leastLoadedChain(listOf(first, second, cancelled), emptySet())).isEqualTo(0)
+        // A task queued again leaves itself out.
+        assertThat(leastLoadedChain(listOf(old, first, second), emptySet(), exclude = second.id)).isEqualTo(1)
+        assertThat(leastLoadedChain(emptyList(), emptySet())).isEqualTo(0)
     }
 }

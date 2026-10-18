@@ -16,14 +16,23 @@ data class SetupItem(val entry: CatalogEntry, val installed: Boolean, val requir
 
 /**
  * One category of the download screen. A [mandatory] category needs a ticked item; its only item is a preselected
- * radio button ([fixed]).
+ * radio button ([fixed]). [builtIn] is the on-device model category of a language ML Kit reads: ML Kit is listed first
+ * and needs no download, so nothing else is ticked by default and nothing is missing.
  */
-data class SetupCategory(val category: CatalogCategory, val items: List<SetupItem>, val mandatory: Boolean) {
-    val fixed: Boolean get() = mandatory && items.size == 1
+data class SetupCategory(
+    val category: CatalogCategory,
+    val items: List<SetupItem>,
+    val mandatory: Boolean,
+    val builtIn: Boolean = false,
+) {
+    val fixed: Boolean get() = mandatory && !builtIn && items.size == 1
 
-    /** Installed and fixed items always; the others as the user set them ([choices]) or as the catalog recommends. */
+    /**
+     * Installed and fixed items always; the others as the user set them ([choices]) or as the catalog recommends,
+     * except beside ML Kit.
+     */
     fun ticked(item: SetupItem, choices: Map<String, Boolean>): Boolean =
-        item.installed || fixed || (choices[item.entry.id] ?: item.entry.recommended)
+        item.installed || fixed || (choices[item.entry.id] ?: (item.entry.recommended && !builtIn))
 }
 
 /** Archive bytes to download, bytes after import, and the space the downloads need on the way. */
@@ -59,13 +68,14 @@ internal fun glossChoices(
  * and those without a gloss language (frequency, transcription, recognition models). Categories go in their declared
  * order, a mandatory one even when empty; within one, in the order of [glosses], the recommended first. A model counts
  * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
- * ([SetupItem.requires]).
+ * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn].
  */
 internal fun setupCategories(
     catalog: Catalog,
     language: String,
     glosses: List<String>,
     installed: List<DictionaryEntity>,
+    mlKitReads: Boolean = false,
     modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
     val entries = catalog.entries.filter { it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses) }
@@ -88,7 +98,8 @@ internal fun setupCategories(
                     SetupItem(entry, installed.any(entry::matches))
                 }
             }
-        SetupCategory(category, items, category in mandatory).takeIf { items.isNotEmpty() || it.mandatory }
+        SetupCategory(category, items, category in mandatory, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)
+            .takeIf { items.isNotEmpty() || it.mandatory }
     }
 }
 
@@ -103,13 +114,18 @@ internal fun mainModelCandidates(categories: List<SetupCategory>, choices: Map<S
 
 /**
  * The model of [candidates] that becomes the language's on-device model: the user's [pick] (a model id, or null for
- * none) while it is still a candidate; else the recommended one; else none where ML Kit reads the language, which then
- * stays its model; else the first one. Without ML Kit one of the candidates is always main.
+ * none) while it is still a candidate. Else, where ML Kit reads the language, a candidate the user ticked ([ticked],
+ * entry ids; the recommended first), or none, which leaves ML Kit; a model ticked only because it is installed does not
+ * count. Without ML Kit, the recommended candidate, else the first: one of them is always main.
  */
-internal fun mainModel(candidates: List<CatalogEntry>, pick: MainModelPick?, mlKitReads: Boolean): String? {
+internal fun mainModel(candidates: List<CatalogEntry>, pick: MainModelPick?, mlKitReads: Boolean, ticked: Set<String> = emptySet()): String? {
     val ids = candidates.mapNotNull { it.model }
     if (pick != null && (pick.model in ids || (pick.model == null && mlKitReads))) return pick.model
-    return candidates.firstOrNull { it.recommended }?.model ?: if (mlKitReads) null else ids.firstOrNull()
+    if (mlKitReads) {
+        val chosen = candidates.filter { it.id in ticked }
+        return (chosen.firstOrNull { it.recommended } ?: chosen.firstOrNull())?.model
+    }
+    return candidates.firstOrNull { it.recommended }?.model ?: ids.firstOrNull()
 }
 
 /** The user's main model on the download screen: a model id, or null for none. */
@@ -117,7 +133,8 @@ data class MainModelPick(val model: String?)
 
 /** Mandatory categories without a ticked item; Confirm stays disabled while there are any. */
 internal fun missingChoices(categories: List<SetupCategory>, choices: Map<String, Boolean>): List<CatalogCategory> =
-    categories.filter { category -> category.mandatory && category.items.none { category.ticked(it, choices) } }.map { it.category }
+    categories.filter { category -> category.mandatory && !category.builtIn && category.items.none { category.ticked(it, choices) } }
+        .map { it.category }
 
 /**
  * The ticked entries to download with the missing models they require, by category and within one the smallest

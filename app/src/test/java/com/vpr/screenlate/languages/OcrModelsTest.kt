@@ -1,9 +1,12 @@
 package com.vpr.screenlate.languages
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import java.io.File
+import java.util.Locale
 import org.junit.Test
 
 class OcrModelsTest {
@@ -65,9 +68,30 @@ class OcrModelsTest {
         val withoutRecommended = mainModelCandidates(categories, mapOf("ru-rec" to false, "ru-best" to true), required)
         assertThat(mainModel(withoutRecommended, MainModelPick("eslav"), mlKitReads = false)).isEqualTo("tesseract-best-rus")
 
-        // Where ML Kit reads the language, no main model leaves it ML Kit's.
+        // Where ML Kit reads the language, no main model leaves it ML Kit's; a model the user ticked becomes main,
+        // one ticked because it is installed does not.
         assertThat(mainModel(all, MainModelPick(null), mlKitReads = true)).isNull()
         assertThat(mainModel(withoutRecommended, pick = null, mlKitReads = true)).isNull()
+        assertThat(mainModel(withoutRecommended, pick = null, mlKitReads = true, ticked = setOf("ru-best"))).isEqualTo("tesseract-best-rus")
+        assertThat(mainModel(all, pick = null, mlKitReads = true, ticked = setOf("ru-fast", "ru-rec"))).isEqualTo("eslav")
+    }
+
+    @Test
+    fun `beside ml kit no model is ticked by default and nothing is missing`() {
+        val recognizer = model("de-rec", "de", "latin")
+        val catalog = Catalog(listOf(recognizer), mapOf("de" to setOf(CatalogCategory.OCR_MODEL)))
+        val builtIn = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList(), mlKitReads = true)
+            .single { it.category == CatalogCategory.OCR_MODEL }
+        assertThat(builtIn.builtIn).isTrue()
+        assertThat(builtIn.fixed).isFalse()
+        assertThat(builtIn.ticked(builtIn.items.single(), emptyMap())).isFalse()
+        assertThat(missingChoices(listOf(builtIn), emptyMap())).isEmpty()
+        assertThat(setupDownloads(listOf(builtIn), emptyMap())).isEmpty()
+        assertThat(setupDownloads(listOf(builtIn), mapOf("de-rec" to true)).map { it.id }).containsExactly("de-rec")
+
+        val without = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList())
+            .single { it.category == CatalogCategory.OCR_MODEL }
+        assertThat(without.ticked(without.items.single(), emptyMap())).isTrue()
     }
 
     @Test
@@ -79,5 +103,22 @@ class OcrModelsTest {
         assertThat(models.mandatory).isFalse()
         assertThat(models.items.map { it.entry.id to it.installed }).containsExactly("ru-det" to true, "ru-rec" to false)
         assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("ru-rec")
+    }
+
+    @Test
+    fun `models left by turned-off languages are listed under each language that has them`() {
+        val installed = listOf(
+            InstalledOcrModel("det", "5", "paddle", File("det")),
+            InstalledOcrModel("eslav", "5", "paddle", File("eslav")),
+            InstalledOcrModel("arabic", "5", "paddle", File("arabic")),
+        )
+        val left = leftoverModels(listOf("ja"), entries, installed, Locale.ENGLISH)
+        assertThat(left.keys).containsExactly("ru", "uk", "ar")
+        assertThat(left.getValue("ru").map { it.id }).containsExactly("det", "eslav").inOrder()
+        assertThat(left.getValue("ar").map { it.id }).containsExactly("det", "arabic").inOrder()
+        // Russian keeps the detector and its recognizer, which Ukrainian lists too.
+        assertThat(leftoverModels(listOf("ru"), entries, installed, Locale.ENGLISH).mapValues { (_, models) -> models.map { it.id } })
+            .containsExactly("ar", listOf("arabic"))
+        assertThat(leftoverModels(listOf("ja"), entries, emptyList(), Locale.ENGLISH)).isEmpty()
     }
 }
