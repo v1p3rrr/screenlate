@@ -109,6 +109,11 @@
     <string name="dictionaries_task_queued">В очереди: %1$s</string>
     <string name="dictionaries_task_downloading">Загрузка: %1$s</string>
     <string name="dictionaries_task_retrying">Повторная загрузка (%2$d из %3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">В очереди (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">В очереди (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Отменить все</string>
+    <string name="dictionaries_tasks_show">Показать список</string>
+    <string name="dictionaries_tasks_hide">Скрыть список</string>
     <string name="dictionaries_download_stopped">%1$s: загрузка остановлена — %2$s</string>
     <string name="dictionaries_connection_lost">соединение прервалось</string>
     <string name="dictionaries_task_importing">Импорт: %1$s</string>

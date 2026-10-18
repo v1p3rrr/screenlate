@@ -306,6 +306,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Article and pronoun tables | Left as is: a form listed as a form of the other forms of its table shows them (Greek της, Russian он) (owner, 2026-10-18, question 50) |
 | Belarusian flag | The official flag from circle-flags (owner, 2026-10-18, question 51) |
 | Compound part order | For a part of a German compound, entries whose headword is the part capitalized (nouns) come first: Lampe before the verb lampen; ordinary lookups keep the usual order (owner, 2026-10-18, question 29) |
+| Download queue | Two tasks run at a time on two chains, their import steps one at a time (owner: "two at once, imports one by one"); a download that breaks off (no data for 20 s) goes to the end of the queue for each of its three retries (owner); a download of the same catalog entry or URL is queued once, and a stopped one still listed is continued instead (a plain fix) (2026-10-19, request 67) |
+| Waiting tasks card | Two or more tasks waiting for their turn share one card ("Waiting (N): …") with "Show the list", a Cancel for each, and "Cancel all" for the waiting ones; the running tasks and a download waiting for its retry keep their own cards. A stopped download gets no Wi-Fi hint, and Jiten no copy on our hosting for now (owner, 2026-10-19, request 67) |
 
 ## Open items (postponed by the owner)
 
@@ -328,23 +330,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   sources remove them; served from our hosting once it exists.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
-- Download queue (request 67), after the current plan:
-  - Jiten (`jiten-global`, resolved through its index `api.jiten.moe/api/frequency-list/index`) fails on the phone;
-    the cause is unknown. The failed card's error and the log (`Task … failed`, `HTTP …`, `broke off`) tell whether
-    the index request, the download or the import fails; check the same entry on the emulator first.
-  - Why the cards multiply: every import is one WorkManager chain (`enqueueUniqueWork`, `APPEND_OR_REPLACE`), so
-    each task behind the running one is "Waiting". A download that stalls holds the head: 60 s read timeout, then
-    `Result.retry()` with a 30 s exponential backoff up to `MAX_RETRIES` = 3, minutes in all. WorkManager's own
-    retries keep the task id and add no card. New cards come from the entry points that queue a download without
-    looking for an unfinished task of the same catalog entry: the task card's Retry (`resume` dismisses the failed
-    task and queues a new one), Home's "Download again", the language setup (`LanguageSwitch.turnOn`) and Update
-    after "Check for updates". Only the catalog card (`catalogItems`, by name) and the OCR model rows (by entry)
-    check. Every tap while the head is stuck adds one more waiting task.
-  - To build: `DictionaryImports.enqueue` returns the unfinished task of the same catalog entry (or URL) instead of
-    queueing another; a stalled download fails or retries without holding up the downloads behind it (to decide:
-    downloads of other hosts may pass it, or downloads run apart from the one-at-a-time import); tasks that only
-    wait share one card ("Waiting: Jiten, PaddleOCR v6, Wiktionary (en-ru)", with their count). Questions when it is
-    built: whether the shared card cancels each task or all of them, and whether it opens a list.
+- Download queue (request 67): built on 2026-10-19, rows "Download queue" and "Waiting tasks card". Jiten fails on
+  the phone on mobile data: its host (Hetzner) gives no range support, so every try starts over, and the mobile
+  network freezes the connection (`ai/notes/audio-sources.md`). The cards multiplied because the entry points queued a
+  download without looking for an unfinished task of the same entry while the stalled one held the single chain.
 
 ## Questions for the owner
 
@@ -1307,3 +1296,5 @@ Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build o
   the engine choice is offered is postponed (Open items).
 - 2026-10-18: group 4a questions 41-54 answered: rows "Serbo-Croatian" to "Belarusian flag" added, "Bubble letters"
   extended; Stage E has the group 4a work list.
+- 2026-10-19: request 67 answered and built: rows "Download queue" and "Waiting tasks card"; the backlog item now
+  records the cause.

@@ -107,6 +107,11 @@
     <string name="dictionaries_task_queued">En attente : %1$s</string>
     <string name="dictionaries_task_downloading">Téléchargement de %1$s</string>
     <string name="dictionaries_task_retrying">Nouvelle tentative de téléchargement (%2$d sur %3$d) : %1$s</string>
+    <string name="dictionaries_tasks_waiting">En attente (%1$d) : %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">En attente (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Tout annuler</string>
+    <string name="dictionaries_tasks_show">Afficher la liste</string>
+    <string name="dictionaries_tasks_hide">Masquer la liste</string>
     <string name="dictionaries_download_stopped">%1$s : téléchargement interrompu — %2$s</string>
     <string name="dictionaries_connection_lost">connexion interrompue</string>
     <string name="dictionaries_task_importing">Import de %1$s</string>

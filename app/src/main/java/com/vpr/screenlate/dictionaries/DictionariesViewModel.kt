@@ -80,6 +80,36 @@ internal fun catalogItems(
     }
 }
 
+/** A task's card, or the card the tasks that wait for their turn share. */
+internal sealed interface TaskItem {
+    val key: Any
+
+    data class One(val task: ImportTask) : TaskItem {
+        override val key: Any get() = task.id
+    }
+
+    data class Waiting(val tasks: List<ImportTask>) : TaskItem {
+        override val key: Any get() = "waiting"
+    }
+}
+
+/**
+ * The cards of [tasks], in their order: two or more that wait for their turn share one card in the place of the
+ * first. A download waiting for its retry keeps its own card, which tells so.
+ */
+internal fun taskItems(tasks: List<ImportTask>): List<TaskItem> {
+    val waiting = tasks.filter { it.state == ImportTask.State.QUEUED && it.retries == 0 }
+    if (waiting.size < 2) return tasks.map(TaskItem::One)
+    val ids = waiting.mapTo(hashSetOf()) { it.id }
+    return tasks.mapNotNull { task ->
+        when {
+            task.id == waiting.first().id -> TaskItem.Waiting(waiting)
+            task.id in ids -> null
+            else -> TaskItem.One(task)
+        }
+    }
+}
+
 /**
  * Catalog entries of one kind and language pair. [targetLanguage] is set for term dictionaries only; frequency,
  * pitch and kanji dictionaries are grouped by source language alone.
@@ -289,18 +319,22 @@ class DictionariesViewModel @Inject constructor(
     }
 
     fun download(entry: CatalogEntry) {
-        imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
+        viewModelScope.launch {
+            imports.download(entry.downloadUrl, entry.title, indexUrl = entry.indexUrl.takeIf { entry.resolveLatest }, entry = entry)
+        }
     }
 
     /** Replaces [copy], an old build of [entry], with the current build in its place. */
     fun replace(entry: CatalogEntry, copy: DictionaryEntity) {
-        imports.download(
-            entry.downloadUrl,
-            copy.title,
-            indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
-            replaces = copy.id,
-            entry = entry,
-        )
+        viewModelScope.launch {
+            imports.download(
+                entry.downloadUrl,
+                copy.title,
+                indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
+                replaces = copy.id,
+                entry = entry,
+            )
+        }
     }
 
     fun setEnabled(dictionary: DictionaryEntity, enabled: Boolean) {
@@ -340,8 +374,10 @@ class DictionariesViewModel @Inject constructor(
     }
 
     fun update(items: List<DictionaryUpdate>, models: List<ModelUpdate> = emptyList()) {
-        items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
-        models.forEach { imports.downloadModel(it.entry) }
+        viewModelScope.launch {
+            items.forEach { imports.download(it.downloadUrl, it.dictionary.title, replaces = it.dictionary.id) }
+            models.forEach { imports.downloadModel(it.entry) }
+        }
         updateCheck.value = updateCheck.value.without(items, models)
     }
 
@@ -385,6 +421,11 @@ class DictionariesViewModel @Inject constructor(
     /** Cancels one queued or running import; the others go on. */
     fun cancel(task: ImportTask) {
         viewModelScope.launch { imports.cancel(task.id) }
+    }
+
+    /** Cancels the [tasks] of the waiting card; the others go on. */
+    fun cancelAll(tasks: List<ImportTask>) {
+        viewModelScope.launch { tasks.forEach { imports.cancel(it.id) } }
     }
 }
 

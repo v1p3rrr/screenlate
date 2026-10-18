@@ -274,13 +274,15 @@ class HomeViewModel @Inject constructor(
 
     fun downloadAgain(missing: MissingDictionary) {
         val entry = missing.catalogEntry ?: return
-        imports.download(
-            entry.downloadUrl,
-            entry.title,
-            indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
-            replaces = missing.dictionary.id,
-            entry = entry,
-        )
+        viewModelScope.launch {
+            imports.download(
+                entry.downloadUrl,
+                entry.title,
+                indexUrl = entry.indexUrl.takeIf { entry.resolveLatest },
+                replaces = missing.dictionary.id,
+                entry = entry,
+            )
+        }
         downloading += missing.dictionary.id
         resolved(missing)
     }
@@ -308,7 +310,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun downloadAgain(model: DamagedModel) {
-        imports.downloadModel(model.catalogEntry ?: return)
+        val entry = model.catalogEntry ?: return
+        viewModelScope.launch { imports.downloadModel(entry) }
     }
 
     fun remove(model: DamagedModel) {

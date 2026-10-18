@@ -103,6 +103,11 @@
     <string name="dictionaries_task_queued">待機中：%1$s</string>
     <string name="dictionaries_task_downloading">%1$s をダウンロード中</string>
     <string name="dictionaries_task_retrying">ダウンロードを再試行中（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_tasks_waiting">待機中（%1$d）：%2$s</string>
+    <string name="dictionaries_tasks_waiting_count">待機中（%1$d）</string>
+    <string name="dictionaries_tasks_cancel_all">すべてキャンセル</string>
+    <string name="dictionaries_tasks_show">一覧を表示</string>
+    <string name="dictionaries_tasks_hide">一覧を隠す</string>
     <string name="dictionaries_download_stopped">%1$s：ダウンロードが停止しました（%2$s）</string>
     <string name="dictionaries_connection_lost">接続が切れました</string>
     <string name="dictionaries_task_importing">%1$s をインポート中</string>

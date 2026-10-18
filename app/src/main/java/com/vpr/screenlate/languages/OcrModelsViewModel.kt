@@ -53,7 +53,7 @@ class OcrModelsViewModel @Inject constructor(
 
     /** Queues the model's download with the models it requires; it reads once chosen. */
     fun download(option: OcrModelOption) {
-        option.downloads.forEach(imports::downloadModel)
+        viewModelScope.launch { option.downloads.forEach { imports.downloadModel(it) } }
     }
 
     /** Deletes the model, and the models it requires that no other installed model does; an active one stays. */

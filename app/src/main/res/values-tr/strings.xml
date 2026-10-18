@@ -105,6 +105,11 @@
     <string name="dictionaries_task_queued">Bekliyor: %1$s</string>
     <string name="dictionaries_task_downloading">İndiriliyor: %1$s</string>
     <string name="dictionaries_task_retrying">İndirme yeniden deneniyor (%2$d/%3$d): %1$s</string>
+    <string name="dictionaries_tasks_waiting">Sırada (%1$d): %2$s</string>
+    <string name="dictionaries_tasks_waiting_count">Sırada (%1$d)</string>
+    <string name="dictionaries_tasks_cancel_all">Tümünü iptal et</string>
+    <string name="dictionaries_tasks_show">Listeyi göster</string>
+    <string name="dictionaries_tasks_hide">Listeyi gizle</string>
     <string name="dictionaries_download_stopped">%1$s: indirme durdu — %2$s</string>
     <string name="dictionaries_connection_lost">bağlantı kesildi</string>
     <string name="dictionaries_task_importing">İçe aktarılıyor: %1$s</string>

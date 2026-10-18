@@ -74,6 +74,7 @@ import com.vpr.screenlate.ui.components.IconButtonProgress
 import com.vpr.screenlate.ui.components.TooltipIconButton
 import com.vpr.screenlate.ui.theme.AccentDefaults
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 
@@ -172,21 +173,31 @@ fun DictionariesScreen(
             importError?.let { error ->
                 ErrorCard(stringResource(R.string.dictionaries_import_failed, error), viewModel::dismissImportError)
             }
-            state.tasks.forEach { task ->
-                TaskCard(
-                    task,
-                    name = state.taskNames[task.id] ?: task.name,
-                    onDismiss = { viewModel.dismiss(task) },
-                    onCancel = { viewModel.cancel(task) },
-                    onResume = {
-                        askNotifications()
-                        viewModel.resume(task)
-                    },
-                    onRetryBundled = {
-                        askNotifications()
-                        viewModel.retryBundledInstall(task)
-                    },
-                )
+            taskItems(state.tasks).forEach { item ->
+                key(item.key) {
+                    when (item) {
+                        is TaskItem.Waiting -> WaitingTasksCard(
+                            item.tasks,
+                            state.taskNames,
+                            onCancel = viewModel::cancel,
+                            onCancelAll = { viewModel.cancelAll(item.tasks) },
+                        )
+                        is TaskItem.One -> TaskCard(
+                            item.task,
+                            name = state.taskNames[item.task.id] ?: item.task.name,
+                            onDismiss = { viewModel.dismiss(item.task) },
+                            onCancel = { viewModel.cancel(item.task) },
+                            onResume = {
+                                askNotifications()
+                                viewModel.resume(item.task)
+                            },
+                            onRetryBundled = {
+                                askNotifications()
+                                viewModel.retryBundledInstall(item.task)
+                            },
+                        )
+                    }
+                }
             }
             ImportNotificationsCard()
 
@@ -649,6 +660,45 @@ private fun TaskCard(
             }
             TextButton(onClick = onCancel, modifier = Modifier.align(Alignment.End)) {
                 Text(stringResource(R.string.action_cancel))
+            }
+        }
+    }
+}
+
+/** The tasks that wait for their turn, named in one line; the list shows each with its own Cancel. */
+@Composable
+private fun WaitingTasksCard(
+    tasks: List<ImportTask>,
+    names: Map<UUID, String>,
+    onCancel: (ImportTask) -> Unit,
+    onCancelAll: () -> Unit,
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val bundled = stringResource(R.string.dictionaries_bundled)
+    val shown = tasks.map { (names[it.id] ?: it.name).ifEmpty { bundled } }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 4.dp)) {
+            val title = if (expanded) {
+                stringResource(R.string.dictionaries_tasks_waiting_count, tasks.size)
+            } else {
+                stringResource(R.string.dictionaries_tasks_waiting, tasks.size, shown.joinToString(", "))
+            }
+            Text(title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(end = 8.dp))
+            if (expanded) {
+                tasks.forEachIndexed { index, task ->
+                    key(task.id) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(shown[index], style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                            TextButton(onClick = { onCancel(task) }) { Text(stringResource(R.string.action_cancel)) }
+                        }
+                    }
+                }
+            }
+            FlowRow(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { expanded = !expanded }) {
+                    Text(stringResource(if (expanded) R.string.dictionaries_tasks_hide else R.string.dictionaries_tasks_show))
+                }
+                TextButton(onClick = onCancelAll) { Text(stringResource(R.string.dictionaries_tasks_cancel_all)) }
             }
         }
     }
