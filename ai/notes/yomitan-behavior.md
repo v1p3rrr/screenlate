@@ -77,6 +77,9 @@ Definitions inside an entry: frequency order → dictionary order → score → 
 
 - Tags: `br ruby rt rp table thead tbody tfoot tr td th span div ol ul li details summary img a`.
 - `data: {k: v}` becomes `data-sc-k="v"`; dictionary `styles.css` targets these attributes (Kolobok relies on it).
+  Yomitan sets `dataset["sc" + K]` with the key's first letter in capitals, so only a key starting with a Latin letter
+  gets the dash and kebab case (`fooBar` → `data-sc-foo-bar`); others follow `data-sc` as written (`data-sc日本`,
+  `data-sc한국`, `data-scКлюч`, `data-sc1x`), and a key the dataset refuses (`foo-bar`) is skipped.
 - `style` objects use camelCase CSS property names from a whitelist. `render.js` applies the same list (`STYLE_PROPERTIES`); other properties are dropped.
 - Internal links look like `?query=…&wildcards=off&primary_reading=…`.
 - Images: `path`, `width`/`height` + `sizeUnits` (`px`/`em`), `appearance: monochrome` (render as a mask in text color), `collapsible`/`collapsed`, `background`, `border`, `borderRadius`. Jitendex ships AVIF illustrations and HanaMinA SVG glyphs.

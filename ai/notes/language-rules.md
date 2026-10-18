@@ -32,19 +32,25 @@ as it is; see below), **ask** (a behavior choice for the owner).
 
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
-| spaced (all but ja, zh) | The lookup starts at the start of the aimed word; `'’-` between letters and combining marks stay inside it | `lang/SpacedLanguageSupport.kt:72` | GermanTest (hyphen), FrenchTest, Isolation (apostrophe words in every spaced language) | Isolation (ja, zh start at the aim; Korean has its own rule) | ok |
-| fr, it, pt | An elided word (l', qu', d') starts a new word after the apostrophe | `lang/SpacedLanguageSupport.kt:156`, `FrenchSupport.kt:24`, `ItalianSupport.kt:25`, `PortugueseSupport.kt:24` | FrenchTest, ItalianTest, PortugueseTest | Isolation (the others keep "l'eau", "d'água" whole) | ok |
-| fr, it | A letter between two apostrophes (rock’n’roll) is no elision | `lang/SpacedLanguageSupport.kt:156` | FrenchTest `a letter between two apostrophes…` | Isolation (rock’n’roll whole everywhere) | fixed |
-| vi | The lookup also starts one and two syllables before the aimed one | `lang/SpacedLanguageSupport.kt:93`, `VietnameseSupport.kt:26`; `api/EarlierStarts.kt:13`; `overlay/OverlayController.kt:1322` | VietnameseTest, EarlierStartsTest | VietnameseTest `other languages start only…`, Isolation | ok |
+| spaced (all but ja, zh) | The lookup starts at the start of the aimed word; `'’-` between letters and combining marks stay inside it | `lang/SpacedLanguageSupport.kt:89` | GermanTest (hyphen), FrenchTest, Isolation (apostrophe words in every spaced language) | Isolation (ja, zh start at the aim; Korean has its own rule) | ok |
+| fr, it, pt | An elided word (l', qu', d') starts a new word after the apostrophe | `lang/SpacedLanguageSupport.kt:227`, `FrenchSupport.kt:24`, `ItalianSupport.kt:25`, `PortugueseSupport.kt:24` | FrenchTest, ItalianTest, PortugueseTest | Isolation (the others keep "l'eau", "d'água" whole) | ok |
+| fr, it | A letter between two apostrophes (rock’n’roll) is no elision | `lang/SpacedLanguageSupport.kt:227` | FrenchTest `a letter between two apostrophes…` | Isolation (rock’n’roll whole everywhere) | fixed |
+| vi | The lookup also starts one and two syllables before the aimed one | `lang/SpacedLanguageSupport.kt:119`, `VietnameseSupport.kt:26`; `api/EarlierStarts.kt:13`; `overlay/LookupStarts.kt:22` | VietnameseTest, EarlierStartsTest, LookupStartsTest | VietnameseTest `other languages start only…`, Isolation, LookupStartsTest (English starts at the word) | ok |
+| spaced | A word hyphenated at a line end ("impor- tant") is tried joined (lowercase second half) and with its hyphen kept ("well-known"); the text as written keeps its results; aimed at the second half, the lookup starts at the first half as well | `lang/SpacedLanguageSupport.kt:148`, `:197`; `api/LookupVariants.kt:12`; `overlay/LookupStarts.kt:22` | Isolation `a word hyphenated at a line end…`, LookupVariantsTest, LookupStartsTest | Isolation (dashes between words, hyphens inside a word; zh, ko, ja none), LookupStartsTest (Japanese) | decided |
+| spaced, ko, ja, zh | The aimed word's start and the earlier starts look back at most 32 characters (code points) | `overlay/LookupStarts.kt:9` | LookupStartsTest | LookupStartsTest (Japanese starts at the aim) | ok |
 | ko | The lookup starts at the start of the spaced word (보면서 → 보다); Latin letters belong to the word, digits do not | `lang/KoreanSupport.kt:85` | KoreanTest, I: KoreanLookupTest | Isolation (ja, zh start at the aim) | ok |
 | ja, zh, ko | Latin words inside CJK text start at their first letter; a lone Latin word counts only as a whole | `lang/CjkText.kt:32`, `:54` | JapaneseTest, ChineseTest, KoreanTest | Isolation (`Ｔシャツ and wa|lk`) | ok |
-| de, pl, tr, lv | A period after a short number (or a longer one before a lowercase word) is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:135` | GermanTest, PolishTest, TurkishTest, LatvianTest, SentenceTest | Isolation (others end at "3." and "1918."; "1918. Dann" ends everywhere) | ok |
-| each spaced language | Its abbreviations ("Mr.", "z. B.", "т. е.", "TP.") do not end a sentence | `lang/SpacedLanguageSupport.kt:56`, each `<Lang>Support.abbreviations` | each `<Lang>Test`, SentenceTest | Isolation (each list holds only its own language's sentences) | ok |
-| tr | Abbreviations in capitals match under Turkish case rules (ŞTİ.), and under the root rules for capitals read without their dots | `lang/SpacedLanguageSupport.kt:42`, `TurkishSupport.kt:31` | TurkishTest `abbreviations in capitals…` | the other languages keep `Locale.ROOT` | fixed |
-| spaced, ko | A period followed at once by a letter or digit (3.14, p.m, example.com) does not end a sentence | `lang/SpacedLanguageSupport.kt:56`, `KoreanSupport.kt:67` | EnglishTest, KoreanTest, SentenceTest | Isolation (holds in every spaced language) | ok |
+| de, pl, tr, lv | A period after a short number (or a longer one before a lowercase word) is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:206` | GermanTest, PolishTest, TurkishTest, LatvianTest, SentenceTest | Isolation (others end at "3." and "1918."; "1918. Dann" ends everywhere) | ok |
+| each spaced language | Its abbreviations ("Mr.", "z.B.", "т. е.", "TP.") do not end a sentence | `lang/SpacedLanguageSupport.kt:70`, each `<Lang>Support.abbreviations` | each `<Lang>Test`, SentenceTest | Isolation (each list holds only its own language's sentences) | ok |
+| de | Single letters abbreviate only beside another one written apart (z. B., d. h., o. Ä., u. v. m.), so "Plan B." ends a sentence; "S." stands alone | `lang/SpacedLanguageSupport.kt:38`, `:177`, `GermanSupport.kt:59` | GermanTest `a single letter abbreviates only beside another one` | Isolation ("Plan B. Dann" ends everywhere; only German has paired letters) | fixed |
+| pl | "ok." (około) holds the sentence only before a number or a lowercase word ("Jest ok. Idziemy." ends) | `lang/SpacedLanguageSupport.kt:44`, `PolishSupport.kt:34` | PolishTest `ok holds the sentence only…` | other languages have no such words | fixed |
+| tr | Abbreviations in capitals match under Turkish case rules (ŞTİ.), and under the root rules for capitals read without their dots | `lang/SpacedLanguageSupport.kt:56`, `TurkishSupport.kt:31` | TurkishTest `abbreviations in capitals…` | the other languages keep `Locale.ROOT` | fixed |
+| spaced, ko | A period followed at once by a letter or digit (3.14, p.m, example.com) does not end a sentence | `lang/SpacedLanguageSupport.kt:70`, `KoreanSupport.kt:67` | EnglishTest, KoreanTest, SentenceTest | Isolation (holds in every spaced language) | ok |
 | ja, zh | A full-width period between digits (３．１４) is a decimal point | `lang/CjkText.kt:44` | JapaneseTest, ChineseTest | JapaneseTest ("第３．次に", "終わり．次" still end) | fixed |
-| each language | Quote pairs: a terminator inside quotes opened before the word does not end the sentence | each `quotePairs`; `Sentence.kt:18` | SentenceTest (ja, en, es, fr, de, it, pt, pl, tr, lv, vi, ru), RussianTest, GermanTest | SentenceTest (balanced quotes unchanged) | ok |
-| each language | A quote or bracket the paragraph does not close (“ja” in German text, a list's "1)") no longer takes in the whole paragraph: the nearest sentence end counts | `Sentence.kt:18`, `:71` | SentenceTest `aQuoteTheParagraphDoesNotClose…` (de, en, pl) | the same test (a closed quote still holds its terminators; Japanese 「」) | fixed |
+| each language | Quote pairs: a terminator inside quotes opened before the word does not end the sentence | each `quotePairs`; `Sentence.kt:22` | SentenceTest (ja, zh, ko, en, es, fr, de, it, pt, pl, tr, lv, vi, ru), RussianTest, GermanTest | SentenceTest (balanced quotes unchanged) | ok |
+| each language | A quote or bracket the paragraph does not close (“ja” in German text, a list's "1)") no longer takes in the whole paragraph: the nearest sentence end counts | `Sentence.kt:22`, `:77` | SentenceTest `aQuoteTheParagraphDoesNotClose…` (de, en, pl) | the same test (a closed quote still holds its terminators; Japanese 「」) | fixed |
+| each language | ” and ’ right after a terminator end that sentence even where the language pairs its quotes otherwise (English quotes in German text) | `Sentence.kt:12` | SentenceTest `aClosingQuoteOfAnotherLanguageStaysWithItsSentence` | the same test (’Tis at the paragraph start; Polish „Idę.” as before) | fixed |
+| zh, ko | Chinese ends at 。！？ but not at a Latin period; Korean at spaced periods but not at 3.14 | `ChineseSupport.kt:17`, `KoreanSupport.kt:21`, `Sentence.kt:22` | SentenceTest `chineseSentence…`, `koreanSentence…` | the same tests (quoted speech holds its terminator) | ok |
 | ja | Respellings: 1人 → 一人, 々, ッ, dots and spaces, radical look-alikes | `lang/JapaneseSupport.kt:126`; `api/LookupVariants.kt:12` | JapaneseTest, LookupVariantsTest, I: LookupPipelineTest | Isolation (no other language respells) | ok |
 | ja | Romaji to kana when the setting is on (Mozc table) | `lang/JapaneseSupport.kt:77`, `MozcRomaji.kt` | JapaneseTest, LookupVariantsTest | Isolation (`fromLatin`, `convertsLatin` only ja) | ok |
 | ja, zh, ko | Character entries of the kanji/hanzi/hanja after the first (single kanji below the results) | `JapaneseSupport.kt:139`, `ChineseSupport.kt:98`, `KoreanSupport.kt:103` | JapaneseTest, ChineseTest, KoreanTest | spaced languages return none (`SpacedLanguageSupport.kt:118`) | ok |
@@ -85,6 +91,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | zh | Pinyin split into syllables, one over each character, with tone colors | `popup/reading-zh.js:5`, `popup/popup.js:383`, `:735` | reading.mjs, popup.mjs | reading.mjs (ja, vi, ko get no syllables) | ok |
 | ja | Definition copy rules of Japanese dictionaries | `popup/definition-ja.js:5` | definition.mjs | definition.mjs `a language without rules of its own…` | ok |
 | ja (default) | Furigana by Yomitan's Japanese distribution for every language without reading rules | `popup/note.js:86`, `render/render.js:570` | note.mjs, anki.test.mjs | — | limit |
+| all | `{phonetic-transcriptions}`: a list of every transcription the dictionaries give, escaped; an English word has empty pitch markers, a Japanese pitch dictionary no transcriptions | `popup/note.js:358` | note.mjs `phonetic transcriptions list each one…` | the same test | ok |
+| tr (page language) | The frequency chip's initial is uppercased by the page language's case rules (ingilizce → İ in Turkish) | `popup/popup.js:910`, `:916` | popup.mjs `the first letter of a long dictionary name…` | the same test (en and no language give I) | fixed |
+| all (render) | Structured content `data` keys become attributes as Yomitan names them: data-sc- and kebab case for Latin keys, data-sc and the key for others (data-sc日本, data-sc한국, data-scКлюч); a key the dataset refuses is skipped | `render/render.js:156` | anki.test.mjs `structured content data attributes…` | the same test | fixed |
 | ja, zh, ru | Furigana markers (`{furigana}`, `{sentence-furigana}`, their plain forms) offered in the + menu only where readings go over or into words; a field that has them is still filled | `LanguageSupport.kt:67`, `FieldTemplate.kt:78` | FieldTemplateTest `offersFuriganaMarkersOnlyWhereReadingsGoOverOrIntoWords` | the same test (en, ko and the others get none; `guessField` gives none for English) | decided |
 | zh, ru | A second line under each furigana marker in the + menu says what it gives (pinyin, stress marks) | `languages/LanguageStrings.kt:71`, `anki/AnkiSettingsScreen.kt:467` | FuriganaMarkerHintsTest | the same test (ja and the others get none) | decided |
 | ru | `{furigana}`, `{furigana-plain}`: the stressed word itself (ко́шка), no ruby; another reading (ёж for еж) goes over the word | `popup/note.js:86`, `:99` | note.mjs `russian furigana put the stress into the word` | note.mjs (zh, ja keep their ruby) | decided |
@@ -97,7 +106,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
-| each OCR script | ML Kit model by script; Cyrillic has none | `ocr/mlkit/MlKitOcrEngine.kt:53` | — | — | limit (no test of the mapping) |
+| each OCR script | ML Kit model by script, Japanese and Chinese apart; Cyrillic has none | `ocr/mlkit/MlKitOcrEngine.kt:53` | MlKitOcrEngineTest | MlKitOcrEngineTest (only Cyrillic-script languages are not read) | ok |
 | each language | OCR words are joined by the language's separator (empty for ja, zh) | `ocr/mlkit/MlKitOcrEngine.kt:87`, `ocr/tesseract/TesseractOcrEngine.kt:187` | TesseractPageTest, TextLayoutTest | — | ok |
 | spaced, ko | App text puts the language's separator between lines a space or line break wraps | `overlay/capture/AccessibilityText.kt:139`, `overlay/OverlayController.kt:1092` | AccessibilityTextTest `a line wrapped at a space…` | AccessibilityTextTest (Japanese joins without one; a wrap inside a word joins) | fixed |
 | all | Vertical lines are detected by geometry; right-to-left by script | `ocr/TextOrientation.kt:9`, `:13` | ReadingOrderTest, TextLayoutTest | — | limit |
@@ -116,26 +125,38 @@ as it is; see below), **ask** (a behavior choice for the owner).
 6. App text joined the last word of a line and the first of the next without a space when the wrap or line break had
    no character location ("Helloworld"), so in spaced languages the aimed word or phrase across a wrap was wrong.
 7. `{sentence-furigana}` stepped one letter after unknown text and found words inside words (happy in unhappy).
+8. German "Plan B." and "Vitamin A." did not end a sentence (single letters were listed as abbreviations alone), and
+   "o. Ä." did end one at "Ä." (ä was missing).
+9. Polish "Jest ok. Idziemy." did not end at "ok.".
+10. English quotes in German text: 'Er sagte “Komm.” Dann…' gave the next sentence a leading ” and left it out of
+    the first.
+11. Structured content data keys starting with Hangul, Cyrillic, a digit or another non-Latin character got
+    `data-sc-`, unlike Yomitan, so a dictionary's CSS written for Yomitan missed them; keys Yomitan skips (foo-bar)
+    were kept.
+12. The frequency chip's initial ignored Turkish case rules (I for ingilizce instead of İ).
 
 ## Limits left as they are
 
-- German one-letter abbreviations ("z. B.") keep "Plan B." from ending a sentence; Polish "ok" likewise.
-- `Compounds.word` stops at a combining mark in NFD text; German text is NFC in practice.
+- `Compounds.word` stops at a combining mark in NFD text; OCR and app text give NFC, so a German compound typed in
+  NFD is not split. Not worth the mapping it would need.
 - Furigana of languages without reading rules goes through Yomitan's Japanese distribution, as Yomitan does;
   `{part-of-speech}` uses Japanese names, as Yomitan does.
-- `∥` example lines are dropped from definition copies in every language (`popup/definition.js:320`).
-- `render/render.js:151`: data keys starting with Hangul or Cyrillic get `data-sc-`, Yomitan gives none (CJK keys
-  are kept verbatim).
-- reading-ru rules are for Russian only; Ukrainian and Belarusian (group 4a) would need their own.
-- No joining of words hyphenated at a line end ("impor- tant") in any language; a feature, not a rule gap.
+- `∥` example lines are dropped from definition copies in every language (`popup/definition.js:320`): by design,
+  ∥ separates an example from its translation wherever it appears.
+- reading-ru rules are for Russian only; Ukrainian and Belarusian (group 4a) need their own when they are added.
 - Paddle lines are paragraphs of their own; Lens takes separators from its response.
-- The frequency chip's initial is uppercased without the Turkish locale (cosmetic).
-- English quotes in German text: a closing ” right after a terminator starts the next sentence ('” Dann ging er.'),
-  as German pairs „ with “.
-- No tests for `MlKitOcrEngine.model()`, the overlay's `wordStart`/`earliestStart` (WORD_LOOKBACK 32), or a
-  `{phonetic-transcriptions}` note; Korean and Chinese have no SentenceTest case.
+- The frequency chip's initial follows the page language, not the dictionary title's (unknown): an English title in
+  a Turkish profile gets İ.
+- A word hyphenated at a line end is joined only when the second half is in lowercase; a real hyphen with a capital
+  after it (Max- Planck) is tried with the hyphen only. A hyphen at a line end in Japanese, Chinese or Korean text
+  is left alone.
+- `{phonetic-transcriptions}` lists the transcriptions without their tags; Yomitan puts the tags in italics before
+  each one. Not language-specific; left for the Anki template review.
 
 ## Owner decisions in this review
+
+Words hyphenated at a line end (owner: "try to join, since it may not be one word"): the lookup tries the joined
+word and the word with its hyphen, and keeps the text as written when neither is found.
 
 Furigana markers outside Japanese (to be recorded in the plan's decision table):
 
@@ -151,4 +172,6 @@ Furigana markers outside Japanese (to be recorded in the plan's decision table):
 
 `test-model.md`: LK28 (stress and tone marks typed apart), LK29 (rock’n’roll), OCR26 (app text across a wrap),
 ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with English quotes), ANK13 (sentence furigana in a
-language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text).
+language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text), LK30
+(a word hyphenated at a line end), ANK12 extended (Plan B., ok., English quotes in German), POP24 (the Turkish chip
+initial).
