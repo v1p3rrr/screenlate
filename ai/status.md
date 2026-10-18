@@ -1,6 +1,6 @@
 # Status
 
-## Work in progress (2026-10-18): OCR missing parts, group 4a questions, the checks session
+## Work in progress (2026-10-19): OCR missing parts, the download queue, group 4a questions, the checks session
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
 
@@ -10,8 +10,12 @@ The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, 
 - the region order is shown only while used (question 28), and a compound part's nouns come first (question 29);
 - docs and test-model cases OCR22-OCR25, AUD12, LK27 (all N).
 
-Requests 67 (download queue: Jiten stalls, retries add attempts; in the backlog) and 68 (scan times, default engines;
-OCR plan questions 36-40, answered) are in the languages plan.
+Request 67 (download queue) is built on `languages/ocr-engines` (`4c1df97`, pushed): two tasks at a time with the
+imports one by one, a download queued once, a stalled one retried at the end of the queue (20 s without data), one
+card for waiting tasks; decision rows "Download queue" and "Waiting tasks card". Jiten's host gives no range support
+and the owner's mobile network freezes it (`notes/audio-sources.md`). Its emulator cases DIC3, DIC20-DIC22 (N) were
+sent to the checks session. Request 68 (scan times, default engines; OCR plan questions 36-40, answered) is in the
+languages plan.
 
 The emulator checks of groups 1-3 and the OCR cases run in their own session ("Emulator checks of groups 1-3 and OCR
 engines", branch `languages/checks` in `.worktrees/lang`), together with the in-app scan timing run per engine.
