@@ -329,7 +329,7 @@
     <string name="audio_sources">소스</string>
     <string name="audio_reset_sources">기본 소스로 복원</string>
     <string name="audio_regions">지역</string>
-    <string name="audio_regions_hint">목록에서 위에 있는 지역의 Wiktionary 녹음을 먼저 재생합니다.</string>
+    <string name="audio_regions_hint">목록에서 위에 있는 지역의 Wiktionary 녹음과 발음 기호가 먼저 나옵니다.</string>
     <string name="audio_region_us">미국</string>
     <string name="audio_region_uk">영국</string>
     <string name="audio_region_latin_america">라틴아메리카</string>

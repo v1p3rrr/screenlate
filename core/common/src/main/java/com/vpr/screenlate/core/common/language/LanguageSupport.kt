@@ -41,6 +41,12 @@ interface LanguageSupport {
      */
     val compoundLinks: List<String>? get() = null
 
+    /**
+     * Whether nouns are written with a capital letter (German): a part of a compound, looked up in lowercase, shows its
+     * capitalized entries first (lampe: the noun Lampe before the verb lampen).
+     */
+    val capitalizedNouns: Boolean get() = false
+
     /** Characters that may end a sentence, for `{sentence}` and cloze markers; [endsSentence] has the final say. */
     val sentenceTerminators: Set<Char>
 

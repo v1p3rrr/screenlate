@@ -339,7 +339,7 @@
     <string name="audio_sources">Источники</string>
     <string name="audio_reset_sources">Вернуть источники по умолчанию</string>
     <string name="audio_regions">Регионы</string>
-    <string name="audio_regions_hint">Записи Wiktionary из регионов выше в списке звучат первыми.</string>
+    <string name="audio_regions_hint">Записи Wiktionary и транскрипции из регионов выше в списке идут первыми.</string>
     <string name="audio_region_us">США</string>
     <string name="audio_region_uk">Великобритания</string>
     <string name="audio_region_latin_america">Латинская Америка</string>

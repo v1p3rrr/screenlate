@@ -329,7 +329,7 @@
     <string name="audio_sources">Nguồn</string>
     <string name="audio_reset_sources">Khôi phục nguồn mặc định</string>
     <string name="audio_regions">Khu vực</string>
-    <string name="audio_regions_hint">Bản ghi Wiktionary của các khu vực ở cao hơn trong danh sách được phát trước.</string>
+    <string name="audio_regions_hint">Bản ghi Wiktionary và phiên âm của các khu vực ở cao hơn trong danh sách được ưu tiên.</string>
     <string name="audio_region_us">Hoa Kỳ</string>
     <string name="audio_region_uk">Vương quốc Anh</string>
     <string name="audio_region_latin_america">Mỹ Latinh</string>

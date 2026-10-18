@@ -332,7 +332,7 @@
     <string name="audio_sources">Kaynaklar</string>
     <string name="audio_reset_sources">Varsayılan kaynakları geri yükle</string>
     <string name="audio_regions">Bölgeler</string>
-    <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları önce çalınır.</string>
+    <string name="audio_regions_hint">Listede daha yukarıdaki bölgelerin Wiktionary kayıtları ve fonetik yazımları önce gelir.</string>
     <string name="audio_region_us">ABD</string>
     <string name="audio_region_uk">Birleşik Krallık</string>
     <string name="audio_region_latin_america">Latin Amerika</string>

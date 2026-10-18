@@ -329,7 +329,7 @@
     <string name="audio_sources">来源</string>
     <string name="audio_reset_sources">恢复默认来源</string>
     <string name="audio_regions">地区</string>
-    <string name="audio_regions_hint">列表中靠前地区的 Wiktionary 录音优先播放。</string>
+    <string name="audio_regions_hint">列表中靠前地区的 Wiktionary 录音和音标优先。</string>
     <string name="audio_region_us">美国</string>
     <string name="audio_region_uk">英国</string>
     <string name="audio_region_latin_america">拉丁美洲</string>

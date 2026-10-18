@@ -332,7 +332,7 @@
     <string name="audio_sources">Quellen</string>
     <string name="audio_reset_sources">Standardquellen wiederherstellen</string>
     <string name="audio_regions">Regionen</string>
-    <string name="audio_regions_hint">Wiktionary-Aufnahmen aus Regionen weiter oben in der Liste werden zuerst abgespielt.</string>
+    <string name="audio_regions_hint">Wiktionary-Aufnahmen und Lautschriften aus Regionen weiter oben in der Liste kommen zuerst.</string>
     <string name="audio_region_us">USA</string>
     <string name="audio_region_uk">Vereinigtes Königreich</string>
     <string name="audio_region_latin_america">Lateinamerika</string>

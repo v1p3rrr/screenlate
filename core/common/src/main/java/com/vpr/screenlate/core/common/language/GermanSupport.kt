@@ -19,6 +19,7 @@ object GermanSupport : SpacedLanguageSupport() {
 
     /** Haustürschlüssel → Haus, Tür, Schlüssel; Arbeitszimmer → Arbeit, Zimmer. */
     override val compoundLinks = listOf("s", "es", "n")
+    override val capitalizedNouns = true
 
     /** „…“ and ‚…‘ close with the characters English opens with; »…« point inwards. */
     override val quotePairs = mapOf('„' to '“', '‚' to '‘', '»' to '«', '(' to ')', '[' to ']')

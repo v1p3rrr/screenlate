@@ -66,4 +66,11 @@ class CompoundsTest {
         assertThat(parts?.flatten()?.map { it.matched }).containsExactly("Haustür", "Haustür")
         assertThat(compoundParts("Haustür ist", listOf(result("Haustür", "Haustür")), links, lookup)).isNull()
     }
+
+    @Test
+    fun `capitalized headwords come first and keep their order`() {
+        val results = listOf(result("lampe", "lampen"), result("lampe", "Lampe"), result("lampe", "lampe"), result("lampe", "Lampen"))
+        assertThat(results.capitalizedFirst().map { it.term.expression }).containsExactly("Lampe", "Lampen", "lampen", "lampe")
+            .inOrder()
+    }
 }

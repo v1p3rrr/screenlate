@@ -71,8 +71,10 @@ class DictionaryLookup @Inject constructor(
             val engineOptions = options.copy(maxResults = engineLimit(limit, prepared.termDictionaries.size))
             val script = settings.script?.takeIf { settings.fixedScript }
 
-            suspend fun shown(found: List<LookupResult>, start: LookupStart): List<LookupResult> = YomitanSorter
+            // [part]: the entries of a compound's part.
+            suspend fun shown(found: List<LookupResult>, start: LookupStart, part: Boolean = false): List<LookupResult> = YomitanSorter
                 .sort(found, options, prepared.termDictionaries)
+                .let { if (part && support.capitalizedNouns) it.capitalizedFirst() else it }
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
                 .filterNot { it.onlyThrough(support.ignoredFormTags) }
                 .mergeSameWords(prepared.termDictionaries, support)
@@ -96,7 +98,7 @@ class DictionaryLookup @Inject constructor(
                         )
                         engine.lookup(part, partOptions).map { it.asShown(support) }
                     }
-                }?.flatMap { shown(it, start) } ?: whole
+                }?.flatMap { shown(it, start, part = true) } ?: whole
             }
 
             val results = if (aimedAt == 0) {

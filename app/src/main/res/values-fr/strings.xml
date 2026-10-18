@@ -335,7 +335,7 @@
     <string name="audio_sources">Sources</string>
     <string name="audio_reset_sources">Rétablir les sources par défaut</string>
     <string name="audio_regions">Régions</string>
-    <string name="audio_regions_hint">Les enregistrements Wiktionary des régions placées plus haut dans la liste passent en premier.</string>
+    <string name="audio_regions_hint">Les enregistrements Wiktionary et les transcriptions des régions placées plus haut dans la liste passent en premier.</string>
     <string name="audio_region_us">États-Unis</string>
     <string name="audio_region_uk">Royaume-Uni</string>
     <string name="audio_region_latin_america">Amérique latine</string>
