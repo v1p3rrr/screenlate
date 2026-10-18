@@ -68,3 +68,16 @@ test('another russian reading goes over the word', () => {
     assert.deepEqual(russian('еж', 'ёж'), ['еж[ёж]']);
     assert.equal(HeadwordReading.syllables('ru', 'ко́шка'), null);
 });
+
+test('russian and chinese rules stay with their languages', () => {
+    const stressed = 'ко\u0301шка';
+    // Other languages written in Cyrillic, and Latin ones, take no rules of their own.
+    for (const lang of ['uk', 'be', 'bg', 'en', 'de']) {
+        assert.equal(HeadwordReading.segments(lang, 'кошка', stressed), null, lang);
+    }
+    assert.deepEqual(Array.from(HeadwordReading.segments('ru-RU', 'кошка', stressed), ([text]) => text), [stressed]);
+    // Pinyin-like readings of Vietnamese and Korean words are not split into syllables.
+    for (const lang of ['vi', 'ko', 'ja']) {
+        assert.equal(HeadwordReading.syllables(lang, 'túshūguǎn'), null, lang);
+    }
+});

@@ -119,4 +119,21 @@ class SentenceTest {
         assertThat(extract(paragraph, "сказал", Language.RUSSIAN).text)
             .isEqualTo("В 1999 г. он сказал: «Я приду. Обязательно».")
     }
+
+    @Test
+    fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
+        // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
+        val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."
+        assertThat(extract(german, "ging", Language.GERMAN).text).isEqualTo("Er sagte “ja” und ging.")
+        // A list item's bracket has no opening one.
+        val list = "Steps: 1) open it. 2) close it. Done."
+        assertThat(extract(list, "close", Language.ENGLISH).text).isEqualTo("2) close it.")
+        // Polish pairs „ with ”; a German-style „Idę.“ leaves an opening quote open after the word.
+        val polish = "Powiedział „Idę.“ Potem wyszedł. Koniec."
+        assertThat(extract(polish, "Powiedział", Language.POLISH).text).isEqualTo("Powiedział „Idę.“")
+        // A quote that closes still holds its terminators.
+        assertThat(extract("1) Er sagte: „Komm. Jetzt.“ und ging. Fertig.", "sagte", Language.GERMAN).text)
+            .isEqualTo("1) Er sagte: „Komm. Jetzt.“ und ging.")
+        assertThat(extract("「行く。」と彼は言った。", "言っ").text).isEqualTo("「行く。」と彼は言った。")
+    }
 }

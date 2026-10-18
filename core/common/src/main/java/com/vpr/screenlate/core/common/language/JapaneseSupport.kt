@@ -14,6 +14,8 @@ object JapaneseSupport : LanguageSupport {
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
     override val quotePairs = mapOf('「' to '」', '『' to '』', '（' to '）', '(' to ')')
 
+    override fun endsSentence(text: String, index: Int): Boolean = CjkText.endsSentence(text, index, sentenceTerminators)
+
     override val ankiMarkers = listOf(
         "cloze-body-kana",
         "pitch-accents",

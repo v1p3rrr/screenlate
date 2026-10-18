@@ -64,6 +64,9 @@ class ChineseSupportTest {
         assertThat(ChineseSupport.endsSentence("好。", 1)).isTrue()
         assertThat(ChineseSupport.endsSentence("吗？", 1)).isTrue()
         assertThat(ChineseSupport.endsSentence("好，", 1)).isFalse()
+        // A full-width period between digits is a decimal point.
+        assertThat(ChineseSupport.endsSentence("约３．５米", 2)).isFalse()
+        assertThat(ChineseSupport.endsSentence("好．再", 1)).isTrue()
         assertThat(ChineseSupport.quotePairs['「']).isEqualTo('」')
         assertThat(ChineseSupport.quotePairs['《']).isEqualTo('》')
     }

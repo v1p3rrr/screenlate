@@ -25,8 +25,12 @@ import kotlin.math.abs
  */
 class AccessibilityText(private val service: AccessibilityService) {
 
-    /** The visible text of application windows, or null when none of it has character positions. */
-    fun read(screenWidth: Int, screenHeight: Int): OcrPage? {
+    /**
+     * The visible text of application windows, or null when none of it has character positions.
+     *
+     * @param separator the language's word separator, put between lines that a space or line break wraps.
+     */
+    fun read(screenWidth: Int, screenHeight: Int, separator: String): OcrPage? {
         val started = SystemClock.elapsedRealtime()
         val paragraphs = mutableListOf<OcrParagraph>()
         val screen = Rect(0, 0, screenWidth, screenHeight)
@@ -34,7 +38,7 @@ class AccessibilityText(private val service: AccessibilityService) {
         for (window in service.windows) {
             if (window.type != AccessibilityWindowInfo.TYPE_APPLICATION) continue
             val root = window.root ?: continue
-            collect(root, screen, paragraphs, depth = 0)
+            collect(root, screen, separator, paragraphs, depth = 0)
         }
         Log.d(
             TAG,
@@ -56,20 +60,26 @@ class AccessibilityText(private val service: AccessibilityService) {
 
     private var stats = Stats()
 
-    private fun collect(node: AccessibilityNodeInfo, screen: Rect, out: MutableList<OcrParagraph>, depth: Int) {
+    private fun collect(
+        node: AccessibilityNodeInfo,
+        screen: Rect,
+        separator: String,
+        out: MutableList<OcrParagraph>,
+        depth: Int,
+    ) {
         if (depth > MAX_DEPTH || !node.isVisibleToUser) return
         val text = node.text?.toString()
         if (!text.isNullOrBlank()) {
             stats.withText++
-            paragraph(node, text, screen)?.let(out::add)
+            paragraph(node, text, screen, separator)?.let(out::add)
         }
         for (index in 0 until node.childCount) {
             val child = node.getChild(index) ?: continue
-            collect(child, screen, out, depth + 1)
+            collect(child, screen, separator, out, depth + 1)
         }
     }
 
-    private fun paragraph(node: AccessibilityNodeInfo, text: String, screen: Rect): OcrParagraph? {
+    private fun paragraph(node: AccessibilityNodeInfo, text: String, screen: Rect, separator: String): OcrParagraph? {
         if (AccessibilityNodeInfo.EXTRA_DATA_TEXT_CHARACTER_LOCATION_KEY !in node.availableExtraData) {
             stats.withoutPositions++
             return null
@@ -86,53 +96,31 @@ class AccessibilityText(private val service: AccessibilityService) {
             RectF::class.java,
         ) ?: return null
 
-        // One entry per code point; characters without a visible location end the current line.
-        val lines = mutableListOf<MutableList<Pair<String, Box>>>()
-        var current = mutableListOf<Pair<String, Box>>()
+        // One entry per code point, with its box where it is visible on screen.
+        val characters = ArrayList<Pair<String, Box?>>(length)
         var index = 0
         while (index < length) {
             val next = text.offsetByCodePoints(index, 1).coerceAtMost(text.length)
-            val character = text.substring(index, next)
-            val rect = locations.getOrNull(index) as? RectF
+            val rect = (locations.getOrNull(index) as? RectF)
+                ?.takeIf { !it.isEmpty && screen.contains(it.centerX().toInt(), it.centerY().toInt()) }
+            characters += text.substring(index, next) to rect?.let { Box(it.left, it.top, it.right, it.bottom) }
             index = next
-            if (rect == null || rect.isEmpty || !screen.contains(rect.centerX().toInt(), rect.centerY().toInt())) {
-                if (current.isNotEmpty()) lines += current.also { current = mutableListOf() }
-                continue
-            }
-            val box = Box(rect.left, rect.top, rect.right, rect.bottom)
-            val previous = current.lastOrNull()?.second
-            // A character that starts left of the previous one or below it begins a new line.
-            if (previous != null && (box.left < previous.left - previous.width / 2 || box.top >= previous.bottom)) {
-                lines += current.also { current = mutableListOf() }
-            }
-            current += character to box
         }
-        if (current.isNotEmpty()) lines += current
+        val lines = appTextLines(characters, separator)
         if (lines.isEmpty()) return null
         if (node.isEditable) {
             val bounds = Rect().also(node::getBoundsInScreen)
             val field = Box(bounds.left.toFloat(), bounds.top.toFloat(), bounds.right.toFloat(), bounds.bottom.toFloat())
-            if (startsAtCorner(field, lines.first().first().second)) {
+            if (startsAtCorner(field, lines.first().characterBoxes!!.first())) {
                 stats.fieldsAtCorner++
                 return null
             }
         }
-        if (sharesBoxes(lines.flatten().map { it.second })) {
+        if (sharesBoxes(lines.flatMap { it.characterBoxes!! })) {
             stats.sharedBoxes++
             return null
         }
-        return OcrParagraph(
-            lines.map { characters ->
-                val box = Box.unionOf(characters.map { it.second })!!
-                val word = OcrWord(
-                    text = characters.joinToString("") { it.first },
-                    separator = "",
-                    box = box,
-                    characterBoxes = characters.map { it.second },
-                )
-                OcrLine(listOf(word), box, vertical = false)
-            },
-        )
+        return OcrParagraph(lines.map { OcrLine(listOf(it), it.box, vertical = false) })
     }
 
     private companion object {
@@ -140,6 +128,46 @@ class AccessibilityText(private val service: AccessibilityService) {
         const val MAX_DEPTH = 64
         const val MAX_CHARACTERS = 2000
     }
+}
+
+/**
+ * A node's text as lines, one word each, from its code points and their boxes on screen (null where a character has no
+ * visible location). A character without a location ends the line, and so does one that starts left of the previous
+ * one or below it. Where a space or line break without a location ends it, the line takes [separator], so the words
+ * on both sides of a wrap stay apart in a language written with spaces.
+ */
+internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: String): List<OcrWord> {
+    val lines = mutableListOf<OcrWord>()
+    var current = mutableListOf<Pair<String, Box>>()
+    fun endLine(spaced: Boolean) {
+        if (current.isEmpty()) return
+        lines += OcrWord(
+            text = current.joinToString("") { it.first },
+            separator = if (spaced) separator else "",
+            box = Box.unionOf(current.map { it.second })!!,
+            characterBoxes = current.map { it.second },
+        )
+        current = mutableListOf()
+    }
+    // Characters without a location since the last visible one, and whether a space or line break was among them.
+    var broken = false
+    var spaced = false
+    for ((character, box) in characters) {
+        if (box == null) {
+            broken = true
+            if (character.isBlank()) spaced = true
+            continue
+        }
+        val previous = current.lastOrNull()?.second
+        if (broken || previous != null && (box.left < previous.left - previous.width / 2 || box.top >= previous.bottom)) {
+            endLine(spaced)
+        }
+        broken = false
+        spaced = false
+        current += character to box
+    }
+    endLine(spaced)
+    return lines
 }
 
 /**

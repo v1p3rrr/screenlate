@@ -1,5 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
+import java.util.Locale
+
 /**
  * Rules shared by languages written with spaces between words. Case, diacritics and inflections are left to Yomitan's
  * text processors and transforms in the engine; the text side only finds where a word starts. Subclasses give the
@@ -34,6 +36,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val elisions: Set<String> = emptySet()
 
     /**
+     * Case rules of the language's letters, for matching [abbreviations] and [elisions] written in capitals. The root
+     * rules are tried as well, for capitals read without their dots (ŞTI for ŞTİ).
+     */
+    protected open val caseLocale: Locale = Locale.ROOT
+
+    /**
      * Whether a period after a number makes it an ordinal, so it does not end the sentence: a number of one or two
      * digits (German "am 3. Oktober"), or a longer one followed by a lowercase word (Latvian "1918. gada"). A year at
      * the end of a sentence still ends it.
@@ -51,7 +59,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (character != '.') return true
         if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
         if (ordinalPeriod && isOrdinal(text, index)) return false
-        return wordBefore(text, index) !in abbreviations
+        return !wordBefore(text, index).lowercaseIn(abbreviations)
     }
 
     /** A word starts with a letter or digit; phrases and inflections are tried by the engine. */
@@ -111,7 +119,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     override fun characterEntry(text: String): String? = null
 
-    /** The word before the period at [index], lowercase, with its inner periods: "p.m" in "at 5 p.m.". */
+    /** The word before the period at [index] with its inner periods: "p.m" in "at 5 p.m.". */
     private fun wordBefore(text: String, index: Int): String {
         var start = index
         while (start > 0) {
@@ -120,7 +128,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             if (!inWord) break
             start--
         }
-        return text.substring(start, index).lowercase()
+        return text.substring(start, index)
     }
 
     /** Whether the period at [index] closes an ordinal number (see [ordinalPeriod]). */
@@ -141,13 +149,20 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         return index - start
     }
 
-    /** Whether the word ending at [end], just before an apostrophe, is one of [elisions]. */
+    /**
+     * Whether the word ending at [end], just before an apostrophe, is one of [elisions]. A word after another
+     * apostrophe is part of a longer one (the n of rock'n'roll), not an elided word.
+     */
     private fun isElision(text: String, end: Int): Boolean {
         if (elisions.isEmpty()) return false
         var start = end
         while (start > 0 && text[start - 1].isLetter()) start--
-        return text.substring(start, end).lowercase() in elisions
+        if (start > 0 && text[start - 1] in APOSTROPHES) return false
+        return text.substring(start, end).lowercaseIn(elisions)
     }
+
+    private fun String.lowercaseIn(words: Set<String>): Boolean =
+        lowercase(caseLocale) in words || lowercase(Locale.ROOT) in words
 
     private fun isWordCharacter(codePoint: Int): Boolean =
         Character.isLetterOrDigit(codePoint) || Character.getType(codePoint) == Character.NON_SPACING_MARK.toInt()

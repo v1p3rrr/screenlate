@@ -18,6 +18,8 @@ object ChineseSupport : LanguageSupport {
         '“' to '”', '‘' to '’', '「' to '」', '『' to '』', '《' to '》', '〈' to '〉', '（' to '）', '(' to ')', '【' to '】',
     )
 
+    override fun endsSentence(text: String, index: Int): Boolean = CjkText.endsSentence(text, index, sentenceTerminators)
+
     /** The word in Simplified and in Traditional characters, for note types with a field of each. */
     override val scriptMarkers = mapOf(
         "expression-simplified" to ChineseScripts.SIMPLIFIED,

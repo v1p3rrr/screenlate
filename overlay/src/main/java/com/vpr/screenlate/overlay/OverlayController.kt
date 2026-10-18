@@ -1090,8 +1090,9 @@ class OverlayController(
 
     private suspend fun readAppText(): OcrPage? {
         val screen = screenBounds()
+        val separator = language.support.wordSeparator
         return withContext(Dispatchers.Default) {
-            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
+            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt(), separator) }
                 .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
                 .getOrNull()
         }
