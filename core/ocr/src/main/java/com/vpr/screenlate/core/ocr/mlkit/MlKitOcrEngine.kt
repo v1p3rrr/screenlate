@@ -50,7 +50,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     override fun reads(language: Language): Boolean = model(language.support.ocrScript) != null
 
     /** The bundled model that reads [script]. */
-    private fun model(script: OcrScript): OcrScript? = when (script) {
+    internal fun model(script: OcrScript): OcrScript? = when (script) {
         OcrScript.LATIN -> OcrScript.LATIN
         OcrScript.JAPANESE -> OcrScript.JAPANESE
         OcrScript.CHINESE -> OcrScript.CHINESE

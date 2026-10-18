@@ -81,13 +81,40 @@ class LanguageRulesIsolationTest {
     @Test
     fun `abbreviations of one language do not hold the sentences of another`() {
         fun holds(support: LanguageSupport, text: String) = !support.endsSentence(text, text.indexOf('.'))
-        // German "z. B." and "d. h." end in single letters, which German lists alone.
-        assertThat(spaced.where { holds(it, "Plan B. Dann") }).containsExactly(Language.GERMAN)
+        // German "z. B." holds its single letters only beside each other; "Plan B." ends everywhere.
+        assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
+        assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
+        assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language }).containsExactly(Language.GERMAN)
         assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH)
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
+    }
+
+    @Test
+    fun `a word hyphenated at a line end is tried joined in every spaced language`() {
+        fun variants(support: LanguageSupport, text: String) =
+            support.spellingVariants(MappedText.identity(text)).map { it.text }
+        for (support in spaced) {
+            assertThat(variants(support, "impor- tant thing")).containsExactly("important thing", "impor-tant thing")
+            // A capital after the break keeps the hyphen only (Max-Planck).
+            assertThat(variants(support, "Max- Planck")).containsExactly("Max-Planck")
+            // A dash between words and a hyphen inside a word are no breaks.
+            assertThat(variants(support, "this - that")).isEmpty()
+            assertThat(variants(support, "well-known")).isEmpty()
+            // Aimed at the second half, the lookup starts at the first one as well.
+            assertThat(support.earlierStartOffset("the impor- ")).isEqualTo("impor- ".length)
+            assertThat(support.earlierStartOffset("the mother-in- ")).isEqualTo("mother-in- ".length)
+            assertThat(support.earlierStartOffset("this - ")).isEqualTo(0)
+        }
+        // The joined word maps back over both halves and the break.
+        val joined = EnglishSupport.spellingVariants(MappedText.identity("impor- tant"))[0]
+        assertThat(joined.sourceLength("important".length)).isEqualTo("impor- tant".length)
+        // Scripts without spaces have no line-end hyphens to join.
+        assertThat(ChineseSupport.spellingVariants(MappedText.identity("impor- tant"))).isEmpty()
+        assertThat(KoreanSupport.spellingVariants(MappedText.identity("impor- tant"))).isEmpty()
+        assertThat(all.filterNot { it in spaced }.where { it.earlierStartOffset("impor- ") > 0 }).isEmpty()
     }
 
     @Test

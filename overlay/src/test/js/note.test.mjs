@@ -189,3 +189,26 @@ test('russian sentence furigana stress only words written in their dictionary fo
     assert.equal(sentence.html, '<span class="term">Ко\u0301шка</span><span class="term"> </span><span class="term">спит</span>'
         + '<span class="term">, </span><span class="term">кошки</span><span class="term"> </span><span class="term">то\u0301же</span>');
 });
+
+test('phonetic transcriptions list each one the dictionaries give, and pitch markers stay empty', () => {
+    const tomato = {
+        lang: 'en',
+        term: {
+            expression: 'tomato',
+            reading: '',
+            glossaries: [],
+            pitches: [
+                { dictionary: 'IPA', pitches: [], transcriptions: ['/təˈmɑːtəʊ/', '/təˈmeɪtoʊ/'] },
+                { dictionary: 'Other', pitches: [], transcriptions: ['/a<b/'] },
+            ],
+        },
+    };
+    const { values } = NoteData.build(tomato, {});
+    const item = ipa => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${ipa}</li>`;
+    assert.equal(values['phonetic-transcriptions'], `<ul>${item('/təˈmɑːtəʊ/')}${item('/təˈmeɪtoʊ/')}${item('/a&lt;b/')}</ul>`);
+    // An English word has no pitch accents.
+    assert.equal(values['pitch-accents'], '');
+    assert.equal(values['pitch-accent-positions'], '');
+    // A Japanese pitch dictionary has no transcriptions.
+    assert.equal(NoteData.build(result, context).values['phonetic-transcriptions'], '');
+});

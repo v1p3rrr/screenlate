@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.EnglishSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.dictionary.api.model.LookupResult
@@ -43,5 +44,14 @@ class LookupVariantsTest {
         assertThat(mapped.matched).isEqualTo("taberu")
         assertThat(mapped.preprocessorSteps).isEqualTo(1)
         assertThat(result.inSource("たべる", MappedText.identity("たべる"))).isSameInstanceAs(result)
+    }
+
+    @Test
+    fun `a word hyphenated at a line end is looked up joined and with its hyphen after the text as written`() {
+        val text = "impor- tant thing"
+        val found = LookupVariants.of(text, LookupSettings(), EnglishSupport)
+        assertThat(found.map { it.text }).containsExactly(text, "important thing", "impor-tant thing").inOrder()
+        val result = LookupResult(matched = "important", deinflected = "important", term = TermEntry("important", ""))
+        assertThat(result.inSource(text, found[1]).matched).isEqualTo("impor- tant")
     }
 }

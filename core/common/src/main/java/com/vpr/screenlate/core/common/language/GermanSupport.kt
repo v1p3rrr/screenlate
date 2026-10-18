@@ -47,13 +47,16 @@ object GermanSupport : SpacedLanguageSupport() {
         "Austrian" to "at",
     )
 
-    /** "z. B." and "d. h." written with spaces end in single letters, which are listed as well. */
+    /** Spaced forms such as "z. B." come from [pairedLetters]; "S." (Seite) stands alone. */
     override val abbreviations = setOf(
-        "z.b", "z", "b", "d.h", "d", "h", "u.a", "u", "a", "v.a", "v", "o.ä", "u.ä", "s", "o", "usw", "bzw", "ca",
+        "z.b", "d.h", "u.a", "v.a", "o.ä", "u.ä", "s", "usw", "bzw", "ca",
         "vgl", "evtl", "ggf", "inkl", "exkl", "bspw", "sog", "etc", "nr", "str", "dr", "prof", "hr", "fr", "jh", "jhd",
         "mio", "mrd", "tel", "abs", "bd", "kap", "abb", "s.o", "s.u", "z.t", "zt", "u.v.m", "st", "jan", "feb", "febr",
         "apr", "aug", "sept", "okt", "nov", "dez",
     )
+
+    /** The letters of z. B., d. h., u. a., v. a., o. Ä., u. Ä., s. o., z. T., u. v. m., o. g., a. D. */
+    override val pairedLetters = setOf("a", "b", "d", "g", "h", "m", "o", "t", "u", "v", "z", "ä")
 
     /** "am 3. Oktober", "im 19. Jahrhundert". */
     override val ordinalPeriod = true

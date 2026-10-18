@@ -89,6 +89,8 @@ In Russian, the headword shows the word with its stress marked as the dictionary
 
 In Vietnamese, where each syllable is written apart, the lookup starts at the aimed syllable and at the one and two syllables before it: a word that reaches the aimed syllable is shown first (học sinh when aiming at sinh), then the syllable's own entries, and the word is highlighted from its first syllable. The old and new places of the tone mark (hoà, hòa) find the same word. Entries that only name "cái" as the classifier of a noun are left out, so "cái" shows its own entries.
 
+In languages written with spaces, a word broken with a hyphen at a line end ("impor-" at the end of one line, "tant" at the start of the next) is looked up joined and with its hyphen kept, since the hyphen may belong to the word; before a capital letter only the hyphenated form is tried (Max-Planck). Aiming at either half finds the whole word, shown before the entries of a half that is a word of its own.
+
 Lookups also try a common respelling of the text: digits as kanji numerals (1人 → 一人), a character before 々 written twice, ッ as っ, and middle dots, commas, hyphens, periods and spaces removed. The text as it is on the screen is always looked up too.
 
 ## Popup
