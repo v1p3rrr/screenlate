@@ -3,6 +3,7 @@ package com.vpr.screenlate
 import android.app.Application
 import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
+import android.os.SystemClock
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
@@ -10,6 +11,7 @@ import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
@@ -58,16 +60,23 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     }
 
     override fun onCreate() {
+        // TEMPORARY DIAGNOSTICS BUILD: before Hilt builds anything (ai/notes/diagnostics.md).
+        Diag.start(this)
+        val created = SystemClock.elapsedRealtime()
         super.onCreate()
+        Diag.event("app_create", "inject_ms" to SystemClock.elapsedRealtime() - created)
         MainScope().launch(Dispatchers.IO) {
             // Before anything writes the settings: an install without any is a first run.
-            runCatching {
-                languageProfiles.settleFirstRun(onUpgrade = TranslationSettingsRepository::keepButtonOn) {
-                    dictionaryRepository.getAll().isNotEmpty()
+            val (_, settleMs) = Diag.timed {
+                runCatching {
+                    languageProfiles.settleFirstRun(onUpgrade = TranslationSettingsRepository::keepButtonOn) {
+                        dictionaryRepository.getAll().isNotEmpty()
+                    }
                 }
+                    .onFailure { Log.w(TAG, "Settling the first run failed: ${it.javaClass.simpleName}") }
             }
-                .onFailure { Log.w(TAG, "Settling the first run failed: ${it.javaClass.simpleName}") }
-            dictionaryImports.installBundled()
+            val (_, bundledMs) = Diag.timed { dictionaryImports.installBundled() }
+            Diag.event("app_init", "settle_ms" to settleMs, "bundled_ms" to bundledMs)
             launch {
                 // The user confirmed it; a reset the process died in is run once more, and reported when that dies too.
                 runCatching { dictionaryReset.resumeInterrupted() }
@@ -75,7 +84,10 @@ class ScreenlateApplication : Application(), Configuration.Provider {
             }
             launch {
                 // A failed check must not stop the app from starting; the home screen checks again.
-                runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
+                val (_, repairMs) = Diag.timed {
+                    runCatching { dictionaryRepair.repair() }.onFailure { Log.w(TAG, "Dictionary repair failed: ${it.javaClass.simpleName}") }
+                }
+                Diag.event("app_repair", "ms" to repairMs)
             }
         }
     }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Tanılama</string>
+    <string name="diag_hint">Bu geçici sürüm taramaların, tanımanın, açılır pencerenin, aramaların ve indirmelerin ne kadar sürdüğünü, bellek kullanımını ve cihaz durumunu kaydeder; tanınan metni ve aranan kelimeleri asla kaydetmez. Veriler günlüklere eklenir: “Günlükleri paylaş” ve “İndirilenlere kaydet” bir zip dosyası verir.</string>
+    <string name="diag_status">%1$s tarihinden beri toplanan: %2$s</string>
+    <string name="diag_clear">Toplanan verileri sil</string>
+    <string name="diag_clear_confirm">Toplanan tanılama verileri silinsin mi? Hâlâ gerekiyorsa önce günlükleri dışa aktarın.</string>
+</resources>

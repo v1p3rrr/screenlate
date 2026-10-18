@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Diagnóstico</string>
+    <string name="diag_hint">Esta versão temporária registra quanto tempo levam as digitalizações, o reconhecimento, o pop-up, as buscas e os downloads, além do uso de memória e do estado do dispositivo; nunca o texto reconhecido nem as palavras pesquisadas. Os dados são adicionados aos registros: “Compartilhar registros” e “Salvar em Downloads” geram um arquivo zip.</string>
+    <string name="diag_status">Coletado desde %1$s: %2$s</string>
+    <string name="diag_clear">Apagar os dados coletados</string>
+    <string name="diag_clear_confirm">Apagar os dados de diagnóstico coletados? Se ainda forem necessários, exporte os registros antes.</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">診斷</string>
+    <string name="diag_hint">此臨時版本會記錄掃描、辨識、彈出視窗、查詢和下載所用的時間，以及記憶體用量和裝置狀態；從不記錄辨識出的文字和查詢的詞語。資料會附加到日誌中：「分享日誌」和「儲存到下載」會產生一個 zip 檔案。</string>
+    <string name="diag_status">自 %1$s 起已收集：%2$s</string>
+    <string name="diag_clear">刪除已收集的資料</string>
+    <string name="diag_clear_confirm">要刪除已收集的診斷資料嗎？如果仍需要，請先匯出日誌。</string>
+</resources>

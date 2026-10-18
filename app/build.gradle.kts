@@ -57,7 +57,8 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = version.commit?.let { "-$it" }
-            manifestPlaceholders["appLabel"] = "Screenlate Dev"
+            // TEMPORARY DIAGNOSTICS BUILD: the label tells this build apart (ai/notes/diagnostics.md).
+            manifestPlaceholders["appLabel"] = "Screenlate Diag"
         }
         release {
             manifestPlaceholders["appLabel"] = "Screenlate"
@@ -111,3 +112,10 @@ dependencies {
 }
 
 disableAnkiDroidLintChecks()
+
+// TEMPORARY DIAGNOSTICS BUILD: diagnostics never go into a release (ai/notes/diagnostics.md).
+tasks.matching { it.name in setOf("assembleRelease", "bundleRelease", "packageRelease", "packageReleaseBundle") }.configureEach {
+    doFirst {
+        throw GradleException("This branch carries the temporary diagnostics build; release builds come from main (ai/notes/diagnostics.md).")
+    }
+}

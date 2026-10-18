@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">诊断</string>
+    <string name="diag_hint">此临时版本会记录扫描、识别、弹出窗口、查词和下载所用的时间，以及内存占用和设备状态；从不记录识别出的文本和查询的词语。数据会附加到日志中：“分享日志”和“保存到下载”会生成一个 zip 文件。</string>
+    <string name="diag_status">自 %1$s 起已收集：%2$s</string>
+    <string name="diag_clear">删除已收集的数据</string>
+    <string name="diag_clear_confirm">要删除已收集的诊断数据吗？如果仍需要，请先导出日志。</string>
+</resources>

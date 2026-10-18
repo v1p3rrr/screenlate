@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.Display
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
+import com.vpr.screenlate.diagnostics.Diag
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellationException
@@ -48,6 +49,8 @@ class ScreenCapturer(
         withoutOverlays: suspend (displayCapture: suspend () -> CapturedScreen) -> CapturedScreen,
     ): CapturedScreen {
         val started = SystemClock.elapsedRealtime()
+        diagRetries = 0
+        diagCopyMs = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             val window = findAppWindow(pointX, pointY)
             if (window != null) {
@@ -61,6 +64,7 @@ class ScreenCapturer(
                     throw e
                 } catch (e: Exception) {
                     Log.w(TAG, "Window capture failed, falling back to display capture", e)
+                    Diag.event("capture_fallback", "error" to e.javaClass.simpleName, "ms" to SystemClock.elapsedRealtime() - started) // TEMPORARY DIAGNOSTICS BUILD
                 }
             }
         }
@@ -69,7 +73,27 @@ class ScreenCapturer(
 
     private fun log(kind: String, shot: CapturedScreen, started: Long) {
         Log.d(TAG, "Captured the $kind, ${shot.bitmap.width}x${shot.bitmap.height}, in ${SystemClock.elapsedRealtime() - started} ms")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        val ms = SystemClock.elapsedRealtime() - started
+        Diag.event(
+            "capture",
+            "kind" to kind,
+            "w" to shot.bitmap.width,
+            "h" to shot.bitmap.height,
+            "ms" to ms,
+            "copy_ms" to diagCopyMs,
+            "retries" to diagRetries,
+            "scan" to Diag.currentScan().takeIf { it > 0 },
+        )
+        Diag.scanNote("capture", "$kind ${shot.bitmap.width}x${shot.bitmap.height} ${ms}ms copy=$diagCopyMs retries=$diagRetries")
     }
+
+    // TEMPORARY DIAGNOSTICS BUILD: what the last capture spent, for its event (ai/notes/diagnostics.md).
+    @Volatile
+    private var diagRetries = 0
+
+    @Volatile
+    private var diagCopyMs = 0L
 
     private fun findAppWindow(x: Int, y: Int): AccessibilityWindowInfo? {
         val appWindows = service.windows.filter { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
@@ -95,8 +119,10 @@ class ScreenCapturer(
             when (val result = takeOnce(request)) {
                 is Result.Success -> return result.bitmap
                 is Result.Error -> when {
-                    result.code == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT && attempt == 0 ->
+                    result.code == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT && attempt == 0 -> {
+                        diagRetries++ // TEMPORARY DIAGNOSTICS BUILD
                         delay(INTERVAL_MS)
+                    }
                     result.code == AccessibilityService.ERROR_TAKE_SCREENSHOT_SECURE_WINDOW ->
                         throw CaptureException.SecureWindow()
                     else -> throw CaptureException.Failed(result.code)
@@ -111,10 +137,14 @@ class ScreenCapturer(
             request(
                 object : TakeScreenshotCallback {
                     override fun onSuccess(screenshot: ScreenshotResult) {
+                        val copyStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
                         val buffer = screenshot.hardwareBuffer
-                        val bitmap = Bitmap.wrapHardwareBuffer(buffer, screenshot.colorSpace)
-                            ?.copy(Bitmap.Config.ARGB_8888, false)
+                        val bitmap = Diag.trace("capture_copy") {
+                            Bitmap.wrapHardwareBuffer(buffer, screenshot.colorSpace)
+                                ?.copy(Bitmap.Config.ARGB_8888, false)
+                        }
                         buffer.close()
+                        diagCopyMs = SystemClock.elapsedRealtime() - copyStarted // TEMPORARY DIAGNOSTICS BUILD
                         val result = if (bitmap != null) Result.Success(bitmap) else Result.Error(-1)
                         // A screenshot that nobody waits for any more is freed at once.
                         continuation.resume(result) { _, value, _ -> (value as? Result.Success)?.bitmap?.recycle() }

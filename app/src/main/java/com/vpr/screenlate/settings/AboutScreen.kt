@@ -162,6 +162,7 @@ fun AboutScreen(
                 }
                 if (saveFailed) Hint(stringResource(R.string.about_logs_save_failed))
             }
+            DiagnosticsCard() // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md)
             SectionCard(title = stringResource(R.string.home_tools_title)) {
                 OutlinedButton(onClick = onOpenOcrTest, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.ocr_test_title), textAlign = TextAlign.Center)

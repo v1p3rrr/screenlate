@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Diagnóstico</string>
+    <string name="diag_hint">Esta versión temporal registra cuánto tardan los escaneos, el reconocimiento, la ventana emergente, las búsquedas y las descargas, junto con el uso de memoria y el estado del dispositivo; nunca el texto reconocido ni las palabras buscadas. Los datos se añaden a los registros: «Compartir registros» y «Guardar en Descargas» dan un archivo zip.</string>
+    <string name="diag_status">Recopilado desde %1$s: %2$s</string>
+    <string name="diag_clear">Borrar los datos recopilados</string>
+    <string name="diag_clear_confirm">¿Borrar los datos de diagnóstico recopilados? Si aún se necesitan, exporta antes los registros.</string>
+</resources>

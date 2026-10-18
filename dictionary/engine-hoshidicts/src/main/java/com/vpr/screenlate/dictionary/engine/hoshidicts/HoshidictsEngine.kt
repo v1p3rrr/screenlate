@@ -1,9 +1,11 @@
 package com.vpr.screenlate.dictionary.engine.hoshidicts
 
 import android.content.Context
+import android.os.SystemClock
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.DictionaryMetadata
@@ -44,11 +46,14 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         ArchiveTitles.check(archive)
         outputDir.mkdirs()
         val raw = try {
-            HoshidictsNative.importDictionary(
-                archive.absolutePath.encodeToByteArray(),
-                outputDir.absolutePath.encodeToByteArray(),
-                false,
-            )
+            // TEMPORARY DIAGNOSTICS BUILD: native import time (ai/notes/diagnostics.md).
+            Diag.trace("hoshidicts_import") {
+                HoshidictsNative.importDictionary(
+                    archive.absolutePath.encodeToByteArray(),
+                    outputDir.absolutePath.encodeToByteArray(),
+                    false,
+                )
+            }
         } catch (e: RuntimeException) {
             throw DictionaryImportException(e.message ?: "Import failed", e)
         }
@@ -61,13 +66,19 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     }
 
     override suspend fun load(dictionaries: DictionarySet) = session { handle ->
-        HoshidictsNative.load(
-            handle,
-            dictionaries.terms.toPaths(),
-            dictionaries.frequencies.toPaths(),
-            dictionaries.pitches.toPaths(),
-            dictionaries.kanji.toPaths(),
-        )
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        val (_, ms) = Diag.timed {
+            Diag.trace("hoshidicts_load") {
+                HoshidictsNative.load(
+                    handle,
+                    dictionaries.terms.toPaths(),
+                    dictionaries.frequencies.toPaths(),
+                    dictionaries.pitches.toPaths(),
+                    dictionaries.kanji.toPaths(),
+                )
+            }
+        }
+        Diag.event("engine_load", "ms" to ms, "terms" to dictionaries.terms.size, *Diag.memoryNow())
     }
 
     override suspend fun lookup(text: String, options: LookupOptions): List<LookupResult> =
@@ -76,6 +87,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
     private suspend fun lookupNative(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
         val frequencyDictionary = options.frequencyDictionary
             ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val raw = HoshidictsNative.lookup(
             handle = handle,
             text = text.encodeToByteArray(),
@@ -85,13 +97,23 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             frequencyOrder = if (frequencyDictionary == null) ORDER_DISABLED else options.frequencyOrder.toNative(),
             primaryReading = options.primaryReading?.encodeToByteArray(),
         )
+        val native = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         json.decodeFromString<List<LookupResult>>(raw.decodeToString()).map { result ->
             if (result.trace.isEmpty()) {
                 result
             } else {
                 result.copy(trace = result.trace.map { JapaneseInflections.localize(context.resources, it) })
             }
-        }
+        }.also { diagLookup("native", started, native, raw.size, it.size) }
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md): engine time against decoding, without the text.
+    private fun diagLookup(kind: String, started: Long, native: Long, bytes: Int, results: Int) {
+        Diag.event(
+            "engine_lookup", "kind" to kind, "native_ms" to native - started,
+            "decode_ms" to SystemClock.elapsedRealtime() - native, "json_kb" to (bytes shr 10), "results" to results,
+            "scan" to Diag.currentScan().takeIf { it > 0 },
+        )
     }
 
     private suspend fun lookupThroughYomitan(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
@@ -99,7 +121,9 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         val code = language.code.encodeToByteArray()
         if (!HoshidictsNative.hasLanguage(handle, code)) {
             val script = context.assets.open("$SCRIPTS/${language.code}.js").use { it.readBytes() }
-            HoshidictsNative.loadLanguage(handle, code, script)
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            val (_, ms) = Diag.timed { Diag.trace("quickjs_load") { HoshidictsNative.loadLanguage(handle, code, script) } }
+            Diag.event("language_script_load", "language" to language.code, "ms" to ms, "script_kb" to (script.size shr 10), *Diag.memoryNow())
         }
         val frequencyDictionary = options.frequencyDictionary
             ?.takeIf { options.frequencyOrder != FrequencyOrder.DISABLED }
@@ -107,6 +131,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             SearchResolution.WORD -> "word"
             SearchResolution.LETTER -> "letter"
         }
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val raw = HoshidictsNative.lookupLanguage(
             handle = handle,
             language = code,
@@ -118,6 +143,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             frequencyDescending = options.frequencyOrder == FrequencyOrder.DESCENDING,
             primaryReading = options.primaryReading?.encodeToByteArray(),
         )
+        val native = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         json.decodeFromString<List<LookupResult>>(raw.decodeToString()).map { result ->
             if (result.trace.isEmpty() && result.otherTraces.isEmpty()) {
                 result
@@ -127,7 +153,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                     otherTraces = result.otherTraces.map { chain -> chain.map { localize(language, it) } },
                 )
             }
-        }
+        }.also { diagLookup("yomitan_${language.code}", started, native, raw.size, it.size) }
     }
 
     /**
@@ -154,7 +180,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
 
     private suspend fun <T> session(block: (Long) -> T): T = withContext(Dispatchers.IO) {
         mutex.withLock {
-            if (handle == 0L) handle = HoshidictsNative.create()
+            if (handle == 0L) handle = HoshidictsNative.create().also { Diag.event("engine_session", "state" to "created") } // TEMPORARY DIAGNOSTICS BUILD
             block(handle)
         }
     }

@@ -11,6 +11,7 @@ import com.ichi2.anki.FlashCardsContract
 import com.ichi2.anki.api.AddContentApi
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.diagnostics.Diag
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -139,15 +140,38 @@ class AnkiDroid @Inject constructor(@ApplicationContext private val context: Con
             .orEmpty()
     }
 
-    private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
+    private suspend fun <T> io(block: () -> T): T {
+        val caller = diagCaller() // TEMPORARY DIAGNOSTICS BUILD
+        return withContext(Dispatchers.IO) { diagTimed(caller) { block() } }
+    }
 
-    private suspend fun <T> query(block: () -> List<T>): List<T> = withContext(Dispatchers.IO) {
+    private suspend fun <T> query(block: () -> List<T>): List<T> {
+        val caller = diagCaller() // TEMPORARY DIAGNOSTICS BUILD
+        return withContext(Dispatchers.IO) {
+            try {
+                diagTimed(caller) { block() }
+            } catch (e: RuntimeException) {
+                // The message may quote the query, e.g. the first field of a duplicate check.
+                Log.w(TAG, "AnkiDroid query failed", e.redacted())
+                emptyList()
+            }
+        }
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md): the time and failures of each call to AnkiDroid's API,
+    // named by the method of this class that made it; never what was asked or answered.
+    private fun diagCaller(): String? = Throwable().stackTrace.firstOrNull {
+        it.className.startsWith(AnkiDroid::class.java.name) && it.methodName != "io" && it.methodName != "query" &&
+            !it.methodName.startsWith("diag")
+    }?.methodName?.substringBefore('$')
+
+    private inline fun <T> diagTimed(caller: String?, block: () -> T): T {
+        val started = android.os.SystemClock.elapsedRealtime()
         try {
-            block()
-        } catch (e: RuntimeException) {
-            // The message may quote the query, e.g. the first field of a duplicate check.
-            Log.w(TAG, "AnkiDroid query failed", e.redacted())
-            emptyList()
+            return block().also { Diag.event("anki_call", "call" to caller, "ms" to android.os.SystemClock.elapsedRealtime() - started) }
+        } catch (e: Exception) {
+            Diag.event("anki_call", "call" to caller, "ms" to android.os.SystemClock.elapsedRealtime() - started, "error" to e.javaClass.simpleName)
+            throw e
         }
     }
 

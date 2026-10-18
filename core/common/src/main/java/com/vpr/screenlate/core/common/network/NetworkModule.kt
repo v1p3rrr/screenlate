@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
+import com.vpr.screenlate.diagnostics.Diag
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 
@@ -17,5 +18,7 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
+        // TEMPORARY DIAGNOSTICS BUILD: per-call timings (ai/notes/diagnostics.md).
+        .eventListenerFactory(Diag.networkEvents)
         .build()
 }

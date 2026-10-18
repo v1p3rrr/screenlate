@@ -10,5 +10,7 @@ android {
 dependencies {
     api(libs.kotlinx.coroutines.android)
     api(libs.okhttp)
+    // TEMPORARY DIAGNOSTICS BUILD: every module reaches Diag through core:common (ai/notes/diagnostics.md).
+    api(project(":diagnostics"))
     implementation(libs.androidx.datastore.preferences)
 }

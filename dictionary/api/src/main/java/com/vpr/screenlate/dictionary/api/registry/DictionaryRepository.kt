@@ -3,6 +3,7 @@ package com.vpr.screenlate.dictionary.api.registry
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.preferenceKey
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
 import com.vpr.screenlate.dictionary.api.FrequencyOrder
@@ -14,6 +15,7 @@ import com.vpr.screenlate.dictionary.api.imports.TranscriptionTagBanks
 import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
 import com.vpr.screenlate.dictionary.api.languages.DictionarySample
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
+import android.os.SystemClock
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -95,6 +97,11 @@ class DictionaryRepository @Inject constructor(
             Log.i(TAG, "Importing an archive of ${archive.length() shr 10} KB (bundled $bundled, replaces $replaces)")
             val imported = engine.import(archive, staging)
             Log.i(TAG, "Engine import of ${imported.metadata.title} took ${System.currentTimeMillis() - started} ms")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.event(
+                "dictionary_import", "archive_kb" to (archive.length() shr 10), "engine_ms" to System.currentTimeMillis() - started,
+                "bundled" to bundled, "replaces" to (replaces != null), *Diag.memoryNow(),
+            )
             started = System.currentTimeMillis()
             val tagNotes = runCatching { TagBanks.read(archive) }
                 .onFailure { Log.w(TAG, "Reading tag descriptions failed", it) }
@@ -445,8 +452,10 @@ class DictionaryRepository @Inject constructor(
     }
 
     private suspend fun load(language: Language) {
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val enabled = dao.getAll().filter { usable(it, language) }
         fun List<DictionaryEntity>.directories() = map { storage.directoryOf(it) }
+        val listed = SystemClock.elapsedRealtime()
         engine.load(
             DictionarySet(
                 terms = enabled.filter { it.termCount > 0 }.directories(),
@@ -459,6 +468,13 @@ class DictionaryRepository @Inject constructor(
         val preferred = preferences.data.first()[sortKey(language)]
         sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
         termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event(
+            "dictionary_load", "language" to language.name, "changed" to (loadedLanguage != language),
+            "list_ms" to listed - started, "ms" to SystemClock.elapsedRealtime() - started,
+            "terms" to enabled.count { it.termCount > 0 }, "frequencies" to frequencies.size,
+            "pitches" to enabled.count { it.pitchCount > 0 }, "kanji" to enabled.count { it.kanjiCount > 0 }, *Diag.memoryNow(),
+        )
         loadedLanguage = language
         changes.incrementAndGet()
     }

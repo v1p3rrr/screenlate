@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">진단</string>
+    <string name="diag_hint">이 임시 빌드는 스캔, 인식, 팝업, 검색, 다운로드에 걸리는 시간과 메모리 사용량, 기기 상태를 기록합니다. 인식된 텍스트와 검색한 단어는 기록하지 않습니다. 데이터는 로그에 추가되며, ‘로그 공유’와 ‘다운로드에 저장’은 zip 파일을 만듭니다.</string>
+    <string name="diag_status">%1$s부터 수집: %2$s</string>
+    <string name="diag_clear">수집한 데이터 삭제</string>
+    <string name="diag_clear_confirm">수집한 진단 데이터를 삭제할까요? 아직 필요하면 먼저 로그를 내보내세요.</string>
+</resources>

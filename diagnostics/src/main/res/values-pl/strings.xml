@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Diagnostyka</string>
+    <string name="diag_hint">Ta tymczasowa wersja zapisuje, ile trwają skanowanie, rozpoznawanie, okno podręczne, wyszukiwanie i pobieranie, a także zużycie pamięci i stan urządzenia; nigdy rozpoznanego tekstu ani wyszukiwanych słów. Dane są dołączane do logów: „Udostępnij logi” i „Zapisz w Pobranych” dają plik zip.</string>
+    <string name="diag_status">Zebrane od %1$s: %2$s</string>
+    <string name="diag_clear">Usuń zebrane dane</string>
+    <string name="diag_clear_confirm">Usunąć zebrane dane diagnostyczne? Jeśli są jeszcze potrzebne, najpierw wyeksportuj logi.</string>
+</resources>

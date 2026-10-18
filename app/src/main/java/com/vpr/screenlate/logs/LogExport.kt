@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import com.vpr.screenlate.diagnostics.DiagExport
 import java.io.File
 import java.io.IOException
 import java.time.LocalDateTime
@@ -48,7 +49,8 @@ object LogExport {
             process.inputStream.bufferedReader().use { input -> input.copyTo(out) }
             process.waitFor()
         }
-        file
+        // TEMPORARY DIAGNOSTICS BUILD: the log goes out as a zip with the collected diagnostics (ai/notes/diagnostics.md).
+        DiagExport.zip(context, file)
     }
 
     /** Writes a fresh log to `Download/Screenlate/`, where any file manager finds it; no permission is needed. */
@@ -59,7 +61,7 @@ object LogExport {
             val resolver = context.contentResolver
             val values = ContentValues().apply {
                 put(MediaStore.Downloads.DISPLAY_NAME, file.name)
-                put(MediaStore.Downloads.MIME_TYPE, "text/plain")
+                put(MediaStore.Downloads.MIME_TYPE, DiagExport.MIME) // TEMPORARY DIAGNOSTICS BUILD
                 put(MediaStore.Downloads.RELATIVE_PATH, folder)
                 put(MediaStore.Downloads.IS_PENDING, 1)
             }
@@ -80,13 +82,13 @@ object LogExport {
 
     /** Opens a saved log in a text viewer, if the phone has one. */
     fun viewIntent(log: SavedLog): Intent = Intent(Intent.ACTION_VIEW)
-        .setDataAndType(log.uri, "text/plain")
+        .setDataAndType(log.uri, DiagExport.MIME) // TEMPORARY DIAGNOSTICS BUILD
         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
     fun shareIntent(context: Context, file: File): Intent {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.logs", file)
         return Intent(Intent.ACTION_SEND)
-            .setType("text/plain")
+            .setType(DiagExport.MIME) // TEMPORARY DIAGNOSTICS BUILD
             .putExtra(Intent.EXTRA_STREAM, uri)
             .putExtra(Intent.EXTRA_SUBJECT, file.name)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

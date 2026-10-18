@@ -1,7 +1,9 @@
 package com.vpr.screenlate.core.ocr.model
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
+import com.vpr.screenlate.diagnostics.Diag
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException
@@ -85,14 +87,27 @@ class OcrModelStore internal constructor(private val root: File) {
         require(spec.id.isSafeName()) { "Bad model id" }
         val name = spec.file ?: MODEL_FILE
         require(name.split('/').all { it.isSafeName() }) { "Bad model file name" }
-        if (!sha256(archive).equals(spec.sha256, ignoreCase = true)) throw ModelChecksumException()
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
+        if (!sha256(archive).equals(spec.sha256, ignoreCase = true)) {
+            Diag.event("model_install", "model" to spec.id, "error" to "checksum", "archive_kb" to (archive.length() shr 10))
+            throw ModelChecksumException()
+        }
+        val checked = SystemClock.elapsedRealtime()
         mutex.withLock {
+            val locked = SystemClock.elapsedRealtime()
             root.mkdirs()
             val staging = File(root, ".${spec.id}.new").apply { deleteRecursively() }
             try {
                 staging.mkdirs()
                 if (isZip(archive)) unzip(archive, staging) else archive.copyTo(File(staging, name))
-                place(spec.id, spec.version, spec.engine, staging)
+                place(spec.id, spec.version, spec.engine, staging).also {
+                    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+                    Diag.event(
+                        "model_install", "model" to spec.id, "version" to spec.version, "engine" to spec.engine,
+                        "archive_kb" to (archive.length() shr 10), "sha_ms" to checked - started, "wait_ms" to locked - checked,
+                        "place_ms" to SystemClock.elapsedRealtime() - locked,
+                    )
+                }
             } finally {
                 staging.deleteRecursively()
             }
@@ -203,6 +218,7 @@ class OcrModelStore internal constructor(private val root: File) {
      * for an engine that failed to read a model. True when one was damaged.
      */
     suspend fun verify(ids: Collection<String>): Boolean = withContext(Dispatchers.IO) {
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         mutex.withLock {
             val damaged = ids.filter { it.isSafeName() }.mapNotNull { id -> File(root, id).takeIf { it.isDirectory } }.filter { directory ->
                 val properties = manifest(directory) ?: return@filter false
@@ -217,6 +233,7 @@ class OcrModelStore internal constructor(private val root: File) {
                 !intact
             }
             scan()
+            Diag.event("model_verify", "models" to ids.toList(), "damaged" to damaged.map { it.name }, "ms" to SystemClock.elapsedRealtime() - started) // TEMPORARY DIAGNOSTICS BUILD
             damaged.isNotEmpty()
         }
     }

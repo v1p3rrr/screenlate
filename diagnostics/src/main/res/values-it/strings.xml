@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Diagnostica</string>
+    <string name="diag_hint">Questa versione temporanea registra quanto durano le scansioni, il riconoscimento, il popup, le ricerche e i download, insieme all’uso della memoria e allo stato del dispositivo; mai il testo riconosciuto né le parole cercate. I dati vengono aggiunti ai log: “Condividi i log” e “Salva in Download” danno un file zip.</string>
+    <string name="diag_status">Raccolti da %1$s: %2$s</string>
+    <string name="diag_clear">Elimina i dati raccolti</string>
+    <string name="diag_clear_confirm">Eliminare i dati di diagnostica raccolti? Se servono ancora, esporta prima i log.</string>
+</resources>

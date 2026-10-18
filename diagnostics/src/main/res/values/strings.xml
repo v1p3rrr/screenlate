@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TEMPORARY DIAGNOSTICS BUILD: removed with the module (ai/notes/diagnostics.md). -->
+<resources>
+    <string name="diag_title">Diagnostics</string>
+    <string name="diag_hint">This temporary build records how long scans, recognition, the popup, lookups and downloads take, with memory use and device state; never recognized text or looked-up words. The data is added to the logs: “Share logs” and “Save to Downloads” give a zip file.</string>
+    <string name="diag_status">Collected since %1$s: %2$s</string>
+    <string name="diag_clear">Delete collected data</string>
+    <string name="diag_clear_confirm">Delete the collected diagnostics data? Export the logs first if they are still needed.</string>
+</resources>

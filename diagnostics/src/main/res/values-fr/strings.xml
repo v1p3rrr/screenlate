@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Diagnostic</string>
+    <string name="diag_hint">Cette version temporaire enregistre la durée des analyses, de la reconnaissance, de la fenêtre contextuelle, des recherches et des téléchargements, ainsi que l’usage de la mémoire et l’état de l’appareil ; jamais le texte reconnu ni les mots recherchés. Les données sont ajoutées aux journaux : « Partager les journaux » et « Enregistrer dans Téléchargements » donnent un fichier zip.</string>
+    <string name="diag_status">Collecté depuis %1$s : %2$s</string>
+    <string name="diag_clear">Supprimer les données collectées</string>
+    <string name="diag_clear_confirm">Supprimer les données de diagnostic collectées ? Si elles sont encore utiles, exportez d’abord les journaux.</string>
+</resources>

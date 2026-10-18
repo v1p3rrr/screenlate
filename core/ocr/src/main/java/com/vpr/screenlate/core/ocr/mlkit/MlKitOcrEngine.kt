@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.ocr.mlkit
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.os.SystemClock
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
@@ -26,6 +27,8 @@ import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
 import com.vpr.screenlate.core.ocr.SymbolLag
 import com.vpr.screenlate.core.ocr.isVerticalLine
+import com.vpr.screenlate.diagnostics.Diag
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -63,7 +66,11 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         val model = model(script) ?: throw NoDeviceOcrException()
         recognizers.getOrPut(model) {
             Log.i(TAG, "Loading the ML Kit model for $model")
-            TextRecognition.getClient(options(model))
+            // TEMPORARY DIAGNOSTICS BUILD: model loads and first runs (ai/notes/diagnostics.md).
+            val (client, ms) = Diag.timed { Diag.trace("mlkit_load") { TextRecognition.getClient(options(model)) } }
+            Diag.event("model_load", "engine" to "mlkit", "model" to model.name, "ms" to ms)
+            diagCold += model
+            client
         }
     }
 
@@ -75,22 +82,40 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     }
 
     override fun release() = synchronized(recognizers) {
+        Diag.event("model_release", "engine" to "mlkit", "models" to recognizers.keys.map { it.name }) // TEMPORARY DIAGNOSTICS BUILD
         recognizers.values.forEach { it.close() }
         recognizers.clear()
     }
 
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
         val support = language.support
-        val task = recognizer(support.ocrScript).process(InputImage.fromBitmap(image, 0))
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
+        val recognizer = recognizer(support.ocrScript)
+        val model = model(support.ocrScript)
+        val cold = synchronized(recognizers) { model != null && diagCold.remove(model) }
+        val cookie = diagCookie.incrementAndGet()
+        Diag.beginAsync("mlkit_task", cookie)
+        val task = recognizer.process(InputImage.fromBitmap(image, 0))
         // A running task cannot be stopped and keeps reading the pixels, so a cancelled call still waits for it.
         val text = withContext(NonCancellable) { task.await() }
+        Diag.endAsync("mlkit_task", cookie)
+        val taskMs = SystemClock.elapsedRealtime() - started
         val separator = support.wordSeparator
         // Checking every character against the pixels takes a while on a dense page; the caller may be the main thread.
         val paragraphs = withContext(Dispatchers.Default) {
-            text.textBlocks.map { block ->
-                OcrParagraph(block.lines.mapNotNull { line -> line.toOcrLine(image, separator) })
-            }.filter { it.lines.isNotEmpty() }
+            Diag.trace("mlkit_lines") {
+                text.textBlocks.map { block ->
+                    OcrParagraph(block.lines.mapNotNull { line -> line.toOcrLine(image, separator) })
+                }.filter { it.lines.isNotEmpty() }
+            }
         }
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        val ms = SystemClock.elapsedRealtime() - started
+        Diag.ocrPass(
+            "mlkit", "recognize", model?.name, image.width, image.height, ms,
+            "task_ms" to taskMs, "lines_ms" to ms - taskMs, "cold" to cold,
+            "paragraphs" to paragraphs.size, "lines" to paragraphs.sumOf { it.lines.size },
+        )
         return OcrPage(image.width, image.height, paragraphs, OcrEngineType.ML_KIT)
     }
 
@@ -124,6 +149,10 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     }
 
     private fun Rect.toBox() = Box(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
+
+    // TEMPORARY DIAGNOSTICS BUILD: models loaded but not yet run, and trace cookies (ai/notes/diagnostics.md).
+    private val diagCold = mutableSetOf<OcrScript>()
+    private val diagCookie = AtomicInteger()
 
     private companion object {
         const val TAG = "MlKitOcr"

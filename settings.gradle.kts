@@ -42,3 +42,5 @@ include(":core:translate")
 include(":dictionary:api")
 include(":dictionary:engine-hoshidicts")
 include(":dictionary:render-yomitan")
+// TEMPORARY DIAGNOSTICS BUILD: removed after the analysis (ai/notes/diagnostics.md).
+include(":diagnostics")

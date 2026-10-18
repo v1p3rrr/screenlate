@@ -18,6 +18,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
@@ -83,6 +84,11 @@ class DictionaryImportWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = imports.tracked {
         val source = inputData.getString(KEY_SOURCE)
         Log.i(TAG, "Task $id ($source) started, run ${runAttemptCount + 1}")
+        // TEMPORARY DIAGNOSTICS BUILD: the import queue (ai/notes/diagnostics.md).
+        Diag.event(
+            "import_task", "task" to id.toString().take(8), "state" to "start", "source" to source, "run" to runAttemptCount + 1,
+            "retries" to inputData.getInt(KEY_RETRIES, 0), "free_mb" to (applicationContext.filesDir.usableSpace shr 20),
+        )
         try {
             withContext(Dispatchers.IO) {
                 // WorkManager counts every run, also those the system stopped; only deaths of the app count here.
@@ -120,6 +126,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             // Cancelled by a dictionary reset, or stopped by the system, which runs it again later.
             val reason = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) " (reason $stopReason)" else ""
             Log.i(TAG, "Task $id stopped by WorkManager$reason")
+            Diag.event("import_task", "task" to id.toString().take(8), "state" to "stopped", "reason" to if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) stopReason else null) // TEMPORARY DIAGNOSTICS BUILD
             withContext(NonCancellable) {
                 try {
                     if (!uncounted) imports.markStopped(id)
@@ -203,6 +210,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             if (retries < MAX_RETRIES) {
                 // Queued again at the end: the tasks behind it do not wait for a host that does not answer.
                 val next = imports.requeue(id, inputData, tags, retries + 1) { isStopped }
+                Diag.event("import_task", "task" to id.toString().take(8), "state" to "requeued", "retry" to retries + 1, "error" to e.cause?.javaClass?.simpleName) // TEMPORARY DIAGNOSTICS BUILD
                 Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES queued as $next")
                 return Result.success(workDataOf(KEY_REQUEUED to true))
             }
@@ -219,6 +227,13 @@ class DictionaryImportWorker @AssistedInject constructor(
             // Work data is limited to 10 KB.
             resumable(workDataOf(KEY_ERROR to (e.message ?: e.javaClass.simpleName).take(MAX_ERROR_LENGTH)))
         }
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event(
+            "import_task", "task" to id.toString().take(8), "state" to "end", "source" to inputData.getString(KEY_SOURCE),
+            "ms" to System.currentTimeMillis() - started, "count" to (output.keyValueMap[KEY_TITLES] as? Array<*>)?.size,
+            "error" to output.getString(KEY_ERROR)?.let { if (it.startsWith("HTTP ")) it else "error" },
+            "stopped" to output.getBoolean(KEY_DOWNLOAD_STOPPED, false), "free_mb" to (applicationContext.filesDir.usableSpace shr 20),
+        )
         return Result.success(output)
     }
 
@@ -251,15 +266,30 @@ class DictionaryImportWorker @AssistedInject constructor(
      * Runs the import step [block] once no other task imports ([DictionaryImports.importing]). While it waits, the
      * task shows as waiting, and a death of the app, likely caused by the other import, does not count against it.
      */
-    private suspend fun <T> oneImportAtATime(name: String, block: suspend () -> T): T = imports.importing(
-        onWait = {
-            Log.i(TAG, "Task $id waits for another import")
-            countRunAsStopped()
-            setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_WAIT))
-        },
-    ) {
-        countRunAgain()
-        block()
+    private suspend fun <T> oneImportAtATime(name: String, block: suspend () -> T): T {
+        val asked = System.currentTimeMillis() // TEMPORARY DIAGNOSTICS BUILD
+        return imports.importing(
+            onWait = {
+                Log.i(TAG, "Task $id waits for another import")
+                countRunAsStopped()
+                setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_WAIT))
+            },
+        ) {
+            countRunAgain()
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            val began = System.currentTimeMillis()
+            val cookie = id.hashCode()
+            Diag.beginAsync("import", cookie)
+            try {
+                block()
+            } finally {
+                Diag.endAsync("import", cookie)
+                Diag.event(
+                    "import_step", "task" to id.toString().take(8), "wait_ms" to began - asked,
+                    "ms" to System.currentTimeMillis() - began, *Diag.memoryNow(),
+                )
+            }
+        }
     }
 
     private suspend fun installBundled(): List<String> {
@@ -439,8 +469,16 @@ class DictionaryImportWorker @AssistedInject constructor(
         val before = if (archive.exists()) archive.length() else 0L
         Log.i(TAG, "Downloading $url" + if (before > 0) ", ${before shr 10} KB already there" else "")
         val throttle = ProgressThrottle()
+        // TEMPORARY DIAGNOSTICS BUILD: the longest pause between progress reports (ai/notes/diagnostics.md).
+        var lastReport = System.currentTimeMillis()
+        var maxGap = 0L
+        var totalBytes = -1L
         try {
             ResumableDownload(downloadClient).fetch(url, archive, state) { copied, total ->
+                val now = System.currentTimeMillis()
+                maxGap = maxOf(maxGap, now - lastReport)
+                lastReport = now
+                totalBytes = total
                 val percent = if (total > 0) (copied * 100 / total).toInt() else -1
                 if (throttle.pass(percent)) {
                     setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_DOWNLOAD, KEY_PERCENT to percent))
@@ -449,9 +487,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         } catch (e: ResumableDownload.FinalStatusException) {
             throw e
         } catch (e: IOException) {
+            diagDownload(url, started, before, archive, maxGap, totalBytes, e.javaClass.simpleName) // TEMPORARY DIAGNOSTICS BUILD
             throw DownloadBrokeOffException(e)
         }
         Log.i(TAG, "Downloaded ${(archive.length() - before) shr 10} KB of ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
+        diagDownload(url, started, before, archive, maxGap, totalBytes, null) // TEMPORARY DIAGNOSTICS BUILD
         try {
             return oneImportAtATime(name) {
                 setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))
@@ -461,6 +501,18 @@ class DictionaryImportWorker @AssistedInject constructor(
             archive.delete()
             state.delete()
         }
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md): the host only, never the path.
+    private fun diagDownload(url: String, started: Long, before: Long, archive: File, maxGap: Long, total: Long, error: String?) {
+        val ms = System.currentTimeMillis() - started
+        val got = (if (archive.exists()) archive.length() else 0L) - before
+        Diag.event(
+            "download", "task" to id.toString().take(8), "host" to runCatching { url.toUri().host }.getOrNull(),
+            "resumed_kb" to (before shr 10), "got_kb" to (got shr 10), "total_kb" to total.takeIf { it > 0 }?.let { it shr 10 },
+            "ms" to ms, "kbps" to if (ms > 0) got * 8 / ms else null, "max_gap_ms" to maxGap, "error" to error,
+            "net" to Diag.network(), "free_mb" to (applicationContext.filesDir.usableSpace shr 20),
+        )
     }
 
     /** Copies the archive the app carries at [path] in its assets into a new archive file, which [install] gets. */

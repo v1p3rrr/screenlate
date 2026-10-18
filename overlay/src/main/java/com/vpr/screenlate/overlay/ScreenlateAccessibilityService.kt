@@ -1,10 +1,13 @@
 package com.vpr.screenlate.overlay
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
+import android.os.SystemClock
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.vpr.screenlate.core.anki.AnkiDroid
@@ -16,6 +19,7 @@ import com.vpr.screenlate.core.common.locale.AppLanguageResources
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.CompositeOcr
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.fonts.PageAppearance
 import com.vpr.screenlate.overlay.settings.OverlaySettingsRepository
@@ -74,9 +78,26 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         return language.resources(super.getResources())
     }
 
+    // TEMPORARY DIAGNOSTICS BUILD: the service's lifecycle (ai/notes/diagnostics.md).
+    override fun onCreate() {
+        super.onCreate()
+        Diag.event("service", "state" to "created", "process_up_ms" to SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
+        Diag.state("service", "created")
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+    override fun onUnbind(intent: Intent?): Boolean {
+        Diag.event("service", "state" to "unbind")
+        Diag.state("service", "unbound")
+        return super.onUnbind(intent)
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(TAG, "Service connected")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event("service", "state" to "connected", "process_up_ms" to SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
+        Diag.state("service", "connected")
         OverlayServiceStatus.setRunning(true)
         scope.launch {
             overlaySettings.settings.map { it.keepAlive }.distinctUntilChanged().collect {
@@ -100,6 +121,14 @@ class ScreenlateAccessibilityService : AccessibilityService() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event(
+            "service_config",
+            "orientation" to newConfig.orientation,
+            "w_dp" to newConfig.screenWidthDp,
+            "h_dp" to newConfig.screenHeightDp,
+            "night" to (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES),
+        )
         controller?.onConfigurationChanged()
     }
 
@@ -126,10 +155,13 @@ class ScreenlateAccessibilityService : AccessibilityService() {
         ?.packageName
         ?.toString()
 
-    override fun onInterrupt() = Unit
+    override fun onInterrupt() = Diag.event("service", "state" to "interrupt") // TEMPORARY DIAGNOSTICS BUILD
 
     override fun onDestroy() {
         Log.i(TAG, "Service stopped")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event("service", "state" to "destroyed", "process_up_ms" to SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
+        Diag.state("service", "destroyed")
         OverlayServiceStatus.setRunning(false)
         BubbleKeepAliveService.keepAlive(this, false)
         handler.removeCallbacksAndMessages(null)

@@ -3,6 +3,7 @@ package com.vpr.screenlate.core.ocr.tesseract
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
+import android.os.SystemClock
 import android.util.Log
 import com.googlecode.tesseract.android.ResultIterator
 import com.googlecode.tesseract.android.TessBaseAPI
@@ -18,6 +19,7 @@ import com.vpr.screenlate.core.ocr.OcrWord
 import com.vpr.screenlate.core.ocr.isRightToLeftText
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.ModelOcrEngine
+import com.vpr.screenlate.diagnostics.Diag
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -50,11 +52,16 @@ class TesseractOcrEngine @Inject constructor() : ModelOcrEngine {
     override suspend fun recognize(image: Bitmap, language: Language, model: InstalledOcrModel, required: List<InstalledOcrModel>): OcrPage =
         withContext(Dispatchers.Default + NonCancellable) {
             mutex.withLock {
+                val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
+                val cold = loaded?.let { it.directory != model.directory || it.version != model.version } ?: true
                 val api = api(model)
+                val loadedAt = SystemClock.elapsedRealtime()
                 val input = prepared(image)
                 try {
+                    val preparedAt = SystemClock.elapsedRealtime()
                     api.setImage(input)
-                    api.getUTF8Text()
+                    Diag.trace("tesseract_recognize") { api.getUTF8Text() }
+                    val recognizedAt = SystemClock.elapsedRealtime()
                     val paragraphs = api.resultIterator?.let { iterator ->
                         try {
                             read(iterator)
@@ -62,6 +69,14 @@ class TesseractOcrEngine @Inject constructor() : ModelOcrEngine {
                             iterator.delete()
                         }
                     }.orEmpty()
+                    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+                    val now = SystemClock.elapsedRealtime()
+                    Diag.ocrPass(
+                        "tesseract", "recognize", "${model.id} ${model.version}", image.width, image.height, now - started,
+                        "load_ms" to loadedAt - started, "prepare_ms" to preparedAt - loadedAt,
+                        "recognize_ms" to recognizedAt - preparedAt, "read_ms" to now - recognizedAt, "cold" to cold,
+                        "inverted" to (input !== image && image.config == Bitmap.Config.ARGB_8888), "paragraphs" to paragraphs.size,
+                    )
                     tesseractPage(paragraphs, image.width, image.height, language.support.wordSeparator)
                 } finally {
                     api.clear()
@@ -74,6 +89,7 @@ class TesseractOcrEngine @Inject constructor() : ModelOcrEngine {
         // Not under the mutex: a scan in progress keeps its model and frees it at the next release or model change.
         if (!mutex.tryLock()) return
         try {
+            loaded?.let { Diag.event("model_release", "engine" to "tesseract", "model" to it.directory.name) } // TEMPORARY DIAGNOSTICS BUILD
             loaded?.api?.recycle()
             loaded = null
         } finally {
@@ -88,12 +104,18 @@ class TesseractOcrEngine @Inject constructor() : ModelOcrEngine {
         val data = File(model.directory, DATA_DIRECTORY).listFiles { file -> file.name.endsWith(DATA_SUFFIX) }
             ?.singleOrNull() ?: throw IOException("The model has no traineddata file")
         val api = TessBaseAPI()
-        if (!api.init(model.directory.path, data.name.removeSuffix(DATA_SUFFIX), TessBaseAPI.OEM_LSTM_ONLY)) {
+        val started = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
+        if (!Diag.trace("tesseract_load") { api.init(model.directory.path, data.name.removeSuffix(DATA_SUFFIX), TessBaseAPI.OEM_LSTM_ONLY) }) {
             api.recycle()
             throw IOException("Tesseract could not load the model")
         }
         api.pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO
         Log.i(TAG, "Loaded ${model.id} ${model.version}")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event(
+            "model_load", "engine" to "tesseract", "model" to "${model.id} ${model.version}",
+            "ms" to SystemClock.elapsedRealtime() - started, "file_kb" to (data.length() shr 10),
+        )
         loaded = Loaded(model.directory, model.version, api)
         return api
     }

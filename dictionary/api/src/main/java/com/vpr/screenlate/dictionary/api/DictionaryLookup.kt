@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api
 
+import android.os.SystemClock
 import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
@@ -7,6 +8,7 @@ import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
@@ -60,7 +62,19 @@ class DictionaryLookup @Inject constructor(
         val settings = lookupSettings.current(language)
         val support = language.support
         support.lookupStart(text.substring(aimedAt), latinAsNative = settings.romaji) ?: return emptyList()
+        // TEMPORARY DIAGNOSTICS BUILD: lookup phases, never the text (ai/notes/diagnostics.md).
+        val diagStarted = SystemClock.elapsedRealtime()
+        var diagLocked = 0L
+        var diagEngineMs = 0L
+        var diagEngineCalls = 0
+        suspend fun timedEngine(block: suspend () -> List<LookupResult>): List<LookupResult> {
+            val (found, ms) = Diag.timed { block() }
+            diagEngineMs += ms
+            diagEngineCalls++
+            return found
+        }
         return repository.withLookup(language) { prepared ->
+            diagLocked = SystemClock.elapsedRealtime()
             val limit = settings.maxResults.takeIf { it > 0 } ?: Int.MAX_VALUE
             val options = prepared.options.copy(
                 scanLength = scanLength ?: settings.scanLength,
@@ -86,7 +100,7 @@ class DictionaryLookup @Inject constructor(
             suspend fun from(source: String): List<LookupResult> {
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
                 val found = LookupVariants.of(source, settings, support).flatMap { variant ->
-                    engine.lookup(variant.text, engineOptions).map { it.asShown(support).inSource(source, variant) }
+                    timedEngine { engine.lookup(variant.text, engineOptions) }.map { it.asShown(support).inSource(source, variant) }
                 }
                 val whole = shown(found, start)
                 return support.compoundLinks?.let { links ->
@@ -96,7 +110,7 @@ class DictionaryLookup @Inject constructor(
                             scanLength = part.codePointCount(0, part.length),
                             searchResolution = SearchResolution.LETTER,
                         )
-                        engine.lookup(part, partOptions).map { it.asShown(support) }
+                        timedEngine { engine.lookup(part, partOptions) }.map { it.asShown(support) }
                     }
                 }?.flatMap { shown(it, start, part = true) } ?: whole
             }
@@ -112,7 +126,16 @@ class DictionaryLookup @Inject constructor(
                 results + singleCharacterEntries(results, language, options, prepared.termDictionaries, script != null)
             }
             val context = support.scriptOf(text)
-            all.map { it.copy(lang = scriptTag(it.term.expression, context, settings, support)) }
+            all.map { it.copy(lang = scriptTag(it.term.expression, context, settings, support)) }.also {
+                // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+                val now = SystemClock.elapsedRealtime()
+                Diag.lookup(
+                    if (scanLength == null) "scan" else "query", now - diagStarted,
+                    "lock_ms" to diagLocked - diagStarted, "engine_ms" to diagEngineMs, "engine_calls" to diagEngineCalls,
+                    "results" to it.size, "text_len" to text.length, "aimed" to (aimedAt > 0), "language" to language.name,
+                    "dictionaries" to prepared.termDictionaries.size,
+                )
+            }
         }
     }
 

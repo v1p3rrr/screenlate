@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diag_title">Chẩn đoán</string>
+    <string name="diag_hint">Bản dựng tạm thời này ghi lại thời gian quét, nhận dạng, cửa sổ bật lên, tra cứu và tải xuống, cùng mức dùng bộ nhớ và trạng thái thiết bị; không bao giờ ghi văn bản được nhận dạng hay từ đã tra. Dữ liệu được thêm vào nhật ký: “Chia sẻ nhật ký” và “Lưu vào Tải xuống” cho ra một tệp zip.</string>
+    <string name="diag_status">Đã thu thập từ %1$s: %2$s</string>
+    <string name="diag_clear">Xóa dữ liệu đã thu thập</string>
+    <string name="diag_clear_confirm">Xóa dữ liệu chẩn đoán đã thu thập? Nếu vẫn cần, hãy xuất nhật ký trước.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TEMPORARY DIAGNOSTICS BUILD: removed with the module (ai/notes/diagnostics.md). The app already has this
+     permission (WorkManager declares it); declared here for the network state in the diagnostics. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+</manifest>
