@@ -43,12 +43,15 @@ data class InstallationStatus(
     val dictionaryReady: Boolean get() = missing.none { it != CatalogCategory.OCR_MODEL }
     val scanReady: Boolean get() = missing.isEmpty() && (!requiresDevice || deviceReady)
 
+    /** Only an on-device model keeps a scan from starting, with nothing downloading or failed. */
+    val needsDeviceModel: Boolean get() = missing.isEmpty() && requiresDevice && !deviceReady && failures == 0 && tasks.isEmpty()
+
     fun message(context: Context, scanning: Boolean = false): String = context.getString(
         when {
             (if (scanning) scanReady else dictionaryReady) -> R.string.installation_ready
             failures > 0 -> R.string.installation_failed
             tasks.isNotEmpty() -> R.string.installation_running
-            scanning && dictionaryReady && missing.isEmpty() -> R.string.overlay_error_no_device_ocr
+            scanning && needsDeviceModel -> R.string.overlay_error_no_device_ocr
             else -> R.string.installation_missing
         },
     )
@@ -97,9 +100,13 @@ internal fun installationStatus(
     val missing = catalog.mandatory(language.code).filterTo(linkedSetOf()) { category ->
         when (category) {
             CatalogCategory.MAIN -> enabled.none { it.termCount > 0 }
-            // Any version counts: an installed model keeps working until a newer one replaces it.
-            CatalogCategory.OCR_MODEL -> entries.filter { it.isModel }.none { entry -> models.any { it.id == entry.model } } &&
-                settings.textSource != TextSource.APP_TEXT_ONLY
+            // Any version counts: an installed model keeps working until a newer one replaces it. A model that others
+            // require (a text detector shared with other languages) reads nothing alone.
+            CatalogCategory.OCR_MODEL -> {
+                val required = entries.flatMapTo(hashSetOf()) { it.requires }
+                entries.filter { it.isModel && it.model !in required }.none { entry -> models.any { it.id == entry.model } } &&
+                    settings.textSource != TextSource.APP_TEXT_ONLY
+            }
             else -> entries.filter { it.category == category }.none { entry -> enabled.any(entry::matches) }
         }
     }

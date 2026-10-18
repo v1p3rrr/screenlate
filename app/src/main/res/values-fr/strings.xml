@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">caractères : %1$d</string>
     <string name="dictionaries_languages_hint">Les dictionnaires installés et ceux disponibles au téléchargement ci-dessous sont ceux de la langue choisie. Les dictionnaires sans langue servent pour toutes les langues.</string>
     <string name="dictionaries_other_languages">Autres langues</string>
-    <string name="dictionaries_other_languages_hint">Dictionnaires des langues désactivées. Ils ne sont pas utilisés pour les recherches et occupent seulement de l’espace.</string>
+    <string name="dictionaries_other_languages_hint">Dictionnaires et modèles de reconnaissance des langues désactivées. Ils ne sont pas utilisés et occupent seulement de l’espace.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d dictionnaire</item>
         <item quantity="many">%1$d dictionnaires</item>

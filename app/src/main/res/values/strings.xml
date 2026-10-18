@@ -69,7 +69,7 @@
     <string name="dictionaries_count_characters">characters: %1$d</string>
     <string name="dictionaries_languages_hint">The installed dictionaries and those available for download below belong to the chosen language. Dictionaries without a language serve every language.</string>
     <string name="dictionaries_other_languages">Other languages</string>
-    <string name="dictionaries_other_languages_hint">Dictionaries of languages that are turned off. They are not used in lookups and only take up storage.</string>
+    <string name="dictionaries_other_languages_hint">Dictionaries and recognition models of languages that are turned off. They are not used and only take up storage.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d dictionary</item>
         <item quantity="other">%1$d dictionaries</item>

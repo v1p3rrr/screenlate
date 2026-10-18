@@ -1,9 +1,12 @@
 package com.vpr.screenlate.languages
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import java.io.File
+import java.util.Locale
 import org.junit.Test
 
 class OcrModelsTest {
@@ -79,5 +82,22 @@ class OcrModelsTest {
         assertThat(models.mandatory).isFalse()
         assertThat(models.items.map { it.entry.id to it.installed }).containsExactly("ru-det" to true, "ru-rec" to false)
         assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("ru-rec")
+    }
+
+    @Test
+    fun `models left by turned-off languages are listed under each language that has them`() {
+        val installed = listOf(
+            InstalledOcrModel("det", "5", "paddle", File("det")),
+            InstalledOcrModel("eslav", "5", "paddle", File("eslav")),
+            InstalledOcrModel("arabic", "5", "paddle", File("arabic")),
+        )
+        val left = leftoverModels(listOf("ja"), entries, installed, Locale.ENGLISH)
+        assertThat(left.keys).containsExactly("ru", "uk", "ar")
+        assertThat(left.getValue("ru").map { it.id }).containsExactly("det", "eslav").inOrder()
+        assertThat(left.getValue("ar").map { it.id }).containsExactly("det", "arabic").inOrder()
+        // Russian keeps the detector and its recognizer, which Ukrainian lists too.
+        assertThat(leftoverModels(listOf("ru"), entries, installed, Locale.ENGLISH).mapValues { (_, models) -> models.map { it.id } })
+            .containsExactly("ar", listOf("arabic"))
+        assertThat(leftoverModels(listOf("ja"), entries, emptyList(), Locale.ENGLISH)).isEmpty()
     }
 }

@@ -910,7 +910,7 @@ class OverlayController(
             if (!ready.scanReady) {
                 ocrFinal = true
                 bubbleView.loading = false
-                showMessage(ready.message(service, scanning = true), installation = true)
+                showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
                 return@launch
             }
             if (settings.textSource == TextSource.APP_TEXT_ONLY) {
@@ -966,6 +966,9 @@ class OverlayController(
                         recognized = Recognized(page = null, final = true, lensError = error)
                         if (appTextRead.await() != null) {
                             show(flash = false)
+                        } else if (error is NoDeviceOcrException) {
+                            ocrFinal = true
+                            showMessage(service.getString(R.string.overlay_error_no_device_ocr), ocrModels = true)
                         } else {
                             // Offline fails the scan only while the device does not recognize; a cloud-only scan says why
                             // the cloud failed.
@@ -975,7 +978,6 @@ class OverlayController(
                                     error is OfflineException && !deviceReads ->
                                         service.getString(R.string.overlay_error_offline_no_device)
                                     error is OfflineException -> service.getString(R.string.overlay_error_offline)
-                                    error is NoDeviceOcrException -> service.getString(R.string.overlay_error_no_device_ocr)
                                     settings.ocrEngines == OcrEngines.CLOUD || !deviceReads -> cloudErrorReason(error)
                                     else -> service.getString(R.string.overlay_error_ocr)
                                 },
@@ -1288,7 +1290,7 @@ class OverlayController(
         showMessage(message)
     }
 
-    private fun showMessage(message: String, installation: Boolean = false) {
+    private fun showMessage(message: String, installation: Boolean = false, ocrModels: Boolean = false) {
         // A lookup still running would draw its word over the message.
         lookupJob?.cancel()
         lookupJob = null
@@ -1296,7 +1298,11 @@ class OverlayController(
         val anchor = Box.fromCenter(x, y, 1f, 1f)
         val view = LookupView("", 0, emptyList(), message)
         shownLookup = null
-        val page = if (installation) PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = true, language = language) else popupState(view)
+        val page = if (installation || ocrModels) {
+            PageState.build(service, pageTheme(), "", 0, emptyList(), message, installation = installation, ocrModels = ocrModels, language = language)
+        } else {
+            popupState(view)
+        }
         popup.show(page, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
     }
 
@@ -1556,6 +1562,11 @@ class OverlayController(
         override fun onOpenUrl(url: String) {
             if (url == OverlayIntents.INSTALLATION_URL) {
                 OverlayIntents.openInstallation(service)
+                dock()
+                return
+            }
+            if (url == OverlayIntents.OCR_MODELS_URL) {
+                OverlayIntents.openOcrModels(service, language)
                 dock()
                 return
             }

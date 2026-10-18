@@ -12,7 +12,8 @@
     <string name="overlay_error_capture">スクリーンショットを撮れませんでした。</string>
     <string name="overlay_error_ocr">文字認識に失敗しました。</string>
     <string name="overlay_error_offline">ネットワークがなく、端末上の認識は設定でオフになっています。</string>
-    <string name="overlay_error_no_device_ocr">端末上の認識はこの言語に対応していません。バブルの設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
+    <string name="overlay_error_no_device_ocr">この言語には端末上のモデルがありません。モデルをダウンロードするか、バブルの設定で「エンジン」を「両方」か「クラウド」にしてください。</string>
+    <string name="overlay_open_ocr_models">端末上のモデル</string>
     <string name="overlay_error_offline_no_device">ネットワークに接続されておらず、端末上の認識はこの言語に対応していません。</string>
     <string name="overlay_ocr_error_title">クラウド認識</string>
     <string name="overlay_ocr_error_offline">ネットワークに接続されていません。</string>

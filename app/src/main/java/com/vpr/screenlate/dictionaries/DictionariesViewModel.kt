@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
+import com.vpr.screenlate.core.ocr.model.OcrModelStore
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
@@ -21,7 +22,9 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.languages.LeftoverModel
 import com.vpr.screenlate.languages.ShownLanguage
+import com.vpr.screenlate.languages.leftoverModels
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.Collator
@@ -85,10 +88,15 @@ data class CatalogGroup(val sourceLanguage: String, val sections: List<CatalogSe
 data class InstalledSection(val kind: DictionaryKind, val dictionaries: List<DictionaryEntity>)
 
 /**
- * Installed dictionaries of a language that is not turned on, or that the app does not support; lookups do not use
- * them. [bytes] is null until their files are measured.
+ * Installed dictionaries and recognition models of a language that is not turned on, or that the app does not support;
+ * lookups do not use them. [bytes] is what the dictionaries take, null until their files are measured.
  */
-data class OtherLanguage(val code: String, val dictionaries: List<DictionaryEntity>, val bytes: Long?)
+data class OtherLanguage(
+    val code: String,
+    val dictionaries: List<DictionaryEntity>,
+    val bytes: Long?,
+    val models: List<LeftoverModel> = emptyList(),
+)
 
 data class DictionariesState(
     /** Every installed dictionary, in priority order. */
@@ -111,6 +119,8 @@ data class DictionariesState(
     val withoutFiles: Set<Long> = emptySet(),
     /** Bytes on disk by dictionary id, for the dictionaries in [others]; empty until measured. */
     val sizes: Map<Long, Long> = emptyMap(),
+    /** The recognition models in [others], by language code. */
+    val otherModels: Map<String, List<LeftoverModel>> = emptyMap(),
     val profiles: LanguageProfilesState = LanguageProfilesState.DEFAULT,
     val loaded: Boolean = false,
 ) {
@@ -137,8 +147,9 @@ class DictionariesViewModel @Inject constructor(
     private val lookup: DictionaryLookup,
     private val dictionaryReset: DictionaryReset,
     private val cache: DictionariesStateCache,
-    catalog: DictionaryCatalog,
+    private val catalog: DictionaryCatalog,
     private val profiles: LanguageProfiles,
+    private val store: OcrModelStore,
 ) : ViewModel() {
     private val shownLanguage = ShownLanguage(profiles, viewModelScope)
     private val copyError = MutableStateFlow<String?>(null)
@@ -154,11 +165,14 @@ class DictionariesViewModel @Inject constructor(
         catalog.entries(),
         combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
-        combine(repository.dictionaries, profiles.state.map { it.turnedOn }.distinctUntilChanged(), ::Pair)
-            .map { (dictionaries, turnedOn) ->
-                FileChecks(remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)))
+        combine(repository.dictionaries, profiles.state.map { it.turnedOn }.distinctUntilChanged(), store.models, ::Triple)
+            .map { (dictionaries, turnedOn, models) ->
+                FileChecks(
+                    remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)),
+                    leftoverModels(turnedOn.map { it.code }, catalog.local(), models, Locale.getDefault()),
+                )
             }
-            .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes) } ?: FileChecks()) },
+            .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
     ) { dictionaries, tasks, entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
         val shownDictionaries = dictionaries.filter { it.isFor(shown) }
@@ -167,7 +181,7 @@ class DictionariesViewModel @Inject constructor(
             installed = DictionaryKind.entries.mapNotNull { kind ->
                 shownDictionaries.filter { it.kind == kind }.takeIf { it.isNotEmpty() }?.let { InstalledSection(kind, it) }
             },
-            others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes),
+            others = otherLanguages(dictionaries, profileState.turnedOn, checks.sizes, checks.models),
             shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
@@ -179,6 +193,7 @@ class DictionariesViewModel @Inject constructor(
             remoteCss = checks.remoteCss,
             withoutFiles = checks.withoutFiles,
             sizes = checks.sizes,
+            otherModels = checks.models,
             profiles = profileState,
             loaded = true,
         )
@@ -355,6 +370,7 @@ private data class FileChecks(
     val remoteCss: Map<String, List<String>> = emptyMap(),
     val withoutFiles: Set<Long> = emptySet(),
     val sizes: Map<Long, Long> = emptyMap(),
+    val models: Map<String, List<LeftoverModel>> = emptyMap(),
 )
 
 /**
@@ -382,18 +398,23 @@ private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: Lis
     return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
 }
 
-/** Dictionaries with a source language that is not turned on, by language, ordered by the language's name. */
+/**
+ * Dictionaries with a source language that is not turned on and the [models] left by such languages, by language,
+ * ordered by the language's name.
+ */
 internal fun otherLanguages(
     dictionaries: List<DictionaryEntity>,
     turnedOn: List<Language>,
     sizes: Map<Long, Long>,
+    models: Map<String, List<LeftoverModel>> = emptyMap(),
 ): List<OtherLanguage> {
     val locale = Locale.getDefault()
-    return ofOtherLanguages(dictionaries, turnedOn)
-        .groupBy { it.sourceLanguage!! }
-        .map { (code, list) ->
+    val byLanguage = ofOtherLanguages(dictionaries, turnedOn).groupBy { it.sourceLanguage!! }
+    return (byLanguage.keys + models.keys)
+        .map { code ->
+            val list = byLanguage[code].orEmpty()
             val bytes = list.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
-            OtherLanguage(code, list, bytes)
+            OtherLanguage(code, list, bytes, models[code].orEmpty())
         }
         .sortedWith(compareBy(Collator.getInstance(locale)) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) })
 }

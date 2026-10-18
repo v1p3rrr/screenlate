@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">karakterler: %1$d</string>
     <string name="dictionaries_languages_hint">Aşağıdaki yüklü ve indirilebilir sözlükler seçilen dile aittir. Dili olmayan sözlükler tüm diller için kullanılır.</string>
     <string name="dictionaries_other_languages">Diğer diller</string>
-    <string name="dictionaries_other_languages_hint">Kapalı dillerin sözlükleri. Aramalarda kullanılmaz, yalnızca yer kaplar.</string>
+    <string name="dictionaries_other_languages_hint">Kapalı dillerin sözlükleri ve tanıma modelleri. Kullanılmaz, yalnızca yer kaplar.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="one">%1$d sözlük</item>
         <item quantity="other">%1$d sözlük</item>

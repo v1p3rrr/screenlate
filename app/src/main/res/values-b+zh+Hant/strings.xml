@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">漢字：%1$d</string>
     <string name="dictionaries_languages_hint">下方已安裝和可下載的詞典屬於所選語言。未設語言的詞典用於所有語言。</string>
     <string name="dictionaries_other_languages">其他語言</string>
-    <string name="dictionaries_other_languages_hint">已停用語言的詞典。查詢時不使用，僅佔用儲存空間。</string>
+    <string name="dictionaries_other_languages_hint">已停用語言的詞典和辨識模型。不會被使用，僅佔用儲存空間。</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="other">%1$d 個詞典</item>
     </plurals>

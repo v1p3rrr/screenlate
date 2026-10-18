@@ -12,7 +12,8 @@
     <string name="overlay_error_capture">Nie udało się zrobić zrzutu ekranu.</string>
     <string name="overlay_error_ocr">Rozpoznawanie tekstu nie powiodło się.</string>
     <string name="overlay_error_offline">Brak sieci, a rozpoznawanie na urządzeniu jest wyłączone w ustawieniach.</string>
-    <string name="overlay_error_no_device_ocr">Rozpoznawanie na urządzeniu nie obsługuje tego języka. W ustawieniach Dymek ustaw Silniki na „Oba” lub „Chmura”.</string>
+    <string name="overlay_error_no_device_ocr">Ten język nie ma modelu na urządzeniu. Pobierz model albo w ustawieniach Dymek ustaw Silniki na „Oba” lub „Chmura”.</string>
+    <string name="overlay_open_ocr_models">Model na urządzeniu</string>
     <string name="overlay_error_offline_no_device">Brak połączenia z siecią, a rozpoznawanie na urządzeniu nie obsługuje tego języka.</string>
     <string name="overlay_ocr_error_title">Rozpoznawanie w chmurze</string>
     <string name="overlay_ocr_error_offline">Brak połączenia z siecią.</string>

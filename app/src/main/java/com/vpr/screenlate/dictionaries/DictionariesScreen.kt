@@ -351,19 +351,22 @@ private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String)
 private fun sectionLabel(kind: DictionaryKind, code: String): Int =
     if (kind == DictionaryKind.TERM) R.string.dictionaries_section_terms else kindLabel(kind, code)
 
-/** The dictionaries of languages that are not turned on, counted; the Languages screen lists them. */
+/** The dictionaries and recognition models of languages that are not turned on, counted; the Languages screen lists them. */
 @Composable
 private fun OtherLanguagesCard(others: List<OtherLanguage>, onOpenLanguages: () -> Unit) {
     val context = LocalContext.current
     val count = others.sumOf { it.dictionaries.size }
-    val bytes = others.map { it.bytes }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
+    // A model several such languages list is counted once.
+    val models = others.flatMap { it.models }.distinctBy { it.id }
+    val bytes = others.map { it.bytes }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }?.plus(models.sumOf { it.bytes })
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 12.dp)) {
             Text(stringResource(R.string.dictionaries_other_languages), style = MaterialTheme.typography.titleMedium)
             Text(
                 listOfNotNull(
                     others.joinToString(", ") { languageName(it.code) },
-                    pluralStringResource(R.plurals.dictionaries_other_language_count, count, count),
+                    pluralStringResource(R.plurals.dictionaries_other_language_count, count, count).takeIf { count > 0 },
+                    pluralStringResource(R.plurals.languages_model_count, models.size, models.size).takeIf { models.isNotEmpty() },
                     bytes?.let { Formatter.formatShortFileSize(context, it) },
                 ).joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall,

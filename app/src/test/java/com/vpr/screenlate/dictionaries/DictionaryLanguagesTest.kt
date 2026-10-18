@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.languages.LeftoverModel
 import java.util.Locale
 import org.junit.After
 import org.junit.Before
@@ -50,6 +51,19 @@ class DictionaryLanguagesTest {
         val unmeasured = otherLanguages(list, listOf(Language.JAPANESE, Language.ENGLISH), sizes = mapOf(2L to 10L))
         assertThat(unmeasured.single().code).isEqualTo("ko")
         assertThat(unmeasured.single().bytes).isNull()
+    }
+
+    @Test
+    fun `a language that left only recognition models is listed with them`() {
+        val list = listOf(dictionary(1, "ja"), dictionary(2, "ko"))
+        val models = mapOf("ru" to listOf(LeftoverModel("eslav", "PaddleOCR", 12L)), "ko" to listOf(LeftoverModel("korean", "PaddleOCR", 3L)))
+
+        val others = otherLanguages(list, listOf(Language.JAPANESE), sizes = mapOf(2L to 10L), models = models)
+        assertThat(others.map { it.code }).containsExactly("ko", "ru").inOrder()
+        assertThat(others[0].models.map { it.id }).containsExactly("korean")
+        assertThat(others[0].bytes).isEqualTo(10L)
+        assertThat(others[1].dictionaries).isEmpty()
+        assertThat(others[1].bytes).isEqualTo(0L)
     }
 
     @Test

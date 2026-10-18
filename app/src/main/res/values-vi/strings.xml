@@ -66,7 +66,7 @@
     <string name="dictionaries_count_characters">chữ Hán: %1$d</string>
     <string name="dictionaries_languages_hint">Các từ điển đã cài và có thể tải xuống bên dưới thuộc về ngôn ngữ đã chọn. Từ điển không có ngôn ngữ được dùng cho mọi ngôn ngữ.</string>
     <string name="dictionaries_other_languages">Ngôn ngữ khác</string>
-    <string name="dictionaries_other_languages_hint">Từ điển của các ngôn ngữ đã tắt. Không được dùng khi tra cứu và chỉ chiếm dung lượng.</string>
+    <string name="dictionaries_other_languages_hint">Từ điển và mô hình nhận dạng của các ngôn ngữ đã tắt. Không được dùng và chỉ chiếm dung lượng.</string>
     <plurals name="dictionaries_other_language_count">
         <item quantity="other">%1$d từ điển</item>
     </plurals>
