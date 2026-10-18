@@ -34,8 +34,9 @@ questions: `plans/2026-10-09-more-languages.md`.
   `DictionariesViewModel`, the catalog (only `ja` sources), the bundled dictionaries.
 - The page: `definition-ja.js` (markup of Japanese dictionaries), furigana and pitch graphs in `render-yomitan`,
   the "Only for Japanese text" font switch.
-- ML Kit: only the bundled Japanese model (`text-recognition-japanese`), used for every `OcrScript`; it reads Latin
-  too.
+- ML Kit: the bundled Latin, Japanese, Chinese and Korean models, one per `OcrScript` that has one (since
+  2026-10-17 Latin-script languages use the Latin model, not the Japanese one); other scripts need a downloaded
+  model (`notes/ocr-engines.md`, plan `2026-10-17-ocr-engines.md`).
 
 ## hoshidicts: what is Japanese-only
 
@@ -76,6 +77,25 @@ questions: `plans/2026-10-09-more-languages.md`.
   This is how languages without transforms (Russian, Polish, …) still get deinflection.
 - Docs: `docs/development/language-features.md`; dictionary list at yomitan.wiki/dictionaries.
 
+### Yomitan's languages and our status (master e7334a9, 2026-10-16)
+
+60 languages plus "Any / Unknown" (`xxx`: lookup as written, no language rules). T: Yomitan has transforms.
+
+- Done on `languages/main`: ja T, en T, zh, ko T, es T, fr T, de T, it, pt. On branches (group 3): ru, pl, tr, vi, lv.
+- Group 4 candidates Yomitan describes: hi, ar T (in the plan from the start, not in request 51), id, tl T (Filipino),
+  th, uk T, nl, el T, cs, hy, be, ka T, sh (Serbian is Serbo-Croatian there and in English Wiktionary: one language,
+  four standards, Cyrillic and Latin).
+- Candidates Yomitan lacks (bn, ms, kk, ky) have wty dictionaries from English Wiktionary: ms→en 1.7 MB, kk→en
+  1.7, bn→en 1.7, ky→en 0.6; into Russian kk 0.8, ky 0.3, ms and bn 0.1 (for scale: id→en 3.9, hi→en 5.6, de→en
+  16.3). They work like group 3: form-of rows plus the longest matching start of the word (Kazakh and Kyrgyz like
+  Turkish). Paddle's `cyrillic` recognizer has every Kazakh and Kyrgyz letter (ә ғ қ ң ө ұ ү һ і), `eslav` does not;
+  Bengali has no ML Kit or Paddle model (Tesseract `ben`, cloud).
+- The rest, by speakers: arz T (Egyptian Arabic, spoken variety; Wiktionary's own language, same script), yue, fa,
+  kn, ro, km, hu, sv, he, bg, sq T, lo, da, fi, no, mn, et, cy, eu T, yi T, mt, aii, ga T, br, gd, haw, gv, kw;
+  constructed eo T, tok; historical la T, grc T, sga T.
+- PP-OCRv5 mobile recognizers on Hugging Face (PaddlePaddle): main (zh/ja/en), en, latin, eslav, cyrillic, korean,
+  el, th, arabic, devanagari, ta, te.
+
 ## Dictionaries for other languages
 
 - Wiktionary (wiktionary-to-yomitan, "wty", data from kaikki/wiktextract), hosted on Hugging Face
@@ -97,7 +117,8 @@ questions: `plans/2026-10-09-more-languages.md`.
 - Korean: KRDICT/STDICT (Lyroxide/yomitan-ko-dic releases): KO-EN KRDICT 15.6 MB (4.3 MB without examples), CC100
   frequency 1.85 MB, IPA 6.6 MB, STDICT, KRDICT for 11 gloss languages. No license stated in the repo; third parties
   say the source data is CC BY-SA 2.0 KR (unconfirmed).
-- English–Russian outside Wiktionary: Mueller 7 and FreeDict eng-rus are GPL-2+.
+- English–Russian outside Wiktionary: Mueller 7 is GPL-2+; FreeDict eng-rus was too before WikDict regenerated it
+  (the 2025.11.23 edition is CC BY-SA 3.0, see "Converted dictionaries").
 - Licenses per dictionary: "Catalog candidates and licenses" below.
 
 ## Catalog candidates and licenses (checked 2026-10-09)
@@ -213,9 +234,9 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
   (`eslav_PP-OCRv5_mobile_rec`) ~7.5 MB. ncnn or MNN builds of PP-OCR are smaller but not packaged. Native
   libraries cannot be downloaded later in a clean way, so the runtime goes into the APK and only the models can be
   catalog downloads. Recognition quality on real screenshots not compared yet.
-- PP-OCRv5 recognizers (2026-10-09, PaddleOCR's multi-language page): korean, latin (~47 languages, Vietnamese
-  included), eslav (ru, be, uk), cyrillic (~33 languages incl. bg, sr, mn, kk), arabic (ar, fa, ur, ug, ps, ku, sd),
-  devanagari, th, el, te, ta, en. None for Hebrew, Georgian, Armenian, Khmer, Lao, Syriac or Kannada; PP-OCRv6
+- PP-OCRv5 recognizers (2026-10-09, PaddleOCR's multi-language page): korean, latin (~47 languages; its character
+  list has no Vietnamese letters with tone marks such as ạ, ấ, ộ, checked 2026-10-16), eslav (ru, be, uk), cyrillic
+  (~33 languages incl. bg, sr, mn, kk), arabic (ar, fa, ur, ug, ps, ku, sd), devanagari, th, el, te, ta, en. None for Hebrew, Georgian, Armenian, Khmer, Lao, Syriac or Kannada; PP-OCRv6
   exists, its languages not checked. Yomitan languages whose script neither ML Kit nor Paddle reads: he, yi, ka, hy,
   km, lo, kn, aii (Tesseract has all of them).
 - Prior art: PlayTranslate (an Android screen translator) runs PP-OCRv5 on MNN: the detector is bundled in its APK,
@@ -456,3 +477,323 @@ leaves every form that already finds something as it was.
 - Wiktionary ko-en: 387 K form-of rows with tags like "formal past indicative", "hanja form", "hangeul"; about 1,000
   tags carry leftover gloss after two spaces (cut by `FormOfTags.clean`).
 - The device recognizer does not read hanja (`ocr-engines.md`).
+
+## Converted dictionaries: FreeDict and OpenRussian (2026-10-16)
+
+- FreeDict pairs into Russian (edition 2025.11.23, all by WikDict, CC BY-SA 3.0 Unported per the TEI header):
+  `scripts/freedict/freedict_yomitan.py` reads the TEI (`entry/form/orth`, `pron`, `gramGrp/pos`, `gen`,
+  `sense/cit[@type=trans]/quote`, a nested `sense/def` as the source-language definition of the sense) and writes
+  wty-like structured content: per sense a `sense-label` div with the definition, then a `glossary` list. Chinese
+  `pron` holds the pinyin as `-{-{xīnyōu}-}-`. Archive sizes: de 1.7 MB, fr 0.9, it 0.7, es 0.7, pl 1.5, en 4.7,
+  zh 5.5.
+- Quality: zh→ru has 74% of its senses as lists of single Russian words in alphabetical order that mix unrelated
+  meanings, and nearly every entry tagged as a noun; en→ru 10% such senses; the others about 1%. Senses with a
+  source-language definition above them: de and pl 100%, en 96%, it 65%, es 58%, fr 32% (question 18 in the plan).
+- OpenRussian: the official SQL dump URL (`api.openrussian.org/downloads/openrussian-sql.zip`, from openrussian-cli's
+  Makefile) returns 404 "Route not found"; the TogetherDB database the site's GitHub README points at
+  (`app.togetherdb.com/db/o9puugtgtauo1ih5/russian3/words`) loads with "Request failed". The CSVs in
+  `github.com/Badestrand/russian-dictionary` (the site's own backup, export of 2020-09-09, CC BY-SA 4.0) are what the
+  converter reads; openrussian-cli (git.fmsbw.de) keeps a copy of the SQL dump from 2021-04-20 (question 19).
+- The CSVs: nouns 26,982 rows, verbs 14,871, adjectives 11,941, others 5,031 (one row there has a tab inside a
+  translation); English translations for 46 K words, German for 57 K. Stress is an apostrophe after the vowel,
+  secondary stress a backtick; one bare form even holds U+0300. Table cells hold alternatives (`зверя'ми//зверьми'`,
+  `до'лжной,(до'лжною)`, `но'вы / новы'`), an asterisk before rare forms, `—` for none, and notes or junk
+  (`застону'//_устар._застона'ю`, `взъе'лась$II(…`, `серёг=>`, `[[са'мый]] [[лени'вый]]`); the converter drops a cell
+  with any symbol besides letters, stress marks, separators, the asterisk and brackets. German translations bracket
+  asides with box corners (`└ seinen / ihren┘`, about 1,100 times), turned into parentheses. Gender `both` (28 nouns)
+  gets both tags; aspect `both` (567 verbs) gives "present/future" forms.
+- Result (`scripts/openrussian/openrussian_yomitan.py`): ru→en 45,968 words and 440,837 form-of rows (597 K form items),
+  6.7 MB; ru→de 56,901 words, 517,227 form-of rows, 8.2 MB. Form-of lemmas are stressed (`ко́шка`), so homographs
+  resolve to the right one (`за́мка` → `за́мок`); forms whose stress differs get separate rows (`руки́`
+  genitive singular, `ру́ки` nominative plural). Verbs get their aspect partner as a last definition
+  ("perfective: сказать").
+
+## Group 3: Polish, Turkish, Latvian, Vietnamese, Russian (2026-10-16)
+
+- Yomitan has no transforms for pl, tr, lv, vi or ru; their bundles carry text processors only, so inflected forms
+  come from the dictionaries' form-of rows. Yomitan's ru processors drop stress marks (ко́шка → кошка) and turn ё
+  into е and back (еж → ёж); vi's move the tone mark between the old and new places (hoà ↔ hòa).
+- Turkish case: Yomitan's `decapitalize` and `capitalizeFirstLetter` use JavaScript's case mapping, which turns I
+  into i and i into I. `scripts/yomitan-language/glue.js` swaps in Turkish versions for `tr` (`caseProcessors`):
+  I ↔ ı, İ ↔ i. `glue.test.mjs` runs the built bundles under node:vm.
+- wty pl-en, tr-en, lv-en: lemma rows have no reading. Sample forms: koty → kot, czytaliśmy → czytać, oknie → okno;
+  gittik → gitmek, kitabı → kitap, okuyorum → okumak (İstanbul and ışık are lemmas); grāmatu → grāmata, lasīju →
+  lasīt, jālasa → lasīt ("indicative debitive"). lv-en's tags add debitive (1,822 items), renarrative (2,716) and
+  "form" after a word ("adverbial form", "rare form"), now silent like "degree".
+- Latvian writes years as ordinals ("1918. gada 18. novembrī"), so a number of any length followed by a period and a
+  lowercase word counts as an ordinal in every language with `ordinalPeriod` (plan question 24).
+- wty vi-en: lemma rows have no reading. "cái" is a non-lemma row with 924 items tagged `classifier`
+  (cái → bàn, ghế, áo, …); `VietnameseSupport.ignoredFormTags` drops results reached only through them. Many
+  syllables are also non-lemma rows pointing to Hán-Nôm characters (`Hán-Nôm` tag: xa → 車, 佘, 奢; học → 𭓕), kept
+  and labelled (plan questions 21, 22). Multi-syllable words are lemmas of their own (học sinh, sinh viên); the
+  lookup starts one and two syllables before the aim (`earlierStartOffset`, `fromEarlierStarts`) and each
+  result's `start` says where its match begins. wty-vi-ipa tags transcriptions with cities (Hanoi, Hue, Saigon,
+  Vinh), not countries, so Vietnamese has no transcription regions.
+- wty ru-en: lemma rows put the stressed form in the reading (кошка read ко́шка; one-syllable words and words with ё
+  have none). Form-of items point to the lemma both unstressed and stressed (кошки → кошка and → ко́шка, in separate
+  rows), and some lemmas are themselves forms (кошка → кот "feminine"). The lookup page shows a reading that only
+  adds U+0300 or U+0301 in the word's place (`reading-ru.js`); a different reading (еж read ёж) stays ruby.
+- Catalog: lv-ru (Wiktionary) is 520,903 bytes, under the 0.5 MiB threshold (plan question 20). The transcription
+  dictionaries of Turkish (303 KB) and Latvian (33 KB) are under it too, so neither language has one in the catalog.
+
+## Group 4a research (2026-10-18)
+
+Dutch (nl), Czech (cs), Indonesian (id), Malay (ms), Tagalog (tl), Serbo-Croatian (sh), Ukrainian (uk), Belarusian (be),
+Greek (el). Sources: Yomitan e7334a9 (`ext/js/language/`), the wty tree on Hugging Face (`latest/dict`, listed and
+downloaded 2026-10-18, sizes in MB of 10^6 bytes), wordfreq 912caf6, the Paddle and tessdata pins of
+`scripts/ocr-models/`, circle-flags 379588b, the fonts of `overlay/src/main/assets/fonts/catalog.json` (cmap and GSUB
+read from the files), the OCR comparison of `ocr-engines.md` (2026-10-16/17). Nothing measured on a device.
+
+### Yomitan at e7334a9
+
+| lang | text processors | transforms |
+|---|---|---|
+| nl | capitalization | none |
+| cs | capitalization | none |
+| id | capitalization, `removeAlphabeticDiacritics` (NFD, drops U+0300–U+036F) | none |
+| ms | no descriptor (like kk, ky: form-of rows and the longest start) | none |
+| tl | capitalization, diacritics removal | `tagalogTransforms`: 3 conditions, 60 transforms, 635 rules; one transform has a description, the others are affix names (`-an`, `mag-`, `pag-…-an`) |
+| sh (iso639_3 `hbs`) | capitalization, `removeSerboCroatianAccentMarks` (combining marks after a e i o u r), `addSerboCroatianDiacritics` (c → č/ć, z → ž, s → š, dj → đ in every combination, capped at `MAX_PROCESS_VARIANTS` 4096) | none |
+| uk | capitalization, `removeUkrainianDiacritics` (U+0301), `ukrainianApostropheVariants` (input ' ‘ ’ ʼ \` ´ → ' ’ ʼ); `isTextLookupWorthy`: contains Cyrillic | `ukrainianTransforms`: 6 conditions, 35 transforms, 3,023 rules, all 35 described |
+| be | capitalization (no stress removal) | none |
+| el | capitalization, `removeDoubleAcuteAccents` | `modernGreekTransforms`: 1 condition, 1 transform (ξανα-), 6 rules |
+
+- `addSerboCroatianDiacritics` grows as 3^n per substring for c and 2^n for s, z: a word like "srecica" gives 18
+  variants, and every substring of the scanned text is expanded. Under QuickJS this is the costliest processor so far;
+  the cap stops it at 4096 per substring. To be timed on the emulator with long Latin lines.
+- Yomitan's text processors change the text, not the headwords: they do not help where the headwords carry marks
+  (Belarusian, below).
+
+### Dictionaries (wty)
+
+Counting: distinct headwords of rows whose glossary is not only `[lemma, [tags]]` items (the catalog threshold's "words
+with their own meaning", plan row "Catalog threshold"); ✗ under 1,500; – no file. Cells: archive MB, words.
+
+Main dictionaries:
+
+| from | en | ru | de | es | fr | it | ja | ko | pl | pt | tr | vi | zh |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| nl | 8.6 67.7k | 0.6 11.5k | 0.1 1.0k ✗ | 0.09 1.8k | 2.5 30.8k | 0.1 2.9k | 0.3 6.0k | 0.06 1.6k | 0.2 5.5k | 0.1 1.9k | 0.09 2.5k | 0.1 1.1k ✗ | 0.9 9.7k |
+| cs | 7.6 47.5k | 1.0 15.1k | 2.5 9.2k | 0.04 698 ✗ | 5.6 25.7k | 0.06 1.1k ✗ | 0.1 2.8k | 0.08 2.2k | 1.6 24.3k | 0.09 1.5k | 0.2 8.0k | 0.03 280 ✗ | 0.6 13.0k |
+| id | 3.9 31.3k | 0.2 4.4k | 0.02 234 ✗ | 0.02 216 ✗ | 0.7 13.9k | 0.01 135 ✗ | 0.09 1.1k ✗ | 0.05 1.2k ✗ | 0.07 1.7k | 0.05 1.1k ✗ | 0.03 683 ✗ | 0.02 100 ✗ | 0.2 3.1k |
+| ms | 1.7 10.0k | 0.1 2.1k | – | 0.01 106 ✗ | 0.07 1.6k | – | 0.07 981 ✗ | 0.04 765 ✗ | 0.03 751 ✗ | 0.03 687 ✗ | 0.02 612 ✗ | 0.02 140 ✗ | 0.5 14.5k |
+| tl | 4.3 28.0k | 0.1 2.2k | 0.03 230 ✗ | 0.01 176 ✗ | 0.08 1.9k | – | 0.04 535 ✗ | 0.02 510 ✗ | 0.05 1.2k ✗ | 0.03 659 ✗ | 0.05 1.9k | 0.02 190 ✗ | 0.2 1.8k |
+| sh | 12.0 56.7k | 0.02 244 ✗ | 0.01 67 ✗ | 0.03 489 ✗ | 0.06 1.0k ✗ | – | 0.2 2.3k | – | – | 0.03 567 ✗ | – | 0.02 204 ✗ | 0.6 9.3k |
+| uk | 9.8 29.9k | 3.2 36.0k | 0.5 2.4k | 0.02 243 ✗ | 2.9 22.6k | 0.02 364 ✗ | 0.1 1.5k | 0.1 3.1k | 1.8 33.1k | 0.04 688 ✗ | 0.3 10.6k | 0.02 119 ✗ | 0.5 4.9k |
+| be | 1.4 5.6k | 1.3 23.3k | 0.2 922 ✗ | – | 0.08 1.5k ✗ | 0.01 86 ✗ | 0.05 395 ✗ | 0.1 2.7k | 1.2 20.8k | 0.03 553 ✗ | 0.04 731 ✗ | 0.02 133 ✗ | 0.1 1.4k ✗ |
+| el | 6.0 29.7k | 0.8 10.0k | 0.05 242 ✗ | 0.04 487 ✗ | 0.8 8.9k | 0.04 950 ✗ | 0.09 1.3k ✗ | 0.04 771 ✗ | 1.1 12.1k | 0.07 1.3k ✗ | 6.3 216.6k | 0.03 176 ✗ | 0.4 4.8k |
+
+Glossaries (the source language's own Wiktionary edition; id, tl, sh, uk and be have none, ms has only lists under the
+threshold, 511 words into en at most):
+
+| from | en | ru | de | es | fr | it | ja | ko | pl | pt | tr | vi | zh |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| nl | 1.3 39.5k | 0.2 3.9k | 0.7 21.2k | 0.8 28.1k | 0.7 22.2k | 0.2 7.6k | 0.1 2.5k | 0.06 1.4k ✗ | 0.2 5.5k | 0.2 4.3k | 0.09 2.5k | 0.05 1.2k ✗ | 0.07 1.6k |
+| cs | 0.7 23.6k | 0.3 11.0k | 0.6 20.9k | 0.2 6.2k | 0.5 17.9k | 0.2 8.4k | 0.08 2.3k | 0.04 912 ✗ | 0.3 12.1k | 0.06 1.9k | 0.04 1.1k ✗ | 0.02 483 ✗ | 0.03 784 ✗ |
+| el | 0.8 42.2k | 0.1 5.9k | 0.4 16.6k | 0.1 6.9k | 0.6 32.6k | 0.1 6.4k | 0.05 2.2k | 0.03 1.2k ✗ | 0.1 6.5k | 0.07 3.9k | 0.07 3.8k | 0.02 349 ✗ | 0.04 1.7k |
+
+- Pairs that pass, main: nl en ru es fr it ja ko pl pt tr zh; cs en ru de fr ja ko pl pt tr zh; id en ru fr pl zh;
+  ms en ru fr zh; tl en ru fr tr zh; sh en ja zh; uk en ru de fr ja ko pl tr zh; be en ru ko pl; el en ru fr pl tr zh.
+  Close to the line (may cross with the next wty release): uk→ja 1,517, cs→pt 1,523, nl→ko 1,566, be→fr 1,475,
+  be→zh 1,377.
+- The catalog script still filters by `MIN_BYTES` (512 KiB); the word count of the "Catalog threshold" row is not
+  implemented on any branch yet. Every 4a file above 512 KiB has more than 1,500 words; 51 files pass by words but not
+  by bytes (id→pl 0.07 MB with 1.7k words, ms→zh 0.5 MB, uk→ja, sh→ja, most glossaries) and stay out until it is.
+- el→tr: 216.6k words, of which about 90.3k are inflections written as prose glosses ("… sözcüğünün çekimi") and
+  111.5k surnames and given names; about 14.8k ordinary entries. It passes either way.
+- Own-language editions: nl-nl 27.4 MB, el-el 37.8, cs-cs 8.4 (46.9k words), id-id 2.1 (42.6k), ms-ms 0.8 (10.5k).
+  The catalog lists a pair only when the target is in `GLOSSES`, so none of them appears today (fr-fr, de-de do,
+  since their languages are gloss languages).
+- Transcriptions (`dict/all/<lang>/wty-<lang>-ipa.zip`), MB and words: nl 2.1 (134.4k), cs 1.7 (122.4k), id 0.47
+  (25.4k), ms 0.22 (9.0k), tl 0.74 (31.8k), sh 0.67 (51.4k), uk 0.92 (66.2k), be 0.20 (14.3k), el 0.98 (59.4k).
+  Under `MIN_BYTES` today: id, ms, be.
+- Form-of rows in →en (rows, distinct forms, own words): nl 189,674 / 182.2k / 67.7k; cs 470,860 / 463.2k / 47.5k;
+  id 36,717 / 35.3k / 31.3k; ms 36,246 / 33.2k / 10.0k; tl 96,733 / 77.1k / 28.0k; sh 927,700 / 878.4k / 56.7k;
+  uk 419,102 / 364.0k / 29.9k; be 58,028 / 55.7k / 5.6k; el 265,861 / 247.8k / 29.7k. Lemma rows have no reading in
+  any of them.
+- Into Latvian: nl→lv 1.1k, cs→lv 1.4k, el→lv under 1k (lv is not a gloss language anyway).
+- Beyond Wiktionary: only Kamata954's Indonesian–English (Wiktionary-based, in "Catalog candidates and licenses") is
+  known; nothing else was searched in this pass.
+
+### Word frequency (wordfreq 912caf6)
+
+- Large lists: cs (3.25 MB), nl (1.66), uk (2.77). Small lists only: el 46.9k words, `fil` 30.3k (Tagalog), id
+  31.2k, ms 28.8k, `sh` 54.8k (one list for bs, hr, sr, me). Belarusian has none.
+- `sh` is Latin only: wordfreq transliterates Serbian Cyrillic to Latin for sr and sh. Cyrillic spellings would have to
+  be added by transliteration when the frequency dictionary is built (as the Traditional Chinese forms are), or
+  Cyrillic text gets no frequency order.
+- Greek: wordfreq writes the final sigma as σ (10,841 words end in σ, none contains ς: τησ, τουσ, πωσ). The builder
+  must turn a word-final σ into ς or no frequency matches. 39k of the 46.9k words carry tonos.
+- Latin words in the lists: uk small 1,660, el small 3,578 (filtered like the Russian list's).
+
+### OCR
+
+- ML Kit's Latin model lists Czech, Dutch, Indonesian, Malay, Filipino ("fil (or tl)"), Serbian in Latin, Croatian and
+  (experimental) Bosnian. Nothing for Cyrillic or Greek. `OcrScript` has no GREEK value yet.
+- Paddle character lists: v5 `latin` (836) and v6 small (18,708) have every Czech, Dutch (Ĳ ĳ included), Tagalog,
+  Indonesian, Malay and Serbo-Croatian Latin letter (Ǆ ǅ ǆ Ǉ ǈ ǉ Ǌ ǋ ǌ included); v6 lacks „ and ‚ and every
+  letter of uk, be, Serbian Cyrillic and Greek beyond Russian and basic Greek. `eslav` (517) has ґ є і ї ў but lacks
+  ђ ј љ њ ћ џ; `cyrillic` (850) has every uk, be and Serbian letter and Latin a–z, but no č ć đ š ž. No model reads
+  both Serbo-Croatian scripts. `el` (354) has the tonos and dialytika letters, ΐ ΰ, ς, ASCII ; and U+00B7, and » but
+  not «. None of the lists has U+037E, U+0387 or U+02BC (they normalize to ; · under NFC; ʼ comes out as ' or ’).
+- tessdata (fast / best MB): nld 5.8 / 8.5, ces 3.6 / 10.4, ind 1.1 / 7.9, msa 1.7 / 7.8, fil 1.8 / 8.6 (no `tgl`),
+  srp 2.1 / 8.9, srp_latn 3.1 / 9.4, hrv 3.9 / 10.7, bos 2.4 / 5.0, ukr 3.6 / 10.4, bel 3.5 / 10.4, ell 1.4 / 8.5.
+- Measured (`ocr-engines.md`, CER %, clean + hard under the plan's rule): cs Paddle v6 1.4 against ML Kit 4.3; sh
+  Latin v6 0.3 against 1.7; uk Paddle `cyrillic` 3.4 (eslav 4.4) against tessdata_fast 19.1; sh Cyrillic `cyrillic`
+  2.8 against 22.1; el Paddle `el` 1.4 against 25.4. Clean screens: cs tessdata 0.1, v6 1.0, ML Kit Latin 0.9; uk
+  `cyrillic` 1.8, eslav 2.6; el Paddle 0.7, tessdata best 0.8. Photos: cs Paddle 13.5 (cloud 5.6), el 11.6 (2.5),
+  sh Cyrillic 9.7 (3.7), uk 39.1 (35.9, two signs). nl, id, ms, tl and be were not measured; their letters are the
+  ones the Latin and Cyrillic models already read.
+- Model sets: `paddle_models.py` offers v6 and `latin` only for en de fr es it pt pl tr lv and `cyrillic` only for
+  ru; the 4a languages need adding, and `el` (and `eslav`, if offered at all) need converting and hosting.
+  Belarusian would take `cyrillic` as Ukrainian does (eslav is worse on uk and lacks nothing be needs, but it was not
+  measured on be).
+
+### Fonts
+
+- Literata covers all nine (Greek and the combining marks included). Inter covers all but U+0311 (inverted breve of
+  Serbo-Croatian Cyrillic readings). PT Serif and PT Sans cover Latin and Cyrillic with ґ є і ї ў ђ ј љ њ ћ џ but
+  lack Ĳ, ǆ ǉ ǌ, Greek and the combining U+0300, U+030F, U+0304, U+0311 that sh readings use. Atkinson Hyperlegible
+  Next: Latin only, without ǆ ǉ ǌ, U+030F, U+0311. Lexend: Latin and Vietnamese only (its file has basic Cyrillic
+  without ґ є і ї ў ђ ј, no Greek); the catalog's subsets already say so.
+- Serbian Cyrillic forms (upright б; italic б г д п т): only the system Noto Sans/Serif have `locl` for SRB (and MKD);
+  Roboto, Literata, Inter and PT have none. The catalog downloads upright files, so italics are synthesized; the
+  Serbian forms appear only with Noto and a Serbian `lang`. HarfBuzz (`hb-ot-tag-table.hh`, main) maps `sh` to BOS,
+  HRV, SRB and takes the first the font has, so `lang="sh"` should select Noto's SRB too (to check in the WebView;
+  `lang="sr"` on Cyrillic text is the fallback).
+- Greek: Roboto lacks U+037E (NFC turns it into ; anyway).
+- Locale codes on Android: `Locale("id").language` is the old code "in" (as he → iw, yi → ji), `toLanguageTag()`
+  gives "id"; the system's Filipino locale is `fil`, while Yomitan and wty use `tl`. Comparisons should go through
+  language tags (to check on API 35).
+
+### Text rules
+
+- Ordinal period: cs ("5. května") and sh ("5. maja", "1918. godine", as Latvian) need `ordinalPeriod`; nl, id, ms,
+  tl (ika-5), uk, be and el do not.
+- Greek: ; is the question mark and ends a sentence; · (ano teleia) is a clause mark and does not. Quotes «…» with
+  “…” inside.
+- Quotes: cs „…“ ‚…‘ »…«; nl “…” ‘…’ „…”; sh Serbian „…“, Croatian »…« and „…“; uk and be «…» with „…“ inside;
+  id, ms, tl “…” ‘…’.
+- Apostrophes: nl 's, 't, 'n, zo'n, auto's (wty: auto's → auto "plural", zo'n a lemma, 's → des, eens; 1,500
+  headwords with '); uk п'ять, м'ясо (5,994 headwords with ', 2 with ’, 1 with ʼ), be сям'я (520 with '). The word
+  scan already keeps ' and ’ between letters (`WORD_CONNECTORS`) and ʼ is a letter; Yomitan's uk variants map ’ ʼ to
+  '; be has no such processor, so ’ in Belarusian text needs one (or `ukrainianApostropheVariants` reused).
+- Abbreviation drafts:
+  - cs: např, tj, tzv, tzn, apod, resp, mj, aj, č, s, str, r, st, ul, nám, MUDr, Ing, Mgr, doc, prof, PhDr, JUDr,
+    RNDr.
+  - nl: bijv, d.w.z, o.a, m.a.w, e.d, ca, nr, blz, dhr, mevr, mr, dr, prof, ir, ing, drs, jl, a.s.
+  - id: dsb, dst, yth, Jl, No, hlm, tsb, sbb, spt, thn, tgl, Bpk, Dr, Prof, S.H (dll often ends a sentence: leave out).
+  - ms: Jln, En, Pn, Tn, Sdn, Bhd, hlm, Dr, Prof.
+  - tl: Gng, G, Bb, Sto, Sta, Blg, p, Hen, Kgg.
+  - sh: npr, tj, tzv, sl, god, g, st, v, str, br, dr, prof, ul, sv, odn, pr. Kr., n. e., p. n. e.; Cyrillic нпр, тј,
+    бр, стр, год, в, ул, др, проф, тзв, св, г.
+  - uk: напр, див, р, ст, с, м, вул, обл, тис, проф, акад, доц, т. зв, пор, англ, лат.
+  - be: г, ст, напр, вул, с, тыс, праф, акад, г. зн.
+  - el: π.χ, δηλ, βλ, σελ, αρ, κ, π.Χ, μ.Χ, τ.μ, χλμ, οδ, Αγ.
+
+### Per language
+
+- **Dutch**: no Yomitan rules; forms from 189.7k form-of rows (plural, diminutive, partitive, "Flanders colloquial").
+  Rich catalog: 11 main pairs and 11 glossaries pass, nl-nl 27.4 MB. Large wordfreq list. OCR: Latin models; not
+  measured, Paddle v6 expected as for de. TTS: Google voices for Belgium and the Netherlands. Audio: Lingua Libre 10/10,
+  Wiktionary 10/10 (Nl-kat.ogg; some titles carry speaker initials where the parser expects a region, Nl-tv-hond.ogg).
+  Flag nl; bubble letter candidates Ĳ or IJ.
+- **Czech**: no Yomitan rules; 470.9k form-of rows (all seven cases, vocative included). 10 main pairs, 9 glossaries,
+  cs-cs 8.4 MB. Large wordfreq list. OCR measured: Paddle v6. TTS: Google voice. Audio: Lingua Libre 6/10, Wiktionary
+  10/10 (Cs-kočka.ogg). Flag cz; bubble letter Ř (or Ů).
+- **Indonesian**: Yomitan strips diacritics only; 36.7k form-of rows (reduplicated plurals rumah-rumah, active and
+  passive verbs: membaca → baca, which is also its own entry; equative, jussive). id-en 3.9 MB, id-ru 4.4k words; id-id
+  2.1 MB; no glossaries. Small wordfreq list. OCR: ML Kit Latin lists it; Paddle `latin`/v6 have the letters; not
+  measured. TTS: Google voice. Audio: Lingua Libre 10/10, Wiktionary 0/10. Flag id; no letter outside basic Latin.
+- **Malay**: no Yomitan descriptor (group 3 style). ms-en 1.7 MB, 10.0k words; ms-zh 0.5 MB with 14.5k words; ms-ms 0.8
+  MB; 13,997 Jawi alt-of items (baca → باچ). Lingua Libre `msa` (Q9237) 2,414 files, `zsm` none. Small wordfreq list.
+  TTS: Google voice (Malaysia). Audio: Lingua Libre 7/10, Wiktionary 4/10 (Ms-MY-kucing.ogg), either 8/10. Flag my
+  (Brunei bn and Singapore sg exist in circle-flags).
+- **Tagalog**: Yomitan transforms (60, affix names only); wty tl-en 4.3 MB, 28.0k words, 96.7k form-of rows (aspect
+  progressive/completive/contemplative, focus objective/benefactive/causative/locative) and 38,896 Baybayin alt-of items
+  (basa → ᜊᜐ). Codes differ by source: Yomitan, wty, Lingua Libre `tl`/`tgl`; ML Kit, tessdata, wordfreq and Google TTS
+  `fil` "Filipino". Lingua Libre `tgl` (Q34057) 3,269 files, `fil` 7. Audio: Lingua Libre 10/10, Wiktionary 2/10
+  (Tl-PH-pusa.ogg). Flag ph; bubble letter candidates Ng or Ñ (Ñ is Spanish's).
+- **Serbo-Croatian**: one language in Yomitan, wty, wordfreq; separate in tessdata (srp, srp_latn, hrv, bos), ML Kit
+  (Serbian Latin, Croatian, Bosnian), Lingua Libre (srp Q9299 93 files, hrv Q6654 1, bos and hbs none) and Google TTS
+  (Serbian, Croatian, Bosnian). wty sh-en 12.0 MB: 31.4k Latin and 25.3k Cyrillic headwords, each a full entry whose
+  grammar line names the other spelling ("Cyrillic spelling ку̏ћа"); 41,876 more Cyrillic form rows carry the accented
+  spelling and point to the Latin lemma with the tag `Cyrillic` (ма̏чка → mačka), duplicates of the Cyrillic entries
+  once marks are ignored. Ekavian and Ijekavian variants link each other (hleb ↔ hljeb, "alternative Ijekavian"); tags
+  include future-i/future-ii, pluperfect, conditional-i/-ii, Ikavian. 134k form rows have accent marks in the headword
+  (most Cyrillic, and periphrastic forms like "би́ли бисмо прешли"); the plain spellings of common forms exist as
+  separate rows (куће, читам, knjige). Only en, ja, zh pass as gloss languages. Audio: Latin words 1/10 (one Lingua
+  Libre file), Cyrillic 8/10 from Wiktionary as Sr-кућа.flac (plain fixes below). No sh flag; candidates rs, hr, ba, me.
+  Bubble letter candidates Đ (Latin, every standard) or Ћ.
+- **Ukrainian**: Yomitan's richest set here (35 described transforms, apostrophe variants); wty uk-en 9.8 MB, uk-ru 3.2
+  MB (36.0k words, more than uk-en's 29.9k); 9 main pairs; form rows carry stressed readings (чита́ю), 537 form
+  headwords have a secondary-stress mark (а̀втостради). Large wordfreq list. OCR: Paddle `cyrillic`. Lingua Libre `ukr`
+  (Q8798) 27,402 files. TTS: Google voice. Audio: Lingua Libre 0/10 (its 27.4k files are mostly one speaker reading
+  rarer words and phrases), Wiktionary 10/10 (Uk-кіт.ogg). Flag ua; bubble letter Ї (or Ґ, Є).
+- **Belarusian**: Yomitan capitalization only. wty be-en 1.4 MB with only 5.6k words, be-ru 23.3k, be-pl 20.8k. 51,670
+  of be-en's form-of rows have a stressed headword (па́льца, ко́шкі) and 45.3k of them have no unstressed twin, so
+  "пальца" in plain text finds nothing; be-ru has 3,601 such rows. No wordfreq list (no frequency order). OCR: Paddle
+  `cyrillic` presumably (not measured). Lingua Libre `bel` (Q9091) 1,931 files. No Google TTS voice. Audio: Lingua Libre
+  2/10, Wiktionary 8/10 (Be-вада.ogg), either 10/10. Flag: circle-flags has only the official red-green `by`. Bubble
+  letter Ў.
+- **Greek**: Yomitan drops double acute accents, one prefix rule (ξανα-); 265.9k form-of rows, with article tables as
+  noise (της lists ο, η, το, τα, τις, τους, τον, τη, την, των… as its lemmas, like the Russian pronoun tables). 6 main
+  pairs and 11 glossaries; el-el 37.8 MB. All-caps text has no tonos (ΣΚΥΛΟΣ → σκυλος), and wty headwords carry it
+  (σκύλος), so capitals and unaccented text find nothing unless headwords are matched without tonos too. Small wordfreq
+  list with the σ problem. OCR: Paddle `el` (not yet converted), `OcrScript.GREEK` needed. Fonts: Literata and Inter
+  (and the system's). Lingua Libre `ell` (Q9129) 167 files. TTS: Google voice. Audio: Lingua Libre 2/10, Wiktionary 0/10
+  (one loose hit without the El- prefix), so the voice is the main source. Flag gr (cy exists); bubble letter Ω (or Λ).
+
+### Plain fixes found (no owner decision)
+
+- Belarusian form headwords with stress marks: index headwords without U+0301 (and U+0300) at import as well, for be,
+  uk and sh (sh also U+030F, U+0311, U+0304, U+0302 on vowels and r), so plain text finds them.
+- Serbo-Croatian `Cyrillic` form rows: silent and dropped (`ignoredFormTags`), the Cyrillic entries exist on their own.
+- Baybayin and Jawi alt-of rows: the target (ᜊᜐ, باچ) is itself only a form row back to the Latin word, so following
+  it brings nothing new; drop the tags `Baybayin` and `Jawi` (the grammar line already shows the spelling).
+- Belarusian apostrophes: the Ukrainian apostrophe variants (’ ʼ → ') applied to be as well.
+- Greek frequency: word-final σ → ς in the builder.
+- sh frequency: add the Cyrillic spellings by transliteration.
+- sh audio: Wiktionary's recordings are `Sr-кућа.flac` (Cyrillic, prefix Sr, not Sh); none was found under Sh, Sr,
+  Hr or Bs in Latin. The search needs the prefix `sr` and, for Latin text, the word transliterated to Cyrillic
+  (lj → љ, nj → њ, dž → џ, đ → ђ …); that turns 1/10 into 8/10 on the test words.
+- Greek ; ends a sentence, · does not; cs and sh `ordinalPeriod`.
+- `OcrScript.GREEK`; uk, be and Serbian Cyrillic on Paddle `cyrillic` (eslav lacks ђ ј љ њ ћ џ and measured worse on
+  uk); the 4a Latin languages on v6/`latin`.
+- A Serbian `lang` on Serbo-Croatian text (`sh`, or `sr` on Cyrillic if the WebView ignores `sh`) for Noto's
+  Serbian glyph forms.
+
+### Questions for the owner
+
+Answered on 2026-10-18: questions 41-54 and the decision rows from "Serbo-Croatian" on in the languages
+plan.
+
+1. Serbo-Croatian: (a, recommended) one language with both scripts, as Yomitan, Wiktionary and wordfreq treat it;
+   (b) Serbian, Croatian and Bosnian as three languages sharing the sh dictionaries (each with its own OCR, voice and
+   flag); (c) one language, Latin only.
+2. Serbo-Croatian script for recognition (no model reads both): (a, recommended) the language's model list holds the
+   Latin models and the Cyrillic one, the Latin v6 preselected, the user picks once; (b) two entries, "Serbo-Croatian
+   (Latin)" and "(Cyrillic)", sharing the dictionaries, switched from the bubble like languages.
+3. Serbo-Croatian flag: (a, recommended) Serbia by default, Croatia, Bosnia and Herzegovina and Montenegro offered on
+   the Languages screen as for English and Portuguese (extends the row "Flag country"); (b) the code "SH" in a round
+   badge instead of a flag; (c) Serbia only.
+4. Serbo-Croatian voice: (a, recommended) by the text's script, Croatian for Latin, Serbian for Cyrillic (to check
+   that the Serbian voice reads Latin); (b) one voice chosen in the audio settings.
+5. Indonesian and Malay: (a, recommended) two languages (own dictionaries, frequency lists, voices, flags); (b) one
+   entry with both dictionaries.
+6. The name of tl: (a, recommended) "Filipino" in the UI (Android, ML Kit, tessdata, wordfreq and the voice say so),
+   code tl inside; (b) "Tagalog" (Yomitan and Wiktionary); (c) "Filipino (Tagalog)".
+7. Own-language Wiktionary editions (nl-nl 27.4 MB, el-el 37.8, cs-cs 8.4, id-id 2.1, ms-ms 0.8): (a, recommended)
+   listed, unticked, for every source language that has one; (b) left out unless the language is a gloss language.
+8. Transcriptions: (a, recommended) the 1,500-word rule as for pairs (id, ms and be get one; Turkish and Latvian
+   rechecked); (b) keep 0.5 MiB for transcriptions.
+9. Greek text without tonos (capitals, careless typing): (a, recommended) a word written without any tonos also
+   matches headwords that have one (ΣΚΥΛΟΣ → σκύλος), a word with tonos matches exactly; 9,456 of 260k accentless
+   spellings join two or more headwords (ποτέ and πότε, νομός and νόμος), which then both show; (b) every word matched
+   without tonos; (c) exact accents only.
+10. Article and pronoun tables (Greek της → 13 article forms; Russian он → вы, его…): (a, recommended) leave as is,
+    as for Russian; (b) drop form links between two forms that list each other.
+11. Belarusian flag: (a, recommended) the official flag from circle-flags; (b) the white-red-white flag, drawn by us;
+    (c) the code "BE" instead of a flag.
+12. Bubble letters: (a, recommended) nl Ĳ, cs Ř, id and ms the codes "ID" and "MS" (no letter of their own), tl Ng,
+    sh Đ, uk Ї, be Ў, el Ω; (b) the alternatives above (IJ, Ů, Ñ, Ћ, Ґ, Λ).

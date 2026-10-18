@@ -1,17 +1,104 @@
 # Status
 
+## Work in progress (2026-10-18): OCR missing parts, group 4a questions, the checks session
+
+The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
+
+- the missing parts of the OCR plan are built (scan holds and deferred model deletes, damaged model files with a home
+  card, model updates in "Check for updates", the device-only scan message opening the language's models);
+- ML Kit comes first at setup for the languages it reads (OCR plan, questions 38 and 40);
+- the region order is shown only while used (question 28), and a compound part's nouns come first (question 29);
+- docs and test-model cases OCR22-OCR25, AUD12, LK27 (all N).
+
+Requests 67 (download queue: Jiten stalls, retries add attempts; in the backlog) and 68 (scan times, default engines;
+OCR plan questions 36-40, answered) are in the languages plan.
+
+The emulator checks of groups 1-3 and the OCR cases run in their own session ("Emulator checks of groups 1-3 and OCR
+engines", branch `languages/checks` in `.worktrees/lang`), together with the in-app scan timing run per engine.
+It was sent a second round: merge `languages/ocr-engines` and check the N cases above. When it reports:
+
+- review its commits, and ask the owner before merging them into `languages/ocr-engines`;
+- apply the timing run: the row "Default OCR engines", the speed marks in words and the Both-mode hint;
+- fast-forward `languages/main` through the stack.
+
+Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
+41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
+engines plan is done.
+
+## Work in progress (2026-10-17): OCR engines and the owner's build
+
+Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
+`languages/ocr-engines` (pushed) holds the whole group 1-3 stack plus ML Kit Latin, Tesseract, the model choice per
+language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Screenlate Dev" APK (artifact
+`screenlate-debug-<sha7>`). The Paddle model archives are on the prerelease `ocr-models-1`. Next: docs (`usage.md`,
+`architecture.md`), the remaining test-model cases, the emulator checks of groups 1-3 and the OCR cases, a phone timing
+run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
+comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
+http server on port 8000, `/data/local/tmp` on the emulator, the scratchpad's `venv-ocr`.
+
+Research-only session (2026-10-16): preliminary scope/cost estimates and four reusable prompts for still-camera
+lookup and playback audio mining are in [notes/camera-and-audio-feasibility.md](notes/camera-and-audio-feasibility.md),
+with Android audio/session constraints in [notes/audio-capture-platform-research.md](notes/audio-capture-platform-research.md).
+These are proposals, not approved decisions or an implementation plan; application code and device state were not changed.
+
 Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-languages-implementation.md) (phase 8,
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
 [plans/2026-09-26-initial-plan.md](plans/2026-09-26-initial-plan.md).
 Work on `main` since 2026-10-15: [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md)
 (fixes and changes brought from the language branches, download lag, Anki check, backups).
 
-## Work in progress on `main` (2026-10-15)
+## Work in progress (2026-10-15)
 
 The owner asked to work on autonomously and keep questions until they are back. Resume from the "Progress" section
-of [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md); it lists what is
-committed, what is uncommitted and the next step. Branch `main`, nothing pushed since `2bdd47d`. Untracked items that
-stay out of commits: `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, `testdata/apk|unihan|wordfreq`.
+of [plans/2026-10-15-main-fixes-and-backups.md](plans/2026-10-15-main-fixes-and-backups.md). Steps 1-5 are done on
+`main` and pushed (`e6e20bf`). Step 6 is done on `languages/main`: `main` merged (`41bf4ff`), the Languages item with
+recognition models added to backups (`9a8db2e`, SET12), the merge checked on the emulator (ANK11 with the English Anki
+settings, SET11, SET3, DIC7 with the update check closing, the segment fill as SET13; run log at `99085b9`), pushed.
+The owner reviewed the choices made without asking: all stay. Item 13 of that plan (romaji inside a joined Latin
+word) was built, then rolled back by the owner's choice (single syllables and letters in the popup); `main` at
+`4a92c96`, `languages/main` at the merge `8145fc4`, both pushed. Item 14 (wty-ja-ja form-of rows shown as empty
+numbered items in Japanese lookups) is fixed: Japanese lookups follow form-of items as Yomitan does, with the
+dictionary's tags (owner's choice), also for Jitendex's and Kolobok's redirect rows; `main` `328c062`, merged into
+`languages/main` (`18b634a`), checked on the emulator (LK15), both pushed.
+The owner answered the ten questions of the languages plan (decision rows from "Font lists across languages" on):
+the recommended options stay, except that the lookup page turns `&quot;` and `&apos;` left in dictionary text into
+quote marks (`main` `35863a4`, merged `0116c88`, POP22) and that a catalog font will also show for every language
+whose script it covers (built with the first Latin fonts, stage C). The hanja dictionary stays in the APK for good.
+The full code review by module (`ai/notes/module-map.md`, code-review at xhigh) runs in its own session, started
+2026-10-15; its plan and progress go into a new file in `ai/plans/`.
+Untracked items that stay out of commits: `testdata/apk|unihan|wordfreq` (and on `main` the QuickJS submodule folder
+`dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, which only `languages/main` tracks).
+
+## Work in progress on the language branches (2026-10-16)
+
+The owner asked to work on autonomously (groups 2 and 3, fonts, Japanese downloads, the converters, the OCR
+comparison), keep questions in the plan and leave group 4 alone. The module review session holds the root checkout,
+`.worktrees/main` and the emulator, so this work is in `.worktrees/lang` only, nothing merged into
+`languages/main` and nothing checked on the emulator since the review started. Each branch is stacked on the
+previous one and pushed:
+
+- `languages/latin-fonts` (Latin fonts, German compounds), `languages/ja-downloads` (Japanese dictionaries
+  downloaded, character dictionaries ticked), `languages/converters` (FreeDict and OpenRussian converters, the OCR
+  comparison's setup in the plan);
+- `languages/pl`, `languages/tr`, `languages/lv`, `languages/vi`, `languages/ru`: group 3, one language each (see the
+  plan's stage D progress paragraph); `languages/lv` also stops tracking two Python bytecode files committed by
+  mistake and adds `__pycache__/` to `.gitignore`;
+- `languages/ocr-compare`: the OCR comparison's harness, not to be merged as it is.
+
+When the review is done: run the OCR comparison on the emulator and build in the chosen engine (Cyrillic has an
+`OcrScript` that no on-device engine reads yet); fast-forward `languages/main` through the stack in the order above
+after the emulator checks (FR1, LNG12, LNG14, DIC9, the FreeDict and OpenRussian imports, LK22-LK26); copy
+`.worktrees/lang/testdata/ocr/{pl,tr,lv,vi}-sample.png` into `testdata/ocr/`. Questions 11-25 of the plan wait for
+the owner; 16 and 23 postpone their part.
+
+Downloaded for building and testing (official sources, in the session scratchpad, nothing installed system-wide):
+Wiktionary (wty) dictionaries es, fr, de, it, pt → en with the transcriptions of de, es, fr, it, pt; pl, tr, lv, vi,
+ru → en; the vi transcriptions; the Hugging Face file listing of wty-release; wordfreq lists (large de, en, es, fr,
+it, pl, pt, ru, zh; small ko, lv, tr); FreeDict deu, eng, fra, ita, pol, spa, zho → rus and its database listing;
+OpenRussian's CSV export; the Latin and Cyrillic fonts (Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Sans,
+PT Serif); PP-OCRv5 mobile detector and recognizers (Latin, Cyrillic, East Slavic, Greek, Arabic, Thai); Tesseract
+tessdata fast and best; MNN 3.6.1 source; a Python virtual environment with mnn 3.6.1, onnxruntime 1.23.2, numpy,
+pillow; a Yomitan checkout at the pinned commit for the language bundles.
 
 ## Next session (handoff, 2026-10-15)
 
@@ -19,7 +106,7 @@ stay out of commits: `dictionary/engine-hoshidicts/src/main/cpp/quickjs/`, `test
   branches merged. Every case of `ai/test-model.md` passed on the emulator in its last run; the run log lists the
   known limits. Upgrades from v0.2.3 and v0.2.3 backups were checked on the emulator (request 32: FR4 to FR7).
 - Open for the owner:
-  - questions 1 to 10 in the plan's "Questions for the owner" (font lists across languages, Chinese script fields in
+  - (answered 2026-10-15) questions 1 to 10 in the plan's "Questions for the owner" (font lists across languages, Chinese script fields in
     Anki, phrasal verbs, and seven from the Korean work); the recommended options are in use;
   - the postponed items before group 1 counts as done: bundled Japanese dictionaries, and hosting (request 30;
     FreeDict zho-rus and eng-rus, Mueller and OpenRussian wait for it);
