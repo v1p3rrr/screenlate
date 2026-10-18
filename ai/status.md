@@ -1,5 +1,30 @@
 # Status
 
+## Work in progress (2026-10-18): OCR missing parts, group 4a questions, the checks session
+
+The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
+
+- the missing parts of the OCR plan are built (scan holds and deferred model deletes, damaged model files with a home
+  card, model updates in "Check for updates", the device-only scan message opening the language's models);
+- ML Kit comes first at setup for the languages it reads (OCR plan, questions 38 and 40);
+- the region order is shown only while used (question 28), and a compound part's nouns come first (question 29);
+- docs and test-model cases OCR22-OCR25, AUD12, LK27 (all N).
+
+Requests 67 (download queue: Jiten stalls, retries add attempts; in the backlog) and 68 (scan times, default engines;
+OCR plan questions 36-40, answered) are in the languages plan.
+
+The emulator checks of groups 1-3 and the OCR cases run in their own session ("Emulator checks of groups 1-3 and OCR
+engines", branch `languages/checks` in `.worktrees/lang`), together with the in-app scan timing run per engine.
+It was sent a second round: merge `languages/ocr-engines` and check the N cases above. When it reports:
+
+- review its commits, and ask the owner before merging them into `languages/ocr-engines`;
+- apply the timing run: the row "Default OCR engines", the speed marks in words and the Both-mode hint;
+- fast-forward `languages/main` through the stack.
+
+Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
+41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
+engines plan is done.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
@@ -10,6 +35,11 @@ language and Paddle on MNN; its CI run (workflow_dispatch) gives the owner's "Sc
 run, then fast-forward `languages/main`; the module code review comes after the owner has tried the build. The
 comparison session (`languages/ocr-compare`, `.worktrees/lang`) is finished. Leftovers to clean when done: the
 http server on port 8000, `/data/local/tmp` on the emulator, the scratchpad's `venv-ocr`.
+
+Research-only session (2026-10-16): preliminary scope/cost estimates and four reusable prompts for still-camera
+lookup and playback audio mining are in [notes/camera-and-audio-feasibility.md](notes/camera-and-audio-feasibility.md),
+with Android audio/session constraints in [notes/audio-capture-platform-research.md](notes/audio-capture-platform-research.md).
+These are proposals, not approved decisions or an implementation plan; application code and device state were not changed.
 
 Current plan: [plans/2026-10-10-languages-implementation.md](plans/2026-10-10-languages-implementation.md) (phase 8,
 languages beyond Japanese, branch `languages/main`); the earlier phases followed
