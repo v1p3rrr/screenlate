@@ -131,6 +131,20 @@ Left:
   fast-forward `languages/main` through the stack and this branch.
 - The code review of all modules after the owner's build (languages plan, row "Build of groups 1-3").
 
+## Progress (2026-10-18)
+
+- Missing parts built: the device-only scan message opens the language's models, and the turned-off languages'
+  block counts their models (dee772e); scans hold their models, a held model's delete is deferred, damaged model
+  files are found by size at start and by hash after an engine error, with a home card, and "Check for updates" lists
+  model updates (321d79f); every row of "Missing parts" now has its code.
+- Questions 38 and 40 built: ML Kit first at setup for the languages it reads, the other models unticked with
+  "More accurate" on the recommended one, and the choice rule ML Kit, then the recommended model, then the best
+  installed one (1fd9a00).
+- Docs: `usage.md` and `architecture.md` describe ML Kit at setup, the choice rule, held and damaged models and model
+  updates. Test-model cases OCR22-OCR25 added (N).
+- Left: the timing run (with the test session), then the row "Default OCR engines", the speed marks in words and the
+  Both-mode hint (row "OCR speed marks"); the emulator check of OCR22-OCR25; step 7.
+
 ## Questions
 
 35. Answered on 2026-10-17: (a). Model updates: when the catalog names a newer version of an installed model (a new tessdata commit, a new
@@ -183,3 +197,4 @@ words, no figures for the user, row "OCR speed marks"; 40 (a), rows "ML Kit at s
 - 2026-10-18: questions 36-39 from request 68 of the languages plan (default engines, where they are offered, ML Kit
   as the built-in model, speed marks); the in-app timing run is with the test session.
 - 2026-10-18: questions 36-40 answered (37 postponed); row "Choice per language" changed by question 40.
+- 2026-10-18: missing parts and questions 38 and 40 built; Progress (2026-10-18) added.
