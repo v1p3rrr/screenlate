@@ -151,16 +151,16 @@ class LanguageLookupTest {
     }
 
     @Test
-    fun serboCroatianWithoutDiacriticsFindsTheLettersInEitherEntry() = runTest {
+    fun croatianAndSerbianWithoutDiacriticsFindTheLettersInEitherScript() = runTest {
         val imported = engine.import(serboCroatianDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
-        val latin = LookupOptions(language = Language.SERBO_CROATIAN_LATIN)
-        val cyrillic = LookupOptions(language = Language.SERBO_CROATIAN_CYRILLIC)
+        val latin = LookupOptions(language = Language.CROATIAN)
+        val cyrillic = LookupOptions(language = Language.SERBIAN)
 
         assertThat(engine.lookup("kuca", latin).map { it.term.expression }).contains("kuća")
         assertThat(engine.lookup("sesir", latin).first().term.expression).isEqualTo("šešir")
         assertThat(engine.lookup("djak", latin).first().term.expression).isEqualTo("đak")
-        // A form and its lemma lose their accent marks at import; plain text finds the form in both entries.
+        // A form and its lemma lose their accent marks at import; plain text finds the form in both languages.
         for (options in listOf(cyrillic, latin)) {
             val form = engine.lookup("куће", options).first()
             assertThat(form.term.expression).isEqualTo("кућа")

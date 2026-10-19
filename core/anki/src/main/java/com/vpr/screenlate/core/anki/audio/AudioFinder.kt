@@ -20,6 +20,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -285,14 +286,20 @@ class AudioFinder internal constructor(
                 candidates(AudioPages.jisho(fetch(request(url).build(), deadline), term, reading))
             }
             AudioSourceType.LINGUA_LIBRE -> {
-                val files = commonsFiles(AudioPages.linguaLibreSearch(term, language.support.wikidataId), deadline)
-                candidates(AudioPages.linguaLibre(files, term))
+                val title = language.support.linguaLibreTitle(term)
+                val items = language.support.linguaLibreItems
+                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items), deadline)
+                candidates(AudioPages.linguaLibre(files, title, items))
             }
             AudioSourceType.WIKTIONARY -> {
-                val title = language.support.recordingTitle(term, reading)
-                val prefix = language.support.recordingPrefix
-                val search = AudioPages.wiktionarySearch(title, prefix, regions)
-                val files = AudioPages.byRegion(commonsFiles(search, deadline), title, prefix, regions)
+                val files = coroutineScope {
+                    language.support.recordings(term, reading).distinct().map { (prefix, title) ->
+                        async {
+                            val found = commonsFiles(AudioPages.wiktionarySearch(title, prefix, regions), deadline)
+                            AudioPages.byRegion(AudioPages.wiktionaryFiles(found, title, prefix, regions), title, prefix, regions)
+                        }
+                    }.awaitAll().flatten().distinctBy { it.first }
+                }
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))

@@ -26,6 +26,15 @@ class CyrillicLookAlikesTest {
     }
 
     @Test
+    fun `in text known to be Cyrillic a word of look-alikes alone becomes Cyrillic`() {
+        assertThat(CyrillicLookAlikes.fixInScript("TOP")).isEqualTo("ТОР")
+        assertThat(CyrillicLookAlikes.fixInScript("Joj,", mapOf('j' to 'ј', 'J' to 'Ј'))).isEqualTo("Јој,")
+        // A word with another Latin letter is fixed only as without the script.
+        assertThat(CyrillicLookAlikes.fixInScript("Tom")).isEqualTo("Tom")
+        assertThat(CyrillicLookAlikes.fixInScript("123")).isEqualTo("123")
+    }
+
+    @Test
     fun `a word of one letter becomes Cyrillic as well`() {
         // The prepositions у and В, the conjunction а, with punctuation beside them.
         assertThat(CyrillicLookAlikes.fix("y")).isEqualTo("у")

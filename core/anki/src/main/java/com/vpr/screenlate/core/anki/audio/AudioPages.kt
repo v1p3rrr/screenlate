@@ -63,15 +63,18 @@ internal object AudioPages {
     private fun titleWord(term: String) = "intitle:\"${term.replace("\"", "")}\" "
 
     /**
-     * Commons file search for Lingua Libre recordings: `LL-Q5287 (jpn)-Speaker-猫.wav`. The Wikidata item names the
-     * language; the code after it varies: Greek recordings carry `ell`, `gre` or `mis`.
+     * Commons file search for Lingua Libre recordings in the languages of [wikidataIds]: `LL-Q5287 (jpn)-Speaker-猫.wav`.
+     * The Wikidata item names the language; the code after it varies: Greek recordings carry `ell`, `gre` or `mis`.
      */
-    fun linguaLibreSearch(term: String, wikidataId: String): String =
-        titleWord(term) + """intitle:/LL-$wikidataId \([a-z]{3}\)-.*-${luceneEscape(term)}\.wav/"""
+    fun linguaLibreSearch(term: String, wikidataIds: List<String>): String {
+        val item = wikidataIds.singleOrNull() ?: wikidataIds.joinToString("|", "(", ")")
+        return titleWord(term) + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneEscape(term)}\.wav/"""
+    }
 
     /**
      * Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`, and with a region code of
-     * [regions] longer than two letters, `Es-am-lat-agua.ogg`.
+     * [regions] longer than two letters, `Es-am-lat-agua.ogg`. It also matches inside titles (`…Kerbush-вода.wav` for
+     * sh), which [wiktionaryFiles] leaves out.
      */
     fun wiktionarySearch(term: String, languageCode: String, regions: List<AudioRegion> = emptyList()): String {
         val prefix = languageCode.take(1).let { "[${it.uppercase()}${it.lowercase()}]" } + languageCode.drop(1)
@@ -112,12 +115,23 @@ internal object AudioPages {
     }
 
     /**
-     * Lingua Libre recordings (title to URL) with their speakers, those whose speaker part holds a hyphen last: such a
-     * title is usually a compound that ends with the term ("kitty-cat" for "cat"), though a speaker's name may hold
-     * one too.
+     * Lingua Libre recordings (title to URL) with their speakers, in the order of their languages in [wikidataIds],
+     * and in each those whose speaker part holds a hyphen last: such a title is usually a compound that ends with the
+     * term ("kitty-cat" for "cat"), though a speaker's name may hold one too.
      */
-    fun linguaLibre(files: List<Pair<String, String>>, term: String): List<Found> =
-        files.map { (title, url) -> Found(url, linguaLibreSpeaker(title, term)) }.sortedBy { '-' in it.name }
+    fun linguaLibre(
+        files: List<Pair<String, String>>,
+        term: String,
+        wikidataIds: List<String> = emptyList(),
+    ): List<Found> {
+        val order = compareBy<Pair<String, String>> { (title, _) -> languageIndex(title, wikidataIds) }
+            .thenBy { (title, _) -> '-' in linguaLibreSpeaker(title, term) }
+        return files.sortedWith(order).map { (title, url) -> Found(url, linguaLibreSpeaker(title, term)) }
+    }
+
+    /** Where the item a Lingua Libre title names is in [wikidataIds]; after them all for another. */
+    private fun languageIndex(title: String, wikidataIds: List<String>): Int =
+        wikidataIds.indexOf(title.removePrefix("File:LL-").substringBefore(' ')).takeIf { it >= 0 } ?: wikidataIds.size
 
     /**
      * The region code in a Wiktionary file title (`File:En-us-water.ogg` gives `us`, `File:Es-am-lat-agua.ogg` gives
@@ -129,12 +143,27 @@ internal object AudioPages {
         languageCode: String,
         regions: List<AudioRegion> = emptyList(),
     ): String? {
+        val pattern = wiktionaryTitle(term, languageCode, regions)
+        return pattern.find(title.removePrefix("File:"))?.groupValues?.get(1)?.lowercase()?.ifEmpty { null }
+    }
+
+    /** The [files] (title to URL) whose whole title is a Wiktionary recording of [term] under [languageCode]. */
+    fun wiktionaryFiles(
+        files: List<Pair<String, String>>,
+        term: String,
+        languageCode: String,
+        regions: List<AudioRegion> = emptyList(),
+    ): List<Pair<String, String>> {
+        val pattern = wiktionaryTitle(term, languageCode, regions)
+        return files.filter { (title, _) -> pattern.matches(title.removePrefix("File:")) }
+    }
+
+    private fun wiktionaryTitle(term: String, languageCode: String, regions: List<AudioRegion>): Regex {
         val codes = (longCodes(regions).map(Regex::escape) + "[a-z]{2}").joinToString("|")
-        val pattern = Regex(
+        return Regex(
             """^${Regex.escape(languageCode)}-(?:($codes)-)?${Regex.escape(term)}[0-9]*\.[a-z0-9]+$""",
             RegexOption.IGNORE_CASE,
         )
-        return pattern.find(title.removePrefix("File:"))?.groupValues?.get(1)?.lowercase()?.ifEmpty { null }
     }
 
     /**

@@ -64,7 +64,7 @@ data class BackupChoice(
 
     /**
      * The codes of the [listed] languages that are taken, with the codes of their dictionaries where these differ (sh
-     * for both Serbo-Croatian entries).
+     * for Croatian and Serbian).
      */
     fun chosenLanguages(listed: List<BackupFile>): Set<String> {
         val codes = listed.map { it.key }

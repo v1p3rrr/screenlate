@@ -24,8 +24,8 @@ LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell",
-    # Serbo-Croatian by script, as its voices: Croatian for Latin, Serbian for Cyrillic.
-    "sh-Latn": "hrv", "sh-Cyrl": "srp",
+    # Serbian's in Cyrillic, which its text is by default.
+    "hr": "hrv", "sr": "srp",
 }
 
 # Recommended per language by the rule over the clean and hard screens (ai/notes/ocr-engines.md): none of the app's

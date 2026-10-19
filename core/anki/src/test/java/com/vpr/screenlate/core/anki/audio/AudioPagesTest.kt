@@ -51,8 +51,10 @@ class AudioPagesTest {
 
     @Test
     fun `commons searches escape the term`() {
-        assertThat(AudioPages.linguaLibreSearch("猫", "Q5287"))
+        assertThat(AudioPages.linguaLibreSearch("猫", listOf("Q5287")))
             .isEqualTo("""intitle:"猫" intitle:/LL-Q5287 \([a-z]{3}\)-.*-猫\.wav/""")
+        assertThat(AudioPages.linguaLibreSearch("voda", listOf("Q6654", "Q9299")))
+            .isEqualTo("""intitle:"voda" intitle:/LL-(Q6654|Q9299) \([a-z]{3}\)-.*-voda\.wav/""")
         assertThat(AudioPages.wiktionarySearch("a.b", "ja"))
             .isEqualTo("""intitle:"a.b" intitle:/[Jj]a(-[a-zA-Z]{2})?-a\.b[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/""")
     }
@@ -88,6 +90,31 @@ class AudioPagesTest {
             AudioPages.Found("https://upload.example/compound.wav", "Back ache-kitty"),
             AudioPages.Found("https://upload.example/hyphen.wav", "Jean-Pierre"),
         ).inOrder()
+    }
+
+    @Test
+    fun `Lingua Libre recordings of several languages come in the order of their items`() {
+        val files = listOf(
+            "File:LL-Q9299 (srp)-Speaker-voda.wav" to "https://upload.example/sr.wav",
+            "File:LL-Q6654 (hrv)-Govornik-voda.wav" to "https://upload.example/hr.wav",
+        )
+        assertThat(AudioPages.linguaLibre(files, "voda", listOf("Q6654", "Q9299")).map { it.name })
+            .containsExactly("Govornik", "Speaker").inOrder()
+        assertThat(AudioPages.linguaLibre(files, "voda").map { it.name }).containsExactly("Speaker", "Govornik").inOrder()
+    }
+
+    @Test
+    fun `Wiktionary files are only those whose whole title records the term in the language`() {
+        val files = listOf(
+            "File:Sr-вода.ogg" to "https://upload.example/a.ogg",
+            "File:sr-вода2.flac" to "https://upload.example/b.flac",
+            "File:LL-Q7737 (rus)-Speaker-вода.wav" to "https://upload.example/ru.wav",
+            "File:Sr-водар.ogg" to "https://upload.example/other.ogg",
+            "File:Hr-вода.ogg" to "https://upload.example/hr.ogg",
+        )
+        assertThat(AudioPages.wiktionaryFiles(files, "вода", "sr").map { it.second })
+            .containsExactly("https://upload.example/a.ogg", "https://upload.example/b.flac").inOrder()
+        assertThat(AudioPages.wiktionaryFiles(listOf("File:En-us-water.ogg" to "u"), "water", "en")).hasSize(1)
     }
 
     @Test

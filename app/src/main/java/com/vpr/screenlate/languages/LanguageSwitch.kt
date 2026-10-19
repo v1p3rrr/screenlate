@@ -96,8 +96,8 @@ class LanguageSwitch @Inject constructor(
 
     /**
      * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries, models and unfinished downloads go
-     * too, except the dictionaries a turned-on entry of another script reads. Returns false for the last language, which
-     * stays on.
+     * too, except the dictionaries another turned-on language reads. Returns false for the last language, which stays
+     * on.
      */
     suspend fun turnOff(language: Language, deleteFiles: Boolean): Boolean = withContext(NonCancellable) {
         if (!profiles.turnOff(language)) return@withContext false

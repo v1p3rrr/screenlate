@@ -90,8 +90,8 @@ class YomitanSettingsImporter @Inject constructor(
 ) {
     /**
      * Applies [sections] of [profile] to the settings of the profile's language; a profile without one, or with a
-     * language Screenlate does not support, goes to the active language. Serbo-Croatian goes to the active entry of its
-     * two, else to a turned-on one, else to the Latin one.
+     * language Screenlate does not support, goes to the active language. Serbo-Croatian goes to the active one of
+     * Croatian and Serbian, else to a turned-on one, else to Croatian.
      */
     suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary {
         val state = profiles.current()

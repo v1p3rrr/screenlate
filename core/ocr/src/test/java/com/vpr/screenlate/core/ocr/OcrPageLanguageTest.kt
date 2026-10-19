@@ -6,10 +6,19 @@ import com.vpr.screenlate.core.common.geometry.Box
 import org.junit.Test
 
 class OcrPageLanguageTest {
-    private fun page(vararg words: String) = OcrPage(
+    private fun page(vararg words: String) = lines(words.toList())
+
+    private fun lines(vararg lines: List<String>) = OcrPage(
         100,
-        20,
-        listOf(OcrParagraph(listOf(OcrLine(words.map { OcrWord(it, " ", Box(0f, 0f, 10f, 10f)) }, Box(0f, 0f, 100f, 20f), vertical = false)))),
+        20 * lines.size,
+        listOf(
+            OcrParagraph(
+                lines.mapIndexed { index, words ->
+                    val top = 20f * index
+                    OcrLine(words.map { OcrWord(it, " ", Box(0f, top, 10f, top + 10f)) }, Box(0f, top, 100f, top + 20f), vertical = false)
+                },
+            ),
+        ),
         OcrEngineType.LENS,
     )
 
@@ -19,6 +28,23 @@ class OcrPageLanguageTest {
         val fixed = page("\u043co\u0440\u0435", "TOP").inLanguage(Language.RUSSIAN)
 
         assertThat(fixed.text).isEqualTo("\u043c\u043e\u0440\u0435 TOP")
+    }
+
+    @Test
+    fun `Serbian fixes look-alikes on its Cyrillic lines and keeps its Latin ones`() {
+        // "Ja сам o кући" with a Latin J, a and o; "Ja i ti" in Latin letters; a line of "O" alone follows the page,
+        // which is mostly Cyrillic.
+        val fixed = lines(
+            listOf("Ja", "\u0441\u0430\u043c", "o", "\u043a\u0443\u045b\u0438"),
+            listOf("Ja", "i", "ti"),
+            listOf("O"),
+        ).inLanguage(Language.SERBIAN)
+
+        assertThat(fixed.paragraphs.single().lines.map { line -> line.words.joinToString(" ") { it.text } }).containsExactly(
+            "\u0408\u0430 \u0441\u0430\u043c \u043e \u043a\u0443\u045b\u0438",
+            "Ja i ti",
+            "\u041e",
+        ).inOrder()
     }
 
     @Test

@@ -52,17 +52,17 @@ DETECTORS = {
                            "properties": {"threshold": "0.2", "box_threshold": "0.45"}},
 }
 
-# Serbo-Croatian is two entries, one per script: no model reads both.
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "sh-Latn"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr"]
 
-# Languages each recognizer is offered for: those the OCR comparison measured it on.
+# Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
+# which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
 RECOGNIZERS = {
     "paddle-v6": {"source": "PP-OCRv6_small_rec", "template": "paddle-v6", "requires": "paddle-detector-v6",
-                  "languages": ["ja", "zh"] + LATIN},
+                  "languages": ["ja", "zh"] + LATIN + ["sr"]},
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
-                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sh-Cyrl"]},
+                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sr"]},
     "paddle-korean": {"source": "korean_PP-OCRv5_mobile_rec", "template": "paddle-v5",
                       "requires": "paddle-detector-v5", "languages": ["ko"]},
     "paddle-el": {"source": "el_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
@@ -75,7 +75,7 @@ RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
     "ru": "paddle-cyrillic", "cs": "paddle-v6", "uk": "paddle-cyrillic", "be": "paddle-cyrillic", "el": "paddle-el",
-    "sh-Latn": "paddle-v6", "sh-Cyrl": "paddle-cyrillic",
+    "hr": "paddle-v6", "sr": "paddle-cyrillic",
 }
 
 TEMPLATES = {"paddle-detector-v5", "paddle-detector-v6", "paddle-v6", "paddle-v5"}

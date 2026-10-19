@@ -60,18 +60,16 @@ class TranslationLanguagesTest {
     }
 
     @Test
-    fun `serbo-croatian is croatian in latin and serbian in cyrillic, and either interface language counts as it`() {
-        val latin = Language.SERBO_CROATIAN_LATIN
-        val cyrillic = Language.SERBO_CROATIAN_CYRILLIC
-        assertThat(TranslationLanguages.of(latin)?.tag).isEqualTo("hr")
-        assertThat(TranslationLanguages.of(cyrillic)?.tag).isEqualTo("sr-Cyrl")
-        for (source in listOf(latin, cyrillic)) {
+    fun `croatian and serbian have their tags, and either interface language counts as both`() {
+        assertThat(TranslationLanguages.of(Language.CROATIAN)?.tag).isEqualTo("hr")
+        assertThat(TranslationLanguages.of(Language.SERBIAN)?.tag).isEqualTo("sr-Cyrl")
+        for (source in listOf(Language.CROATIAN, Language.SERBIAN)) {
             for (tag in listOf("hr", "sr", "sr-Latn", "bs")) {
                 assertThat(TranslationLanguages.defaultFor(Locale.forLanguageTag(tag), source).tag).isEqualTo("en")
             }
             assertThat(TranslationLanguages.defaultFor(Locale.forLanguageTag("ru"), source).tag).isEqualTo("ru")
         }
-        // Croatian text is not Serbo-Croatian for the other languages.
+        // A Croatian interface is no source language for the other languages.
         assertThat(TranslationLanguages.defaultFor(Locale.forLanguageTag("hr"), Language.CZECH).tag).isEqualTo("hr")
     }
 

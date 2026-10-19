@@ -75,7 +75,7 @@ class LanguageRulesIsolationTest {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
-            Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC,
+            Language.CROATIAN, Language.SERBIAN,
         )
         assertThat(spaced.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(spaced.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -91,19 +91,19 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.GERMAN, Language.CZECH, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN)
         // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
         val era = "v roce 300 n. l. vznikl"
         assertThat(spaced.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
-        // Serbo-Croatian mr. is magistar.
-        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
-        assertThat(spaced.where { holds(it, "Kr. godine") }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        // Croatian and Serbian mr. is magistar.
+        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
+        assertThat(spaced.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         // Ukrainian т. holds for "т. зв." and "у т. ч.".
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
         assertThat(spaced.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
-        // г. is год, гады and година, in either script of Serbo-Croatian.
+        // г. is год, гады and година; Croatian keeps the Cyrillic abbreviations Serbian has.
         assertThat(spaced.where { holds(it, "у 1991 г. ён") }).containsExactly(
-            Language.RUSSIAN, Language.BELARUSIAN, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC,
+            Language.RUSSIAN, Language.BELARUSIAN, Language.CROATIAN, Language.SERBIAN,
         )
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         val example = "π.χ. το"
@@ -152,28 +152,32 @@ class LanguageRulesIsolationTest {
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
-            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
 
     @Test
-    fun `only Filipino and the Serbo-Croatian entries have their own names and other voice tags`() {
+    fun `only Filipino has its own name and another voice tag`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
-        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
-        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
     }
 
     @Test
-    fun `only the Serbo-Croatian entries share their dictionaries and have other recording and locale codes`() {
-        assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
-        assertThat(all.where { it.recordingPrefix != it.language.dictionaryCode }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
-        assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+    fun `only Croatian and Serbian share their dictionaries and have other recordings and locale codes`() {
+        assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+        assertThat(all.where { it.recordings("kuća", "") != listOf(RecordingTitle(it.language.dictionaryCode, "kuća")) })
+            .containsExactly(Language.CROATIAN, Language.SERBIAN)
+        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN)
+        assertThat(all.where { it.linguaLibreTitle("кућа") != "кућа" }).containsExactly(Language.SERBIAN)
+        assertThat(all.where { it.translationTag("Kuća je velika.") != null }).containsExactly(Language.SERBIAN)
+        assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
         assertThat(all.where { it.frequencyWord("τησ") != "τησ" }).containsExactly(Language.GREEK)
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK)
-        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.CROATIAN, Language.SERBIAN)
     }
 
     @Test
@@ -202,16 +206,18 @@ class LanguageRulesIsolationTest {
     @Test
     fun `look-alikes are fixed only in Cyrillic and Greek text, the Serbian j and the Latin i only where they have a twin`() {
         assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
-            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN)
+            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN)
         assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
-            .containsExactly(Language.SERBO_CROATIAN_CYRILLIC)
+            .containsExactly(Language.SERBIAN)
         // A word of one letter has no other one to show its script.
         assertThat(all.where { it.ocrWord("y") != "y" })
-            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK)
+            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK)
         assertThat(all.where { it.ocrWord("i") != "i" }).containsExactly(Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
+        // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
+        assertThat(all.where { it.ocrLines(listOf(listOf("y"))) != listOf(listOf(it.ocrWord("y"))) }).containsExactly(Language.SERBIAN)
     }
 
     @Test

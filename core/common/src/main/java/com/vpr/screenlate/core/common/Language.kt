@@ -7,10 +7,9 @@ import java.util.Locale
  * Source language of the text being looked up. Every layer (OCR, lookup, rendering) takes it as a parameter. A
  * language is listed once it has a support class (`core.common.language.support`).
  *
- * @property code the entry's own code: settings, routes, backups and recognition models go by it. The ISO 639-1 code,
- * with a script subtag for a language listed once per script (sh-Latn, sh-Cyrl).
- * @property dictionaryCode the language's code in dictionaries, Yomitan and wordfreq: entries of one language written in
- * two scripts share it, and with it their dictionaries.
+ * @property code the language's own ISO 639-1 code: settings, routes, backups and recognition models go by it.
+ * @property dictionaryCode the language's code in dictionaries, Yomitan and wordfreq: languages that read the same
+ * dictionaries share it (Croatian and Serbian read the Serbo-Croatian ones, sh).
  */
 enum class Language(val code: String, val dictionaryCode: String = code) {
     JAPANESE("ja"),
@@ -32,8 +31,8 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     FILIPINO("tl"),
     VIETNAMESE("vi"),
     RUSSIAN("ru"),
-    SERBO_CROATIAN_LATIN("sh-Latn", "sh"),
-    SERBO_CROATIAN_CYRILLIC("sh-Cyrl", "sh"),
+    CROATIAN("hr", "sh"),
+    SERBIAN("sr", "sh"),
     UKRAINIAN("uk"),
     BELARUSIAN("be"),
     GREEK("el"),
@@ -46,11 +45,11 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
          */
         fun of(code: String?): Language? = entries.firstOrNull { it.code == code } ?: OTHER_CODES[code]
 
-        /** The entries whose dictionaries have the source language [code] ([dictionaryCode]); empty for none. */
+        /** The languages whose dictionaries have the source language [code] ([dictionaryCode]); empty for none. */
         fun withDictionaries(code: String?): List<Language> = entries.filter { it.dictionaryCode == code }
 
         /**
-         * The first entry whose dictionaries have the source language [code], for what entries sharing a code do alike
+         * The first language whose dictionaries have the source language [code], for what languages sharing it do alike
          * (reading dictionaries, building frequency lists); null when the app does not support it.
          */
         fun ofDictionaries(code: String?): Language? = withDictionaries(code).firstOrNull()
@@ -60,9 +59,8 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
 }
 
 /**
- * Whether [code], the language a catalog entry or a download is for, is this entry's: a recognition model's names the
- * entry itself ([Language.code]), a dictionary's the [Language.dictionaryCode] it shares with the entries of its other
- * scripts.
+ * Whether [code], the language a catalog entry or a download is for, is this language's: a recognition model's names
+ * the language itself ([Language.code]), a dictionary's the [Language.dictionaryCode] it may share with other languages.
  */
 fun Language.hasCode(code: String?): Boolean = code == this.code || code == dictionaryCode
 

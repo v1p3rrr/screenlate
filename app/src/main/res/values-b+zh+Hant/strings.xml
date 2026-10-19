@@ -483,7 +483,8 @@
     <string name="popup_font_script_only_tl">僅用於菲律賓語文字</string>
     <string name="popup_font_script_only_vi">僅用於越南文文字</string>
     <string name="popup_font_script_only_ru">僅用於俄文文字</string>
-    <string name="popup_font_script_only_sh">僅用於塞爾維亞-克羅埃西亞語文字</string>
+    <string name="popup_font_script_only_hr">僅用於克羅埃西亞文文字</string>
+    <string name="popup_font_script_only_sr">僅用於塞爾維亞文文字</string>
     <string name="popup_font_script_only_uk">僅用於烏克蘭文文字</string>
     <string name="popup_font_script_only_be">僅用於白俄羅斯文文字</string>
     <string name="popup_font_script_only_el">僅用於希臘文文字</string>

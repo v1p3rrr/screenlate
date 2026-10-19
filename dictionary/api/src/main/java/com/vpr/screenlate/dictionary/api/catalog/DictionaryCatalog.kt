@@ -61,8 +61,8 @@ enum class CatalogCategory {
  * Wiktionary entries there are written by `scripts/catalog/generate.mjs`.
  *
  * @property title the entry's own name, also the name of its download task; [displayTitle] is what the user sees.
- * @property sourceLanguage a dictionary's [Language.dictionaryCode], which the entries of a language in several scripts
- *   share; a model's [Language.code], as each entry reads with its own models ([isFor]).
+ * @property sourceLanguage a dictionary's [Language.dictionaryCode], which languages reading the same dictionaries
+ *   share (Croatian and Serbian); a model's [Language.code], as each language reads with its own models ([isFor]).
  * @property installedTitle title prefix of the installed dictionary, used when it has no [indexUrl].
  * @property formerTitles title prefixes the dictionary had before upstream renamed it; copies installed then still match.
  * @property oldTitles exact titles of installed copies, matched whole or followed by ` [` (a dated build), e.g. `JMdict`,

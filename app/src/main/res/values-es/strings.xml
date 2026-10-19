@@ -489,7 +489,8 @@
     <string name="popup_font_script_only_tl">Solo para texto en filipino</string>
     <string name="popup_font_script_only_vi">Solo para texto en vietnamita</string>
     <string name="popup_font_script_only_ru">Solo para texto en ruso</string>
-    <string name="popup_font_script_only_sh">Solo para texto en serbocroata</string>
+    <string name="popup_font_script_only_hr">Solo para texto en croata</string>
+    <string name="popup_font_script_only_sr">Solo para texto en serbio</string>
     <string name="popup_font_script_only_uk">Solo para texto en ucraniano</string>
     <string name="popup_font_script_only_be">Solo para texto en bielorruso</string>
     <string name="popup_font_script_only_el">Solo para texto en griego</string>

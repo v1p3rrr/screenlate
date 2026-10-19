@@ -115,6 +115,16 @@ class SentenceTranslatorTest {
     }
 
     @Test
+    fun `serbian in latin letters goes as sr-Latn to a service that has it`() = runBlocking<Unit> {
+        translator().translate("Kuća je velika.", Language.SERBIAN)
+        translator().translate("Кућа је велика.", Language.SERBIAN)
+        val cyrillicOnly = FakeTranslator(TranslationService.GOOGLE, supported = setOf("sr-Cyrl", "ru"))
+        settings.setServiceEnabled(TranslationService.BING, false)
+        SentenceTranslator(listOf(bing, cyrillicOnly, edge), settings, { locale }).translate("Kuća je velika.", Language.SERBIAN)
+        assertThat(calls).containsExactly("BING sr-Latn>ru", "BING sr-Cyrl>ru", "GOOGLE sr-Cyrl>ru").inOrder()
+    }
+
+    @Test
     fun `the chosen language, and English for a Japanese interface`() = runBlocking<Unit> {
         locale = Locale.JAPANESE
         translator().translate("文", Language.JAPANESE)

@@ -33,13 +33,13 @@ object TranslationLanguages {
 
     /**
      * The language of [source] text, as the services know it: the closest tag where they have no plain one (zh-Hans for
-     * zh, pt-BR for pt, fil for tl; Serbo-Croatian as its entry's voice, Croatian for Latin, Serbian for Cyrillic).
+     * zh, pt-BR for pt, fil for tl, sr-Cyrl for sr).
      */
     fun of(source: Language): TranslationLanguage? = of(source.code) ?: forLocale(Locale.forLanguageTag(source.code))
 
     /**
      * The language translations go into by default: [locale]'s (the interface language), or English when that is
-     * the [source] language (Croatian or Serbian for Serbo-Croatian) or no service has it.
+     * the [source] language (Croatian, Serbian or Bosnian for either of the first two) or no service has it.
      */
     fun defaultFor(locale: Locale, source: Language): TranslationLanguage {
         val english = of(ENGLISH)!!

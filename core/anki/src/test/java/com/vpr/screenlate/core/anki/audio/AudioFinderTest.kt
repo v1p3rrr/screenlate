@@ -284,6 +284,45 @@ class AudioFinderTest {
     }
 
     @Test
+    fun `croatian wiktionary recordings come before serbian ones in cyrillic, titles holding the term inside are dropped`() = runBlocking<Unit> {
+        val croatian = "File:Hr-kuća.ogg"
+        val serbian = "File:Sr-кућа.flac"
+        val russian = "File:LL-Q7737 (rus)-Speaker-кућа.wav"
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                val search = request.url.queryParameter("srsearch")
+                if (search != null) {
+                    val titles = if ("[Hh]r" in search) listOf(croatian) else listOf(serbian, russian)
+                    val found = titles.joinToString(",") { """{"title": "$it"}""" }
+                    return text("""{"query": {"search": [$found]}}""", "application/json")
+                }
+                val pages = listOf(croatian, serbian, russian).mapIndexed { index, title ->
+                    """"$index": {"title": "$title", "imageinfo": [{"url": "https://upload.example/$index"}]}"""
+                }.joinToString(",")
+                return text("""{"query": {"pages": {$pages}}}""", "application/json")
+            }
+        }
+        val candidates = finder.candidates("kuća", "", Language.CROATIAN, listOf(AudioSource(AudioSourceType.WIKTIONARY)))
+        assertThat(candidates.map { it.url }).containsExactly("https://upload.example/0", "https://upload.example/1").inOrder()
+    }
+
+    @Test
+    fun `serbian lingua libre recordings are searched in latin letters`() = runBlocking<Unit> {
+        val title = "File:LL-Q9299 (srp)-Speaker-voda.wav"
+        routes["/w/api.php"] = {
+            val url = requests.last().url
+            if (url.queryParameter("list") == "search") {
+                text("""{"query": {"search": [{"title": "$title"}]}}""", "application/json")
+            } else {
+                text("""{"query": {"pages": {"1": {"title": "$title", "imageinfo": [{"url": "https://upload.example/voda.wav"}]}}}}""", "application/json")
+            }
+        }
+        val candidates = finder.candidates("вода", "", Language.SERBIAN, listOf(AudioSource(AudioSourceType.LINGUA_LIBRE)))
+        assertThat(candidates.single().name).isEqualTo("Speaker")
+        assertThat(requests.first().url.queryParameter("srsearch")).isEqualTo(AudioPages.linguaLibreSearch("voda", listOf("Q9299")))
+    }
+
+    @Test
     fun `chinese wiktionary recordings are searched by pinyin, text to speech reads the characters`() = runBlocking<Unit> {
         val title = "File:Zh-nǐhǎo.ogg"
         routes["/w/api.php"] = {

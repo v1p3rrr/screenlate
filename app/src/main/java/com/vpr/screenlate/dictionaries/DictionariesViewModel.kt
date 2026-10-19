@@ -364,7 +364,7 @@ class DictionariesViewModel @Inject constructor(
 
     /**
      * Sorts the results of [dictionary]'s language by it: the shown language's when it reads the dictionary (one without
-     * a language, or one of both Serbo-Croatian entries), else the first entry that does.
+     * a language, or a Serbo-Croatian one for Croatian or Serbian), else the first language that does.
      */
     fun setSortDictionary(dictionary: DictionaryEntity) {
         val shown = shownLanguage.language.value

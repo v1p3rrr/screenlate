@@ -31,6 +31,12 @@ interface LanguageSupport {
     }
 
     /**
+     * A page's words as OCR read them, line by line, each as [ocrWord] writes it. A language written in two scripts
+     * decides by the line which one a word is in (Serbian).
+     */
+    fun ocrLines(lines: List<List<String>>): List<List<String>> = lines.map { line -> line.map(::ocrWord) }
+
+    /**
      * How the lookup shortens the text after the aim when a longer match fails: by words for languages written with
      * spaces ("look up to" → "look up" → "look"), by characters otherwise (Yomitan's search resolution).
      */
@@ -85,8 +91,14 @@ interface LanguageSupport {
     /** Default audio sources, as `AudioSourceType` names, in priority order. */
     val defaultAudioSources: List<String>
 
-    /** Wikidata item of the language, used by Lingua Libre recordings. */
+    /** Wikidata item of the language, which Lingua Libre's file titles name (`LL-Q5287 (jpn)-Speaker-猫.wav`). */
     val wikidataId: String
+
+    /** The Wikidata items whose Lingua Libre recordings fit the language, best first: its own. */
+    val linguaLibreItems: List<String> get() = listOf(wikidataId)
+
+    /** The spelling Lingua Libre's recordings of [term] are titled by: the word itself. */
+    fun linguaLibreTitle(term: String): String = term
 
     /**
      * The spelling Wiktionary's recordings of a word ([term] read as [reading]) are titled by: the word itself, or its
@@ -95,16 +107,25 @@ interface LanguageSupport {
     fun recordingTitle(term: String, reading: String): String = term
 
     /**
-     * The language code Wiktionary's recording titles start with: the dictionaries' code, unless Wiktionary files the
-     * recordings under another (Serbian `Sr-кућа.flac` for Serbo-Croatian).
+     * Wiktionary's recordings to look for, best first, by the language code their titles start with and the spelling
+     * they are titled by: the dictionaries' code and [recordingTitle], unless Wiktionary files the language's
+     * recordings under other codes too (Croatian takes Serbian `Sr-кућа.flac`).
      */
-    val recordingPrefix: String get() = language.dictionaryCode
+    fun recordings(term: String, reading: String): List<RecordingTitle> =
+        listOf(RecordingTitle(language.dictionaryCode, recordingTitle(term, reading)))
 
     /**
-     * The language codes system locales and translation services give this language: Croatian, Serbian and Bosnian
-     * for Serbo-Croatian. A translation into one of them would repeat the text.
+     * The language codes system locales and translation services give this language and those that read the same
+     * dictionaries: Croatian, Serbian, Bosnian and Montenegrin for Croatian and Serbian. A translation into one of them
+     * would repeat the text.
      */
     val localeLanguages: Set<String> get() = setOf(language.dictionaryCode)
+
+    /**
+     * The translation services' tag for [text] where the text decides it (Serbian in Latin letters: sr-Latn); null for
+     * the language's own.
+     */
+    fun translationTag(text: String): String? = null
 
     /** What text to speech reads for a word: its reading where a voice reads it as the word (kana), else the word. */
     fun speechText(term: String, reading: String): String = reading.ifEmpty { term }
@@ -311,6 +332,9 @@ enum class SearchResolution { WORD, LETTER }
  */
 data class HeadwordMarks(val marks: String, val bases: String, val everyHeadword: Boolean = false)
 
+/** A Wiktionary recording title to look for: `Sr-кућа.flac` has the [prefix] sr and the [title] кућа. */
+data class RecordingTitle(val prefix: String, val title: String)
+
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, GREEK, JAPANESE, KOREAN }
 
@@ -335,8 +359,8 @@ val Language.support: LanguageSupport
         Language.FILIPINO -> FilipinoSupport
         Language.VIETNAMESE -> VietnameseSupport
         Language.RUSSIAN -> RussianSupport
-        Language.SERBO_CROATIAN_LATIN -> SerboCroatianLatinSupport
-        Language.SERBO_CROATIAN_CYRILLIC -> SerboCroatianCyrillicSupport
+        Language.CROATIAN -> CroatianSupport
+        Language.SERBIAN -> SerbianSupport
         Language.UKRAINIAN -> UkrainianSupport
         Language.BELARUSIAN -> BelarusianSupport
         Language.GREEK -> GreekSupport

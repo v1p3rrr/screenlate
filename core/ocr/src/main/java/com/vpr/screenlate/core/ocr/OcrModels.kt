@@ -45,16 +45,18 @@ data class OcrPage(
     )
 }
 
-/** The page with every word as [language] writes it ([LanguageSupport.ocrWord]); the same page when nothing changes. */
+/** The page with every word as [language] writes it ([LanguageSupport.ocrLines]); the same page when nothing changes. */
 fun OcrPage.inLanguage(language: Language): OcrPage {
-    val support = language.support
+    val texts = language.support.ocrLines(paragraphs.flatMap { it.lines }.map { line -> line.words.map { it.text } })
     var changed = false
+    var lineIndex = 0
     val fixed = paragraphs.map { paragraph ->
         paragraph.copy(
             lines = paragraph.lines.map { line ->
+                val lineTexts = texts[lineIndex++]
                 line.copy(
-                    words = line.words.map { word ->
-                        val text = support.ocrWord(word.text)
+                    words = line.words.mapIndexed { index, word ->
+                        val text = lineTexts[index]
                         if (text == word.text) word else word.copy(text = text).also { changed = true }
                     },
                 )

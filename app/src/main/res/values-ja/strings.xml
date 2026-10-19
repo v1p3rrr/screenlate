@@ -483,7 +483,8 @@
     <string name="popup_font_script_only_tl">フィリピノ語の文字だけに使う</string>
     <string name="popup_font_script_only_vi">ベトナム語の文字だけに使う</string>
     <string name="popup_font_script_only_ru">ロシア語の文字だけに使う</string>
-    <string name="popup_font_script_only_sh">セルビア・クロアチア語の文字だけに使う</string>
+    <string name="popup_font_script_only_hr">クロアチア語の文字だけに使う</string>
+    <string name="popup_font_script_only_sr">セルビア語の文字だけに使う</string>
     <string name="popup_font_script_only_uk">ウクライナ語の文字だけに使う</string>
     <string name="popup_font_script_only_be">ベラルーシ語の文字だけに使う</string>
     <string name="popup_font_script_only_el">ギリシャ語の文字だけに使う</string>

@@ -123,54 +123,54 @@ class OcrModelsTest {
         assertThat(leftoverModels(listOf("ja"), entries, emptyList(), Locale.ENGLISH)).isEmpty()
     }
 
-    private val latin = Language.SERBO_CROATIAN_LATIN
-    private val cyrillic = Language.SERBO_CROATIAN_CYRILLIC
+    private val croatian = Language.CROATIAN
+    private val serbian = Language.SERBIAN
 
     @Test
-    fun `a serbo-croatian entry brings its models, and the shared dictionaries only while the other entry is off`() {
-        assertThat(fileCodes("sh-Latn", turnedOn = listOf(Language.JAPANESE, cyrillic))).containsExactly("sh-Latn")
-        assertThat(fileCodes("sh-Latn", turnedOn = listOf(Language.JAPANESE))).containsExactly("sh-Latn", "sh")
-        // The card of both entries stands for the dictionaries and each script's models.
-        assertThat(fileCodes("sh", turnedOn = listOf(Language.JAPANESE))).containsExactly("sh-Latn", "sh", "sh-Cyrl")
-        assertThat(fileCodes("sh", turnedOn = listOf(cyrillic))).containsExactly("sh-Latn")
+    fun `croatian or serbian brings its models, and the shared dictionaries only while the other is off`() {
+        assertThat(fileCodes("hr", turnedOn = listOf(Language.JAPANESE, serbian))).containsExactly("hr")
+        assertThat(fileCodes("hr", turnedOn = listOf(Language.JAPANESE))).containsExactly("hr", "sh")
+        // The card of both stands for the dictionaries and each language's models.
+        assertThat(fileCodes("sh", turnedOn = listOf(Language.JAPANESE))).containsExactly("hr", "sh", "sr")
+        assertThat(fileCodes("sh", turnedOn = listOf(serbian))).containsExactly("hr")
         assertThat(fileCodes("ru", turnedOn = listOf(Language.JAPANESE))).containsExactly("ru")
         assertThat(fileCodes("xx", turnedOn = listOf(Language.JAPANESE))).containsExactly("xx")
     }
 
     @Test
-    fun `the models of both serbo-croatian entries share one leftover card while both are off`() {
-        assertThat(leftoverCode("sh-Latn", turnedOn = listOf(Language.JAPANESE))).isEqualTo("sh")
-        assertThat(leftoverCode("sh-Latn", turnedOn = listOf(cyrillic))).isEqualTo("sh-Latn")
+    fun `the models of croatian and serbian share one leftover card while both are off`() {
+        assertThat(leftoverCode("hr", turnedOn = listOf(Language.JAPANESE))).isEqualTo("sh")
+        assertThat(leftoverCode("hr", turnedOn = listOf(serbian))).isEqualTo("hr")
         assertThat(leftoverCode("ru", turnedOn = listOf(Language.JAPANESE))).isEqualTo("ru")
         assertThat(leftoverCode("xx", turnedOn = listOf(Language.JAPANESE))).isEqualTo("xx")
 
         val models = listOf(
-            model("latn-det", "sh-Latn", "det"),
-            model("latn-rec", "sh-Latn", "v6"),
-            model("cyrl-det", "sh-Cyrl", "det"),
-            model("cyrl-rec", "sh-Cyrl", "cyrillic"),
+            model("hr-det", "hr", "det"),
+            model("hr-rec", "hr", "v6"),
+            model("sr-det", "sr", "det"),
+            model("sr-rec", "sr", "cyrillic"),
         )
         val installed = listOf("det", "v6", "cyrillic").map { InstalledOcrModel(it, "5", "paddle", File(it)) }
         val bothOff = leftoverCards(listOf(Language.JAPANESE), models, installed, Locale.ENGLISH)
         assertThat(bothOff.mapValues { (_, list) -> list.map { it.id } }).containsExactly("sh", listOf("det", "v6", "cyrillic"))
-        // With the Cyrillic entry on, the Latin one keeps only the model the other does not read.
-        val latinOff = leftoverCards(listOf(cyrillic), models, installed, Locale.ENGLISH)
-        assertThat(latinOff.mapValues { (_, list) -> list.map { it.id } }).containsExactly("sh-Latn", listOf("v6"))
+        // With Serbian on, Croatian keeps only the model Serbian does not read.
+        val croatianOff = leftoverCards(listOf(serbian), models, installed, Locale.ENGLISH)
+        assertThat(croatianOff.mapValues { (_, list) -> list.map { it.id } }).containsExactly("hr", listOf("v6"))
     }
 
     @Test
-    fun `each serbo-croatian entry lists the shared dictionaries and its own models`() {
+    fun `croatian and serbian each list the shared dictionaries and their own models`() {
         val catalog = Catalog(
             listOf(
                 CatalogEntry(
                     id = "sh-en", title = "sh-en", declaredCategory = CatalogCategory.MAIN, sourceLanguage = "sh",
                     targetLanguage = "en", recommended = true, downloadUrl = "https://example.org/sh-en.zip", downloadSize = 12_000_000,
                 ),
-                model("latn-rec", "sh-Latn", "v6"),
-                model("cyrl-rec", "sh-Cyrl", "cyrillic"),
+                model("hr-rec", "hr", "v6"),
+                model("sr-rec", "sr", "cyrillic"),
             ),
         )
-        for ((entry, own) in listOf(latin to "latn-rec", cyrillic to "cyrl-rec")) {
+        for ((entry, own) in listOf(croatian to "hr-rec", serbian to "sr-rec")) {
             val ids = setupCategories(catalog, entry, glosses = listOf("en"), installed = emptyList())
                 .flatMap { category -> category.items.map { it.entry.id } }
             assertThat(ids).containsExactly("sh-en", own)

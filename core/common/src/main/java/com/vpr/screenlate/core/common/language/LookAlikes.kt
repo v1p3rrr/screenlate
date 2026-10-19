@@ -19,6 +19,19 @@ internal class LookAlikes(private val script: Character.UnicodeScript, private v
         return buildString(word.length) { word.forEach { append(own[it] ?: letters[it] ?: it) } }
     }
 
+    /**
+     * [word] with its look-alikes in the script also when it has no letter of the script, as long as all its letters
+     * are look-alikes (Joj, je): for text known to be in the script. Other words as [fix] writes them.
+     */
+    fun fixInScript(word: String, own: Map<Char, Char> = emptyMap()): String {
+        val letters = word.filter(Char::isLetter)
+        if (letters.isEmpty() || !letters.all { it in this.letters || it in own }) return fix(word, own)
+        return buildString(word.length) { word.forEach { append(own[it] ?: this@LookAlikes.letters[it] ?: it) } }
+    }
+
+    /** Whether [c] is a Latin letter that looks like one of the script's. */
+    fun isLookAlike(c: Char): Boolean = c in letters
+
     private fun isScriptLetter(c: Char) = c.isLetter() && Character.UnicodeScript.of(c.code) == script
 }
 

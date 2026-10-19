@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.redacted
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -131,7 +132,9 @@ class SentenceTranslator internal constructor(
         timeoutMs: Long,
     ): Result<String> = try {
         val to = translator.code(target)
-        val source = TranslationLanguages.of(from)?.let(translator::code)
+        // The text's own tag (Serbian in Latin letters) where the service has it, else the language's.
+        val source = from.support.translationTag(text)?.let(TranslationLanguages::of)?.let(translator::code)
+            ?: TranslationLanguages.of(from)?.let(translator::code)
         when {
             to == null || source == null -> Result.failure(TranslationException(TranslationError.Kind.UNSUPPORTED_LANGUAGE))
             text.length > translator.maxLength -> Result.failure(TranslationException(TranslationError.Kind.TOO_LONG))

@@ -493,7 +493,8 @@
     <string name="popup_font_script_only_tl">Только для филиппинского текста</string>
     <string name="popup_font_script_only_vi">Только для вьетнамского текста</string>
     <string name="popup_font_script_only_ru">Только для русского текста</string>
-    <string name="popup_font_script_only_sh">Только для сербскохорватского текста</string>
+    <string name="popup_font_script_only_hr">Только для хорватского текста</string>
+    <string name="popup_font_script_only_sr">Только для сербского текста</string>
     <string name="popup_font_script_only_uk">Только для украинского текста</string>
     <string name="popup_font_script_only_be">Только для белорусского текста</string>
     <string name="popup_font_script_only_el">Только для греческого текста</string>

@@ -483,7 +483,8 @@
     <string name="popup_font_script_only_tl">필리핀어 텍스트에만 사용</string>
     <string name="popup_font_script_only_vi">베트남어 텍스트에만 사용</string>
     <string name="popup_font_script_only_ru">러시아어 텍스트에만 사용</string>
-    <string name="popup_font_script_only_sh">세르비아크로아티아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_hr">크로아티아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_sr">세르비아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_uk">우크라이나어 텍스트에만 사용</string>
     <string name="popup_font_script_only_be">벨라루스어 텍스트에만 사용</string>
     <string name="popup_font_script_only_el">그리스어 텍스트에만 사용</string>

@@ -23,8 +23,8 @@ import kotlinx.serialization.json.put
  * The list is gzipped MessagePack: a header `{"format": "cB", "version": 1}`, then one array of words per centibel of
  * frequency, the most frequent first. Ranks follow that order: 1 is the most frequent word. Tokens without a letter are
  * left out. wordfreq lowercases everything, while dictionaries write names and German nouns capitalized, so each word
- * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. A language written in
- * two scripts gets each word's spellings in the other one too (`LanguageSupport.frequencySpellings`): wordfreq writes
+ * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. Dictionaries written
+ * in two scripts get each word's spellings in the other one too (`LanguageSupport.frequencySpellings`): wordfreq writes
  * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are, and
  * the Ukrainian apostrophe as ' only. A language's spelling of a word (`LanguageSupport.frequencyWord`, the Greek final
  * ς) replaces the list's. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.

@@ -483,7 +483,8 @@
     <string name="popup_font_script_only_tl">Chỉ cho chữ tiếng Filipino</string>
     <string name="popup_font_script_only_vi">Chỉ cho chữ tiếng Việt</string>
     <string name="popup_font_script_only_ru">Chỉ cho chữ tiếng Nga</string>
-    <string name="popup_font_script_only_sh">Chỉ cho chữ tiếng Serbia-Croatia</string>
+    <string name="popup_font_script_only_hr">Chỉ cho chữ tiếng Croatia</string>
+    <string name="popup_font_script_only_sr">Chỉ cho chữ tiếng Serbia</string>
     <string name="popup_font_script_only_uk">Chỉ cho chữ tiếng Ukraina</string>
     <string name="popup_font_script_only_be">Chỉ cho chữ tiếng Belarus</string>
     <string name="popup_font_script_only_el">Chỉ cho chữ tiếng Hy Lạp</string>

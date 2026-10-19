@@ -24,9 +24,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 /**
- * The codes of the files that go with [code] while the languages [turnedOn] stay on: an entry's own (its models), and
- * its dictionaries' unless a turned-on entry of another script reads them too. A dictionary code stands for those of
- * its entries that are off ("sh" for both scripts), a code this version does not support for itself.
+ * The codes of the files that go with [code] while the languages [turnedOn] stay on: a language's own (its models),
+ * and its dictionaries' unless another turned-on language reads them too. A dictionary code stands for those of its
+ * languages that are off ("sh" for Croatian and Serbian), a code this version does not support for itself.
  */
 internal fun fileCodes(code: String, turnedOn: Collection<Language>): Set<String> {
     val entries = Language.of(code)?.let(::listOf) ?: Language.withDictionaries(code)
@@ -38,8 +38,8 @@ internal fun fileCodes(code: String, turnedOn: Collection<Language>): Set<String
 }
 
 /**
- * The leftover card the models of the entry with [code] go under: its dictionaries' while no entry reading them is on,
- * so that a language written in two scripts has one card; else its own.
+ * The leftover card the models of the language with [code] go under: its dictionaries' while no language reading them
+ * is on, so that languages sharing dictionaries have one card; else its own.
  */
 internal fun leftoverCode(code: String, turnedOn: Collection<Language>): String {
     val language = Language.of(code) ?: return code
@@ -70,8 +70,8 @@ data class LeftoverModel(val id: String, val title: String, val bytes: Long)
 
 /**
  * The files left by a language that is not turned on: its dictionaries (with [sizes] by id) and the recognition models
- * no turned-on language uses. [code] is an entry's, or the dictionaries' code of a language written in two scripts
- * whose entries are both off.
+ * no turned-on language uses. [code] is a language's, or the dictionaries' code of languages that share them and are
+ * all off.
  */
 data class LanguageLeftovers(
     val code: String,
@@ -79,7 +79,7 @@ data class LanguageLeftovers(
     val models: List<LeftoverModel>,
     val sizes: Map<Long, Long>,
 ) {
-    /** The entries that can be turned on with these files: both scripts' for "sh", none for an unsupported code. */
+    /** The languages that can be turned on with these files: Croatian and Serbian for "sh", none for an unsupported code. */
     val languages: List<Language> get() = Language.of(code)?.let(::listOf) ?: Language.withDictionaries(code)
 
     /** Null until every dictionary's size is known. */
@@ -110,8 +110,8 @@ internal fun leftoverModels(
 }
 
 /**
- * [leftoverModels] by leftover card ([leftoverCode]): the models of both Serbo-Croatian entries go under sh while both
- * are off.
+ * [leftoverModels] by leftover card ([leftoverCode]): the models of Croatian and Serbian go under sh while both are
+ * off.
  */
 internal fun leftoverCards(
     turnedOn: List<Language>,
@@ -123,8 +123,8 @@ internal fun leftoverCards(
     .mapValues { (_, lists) -> lists.flatten().distinctBy { it.id } }
 
 /**
- * The files a language brings: the dictionaries whose source language it is, unless an entry of another script that
- * reads them is on, and the recognition models of its catalog entries that no other turned-on language uses.
+ * The files a language brings: the dictionaries whose source language it is, unless another language that reads them
+ * is on, and the recognition models of its catalog entries that no other turned-on language uses.
  * Dictionaries without a language serve every language and never count.
  */
 @Singleton

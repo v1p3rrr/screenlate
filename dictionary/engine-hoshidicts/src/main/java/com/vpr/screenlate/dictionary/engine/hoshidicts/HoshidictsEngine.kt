@@ -99,7 +99,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
 
     private suspend fun lookupThroughYomitan(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
         val language = options.language
-        // Entries of one language in two scripts share its bundle, as they share its dictionaries.
+        // Languages that share dictionaries (Croatian and Serbian) share their bundle too.
         val code = language.dictionaryCode.encodeToByteArray()
         if (!HoshidictsNative.hasLanguage(handle, code)) {
             val script = context.assets.open("$SCRIPTS/${language.dictionaryCode}.js").use { it.readBytes() }

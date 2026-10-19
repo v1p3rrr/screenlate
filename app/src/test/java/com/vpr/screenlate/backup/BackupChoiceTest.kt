@@ -83,12 +83,12 @@ class BackupChoiceTest {
     }
 
     @Test
-    fun `either serbo-croatian entry takes the shared dictionaries`() {
-        val languages = listOf(BackupFile("sh-Latn", "Serbo-Croatian (Latin)", 10), BackupFile("sh-Cyrl", "Serbo-Croatian (Cyrillic)", 10))
+    fun `croatian or serbian takes the shared dictionaries`() {
+        val languages = listOf(BackupFile("hr", "Croatian", 10), BackupFile("sr", "Serbian", 10))
         val files = listOf(BackupFile("a", "A", 1, "sh"), BackupFile("b", "B", 1, "ru"))
-        val latinOnly = BackupChoice(languages = FileChoice(on = true).toggle("sh-Cyrl", languages.map { it.key }))
-        assertThat(latinOnly.chosenLanguages(languages)).containsExactly("sh-Latn", "sh")
-        assertThat(latinOnly.visible(files, languages).map { it.key }).containsExactly("a")
+        val croatianOnly = BackupChoice(languages = FileChoice(on = true).toggle("sr", languages.map { it.key }))
+        assertThat(croatianOnly.chosenLanguages(languages)).containsExactly("hr", "sh")
+        assertThat(croatianOnly.visible(files, languages).map { it.key }).containsExactly("a")
         val none = BackupChoice(languages = FileChoice(on = false))
         assertThat(none.visible(files, languages)).isEmpty()
     }

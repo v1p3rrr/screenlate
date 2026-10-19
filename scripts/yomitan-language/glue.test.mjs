@@ -81,7 +81,7 @@ test('tagalog affixes and the linker ng are undone only in tagalog', () => {
 });
 
 test('serbo-croatian text without diacritics finds the letters and accent marks drop, only in serbo-croatian', () => {
-    // Both entries (sh-Latn, sh-Cyrl) read the one bundle under the dictionaries' code.
+    // Croatian and Serbian read the one bundle under the dictionaries' code.
     assert.ok(queried('sh', 'kuca').has('kuća'));
     assert.ok(queried('sh', 'sesir').has('šešir'));
     assert.ok(queried('sh', 'djak').has('đak'));
