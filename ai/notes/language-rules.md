@@ -40,7 +40,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | spaced, ko, ja, zh | The aimed word's start and the earlier starts look back at most 32 characters (code points) | `overlay/LookupStarts.kt:9` | LookupStartsTest | LookupStartsTest (Japanese starts at the aim) | ok |
 | ko | The lookup starts at the start of the spaced word (보면서 → 보다); Latin letters belong to the word, digits do not | `lang/KoreanSupport.kt:85` | KoreanTest, I: KoreanLookupTest | Isolation (ja, zh start at the aim) | ok |
 | ja, zh, ko | Latin words inside CJK text start at their first letter; a lone Latin word counts only as a whole | `lang/CjkText.kt:32`, `:54` | JapaneseTest, ChineseTest, KoreanTest | Isolation (`Ｔシャツ and wa|lk`) | ok |
-| de, pl, tr, lv, cs, hr, sr | A period after a short number (or a longer one before a lowercase word) is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:206` | GermanTest, PolishTest, TurkishTest, LatvianTest, CzechTest, SerboCroatianTest, SentenceTest | Isolation (others end at "3." and "1918."; "1918. Dann" ends everywhere) | ok |
+| de, pl, tr, lv, cs, hr, sr | A period after a short number, or after a longer one or a Roman numeral in capitals before a lowercase word ("1918. gada", "Karel IV. byl"), is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:208` | GermanTest, PolishTest, TurkishTest, LatvianTest, CzechTest, SerboCroatianTest, SentenceTest | Isolation (others end at "3.", "1918." and "IV."; "1918. Dann" and "IV. Potom" end everywhere), GermanTest (IIII., iv.) | fixed |
 | each spaced language | Its abbreviations ("Mr.", "z.B.", "т. е.", "TP.", "π.χ.") do not end a sentence | `lang/SpacedLanguageSupport.kt:70`, each `<Lang>Support.abbreviations` | each `<Lang>Test`, SentenceTest | Isolation (each list holds only its own language's sentences) | ok |
 | de, cs, hr, sr | Single letters abbreviate only beside another one written apart (z. B., d. h., o. Ä., u. v. m.; Czech př. n. l., also with the l read as a capital I, as OCR reads it in sans-serif text; Croatian and Serbian p. n. e., п. н. е.), so "Plan B." ends a sentence; "S." stands alone | `lang/SpacedLanguageSupport.kt:38`, `:177`, `GermanSupport.kt:59`, `CzechSupport.kt:41`, `SerboCroatianSupport.kt` `pairedLetters` | GermanTest `a single letter abbreviates only beside another one`, CzechTest (also `the l of the era read as a capital I`), SerboCroatianTest `before the common era…`, SentenceTest | Isolation ("Plan B. Dann" ends everywhere; only German, Czech and Serbo-Croatian have paired letters, "n. l." holds only in Czech) | fixed |
 | pl, hr, sr | A word that holds the sentence only before a number or a lowercase word: Polish "ok.", Croatian and Serbian "Kr." and "Хр." after "pr." ("pr. Kr. godine" holds, "pr. Kr. Onda" ends) | `lang/SpacedLanguageSupport.kt:44`, `SerboCroatianSupport.kt` `abbreviationsBeforeLowercase` | SerboCroatianTest `before the common era, kr holds only before a lowercase word` | Isolation ("Kr. godine" ends in the other languages) | ok |
@@ -70,7 +70,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
-| de, nl | A compound without an entry is split into the longest words, a linking s/es/n (Dutch s/en/e) skipped; the page names the parts above their entries ("Compound: A + B") | `api/Compounds.kt:12`, `api/DictionaryLookup.kt:92`, `GermanSupport.kt:21`, `DutchSupport.kt:24` | CompoundsTest | Isolation (`compoundLinks` only de, nl) | ok |
+| de, nl | A compound without an entry is split into the fewest words, then the split whose shortest part is longest (stads + bestuurder, not stadsbestuur + der), then the longest first, a linking s/es/n (Dutch s/en/e) skipped; the page names the parts above their entries ("Compound: A + B") | `api/Compounds.kt:12`, `api/DictionaryLookup.kt:92`, `GermanSupport.kt:21`, `DutchSupport.kt:24` | CompoundsTest | Isolation (`compoundLinks` only de, nl), CompoundsTest (the lookup limit) | fixed |
 | de | A compound part's capitalized headwords (nouns) come first | `api/Compounds.kt:30`, `api/DictionaryLookup.kt:77` | CompoundsTest | Isolation (`capitalizedNouns` only de) | ok |
 | vi | Chains through a "classifier" form-of entry are dropped, a word reached only through one is left out | `api/ShownResults.kt:48`, `VietnameseSupport.kt:29` | ShownResultsTest | ShownResultsTest (every other language keeps it), Isolation | ok |
 | tl | Chains through a "Baybayin" form-of entry are dropped (basa → ᜊᜐ → basa, Basa), a word reached only through one is left out | `api/ShownResults.kt:48`, `FilipinoSupport.kt` | ShownResultsTest, FilipinoSupportTest | Isolation | ok |
@@ -111,7 +111,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | zh | Pinyin split into syllables, one over each character, with tone colors | `popup/reading-zh.js:5`, `popup/popup.js:383`, `:735` | reading.mjs, popup.mjs | reading.mjs (ja, vi, ko get no syllables) | ok |
 | ja | Definition copy rules of Japanese dictionaries | `popup/definition-ja.js:5` | definition.mjs | definition.mjs `a language without rules of its own…` | ok |
 | ja (default) | Furigana by Yomitan's Japanese distribution for every language without reading rules | `popup/note.js:86`, `render/render.js:570` | note.mjs, anki.test.mjs | — | limit |
-| all | `{phonetic-transcriptions}`: a list of every transcription the dictionaries give, escaped; an English word has empty pitch markers, a Japanese pitch dictionary no transcriptions | `popup/note.js:358` | note.mjs `phonetic transcriptions list each one…` | the same test | ok |
+| all | `{phonetic-transcriptions}`: a list of every transcription the dictionaries give, escaped, each with its dictionary tags before it in italics as Yomitan writes them (`<i>(UK, US)</i> /…/`); an English word has empty pitch markers, a Japanese pitch dictionary no transcriptions | `popup/note.js:365`, `api/Transcriptions.kt:27` | note.mjs `phonetic transcriptions list each one…`, TranscriptionsTest | the same tests (no tags, no brackets) | fixed |
 | tr (page language) | The frequency chip's initial is uppercased by the page language's case rules (ingilizce → İ in Turkish) | `popup/popup.js:910`, `:916` | popup.mjs `the first letter of a long dictionary name…` | the same test (en and no language give I) | fixed |
 | all (render) | Structured content `data` keys become attributes as Yomitan names them: data-sc- and kebab case for Latin keys, data-sc and the key for others (data-sc日本, data-sc한국, data-scКлюч); a key the dataset refuses is skipped | `render/render.js:156` | anki.test.mjs `structured content data attributes…` | the same test | fixed |
 | ja, zh, ru | Furigana markers (`{furigana}`, `{sentence-furigana}`, their plain forms) offered in the + menu only where readings go over or into words; a field that has them is still filled | `LanguageSupport.kt:67`, `FieldTemplate.kt:78` | FieldTemplateTest `offersFuriganaMarkersOnlyWhereReadingsGoOverOrIntoWords` | the same test (en, ko and the others get none; `guessField` gives none for English) | decided |
@@ -131,6 +131,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | spaced, ko | App text puts the language's separator between lines a space or line break wraps | `overlay/capture/AccessibilityText.kt:139`, `overlay/OverlayController.kt:1092` | AccessibilityTextTest `a line wrapped at a space…` | AccessibilityTextTest (Japanese joins without one; a wrap inside a word joins) | fixed |
 | all | App text keeps a combining mark typed apart (empty box in a text view) with its letter, in the letter's box | `overlay/capture/AccessibilityText.kt:158` | AccessibilityTextTest `a combining mark without a box stays with its letter` | AccessibilityTextTest (a mark after a character without a box, or at the start, is dropped) | fixed |
 | spaced | Lens gives no separator after a word hyphenated at a line end; the language's separator is put there, so the break rules see it | `ocr/HyphenBreaks.kt:9`, `ocr/lens/LensOcrEngine.kt:76` | HyphenBreaksTest | HyphenBreaksTest (a dash of its own, a hyphen after a digit, a separator Lens gave, the last line, Japanese) | fixed |
+| spaced | ML Kit keeps a line-end hyphen in the line's text but not in its last element; it is put back after the word, its box reaching the line's end | `ocr/HyphenBreaks.kt:38`, `ocr/mlkit/MlKitOcrEngine.kt:113` | HyphenBreaksTest `the hyphen ml kit leaves out…`, MlKitLineEndHyphenTest (instrumented, German) | HyphenBreaksTest (no hyphen in the text, a vertical line, a word that has it, a hyphen after a digit) | fixed |
 | all | Vertical lines are detected by geometry; right-to-left by script | `ocr/TextOrientation.kt:9`, `:13` | ReadingOrderTest, TextLayoutTest | — | limit |
 
 ## Bugs fixed in this review
@@ -197,6 +198,16 @@ Found while splitting Croatian and Serbian:
 22. The Commons search for `Sr-вода` also matched `LL-Q7737 (rus)-Tatiana Kerbush-вода.wav`: its regular expression
     is not anchored to the title's start. Wiktionary files now count only when the whole title matches.
 
+Fixed afterwards from the limits below (2026-10-19, the owner asked which are worth fixing):
+
+23. ML Kit leaves a line-final hyphen out of its words ("impor" / "tant"), so a hyphenated word was never joined with
+    it. Its line text keeps the hyphen (checked on the emulator, German), so the hyphen is put back after the word.
+24. Czech Roman ordinals ("Karel IV. byl") ended the sentence at their period. A Roman numeral in capitals before a
+    lowercase word is now an ordinal in every ordinal language (cs, de, pl, lv, tr, hr, sr).
+25. Compounds split greedily, the longest word first: Dutch stadsbestuurder gave stadsbestuur + der. The split now
+    takes the fewest parts, then the longest shortest part (stads + bestuurder).
+26. `{phonetic-transcriptions}` left out the transcriptions' tags, which Yomitan puts in italics before each one.
+
 ## Limits left as they are
 
 - `Compounds.word` stops at a combining mark in NFD text; OCR and app text give NFC, so a German compound typed in
@@ -208,22 +219,28 @@ Found while splitting Croatian and Serbian:
 - reading-ru rules are for Russian only. Ukrainian and Belarusian need none: their dictionaries give lemmas no
   reading, and the forms' stress is dropped from the key at import.
 - wty uk-ru has some words twice, under ' and ’ (п'ятниця, п’ятниця): both are found, as two entries that look
-  the same. Merging them would need an apostrophe rule in the grouping of every language.
+  the same. Only 3 of its 99,684 headwords are such pairs; merging them would need an apostrophe rule in the grouping
+  of every language.
 - Ukrainian "див." (see) is also the genitive plural of диво, and "пор." (compare) of пора (a pore); a sentence ending in
   either does not end there.
-- Paddle lines are paragraphs of their own; Lens takes separators from its response.
-- ML Kit leaves a line-final hyphen out of its words ("impor" / "tant"), so a hyphenated word is not joined with
-  it and each half is looked up alone. Joining every word across a line break without a hyphen would find wrong
-  words ("the" / "rapist"). Whether ML Kit's line text keeps the hyphen is not checked.
+- Paddle lines are paragraphs of their own, so a word hyphenated at a line end in PaddleOCR text is looked up as two
+  halves; Lens takes separators from its response. Joining every word across a line break without a hyphen would
+  find wrong words ("the" / "rapist").
 - The frequency chip's initial follows the page language, not the dictionary title's (unknown): an English title in
   a Turkish profile gets İ.
 - A word hyphenated at a line end is joined only when the second half is in lowercase; a real hyphen with a capital
   after it (Max- Planck) is tried with the hyphen only. A hyphen at a line end in Japanese, Chinese or Korean text
   is left alone.
-- Compounds split greedily, the longest word first: Dutch stadsbestuurder gives stadsbestuur + der, not stads +
-  bestuurder, since the dictionary has stadsbestuur and "der". Wiktionary's s-forms (werkgevers, dorps) mostly take
-  the linking s with the first part.
-- Czech Roman ordinals ("Karel IV. byl") end the sentence at their period; only digits are ordinals.
+- Wiktionary's s-forms (werkgevers, dorps, stads) are words of their own, so a compound split mostly takes the
+  linking s with the first part.
+- The compound split (fewest parts, then the longest shortest part) errs where a linking s could start the next
+  word: urlaub + stag for Urlaubstag, geschlecht + steil; adverbs in -erweise (glücklich + erweise) and numerals
+  (fünf + zehnmal) split wrong too, but dictionaries usually have them whole. Checked on 20,000 long lemma headwords
+  of wty de-en and nl-en each, the headword hidden from the lookup: the rule changes 2% (de) and 4% (nl) of the
+  longest-first splits; of 80 changed ones 47 got better and 26 worse in German, about 50 and 13 in Dutch (the worse
+  Dutch ones mostly derived words where both splits are wrong: aanvaar + ding, aanvaard + ing). A wordfreq tie-break
+  among splits with as many parts was worse: short frequent words win (middag + ten, dan + school, pijl + taart).
+- A Roman ordinal before a capital ("Ludwig XIV. König von Frankreich") ends the sentence, as a year does.
 - A word that is also a form of itself (kuća, genitive plural of kuća) shows the form's name beside the headword,
   as Yomitan does: the empty chain of the direct match is not shown, the form's chain is.
 - Serbian text that mixes scripts within a line (a Latin name in a Cyrillic sentence) follows the line's majority:
@@ -238,8 +255,6 @@ Found while splitting Croatian and Serbian:
   finds only headwords written the same way. Modern Greek dictionaries are monotonic.
 - Greek text without tonos finds every headword that differs by it, as decided: ποτε shows ποτέ (never) and πότε
   (when). In wty el-en 7,921 tonos-free spellings stand for two or more headwords.
-- `{phonetic-transcriptions}` lists the transcriptions without their tags; Yomitan puts the tags in italics before
-  each one. Not language-specific; left for the Anki template review.
 
 ## Owner decisions in this review
 
