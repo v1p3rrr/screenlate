@@ -1143,3 +1143,294 @@ Cells: archive MB, words.
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4b.md`.
+
+## Group 4c research (2026-10-19)
+
+Thai (th), Lao (lo), Khmer (km): scripts written left to right without spaces between words. Sources: Yomitan
+e7334a9 (`ext/js/language/`, `translator.js`, `text-scanner.js`; GPL-3.0), the wty tree on Hugging Face
+(`latest/dict`, revision 2026.10.11, listed and downloaded 2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes),
+wordfreq 912caf6, PyThaiNLP 8b2b9a6 (`pythainlp/corpus/`, licenses in `corpus_license.md`), ICU4J 66.1 and 75.1
+(Unicode license) for word segmentation, the tessdata pins of `tessdata_catalog.py` (Apache-2.0), the Paddle Thai
+model converted for the comparison (Apache-2.0), AOSP `fonts.xml` (main, 15, 16) with the font files and Google Fonts
+metadata, circle-flags 379588b (MIT), Wikimedia Commons and Lingua Libre (search API) for audio, Google's TalkBack
+language list for voices, the OCR comparison of `ocr-engines.md` (`testdata/ocr/compare/analyze-rot.txt`). Nothing
+in this section was measured on a device.
+
+### Yomitan at e7334a9
+
+- Descriptors for th, lo and km (`iso639_3` tha, lao, khm; `exampleText` อ่าน, ອ່ານ, អាន) with no text processors and
+  no transforms. The bundles build from them as they are.
+- The translator's `_getNextSubstring` drops one character at a time with letter resolution; word resolution cuts at
+  the last character that is not `\p{Letter}`, which here includes every vowel and tone mark above or below (Mn), so
+  only letter resolution works, as for Japanese and Chinese.
+- The browser's text scanner has no segmentation: in its default letter mode the lookup starts at the caret; word mode
+  (`SCAN_RESOLUTION_EXCLUDED_LANGUAGES` lists ja, zh, yue, ko, not these three) moves the start back to the last
+  character matching `WORD_DELIMITER_REGEX` (`[^\w\p{L}\p{N}]`), which in Thai is the nearest mark or space.
+
+### Dictionaries (wty)
+
+Counting as in group 4a (words with their own meaning); ✗ under 1,500 (then only the word count is given); – no file.
+Cells: archive MB, words.
+
+| from | en | ru | pl | zh | fr | it | tr | ko | ja | pt | es | vi | de | own |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| th | 2.72 16.7k | 0.16 3.3k | 0.19 3.5k | 0.28 2.4k | 640 ✗ | 244 ✗ | 601 ✗ | – | 0.14 1.9k | 567 ✗ | 185 ✗ | 570 ✗ | 423 ✗ | 2.94 22.4k |
+| lo | 0.27 2.3k | 1,418 ✗ | 650 ✗ | 549 ✗ | 150 ✗ | – | 117 ✗ | 378 ✗ | 93 ✗ | – | – | 219 ✗ | – | – |
+| km | 0.96 9.2k | 0.23 5.9k | 845 ✗ | 939 ✗ | 214 ✗ | – | 262 ✗ | 134 ✗ | 58 ✗ | 119 ✗ | – | 461 ✗ | 155 ✗ | – |
+
+- Pairs that pass: th en ru pl zh ja and the Thai edition (th-th, listed unticked by the row "Own-language
+  dictionaries"); lo en only (lo-ru 1,418 is just under); km en ru. Outside the gloss languages: lo-th 9,898 words,
+  km-th 1,715.
+- Glossaries: only Thai has them (from the Thai Wiktionary: a Thai sense label and the translations, เดิน → walk);
+  th-en passes (0.08 MB, 2,066), the others have 194-963 words. None for Lao or Khmer.
+- Transcriptions (`dict/all/<lang>/wty-<lang>-ipa.zip`): th 0.58 MB (35,452 words), lo 0.25 (13,255, Vientiane and
+  Luang Prabang variants), km 0.07 (2,318); all pass. The Khmer file mixes a transliteration, the Wiktionary
+  romanization and IPA under one label and covers 20.5% of the km-en headwords (Thai 99.9%, Lao 98.8%).
+- Rows (→en): th 29,681, a third form-of (9,820); lo 3,532 (836); km 14,619 (3,677). The ru dictionaries have no
+  form-of rows. Form-of tags: `abstract-noun` (การ/ความ + X → X; Lao ການ/ຄວາມ, Khmer ការ/ភាព: th 5,237, lo 514, km
+  2,797), `alternative`, `alt-of`, and in Thai and Lao `classifier`: 1,900 Thai rows on 150 classifiers (คน 386, ตัว
+  306, ใบ 101), 124 Lao (ໂຕ 43), none in Khmer; a lookup of คน brings 386 "classifier of" entries besides its own, as
+  cái did in Vietnamese. 70 Thai letters link to their Morse code (ศ → `...`); 604 exact duplicate form-of rows in
+  th-en (lo 50, km 80).
+- No readings (`row[1]` is empty). The en dictionaries carry a romanization only in the structured content's grammar
+  line (`word • (roman)`): Thai Paiboon (pâap-bplaa-grɔ̀ɔp), Lao Wiktionary transliteration (khǭp khūa), Khmer
+  Wiktionary romanization, 8.2% of it corrupted for words with a minor first syllable (ចចក cɑɑcɑcɑɑk for cɑcɑɑk). The
+  ru dictionaries have none. The popup shows the line with the definition; `{reading}` stays empty.
+- Normalization: NFC changes no headword. Thai is clean (ำ precomposed in 1,033 headwords, never split; no tone
+  mark typed before a vowel), with a few old spellings ํ + tone + า (นํ้า). Lao mixes spellings: ໜ ໝ 120 headwords
+  against ຫນ ຫມ 28, ຫຼ 52 against ຫລ 43, and 53 words stand in both spellings (ໜາ/ຫນາ, ເຫຼັກ/ເຫລັກ); 50 Lao lemma rows
+  say "dated spelling of". Khmer subscript DA ្ដ (225 headwords) and TA ្ត (460) print alike, and 10 words stand in
+  both (ក្ដារ/ក្តារ, សួស្ដី/សួស្តី); km-ru has about 60 headwords typed in legacy order.
+- Prefixes: 19% of Thai headwords (lo 17%, km 19%) are the start of a longer one, mostly through the form-of
+  families การ/ความ (การ+X: 3,450 form-of headwords against 701 lemmas). Single-code-point headwords: th 86, lo 14,
+  km 112 (letters, classifiers, symbols). Of 200 sampled Thai lemmas, 118 split into two headwords; about 55% of the
+  sample are real compounds or phrases (ฝ่าย|ซ้าย, ธรรม|ศาสตร์, หาย|ไป), 9 splits are wrong (จิต|ระ, คะ|นอง). Lao
+  about 22% (many numerals), Khmer about 33%.
+- Odd rows: Khmer phrasebook sentences as headwords (ខ្ញុំមិនចេះនិយាយភាសាខ្មែរទេ); 134 Thai rows with an empty part of
+  speech (classifier senses, ฯ, ๛, Braille); one `{{place|…` residue row per dictionary; no `{{{`.
+
+### Word frequency
+
+- wordfreq 912caf6: no th, lo or km list.
+- PyThaiNLP: `tnc_freq.txt` (words and counts from the Thai National Corpus, 106,122 words, 1.6 MB; SHA-256
+  554984d6…dd0dda at 8b2b9a6) and `ttc_freq.txt` (Thai Textbook Corpus, 19,493 words), both listed in
+  `corpus_license.md` among the word lists released under CC0-1.0. Against the th-en headwords: 10,311 headwords have a
+  TNC count; of the TNC's top 1,000 words 954 are headwords, top 5,000 4,013, top 10,000 6,405, top 20,000 8,690;
+  headwords cover 90.7% of the corpus' tokens. Missing from the top 300: ๆ, ‘, พ.ศ., ก็คือ, ล่ะ, หรือไม่.
+- Nothing found for Lao or Khmer.
+
+### OCR
+
+- ML Kit: no Thai, Lao or Khmer.
+- Paddle: `th_PP-OCRv5_mobile_rec` (Apache-2.0), converted to MNN for the comparison (`model.mnn` 7.9 MB, `dict.txt`
+  1.8 KB; `testdata/ocr/compare/models/`), not uploaded. Its character list has every Thai letter, mark and digit
+  except ฃ (obsolete), ๎ ๏ ๛ (rare), plus Latin letters, digits and common punctuation; nothing for Lao or Khmer.
+  It splits a line into phrases at spaces (`TextRecognition.words`, separator " "), with CTC character positions.
+- tessdata (fast / best MB): tha 1.07 / 7.61, lao 6.39 / 13.53, khm 1.45 / 8.10.
+- Measured (`analyze-rot.txt`, CER % over clean + hard; clean / hard in brackets):
+  - th: Paddle 1.3 (0.4 / 1.8), Tesseract fast 20.8 (0.8 / 33.2), best 21.0 (0.9 / 33.4); cloud 0.0. By the
+    recommendation rule Paddle.
+  - lo: Tesseract fast 37.6 (16.8 / 53.9), best 37.3 (17.0 / 53.3); cloud 3.6 (4.3 / 3.0). Tesseract reads Lao marks
+    as lines of their own and drops lines.
+  - km: Tesseract fast 38.3 (8.9 / 57.1), best 37.9 (8.9 / 56.6); cloud 0.1 (0.0 / 0.2).
+  - For scale: models not offered as unusable read 13.4% (Paddle Latin on Vietnamese) and 26.4% (Tesseract on
+    Persian) on the clean screens.
+- How each engine splits the text (clean light screens):
+  - Cloud recognition: Thai and Khmer by word, no character boxes; Lao by syllable, and it read ຕະຫຼາດ as ຕະຫຼาด,
+    the last two letters Thai (า ด, the same shapes as າ ດ).
+  - Paddle: phrases between spaces.
+  - Tesseract: Thai one "word" per character or cluster (ห | ้ | อ | ง | ส | ม | ุ | ด; issue #2702), so
+    `tesseractPage`, which gives every word the language's separator, would put a space between all of them; Thai
+    ำ comes out as ํ + า (ก ํ า ห น ด). Lao and Khmer as phrases between spaces.
+- `OcrScript` needs THAI, LAO and KHMER; only THAI maps to an on-device recognizer besides Tesseract.
+- `scripts/text-image.py` draws with Pillow, which shapes Thai and Khmer only with libraqm (not on this PC): marks
+  stack wrongly and Khmer subscripts come apart. The comparison screens were drawn in the emulator's browser; new
+  test screens go the same way.
+
+### Fonts
+
+- No font of `catalog.json` covers Thai, Lao or Khmer (only ฿ U+0E3F in Inter, M PLUS 1p and LXGW WenKai TC).
+- System (AOSP `fonts.xml`, the same entries on main, 15 and 16; `und-Thai`, `und-Laoo`, `und-Khmr`, each with an
+  `elegant` Sans, the Serif as its `fallbackFor="serif"`, and a `compact` UI face). Names for `local()` read from the
+  files:
+
+  | Font | PostScript | Full name | Loops |
+  |---|---|---|---|
+  | Thai Sans (v1.04) | `NotoSansThai` | `Noto Sans Thai` | looped |
+  | Thai UI | `NotoSansThaiUI` | `Noto Sans Thai UI` | looped |
+  | Thai Serif | `NotoSerifThai-Regular` | `Noto Serif Thai Regular` | looped |
+  | Lao Sans | `NotoSansLao-Regular` | `Noto Sans Lao Regular` | loopless |
+  | Lao UI | `NotoSansLaoUI` | `Noto Sans Lao UI` | looped |
+  | Lao Serif | `NotoSerifLao-Regular` | `Noto Serif Lao Regular` | looped |
+  | Khmer Sans | `NotoSansKhmer-Regular` | `Noto Sans Khmer` (15, v1.901), `Noto Sans Khmer Regular` (16, v2.004) | – |
+  | Khmer UI | `NotoSansKhmerUI` | `Noto Sans Khmer UI` | – |
+  | Khmer Serif | `NotoSerifKhmer-Regular` | `Noto Serif Khmer Regular` | – |
+
+  - AOSP's Thai Sans is the 2011 looped design, though its metadata says loopless (checked on 22 consonants with a
+    head loop: 22 of 22 looped). `NotoSansThai-Regular` and `Noto Sans Thai Regular` name the newer loopless v2
+    (Google Fonts) and must not go into the system list.
+  - The system Lao Sans lacks 15 rare letters (U+0E86, 0E89, 0E8C, 0E8E-0E93, 0E98, 0EA0, 0EA8, 0EA9, 0EAC, 0EBA;
+    Pali and dialect); Thai 87/87 and Khmer 146/146 are complete.
+  - Android 15's `NotoSansKhmer-VF.ttf` (1.901) has a non-standard `wght` axis 26-190 (Regular 90). Declared as read
+    from `fvar` ("font-weight: 26 190"), a request for 400 clamps to 190 and the text may come out black; 16 has
+    100-900. A range should be declared only when the axis reaches 400. To check on the emulator.
+  - Natural line heights (hhea, em): Thai 1.37, Lao 1.64 (UI 1.33), Khmer 1.36.
+- Looped and loopless Thai: looped is the printed form of textbooks and formal text, loopless that of signs, apps and
+  headlines (Typotheque and Chulalongkorn, 2024: looped rated more readable at every age and read slightly faster;
+  younger readers cope with loopless at small sizes). Khmer has no such split; Lao has both.
+- Downloadable (Google Fonts, all OFL; popularity rank, TTF size, script subset as WOFF2):
+  - Thai (34 families, every one with all 87 letters): Kanit (22, loopless, 173 KB), Prompt (36, loopless, 169 KB),
+    Chakra Petch (107, display), Noto Sans Thai (114, loopless, variable, 219 KB), Sarabun (143, looped, 90 KB), IBM
+    Plex Sans Thai (230, loopless), Noto Serif Thai (303, looped), Noto Sans Thai Looped (628, looped), IBM Plex Sans
+    Thai Looped (749).
+  - Lao: Noto Sans Lao (loopless), Noto Sans Lao Looped, Noto Serif Lao, Phetsarath (65 of 82 letters).
+  - Khmer (28 families): Noto Sans Khmer (79, 360 KB), Nokora, Kantumruy Pro (530, variable, 200 KB), Hanuman (615,
+    serif, 126 KB), Battambang, Koh Santepheap, Noto Serif Khmer; Bayon, Angkor, Koulen, Moul are display faces.
+  - Authors' files: Noto slim variable TTFs at `notofonts/notofonts.github.io` (`fonts/<Family>/unhinted/
+    slim-variable-ttf/`; Sans Thai 32 KB, Thai Looped 57, Serif Thai 42, Sans Lao 34, Lao Looped 59, Serif Lao 44,
+    Sans Khmer 120, Serif Khmer 170; `wght` 400-700); Cadson Demak's TTFs committed in their repositories
+    (`cadsondemak/Sarabun`, `kanit`, `prompt`); Kantumruy Pro at `sovichet/kantumruy-pro` (`fonts/variable/`); Danh
+    Hong's Khmer fonts at `danhhong/<Name>` (`Release/ttf/`). GitHub detects OFL-1.1 on all of them.
+- Shaping (stacked marks, Khmer subscripts, leading vowels) is the WebView's and the system's; nothing from us.
+
+### Word starts: where the word under the tap begins
+
+- Today: spaced languages look up from the start of the space-separated word under the aim (`wordStartOffset`);
+  Japanese and Chinese (`SearchResolution.LETTER`, empty separator) look up from the aimed character; Vietnamese also
+  starts one and two words before the aim (`earlierStartOffset`, `EarlierStarts.wordStarts`, which finds the starts
+  after spaces). None of this works for Thai, Lao or Khmer: a space ends a phrase or a sentence, not a word, and the
+  median headword is 6-7 characters, so a start at the aimed character lands mid-word most of the time (ผู้หญิง tapped
+  on หญิง finds หญิง "woman" alone; โรงเรียน tapped on เรียน finds "to study").
+- ICU's word break iterator segments the three scripts with dictionaries (thaidict, laodict, khmerdict; ICU 4.x on).
+  Android has had `android.icu.text.BreakIterator` since API 24, ICU 66 at API 30 (the app's minSdk). Checked with
+  ICU4J 66.1 and 75.1 (the same output) on sample sentences:
+  - th: ฉัน|ไป|โรงเรียน|ทุก|วัน; เด็กๆ|ชอบ|กิน|ข้าว|ผัด|มาก; กรุงเทพฯ| |เป็น|เมือง|หลวง|ของ|ประเทศไทย;
+    นายก|รัฐมนตรี|ประกาศ|นโยบาย|ใหม่|เมื่อ|วาน|นี้; ผู้|หญิง|คน|นั้น|กำลัง|อ่าน|หนังสือพิมพ์|อยู่|ที่|ห้อง|สมุด;
+    เขา|มี|ตากลม|และ|ผม|ยาว (right); ผ้าตา|กลม|แห้ง|เร็ว (wrong: ผ้า|ตาก|ลม); ราคา| |150| |บาท| |ฯลฯ ...;
+    ฉัน|ชอบ| |iPhone| |มากกว่า.
+  - lo: ຂ້ອຍ|ໄປ|ໂຮງຮຽນ|ທຸກມື້; ປະເທດ|ລາວ|ມີ|ແມ່|ນ້ຳ|ຂອງ (ແມ່ນ້ຳ "river" split); ພວກ|ເຮົາ|ກິນເຂົ້າ|ໜຽວ|ທຸກ|ວັນ
+    (ເຂົ້າໜຽວ "sticky rice" split wrongly).
+  - km: ខ្ញុំ|ទៅ|សាលារៀន|រាល់ថ្ងៃ; ប្រទេស|កម្ពុជា|មាន|រាជធានី|ភ្នំពេញ|។; កូន|ៗ|របស់|គាត់|ទៅលេង|នៅផ្ទះ|យាយ.
+  - It splits compounds into their parts more often than it errs: of the wty →en headwords without spaces, one ICU
+    piece th 52.9%, two 32.9%, three 10.0%, four or more 4.1%; lo 59.6 / 28.5 / 9.8 / 2.1; km 84.9 / 10.1 / 3.2 / 1.8.
+    Loanwords fall apart (กรด|นิว|คลี|อิก, កា|បូន|អ៊ី|ដ្រា|ត).
+  - The JDK's `java.text.BreakIterator` has an older Thai dictionary (ผู้หญิง, ห้องสมุด, นายกรัฐมนตรี whole; ตาก|ลม
+    wrong) and none for Lao or Khmer (whole phrases). Unit tests run against android.jar stubs, where `android.icu`
+    returns defaults, so tests need ICU4J (66.1 matches API 30) behind an interface, or Robolectric (not used).
+  - Cost: a whole 2,000-character line 0.2-0.3 ms, a new iterator over a 64-character window 0.01-0.04 ms (desktop
+    JVM); nothing to worry about on a phone.
+  - ICU's sentence iterator does not split Thai at spaces (one "sentence" per line); Khmer splits after ។.
+- Ways to find the start (question 1 of the plan):
+  - ICU words: the lookup starts at the start of the ICU word under the aim and at the starts of the one or two ICU
+    words before it, keeping from an earlier start only words that reach the aimed one, earliest first, then the
+    aimed word's own results (the Vietnamese rule). ห้องสมุด tapped on สมุด: ห้องสมุด "library" first, then สมุด
+    "notebook". Two earlier words reach every part of 95.8% of Thai headwords (98% of Lao and Khmer), three 98.8%.
+    Three lookups per tap with two earlier words, as Vietnamese.
+  - Japanese-style: from the aimed character, the user aims at the first letter; no segmentation.
+  - Every start: every character start in a window before the aim (up to the scan length), keeping the longest
+    dictionary word that covers the aim; independent of ICU's dictionary, about 16 lookups per tap and more junk
+    (short words that end at the aim).
+- Cloud recognition already returns Thai and Khmer split into words (ห้องสมุด | เปิด | ตั้งแต่ | เก้า | โมง; Khmer
+  បណ្ណាល័យ | បើក | នៅ | ម៉ោង), Lao by syllable (ສາ | ທາ | ລະ | ນະ). `TextLayout` flattens words into characters, so
+  those boundaries are lost today; ICU covers every engine and app text alike.
+
+### Combining marks: hit testing, highlight, lookup boundaries
+
+- Thai and Lao: vowels above and below and the tone marks are Mn (ั ิ ี ึ ื ุ ู ็ ่ ้ ๊ ๋ ์; Lao ັ ິ ີ ຶ ື ຸ ູ ົ ່ ້ ໊ ໋ ໌ ໍ);
+  the following vowels า ำ ะ ๅ (Lao າ ຳ ະ) and the leading vowels เ แ โ ใ ไ (Lao ເ ແ ໂ ໃ ໄ) are letters (Lo), the
+  leading ones stored before the consonant they are read after. ฯ and ຯ are Lo, ๆ and ໆ Lm.
+- Khmer: dependent vowels are Mc (ា ើ ោ ៅ ះ) or Mn (ិ ី ឹ ឺ ុ ូ ួ), signs ់ ៉ ៊ ៍ ៎ ៏ ័ Mn, the coeng ្ (Mn, ccc 9)
+  puts the next consonant below: ខ្ញុំ is ខ ្ ញ ុ ំ, five code points, one cluster.
+- `TextLayout.splitBox` divides a word box evenly per code point when the engine gives no box per code point (cloud
+  recognition, Tesseract's Thai), so a mark gets a slot of its own: ห้องสมุด gets 8 slots for 6 visible columns and the
+  rest of the word drifts left. Marks need no width (Mn, the coeng and the consonant after it) when the box is
+  divided; highlighting merges per line, so whole words stay covered either way.
+- A lookup must not start on a mark, a following vowel or the consonant right after a leading vowel, nor on the
+  consonant after a coeng; a match must not end before a mark or a following vowel, nor end with a leading vowel or a
+  coeng. `ShownResults` already drops matches that end before a combining mark (Mn only); Thai and Lao following
+  vowels are Lo and Khmer's spacing vowels Mc, so neither is caught today: กาง looked up from ก would show the letter
+  ก as a word.
+- `SpacedLanguageSupport.isWordCharacter` (letters, digits, Mn) is not used by these languages, which need their own
+  support class (empty separator, `SearchResolution.LETTER`, as Chinese); its word characters must take Mc as well
+  (Khmer).
+
+### Text rules
+
+- Sentence ends:
+  - th: no full stop. A space separates sentences and also clauses, numbers and foreign words, and stands around ๆ
+    (เด็ก ๆ, the Royal Institute's spelling) and ฯลฯ; ? ! … and line ends. A period is used in abbreviations (พ.ศ.,
+    ม.ค., ดร., อย.) and never ends a sentence.
+  - lo: as Thai; a period is used now and then.
+  - km: ។ (khan) and ៕ (end of a section), ? ! …; a space separates phrases, not sentences.
+- Repetition marks: ๆ ໆ ៗ repeat the word before. Thai headwords write it after a space (กล้วย ๆ, ขำ ๆ, 30 headwords;
+  one without: นานๆ); Lao (ຊ້າໆ) and Khmer (ក្មេងៗ) without. Text writes Thai both ways. ICU keeps เด็กๆ as one word and
+  splits កូន|ៗ.
+- ฯ abbreviates (กรุงเทพฯ, นายกฯ; 5 headwords with it); ฯลฯ is "etc."; ຯ the same in Lao.
+- Digits: Thai ๐-๙, Lao ໐-໙, Khmer ០-៩ are Nd; Western digits are more common.
+- Quotes: th and lo “” ‘’; km «» and “”.
+- Normalization: ำ (U+0E33) and ຳ (U+0EB3) decompose only by compatibility (ํ + า, ໍ + າ), so NFC leaves Tesseract's
+  ํา as two characters, and older typing puts the tone mark between them (นํ้า for น้ำ); Thai typed with the tone mark
+  before the vowel above (ก่ิ for กิ่) is not reordered by NFC (the vowel's class is 0). Lao ໜ ໝ ຫຼ and ຫນ ຫມ ຫລ, and
+  Khmer subscript ្ដ and ្ត, are both in use (see "Dictionaries"); OCR gives one form of each. Khmer text from apps
+  carries zero-width spaces (U+200B) between words; no →en headword has one (lo-ru 5, km-ru 3).
+- Abbreviations with periods are headwords (อย., ส.ค.ส., ดี.ซี.); `tnc_freq` lists พ.ศ.
+
+### Scan length
+
+- Headwords without spaces longer than 16 characters (the default scan length): th 1.9% (309; 20: 0.6%), lo 0.1%,
+  km 0.9% (cs 2.5%, el 2.6%). The row "Scan length" of the group 4b plan (24 for Georgian and Armenian, 16 for the
+  other languages) covers these three; nothing to ask.
+
+### Audio
+
+- Lingua Libre (items, title codes, files, speakers): th Q9217 `tha` 289 files, 4 speakers (one recorded 244);
+  lo Q9211 `lao` 9 files (place names, a greeting, ພາສາ, ຮ້ອຍ), 1 speaker; km Q9205 `khm` 13 files, 1 speaker.
+- Twenty common words (as in group 4b), Lingua Libre / Wiktionary / either: th 11 / 2 (`Th-น้ำ.ogg`, `Th-แมว.ogg`) /
+  13; lo 0 / 0 / 0; km 0 / 0 / 0. The app's search queries find every known file in these scripts (no segmentation
+  problem). By the row "Audio order": Lingua Libre first for Thai; Lao and Khmer tie at nothing, the default order.
+- Commons by prefix: `Th-` 238 audio files, 42 with Thai titles (the rest romanized: `Th-rak.ogg`, tone tests, names;
+  the app cannot find those without a romanization); `Km-` 9 Khmer words; `Lo-` and `Lao-` hold no Lao words.
+- Text to speech: Google's Android engine lists Thai (Thailand) and Khmer (Cambodia), not Lao (TalkBack's language
+  list; not tested on a device); eSpeak NG has Thai only. Lao has no word audio and no voice: the speaker button
+  would find nothing. To check on the emulator: which voices Google's engine installs for th and km.
+
+### Names, flags, codes
+
+- Translation services: `TranslationLanguageTable` lists th, lo and km for both services, same codes.
+- Names (JDK = ICU 75): Thai / тайский / タイ語 / 泰语 / Thailändisch / Tiếng Thái; Lao / лаосский / ラオ語 / 老挝语 /
+  Laotisch / Tiếng Lào; Khmer / кхмерский / クメール語 / 高棉语 / Khmer / Tiếng Khmer. Own names: ไทย, ລາວ, ខ្មែរ.
+- Bubble glyph candidates: a letter of the language's own name (ท from ไทย, whose first character is the leading
+  vowel ไ; ລ; ខ) or the first letter of the alphabet (ก, ກ, ក; ก and ກ look alike).
+- E-ink codes: TH, LO, KM. No Anki markers (no readings in the dictionaries).
+- circle-flags 379588b: `th.svg`, `la.svg`, `kh.svg` (paths and one circle, as the existing flags; they convert
+  with the repository's own `vector_drawable()` to 765-860 bytes); `scripts/flags/` needs th, la, kh in `COUNTRIES`.
+
+### Long lines
+
+- ICU segmentation is linear and cheap (above); the lookup costs the usual substrings per start: three starts with
+  two earlier words, about 16 exact lookups each (no inflection rules). The every-start way would cost about 16
+  starts of the same. To be timed on the emulator with the test screens.
+
+### Plain fixes found (no owner decision)
+
+- Clusters: no lookup start on a mark, a following vowel, the consonant after a leading vowel or after a coeng; no
+  match ending inside a cluster (before a mark or a following vowel, on a leading vowel or a coeng); `TextLayout`
+  gives marks no width when it divides a word box; Khmer word characters take Mc.
+- Tesseract words of these scripts joined by the gap between their boxes, not by the language's separator (Thai
+  comes one character per word).
+- Thai text: ํา read as ำ and ํ + tone + า as tone + ำ (นํ้า → น้ำ); a tone mark typed before the vowel above moved after
+  it; the repetition mark tried with and without a space before it (เด็กๆ, เด็ก ๆ).
+- Lao text: ໍາ read as ຳ; ຫນ ຫມ ຫລ and ໜ ໝ ຫຼ match each other; Thai letters of the same shape in a Lao word written as
+  the Lao ones (cloud recognition's ຕະຫຼาด).
+- Khmer text: subscript DA and TA match each other; zero-width spaces dropped from the looked-up text and taken as
+  word boundaries.
+- Form-of rows: Thai and Lao `classifier` rows left out as the Vietnamese ones are (row "Vietnamese classifiers");
+  Morse code links dropped; duplicate rows merged.
+- Sentence ends: Khmer ។ ៕ ? ! …; a period after Thai or Lao letters never ends a sentence.
+- System font weights: a variable font's range declared only when its axis reaches 400 (Android 15's Noto Sans Khmer).
+- `OcrScript` THAI, LAO, KHMER; tessdata entries for tha, lao, khm; the Paddle Thai entry once uploaded.
+- Catalog: `SOURCES` gains th, lo, km; flags th, la, kh.
+
+### Questions for the owner
+
+See `plans/2026-10-19-group-4c.md`.
