@@ -57,8 +57,8 @@ look-alikes in Greek words; `paddle-el` uploaded to the `ocr-models-1` release).
 search took only the ISO 639-3 code, and Greek recordings also carry `gre` and `mis`; it takes any code now, for every
 language. Group 4a is done. Croatian and Serbian: Serbian reads both scripts (look-alikes fixed per line; the voice
 gets Latin words in Cyrillic; translation as sr-Latn), Croatian audio tries Hr- recordings, then Serbian ones; the
-Commons search now drops matches inside titles. Left: questions 65-66 (Serbian look-alikes per line, ML Kit for
-Serbian) for the owner; the owner re-imports the Russian dictionaries (the stress-mark rule changes them at import). The emulator's /data has 465 MB
+Commons search now drops matches inside titles. Questions 65-66 are answered: look-alikes by the line, Latin words in
+capitals kept outside headings in capitals; no ML Kit for Serbian. Left: the owner re-imports the Russian dictionaries (the stress-mark rule changes them at import). The emulator's /data has 465 MB
 free with the storage thresholds lowered (`sys_storage_threshold_percentage` 1, `sys_storage_threshold_max_bytes`
 100 MB); deleting the two settings puts it into low storage until some language's files go.
 
