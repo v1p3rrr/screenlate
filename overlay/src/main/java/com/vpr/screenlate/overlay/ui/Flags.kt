@@ -30,6 +30,7 @@ object Flags {
         "cz" to R.drawable.flag_cz,
         "id" to R.drawable.flag_id,
         "my" to R.drawable.flag_my,
+        "ph" to R.drawable.flag_ph,
         "vn" to R.drawable.flag_vn,
         "ru" to R.drawable.flag_ru,
     )

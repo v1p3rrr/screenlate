@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_tl.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_tl_hyphenated_label">có gạch nối</string>
+    <string name="inflection_tl_hyphenated">Dạng viết có gạch nối của từ</string>
+</resources>

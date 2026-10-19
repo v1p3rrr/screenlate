@@ -133,6 +133,12 @@ class SentenceTest {
     }
 
     @Test
+    fun filipinoSentenceKeepsTitlesAndSaints() {
+        val paragraph = "Umulan kahapon. Nakita ko si G. Santos sa Sta. Cruz kanina. Tapos na."
+        assertThat(extract(paragraph, "Nakita", Language.FILIPINO).text).isEqualTo("Nakita ko si G. Santos sa Sta. Cruz kanina.")
+    }
+
+    @Test
     fun vietnameseSentenceKeepsCityAbbreviation() {
         val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
         assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")

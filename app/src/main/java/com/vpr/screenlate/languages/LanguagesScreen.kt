@@ -45,6 +45,7 @@ import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.dictionaries.DictionaryLanguagesDialog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -416,8 +417,7 @@ private fun FlagDialog(language: Language, chosen: String, onChoose: (String) ->
 /** The name of the language with [code], also for one this version does not support. */
 private fun leftoverName(code: String): String {
     val locale = Locale.getDefault()
-    return Language.of(code)?.displayName()
-        ?: Locale.forLanguageTag(code).getDisplayLanguage(locale).ifEmpty { code }.replaceFirstChar { it.titlecase(locale) }
+    return languageName(code, locale).ifEmpty { code }.replaceFirstChar { it.titlecase(locale) }
 }
 
 private fun languages(dictionary: DictionaryEntity): String =

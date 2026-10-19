@@ -99,6 +99,12 @@ interface LanguageSupport {
     /** BCP 47 tag of the language, for `lang` attributes and locale-dependent glyph forms. */
     val languageTag: String
 
+    /** The language's name in [locale] as running text writes it (lowercase in Russian); see `Language.displayName`. */
+    fun nameIn(locale: Locale): String = Locale.forLanguageTag(language.code).getDisplayLanguage(locale)
+
+    /** BCP 47 tag of the text-to-speech voice: the language's code unless the voices know it by another. */
+    val speechTag: String get() = language.code
+
     /** The phone's fonts for the language, used by the lookup page unless the user picks another font. */
     val systemFonts: SystemFonts
 
@@ -297,6 +303,7 @@ val Language.support: LanguageSupport
         Language.CZECH -> CzechSupport
         Language.INDONESIAN -> IndonesianSupport
         Language.MALAY -> MalaySupport
+        Language.FILIPINO -> FilipinoSupport
         Language.VIETNAMESE -> VietnameseSupport
         Language.RUSSIAN -> RussianSupport
     }

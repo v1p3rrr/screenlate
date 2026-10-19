@@ -486,6 +486,7 @@
     <string name="popup_font_script_only_cs">Only for Czech text</string>
     <string name="popup_font_script_only_id">Only for Indonesian text</string>
     <string name="popup_font_script_only_ms">Only for Malay text</string>
+    <string name="popup_font_script_only_tl">Only for Filipino text</string>
     <string name="popup_font_script_only_vi">Only for Vietnamese text</string>
     <string name="popup_font_script_only_ru">Only for Russian text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>

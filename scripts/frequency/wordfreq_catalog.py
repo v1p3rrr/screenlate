@@ -21,7 +21,10 @@ HOMEPAGE = "https://github.com/rspeer/wordfreq"
 TEMPLATE = "wordfreq"
 
 # The app's source languages except Japanese, which bundles its own frequency dictionary.
-LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms"]
+LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl"]
+
+# wordfreq's codes where they differ from the app's: Tagalog is its "fil" (Filipino).
+WORDFREQ_CODES = {"tl": "fil"}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")
@@ -68,7 +71,8 @@ def entry(language, name, data):
 def entries(cache):
     result = []
     for language in LANGUAGES:
-        for name in (f"large_{language}.msgpack.gz", f"small_{language}.msgpack.gz"):
+        code = WORDFREQ_CODES.get(language, language)
+        for name in (f"large_{code}.msgpack.gz", f"small_{code}.msgpack.gz"):
             data = fetch(name, cache)
             if data is not None:
                 result.append(entry(language, name, data))

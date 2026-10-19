@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.catalog
 
 import android.content.Context
 import android.util.Log
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.updatesItself
@@ -161,7 +162,7 @@ data class CatalogEntry(
 
     private fun fill(text: String, locale: Locale): String {
         if ('{' !in text) return text
-        fun name(code: String?) = code?.let { Locale.forLanguageTag(it).getDisplayLanguage(locale) }.orEmpty()
+        fun name(code: String?) = code?.let { languageName(it, locale) }.orEmpty()
         return text.replace("{source}", name(sourceLanguage))
             .replace("{target}", name(targetLanguage))
             .replace("{src}", sourceLanguage)

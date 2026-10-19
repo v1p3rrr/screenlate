@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_tl.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_tl_hyphenated_label">kısa çizgili</string>
+    <string name="inflection_tl_hyphenated">Sözcüğün kısa çizgiyle yazılmış biçimi</string>
+</resources>

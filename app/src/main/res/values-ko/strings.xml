@@ -479,6 +479,7 @@
     <string name="popup_font_script_only_cs">체코어 텍스트에만 사용</string>
     <string name="popup_font_script_only_id">인도네시아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_ms">말레이어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_tl">필리핀어 텍스트에만 사용</string>
     <string name="popup_font_script_only_vi">베트남어 텍스트에만 사용</string>
     <string name="popup_font_script_only_ru">러시아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>

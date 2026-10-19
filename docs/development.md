@@ -97,8 +97,8 @@ check out Yomitan at the commit in `scripts/yomitan-language/yomitan-commit.txt`
 inflection rule names (`res/values/inflections_<iso>.xml` and `YomitanInflections.kt`) and lists the translations
 that are missing or no longer needed; translations are edited by hand. `glue.js` may replace a language's case
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
-descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian). The bundles and the strings are GPL-3.0, like
-the engine module that holds them.
+descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian). The bundles and the
+strings are GPL-3.0, like the engine module that holds them.
 
 ## Tests
 

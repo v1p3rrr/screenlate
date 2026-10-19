@@ -71,14 +71,16 @@ class CatalogFileTest {
     fun `every source language but Japanese has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build != null }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
             assertThat(entry.recommended).isTrue()
             assertThat(entry.sha256).matches("[0-9a-f]{64}")
+            // wordfreq names Tagalog fil.
+            val code = if (entry.sourceLanguage == "tl") "fil" else entry.sourceLanguage
             assertThat(entry.downloadUrl).matches(
-                "https://raw\\.githubusercontent\\.com/rspeer/wordfreq/[0-9a-f]{40}/wordfreq/data/(large|small)_${entry.sourceLanguage}\\.msgpack\\.gz",
+                "https://raw\\.githubusercontent\\.com/rspeer/wordfreq/[0-9a-f]{40}/wordfreq/data/(large|small)_$code\\.msgpack\\.gz",
             )
             assertThat(entry.oldTitles).containsExactly(WordfreqDictionary.title(entry.sourceLanguage))
             assertThat(entry.titles.keys).containsAtLeastElementsIn(locales)

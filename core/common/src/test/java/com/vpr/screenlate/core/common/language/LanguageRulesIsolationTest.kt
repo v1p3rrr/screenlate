@@ -2,6 +2,7 @@ package com.vpr.screenlate.core.common.language
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
+import java.util.Locale
 import org.junit.Test
 
 /**
@@ -130,8 +131,17 @@ class LanguageRulesIsolationTest {
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
-            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY)
+            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO)
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
+    }
+
+    @Test
+    fun `only Filipino has its own name and another voice tag`() {
+        val systemName = { support: LanguageSupport ->
+            Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
+        }
+        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
     }
 
     @Test

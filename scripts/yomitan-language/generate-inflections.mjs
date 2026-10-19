@@ -43,9 +43,17 @@ async function transformsOf(iso) {
     throw new Error(`${iso}: Yomitan has no transforms`);
 }
 
-/** A rule name worth translating: words, not an affix (-able, un-) or a name in the language's own script. */
-function hasLabel(name) {
-    return /[a-z]/i.test(name) && !name.startsWith('-') && !name.endsWith('-');
+/** Whether [text] names affixes: a hyphen at a word's edge (-able, un-, ka-...-an, mag- + rep1). */
+function isAffix(text) {
+    return /(^|[\s.])-|-($|[\s.])/.test(text);
+}
+
+/**
+ * A rule worth a translated label: its name is words, not affixes (by the name or the id: Tagalog's -ng is named "ng")
+ * or a name in the language's own script.
+ */
+function hasLabel(id, name) {
+    return /[a-z]/i.test(name) && !isAffix(id) && !isAffix(name);
 }
 
 /** [text] as a resource name part; empty when it has no Latin letters or digits (a rule named in Hangul). */
@@ -78,7 +86,7 @@ for (const iso of languages) {
         let slug = `inflection_${iso}_` + (slugOf(id) || slugOf(description ?? '') || 'rule');
         while ([...keys.values()].includes(slug)) slug += '_';
         keys.set(id, slug);
-        const label = hasLabel(name);
+        const label = hasLabel(id, name);
         lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
         if (label) {
             // Labels are lowercase like the other rule names; Yomitan capitalizes a few (French "Preterite").

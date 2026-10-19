@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
@@ -356,7 +357,7 @@ private fun SubsectionTitle(text: String) {
 }
 
 private fun languageName(code: String): String =
-    Locale.forLanguageTag(code).getDisplayLanguage(Locale.getDefault()).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+    languageName(code).replaceFirstChar { it.titlecase(Locale.getDefault()) }
 
 @Composable
 private fun catalogSectionLabel(section: CatalogSection, sourceLanguage: String): String = when (section.kind) {

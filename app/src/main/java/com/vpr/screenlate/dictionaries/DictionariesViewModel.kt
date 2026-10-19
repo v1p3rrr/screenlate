@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
@@ -493,7 +494,7 @@ internal fun otherLanguages(
             val bytes = list.map { sizes[it.id] }.takeIf { it.all { size -> size != null } }?.sumOf { it!! }
             OtherLanguage(code, list, bytes, models[code].orEmpty())
         }
-        .sortedWith(compareBy(Collator.getInstance(locale)) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) })
+        .sortedWith(compareBy(Collator.getInstance(locale)) { languageName(it.code, locale) })
 }
 
 /**

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.vpr.screenlate.R
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import java.util.Locale
 
@@ -94,8 +95,7 @@ private fun LanguageField(label: String, value: String?, onChange: (String?) -> 
 
 /** "English (en)" in the interface language. */
 private fun languageLabel(code: String): String {
-    val name = Locale.forLanguageTag(code).getDisplayLanguage(Locale.getDefault())
-        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+    val name = languageName(code).replaceFirstChar { it.titlecase(Locale.getDefault()) }
     return if (name.isEmpty() || name == code) code else "$name ($code)"
 }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_tl.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_tl_hyphenated_label">连字符形式</string>
+    <string name="inflection_tl_hyphenated">带连字符的词形</string>
+</resources>

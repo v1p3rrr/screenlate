@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_tl.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_tl_hyphenated_label">avec trait d’union</string>
+    <string name="inflection_tl_hyphenated">Forme du mot écrite avec un trait d’union</string>
+</resources>

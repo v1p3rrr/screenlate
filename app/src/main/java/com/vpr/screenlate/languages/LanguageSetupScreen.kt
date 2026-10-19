@@ -50,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpr.screenlate.R
 import com.vpr.screenlate.core.common.displayName
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.dictionaries.rememberImportNotificationsAsk
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.ui.components.BackButton
@@ -368,4 +369,4 @@ private fun ConfirmBar(state: LanguageSetupState, enabled: Boolean, onConfirm: (
 
 /** A gloss language's name in the interface language, capitalized as a list item. */
 private fun languageName(code: String): String =
-    Locale.forLanguageTag(code).getDisplayLanguage(Locale.getDefault()).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+    languageName(code).replaceFirstChar { it.titlecase(Locale.getDefault()) }

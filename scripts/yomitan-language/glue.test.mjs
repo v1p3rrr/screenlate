@@ -55,9 +55,9 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms']) {
-        // Indonesian and Malay drop every combining mark, as Yomitan's Indonesian processors do.
-        if (!['id', 'ms'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl']) {
+        // Indonesian, Malay and Tagalog drop every combining mark, as Yomitan's processors for them do.
+        if (!['id', 'ms', 'tl'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
     }
 });
@@ -68,6 +68,16 @@ test('malay takes the indonesian text processors under its own code', () => {
         assert.ok(queried(language, 'bacá').has('baca'), language);
     }
     assert.ok(!queried('en', 'bacá').has('baca'));
+});
+
+test('tagalog affixes and the linker ng are undone only in tagalog', () => {
+    // Yomitan has no infix rules (kumain → kain); the dictionaries' form-of entries cover those.
+    assert.ok(queried('tl', 'kainin').has('kain'));
+    assert.ok(queried('tl', 'magluto').has('luto'));
+    assert.ok(queried('tl', 'ipagluto').has('luto'));
+    assert.ok(queried('tl', 'magandang').has('maganda'));
+    assert.ok(queried('tl', 'pag-asa').has('pagasa'));
+    assert.ok(!queried('id', 'kainin').has('kain'));
 });
 
 test('vietnamese tone marks match in the old and the new placement only in vietnamese', () => {

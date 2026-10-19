@@ -2,6 +2,7 @@ package com.vpr.screenlate.languages
 
 import android.util.Log
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
@@ -124,7 +125,7 @@ class LanguageFiles @Inject constructor(
             LanguageLeftovers(code, dictionaries.filter { it.sourceLanguage == code }, models[code].orEmpty(), sizes)
         }.sortedWith(
             compareBy<LanguageLeftovers> { it.language == null }
-                .thenBy(collator) { Locale.forLanguageTag(it.code).getDisplayLanguage(locale) },
+                .thenBy(collator) { languageName(it.code, locale) },
         )
     }
 
