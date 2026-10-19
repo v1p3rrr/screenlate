@@ -1539,6 +1539,44 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-id",
+      "title": "wordfreq (id)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq id"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "id",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_id.msgpack.gz",
+      "downloadSize": 133311,
+      "sha256": "6fd891027cd6395b5c038c0e6402fa7e107ffd8973f862053246b897beb1bcd3",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-ms",
+      "title": "wordfreq (ms)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq ms"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ms",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_ms.msgpack.gz",
+      "downloadSize": 119736,
+      "sha256": "dca0d42e666ae1998b74685963570d35407fb3d7c4a4796b21b3cd33954ffc1a",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",

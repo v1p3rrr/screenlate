@@ -477,6 +477,8 @@
     <string name="popup_font_script_only_lv">ラトビア語の文字だけに使う</string>
     <string name="popup_font_script_only_nl">オランダ語の文字だけに使う</string>
     <string name="popup_font_script_only_cs">チェコ語の文字だけに使う</string>
+    <string name="popup_font_script_only_id">インドネシア語の文字だけに使う</string>
+    <string name="popup_font_script_only_ms">マレー語の文字だけに使う</string>
     <string name="popup_font_script_only_vi">ベトナム語の文字だけに使う</string>
     <string name="popup_font_script_only_ru">ロシア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>

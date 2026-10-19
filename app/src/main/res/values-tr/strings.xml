@@ -480,6 +480,8 @@
     <string name="popup_font_script_only_lv">Yalnızca Letonca metin için</string>
     <string name="popup_font_script_only_nl">Yalnızca Felemenkçe metin için</string>
     <string name="popup_font_script_only_cs">Yalnızca Çekçe metin için</string>
+    <string name="popup_font_script_only_id">Yalnızca Endonezce metin için</string>
+    <string name="popup_font_script_only_ms">Yalnızca Malayca metin için</string>
     <string name="popup_font_script_only_vi">Yalnızca Vietnamca metin için</string>
     <string name="popup_font_script_only_ru">Yalnızca Rusça metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>

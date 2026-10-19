@@ -55,10 +55,19 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs']) {
-        assert.ok(!queried(language, stressed).has('кошка'), language);
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms']) {
+        // Indonesian and Malay drop every combining mark, as Yomitan's Indonesian processors do.
+        if (!['id', 'ms'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
     }
+});
+
+test('malay takes the indonesian text processors under its own code', () => {
+    for (const language of ['id', 'ms']) {
+        assert.ok(queried(language, 'Baca').has('baca'), language);
+        assert.ok(queried(language, 'bacá').has('baca'), language);
+    }
+    assert.ok(!queried('en', 'bacá').has('baca'));
 });
 
 test('vietnamese tone marks match in the old and the new placement only in vietnamese', () => {

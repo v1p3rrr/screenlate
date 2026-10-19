@@ -124,6 +124,15 @@ class SentenceTest {
     }
 
     @Test
+    fun indonesianAndMalaySentencesKeepTheirAbbreviations() {
+        val indonesian = "Hujan turun. Dia tinggal di Jl. Merdeka No. 5 sejak lama. Selesai."
+        assertThat(extract(indonesian, "tinggal", Language.INDONESIAN).text)
+            .isEqualTo("Dia tinggal di Jl. Merdeka No. 5 sejak lama.")
+        val malay = "Hujan turun. Saya jumpa En. Ali di Maju Sdn. Bhd. semalam. Tamat."
+        assertThat(extract(malay, "jumpa", Language.MALAY).text).isEqualTo("Saya jumpa En. Ali di Maju Sdn. Bhd. semalam.")
+    }
+
+    @Test
     fun vietnameseSentenceKeepsCityAbbreviation() {
         val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
         assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")

@@ -477,6 +477,8 @@
     <string name="popup_font_script_only_lv">仅用于拉脱维亚文文字</string>
     <string name="popup_font_script_only_nl">仅用于荷兰文文字</string>
     <string name="popup_font_script_only_cs">仅用于捷克文文字</string>
+    <string name="popup_font_script_only_id">仅用于印尼文文字</string>
+    <string name="popup_font_script_only_ms">仅用于马来文文字</string>
     <string name="popup_font_script_only_vi">仅用于越南文文字</string>
     <string name="popup_font_script_only_ru">仅用于俄文文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>

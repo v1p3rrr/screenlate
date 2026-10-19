@@ -483,6 +483,8 @@
     <string name="popup_font_script_only_lv">Solo per il testo lettone</string>
     <string name="popup_font_script_only_nl">Solo per il testo olandese</string>
     <string name="popup_font_script_only_cs">Solo per il testo ceco</string>
+    <string name="popup_font_script_only_id">Solo per il testo indonesiano</string>
+    <string name="popup_font_script_only_ms">Solo per il testo malese</string>
     <string name="popup_font_script_only_vi">Solo per il testo vietnamita</string>
     <string name="popup_font_script_only_ru">Solo per il testo russo</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>

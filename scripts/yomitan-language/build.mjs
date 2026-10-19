@@ -24,14 +24,32 @@ const banner = `/* Yomitan's language code (https://github.com/yomidevs/yomitan,
 const yomitan = path.resolve(yomitanRoot, 'ext/js');
 const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
 
+/**
+ * Languages Yomitan has no descriptor for, built from a related language's descriptor under their own codes: Malay
+ * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either.
+ */
+const borrowed = {
+    ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
+};
+
 /** @param {string} source @param {string} iso */
 function keepLanguage(source, iso) {
     const start = source.indexOf('const languageDescriptors = [');
     const end = source.indexOf('\n];', start);
     const blocks = source.slice(start, end).split(/\n {4}\{\n/).slice(1).map((b) => '    {\n' + b.replace(/,\s*$/, ''));
-    const kept = blocks.filter((b) => b.includes(`iso: '${iso}'`));
+    const borrowing = borrowed[iso];
+    const kept = blocks.filter((b) => b.includes(`iso: '${borrowing ? borrowing.from : iso}'`));
     if (kept.length !== 1) throw new Error(`${iso}: found ${kept.length} descriptors`);
-    return source.slice(0, start) + 'const languageDescriptors = [\n' + kept[0] + ',' + source.slice(end);
+    let block = kept[0];
+    if (borrowing) {
+        if (blocks.some((b) => b.includes(`iso: '${iso}'`))) throw new Error(`${iso}: Yomitan has a descriptor now`);
+        if (block.includes('languageTransforms')) throw new Error(`${iso}: ${borrowing.from} has inflection rules`);
+        block = block
+            .replace(/iso: '[^']*'/, `iso: '${iso}'`)
+            .replace(/iso639_3: '[^']*'/, `iso639_3: '${borrowing.iso639_3}'`)
+            .replace(/name: '[^']*'/, `name: '${borrowing.name}'`);
+    }
+    return source.slice(0, start) + 'const languageDescriptors = [\n' + block + ',' + source.slice(end);
 }
 
 fs.mkdirSync(outDir, {recursive: true});

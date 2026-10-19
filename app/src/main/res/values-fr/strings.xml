@@ -483,6 +483,8 @@
     <string name="popup_font_script_only_lv">Seulement pour le texte letton</string>
     <string name="popup_font_script_only_nl">Seulement pour le texte néerlandais</string>
     <string name="popup_font_script_only_cs">Seulement pour le texte tchèque</string>
+    <string name="popup_font_script_only_id">Seulement pour le texte indonésien</string>
+    <string name="popup_font_script_only_ms">Seulement pour le texte malais</string>
     <string name="popup_font_script_only_vi">Seulement pour le texte vietnamien</string>
     <string name="popup_font_script_only_ru">Seulement pour le texte russe</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>

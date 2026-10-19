@@ -188,6 +188,10 @@ class BubbleView(context: Context) : View(context) {
             y = centerY
             glyphPaint.textSize = minOf(part.width(), part.height()) * GLYPH_SIZE
         }
+        // Two letters (ID, Ng) shrink to fit across the part that shows.
+        val width = glyphPaint.measureText(glyph)
+        val room = part.width() * GLYPH_WIDTH
+        if (width > room) glyphPaint.textSize *= room / width
         val baseline = y - (glyphPaint.descent() + glyphPaint.ascent()) / 2f
         canvas.drawText(glyph, x, baseline, glyphPaint)
     }
@@ -208,6 +212,9 @@ class BubbleView(context: Context) : View(context) {
 
         /** Glyph size relative to the visible part of the docked bubble. */
         private const val GLYPH_SIZE = 0.8f
+
+        /** The glyph's largest width relative to the visible part's width. */
+        private const val GLYPH_WIDTH = 0.8f
 
         /** At the top and bottom: the glyph's size and center relative to the cap's height, from the screen edge. */
         private const val CAP_GLYPH_SIZE = 0.68f

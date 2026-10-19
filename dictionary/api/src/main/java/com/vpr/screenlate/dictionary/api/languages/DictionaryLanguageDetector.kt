@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.textclassifier.TextClassificationManager
 import android.view.textclassifier.TextLanguage
+import com.vpr.screenlate.core.common.languageCode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +36,7 @@ class DictionaryLanguageDetector @Inject constructor(@ApplicationContext private
         val result = classifier.detectLanguage(TextLanguage.Request.Builder(text).build())
         if (result.localeHypothesisCount == 0) return@runCatching null
         val locale = result.getLocale(0)
-        locale.language.takeIf { it.isNotEmpty() && result.getConfidenceScore(locale) >= MIN_CONFIDENCE }
+        locale.toLocale().languageCode.takeIf { it.isNotEmpty() && result.getConfidenceScore(locale) >= MIN_CONFIDENCE }
     }.onFailure { Log.w(TAG, "Language detection failed", it) }.getOrNull()
 
     private companion object {

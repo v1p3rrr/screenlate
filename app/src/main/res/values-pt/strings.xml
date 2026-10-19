@@ -483,6 +483,8 @@
     <string name="popup_font_script_only_lv">Só para texto em letão</string>
     <string name="popup_font_script_only_nl">Só para texto em neerlandês</string>
     <string name="popup_font_script_only_cs">Só para texto em tcheco</string>
+    <string name="popup_font_script_only_id">Só para texto em indonésio</string>
+    <string name="popup_font_script_only_ms">Só para texto em malaio</string>
     <string name="popup_font_script_only_vi">Só para texto em vietnamita</string>
     <string name="popup_font_script_only_ru">Só para texto em russo</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>

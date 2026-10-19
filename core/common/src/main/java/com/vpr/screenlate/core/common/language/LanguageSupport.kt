@@ -295,6 +295,8 @@ val Language.support: LanguageSupport
         Language.LATVIAN -> LatvianSupport
         Language.DUTCH -> DutchSupport
         Language.CZECH -> CzechSupport
+        Language.INDONESIAN -> IndonesianSupport
+        Language.MALAY -> MalaySupport
         Language.VIETNAMESE -> VietnameseSupport
         Language.RUSSIAN -> RussianSupport
     }

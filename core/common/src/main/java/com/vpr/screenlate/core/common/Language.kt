@@ -21,6 +21,8 @@ enum class Language(val code: String) {
     LATVIAN("lv"),
     DUTCH("nl"),
     CZECH("cs"),
+    INDONESIAN("id"),
+    MALAY("ms"),
     VIETNAMESE("vi"),
     RUSSIAN("ru"),
     ;

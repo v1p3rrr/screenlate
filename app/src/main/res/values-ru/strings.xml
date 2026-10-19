@@ -487,6 +487,8 @@
     <string name="popup_font_script_only_lv">Только для латышского текста</string>
     <string name="popup_font_script_only_nl">Только для нидерландского текста</string>
     <string name="popup_font_script_only_cs">Только для чешского текста</string>
+    <string name="popup_font_script_only_id">Только для индонезийского текста</string>
+    <string name="popup_font_script_only_ms">Только для малайского текста</string>
     <string name="popup_font_script_only_vi">Только для вьетнамского текста</string>
     <string name="popup_font_script_only_ru">Только для русского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
