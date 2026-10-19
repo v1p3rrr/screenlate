@@ -18,6 +18,7 @@ class GermanSupportTest {
     fun `ordinals and abbreviations do not end a sentence`() {
         assertThat(ends("Am 3. Oktober")).isFalse()
         assertThat(ends("im 19. Jahrhundert")).isFalse()
+        assertThat(ends("Ludwig XIV. war König")).isFalse()
         assertThat(ends("Obst, z.B. Äpfel")).isFalse()
         assertThat(ends("Obst, z. B. Äpfel", 7)).isFalse()
         assertThat(ends("Obst, z. B. Äpfel", 10)).isFalse()
@@ -42,6 +43,10 @@ class GermanSupportTest {
     fun `a year or a word with digits at the end of a sentence ends it`() {
         assertThat(ends("Er kam 2020. Dann")).isTrue()
         assertThat(ends("Version A4. Dann")).isTrue()
+        assertThat(ends("Es regierte Ludwig XIV. Dann")).isTrue()
+        // Not a Roman numeral, or not in capitals.
+        assertThat(ends("Das war IIII. dann")).isTrue()
+        assertThat(ends("Das war iv. dann")).isTrue()
     }
 
     @Test

@@ -254,7 +254,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | STDICT | Listed for Korean, not ticked (owner, 2026-10-15) |
 | Text to speech note | The hint under the text-to-speech source ("Playback only; notes take audio from the other sources") is enough; the Sources hint stays as it is (owner, 2026-10-15) |
 | Latin fonts | Literata and Inter (Latin, Cyrillic, Greek, Vietnamese), Atkinson Hyperlegible Next (Latin) and Lexend (Latin, Vietnamese), PT Serif and PT Sans (Latin, Cyrillic) to download; each shows for every language whose letters it covers (owner, 2026-10-16) |
-| German compounds | When the whole word has no entry, the popup shows its parts in order: the longest dictionary word from the start, then the longest in the rest, linking -s-, -es-, -n- skipped (Haustürschlüssel → Haus, Tür, Schlüssel); a word with its own entry as now. Later the same for other languages with compounds (Dutch, Swedish) (owner, 2026-10-16) |
+| German compounds | When the whole word has no entry, the popup shows its parts in order: the split into the fewest dictionary words, then the one whose shortest part is longest, then the longest word first, linking -s-, -es-, -n- skipped (Haustürschlüssel → Haus, Tür, Schlüssel; Dutch stadsbestuurder → stads, bestuurder); a word with its own entry as now. Later the same for other languages with compounds (Dutch, Swedish) (owner, 2026-10-16; the split rule changed from "the longest word from the start, then the longest in the rest" on 2026-10-19 after a check on dictionary headwords, owner: "как лучше будет") |
 | Dictionaries we convert | The converter for FreeDict's pairs (de, fr, it, es, pl, en, zh → ru) and OpenRussian is written now; its files are checked on the emulator (adb, a local address) and join the catalog once hosting exists (owner, 2026-10-16) |
 | Character dictionaries ticked | KANJIDIC for Japanese, CC-CEDICT Hanzi for Chinese and the hanja dictionary for Korean are ticked on the download screen (an exception to "Turning on a language", where character dictionaries are not) (owner, 2026-10-16) |
 | Audio order, groups 2 and 3 | By the measured coverage of ten common words: Wiktionary first for Russian and Polish, Lingua Libre first for Spanish, French, German, Italian, Portuguese, Turkish, Vietnamese and Latvian; text to speech last. A source without the word falls through to the next, so the order only picks whose clip plays and goes into notes when several have one (owner, 2026-10-16) |
@@ -1408,5 +1408,13 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questio
   as the owner asked to keep English words safe; no ML Kit in Serbian's model list.
 - 2026-10-19: row "Furigana markers" recorded from the language rules review (the owner's decisions there); the
   catalog threshold in words and the Serbo-Croatian diacritics timing marked done in group 4a's list.
+- 2026-10-19: small limits of the language rules review fixed at the owner's request ("which are worth fixing"): ML
+  Kit's line-end hyphen put back into the line's last word, Roman ordinals before a lowercase word (row "Ordinals with
+  a period" extended to Roman numerals), `{phonetic-transcriptions}` with each transcription's tags as Yomitan writes
+  them, and the compound split. Row "German compounds" changed (owner): the fewest parts, then the longest shortest
+  part, instead of the longest word from the start. Checked on 20,000 long lemma headwords of wty de-en and nl-en each
+  (the headword hidden): 2% (de) and 4% (nl) of splits change; of 80 changed ones 47 better, 26 worse in German
+  (urlaub + stag, adverbs in -erweise, numerals), about 50 and 13 in Dutch. A wordfreq tie-break was worse
+  (middag + ten, dan + school). The other limits stay, with reasons, in `notes/language-rules.md`.
 - 2026-10-19: group 4b (Hindi, Bengali, Georgian, Armenian) researched; its plan with the questions is
   `2026-10-19-group-4b.md`, linked from Stage E.

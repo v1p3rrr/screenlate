@@ -7,11 +7,11 @@ import com.vpr.screenlate.dictionary.api.registry.TranscriptionTags
 
 /**
  * Cleans up the phonetic transcriptions of Wiktionary dictionaries, which merge every edition and list dozens for a
- * common word, and adds the regions their tags name:
+ * common word, and adds their tags and the regions the tags name:
  * - a list in one string (`/a/, /b/`) is split into its transcriptions;
  * - transcriptions in an ASCII notation (SAMPA, X-SAMPA) or with quoted text in them are dropped;
  * - a phonetic `[…]` and a phonemic `/…/` form with the same symbols, syllable dots aside, become one, the phonemic
- *   one, with the regions of both.
+ *   one, with the tags and regions of both.
  */
 internal object Transcriptions {
 
@@ -36,21 +36,23 @@ internal object Transcriptions {
                 val core = core(ipa)
                 val same = byCore[core]
                 if (same == null) {
-                    Item(ipa, regions.toMutableList()).also {
+                    Item(ipa, regions.toMutableList(), itemTags.toMutableList()).also {
                         kept += it
                         byCore[core] = it
                     }
                 } else {
                     if (same.ipa.startsWith('[') && ipa.startsWith('/')) same.ipa = ipa
                     regions.filterTo(same.regions) { it !in same.regions }
+                    itemTags.filterTo(same.tags) { it !in same.tags }
                 }
             }
         }
         val transcriptions = kept.map { it.ipa }
-        if (transcriptions == group.transcriptions && kept.all { it.regions.isEmpty() }) return group
+        if (transcriptions == group.transcriptions && kept.all { it.regions.isEmpty() && it.tags.isEmpty() }) return group
         return group.copy(
             transcriptions = transcriptions,
             transcriptionRegions = if (kept.any { it.regions.isNotEmpty() }) kept.map { it.regions.toList() } else emptyList(),
+            transcriptionTags = if (kept.any { it.tags.isNotEmpty() }) kept.map { it.tags.toList() } else emptyList(),
         )
     }
 
@@ -67,7 +69,7 @@ internal object Transcriptions {
     private fun delimited(ipa: String): Boolean =
         ipa.length > 2 && ((ipa.first() == '/' && ipa.last() == '/') || (ipa.first() == '[' && ipa.last() == ']'))
 
-    private class Item(var ipa: String, val regions: MutableList<String>)
+    private class Item(var ipa: String, val regions: MutableList<String>, val tags: MutableList<String>)
 
     /** Tags of transcriptions in an ASCII notation: SAMPA and X-SAMPA. */
     private val NOTATIONS = setOf("SAMPA", "XS", "X-SAMPA")

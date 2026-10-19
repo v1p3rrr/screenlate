@@ -79,6 +79,7 @@ class LanguageRulesIsolationTest {
         )
         assertThat(spaced.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(spaced.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
+        assertThat(spaced.where { !endsAfter(it, "Karel IV. byl") }).containsExactlyElementsIn(ordinals)
         // A year before a capital letter ends the sentence in every language.
         assertThat(spaced.where { !endsAfter(it, "1918. Dann") }).isEmpty()
         assertThat(KoreanSupport.endsSentence("3. 그리고", 1)).isTrue()

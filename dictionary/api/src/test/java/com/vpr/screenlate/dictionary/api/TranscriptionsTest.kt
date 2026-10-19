@@ -28,6 +28,11 @@ class TranscriptionsTest {
         assertThat(prepared.transcriptions).containsExactly("/ˈwɔtɚ/", "/ˈwɔːtə/", "/ˈwɑtɚ/").inOrder()
         assertThat(prepared.transcriptionRegions)
             .containsExactly(listOf("us"), listOf("gb", "us"), emptyList<String>()).inOrder()
+        assertThat(prepared.transcriptionTags).containsExactly(
+            listOf("General-American"),
+            listOf("British", "dialect", "General-American"),
+            emptyList<String>(),
+        ).inOrder()
     }
 
     @Test
@@ -53,6 +58,7 @@ class TranscriptionsTest {
 
         assertThat(prepared.transcriptions).containsExactly("/ˈwɔ.tɚ/", "/ˈwɑ.tɚ/", "[a]", "[b]").inOrder()
         assertThat(prepared.transcriptionRegions).isEmpty()
+        assertThat(prepared.transcriptionTags).isEmpty()
     }
 
     @Test
@@ -73,6 +79,8 @@ class TranscriptionsTest {
 
         assertThat(prepared.transcriptions).containsExactly("/ˈwɔːtə/", "/ˈwɑtɚ/").inOrder()
         assertThat(prepared.transcriptionRegions).containsExactly(listOf("gb", "us"), emptyList<String>()).inOrder()
+        assertThat(prepared.transcriptionTags)
+            .containsExactly(listOf("British", "General-American"), emptyList<String>()).inOrder()
     }
 
     @Test

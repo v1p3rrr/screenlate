@@ -272,6 +272,13 @@ const NoteData = (() => {
 
     // region Pitch accent (Yomitan template "pitch-accent-list")
 
+    /** A transcription's tags as Yomitan's Anki marker writes them before it: `<i>(UK, US)</i> `, each tag a span. */
+    function transcriptionTagList(tags) {
+        if (!tags.length) return '';
+        const spans = tags.map(name => `<span class="tag" data-details="${escapeHtml(name)}">${escapeHtml(name)}</span>`);
+        return `<i>(${spans.join(', ')})</i> `;
+    }
+
     function pitchList(term, format) {
         const reading = term.reading || term.expression;
         const items = [];
@@ -356,9 +363,10 @@ const NoteData = (() => {
                 return escapeHtml(names.length ? names.join(', ') : 'Unknown');
             },
             'phonetic-transcriptions': () => {
-                const items = (term.pitches || []).flatMap(group => group.transcriptions || []);
+                const items = (term.pitches || []).flatMap(group => (group.transcriptions || [])
+                    .map((ipa, i) => ({ ipa, tags: group.transcriptionTags?.[i] || [] })));
                 return items.length
-                    ? `<ul>${items.map(ipa => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${escapeHtml(ipa)}</li>`).join('')}</ul>`
+                    ? `<ul>${items.map(({ ipa, tags }) => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${transcriptionTagList(tags)}${escapeHtml(ipa)}</li>`).join('')}</ul>`
                     : '';
             },
             'pitch-accents': () => pitchList(term, 'text'),

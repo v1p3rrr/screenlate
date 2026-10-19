@@ -62,6 +62,15 @@ capitals kept outside headings in capitals; no ML Kit for Serbian. Left: the own
 free with the storage thresholds lowered (`sys_storage_threshold_percentage` 1, `sys_storage_threshold_max_bytes`
 100 MB); deleting the two settings puts it into low storage until some language's files go.
 
+Small limits of the language rules review (owner: which are worth fixing), on `languages/sr`: fixed ML Kit's
+line-end hyphen (put back into the line's last word; checked by an instrumented test on the emulator), Roman ordinals
+before a lowercase word, `{phonetic-transcriptions}` tags as Yomitan writes them, and the compound split (fewest
+parts, then the longest shortest part; row "German compounds" changed by the owner after a check on 20,000 headwords,
+see the plan's changelog). The rest stays, with reasons, in `notes/language-rules.md`. New cases LK40, LK41, ANK15,
+ANK16 (N, not run on the emulator yet). The owner does not want a new phone build for now. Running in separate
+sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
+Bengali" (research and questions first, then the build).
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

@@ -1,5 +1,7 @@
 package com.vpr.screenlate.core.ocr
 
+import com.vpr.screenlate.core.common.geometry.Box
+
 /**
  * The page with [separator], the language's word separator, after a word hyphenated at a line end ("impor-" ending a
  * line, "tant" starting the next). Lens joins the halves with no separator, as one hyphenated word, and the language
@@ -25,6 +27,25 @@ private fun OcrLine.withHyphenBreak(separator: String): OcrLine {
     val hyphenated = text.length >= 2 && text.last() in LINE_END_HYPHENS && text[text.length - 2].isLetter()
     if (!hyphenated || last.separator.isNotEmpty()) return this
     return copy(words = words.dropLast(1) + last.copy(separator = separator))
+}
+
+/**
+ * The words of a line whose [text] ends with a hyphen its last word lacks: ML Kit keeps a hyphen at the line end in
+ * the line's text but leaves it out of the line's last element ("impor-" ends the line, the element is "impor"). The
+ * hyphen is put back after the word, its box reaching the line's end, so the lookup can join the word across the
+ * break. A hyphen after anything but a letter, and vertical lines, stay as they are.
+ */
+internal fun List<OcrWord>.withLineEndHyphen(text: String, lineBox: Box, vertical: Boolean): List<OcrWord> {
+    val hyphen = text.trimEnd().lastOrNull()?.takeIf { it in LINE_END_HYPHENS } ?: return this
+    val last = lastOrNull() ?: return this
+    if (vertical || last.text.lastOrNull()?.isLetter() != true) return this
+    val right = if (lineBox.right > last.box.right) lineBox.right else last.box.right + last.box.height / 3
+    val hyphenBox = Box(last.box.right, last.box.top, right, last.box.bottom)
+    return dropLast(1) + last.copy(
+        text = last.text + hyphen,
+        box = last.box.copy(right = right),
+        characterBoxes = last.characterBoxes?.plus(hyphenBox),
+    )
 }
 
 /** A hyphen, the Unicode hyphen and the soft hyphen. */

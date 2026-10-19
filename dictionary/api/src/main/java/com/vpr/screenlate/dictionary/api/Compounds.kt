@@ -41,9 +41,10 @@ internal fun List<LookupResult>.capitalizedFirst(): List<LookupResult> =
     sortedBy { it.term.expression.firstOrNull()?.isUpperCase() != true }
 
 /**
- * Splits a compound written as one word (Haustürschlüssel) into dictionary words: the longest word the dictionaries
- * have at the start, then the longest in the rest, a linking element between two parts skipped (Arbeit-s-zimmer).
- * Shorter words and skipped links are tried only when the longer choice leaves a rest that cannot be covered.
+ * Splits a compound written as one word (Haustürschlüssel) into dictionary words, a linking element between two parts
+ * skipped (Arbeit-s-zimmer). Of the splits that cover the word, the one with the fewest parts wins, then the one whose
+ * shortest part is longest (Dutch stads + bestuurder, not stadsbestuur + der), then the one with the longer words
+ * first. Splits are tried longest word first, so when the lookups run out the longest-first one found so far stays.
  */
 internal object Compounds {
 
@@ -69,11 +70,13 @@ internal object Compounds {
     suspend fun split(word: String, links: List<String>, prefixes: suspend (String) -> Collection<Int>): List<IntRange>? {
         if (word.length < 2 * MIN_PART_LENGTH) return null
         val known = HashMap<Int, List<Int>>()
-        val uncovered = HashSet<Int>()
+        val best = HashMap<Int, List<IntRange>?>()
         var lookups = 0
 
-        suspend fun lengthsAt(start: Int): List<Int>? = known[start] ?: run {
-            if (lookups++ >= MAX_LOOKUPS) return null
+        // A start whose lookup the limit leaves out has no words.
+        suspend fun lengthsAt(start: Int): List<Int> = known[start] ?: run {
+            if (lookups >= MAX_LOOKUPS) return emptyList()
+            lookups++
             prefixes(word.substring(start))
                 .filter { it >= MIN_PART_LENGTH && start + it <= word.length }
                 .distinct()
@@ -81,25 +84,32 @@ internal object Compounds {
                 .also { known[start] = it }
         }
 
-        // Parts from [position] to the end; after the first part a link may come before the next one.
+        // The best parts from [position] to the end; after the first part a link may come before the next one.
         suspend fun cover(position: Int, first: Boolean): List<IntRange>? {
             if (position == word.length) return emptyList()
-            if (position in uncovered) return null
+            if (!first && position in best) return best[position]
             val starts = if (first) {
                 listOf(position)
             } else {
                 listOf(position) + links.filter { word.startsWith(it, position, ignoreCase = true) }.map { position + it.length }
             }
+            var chosen: List<IntRange>? = null
             for (start in starts.filter { it < word.length }) {
-                for (length in lengthsAt(start) ?: return null) {
+                for (length in lengthsAt(start)) {
                     val rest = cover(start + length, first = false) ?: continue
-                    return listOf(start until start + length) + rest
+                    val parts = listOf(start until start + length) + rest
+                    if (chosen == null || parts.isBetterThan(chosen)) chosen = parts
                 }
             }
-            uncovered += position
-            return null
+            if (!first) best[position] = chosen
+            return chosen
         }
 
         return cover(0, first = true)?.takeIf { it.size >= 2 }
     }
+
+    private fun List<IntRange>.isBetterThan(other: List<IntRange>): Boolean =
+        size < other.size || size == other.size && shortest() > other.shortest()
+
+    private fun List<IntRange>.shortest(): Int = minOf { it.last - it.first + 1 }
 }
