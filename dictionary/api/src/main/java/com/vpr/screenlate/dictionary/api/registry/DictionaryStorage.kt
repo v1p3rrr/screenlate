@@ -14,13 +14,18 @@ import kotlinx.serialization.json.Json
 
 /**
  * File layout of imported dictionaries: `filesDir/dictionaries/<uuid>/` per dictionary, and a staging area on
- * the same file system so a finished import is moved into place with a rename.
+ * the same file system so a finished import is moved into place with a rename. Archives being downloaded or copied
+ * are in `noBackupFilesDir/dictionary-downloads/`, where the system does not delete a stopped download's partial file
+ * as it does in the cache.
  */
 @Singleton
 class DictionaryStorage @Inject constructor(@ApplicationContext context: Context) {
     val root: File = File(context.filesDir, "dictionaries")
     private val staging: File = File(root, ".staging")
-    private val downloads: File = File(context.cacheDir, "dictionary-downloads")
+    private val downloads: File = File(context.noBackupFilesDir, "dictionary-downloads")
+
+    /** Where older versions kept archives. */
+    private val cachedDownloads: File = File(context.cacheDir, "dictionary-downloads")
 
     fun directoryOf(dictionary: DictionaryEntity): File = File(root, dictionary.directory)
 
@@ -95,11 +100,16 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     /** Dictionary directories that no registry entry ([known] directory names) points to. */
     fun orphans(known: Collection<String>): List<File> = orphanDirectories(root, staging, known)
 
-    /** Deletes what imports cut short by the process dying left behind ([importLeftovers]); returns how many. */
+    /**
+     * Deletes what imports cut short by the process dying left behind ([importLeftovers]) and the archives of the
+     * cache directory older versions used, which no task reads any more; returns how many.
+     */
     fun removeImportLeftovers(archivesInUse: Set<String>?): Int {
         val now = System.currentTimeMillis()
         val processStart = now - (SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime())
-        return importLeftovers(staging, downloads, archivesInUse, processStart, now).onEach { it.deleteRecursively() }.size
+        val cached = cachedDownloads.listFiles().orEmpty().toList()
+        cachedDownloads.deleteRecursively()
+        return cached.size + importLeftovers(staging, downloads, archivesInUse, processStart, now).onEach { it.deleteRecursively() }.size
     }
 
     private companion object {
