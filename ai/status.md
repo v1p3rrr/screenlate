@@ -69,7 +69,13 @@ parts, then the longest shortest part; row "German compounds" changed by the own
 see the plan's changelog). The rest stays, with reasons, in `notes/language-rules.md`. New cases LK40, LK41, ANK15,
 ANK16 (N, not run on the emulator yet). The owner does not want a new phone build for now. Running in separate
 sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
-Bengali" (research and questions first, then the build). Group 4c (Thai, Khmer, Lao) is researched
+Bengali" (research and questions first, then the build).
+
+Group 5 (owner, 2026-10-19; the plan's Stage F and rows "Group 5", "Group 5 research", "Group 5 release"): six
+blocks, researched in parallel sessions started on 2026-10-19, each writing `plans/2026-10-19-group-5x.md` on its own
+branch: 5a Latin, 5b Celtic, 5c long suffix chains, 5d Cyrillic, 5e other scripts; 5f right to left starts after
+group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz) are researched in sessions of their
+own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go.
