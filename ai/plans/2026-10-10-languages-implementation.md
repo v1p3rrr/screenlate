@@ -343,6 +343,9 @@ Decided when the first language or group 1 is ready, before it is merged into th
   the phone on mobile data: its host (Hetzner) gives no range support, so every try starts over, and the mobile
   network freezes the connection (`ai/notes/audio-sources.md`). The cards multiplied because the entry points queued a
   download without looking for an unfinished task of the same entry while the stalled one held the single chain.
+- Right-to-left interface languages (owner, 2026-10-19, question 70 of `2026-10-19-group-4d.md`): Arabic, Persian
+  and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
+  build) and group 4's build.
 
 ## Questions for the owner
 
@@ -1035,6 +1038,12 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
 `2026-10-19-group-4c.md`. Khmer joins Thai now instead of later; Lao is deferred, for a while or for good (owner,
 2026-10-19, question 5 of that plan).
 
+### Group 4d (ar, fa, he; ur in group 5f)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questions (69-86) and progress:
+`2026-10-19-group-4d.md`. Urdu comes later, on its own (question 69 of that plan; block 5f of row "Group 5"); the
+interface stays left to right, right-to-left interface languages are in the backlog (question 70).
+
 ## Stage F: group 5 (decided on 2026-10-19)
 
 Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
@@ -1459,3 +1468,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-19: Backlog "Own copies of the dictionaries" done: the private archive with its refresh script outside the
   repository (`notes/dictionary-archive.md`); the script stays in the archive and newer versions replace files only
   after their checks, files their source drops are kept (owner).
+- 2026-10-19: group 4d researched (Arabic, Persian, Hebrew; `2026-10-19-group-4d.md`, questions 69-85 answered by
+  the owner); Urdu later, on its own; right-to-left interface languages added to the backlog. The build waits for the
+  owner's go.

@@ -102,6 +102,17 @@ languages): 1,083 files, 2.4 GiB, checked against their hosts' hashes where publ
 owner's computer with the refresh script `mirror/mirror.mjs` inside it (`notes/dictionary-archive.md`). Nothing from
 it is committed or uploaded.
 
+Group 4d (Arabic, Persian, Hebrew) is researched (`notes/languages.md`, "Group 4d research") and its questions 69-86
+answered (`plans/2026-10-19-group-4d.md`): Urdu later, on its own (block 5f); right-to-left interface languages in
+the backlog; the popup keeps its layout with right-to-left text in place; a `dir="rtl"` span around the markers of
+right-to-left text in the Anki field templates, put there by "Suggest templates" and the marker picker, never in the
+first field; broad Arabic spellings; own Persian ending and Hebrew prefix rules;
+scan length 24. Persian has no on-device model until the Paddle upload (Tesseract `fas` is unusable). Plain fixes
+found on the way, among them two audio bugs for every language (a Commons error answer cached as no recording, a
+redirect's target dropped) and the glue's transform key, which leaves Georgian without deinflection. To measure on
+the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's Hebrew voice, the ar-en import. The
+build follows group 4c in the overnight queue.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
