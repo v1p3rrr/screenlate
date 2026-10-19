@@ -315,6 +315,45 @@ class LanguageLookupTest {
         assertThat(engine.lookup("ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ", georgian).first().term.expression).isEqualTo("საქართველო")
     }
 
+    @Test
+    fun armenianMarksDropTheLigatureIsTriedAndClassicalSpellingsFindTheirWord() = runTest {
+        val imported = engine.import(armenianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val armenian = LookupOptions(language = Language.ARMENIAN)
+        suspend fun first(text: String) = engine.lookup(text, armenian).first()
+
+        // A form written with the emphasis mark, found with and without it.
+        val imperative = first("կարդա")
+        assertThat(imperative.term.expression).isEqualTo("կարդալ")
+        assertThat(imperative.trace.map { it.name }).containsExactly("imperative singular")
+        assertThat(first("կարդա՛").term.expression).isEqualTo("կարդալ")
+        // The question mark on the stressed vowel.
+        val why = first("ինչո՞ւ ես")
+        assertThat(why.term.expression).isEqualTo("ինչու")
+        assertThat(why.matched).isEqualTo("ինչո՞ւ")
+        assertThat(first("ԵՐԵՎԱՆ").term.expression).isEqualTo("Երևան")
+        // "orthography spelling գիւղ" is keyed as գիւղ.
+        val village = first("գիւղ")
+        assertThat(village.term.expression).isEqualTo("գյուղ")
+        assertThat(village.trace.map { it.name }).containsExactly("traditional")
+    }
+
+    /** Rows as Wiktionary's Armenian exports write them, the classical spelling after its label. */
+    private fun armenianDictionary(): File = zip(
+        "hy.zip",
+        "index.json" to """{"title":"Test Armenian","revision":"1","format":3,"sourceLanguage":"hy"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["կարդալ","","v","",0,["to read"],1,""],
+              ["կարդա՛","","non-lemma","",0,[["կարդալ",["imperative singular"]]],2,""],
+              ["ինչու","","adv","",0,["why"],3,""],
+              ["Երևան","","name","",0,["Yerevan"],4,""],
+              ["գյուղ","","n","",0,["village"],5,""],
+              ["orthography spelling գիւղ","","non-lemma","",0,[["գյուղ",["traditional"]]],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /** Rows as Wiktionary's Georgian exports write them: no parts of speech. */
     private fun georgianDictionary(): File = zip(
         "ka.zip",

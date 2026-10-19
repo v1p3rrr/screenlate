@@ -494,6 +494,7 @@
     <string name="popup_font_script_only_hi">Yalnızca Hintçe metin için</string>
     <string name="popup_font_script_only_bn">Yalnızca Bengalce metin için</string>
     <string name="popup_font_script_only_ka">Yalnızca Gürcüce metin için</string>
+    <string name="popup_font_script_only_hy">Yalnızca Ermenice metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

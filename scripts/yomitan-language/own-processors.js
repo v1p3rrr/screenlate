@@ -22,3 +22,26 @@ export const candrabinduAsAnusvara = {
     description: 'हैँ → हैं',
     process: (str) => [str, str.replace(/\u0901/g, '\u0902')],
 };
+
+/**
+ * Armenian emphasis, exclamation and question marks, written on the stressed vowel inside a word (ինչո՞ւ for ինչու,
+ * կարդա՛): headwords are written without them. The import keys Wiktionary's forms written with them without them too.
+ * @type {import('language').TextProcessor}
+ */
+export const removeArmenianMarks = {
+    name: 'Remove Armenian marks',
+    description: 'ինչո՞ւ → ինչու',
+    process: (str) => [str, str.replace(/[\u055B\u055C\u055E]/g, '')],
+};
+
+/**
+ * The Armenian ligature և, which dictionaries write for ե + վ inside a word, written out as եվ (capitals have no
+ * ligature, so ԵՐԵՎԱՆ lowercases to երեվան) or in the classical spelling եւ. The text as written stays, for words
+ * written with եվ (Եվրոպա).
+ * @type {import('language').TextProcessor}
+ */
+export const armenianLigatureEv = {
+    name: 'Armenian ligature ev',
+    description: 'երեվան → երևան',
+    process: (str) => [str, str.replace(/ե[վւ]/g, 'և')],
+};

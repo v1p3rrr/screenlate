@@ -14,6 +14,9 @@ class LanguageRulesIsolationTest {
     private val all = Language.entries.map { it.support }
     private val spaced = all.filterIsInstance<SpacedLanguageSupport>()
 
+    /** Spaced languages whose period ends a sentence: all but Armenian, which ends one at ։. */
+    private val periodEnding = spaced.filter { it.endsSentence("Run. Then", "Run".length) }
+
     private fun List<LanguageSupport>.where(predicate: (LanguageSupport) -> Boolean): List<Language> =
         filter(predicate).map { it.language }
 
@@ -87,11 +90,11 @@ class LanguageRulesIsolationTest {
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
             Language.CROATIAN, Language.SERBIAN,
         )
-        assertThat(spaced.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
-        assertThat(spaced.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
-        assertThat(spaced.where { !endsAfter(it, "Karel IV. byl") }).containsExactlyElementsIn(ordinals)
+        assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
+        assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
+        assertThat(periodEnding.where { !endsAfter(it, "Karel IV. byl") }).containsExactlyElementsIn(ordinals)
         // A year before a capital letter ends the sentence in every language.
-        assertThat(spaced.where { !endsAfter(it, "1918. Dann") }).isEmpty()
+        assertThat(periodEnding.where { !endsAfter(it, "1918. Dann") }).isEmpty()
         assertThat(KoreanSupport.endsSentence("3. 그리고", 1)).isTrue()
     }
 
@@ -99,41 +102,41 @@ class LanguageRulesIsolationTest {
     fun `abbreviations of one language do not hold the sentences of another`() {
         fun holds(support: LanguageSupport, text: String) = !support.endsSentence(text, text.indexOf('.'))
         // German "z. B." holds its single letters only beside each other; "Plan B." ends everywhere.
-        assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
-        assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
+        assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
+        assertThat(periodEnding.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN)
         // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
         val era = "v roce 300 n. l. vznikl"
-        assertThat(spaced.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
+        assertThat(periodEnding.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
         // Croatian and Serbian mr. is magistar.
-        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
-        assertThat(spaced.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+        assertThat(periodEnding.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
+        assertThat(periodEnding.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         // Ukrainian т. holds for "т. зв." and "у т. ч.".
-        assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
-        assertThat(spaced.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
+        assertThat(periodEnding.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
+        assertThat(periodEnding.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
         // г. is год, гады and година; Croatian keeps the Cyrillic abbreviations Serbian has.
-        assertThat(spaced.where { holds(it, "у 1991 г. ён") }).containsExactly(
+        assertThat(periodEnding.where { holds(it, "у 1991 г. ён") }).containsExactly(
             Language.RUSSIAN, Language.BELARUSIAN, Language.CROATIAN, Language.SERBIAN,
         )
-        assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
+        assertThat(periodEnding.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         val example = "π.χ. το"
-        assertThat(spaced.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
+        assertThat(periodEnding.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
         // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods; Bengali the same way.
-        assertThat(spaced.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI)
+        assertThat(periodEnding.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI)
         val acronym = "ए.पी.जे. कलाम"
-        assertThat(spaced.where { !it.endsSentence(acronym, acronym.indexOf(". ")) }).containsExactly(Language.HINDI)
-        assertThat(spaced.where { holds(it, "মো. রহিম") }).containsExactly(Language.BENGALI)
+        assertThat(periodEnding.where { !it.endsSentence(acronym, acronym.indexOf(". ")) }).containsExactly(Language.HINDI)
+        assertThat(periodEnding.where { holds(it, "মো. রহিম") }).containsExactly(Language.BENGALI)
         val bengaliAcronym = "এ.কে. ফজলুল"
-        assertThat(spaced.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
+        assertThat(periodEnding.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
             .containsExactly(Language.BENGALI)
         assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
             .containsExactly(Language.HINDI, Language.BENGALI)
         // Georgian ქ. (city) and წ. (year), single letters without a partner.
-        assertThat(spaced.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
-        assertThat(spaced.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
+        assertThat(periodEnding.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
+        assertThat(periodEnding.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
-        assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
+        assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
 
     @Test
@@ -261,8 +264,22 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian considers more characters from the aim than Yomitan's 16 by default`() {
-        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN)
+    fun `only Georgian and Armenian consider more characters from the aim than Yomitan's 16 by default`() {
+        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN, Language.ARMENIAN)
+    }
+
+    @Test
+    fun `only Armenian ends a sentence at its full stop and the colon, and goes on at a period`() {
+        assertThat(all.where { it.endsSentence("Այո։ Ոչ", "Այո".length) }).containsExactly(Language.ARMENIAN)
+        assertThat(all.where { it.endsSentence("Yes: no", "Yes".length) }).containsExactly(Language.ARMENIAN)
+        assertThat(all.where { it.endsSentence("at 10:30", "at 10".length) }).isEmpty()
+        assertThat(spaced.where { !it.endsSentence("Run. Then", "Run".length) }).containsExactly(Language.ARMENIAN)
+    }
+
+    @Test
+    fun `only Armenian keeps its marks inside the aimed word and keys headwords without them`() {
+        assertThat(spaced.where { it.wordStartOffset("ինչո՞", "ւ") != 0 }).containsExactly(Language.ARMENIAN)
+        assertThat(all.where { it.headwordMarks?.marks?.contains('\u055E') == true }).containsExactly(Language.ARMENIAN)
     }
 
     @Test

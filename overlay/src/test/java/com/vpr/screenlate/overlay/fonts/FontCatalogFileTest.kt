@@ -70,8 +70,9 @@ class FontCatalogFileTest {
     }
 
     @Test
-    fun `georgian is offered no downloadable font, only the system's`() {
+    fun `georgian and armenian are offered no downloadable font, only the system's`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
+        assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()
     }
 
     @Test

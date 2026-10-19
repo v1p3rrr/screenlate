@@ -494,6 +494,7 @@
     <string name="popup_font_script_only_hi">Nur für Hindi-Text</string>
     <string name="popup_font_script_only_bn">Nur für bengalischen Text</string>
     <string name="popup_font_script_only_ka">Nur für georgischen Text</string>
+    <string name="popup_font_script_only_hy">Nur für armenischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

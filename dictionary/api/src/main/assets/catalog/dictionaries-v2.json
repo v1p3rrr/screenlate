@@ -2782,6 +2782,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-hye",
+      "title": "Tesseract fast (hye)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "hy",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/hye.traineddata",
+      "downloadSize": 3463717,
+      "sha256": "b701d0d95799a716143dedb0197504e56f27a1bb133d6607ff5778c6988cb67c",
+      "model": "tesseract-fast-hye",
+      "engine": "tesseract",
+      "file": "tessdata/hye.traineddata",
+      "version": "b701d0d95799",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-hye",
+      "title": "Tesseract best (hye)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "hy",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/hye.traineddata",
+      "downloadSize": 6372242,
+      "sha256": "ca46afdca95b5436e9510fd2fc59aff45c306132433a4267eed2bd422cdd29f4",
+      "model": "tesseract-best-hye",
+      "engine": "tesseract",
+      "file": "tessdata/hye.traineddata",
+      "version": "ca46afdca95b",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -12038,6 +12072,144 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ka/wty-ka-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 432593,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-en",
+      "title": "Wiktionary (hy–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-en",
+        "kty-hy-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/en/wty-hy-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 7500411,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-ru",
+      "title": "Wiktionary (hy–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-ru",
+        "kty-hy-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/ru/wty-hy-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 419526,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-fr",
+      "title": "Wiktionary (hy–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-fr",
+        "kty-hy-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/fr/wty-hy-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 65551,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-pl",
+      "title": "Wiktionary (hy–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-pl",
+        "kty-hy-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/pl/wty-hy-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 121003,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-tr",
+      "title": "Wiktionary (hy–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-tr",
+        "kty-hy-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/tr/wty-hy-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 199952,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-zh",
+      "title": "Wiktionary (hy–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-hy-zh",
+        "kty-hy-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "hy",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/hy/zh/wty-hy-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 187341,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-hy-transcription",
+      "title": "Wiktionary transcription (hy)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-hy-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "hy",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-hy-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/hy/wty-hy-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 642362,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

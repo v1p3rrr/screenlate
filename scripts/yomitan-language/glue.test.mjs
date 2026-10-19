@@ -229,3 +229,19 @@ test('georgian rules stay out of other languages', () => {
     }
 });
 
+test('armenian marks on a stressed vowel drop and the ligature ev is tried for ev and the classical spelling', () => {
+    assert.ok(queried('hy', 'ինչո՞ւ').has('ինչու'));
+    assert.ok(queried('hy', 'կարդա՛').has('կարդա'));
+    // Capitals have no ligature: ԵՐԵՎԱՆ finds Երևան.
+    assert.ok(queried('hy', 'ԵՐԵՎԱՆ').has('Երևան'));
+    assert.ok(queried('hy', 'եւ').has('և'));
+    // The text as written stays, for words written with եվ.
+    assert.ok(queried('hy', 'Եվրոպա').has('Եվրոպա'));
+});
+
+test('armenian marks and the ligature stay out of other languages', () => {
+    for (const language of ['en', 'ru', 'ka']) {
+        assert.ok(!queried(language, 'ինչո՞ւ').has('ինչու'), language);
+        assert.ok(!queried(language, 'երեվան').has('երևան'), language);
+    }
+});

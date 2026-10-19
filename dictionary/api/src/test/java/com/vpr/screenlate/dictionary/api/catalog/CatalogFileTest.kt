@@ -68,7 +68,7 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `every source language but Japanese, Belarusian and Georgian has a frequency dictionary built from wordfreq`() {
+    fun `every source language but Japanese, Belarusian, Georgian and Armenian has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build != null }
         assertThat(built.map { it.sourceLanguage })
             .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn")

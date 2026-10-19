@@ -198,6 +198,13 @@ class SentenceTest {
     }
 
     @Test
+    fun armenianSentencesEndAtTheFullStopAndTheColonNotAtThePeriod() {
+        val armenian = "Նա եկավ։ Նա ասաց. «Վաղը կգամ։ Անպայման։» Հետո գնաց։ Ժամը 10:30-ին: Վերջ։"
+        assertThat(extract(armenian, "ասաց", Language.ARMENIAN).text).isEqualTo("Նա ասաց. «Վաղը կգամ։ Անպայման։» Հետո գնաց։")
+        assertThat(extract(armenian, "Ժամը", Language.ARMENIAN).text).isEqualTo("Ժամը 10:30-ին:")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

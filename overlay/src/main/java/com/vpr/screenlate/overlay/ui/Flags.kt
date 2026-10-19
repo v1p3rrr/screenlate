@@ -42,6 +42,7 @@ object Flags {
         "in" to R.drawable.flag_in,
         "bd" to R.drawable.flag_bd,
         "ge" to R.drawable.flag_ge,
+        "am" to R.drawable.flag_am,
     )
 
     /** The flag of [country]; null for a country without one. */

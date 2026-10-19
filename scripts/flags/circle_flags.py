@@ -20,7 +20,7 @@ URL = "https://raw.githubusercontent.com/HatScripts/circle-flags/{commit}/flags/
 # The countries LanguageSupport.flagCountries names, in the order of the languages.
 COUNTRIES = [
     "jp", "us", "gb", "cn", "kr", "es", "fr", "de", "it", "br", "pt", "pl", "tr", "lv", "nl", "cz", "id", "my", "ph", "vn", "ru",
-    "hr", "rs", "ua", "by", "gr", "in", "bd", "ge",
+    "hr", "rs", "ua", "by", "gr", "in", "bd", "ge", "am",
 ]
 
 SVG = "{http://www.w3.org/2000/svg}"

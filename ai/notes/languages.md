@@ -1190,6 +1190,30 @@ Cells: archive MB, words.
 - Audio: Wiktionary first (more common words recorded than on Lingua Libre, whose Georgian items are few and partly
   filed under French).
 
+### Armenian (2026-10-20)
+
+- Sentences end at the full stop ։ and at the colon OCR and keyboards write for it (Tesseract reads every ։ as `:`),
+  not when a letter or digit follows at once (10:30). The period is the Armenian colon (mijaket) and never ends a
+  sentence, so Armenian needs no abbreviations; the other spaced languages keep the period rules.
+- The emphasis, exclamation and question marks ՛ ՜ ՞ sit on the stressed vowel inside a word (ինչո՞ւ, կարդա՛). They
+  count as word characters (`SpacedLanguageSupport.wordMarks`, with the apostrophe ՚), so a tap after the mark still
+  starts at the word's start; the comma ՝ and ։ do not. The Armenian hyphen ֊ joins words as - does.
+- wty hy-en (17,645 words): the marks appear on form rows only (16,003 rows, 11,161 of them with no unmarked twin,
+  mostly imperatives), never on a lemma, so `headwordMarks` keys the marked forms without them and
+  `everyHeadword` stays false. The text processor `removeArmenianMarks` drops them from the looked-up text.
+- The ligature և is written in 12,576 headwords; texts often write եվ (the reformed spelling's capitals have no
+  ligature: ԵՐԵՎԱՆ) or the classical եւ. `armenianLigatureEv` tries և for both, the text as written kept (Եվրոպա is
+  written with եվ). It doubles the candidates per եվ/եւ in a substring.
+- 3,207 form rows of hy-en read "orthography spelling X" for the classical spelling X of a word (գիւղ → գյուղ); the
+  import keys them as X (`form_headwords`). The label is in hy-en only.
+- Yomitan's Armenian descriptor has capitalization only and no transforms; the app's two processors are added in
+  `build.mjs` (`addedPreprocessors`).
+- OCR: no ML Kit or Paddle model. Tesseract hye over clean + hard screens: fast 28.1%, best 26.9% CER (clean 2.9% and
+  2.0%); fast (3.5 MB against 6.4 MB) is the recommended model, as for Georgian.
+- Scan length 24 by default (5% of the forms longer than 16 characters).
+- No downloadable fonts; the page names Noto Serif Armenian by its local names, the sans falls back by itself.
+- Audio: Wiktionary first (18 of the 20 common words against 6 on Lingua Libre).
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4b.md`.

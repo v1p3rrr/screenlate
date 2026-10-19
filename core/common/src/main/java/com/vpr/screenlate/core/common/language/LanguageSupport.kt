@@ -381,4 +381,5 @@ val Language.support: LanguageSupport
         Language.HINDI -> HindiSupport
         Language.BENGALI -> BengaliSupport
         Language.GEORGIAN -> GeorgianSupport
+        Language.ARMENIAN -> ArmenianSupport
     }
