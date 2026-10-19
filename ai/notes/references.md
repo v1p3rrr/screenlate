@@ -55,6 +55,24 @@
 | Finnish and Hungarian analysers | Omorfi (GPL-3.0), Voikko (GPL-2.0+), Hungarian Hunspell data (GPL/LGPL/MPL) | Not used; the ending rules are written from grammar descriptions |
 | Lingua Libre items | Wikidata Q1412 (fi), Q9072 (et), Q9067 (hu), Q9292 (az), Q9264 (uz) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav`; Wiktionary files `Fi-`, `Et-`, `Hu-`, `Az-`, `Uz-` |
 
+## Language research sources (group 5e: Cantonese, Kannada, Tamil, Telugu, Marathi)
+
+| What | Where | Notes |
+|---|---|---|
+| Words.hk in Yomitan format | github.com/MarvNC/wordshk-yomitan (daily releases, `term_index.json` for updates; converter MIT) | Data under the Words.hk Non-Commercial Open Data License 1.0 (words.hk/base/hoifong/); also a 34,933-word frequency list under the same license |
+| CC-Canto, CC-CEDICT with Cantonese readings | github.com/MarvNC/cc-cedict-yomitan releases (`CC-Canto.zip`, `CC-CEDICT.Canto.zip`); sources cccanto.org/download.html | CC BY-SA 3.0, Pleco; CC-Canto data of 2017-02-02, readings of 2015-09-23 |
+| rime-cantonese | github.com/rime/rime-cantonese (commit 259f0e48) | CC BY 4.0 (maps ODbL 1.0); `essay-cantonese.txt` 266,870 weighted words, source corpus undocumented, OpenCC standard forms |
+| Kaifangcidian | kaifangcidian.com/han/yue; github.com/kfcd (`yyzd`, `pingyam`) | CC BY 3.0; `pingyam` converts Jyutping to Yale and other romanizations |
+| Cifu, HKCanCor | github.com/gwinterstein/Cifu (GPL-3.0); HKCanCor in github.com/jacksonllee/pycantonese `src/pycantonese/data/hkcancor` (CC BY 4.0) | Cantonese word counts; measurements only |
+| OpenCC | github.com/BYVoid/OpenCC (Apache-2.0; `HKVariants.txt`, `TWVariants.txt`) | Hong Kong and Taiwan character variants, for folding forms such as 爲 and 為 |
+| FrequencyWords | github.com/hermitdave/FrequencyWords (commit 525f9b5; content CC BY-SA 4.0) | Subtitle word counts (2018); ta and te only |
+| Leipzig Corpora Collection | downloads.wortschatz-leipzig.de/corpora/ `kan_newscrawl_2016_100K`, `tam_news_2020_100K`, `tel_news_2020_100K`, `mar_news_2020_100K` | Coverage measurements only |
+| PaddleOCR Tamil, Telugu, Kannada recognizers | huggingface.co/PaddlePaddle/ta_PP-OCRv5_mobile_rec (0db89798af0d), te_PP-OCRv5_mobile_rec (f1197c834302), ka_PP-OCRv3_mobile_rec (fd08732bad5f; `ka` is Kannada in PaddleOCR) | Apache-2.0; the Kannada v3 model misreads stacked consonants (see `plans/2026-10-19-group-5e.md`, OCR) |
+| Fonts | itfoundry Hind Madurai, Guntur, Mysuru; Tiro Tamil, Telugu, Kannada, Devanagari Marathi; Mukta Malar (Google Fonts, OFL); notofonts/noto-cjk (Noto Sans HK, Noto Serif HK, OFL) | Candidates for the font catalog |
+| circle-flags | github.com/HatScripts/circle-flags (commit 379588b; `hk.svg`, `lk.svg`) | Converted by `scripts/flags/circle_flags.py` |
+| Lingua Libre items | Wikidata Q5885 (ta, `tam`), Q8097 (te, `tel`), Q33673 (kn, `kan`), Q1571 (mr, `mar`), Q9186 (yue) | Commons titles `LL-<item> (<code>)-<speaker>-<word>.wav`; Cantonese titles have characters only |
+| Google speech languages | support.google.com/accessibility/android/answer/11101402 ("Languages supported by TalkBack") | A hint at which languages Google's engine speaks |
+
 ## Custom audio servers
 
 The Yomitan local audio server (a Python server on port 5050, often run in Docker) builds file URLs from its bind address, so its audio source list names files as `http://0.0.0.0:5050/...`. On a desktop that reaches the desktop itself; on a phone it reaches the phone. Behind a reverse proxy the list needs rewriting (nginx `sub_filter` on `application/json`, with `Accept-Encoding` cleared); the app now also rewrites such local file URLs to the list's scheme, host and port. The owner runs one behind an https domain; its address and server access are not recorded in the repository.
