@@ -264,7 +264,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | OCR engine choice | Paddle and Tesseract are compared on the emulator, inside a debug build, on screenshots taken there with known text, for the scripts ML Kit lacks (Cyrillic, Greek, Thai, Arabic). Measured: the share of wrong characters, the share of words read whole, and whether a tap lands in the right word box. Paddle is chosen when on the Russian screenshots it makes at least a third fewer character errors than Tesseract, is not clearly worse on any script and takes at most twice as long per screen; otherwise Tesseract. With Paddle, MNN or ONNX Runtime by the smaller addition to the APK, unless the other is at least 30% faster per screen. Speed is measured on the emulator; one run on the phone once the owner is back, and the choice changes only if the phone shows a clearly different picture (owner, 2026-10-16). Since request 60 every engine is kept, and the rule picks each language's recommended model: the fewest errors over the clean and hard screens together; another model replaces the bundled or smallest one only with at least a third fewer errors and at least 0.5 percentage points fewer; time does not count while every engine stays under the 1.6 s of ML Kit's Japanese model. Applied once the hard-screen results are in (owner, 2026-10-16, question 34) |
 | Work while the owner is away | After group 2 and the OCR comparison the agent picks the engine by the row above, builds it in and does group 3 (Russian, Polish, Turkish, Vietnamese, Latvian), each language on its own branch merged after the emulator checks; group 4 is not started (owner, 2026-10-16) |
 | OCR screenshots | Taken by the agent on the emulator: Wikipedia and news sites in the browser, the Android interface in the language, several fonts, light and dark themes; kept in `testdata/ocr/` (owner, 2026-10-16) |
-| Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16); Dutch Ĳ, Czech Ř, Indonesian "ID", Malay "MS", Filipino Ng, Serbo-Croatian Đ (Latin) and Ћ (Cyrillic), Ukrainian Ї, Belarusian Ў, Greek Ω (owner, 2026-10-18, question 52) |
+| Bubble letters | The docked bubble's letter: Spanish Ñ, French Ç, German ß, Italian È, Portuguese Ã; Russian Я, Polish Ł, Turkish Ğ, Vietnamese Ư, Latvian Ā (owner, 2026-10-16); Dutch Ĳ, Czech Ř, Indonesian "ID", Malay "MS", Filipino Ng, Croatian Đ, Serbian Ћ, Ukrainian Ї, Belarusian Ў, Greek Ω (owner, 2026-10-18, question 52) |
 | Russian stress | The headword shows the dictionary's stressed form (ко́шка) with no separate reading line; Anki's `{expression}` is the word without stress, `{reading}` the stressed form as in the dictionary (owner, 2026-10-16) |
 | Diacritics of Latin-script languages | Where ML Kit's Latin model loses a language's diacritics (Vietnamese tones, Polish ł, Turkish ğ, Latvian macrons), that language uses the chosen engine's model instead, downloaded when the language is turned on, but only when it makes at least a third fewer character errors than ML Kit on that language's screenshots (owner, 2026-10-16) |
 | Flag outlines | Every round flag gets a thin outline: light in the dark theme, dark in the light theme, so a stripe of the background's color (Germany's black, Poland's or Japan's white) stays visible (owner, 2026-10-16; question 14) |
@@ -297,7 +297,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
 | ML Kit at setup | For a language ML Kit reads (Japanese, Chinese, Korean, the Latin-script languages), the download screen's on-device category lists ML Kit first, marked as built in with no download, and chosen as the main model. The other models are offered unticked, marked "more accurate" where the comparison shows it; a model is ticked by default only for languages ML Kit does not read. A model ticked at setup becomes the main one unless the "main" switch stays on ML Kit; one downloaded later from the model list is only added; with no choice ML Kit is used (owner, 2026-10-18, questions 38 and 40 of the OCR engines plan; changes "On-device OCR engines" and "Several OCR models at setup" for these languages) |
 | OCR speed marks | Speed is shown in words only ("faster", "more accurate"), from the timing run and the comparison; no figures for the user. With Engines on Both, a hint says that the on-device model only gives the draft (owner, 2026-10-18, question 39 of the OCR engines plan) |
-| Serbo-Croatian | One language as in Yomitan, Wiktionary and wordfreq (not Serbian, Croatian and Bosnian apart), shown as two entries by script: "Serbo-Croatian (Latin)" with the Croatian flag and "Serbo-Croatian (Cyrillic)" with the Serbian flag. Each entry is a language of its own in the app (on-device model, voice, Anki, audio and popup settings, turned on by itself, switched from the bubble); the dictionaries are downloaded once and shared by both. The voice follows the script: Croatian for Latin, Serbian for Cyrillic (owner, 2026-10-18, questions 41-44 and 54; what the entries share is the agent's choice at the owner's request, question 53) |
+| Serbian and Croatian | Two languages, Croatian (hr, Latin) and Serbian (sr, Cyrillic and Latin), on the shared Serbo-Croatian dictionaries (Yomitan, Wiktionary and wordfreq have only sh), downloaded once. Each is a language of its own in the app (on-device model, voice, Anki, audio and popup settings, turned on by itself, switched from the bubble), with its own voice, sentence translation language, flag (Croatia, Serbia; no second flag) and e-ink code (HR, SR). Serbian reads both scripts in lookup, voice and cloud recognition; its on-device model is Cyrillic by default (PaddleOCR cyrillic), a Latin model can be chosen in its model list, and Latin look-alikes become Cyrillic only with a Cyrillic model (built per line instead, whatever the model: question 65, to confirm). Tesseract: hrv for Croatian, srp for Serbian. No Bosnian or Montenegrin entry for now. Croatian audio: Croatian recordings where some source has them, else the Serbian ones. With both off, one "Turned off" card holds the shared dictionaries and both languages' models, with a "Turn on" button per language (owner, 2026-10-19, questions 55-60 and 61-64; replaces "Serbo-Croatian", which had two entries "Serbo-Croatian (Latin)" and "(Cyrillic)") |
 | Indonesian and Malay | Two languages, each with its own dictionaries, frequency list, voice and flag (owner, 2026-10-18, question 45) |
 | Filipino name | "Filipino (Tagalog)" in the interface; the code tl inside (Yomitan, Wiktionary, Lingua Libre), fil where ML Kit, tessdata, wordfreq and the voice need it (owner, 2026-10-18, question 46) |
 | Own-language dictionaries | Every source language lists its own Wiktionary edition (nl-nl, el-el, cs-cs, id-id, ms-ms, and any later one that passes the threshold) on the download screen, unticked, as if the language were among its gloss languages (owner, 2026-10-18, question 47) |
@@ -571,7 +571,8 @@ decision rows from "Serbo-Croatian" on:
     "Serbian" (Serbian Latin text would then go through "Croatian").
 
 Collected while building Serbo-Croatian (2026-10-19; the owner left the work running, so each is built with the first
-option and changes cheaply):
+option and changes cheaply). Answered on 2026-10-19: 55 "HR" and "SR"; 56 (a); 57 replaced by the owner's request to
+make Serbian and Croatian separate languages (questions 61-64); 58 (a); 59 by question 63; 60 (a):
 
 55. Codes in e-ink mode (letters instead of flags): "SH" for the Latin entry and "СХ" for the Cyrillic one; or "SH"
     for both; or "HR" and "SR".
@@ -586,6 +587,29 @@ option and changes cheaply):
     none. Or no Lingua Libre for Serbo-Croatian (Wiktionary first, then the voice).
 60. "Turned off" with both entries off: one card for the shared files with "Turn on Serbo-Croatian (Latin)" and "Turn
     on Serbo-Croatian (Cyrillic)"; or one card per entry, the dictionaries on the card of the entry turned off last.
+
+Asked after the owner's request (2026-10-19: "a learner would rather learn Serbian than Serbo-Croatian"), answered
+the same day:
+
+61. Answered: (a). Serbian's Latin text: Serbian reads both scripts (lookup, voice, cloud recognition; one on-device
+    model, Cyrillic by default, Latin selectable); or three entries, Croatian, Serbian (Cyrillic) and Serbian (Latin);
+    or Serbian in Cyrillic only, its Latin text read through Croatian.
+62. Answered: (a). Bosnian and Montenegrin: not now (their text reads through Croatian or Serbian); or Bosnian as a
+    third language on the shared dictionaries.
+63. Answered: other. Croatian recordings: look for a source with Croatian recordings first; if there is none, give
+    Croatian the Serbian recordings (Wiktionary, Lingua Libre).
+64. Answered: (a). "Turned off" with both off: one card for the shared files, a "Turn on" button per language; or one
+    card per language.
+
+Collected while building Croatian and Serbian (2026-10-19), to ask:
+
+65. Serbian look-alikes (Latin letters that look Cyrillic: a, e, o, j, T and the like). The row says they become
+    Cyrillic only with a Cyrillic model. Built instead: by the line, whatever the model, since the final text comes
+    from cloud recognition, which reads both scripts. A line whose letters are mostly Cyrillic gets them in Cyrillic,
+    also in words made of them alone (Ја, је, Јој, which cloud recognition reads as Latin); a Latin line keeps them
+    (the words i, a, u, o). (a, recommended) keep it per line; (b) as the row says, by the model.
+66. ML Kit (built in, Latin) in Serbian's model list: now the Latin choice there is PaddleOCR v6 (21 MB) or nothing;
+    ML Kit is listed for Croatian. (a, recommended) list ML Kit for Serbian too; (b) leave it out.
 
 ## Branches and workflow
 
@@ -985,7 +1009,9 @@ is built now, for German and Dutch (`58ea5fa`). Serbo-Croatian (both entries) is
 the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Ukrainian
 and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK38). Greek is built on
 `languages/el` and checked on the emulator (LK39); its Paddle model is in the `ocr-models-1` release. Group 4a is
-done; what is left is the owner's questions 55-60 and the phone timings of the OCR plan.
+done; what is left is the phone timings of the OCR plan. Serbian and Croatian are built as two languages on
+`languages/sr` (row "Serbian and Croatian", replacing the two Serbo-Croatian entries), checked on the emulator (LK36
+rewritten) and fast-forwarded into `languages/main`; questions 65-66 are open.
 
 ## The big release
 
@@ -1358,3 +1384,12 @@ done; what is left is the owner's questions 55-60 and the phone timings of the O
   import (row "Greek accents"); wordfreq's word-final σ becomes ς; Latin look-alikes in Greek words become Greek;
   `paddle-el` uploaded to `ocr-models-1` (owner's OK once the 4a work was ready). Plain fix found: the Lingua Libre
   search took only the ISO 639-3 code, while Greek recordings also carry `gre` and `mis`; it now takes any code.
+- 2026-10-19: questions 55-60 answered; at the owner's request Serbo-Croatian becomes two languages, Serbian and
+  Croatian, on the shared dictionaries (questions 61-64; row "Serbian and Croatian" replaces "Serbo-Croatian", and
+  "Bubble letters" names Croatian Đ and Serbian Ћ).
+- 2026-10-19: Croatian and Serbian built on `languages/sr` and checked on the emulator. Croatian audio tries Hr-
+  recordings, then the Serbian ones in Cyrillic, and both Lingua Libre items; Serbian looks for Sr- under both
+  spellings and searches Lingua Libre in Latin letters; Serbian Latin text goes to the voice in Cyrillic and to the
+  translators as sr-Latn. Serbian look-alikes are fixed per line rather than by the model (question 65 asks the
+  owner to confirm); question 66 (ML Kit for Serbian) added. Plain fixes: Commons matches inside titles are dropped;
+  Јој read as Latin on a Cyrillic line is written in Cyrillic.

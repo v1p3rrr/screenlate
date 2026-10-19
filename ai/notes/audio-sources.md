@@ -47,3 +47,13 @@ Lingua Libre titles name the language twice, by its Wikidata item and by a code 
 (ISO 639-2/B) or `mis` (2026-10-19: 167, 130 and 84). `AudioPages.linguaLibreSearch` therefore matches any
 three-letter code after the item. Checked for fr, de, nl, cs, ms, zh, sh, be and tl: one code each, with 105 French
 and 9 Mandarin files under others. Commons answers 429 to fast series of searches; wait a few seconds between them.
+
+Croatian and Serbian (2026-10-19, 20 common words in both scripts): Wiktionary's `Hr-` files (about 60 in the
+category, some titled without diacritics, `Hr-garaza.oga`) cover 4 of the 20 (dan, ruka, ljubav, sreća);
+`Sr-` files about 14, mostly titled in Cyrillic (`Sr-кућа.flac`), a few in Latin letters (`Sr-majka.ogg`,
+`Sr-grad.ogg`). Lingua Libre has one Croatian recording (Q6654) and 93 Serbian ones (Q9299, `srp`), all titled in
+Latin letters. So Croatian looks for `Hr-` first, then for the Serbian file of the word in Cyrillic, and searches
+both Lingua Libre items, Croatian speakers first; Serbian looks for `Sr-` under both spellings and searches Lingua
+Libre in Latin letters. A word Serbian spells otherwise (Croatian mlijeko, Serbian млеко) has no Serbian file.
+The Commons regular expression is not anchored: `Sr-вода` also matched `LL-Q7737 (rus)-Tatiana Kerbush-вода.wav`,
+so `AudioPages.wiktionaryFiles` keeps only titles that are a recording of the term as a whole.

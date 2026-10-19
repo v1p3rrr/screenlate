@@ -151,7 +151,7 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   first one after start reads the lemmas' pages (681 ms for 豪州). Installed on the emulator: wty-ja-ja 48 MB, wty-ja-en 94 MB; splitting the rows into a
   compact table at import (as `languages/main` does for other languages) would cut them to roughly 22 and 10 MB.
 - Headword marks in the form-of table (2026-10-19): `LanguageSupport.headwordMarks` passes the marks to drop
-  (`HEADWORD_MARKS` JSON) to `split_form_of`. Russian, Ukrainian, Belarusian and Serbo-Croatian key form rows without
+  (`HEADWORD_MARKS` JSON) to `split_form_of`. Russian, Ukrainian, Belarusian, Croatian and Serbian (sh) key form rows without
   their stress marks and store lemmas without them. Greek (`every_headword`) keys every headword that has
   definitions without its tonos, pointing to itself with no tags, and keeps lemmas as written, since its headwords
   carry the tonos; `split_form_of` then reads every bank, and `jni_bridge.cpp` writes the table even when the archive

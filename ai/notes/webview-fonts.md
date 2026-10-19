@@ -6,7 +6,7 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
 
 - Android ships Noto Sans/Serif CJK as `.ttc` collections. `fonts.xml` lists one face per region (JP, KR, SC, TC, HK) with `lang` and `postScriptName` (`NotoSansCJKjp-Regular` etc.).
 - The faces are Pan-CJK: each carries the other regions' glyphs behind the OpenType `locl` feature. The element's language picks them, so the JP face renders Chinese forms under `lang="zh-Hans"` and vice versa. **The page must set `lang` to the source language** (`LanguageSupport.languageTag`); the font choice alone is not enough.
-- The same holds outside CJK: Noto Sans has Serbian forms (б, and italic г д п т) behind `locl`. The Serbo-Croatian page sets `lang` to the entry's code (`sh-Cyrl`, `sh-Latn`); the WebView maps `sh` to the Serbian forms (checked on the emulator, 2026-10-19: headword and sentence show the Serbian б). Native views (the search field) keep the Russian forms.
+- The same holds outside CJK: Noto Sans has Serbian forms (б, and italic г д п т) behind `locl`. The page sets `lang` to the language's code: `sr` for Serbian gives the Serbian forms (checked on the emulator, 2026-10-19: the headword брдо shows the Serbian б), `hr` for Croatian the default ones. Before the split the entries' `sh-Cyrl` and `sh-Latn` gave the Serbian forms too. Native views (the search field) keep the Russian forms.
 - Without an explicit font, Chrome's fallback for Han characters follows the element's language. That works on stock Android. A vendor default font (`sans-serif`) that itself covers Han would win before the fallback, hence the explicit `"Screenlate Sans"` face.
 
 ## `local()` in `@font-face`

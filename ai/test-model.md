@@ -175,7 +175,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK37 | Ukrainian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/arial.ttf`): книги → книга with "nominative plural" and a wordfreq rank; книга typed as is shows no form chain; зробив → зробити "past"; чита́ю (stress mark) → читати; п’ять, пʼять and п'ять find п'ять; a lone і read by OCR finds the conjunction; "р.", "т. зв." do not end a sentence; flag ua, bubble Ї; audio from Wiktionary; definitions in English and Russian | E | U UkrainianSupportTest, CyrillicLookAlikesTest, SentenceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 | LK38 | Belarusian lookups (search screen, overlay): сям’я → сям'я; вады and ва́ды → вада "genitive singular" (a stressed form row); праўда; a lone і read by OCR finds the conjunction; "г.", "г. зн." do not end a sentence; flag by (red-green), bubble Ў; audio from Wiktionary; no frequency list offered | E | U BelarusianSupportTest, SentenceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 | LK39 | Greek lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/arial.ttf`, PaddleOCR `el`): σκυλος and ΣΚΥΛΟΣ → σκύλος with a wordfreq rank and no form step; ποτε shows ποτέ and πότε, πότε only itself; ξαναρώτησε and Ξαναρώτησε → ρωτάω with "ξανα- « …"; καλη ορεξη → καλή όρεξη; a lone Η read by OCR finds the letter and the article; the sentence of a word after "Πού πας;" starts after the ; and keeps "κ.", the ano teleia and «…»; "π.χ." does not end a sentence; flag gr, bubble Ω; audio from Lingua Libre under either code (γάτα: Spiros71, `ell`; μητέρα: MARKELLOS, `gre`), else the voice; the Paddle model downloads from the `ocr-models-1` release and warms up when chosen | E | U GreekSupportTest, SentenceTest, WordfreqDictionaryTest, AudioPagesTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
-| LK36 | Serbo-Croatian lookups, both entries (Latin text from `scripts/text-image.py`; Cyrillic `testdata/ocr/sh-cyrl-sample.png`, rendered with `FONT=C:/Windows/Fonts/arial.ttf`): kuca also finds kuća (house), sesir → šešir, djak → đak; куће → кућа with "genitive singular"; ку̏ћа and kȕća (reading marks) find the word; a long line of c, s and z ("kuca cecescecescecesc") looks up without an error; "npr.", "5. maja", "pr. Kr." and "p. n. e." do not end a sentence; Јој read with a Latin J finds јој; the Latin entry shows Đ and the Croatian flag, the Cyrillic one Ћ and the Serbian flag, both switched from the bubble menu; кућа has the frequency of kuća; Cyrillic headwords in Serbian glyph forms (б); audio from Wiktionary's Sr- recordings for Latin and Cyrillic words; the second entry turns on at once with the shared dictionaries; turning one entry off while the other is on offers nothing shared to delete, with both off one "Turned off" card with a "Turn on" button per entry; with a Croatian or Serbian interface, sentences translate into English by default | E | U SerboCroatianSupportTest, SerboCroatianScriptsTest, TranslationLanguagesTest, OcrModelsTest, BackupChoiceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 (I) |
+| LK36 | Croatian and Serbian, two languages on the shared Serbo-Croatian dictionaries (Latin text `testdata/ocr/sr-latn-sample.png`, Cyrillic `testdata/ocr/sh-cyrl-sample.png`, both from `scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`): kuca also finds kuća (house), sesir → šešir, djak → đak; куће → кућа with "genitive singular"; ку̏ћа and kȕća (reading marks) find the word; a long line of c, s and z ("kuca cecescecescecesc") looks up without an error; "npr.", "5. maja", "pr. Kr." and "p. n. e." do not end a sentence; Serbian over Cyrillic text: Јој and је (which cloud recognition reads in Latin letters) show the Cyrillic entries (check the headword's code points with `scripts/popup-eval.mjs`: the letters look alike), a lone у finds the preposition; Serbian over Latin text: a lone u and kući stay Latin; Croatian shows Đ, flag hr and page `lang` hr, Serbian Ћ, flag rs and `lang` sr with the Serbian б, no flag button; both switched from Home and the bubble menu; кућа has the frequency of kuća; Serbian's model list has PaddleOCR v5 Cyrillic recommended and PaddleOCR v6 selectable (loaded and warmed up at once); audio: Croatian ljubav lists Hr-ljubav.ogg, then Sr-љубав.flac; Serbian voda Sr-вода.flac, then Lingua Libre (a Latin title), and the voice item speaks with a Serbian voice; Serbian Latin sentences translate (Bing as sr-Latn); the second language turns on at once with the shared dictionaries; turning one off while the other is on offers nothing shared to delete, with both off one "Turned off" card with a "Turn on" button per language; with a Croatian or Serbian interface, sentences translate into English by default | E | U SerboCroatianSupportTest, SerboCroatianScriptsTest, CyrillicLookAlikesTest, OcrPageLanguageTest, AudioPagesTest, AudioFinderTest, SentenceTranslatorTest, TranslationLanguagesTest, OcrModelsTest, BackupChoiceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 | LK25 | Vietnamese lookups (`testdata/ocr/vi-sample.png`): aiming at "sinh" in "học sinh" shows học sinh first (the lookup also starts one and two syllables before), then sinh; "nhà vệ sinh" from its last syllable; hoà and hòa find the same word; "cái" shows its own entries, not the hundreds of nouns it is the classifier of; Hán-Nôm characters labelled "Hán-Nôm spelling"; "TP." does not end a sentence; Ư in the bubble, Vietnamese flag; fonts listed by the vietnamese subset | E | U VietnameseSupportTest, EarlierStartsTest, ShownResultsTest, SentenceTest, M | 2026-10-18 |
 | LK26 | Russian lookups (`testdata/ocr/ru-sample.png`, cloud recognition or PaddleOCR v5 Cyrillic on the device): кошки → кошка with "genitive singular" and the other forms, the headword shown as ко́шка with no reading line, the note with `{expression}` кошка and `{reading}` ко́шка; шокирующее → шокирующий → шокировать (the second form-of step); еж finds ёж; text with stress marks (ко́шка) finds кошка; «» and „“ are quotes, "т. е." and "г." do not end a sentence; Я in the bubble, Russian flag; audio tries Wiktionary first; text to speech reads the stressed reading correctly | E | U RussianSupportTest, SentenceTest, reading.test.mjs, popup.test.mjs, M | 2026-10-18 |
 | LK27 | German compound part order: a compound without an entry whose part is "lampe" (Küchentischlampe) shows the noun Lampe before the verb lampen among the part's entries; ordinary lookups keep the usual order | F | U CompoundsTest, M | 2026-10-19 |
@@ -367,6 +367,39 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/sr` (Croatian and Serbian, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Croatian and Serbian (LK36 as rewritten for the two languages) through the Languages screen, Home, the
+on-device model dialog, the search screen (text action), the overlay over `sh-cyrl-sample.png` and the new
+`sr-latn-sample.png` in the debug viewer, and the bubble menu; the lookup engine's instrumented tests (74 passed).
+
+Results: passed after one fix. First checks: LK36 as rewritten.
+
+- Setup: the build has no migration from the unreleased Serbo-Croatian entries, so both languages came up off, with
+  the shared dictionaries in one "Turned off" card ("Serbo-Croatian · 3 dictionaries · 48 MB", "Turn on Croatian",
+  "Turn on Serbian"). Croatian turned on from it: Active, Ready, flag hr, Đ. Serbian then turned on at once from "Not
+  turned on": Active, Ready, flag rs, Ћ, no flag button.
+- Models: Serbian's list held Tesseract fast and accurate (srp), PaddleOCR v6 (installed) and PaddleOCR v5
+  (recommended, installed, in use). Choosing v6 loaded its detector and recognizer and warmed up in 481 ms; a scan
+  of the Latin image then drafted with it. Set back to v5.
+- Overlay, Serbian over Cyrillic text: кућа W 553; у gave the letter and the preposition. Јој showed the Latin entry
+  joj: cloud recognition read all three letters as Latin, and the look-alike fix needs a Cyrillic letter in the word.
+  Fixed (on a Cyrillic line a word of look-alikes alone is written in Cyrillic); then Јој gave јој and је gave је
+  (бити), checked by the headwords' code points.
+- Overlay, Serbian over Latin text: kući → kući, kuća; the lone u stayed Latin (U+0075). Translation: Bing timed out
+  once (3 s, its first request) and Google gave "You and I are in the house."; the next sentence came from Bing as
+  sr-Latn: "The house is big, and the yard is small."
+- Page `lang`: hr for Croatian, sr for Serbian; брдо in the Serbian б.
+- Audio: Croatian ljubav listed Hr-ljubav.ogg, Sr-љубав.flac and the voice; Serbian voda Sr-вода.flac,
+  UništihEkonomiju (Lingua Libre) and the voice, which spoke with Google's sr-RS voice.
+- Turning off: Croatian with Serbian on offered no files; Serbian then offered "Delete its dictionaries and models
+  (48 MB)", unticked here, and the shared card came back. Both were turned on again; turning Croatian on made it
+  active and left Serbian unstarred (activation moves the stars), so the bubble menu had no flag row until Serbian
+  was starred again.
+
+Emulator state since this run: Serbian active, Croatian starred, Greek on and unstarred (it was active);
+`sr-latn-sample.png` added to the app's test images. /data had 344 MB free.
 
 ### 2026-10-19, `languages/el` (Greek, before its commit), Pixel_10_Pro (API 37)
 
