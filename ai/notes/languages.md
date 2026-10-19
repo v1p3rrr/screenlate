@@ -87,9 +87,10 @@ questions: `plans/2026-10-09-more-languages.md`.
   four standards, Cyrillic and Latin).
 - Candidates Yomitan lacks (bn, ms, kk, ky) have wty dictionaries from English Wiktionary: ms→en 1.7 MB, kk→en
   1.7, bn→en 1.7, ky→en 0.6; into Russian kk 0.8, ky 0.3, ms and bn 0.1 (for scale: id→en 3.9, hi→en 5.6, de→en
-  16.3). They work like group 3: form-of rows plus the longest matching start of the word (Kazakh and Kyrgyz like
-  Turkish). Paddle's `cyrillic` recognizer has every Kazakh and Kyrgyz letter (ә ғ қ ң ө ұ ү һ і), `eslav` does not;
-  Bengali has no Paddle model; ML Kit's Devanagari recognizer turned out to read it (group 4b, 2026-10-19).
+  16.3). Without rules of their own they work like group 3: the word as written and its form-of rows, since word
+  resolution never shortens a word (corrected by the group 4e research, which found no longest-start fallback;
+  Bengali, Kazakh and Kyrgyz get endings of their own). Paddle's `cyrillic` recognizer has every Kazakh and Kyrgyz
+  letter (ә ғ қ ң ө ұ ү һ і), `eslav` does not; Bengali has no Paddle model; ML Kit's Devanagari recognizer turned out to read it (group 4b, 2026-10-19).
 - The rest, by speakers: arz T (Egyptian Arabic, spoken variety; Wiktionary's own language, same script), yue, fa,
   kn, ro, km, hu, sv, he, bg, sq T, lo, da, fi, no, mn, et, cy, eu T, yi T, mt, aii, ga T, br, gd, haw, gv, kw;
   constructed eo T, tok; historical la T, grc T, sga T.
@@ -199,7 +200,8 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
 | ar | kaihouguide's language→Arabic set | self-ripped |
 | many | Lingoes Vicon dictionaries | ripped from Lingoes |
 | zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
-| many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent |
+| many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent. Read again for group 4e (Wayback copy of 2025-11-12): CC BY-NC for the site's data and services, CC BY for "the text corpora offered for download"; the Kazakh and Kyrgyz frequency lists are built from those downloads (owner, 2026-10-19) |
+| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. A Kazakh and Kyrgyz converter is planned (group 4e); the license is checked again before hosting |
 
 ## OCR
 
@@ -1764,3 +1766,246 @@ file. Cells: archive MB, words.
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).
+
+## Group 4e research (2026-10-19)
+
+Kazakh (kk) and Kyrgyz (ky): Turkic languages written in Cyrillic, with long chains of endings. Sources: Yomitan
+e7334a9 (`ext/js/language/`, `translator.js`; GPL-3.0), the wty tree on Hugging Face (`latest/dict`, revision
+2026.10.11, listed and downloaded 2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes), wordfreq 912caf6, hermitdave
+FrequencyWords, the Leipzig Corpora Collection (downloads, and Wayback copies of its pages, as the live site sits
+behind a bot check), Apertium, PanLex (the `cointegrated/panlex-meanings` mirror), Tatoeba, 30 Wikipedia articles per
+language and Leipzig's news samples for running text, the tessdata pins of `tessdata_catalog.py` (Apache-2.0), Paddle
+`cyrillic_PP-OCRv5_mobile_rec` (Apache-2.0) run with ONNX Runtime on the PC, the OCR comparison of `ocr-engines.md`
+(`testdata/ocr/compare/analyze-rot.txt`), the catalog's font files, circle-flags 379588b (MIT), Wikimedia Commons
+and Lingua Libre (API) for audio, the engines' own language lists for voices and translators, the alphabet decrees,
+CLDR, the Windows and AOSP keyboard tables, and grammar descriptions of both languages for the ending rules (no GPL
+code). Nothing in this section was measured on a device.
+
+### Yomitan at e7334a9
+
+- No descriptor for kk or ky. The bundles borrow Mongolian's descriptor (Cyrillic, capitalization only; Bulgarian's
+  is the same) under their own codes, with the app's own text processors and ending rules (`own-transforms.js`, as
+  Bengali's).
+- Word resolution never shortens a single word (`_getNextSubstring` drops whole trailing words), so without rules a
+  Kazakh or Kyrgyz word is found only as written or through a wty form-of row, as Turkish is today. The line above
+  that these languages get "the longest matching start of the word" was wrong.
+
+### Dictionaries (wty)
+
+Counting as in group 4a (words with their own meaning); ✗ under 1,500. Cells: archive MB, words; form rows in
+brackets where they matter.
+
+| from | en | ru | fr | pl | zh | ko | tr | ja | pt | it | vi | de | own |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| kk | 1.74 12.0k (74.6k) | 0.80 18.0k (14.4k) | 0.22 4.8k | 0.18 3.0k | 0.19 2.1k | 0.08 1.9k | 663 ✗ | 453 ✗ | 533 ✗ | 236 ✗ | 209 ✗ | 86 ✗ | – |
+| ky | 0.62 2.7k (53.4k) | 0.30 3.7k (10.4k) | 1,320 ✗ | 442 ✗ | 759 ✗ | 579 ✗ | 632 ✗ | 127 ✗ | 344 ✗ | – | 481 ✗ | 81 ✗ | – |
+
+- Pairs that pass: kk en ru fr pl zh ko; ky en ru (ky-fr 1,320 just under). Outside the gloss languages: kk-el
+  6,422 words, kk-ku 2,346, ky-ku 1,959. Neither language has a Wiktionary edition in wty.
+- Transcriptions (`wty-<lang>-ipa.zip`): kk 0.18 MB, 10,825 words; ky 0.04 MB, 1,552 words; both pass.
+- kk-ru has more words of its own (18.0k) than kk-en (12.0k), with 3,689 verbs against 744; kk-en has the form
+  tables. Together 24.3k distinct headwords.
+- The part of speech is in the definition tags (`n` 7,640, `v` 712, `adj` 1,845 in kk-en; `non-lemma` on form
+  rows); the rules field is empty in every row.
+- Form-of rows:
+  - kk-en: about 4,700 nouns declined (13 case and number forms each, no possessives); 168 verbs with aorist,
+    preterite and optative forms; 922 `alternative` spellings in Cyrillic (Болғария → Болгария); links from a Cyrillic
+    headword to another script: 105 to its Arabic-script spelling (Қазақстан → قازاقستان, tags `Arabic`, `alt-of`),
+    91 to its romanization (мен → men, `romanization`), 4 to the 1929 Latin alphabet (жер → çer, `Yañalif`); 71
+    rows give a letter's Arabic equivalent (о → و); 42 + 42 single letters link their other case.
+  - ky-en: 1,253 nouns with case forms and the first- and second-person possessives; 265 verbs with a few
+    participles (келген → келүү); 2,202 Arabic-script headwords pointing to their Cyrillic spelling (only Arabic text
+    reaches them) and 24 Cyrillic ones pointing to an Arabic spelling (ата → اتا); 18 letter equivalents, 47 case
+    links of single letters, 1 Yañalif row.
+  - A lookup of Қазақстан or мен shows a form-of entry ("Arabic … of قازاقستان", "romanization of men") whose
+    lemma is in no dictionary, next to the meaning.
+  - kk-ru: 1,210 nouns declined; ky-ru: 709 nouns with person forms, 675 declined.
+- Suffix headwords: kk 312 (-ға, -ге, -дың …), ky 178.
+- Readings: none.
+
+### Other dictionaries
+
+- No Yomitan dictionary for either language besides wty; FreeDict and WikDict have none. sozdik.kz and
+  el-sozduk.kg carry no open license; Yudakhin's Kyrgyz–Russian dictionary (1940, 1965) is under copyright.
+- Apertium (GPL-3.0): bilingual lemma pairs with a part of speech and no definitions: eng-kaz 32,994 entries,
+  kaz-rus 29,572, kaz-kir 8,174, eng-kir 474. GPL, so usable only in the GPL modules; not taken.
+- PanLex: the live site says CC BY-NC-SA 4.0 (commercial use only with written permission); a Wayback copy of 2021
+  says the snapshots were CC0. The Hugging Face mirror `cointegrated/panlex-meanings` (CC0, the 2024-03-01 dump)
+  has `kaz.tsv` (37.5k expressions; 31k in the standard Cyrillic variety) and `kir.tsv` (21.3k; 19.7k). Joined with
+  `rus.tsv` on the meaning: 19.3k Kazakh and 8.6k Kyrgyz words get a Russian translation. Quality varies: су →
+  вода, мышык → кошка, but ушул → "присутствовать", шаар → лондон among город. It has words wty lacks (Kyrgyz
+  боюнча, чейин, же, кабыл, аркылуу, азыр, but not экен, учурда). Of the 2,000 most frequent word forms of the
+  Leipzig news sample: kk wty 1,287, PanLex 1,052, either 1,405; ky wty 789, PanLex 818, either 1,143.
+- Tatoeba: 4,582 Kazakh and 826 Kyrgyz sentences (CC BY 2.0 FR).
+
+### Lookup coverage
+
+Measured on running text (30 Wikipedia articles per language on general topics: kk 54k, ky 24k lowercase tokens;
+Leipzig newscrawl 2016 10K-sentence samples: kk 121k, ky 115k). Lowercase tokens only, so names are left out.
+Steps, cumulative: a headword with its own meaning; a form-of row; own ending rules; the longest start of at least 3
+letters that is a headword.
+
+| Text, dictionaries | Headword | + form rows | + own rules | + longest start |
+|---|---|---|---|---|
+| kk Wikipedia, en | 37.4% | 51.9% | 82.8% | 89.9% |
+| kk Wikipedia, ru | 40.3% | 45.9% | 83.3% | 87.7% |
+| kk Wikipedia, en + ru | 45.4% | 59.0% | 91.4% | 94.6% |
+| kk news, en + ru, Latin i read as і | 42.6% | 58.7% | 91.9% | 95.0% |
+| ky Wikipedia, en | 23.3% | 34.9% | 56.1% | 69.7% |
+| ky Wikipedia, ru | 19.4% | 26.9% | 41.6% | 54.7% |
+| ky Wikipedia, en + ru | 26.4% | 40.8% | 62.5% | 75.9% |
+| ky news, en + ru | 25.0% | 38.4% | 63.2% | 76.0% |
+
+- The rules, written from grammar descriptions: a noun is stem [plural] [possessive] [case] [predicative]; a verb is
+  stem [voice] [negation], then one of past + person, present + person, participle (+ possessive, case,
+  predicative), converb, conditional + person, imperative. Kazakh endings in their two vowel-harmony variants and
+  consonant variants (-лар -лер -дар -дер -тар -тер; -ның -нің -дың -дің -тың -тің), Kyrgyz in four (-лар -лер
+  -лор -лөр …; -дын -дин -дун -дүн …). The stem is tried as written and with the consonant change at a vowel ending
+  undone (аумағы → аумақ, мектебі → мектеп; китеби → китеп). A verb stem becomes the dictionary form: Kazakh stem + у,
+  ы/і → у, й → ю (бар- → бару, оқы- → оқу, қой- → қою); Kyrgyz stem + уу/үү, а → оо, е → өө (бар- → баруу, жаша- →
+  жашоо, иште- → иштөө), accepted only when that headword is a verb. The longest stem wins; equal ones all show
+  (қараңыз → қара "black" and қарау "to look"). The script is `coverage2.py` of the research scratchpad (not kept).
+- Precision, 40 samples weighted by frequency, judged by hand: kk 36/40 (wrong: тұратын → тұраты, түскен → түс
+  "noon", іне, алдыңда), ky 37/40 (wrong: кайрадан → кайыруу, атм, ашуун → ашуу only related). An earlier version
+  that stripped any ending in any order was right on 32/40 (kk) and 17/40 (ky): without the slot order, Kyrgyz's
+  small dictionaries pull words down to wrong short stems (журналдар → жуу).
+- The longest start was right on about 15 of 40 samples (жетілдіру → жеті "seven", өнеркәсібінің → өнер "art",
+  жайгашкан → жай); after the rules it adds kk 3.3, ky 13.4 points, mostly wrong.
+- Remaining misses: Kazakh particles written as words of their own (ма/ме/ба/бе/па/пе, да/де/та/те, мен/бен/пен),
+  endings after numbers and abbreviations (1990-ға), units (км, млн). Kyrgyz: words neither dictionary has: боюнча
+  (797 times in the news sample), чейин 297, же 242, кабыл 185, айтымында, ушул, экен, ылайык, аркылуу, азыр.
+- Long words: 0.35% of the Kazakh and 0.37% of the Kyrgyz word forms are longer than 16 letters; the group 4b row
+  "Scan length" covers both.
+- Group 5c measured the same for Azerbaijani and Uzbek (shared notes of the group sessions): a hand-written Turkic
+  ending list added 8 and 15 points of news words there.
+
+### Scripts
+
+- Kazakh Latin: the only alphabet signed is that of Decree 637 (19 Feb 2018): acute letters Á Ǵ Ń Ó Ú Ý (written in
+  the decree as base letter + U+0301), I i for і and I ı for и/й, so a capital I stands for both; Sh and Ch. Its 2017
+  apostrophe version was replaced. The 2021 drafts (ä ğ ñ ö ş ū ü, I ı = і, İ i = и/й) were never signed; the
+  Turkic Academy's recommendation of 15 June 2026 (Ç Ğ Ñ Ş Q, I ı = ы, İ i = і/и, Y = й) is advisory. In September
+  2026 officials said the alphabet and spelling rules are still being revised, with no date. Latin is met on
+  Kazinform's `qz.inform.kz` (2018 letters), behind Egemen's LAT button and in informal text; about 1.5% of 180k
+  Kazakh app reviews are mostly Latin (KazSAnDRA). Kazakh Wikipedia offers no working Latin variant.
+- Arabic-script Kazakh (töte jazu) is official in China's Ili prefecture (about 1.56 million Kazakhs in China) and
+  rarely met elsewhere; CLDR has `kk_Arab`.
+- Kyrgyz: Cyrillic with Ң Ө Ү; no Latin law (the president called a switch premature in 2023). A July 2026 spelling
+  draft, not adopted, would write е for э in native words (эне → ене) and йа йу йо for я ю ё.
+- Casing: Cyrillic І/і is an ordinary case pair; Unicode's language-specific I rules cover tr, az and lt only. No
+  `kk_Latn` locale in CLDR and no sentence-break exceptions for kk or ky.
+
+### Letters lost in typing and OCR
+
+- Keyboards: the Windows Kazakh layout puts ә і ң ғ ү ұ қ ө һ on the number row (no digits there); the Windows Kyrgyz
+  layout gives ү ң ө with AltGr; AOSP's keyboard gives the letters on a long press of a Russian key (Kazakh а → ә,
+  г → ғ, к → қ, н → ң, о → ө, у → ү ұ, ы → і, э → һ; Kyrgyz у → ү, н → ң, о → ө). Without the long press і becomes ы,
+  not и. Gboard's current layouts are not documented.
+- Latin look-alikes in Cyrillic words: the Kazakh news sample has Latin i (U+0069) for і in 10% of its Cyrillic
+  words (мүмкiн, үшiн; Leipzig's sample counts 12,616 such tokens against 20,134 written right), the Kyrgyz one 0.2%,
+  Kazakh Wikipedia 0.65%; Latin ə for ә is rarer; Kyrgyz Wikipedia has Latin ɵ for ө and a few words typed wholly in
+  Latin look-alikes (Maнac). Roman numerals are sometimes typed with Cyrillic Х and І (ХІІІ ғасыр).
+- Plain Russian letters for Kazakh ones are a known kind of user text (KazSAnDRA, the KazNLP normalizer, Kazakh press
+  on ң "disappearing"); no published rate.
+- Matching the Kazakh letters to their Russian twins (қ к, ғ г, ң н, ұ ү у, ө о, ә а, і и, һ х): 0.9% of the kk
+  headwords and forms (895 of 103k: он/оң/өң, күн/күң/құн, сал/сәл) share a key with another; Kyrgyz (ң ө ү) 0.7%
+  (407 of 60.6k: колуң/көлүң, тор/төр). Adding ы to the і class raises Kazakh to 1.5% (мына/мина, таныды/таниды,
+  жын/жін).
+
+### OCR
+
+- Paddle `cyrillic_PP-OCRv5_mobile_rec` (850 characters) has every Kazakh and Kyrgyz letter in both cases. Measured
+  before (`analyze-rot.txt`, CER % clean / hard): kk Paddle 0.2 / 3.4 (2.2 over both), Tesseract fast 0.0 / 38.6
+  (24.0), best 0.0 / 36.7 (22.8), cloud 0.0 / 0.0. By the recommendation rule Paddle.
+- Kyrgyz on the PC (ONNX Runtime, `paddle_ref.py`, the v5 detector and the cyrillic recognizer): eight sentences
+  drawn with Pillow in 11 styles (Arial 56 light and dark, 30 and 22 px, bold, italic, Cambria, Segoe UI, Times,
+  Courier, white bold over a blurred photo-like background): 0.0% errors in every style. The same run on the Kazakh
+  and Russian sentences of the comparison: kk 0.6 / 0.1 (қ → к twice on the dark screen, ұ → ү in Times and Courier),
+  ru 0.0 / 0.2. Pillow screens are easier than the browser-drawn ones (no tilt, no device scene); Kyrgyz's letters
+  are a subset of Kazakh's. Tesseract was not run on the PC.
+- What Paddle gets wrong on the Kazakh device screens: the Kazakh letters read as the Russian letters they come
+  from: қ → к (Оқушылар → Окушылар, Қазақстан → Казакстан), ң → н, ғ → г/в/ф (тоғызда → товызда), ұ → ү/у, і → и
+  (Кітапхана → Китапхана), ө → о/е, һ → н. Of 323 words 32 were misread; 24 of them match the right word with the
+  letters taken as their Russian twins and Latin look-alikes as Cyrillic.
+- tessdata (MB, fast / best): kaz 4.73 / 7.53, kir 9.93 / 11.95 (rus 3.86 / 15.30 for scale).
+- Speed: as Russian (one model for all Cyrillic languages).
+
+### Fonts
+
+- The catalog's downloadable fonts with the Cyrillic Extended subset (Literata, Inter, PT Serif, PT Sans) have all
+  nine Kazakh letters ә ғ қ ң ө ұ ү һ і in both cases (cmap of the catalog's files). kk and ky need `fontSubsets`
+  latin, cyrillic, cyrillic-ext (the letters other than і are in U+0460-052F); the system fonts cover U+0400-052F.
+  Georgia lacks them (drawn as boxes in the PC run).
+
+### Text rules
+
+- Quotes (CLDR): kk « » and “ ”; ky « » and „ “. In the Wikipedia sample «» dominate (kk 876, ky 580). Dialogue lines
+  open with an em dash; Kyrgyz often uses – as the dash.
+- Question particle: Kazakh ма/ме/ба/бе/па/пе is a separate word (болған ба?); Kyrgyz -бы/-би/-бу/-бү/-пы … is
+  attached (барасыңбы).
+- Abbreviations with a period (the Kazakh document guide: units take none, doubled forms one: жж., ғғ., бб.):
+  Kazakh т.б. (81 in the sample), ж. (75), жж., ғ., ғғ., б.з.д., б.з.б., мыс., млн., млрд., трлн., т., б., қ., шам.,
+  ағыл., орыс., с. е., ш. б., обл., ауд., көш.; Kyrgyz ж. б. (241 spaced, 27 joined), б. з. ч., ж. (1991-ж.), жж.,
+  к. (19-к.), кк., б.а., проф., обл., түн., түш., and Russian ones in references (с., т., изд-во). т.б., ж., жж., ғ.
+  often end a sentence too; the next character tells.
+- Ordinals and dates: a number, a hyphen and an ending (1-ші, 9-орын; Kyrgyz 2007-жылы, 19-кылымдын); Kazakh years
+  mostly without the hyphen (1997 жылы). No ordinals with a period in running text, so the row "Ordinals with a
+  period" does not extend to them.
+- Apostrophes only in foreign names (д’Ивуар).
+- Hyphenated words are frequent: kk 934 lowercase hyphenated tokens in the 54k-token Wikipedia sample (сондай-ақ 37,
+  қарым-қатынас, азық-түлік, бір-біріне), 93 of them headwords as a whole and 345 more whose parts all are; ky 393, 14
+  and 76. After digits: kk 199 (-ші, -інде, -ден), ky 545 (-жылы 161, -жылдын 58, -ж).
+- Encyclopedic Kyrgyz contracts with hyphens (м-н for менен, ж-а for жана).
+
+### Word frequency
+
+- wordfreq 912caf6: neither language. hermitdave FrequencyWords: Kazakh only, 4,672 words from two subtitle files
+  (CC BY-SA 4.0); no Kyrgyz.
+- Leipzig Corpora Collection: the terms page (Wayback copy of 2025-11-12) gives the site's data and services under
+  CC BY-NC and "the text corpora offered for download" under CC BY. Archives on `downloads.wortschatz-leipzig.de`
+  (static, fixed dates): `kaz_newscrawl_2016` and `kir_newscrawl_2016` in 10K … 1M sentences (100K: 18.7 and
+  19.9 MB, SHA-256 dcbe3bf7…e68773 and 145fd1c7…03d9bb; 300K: 56.9 and 60.0 MB; 1M: 194 and 202 MB). Each holds
+  `-words.txt` (id, word, count; case-sensitive, punctuation included) at a varying place in the archive.
+- The 100K lists: kk 114,695 lowercase Cyrillic word forms after reading Latin i as і (52,751 seen twice or more),
+  ky 100,901 (48,535). Of the top 1,000: kk 711 and ky 475 are wty headwords or form rows (the others mostly inflected
+  forms: болып, екенін; Kyrgyz менен, деп, боюнча).
+- Other corpora (CC-100, OSCAR, MADLAD-400, Wikipedia dumps) are raw text: a list would have to be built and
+  hosted.
+
+### Audio
+
+- Lingua Libre: kk Q9252 `kaz` 125 files, 3 speakers; ky Q9255 `kir` 1,288 files, 1 speaker (letters and common
+  words). Commons titles carry one code each.
+- Twenty common words (as in group 4b), Lingua Libre / Wiktionary / either: kk 4 / 0 / 4 (кітап, мектеп, күн, ағаш);
+  ky 17 / 1 / 17 (Ky-китеп). By the row "Audio order": Lingua Libre first for both.
+- Commons by prefix: `Kk-` 156 files, titled in a Latin transliteration (Kk-9-toğyz.ogg, city names) or not words,
+  some vulgar phrases; the app's search by the Cyrillic word finds none. `Ky-` 110, mostly unrelated images.
+- Text to speech: Google's engines list neither language. eSpeak NG has both (F-Droid, GPL-3.0); RHVoice has Kyrgyz
+  (Azamat, Nazgul; LGPL); the sherpa-onnx engine has Kazakh Piper voices (ISSAI data, CC BY 4.0; APKs of 44-144 MB);
+  Microsoft's cloud has Kazakh. The popup already says "No text-to-speech voice for this language is installed".
+
+### Names, flags, codes
+
+- Translation services: `TranslationLanguageTable` lists kk and ky for both services, same codes. DeepL has KK and
+  KY (API key); LibreTranslate and Argos have Kyrgyz only.
+- Names (JDK 21, CLDR): Kazakh / казахский / カザフ語 / 哈萨克语 / Kasachisch / kazajo / kazakh / kazako / cazaque /
+  kazachski / Kazakça / Tiếng Kazakh / kazahu; Kyrgyz / киргизский / キルギス語 / 柯尔克孜语 / Kirgisisch / kirguís /
+  kirghize / kirghiso / quirguiz / kirgiski / Kırgızca / Tiếng Kyrgyz / kirgīzu. Own names: қазақ тілі, кыргызча. The
+  Chinese name is the one used in China for its Kyrgyz minority (吉尔吉斯语, after the country, is also used).
+- circle-flags 379588b: `kz.svg` (712 bytes), `kg.svg` (869): paths, circles, a mask and a group, as the existing
+  flags; `scripts/flags/` needs kz, kg in `COUNTRIES`.
+- E-ink codes: KK, KY.
+
+### Plain fixes found (no owner decision)
+
+- Form rows to other scripts (Arabic, romanization, Yañalif) and letter equivalents dropped, as the Jawi and Baybayin
+  rows.
+- Kyrgyz look-alikes: ɵ Ɵ as ө Ө.
+- A hyphen after digits or an abbreviation ends that word; the ending alone is also tried with its hyphen (-ға).
+- The Kyrgyz question particle among the rules; abbreviation lists and quotes of both languages.
+- Verb chains checked against the part-of-speech tag, since wty's rules field is empty.
+- `fontSubsets` with cyrillic-ext; tessdata kaz, kir; `paddle-cyrillic` for kk, ky; flags kz, kg.
+
+### Questions for the owner
+
+See `plans/2026-10-19-group-4e.md`.

@@ -1044,6 +1044,12 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questio
 `2026-10-19-group-4d.md`. Urdu comes later, on its own (question 69 of that plan; block 5f of row "Group 5"); the
 interface stays left to right, right-to-left interface languages are in the backlog (question 70).
 
+### Group 4e (kk, ky)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4e research". Plan, questions and progress:
+`2026-10-19-group-4e.md`. Its row "Hyphenated words" applies to every spaced language, and Kyrgyz PanLex is
+ticked as an exception to the row "Recommended dictionaries".
+
 ## Stage F: group 5 (decided on 2026-10-19)
 
 Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
@@ -1471,3 +1477,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-19: group 4d researched (Arabic, Persian, Hebrew; `2026-10-19-group-4d.md`, questions 69-85 answered by
   the owner); Urdu later, on its own; right-to-left interface languages added to the backlog. The build waits for the
   owner's go.
+- 2026-10-19: group 4e (Kazakh, Kyrgyz) researched; its plan with the owner's answers is `2026-10-19-group-4e.md`,
+  linked from Stage E. Two of its rows reach beyond the group: a tap on a part of a hyphenated word shows the whole
+  word when it is a headword, then the tapped part, in every spaced language; Kyrgyz PanLex is ticked next to
+  Wiktionary, an exception to "Recommended dictionaries". The line of `notes/languages.md` that kk and ky would get
+  the longest matching start is corrected: word resolution never shortens a word.
