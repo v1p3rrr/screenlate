@@ -356,7 +356,7 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
-### 2026-10-19, `languages/checks` (`cc2cd4b`: the language rules review and its fixes merged), Pixel_10_Pro (API 37)
+### 2026-10-19, `languages/checks` (`ca52b3d`, with the language rules review merged), Pixel_10_Pro (API 37)
 
 Scope: the cases the language rules review added (LK28-LK30, OCR26, ANK12-ANK14, POP24). App text of AnkiDroid's
 note editor stood in for the text images and the browser page of ANK12, LK28 and OCR26: text shared to AnkiDroid
@@ -365,8 +365,8 @@ opens the editor with it in a field, the field reports character positions, and 
 debug viewer.
 
 Results: every case passed on `cc2cd4b`. The first build (`635b00c`) failed LK28 (Vietnamese) and LK30 (English);
-both were fixed in `854a77e` and checked again. First checks: LK28-LK30, OCR26, ANK12-ANK14, POP24. Automated: unit
-tests 1023 (4 skipped), page tests 139, `scripts/yomitan-language` tests 8.
+both were fixed in `854a77e` and checked again. First checks: LK28-LK30, OCR26, ANK12-ANK14, POP24. Automated on
+`ca52b3d`: unit tests 1024 (4 skipped), page tests 139, `scripts/yomitan-language` tests 8.
 
 - LK28: ко́шка typed with U+0301: кошка and кот, no entries for ко or к, one highlight box. Vietnamese hoà typed with
   U+0300 in "Chúng tôi yêu hoà bình.": "hoà bình" first, then hòa bình, hòa, hoà, one box. On `635b00c` app text
@@ -377,9 +377,10 @@ tests 1023 (4 skipped), page tests 139, `scripts/yomitan-language` tests 8.
   joined form; Japanese broken across lines: 電 found 電車, 楽 found 楽しい, the sentence joined with no space. On
   `635b00c` English failed with both engines: cloud recognition gave "impor-" no separator, and ML Kit leaves the
   line-final hyphen out ("impor" / "tant"). `854a77e` fixed it for cloud recognition; the case covers that only.
-- OCR26: "whole" at the start of a wrapped line looked up alone, with a space at the wrap in `{sentence}`; a line-final
-  "pick" showed "pick up" first and the sentence "…pick up the new tasks."; "up" on the next line looked up alone; an
-  explicit line break between "pick" and "up" gave "pick up"; Japanese across a wrap joined with no space.
+- OCR26 (on `635b00c` and again on `ca52b3d`, since `854a77e` changed the app text lines): "whole" at the start of a
+  wrapped line looked up alone, with a space at the wrap in `{sentence}`; a line-final "pick" showed "pick up" first
+  and the sentence "…pick up the new tasks."; "up" on the next line looked up alone; an explicit line break between
+  "pick" and "up" gave "pick up"; Japanese across a wrap joined with no space.
 - ANK12: 円周率 kept ３．１４ in the sentence; German "ging" gave "Er sagte “ja” und ging.", "gehen" gave "Dann gehen
   wir." and "ging" after “Komm.” gave "Dann ging er." with no leading ”; Turkish "dün geldi" kept "ABC LTD. ŞTİ." in
   the sentence; Polish "Idziemy." ended its sentence, and "ok." did not end "To kosztuje ok. 5 zł i jest ok.
@@ -394,7 +395,18 @@ tests 1023 (4 skipped), page tests 139, `scripts/yomitan-language` tests 8.
   unfolded; the folded chip showed W, the initial of wordfreq, the first frequency dictionary. English: "I" on the
   folded chip.
 
-Findings: none new. AnkiDroid's local collection on the emulator got three test notes (кошка, кот, whole).
+Findings:
+
+- Fixed in `ca52b3d`: the audio finder made its clip directory in the cache once per process. At 98-99 % storage
+  use the emulator's system clears app caches every minute ("Free cache requested" in the log); after that every
+  clip download failed with FileNotFoundException until the app restarted, and Home showed "Audio sources that
+  failed: Wiktionary, Lingua Libre". On `ca52b3d` the clips were found after each clearing and the directory came
+  back.
+- Owner's choice: Home puts a failing source that several languages share under the first turned-on language that
+  lists it (the active one first). The failures above came from Vietnamese, English and German lookups, and the card
+  named Korean.
+
+AnkiDroid's local collection on the emulator got three test notes (кошка, кот, whole).
 
 Not checked: ANK14 Chinese; the cases on the phone.
 
