@@ -331,9 +331,12 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Backlog
 
-- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
-  to, and those we plan to host, and keep them outside the repository (on the owner's computer) in case their
-  sources remove them; served from our hosting once it exists.
+- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links to,
+  and those we plan to host, and keep them outside the repository (on the owner's computer) in case their sources
+  remove them; served from our hosting once it exists. Done on 2026-10-19 (`notes/dictionary-archive.md`): the
+  catalog's files, the next languages' Wiktionary pairs, the sources we convert with our conversions and the OCR
+  models, 1,083 files (2.4 GiB) checked against their hosts' hashes where published, in a git-ignored folder with its
+  refresh script.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
 - Download queue (request 67): built on 2026-10-19, rows "Download queue" and "Waiting tasks card". Jiten fails on
@@ -1453,3 +1456,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
 - 2026-10-19: group 5 added (owner): its languages, six blocks and research of five blocks at once, the sixth after
   group 4d; provisionally after the big release. Rows "Group 5", "Group 5 research", "Group 5 release", Stage F.
+- 2026-10-19: Backlog "Own copies of the dictionaries" done: the private archive with its refresh script outside the
+  repository (`notes/dictionary-archive.md`); the script stays in the archive and newer versions replace files only
+  after their checks, files their source drops are kept (owner).

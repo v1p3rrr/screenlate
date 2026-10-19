@@ -95,6 +95,13 @@ passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun
 entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
 rebuilt. Both are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian.
 
+Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
+`languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
+the FreeDict, OpenRussian, Mueller and Unihan sources with our conversions, and the OCR models (also for those
+languages): 1,083 files, 2.4 GiB, checked against their hosts' hashes where published, in a git-ignored folder on the
+owner's computer with the refresh script `mirror/mirror.mjs` inside it (`notes/dictionary-archive.md`). Nothing from
+it is committed or uploaded.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

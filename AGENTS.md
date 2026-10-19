@@ -21,6 +21,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
    - `store-publishing.md` — what a Google Play build would have to change, Android developer verification and its paths.
    - `module-map.md` — functional modules, how they integrate, and the instruction for the pending full code review (one run per module, started only on the owner's command).
+   - `dictionary-archive.md` — the owner's private copy of every catalog file, the sources we convert and the OCR models: layout, refresh script, licenses that limit sharing.
    - `languages.md` — what is Japanese-only in the app and in hoshidicts, how Yomitan supports other languages, Wiktionary and other dictionaries with licenses and gloss-language coverage, OCR scripts and model sizes, the QuickJS lookup experiment (en, zh, ru, ko).
    - `language-rules.md` — every language-specific rule (word starts, sentence ends, lookup, engine, page scripts, app text) with its code, positive and negative tests, the bugs fixed and the limits left.
 3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
