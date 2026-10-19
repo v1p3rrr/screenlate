@@ -185,6 +185,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK40 | A word hyphenated at a line end with the built-in recognizer (ML Kit as the language's model, English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py`): aiming at either half shows "important" first and highlights both halves with the hyphen; a line ending in "COVID-19-" or a dash of its own unchanged | N | I MlKitLineEndHyphenTest, U HyphenBreaksTest, M | — |
 | LK41 | Compound splits take the fewest and longest parts: Dutch stadsbestuurder shows "Compound: stads + bestuurder" (not stadsbestuur + der); rijbewijsfoto still rijbewijs + foto, German Arbeitsschreibtisch still Arbeit + Schreibtisch | N | U CompoundsTest, M | — |
 | LK42 | Hindi lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit Devanagari): पढता and पढ़ता → पढ़ना with its form tags and a wordfreq rank; हूं → होना through the हूँ entry; लडकियां → लड़की; खाना shows खाना and ख़ाना, ख़ाना only itself; हैँ → हैं; किताब aimed at ता is looked up from कि; the sentence of a word after a danda starts after it and keeps "डॉ." and "ए.पी.जे."; flag in, bubble हि; the page's serif face is the phone's Noto Serif Devanagari (`local()`), and Mukta, Hind and Tiro Devanagari Hindi download and are listed for Hindi only; ML Kit reads the screen on the device; audio from Lingua Libre (पानी), else the voice | E | U HindiSupportTest, SentenceTest, WordfreqDictionaryTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-19 |
+| LK43 | Bengali lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit's Devanagari recognizer): বইটির, বইগুলো (also with ো typed as ে + া) → বই through the endings; ছেলেদের → ছেলে; a form row with a romanization after it (মাসটি) found by its word; the sentence of a word after a danda starts after it and keeps "ড." and "এ.কে."; the language is "Bengali" in the English interface; flag bd, bubble বা; the page's serif face is the phone's Noto Serif Bengali (`local()`), and Hind Siliguri and Tiro Bangla are listed for Bengali only; ML Kit reads the screen on the device; audio from Lingua Libre (বই), else the voice | N | U BengaliSupportTest, SentenceTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 
 ### POP: the popup
 
@@ -372,6 +373,41 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/bn` (Bengali, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Bengali (LK43) through the Languages screen, the download screen, the search screen (text action), the
+overlay over a rendered Bengali image (64 px, Nirmala UI) in the debug viewer with cloud recognition and with ML Kit
+offline, the popup page (`popup-eval.mjs`) and the Popup settings' font card; the lookup engine's instrumented tests
+(39/39).
+
+Results: passed. First checks: LK43.
+
+- Setup: the download screen listed wty-bn-en (1.7 MB), the wordfreq list (1.6 MB), the transcription dictionary
+  (204 kB), ML Kit (built in, ticked, "Reads Chinese, Japanese, Korean, Devanagari, Bengali and Latin-script text")
+  and both Tesseract models (856 kB and 11 MB, unticked). 3.4 MB downloaded, about 12 MB after import; Active · Ready,
+  flag bd, "Bengali" in the English interface, bubble বা.
+- Search: বইটির → বই (-টির, W 457, /boi/); বইগুলো, also with ো typed as ে + া, → বই (-গুলো); ছেলেদের → ছেলে
+  (-দের, W 264); মাসটি → মাস through -টি and through the form rows "nominative singular definite" and "singular
+  definite objective" (rows written with a romanization after the form). বই is also a form of বু and বওয়া, which
+  follow it.
+- Overlay, cloud recognition: দাম, বইটির → বই, বললেন → বলা ("second person third person past polite"); the
+  sentence of বললেন started after the danda and kept ড. ("Dr. Yunus said, "Come tomorrow."" from Google), the one
+  of ছিলেন kept the initials ("The Prime Minister of Bengal was A. K. Fazlul Huq." from Bing). Audio for বই came from
+  the first of two sources in 4.2 s.
+- Overlay, ML Kit with Wi-Fi and data off: the band draft (2 paragraphs) in 4.3-4.9 s, Hindi's took 3.1-3.3 s on
+  the same emulator; the rest of the page (6 paragraphs) 5.9-7.5 s later, 10.7-11.9 s in all; the cloud request
+  failed offline (⚠). বইটির, বইগুলো → বই and ভালো read correctly.
+- Page: `lang` bn; the "Screenlate Serif" face carries the Bengali range. `local("NotoSerifBengali-Regular")` and
+  `local("Noto Serif Bengali Regular")` load, `local("Noto Serif Bengali")` does not; Noto Sans Bengali loads by its
+  PostScript names only.
+- Fonts: Bengali's card offers Hind Siliguri (0.5 MB) and Tiro Bangla (0.3 MB) with "Only for Bengali text". None
+  downloaded.
+
+Not checked: a font download, the voice for Bengali, Tesseract for Bengali.
+
+Emulator state since this run: Bengali active and starred, Hindi, Croatian and Serbian ready; Wi-Fi and data on;
+/data had 364 MB free.
 
 ### 2026-10-19, `languages/hi` (Hindi, before its commit), Pixel_10_Pro (API 37)
 

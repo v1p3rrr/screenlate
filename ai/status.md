@@ -80,11 +80,11 @@ own too. Their branches are merged into `languages/main` by this session when th
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go.
 
-Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered, question 10 (Bengali's
-recommended model) waits for an ML Kit measurement on the Bengali branch. Hindi is done on `languages/hi` and
-fast-forwarded into `languages/main`: LK42 passed on the emulator after one fix (the ML Kit description names
-Devanagari). Next on chained branches: Bengali, Georgian, Armenian. Group 4c (th, lo, km) is researched in its own
-session.
+Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
+Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
+passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
+entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
+rebuilt. Both are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

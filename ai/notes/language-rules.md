@@ -54,6 +54,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | el | The Greek question mark ; (and U+037E) ends a sentence; the ano teleia · (a semicolon) does not | `GreekSupport.kt` `sentenceTerminators` | GreekTest `the question mark is a semicolon…`, SentenceTest `greekSentences…` | Isolation `only Greek ends a sentence at a semicolon…` | ok |
 | hi | The danda । and the double danda ॥ end a sentence, as a period does | `HindiSupport.kt` `sentenceTerminators` | HindiSupportTest `the danda and the double danda…`, SentenceTest `hindiSentences…` | Isolation `only Hindi ends a sentence at the danda` | ok |
 | hi | Abbreviations (डॉ., प्रो., ई.पू., कि.मी.; the vowel sign of डॉ is a mark, part of the word) and Latin letters written as their names, as initials joined by periods (ए.पी.जे., आई.आई.टी.) or apart (बी. आर.), hold the sentence; आई, जी and पी, which are words too (वह आई.), hold it only joined to another letter name | `lang/SpacedLanguageSupport.kt` `initials`, `endsSentence`; `HindiSupport.kt` `abbreviations`, `initials` | HindiSupportTest `abbreviations and initials…`, SentenceTest `hindiSentences…` | Isolation (`initials` only hi; डॉ. and ए.पी.जे. hold only in hi) | ok |
+| bn | The danda । and the double danda ॥ end a sentence, as in Hindi | `BengaliSupport.kt` `sentenceTerminators` | BengaliSupportTest `the danda and the double danda…`, SentenceTest `bengaliSentences…` | Isolation `only Hindi and Bengali end a sentence at the danda` | ok |
+| bn | Abbreviations (ড., ডা., মো., খ্রি., কি.মি.) and Latin letters written as their names, as initials joined by periods (এ.কে., বি.এন.পি.) or apart (এ. কে.), hold the sentence; এল, এস and ও, which are words too (তুমি এস.), end it | `BengaliSupport.kt` `abbreviations`, `initials` | BengaliSupportTest `abbreviations and initials…`, SentenceTest `bengaliSentences…` | Isolation (`initials` only hi and bn; মো. and এ.কে. hold only in bn) | ok |
+| bn | The language is called Bengali in English and tiếng Bengal in Vietnamese, where Android and Java say Bangla; other locales take the phone's name | `BengaliSupport.kt` `nameIn` | BengaliSupportTest `the language is called Bengali…` | Isolation `only Filipino and Bengali have names of their own…`, BengaliSupportTest (Russian is the phone's name) | ok |
 | zh, ko | Chinese ends at 。！？ but not at a Latin period; Korean at spaced periods but not at 3.14 | `ChineseSupport.kt:17`, `KoreanSupport.kt:21`, `Sentence.kt:22` | SentenceTest `chineseSentence…`, `koreanSentence…` | the same tests (quoted speech holds its terminator) | ok |
 | ja | Respellings: 1人 → 一人, 々, ッ, dots and spaces, radical look-alikes | `lang/JapaneseSupport.kt:126`; `api/LookupVariants.kt:12` | JapaneseTest, LookupVariantsTest, I: LookupPipelineTest | Isolation (no other language respells) | ok |
 | ja | Romaji to kana when the setting is on (Mozc table) | `lang/JapaneseSupport.kt:77`, `MozcRomaji.kt` | JapaneseTest, LookupVariantsTest | Isolation (`fromLatin`, `convertsLatin` only ja) | ok |
@@ -94,7 +97,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | en | Untyped phrasal verbs ("picked up" → "pick up") for dictionaries without parts of speech | `glue:98`, `:125` | glue `english phrasal verbs…`, I: LanguageLookupTest | glue ("closed to" gets none; de, fr, es never) | ok |
 | id, ms | Combining marks dropped (Yomitan's Indonesian `removeAlphabeticDiacritics`); Malay, which has no Yomitan descriptor, is built from Indonesian's under its own code | `id.js`, `ms.js` bundles; `scripts/yomitan-language/build.mjs:30` | glue `malay takes the indonesian text processors…` | glue (en keeps "bacá") | ok |
 | tl | Affixes (mag-, ipag-, -in), the linker -ng and hyphens undone (Yomitan's `tagalogTransforms`, no infixes); combining marks dropped | `tl.js` bundle | glue `tagalog affixes and the linker ng…` | glue (id keeps "kainin") | ok |
-| tl | Shown as "Filipino (Tagalog)" (Android names fil Filipino, Yomitan and Wiktionary say Tagalog); the voice is asked for fil; the code fil (text classifier, other packagers) reads as tl | `FilipinoSupport.kt` `nameIn`, `speechTag`; `Language.kt` `languageName`, `Language.of` | FilipinoSupportTest | Isolation `only Filipino and the Serbo-Croatian entries have their own names…` | ok |
+| tl | Shown as "Filipino (Tagalog)" (Android names fil Filipino, Yomitan and Wiktionary say Tagalog); the voice is asked for fil; the code fil (text classifier, other packagers) reads as tl | `FilipinoSupport.kt` `nameIn`, `speechTag`; `Language.kt` `languageName`, `Language.of` | FilipinoSupportTest | Isolation `only Filipino and Bengali have names of their own…` | ok |
 | ru | Stress marks dropped, ё ↔ е (Yomitan's Russian processors) | `ru.js` bundle | glue `russian stress marks…`, I: LanguageLookupTest | glue (en, de, pl, lv, nl, cs do neither; id, ms and tl drop the marks as well, through their diacritics processors) | ok |
 | el | At import, every headword with definitions is also keyed without its tonos (U+0301 on α ε η ι ο υ ω) in the form-of table, a step with no tags back to itself; form rows are keyed the same way and keep their accented lemma; the table is written for dictionaries without form rows too. So text without tonos and capitals (ΣΚΥΛΟΣ, lowercased σκυλος) find σκύλος, and text with tonos finds only that spelling (πότε, not ποτέ) | `GreekSupport.kt` `headwordMarks` (`everyHeadword`), `cpp/language/archive_split.cpp` `split_bank`, `cpp/jni_bridge.cpp` | I: LanguageLookupTest `greekWithoutTonosFindsHeadwords…`, `greekDictionaryWithoutForms…` | Isolation (`everyHeadword` only el and hi); ru, uk, be, hr, sr still key forms only (`stressMarksOfFormsAndTheirLemmasAreDroppedAtImport`) | ok |
 | hi | At import, every headword with definitions is also keyed without nukta (U+093C after क–ह, in NFC as headwords write it), with anusvara for candrabindu (`HeadwordMarks.replacements`), and with both, as a step with no tags back to itself; form rows are keyed the same way and keep their lemma. So पढता and लडकियां find पढ़ना and लड़की, हूं finds हूँ, and a word with nukta finds only that spelling (ख़ाना, not खाना; खाना finds both) | `HindiSupport.kt` `headwordMarks`, `cpp/language/archive_split.cpp` `MarkStripper::keys`, `HoshidictsEngine.kt` (`replacements` in the marks JSON) | I: LanguageLookupTest `hindiWithoutNuktaOrWithAnusvara…` | Isolation `only Greek and Hindi key every headword…` (`replacements` only hi) | ok |
@@ -105,6 +108,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | be | Ukrainian's stress mark and apostrophe processors added to Belarusian's descriptor, which has capitalization only (сям’я → сям'я, ва́да → вада); the build fails if Yomitan gives Belarusian more processors | `be.js` bundle, `scripts/yomitan-language/build.mjs` `addedPreprocessors` | glue `belarusian takes the ukrainian…`, I: LanguageLookupTest `belarusian…` | glue (ru gets no other apostrophe) | ok |
 | all but ja | Yomitan's console messages (a text processor's variants cut at 4096) are dropped: QuickJS has no console, and the messages carry the looked-up text | `scripts/yomitan-language/console-stub.js` | glue `a text with more variants than yomitan keeps…`, I: LanguageLookupTest `serboCroatian…` | — | fixed |
 | hi | Text composed as headwords are (NFC: क़ U+0958 → क + nukta; Bengali ে + া → ো) and candrabindu read as anusvara (हैँ → हैं): the app's own text processors, added to Hindi's descriptor, which has none | `hi.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `hindi text is composed…`, I: LanguageLookupTest (U+0959 finds ख़ाना) | glue (en, ru, de, pl do neither; el, id and vi compose the text through their accent processors) | ok |
+| bn | Hindi's descriptor under bn, with the text composed as headwords are (NFC: ে + া → ো; য় U+09DF → য + nukta, as NFC writes it) | `bn.js` bundle, `build.mjs` `borrowed`, `addedPreprocessors` | glue `bengali noun endings…` (ো typed apart, য় as one character), I: LanguageLookupTest `bengaliEndings…` | glue `bengali endings and untyped matches stay out of hindi` | ok |
+| bn | Noun endings (classifiers টি টা খানা গুলো গুলি, plurals রা দের, cases র কে তে এ and their combinations) undone once, after at least two letters; the results match entries without a part of speech, which Wiktionary's Bengali entries never name | `scripts/yomitan-language/own-transforms.js`, `build.mjs` `addedTransforms`, `glue.js` `untypedRules`, `cpp/language/candidate_lookup.cpp` `fits` | glue `bengali noun endings…`, I: LanguageLookupTest `bengaliEndings…` | glue (one ending only: ছেলেদেরকে does not reach ছেলে; ভয় is not cut to ভ; hi has neither) | ok |
+| all (wty) | At import, a form row written with template leftovers is keyed by its words: a romanization or note after whitespace and `(` or `,` is cut off, two spellings split at a whitespace-led `/` are keyed both, whitespace before a combining mark is dropped (মুখ ে → মুখে), and a row of an unfilled template (`{{{3}}}ে`) is not keyed | `cpp/language/archive_split.cpp` `form_headwords` | I: LanguageLookupTest `bengaliEndings…` (করেন, করিস, করো) | every other LanguageLookupTest (well-formed rows keep their keys) | fixed |
 | vi | Tone marks in the old and the new placement (hoà ↔ hòa) | `vi.js` bundle | glue `vietnamese tone marks…` | glue (fr, es, pt, it do not) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 
@@ -131,7 +137,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
-| each OCR script | ML Kit model by script, Japanese and Chinese apart, Devanagari bundled; Armenian, Bengali, Cyrillic, Georgian and Greek have none | `ocr/mlkit/MlKitOcrEngine.kt` `model`, `options` | MlKitOcrEngineTest (Hindi is read) | MlKitOcrEngineTest (only the languages of scripts without a model are not read) | ok |
+| each OCR script | ML Kit model by script, Japanese and Chinese apart, Devanagari bundled and used for Bengali too; Armenian, Cyrillic, Georgian and Greek have none | `ocr/mlkit/MlKitOcrEngine.kt` `model`, `options` | MlKitOcrEngineTest (Hindi and Bengali are read) | MlKitOcrEngineTest (only the languages of scripts without a model are not read) | ok |
 | each language | OCR words are joined by the language's separator (empty for ja, zh) | `ocr/mlkit/MlKitOcrEngine.kt:87`, `ocr/tesseract/TesseractOcrEngine.kt:187` | TesseractPageTest, TextLayoutTest | — | ok |
 | spaced, ko | App text puts the language's separator between lines a space or line break wraps | `overlay/capture/AccessibilityText.kt:139`, `overlay/OverlayController.kt:1092` | AccessibilityTextTest `a line wrapped at a space…` | AccessibilityTextTest (Japanese joins without one; a wrap inside a word joins) | fixed |
 | all | App text keeps a combining mark typed apart (empty box in a text view) with its letter, in the letter's box | `overlay/capture/AccessibilityText.kt:158` | AccessibilityTextTest `a combining mark without a box stays with its letter` | AccessibilityTextTest (a mark after a character without a box, or at the start, is dropped) | fixed |
@@ -220,7 +226,25 @@ Fixed afterwards from the limits below (2026-10-19, the owner asked which are wo
     takes the fewest parts, then the longest shortest part (stads + bestuurder).
 26. `{phonetic-transcriptions}` left out the transcriptions' tags, which Yomitan puts in italics before each one.
 
+Found while adding Bengali:
+
+27. Wiktionary exports write some form rows with leftovers of their templates, keyed under the whole text and so
+    never found: in wty bn-en 5,972 of 53,646 form rows have a romanization after the form ("মাসটি (maśṭa
+    (colloquial), maśṭi (formal))", "কলকাতাকে  / kolkatake"), 337 an ending set apart (মুখ ে; 90 such rows in
+    hi-en), 78 an unfilled template ({{{3}}}ে); hy-en has 1,883 of 942,487 with a romanization or two spellings
+    (ծագմանը / ծագմանն), ka-en 11, and 73 unfilled templates. They are now keyed by their words.
+
 ## Limits left as they are
+
+- Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
+  rows. The endings are tried on every word that ends like one (সাগর also queries সাগ); such a word shows only if a
+  dictionary has it, after the full word.
+- An ending also reaches the form rows under the word it leaves: বইটির shows বই first, then বু (of which বই is a
+  spelling) and the verb বওয়া (of which বই is the first person present), as no part of speech rules them out.
+- An ending set apart as য় (কলকাতা য়, 89 rows in wty bn-en) is not joined, since য় is a letter, not a mark; the -য়
+  ending finds কলকাতা anyway, without the form's tag (locative).
+- wty bn-pl writes romanizations as forms ("biṣ / bish" → বিষ); they are keyed as written, Latin text that Bengali
+  text never matches.
 
 - `Compounds.word` stops at a combining mark in NFD text; OCR and app text give NFC, so a German compound typed in
   NFD is not split. Not worth the mapping it would need.
@@ -289,4 +313,4 @@ Furigana markers outside Japanese (the plan's decision row "Furigana markers"):
 ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with English quotes), ANK13 (sentence furigana in a
 language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text), LK30
 (a word hyphenated at a line end), ANK12 extended (Plan B., ok., English quotes in German), POP24 (the Turkish chip
-initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi).
+initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali).
