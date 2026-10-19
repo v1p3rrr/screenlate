@@ -1672,6 +1672,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-bn",
+      "title": "wordfreq (bn)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq bn"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "bn",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_bn.msgpack.gz",
+      "downloadSize": 1555615,
+      "sha256": "d10ed5ca1e61a6bf210324424ee25c53ff71175398833067d810ccc6c826d581",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -2691,6 +2710,40 @@
       "engine": "tesseract",
       "file": "tessdata/hin.traineddata",
       "version": "bd2e65a2184a",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-ben",
+      "title": "Tesseract fast (ben)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bn",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ben.traineddata",
+      "downloadSize": 855841,
+      "sha256": "31163084c279aaebd376216f0c3d5c17ad4b5fee8db49dae79c20000b5de5964",
+      "model": "tesseract-fast-ben",
+      "engine": "tesseract",
+      "file": "tessdata/ben.traineddata",
+      "version": "31163084c279",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-ben",
+      "title": "Tesseract best (ben)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "bn",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/ben.traineddata",
+      "downloadSize": 11045427,
+      "sha256": "1cd0129288d1f74f6661c35e638e487bd146a66bb732ecd9e011e48dcb0df623",
+      "model": "tesseract-best-ben",
+      "engine": "tesseract",
+      "file": "tessdata/ben.traineddata",
+      "version": "1cd0129288d1",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -11775,6 +11828,84 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/hi/wty-hi-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 658555,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bn-en",
+      "title": "Wiktionary (bn–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bn-en",
+        "kty-bn-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bn",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bn/en/wty-bn-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1670553,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bn-ru",
+      "title": "Wiktionary (bn–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bn-ru",
+        "kty-bn-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bn",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bn/ru/wty-bn-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 112486,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bn-it",
+      "title": "Wiktionary (bn–it)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-bn-it",
+        "kty-bn-it"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "bn",
+      "targetLanguage": "it",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-it-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/bn/it/wty-bn-it.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 102140,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-bn-transcription",
+      "title": "Wiktionary transcription (bn)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-bn-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "bn",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-bn-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/bn/wty-bn-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 204366,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

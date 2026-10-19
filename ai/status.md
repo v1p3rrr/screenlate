@@ -80,6 +80,21 @@ own too. Their branches are merged into `languages/main` by this session when th
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go.
 
+Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
+Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
+test-model cases run on the emulator) and merged into `languages/main` before the next starts: 4b (Bengali, Georgian,
+Armenian), 4c (Thai, Khmer), 4d (Arabic, Persian, Hebrew), 4e (Kazakh, Kyrgyz, after its research). The research
+sessions of 5a-5e finish their plans without the answers. Open questions go into each plan file under "Questions for
+the owner (overnight)", marked deferred (the part waits) or decided provisionally (with what was implemented), to be
+asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
+root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
+
+Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
+Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
+passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
+entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
+rebuilt. Both are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian.
+
 Group 4d (Arabic, Persian, Hebrew) is researched (`notes/languages.md`, "Group 4d research") and its questions 69-86
 answered (`plans/2026-10-19-group-4d.md`): Urdu later, on its own (block 5f); right-to-left interface languages in
 the backlog; the popup keeps its layout with right-to-left text in place; a `dir="rtl"` span around the markers of
@@ -89,13 +104,7 @@ scan length 24. Persian has no on-device model until the Paddle upload (Tesserac
 found on the way, among them two audio bugs for every language (a Commons error answer cached as no recording, a
 redirect's target dropped) and the glue's transform key, which leaves Georgian without deinflection. To measure on
 the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's Hebrew voice, the ar-en import. The
-build waits for the owner's go.
-
-Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered, question 10 (Bengali's
-recommended model) waits for an ML Kit measurement on the Bengali branch. Hindi is done on `languages/hi` and
-fast-forwarded into `languages/main`: LK42 passed on the emulator after one fix (the ML Kit description names
-Devanagari). Next on chained branches: Bengali, Georgian, Armenian. Group 4c (th, lo, km) is researched in its own
-session.
+build is third in the overnight queue, after group 4c.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

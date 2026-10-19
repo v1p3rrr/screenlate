@@ -160,6 +160,20 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   replacement, without its marks (nukta after क–ह) and with both, each distinct and unlike the headword, so a
   candrabindu headword is keyed under anusvara too. Wiktionary's Hindi headwords are NFC: nukta letters decomposed
   (क + ़; U+0958–U+095F are composition exclusions), and the bundle composes the text the same way.
+- Form rows with template leftovers (2026-10-19, Bengali): wty writes some form headwords with what its templates
+  left, and `split_bank` keyed them under the whole text, which no lookup ever gives. `form_headwords` cleans them:
+  a romanization or note after whitespace and `(` or `,` is cut off ("মাসটি (maśṭa (colloquial), maśṭi (formal))",
+  "বইগুলো , boigulo"), two spellings split at whitespace and `/` are keyed both ("ծագմանը / ծագմանն"; in bn the second
+  is a romanization, "কলকাতাকে  / kolkatake", keyed but never matched), whitespace before a combining mark goes (the
+  ending set apart, মুখ ে), and a row with `{{{` (an unfilled template parameter, `{{{3}}}ে`) keys nothing. Counts in
+  wty *-en: bn 5,972 + 337 + 78 of 53,646 form rows; hi 90 marks apart of 275,411; hy 1,883 of 942,487; ka 11 and 73
+  of 503,440. An ending set apart as য় (কলকাতা য়, 89 rows in bn) stays, as য় is a letter; Bengali's own -য় ending
+  finds the word anyway. Lemmas are left as they are (none of the samples had leftovers there).
+- Entries without a part of speech (2026-10-19, Bengali): wty's Bengali entries have blank `rules`, so a deinflected
+  candidate (conditions ≠ 0) never fitted them. `fits` in `candidate_lookup.cpp` already lets an untyped candidate
+  match a blank-rule entry (English phrasal verbs); `glue.js` `untypedRules` marks every deinflected candidate of the
+  listed languages (bn) untyped. Hindi needs nothing: Yomitan has no Hindi rules, so its candidates have no
+  conditions. Georgian and Tagalog have Yomitan rules and blank-rule wty entries too, to be checked on their branches.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

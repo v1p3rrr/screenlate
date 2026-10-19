@@ -67,7 +67,8 @@ struct ArchiveSplit {
 // unmarked: Wiktionary's Russian forms name почти́ть for почтить). With [HeadwordMarks::every_headword], a headword
 // with definitions is also found without them, as a form of itself with no tags, and lemmas stay as written; the
 // table is then returned even when the archive needs no rewriting ([ArchiveSplit::written] false). The
-// [HeadwordMarks::replacements] give such a form or headword further spellings the same way.
+// [HeadwordMarks::replacements] give such a form or headword further spellings the same way. A form written with a
+// romanization or note after it, or with two spellings, is keyed by its words; one of an unfilled template by none.
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
                            const std::map<std::string, HeadwordMarks>& marks);
 

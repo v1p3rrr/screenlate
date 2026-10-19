@@ -60,6 +60,16 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `bengali has a sans-serif and a serif, offered for bengali only`() {
+        val bengali = fonts.filter { it.language == Language.BENGALI.code }
+        assertThat(bengali.map { it.family }).containsExactly("Hind Siliguri", "Tiro Bangla")
+        for (font in bengali) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.BENGALI)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.BENGALI) }).containsExactlyElementsIn(bengali)
+    }
+
+    @Test
     fun `latin fonts are offered for every language whose letters they have`() {
         val latin = Language.entries.filter { it.support.fontSubsets == setOf("latin") }
         assertThat(latin).containsAtLeast(Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN)

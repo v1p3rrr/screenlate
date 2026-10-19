@@ -89,7 +89,7 @@ questions: `plans/2026-10-09-more-languages.md`.
   1.7, bn→en 1.7, ky→en 0.6; into Russian kk 0.8, ky 0.3, ms and bn 0.1 (for scale: id→en 3.9, hi→en 5.6, de→en
   16.3). They work like group 3: form-of rows plus the longest matching start of the word (Kazakh and Kyrgyz like
   Turkish). Paddle's `cyrillic` recognizer has every Kazakh and Kyrgyz letter (ә ғ қ ң ө ұ ү һ і), `eslav` does not;
-  Bengali has no ML Kit or Paddle model (Tesseract `ben`, cloud).
+  Bengali has no Paddle model; ML Kit's Devanagari recognizer turned out to read it (group 4b, 2026-10-19).
 - The rest, by speakers: arz T (Egyptian Arabic, spoken variety; Wiktionary's own language, same script), yue, fa,
   kn, ro, km, hu, sv, he, bg, sq T, lo, da, fi, no, mn, et, cy, eu T, yi T, mt, aii, ga T, br, gd, haw, gv, kw;
   constructed eo T, tok; historical la T, grc T, sga T.
@@ -1030,8 +1030,8 @@ Cells: archive MB, words.
 
 - ML Kit: the Devanagari recognizer (documented: Hindi, Marathi, Nepali, Sanskrit experimental) is a separate AAR,
   2.02 MB; its shared assets are byte for byte those already in the APK, so the APK grows by about 0.6 MB (Deva_ctc
-  and Beng_ctc models, about 31 + 283 KB compressed each). It holds a Bengali model too, undocumented: to be measured
-  on Bengali screens. Nothing for Georgian or Armenian.
+  and Beng_ctc models, about 31 + 283 KB compressed each). It holds a Bengali model too, undocumented; measured on
+  the Bengali screens it reads them well (below, "Bengali on the emulator"). Nothing for Georgian or Armenian.
 - Paddle: `devanagari_PP-OCRv5_mobile_rec` (568 characters: danda ।, double danda ॥, nukta, candrabindu, Devanagari
   digits, “” ‘’ «»; no Bengali letters, no ZWJ/ZWNJ), converted to MNN for the comparison (7.9 MB,
   `testdata/ocr/compare/models/`); not uploaded. Paddle has no Bengali, Georgian or Armenian recognizer (its `ka` is
@@ -1147,6 +1147,21 @@ Cells: archive MB, words.
   keeps the nukta.
 - A tap on a vowel sign (किताब at ता) looks the word up from its start, as the shared word rule intends.
 - The serif system face loads by its PostScript and full names, not by the family name (`webview-fonts.md`).
+
+### Bengali (2026-10-19)
+
+- ML Kit: the Devanagari recognizer reads Bengali, CER 0.5% on the clean screens and 4.2% on the hard ones, against
+  Tesseract ben fast 6.3% / 52.0% and best 0.5% / 43.3% (`ocr-engines.md`). Bengali reads with it, built in; the
+  question of Tesseract's recommended model fell away.
+- Wiktionary's Bengali entries have no part of speech, so Yomitan-style conditions never fit them. The app's own noun
+  endings (`own-transforms.js`, 28 endings, longest first) are undone once, after at least two letters, and their
+  results match entries without a part of speech (`glue.js` `untypedRules`). বইটির → বই, মায়ের → মা, ঘরে → ঘর;
+  ছেলেদেরকে stops at ছেলেদের.
+- The malformed form rows (romanizations after the form, endings apart, unfilled templates) are cleaned at import for
+  every language (`form_headwords`, `dictionary-engine.md`). The 89 rows with য় apart stay; the -য় ending covers them.
+- wordfreq `large_bn` is NFC (27,561 words write য় as য + nukta, none U+09DF), as the headwords are.
+- The bn bundle takes Hindi's descriptor (exampleText replaced) with `composeCharacters` only: candrabindu and
+  anusvara are not interchangeable in Bengali spelling.
 
 ### Questions for the owner
 

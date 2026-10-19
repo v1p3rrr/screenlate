@@ -40,7 +40,8 @@ import kotlinx.coroutines.withContext
 /**
  * On-device OCR with ML Kit. The Latin, Japanese, Chinese, Korean and Devanagari models are bundled (the Latin one adds
  * little: the Japanese model carries its recognizer). Latin-script languages use the Latin model, which reads them as
- * well as the Japanese one in less than half the time. Fast but weaker on vertical text and manga.
+ * well as the Japanese one in less than half the time; Bengali uses the Devanagari one, which reads both scripts. Fast
+ * but weaker on vertical text and manga.
  */
 @Singleton
 class MlKitOcrEngine @Inject constructor() : OcrEngine {
@@ -57,8 +58,8 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         OcrScript.JAPANESE -> OcrScript.JAPANESE
         OcrScript.CHINESE -> OcrScript.CHINESE
         OcrScript.KOREAN -> OcrScript.KOREAN
-        OcrScript.DEVANAGARI -> OcrScript.DEVANAGARI
-        OcrScript.ARMENIAN, OcrScript.BENGALI, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK -> null
+        OcrScript.DEVANAGARI, OcrScript.BENGALI -> OcrScript.DEVANAGARI
+        OcrScript.ARMENIAN, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK -> null
     }
 
     /** One recognizer per bundled model; scripts with a model of their own do not share (Japanese misreads Chinese). */

@@ -119,11 +119,16 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         val example = "π.χ. το"
         assertThat(spaced.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
-        // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods.
+        // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods; Bengali the same way.
         assertThat(spaced.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI)
         val acronym = "ए.पी.जे. कलाम"
         assertThat(spaced.where { !it.endsSentence(acronym, acronym.indexOf(". ")) }).containsExactly(Language.HINDI)
-        assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language }).containsExactly(Language.HINDI)
+        assertThat(spaced.where { holds(it, "মো. রহিম") }).containsExactly(Language.BENGALI)
+        val bengaliAcronym = "এ.কে. ফজলুল"
+        assertThat(spaced.where { !it.endsSentence(bengaliAcronym, bengaliAcronym.indexOf(". ")) })
+            .containsExactly(Language.BENGALI)
+        assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
+            .containsExactly(Language.HINDI, Language.BENGALI)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
     }
@@ -135,9 +140,12 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Hindi ends a sentence at the danda`() {
-        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) }).containsExactly(Language.HINDI)
-        assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactly(Language.HINDI)
+    fun `only Hindi and Bengali end a sentence at the danda`() {
+        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) })
+            .containsExactly(Language.HINDI, Language.BENGALI)
+        assertThat(all.where { it.endsSentence("সে এল। তারপর", "সে এল".length) })
+            .containsExactly(Language.HINDI, Language.BENGALI)
+        assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactly(Language.HINDI, Language.BENGALI)
     }
 
     @Test
@@ -179,11 +187,12 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Filipino has its own name and another voice tag`() {
+    fun `only Filipino and Bengali have names of their own, only Filipino another voice tag`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
-        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO)
+        // Java says Bangla; Wiktionary and the translators say Bengali.
+        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.BENGALI)
         assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
     }
 
