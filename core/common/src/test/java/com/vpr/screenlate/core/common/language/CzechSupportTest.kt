@@ -18,6 +18,9 @@ class CzechSupportTest {
         assertThat(ends("Řekl to nám. Pak")).isTrue()
         assertThat(ends("Stalo se to v roce 1990. Pak")).isTrue()
         assertThat(ends("Plán N. Potom")).isTrue()
+        // A Roman ordinal before a lowercase word; before a capital it may end the sentence.
+        assertThat(ends("Karel IV. byl král")).isFalse()
+        assertThat(ends("Vládl Karel IV. Potom")).isTrue()
     }
 
     @Test
@@ -25,8 +28,11 @@ class CzechSupportTest {
         val read = "300 př. n. I. a rostlo"
         assertThat(ends(read, at = read.indexOf("I.") + 1)).isFalse()
         assertThat(ends("Plán I. Potom")).isTrue()
-        // German pairs no l, so a capital I stays a letter of its own there.
-        assertThat(GermanSupport.endsSentence(read, read.indexOf("I.") + 1)).isTrue()
+        // German pairs no l, so a capital I stays a letter of its own there (before a lowercase word it is a Roman
+        // ordinal).
+        val capital = "300 př. n. I. Potom"
+        assertThat(ends(capital, at = capital.indexOf("I.") + 1)).isFalse()
+        assertThat(GermanSupport.endsSentence(capital, capital.indexOf("I.") + 1)).isTrue()
     }
 
     @Test

@@ -46,6 +46,37 @@ class CompoundsTest {
     }
 
     @Test
+    fun `the split with the fewest parts wins, then the one whose shortest part is longest`() {
+        fun dutch(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, DutchSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(dutch("stadsbestuurder", "stad", "stads", "stadsbestuur", "bestuur", "bestuurder", "der"))
+            .containsExactly("stads", "bestuurder").inOrder()
+        // Two parts before three, even with short ones: the longest first word stays when nothing beats it.
+        assertThat(split("Haustürschlüssel", "haus", "haustür", "tür", "schlüssel", "türschlüssel"))
+            .containsExactly("Haustür", "schlüssel").inOrder()
+        assertThat(split("Haustürschlüsselbund", "haus", "tür", "schlüssel", "schlüsselbund", "bund"))
+            .containsExactly("Haus", "tür", "schlüsselbund").inOrder()
+        // Equal shortest parts: the longer first word.
+        assertThat(split("Wachstube", "wach", "wachs", "stube", "tube")).containsExactly("Wachs", "tube").inOrder()
+    }
+
+    @Test
+    fun `the search keeps within its lookups`() = runBlocking {
+        val words = setOf("abc", "abcdef", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx")
+        val word = "abcdefghijklmnopqrstuvwx"
+        var calls = 0
+        val parts = Compounds.split(word, emptyList()) { text ->
+            calls++
+            prefixes(words, text)
+        }
+        assertThat(parts?.map { word.substring(it.first, it.last + 1) })
+            .containsExactly("abcdef", "ghi", "jkl", "mno", "pqr", "stu", "vwx").inOrder()
+        assertThat(calls).isAtMost(Compounds.MAX_LOOKUPS)
+    }
+
+    @Test
     fun `a shorter first word is tried when the longer one leaves a rest without words`() {
         assertThat(split("Wasserflasche", "wasser", "wasserf", "flasche")).containsExactly("Wasser", "flasche").inOrder()
     }

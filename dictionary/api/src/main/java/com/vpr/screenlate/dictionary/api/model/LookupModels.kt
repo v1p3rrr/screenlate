@@ -84,6 +84,8 @@ data class FrequencyValue(
 /**
  * @property transcriptionRegions for each of [transcriptions], the regions its tags name (ISO 3166-1 codes in lower
  * case, `us`), possibly none; empty when none of them names any.
+ * @property transcriptionTags for each of [transcriptions], the dictionary's tags as written (`UK`, an accent name, a
+ * flag), which Yomitan's Anki marker shows before it; empty when none of them has any.
  */
 @Serializable
 data class PitchGroup(
@@ -91,6 +93,7 @@ data class PitchGroup(
     val pitches: List<PitchAccent> = emptyList(),
     val transcriptions: List<String> = emptyList(),
     val transcriptionRegions: List<List<String>> = emptyList(),
+    val transcriptionTags: List<List<String>> = emptyList(),
 )
 
 /**

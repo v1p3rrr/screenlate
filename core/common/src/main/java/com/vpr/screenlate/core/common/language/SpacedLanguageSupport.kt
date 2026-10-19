@@ -57,8 +57,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * Whether a period after a number makes it an ordinal, so it does not end the sentence: a number of one or two
-     * digits (German "am 3. Oktober"), or a longer one followed by a lowercase word (Latvian "1918. gada"). A year at
-     * the end of a sentence still ends it.
+     * digits (German "am 3. Oktober"), or a longer one or a Roman numeral followed by a lowercase word (Latvian
+     * "1918. gada", Czech "Karel IV. byl"). A year or a Roman numeral at the end of a sentence still ends it.
      */
     open val ordinalPeriod: Boolean = false
 
@@ -207,8 +207,13 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     /** Whether the period at [index] closes an ordinal number (see [ordinalPeriod]). */
     private fun isOrdinal(text: String, index: Int): Boolean {
         val digits = digitsBefore(text, index)
-        if (digits == 0) return false
+        if (digits == 0) return ROMAN_NUMERAL.matches(wordBefore(text, index)) && lowercaseWordAfter(text, index)
         if (digits <= 2) return true
+        return lowercaseWordAfter(text, index)
+    }
+
+    /** Whether a lowercase letter follows [index] after spaces on the same line. */
+    private fun lowercaseWordAfter(text: String, index: Int): Boolean {
         var next = index + 1
         while (next < text.length && text[next] != '\n' && text[next].isWhitespace()) next++
         return next < text.length && text[next].isLowerCase()
@@ -244,6 +249,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         Character.isLetterOrDigit(codePoint) || Character.getType(codePoint) == Character.NON_SPACING_MARK.toInt()
 
     private companion object {
+        /** A Roman numeral in capitals, I to MMMCMXCIX (IV, XIV). */
+        val ROMAN_NUMERAL = Regex("(?=[MDCLXVI])M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
+
         /** Characters inside one word: don't, rock'n'roll, well-known. */
         const val WORD_CONNECTORS = "'’-"
         const val APOSTROPHES = "'’"

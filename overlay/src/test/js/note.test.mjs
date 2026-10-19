@@ -206,6 +206,16 @@ test('phonetic transcriptions list each one the dictionaries give, and pitch mar
     const { values } = NoteData.build(tomato, {});
     const item = ipa => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${ipa}</li>`;
     assert.equal(values['phonetic-transcriptions'], `<ul>${item('/təˈmɑːtəʊ/')}${item('/təˈmeɪtoʊ/')}${item('/a&lt;b/')}</ul>`);
+    // Tags go before their transcription in italics, as Yomitan writes them.
+    const tagged = structuredClone(tomato);
+    tagged.term.pitches[0].transcriptionTags = [['UK', 'Received-Pronunciation'], []];
+    tagged.term.pitches[1].transcriptionTags = [['a"b']];
+    const tag = name => `<span class="tag" data-details="${name}">${name}</span>`;
+    assert.equal(
+        NoteData.build(tagged, {}).values['phonetic-transcriptions'],
+        `<ul>${item(`<i>(${tag('UK')}, ${tag('Received-Pronunciation')})</i> /təˈmɑːtəʊ/`)}${item('/təˈmeɪtoʊ/')}`
+            + `${item(`<i>(${tag('a&quot;b')})</i> /a&lt;b/`)}</ul>`,
+    );
     // An English word has no pitch accents.
     assert.equal(values['pitch-accents'], '');
     assert.equal(values['pitch-accent-positions'], '');

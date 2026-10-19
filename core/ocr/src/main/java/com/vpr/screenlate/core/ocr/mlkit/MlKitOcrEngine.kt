@@ -26,6 +26,7 @@ import com.vpr.screenlate.core.ocr.OcrParagraph
 import com.vpr.screenlate.core.ocr.OcrWord
 import com.vpr.screenlate.core.ocr.SymbolLag
 import com.vpr.screenlate.core.ocr.isVerticalLine
+import com.vpr.screenlate.core.ocr.withLineEndHyphen
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -109,7 +110,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
             )
         }
         if (words.isEmpty()) return null
-        return OcrLine(words, lineBox, vertical)
+        return OcrLine(words.withLineEndHyphen(text, lineBox, vertical), lineBox, vertical)
     }
 
     /** Symbol boxes checked against the pixels, see [SymbolLag]. */
