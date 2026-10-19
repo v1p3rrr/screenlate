@@ -15,12 +15,14 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `app-icon.md` — the icon design, its generator and checks (`scripts/icon/`).
    - `overlay-system-ui.md` — insets, keyboard and fullscreen detection from the overlay, which edge swipes the system takes.
    - `ocr-engines.md` — OCR and app text costs, ML Kit quirks, trusted character boxes, popup renderer priority, OCR threads and the scan screenshot's lifetime.
+   - `ocr-engine-research.md` — outside sources on ML Kit, Tesseract and PaddleOCR: published comparisons, known model defects, licenses, model descriptions for the app.
    - `translations.md` — the 14 locales, escaping and line-break pitfalls, per-language conventions and shared terms.
    - `audio-sources.md` — hosts of the default audio sources, mobile networks that freeze foreign hosting, the owner's audio server.
    - `translation-services.md` — free translators tried for a sentence translation button, their requests and quality ja→ru.
    - `store-publishing.md` — what a Google Play build would have to change, Android developer verification and its paths.
    - `module-map.md` — functional modules, how they integrate, and the instruction for the pending full code review (one run per module, started only on the owner's command).
    - `languages.md` — what is Japanese-only in the app and in hoshidicts, how Yomitan supports other languages, Wiktionary and other dictionaries with licenses and gloss-language coverage, OCR scripts and model sizes, the QuickJS lookup experiment (en, zh, ru, ko).
+   - `language-rules.md` — every language-specific rule (word starts, sentence ends, lookup, engine, page scripts, app text) with its code, positive and negative tests, the bugs fixed and the limits left.
 3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
 4. Testing on a device follows `ai/test-model.md`: cases by area with categories (E every regression, F full regression, O once, N new), coverage, emulator setup, non-functional baselines and the run log. New features add their cases there.
 
