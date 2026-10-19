@@ -1513,6 +1513,15 @@ See `plans/2026-10-19-group-4c.md`.
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
 
+## Group 5c research (2026-10-19)
+
+Finnish, Estonian, Hungarian, Azerbaijani and Uzbek: research, decisions and work in `plans/2026-10-19-group-5c.md`.
+
+## Group 5e research (2026-10-19)
+
+Cantonese, Kannada, Tamil, Telugu and Marathi: research, OCR measurements, decisions and work in
+`plans/2026-10-19-group-5e.md`.
+
 ## Group 4d research (2026-10-19)
 
 Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian

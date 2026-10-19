@@ -118,7 +118,8 @@ scan length 24. Persian has no on-device model until the Paddle upload (Tesserac
 found on the way, among them two audio bugs for every language (a Commons error answer cached as no recording, a
 redirect's target dropped) and the glue's transform key, which leaves Georgian without deinflection. To measure on
 the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's Hebrew voice, the ar-en import. The
-build follows group 4c in the overnight queue.
+implementation plan is in the plan's "Work" (Arabic with the shared pieces, then Persian, then Hebrew); the build
+follows group 4c in the overnight queue.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
