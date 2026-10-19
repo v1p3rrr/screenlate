@@ -103,6 +103,7 @@
     <string name="dictionaries_task_queued">待機中：%1$s</string>
     <string name="dictionaries_task_downloading">%1$s をダウンロード中</string>
     <string name="dictionaries_task_retrying">ダウンロードを再試行中（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_task_no_network">ネットワーク待ち：%1$s</string>
     <string name="dictionaries_tasks_waiting">待機中（%1$d）：%2$s</string>
     <string name="dictionaries_tasks_waiting_count">待機中（%1$d）</string>
     <string name="dictionaries_tasks_cancel_all">すべてキャンセル</string>
@@ -196,6 +197,7 @@
     <string name="dictionaries_task_converting">%1$s を展開中</string>
     <string name="dictionaries_task_checking_space">%1$s の空き容量を確認中</string>
     <string name="dictionaries_stage_queued">順番待ち</string>
+    <string name="dictionaries_stage_no_network">ネットワーク待ち</string>
     <string name="dictionaries_stage_downloading">ダウンロード中</string>
     <string name="dictionaries_stage_checking_space">空き容量を確認中</string>
     <string name="dictionaries_stage_converting">展開中</string>

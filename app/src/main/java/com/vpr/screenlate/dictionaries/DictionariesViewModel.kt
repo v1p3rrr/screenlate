@@ -97,6 +97,10 @@ internal sealed interface TaskItem {
  * The cards of [tasks], in their order: two or more that wait for their turn share one card in the place of the
  * first. A download waiting for its retry keeps its own card, which tells so.
  */
+/** The queued downloads of [tasks] that wait for a network, as none is up ([online]). */
+internal fun waitingForNetwork(tasks: List<ImportTask>, online: Boolean): Set<UUID> =
+    if (online) emptySet() else tasks.filter { it.state == ImportTask.State.QUEUED && it.needsNetwork }.mapTo(hashSetOf()) { it.id }
+
 internal fun taskItems(tasks: List<ImportTask>): List<TaskItem> {
     val waiting = tasks.filter { it.state == ImportTask.State.QUEUED && it.retries == 0 }
     if (waiting.size < 2) return tasks.map(TaskItem::One)
@@ -142,6 +146,8 @@ data class DictionariesState(
     val tasks: List<ImportTask> = emptyList(),
     /** What the [tasks] are called on their cards, by task id ([ImportTask.shownName]). */
     val taskNames: Map<UUID, String> = emptyMap(),
+    /** The [tasks] that wait for a network ([waitingForNetwork]). */
+    val waitingForNetwork: Set<UUID> = emptySet(),
     val catalog: List<CatalogGroup> = emptyList(),
     /** The frequency dictionary that sorts the [shown] language's results. */
     val sortDictionaryId: Long? = null,
@@ -162,8 +168,11 @@ data class DictionariesState(
     val languages: List<Language> get() = profiles.turnedOn
 }
 
-/** A newer version of an installed recognition model; [entry] downloads it, the installed one works until then. */
-data class ModelUpdate(val entry: CatalogEntry, val installedVersion: String)
+/**
+ * A newer version of an installed recognition model; [entry] downloads it, the installed one works until then.
+ * [languages] are the codes of the languages that read with it, as several titles ("Tesseract, fast") name no language.
+ */
+data class ModelUpdate(val entry: CatalogEntry, val installedVersion: String, val languages: List<String> = listOf(entry.sourceLanguage))
 
 /** Result of the last update check; [updates] is null while checking, [models] are the recognition models'. */
 data class UpdateCheck(val updates: List<DictionaryUpdate>?, val models: List<ModelUpdate> = emptyList())
@@ -181,8 +190,9 @@ internal fun UpdateCheck?.without(started: List<DictionaryUpdate>, startedModels
 /** Installed models whose catalog entry names another version; a model of several entries takes the first one. */
 internal fun modelUpdates(entries: List<CatalogEntry>, installed: List<InstalledOcrModel>): List<ModelUpdate> =
     installed.mapNotNull { model ->
-        val entry = entries.firstOrNull { it.isModel && it.model == model.id } ?: return@mapNotNull null
-        ModelUpdate(entry, model.version).takeIf { entry.version != model.version }
+        val its = entries.filter { it.isModel && it.model == model.id }
+        val entry = its.firstOrNull() ?: return@mapNotNull null
+        ModelUpdate(entry, model.version, its.map { it.sourceLanguage }.distinct()).takeIf { entry.version != model.version }
     }
 
 @HiltViewModel
@@ -208,7 +218,7 @@ class DictionariesViewModel @Inject constructor(
 
     val state: StateFlow<DictionariesState> = combine(
         repository.dictionaries,
-        imports.tasks,
+        combine(imports.tasks, imports.online, ::Pair),
         catalog.entries(),
         combine(sortDictionaryIds(), profiles.state, shownLanguage.language, ::Triple),
         // Reading the styles loads the engine and checking files takes a moment; the list does not wait for them.
@@ -220,7 +230,7 @@ class DictionariesViewModel @Inject constructor(
                 )
             }
             .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
-    ) { dictionaries, tasks, entries, (sortIds, profileState, shown), checks ->
+    ) { dictionaries, (tasks, online), entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
         val shownDictionaries = dictionaries.filter { it.isFor(shown) }
         DictionariesState(
@@ -232,6 +242,7 @@ class DictionariesViewModel @Inject constructor(
             shown = shown,
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
+            waitingForNetwork = waitingForNetwork(tasks, online),
             catalog = groupCatalog(items.filter { it.entry.sourceLanguage == shown.code }, shown),
             sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->

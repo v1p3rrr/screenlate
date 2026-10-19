@@ -103,6 +103,7 @@
     <string name="dictionaries_task_queued">等待中：%1$s</string>
     <string name="dictionaries_task_downloading">正在下载 %1$s</string>
     <string name="dictionaries_task_retrying">正在重试下载（%2$d/%3$d）：%1$s</string>
+    <string name="dictionaries_task_no_network">等待网络：%1$s</string>
     <string name="dictionaries_tasks_waiting">等待中（%1$d）：%2$s</string>
     <string name="dictionaries_tasks_waiting_count">等待中（%1$d）</string>
     <string name="dictionaries_tasks_cancel_all">全部取消</string>
@@ -196,6 +197,7 @@
     <string name="dictionaries_task_converting">正在解压 %1$s</string>
     <string name="dictionaries_task_checking_space">正在检查 %1$s 所需的剩余空间</string>
     <string name="dictionaries_stage_queued">排队等待中</string>
+    <string name="dictionaries_stage_no_network">等待网络</string>
     <string name="dictionaries_stage_downloading">正在下载</string>
     <string name="dictionaries_stage_checking_space">正在检查剩余空间</string>
     <string name="dictionaries_stage_converting">正在解压</string>
