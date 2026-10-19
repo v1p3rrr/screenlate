@@ -131,10 +131,12 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR19 | A scan with a Paddle model active: the draft comes from DEVICE_MODEL (log `OCR draft from DEVICE_MODEL`) and the lookup runs on it (Russian, `ru-page-light.png`) | E | M | 2026-10-18 |
 | OCR20 | The on-device model dialog (Bubble settings, On-device model, a language): download PaddleOCR v6 with its detector (size with it), `detector.properties` unpacked; languages without an explicit choice that recommend it switch to it | F | U OcrModelListTest, M | 2026-10-17, 2026-10-18 (a Tesseract download) |
 | OCR21 | Offline scan with PaddleOCR v6 (Japanese, `ja-page-light.png`, Wi-Fi and data off): the draft and the final page come from the device, Lens fails with OfflineException; words are found | F | M | 2026-10-18 |
-| OCR22 | Turning on a language ML Kit reads (German): the on-device category lists "ML Kit (built in)" first, ticked and locked, with no size; the catalog models are unticked, the recommended one marked "More accurate"; nothing is missing with no model ticked. Ticking PaddleOCR shows the "main" switch on ML Kit and on the model; the model ticked becomes the language's model unless ML Kit stays main. Russian (no ML Kit) still ticks its model (OCR18) | N | U OcrModelsTest, LanguageSetupTest, M | |
-| OCR23 | Deleting a model while a scan uses it (a long Paddle whole-screen pass): the model's directory gets a `.deleted` marker, the scan finishes, then the directory goes; a marked directory left by a killed process goes at the next start | N | U OcrModelStoreTest, M | |
-| OCR24 | Damaged model files (a file of an installed model truncated with adb): after Home's refresh, the card "Recognition models whose files are damaged" lists the model with "Download again" and "Remove"; while it downloads again the card is gone; scans use the next model or ML Kit meanwhile. An engine failure on a model rehashes its files and marks it damaged on a mismatch | N | U OcrModelStoreTest, DeviceOcrTest, DamagedModelsTest, M | |
-| OCR25 | Model updates: with a catalog that names another version of an installed model (local catalog), "Check for updates" on the Dictionaries screen lists the model with its size beside the dictionaries; "Update" or "Update all" downloads it, the installed version works until the new one replaces it | N | U UpdateCheckTest, M | |
+| OCR22 | Turning on a language ML Kit reads (German): the on-device category lists "ML Kit (built in)" first, ticked and locked, with no size; the catalog models are unticked, the recommended one marked "More accurate"; nothing is missing with no model ticked. Ticking PaddleOCR shows the "main" switch on ML Kit and on the model; the model ticked becomes the language's model unless ML Kit stays main. Russian (no ML Kit) still ticks its model (OCR18) | F | U OcrModelsTest, LanguageSetupTest, M | 2026-10-19 (Polish; German was on already) |
+| OCR23 | Deleting a model while a scan uses it (a long Paddle whole-screen pass): the model's directory gets a `.deleted` marker, the scan finishes, then the directory goes; a marked directory left by a killed process goes at the next start | O | U OcrModelStoreTest, M | 2026-10-19 |
+| OCR24 | Damaged model files (a file of an installed model truncated with adb): after Home's refresh, the card "Recognition models whose files are damaged" lists the model with "Download again" and "Remove"; while it downloads again the card is gone; scans use the next model or ML Kit meanwhile. An engine failure on a model rehashes its files and marks it damaged on a mismatch | O | U OcrModelStoreTest, DeviceOcrTest, DamagedModelsTest, M | 2026-10-19 (Tesseract eng truncated) |
+| OCR25 | Model updates: with a catalog that names another version of an installed model (local catalog), "Check for updates" on the Dictionaries screen lists the model with its size beside the dictionaries; "Update" or "Update all" downloads it, the installed version works until the new one replaces it | F | U UpdateCheckTest, M | 2026-10-19 |
+| OCR26 | A model chosen in the on-device model dialog is loaded and warmed up at once, with no scan ("Loaded …" and "On-device recognition for … warmed up in … ms" right after the tap); the same when a model of the active language is installed or deleted. No UI dump after the choice: a dump rebinds the service, which warms the model up anyway | F | U CompositeOcrTest, DeviceOcrTest, M | 2026-10-19 |
+| OCR27 | Opening the cloud connection on a touch: with Engines "Both" or cloud, a touch on the bubble (a tap, a pull, a touch on the docked bubble) logs "Lens: connected in … ms" unless the cloud was contacted in the last 30 s; the scan's request waits for it up to 3 s; the first scan after 5 idle minutes gets the cloud result in the usual time, not ~2 s. Nothing opens in Device mode or with app text only; offline the opening fails at once and the scan does not wait for it | F | U PreconnectionTest, CompositeOcrTest, M | 2026-10-19 |
 
 ### LK: lookup
 
@@ -166,7 +168,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK24 | Latvian lookups (`testdata/ocr/lv-sample.png`): grāmatu → grāmata with "accusative singular", lasīju → lasīt with "first-person singular past indicative", Rīgā → Rīga, jālasa → lasīt with "indicative debitive" (form entries; Yomitan has no Latvian inflection rules); „“ are quotes, "u.c.", the ordinal "18." and the year in "1918. gada" do not end a sentence; Ā in the bubble, Latvian flag; no transcription dictionary in the catalog | E | U LatvianSupportTest, SentenceTest, FormOfTagsTest, M | 2026-10-18 |
 | LK25 | Vietnamese lookups (`testdata/ocr/vi-sample.png`): aiming at "sinh" in "học sinh" shows học sinh first (the lookup also starts one and two syllables before), then sinh; "nhà vệ sinh" from its last syllable; hoà and hòa find the same word; "cái" shows its own entries, not the hundreds of nouns it is the classifier of; Hán-Nôm characters labelled "Hán-Nôm spelling"; "TP." does not end a sentence; Ư in the bubble, Vietnamese flag; fonts listed by the vietnamese subset | E | U VietnameseSupportTest, EarlierStartsTest, ShownResultsTest, SentenceTest, M | 2026-10-18 |
 | LK26 | Russian lookups (`testdata/ocr/ru-sample.png`, cloud recognition or PaddleOCR v5 Cyrillic on the device): кошки → кошка with "genitive singular" and the other forms, the headword shown as ко́шка with no reading line, the note with `{expression}` кошка and `{reading}` ко́шка; шокирующее → шокирующий → шокировать (the second form-of step); еж finds ёж; text with stress marks (ко́шка) finds кошка; «» and „“ are quotes, "т. е." and "г." do not end a sentence; Я in the bubble, Russian flag; audio tries Wiktionary first; text to speech reads the stressed reading correctly | E | U RussianSupportTest, SentenceTest, reading.test.mjs, popup.test.mjs, M | 2026-10-18 |
-| LK27 | German compound part order: a compound without an entry whose part is "lampe" (Küchentischlampe) shows the noun Lampe before the verb lampen among the part's entries; ordinary lookups keep the usual order | N | U CompoundsTest, M | |
+| LK27 | German compound part order: a compound without an entry whose part is "lampe" (Küchentischlampe) shows the noun Lampe before the verb lampen among the part's entries; ordinary lookups keep the usual order | F | U CompoundsTest, M | 2026-10-19 |
 
 ### POP: the popup
 
@@ -195,6 +197,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP21 | Korean fonts: four to download (Noto Sans KR, Noto Serif KR, Nanum Gothic, Nanum Myeongjo); Nanum Gothic downloads, is chosen and loads on the page in its two weights; with the phone's font the page loads `NotoSansCJKkr-Regular` and `NotoSerifCJKkr-Regular`, and 次 takes its Korean form | O | U FontCatalogFileTest, M | 2026-10-15 |
 | POP22 | Quote entities left in a dictionary's plain text (`&quot;`, `&apos;`; 496 KRDICT ko-en entries) show as quote marks on the page and in Anki fields; other entities stay as written | O | P, M | 2026-10-15 |
 | POP23 | Latin fonts: six to download (Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif, PT Sans) on the list of every Latin-script language; Lexend downloaded for Portuguese shows on the French list too, not on the Japanese one, and the popup loads it | F | U FontCatalogFileTest, FontsForLanguageTest, M | 2026-10-16 |
+| POP24 | A popup page whose renderer was lost while the popup was hidden (`am crash` on the app's sandboxed renderer: "renderer gone (crashed: true, shown: false)") comes back with the next scan, after the capture: "Captured" as fast as without the crash, the renderer process starts after it, the popup then shows the word | O | M | 2026-10-19 |
 
 ### AUD: audio
 
@@ -211,7 +214,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD9 | French regions: France (titles `Fr-fr-paris-…` and `Fr-fr-…`), Canada, Other regions; Quebec and Paris transcription tags take the region labels | F | U FrenchSupportTest, M | 2026-10-18 |
 | AUD10 | German regions: Germany, Other regions, Austria (`De-at-…`), Switzerland; Chemie shows the standard [çeˈmiː] as DE first, then AT and CH; regional variants inside Germany carry no region | F | U GermanSupportTest, M | 2026-10-16 |
 | AUD11 | Portuguese regions: Brazil, Portugal, Other regions (titles `Pt-br-…`, `Pt-pt-…`); regional accents (🇧🇷RdJ, Lisbon) count as their country | F | U PortugueseSupportTest, M | 2026-10-16 |
-| AUD12 | The Regions list in the audio settings shows while Wiktionary is among the language's sources or a transcription dictionary of the language is installed, and hides otherwise (English: Wiktionary removed and no wty-en-ipa → hidden; with wty-en-ipa → shown); its hint names recordings and transcriptions | N | U RegionsUsedTest, M | |
+| AUD12 | The Regions list in the audio settings shows while Wiktionary is among the language's sources or a transcription dictionary of the language is installed, and hides otherwise (English: Wiktionary removed and no wty-en-ipa → hidden; with wty-en-ipa → shown); its hint names recordings and transcriptions | F | U RegionsUsedTest, M | 2026-10-19 |
 
 ### ANK: Anki
 
@@ -244,7 +247,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 |---|---|---|---|---|
 | DIC1 | Import a `.zip` from a file: progress in the card and the notification; Cancel there and in the notification | F | M | 2026-10-14 |
 | DIC2 | Catalog download: the ring (waiting, filling, spinning), its stage line, ✕ inactive in the first second; the import after it; the task is named by its catalog title in the interface language, on its card and on home | F | M | 2026-10-14 |
-| DIC3 | A download that breaks off goes to the end of the queue and retries by itself up to three times (attempt on its card, 30 s, 1 and 2 min apart; the tasks behind it start meanwhile) and continues where it stopped; after that, Resume and Cancel, and the card says the connection was lost (not the technical reason); Cancel deletes the partial file. Changed 2026-10-19: checked again as N | N | U ResumableDownloadTest, DictionaryImportsTest, M | |
+| DIC3 | A download that breaks off goes to the end of the queue and retries by itself up to three times (attempt on its card, 30 s, 1 and 2 min apart; the tasks behind it start meanwhile) and continues where it stopped; after that, Resume and Cancel, and the card says the connection was lost (not the technical reason); Cancel deletes the partial file. | F | U ResumableDownloadTest, DictionaryImportsTest, M | 2026-10-19 |
 | DIC4 | The app killed during a download (`am kill` in the background) → the download continues by itself, no button; during an import → it restarts | F | M | 2026-10-14 |
 | DIC5 | The app dies twice during an import → not started again, the card says so | O | U DictionaryImportsTest, M | |
 | DIC6 | Order by drag, switches, sort dictionary; the last dictionary with definitions cannot be switched off or deleted | F | M | 2026-10-18 |
@@ -260,9 +263,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC16 | With several languages: language chips on the page, "Other languages" links to the Languages screen | F | M | 2026-10-18 (chips) |
 | DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | O | U WordfreqDictionaryTest, M | 2026-10-15 |
 | DIC18 | Korean download screen: KRDICT (ko–en) ticked, Wiktionary not, wordfreq, transcription and Unihan Hanja ("Comes with the app") ticked; the download total leaves the hanja archive out; everything installs and Korean is ready | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-15 |
-| DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | N | U DictionaryImportsTest, M | |
-| DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | N | M | |
-| DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | N | U TaskItemsTest, M | |
+| DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update; setup and home by unit tests) |
+| DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-19 |
+| DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-19 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -329,6 +332,7 @@ the same AVD is a finding. The first run of this model records them in the run l
 | NF10 | Long texts wrap and screens scroll in all 14 locales (download screen, Languages, settings hints; spot checks in de, ru, vi, ja) | F | M | 2026-10-14 |
 | NF11 | Import times: JMdict from a file, the Japanese defaults on first run (download and import) | O | M | 2026-10-14 (bundled) |
 | NF12 | Search updates while typing without visible lag | O | M | 2026-10-14 |
+| NF13 | PaddleOCR memory: 10 s after the last recognition "Freed the memory of large inputs: … MB" (v6 on `ja-page-light.png`: ~360 → ~35 MB; native heap in `dumpsys meminfo` back near its value before the scan); scans less than 10 s apart do not trim between them; the next scan after a trim reads the same paragraphs | F | U IdleActionTest, M | 2026-10-19 |
 
 ## Not on the emulator
 
@@ -343,6 +347,67 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/checks` (`7783c5e` with the scan changes committed after it), Pixel_10_Pro (API 37)
+
+Scope: the cases `languages/ocr-engines` added (OCR22-OCR25, LK27, AUD12), the download queue (DIC3 as changed,
+DIC20-DIC22), scan times for Chinese and for Tesseract German, ML Kit's cold warm-up, and four scan changes built on
+this branch: freeing PaddleOCR memory once scans pause (NF13), opening the cloud connection on a touch (OCR27),
+warming up a model chosen in the dialog (OCR26) and creating a lost popup page after the capture (POP24).
+
+Results: every case passed; no fixes to the merged code. First checks: OCR22-OCR27, LK27, AUD12, DIC3 (changed),
+DIC20-DIC22, POP24, NF13. Automated: unit tests 977, page tests 132.
+
+- OCR22 on Polish (German was on already); Russian still ticks its model. OCR23: the scan finished, then the
+  directory went; a marked directory left by a killed process went at the next start. OCR24: Tesseract eng truncated
+  to 1 MB; scans read with ML Kit meanwhile. OCR25: from a local catalog; the update row says "Tesseract, fast"
+  without the language or script it reads.
+- LK27: Küchentischlampe lists Lampe before lampen; lampen alone keeps the verb first.
+- DIC3: retries 30 s, 1 min and 2 min apart, then "download stopped — connection lost" with Resume and Cancel;
+  Resume continued from the bytes already there; Cancel deleted the partial file and its `.state`.
+- DIC20: a queued catalog entry shows "Waiting in the queue" with Cancel; downloading a stopped entry resumed it and
+  its stopped card went; Update after "Check for updates" while the entry waited for its retry added no task. The
+  language setup and home "Download again" paths are covered by unit tests only.
+- DIC21: a finished download showed "Waiting" while the other task imported; Cancel in one notification cancelled
+  only its task. DIC22: "Waiting (2)" with "Show the list" and "Cancel all".
+- Network shaping: `adb emu network delay` applies to new connections only; `network speed 1:1` makes reads time out
+  (20 s) while the network stays validated, which is the way to stall a download; a 30 s delay fails the validation
+  probe, so WorkManager stops the jobs (stop reason 7).
+- OCR26: choosing PaddleOCR v6 for Japanese logged "Loaded paddle-detector-v6", "Loaded paddle-v6" and the warm-up
+  (0.2-0.4 s) right after the tap, with no scan.
+- OCR27: the first scan after 5 idle minutes: "Lens: connected" in 615 ms (Wi-Fi) and 1474 ms (mobile network), the
+  cloud result 1.17 s and 1.82 s after the scan start (before: HTTP alone 2.0-2.2 s); within 30 s no HEAD; Device
+  mode and offline sent none.
+- POP24: the renderer crashed with the popup hidden ("shown: false"); at the next scan "Captured" took 255-265 ms
+  (241-324 ms without the crash), the renderer process started 0.25-0.3 s after the capture, the draft came 0.3-0.6 s
+  later than without the crash and no "Skipped frames" line appeared (before: 0.75-0.9 s of skipped frames ahead of
+  the capture); the popup showed the word.
+- NF13: PaddleOCR v6 on `ja-page-light.png`: "Freed the memory of large inputs: 362 -> 34 MB in 16-21 ms" 10 s after
+  the last final; native heap 483 → 143 MB, PSS 714 → 351 MB (128 MB and 293 MB before the scan). Three scans 8 s
+  apart trimmed once, after the last. After a trim a UI dump (the service's warm-up on a 32 × 32 image) ran without
+  a crash, and the next scans read 14 paragraphs.
+
+Scan times (Device / Both, first text / final): see `ai/notes/ocr-engines.md`, rows marked 2026-10-19. ML Kit's cold
+warm-up: Latin 0.65-1.6 s, Korean 0.7 s, Japanese 1.07-1.5 s; PaddleOCR v6 0.48 s.
+
+Findings, not fixed (owner's choices):
+
+- Partial downloads live in the cache directory, which the system cleared when storage ran low; the download then
+  failed with a missing file and ended as "connection lost" after three retries.
+- A WorkManager stop for a lost network (reason 7) at the moment of the third failure makes WorkManager run the work
+  again later: a task logged as stopped resumed by itself.
+- On a slow link the second of two parallel downloads gets almost nothing until the first ends.
+- The "Waiting" card of a download held offline does not say it waits for the network.
+- The log line "retry … queued as null" reads like an error.
+- "1 dictionaries" in a count; "no dictionary with definitions" on Home during an installation (as on 2026-10-18).
+- A downloaded model is not chosen in the dialog by itself (as designed: it is used once chosen).
+- The emulator's UWB service (`android.hardware.uwb-service`) crashes in a loop; AnkiDroid logged an exception of its
+  own. Neither involves the app.
+
+Not checked: the changes on the phone (memory and connection timings there, a real mobile network), the
+draft-lead rule (the emulator's device drafts lead the cloud by only 0.1-0.35 s), the DIC20 setup and home paths.
+
+Emulator state since this run: as before it (the data was restored from the backup).
 
 ### 2026-10-18, `languages/checks` (`2f698a8`), Pixel_10_Pro (API 37)
 
