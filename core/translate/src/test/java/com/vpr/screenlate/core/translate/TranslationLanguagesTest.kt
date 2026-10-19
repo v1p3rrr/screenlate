@@ -51,6 +51,15 @@ class TranslationLanguagesTest {
     }
 
     @Test
+    fun `every source language has a service language`() {
+        for (language in Language.entries) assertThat(TranslationLanguages.of(language)).isNotNull()
+        assertThat(TranslationLanguages.of(Language.CHINESE)?.tag).isEqualTo("zh-Hans")
+        assertThat(TranslationLanguages.of(Language.PORTUGUESE)?.tag).isEqualTo("pt-BR")
+        assertThat(TranslationLanguages.of(Language.FILIPINO)?.tag).isEqualTo("fil")
+        assertThat(TranslationLanguages.defaultFor(Locale.forLanguageTag("fil"), Language.FILIPINO).tag).isEqualTo("en")
+    }
+
+    @Test
     fun `each service gets its own code`() {
         val chinese = TranslationLanguages.of("zh-Hans")!!
         assertThat(chinese.microsoft).isEqualTo("zh-Hans")

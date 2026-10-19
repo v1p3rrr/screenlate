@@ -30,8 +30,11 @@ object TranslationLanguages {
 
     fun of(tag: String): TranslationLanguage? = byTag[tag.lowercase(Locale.ROOT)]
 
-    /** The language of [source] text, as the services know it. */
-    fun of(source: Language): TranslationLanguage? = of(source.code)
+    /**
+     * The language of [source] text, as the services know it: the closest tag where they have no plain one (zh-Hans for
+     * zh, pt-BR for pt, fil for tl).
+     */
+    fun of(source: Language): TranslationLanguage? = of(source.code) ?: forLocale(Locale.forLanguageTag(source.code))
 
     /**
      * The language translations go into by default: [locale]'s (the interface language), or English when that is
@@ -40,7 +43,7 @@ object TranslationLanguages {
     fun defaultFor(locale: Locale, source: Language): TranslationLanguage {
         val english = of(ENGLISH)!!
         val language = forLocale(locale) ?: return english
-        return if (Locale.forLanguageTag(language.tag).languageCode == source.code) english else language
+        return if (Language.of(Locale.forLanguageTag(language.tag).languageCode) == source) english else language
     }
 
     /**
