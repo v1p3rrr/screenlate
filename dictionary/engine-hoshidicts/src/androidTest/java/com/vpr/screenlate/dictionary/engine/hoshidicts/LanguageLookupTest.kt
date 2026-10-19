@@ -278,6 +278,27 @@ class LanguageLookupTest {
         assertThat(engine.lookup("\u0959ाना", hindi).map { it.term.expression }).contains("ख़ाना")
     }
 
+    @Test
+    fun bengaliEndingsFindEntriesWithoutPartOfSpeechAndBrokenFormRowsAreCleanedAtImport() = runTest {
+        val imported = engine.import(bengaliDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val bengali = LookupOptions(language = Language.BENGALI)
+        suspend fun first(text: String) = engine.lookup(text, bengali).first().term.expression
+
+        // An ending finds a headword without a part of speech, in text composed as headwords are too (ো as ে + া).
+        val book = engine.lookup("বইটির দাম", bengali).first()
+        assertThat(book.term.expression).isEqualTo("বই")
+        assertThat(book.matched).isEqualTo("বইটির")
+        assertThat(book.trace.map { it.name }).containsExactly("-টির")
+        assertThat(first("বইগুল\u09C7\u09BE")).isEqualTo("বই")
+        // Forms written with a romanization after them, with two spellings or with the ending apart.
+        assertThat(first("করেন")).isEqualTo("করা")
+        assertThat(first("করিস")).isEqualTo("করা")
+        assertThat(first("করো")).isEqualTo("করা")
+        // A row of an unfilled template stands for no word.
+        assertThat(engine.lookup("{{{3}}}ে", bengali)).isEmpty()
+    }
+
     private fun ukrainianDictionary(): File = zip(
         "uk.zip",
         "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),
@@ -327,6 +348,22 @@ class LanguageLookupTest {
               ["हैं","","","v",0,["are"],7,""],
               ["खाना","","","n",0,["food"],8,""],
               ["ख़ाना","","","n",0,["compartment"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Rows as Wiktionary's Bengali exports write them: no parts of speech, some forms with leftovers. */
+    private fun bengaliDictionary(): File = zip(
+        "bn.zip",
+        "index.json" to """{"title":"Test Bengali","revision":"1","format":3,"sourceLanguage":"bn"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["বই","","","",0,["book"],1,""],
+              ["করা","","","",0,["to do"],2,""],
+              ["করেন (koren (formal))","","non-lemma","",0,[["করা",["third-person present polite"]]],3,""],
+              ["করিস  / koris","","non-lemma","",0,[["করা",["second-person present very familiar"]]],4,""],
+              ["কর ো","","non-lemma","",0,[["করা",["imperative familiar"]]],5,""],
+              ["{{{3}}}ে ({{{4}}}e)","","non-lemma","",0,[["করা",["third-person present familiar"]]],6,""]
             ]
         """.trimIndent().toByteArray(),
     )

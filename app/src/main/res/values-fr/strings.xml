@@ -495,6 +495,7 @@
     <string name="popup_font_script_only_be">Seulement pour le texte biélorusse</string>
     <string name="popup_font_script_only_el">Seulement pour le texte grec</string>
     <string name="popup_font_script_only_hi">Seulement pour le texte hindi</string>
+    <string name="popup_font_script_only_bn">Seulement pour le texte bengali</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>
@@ -773,7 +774,7 @@
     <string name="ocr_models_empty">Aucun modèle sur l’appareil ne reconnaît cette langue.</string>
     <string name="ocr_models_dialog_hint">Un modèle téléchargé est utilisé une fois choisi. Un modèle utilisé peut être supprimé après en avoir choisi un autre.</string>
     <string name="ocr_models_mlkit">ML Kit (intégré)</string>
-    <string name="ocr_models_mlkit_info">Intégré à l’appli, rien à télécharger. Reconnaît le chinois, le japonais, le coréen et les textes en devanagari et en alphabet latin.</string>
+    <string name="ocr_models_mlkit_info">Intégré à l’appli, rien à télécharger. Reconnaît le chinois, le japonais, le coréen et les textes en devanagari, en écriture bengalie et en alphabet latin.</string>
     <string name="ocr_models_recommended">Recommandé</string>
     <string name="ocr_models_more_accurate">Plus précis</string>
     <string name="ocr_models_installed_size">Installé · %1$s</string>
@@ -782,5 +783,5 @@
     <string name="ocr_models_delete_text">Le modèle « %1$s » (%2$s) sera supprimé.</string>
     <string name="ocr_models_delete_shared">Il est aussi supprimé pour ces langues : %1$s.</string>
     <string name="language_setup_main_model">Modèle principal</string>
-    <string name="language_setup_models_info">Le modèle principal reconnaît la langue sur l’appareil. Les autres modèles cochés sont aussi téléchargés ; ils peuvent être choisis plus tard dans les paramètres de reconnaissance de l’écran. ML Kit, intégré à l’appli, reconnaît le chinois, le japonais, le coréen et les textes en devanagari et en alphabet latin ; pour ces langues, il est utilisé tant qu’aucun modèle n’est principal.</string>
+    <string name="language_setup_models_info">Le modèle principal reconnaît la langue sur l’appareil. Les autres modèles cochés sont aussi téléchargés ; ils peuvent être choisis plus tard dans les paramètres de reconnaissance de l’écran. ML Kit, intégré à l’appli, reconnaît le chinois, le japonais, le coréen et les textes en devanagari, en écriture bengalie et en alphabet latin ; pour ces langues, il est utilisé tant qu’aucun modèle n’est principal.</string>
 </resources>

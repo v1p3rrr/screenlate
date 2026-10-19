@@ -180,6 +180,16 @@ class SentenceTest {
     }
 
     @Test
+    fun bengaliSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
+        val bengali = "সে বাড়ি গেল। ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন। শেষ।"
+        assertThat(extract(bengali, "ইউনূস", Language.BENGALI).text)
+            .isEqualTo("ড. ইউনূস বললেন, “কাল এসো। অবশ্যই।” তারপর তাঁরা চলে গেলেন।")
+        assertThat(extract(bengali, "গেল", Language.BENGALI).text).isEqualTo("সে বাড়ি গেল।")
+        val initials = "বাংলার প্রধানমন্ত্রী ছিলেন এ.কে. ফজলুল হক। তিনি আইনজীবী ছিলেন।"
+        assertThat(extract(initials, "ফজলুল", Language.BENGALI).text).isEqualTo("বাংলার প্রধানমন্ত্রী ছিলেন এ.কে. ফজলুল হক।")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

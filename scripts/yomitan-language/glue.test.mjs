@@ -177,3 +177,28 @@ test('hindi text is composed as headwords are and candrabindu reads as anusvara,
         assert.ok(!queried(language, 'हैँ').has('हैं'), language);
     }
 });
+
+test('bengali noun endings are undone once, in composed text, and match entries without a part of speech', () => {
+    const book = candidates('bn', 'বইটির').find((c) => c.d === 'বই');
+    assert.ok(book);
+    assert.ok(book.u);
+    // The bundle's arrays come from another context, so they are compared as JSON.
+    assert.equal(JSON.stringify(book.r), JSON.stringify([['-টির']]));
+    // ো typed as ে + া, and য় as one character, are composed as the headwords are.
+    assert.ok(queried('bn', 'বইগুল\u09C7\u09BE').has('বই'));
+    assert.ok(queried('bn', 'মা\u09DFের').has('মা'));
+    assert.ok(queried('bn', 'ঘরে').has('ঘর'));
+    // One ending only: ছেলেদেরকে is not cut down to ছেলে.
+    const children = queried('bn', 'ছেলেদেরকে');
+    assert.ok(children.has('ছেলেদের'));
+    assert.ok(!children.has('ছেলে'));
+    // Two letters stay before an ending: ভয় is not cut down to ভ.
+    assert.ok(!queried('bn', 'ভয়').has('ভ'));
+    // The text itself stays typed.
+    assert.ok(!candidates('bn', 'বইটির').find((c) => c.d === 'বইটির').u);
+});
+
+test('bengali endings and untyped matches stay out of hindi', () => {
+    assert.ok(!queried('hi', 'বইটির').has('বই'));
+    assert.ok(candidates('hi', 'पढ़ने').every((c) => !c.u));
+});

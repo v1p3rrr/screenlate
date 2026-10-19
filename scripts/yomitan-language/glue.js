@@ -87,9 +87,15 @@ function candidates(text, language, searchResolution) {
         s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
         c: d.conditions,
         r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
-        u: verb !== 0 && isUntypedPhrasalVerb(d, verb),
+        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || (untypedRules.has(language) && d.conditions !== 0),
     }));
 }
+
+/**
+ * Languages whose deinflected texts may match entries without a part of speech: Wiktionary's Bengali entries give
+ * none, and the app's endings (own-transforms.js) are undone once only, so they do not chain without conditions.
+ */
+const untypedRules = new Set(['bn']);
 
 /**
  * Adverb particles of English phrasal verbs (`phrasalVerbParticles` of Yomitan's english-transforms.js). Prepositions

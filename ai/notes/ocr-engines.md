@@ -132,6 +132,13 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 
 - The Korean recognizer reads Hangul and Latin but not hanja: 大學校에서 歷史를 came out as 푸에서 끗을 (2026-10-15,
   `testdata/ocr/ko-mixed.png`). Cloud recognition reads them.
+- The Devanagari recognizer reads Bengali too (2026-10-19, emulator, a throwaway instrumented probe over the comparison's
+  screens, scored by `scripts/ocr-compare/score.py`): CER 0.5% and 96.6% of words on the two clean Bengali screens,
+  4.2% and 82.2% on the four hard ones (font 2.1%, italic 5.7%, scene 7.9%, tilt 1.5%), about 1.2 s per clean screen;
+  the same run gave Hindi 0.6% on its clean screens. Tesseract ben on the same screens: fast 6.3% clean and 52.0% hard,
+  best 0.5% and 43.3%. So `MlKitOcrEngine.model` maps `OcrScript.BENGALI` to the Devanagari model, which ML Kit
+  documents for Devanagari only; Bengali needs no download, and the Tesseract models stay unticked. In the app's
+  scan of a full screen of Bengali text the draft band took 4.3-4.9 s on the emulator, against 3.1-3.3 s for Hindi.
 - ML Kit has no Cyrillic recognizer: `MlKitOcrEngine` returns no recognizer for `OcrScript.CYRILLIC` (Russian,
   `languages/ru`, 2026-10-16), so only cloud recognition and app text read Russian until an on-device engine for it
   is built in (the OCR comparison in the languages plan).

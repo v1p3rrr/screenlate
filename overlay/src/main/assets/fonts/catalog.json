@@ -524,6 +524,61 @@
       "homepage": "https://fonts.google.com/specimen/Tiro+Devanagari+Hindi"
     },
     {
+      "id": "hind-siliguri",
+      "family": "Hind Siliguri",
+      "language": "bn",
+      "description": {
+        "en": "Sans-serif by Indian Type Foundry for Bengali and Latin, made for text on screens; regular and bold.",
+        "ru": "Шрифт без засечек Indian Type Foundry для бенгальского письма и латиницы, сделан для текста на экранах; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von Indian Type Foundry für bengalische Schrift und Lateinisch, gemacht für Text auf Bildschirmen; normal und fett.",
+        "es": "Fuente sin serifa de Indian Type Foundry para bengalí y latino, hecha para texto en pantalla; normal y negrita.",
+        "fr": "Police sans empattement d’Indian Type Foundry pour le bengali et le latin, conçue pour le texte à l’écran ; normale et grasse.",
+        "it": "Carattere senza grazie di Indian Type Foundry per bengalese e latino, pensato per il testo su schermo; normale e grassetto.",
+        "ja": "Indian Type Foundry によるベンガル文字とラテン文字のサンセリフ。画面上の文章向け。標準と太字。",
+        "ko": "Indian Type Foundry가 만든 벵골 문자와 라틴 문자용 산세리프로, 화면의 본문에 맞게 만들었습니다. 보통과 굵게가 있습니다.",
+        "pl": "Krój bezszeryfowy Indian Type Foundry dla pisma bengalskiego i łacinki, zrobiony do tekstu na ekranie; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da Indian Type Foundry para bengali e latino, feita para texto na tela; normal e negrito.",
+        "tr": "Indian Type Foundry’nin Bengal ve Latin alfabeleri için tırnaksız yazı tipi, ekrandaki metinler için yapılmış; normal ve kalın.",
+        "vi": "Phông không chân của Indian Type Foundry cho chữ Bengal và Latinh, làm cho văn bản trên màn hình; thường và đậm.",
+        "zh": "Indian Type Foundry 出品的孟加拉文和拉丁字母无衬线字体，为屏幕上的正文设计；常规和粗体。",
+        "zh-Hant": "Indian Type Foundry 出品的孟加拉文和拉丁字母無襯線字型，為螢幕上的內文設計；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hindsiliguri/HindSiliguri-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hindsiliguri/HindSiliguri-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.5,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Hind+Siliguri"
+    },
+    {
+      "id": "tiro-bangla",
+      "family": "Tiro Bangla",
+      "language": "bn",
+      "description": {
+        "en": "Serif by Tiro Typeworks in the style of printed Bengali books, with Latin; regular only.",
+        "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на бенгальском, с латиницей; только обычное начертание.",
+        "de": "Serifenschrift von Tiro Typeworks im Stil gedruckter bengalischer Bücher, mit Lateinisch; nur normal.",
+        "es": "Fuente con serifa de Tiro Typeworks al estilo de los libros impresos en bengalí, con latino; solo normal.",
+        "fr": "Police à empattements de Tiro Typeworks dans le style des livres imprimés en bengali, avec le latin ; normale seulement.",
+        "it": "Carattere con grazie di Tiro Typeworks nello stile dei libri stampati in bengalese, con il latino; solo normale.",
+        "ja": "Tiro Typeworks によるセリフ体。ベンガル語の印刷本の書体にならい、ラテン文字付き。標準のみ。",
+        "ko": "Tiro Typeworks가 만든 세리프로, 벵골어 인쇄본의 글자 모양을 따르며 라틴 문자도 있습니다. 보통만 있습니다.",
+        "pl": "Krój szeryfowy Tiro Typeworks w stylu drukowanych książek w języku bengalskim, z łacinką; tylko zwykły.",
+        "pt": "Fonte com serifa da Tiro Typeworks no estilo dos livros impressos em bengali, com latino; só normal.",
+        "tr": "Tiro Typeworks’ün basılı Bengalce kitapların tarzında tırnaklı yazı tipi, Latin harfleriyle; yalnızca normal.",
+        "vi": "Phông có chân của Tiro Typeworks theo kiểu sách in tiếng Bengal, kèm chữ Latinh; chỉ kiểu thường.",
+        "zh": "Tiro Typeworks 出品的衬线字体，仿孟加拉语印刷书籍的字形，附拉丁字母；仅常规。",
+        "zh-Hant": "Tiro Typeworks 出品的襯線字型，仿孟加拉語印刷書籍的字形，附拉丁字母；僅常規。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tirobangla/TiroBangla-Regular.ttf", "weight": "400"}
+      ],
+      "sizeMb": 0.3,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Tiro+Bangla"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

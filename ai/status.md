@@ -71,11 +71,12 @@ ANK16 (N, not run on the emulator yet). The owner does not want a new phone buil
 sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
 Bengali" (research and questions first, then the build).
 
-Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered, question 10 (Bengali's
-recommended model) waits for an ML Kit measurement on the Bengali branch. Hindi is done on `languages/hi` and
-fast-forwarded into `languages/main`: LK42 passed on the emulator after one fix (the ML Kit description names
-Devanagari). Next on chained branches: Bengali, Georgian, Armenian. Group 4c (th, lo, km) is researched in its own
-session.
+Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
+Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
+passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's entries without a
+part of speech, form rows with template leftovers cleaned at import for every language, all bundles rebuilt. Both
+are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian. Group 4c (th, lo, km)
+is researched in its own session.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
