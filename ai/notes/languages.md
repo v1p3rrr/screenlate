@@ -942,7 +942,7 @@ The owner chose two languages instead of two script entries (questions 61-64): a
 
 Hindi (hi), Bengali (bn), Georgian (ka), Armenian (hy): new scripts, left to right, spaces between words. Sources:
 Yomitan e7334a9 (`ext/js/language/`, GPL-3.0), the wty tree on Hugging Face (`latest/dict`, listed and downloaded
-2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes), wordfreq 912caf6 (MIT code, data CC BY-SA 4.0), the tessdata
+2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes), wordfreq 912caf6 (Apache-2.0 code, data CC BY-SA 4.0), the tessdata
 pins of `tessdata_catalog.py` (Apache-2.0), ML Kit text recognition 16.0.1 (the Devanagari AAR from the Gradle cache),
 the Paddle devanagari model converted for the comparison (Apache-2.0), AOSP `fonts.xml` (main) and Google Fonts
 metadata for the font lists, circle-flags 379588b (MIT), Wikimedia Commons and Lingua Libre (search API) for audio,
@@ -1442,3 +1442,306 @@ Cells: archive MB, words.
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4c.md`.
+
+## Group 4d research (2026-10-19)
+
+Arabic (ar), Persian (fa), Hebrew (he): scripts written right to left with spaces between words. Urdu (ur), Egyptian
+Arabic (arz) and Yiddish (yi) were looked at for comparison; they belong to group 5f (row "Group 5"; the owner put
+Urdu after these three, question 69 of `plans/2026-10-19-group-4d.md`). Sources: Yomitan e7334a9 (`ext/js/language/`,
+`translator.js`, `text-scanner.js`; GPL-3.0), the wty tree on Hugging Face (`latest/dict`, release 2026-10-11, wty
+commit 602ffb3; listed and downloaded 2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes) and wty's source at
+602ffb3 (MIT), wordfreq 912caf6 (code Apache-2.0, data CC BY-SA 4.0), the tessdata pins of `tessdata_catalog.py`
+(Apache-2.0), Paddle's `arabic_PP-OCRv5_mobile_rec` (Hugging Face, Apache-2.0) as converted for the comparison,
+cloud recognition probed from the PC with a client that mirrors `LensProtocol`, AOSP `fonts.xml` (main) and Google
+Fonts metadata, circle-flags 379588b (MIT), Wikimedia Commons and Lingua Libre (search API) for audio, Google's
+TalkBack and Cloud TTS voice lists, JDK 21 (CLDR 42) for names, the OCR comparison of `ocr-engines.md`
+(`testdata/ocr/compare/analyze-rot.txt`). Nothing in this section was measured on a device except the OCR comparison
+(emulator, 2026-10-16/17).
+
+### Yomitan at e7334a9
+
+- Descriptors: ar (`ara`) with text processors removeArabicScriptDiacritics, removeTatweel, normalizeUnicode (NFKC),
+  addHamzaTop, addHamzaBottom, convertAlifMaqsuraToYaa and 50 transforms; arz the same plus convertHaToTaMarbuta; fa
+  (`fas`) only removeArabicScriptDiacritics; he (`heb`) no processors and no transforms; no descriptor for ur.
+  `recommended-settings.json` sets word scan and search resolution for ar, arz and he.
+- removeArabicScriptDiacritics removes 16 code points (U+0618-061A, U+064B-0652, U+0653-0656, U+0670) as a variant;
+  NFKC turns presentation forms into letters (ﻛ → ك, ﻻ → لا) and composes ا + U+0654 into أ. No processor maps أ إ آ ٱ
+  to ا: the two hamza processors only add a hamza to the first bare alif anywhere in the text (`replace('ا', 'أ')`),
+  so 145 of 299 candidates of 17 test words are hamza variants of the article or a medial ā (ألكتاب, كتإبهم), and a
+  hamza after a proclitic is never restored (الاسلام gives اسلام, never إسلام). Final ى → ي only one way; ه → ة only in
+  arz. Persian ی ک against Arabic ي ك: no mapping anywhere. ZWNJ: never removed. Hebrew niqqud: nothing for he (yi
+  removes U+05B0-05C7 and keeps cantillation); final letters only in Yiddish's postprocessor.
+- Arabic transforms: 26 conditions, 50 transforms, 7,157 rules (178 prefix, 409 suffix, 6,570 prefix and suffix
+  "sandwich" regexes): noun prefixes و ف ب ك ل ال and their chains (وال بال كال لل), possessive suffixes, ـة,
+  accusative ـا ـاً, duals, sound plurals ـات ـون ـين, perfect and imperfect verbs with proclitics and object pronouns
+  (سيكتبون → كتب), imperatives. Not covered: broken plurals (كتب → كتاب, reached only through form-of rows), weak
+  verbs, the passive, adjectives as a part of speech. Every affix is unvocalized; a vocalized stem matches, so vocalized
+  text deinflects through its diacritics-free variant. Yomitan's 382 Arabic test cases (261 valid, 121 invalid) all
+  pass through the ar bundle.
+- Conditions are n, v, pv, iv, cv only (`partOfSpeechFlagsJson('ar')`). wty ar-en writes `n` (12,865 own rows), `v`
+  (7,239) or nothing (7,405; adjectives, adverbs, particles) in the rules field, and its form rows `v` 477,746, `n`
+  350,029, nothing 164,359. A transformed candidate (conditions ≠ 0) never fits an untagged entry, in Yomitan and in
+  the engine, so والطويلة finds nothing through الطويلة (an untagged form of طويل). The engine already lets an
+  `untyped` candidate fit an untagged entry (`candidate_lookup.cpp` `fits`, built for English phrasal verbs).
+- Persian and Hebrew have no rules: none of می‌ نمی‌ ب ن, ها ان, the ezafe, pronoun suffixes or ‌تر ‌ترین; none of the
+  Hebrew prefixes ו ה ב כ ל מ ש. Yiddish has 6 transforms (plurals, umlaut plurals, present forms).
+- The glue registers a transformer only when `descriptor.language === language` (`scripts/yomitan-language/glue.js`
+  18). Arabic's transforms say `'ar'`, so the arz bundle gets no deinflection; Georgian's say `'kat'`, so the ka
+  bundle gets none either (სახლში gives only itself). Keyed by the descriptor's `iso` (as
+  `getAllLanguageTransformDescriptors()` returns it), arz passes all 382 Arabic cases and ka gives სახლ.
+  `generate-inflections.mjs` looks transforms up the same way (folder and `language === iso`). Upstream Yomitan has
+  the same gap (`multi-language-transformer.js` 33).
+- Empty candidates: Arabic prefix rules with no stem left (في, لا, وا: 3-8 each; 5 of 621 word starts of one
+  sentence) and Yiddish umlaut rules that return `''` (קינדער: 5 of 8 candidates). The glue passes them on.
+- Bundles (`build.mjs`, unchanged): ar 62,098 bytes, arz 62,271, fa 45,271, he 44,882, yi 49,611; ur needs a
+  `borrowed` entry (`ur: {from: 'fa', iso639_3: 'urd', name: 'Urdu'}`, 45,268 bytes). `addedPreprocessors` only
+  replaces the line `textPreprocessors: capitalizationPreprocessors,`, so it cannot add processors to fa (its own
+  object) or he (no field): the mechanism needs extending for these two.
+- Word resolution (`_getNextSubstring`) cuts at the last `[^\p{Letter}]`: at every haraka and niqqud (Mn), ZWNJ (Cf),
+  maqaf (Pd), geresh, gershayim and ASCII quotes (Po). `ShownResults.fromVariant` already drops matches that end
+  before an Mn, Mc or Me mark; a match ending before a ZWNJ shows (می for می‌روم, but also the wanted کتاب for
+  کتاب‌ها).
+- Nothing in the language code, `text-scanner.js` or `translator.js` handles direction. The default sentence
+  terminators lack ؟ (U+061F) and ۔ (U+06D4).
+- Timing (Node, median of 300 calls): ar 0.19-0.41 ms per call on unvocalized lines of 16-32 units, 0.25-1.36 ms on a
+  fully vocalized line (each mark is a cut point, so 3-5 times the candidates); fa and he 0.01-0.06 ms; en 0.12 ms,
+  ko 4.6 ms for reference. No processor is combinatorial: at most 64 variants per substring, the 4096 cap is never
+  reached. Loading the ar bundle builds 7,157 RegExp objects: 11.4 ms in Node (uk 5.0, ko 4.1); its QuickJS load,
+  heap and per-call time are to be measured on the emulator.
+
+### Dictionaries (wty)
+
+Counting as in groups 4a-4c (words with their own meaning); ✗ under 1,500 (then only the word count is given); – no
+file. Cells: archive MB, words.
+
+| from | en | ru | de | es | fr | it | ja | ko | pl | pt | tr | vi | zh |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ar | 13.60 20.7k | 0.60 13.5k | 301 ✗ | 701 ✗ | 1.20 11.4k | 547 ✗ | 1,038 ✗ | 0.08 1.6k | 0.74 9.6k | 1,148 ✗ | 0.24 2.2k | 215 ✗ | 0.38 2.2k |
+| fa | 3.34 14.8k | 0.44 11.0k | 165 ✗ | 157 ✗ | 0.13 2.8k | 200 ✗ | 1,275 ✗ | 1,319 ✗ | 0.11 2.0k | 864 ✗ | 1,106 ✗ | 98 ✗ | 0.25 3.1k |
+| he | 3.32 12.9k | 0.50 9.3k | 107 ✗ | 0.16 1.6k | 1,484 ✗ | 600 ✗ | 0.09 1.7k | 380 ✗ | 0.11 2.4k | 817 ✗ | 1,444 ✗ | – | 0.23 1.7k |
+| ur | 1.49 7.7k | 1,353 ✗ | 0.28 1.6k | – | 226 ✗ | – | 223 ✗ | 646 ✗ | 350 ✗ | 501 ✗ | 440 ✗ | 120 ✗ | 938 ✗ |
+| arz | 1,111 ✗ | – | – | 104 ✗ | – | – | 66 ✗ | – | – | – | – | – | 180 ✗ |
+
+- Pairs that pass: ar en ru fr ko pl tr zh; fa en ru fr pl zh; he en ru es ja pl zh; ur en de; arz none. ar-en (13.60
+  MB) is above the catalog script's `COUNTED_BELOW` (8 MiB) and passes uncounted; it holds 20,683 words.
+- No own-language editions and no glossaries for any of the five. Transcriptions (`dict/all/<lang>/wty-<lang>-ipa.zip`):
+  ar 0.42 MB 20.6k, fa 0.57 13.2k, he 0.20 8.1k, ur 0.15 8.5k (all pass), arz 1,043 ✗. Their readings: ar the
+  vocalized spelling (أقمار → أَقْمَار), fa a romanization (`išārat`), he the key itself.
+- How wty writes them (`src/dict/main/ir/mod.rs`): `normalize_orthography` strips 16 Arabic marks from form headwords
+  for ar and fa only, putting the original into the reading; Hebrew, Urdu and Egyptian forms keep their pointing.
+  Lemma headwords are page titles, unpointed in all five. Readings: ar the vocalized form (98.0% of lemma rows), fa a
+  romanization in mixed schemes (97.3%: `classical čuġundar`, `majâzi`, `ensân-e kâmel`), he, ur and arz none (the
+  pointed lemma is only in the definition's grammar line, `כֶּלֶב • (kélev …)`).
+- Form-of rows (→en): ar 992,134 rows (301.1k distinct forms, 3.29 rows per form: each vowelled case form is its own
+  row with the same unvocalized headword); fa 117,286; he 146,417; ur 45,348; arz 6,871. 98.4-99.4% of lemma links
+  are headwords; ar 11,029 (ur 336) only after stripping the marks from the link (`form of كِتَاب [plural]`).
+  Template names leak as tags in ar (`ar-infl-a` 160,406, `ar-infl-in`, …); "informal" is the pausal form.
+- Prefixed forms: ar lists the definite ال forms (203,412 form rows, الكتاب → كتاب) but no proclitic forms (والكتاب,
+  بالكتاب, للكتاب) and almost no pronoun-suffix forms (كتابي only as a dual construct). he lists definite ה forms
+  (pointed, 4,887) and possessed forms (51,466 tags), not the prefixes ב ל ו מ ש כ (בבית, לבית, והבית are no
+  headwords). fa lists verb forms joined (میفرستادیم, نمیدانم: 4,657 می/نمی forms, none with ZWNJ, already lost in
+  kaikki's data) and few noun forms (کتابها yes, کتاب‌ها no).
+- Arabic spellings (own words / form headwords): hamza alef أ إ آ ٱ 14.5% / 12.4%, final ى 3.6% / 1.2%, final ة 17.2%
+  / 5.3%, harakat none (stripped by wty). Keys with every alef form → ا, final ى → ي and final ة → ه: 44,765 new
+  spellings, 9,529 shared by two or more headwords (own words 292, على and علي among them). 721 romanized Latin form
+  headwords (al-ḡarafāt), 117 Hebrew-script Judeo-Arabic headwords.
+- Persian spellings: Persian ی (41.2% of own words) and ک (17.7%); Arabic ي ك almost never (14, 6). ZWNJ in 811 own
+  words, 170 of them also written with a space, 180 also joined; no form headword has one. 5,741 Cyrillic form
+  headwords (6,192 rows tagged "Cyrillic Tajik", ҳалол → حلال) and 2,519 romanized conjugations (kosdâdim).
+- Hebrew spellings: niqqud in 82.4% of form headwords, almost no own words. Unpointed keys: 83,977 new spellings, 23,543
+  shared by two or more headwords (homographs such as כבית: no prefixed form of בית, a form of כיבה). 34.8% of
+  pointed forms unpoint to defective spelling (חֲנֻכַּת־ → חנכת where text writes חנוכת); plene keys built from the
+  points add only 133 of the 20,000 commonest words (24,827 keys), so they are not worth it. Abbreviations use
+  gershayim and geresh only (צה״ל, ג׳ירפה); 7,565 construct forms end with a maqaf (כֶּלֶב־); 22.2% of own words end
+  in a final letter. 100 malformed Latin form headwords (`form אָרֶץ`).
+- Beyond Wiktionary: FreeDict ara-eng (Arabeyes, GPL, reversed list of low quality); nothing open for Persian or
+  Hebrew. Hans Wehr is copyrighted; circulating Yomitan conversions are unlicensed.
+
+### Word frequency
+
+- wordfreq 912caf6: `large_ar` (620,701 words), `large_he` (591,944), `small_fa` (31,389), `small_ur` (23,201); none
+  for arz. Its preprocessing applies NFKC and removes every Mn mark and tatweel for Arabic and Hebrew script; it folds
+  nothing else (no alef forms, no ى/ي, ي/ی or ك/ک) and keeps ZWNJ.
+- fa's list holds Arabic ي in 1,803 words and ك in 326 (اين مي هاي براي, كه يك); he's both ASCII and Hebrew quotes
+  (צה"ל 17,140 words with `"`, 211 with ״).
+- Coverage of the 20,000 commonest words against the X-en headwords (lemmas and forms):
+  - ar 13,847 exactly; 14,601 with the spelling keys above; 17,771 with proclitics; 18,851 with pronoun suffixes too
+    (the last two are upper bounds, which Yomitan's transforms cover).
+  - fa 9,517 exactly; 11,014 with ي ك ى → ی ک ی and ZWNJ removed; 14,603 with our ending rules; 15,081 with the
+    verb prefixes too. Missing then: colloquial forms (خوبه, میاد, چیه).
+  - he 6,067 exactly; 10,863 against unpointed headwords (and ASCII quotes as Hebrew ones); 17,570 with up to three
+    prefix letters split off (an upper bound with false matches).
+  - ur 5,516 exactly; 6,575 with folds.
+- Other lists: CAMeL Arabic frequency lists (CC BY-SA 4.0, with MSA and dialect lists; the only open one for arz),
+  hermitdave/FrequencyWords (OpenSubtitles, CC BY-SA 4.0 content). Leipzig's terms contradict each other.
+
+### OCR
+
+- ML Kit: no Arabic or Hebrew model.
+- Paddle `arabic_PP-OCRv5_mobile_rec` (Apache-2.0): ONNX 8.0 MB, MNN 7.98 MB, 747 entries (Arabic block with harakat
+  and tatweel, ، ؛ ؟ ۔, Persian پ چ ژ گ ک ی, Urdu ٹ ڈ ڑ ں ھ ہ ے, both digit sets, Latin, symbols); no ZWNJ, no
+  Hebrew. Converted for the comparison (`testdata/ocr/compare/models/`); it joins the Paddle models that wait for
+  the owner's upload (question 4 of `plans/2026-10-19-group-4c.md`).
+- Tesseract (pins of `tessdata_catalog.py`), MB: ara fast 1.43 / best 12.60; fas 0.43 / 3.33; heb 0.96 / 3.70;
+  urd 1.40 / 7.99.
+- Comparison (emulator, 2026-10-16/17), character errors in % on clean / hard screens:
+  - ar: Paddle 2.4 / 3.5, Tesseract fast 5.8 / 58.8, best 5.9 / 56.1, cloud 0.4 / 0.5;
+  - fa: Paddle 2.2 / 5.2, Tesseract fast 26.4 / 49.9, best 26.5 / 49.4, cloud 1.4 / 0.7;
+  - he: Tesseract fast 0.0 / 48.5, best 0.0 / 43.7, cloud 0.0 / 5.1 (taps right 87%).
+  By the rows "OCR engine choice" and "Tesseract models": Paddle for ar and fa, Tesseract fast for he (best is not
+  clearly better). Row "On-device OCR engines" keeps Tesseract out of Persian's list (measured unusable), so until
+  the Paddle upload Persian has no on-device model, and Arabic offers Tesseract.
+- Test pages of this research (`scripts/text-image.py` cannot shape Arabic: Pillow without raqm; drawn with headless
+  Chrome at 1080 px in Noto Naskh Arabic, Noto Sans Arabic, Vazirmatn, Noto Sans and Serif Hebrew, with harakat,
+  tatweel, ZWNJ, both digit sets, quotes and brackets, mixed Latin). Cloud recognition (PC client) and Paddle (PC,
+  `paddle_ref.py` with ONNX Runtime, the app's `readingOrder` applied):
+
+| What | Cloud recognition | Paddle arabic |
+|---|---|---|
+| Word order, pure RTL line | reading order, rightmost word first | reading order after `readingOrder` |
+| Punctuation ، ؟ ؛ . : « » ( ) | separate words, empty separator before them | kept in words; brackets and guillemets come out mirrored: `»اقرأ الكتاب«`, `)الصفحة 12(` |
+| 10:30, ٢٠٢٤, ۱۴۰۳ | one word, correct order | ASCII digits correct; Arabic-Indic and Persian digits reversed: ٢٠٢٤ → ٤٢٠٢, ۱۴۰۳ → ۳۰۴۱ |
+| Number before the full stop | correct | "الرصيف 5." → "الرصيف .5" |
+| Harakat | kept (once an extra sukun) | a vowelled line read badly (scores 0.56-0.64, letters lost) |
+| Tatweel | removed | kept as ـ or dropped |
+| Persian ی ک | Persian on a Persian page, Arabic on an Arabic page | Persian with Vazirmatn; Arabic ي ك ى with Noto Naskh (كتاب, مى, يك) |
+| ZWNJ (می‌خواهم, کتاب‌ها) | always dropped: joined (میخواهم), once a space (خانه ای) | not in its list: joined, or a space with Naskh |
+| Latin inside an Arabic line | "iPhone 15 Pro" in reading order (Sans dropped "15") | lost with Naskh, garbled with Sans |
+| Latin inside a Hebrew or Persian line | runs in the wrong order (קניתי, 15, iPhone) | – |
+| Hebrew niqqud | kept, a dagesh once dropped | – |
+| Hebrew ״ ׳ ־ | gershayim → ASCII `"`, geresh → ASCII `'`, maqaf kept | – |
+| Arabic word in an English line | order right; كتاب came back with Persian ک | – |
+
+- The locale sent (ar or fa) does not change the output; the response's `content_language` is `fa` for Persian and
+  `iw` (the old code) for Hebrew; `LensProtocol` does not read it. Word boxes are right, so the order of a mixed line
+  can be rebuilt from geometry.
+
+### Right to left in the app today
+
+- Recognition marks lines: `OcrLine.rightToLeft` from the first strong character (cloud, Tesseract); Paddle's
+  `readingOrder` reverses its letters except runs of ASCII letters, digits and `: * . / % + -` (so Arabic-Indic and
+  Persian digits are reversed and mirrored characters are not mirrored, see above).
+- `TextLayout.splitBox` splits a word box from its right edge in RTL lines; hit testing takes the nearest character;
+  the highlight is the union of the matched characters' boxes per line. Arabic letters differ in width (ا, س), so
+  evenly split boxes are approximate; with the word-start lookup a tap inside a word finds it anyway. Harakat count as
+  characters in the split (group 4c's "marks get no width" fixes that too).
+- Tesseract's iterator gives words and symbols in reading order; symbol boxes are kept when there is one per character.
+- App text (`AccessibilityText.appTextLines`) ends a line where a character starts left of the previous one by half
+  its width: in an RTL text view every next letter does, so each Arabic or Hebrew letter becomes a line of its own,
+  and the lines are not marked RTL.
+- `LanguageSupport.rightToLeft` exists; nothing reads it.
+- Lookup page: `lang` is set per source and result, `dir` nowhere; a block with Arabic text is laid out as LTR
+  (trailing punctuation on the wrong side, mixed runs misordered, aligned left).
+- Anki: the app fills fields of the user's note types and creates none; the direction of an Arabic field is the card
+  template's (Yomitan adds nothing either). AnkiDroid's duplicate check compares the first field's checksum, markup
+  included (`AnkiDroid.kt` 64-70).
+- Word characters: letters, digits, marks, ZWNJ and ZWJ (since Hindi), so harakat, niqqud, tatweel (Lm) and Persian
+  ZWNJ stay inside words. Not yet: geresh ׳ and gershayim ״ (Po), ASCII `'` and `"` between Hebrew letters (cloud
+  recognition gives צה"ל, ג'ירפה), maqaf ־ (Pd).
+- Sentence ends: `. ! ? … \n`; ؟ (U+061F) and the Urdu ۔ (U+06D4) are missing; ، and ؛ are a comma and a semicolon.
+
+### Fonts
+
+- AOSP `fonts.xml`: Noto Naskh Arabic and its UI variant for `und-Arab`; Noto Sans Hebrew and Noto Serif Hebrew for
+  `und-Hebr`. No Noto Sans Arabic, no Nastaliq (Urdu would show in Naskh). PostScript names `NotoNaskhArabic`,
+  `NotoNaskhArabicUI`, `NotoSansHebrew`, `NotoSerifHebrew`; `local()` to be checked on the emulator.
+- The font catalog has nothing for either script. Downloadable (Google Fonts, OFL): Noto Sans Arabic (0.84 MB), Amiri
+  (0.43 MB, book style), Vazirmatn (0.24 MB, the common Persian face), Heebo (0.12 MB), Frank Ruhl Libre (0.18 MB,
+  serif); Noto Nastaliq Urdu for later.
+- Shaping (joining forms, lam-alef, marks) is the WebView's and the system's HarfBuzz; nothing needed from us.
+
+### Text rules
+
+- Arabic: the spelling keys above (hamza alefs, final ى/ي, final ة/ه) at import, in place of Yomitan's two hamza
+  processors; adjectives reached through untyped noun-rule candidates; lemma links compared without harakat;
+  `ar-infl-*` tags dropped; romanized form rows dropped.
+- Persian: ZWNJ removed in text and keys; ي ك ى → ی ک ی and ۀ → ه in text, keys and frequency spellings; our own ending
+  and verb-prefix rules (about 30) in the fa bundle; Cyrillic Tajik and romanized form rows dropped.
+- Hebrew: niqqud and cantillation removed in text (a variant) and in keys (U+0591-05C7 except the punctuation maqaf,
+  paseq, sof pasuq, nun hafukha); a trailing maqaf dropped from keys; ASCII `'` `"` between Hebrew letters tried as
+  ׳ ״; our own prefix rules (up to three of ו ה ב ל מ ש כ). Final letters need nothing: prefixes do not touch a word's
+  end and there are no suffix rules.
+- Sentence ends: ؟ for Arabic and Persian (۔ for Urdu later); Hebrew . ! ? as now.
+- Text to speech: `speechText` is `reading.ifEmpty { term }`; Persian's reading is Latin, so Persian speaks the term.
+
+### Scan length
+
+- Over 16 code points (the default scan length): 2.4% of vowelled Arabic forms and 1.2% of pointed Hebrew forms;
+  with up to four code points of prefixes 18.1% and 15.6%; Persian headwords 12.1% (multiword verb forms such as
+  داشتیم میفرستادیم). Over 24: 0.2% of vowelled Arabic forms with prefixes, no Hebrew ones, 2.5% of Persian headwords.
+
+### Audio
+
+- Lingua Libre: ar Q13955 `ara` 13,788 files from 67 speakers; fa Q9168 `fas` 4,260 / 11; he Q9288 `heb` 3,615 / 31;
+  ur Q1617 `urd` 490 / 8. One code per item, so the app's `\([a-z]{3}\)` matches all. 49 Hebrew words are filed
+  under the Arabic item. Arabic varieties have items of their own (South Levantine `ajp` 3,323, Moroccan `ary` 1,770,
+  Egyptian `arz` 948, …).
+- Wiktionary-style titles on Commons: `Ar-` 1,592 audio files (1,533 in Arabic script), `Fa-` 933 (856), `He-` 1,477
+  (1,377; 280 more titled `He-Q<item>-…-Ijon.ogg`, which the app's pattern does not match), `Ur-` 138 (126).
+- Twenty common words, the app's own queries, Lingua Libre / Wiktionary / either: ar 12 / 15 / 20 (14 / 15 / 20 when
+  the vowelled spelling is searched too); fa 17 / 15 / 19; he 19 / 1 / 20 (20 / 5 / 20 with the pointed spelling);
+  ur 5 / 1 / 5. By the row "Audio order": Wiktionary first for Arabic, Lingua Libre first for Persian and Hebrew.
+- Vowel marks in titles: `He-` 78% pointed (`He-כֶּלֶב.ogg`), Lingua Libre `ara` 17%, `fas` 14% (one speaker), `Ar-`
+  4%, `Fa-` none. Commons search does not ignore marks (`قرأ` finds nothing, `قَرَأَ` two files) and stores titles in
+  NFC, which reorders marks (shadda after the vowel), so a vowelled spelling compared locally must be NFC first. The
+  marks in titles are the uploader's (`Ar-كِتَابٌ.oga` with tanwin), so a query with the dictionary's vowelled reading
+  finds only some. An optional marks class after every letter of the query (tested: Lingua Libre 0.5-0.7 s, Wiktionary
+  0.5-1.5 s when narrowed with `intitle:"<word>"`, 16 s without) finds them all, but also homographs (كلب finds the
+  verb كَلَبَ, אב the month Av): Arabic 15 / 16 / 20, Hebrew 20 / 5 / 20, Persian 18 / 15 / 19.
+- Arabic dialect items have 17 of the twenty words, pronounced as the dialect; not used for Arabic (question 85).
+- 204 of the 856 `Fa-` titles use Arabic ي or ك (`Fa-كتاب.ogg` is the clip the Persian entry کتاب cites); the app's
+  query with Persian letters misses them. Lingua Libre `fas` uses Persian letters throughout.
+- Text to speech: Google's engine has Arabic and Urdu; Hebrew is in Wikipedia's list and Google Cloud's (`he-IL`)
+  but not in TalkBack's language list, so it is to be checked on the emulator; no Persian anywhere (Persian audio rests
+  on the recordings). `TextToSpeech.setLanguage` passes the ISO 639-2 code, so `he` and `iw` are the same to it.
+
+### Names, flags, codes
+
+- Names (JDK 21, CLDR 42): Arabic / арабский / アラビア語 / 阿拉伯语 / Arabisch / Tiếng Ả Rập; Persian / персидский /
+  ペルシア語 / 波斯语 / Persisch / Tiếng Ba Tư (Turkish Farsça); Hebrew / иврит / ヘブライ語 / 希伯来语 / Hebräisch /
+  Tiếng Do Thái. Own names العربية, فارسی, עברית. Android's ICU may differ slightly (not checked on the device).
+- Codes: Android's `Locale("he").language` is "iw"; the app compares `languageCode` (from the language tag, "he"),
+  and `TranslationLanguages.forLocale` maps iw → he. Translation services: ar, fa, he (Google `iw`) in
+  `TranslationLanguageTable`; no Arabic varieties in either service.
+- circle-flags 379588b: `sa.svg`, `ir.svg`, `il.svg` convert with `circle_flags.py` (3,026, 1,200, 1,050 bytes);
+  `flags/language/ar.svg` is a design of its own (lettering on green), fa, he and ur are links to the country flags.
+- E-ink codes AR, FA, HE.
+
+### Urdu, Egyptian Arabic and Yiddish (for group 5f)
+
+- Urdu: ur-en 7.7k words and ur-de 1.6k; forms are multiword table cells with a pronoun (ہَم کَریں), so bare forms
+  (کریں, والے) are no headwords; 73% of form headwords pointed; Nastaliq is the usual print style and was not measured
+  (Paddle's Arabic model knows the Urdu letters); no system Nastaliq font; Lingua Libre 490 files (120 more Urdu-script
+  files under the English item, 14 of the twenty words with them), Google voices `ur-PK`/`ur-IN`. The bundle needs `borrowed.ur` and letter variants ک/ك, ی/ي, ہ/ه, ے.
+- Egyptian Arabic: arz-en 1,111 words, under the threshold; its bundle needs the glue keyed by iso to deinflect.
+- Yiddish: yi-en 1.39 MB; Yomitan's points removal and final letters; candidates never carry the YIVO points.
+
+### Plain fixes found (no owner decision)
+
+- Paddle `readingOrder`: every decimal digit (Nd) kept in its run, bidi-mirrored characters (`( ) [ ] « » < > { }`)
+  mirrored, kept signs at a run's edge split off it (except %), so "5." stays "5.".
+- App text: in an RTL text view a line ends where a character starts to the right of the previous one, and its lines
+  are marked right to left.
+- Cloud recognition: the order of a mixed RTL line rebuilt from word boxes (LTR runs kept left to right).
+- Letters by language in OCR words (`ocrWord`, as the Cyrillic look-alikes): Persian ي ك ى → ی ک ی; Arabic ک ی → ك ي.
+- Word characters: geresh, gershayim and ASCII `'` `"` between Hebrew letters; the maqaf as a connector like the
+  hyphen. Sentence end ؟.
+- Glue: transforms registered by the descriptor's iso (fixes arz and Georgian); empty deinflected texts dropped;
+  `generate-inflections.mjs` by iso. `build.mjs`: `addedPreprocessors` for descriptors without the capitalization
+  line.
+- Form-of: lemma links compared without marks (ar, ur); template-name tags dropped; form rows in other scripts dropped
+  (fa Tajik Cyrillic and romanized, ar romanized, he malformed Latin).
+- Frequency spellings: fa ي ك ى → ی ک ی, ZWNJ removed; he ASCII quotes → ׳ ״.
+- Audio: the term and reading NFC-normalized before titles are compared; Persian Wiktionary titles searched with
+  Arabic ي ك as well.
+- Audio, every language: a Commons error answer (HTTP 200 with `error`, such as `cirrussearch-regex-too-busy-error`,
+  seen on 7 of about 400 regex searches) counts as "no recording" and the miss is cached for 60 s
+  (`AudioFinder.commonsFiles`); it should count as a failure. The search returns a redirect's target title, which
+  `wiktionaryFiles` drops when its word differs (`Ar-كتاب.ogg` → `Ar-كِتَابٌ.oga`, the only Wiktionary clip of كتاب).
+- Persian speaks the term, not its Latin reading.
+- `LensProtocol`: `content_language` "iw" is Hebrew, should it ever be read.
+- wordfreq's code license is Apache-2.0 (the group 4b sources line said MIT).
+
+### Questions for the owner
+
+See `plans/2026-10-19-group-4d.md` (questions 69-85, all answered on 2026-10-19).

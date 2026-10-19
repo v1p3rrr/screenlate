@@ -17,6 +17,11 @@
 | JPDB v2.2 frequency | github.com/Kuuuube/yomitan-dictionaries (no license) | Not bundled; importable by the user |
 | Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Bundled |
 | Yomitan API | github.com/yomidevs/yomitan-api | Desktop-only native messaging bridge; not usable on Android |
+| Paddle Arabic recognizer | huggingface.co/PaddlePaddle/arabic_PP-OCRv5_mobile_rec_onnx at 14aaedcd (Apache-2.0) | Arabic, Persian and Urdu letters, no ZWNJ, no Hebrew; converted for the comparison, waits for the Paddle upload; `languages.md`, "Group 4d research" |
+| Arabic, Persian, Hebrew fonts | Google Fonts (OFL): Noto Sans Arabic, Amiri, Vazirmatn, Heebo, Frank Ruhl Libre; Noto Nastaliq Urdu for Urdu later | Row "Fonts" of `plans/2026-10-19-group-4d.md` |
+| CAMeL Arabic frequency lists | github.com/CAMeL-Lab/Camel_Arabic_Frequency_Lists (CC BY-SA 4.0, their paper to be cited) | MSA, classical and dialect lists; not used (wordfreq has Arabic); the only open dialect list, for Egyptian Arabic later |
+| FrequencyWords | github.com/hermitdave/FrequencyWords (code MIT, lists CC BY-SA 4.0) | OpenSubtitles 2018 lists (ar, fa, he, ur 50k); not used |
+| FreeDict ara-eng | download.freedict.org/dictionaries/ara-eng/0.6.3 (GPL-2.0-or-later) | A reversed Arabeyes word list of low quality; not used |
 
 ## Custom audio servers
 
