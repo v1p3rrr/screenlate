@@ -1,6 +1,6 @@
 # Status
 
-## Work in progress (2026-10-19): OCR missing parts, the download queue, group 4a questions, the checks session
+## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
 
@@ -17,13 +17,33 @@ and the owner's mobile network freezes it (`notes/audio-sources.md`). Its emulat
 sent to the checks session. Request 68 (scan times, default engines; OCR plan questions 36-40, answered) is in the
 languages plan.
 
-The emulator checks of groups 1-3 and the OCR cases run in their own session ("Emulator checks of groups 1-3 and OCR
-engines", branch `languages/checks` in `.worktrees/lang`), together with the in-app scan timing run per engine.
-It was sent a second round: merge `languages/ocr-engines` and check the N cases above. When it reports:
+The emulator checks of groups 1-3 and the OCR cases are done (session "Emulator checks of groups 1-3 and OCR
+engines", run log in `test-model.md`, 2026-10-18 and 2026-10-19): every case passed. `languages/checks` (its rule
+fixes, the scan changes and the language rules audit) was reviewed and merged into `languages/ocr-engines`
+(`2a3676a`). After the merge, built on `languages/ocr-engines`:
 
-- review its commits, and ask the owner before merging them into `languages/ocr-engines`;
-- apply the timing run: the row "Default OCR engines", the speed marks in words and the Both-mode hint;
-- fast-forward `languages/main` through the stack.
+- partial downloads in `no_backup/dictionary-downloads/` instead of the cache (owner), the old cache directory deleted
+  with the import leftovers;
+- "Waiting for a network" on waiting download cards and catalog cards (owner; rows "Partial downloads", "Waiting for
+  a network");
+- review fixes: decomposed Vietnamese app text was rejected as shared boxes; a PaddleOCR release during a trim or a
+  scan is deferred until it ends (`DeferredRelease`);
+- Home: no "no dictionary with definitions" for categories being installed, no "Installing dictionaries…" for a model
+  download alone; model update rows name their languages.
+- New cases DIC23-DIC25 (N), not run yet.
+
+Still to do from the checks: the timing run's row "Default OCR engines", the speed marks in words and the Both-mode
+hint; fast-forward `languages/main` through the stack. `main` CI has failed since 2026-10-15 on lint `RestrictedApi`
+(`Data.Builder.put`, `Result.Retry` in the import worker); the language branch no longer has that code, so it ends
+with the next release from it.
+
+TEMPORARY diagnostics build (open item, remove after the analysis): branch `claude/diagnostics-build-9fbbc9`
+(session "Temporary diagnostics build: logs and metrics", `notes/diagnostics.md` on that branch) records timings,
+memory and process events; it is never merged into a working branch, and the latest `languages/ocr-engines` is merged
+into it for each phone build. The owner installs local builds of it (`testdata/apk/screenlate-diag-<sha>.apk`, this
+machine's debug key, so later ones install over it), uses the phone for a few days and sends the export (About →
+Logs). After the analysis: follow "Removal" in that note (delete the branch and worktree; "Delete collected data" on
+the phone; ask whether a normal build should delete leftover `no_backup/diagnostics` files).
 
 Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
 41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
