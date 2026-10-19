@@ -748,6 +748,14 @@ threshold, 511 words into en at most):
 
 - Belarusian form headwords with stress marks: index headwords without U+0301 (and U+0300) at import as well, for be,
   uk and sh (sh also U+030F, U+0311, U+0304, U+0302 on vowels and r), so plain text finds them.
+  Built on `languages/main` 2026-10-19 (`LanguageSupport.headwordMarks`, `MarkStripper` in `archive_split.cpp`). The
+  scan of the archives found the lemmas as well: form-of items name a stressed lemma that no headword spells
+  (wty ru-en: 376,101 items, почти → почти́ть; 363,544 of them name a headword once the marks go, 11,514 another form,
+  1,043 nothing; uk-en 21,689 of 29,039; sh-en 1,531 of 1,677; be-en 1,900 of 1,981). So Russian gets the rule too,
+  for lemmas: before it those items led nowhere. Stored lemmas lose the marks; forms keep the stressed key beside the
+  plain one. Marks go only after vowels (and r for sh): Belarusian Łacinka ć ś ń ź and Serbo-Croatian ć carry the
+  same acute in decomposed form. Only 15 sh main headwords are marked (the letters ȁ ȅ … and "Ciudad de México").
+  Installed dictionaries change only when imported again.
 - Serbo-Croatian `Cyrillic` form rows: silent and dropped (`ignoredFormTags`), the Cyrillic entries exist on their own.
 - Baybayin and Jawi alt-of rows: the target (ᜊᜐ, باچ) is itself only a form row back to the Latin word, so following
   it brings nothing new; drop the tags `Baybayin` and `Jawi` (the grammar line already shows the spelling).
@@ -797,3 +805,101 @@ plan.
     (c) the code "BE" instead of a flag.
 12. Bubble letters: (a, recommended) nl Ĳ, cs Ř, id and ms the codes "ID" and "MS" (no letter of their own), tl Ng,
     sh Đ, uk Ї, be Ў, el Ω; (b) the alternatives above (IJ, Ů, Ñ, Ћ, Ґ, Λ).
+
+## Serbo-Croatian on `languages/sh` (2026-10-19)
+
+- Two entries, `Language.SERBO_CROATIAN_LATIN` (`sh-Latn`) and `SERBO_CROATIAN_CYRILLIC` (`sh-Cyrl`), with the shared
+  `dictionaryCode` sh. The entry code keys the settings, the profile, the recognition models (`paddle-v6-sh-Latn`,
+  `tesseract-*-hrv`; `paddle-cyrillic-sh-Cyrl`, `tesseract-*-srp`), the voice (hr, sr), the flag and the page's
+  `lang`; the dictionary code is the dictionaries' source language (catalog, registry, imports), the Yomitan bundle
+  `sh.js`, the wordfreq list, the audio URL templates' `{language}`, cloud recognition's language and the backup's
+  dictionary files (either entry takes them). `Language.of("sh")` is null, `Language.withDictionaries("sh")` gives both
+  entries, `CatalogEntry.isFor` compares models by entry and dictionaries by dictionary code.
+- Files: an entry's files are its models, plus the dictionaries only while the other entry is off (`fileCodes`), so
+  turning off one entry while the other is on deletes nothing shared; with both off, one leftover card under sh holds
+  the dictionaries and both entries' models, with a "Turn on" button per entry (`leftoverCode`, `leftoverCards`).
+- Lookup time on the emulator (Pixel_10_Pro, wty-sh-en, instrumented test): ordinary words 2-10 ms; a line of c, s
+  and z ("cecescecescecesc") that reaches Yomitan's 4,096-variant cap 140-260 ms. No cut of our own was needed.
+- QuickJS has no `console`: Yomitan warns through `console.warn` when it cuts the variants, and the warning threw, so
+  the whole lookup failed. `scripts/yomitan-language/console-stub.js` (in every bundle) drops the messages, which carry
+  the looked-up text. Node's `vm` contexts always have a console; the glue test sets `console: undefined`.
+- Yomitan's `removeSerboCroatianAccentMarks` matches Latin vowels and r only, so Cyrillic text with reading marks
+  (ку̏ћа) found nothing; the glue replaces it with a version that takes the Cyrillic vowels and р as well.
+- A word that is also a form of itself shows the form's tag (kuća "genitive plural", as kuća is the genitive plural of
+  kuća): the engine merges the direct match and the form-of match into chains [[], [genitive plural]] and shows the
+  non-empty one, as Yomitan does. Left as is (`notes/language-rules.md`, limits).
+- Frequency: the wordfreq `sh` list is Latin; the builder adds each word's Cyrillic spelling (and its capitalized
+  form) with the word's rank, so кућа gets 553 as kuća does.
+- Audio: Wiktionary files are found under the prefix `Sr-` with the Cyrillic title (Latin words transliterated by
+  `SerboCroatianScripts`); kuća and кућа played from Wiktionary on the emulator. Lingua Libre (`srp`) had nothing for
+  the words tried.
+- Glyph forms: `lang="sh-Cyrl"` gives Noto's Serbian б in the WebView (`webview-fonts.md`).
+
+## Ukrainian and Belarusian on `languages/uk` (2026-10-19)
+
+- Bundles: `uk.js` has Yomitan's 35 rules, `removeUkrainianDiacritics` (U+0301) and `ukrainianApostropheVariants`
+  (' ‘ ’ ʼ ` ´ each tried as ', ’ and ʼ). Yomitan gives Belarusian capitalization only; `build.mjs` adds Ukrainian's two
+  processors to its descriptor (`addedPreprocessors`) and fails if Yomitan's `be` gets more processors of its own.
+- Rule names: `values/inflections_uk.xml` from `generate-inflections.mjs`, translated by hand into the 13 other
+  locales with the form-of tag terms of each (`form_of_tags.xml`).
+- Readings: wty gives uk and be lemmas no reading; forms carry their stress (чита́ю, вады́), which the import drops
+  from the key (`headwordMarks`, U+0301 and U+0300 after a vowel). So no reading rule like `reading-ru.js` and no
+  furigana markers for either.
+- Apostrophes: wordfreq uk, wty uk-en (5,994 headwords) and most other editions write ', wty uk-fr ’ (1,999), uk-ru
+  both (1,031 ', 79 ’), be-pl and be-ru ’ and some ʼ. Lookups find any of them through the processors. The wordfreq
+  builder gives uk words with ' their ’ and ʼ spellings at the same rank (`frequencySpellings`); the index then says
+  "spellings the list leaves out … have its rank" (the sentence covers the Chinese and Serbo-Croatian scripts too).
+  wty uk-ru lists some words under both (п'ятниця, п’ятниця), shown as two entries.
+- Chains back to the text: Yomitan's "nominative plural" takes книга for the plural of книго, and wty lists книго as
+  the vocative of книга, so every feminine noun in -а in its dictionary form showed "nominative plural « vocative
+  singular". `candidate_lookup.cpp` drops a form-of step that leads back to the scanned text (the candidate's
+  transformed text) through another text; a form that is its own lemma (kuća) keeps its one-step chain.
+- OCR: a word of one letter is taken as Cyrillic in every Cyrillic language (`CyrillicLookAlikes.fix`): і (and), у,
+  В and а have no other letter to show their script. Ukrainian adds i, ï → і, ї, Belarusian i, ŭ → і, ў. The overlay
+  over a rendered Ukrainian image (Arial, Paddle `cyrillic`) found і as the conjunction and п’ять as п'ять.
+- Fonts: the Ukrainian apostrophe ʼ (U+02BC) is outside the Latin and Cyrillic blocks; Ukrainian's system font range
+  adds it.
+- Sentences: Ukrainian "р." and "рр." (рік, роки), "т. зв.", "у т. ч.", "ст.", "див."; Belarusian "г.", "гг.", "г.
+  зн."; "і т. д." and "і г. д." end. Ukrainian т. also holds Russian "т. е.", Belarusian г. Russian and Serbo-Croatian
+  "1991 г." (Isolation test).
+- Catalog: uk has 9 main pairs (en, ru, de, fr, ja, ko, pl, tr, zh), the large wordfreq list (2.8 MB), the
+  transcription and Paddle `cyrillic`; be 4 main pairs (en, ru, ko, pl), no frequency list.
+- Emulator (LK37, LK38): книги → книга "nominative plural", W 1109; зробив → зробити "past"; чита́ю → читати; п’ять and
+  пʼятниця find the ' headwords (п'ять W 800); Wiktionary audio plays; flags ua and by, Ї and Ў in the bubble;
+  Belarusian сям’я → сям'я, вады and ва́ды → вада "genitive singular", праўда.
+
+## Greek on `languages/el` (2026-10-19)
+
+- Bundle: `el.js` has Yomitan's capitalization processors, `removeDoubleAcuteAccents` (an enclitic's second accent:
+  πρόσωπό → πρόσωπο) and one rule, ξανα- (again). The rule's last variant drops every accent of what is left
+  (ξαναρώτησε → ρωτησε), which only the tonos-free keys below can match. QuickJS lowercases a final Σ to ς
+  (ΣΚΥΛΟΣ → σκυλος), checked by the instrumented test. `values/inflections_el.xml` holds no strings: the rule is
+  named by its prefix, so `generate-inflections.mjs` no longer asks for a translation file when nothing needs one.
+- Tonos: wty headwords carry it (σκύλος), all-caps text never does, and much typed text leaves it out. With
+  `HeadwordMarks.everyHeadword` the import keys every headword with definitions without U+0301 in the form-of table,
+  as a step without tags back to the headword, and form rows the same way with their lemmas as written. The table is
+  written even when the archive needs no rewrite, so el-el and the glossaries get it too. Text with the tonos still
+  matches exactly: πότε finds πότε only, ποτε finds ποτέ and πότε (owner's choice). wty el-en: 7,921 tonos-free
+  spellings stand for two or more headwords.
+- wordfreq: the small `el` list (276 kB) writes the final sigma as σ (τησ, σασ); the builder turns a word-final σ into
+  ς (`LanguageSupport.frequencyWord`), so ranks reach the headwords (σκύλος W 3024, ποτέ 120, τώρα 67).
+- OCR: ML Kit has no Greek model. Paddle `el` (PP-OCRv5 with the v5 detector, 7.2 MB) is the recommended model,
+  uploaded to the `ocr-models-1` release on 2026-10-19; Tesseract `ell` fast and best are listed unticked. Latin
+  look-alikes become Greek (`GreekLookAlikes`): the shared capitals, v → ν, n → η, c → ς, u → υ, w → ω, y → γ,
+  x → χ; a lone o or H counts as the article ο, Η.
+- Sentences: ; and U+037E end a sentence, the ano teleia · does not; abbreviations π.χ., λ.χ., κ. (Mr), αι.,
+  βλ., σελ., μ.μ., π.μ. and the others in `GreekSupport` hold it; κ.λπ., κ.τ.λ., κ.ά. and μ.Χ. end. Quotes « » with
+  “ ” inside. Elided σ', τ', μ', θ', ν', κ', απ', γι' start a new word after the apostrophe.
+- Fonts: the system font range adds Greek and Coptic (U+0370-03FF) and Greek Extended (U+1F00-1FFF); downloadable Latin fonts with Greek (Literata, Inter) show on the list; the "Only for Greek
+  text" switch has its string in every locale.
+- Audio: Lingua Libre files under Q9129 carry `ell` (167), `gre` (130) or `mis` (84); the search took `ell` only and
+  now takes any code (all languages). Of ten common words, two have a recording (γάτα under `ell`, μητέρα under
+  `gre`), none a Wiktionary one, so the voice reads most words.
+- Wiktionary data shown as it is: form rows join related nouns (σκυλί "masculine" → σκύλος, μητέρα "feminine" →
+  πατέρας) and some tags repeat (καλή → καλός "nominative/accusative/vocative singular feminine/feminine").
+- Catalog: 6 main pairs (en, ru, fr, pl, tr, zh ticked; el-el 38 MB unticked), 11 short-translation glossaries,
+  the transcription, wordfreq, Paddle `el`, Tesseract `ell`.
+- Emulator (LK39): σκυλος and ΣΚΥΛΟΣ → σκύλος, ποτε → ποτέ and πότε, πότε alone, ξαναρώτησε → ρωτάω "ξανα- « …",
+  καλη ορεξη → καλή όρεξη; flag gr, Ω in the bubble; the Paddle download, its warm-up (131 ms) and the overlay over a
+  rendered image (Arial): ΣΚΥΛΟΣ, Νίκος with the sentence "Ο κ. Νίκος είπε· «Έρχομαι αύριο»." translated whole,
+  the lone Η as the letter and article, π.χ. inside its sentence.

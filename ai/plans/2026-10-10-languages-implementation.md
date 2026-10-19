@@ -570,6 +570,23 @@ decision rows from "Serbo-Croatian" on:
 54. Answered: (a). The entries' names: "Serbo-Croatian (Latin)" and "Serbo-Croatian (Cyrillic)"; or "Croatian" and
     "Serbian" (Serbian Latin text would then go through "Croatian").
 
+Collected while building Serbo-Croatian (2026-10-19; the owner left the work running, so each is built with the first
+option and changes cheaply):
+
+55. Codes in e-ink mode (letters instead of flags): "SH" for the Latin entry and "СХ" for the Cyrillic one; or "SH"
+    for both; or "HR" and "SR".
+56. Tesseract models listed: Croatian (hrv) for the Latin entry and Serbian (srp) for the Cyrillic one; or also
+    Serbian Latin (srp_latn) and Bosnian (bos) for the Latin entry. PaddleOCR v6 stays the recommended one for Latin
+    (measured best), PaddleOCR cyrillic for Cyrillic.
+57. Sentence translation from: Croatian for the Latin entry and Serbian (Cyrillic) for the Cyrillic one, as the
+    voices; or Serbian (Latin) for the Latin entry; or Bosnian. The services translate the three alike.
+58. Flags: Croatia for the Latin entry and Serbia for the Cyrillic one, with no "Flag" button; or a "Flag" button on
+    the Latin entry with Croatia, Serbia, Bosnia and Herzegovina and Montenegro (as for English).
+59. Lingua Libre: the Serbian recordings (srp, 93 files) for both entries; Croatian (hrv) has one file and Bosnian
+    none. Or no Lingua Libre for Serbo-Croatian (Wiktionary first, then the voice).
+60. "Turned off" with both entries off: one card for the shared files with "Turn on Serbo-Croatian (Latin)" and "Turn
+    on Serbo-Croatian (Cyrillic)"; or one card per entry, the dictionaries on the card of the entry turned off last.
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -936,7 +953,8 @@ Dictionaries are checked when the group starts; a language without support or di
 
 ### Group 4a (nl, cs, id, ms, tl, sh, uk, be, el)
 
-Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build of groups 1-3"). Research:
+Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build of groups 1-3"); the owner started it
+on 2026-10-19 before the OCR plan's last items, which wait for the phone timings and are adjusted afterwards. Research:
 `notes/languages.md`, "Group 4a research"; decisions from the row "Serbo-Croatian" on.
 
 - Shared pieces first, on `languages/main`:
@@ -959,6 +977,15 @@ Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build o
   rule, the audio order by measured coverage, OCR and the test screenshots.
 - To time on the emulator: Yomitan's `addSerboCroatianDiacritics` on long Latin lines (3^n variants per substring,
   capped at 4096).
+
+Progress: nl, cs, id, ms and tl are built on chained branches and checked on the emulator (LK31-LK35, run log of
+2026-10-19); `languages/main` is fast-forwarded to `languages/tl` (`3951cea`). Found while checking: the line
+"Compound: X + Y" above a split compound (row "German compounds", question 15, owner 2026-10-16) was never built; it
+is built now, for German and Dutch (`58ea5fa`). Serbo-Croatian (both entries) is built on `languages/sh`, checked on
+the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Ukrainian
+and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK38). Greek is built on
+`languages/el` and checked on the emulator (LK39); its Paddle model is in the `ocr-models-1` release. Group 4a is
+done; what is left is the owner's questions 55-60 and the phone timings of the OCR plan.
 
 ## The big release
 
@@ -1302,3 +1329,32 @@ Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build o
   records the cause.
 - 2026-10-19: answers after the emulator checks: rows "Partial downloads" and "Waiting for a network"; the checks
   branch merged after a review (two minor fixes: decomposed Vietnamese app text, a PaddleOCR release during a trim).
+- 2026-10-19: group 4a started before the OCR plan's timing-dependent items (owner: the timings can be applied
+  afterwards); `languages/main` fast-forwarded through the stack and `main` merged (`ac61458`). The Greek Paddle
+  model may go to `ocr-models-1` once the 4a work is done (owner); that release is a regular one now (owner), not
+  marked latest, so the in-app update check (`releases/latest`) still finds v0.2.3.
+- 2026-10-19: group 4a shared pieces on `languages/main`. The catalog script counts words (cached in
+  `scripts/catalog/word-counts.json`; archives of 8 MB or more pass uncounted) and lists own editions of languages
+  outside the gloss languages, not recommended; the existing languages gain 146 small pairs and glossaries that pass
+  by words (lv–ru among them), none is lost. Headword marks are dropped at import; the archive scan showed that
+  Russian needs it as well (376k form-of items name stressed lemmas), so Russian gets the rule. Paddle and Tesseract
+  sets for the 4a languages, `paddle-el` converted (not uploaded yet); cs, uk, be and el recommend the measured
+  Paddle models, the unmeasured Latin languages recommend none.
+- 2026-10-19: the Latin languages of group 4a (nl, cs, id, ms, tl) checked on the emulator and fast-forwarded into
+  `languages/main`. Fixes from the check: a second form-of step never leads back to the text it started from (Jansen →
+  Janssen → Jansen showed as a form chain); a capital I read for the l of Czech "n. l." keeps the sentence going.
+  Translation of Chinese, Portuguese and Filipino sentences picked no service language (plain bug, fixed). The
+  missing "Compound:" line is built next.
+- 2026-10-19: the line "Compound: …" built for German and Dutch. Serbo-Croatian built as two entries sharing the
+  dictionary code sh, checked on the emulator and fast-forwarded into `languages/main`. Plain fixes found: QuickJS has
+  no console, so Yomitan's warning at its 4,096-variant cut failed the lookup (a stub in every bundle); Cyrillic text
+  with reading marks found nothing (the glue replaces Yomitan's accent mark processor); a Croatian or Serbian
+  interface made the text's own language the default translation target. Provisional choices: questions 55-60.
+- 2026-10-19: Ukrainian and Belarusian built on `languages/uk` (Belarusian takes Ukrainian's stress mark and
+  apostrophe processors) and checked on the emulator. Plain fixes found: a form-of step back to the scanned text after
+  a Yomitan rule showed as a chain on every feminine noun in -а (книга); a word of one letter read in Latin (і, у, В)
+  stayed Latin in every Cyrillic language; wordfreq's Ukrainian words also rank their ’ and ʼ spellings.
+- 2026-10-19: Greek built on `languages/el` and checked on the emulator. Every headword is keyed without its tonos at
+  import (row "Greek accents"); wordfreq's word-final σ becomes ς; Latin look-alikes in Greek words become Greek;
+  `paddle-el` uploaded to `ocr-models-1` (owner's OK once the 4a work was ready). Plain fix found: the Lingua Libre
+  search took only the ISO 639-3 code, while Greek recordings also carry `gre` and `mis`; it now takes any code.

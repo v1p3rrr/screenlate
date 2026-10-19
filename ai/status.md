@@ -48,8 +48,17 @@ commit `9937cc4` with `languages/ocr-engines` at `fa1b086`), uses the phone for 
 the phone; ask whether a normal build should delete leftover `no_backup/diagnostics` files).
 
 Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
-41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
-engines plan is done.
+41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. Started on 2026-10-19 (the
+OCR plan's timing items wait for the phone). Done on chained branches and fast-forwarded into `languages/main`: the
+shared pieces, nl, cs, id, ms, tl (LK31-LK35), the "Compound:" line, sh as two entries (LK36; questions 55-60 are
+its provisional choices, to ask the owner), uk and be (LK37, LK38; Belarusian takes Ukrainian's stress mark and
+apostrophe processors), el (LK39; every headword keyed without its tonos at import, wordfreq's final σ as ς, Latin
+look-alikes in Greek words; `paddle-el` uploaded to the `ocr-models-1` release). Found with Greek: the Lingua Libre
+search took only the ISO 639-3 code, and Greek recordings also carry `gre` and `mis`; it takes any code now, for every
+language. Group 4a is done. Left: questions 55-60 (Serbo-Croatian's provisional choices) for the owner; the owner
+re-imports the Russian dictionaries (the stress-mark rule changes them at import). The emulator's /data has 465 MB
+free with the storage thresholds lowered (`sys_storage_threshold_percentage` 1, `sys_storage_threshold_max_bytes`
+100 MB); deleting the two settings puts it into low storage until some language's files go.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
