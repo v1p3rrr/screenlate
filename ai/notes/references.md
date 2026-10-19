@@ -43,6 +43,25 @@
 | Google Cloud voices | docs.cloud.google.com/text-to-speech/docs/list-voices-and-types | A hint at the Android engine's languages; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
 | Lingua Libre items | Wikidata Q7918 (bg), Q9296 (mk), Q9246 (mn); Khalkha Q6399808 | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
 
+## Language research sources (group 5b: Welsh, Irish, Scottish Gaelic, Breton)
+
+| What | Where | Notes |
+|---|---|---|
+| kaikki.org Breton | kaikki.org/frwiktionary/Breton/, kaikki.org/dictionary/Breton/, kaikki.org/ruwiktionary/Бретонский/, kaikki.org/eswiktionary/Bretón/ (Wiktionary, CC BY-SA 4.0) | Per-language JSONL of wiktextract; the only Breton Wiktionary data (wty has none); French edition writes c'h with U+02BC |
+| wty language list | github.com/yomidevs/wiktionary-to-yomitan `assets/languages.json` (code MIT), commit f7cc3d7 | The top 150 languages of the English edition; Breton is 195th, so not built |
+| Leipzig Corpora Collection | cym_wikipedia_2021_10K / _100K, gle_wikipedia_2021_10K, gle_newscrawl_2014_300K, bre_wikipedia_2021_10K / _100K (downloads CC BY) | Coverage texts and frequency candidates; no Scottish Gaelic corpus |
+| Scottish Gaelic Wikipedia dump | dumps.wikimedia.org/gdwiki/20261001/ (CC BY-SA 4.0) | Coverage text (150 longer articles); measurements only |
+| Yr Amliadur | research-data.cardiff.ac.uk, DOI 10.17035/d.2020.0120164107 (CC BY-SA 4.0) | Welsh frequency lists from CorCenCC (54,072 forms); the corpus itself is CC BY-NC-SA |
+| An Crúbadán | crubadan.org/files/`<lang>`.zip (CC BY 4.0), Kevin Scannell | Web-crawl word lists for cy, ga, gd, br (top 50,000); unversioned files, site down on 2026-10-19 |
+| Eurfa | eurfa.org.uk (GPL/AGPL-3.0), Kevin Donnelly | Welsh lemmas and verb forms, no mutated forms; not used |
+| BuNaMo, Gramadán | github.com/michmech/BuNaMo (ODbL), github.com/michmech/Gramadan (MIT) | Irish morphology without glosses or mutations; not used |
+| Apertium Celtic pairs | github.com/apertium apertium-br-fr, apertium-cym-eng, apertium-eng-gle, apertium-ga-gd (GPL-2.0 / GPL-3.0) | Translation lexicons; not used |
+| FreeDict bre-fra | download.freedict.org/dictionaries/bre-fra/0.8.3 (GPL-2.0-or-later) | 27,034 headwords, French glosses; not used |
+| Deloof | kevindonnelly.org.uk/deloof/ (GPL-3.0) | Breton–Dutch, 35,480 headwords; not used |
+| circle-flags regional flags | github.com/HatScripts/circle-flags `flags/gb-wls.svg`, `gb-sct.svg`, `fr-bre.svg` (MIT) | Wales, Scotland, Brittany |
+| Lingua Libre items | Wikidata Q9309 (cy, `cym`), Q9142 (ga, `gle`), Q9314 (gd, `gla`), Q12107 (br, `bre`) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
+| eSpeak NG Celtic voices | github.com/espeak-ng/espeak-ng `docs/languages.md` | cy, ga, gd; no Breton |
+
 ## Custom audio servers
 
 The Yomitan local audio server (a Python server on port 5050, often run in Docker) builds file URLs from its bind address, so its audio source list names files as `http://0.0.0.0:5050/...`. On a desktop that reaches the desktop itself; on a phone it reaches the phone. Behind a reverse proxy the list needs rewriting (nginx `sub_filter` on `application/json`, with `Accept-Encoding` cleared); the app now also rewrites such local file URLs to the list's scheme, host and port. The owner runs one behind an https domain; its address and server access are not recorded in the repository.

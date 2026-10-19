@@ -1460,6 +1460,10 @@ Cells: archive MB, words.
 
 See `plans/2026-10-19-group-4c.md`.
 
+## Group 5b research (2026-10-19)
+
+Welsh, Irish, Scottish Gaelic and Breton: research, decisions and work in `plans/2026-10-19-group-5b.md`.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
