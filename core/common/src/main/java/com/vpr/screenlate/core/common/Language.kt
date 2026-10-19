@@ -20,6 +20,7 @@ enum class Language(val code: String) {
     TURKISH("tr"),
     LATVIAN("lv"),
     DUTCH("nl"),
+    CZECH("cs"),
     VIETNAMESE("vi"),
     RUSSIAN("ru"),
     ;

@@ -116,6 +116,14 @@ class SentenceTest {
     }
 
     @Test
+    fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
+        val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
+        assertThat(extract(paragraph, "vznikl", Language.CZECH).text)
+            .isEqualTo("Dne 5. května 300 př. n. l. vznikl např. tento dům.")
+        assertThat(extract(paragraph, "řekla", Language.CZECH).text).isEqualTo("„Pojď sem.“ řekla.")
+    }
+
+    @Test
     fun vietnameseSentenceKeepsCityAbbreviation() {
         val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
         assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")

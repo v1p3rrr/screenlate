@@ -476,6 +476,7 @@
     <string name="popup_font_script_only_tr">Chỉ cho chữ tiếng Thổ Nhĩ Kỳ</string>
     <string name="popup_font_script_only_lv">Chỉ cho chữ tiếng Latvia</string>
     <string name="popup_font_script_only_nl">Chỉ cho chữ tiếng Hà Lan</string>
+    <string name="popup_font_script_only_cs">Chỉ cho chữ tiếng Séc</string>
     <string name="popup_font_script_only_vi">Chỉ cho chữ tiếng Việt</string>
     <string name="popup_font_script_only_ru">Chỉ cho chữ tiếng Nga</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>

@@ -27,6 +27,7 @@ object Flags {
         "tr" to R.drawable.flag_tr,
         "lv" to R.drawable.flag_lv,
         "nl" to R.drawable.flag_nl,
+        "cz" to R.drawable.flag_cz,
         "vn" to R.drawable.flag_vn,
         "ru" to R.drawable.flag_ru,
     )

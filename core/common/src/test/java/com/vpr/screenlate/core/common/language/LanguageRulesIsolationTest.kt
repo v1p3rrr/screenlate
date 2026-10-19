@@ -70,7 +70,7 @@ class LanguageRulesIsolationTest {
     @Test
     fun `a period after a short number keeps the sentence going only where ordinals take one`() {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
-        val ordinals = listOf(Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN)
+        val ordinals = listOf(Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH)
         assertThat(spaced.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(spaced.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
         // A year before a capital letter ends the sentence in every language.
@@ -84,7 +84,9 @@ class LanguageRulesIsolationTest {
         // German "z. B." holds its single letters only beside each other; "Plan B." ends everywhere.
         assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
-        assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language }).containsExactly(Language.GERMAN)
+        assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
+            .containsExactly(Language.GERMAN, Language.CZECH)
+        assertThat(spaced.where { holds(it, "v roce 300 n. l. vznikl") }).containsExactly(Language.CZECH)
         assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH)
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)

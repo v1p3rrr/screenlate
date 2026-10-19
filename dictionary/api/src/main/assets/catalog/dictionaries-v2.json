@@ -1520,6 +1520,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-cs",
+      "title": "wordfreq (cs)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq cs"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "cs",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_cs.msgpack.gz",
+      "downloadSize": 3252178,
+      "sha256": "3971d2ea15c0d0218fb31cdf4f109dfa4027d8f4ea52bd7b574a2b7678f1e60f",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",

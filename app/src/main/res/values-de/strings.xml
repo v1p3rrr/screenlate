@@ -479,6 +479,7 @@
     <string name="popup_font_script_only_tr">Nur für türkischen Text</string>
     <string name="popup_font_script_only_lv">Nur für lettischen Text</string>
     <string name="popup_font_script_only_nl">Nur für niederländischen Text</string>
+    <string name="popup_font_script_only_cs">Nur für tschechischen Text</string>
     <string name="popup_font_script_only_vi">Nur für vietnamesischen Text</string>
     <string name="popup_font_script_only_ru">Nur für russischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
