@@ -122,25 +122,40 @@ object SerbianSupport : SerboCroatianSupport() {
     /**
      * Latin look-alikes become Cyrillic only on a line whose letters are mostly Cyrillic, or, on a line of look-alikes
      * alone, when the page's are: a line in Latin letters keeps its one-letter words (i, a, u, o). On a Cyrillic line a
-     * word of look-alikes alone (Ја, је, Јој, which engines read as Latin) becomes Cyrillic too.
+     * word of look-alikes alone (Ја, је, Јој, which engines read as Latin) becomes Cyrillic too, except a word in
+     * capitals outside a heading in capitals (a line with Cyrillic letters and no lowercase ones): in running text and
+     * on buttons OK, TOP or TEXT are Latin abbreviations and names.
      */
     override fun ocrLines(lines: List<List<String>>): List<List<String>> {
         val balances = lines.map { line -> line.sumOf(::scriptBalance) }
         val page = balances.sum()
         return lines.mapIndexed { index, line ->
-            if ((balances[index].takeIf { it != 0 } ?: page) > 0) {
-                line.map { CyrillicLookAlikes.fixInScript(it, SERBIAN_LOOK_ALIKES) }
-            } else {
-                line
+            if ((balances[index].takeIf { it != 0 } ?: page) <= 0) return@mapIndexed line
+            val heading = line.none { word -> word.any(Char::isLowerCase) } &&
+                line.any { word -> word.any(::isCyrillicLetter) }
+            line.map { word ->
+                if (isInCapitals(word) && !heading) {
+                    CyrillicLookAlikes.fix(word, SERBIAN_LOOK_ALIKES)
+                } else {
+                    CyrillicLookAlikes.fixInScript(word, SERBIAN_LOOK_ALIKES)
+                }
             }
         }
     }
+
+    private fun isInCapitals(word: String): Boolean {
+        val letters = word.filter(Char::isLetter)
+        return letters.length > 1 && letters.all(Char::isUpperCase)
+    }
+
+    private fun isCyrillicLetter(c: Char) =
+        c.isLetter() && Character.UnicodeScript.of(c.code) == Character.UnicodeScript.CYRILLIC
 
     /** Cyrillic letters less Latin letters that look like no Cyrillic one. */
     private fun scriptBalance(text: String): Int = text.sumOf { c ->
         when {
             !c.isLetter() -> 0
-            Character.UnicodeScript.of(c.code) == Character.UnicodeScript.CYRILLIC -> 1
+            isCyrillicLetter(c) -> 1
             CyrillicLookAlikes.isLookAlike(c) || c in SERBIAN_LOOK_ALIKES -> 0
             else -> -1
         }

@@ -117,6 +117,24 @@ class SerboCroatianSupportTest {
     }
 
     @Test
+    fun `serbian keeps latin words in capitals on a cyrillic line unless the line is a heading in capitals`() {
+        val text = listOf("Кликни", "OK", "и", "TOP", "листа", "Joj,", "TEXT")
+        assertThat(serbian.ocrLines(listOf(text)).single())
+            .containsExactly("Кликни", "OK", "и", "TOP", "листа", "Јој,", "TEXT").inOrder()
+        // In a heading in capitals the words of look-alikes alone are Serbian too (ЈОЈ, ОВО ЈЕ КУЋА).
+        assertThat(serbian.ocrLines(listOf(listOf("JOJ,", "OBO", "JE", "КУЋА"))).single())
+            .containsExactly("ЈОЈ,", "ОВО", "ЈЕ", "КУЋА").inOrder()
+        // A Cyrillic abbreviation does not make running text a heading.
+        assertThat(serbian.ocrLines(listOf(listOf("OK", "у", "САД", "сад"))).single())
+            .containsExactly("OK", "у", "САД", "сад").inOrder()
+        // A line in capitals of look-alikes alone (a button, OK) follows the page, and keeps its Latin capitals.
+        assertThat(serbian.ocrLines(listOf(listOf("кући"), listOf("OK"))).last()).containsExactly("OK")
+        // A Cyrillic word in capitals with Latin look-alikes in it is fixed anyway.
+        assertThat(serbian.ocrLines(listOf(listOf("кући", "KУЋA"))).single())
+            .containsExactly("кући", "КУЋА").inOrder()
+    }
+
+    @Test
     fun `each language has its script, voice, flag and code, the dictionaries' code is shared`() {
         assertThat(croatian.ocrScript).isEqualTo(OcrScript.LATIN)
         assertThat(serbian.ocrScript).isEqualTo(OcrScript.CYRILLIC)
