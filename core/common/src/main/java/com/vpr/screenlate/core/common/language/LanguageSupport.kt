@@ -293,6 +293,7 @@ val Language.support: LanguageSupport
         Language.POLISH -> PolishSupport
         Language.TURKISH -> TurkishSupport
         Language.LATVIAN -> LatvianSupport
+        Language.DUTCH -> DutchSupport
         Language.VIETNAMESE -> VietnameseSupport
         Language.RUSSIAN -> RussianSupport
     }

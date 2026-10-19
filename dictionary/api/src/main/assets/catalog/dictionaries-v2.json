@@ -1273,6 +1273,253 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-zh",
+      "title": "wordfreq (zh)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq zh"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "zh",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_zh.msgpack.gz",
+      "downloadSize": 1773909,
+      "sha256": "e079d7aaff1cfb92874850cb3ffbc7b611af939d9d671c1cbda932d968467cdd",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-ko",
+      "title": "wordfreq (ko)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq ko"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ko",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_ko.msgpack.gz",
+      "downloadSize": 131176,
+      "sha256": "01014287a9e779d232f965d054a9cb5eb10b0bc46ee464fbd42935a5df7c8319",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-es",
+      "title": "wordfreq (es)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq es"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "es",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_es.msgpack.gz",
+      "downloadSize": 1652691,
+      "sha256": "14f326b4f68d517f9b8b99c1e26ef56a508d2dc8d0ee7a9e6e8732ddab1aa65e",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-fr",
+      "title": "wordfreq (fr)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq fr"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "fr",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_fr.msgpack.gz",
+      "downloadSize": 1491216,
+      "sha256": "6f16cd80b9b66c5698ed002becea83ae30d0584c3205f1cf01714ad562c00c8b",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-de",
+      "title": "wordfreq (de)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq de"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "de",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_de.msgpack.gz",
+      "downloadSize": 3622737,
+      "sha256": "8ef04d3f4a28fb48d800d25fa80a96d90a5f80c8496c9a453f99f887c6ad3c12",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-it",
+      "title": "wordfreq (it)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq it"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "it",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_it.msgpack.gz",
+      "downloadSize": 1576222,
+      "sha256": "0b5500e425a50e0f1fefb256d9125e74f586ac6b2f2a6e41bc96634bd5613cc7",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-pt",
+      "title": "wordfreq (pt)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq pt"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "pt",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_pt.msgpack.gz",
+      "downloadSize": 1286674,
+      "sha256": "7d764586bca6262f554d5fa77ad8e6841ef42534776e70558065140853660ce2",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-ru",
+      "title": "wordfreq (ru)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq ru"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ru",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_ru.msgpack.gz",
+      "downloadSize": 4524376,
+      "sha256": "0440613cc765c14a20fb9483225f2fec4d85e66672809076bcec9b29119f9b43",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-pl",
+      "title": "wordfreq (pl)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq pl"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "pl",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_pl.msgpack.gz",
+      "downloadSize": 2368608,
+      "sha256": "fac63e49c49ea2e39dd8a48152d7e54cec0920abbc59993088063ed5d9b528c2",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-tr",
+      "title": "wordfreq (tr)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq tr"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "tr",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_tr.msgpack.gz",
+      "downloadSize": 300420,
+      "sha256": "10980704ee3ac5b52f226579251905412a04ead57092a12182dd0b8be6a765df",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-vi",
+      "title": "wordfreq (vi)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq vi"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "vi",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_vi.msgpack.gz",
+      "downloadSize": 39727,
+      "sha256": "bde76e2846f38fc8f4ad5112493d524c0c7f5e5545072b4de773d0a83159f15f",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-lv",
+      "title": "wordfreq (lv)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq lv"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "lv",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_lv.msgpack.gz",
+      "downloadSize": 210864,
+      "sha256": "fa1996db4bb977099205d4fb57aa9181f320573cab9ac477c89b90cf4a67c639",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
+      "id": "wordfreq-nl",
+      "title": "wordfreq (nl)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq nl"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "nl",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_nl.msgpack.gz",
+      "downloadSize": 1661682,
+      "sha256": "cfdae01b2ccd5bc94be046645b6ba8682e65d6709beedf6ab98d7bdc5414d671",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -1334,25 +1581,6 @@
       "license": "CC BY-SA 4.0",
       "homepage": "https://cc-cedict.org/wiki/",
       "recommended": true
-    },
-    {
-      "id": "wordfreq-zh",
-      "title": "wordfreq (zh)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq zh"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "zh",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_zh.msgpack.gz",
-      "downloadSize": 1773909,
-      "sha256": "e079d7aaff1cfb92874850cb3ffbc7b611af939d9d671c1cbda932d968467cdd",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
       "id": "krdict-ar",
@@ -1633,215 +1861,6 @@
       "downloadSize": 168500,
       "license": "Unicode License v3",
       "homepage": "https://www.unicode.org/charts/unihan.html"
-    },
-    {
-      "id": "wordfreq-ko",
-      "title": "wordfreq (ko)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq ko"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "ko",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_ko.msgpack.gz",
-      "downloadSize": 131176,
-      "sha256": "01014287a9e779d232f965d054a9cb5eb10b0bc46ee464fbd42935a5df7c8319",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-es",
-      "title": "wordfreq (es)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq es"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "es",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_es.msgpack.gz",
-      "downloadSize": 1652691,
-      "sha256": "14f326b4f68d517f9b8b99c1e26ef56a508d2dc8d0ee7a9e6e8732ddab1aa65e",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-fr",
-      "title": "wordfreq (fr)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq fr"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "fr",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_fr.msgpack.gz",
-      "downloadSize": 1491216,
-      "sha256": "6f16cd80b9b66c5698ed002becea83ae30d0584c3205f1cf01714ad562c00c8b",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-de",
-      "title": "wordfreq (de)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq de"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "de",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_de.msgpack.gz",
-      "downloadSize": 3622737,
-      "sha256": "8ef04d3f4a28fb48d800d25fa80a96d90a5f80c8496c9a453f99f887c6ad3c12",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-it",
-      "title": "wordfreq (it)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq it"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "it",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_it.msgpack.gz",
-      "downloadSize": 1576222,
-      "sha256": "0b5500e425a50e0f1fefb256d9125e74f586ac6b2f2a6e41bc96634bd5613cc7",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-pt",
-      "title": "wordfreq (pt)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq pt"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "pt",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_pt.msgpack.gz",
-      "downloadSize": 1286674,
-      "sha256": "7d764586bca6262f554d5fa77ad8e6841ef42534776e70558065140853660ce2",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-ru",
-      "title": "wordfreq (ru)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq ru"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "ru",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_ru.msgpack.gz",
-      "downloadSize": 4524376,
-      "sha256": "0440613cc765c14a20fb9483225f2fec4d85e66672809076bcec9b29119f9b43",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-pl",
-      "title": "wordfreq (pl)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq pl"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "pl",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/large_pl.msgpack.gz",
-      "downloadSize": 2368608,
-      "sha256": "fac63e49c49ea2e39dd8a48152d7e54cec0920abbc59993088063ed5d9b528c2",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-tr",
-      "title": "wordfreq (tr)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq tr"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "tr",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_tr.msgpack.gz",
-      "downloadSize": 300420,
-      "sha256": "10980704ee3ac5b52f226579251905412a04ead57092a12182dd0b8be6a765df",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-vi",
-      "title": "wordfreq (vi)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq vi"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "vi",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_vi.msgpack.gz",
-      "downloadSize": 39727,
-      "sha256": "bde76e2846f38fc8f4ad5112493d524c0c7f5e5545072b4de773d0a83159f15f",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
-    },
-    {
-      "id": "wordfreq-lv",
-      "title": "wordfreq (lv)",
-      "template": "wordfreq",
-      "oldTitles": [
-        "wordfreq lv"
-      ],
-      "kind": "FREQUENCY",
-      "category": "FREQUENCY",
-      "sourceLanguage": "lv",
-      "recommended": true,
-      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_lv.msgpack.gz",
-      "downloadSize": 210864,
-      "sha256": "fa1996db4bb977099205d4fb57aa9181f320573cab9ac477c89b90cf4a67c639",
-      "build": "wordfreq",
-      "version": "3.2",
-      "license": "CC BY-SA 4.0",
-      "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
       "id": "tesseract-fast-eng",

@@ -46,7 +46,7 @@ fun dictionaryStrings(code: String?): DictionaryStrings = when (if (code == null
         kanjiKind = R.string.dictionaries_kind_kanji,
         kanjiCount = R.string.dictionaries_count_kanji,
     )
-    Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE, Language.RUSSIAN,
+    Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.VIETNAMESE, Language.RUSSIAN,
     null,
     -> DictionaryStrings(
         pitchKind = R.string.dictionaries_kind_pronunciation,
@@ -61,7 +61,7 @@ val Language.pronunciationColorStrings: PronunciationColorStrings?
     get() = when (this) {
         Language.JAPANESE -> PronunciationColorStrings(R.string.popup_pitch_colors, R.string.popup_pitch_colors_hint)
         Language.CHINESE -> PronunciationColorStrings(R.string.popup_tone_colors, R.string.popup_tone_colors_hint)
-        Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE, Language.RUSSIAN -> null
+        Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.VIETNAMESE, Language.RUSSIAN -> null
     }
 
 /**
@@ -82,7 +82,7 @@ val Language.furiganaMarkerHints: Map<String, Int>
             "sentence-furigana" to R.string.anki_marker_sentence_furigana_ru,
             "sentence-furigana-plain" to R.string.anki_marker_sentence_furigana_plain_ru,
         )
-        Language.JAPANESE, Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE -> emptyMap()
+        Language.JAPANESE, Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.VIETNAMESE -> emptyMap()
     }
 
 /** The switch for entries of the other characters of a found word (`LanguageSupport.hasCharacterEntries`). */
@@ -94,7 +94,7 @@ class CharacterEntryStrings(
 val Language.characterEntryStrings: CharacterEntryStrings
     get() = when (this) {
         Language.JAPANESE -> CharacterEntryStrings(R.string.lookup_single_kanji, R.string.lookup_single_kanji_hint)
-        Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE, Language.RUSSIAN ->
+        Language.ENGLISH, Language.CHINESE, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.VIETNAMESE, Language.RUSSIAN ->
             CharacterEntryStrings(R.string.lookup_single_characters, R.string.lookup_single_characters_hint)
     }
 
@@ -199,6 +199,14 @@ val Language.fontStrings: FontStrings
         Language.LATVIAN -> FontStrings(
             system = R.string.popup_font_system_default,
             scriptOnly = R.string.popup_font_script_only_lv,
+            scriptOnlyHint = R.string.popup_font_script_only_hint_any,
+            systemMissing = null,
+            catalogInfo = null,
+            weightInfo = R.string.popup_text_weight_info_languages,
+        )
+        Language.DUTCH -> FontStrings(
+            system = R.string.popup_font_system_default,
+            scriptOnly = R.string.popup_font_script_only_nl,
             scriptOnlyHint = R.string.popup_font_script_only_hint_any,
             systemMissing = null,
             catalogInfo = null,

@@ -85,7 +85,7 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language }).containsExactly(Language.GERMAN)
-        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH)
+        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH)
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
@@ -118,8 +118,8 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German splits compounds and puts capitalized parts first`() {
-        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN)
+    fun `only German and Dutch split compounds, German puts capitalized parts first`() {
+        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN, Language.DUTCH)
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
 

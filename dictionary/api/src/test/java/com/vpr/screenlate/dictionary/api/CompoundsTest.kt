@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.DutchSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import kotlinx.coroutines.runBlocking
@@ -31,6 +32,17 @@ class CompoundsTest {
         assertThat(split("Hundesteuer", "hund", "hunde", "steuer", "teuer", "este")).containsExactly("Hunde", "steuer")
             .inOrder()
         assertThat(split("Sonnenschein", "sonne", "schein")).containsExactly("Sonne", "schein").inOrder()
+    }
+
+    @Test
+    fun `dutch links are skipped the same way`() {
+        fun dutch(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, DutchSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(dutch("stadsdeel", "stad", "deel")).containsExactly("stad", "deel").inOrder()
+        assertThat(dutch("boekenkast", "boek", "kast")).containsExactly("boek", "kast").inOrder()
+        assertThat(dutch("pannekoek", "pan", "panne", "koek")).containsExactly("panne", "koek").inOrder()
     }
 
     @Test

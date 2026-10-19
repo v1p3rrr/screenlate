@@ -108,6 +108,14 @@ class SentenceTest {
     }
 
     @Test
+    fun dutchSentenceKeepsAbbreviationsAndLowQuotes() {
+        val paragraph = "Het regende. Fruit, bijv. appels, d.w.z. goed fruit. „Kom hier.” zei ze. Ik zag Jan. Hij liep."
+        assertThat(extract(paragraph, "appels", Language.DUTCH).text).isEqualTo("Fruit, bijv. appels, d.w.z. goed fruit.")
+        assertThat(extract(paragraph, "zei", Language.DUTCH).text).isEqualTo("„Kom hier.” zei ze.")
+        assertThat(extract(paragraph, "zag", Language.DUTCH).text).isEqualTo("Ik zag Jan.")
+    }
+
+    @Test
     fun vietnameseSentenceKeepsCityAbbreviation() {
         val paragraph = "Trời mưa. Tôi sống ở TP. Hồ Chí Minh. Hết."
         assertThat(extract(paragraph, "sống", Language.VIETNAMESE).text).isEqualTo("Tôi sống ở TP. Hồ Chí Minh.")
