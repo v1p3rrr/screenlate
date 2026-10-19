@@ -165,3 +165,50 @@ test('dictionary styles go into glossary fields unchanged', () => {
     assert.match(values.glossary, /<style>\.yomitan-glossary \[data-dictionary="D"\] b \{ color: red; \}.*\(width < 600px\).*<\/style>/);
     assert.match(values['glossary-first'], /<style>\.yomitan-glossary b \{ color: red; \}.*<\/style><\/div>$/);
 });
+
+test('russian furigana put the stress into the word', () => {
+    const word = (expression, reading) => NoteData.build({ lang: 'ru', term: { expression, reading, glossaries: [] } }, {}).values;
+    assert.equal(word('кошка', 'ко\u0301шка').furigana, 'ко\u0301шка');
+    assert.equal(word('кошка', 'ко\u0301шка')['furigana-plain'], 'ко\u0301шка');
+    // Another reading still goes over the word, as in the popup.
+    assert.equal(word('еж', 'ёж').furigana, '<ruby>еж<rt>ёж</rt></ruby>');
+    assert.equal(word('кошка', '').furigana, 'кошка');
+});
+
+test('russian sentence furigana stress only words written in their dictionary form', () => {
+    const sentence = NoteData.sentenceFurigana([
+        { text: 'Кошка', expression: 'кошка', reading: 'ко\u0301шка' },
+        { text: ' ' },
+        { text: 'спит', expression: 'спать', reading: 'спа\u0301ть' },
+        { text: ', ' },
+        { text: 'кошки', expression: 'кошка', reading: 'ко\u0301шка' },
+        { text: ' ' },
+        { text: 'тоже', expression: 'тоже', reading: 'то\u0301же' },
+    ], 'ru');
+    assert.equal(sentence.plain, 'Ко\u0301шка спит, кошки то\u0301же');
+    assert.equal(sentence.html, '<span class="term">Ко\u0301шка</span><span class="term"> </span><span class="term">спит</span>'
+        + '<span class="term">, </span><span class="term">кошки</span><span class="term"> </span><span class="term">то\u0301же</span>');
+});
+
+test('phonetic transcriptions list each one the dictionaries give, and pitch markers stay empty', () => {
+    const tomato = {
+        lang: 'en',
+        term: {
+            expression: 'tomato',
+            reading: '',
+            glossaries: [],
+            pitches: [
+                { dictionary: 'IPA', pitches: [], transcriptions: ['/təˈmɑːtəʊ/', '/təˈmeɪtoʊ/'] },
+                { dictionary: 'Other', pitches: [], transcriptions: ['/a<b/'] },
+            ],
+        },
+    };
+    const { values } = NoteData.build(tomato, {});
+    const item = ipa => `<li class="pronunciation" data-pronunciation-type="phonetic-transcription">${ipa}</li>`;
+    assert.equal(values['phonetic-transcriptions'], `<ul>${item('/təˈmɑːtəʊ/')}${item('/təˈmeɪtoʊ/')}${item('/a&lt;b/')}</ul>`);
+    // An English word has no pitch accents.
+    assert.equal(values['pitch-accents'], '');
+    assert.equal(values['pitch-accent-positions'], '');
+    // A Japanese pitch dictionary has no transcriptions.
+    assert.equal(NoteData.build(result, context).values['phonetic-transcriptions'], '');
+});

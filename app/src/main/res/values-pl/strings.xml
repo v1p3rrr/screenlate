@@ -137,6 +137,14 @@
     <string name="anki_fields">Pola</string>
     <string name="anki_fields_hint">Szablony używają znaczników takich jak {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Przycisk + wstawia znacznik. Pierwsze pole służy do sprawdzania duplikatów.</string>
     <string name="anki_insert_marker">Wstaw znacznik</string>
+    <string name="anki_marker_furigana_zh">Pinyin nad znakami</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin jako tekst: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Zdanie z pinyinem nad znakami</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Zdanie z pinyinem jako tekst</string>
+    <string name="anki_marker_furigana_ru">Słowo z zaznaczonym akcentem</string>
+    <string name="anki_marker_furigana_plain_ru">Słowo z zaznaczonym akcentem, jako tekst</string>
+    <string name="anki_marker_sentence_furigana_ru">Zdanie z akcentem zaznaczonym w słowach w formie podstawowej</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Zdanie z akcentem zaznaczonym w słowach w formie podstawowej, jako tekst</string>
     <string name="anki_duplicates">Duplikaty</string>
     <string name="anki_duplicate_check">Sprawdzaj duplikaty</string>
     <string name="anki_duplicate_scope">Szukaj w</string>

@@ -137,4 +137,15 @@ class JapaneseSupportTest {
         assertThat(JapaneseSupport.characterEntry("abc")).isNull()
         assertThat(JapaneseSupport.characterEntry("")).isNull()
     }
+
+    @Test
+    fun `a full-width period between digits is a decimal point`() {
+        fun ends(text: String) = JapaneseSupport.endsSentence(text, text.indexOf('．'))
+        assertThat(ends("円周率は３．１４です")).isFalse()
+        assertThat(ends("約1．5倍")).isFalse()
+        assertThat(ends("第３．次に")).isTrue()
+        assertThat(ends("終わり．次")).isTrue()
+        assertThat(ends("値は３．")).isTrue()
+        assertThat(JapaneseSupport.endsSentence("３。１", 1)).isTrue()
+    }
 }

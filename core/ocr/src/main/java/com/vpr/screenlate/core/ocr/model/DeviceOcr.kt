@@ -15,7 +15,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 /**
@@ -51,6 +56,8 @@ class DeviceOcr internal constructor(
     private val chosen: suspend (Language) -> String?,
     private val hold: (List<String>) -> AutoCloseable? = { AutoCloseable {} },
     private val verify: suspend (List<String>) -> Unit = {},
+    /** Emits whenever what reads the language may have changed: its choice or the installed models. */
+    private val changes: (Language) -> Flow<Any?> = { emptyFlow() },
 ) : OcrEngine {
     @Inject
     constructor(
@@ -59,7 +66,16 @@ class DeviceOcr internal constructor(
         store: OcrModelStore,
         listed: LanguageModels,
         choices: OcrModelChoices,
-    ) : this(mlKit, engines, { store.models.value }, listed, { choices.chosen(it).first() }, store::hold, { store.verify(it) })
+    ) : this(
+        mlKit,
+        engines,
+        { store.models.value },
+        listed,
+        { choices.chosen(it).first() },
+        store::hold,
+        { store.verify(it) },
+        { combine(choices.chosen(it), store.models) { chosen, models -> chosen to models } },
+    )
 
     private val engines = engines.associateBy { it.id }
 
@@ -102,6 +118,9 @@ class DeviceOcr internal constructor(
 
     /** What reads [language] now; null when nothing on the device can. */
     suspend fun active(language: Language): DeviceModel? = select(language, installed().associateBy { it.id })
+
+    /** What reads [language], now and whenever another model takes over: chosen, installed or deleted. */
+    fun activeUpdates(language: Language): Flow<DeviceModel?> = changes(language).map { active(language) }.distinctUntilChanged()
 
     override fun release() {
         mlKit.release()

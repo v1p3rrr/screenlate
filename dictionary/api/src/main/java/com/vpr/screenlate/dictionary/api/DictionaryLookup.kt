@@ -100,7 +100,7 @@ class DictionaryLookup @Inject constructor(
             suspend fun from(source: String): List<LookupResult> {
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
                 val found = LookupVariants.of(source, settings, support).flatMap { variant ->
-                    timedEngine { engine.lookup(variant.text, engineOptions) }.map { it.asShown(support).inSource(source, variant) }
+                    timedEngine { engine.lookup(variant.text, engineOptions) }.fromVariant(source, variant, support)
                 }
                 val whole = shown(found, start)
                 return support.compoundLinks?.let { links ->

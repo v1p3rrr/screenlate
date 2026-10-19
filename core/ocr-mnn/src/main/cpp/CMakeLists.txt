@@ -25,7 +25,8 @@ add_subdirectory(MNN EXCLUDE_FROM_ALL)
 add_library(screenlate_mnn SHARED mnn_network.cpp)
 
 target_compile_options(screenlate_mnn PRIVATE -fvisibility=hidden -Wall)
-target_include_directories(screenlate_mnn PRIVATE MNN/include)
+# MNN/source for the runtime's garbage collection (core/Backend.hpp), which the public headers do not offer.
+target_include_directories(screenlate_mnn PRIVATE MNN/include MNN/source)
 
 # MNN registers its operators and backends from static initializers, so the whole archive is linked; unused sections
 # and MNN's symbols are dropped from the result.

@@ -131,6 +131,14 @@
     <string name="anki_fields">字段</string>
     <string name="anki_fields_hint">模板使用 {expression}、{reading}、{glossary}、{sentence}、{audio}、{screenshot} 等标记。点按 + 按钮可插入标记。第一个字段用于查重。</string>
     <string name="anki_insert_marker">插入标记</string>
+    <string name="anki_marker_furigana_zh">汉字上方标注拼音</string>
+    <string name="anki_marker_furigana_plain_zh">拼音（文本）：你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">汉字上方标注拼音的句子</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">以文本标注拼音的句子</string>
+    <string name="anki_marker_furigana_ru">带重音符号的单词</string>
+    <string name="anki_marker_furigana_plain_ru">带重音符号的单词（文本）</string>
+    <string name="anki_marker_sentence_furigana_ru">原形单词带重音符号的句子</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">原形单词带重音符号的句子（文本）</string>
     <string name="anki_duplicates">重复</string>
     <string name="anki_duplicate_check">检查重复</string>
     <string name="anki_duplicate_scope">查找范围</string>

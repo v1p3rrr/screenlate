@@ -96,10 +96,6 @@ class AudioFinder internal constructor(
         settings: AudioSettingsRepository,
     ) : this(File(context.cacheDir, "audio"), httpClient, settings)
 
-    init {
-        directory.mkdirs()
-    }
-
     /**
      * Every request opens its own connection: some mobile networks freeze a connection to foreign hosting after its
      * first answers, and a request sent over such a kept-open connection hangs.
@@ -375,6 +371,8 @@ class AudioFinder internal constructor(
             val bytes = body.buffer.readByteArray()
             if (bytes.isEmpty()) return@execute null
             val extension = extensionFor(contentType, url)
+            // The system clears the cache directory when storage runs low, also while the app runs.
+            directory.mkdirs()
             val file = File(directory, "${sha256(key.toByteArray()).take(16)}.$extension")
             file.writeBytes(bytes)
             AudioClip(file, url, extension)

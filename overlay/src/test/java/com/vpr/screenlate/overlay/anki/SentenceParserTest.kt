@@ -58,4 +58,28 @@ class SentenceParserTest {
         }
         assertThat(cancelled).isTrue()
     }
+
+    @Test
+    fun `in a language looked up by words unknown text is passed over a word at a time`() = runTest {
+        val lookups = mutableListOf<String>()
+        suspend fun parse(sentence: String, language: Language, vararg known: String) =
+            parseSentence(sentence, language) { text, _ ->
+                lookups += text
+                known.firstOrNull { text.startsWith(it) }?.let { LookupResult(it, it, term = TermEntry(it, "")) }
+            }
+
+        assertThat(parse("unhappy is well-known", Language.ENGLISH, "happy", "is", "known")).containsExactly(
+            SentencePart("unhappy "),
+            SentencePart("is", "is", ""),
+            SentencePart(" well-known"),
+        ).inOrder()
+        assertThat(lookups).containsNoneOf("happy is well-known", "known")
+        // Apostrophes inside a word keep it whole; an elided article ends one in French only.
+        assertThat(parse("aujourd'hui", Language.FRENCH, "hui").map { it.text }).containsExactly("aujourd'hui")
+        assertThat(parse("l'eau", Language.FRENCH, "eau").map { it.text }).containsExactly("l'", "eau").inOrder()
+        assertThat(parse("l'eau", Language.ENGLISH, "eau").map { it.text }).containsExactly("l'eau")
+        // Languages looked up by letters still try every character.
+        assertThat(parse("unhappy", Language.KOREAN, "happy").map { it.text }).containsExactly("un", "happy").inOrder()
+        assertThat(parse("未知猫", Language.JAPANESE, "猫").map { it.text }).containsExactly("未知", "猫").inOrder()
+    }
 }

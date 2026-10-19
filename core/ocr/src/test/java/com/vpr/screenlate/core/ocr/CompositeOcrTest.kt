@@ -18,8 +18,10 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.coroutines.EmptyCoroutineContext
@@ -35,9 +37,14 @@ class CompositeOcrTest {
     /** Answers after [latency] with a one-line page, or fails with [error]. */
     private class FakeEngine(override val type: OcrEngineType, var latency: Duration, var error: Throwable? = null) : OcrEngine {
         var calls = 0
+        var prepared = 0
         var readsLanguage = true
 
         override fun reads(language: Language) = readsLanguage
+
+        override fun prepare() {
+            prepared++
+        }
 
         override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
             calls++
@@ -153,6 +160,37 @@ class CompositeOcrTest {
 
         now += 5.minutes.inWholeMilliseconds
         assertThat(updates().last().page.engine).isEqualTo(OcrEngineType.LENS)
+    }
+
+    @Test
+    fun `a change of the on-device model is told, not the model at the start`() = runTest {
+        val models = MutableStateFlow("mlkit")
+        val ocr = CompositeOcr(lens, mlKit, { online }, { now }, copyOf = { it }, release = {}, worker = EmptyCoroutineContext, deviceModels = { models })
+        var changes = 0
+        val job = launch { ocr.deviceModelChanges(Language.ENGLISH).collect { changes++ } }
+        runCurrent()
+        assertThat(changes).isEqualTo(0)
+        models.value = "paddle-v6"
+        runCurrent()
+        assertThat(changes).isEqualTo(1)
+        job.cancel()
+    }
+
+    @Test
+    fun `lens prepares for a scan only when it can be asked`() = runTest {
+        ocr.prepareLens()
+        assertThat(lens.prepared).isEqualTo(1)
+
+        online = false
+        ocr.prepareLens()
+        assertThat(lens.prepared).isEqualTo(1)
+
+        online = true
+        lens.error = LensHttpException(429)
+        updates()
+        ocr.prepareLens()
+        assertThat(lens.prepared).isEqualTo(1)
+        assertThat(mlKit.prepared).isEqualTo(0)
     }
 
     @Test

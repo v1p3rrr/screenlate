@@ -22,6 +22,14 @@ class FrenchSupportTest {
     }
 
     @Test
+    fun `a letter between two apostrophes is no elided word`() {
+        assertThat(FrenchSupport.wordStartOffset("du rock’n’r", "o")).isEqualTo(8)
+        assertThat(ItalianSupport.wordStartOffset("il rock'n'r", "o")).isEqualTo(8)
+        // A real elision after a hyphen still starts a new word: va-t'en.
+        assertThat(FrenchSupport.wordStartOffset("va-t'", "e")).isEqualTo(0)
+    }
+
+    @Test
     fun `guillemets are a pair and abbreviations do not end a sentence`() {
         assertThat(FrenchSupport.quotePairs).containsEntry('«', '»')
         fun ends(text: String) = FrenchSupport.endsSentence(text, text.indexOf('.'))

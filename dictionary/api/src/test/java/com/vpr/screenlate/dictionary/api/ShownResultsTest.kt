@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.model.FrequencyGroup
 import com.vpr.screenlate.dictionary.api.model.FrequencyValue
@@ -154,5 +155,51 @@ class ShownResultsTest {
         assertThat(result("車", "", "Wiktionary", matched = "xa", trace = listOf(Transform("Hán-Nôm"))).onlyThrough(tags))
             .isFalse()
         assertThat(noun.onlyThrough(emptySet())).isFalse()
+        // Other languages keep every form-of result.
+        for (language in Language.entries - Language.VIETNAMESE) {
+            assertThat(noun.onlyThrough(language.support.ignoredFormTags)).isFalse()
+        }
+    }
+
+    @Test
+    fun `a spelling tag of another language's dictionary leaves the lemma in place`() {
+        val found = result("圖書館", "", "Wiktionary", matched = "图书馆", trace = listOf(Transform("Simplified-Chinese")))
+        for (language in Language.entries - Language.CHINESE) {
+            val shown = found.asShown(language.support)
+            assertThat(shown.term.expression).isEqualTo("圖書館")
+            assertThat(shown.trace).containsExactly(Transform("Simplified-Chinese"))
+        }
+    }
+
+    @Test
+    fun `readings spaced differently stay apart outside Chinese`() {
+        val results = listOf(result("日本語", "にほんご", "Jitendex"), result("日本語", "にほん ご", "Wiktionary"))
+        assertThat(results.mergeSameWords(order, Language.JAPANESE.support)).hasSize(2)
+    }
+
+    @Test
+    fun `a match that ends before a stress or tone mark is left out of a word lookup`() {
+        fun shown(text: String, language: Language, vararg matched: String) =
+            matched.map { result(it, "", "Wiktionary", matched = it) }
+                .fromVariant(text, MappedText.identity(text), language.support)
+                .map { it.matched }
+
+        assertThat(shown("ко\u0301шка сидит", Language.RUSSIAN, "ко\u0301шка", "ко")).containsExactly("ко\u0301шка")
+        assertThat(shown("hoa\u0300 bi\u0300nh", Language.VIETNAMESE, "hoa\u0300 bi\u0300nh", "hoa\u0300 bi", "hoa"))
+            .containsExactly("hoa\u0300 bi\u0300nh")
+        // A match up to a space, a precomposed letter or the end of the text stays.
+        assertThat(shown("кошка сидит", Language.RUSSIAN, "кошка", "кошка сидит")).containsExactly("кошка", "кошка сидит")
+        assertThat(shown("hòa bình", Language.VIETNAMESE, "hòa")).containsExactly("hòa")
+        // Lookups by letters keep every match, as before.
+        assertThat(shown("か\u3099き", Language.JAPANESE, "か")).containsExactly("か")
+    }
+
+    @Test
+    fun `a match of a converted text points at the source characters`() {
+        val variant = MappedText.identity("1人").replace(Regex("1"), "一")
+        val shown = listOf(result("一人", "ひとり", "Jitendex", matched = "一人"))
+            .fromVariant("1人", variant, Language.JAPANESE.support)
+        assertThat(shown.single().matched).isEqualTo("1人")
+        assertThat(shown.single().preprocessorSteps).isEqualTo(1)
     }
 }

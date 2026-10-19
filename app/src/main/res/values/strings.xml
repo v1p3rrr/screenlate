@@ -137,6 +137,14 @@
     <string name="anki_fields">Fields</string>
     <string name="anki_fields_hint">Templates use markers such as {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Use the + button to insert one. The first field is used for the duplicate check.</string>
     <string name="anki_insert_marker">Insert marker</string>
+    <string name="anki_marker_furigana_zh">Pinyin over the characters</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin as text: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Sentence with pinyin over the characters</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Sentence with pinyin as text</string>
+    <string name="anki_marker_furigana_ru">Word with its stress mark</string>
+    <string name="anki_marker_furigana_plain_ru">Word with its stress mark, as text</string>
+    <string name="anki_marker_sentence_furigana_ru">Sentence with stress marks on words in dictionary form</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Sentence with stress marks on words in dictionary form, as text</string>
     <string name="anki_duplicates">Duplicates</string>
     <string name="anki_duplicate_check">Check for duplicates</string>
     <string name="anki_duplicate_scope">Search in</string>

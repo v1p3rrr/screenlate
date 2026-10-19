@@ -31,8 +31,10 @@ object PolishSupport : SpacedLanguageSupport() {
      * "r", "w" and "s" are rok, wiek and strona ("2020 r.", "XX w.", "s. 5"). Abbreviations that are also words ending
      * sentences are left out: im (them), lis (fox), maj (May), rys (trait).
      */
+    override val abbreviationsBeforeLowercase = setOf("ok")
+
     override val abbreviations = setOf(
-        "np", "itd", "itp", "tj", "tzn", "tzw", "m.in", "ok", "ang", "łac", "wg", "zob", "por", "jw", "cdn", "dr",
+        "np", "itd", "itp", "tj", "tzn", "tzw", "m.in", "ang", "łac", "wg", "zob", "por", "jw", "cdn", "dr",
         "prof", "mgr", "inż", "hab", "doc", "ks", "św", "płk", "gen", "ul", "al", "pl", "nr", "tel", "str", "s", "r",
         "w", "godz", "min", "woj", "pow", "gm", "płn", "płd", "wsch", "zach", "sp", "o.o", "tys", "mln", "mld", "zł",
         "gr", "wyd", "red", "t", "tab", "sty", "lut", "kwi", "cze", "wrz", "paź", "gru",

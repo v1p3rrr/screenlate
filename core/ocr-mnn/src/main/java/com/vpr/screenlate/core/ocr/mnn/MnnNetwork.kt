@@ -21,6 +21,18 @@ class MnnNetwork(path: String, threads: Int) : AutoCloseable {
         return MnnTensor(data, nativeOutputShape(handle))
     }
 
+    /**
+     * Frees the memory that larger inputs took and leaves the network sized for [shape], a small input; a larger run
+     * takes memory for its input again.
+     */
+    fun trim(shape: IntArray) {
+        check(handle != 0L) { "The network is closed" }
+        nativeTrim(handle, shape)
+    }
+
+    /** MNN's memory for the network in MB. */
+    val memoryMb: Float get() = if (handle == 0L) 0f else nativeMemory(handle)
+
     override fun close() {
         if (handle != 0L) nativeRelease(handle)
         handle = 0L
@@ -36,6 +48,10 @@ class MnnNetwork(path: String, threads: Int) : AutoCloseable {
         @JvmStatic external fun nativeRun(handle: Long, data: FloatArray, shape: IntArray): FloatArray
 
         @JvmStatic external fun nativeOutputShape(handle: Long): IntArray
+
+        @JvmStatic external fun nativeTrim(handle: Long, shape: IntArray)
+
+        @JvmStatic external fun nativeMemory(handle: Long): Float
 
         @JvmStatic external fun nativeRelease(handle: Long)
     }

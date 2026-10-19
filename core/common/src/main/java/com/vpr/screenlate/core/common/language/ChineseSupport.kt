@@ -13,10 +13,13 @@ object ChineseSupport : LanguageSupport {
     override val flagCountries = listOf("cn")
     override val searchResolution = SearchResolution.LETTER
     override val hasCharacterEntries = true
+    override val furiganaMarkers = true
     override val sentenceTerminators = setOf('。', '！', '？', '!', '?', '．', '…', '\n')
     override val quotePairs = mapOf(
         '“' to '”', '‘' to '’', '「' to '」', '『' to '』', '《' to '》', '〈' to '〉', '（' to '）', '(' to ')', '【' to '】',
     )
+
+    override fun endsSentence(text: String, index: Int): Boolean = CjkText.endsSentence(text, index, sentenceTerminators)
 
     /** The word in Simplified and in Traditional characters, for note types with a field of each. */
     override val scriptMarkers = mapOf(

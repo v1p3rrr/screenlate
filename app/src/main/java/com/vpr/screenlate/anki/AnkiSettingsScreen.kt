@@ -65,6 +65,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.languages.LanguageCard
+import com.vpr.screenlate.languages.furiganaMarkerHints
 import com.vpr.screenlate.settings.SectionResetButton
 import com.vpr.screenlate.settings.SettingsSection
 import com.vpr.screenlate.ui.components.BackButton
@@ -348,6 +349,7 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     field = field,
                     template = settings.fields[field].orEmpty(),
                     markers = state.markers,
+                    hints = state.language.furiganaMarkerHints,
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
                 if (overwrite) {
@@ -460,8 +462,15 @@ private fun <T> Picker(label: String, value: String?, options: List<T>, name: (T
     }
 }
 
+/** A field's template with a + menu of [markers]; [hints] puts a second line under some of them. */
 @Composable
-internal fun TemplateField(field: String, template: String, markers: List<String>, onChange: (String) -> Unit) {
+internal fun TemplateField(
+    field: String,
+    template: String,
+    markers: List<String>,
+    hints: Map<String, Int> = emptyMap(),
+    onChange: (String) -> Unit,
+) {
     var text by remember(field) { mutableStateOf(template) }
     var menu by remember { mutableStateOf(false) }
     var focused by remember { mutableStateOf(false) }
@@ -487,7 +496,18 @@ internal fun TemplateField(field: String, template: String, markers: List<String
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     markers.forEach { marker ->
                         DropdownMenuItem(
-                            text = { Text("{$marker}", fontFamily = FontFamily.Monospace) },
+                            text = {
+                                Column {
+                                    Text("{$marker}", fontFamily = FontFamily.Monospace)
+                                    hints[marker]?.let { hint ->
+                                        Text(
+                                            stringResource(hint),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                }
+                            },
                             onClick = {
                                 menu = false
                                 text += "{$marker}"

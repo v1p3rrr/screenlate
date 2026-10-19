@@ -135,6 +135,14 @@
     <string name="anki_fields">Campos</string>
     <string name="anki_fields_hint">Os modelos usam marcadores como {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Use o botão + para inserir um. O primeiro campo é usado para verificar duplicatas.</string>
     <string name="anki_insert_marker">Inserir marcador</string>
+    <string name="anki_marker_furigana_zh">Pinyin sobre os caracteres</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin como texto: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Frase com pinyin sobre os caracteres</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Frase com pinyin como texto</string>
+    <string name="anki_marker_furigana_ru">Palavra com o acento tônico marcado</string>
+    <string name="anki_marker_furigana_plain_ru">Palavra com o acento tônico marcado, como texto</string>
+    <string name="anki_marker_sentence_furigana_ru">Frase com o acento tônico marcado nas palavras na forma de dicionário</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Frase com o acento tônico marcado nas palavras na forma de dicionário, como texto</string>
     <string name="anki_duplicates">Duplicatas</string>
     <string name="anki_duplicate_check">Verificar duplicatas</string>
     <string name="anki_duplicate_scope">Procurar em</string>

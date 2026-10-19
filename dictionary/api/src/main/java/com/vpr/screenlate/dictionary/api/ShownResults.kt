@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api
 
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.MappedText
+import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 
@@ -20,6 +21,24 @@ internal fun LookupResult.asShown(support: LanguageSupport): LookupResult {
         otherTraces = emptyList(),
         term = term.copy(expression = matched, reading = reading),
     )
+}
+
+/**
+ * The engine's results for [variant] of [source] as the lookup shows them ([asShown], [LookupResult.inSource]). In a
+ * language looked up by words, a match that ends before a combining mark is left out: Yomitan's word resolution takes
+ * a stress or tone mark typed apart for the end of a word, which would look up ко in ко́шка and hoa in hoà.
+ */
+internal fun List<LookupResult>.fromVariant(source: String, variant: MappedText, support: LanguageSupport): List<LookupResult> =
+    filterNot { support.searchResolution == SearchResolution.WORD && it.endsBeforeMark(variant.text) }
+        .map { it.asShown(support).inSource(source, variant) }
+
+/** Whether a combining mark of [text] follows the match. */
+private fun LookupResult.endsBeforeMark(text: String): Boolean {
+    if (matched.length >= text.length) return false
+    return when (Character.getType(text.codePointAt(matched.length))) {
+        Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt() -> true
+        else -> false
+    }
 }
 
 /**
