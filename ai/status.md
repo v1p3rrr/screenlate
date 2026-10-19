@@ -71,12 +71,20 @@ ANK16 (N, not run on the emulator yet). The owner does not want a new phone buil
 sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
 Bengali" (research and questions first, then the build).
 
+Group 5 (owner, 2026-10-19; the plan's Stage F and rows "Group 5", "Group 5 research", "Group 5 release"): six
+blocks, researched in parallel sessions started on 2026-10-19, each writing `plans/2026-10-19-group-5x.md` on its own
+branch: 5a Latin, 5b Celtic, 5c long suffix chains, 5d Cyrillic, 5e other scripts; 5f right to left starts after
+group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz) are researched in sessions of their
+own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
+(`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
+9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
+and Khmer build waits for the owner's go.
+
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
-passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's entries without a
-part of speech, form rows with template leftovers cleaned at import for every language, all bundles rebuilt. Both
-are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian. Group 4c (th, lo, km)
-is researched in its own session.
+passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
+entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
+rebuilt. Both are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

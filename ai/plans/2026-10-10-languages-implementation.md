@@ -311,6 +311,9 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Partial downloads | A download's archive is kept in the app's own storage (`no_backup`), not in the cache the system clears when storage runs low (owner, 2026-10-19) |
 | Waiting for a network | While no network is up, a waiting download's card says "Waiting for a network: …" (ru "Ждёт сеть: …"), a shared waiting card has the line "Waiting for a network" under its title (owner, 2026-10-19); the catalog card's stage and a waiting retry's card (under its retry text) say the same (a plain extension) |
 | Furigana markers | Yomitan's names stay (`{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}`); offered only for Japanese, Chinese and Russian, whose readings go over or into the words (a field that already has them keeps getting them in any language); Chinese and Russian show what they give as a second line in the + menu; Russian puts the stress into the text, in a sentence only on words in their dictionary form (owner, 2026-10-19, the language rules review; `notes/language-rules.md`) |
+| Group 5 | Every living language Yomitan describes that no group has, plus Latin and Esperanto (not Toki Pona, Ancient Greek, Old Irish, Manx, Cornish, Hawaiian), and the large languages Yomitan lacks that have Wiktionary dictionaries (sk, sl, lt, mk, az, uz, ur, ta, te, mr, sw). Six blocks by what the app needs: 5a Latin (ro, sv, da, no, sq, eu, mt, eo, la; sk, sl, lt, sw), 5b Celtic with initial mutations (cy, ga, gd, br), 5c long suffix chains (fi, et, hu; az, uz), 5d Cyrillic (bg, mn; mk), 5e other scripts (yue, kn; ta, te, mr), 5f right to left once group 4d is done (yi, arz, aii; ur). A block's research may move a language to another block (owner, 2026-10-19; the agent placed the languages Yomitan lacks, after the semicolons) |
+| Group 5 research | Each block is researched in its own session, research and the owner's questions first, as for group 4; 5a-5e start at once, 5f after group 4d's research (owner, 2026-10-19) |
+| Group 5 release | Provisionally after the big release, block by block; decided when group 4 is done (owner, 2026-10-19) |
 
 ## Open items (postponed by the owner)
 
@@ -1023,6 +1026,30 @@ no ML Kit for Serbian).
 Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questions and progress:
 `2026-10-19-group-4b.md`.
 
+### Group 4c (th, km; lo deferred)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questions and progress:
+`2026-10-19-group-4c.md`. Khmer joins Thai now instead of later; Lao is deferred, for a while or for good (owner,
+2026-10-19, question 5 of that plan).
+
+## Stage F: group 5 (decided on 2026-10-19)
+
+Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
+and progress in a plan file of its own (`2026-10-19-group-5a.md` and so on; question numbers are that file's own),
+so the block sessions do not edit the same files; `notes/languages.md` gets one line pointing to it.
+
+- 5a Latin: Romanian, Swedish, Danish, Norwegian, Albanian, Basque, Maltese, Esperanto, Latin; Slovak, Slovenian,
+  Lithuanian, Swahili. Mostly as group 4a; Swedish and Danish compounds as German and Dutch.
+- 5b Celtic: Welsh, Irish, Scottish Gaelic, Breton. A word's first letter changes with the grammar (Irish bhean from
+  bean), so the lookup needs a rule for initial mutations.
+- 5c Long suffix chains: Finnish, Estonian, Hungarian; Azerbaijani, Uzbek. Endings stacked on a stem, compounds in the
+  Finnic languages and Hungarian; the Turkic ones as Turkish.
+- 5d Cyrillic: Bulgarian, Mongolian; Macedonian.
+- 5e Other scripts: Cantonese (Han characters as Chinese, jyutping readings), Kannada; Tamil, Telugu, Marathi
+  (Brahmic scripts as Hindi; Kannada is read by the cloud only).
+- 5f Right to left, after group 4d: Yiddish (Hebrew script), Egyptian Arabic, Assyrian Neo-Aramaic (Syriac script,
+  cloud only); Urdu.
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -1418,3 +1445,11 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questio
   (middag + ten, dan + school). The other limits stay, with reasons, in `notes/language-rules.md`.
 - 2026-10-19: group 4b (Hindi, Bengali, Georgian, Armenian) researched; its plan with the questions is
   `2026-10-19-group-4b.md`, linked from Stage E.
+- 2026-10-19: group 4c (Thai, Khmer, Lao) researched; its plan with the owner's answers is `2026-10-19-group-4c.md`,
+  linked from Stage E. Lao and Khmer are built now with Thai (question 30 said later). The converted Paddle models
+  that wait (Thai, Devanagari) go up in one release when the owner decides (row "Paddle model hosting": the upload
+  date is the owner's; question 9 of the group 4b plan said "with the next Paddle models").
+- 2026-10-19: Lao deferred, for a while or for good (owner, after a summary of group 4c: one small English
+  dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
+- 2026-10-19: group 5 added (owner): its languages, six blocks and research of five blocks at once, the sixth after
+  group 4d; provisionally after the big release. Rows "Group 5", "Group 5 research", "Group 5 release", Stage F.
