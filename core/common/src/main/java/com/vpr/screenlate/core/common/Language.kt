@@ -38,6 +38,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     GREEK("el"),
     HINDI("hi"),
     BENGALI("bn"),
+    GEORGIAN("ka"),
     ;
 
     companion object {

@@ -57,6 +57,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | bn | The danda । and the double danda ॥ end a sentence, as in Hindi | `BengaliSupport.kt` `sentenceTerminators` | BengaliSupportTest `the danda and the double danda…`, SentenceTest `bengaliSentences…` | Isolation `only Hindi and Bengali end a sentence at the danda` | ok |
 | bn | Abbreviations (ড., ডা., মো., খ্রি., কি.মি.) and Latin letters written as their names, as initials joined by periods (এ.কে., বি.এন.পি.) or apart (এ. কে.), hold the sentence; এল, এস and ও, which are words too (তুমি এস.), end it | `BengaliSupport.kt` `abbreviations`, `initials` | BengaliSupportTest `abbreviations and initials…`, SentenceTest `bengaliSentences…` | Isolation (`initials` only hi and bn; মো. and এ.কে. hold only in bn) | ok |
 | bn | The language is called Bengali in English and tiếng Bengal in Vietnamese, where Android and Java say Bangla; other locales take the phone's name | `BengaliSupport.kt` `nameIn` | BengaliSupportTest `the language is called Bengali…` | Isolation `only Filipino and Bengali have names of their own…`, BengaliSupportTest (Russian is the phone's name) | ok |
+| ka | Abbreviations (ქ. city, წ. year, მაგ., ე.ი., ძვ. წ., გვ., ტ., იხ., შდრ., პროფ., აკად.) hold the sentence, also in a heading in Mtavruli capitals (Ქ., matched lowercased); ა.შ. (and so on), which mostly ends one, is left out | `GeorgianSupport.kt` `abbreviations`; `lang/SpacedLanguageSupport.kt` `lowercaseIn` | GeorgianSupportTest `abbreviations hold the sentence`, SentenceTest `georgianSentences…` | Isolation (ქ. and წ. hold only in ka) | ok |
 | zh, ko | Chinese ends at 。！？ but not at a Latin period; Korean at spaced periods but not at 3.14 | `ChineseSupport.kt:17`, `KoreanSupport.kt:21`, `Sentence.kt:22` | SentenceTest `chineseSentence…`, `koreanSentence…` | the same tests (quoted speech holds its terminator) | ok |
 | ja | Respellings: 1人 → 一人, 々, ッ, dots and spaces, radical look-alikes | `lang/JapaneseSupport.kt:126`; `api/LookupVariants.kt:12` | JapaneseTest, LookupVariantsTest, I: LookupPipelineTest | Isolation (no other language respells) | ok |
 | ja | Romaji to kana when the setting is on (Mozc table) | `lang/JapaneseSupport.kt:77`, `MozcRomaji.kt` | JapaneseTest, LookupVariantsTest | Isolation (`fromLatin`, `convertsLatin` only ja) | ok |
@@ -86,6 +87,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | zh | Fixed script: a word gives way to its spelling in the chosen script; Anki script markers | `api/ShownResults.kt:73`, `:107`; `ChineseScripts.kt` | ShownResultsTest, ChineseScriptsTest, ReadingWordsTest | Isolation (`scriptOf`, `inScript` only zh); `scriptTag` is null for English | ok |
 | zh | Search by typed pinyin (reading index) | `ChineseSupport.kt:133`, `:135`; `api/DictionaryLookup.kt:124` | ChinesePinyinTest, ReadingWordsTest | Isolation (`readingSearch`, `readingKey` only zh) | ok |
 | spaced | A match that ends before a combining mark is left out (ко in ко́шка, hoa in hoà typed apart) | `api/ShownResults.kt:31`, `api/DictionaryLookup.kt:89` | ShownResultsTest `a match that ends before a stress or tone mark…` | the same test (Japanese か + dakuten keeps its match; a match up to a space stays) | fixed |
+| ka | 24 characters from the aim by default, Georgian words running long (5% of the forms are longer than 16), until the scan length is set; the setting stays per language | `lang/LanguageSupport.kt` `defaultScanLength`, `GeorgianSupport.kt`, `api/settings/LookupSettings.kt` | LookupSettingsRepositoryTest `georgianScansTwentyFour…`, GeorgianSupportTest | Isolation `only Georgian considers more characters…`, LookupSettingsRepositoryTest (English 16) | ok |
 
 ## Engine (`dictionary:engine-hoshidicts`)
 
@@ -110,6 +112,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | hi | Text composed as headwords are (NFC: क़ U+0958 → क + nukta; Bengali ে + া → ো) and candrabindu read as anusvara (हैँ → हैं): the app's own text processors, added to Hindi's descriptor, which has none | `hi.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `hindi text is composed…`, I: LanguageLookupTest (U+0959 finds ख़ाना) | glue (en, ru, de, pl do neither; el, id and vi compose the text through their accent processors) | ok |
 | bn | Hindi's descriptor under bn, with the text composed as headwords are (NFC: ে + া → ো; য় U+09DF → য + nukta, as NFC writes it) | `bn.js` bundle, `build.mjs` `borrowed`, `addedPreprocessors` | glue `bengali noun endings…` (ো typed apart, য় as one character), I: LanguageLookupTest `bengaliEndings…` | glue `bengali endings and untyped matches stay out of hindi` | ok |
 | bn | Noun endings (classifiers টি টা খানা গুলো গুলি, plurals রা দের, cases র কে তে এ and their combinations) undone once, after at least two letters; the results match entries without a part of speech, which Wiktionary's Bengali entries never name | `scripts/yomitan-language/own-transforms.js`, `build.mjs` `addedTransforms`, `glue.js` `untypedRules`, `cpp/language/candidate_lookup.cpp` `fits` | glue `bengali noun endings…`, I: LanguageLookupTest `bengaliEndings…` | glue (one ending only: ছেলেদেরকে does not reach ছেলে; ভয় is not cut to ভ; hi has neither) | ok |
+| ka | Yomitan's Georgian rules (13 case and plural endings cut, -გნ/-ნ → -გნი/-ნი, -გ → -გა, chaining), filed under `kat`: the glue takes each language's rules by the descriptor's iso; they match entries without a part of speech, which Wiktionary's Georgian entries never name, when three letters or more stay (owner, question 11 of the group 4b plan) | `glue.js` `prepare`, `untypedRules`; `cpp/language/candidate_lookup.cpp` `fits` | glue `georgian rules load…`, I: LanguageLookupTest `georgianRules…` | glue `georgian rules stay out of other languages`, the მას case (not cut to მა) in both tests | fixed |
+| ka | Mtavruli capitals lowercased (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო): Yomitan's `decapitalize` added to Georgian's descriptor, which has no text processors | `ka.js` bundle, `build.mjs` `addedPreprocessors` | glue `georgian headings in mtavruli…`, I: LanguageLookupTest `georgianRules…` | — (every language with decapitalize lowercases Mtavruli as well, harmlessly) | ok |
+| ka | Inflection names: Yomitan's identifiers (noun-adj-suffix-stripping) shown as declension, nominative, dropped vowel, in the 14 locales | `generate-inflections.mjs` `labels`, `transformLanguages`; `res/values*/inflections_ka.xml` | the generator reports no missing translation | other languages keep Yomitan's names | ok |
 | all (wty) | At import, a form row written with template leftovers is keyed by its words: a romanization or note after whitespace and `(` or `,` is cut off, two spellings split at a whitespace-led `/` are keyed both, whitespace before a combining mark is dropped (মুখ ে → মুখে), and a row of an unfilled template (`{{{3}}}ে`) is not keyed | `cpp/language/archive_split.cpp` `form_headwords` | I: LanguageLookupTest `bengaliEndings…` (করেন, করিস, করো) | every other LanguageLookupTest (well-formed rows keep their keys) | fixed |
 | vi | Tone marks in the old and the new placement (hoà ↔ hòa) | `vi.js` bundle | glue `vietnamese tone marks…` | glue (fr, es, pt, it do not) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
@@ -138,6 +143,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
 | each OCR script | ML Kit model by script, Japanese and Chinese apart, Devanagari bundled and used for Bengali too; Armenian, Cyrillic, Georgian and Greek have none | `ocr/mlkit/MlKitOcrEngine.kt` `model`, `options` | MlKitOcrEngineTest (Hindi and Bengali are read) | MlKitOcrEngineTest (only the languages of scripts without a model are not read) | ok |
+| ka | No ML Kit or Paddle model; Tesseract `kat`, the fast model recommended (22.9% CER over clean and hard screens against best's 22.8%, 2.5 MB against 4.5 MB) | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`, catalog `tesseract-fast-kat` | MlKitOcrEngineTest (Georgian has no model) | the other languages recommend no Tesseract model | ok |
 | each language | OCR words are joined by the language's separator (empty for ja, zh) | `ocr/mlkit/MlKitOcrEngine.kt:87`, `ocr/tesseract/TesseractOcrEngine.kt:187` | TesseractPageTest, TextLayoutTest | — | ok |
 | spaced, ko | App text puts the language's separator between lines a space or line break wraps | `overlay/capture/AccessibilityText.kt:139`, `overlay/OverlayController.kt:1092` | AccessibilityTextTest `a line wrapped at a space…` | AccessibilityTextTest (Japanese joins without one; a wrap inside a word joins) | fixed |
 | all | App text keeps a combining mark typed apart (empty box in a text view) with its letter, in the letter's box | `overlay/capture/AccessibilityText.kt:158` | AccessibilityTextTest `a combining mark without a box stays with its letter` | AccessibilityTextTest (a mark after a character without a box, or at the start, is dropped) | fixed |
@@ -234,6 +240,12 @@ Found while adding Bengali:
     hi-en), 78 an unfilled template ({{{3}}}ে); hy-en has 1,883 of 942,487 with a romanization or two spellings
     (ծագմանը / ծագմանն), ka-en 11, and 73 unfilled templates. They are now keyed by their words.
 
+Found while adding Georgian:
+
+28. Yomitan's Georgian descriptor files its rules under `kat`, not `ka`, and the glue looked rules up by the language
+    code, so none loaded (Yomitan itself never applies them either). The glue now takes each language's rules by
+    the descriptor's iso; the inflection generator maps ka to `kat` (`transformLanguages`).
+
 ## Limits left as they are
 
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
@@ -245,6 +257,9 @@ Found while adding Bengali:
   ending finds কলকাতা anyway, without the form's tag (locative).
 - wty bn-pl writes romanizations as forms ("biṣ / bish" → বিষ); they are keyed as written, Latin text that Bengali
   text never matches.
+- Georgian rules chain and are tried on every word that ends like an ending; with three letters left, some words
+  also show a wrong neighbor after the right entry (არის, "is", also shows არი). Verbs come only from the form rows.
+  A word cut to nothing (მა minus -მა) queries an empty text, which finds nothing.
 
 - `Compounds.word` stops at a combining mark in NFD text; OCR and app text give NFC, so a German compound typed in
   NFD is not split. Not worth the mapping it would need.
@@ -313,4 +328,4 @@ Furigana markers outside Japanese (the plan's decision row "Furigana markers"):
 ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with English quotes), ANK13 (sentence furigana in a
 language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text), LK30
 (a word hyphenated at a line end), ANK12 extended (Plan B., ok., English quotes in German), POP24 (the Turkish chip
-initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali).
+initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali), LK44 (Georgian).

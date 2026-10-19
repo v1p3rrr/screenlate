@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">deklinacja</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Końcówka przypadka lub liczby mnogiej rzeczownika albo przymiotnika</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">mianownik</string>
+    <string name="inflection_ka_nounadjstemcompletion">Końcówka mianownika -ი przywrócona tematowi rzeczownika lub przymiotnika zakończonemu na spółgłoskę</string>
+    <string name="inflection_ka_vowelrestoration_label">wypadnięta samogłoska</string>
+    <string name="inflection_ka_vowelrestoration">Samogłoska, która wypadła z tematu, przywrócona</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">déclinaison</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Terminaison de cas ou de pluriel d’un nom ou d’un adjectif</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominatif</string>
+    <string name="inflection_ka_nounadjstemcompletion">Terminaison du nominatif -ი rendue à un radical de nom ou d’adjectif terminé par une consonne</string>
+    <string name="inflection_ka_vowelrestoration_label">voyelle tombée</string>
+    <string name="inflection_ka_vowelrestoration">Voyelle tombée du radical, rétablie</string>
+</resources>

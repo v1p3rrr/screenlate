@@ -1163,6 +1163,31 @@ Cells: archive MB, words.
 - The bn bundle takes Hindi's descriptor (exampleText replaced) with `composeCharacters` only: candrabindu and
   anusvara are not interchangeable in Bengali spelling.
 
+### Georgian (2026-10-19)
+
+- Yomitan's Georgian rules were dead twice: its descriptor files them under `kat`, while the language is `ka`, so
+  Yomitan's own MultiLanguageTransformer never reaches them; and every condition needs a part of speech, which wty's
+  Georgian entries never give (column 4 blank; the tags column says `n`, `pron sg`, `name`). The glue now takes each
+  language's rules by the descriptor's iso, and `untypedRules` lets the Georgian ones match untyped entries when three
+  letters or more stay (owner, question 11 of the group 4b plan).
+- What the rules add over wty ka-en's headwords and form rows (`tools/ka_rules.py` in the session scratchpad): the
+  form rows already find 76% of the words of Wiktionary's own examples (3,718 words) and 89% of the comparison
+  screens' words. The rules with three letters left find 1.3-3% more words (გაკეთებას → გაკეთება, აკაკის → აკაკი);
+  some words also show a wrong neighbor after the right entry (არის, "is", also shows არი). Without a minimum they
+  cut ვადის down to ვ.
+- The rules chain (n|adj in and out): წიგნს → წიგნ → წიგნი, reached twice (through -გნ and through -ნ); the engine
+  keeps one. Stripping -მა from a two-letter word leaves an empty text, which is queried and finds nothing.
+- Mtavruli: Yomitan gives Georgian no text processors; `addedPreprocessors` adds `decapitalize`
+  (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო). Every language with decapitalize lowercases Mtavruli too, which is harmless.
+- Inflection names: Yomitan's names are identifiers (noun-adj-suffix-stripping); `generate-inflections.mjs` gives them
+  English labels (declension, nominative, dropped vowel) and the 13 other locales are translated by hand.
+- OCR: no ML Kit or Paddle model. Tesseract kat over clean + hard screens: fast 22.9%, best 22.8% CER (clean 1.1%
+  both); fast (2.5 MB against 4.5 MB) is the recommended model.
+- Scan length 24 by default (`LanguageSupport.defaultScanLength`), the setting per language as before.
+- No downloadable fonts; the page names Noto Serif Georgian by its local names, the sans falls back by itself.
+- Audio: Wiktionary first (more common words recorded than on Lingua Libre, whose Georgian items are few and partly
+  filed under French).
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4b.md`.

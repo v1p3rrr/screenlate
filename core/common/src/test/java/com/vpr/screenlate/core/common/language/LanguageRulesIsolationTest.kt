@@ -129,6 +129,9 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.BENGALI)
         assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language })
             .containsExactly(Language.HINDI, Language.BENGALI)
+        // Georgian ქ. (city) and წ. (year), single letters without a partner.
+        assertThat(spaced.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
+        assertThat(spaced.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
     }
@@ -255,6 +258,11 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
         assertThat(all.where { it.ocrLines(listOf(listOf("y"))) != listOf(listOf(it.ocrWord("y"))) }).containsExactly(Language.SERBIAN)
+    }
+
+    @Test
+    fun `only Georgian considers more characters from the aim than Yomitan's 16 by default`() {
+        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN)
     }
 
     @Test

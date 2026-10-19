@@ -190,6 +190,14 @@ class SentenceTest {
     }
 
     @Test
+    fun georgianSentencesKeepTheirAbbreviationsAndLowHighQuotes() {
+        val georgian = "ის ქ. თბილისში 1991 წ. დაიბადა. მან თქვა: „ხვალ მოვალ. აუცილებლად.“ შემდეგ წავიდა. დასასრული."
+        assertThat(extract(georgian, "თბილისში", Language.GEORGIAN).text).isEqualTo("ის ქ. თბილისში 1991 წ. დაიბადა.")
+        assertThat(extract(georgian, "თქვა", Language.GEORGIAN).text)
+            .isEqualTo("მან თქვა: „ხვალ მოვალ. აუცილებლად.“ შემდეგ წავიდა.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

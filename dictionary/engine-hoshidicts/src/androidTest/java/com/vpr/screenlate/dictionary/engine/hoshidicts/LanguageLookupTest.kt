@@ -299,6 +299,35 @@ class LanguageLookupTest {
         assertThat(engine.lookup("{{{3}}}ে", bengali)).isEmpty()
     }
 
+    @Test
+    fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
+        val imported = engine.import(georgianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val georgian = LookupOptions(language = Language.GEORGIAN)
+
+        // The dative ending cut and the nominative -ი restored, on an entry without a part of speech.
+        val book = engine.lookup("წიგნს ვკითხულობ", georgian).first()
+        assertThat(book.term.expression).isEqualTo("წიგნი")
+        assertThat(book.matched).isEqualTo("წიგნს")
+        assertThat(book.trace.map { it.name }).containsExactly("nounAdjStemCompletion", "nounAdjSuffixStripping")
+        // Two letters left are too few: მას is not cut down to the entry მა.
+        assertThat(engine.lookup("მას", georgian)).isEmpty()
+        assertThat(engine.lookup("ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ", georgian).first().term.expression).isEqualTo("საქართველო")
+    }
+
+    /** Rows as Wiktionary's Georgian exports write them: no parts of speech. */
+    private fun georgianDictionary(): File = zip(
+        "ka.zip",
+        "index.json" to """{"title":"Test Georgian","revision":"1","format":3,"sourceLanguage":"ka"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["წიგნი","","n","",0,["book"],1,""],
+              ["მა","","n col","",0,["a made-up collective noun"],2,""],
+              ["საქართველო","","name","",0,["Georgia"],3,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun ukrainianDictionary(): File = zip(
         "uk.zip",
         "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),

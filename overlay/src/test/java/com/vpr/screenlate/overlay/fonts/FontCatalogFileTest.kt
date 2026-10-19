@@ -70,6 +70,11 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `georgian is offered no downloadable font, only the system's`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
+    }
+
+    @Test
     fun `latin fonts are offered for every language whose letters they have`() {
         val latin = Language.entries.filter { it.support.fontSubsets == setOf("latin") }
         assertThat(latin).containsAtLeast(Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN)

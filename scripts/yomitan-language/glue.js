@@ -9,13 +9,15 @@ import {LanguageTransformer} from 'yomitan/language/language-transformer.js';
 const translator = new Translator(/** @type {any} */ (null));
 
 /**
- * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS).
+ * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS). The
+ * transforms are taken by the descriptor's code: Georgian's name their language `kat`, under which Yomitan files them
+ * and its Georgian lookups never find them.
  * @param {string} language
  */
 function prepare(language) {
     if (translator._textProcessors.has(language)) { return; }
-    for (const {languageTransforms: descriptor} of getAllLanguageTransformDescriptors()) {
-        if (descriptor.language !== language) { continue; }
+    for (const {iso, languageTransforms: descriptor} of getAllLanguageTransformDescriptors()) {
+        if (iso !== language) { continue; }
         const transformer = new LanguageTransformer();
         transformer.addDescriptor(descriptor);
         translator._multiLanguageTransformer._languageTransformers.set(language, transformer);
@@ -87,15 +89,27 @@ function candidates(text, language, searchResolution) {
         s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
         c: d.conditions,
         r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
-        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || (untypedRules.has(language) && d.conditions !== 0),
+        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language),
     }));
 }
 
 /**
- * Languages whose deinflected texts may match entries without a part of speech: Wiktionary's Bengali entries give
- * none, and the app's endings (own-transforms.js) are undone once only, so they do not chain without conditions.
+ * Languages whose deinflected texts may match entries without a part of speech, with the shortest such text in
+ * characters: Wiktionary's Bengali and Georgian entries give none. The app's Bengali endings (own-transforms.js) are
+ * undone once only and leave two characters at least. Yomitan's Georgian rules chain and cut words down to a letter or
+ * two (ვადის → ვ), which would find only the letters' entries.
  */
-const untypedRules = new Set(['bn']);
+const untypedRules = new Map([['bn', 2], ['ka', 3]]);
+
+/**
+ * Whether [d], a deinflected text, may match entries without a part of speech (`untypedRules`).
+ * @param {{conditions: number, deinflectedText: string}} d
+ * @param {string} language
+ */
+function isUntypedRule(d, language) {
+    const shortest = untypedRules.get(language);
+    return shortest !== undefined && d.conditions !== 0 && [...d.deinflectedText].length >= shortest;
+}
 
 /**
  * Adverb particles of English phrasal verbs (`phrasalVerbParticles` of Yomitan's english-transforms.js). Prepositions

@@ -202,3 +202,27 @@ test('bengali endings and untyped matches stay out of hindi', () => {
     assert.ok(!queried('hi', 'বইটির').has('বই'));
     assert.ok(candidates('hi', 'पढ़ने').every((c) => !c.u));
 });
+
+test('georgian rules load, chain and match entries without a part of speech when three letters stay', () => {
+    // Yomitan files its Georgian rules under kat, not ka.
+    const book = candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნი');
+    assert.ok(book);
+    assert.ok(book.u);
+    assert.equal(JSON.stringify(book.r), JSON.stringify([['nounAdjStemCompletion', 'nounAdjSuffixStripping']]));
+    assert.ok(candidates('ka', 'სახლში').find((c) => c.d === 'სახლ').u);
+    // მას (him) is not cut down to an untyped მა, a word of its own.
+    const short = candidates('ka', 'მას').find((c) => c.d === 'მა');
+    assert.ok(short);
+    assert.ok(!short.u);
+    assert.ok(!candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნს').u);
+});
+
+test('georgian headings in mtavruli capitals are looked up in the ordinary letters', () => {
+    assert.ok(queried('ka', 'ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ').has('საქართველო'));
+});
+
+test('georgian rules stay out of other languages', () => {
+    for (const language of ['en', 'ru', 'bn']) {
+        assert.ok(!queried(language, 'წიგნს').has('წიგნი'), language);
+    }
+});

@@ -48,4 +48,13 @@ class LookupSettingsRepositoryTest {
         assertThat(dataStore.data.value.asMap().keys.map { it.name })
             .containsExactly("lookup_scan_length_en", "lookup_single_kanji_en", "lookup_max_results", "lookup_romaji")
     }
+
+    @Test
+    fun georgianScansTwentyFourCharactersUntilItsScanLengthIsSet() = runTest {
+        val repository = LookupSettingsRepository(dataStore)
+        assertThat(repository.current(Language.GEORGIAN).scanLength).isEqualTo(24)
+        assertThat(repository.current(Language.ENGLISH).scanLength).isEqualTo(LookupSettings.DEFAULT_SCAN_LENGTH)
+        repository.setScanLength(Language.GEORGIAN, 16)
+        assertThat(repository.current(Language.GEORGIAN).scanLength).isEqualTo(16)
+    }
 }
