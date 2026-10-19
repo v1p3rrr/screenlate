@@ -141,9 +141,11 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
   (first box too wide, last too narrow), horizontal and vertical. `SymbolLag` moves inner boundaries back by the offset
   at which they cross the least ink, only when that is clearly better; exact words stay untouched. Checked on the
   thread, game, small-text and manga screenshots in `testdata/ocr/`. Lens and app text are not affected.
-- ML Kit leaves a line-final hyphen out of the line's words ("impor" / "tant", emulator, LK30), so the lookup cannot
-  join a hyphenated word read by ML Kit. Lens keeps the hyphen but gives the word no separator ("impor-tant");
-  `withHyphenBreaks` puts the language's separator there.
+- ML Kit leaves a line-final hyphen out of the line's last element ("impor" / "tant", emulator, LK30) but keeps it
+  in the line's text; `withLineEndHyphen` puts it back after the word (box to the line's end), so the lookup joins
+  the word (MlKitLineEndHyphenTest, German). Lens keeps the hyphen but gives the word no separator ("impor-tant");
+  `withHyphenBreaks` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
+  halves are looked up apart.
 - `OcrOptions.deferWholeImage` ("Reduce load on the device"): the band around the aim runs at once, the whole screen
   only when Lens is 3 s late, fails or is unavailable.
 - Threads: the scan flow is collected on the main thread, so every engine moves its own heavy work off it: ML Kit's
