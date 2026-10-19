@@ -80,8 +80,8 @@ own too. Their branches are merged into `languages/main` by this session when th
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go. Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
-OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; the build waits for
-the owner's go.
+OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
+in the overnight queue below, after 4d.
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
