@@ -30,6 +30,9 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
   (first box too wide, last too narrow), horizontal and vertical. `SymbolLag` moves inner boundaries back by the offset
   at which they cross the least ink, only when that is clearly better; exact words stay untouched. Checked on the
   thread, game, small-text and manga screenshots in `testdata/ocr/`. Lens and app text are not affected.
+- ML Kit leaves a line-final hyphen out of the line's words ("impor" / "tant", emulator, LK30), so the lookup cannot
+  join a hyphenated word read by ML Kit. Lens keeps the hyphen but gives the word no separator ("impor-tant");
+  `withHyphenBreaks` puts the language's separator there.
 - `OcrOptions.deferWholeImage` ("Reduce load on the device"): the band around the aim runs at once, the whole screen
   only when Lens is 3 s late, fails or is unavailable.
 - Threads: the scan flow is collected on the main thread, so every engine moves its own heavy work off it: ML Kit's
@@ -77,6 +80,8 @@ Findings from the load measurements and highlight fixes of 2026-09-28. Code: `co
     characters on the search screen). Detected as an editable node whose first box is at the node's corner
     (`startsAtCorner`).
 - A WebView's text (the search screen's result page) did not show up as text nodes at all; OCR covers it.
+- A text view gives a combining mark typed apart (U+0301, U+0300) an empty box; `appTextLines` keeps it with its
+  letter in the letter's box instead of dropping it and ending the line there.
 - App text takes precedence over OCR where both have text; unknown apps with other box errors would show a shifted
   highlight or find a neighboring word. That is why "App text first" stays experimental and off by default (owner,
   2026-09-28).
