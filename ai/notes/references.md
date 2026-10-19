@@ -17,6 +17,11 @@
 | JPDB v2.2 frequency | github.com/Kuuuube/yomitan-dictionaries (no license) | Not bundled; importable by the user |
 | Kanjium pitch accents | Yomitan-format pitch dictionary (CC BY-SA 4.0) | Bundled |
 | Yomitan API | github.com/yomidevs/yomitan-api | Desktop-only native messaging bridge; not usable on Android |
+| Leipzig Corpora Collection | downloads.wortschatz-leipzig.de/corpora/`<name>`.tar.gz; terms wortschatz.uni-leipzig.de/en/usage (downloads CC BY, the rest CC BY-NC) | Kazakh and Kyrgyz frequency lists (`kaz_newscrawl_2016_100K`, `kir_newscrawl_2016_100K`); see `languages.md`, "Group 4e research" |
+| PanLex | panlex.org (now CC BY-NC-SA 4.0); mirror huggingface.co/datasets/cointegrated/panlex-meanings (CC0, 2024-03-01 dump) | Kazakh and Kyrgyz translations into English and Russian, to be converted; license checked again before hosting |
+| Apertium Kazakh and Kyrgyz | github.com/apertium (apertium-kaz, apertium-kir, apertium-eng-kaz, apertium-kaz-rus; GPL-3.0) | Lemma pairs and morphological analysers; not used |
+| Kazakh and Kyrgyz voices | eSpeak NG (GPL-3.0; kk, ky), RHVoice (LGPL-2.1; Kyrgyz Azamat, Nazgul), sherpa-onnx with Piper kk_KZ (Apache-2.0; voices from ISSAI's Kazakh TTS data, CC BY 4.0) | Engines a user installs; Google's have neither language |
+| Lingua Libre items | Kazakh Q9252 (`kaz`), Kyrgyz Q9255 (`kir`) | Commons titles `LL-Q9252 (kaz)-Speaker-word.wav` |
 
 ## Custom audio servers
 

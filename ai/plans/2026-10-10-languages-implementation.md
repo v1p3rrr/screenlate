@@ -1032,6 +1032,12 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
 `2026-10-19-group-4c.md`. Khmer joins Thai now instead of later; Lao is deferred, for a while or for good (owner,
 2026-10-19, question 5 of that plan).
 
+### Group 4e (kk, ky)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4e research". Plan, questions and progress:
+`2026-10-19-group-4e.md`. Its row "Hyphenated words" applies to every spaced language, and Kyrgyz PanLex is
+ticked as an exception to the row "Recommended dictionaries".
+
 ## Stage F: group 5 (decided on 2026-10-19)
 
 Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
@@ -1453,3 +1459,8 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
 - 2026-10-19: group 5 added (owner): its languages, six blocks and research of five blocks at once, the sixth after
   group 4d; provisionally after the big release. Rows "Group 5", "Group 5 research", "Group 5 release", Stage F.
+- 2026-10-19: group 4e (Kazakh, Kyrgyz) researched; its plan with the owner's answers is `2026-10-19-group-4e.md`,
+  linked from Stage E. Two of its rows reach beyond the group: a tap on a part of a hyphenated word shows the whole
+  word when it is a headword, then the tapped part, in every spaced language; Kyrgyz PanLex is ticked next to
+  Wiktionary, an exception to "Recommended dictionaries". The line of `notes/languages.md` that kk and ky would get
+  the longest matching start is corrected: word resolution never shortens a word.

@@ -78,7 +78,10 @@ group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz)
 own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
-and Khmer build waits for the owner's go.
+and Khmer build waits for the owner's go. Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
+research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
+OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; the build waits for
+the owner's go.
 
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
