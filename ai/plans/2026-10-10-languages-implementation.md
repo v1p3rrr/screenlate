@@ -1018,6 +1018,11 @@ done; what is left is the phone timings of the OCR plan. Serbian and Croatian ar
 rewritten) and fast-forwarded into `languages/main`; questions 65-66 are answered (look-alikes by the line, Latin capitals kept;
 no ML Kit for Serbian).
 
+### Group 4b (hi, bn, ka, hy)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questions and progress:
+`2026-10-19-group-4b.md`.
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -1403,3 +1408,5 @@ no ML Kit for Serbian).
   as the owner asked to keep English words safe; no ML Kit in Serbian's model list.
 - 2026-10-19: row "Furigana markers" recorded from the language rules review (the owner's decisions there); the
   catalog threshold in words and the Serbo-Croatian diacritics timing marked done in group 4a's list.
+- 2026-10-19: group 4b (Hindi, Bengali, Georgian, Armenian) researched; its plan with the questions is
+  `2026-10-19-group-4b.md`, linked from Stage E.
