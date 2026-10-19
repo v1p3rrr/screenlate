@@ -41,6 +41,8 @@ struct Pending {
   std::vector<std::vector<std::string>> chains;
   std::string text;
   bool untyped = false;
+  // The text whose form-of entry led to [text]; empty for a candidate.
+  std::string from;
 };
 
 struct Match {
@@ -178,7 +180,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       }
     }
     for (const auto& item : form_of) {
-      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false};
+      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());
@@ -196,11 +198,14 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     visit(p, lemmas);
   }
   // One form-of step, as Yomitan; a second one only from a lemma that is itself only a form (шокирующее →
-  // шокирующий → шокировать).
+  // шокирующий → шокировать), and not back to the text it came from (Jansen → Janssen → Jansen).
   std::vector<Pending> second;
   for (const auto& lemma : lemmas) {
     std::vector<Pending> further;
-    if (!visit(lemma, further)) second.insert(second.end(), further.begin(), further.end());
+    if (visit(lemma, further)) continue;
+    for (auto& next : further) {
+      if (next.text != lemma.from) second.push_back(std::move(next));
+    }
   }
   std::vector<Pending> ignored;
   for (const auto& lemma : second) visit(lemma, ignored);

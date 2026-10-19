@@ -122,6 +122,34 @@ class LanguageLookupTest {
         assertThat(engine.lookup("ёжика", russian).first().term.expression).isEqualTo("ёжик")
     }
 
+    @Test
+    fun formStepsDoNotLeadBackToTheText() = runTest {
+        val imported = engine.import(
+            zip(
+                "names.zip",
+                "index.json" to """{"title":"Test Names","revision":"1","format":3,"sourceLanguage":"en"}""".toByteArray(),
+                "term_bank_1.json" to """
+                    [
+                      ["Jansen","","","n",0,["a surname"],1,""],
+                      ["Jansen","","non-lemma","n",0,[["Janssen",["alternative form"]]],2,""],
+                      ["Janssen","","non-lemma","n",0,[["Jansen",["alternative"]]],3,""]
+                    ]
+                """.trimIndent().toByteArray(),
+            ),
+            File(root, "out"),
+        )
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+
+        // Jansen → Janssen → Jansen is no form of the word.
+        val direct = engine.lookup("Jansen", english).first()
+        assertThat(direct.term.expression).isEqualTo("Jansen")
+        assertThat(direct.trace).isEmpty()
+        assertThat(direct.otherTraces).isEmpty()
+        val form = engine.lookup("Janssen", english).first()
+        assertThat(form.term.expression).isEqualTo("Jansen")
+        assertThat(form.trace.map { it.name }).containsExactly("alternative")
+    }
+
     private fun russianDictionary(): File = zip(
         "ru.zip",
         "index.json" to """{"title":"Test Russian","revision":"1","format":3,"sourceLanguage":"ru"}""".toByteArray(),

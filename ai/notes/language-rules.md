@@ -42,7 +42,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ja, zh, ko | Latin words inside CJK text start at their first letter; a lone Latin word counts only as a whole | `lang/CjkText.kt:32`, `:54` | JapaneseTest, ChineseTest, KoreanTest | Isolation (`Ｔシャツ and wa|lk`) | ok |
 | de, pl, tr, lv, cs | A period after a short number (or a longer one before a lowercase word) is an ordinal, not a sentence end | `lang/SpacedLanguageSupport.kt:206` | GermanTest, PolishTest, TurkishTest, LatvianTest, CzechTest, SentenceTest | Isolation (others end at "3." and "1918."; "1918. Dann" ends everywhere) | ok |
 | each spaced language | Its abbreviations ("Mr.", "z.B.", "т. е.", "TP.") do not end a sentence | `lang/SpacedLanguageSupport.kt:70`, each `<Lang>Support.abbreviations` | each `<Lang>Test`, SentenceTest | Isolation (each list holds only its own language's sentences) | ok |
-| de, cs | Single letters abbreviate only beside another one written apart (z. B., d. h., o. Ä., u. v. m.; Czech př. n. l.), so "Plan B." ends a sentence; "S." stands alone | `lang/SpacedLanguageSupport.kt:38`, `:177`, `GermanSupport.kt:59`, `CzechSupport.kt:41` | GermanTest `a single letter abbreviates only beside another one`, CzechTest, SentenceTest | Isolation ("Plan B. Dann" ends everywhere; only German and Czech have paired letters, "n. l." holds only in Czech) | fixed |
+| de, cs | Single letters abbreviate only beside another one written apart (z. B., d. h., o. Ä., u. v. m.; Czech př. n. l., also with the l read as a capital I, as OCR reads it in sans-serif text), so "Plan B." ends a sentence; "S." stands alone | `lang/SpacedLanguageSupport.kt:38`, `:177`, `GermanSupport.kt:59`, `CzechSupport.kt:41` | GermanTest `a single letter abbreviates only beside another one`, CzechTest (also `the l of the era read as a capital I`), SentenceTest | Isolation ("Plan B. Dann" ends everywhere; only German and Czech have paired letters, "n. l." holds only in Czech) | fixed |
 | pl | "ok." (około) holds the sentence only before a number or a lowercase word ("Jest ok. Idziemy." ends) | `lang/SpacedLanguageSupport.kt:44`, `PolishSupport.kt:34` | PolishTest `ok holds the sentence only…` | other languages have no such words | fixed |
 | tr | Abbreviations in capitals match under Turkish case rules (ŞTİ.), and under the root rules for capitals read without their dots | `lang/SpacedLanguageSupport.kt:56`, `TurkishSupport.kt:31` | TurkishTest `abbreviations in capitals…` | the other languages keep `Locale.ROOT` | fixed |
 | spaced, ko | A period followed at once by a letter or digit (3.14, p.m, example.com) does not end a sentence | `lang/SpacedLanguageSupport.kt:70`, `KoreanSupport.kt:67` | EnglishTest, KoreanTest, SentenceTest | Isolation (holds in every spaced language) | ok |
@@ -78,7 +78,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
 | ja | Native hoshidicts lookup with its deinflector; other languages through their Yomitan bundle in QuickJS | `HoshidictsEngine.kt:101` | I: HoshidictsEngineTest, LookupPipelineTest, LanguageLookupTest | — (one path per language) | ok |
-| all but ja | Form-of entries are followed, a second form-of step allowed (шокирующее → шокировать) | `cpp/language/candidate_lookup.cpp:39` | I: LanguageLookupTest, HoshidictsEngineTest | language-agnostic by design | ok |
+| all but ja | Form-of entries are followed, a second form-of step allowed (шокирующее → шокировать), never back to the text it started from (Jansen → Janssen → Jansen) | `cpp/language/candidate_lookup.cpp:39`, `:199` | I: LanguageLookupTest (`formStepsDoNotLeadBackToTheText`), HoshidictsEngineTest | language-agnostic by design | ok |
 | tr | Turkish case pairs (I ↔ ı, İ ↔ i) | `glue:44` | glue `turkish capitals…` | glue `other languages keep the default case pairs`, `turkish case pairs do not reach english` | ok |
 | en | Untyped phrasal verbs ("picked up" → "pick up") for dictionaries without parts of speech | `glue:86`, `:113` | glue `english phrasal verbs…`, I: LanguageLookupTest | glue ("closed to" gets none; de, fr, es never) | ok |
 | id, ms | Combining marks dropped (Yomitan's Indonesian `removeAlphabeticDiacritics`); Malay, which has no Yomitan descriptor, is built from Indonesian's under its own code | `id.js`, `ms.js` bundles; `scripts/yomitan-language/build.mjs:30` | glue `malay takes the indonesian text processors…` | glue (en keeps "bacá") | ok |
@@ -166,6 +166,10 @@ as it is; see below), **ask** (a behavior choice for the owner).
 - A word hyphenated at a line end is joined only when the second half is in lowercase; a real hyphen with a capital
   after it (Max- Planck) is tried with the hyphen only. A hyphen at a line end in Japanese, Chinese or Korean text
   is left alone.
+- Compounds split greedily, the longest word first: Dutch stadsbestuurder gives stadsbestuur + der, not stads +
+  bestuurder, since the dictionary has stadsbestuur and "der". Wiktionary's s-forms (werkgevers, dorps) mostly take
+  the linking s with the first part.
+- Czech Roman ordinals ("Karel IV. byl") end the sentence at their period; only digits are ordinals.
 - `{phonetic-transcriptions}` lists the transcriptions without their tags; Yomitan puts the tags in italics before
   each one. Not language-specific; left for the Anki template review.
 

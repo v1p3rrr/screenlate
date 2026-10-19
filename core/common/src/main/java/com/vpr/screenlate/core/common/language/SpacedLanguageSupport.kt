@@ -74,7 +74,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (index + 1 < text.length && text[index + 1].isLetterOrDigit()) return false
         if (ordinalPeriod && isOrdinal(text, index)) return false
         val word = wordBefore(text, index)
-        if (word.length == 1 && word.lowercaseIn(pairedLetters)) return !hasPartner(text, index - 1, index)
+        if (word.length == 1 && (word.lowercaseIn(pairedLetters) || word.isReadForPairedL())) {
+            return !hasPartner(text, index - 1, index)
+        }
         if (word.lowercaseIn(abbreviationsBeforeLowercase)) return !lowercaseOrNumberAfter(text, index)
         return !word.lowercaseIn(abbreviations)
     }
@@ -231,6 +233,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         if (start > 0 && text[start - 1] in APOSTROPHES) return false
         return text.substring(start, end).lowercaseIn(elisions)
     }
+
+    /** OCR reads a sans-serif l as a capital I (Czech "n. I." for "n. l."). */
+    private fun String.isReadForPairedL(): Boolean = this == "I" && "l" in pairedLetters
 
     private fun String.lowercaseIn(words: Set<String>): Boolean =
         lowercase(caseLocale) in words || lowercase(Locale.ROOT) in words

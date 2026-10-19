@@ -21,6 +21,15 @@ class CzechSupportTest {
     }
 
     @Test
+    fun `the l of the era read as a capital I still keeps the sentence going`() {
+        val read = "300 př. n. I. a rostlo"
+        assertThat(ends(read, at = read.indexOf("I.") + 1)).isFalse()
+        assertThat(ends("Plán I. Potom")).isTrue()
+        // German pairs no l, so a capital I stays a letter of its own there.
+        assertThat(GermanSupport.endsSentence(read, read.indexOf("I.") + 1)).isTrue()
+    }
+
+    @Test
     fun `low quotes close with the high opening quote`() {
         assertThat(CzechSupport.quotePairs['„']).isEqualTo('“')
         assertThat(CzechSupport.quotePairs['»']).isEqualTo('«')
