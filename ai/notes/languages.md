@@ -854,8 +854,10 @@ The owner chose two languages instead of two script entries (questions 61-64): a
   before. OCR: `LanguageSupport.ocrLines` gets the page line by line; Serbian sums each line's script balance
   (Cyrillic letters +1, look-alikes and j 0, other Latin letters -1; a line at 0 takes the page's) and fixes
   look-alikes only on Cyrillic lines, there also in words of look-alikes alone (`LookAlikes.fixInScript`: Ја, је,
-  Јој, which Lens reads as Latin). A Latin line keeps i, a, u, o. This replaces the plan row's "only with a Cyrillic
-  model": the final text comes from cloud recognition whatever the model, and Lens reads both scripts.
+  Јој, which Lens reads as Latin: every letter of such a word has a Latin twin, so Lens writes the whole word in
+  Latin, it does not mix scripts within it). Latin words in capitals stay unless the line is a heading in capitals
+  (OK, TOP on buttons and in running text). A Latin line keeps i, a, u, o. The owner chose this over the plan row's
+  "only with a Cyrillic model" (question 65): the final text comes from cloud recognition whatever the model.
 - Voice: `speechText` gives the voice Latin words in Cyrillic (the sr voice reads Cyrillic for certain; on the
   emulator Google TTS used sr-RS). Translation: `translationTag` sends text that is mostly Latin as `sr-Latn` where
   the service has it (Bing, Edge); Google has no sr-Latn, gets sr and translates Latin text right. On the emulator
@@ -865,7 +867,7 @@ The owner chose two languages instead of two script entries (questions 61-64): a
   Croatian's two items and Serbian's Latin titles. Emulator: ljubav (Croatian) Hr-ljubav.ogg, then Sr-љубав.flac;
   voda (Serbian) Sr-вода.flac, then Lingua Libre (UništihEkonomiju).
 - Models: Serbian's list holds PaddleOCR v5 Cyrillic (recommended), PaddleOCR v6 (Latin) and Tesseract srp; no
-  ML Kit, whose script check is Cyrillic. Choosing v6 loaded and warmed it at once (481 ms).
+  ML Kit (question 66: Serbian is mostly Cyrillic). Choosing v6 loaded and warmed it at once (481 ms).
 
 ## Ukrainian and Belarusian on `languages/uk` (2026-10-19)
 
