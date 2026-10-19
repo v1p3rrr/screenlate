@@ -107,7 +107,9 @@ internal class NetworkEvents(private val clock: () -> Long = System::nanoTime) :
 
         private fun end(error: IOException?) {
             val now = clock()
-            val idle = lastEnd.put(host, now)?.let { (start - it) / 1_000_000 }
+            // A call to the host that ended after this one started ran alongside it: no idle time then.
+            val since = lastEnd.put(host, now)?.let { (start - it) / 1_000_000 }
+            val idle = since?.takeIf { it >= 0 }
             val total = (now - start) / 1_000_000
             val fields = arrayOf<Pair<String, Any?>>(
                 "host" to host,
@@ -125,6 +127,7 @@ internal class NetworkEvents(private val clock: () -> Long = System::nanoTime) :
                 "kbps" to bodyMs?.takeIf { it >= MIN_SPEED_MS }?.let { received * 8 / it },
                 "reused" to reused,
                 "idle_ms" to idle,
+                "overlapped" to (since != null && since < 0).takeIf { it },
                 "proto" to protocol,
                 "error" to error?.javaClass?.simpleName,
                 "scan" to scan.takeIf { it > 0 },

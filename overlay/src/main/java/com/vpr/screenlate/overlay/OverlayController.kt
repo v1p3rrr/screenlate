@@ -271,7 +271,6 @@ class OverlayController(
     // TEMPORARY DIAGNOSTICS BUILD: the touch that may start a scan, the last dock screen (ai/notes/diagnostics.md).
     private var diagTouchAt = 0L
     private var diagDockScreen: String? = null
-    private var diagBubbleShown = false
 
     /** What the page was given last; the lookup keeps the same lists until the dictionaries change. */
     private var pageStyles: List<DictionaryStyle>? = null
@@ -1743,3 +1742,6 @@ class OverlayController(
         val lensError: Throwable?,
     )
 }
+
+// TEMPORARY DIAGNOSTICS BUILD: the bubble was shown in this process already; services come and go (ai/notes/diagnostics.md).
+private var diagBubbleShown = false

@@ -18,6 +18,7 @@ internal object ProcessInfo {
     private const val CURSOR = "exit-cursor.txt"
     private const val MAX_TRACE_BYTES = 1L shl 20
     private const val MAX_SUMMARY = 128
+    private const val SUMMARY_PREFIX = "sl;"
 
     fun start(): Map<String, Any?> = linkedMapOf(
         "pid" to Process.myPid(),
@@ -50,7 +51,7 @@ internal object ProcessInfo {
                 "pss_kb" to exit.pss,
                 "rss_kb" to exit.rss,
                 "description" to exit.description,
-                "state" to exit.processStateSummary?.decodeToString(),
+                "state" to exit.processStateSummary?.let(::summaryText),
                 "trace" to trace,
             )
         }
@@ -103,10 +104,19 @@ internal object ProcessInfo {
         )
     }
 
-    /** Up to 128 bytes that the next process reads in this one's [ApplicationExitInfo]. */
+    /**
+     * Up to 128 bytes that the next process reads in this one's [ApplicationExitInfo]. The WebView sets a summary of its
+     * own when it loads, so ours starts with [SUMMARY_PREFIX].
+     */
     fun setSummary(context: Context, state: Map<String, String>) {
-        val text = state.entries.joinToString(";") { "${it.key}=${it.value}" }.take(MAX_SUMMARY)
+        val text = (SUMMARY_PREFIX + state.entries.joinToString(";") { "${it.key}=${it.value}" }).take(MAX_SUMMARY)
         runCatching { context.getSystemService(ActivityManager::class.java).setProcessStateSummary(text.encodeToByteArray()) }
+    }
+
+    /** A summary of ours without the prefix; another writer's (the WebView's binary one) only as its size. */
+    fun summaryText(bytes: ByteArray): String {
+        val text = bytes.decodeToString()
+        return if (text.startsWith(SUMMARY_PREFIX)) text.removePrefix(SUMMARY_PREFIX) else "other:${bytes.size}b"
     }
 
     fun reasonName(reason: Int): String = when (reason) {

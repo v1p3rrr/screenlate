@@ -2,6 +2,8 @@ package com.vpr.screenlate.diagnostics
 
 import com.google.common.truth.Truth.assertThat
 import java.util.Collections
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import okhttp3.OkHttpClient
@@ -59,6 +61,21 @@ class NetworkEventsTest {
         assertThat(events[1]["reused"]).isEqualTo(true)
         assertThat(events[1]["connect_ms"]).isNull()
         assertThat(events[1]["idle_ms"]).isNotNull()
+    }
+
+    @Test
+    fun `a call that ran alongside another to the host has no idle time`() {
+        server.enqueue(MockResponse.Builder().body("slow").headersDelay(400, TimeUnit.MILLISECONDS).build())
+        server.enqueue(MockResponse.Builder().body("fast").build())
+        val slow = thread { get("/slow") }
+        Thread.sleep(100)
+        get("/fast")
+        slow.join()
+
+        assertThat(events).hasSize(2)
+        assertThat(events[1]["idle_ms"]).isNull()
+        assertThat(events[1]["overlapped"]).isEqualTo(true)
+        assertThat(events[0]["overlapped"]).isNull()
     }
 
     @Test

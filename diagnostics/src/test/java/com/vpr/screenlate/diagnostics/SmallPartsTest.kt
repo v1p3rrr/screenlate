@@ -57,6 +57,14 @@ class SmallPartsTest {
     }
 
     @Test
+    fun `an exit keeps our state summary and only the size of another writer's`() {
+        assertThat(ProcessInfo.summaryText("sl;service=connected;scan=3:closed".encodeToByteArray()))
+            .isEqualTo("service=connected;scan=3:closed")
+        val webView = byteArrayOf(0x31, 0x35, 0x35, 0x2e, 0x30, 0x00, 0x7f, -0x3a, 0x12)
+        assertThat(ProcessInfo.summaryText(webView)).isEqualTo("other:9b")
+    }
+
+    @Test
     fun `counters give the counts since the last drain`() {
         val counters = Counters()
         repeat(3) { counters.add("windows") }

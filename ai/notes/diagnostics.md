@@ -36,7 +36,8 @@ Process and system:
   start reason, cold/warm, whether the app was force-stopped, fork/bind/onCreate/first frame times).
 - `exit`: why each earlier process ended (`ApplicationExitInfo`: low memory, crash, native crash, ANR, freezer, user
   stopped, …) with its PSS/RSS and the state string the process had set (`Diag.state`: service state, last scan, PSS);
-  ANR traces are copied into `traces/`.
+  ANR traces are copied into `traces/`. The WebView also sets the process's state summary (binary, starting with its
+  version); ours starts with `sl;`, which `state` drops, and another writer's summary is kept only as `other:<size>b`.
 - `app_create` (Hilt injection ms), `app_init` (first-run settling and bundled install ms), `app_repair` (ms).
 - `service`: accessibility service created / connected / unbind / interrupt / destroyed with the process age;
   `service_config` (orientation, size in dp, night mode).
@@ -55,7 +56,7 @@ Process and system:
 - `counts` in the `sample`: events too frequent for their own lines, since the last sample: `windows_changed`,
   `foreground_app`, `popup_update`, `lens_prepare_skipped` (offline or paused), `lens_preconnect_opening` /
   `lens_preconnect_recent` (no new connection opened on touch), `device_model_gone` (a model deleted under the scan),
-  `webview_prepare_popup`.
+  `webview_prepare_popup` / `webview_prepare_embedded` (a page loaded again after the system reclaimed it).
 
 Scans (`scan`, one per scan, written when it closes: `next_scan`, `closed` (docked, hidden, settings), or `timeout`
 30 s after it began):
@@ -81,7 +82,8 @@ Scans (`scan`, one per scan, written when it closes: `next_scan`, `closed` (dock
 
 Overlay:
 
-- `bubble`: shown or hidden; the first one after a process start has `process_up_ms`; `package`.
+- `bubble`: shown or hidden; `first` and `process_up_ms` on the first one in a process (a service that reconnects in
+  the same process does not repeat them); `package`.
 - `dock_screen`: what the dock sees of the screen, each time it changes: size, `keyboard_top` (null without a
   keyboard), `bars` shown (`none`: a fullscreen app), the usable area, the gesture insets, the side, the bubble's
   window, whether the bubble was touched, `package`.
@@ -99,7 +101,8 @@ renderer priority at exit, shown, ready, the page's age).
 Network (`net`, one per HTTP call of the shared OkHttp client and every client derived from it: cloud recognition,
 catalog, downloads, audio, translation, updates): host, method, code, total ms, DNS, connect, TLS (and version), wait
 for the first byte, body ms, bytes sent/received, speed, whether a pooled connection was reused, idle time since the
-previous call to the host, protocol, error class.
+previous call to the host ended (`overlapped` instead when the call started before that one ended), protocol, error
+class.
 
 Capture and recognition:
 
@@ -170,7 +173,36 @@ Trace sections (`SL:` prefix) for Perfetto: `capture_copy`, `webview_create`, `m
 
 The events are JSON lines; e.g. with Python: `[json.loads(l) for f in sorted(glob('diagnostics/events/*.jsonl')) for
 l in open(f, encoding='utf-8')]`, then group by `e`. The logcat copy has the app's own log lines with years in the
-time stamps (`-v threadtime -v year`).
+time stamps (`-v threadtime -v year`). `logcat -f` buffers its writes, so the copy lags by about 15 s and may end in
+a partial line; the export's usual log text (`logcat -d`) has the latest lines, and the next process continues the
+copy after its last full time stamp.
+
+## Emulator check (2026-10-19, Pixel_10_Pro)
+
+Emulator numbers on a desktop CPU; only the shape of the data matters, not the times.
+
+- Install: the emulator's `/data` was 97–99 % full and installing over the Dev build failed ("not enough space"). What
+  worked: back up the app's data (`adb exec-out run-as <pkg> tar cf - . > app-data.tar`), turn off the accessibility
+  service, `pm clear`, install, restore (`adb exec-in run-as <pkg> tar xf - < app-data.tar`), turn the service on.
+  `pm clear` also revokes the AnkiDroid permission: `pm grant <pkg> com.ichi2.anki.permission.READ_WRITE_DATABASE`.
+- Start: `process`, `device`, `process_start`, `exit` and `sample` written; Hilt injection 309 ms; the service created
+  0.9 s after the process start, a 560 ms main-thread stall when it connects; the popup WebView created in 194 ms (cold;
+  15–20 ms when the service reconnects), its page ready after about 1 s; the bubble shown 1.6 s after the process start;
+  the ML Kit warm-up 1.3 s.
+- A pull-out scan: ML Kit band (1280×428) 759 ms, draft at 1150 ms, popup shown at 1544, cloud final at 1791, popup
+  drawn at 1856; lookup 281 ms. The connection opened on touch took 1235 ms (DNS 286, connect 419, TLS 140) and the
+  scan's request waited 727 ms for it.
+- A tap scan: `touch_ms` 307 (the double-tap timeout), cloud final at 713 ms, `aim_to_popup` 67 ms, `render_drawn`
+  88 ms.
+- PaddleOCR v6: band pass 551 ms (detector 1×3×320×960 99 ms, recognizer 3 runs, 3 resizes); whole screen 1567 ms
+  (detector 1×3×2144×960 839 ms, recognizer 14 runs, 11 resizes; MNN 362 MB, native heap 534 MB); the trim 10 s later
+  freed MNN 363 → 34 MB and native 507 → 170 MB in 20 ms.
+- Export: "Save to Downloads" gives the zip with the log text, `state.json`, the events, the logcat copy and the
+  cursors; the About card showed the collected size.
+- Fixed after the check: the WebView's binary state summary in `exit` (now `sl;` and `other:<size>b`), negative idle
+  times of overlapping calls (now `overlapped`), `first` on every service reconnect (now per process).
+- Noise to ignore: `uiautomator dump` reconnects the service (see `build-environment.md`); the emulator's local audio
+  sources refuse connections.
 
 ## Removal
 
