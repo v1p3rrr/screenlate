@@ -72,6 +72,14 @@ test('vietnamese tone marks match in the old and the new placement only in vietn
     }
 });
 
+test('a vietnamese phrase with a tone mark typed apart keeps the text as written for its match', () => {
+    const written = 'hoa\u0300 b\u00ecnh';
+    const found = candidates('vi', written + '.').filter((c) => c.d === 'ho\u00e0 b\u00ecnh');
+    assert.ok(found.length > 0);
+    // The engine reports the match in the text it was given, so the app maps it back over the mark.
+    assert.ok(found.every((c) => c.o === written));
+});
+
 test('english phrasal verbs are untyped candidates only in english', () => {
     const picked = candidates('en', 'picked up');
     assert.ok(picked.some((c) => c.d === 'pick up' && c.u));

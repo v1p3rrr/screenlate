@@ -5,9 +5,11 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.graphics.scale
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage
+import com.vpr.screenlate.core.ocr.withHyphenBreaks
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javax.inject.Inject
@@ -94,7 +96,10 @@ class LensOcrEngine @Inject constructor(
                 response.body.bytes()
             }
         }
-        return withContext(Dispatchers.Default) { LensProtocol.parseResponse(bytes, image.width, image.height) }
+        return withContext(Dispatchers.Default) {
+            val page = LensProtocol.parseResponse(bytes, image.width, image.height)
+            page.withHyphenBreaks(language.support.wordSeparator)
+        }
     }
 
     private fun encode(image: Bitmap): Triple<ByteArray, Int, Int> {

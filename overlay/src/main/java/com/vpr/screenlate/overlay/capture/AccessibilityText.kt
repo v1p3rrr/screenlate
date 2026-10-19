@@ -134,7 +134,8 @@ class AccessibilityText(private val service: AccessibilityService) {
  * A node's text as lines, one word each, from its code points and their boxes on screen (null where a character has no
  * visible location). A character without a location ends the line, and so does one that starts left of the previous
  * one or below it. Where a space or line break without a location ends it, the line takes [separator], so the words
- * on both sides of a wrap stay apart in a language written with spaces.
+ * on both sides of a wrap stay apart in a language written with spaces. A combining mark typed apart (a stress or tone
+ * mark: ко́шка, hoà) has an empty box in a text view; it stays with its letter and takes the letter's box.
  */
 internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: String): List<OcrWord> {
     val lines = mutableListOf<OcrWord>()
@@ -153,12 +154,16 @@ internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: Strin
     var broken = false
     var spaced = false
     for ((character, box) in characters) {
+        val previous = current.lastOrNull()?.second
+        if (box == null && previous != null && !broken && isCombiningMark(character)) {
+            current += character to previous
+            continue
+        }
         if (box == null) {
             broken = true
             if (character.isBlank()) spaced = true
             continue
         }
-        val previous = current.lastOrNull()?.second
         if (broken || previous != null && (box.left < previous.left - previous.width / 2 || box.top >= previous.bottom)) {
             endLine(spaced)
         }
@@ -168,6 +173,11 @@ internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: Strin
     }
     endLine(spaced)
     return lines
+}
+
+private fun isCombiningMark(character: String): Boolean = when (Character.getType(character.codePointAt(0))) {
+    Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt() -> true
+    else -> false
 }
 
 /**

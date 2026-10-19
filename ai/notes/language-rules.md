@@ -109,6 +109,8 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | each OCR script | ML Kit model by script, Japanese and Chinese apart; Cyrillic has none | `ocr/mlkit/MlKitOcrEngine.kt:53` | MlKitOcrEngineTest | MlKitOcrEngineTest (only Cyrillic-script languages are not read) | ok |
 | each language | OCR words are joined by the language's separator (empty for ja, zh) | `ocr/mlkit/MlKitOcrEngine.kt:87`, `ocr/tesseract/TesseractOcrEngine.kt:187` | TesseractPageTest, TextLayoutTest | — | ok |
 | spaced, ko | App text puts the language's separator between lines a space or line break wraps | `overlay/capture/AccessibilityText.kt:139`, `overlay/OverlayController.kt:1092` | AccessibilityTextTest `a line wrapped at a space…` | AccessibilityTextTest (Japanese joins without one; a wrap inside a word joins) | fixed |
+| all | App text keeps a combining mark typed apart (empty box in a text view) with its letter, in the letter's box | `overlay/capture/AccessibilityText.kt:158` | AccessibilityTextTest `a combining mark without a box stays with its letter` | AccessibilityTextTest (a mark after a character without a box, or at the start, is dropped) | fixed |
+| spaced | Lens gives no separator after a word hyphenated at a line end; the language's separator is put there, so the break rules see it | `ocr/HyphenBreaks.kt:9`, `ocr/lens/LensOcrEngine.kt:76` | HyphenBreaksTest | HyphenBreaksTest (a dash of its own, a hyphen after a digit, a separator Lens gave, the last line, Japanese) | fixed |
 | all | Vertical lines are detected by geometry; right-to-left by script | `ocr/TextOrientation.kt:9`, `:13` | ReadingOrderTest, TextLayoutTest | — | limit |
 
 ## Bugs fixed in this review
@@ -134,6 +136,11 @@ as it is; see below), **ask** (a behavior choice for the owner).
     `data-sc-`, unlike Yomitan, so a dictionary's CSS written for Yomitan missed them; keys Yomitan skips (foo-bar)
     were kept.
 12. The frequency chip's initial ignored Turkish case rules (I for ingilizce instead of İ).
+13. App text dropped a combining mark typed apart, whose box a text view reports empty, and ended the line there:
+    hoà written with U+0300 was looked up as "hoa" (the flower only), and ко́шка was highlighted as two overlapping
+    boxes. Found on the emulator (LK28); the language engine itself handles such text (glue test).
+14. Lens joins the halves of a word hyphenated at a line end with no separator ("impor-tant"), so the break rules
+    never matched and neither half found anything (LK30).
 
 ## Limits left as they are
 
@@ -145,6 +152,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
   ∥ separates an example from its translation wherever it appears.
 - reading-ru rules are for Russian only; Ukrainian and Belarusian (group 4a) need their own when they are added.
 - Paddle lines are paragraphs of their own; Lens takes separators from its response.
+- ML Kit leaves a line-final hyphen out of its words ("impor" / "tant"), so a hyphenated word is not joined with
+  it and each half is looked up alone. Joining every word across a line break without a hyphen would find wrong
+  words ("the" / "rapist"). Whether ML Kit's line text keeps the hyphen is not checked.
 - The frequency chip's initial follows the page language, not the dictionary title's (unknown): an English title in
   a Turkish profile gets İ.
 - A word hyphenated at a line end is joined only when the second half is in lowercase; a real hyphen with a capital

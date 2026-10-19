@@ -78,6 +78,21 @@ class AccessibilityTextTest {
     }
 
     @Test
+    fun `a combining mark without a box stays with its letter`() {
+        // A text view gives a stress or tone mark typed apart an empty box.
+        val stressed = characters("ко́шка", hidden = setOf(2))
+        val russian = appTextLines(stressed, " ")
+        assertThat(russian.map { it.text }).containsExactly("ко́шка")
+        assertThat(russian[0].characterBoxes!![2]).isEqualTo(russian[0].characterBoxes!![1])
+        val vietnamese = appTextLines(characters("hoà bình", hidden = setOf(3)), " ")
+        assertThat(vietnamese.joinToString("") { it.text + it.separator }).isEqualTo("hoà bình")
+        // A mark after a character without a box, or at the start, has nothing to stay with.
+        val afterHidden = characters("ab́cd", hidden = setOf(1, 2))
+        assertThat(appTextLines(afterHidden, " ").map { it.text }).containsExactly("a", "cd").inOrder()
+        assertThat(appTextLines(characters("́ab", hidden = setOf(0)), " ").map { it.text }).containsExactly("ab")
+    }
+
+    @Test
     fun `each line keeps its character boxes`() {
         val lines = appTextLines(characters("ab cd", hidden = setOf(2)), " ")
         assertThat(lines.map { it.characterBoxes!!.size }).containsExactly(2, 2).inOrder()
