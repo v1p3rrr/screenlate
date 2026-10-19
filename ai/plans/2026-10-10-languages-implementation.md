@@ -331,9 +331,12 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Backlog
 
-- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
-  to, and those we plan to host, and keep them outside the repository (on the owner's computer) in case their
-  sources remove them; served from our hosting once it exists.
+- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links to,
+  and those we plan to host, and keep them outside the repository (on the owner's computer) in case their sources
+  remove them; served from our hosting once it exists. Done on 2026-10-19 (`notes/dictionary-archive.md`): the
+  catalog's files, the next languages' Wiktionary pairs, the sources we convert with our conversions and the OCR
+  models, 1,083 files (2.4 GiB) checked against their hosts' hashes where published, in a git-ignored folder with its
+  refresh script.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
 - Download queue (request 67): built on 2026-10-19, rows "Download queue" and "Waiting tasks card". Jiten fails on
@@ -1041,6 +1044,12 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questio
 `2026-10-19-group-4d.md`. Urdu comes later, on its own (question 69 of that plan; block 5f of row "Group 5"); the
 interface stays left to right, right-to-left interface languages are in the backlog (question 70).
 
+### Group 4e (kk, ky)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4e research". Plan, questions and progress:
+`2026-10-19-group-4e.md`. Its row "Hyphenated words" applies to every spaced language, and Kyrgyz PanLex is
+ticked as an exception to the row "Recommended dictionaries".
+
 ## Stage F: group 5 (decided on 2026-10-19)
 
 Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
@@ -1462,6 +1471,14 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
 - 2026-10-19: group 5 added (owner): its languages, six blocks and research of five blocks at once, the sixth after
   group 4d; provisionally after the big release. Rows "Group 5", "Group 5 research", "Group 5 release", Stage F.
+- 2026-10-19: Backlog "Own copies of the dictionaries" done: the private archive with its refresh script outside the
+  repository (`notes/dictionary-archive.md`); the script stays in the archive and newer versions replace files only
+  after their checks, files their source drops are kept (owner).
 - 2026-10-19: group 4d researched (Arabic, Persian, Hebrew; `2026-10-19-group-4d.md`, questions 69-85 answered by
   the owner); Urdu later, on its own; right-to-left interface languages added to the backlog. The build waits for the
   owner's go.
+- 2026-10-19: group 4e (Kazakh, Kyrgyz) researched; its plan with the owner's answers is `2026-10-19-group-4e.md`,
+  linked from Stage E. Two of its rows reach beyond the group: a tap on a part of a hyphenated word shows the whole
+  word when it is a headword, then the tapped part, in every spaced language; Kyrgyz PanLex is ticked next to
+  Wiktionary, an exception to "Recommended dictionaries". The line of `notes/languages.md` that kk and ky would get
+  the longest matching start is corrected: word resolution never shortens a word.
