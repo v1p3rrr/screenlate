@@ -1457,3 +1457,7 @@ Cells: archive MB, words.
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4c.md`.
+
+## Group 5d research (2026-10-19)
+
+Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
