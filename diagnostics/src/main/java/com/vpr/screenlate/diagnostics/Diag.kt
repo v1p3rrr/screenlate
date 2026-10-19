@@ -54,6 +54,7 @@ object Diag {
     private var currentScanId = 0
     private var lastFullMemory = 0L
     private val summary = LinkedHashMap<String, String>()
+    private val counters = Counters()
     private var summaryPending = false
 
     /** First thing in `Application.onCreate`, before Hilt builds anything. */
@@ -179,6 +180,11 @@ object Diag {
         }
     }
 
+    /** A repeated step of the open scan, summed up in its `stats`. */
+    fun scanStat(name: String, ms: Long) {
+        synchronized(lock) { scan?.stat(name, ms) }
+    }
+
     /** The number of the open scan, 0 when none is open. */
     fun currentScan(): Int = currentScanId
 
@@ -262,6 +268,14 @@ object Diag {
         }
     }
 
+    /** Counts an event too frequent for its own lines (window changes, popup updates); the `sample` carries the counts. */
+    fun count(key: String) {
+        if (recorder != null) counters.add(key)
+    }
+
+    /** How long this process has run. */
+    fun processUpMs(): Long = SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime()
+
     /** The cheap memory counters, as event fields. */
     fun memoryNow(): Array<Pair<String, Any?>> = if (recorder == null) emptyArray() else Memory.cheap().toPairs()
 
@@ -296,10 +310,11 @@ object Diag {
             event(
                 "sample",
                 "cpu_ms" to Process.getElapsedCpuTime(),
-                "process_up_ms" to SystemClock.elapsedRealtime() - Process.getStartElapsedRealtime(),
+                "process_up_ms" to processUpMs(),
                 *memory.toPairs(),
                 *DeviceState.full(context).toPairs(),
                 "diag_kb" to (sizeBytes() shr 10),
+                "counts" to counters.drain().takeIf { it.isNotEmpty() },
             )
         }
         handler.postDelayed(::sample, SAMPLE_PERIOD_MS)

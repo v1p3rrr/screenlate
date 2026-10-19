@@ -16,6 +16,7 @@ internal class ScanTrace(val id: Int, private val begun: Long, fields: Map<Strin
     private var lookups = 0
     private var lookupMax = 0L
     private var lookupSum = 0L
+    private val stats = LinkedHashMap<String, LongArray>()
 
     /** The process's CPU time when the scan began, for the CPU time it took. */
     @Volatile
@@ -75,6 +76,15 @@ internal class ScanTrace(val id: Int, private val begun: Long, fields: Map<Strin
         if (ms > lookupMax) lookupMax = ms
     }
 
+    /** A repeated step of the scan (`render`, `popup_show`, …): how often, the longest and the total. */
+    @Synchronized
+    fun stat(name: String, ms: Long) {
+        val stat = stats.getOrPut(name) { LongArray(3) }
+        stat[0]++
+        if (ms > stat[1]) stat[1] = ms
+        stat[2] += ms
+    }
+
     @Synchronized
     fun summary(reason: String, now: Long): Array<Pair<String, Any?>> = buildList {
         add("scan" to id)
@@ -87,6 +97,9 @@ internal class ScanTrace(val id: Int, private val begun: Long, fields: Map<Strin
         if (net.isNotEmpty()) add("net" to net.toList())
         if (stalls > 0) add("stalls" to mapOf("n" to stalls, "max_ms" to stallMax, "sum_ms" to stallSum))
         if (lookups > 0) add("lookups" to mapOf("n" to lookups, "max_ms" to lookupMax, "sum_ms" to lookupSum))
+        if (stats.isNotEmpty()) {
+            add("stats" to stats.mapValues { (_, stat) -> mapOf("n" to stat[0], "max_ms" to stat[1], "sum_ms" to stat[2]) })
+        }
     }.toTypedArray()
 
     private companion object {

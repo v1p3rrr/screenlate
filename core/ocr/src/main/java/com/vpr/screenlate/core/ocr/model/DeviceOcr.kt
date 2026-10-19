@@ -7,6 +7,7 @@ import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
+import com.vpr.screenlate.diagnostics.Diag
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -93,11 +94,15 @@ class DeviceOcr internal constructor(
             val models = installed().associateBy { it.id }
             when (val selected = select(language, models)) {
                 null -> throw NoDeviceOcrException()
-                DeviceModel.MlKit -> return mlKit.recognize(image, language)
+                DeviceModel.MlKit -> {
+                    Diag.scanNote("device_model", "mlkit") // TEMPORARY DIAGNOSTICS BUILD
+                    return mlKit.recognize(image, language)
+                }
                 is DeviceModel.Listed -> {
                     val model = selected.model
+                    Diag.scanNote("device_model", model.id) // TEMPORARY DIAGNOSTICS BUILD
                     val ids = listOf(model.id) + model.requires
-                    val held = hold(ids) ?: return@repeat
+                    val held = hold(ids) ?: run { Diag.count("device_model_gone"); return@repeat } // TEMPORARY DIAGNOSTICS BUILD
                     return held.use { read(image, language, model, models) }
                 }
             }

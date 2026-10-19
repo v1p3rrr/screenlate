@@ -52,6 +52,49 @@ Process and system:
 - `thermal`, `power_save`, `screen`, `doze`, `network`: changes as they happen.
 - `crash`: an uncaught exception's type, causes and frames, written before the usual crash.
 - `export`, `cleared`, `dropped` (lines lost to a full queue).
+- `counts` in the `sample`: events too frequent for their own lines, since the last sample: `windows_changed`,
+  `foreground_app`, `popup_update`, `lens_prepare_skipped` (offline or paused), `lens_preconnect_opening` /
+  `lens_preconnect_recent` (no new connection opened on touch), `device_model_gone` (a model deleted under the scan),
+  `webview_prepare_popup`.
+
+Scans (`scan`, one per scan, written when it closes: `next_scan`, `closed` (docked, hidden, settings), or `timeout`
+30 s after it began):
+
+- Settings and state at the start: `trigger` (`tap`, `pull_out`), `touch_ms` (from the finger on the bubble to the scan
+  start; a tap waits for the double-tap timeout first), `language`, `text_source`, `engines`, `saving`, `small_text`,
+  `device_loaded`, `page` (the popup page: `ready`, `loading`, `reclaimed`), `package` (the app in the foreground), the
+  device's thermal state, power saving, network and battery, memory `before_*` and `after_*`, `cpu_ms`.
+- What happened: `ocr_plan` (`cloud`, `both`, `device`), `lens_skipped`, `copy_ms` (the screenshot copy for the
+  device), `lens_ms`, `device_model`, `device_whole_ms`, `device_bands`, `app_text_ms`, `app_text_paragraphs`,
+  `capture_error`, `ocr_error`, `lens_error`, `result` (`not_ready`, or the resource name of the message shown),
+  `state_kb` (the page state JSON).
+- `marks`: ms since the scan began when a stage was first reached (`ready_checked`, `capture_start`, `capture_end`,
+  `app_text`, `page_prepare`, `page_ready`, `lens_start`, `lens_done` / `lens_failed` / `lens_cancelled`,
+  `band_done`, `device_whole_start`, `device_whole_done`, `draft`, `final`, `ocr_done`, `render_queued`,
+  `popup_shown`, `popup_drawn`, `message_shown`); a stage reached again is counted in `<stage>_n`.
+- `updates` (`draft|final:ENGINE:paragraphs@ms`), `passes` (the scan's `ocr_pass` lines in short), `net` (the scan's
+  HTTP calls in short), `stalls`, `lookups`.
+- `stats`: count, longest and total ms of repeated steps: `band_crop`, `device_band`, `lens_region` (small-text
+  bands), `page_state` (the popup's JSON), `popup_show` (the window update), `aim_to_popup` (from the aim on a new word
+  to the popup shown; `aim_to_popup_cached` for the same text again), `no_results`, `render_script` (the page's
+  render script), `render_drawn` (until the frame with it is ready), `webview_create`, `page_ready`.
+
+Overlay:
+
+- `bubble`: shown or hidden; the first one after a process start has `process_up_ms`; `package`.
+- `dock_screen`: what the dock sees of the screen, each time it changes: size, `keyboard_top` (null without a
+  keyboard), `bars` shown (`none`: a fullscreen app), the usable area, the gesture insets, the side, the bubble's
+  window, whether the bubble was touched, `package`.
+- `warm_up_request` (`settings`, `released`, `language`, `model_changed`), `warm_up` (language, ms, memory, or the
+  error), `device_release`.
+- `small_text_band`: a band sent to the cloud again (index, size, ms, paragraphs found and added).
+- `lens_preconnect`: the connection opened when the bubble is touched (ms, error, network); its HTTP call is also a
+  `net` line with method `HEAD`.
+
+Popup page: `webview_create` (`page`: `popup` or `embedded`; `reason`: `init`, `reclaimed`, `crashed`, `gone_shown`,
+`destroyed`; `trigger`: `prepare`, `render`, `renderer_gone`; ms of the main thread, process age, memory),
+`page_ready` (ms from the creation to the page's ready call, scripts queued meanwhile), `renderer_gone` (crashed,
+renderer priority at exit, shown, ready, the page's age).
 
 Network (`net`, one per HTTP call of the shared OkHttp client and every client derived from it: cloud recognition,
 catalog, downloads, audio, translation, updates): host, method, code, total ms, DNS, connect, TLS (and version), wait
@@ -62,9 +105,15 @@ Capture and recognition:
 
 - `capture`: window or display capture, size, ms, the hardware buffer copy ms, retries after "too soon";
   `capture_fallback` (window capture failed).
-- `model_load` / `model_release` (ML Kit per model, Tesseract per model with file size), `ocr_pass` (one per engine
-  run: engine, model, image size, ms, ML Kit task vs line building ms, Tesseract load/prepare/recognize/read ms,
-  whether it was the first run after a load, native heap after it).
+- `model_load` / `model_release` (ML Kit per model, Tesseract per model with file size, PaddleOCR per network with
+  version and memory; a release while a scan reads is `busy`), `model_trim` (PaddleOCR's memory freed once scans pause:
+  MNN MB before and after, ms, native heap before and after).
+- `ocr_pass` (one per engine run: engine, model, image size, ms, whether it was the first run after a load, native
+  heap after it; ML Kit task vs line building ms; Tesseract load/prepare/recognize/read ms; the cloud's JPEG encode,
+  wait for the connection opened on touch, HTTP and parse ms, sent size, JPEG and answer KB, HTTP code; PaddleOCR's
+  wait for the engine, load ms, the detector's and recognizer's runs (`runs`, `ms`, `max`, `resizes` of the MNN session
+  for a new input shape, `resize_ms` of those runs, `largest` input shape), `other_ms` (scaling, crops, decoding),
+  lines and MNN memory).
 - `model_install` (checksum ms, wait for the store, unzip/place ms), `model_verify` (damaged models).
 
 Dictionaries:
@@ -79,25 +128,15 @@ Dictionaries:
 
 AnkiDroid: `anki_call` (which method of `AnkiDroid`, ms, error class).
 
-Trace sections (`SL:` prefix) for Perfetto: `capture_copy`, `mlkit_load`, `mlkit_task` (async),
+Trace sections (`SL:` prefix) for Perfetto: `capture_copy`, `webview_create`, `mlkit_load`, `mlkit_task` (async),
 `mlkit_lines`, `tesseract_load`, `tesseract_recognize`, `hoshidicts_import`, `hoshidicts_load`, `quickjs_load`,
 `import` (async), `scan` (async); counters `SL:pss_mb`, `SL:native_mb`.
 
-### Not yet instrumented (waits for the performance changes)
+### Not instrumented
 
-The scan summary needs the overlay and the files of the performance work, which another session is changing. Once it
-has pushed to `languages/checks`, merge that into the diagnostics branch and add:
-
-- `OverlayController`: `Diag.scanBegin(trigger, settings snapshot)` at the scan start, `scanMark` for touch, capture
-  start/end, app text, first result, popup shown, WebView ready; `scanUpdate` for each draft/final result;
-  `scanEnd(reason)` in `resetScan`; bubble window add/remove, dock decisions, insets/keyboard/fullscreen decisions,
-  warm-up; process start → bubble shown.
-- `LookupPage` / `PopupController`: WebView created (reason, ms), page ready, render ms, renderer gone, how often.
-- `CompositeOcr` (band/whole passes with crop sizes, which result won), `DeviceOcr` (model choice), `LensOcrEngine`
-  (JPEG encode ms and size, parse ms), `PaddleOcrEngine` / `mnn_network.cpp` (load, warm-up, input shapes, session
-  resizes, release, per-network inference ms, native heap after a pass).
-
-Until then the `scan` event is not written; the other events are.
+- `mnn_network.cpp` itself: its native build is slow, and the Kotlin side already times each run, sees the input
+  shape changes that resize the session and reads MNN's memory.
+- The overlay's own windows have no frame metrics; the main-thread watch and the popup's `render_drawn` stand in.
 
 ## Overhead
 
@@ -156,3 +195,5 @@ time stamps (`-v threadtime -v year`).
 - Should a normal build delete leftover `no_backup/diagnostics` files by itself (one line in the main line), or is the
   card's "Delete collected data" enough?
 - CI or a local build for the phone: both sign with a key that differs from the installed Dev build (see step 1 above).
+- The foreground app's package name is in `scan`, `bubble` and `dock_screen` (scans and system bars depend on the app);
+  keep it, or leave it out?

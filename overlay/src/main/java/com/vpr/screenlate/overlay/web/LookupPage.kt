@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
@@ -26,6 +27,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.coroutines.resume
 import com.vpr.screenlate.core.common.redacted
+import com.vpr.screenlate.diagnostics.Diag
 
 /**
  * The lookup results page (`assets/popup/popup.html`) in a WebView, shared by the overlay popup and the search
@@ -137,10 +139,47 @@ class LookupPage(
         selectionHost.onSelecting = listener
     }
     private val reclaimable = !embedded
+
+    // TEMPORARY DIAGNOSTICS BUILD: page creations, readiness and renders (ai/notes/diagnostics.md).
+    private val diagKind = if (embedded) "embedded" else "popup"
+    private var diagCreated = 0L
+    private var diagReason = "init"
+    private var diagTrigger = "prepare"
+    private var diagRenders = 0
+
+    /** `ready`, `loading` or `reclaimed`, for the scan summary. */
+    val diagState: String get() = when {
+        webView == null -> "reclaimed"
+        !pageReady -> "loading"
+        else -> "ready"
+    }
+
     private var webView: WebView? = createWebView(context)
 
+    // TEMPORARY DIAGNOSTICS BUILD: times the creation, which holds up the main thread (ai/notes/diagnostics.md).
+    private fun createWebView(context: Context): WebView {
+        val started = SystemClock.elapsedRealtime()
+        val view = Diag.trace("webview_create") { newWebView(context) }
+        val ms = SystemClock.elapsedRealtime() - started
+        diagCreated = started
+        Diag.event(
+            "webview_create",
+            "page" to diagKind,
+            "reason" to diagReason,
+            "trigger" to diagTrigger,
+            "ms" to ms,
+            "process_up_ms" to Diag.processUpMs(),
+            "scan" to Diag.currentScan().takeIf { it > 0 },
+            *Diag.memoryNow(),
+        )
+        Diag.scanStat("webview_create", ms)
+        diagReason = "destroyed"
+        diagTrigger = "prepare"
+        return view
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
-    private fun createWebView(context: Context): WebView = WebView(context).apply {
+    private fun newWebView(context: Context): WebView = WebView(context).apply {
         setBackgroundColor(Color.TRANSPARENT)
         settings.javaScriptEnabled = true
         settings.allowFileAccess = false
@@ -158,7 +197,7 @@ class LookupPage(
      * @param continued the popup stayed open, so a new scan result of the same word and sentence keeps the translation.
      */
     fun render(state: String, continued: Boolean = false) =
-        run("Popup.render($state, {continued: $continued})", replacesView = true)
+        run("Popup.render($state, {continued: $continued})", replacesView = true, diagRender = true)
 
     /** Re-renders the current view in place (theme, OCR status). */
     fun update(state: String) = run("Popup.update($state)")
@@ -222,6 +261,7 @@ class LookupPage(
 
     /** Loads the page again if the system reclaimed its renderer; called during a scan, so it loads meanwhile. */
     fun prepare() {
+        if (webView == null) Diag.count("webview_prepare_${diagKind}") // TEMPORARY DIAGNOSTICS BUILD
         if (webView == null) webView = createWebView(container.context)
     }
 
@@ -248,14 +288,41 @@ class LookupPage(
     }
 
     /** Until the page is ready, scripts queue up; a new view drops the queued ones, which only concern older views. */
-    private fun run(script: String, replacesView: Boolean = false) {
+    private fun run(script: String, replacesView: Boolean = false, diagRender: Boolean = false) {
         val view = webView
         if (pageReady && view != null) {
-            view.evaluateJavascript(script, null)
+            if (diagRender) diagRender(view, script) else view.evaluateJavascript(script, null)
         } else {
+            if (diagRender) {
+                // TEMPORARY DIAGNOSTICS BUILD: a render that waits for the page (ai/notes/diagnostics.md).
+                Diag.scanMark("render_queued")
+                if (view == null) diagTrigger = "render"
+            }
             if (replacesView) pendingScripts.clear()
             pendingScripts += script
             prepare()
+        }
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD: the script's run, then the frame that shows it (ai/notes/diagnostics.md).
+    private fun diagRender(view: WebView, script: String) {
+        val started = SystemClock.elapsedRealtime()
+        val id = ++diagRenders
+        view.evaluateJavascript(script) {
+            val ran = SystemClock.elapsedRealtime()
+            Diag.scanStat("render_script", ran - started)
+            // The view may have been destroyed meanwhile (a renderer gone).
+            runCatching {
+                view.postVisualStateCallback(
+                    id.toLong(),
+                    object : WebView.VisualStateCallback() {
+                        override fun onComplete(requestId: Long) {
+                            Diag.scanStat("render_drawn", SystemClock.elapsedRealtime() - started)
+                            Diag.scanMark("popup_drawn")
+                        }
+                    },
+                )
+            }
         }
     }
 
@@ -303,6 +370,20 @@ class LookupPage(
         override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
             val shown = view.isShown
             Log.w(TAG, "Lookup page renderer gone (crashed: ${detail.didCrash()}, shown: $shown)")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.event(
+                "renderer_gone",
+                "page" to diagKind,
+                "crashed" to detail.didCrash(),
+                "priority" to detail.rendererPriorityAtExit(),
+                "shown" to shown,
+                "ready" to pageReady,
+                "age_ms" to SystemClock.elapsedRealtime() - diagCreated,
+                "scan" to Diag.currentScan().takeIf { it > 0 },
+            )
+            Diag.memory("renderer_gone")
+            diagReason = if (detail.didCrash()) "crashed" else if (shown || !reclaimable) "gone_shown" else "reclaimed"
+            diagTrigger = if (shown || !reclaimable) "renderer_gone" else "prepare"
             container.removeView(view)
             view.destroy()
             pageReady = false
@@ -321,6 +402,11 @@ class LookupPage(
     private inner class Bridge {
         @JavascriptInterface
         fun onReady() = post {
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            val ready = SystemClock.elapsedRealtime() - diagCreated
+            Diag.event("page_ready", "page" to diagKind, "ms" to ready, "queued" to pendingScripts.size, "scan" to Diag.currentScan().takeIf { it > 0 })
+            Diag.scanStat("page_ready", ready)
+            Diag.scanMark("page_ready")
             pageReady = true
             (persistent.values + pendingScripts).forEach { webView?.evaluateJavascript(it, null) }
             pendingScripts.clear()

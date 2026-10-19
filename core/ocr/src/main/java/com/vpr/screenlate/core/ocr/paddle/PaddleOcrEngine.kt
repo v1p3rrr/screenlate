@@ -9,6 +9,7 @@ import com.vpr.screenlate.core.ocr.mnn.MnnNetwork
 import com.vpr.screenlate.core.ocr.mnn.MnnTensor
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.core.ocr.model.ModelOcrEngine
+import com.vpr.screenlate.diagnostics.Diag
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -58,17 +59,39 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
     override suspend fun recognize(image: Bitmap, language: Language, model: InstalledOcrModel, required: List<InstalledOcrModel>): OcrPage =
         withContext(Dispatchers.Default) {
             trim.cancel()
+            val diagStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
             try {
                 mutex.withLock {
+                    // TEMPORARY DIAGNOSTICS BUILD: loads, network runs and session resizes (ai/notes/diagnostics.md).
+                    val diagLocked = SystemClock.elapsedRealtime()
+                    val diagLoads = diagLoadCount
                     val detectorModel = required.singleOrNull() ?: throw IOException("A recognizer needs one detector")
                     val detector = loaded(detectorModel, detector, { detector = it }) { detector(it) }
                     val recognizer = loaded(model, recognizer, { recognizer = it }) { recognizer(it) }
+                    val diagLoaded = SystemClock.elapsedRealtime()
+                    val detectorRuns = NetworkRuns(diagShapes[detector.network])
+                    val recognizerRuns = NetworkRuns(diagShapes[recognizer.network])
                     val page = PaddlePipeline(
-                        detector = Mnn(detector.network),
-                        recognizer = Mnn(recognizer.network),
+                        detector = Mnn(detector.network, detectorRuns),
+                        recognizer = Mnn(recognizer.network, recognizerRuns),
                         dictionary = recognizer.dictionary,
                         thresholds = detector.thresholds,
                     ).recognize(image)
+                    // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+                    diagShapes[detector.network] = detectorRuns.shape
+                    diagShapes[recognizer.network] = recognizerRuns.shape
+                    val diagDone = SystemClock.elapsedRealtime()
+                    Diag.ocrPass(
+                        "paddle", "recognize", model.id, image.width, image.height, diagDone - diagStarted,
+                        "wait_ms" to diagLocked - diagStarted,
+                        "load_ms" to (diagLoaded - diagLocked).takeIf { diagLoadCount != diagLoads },
+                        "cold" to (diagLoadCount != diagLoads),
+                        "det" to detectorRuns.describe(),
+                        "rec" to recognizerRuns.describe(),
+                        "other_ms" to diagDone - diagLoaded - detectorRuns.ms - recognizerRuns.ms,
+                        "lines" to page.paragraphs.size,
+                        "mnn_mb" to (detector.network.memoryMb + recognizer.network.memoryMb).toInt(),
+                    )
                     if (recognizer.rightToLeft) readingOrder(page) else page
                 }
             } finally {
@@ -82,22 +105,41 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
             val recognizer = recognizer?.value ?: return
             val started = SystemClock.elapsedRealtime()
             val before = detector.network.memoryMb + recognizer.network.memoryMb
+            val diagNative = android.os.Debug.getNativeHeapAllocatedSize() shr 10 // TEMPORARY DIAGNOSTICS BUILD
             detector.network.trim(DETECTOR_TRIM_SHAPE)
             recognizer.network.trim(RECOGNIZER_TRIM_SHAPE)
             val after = detector.network.memoryMb + recognizer.network.memoryMb
             Log.i(TAG, "Freed the memory of large inputs: ${before.roundToInt()} -> ${after.roundToInt()} MB in ${SystemClock.elapsedRealtime() - started} ms")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            diagShapes[detector.network] = DETECTOR_TRIM_SHAPE.toList()
+            diagShapes[recognizer.network] = RECOGNIZER_TRIM_SHAPE.toList()
+            Diag.event(
+                "model_trim",
+                "engine" to "paddle",
+                "before_mb" to before.roundToInt(),
+                "after_mb" to after.roundToInt(),
+                "ms" to SystemClock.elapsedRealtime() - started,
+                "native_before_kb" to diagNative,
+                "native_kb" to (android.os.Debug.getNativeHeapAllocatedSize() shr 10),
+            )
+            Diag.memory("model_trim")
         }
     }
 
     override fun release() {
         trim.cancel()
         // Not under the mutex: a scan in progress keeps its models and frees them at the next release or model change.
-        if (!mutex.tryLock()) return
+        if (!mutex.tryLock()) {
+            Diag.event("model_release", "engine" to "paddle", "busy" to true) // TEMPORARY DIAGNOSTICS BUILD
+            return
+        }
         try {
+            Diag.event("model_release", "engine" to "paddle", "loaded" to (detector != null || recognizer != null)) // TEMPORARY DIAGNOSTICS BUILD
             detector?.value?.close()
             recognizer?.value?.close()
             detector = null
             recognizer = null
+            diagShapes.clear() // TEMPORARY DIAGNOSTICS BUILD
         } finally {
             mutex.unlock()
         }
@@ -113,8 +155,20 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
         current?.takeIf { it.directory == directory && it.version == model.version }?.let { return it.value }
         current?.value?.close()
         store(null)
+        val diagStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val value = load(model)
         Log.i(TAG, "Loaded ${model.id} ${model.version}")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        diagLoadCount++
+        Diag.event(
+            "model_load",
+            "engine" to "paddle",
+            "model" to model.id,
+            "version" to model.version,
+            "replaced" to (current != null),
+            "ms" to SystemClock.elapsedRealtime() - diagStarted,
+            *Diag.memoryNow(),
+        )
         store(Loaded(directory, model.version, value))
         return value
     }
@@ -132,9 +186,19 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
         return Recognizer(network, PaddlePipeline.dictionary(characters), characters.any(::hasRightToLeftLetter))
     }
 
+    // TEMPORARY DIAGNOSTICS BUILD: each network's last input shape, and how many models were loaded (ai/notes/diagnostics.md).
+    private val diagShapes = HashMap<MnnNetwork, List<Int>?>()
+    private var diagLoadCount = 0
+
     /** One of the pipeline's networks on MNN; closing it is left to the engine. */
-    private class Mnn(private val network: MnnNetwork) : PaddleModel {
-        override fun run(input: Tensor): Tensor = network.run(MnnTensor(input.data, input.shape)).let { Tensor(it.data, it.shape) }
+    private class Mnn(private val network: MnnNetwork, private val runs: NetworkRuns? = null) : PaddleModel {
+        // TEMPORARY DIAGNOSTICS BUILD: each run's time and shape (ai/notes/diagnostics.md).
+        override fun run(input: Tensor): Tensor {
+            val started = SystemClock.elapsedRealtime()
+            val output = network.run(MnnTensor(input.data, input.shape)).let { Tensor(it.data, it.shape) }
+            runs?.add(input.shape, SystemClock.elapsedRealtime() - started)
+            return output
+        }
 
         override fun close() = Unit
     }

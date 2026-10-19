@@ -55,4 +55,16 @@ class SmallPartsTest {
         val frame = StackTraceElement("com.example.Popup", "show", "Popup.kt", 42)
         assertThat(Crashes.frame(frame)).isEqualTo("com.example.Popup.show:42")
     }
+
+    @Test
+    fun `counters give the counts since the last drain`() {
+        val counters = Counters()
+        repeat(3) { counters.add("windows") }
+        counters.add("popup_update")
+
+        assertThat(counters.drain()).containsExactly("popup_update", 1L, "windows", 3L).inOrder()
+        counters.add("windows")
+        assertThat(counters.drain()).containsExactly("windows", 1L)
+        assertThat(counters.drain()).isEmpty()
+    }
 }

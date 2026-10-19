@@ -1,5 +1,6 @@
 package com.vpr.screenlate.core.ocr.lens
 
+import com.vpr.screenlate.diagnostics.Diag
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -21,7 +22,10 @@ internal class Preconnection(
     fun start() {
         val done = synchronized(this) {
             val now = clock()
-            if (opening != null || lastContact?.let { now - it < interval } == true) return
+            if (opening != null || lastContact?.let { now - it < interval } == true) {
+                Diag.count(if (opening != null) "lens_preconnect_opening" else "lens_preconnect_recent") // TEMPORARY DIAGNOSTICS BUILD
+                return
+            }
             lastContact = now
             CompletableDeferred<Unit>().also { opening = it }
         }

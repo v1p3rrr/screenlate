@@ -52,6 +52,7 @@ import com.vpr.screenlate.core.ocr.TextLayout
 import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.withMissingFrom
+import com.vpr.screenlate.diagnostics.Diag
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
@@ -267,6 +268,11 @@ class OverlayController(
 
     private val json = Json
 
+    // TEMPORARY DIAGNOSTICS BUILD: the touch that may start a scan, the last dock screen (ai/notes/diagnostics.md).
+    private var diagTouchAt = 0L
+    private var diagDockScreen: String? = null
+    private var diagBubbleShown = false
+
     /** What the page was given last; the lookup keeps the same lists until the dictionaries change. */
     private var pageStyles: List<DictionaryStyle>? = null
     private var pageTagNotes: List<DictionaryTagNotes>? = null
@@ -282,7 +288,12 @@ class OverlayController(
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
         // A model chosen in the settings, or one installed or deleted, is loaded before the next scan needs it.
-        scope.launch { scanLanguage.flatMapLatest { ocr.deviceModelChanges(it) }.collect { if (onDeviceLoaded) ocr.warmUp(language) } }
+        scope.launch {
+            scanLanguage.flatMapLatest { ocr.deviceModelChanges(it) }.collect {
+                Diag.event("warm_up_request", "reason" to "model_changed", "loaded" to onDeviceLoaded) // TEMPORARY DIAGNOSTICS BUILD
+                if (onDeviceLoaded) ocr.warmUp(language)
+            }
+        }
         scope.launch {
             translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
         }
@@ -330,6 +341,7 @@ class OverlayController(
     fun onForegroundApp(packageName: String) {
         if (packageName == foregroundPackage) return
         foregroundPackage = packageName
+        Diag.count("foreground_app") // TEMPORARY DIAGNOSTICS BUILD
         bubbleMenu.dismiss()
         applySettings(settings)
     }
@@ -353,7 +365,10 @@ class OverlayController(
         if (scanLanguage.value == activeLanguage) return
         Log.d(TAG, "Scan language ${activeLanguage.code}")
         scanLanguage.value = activeLanguage
-        if (warmUp && onDeviceLoaded) scope.launch { ocr.warmUp(activeLanguage) }
+        if (warmUp && onDeviceLoaded) {
+            Diag.event("warm_up_request", "reason" to "language", "language" to activeLanguage.code) // TEMPORARY DIAGNOSTICS BUILD
+            scope.launch { ocr.warmUp(activeLanguage) }
+        }
     }
 
     // region Settings and windows
@@ -382,6 +397,7 @@ class OverlayController(
     private fun loadOnDevice(needed: Boolean) {
         if (needed == onDeviceLoaded) return
         onDeviceLoaded = needed
+        Diag.event("warm_up_request", "reason" to if (needed) "settings" else "released") // TEMPORARY DIAGNOSTICS BUILD
         if (needed) scope.launch { ocr.warmUp(language) } else ocr.releaseOnDevice()
     }
 
@@ -392,6 +408,10 @@ class OverlayController(
         placeDocked()
         windowManager.addView(bubbleView, bubbleParams)
         attached = true
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event("bubble", "state" to "shown", "first" to !diagBubbleShown, "process_up_ms" to Diag.processUpMs(), "package" to foregroundPackage)
+        diagBubbleShown = true
+        Diag.state("bubble", "shown")
     }
 
     private fun detachWindows() {
@@ -403,6 +423,9 @@ class OverlayController(
         popup.detach()
         windowManager.removeView(layerView)
         attached = false
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.event("bubble", "state" to "hidden", "setting" to settings.bubbleVisible, "package" to foregroundPackage)
+        Diag.state("bubble", "hidden")
     }
 
     private fun resizeBubble(size: Int) {
@@ -490,7 +513,9 @@ class OverlayController(
     private fun placeDocked(position: Float = settings.dockPosition) {
         bubbleView.dockSide = settings.dockSide
         bubbleView.docked = true
-        val window = DockPlacement.window(settings.dockSide, position, bubbleSize, dockScreen())
+        val screen = dockScreen()
+        val window = DockPlacement.window(settings.dockSide, position, bubbleSize, screen)
+        diagDockScreen(screen, window) // TEMPORARY DIAGNOSTICS BUILD
         val (cx, cy) = DockPlacement.center(window, bubbleSize, settings.dockSide)
         val shown = Box(
             window.x.toFloat(),
@@ -499,6 +524,27 @@ class OverlayController(
             (window.y + window.height).toFloat(),
         )
         bubbleWindow.moveTo(BubbleFrame(window, cx, cy, shown))
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD: what the dock saw of the screen, when it changes (ai/notes/diagnostics.md).
+    private fun diagDockScreen(screen: DockPlacement.Screen, window: DockPlacement.Window) {
+        val bars = screen.shownBars.map { it.name.lowercase() }.sorted().joinToString("+").ifEmpty { "none" }
+        val key = "${screen.width.toInt()}x${screen.height.toInt()} ${screen.keyboardTop?.toInt()} $bars ${settings.dockSide}"
+        if (key == diagDockScreen) return
+        diagDockScreen = key
+        Diag.event(
+            "dock_screen",
+            "w" to screen.width.toInt(),
+            "h" to screen.height.toInt(),
+            "keyboard_top" to screen.keyboardTop?.toInt(),
+            "bars" to bars,
+            "usable" to screen.usable.let { "${it.left.toInt()},${it.top.toInt()},${it.right.toInt()},${it.bottom.toInt()}" },
+            "gestures" to screen.gestures.let { "${it.left.toInt()},${it.top.toInt()},${it.right.toInt()},${it.bottom.toInt()}" },
+            "side" to settings.dockSide.name,
+            "window" to "${window.x},${window.y} ${window.width}x${window.height}",
+            "touching" to touching,
+            "package" to foregroundPackage,
+        )
     }
 
     /** One step of [bubbleWindow]: the window's place and size, and where the disc goes in it. */
@@ -527,6 +573,7 @@ class OverlayController(
      * the bars, which moves the dock. Not while the bubble is touched: it would jump under the finger.
      */
     fun onWindowsChanged() {
+        Diag.count("windows_changed") // TEMPORARY DIAGNOSTICS BUILD
         if (attached && state == State.DOCKED && !touching) placeDocked()
     }
 
@@ -774,6 +821,7 @@ class OverlayController(
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     touching = true
+                    diagTouchAt = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
                     prepareScan()
                     downX = event.rawX
                     downY = event.rawY
@@ -872,6 +920,7 @@ class OverlayController(
     // region Scanning and lookup
 
     private fun resetScan() {
+        Diag.scanEnd("closed") // TEMPORARY DIAGNOSTICS BUILD
         scanId++
         scanJob?.cancel()
         scanJob = null
@@ -906,14 +955,30 @@ class OverlayController(
     private fun startScan(flashLines: Boolean) {
         Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
+        Diag.scanEnd("next_scan") // TEMPORARY DIAGNOSTICS BUILD
         closePopup()
         resetScan()
         takeActiveLanguage(warmUp = false)
+        // TEMPORARY DIAGNOSTICS BUILD: the scan summary and its settings (ai/notes/diagnostics.md).
+        Diag.scanBegin(
+            if (flashLines) "tap" else "pull_out",
+            "touch_ms" to diagTouchAt.takeIf { it > 0 }?.let { SystemClock.elapsedRealtime() - it },
+            "language" to language.code,
+            "text_source" to settings.textSource.name,
+            "engines" to settings.ocrEngines.name,
+            "saving" to settings.ocrSaving,
+            "small_text" to smallText().name,
+            "device_loaded" to onDeviceLoaded,
+            "page" to popup.page.diagState,
+            "package" to foregroundPackage,
+        )
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
             val ready = installation.current(language)
+            Diag.scanMark("ready_checked") // TEMPORARY DIAGNOSTICS BUILD
             if (!ready.scanReady) {
+                Diag.scanNote("result", "not_ready") // TEMPORARY DIAGNOSTICS BUILD
                 ocrFinal = true
                 bubbleView.loading = false
                 showMessage(ready.message(service, scanning = true), installation = !ready.needsDeviceModel, ocrModels = ready.needsDeviceModel)
@@ -930,12 +995,16 @@ class OverlayController(
             // does not expose, such as text in images.
             val appTextRead = async { if (settings.textSource != TextSource.SCREEN) readAppText() else null }
             var captureError: CaptureException? = null
+            Diag.scanMark("capture_start") // TEMPORARY DIAGNOSTICS BUILD
             val captured = try {
                 capture()
             } catch (e: CaptureException) {
                 captureError = e
                 null
             }
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.scanMark("capture_end")
+            captureError?.let { Diag.scanNote("capture_error", it::class.simpleName) }
             // Neither source waits for the other: whichever arrives is shown, merged with what the other has so far.
             var appText: OcrPage? = null
             var recognized: Recognized? = null
@@ -970,12 +1039,14 @@ class OverlayController(
             // delay the screenshot, right after it the recognition.
             launch {
                 delay(PAGE_CREATION_DELAY_MS)
+                Diag.scanMark("page_prepare") // TEMPORARY DIAGNOSTICS BUILD
                 popup.page.prepare()
             }
             try {
                 ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
                     .catch { error ->
                         if (error is CancellationException) throw error
+                        Diag.scanNote("ocr_error", error::class.simpleName) // TEMPORARY DIAGNOSTICS BUILD
                         bubbleView.loading = false
                         recognized = Recognized(page = null, final = true, lensError = error)
                         if (appTextRead.await() != null) {
@@ -1011,6 +1082,7 @@ class OverlayController(
             } finally {
                 shot.release()
             }
+            Diag.scanMark("ocr_done") // TEMPORARY DIAGNOSTICS BUILD
             if (!ocrFinal) {
                 // Recognition failed without a final page: nothing more will come, and what is shown stays.
                 ocrFinal = true
@@ -1049,6 +1121,10 @@ class OverlayController(
         val kind = if (update is OcrUpdate.Final) "final" else "draft"
         val error = (update as? OcrUpdate.Final)?.lensError?.let { ", Lens: ${it::class.simpleName}" }.orEmpty()
         Log.i(TAG, "OCR $kind from ${update.page.engine}: ${update.page.paragraphs.size} paragraphs in $millis ms$error")
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.scanUpdate(kind, update.page.engine.name, update.page.paragraphs.size)
+        Diag.scanMark(kind)
+        (update as? OcrUpdate.Final)?.lensError?.let { Diag.scanNote("lens_error", it::class.simpleName) }
     }
 
     /** On-demand small text: the aim rests where nothing was recognized, so its band goes to Lens once. */
@@ -1071,6 +1147,7 @@ class OverlayController(
         val band = ScreenBands.of(screen.bitmap.width, screen.bitmap.height)[index]
         // Started at once, so the band gives the screenshot back even when it is cancelled before it runs.
         bandJobs += scope.launch(start = CoroutineStart.UNDISPATCHED) {
+            val diagStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
             val found = try {
                 // The crop is made and freed inside the block, which withContext waits for even when cancelled.
                 withContext(Dispatchers.Default) {
@@ -1095,6 +1172,17 @@ class OverlayController(
             val added = found?.offset(screen.left.toFloat(), screen.top + band.top) ?: return@launch
             val merged = current.page.withMissingFrom(added)
             Log.d(TAG, "Band $index added ${merged.paragraphs.size - current.page.paragraphs.size} paragraphs")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.event(
+                "small_text_band",
+                "index" to index,
+                "w" to band.width.toInt(),
+                "h" to band.height.toInt(),
+                "ms" to SystemClock.elapsedRealtime() - diagStarted,
+                "found" to added.paragraphs.size,
+                "added" to merged.paragraphs.size - current.page.paragraphs.size,
+                "scan" to Diag.currentScan().takeIf { it > 0 },
+            )
             if (merged === current.page) return@launch
             layout = TextLayout(merged)
             hit = null
@@ -1105,10 +1193,16 @@ class OverlayController(
     private suspend fun readAppText(): OcrPage? {
         val screen = screenBounds()
         val separator = language.support.wordSeparator
+        val diagStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         return withContext(Dispatchers.Default) {
             runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt(), separator) }
                 .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
                 .getOrNull()
+        }.also {
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.scanMark("app_text")
+            Diag.scanNote("app_text_ms", SystemClock.elapsedRealtime() - diagStarted)
+            Diag.scanNote("app_text_paragraphs", it?.paragraphs?.size)
         }
     }
 
@@ -1197,6 +1291,7 @@ class OverlayController(
         val query = layout.textFrom(earliest, scanLength + earlier)
         val aimedAt = layout.textFrom(earliest, earlier).length
         val previous = lookupJob
+        val diagAimed = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
             val cached = shownLookup?.takeIf { it.query == query && popup.isShowing }
@@ -1208,6 +1303,7 @@ class OverlayController(
             val kanji = if (cached != null) cached.kanji else if (results.isEmpty()) characterEntry(text) else null
             // Nothing found: no popup, as with Yomitan's auto-hide. Only a missing dictionary is worth a message.
             if (results.isEmpty() && kanji == null && lookup.hasTermDictionaries(language)) {
+                Diag.scanStat("no_results", SystemClock.elapsedRealtime() - diagAimed) // TEMPORARY DIAGNOSTICS BUILD
                 layerView.setWordBoxes(emptyList())
                 shownLookup = null
                 hapticWord = null
@@ -1236,8 +1332,17 @@ class OverlayController(
             if (word != null && word != hapticWord) haptic()
             hapticWord = word
             popupNotes.refreshActions()
+            val diagState = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
             val state = popupStateOffMain(view)
+            // TEMPORARY DIAGNOSTICS BUILD: page state JSON, window update and aim-to-popup times (ai/notes/diagnostics.md).
+            val diagShow = SystemClock.elapsedRealtime()
+            Diag.scanStat("page_state", diagShow - diagState)
             popup.show(state, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
+            val diagShown = SystemClock.elapsedRealtime()
+            Diag.scanStat("popup_show", diagShown - diagShow)
+            Diag.scanStat(if (cached != null) "aim_to_popup_cached" else "aim_to_popup", diagShown - diagAimed)
+            Diag.scanMark("popup_shown")
+            Diag.scanNote("state_kb", state.length shr 10)
             popupNotes.onResultsShown(results.firstOrNull()?.term?.let { it.expression to it.reading })
         }
     }
@@ -1297,7 +1402,10 @@ class OverlayController(
     }
 
     /** A scan that ended without text: nothing more will come, so the popup shows no spinner. */
-    private fun showScanError(message: Int) = showScanError(service.getString(message))
+    private fun showScanError(message: Int) {
+        Diag.scanNote("result", runCatching { service.resources.getResourceEntryName(message) }.getOrNull()) // TEMPORARY DIAGNOSTICS BUILD
+        showScanError(service.getString(message))
+    }
 
     private fun showScanError(message: String) {
         ocrFinal = true
@@ -1306,6 +1414,7 @@ class OverlayController(
     }
 
     private fun showMessage(message: String, installation: Boolean = false, ocrModels: Boolean = false) {
+        Diag.scanMark("message_shown") // TEMPORARY DIAGNOSTICS BUILD
         // A lookup still running would draw its word over the message.
         lookupJob?.cancel()
         lookupJob = null
@@ -1324,7 +1433,10 @@ class OverlayController(
     /** Pushes OCR status and theme changes into the popup without a new lookup. */
     private fun refreshPopup() {
         val view = shownLookup ?: return
-        if (popup.isShowing) popup.update(popupState(view))
+        if (popup.isShowing) {
+            Diag.count("popup_update") // TEMPORARY DIAGNOSTICS BUILD
+            popup.update(popupState(view))
+        }
     }
 
     /**

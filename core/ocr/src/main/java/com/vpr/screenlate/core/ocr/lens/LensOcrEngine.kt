@@ -10,6 +10,7 @@ import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.withHyphenBreaks
+import com.vpr.screenlate.diagnostics.Diag
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javax.inject.Inject
@@ -52,14 +53,27 @@ class LensOcrEngine @Inject constructor(
                 override fun onResponse(call: Call, response: Response) {
                     response.close()
                     Log.d(TAG, "Lens: connected in ${SystemClock.elapsedRealtime() - started} ms")
+                    diagPreconnect(started, null) // TEMPORARY DIAGNOSTICS BUILD
                     done()
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
                     Log.d(TAG, "Lens: connecting failed (${e.javaClass.simpleName})")
+                    diagPreconnect(started, e) // TEMPORARY DIAGNOSTICS BUILD
                     done()
                 }
             },
+        )
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD: the connection opened on touch (ai/notes/diagnostics.md).
+    private fun diagPreconnect(started: Long, error: IOException?) {
+        Diag.event(
+            "lens_preconnect",
+            "ms" to SystemClock.elapsedRealtime() - started,
+            "error" to error?.javaClass?.simpleName,
+            "network" to Diag.network(),
+            "scan" to Diag.currentScan().takeIf { it > 0 },
         )
     }
 
@@ -69,6 +83,7 @@ class LensOcrEngine @Inject constructor(
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
         val started = SystemClock.elapsedRealtime()
         val (jpeg, sentWidth, sentHeight) = withContext(Dispatchers.Default) { encode(image) }
+        val diagEncoded = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val body = LensProtocol.buildRequest(
             image = jpeg,
             width = sentWidth,
@@ -83,6 +98,8 @@ class LensOcrEngine @Inject constructor(
             .post(body.toRequestBody(PROTOBUF))
             .build()
         preconnection.awaitOpening(PRECONNECT_WAIT_MS)
+        val diagSent = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
+        var diagCode = 0
         // The body arrives after the headers, possibly slowly: it is read off the caller's (main) thread.
         val bytes = withContext(Dispatchers.IO) {
             client.newCall(request).await().use { response ->
@@ -92,13 +109,30 @@ class LensOcrEngine @Inject constructor(
                     "Lens: HTTP ${response.code} for ${jpeg.size shr 10} KB (${sentWidth}x$sentHeight) " +
                         "in ${SystemClock.elapsedRealtime() - started} ms",
                 )
+                diagCode = response.code // TEMPORARY DIAGNOSTICS BUILD
                 if (!response.isSuccessful) throw LensHttpException(response.code)
                 response.body.bytes()
             }
         }
+        val diagReceived = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         return withContext(Dispatchers.Default) {
             val page = LensProtocol.parseResponse(bytes, image.width, image.height)
             page.withHyphenBreaks(language.support.wordSeparator)
+        }.also {
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            val now = SystemClock.elapsedRealtime()
+            Diag.ocrPass(
+                "lens", "recognize", null, image.width, image.height, now - started,
+                "encode_ms" to diagEncoded - started,
+                "preconnect_wait_ms" to diagSent - diagEncoded,
+                "http_ms" to diagReceived - diagSent,
+                "parse_ms" to now - diagReceived,
+                "sent" to "${sentWidth}x$sentHeight",
+                "jpeg_kb" to (jpeg.size shr 10),
+                "received_kb" to (bytes.size shr 10),
+                "code" to diagCode,
+                "paragraphs" to it.paragraphs.size,
+            )
         }
     }
 

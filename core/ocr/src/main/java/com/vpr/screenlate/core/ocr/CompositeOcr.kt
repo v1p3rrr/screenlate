@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
+import com.vpr.screenlate.diagnostics.Diag
 import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -103,7 +104,8 @@ class CompositeOcr internal constructor(
         if (!deviceReads && options.engines == OcrEngines.DEVICE) throw NoDeviceOcrException()
         if (options.engines == OcrEngines.CLOUD || !deviceReads) {
             if (!deviceReads) Log.d(TAG, "No on-device recognition for ${language.code}; cloud only")
-            send(OcrUpdate.Final(recognizeWithLens(image, language)))
+            Diag.scanNote("ocr_plan", "cloud") // TEMPORARY DIAGNOSTICS BUILD
+            send(OcrUpdate.Final(diagLens { recognizeWithLens(image, language) }))
             return@channelFlow
         }
         val lensSkipped = when {
@@ -113,6 +115,9 @@ class CompositeOcr internal constructor(
             else -> null
         }
         val useLens = options.engines == OcrEngines.BOTH && lensSkipped == null
+        // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+        Diag.scanNote("ocr_plan", if (useLens) "both" else "device")
+        lensSkipped?.let { Diag.scanNote("lens_skipped", it.javaClass.simpleName) }
         val wholeImage = CompletableDeferred<Unit>()
         if (!useLens || !options.deferWholeImage) wholeImage.complete(Unit)
 
@@ -120,7 +125,9 @@ class CompositeOcr internal constructor(
         // The device cannot be stopped once it runs, so it reads its own copy outside this flow: the flow ends with
         // the Lens result while the device finishes, and the copy is freed once the device no longer reads it. Started
         // at once, so a scan cancelled before the draft would have run still frees the copy.
+        val diagCopy = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         val copy = copyOnWorker(image)
+        Diag.scanNote("copy_ms", SystemClock.elapsedRealtime() - diagCopy) // TEMPORARY DIAGNOSTICS BUILD
         val draft = CoroutineScope(coroutineContext.minusKey(Job)).async(start = CoroutineStart.UNDISPATCHED) {
             try {
                 runCatching { recognizeOnDevice(copy, language, focus, emitter, wholeImage) }
@@ -141,7 +148,7 @@ class CompositeOcr internal constructor(
                     wholeImage.complete(Unit)
                 }
             }
-            runCatching { askLens { lens.recognize(image, language) } }
+            runCatching { diagLens { askLens { lens.recognize(image, language) } } }
                 .onFailure { if (it is CancellationException) throw it }
                 .onFailure(::noteLensFailure)
                 .onSuccess { page -> emitter.emitFinal(OcrUpdate.Final(page)) }
@@ -158,6 +165,20 @@ class CompositeOcr internal constructor(
         when (update) {
             is OcrUpdate.Draft -> update.copy(page = update.page.inLanguage(language))
             is OcrUpdate.Final -> update.copy(page = update.page.inLanguage(language))
+        }
+    }
+
+    // TEMPORARY DIAGNOSTICS BUILD: the cloud request's start and end in the scan summary (ai/notes/diagnostics.md).
+    private suspend fun <T> diagLens(block: suspend () -> T): T {
+        val started = SystemClock.elapsedRealtime()
+        Diag.scanMark("lens_start")
+        return try {
+            block().also { Diag.scanMark("lens_done") }
+        } catch (e: Throwable) {
+            Diag.scanMark(if (e is CancellationException) "lens_cancelled" else "lens_failed")
+            throw e
+        } finally {
+            Diag.scanNote("lens_ms", SystemClock.elapsedRealtime() - started)
         }
     }
 
@@ -218,20 +239,30 @@ class CompositeOcr internal constructor(
             }
             val started = clock()
             val crop = withContext(worker) { cropRows(image, rows) }
+            val diagCropped = clock() // TEMPORARY DIAGNOSTICS BUILD
             val band = try {
                 device.recognize(crop, language)
             } finally {
                 if (crop !== image) release(crop)
             }
             Log.d(TAG, "${band.source} band: ${band.paragraphs.size} paragraphs in ${clock() - started} ms")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.scanStat("band_crop", diagCropped - started)
+            Diag.scanStat("device_band", clock() - diagCropped)
+            Diag.scanMark("band_done")
             val placed = band.offset(0f, rows.first.toFloat()).copy(height = height)
             draft = draft?.let(placed::withMissingFrom) ?: placed
             done += rows
             emitter.emitDraft(OcrUpdate.Draft(draft))
         }
         val started = clock()
+        Diag.scanMark("device_whole_start") // TEMPORARY DIAGNOSTICS BUILD
         return device.recognize(image, language).also {
             Log.d(TAG, "${it.source}: ${it.paragraphs.size} paragraphs in ${clock() - started} ms")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.scanMark("device_whole_done")
+            Diag.scanNote("device_whole_ms", clock() - started)
+            Diag.scanNote("device_bands", done.size)
         }
     }
 
@@ -243,13 +274,14 @@ class CompositeOcr internal constructor(
 
     /** A scan may follow (the bubble is touched): Lens opens its connection meanwhile, unless it cannot be asked. */
     fun prepareLens() {
-        if (isOnline() && !lensPaused()) lens.prepare()
+        if (isOnline() && !lensPaused()) lens.prepare() else Diag.count("lens_prepare_skipped") // TEMPORARY DIAGNOSTICS BUILD
     }
 
     /** Unloads the on-device model when it is turned off; a later scan loads it again. */
     fun releaseOnDevice() {
         device.release()
         Log.i(TAG, "Released the on-device model")
+        Diag.event("device_release", *Diag.memoryNow()) // TEMPORARY DIAGNOSTICS BUILD
     }
 
     /** Emits each time another on-device model takes over reading [language]: chosen, installed or deleted. */
@@ -263,10 +295,19 @@ class CompositeOcr internal constructor(
             val started = SystemClock.elapsedRealtime()
             device.recognize(image, language)
             Log.i(TAG, "On-device recognition for ${language.code} warmed up in ${SystemClock.elapsedRealtime() - started} ms")
+            // TEMPORARY DIAGNOSTICS BUILD (ai/notes/diagnostics.md).
+            Diag.event(
+                "warm_up",
+                "language" to language.code,
+                "ms" to SystemClock.elapsedRealtime() - started,
+                "scan" to Diag.currentScan().takeIf { it > 0 },
+                *Diag.memoryNow(),
+            )
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.w(TAG, "On-device OCR warm-up failed", e.redacted())
+            Diag.event("warm_up", "language" to language.code, "error" to e.javaClass.simpleName) // TEMPORARY DIAGNOSTICS BUILD
         } finally {
             image.recycle()
         }
@@ -278,7 +319,9 @@ class CompositeOcr internal constructor(
      */
     suspend fun recognizeRegion(image: Bitmap, language: Language): OcrPage? {
         if (!isOnline() || lensPaused()) return null
+        val diagStarted = SystemClock.elapsedRealtime() // TEMPORARY DIAGNOSTICS BUILD
         return runCatching { askLens { lens.recognize(image, language) } }
+            .also { Diag.scanStat("lens_region", SystemClock.elapsedRealtime() - diagStarted) } // TEMPORARY DIAGNOSTICS BUILD
             .onFailure { if (it is CancellationException) throw it }
             .onFailure(::noteLensFailure)
             .getOrNull()

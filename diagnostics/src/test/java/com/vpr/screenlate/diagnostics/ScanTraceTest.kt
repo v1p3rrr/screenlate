@@ -36,11 +36,28 @@ class ScanTraceTest {
     }
 
     @Test
+    fun `sums up repeated steps by name`() {
+        val trace = ScanTrace(2, begun = 0, fields = emptyMap())
+        trace.stat("render", 30)
+        trace.stat("render", 10)
+        trace.stat("popup_show", 4)
+
+        val stats = trace.summary("closed", 100).toMap()["stats"]
+
+        assertThat(stats).isEqualTo(
+            mapOf(
+                "render" to mapOf("n" to 2L, "max_ms" to 30L, "sum_ms" to 40L),
+                "popup_show" to mapOf("n" to 1L, "max_ms" to 4L, "sum_ms" to 4L),
+            ),
+        )
+    }
+
+    @Test
     fun `leaves out what did not happen and caps long lists`() {
         val trace = ScanTrace(1, begun = 0, fields = emptyMap())
         repeat(100) { trace.pass("pass $it") }
         val summary = trace.summary("timeout", 30_000).toMap()
-        assertThat(summary.keys).containsNoneOf("updates", "net", "stalls", "lookups")
+        assertThat(summary.keys).containsNoneOf("updates", "net", "stalls", "lookups", "stats")
         assertThat(summary["passes"] as List<*>).hasSize(40)
     }
 }
