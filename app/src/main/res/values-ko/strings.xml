@@ -131,6 +131,14 @@
     <string name="anki_fields">필드</string>
     <string name="anki_fields_hint">템플릿에는 {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot} 같은 마커를 사용합니다. + 버튼으로 삽입할 수 있습니다. 중복 확인에는 첫 번째 필드가 사용됩니다.</string>
     <string name="anki_insert_marker">마커 삽입</string>
+    <string name="anki_marker_furigana_zh">한자 위에 병음</string>
+    <string name="anki_marker_furigana_plain_zh">병음(텍스트): 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">한자 위에 병음을 단 문장</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">병음을 텍스트로 단 문장</string>
+    <string name="anki_marker_furigana_ru">강세 표시가 있는 단어</string>
+    <string name="anki_marker_furigana_plain_ru">강세 표시가 있는 단어(텍스트)</string>
+    <string name="anki_marker_sentence_furigana_ru">기본형 단어에 강세 표시가 있는 문장</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">기본형 단어에 강세 표시가 있는 문장(텍스트)</string>
     <string name="anki_duplicates">중복</string>
     <string name="anki_duplicate_check">중복 확인</string>
     <string name="anki_duplicate_scope">검색 범위</string>

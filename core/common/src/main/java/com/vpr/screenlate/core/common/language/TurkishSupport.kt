@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.common.language
 
 import com.vpr.screenlate.core.common.Language
+import java.util.Locale
 
 /**
  * Wiktionary recordings of Turkish name no regions, so there are no audio regions. Dotted and dotless i are matched in
@@ -25,6 +26,9 @@ object TurkishSupport : SpacedLanguageSupport() {
 
     /** Ordinals in digits take a period: "15. yüzyıl", "3. sınıf". */
     override val ordinalPeriod = true
+
+    /** ŞTİ. and DOÇ. match their lowercase forms only under Turkish case rules (İ → i, I → ı). */
+    override val caseLocale: Locale = Locale.forLanguageTag("tr")
 
     /** "s" is sayfa ("s. 5"); month abbreviations are left out, as ara and kas are words. */
     override val abbreviations = setOf(

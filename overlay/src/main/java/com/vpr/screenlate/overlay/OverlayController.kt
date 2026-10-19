@@ -94,7 +94,6 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 import kotlin.math.abs
 import kotlin.math.hypot
-import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -1105,8 +1104,9 @@ class OverlayController(
 
     private suspend fun readAppText(): OcrPage? {
         val screen = screenBounds()
+        val separator = language.support.wordSeparator
         return withContext(Dispatchers.Default) {
-            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt()) }
+            runCatching { accessibilityText.read(screen.width.toInt(), screen.height.toInt(), separator) }
                 .onFailure { Log.w(TAG, "Reading app text failed", it.redacted()) }
                 .getOrNull()
         }
@@ -1191,8 +1191,8 @@ class OverlayController(
     }
 
     private fun showLookup(layout: TextLayout, aimed: TextPosition) {
-        val word = wordStart(layout, aimed)
-        val earliest = earliestStart(layout, word)
+        val word = wordStart(layout, aimed, language.support)
+        val earliest = earliestStart(layout, word, language.support)
         val earlier = word.offset - earliest.offset
         val query = layout.textFrom(earliest, scanLength + earlier)
         val aimedAt = layout.textFrom(earliest, earlier).length
@@ -1319,25 +1319,6 @@ class OverlayController(
             popupState(view)
         }
         popup.show(page, anchor, bubbleBox(), usableBounds(), MAX_POPUP_DP * density)
-    }
-
-    /** Where the lookup aimed at [aimed] starts: the first character of a word the language reads as a whole. */
-    private fun wordStart(layout: TextLayout, aimed: TextPosition): TextPosition {
-        val characters = layout.paragraphs[aimed.paragraphIndex]
-        val before = characters.subList(max(0, aimed.offset - WORD_LOOKBACK), aimed.offset).joinToString("") { it.text }
-        val back = language.support.wordStartOffset(before, characters[aimed.offset].text)
-        return if (back == 0) aimed else aimed.copy(offset = aimed.offset - back)
-    }
-
-    /**
-     * Where the lookup of the word at [word] begins: at the words before it that the language looks up from as well
-     * (`LanguageSupport.earlierStartOffset`), else at the word.
-     */
-    private fun earliestStart(layout: TextLayout, word: TextPosition): TextPosition {
-        val characters = layout.paragraphs[word.paragraphIndex]
-        val before = characters.subList(max(0, word.offset - WORD_LOOKBACK), word.offset).joinToString("") { it.text }
-        val back = language.support.earlierStartOffset(before)
-        return if (back == 0) word else word.copy(offset = word.offset - back)
     }
 
     /** Pushes OCR status and theme changes into the popup without a new lookup. */
@@ -1633,8 +1614,6 @@ class OverlayController(
         /** How far the aim must leave the word, onto no text, for "When the aim leaves the word": about 3 mm. */
         const val OFF_WORD_DP = 20f
 
-        /** Characters before the aim that may belong to the aimed word. */
-        const val WORD_LOOKBACK = 32
         const val MAX_POPUP_DP = 420f
         const val FLASH_HOLD_MS = 2500L
         const val HIDE_FRAME_MS = 48L

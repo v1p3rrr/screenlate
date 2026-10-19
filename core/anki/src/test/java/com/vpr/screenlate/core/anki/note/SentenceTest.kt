@@ -119,4 +119,54 @@ class SentenceTest {
         assertThat(extract(paragraph, "сказал", Language.RUSSIAN).text)
             .isEqualTo("В 1999 г. он сказал: «Я приду. Обязательно».")
     }
+
+    @Test
+    fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
+        // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
+        val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."
+        assertThat(extract(german, "ging", Language.GERMAN).text).isEqualTo("Er sagte “ja” und ging.")
+        // A list item's bracket has no opening one.
+        val list = "Steps: 1) open it. 2) close it. Done."
+        assertThat(extract(list, "close", Language.ENGLISH).text).isEqualTo("2) close it.")
+        // Polish pairs „ with ”; a German-style „Idę.“ leaves an opening quote open after the word.
+        val polish = "Powiedział „Idę.“ Potem wyszedł. Koniec."
+        assertThat(extract(polish, "Powiedział", Language.POLISH).text).isEqualTo("Powiedział „Idę.“")
+        // A quote that closes still holds its terminators.
+        assertThat(extract("1) Er sagte: „Komm. Jetzt.“ und ging. Fertig.", "sagte", Language.GERMAN).text)
+            .isEqualTo("1) Er sagte: „Komm. Jetzt.“ und ging.")
+        assertThat(extract("「行く。」と彼は言った。", "言っ").text).isEqualTo("「行く。」と彼は言った。")
+    }
+
+    @Test
+    fun chineseSentenceKeepsQuotedSpeechDecimalsAndLatinPeriods() {
+        val speech = "他说：“我走了。”然后离开了。明天见！"
+        assertThat(extract(speech, "离开", Language.CHINESE).text).isEqualTo("他说：“我走了。”然后离开了。")
+        assertThat(extract(speech, "明天", Language.CHINESE).text).isEqualTo("明天见！")
+        assertThat(extract("圆周率是３．１４。下一句。", "圆周率", Language.CHINESE).text).isEqualTo("圆周率是３．１４。")
+        // A Latin period is no Chinese terminator.
+        assertThat(extract("我在3.5节看到了。下一句。", "看到", Language.CHINESE).text).isEqualTo("我在3.5节看到了。")
+        assertThat(extract("你好吗？我很好。", "很好", Language.CHINESE).text).isEqualTo("我很好。")
+    }
+
+    @Test
+    fun koreanSentenceEndsAtSpacedPeriodsButKeepsDecimalsAndQuotes() {
+        val paragraph = "나는 학교에 갔다. 그리고 공부했다! 내일은?"
+        assertThat(extract(paragraph, "공부", Language.KOREAN)).isEqualTo(Sentence("그리고 ", "공부", "했다!"))
+        assertThat(extract("원주율은 3.14이다. 다음 문장.", "원주율", Language.KOREAN).text).isEqualTo("원주율은 3.14이다.")
+        assertThat(extract("그가 “집에 가자.”라고 말했다. 다음 문장.", "말했", Language.KOREAN).text)
+            .isEqualTo("그가 “집에 가자.”라고 말했다.")
+    }
+
+    @Test
+    fun aClosingQuoteOfAnotherLanguageStaysWithItsSentence() {
+        // English quotes in German text: ” closes in every language here, so it ends the sentence it follows.
+        val german = "Er sagte “Komm.” Dann ging er. Fertig."
+        assertThat(extract(german, "sagte", Language.GERMAN).text).isEqualTo("Er sagte “Komm.”")
+        assertThat(extract(german, "Dann", Language.GERMAN).text).isEqualTo("Dann ging er.")
+        // An apostrophe that starts a word at the paragraph start stays.
+        assertThat(extract("’Tis late. Go.", "late", Language.ENGLISH).text).isEqualTo("’Tis late.")
+        // Polish pairs „ with ”: the quote holds its terminator, as before.
+        assertThat(extract("Powiedział „Idę.” Potem wyszedł.", "Potem", Language.POLISH).text)
+            .isEqualTo("Powiedział „Idę.” Potem wyszedł.")
+    }
 }

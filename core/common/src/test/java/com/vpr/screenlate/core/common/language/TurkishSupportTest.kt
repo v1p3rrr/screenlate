@@ -17,6 +17,17 @@ class TurkishSupportTest {
     }
 
     @Test
+    fun `abbreviations in capitals follow the turkish dotted i`() {
+        val company = "ABC LTD. ŞTİ. Sonra"
+        assertThat(ends(company)).isFalse()
+        assertThat(ends(company, company.indexOf(". S"))).isFalse()
+        // Read without the dot, as OCR may give it.
+        assertThat(ends("ABC ŞTI. Sonra")).isFalse()
+        assertThat(ends("DOÇ. DR. Ayşe")).isFalse()
+        assertThat(ends("EVE GELDİ. Sonra")).isTrue()
+    }
+
+    @Test
     fun `a suffix after an apostrophe belongs to the name`() {
         assertThat(TurkishSupport.wordStartOffset("Dün İstanbul'", "a")).isEqualTo(9)
     }

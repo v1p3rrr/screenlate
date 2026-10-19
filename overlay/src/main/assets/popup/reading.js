@@ -6,8 +6,13 @@
  *                                           own, such as reading-zh.js. rules.syllables(reading) splits a reading into
  *                                           parts { text, tone }, tone null for the text between syllables, or gives
  *                                           null for a reading it cannot split; rules.segments(expression, reading)
- *                                           gives [[text, parts | null], ...], one ruby per text with parts.
+ *                                           gives [[text, parts | null], ...], one ruby per text with parts;
+ *                                           rules.sentenceSegments(text, expression, reading), when a language has
+ *                                           it, gives the segments of a word as a sentence spells it (text).
  *   segments(lang, expression, reading)     the language's segments, or null for a language without rules.
+ *   sentenceSegments(lang, text, expression, reading)
+ *                                           the language's segments of a word in a sentence, or null when the
+ *                                           language has no such rules.
  *   syllables(lang, reading)                the language's syllables, or null.
  */
 const HeadwordReading = (() => {
@@ -31,5 +36,9 @@ const HeadwordReading = (() => {
         return rulesOf(lang)?.syllables(reading || '') ?? null;
     }
 
-    return { addLanguage, segments, syllables };
+    function sentenceSegments(lang, text, expression, reading) {
+        return rulesOf(lang)?.sentenceSegments?.(text || '', expression || '', reading || '') ?? null;
+    }
+
+    return { addLanguage, segments, sentenceSegments, syllables };
 })();

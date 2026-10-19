@@ -135,6 +135,14 @@
     <string name="anki_fields">Champs</string>
     <string name="anki_fields_hint">Les modèles utilisent des marqueurs comme {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Le bouton + en insère un. Le premier champ sert à détecter les doublons.</string>
     <string name="anki_insert_marker">Insérer un marqueur</string>
+    <string name="anki_marker_furigana_zh">Pinyin au-dessus des caractères</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin en texte : 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Phrase avec le pinyin au-dessus des caractères</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Phrase avec le pinyin en texte</string>
+    <string name="anki_marker_furigana_ru">Mot avec l’accent tonique marqué</string>
+    <string name="anki_marker_furigana_plain_ru">Mot avec l’accent tonique marqué, en texte</string>
+    <string name="anki_marker_sentence_furigana_ru">Phrase avec l’accent tonique marqué sur les mots sous leur forme de dictionnaire</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Phrase avec l’accent tonique marqué sur les mots sous leur forme de dictionnaire, en texte</string>
     <string name="anki_duplicates">Doublons</string>
     <string name="anki_duplicate_check">Rechercher les doublons</string>
     <string name="anki_duplicate_scope">Chercher dans</string>

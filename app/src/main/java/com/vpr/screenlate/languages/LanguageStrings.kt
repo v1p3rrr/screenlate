@@ -64,6 +64,27 @@ val Language.pronunciationColorStrings: PronunciationColorStrings?
         Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE, Language.RUSSIAN -> null
     }
 
+/**
+ * Second lines under Anki's furigana markers in a field's + menu, by marker: what they give in a language whose
+ * readings are not kana. Empty where the marker names say it (Japanese) or the markers are not offered.
+ */
+val Language.furiganaMarkerHints: Map<String, Int>
+    get() = when (this) {
+        Language.CHINESE -> mapOf(
+            "furigana" to R.string.anki_marker_furigana_zh,
+            "furigana-plain" to R.string.anki_marker_furigana_plain_zh,
+            "sentence-furigana" to R.string.anki_marker_sentence_furigana_zh,
+            "sentence-furigana-plain" to R.string.anki_marker_sentence_furigana_plain_zh,
+        )
+        Language.RUSSIAN -> mapOf(
+            "furigana" to R.string.anki_marker_furigana_ru,
+            "furigana-plain" to R.string.anki_marker_furigana_plain_ru,
+            "sentence-furigana" to R.string.anki_marker_sentence_furigana_ru,
+            "sentence-furigana-plain" to R.string.anki_marker_sentence_furigana_plain_ru,
+        )
+        Language.JAPANESE, Language.ENGLISH, Language.KOREAN, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.VIETNAMESE -> emptyMap()
+    }
+
 /** The switch for entries of the other characters of a found word (`LanguageSupport.hasCharacterEntries`). */
 class CharacterEntryStrings(
     @param:StringRes val label: Int,

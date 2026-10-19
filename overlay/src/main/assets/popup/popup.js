@@ -905,12 +905,22 @@ const Popup = (() => {
 
     /**
      * [name] when it is up to [SHORT_NAME_WIDTH] wide (JPDB, NieR), else its first character in upper case (BCCWJ → B,
-     * wordfreq zh → W, 国語辞典 → 国).
+     * wordfreq zh → W, 国語辞典 → 国), by the case rules of the page's language (ingilizce → İ in Turkish).
      */
     function chipName(name) {
         const characters = Array.from(name.trim());
         const width = characters.reduce((sum, character) => sum + (isWide(character) ? 2 : 1), 0);
-        return width <= SHORT_NAME_WIDTH || !characters.length ? name : characters[0].toUpperCase();
+        return width <= SHORT_NAME_WIDTH || !characters.length ? name : upperCase(characters[0]);
+    }
+
+    function upperCase(text) {
+        const lang = document.documentElement.lang;
+        try {
+            return lang ? text.toLocaleUpperCase(lang) : text.toUpperCase();
+        } catch (e) {
+            // Not a language tag the browser knows.
+            return text.toUpperCase();
+        }
     }
 
     /** Whether [character] takes the width of two Latin letters: CJK characters, kana, hangul, full-width forms. */

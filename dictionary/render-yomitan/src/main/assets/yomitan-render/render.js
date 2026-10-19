@@ -148,15 +148,18 @@ window.YomitanRender = (() => {
         }
     }
 
+    /**
+     * Yomitan's naming through the dataset: the key with its first letter in capitals after "sc", so a key starting
+     * with a Latin letter gets data-sc- and kebab case (fooBar: data-sc-foo-bar) and any other key follows data-sc
+     * as written (data-sc日本, data-sc한국, data-scКлюч).
+     */
     function setData(element, data) {
         for (const [key, value] of Object.entries(data)) {
-            const name = key.replace(/([A-Z])/g, (_, c, i) => (i ? '-' : '') + c.toLowerCase());
+            const name = key.length > 0 ? `sc${key[0].toUpperCase()}${key.substring(1)}` : 'sc';
             try {
-                // Keys that start with CJK characters are kept verbatim, as some dictionaries' CSS expects.
-                const cjk = /^[　-鿿豈-﫿]/.test(key);
-                element.setAttribute(cjk ? `data-sc${name}` : `data-sc-${name}`, String(value));
+                element.dataset[name] = String(value);
             } catch (e) {
-                // Not a valid attribute name; the dictionary CSS cannot target it anyway.
+                // Not a valid attribute name (foo-bar); Yomitan skips it as well.
             }
         }
     }

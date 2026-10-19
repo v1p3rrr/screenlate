@@ -538,6 +538,18 @@ test('a long dictionary name shows its first letter until the chip is tapped; "+
     assert.deepEqual(chips(content.querySelector('.entry-info')), ['B39']);
 });
 
+test('the first letter of a long dictionary name follows the case rules of the page language', () => {
+    const initial = lang => {
+        Popup.setAppearance({ lang });
+        Popup.render(state({ results: [frequent([{ dictionary: 'ingilizce sıklık', values: [{ value: 3, displayValue: '' }] }])] }));
+        return chips(content.querySelector('.entry-info'))[0];
+    };
+    assert.equal(initial('tr'), 'İ3');
+    assert.equal(initial('en'), 'I3');
+    assert.equal(initial(''), 'I3');
+    Popup.setAppearance({ lang: 'ja' });
+});
+
 test('a kana value alone in its dictionary needs no "+N"', () => {
     Popup.render(state({ results: [frequent([{ dictionary: 'Jiten', values: [{ value: 10, displayValue: '10㋕' }] }])] }));
     const row = content.querySelector('.entry-info');

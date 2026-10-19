@@ -68,9 +68,19 @@ object FieldTemplate {
     /** Pronunciation in the phonetic alphabet; offered only while a pronunciation dictionary is on. */
     const val PHONETIC_TRANSCRIPTIONS = "phonetic-transcriptions"
 
-    /** The standard markers, this app's, and those of [language]; [transcriptions] keeps [PHONETIC_TRANSCRIPTIONS]. */
-    fun markersFor(language: Language, transcriptions: Boolean = true): List<String> =
-        MARKERS.filter { transcriptions || it != PHONETIC_TRANSCRIPTIONS } + APP_MARKERS + language.support.ankiMarkers
+    /** Yomitan's furigana markers; offered only where `LanguageSupport.furiganaMarkers`, but filled everywhere. */
+    val FURIGANA_MARKERS = listOf("furigana", "furigana-plain", "sentence-furigana", "sentence-furigana-plain")
+
+    /**
+     * The standard markers, this app's, and those of [language]; [transcriptions] keeps [PHONETIC_TRANSCRIPTIONS]. The
+     * furigana markers only for a language whose readings they show ([FURIGANA_MARKERS]).
+     */
+    fun markersFor(language: Language, transcriptions: Boolean = true): List<String> {
+        val furigana = language.support.furiganaMarkers
+        return MARKERS.filter { marker ->
+            (transcriptions || marker != PHONETIC_TRANSCRIPTIONS) && (furigana || marker !in FURIGANA_MARKERS)
+        } + APP_MARKERS + language.support.ankiMarkers
+    }
 
     const val SINGLE_GLOSSARY_PREFIX = "single-glossary-"
     const val SINGLE_FREQUENCY_NUMBER_PREFIX = "single-frequency-number-"
