@@ -72,7 +72,8 @@ const replacedProcessors = {
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
  * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, and
- * whether an entry without a part of speech may match despite the conditions.
+ * whether an entry without a part of speech may match despite the conditions. A rule that strips a whole word
+ * (Georgian -მა from მა) leaves an empty text, which is not asked for.
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
@@ -80,7 +81,8 @@ const replacedProcessors = {
 function candidates(text, language, searchResolution) {
     prepare(language);
     const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
-        .filter((d) => isWellFormed(d.originalText) && isWellFormed(d.transformedText) && isWellFormed(d.deinflectedText));
+        .filter((d) => d.deinflectedText !== '' && isWellFormed(d.originalText) && isWellFormed(d.transformedText) &&
+            isWellFormed(d.deinflectedText));
     const verb = englishVerbFlags(language);
     return list.map((d) => ({
         o: d.originalText,

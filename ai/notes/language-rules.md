@@ -114,7 +114,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | bn | Noun endings (classifiers টি টা খানা গুলো গুলি, plurals রা দের, cases র কে তে এ and their combinations) undone once, after at least two letters; the results match entries without a part of speech, which Wiktionary's Bengali entries never name | `scripts/yomitan-language/own-transforms.js`, `build.mjs` `addedTransforms`, `glue.js` `untypedRules`, `cpp/language/candidate_lookup.cpp` `fits` | glue `bengali noun endings…`, I: LanguageLookupTest `bengaliEndings…` | glue (one ending only: ছেলেদেরকে does not reach ছেলে; ভয় is not cut to ভ; hi has neither) | ok |
 | ka | Yomitan's Georgian rules (13 case and plural endings cut, -გნ/-ნ → -გნი/-ნი, -გ → -გა, chaining), filed under `kat`: the glue takes each language's rules by the descriptor's iso; they match entries without a part of speech, which Wiktionary's Georgian entries never name, when three letters or more stay (owner, question 11 of the group 4b plan) | `glue.js` `prepare`, `untypedRules`; `cpp/language/candidate_lookup.cpp` `fits` | glue `georgian rules load…`, I: LanguageLookupTest `georgianRules…` | glue `georgian rules stay out of other languages`, the მას case (not cut to მა) in both tests | fixed |
 | ka | Mtavruli capitals lowercased (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო): Yomitan's `decapitalize` added to Georgian's descriptor, which has no text processors | `ka.js` bundle, `build.mjs` `addedPreprocessors` | glue `georgian headings in mtavruli…`, I: LanguageLookupTest `georgianRules…` | — (every language with decapitalize lowercases Mtavruli as well, harmlessly) | ok |
-| ka | Inflection names: Yomitan's identifiers (noun-adj-suffix-stripping) shown as declension, nominative, dropped vowel, in the 14 locales | `generate-inflections.mjs` `labels`, `transformLanguages`; `res/values*/inflections_ka.xml` | the generator reports no missing translation | other languages keep Yomitan's names | ok |
+| ka | Inflection names: Yomitan's identifiers (noun-adj-suffix-stripping) shown as declension, nominative, dropped vowel, in the 14 locales | `generate-inflections.mjs` `labels`, `transformsOf`; `res/values*/inflections_ka.xml` | the generator reports no missing translation | other languages keep Yomitan's names | ok |
 | all (wty) | At import, a form row written with template leftovers is keyed by its words: a romanization or note after whitespace and `(` or `,` is cut off, two spellings split at a whitespace-led `/` are keyed both, whitespace before a combining mark is dropped (মুখ ে → মুখে), and a row of an unfilled template (`{{{3}}}ে`) is not keyed | `cpp/language/archive_split.cpp` `form_headwords` | I: LanguageLookupTest `bengaliEndings…` (করেন, করিস, করো) | every other LanguageLookupTest (well-formed rows keep their keys) | fixed |
 | vi | Tone marks in the old and the new placement (hoà ↔ hòa) | `vi.js` bundle | glue `vietnamese tone marks…` | glue (fr, es, pt, it do not) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
@@ -244,7 +244,10 @@ Found while adding Georgian:
 
 28. Yomitan's Georgian descriptor files its rules under `kat`, not `ka`, and the glue looked rules up by the language
     code, so none loaded (Yomitan itself never applies them either). The glue now takes each language's rules by
-    the descriptor's iso; the inflection generator maps ka to `kat` (`transformLanguages`).
+    the descriptor's iso; the inflection generator takes the transforms in the language's folder, whatever code
+    they name.
+29. A rule that strips a whole word (Georgian -მა from მა) left an empty text, which was queried; the glue drops
+    empty candidates in every language (glue `georgian rules load…`).
 
 ## Limits left as they are
 
@@ -259,7 +262,6 @@ Found while adding Georgian:
   text never matches.
 - Georgian rules chain and are tried on every word that ends like an ending; with three letters left, some words
   also show a wrong neighbor after the right entry (არის, "is", also shows არი). Verbs come only from the form rows.
-  A word cut to nothing (მა minus -მა) queries an empty text, which finds nothing.
 
 - `Compounds.word` stops at a combining mark in NFD text; OCR and app text give NFC, so a German compound typed in
   NFD is not split. Not worth the mapping it would need.

@@ -214,6 +214,8 @@ test('georgian rules load, chain and match entries without a part of speech when
     const short = candidates('ka', 'მას').find((c) => c.d === 'მა');
     assert.ok(short);
     assert.ok(!short.u);
+    // -მა stripped from მა leaves nothing, which is not queried.
+    assert.ok(!queried('ka', 'მას').has(''));
     assert.ok(!candidates('ka', 'წიგნს').find((c) => c.d === 'წიგნს').u);
 });
 
@@ -226,3 +228,4 @@ test('georgian rules stay out of other languages', () => {
         assert.ok(!queried(language, 'წიგნს').has('წიგნი'), language);
     }
 });
+

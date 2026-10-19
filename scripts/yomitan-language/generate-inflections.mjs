@@ -26,9 +26,6 @@ const module = path.join(here, '../../dictionary/engine-hoshidicts');
 const res = path.join(module, 'src/main/res');
 const kotlin = path.join(module, 'src/main/java/com/vpr/screenlate/dictionary/engine/hoshidicts/YomitanInflections.kt');
 
-/** Codes the transforms name their language by where they differ from the app's: Georgian's say `kat`. */
-const transformLanguages = {ka: 'kat'};
-
 /**
  * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping"), by language and rule id.
  * @type {Record<string, Record<string, string>>}
@@ -39,7 +36,8 @@ const labels = {
 
 /**
  * The transforms of [iso], imported from the language's own file: the descriptor list imports every language, and some
- * need libraries a checkout does not have until Yomitan is built.
+ * need libraries a checkout does not have until Yomitan is built. They are taken by the folder, as the bundles take
+ * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`).
  * @param {string} iso
  */
 async function transformsOf(iso) {
@@ -48,7 +46,7 @@ async function transformsOf(iso) {
     for (const file of files) {
         const exports = await import(pathToFileURL(path.join(dir, file)).href);
         for (const descriptor of Object.values(exports)) {
-            if (descriptor?.language === (transformLanguages[iso] ?? iso) && descriptor.transforms) {
+            if (descriptor?.language && descriptor.transforms) {
                 return Object.entries(descriptor.transforms);
             }
         }

@@ -1178,7 +1178,7 @@ Cells: archive MB, words.
   some words also show a wrong neighbor after the right entry (არის, "is", also shows არი). Without a minimum they
   cut ვადის down to ვ.
 - The rules chain (n|adj in and out): წიგნს → წიგნ → წიგნი, reached twice (through -გნ and through -ნ); the engine
-  keeps one. Stripping -მა from a two-letter word leaves an empty text, which is queried and finds nothing.
+  keeps one. Stripping -მა from მა leaves an empty text, which the glue drops (in every language).
 - Mtavruli: Yomitan gives Georgian no text processors; `addedPreprocessors` adds `decapitalize`
   (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო). Every language with decapitalize lowercases Mtavruli too, which is harmless.
 - Inflection names: Yomitan's names are identifiers (noun-adj-suffix-stripping); `generate-inflections.mjs` gives them
