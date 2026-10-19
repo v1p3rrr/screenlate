@@ -39,5 +39,6 @@ target_link_libraries(screenlate_hoshidicts PRIVATE
     glaze::glaze
     libdeflate_static
     quickjs
+    utf8proc::utf8proc
     log
 )

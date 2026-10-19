@@ -6,7 +6,9 @@
 #include <unistd.h>
 
 #include <libdeflate.h>
+#include <utf8proc.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
@@ -272,8 +274,8 @@ struct Compressors {
 };
 
 // The rows of one term bank without their form-of items, which go into [split]; nullopt when the bank has none (or
-// cannot be read, which hoshidicts then reports).
-std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split) {
+// cannot be read, which hoshidicts then reports). [stripper] drops the language's headword marks, if it has any.
+std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper) {
   std::vector<glz::raw_json_view> rows;
   if (glz::read_json(rows, content)) return std::nullopt;
   std::string out = "[";
@@ -309,7 +311,13 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     changed = true;
     std::string rules;
     if (glz::read_json(rules, fields[3].str)) rules.clear();
-    for (const auto& [lemma, tags] : form_of) split.table.add(expression, lemma, tags, rules);
+    const std::string plain = stripper != nullptr ? stripper->strip(expression) : std::string();
+    for (const auto& [lemma, tags] : form_of) {
+      const std::string plain_lemma = stripper != nullptr ? stripper->strip(lemma) : std::string();
+      const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
+      split.table.add(expression, target, tags, rules);
+      if (!plain.empty()) split.table.add(plain, target, tags, rules);
+    }
     if (definitions.empty()) {
       split.form_rows++;
       continue;
@@ -337,9 +345,67 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
   return out;
 }
 
+std::vector<int32_t> code_points(std::string_view text) {
+  std::vector<int32_t> out;
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
+  utf8proc_ssize_t pos = 0;
+  const auto size = static_cast<utf8proc_ssize_t>(text.size());
+  while (pos < size) {
+    utf8proc_int32_t point = 0;
+    const utf8proc_ssize_t read = utf8proc_iterate(bytes + pos, size - pos, &point);
+    if (read <= 0) break;
+    out.push_back(point);
+    pos += read;
+  }
+  std::sort(out.begin(), out.end());
+  return out;
+}
+
+bool contains(const std::vector<int32_t>& sorted, int32_t point) {
+  return std::binary_search(sorted.begin(), sorted.end(), point);
+}
+
 }  // namespace
 
-ArchiveSplit split_form_of(const std::string& archive, const std::string& output) {
+MarkStripper::MarkStripper(const HeadwordMarks& marks) : marks_(code_points(marks.marks)), bases_(code_points(marks.bases)) {}
+
+std::string MarkStripper::strip(std::string_view text) const {
+  // Forms in plain ASCII are the common case and carry no marks.
+  if (std::all_of(text.begin(), text.end(), [](char c) { return static_cast<unsigned char>(c) < 0x80; })) return {};
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
+  const auto size = static_cast<utf8proc_ssize_t>(text.size());
+  // One more entry than the code points, which re-encoding in place needs for its terminating zero.
+  std::vector<utf8proc_int32_t> points(text.size() + 1);
+  utf8proc_ssize_t count = utf8proc_decompose(bytes, size, points.data(), static_cast<utf8proc_ssize_t>(points.size()),
+                                              UTF8PROC_DECOMPOSE);
+  if (count > static_cast<utf8proc_ssize_t>(points.size())) {
+    points.resize(static_cast<size_t>(count) + 1);
+    count = utf8proc_decompose(bytes, size, points.data(), static_cast<utf8proc_ssize_t>(points.size()),
+                               UTF8PROC_DECOMPOSE);
+  }
+  if (count < 0) return {};
+  utf8proc_ssize_t kept = 0;
+  utf8proc_int32_t base = 0;
+  bool dropped = false;
+  for (utf8proc_ssize_t i = 0; i < count; i++) {
+    const utf8proc_int32_t point = points[static_cast<size_t>(i)];
+    if (contains(marks_, point) && contains(bases_, utf8proc_tolower(base))) {
+      dropped = true;
+      continue;
+    }
+    // A mark after another mark goes with the same letter.
+    if (utf8proc_category(point) != UTF8PROC_CATEGORY_MN) base = point;
+    points[static_cast<size_t>(kept++)] = point;
+  }
+  if (!dropped || kept == 0) return {};
+  const utf8proc_ssize_t length =
+      utf8proc_reencode(points.data(), kept, static_cast<utf8proc_option_t>(UTF8PROC_STABLE | UTF8PROC_COMPOSE));
+  if (length < 0) return {};
+  return std::string(reinterpret_cast<const char*>(points.data()), static_cast<size_t>(length));
+}
+
+ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
+                           const std::map<std::string, HeadwordMarks>& marks) {
   ArchiveSplit split;
   MappedFile file(archive);
   const auto entries = read_entries(file);
@@ -349,12 +415,15 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
 
   // A dictionary without a source language also serves Japanese lookups, which would lose the rows moved out.
   bool other_language = false;
+  std::optional<MarkStripper> stripper;
   for (const auto& entry : *entries) {
     if (entry.name != "index.json") continue;
     const auto content = inflate(file, entry, compressors.decompressor);
     IndexLanguage index;
     other_language = content && !glz::read<glz::opts{.error_on_unknown_keys = false}>(index, *content) &&
                      index.sourceLanguage && !index.sourceLanguage->empty() && *index.sourceLanguage != "ja";
+    const auto language = other_language ? marks.find(*index.sourceLanguage) : marks.end();
+    if (language != marks.end()) stripper.emplace(language->second);
   }
   if (!other_language) return split;
 
@@ -367,7 +436,9 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       const Entry& entry = (*entries)[i];
       if (!is_term_bank(entry.name)) continue;
       const auto content = inflate(file, entry, compressors.decompressor);
-      const auto rest = content && may_hold_form_of(*content) ? split_bank(*content, split) : std::nullopt;
+      const auto rest = content && may_hold_form_of(*content)
+                            ? split_bank(*content, split, stripper ? &*stripper : nullptr)
+                            : std::nullopt;
       if (!rest) continue;
       if (!writer) writer = std::make_unique<ArchiveWriter>(output);
       for (; copied < i; copied++) writer->add((*entries)[copied], file.data() + (*entries)[copied].data_offset);

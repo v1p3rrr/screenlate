@@ -1,28 +1,42 @@
 #!/usr/bin/env node
 // Rebuilds the Wiktionary entries of the dictionary catalog from the Hugging Face tree of wty-release and writes the
 // format 1 catalog that older app versions read. Hand-written entries (those without a Wiktionary template) are kept
-// as they are.
+// as they are. A dictionary is listed when it holds enough words (MIN_WORDS); archives are downloaded to count them,
+// and the counts are kept in word-counts.json, so only new or changed archives are downloaded again.
 //
-//   node scripts/catalog/generate.mjs            fetch the tree and rewrite both catalog files
-//   node scripts/catalog/generate.mjs --tree t.json   use a recorded tree listing instead of the network
+//   node scripts/catalog/generate.mjs            fetch the tree, count new archives, rewrite both catalog files
+//   node scripts/catalog/generate.mjs --tree t.json   use a recorded tree listing and the kept counts, no network
 //   node scripts/catalog/generate.mjs --record t.json fetch the tree and also save the listing
 
 import { readFile, writeFile } from 'node:fs/promises';
+import { inflateRawSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CATALOG = path.join(ROOT, 'dictionary/api/src/main/assets/catalog/dictionaries-v2.json');
 const LEGACY = path.join(ROOT, 'dictionary/api/src/main/assets/catalog/dictionaries.json');
+const COUNTS = path.join(ROOT, 'scripts/catalog/word-counts.json');
 
 /** Source languages of the app's language groups; the app shows those it supports. */
-export const SOURCES = ['ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv'];
+export const SOURCES = [
+  'ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv',
+  'nl', 'cs', 'id', 'ms', 'tl', 'sh', 'uk', 'be', 'el',
+];
 
 /** Gloss languages: the interface languages that have a Wiktionary edition. */
 export const GLOSSES = ['en', 'ru', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt', 'tr', 'vi', 'zh'];
 
-/** Smaller archives cover only a few hundred words and are left out. */
-export const MIN_BYTES = 512 * 1024;
+/**
+ * A dictionary is listed when it holds at least this many words with a meaning of their own; words that are only
+ * forms of others (`[lemma, [tags]]` glossary items) do not count. A transcription counts its transcribed words.
+ */
+export const MIN_WORDS = 1500;
+
+const MIB = 1024 * 1024;
+
+/** Larger archives are not downloaded for counting: each holds tens of thousands of words. */
+export const COUNTED_BELOW = 8 * MIB;
 
 /** Languages whose transcription is not ticked on the download screen (Chinese readings are in its dictionaries). */
 const UNTICKED_TRANSCRIPTION = new Set(['zh']);
@@ -31,7 +45,6 @@ const RELEASE = 'https://huggingface.co/datasets/daxida/wty-release/resolve/main
 const TREE_API = 'https://huggingface.co/api/datasets/daxida/wty-release/tree/main/latest/dict';
 const HOMEPAGE = 'https://github.com/yomidevs/wiktionary-to-yomitan';
 const LICENSE = 'CC BY-SA 4.0';
-const MIB = 1024 * 1024;
 
 export const TEMPLATE_MAIN = 'wiktionary';
 export const TEMPLATE_GLOSSARY = 'wiktionary-glossary';
@@ -107,29 +120,125 @@ function transcriptionEntry(source, size) {
 }
 
 /**
- * The Wiktionary entries for [files] (tree paths below `dict/`). A main dictionary is recommended unless a hand-written
- * main dictionary of the same pair is, so each pair has one recommended entry.
+ * The languages [source]'s dictionaries go into: the gloss languages and, for a language that is none of them, its
+ * own Wiktionary edition, which the download screen lists unticked.
  */
-export function wiktionaryEntries(files, manual) {
+export function targets(source) {
+  return GLOSSES.includes(source) ? GLOSSES : [...GLOSSES, source];
+}
+
+/** Tree paths (below `dict/`) of every archive the catalog may list. */
+export function candidates() {
+  const paths = [];
+  for (const source of SOURCES) {
+    for (const target of targets(source)) paths.push(`dict/${source}/${target}/wty-${source}-${target}.zip`);
+    for (const target of GLOSSES) paths.push(`dict/${source}/${target}/wty-${source}-${target}-gloss.zip`);
+    paths.push(`dict/all/${source}/wty-${source}-ipa.zip`);
+  }
+  return paths;
+}
+
+/**
+ * The Wiktionary entries for [files] (tree paths below `dict/`) that hold MIN_WORDS words by [words] (counts by
+ * path); an archive of COUNTED_BELOW bytes or more passes uncounted. A main dictionary is recommended unless a
+ * hand-written main dictionary of the same pair is, so each pair has one recommended entry, or it is the own edition of
+ * a language outside the gloss languages.
+ */
+export function wiktionaryEntries(files, manual, words = new Map()) {
   const sizes = new Map(files.map((file) => [file.path, file.size]));
+  const passes = (file) => sizes.has(file) && (sizes.get(file) >= COUNTED_BELOW || (words.get(file) ?? 0) >= MIN_WORDS);
   const recommendedPairs = new Set(
     manual.filter((e) => e.recommended && (e.category ?? 'MAIN') === 'MAIN' && e.kind === 'TERM')
       .map((e) => `${e.sourceLanguage}-${e.targetLanguage}`),
   );
   const entries = [];
   for (const source of SOURCES) {
-    for (const target of GLOSSES) {
-      const main = sizes.get(`dict/${source}/${target}/wty-${source}-${target}.zip`);
-      if (main >= MIN_BYTES) entries.push(mainEntry(source, target, main, !recommendedPairs.has(`${source}-${target}`)));
+    for (const target of targets(source)) {
+      const file = `dict/${source}/${target}/wty-${source}-${target}.zip`;
+      const recommended = GLOSSES.includes(target) && !recommendedPairs.has(`${source}-${target}`);
+      if (passes(file)) entries.push(mainEntry(source, target, sizes.get(file), recommended));
     }
     for (const target of GLOSSES) {
-      const glossary = sizes.get(`dict/${source}/${target}/wty-${source}-${target}-gloss.zip`);
-      if (glossary >= MIN_BYTES) entries.push(glossaryEntry(source, target, glossary));
+      const file = `dict/${source}/${target}/wty-${source}-${target}-gloss.zip`;
+      if (passes(file)) entries.push(glossaryEntry(source, target, sizes.get(file)));
     }
-    const transcription = sizes.get(`dict/all/${source}/wty-${source}-ipa.zip`);
-    if (transcription >= MIN_BYTES) entries.push(transcriptionEntry(source, transcription));
+    const file = `dict/all/${source}/wty-${source}-ipa.zip`;
+    if (passes(file)) entries.push(transcriptionEntry(source, sizes.get(file)));
   }
   return entries;
+}
+
+/** Whether a glossary item has a meaning of its own: anything but a form-of `[lemma, [tags]]`. */
+function ownMeaning(item) {
+  return !(Array.isArray(item) && typeof item[0] === 'string' && Array.isArray(item[1]));
+}
+
+/**
+ * The number of words in a Yomitan archive that count for MIN_WORDS: headwords of term bank rows with a glossary item
+ * of their own meaning, and words of `ipa` term meta rows. Reads the zip's central directory; stored and deflated
+ * entries only, which is what the Wiktionary archives hold.
+ */
+export function countWords(buffer) {
+  let end = buffer.length - 22;
+  while (end >= 0 && buffer.readUInt32LE(end) !== 0x06054b50) end--;
+  if (end < 0) throw new Error('not a zip archive');
+  const entries = buffer.readUInt16LE(end + 10);
+  let position = buffer.readUInt32LE(end + 16);
+  const words = new Set();
+  for (let i = 0; i < entries; i++) {
+    const method = buffer.readUInt16LE(position + 10);
+    const compressed = buffer.readUInt32LE(position + 20);
+    const nameLength = buffer.readUInt16LE(position + 28);
+    const local = buffer.readUInt32LE(position + 42);
+    const name = buffer.toString('utf8', position + 46, position + 46 + nameLength);
+    position += 46 + nameLength + buffer.readUInt16LE(position + 30) + buffer.readUInt16LE(position + 32);
+    const term = /^term_bank_\d+\.json$/.test(name);
+    if (!term && !/^term_meta_bank_\d+\.json$/.test(name)) continue;
+    const start = local + 30 + buffer.readUInt16LE(local + 26) + buffer.readUInt16LE(local + 28);
+    const data = buffer.subarray(start, start + compressed);
+    const rows = JSON.parse((method === 8 ? inflateRawSync(data) : data).toString('utf8'));
+    for (const row of rows) {
+      if (term ? Array.isArray(row[5]) && row[5].some(ownMeaning) : row[1] === 'ipa') words.add(row[0]);
+    }
+  }
+  return words.size;
+}
+
+/**
+ * Whether a kept count ([counted], `{size, words}`) needs the archive counted again at [size]: it is missing, the
+ * archive grew or shrank by more than a tenth since, or the count is close enough to MIN_WORDS for a small change to
+ * cross it.
+ */
+export function needsCount(counted, size) {
+  if (!counted) return true;
+  if (counted.size === size) return false;
+  return Math.abs(size - counted.size) > counted.size / 10 ||
+    (counted.words >= MIN_WORDS * 0.8 && counted.words < MIN_WORDS * 1.25);
+}
+
+/**
+ * [counts] (`{path: {size, words}}`) with the archives of [files] below COUNTED_BELOW counted where [needsCount] says
+ * so; [download] gives an archive's bytes by its tree path.
+ */
+export async function refreshCounts(files, counts, download, parallel = 4) {
+  const wanted = new Set(candidates());
+  const queue = files.filter((file) =>
+    wanted.has(file.path) && file.size < COUNTED_BELOW && needsCount(counts[file.path], file.size));
+  const result = { ...counts };
+  const worker = async () => {
+    for (let file = queue.shift(); file; file = queue.shift()) {
+      result[file.path] = { size: file.size, words: countWords(await download(file.path)) };
+      console.log(`${file.path}: ${result[file.path].words} words`);
+    }
+  };
+  await Promise.all(Array.from({ length: parallel }, worker));
+  return Object.fromEntries(Object.entries(result).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+async function downloadArchive(file) {
+  const response = await fetch(`${RELEASE}/${file}?download=true`);
+  if (!response.ok) throw new Error(`${response.status} for ${file}`);
+  return Buffer.from(await response.arrayBuffer());
 }
 
 /** The catalog document with its Wiktionary entries replaced by [generated], hand-written entries first. */
@@ -218,9 +327,15 @@ async function main() {
   const record = option('--record');
   if (record) await writeFile(record, json(listing));
 
+  const files = archives(listing);
+  const kept = JSON.parse(await readFile(COUNTS, 'utf8').catch(() => '{}'));
+  const counts = recorded ? kept : await refreshCounts(files, kept, downloadArchive);
+  if (!recorded) await writeFile(COUNTS, json(counts));
+  const words = new Map(Object.entries(counts).map(([file, count]) => [file, count.words]));
+
   const document = JSON.parse(await readFile(CATALOG, 'utf8'));
   const manual = document.dictionaries.filter((e) => !TEMPLATES.has(e.template));
-  const rebuilt = rebuild(document, wiktionaryEntries(archives(listing), manual));
+  const rebuilt = rebuild(document, wiktionaryEntries(files, manual, words));
   await writeFile(CATALOG, json(rebuilt));
   await writeFile(LEGACY, json(legacy(rebuilt)));
   const generated = rebuilt.dictionaries.length - manual.length;

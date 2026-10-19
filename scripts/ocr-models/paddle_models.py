@@ -41,6 +41,8 @@ SOURCES = {
                                      "5371ee1ddaa7983cc62d0818d99e982b6804638c85e4f960d59a574094e172e5"),
     "korean_PP-OCRv5_mobile_rec": ("5c6f574b8e2230adf4287b33e736d71b9fabd28e",
                                    "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08"),
+    "el_PP-OCRv5_mobile_rec": ("8152b89d2ee0e1d4c92decab75fe75e5e3d836b6",
+                               "2acf17fcaea2bc81b878e311e6263b8885f48bb03796f75f9f30ed3242bbaa6d"),
 }
 
 DETECTORS = {
@@ -50,7 +52,7 @@ DETECTORS = {
                            "properties": {"threshold": "0.2", "box_threshold": "0.45"}},
 }
 
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on.
 RECOGNIZERS = {
@@ -59,16 +61,19 @@ RECOGNIZERS = {
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
-                        "requires": "paddle-detector-v5", "languages": ["ru"]},
+                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be"]},
     "paddle-korean": {"source": "korean_PP-OCRv5_mobile_rec", "template": "paddle-v5",
                       "requires": "paddle-detector-v5", "languages": ["ko"]},
+    "paddle-el": {"source": "el_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
+                  "languages": ["el"]},
 }
 
-# The recommendation rule over the clean and hard screens (ai/notes/ocr-engines.md); ko and vi keep ML Kit.
+# The recommendation rule over the clean and hard screens (ai/notes/ocr-engines.md); ko and vi keep ML Kit, and the
+# Latin-script languages not measured (nl, id, ms, tl) recommend none. Belarusian, not measured, takes Ukrainian's.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
-    "ru": "paddle-cyrillic",
+    "ru": "paddle-cyrillic", "cs": "paddle-v6", "uk": "paddle-cyrillic", "be": "paddle-cyrillic", "el": "paddle-el",
 }
 
 TEMPLATES = {"paddle-detector-v5", "paddle-detector-v6", "paddle-v6", "paddle-v5"}

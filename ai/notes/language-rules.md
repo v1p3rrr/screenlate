@@ -80,6 +80,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | tr | Turkish case pairs (I ↔ ı, İ ↔ i) | `glue:44` | glue `turkish capitals…` | glue `other languages keep the default case pairs`, `turkish case pairs do not reach english` | ok |
 | en | Untyped phrasal verbs ("picked up" → "pick up") for dictionaries without parts of speech | `glue:86`, `:113` | glue `english phrasal verbs…`, I: LanguageLookupTest | glue ("closed to" gets none; de, fr, es never) | ok |
 | ru | Stress marks dropped, ё ↔ е (Yomitan's Russian processors) | `ru.js` bundle | glue `russian stress marks…`, I: LanguageLookupTest | glue (en, de, pl, lv do neither) | ok |
+| ru (be, uk, sh with their branches) | At import, form-of headwords are also indexed without stress marks and the lemmas they name are stored without them (U+0301, U+0300 after a vowel; sh also U+030F, U+0311, U+0304, U+0302, and after r) | `lang/RussianSupport.kt` `headwordMarks`, `cpp/language/archive_split.cpp` `MarkStripper` | I: LanguageLookupTest `stressMarksOfFormsAndTheirLemmasAreDroppedAtImport` | the same test (ё keeps its diaeresis); languages without `headwordMarks` pass nothing | fixed |
 | vi | Tone marks in the old and the new placement (hoà ↔ hòa) | `vi.js` bundle | glue `vietnamese tone marks…` | glue (fr, es, pt, it do not) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 

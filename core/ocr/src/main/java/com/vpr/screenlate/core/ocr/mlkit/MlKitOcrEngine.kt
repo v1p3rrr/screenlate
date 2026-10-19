@@ -55,7 +55,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         OcrScript.JAPANESE -> OcrScript.JAPANESE
         OcrScript.CHINESE -> OcrScript.CHINESE
         OcrScript.KOREAN -> OcrScript.KOREAN
-        OcrScript.CYRILLIC, OcrScript.DEVANAGARI -> null
+        OcrScript.CYRILLIC, OcrScript.DEVANAGARI, OcrScript.GREEK -> null
     }
 
     /** One recognizer per bundled model; scripts with a model of their own do not share (Japanese misreads Chinese). */

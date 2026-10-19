@@ -211,6 +211,13 @@ interface LanguageSupport {
      */
     val ignoredFormTags: Set<String> get() = emptySet()
 
+    /**
+     * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
+     * import a form is also found without them, and the lemmas forms name are stored without them. Null where words
+     * carry none.
+     */
+    val headwordMarks: HeadwordMarks? get() = null
+
     /** A dictionary's reading as entries show it, without notations it adds ("xíng (xing²)" → "xíng"). */
     fun displayReading(reading: String): String = reading
 
@@ -263,8 +270,14 @@ data class SystemFonts(
 
 enum class SearchResolution { WORD, LETTER }
 
+/**
+ * Combining [marks] dropped from a word where they follow one of [bases] (lowercase letters), in the word's decomposed
+ * form: the acute of Serbo-Croatian ć stays, as it follows no vowel.
+ */
+data class HeadwordMarks(val marks: String, val bases: String)
+
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, JAPANESE, KOREAN }
+enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, GREEK, JAPANESE, KOREAN }
 
 val Language.support: LanguageSupport
     get() = when (this) {

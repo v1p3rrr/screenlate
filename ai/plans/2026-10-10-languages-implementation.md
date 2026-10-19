@@ -936,7 +936,8 @@ Dictionaries are checked when the group starts; a language without support or di
 
 ### Group 4a (nl, cs, id, ms, tl, sh, uk, be, el)
 
-Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build of groups 1-3"). Research:
+Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build of groups 1-3"); the owner started it
+on 2026-10-19 before the OCR plan's last items, which wait for the phone timings and are adjusted afterwards. Research:
 `notes/languages.md`, "Group 4a research"; decisions from the row "Serbo-Croatian" on.
 
 - Shared pieces first, on `languages/main`:
@@ -1302,3 +1303,14 @@ Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build o
   records the cause.
 - 2026-10-19: answers after the emulator checks: rows "Partial downloads" and "Waiting for a network"; the checks
   branch merged after a review (two minor fixes: decomposed Vietnamese app text, a PaddleOCR release during a trim).
+- 2026-10-19: group 4a started before the OCR plan's timing-dependent items (owner: the timings can be applied
+  afterwards); `languages/main` fast-forwarded through the stack and `main` merged (`ac61458`). The Greek Paddle
+  model may go to `ocr-models-1` once the 4a work is done (owner); that release is a regular one now (owner), not
+  marked latest, so the in-app update check (`releases/latest`) still finds v0.2.3.
+- 2026-10-19: group 4a shared pieces on `languages/main`. The catalog script counts words (cached in
+  `scripts/catalog/word-counts.json`; archives of 8 MB or more pass uncounted) and lists own editions of languages
+  outside the gloss languages, not recommended; the existing languages gain 146 small pairs and glossaries that pass
+  by words (lv–ru among them), none is lost. Headword marks are dropped at import; the archive scan showed that
+  Russian needs it as well (376k form-of items name stressed lemmas), so Russian gets the rule. Paddle and Tesseract
+  sets for the 4a languages, `paddle-el` converted (not uploaded yet); cs, uk, be and el recommend the measured
+  Paddle models, the unmeasured Latin languages recommend none.

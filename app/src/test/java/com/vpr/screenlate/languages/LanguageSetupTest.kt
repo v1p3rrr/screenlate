@@ -87,6 +87,26 @@ class LanguageSetupTest {
     }
 
     @Test
+    fun `the language's own edition is listed after the gloss languages and ticked only when chosen as one`() {
+        val dutch = Catalog(
+            listOf(
+                entry("nl-nl", "nl", CatalogCategory.MAIN, recommended = true, source = "nl"),
+                entry("nl-en", "en", CatalogCategory.MAIN, recommended = true, source = "nl"),
+                entry("nl-fr", "fr", CatalogCategory.MAIN, recommended = true, source = "nl"),
+            ),
+        )
+
+        val listed = setupCategories(dutch, "nl", listOf("en"), installed = emptyList())
+        assertThat(listed.single().items.map { it.entry.id }).containsExactly("nl-en", "nl-nl").inOrder()
+        assertThat(listed.single().fixed).isFalse()
+        assertThat(setupDownloads(listed, emptyMap()).map { it.id }).containsExactly("nl-en")
+        assertThat(setupDownloads(listed, mapOf("nl-nl" to true)).map { it.id }).containsExactly("nl-en", "nl-nl").inOrder()
+
+        val chosen = setupCategories(dutch, "nl", listOf("nl", "en"), installed = emptyList())
+        assertThat(setupDownloads(chosen, emptyMap()).map { it.id }).containsExactly("nl-nl", "nl-en").inOrder()
+    }
+
+    @Test
     fun `a required model is not listed and is downloaded once with the ticked models that need it`() {
         fun model(id: String, model: String, size: Long, recommended: Boolean = false, requires: List<String> = emptyList()) =
             CatalogEntry(
@@ -113,7 +133,8 @@ class LanguageSetupTest {
 
     @Test
     fun `a single mandatory item is fixed and installed items are not downloaded again`() {
-        val categories = setupCategories(catalog, "en", listOf("de"), installed = listOf(installed("en-ipa", kind = DictionaryKind.PITCH)))
+        val withoutOwnEdition = Catalog(catalog.entries.filterNot { it.id == "en-en" })
+        val categories = setupCategories(withoutOwnEdition, "en", listOf("de"), installed = listOf(installed("en-ipa", kind = DictionaryKind.PITCH)))
         val main = categories.first { it.category == CatalogCategory.MAIN }
         assertThat(main.fixed).isTrue()
         assertThat(main.ticked(main.items.single(), mapOf("en-de" to false))).isTrue()
@@ -135,10 +156,16 @@ class LanguageSetupTest {
 
     @Test
     fun `a mandatory category without dictionaries in the chosen languages is still shown, and missing`() {
-        val categories = setupCategories(catalog, "en", listOf("fr"), installed = emptyList())
+        val categories = setupCategories(Catalog(catalog.entries.filterNot { it.id == "en-en" }), "en", listOf("fr"), installed = emptyList())
         assertThat(categories.first().category).isEqualTo(CatalogCategory.MAIN)
         assertThat(categories.first().items).isEmpty()
         assertThat(missingChoices(categories, emptyMap())).containsExactly(CatalogCategory.MAIN)
+
+        // The language's own edition is listed as well; as the only main dictionary it is the one to take.
+        val ownOnly = setupCategories(catalog, "en", listOf("fr"), installed = emptyList())
+        assertThat(ownOnly.first().items.map { it.entry.id }).containsExactly("en-en")
+        assertThat(ownOnly.first().fixed).isTrue()
+        assertThat(missingChoices(ownOnly, emptyMap())).isEmpty()
     }
 
     @Test

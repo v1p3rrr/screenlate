@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.languageCode
 import com.vpr.screenlate.core.ocr.mlkit.MlKitOcrEngine
 import com.vpr.screenlate.core.ocr.model.OcrModelChoices
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
@@ -66,7 +67,7 @@ class LanguageSetupViewModel @Inject constructor(
 ) : ViewModel() {
     val language: Language = requireNotNull(Language.of(savedState.get<String>(ARG_CODE)))
     private val firstRun: Boolean = savedState.get<Boolean>(ARG_FIRST_RUN) ?: false
-    private val interfaceLanguage = Locale.getDefault().language
+    private val interfaceLanguage = Locale.getDefault().languageCode
 
     /** The user's pick for the slot they fill, [GlossPick.code] null for none; null until they pick. */
     private val chosenGloss = MutableStateFlow<GlossPick?>(null)

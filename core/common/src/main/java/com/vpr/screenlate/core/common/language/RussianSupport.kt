@@ -29,6 +29,9 @@ object RussianSupport : SpacedLanguageSupport() {
     override val quotePairs = mapOf('«' to '»', '„' to '“', '(' to ')', '[' to ']')
     override val furiganaMarkers = true
 
+    /** Wiktionary's forms name their lemmas stressed (почти → почти́ть), some in Latin transcription (oná). */
+    override val headwordMarks = HeadwordMarks(marks = "\u0301\u0300", bases = "аеиоуыэюяaeiouy")
+
     /**
      * "г" and "в" are год and век ("в 1999 г.", "XX в."); "т", "е", "к" and "н" make up "т. е.", "т. к." and "т. н.".
      * Abbreviations that usually end a sentence or are also words are left out: "и т. д.", "и т. п.", "и др.", им (them),

@@ -15,8 +15,10 @@
 #include <exception>
 #include <filesystem>
 #include <limits>
+#include <map>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -300,13 +302,18 @@ JNIEXPORT void JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_Hosh
 }
 
 JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidicts_HoshidictsNative_importDictionary(
-    JNIEnv* env, jobject, jbyteArray zip_path, jbyteArray output_dir, jboolean low_ram) {
+    JNIEnv* env, jobject, jbyteArray zip_path, jbyteArray output_dir, jboolean low_ram, jbyteArray headword_marks) {
   try {
     const std::string archive = to_string(env, zip_path);
     const std::filesystem::path output = to_string(env, output_dir);
+    std::map<std::string, screenlate_language::HeadwordMarks> marks;
+    const std::string marks_json = to_string(env, headword_marks);
+    if (auto error = glz::read_json(marks, marks_json)) {
+      throw std::runtime_error("headword marks: " + glz::format_error(error, marks_json));
+    }
     // Form-of rows go into our own table; hoshidicts imports the archive without them.
     const std::string split_path = (output / kSplitArchive).string();
-    screenlate_language::ArchiveSplit split = screenlate_language::split_form_of(archive, split_path);
+    screenlate_language::ArchiveSplit split = screenlate_language::split_form_of(archive, split_path, marks);
     ImportResult result = dictionary_importer::import(split.written ? split_path : archive, output.string(),
                                                       low_ram == JNI_TRUE);
     std::error_code error;

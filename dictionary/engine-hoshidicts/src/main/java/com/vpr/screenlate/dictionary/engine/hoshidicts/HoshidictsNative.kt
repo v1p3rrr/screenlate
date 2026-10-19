@@ -15,7 +15,13 @@ internal object HoshidictsNative {
 
     external fun destroy(handle: Long)
 
-    external fun importDictionary(zipPath: ByteArray, outputDir: ByteArray, lowRam: Boolean): ByteArray
+    /** [headwordMarks]: JSON of `{code: {marks, bases}}`, the languages' `LanguageSupport.headwordMarks`. */
+    external fun importDictionary(
+        zipPath: ByteArray,
+        outputDir: ByteArray,
+        lowRam: Boolean,
+        headwordMarks: ByteArray,
+    ): ByteArray
 
     external fun load(
         handle: Long,

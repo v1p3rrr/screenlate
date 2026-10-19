@@ -2,11 +2,34 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
+#include <map>
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include "form_of_table.hpp"
 
 namespace screenlate_language {
+
+// Combining marks that the words of a language's form-of rows carry and running text leaves out (stress marks), and
+// the letters, lowercase, they are dropped after; both as UTF-8 text.
+struct HeadwordMarks {
+  std::string marks;
+  std::string bases;
+};
+
+class MarkStripper {
+ public:
+  explicit MarkStripper(const HeadwordMarks& marks);
+
+  // [text] without the marks that follow one of the bases, composed again (NFC); empty when none is dropped.
+  std::string strip(std::string_view text) const;
+
+ private:
+  std::vector<int32_t> marks_;
+  std::vector<int32_t> bases_;
+};
 
 struct ArchiveSplit {
   // Whether [output] holds the archive to import instead of the original: one without the form-of rows.
@@ -21,7 +44,10 @@ struct ArchiveSplit {
 // Reads the term banks of the archive at [archive]; when they hold form-of items, writes an archive without them to
 // [output] and returns them in the table. Only dictionaries whose index names a source language other than Japanese are
 // split: Japanese lookup runs in hoshidicts, which keeps such rows, and a dictionary without a language serves it too.
-// Archives this cannot read are left to hoshidicts as well.
-ArchiveSplit split_form_of(const std::string& archive, const std::string& output);
+// Archives this cannot read are left to hoshidicts as well. Where [marks] has the source language, a form that carries
+// them is also found without them, and the lemmas it names are stored without them (dictionaries write headwords
+// unmarked: Wiktionary's Russian forms name почти́ть for почтить).
+ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
+                           const std::map<std::string, HeadwordMarks>& marks);
 
 }  // namespace screenlate_language

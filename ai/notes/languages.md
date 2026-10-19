@@ -748,6 +748,14 @@ threshold, 511 words into en at most):
 
 - Belarusian form headwords with stress marks: index headwords without U+0301 (and U+0300) at import as well, for be,
   uk and sh (sh also U+030F, U+0311, U+0304, U+0302 on vowels and r), so plain text finds them.
+  Built on `languages/main` 2026-10-19 (`LanguageSupport.headwordMarks`, `MarkStripper` in `archive_split.cpp`). The
+  scan of the archives found the lemmas as well: form-of items name a stressed lemma that no headword spells
+  (wty ru-en: 376,101 items, почти → почти́ть; 363,544 of them name a headword once the marks go, 11,514 another form,
+  1,043 nothing; uk-en 21,689 of 29,039; sh-en 1,531 of 1,677; be-en 1,900 of 1,981). So Russian gets the rule too,
+  for lemmas: before it those items led nowhere. Stored lemmas lose the marks; forms keep the stressed key beside the
+  plain one. Marks go only after vowels (and r for sh): Belarusian Łacinka ć ś ń ź and Serbo-Croatian ć carry the
+  same acute in decomposed form. Only 15 sh main headwords are marked (the letters ȁ ȅ … and "Ciudad de México").
+  Installed dictionaries change only when imported again.
 - Serbo-Croatian `Cyrillic` form rows: silent and dropped (`ignoredFormTags`), the Cyrillic entries exist on their own.
 - Baybayin and Jawi alt-of rows: the target (ᜊᜐ, باچ) is itself only a form row back to the Latin word, so following
   it brings nothing new; drop the tags `Baybayin` and `Jawi` (the grammar line already shows the spelling).

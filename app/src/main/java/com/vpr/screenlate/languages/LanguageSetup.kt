@@ -7,9 +7,16 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 
 /**
  * A catalog entry on the download screen; an [installed] one stays ticked and is not downloaded again. [requires] are
- * the models it reads only together with (the Paddle detector), downloaded with it when missing and not listed.
+ * the models it reads only together with (the Paddle detector), downloaded with it when missing and not listed. An
+ * [ownEdition] is a dictionary of the language's own Wiktionary edition listed although the language is not among the
+ * chosen gloss languages; it is not ticked by default.
  */
-data class SetupItem(val entry: CatalogEntry, val installed: Boolean, val requires: List<SetupItem> = emptyList()) {
+data class SetupItem(
+    val entry: CatalogEntry,
+    val installed: Boolean,
+    val requires: List<SetupItem> = emptyList(),
+    val ownEdition: Boolean = false,
+) {
     /** What ticking it downloads: the entry and the missing models it requires. */
     val downloadBytes: Long get() = entry.downloadBytes + requires.filterNot { it.installed }.sumOf { it.entry.downloadBytes }
 }
@@ -29,10 +36,10 @@ data class SetupCategory(
 
     /**
      * Installed and fixed items always; the others as the user set them ([choices]) or as the catalog recommends,
-     * except beside ML Kit.
+     * except beside ML Kit and for an [SetupItem.ownEdition].
      */
     fun ticked(item: SetupItem, choices: Map<String, Boolean>): Boolean =
-        item.installed || fixed || (choices[item.entry.id] ?: (item.entry.recommended && !builtIn))
+        item.installed || fixed || (choices[item.entry.id] ?: (item.entry.recommended && !builtIn && !item.ownEdition))
 }
 
 /** Archive bytes to download, bytes after import, and the space the downloads need on the way. */
@@ -64,9 +71,10 @@ internal fun glossChoices(
     .toList()
 
 /**
- * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them,
- * and those without a gloss language (frequency, transcription, recognition models). Categories go in their declared
- * order, a mandatory one even when empty; within one, in the order of [glosses], the recommended first. A model counts
+ * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them or
+ * into [language] itself (its own Wiktionary edition, after the others), and those without a gloss language
+ * (frequency, transcription, recognition models). Categories go in their declared order, a mandatory one even when
+ * empty; within one, in the order of [glosses], the recommended first. A model counts
  * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
  * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn].
  */
@@ -78,7 +86,9 @@ internal fun setupCategories(
     mlKitReads: Boolean = false,
     modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
-    val entries = catalog.entries.filter { it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses) }
+    val entries = catalog.entries.filter {
+        it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == language)
+    }
     val mandatory = catalog.mandatory(language)
     val required = catalog.entries.flatMapTo(hashSetOf()) { it.requires }
     fun requiredItems(entry: CatalogEntry) = entry.requires.mapNotNull { id ->
@@ -88,14 +98,16 @@ internal fun setupCategories(
     return CatalogCategory.entries.mapNotNull { category ->
         val items = entries.filter { it.category == category && !(it.isModel && it.model in required) }
             .sortedWith(
-                compareBy<CatalogEntry> { entry -> entry.targetLanguage?.let(glosses::indexOf) ?: glosses.size }
+                compareBy<CatalogEntry> { entry ->
+                    entry.targetLanguage?.let(glosses::indexOf)?.takeIf { it >= 0 } ?: glosses.size
+                }
                     .thenBy { !it.recommended },
             )
             .map { entry ->
                 if (entry.isModel) {
                     SetupItem(entry, modelInstalled(entry), requiredItems(entry))
                 } else {
-                    SetupItem(entry, installed.any(entry::matches))
+                    SetupItem(entry, installed.any(entry::matches), ownEdition = entry.targetLanguage == language && language !in glosses)
                 }
             }
         SetupCategory(category, items, category in mandatory, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)

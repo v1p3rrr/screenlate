@@ -1,0 +1,1950 @@
+{
+  "dict/all/be/wty-be-ipa.zip": {
+    "size": 202048,
+    "words": 14335
+  },
+  "dict/all/cs/wty-cs-ipa.zip": {
+    "size": 1727145,
+    "words": 122390
+  },
+  "dict/all/el/wty-el-ipa.zip": {
+    "size": 984101,
+    "words": 59429
+  },
+  "dict/all/en/wty-en-ipa.zip": {
+    "size": 3777718,
+    "words": 159380
+  },
+  "dict/all/id/wty-id-ipa.zip": {
+    "size": 471039,
+    "words": 25374
+  },
+  "dict/all/it/wty-it-ipa.zip": {
+    "size": 7955583,
+    "words": 759906
+  },
+  "dict/all/ja/wty-ja-ipa.zip": {
+    "size": 1701130,
+    "words": 84463
+  },
+  "dict/all/ko/wty-ko-ipa.zip": {
+    "size": 1384065,
+    "words": 89428
+  },
+  "dict/all/lv/wty-lv-ipa.zip": {
+    "size": 70369,
+    "words": 4801
+  },
+  "dict/all/ms/wty-ms-ipa.zip": {
+    "size": 223548,
+    "words": 9047
+  },
+  "dict/all/nl/wty-nl-ipa.zip": {
+    "size": 2113890,
+    "words": 134383
+  },
+  "dict/all/pl/wty-pl-ipa.zip": {
+    "size": 3521911,
+    "words": 201969
+  },
+  "dict/all/pt/wty-pt-ipa.zip": {
+    "size": 7322012,
+    "words": 344315
+  },
+  "dict/all/sh/wty-sh-ipa.zip": {
+    "size": 667859,
+    "words": 51444
+  },
+  "dict/all/tl/wty-tl-ipa.zip": {
+    "size": 737427,
+    "words": 31788
+  },
+  "dict/all/tr/wty-tr-ipa.zip": {
+    "size": 484283,
+    "words": 28604
+  },
+  "dict/all/uk/wty-uk-ipa.zip": {
+    "size": 924760,
+    "words": 66232
+  },
+  "dict/all/vi/wty-vi-ipa.zip": {
+    "size": 2195331,
+    "words": 51099
+  },
+  "dict/be/de/wty-be-de.zip": {
+    "size": 192314,
+    "words": 922
+  },
+  "dict/be/en/wty-be-en.zip": {
+    "size": 1383910,
+    "words": 5594
+  },
+  "dict/be/fr/wty-be-fr.zip": {
+    "size": 80579,
+    "words": 1475
+  },
+  "dict/be/it/wty-be-it.zip": {
+    "size": 11190,
+    "words": 86
+  },
+  "dict/be/ja/wty-be-ja.zip": {
+    "size": 46165,
+    "words": 395
+  },
+  "dict/be/ko/wty-be-ko.zip": {
+    "size": 118719,
+    "words": 2676
+  },
+  "dict/be/pl/wty-be-pl.zip": {
+    "size": 1234590,
+    "words": 20778
+  },
+  "dict/be/pt/wty-be-pt.zip": {
+    "size": 30738,
+    "words": 553
+  },
+  "dict/be/ru/wty-be-ru.zip": {
+    "size": 1297776,
+    "words": 23316
+  },
+  "dict/be/tr/wty-be-tr.zip": {
+    "size": 36612,
+    "words": 731
+  },
+  "dict/be/vi/wty-be-vi.zip": {
+    "size": 17954,
+    "words": 133
+  },
+  "dict/be/zh/wty-be-zh.zip": {
+    "size": 140255,
+    "words": 1377
+  },
+  "dict/cs/de/wty-cs-de-gloss.zip": {
+    "size": 601363,
+    "words": 20933
+  },
+  "dict/cs/de/wty-cs-de.zip": {
+    "size": 2496130,
+    "words": 9207
+  },
+  "dict/cs/en/wty-cs-en-gloss.zip": {
+    "size": 714358,
+    "words": 23559
+  },
+  "dict/cs/en/wty-cs-en.zip": {
+    "size": 7595534,
+    "words": 47491
+  },
+  "dict/cs/es/wty-cs-es-gloss.zip": {
+    "size": 166371,
+    "words": 6210
+  },
+  "dict/cs/es/wty-cs-es.zip": {
+    "size": 41896,
+    "words": 698
+  },
+  "dict/cs/fr/wty-cs-fr-gloss.zip": {
+    "size": 522766,
+    "words": 17938
+  },
+  "dict/cs/fr/wty-cs-fr.zip": {
+    "size": 5584551,
+    "words": 25678
+  },
+  "dict/cs/it/wty-cs-it-gloss.zip": {
+    "size": 218803,
+    "words": 8388
+  },
+  "dict/cs/it/wty-cs-it.zip": {
+    "size": 57881,
+    "words": 1079
+  },
+  "dict/cs/ja/wty-cs-ja-gloss.zip": {
+    "size": 82653,
+    "words": 2301
+  },
+  "dict/cs/ja/wty-cs-ja.zip": {
+    "size": 123266,
+    "words": 2835
+  },
+  "dict/cs/ko/wty-cs-ko-gloss.zip": {
+    "size": 36058,
+    "words": 912
+  },
+  "dict/cs/ko/wty-cs-ko.zip": {
+    "size": 83155,
+    "words": 2239
+  },
+  "dict/cs/pl/wty-cs-pl-gloss.zip": {
+    "size": 324828,
+    "words": 12120
+  },
+  "dict/cs/pl/wty-cs-pl.zip": {
+    "size": 1595489,
+    "words": 24332
+  },
+  "dict/cs/pt/wty-cs-pt-gloss.zip": {
+    "size": 58592,
+    "words": 1916
+  },
+  "dict/cs/pt/wty-cs-pt.zip": {
+    "size": 91643,
+    "words": 1523
+  },
+  "dict/cs/ru/wty-cs-ru-gloss.zip": {
+    "size": 332140,
+    "words": 11035
+  },
+  "dict/cs/ru/wty-cs-ru.zip": {
+    "size": 974825,
+    "words": 15143
+  },
+  "dict/cs/tr/wty-cs-tr-gloss.zip": {
+    "size": 36576,
+    "words": 1097
+  },
+  "dict/cs/tr/wty-cs-tr.zip": {
+    "size": 183079,
+    "words": 7992
+  },
+  "dict/cs/vi/wty-cs-vi-gloss.zip": {
+    "size": 21514,
+    "words": 483
+  },
+  "dict/cs/vi/wty-cs-vi.zip": {
+    "size": 28541,
+    "words": 280
+  },
+  "dict/cs/zh/wty-cs-zh-gloss.zip": {
+    "size": 30996,
+    "words": 784
+  },
+  "dict/cs/zh/wty-cs-zh.zip": {
+    "size": 623019,
+    "words": 12999
+  },
+  "dict/de/en/wty-de-en-gloss.zip": {
+    "size": 4269002,
+    "words": 79575
+  },
+  "dict/de/es/wty-de-es-gloss.zip": {
+    "size": 2120245,
+    "words": 38878
+  },
+  "dict/de/es/wty-de-es.zip": {
+    "size": 227984,
+    "words": 3768
+  },
+  "dict/de/fr/wty-de-fr-gloss.zip": {
+    "size": 3480698,
+    "words": 63258
+  },
+  "dict/de/it/wty-de-it-gloss.zip": {
+    "size": 1951216,
+    "words": 36207
+  },
+  "dict/de/it/wty-de-it.zip": {
+    "size": 524586,
+    "words": 10556
+  },
+  "dict/de/ja/wty-de-ja-gloss.zip": {
+    "size": 452050,
+    "words": 8254
+  },
+  "dict/de/ja/wty-de-ja.zip": {
+    "size": 640877,
+    "words": 8553
+  },
+  "dict/de/ko/wty-de-ko-gloss.zip": {
+    "size": 164974,
+    "words": 3322
+  },
+  "dict/de/ko/wty-de-ko.zip": {
+    "size": 236675,
+    "words": 4793
+  },
+  "dict/de/pl/wty-de-pl-gloss.zip": {
+    "size": 1351347,
+    "words": 24698
+  },
+  "dict/de/pl/wty-de-pl.zip": {
+    "size": 2527094,
+    "words": 44608
+  },
+  "dict/de/pt/wty-de-pt-gloss.zip": {
+    "size": 1164041,
+    "words": 22283
+  },
+  "dict/de/pt/wty-de-pt.zip": {
+    "size": 277076,
+    "words": 4425
+  },
+  "dict/de/ru/wty-de-ru-gloss.zip": {
+    "size": 1695029,
+    "words": 29582
+  },
+  "dict/de/ru/wty-de-ru.zip": {
+    "size": 5092553,
+    "words": 83779
+  },
+  "dict/de/tr/wty-de-tr-gloss.zip": {
+    "size": 919975,
+    "words": 15999
+  },
+  "dict/de/tr/wty-de-tr.zip": {
+    "size": 1024429,
+    "words": 39090
+  },
+  "dict/de/vi/wty-de-vi-gloss.zip": {
+    "size": 158174,
+    "words": 3025
+  },
+  "dict/de/vi/wty-de-vi.zip": {
+    "size": 67150,
+    "words": 586
+  },
+  "dict/de/zh/wty-de-zh-gloss.zip": {
+    "size": 228049,
+    "words": 4315
+  },
+  "dict/de/zh/wty-de-zh.zip": {
+    "size": 5680493,
+    "words": 88623
+  },
+  "dict/el/de/wty-el-de-gloss.zip": {
+    "size": 355342,
+    "words": 16628
+  },
+  "dict/el/de/wty-el-de.zip": {
+    "size": 54242,
+    "words": 242
+  },
+  "dict/el/en/wty-el-en-gloss.zip": {
+    "size": 785649,
+    "words": 42191
+  },
+  "dict/el/en/wty-el-en.zip": {
+    "size": 6048036,
+    "words": 29712
+  },
+  "dict/el/es/wty-el-es-gloss.zip": {
+    "size": 127399,
+    "words": 6885
+  },
+  "dict/el/es/wty-el-es.zip": {
+    "size": 44423,
+    "words": 487
+  },
+  "dict/el/fr/wty-el-fr-gloss.zip": {
+    "size": 591971,
+    "words": 32577
+  },
+  "dict/el/fr/wty-el-fr.zip": {
+    "size": 848029,
+    "words": 8911
+  },
+  "dict/el/it/wty-el-it-gloss.zip": {
+    "size": 114317,
+    "words": 6400
+  },
+  "dict/el/it/wty-el-it.zip": {
+    "size": 42708,
+    "words": 950
+  },
+  "dict/el/ja/wty-el-ja-gloss.zip": {
+    "size": 49309,
+    "words": 2198
+  },
+  "dict/el/ja/wty-el-ja.zip": {
+    "size": 87958,
+    "words": 1259
+  },
+  "dict/el/ko/wty-el-ko-gloss.zip": {
+    "size": 30261,
+    "words": 1246
+  },
+  "dict/el/ko/wty-el-ko.zip": {
+    "size": 36180,
+    "words": 771
+  },
+  "dict/el/pl/wty-el-pl-gloss.zip": {
+    "size": 125867,
+    "words": 6528
+  },
+  "dict/el/pl/wty-el-pl.zip": {
+    "size": 1124133,
+    "words": 12055
+  },
+  "dict/el/pt/wty-el-pt-gloss.zip": {
+    "size": 73216,
+    "words": 3881
+  },
+  "dict/el/pt/wty-el-pt.zip": {
+    "size": 74759,
+    "words": 1324
+  },
+  "dict/el/ru/wty-el-ru-gloss.zip": {
+    "size": 110772,
+    "words": 5882
+  },
+  "dict/el/ru/wty-el-ru.zip": {
+    "size": 781018,
+    "words": 10032
+  },
+  "dict/el/tr/wty-el-tr-gloss.zip": {
+    "size": 73652,
+    "words": 3753
+  },
+  "dict/el/tr/wty-el-tr.zip": {
+    "size": 6258673,
+    "words": 216603
+  },
+  "dict/el/vi/wty-el-vi-gloss.zip": {
+    "size": 15551,
+    "words": 349
+  },
+  "dict/el/vi/wty-el-vi.zip": {
+    "size": 30537,
+    "words": 176
+  },
+  "dict/el/zh/wty-el-zh-gloss.zip": {
+    "size": 40294,
+    "words": 1719
+  },
+  "dict/el/zh/wty-el-zh.zip": {
+    "size": 442768,
+    "words": 4820
+  },
+  "dict/en/de/wty-en-de-gloss.zip": {
+    "size": 3325393,
+    "words": 67546
+  },
+  "dict/en/de/wty-en-de.zip": {
+    "size": 2035968,
+    "words": 12587
+  },
+  "dict/en/es/wty-en-es-gloss.zip": {
+    "size": 2896357,
+    "words": 62897
+  },
+  "dict/en/es/wty-en-es.zip": {
+    "size": 1637346,
+    "words": 16225
+  },
+  "dict/en/fr/wty-en-fr-gloss.zip": {
+    "size": 3000666,
+    "words": 71772
+  },
+  "dict/en/it/wty-en-it-gloss.zip": {
+    "size": 2144623,
+    "words": 51221
+  },
+  "dict/en/it/wty-en-it.zip": {
+    "size": 1424484,
+    "words": 23685
+  },
+  "dict/en/ja/wty-en-ja-gloss.zip": {
+    "size": 1749756,
+    "words": 37350
+  },
+  "dict/en/ja/wty-en-ja.zip": {
+    "size": 4402478,
+    "words": 57147
+  },
+  "dict/en/ko/wty-en-ko-gloss.zip": {
+    "size": 1126763,
+    "words": 26177
+  },
+  "dict/en/ko/wty-en-ko.zip": {
+    "size": 1172621,
+    "words": 15423
+  },
+  "dict/en/pl/wty-en-pl-gloss.zip": {
+    "size": 2914587,
+    "words": 65602
+  },
+  "dict/en/pl/wty-en-pl.zip": {
+    "size": 5029748,
+    "words": 81396
+  },
+  "dict/en/pt/wty-en-pt-gloss.zip": {
+    "size": 2337659,
+    "words": 53577
+  },
+  "dict/en/pt/wty-en-pt.zip": {
+    "size": 1015504,
+    "words": 12829
+  },
+  "dict/en/ru/wty-en-ru-gloss.zip": {
+    "size": 3281663,
+    "words": 59074
+  },
+  "dict/en/ru/wty-en-ru.zip": {
+    "size": 5036705,
+    "words": 59271
+  },
+  "dict/en/tr/wty-en-tr-gloss.zip": {
+    "size": 1160394,
+    "words": 26958
+  },
+  "dict/en/tr/wty-en-tr.zip": {
+    "size": 2309025,
+    "words": 75896
+  },
+  "dict/en/vi/wty-en-vi-gloss.zip": {
+    "size": 732713,
+    "words": 16772
+  },
+  "dict/en/vi/wty-en-vi.zip": {
+    "size": 6064029,
+    "words": 107992
+  },
+  "dict/en/zh/wty-en-zh-gloss.zip": {
+    "size": 104302,
+    "words": 1553
+  },
+  "dict/en/zh/wty-en-zh.zip": {
+    "size": 5509523,
+    "words": 70849
+  },
+  "dict/es/de/wty-es-de-gloss.zip": {
+    "size": 191278,
+    "words": 11811
+  },
+  "dict/es/de/wty-es-de.zip": {
+    "size": 275956,
+    "words": 2769
+  },
+  "dict/es/en/wty-es-en-gloss.zip": {
+    "size": 323225,
+    "words": 22813
+  },
+  "dict/es/fr/wty-es-fr-gloss.zip": {
+    "size": 226958,
+    "words": 16552
+  },
+  "dict/es/fr/wty-es-fr.zip": {
+    "size": 6472613,
+    "words": 33087
+  },
+  "dict/es/it/wty-es-it-gloss.zip": {
+    "size": 139669,
+    "words": 10284
+  },
+  "dict/es/it/wty-es-it.zip": {
+    "size": 231463,
+    "words": 5481
+  },
+  "dict/es/ja/wty-es-ja-gloss.zip": {
+    "size": 64864,
+    "words": 3154
+  },
+  "dict/es/ja/wty-es-ja.zip": {
+    "size": 560949,
+    "words": 12883
+  },
+  "dict/es/ko/wty-es-ko-gloss.zip": {
+    "size": 28750,
+    "words": 1271
+  },
+  "dict/es/ko/wty-es-ko.zip": {
+    "size": 254841,
+    "words": 5015
+  },
+  "dict/es/pl/wty-es-pl-gloss.zip": {
+    "size": 81106,
+    "words": 4980
+  },
+  "dict/es/pl/wty-es-pl.zip": {
+    "size": 2037242,
+    "words": 22141
+  },
+  "dict/es/pt/wty-es-pt-gloss.zip": {
+    "size": 128096,
+    "words": 9650
+  },
+  "dict/es/pt/wty-es-pt.zip": {
+    "size": 408888,
+    "words": 8429
+  },
+  "dict/es/ru/wty-es-ru-gloss.zip": {
+    "size": 70338,
+    "words": 3691
+  },
+  "dict/es/ru/wty-es-ru.zip": {
+    "size": 1052536,
+    "words": 15667
+  },
+  "dict/es/tr/wty-es-tr-gloss.zip": {
+    "size": 33422,
+    "words": 1855
+  },
+  "dict/es/tr/wty-es-tr.zip": {
+    "size": 165810,
+    "words": 6273
+  },
+  "dict/es/vi/wty-es-vi-gloss.zip": {
+    "size": 20901,
+    "words": 838
+  },
+  "dict/es/vi/wty-es-vi.zip": {
+    "size": 108330,
+    "words": 654
+  },
+  "dict/es/zh/wty-es-zh-gloss.zip": {
+    "size": 32777,
+    "words": 1476
+  },
+  "dict/es/zh/wty-es-zh.zip": {
+    "size": 3407574,
+    "words": 28801
+  },
+  "dict/fr/de/wty-fr-de-gloss.zip": {
+    "size": 1332566,
+    "words": 49379
+  },
+  "dict/fr/de/wty-fr-de.zip": {
+    "size": 880553,
+    "words": 10875
+  },
+  "dict/fr/en/wty-fr-en-gloss.zip": {
+    "size": 2623612,
+    "words": 124306
+  },
+  "dict/fr/es/wty-fr-es-gloss.zip": {
+    "size": 1154713,
+    "words": 54537
+  },
+  "dict/fr/es/wty-fr-es.zip": {
+    "size": 493280,
+    "words": 7070
+  },
+  "dict/fr/it/wty-fr-it-gloss.zip": {
+    "size": 1385097,
+    "words": 69684
+  },
+  "dict/fr/it/wty-fr-it.zip": {
+    "size": 569474,
+    "words": 6597
+  },
+  "dict/fr/ja/wty-fr-ja-gloss.zip": {
+    "size": 426137,
+    "words": 17039
+  },
+  "dict/fr/ja/wty-fr-ja.zip": {
+    "size": 905213,
+    "words": 16906
+  },
+  "dict/fr/ko/wty-fr-ko-gloss.zip": {
+    "size": 200889,
+    "words": 8217
+  },
+  "dict/fr/ko/wty-fr-ko.zip": {
+    "size": 283492,
+    "words": 5713
+  },
+  "dict/fr/pl/wty-fr-pl-gloss.zip": {
+    "size": 506267,
+    "words": 21796
+  },
+  "dict/fr/pl/wty-fr-pl.zip": {
+    "size": 1412747,
+    "words": 26367
+  },
+  "dict/fr/pt/wty-fr-pt-gloss.zip": {
+    "size": 680106,
+    "words": 27080
+  },
+  "dict/fr/pt/wty-fr-pt.zip": {
+    "size": 279266,
+    "words": 4655
+  },
+  "dict/fr/ru/wty-fr-ru-gloss.zip": {
+    "size": 664197,
+    "words": 25577
+  },
+  "dict/fr/ru/wty-fr-ru.zip": {
+    "size": 1732208,
+    "words": 20817
+  },
+  "dict/fr/tr/wty-fr-tr-gloss.zip": {
+    "size": 205308,
+    "words": 8762
+  },
+  "dict/fr/tr/wty-fr-tr.zip": {
+    "size": 3334097,
+    "words": 214723
+  },
+  "dict/fr/vi/wty-fr-vi-gloss.zip": {
+    "size": 125083,
+    "words": 4908
+  },
+  "dict/fr/vi/wty-fr-vi.zip": {
+    "size": 3261033,
+    "words": 43949
+  },
+  "dict/fr/zh/wty-fr-zh-gloss.zip": {
+    "size": 282525,
+    "words": 10614
+  },
+  "dict/fr/zh/wty-fr-zh.zip": {
+    "size": 3038870,
+    "words": 27658
+  },
+  "dict/id/de/wty-id-de.zip": {
+    "size": 24548,
+    "words": 234
+  },
+  "dict/id/en/wty-id-en.zip": {
+    "size": 3933885,
+    "words": 31258
+  },
+  "dict/id/es/wty-id-es.zip": {
+    "size": 15906,
+    "words": 216
+  },
+  "dict/id/fr/wty-id-fr.zip": {
+    "size": 678226,
+    "words": 13881
+  },
+  "dict/id/id/wty-id-id.zip": {
+    "size": 2108027,
+    "words": 42650
+  },
+  "dict/id/it/wty-id-it.zip": {
+    "size": 12053,
+    "words": 135
+  },
+  "dict/id/ja/wty-id-ja.zip": {
+    "size": 88781,
+    "words": 1136
+  },
+  "dict/id/ko/wty-id-ko.zip": {
+    "size": 51145,
+    "words": 1164
+  },
+  "dict/id/pl/wty-id-pl.zip": {
+    "size": 67211,
+    "words": 1703
+  },
+  "dict/id/pt/wty-id-pt.zip": {
+    "size": 46996,
+    "words": 1053
+  },
+  "dict/id/ru/wty-id-ru.zip": {
+    "size": 221791,
+    "words": 4374
+  },
+  "dict/id/tr/wty-id-tr.zip": {
+    "size": 31027,
+    "words": 683
+  },
+  "dict/id/vi/wty-id-vi.zip": {
+    "size": 17930,
+    "words": 100
+  },
+  "dict/id/zh/wty-id-zh.zip": {
+    "size": 221587,
+    "words": 3102
+  },
+  "dict/it/de/wty-it-de-gloss.zip": {
+    "size": 264483,
+    "words": 8684
+  },
+  "dict/it/de/wty-it-de.zip": {
+    "size": 754754,
+    "words": 11222
+  },
+  "dict/it/en/wty-it-en-gloss.zip": {
+    "size": 1068320,
+    "words": 33541
+  },
+  "dict/it/es/wty-it-es-gloss.zip": {
+    "size": 186445,
+    "words": 7056
+  },
+  "dict/it/es/wty-it-es.zip": {
+    "size": 299316,
+    "words": 5527
+  },
+  "dict/it/fr/wty-it-fr-gloss.zip": {
+    "size": 219452,
+    "words": 7966
+  },
+  "dict/it/ja/wty-it-ja-gloss.zip": {
+    "size": 38352,
+    "words": 924
+  },
+  "dict/it/ja/wty-it-ja.zip": {
+    "size": 707305,
+    "words": 16228
+  },
+  "dict/it/ko/wty-it-ko-gloss.zip": {
+    "size": 21252,
+    "words": 426
+  },
+  "dict/it/ko/wty-it-ko.zip": {
+    "size": 205766,
+    "words": 4959
+  },
+  "dict/it/pl/wty-it-pl-gloss.zip": {
+    "size": 46325,
+    "words": 1477
+  },
+  "dict/it/pl/wty-it-pl.zip": {
+    "size": 2116129,
+    "words": 33615
+  },
+  "dict/it/pt/wty-it-pt-gloss.zip": {
+    "size": 107728,
+    "words": 3352
+  },
+  "dict/it/pt/wty-it-pt.zip": {
+    "size": 200199,
+    "words": 3961
+  },
+  "dict/it/ru/wty-it-ru-gloss.zip": {
+    "size": 65735,
+    "words": 1947
+  },
+  "dict/it/ru/wty-it-ru.zip": {
+    "size": 916968,
+    "words": 15726
+  },
+  "dict/it/tr/wty-it-tr-gloss.zip": {
+    "size": 26393,
+    "words": 784
+  },
+  "dict/it/tr/wty-it-tr.zip": {
+    "size": 2759813,
+    "words": 153006
+  },
+  "dict/it/vi/wty-it-vi-gloss.zip": {
+    "size": 17563,
+    "words": 299
+  },
+  "dict/it/vi/wty-it-vi.zip": {
+    "size": 34687,
+    "words": 282
+  },
+  "dict/it/zh/wty-it-zh-gloss.zip": {
+    "size": 31094,
+    "words": 843
+  },
+  "dict/it/zh/wty-it-zh.zip": {
+    "size": 2626881,
+    "words": 25106
+  },
+  "dict/ja/de/wty-ja-de-gloss.zip": {
+    "size": 159339,
+    "words": 5883
+  },
+  "dict/ja/de/wty-ja-de.zip": {
+    "size": 39844,
+    "words": 379
+  },
+  "dict/ja/en/wty-ja-en-gloss.zip": {
+    "size": 386477,
+    "words": 15634
+  },
+  "dict/ja/es/wty-ja-es-gloss.zip": {
+    "size": 126998,
+    "words": 4706
+  },
+  "dict/ja/es/wty-ja-es.zip": {
+    "size": 95178,
+    "words": 2018
+  },
+  "dict/ja/fr/wty-ja-fr-gloss.zip": {
+    "size": 156113,
+    "words": 6041
+  },
+  "dict/ja/fr/wty-ja-fr.zip": {
+    "size": 2554977,
+    "words": 11384
+  },
+  "dict/ja/it/wty-ja-it-gloss.zip": {
+    "size": 112263,
+    "words": 4395
+  },
+  "dict/ja/it/wty-ja-it.zip": {
+    "size": 169838,
+    "words": 2844
+  },
+  "dict/ja/ko/wty-ja-ko-gloss.zip": {
+    "size": 115755,
+    "words": 4494
+  },
+  "dict/ja/ko/wty-ja-ko.zip": {
+    "size": 776045,
+    "words": 12246
+  },
+  "dict/ja/pl/wty-ja-pl-gloss.zip": {
+    "size": 118580,
+    "words": 4162
+  },
+  "dict/ja/pl/wty-ja-pl.zip": {
+    "size": 401405,
+    "words": 6153
+  },
+  "dict/ja/pt/wty-ja-pt-gloss.zip": {
+    "size": 110707,
+    "words": 4137
+  },
+  "dict/ja/pt/wty-ja-pt.zip": {
+    "size": 370922,
+    "words": 5637
+  },
+  "dict/ja/ru/wty-ja-ru-gloss.zip": {
+    "size": 147225,
+    "words": 4778
+  },
+  "dict/ja/ru/wty-ja-ru.zip": {
+    "size": 693563,
+    "words": 9636
+  },
+  "dict/ja/tr/wty-ja-tr-gloss.zip": {
+    "size": 70251,
+    "words": 2550
+  },
+  "dict/ja/tr/wty-ja-tr.zip": {
+    "size": 214612,
+    "words": 8077
+  },
+  "dict/ja/vi/wty-ja-vi-gloss.zip": {
+    "size": 66842,
+    "words": 2287
+  },
+  "dict/ja/vi/wty-ja-vi.zip": {
+    "size": 314955,
+    "words": 5717
+  },
+  "dict/ja/zh/wty-ja-zh-gloss.zip": {
+    "size": 133610,
+    "words": 5000
+  },
+  "dict/ja/zh/wty-ja-zh.zip": {
+    "size": 6945208,
+    "words": 104692
+  },
+  "dict/ko/de/wty-ko-de-gloss.zip": {
+    "size": 146681,
+    "words": 2958
+  },
+  "dict/ko/de/wty-ko-de.zip": {
+    "size": 40771,
+    "words": 368
+  },
+  "dict/ko/en/wty-ko-en-gloss.zip": {
+    "size": 430364,
+    "words": 8446
+  },
+  "dict/ko/en/wty-ko-en.zip": {
+    "size": 7423546,
+    "words": 35411
+  },
+  "dict/ko/es/wty-ko-es-gloss.zip": {
+    "size": 131993,
+    "words": 2689
+  },
+  "dict/ko/es/wty-ko-es.zip": {
+    "size": 32296,
+    "words": 454
+  },
+  "dict/ko/fr/wty-ko-fr-gloss.zip": {
+    "size": 152316,
+    "words": 3170
+  },
+  "dict/ko/fr/wty-ko-fr.zip": {
+    "size": 1044559,
+    "words": 11229
+  },
+  "dict/ko/it/wty-ko-it-gloss.zip": {
+    "size": 119894,
+    "words": 2489
+  },
+  "dict/ko/it/wty-ko-it.zip": {
+    "size": 43093,
+    "words": 1215
+  },
+  "dict/ko/ja/wty-ko-ja-gloss.zip": {
+    "size": 37039,
+    "words": 605
+  },
+  "dict/ko/ja/wty-ko-ja.zip": {
+    "size": 1258720,
+    "words": 29838
+  },
+  "dict/ko/ko/wty-ko-ko.zip": {
+    "size": 4186344,
+    "words": 68135
+  },
+  "dict/ko/pl/wty-ko-pl-gloss.zip": {
+    "size": 119177,
+    "words": 2421
+  },
+  "dict/ko/pl/wty-ko-pl.zip": {
+    "size": 267334,
+    "words": 4150
+  },
+  "dict/ko/pt/wty-ko-pt-gloss.zip": {
+    "size": 120690,
+    "words": 2514
+  },
+  "dict/ko/pt/wty-ko-pt.zip": {
+    "size": 38351,
+    "words": 853
+  },
+  "dict/ko/ru/wty-ko-ru-gloss.zip": {
+    "size": 184068,
+    "words": 3731
+  },
+  "dict/ko/ru/wty-ko-ru.zip": {
+    "size": 300517,
+    "words": 5376
+  },
+  "dict/ko/tr/wty-ko-tr-gloss.zip": {
+    "size": 102024,
+    "words": 2100
+  },
+  "dict/ko/tr/wty-ko-tr.zip": {
+    "size": 51252,
+    "words": 961
+  },
+  "dict/ko/vi/wty-ko-vi-gloss.zip": {
+    "size": 82428,
+    "words": 1757
+  },
+  "dict/ko/vi/wty-ko-vi.zip": {
+    "size": 60560,
+    "words": 674
+  },
+  "dict/ko/zh/wty-ko-zh-gloss.zip": {
+    "size": 135261,
+    "words": 2664
+  },
+  "dict/ko/zh/wty-ko-zh.zip": {
+    "size": 7286643,
+    "words": 227223
+  },
+  "dict/lv/de/wty-lv-de.zip": {
+    "size": 76461,
+    "words": 862
+  },
+  "dict/lv/en/wty-lv-en.zip": {
+    "size": 4000904,
+    "words": 17157
+  },
+  "dict/lv/es/wty-lv-es.zip": {
+    "size": 16096,
+    "words": 169
+  },
+  "dict/lv/fr/wty-lv-fr.zip": {
+    "size": 460190,
+    "words": 2256
+  },
+  "dict/lv/it/wty-lv-it.zip": {
+    "size": 29730,
+    "words": 566
+  },
+  "dict/lv/ja/wty-lv-ja.zip": {
+    "size": 44619,
+    "words": 785
+  },
+  "dict/lv/ko/wty-lv-ko.zip": {
+    "size": 72712,
+    "words": 2007
+  },
+  "dict/lv/pl/wty-lv-pl.zip": {
+    "size": 225984,
+    "words": 6753
+  },
+  "dict/lv/pt/wty-lv-pt.zip": {
+    "size": 34083,
+    "words": 684
+  },
+  "dict/lv/ru/wty-lv-ru.zip": {
+    "size": 520903,
+    "words": 9284
+  },
+  "dict/lv/tr/wty-lv-tr.zip": {
+    "size": 32134,
+    "words": 604
+  },
+  "dict/lv/vi/wty-lv-vi.zip": {
+    "size": 20324,
+    "words": 152
+  },
+  "dict/lv/zh/wty-lv-zh.zip": {
+    "size": 289762,
+    "words": 3054
+  },
+  "dict/ms/de/wty-ms-de-gloss.zip": {
+    "size": 21017,
+    "words": 409
+  },
+  "dict/ms/en/wty-ms-en-gloss.zip": {
+    "size": 21921,
+    "words": 511
+  },
+  "dict/ms/en/wty-ms-en.zip": {
+    "size": 1696100,
+    "words": 10021
+  },
+  "dict/ms/es/wty-ms-es-gloss.zip": {
+    "size": 19645,
+    "words": 402
+  },
+  "dict/ms/es/wty-ms-es.zip": {
+    "size": 11948,
+    "words": 106
+  },
+  "dict/ms/fr/wty-ms-fr-gloss.zip": {
+    "size": 20108,
+    "words": 422
+  },
+  "dict/ms/fr/wty-ms-fr.zip": {
+    "size": 73119,
+    "words": 1600
+  },
+  "dict/ms/it/wty-ms-it-gloss.zip": {
+    "size": 18086,
+    "words": 364
+  },
+  "dict/ms/ja/wty-ms-ja-gloss.zip": {
+    "size": 20304,
+    "words": 343
+  },
+  "dict/ms/ja/wty-ms-ja.zip": {
+    "size": 73748,
+    "words": 981
+  },
+  "dict/ms/ko/wty-ms-ko-gloss.zip": {
+    "size": 16240,
+    "words": 247
+  },
+  "dict/ms/ko/wty-ms-ko.zip": {
+    "size": 39940,
+    "words": 765
+  },
+  "dict/ms/ms/wty-ms-ms.zip": {
+    "size": 839079,
+    "words": 10452
+  },
+  "dict/ms/pl/wty-ms-pl-gloss.zip": {
+    "size": 17106,
+    "words": 324
+  },
+  "dict/ms/pl/wty-ms-pl.zip": {
+    "size": 34190,
+    "words": 751
+  },
+  "dict/ms/pt/wty-ms-pt-gloss.zip": {
+    "size": 19034,
+    "words": 390
+  },
+  "dict/ms/pt/wty-ms-pt.zip": {
+    "size": 31992,
+    "words": 687
+  },
+  "dict/ms/ru/wty-ms-ru-gloss.zip": {
+    "size": 21961,
+    "words": 383
+  },
+  "dict/ms/ru/wty-ms-ru.zip": {
+    "size": 112115,
+    "words": 2119
+  },
+  "dict/ms/tr/wty-ms-tr-gloss.zip": {
+    "size": 16307,
+    "words": 291
+  },
+  "dict/ms/tr/wty-ms-tr.zip": {
+    "size": 24105,
+    "words": 612
+  },
+  "dict/ms/vi/wty-ms-vi-gloss.zip": {
+    "size": 14614,
+    "words": 204
+  },
+  "dict/ms/vi/wty-ms-vi.zip": {
+    "size": 15373,
+    "words": 140
+  },
+  "dict/ms/zh/wty-ms-zh.zip": {
+    "size": 461230,
+    "words": 14475
+  },
+  "dict/nl/de/wty-nl-de-gloss.zip": {
+    "size": 736719,
+    "words": 21178
+  },
+  "dict/nl/de/wty-nl-de.zip": {
+    "size": 132735,
+    "words": 1017
+  },
+  "dict/nl/en/wty-nl-en-gloss.zip": {
+    "size": 1322205,
+    "words": 39512
+  },
+  "dict/nl/es/wty-nl-es-gloss.zip": {
+    "size": 843486,
+    "words": 28091
+  },
+  "dict/nl/es/wty-nl-es.zip": {
+    "size": 86665,
+    "words": 1792
+  },
+  "dict/nl/fr/wty-nl-fr-gloss.zip": {
+    "size": 697064,
+    "words": 22232
+  },
+  "dict/nl/fr/wty-nl-fr.zip": {
+    "size": 2548116,
+    "words": 30765
+  },
+  "dict/nl/it/wty-nl-it-gloss.zip": {
+    "size": 248660,
+    "words": 7640
+  },
+  "dict/nl/it/wty-nl-it.zip": {
+    "size": 108691,
+    "words": 2895
+  },
+  "dict/nl/ja/wty-nl-ja-gloss.zip": {
+    "size": 105112,
+    "words": 2454
+  },
+  "dict/nl/ja/wty-nl-ja.zip": {
+    "size": 301569,
+    "words": 6006
+  },
+  "dict/nl/ko/wty-nl-ko-gloss.zip": {
+    "size": 56798,
+    "words": 1359
+  },
+  "dict/nl/ko/wty-nl-ko.zip": {
+    "size": 63902,
+    "words": 1566
+  },
+  "dict/nl/pl/wty-nl-pl-gloss.zip": {
+    "size": 202802,
+    "words": 5537
+  },
+  "dict/nl/pl/wty-nl-pl.zip": {
+    "size": 224662,
+    "words": 5463
+  },
+  "dict/nl/pt/wty-nl-pt-gloss.zip": {
+    "size": 158822,
+    "words": 4273
+  },
+  "dict/nl/pt/wty-nl-pt.zip": {
+    "size": 103881,
+    "words": 1885
+  },
+  "dict/nl/ru/wty-nl-ru-gloss.zip": {
+    "size": 157980,
+    "words": 3869
+  },
+  "dict/nl/ru/wty-nl-ru.zip": {
+    "size": 637211,
+    "words": 11486
+  },
+  "dict/nl/tr/wty-nl-tr-gloss.zip": {
+    "size": 94707,
+    "words": 2459
+  },
+  "dict/nl/tr/wty-nl-tr.zip": {
+    "size": 89142,
+    "words": 2478
+  },
+  "dict/nl/vi/wty-nl-vi-gloss.zip": {
+    "size": 51493,
+    "words": 1196
+  },
+  "dict/nl/vi/wty-nl-vi.zip": {
+    "size": 120771,
+    "words": 1079
+  },
+  "dict/nl/zh/wty-nl-zh-gloss.zip": {
+    "size": 68359,
+    "words": 1620
+  },
+  "dict/nl/zh/wty-nl-zh.zip": {
+    "size": 924442,
+    "words": 9720
+  },
+  "dict/pl/de/wty-pl-de-gloss.zip": {
+    "size": 433199,
+    "words": 27695
+  },
+  "dict/pl/de/wty-pl-de.zip": {
+    "size": 1404021,
+    "words": 9845
+  },
+  "dict/pl/en/wty-pl-en-gloss.zip": {
+    "size": 722276,
+    "words": 44096
+  },
+  "dict/pl/es/wty-pl-es-gloss.zip": {
+    "size": 392345,
+    "words": 24634
+  },
+  "dict/pl/es/wty-pl-es.zip": {
+    "size": 90516,
+    "words": 1273
+  },
+  "dict/pl/fr/wty-pl-fr-gloss.zip": {
+    "size": 329375,
+    "words": 22436
+  },
+  "dict/pl/fr/wty-pl-fr.zip": {
+    "size": 1586630,
+    "words": 14025
+  },
+  "dict/pl/it/wty-pl-it-gloss.zip": {
+    "size": 337247,
+    "words": 22693
+  },
+  "dict/pl/it/wty-pl-it.zip": {
+    "size": 84291,
+    "words": 2014
+  },
+  "dict/pl/ja/wty-pl-ja-gloss.zip": {
+    "size": 84764,
+    "words": 4289
+  },
+  "dict/pl/ja/wty-pl-ja.zip": {
+    "size": 319034,
+    "words": 3442
+  },
+  "dict/pl/ko/wty-pl-ko-gloss.zip": {
+    "size": 40382,
+    "words": 2285
+  },
+  "dict/pl/ko/wty-pl-ko.zip": {
+    "size": 109460,
+    "words": 2780
+  },
+  "dict/pl/pt/wty-pl-pt-gloss.zip": {
+    "size": 97116,
+    "words": 6550
+  },
+  "dict/pl/pt/wty-pl-pt.zip": {
+    "size": 132085,
+    "words": 1962
+  },
+  "dict/pl/ru/wty-pl-ru-gloss.zip": {
+    "size": 494793,
+    "words": 29139
+  },
+  "dict/pl/ru/wty-pl-ru.zip": {
+    "size": 1353037,
+    "words": 18764
+  },
+  "dict/pl/tr/wty-pl-tr-gloss.zip": {
+    "size": 72882,
+    "words": 4748
+  },
+  "dict/pl/tr/wty-pl-tr.zip": {
+    "size": 581533,
+    "words": 26173
+  },
+  "dict/pl/vi/wty-pl-vi-gloss.zip": {
+    "size": 25721,
+    "words": 1216
+  },
+  "dict/pl/vi/wty-pl-vi.zip": {
+    "size": 31504,
+    "words": 239
+  },
+  "dict/pl/zh/wty-pl-zh-gloss.zip": {
+    "size": 56804,
+    "words": 3478
+  },
+  "dict/pl/zh/wty-pl-zh.zip": {
+    "size": 999003,
+    "words": 21358
+  },
+  "dict/pt/de/wty-pt-de-gloss.zip": {
+    "size": 229538,
+    "words": 11005
+  },
+  "dict/pt/de/wty-pt-de.zip": {
+    "size": 173455,
+    "words": 830
+  },
+  "dict/pt/en/wty-pt-en-gloss.zip": {
+    "size": 370285,
+    "words": 21401
+  },
+  "dict/pt/es/wty-pt-es-gloss.zip": {
+    "size": 259549,
+    "words": 16362
+  },
+  "dict/pt/es/wty-pt-es.zip": {
+    "size": 357757,
+    "words": 4669
+  },
+  "dict/pt/fr/wty-pt-fr-gloss.zip": {
+    "size": 261119,
+    "words": 15372
+  },
+  "dict/pt/fr/wty-pt-fr.zip": {
+    "size": 5187535,
+    "words": 21793
+  },
+  "dict/pt/it/wty-pt-it-gloss.zip": {
+    "size": 209610,
+    "words": 12879
+  },
+  "dict/pt/it/wty-pt-it.zip": {
+    "size": 72434,
+    "words": 1577
+  },
+  "dict/pt/ja/wty-pt-ja-gloss.zip": {
+    "size": 122710,
+    "words": 5415
+  },
+  "dict/pt/ja/wty-pt-ja.zip": {
+    "size": 505958,
+    "words": 10232
+  },
+  "dict/pt/ko/wty-pt-ko-gloss.zip": {
+    "size": 72714,
+    "words": 3251
+  },
+  "dict/pt/ko/wty-pt-ko.zip": {
+    "size": 86001,
+    "words": 2166
+  },
+  "dict/pt/pl/wty-pt-pl-gloss.zip": {
+    "size": 136171,
+    "words": 6971
+  },
+  "dict/pt/pl/wty-pt-pl.zip": {
+    "size": 430809,
+    "words": 10382
+  },
+  "dict/pt/ru/wty-pt-ru-gloss.zip": {
+    "size": 150364,
+    "words": 6884
+  },
+  "dict/pt/ru/wty-pt-ru.zip": {
+    "size": 706964,
+    "words": 12767
+  },
+  "dict/pt/tr/wty-pt-tr-gloss.zip": {
+    "size": 83979,
+    "words": 4144
+  },
+  "dict/pt/tr/wty-pt-tr.zip": {
+    "size": 67922,
+    "words": 1713
+  },
+  "dict/pt/vi/wty-pt-vi-gloss.zip": {
+    "size": 41969,
+    "words": 1926
+  },
+  "dict/pt/vi/wty-pt-vi.zip": {
+    "size": 38323,
+    "words": 231
+  },
+  "dict/pt/zh/wty-pt-zh-gloss.zip": {
+    "size": 96078,
+    "words": 4210
+  },
+  "dict/pt/zh/wty-pt-zh.zip": {
+    "size": 1929833,
+    "words": 20409
+  },
+  "dict/ru/de/wty-ru-de-gloss.zip": {
+    "size": 831909,
+    "words": 30248
+  },
+  "dict/ru/de/wty-ru-de.zip": {
+    "size": 352340,
+    "words": 1503
+  },
+  "dict/ru/en/wty-ru-en-gloss.zip": {
+    "size": 1468448,
+    "words": 52873
+  },
+  "dict/ru/es/wty-ru-es-gloss.zip": {
+    "size": 655352,
+    "words": 23426
+  },
+  "dict/ru/es/wty-ru-es.zip": {
+    "size": 60071,
+    "words": 809
+  },
+  "dict/ru/fr/wty-ru-fr-gloss.zip": {
+    "size": 935973,
+    "words": 31904
+  },
+  "dict/ru/it/wty-ru-it-gloss.zip": {
+    "size": 560505,
+    "words": 21496
+  },
+  "dict/ru/it/wty-ru-it.zip": {
+    "size": 79937,
+    "words": 1283
+  },
+  "dict/ru/ja/wty-ru-ja-gloss.zip": {
+    "size": 297216,
+    "words": 9001
+  },
+  "dict/ru/ja/wty-ru-ja.zip": {
+    "size": 654962,
+    "words": 9612
+  },
+  "dict/ru/ko/wty-ru-ko-gloss.zip": {
+    "size": 216810,
+    "words": 7648
+  },
+  "dict/ru/ko/wty-ru-ko.zip": {
+    "size": 951654,
+    "words": 17157
+  },
+  "dict/ru/pl/wty-ru-pl-gloss.zip": {
+    "size": 453859,
+    "words": 18490
+  },
+  "dict/ru/pl/wty-ru-pl.zip": {
+    "size": 1566555,
+    "words": 26199
+  },
+  "dict/ru/pt/wty-ru-pt-gloss.zip": {
+    "size": 390266,
+    "words": 14748
+  },
+  "dict/ru/pt/wty-ru-pt.zip": {
+    "size": 199788,
+    "words": 2948
+  },
+  "dict/ru/tr/wty-ru-tr-gloss.zip": {
+    "size": 323650,
+    "words": 11147
+  },
+  "dict/ru/tr/wty-ru-tr.zip": {
+    "size": 631062,
+    "words": 20509
+  },
+  "dict/ru/vi/wty-ru-vi-gloss.zip": {
+    "size": 162874,
+    "words": 4967
+  },
+  "dict/ru/vi/wty-ru-vi.zip": {
+    "size": 2735156,
+    "words": 35416
+  },
+  "dict/ru/zh/wty-ru-zh-gloss.zip": {
+    "size": 274905,
+    "words": 8521
+  },
+  "dict/ru/zh/wty-ru-zh.zip": {
+    "size": 7740607,
+    "words": 97707
+  },
+  "dict/sh/de/wty-sh-de.zip": {
+    "size": 10994,
+    "words": 67
+  },
+  "dict/sh/es/wty-sh-es.zip": {
+    "size": 31050,
+    "words": 489
+  },
+  "dict/sh/fr/wty-sh-fr.zip": {
+    "size": 59474,
+    "words": 1008
+  },
+  "dict/sh/ja/wty-sh-ja.zip": {
+    "size": 152456,
+    "words": 2302
+  },
+  "dict/sh/pt/wty-sh-pt.zip": {
+    "size": 34040,
+    "words": 567
+  },
+  "dict/sh/ru/wty-sh-ru.zip": {
+    "size": 23937,
+    "words": 244
+  },
+  "dict/sh/vi/wty-sh-vi.zip": {
+    "size": 23922,
+    "words": 204
+  },
+  "dict/sh/zh/wty-sh-zh.zip": {
+    "size": 595992,
+    "words": 9280
+  },
+  "dict/tl/de/wty-tl-de.zip": {
+    "size": 34904,
+    "words": 230
+  },
+  "dict/tl/en/wty-tl-en.zip": {
+    "size": 4292012,
+    "words": 27960
+  },
+  "dict/tl/es/wty-tl-es.zip": {
+    "size": 14923,
+    "words": 176
+  },
+  "dict/tl/fr/wty-tl-fr.zip": {
+    "size": 77250,
+    "words": 1899
+  },
+  "dict/tl/ja/wty-tl-ja.zip": {
+    "size": 40107,
+    "words": 535
+  },
+  "dict/tl/ko/wty-tl-ko.zip": {
+    "size": 24914,
+    "words": 510
+  },
+  "dict/tl/pl/wty-tl-pl.zip": {
+    "size": 49701,
+    "words": 1151
+  },
+  "dict/tl/pt/wty-tl-pt.zip": {
+    "size": 32093,
+    "words": 659
+  },
+  "dict/tl/ru/wty-tl-ru.zip": {
+    "size": 103553,
+    "words": 2162
+  },
+  "dict/tl/tr/wty-tl-tr.zip": {
+    "size": 47727,
+    "words": 1898
+  },
+  "dict/tl/vi/wty-tl-vi.zip": {
+    "size": 21568,
+    "words": 190
+  },
+  "dict/tl/zh/wty-tl-zh.zip": {
+    "size": 160015,
+    "words": 1830
+  },
+  "dict/tr/de/wty-tr-de-gloss.zip": {
+    "size": 180837,
+    "words": 8559
+  },
+  "dict/tr/de/wty-tr-de.zip": {
+    "size": 95289,
+    "words": 645
+  },
+  "dict/tr/en/wty-tr-en-gloss.zip": {
+    "size": 272091,
+    "words": 15060
+  },
+  "dict/tr/es/wty-tr-es-gloss.zip": {
+    "size": 79439,
+    "words": 4115
+  },
+  "dict/tr/es/wty-tr-es.zip": {
+    "size": 24961,
+    "words": 448
+  },
+  "dict/tr/fr/wty-tr-fr-gloss.zip": {
+    "size": 146870,
+    "words": 8471
+  },
+  "dict/tr/fr/wty-tr-fr.zip": {
+    "size": 252854,
+    "words": 4336
+  },
+  "dict/tr/it/wty-tr-it-gloss.zip": {
+    "size": 85400,
+    "words": 4906
+  },
+  "dict/tr/it/wty-tr-it.zip": {
+    "size": 28302,
+    "words": 632
+  },
+  "dict/tr/ja/wty-tr-ja-gloss.zip": {
+    "size": 32825,
+    "words": 1043
+  },
+  "dict/tr/ja/wty-tr-ja.zip": {
+    "size": 56579,
+    "words": 979
+  },
+  "dict/tr/ko/wty-tr-ko-gloss.zip": {
+    "size": 24306,
+    "words": 748
+  },
+  "dict/tr/pl/wty-tr-pl-gloss.zip": {
+    "size": 62193,
+    "words": 3064
+  },
+  "dict/tr/pl/wty-tr-pl.zip": {
+    "size": 367343,
+    "words": 8229
+  },
+  "dict/tr/pt/wty-tr-pt-gloss.zip": {
+    "size": 47504,
+    "words": 2151
+  },
+  "dict/tr/pt/wty-tr-pt.zip": {
+    "size": 54449,
+    "words": 1155
+  },
+  "dict/tr/ru/wty-tr-ru-gloss.zip": {
+    "size": 114792,
+    "words": 5120
+  },
+  "dict/tr/ru/wty-tr-ru.zip": {
+    "size": 994425,
+    "words": 24897
+  },
+  "dict/tr/vi/wty-tr-vi-gloss.zip": {
+    "size": 14909,
+    "words": 293
+  },
+  "dict/tr/vi/wty-tr-vi.zip": {
+    "size": 28755,
+    "words": 269
+  },
+  "dict/tr/zh/wty-tr-zh-gloss.zip": {
+    "size": 23911,
+    "words": 751
+  },
+  "dict/tr/zh/wty-tr-zh.zip": {
+    "size": 478135,
+    "words": 5779
+  },
+  "dict/uk/de/wty-uk-de.zip": {
+    "size": 532008,
+    "words": 2370
+  },
+  "dict/uk/es/wty-uk-es.zip": {
+    "size": 18591,
+    "words": 243
+  },
+  "dict/uk/fr/wty-uk-fr.zip": {
+    "size": 2914667,
+    "words": 22572
+  },
+  "dict/uk/it/wty-uk-it.zip": {
+    "size": 20571,
+    "words": 364
+  },
+  "dict/uk/ja/wty-uk-ja.zip": {
+    "size": 145946,
+    "words": 1517
+  },
+  "dict/uk/ko/wty-uk-ko.zip": {
+    "size": 125936,
+    "words": 3090
+  },
+  "dict/uk/pl/wty-uk-pl.zip": {
+    "size": 1842528,
+    "words": 33072
+  },
+  "dict/uk/pt/wty-uk-pt.zip": {
+    "size": 35298,
+    "words": 688
+  },
+  "dict/uk/ru/wty-uk-ru.zip": {
+    "size": 3227282,
+    "words": 36025
+  },
+  "dict/uk/tr/wty-uk-tr.zip": {
+    "size": 307180,
+    "words": 10620
+  },
+  "dict/uk/vi/wty-uk-vi.zip": {
+    "size": 21230,
+    "words": 119
+  },
+  "dict/uk/zh/wty-uk-zh.zip": {
+    "size": 520940,
+    "words": 4888
+  },
+  "dict/vi/de/wty-vi-de-gloss.zip": {
+    "size": 19869,
+    "words": 431
+  },
+  "dict/vi/de/wty-vi-de.zip": {
+    "size": 117922,
+    "words": 977
+  },
+  "dict/vi/en/wty-vi-en-gloss.zip": {
+    "size": 99119,
+    "words": 4327
+  },
+  "dict/vi/en/wty-vi-en.zip": {
+    "size": 4341834,
+    "words": 37657
+  },
+  "dict/vi/es/wty-vi-es-gloss.zip": {
+    "size": 30409,
+    "words": 962
+  },
+  "dict/vi/es/wty-vi-es.zip": {
+    "size": 19295,
+    "words": 320
+  },
+  "dict/vi/fr/wty-vi-fr-gloss.zip": {
+    "size": 34268,
+    "words": 1118
+  },
+  "dict/vi/fr/wty-vi-fr.zip": {
+    "size": 1309974,
+    "words": 15999
+  },
+  "dict/vi/it/wty-vi-it-gloss.zip": {
+    "size": 15715,
+    "words": 302
+  },
+  "dict/vi/it/wty-vi-it.zip": {
+    "size": 14982,
+    "words": 238
+  },
+  "dict/vi/ja/wty-vi-ja-gloss.zip": {
+    "size": 30884,
+    "words": 757
+  },
+  "dict/vi/ja/wty-vi-ja.zip": {
+    "size": 433616,
+    "words": 11978
+  },
+  "dict/vi/ko/wty-vi-ko-gloss.zip": {
+    "size": 18451,
+    "words": 347
+  },
+  "dict/vi/ko/wty-vi-ko.zip": {
+    "size": 288734,
+    "words": 5187
+  },
+  "dict/vi/pl/wty-vi-pl-gloss.zip": {
+    "size": 15672,
+    "words": 272
+  },
+  "dict/vi/pl/wty-vi-pl.zip": {
+    "size": 104450,
+    "words": 2611
+  },
+  "dict/vi/pt/wty-vi-pt-gloss.zip": {
+    "size": 15986,
+    "words": 304
+  },
+  "dict/vi/pt/wty-vi-pt.zip": {
+    "size": 41376,
+    "words": 792
+  },
+  "dict/vi/ru/wty-vi-ru-gloss.zip": {
+    "size": 26904,
+    "words": 649
+  },
+  "dict/vi/ru/wty-vi-ru.zip": {
+    "size": 102337,
+    "words": 1868
+  },
+  "dict/vi/tr/wty-vi-tr-gloss.zip": {
+    "size": 13042,
+    "words": 175
+  },
+  "dict/vi/tr/wty-vi-tr.zip": {
+    "size": 21424,
+    "words": 426
+  },
+  "dict/vi/vi/wty-vi-vi.zip": {
+    "size": 3772313,
+    "words": 40762
+  },
+  "dict/vi/zh/wty-vi-zh-gloss.zip": {
+    "size": 21102,
+    "words": 703
+  },
+  "dict/vi/zh/wty-vi-zh.zip": {
+    "size": 1594265,
+    "words": 39150
+  },
+  "dict/zh/de/wty-zh-de-gloss.zip": {
+    "size": 358941,
+    "words": 7629
+  },
+  "dict/zh/de/wty-zh-de.zip": {
+    "size": 53275,
+    "words": 352
+  },
+  "dict/zh/en/wty-zh-en-gloss.zip": {
+    "size": 658491,
+    "words": 27109
+  },
+  "dict/zh/es/wty-zh-es-gloss.zip": {
+    "size": 330194,
+    "words": 7177
+  },
+  "dict/zh/fr/wty-zh-fr-gloss.zip": {
+    "size": 346469,
+    "words": 7989
+  },
+  "dict/zh/fr/wty-zh-fr.zip": {
+    "size": 1028307,
+    "words": 13080
+  },
+  "dict/zh/it/wty-zh-it-gloss.zip": {
+    "size": 272359,
+    "words": 6146
+  },
+  "dict/zh/it/wty-zh-it.zip": {
+    "size": 125619,
+    "words": 1334
+  },
+  "dict/zh/ja/wty-zh-ja-gloss.zip": {
+    "size": 325361,
+    "words": 7477
+  },
+  "dict/zh/ja/wty-zh-ja.zip": {
+    "size": 1809535,
+    "words": 42493
+  },
+  "dict/zh/ko/wty-zh-ko-gloss.zip": {
+    "size": 286162,
+    "words": 6243
+  },
+  "dict/zh/ko/wty-zh-ko.zip": {
+    "size": 1016459,
+    "words": 15885
+  },
+  "dict/zh/pl/wty-zh-pl-gloss.zip": {
+    "size": 291076,
+    "words": 6327
+  },
+  "dict/zh/pl/wty-zh-pl.zip": {
+    "size": 660232,
+    "words": 2469
+  },
+  "dict/zh/pt/wty-zh-pt-gloss.zip": {
+    "size": 314107,
+    "words": 7046
+  },
+  "dict/zh/pt/wty-zh-pt.zip": {
+    "size": 90886,
+    "words": 2254
+  },
+  "dict/zh/ru/wty-zh-ru-gloss.zip": {
+    "size": 5283908,
+    "words": 159502
+  },
+  "dict/zh/tr/wty-zh-tr-gloss.zip": {
+    "size": 222766,
+    "words": 4893
+  },
+  "dict/zh/tr/wty-zh-tr.zip": {
+    "size": 38834,
+    "words": 993
+  },
+  "dict/zh/vi/wty-zh-vi-gloss.zip": {
+    "size": 213809,
+    "words": 4548
+  },
+  "dict/zh/vi/wty-zh-vi.zip": {
+    "size": 167044,
+    "words": 1803
+  }
+}

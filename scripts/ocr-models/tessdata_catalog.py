@@ -22,7 +22,8 @@ REPOSITORIES = {
 # The app's languages whose script Tesseract reads well enough to offer it, with Tesseract's code for each.
 LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
-    "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus",
+    "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
+    "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell",
 }
 
 # Recommended per language by the rule over the clean and hard screens (ai/notes/ocr-engines.md): none of the app's

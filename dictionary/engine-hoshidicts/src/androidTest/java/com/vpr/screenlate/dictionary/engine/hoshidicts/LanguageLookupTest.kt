@@ -107,6 +107,37 @@ class LanguageLookupTest {
         assertThat(engine.isComplete(imported.directory)).isTrue()
     }
 
+    @Test
+    fun stressMarksOfFormsAndTheirLemmasAreDroppedAtImport() = runTest {
+        val imported = engine.import(russianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val russian = LookupOptions(language = Language.RUSSIAN)
+
+        // The form names its lemma stressed; the dictionary's headword is not.
+        assertThat(engine.lookup("почти", russian).map { it.term.expression }).contains("почтить")
+        // A stressed form is found in plain text and as written.
+        assertThat(engine.lookup("пальца", russian).first().term.expression).isEqualTo("палец")
+        assertThat(engine.lookup("па́льца", russian).first().term.expression).isEqualTo("палец")
+        // The diaeresis of ё is a letter's, not a stress mark.
+        assertThat(engine.lookup("ёжика", russian).first().term.expression).isEqualTo("ёжик")
+    }
+
+    private fun russianDictionary(): File = zip(
+        "ru.zip",
+        "index.json" to """{"title":"Test Russian","revision":"1","format":3,"sourceLanguage":"ru"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["почтить","","","v",0,["to honor"],1,""],
+              ["почти","","","adv",0,["almost"],2,""],
+              ["почти","","non-lemma","v",0,[["почти́ть",["imperative"]]],3,""],
+              ["палец","","","n",0,["finger"],4,""],
+              ["па́льца","","non-lemma","n",0,[["палец",["genitive"]]],5,""],
+              ["ёжик","","","n",0,["hedgehog"],6,""],
+              ["ёжика","","non-lemma","n",0,[["ё́жик",["genitive"]]],7,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun englishDictionary(
         index: String = """{"title":"Test English","revision":"1","format":3,"sourceLanguage":"en"}""",
     ): File = zip(

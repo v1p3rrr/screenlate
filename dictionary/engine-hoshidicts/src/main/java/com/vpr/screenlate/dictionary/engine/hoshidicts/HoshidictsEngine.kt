@@ -24,6 +24,8 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +50,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                 archive.absolutePath.encodeToByteArray(),
                 outputDir.absolutePath.encodeToByteArray(),
                 false,
+                HEADWORD_MARKS,
             )
         } catch (e: RuntimeException) {
             throw DictionaryImportException(e.message ?: "Import failed", e)
@@ -179,6 +182,17 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
 
         /** Written next to a dictionary's files by the import (`jni_bridge.cpp`). */
         const val FORM_OF_TABLE = "form_of.bin"
+
+        /** Each language's [headwordMarks][com.vpr.screenlate.core.common.language.LanguageSupport.headwordMarks]. */
+        val HEADWORD_MARKS: ByteArray = buildJsonObject {
+            for (language in Language.entries) {
+                val marks = language.support.headwordMarks ?: continue
+                put(language.code, buildJsonObject {
+                    put("marks", marks.marks)
+                    put("bases", marks.bases)
+                })
+            }
+        }.toString().encodeToByteArray()
 
         // Values of hoshidicts' LookupFrequencyOrder.
         const val ORDER_ASCENDING = 1

@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.translate
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.languageCode
 import java.util.Locale
 
 /**
@@ -39,7 +40,7 @@ object TranslationLanguages {
     fun defaultFor(locale: Locale, source: Language): TranslationLanguage {
         val english = of(ENGLISH)!!
         val language = forLocale(locale) ?: return english
-        return if (Locale.forLanguageTag(language.tag).language == source.code) english else language
+        return if (Locale.forLanguageTag(language.tag).languageCode == source.code) english else language
     }
 
     /**

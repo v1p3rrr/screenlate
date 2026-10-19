@@ -29,6 +29,12 @@ enum class Language(val code: String) {
     }
 }
 
+/**
+ * The ISO 639 code of the locale's language as language tags write it: "id" for Indonesian and "he" for Hebrew, where
+ * Android's [Locale.getLanguage] keeps the old "in" and "iw".
+ */
+val Locale.languageCode: String get() = toLanguageTag().substringBefore('-')
+
 /** The language's name in [locale] (the interface language by default), capitalized as a heading or list item. */
 fun Language.displayName(locale: Locale = Locale.getDefault()): String =
     Locale.forLanguageTag(code).getDisplayLanguage(locale).replaceFirstChar { it.titlecase(locale) }
