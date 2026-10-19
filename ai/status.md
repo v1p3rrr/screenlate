@@ -80,6 +80,15 @@ own too. Their branches are merged into `languages/main` by this session when th
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go.
 
+Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
+Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
+test-model cases run on the emulator) and merged into `languages/main` before the next starts: 4b (Bengali, Georgian,
+Armenian), 4c (Thai, Khmer), 4d (Arabic, Persian, Hebrew), 4e (Kazakh, Kyrgyz, after its research). The research
+sessions of 5a-5e finish their plans without the answers. Open questions go into each plan file under "Questions for
+the owner (overnight)", marked deferred (the part waits) or decided provisionally (with what was implemented), to be
+asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
+root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
+
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
 passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
