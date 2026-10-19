@@ -19,6 +19,12 @@ object IndonesianSupport : SpacedLanguageSupport() {
     override val fontSubsets = LATIN_FONT_SUBSETS
 
     /**
+     * The Jawi spelling a word names leads only back to the word (derita → دريتا → derita), and Jawi text is not
+     * read from the screen.
+     */
+    override val ignoredFormTags = setOf("Jawi")
+
+    /**
      * "Jl." is jalan (street), "No." nomor, "hlm." halaman, "thn." and "tgl." tahun and tanggal. "dll." and "dkk." are
      * left out: they end sentences as often as not.
      */

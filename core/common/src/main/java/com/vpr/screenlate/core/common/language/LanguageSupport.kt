@@ -206,8 +206,8 @@ interface LanguageSupport {
     val spellingFormTags: Set<String> get() = emptySet()
 
     /**
-     * Tags of form-of entries whose results are left out: Wiktionary's Vietnamese dictionary lists "cái" as the
-     * `classifier` form of hundreds of nouns.
+     * Tags of form-of entries that lookups do not go through: Wiktionary's Vietnamese dictionary lists "cái" as the
+     * `classifier` form of hundreds of nouns. A result keeps its other chains of steps and is left out without them.
      */
     val ignoredFormTags: Set<String> get() = emptySet()
 

@@ -16,6 +16,11 @@ class MalaySupportTest {
     }
 
     @Test
+    fun `jawi spellings are not followed`() {
+        assertThat(MalaySupport.ignoredFormTags).containsExactly("Jawi")
+    }
+
+    @Test
     fun `two letters stand in the bubble and the malaysian flag is the default`() {
         assertThat(MalaySupport.glyph).isEqualTo("MS")
         assertThat(MalaySupport.flagCountries).containsExactly("my")

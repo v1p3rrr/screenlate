@@ -76,7 +76,7 @@ class DictionaryLookup @Inject constructor(
                 .sort(found, options, prepared.termDictionaries)
                 .let { if (part && support.capitalizedNouns) it.capitalizedFirst() else it }
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
-                .filterNot { it.onlyThrough(support.ignoredFormTags) }
+                .mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)

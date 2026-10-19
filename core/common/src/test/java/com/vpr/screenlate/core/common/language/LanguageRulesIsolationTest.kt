@@ -129,7 +129,8 @@ class LanguageRulesIsolationTest {
 
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
-        assertThat(all.where { it.ignoredFormTags.isNotEmpty() }).containsExactly(Language.VIETNAMESE)
+        assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
+            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY)
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
 

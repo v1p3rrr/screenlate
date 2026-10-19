@@ -145,19 +145,28 @@ class ShownResultsTest {
     }
 
     @Test
-    fun `a word reached only through an ignored form tag is left out`() {
+    fun `chains through an ignored form tag are dropped and a word reached only through them is left out`() {
         val classifier = Transform("classifier")
         val tags = setOf("classifier")
         val noun = result("bàn", "", "Wiktionary", matched = "cái", trace = listOf(classifier))
-        assertThat(noun.onlyThrough(tags)).isTrue()
-        assertThat(noun.copy(otherTraces = listOf(listOf(Transform("alt-of")))).onlyThrough(tags)).isFalse()
-        assertThat(result("cái", "", "Wiktionary").onlyThrough(tags)).isFalse()
-        assertThat(result("車", "", "Wiktionary", matched = "xa", trace = listOf(Transform("Hán-Nôm"))).onlyThrough(tags))
-            .isFalse()
-        assertThat(noun.onlyThrough(emptySet())).isFalse()
+        assertThat(noun.withoutChainsThrough(tags)).isNull()
+        val altOf = listOf(Transform("alt-of"))
+        val both = noun.copy(otherTraces = listOf(altOf))
+        assertThat(both.withoutChainsThrough(tags)).isEqualTo(noun.copy(trace = altOf))
+        val word = result("cái", "", "Wiktionary")
+        assertThat(word.withoutChainsThrough(tags)).isSameInstanceAs(word)
+        val hanNom = result("車", "", "Wiktionary", matched = "xa", trace = listOf(Transform("Hán-Nôm")))
+        assertThat(hanNom.withoutChainsThrough(tags)).isSameInstanceAs(hanNom)
+        assertThat(noun.withoutChainsThrough(emptySet())).isSameInstanceAs(noun)
+        // Malay "baca" is found itself and, through its Jawi spelling, again (baca → باچ → baca).
+        val jawi = Transform("Jawi")
+        val baca = result("baca", "", "Wiktionary")
+            .copy(otherTraces = listOf(listOf(jawi, jawi), listOf(Transform("alt-of"), jawi)))
+        assertThat(baca.withoutChainsThrough(Language.MALAY.support.ignoredFormTags))
+            .isEqualTo(baca.copy(otherTraces = emptyList()))
         // Other languages keep every form-of result.
         for (language in Language.entries - Language.VIETNAMESE) {
-            assertThat(noun.onlyThrough(language.support.ignoredFormTags)).isFalse()
+            assertThat(noun.withoutChainsThrough(language.support.ignoredFormTags)).isSameInstanceAs(noun)
         }
     }
 

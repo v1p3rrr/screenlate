@@ -22,6 +22,12 @@ object MalaySupport : SpacedLanguageSupport() {
     override val fontSubsets = LATIN_FONT_SUBSETS
 
     /**
+     * Words name their Jawi spelling (baca → باچ), which leads only back to the word; Jawi text is not read from the
+     * screen.
+     */
+    override val ignoredFormTags = setOf("Jawi")
+
+    /**
      * Titles and companies: Encik, Puan, Tuan, Haji, Sendirian Berhad ("Sdn. Bhd."); "Jln." is jalan, "hlm." halaman.
      * "dll." is left out: it ends sentences as often as not.
      */

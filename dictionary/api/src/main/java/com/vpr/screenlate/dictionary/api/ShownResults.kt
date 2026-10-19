@@ -42,12 +42,18 @@ private fun LookupResult.endsBeforeMark(text: String): Boolean {
 }
 
 /**
- * Whether every chain of steps to the result goes through a form-of entry with one of [tags]
- * (`LanguageSupport.ignoredFormTags`), so it is left out.
+ * The result without its chains of steps that go through a form-of entry with one of [tags]
+ * (`LanguageSupport.ignoredFormTags`); null when every chain does, so the result is left out.
  */
-internal fun LookupResult.onlyThrough(tags: Set<String>): Boolean {
-    if (tags.isEmpty() || trace.isEmpty()) return false
-    return (listOf(trace) + otherTraces).all { chain -> chain.any { it.name in tags } }
+internal fun LookupResult.withoutChainsThrough(tags: Set<String>): LookupResult? {
+    if (tags.isEmpty()) return this
+    val chains = listOf(trace) + otherTraces
+    val kept = chains.filterNot { chain -> chain.any { it.name in tags } }
+    return when {
+        kept.size == chains.size -> this
+        kept.isEmpty() -> null
+        else -> copy(trace = kept.first(), otherTraces = kept.drop(1))
+    }
 }
 
 /**
