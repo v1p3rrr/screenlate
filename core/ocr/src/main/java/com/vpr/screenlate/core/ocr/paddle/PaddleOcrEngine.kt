@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.ocr.paddle
 
 import android.graphics.Bitmap
+import android.os.SystemClock
 import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.OcrPage
@@ -17,7 +18,10 @@ import java.io.IOException
 import java.util.Properties
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -26,8 +30,9 @@ import kotlinx.coroutines.withContext
  * PP-OCR on MNN. A recognizer's directory holds `model.mnn` and `dict.txt`, its characters one per line; the
  * detector it requires holds `model.mnn` and may hold `detector.properties` with its thresholds
  * ([DetectionThresholds.parse]). The detector and one recognizer stay loaded until [release] or a scan with
- * another model. A recognizer whose characters include right-to-left letters (Arabic) reads its crops from left to
- * right; its lines are turned into reading order ([readingOrder]).
+ * another model; the memory their largest input took is freed once scans pause ([TRIM_DELAY_MS]). A recognizer whose
+ * characters include right-to-left letters (Arabic) reads its crops from left to right; its lines are turned into
+ * reading order ([readingOrder]).
  */
 @Singleton
 class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
@@ -36,6 +41,9 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
     private val mutex = Mutex()
     private var detector: Loaded<Detector>? = null
     private var recognizer: Loaded<Recognizer>? = null
+
+    /** A whole screen leaves ~350 MB with MNN (1280 × 2856); freed once scans pause, kept while they follow. */
+    private val trim = IdleAction(CoroutineScope(SupervisorJob() + Dispatchers.Default), TRIM_DELAY_MS) { trimNetworks() }
 
     private class Loaded<T : AutoCloseable>(val directory: String, val version: String, val value: T)
 
@@ -49,21 +57,40 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
 
     override suspend fun recognize(image: Bitmap, language: Language, model: InstalledOcrModel, required: List<InstalledOcrModel>): OcrPage =
         withContext(Dispatchers.Default) {
-            mutex.withLock {
-                val detectorModel = required.singleOrNull() ?: throw IOException("A recognizer needs one detector")
-                val detector = loaded(detectorModel, detector, { detector = it }) { detector(it) }
-                val recognizer = loaded(model, recognizer, { recognizer = it }) { recognizer(it) }
-                val page = PaddlePipeline(
-                    detector = Mnn(detector.network),
-                    recognizer = Mnn(recognizer.network),
-                    dictionary = recognizer.dictionary,
-                    thresholds = detector.thresholds,
-                ).recognize(image)
-                if (recognizer.rightToLeft) readingOrder(page) else page
+            trim.cancel()
+            try {
+                mutex.withLock {
+                    val detectorModel = required.singleOrNull() ?: throw IOException("A recognizer needs one detector")
+                    val detector = loaded(detectorModel, detector, { detector = it }) { detector(it) }
+                    val recognizer = loaded(model, recognizer, { recognizer = it }) { recognizer(it) }
+                    val page = PaddlePipeline(
+                        detector = Mnn(detector.network),
+                        recognizer = Mnn(recognizer.network),
+                        dictionary = recognizer.dictionary,
+                        thresholds = detector.thresholds,
+                    ).recognize(image)
+                    if (recognizer.rightToLeft) readingOrder(page) else page
+                }
+            } finally {
+                trim.schedule()
             }
         }
 
+    private suspend fun trimNetworks() {
+        mutex.withLock {
+            val detector = detector?.value ?: return
+            val recognizer = recognizer?.value ?: return
+            val started = SystemClock.elapsedRealtime()
+            val before = detector.network.memoryMb + recognizer.network.memoryMb
+            detector.network.trim(DETECTOR_TRIM_SHAPE)
+            recognizer.network.trim(RECOGNIZER_TRIM_SHAPE)
+            val after = detector.network.memoryMb + recognizer.network.memoryMb
+            Log.i(TAG, "Freed the memory of large inputs: ${before.roundToInt()} -> ${after.roundToInt()} MB in ${SystemClock.elapsedRealtime() - started} ms")
+        }
+    }
+
     override fun release() {
+        trim.cancel()
         // Not under the mutex: a scan in progress keeps its models and frees them at the next release or model change.
         if (!mutex.tryLock()) return
         try {
@@ -119,6 +146,16 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
         private const val MODEL_FILE = "model.mnn"
         private const val DICTIONARY_FILE = "dict.txt"
         private const val DETECTOR_FILE = "detector.properties"
+
+        /**
+         * How long after a scan the memory of its largest input is kept. Taking it again costs a full-page scan
+         * ~0.25 s (emulator); while scans follow each other, it stays.
+         */
+        private const val TRIM_DELAY_MS = 10_000L
+
+        /** Small inputs the networks are sized for while scans pause: the detector's smallest, one recognizer step. */
+        private val DETECTOR_TRIM_SHAPE = intArrayOf(1, 3, 32, 32)
+        private val RECOGNIZER_TRIM_SHAPE = intArrayOf(1, 3, TextRecognition.HEIGHT, TextRecognition.WIDTH_STEP)
 
         /** As in the comparison's timings. */
         private const val THREADS = 4

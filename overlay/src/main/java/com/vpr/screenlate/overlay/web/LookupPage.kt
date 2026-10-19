@@ -220,7 +220,7 @@ class LookupPage(
         }
     }
 
-    /** Loads the page again if the system reclaimed its renderer; called when a scan starts, so it loads meanwhile. */
+    /** Loads the page again if the system reclaimed its renderer; called during a scan, so it loads meanwhile. */
     fun prepare() {
         if (webView == null) webView = createWebView(container.context)
     }

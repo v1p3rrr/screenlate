@@ -41,6 +41,29 @@ class LensOcrEngine @Inject constructor(
 
     override val type = OcrEngineType.LENS
 
+    /** A HEAD request to the host without an image or a key; its answer (an error page) is not read. */
+    private val preconnection = Preconnection(PRECONNECT_INTERVAL_MS, SystemClock::elapsedRealtime) { done ->
+        val started = SystemClock.elapsedRealtime()
+        val request = Request.Builder().url(HOST_URL).head().header("User-Agent", USER_AGENT).build()
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    response.close()
+                    Log.d(TAG, "Lens: connected in ${SystemClock.elapsedRealtime() - started} ms")
+                    done()
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d(TAG, "Lens: connecting failed (${e.javaClass.simpleName})")
+                    done()
+                }
+            },
+        )
+    }
+
+    /** Opens the connection while the user starts a scan, which saves the handshake of a connection the server closed. */
+    override fun prepare() = preconnection.start()
+
     override suspend fun recognize(image: Bitmap, language: Language): OcrPage {
         val started = SystemClock.elapsedRealtime()
         val (jpeg, sentWidth, sentHeight) = withContext(Dispatchers.Default) { encode(image) }
@@ -57,9 +80,11 @@ class LensOcrEngine @Inject constructor(
             .header("User-Agent", USER_AGENT)
             .post(body.toRequestBody(PROTOBUF))
             .build()
+        preconnection.awaitOpening(PRECONNECT_WAIT_MS)
         // The body arrives after the headers, possibly slowly: it is read off the caller's (main) thread.
         val bytes = withContext(Dispatchers.IO) {
             client.newCall(request).await().use { response ->
+                preconnection.contacted()
                 Log.d(
                     TAG,
                     "Lens: HTTP ${response.code} for ${jpeg.size shr 10} KB (${sentWidth}x$sentHeight) " +
@@ -89,7 +114,14 @@ class LensOcrEngine @Inject constructor(
 
     private companion object {
         const val TAG = "LensOcr"
-        const val ENDPOINT = "https://lensfrontend-pa.googleapis.com/v1/crupload"
+        const val HOST_URL = "https://lensfrontend-pa.googleapis.com/"
+        const val ENDPOINT = "${HOST_URL}v1/crupload"
+
+        /** A connection used this recently is still open; servers close idle ones after some minutes. */
+        const val PRECONNECT_INTERVAL_MS = 30_000L
+
+        /** How long a scan waits for the connection being opened before it opens its own. */
+        const val PRECONNECT_WAIT_MS = 3_000L
 
         // Public key embedded in Chrome, taken from chrome-lens-ocr.
         const val API_KEY = "AIzaSyDr2UxVnv_U85AbhhY8XSHSIavUW0DC-sY"

@@ -15,6 +15,9 @@ interface OcrEngine {
      */
     suspend fun recognize(image: Bitmap, language: Language): OcrPage
 
+    /** Prepares for a [recognize] that may follow soon, such as by opening a network connection. */
+    fun prepare() = Unit
+
     /** Frees models or caches that the next [recognize] can load again; called when the engine is turned off. */
     fun release() = Unit
 }

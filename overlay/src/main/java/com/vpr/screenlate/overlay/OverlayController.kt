@@ -282,6 +282,8 @@ class OverlayController(
         scope.launch { profiles.state.collect { languages = it } }
         scope.launch { scanLanguage.flatMapLatest { lookup.settingsUpdates(it) }.collect { scanLength = it.scanLength } }
         scope.launch { scanLanguage.flatMapLatest { pageAppearance.json(it) }.collect { popup.page.setAppearance(it) } }
+        // A model chosen in the settings, or one installed or deleted, is loaded before the next scan needs it.
+        scope.launch { scanLanguage.flatMapLatest { ocr.deviceModelChanges(it) }.collect { if (onDeviceLoaded) ocr.warmUp(language) } }
         scope.launch {
             translation.settings.settings.map { it.button }.distinctUntilChanged().collect { popup.page.setTranslation(it) }
         }
@@ -773,6 +775,7 @@ class OverlayController(
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     touching = true
+                    prepareScan()
                     downX = event.rawX
                     downY = event.rawY
                     lastX = downX
@@ -896,13 +899,17 @@ class OverlayController(
         pendingSingleTap = null
     }
 
+    /** A touch on the bubble may start a scan: Lens opens its connection meanwhile when the scan would ask it. */
+    private fun prepareScan() {
+        if (settings.textSource != TextSource.APP_TEXT_ONLY && settings.ocrEngines != OcrEngines.DEVICE) ocr.prepareLens()
+    }
+
     private fun startScan(flashLines: Boolean) {
         Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()
         resetScan()
         takeActiveLanguage(warmUp = false)
-        popup.page.prepare()
         loadDictionaryStyles()
         bubbleView.loading = true
         scanJob = scope.launch {
@@ -914,6 +921,7 @@ class OverlayController(
                 return@launch
             }
             if (settings.textSource == TextSource.APP_TEXT_ONLY) {
+                popup.page.prepare()
                 readAppTextOnly(flashLines)
                 return@launch
             }
@@ -958,6 +966,13 @@ class OverlayController(
             // Kept for {screenshot} and small-text bands until the next scan or docking; recognition holds it as well.
             val shot = SharedScreenshot(captured).also { screenshot = it }
             shot.retain()
+            // A page the system reclaimed loads again while the screen is read. Creating it holds up the main thread
+            // for most of a second, so it waits until the recognition runs on its workers: before the capture it would
+            // delay the screenshot, right after it the recognition.
+            launch {
+                delay(PAGE_CREATION_DELAY_MS)
+                popup.page.prepare()
+            }
             try {
                 ocr.recognize(captured.bitmap, language, ocrOptions(), focus = { scanFocus(captured) })
                     .catch { error ->
@@ -1625,6 +1640,9 @@ class OverlayController(
         const val HIDE_FRAME_MS = 48L
         const val FOCUS_PADDING_DP = 48f
         const val BAND_DELAY_MS = 300L
+
+        /** Long enough for the recognition to copy the screenshot and leave the main thread. */
+        const val PAGE_CREATION_DELAY_MS = 150L
     }
 
     /** The latest recognition result of a scan in screen coordinates; [page] is null when recognition failed. */
