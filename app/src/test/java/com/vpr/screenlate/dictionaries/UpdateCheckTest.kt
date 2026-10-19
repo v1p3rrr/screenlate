@@ -38,9 +38,9 @@ class UpdateCheckTest {
         assertNull(UpdateCheck(listOf(a)).without(listOf(a)))
     }
 
-    private fun model(id: String, model: String, version: String) = CatalogEntry(
+    private fun model(id: String, model: String, version: String, language: String = "ru") = CatalogEntry(
         id, id, installedTitle = id, kind = DictionaryKind.TERM, declaredCategory = CatalogCategory.OCR_MODEL,
-        sourceLanguage = "ru", downloadUrl = "https://example.org/$id.zip", model = model, version = version, engine = "paddle", sha256 = "hash",
+        sourceLanguage = language, downloadUrl = "https://example.org/$id.zip", model = model, version = version, engine = "paddle", sha256 = "hash",
     )
 
     @Test
@@ -52,6 +52,17 @@ class UpdateCheckTest {
             InstalledOcrModel("tesseract-fast-rus", "1", "tesseract", File("t")),
         )
         assertThat(modelUpdates(entries, installed)).containsExactly(ModelUpdate(entries[0], "1"))
+    }
+
+    @Test
+    fun `a model update names every language that reads with it`() {
+        val entries = listOf(
+            model("paddle-cyrillic-ru", "paddle-cyrillic", "2"),
+            model("paddle-cyrillic-uk", "paddle-cyrillic", "2", language = "uk"),
+            model("paddle-cyrillic-be", "paddle-cyrillic", "2", language = "be"),
+        )
+        val installed = listOf(InstalledOcrModel("paddle-cyrillic", "1", "paddle", File("c")))
+        assertThat(modelUpdates(entries, installed).single().languages).containsExactly("ru", "uk", "be").inOrder()
     }
 
     @Test

@@ -116,7 +116,9 @@ class AccessibilityText(private val service: AccessibilityService) {
                 return null
             }
         }
-        if (sharesBoxes(lines.flatMap { it.characterBoxes!! })) {
+        // The boxes the node reported: those combining marks took from their letters would count as shared, and short
+        // decomposed Vietnamese words (Được) would be left out.
+        if (sharesBoxes(characters.mapNotNull { it.second })) {
             stats.sharedBoxes++
             return null
         }

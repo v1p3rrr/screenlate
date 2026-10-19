@@ -308,6 +308,8 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Compound part order | For a part of a German compound, entries whose headword is the part capitalized (nouns) come first: Lampe before the verb lampen; ordinary lookups keep the usual order (owner, 2026-10-18, question 29) |
 | Download queue | Two tasks run at a time on two chains, their import steps one at a time (owner: "two at once, imports one by one"); a download that breaks off (no data for 20 s) goes to the end of the queue for each of its three retries (owner); a download of the same catalog entry or URL is queued once, and a stopped one still listed is continued instead (a plain fix) (2026-10-19, request 67) |
 | Waiting tasks card | Two or more tasks waiting for their turn share one card ("Waiting (N): …") with "Show the list", a Cancel for each, and "Cancel all" for the waiting ones; the running tasks and a download waiting for its retry keep their own cards. A stopped download gets no Wi-Fi hint, and Jiten no copy on our hosting for now (owner, 2026-10-19, request 67) |
+| Partial downloads | A download's archive is kept in the app's own storage (`no_backup`), not in the cache the system clears when storage runs low (owner, 2026-10-19) |
+| Waiting for a network | While no network is up, a waiting download's card says "Waiting for a network: …" (ru "Ждёт сеть: …"), a shared waiting card has the line "Waiting for a network" under its title (owner, 2026-10-19); the catalog card's stage and a waiting retry's card (under its retry text) say the same (a plain extension) |
 
 ## Open items (postponed by the owner)
 
@@ -1298,3 +1300,5 @@ Starts once the OCR engines plan is done and groups 1-3 are merged (row "Build o
   extended; Stage E has the group 4a work list.
 - 2026-10-19: request 67 answered and built: rows "Download queue" and "Waiting tasks card"; the backlog item now
   records the cause.
+- 2026-10-19: answers after the emulator checks: rows "Partial downloads" and "Waiting for a network"; the checks
+  branch merged after a review (two minor fixes: decomposed Vietnamese app text, a PaddleOCR release during a trim).

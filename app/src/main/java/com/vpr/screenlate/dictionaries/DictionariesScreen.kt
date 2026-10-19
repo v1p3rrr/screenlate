@@ -163,6 +163,7 @@ fun DictionariesScreen(
             updateCheck?.let { check ->
                 UpdatesCard(
                     check,
+                    turnedOn = state.languages.map { it.code },
                     onUpdate = { items, models ->
                         askNotifications()
                         viewModel.update(items, models)
@@ -179,12 +180,14 @@ fun DictionariesScreen(
                         is TaskItem.Waiting -> WaitingTasksCard(
                             item.tasks,
                             state.taskNames,
+                            noNetwork = item.tasks.any { it.id in state.waitingForNetwork },
                             onCancel = viewModel::cancel,
                             onCancelAll = { viewModel.cancelAll(item.tasks) },
                         )
                         is TaskItem.One -> TaskCard(
                             item.task,
                             name = state.taskNames[item.task.id] ?: item.task.name,
+                            noNetwork = item.task.id in state.waitingForNetwork,
                             onDismiss = { viewModel.dismiss(item.task) },
                             onCancel = { viewModel.cancel(item.task) },
                             onResume = {
@@ -282,7 +285,12 @@ fun DictionariesScreen(
                     )
                     section.items.forEach { item ->
                         key(item.entry.title) {
-                            CatalogCard(item, onDownload = download, onCancel = viewModel::cancel)
+                            CatalogCard(
+                                item,
+                                noNetwork = item.task?.let { it.id in state.waitingForNetwork } == true,
+                                onDownload = download,
+                                onCancel = viewModel::cancel,
+                            )
                         }
                     }
                 }
@@ -503,7 +511,7 @@ private fun LinkButtons(links: DictionaryLinks) {
 private data class SortChoice(val selected: Boolean, val onSelect: () -> Unit)
 
 @Composable
-private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>, List<ModelUpdate>) -> Unit) {
+private fun UpdatesCard(check: UpdateCheck, turnedOn: List<String>, onUpdate: (List<DictionaryUpdate>, List<ModelUpdate>) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val updates = check.updates
@@ -533,9 +541,12 @@ private fun UpdatesCard(check: UpdateCheck, onUpdate: (List<DictionaryUpdate>, L
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(update.entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
-                                // Model versions are build hashes; the size says more.
+                                // Model versions are build hashes; the size says more. A model many languages read with
+                                // names the turned-on ones.
+                                val languages = update.languages.filter { it in turnedOn }.ifEmpty { update.languages }
                                 Text(
-                                    Formatter.formatShortFileSize(LocalContext.current, update.entry.downloadBytes),
+                                    (languages.map(::languageName) + Formatter.formatShortFileSize(LocalContext.current, update.entry.downloadBytes))
+                                        .joinToString(" · "),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -591,6 +602,7 @@ private fun kindLabel(kind: DictionaryKind, code: String?): Int = when (kind) {
 private fun TaskCard(
     task: ImportTask,
     name: String,
+    noNetwork: Boolean,
     onDismiss: () -> Unit,
     onCancel: () -> Unit,
     onResume: () -> Unit,
@@ -643,6 +655,8 @@ private fun TaskCard(
             val status = when (task.state) {
                 ImportTask.State.QUEUED -> if (task.retries > 0) {
                     stringResource(R.string.dictionaries_task_retrying, shown, task.retries, DictionaryImportWorker.MAX_RETRIES)
+                } else if (noNetwork) {
+                    stringResource(R.string.dictionaries_task_no_network, shown)
                 } else {
                     stringResource(R.string.dictionaries_task_queued, shown)
                 }
@@ -652,6 +666,7 @@ private fun TaskCard(
                 else -> stringResource(R.string.dictionaries_task_importing, shown)
             }
             Text(status, style = MaterialTheme.typography.bodyMedium)
+            if (noNetwork && task.retries > 0) NoNetworkLine()
             val percent = task.percent
             if (percent != null) {
                 LinearProgressIndicator(progress = { percent / 100f }, modifier = Modifier.fillMaxWidth(), color = AccentDefaults.progress)
@@ -665,11 +680,23 @@ private fun TaskCard(
     }
 }
 
+/** Under a waiting card's title: its downloads wait for a network. */
+@Composable
+private fun NoNetworkLine() {
+    Text(
+        stringResource(R.string.dictionaries_stage_no_network),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 4.dp, end = 8.dp),
+    )
+}
+
 /** The tasks that wait for their turn, named in one line; the list shows each with its own Cancel. */
 @Composable
 private fun WaitingTasksCard(
     tasks: List<ImportTask>,
     names: Map<UUID, String>,
+    noNetwork: Boolean,
     onCancel: (ImportTask) -> Unit,
     onCancelAll: () -> Unit,
 ) {
@@ -684,6 +711,7 @@ private fun WaitingTasksCard(
                 stringResource(R.string.dictionaries_tasks_waiting, tasks.size, shown.joinToString(", "))
             }
             Text(title, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(end = 8.dp))
+            if (noNetwork) NoNetworkLine()
             if (expanded) {
                 tasks.forEachIndexed { index, task ->
                     key(task.id) {
@@ -761,7 +789,7 @@ private fun ErrorCard(
 }
 
 @Composable
-private fun CatalogCard(item: CatalogItem, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
+private fun CatalogCard(item: CatalogItem, noNetwork: Boolean, onDownload: (CatalogItem) -> Unit, onCancel: (ImportTask) -> Unit) {
     val entry = item.entry
     val task = item.task
     // The ring replaces Download at the tap, before the queued task shows up, so a double tap cannot queue it twice.
@@ -803,7 +831,7 @@ private fun CatalogCard(item: CatalogItem, onDownload: (CatalogItem) -> Unit, on
                     )
                 }
                 if (task != null || requested) {
-                    Text(taskStage(task), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                    Text(taskStage(task, noNetwork), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                 }
             }
             when {
@@ -839,11 +867,11 @@ private const val REQUEST_SHOWN_MS = 5_000L
 
 /** What a catalog card's import is doing, with the percent when it is known; null is a download just requested. */
 @Composable
-private fun taskStage(task: ImportTask?): String {
+private fun taskStage(task: ImportTask?, noNetwork: Boolean): String {
     if (task == null) return stringResource(R.string.dictionaries_stage_queued)
     val stage = stringResource(
         when (task.state) {
-            ImportTask.State.QUEUED -> R.string.dictionaries_stage_queued
+            ImportTask.State.QUEUED -> if (noNetwork) R.string.dictionaries_stage_no_network else R.string.dictionaries_stage_queued
             ImportTask.State.DOWNLOADING -> R.string.dictionaries_stage_downloading
             ImportTask.State.CHECKING_SPACE -> R.string.dictionaries_stage_checking_space
             ImportTask.State.CONVERTING -> R.string.dictionaries_stage_converting

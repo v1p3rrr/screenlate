@@ -21,6 +21,7 @@ import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.BundledDictionaries
+import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_MODEL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
@@ -91,6 +92,19 @@ internal fun audioFailureCards(
         taken += its
         own.takeIf { it.isNotEmpty() }?.let { HomeProblem.AudioSources(it, language.takeIf { several }) }
     }
+}
+
+/** Whether an unfinished task of [tasks] installs dictionaries; a recognition model's download does not. */
+internal fun installsDictionaries(tasks: List<ImportTask>): Boolean = tasks.any { !it.finished && it.source != SOURCE_MODEL }
+
+/**
+ * The categories [status] lacks that none of its unfinished tasks installs; the others show as its install progress.
+ * A task without a catalog entry (the bundled install, a file, an update) may install any of them.
+ */
+internal fun missingNotInstalling(status: InstallationStatus, entries: List<CatalogEntry>): Set<CatalogCategory> {
+    if (status.tasks.any { it.catalogEntry == null }) return emptySet()
+    val installing = status.tasks.mapNotNullTo(hashSetOf()) { task -> entries.firstOrNull { it.id == task.catalogEntry }?.category }
+    return status.missing - installing
 }
 
 /** Imports not finished yet: how many, and the running one's name and percent, if known. */
@@ -176,7 +190,7 @@ class HomeViewModel @Inject constructor(
             DictionarySummary(
                 installed = dictionaries.size,
                 enabled = dictionaries.count { it.enabled },
-                importing = tasks.any { !it.finished },
+                importing = installsDictionaries(tasks),
             )
         }.stateIn(
             viewModelScope,
@@ -219,7 +233,7 @@ class HomeViewModel @Inject constructor(
      */
     val problems: StateFlow<List<HomeProblem>> =
         combine(checked, languageInstallations, models.damaged, catalogEntries, imports.tasks) { found, (languages, statuses), damaged, entries, tasks ->
-            val without = statuses.associate { it.language to it.missing }.filterValues { it.isNotEmpty() }
+            val without = statuses.associate { it.language to missingNotInstalling(it, entries) }.filterValues { it.isNotEmpty() }
             val noTerms = HomeProblem.NoTermDictionaries(without, languages.several).takeIf { without.isNotEmpty() }
             val broken = damagedModels(damaged, entries, tasks).takeIf { it.isNotEmpty() }?.let(HomeProblem::DamagedModels)
             found.filterNot { it is HomeProblem.NoTermDictionaries } + listOfNotNull(broken, noTerms)

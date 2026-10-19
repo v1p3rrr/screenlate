@@ -2,6 +2,9 @@ package com.vpr.screenlate.dictionary.api.imports
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
@@ -60,7 +63,9 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -113,6 +118,8 @@ data class ImportTask(
      * its delay, the network or the tasks before it.
      */
     val retries: Int = 0,
+    /** Set on a download that has not started yet: it starts only with a network ([DictionaryImports.online]). */
+    val needsNetwork: Boolean = false,
 ) {
     enum class State { QUEUED, DOWNLOADING, CHECKING_SPACE, CONVERTING, IMPORTING, SUCCEEDED, FAILED }
 
@@ -169,6 +176,34 @@ class DictionaryImports @Inject constructor(
     ) { infos, marks -> importTasks(infos, marks.cancelled, marks.dismissed) }
 
     private data class TaskMarks(val cancelled: Set<String>, val dismissed: Set<String>)
+
+    /**
+     * Whether a network that downloads wait for is up: the default network has internet access the system validated,
+     * as the downloads' network constraint asks.
+     */
+    val online: Flow<Boolean> = callbackFlow {
+        val manager = context.getSystemService(ConnectivityManager::class.java)
+        if (manager == null) {
+            send(true)
+            awaitClose()
+            return@callbackFlow
+        }
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+                trySend(capabilities.downloadsCanRun())
+            }
+
+            override fun onLost(network: Network) {
+                trySend(false)
+            }
+        }
+        trySend(manager.activeNetwork?.let(manager::getNetworkCapabilities)?.downloadsCanRun() == true)
+        manager.registerDefaultNetworkCallback(callback)
+        awaitClose { manager.unregisterNetworkCallback(callback) }
+    }.distinctUntilChanged()
+
+    private fun NetworkCapabilities.downloadsCanRun(): Boolean =
+        hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to
@@ -739,5 +774,7 @@ private fun WorkInfo.toTask(): ImportTask {
         } else {
             0
         },
+        needsNetwork = (state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.BLOCKED) &&
+            constraints.requiredNetworkType != NetworkType.NOT_REQUIRED,
     )
 }

@@ -105,6 +105,7 @@
     <string name="dictionaries_task_queued">Wartet: %1$s</string>
     <string name="dictionaries_task_downloading">%1$s wird heruntergeladen</string>
     <string name="dictionaries_task_retrying">Download wird wiederholt (%2$d von %3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">Wartet auf Netzwerk: %1$s</string>
     <string name="dictionaries_tasks_waiting">In der Warteschlange (%1$d): %2$s</string>
     <string name="dictionaries_tasks_waiting_count">In der Warteschlange (%1$d)</string>
     <string name="dictionaries_tasks_cancel_all">Alle abbrechen</string>
@@ -198,6 +199,7 @@
     <string name="dictionaries_task_converting">%1$s wird entpackt</string>
     <string name="dictionaries_task_checking_space">Freier Speicher für %1$s wird geprüft</string>
     <string name="dictionaries_stage_queued">Wartet in der Warteschlange</string>
+    <string name="dictionaries_stage_no_network">Wartet auf Netzwerk</string>
     <string name="dictionaries_stage_downloading">Wird heruntergeladen</string>
     <string name="dictionaries_stage_checking_space">Freier Speicher wird geprüft</string>
     <string name="dictionaries_stage_converting">Wird entpackt</string>

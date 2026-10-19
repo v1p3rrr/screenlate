@@ -24,7 +24,9 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.SOURCE_URL
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_DOWNLOAD
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companion.STAGE_WAIT
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.NetworkType
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
 import java.io.File
@@ -59,6 +61,7 @@ class DictionaryImportsTest {
         download: String? = null,
         chain: Int? = null,
         retry: Int? = null,
+        constraints: Constraints = Constraints.NONE,
     ) = WorkInfo(
         id = UUID.randomUUID(),
         state = state,
@@ -76,6 +79,7 @@ class DictionaryImportsTest {
         ),
         outputData = output,
         progress = progress,
+        constraints = constraints,
     )
 
     @Test
@@ -346,6 +350,24 @@ class DictionaryImportsTest {
             .containsExactly(ImportTask.State.DOWNLOADING, ImportTask.State.QUEUED, ImportTask.State.QUEUED).inOrder()
         // A running try is not a waiting retry.
         assertThat(tasks.map { it.retries }).containsExactly(0, 1, 0).inOrder()
+    }
+
+    @Test
+    fun `a download needs a network until it starts`() {
+        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val waiting = work("Jiten", WorkInfo.State.ENQUEUED, 1, constraints = network)
+        val behind = work("Wiktionary", WorkInfo.State.BLOCKED, 2, constraints = network)
+        val running = work("Model", WorkInfo.State.RUNNING, 3, constraints = network, progress = workDataOf(KEY_STAGE to STAGE_WAIT))
+        val file = work("File", WorkInfo.State.ENQUEUED, 4)
+
+        val tasks = importTasks(listOf(waiting, behind, running, file))
+
+        assertThat(tasks.map { it.name to it.needsNetwork }).containsExactly(
+            "Model" to false,
+            "Jiten" to true,
+            "Wiktionary" to true,
+            "File" to false,
+        )
     }
 
     @Test

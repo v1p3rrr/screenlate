@@ -109,6 +109,7 @@
     <string name="dictionaries_task_queued">Oczekuje: %1$s</string>
     <string name="dictionaries_task_downloading">Pobieranie: %1$s</string>
     <string name="dictionaries_task_retrying">Ponawianie pobierania (%2$d z %3$d): %1$s</string>
+    <string name="dictionaries_task_no_network">Czeka na sieć: %1$s</string>
     <string name="dictionaries_tasks_waiting">W kolejce (%1$d): %2$s</string>
     <string name="dictionaries_tasks_waiting_count">W kolejce (%1$d)</string>
     <string name="dictionaries_tasks_cancel_all">Anuluj wszystkie</string>
@@ -202,6 +203,7 @@
     <string name="dictionaries_task_converting">Rozpakowywanie: %1$s</string>
     <string name="dictionaries_task_checking_space">Sprawdzanie wolnego miejsca dla %1$s</string>
     <string name="dictionaries_stage_queued">W kolejce</string>
+    <string name="dictionaries_stage_no_network">Czeka na sieć</string>
     <string name="dictionaries_stage_downloading">Pobieranie</string>
     <string name="dictionaries_stage_checking_space">Sprawdzanie wolnego miejsca</string>
     <string name="dictionaries_stage_converting">Rozpakowywanie</string>
