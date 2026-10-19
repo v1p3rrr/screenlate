@@ -26,21 +26,29 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
 
 /**
  * Languages Yomitan has no descriptor for, built from a related language's descriptor under their own codes: Malay
- * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either.
+ * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either; Bengali takes
+ * Hindi's descriptor, which has neither, for the app's own processors and endings.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
+    bn: {from: 'hi', iso639_3: 'ben', name: 'Bengali', exampleText: 'পড়ার জন্য'},
 };
 
 /**
  * Text processors a language takes from another one, by the names the descriptor file imports them under, or the
  * app's own (own-processors.js): Belarusian is written with the stress marks and apostrophes Ukrainian is (сям'я,
- * сям’я), and Yomitan gives it capitalization only; Hindi text is not always composed as the headwords are, and it
- * writes candrabindu and anusvara for each other.
+ * сям’я), and Yomitan gives it capitalization only; Hindi and Bengali text is not always composed as the headwords
+ * are, and Hindi writes candrabindu and anusvara for each other.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
     hi: ['composeCharacters', 'candrabinduAsAnusvara'],
+    bn: ['composeCharacters'],
+};
+
+/** Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings. */
+const addedTransforms = {
+    bn: 'bengaliTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
@@ -61,6 +69,7 @@ function keepLanguage(source, iso) {
             .replace(/iso: '[^']*'/, `iso: '${iso}'`)
             .replace(/iso639_3: '[^']*'/, `iso639_3: '${borrowing.iso639_3}'`)
             .replace(/name: '[^']*'/, `name: '${borrowing.name}'`);
+        if (borrowing.exampleText) block = block.replace(/exampleText: '[^']*'/, `exampleText: '${borrowing.exampleText}'`);
     }
     const added = addedPreprocessors[iso];
     let imports = '';
@@ -76,6 +85,12 @@ function keepLanguage(source, iso) {
         }
         const own = added.filter((name) => ownProcessors.includes(name));
         if (own.length > 0) imports = `import {${own.join(', ')}} from 'screenlate/own-processors.js';\n`;
+    }
+    const transforms = addedTransforms[iso];
+    if (transforms) {
+        if (block.includes('languageTransforms')) throw new Error(`${iso}: Yomitan has inflection rules now`);
+        block = block.replace(/\n {4}\}$/, `\n        languageTransforms: ${transforms},\n    }`);
+        imports += `import {${transforms}} from 'screenlate/own-transforms.js';\n`;
     }
     return imports + source.slice(0, start) + 'const languageDescriptors = [\n' + block + ',' + source.slice(end);
 }

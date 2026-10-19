@@ -489,6 +489,7 @@
     <string name="popup_font_script_only_be">Chỉ cho chữ tiếng Belarus</string>
     <string name="popup_font_script_only_el">Chỉ cho chữ tiếng Hy Lạp</string>
     <string name="popup_font_script_only_hi">Chỉ cho chữ tiếng Hindi</string>
+    <string name="popup_font_script_only_bn">Chỉ cho chữ tiếng Bengal</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>
@@ -759,7 +760,7 @@
     <string name="ocr_models_empty">Không có mô hình trên thiết bị nào nhận dạng ngôn ngữ này.</string>
     <string name="ocr_models_dialog_hint">Mô hình đã tải được dùng khi được chọn. Mô hình đang dùng có thể xóa sau khi chọn mô hình khác.</string>
     <string name="ocr_models_mlkit">ML Kit (tích hợp)</string>
-    <string name="ocr_models_mlkit_info">Có sẵn trong ứng dụng, không cần tải. Nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari và chữ Latinh.</string>
+    <string name="ocr_models_mlkit_info">Có sẵn trong ứng dụng, không cần tải. Nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari, chữ Bengal và chữ Latinh.</string>
     <string name="ocr_models_recommended">Khuyến nghị</string>
     <string name="ocr_models_more_accurate">Chính xác hơn</string>
     <string name="ocr_models_installed_size">Đã cài · %1$s</string>
@@ -768,5 +769,5 @@
     <string name="ocr_models_delete_text">Mô hình “%1$s” (%2$s) sẽ bị xóa.</string>
     <string name="ocr_models_delete_shared">Mô hình cũng bị xóa cho các ngôn ngữ này: %1$s.</string>
     <string name="language_setup_main_model">Mô hình chính</string>
-    <string name="language_setup_models_info">Mô hình chính nhận dạng ngôn ngữ trên thiết bị. Các mô hình khác đã đánh dấu cũng được tải xuống và có thể chọn sau trong cài đặt nhận dạng màn hình. ML Kit có sẵn trong ứng dụng, nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari và chữ Latinh; với các ngôn ngữ này, ML Kit được dùng khi chưa có mô hình chính.</string>
+    <string name="language_setup_models_info">Mô hình chính nhận dạng ngôn ngữ trên thiết bị. Các mô hình khác đã đánh dấu cũng được tải xuống và có thể chọn sau trong cài đặt nhận dạng màn hình. ML Kit có sẵn trong ứng dụng, nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari, chữ Bengal và chữ Latinh; với các ngôn ngữ này, ML Kit được dùng khi chưa có mô hình chính.</string>
 </resources>

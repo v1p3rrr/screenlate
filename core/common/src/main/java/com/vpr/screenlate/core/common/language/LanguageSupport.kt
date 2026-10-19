@@ -373,4 +373,5 @@ val Language.support: LanguageSupport
         Language.BELARUSIAN -> BelarusianSupport
         Language.GREEK -> GreekSupport
         Language.HINDI -> HindiSupport
+        Language.BENGALI -> BengaliSupport
     }

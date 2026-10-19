@@ -146,6 +146,75 @@ bool is_array(std::string_view json) {
   return i < json.size() && json[i] == '[';
 }
 
+// [text] without the whitespace before combining marks: an ending written apart from its word ("মুখ ে").
+std::string join_marks(std::string_view text) {
+  std::string out;
+  const auto* bytes = reinterpret_cast<const utf8proc_uint8_t*>(text.data());
+  const auto size = static_cast<utf8proc_ssize_t>(text.size());
+  size_t spaces = std::string::npos;
+  for (utf8proc_ssize_t pos = 0; pos < size;) {
+    utf8proc_int32_t point = 0;
+    utf8proc_ssize_t read = utf8proc_iterate(bytes + pos, size - pos, &point);
+    if (read <= 0) read = 1;
+    if (is_space(text[pos])) {
+      if (spaces == std::string::npos) spaces = out.size();
+    } else {
+      const auto category = utf8proc_category(point);
+      if (spaces != std::string::npos && (category == UTF8PROC_CATEGORY_MN || category == UTF8PROC_CATEGORY_MC)) {
+        out.resize(spaces);
+      }
+      spaces = std::string::npos;
+    }
+    out.append(text.substr(pos, read));
+    pos += read;
+  }
+  return out;
+}
+
+std::string_view trimmed(std::string_view text) {
+  while (!text.empty() && is_space(text.front())) text.remove_prefix(1);
+  while (!text.empty() && is_space(text.back())) text.remove_suffix(1);
+  return text;
+}
+
+// The headwords a form-of row stands for. Wiktionary exports write some forms with a romanization or a note after
+// them ("মাসটি (maśṭa (colloquial), maśṭi (formal))", "বইগুলো , boigulo"), two spellings apart ("ծագմանը / ծագմանն"),
+// an ending apart from its word ("মুখ ে"), or an unfilled template ("{{{3}}}ে"), which stands for no word.
+std::vector<std::string> form_headwords(const std::string& expression) {
+  std::vector<std::string> out;
+  if (expression.find("{{{") != std::string::npos) return out;
+  std::string_view text = expression;
+  for (size_t i = 0; i < text.size(); i++) {
+    if (!is_space(text[i])) continue;
+    size_t next = i;
+    while (next < text.size() && is_space(text[next])) next++;
+    if (next < text.size() && (text[next] == '(' || text[next] == ',')) {
+      text = text.substr(0, i);
+      break;
+    }
+    i = next - 1;
+  }
+  while (!text.empty()) {
+    size_t cut = text.size();
+    size_t rest = text.size();
+    for (size_t i = 0; i < text.size(); i++) {
+      if (!is_space(text[i])) continue;
+      size_t next = i;
+      while (next < text.size() && is_space(text[next])) next++;
+      if (next < text.size() && text[next] == '/') {
+        cut = i;
+        rest = next + 1;
+        break;
+      }
+      i = next - 1;
+    }
+    const std::string_view part = trimmed(text.substr(0, cut));
+    if (!part.empty()) out.push_back(join_marks(part));
+    text = text.substr(rest);
+  }
+  return out;
+}
+
 // Whether a term bank may hold form-of items: each ends its tag list and itself with "]]", which rows without them
 // have only at the bank's end. Saves parsing the banks of dictionaries without forms, Japanese ones among them.
 bool may_hold_form_of(const std::string& content) {
@@ -321,11 +390,16 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       continue;
     }
     changed = true;
-    for (const auto& [lemma, tags] : form_of) {
-      const std::string plain_lemma = stripper != nullptr && !every_headword ? stripper->strip(lemma) : std::string();
-      const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
-      split.table.add(expression, target, tags, rules);
-      for (const auto& key : keys) split.table.add(key, target, tags, rules);
+    for (const auto& headword : form_headwords(expression)) {
+      std::vector<std::string> other_keys;
+      if (headword != expression && stripper != nullptr) other_keys = stripper->keys(headword);
+      const auto& form_keys = headword == expression ? keys : other_keys;
+      for (const auto& [lemma, tags] : form_of) {
+        const std::string plain_lemma = stripper != nullptr && !every_headword ? stripper->strip(lemma) : std::string();
+        const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
+        split.table.add(headword, target, tags, rules);
+        for (const auto& key : form_keys) split.table.add(key, target, tags, rules);
+      }
     }
     if (definitions.empty()) {
       split.form_rows++;

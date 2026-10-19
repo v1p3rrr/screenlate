@@ -69,7 +69,7 @@ uint32_t flags_of(const std::string& rules, const std::unordered_map<std::string
 bool is_space(char c) { return c == ' ' || c == 9 || c == 10 || c == 13; }
 
 // Whether an entry with part of speech [rules] fits the conditions of [p]; an entry without one fits an untyped
-// candidate too (see `isUntypedPhrasalVerb` in the language script).
+// candidate too (see `isUntypedPhrasalVerb` and `untypedRules` in the language script).
 bool fits(const Pending& p, const std::string& rules,
           const std::unordered_map<std::string, uint32_t>& part_of_speech_flags) {
   if (p.conditions == 0 || (p.conditions & flags_of(rules, part_of_speech_flags)) != 0) return true;
