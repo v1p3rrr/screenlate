@@ -808,6 +808,9 @@ plan.
 
 ## Serbo-Croatian on `languages/sh` (2026-10-19)
 
+Superseded on `languages/sr` the same day (next section): the two entries became Croatian and Serbian. The lookup,
+frequency, glyph and QuickJS findings below still hold.
+
 - Two entries, `Language.SERBO_CROATIAN_LATIN` (`sh-Latn`) and `SERBO_CROATIAN_CYRILLIC` (`sh-Cyrl`), with the shared
   `dictionaryCode` sh. The entry code keys the settings, the profile, the recognition models (`paddle-v6-sh-Latn`,
   `tesseract-*-hrv`; `paddle-cyrillic-sh-Cyrl`, `tesseract-*-srp`), the voice (hr, sr), the flag and the page's
@@ -835,6 +838,35 @@ plan.
   the words tried.
 - Glyph forms: `lang="sh-Cyrl"` gives Noto's Serbian б in the WebView (`webview-fonts.md`).
 
+## Croatian and Serbian on `languages/sr` (2026-10-19)
+
+The owner chose two languages instead of two script entries (questions 61-64): a learner learns "Serbian" or
+"Croatian", not Serbo-Croatian.
+
+- `Language.CROATIAN` (`hr`, Latin) and `SERBIAN` (`sr`, Cyrillic and Latin), both with `dictionaryCode` sh. The code
+  keys settings, profile, models (`paddle-v6-hr`, `tesseract-*-hrv`; `paddle-cyrillic-sr` recommended,
+  `paddle-v6-sr`, `tesseract-*-srp`), voice, flag (hr, rs; no flag button), e-ink code (HR, SR) and the page `lang`.
+  The names are the system's (Croatian, Serbian). Shared behavior stays in the abstract `SerboCroatianSupport`;
+  `CroatianSupport` and `SerbianSupport` add script, samples, fonts, glyph (Đ, Ћ) and the hooks below. No migration
+  from the unreleased `sh-Latn` and `sh-Cyrl` settings: on the emulator both languages came up off, with the shared
+  dictionaries in one "Turned off" card ("Serbo-Croatian · 3 dictionaries · 48 MB", a "Turn on" button each).
+- Serbian in both scripts: lookup takes either (the dictionaries hold both spellings); cloud recognition gets sh, as
+  before. OCR: `LanguageSupport.ocrLines` gets the page line by line; Serbian sums each line's script balance
+  (Cyrillic letters +1, look-alikes and j 0, other Latin letters -1; a line at 0 takes the page's) and fixes
+  look-alikes only on Cyrillic lines, there also in words of look-alikes alone (`LookAlikes.fixInScript`: Ја, је,
+  Јој, which Lens reads as Latin). A Latin line keeps i, a, u, o. This replaces the plan row's "only with a Cyrillic
+  model": the final text comes from cloud recognition whatever the model, and Lens reads both scripts.
+- Voice: `speechText` gives the voice Latin words in Cyrillic (the sr voice reads Cyrillic for certain; on the
+  emulator Google TTS used sr-RS). Translation: `translationTag` sends text that is mostly Latin as `sr-Latn` where
+  the service has it (Bing, Edge); Google has no sr-Latn, gets sr and translates Latin text right. On the emulator
+  Bing gave "The house is big, and the yard is small." for "Kuća je velika, a dvorište malo."
+- Audio (`audio-sources.md`): `LanguageSupport.recordings` lists the Wiktionary prefixes and titles to try
+  (`RecordingTitle`), searched in parallel and merged in order; `linguaLibreItems` and `linguaLibreTitle` cover
+  Croatian's two items and Serbian's Latin titles. Emulator: ljubav (Croatian) Hr-ljubav.ogg, then Sr-љубав.flac;
+  voda (Serbian) Sr-вода.flac, then Lingua Libre (UništihEkonomiju).
+- Models: Serbian's list holds PaddleOCR v5 Cyrillic (recommended), PaddleOCR v6 (Latin) and Tesseract srp; no
+  ML Kit, whose script check is Cyrillic. Choosing v6 loaded and warmed it at once (481 ms).
+
 ## Ukrainian and Belarusian on `languages/uk` (2026-10-19)
 
 - Bundles: `uk.js` has Yomitan's 35 rules, `removeUkrainianDiacritics` (U+0301) and `ukrainianApostropheVariants`
@@ -848,7 +880,7 @@ plan.
 - Apostrophes: wordfreq uk, wty uk-en (5,994 headwords) and most other editions write ', wty uk-fr ’ (1,999), uk-ru
   both (1,031 ', 79 ’), be-pl and be-ru ’ and some ʼ. Lookups find any of them through the processors. The wordfreq
   builder gives uk words with ' their ’ and ʼ spellings at the same rank (`frequencySpellings`); the index then says
-  "spellings the list leaves out … have its rank" (the sentence covers the Chinese and Serbo-Croatian scripts too).
+  "spellings the list leaves out … have its rank" (the sentence covers the Chinese and Serbian scripts too).
   wty uk-ru lists some words under both (п'ятниця, п’ятниця), shown as two entries.
 - Chains back to the text: Yomitan's "nominative plural" takes книга for the plural of книго, and wty lists книго as
   the vocative of книга, so every feminine noun in -а in its dictionary form showed "nominative plural « vocative
