@@ -32,6 +32,15 @@ const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
 };
 
+/**
+ * Text processors a language takes from another one, by the names the descriptor file imports them under: Belarusian
+ * is written with the stress marks and apostrophes Ukrainian is (сям'я, сям’я), and Yomitan gives it capitalization
+ * only.
+ */
+const addedPreprocessors = {
+    be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
+};
+
 /** @param {string} source @param {string} iso */
 function keepLanguage(source, iso) {
     const start = source.indexOf('const languageDescriptors = [');
@@ -48,6 +57,12 @@ function keepLanguage(source, iso) {
             .replace(/iso: '[^']*'/, `iso: '${iso}'`)
             .replace(/iso639_3: '[^']*'/, `iso639_3: '${borrowing.iso639_3}'`)
             .replace(/name: '[^']*'/, `name: '${borrowing.name}'`);
+    }
+    const added = addedPreprocessors[iso];
+    if (added) {
+        const plain = 'textPreprocessors: capitalizationPreprocessors,';
+        if (!block.includes(plain)) throw new Error(`${iso}: Yomitan has more text processors now`);
+        block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
     }
     return source.slice(0, start) + 'const languageDescriptors = [\n' + block + ',' + source.slice(end);
 }

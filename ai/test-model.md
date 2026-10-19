@@ -172,6 +172,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK33 | Indonesian lookups (Indonesian text from `scripts/text-image.py` or an Indonesian web page): membaca → baca (form entry, and baca's own entry), rumah-rumah → rumah, dibaca → baca; "Jl.", "No." and "hlm." do not end a sentence, "dll." does; "ID" fits in the docked bubble at every edge, Indonesian flag; audio from Lingua Libre; the download screen lists id-id unticked and the transcription dictionary | E | U IndonesianSupportTest, SentenceTest, glue.test.mjs, M | 2026-10-19 |
 | LK34 | Malay lookups (Malay text, `scripts/text-image.py`): membaca (its own entry in wty-ms-en), kucing; baca shows no "Jawi" step (its Jawi spelling only leads back to it); "En.", "Sdn. Bhd." do not end a sentence; "MS" fits in the docked bubble, Malaysian flag; the frequency order from wordfreq | E | U MalaySupportTest, SentenceTest, glue.test.mjs, M | 2026-10-19 |
 | LK35 | Filipino lookups (Filipino text, `scripts/text-image.py`): kumain (its own entry, and "complete aspect of kumain"), magluto → luto, magandang → maganda; basa shows no "Baybayin" step and no entry of Basa; "G.", "Sta.", "Blg." do not end a sentence; the language reads "Filipino (Tagalog)" ("Филиппинский (тагалог)" in Russian) on Languages, Home and the download screen; "Ng" fits in the docked bubble, Philippine flag; audio from Lingua Libre, the voice test speaks with a Filipino voice when one is installed; the sentence translation works | E | U FilipinoSupportTest, SentenceTest, TranslationLanguagesTest, glue.test.mjs, M | 2026-10-19 |
+| LK37 | Ukrainian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/arial.ttf`): книги → книга with "nominative plural" and a wordfreq rank; книга typed as is shows no form chain; зробив → зробити "past"; чита́ю (stress mark) → читати; п’ять, пʼять and п'ять find п'ять; a lone і read by OCR finds the conjunction; "р.", "т. зв." do not end a sentence; flag ua, bubble Ї; audio from Wiktionary; definitions in English and Russian | E | U UkrainianSupportTest, CyrillicLookAlikesTest, SentenceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
+| LK38 | Belarusian lookups (search screen, overlay): сям’я → сям'я; вады and ва́ды → вада "genitive singular" (a stressed form row); праўда; a lone і read by OCR finds the conjunction; "г.", "г. зн." do not end a sentence; flag by (red-green), bubble Ў; audio from Wiktionary; no frequency list offered | E | U BelarusianSupportTest, SentenceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 | LK36 | Serbo-Croatian lookups, both entries (Latin text from `scripts/text-image.py`; Cyrillic `testdata/ocr/sh-cyrl-sample.png`, rendered with `FONT=C:/Windows/Fonts/arial.ttf`): kuca also finds kuća (house), sesir → šešir, djak → đak; куће → кућа with "genitive singular"; ку̏ћа and kȕća (reading marks) find the word; a long line of c, s and z ("kuca cecescecescecesc") looks up without an error; "npr.", "5. maja", "pr. Kr." and "p. n. e." do not end a sentence; Јој read with a Latin J finds јој; the Latin entry shows Đ and the Croatian flag, the Cyrillic one Ћ and the Serbian flag, both switched from the bubble menu; кућа has the frequency of kuća; Cyrillic headwords in Serbian glyph forms (б); audio from Wiktionary's Sr- recordings for Latin and Cyrillic words; the second entry turns on at once with the shared dictionaries; turning one entry off while the other is on offers nothing shared to delete, with both off one "Turned off" card with a "Turn on" button per entry; with a Croatian or Serbian interface, sentences translate into English by default | E | U SerboCroatianSupportTest, SerboCroatianScriptsTest, TranslationLanguagesTest, OcrModelsTest, BackupChoiceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 (I) |
 | LK25 | Vietnamese lookups (`testdata/ocr/vi-sample.png`): aiming at "sinh" in "học sinh" shows học sinh first (the lookup also starts one and two syllables before), then sinh; "nhà vệ sinh" from its last syllable; hoà and hòa find the same word; "cái" shows its own entries, not the hundreds of nouns it is the classifier of; Hán-Nôm characters labelled "Hán-Nôm spelling"; "TP." does not end a sentence; Ư in the bubble, Vietnamese flag; fonts listed by the vietnamese subset | E | U VietnameseSupportTest, EarlierStartsTest, ShownResultsTest, SentenceTest, M | 2026-10-18 |
 | LK26 | Russian lookups (`testdata/ocr/ru-sample.png`, cloud recognition or PaddleOCR v5 Cyrillic on the device): кошки → кошка with "genitive singular" and the other forms, the headword shown as ко́шка with no reading line, the note with `{expression}` кошка and `{reading}` ко́шка; шокирующее → шокирующий → шокировать (the second form-of step); еж finds ёж; text with stress marks (ко́шка) finds кошка; «» and „“ are quotes, "т. е." and "г." do not end a sentence; Я in the bubble, Russian flag; audio tries Wiktionary first; text to speech reads the stressed reading correctly | E | U RussianSupportTest, SentenceTest, reading.test.mjs, popup.test.mjs, M | 2026-10-18 |
@@ -364,6 +366,26 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/uk` (Ukrainian and Belarusian, before their commit), Pixel_10_Pro (API 37)
+
+Scope: Ukrainian (LK37) and Belarusian (LK38) through the Languages screen, the download screen, the search screen
+(text action) and the overlay over a rendered Ukrainian image in the debug viewer; the lookup engine's
+instrumented tests.
+
+Results: passed after one fix. First checks: LK37, LK38.
+
+- Setup: Ukrainian's download screen listed wty-uk-en, the wordfreq list, the transcription dictionary, PaddleOCR v5
+  (installed) and both Tesseract models; with Russian added, wty-uk-ru too (17 MB, about 56 MB after import).
+  Belarusian: wty-be-ru, wty-be-en and the transcription (2.9 MB), no frequency list. Both Ready; flags ua and by.
+- Lookups: книги → книга ("nominative plural", W 1109, [ˈknɪɦɐ]); зробив → зробити ("past"); чита́ю → читати
+  ("present"); п’ять → п'ять (W 800); пʼятниця → п'ятниця; сям’я → сям'я; вады and ва́ды → вада ("genitive
+  singular"); праўда. Wiktionary audio played (Ogg).
+- Fix: книга and п'ятниця typed as is showed "nominative plural « vocative singular" (a Yomitan rule to книго, then
+  Wiktionary's vocative row back to книга); fixed in the engine and checked: no chain.
+- wty-uk-ru shows п'ятниця twice (its headwords п'ятниця and п’ятниця); left as is (`notes/language-rules.md`).
+- Overlay (Belarusian, then Ukrainian active): the lone і found the conjunction; п’ять found п'ять with its
+  highlight over the word.
 
 ### 2026-10-19, `languages/sh` (Serbo-Croatian, before its commit), Pixel_10_Pro (API 37)
 

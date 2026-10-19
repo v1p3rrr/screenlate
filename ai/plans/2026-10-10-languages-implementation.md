@@ -982,8 +982,8 @@ Progress: nl, cs, id, ms and tl are built on chained branches and checked on the
 2026-10-19); `languages/main` is fast-forwarded to `languages/tl` (`3951cea`). Found while checking: the line
 "Compound: X + Y" above a split compound (row "German compounds", question 15, owner 2026-10-16) was never built; it
 is built now, for German and Dutch (`58ea5fa`). Serbo-Croatian (both entries) is built on `languages/sh`, checked on
-the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Next:
-Ukrainian, Belarusian, Greek.
+the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Ukrainian
+and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK38). Next: Greek.
 
 ## The big release
 
@@ -1348,3 +1348,7 @@ Ukrainian, Belarusian, Greek.
   no console, so Yomitan's warning at its 4,096-variant cut failed the lookup (a stub in every bundle); Cyrillic text
   with reading marks found nothing (the glue replaces Yomitan's accent mark processor); a Croatian or Serbian
   interface made the text's own language the default translation target. Provisional choices: questions 55-60.
+- 2026-10-19: Ukrainian and Belarusian built on `languages/uk` (Belarusian takes Ukrainian's stress mark and
+  apostrophe processors) and checked on the emulator. Plain fixes found: a form-of step back to the scanned text after
+  a Yomitan rule showed as a chain on every feminine noun in -а (книга); a word of one letter read in Latin (і, у, В)
+  stayed Latin in every Cyrillic language; wordfreq's Ukrainian words also rank their ’ and ʼ spellings.

@@ -25,8 +25,9 @@ import kotlinx.serialization.json.put
  * left out. wordfreq lowercases everything, while dictionaries write names and German nouns capitalized, so each word
  * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. A language written in
  * two scripts gets each word's spellings in the other one too (`LanguageSupport.frequencySpellings`): wordfreq writes
- * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are. The
- * index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.
+ * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are, and
+ * the Ukrainian apostrophe as ' only. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its
+ * data asks.
  */
 object WordfreqDictionary {
     const val DEFAULT_SIZE = 100_000
@@ -36,12 +37,12 @@ object WordfreqDictionary {
         // Tokens without letters are dropped, so more words are read than needed.
         val words = source.inputStream().use { words(it, size * 2) }
         val support = Language.ofDictionaries(language)?.support
-        var otherScripts = false
+        var otherSpellings = false
         val rows = termMeta(words, size, Locale.forLanguageTag(language)) { word ->
-            support?.frequencySpellings(word).orEmpty().also { if (it.isNotEmpty()) otherScripts = true }
+            support?.frequencySpellings(word).orEmpty().also { if (it.isNotEmpty()) otherSpellings = true }
         }
         val ranked = rows.maxOfOrNull { it.second } ?: 0
-        write(output, index(language, version, ranked, otherScripts), rows)
+        write(output, index(language, version, ranked, otherSpellings), rows)
         return ranked
     }
 
@@ -102,7 +103,7 @@ object WordfreqDictionary {
 
     private fun hasLetter(word: String): Boolean = word.codePoints().anyMatch(Character::isLetter)
 
-    internal fun index(language: String, version: String, size: Int, otherScripts: Boolean = false) = buildJsonObject {
+    internal fun index(language: String, version: String, size: Int, otherSpellings: Boolean = false) = buildJsonObject {
         put("title", title(language))
         put("format", 3)
         put("revision", "wordfreq-$version-$size")
@@ -113,7 +114,7 @@ object WordfreqDictionary {
         put(
             "description",
             "Frequency ranks of the $size most frequent words of wordfreq $version for the language $language: 1 is the most frequent." +
-                if (otherScripts) " A word's spellings in the language's other script have its rank." else "",
+                if (otherSpellings) " A word's spellings the list leaves out, in another script or with another apostrophe, have its rank." else "",
         )
         put("attribution", attribution(version))
         put("sourceLanguage", language)

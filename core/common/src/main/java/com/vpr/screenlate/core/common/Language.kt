@@ -34,6 +34,8 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     RUSSIAN("ru"),
     SERBO_CROATIAN_LATIN("sh-Latn", "sh"),
     SERBO_CROATIAN_CYRILLIC("sh-Cyrl", "sh"),
+    UKRAINIAN("uk"),
+    BELARUSIAN("be"),
     ;
 
     companion object {

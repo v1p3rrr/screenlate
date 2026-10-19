@@ -137,3 +137,17 @@ test('turkish case pairs do not reach english', () => {
     assert.ok(!queried('en', 'IŞIK').has('ışık'));
     assert.ok(queried('en', 'IŞIK').has('işik'));
 });
+
+test('ukrainian deinflects, drops stress marks and matches every apostrophe', () => {
+    assert.ok(queried('uk', 'книги').has('книга'));
+    assert.ok(queried('uk', 'зробив').has('зробити'));
+    assert.ok(queried('uk', 'чита\u0301ю').has('читаю'));
+    for (const apostrophe of ["'", '’', 'ʼ']) assert.ok(queried('uk', 'п’ять').has(`п${apostrophe}ять`), apostrophe);
+});
+
+test('belarusian takes the ukrainian stress and apostrophe processors, russian does not', () => {
+    assert.ok(queried('be', 'ва\u0301да').has('вада'));
+    assert.ok(queried('be', 'сям’я').has("сям'я"));
+    assert.ok(queried('be', "сям'я").has('сямʼя'));
+    assert.ok(!queried('ru', 'п’ять').has("п'ять"));
+});

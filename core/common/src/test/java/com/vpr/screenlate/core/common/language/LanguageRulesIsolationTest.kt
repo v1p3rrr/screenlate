@@ -96,7 +96,13 @@ class LanguageRulesIsolationTest {
         // Serbo-Croatian mr. is magistar.
         assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(spaced.where { holds(it, "Kr. godine") }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
-        assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
+        // Ukrainian т. holds for "т. зв." and "у т. ч.".
+        assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
+        assertThat(spaced.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
+        // г. is год, гады and година, in either script of Serbo-Croatian.
+        assertThat(spaced.where { holds(it, "у 1991 г. ён") }).containsExactly(
+            Language.RUSSIAN, Language.BELARUSIAN, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC,
+        )
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
@@ -154,6 +160,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(all.where { it.recordingPrefix != it.language.dictionaryCode }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
         assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
     }
 
@@ -181,11 +188,15 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `cyrillic look-alikes are fixed only in Cyrillic text, the Serbian j only in Serbo-Croatian Cyrillic`() {
+    fun `cyrillic look-alikes are fixed only in Cyrillic text, the Serbian j and the Latin i only where they have a twin`() {
         assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
-            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC)
+            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN)
         assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
             .containsExactly(Language.SERBO_CROATIAN_CYRILLIC)
+        // A word of one letter has no other one to show its script.
+        assertThat(all.where { it.ocrWord("y") != "y" }).containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN)
+        assertThat(all.where { it.ocrWord("i") != "i" }).containsExactly(Language.UKRAINIAN, Language.BELARUSIAN)
+        assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
     }
 
     @Test

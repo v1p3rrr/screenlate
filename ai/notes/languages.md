@@ -834,3 +834,36 @@ plan.
   `SerboCroatianScripts`); kuća and кућа played from Wiktionary on the emulator. Lingua Libre (`srp`) had nothing for
   the words tried.
 - Glyph forms: `lang="sh-Cyrl"` gives Noto's Serbian б in the WebView (`webview-fonts.md`).
+
+## Ukrainian and Belarusian on `languages/uk` (2026-10-19)
+
+- Bundles: `uk.js` has Yomitan's 35 rules, `removeUkrainianDiacritics` (U+0301) and `ukrainianApostropheVariants`
+  (' ‘ ’ ʼ ` ´ each tried as ', ’ and ʼ). Yomitan gives Belarusian capitalization only; `build.mjs` adds Ukrainian's two
+  processors to its descriptor (`addedPreprocessors`) and fails if Yomitan's `be` gets more processors of its own.
+- Rule names: `values/inflections_uk.xml` from `generate-inflections.mjs`, translated by hand into the 13 other
+  locales with the form-of tag terms of each (`form_of_tags.xml`).
+- Readings: wty gives uk and be lemmas no reading; forms carry their stress (чита́ю, вады́), which the import drops
+  from the key (`headwordMarks`, U+0301 and U+0300 after a vowel). So no reading rule like `reading-ru.js` and no
+  furigana markers for either.
+- Apostrophes: wordfreq uk, wty uk-en (5,994 headwords) and most other editions write ', wty uk-fr ’ (1,999), uk-ru
+  both (1,031 ', 79 ’), be-pl and be-ru ’ and some ʼ. Lookups find any of them through the processors. The wordfreq
+  builder gives uk words with ' their ’ and ʼ spellings at the same rank (`frequencySpellings`); the index then says
+  "spellings the list leaves out … have its rank" (the sentence covers the Chinese and Serbo-Croatian scripts too).
+  wty uk-ru lists some words under both (п'ятниця, п’ятниця), shown as two entries.
+- Chains back to the text: Yomitan's "nominative plural" takes книга for the plural of книго, and wty lists книго as
+  the vocative of книга, so every feminine noun in -а in its dictionary form showed "nominative plural « vocative
+  singular". `candidate_lookup.cpp` drops a form-of step that leads back to the scanned text (the candidate's
+  transformed text) through another text; a form that is its own lemma (kuća) keeps its one-step chain.
+- OCR: a word of one letter is taken as Cyrillic in every Cyrillic language (`CyrillicLookAlikes.fix`): і (and), у,
+  В and а have no other letter to show their script. Ukrainian adds i, ï → і, ї, Belarusian i, ŭ → і, ў. The overlay
+  over a rendered Ukrainian image (Arial, Paddle `cyrillic`) found і as the conjunction and п’ять as п'ять.
+- Fonts: the Ukrainian apostrophe ʼ (U+02BC) is outside the Latin and Cyrillic blocks; Ukrainian's system font range
+  adds it.
+- Sentences: Ukrainian "р." and "рр." (рік, роки), "т. зв.", "у т. ч.", "ст.", "див."; Belarusian "г.", "гг.", "г.
+  зн."; "і т. д." and "і г. д." end. Ukrainian т. also holds Russian "т. е.", Belarusian г. Russian and Serbo-Croatian
+  "1991 г." (Isolation test).
+- Catalog: uk has 9 main pairs (en, ru, de, fr, ja, ko, pl, tr, zh), the large wordfreq list (2.8 MB), the
+  transcription and Paddle `cyrillic`; be 4 main pairs (en, ru, ko, pl), no frequency list.
+- Emulator (LK37, LK38): книги → книга "nominative plural", W 1109; зробив → зробити "past"; чита́ю → читати; п’ять and
+  пʼятниця find the ' headwords (п'ять W 800); Wiktionary audio plays; flags ua and by, Ї and Ў in the bubble;
+  Belarusian сям’я → сям'я, вады and ва́ды → вада "genitive singular", праўда.

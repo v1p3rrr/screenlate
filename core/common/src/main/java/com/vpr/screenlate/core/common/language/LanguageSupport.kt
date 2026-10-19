@@ -22,7 +22,7 @@ interface LanguageSupport {
     /**
      * A word as OCR read it, with letters that engines take from another script written in the language's own; one
      * character for one, so character boxes stay valid. In a Cyrillic-script language, Latin look-alikes in a word with
-     * Cyrillic letters become Cyrillic ([CyrillicLookAlikes]).
+     * Cyrillic letters or of one letter become Cyrillic ([CyrillicLookAlikes]).
      */
     fun ocrWord(text: String): String = if (ocrScript == OcrScript.CYRILLIC) CyrillicLookAlikes.fix(text) else text
 
@@ -218,8 +218,8 @@ interface LanguageSupport {
     fun inScript(text: MappedText, tag: String): List<MappedText> = emptyList()
 
     /**
-     * Spellings of a word of wordfreq's list in another script of the language, which share its rank: Traditional
-     * characters for wordfreq's Simplified Chinese. Empty where the list has every script.
+     * Spellings of a word of wordfreq's list that the list leaves out, which share its rank: Traditional characters for
+     * wordfreq's Simplified Chinese. Empty where the list has every spelling.
      */
     fun frequencySpellings(word: String): List<String> =
         scriptTags.flatMap { tag -> inScript(MappedText.identity(word), tag).map { it.text } }
@@ -330,4 +330,6 @@ val Language.support: LanguageSupport
         Language.RUSSIAN -> RussianSupport
         Language.SERBO_CROATIAN_LATIN -> SerboCroatianLatinSupport
         Language.SERBO_CROATIAN_CYRILLIC -> SerboCroatianCyrillicSupport
+        Language.UKRAINIAN -> UkrainianSupport
+        Language.BELARUSIAN -> BelarusianSupport
     }

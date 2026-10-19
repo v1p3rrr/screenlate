@@ -43,6 +43,8 @@ struct Pending {
   bool untyped = false;
   // The text whose form-of entry led to [text]; empty for a candidate.
   std::string from;
+  // The scanned text after the text preprocessors, where the chains start.
+  std::string origin;
 };
 
 struct Match {
@@ -180,7 +182,11 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       }
     }
     for (const auto& item : form_of) {
-      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text};
+      // A lemma that is the text itself, reached through another text, adds nothing: Yomitan's Ukrainian rules take
+      // книга for the plural of книго, which a dictionary lists as the vocative of книга. A form that is its own lemma
+      // (kuća, genitive plural of kuća) is a chain of one step and stays.
+      if (item.lemma == p.origin && p.text != p.origin) continue;
+      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());
@@ -193,7 +199,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
 
   std::vector<Pending> lemmas;
   for (const auto& candidate : candidates) {
-    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u};
+    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t};
     if (p.chains.empty()) p.chains.emplace_back();
     visit(p, lemmas);
   }

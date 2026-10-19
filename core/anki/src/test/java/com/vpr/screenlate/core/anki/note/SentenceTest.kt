@@ -152,6 +152,16 @@ class SentenceTest {
     }
 
     @Test
+    fun ukrainianAndBelarusianSentencesKeepQuotesAndAbbreviations() {
+        val ukrainian = "Ішов дощ. У 1991 р. він побачив т. зв. „диво“ на вул. Шевченка. Кінець."
+        assertThat(extract(ukrainian, "побачив", Language.UKRAINIAN).text)
+            .isEqualTo("У 1991 р. він побачив т. зв. „диво“ на вул. Шевченка.")
+        val belarusian = "Ішоў дождж. У 1991 г. ён сказаў: «Я прыйду. Абавязкова». Потым пайшоў."
+        assertThat(extract(belarusian, "сказаў", Language.BELARUSIAN).text)
+            .isEqualTo("У 1991 г. ён сказаў: «Я прыйду. Абавязкова».")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

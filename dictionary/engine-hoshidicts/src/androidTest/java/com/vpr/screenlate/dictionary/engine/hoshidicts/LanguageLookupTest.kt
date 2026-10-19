@@ -173,6 +173,76 @@ class LanguageLookupTest {
         assertThat(engine.lookup("cecescecescecesc", latin)).isEmpty()
     }
 
+    @Test
+    fun ukrainianDeinflectsDropsStressAndMatchesEveryApostrophe() = runTest {
+        val imported = engine.import(ukrainianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val ukrainian = LookupOptions(language = Language.UKRAINIAN)
+
+        assertThat(engine.lookup("книги", ukrainian).map { it.term.expression }).contains("книга")
+        assertThat(engine.lookup("зробив", ukrainian).map { it.term.expression }).contains("зробити")
+        for (text in listOf("п'ять", "п’ять", "пʼять")) {
+            assertThat(engine.lookup(text, ukrainian).first().term.expression).isEqualTo("п'ять")
+        }
+        assertThat(engine.lookup("сім'я", ukrainian).first().term.expression).isEqualTo("сімʼя")
+        // A form with a secondary stress mark is found in plain text, beside Yomitan's rule for the same ending.
+        val form = engine.lookup("автостради", ukrainian).first()
+        assertThat(form.term.expression).isEqualTo("автострада")
+        assertThat((form.otherTraces + listOf(form.trace)).map { trace -> trace.map { it.name } }).contains(listOf("genitive"))
+        assertThat(engine.lookup("чита́ю", ukrainian).first().term.expression).isEqualTo("читати")
+        // Yomitan takes книга for the plural of книго, the vocative of книга: no chain leads back to the text.
+        val lemma = engine.lookup("книга", ukrainian).first()
+        assertThat(lemma.term.expression).isEqualTo("книга")
+        assertThat(lemma.trace).isEmpty()
+        assertThat(lemma.otherTraces).isEmpty()
+        val vocative = engine.lookup("книго", ukrainian).first()
+        assertThat((vocative.otherTraces + listOf(vocative.trace)).map { trace -> trace.map { it.name } })
+            .contains(listOf("vocative singular"))
+    }
+
+    @Test
+    fun belarusianDropsStressAndMatchesEveryApostrophe() = runTest {
+        val imported = engine.import(belarusianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val belarusian = LookupOptions(language = Language.BELARUSIAN)
+
+        assertThat(engine.lookup("сям’я", belarusian).first().term.expression).isEqualTo("сям'я")
+        val form = engine.lookup("вады", belarusian).first()
+        assertThat(form.term.expression).isEqualTo("вада")
+        assertThat(form.trace.map { it.name }).containsExactly("genitive")
+        assertThat(engine.lookup("ва́ды", belarusian).first().term.expression).isEqualTo("вада")
+    }
+
+    private fun ukrainianDictionary(): File = zip(
+        "uk.zip",
+        "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["книга","","","n",0,["book"],1,""],
+              ["зробити","","","v",0,["to do"],2,""],
+              ["п'ять","","","num",0,["five"],3,""],
+              ["сімʼя","","","n",0,["family"],4,""],
+              ["автострада","","","n",0,["highway"],5,""],
+              ["а̀втостра́ди","","non-lemma","n",0,[["автострада",["genitive"]]],6,""],
+              ["читати","","","v",0,["to read"],7,""],
+              ["чита́ю","","non-lemma","v",0,[["чита́ти",["first-person singular present"]]],8,""],
+              ["кни́го","","non-lemma","n",0,[["кни́га",["vocative singular"]]],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun belarusianDictionary(): File = zip(
+        "be.zip",
+        "index.json" to """{"title":"Test Belarusian","revision":"1","format":3,"sourceLanguage":"be"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["сям'я","","","n",0,["family"],1,""],
+              ["вада","","","n",0,["water"],2,""],
+              ["вады́","","non-lemma","n",0,[["вада",["genitive"]]],3,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun serboCroatianDictionary(): File = zip(
         "sh.zip",
         "index.json" to """{"title":"Test Serbo-Croatian","revision":"1","format":3,"sourceLanguage":"sh"}""".toByteArray(),

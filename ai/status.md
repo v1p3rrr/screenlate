@@ -51,7 +51,8 @@ Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`,
 41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. Started on 2026-10-19 (the
 OCR plan's timing items wait for the phone). Done on chained branches and fast-forwarded into `languages/main`: the
 shared pieces, nl, cs, id, ms, tl (LK31-LK35), the "Compound:" line, sh as two entries (LK36; questions 55-60 are
-its provisional choices, to ask the owner). Next: uk, be, el; then the docs' language lists, the Greek Paddle model
+its provisional choices, to ask the owner), uk and be (LK37, LK38; Belarusian takes Ukrainian's stress mark and
+apostrophe processors). Next: el; then the docs' language lists, the Greek Paddle model
 upload to `ocr-models-1` (approved once the 4a work is ready), and the owner re-imports the Russian dictionaries (the
 stress-mark rule changes them at import).
 

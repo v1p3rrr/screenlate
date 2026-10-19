@@ -490,6 +490,8 @@
     <string name="popup_font_script_only_vi">Solo per il testo vietnamita</string>
     <string name="popup_font_script_only_ru">Solo per il testo russo</string>
     <string name="popup_font_script_only_sh">Solo per il testo serbo-croato</string>
+    <string name="popup_font_script_only_uk">Solo per il testo ucraino</string>
+    <string name="popup_font_script_only_be">Solo per il testo bielorusso</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

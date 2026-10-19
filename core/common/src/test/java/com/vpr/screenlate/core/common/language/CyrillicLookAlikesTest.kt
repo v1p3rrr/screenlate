@@ -26,6 +26,18 @@ class CyrillicLookAlikesTest {
     }
 
     @Test
+    fun `a word of one letter becomes Cyrillic as well`() {
+        // The prepositions у and В, the conjunction а, with punctuation beside them.
+        assertThat(CyrillicLookAlikes.fix("y")).isEqualTo("у")
+        assertThat(CyrillicLookAlikes.fix("B")).isEqualTo("В")
+        assertThat(CyrillicLookAlikes.fix("a,")).isEqualTo("а,")
+        // A letter with no twin, and two letters without a Cyrillic one, stay.
+        assertThat(CyrillicLookAlikes.fix("i")).isEqualTo("i")
+        assertThat(CyrillicLookAlikes.fix("ok")).isEqualTo("ok")
+        assertThat(CyrillicLookAlikes.fix("i", mapOf('i' to 'і'))).isEqualTo("і")
+    }
+
+    @Test
     fun `only Cyrillic-script languages fix their words`() {
         assertThat(RussianSupport.ocrWord("\u043co\u0440e")).isEqualTo("\u043c\u043e\u0440\u0435")
         assertThat(EnglishSupport.ocrWord("\u043co\u0440e")).isEqualTo("\u043co\u0440e")

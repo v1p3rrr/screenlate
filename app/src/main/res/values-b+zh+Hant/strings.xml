@@ -484,6 +484,8 @@
     <string name="popup_font_script_only_vi">僅用於越南文文字</string>
     <string name="popup_font_script_only_ru">僅用於俄文文字</string>
     <string name="popup_font_script_only_sh">僅用於塞爾維亞-克羅埃西亞語文字</string>
+    <string name="popup_font_script_only_uk">僅用於烏克蘭文文字</string>
+    <string name="popup_font_script_only_be">僅用於白俄羅斯文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

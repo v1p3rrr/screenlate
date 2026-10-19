@@ -490,6 +490,8 @@
     <string name="popup_font_script_only_vi">Só para texto em vietnamita</string>
     <string name="popup_font_script_only_ru">Só para texto em russo</string>
     <string name="popup_font_script_only_sh">Só para texto em servo-croata</string>
+    <string name="popup_font_script_only_uk">Só para texto em ucraniano</string>
+    <string name="popup_font_script_only_be">Só para texto em bielorrusso</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

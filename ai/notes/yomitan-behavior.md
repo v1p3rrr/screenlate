@@ -42,6 +42,10 @@ Reference: `yomidevs/yomitan` `ext/js/language/translator.js`, `ext/data/schemas
    keeps that match. Jitendex and Kolobok put such an item next to a visible "⟶ lemma" link (Jitendex "redirected
    from 社會", Kolobok "вариант написания: 社會"), so 社會 also brings 社会 with that tag; when several dictionaries
    lead to the same term, the tag of the first one in the user's order shows.
+   Screenlate differs where a chain leads back to the text: Yomitan shows every non-empty chain of a term, so its
+   Ukrainian rules and Wiktionary give книга "nominative plural « vocative singular" (книга as the plural of книго,
+   which Wiktionary lists as the vocative of книга). Screenlate drops a form-of step that leads back to the scanned
+   text through another text, and a second form-of step back to the text before it (Jansen → Janssen → Jansen).
 9. Korean irregular-stem rules reach unrelated words: 수업은 deinflects to 수없다 (ㅅ-irregular, -(으)ㄴ) as well as
    to 수업, and the longer match sorts first; Yomitan's candidates are the same (checked with the bundle in Node).
 

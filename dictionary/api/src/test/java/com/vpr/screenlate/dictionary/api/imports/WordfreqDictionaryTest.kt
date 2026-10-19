@@ -154,7 +154,7 @@ class WordfreqDictionaryTest {
         assertThat(WordfreqDictionary.build(source, "zh", "3.2", output, size = 2)).isEqualTo(2)
         ZipFile(output).use { zip ->
             val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
-            assertThat(index["description"]!!.jsonPrimitive.content).contains("other script")
+            assertThat(index["description"]!!.jsonPrimitive.content).contains("another script")
             val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
             assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
                 .containsExactly("学习" to 1, "中文" to 2, "學習" to 1).inOrder()
