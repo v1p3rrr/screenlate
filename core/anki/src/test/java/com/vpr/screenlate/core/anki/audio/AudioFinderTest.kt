@@ -125,6 +125,16 @@ class AudioFinderTest {
     }
 
     @Test
+    fun `a clip is saved after the system cleared the cache directory`() {
+        val directory = folder.newFolder("cleared")
+        finder = AudioFinder(directory, client, settings)
+        directory.deleteRecursively()
+        sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}"))
+        routes["/word"] = { audio(byteArrayOf(7, 8)) }
+        assertThat(find()!!.file.readBytes()).isEqualTo(byteArrayOf(7, 8))
+    }
+
+    @Test
     fun `a missing clip is remembered, a server error is not`() {
         sources(AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}"))
         assertThat(find()).isNull()

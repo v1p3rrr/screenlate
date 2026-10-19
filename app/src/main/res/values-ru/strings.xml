@@ -138,6 +138,14 @@
     <string name="anki_fields">Поля</string>
     <string name="anki_fields_hint">В шаблонах используются маркеры вроде {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Кнопка + вставляет маркер. По первому полю проверяются дубли.</string>
     <string name="anki_insert_marker">Вставить маркер</string>
+    <string name="anki_marker_furigana_zh">Пиньинь над иероглифами</string>
+    <string name="anki_marker_furigana_plain_zh">Пиньинь текстом: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Предложение с пиньинем над иероглифами</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Предложение с пиньинем текстом</string>
+    <string name="anki_marker_furigana_ru">Слово с ударением</string>
+    <string name="anki_marker_furigana_plain_ru">Слово с ударением, текстом</string>
+    <string name="anki_marker_sentence_furigana_ru">Предложение с ударениями в словах начальной формы</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Предложение с ударениями в словах начальной формы, текстом</string>
     <string name="anki_duplicates">Дубли</string>
     <string name="anki_duplicate_check">Проверять дубли</string>
     <string name="anki_duplicate_scope">Искать в</string>

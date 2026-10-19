@@ -60,6 +60,13 @@ interface LanguageSupport {
     val ankiMarkers: List<String>
 
     /**
+     * Whether Anki's furigana markers (`{furigana}`, `{sentence-furigana}` and their plain forms, Yomitan's names) are
+     * offered: the language's readings go over its words or into them (Japanese kana, Chinese pinyin, Russian stress
+     * marks). Elsewhere they would repeat the word; a field that has them still gets them.
+     */
+    val furiganaMarkers: Boolean get() = false
+
+    /**
      * Anki markers ([ankiMarkers]) that spell the word in one of [scriptTags], to that script's tag:
      * `{expression-traditional}` for a note type with a field for each script.
      */

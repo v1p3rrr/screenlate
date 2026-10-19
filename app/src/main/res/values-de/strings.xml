@@ -133,6 +133,14 @@
     <string name="anki_fields">Felder</string>
     <string name="anki_fields_hint">Vorlagen nutzen Marker wie {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Mit der Schaltfläche + fügst du einen ein. Das erste Feld dient der Duplikatprüfung.</string>
     <string name="anki_insert_marker">Marker einfügen</string>
+    <string name="anki_marker_furigana_zh">Pinyin über den Schriftzeichen</string>
+    <string name="anki_marker_furigana_plain_zh">Pinyin als Text: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Satz mit Pinyin über den Schriftzeichen</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Satz mit Pinyin als Text</string>
+    <string name="anki_marker_furigana_ru">Wort mit Betonungszeichen</string>
+    <string name="anki_marker_furigana_plain_ru">Wort mit Betonungszeichen, als Text</string>
+    <string name="anki_marker_sentence_furigana_ru">Satz mit Betonungszeichen in Wörtern der Grundform</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Satz mit Betonungszeichen in Wörtern der Grundform, als Text</string>
     <string name="anki_duplicates">Duplikate</string>
     <string name="anki_duplicate_check">Auf Duplikate prüfen</string>
     <string name="anki_duplicate_scope">Suchen in</string>

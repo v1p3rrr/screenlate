@@ -37,6 +37,19 @@ internal object CjkText {
         return if (letters > 0 && word >= 2) LookupStart.Whole(word) else null
     }
 
+    /**
+     * Whether the character at [index] ends the sentence: one of [terminators], except a full-width period between
+     * digits, which is a decimal point (３．１４).
+     */
+    fun endsSentence(text: String, index: Int, terminators: Set<Char>): Boolean {
+        val character = text[index]
+        if (character !in terminators) return false
+        if (character != '．' || index == 0 || index + 1 >= text.length) return true
+        return !(isDigit(text[index - 1].code) && isDigit(text[index + 1].code))
+    }
+
+    private fun isDigit(codePoint: Int): Boolean = codePoint in '0'.code..'9'.code || codePoint in 0xFF10..0xFF19
+
     /** A Latin word is looked up from its first character wherever the aim is inside it. */
     fun latinWordStartOffset(before: String, aimed: String): Int {
         if (aimed.isEmpty() || !isLatinLetter(aimed.codePointAt(0))) return 0

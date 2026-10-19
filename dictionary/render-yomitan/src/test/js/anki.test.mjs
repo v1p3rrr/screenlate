@@ -194,3 +194,23 @@ test('quote entities left in plain text show as quote marks', () => {
     const items = [...parent.querySelectorAll('.glossary-item')].map(item => item.textContent);
     assert.deepEqual(items, Array(3).fill('a "b" ' + "'c' &amp;"));
 });
+
+test('structured content data attributes are named as yomitan names them', () => {
+    const span = data => ({ type: 'structured-content', content: { tag: 'span', data, content: 'x' } });
+    const attributes = data => {
+        const parent = window.document.createElement('div');
+        window.YomitanRender.renderGlossary(parent, [span(data)], 'D', {});
+        return Array.from(parent.querySelectorAll('*'))
+            .flatMap(node => Array.from(node.attributes).map(attribute => attribute.name))
+            .filter(name => name.startsWith('data-sc'));
+    };
+    assert.deepEqual(attributes({ fooBar: '1' }), ['data-sc-foo-bar']);
+    assert.deepEqual(attributes({ Class: '1' }), ['data-sc-class']);
+    // Keys in other scripts follow data-sc as written, Korean and Cyrillic as well as CJK.
+    assert.deepEqual(attributes({ '日本': '1' }), ['data-sc日本']);
+    assert.deepEqual(attributes({ '한국': '1' }), ['data-sc한국']);
+    assert.deepEqual(attributes({ 'ключ': '1' }), ['data-scКлюч']);
+    assert.deepEqual(attributes({ '1x': '1' }), ['data-sc1x']);
+    // A key the dataset cannot take is skipped.
+    assert.deepEqual(attributes({ 'foo-bar': '1' }), []);
+});

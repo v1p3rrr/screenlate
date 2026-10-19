@@ -27,6 +27,7 @@ object RussianSupport : SpacedLanguageSupport() {
 
     /** «…» outside, „…“ inside; “ closes the inner quotes, so it opens none. */
     override val quotePairs = mapOf('«' to '»', '„' to '“', '(' to ')', '[' to ']')
+    override val furiganaMarkers = true
 
     /**
      * "г" and "в" are год and век ("в 1999 г.", "XX в."); "т", "е", "к" and "н" make up "т. е.", "т. к." and "т. н.".

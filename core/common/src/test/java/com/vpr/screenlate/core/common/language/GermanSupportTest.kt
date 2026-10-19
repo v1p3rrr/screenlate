@@ -25,6 +25,20 @@ class GermanSupportTest {
     }
 
     @Test
+    fun `a single letter abbreviates only beside another one`() {
+        assertThat(ends("Plan B. Dann")).isTrue()
+        assertThat(ends("Vitamin A. Er")).isTrue()
+        val list = "Äpfel, Birnen o. Ä. kaufen"
+        assertThat(ends(list)).isFalse()
+        assertThat(ends(list, list.indexOf("Ä.") + 1)).isFalse()
+        val more = "Obst u. v. m. kaufen"
+        assertThat(more.indices.filter { more[it] == '.' }.map { ends(more, it) }).containsExactly(false, false, false)
+        assertThat(ends("Das ist d. h. gut")).isFalse()
+        // S. for Seite stands alone.
+        assertThat(ends("siehe S. 12")).isFalse()
+    }
+
+    @Test
     fun `a year or a word with digits at the end of a sentence ends it`() {
         assertThat(ends("Er kam 2020. Dann")).isTrue()
         assertThat(ends("Version A4. Dann")).isTrue()

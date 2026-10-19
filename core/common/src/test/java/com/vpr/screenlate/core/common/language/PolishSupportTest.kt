@@ -24,6 +24,14 @@ class PolishSupportTest {
     }
 
     @Test
+    fun `ok holds the sentence only before a number or a lowercase word`() {
+        assertThat(ends("Było ok. 20 osób")).isFalse()
+        assertThat(ends("Trwało to ok. godziny")).isFalse()
+        assertThat(ends("Jest ok. Idziemy")).isTrue()
+        assertThat(ends("Wszystko ok.")).isTrue()
+    }
+
+    @Test
     fun `wiktionary comes first among recordings`() {
         assertThat(PolishSupport.defaultAudioSources).containsExactly("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
             .inOrder()

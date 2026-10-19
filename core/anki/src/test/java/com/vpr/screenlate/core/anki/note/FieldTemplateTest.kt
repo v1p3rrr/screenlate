@@ -25,6 +25,20 @@ class FieldTemplateTest {
     }
 
     @Test
+    fun offersFuriganaMarkersOnlyWhereReadingsGoOverOrIntoWords() {
+        val offering = Language.entries.filter { FieldTemplate.markersFor(it).containsAll(FieldTemplate.FURIGANA_MARKERS) }
+        assertThat(offering).containsExactly(Language.JAPANESE, Language.CHINESE, Language.RUSSIAN)
+        for (language in Language.entries - offering) {
+            assertThat(FieldTemplate.markersFor(language)).containsNoneIn(FieldTemplate.FURIGANA_MARKERS)
+        }
+        // A field set up with one still gets it, and is no typo.
+        assertThat(FieldTemplate.FURIGANA_MARKERS.all(FieldTemplate::isKnown)).isTrue()
+        // Nor is a field named after one guessed in a language that does not offer it.
+        assertThat(FieldTemplate.guessField("Furigana", 1, Language.ENGLISH)).isEmpty()
+        assertThat(FieldTemplate.guessField("Furigana", 1, Language.JAPANESE)).isEqualTo("{furigana}")
+    }
+
+    @Test
     fun findsMarkers() {
         assertThat(FieldTemplate.markersIn("{sentence}<br>{single-glossary-jitendexorg-2026-08-11}"))
             .containsExactly("sentence", "single-glossary-jitendexorg-2026-08-11")

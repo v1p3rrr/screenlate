@@ -133,6 +133,14 @@
     <string name="anki_fields">Alanlar</string>
     <string name="anki_fields_hint">Şablonlar {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot} gibi işaretçiler kullanır. Eklemek için + düğmesini kullanın. Yinelenen kontrolü için ilk alan kullanılır.</string>
     <string name="anki_insert_marker">İşaretçi ekle</string>
+    <string name="anki_marker_furigana_zh">Karakterlerin üstünde pinyin</string>
+    <string name="anki_marker_furigana_plain_zh">Metin olarak pinyin: 你[nǐ] 好[hǎo]</string>
+    <string name="anki_marker_sentence_furigana_zh">Karakterlerin üstünde pinyinli cümle</string>
+    <string name="anki_marker_sentence_furigana_plain_zh">Metin olarak pinyinli cümle</string>
+    <string name="anki_marker_furigana_ru">Vurgu işaretli sözcük</string>
+    <string name="anki_marker_furigana_plain_ru">Vurgu işaretli sözcük, metin olarak</string>
+    <string name="anki_marker_sentence_furigana_ru">Sözlük biçimindeki sözcüklerde vurgu işaretli cümle</string>
+    <string name="anki_marker_sentence_furigana_plain_ru">Sözlük biçimindeki sözcüklerde vurgu işaretli cümle, metin olarak</string>
     <string name="anki_duplicates">Yinelenenler</string>
     <string name="anki_duplicate_check">Yinelenenleri denetle</string>
     <string name="anki_duplicate_scope">Aranacak yer</string>

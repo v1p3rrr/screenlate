@@ -8,10 +8,16 @@ import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage
 import java.io.File
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
+// The test scheduler's runCurrent is experimental API.
+@OptIn(ExperimentalCoroutinesApi::class)
 class DeviceOcrTest {
     private class FakeMlKit(private val scripts: Set<Language>) : OcrEngine {
         override val type = OcrEngineType.ML_KIT
@@ -153,5 +159,29 @@ class DeviceOcrTest {
         assertThat(held).containsExactly("paddle-cyrillic", "paddle-detector").inOrder()
         assertThat(closed).isEqualTo(1)
         assertThat(verified).containsExactly(listOf("paddle-cyrillic", "paddle-detector"))
+    }
+
+    @Test
+    fun `the active model is told again only when another one takes over`() = runTest {
+        val changes = MutableSharedFlow<Unit>(replay = 1).apply { tryEmit(Unit) }
+        val device = DeviceOcr(
+            FakeMlKit(setOf(Language.ENGLISH)), setOf(paddle, tesseract), { installed }, { listed[it].orEmpty() }, { chosen },
+            changes = { changes },
+        )
+        val seen = mutableListOf<String?>()
+        val job = launch { device.activeUpdates(Language.ENGLISH).collect { seen += it?.id } }
+        runCurrent()
+        // Installed but not chosen: ML Kit still reads, so nothing new is told.
+        install("tesseract-fast-eng")
+        changes.emit(Unit)
+        runCurrent()
+        chosen = "tesseract-fast-eng"
+        changes.emit(Unit)
+        runCurrent()
+        installed = emptyList()
+        changes.emit(Unit)
+        runCurrent()
+        job.cancel()
+        assertThat(seen).containsExactly("mlkit", "tesseract-fast-eng", "mlkit").inOrder()
     }
 }

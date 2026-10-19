@@ -68,3 +68,28 @@ test('another russian reading goes over the word', () => {
     assert.deepEqual(russian('еж', 'ёж'), ['еж[ёж]']);
     assert.equal(HeadwordReading.syllables('ru', 'ко́шка'), null);
 });
+
+test('russian and chinese rules stay with their languages', () => {
+    const stressed = 'ко\u0301шка';
+    // Other languages written in Cyrillic, and Latin ones, take no rules of their own.
+    for (const lang of ['uk', 'be', 'bg', 'en', 'de']) {
+        assert.equal(HeadwordReading.segments(lang, 'кошка', stressed), null, lang);
+    }
+    assert.deepEqual(Array.from(HeadwordReading.segments('ru-RU', 'кошка', stressed), ([text]) => text), [stressed]);
+    // Pinyin-like readings of Vietnamese and Korean words are not split into syllables.
+    for (const lang of ['vi', 'ko', 'ja']) {
+        assert.equal(HeadwordReading.syllables(lang, 'túshūguǎn'), null, lang);
+    }
+});
+
+test('a russian word in a sentence takes the stress only in its dictionary form', () => {
+    const inSentence = (text, expression, reading) =>
+        Array.from(HeadwordReading.sentenceSegments('ru', text, expression, reading), ([part, parts]) => parts ? `${part}[]` : part);
+    assert.deepEqual(inSentence('Кошка', 'кошка', 'ко\u0301шка'), ['Ко\u0301шка']);
+    assert.deepEqual(inSentence('руки', 'рука', 'рука\u0301'), ['руки']);
+    assert.deepEqual(inSentence('еж', 'ёж', 'ёж'), ['еж']);
+    assert.deepEqual(inSentence('кошка', 'кошка', ''), ['кошка']);
+    // Chinese and languages without rules have no sentence rules.
+    assert.equal(HeadwordReading.sentenceSegments('zh', '学习', '学习', 'xuéxí'), null);
+    assert.equal(HeadwordReading.sentenceSegments('ja', '猫', '猫', 'ねこ'), null);
+});

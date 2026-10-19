@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.ocr
 
 import android.graphics.Bitmap
+import android.os.SystemClock
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.ocr.lens.LensOcrEngine
@@ -31,6 +32,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
@@ -78,10 +81,12 @@ class CompositeOcr internal constructor(
     private val release: (Bitmap) -> Unit = Bitmap::recycle,
     /** Where images are copied and cropped, off the collector's (main) thread. */
     private val worker: CoroutineContext = Dispatchers.Default,
+    /** What reads a language on the device, now and after each change ([DeviceOcr.activeUpdates]). */
+    private val deviceModels: (Language) -> Flow<Any?> = { emptyFlow() },
 ) {
     @Inject
     constructor(lens: LensOcrEngine, device: DeviceOcr, networkStatus: NetworkStatus) :
-        this(lens, device, networkStatus::isOnline)
+        this(lens, device, networkStatus::isOnline, deviceModels = device::activeUpdates)
 
     /**
      * @param focus the aim's row in [image] at the moment, or null without an aim.
@@ -236,18 +241,28 @@ class CompositeOcr internal constructor(
     /** Whether the device reads [language]; a scan of a language it does not read asks the cloud alone. */
     fun deviceReads(language: Language): Boolean = device.reads(language)
 
+    /** A scan may follow (the bubble is touched): Lens opens its connection meanwhile, unless it cannot be asked. */
+    fun prepareLens() {
+        if (isOnline() && !lensPaused()) lens.prepare()
+    }
+
     /** Unloads the on-device model when it is turned off; a later scan loads it again. */
     fun releaseOnDevice() {
         device.release()
         Log.i(TAG, "Released the on-device model")
     }
 
+    /** Emits each time another on-device model takes over reading [language]: chosen, installed or deleted. */
+    fun deviceModelChanges(language: Language): Flow<Unit> = deviceModels(language).drop(1).map { }
+
     /** Loads the on-device model for [language], which would otherwise delay the first draft. */
     suspend fun warmUp(language: Language) {
         if (!device.reads(language)) return
         val image = Bitmap.createBitmap(WARM_UP_SIZE, WARM_UP_SIZE, Bitmap.Config.ARGB_8888)
         try {
+            val started = SystemClock.elapsedRealtime()
             device.recognize(image, language)
+            Log.i(TAG, "On-device recognition for ${language.code} warmed up in ${SystemClock.elapsedRealtime() - started} ms")
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
