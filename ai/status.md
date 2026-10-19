@@ -30,7 +30,8 @@ fixes, the scan changes and the language rules audit) was reviewed and merged in
   scan is deferred until it ends (`DeferredRelease`);
 - Home: no "no dictionary with definitions" for categories being installed, no "Installing dictionaries…" for a model
   download alone; model update rows name their languages.
-- New cases DIC23-DIC25 (N), not run yet.
+- New cases DIC23-DIC25: DIC23 passed on the emulator (moved to F), DIC24 partly (the directory; the resume after
+  Clear cache not run), DIC25 not run yet.
 
 Still to do from the checks: the timing run's row "Default OCR engines", the speed marks in words and the Both-mode
 hint; fast-forward `languages/main` through the stack. `main` CI has failed since 2026-10-15 on lint `RestrictedApi`
@@ -41,8 +42,9 @@ TEMPORARY diagnostics build (open item, remove after the analysis): branch `clau
 (session "Temporary diagnostics build: logs and metrics", `notes/diagnostics.md` on that branch) records timings,
 memory and process events; it is never merged into a working branch, and the latest `languages/ocr-engines` is merged
 into it for each phone build. The owner installs local builds of it (`testdata/apk/screenlate-diag-<sha>.apk`, this
-machine's debug key, so later ones install over it), uses the phone for a few days and sends the export (About →
-Logs). After the analysis: follow "Removal" in that note (delete the branch and worktree; "Delete collected data" on
+machine's debug key, so later ones install over it; the latest is `screenlate-diag-9937cc41.apk`, diagnostics
+commit `9937cc4` with `languages/ocr-engines` at `fa1b086`), uses the phone for a few days and sends the export
+(About → Logs). After the analysis: follow "Removal" in that note (delete the branch and worktree; "Delete collected data" on
 the phone; ask whether a normal build should delete leftover `no_backup/diagnostics` files).
 
 Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions

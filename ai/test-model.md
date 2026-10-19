@@ -274,8 +274,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update; setup and home by unit tests) |
 | DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-19 |
 | DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-19 |
-| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | N | U TaskItemsTest, DictionaryImportsTest, M | |
-| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | N | M | |
+| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-19 (cards and the network back; the retry and the file import not run) |
+| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | N | M | 2026-10-19 (the directory used, no cache directory; the clear-cache resume not run) |
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | N | U InstallingTest, UpdateCheckTest, M | |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
@@ -358,6 +358,19 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, diagnostics build `9937cc4` (`languages/ocr-engines` at `fa1b086` merged), Pixel_10_Pro (API 37)
+
+Scope: the "Waiting for a network" labels (DIC23) and the partial downloads directory (DIC24), on the diagnostics
+build the owner installs. Installed over the previous build with the app data restored (`/data` was full, see
+`notes/build-environment.md` if this recurs); Wi-Fi and mobile data off with `svc wifi disable`, `svc data disable`.
+
+Results: passed. DIC23 moved to F: JMdict (Hungarian) queued offline showed "Waiting for a network" on its catalog
+card; with JMdict (Slovenian) queued too, the shared card "Waiting (2): …" had the line under its title; with one
+cancelled, the single card read "Waiting for a network: JMdict (Hungarian)"; with the network back the download
+started at once and installed in 2.7 s (the test dictionary deleted afterwards). DIC24 stays N: the download used
+`no_backup/dictionary-downloads/` and `cache/` has no `dictionary-downloads/`; the resume after Clear cache is not run.
+The system purged the app's WebView cache for low storage during the run, the case the move away from the cache is for.
 
 ### 2026-10-19, `languages/checks` (`ca52b3d`, with the language rules review merged), Pixel_10_Pro (API 37)
 

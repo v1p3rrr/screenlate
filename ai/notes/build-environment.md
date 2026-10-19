@@ -54,6 +54,11 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `-no-window` QEMU processes are named `qemu-system-x86_64-headless.exe`; include that name when checking cleanup.
   The API 37 AVD's data disk is nearly full. The 2026-10-11 checks used a disposable `-read-only` instance; installing
   the final APK needed temporarily setting the storage threshold to 1%/100 MiB, then deleting those settings again.
+  When `install -r` fails for space and `pm trim-caches` frees too little (2026-10-19, about 340 MB free): back up
+  the app's data with `adb exec-out run-as <pkg> tar cf - . > app-data.tar` (2.7 GB with the dictionaries), turn
+  the accessibility service off, `pm clear <pkg>`, install, restore with `adb exec-in run-as <pkg> tar xf - <
+  app-data.tar`, grant `com.ichi2.anki.permission.READ_WRITE_DATABASE` and `POST_NOTIFICATIONS` again and put the
+  service setting back. Under Git Bash set `MSYS_NO_PATHCONV=1` and give host paths as `D:/...`.
 
 - Emulator AVD `Pixel_10_Pro`: 1280×2856, density 480 (3.0), Android 17 (API 37.2), Play Store image with 16 KB pages. Native libraries (hoshidicts) must be 16 KB aligned: use NDK r28+ or the equivalent linker flags.
 - `Pixel_10_Pro` has no quick-boot snapshot since 2026-10-15: saving one (`adb emu avd snapshot save default_boot`)
