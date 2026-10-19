@@ -1034,9 +1034,9 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
 
 ## Stage F: group 5 (decided on 2026-10-19)
 
-Rows "Group 5", "Group 5 research", "Group 5 release". Each block's research writes a "Group 5x research" section in
-`notes/languages.md` and its plan, questions and progress in a plan file of its own (`2026-10-19-group-5x.md`), as
-groups 4b and 4c do; question numbers are that file's own.
+Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its research, decision table, questions
+and progress in a plan file of its own (`2026-10-19-group-5a.md` and so on; question numbers are that file's own),
+so the block sessions do not edit the same files; `notes/languages.md` gets one line pointing to it.
 
 - 5a Latin: Romanian, Swedish, Danish, Norwegian, Albanian, Basque, Maltese, Esperanto, Latin; Slovak, Slovenian,
   Lithuanian, Swahili. Mostly as group 4a; Swedish and Danish compounds as German and Dutch.
