@@ -71,7 +71,8 @@ ANK16 (N, not run on the emulator yet). The owner does not want a new phone buil
 sessions since 2026-10-19: "Private copies of every catalog dictionary" and "Group 4b: Hindi, Georgian, Armenian,
 Bengali" (research and questions first, then the build). Group 4c (Thai, Khmer, Lao) is researched
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
-9, a note on weak on-device recognition, is asked later); the build waits for the owner's go.
+9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
+and Khmer build waits for the owner's go.
 
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered, question 10 (Bengali's
 recommended model) waits for an ML Kit measurement on the Bengali branch. Hindi is done on `languages/hi` and

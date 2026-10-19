@@ -1023,10 +1023,11 @@ no ML Kit for Serbian).
 Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questions and progress:
 `2026-10-19-group-4b.md`.
 
-### Group 4c (th, km, lo)
+### Group 4c (th, km; lo deferred)
 
 Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questions and progress:
-`2026-10-19-group-4c.md`. Lao and Khmer join Thai now instead of later (owner, 2026-10-19, question 5 of that plan).
+`2026-10-19-group-4c.md`. Khmer joins Thai now instead of later; Lao is deferred, for a while or for good (owner,
+2026-10-19, question 5 of that plan).
 
 ## The big release
 
@@ -1427,3 +1428,5 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
   linked from Stage E. Lao and Khmer are built now with Thai (question 30 said later). The converted Paddle models
   that wait (Thai, Devanagari) go up in one release when the owner decides (row "Paddle model hosting": the upload
   date is the owner's; question 9 of the group 4b plan said "with the next Paddle models").
+- 2026-10-19: Lao deferred, for a while or for good (owner, after a summary of group 4c: one small English
+  dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
