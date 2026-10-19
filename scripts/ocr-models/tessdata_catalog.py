@@ -23,7 +23,7 @@ REPOSITORIES = {
 LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
-    "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell",
+    "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }

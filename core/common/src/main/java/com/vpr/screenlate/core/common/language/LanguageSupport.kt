@@ -267,7 +267,8 @@ interface LanguageSupport {
     /**
      * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
      * import a form is also found without them, and the lemmas forms name are stored without them; or, with
-     * [HeadwordMarks.everyHeadword], marks every headword carries (the Greek tonos). Null where words carry none.
+     * [HeadwordMarks.everyHeadword], marks headwords carry (the Greek tonos, the Hindi nukta). Null where words carry
+     * none.
      */
     val headwordMarks: HeadwordMarks? get() = null
 
@@ -327,16 +328,23 @@ enum class SearchResolution { WORD, LETTER }
  * Combining [marks] dropped from a word where they follow one of [bases] (lowercase letters), in the word's decomposed
  * form: the acute of Serbo-Croatian ć stays, as it follows no vowel.
  *
- * @property everyHeadword every headword carries the marks and lemmas name headwords as written: a headword with
- * definitions is also found without them, and lemmas keep them.
+ * @property everyHeadword headwords carry the marks and lemmas name headwords as written: a headword with definitions
+ * is also found without them, and lemmas keep them.
+ * @property replacements marks that running text writes as another one (the Hindi candrabindu as anusvara): a word is
+ * also found with them replaced, with its [marks] and without them.
  */
-data class HeadwordMarks(val marks: String, val bases: String, val everyHeadword: Boolean = false)
+data class HeadwordMarks(
+    val marks: String,
+    val bases: String,
+    val everyHeadword: Boolean = false,
+    val replacements: Map<String, String> = emptyMap(),
+)
 
 /** A Wiktionary recording title to look for: `Sr-кућа.flac` has the [prefix] sr and the [title] кућа. */
 data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, GREEK, JAPANESE, KOREAN }
+enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KOREAN }
 
 val Language.support: LanguageSupport
     get() = when (this) {
@@ -364,4 +372,5 @@ val Language.support: LanguageSupport
         Language.UKRAINIAN -> UkrainianSupport
         Language.BELARUSIAN -> BelarusianSupport
         Language.GREEK -> GreekSupport
+        Language.HINDI -> HindiSupport
     }

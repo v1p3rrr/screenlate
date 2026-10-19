@@ -441,6 +441,89 @@
       "homepage": "https://fonts.google.com/specimen/Nanum+Myeongjo"
     },
     {
+      "id": "mukta",
+      "family": "Mukta",
+      "language": "hi",
+      "description": {
+        "en": "Sans-serif by Ek Type for Devanagari and Latin, one of the most used on websites; regular and bold.",
+        "ru": "Шрифт без засечек Ek Type для деванагари и латиницы, один из самых частых на сайтах; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von Ek Type für Devanagari und Lateinisch, eine der meistgenutzten auf Websites; normal und fett.",
+        "es": "Fuente sin serifa de Ek Type para devanagari y latino, de las más usadas en sitios web; normal y negrita.",
+        "fr": "Police sans empattement d’Ek Type pour le devanagari et le latin, parmi les plus utilisées sur le web ; normale et grasse.",
+        "it": "Carattere senza grazie di Ek Type per devanagari e latino, tra i più usati sui siti web; normale e grassetto.",
+        "ja": "Ek Type によるデーヴァナーガリー文字とラテン文字のサンセリフ。ウェブサイトで特によく使われる。標準と太字。",
+        "ko": "Ek Type이 만든 데바나가리 문자와 라틴 문자용 산세리프로, 웹사이트에서 가장 많이 쓰이는 글꼴 중 하나입니다. 보통과 굵게가 있습니다.",
+        "pl": "Krój bezszeryfowy Ek Type dla dewanagari i łacinki, jeden z najczęstszych na stronach internetowych; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da Ek Type para devanágari e latino, das mais usadas em sites; normal e negrito.",
+        "tr": "Ek Type’ın Devanagari ve Latin alfabeleri için tırnaksız yazı tipi, web sitelerinde en çok kullanılanlardan; normal ve kalın.",
+        "vi": "Phông không chân của Ek Type cho chữ Devanagari và Latinh, thuộc loại dùng nhiều nhất trên các trang web; thường và đậm.",
+        "zh": "Ek Type 出品的天城文和拉丁字母无衬线字体，网站上最常用的字体之一；常规和粗体。",
+        "zh-Hant": "Ek Type 出品的天城文和拉丁字母無襯線字型，網站上最常用的字型之一；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.9,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Mukta"
+    },
+    {
+      "id": "hind",
+      "family": "Hind",
+      "language": "hi",
+      "description": {
+        "en": "Sans-serif by Indian Type Foundry for Devanagari and Latin, made for text on screens; regular and bold.",
+        "ru": "Шрифт без засечек Indian Type Foundry для деванагари и латиницы, сделан для текста на экранах; обычное и жирное начертания.",
+        "de": "Serifenlose Schrift von Indian Type Foundry für Devanagari und Lateinisch, gemacht für Text auf Bildschirmen; normal und fett.",
+        "es": "Fuente sin serifa de Indian Type Foundry para devanagari y latino, hecha para texto en pantalla; normal y negrita.",
+        "fr": "Police sans empattement d’Indian Type Foundry pour le devanagari et le latin, conçue pour le texte à l’écran ; normale et grasse.",
+        "it": "Carattere senza grazie di Indian Type Foundry per devanagari e latino, pensato per il testo su schermo; normale e grassetto.",
+        "ja": "Indian Type Foundry によるデーヴァナーガリー文字とラテン文字のサンセリフ。画面上の文章向け。標準と太字。",
+        "ko": "Indian Type Foundry가 만든 데바나가리 문자와 라틴 문자용 산세리프로, 화면의 본문에 맞게 만들었습니다. 보통과 굵게가 있습니다.",
+        "pl": "Krój bezszeryfowy Indian Type Foundry dla dewanagari i łacinki, zrobiony do tekstu na ekranie; zwykły i pogrubiony.",
+        "pt": "Fonte sem serifa da Indian Type Foundry para devanágari e latino, feita para texto na tela; normal e negrito.",
+        "tr": "Indian Type Foundry’nin Devanagari ve Latin alfabeleri için tırnaksız yazı tipi, ekrandaki metinler için yapılmış; normal ve kalın.",
+        "vi": "Phông không chân của Indian Type Foundry cho chữ Devanagari và Latinh, làm cho văn bản trên màn hình; thường và đậm.",
+        "zh": "Indian Type Foundry 出品的天城文和拉丁字母无衬线字体，为屏幕上的正文设计；常规和粗体。",
+        "zh-Hant": "Indian Type Foundry 出品的天城文和拉丁字母無襯線字型，為螢幕上的內文設計；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hind/Hind-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hind/Hind-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.6,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Hind"
+    },
+    {
+      "id": "tiro-devanagari-hindi",
+      "family": "Tiro Devanagari Hindi",
+      "language": "hi",
+      "description": {
+        "en": "Serif by Tiro Typeworks in the style of printed Hindi books, with Latin; regular only.",
+        "ru": "Шрифт с засечками Tiro Typeworks в стиле печатных книг на хинди, с латиницей; только обычное начертание.",
+        "de": "Serifenschrift von Tiro Typeworks im Stil gedruckter Hindi-Bücher, mit Lateinisch; nur normal.",
+        "es": "Fuente con serifa de Tiro Typeworks al estilo de los libros impresos en hindi, con latino; solo normal.",
+        "fr": "Police à empattements de Tiro Typeworks dans le style des livres imprimés en hindi, avec le latin ; normale seulement.",
+        "it": "Carattere con grazie di Tiro Typeworks nello stile dei libri stampati in hindi, con il latino; solo normale.",
+        "ja": "Tiro Typeworks によるセリフ体。ヒンディー語の印刷本の書体にならい、ラテン文字付き。標準のみ。",
+        "ko": "Tiro Typeworks가 만든 세리프로, 힌디어 인쇄본의 글자 모양을 따르며 라틴 문자도 있습니다. 보통만 있습니다.",
+        "pl": "Krój szeryfowy Tiro Typeworks w stylu drukowanych książek w hindi, z łacinką; tylko zwykły.",
+        "pt": "Fonte com serifa da Tiro Typeworks no estilo dos livros impressos em hindi, com latino; só normal.",
+        "tr": "Tiro Typeworks’ün basılı Hintçe kitapların tarzında tırnaklı yazı tipi, Latin harfleriyle; yalnızca normal.",
+        "vi": "Phông có chân của Tiro Typeworks theo kiểu sách in tiếng Hindi, kèm chữ Latinh; chỉ kiểu thường.",
+        "zh": "Tiro Typeworks 出品的衬线字体，仿印地语印刷书籍的字形，附拉丁字母；仅常规。",
+        "zh-Hant": "Tiro Typeworks 出品的襯線字型，仿印地語印刷書籍的字形，附拉丁字母；僅常規。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf", "weight": "400"}
+      ],
+      "sizeMb": 0.4,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Tiro+Devanagari+Hindi"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

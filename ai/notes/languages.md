@@ -1140,6 +1140,14 @@ Cells: archive MB, words.
 - Catalog: `SOURCES` gains hi, bn, ka, hy; wordfreq `LANGUAGES` hi and bn; flags in, bd, ge, am.
 - bn bundle: borrowed from hi (both without processors) under its own code, `iso639_3` `ben`.
 
+### Hindi on the emulator (2026-10-19)
+
+- ML Kit Devanagari on a rendered page (64 px, 1280×2856): the band draft in 3.1-3.3 s, the whole page in 6.0 s. It
+  read ख़ाना without its nukta; the import key without nukta still finds ख़ाना, second after खाना. Cloud recognition
+  keeps the nukta.
+- A tap on a vowel sign (किताब at ता) looks the word up from its start, as the shared word rule intends.
+- The serif system face loads by its PostScript and full names, not by the family name (`webview-fonts.md`).
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4b.md`.

@@ -33,13 +33,17 @@ const borrowed = {
 };
 
 /**
- * Text processors a language takes from another one, by the names the descriptor file imports them under: Belarusian
- * is written with the stress marks and apostrophes Ukrainian is (сям'я, сям’я), and Yomitan gives it capitalization
- * only.
+ * Text processors a language takes from another one, by the names the descriptor file imports them under, or the
+ * app's own (own-processors.js): Belarusian is written with the stress marks and apostrophes Ukrainian is (сям'я,
+ * сям’я), and Yomitan gives it capitalization only; Hindi text is not always composed as the headwords are, and it
+ * writes candrabindu and anusvara for each other.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
+    hi: ['composeCharacters', 'candrabinduAsAnusvara'],
 };
+
+const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
 
 /** @param {string} source @param {string} iso */
 function keepLanguage(source, iso) {
@@ -59,12 +63,21 @@ function keepLanguage(source, iso) {
             .replace(/name: '[^']*'/, `name: '${borrowing.name}'`);
     }
     const added = addedPreprocessors[iso];
+    let imports = '';
     if (added) {
         const plain = 'textPreprocessors: capitalizationPreprocessors,';
-        if (!block.includes(plain)) throw new Error(`${iso}: Yomitan has more text processors now`);
-        block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
+        const example = /(\n {8}exampleText: [^\n]*\n)/;
+        if (block.includes(plain)) {
+            block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
+        } else if (!block.includes('textPreprocessors') && example.test(block)) {
+            block = block.replace(example, `$1        textPreprocessors: {${added.join(', ')}},\n`);
+        } else {
+            throw new Error(`${iso}: Yomitan has more text processors now`);
+        }
+        const own = added.filter((name) => ownProcessors.includes(name));
+        if (own.length > 0) imports = `import {${own.join(', ')}} from 'screenlate/own-processors.js';\n`;
     }
-    return source.slice(0, start) + 'const languageDescriptors = [\n' + block + ',' + source.slice(end);
+    return imports + source.slice(0, start) + 'const languageDescriptors = [\n' + block + ',' + source.slice(end);
 }
 
 fs.mkdirSync(outDir, {recursive: true});
@@ -73,6 +86,7 @@ for (const iso of languages) {
         name: 'yomitan',
         setup(build) {
             build.onResolve({filter: /^yomitan\//}, (a) => ({path: path.join(yomitan, a.path.slice('yomitan/'.length))}));
+            build.onResolve({filter: /^screenlate\//}, (a) => ({path: path.join(here, a.path.slice('screenlate/'.length))}));
             build.onResolve({filter: /\/lib\/hangul-js\.js$/}, () => ({path: path.join(here, 'shims/hangul-js.js')}));
             build.onResolve({filter: /\/lib\/kanji-processor\.js$/}, () => ({path: path.join(here, 'shims/kanji-processor.js')}));
             // Lets esbuild drop the language modules nothing imports any more.

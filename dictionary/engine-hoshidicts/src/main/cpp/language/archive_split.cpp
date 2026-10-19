@@ -311,9 +311,11 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
     }
     std::string rules;
     if (glz::read_json(rules, fields[3].str)) rules.clear();
-    const std::string plain = stripper != nullptr ? stripper->strip(expression) : std::string();
+    const std::vector<std::string> keys = stripper != nullptr ? stripper->keys(expression) : std::vector<std::string>();
     // Text without the marks (ΣΚΥΛΟΣ, σκυλος) finds the headword (σκύλος) as a form of itself, with no step to show.
-    if (every_headword && !plain.empty() && !definitions.empty()) split.table.add(plain, expression, {}, rules);
+    if (every_headword && !definitions.empty()) {
+      for (const auto& key : keys) split.table.add(key, expression, {}, rules);
+    }
     if (form_of.empty()) {
       append(row.str);
       continue;
@@ -323,7 +325,7 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       const std::string plain_lemma = stripper != nullptr && !every_headword ? stripper->strip(lemma) : std::string();
       const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
       split.table.add(expression, target, tags, rules);
-      if (!plain.empty()) split.table.add(plain, target, tags, rules);
+      for (const auto& key : keys) split.table.add(key, target, tags, rules);
     }
     if (definitions.empty()) {
       split.form_rows++;
@@ -375,7 +377,36 @@ bool contains(const std::vector<int32_t>& sorted, int32_t point) {
 }  // namespace
 
 MarkStripper::MarkStripper(const HeadwordMarks& marks)
-    : marks_(code_points(marks.marks)), bases_(code_points(marks.bases)), every_headword_(marks.every_headword) {}
+    : marks_(code_points(marks.marks)),
+      bases_(code_points(marks.bases)),
+      every_headword_(marks.every_headword),
+      replacements_(marks.replacements.begin(), marks.replacements.end()) {}
+
+std::vector<std::string> MarkStripper::keys(std::string_view text) const {
+  std::vector<std::string> out;
+  auto add = [&](std::string key) {
+    if (key.empty() || key == text || std::find(out.begin(), out.end(), key) != out.end()) return;
+    out.push_back(std::move(key));
+  };
+  const std::string plain = strip(text);
+  add(replaced(text));
+  if (!plain.empty()) add(replaced(plain));
+  add(plain);
+  return out;
+}
+
+std::string MarkStripper::replaced(std::string_view text) const {
+  std::string out(text);
+  bool changed = false;
+  for (const auto& [from, to] : replacements_) {
+    if (from.empty()) continue;
+    for (size_t pos = out.find(from); pos != std::string::npos; pos = out.find(from, pos + to.size())) {
+      out.replace(pos, from.size(), to);
+      changed = true;
+    }
+  }
+  return changed ? out : std::string();
+}
 
 std::string MarkStripper::strip(std::string_view text) const {
   // Forms in plain ASCII are the common case and carry no marks.

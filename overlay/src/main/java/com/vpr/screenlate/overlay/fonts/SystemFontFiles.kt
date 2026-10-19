@@ -3,6 +3,7 @@ package com.vpr.screenlate.overlay.fonts
 import android.graphics.fonts.Font
 import android.graphics.fonts.FontStyle
 import android.graphics.fonts.SystemFonts
+import android.icu.util.ULocale
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
@@ -43,10 +44,20 @@ object SystemFontFiles {
     /** The range of [font]'s weight axis as CSS `font-weight`; null for a font with one weight. */
     fun weightRange(font: Font): String? = runCatching { FontFiles.describe(font.buffer, font.ttcIndex)?.weightRange }.getOrNull()
 
+    /**
+     * The fonts Android declares for the language, or for its script alone: `fonts.xml` lists the Devanagari ones for
+     * `und-Deva`, not for Hindi.
+     */
     private fun languageFonts(languageTag: String): List<Font> {
         val language = Locale.forLanguageTag(languageTag).language
-        return SystemFonts.getAvailableFonts()
-            .filter { font -> (0 until font.localeList.size()).any { font.localeList[it].language == language } }
+        val script = ULocale.addLikelySubtags(ULocale.forLanguageTag(languageTag)).script
+        return SystemFonts.getAvailableFonts().filter { font ->
+            (0 until font.localeList.size()).any { index ->
+                val declared = font.localeList[index]
+                declared.language == language ||
+                    script.isNotEmpty() && declared.script == script && declared.language in UNDETERMINED
+            }
+        }
     }
 
     /** The first of [fonts] whose full or PostScript name is one of the page's `local()` names (case-insensitive). */
@@ -58,4 +69,7 @@ object SystemFontFiles {
     }
 
     private fun isSerif(font: Font): Boolean = font.file?.name?.contains("Serif") == true
+
+    /** How a locale without a language reads: Java writes `und` as an empty language. */
+    private val UNDETERMINED = setOf("", "und")
 }

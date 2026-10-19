@@ -44,6 +44,13 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val abbreviationsBeforeLowercase: Set<String> = emptySet()
 
     /**
+     * Letters as their names write them where they stand for initials or the letters of an acronym (Hindi ए, बी, सी for
+     * A, B, C), lowercase: two or more joined by periods keep the sentence going ("ए.पी.जे.", "आई.आई.टी."). A single one
+     * counts only when [abbreviations] lists it.
+     */
+    open val initials: Set<String> = emptySet()
+
+    /**
      * Words written joined to the next one with an apostrophe without being part of it (French l', qu'), lowercase: a
      * word aimed after the apostrophe is looked up from there ("l'eau" → "eau").
      */
@@ -64,8 +71,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * A period ends the sentence unless a letter or digit follows it at once (3.14, p.m, example.com), it closes an
-     * abbreviation (a paired letter only beside another, see [pairedLetters]) or, with [ordinalPeriod], an ordinal
-     * number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
+     * abbreviation (a paired letter only beside another, see [pairedLetters]) or [initials], or, with [ordinalPeriod],
+     * an ordinal number. An abbreviation at the real end of a sentence keeps it running on, which is the smaller error.
      */
     override fun endsSentence(text: String, index: Int): Boolean {
         val character = text[index]
@@ -78,6 +85,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             return !hasPartner(text, index - 1, index)
         }
         if (word.lowercaseIn(abbreviationsBeforeLowercase)) return !lowercaseOrNumberAfter(text, index)
+        if ('.' in word && word.split('.').all { it.lowercaseIn(initials) }) return false
         return !word.lowercaseIn(abbreviations)
     }
 
@@ -165,7 +173,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         var start = index
         while (start > 0) {
             val previous = text[start - 1]
-            val inWord = previous.isLetter() || previous == '.' && start > 1 && text[start - 2].isLetter()
+            val inWord = previous.isLetterOrMark() ||
+                previous == '.' && start > 1 && text[start - 2].isLetterOrMark()
             if (!inWord) break
             start--
         }
@@ -180,7 +189,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         var before = letter
         while (before > 0 && text[before - 1].isWhitespace()) before--
         val partnerBefore = before < letter && before >= 2 && text[before - 1] == '.' && text[before - 2].isLetter() &&
-            (before < 3 || !text[before - 3].isLetter())
+            (before < 3 || !text[before - 3].isLetterOrMark())
         var after = period + 1
         while (after < text.length && text[after].isWhitespace()) after++
         val partnerAfter = after > period + 1 && after + 1 < text.length && text[after].isLetter() &&
@@ -223,7 +232,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     private fun digitsBefore(text: String, index: Int): Int {
         var start = index
         while (start > 0 && text[start - 1].isDigit()) start--
-        if (start > 0 && text[start - 1].isLetter()) return 0
+        if (start > 0 && text[start - 1].isLetterOrMark()) return 0
         return index - start
     }
 
@@ -234,7 +243,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     private fun isElision(text: String, end: Int): Boolean {
         if (elisions.isEmpty()) return false
         var start = end
-        while (start > 0 && text[start - 1].isLetter()) start--
+        while (start > 0 && text[start - 1].isLetterOrMark()) start--
         if (start > 0 && text[start - 1] in APOSTROPHES) return false
         return text.substring(start, end).lowercaseIn(elisions)
     }
@@ -245,12 +254,26 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     private fun String.lowercaseIn(words: Set<String>): Boolean =
         lowercase(caseLocale) in words || lowercase(Locale.ROOT) in words
 
-    private fun isWordCharacter(codePoint: Int): Boolean =
-        Character.isLetterOrDigit(codePoint) || Character.getType(codePoint) == Character.NON_SPACING_MARK.toInt()
+    /**
+     * Letters, digits and combining marks: the vowel signs of Indic scripts are spacing marks (पढ़ा, বাড়ি), drawn before
+     * their letter at times; the zero-width joiners shape letters inside a word.
+     */
+    private fun isWordCharacter(codePoint: Int): Boolean = Character.isLetterOrDigit(codePoint) ||
+        isMark(Character.getType(codePoint)) || codePoint == ZWNJ || codePoint == ZWJ
+
+    /** A letter or a combining mark: the vowel sign of "डॉ." belongs to the abbreviation. */
+    private fun Char.isLetterOrMark(): Boolean = isLetter() || isMark(Character.getType(this))
+
+    private fun isMark(type: Int): Boolean =
+        type == Character.NON_SPACING_MARK.toInt() || type == Character.COMBINING_SPACING_MARK.toInt() ||
+            type == Character.ENCLOSING_MARK.toInt()
 
     private companion object {
         /** A Roman numeral in capitals, I to MMMCMXCIX (IV, XIV). */
         val ROMAN_NUMERAL = Regex("(?=[MDCLXVI])M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
+
+        const val ZWNJ = 0x200C
+        const val ZWJ = 0x200D
 
         /** Characters inside one word: don't, rock'n'roll, well-known. */
         const val WORD_CONNECTORS = "'’-"

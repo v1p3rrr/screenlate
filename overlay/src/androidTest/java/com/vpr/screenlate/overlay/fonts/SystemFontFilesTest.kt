@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.fonts
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -30,5 +31,14 @@ class SystemFontFilesTest {
         val weights = SystemFontFiles.weights(JapaneseSupport)
         assertThat(weights.sans).isEqualTo(SystemFontFiles.find(JapaneseSupport)?.let(SystemFontFiles::weightRange))
         assertThat(weights.serif).isEqualTo(SystemFontFiles.find(JapaneseSupport, serif = true)?.let(SystemFontFiles::weightRange))
+    }
+
+    /** Android declares its Devanagari fonts for the script (`und-Deva`), not for Hindi. */
+    @Test
+    fun findsTheDevanagariSerifThroughItsScript() {
+        val font = SystemFontFiles.find(HindiSupport, serif = true)
+        assumeTrue("The phone has no Devanagari serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in HindiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

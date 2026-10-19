@@ -113,6 +113,13 @@ class WordfreqDictionaryTest {
     }
 
     @Test
+    fun `hindi words rank their candrabindu and anusvara spellings both, as devanagari has no capitals`() {
+        val support = Language.HINDI.support
+        val rows = WordfreqDictionary.termMeta(listOf("हूं", "पानी", "माँ"), 3, Locale.forLanguageTag("hi"), support::frequencySpellings)
+        assertThat(rows).containsExactly("हूं" to 1, "पानी" to 2, "माँ" to 3, "हूँ" to 1, "मां" to 3).inOrder()
+    }
+
+    @Test
     fun `capitals follow the language`() {
         assertThat(WordfreqDictionary.capitalized("istanbul", Locale.forLanguageTag("tr"))).isEqualTo("İstanbul")
         assertThat(WordfreqDictionary.capitalized("istanbul", Locale.ENGLISH)).isEqualTo("Istanbul")

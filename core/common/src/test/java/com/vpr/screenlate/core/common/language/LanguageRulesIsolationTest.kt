@@ -54,6 +54,16 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `vowel signs and joiners stay inside their word in every spaced language`() {
+        for (support in spaced) {
+            // ि is a spacing mark, drawn before its letter.
+            assertThat(support.wordStartOffset("आज कि", "ताब")).isEqualTo(2)
+            assertThat(support.wordStartOffset("क्\u200C", "ष")).isEqualTo(3)
+            assertThat(support.lookupStart("ाना", latinAsNative = false)).isNull()
+        }
+    }
+
+    @Test
     fun `only Vietnamese starts lookups at the syllables before the aimed one`() {
         assertThat(all.where { it.earlierStartOffset("Tôi là học ") > 0 }).containsExactly(Language.VIETNAMESE)
     }
@@ -109,6 +119,11 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         val example = "π.χ. το"
         assertThat(spaced.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
+        // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods.
+        assertThat(spaced.where { holds(it, "डॉ. शर्मा") }).containsExactly(Language.HINDI)
+        val acronym = "ए.पी.जे. कलाम"
+        assertThat(spaced.where { !it.endsSentence(acronym, acronym.indexOf(". ")) }).containsExactly(Language.HINDI)
+        assertThat(spaced.filter { it.initials.isNotEmpty() }.map { it.language }).containsExactly(Language.HINDI)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
     }
@@ -117,6 +132,12 @@ class LanguageRulesIsolationTest {
     fun `only Greek ends a sentence at a semicolon, and none at the ano teleia`() {
         assertThat(all.where { it.endsSentence("Τι; Ναι", 2) }).containsExactly(Language.GREEK)
         assertThat(all.where { it.endsSentence("Τι· Ναι", 2) }).isEmpty()
+    }
+
+    @Test
+    fun `only Hindi ends a sentence at the danda`() {
+        assertThat(all.where { it.endsSentence("वह आया। फिर", "वह आया".length) }).containsExactly(Language.HINDI)
+        assertThat(all.where { it.endsSentence("राम॥ अब", "राम".length) }).containsExactly(Language.HINDI)
     }
 
     @Test
@@ -177,8 +198,14 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
         assertThat(all.where { it.frequencyWord("τησ") != "τησ" }).containsExactly(Language.GREEK)
-        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK)
         assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+    }
+
+    @Test
+    fun `only Greek and Hindi key every headword without its marks, only Hindi replaces marks`() {
+        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK, Language.HINDI)
+        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(Language.HINDI)
+        assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
     }
 
     @Test
