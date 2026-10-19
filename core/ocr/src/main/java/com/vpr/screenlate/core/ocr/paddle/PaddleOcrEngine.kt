@@ -29,10 +29,10 @@ import kotlinx.coroutines.withContext
 /**
  * PP-OCR on MNN. A recognizer's directory holds `model.mnn` and `dict.txt`, its characters one per line; the
  * detector it requires holds `model.mnn` and may hold `detector.properties` with its thresholds
- * ([DetectionThresholds.parse]). The detector and one recognizer stay loaded until [release] or a scan with
- * another model; the memory their largest input took is freed once scans pause ([TRIM_DELAY_MS]). A recognizer whose
- * characters include right-to-left letters (Arabic) reads its crops from left to right; its lines are turned into
- * reading order ([readingOrder]).
+ * ([DetectionThresholds.parse]). The detector and one recognizer stay loaded until [release] (after the scan or trim
+ * in progress) or a scan with another model; the memory their largest input took is freed once scans pause
+ * ([TRIM_DELAY_MS]). A recognizer whose characters include right-to-left letters (Arabic) reads its crops from left to
+ * right; its lines are turned into reading order ([readingOrder]).
  */
 @Singleton
 class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
@@ -44,6 +44,14 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
 
     /** A whole screen leaves ~350 MB with MNN (1280 × 2856); freed once scans pause, kept while they follow. */
     private val trim = IdleAction(CoroutineScope(SupervisorJob() + Dispatchers.Default), TRIM_DELAY_MS) { trimNetworks() }
+
+    /** A release does not wait for a scan or a trim; they free the networks when they end. */
+    private val deferredRelease = DeferredRelease(mutex) {
+        detector?.value?.close()
+        recognizer?.value?.close()
+        detector = null
+        recognizer = null
+    }
 
     private class Loaded<T : AutoCloseable>(val directory: String, val version: String, val value: T)
 
@@ -72,35 +80,31 @@ class PaddleOcrEngine @Inject constructor() : ModelOcrEngine {
                     if (recognizer.rightToLeft) readingOrder(page) else page
                 }
             } finally {
+                deferredRelease.afterHold()
                 trim.schedule()
             }
         }
 
     private suspend fun trimNetworks() {
-        mutex.withLock {
-            val detector = detector?.value ?: return
-            val recognizer = recognizer?.value ?: return
-            val started = SystemClock.elapsedRealtime()
-            val before = detector.network.memoryMb + recognizer.network.memoryMb
-            detector.network.trim(DETECTOR_TRIM_SHAPE)
-            recognizer.network.trim(RECOGNIZER_TRIM_SHAPE)
-            val after = detector.network.memoryMb + recognizer.network.memoryMb
-            Log.i(TAG, "Freed the memory of large inputs: ${before.roundToInt()} -> ${after.roundToInt()} MB in ${SystemClock.elapsedRealtime() - started} ms")
+        try {
+            mutex.withLock {
+                val detector = detector?.value ?: return
+                val recognizer = recognizer?.value ?: return
+                val started = SystemClock.elapsedRealtime()
+                val before = detector.network.memoryMb + recognizer.network.memoryMb
+                detector.network.trim(DETECTOR_TRIM_SHAPE)
+                recognizer.network.trim(RECOGNIZER_TRIM_SHAPE)
+                val after = detector.network.memoryMb + recognizer.network.memoryMb
+                Log.i(TAG, "Freed the memory of large inputs: ${before.roundToInt()} -> ${after.roundToInt()} MB in ${SystemClock.elapsedRealtime() - started} ms")
+            }
+        } finally {
+            deferredRelease.afterHold()
         }
     }
 
     override fun release() {
         trim.cancel()
-        // Not under the mutex: a scan in progress keeps its models and frees them at the next release or model change.
-        if (!mutex.tryLock()) return
-        try {
-            detector?.value?.close()
-            recognizer?.value?.close()
-            detector = null
-            recognizer = null
-        } finally {
-            mutex.unlock()
-        }
+        deferredRelease.request()
     }
 
     private inline fun <T : AutoCloseable> loaded(

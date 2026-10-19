@@ -93,6 +93,18 @@ class AccessibilityTextTest {
     }
 
     @Test
+    fun `boxes that marks take from their letters are not shared boxes`() {
+        // "Được" decomposed: Đ u, horn, o, horn, dot below, c; the marks have no box of their own.
+        val word = "Đ" + "u" + "\u031B" + "o" + "\u031B" + "\u0323" + "c"
+        val characters = characters(word, hidden = setOf(2, 4, 5))
+        val lines = appTextLines(characters, " ")
+
+        assertThat(lines.map { it.text }).containsExactly(word)
+        assertThat(sharesBoxes(lines.flatMap { it.characterBoxes!! })).isTrue()
+        assertThat(sharesBoxes(characters.mapNotNull { it.second })).isFalse()
+    }
+
+    @Test
     fun `each line keeps its character boxes`() {
         val lines = appTextLines(characters("ab cd", hidden = setOf(2)), " ")
         assertThat(lines.map { it.characterBoxes!!.size }).containsExactly(2, 2).inOrder()
