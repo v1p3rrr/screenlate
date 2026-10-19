@@ -1023,6 +1023,11 @@ no ML Kit for Serbian).
 Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questions and progress:
 `2026-10-19-group-4b.md`.
 
+### Group 4c (th, km, lo)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questions and progress:
+`2026-10-19-group-4c.md`. Lao and Khmer join Thai now instead of later (owner, 2026-10-19, question 5 of that plan).
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -1418,3 +1423,7 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4b research". Plan, questio
   (middag + ten, dan + school). The other limits stay, with reasons, in `notes/language-rules.md`.
 - 2026-10-19: group 4b (Hindi, Bengali, Georgian, Armenian) researched; its plan with the questions is
   `2026-10-19-group-4b.md`, linked from Stage E.
+- 2026-10-19: group 4c (Thai, Khmer, Lao) researched; its plan with the owner's answers is `2026-10-19-group-4c.md`,
+  linked from Stage E. Lao and Khmer are built now with Thai (question 30 said later). The converted Paddle models
+  that wait (Thai, Devanagari) go up in one release when the owner decides (row "Paddle model hosting": the upload
+  date is the owner's; question 9 of the group 4b plan said "with the next Paddle models").
