@@ -117,10 +117,33 @@ class FormOfTagsTest {
     }
 
     @Test
+    fun `dutch, czech, serbo-croatian, tagalog, belarusian and greek tags are translated`() {
+        assertThat(label("first/second-person singular present main-clause"))
+            .isEqualTo("first_person/second_person singular present main_clause")
+        assertThat(label("plural past indicative dependent-clause"))
+            .isEqualTo("plural past indicative subordinate_clause")
+        assertThat(label("second-person singular past Flanders colloquial"))
+            .isEqualTo("second_person singular past flanders colloquial")
+        assertThat(label("singular masculine present transgressive"))
+            .isEqualTo("singular masculine present transgressive")
+        assertThat(label("iterative")).isEqualTo("frequentative")
+        assertThat(label("singular conditional conditional-ii")).isEqualTo("singular conditional conditional_ii")
+        assertThat(label("alternative Ikavian Čakavian")).isEqualTo("alternative ikavian chakavian")
+        assertThat(label("infinitive benefactive")).isEqualTo("infinitive benefactive")
+        assertThat(label("plural count-form")).isEqualTo("plural count_form")
+        assertThat(label("count form")).isEqualTo("count_form")
+        assertThat(label("alternative Taraškievica")).isEqualTo("alternative taraskievica")
+        assertThat(label("active infinitive-aorist")).isEqualTo("active infinitive_aorist")
+    }
+
+    @Test
     fun `countries take the system's name, other regions a string`() {
         assertThat(label("alternative Brazil pronunciation-spelling"))
             .isEqualTo("alternative country:BR pronunciation_spelling")
         assertThat(label("alternative Liechtenstein Switzerland")).isEqualTo("alternative country:LI country:CH")
+        assertThat(label("alternative Brunei Malaysia Singapore"))
+            .isEqualTo("alternative country:BN country:MY country:SG")
+        assertThat(label("alternative Bosnia Serbia")).isEqualTo("alternative country:BA country:RS")
         assertThat(label("Latin-America")).isEqualTo("latin_america")
     }
 }
