@@ -23,7 +23,7 @@ class LanguageReactivationTest {
             fixture.switch.turnOff(Language.ENGLISH, deleteFiles = false)
             listOf(main, other, japanese).forEach { fixture.repository.setEnabled(it.id, false) }
             assertThat(fixture.switch.needsDownloads(Language.ENGLISH)).isTrue()
-            val categories = setupCategories(catalog, "en", listOf("en"), fixture.repository.getAll())
+            val categories = setupCategories(catalog, Language.ENGLISH, listOf("en"), fixture.repository.getAll())
             val selected = setupInstalled(categories, emptyMap(), fixture.repository.getAll())
             val before = fixture.imports.tasks.first()
 

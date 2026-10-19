@@ -95,10 +95,21 @@ class WordfreqDictionaryTest {
     @Test
     fun `chinese words are spelled in traditional characters too`() {
         val chinese = Language.CHINESE.support
-        assertThat(WordfreqDictionary.spellings("头发", chinese)).contains("頭髮")
-        assertThat(WordfreqDictionary.spellings("学习", chinese)).containsExactly("學習")
-        assertThat(WordfreqDictionary.spellings("中文", chinese)).isEmpty()
-        assertThat(WordfreqDictionary.spellings("water", Language.ENGLISH.support)).isEmpty()
+        assertThat(chinese.frequencySpellings("头发")).contains("頭髮")
+        assertThat(chinese.frequencySpellings("学习")).containsExactly("學習")
+        assertThat(chinese.frequencySpellings("中文")).isEmpty()
+        assertThat(Language.ENGLISH.support.frequencySpellings("water")).isEmpty()
+    }
+
+    @Test
+    fun `serbo-croatian words are spelled in cyrillic too, capitalized as well`() {
+        val support = Language.ofDictionaries("sh")!!.support
+        assertThat(support.frequencySpellings("knjiga")).containsExactly("књига")
+        assertThat(support.frequencySpellings("wifi")).isEmpty()
+        val rows = WordfreqDictionary.termMeta(listOf("beograd", "kuća"), 2, Locale.forLanguageTag("sh"), support::frequencySpellings)
+        assertThat(rows).containsExactly(
+            "beograd" to 1, "Beograd" to 1, "kuća" to 2, "Kuća" to 2, "београд" to 1, "Београд" to 1, "кућа" to 2, "Кућа" to 2,
+        ).inOrder()
     }
 
     @Test

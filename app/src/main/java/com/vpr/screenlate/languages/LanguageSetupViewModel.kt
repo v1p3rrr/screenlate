@@ -93,13 +93,13 @@ class LanguageSetupViewModel @Inject constructor(
         picks: Picks,
     ): LanguageSetupState {
         val choices = picks.ticks
-        val order = catalogTargetOrder(language.code, Locale.getDefault())
-        val available = glossChoices(catalog.entries, language.code, taken = emptyList(), order)
-        val slots = glossSlots(language.code, interfaceLanguage, available)
+        val order = catalogTargetOrder(language.dictionaryCode, Locale.getDefault())
+        val available = glossChoices(catalog.entries, language.dictionaryCode, taken = emptyList(), order)
+        val slots = glossSlots(language.dictionaryCode, interfaceLanguage, available)
         val choosable = slots.indexOf(null).takeIf { it >= 0 }
         val glosses = if (choosable == null || chosen == null) slots else slots.toMutableList().also { it[choosable] = chosen.code }
         val mlKitReads = mlKit.reads(language)
-        val categories = setupCategories(catalog, language.code, glosses.filterNotNull(), installed, mlKitReads) { it.isInstalledIn(models) }
+        val categories = setupCategories(catalog, language, glosses.filterNotNull(), installed, mlKitReads) { it.isInstalledIn(models) }
         val downloads = setupDownloads(categories, choices)
         val candidates = mainModelCandidates(categories, choices, catalog.entries.flatMapTo(hashSetOf()) { it.requires })
         return LanguageSetupState(

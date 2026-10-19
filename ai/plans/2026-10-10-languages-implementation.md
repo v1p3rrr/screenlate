@@ -570,6 +570,23 @@ decision rows from "Serbo-Croatian" on:
 54. Answered: (a). The entries' names: "Serbo-Croatian (Latin)" and "Serbo-Croatian (Cyrillic)"; or "Croatian" and
     "Serbian" (Serbian Latin text would then go through "Croatian").
 
+Collected while building Serbo-Croatian (2026-10-19; the owner left the work running, so each is built with the first
+option and changes cheaply):
+
+55. Codes in e-ink mode (letters instead of flags): "SH" for the Latin entry and "СХ" for the Cyrillic one; or "SH"
+    for both; or "HR" and "SR".
+56. Tesseract models listed: Croatian (hrv) for the Latin entry and Serbian (srp) for the Cyrillic one; or also
+    Serbian Latin (srp_latn) and Bosnian (bos) for the Latin entry. PaddleOCR v6 stays the recommended one for Latin
+    (measured best), PaddleOCR cyrillic for Cyrillic.
+57. Sentence translation from: Croatian for the Latin entry and Serbian (Cyrillic) for the Cyrillic one, as the
+    voices; or Serbian (Latin) for the Latin entry; or Bosnian. The services translate the three alike.
+58. Flags: Croatia for the Latin entry and Serbia for the Cyrillic one, with no "Flag" button; or a "Flag" button on
+    the Latin entry with Croatia, Serbia, Bosnia and Herzegovina and Montenegro (as for English).
+59. Lingua Libre: the Serbian recordings (srp, 93 files) for both entries; Croatian (hrv) has one file and Bosnian
+    none. Or no Lingua Libre for Serbo-Croatian (Wiktionary first, then the voice).
+60. "Turned off" with both entries off: one card for the shared files with "Turn on Serbo-Croatian (Latin)" and "Turn
+    on Serbo-Croatian (Cyrillic)"; or one card per entry, the dictionaries on the card of the entry turned off last.
+
 ## Branches and workflow
 
 - `languages/main`: the multi-language branch, off `main`. (Git cannot hold a branch `languages` next to
@@ -964,7 +981,9 @@ on 2026-10-19 before the OCR plan's last items, which wait for the phone timings
 Progress: nl, cs, id, ms and tl are built on chained branches and checked on the emulator (LK31-LK35, run log of
 2026-10-19); `languages/main` is fast-forwarded to `languages/tl` (`3951cea`). Found while checking: the line
 "Compound: X + Y" above a split compound (row "German compounds", question 15, owner 2026-10-16) was never built; it
-is built next, for German and Dutch, before Serbo-Croatian.
+is built now, for German and Dutch (`58ea5fa`). Serbo-Croatian (both entries) is built on `languages/sh`, checked on
+the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Next:
+Ukrainian, Belarusian, Greek.
 
 ## The big release
 
@@ -1324,3 +1343,8 @@ is built next, for German and Dutch, before Serbo-Croatian.
   Janssen → Jansen showed as a form chain); a capital I read for the l of Czech "n. l." keeps the sentence going.
   Translation of Chinese, Portuguese and Filipino sentences picked no service language (plain bug, fixed). The
   missing "Compound:" line is built next.
+- 2026-10-19: the line "Compound: …" built for German and Dutch. Serbo-Croatian built as two entries sharing the
+  dictionary code sh, checked on the emulator and fast-forwarded into `languages/main`. Plain fixes found: QuickJS has
+  no console, so Yomitan's warning at its 4,096-variant cut failed the lookup (a stub in every bundle); Cyrillic text
+  with reading marks found nothing (the glue replaces Yomitan's accent mark processor); a Croatian or Serbian
+  interface made the text's own language the default translation target. Provisional choices: questions 55-60.

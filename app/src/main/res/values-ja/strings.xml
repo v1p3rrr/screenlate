@@ -295,6 +295,7 @@
     <string name="languages_turned_off_hint">オフにした言語のファイルです。検索には使われません。</string>
     <string name="languages_not_turned_on">オンにしていない言語</string>
     <string name="languages_turn_on">オンにする</string>
+    <string name="languages_turn_on_named">%1$sをオンにする</string>
     <string name="languages_active">使用中</string>
     <string name="languages_star">クイック切り替え</string>
     <string name="languages_star_active">使用中の言語は常にクイック切り替えに含まれます</string>
@@ -482,6 +483,7 @@
     <string name="popup_font_script_only_tl">フィリピノ語の文字だけに使う</string>
     <string name="popup_font_script_only_vi">ベトナム語の文字だけに使う</string>
     <string name="popup_font_script_only_ru">ロシア語の文字だけに使う</string>
+    <string name="popup_font_script_only_sh">セルビア・クロアチア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

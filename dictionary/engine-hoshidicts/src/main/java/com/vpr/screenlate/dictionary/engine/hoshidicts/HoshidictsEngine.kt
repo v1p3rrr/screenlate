@@ -99,9 +99,10 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
 
     private suspend fun lookupThroughYomitan(text: String, options: LookupOptions): List<LookupResult> = session { handle ->
         val language = options.language
-        val code = language.code.encodeToByteArray()
+        // Entries of one language in two scripts share its bundle, as they share its dictionaries.
+        val code = language.dictionaryCode.encodeToByteArray()
         if (!HoshidictsNative.hasLanguage(handle, code)) {
-            val script = context.assets.open("$SCRIPTS/${language.code}.js").use { it.readBytes() }
+            val script = context.assets.open("$SCRIPTS/${language.dictionaryCode}.js").use { it.readBytes() }
             HoshidictsNative.loadLanguage(handle, code, script)
         }
         val frequencyDictionary = options.frequencyDictionary
@@ -138,7 +139,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
      * stay as they are.
      */
     private fun localize(language: Language, transform: Transform): Transform {
-        YomitanInflections.localize(context.resources, language.code, transform)?.let { return it }
+        YomitanInflections.localize(context.resources, language.dictionaryCode, transform)?.let { return it }
         val tag = transform.copy(name = FormOfTags.clean(transform.name))
         return FormOfTags.label(context.resources, tag.name)?.let { tag.copy(label = it) } ?: tag
     }
@@ -183,11 +184,14 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
         /** Written next to a dictionary's files by the import (`jni_bridge.cpp`). */
         const val FORM_OF_TABLE = "form_of.bin"
 
-        /** Each language's [headwordMarks][com.vpr.screenlate.core.common.language.LanguageSupport.headwordMarks]. */
+        /**
+         * Each language's [headwordMarks][com.vpr.screenlate.core.common.language.LanguageSupport.headwordMarks], by the
+         * source language dictionaries name ([Language.dictionaryCode]).
+         */
         val HEADWORD_MARKS: ByteArray = buildJsonObject {
-            for (language in Language.entries) {
+            for (language in Language.entries.distinctBy { it.dictionaryCode }) {
                 val marks = language.support.headwordMarks ?: continue
-                put(language.code, buildJsonObject {
+                put(language.dictionaryCode, buildJsonObject {
                     put("marks", marks.marks)
                     put("bases", marks.bases)
                 })

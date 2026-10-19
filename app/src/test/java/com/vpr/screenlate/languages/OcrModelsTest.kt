@@ -1,6 +1,7 @@
 package com.vpr.screenlate.languages
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
@@ -52,7 +53,7 @@ class OcrModelsTest {
         val best = model("ru-best", "ru", "tesseract-best-rus").copy(engine = "tesseract", recommended = false)
         val recognizer = model("ru-rec", "ru", "eslav").copy(requires = listOf("det"))
         val catalog = Catalog(listOf(model("ru-det", "ru", "det"), recognizer, fast, best))
-        val categories = setupCategories(catalog, "ru", glosses = listOf("en"), installed = emptyList())
+        val categories = setupCategories(catalog, Language.RUSSIAN, glosses = listOf("en"), installed = emptyList())
         val required = setOf("det")
 
         // The detector is ticked and downloaded but never main.
@@ -80,7 +81,7 @@ class OcrModelsTest {
     fun `beside ml kit no model is ticked by default and nothing is missing`() {
         val recognizer = model("de-rec", "de", "latin")
         val catalog = Catalog(listOf(recognizer), mapOf("de" to setOf(CatalogCategory.OCR_MODEL)))
-        val builtIn = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList(), mlKitReads = true)
+        val builtIn = setupCategories(catalog, Language.GERMAN, glosses = listOf("en"), installed = emptyList(), mlKitReads = true)
             .single { it.category == CatalogCategory.OCR_MODEL }
         assertThat(builtIn.builtIn).isTrue()
         assertThat(builtIn.fixed).isFalse()
@@ -89,14 +90,14 @@ class OcrModelsTest {
         assertThat(setupDownloads(listOf(builtIn), emptyMap())).isEmpty()
         assertThat(setupDownloads(listOf(builtIn), mapOf("de-rec" to true)).map { it.id }).containsExactly("de-rec")
 
-        val without = setupCategories(catalog, "de", glosses = listOf("en"), installed = emptyList())
+        val without = setupCategories(catalog, Language.GERMAN, glosses = listOf("en"), installed = emptyList())
             .single { it.category == CatalogCategory.OCR_MODEL }
         assertThat(without.ticked(without.items.single(), emptyMap())).isTrue()
     }
 
     @Test
     fun `models are listed on the download screen and an installed one stays ticked`() {
-        val categories = setupCategories(Catalog(entries), "ru", glosses = listOf("en"), installed = emptyList()) {
+        val categories = setupCategories(Catalog(entries), Language.RUSSIAN, glosses = listOf("en"), installed = emptyList()) {
             it.model == "det"
         }
         val models = categories.single { it.category == CatalogCategory.OCR_MODEL }
@@ -120,5 +121,59 @@ class OcrModelsTest {
         assertThat(leftoverModels(listOf("ru"), entries, installed, Locale.ENGLISH).mapValues { (_, models) -> models.map { it.id } })
             .containsExactly("ar", listOf("arabic"))
         assertThat(leftoverModels(listOf("ja"), entries, emptyList(), Locale.ENGLISH)).isEmpty()
+    }
+
+    private val latin = Language.SERBO_CROATIAN_LATIN
+    private val cyrillic = Language.SERBO_CROATIAN_CYRILLIC
+
+    @Test
+    fun `a serbo-croatian entry brings its models, and the shared dictionaries only while the other entry is off`() {
+        assertThat(fileCodes("sh-Latn", turnedOn = listOf(Language.JAPANESE, cyrillic))).containsExactly("sh-Latn")
+        assertThat(fileCodes("sh-Latn", turnedOn = listOf(Language.JAPANESE))).containsExactly("sh-Latn", "sh")
+        // The card of both entries stands for the dictionaries and each script's models.
+        assertThat(fileCodes("sh", turnedOn = listOf(Language.JAPANESE))).containsExactly("sh-Latn", "sh", "sh-Cyrl")
+        assertThat(fileCodes("sh", turnedOn = listOf(cyrillic))).containsExactly("sh-Latn")
+        assertThat(fileCodes("ru", turnedOn = listOf(Language.JAPANESE))).containsExactly("ru")
+        assertThat(fileCodes("xx", turnedOn = listOf(Language.JAPANESE))).containsExactly("xx")
+    }
+
+    @Test
+    fun `the models of both serbo-croatian entries share one leftover card while both are off`() {
+        assertThat(leftoverCode("sh-Latn", turnedOn = listOf(Language.JAPANESE))).isEqualTo("sh")
+        assertThat(leftoverCode("sh-Latn", turnedOn = listOf(cyrillic))).isEqualTo("sh-Latn")
+        assertThat(leftoverCode("ru", turnedOn = listOf(Language.JAPANESE))).isEqualTo("ru")
+        assertThat(leftoverCode("xx", turnedOn = listOf(Language.JAPANESE))).isEqualTo("xx")
+
+        val models = listOf(
+            model("latn-det", "sh-Latn", "det"),
+            model("latn-rec", "sh-Latn", "v6"),
+            model("cyrl-det", "sh-Cyrl", "det"),
+            model("cyrl-rec", "sh-Cyrl", "cyrillic"),
+        )
+        val installed = listOf("det", "v6", "cyrillic").map { InstalledOcrModel(it, "5", "paddle", File(it)) }
+        val bothOff = leftoverCards(listOf(Language.JAPANESE), models, installed, Locale.ENGLISH)
+        assertThat(bothOff.mapValues { (_, list) -> list.map { it.id } }).containsExactly("sh", listOf("det", "v6", "cyrillic"))
+        // With the Cyrillic entry on, the Latin one keeps only the model the other does not read.
+        val latinOff = leftoverCards(listOf(cyrillic), models, installed, Locale.ENGLISH)
+        assertThat(latinOff.mapValues { (_, list) -> list.map { it.id } }).containsExactly("sh-Latn", listOf("v6"))
+    }
+
+    @Test
+    fun `each serbo-croatian entry lists the shared dictionaries and its own models`() {
+        val catalog = Catalog(
+            listOf(
+                CatalogEntry(
+                    id = "sh-en", title = "sh-en", declaredCategory = CatalogCategory.MAIN, sourceLanguage = "sh",
+                    targetLanguage = "en", recommended = true, downloadUrl = "https://example.org/sh-en.zip", downloadSize = 12_000_000,
+                ),
+                model("latn-rec", "sh-Latn", "v6"),
+                model("cyrl-rec", "sh-Cyrl", "cyrillic"),
+            ),
+        )
+        for ((entry, own) in listOf(latin to "latn-rec", cyrillic to "cyrl-rec")) {
+            val ids = setupCategories(catalog, entry, glosses = listOf("en"), installed = emptyList())
+                .flatMap { category -> category.items.map { it.entry.id } }
+            assertThat(ids).containsExactly("sh-en", own)
+        }
     }
 }

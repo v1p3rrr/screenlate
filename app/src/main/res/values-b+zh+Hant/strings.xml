@@ -295,6 +295,7 @@
     <string name="languages_turned_off_hint">已停用語言的檔案。查詢時不使用。</string>
     <string name="languages_not_turned_on">未啟用</string>
     <string name="languages_turn_on">啟用</string>
+    <string name="languages_turn_on_named">啟用%1$s</string>
     <string name="languages_active">目前</string>
     <string name="languages_star">快速切換</string>
     <string name="languages_star_active">目前語言一律在快速切換中</string>
@@ -482,6 +483,7 @@
     <string name="popup_font_script_only_tl">僅用於菲律賓語文字</string>
     <string name="popup_font_script_only_vi">僅用於越南文文字</string>
     <string name="popup_font_script_only_ru">僅用於俄文文字</string>
+    <string name="popup_font_script_only_sh">僅用於塞爾維亞-克羅埃西亞語文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

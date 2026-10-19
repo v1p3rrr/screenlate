@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.catalog
 
 import android.content.Context
 import android.util.Log
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -60,6 +61,8 @@ enum class CatalogCategory {
  * Wiktionary entries there are written by `scripts/catalog/generate.mjs`.
  *
  * @property title the entry's own name, also the name of its download task; [displayTitle] is what the user sees.
+ * @property sourceLanguage a dictionary's [Language.dictionaryCode], which the entries of a language in several scripts
+ *   share; a model's [Language.code], as each entry reads with its own models ([isFor]).
  * @property installedTitle title prefix of the installed dictionary, used when it has no [indexUrl].
  * @property formerTitles title prefixes the dictionary had before upstream renamed it; copies installed then still match.
  * @property oldTitles exact titles of installed copies, matched whole or followed by ` [` (a dated build), e.g. `JMdict`,
@@ -123,6 +126,9 @@ data class CatalogEntry(
     val category: CatalogCategory get() = declaredCategory ?: kind?.let(CatalogCategory::of) ?: CatalogCategory.MAIN
 
     val isModel: Boolean get() = category == CatalogCategory.OCR_MODEL
+
+    /** Whether the entry is one of [language]'s: by its own code for a model, by its dictionaries' code otherwise. */
+    fun isFor(language: Language): Boolean = sourceLanguage == if (isModel) language.code else language.dictionaryCode
 
     /**
      * A dictionary names its kind; a model its id, engine, version and checksum; a built dictionary a known [build],
@@ -231,6 +237,9 @@ data class Catalog(
 ) {
     /** Categories [language] needs at least one dictionary of: the main dictionary, and more for some languages. */
     fun mandatory(language: String): Set<CatalogCategory> = mandatory[language] ?: setOf(CatalogCategory.MAIN)
+
+    /** [mandatory] for an entry: its own code's, else its dictionaries' code's. */
+    fun mandatory(language: Language): Set<CatalogCategory> = mandatory[language.code] ?: mandatory(language.dictionaryCode)
 }
 
 @Serializable

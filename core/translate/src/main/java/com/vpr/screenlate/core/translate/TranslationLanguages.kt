@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.translate
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.languageCode
 import java.util.Locale
 
@@ -32,18 +33,19 @@ object TranslationLanguages {
 
     /**
      * The language of [source] text, as the services know it: the closest tag where they have no plain one (zh-Hans for
-     * zh, pt-BR for pt, fil for tl).
+     * zh, pt-BR for pt, fil for tl; Serbo-Croatian as its entry's voice, Croatian for Latin, Serbian for Cyrillic).
      */
     fun of(source: Language): TranslationLanguage? = of(source.code) ?: forLocale(Locale.forLanguageTag(source.code))
 
     /**
      * The language translations go into by default: [locale]'s (the interface language), or English when that is
-     * the [source] language or no service has it.
+     * the [source] language (Croatian or Serbian for Serbo-Croatian) or no service has it.
      */
     fun defaultFor(locale: Locale, source: Language): TranslationLanguage {
         val english = of(ENGLISH)!!
         val language = forLocale(locale) ?: return english
-        return if (Language.of(Locale.forLanguageTag(language.tag).languageCode) == source) english else language
+        val code = Locale.forLanguageTag(language.tag).languageCode
+        return if (Language.of(code) == source || code in source.support.localeLanguages) english else language
     }
 
     /**
@@ -56,6 +58,7 @@ object TranslationLanguages {
             "zh" -> if (locale.script == "Hant" || (locale.script.isEmpty() && locale.country in TRADITIONAL_REGIONS)) "zh-Hant" else "zh-Hans"
             "pt" -> if (locale.country == "PT") "pt-PT" else "pt-BR"
             "sr" -> if (locale.script == "Latn") "sr-Latn" else "sr-Cyrl"
+            "sh" -> if (locale.script == "Cyrl") "sr-Cyrl" else "hr"
             "fr" -> if (locale.country == "CA") "fr-CA" else "fr"
             "no", "nn" -> "nb"
             "tl" -> "fil"

@@ -154,7 +154,7 @@ class BackupManager @Inject constructor(
     suspend fun files(): BackupFiles = withContext(Dispatchers.IO) {
         val sizes = fonts.sizes()
         val turnedOn = profiles.current().turnedOn
-        val codes = turnedOn.map { it.code }
+        val codes = turnedOn.flatMap { listOf(it.code, it.dictionaryCode) }
         val installed = dictionaries.getAll().filter { it.sourceLanguage == null || it.sourceLanguage in codes }
         val modelLanguages = modelLanguages()
         BackupFiles(

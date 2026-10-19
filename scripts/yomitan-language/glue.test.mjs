@@ -80,6 +80,27 @@ test('tagalog affixes and the linker ng are undone only in tagalog', () => {
     assert.ok(!queried('id', 'kainin').has('kain'));
 });
 
+test('serbo-croatian text without diacritics finds the letters and accent marks drop, only in serbo-croatian', () => {
+    // Both entries (sh-Latn, sh-Cyrl) read the one bundle under the dictionaries' code.
+    assert.ok(queried('sh', 'kuca').has('kuća'));
+    assert.ok(queried('sh', 'sesir').has('šešir'));
+    assert.ok(queried('sh', 'djak').has('đak'));
+    assert.ok(queried('sh', 'ku\u030F\u0107a').has('kuća'));
+    assert.ok(queried('sh', 'ку\u030Fћа').has('кућа'));
+    assert.ok(queried('sh', 'Ку\u0301ћа').has('кућа'));
+    assert.ok(queried('sh', 'КУЋА').has('кућа'));
+    assert.ok(!queried('cs', 'kuca').has('kuća'));
+    assert.ok(!queried('ru', 'ку\u030Fћа').has('кућа'));
+});
+
+test('a text with more variants than yomitan keeps is looked up without a console, as in quickjs', () => {
+    // Node's contexts have a console; QuickJS has none, and Yomitan warns through it when it cuts the variants.
+    const context = vm.createContext({console: undefined});
+    vm.runInContext(fs.readFileSync(path.join(assets, 'sh.js'), 'utf8'), context);
+    const found = context.yomitanLang.candidates('cecescecescecesc', 'sh', 'word');
+    assert.ok(found.length > 0);
+});
+
 test('vietnamese tone marks match in the old and the new placement only in vietnamese', () => {
     const old = 'ho\u00e0';
     const current = 'h\u00f2a';

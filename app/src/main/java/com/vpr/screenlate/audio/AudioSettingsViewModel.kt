@@ -69,7 +69,7 @@ class AudioSettingsViewModel @Inject constructor(
 
     /** Whether a transcription dictionary of the shown language is installed. */
     val hasTranscriptions: StateFlow<Boolean> = combine(shown.language, dictionaries.dictionaries) { language, installed ->
-        installed.any { it.kind == DictionaryKind.PITCH && it.sourceLanguage == language.code }
+        installed.any { it.kind == DictionaryKind.PITCH && it.sourceLanguage == language.dictionaryCode }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
     val testWord = MutableStateFlow(shown.language.value.support.audioTestWord)

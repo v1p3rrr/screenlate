@@ -48,8 +48,12 @@ commit `9937cc4` with `languages/ocr-engines` at `fa1b086`), uses the phone for 
 the phone; ask whether a normal build should delete leftover `no_backup/diagnostics` files).
 
 Group 4a (nl, cs, id, ms, tl, sh, uk, be, el): researched (`notes/languages.md`, "Group 4a research"), questions
-41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. It starts after the OCR
-engines plan is done.
+41-54 answered (decision rows from "Serbo-Croatian" on), work list in the plan's Stage E. Started on 2026-10-19 (the
+OCR plan's timing items wait for the phone). Done on chained branches and fast-forwarded into `languages/main`: the
+shared pieces, nl, cs, id, ms, tl (LK31-LK35), the "Compound:" line, sh as two entries (LK36; questions 55-60 are
+its provisional choices, to ask the owner). Next: uk, be, el; then the docs' language lists, the Greek Paddle model
+upload to `ocr-models-1` (approved once the 4a work is ready), and the owner re-imports the Russian dictionaries (the
+stress-mark rule changes them at import).
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

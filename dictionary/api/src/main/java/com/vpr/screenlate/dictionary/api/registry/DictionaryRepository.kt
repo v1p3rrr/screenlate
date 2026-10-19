@@ -121,7 +121,7 @@ class DictionaryRepository @Inject constructor(
                 null
             }
             Log.i(TAG, "Languages of ${metadata.title}: ${source ?: detected?.source} → ${target ?: detected?.target}")
-            val support = Language.of(source ?: detected?.source)?.support
+            val support = (source ?: detected?.source).let { Language.of(it) ?: Language.ofDictionaries(it) }?.support
             if (metadata.termCount > 0 && support?.readingSearch == true) {
                 val indexStarted = System.currentTimeMillis()
                 val readingIndex = runCatching { ReadingIndexBanks.read(archive, support) }

@@ -291,8 +291,9 @@ class AudioFinder internal constructor(
             }
             AudioSourceType.WIKTIONARY -> {
                 val title = language.support.recordingTitle(term, reading)
-                val search = AudioPages.wiktionarySearch(title, language.code, regions)
-                val files = AudioPages.byRegion(commonsFiles(search, deadline), title, language.code, regions)
+                val prefix = language.support.recordingPrefix
+                val search = AudioPages.wiktionarySearch(title, prefix, regions)
+                val files = AudioPages.byRegion(commonsFiles(search, deadline), title, prefix, regions)
                 candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))
@@ -430,7 +431,7 @@ class AudioFinder internal constructor(
     private fun expand(template: String, term: String, reading: String, language: Language): String =
         template.replace("{term}", encode(term))
             .replace("{reading}", encode(reading.ifEmpty { term }))
-            .replace("{language}", encode(language.code))
+            .replace("{language}", encode(language.dictionaryCode))
 
     private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 

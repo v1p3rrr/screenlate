@@ -805,3 +805,32 @@ plan.
     (c) the code "BE" instead of a flag.
 12. Bubble letters: (a, recommended) nl Ĳ, cs Ř, id and ms the codes "ID" and "MS" (no letter of their own), tl Ng,
     sh Đ, uk Ї, be Ў, el Ω; (b) the alternatives above (IJ, Ů, Ñ, Ћ, Ґ, Λ).
+
+## Serbo-Croatian on `languages/sh` (2026-10-19)
+
+- Two entries, `Language.SERBO_CROATIAN_LATIN` (`sh-Latn`) and `SERBO_CROATIAN_CYRILLIC` (`sh-Cyrl`), with the shared
+  `dictionaryCode` sh. The entry code keys the settings, the profile, the recognition models (`paddle-v6-sh-Latn`,
+  `tesseract-*-hrv`; `paddle-cyrillic-sh-Cyrl`, `tesseract-*-srp`), the voice (hr, sr), the flag and the page's
+  `lang`; the dictionary code is the dictionaries' source language (catalog, registry, imports), the Yomitan bundle
+  `sh.js`, the wordfreq list, the audio URL templates' `{language}`, cloud recognition's language and the backup's
+  dictionary files (either entry takes them). `Language.of("sh")` is null, `Language.withDictionaries("sh")` gives both
+  entries, `CatalogEntry.isFor` compares models by entry and dictionaries by dictionary code.
+- Files: an entry's files are its models, plus the dictionaries only while the other entry is off (`fileCodes`), so
+  turning off one entry while the other is on deletes nothing shared; with both off, one leftover card under sh holds
+  the dictionaries and both entries' models, with a "Turn on" button per entry (`leftoverCode`, `leftoverCards`).
+- Lookup time on the emulator (Pixel_10_Pro, wty-sh-en, instrumented test): ordinary words 2-10 ms; a line of c, s
+  and z ("cecescecescecesc") that reaches Yomitan's 4,096-variant cap 140-260 ms. No cut of our own was needed.
+- QuickJS has no `console`: Yomitan warns through `console.warn` when it cuts the variants, and the warning threw, so
+  the whole lookup failed. `scripts/yomitan-language/console-stub.js` (in every bundle) drops the messages, which carry
+  the looked-up text. Node's `vm` contexts always have a console; the glue test sets `console: undefined`.
+- Yomitan's `removeSerboCroatianAccentMarks` matches Latin vowels and r only, so Cyrillic text with reading marks
+  (ку̏ћа) found nothing; the glue replaces it with a version that takes the Cyrillic vowels and р as well.
+- A word that is also a form of itself shows the form's tag (kuća "genitive plural", as kuća is the genitive plural of
+  kuća): the engine merges the direct match and the form-of match into chains [[], [genitive plural]] and shows the
+  non-empty one, as Yomitan does. Left as is (`notes/language-rules.md`, limits).
+- Frequency: the wordfreq `sh` list is Latin; the builder adds each word's Cyrillic spelling (and its capitalized
+  form) with the word's rank, so кућа gets 553 as kuća does.
+- Audio: Wiktionary files are found under the prefix `Sr-` with the Cyrillic title (Latin words transliterated by
+  `SerboCroatianScripts`); kuća and кућа played from Wiktionary on the emulator. Lingua Libre (`srp`) had nothing for
+  the words tried.
+- Glyph forms: `lang="sh-Cyrl"` gives Noto's Serbian б in the WebView (`webview-fonts.md`).

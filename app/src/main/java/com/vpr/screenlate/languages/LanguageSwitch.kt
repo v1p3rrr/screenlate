@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
  */
 internal fun missingCategories(language: Language, dictionaries: List<DictionaryEntity>, catalog: Catalog): Set<CatalogCategory> {
     val own = dictionaries.filter { it.enabled && it.isFor(language) }
-    return catalog.mandatory(language.code).filterTo(linkedSetOf()) { category ->
+    return catalog.mandatory(language).filterTo(linkedSetOf()) { category ->
         when (category) {
             CatalogCategory.MAIN -> own.none { it.termCount > 0 }
             else -> own.none { dictionary -> catalog.entries.any { it.category == category && it.matches(dictionary) } }
@@ -51,7 +51,7 @@ class LanguageSwitch @Inject constructor(
      */
     suspend fun needsDownloads(language: Language): Boolean {
         if (language == bundled.language && bundled.all().isNotEmpty()) return false
-        val own = repository.getAll().filter { it.sourceLanguage == language.code }
+        val own = repository.getAll().filter { it.sourceLanguage == language.dictionaryCode }
         val catalog = withContext(Dispatchers.IO) { catalog.localCatalog() }
         return missingCategories(language, own, catalog).isNotEmpty()
     }
@@ -73,7 +73,7 @@ class LanguageSwitch @Inject constructor(
                 .forEach { repository.setEnabled(it.id, true) }
             if (firstRun) profiles.finishFirstRun(language) else profiles.turnOn(language)
             if (language == bundled.language) {
-                if (files.dictionaries(language.code).isEmpty()) bundled.reinstallAll()
+                if (files.dictionaries(language).isEmpty()) bundled.reinstallAll()
                 imports.installBundled()
             }
             downloads.forEach { entry ->
@@ -92,16 +92,17 @@ class LanguageSwitch @Inject constructor(
 
     /** The bytes [language]'s files take; zero for downloads only, null when it has neither files nor downloads. */
     suspend fun filesSize(language: Language): Long? =
-        if (files.isEmpty(language.code)) null else files.size(language.code)
+        if (files.isEmpty(language)) null else files.size(language)
 
     /**
      * Turns [language] off; its settings stay. With [deleteFiles] its dictionaries, models and unfinished downloads go
-     * too. Returns false for the last language, which stays on.
+     * too, except the dictionaries a turned-on entry of another script reads. Returns false for the last language, which
+     * stays on.
      */
     suspend fun turnOff(language: Language, deleteFiles: Boolean): Boolean = withContext(NonCancellable) {
         if (!profiles.turnOff(language)) return@withContext false
         if (deleteFiles) {
-            files.delete(language.code)
+            files.delete(language)
             Log.i(TAG, "Turned off ${language.code}: files deleted")
         } else {
             Log.i(TAG, "Turned off ${language.code}: files kept")

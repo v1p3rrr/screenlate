@@ -295,6 +295,7 @@
     <string name="languages_turned_off_hint">꺼진 언어의 파일입니다. 검색에 사용되지 않습니다.</string>
     <string name="languages_not_turned_on">켜지 않은 언어</string>
     <string name="languages_turn_on">켜기</string>
+    <string name="languages_turn_on_named">%1$s 켜기</string>
     <string name="languages_active">사용 중</string>
     <string name="languages_star">빠른 전환</string>
     <string name="languages_star_active">사용 중인 언어는 항상 빠른 전환에 포함됩니다</string>
@@ -482,6 +483,7 @@
     <string name="popup_font_script_only_tl">필리핀어 텍스트에만 사용</string>
     <string name="popup_font_script_only_vi">베트남어 텍스트에만 사용</string>
     <string name="popup_font_script_only_ru">러시아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_sh">세르비아크로아티아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

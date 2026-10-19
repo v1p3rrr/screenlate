@@ -50,7 +50,7 @@ data class LanguagesState(
     /** Supported languages that are off and have no files. */
     val rest: List<Language>
         get() = Language.entries.filter { language ->
-            language !in profiles.turnedOn && leftovers.orEmpty().none { it.code == language.code }
+            language !in profiles.turnedOn && leftovers.orEmpty().none { language in it.languages }
         }
 }
 

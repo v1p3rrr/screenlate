@@ -150,6 +150,44 @@ class LanguageLookupTest {
         assertThat(form.trace.map { it.name }).containsExactly("alternative")
     }
 
+    @Test
+    fun serboCroatianWithoutDiacriticsFindsTheLettersInEitherEntry() = runTest {
+        val imported = engine.import(serboCroatianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val latin = LookupOptions(language = Language.SERBO_CROATIAN_LATIN)
+        val cyrillic = LookupOptions(language = Language.SERBO_CROATIAN_CYRILLIC)
+
+        assertThat(engine.lookup("kuca", latin).map { it.term.expression }).contains("kuća")
+        assertThat(engine.lookup("sesir", latin).first().term.expression).isEqualTo("šešir")
+        assertThat(engine.lookup("djak", latin).first().term.expression).isEqualTo("đak")
+        // A form and its lemma lose their accent marks at import; plain text finds the form in both entries.
+        for (options in listOf(cyrillic, latin)) {
+            val form = engine.lookup("куће", options).first()
+            assertThat(form.term.expression).isEqualTo("кућа")
+            assertThat(form.trace.map { it.name }).containsExactly("genitive singular")
+        }
+        // Text written with the marks of readings, in either script.
+        assertThat(engine.lookup("ку̏ћа", cyrillic).first().term.expression).isEqualTo("кућа")
+        assertThat(engine.lookup("kȕća", latin).first().term.expression).isEqualTo("kuća")
+        // More variants than Yomitan keeps: it warns about the cut through a console, which QuickJS lacks.
+        assertThat(engine.lookup("cecescecescecesc", latin)).isEmpty()
+    }
+
+    private fun serboCroatianDictionary(): File = zip(
+        "sh.zip",
+        "index.json" to """{"title":"Test Serbo-Croatian","revision":"1","format":3,"sourceLanguage":"sh"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["kuća","","","n",0,["house"],1,""],
+              ["kuca","","","n",0,["a made-up word"],2,""],
+              ["šešir","","","n",0,["hat"],3,""],
+              ["đak","","","n",0,["pupil"],4,""],
+              ["кућа","","","n",0,["house"],5,""],
+              ["ку̏ће","","non-lemma","n",0,[["ку̏ћа",["genitive singular"]]],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun russianDictionary(): File = zip(
         "ru.zip",
         "index.json" to """{"title":"Test Russian","revision":"1","format":3,"sourceLanguage":"ru"}""".toByteArray(),

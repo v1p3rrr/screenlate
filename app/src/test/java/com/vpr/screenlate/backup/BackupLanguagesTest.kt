@@ -76,4 +76,11 @@ class BackupLanguagesTest {
         assertThat(BackupLanguages.of(older, JsonObject(emptyMap()), listOf("ja", null))).containsExactly(ja)
         assertThat(BackupLanguages.of(older, JsonObject(emptyMap()), listOf("ko"))).containsExactly(ja, ko).inOrder()
     }
+
+    @Test
+    fun `an older backup's serbo-croatian dictionaries bring both entries`() {
+        val older = BackupManifest(appVersion = "1", createdAt = 0, sections = emptyList())
+        assertThat(BackupLanguages.of(older, JsonObject(emptyMap()), listOf("sh")))
+            .containsExactly(ja, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC).inOrder()
+    }
 }

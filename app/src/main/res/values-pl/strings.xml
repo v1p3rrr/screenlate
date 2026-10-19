@@ -301,6 +301,7 @@
     <string name="languages_turned_off_hint">Pliki wyłączonych języków. Nie są używane w wyszukiwaniu.</string>
     <string name="languages_not_turned_on">Niewłączone</string>
     <string name="languages_turn_on">Włącz</string>
+    <string name="languages_turn_on_named">Włącz: %1$s</string>
     <string name="languages_active">Aktywny</string>
     <string name="languages_star">Szybkie przełączanie</string>
     <string name="languages_star_active">Aktywny język zawsze jest w szybkim przełączaniu</string>
@@ -491,6 +492,7 @@
     <string name="popup_font_script_only_tl">Tylko dla tekstu filipińskiego</string>
     <string name="popup_font_script_only_vi">Tylko dla tekstu wietnamskiego</string>
     <string name="popup_font_script_only_ru">Tylko dla tekstu rosyjskiego</string>
+    <string name="popup_font_script_only_sh">Tylko dla tekstu serbsko-chorwackiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

@@ -67,7 +67,7 @@ class LanguageSetupTest {
 
     @Test
     fun `categories hold the dictionaries into the gloss languages and those without one`() {
-        val categories = setupCategories(catalog, "en", listOf("ru", "en"), installed = emptyList())
+        val categories = setupCategories(catalog, Language.ENGLISH, listOf("ru", "en"), installed = emptyList())
         assertThat(categories.map { it.category })
             .containsExactly(CatalogCategory.MAIN, CatalogCategory.PRONUNCIATION, CatalogCategory.GLOSSARY).inOrder()
         val main = categories.first()
@@ -78,7 +78,7 @@ class LanguageSetupTest {
 
     @Test
     fun `recommended dictionaries are ticked, the user's ticks win, an empty mandatory category is missing`() {
-        val categories = setupCategories(catalog, "en", listOf("ru", "en"), installed = emptyList())
+        val categories = setupCategories(catalog, Language.ENGLISH, listOf("ru", "en"), installed = emptyList())
         assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("en-ru", "en-en", "en-ipa").inOrder()
 
         val choices = mapOf("en-ru" to false, "en-en" to false, "en-ru-glossary" to true)
@@ -96,13 +96,13 @@ class LanguageSetupTest {
             ),
         )
 
-        val listed = setupCategories(dutch, "nl", listOf("en"), installed = emptyList())
+        val listed = setupCategories(dutch, Language.DUTCH, listOf("en"), installed = emptyList())
         assertThat(listed.single().items.map { it.entry.id }).containsExactly("nl-en", "nl-nl").inOrder()
         assertThat(listed.single().fixed).isFalse()
         assertThat(setupDownloads(listed, emptyMap()).map { it.id }).containsExactly("nl-en")
         assertThat(setupDownloads(listed, mapOf("nl-nl" to true)).map { it.id }).containsExactly("nl-en", "nl-nl").inOrder()
 
-        val chosen = setupCategories(dutch, "nl", listOf("nl", "en"), installed = emptyList())
+        val chosen = setupCategories(dutch, Language.DUTCH, listOf("nl", "en"), installed = emptyList())
         assertThat(setupDownloads(chosen, emptyMap()).map { it.id }).containsExactly("nl-nl", "nl-en").inOrder()
     }
 
@@ -121,20 +121,20 @@ class LanguageSetupTest {
                 model("detector-en", "detector", 4),
             ),
         )
-        val categories = setupCategories(models, "en", listOf("en"), installed = emptyList())
+        val categories = setupCategories(models, Language.ENGLISH, listOf("en"), installed = emptyList())
         val items = categories.single { it.category == CatalogCategory.OCR_MODEL }.items
         assertThat(items.map { it.entry.id }).containsExactly("latin-en", "v6-en").inOrder()
         assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("detector-en", "latin-en").inOrder()
         assertThat(setupDownloads(categories, mapOf("v6-en" to true)).map { it.id })
             .containsExactly("detector-en", "latin-en", "v6-en").inOrder()
-        val withDetector = setupCategories(models, "en", listOf("en"), installed = emptyList()) { it.model == "detector" }
+        val withDetector = setupCategories(models, Language.ENGLISH, listOf("en"), installed = emptyList()) { it.model == "detector" }
         assertThat(setupDownloads(withDetector, emptyMap()).map { it.id }).containsExactly("latin-en")
     }
 
     @Test
     fun `a single mandatory item is fixed and installed items are not downloaded again`() {
         val withoutOwnEdition = Catalog(catalog.entries.filterNot { it.id == "en-en" })
-        val categories = setupCategories(withoutOwnEdition, "en", listOf("de"), installed = listOf(installed("en-ipa", kind = DictionaryKind.PITCH)))
+        val categories = setupCategories(withoutOwnEdition, Language.ENGLISH, listOf("de"), installed = listOf(installed("en-ipa", kind = DictionaryKind.PITCH)))
         val main = categories.first { it.category == CatalogCategory.MAIN }
         assertThat(main.fixed).isTrue()
         assertThat(main.ticked(main.items.single(), mapOf("en-de" to false))).isTrue()
@@ -147,7 +147,7 @@ class LanguageSetupTest {
         val pronunciation = installed("en-ipa", kind = DictionaryKind.PITCH).copy(enabled = false)
         val unrelated = installed("Own English Dictionary").copy(enabled = false)
         val installed = listOf(main, pronunciation, unrelated)
-        val categories = setupCategories(catalog, "en", listOf("ru"), installed)
+        val categories = setupCategories(catalog, Language.ENGLISH, listOf("ru"), installed)
 
         assertThat(missingChoices(categories, emptyMap())).isEmpty()
         assertThat(setupDownloads(categories, emptyMap())).isEmpty()
@@ -156,13 +156,13 @@ class LanguageSetupTest {
 
     @Test
     fun `a mandatory category without dictionaries in the chosen languages is still shown, and missing`() {
-        val categories = setupCategories(Catalog(catalog.entries.filterNot { it.id == "en-en" }), "en", listOf("fr"), installed = emptyList())
+        val categories = setupCategories(Catalog(catalog.entries.filterNot { it.id == "en-en" }), Language.ENGLISH, listOf("fr"), installed = emptyList())
         assertThat(categories.first().category).isEqualTo(CatalogCategory.MAIN)
         assertThat(categories.first().items).isEmpty()
         assertThat(missingChoices(categories, emptyMap())).containsExactly(CatalogCategory.MAIN)
 
         // The language's own edition is listed as well; as the only main dictionary it is the one to take.
-        val ownOnly = setupCategories(catalog, "en", listOf("fr"), installed = emptyList())
+        val ownOnly = setupCategories(catalog, Language.ENGLISH, listOf("fr"), installed = emptyList())
         assertThat(ownOnly.first().items.map { it.entry.id }).containsExactly("en-en")
         assertThat(ownOnly.first().fixed).isTrue()
         assertThat(missingChoices(ownOnly, emptyMap())).isEmpty()
@@ -227,7 +227,7 @@ class LanguageSetupTest {
         )
         val installed = listOf(installed("Old English Title"))
 
-        assertThat(downloadsOf("en", tasks, catalog, installed, Language.JAPANESE).map { it.name })
+        assertThat(downloadsOf(setOf("en"), tasks, catalog, installed, Language.JAPANESE).map { it.name })
             .containsExactly("en-ru", "Old English Title")
     }
 
@@ -241,8 +241,8 @@ class LanguageSetupTest {
         val ownFile = task("own.zip", source = "file")
         val tasks = listOf(queued, importing, finished, ownFile)
 
-        assertThat(downloadsOf("ja", tasks, catalog, emptyList(), Language.JAPANESE))
+        assertThat(downloadsOf(setOf("ja"), tasks, catalog, emptyList(), Language.JAPANESE))
             .containsExactly(queued, importing)
-        assertThat(downloadsOf("en", tasks, catalog, emptyList(), Language.JAPANESE)).isEmpty()
+        assertThat(downloadsOf(setOf("en"), tasks, catalog, emptyList(), Language.JAPANESE)).isEmpty()
     }
 }

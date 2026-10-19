@@ -299,6 +299,7 @@
     <string name="languages_turned_off_hint">Archivos de idiomas desactivados. No se usan en las búsquedas.</string>
     <string name="languages_not_turned_on">No activados</string>
     <string name="languages_turn_on">Activar</string>
+    <string name="languages_turn_on_named">Activar: %1$s</string>
     <string name="languages_active">Activo</string>
     <string name="languages_star">Cambio rápido</string>
     <string name="languages_star_active">El idioma activo siempre está en el cambio rápido</string>
@@ -488,6 +489,7 @@
     <string name="popup_font_script_only_tl">Solo para texto en filipino</string>
     <string name="popup_font_script_only_vi">Solo para texto en vietnamita</string>
     <string name="popup_font_script_only_ru">Solo para texto en ruso</string>
+    <string name="popup_font_script_only_sh">Solo para texto en serbocroata</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

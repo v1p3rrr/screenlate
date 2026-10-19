@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.ui
 
 import androidx.annotation.DrawableRes
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.overlay.R
 import java.util.Locale
@@ -33,6 +34,11 @@ object Flags {
         "ph" to R.drawable.flag_ph,
         "vn" to R.drawable.flag_vn,
         "ru" to R.drawable.flag_ru,
+        "hr" to R.drawable.flag_hr,
+        "rs" to R.drawable.flag_rs,
+        "ua" to R.drawable.flag_ua,
+        "by" to R.drawable.flag_by,
+        "gr" to R.drawable.flag_gr,
     )
 
     /** The flag of [country]; null for a country without one. */
@@ -43,8 +49,8 @@ object Flags {
     @DrawableRes
     fun of(state: LanguageProfilesState, language: Language): Int? = drawable(state.flagCountry(language))
 
-    /** The two letters shown instead of a flag. */
-    fun code(language: Language): String = language.code.uppercase(Locale.ROOT)
+    /** The letters shown instead of a flag. */
+    fun code(language: Language): String = language.support.codeLabel
 
     /** The country's name in [locale], for a flag's choice and TalkBack. */
     fun countryName(country: String, locale: Locale = Locale.getDefault()): String =

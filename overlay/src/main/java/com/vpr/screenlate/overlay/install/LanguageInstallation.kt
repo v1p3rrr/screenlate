@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.install
 
 import android.content.Context
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.hasCode
 import com.vpr.screenlate.core.ocr.OcrEngines
 import com.vpr.screenlate.core.ocr.model.DeviceOcr
 import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
@@ -96,8 +97,8 @@ internal fun installationStatus(
 ): InstallationStatus {
     val own = dictionaries.filter { it.isFor(language) }
     val enabled = own.filter { it.enabled }
-    val entries = catalog.entries.filter { it.sourceLanguage == language.code }
-    val missing = catalog.mandatory(language.code).filterTo(linkedSetOf()) { category ->
+    val entries = catalog.entries.filter { it.isFor(language) }
+    val missing = catalog.mandatory(language).filterTo(linkedSetOf()) { category ->
         when (category) {
             CatalogCategory.MAIN -> enabled.none { it.termCount > 0 }
             // Any version counts: an installed model keeps working until a newer one replaces it. A model that others
@@ -112,7 +113,7 @@ internal fun installationStatus(
     }
     val names = entries.mapTo(hashSetOf()) { it.title }.apply { own.forEach { add(it.title) } }
     val relevant = tasks.filter { task ->
-        if (task.language != null) task.language == language.code
+        if (task.language != null) language.hasCode(task.language)
         else task.name in names || task.titles.any { it in names } || (language == bundledLanguage && (task.source == SOURCE_BUNDLED || task.paused))
     }
     // A retry supersedes the older failed task of the same entry. Completed failures otherwise remain visible.

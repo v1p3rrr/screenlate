@@ -93,6 +93,18 @@ interface LanguageSupport {
      */
     fun recordingTitle(term: String, reading: String): String = term
 
+    /**
+     * The language code Wiktionary's recording titles start with: the dictionaries' code, unless Wiktionary files the
+     * recordings under another (Serbian `Sr-кућа.flac` for Serbo-Croatian).
+     */
+    val recordingPrefix: String get() = language.dictionaryCode
+
+    /**
+     * The language codes system locales and translation services give this language: Croatian, Serbian and Bosnian
+     * for Serbo-Croatian. A translation into one of them would repeat the text.
+     */
+    val localeLanguages: Set<String> get() = setOf(language.dictionaryCode)
+
     /** What text to speech reads for a word: its reading where a voice reads it as the word (kana), else the word. */
     fun speechText(term: String, reading: String): String = reading.ifEmpty { term }
 
@@ -104,6 +116,9 @@ interface LanguageSupport {
 
     /** BCP 47 tag of the text-to-speech voice: the language's code unless the voices know it by another. */
     val speechTag: String get() = language.code
+
+    /** What stands for the language where its flag cannot (e-ink): its code in capitals. */
+    val codeLabel: String get() = language.code.uppercase(Locale.ROOT)
 
     /** The phone's fonts for the language, used by the lookup page unless the user picks another font. */
     val systemFonts: SystemFonts
@@ -201,6 +216,13 @@ interface LanguageSupport {
      * first; empty when nothing in it changes.
      */
     fun inScript(text: MappedText, tag: String): List<MappedText> = emptyList()
+
+    /**
+     * Spellings of a word of wordfreq's list in another script of the language, which share its rank: Traditional
+     * characters for wordfreq's Simplified Chinese. Empty where the list has every script.
+     */
+    fun frequencySpellings(word: String): List<String> =
+        scriptTags.flatMap { tag -> inScript(MappedText.identity(word), tag).map { it.text } }
 
     /** The script for words written alike in each that an interface language ([locale]) suggests. */
     fun defaultScriptTag(locale: Locale): String? = scriptTags.firstOrNull()
@@ -306,4 +328,6 @@ val Language.support: LanguageSupport
         Language.FILIPINO -> FilipinoSupport
         Language.VIETNAMESE -> VietnameseSupport
         Language.RUSSIAN -> RussianSupport
+        Language.SERBO_CROATIAN_LATIN -> SerboCroatianLatinSupport
+        Language.SERBO_CROATIAN_CYRILLIC -> SerboCroatianCyrillicSupport
     }

@@ -1,5 +1,6 @@
 package com.vpr.screenlate.languages
 
+import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -56,7 +57,10 @@ const val MOBILE_DATA_ASK_BYTES = 50_000_000L
 internal fun glossSlots(language: String, interfaceLanguage: String, available: Collection<String>): List<String?> =
     listOf(interfaceLanguage.takeUnless { it == "en" || it == language || it !in available }, "en")
 
-/** The gloss languages of [language]'s dictionaries in the catalog, for the slot the user fills; [taken] are left out. */
+/**
+ * The gloss languages of the dictionaries of [language] (a [Language.dictionaryCode]) in the catalog, for the slot the
+ * user fills; [taken] are left out.
+ */
 internal fun glossChoices(
     entries: List<CatalogEntry>,
     language: String,
@@ -73,21 +77,22 @@ internal fun glossChoices(
 /**
  * The categories of [language]'s download screen with the gloss languages [glosses]: dictionaries into one of them or
  * into [language] itself (its own Wiktionary edition, after the others), and those without a gloss language
- * (frequency, transcription, recognition models). Categories go in their declared order, a mandatory one even when
+ * (frequency, transcription, the entry's own recognition models). Categories go in their declared order, a mandatory one even when
  * empty; within one, in the order of [glosses], the recommended first. A model counts
  * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
  * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn].
  */
 internal fun setupCategories(
     catalog: Catalog,
-    language: String,
+    language: Language,
     glosses: List<String>,
     installed: List<DictionaryEntity>,
     mlKitReads: Boolean = false,
     modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
+    val code = language.dictionaryCode
     val entries = catalog.entries.filter {
-        it.sourceLanguage == language && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == language)
+        it.isFor(language) && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == code)
     }
     val mandatory = catalog.mandatory(language)
     val required = catalog.entries.flatMapTo(hashSetOf()) { it.requires }
@@ -107,7 +112,7 @@ internal fun setupCategories(
                 if (entry.isModel) {
                     SetupItem(entry, modelInstalled(entry), requiredItems(entry))
                 } else {
-                    SetupItem(entry, installed.any(entry::matches), ownEdition = entry.targetLanguage == language && language !in glosses)
+                    SetupItem(entry, installed.any(entry::matches), ownEdition = entry.targetLanguage == code && code !in glosses)
                 }
             }
         SetupCategory(category, items, category in mandatory, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)

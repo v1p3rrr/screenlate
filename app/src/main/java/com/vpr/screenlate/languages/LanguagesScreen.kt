@@ -117,7 +117,7 @@ fun LanguagesScreen(
                 leftovers.forEach { leftover ->
                     LeftoverCard(
                         leftover = leftover,
-                        onTurnOn = leftover.language?.let { language -> { viewModel.turnOn(language) } },
+                        onTurnOn = viewModel::turnOn,
                         onDeleteAll = { deletingFiles = leftover },
                         onDeleteDictionary = { deletingDictionary = it },
                         onEditLanguages = { editingLanguages = it },
@@ -317,11 +317,14 @@ private fun StarButton(active: Boolean, starred: Boolean, canStar: Boolean, onSt
     }
 }
 
-/** A language that is off with the files it left: a tap shows them; delete them all or turn the language on. */
+/**
+ * A language that is off with the files it left: a tap shows them; delete them all or turn the language on, each of
+ * its scripts by name where it has two.
+ */
 @Composable
 private fun LeftoverCard(
     leftover: LanguageLeftovers,
-    onTurnOn: (() -> Unit)?,
+    onTurnOn: (Language) -> Unit,
     onDeleteAll: () -> Unit,
     onDeleteDictionary: (DictionaryEntity) -> Unit,
     onEditLanguages: (DictionaryEntity) -> Unit,
@@ -347,7 +350,7 @@ private fun LeftoverCard(
                     leftover.bytes?.let { Formatter.formatShortFileSize(context, it) },
                 ).joinToString(" · "),
             )
-            if (leftover.language == null) Hint(stringResource(R.string.languages_not_supported))
+            if (leftover.languages.isEmpty()) Hint(stringResource(R.string.languages_not_supported))
         }
         if (expanded) {
             Column(modifier = Modifier.padding(start = 16.dp, end = 4.dp)) {
@@ -382,7 +385,14 @@ private fun LeftoverCard(
         }
         FlowRow(modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 4.dp)) {
             TextButton(onClick = onDeleteAll) { Text(stringResource(R.string.dictionaries_delete_language)) }
-            if (onTurnOn != null) TextButton(onClick = onTurnOn) { Text(stringResource(R.string.languages_turn_on)) }
+            leftover.languages.forEach { language ->
+                TextButton(onClick = { onTurnOn(language) }) {
+                    Text(
+                        if (leftover.languages.size == 1) stringResource(R.string.languages_turn_on)
+                        else stringResource(R.string.languages_turn_on_named, language.displayName()),
+                    )
+                }
+            }
         }
     }
 }

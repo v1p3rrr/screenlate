@@ -90,11 +90,14 @@ class YomitanSettingsImporter @Inject constructor(
 ) {
     /**
      * Applies [sections] of [profile] to the settings of the profile's language; a profile without one, or with a
-     * language Screenlate does not support, goes to the active language.
+     * language Screenlate does not support, goes to the active language. Serbo-Croatian goes to the active entry of its
+     * two, else to a turned-on one, else to the Latin one.
      */
     suspend fun apply(profile: YomitanSettings.Profile, sections: Set<YomitanSection>): ImportSummary {
         val state = profiles.current()
-        val language = Language.of(profile.language) ?: state.active
+        val entries = Language.of(profile.language)?.let(::listOf) ?: Language.withDictionaries(profile.language)
+        val language = entries.firstOrNull { it == state.active } ?: entries.firstOrNull { it in state.turnedOn }
+            ?: entries.firstOrNull() ?: state.active
         return apply(profile, sections, language).copy(language = language.takeIf { state.several || it != state.active })
     }
 

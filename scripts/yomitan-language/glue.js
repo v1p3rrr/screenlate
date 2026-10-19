@@ -1,6 +1,7 @@
 // Entry point of a language bundle: Yomitan's own language code (text processors, deinflection transforms) as a
 // candidate generator for the engine's native lookup (dictionary/engine-hoshidicts/src/main/cpp/language).
 import './intl-stub.js';
+import './console-stub.js';
 import {Translator} from 'yomitan/language/translator.js';
 import {getAllLanguageTextProcessors, getAllLanguageTransformDescriptors} from 'yomitan/language/languages.js';
 import {LanguageTransformer} from 'yomitan/language/language-transformer.js';
@@ -21,7 +22,7 @@ function prepare(language) {
     }
     for (const {iso, textPreprocessors = [], textPostprocessors = []} of getAllLanguageTextProcessors()) {
         if (iso !== language) { continue; }
-        const preprocessors = textPreprocessors.map((p) => ({...p, textProcessor: caseProcessors[iso]?.[p.id] ?? p.textProcessor}));
+        const preprocessors = textPreprocessors.map((p) => ({...p, textProcessor: replacedProcessors[iso]?.[p.id] ?? p.textProcessor}));
         translator._textProcessors.set(iso, {textPreprocessors: preprocessors, textPostprocessors});
     }
 }
@@ -35,12 +36,13 @@ function turkishUpperCase(text) {
 }
 
 /**
- * Case processors that replace Yomitan's by id for a language whose letter pairs differ from the default. Without a
- * locale (QuickJS has none) JavaScript lowercases I to i and İ to i with a combining dot, so a Turkish word written in
- * capitals (IŞIK, İSTANBUL) would find no entry.
+ * Text processors that replace Yomitan's by id. Turkish case pairs: without a locale (QuickJS has none) JavaScript
+ * lowercases I to i and İ to i with a combining dot, so a Turkish word written in capitals (IŞIK, İSTANBUL) would find
+ * no entry. Serbo-Croatian accent marks: Yomitan drops them from Latin vowels and r only, so Cyrillic text written
+ * with the marks of readings (ку̏ћа) would find no entry.
  * @type {Record<string, Record<string, import('language').TextProcessor>>}
  */
-const caseProcessors = {
+const replacedProcessors = {
     tr: {
         decapitalize: {
             name: 'Decapitalize text',
@@ -51,6 +53,16 @@ const caseProcessors = {
             name: 'Capitalize first letter',
             description: 'istanbul → İstanbul, ılık → Ilık',
             process: (str) => [str, turkishUpperCase(str.charAt(0)) + str.slice(1)],
+        },
+    },
+    sh: {
+        removeSerboCroatianAccentMarks: {
+            name: 'Remove vowel accents',
+            description: 'A\u0301 → A, a\u0301 → a, а\u0301 → а',
+            process: (str) => [
+                str,
+                str.normalize('NFD').replace(/[aeiourAEIOURаеиоурАЕИОУР][\u0300-\u036f]/g, (match) => match[0]),
+            ],
         },
     },
 };

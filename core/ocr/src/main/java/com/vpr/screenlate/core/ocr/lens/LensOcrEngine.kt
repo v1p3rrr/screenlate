@@ -73,7 +73,7 @@ class LensOcrEngine @Inject constructor(
             image = jpeg,
             width = sentWidth,
             height = sentHeight,
-            language = language.code,
+            language = language.dictionaryCode,
             requestId = Random.nextLong() and Long.MAX_VALUE,
         )
         val request = Request.Builder()

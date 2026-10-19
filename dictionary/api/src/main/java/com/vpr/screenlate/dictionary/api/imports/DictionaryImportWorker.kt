@@ -510,7 +510,7 @@ class DictionaryImportWorker @AssistedInject constructor(
             val replaces = inputData.getLong(KEY_REPLACE_ID, -1).takeIf { it >= 0 }
             val dictionary = repository.import(archive, replaces = replaces, catalog = catalogEntries)
             if (dictionary.kind == DictionaryKind.FREQUENCY) {
-                Language.of(entry.sourceLanguage)?.let { repository.preferSortDictionary(it, dictionary.id) }
+                Language.withDictionaries(entry.sourceLanguage).forEach { repository.preferSortDictionary(it, dictionary.id) }
             }
             return dictionary.title
         } finally {

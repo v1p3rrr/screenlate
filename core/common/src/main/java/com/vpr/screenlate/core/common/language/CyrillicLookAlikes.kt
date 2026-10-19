@@ -29,10 +29,12 @@ internal object CyrillicLookAlikes {
     /**
      * [word] with its look-alikes in Cyrillic when it has a Cyrillic letter. A word without one stays as read: an
      * English word made of look-alikes (TOP, COM) must not become a Russian one.
+     *
+     * @param own the language's look-alikes beyond these (Serbian ј for j).
      */
-    fun fix(word: String): String {
-        if (word.none { it in cyrillic } || word.none(::isCyrillicLetter)) return word
-        return buildString(word.length) { word.forEach { append(cyrillic[it] ?: it) } }
+    fun fix(word: String, own: Map<Char, Char> = emptyMap()): String {
+        if (word.none { it in cyrillic || it in own } || word.none(::isCyrillicLetter)) return word
+        return buildString(word.length) { word.forEach { append(own[it] ?: cyrillic[it] ?: it) } }
     }
 
     private fun isCyrillicLetter(c: Char) = c.isLetter() && Character.UnicodeScript.of(c.code) == Character.UnicodeScript.CYRILLIC

@@ -71,7 +71,10 @@ class LanguageRulesIsolationTest {
     @Test
     fun `a period after a short number keeps the sentence going only where ordinals take one`() {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
-        val ordinals = listOf(Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH)
+        val ordinals = listOf(
+            Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
+            Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC,
+        )
         assertThat(spaced.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(spaced.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
         // A year before a capital letter ends the sentence in every language.
@@ -86,11 +89,13 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.GERMAN, Language.CZECH)
+            .containsExactly(Language.GERMAN, Language.CZECH, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
         val era = "v roce 300 n. l. vznikl"
         assertThat(spaced.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
-        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH)
+        // Serbo-Croatian mr. is magistar.
+        assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(spaced.where { holds(it, "Kr. godine") }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
@@ -131,17 +136,25 @@ class LanguageRulesIsolationTest {
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
-            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO)
+            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
 
     @Test
-    fun `only Filipino has its own name and another voice tag`() {
+    fun `only Filipino and the Serbo-Croatian entries have their own names and other voice tags`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
-        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO)
-        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
+        assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+    }
+
+    @Test
+    fun `only the Serbo-Croatian entries share their dictionaries and have other recording and locale codes`() {
+        assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.recordingPrefix != it.language.dictionaryCode }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
     }
 
     @Test
@@ -168,8 +181,11 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `cyrillic look-alikes are fixed only in Russian`() {
-        assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" }).containsExactly(Language.RUSSIAN)
+    fun `cyrillic look-alikes are fixed only in Cyrillic text, the Serbian j only in Serbo-Croatian Cyrillic`() {
+        assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
+            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC)
+        assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
+            .containsExactly(Language.SERBO_CROATIAN_CYRILLIC)
     }
 
     @Test

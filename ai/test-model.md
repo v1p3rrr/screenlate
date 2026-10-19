@@ -172,6 +172,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK33 | Indonesian lookups (Indonesian text from `scripts/text-image.py` or an Indonesian web page): membaca → baca (form entry, and baca's own entry), rumah-rumah → rumah, dibaca → baca; "Jl.", "No." and "hlm." do not end a sentence, "dll." does; "ID" fits in the docked bubble at every edge, Indonesian flag; audio from Lingua Libre; the download screen lists id-id unticked and the transcription dictionary | E | U IndonesianSupportTest, SentenceTest, glue.test.mjs, M | 2026-10-19 |
 | LK34 | Malay lookups (Malay text, `scripts/text-image.py`): membaca (its own entry in wty-ms-en), kucing; baca shows no "Jawi" step (its Jawi spelling only leads back to it); "En.", "Sdn. Bhd." do not end a sentence; "MS" fits in the docked bubble, Malaysian flag; the frequency order from wordfreq | E | U MalaySupportTest, SentenceTest, glue.test.mjs, M | 2026-10-19 |
 | LK35 | Filipino lookups (Filipino text, `scripts/text-image.py`): kumain (its own entry, and "complete aspect of kumain"), magluto → luto, magandang → maganda; basa shows no "Baybayin" step and no entry of Basa; "G.", "Sta.", "Blg." do not end a sentence; the language reads "Filipino (Tagalog)" ("Филиппинский (тагалог)" in Russian) on Languages, Home and the download screen; "Ng" fits in the docked bubble, Philippine flag; audio from Lingua Libre, the voice test speaks with a Filipino voice when one is installed; the sentence translation works | E | U FilipinoSupportTest, SentenceTest, TranslationLanguagesTest, glue.test.mjs, M | 2026-10-19 |
+| LK36 | Serbo-Croatian lookups, both entries (Latin text from `scripts/text-image.py`; Cyrillic `testdata/ocr/sh-cyrl-sample.png`, rendered with `FONT=C:/Windows/Fonts/arial.ttf`): kuca also finds kuća (house), sesir → šešir, djak → đak; куће → кућа with "genitive singular"; ку̏ћа and kȕća (reading marks) find the word; a long line of c, s and z ("kuca cecescecescecesc") looks up without an error; "npr.", "5. maja", "pr. Kr." and "p. n. e." do not end a sentence; Јој read with a Latin J finds јој; the Latin entry shows Đ and the Croatian flag, the Cyrillic one Ћ and the Serbian flag, both switched from the bubble menu; кућа has the frequency of kuća; Cyrillic headwords in Serbian glyph forms (б); audio from Wiktionary's Sr- recordings for Latin and Cyrillic words; the second entry turns on at once with the shared dictionaries; turning one entry off while the other is on offers nothing shared to delete, with both off one "Turned off" card with a "Turn on" button per entry; with a Croatian or Serbian interface, sentences translate into English by default | E | U SerboCroatianSupportTest, SerboCroatianScriptsTest, TranslationLanguagesTest, OcrModelsTest, BackupChoiceTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 (I) |
 | LK25 | Vietnamese lookups (`testdata/ocr/vi-sample.png`): aiming at "sinh" in "học sinh" shows học sinh first (the lookup also starts one and two syllables before), then sinh; "nhà vệ sinh" from its last syllable; hoà and hòa find the same word; "cái" shows its own entries, not the hundreds of nouns it is the classifier of; Hán-Nôm characters labelled "Hán-Nôm spelling"; "TP." does not end a sentence; Ư in the bubble, Vietnamese flag; fonts listed by the vietnamese subset | E | U VietnameseSupportTest, EarlierStartsTest, ShownResultsTest, SentenceTest, M | 2026-10-18 |
 | LK26 | Russian lookups (`testdata/ocr/ru-sample.png`, cloud recognition or PaddleOCR v5 Cyrillic on the device): кошки → кошка with "genitive singular" and the other forms, the headword shown as ко́шка with no reading line, the note with `{expression}` кошка and `{reading}` ко́шка; шокирующее → шокирующий → шокировать (the second form-of step); еж finds ёж; text with stress marks (ко́шка) finds кошка; «» and „“ are quotes, "т. е." and "г." do not end a sentence; Я in the bubble, Russian flag; audio tries Wiktionary first; text to speech reads the stressed reading correctly | E | U RussianSupportTest, SentenceTest, reading.test.mjs, popup.test.mjs, M | 2026-10-18 |
 | LK27 | German compound part order: a compound without an entry whose part is "lampe" (Küchentischlampe) shows the noun Lampe before the verb lampen among the part's entries; ordinary lookups keep the usual order | F | U CompoundsTest, M | 2026-10-19 |
@@ -363,6 +364,37 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/sh` (Serbo-Croatian, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Serbo-Croatian, both entries (LK36), through the search screen (text action), the overlay over
+`testdata/ocr/sh-cyrl-sample.png` in the debug viewer, the Languages screen and the bubble menu; the lookup engine's
+instrumented tests. `/data` was short for the install: `Download/3_Mining.apkg` (208 MB, a copy of the deck in
+`testdata/anki-backup/`) was deleted.
+
+Results: passed after three fixes. First checks: LK36.
+
+- Setup: the Latin entry's download screen listed wty-sh-en, the wordfreq list, the transcription dictionary and
+  PaddleOCR v6 (already installed); Ready. The Cyrillic entry then turned on at once with the shared dictionaries:
+  Active, Ready, the Serbian flag, Ћ.
+- Lookups: kuca → kuca (doggy), kucati, kuća (house, "genitive plural": kuća is also a form of itself, shown as
+  Yomitan shows it); кућа with the frequency 553 from the transliterated wordfreq list; Јој with a Latin J → јој;
+  џеп → pocket; the overlay over the Cyrillic image found кућа.
+- Glyph forms: headword and sentence in the Serbian б; the search field (a native view) in the Russian one.
+- Audio: kuća and кућа from Wiktionary (`Sr-кућа`); text to speech available for both entries; the audio sources
+  were set back to the defaults afterwards.
+- Bubble menu: with both entries starred, the flag row showed Croatia and Serbia; switching changed Đ and Ћ.
+- Turning off: the Latin entry with the Cyrillic one on offered no files to delete; the Cyrillic one then offered the
+  shared dictionaries (48 MB), unticked here; one card "Serbo-Croatian · 3 dictionaries · 48 MB" with a button per
+  entry; turning the Latin entry on from it made it active, the card went and the Cyrillic entry stayed off.
+- The timing test failed on a line of c, s and z: QuickJS has no console and Yomitan warns through it when it cuts
+  the variants at 4,096, so the lookup threw. Fixed (a console stub in every bundle); "kuca cecescecescecesc" now
+  shows kuca first. Such lines take 140-260 ms, ordinary words 2-10 ms.
+- Cyrillic text with reading marks (ку̏ћа) found nothing; fixed in the glue and checked: ку̏ћа → кућа.
+- With a Croatian or Serbian interface the default translation target was the text's own language; fixed (unit
+  tests).
+- Home's "the system stopped the service" after each `uiautomator dump` is the dump rebinding accessibility services
+  (`notes/build-environment.md`), not a bug.
 
 ### 2026-10-19, `languages/tl` (`db2f5e32` and the fixes below), Pixel_10_Pro (API 37)
 

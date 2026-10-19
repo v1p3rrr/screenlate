@@ -49,6 +49,6 @@ object BackupLanguages {
         val turnedOn = runCatching {
             settings[LanguageProfiles.TURNED_ON.name]?.jsonObject?.get("value")?.jsonPrimitive?.content
         }.getOrNull()?.split(',')?.mapNotNull { Language.of(it.trim()) }.orEmpty().ifEmpty { listOf(Language.JAPANESE) }
-        return (turnedOn + files.mapNotNull { Language.of(it) }).distinct()
+        return (turnedOn + files.flatMap { Language.of(it)?.let(::listOf) ?: Language.withDictionaries(it) }).distinct()
     }
 }

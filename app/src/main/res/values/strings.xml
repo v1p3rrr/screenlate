@@ -301,6 +301,7 @@
     <string name="languages_turned_off_hint">Files of languages that are turned off. They are not used in lookups.</string>
     <string name="languages_not_turned_on">Not turned on</string>
     <string name="languages_turn_on">Turn on</string>
+    <string name="languages_turn_on_named">Turn on %1$s</string>
     <string name="languages_active">Active</string>
     <string name="languages_star">Quick switching</string>
     <string name="languages_star_active">The active language is always in quick switching</string>
@@ -489,6 +490,7 @@
     <string name="popup_font_script_only_tl">Only for Filipino text</string>
     <string name="popup_font_script_only_vi">Only for Vietnamese text</string>
     <string name="popup_font_script_only_ru">Only for Russian text</string>
+    <string name="popup_font_script_only_sh">Only for Serbo-Croatian text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

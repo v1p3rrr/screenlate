@@ -46,7 +46,7 @@ data class DictionaryEntity(
 )
 
 /** Whether the dictionary is for words of [language]; one that does not say its language is used for any. */
-fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.code
+fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.dictionaryCode
 
 /**
  * Whether this is the only enabled dictionary with definitions, among [all], for one of the turned-on [languages] it is

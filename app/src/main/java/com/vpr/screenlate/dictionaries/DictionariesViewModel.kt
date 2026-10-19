@@ -26,7 +26,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
 import com.vpr.screenlate.languages.LeftoverModel
 import com.vpr.screenlate.languages.ShownLanguage
-import com.vpr.screenlate.languages.leftoverModels
+import com.vpr.screenlate.languages.leftoverCards
 import com.vpr.screenlate.overlay.fonts.CssCheck
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.Collator
@@ -227,7 +227,7 @@ class DictionariesViewModel @Inject constructor(
             .map { (dictionaries, turnedOn, models) ->
                 FileChecks(
                     remoteCss(), withoutFiles(), sizes(ofOtherLanguages(dictionaries, turnedOn)),
-                    leftoverModels(turnedOn.map { it.code }, catalog.local(), models, Locale.getDefault()),
+                    leftoverCards(turnedOn, catalog.local(), models, Locale.getDefault()),
                 )
             }
             .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
@@ -244,7 +244,7 @@ class DictionariesViewModel @Inject constructor(
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
             waitingForNetwork = waitingForNetwork(tasks, online),
-            catalog = groupCatalog(items.filter { it.entry.sourceLanguage == shown.code }, shown),
+            catalog = groupCatalog(items.filter { !it.entry.isModel && it.entry.isFor(shown) }, shown),
             sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
@@ -362,9 +362,13 @@ class DictionariesViewModel @Inject constructor(
         viewModelScope.launch { repository.setLanguages(dictionary.id, source, target) }
     }
 
-    /** Sorts the results of [dictionary]'s language by it; one without a language sorts the shown language's. */
+    /**
+     * Sorts the results of [dictionary]'s language by it: the shown language's when it reads the dictionary (one without
+     * a language, or one of both Serbo-Croatian entries), else the first entry that does.
+     */
     fun setSortDictionary(dictionary: DictionaryEntity) {
-        val language = Language.of(dictionary.sourceLanguage) ?: shownLanguage.language.value
+        val shown = shownLanguage.language.value
+        val language = shown.takeIf { dictionary.isFor(it) } ?: Language.ofDictionaries(dictionary.sourceLanguage) ?: shown
         viewModelScope.launch {
             repository.setSortDictionary(language, dictionary.id)
         }
@@ -472,8 +476,8 @@ internal fun sortDictionaryId(dictionaries: List<DictionaryEntity>, stored: Long
 
 /** Dictionaries with a source language that is not turned on. */
 private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: List<Language>): List<DictionaryEntity> {
-    val on = turnedOn.mapTo(hashSetOf()) { it.code }
-    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in on }
+    val read = turnedOn.mapTo(hashSetOf()) { it.dictionaryCode }
+    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in read }
 }
 
 /**
@@ -505,7 +509,7 @@ private fun groupCatalog(items: List<CatalogItem>, active: Language): List<Catal
     val locale = Locale.getDefault()
     val userLanguage = locale.language
     return items.groupBy { it.entry.sourceLanguage }
-        .toSortedMap(compareBy<String> { it != active.code }.thenBy { it != userLanguage }.thenBy { it })
+        .toSortedMap(compareBy<String> { it != active.dictionaryCode }.thenBy { it != userLanguage }.thenBy { it })
         .map { (source, sourceItems) ->
             val terms = sourceItems.filter { it.entry.kind == DictionaryKind.TERM }
                 .groupBy { it.entry.targetLanguage }
