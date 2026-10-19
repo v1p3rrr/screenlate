@@ -1037,7 +1037,7 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
 
 ### Group 4d (ar, fa, he; ur in group 5f)
 
-Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questions (69-85) and progress:
+Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questions (69-86) and progress:
 `2026-10-19-group-4d.md`. Urdu comes later, on its own (question 69 of that plan; block 5f of row "Group 5"); the
 interface stays left to right, right-to-left interface languages are in the backlog (question 70).
 

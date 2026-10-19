@@ -80,10 +80,11 @@ own too. Their branches are merged into `languages/main` by this session when th
 9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
 and Khmer build waits for the owner's go.
 
-Group 4d (Arabic, Persian, Hebrew) is researched (`notes/languages.md`, "Group 4d research") and its questions 69-85
+Group 4d (Arabic, Persian, Hebrew) is researched (`notes/languages.md`, "Group 4d research") and its questions 69-86
 answered (`plans/2026-10-19-group-4d.md`): Urdu later, on its own (block 5f); right-to-left interface languages in
-the backlog; the popup keeps its layout with right-to-left text in place; Anki fields with Arabic or Hebrew text
-wrapped in `dir="rtl"` except the first field; broad Arabic spellings; own Persian ending and Hebrew prefix rules;
+the backlog; the popup keeps its layout with right-to-left text in place; a `dir="rtl"` span around the markers of
+right-to-left text in the Anki field templates, put there by "Suggest templates" and the marker picker, never in the
+first field; broad Arabic spellings; own Persian ending and Hebrew prefix rules;
 scan length 24. Persian has no on-device model until the Paddle upload (Tesseract `fas` is unusable). Plain fixes
 found on the way, among them two audio bugs for every language (a Commons error answer cached as no recording, a
 redirect's target dropped) and the glue's transform key, which leaves Georgian without deinflection. To measure on

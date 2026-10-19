@@ -1744,4 +1744,4 @@ file. Cells: archive MB, words.
 
 ### Questions for the owner
 
-See `plans/2026-10-19-group-4d.md` (questions 69-85, all answered on 2026-10-19).
+See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).
