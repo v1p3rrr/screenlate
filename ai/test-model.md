@@ -184,6 +184,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK30 | A word hyphenated at a line end (English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py`): aiming at either half shows "important" first and highlights both halves; German "Haus- und Gartenarbeit" aimed at "und" shows "und"; "well-" / "known" shows "well-known"; Japanese text with a line ending in "-" unchanged. Cloud recognition; the built-in recognizer is LK40 | F | U LanguageRulesIsolationTest, LookupVariantsTest, LookupStartsTest, HyphenBreaksTest, M | 2026-10-19 |
 | LK40 | A word hyphenated at a line end with the built-in recognizer (ML Kit as the language's model, English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py`): aiming at either half shows "important" first and highlights both halves with the hyphen; a line ending in "COVID-19-" or a dash of its own unchanged | N | I MlKitLineEndHyphenTest, U HyphenBreaksTest, M | — |
 | LK41 | Compound splits take the fewest and longest parts: Dutch stadsbestuurder shows "Compound: stads + bestuurder" (not stadsbestuur + der); rijbewijsfoto still rijbewijs + foto, German Arbeitsschreibtisch still Arbeit + Schreibtisch | N | U CompoundsTest, M | — |
+| LK42 | Hindi lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit Devanagari): पढता and पढ़ता → पढ़ना with its form tags and a wordfreq rank; हूं → होना through the हूँ entry; लडकियां → लड़की; खाना shows खाना and ख़ाना, ख़ाना only itself; हैँ → हैं; किताब aimed at ता is looked up from कि; the sentence of a word after a danda starts after it and keeps "डॉ." and "ए.पी.जे."; flag in, bubble हि; the page's serif face is the phone's Noto Serif Devanagari (`local()`), and Mukta, Hind and Tiro Devanagari Hindi download and are listed for Hindi only; ML Kit reads the screen on the device; audio from Lingua Libre (पानी), else the voice | E | U HindiSupportTest, SentenceTest, WordfreqDictionaryTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-19 |
 
 ### POP: the popup
 
@@ -371,6 +372,43 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-19, `languages/hi` (Hindi, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Hindi (LK42) through the Languages screen, the download screen, the search screen (text action), the overlay
+over a rendered Devanagari image (64 px, Nirmala UI) in the debug viewer with cloud recognition and with ML Kit
+offline, the popup page (`popup-eval.mjs`), the Popup settings' font card and the on-device model dialog; the lookup
+engine's instrumented tests (38/38) and `SystemFontFilesTest` (3/3).
+
+Results: passed after one fix. First checks: LK42.
+
+- Setup: the download screen listed wty-hi-en (5.6 MB), the wordfreq list (148 kB), the transcription dictionary
+  (659 kB), ML Kit (built in, ticked) and both Tesseract models (1.1 and 12 MB). 6.4 MB downloaded, about 23 MB after
+  import; Active · Ready, flag in, bubble हि.
+- Search: पढता → पढ़ना ("singular masculine contrafactual" +2, W 3347, [pəɽʰ(ə)nɑ]); हूं → होना (W 257); लडकियां →
+  लड़की ("plural direct", W 395); खाना → खाना (W 722) and ख़ाना (Wiktionary's "nuqtaless form" row); ख़ाना, decomposed
+  and as U+0959, → ख़ाना only; हैँ → हैं (W 9) and होना.
+- Overlay, cloud recognition: हैं; "पढता हूं" → पढ़ना as a phrase ("first person singular masculine present
+  subjunctive/indicative"); the sentence with डॉ. kept the abbreviation ("Dr. Sharma said, “Come tomorrow." from
+  Google), the one with ए.पी.जे. its initials ("A.P.J. Abdul Kalam was a scientist." from Bing). Audio for पढ़ना
+  came from the first of two sources in 4.1 s.
+- Overlay, ML Kit with Wi-Fi and data off: the band draft (3 paragraphs) in 3.1-3.3 s, the whole page (5
+  paragraphs) in 6.0 s; the cloud request failed offline as expected. कलाम found; साफ़ किया → साफ़ करना; किताब aimed at
+  ता → किताब, highlighted whole. ML Kit read ख़ाना without its nukta, so खाना came first and ख़ाना second.
+- Page: `lang` hi; the "Screenlate Serif" face carries the Devanagari range. `local("NotoSerifDevanagari-Regular")`
+  and `local("Noto Serif Devanagari Regular")` load, `local("Noto Serif Devanagari")` does not; Noto Sans Devanagari
+  loads by its PostScript name only.
+- Fonts: Hindi's card offers Mukta (0.9 MB), Hind (0.6 MB) and Tiro Devanagari Hindi with "Only for Hindi text";
+  Spanish's lists the Latin fonts. None downloaded.
+- Fix: the ML Kit description (language setup and the on-device model dialog) named Chinese, Japanese, Korean and
+  Latin script only; it names Devanagari now in all 14 locales, checked in the model dialog after the rebuild.
+
+Noted, not looked into: Home showed "The note type was not found in AnkiDroid" for Japanese (the emulator's local
+AnkiDroid collection).
+
+Not checked: a font download, the voice for Hindi, Tesseract for Hindi.
+
+Emulator state since this run: Hindi active, Croatian starred; Wi-Fi and data on; /data had 414 MB free. Powered off.
 
 ### 2026-10-19, `languages/sr` (Croatian and Serbian, before its commit), Pixel_10_Pro (API 37)
 

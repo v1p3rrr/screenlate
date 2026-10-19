@@ -937,3 +937,217 @@ The owner chose two languages instead of two script entries (questions 61-64): a
   καλη ορεξη → καλή όρεξη; flag gr, Ω in the bubble; the Paddle download, its warm-up (131 ms) and the overlay over a
   rendered image (Arial): ΣΚΥΛΟΣ, Νίκος with the sentence "Ο κ. Νίκος είπε· «Έρχομαι αύριο»." translated whole,
   the lone Η as the letter and article, π.χ. inside its sentence.
+
+## Group 4b research (2026-10-19)
+
+Hindi (hi), Bengali (bn), Georgian (ka), Armenian (hy): new scripts, left to right, spaces between words. Sources:
+Yomitan e7334a9 (`ext/js/language/`, GPL-3.0), the wty tree on Hugging Face (`latest/dict`, listed and downloaded
+2026-10-19, CC BY-SA 4.0; sizes in MB of 10^6 bytes), wordfreq 912caf6 (MIT code, data CC BY-SA 4.0), the tessdata
+pins of `tessdata_catalog.py` (Apache-2.0), ML Kit text recognition 16.0.1 (the Devanagari AAR from the Gradle cache),
+the Paddle devanagari model converted for the comparison (Apache-2.0), AOSP `fonts.xml` (main) and Google Fonts
+metadata for the font lists, circle-flags 379588b (MIT), Wikimedia Commons and Lingua Libre (search API) for audio,
+the OCR comparison of `ocr-engines.md` (screens of 2026-10-16/17, `testdata/ocr/compare/analyze-rot.txt`). Nothing in
+this section was measured on a device.
+
+### Yomitan at e7334a9
+
+| lang | text processors | transforms |
+|---|---|---|
+| hi | none (descriptor with `exampleText` only) | none |
+| bn | no descriptor | none |
+| ka | none: no capitalization, so Mtavruli (ᲡᲐᲮᲚᲘ, headings in capitals) is never lowercased | `georgianTransforms` (`language: 'kat'`): 6 conditions, 3 transforms, 16 rules: 13 case and plural endings dropped (ები ებს ებების მა ს ის ით ად ო ში ზე შია ზეა), stem completion გნ → გნი, ნ → ნი, vowel restoration გ → გა; names are ids ("noun-adj-suffix-stripping") with English descriptions |
+| hy | capitalization | none |
+
+- Georgian's transforms name the language by its ISO 639-3 code (`kat`); `generate-inflections.mjs` matches
+  `descriptor.language === iso` and would not find them.
+- Yomitan cuts lookup candidates at characters that are not `\p{Letter}`, so an Indic word is cut at its vowel signs
+  and viramas (Mn, Mc): the candidates of "पढ़ता" include "पढ" and "प"; `ShownResults` already drops matches that end
+  before a combining mark. Georgian and Armenian letters are all `\p{Letter}`.
+- QuickJS-ng 0.17.0 has Unicode tables that lowercase Mtavruli (U+1C90–U+1CBF → U+10D0–U+10FF) and Armenian capitals;
+  `ԵՎ` lowercases to `եվ`, never to the ligature `և` (U+0587).
+
+### Dictionaries (wty)
+
+Counting as in group 4a (words with their own meaning); ✗ under 1,500 (then only the word count is given); – no file.
+Cells: archive MB, words.
+
+| from | en | ru | pl | zh | fr | it | tr | ko | ja | pt | es | vi | de |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| hi | 5.61 21.6k | 0.30 6.9k | 0.18 3.4k | 0.27 3.6k | 1,255 ✗ | 343 ✗ | 593 ✗ | 879 ✗ | 488 ✗ | 469 ✗ | 186 ✗ | 128 ✗ | 73 ✗ |
+| bn | 1.67 9.2k | 0.11 2.2k | 1,235 ✗ | 1,459 ✗ | 279 ✗ | 0.10 1.9k | 363 ✗ | 349 ✗ | 270 ✗ | 293 ✗ | 115 ✗ | 125 ✗ | 103 ✗ |
+| ka | 5.49 22.3k | 0.38 7.1k | 0.16 3.5k | 728 ✗ | 0.16 1.8k | 112 ✗ | 1,117 ✗ | 1,112 ✗ | 173 ✗ | 885 ✗ | 229 ✗ | 214 ✗ | 451 ✗ |
+| hy | 7.50 17.6k | 0.42 9.5k | 0.12 3.0k | 0.19 2.5k | 0.07 1.6k | – | 0.20 3.3k | 1,424 ✗ | 1,283 ✗ | 417 ✗ | 245 ✗ | 116 ✗ | 678 ✗ |
+
+- Pairs that pass: hi en ru pl zh; bn en ru it; ka en ru pl fr; hy en ru tr pl zh fr. Close to the line: bn→zh 1,459,
+  hy→ko 1,424, hi→fr 1,255, bn→pl 1,235.
+- No own-language edition and no glossaries for any of the four. The per-pair transcription files wty now publishes
+  (`-ipa.zip` beside the pairs) are not what the catalog reads; it reads `dict/all/<lang>/wty-<lang>-ipa.zip`:
+  hi 0.66 MB (34.1k words), ka 0.43 (25.4k), hy 0.64 (19.8k), bn 0.20 (7.7k); all four pass the 1,500-word rule.
+- Form-of rows in →en: hi 275,411; ka 503,440; hy 942,487; bn 53,646. Headwords are NFC; lemma rows have no readings.
+- Hindi: forms cover verbs and nouns (पढ़ता, पढ़ूँगा, लड़कों, किताबें, गई, हूँ, हैं, था). 11,648 Urdu-script rows tagged
+  `Urdu` point to the Hindi lemmas (useful for Urdu text, harmless otherwise); 351 romanized rows ("khaṛā hoiye").
+  Spellings: headwords write nukta (पढ़ना, बड़ा) and candrabindu (हूँ, माँ, लड़कियाँ) where much printed and typed text
+  writes no nukta (पढना) and anusvara (हूं, मां, लड़कियां); none of those spellings is a headword. Keys without
+  nukta: 38,248 headwords, 34,659 new spellings, 3,369 shared by two or more headwords. Candrabindu as anusvara:
+  52,891 headwords, 49,784 new, 3,107 shared. wordfreq `small_hi` against the headwords: top 1,000 965 exact, 975
+  with the candrabindu/anusvara keys, 980 with the nukta-free keys too; top 5,000 4,285 / 4,331 / 4,437; top 20,000
+  12,811 / 13,050 / 13,574.
+- Bengali: 6,297 form headwords are malformed by the extraction: a native word followed by a transliteration
+  ("মাসটি (maśṭa (colloquial), maśṭi (formal))", "বইগুলো , boigulo (formal))") in 5,596 rows, template residue
+  ("{{{3}}}ো ({{{4}}}o)") in 78. Keying the native word before the first space with `(`, `/` or `,` after it recovers
+  5,268 spellings that are not headwords yet (বইটি, বইগুলো, বাড়িগুলো). Rows tagged "alternative Standard" link
+  standard words to dialect lemmas (আমার → হাঁর); left as they are. Coverage on wordfreq `large_bn`:
+
+  | top | exact | with the cleanup | with the cleanup and noun endings |
+  |---|---|---|---|
+  | 1,000 | 807 | 809 | 869 |
+  | 5,000 | 2,790 | 2,812 | 3,328 |
+  | 20,000 | 6,551 | 6,697 | 9,058 |
+
+  The noun endings are our own list (classifiers and cases, not from Yomitan): -গুলোতে -গুলিতে -গুলোর -গুলির
+  -গুলোকে -গুলিকে -গুলো -গুলি -টিতে -টাতে -টির -টার -টিকে -টাকে -টি -টা -খানা -খানি -দের -েরা -রা -য়ের -য় -ের
+  -র -কে -তে -ে.
+- Georgian: forms cover nouns and verbs (ვწერ, დავწერე, წიგნის, სახლში); 413 odd rows, `{{{SNM}}}` residue. Most of
+  Yomitan's suffix rules duplicate form rows.
+- Armenian: 15,761 headwords carry the emphasis mark ՛ U+055B (imperatives: կարդա՛, կազմակերպի՛ր), 11,003 of them with
+  no plain twin; some forms carry the question mark ՞ U+055E inside the word (ուրո՞ւ). Text writes the question mark
+  on the stressed vowel (ինչո՞ւ for ինչու), so it must go before lookup. 12,010 headwords contain the ligature և;
+  capitals have no ligature (ԵՎ, Եվրոպա), so ԵՐԵՎԱՆ lowercases to երեվան and is not found; Եվրոպա itself keeps եվ.
+  5,128 rows "orthography spelling X" (tag `traditional`) link the classical spellings to the lemma; their headword
+  carries that prefix and needs it cut.
+- Word lengths: lemmas longer than 16 UTF-16 units (the default scan length): hi 1.3%, bn 1.1%, ka 7.3%, hy 2.1%
+  (cs 2.5%, el 2.6% for comparison); one-word forms longer than 16: ka 5.2%, hy 4.9% (cs 0.7%): ժողովրդավարություն
+  (18), კონგრესმენებისთვის (18).
+
+### Word frequency (wordfreq 912caf6)
+
+- hi: `small_hi` only (148 KB, 26.7k words; 1,807 of the top 2,000 are headwords). It writes anusvara where the
+  headwords write candrabindu, so हूं and हूँ should share the rank.
+- bn: `large_bn` (1.56 MB, 238.7k words) and `small_bn`; 1,422 of the top 2,000 are headwords.
+- ka, hy: no list (no frequency order, as for Belarusian).
+
+### OCR
+
+- ML Kit: the Devanagari recognizer (documented: Hindi, Marathi, Nepali, Sanskrit experimental) is a separate AAR,
+  2.02 MB; its shared assets are byte for byte those already in the APK, so the APK grows by about 0.6 MB (Deva_ctc
+  and Beng_ctc models, about 31 + 283 KB compressed each). It holds a Bengali model too, undocumented: to be measured
+  on Bengali screens. Nothing for Georgian or Armenian.
+- Paddle: `devanagari_PP-OCRv5_mobile_rec` (568 characters: danda ।, double danda ॥, nukta, candrabindu, Devanagari
+  digits, “” ‘’ «»; no Bengali letters, no ZWJ/ZWNJ), converted to MNN for the comparison (7.9 MB,
+  `testdata/ocr/compare/models/`); not uploaded. Paddle has no Bengali, Georgian or Armenian recognizer (its `ka` is
+  Kannada).
+- tessdata (fast / best MB): hin 1.12 / 11.90, ben 0.86 / 11.05, kat 2.52 / 4.49, hye 3.46 / 6.37.
+- Measured (`analyze-rot.txt`, CER % over clean + hard): hi ML Kit 1.8, Paddle 2.7, tessdata fast 24.8, best 25.0
+  (clean: fast 0.2, best 0.4, ML Kit 0.6, Paddle 0.9); bn fast 34.7, best 27.2 (clean 6.3 against 0.5); ka fast 22.9,
+  best 22.8 (clean 1.1 both); hy fast 28.1, best 26.9 (clean 2.9 against 2.0). Cloud recognition: 0.0-0.3. By the
+  recommendation rule (row "OCR engine choice"): hi ML Kit; bn, ka, hy tessdata fast, since best is not a third
+  better anywhere (bn 22% fewer errors, though 6.3 against 0.5 on clean screens).
+- `OcrScript` needs values for Georgian, Armenian and Bengali (Devanagari exists); `MlKitOcrEngine` maps DEVANAGARI
+  to nothing today.
+
+### Fonts
+
+- No font of `catalog.json` covers any of the four scripts.
+- System (AOSP `fonts.xml`): Noto Sans Devanagari, Bengali, Georgian, Armenian (plus UI variants) and Noto Serif
+  Devanagari, Bengali, Georgian, Armenian; PostScript names `NotoSansDevanagari-Regular`, `NotoSerifDevanagari-Regular`
+  and so on. The serif ones would be reached through `local()` with a unicode range per script, as Korean's
+  `SystemFonts` are; the WebView falls back to the sans ones by itself. To check on the emulator that `local()` finds
+  them.
+- Downloadable (Google Fonts, all OFL): Devanagari 63 families (Hind, Mukta, Poppins, Martel, Tiro Devanagari Hindi,
+  Noto Sans Devanagari…), Bengali 11 (Hind Siliguri, Anek Bangla, Tiro Bangla, Noto Serif Bengali…), Georgian only
+  Noto Sans and Serif Georgian, Armenian Noto Sans and Serif Armenian and Handjet.
+- Shaping is the WebView's and the system's (HarfBuzz): conjuncts, reordered matras (ि drawn before its consonant)
+  and Bengali two-part vowels (ো = ে + া) need nothing from us.
+
+### Hit testing, highlight and word starts
+
+- `TextLayout` splits a word into code points and, without one engine box per code point, divides the word's box
+  evenly. In Devanagari and Bengali code points are not left-to-right glyphs (ि is drawn before its consonant, a
+  conjunct is one glyph), so a tap can land on any code point of the word. Highlighting merges boxes per line, so the
+  whole word is still covered. On the comparison screens ML Kit, Paddle and Tesseract gave one character box per code
+  point for these scripts; cloud recognition gives word boxes only.
+- A tap that lands on a spacing vowel sign (Mc: ा ी ो in Devanagari, া ী in Bengali) finds nothing today:
+  `SpacedLanguageSupport.isWordCharacter` counts letters, digits and Mn only, so the word start is not searched and
+  `lookupStart` refuses a mark. Mc and Me marks, ZWJ and ZWNJ between letters, and Armenian's in-word marks
+  (՛ U+055B, ՜ U+055C, ՞ U+055E, the apostrophe ՚ U+055A) must count as word characters; the Armenian hyphen ֊ U+058A
+  as a connector.
+- `wordBefore`, `hasPartner`, `isElision` and `digitsBefore` test `isLetter()`, so "डॉ." (Dr) gives an empty word and
+  no abbreviation matches: marks must count as part of the word there too.
+
+### Text rules
+
+- Sentence ends: hi and bn । ॥ . ? ! …; hy ։ U+0589 and the colon OCR gives for it (not when a letter or digit
+  follows at once: 10:30), ? ! …, while . (the mijaket) does not end a sentence, so abbreviations do not matter; ka
+  . ? ! …. On the comparison screens every engine reads the danda as । (no | or I); Tesseract reads every Armenian
+  ։ as a colon, cloud recognition about half of them.
+- Abbreviations: hi डॉ प्रो सं ई ई.पू पृ क्र रु लि कं कि.मी से.मी पं स्व, and Latin letter names as initials (ए बी सी
+  … जेड); bn ড ডা মো মোহা মি খ্রি পৃ লি কি.মি সে.মি সা রা and initials এ বি সি …; ka ე.ი მაგ წ ძვ ქ გვ ტ იხ შდრ
+  პროფ აკად ("ა.შ." ends a sentence).
+- Quotes: hi, bn “” ‘’; ka „“ and «»; hy «». The Armenian comma ՝ U+055D and the full stop ։ are not word characters.
+- Digits: Devanagari and Bengali digits are Nd (`isDigit`); Western digits are more common in both.
+- Normalization: the app never NFC-normalizes scanned text. OCR and typed text may give Bengali ো as ে + া (in
+  that order, which NFC composes), and precomposed nukta letters (U+0958–U+095F, U+09DC, U+09DD, U+09DF) that NFC
+  decomposes; wty headwords are NFC. A text processor applying NFC is needed for hi and bn.
+- Georgian Mtavruli: capitals in headings (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ); a decapitalize processor (QuickJS lowercases them) finds the
+  ordinary letters. Capitalizing the first letter is meaningless for Georgian.
+
+### Audio
+
+- Lingua Libre files: hi `hin` (Q1568) 3,430, bn `ben` (Q9610) 68,257, ka `kat` (Q8108) 881, hy `hye` (Q8785)
+  3,233.
+- Twenty common words each (water, house, book, cat, dog, mother, father, food or to eat, to read, good, friend,
+  school, night, day, tree, boy, girl, man, city, love), Lingua Libre / Wiktionary / either: hi 20 / 0 (`Hi-`) / 20;
+  bn 20 / 5 (`Bn-`) / 20; ka 1 / 9 (`Ka-წყალი.ogg`) / 10; hy 6 / 18 (`Hy-ջուր.ogg`) / 20. By the row "Audio order":
+  Lingua Libre first for hi and bn, Wiktionary first for ka and hy.
+- Georgian words recorded by one Lingua Libre speaker are filed under French (`LL-Q150 (fra)-…-წყალი.wav`, 9 of the
+  20 words); a search by the Georgian item does not find them, and they are left out.
+- Text to speech: Google's engine has Hindi and Bengali (Bangladesh and India) voices; Georgian and Armenian to be
+  checked on the emulator.
+
+### Names, flags, codes
+
+- Translation services: `TranslationLanguageTable` already lists hi, bn ("Bangla"), ka and hy with the same codes for
+  both services.
+- Names (JDK and Android): Hindi, Georgian, Armenian everywhere; bn is "Bangla" in English and Vietnamese (Tiếng
+  Bangla) and "Bengali" or its equivalent elsewhere (бенгальский, Bengalisch). Own names: हिन्दी, বাংলা, ქართული,
+  հայերեն.
+- circle-flags: `in`, `bd`, `ge`, `am` (paths and circles only, as the existing flags).
+- Bubble glyph candidates: the first letter of the language's own name (हि, বা, ქ, Հ) or of the alphabet (अ, অ, ა,
+  Ա; अ and অ look alike).
+- E-ink codes: HI, BN, KA, HY. No Anki markers (no readings).
+
+### Long lines
+
+- Nothing found that grows with the line beyond the usual substrings: Georgian's 16 suffix rules and a Bengali list of
+  about 30 endings cost a lookup per rule per substring, like the group 3 rules; import-time keys (nukta, candrabindu,
+  Armenian marks) cost nothing at lookup. An Armenian և variant of the text doubles the candidates per եվ/եւ in a
+  substring, rarely more than one or two. To be timed on the emulator with the test screens.
+
+### Plain fixes found (no owner decision)
+
+- Word characters: Mc, Me, ZWJ/ZWNJ between letters and the Armenian in-word marks count as part of a word; the
+  abbreviation helpers count marks as letters (see "Hit testing").
+- NFC text processor for hi and bn.
+- Armenian: a text processor dropping ՛ ՜ ՞ inside words; `HeadwordMarks` for the same marks after Armenian letters,
+  so կարդա՛ is keyed as կարդա; a text variant with եվ and եւ as և (the original kept, Եվրոպա).
+- Georgian: decapitalize added (glue or `addedPreprocessors`); `generate-inflections.mjs` matching the descriptor by
+  ISO 639-3 too; the three rule names translated.
+- wty cleanup at import, form rows only: the native word keyed when spaces and `(`, `/` or `,` follow it; rows with
+  `{{{` dropped; the prefix "orthography spelling " cut (hy).
+- Hindi frequency: anusvara and candrabindu spellings share the rank.
+- `OcrScript` values; the ML Kit Devanagari AAR (row "ML Kit Chinese and Korean": a few MB may be bundled); Bengali
+  measured on ML Kit; tessdata entries; the Paddle devanagari entry once its upload is approved.
+- Catalog: `SOURCES` gains hi, bn, ka, hy; wordfreq `LANGUAGES` hi and bn; flags in, bd, ge, am.
+- bn bundle: borrowed from hi (both without processors) under its own code, `iso639_3` `ben`.
+
+### Hindi on the emulator (2026-10-19)
+
+- ML Kit Devanagari on a rendered page (64 px, 1280×2856): the band draft in 3.1-3.3 s, the whole page in 6.0 s. It
+  read ख़ाना without its nukta; the import key without nukta still finds ख़ाना, second after खाना. Cloud recognition
+  keeps the nukta.
+- A tap on a vowel sign (किताब at ता) looks the word up from its start, as the shared word rule intends.
+- The serif system face loads by its PostScript and full names, not by the family name (`webview-fonts.md`).
+
+### Questions for the owner
+
+See `plans/2026-10-19-group-4b.md`.
