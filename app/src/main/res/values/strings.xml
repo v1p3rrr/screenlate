@@ -493,6 +493,7 @@
     <string name="popup_font_script_only_sh">Only for Serbo-Croatian text</string>
     <string name="popup_font_script_only_uk">Only for Ukrainian text</string>
     <string name="popup_font_script_only_be">Only for Belarusian text</string>
+    <string name="popup_font_script_only_el">Only for Greek text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

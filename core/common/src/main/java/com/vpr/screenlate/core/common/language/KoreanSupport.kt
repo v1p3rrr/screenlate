@@ -32,7 +32,6 @@ object KoreanSupport : LanguageSupport {
 
     /** Wiktionary first: more common words have a recording there than on Lingua Libre. */
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
-    override val iso639Part3 = "kor"
     override val wikidataId = "Q9176"
 
     /** The word: a voice reads Hangul as it is. */

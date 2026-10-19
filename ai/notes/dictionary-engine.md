@@ -150,6 +150,12 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   term; 社會 shows 社会 with Jitendex's tag). Warm lookups on the emulator with ten dictionaries stay at 10–22 ms; the
   first one after start reads the lemmas' pages (681 ms for 豪州). Installed on the emulator: wty-ja-ja 48 MB, wty-ja-en 94 MB; splitting the rows into a
   compact table at import (as `languages/main` does for other languages) would cut them to roughly 22 and 10 MB.
+- Headword marks in the form-of table (2026-10-19): `LanguageSupport.headwordMarks` passes the marks to drop
+  (`HEADWORD_MARKS` JSON) to `split_form_of`. Russian, Ukrainian, Belarusian and Serbo-Croatian key form rows without
+  their stress marks and store lemmas without them. Greek (`every_headword`) keys every headword that has
+  definitions without its tonos, pointing to itself with no tags, and keeps lemmas as written, since its headwords
+  carry the tonos; `split_form_of` then reads every bank, and `jni_bridge.cpp` writes the table even when the archive
+  is not rewritten (a dictionary without form rows). The lookup needs nothing new: a key without marks is a form.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

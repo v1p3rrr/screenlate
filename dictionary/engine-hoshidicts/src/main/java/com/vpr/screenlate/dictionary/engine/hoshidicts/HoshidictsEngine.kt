@@ -194,6 +194,7 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                 put(language.dictionaryCode, buildJsonObject {
                     put("marks", marks.marks)
                     put("bases", marks.bases)
+                    put("every_headword", marks.everyHeadword)
                 })
             }
         }.toString().encodeToByteArray()

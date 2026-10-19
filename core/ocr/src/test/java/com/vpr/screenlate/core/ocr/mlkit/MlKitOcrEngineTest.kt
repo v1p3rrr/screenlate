@@ -22,10 +22,12 @@ class MlKitOcrEngineTest {
     }
 
     @Test
-    fun `every language reads on the device except those written in cyrillic`() {
+    fun `every language reads on the device except those written in cyrillic or greek`() {
         val unread = Language.entries.filterNot { engine.reads(it) }
-        assertThat(unread).containsExactlyElementsIn(Language.entries.filter { it.support.ocrScript == OcrScript.CYRILLIC })
-        assertThat(unread).contains(Language.RUSSIAN)
+        assertThat(unread).containsExactlyElementsIn(
+            Language.entries.filter { it.support.ocrScript == OcrScript.CYRILLIC || it.support.ocrScript == OcrScript.GREEK },
+        )
+        assertThat(unread).containsAtLeast(Language.RUSSIAN, Language.GREEK)
         assertThat(engine.reads(Language.VIETNAMESE)).isTrue()
     }
 }

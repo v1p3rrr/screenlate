@@ -12,7 +12,6 @@ object TurkishSupport : SpacedLanguageSupport() {
     override val language = Language.TURKISH
     override val glyph = "Ğ"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "tur"
     override val wikidataId = "Q256"
     override val languageTag = "tr"
     override val fontSample = "Pijamalı hasta yağız şoföre çabucak güvendi. İstanbul, Iğdır, ılık."

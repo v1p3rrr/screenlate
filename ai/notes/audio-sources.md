@@ -41,3 +41,9 @@ under another order's key. Changing region priority must affect the next selecti
 
 Lingua Libre and Wiktionary results for English, Russian, Korean and Chinese, the Mandarin codes and pinyin file
 names, and the compound matches of the Lingua Libre pattern: `languages.md`, "Audio per language".
+
+Lingua Libre titles name the language twice, by its Wikidata item and by a code in parentheses
+(`LL-Q9129 (ell)-Speaker-word.wav`). The item is what identifies it; the code varies: Greek files carry `ell`, `gre`
+(ISO 639-2/B) or `mis` (2026-10-19: 167, 130 and 84). `AudioPages.linguaLibreSearch` therefore matches any
+three-letter code after the item. Checked for fr, de, nl, cs, ms, zh, sh, be and tl: one code each, with 105 French
+and 9 Mandarin files under others. Commons answers 429 to fast series of searches; wait a few seconds between them.

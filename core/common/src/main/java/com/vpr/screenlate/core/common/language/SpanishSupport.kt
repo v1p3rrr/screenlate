@@ -6,7 +6,6 @@ object SpanishSupport : SpacedLanguageSupport() {
     override val language = Language.SPANISH
     override val glyph = "Ñ"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "spa"
     override val wikidataId = "Q1321"
     override val languageTag = "es"
     override val fontSample = "El veloz murciélago hindú comía feliz cardillo y kiwi. ¿Qué año? ¡Pingüino!"

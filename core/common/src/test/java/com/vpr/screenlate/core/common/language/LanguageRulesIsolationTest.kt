@@ -18,15 +18,17 @@ class LanguageRulesIsolationTest {
         filter(predicate).map { it.language }
 
     @Test
-    fun `an elided word starts a new word only in French, Italian and Portuguese`() {
+    fun `an elided word starts a new word only in French, Italian, Portuguese and Greek`() {
         assertThat(spaced.where { it.wordStartOffset("de l'ea", "u") == 2 })
             .containsExactly(Language.FRENCH, Language.ITALIAN)
         assertThat(spaced.where { it.wordStartOffset("gota d'águ", "a") == 3 })
             .containsExactly(Language.FRENCH, Language.ITALIAN, Language.PORTUGUESE)
+        assertThat(spaced.where { it.wordStartOffset("σ'αγα", "π") == 3 }).containsExactly(Language.GREEK)
         // Everywhere else the apostrophe joins the word.
         for (support in spaced.filter { it.elisions.isEmpty() }) {
             assertThat(support.wordStartOffset("de l'ea", "u")).isEqualTo(4)
             assertThat(support.wordStartOffset("gota d'águ", "a")).isEqualTo(5)
+            assertThat(support.wordStartOffset("σ'αγα", "π")).isEqualTo(5)
         }
     }
 
@@ -104,8 +106,16 @@ class LanguageRulesIsolationTest {
             Language.RUSSIAN, Language.BELARUSIAN, Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC,
         )
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
+        val example = "π.χ. το"
+        assertThat(spaced.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(spaced.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(spaced.map { it.language })
+    }
+
+    @Test
+    fun `only Greek ends a sentence at a semicolon, and none at the ano teleia`() {
+        assertThat(all.where { it.endsSentence("Τι; Ναι", 2) }).containsExactly(Language.GREEK)
+        assertThat(all.where { it.endsSentence("Τι· Ναι", 2) }).isEmpty()
     }
 
     @Test
@@ -161,6 +171,8 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.recordingPrefix != it.language.dictionaryCode }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
+        assertThat(all.where { it.frequencyWord("τησ") != "τησ" }).containsExactly(Language.GREEK)
+        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK)
         assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.SERBO_CROATIAN_LATIN, Language.SERBO_CROATIAN_CYRILLIC)
     }
 
@@ -188,15 +200,18 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `cyrillic look-alikes are fixed only in Cyrillic text, the Serbian j and the Latin i only where they have a twin`() {
+    fun `look-alikes are fixed only in Cyrillic and Greek text, the Serbian j and the Latin i only where they have a twin`() {
         assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
             .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN)
         assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
             .containsExactly(Language.SERBO_CROATIAN_CYRILLIC)
         // A word of one letter has no other one to show its script.
-        assertThat(all.where { it.ocrWord("y") != "y" }).containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN)
-        assertThat(all.where { it.ocrWord("i") != "i" }).containsExactly(Language.UKRAINIAN, Language.BELARUSIAN)
+        assertThat(all.where { it.ocrWord("y") != "y" })
+            .containsExactly(Language.RUSSIAN, Language.SERBO_CROATIAN_CYRILLIC, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK)
+        assertThat(all.where { it.ocrWord("i") != "i" }).containsExactly(Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
+        // A Latin T before a Greek omicron.
+        assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
     }
 
     @Test

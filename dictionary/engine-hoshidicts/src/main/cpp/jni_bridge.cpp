@@ -318,7 +318,8 @@ JNIEXPORT jbyteArray JNICALL Java_com_vpr_screenlate_dictionary_engine_hoshidict
                                                       low_ram == JNI_TRUE);
     std::error_code error;
     if (split.written) std::filesystem::remove(split_path, error);
-    if (result.success && split.written) {
+    // Without a rewritten archive the table holds only headwords found without their marks (HeadwordMarks).
+    if (result.success && !split.table.empty()) {
       split.table.write(output / result.title / kFormOfTable);
       // A dictionary of forms only still counts as a term dictionary, so it is loaded.
       result.summary.counts.terms.total += split.form_rows;

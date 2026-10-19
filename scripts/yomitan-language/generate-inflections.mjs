@@ -108,7 +108,8 @@ for (const iso of languages) {
     for (const dir of fs.readdirSync(res).filter((d) => d.startsWith('values-')).sort()) {
         const file = path.join(res, dir, `inflections_${iso}.xml`);
         if (!fs.existsSync(file)) {
-            console.log(`${dir}: inflections_${iso}.xml missing`);
+            // Rules named only by affixes (Greek ξανα-) have nothing to translate.
+            if (expected.size > 0) console.log(`${dir}: inflections_${iso}.xml missing`);
             continue;
         }
         const present = new Set([...fs.readFileSync(file, 'utf8').matchAll(/<string name="([^"]+)"/g)].map((m) => m[1]));

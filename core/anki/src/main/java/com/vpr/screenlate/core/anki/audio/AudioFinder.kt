@@ -285,8 +285,7 @@ class AudioFinder internal constructor(
                 candidates(AudioPages.jisho(fetch(request(url).build(), deadline), term, reading))
             }
             AudioSourceType.LINGUA_LIBRE -> {
-                val support = language.support
-                val files = commonsFiles(AudioPages.linguaLibreSearch(term, support.wikidataId, support.iso639Part3), deadline)
+                val files = commonsFiles(AudioPages.linguaLibreSearch(term, language.support.wikidataId), deadline)
                 candidates(AudioPages.linguaLibre(files, term))
             }
             AudioSourceType.WIKTIONARY -> {

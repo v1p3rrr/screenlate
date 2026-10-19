@@ -7,7 +7,6 @@ object LatvianSupport : SpacedLanguageSupport() {
     override val language = Language.LATVIAN
     override val glyph = "Ā"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "lav"
     override val wikidataId = "Q9078"
     override val languageTag = "lv"
     override val fontSample = "Glāžšķūņa rūķīši dzērumā čiepj Baha koncertflīģeļu vākus."

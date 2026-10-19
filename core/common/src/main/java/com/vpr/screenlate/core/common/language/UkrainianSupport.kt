@@ -12,7 +12,6 @@ object UkrainianSupport : SpacedLanguageSupport() {
     override val language = Language.UKRAINIAN
     override val glyph = "Ї"
     override val ocrScript = OcrScript.CYRILLIC
-    override val iso639Part3 = "ukr"
     override val wikidataId = "Q8798"
     override val languageTag = "uk"
     override val fontSample = "Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів! Наго́лос, пʼять."

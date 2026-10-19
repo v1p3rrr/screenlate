@@ -27,7 +27,6 @@ object JapaneseSupport : LanguageSupport {
     )
 
     override val defaultAudioSources = listOf("JAPANESE_POD_101", "LANGUAGE_POD_101", "JISHO")
-    override val iso639Part3 = "jpn"
     override val wikidataId = "Q5287"
     override val languageTag = "ja"
     override val fontSample = "置く・直す・骨 — あいうえお アイウエオ"

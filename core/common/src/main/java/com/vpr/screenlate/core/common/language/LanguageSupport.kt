@@ -21,10 +21,14 @@ interface LanguageSupport {
 
     /**
      * A word as OCR read it, with letters that engines take from another script written in the language's own; one
-     * character for one, so character boxes stay valid. In a Cyrillic-script language, Latin look-alikes in a word with
-     * Cyrillic letters or of one letter become Cyrillic ([CyrillicLookAlikes]).
+     * character for one, so character boxes stay valid. In a Cyrillic or Greek language, Latin look-alikes in a word
+     * with letters of the script or of one letter take the script's letters ([LookAlikes]).
      */
-    fun ocrWord(text: String): String = if (ocrScript == OcrScript.CYRILLIC) CyrillicLookAlikes.fix(text) else text
+    fun ocrWord(text: String): String = when (ocrScript) {
+        OcrScript.CYRILLIC -> CyrillicLookAlikes.fix(text)
+        OcrScript.GREEK -> GreekLookAlikes.fix(text)
+        else -> text
+    }
 
     /**
      * How the lookup shortens the text after the aim when a longer match fails: by words for languages written with
@@ -80,9 +84,6 @@ interface LanguageSupport {
 
     /** Default audio sources, as `AudioSourceType` names, in priority order. */
     val defaultAudioSources: List<String>
-
-    /** ISO 639-3 code, used by Lingua Libre recordings. */
-    val iso639Part3: String
 
     /** Wikidata item of the language, used by Lingua Libre recordings. */
     val wikidataId: String
@@ -224,6 +225,9 @@ interface LanguageSupport {
     fun frequencySpellings(word: String): List<String> =
         scriptTags.flatMap { tag -> inScript(MappedText.identity(word), tag).map { it.text } }
 
+    /** A word of wordfreq's list as dictionaries spell it: wordfreq writes the Greek final sigma as σ (τησ for της). */
+    fun frequencyWord(word: String): String = word
+
     /** The script for words written alike in each that an interface language ([locale]) suggests. */
     fun defaultScriptTag(locale: Locale): String? = scriptTags.firstOrNull()
 
@@ -241,8 +245,8 @@ interface LanguageSupport {
 
     /**
      * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
-     * import a form is also found without them, and the lemmas forms name are stored without them. Null where words
-     * carry none.
+     * import a form is also found without them, and the lemmas forms name are stored without them; or, with
+     * [HeadwordMarks.everyHeadword], marks every headword carries (the Greek tonos). Null where words carry none.
      */
     val headwordMarks: HeadwordMarks? get() = null
 
@@ -301,8 +305,11 @@ enum class SearchResolution { WORD, LETTER }
 /**
  * Combining [marks] dropped from a word where they follow one of [bases] (lowercase letters), in the word's decomposed
  * form: the acute of Serbo-Croatian ć stays, as it follows no vowel.
+ *
+ * @property everyHeadword every headword carries the marks and lemmas name headwords as written: a headword with
+ * definitions is also found without them, and lemmas keep them.
  */
-data class HeadwordMarks(val marks: String, val bases: String)
+data class HeadwordMarks(val marks: String, val bases: String, val everyHeadword: Boolean = false)
 
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript { LATIN, CHINESE, CYRILLIC, DEVANAGARI, GREEK, JAPANESE, KOREAN }
@@ -332,4 +339,5 @@ val Language.support: LanguageSupport
         Language.SERBO_CROATIAN_CYRILLIC -> SerboCroatianCyrillicSupport
         Language.UKRAINIAN -> UkrainianSupport
         Language.BELARUSIAN -> BelarusianSupport
+        Language.GREEK -> GreekSupport
     }

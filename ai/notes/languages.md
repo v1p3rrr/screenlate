@@ -867,3 +867,39 @@ plan.
 - Emulator (LK37, LK38): книги → книга "nominative plural", W 1109; зробив → зробити "past"; чита́ю → читати; п’ять and
   пʼятниця find the ' headwords (п'ять W 800); Wiktionary audio plays; flags ua and by, Ї and Ў in the bubble;
   Belarusian сям’я → сям'я, вады and ва́ды → вада "genitive singular", праўда.
+
+## Greek on `languages/el` (2026-10-19)
+
+- Bundle: `el.js` has Yomitan's capitalization processors, `removeDoubleAcuteAccents` (an enclitic's second accent:
+  πρόσωπό → πρόσωπο) and one rule, ξανα- (again). The rule's last variant drops every accent of what is left
+  (ξαναρώτησε → ρωτησε), which only the tonos-free keys below can match. QuickJS lowercases a final Σ to ς
+  (ΣΚΥΛΟΣ → σκυλος), checked by the instrumented test. `values/inflections_el.xml` holds no strings: the rule is
+  named by its prefix, so `generate-inflections.mjs` no longer asks for a translation file when nothing needs one.
+- Tonos: wty headwords carry it (σκύλος), all-caps text never does, and much typed text leaves it out. With
+  `HeadwordMarks.everyHeadword` the import keys every headword with definitions without U+0301 in the form-of table,
+  as a step without tags back to the headword, and form rows the same way with their lemmas as written. The table is
+  written even when the archive needs no rewrite, so el-el and the glossaries get it too. Text with the tonos still
+  matches exactly: πότε finds πότε only, ποτε finds ποτέ and πότε (owner's choice). wty el-en: 7,921 tonos-free
+  spellings stand for two or more headwords.
+- wordfreq: the small `el` list (276 kB) writes the final sigma as σ (τησ, σασ); the builder turns a word-final σ into
+  ς (`LanguageSupport.frequencyWord`), so ranks reach the headwords (σκύλος W 3024, ποτέ 120, τώρα 67).
+- OCR: ML Kit has no Greek model. Paddle `el` (PP-OCRv5 with the v5 detector, 7.2 MB) is the recommended model,
+  uploaded to the `ocr-models-1` release on 2026-10-19; Tesseract `ell` fast and best are listed unticked. Latin
+  look-alikes become Greek (`GreekLookAlikes`): the shared capitals, v → ν, n → η, c → ς, u → υ, w → ω, y → γ,
+  x → χ; a lone o or H counts as the article ο, Η.
+- Sentences: ; and U+037E end a sentence, the ano teleia · does not; abbreviations π.χ., λ.χ., κ. (Mr), αι.,
+  βλ., σελ., μ.μ., π.μ. and the others in `GreekSupport` hold it; κ.λπ., κ.τ.λ., κ.ά. and μ.Χ. end. Quotes « » with
+  “ ” inside. Elided σ', τ', μ', θ', ν', κ', απ', γι' start a new word after the apostrophe.
+- Fonts: the system font range adds Greek and Coptic (U+0370-03FF) and Greek Extended (U+1F00-1FFF); downloadable Latin fonts with Greek (Literata, Inter) show on the list; the "Only for Greek
+  text" switch has its string in every locale.
+- Audio: Lingua Libre files under Q9129 carry `ell` (167), `gre` (130) or `mis` (84); the search took `ell` only and
+  now takes any code (all languages). Of ten common words, two have a recording (γάτα under `ell`, μητέρα under
+  `gre`), none a Wiktionary one, so the voice reads most words.
+- Wiktionary data shown as it is: form rows join related nouns (σκυλί "masculine" → σκύλος, μητέρα "feminine" →
+  πατέρας) and some tags repeat (καλή → καλός "nominative/accusative/vocative singular feminine/feminine").
+- Catalog: 6 main pairs (en, ru, fr, pl, tr, zh ticked; el-el 38 MB unticked), 11 short-translation glossaries,
+  the transcription, wordfreq, Paddle `el`, Tesseract `ell`.
+- Emulator (LK39): σκυλος and ΣΚΥΛΟΣ → σκύλος, ποτε → ποτέ and πότε, πότε alone, ξαναρώτησε → ρωτάω "ξανα- « …",
+  καλη ορεξη → καλή όρεξη; flag gr, Ω in the bubble; the Paddle download, its warm-up (131 ms) and the overlay over a
+  rendered image (Arial): ΣΚΥΛΟΣ, Νίκος with the sentence "Ο κ. Νίκος είπε· «Έρχομαι αύριο»." translated whole,
+  the lone Η as the letter and article, π.χ. inside its sentence.

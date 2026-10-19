@@ -6,7 +6,6 @@ object EnglishSupport : SpacedLanguageSupport() {
     override val language = Language.ENGLISH
     override val glyph = "A"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "eng"
     override val wikidataId = "Q1860"
     override val languageTag = "en"
     override val fontSample = "The quick brown fox jumps over the lazy dog"

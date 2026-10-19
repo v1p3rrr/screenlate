@@ -62,9 +62,12 @@ internal object AudioPages {
      */
     private fun titleWord(term: String) = "intitle:\"${term.replace("\"", "")}\" "
 
-    /** Commons file search for Lingua Libre recordings: `LL-Q5287 (jpn)-Speaker-猫.wav`. */
-    fun linguaLibreSearch(term: String, wikidataId: String, iso639Part3: String): String =
-        titleWord(term) + """intitle:/LL-$wikidataId \($iso639Part3\)-.*-${luceneEscape(term)}\.wav/"""
+    /**
+     * Commons file search for Lingua Libre recordings: `LL-Q5287 (jpn)-Speaker-猫.wav`. The Wikidata item names the
+     * language; the code after it varies: Greek recordings carry `ell`, `gre` or `mis`.
+     */
+    fun linguaLibreSearch(term: String, wikidataId: String): String =
+        titleWord(term) + """intitle:/LL-$wikidataId \([a-z]{3}\)-.*-${luceneEscape(term)}\.wav/"""
 
     /**
      * Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`, and with a region code of

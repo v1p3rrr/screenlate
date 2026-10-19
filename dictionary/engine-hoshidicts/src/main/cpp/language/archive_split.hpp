@@ -17,6 +17,9 @@ namespace screenlate_language {
 struct HeadwordMarks {
   std::string marks;
   std::string bases;
+  // Whether every headword carries them and lemmas name headwords as written (the Greek tonos): a headword with
+  // definitions is found without them as well, and lemmas keep them.
+  bool every_headword = false;
 };
 
 class MarkStripper {
@@ -26,9 +29,12 @@ class MarkStripper {
   // [text] without the marks that follow one of the bases, composed again (NFC); empty when none is dropped.
   std::string strip(std::string_view text) const;
 
+  bool every_headword() const { return every_headword_; }
+
  private:
   std::vector<int32_t> marks_;
   std::vector<int32_t> bases_;
+  bool every_headword_;
 };
 
 struct ArchiveSplit {
@@ -46,7 +52,9 @@ struct ArchiveSplit {
 // split: Japanese lookup runs in hoshidicts, which keeps such rows, and a dictionary without a language serves it too.
 // Archives this cannot read are left to hoshidicts as well. Where [marks] has the source language, a form that carries
 // them is also found without them, and the lemmas it names are stored without them (dictionaries write headwords
-// unmarked: Wiktionary's Russian forms name почти́ть for почтить).
+// unmarked: Wiktionary's Russian forms name почти́ть for почтить). With [HeadwordMarks::every_headword], a headword
+// with definitions is also found without them, as a form of itself with no tags, and lemmas stay as written; the
+// table is then returned even when the archive needs no rewriting ([ArchiveSplit::written] false).
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
                            const std::map<std::string, HeadwordMarks>& marks);
 

@@ -11,7 +11,6 @@ object RussianSupport : SpacedLanguageSupport() {
     override val language = Language.RUSSIAN
     override val glyph = "Я"
     override val ocrScript = OcrScript.CYRILLIC
-    override val iso639Part3 = "rus"
     override val wikidataId = "Q7737"
     override val languageTag = "ru"
     override val fontSample = "Съешь же ещё этих мягких французских булок, да выпей чаю. Ударе́ние, ёж."

@@ -7,7 +7,6 @@ object PolishSupport : SpacedLanguageSupport() {
     override val language = Language.POLISH
     override val glyph = "Ł"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "pol"
     override val wikidataId = "Q809"
     override val languageTag = "pl"
     override val fontSample = "Pchnąć w tę łódź jeża lub ośm skrzyń fig. Źdźbło, żółw, gęś."

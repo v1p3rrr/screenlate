@@ -11,7 +11,6 @@ object BelarusianSupport : SpacedLanguageSupport() {
     override val language = Language.BELARUSIAN
     override val glyph = "Ў"
     override val ocrScript = OcrScript.CYRILLIC
-    override val iso639Part3 = "bel"
     override val wikidataId = "Q9091"
     override val languageTag = "be"
     override val fontSample = "У Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад'есці фаршыраваных яек."

@@ -6,7 +6,6 @@ object GermanSupport : SpacedLanguageSupport() {
     override val language = Language.GERMAN
     override val glyph = "ß"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "deu"
     override val wikidataId = "Q188"
     override val languageTag = "de"
     override val fontSample = "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich."

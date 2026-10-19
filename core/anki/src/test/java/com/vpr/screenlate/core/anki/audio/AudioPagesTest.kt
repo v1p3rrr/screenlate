@@ -51,8 +51,8 @@ class AudioPagesTest {
 
     @Test
     fun `commons searches escape the term`() {
-        assertThat(AudioPages.linguaLibreSearch("猫", "Q5287", "jpn"))
-            .isEqualTo("""intitle:"猫" intitle:/LL-Q5287 \(jpn\)-.*-猫\.wav/""")
+        assertThat(AudioPages.linguaLibreSearch("猫", "Q5287"))
+            .isEqualTo("""intitle:"猫" intitle:/LL-Q5287 \([a-z]{3}\)-.*-猫\.wav/""")
         assertThat(AudioPages.wiktionarySearch("a.b", "ja"))
             .isEqualTo("""intitle:"a.b" intitle:/[Jj]a(-[a-zA-Z]{2})?-a\.b[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/""")
     }

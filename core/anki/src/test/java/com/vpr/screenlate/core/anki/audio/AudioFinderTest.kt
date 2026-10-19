@@ -280,7 +280,7 @@ class AudioFinderTest {
         val candidates = finder.candidates("猫", "ねこ", Language.JAPANESE, listOf(AudioSource(AudioSourceType.LINGUA_LIBRE)))
         assertThat(candidates.single().url).isEqualTo("https://upload.example/cat.wav")
         assertThat(candidates.single().name).isEqualTo("Speaker1")
-        assertThat(requests.first().url.queryParameter("srsearch")).contains("LL-Q5287 \\(jpn\\)")
+        assertThat(requests.first().url.queryParameter("srsearch")).contains("LL-Q5287 \\([a-z]{3}\\)")
     }
 
     @Test

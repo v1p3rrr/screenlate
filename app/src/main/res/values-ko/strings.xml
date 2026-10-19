@@ -486,6 +486,7 @@
     <string name="popup_font_script_only_sh">세르비아크로아티아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_uk">우크라이나어 텍스트에만 사용</string>
     <string name="popup_font_script_only_be">벨라루스어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_el">그리스어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

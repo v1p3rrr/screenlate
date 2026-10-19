@@ -162,6 +162,14 @@ class SentenceTest {
     }
 
     @Test
+    fun greekSentencesEndAtTheQuestionMarkAndKeepQuotesAndAbbreviations() {
+        val greek = "Πού πας; Ο κ. Νίκος είπε· «Έρχομαι. Περίμενε», π.χ. αύριο. Τέλος."
+        assertThat(extract(greek, "είπε", Language.GREEK).text)
+            .isEqualTo("Ο κ. Νίκος είπε· «Έρχομαι. Περίμενε», π.χ. αύριο.")
+        assertThat(extract(greek, "πας", Language.GREEK).text).isEqualTo("Πού πας;")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

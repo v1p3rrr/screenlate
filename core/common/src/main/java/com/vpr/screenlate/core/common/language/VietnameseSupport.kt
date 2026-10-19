@@ -11,7 +11,6 @@ object VietnameseSupport : SpacedLanguageSupport() {
     override val language = Language.VIETNAMESE
     override val glyph = "Ư"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "vie"
     override val wikidataId = "Q9199"
     override val languageTag = "vi"
     override val fontSample = "Trăm năm trong cõi người ta, chữ tài chữ mệnh khéo là ghét nhau. Đà Nẵng, Huế."

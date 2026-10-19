@@ -213,6 +213,47 @@ class LanguageLookupTest {
         assertThat(engine.lookup("ва́ды", belarusian).first().term.expression).isEqualTo("вада")
     }
 
+    @Test
+    fun greekWithoutTonosFindsHeadwordsWithItAndWithTonosOnlyItself() = runTest {
+        val imported = engine.import(greekDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val greek = LookupOptions(language = Language.GREEK)
+
+        for (text in listOf("σκυλος", "ΣΚΥΛΟΣ", "σκύλος")) {
+            val dog = engine.lookup(text, greek).first()
+            assertThat(dog.term.expression).isEqualTo("σκύλος")
+            assertThat(dog.trace).isEmpty()
+            assertThat(dog.otherTraces).isEmpty()
+        }
+        assertThat(engine.lookup("ποτε", greek).map { it.term.expression }).containsAtLeast("ποτέ", "πότε")
+        assertThat(engine.lookup("πότε", greek).map { it.term.expression }).doesNotContain("ποτέ")
+        // A form keeps its accented lemma.
+        val genitive = engine.lookup("ΣΚΥΛΟΥ", greek).first()
+        assertThat(genitive.term.expression).isEqualTo("σκύλος")
+        assertThat(genitive.trace.map { it.name }).containsExactly("genitive", "singular")
+        assertThat(engine.lookup("καλη ορεξη", greek).first().term.expression).isEqualTo("καλή όρεξη")
+        // Yomitan's ξανα- rule leads to the form, which leads to its lemma.
+        assertThat(engine.lookup("ξαναρώτησε", greek).map { it.term.expression }).contains("ρωτάω")
+        assertThat(engine.lookup("πρόσωπό", greek).first().term.expression).isEqualTo("πρόσωπο")
+    }
+
+    @Test
+    fun greekDictionaryWithoutFormsGetsATableOfHeadwordsWithoutTonos() = runTest {
+        val imported = engine.import(
+            zip(
+                "el-main.zip",
+                "index.json" to """{"title":"Test Greek Words","revision":"1","format":3,"sourceLanguage":"el"}""".toByteArray(),
+                "term_bank_1.json" to """[["νερό","","","n",0,["water"],1,""]]""".toByteArray(),
+            ),
+            File(root, "out"),
+        )
+        assertThat(File(imported.directory, FORM_OF_TABLE).isFile).isTrue()
+        assertThat(engine.isComplete(imported.directory)).isTrue()
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+
+        assertThat(engine.lookup("ΝΕΡΟ", LookupOptions(language = Language.GREEK)).first().term.expression).isEqualTo("νερό")
+    }
+
     private fun ukrainianDictionary(): File = zip(
         "uk.zip",
         "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),
@@ -227,6 +268,23 @@ class LanguageLookupTest {
               ["читати","","","v",0,["to read"],7,""],
               ["чита́ю","","non-lemma","v",0,[["чита́ти",["first-person singular present"]]],8,""],
               ["кни́го","","non-lemma","n",0,[["кни́га",["vocative singular"]]],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun greekDictionary(): File = zip(
+        "el.zip",
+        "index.json" to """{"title":"Test Greek","revision":"1","format":3,"sourceLanguage":"el"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["σκύλος","","","n",0,["dog"],1,""],
+              ["σκύλου","","non-lemma","n",0,[["σκύλος",["genitive","singular"]]],2,""],
+              ["ποτέ","","","adv",0,["never"],3,""],
+              ["πότε","","","adv",0,["when"],4,""],
+              ["καλή όρεξη","","","phrase",0,["enjoy your meal"],5,""],
+              ["ρωτάω","","","v",0,["to ask"],6,""],
+              ["ρώτησε","","non-lemma","v",0,[["ρωτάω",["third-person singular past"]]],7,""],
+              ["πρόσωπο","","","n",0,["face"],8,""]
             ]
         """.trimIndent().toByteArray(),
     )

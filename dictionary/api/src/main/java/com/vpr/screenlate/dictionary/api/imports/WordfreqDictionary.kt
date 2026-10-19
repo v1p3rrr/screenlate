@@ -26,8 +26,8 @@ import kotlinx.serialization.json.put
  * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. A language written in
  * two scripts gets each word's spellings in the other one too (`LanguageSupport.frequencySpellings`): wordfreq writes
  * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are, and
- * the Ukrainian apostrophe as ' only. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its
- * data asks.
+ * the Ukrainian apostrophe as ' only. A language's spelling of a word (`LanguageSupport.frequencyWord`, the Greek final
+ * ς) replaces the list's. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.
  */
 object WordfreqDictionary {
     const val DEFAULT_SIZE = 100_000
@@ -38,7 +38,8 @@ object WordfreqDictionary {
         val words = source.inputStream().use { words(it, size * 2) }
         val support = Language.ofDictionaries(language)?.support
         var otherSpellings = false
-        val rows = termMeta(words, size, Locale.forLanguageTag(language)) { word ->
+        val listed = if (support == null) words else words.map(support::frequencyWord)
+        val rows = termMeta(listed, size, Locale.forLanguageTag(language)) { word ->
             support?.frequencySpellings(word).orEmpty().also { if (it.isNotEmpty()) otherSpellings = true }
         }
         val ranked = rows.maxOfOrNull { it.second } ?: 0

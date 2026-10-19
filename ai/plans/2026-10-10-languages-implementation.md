@@ -983,7 +983,9 @@ Progress: nl, cs, id, ms and tl are built on chained branches and checked on the
 "Compound: X + Y" above a split compound (row "German compounds", question 15, owner 2026-10-16) was never built; it
 is built now, for German and Dutch (`58ea5fa`). Serbo-Croatian (both entries) is built on `languages/sh`, checked on
 the emulator (LK36) and fast-forwarded into `languages/main`; its provisional choices are questions 55-60. Ukrainian
-and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK38). Next: Greek.
+and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK38). Greek is built on
+`languages/el` and checked on the emulator (LK39); its Paddle model is in the `ocr-models-1` release. Group 4a is
+done; what is left is the owner's questions 55-60 and the phone timings of the OCR plan.
 
 ## The big release
 
@@ -1352,3 +1354,7 @@ and Belarusian are built on `languages/uk` and checked on the emulator (LK37, LK
   apostrophe processors) and checked on the emulator. Plain fixes found: a form-of step back to the scanned text after
   a Yomitan rule showed as a chain on every feminine noun in -а (книга); a word of one letter read in Latin (і, у, В)
   stayed Latin in every Cyrillic language; wordfreq's Ukrainian words also rank their ’ and ʼ spellings.
+- 2026-10-19: Greek built on `languages/el` and checked on the emulator. Every headword is keyed without its tonos at
+  import (row "Greek accents"); wordfreq's word-final σ becomes ς; Latin look-alikes in Greek words become Greek;
+  `paddle-el` uploaded to `ocr-models-1` (owner's OK once the 4a work was ready). Plain fix found: the Lingua Libre
+  search took only the ISO 639-3 code, while Greek recordings also carry `gre` and `mis`; it now takes any code.

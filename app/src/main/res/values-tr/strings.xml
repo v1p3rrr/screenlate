@@ -489,6 +489,7 @@
     <string name="popup_font_script_only_sh">Yalnızca Sırp-Hırvatça metin için</string>
     <string name="popup_font_script_only_uk">Yalnızca Ukraynaca metin için</string>
     <string name="popup_font_script_only_be">Yalnızca Belarusça metin için</string>
+    <string name="popup_font_script_only_el">Yalnızca Yunanca metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

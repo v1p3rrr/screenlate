@@ -162,6 +162,21 @@ class WordfreqDictionaryTest {
     }
 
     @Test
+    fun `a greek archive ends words with a final sigma`() {
+        val source = folder.newFile().apply { writeBytes(wordList(listOf(listOf("τησ", "και"), listOf("σ'αυτούσ")))) }
+        val output = folder.newFile()
+
+        assertThat(WordfreqDictionary.build(source, "el", "3.2", output, size = 3)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["description"]!!.jsonPrimitive.content).doesNotContain("another script")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("της" to 1, "Της" to 1, "και" to 2, "Και" to 2, "σ'αυτούς" to 3, "Σ'αυτούς" to 3).inOrder()
+        }
+    }
+
+    @Test
     fun `the checksum is compared in any case`() {
         val file = folder.newFile().apply { writeText("wordfreq") }
         val sha = MessageDigest.getInstance("SHA-256").digest(file.readBytes()).joinToString("") { "%02x".format(it) }

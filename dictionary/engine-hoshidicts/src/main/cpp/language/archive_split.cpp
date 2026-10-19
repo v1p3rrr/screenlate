@@ -278,6 +278,7 @@ struct Compressors {
 std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper) {
   std::vector<glz::raw_json_view> rows;
   if (glz::read_json(rows, content)) return std::nullopt;
+  const bool every_headword = stripper != nullptr && stripper->every_headword();
   std::string out = "[";
   bool changed = false;
   bool first = true;
@@ -304,16 +305,22 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       }
     }
     std::string expression;
-    if (form_of.empty() || glz::read_json(expression, fields[0].str) || expression.empty()) {
+    if ((form_of.empty() && !every_headword) || glz::read_json(expression, fields[0].str) || expression.empty()) {
+      append(row.str);
+      continue;
+    }
+    std::string rules;
+    if (glz::read_json(rules, fields[3].str)) rules.clear();
+    const std::string plain = stripper != nullptr ? stripper->strip(expression) : std::string();
+    // Text without the marks (ΣΚΥΛΟΣ, σκυλος) finds the headword (σκύλος) as a form of itself, with no step to show.
+    if (every_headword && !plain.empty() && !definitions.empty()) split.table.add(plain, expression, {}, rules);
+    if (form_of.empty()) {
       append(row.str);
       continue;
     }
     changed = true;
-    std::string rules;
-    if (glz::read_json(rules, fields[3].str)) rules.clear();
-    const std::string plain = stripper != nullptr ? stripper->strip(expression) : std::string();
     for (const auto& [lemma, tags] : form_of) {
-      const std::string plain_lemma = stripper != nullptr ? stripper->strip(lemma) : std::string();
+      const std::string plain_lemma = stripper != nullptr && !every_headword ? stripper->strip(lemma) : std::string();
       const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
       split.table.add(expression, target, tags, rules);
       if (!plain.empty()) split.table.add(plain, target, tags, rules);
@@ -367,7 +374,8 @@ bool contains(const std::vector<int32_t>& sorted, int32_t point) {
 
 }  // namespace
 
-MarkStripper::MarkStripper(const HeadwordMarks& marks) : marks_(code_points(marks.marks)), bases_(code_points(marks.bases)) {}
+MarkStripper::MarkStripper(const HeadwordMarks& marks)
+    : marks_(code_points(marks.marks)), bases_(code_points(marks.bases)), every_headword_(marks.every_headword) {}
 
 std::string MarkStripper::strip(std::string_view text) const {
   // Forms in plain ASCII are the common case and carry no marks.
@@ -436,7 +444,8 @@ ArchiveSplit split_form_of(const std::string& archive, const std::string& output
       const Entry& entry = (*entries)[i];
       if (!is_term_bank(entry.name)) continue;
       const auto content = inflate(file, entry, compressors.decompressor);
-      const auto rest = content && may_hold_form_of(*content)
+      const bool every_headword = stripper && stripper->every_headword();
+      const auto rest = content && (every_headword || may_hold_form_of(*content))
                             ? split_bank(*content, split, stripper ? &*stripper : nullptr)
                             : std::nullopt;
       if (!rest) continue;

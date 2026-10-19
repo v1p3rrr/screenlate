@@ -496,6 +496,7 @@
     <string name="popup_font_script_only_sh">Только для сербскохорватского текста</string>
     <string name="popup_font_script_only_uk">Только для украинского текста</string>
     <string name="popup_font_script_only_be">Только для белорусского текста</string>
+    <string name="popup_font_script_only_el">Только для греческого текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

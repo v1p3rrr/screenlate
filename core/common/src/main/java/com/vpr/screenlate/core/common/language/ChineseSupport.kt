@@ -44,7 +44,6 @@ object ChineseSupport : LanguageSupport {
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
 
     /** Lingua Libre files Mandarin under its own item, `LL-Q9192 (cmn)`. */
-    override val iso639Part3 = "cmn"
     override val wikidataId = "Q9192"
 
     /** The pinyin without spaces, as almost every Mandarin recording on Wiktionary is titled (`Zh-xièxie.ogg`). */

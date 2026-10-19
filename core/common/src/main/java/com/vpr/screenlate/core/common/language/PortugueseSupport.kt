@@ -6,7 +6,6 @@ object PortugueseSupport : SpacedLanguageSupport() {
     override val language = Language.PORTUGUESE
     override val glyph = "Ã"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "por"
     override val wikidataId = "Q5146"
     override val languageTag = "pt"
     override val fontSample =

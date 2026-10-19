@@ -7,7 +7,6 @@ object CzechSupport : SpacedLanguageSupport() {
     override val language = Language.CZECH
     override val glyph = "Ř"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "ces"
     override val wikidataId = "Q9056"
     override val languageTag = "cs"
     override val fontSample = "Příliš žluťoučký kůň úpěl ďábelské ódy."

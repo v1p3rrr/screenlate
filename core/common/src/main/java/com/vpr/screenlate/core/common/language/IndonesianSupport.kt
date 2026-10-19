@@ -7,7 +7,6 @@ object IndonesianSupport : SpacedLanguageSupport() {
     override val language = Language.INDONESIAN
     override val glyph = "ID"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "ind"
     override val wikidataId = "Q9240"
     override val languageTag = "id"
     override val fontSample = "Muharjo seorang xenofobia universal yang takut pada warga jazirah, contohnya Qatar."

@@ -621,6 +621,9 @@ internal object YomitanInflections {
             "possessive adjective" to Strings(R.string.inflection_uk_possessive_adjective_label, R.string.inflection_uk_possessive_adjective),
             "verbal noun" to Strings(R.string.inflection_uk_verbal_noun_label, R.string.inflection_uk_verbal_noun),
         ),
+        "el" to mapOf(
+            "ξανα-" to Strings(null, null),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

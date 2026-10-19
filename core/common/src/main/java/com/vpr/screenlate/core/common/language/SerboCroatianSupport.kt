@@ -10,7 +10,6 @@ import java.util.Locale
  * Latin word is looked for in Cyrillic; they name no regions.
  */
 abstract class SerboCroatianSupport : SpacedLanguageSupport() {
-    override val iso639Part3 = "srp"
     override val wikidataId = "Q9299"
     override val languageTag get() = language.code
     override val recordingPrefix = "sr"

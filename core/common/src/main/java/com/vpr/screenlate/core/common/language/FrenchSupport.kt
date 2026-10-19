@@ -6,7 +6,6 @@ object FrenchSupport : SpacedLanguageSupport() {
     override val language = Language.FRENCH
     override val glyph = "Ç"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "fra"
     override val wikidataId = "Q150"
     override val languageTag = "fr"
     override val fontSample = "Voix ambiguë d’un cœur qui, au zéphyr, préfère les jattes de kiwis. Où ça ? Là-bas !"

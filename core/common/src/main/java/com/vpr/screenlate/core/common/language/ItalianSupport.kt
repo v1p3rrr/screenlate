@@ -7,7 +7,6 @@ object ItalianSupport : SpacedLanguageSupport() {
     override val language = Language.ITALIAN
     override val glyph = "È"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "ita"
     override val wikidataId = "Q652"
     override val languageTag = "it"
     override val fontSample =

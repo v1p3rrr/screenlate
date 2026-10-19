@@ -151,3 +151,14 @@ test('belarusian takes the ukrainian stress and apostrophe processors, russian d
     assert.ok(queried('be', "сям'я").has('сямʼя'));
     assert.ok(!queried('ru', 'п’ять').has("п'ять"));
 });
+
+test('greek capitals lower with a final sigma, a second accent drops and xana- is undone', () => {
+    assert.ok(queried('el', 'ΣΚΥΛΟΣ').has('σκυλος'));
+    assert.ok(queried('el', 'πρόσωπό').has('πρόσωπο'));
+    const xana = queried('el', 'ξαναρώτησε');
+    assert.ok(xana.has('ρώτησε'));
+    // Yomitan's other ξανα- rule drops the accents, for forms written apart in no dictionary.
+    assert.ok(xana.has('ρωτησε'));
+    // The tonos stays: a word written with it is matched as written.
+    assert.ok(!queried('el', 'πότε').has('ποτε'));
+});

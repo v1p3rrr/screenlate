@@ -10,7 +10,6 @@ object DutchSupport : SpacedLanguageSupport() {
     override val language = Language.DUTCH
     override val glyph = "Ĳ"
     override val ocrScript = OcrScript.LATIN
-    override val iso639Part3 = "nld"
     override val wikidataId = "Q7411"
     override val languageTag = "nl"
     override val fontSample = "Pa’s wijze lynx bezag vroom het fikse aquaduct."
