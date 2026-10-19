@@ -498,6 +498,7 @@
     <string name="popup_font_script_only_uk">Только для украинского текста</string>
     <string name="popup_font_script_only_be">Только для белорусского текста</string>
     <string name="popup_font_script_only_el">Только для греческого текста</string>
+    <string name="popup_font_script_only_hi">Только для текста на хинди</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>
@@ -780,7 +781,7 @@
     <string name="ocr_models_empty">Для этого языка нет моделей распознавания на устройстве.</string>
     <string name="ocr_models_dialog_hint">Скачанная модель используется после выбора. Используемую модель можно удалить, когда выбрана другая.</string>
     <string name="ocr_models_mlkit">ML Kit (встроенная)</string>
-    <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский и текст на латинице.</string>
+    <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский, текст на деванагари и на латинице.</string>
     <string name="ocr_models_recommended">Рекомендуется</string>
     <string name="ocr_models_more_accurate">Точнее</string>
     <string name="ocr_models_installed_size">Установлена · %1$s</string>
@@ -789,5 +790,5 @@
     <string name="ocr_models_delete_text">Модель «%1$s» (%2$s) будет удалена.</string>
     <string name="ocr_models_delete_shared">Она удалится и для этих языков: %1$s.</string>
     <string name="language_setup_main_model">Основная модель</string>
-    <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский и текст на латинице; для этих языков он используется, пока ни одна модель не основная.</string>
+    <string name="language_setup_models_info">Основная модель распознаёт язык на устройстве. Остальные отмеченные модели тоже скачиваются, их можно выбрать позже в настройках распознавания экрана. ML Kit встроен в приложение и читает китайский, японский, корейский, текст на деванагари и на латинице; для этих языков он используется, пока ни одна модель не основная.</string>
 </resources>

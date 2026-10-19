@@ -156,6 +156,10 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   definitions without its tonos, pointing to itself with no tags, and keeps lemmas as written, since its headwords
   carry the tonos; `split_form_of` then reads every bank, and `jni_bridge.cpp` writes the table even when the archive
   is not rewritten (a dictionary without form rows). The lookup needs nothing new: a key without marks is a form.
+  Hindi (2026-10-19) adds `replacements` (`{"ँ": "ं"}`): `MarkStripper::keys` gives the headword with the
+  replacement, without its marks (nukta after क–ह) and with both, each distinct and unlike the headword, so a
+  candrabindu headword is keyed under anusvara too. Wiktionary's Hindi headwords are NFC: nukta letters decomposed
+  (क + ़; U+0958–U+095F are composition exclusions), and the bundle composes the text the same way.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

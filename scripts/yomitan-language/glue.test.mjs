@@ -162,3 +162,18 @@ test('greek capitals lower with a final sigma, a second accent drops and xana- i
     // The tonos stays: a word written with it is matched as written.
     assert.ok(!queried('el', 'πότε').has('ποτε'));
 });
+
+test('hindi text is composed as headwords are and candrabindu reads as anusvara, only in hindi', () => {
+    // NFC writes क़ (U+0958) as क + nukta, as dictionaries do.
+    const precomposed = '\u0958लम';
+    const composed = '\u0915\u093Cलम';
+    assert.ok(queried('hi', precomposed).has(composed));
+    assert.ok(queried('hi', 'हैँ').has('हैं'));
+    // The import keys candrabindu headwords under anusvara; the text is not respelled the other way.
+    assert.ok(!queried('hi', 'हैं').has('हैँ'));
+    // The accent processors of Greek, Indonesian and others decompose and compose the text as well.
+    for (const language of ['en', 'ru', 'de', 'pl']) {
+        assert.ok(!queried(language, precomposed).has(composed), language);
+        assert.ok(!queried(language, 'हैँ').has('हैं'), language);
+    }
+});

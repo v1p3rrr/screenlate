@@ -488,6 +488,7 @@
     <string name="popup_font_script_only_uk">ウクライナ語の文字だけに使う</string>
     <string name="popup_font_script_only_be">ベラルーシ語の文字だけに使う</string>
     <string name="popup_font_script_only_el">ギリシャ語の文字だけに使う</string>
+    <string name="popup_font_script_only_hi">ヒンディー語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>
@@ -758,7 +759,7 @@
     <string name="ocr_models_empty">この言語を認識できる端末上のモデルはありません。</string>
     <string name="ocr_models_dialog_hint">ダウンロードしたモデルは選ぶと使われます。使用中のモデルは、ほかのモデルを選んだあとで削除できます。</string>
     <string name="ocr_models_mlkit">ML Kit（内蔵）</string>
-    <string name="ocr_models_mlkit_info">アプリに含まれ、ダウンロードは不要です。中国語、日本語、韓国語とラテン文字のテキストを認識します。</string>
+    <string name="ocr_models_mlkit_info">アプリに含まれ、ダウンロードは不要です。中国語、日本語、韓国語、デーヴァナーガリー文字とラテン文字のテキストを認識します。</string>
     <string name="ocr_models_recommended">推奨</string>
     <string name="ocr_models_more_accurate">より正確</string>
     <string name="ocr_models_installed_size">インストール済み · %1$s</string>
@@ -767,5 +768,5 @@
     <string name="ocr_models_delete_text">モデル「%1$s」（%2$s）を削除します。</string>
     <string name="ocr_models_delete_shared">次の言語からも削除されます：%1$s。</string>
     <string name="language_setup_main_model">メインのモデル</string>
-    <string name="language_setup_models_info">メインのモデルが端末上でこの言語を認識します。チェックしたほかのモデルもダウンロードされ、あとで画面の認識の設定で選べます。ML Kit はアプリに内蔵され、中国語、日本語、韓国語とラテン文字のテキストを認識します。これらの言語では、メインのモデルがない間は ML Kit が使われます。</string>
+    <string name="language_setup_models_info">メインのモデルが端末上でこの言語を認識します。チェックしたほかのモデルもダウンロードされ、あとで画面の認識の設定で選べます。ML Kit はアプリに内蔵され、中国語、日本語、韓国語、デーヴァナーガリー文字とラテン文字のテキストを認識します。これらの言語では、メインのモデルがない間は ML Kit が使われます。</string>
 </resources>

@@ -16,6 +16,13 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
   Regular`, `NotoSerifCJKkr-Regular` and `Noto Serif CJK KR` load; `Noto Sans CJK KR` and the Noto Sans/Serif KR
   names do not. `fonts.xml`'s `ko` family points at index 1 of the `.ttc` files but names the PostScript name
   `NotoSansCJKJP-Regular`, so its attribute cannot be trusted. Under `lang="ko"` 次 takes its Korean form.
+- Devanagari (2026-10-19, AOSP `fonts.xml` main): the families are declared for the script alone, `lang="und-Deva"`
+  (Noto Sans Devanagari as a variable font, Noto Serif Devanagari), not for `hi`, so `SystemFontFiles` also matches a
+  font whose locale has no language and the script ICU's likely subtags give the language (`hi` → `Deva`). Hindi
+  declares no sans face (`systemFonts.sans` empty: the default font falls back to Noto Sans Devanagari by itself) and
+  the serif one by `NotoSerifDevanagari-Regular`, `Noto Serif Devanagari Regular` and `Noto Serif Devanagari`. On the
+  Android 17 emulator the first two load and the family name does not; Noto Sans Devanagari loads by its PostScript
+  name only.
 - Family names in plain CSS (`font-family: "Noto Sans CJK JP"`) do not reach system fallback fonts; only the families and aliases of `fonts.xml` (sans-serif, serif, monospace, arial, times, courier, …) resolve by name.
 - The system face is declared with the script's `unicode-range`, so Latin and Cyrillic keep Roboto.
 - The chosen installed font is always declared a second time as `"Screenlate Chosen"` (with the script's `unicode-range` when it is "only for Japanese text"), and the page font list names only that alias. Its own family name stays unlimited for custom CSS; naming the family itself in the list would mix in other installed fonts of the same family (an own file "Klee One" next to the downloaded one). A range-limited face loads only for characters in its range, so `document.fonts.load` needs a sample text (`preloadText`, the language's `fontSample`); with the default single space nothing loads.

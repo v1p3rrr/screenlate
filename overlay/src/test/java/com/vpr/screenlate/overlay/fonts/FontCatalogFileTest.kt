@@ -49,6 +49,17 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `hindi has two sans-serifs and a serif, offered for hindi only`() {
+        val hindi = fonts.filter { it.language == Language.HINDI.code }
+        assertThat(hindi.map { it.family }).containsExactly("Mukta", "Hind", "Tiro Devanagari Hindi")
+        for (font in hindi) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.HINDI)
+        }
+        // Latin fonts have no Devanagari.
+        assertThat(fonts.filter { it.isOfferedFor(Language.HINDI) }).containsExactlyElementsIn(hindi)
+    }
+
+    @Test
     fun `latin fonts are offered for every language whose letters they have`() {
         val latin = Language.entries.filter { it.support.fontSubsets == setOf("latin") }
         assertThat(latin).containsAtLeast(Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN)

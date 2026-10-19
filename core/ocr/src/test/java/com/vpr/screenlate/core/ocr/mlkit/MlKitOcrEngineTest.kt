@@ -17,17 +17,18 @@ class MlKitOcrEngineTest {
         assertThat(engine.model(OcrScript.JAPANESE)).isEqualTo(OcrScript.JAPANESE)
         assertThat(engine.model(OcrScript.CHINESE)).isEqualTo(OcrScript.CHINESE)
         assertThat(engine.model(OcrScript.KOREAN)).isEqualTo(OcrScript.KOREAN)
-        assertThat(engine.model(OcrScript.CYRILLIC)).isNull()
-        assertThat(engine.model(OcrScript.DEVANAGARI)).isNull()
+        assertThat(engine.model(OcrScript.DEVANAGARI)).isEqualTo(OcrScript.DEVANAGARI)
+        for (script in listOf(OcrScript.ARMENIAN, OcrScript.BENGALI, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK)) {
+            assertThat(engine.model(script)).isNull()
+        }
     }
 
     @Test
-    fun `every language reads on the device except those written in cyrillic or greek`() {
+    fun `every language reads on the device except those whose script has no model`() {
         val unread = Language.entries.filterNot { engine.reads(it) }
-        assertThat(unread).containsExactlyElementsIn(
-            Language.entries.filter { it.support.ocrScript == OcrScript.CYRILLIC || it.support.ocrScript == OcrScript.GREEK },
-        )
+        assertThat(unread).containsExactlyElementsIn(Language.entries.filter { engine.model(it.support.ocrScript) == null })
         assertThat(unread).containsAtLeast(Language.RUSSIAN, Language.GREEK)
         assertThat(engine.reads(Language.VIETNAMESE)).isTrue()
+        assertThat(engine.reads(Language.HINDI)).isTrue()
     }
 }

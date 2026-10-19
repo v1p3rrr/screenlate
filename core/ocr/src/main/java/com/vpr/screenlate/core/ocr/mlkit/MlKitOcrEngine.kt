@@ -10,6 +10,7 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -37,9 +38,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 /**
- * On-device OCR with ML Kit. The Latin, Japanese, Chinese and Korean models are bundled (the Latin one adds little: the
- * Japanese model carries its recognizer). Latin-script languages use the Latin model, which reads them as well as the
- * Japanese one in less than half the time. Fast but weaker on vertical text and manga.
+ * On-device OCR with ML Kit. The Latin, Japanese, Chinese, Korean and Devanagari models are bundled (the Latin one adds
+ * little: the Japanese model carries its recognizer). Latin-script languages use the Latin model, which reads them as
+ * well as the Japanese one in less than half the time. Fast but weaker on vertical text and manga.
  */
 @Singleton
 class MlKitOcrEngine @Inject constructor() : OcrEngine {
@@ -56,7 +57,8 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
         OcrScript.JAPANESE -> OcrScript.JAPANESE
         OcrScript.CHINESE -> OcrScript.CHINESE
         OcrScript.KOREAN -> OcrScript.KOREAN
-        OcrScript.CYRILLIC, OcrScript.DEVANAGARI, OcrScript.GREEK -> null
+        OcrScript.DEVANAGARI -> OcrScript.DEVANAGARI
+        OcrScript.ARMENIAN, OcrScript.BENGALI, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK -> null
     }
 
     /** One recognizer per bundled model; scripts with a model of their own do not share (Japanese misreads Chinese). */
@@ -71,6 +73,7 @@ class MlKitOcrEngine @Inject constructor() : OcrEngine {
     private fun options(model: OcrScript): TextRecognizerOptionsInterface = when (model) {
         OcrScript.CHINESE -> ChineseTextRecognizerOptions.Builder().build()
         OcrScript.KOREAN -> KoreanTextRecognizerOptions.Builder().build()
+        OcrScript.DEVANAGARI -> DevanagariTextRecognizerOptions.Builder().build()
         OcrScript.LATIN -> TextRecognizerOptions.DEFAULT_OPTIONS
         else -> JapaneseTextRecognizerOptions.Builder().build()
     }

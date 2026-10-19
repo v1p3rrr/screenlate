@@ -495,6 +495,7 @@
     <string name="popup_font_script_only_uk">Only for Ukrainian text</string>
     <string name="popup_font_script_only_be">Only for Belarusian text</string>
     <string name="popup_font_script_only_el">Only for Greek text</string>
+    <string name="popup_font_script_only_hi">Only for Hindi text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>
@@ -769,7 +770,7 @@
     <string name="ocr_models_empty">No on-device model reads this language.</string>
     <string name="ocr_models_dialog_hint">A downloaded model is used once it is chosen. A model in use can be deleted after another one is chosen.</string>
     <string name="ocr_models_mlkit">ML Kit (built in)</string>
-    <string name="ocr_models_mlkit_info">Comes with the app; nothing to download. Reads Chinese, Japanese, Korean and Latin-script text.</string>
+    <string name="ocr_models_mlkit_info">Comes with the app; nothing to download. Reads Chinese, Japanese, Korean, Devanagari and Latin-script text.</string>
     <string name="ocr_models_recommended">Recommended</string>
     <string name="ocr_models_more_accurate">More accurate</string>
     <string name="ocr_models_installed_size">Installed · %1$s</string>
@@ -778,5 +779,5 @@
     <string name="ocr_models_delete_text">The model “%1$s” (%2$s) will be deleted.</string>
     <string name="ocr_models_delete_shared">It is deleted for these languages too: %1$s.</string>
     <string name="language_setup_main_model">Main model</string>
-    <string name="language_setup_models_info">The main model reads the language on the device. The other ticked models are downloaded too; they can be chosen later in the screen recognition settings. ML Kit, built into the app, reads Chinese, Japanese, Korean and Latin-script text; for those languages it is used while no model is main.</string>
+    <string name="language_setup_models_info">The main model reads the language on the device. The other ticked models are downloaded too; they can be chosen later in the screen recognition settings. ML Kit, built into the app, reads Chinese, Japanese, Korean, Devanagari and Latin-script text; for those languages it is used while no model is main.</string>
 </resources>

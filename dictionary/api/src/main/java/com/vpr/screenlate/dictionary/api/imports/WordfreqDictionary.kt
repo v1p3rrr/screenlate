@@ -25,9 +25,9 @@ import kotlinx.serialization.json.put
  * left out. wordfreq lowercases everything, while dictionaries write names and German nouns capitalized, so each word
  * also gets its capitalized form (in the language's rules, Turkish `i` → `İ`) with the same rank. Dictionaries written
  * in two scripts get each word's spellings in the other one too (`LanguageSupport.frequencySpellings`): wordfreq writes
- * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are, and
- * the Ukrainian apostrophe as ' only. A language's spelling of a word (`LanguageSupport.frequencyWord`, the Greek final
- * ς) replaces the list's. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.
+ * Chinese in Simplified characters and Serbo-Croatian in Latin letters only, which the script leaves as they are, the
+ * Ukrainian apostrophe as ' only, and Hindi mostly with anusvara where headwords write candrabindu. A language's
+ * spelling of a word (`LanguageSupport.frequencyWord`, the Greek final ς) replaces the list's. The index credits wordfreq and its sources, as the CC BY-SA 4.0 license of its data asks.
  */
 object WordfreqDictionary {
     const val DEFAULT_SIZE = 100_000
@@ -115,7 +115,7 @@ object WordfreqDictionary {
         put(
             "description",
             "Frequency ranks of the $size most frequent words of wordfreq $version for the language $language: 1 is the most frequent." +
-                if (otherSpellings) " A word's spellings the list leaves out, in another script or with another apostrophe, have its rank." else "",
+                if (otherSpellings) " A word's spellings the list leaves out, in another script or with another apostrophe or mark, have its rank." else "",
         )
         put("attribution", attribution(version))
         put("sourceLanguage", language)

@@ -170,6 +170,16 @@ class SentenceTest {
     }
 
     @Test
+    fun hindiSentencesEndAtTheDandaAndKeepQuotesAbbreviationsAndInitials() {
+        val hindi = "वह घर गया। डॉ. शर्मा ने कहा, “कल आना। ज़रूर।” फिर वे चले गए। अंत।"
+        assertThat(extract(hindi, "शर्मा", Language.HINDI).text)
+            .isEqualTo("डॉ. शर्मा ने कहा, “कल आना। ज़रूर।” फिर वे चले गए।")
+        assertThat(extract(hindi, "गया", Language.HINDI).text).isEqualTo("वह घर गया।")
+        val initials = "भारत के राष्ट्रपति ए.पी.जे. अब्दुल कलाम थे। वे वैज्ञानिक थे।"
+        assertThat(extract(initials, "कलाम", Language.HINDI).text).isEqualTo("भारत के राष्ट्रपति ए.पी.जे. अब्दुल कलाम थे।")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

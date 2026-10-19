@@ -73,6 +73,12 @@ Bengali" (research and questions first, then the build). Group 4c (Thai, Khmer, 
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
 9, a note on weak on-device recognition, is asked later); the build waits for the owner's go.
 
+Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered, question 10 (Bengali's
+recommended model) waits for an ML Kit measurement on the Bengali branch. Hindi is done on `languages/hi` and
+fast-forwarded into `languages/main`: LK42 passed on the emulator after one fix (the ML Kit description names
+Devanagari). Next on chained branches: Bengali, Georgian, Armenian. Group 4c (th, lo, km) is researched in its own
+session.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

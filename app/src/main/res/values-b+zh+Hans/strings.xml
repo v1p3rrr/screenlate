@@ -488,6 +488,7 @@
     <string name="popup_font_script_only_uk">仅用于乌克兰文文字</string>
     <string name="popup_font_script_only_be">仅用于白俄罗斯文文字</string>
     <string name="popup_font_script_only_el">仅用于希腊文文字</string>
+    <string name="popup_font_script_only_hi">仅用于印地文文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>
@@ -758,7 +759,7 @@
     <string name="ocr_models_empty">没有可识别该语言的设备端模型。</string>
     <string name="ocr_models_dialog_hint">下载的模型选中后使用。正在使用的模型需先选择其他模型才能删除。</string>
     <string name="ocr_models_mlkit">ML Kit（内置）</string>
-    <string name="ocr_models_mlkit_info">内置于应用中，无需下载。可识别中文、日文、韩文和拉丁字母文本。</string>
+    <string name="ocr_models_mlkit_info">内置于应用中，无需下载。可识别中文、日文、韩文、天城文和拉丁字母文本。</string>
     <string name="ocr_models_recommended">推荐</string>
     <string name="ocr_models_more_accurate">更准确</string>
     <string name="ocr_models_installed_size">已安装 · %1$s</string>
@@ -767,5 +768,5 @@
     <string name="ocr_models_delete_text">将删除模型“%1$s”（%2$s）。</string>
     <string name="ocr_models_delete_shared">以下语言也会失去该模型：%1$s。</string>
     <string name="language_setup_main_model">主模型</string>
-    <string name="language_setup_models_info">主模型在设备上识别该语言。其他勾选的模型也会下载，之后可在屏幕识别设置中选择。ML Kit 内置于应用中，可识别中文、日文、韩文和拉丁字母文本；对于这些语言，没有主模型时使用 ML Kit。</string>
+    <string name="language_setup_models_info">主模型在设备上识别该语言。其他勾选的模型也会下载，之后可在屏幕识别设置中选择。ML Kit 内置于应用中，可识别中文、日文、韩文、天城文和拉丁字母文本；对于这些语言，没有主模型时使用 ML Kit。</string>
 </resources>

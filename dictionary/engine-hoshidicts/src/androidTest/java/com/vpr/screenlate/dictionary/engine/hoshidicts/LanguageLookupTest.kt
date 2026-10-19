@@ -254,6 +254,30 @@ class LanguageLookupTest {
         assertThat(engine.lookup("ΝΕΡΟ", LookupOptions(language = Language.GREEK)).first().term.expression).isEqualTo("νερό")
     }
 
+    @Test
+    fun hindiWithoutNuktaOrWithAnusvaraFindsHeadwordsWithThemAndWithNuktaOnlyItself() = runTest {
+        val imported = engine.import(hindiDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val hindi = LookupOptions(language = Language.HINDI)
+        suspend fun first(text: String) = engine.lookup(text, hindi).first().term.expression
+
+        // Forms are found with and without nukta, and with anusvara for candrabindu, each way round.
+        for (text in listOf("पढ़ता", "पढता")) assertThat(first(text)).isEqualTo("पढ़ना")
+        for (text in listOf("लड़कियाँ", "लड़कियां", "लडकियाँ", "लडकियां")) assertThat(first(text)).isEqualTo("लड़की")
+        // Headwords with definitions as well, as forms of themselves with no steps.
+        val am = engine.lookup("हूं", hindi).first()
+        assertThat(am.term.expression).isEqualTo("हूँ")
+        assertThat(am.trace).isEmpty()
+        assertThat(first("मां")).isEqualTo("माँ")
+        // Candrabindu written for anusvara.
+        assertThat(first("हैँ")).isEqualTo("हैं")
+        // A word without nukta finds both spellings, one with nukta only itself.
+        assertThat(engine.lookup("खाना", hindi).map { it.term.expression }).containsAtLeast("खाना", "ख़ाना")
+        assertThat(engine.lookup("ख़ाना", hindi).map { it.term.expression }).doesNotContain("खाना")
+        // A letter with nukta as one character (U+0959) reads as the headword's two.
+        assertThat(engine.lookup("\u0959ाना", hindi).map { it.term.expression }).contains("ख़ाना")
+    }
+
     private fun ukrainianDictionary(): File = zip(
         "uk.zip",
         "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),
@@ -285,6 +309,24 @@ class LanguageLookupTest {
               ["ρωτάω","","","v",0,["to ask"],6,""],
               ["ρώτησε","","non-lemma","v",0,[["ρωτάω",["third-person singular past"]]],7,""],
               ["πρόσωπο","","","n",0,["face"],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    private fun hindiDictionary(): File = zip(
+        "hi.zip",
+        "index.json" to """{"title":"Test Hindi","revision":"1","format":3,"sourceLanguage":"hi"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["पढ़ना","","","v",0,["to read"],1,""],
+              ["पढ़ता","","non-lemma","",0,[["पढ़ना",["masculine","singular","habitual"]]],2,""],
+              ["लड़की","","","n",0,["girl"],3,""],
+              ["लड़कियाँ","","non-lemma","",0,[["लड़की",["plural","direct"]]],4,""],
+              ["हूँ","","","v",0,["am"],5,""],
+              ["माँ","","","n",0,["mother"],6,""],
+              ["हैं","","","v",0,["are"],7,""],
+              ["खाना","","","n",0,["food"],8,""],
+              ["ख़ाना","","","n",0,["compartment"],9,""]
             ]
         """.trimIndent().toByteArray(),
     )

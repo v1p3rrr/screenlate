@@ -491,6 +491,7 @@
     <string name="popup_font_script_only_uk">Yalnızca Ukraynaca metin için</string>
     <string name="popup_font_script_only_be">Yalnızca Belarusça metin için</string>
     <string name="popup_font_script_only_el">Yalnızca Yunanca metin için</string>
+    <string name="popup_font_script_only_hi">Yalnızca Hintçe metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>
@@ -765,7 +766,7 @@
     <string name="ocr_models_empty">Bu dili tanıyan bir cihaz modeli yok.</string>
     <string name="ocr_models_dialog_hint">İndirilen model seçildiğinde kullanılır. Kullanılan model, başka bir model seçildikten sonra silinebilir.</string>
     <string name="ocr_models_mlkit">ML Kit (yerleşik)</string>
-    <string name="ocr_models_mlkit_info">Uygulamayla gelir, indirme gerekmez. Çince, Japonca, Korece ve Latin alfabesiyle yazılmış metni tanır.</string>
+    <string name="ocr_models_mlkit_info">Uygulamayla gelir, indirme gerekmez. Çince, Japonca, Korece, Devanagari ve Latin alfabesiyle yazılmış metni tanır.</string>
     <string name="ocr_models_recommended">Önerilen</string>
     <string name="ocr_models_more_accurate">Daha doğru</string>
     <string name="ocr_models_installed_size">Yüklü · %1$s</string>
@@ -774,5 +775,5 @@
     <string name="ocr_models_delete_text">“%1$s” modeli (%2$s) silinecek.</string>
     <string name="ocr_models_delete_shared">Bu diller için de silinir: %1$s.</string>
     <string name="language_setup_main_model">Ana model</string>
-    <string name="language_setup_models_info">Ana model dili cihazda tanır. İşaretlenen diğer modeller de indirilir; bunlar daha sonra ekran tanıma ayarlarından seçilebilir. Uygulamaya yerleşik ML Kit Çince, Japonca, Korece ve Latin alfabesiyle yazılmış metni tanır; bu dillerde hiçbir model ana model değilken ML Kit kullanılır.</string>
+    <string name="language_setup_models_info">Ana model dili cihazda tanır. İşaretlenen diğer modeller de indirilir; bunlar daha sonra ekran tanıma ayarlarından seçilebilir. Uygulamaya yerleşik ML Kit Çince, Japonca, Korece, Devanagari ve Latin alfabesiyle yazılmış metni tanır; bu dillerde hiçbir model ana model değilken ML Kit kullanılır.</string>
 </resources>
