@@ -43,6 +43,18 @@
 | Google Cloud voices | docs.cloud.google.com/text-to-speech/docs/list-voices-and-types | A hint at the Android engine's languages; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
 | Lingua Libre items | Wikidata Q7918 (bg), Q9296 (mk), Q9246 (mn); Khalkha Q6399808 | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
 
+## Language research sources (group 5c: Finnish, Estonian, Hungarian, Azerbaijani, Uzbek)
+
+| What | Where | Notes |
+|---|---|---|
+| UD test sets | github.com/UniversalDependencies: UD_Finnish-TDT, UD_Azerbaijani-TueCL, UD_Uzbek-UT, UD_Uzbek-UzUDT (CC BY-SA 4.0); UD_Estonian-EDT, UD_Hungarian-Szeged (CC BY-NC-SA 3.0) | Gold lemmas for lookup coverage; measurements only, no test words copied from the NC sets |
+| Leipzig Corpora Collection | downloads.wortschatz-leipzig.de/corpora/: `fin_`, `est_`, `hun_`, `aze_`, `uzb_news_2020_10K`; `est_news_2020_100K`, `aze_newscrawl_2013_100K`, `aze_wikipedia_2021_100K`, `uzb_news_2020_30K`, `uzb_wikipedia_2021_100K`, `uzb_newscrawl_2011_100K` (mostly Cyrillic) | Running text for coverage and text counts; frequency candidates for et, az, uz; no 100K news for aze, uzb |
+| FrequencyWords et_50k | github.com/hermitdave/FrequencyWords (lists CC BY-SA 4.0) | Subtitle list, compared for Estonian frequency; not chosen |
+| ML Kit text recognition languages | developers.google.com/ml-kit/vision/text-recognition/v2/languages | fi, et, hu supported; az, uz experimental |
+| PaddleOCR ONNX models | huggingface.co/PaddlePaddle/`<name>`_onnx at the pins of `paddle_models.py` | v5 `latin` lacks ə and ʻ; v6 small has ə; run on the PC with `testdata/ocr/compare/scripts/paddle_ref.py` |
+| Finnish and Hungarian analysers | Omorfi (GPL-3.0), Voikko (GPL-2.0+), Hungarian Hunspell data (GPL/LGPL/MPL) | Not used; the ending rules are written from grammar descriptions |
+| Lingua Libre items | Wikidata Q1412 (fi), Q9072 (et), Q9067 (hu), Q9292 (az), Q9264 (uz) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav`; Wiktionary files `Fi-`, `Et-`, `Hu-`, `Az-`, `Uz-` |
+
 ## Language research sources (group 5e: Cantonese, Kannada, Tamil, Telugu, Marathi)
 
 | What | Where | Notes |
