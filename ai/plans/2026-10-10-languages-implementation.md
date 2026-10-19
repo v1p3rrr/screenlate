@@ -310,6 +310,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Waiting tasks card | Two or more tasks waiting for their turn share one card ("Waiting (N): …") with "Show the list", a Cancel for each, and "Cancel all" for the waiting ones; the running tasks and a download waiting for its retry keep their own cards. A stopped download gets no Wi-Fi hint, and Jiten no copy on our hosting for now (owner, 2026-10-19, request 67) |
 | Partial downloads | A download's archive is kept in the app's own storage (`no_backup`), not in the cache the system clears when storage runs low (owner, 2026-10-19) |
 | Waiting for a network | While no network is up, a waiting download's card says "Waiting for a network: …" (ru "Ждёт сеть: …"), a shared waiting card has the line "Waiting for a network" under its title (owner, 2026-10-19); the catalog card's stage and a waiting retry's card (under its retry text) say the same (a plain extension) |
+| Furigana markers | Yomitan's names stay (`{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}`); offered only for Japanese, Chinese and Russian, whose readings go over or into the words (a field that already has them keeps getting them in any language); Chinese and Russian show what they give as a second line in the + menu; Russian puts the stress into the text, in a sentence only on words in their dictionary form (owner, 2026-10-19, the language rules review; `notes/language-rules.md`) |
 
 ## Open items (postponed by the owner)
 
@@ -985,7 +986,7 @@ on 2026-10-19 before the OCR plan's last items, which wait for the phone timings
 `notes/languages.md`, "Group 4a research"; decisions from the row "Serbo-Croatian" on.
 
 - Shared pieces first, on `languages/main`:
-  - the catalog script counts words for the threshold (row "Catalog threshold", not built yet; 51 4a files pass by
+  - the catalog script counts words for the threshold (row "Catalog threshold", built; 51 4a files pass by
     words only) and applies it to transcriptions;
   - own-language editions listed;
   - headwords indexed without stress marks as well (U+0301, U+0300; for sh also U+030F, U+0311, U+0304, U+0302 on
@@ -1002,8 +1003,8 @@ on 2026-10-19 before the OCR plan's last items, which wait for the phone timings
   (Serbo-Croatian `Cyrillic` form rows, Baybayin and Jawi alt-of rows), sh audio through Wiktionary's `Sr-` files
   (Latin words transliterated), a Serbian `lang` on Serbo-Croatian text for Noto's glyph forms, the Greek accent
   rule, the audio order by measured coverage, OCR and the test screenshots.
-- To time on the emulator: Yomitan's `addSerboCroatianDiacritics` on long Latin lines (3^n variants per substring,
-  capped at 4096).
+- Timed on the emulator: Yomitan's `addSerboCroatianDiacritics` on long Latin lines (3^n variants per substring,
+  capped at 4096) takes 140-260 ms at the cap; no cut of our own was needed.
 
 Progress: nl, cs, id, ms and tl are built on chained branches and checked on the emulator (LK31-LK35, run log of
 2026-10-19); `languages/main` is fast-forwarded to `languages/tl` (`3951cea`). Found while checking: the line
@@ -1400,3 +1401,5 @@ no ML Kit for Serbian).
 - 2026-10-19: questions 65-66 answered. Row "Serbian and Croatian": look-alikes by the line, whatever the model
   (was "only with a Cyrillic model"), and Latin words in capitals stay on Cyrillic lines outside headings in capitals,
   as the owner asked to keep English words safe; no ML Kit in Serbian's model list.
+- 2026-10-19: row "Furigana markers" recorded from the language rules review (the owner's decisions there); the
+  catalog threshold in words and the Serbo-Croatian diacritics timing marked done in group 4a's list.

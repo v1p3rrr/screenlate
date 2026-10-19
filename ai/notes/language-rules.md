@@ -246,7 +246,7 @@ Found while splitting Croatian and Serbian:
 Words hyphenated at a line end (owner: "try to join, since it may not be one word"): the lookup tries the joined
 word and the word with its hyphen, and keeps the text as written when neither is found.
 
-Furigana markers outside Japanese (to be recorded in the plan's decision table):
+Furigana markers outside Japanese (the plan's decision row "Furigana markers"):
 
 - The names stay Yomitan's (`{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}`).
 - They are offered only for Japanese, Chinese and Russian: languages whose readings go over or into the words. Korean
