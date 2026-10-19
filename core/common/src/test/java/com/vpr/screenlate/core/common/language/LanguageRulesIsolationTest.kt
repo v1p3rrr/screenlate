@@ -86,7 +86,9 @@ class LanguageRulesIsolationTest {
         assertThat(spaced.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
             .containsExactly(Language.GERMAN, Language.CZECH)
-        assertThat(spaced.where { holds(it, "v roce 300 n. l. vznikl") }).containsExactly(Language.CZECH)
+        // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
+        val era = "v roce 300 n. l. vznikl"
+        assertThat(spaced.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
         assertThat(spaced.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH)
         assertThat(spaced.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN)
         assertThat(spaced.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
