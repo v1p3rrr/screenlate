@@ -194,7 +194,7 @@ class DictionaryImportWorker @AssistedInject constructor(
                 }
                 else -> error("Unknown import source")
             }
-            Log.i(TAG, "Task $id done in ${System.currentTimeMillis() - started} ms: ${titles.size} dictionaries $titles")
+            Log.i(TAG, "Task $id done in ${System.currentTimeMillis() - started} ms, installed: $titles")
             workDataOf(KEY_TITLES to titles.toTypedArray())
         } catch (e: CancellationException) {
             throw e
@@ -203,7 +203,8 @@ class DictionaryImportWorker @AssistedInject constructor(
             if (retries < MAX_RETRIES) {
                 // Queued again at the end: the tasks behind it do not wait for a host that does not answer.
                 val next = imports.requeue(id, inputData, tags, retries + 1) { isStopped }
-                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); retry ${retries + 1} of $MAX_RETRIES queued as $next")
+                val what = if (next != null) "retry ${retries + 1} of $MAX_RETRIES queued as $next" else "not queued again, as the task ended"
+                Log.w(TAG, "Task $id: the download broke off (${e.cause?.javaClass?.simpleName}); $what")
                 return Result.success(workDataOf(KEY_REQUEUED to true))
             }
             Log.w(TAG, "Task $id: the download broke off $MAX_RETRIES times; stopped", e.cause)
