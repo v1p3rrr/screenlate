@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
     <string name="overlay_translate">翻譯句子</string>
     <string name="overlay_translating">正在翻譯…</string>
+    <string name="overlay_compound">複合詞：%1$s</string>
     <string name="translation_failed">無法翻譯這個句子。</string>
     <string name="translation_failed_other">翻譯失敗。</string>
     <string name="translation_none_enabled">沒有啟用任何翻譯服務。請在 Screenlate 設定的「翻譯」中啟用。</string>

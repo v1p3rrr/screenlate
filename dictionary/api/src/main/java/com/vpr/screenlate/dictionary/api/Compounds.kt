@@ -26,6 +26,16 @@ internal suspend fun compoundParts(
     }
 }
 
+/**
+ * The entries of a compound's parts in order, each marked with the parts ([LookupResult.compound]): the headword of
+ * each part's first entry. A part left without entries is left out.
+ */
+internal fun List<List<LookupResult>>.markedAsCompound(): List<LookupResult> {
+    val parts = filter { it.isNotEmpty() }
+    val names = parts.map { it.first().term.expression }
+    return parts.flatMap { part -> part.map { it.copy(compound = names) } }
+}
+
 /** The results with a capitalized headword (German nouns) first, the others after them, each in their order. */
 internal fun List<LookupResult>.capitalizedFirst(): List<LookupResult> =
     sortedBy { it.term.expression.firstOrNull()?.isUpperCase() != true }

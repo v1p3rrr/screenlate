@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">バックグラウンドでバブルを使える状態に保ちます</string>
     <string name="overlay_translate">文を翻訳</string>
     <string name="overlay_translating">翻訳しています…</string>
+    <string name="overlay_compound">複合語：%1$s</string>
     <string name="translation_failed">文を翻訳できませんでした。</string>
     <string name="translation_failed_other">翻訳に失敗しました。</string>
     <string name="translation_none_enabled">翻訳サービスが 1 つも有効になっていません。Screenlate の設定の「翻訳」で有効にしてください。</string>

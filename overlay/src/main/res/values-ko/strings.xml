@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">백그라운드에서 버블을 사용할 수 있도록 유지합니다</string>
     <string name="overlay_translate">문장 번역</string>
     <string name="overlay_translating">번역 중…</string>
+    <string name="overlay_compound">합성어: %1$s</string>
     <string name="translation_failed">문장을 번역하지 못했습니다.</string>
     <string name="translation_failed_other">번역에 실패했습니다.</string>
     <string name="translation_none_enabled">켜진 번역 서비스가 없습니다. Screenlate 설정의 번역에서 켤 수 있습니다.</string>

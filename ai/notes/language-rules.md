@@ -62,7 +62,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 
 | Language | Rule | Code | Positive tests | Negative tests | Status |
 |---|---|---|---|---|---|
-| de, nl | A compound without an entry is split into the longest words, a linking s/es/n (Dutch s/en/e) skipped | `api/Compounds.kt:12`, `api/DictionaryLookup.kt:92`, `GermanSupport.kt:21`, `DutchSupport.kt:24` | CompoundsTest | Isolation (`compoundLinks` only de, nl) | ok |
+| de, nl | A compound without an entry is split into the longest words, a linking s/es/n (Dutch s/en/e) skipped; the page names the parts above their entries ("Compound: A + B") | `api/Compounds.kt:12`, `api/DictionaryLookup.kt:92`, `GermanSupport.kt:21`, `DutchSupport.kt:24` | CompoundsTest | Isolation (`compoundLinks` only de, nl) | ok |
 | de | A compound part's capitalized headwords (nouns) come first | `api/Compounds.kt:30`, `api/DictionaryLookup.kt:77` | CompoundsTest | Isolation (`capitalizedNouns` only de) | ok |
 | vi | Chains through a "classifier" form-of entry are dropped, a word reached only through one is left out | `api/ShownResults.kt:48`, `VietnameseSupport.kt:29` | ShownResultsTest | ShownResultsTest (every other language keeps it), Isolation | ok |
 | tl | Chains through a "Baybayin" form-of entry are dropped (basa → ᜊᜐ → basa, Basa), a word reached only through one is left out | `api/ShownResults.kt:48`, `FilipinoSupport.kt` | ShownResultsTest, FilipinoSupportTest | Isolation | ok |

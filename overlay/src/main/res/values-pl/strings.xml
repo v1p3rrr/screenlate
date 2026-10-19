@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">Dymek pozostaje dostępny w tle</string>
     <string name="overlay_translate">Przetłumacz zdanie</string>
     <string name="overlay_translating">Tłumaczenie…</string>
+    <string name="overlay_compound">Wyraz złożony: %1$s</string>
     <string name="translation_failed">Nie udało się przetłumaczyć zdania.</string>
     <string name="translation_failed_other">Tłumaczenie się nie powiodło.</string>
     <string name="translation_none_enabled">Żadna usługa tłumaczenia nie jest włączona. Usługi konfiguruje się w sekcji Tłumaczenie w ustawieniach Screenlate.</string>

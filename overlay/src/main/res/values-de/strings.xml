@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">Die Blase bleibt im Hintergrund verfügbar</string>
     <string name="overlay_translate">Satz übersetzen</string>
     <string name="overlay_translating">Wird übersetzt…</string>
+    <string name="overlay_compound">Kompositum: %1$s</string>
     <string name="translation_failed">Der Satz konnte nicht übersetzt werden.</string>
     <string name="translation_failed_other">Die Übersetzung ist fehlgeschlagen.</string>
     <string name="translation_none_enabled">Kein Übersetzungsdienst ist aktiv. Die Dienste werden in den Screenlate-Einstellungen unter „Übersetzung“ eingerichtet.</string>

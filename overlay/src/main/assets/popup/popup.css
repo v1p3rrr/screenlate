@@ -364,6 +364,12 @@ a {
     padding-top: 12px;
 }
 
+.compound {
+    color: var(--muted);
+    font-size: 0.9em;
+    padding-top: 8px;
+}
+
 .entry {
     padding: 10px 0 8px;
 }

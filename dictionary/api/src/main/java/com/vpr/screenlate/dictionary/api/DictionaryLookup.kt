@@ -98,7 +98,7 @@ class DictionaryLookup @Inject constructor(
                         )
                         engine.lookup(part, partOptions).map { it.asShown(support) }
                     }
-                }?.flatMap { shown(it, start, part = true) } ?: whole
+                }?.map { shown(it, start, part = true) }?.markedAsCompound() ?: whole
             }
 
             val results = if (aimedAt == 0) {

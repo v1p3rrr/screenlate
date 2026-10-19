@@ -961,6 +961,11 @@ on 2026-10-19 before the OCR plan's last items, which wait for the phone timings
 - To time on the emulator: Yomitan's `addSerboCroatianDiacritics` on long Latin lines (3^n variants per substring,
   capped at 4096).
 
+Progress: nl, cs, id, ms and tl are built on chained branches and checked on the emulator (LK31-LK35, run log of
+2026-10-19); `languages/main` is fast-forwarded to `languages/tl` (`3951cea`). Found while checking: the line
+"Compound: X + Y" above a split compound (row "German compounds", question 15, owner 2026-10-16) was never built; it
+is built next, for German and Dutch, before Serbo-Croatian.
+
 ## The big release
 
 - Merge `languages/main` into `main`; docs and README; NOTICE; release notes in the agreed style; the version number
@@ -1314,3 +1319,8 @@ on 2026-10-19 before the OCR plan's last items, which wait for the phone timings
   Russian needs it as well (376k form-of items name stressed lemmas), so Russian gets the rule. Paddle and Tesseract
   sets for the 4a languages, `paddle-el` converted (not uploaded yet); cs, uk, be and el recommend the measured
   Paddle models, the unmeasured Latin languages recommend none.
+- 2026-10-19: the Latin languages of group 4a (nl, cs, id, ms, tl) checked on the emulator and fast-forwarded into
+  `languages/main`. Fixes from the check: a second form-of step never leads back to the text it started from (Jansen →
+  Janssen → Jansen showed as a form chain); a capital I read for the l of Czech "n. l." keeps the sentence going.
+  Translation of Chinese, Portuguese and Filipino sentences picked no service language (plain bug, fixed). The
+  missing "Compound:" line is built next.

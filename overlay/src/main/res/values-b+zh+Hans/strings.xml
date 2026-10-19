@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">在后台保持悬浮球可用</string>
     <string name="overlay_translate">翻译句子</string>
     <string name="overlay_translating">正在翻译…</string>
+    <string name="overlay_compound">复合词：%1$s</string>
     <string name="translation_failed">无法翻译这个句子。</string>
     <string name="translation_failed_other">翻译失败。</string>
     <string name="translation_none_enabled">没有启用任何翻译服务。请在 Screenlate 设置的“翻译”中启用。</string>

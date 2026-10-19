@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">A bolha continua disponível em segundo plano</string>
     <string name="overlay_translate">Traduzir a frase</string>
     <string name="overlay_translating">Traduzindo…</string>
+    <string name="overlay_compound">Palavra composta: %1$s</string>
     <string name="translation_failed">Não foi possível traduzir a frase.</string>
     <string name="translation_failed_other">A tradução falhou.</string>
     <string name="translation_none_enabled">Nenhum serviço de tradução está ativado. Os serviços são configurados em Tradução, nas configurações do Screenlate.</string>

@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">La bulle reste disponible en arrière-plan</string>
     <string name="overlay_translate">Traduire la phrase</string>
     <string name="overlay_translating">Traduction…</string>
+    <string name="overlay_compound">Mot composé : %1$s</string>
     <string name="translation_failed">Impossible de traduire la phrase.</string>
     <string name="translation_failed_other">La traduction a échoué.</string>
     <string name="translation_none_enabled">Aucun service de traduction n’est activé. Les services se configurent dans Traduction, dans les paramètres de Screenlate.</string>

@@ -89,6 +89,16 @@ test('renders the header and one card per result', () => {
     assert.equal(content.querySelectorAll('.action-close').length, 0);
 });
 
+test('a compound line stands above the entries of its parts and goes with a word of its own', () => {
+    Popup.render(state({ compound: 'Compound: Küchentisch + Lampenschirm' }));
+    const line = content.querySelector('.compound');
+    assert.equal(line.textContent, 'Compound: Küchentisch + Lampenschirm');
+    assert.equal(content.firstElementChild, line);
+    assert.equal(content.querySelectorAll('article.entry').length, 2);
+    Popup.render(state());
+    assert.equal(content.querySelector('.compound'), null);
+});
+
 test('the e-ink theme reaches the page root', () => {
     Popup.render(state({ theme: 'eink' }));
     assert.equal(page.document.documentElement.dataset.theme, 'eink');

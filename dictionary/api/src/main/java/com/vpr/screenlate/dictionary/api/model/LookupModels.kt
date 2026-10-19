@@ -16,6 +16,8 @@ import kotlinx.serialization.Serializable
  *   (`LanguageSupport.scriptTags`); null otherwise.
  * @property start UTF-16 index in the lookup string where [matched] begins: after the start for a lookup that also
  *   starts at words before the aimed one (`LanguageSupport.earlierStartOffset`).
+ * @property compound for an entry of a compound's part (a compound without an entry of its own), the headwords of the
+ *   parts in order; empty otherwise.
  */
 @Serializable
 data class LookupResult(
@@ -27,6 +29,7 @@ data class LookupResult(
     val preprocessorSteps: Int = 0,
     val lang: String? = null,
     val start: Int = 0,
+    val compound: List<String> = emptyList(),
 )
 
 /**

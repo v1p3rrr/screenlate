@@ -80,6 +80,18 @@ class CompoundsTest {
     }
 
     @Test
+    fun `every entry of the parts names the parts by their first headwords`() {
+        val parts = listOf(
+            listOf(result("Küchentischlampe", "Küchentisch")),
+            emptyList(),
+            listOf(result("Küchentischlampe", "Lampe"), result("Küchentischlampe", "lampen")),
+        )
+        val marked = parts.markedAsCompound()
+        assertThat(marked.map { it.term.expression }).containsExactly("Küchentisch", "Lampe", "lampen").inOrder()
+        assertThat(marked.map { it.compound }.distinct()).containsExactly(listOf("Küchentisch", "Lampe"))
+    }
+
+    @Test
     fun `capitalized headwords come first and keep their order`() {
         val results = listOf(result("lampe", "lampen"), result("lampe", "Lampe"), result("lampe", "lampe"), result("lampe", "Lampen"))
         assertThat(results.capitalizedFirst().map { it.term.expression }).containsExactly("Lampe", "Lampen", "lampen", "lampe")

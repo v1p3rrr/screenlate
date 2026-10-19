@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">Baloncuk arka planda kullanılabilir kalır</string>
     <string name="overlay_translate">Cümleyi çevir</string>
     <string name="overlay_translating">Çevriliyor…</string>
+    <string name="overlay_compound">Birleşik sözcük: %1$s</string>
     <string name="translation_failed">Cümle çevrilemedi.</string>
     <string name="translation_failed_other">Çeviri başarısız oldu.</string>
     <string name="translation_none_enabled">Hiçbir çeviri hizmeti açık değil. Hizmetler, Screenlate ayarlarındaki Çeviri bölümündedir.</string>

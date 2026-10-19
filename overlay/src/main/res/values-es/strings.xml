@@ -73,6 +73,7 @@
     <string name="overlay_keep_alive_text">La burbuja sigue disponible en segundo plano</string>
     <string name="overlay_translate">Traducir la frase</string>
     <string name="overlay_translating">Traduciendo…</string>
+    <string name="overlay_compound">Palabra compuesta: %1$s</string>
     <string name="translation_failed">No se pudo traducir la frase.</string>
     <string name="translation_failed_other">La traducción falló.</string>
     <string name="translation_none_enabled">No hay ningún servicio de traducción activado. Los servicios se configuran en Traducción, en los ajustes de Screenlate.</string>

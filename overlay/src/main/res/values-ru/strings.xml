@@ -74,6 +74,7 @@
     <string name="overlay_keep_alive_text">Плавающая кнопка остаётся доступной в фоне</string>
     <string name="overlay_translate">Перевести предложение</string>
     <string name="overlay_translating">Перевожу…</string>
+    <string name="overlay_compound">Составное слово: %1$s</string>
     <string name="translation_failed">Не удалось перевести предложение.</string>
     <string name="translation_failed_other">Ошибка перевода.</string>
     <string name="translation_none_enabled">Ни один сервис перевода не включён. Сервисы настраиваются в разделе «Перевод» настроек Screenlate.</string>

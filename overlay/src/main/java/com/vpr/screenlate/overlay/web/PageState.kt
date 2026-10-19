@@ -62,8 +62,15 @@ object PageState {
             sentence = sentence,
             installation = installation,
             ocrModels = ocrModels,
+            compound = compoundLine(context, results),
         ),
     )
+
+    /** "Compound: Küchentisch + Lampenschirm" above the entries of a word found only as its parts; empty otherwise. */
+    private fun compoundLine(context: Context, results: List<LookupResult>): String {
+        val parts = results.firstOrNull()?.compound.orEmpty()
+        return if (parts.size < 2) "" else context.getString(R.string.overlay_compound, parts.joinToString(" + "))
+    }
 
     /** Strings of the entries and of the page itself (Copy over a selection), which every view needs. */
     private fun labels(context: Context): Map<String, String> = mapOf(
@@ -159,6 +166,8 @@ object PageState {
         val labels: Map<String, String> = emptyMap(),
         /** The sentence around the word; a new scan result with the same word and sentence keeps the translation. */
         val sentence: String = "",
+        /** The line above the entries of a compound's parts; empty for a word with its own entry. */
+        val compound: String = "",
     )
 
     /** @property lang the script of [text] where the language has several, as the results' `lang`. */

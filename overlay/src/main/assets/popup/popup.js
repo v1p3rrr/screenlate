@@ -18,6 +18,7 @@
  *   installation: boolean,         opens the installation queue from the message
  *   ocrModels: boolean,            opens the language's on-device models from the message
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
+ *   compound: string,              a line above the entries of a word found only as its parts, empty otherwise
  *   labels: { ... }                localized strings
  * }
  *
@@ -167,6 +168,7 @@ const Popup = (() => {
             state.ocrModels,
             state.source,
             state.kanji?.character,
+            state.compound,
             (state.results || []).map(r => [r.term.expression, r.term.reading]),
         ]);
     }
@@ -207,6 +209,7 @@ const Popup = (() => {
             return;
         }
         const fragment = document.createDocumentFragment();
+        if (state.compound) fragment.append(element('div', 'compound', state.compound));
         results.forEach((result, index) => fragment.append(entry(result, index, state.labels || {})));
         content.replaceChildren(fragment);
         // Layout is known only once the entries are in the document.
