@@ -219,13 +219,18 @@ Emulator numbers on a desktop CPU; only the shape of the data matters, not the t
    `no_backup/diagnostics`) goes with the next uninstall or "Clear storage".
 4. Delete this note, its line in `AGENTS.md` and the open item in `ai/status.md`.
 
+## Owner's answers (2026-10-19)
+
+- System log lines: no, the app's own lines only. Even with READ_LOGS granted over adb, Android 13+ asks for consent
+  ("only this time") each time the logcat copy starts, i.e. with every new process, and declines silently when the app
+  is not on top, which is how the accessibility service usually starts it; the exit reasons need no permission.
+- Caps: ~36 MB and a sample every 15 minutes stay.
+- The foreground app's package name stays in `scan`, `bubble` and `dock_screen`.
+- The phone gets the local build (`./gradlew :app:assembleDebug` here, copied to `testdata/apk/screenlate-diag-<sha>.apk`):
+  this machine's debug key stays the same, so later diagnostics builds install over it; CI signs every run with a new
+  key. The first install replaces the Dev build from CI through a backup, uninstall and restore.
+
 ## Open questions for the owner
 
-- Should the system log lines be included (READ_LOGS granted once over adb)? It gives other apps' and the system's
-  lines (e.g. why the system stopped the service), but Android 13+ asks for consent each time logcat starts.
-- Are ~36 MB and 15-minute samples right, or should the caps be smaller/larger?
 - Should a normal build delete leftover `no_backup/diagnostics` files by itself (one line in the main line), or is the
-  card's "Delete collected data" enough?
-- CI or a local build for the phone: both sign with a key that differs from the installed Dev build (see step 1 above).
-- The foreground app's package name is in `scan`, `bubble` and `dock_screen` (scans and system bars depend on the app);
-  keep it, or leave it out?
+  card's "Delete collected data" enough? Decide at the removal.
