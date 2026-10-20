@@ -47,6 +47,15 @@
     <!-- -یشان -->
     <string name="inflection_fa_yshan_label">3rd pl.</string>
     <string name="inflection_fa_yshan">third person plural after a vowel: their (پایشان)</string>
+    <!-- -مون -->
+    <string name="inflection_fa_mvn_label">1st pl.</string>
+    <string name="inflection_fa_mvn">spoken first person plural: our (کتابمون) or to us (بهمون)</string>
+    <!-- -تون -->
+    <string name="inflection_fa_tvn_label">2nd pl.</string>
+    <string name="inflection_fa_tvn">spoken second person plural: your (کتابتون) or to you (بهتون)</string>
+    <!-- -شون -->
+    <string name="inflection_fa_shvn_label">3rd pl.</string>
+    <string name="inflection_fa_shvn">spoken third person plural: their (کتابشون) or to them (بهشون)</string>
     <!-- -ی -->
     <string name="inflection_fa_y_label">indef.; 2nd sg.; ezafe</string>
     <string name="inflection_fa_y">indefinite (کتابی), you are (خوبی) or the ezafe after a vowel (پای)</string>
@@ -86,6 +95,9 @@
     <!-- -ترین -->
     <string name="inflection_fa_tryn_label">superlative</string>
     <string name="inflection_fa_tryn">superlative (بزرگترین)</string>
+    <!-- -مین -->
+    <string name="inflection_fa_myn_label">ordinal</string>
+    <string name="inflection_fa_myn">ordinal before a noun (دومین from دوم)</string>
     <!-- می- -->
     <string name="inflection_fa_my_label">durative</string>
     <string name="inflection_fa_my">durative prefix: present (می‌روم) and past continuous (می‌رفتم)</string>

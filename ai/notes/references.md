@@ -62,6 +62,7 @@
 | circle-flags regional flags | github.com/HatScripts/circle-flags `flags/gb-wls.svg`, `gb-sct.svg`, `fr-bre.svg` (MIT) | Wales, Scotland, Brittany |
 | Lingua Libre items | Wikidata Q9309 (cy, `cym`), Q9142 (ga, `gle`), Q9314 (gd, `gla`), Q12107 (br, `bre`) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
 | eSpeak NG Celtic voices | github.com/espeak-ng/espeak-ng `docs/languages.md` | cy, ga, gd; no Breton |
+| CC-100 | data.statmt.org/cc-100/`<lang>`.txt.xz (Common Crawl web text, one file per language; cy 188 MB, ga 112 MB, gd 22 MB compressed) | Web text for how often marks are left out when typing; measurements only |
 
 ## Language research sources (group 5a: Latin-script languages)
 

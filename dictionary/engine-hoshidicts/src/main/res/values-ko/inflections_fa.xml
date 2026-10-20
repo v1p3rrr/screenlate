@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">모음 뒤의 2인칭 복수: 너희의 (پایتان)</string>
     <string name="inflection_fa_yshan_label">3인칭 복수</string>
     <string name="inflection_fa_yshan">모음 뒤의 3인칭 복수: 그들의 (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1인칭 복수</string>
+    <string name="inflection_fa_mvn">구어 1인칭 복수: 우리의 (کتابمون) 또는 우리에게 (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2인칭 복수</string>
+    <string name="inflection_fa_tvn">구어 2인칭 복수: 너희의 (کتابتون) 또는 너희에게 (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3인칭 복수</string>
+    <string name="inflection_fa_shvn">구어 3인칭 복수: 그들의 (کتابشون) 또는 그들에게 (بهشون)</string>
     <string name="inflection_fa_y_label">비한정; 2인칭 단수; 에자페</string>
     <string name="inflection_fa_y">비한정 (کتابی), ‘너는 ~이다’ (خوبی) 또는 모음 뒤의 에자페 (پای)</string>
     <string name="inflection_fa_ay_label">비한정; 2인칭 단수</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">비교급 (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">최상급</string>
     <string name="inflection_fa_tryn">최상급 (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">서수</string>
+    <string name="inflection_fa_myn">명사 앞에 오는 서수 (دوم에서 دومین)</string>
     <string name="inflection_fa_my_label">지속</string>
     <string name="inflection_fa_my">지속 접두사: 현재 (می‌روم) 및 과거 진행 (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">부정 지속</string>

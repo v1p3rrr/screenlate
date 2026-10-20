@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">2e personne du pluriel après une voyelle : votre (پایتان)</string>
     <string name="inflection_fa_yshan_label">3e pers. pl.</string>
     <string name="inflection_fa_yshan">3e personne du pluriel après une voyelle : leur (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1re pers. pl.</string>
+    <string name="inflection_fa_mvn">1re personne du pluriel à l’oral : notre (کتابمون) ou à nous (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2e pers. pl.</string>
+    <string name="inflection_fa_tvn">2e personne du pluriel à l’oral : votre (کتابتون) ou à vous (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3e pers. pl.</string>
+    <string name="inflection_fa_shvn">3e personne du pluriel à l’oral : leur (کتابشون) ou à eux (بهشون)</string>
     <string name="inflection_fa_y_label">indéf. ; 2e pers. sg. ; ézafé</string>
     <string name="inflection_fa_y">indéfini (کتابی), tu es (خوبی) ou l’ézafé après une voyelle (پای)</string>
     <string name="inflection_fa_ay_label">indéf. ; 2e pers. sg.</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">comparatif (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">superlatif</string>
     <string name="inflection_fa_tryn">superlatif (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">ordinal</string>
+    <string name="inflection_fa_myn">ordinal placé avant le nom (دومین de دوم)</string>
     <string name="inflection_fa_my_label">duratif</string>
     <string name="inflection_fa_my">préfixe duratif : présent (می‌روم) et imparfait (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">duratif nég.</string>

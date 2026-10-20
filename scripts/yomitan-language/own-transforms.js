@@ -41,9 +41,12 @@ export const bengaliTransforms = {
 
 /**
  * Persian endings and verb prefixes, as the app's own rules: Wiktionary lists the verb forms (میفرستادیم, نمیدانم) and
- * few noun forms. An enclitic comes off first: a possessive (کتابم, کتابشان, خانهاش, پایم), the indefinite or ezafe
- * ی (کتابی, خانهای, پایی), a copula (رفتهاند) or a joined را (آنرا); then a plural (کتابها, درختان, ستارگان →
- * ستاره, دانشجویان); then a comparative (بزرگتر, بزرگترین). A verb prefix (می, نمی, ب, ن) comes off a word on its own.
+ * few noun forms. An enclitic comes off first: a possessive (کتابم, کتابشان, خانهاش, پایم, spoken کتابشون), the
+ * indefinite or ezafe ی (کتابی, خانهای, پایی), a copula (رفتهاند) or a joined را (آنرا); then a plural (کتابها,
+ * درختان, ستارگان → ستاره, دانشجویان); then a comparative (بزرگتر, بزرگترین) or an ordinal in -مین (دومین → دوم). A
+ * verb prefix (می, نمی, ب, ن) comes off a word on its own. The other spoken endings (the copula خوبه, the object marker
+ * اینو, the plural دخترا, -ین) are left out: on the commonest words they find a wrong entry more often than the right
+ * one (ai/notes/language-rules.md).
  * The text has no zero-width non-joiner by then (own-processors.js). Wiktionary's Persian entries give no part of
  * speech, so the results match entries without one (glue.js, `untypedRules`). Two letters stay at least, and three
  * after ب and ن, which start many words (نام, باد); a space does not count as one, so an affix is never cut off the
@@ -106,6 +109,9 @@ const persianEnclitics = [
     ['یمان', '1st pl.', 'first person plural after a vowel: our (پایمان)'],
     ['یتان', '2nd pl.', 'second person plural after a vowel: your (پایتان)'],
     ['یشان', '3rd pl.', 'third person plural after a vowel: their (پایشان)'],
+    ['مون', '1st pl.', 'spoken first person plural: our (کتابمون) or to us (بهمون)'],
+    ['تون', '2nd pl.', 'spoken second person plural: your (کتابتون) or to you (بهتون)'],
+    ['شون', '3rd pl.', 'spoken third person plural: their (کتابشون) or to them (بهشون)'],
     ['ی', 'indef.; 2nd sg.; ezafe', 'indefinite (کتابی), you are (خوبی) or the ezafe after a vowel (پای)'],
     ['ای', 'indef.; 2nd sg.', 'after ه: indefinite (خانه\u200Cای) or you are (خسته\u200Cای)'],
     ['یی', 'indef.; 2nd sg.', 'after a vowel: indefinite (دانشجویی) or you are (کجایی)'],
@@ -131,6 +137,23 @@ const persianComparatives = [
     ['تر', 'comparative', 'comparative (بزرگتر)'],
     ['ترین', 'superlative', 'superlative (بزرگترین)'],
 ];
+
+/**
+ * The numbers an ordinal in -مین ends in (دومین, سومین, سیزدهمین, دویستمین), which leave the ordinal in -م that
+ * Wiktionary lists (دوم, سوم). Only after a number: مسلمین and معلمین are Arabic plurals.
+ */
+const persianOrdinalNumbers = [
+    'یک', 'دو', 'سو', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه', 'ده', 'یست', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد',
+    'نود', 'صد', 'هزار', 'میلیون', 'میلیارد',
+];
+
+/** @returns {import('language-transformer').SuffixRule<'n' | 'p' | 'c'>} */
+function persianOrdinal() {
+    return {
+        ...persianSuffix('مین', 'م', ['c'], ['n']),
+        isInflected: new RegExp('(' + persianOrdinalNumbers.join('|') + ')مین$'),
+    };
+}
 
 /**
  * Verb prefixes and the letters that stay at least, with a name and a description.
@@ -167,6 +190,7 @@ export const persianTransforms = {
             description,
             rules: [persianSuffix(ending, '', ['c'], ['n'])],
         }]),
+        ['-مین', {name: 'ordinal', description: 'ordinal before a noun (دومین from دوم)', rules: [persianOrdinal()]}],
         ...persianPrefixes.map(([prefix, rest, name, description]) => [`${prefix}-`, {
             name,
             description,

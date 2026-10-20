@@ -45,10 +45,10 @@ const borrowed = {
  * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out; Thai
  * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have; Khmer
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
- * final ة as ه; Persian text may give Arabic letters for its own, lose its zero-width non-joiners and write a verb
- * prefix or an ending apart; Hebrew text may carry vowel points and write the geresh and gershayim as ASCII quotes;
- * Kazakh text may give Latin i, h and ə for і, һ and ә.
- * Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
+ * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
+ * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә. Processors join the
+ * descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -58,7 +58,7 @@ const addedPreprocessors = {
     hy: ['removeArmenianMarks', 'armenianLigatureEv'],
     th: ['thaiCharacterOrder', 'thaiMaiYamokSpace'],
     km: ['khmerZeroWidthSpace', 'khmerSubscriptDa'],
-    ar: ['arabicTaMarbutaAsHa'],
+    ar: ['arabicTaMarbutaAsHa', 'arabicLetters'],
     fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
     he: ['removeHebrewPoints', 'hebrewQuotes'],
     kk: ['kazakhLatinLetters'],

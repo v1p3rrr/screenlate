@@ -87,19 +87,19 @@ answered: own initial-mutation rule with the mutation's name and a short list of
 stays mae), Irish and Gaelic elisions as French, regional flags, the Russian Gaelic name, no frequency dictionaries,
 bubble letters Ŵ Á Ò, branches Welsh, Irish, Gaelic; recognition measured on the emulator (ML Kit stays main; ML
 Kit never reads Welsh ŵ ŷ, so the lookup tries ý as ŷ and û as ŵ for OCR words only, which needs the lookup to know
-a word's source, a piece shared with 5c's Hungarian ő ű). Not started: its order is the owner's call. The research
+a word's source, a piece shared with 5c's Hungarian ő ű; Welsh and Gaelic words typed without marks also find the
+marked headwords when they find nothing, in any text). Not started: its order is the owner's call. The research
 downloads (wty files, kaikki's Breton extracts, corpora, Tesseract models) were in the session scratchpad only and are
 removed; the measurement scripts are in the shared session notes (`group-5b-scripts`).
 Group 5c (Finnish, Estonian, Hungarian, Azerbaijani, Uzbek) is researched (`notes/languages.md`, "Group 5c research";
-`plans/2026-10-19-group-5c.md`) and its questions 1-11 answered: all five, branches in the order Finnish, Hungarian,
+`plans/2026-10-19-group-5c.md`) and all its questions are answered: all five, branches in the order Finnish, Hungarian,
 Estonian, Azerbaijani, Uzbek; own ending lists for all five; the compound split for Finnish, Estonian and Hungarian; a
-"Word forms" item from the English dictionary when English is not chosen; Hungarian ö ü also matching ő ű for OCR words
-only (the same source piece as Welsh); Uzbek o g matching oʻ gʻ in any text; Uzbek Cyrillic transliterated to Latin;
-Leipzig frequency lists for Estonian, Azerbaijani and Uzbek; scan length 24 for Finnish; bubble letters Ä Õ Ő Ə Oʻ;
-recognition measured on the emulator (ML Kit main; Paddle v6 marked more accurate for Estonian and Azerbaijani; Google's
-engine has no Azerbaijani or Uzbek voice). Question 12, whether cloud recognition counts as OCR for the Hungarian
-matching, is open. Not started: its order is the owner's call. The measurement scripts are in the shared session notes
-(`group-5c-scripts`).
+"Word forms" item from the English dictionary when English is not chosen; Hungarian ö ü also matching ő ű for words from
+any recognition, cloud included, not for app text (the same source piece as Welsh); Uzbek o g matching oʻ gʻ in any
+text; Uzbek Cyrillic transliterated to Latin; Leipzig frequency lists for Estonian, Azerbaijani and Uzbek; scan length
+24 for Finnish; bubble letters Ä Õ Ő Ə Oʻ; recognition measured on the emulator (ML Kit main; Paddle v6 marked more
+accurate for Estonian and Azerbaijani; Google's engine has no Azerbaijani or Uzbek voice). Not started: its order is the
+owner's call. The measurement scripts are in the shared session notes (`group-5c-scripts`).
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
@@ -205,6 +205,15 @@ the emulator after three fixes: transcriptions written `//a/ [b]/` split in two 
 right-to-left lines that come in neither order put in the order of their boxes, and Hebrew's `{reading}` (the word
 itself) in the right-to-left span. Overnight questions 5 (Modern Israeli transcriptions first) and 6 (form tags beside
 a plain word, שלום "singular construct") are decided provisionally. Group 4d is done; 4e (Kazakh, Kyrgyz) follows.
+
+The owner's answers to overnight questions 3-6 are built on `languages/fa-he-followups` (2026-10-20, from
+`languages/main` while 4e builds there; main merges it): Iranian Persian transcriptions first (🇮🇷, 🇮🇷TE, "Iran…"
+tags), the rest behind "+N"; Hebrew as built; the engine leaves out the tags of a form whose lemma is the headword
+the text is itself, in every language (kuća, שלום; kućama and pointed שְׁלוֹם keep theirs); the spoken Persian
+endings measured on wordfreq's words with hand judgments (numbers in `notes/language-rules.md`, "Owner decisions"):
+-مون, -تون, -شون and the ordinal -مین → -م after a number added, the copula -ه, the object marker -و/-رو, the
+plural -ا and -ین left out. Question 7 (the plural -ا also read as the adverb ending -اً) is decided provisionally:
+left out. The hoshidicts JSON-escape follow-up is a separate task of main's.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

@@ -111,6 +111,17 @@ export const arabicTaMarbutaAsHa = {
 };
 
 /**
+ * Arabic text with the Persian kaf and yeh (ک ی), which Persian keyboards and fonts give: Arabic headwords write ك and
+ * ي, and a final ى is keyed under ي at import (ArabicSupport's `HeadwordMarks`). Arabic never writes ک or ی.
+ * @type {import('language').TextProcessor}
+ */
+export const arabicLetters = {
+    name: 'Arabic letters',
+    description: 'کتاب → كتاب, علی → علي',
+    process: (str) => [str.replace(/ک/g, 'ك').replace(/ی/g, 'ي')],
+};
+
+/**
  * Persian text with the Arabic yeh, kaf and alif maqsura (ي ك ى), which Arabic keyboards and fonts give, and the heh
  * with yeh above ۀ of the ezafe (خانۀ): Persian headwords write ی ک ی and ه. The import keys headwords written with
  * the Arabic letters under the Persian ones (PersianSupport's `HeadwordMarks`).

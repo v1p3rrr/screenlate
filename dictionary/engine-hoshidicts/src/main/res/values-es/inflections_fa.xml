@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">2.ª persona del plural tras vocal: vuestro (پایتان)</string>
     <string name="inflection_fa_yshan_label">3.ª pers. pl.</string>
     <string name="inflection_fa_yshan">3.ª persona del plural tras vocal: su (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1.ª pers. pl.</string>
+    <string name="inflection_fa_mvn">1.ª persona del plural, coloquial: nuestro (کتابمون) o a nosotros (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2.ª pers. pl.</string>
+    <string name="inflection_fa_tvn">2.ª persona del plural, coloquial: vuestro (کتابتون) o a vosotros (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3.ª pers. pl.</string>
+    <string name="inflection_fa_shvn">3.ª persona del plural, coloquial: su (کتابشون) o a ellos (بهشون)</string>
     <string name="inflection_fa_y_label">indef.; 2.ª pers. sg.; ezafe</string>
     <string name="inflection_fa_y">indefinido (کتابی), eres, estás (خوبی) o la ezafe tras vocal (پای)</string>
     <string name="inflection_fa_ay_label">indef.; 2.ª pers. sg.</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">comparativo (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">superlativo</string>
     <string name="inflection_fa_tryn">superlativo (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">ordinal</string>
+    <string name="inflection_fa_myn">ordinal antepuesto al sustantivo (دومین de دوم)</string>
     <string name="inflection_fa_my_label">durativo</string>
     <string name="inflection_fa_my">prefijo durativo: presente (می‌روم) y pasado continuo (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">durativo neg.</string>
