@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.audio
 
 import com.vpr.screenlate.core.common.language.AudioRegion
+import java.util.Locale
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -61,12 +62,27 @@ internal object AudioPages {
     }
 
     /**
-     * [term] for a Lucene regular expression; with [marks], every letter may carry any of them, as titles that write
-     * the word vowelled do (`Ar-كِتَابٌ.oga` for كتاب).
+     * [term] for a Lucene regular expression. Its first letter may be in either case: titles may capitalize the word
+     * (`Cy-Bwyta.ogg` for bwyta), and the expression is case-sensitive; [locale] gives the cases (Turkish i and İ), a
+     * letter of a script without case stays as it is. With [marks], every letter may carry any of them, as titles that
+     * write the word vowelled do (`Ar-كِتَابٌ.oga` for كتاب).
      */
-    private fun luceneTerm(term: String, marks: String): String = buildString {
+    private fun luceneTerm(term: String, marks: String, locale: Locale): String = buildString {
         val anyMarks = if (marks.isEmpty()) "" else "[$marks]*"
-        withoutMarks(term, marks).forEach { if (it in REGEX_SPECIAL) append('\\'); append(it); append(anyMarks) }
+        val letters = withoutMarks(term, marks)
+        if (letters.isEmpty()) return@buildString
+        val first = letters.substring(0, letters.offsetByCodePoints(0, 1))
+        append(letterCases(first, locale)).append(anyMarks)
+        letters.substring(first.length).forEach { if (it in REGEX_SPECIAL) append('\\'); append(it); append(anyMarks) }
+    }
+
+    /** [letter] for a Lucene regular expression in each of its cases (`[bB]`), or escaped when it has one. */
+    private fun letterCases(letter: String, locale: Locale): String {
+        val titlecase = letter.replaceFirstChar { it.titlecase(locale) }
+        val cases = listOf(letter, letter.lowercase(locale), letter.uppercase(locale), titlecase)
+            .filter { it.codePointCount(0, it.length) == 1 }
+            .distinct()
+        return if (cases.size == 1) luceneEscape(letter) else cases.joinToString("", "[", "]")
     }
 
     /** [term] as a group of a Kotlin regular expression, every letter followed by any of [marks]. */
@@ -83,8 +99,8 @@ internal object AudioPages {
      * (the verb كَلَبَ for the noun كلب). Without marks titles hold the term itself, so all are 0.
      */
     fun recordingRank(word: String, term: String, reading: String, marks: String): Int = when {
-        marks.isEmpty() || word == term -> 0
-        reading.isNotEmpty() && word == reading -> 1
+        marks.isEmpty() || word.equals(term, ignoreCase = true) -> 0
+        reading.isNotEmpty() && word.equals(reading, ignoreCase = true) -> 1
         else -> 2
     }
 
@@ -100,22 +116,30 @@ internal object AudioPages {
      * Titles may add [marks] to the term's letters. Then the plain title word is left out: the index files a vowelled
      * title under other words (`…-مَدْرَسَة.wav` is not found by "مدرسة"), and the item's prefix keeps the expression fast.
      */
-    fun linguaLibreSearch(term: String, wikidataIds: List<String>, marks: String = ""): String {
+    fun linguaLibreSearch(
+        term: String,
+        wikidataIds: List<String>,
+        marks: String = "",
+        locale: Locale = Locale.ROOT,
+    ): String {
         val item = wikidataIds.singleOrNull() ?: wikidataIds.joinToString("|", "(", ")")
         val narrowed = if (marks.isEmpty()) titleWord(term) else ""
-        return narrowed + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneTerm(term, marks)}\.wav/"""
+        return narrowed + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneTerm(term, marks, locale)}\.wav/"""
     }
 
     /**
      * Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`, and with a region code of
      * [regions] longer than two letters, `Es-am-lat-agua.ogg`; titles may add [marks] to the term's letters. It also
-     * matches inside titles (`…Kerbush-вода.wav` for sh), which [wiktionaryFiles] leaves out.
+     * matches inside titles (`…Kerbush-вода.wav` for sh), which [wiktionaryFiles] leaves out. Other longer tags are not
+     * taken for regions: in such titles the tag is mostly the first part of a compound or a name (`Fr-grand-mère.ogg`,
+     * `Cy-Ynys-hir.ogg`), not a region.
      */
     fun wiktionarySearch(
         term: String,
         languageCode: String,
         regions: List<AudioRegion> = emptyList(),
         marks: String = "",
+        locale: Locale = Locale.ROOT,
     ): String {
         val prefix = languageCode.take(1).let { "[${it.uppercase()}${it.lowercase()}]" } + languageCode.drop(1)
         val longCodes = longCodes(regions)
@@ -123,7 +147,7 @@ internal object AudioPages {
             "(${(longCodes.map(::luceneEscape) + "[a-zA-Z]{2}").joinToString("|")})"
         }
         return titleWord(withoutMarks(term, marks)) +
-            """intitle:/$prefix(-$region)?-${luceneTerm(term, marks)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
+            """intitle:/$prefix(-$region)?-${luceneTerm(term, marks, locale)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
     }
 
     /** Region codes of more than two letters (`am-lat`), which file titles hold as well as two-letter ones. */
@@ -158,16 +182,19 @@ internal object AudioPages {
         throw CommonsErrorException((error as? JsonObject)?.get("code")?.jsonPrimitive?.contentOrNull ?: "error")
     }
 
-    /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`). */
+    /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`, `…-Speaker-Cat.wav`). */
     fun linguaLibreSpeaker(title: String, term: String, marks: String = ""): String {
         val rest = title.substringAfter(")-", "")
         val word = linguaLibreWord(rest, term, marks)
         return if (word != null) rest.dropLast(word.length + ".wav".length + 1) else rest.substringBeforeLast('-', "")
     }
 
-    /** The word a Lingua Libre title ends with (`Speaker-كِتَاب.wav`) when it is [term], with or without [marks]. */
+    /**
+     * The word a Lingua Libre title ends with (`Speaker-كِتَاب.wav`) when it is [term], with or without [marks], in
+     * either case (`Speaker-Uisge.wav`).
+     */
     private fun linguaLibreWord(rest: String, term: String, marks: String): String? =
-        Regex("-${titleTerm(term, marks)}\\.wav$").find(rest)?.groupValues?.get(1)
+        Regex("-${titleTerm(term, marks)}\\.wav$", RegexOption.IGNORE_CASE).find(rest)?.groupValues?.get(1)
 
     /**
      * Lingua Libre recordings (title to URL) with their speakers, those closest to [term] read as [reading] first

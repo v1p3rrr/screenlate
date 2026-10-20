@@ -8,6 +8,13 @@ Every rule that applies to some languages only, where it lives, the tests that s
 When a language gets a new rule, add its row here, a positive test, and a negative case in
 `LanguageRulesIsolationTest` (or next to the rule when it lives outside `core:common`).
 
+Look-alike fixes and look-alike matching are for OCR results only, in every language (owner, 2026-10-20, plan
+request 69): text read from apps is taken as it is. One-for-one fixes go in `LanguageSupport.ocrWord` or `ocrLines`,
+which run only from `OcrPage.inLanguage` in `CompositeOcr`; `OverlayController.readAppText` skips them. Lookup
+variants for OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) run only for words
+from OCR, which needs each line's source to reach the lookup (planned in groups 5b and 5c). Where people often type
+the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text.
+
 ## Paths and test names
 
 | Short | Path |
@@ -82,6 +89,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | hi | wordfreq mostly writes anusvara (हूं) where headwords write candrabindu (हूँ); each word also ranks its spelling with the other mark | `HindiSupport.kt` `frequencySpellings`, `api/imports/WordfreqDictionary.kt` | HindiSupportTest `wordfreq's anusvara…`, WordfreqDictionaryTest `hindi words rank…` | Isolation (only hi respells हूं) | ok |
 | uk | wordfreq writes the apostrophe as ' only; its words with one also rank their ’ and ʼ spellings (wty uk-fr writes п’ять) | `UkrainianSupport.kt` `frequencySpellings`, `api/imports/WordfreqDictionary.kt` | UkrainianSupportTest `wordfreq words with an apostrophe…` | Isolation (only uk gets other apostrophes) | fixed |
 | en, fr, de, es, pt | Audio and transcription regions (us/uk, fr/ca…, de/at/ch, es/mx…, br/pt) | each `audioRegions`, `transcriptionRegionNames`; `lang/AudioRegion.kt:12`, `TranscriptionRegions.kt:11` | TranscriptionRegionsTest, TranscriptionsTest, each `<Lang>Test` | languages without regions (it, pl, tr, lv, nl, cs, id, ms, tl, ru, vi, zh, ko): `<Lang>Test` | ok |
+| all, tr | Commons audio searches take the term's first letter in either case, as titles may capitalize it (bwyta → Cy-Bwyta.ogg, uisge → …-Uisge.wav), by the case rules of the language's tag (Turkish iyi → [iİ]yi, ılık → [ıI]lık); scripts without case keep the term as it is; the title filters, the speaker and the rank ignore case | `core/anki/audio/AudioPages.kt:70` `luceneTerm`, `:80` `letterCases`, `AudioFinder.kt:527` `caseLocale` | AudioPagesTest `commons searches take the term's first letter…`, `…the cases of the language's letters`; AudioFinderTest `recordings titled with a capital…` | AudioPagesTest `commons searches leave the term of a script without case…` (ja, ko), ß; other languages give [iI] | fixed |
 | ar | Harakat, shadda and the tatweel stretch stay inside the aimed word (marks are Mn, tatweel a letter); the lookup text drops them (Yomitan's processors) | `lang/SpacedLanguageSupport.kt` `isWordCharacter`; Yomitan's `removeArabicScriptDiacritics`, `removeTatweel` | ArabicSupportTest `vowel marks, shadda and tatweel stay inside the aimed word`; I: LanguageLookupTest `arabicWithoutHamza…` (كِتَابٌ and كتـاب find كتاب) | Isolation (spaced word starts in every language) | ok |
 | ar | ؟ ends a sentence; the Arabic comma ، and semicolon ؛ do not; "د." "أ." "ص." "ج." "ق.م." before a name or number hold it ("م." and "هـ." after a year are left out, as they often end it) | `ArabicSupport.kt` `sentenceTerminators`, `abbreviations` | ArabicSupportTest `the arabic question mark ends a sentence…`, `titles and a page before a name…`; SentenceTest `arabicSentencesEndAtTheArabicQuestionMark…` | Isolation `only Arabic runs right to left, ends a sentence at its question mark…` (هل؟ ends nowhere else, ، nowhere, د. holds only in Arabic) | ok |
 | ar | Quote pairs « » “ ” ( ) [ ] | `ArabicSupport.kt` `quotePairs` | ArabicSupportTest `guillemets, curly quotes and brackets pair` | — | ok |

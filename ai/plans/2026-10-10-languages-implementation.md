@@ -154,6 +154,9 @@ Requests 1–19 are in the previous plan. New ones:
     alone offered); say that ML Kit is built in for the languages it reads instead of offering a download as the
     default; mark ML Kit as faster where the measurements show it, above all for the draft with Engines on Both
     (plan `2026-10-17-ocr-engines.md`, questions 36-39).
+69. (2026-10-20) Letters fixed by look-alike after recognition are for OCR results only: text the app reads from
+    the screen's apps is taken as it is, in every language and branch, where the text itself is written right; a
+    spelling people often type themselves stays matched in any text (row "Look-alike fixes only after OCR").
 
 ## Decisions
 
@@ -292,6 +295,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Deleting OCR models | A language's active model cannot be deleted, only replaced: another one downloaded and chosen, then the old one can go; all of a language's models go when the language's files are deleted. A model another language also lists can be deleted only when no language uses it as its active model; the dialog says that it goes for those languages too. With an active model it cannot be deleted, and the row says which language uses it. The Paddle detector is not listed on its own: it goes with the last Paddle recognizer (owner, 2026-10-16, questions 32 and 33) |
 | PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
 | Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
+| Look-alike fixes only after OCR | Every language's fixes of letters that an engine reads as look-alikes (Latin in Cyrillic or Greek words, letters a language never writes) and matching OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) apply to OCR results only (`LanguageSupport.ocrWord`, from `OcrPage.inLanguage`; lookup variants need each line's source); text read from the screen's apps is taken as it is. Where people often type the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text (owner, 2026-10-20, request 69) |
 | OCR model list | A language's models open in a dialog (scrolls when long): ML Kit where it reads the language, then the catalog's models, each with its size, a recommended mark, an ⓘ and Download or Delete. The language rows stand in the Recognition section under the engine choice, below a subheading; with Cloud only or app text only they stay visible but disabled, as the other recognition settings do. Downloading a model only adds it: it becomes the language's model when chosen in the list (owner, 2026-10-17) |
 | Region order display | The audio settings show a language's region order while Wiktionary is among its audio sources or a transcription dictionary of the language is installed; the hint names both uses (recordings and transcriptions) (owner, 2026-10-18, question 28; request 55) |
 | Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
@@ -1482,3 +1486,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   word when it is a headword, then the tapped part, in every spaced language; Kyrgyz PanLex is ticked next to
   Wiktionary, an exception to "Recommended dictionaries". The line of `notes/languages.md` that kk and ky would get
   the longest matching start is corrected: word resolution never shortens a word.
+- 2026-10-20: request 69 and row "Look-alike fixes only after OCR" (owner): look-alike letter fixes are for OCR
+  results only, never for text read from apps, in every language and branch; the code already works so.
+- 2026-10-20: request 69 refined (owner): the OCR-only rule holds where the text itself is written right; spellings
+  people often type themselves (Uzbek o for oʻ) stay matched in any text.

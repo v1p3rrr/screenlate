@@ -1521,7 +1521,8 @@ See `plans/2026-10-19-group-4c.md`.
 
 ## Group 5b research (2026-10-19)
 
-Welsh, Irish, Scottish Gaelic and Breton: research, decisions and work in `plans/2026-10-19-group-5b.md`.
+Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decisions and work in
+`plans/2026-10-19-group-5b.md`.
 
 ## Group 5a research (2026-10-19)
 
