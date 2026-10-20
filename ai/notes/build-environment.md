@@ -80,6 +80,12 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - `adb`: `D:\Android\Sdk\platform-tools\adb.exe`. In Git Bash set `MSYS_NO_PATHCONV=1`, otherwise device paths like `/sdcard/...` get rewritten to Windows paths.
 - `scripts/debug-device.sh` wraps the routine: `install` (installs the debug APK and enables the accessibility service, retrying because the system drops the service shortly after a package update), `images` (copies `testdata/ocr/*` into the app's internal files via `run-as`), `show <file> [default|swipe]` (opens the debug full-screen image viewer; with a mode the system bars are hidden as in fullscreen apps, see `overlay-system-ui.md`), `shot <out.png>`.
 - Never use `am start -S` or `am force-stop` on the app while testing the overlay: force-stopping removes the accessibility service from the enabled list. Launch the app with `adb shell monkey -p com.vpr.screenlate.debug -c android.intent.category.LAUNCHER 1` (it brings back the task's last screen, such as the debug viewer; press Back to reach home). After a slip, `settings put secure enabled_accessibility_services com.vpr.screenlate.debug/com.vpr.screenlate.overlay.ScreenlateAccessibilityService` and `settings put secure accessibility_enabled 1` turn the service on again.
+- App logs on Honor and Huawei phones (2026-10-20): the owner's Honor (MagicOS 9, Android 15) gives the app no
+  lines from `logcat -d`, in the release, debug and diagnostics builds alike: About → Logs holds only the header, and
+  the diagnostics build's `logcat -f` copy stays at 0 bytes (its own events file is fine). Honor and Huawei drop app
+  log output unless a hidden log switch is on (service code `*#*#2846579#*#*` → Background settings → Log settings;
+  reportedly reset by a reboot and not always enough on MagicOS 9; developer forum reports, nothing official).
+  Diagnostics that must work on such phones need the app's own file log and `ApplicationExitInfo`, not logcat.
 - Files pushed by adb into `/sdcard/Android/data/<pkg>` are not readable by the app (group `ext_data_rw`); copy through `run-as` into internal storage instead.
 - `adb install` cannot open a host path over 260 characters ("failed to stat"; the scratchpad's Gradle outputs reach it): copy the APK to a short path first.
 - Short /data (2026-10-20, Khmer run): with about 0.39 GB free the 126 MB debug APK fails with
