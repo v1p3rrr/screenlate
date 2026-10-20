@@ -188,6 +188,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK43 | Bengali lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit's Devanagari recognizer): বইটির, বইগুলো (also with ো typed as ে + া) → বই through the endings; ছেলেদের → ছেলে; a form row with a romanization after it (মাসটি) found by its word; the sentence of a word after a danda starts after it and keeps "ড." and "এ.কে."; the language is "Bengali" in the English interface; flag bd, bubble বা; the page's serif face is the phone's Noto Serif Bengali (`local()`), and Hind Siliguri and Tiro Bangla are listed for Bengali only; ML Kit reads the screen on the device; audio from Lingua Libre (বই), else the voice | N | U BengaliSupportTest, SentenceTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
 | LK44 | Georgian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansGeorgian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf` (Sylfaen has no Mtavruli), Tesseract kat fast, then cloud recognition): წიგნს, წიგნები → წიგნი with the rule chip names (declension, nominative) in English and Russian; მას shows its own entry, not მა; a word longer than 16 letters found whole, the Lookup setting showing 24 for Georgian and 16 for English; ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო; the sentence keeps "ქ." and "წ."; flag ge, bubble ქ; the page's serif face is the phone's Noto Serif Georgian (`local()`), no downloadable font listed for Georgian; Tesseract fast is the recommended model; audio from Wiktionary (წყალი), else the voice | N | U GeorgianSupportTest, SentenceTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK45 | Armenian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansArmenian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf`, Tesseract hye fast, then cloud recognition): ինչո՞ւ → ինչու, also when tapped after ՞; կարդա՛ and կարդա → կարդալ (imperative); գրքեր → գիրք; Երեվան and Երեվանը → Երևան, ԵՐԵՎԱՆ shows Երևան after the verb form երևան; Եվրոպա found as written; the classical գիւղ → գյուղ; the sentence ends at ։ and at a colon, not at the period or at 10:30 (two sentences on one line: OCR makes every line a paragraph here); a word longer than 16 letters found whole, the Lookup setting showing 24 for Armenian; flag am, bubble Հ; the page's serif face is the phone's Noto Serif Armenian (`local()`), no downloadable font listed for Armenian; Tesseract fast is the recommended model; audio from Wiktionary (ջուր), else the voice | N | U ArmenianSupportTest, SentenceTest, LanguageRulesIsolationTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
+| LK46 | Thai lookups (search screen; overlay over an image rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansThai-Regular.ttf` and `FALLBACK` the phone's Roboto, as `scripts/text-image.py` does not shape Thai; Tesseract tha fast, then cloud recognition): ห้องสมุด aimed at สมุด shows ห้องสมุด (library) first, then สมุด; โรงเรียน aimed at เรียน shows โรงเรียน first; การตลาด shows การตลาด and การ, not กา; ห้อง shows its own entries without the rooms it is the classifier of; จริงๆ (no space) finds จริง ๆ and the highlight stops at ๆ, นาน ๆ finds นานๆ; น้ำ typed as น + ํ + ้ + า finds น้ำ; กรุงเทพฯ finds กรุงเทพมหานคร; results carry a rank from the Thai National Corpus dictionary; the sentence (translation button) ends at a space between words, not beside ๆ, ฯ or digits, and พ.ศ. holds; flag th, bubble ท; the page's serif face is the phone's Noto Serif Thai (`local()`), and Sarabun, Noto Sans Thai Looped, Kanit and Prompt are listed for Thai and load on the page; Tesseract fast is the recommended model and its text keeps the words of a line together (no spaces between letters); audio for น้ำ from Wiktionary, else the voice | N | U ThaiSupportTest, SentenceTest, LookupStartsTest, TextLayoutTest, TesseractPageTest, CorpusCountsDictionaryTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 
 ### POP: the popup
 
@@ -375,6 +376,49 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-20, `languages/th` (Thai, on `12b367c4`), Pixel_10_Pro (API 37)
+
+Scope: Thai (LK46) through the Languages screen, the download screen, the search screen (text action), the overlay
+over a rendered image (64 px, the phone's Noto Sans Thai with Roboto for digits and punctuation, `TextImage.java`) in
+the debug viewer with cloud recognition and with Tesseract offline, the sentence translation, the Popup settings' font
+card, the popup page (`popup-eval.mjs`), audio; the lookup engine's (42/42) and the overlay's (23/23) instrumented
+tests.
+
+Results: passed after one fix. First check: LK46.
+
+- Setup: Thai offered wty-th-en (2.7 MB, ticked) and wty-th-th (2.9 MB), the Thai National Corpus frequency (1.6 MB,
+  ticked), transcriptions (584 kB, ticked), short translations (79 kB) and Tesseract fast (1.1 MB, ticked, main model)
+  and accurate (7.6 MB): 6.0 MB, about 19 MB after import; downloaded, built and imported in under 20 s. Flag th,
+  bubble ท.
+- Search: การตลาดออนไลน์ → การตลาด (marketing), then การ (rank 2), no กา; ห้อง → its own entries (room; measure), none
+  of the rooms it counts; จริงๆ แล้ว → จริง ๆ; นาน ๆ ครั้ง → นานๆ, then นาน; น + ํ + ้ + า + เย็น → น้ำ (rank 130), the four
+  characters highlighted; กรุงเทพฯ → กรุงเทพมหานคร through its form row (alternative abbreviation). wty-th-en has no
+  เด็ก ๆ, so เด็กๆ shows เด็ก. การตลาด and กรุงเทพมหานคร carry no rank: the corpus counts them in parts.
+- Overlay, cloud recognition: ห้องสมุด aimed at สมุด → ห้องสมุด (library, rank 3316), then สมุด, highlighted from ห;
+  โรงเรียน aimed at เรียน → โรงเรียน, then เรียน; จริงๆ → จริง ๆ; การตลาด → การตลาด and การ; กรุงเทพฯ → กรุงเทพมหานคร;
+  น้ำ → น้ำ. Sentences (translation button): "We drink cold water." (the space before แล้ว ended it); "In 2024, there
+  was a lot of rain." (ใน พ.ศ. 2567 … whole: the period after ศ held, and the spaces beside the digits); "Bangkok is the
+  capital city of Thailand" (the space after ฯ held); "Children really like going to school. Online marketing is
+  growing very fast.": the space after เด็กๆ held, and so did the space after จริงๆ at the line end, as cloud
+  recognition put both lines in one paragraph (a limit of the decided rule, in `language-rules.md`).
+- Overlay offline: Tesseract tha fast alone (⚠ for the failed cloud request): ห้องสมุด, โรงเรียน, จริงๆ, การตลาด and
+  กรุงเทพฯ as above. Its text ("Copy all recognized text" pasted into the search): words kept together
+  (ห้องสมุดเปิดตั้งแต่เก้าโมงเช้า, การตลาดออนไลน์โตเร็วมาก); spaces lost beside ๆ and the digits (เด็กๆชอบ,
+  พ.ศ.2567มี); lines 4 and 5 made one paragraph joined with nothing (…ของไทยใน พ.ศ.…); ดื่มน้ำ read as ดีมนํา, so aiming
+  at น้ำ found only the letter ม.
+- Fix: the match of เด็กๆ ชอบ took in the space after ๆ (the engine's LanguageLookupTest failed; on the search screen
+  the highlight of จริงๆ ran up to แล้ว): the mai yamok processor no longer adds a space after a ๆ that ends the text.
+  Rechecked after reinstalling: the highlight stops at ๆ.
+- Page: `lang` th; the "Screenlate Serif" face names Noto Serif Thai by PostScript and full name (`local()`), weight
+  400 700, as the phone's NotoSerifThai-Regular.ttf is a variable font (wght 400-700); both weights load. The sans
+  face names no font (the default falls back to Noto Sans Thai).
+- Fonts: the card lists Sarabun (0.2 MB), Noto Sans Thai Looped (0.2 MB), Kanit (0.4 MB) and Prompt (0.4 MB), "Only
+  for Thai text", and a Thai sample in the preview. Sarabun and Noto Sans Thai Looped downloaded; Looped, chosen,
+  loads on the page as "Screenlate Chosen" (100 900) for the Thai range only. Set back to the phone's font.
+- Audio: น้ำ from the second source, Wiktionary (Th-น้ำ.ogg); Lingua Libre has none; the voice is listed third.
+- Emulator left with Thai turned on and active, Sarabun and Noto Sans Thai Looped downloaded, airplane mode off;
+  /data 262 MB free (416 MB before: the two reinstalls of the 126 MB build and the Thai data).
 
 ### 2026-10-20, `languages/hy` (`60826bc2`, Georgian and Armenian), Pixel_10_Pro (API 37)
 

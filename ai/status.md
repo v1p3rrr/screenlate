@@ -77,8 +77,8 @@ branch: 5a Latin, 5b Celtic, 5c long suffix chains, 5d Cyrillic, 5e other script
 group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz) are researched in sessions of their
 own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
-9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
-and Khmer build waits for the owner's go. Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
+9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); Thai and
+Khmer are built in the overnight queue (below). Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
 OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
 in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic, Breton) is researched
@@ -113,6 +113,16 @@ under `kat`, now loaded and matched to untyped entries; decapitalize for Mtavrul
 `languages/hy` (marks inside words, the ligature և, classical spellings, sentences at ։ and the colon); unit, glue,
 page and catalog tests pass, and the emulator checks LK44 and LK45 passed. Both are merged into `languages/main`;
 group 4c (Thai, Khmer) builds next.
+
+Group 4c (th, km; `plans/2026-10-19-group-4c.md`; Lao deferred): Thai is done on `languages/th`. Words come from
+Android's ICU segmenter (earlier starts two ICU words back, shorter matches only at ICU boundaries), sentences end at
+a space between Thai letters, Tesseract `tha` only (the Thai Paddle model waits for the upload), Tesseract clusters
+joined by gap, the app's own text processors for sara am, tone-mark order and the spaces around ๆ, a frequency
+dictionary built from the Thai National Corpus counts, Noto Serif Thai by `local()` and four downloadable fonts.
+LK46 passed on the emulator after one fix (a space after ๆ was taken into the match). Test screens for scripts with
+stacked marks are drawn by `scripts/TextImage.java` (Pillow does not shape them). Overnight questions 10 (a space
+beside any ฯ holds) and 11 (ๆ and a space never end a sentence) are in the plan, implemented as recommended. Khmer
+follows on its own branch. The emulator's `/data` has about 260 MB free.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
