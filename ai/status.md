@@ -99,8 +99,8 @@ entries without a part of speech, form rows with template leftovers cleaned at i
 rebuilt. Both are fast-forwarded into `languages/main`. Georgian is built on `languages/ka` (Yomitan's rules, filed
 under `kat`, now loaded and matched to untyped entries; decapitalize for Mtavruli; scan length 24) and Armenian on
 `languages/hy` (marks inside words, the ligature և, classical spellings, sentences at ։ and the colon); unit, glue,
-page and catalog tests pass. Still to do: the emulator checks LK44 and LK45, the merge into `languages/main`, the
-start of group 4c.
+page and catalog tests pass, and the emulator checks LK44 and LK45 passed. Both are merged into `languages/main`;
+group 4c (Thai, Khmer) builds next.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,

@@ -1189,6 +1189,10 @@ Cells: archive MB, words.
 - No downloadable fonts; the page names Noto Serif Georgian by its local names, the sans falls back by itself.
 - Audio: Wiktionary first (more common words recorded than on Lingua Libre, whose Georgian items are few and partly
   filed under French).
+- On the emulator (LK44, 2026-10-20): Tesseract kat fast reads a rendered page in about 1 s and reads Mtavruli
+  headings too; Google's speech engine has no Georgian voice, so a word without a recording stays silent. Windows'
+  Sylfaen has no Mtavruli; test images use the phone's Noto Sans Georgian (`text-image.py` `FALLBACK` for digits and
+  punctuation).
 
 ### Armenian (2026-10-20)
 
@@ -1213,6 +1217,9 @@ Cells: archive MB, words.
 - Scan length 24 by default (5% of the forms longer than 16 characters).
 - No downloadable fonts; the page names Noto Serif Armenian by its local names, the sans falls back by itself.
 - Audio: Wiktionary first (18 of the 20 common words against 6 on Lingua Libre).
+- On the emulator (LK45, 2026-10-20): Tesseract hye fast reads a rendered page in 0.35 s and keeps ՞ where it was;
+  an all-caps word lists the lowercase form row before the capitalized name (ԵՐԵՎԱՆ: երևան of երևալ, then Երևան),
+  as Yomitan ranks fewer text changes first.
 
 ### Questions for the owner
 
