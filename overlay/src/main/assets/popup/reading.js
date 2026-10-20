@@ -1,6 +1,6 @@
 /*
- * Readings of headwords drawn by a language's own rules: Chinese pinyin, one syllable per character, and the stressed
- * form of Russian words. Japanese readings go through YomitanRender.furigana instead.
+ * Readings of headwords drawn by a language's own rules: Chinese pinyin, one syllable per character, the stressed
+ * form of Russian words and the vowelled form of Arabic ones. Japanese readings go through YomitanRender.furigana instead.
  *
  *   addLanguage(tag, rules)                 registers a language's rules; each language has them in a script of its
  *                                           own, such as reading-zh.js. rules.syllables(reading) splits a reading into

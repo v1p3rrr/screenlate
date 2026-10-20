@@ -131,6 +131,7 @@
     <string name="anki_tags">标签（以空格分隔）</string>
     <string name="anki_fields">字段</string>
     <string name="anki_fields_hint">模板使用 {expression}、{reading}、{glossary}、{sentence}、{audio}、{screenshot} 等标记。点按 + 按钮可插入标记。第一个字段用于查重。</string>
+    <string name="anki_fields_hint_rtl">对于从右向左书写的语言，“填入推荐模板”和 + 按钮会把单词和句子放进 &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;，使卡片按阅读顺序显示。第一个字段不加，因为查重会连同标记一起比较。</string>
     <string name="anki_insert_marker">插入标记</string>
     <string name="anki_marker_furigana_zh">汉字上方标注拼音</string>
     <string name="anki_marker_furigana_plain_zh">拼音（文本）：你[nǐ] 好[hǎo]</string>
@@ -494,6 +495,7 @@
     <string name="popup_font_script_only_hy">仅用于亚美尼亚文文字</string>
     <string name="popup_font_script_only_th">仅用于泰文文字</string>
     <string name="popup_font_script_only_km">仅用于高棉文文字</string>
+    <string name="popup_font_script_only_ar">仅用于阿拉伯文文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>

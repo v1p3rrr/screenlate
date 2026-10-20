@@ -131,6 +131,7 @@
     <string name="anki_tags">태그(공백으로 구분)</string>
     <string name="anki_fields">필드</string>
     <string name="anki_fields_hint">템플릿에는 {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot} 같은 마커를 사용합니다. + 버튼으로 삽입할 수 있습니다. 중복 확인에는 첫 번째 필드가 사용됩니다.</string>
+    <string name="anki_fields_hint_rtl">오른쪽에서 왼쪽으로 쓰는 언어에서는 “추천 템플릿으로 채우기”와 + 버튼이 단어와 문장을 &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;로 감싸 카드에 읽는 순서대로 표시되게 합니다. 중복 확인은 마크업까지 비교하므로 첫 번째 필드에는 넣지 않습니다.</string>
     <string name="anki_insert_marker">마커 삽입</string>
     <string name="anki_marker_furigana_zh">한자 위에 병음</string>
     <string name="anki_marker_furigana_plain_zh">병음(텍스트): 你[nǐ] 好[hǎo]</string>
@@ -494,6 +495,7 @@
     <string name="popup_font_script_only_hy">아르메니아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_th">태국어 텍스트에만 사용</string>
     <string name="popup_font_script_only_km">크메르어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_ar">아랍어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

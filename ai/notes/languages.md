@@ -1840,6 +1840,19 @@ file. Cells: archive MB, words.
 - `LensProtocol`: `content_language` "iw" is Hebrew, should it ever be read.
 - wordfreq's code license is Apache-2.0 (the group 4b sources line said MIT).
 
+### Outcome on the Arabic branch (2026-10-20)
+
+- Paddle `readingOrder`: the `%` exception was dropped. In an Arabic line's crop, `%` stands apart from its number
+  like the other weak signs at a run's edge (W1–W7 and N1 of the bidirectional algorithm), so "50%" is drawn "%50" and
+  read back as "50%" only when it is split off like ".". Details in `ocr-engines.md`, "Right-to-left lines".
+- Audio redirects: `list=search` returns a redirect's target title, not the redirect itself (checked live on
+  2026-10-20 with `Ar-كتاب.ogg`, which redirects to `Ar-كِتَابٌ.oga`). The marks-tolerant title pattern
+  (`LanguageSupport.recordingMarks`) keeps such a target, so asking for redirects (`redirects=1`) is not needed. The
+  other redirects seen point to other words or to dialect items and are dropped as before.
+- The Commons error answer is a failure now (`CommonsErrorException`, `AudioError.Kind.HTTP_STATUS` with the error
+  code), not a cached miss.
+- `LensProtocol`'s `iw` is left to the Hebrew branch.
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).

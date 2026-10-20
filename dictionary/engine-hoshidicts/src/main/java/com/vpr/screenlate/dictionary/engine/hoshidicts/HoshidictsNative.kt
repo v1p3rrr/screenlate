@@ -16,8 +16,8 @@ internal object HoshidictsNative {
     external fun destroy(handle: Long)
 
     /**
-     * [headwordMarks]: JSON of `{code: {marks, bases, every_headword, replacements}}`, the languages'
-     * `LanguageSupport.headwordMarks`.
+     * [headwordMarks]: JSON of `{code: {marks, bases, every_headword, replacements, further_replacements,
+     * lemmas_as_written, forms_in_script}}`, the languages' `LanguageSupport.headwordMarks`.
      */
     external fun importDictionary(
         zipPath: ByteArray,

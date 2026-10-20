@@ -15,9 +15,13 @@ internal fun hasRightToLeftLetter(text: String): Boolean = text.codePoints().any
 
 /**
  * The page of a right-to-left recognizer, which reads each crop from left to right, in reading order, as PaddleOCR
- * turns it: a line's characters are reversed, except runs of Latin letters, digits and `: * . / % + -` with the spaces
- * between them, which keep their order. Words are split again at the spaces; their boxes join their characters'. Lines
- * become [OcrLine.rightToLeft].
+ * turns it: a line's characters are reversed, except runs of Latin letters with the digits, spaces and signs
+ * `: * . , / % + -` among them, and numbers in digits of any script, which keep their order. Among Arabic letters the
+ * line was drawn by the bidirectional algorithm, where a number holds together only through `. , : / ٫ ٬` between two
+ * digits (10:30, 12.5): signs at a run's edge and a number's `% + - *` stand apart and are drawn on its other side
+ * ("الرصيف 5." is read ".5 فيصرلا", "50%" "%50"), and numbers apart by a space are drawn in turn. Brackets and quotes
+ * outside Latin runs are mirrored, as they were drawn. Words are split again at the spaces; their boxes join their
+ * characters'. Lines become [OcrLine.rightToLeft].
  */
 internal fun readingOrder(page: OcrPage): OcrPage = page.copy(
     paragraphs = page.paragraphs.map { paragraph -> paragraph.copy(lines = paragraph.lines.map(::readingOrder)) },
@@ -26,7 +30,12 @@ internal fun readingOrder(page: OcrPage): OcrPage = page.copy(
 /** A character with its box; [exact] when the box is the character's own, not its word's. */
 private class Glyph(val text: String, val box: Box?, val exact: Boolean) {
     val space: Boolean get() = text == " "
-    val kept: Boolean get() = space || text.all { it in 'a'..'z' || it in 'A'..'Z' || it in '0'..'9' || it in KEPT_SIGNS }
+    val latin: Boolean get() = text.all { it in 'a'..'z' || it in 'A'..'Z' }
+    val digit: Boolean get() = text.all(Char::isDigit)
+    val sign: Boolean get() = text.length == 1 && text[0] in KEPT_SIGNS
+    val kept: Boolean get() = space || latin || digit || sign
+
+    fun mirrored(): Glyph = MIRRORED[text]?.let { Glyph(it, box, exact) } ?: this
 }
 
 private fun readingOrder(line: OcrLine): OcrLine {
@@ -41,14 +50,25 @@ private fun readingOrder(line: OcrLine): OcrLine {
     val segments = ArrayList<List<Glyph>>()
     val run = ArrayList<Glyph>()
     fun endRun() {
-        val first = run.indexOfFirst { !it.space }
-        if (first < 0) {
-            run.forEach { segments += listOf(it) }
-        } else {
-            val last = run.indexOfLast { !it.space }
+        if (run.any(Glyph::latin)) {
+            val first = run.indexOfFirst { !it.space && !it.sign }
+            val last = run.indexOfLast { !it.space && !it.sign }
             run.subList(0, first).forEach { segments += listOf(it) }
             segments += run.subList(first, last + 1).toList()
             run.subList(last + 1, run.size).forEach { segments += listOf(it) }
+        } else {
+            var number = ArrayList<Glyph>()
+            run.forEachIndexed { i, glyph ->
+                val joins = glyph.digit ||
+                    glyph.text in NUMBER_SEPARATORS && run.getOrNull(i - 1)?.digit == true && run.getOrNull(i + 1)?.digit == true
+                if (joins) {
+                    number += glyph
+                } else {
+                    if (number.isNotEmpty()) segments += number.also { number = ArrayList() }
+                    segments += listOf(glyph.mirrored())
+                }
+            }
+            if (number.isNotEmpty()) segments += number
         }
         run.clear()
     }
@@ -57,7 +77,7 @@ private fun readingOrder(line: OcrLine): OcrLine {
             run += glyph
         } else {
             endRun()
-            segments += listOf(glyph)
+            segments += listOf(glyph.mirrored())
         }
     }
     endRun()
@@ -81,4 +101,12 @@ private fun readingOrder(line: OcrLine): OcrLine {
     return line.copy(words = words, rightToLeft = true)
 }
 
-private const val KEPT_SIGNS = ":*./%+-"
+private const val KEPT_SIGNS = ":*.,/%+-٫٬"
+
+/** Signs that join the digits on either side of them into one number. */
+private val NUMBER_SEPARATORS = setOf(".", ",", ":", "/", "٫", "٬")
+
+/** Characters a right-to-left line draws as their mirror image (Unicode's Bidi_Mirrored ones in common use). */
+private val MIRRORED: Map<String, String> = listOf("()", "[]", "{}", "<>", "«»", "‹›")
+    .flatMap { pair -> listOf(pair[0].toString() to pair[1].toString(), pair[1].toString() to pair[0].toString()) }
+    .toMap()

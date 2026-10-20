@@ -744,6 +744,61 @@
       "homepage": "https://fonts.google.com/specimen/Hanuman"
     },
     {
+      "id": "noto-sans-arabic",
+      "family": "Noto Sans Arabic",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Arabic-script sans-serif of Google's Noto family, with Latin, from thin to black.",
+        "ru": "Шрифт без засечек для арабского письма из семейства Noto от Google; с латиницей, от тонкого до сверхжирного.",
+        "de": "Serifenlose Schrift für die arabische Schrift aus Googles Noto-Familie, mit Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente sin serifa para la escritura árabe de la familia Noto de Google, con latino, de fina a ultranegrita.",
+        "fr": "Police sans empattement pour l’écriture arabe de la famille Noto de Google, avec le latin, de maigre à extra-grasse.",
+        "it": "Carattere senza grazie per la scrittura araba della famiglia Noto di Google, con il latino, da sottile a nero.",
+        "ja": "Google の Noto ファミリーによるアラビア文字のサンセリフ。ラテン文字付き。極細から極太まで。",
+        "ko": "Google Noto 계열의 아랍 문자 산세리프로, 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Bezszeryfowy krój pisma arabskiego z rodziny Noto od Google, z łacinką, od cienkiego do najgrubszego.",
+        "pt": "Fonte sem serifa para a escrita árabe da família Noto do Google, com latino, de fina a ultranegrito.",
+        "tr": "Google’ın Noto ailesinden Arap yazısı için tırnaksız yazı tipi, Latin harfleriyle; inceden en kalına.",
+        "vi": "Phông chữ Ả Rập không chân thuộc họ Noto của Google, kèm chữ Latinh, từ mảnh đến rất đậm.",
+        "zh": "Google Noto 系列的阿拉伯文无衬线字体，附拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Google Noto 系列的阿拉伯文無襯線字型，附拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansarabic/NotoSansArabic%5Bwdth,wght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+Arabic"
+    },
+    {
+      "id": "amiri",
+      "family": "Amiri",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Classical Naskh typeface by Khaled Hosny for Arabic book text, with Latin; regular and bold.",
+        "ru": "Классический шрифт насх для арабского книжного текста, автор — Khaled Hosny; с латиницей, обычное и жирное начертания.",
+        "de": "Klassische Naskh-Schrift von Khaled Hosny für arabischen Buchtext, mit Lateinisch; normal und fett.",
+        "es": "Fuente naskh clásica de Khaled Hosny para texto de libros en árabe, con latino; normal y negrita.",
+        "fr": "Police naskh classique de Khaled Hosny pour le texte de livre arabe, avec le latin ; normale et grasse.",
+        "it": "Carattere naskh classico di Khaled Hosny per il testo dei libri in arabo, con il latino; normale e grassetto.",
+        "ja": "Khaled Hosny による、アラビア語の書籍本文向けの古典的なナスフ体。ラテン文字付き。標準と太字。",
+        "ko": "Khaled Hosny가 만든 아랍어 책 본문용 고전 나스흐체로, 라틴 문자도 있으며 보통과 굵게가 있습니다.",
+        "pl": "Klasyczny krój naschi projektu Khaled Hosny do tekstu książkowego po arabsku, z łacinką; zwykły i pogrubiony.",
+        "pt": "Fonte naskh clássica de Khaled Hosny para texto de livros em árabe, com latino; normal e negrito.",
+        "tr": "Khaled Hosny’nin Arapça kitap metni için klasik nesih yazı tipi, Latin harfleriyle; normal ve kalın.",
+        "vi": "Phông chữ Naskh cổ điển của Khaled Hosny cho văn bản sách tiếng Ả Rập, kèm chữ Latinh; thường và đậm.",
+        "zh": "Khaled Hosny 设计的古典纳斯赫体，用于阿拉伯文书籍正文，附拉丁字母；常规和粗体。",
+        "zh-Hant": "Khaled Hosny 設計的古典納斯赫體，用於阿拉伯文書籍內文，附拉丁字母；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Amiri"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

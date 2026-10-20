@@ -9,6 +9,7 @@
 #include <utf8proc.h>
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
@@ -180,7 +181,8 @@ std::string_view trimmed(std::string_view text) {
 // The headwords a form-of row stands for. Wiktionary exports write some forms with a romanization or a note after
 // them ("মাসটি (maśṭa (colloquial), maśṭi (formal))", "বইগুলো , boigulo"), two spellings apart ("ծագմանը / ծագմանն"),
 // an ending apart from its word ("মুখ ে"), the classical spellings of Armenian words after a label
-// ("orthography spelling գիւղ"), or an unfilled template ("{{{3}}}ে"), which stands for no word.
+// ("orthography spelling գիւղ"), or an unfilled template ("{{{3}}}ে"), which stands for no word. A Hebrew construct
+// form written with the maqaf that joins it to the next word ("כֶּלֶב־") stands for the word without it as well.
 std::vector<std::string> form_headwords(const std::string& expression) {
   std::vector<std::string> out;
   if (expression.find("{{{") != std::string::npos) return out;
@@ -213,6 +215,10 @@ std::vector<std::string> form_headwords(const std::string& expression) {
     }
     const std::string_view part = trimmed(text.substr(0, cut));
     if (!part.empty()) out.push_back(join_marks(part));
+    constexpr std::string_view kMaqaf = "־";  // U+05BE
+    if (part.size() > kMaqaf.size() && part.ends_with(kMaqaf)) {
+      out.push_back(join_marks(part.substr(0, part.size() - kMaqaf.size())));
+    }
     text = text.substr(rest);
   }
   return out;
@@ -347,6 +353,42 @@ struct Compressors {
 
 // The rows of one term bank without their form-of items, which go into [split]; nullopt when the bank has none (or
 // cannot be read, which hoshidicts then reports). [stripper] drops the language's headword marks, if it has any.
+// Whether a word of a form's tags is the name of a Wiktionary inflection template (ar-infl-a, ar-infl-an-maksura),
+// which Wiktionary's Arabic exports put among the grammatical ones.
+bool is_template_name(std::string_view word) {
+  const size_t dash = word.find('-');
+  if (dash < 2 || dash > 3 || !std::all_of(word.begin(), word.begin() + static_cast<std::ptrdiff_t>(dash),
+                                           [](char c) { return c >= 'a' && c <= 'z'; })) {
+    return false;
+  }
+  const std::string_view rest = word.substr(dash);
+  return rest == "-infl" || rest.starts_with("-infl-");
+}
+
+// [tags] without template names, a tag left empty dropped.
+std::vector<std::string> cleaned_tags(const std::vector<std::string>& tags) {
+  std::vector<std::string> out;
+  for (const auto& tag : tags) {
+    if (tag.find("-infl") == std::string::npos) {
+      out.push_back(tag);
+      continue;
+    }
+    std::string kept;
+    std::string_view rest = tag;
+    while (!rest.empty()) {
+      const size_t space = rest.find(' ');
+      const std::string_view word = rest.substr(0, space);
+      if (!word.empty() && !is_template_name(word)) {
+        if (!kept.empty()) kept += ' ';
+        kept += word;
+      }
+      rest = space == std::string_view::npos ? std::string_view() : rest.substr(space + 1);
+    }
+    if (!kept.empty()) out.push_back(std::move(kept));
+  }
+  return out;
+}
+
 std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& split, const MarkStripper* stripper) {
   std::vector<glz::raw_json_view> rows;
   if (glz::read_json(rows, content)) return std::nullopt;
@@ -393,15 +435,18 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
       continue;
     }
     changed = true;
-    for (const auto& headword : form_headwords(expression)) {
+    const bool dropped = stripper != nullptr && stripper->drops_form(expression);
+    for (const auto& headword : dropped ? std::vector<std::string>() : form_headwords(expression)) {
       std::vector<std::string> other_keys;
       if (headword != expression && stripper != nullptr) other_keys = stripper->keys(headword);
       const auto& form_keys = headword == expression ? keys : other_keys;
       for (const auto& [lemma, tags] : form_of) {
-        const std::string plain_lemma = stripper != nullptr && !every_headword ? stripper->strip(lemma) : std::string();
+        const std::string plain_lemma =
+            stripper != nullptr && !stripper->lemmas_as_written() ? stripper->strip(lemma) : std::string();
         const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
-        split.table.add(headword, target, tags, rules);
-        for (const auto& key : form_keys) split.table.add(key, target, tags, rules);
+        const std::vector<std::string> shown = cleaned_tags(tags);
+        split.table.add(headword, target, shown, rules);
+        for (const auto& key : form_keys) split.table.add(key, target, shown, rules);
       }
     }
     if (definitions.empty()) {
@@ -457,7 +502,10 @@ MarkStripper::MarkStripper(const HeadwordMarks& marks)
     : marks_(code_points(marks.marks)),
       bases_(code_points(marks.bases)),
       every_headword_(marks.every_headword),
-      replacements_(marks.replacements.begin(), marks.replacements.end()) {}
+      lemmas_as_written_(marks.lemmas_as_written),
+      forms_in_script_(marks.forms_in_script),
+      replacements_(marks.replacements.begin(), marks.replacements.end()),
+      further_replacements_(marks.further_replacements.begin(), marks.further_replacements.end()) {}
 
 std::vector<std::string> MarkStripper::keys(std::string_view text) const {
   std::vector<std::string> out;
@@ -465,17 +513,30 @@ std::vector<std::string> MarkStripper::keys(std::string_view text) const {
     if (key.empty() || key == text || std::find(out.begin(), out.end(), key) != out.end()) return;
     out.push_back(std::move(key));
   };
+  // The text with the replacements, then with the further ones on top of them.
+  auto add_replaced = [&](std::string_view from) {
+    std::string first = replaced(from, replacements_);
+    const std::string further = replaced(first.empty() ? from : std::string_view(first), further_replacements_);
+    add(std::move(first));
+    add(further);
+  };
   const std::string plain = strip(text);
-  add(replaced(text));
-  if (!plain.empty()) add(replaced(plain));
+  add_replaced(text);
+  if (!plain.empty()) add_replaced(plain);
   add(plain);
   return out;
 }
 
-std::string MarkStripper::replaced(std::string_view text) const {
+bool MarkStripper::drops_form(std::string_view text) const {
+  if (!forms_in_script_) return false;
+  const std::vector<int32_t> points = code_points(text);
+  return std::none_of(points.begin(), points.end(), [&](int32_t point) { return contains(bases_, utf8proc_tolower(point)); });
+}
+
+std::string MarkStripper::replaced(std::string_view text, const Replacements& replacements) {
   std::string out(text);
   bool changed = false;
-  for (const auto& [from, to] : replacements_) {
+  for (const auto& [from, to] : replacements) {
     if (from.empty()) continue;
     for (size_t pos = out.find(from); pos != std::string::npos; pos = out.find(from, pos + to.size())) {
       out.replace(pos, from.size(), to);

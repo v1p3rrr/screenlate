@@ -2,6 +2,7 @@ package com.vpr.screenlate.overlay.fonts
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.ArabicSupport
 import com.vpr.screenlate.core.common.language.ArmenianSupport
 import com.vpr.screenlate.core.common.language.GeorgianSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
@@ -80,5 +81,14 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Khmer serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in KhmerSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Noto Naskh Arabic is declared for `und-Arab`; Arabic has no sans-serif of its own on the phone. */
+    @Test
+    fun findsTheArabicSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ArabicSupport, serif = true)
+        assumeTrue("The phone has no Arabic serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ArabicSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

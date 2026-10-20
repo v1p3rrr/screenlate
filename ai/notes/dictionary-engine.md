@@ -174,6 +174,22 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   match a blank-rule entry (English phrasal verbs); `glue.js` `untypedRules` marks every deinflected candidate of the
   listed languages (bn) untyped. Hindi needs nothing: Yomitan has no Hindi rules, so its candidates have no
   conditions. Georgian and Tagalog have Yomitan rules and blank-rule wty entries too, to be checked on their branches.
+- Arabic keys (2026-10-20): wty-ar-en (2026.10.11) has 1,019,643 rows, 992,134 of them form rows and 27,509 with
+  definitions. Its headwords are written without harakat (11 carry some), the reading with them (كتاب, كِتَاب; 27,230
+  readings have marks), while form rows name their lemmas vowelled (مدارس → مَدْرَسَة). `every_headword` keys each
+  headword with `replacements` ({ى→ي, ة→ه}, the spelling running text often uses at a word's end) and with
+  `further_replacements` ({أ إ آ ٱ → ا}) made on top of the first ones, so اكبر finds أكبر while أمام does not find
+  إمام (the text keeps its hamza and is looked up as written). `MarkStripper::keys` adds the headword with the first
+  replacements and with both, without the marks and with them. Lemmas lose their harakat (`lemmas_as_written`
+  false), so مَدْرَسَة leads to the headword مدرسة. Greek keeps its lemmas as written:
+  `HeadwordMarks.lemmasAsWritten` defaults to `everyHeadword`, which used to decide it.
+- Template names among form tags (2026-10-20): 158,443 of wty-ar-en's form rows carry the name of the Wiktionary
+  template that made them (`ar-infl-a`, `ar-infl-an-maksura`) as a tag word next to the grammatical ones.
+  `cleaned_tags` drops every word `xx-infl` or `xx-infl-…` (two or three lowercase letters) and a tag left empty, for
+  every language; no other language's wty export has them in the samples.
+- Forms outside the script (2026-10-20): 795 Arabic form rows are romanizations (ḡarafāt), keyed under Latin text
+  that an Arabic lookup never gives and that a Latin-script dictionary's lookup could hit. `forms_in_script` drops a
+  form row whose headword has none of the `bases` letters (`MarkStripper::drops_form`); only Arabic sets it.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

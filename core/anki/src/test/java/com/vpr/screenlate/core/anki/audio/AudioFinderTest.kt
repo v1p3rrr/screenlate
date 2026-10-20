@@ -3,6 +3,7 @@ package com.vpr.screenlate.core.anki.audio
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.anki.MemoryDataStore
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.ArabicSupport
 import mockwebserver3.Dispatcher
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
@@ -79,6 +80,12 @@ class AudioFinderTest {
 
     private fun text(body: String, type: String = "text/html") =
         MockResponse.Builder().code(200).addHeader("Content-Type", type).body(body).build()
+
+    private companion object {
+        /** مُدَرِّس with the shadda before the kasra, as some dictionaries write it, and in NFC, kasra first. */
+        const val MUDARRIS_SHADDA_FIRST = "\u0645\u064F\u062F\u064E\u0631\u0651\u0650\u0633"
+        const val MUDARRIS_NFC = "\u0645\u064F\u062F\u064E\u0631\u0650\u0651\u0633"
+    }
 
     private fun sources(vararg sources: AudioSource) = runBlocking { settings.update(Language.JAPANESE) { it.copy(sources = sources.toList()) } }
 
@@ -366,6 +373,93 @@ class AudioFinderTest {
 
         settings.update(Language.CHINESE) { it.copy(sources = listOf(AudioSource(AudioSourceType.TEXT_TO_SPEECH))) }
         assertThat(finder.pronunciation("你好", "nǐ hǎo", Language.CHINESE)).isEqualTo(Pronunciation.Speech("你好", Language.CHINESE))
+    }
+
+    /**
+     * Commons answers searches holding a key of [titles] with its titles, and gives every title a file URL by its
+     * index; the file holds that index.
+     */
+    private fun commons(titles: Map<String, List<String>>) {
+        val all = titles.values.flatten().distinct()
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                val search = request.url.queryParameter("srsearch")
+                if (search != null) {
+                    val found = titles.entries.firstOrNull { it.key in search }?.value.orEmpty()
+                    return text("""{"query": {"search": [${found.joinToString(",") { """{"title": "$it"}""" }}]}}""", "application/json")
+                }
+                if (request.url.queryParameter("titles") != null) {
+                    val pages = all.mapIndexed { index, title ->
+                        """"$index": {"title": "$title", "imageinfo": [{"url": "https://upload.example/$index"}]}"""
+                    }.joinToString(",")
+                    return text("""{"query": {"pages": {$pages}}}""", "application/json")
+                }
+                return audio(byteArrayOf(request.url.encodedPath.removePrefix("/").toByte()), "audio/ogg")
+            }
+        }
+    }
+
+    @Test
+    fun `arabic recordings of the word come first from any source, then those of the vowelled reading, then the rest`() = runBlocking<Unit> {
+        val wiktionary = listOf("File:Ar-كِتَابٌ.oga", "File:Ar-كتابة.ogg")
+        val linguaLibre = listOf(
+            "File:LL-Q13955 (ara)-Al-jahbaḏ-كِتَاب.wav",
+            "File:LL-Q13955 (ara)-Zinou2go-كتاب.wav",
+            "File:LL-Q55633582 (ajp)-Khalil.rantissi-كتاب.wav",
+        )
+        commons(mapOf("LL-" to linguaLibre, "[Aa]r" to wiktionary))
+        val sources = listOf(
+            AudioSource(AudioSourceType.WIKTIONARY),
+            AudioSource(AudioSourceType.LINGUA_LIBRE),
+            AudioSource(AudioSourceType.TEXT_TO_SPEECH),
+        )
+        val candidates = finder.candidates("كتاب", "كِتَاب", Language.ARABIC, sources)
+        assertThat(candidates.map { it.name }).containsExactly("Zinou2go", "Al-jahbaḏ", "Ar-كِتَابٌ.oga", "").inOrder()
+        assertThat(candidates.map { it.rank }).containsExactly(0, 1, 2, 0).inOrder()
+        val linguaLibreSearch = requests.mapNotNull { it.url.queryParameter("srsearch") }.single { "LL-" in it }
+        assertThat(linguaLibreSearch)
+            .isEqualTo(AudioPages.linguaLibreSearch("كتاب", listOf("Q13955"), ArabicSupport.recordingMarks))
+
+        settings.update(Language.ARABIC) { it.copy(sources = sources) }
+        // Wiktionary is asked first, but Lingua Libre has the word itself.
+        assertThat(finder.find("كتاب", "كِتَاب", Language.ARABIC)!!.url).isEqualTo("https://upload.example/1")
+    }
+
+    @Test
+    fun `arabic readings are compared in NFC, as Commons stores titles`() = runBlocking<Unit> {
+        commons(mapOf("[Aa]r" to listOf("File:Ar-$MUDARRIS_NFC.ogg")))
+        val candidates = finder.candidates("مدرس", "$MUDARRIS_SHADDA_FIRST", Language.ARABIC, listOf(AudioSource(AudioSourceType.WIKTIONARY)))
+        assertThat(candidates.single().rank).isEqualTo(1)
+    }
+
+    @Test
+    fun `a clip of other marks is asked again when a source that might have the word failed`() = runBlocking<Unit> {
+        commons(mapOf("[Aa]r" to listOf("File:Ar-كِتَابٌ.oga")))
+        settings.update(Language.ARABIC) {
+            it.copy(sources = listOf(AudioSource(AudioSourceType.WIKTIONARY), AudioSource(AudioSourceType.URL, "https://down.example/{term}")))
+        }
+        val dispatcher = server.dispatcher
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest): MockResponse =
+                if (request.url.encodedPath.startsWith("/%D9")) MockResponse.Builder().code(503).build() else dispatcher.dispatch(request)
+        }
+        assertThat(finder.find("كتاب", "كِتَاب", Language.ARABIC)!!.url).isEqualTo("https://upload.example/0")
+        val before = requests.size
+        assertThat(finder.find("كتاب", "كِتَاب", Language.ARABIC)).isNotNull()
+        assertThat(requests.size).isGreaterThan(before)
+    }
+
+    @Test
+    fun `a commons error answer is a failure, asked again, not a missing recording`() = runBlocking<Unit> {
+        settings.update(Language.ENGLISH) { it.copy(sources = listOf(AudioSource(AudioSourceType.WIKTIONARY))) }
+        routes["/w/api.php"] = {
+            text("""{"error": {"code": "cirrussearch-regex-too-busy-error", "info": "Too many regular expression searches currently running."}}""", "application/json")
+        }
+        assertThat(finder.find("water", "", Language.ENGLISH)).isNull()
+        assertThat(finder.recentFailures().single().error)
+            .isEqualTo(AudioError(AudioError.Kind.HTTP_STATUS, "cirrussearch-regex-too-busy-error"))
+        assertThat(finder.find("water", "", Language.ENGLISH)).isNull()
+        assertThat(requests).hasSize(2)
     }
 
     @Test

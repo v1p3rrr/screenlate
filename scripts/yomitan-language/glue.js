@@ -41,10 +41,22 @@ function turkishUpperCase(text) {
  * Text processors that replace Yomitan's by id. Turkish case pairs: without a locale (QuickJS has none) JavaScript
  * lowercases I to i and İ to i with a combining dot, so a Turkish word written in capitals (IŞIK, İSTANBUL) would find
  * no entry. Serbo-Croatian accent marks: Yomitan drops them from Latin vowels and r only, so Cyrillic text written
- * with the marks of readings (ку̏ћа) would find no entry.
+ * with the marks of readings (ку̏ћа) would find no entry. Arabic hamza: Yomitan puts a hamza on the text's first alif
+ * (ألكتاب, كتإبهم) and never after a prefix (الاسلام); the import keys headwords with hamza alefs under a bare alif
+ * instead (ArabicSupport's `HeadwordMarks`), so the two processors give nothing. Arabic alif maqsura: ى is written ي at
+ * the end of every word of the text, not only of its last.
  * @type {Record<string, Record<string, import('language').TextProcessor>>}
  */
 const replacedProcessors = {
+    ar: {
+        addHamzaTop: {name: 'Add Hamza to top of Alif', description: 'keyed at import', process: (str) => [str]},
+        addHamzaBottom: {name: 'Add Hamza to bottom of Alif', description: 'keyed at import', process: (str) => [str]},
+        convertAlifMaqsuraToYaa: {
+            name: 'Convert Alif Maqsura to Yaa',
+            description: 'فى → في',
+            process: (str) => [str, str.replace(/ى(?=\s|$)/g, 'ي')],
+        },
+    },
     tr: {
         decapitalize: {
             name: 'Decapitalize text',
@@ -97,11 +109,18 @@ function candidates(text, language, searchResolution) {
 
 /**
  * Languages whose deinflected texts may match entries without a part of speech, with the shortest such text in
- * characters: Wiktionary's Bengali and Georgian entries give none. The app's Bengali endings (own-transforms.js) are
- * undone once only and leave two characters at least. Yomitan's Georgian rules chain and cut words down to a letter or
- * two (ვადის → ვ), which would find only the letters' entries.
+ * characters and, where only some rules may, the conditions their texts end in: Wiktionary's Bengali and Georgian
+ * entries give none. The app's Bengali endings (own-transforms.js) are undone once only and leave two characters at
+ * least. Yomitan's Georgian rules chain and cut words down to a letter or two (ვადის → ვ), which would find only the
+ * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
+ * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed.
+ * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
-const untypedRules = new Map([['bn', 2], ['ka', 3]]);
+const untypedRules = new Map([
+    ['bn', {shortest: 2}],
+    ['ka', {shortest: 3}],
+    ['ar', {shortest: 2, conditions: ['n']}],
+]);
 
 /**
  * Whether [d], a deinflected text, may match entries without a part of speech (`untypedRules`).
@@ -109,8 +128,12 @@ const untypedRules = new Map([['bn', 2], ['ka', 3]]);
  * @param {string} language
  */
 function isUntypedRule(d, language) {
-    const shortest = untypedRules.get(language);
-    return shortest !== undefined && d.conditions !== 0 && [...d.deinflectedText].length >= shortest;
+    const rule = untypedRules.get(language);
+    if (rule === undefined || d.conditions === 0 || [...d.deinflectedText].length < rule.shortest) { return false; }
+    if (!rule.conditions) { return true; }
+    const flags = translator._multiLanguageTransformer._languageTransformers.get(language)?._conditionTypeToConditionFlagsMap;
+    const allowed = rule.conditions.reduce((all, name) => all | (flags?.get(name) ?? 0), 0);
+    return (d.conditions & ~allowed) === 0;
 }
 
 /**

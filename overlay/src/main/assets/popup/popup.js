@@ -19,6 +19,9 @@
  *   ocrModels: boolean,            opens the language's on-device models from the message
  *   hideSource: boolean,           no header on the first view: it starts with the first entry, whose buttons get ✕
  *   compound: string,              a line above the entries of a word found only as its parts, empty otherwise
+ *   rightToLeft: boolean,          the language is written right to left: the lookup text, headwords and readings run
+ *                                  that way, the glossaries' blocks by their own first letters (an Arabic example
+ *                                  among English meanings); the layout stays
  *   labels: { ... }                localized strings
  * }
  *
@@ -69,6 +72,9 @@ const Popup = (() => {
     const KANJI_STATS = ['strokes', 'grade', 'jlpt', 'freq'];
     /** Characters of a headword that open their own entry when tapped (drawSegments). */
     const HAN_CHARACTER = /[\p{Script=Han}〇]/u;
+    const HAN_PIECES = /([\p{Script=Han}〇])/u;
+    /** Elements of a glossary that take the direction of their own first letter in a right-to-left language. */
+    const TEXT_BLOCKS = 'div, p, li, dt, dd, td, th, summary';
     /** Pitch accents shown before "+N"; a word with more shows only its first. */
     const SHOWN_ACCENTS = 2;
     /** Transcriptions that "+N" shows before "Show all". */
@@ -93,6 +99,8 @@ const Popup = (() => {
     let styles = [];
     let tagNotes = new Map();
     let actions = { anki: false, audio: false };
+    /** The drawn entries' language is written right to left (state.rightToLeft). */
+    let rightToLeft = false;
     let noteConfig = { markers: null, frequencyModes: {} };
     let menu = null;
     /** Whether the translation button shows. */
@@ -149,6 +157,7 @@ const Popup = (() => {
 
         source.replaceChildren();
         setLang(source, state.source?.lang);
+        setDirection(source, state.rightToLeft ? 'rtl' : '');
         const text = state.source?.text || '';
         const chars = Array.from(text);
         const matched = Math.min(state.source?.matched || 0, chars.length);
@@ -208,6 +217,7 @@ const Popup = (() => {
             }
             return;
         }
+        rightToLeft = Boolean(state.rightToLeft);
         const fragment = document.createDocumentFragment();
         if (state.compound) fragment.append(element('div', 'compound', state.compound));
         results.forEach((result, index) => fragment.append(entry(result, index, state.labels || {})));
@@ -375,6 +385,12 @@ const Popup = (() => {
         else node.removeAttribute('lang');
     }
 
+    /** 'rtl', 'auto', or '' for the page's own direction. */
+    function setDirection(node, dir) {
+        if (dir) node.dir = dir;
+        else node.removeAttribute('dir');
+    }
+
     function entry(result, index, labels) {
         const term = result.term;
         const article = element('article', 'entry');
@@ -398,6 +414,7 @@ const Popup = (() => {
         }
         const category = firstPitchCategory(term);
         if (category) expression.dataset.pitchCategory = category;
+        if (rightToLeft) expression.dir = 'rtl';
         head.append(expression);
         const details = entryInfo(result, labels);
         if (details) head.append(details);
@@ -417,8 +434,9 @@ const Popup = (() => {
     function drawSegments(parent, segments) {
         for (const [text, parts] of segments) {
             const target = parts ? document.createElement('ruby') : parent;
-            for (const character of text) {
-                target.append(HAN_CHARACTER.test(character) ? element('span', 'kanji-char', character) : character);
+            // The text between such characters stays one node, so that joined scripts (Arabic) shape across it.
+            for (const piece of text.split(HAN_PIECES).filter(Boolean)) {
+                target.append(HAN_CHARACTER.test(piece) ? element('span', 'kanji-char', piece) : piece);
             }
             if (!parts) continue;
             const rt = document.createElement('rt');
@@ -973,7 +991,8 @@ const Popup = (() => {
     /**
      * Distinct phonetic transcriptions of the word (Yomitan's `ipa` term meta) with the labels of the regions their tags
      * name and the dictionaries that list each one. They follow the order of the audio regions (`noteConfig.regions`);
-     * those without a region come last.
+     * those without a region come last. A language without audio regions keeps the dictionary's order, where the
+     * standard form usually has no region (Arabic /ki.taːb/ before Egyptian [keˈtæːb]).
      */
     function phoneticTranscriptions(term) {
         const transcriptions = new Map();
@@ -994,7 +1013,7 @@ const Popup = (() => {
                     .map((code, i) => ({ code, i, rank: regionRank(code, order) }))
                     .sort((a, b) => a.rank - b.rank || a.i - b.i);
                 const labels = [...new Set(ranked.map(region => regionLabel(region.code, order)))];
-                const rank = ranked.length ? ranked[0].rank : Number.MAX_SAFE_INTEGER;
+                const rank = !order.length ? 0 : ranked.length ? ranked[0].rank : Number.MAX_SAFE_INTEGER;
                 return { ipa: item.ipa, labels, dictionaries: item.dictionaries, rank, index };
             })
             .sort((a, b) => a.rank - b.rank || a.index - b.index);
@@ -1040,6 +1059,8 @@ const Popup = (() => {
         // A chip in the first definition, as in Yomitan, instead of a line of its own; placed after drawing.
         const name = element('span', 'dictionary-name', shortName(dictionary));
         name.title = dictionary;
+        // Placed into the first block, whose own direction its name would otherwise decide.
+        if (rightToLeft) name.dir = 'auto';
         const copy = element('button', 'copy-definition');
         copy.type = 'button';
         copy.innerHTML = ICONS.copy;
@@ -1066,6 +1087,10 @@ const Popup = (() => {
                 renderer.renderGlossary(body, content, dictionary, renderOptions);
             } else {
                 body.textContent = plainText(content);
+            }
+            if (rightToLeft) {
+                body.dir = 'auto';
+                body.querySelectorAll(TEXT_BLOCKS).forEach(block => setDirection(block, block.dir || 'auto'));
             }
             definition.append(body);
             container.append(definition);

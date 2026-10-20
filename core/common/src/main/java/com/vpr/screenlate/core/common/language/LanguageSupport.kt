@@ -96,6 +96,13 @@ interface LanguageSupport {
     val scriptMarkers: Map<String, String> get() = emptyMap()
 
     /**
+     * Anki markers of the language's own text in a language written right to left: the word, the sentence and its
+     * cloze parts. Suggested templates and the marker picker put them in `<span dir="rtl">`, so that a card laid out
+     * left to right shows them in order; meanings and transcriptions stay as they are.
+     */
+    val rightToLeftMarkers: Set<String> get() = if (rightToLeft) RIGHT_TO_LEFT_TEXT_MARKERS else emptySet()
+
+    /**
      * Field names of note types made for the language, by the marker such a field is pre-filled with (Pinyin →
      * `reading`); they come before the names every language shares.
      */
@@ -112,6 +119,13 @@ interface LanguageSupport {
 
     /** The spelling Lingua Libre's recordings of [term] are titled by: the word itself. */
     fun linguaLibreTitle(term: String): String = term
+
+    /**
+     * Vowel marks recording titles may write where the word has none (`Ar-كِتَابٌ.oga` for كتاب). Titles that differ
+     * from the word only by them are found too; those with the word itself come first, then those with its vowelled
+     * reading, then the rest, which may be another word of the same letters.
+     */
+    val recordingMarks: String get() = ""
 
     /**
      * The spelling Wiktionary's recordings of a word ([term] read as [reading]) are titled by: the word itself, or its
@@ -376,19 +390,33 @@ enum class SearchResolution { WORD, LETTER }
  * is also found without them, and lemmas keep them.
  * @property replacements marks that running text writes as another one (the Hindi candrabindu as anusvara): a word is
  * also found with them replaced, with its [marks] and without them.
+ * @property furtherReplacements replacements made on top of [replacements] for one more spelling: Arabic headwords are
+ * found with final ى and ة written ي and ه, and also with their hamza alefs written as a bare alif.
+ * @property lemmasAsWritten lemmas name headwords with their marks and keep them; otherwise they lose them (Arabic
+ * forms name vowelled lemmas of unvowelled headwords).
+ * @property formsInScript forms are written in the script of [bases]: a form without one of its letters is dropped
+ * at import (the romanized forms Wiktionary's Arabic exports give).
  */
 data class HeadwordMarks(
     val marks: String,
     val bases: String,
     val everyHeadword: Boolean = false,
     val replacements: Map<String, String> = emptyMap(),
+    val furtherReplacements: Map<String, String> = emptyMap(),
+    val lemmasAsWritten: Boolean = everyHeadword,
+    val formsInScript: Boolean = false,
 )
+
+/** The markers of [LanguageSupport.rightToLeftMarkers] every right-to-left language has. */
+internal val RIGHT_TO_LEFT_TEXT_MARKERS = setOf("expression", "sentence", "cloze-prefix", "cloze-body", "cloze-suffix")
 
 /** A Wiktionary recording title to look for: `Sr-кућа.flac` has the [prefix] sr and the [title] кућа. */
 data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KHMER, KOREAN, THAI }
+enum class OcrScript {
+    LATIN, ARABIC, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KHMER, KOREAN, THAI,
+}
 
 val Language.support: LanguageSupport
     get() = when (this) {
@@ -422,4 +450,5 @@ val Language.support: LanguageSupport
         Language.ARMENIAN -> ArmenianSupport
         Language.THAI -> ThaiSupport
         Language.KHMER -> KhmerSupport
+        Language.ARABIC -> ArabicSupport
     }

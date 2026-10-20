@@ -13,6 +13,7 @@ data class AudioError(val kind: Kind, val type: String) {
     companion object {
         fun of(error: Throwable): AudioError {
             if (error is HttpStatusException) return AudioError(Kind.HTTP_STATUS, "HTTP ${error.code}")
+            if (error is CommonsErrorException) return AudioError(Kind.HTTP_STATUS, error.code)
             val kind = when (error) {
                 is UnknownHostException -> Kind.NOT_FOUND
                 is ConnectException -> Kind.REFUSED
@@ -28,6 +29,12 @@ data class AudioError(val kind: Kind, val type: String) {
 }
 
 internal class HttpStatusException(val code: Int) : IOException("HTTP $code")
+
+/**
+ * Wikimedia Commons answered with an error instead of results, such as `cirrussearch-regex-too-busy-error` when too
+ * many regular expression searches run at once; [code] names it.
+ */
+internal class CommonsErrorException(val code: String) : IOException(code)
 
 /** The answer of a custom JSON source is not an audio source list. */
 internal class NotAudioListException(cause: Throwable) : IOException(cause)

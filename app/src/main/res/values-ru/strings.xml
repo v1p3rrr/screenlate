@@ -138,6 +138,7 @@
     <string name="anki_tags">Метки (через пробел)</string>
     <string name="anki_fields">Поля</string>
     <string name="anki_fields_hint">В шаблонах используются маркеры вроде {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Кнопка + вставляет маркер. По первому полю проверяются дубли.</string>
+    <string name="anki_fields_hint_rtl">Для языка с письмом справа налево «Подставить рекомендуемые шаблоны» и кнопка + заключают слово и предложение в &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, чтобы карточка показывала их в порядке чтения. В первом поле этого нет: проверка дублей сравнивает его разметку.</string>
     <string name="anki_insert_marker">Вставить маркер</string>
     <string name="anki_marker_furigana_zh">Пиньинь над иероглифами</string>
     <string name="anki_marker_furigana_plain_zh">Пиньинь текстом: 你[nǐ] 好[hǎo]</string>
@@ -504,6 +505,7 @@
     <string name="popup_font_script_only_hy">Только для армянского текста</string>
     <string name="popup_font_script_only_th">Только для тайского текста</string>
     <string name="popup_font_script_only_km">Только для кхмерского текста</string>
+    <string name="popup_font_script_only_ar">Только для арабского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

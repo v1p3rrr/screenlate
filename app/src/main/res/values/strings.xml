@@ -137,6 +137,7 @@
     <string name="anki_tags">Tags (space-separated)</string>
     <string name="anki_fields">Fields</string>
     <string name="anki_fields_hint">Templates use markers such as {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Use the + button to insert one. The first field is used for the duplicate check.</string>
+    <string name="anki_fields_hint_rtl">For a language written right to left, “Fill in suggested templates” and the + button put the word and the sentence in &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, so that the card shows them in reading order. The first field gets none, as the duplicate check compares its markup.</string>
     <string name="anki_insert_marker">Insert marker</string>
     <string name="anki_marker_furigana_zh">Pinyin over the characters</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin as text: 你[nǐ] 好[hǎo]</string>
@@ -501,6 +502,7 @@
     <string name="popup_font_script_only_hy">Only for Armenian text</string>
     <string name="popup_font_script_only_th">Only for Thai text</string>
     <string name="popup_font_script_only_km">Only for Khmer text</string>
+    <string name="popup_font_script_only_ar">Only for Arabic text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

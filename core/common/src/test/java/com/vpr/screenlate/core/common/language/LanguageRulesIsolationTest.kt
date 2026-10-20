@@ -250,11 +250,15 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Greek and Hindi key every headword without its marks, only Hindi replaces marks`() {
+    fun `only Greek, Hindi, Khmer and Arabic key every headword without its marks, only Arabic two spellings further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true })
-            .containsExactly(Language.GREEK, Language.HINDI, Language.KHMER)
+            .containsExactly(Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC)
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
-            .containsExactly(Language.HINDI, Language.KHMER)
+            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC)
+        assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
+        // Arabic lemmas lose their vowel marks although every headword is keyed.
+        assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
+            .containsExactly(Language.ARABIC)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
     }
 
@@ -299,8 +303,28 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian and Armenian consider more characters from the aim than Yomitan's 16 by default`() {
-        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN, Language.ARMENIAN)
+    fun `only Georgian, Armenian and Arabic consider more characters from the aim than Yomitan's 16 by default`() {
+        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC)
+    }
+
+    @Test
+    fun `only Arabic runs right to left, ends a sentence at its question mark and writes Persian kaf as its own`() {
+        assertThat(all.where { it.rightToLeft }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.endsSentence("هل؟ نعم", "هل".length) }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.endsSentence("كتب، ثم", "كتب".length) }).isEmpty()
+        assertThat(all.where { it.ocrWord("کتاب") != "کتاب" }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.ocrWord("كتاب") != "كتاب" }).isEmpty()
+        assertThat(periodEnding.where { !it.endsSentence("قال د. أحمد", "قال د".length) }).containsExactly(Language.ARABIC)
+    }
+
+    @Test
+    fun `only Arabic wraps its anki markers right to left, finds recordings with vowel marks and drops forms in other scripts`() {
+        assertThat(all.where { it.rightToLeftMarkers.isNotEmpty() }).containsExactly(Language.ARABIC)
+        assertThat(all.where { "reading" in it.rightToLeftMarkers }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.headwordMarks?.formsInScript == true }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) && it.language != Language.CROATIAN && it.language != Language.SERBIAN })
+            .isEmpty()
     }
 
     @Test

@@ -24,6 +24,9 @@ class EntryTest(unittest.TestCase):
         # Khmer as well: best reads it 37.9% wrong against fast's 38.3%.
         self.assertTrue(catalog.entry("km", "khm", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("km", "khm", "best", b"lstm")["recommended"])
+        # Arabic until Paddle's model is in the catalog: best reads it 5.9% wrong against fast's 5.8%.
+        self.assertTrue(catalog.entry("ar", "ara", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("ar", "ara", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):
