@@ -63,7 +63,8 @@ titles capitalize the word (`Cy-Bwyta.ogg`, `LL-Q9314 (gla)-DaoineÈibhinn-Uisge
 term's first letter in either case, by the case rules of the language's tag (`[bB]wyta`; Turkish `[iİ]yi`, `[ıI]lık`).
 Only the first letter: a word capitalized throughout is rare in titles. A letter of a script without case, or one
 whose capital is two letters (ß), stays as it is. Checked live: the new searches find both files above, the
-lowercase ones found neither.
+lowercase ones found neither. One builder (`AudioPages.luceneTerm`) also lets every letter carry the language's
+`recordingMarks` (Arabic harakat); the title filters, the Lingua Libre speaker and the rank ignore case.
 
 Longer tags between the language code and the word (2026-10-20, titles `<Prefix>-<3+ letters>-…` on Commons): de
 9,471, nearly all compounds (`De-Corona-Testen.ogg`, `De-NATO-Mitglied.ogg`); fr 7,256: 6,386 `Fr-Paris--word.ogg`
