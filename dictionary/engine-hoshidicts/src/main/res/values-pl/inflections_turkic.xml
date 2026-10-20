@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">liczba mnoga</string>
+    <string name="inflection_turkic_possessive_1sg_label">mój</string>
+    <string name="inflection_turkic_possessive_2sg_label">twój</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">Pana, Pani (grzecz.)</string>
+    <string name="inflection_turkic_possessive_3rd_label">jego, jej, ich</string>
+    <string name="inflection_turkic_possessive_1pl_label">nasz</string>
+    <string name="inflection_turkic_genitive_label">dopełniacz</string>
+    <string name="inflection_turkic_dative_label">celownik</string>
+    <string name="inflection_turkic_accusative_label">biernik</string>
+    <string name="inflection_turkic_locative_label">miejscownik</string>
+    <string name="inflection_turkic_ablative_label">ablatyw</string>
+    <string name="inflection_turkic_instrumental_label">narzędnik</string>
+    <string name="inflection_turkic_attributive_locative_label">miejscownik przydawkowy</string>
+    <string name="inflection_turkic_attributive_label">przymiotnik relacyjny</string>
+    <string name="inflection_turkic_equative_label">ekwatyw</string>
+    <string name="inflection_turkic_manner_label">sposób</string>
+    <string name="inflection_turkic_1sg_label">1. os. lp.</string>
+    <string name="inflection_turkic_2sg_label">2. os. lp.</string>
+    <string name="inflection_turkic_2sg_polite_label">2. os. lp. grzecz.</string>
+    <string name="inflection_turkic_3rd_label">3. osoba</string>
+    <string name="inflection_turkic_1pl_label">1. os. lm.</string>
+    <string name="inflection_turkic_2pl_label">2. os. lm.</string>
+    <string name="inflection_turkic_2pl_polite_label">2. os. lm. grzecz.</string>
+    <string name="inflection_turkic_past_label">czas przeszły</string>
+    <string name="inflection_turkic_present_label">czas teraźniejszy</string>
+    <string name="inflection_turkic_conditional_label">tryb warunkowy</string>
+    <string name="inflection_turkic_past_participle_label">imiesłów przeszły</string>
+    <string name="inflection_turkic_habitual_participle_label">imiesłów zwyczajowy</string>
+    <string name="inflection_turkic_aorist_label">aoryst</string>
+    <string name="inflection_turkic_intention_label">zamiar</string>
+    <string name="inflection_turkic_converb_label">konwerb</string>
+    <string name="inflection_turkic_purpose_label">cel</string>
+    <string name="inflection_turkic_until_label">aż do</string>
+    <string name="inflection_turkic_imperative_label">tryb rozkazujący</string>
+    <string name="inflection_turkic_please_label">prośba</string>
+    <string name="inflection_turkic_negative_label">przeczenie</string>
+    <string name="inflection_turkic_passive_label">strona bierna</string>
+    <string name="inflection_turkic_reflexive_label">strona zwrotna</string>
+    <string name="inflection_turkic_reciprocal_label">strona wzajemna</string>
+    <string name="inflection_turkic_causative_label">kauzatyw</string>
+    <string name="inflection_turkic_question_label">pytanie</string>
+    <string name="inflection_turkic_possessive_2pl_label">wasz</string>
+</resources>

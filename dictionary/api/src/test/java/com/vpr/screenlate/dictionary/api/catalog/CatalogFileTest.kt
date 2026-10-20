@@ -94,10 +94,19 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai has a frequency dictionary built from the corpus counts of PyThaiNLP`() {
+    fun `thai and kazakh have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th")
-        val thai = built.single()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk").inOrder()
+        val kazakh = built.single { it.sourceLanguage == "kk" }
+        assertThat(kazakh.recommended).isTrue()
+        assertThat(kazakh.sha256).matches("[0-9a-f]{64}")
+        assertThat(kazakh.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/kaz_newscrawl_2016_100K.tar.gz")
+        assertThat(kazakh.oldTitles).containsExactly(CorpusCountsDictionary.title("kk"))
+        assertThat(kazakh.titles.keys).containsAtLeastElementsIn(locales)
+        assertThat(kazakh.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (Leipzig Corpora Collection)")
+        assertThat(kazakh.description(Locale.ENGLISH)).startsWith("Leipzig Corpora Collection, Kazakh:")
+        val thai = built.single { it.sourceLanguage == "th" }
         assertThat(thai.category).isEqualTo(CatalogCategory.FREQUENCY)
         assertThat(thai.recommended).isTrue()
         assertThat(thai.sha256).matches("[0-9a-f]{64}")
@@ -150,6 +159,17 @@ class CatalogFileTest {
         )
         assertThat(hebrew.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-heb")
         assertThat(hebrew.first { it.id == "wordfreq-he" }.downloadUrl).endsWith("/large_he.msgpack.gz")
+    }
+
+    @Test
+    fun `kazakh offers six wiktionaries, its transcription, the leipzig counts and paddle, ticked, and tesseract`() {
+        val kazakh = catalog!!.entries.filter { it.sourceLanguage == "kk" }
+        assertThat(kazakh.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-kk-en", "wiktionary-kk-ru", "wiktionary-kk-fr", "wiktionary-kk-ko", "wiktionary-kk-pl",
+            "wiktionary-kk-zh", "wiktionary-kk-transcription", "corpus-kk", "paddle-cyrillic-kk",
+        )
+        assertThat(kazakh.filterNot { it.recommended }.map { it.id })
+            .containsExactly("tesseract-fast-kaz", "tesseract-best-kaz", "paddle-detector-v5-kk")
     }
 
     @Test

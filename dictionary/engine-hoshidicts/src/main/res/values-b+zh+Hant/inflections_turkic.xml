@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traditional Chinese translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">複數</string>
+    <string name="inflection_turkic_possessive_1sg_label">我的</string>
+    <string name="inflection_turkic_possessive_2sg_label">你的</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">您的</string>
+    <string name="inflection_turkic_possessive_3rd_label">他的、她的、他們的</string>
+    <string name="inflection_turkic_possessive_1pl_label">我們的</string>
+    <string name="inflection_turkic_genitive_label">屬格</string>
+    <string name="inflection_turkic_dative_label">與格</string>
+    <string name="inflection_turkic_accusative_label">賓格</string>
+    <string name="inflection_turkic_locative_label">方位格</string>
+    <string name="inflection_turkic_ablative_label">離格</string>
+    <string name="inflection_turkic_instrumental_label">工具格</string>
+    <string name="inflection_turkic_attributive_locative_label">定語方位格</string>
+    <string name="inflection_turkic_attributive_label">定語形</string>
+    <string name="inflection_turkic_equative_label">等同格</string>
+    <string name="inflection_turkic_manner_label">方式</string>
+    <string name="inflection_turkic_1sg_label">第一人稱單數</string>
+    <string name="inflection_turkic_2sg_label">第二人稱單數</string>
+    <string name="inflection_turkic_2sg_polite_label">第二人稱單數敬稱</string>
+    <string name="inflection_turkic_3rd_label">第三人稱</string>
+    <string name="inflection_turkic_1pl_label">第一人稱複數</string>
+    <string name="inflection_turkic_2pl_label">第二人稱複數</string>
+    <string name="inflection_turkic_2pl_polite_label">第二人稱複數敬稱</string>
+    <string name="inflection_turkic_past_label">過去時</string>
+    <string name="inflection_turkic_present_label">現在時</string>
+    <string name="inflection_turkic_conditional_label">條件式</string>
+    <string name="inflection_turkic_past_participle_label">過去分詞</string>
+    <string name="inflection_turkic_habitual_participle_label">慣常分詞</string>
+    <string name="inflection_turkic_aorist_label">不定過去時</string>
+    <string name="inflection_turkic_intention_label">意圖</string>
+    <string name="inflection_turkic_converb_label">副動詞</string>
+    <string name="inflection_turkic_purpose_label">目的</string>
+    <string name="inflection_turkic_until_label">直到</string>
+    <string name="inflection_turkic_imperative_label">命令式</string>
+    <string name="inflection_turkic_please_label">請求</string>
+    <string name="inflection_turkic_negative_label">否定</string>
+    <string name="inflection_turkic_passive_label">被動態</string>
+    <string name="inflection_turkic_reflexive_label">反身態</string>
+    <string name="inflection_turkic_reciprocal_label">相互態</string>
+    <string name="inflection_turkic_causative_label">使役態</string>
+    <string name="inflection_turkic_question_label">疑問</string>
+    <string name="inflection_turkic_possessive_2pl_label">你們的</string>
+</resources>

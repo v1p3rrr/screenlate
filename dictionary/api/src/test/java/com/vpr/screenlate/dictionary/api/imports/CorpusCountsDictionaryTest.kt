@@ -1,8 +1,12 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.KazakhSupport
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.util.Locale
+import java.util.zip.GZIPOutputStream
 import java.util.zip.ZipFile
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -64,6 +68,81 @@ class CorpusCountsDictionaryTest {
     @Test
     fun `the title names the corpus`() {
         assertThat(CorpusCountsDictionary.title("th")).isEqualTo("Thai National Corpus (th)")
+    }
+
+    /** A gzipped tar archive of [files] (path to text) in the ustar format, as the Leipzig archives are. */
+    private fun tarGz(vararg files: Pair<String, String>): ByteArray {
+        val tar = ByteArrayOutputStream()
+        for ((path, text) in files) {
+            val data = text.toByteArray()
+            val header = ByteArray(512)
+            path.toByteArray().copyInto(header)
+            "%011o".format(data.size).toByteArray().copyInto(header, 124)
+            header[156] = '0'.code.toByte()
+            "ustar".toByteArray().copyInto(header, 257)
+            tar.write(header)
+            tar.write(data)
+            tar.write(ByteArray((512 - data.size % 512) % 512))
+        }
+        tar.write(ByteArray(1024))
+        return ByteArrayOutputStream().also { out -> GZIPOutputStream(out).use { it.write(tar.toByteArray()) } }.toByteArray()
+    }
+
+    private val leipzig = listOf(
+        "1\t!\t50", "2\t\"\t40", "100\tкiтап\t30", "101\tжәне\t28", "102\tКітап\t25", "103\t2007\t20",
+        "104\tКабар/\t19", "105\tсондай-ақ\t10",
+    ).joinToString("\n")
+
+    @Test
+    fun `leipzig words are lowercased, kazakh latin i read as і, counts merged, the list found anywhere in the archive`() {
+        // A long file before the list: its data spans blocks.
+        val archive = tarGz("kaz/kaz-sources.txt" to "x".repeat(1300), "kaz/kaz-words.txt" to leipzig, "kaz/kaz-co_n.txt" to "y")
+        val words = CorpusCountsDictionary.leipzigWords(archive.inputStream(), 100, KazakhSupport, Locale.forLanguageTag("kk"))
+        assertThat(words).containsExactly("кітап", "және", "сондай-ақ").inOrder()
+        assertThat(CorpusCountsDictionary.leipzigWords(archive.inputStream(), 1, KazakhSupport, Locale.ROOT)).containsExactly("кітап")
+    }
+
+    @Test(expected = IOException::class)
+    fun `an archive without a word list is refused`() {
+        CorpusCountsDictionary.leipzigWords(tarGz("kaz/kaz-sentences.txt" to "1\tБұл.").inputStream(), 10, null, Locale.ROOT)
+    }
+
+    @Test(expected = IOException::class)
+    fun `a word list without counts is refused`() {
+        CorpusCountsDictionary.leipzigWords(tarGz("kaz/kaz-words.txt" to "1\tкітап").inputStream(), 10, null, Locale.ROOT)
+    }
+
+    @Test
+    fun `the kazakh dictionary is built from the leipzig archive and credits the collection`() {
+        val source = folder.newFile().apply { writeBytes(tarGz("kaz/kaz-words.txt" to leipzig)) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "kk", "2016", output)).isEqualTo(3)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (kk)")
+            assertThat(index["author"]!!.jsonPrimitive.content).isEqualTo("Leipzig University")
+            assertThat(index["attribution"]!!.jsonPrimitive.content).contains("kaz_newscrawl_2016_100K")
+            assertThat(index["attribution"]!!.jsonPrimitive.content).contains("CC BY")
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            assertThat(bank.map { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } })
+                .containsExactly("кітап" to 1, "Кітап" to 1, "және" to 2, "Және" to 2, "сондай-ақ" to 3, "Сондай-ақ" to 3).inOrder()
+        }
+    }
+
+    /** The Leipzig archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
+    @Test
+    fun `the kazakh archive builds the top 100 000 words`() {
+        val source = File("../../testdata/corpus/kaz_newscrawl_2016_100K.tar.gz").takeIf { it.exists() } ?: return
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "kk", "test", output)).isEqualTo(100_000)
+        ZipFile(output).use { zip ->
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            val ranks = bank.associate { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } }
+            assertThat(ranks["және"]).isLessThan(10)
+            assertThat(ranks.keys.none { word -> word.any { it == 'i' } && word.any { it in '\u0400'..'\u04FF' } }).isTrue()
+        }
     }
 
     /** PyThaiNLP's own counts, when they were copied into testdata (`scripts/frequency/corpus_catalog.py`). */

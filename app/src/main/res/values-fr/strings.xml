@@ -504,6 +504,7 @@
     <string name="popup_font_script_only_ar">Seulement pour le texte arabe</string>
     <string name="popup_font_script_only_fa">Seulement pour le texte persan</string>
     <string name="popup_font_script_only_he">Seulement pour le texte hébreu</string>
+    <string name="popup_font_script_only_kk">Seulement pour le texte kazakh</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

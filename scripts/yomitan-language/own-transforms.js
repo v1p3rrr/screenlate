@@ -257,3 +257,350 @@ export const hebrewTransforms = {
         rules: rules.map(([conditionsIn, conditionOut]) => hebrewPrefix(prefix, conditionsIn, conditionOut)),
     }])),
 };
+
+/**
+ * Kazakh and Kyrgyz endings, the app's own rules written from the grammar: a noun is stem [plural] [possessive] [case]
+ * [predicative], a verb stem [voice] [negation] and then a tense, mood, participle or converb, a participle taking noun
+ * endings after it; Kyrgyz attaches its question particle to the word (барасыңбы). Every ending comes in its
+ * vowel-harmony and consonant variants, and also with the language's own letters as their Russian twins (-нын for
+ * -ның), as OCR and keyboards write them; the import keys headwords under those twins too (`HeadwordMarks`). A stem
+ * keeps two letters and a vowel at least; after an ending that starts with a vowel, a noun stem is also tried with its
+ * last consonant as the dictionary writes it (аумағы → аумақ, кітабы → кітап).
+ *
+ * Every Yomitan rule applies to the word as written as well, so the steps that only continue another (negation, voice,
+ * the present tense mark before its person ending, a verb stem's dictionary form) read a text that ends in a mark no
+ * real text holds, and the engine asks for no text with one (glue.js). A verb stem becomes its dictionary form (оқы- →
+ * оқу, жаша- → жашоо) in a step the popup does not show (`hidden`). Wiktionary's entries leave the rules field empty
+ * and give the part of speech among their definition tags, so a nominal result matches any entry and a verb result the
+ * entries tagged as verbs (glue.js).
+ */
+
+/** Ends a text whose rest is a verb stem; see above. */
+const TURKIC_VERB = /* @__PURE__ */ String.fromCharCode(0xe000);
+
+/** Ends a text whose rest ends in the present tense mark, its person ending taken off. */
+const TURKIC_PRESENT = /* @__PURE__ */ String.fromCharCode(0xe001);
+
+/** @typedef {'n' | 'v' | 'q' | 'cs' | 'px' | 'pl' | 'pt' | 'cv' | 'im' | 'pc' | 'pr' | 'vt' | 'vn' | 'vv'} TurkicCondition */
+
+/**
+ * What each kind of ending applies after and leaves, and the mark the text it reads (`reads`) or leaves (`leaves`)
+ * ends in. A word as written has no conditions, so every kind applies to it except the ones that read a mark.
+ * @type {Record<string, {conditionsIn: TurkicCondition[], conditionsOut: TurkicCondition[], reads?: string, leaves?: string}>}
+ */
+const turkicSlots = {
+    question: {conditionsIn: [], conditionsOut: ['q']},
+    please: {conditionsIn: [], conditionsOut: ['im']},
+    pleaseStem: {conditionsIn: [], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    predicative: {conditionsIn: ['q'], conditionsOut: ['cs', 'px', 'pl', 'pt', 'cv', 'n']},
+    presentPerson: {conditionsIn: ['q'], conditionsOut: ['pr'], leaves: TURKIC_PRESENT},
+    pastPerson: {conditionsIn: ['q'], conditionsOut: ['pc']},
+    case: {conditionsIn: ['q', 'cs'], conditionsOut: ['px', 'pl', 'pt', 'n']},
+    possessive: {conditionsIn: ['q', 'cs', 'px'], conditionsOut: ['pl', 'pt', 'n']},
+    plural: {conditionsIn: ['q', 'cs', 'px', 'pl'], conditionsOut: ['pt', 'n']},
+    verbalNoun: {conditionsIn: ['q', 'cs', 'px', 'pl', 'pt'], conditionsOut: ['v']},
+    participle: {conditionsIn: ['q', 'cs', 'px', 'pl', 'pt'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    past: {conditionsIn: ['q', 'pc'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    conditional: {conditionsIn: ['q', 'pc'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    present: {conditionsIn: ['pr'], conditionsOut: ['vt'], reads: TURKIC_PRESENT, leaves: TURKIC_VERB},
+    converb: {conditionsIn: ['q', 'cv'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    converbAlone: {conditionsIn: ['q'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    imperative: {conditionsIn: ['q', 'im'], conditionsOut: ['vt'], leaves: TURKIC_VERB},
+    negation: {conditionsIn: ['vt'], conditionsOut: ['vn'], reads: TURKIC_VERB, leaves: TURKIC_VERB},
+    voice: {conditionsIn: ['vt', 'vn', 'vv'], conditionsOut: ['vv'], reads: TURKIC_VERB, leaves: TURKIC_VERB},
+};
+
+/**
+ * One language's letters and endings.
+ * @typedef {object} TurkicGrammar
+ * @property {string} language
+ * @property {string} vowels the vowels, the Russian twins of the language's own included
+ * @property {string} linkingVowels vowels an ending starts with only after a consonant (-ым after кітап, -м after бала)
+ * @property {string} consonants the letters a stem ends in before an ending written with /C (кітап-ты, су-ды, not
+ *   оқы-ды, which is a past tense)
+ * @property {string} presentVowels what the present tense mark ends in before its person ending (бара-ды, сөйлей-ді)
+ * @property {Record<string, string>} twins the language's own letters as the Russian ones OCR and keyboards give
+ * @property {Record<string, string>} hardened a noun stem's last consonant before a vowel, as the dictionary writes it
+ * @property {Record<string, string[]>} contracted endings written together with a stem's last vowel, with the vowels
+ *   the stem may have ended in (Kazakh оқиды from оқы- and the present mark -й)
+ * @property {(stem: string) => string[]} dictionaryForms a verb stem's dictionary forms
+ * @property {(TurkicTransform | {persons: string[][]})[]} transforms rules, and rows of person endings (`turkicPersons`)
+ *   in their place; plain data, so that bundles of other languages drop the tables
+ */
+
+/**
+ * @typedef {object} TurkicTransform
+ * @property {string} id
+ * @property {string} name
+ * @property {string} example
+ * @property {Record<string, string>} endings by kind (`turkicSlots`), each a space-separated list; an ending written
+ *   with a slash follows only the letters after it (на/ыі: баласына, not бала-на), with /C only a consonant
+ * @property {string[]} [afterNegation] participle endings that follow only the negation (Kazakh бар-ма-с)
+ */
+
+/**
+ * The transforms of [grammar]. Kazakh and Kyrgyz name their rules alike, so their labels are one set of strings
+ * (`sharedLabels`, generate-inflections.mjs); a rule's description lists its endings with an example, which needs no
+ * translation.
+ * @param {TurkicGrammar} grammar
+ * @returns {import('language-transformer').LanguageTransformDescriptor<TurkicCondition> & {sharedLabels: string}}
+ */
+function turkicTransforms(grammar) {
+    const vowels = new Set(grammar.vowels);
+    const linking = new Set([...grammar.linkingVowels].flatMap((c) => [c, grammar.twins[c] ?? c]));
+    const vowelClass = `[${grammar.vowels}]`;
+    const consonantClass = `[^ ${grammar.vowels}${TURKIC_VERB}${TURKIC_PRESENT}]`;
+    /** Whether the last word of [text] has two characters and a vowel at least. */
+    const isStem = (text) => {
+        const word = [...text.slice(text.lastIndexOf(' ') + 1)];
+        return word.length >= 2 && word.some((c) => vowels.has(c));
+    };
+    /** [ending] and, when it has letters of the language's own, the spelling with their Russian twins. */
+    const spellings = (ending) => [...new Set([ending, [...ending].map((c) => grammar.twins[c] ?? c).join('')])];
+    /**
+     * @param {string} ending
+     * @param {string} slot
+     * @param {string} before what the stem ends in, as a regular expression; '' for anything
+     * @param {(stem: string) => string} restore the stem as the rest of the word writes it
+     * @returns {import('language-transformer').SuffixRule<TurkicCondition>}
+     */
+    const rule = (ending, slot, before, restore = (stem) => stem) => {
+        const {conditionsIn, conditionsOut, reads = '', leaves = ''} = turkicSlots[slot];
+        const length = ending.length + reads.length;
+        return {
+            type: 'suffix',
+            isInflected: new RegExp(before + ending + reads + '$'),
+            deinflected: '',
+            // A stem too short is no text, which the engine leaves out.
+            deinflect: (text) => {
+                const stem = restore(text.slice(0, -length));
+                return isStem(stem) ? stem + leaves : '';
+            },
+            conditionsIn,
+            conditionsOut,
+        };
+    };
+    /**
+     * The rules of one ending in each spelling: a single consonant follows a vowel, a linking vowel a consonant, the
+     * present tense mark's person ending the mark, and a past or conditional person ending the vowel of its tense.
+     */
+    const rulesOf = (item, slot) => spellings(item.split('/')[0]).flatMap((spelling) => {
+        const [ending, after] = item.split('/');
+        const first = spelling[0];
+        const contracted = grammar.contracted[ending];
+        const letters = after === 'C' ? grammar.consonants : after;
+        if (letters) return [rule(spelling, slot, `[${[...new Set(spellings(letters).join(''))].join('')}]`)];
+        if (contracted) return contracted.map((vowel) => rule(spelling, slot, consonantClass, (stem) => stem + vowel));
+        if (slot === 'presentPerson') return [rule(spelling, slot, `[${grammar.presentVowels}]`)];
+        if (slot === 'pastPerson') return [rule(spelling, slot, vowelClass)];
+        if ([...spelling].length === 1 && !vowels.has(first)) return [rule(spelling, slot, vowelClass)];
+        if (!vowels.has(first)) return [rule(spelling, slot, '')];
+        const rules = [rule(spelling, slot, linking.has(first) ? consonantClass : '')];
+        // Verb stems keep the consonant their dictionary form has (табады, табу).
+        if (!turkicSlots[slot].leaves) {
+            for (const [from, to] of Object.entries(grammar.hardened)) {
+                rules.push(rule(spelling, slot, from, (stem) => stem.slice(0, -1) + to));
+            }
+        }
+        return rules;
+    });
+    /** @type {Record<string, {name: string, description?: string, hidden?: boolean, rules: import('language-transformer').Rule<TurkicCondition>[]}>} */
+    const transforms = {};
+    const list = grammar.transforms.flatMap((item) => ('persons' in item ? turkicPersons(item.persons) : [item]));
+    for (const {id, name, example, endings, afterNegation = []} of list) {
+        const rules = Object.entries(endings).flatMap(([slot, list]) => list.split(' ').flatMap((ending) => rulesOf(ending, slot)));
+        for (const ending of afterNegation) {
+            for (const spelling of spellings(ending)) rules.push(rule(spelling, 'participle', '[мбп][аеоө]'));
+        }
+        const listed = [...new Set([...Object.values(endings).flatMap((list) => list.split(' ')), ...afterNegation]
+            .map((item) => item.split('/')[0]))];
+        transforms[id] = {name, description: `${listed.map((e) => '-' + e).join(' ')} (${example})`, rules};
+    }
+    // As many rules as a stem has dictionary forms at most; each gives one, or no text.
+    transforms['dictionary form'] = {
+        name: 'dictionary form',
+        hidden: true,
+        rules: [0, 1, 2, 3].map((index) => ({
+            type: 'suffix',
+            isInflected: new RegExp(TURKIC_VERB + '$'),
+            deinflected: '',
+            deinflect: (text) => grammar.dictionaryForms(text.slice(0, -1))[index] ?? '',
+            conditionsIn: ['vt', 'vn', 'vv'],
+            conditionsOut: ['v'],
+        })),
+    };
+    return {
+        language: grammar.language,
+        sharedLabels: 'turkic',
+        conditions: {
+            n: {name: 'Nominal', isDictionaryForm: true},
+            v: {name: 'Verb', isDictionaryForm: true},
+            q: {name: 'Before the question particle', isDictionaryForm: false},
+            cs: {name: 'Before a case ending', isDictionaryForm: false},
+            px: {name: 'Before a possessive ending', isDictionaryForm: false},
+            pl: {name: 'Before a plural ending', isDictionaryForm: false},
+            pt: {name: 'Before a participle ending', isDictionaryForm: false},
+            cv: {name: 'Before a converb ending', isDictionaryForm: false},
+            im: {name: 'Before an imperative ending', isDictionaryForm: false},
+            pc: {name: 'Before a past or conditional ending', isDictionaryForm: false},
+            pr: {name: 'Before the present tense mark', isDictionaryForm: false},
+            vt: {name: 'Verb stem', isDictionaryForm: false},
+            vn: {name: 'Verb stem before the negation', isDictionaryForm: false},
+            vv: {name: 'Verb stem before a voice ending', isDictionaryForm: false},
+        },
+        transforms,
+    };
+}
+
+/**
+ * The person endings of nominal predicates, of the present tense and of the past and conditional, as transforms: rows
+ * of id, name, example and the three lists.
+ * @param {string[][]} persons
+ * @returns {TurkicTransform[]}
+ */
+function turkicPersons(persons) {
+    return persons.map(([id, name, example, predicative, present, past]) => ({
+        id,
+        name,
+        example,
+        endings: Object.fromEntries([['predicative', predicative], ['presentPerson', present], ['pastPerson', past]]
+            .filter(([, list]) => list !== '')),
+    }));
+}
+
+/** Kazakh: two-way vowel harmony (-лар, -лер), the letters ә ғ қ ң ө ұ ү һ і. */
+export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
+    language: 'kk',
+    vowels: 'аәеиоөұүыіэюяуё',
+    linkingVowels: 'ыі',
+    // у after a vowel is a consonant (су, ау).
+    consonants: 'бвгғджзйкқлмнңпрстуфхһцчшщъь',
+    presentVowels: 'аейи',
+    twins: {'қ': 'к', 'ғ': 'г', 'ң': 'н', 'ұ': 'у', 'ү': 'у', 'ө': 'о', 'ә': 'а', 'і': 'и', 'һ': 'х'},
+    hardened: {'ғ': 'қ', 'г': 'к', 'б': 'п'},
+    contracted: {'и': ['ы', 'і'], 'итын': ['ы'], 'итін': ['і']},
+    // ы and і give way to у (оқы- → оқу), й to ю (қой- → қою), и takes ю (ки- → кию). A last п қ к is voiced
+    // before у (тап- → табу).
+    dictionaryForms: (stem) => {
+        const last = stem.slice(-1);
+        const rest = stem.slice(0, -1);
+        const voiced = {'п': 'б', 'қ': 'ғ', 'к': 'г'}[last];
+        if ('ыі'.includes(last)) return [rest + 'у'];
+        if (last === 'й') return [rest + 'ю'];
+        if (last === 'и') return [stem + 'ю'];
+        return voiced ? [stem + 'у', rest + voiced + 'у'] : [stem + 'у'];
+    },
+    transforms: [
+        {id: 'plural', name: 'plural', example: 'кітаптар', endings: {plural: 'лар лер дар дер тар тер'}},
+        {id: 'possessive 1sg', name: 'my', example: 'кітабым', endings: {possessive: 'ым ім м'}},
+        {id: 'possessive 2sg', name: 'your', example: 'кітабың', endings: {possessive: 'ың ің ң'}},
+        {id: 'possessive 2sg polite', name: 'your (polite)', example: 'кітабыңыз', endings: {possessive: 'ыңыз іңіз ңыз ңіз'}},
+        {id: 'possessive 3rd', name: 'his, her, their', example: 'кітабы, баласы', endings: {possessive: 'ы і сы сі'}},
+        {id: 'possessive 1pl', name: 'our', example: 'кітабымыз', endings: {possessive: 'ымыз іміз мыз міз'}},
+        {id: 'genitive', name: 'genitive', example: 'кітаптың', endings: {case: 'ның нің дың/C дің/C тың/C тің/C'}},
+        {id: 'dative', name: 'dative', example: 'кітапқа, баласына', endings: {case: 'ға ге қа ке на/ыі не/ыі а/мң е/мң'}},
+        {id: 'accusative', name: 'accusative', example: 'кітапты, баласын', endings: {case: 'ны ні ды/C ді/C ты/C ті/C н/ыі'}},
+        {id: 'locative', name: 'locative', example: 'кітапта, баласында', endings: {case: 'да де та те нда/ыі нде/ыі'}},
+        {id: 'ablative', name: 'ablative', example: 'кітаптан, баласынан', endings: {case: 'дан ден тан тен нан нен'}},
+        {id: 'instrumental', name: 'instrumental', example: 'кітаппен', endings: {case: 'мен бен пен менен бенен пенен'}},
+        {id: 'attributive locative', name: 'attributive locative', example: 'үйдегі', endings: {case: 'дағы дегі тағы тегі ндағы/ыі ндегі/ыі'}},
+        {id: 'attributive', name: 'attributive', example: 'жазғы', endings: {case: 'ғы гі қы кі'}},
+        {id: 'equative', name: 'equative', example: 'баладай', endings: {case: 'дай дей тай тей'}},
+        {id: 'manner', name: 'manner', example: 'қазақша', endings: {case: 'ша ше'}},
+        {persons: [
+            ['1sg', '1st sg.', 'барамын, бардым', 'мын мін бын бін пын пін', 'мын мін', 'м'],
+            ['2sg', '2nd sg.', 'барасың, бардың', 'сың сің', 'сың сің', 'ң'],
+            ['2sg polite', '2nd sg. polite', 'барасыз, бардыңыз', 'сыз сіз', 'сыз сіз', 'ңыз ңіз'],
+            ['3rd', '3rd person', 'барады', '', 'ды ді', ''],
+            ['1pl', '1st pl.', 'барамыз, бардық', 'мыз міз быз біз пыз піз', 'мыз міз', 'қ к'],
+            ['2pl', '2nd pl.', 'барасыңдар, бардыңдар', 'сыңдар сіңдер', 'сыңдар сіңдер', 'ңдар ңдер'],
+            ['2pl polite', '2nd pl. polite', 'барасыздар, бардыңыздар', 'сыздар сіздер', 'сыздар сіздер', 'ңыздар ңіздер'],
+        ]},
+        {id: 'past', name: 'past', example: 'барды', endings: {past: 'ды ді ты ті'}},
+        {id: 'present', name: 'present', example: 'барады, оқиды', endings: {present: 'а е й и'}},
+        {id: 'conditional', name: 'conditional', example: 'барса', endings: {conditional: 'са се'}},
+        {id: 'past participle', name: 'past participle', example: 'барған', endings: {participle: 'ған ген қан кен'}},
+        {id: 'habitual participle', name: 'habitual participle', example: 'баратын, оқитын', endings: {participle: 'атын етін йтын йтін итын итін'}},
+        {id: 'aorist', name: 'aorist', example: 'барар, бармас', endings: {participle: 'ар ер р'}, afterNegation: ['с']},
+        {id: 'intention', name: 'intention', example: 'бармақ', endings: {participle: 'мақ мек бақ бек пақ пек'}},
+        {id: 'converb', name: 'converb', example: 'барып, бара', endings: {converb: 'ып іп п', converbAlone: 'а е й'}},
+        {id: 'purpose', name: 'purpose', example: 'барғалы', endings: {converb: 'ғалы гелі қалы келі'}},
+        {id: 'until', name: 'until', example: 'барғанша', endings: {converb: 'ғанша генше қанша кенше'}},
+        {id: 'imperative', name: 'imperative', example: 'барыңыз, барсын', endings: {imperative: 'ыңыз іңіз ңыз ңіз ыңдар іңдер ңдар ңдер ыңыздар іңіздер ңыздар ңіздер сын сін айын ейін йын йін айық ейік йық йік'}},
+        {id: 'please', name: 'please', example: 'айтшы', endings: {please: 'шы ші', pleaseStem: 'шы ші'}},
+        {id: 'negative', name: 'negative', example: 'бармады', endings: {negation: 'ма ме ба бе па пе'}},
+        {id: 'passive', name: 'passive', example: 'жазылды', endings: {voice: 'ыл іл л'}},
+        {id: 'reflexive', name: 'reflexive', example: 'киінді', endings: {voice: 'ын ін н'}},
+        {id: 'reciprocal', name: 'reciprocal', example: 'көрісті', endings: {voice: 'ыс іс с'}},
+        {id: 'causative', name: 'causative', example: 'жаздырды', endings: {voice: 'дыр дір тыр тір ғыз гіз қыз кіз т'}},
+    ],
+});
+
+/** Kyrgyz: four-way vowel harmony (-лар, -лер, -лор, -лөр), the letters ң ө ү, the question particle joined. */
+export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
+    language: 'ky',
+    vowels: 'аеиоөуүыэюяё',
+    linkingVowels: 'ыиуү',
+    consonants: 'бвгджзйклмнңпрстфхцчшщъь',
+    presentVowels: 'аеоөй',
+    twins: {'ң': 'н', 'ө': 'о', 'ү': 'у'},
+    hardened: {'г': 'к', 'б': 'п'},
+    contracted: {},
+    // A vowel lengthens into the ending (жаша- → жашоо, иште- → иштөө, оку- → окуу); after a consonant -уу or -үү by
+    // the last vowel, a last п к voiced (тап- → табуу); й takes -юу or -уу (кой- → коюу, сүй- → сүйүү). With ө and ү
+    // written о and у the forms come out as the import keys them.
+    dictionaryForms: (stem) => {
+        const last = stem.slice(-1);
+        const rest = stem.slice(0, -1);
+        const vowel = [...stem].reverse().find((c) => 'аеиоөуүыэюяё'.includes(c)) ?? 'а';
+        const ending = 'аыоуяё'.includes(vowel) ? 'уу' : 'үү';
+        const lengthened = {'а': rest + 'оо', 'е': rest + 'өө', 'о': stem + 'о', 'ө': stem + 'ө', 'у': stem + 'у', 'ү': stem + 'ү', 'ы': rest + 'уу', 'и': rest + 'үү'}[last];
+        if (lengthened) return [lengthened];
+        if (last === 'й') return [rest + (ending === 'уу' ? 'юу' : 'юү'), stem + ending];
+        const voiced = {'п': 'б', 'к': 'г'}[last];
+        return voiced ? [stem + ending, rest + voiced + ending] : [stem + ending];
+    },
+    transforms: [
+        {id: 'question', name: 'question', example: 'барасыңбы', endings: {question: 'бы би бу бү пы пи пу пү'}},
+        {id: 'plural', name: 'plural', example: 'китептер', endings: {plural: 'лар лер лор лөр дар дер дор дөр тар тер тор төр'}},
+        {id: 'possessive 1sg', name: 'my', example: 'китебим', endings: {possessive: 'ым им ум үм м'}},
+        {id: 'possessive 2sg', name: 'your', example: 'китебиң', endings: {possessive: 'ың иң уң үң ң'}},
+        {id: 'possessive 2sg polite', name: 'your (polite)', example: 'китебиңиз', endings: {possessive: 'ыңыз иңиз уңуз үңүз ңыз ңиз ңуз ңүз'}},
+        {id: 'possessive 3rd', name: 'his, her, their', example: 'китеби, баласы', endings: {possessive: 'ы и у ү сы си су сү'}},
+        {id: 'possessive 1pl', name: 'our', example: 'китебибиз', endings: {possessive: 'ыбыз ибиз убуз үбүз быз биз буз бүз'}},
+        {id: 'possessive 2pl', name: 'your (pl.)', example: 'китебиңер', endings: {possessive: 'ыңар иңер уңар үңөр ңар ңер ңор ңөр'}},
+        {id: 'genitive', name: 'genitive', example: 'китептин', endings: {case: 'нын нин нун нүн дын/C дин/C дун/C дүн/C тын/C тин/C тун/C түн/C'}},
+        {id: 'dative', name: 'dative', example: 'китепке, баласына', endings: {case: 'га ге го гө ка ке ко кө на/ыиуү не/ыиуү но/ыиуү нө/ыиуү а/мң е/мң о/мң ө/мң'}},
+        {id: 'accusative', name: 'accusative', example: 'китепти, баласын', endings: {case: 'ны ни ну нү ды/C ди/C ду/C дү/C ты/C ти/C ту/C тү/C н/ыиуү'}},
+        {id: 'locative', name: 'locative', example: 'китепте, баласында', endings: {case: 'да де до дө та те то тө нда/ыиуү нде/ыиуү ндо/ыиуү ндө/ыиуү'}},
+        {id: 'ablative', name: 'ablative', example: 'китептен, баласынан', endings: {case: 'дан ден дон дөн тан тен тон төн нан/ыиуү нен/ыиуү нон/ыиуү нөн/ыиуү'}},
+        {id: 'attributive locative', name: 'attributive locative', example: 'үйдөгү', endings: {case: 'дагы деги догу дөгү тагы теги тогу төгү ндагы/ыиуү ндеги/ыиуү ндогу/ыиуү ндөгү/ыиуү'}},
+        {id: 'equative', name: 'equative', example: 'баладай', endings: {case: 'дай дей дой дөй тай тей той төй'}},
+        {id: 'manner', name: 'manner', example: 'кыргызча', endings: {case: 'ча че чо чө'}},
+        {persons: [
+            ['1sg', '1st sg.', 'барамын, бардым', 'мын мин мун мүн', 'мын мин мун мүн м', 'м'],
+            ['2sg', '2nd sg.', 'барасың, бардың', 'сың сиң суң сүң', 'сың сиң суң сүң', 'ң'],
+            ['2sg polite', '2nd sg. polite', 'барасыз, бардыңыз', 'сыз сиз суз сүз', 'сыз сиз суз сүз', 'ңыз ңиз ңуз ңүз'],
+            ['3rd', '3rd person', 'барат', '', 'т', ''],
+            ['1pl', '1st pl.', 'барабыз, бардык', 'быз биз буз бүз пыз пиз пуз пүз', 'быз биз буз бүз', 'к'],
+            ['2pl', '2nd pl.', 'барасыңар, бардыңар', 'сыңар сиңер суңар сүңөр', 'сыңар сиңер суңар сүңөр', 'ңар ңер ңор ңөр'],
+            ['2pl polite', '2nd pl. polite', 'барасыздар, бардыңыздар', 'сыздар сиздер суздар сүздөр', 'сыздар сиздер суздар сүздөр', 'ңыздар ңиздер ңуздар ңүздөр'],
+        ]},
+        {id: 'past', name: 'past', example: 'барды', endings: {past: 'ды ди ду дү ты ти ту тү'}},
+        {id: 'present', name: 'present', example: 'барат, иштейт', endings: {present: 'а е о ө й'}},
+        {id: 'conditional', name: 'conditional', example: 'барса', endings: {conditional: 'са се со сө'}},
+        {id: 'past participle', name: 'past participle', example: 'барган', endings: {participle: 'ган ген гон гөн кан кен кон көн'}},
+        {id: 'habitual participle', name: 'habitual participle', example: 'баруучу', endings: {verbalNoun: 'чу чү'}},
+        {id: 'aorist', name: 'aorist', example: 'барар, барбас', endings: {participle: 'ар ер ор өр р'}, afterNegation: ['с']},
+        {id: 'intention', name: 'intention', example: 'бармак', endings: {participle: 'мак мек мок мөк'}},
+        {id: 'converb', name: 'converb', example: 'барып, бара', endings: {converb: 'ып ип уп үп п', converbAlone: 'а е о ө й'}},
+        {id: 'purpose', name: 'purpose', example: 'баргалы', endings: {converb: 'галы гели голу гөлү калы кели колу көлү'}},
+        {id: 'until', name: 'until', example: 'баргыча', endings: {converb: 'гыча гиче гуча гүчө кыча киче куча күчө'}},
+        {id: 'imperative', name: 'imperative', example: 'барыңыз, барсын', endings: {imperative: 'гыла гиле гула гүлө кыла киле кула күлө ыңыз иңиз уңуз үңүз ңыз ңиз ңуз ңүз сын син сун сүн айын ейин ойун өйүн алы ели олу өлү ыңар иңер уңар үңөр ңар ңер ңор ңөр'}},
+        {id: 'negative', name: 'negative', example: 'барбады', endings: {negation: 'ба бе бо бө па пе по пө ма ме мо мө'}},
+        {id: 'passive', name: 'passive', example: 'жазылды', endings: {voice: 'ыл ил ул үл л'}},
+        {id: 'reflexive', name: 'reflexive', example: 'жуунду', endings: {voice: 'ын ин ун үн н'}},
+        {id: 'reciprocal', name: 'reciprocal', example: 'көрүштү', endings: {voice: 'ыш иш уш үш ш'}},
+        {id: 'causative', name: 'causative', example: 'жаздырды', endings: {voice: 'дыр дир дур дүр тыр тир тур түр гыз гиз гуз гүз кыз киз куз күз т'}},
+    ],
+});

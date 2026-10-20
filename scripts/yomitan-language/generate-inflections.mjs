@@ -3,7 +3,10 @@
 // Pass every such language the app has (the Kotlin map is written for exactly these). Writes
 // res/values/inflections_<iso>.xml (rule names and English descriptions, as Yomitan has them, or as the app's own rules
 // in own-transforms.js name them) and YomitanInflections.kt in dictionary/engine-hoshidicts, then lists the keys that
-// translations in res/values-*/inflections_<iso>.xml lack or no longer need. Translations are edited by hand.
+// translations in res/values-*/inflections_<iso>.xml lack or no longer need. Own rules of languages that share their
+// names (`sharedLabels` of a descriptor: Kazakh and Kyrgyz, 'turkic') take their labels from one file,
+// inflections_<shared>.xml, and keep their descriptions, which list endings, untranslated. Rules marked `hidden` get no
+// strings. Translations are edited by hand.
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -45,9 +48,11 @@ const labels = {
  * The transforms of [iso], imported from the language's own file: the descriptor list imports every language, and some
  * need libraries a checkout does not have until Yomitan is built. They are taken by the folder, as the bundles take
  * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`). A language
- * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix.
+ * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix, and
+ * [shared] names the label file of languages whose own rules share their names.
  * @param {string} iso
- * @returns {Promise<{transforms: [string, {name: string, description?: string}][], own: boolean}>}
+ * @returns {Promise<{transforms: [string, {name: string, description?: string, hidden?: boolean}][], own: boolean,
+ *     shared?: string}>}
  */
 async function transformsOf(iso) {
     const dir = path.join(yomitanRoot, 'ext/js/language', iso);
@@ -62,7 +67,7 @@ async function transformsOf(iso) {
     }
     const own = await import(pathToFileURL(path.join(here, 'own-transforms.js')).href);
     const descriptor = Object.values(own).find((d) => d?.language === iso && d.transforms);
-    if (descriptor) return {transforms: Object.entries(descriptor.transforms), own: true};
+    if (descriptor) return {transforms: Object.entries(descriptor.transforms), own: true, shared: descriptor.sharedLabels};
     throw new Error(`${iso}: Yomitan has no transforms, nor does own-transforms.js`);
 }
 
@@ -107,9 +112,32 @@ function kotlinString(text) {
     return '"' + text.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$') + '"';
 }
 
+/**
+ * Lists the keys that the translations of values/[file] lack or no longer need.
+ * @param {string} file
+ * @param {Set<string>} expected
+ */
+function checkTranslations(file, expected) {
+    for (const dir of fs.readdirSync(res).filter((d) => d.startsWith('values-')).sort()) {
+        const translated = path.join(res, dir, file);
+        if (!fs.existsSync(translated)) {
+            // Rules named only by affixes (Greek ξανα-) have nothing to translate.
+            if (expected.size > 0) console.log(`${dir}: ${file} missing`);
+            continue;
+        }
+        const present = new Set([...fs.readFileSync(translated, 'utf8').matchAll(/<string name="([^"]+)"/g)].map((m) => m[1]));
+        const missing = [...expected].filter((k) => !present.has(k));
+        const stale = [...present].filter((k) => !expected.has(k));
+        if (missing.length || stale.length) console.log(`${dir}: missing ${missing}, no longer needed ${stale}`);
+    }
+}
+
+/** Shared labels by file name, each by key, with the rule id and name of the first language that gave it. */
+const sharedLabels = new Map();
+
 const maps = [];
 for (const iso of languages) {
-    const {transforms, own: ownRules} = await transformsOf(iso);
+    const {transforms, own: ownRules, shared} = await transformsOf(iso);
     const keys = new Map();
     const lines = [
         '<?xml version="1.0" encoding="utf-8"?>',
@@ -121,7 +149,23 @@ for (const iso of languages) {
     ];
     const expected = new Set();
     const rows = [];
-    for (const [id, {name, description}] of transforms) {
+    const labelsOf = shared && (sharedLabels.get(shared) ?? sharedLabels.set(shared, new Map()).get(shared));
+    for (const [id, {name, description, hidden}] of transforms) {
+        if (hidden) continue;
+        if (labelsOf) {
+            // Labels from the shared file, the same for each language with the rule; descriptions list endings.
+            const slug = `inflection_${iso}_${slugOf(id)}`;
+            const label = `inflection_${shared}_${slugOf(id)}_label`;
+            const known = labelsOf.get(label);
+            if (known && (known.id !== id || known.name !== name)) {
+                throw new Error(`${iso}: ${id} is named "${name}", ${known.iso} names ${known.id} "${known.name}"`);
+            }
+            if (!known) labelsOf.set(label, {iso, id, name});
+            lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
+            lines.push(`    <string name="${slug}" translatable="false">${xml(description)}</string>`);
+            rows.push(`            ${kotlinString(id)} to Strings(R.string.${label}, R.string.${slug}),`);
+            continue;
+        }
         let slug = `inflection_${iso}_` + (slugOf(id) || slugOf(romanized(id)) || slugOf(description ?? '') || 'rule');
         while ([...keys.values()].includes(slug)) slug += '_';
         keys.set(id, slug);
@@ -144,19 +188,22 @@ for (const iso of languages) {
     fs.writeFileSync(path.join(res, `values/inflections_${iso}.xml`), lines.join('\n') + '\n');
     maps.push(`        ${kotlinString(iso)} to mapOf(\n${rows.join('\n')}\n        ),`);
     console.log(`${iso}: ${transforms.length} rules`);
+    checkTranslations(`inflections_${iso}.xml`, expected);
+}
 
-    for (const dir of fs.readdirSync(res).filter((d) => d.startsWith('values-')).sort()) {
-        const file = path.join(res, dir, `inflections_${iso}.xml`);
-        if (!fs.existsSync(file)) {
-            // Rules named only by affixes (Greek ξανα-) have nothing to translate.
-            if (expected.size > 0) console.log(`${dir}: inflections_${iso}.xml missing`);
-            continue;
-        }
-        const present = new Set([...fs.readFileSync(file, 'utf8').matchAll(/<string name="([^"]+)"/g)].map((m) => m[1]));
-        const missing = [...expected].filter((k) => !present.has(k));
-        const stale = [...present].filter((k) => !expected.has(k));
-        if (missing.length || stale.length) console.log(`${dir}: missing ${missing}, no longer needed ${stale}`);
-    }
+for (const [shared, labelsOf] of sharedLabels) {
+    const isos = [...new Set([...labelsOf.values()].map((l) => l.iso))];
+    const lines = [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        `<!-- Names of the app's own rules shared by "${isos.join('", "')}" (scripts/yomitan-language/own-transforms.js).`,
+        '     Generated by scripts/yomitan-language/generate-inflections.mjs; do not edit. -->',
+        '<resources>',
+        ...[...labelsOf].map(([key, {name}]) => `    <string name="${key}">${xml(name)}</string>`),
+        '</resources>',
+    ];
+    fs.writeFileSync(path.join(res, `values/inflections_${shared}.xml`), lines.join('\n') + '\n');
+    console.log(`${shared}: ${labelsOf.size} labels`);
+    checkTranslations(`inflections_${shared}.xml`, new Set(labelsOf.keys()));
 }
 
 fs.writeFileSync(kotlin, `package com.vpr.screenlate.dictionary.engine.hoshidicts

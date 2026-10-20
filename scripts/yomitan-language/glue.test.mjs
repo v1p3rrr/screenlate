@@ -6,7 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
-import {hebrewTransforms, persianTransforms} from './own-transforms.js';
+import {hebrewTransforms, kazakhTransforms, kyrgyzTransforms, persianTransforms} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -562,4 +562,143 @@ test('hebrew rules and processors stay out of other languages', () => {
     assert.ok(!queried('he', 'والكتاب').has('كتاب'));
     assert.ok(candidates('he', 'والكتاب').every((c) => !c.u));
     assert.ok(!queried('he', 'کتابها').has('کتاب'));
+});
+
+/**
+ * The candidates of [language] for [text] that deinflect to [lemma]; there is one at least.
+ * @param {string} language
+ * @param {string} text
+ * @param {string} lemma
+ */
+function candidatesTo(language, text, lemma) {
+    const found = candidates(language, text).filter((c) => c.d === lemma);
+    assert.ok(found.length > 0, `${text} → ${lemma}`);
+    return found;
+}
+
+/**
+ * Whether one of [found] is a verb form, tagged so, through [chain].
+ * @param {{u: boolean, g?: string[], r: string[][]}[]} found
+ * @param {string[]} chain
+ */
+function isVerbThrough(found, chain) {
+    return found.every((c) => c.u && JSON.stringify(c.g) === JSON.stringify(['v'])) &&
+        found.some((c) => c.r.some((r) => JSON.stringify(r) === JSON.stringify(chain)));
+}
+
+test('kazakh noun endings come off in the order of the grammar and match entries without a part of speech', () => {
+    const [book] = candidatesTo('kk', 'кітаптарымызда', 'кітап');
+    assert.ok(book.u);
+    assert.equal(book.g, undefined);
+    assert.deepEqual([...book.r[0]], ['plural', 'possessive 1pl', 'locative']);
+    // A stem's last consonant voiced before a vowel: кітабы, аумағы.
+    assert.deepEqual([...candidatesTo('kk', 'кітабы', 'кітап')[0].r[0]], ['possessive 3rd']);
+    assert.ok(queried('kk', 'аумағы').has('аумақ'));
+    assert.ok(queried('kk', 'баласына').has('бала'));
+    assert.ok(queried('kk', 'Казакстанның').has('Казакстан'));
+    assert.deepEqual([...candidatesTo('kk', 'мұғаліммін', 'мұғалім')[0].r[0]], ['1sg']);
+    // -на follows a possessive's vowel only: кітап-на is no dative. балана is балаңа typed with н.
+    assert.ok(!queried('kk', 'кітапна').has('кітап'));
+    assert.deepEqual([...candidatesTo('kk', 'балана', 'бала')[0].r[0]], ['possessive 2sg', 'dative']);
+    // -ды and -дың follow a consonant: оқыды is a past tense, not оқ with -ы and -ды; суды is су's accusative.
+    assert.ok(!queried('kk', 'оқыды').has('оқ'));
+    assert.ok(!queried('kk', 'оқыдың').has('оқ'));
+    assert.deepEqual([...candidatesTo('kk', 'суды', 'су')[0].r[0]], ['accusative']);
+    assert.deepEqual([...candidatesTo('kk', 'кітапты', 'кітап')[0].r[0]], ['accusative']);
+    assert.deepEqual([...candidatesTo('kk', 'жолдың', 'жол')[0].r[0]], ['genitive']);
+    // The word as written stays typed.
+    assert.ok(!candidates('kk', 'кітап').find((c) => c.d === 'кітап').u);
+});
+
+test('kazakh verb forms reach the dictionary form and match only definitions tagged as verbs', () => {
+    const forms = {
+        'барды': ['бару', ['past']],
+        'бармады': ['бару', ['negative', 'past']],
+        'барамын': ['бару', ['present', '1sg']],
+        'оқиды': ['оқу', ['present', '3rd']],
+        'сөйлейді': ['сөйлеу', ['present', '3rd']],
+        'жаздырды': ['жазу', ['causative', 'past']],
+        'айтшы': ['айту', ['please']],
+        'бармас': ['бару', ['negative', 'aorist']],
+        'оқитын': ['оқу', ['habitual participle']],
+        'қойды': ['қою', ['past']],
+        'тапты': ['табу', ['past']],
+    };
+    for (const [text, [lemma, chain]] of Object.entries(forms)) {
+        assert.ok(isVerbThrough(candidatesTo('kk', text, lemma), chain), text);
+    }
+    // A converb does not follow a predicative ending: барамын is not бара + -мын read as a converb.
+    const going = candidates('kk', 'барамын').filter((c) => c.d === 'бару');
+    assert.ok(going.every((c) => c.r.every((r) => !r.includes('converb'))));
+});
+
+test('turkic steps between rules are not asked for and the hidden rule leaves the chains', () => {
+    const marked = (text) => [...text].some((c) => c.charCodeAt(0) >= 0xe000 && c.charCodeAt(0) <= 0xf8ff);
+    for (const [language, text] of [['kk', 'бармадыңыз'], ['kk', 'жазылды'], ['ky', 'барасыңбы'], ['ky', 'келбейт']]) {
+        const list = candidates(language, text);
+        assert.ok(list.every((c) => !marked(c.d)), text);
+        assert.ok(list.every((c) => c.r.every((r) => !r.includes('dictionary form'))), text);
+        // Every text but the one as written names a dictionary form: a nominal one untyped, a verb tagged.
+        assert.ok(list.every((c) => c.c === 0 || c.u), text);
+    }
+});
+
+test('kazakh latin i, h and schwa inside a cyrillic word read as the kazakh letters, in kazakh only', () => {
+    assert.ok(queried('kk', 'кiтап').has('кітап'));
+    assert.ok(queried('kk', 'Iле').has('Іле'));
+    assert.ok(queried('kk', 'шаhар').has('шаһар'));
+    assert.ok(queried('kk', 'əлем').has('әлем'));
+    assert.ok(queried('kk', 'кiтаптар').has('кітап'));
+    // A word of Latin letters stays as it is.
+    assert.deepEqual([...queried('kk', 'hit')].filter((t) => t.toLowerCase() !== 'hit'), []);
+    for (const language of ['ky', 'ru', 'uk']) assert.ok(!queried(language, 'кiтап').has('кітап'), language);
+});
+
+test('kyrgyz endings in four-way harmony, the question particle and verb stems that lengthen into the dictionary form', () => {
+    assert.deepEqual([...candidatesTo('ky', 'китептерибизде', 'китеп')[0].r[0]], ['plural', 'possessive 1pl', 'locative']);
+    assert.ok(queried('ky', 'китеби').has('китеп'));
+    assert.ok(queried('ky', 'үйлөрдө').has('үй'));
+    assert.deepEqual([...candidatesTo('ky', 'китепти', 'китеп')[0].r[0]], ['accusative']);
+    assert.ok(!queried('ky', 'окуду').has('ок'));
+    const forms = {
+        'барасыңбы': ['баруу', ['present', '2sg', 'question']],
+        'иштейт': ['иштөө', ['present', '3rd']],
+        'жашады': ['жашоо', ['past']],
+        'баруучу': ['баруу', ['habitual participle']],
+        'көрдүм': ['көрүү', ['past', '1sg']],
+        'келбейт': ['келүү', ['negative', 'present', '3rd']],
+        'окуйт': ['окуу', ['present', '3rd']],
+    };
+    for (const [text, [lemma, chain]] of Object.entries(forms)) {
+        assert.ok(isVerbThrough(candidatesTo('ky', text, lemma), chain), text);
+    }
+});
+
+test('every turkic rule has a shared name and a description of its endings, which the app strings are generated from', () => {
+    const res = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values');
+    const labels = fs.readFileSync(path.join(res, 'inflections_turkic.xml'), 'utf8');
+    for (const descriptor of [kazakhTransforms, kyrgyzTransforms]) {
+        const strings = fs.readFileSync(path.join(res, `inflections_${descriptor.language}.xml`), 'utf8');
+        assert.equal(descriptor.sharedLabels, 'turkic');
+        for (const [id, {name, description, hidden}] of Object.entries(descriptor.transforms)) {
+            if (hidden) {
+                assert.ok(!strings.includes(`<!-- ${id} -->`), id);
+                continue;
+            }
+            assert.ok(description.startsWith('-') && description.endsWith(')'), id);
+            assert.ok(strings.includes(`<!-- ${id} -->`) && strings.includes(`>${description}</string>`), id);
+            assert.ok(labels.includes(`>${name}</string>`), id);
+        }
+    }
+});
+
+test('kazakh and kyrgyz rules stay out of other languages', () => {
+    for (const language of ['ru', 'uk', 'tr', 'en']) {
+        assert.ok(!queried(language, 'кітаптарымызда').has('кітап'), language);
+        assert.ok(!queried(language, 'барды').has('бару'), language);
+        assert.ok(candidates(language, 'барды').every((c) => c.g === undefined), language);
+    }
+    assert.ok(!queried('kk', 'китептерибизде').has('китеп'));
+    assert.ok(!queried('ky', 'жазғы').has('жаз'));
+    assert.ok(!queried('kk', 'барасыңбы').has('барасың'));
 });

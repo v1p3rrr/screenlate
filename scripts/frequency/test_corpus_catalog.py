@@ -1,4 +1,6 @@
 """Tests of the corpus catalog entries: python -m unittest discover scripts/frequency"""
+import io
+import tarfile
 import unittest
 
 import corpus_catalog as catalog
@@ -17,6 +19,32 @@ class CheckTest(unittest.TestCase):
             catalog.check("ที่\t10\nการ\t11\n".encode("utf-8"))
 
 
+def archive(**files):
+    """A gzipped tar archive of [files], path to text."""
+    out = io.BytesIO()
+    with tarfile.open(fileobj=out, mode="w:gz") as tar:
+        for name, text in files.items():
+            data = text.encode("utf-8")
+            info = tarfile.TarInfo(name.replace("__", "/"))
+            info.size = len(data)
+            tar.addfile(info, io.BytesIO(data))
+    return out.getvalue()
+
+
+class LeipzigCheckTest(unittest.TestCase):
+    def test_counts_the_lines_of_the_word_list_wherever_it_is(self):
+        data = archive(kaz__kaz_sources_txt="x", **{"kaz__kaz-words.txt": "1\t!\t5\n100\tкітап\t3\n"})
+        self.assertEqual(catalog.check(data, "leipzig"), 2)
+
+    def test_refuses_an_archive_without_a_word_list(self):
+        with self.assertRaises(ValueError):
+            catalog.check(archive(kaz__sentences_txt="1\tБұл."), "leipzig")
+
+    def test_refuses_a_line_without_a_count(self):
+        with self.assertRaises(ValueError):
+            catalog.check(archive(**{"kaz__kaz-words.txt": "1\tкітап\n"}), "leipzig")
+
+
 class EntryTest(unittest.TestCase):
     def test_the_thai_entry_is_a_recommended_frequency_build(self):
         data = "ที่\t10\n".encode("utf-8")
@@ -28,6 +56,15 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(entry["downloadSize"], len(data))
         self.assertEqual(entry["oldTitles"], ["Thai National Corpus (th)"])
         self.assertIn(catalog.PYTHAINLP_COMMIT, entry["downloadUrl"])
+
+    def test_the_kazakh_entry_is_the_leipzig_archive(self):
+        entry = catalog.entry("kk", catalog.CORPORA["kk"], b"x")
+        self.assertEqual(entry["id"], "corpus-kk")
+        self.assertEqual(entry["template"], "leipzig")
+        self.assertEqual(entry["oldTitles"], ["Leipzig Corpora Collection (kk)"])
+        self.assertEqual(entry["downloadUrl"],
+                         "https://downloads.wortschatz-leipzig.de/corpora/kaz_newscrawl_2016_100K.tar.gz")
+        self.assertEqual(entry["license"], "CC BY")
 
 
 class ReplaceTest(unittest.TestCase):

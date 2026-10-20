@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">множественное число</string>
+    <string name="inflection_turkic_possessive_1sg_label">мой</string>
+    <string name="inflection_turkic_possessive_2sg_label">твой</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">ваш (вежл.)</string>
+    <string name="inflection_turkic_possessive_3rd_label">его, её, их</string>
+    <string name="inflection_turkic_possessive_1pl_label">наш</string>
+    <string name="inflection_turkic_genitive_label">родительный падеж</string>
+    <string name="inflection_turkic_dative_label">дательный падеж</string>
+    <string name="inflection_turkic_accusative_label">винительный падеж</string>
+    <string name="inflection_turkic_locative_label">местный падеж</string>
+    <string name="inflection_turkic_ablative_label">исходный падеж</string>
+    <string name="inflection_turkic_instrumental_label">творительный падеж</string>
+    <string name="inflection_turkic_attributive_locative_label">местный определительный</string>
+    <string name="inflection_turkic_attributive_label">относительное прилагательное</string>
+    <string name="inflection_turkic_equative_label">уподобительный падеж</string>
+    <string name="inflection_turkic_manner_label">образ действия</string>
+    <string name="inflection_turkic_1sg_label">1-е л. ед. ч.</string>
+    <string name="inflection_turkic_2sg_label">2-е л. ед. ч.</string>
+    <string name="inflection_turkic_2sg_polite_label">2-е л. ед. ч. вежл.</string>
+    <string name="inflection_turkic_3rd_label">3-е лицо</string>
+    <string name="inflection_turkic_1pl_label">1-е л. мн. ч.</string>
+    <string name="inflection_turkic_2pl_label">2-е л. мн. ч.</string>
+    <string name="inflection_turkic_2pl_polite_label">2-е л. мн. ч. вежл.</string>
+    <string name="inflection_turkic_past_label">прошедшее время</string>
+    <string name="inflection_turkic_present_label">настоящее время</string>
+    <string name="inflection_turkic_conditional_label">условное наклонение</string>
+    <string name="inflection_turkic_past_participle_label">причастие прошедшего времени</string>
+    <string name="inflection_turkic_habitual_participle_label">причастие обычного действия</string>
+    <string name="inflection_turkic_aorist_label">аорист</string>
+    <string name="inflection_turkic_intention_label">намерение</string>
+    <string name="inflection_turkic_converb_label">деепричастие</string>
+    <string name="inflection_turkic_purpose_label">деепричастие цели</string>
+    <string name="inflection_turkic_until_label">до тех пор, пока</string>
+    <string name="inflection_turkic_imperative_label">повелительное наклонение</string>
+    <string name="inflection_turkic_please_label">просьба</string>
+    <string name="inflection_turkic_negative_label">отрицание</string>
+    <string name="inflection_turkic_passive_label">страдательный залог</string>
+    <string name="inflection_turkic_reflexive_label">возвратный залог</string>
+    <string name="inflection_turkic_reciprocal_label">взаимный залог</string>
+    <string name="inflection_turkic_causative_label">понудительный залог</string>
+    <string name="inflection_turkic_question_label">вопрос</string>
+    <string name="inflection_turkic_possessive_2pl_label">ваш</string>
+</resources>

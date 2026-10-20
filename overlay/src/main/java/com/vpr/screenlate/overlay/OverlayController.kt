@@ -1203,10 +1203,15 @@ class OverlayController(
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
-            // Within the word shown the results stay, unless they came from inside it for another character.
+            // Within the word shown the results stay, unless they came from inside it for another character or
+            // another part of a hyphenated word is aimed at.
             val cached = shownLookup?.takeIf { view ->
-                view.query == query && popup.isShowing &&
-                    (view.aimedCharAt == aimedCharAt || view.results.firstOrNull()?.covers(aimedCharAt) != false)
+                view.query == query && popup.isShowing && (
+                    view.aimedCharAt == aimedCharAt ||
+                        view.results.firstOrNull()?.covers(aimedCharAt) != false &&
+                        language.support.partStarts(query, aimedAt, view.aimedCharAt) ==
+                        language.support.partStarts(query, aimedAt, aimedCharAt)
+                    )
             }
             val results = cached?.results ?: lookupResults(query, aimedAt = aimedAt, aimedCharAt = aimedCharAt)
             // The first result may be a word that starts before the aimed one.

@@ -61,6 +61,42 @@ class EarlierStartsTest {
         assertThat(reaching(text, emptyList(), 10, listOf(4, 5, 9), "ពេញ")).containsExactly("ពេញ" to 9)
     }
 
+    /** [withHyphenatedParts] over [results] found from the word's start, the [words] found as in [found]. */
+    private fun withParts(
+        text: String,
+        results: List<String>,
+        aimedCharAt: Int,
+        parts: List<Int>,
+        vararg words: String,
+    ): List<Pair<String, Int>> = runBlocking {
+        val shown = results.map { LookupResult(matched = it, deinflected = it, term = TermEntry(it, "")) }
+        withHyphenatedParts(shown, aimedCharAt, parts) { start ->
+            words.filter { text.startsWith(it, start) }
+                .sortedByDescending { it.length }
+                .map { LookupResult(matched = it, deinflected = it, term = TermEntry(it, "")) }
+        }.map { it.term.expression to it.start }
+    }
+
+    @Test
+    fun `a later part of a hyphenated word shows the whole word, then the part, not the first part`() {
+        val text = "state-owned firms"
+        val aimed = "state-o".length
+        assertThat(withParts(text, listOf("state-owned", "state"), aimed, listOf(6), "state-owned", "state", "owned"))
+            .containsExactly("state-owned" to 0, "owned" to 6).inOrder()
+        assertThat(withParts(text, listOf("state"), aimed, listOf(6), "state", "owned")).containsExactly("owned" to 6)
+        // Each part up to the aimed one, the earlier first; words that stop before the aim are left out.
+        assertThat(withParts("mother-in-law", listOf("mother"), 11, listOf(7, 10), "mother", "in-law", "in", "law"))
+            .containsExactly("in-law" to 7, "law" to 10).inOrder()
+        // A suffix entry with its hyphen comes before the ending alone: 1990-ға.
+        assertThat(withParts("1990-ға", emptyList(), 5, listOf(4, 5), "-ға", "ға"))
+            .containsExactly("-ға" to 4, "ға" to 5).inOrder()
+        // The part finds nothing: the whole word only (бала-шаға aimed at шағамен, which has no entry).
+        assertThat(withParts("бала-шағамен", listOf("бала-шаға", "бала"), 7, listOf(5), "бала-шаға", "бала"))
+            .containsExactly("бала-шаға" to 0)
+        // Nothing reaches the aim: the results stay as they are.
+        assertThat(withParts(text, listOf("state"), aimed, listOf(6), "state")).containsExactly("state" to 0)
+    }
+
     @Test
     fun `a match covers the characters from its start to its end`() {
         val result = LookupResult(matched = "ពេញ", deinflected = "ពេញ", term = TermEntry("ពេញ", ""), start = 9)

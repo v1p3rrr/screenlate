@@ -2,15 +2,19 @@
 
     python scripts/frequency/corpus_catalog.py [--cache testdata/corpus]
 
-For languages wordfreq has no list for. Each entry points at one count list at a pinned commit with its size and
-SHA-256; the app downloads it, checks it and builds the dictionary as CorpusCountsDictionary does. The list is
-`word<TAB>count` lines, the most frequent first, which this script checks. Entries of the corpora's templates in
-dictionaries-v2.json are replaced and placed after the wordfreq entries; the template texts are kept as they are.
+For languages wordfreq has no list for. Each entry points at one count list at a pinned commit, or at a Leipzig
+Corpora Collection archive (a fixed file), with its size and SHA-256; the app downloads it, checks it and builds the
+dictionary as CorpusCountsDictionary does. A list is `word<TAB>count` lines, the most frequent first; an archive holds
+`<corpus>-words.txt` with `id<TAB>word<TAB>count` lines somewhere in it; this script checks both. Entries of the
+corpora's templates in dictionaries-v2.json are replaced and placed after the wordfreq entries; the template texts are
+kept as they are.
 """
 import argparse
 import hashlib
+import io
 import json
 import os
+import tarfile
 import urllib.request
 
 PYTHAINLP_COMMIT = "10c1e82db675344140ef514821bf3a40f9601c2b"
@@ -28,6 +32,25 @@ CORPORA = {
         "homepage": "https://github.com/PyThaiNLP/pythainlp",
     },
 }
+
+LEIPZIG = "https://downloads.wortschatz-leipzig.de/corpora"
+
+
+def leipzig(corpus, language):
+    """The entry of the Leipzig archive [corpus], whose texts the template "leipzig" gives with the language's name."""
+    return {
+        "template": "leipzig",
+        "title": f"Leipzig Corpora Collection ({language})",
+        "url": f"{LEIPZIG}/{corpus}.tar.gz",
+        "file": f"{corpus}.tar.gz",
+        "format": "leipzig",
+        "version": "2016",
+        "license": "CC BY",
+        "homepage": "https://wortschatz.uni-leipzig.de/en/download",
+    }
+
+
+CORPORA["kk"] = leipzig("kaz_newscrawl_2016_100K", "kk")
 
 BUILD = "corpus-counts"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -47,7 +70,28 @@ def fetch(corpus, cache):
         return file.read()
 
 
-def check(data):
+def check(data, format="counts"):
+    """The number of words [data] lists; raises ValueError unless it is a list of the [format]."""
+    if format == "leipzig":
+        return check_leipzig(data)
+    return check_counts(data)
+
+
+def check_leipzig(data):
+    """The number of lines of the archive's word list; each is an id, a word and a count, separated by tabs."""
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+        member = next((m for m in archive.getmembers() if m.isfile() and m.name.endswith("-words.txt")), None)
+        if member is None:
+            raise ValueError("no -words.txt in the archive")
+        lines = archive.extractfile(member).read().decode("utf-8").splitlines()
+    for number, line in enumerate(lines, 1):
+        fields = line.split("\t")
+        if len(fields) != 3 or not fields[2].isdigit():
+            raise ValueError(f"line {number} is not an id, a word and a count")
+    return len(lines)
+
+
+def check_counts(data):
     """The number of lines of [data]; raises ValueError unless every line is a word, a tab and a count, the largest first."""
     previous = None
     lines = data.decode("utf-8").splitlines()
@@ -101,7 +145,7 @@ def main():
         if corpus["template"] not in document.get("templates", {}):
             raise SystemExit(f"The catalog has no template {corpus['template']!r}")
         data = fetch(corpus, args.cache)
-        print(f"{language}: {check(data)} words")
+        print(f"{language}: {check(data, corpus.get('format', 'counts'))} words")
         built.append(entry(language, corpus, data))
     with open(CATALOG, "w", encoding="utf-8", newline="\n") as file:
         file.write(json.dumps(replace(document, built), ensure_ascii=False, indent=2) + "\n")

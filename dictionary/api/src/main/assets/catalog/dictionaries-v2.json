@@ -172,6 +172,40 @@
         "zh-Hant": "泰語單詞在泰語國家語料庫中的使用頻率，搜尋結果按此排序。在裝置上由 PyThaiNLP 的詞頻統計產生。"
       }
     },
+    "leipzig": {
+      "title": {
+        "en": "Word frequency (Leipzig Corpora Collection)",
+        "ru": "Частотность слов (Leipzig Corpora Collection)",
+        "de": "Worthäufigkeit (Leipzig Corpora Collection)",
+        "es": "Frecuencia de palabras (Leipzig Corpora Collection)",
+        "fr": "Fréquence des mots (Leipzig Corpora Collection)",
+        "it": "Frequenza delle parole (Leipzig Corpora Collection)",
+        "ja": "単語の頻度（Leipzig Corpora Collection）",
+        "ko": "단어 빈도 (Leipzig Corpora Collection)",
+        "pl": "Częstość wyrazów (Leipzig Corpora Collection)",
+        "pt": "Frequência de palavras (Leipzig Corpora Collection)",
+        "tr": "Sözcük sıklığı (Leipzig Corpora Collection)",
+        "vi": "Tần suất từ (Leipzig Corpora Collection)",
+        "zh": "词频（Leipzig Corpora Collection）",
+        "zh-Hant": "詞頻（Leipzig Corpora Collection）"
+      },
+      "description": {
+        "en": "Leipzig Corpora Collection, {source}: how common words are in news texts; results are sorted by it. Built on the device from the collection's word counts.",
+        "ru": "Leipzig Corpora Collection, {source}: частотность слов в новостных текстах, по ней сортируются результаты. Собирается на устройстве из подсчётов слов коллекции.",
+        "de": "Leipzig Corpora Collection, {source}: wie häufig Wörter in Nachrichtentexten sind; die Ergebnisse werden danach sortiert. Wird auf dem Gerät aus den Wortzählungen der Sammlung erstellt.",
+        "es": "Leipzig Corpora Collection, {source}: la frecuencia de las palabras en textos de noticias; los resultados se ordenan por ella. Se crea en el dispositivo a partir de los recuentos de palabras de la colección.",
+        "fr": "Leipzig Corpora Collection, {source} : la fréquence des mots dans des textes d'actualité ; les résultats sont triés selon elle. Créé sur l'appareil à partir des comptages de mots de la collection.",
+        "it": "Leipzig Corpora Collection, {source}: la frequenza delle parole nei testi di notizie; i risultati sono ordinati in base a essa. Creato sul dispositivo dai conteggi delle parole della raccolta.",
+        "ja": "Leipzig Corpora Collection（{source}）：ニュース記事における単語の使用頻度。検索結果の並べ替えに使います。コレクションの単語の出現数から端末上で作成します。",
+        "ko": "Leipzig Corpora Collection, {source}: 뉴스 텍스트에서 단어의 사용 빈도로, 검색 결과를 이 순서로 정렬합니다. 컬렉션의 단어 출현 횟수로 기기에서 만듭니다.",
+        "pl": "Leipzig Corpora Collection, {source}: częstość występowania wyrazów w tekstach prasowych; według niej sortowane są wyniki. Tworzony na urządzeniu z liczby wystąpień wyrazów w kolekcji.",
+        "pt": "Leipzig Corpora Collection, {source}: a frequência das palavras em textos de notícias; os resultados são ordenados por ela. Criado no dispositivo a partir das contagens de palavras da coleção.",
+        "tr": "Leipzig Corpora Collection, {source}: haber metinlerinde sözcüklerin kullanım sıklığı; sonuçlar buna göre sıralanır. Cihazda koleksiyonun sözcük sayımlarından oluşturulur.",
+        "vi": "Leipzig Corpora Collection, {source}: tần suất sử dụng của từ trong các văn bản tin tức; kết quả được sắp xếp theo đó. Được tạo trên thiết bị từ số lần xuất hiện của từ trong bộ sưu tập.",
+        "zh": "Leipzig Corpora Collection，{source}：单词在新闻文本中的使用频率，搜索结果按此排序。在设备上由该语料库集的词频统计生成。",
+        "zh-Hant": "Leipzig Corpora Collection，{source}：單詞在新聞文本中的使用頻率，搜尋結果按此排序。在裝置上由該語料庫集的詞頻統計產生。"
+      }
+    },
     "krdict": {
       "title": {
         "en": "KRDICT ({src}–{tgt})",
@@ -1801,6 +1835,25 @@
       "homepage": "https://github.com/PyThaiNLP/pythainlp"
     },
     {
+      "id": "corpus-kk",
+      "title": "Leipzig Corpora Collection (kk)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (kk)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "kk",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/kaz_newscrawl_2016_100K.tar.gz",
+      "downloadSize": 18737608,
+      "sha256": "dcbe3bf7eee54bd6b03737bf749656ad781a5e5ade9c31ce6ab5f7f912e68773",
+      "build": "corpus-counts",
+      "version": "2016",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -3058,6 +3111,40 @@
       "engine": "tesseract",
       "file": "tessdata/heb.traineddata",
       "version": "dbaa827aea6b",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-kaz",
+      "title": "Tesseract fast (kaz)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kk",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/kaz.traineddata",
+      "downloadSize": 4734644,
+      "sha256": "fcc01eed3815a42b9c6321c4c9d3606f39b166cbf95ade98b7d8d12063eae53d",
+      "model": "tesseract-fast-kaz",
+      "engine": "tesseract",
+      "file": "tessdata/kaz.traineddata",
+      "version": "fcc01eed3815",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-kaz",
+      "title": "Tesseract best (kaz)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kk",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/kaz.traineddata",
+      "downloadSize": 7528853,
+      "sha256": "34cbd9204b1ff3cc813d50b29e3c0ae3752bcc201f261a4a393ceca3895aea9d",
+      "model": "tesseract-best-kaz",
+      "engine": "tesseract",
+      "file": "tessdata/kaz.traineddata",
+      "version": "34cbd9204b1f",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -4414,6 +4501,41 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "be",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-cyrillic-kk",
+      "title": "PaddleOCR cyrillic (kk)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kk",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-cyrillic.zip",
+      "downloadSize": 7344469,
+      "sha256": "e22911ed9991338d24651c81887fa77d18eda89e56efbca5006ea41991f5ebbf",
+      "model": "paddle-cyrillic",
+      "engine": "paddle",
+      "version": "e22911ed9991",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v5-kk",
+      "title": "PaddleOCR detector-v5 (kk)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "kk",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -13085,6 +13207,144 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/he/wty-he-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 198816,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-en",
+      "title": "Wiktionary (kk–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-en",
+        "kty-kk-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/en/wty-kk-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 1744849,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-ru",
+      "title": "Wiktionary (kk–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-ru",
+        "kty-kk-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/ru/wty-kk-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 795991,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-fr",
+      "title": "Wiktionary (kk–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-fr",
+        "kty-kk-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/fr/wty-kk-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 216404,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-ko",
+      "title": "Wiktionary (kk–ko)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-ko",
+        "kty-kk-ko"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "ko",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-ko-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/ko/wty-kk-ko.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 78563,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-pl",
+      "title": "Wiktionary (kk–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-pl",
+        "kty-kk-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/pl/wty-kk-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 178054,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-zh",
+      "title": "Wiktionary (kk–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-kk-zh",
+        "kty-kk-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "kk",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/kk/zh/wty-kk-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 189306,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-kk-transcription",
+      "title": "Wiktionary transcription (kk)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-kk-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "kk",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-kk-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/kk/wty-kk-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 177274,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

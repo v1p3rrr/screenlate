@@ -25,6 +25,7 @@ struct RawCandidate {
   int64_t c = 0;
   std::vector<std::vector<std::string>> r;
   bool u = false;
+  std::vector<std::string> g;
 };
 
 }  // namespace candidate_json
@@ -45,6 +46,10 @@ struct Pending {
   std::string from;
   // The scanned text after the text preprocessors, where the chains start.
   std::string origin;
+  // Definition tags one of which a glossary needs, kept along form-of steps; empty for any.
+  std::vector<std::string> tags;
+  // Whether a form-of entry with no tags led here (CandidateResult::respelled).
+  bool respelled = false;
 };
 
 struct Match {
@@ -53,6 +58,7 @@ struct Match {
   int steps = 0;
   std::vector<std::vector<std::string>> chains;
   TermResult term;
+  bool respelled = false;
 };
 
 uint32_t flags_of(const std::string& rules, const std::unordered_map<std::string, uint32_t>& part_of_speech_flags) {
@@ -74,6 +80,19 @@ bool fits(const Pending& p, const std::string& rules,
           const std::unordered_map<std::string, uint32_t>& part_of_speech_flags) {
   if (p.conditions == 0 || (p.conditions & flags_of(rules, part_of_speech_flags)) != 0) return true;
   return p.untyped && std::all_of(rules.begin(), rules.end(), is_space);
+}
+
+// Whether a glossary with [definition_tags] (space-separated) fits [tags]: it names one of them, or none at all.
+bool has_tag(const std::string& definition_tags, const std::vector<std::string>& tags) {
+  if (tags.empty()) return true;
+  std::istringstream stream(definition_tags);
+  std::string tag;
+  bool any = false;
+  while (stream >> tag) {
+    any = true;
+    if (std::find(tags.begin(), tags.end(), tag) != tags.end()) return true;
+  }
+  return !any;
 }
 
 // Removes form-of items from a glossary (`screenlate_form_of::strip_form_of`) and collects them with the row's rules.
@@ -115,6 +134,7 @@ bool better(const Match& a, const Match& b) {
   const size_t length_b = length_of(b.matched);
   if (length_a != length_b) return length_a > length_b;
   if (a.steps != b.steps) return a.steps < b.steps;
+  if (a.respelled != b.respelled) return b.respelled;
   const size_t chain_a = shortest(a.chains);
   const size_t chain_b = shortest(b.chains);
   if (chain_a != chain_b) return chain_a < chain_b;
@@ -133,8 +153,8 @@ std::vector<LanguageCandidate> parse_candidates(const std::string& json) {
   std::vector<LanguageCandidate> result;
   result.reserve(raw.size());
   for (auto& c : raw) {
-    result.push_back(
-        {std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r), c.u});
+    result.push_back({std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r), c.u,
+                      std::move(c.g)});
   }
   return result;
 }
@@ -169,11 +189,12 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     for (const auto& term : terms_for(p.text)) {
       if (!fits(p, term.rules, part_of_speech_flags)) continue;
       TermResult copy = term;
+      std::erase_if(copy.glossaries, [&](const GlossaryEntry& g) { return !has_tag(g.definition_tags, p.tags); });
       for (auto& glossary : copy.glossaries) glossary.glossary = strip_form_of(glossary.glossary, copy.rules, form_of);
       std::erase_if(copy.glossaries, [](const GlossaryEntry& g) { return g.glossary.empty(); });
       if (copy.glossaries.empty()) continue;
       has_definitions = true;
-      matches.push_back({p.matched, p.text, p.steps, p.chains, std::move(copy)});
+      matches.push_back({p.matched, p.text, p.steps, p.chains, std::move(copy), p.respelled});
     }
     for (const FormOfTable* table : tables) {
       for (auto& item : table->find(p.text)) {
@@ -196,7 +217,8 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       // form of שלום) would only add its tags beside that headword, which Yomitan shows and the app leaves out. Text
       // with the form's own marks (שְׁלוֹם) is not the headword itself and keeps them.
       if (!item.tags.empty() && is_itself(item.lemma)) continue;
-      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin};
+      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin, p.tags,
+                    p.respelled || item.tags.empty()};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());
@@ -209,7 +231,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
 
   std::vector<Pending> lemmas;
   for (const auto& candidate : candidates) {
-    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t};
+    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t, candidate.g};
     if (p.chains.empty()) p.chains.emplace_back();
     visit(p, lemmas);
   }
@@ -236,7 +258,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     for (Match* match : group) {
       if (better(*match, *best)) best = match;
     }
-    CandidateResult result{best->matched, best->deinflected, {}, best->steps, std::move(best->term)};
+    CandidateResult result{best->matched, best->deinflected, {}, best->steps, std::move(best->term), best->respelled};
     for (const Match* match : group) {
       if (match->matched != result.matched || match->steps != result.preprocessor_steps) continue;
       for (const auto& chain : match->chains) {
@@ -260,6 +282,7 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
     const size_t length_b = length_of(b.matched);
     if (length_a != length_b) return length_a > length_b;
     if (a.preprocessor_steps != b.preprocessor_steps) return a.preprocessor_steps < b.preprocessor_steps;
+    if (a.respelled != b.respelled) return b.respelled;
     const size_t chain_a = shortest(a.chains);
     const size_t chain_b = shortest(b.chains);
     if (chain_a != chain_b) return chain_a < chain_b;

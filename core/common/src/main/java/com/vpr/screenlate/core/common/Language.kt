@@ -45,6 +45,7 @@ enum class Language(val code: String, val dictionaryCode: String = code) {
     ARABIC("ar"),
     PERSIAN("fa"),
     HEBREW("he"),
+    KAZAKH("kk"),
     ;
 
     companion object {

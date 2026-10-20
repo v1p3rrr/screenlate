@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">số nhiều</string>
+    <string name="inflection_turkic_possessive_1sg_label">của tôi</string>
+    <string name="inflection_turkic_possessive_2sg_label">của bạn</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">của ngài (lịch sự)</string>
+    <string name="inflection_turkic_possessive_3rd_label">của anh ấy, cô ấy, họ</string>
+    <string name="inflection_turkic_possessive_1pl_label">của chúng tôi</string>
+    <string name="inflection_turkic_genitive_label">sở hữu cách</string>
+    <string name="inflection_turkic_dative_label">tặng cách</string>
+    <string name="inflection_turkic_accusative_label">đối cách</string>
+    <string name="inflection_turkic_locative_label">vị trí cách</string>
+    <string name="inflection_turkic_ablative_label">xuất phát cách</string>
+    <string name="inflection_turkic_instrumental_label">công cụ cách</string>
+    <string name="inflection_turkic_attributive_locative_label">vị trí cách định ngữ</string>
+    <string name="inflection_turkic_attributive_label">định ngữ</string>
+    <string name="inflection_turkic_equative_label">cách so sánh ngang</string>
+    <string name="inflection_turkic_manner_label">cách thức</string>
+    <string name="inflection_turkic_1sg_label">ngôi 1 số ít</string>
+    <string name="inflection_turkic_2sg_label">ngôi 2 số ít</string>
+    <string name="inflection_turkic_2sg_polite_label">ngôi 2 số ít lịch sự</string>
+    <string name="inflection_turkic_3rd_label">ngôi 3</string>
+    <string name="inflection_turkic_1pl_label">ngôi 1 số nhiều</string>
+    <string name="inflection_turkic_2pl_label">ngôi 2 số nhiều</string>
+    <string name="inflection_turkic_2pl_polite_label">ngôi 2 số nhiều lịch sự</string>
+    <string name="inflection_turkic_past_label">quá khứ</string>
+    <string name="inflection_turkic_present_label">hiện tại</string>
+    <string name="inflection_turkic_conditional_label">điều kiện</string>
+    <string name="inflection_turkic_past_participle_label">phân từ quá khứ</string>
+    <string name="inflection_turkic_habitual_participle_label">phân từ thói quen</string>
+    <string name="inflection_turkic_aorist_label">bất định quá khứ</string>
+    <string name="inflection_turkic_intention_label">ý định</string>
+    <string name="inflection_turkic_converb_label">trạng động từ</string>
+    <string name="inflection_turkic_purpose_label">mục đích</string>
+    <string name="inflection_turkic_until_label">cho đến khi</string>
+    <string name="inflection_turkic_imperative_label">mệnh lệnh</string>
+    <string name="inflection_turkic_please_label">lời nhờ</string>
+    <string name="inflection_turkic_negative_label">phủ định</string>
+    <string name="inflection_turkic_passive_label">bị động</string>
+    <string name="inflection_turkic_reflexive_label">phản thân</string>
+    <string name="inflection_turkic_reciprocal_label">tương hỗ</string>
+    <string name="inflection_turkic_causative_label">sai khiến</string>
+    <string name="inflection_turkic_question_label">nghi vấn</string>
+    <string name="inflection_turkic_possessive_2pl_label">của các bạn</string>
+</resources>
