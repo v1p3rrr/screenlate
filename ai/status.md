@@ -5,7 +5,10 @@
 A user of v0.2.3 sent a screen recording: the bubble and popup vanish 2–3 s after most scans and the accessibility
 switch goes off by itself; once it came back by itself. Analysis, ranked causes (a crash during recognition, or a
 force-stop by the phone's background manager), the questions and log steps for the user and the app-side options are
-in `ai/notes/oem-background-limits.md`. Waiting for the user's answers and a log; no app change yet.
+in `ai/notes/oem-background-limits.md`. The user's first log (Android 16) covers only a fresh process: no crash on
+record and, if saved right after a disappearance, no force-stop either, so ColorOS turning the service off without a
+force-stop is now a candidate too. Waiting for the user's answers and a log taken with a large buffer; no app change
+yet.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

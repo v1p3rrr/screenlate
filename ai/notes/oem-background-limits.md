@@ -99,7 +99,39 @@ Times are seconds into the recording.
   `SettingsModule`'s corruption handler; DataStore writes through a temp file and rename, so a stop during a write
   should not do that). To ask.
 
+### The first log (About → Logs, saved 22:45 the same day)
+
+Header: OPPO CPH2825, Android 16 (API 36), so ColorOS 16. What it shows and what it rules out:
+
+- It holds one process only, started at 22:45:17 when the user opened the app, and ends 22 s later at the export.
+  Nothing of the process that lost the bubble. ColorOS logs a lot (this process alone wrote ~200 framework lines in
+  22 s, mostly `Oplus*`), so the shared main and system buffers are overwritten fast; lines of an earlier process of the
+  same app are readable only while still in the buffer.
+- No `beginning of crash` section. The export reads the default buffers, crash included; a Java crash ("FATAL
+  EXCEPTION" from `AndroidRuntime`) is always written to the crash buffer and a native crash's "Fatal signal" line
+  normally too, and that buffer holds only crashes, so it keeps them for long. None of Screenlate's: a crash since the
+  last reboot is unlikely.
+- `WM-ForceStopRunnable: Found unfinished work, scheduling it.` WorkManager runs this check at every process start (the
+  app initializes it in `Application.onCreate` through `installBundled()`). On API 30+ it reads
+  `getHistoricalProcessExitReasons` and logs "Application was force-stopped, rescheduling." when it finds a
+  `REASON_USER_REQUESTED` exit (that is what a force-stop records) newer than the last one it handled. It did not, so
+  the process before this one did not end with a force-stop, provided nothing started Screenlate between the
+  disappearance and the export (every service start runs the same check and would have taken that exit).
+- No "Service connected" in 22 s: the service was not on the enabled list at that time. An enabled service whose
+  process died is rebound as soon as the process starts again (ActivityManager starts pending service restarts on
+  attach), so it would have connected.
+- The rest is ColorOS framework noise (`SchedAssist`, `OplusPredictiveBackController`, an `avc denied` on the zygote
+  socket) and the bundled dictionary check; nothing points at Screenlate.
+
+So the log weakens both leading causes: no crash on record, and no force-stop if the export followed the
+disappearance directly. That leaves a third reading: ColorOS takes the service off the enabled list (or unbinds it)
+without a force-stop, and the process is killed later as an ordinary background process. To tell, the next log has to
+cover the moment itself: a larger log buffer before reproducing, the export at once, or exit reasons recorded by the
+app.
+
 ### Likely causes, ranked
+
+Ranked from the recording alone; the first log (above) argues against 1 and, with a condition, against 2, and adds 2a.
 
 1. **The process crashes during or right after recognition on this phone** (Java or native: ML Kit, WebView, the
    engine's JNI, or the scan code). For: the deaths follow scans at a steady interval; the one automatic return at
@@ -113,6 +145,11 @@ Times are seconds into the recording.
    acting within seconds on an app with an enabled accessibility service would be unusual. Confirm: exit-info with
    `USER_REQUESTED` (force-stop) or `OTHER` and a ColorOS description; system lines "Force stopping com.vpr.screenlate
    … : <caller>"; the app's own log ends without a crash line; the keep-alive notification test changes the result.
+   2a. **ColorOS turns the service off without a force-stop** (a security or power feature writing the enabled list,
+   or unbinding the service). Fits the first log: no crash, no force-stop exit, service off. Confirm: with a large
+   log buffer, the app's own lines at the moment show "Service stopped" (`onDestroy`, process still alive) and no
+   crash; exit-info shows a later `OTHER`/`LOW_MEMORY`/`FREEZER` kill instead of `USER_REQUESTED`; a ColorOS
+   notification or toast at that moment.
 3. **Low-memory kill.** Would leave the service enabled and restart it (only the 48.4 case fits). Confirm:
    exit-info `LOW_MEMORY`. Unlikely during a single scan on a recent phone, but cheap to rule out.
 4. **The accessibility shortcut.** Not the cause in the recording (no touch at the deaths), but a tap on the floating
@@ -146,12 +183,16 @@ Questions (the Russian text for the owner to forward is in the session's report 
    (`grep -i` instead of `findstr /i` on macOS and Linux.) The first two hold only lines naming Screenlate; the third
    Screenlate's tags plus crash reports. A larger log buffer in Developer options (Logger buffer size) keeps more
    history.
+6. After the first log: was it saved right after a disappearance, with the service not turned on again in between?
+   Does ColorOS show anything at that moment (a notification, a toast, an entry in the phone manager or security app)?
+   For the next try: Developer options → Logger buffer size at the largest value, reproduce, then save the log at once
+   without turning the service on first.
 
 ### Possible fixes in the app
 
 | Fix | What it does | Cost |
 | --- | --- | --- |
-| Exit reasons in the log | At each process start, log the earlier processes' `ApplicationExitInfo` (reason, description, status or signal, importance, PSS/RSS, time; no text) so the About → Logs export answers crash vs stop on any phone | Small: about half a day with tests; reaches users with the next release. The diagnostics branch has a version to borrow from |
+| Exit reasons in the log | At each process start, log the earlier processes' `ApplicationExitInfo` (reason, description, status or signal, importance, PSS/RSS, time; no text) so the About → Logs export answers crash vs stop on any phone. The first log shows the export alone cannot: on ColorOS the buffer loses the dying process before the user gets to the button, while exit records stay for days. Keeping the service's connect and stop events in a small file of their own (a stop with the process alive means the service was turned off, not killed) would separate 2 from 2a | Small: about half a day with tests; reaches users with the next release. The diagnostics branch has a version to borrow from |
 | "Stopped by the system" card | Remember that the service ran; on the next app start, if it is off without a clean stop (onDestroy with the process alive) and the exit reason was a stop or crash, show a Home card with the steps (Background work, the accessibility page) | Medium: 1–1.5 days, strings in 14 languages, emulator check |
 | Fix the crash | Once a trace shows it | Unknown until the log |
 | Keep-alive on by default on phones with a maker's startup screen | The notification that makes background killers leave the app alone more often | Small (hours), only if the notification test helps |
