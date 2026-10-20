@@ -42,6 +42,7 @@
 | Fonts with Bulgarian forms | github.com/google/fonts `ofl/montserrat`, `ofl/commissioner`, `ofl/sofiasans` | OFL; `locl` BGR (Montserrat, Commissioner), Bulgarian by default (Sofia Sans) |
 | Google Cloud voices | docs.cloud.google.com/text-to-speech/docs/list-voices-and-types | A hint at the Android engine's languages; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
 | Lingua Libre items | Wikidata Q7918 (bg), Q9296 (mk), Q9246 (mn); Khalkha Q6399808 | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
+| Mongolian converbs | cjvlang.com/Spicks/switchreference/ (notes on Janhunen 2012, Tserenpil and Kullmann); en.wiktionary.org/wiki/байх (conjugation table) | -аад as the dative-locative of the -аа verbal noun and as the coordinating (perfective) converb |
 
 ## Language research sources (group 5b: Welsh, Irish, Scottish Gaelic; Breton researched, not built)
 
