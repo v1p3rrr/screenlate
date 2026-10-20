@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">склонение</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Падежное окончание или окончание множественного числа существительного или прилагательного</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">именительный падеж</string>
+    <string name="inflection_ka_nounadjstemcompletion">Окончание именительного падежа -ი, возвращённое основе существительного или прилагательного на согласную</string>
+    <string name="inflection_ka_vowelrestoration_label">выпавшая гласная</string>
+    <string name="inflection_ka_vowelrestoration">Выпавшая гласная основы, восстановленная</string>
+</resources>

@@ -27,8 +27,17 @@ const res = path.join(module, 'src/main/res');
 const kotlin = path.join(module, 'src/main/java/com/vpr/screenlate/dictionary/engine/hoshidicts/YomitanInflections.kt');
 
 /**
+ * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping"), by language and rule id.
+ * @type {Record<string, Record<string, string>>}
+ */
+const labels = {
+    ka: {nounAdjSuffixStripping: 'declension', nounAdjStemCompletion: 'nominative', vowelRestoration: 'dropped vowel'},
+};
+
+/**
  * The transforms of [iso], imported from the language's own file: the descriptor list imports every language, and some
- * need libraries a checkout does not have until Yomitan is built.
+ * need libraries a checkout does not have until Yomitan is built. They are taken by the folder, as the bundles take
+ * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`).
  * @param {string} iso
  */
 async function transformsOf(iso) {
@@ -37,7 +46,9 @@ async function transformsOf(iso) {
     for (const file of files) {
         const exports = await import(pathToFileURL(path.join(dir, file)).href);
         for (const descriptor of Object.values(exports)) {
-            if (descriptor?.language === iso && descriptor.transforms) return Object.entries(descriptor.transforms);
+            if (descriptor?.language && descriptor.transforms) {
+                return Object.entries(descriptor.transforms);
+            }
         }
     }
     throw new Error(`${iso}: Yomitan has no transforms`);
@@ -90,7 +101,8 @@ for (const iso of languages) {
         lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
         if (label) {
             // Labels are lowercase like the other rule names; Yomitan capitalizes a few (French "Preterite").
-            const shown = /^[A-Z][a-z]+$/.test(name) ? name.toLowerCase() : name;
+            const own = /^[A-Z][a-z]+$/.test(name) ? name.toLowerCase() : name;
+            const shown = labels[iso]?.[id] ?? own;
             lines.push(`    <string name="${slug}_label">${xml(shown)}</string>`);
             expected.add(`${slug}_label`);
         }

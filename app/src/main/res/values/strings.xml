@@ -497,6 +497,8 @@
     <string name="popup_font_script_only_el">Only for Greek text</string>
     <string name="popup_font_script_only_hi">Only for Hindi text</string>
     <string name="popup_font_script_only_bn">Only for Bengali text</string>
+    <string name="popup_font_script_only_ka">Only for Georgian text</string>
+    <string name="popup_font_script_only_hy">Only for Armenian text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

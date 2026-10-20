@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">declinação</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Terminação de caso ou de plural de um substantivo ou adjetivo</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominativo</string>
+    <string name="inflection_ka_nounadjstemcompletion">Terminação de nominativo -ი devolvida a um radical de substantivo ou adjetivo terminado em consoante</string>
+    <string name="inflection_ka_vowelrestoration_label">vogal caída</string>
+    <string name="inflection_ka_vowelrestoration">Vogal caída do radical, restituída</string>
+</resources>

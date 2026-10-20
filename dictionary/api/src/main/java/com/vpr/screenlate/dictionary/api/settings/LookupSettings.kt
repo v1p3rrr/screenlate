@@ -21,7 +21,8 @@ import kotlinx.coroutines.flow.map
  * Lookup settings of one language: [scanLength], [singleKanji], [script] and [fixedScript] are the language's own, the
  * others are shared. [script] and [fixedScript] are set on the Languages screen.
  *
- * @property scanLength characters from the aim point that a lookup considers.
+ * @property scanLength characters from the aim point that a lookup considers; the language's own default
+ *   (`LanguageSupport.defaultScanLength`) until it is set.
  * @property maxResults entries shown for a lookup; 0 means no limit.
  * @property romaji Latin text is also looked up as romaji converted to kana.
  * @property singleKanji the kanji of the matched word get their own entries below the results.
@@ -53,7 +54,7 @@ class LookupSettingsRepository @Inject constructor(
     // Restored backups write the values without the setters' checks.
     private fun read(prefs: Preferences, language: Language): LookupSettings =
         LookupSettings(
-            scanLength = (prefs[scanLengthKey(language)] ?: LookupSettings.DEFAULT_SCAN_LENGTH)
+            scanLength = (prefs[scanLengthKey(language)] ?: language.support.defaultScanLength)
                 .coerceIn(LookupSettings.MIN_SCAN_LENGTH, LookupSettings.MAX_SCAN_LENGTH),
             maxResults = (prefs[MAX_RESULTS] ?: LookupSettings.DEFAULT_MAX_RESULTS).coerceAtLeast(0),
             romaji = prefs[ROMAJI] ?: false,

@@ -43,6 +43,42 @@
 | Google Cloud voices | docs.cloud.google.com/text-to-speech/docs/list-voices-and-types | A hint at the Android engine's languages; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
 | Lingua Libre items | Wikidata Q7918 (bg), Q9296 (mk), Q9246 (mn); Khalkha Q6399808 | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
 
+## Language research sources (group 5b: Welsh, Irish, Scottish Gaelic, Breton)
+
+| What | Where | Notes |
+|---|---|---|
+| kaikki.org Breton | kaikki.org/frwiktionary/Breton/, kaikki.org/dictionary/Breton/, kaikki.org/ruwiktionary/Бретонский/, kaikki.org/eswiktionary/Bretón/ (Wiktionary, CC BY-SA 4.0) | Per-language JSONL of wiktextract; the only Breton Wiktionary data (wty has none); French edition writes c'h with U+02BC |
+| wty language list | github.com/yomidevs/wiktionary-to-yomitan `assets/languages.json` (code MIT), commit f7cc3d7 | The top 150 languages of the English edition; Breton is 195th, so not built |
+| Leipzig Corpora Collection | cym_wikipedia_2021_10K / _100K, gle_wikipedia_2021_10K, gle_newscrawl_2014_300K, bre_wikipedia_2021_10K / _100K (downloads CC BY) | Coverage texts and frequency candidates; no Scottish Gaelic corpus |
+| Scottish Gaelic Wikipedia dump | dumps.wikimedia.org/gdwiki/20261001/ (CC BY-SA 4.0) | Coverage text (150 longer articles); measurements only |
+| Yr Amliadur | research-data.cardiff.ac.uk, DOI 10.17035/d.2020.0120164107 (CC BY-SA 4.0) | Welsh frequency lists from CorCenCC (54,072 forms); the corpus itself is CC BY-NC-SA |
+| An Crúbadán | crubadan.org/files/`<lang>`.zip (CC BY 4.0), Kevin Scannell | Web-crawl word lists for cy, ga, gd, br (top 50,000); unversioned files, site down on 2026-10-19 |
+| Eurfa | eurfa.org.uk (GPL/AGPL-3.0), Kevin Donnelly | Welsh lemmas and verb forms, no mutated forms; not used |
+| BuNaMo, Gramadán | github.com/michmech/BuNaMo (ODbL), github.com/michmech/Gramadan (MIT) | Irish morphology without glosses or mutations; not used |
+| Apertium Celtic pairs | github.com/apertium apertium-br-fr, apertium-cym-eng, apertium-eng-gle, apertium-ga-gd (GPL-2.0 / GPL-3.0) | Translation lexicons; not used |
+| FreeDict bre-fra | download.freedict.org/dictionaries/bre-fra/0.8.3 (GPL-2.0-or-later) | 27,034 headwords, French glosses; not used |
+| Deloof | kevindonnelly.org.uk/deloof/ (GPL-3.0) | Breton–Dutch, 35,480 headwords; not used |
+| circle-flags regional flags | github.com/HatScripts/circle-flags `flags/gb-wls.svg`, `gb-sct.svg`, `fr-bre.svg` (MIT) | Wales, Scotland, Brittany |
+| Lingua Libre items | Wikidata Q9309 (cy, `cym`), Q9142 (ga, `gle`), Q9314 (gd, `gla`), Q12107 (br, `bre`) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
+| eSpeak NG Celtic voices | github.com/espeak-ng/espeak-ng `docs/languages.md` | cy, ga, gd; no Breton |
+
+## Language research sources (group 5a: Latin-script languages)
+
+| What | Where | Notes |
+|---|---|---|
+| ESPDIC (Paul Denisowski) | download.freedict.org/dictionaries/epo-eng (FreeDict TEI) | CC BY 3.0; 63,895 entries eo→en; adds 3.5% of Esperanto words over wty |
+| WikDict | download.wikdict.com/dictionaries/tei (dan-rus, nor-rus, swe-rus; edition 2025.11.21) | CC BY-SA 3.0; from Wiktionary translation tables; raises the Russian coverage of Scandinavian languages |
+| Folkets lexikon | folkets-lexikon.csc.kth.se (XDXF) | CC BY-SA 2.5; sv↔en; not used (wty sv-en covers the frequent words) |
+| ReVo | github.com/revuloj/revo-fonto | GPL; Esperanto monolingual with translations; not used |
+| Norsk Ordbank | Språkbanken (nb.no/sprakbanken), Bokmål and Nynorsk word lists | CC BY 4.0 per Språkbanken, "restricted" in CLARIN listings; forms lexicon; not used |
+| Lewis & Short | github.com/PerseusDL/lexica (CC BY-SA 4.0) | Latin→English; no Yomitan build; not used |
+| Sloleks | CLARIN.SI (CC BY-SA 4.0) | Slovenian forms lexicon with accents; not used |
+| Lingua Libre items | Q7913 ron, Q9027 swe, Q9035 dan, Q9043 nor (Q25167 Bokmål, Q25164 Nynorsk), Q8748 sqi, Q143 epo, Q397 lat, Q9058 slk, Q9063 slv, Q9083 lit, Q7838 swa, Q8752 eus, Q9166 mlt | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
+| Microsoft Translator languages | api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation | No Esperanto or Latin; Norwegian is nb |
+| Google TTS languages | support.google.com/accessibility/android (TalkBack languages) | A hint; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
+| circle-flags language flags | github.com/HatScripts/circle-flags `flags/language/eo.svg`, `la.svg` (MIT, 379588b) | Esperanto and Latin flags |
+| Wikipedia articles | sq: Shqipëria, Tirana, Gjuha shqipe, Gjergj Kastrioti Skënderbeu; eo: Esperanto, Ludoviko Lazaro Zamenhof, Parizo, Akvo; la: Roma, Gaius Iulius Caesar, Lingua Latina, Europa; sw: Elimu, Kenya | CC BY-SA; plain-text extracts for lookup coverage; measurements only |
+
 ## Language research sources (group 5c: Finnish, Estonian, Hungarian, Azerbaijani, Uzbek)
 
 | What | Where | Notes |

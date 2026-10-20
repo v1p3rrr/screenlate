@@ -496,6 +496,8 @@
     <string name="popup_font_script_only_el">Solo para texto en griego</string>
     <string name="popup_font_script_only_hi">Solo para texto en hindi</string>
     <string name="popup_font_script_only_bn">Solo para texto en bengalí</string>
+    <string name="popup_font_script_only_ka">Solo para texto en georgiano</string>
+    <string name="popup_font_script_only_hy">Solo para texto en armenio</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

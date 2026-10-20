@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">격변화</string>
+    <string name="inflection_ka_nounadjsuffixstripping">명사·형용사의 격 어미나 복수 어미</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">주격</string>
+    <string name="inflection_ka_nounadjstemcompletion">자음으로 끝나는 명사·형용사 어간에 주격 어미 -ი를 되돌린 형태</string>
+    <string name="inflection_ka_vowelrestoration_label">탈락 모음</string>
+    <string name="inflection_ka_vowelrestoration">어간에서 탈락한 모음을 되돌린 형태</string>
+</resources>

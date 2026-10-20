@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">biến cách</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Đuôi cách hoặc đuôi số nhiều của danh từ hay tính từ</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">chủ cách</string>
+    <string name="inflection_ka_nounadjstemcompletion">Đuôi chủ cách -ი được trả lại cho gốc danh từ hay tính từ kết thúc bằng phụ âm</string>
+    <string name="inflection_ka_vowelrestoration_label">nguyên âm bị rụng</string>
+    <string name="inflection_ka_vowelrestoration">Nguyên âm bị rụng khỏi gốc, được khôi phục</string>
+</resources>
