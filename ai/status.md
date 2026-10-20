@@ -86,7 +86,9 @@ in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic,
 initial-mutation rule with the mutation's name, Irish and Gaelic elisions as French, regional flags, the Russian
 Gaelic name); questions 5-10 recorded overnight, 5 deferred (wty has no Breton), 6-10 decided provisionally;
 recognition measured on the emulator (ML Kit stays main; ML Kit never reads Welsh ŵ ŷ, Tesseract's Welsh model reads
-all). Not started: its order is the owner's call.
+all). Not started: its order is the owner's call. Downloaded for it (official sources, session scratchpad only): the
+wty files of cy, ga, gd, kaikki's Breton extracts and the other sources of `notes/references.md` (group 5b), Tesseract
+fast and best models; the Python environment for the PC OCR runs was removed afterwards.
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
