@@ -99,6 +99,11 @@ the owner (overnight)", marked deferred (the part waits) or decided provisionall
 asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
 root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
 
+Overnight progress (2026-10-20, 03:30): group 4b is done (Georgian and Armenian built, LK42-LK45 passed on the
+emulator, no open questions). The research of 5a-5e is done and merged; each plan file lists its open questions
+under "Questions for the owner (overnight)". Group 4d has its build plan (`plans/2026-10-19-group-4d.md`), 4e its
+plan from the research. Group 4c builds Thai and Khmer now; 4d and 4e follow in turn.
+
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
 passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
