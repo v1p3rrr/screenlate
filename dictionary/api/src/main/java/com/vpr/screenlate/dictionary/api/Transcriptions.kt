@@ -8,24 +8,40 @@ import com.vpr.screenlate.dictionary.api.registry.TranscriptionTags
 /**
  * Cleans up the phonetic transcriptions of Wiktionary dictionaries, which merge every edition and list dozens for a
  * common word, and adds their tags and the regions the tags name:
- * - a list in one string (`/a/, /b/`) is split into its transcriptions;
+ * - a list in one string (`/a/, /b/`, `//a/ [b]/`) is split into its transcriptions;
  * - transcriptions in an ASCII notation (SAMPA, X-SAMPA) or with quoted text in them are dropped;
  * - a phonetic `[…]` and a phonemic `/…/` form with the same symbols, syllable dots aside, become one, the phonemic
- *   one, with the tags and regions of both.
+ *   one, with the tags and regions of both;
+ * - those whose tags the language puts first (`LanguageSupport.firstTranscription`) go before the others.
  */
 internal object Transcriptions {
 
-    fun prepare(result: LookupResult, tags: Map<String, TranscriptionTags>, regionNames: Map<String, String>): LookupResult {
+    fun prepare(
+        result: LookupResult,
+        tags: Map<String, TranscriptionTags>,
+        regionNames: Map<String, String>,
+        first: (List<String>) -> Boolean = { false },
+    ): LookupResult {
         val pitches = result.term.pitches
         if (pitches.none { it.transcriptions.isNotEmpty() }) return result
         val prepared = pitches.map { group ->
-            if (group.transcriptions.isEmpty()) group else prepare(group, result.term.expression, tags[group.dictionary], regionNames)
+            if (group.transcriptions.isEmpty()) {
+                group
+            } else {
+                prepare(group, result.term.expression, tags[group.dictionary], regionNames, first)
+            }
         }
         return result.copy(term = result.term.copy(pitches = prepared))
     }
 
-    fun prepare(group: PitchGroup, term: String, tags: TranscriptionTags?, regionNames: Map<String, String>): PitchGroup {
-        val kept = mutableListOf<Item>()
+    fun prepare(
+        group: PitchGroup,
+        term: String,
+        tags: TranscriptionTags?,
+        regionNames: Map<String, String>,
+        first: (List<String>) -> Boolean = { false },
+    ): PitchGroup {
+        val found = mutableListOf<Item>()
         val byCore = HashMap<String, Item>()
         for (whole in group.transcriptions) {
             val itemTags = tags?.of(term, whole).orEmpty()
@@ -37,7 +53,7 @@ internal object Transcriptions {
                 val same = byCore[core]
                 if (same == null) {
                     Item(ipa, regions.toMutableList(), itemTags.toMutableList()).also {
-                        kept += it
+                        found += it
                         byCore[core] = it
                     }
                 } else {
@@ -47,6 +63,7 @@ internal object Transcriptions {
                 }
             }
         }
+        val kept = found.sortedBy { !first(it.tags) }
         val transcriptions = kept.map { it.ipa }
         if (transcriptions == group.transcriptions && kept.all { it.regions.isEmpty() && it.tags.isEmpty() }) return group
         return group.copy(
@@ -56,8 +73,18 @@ internal object Transcriptions {
         )
     }
 
-    /** The transcriptions of `/a/, /b/`; any other text is one transcription. */
+    /**
+     * The transcriptions of `/a/, /b/`, and of `//a/ [b]/` or `//a//`, which the converter writes for one Wiktionary
+     * template giving a phonemic and a phonetic form (6% of the Hebrew transcriptions); any other text is one
+     * transcription.
+     */
     internal fun split(ipa: String): List<String> {
+        if (ipa.startsWith("//") && ipa.endsWith("/")) {
+            val inner = ipa.substring(1, ipa.length - 1)
+            val parts = inner.split(" ")
+            if (parts.size > 1 && parts.all(::delimited)) return parts
+            if (delimited(inner)) return listOf(inner)
+        }
         if (", " !in ipa) return listOf(ipa)
         val parts = ipa.split(", ")
         return if (parts.all(::delimited)) parts else listOf(ipa)

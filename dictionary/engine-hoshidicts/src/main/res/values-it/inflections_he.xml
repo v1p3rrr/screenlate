@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">e</string>
+    <string name="inflection_he_v">e (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">che</string>
+    <string name="inflection_he_sh">che, il quale, chi (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">quando</string>
+    <string name="inflection_he_ksh">quando, mentre (כשהגעתי)</string>
+    <string name="inflection_he_b_label">in</string>
+    <string name="inflection_he_b">in, a, con (בבית)</string>
+    <string name="inflection_he_k_label">come</string>
+    <string name="inflection_he_k">come, in qualità di (כילד)</string>
+    <string name="inflection_he_l_label">a</string>
+    <string name="inflection_he_l">a, per (לבית)</string>
+    <string name="inflection_he_m_label">da</string>
+    <string name="inflection_he_m">da, di; che (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">articolo</string>
+    <string name="inflection_he_h">articolo determinativo (הבית)</string>
+</resources>

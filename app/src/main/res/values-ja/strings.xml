@@ -497,6 +497,7 @@
     <string name="popup_font_script_only_km">クメール語の文字だけに使う</string>
     <string name="popup_font_script_only_ar">アラビア語の文字だけに使う</string>
     <string name="popup_font_script_only_fa">ペルシア語の文字だけに使う</string>
+    <string name="popup_font_script_only_he">ヘブライ語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

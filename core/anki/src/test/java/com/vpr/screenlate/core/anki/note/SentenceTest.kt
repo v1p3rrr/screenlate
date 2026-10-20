@@ -244,6 +244,14 @@ class SentenceTest {
     }
 
     @Test
+    fun hebrewSentencesKeepTheMaqafTheGershayimAndAQuotedExclamation() {
+        val hebrew = "הלכתי לבית־הספר. מה שלומך? הוא אמר: „שלום!” וצה״ל הגיע."
+        assertThat(extract(hebrew, "הספר", Language.HEBREW).text).isEqualTo("הלכתי לבית־הספר.")
+        assertThat(extract(hebrew, "שלומך", Language.HEBREW).text).isEqualTo("מה שלומך?")
+        assertThat(extract(hebrew, "וצה״ל", Language.HEBREW).text).isEqualTo("הוא אמר: „שלום!” וצה״ל הגיע.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

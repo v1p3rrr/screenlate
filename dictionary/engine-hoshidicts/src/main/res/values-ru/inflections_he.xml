@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">и</string>
+    <string name="inflection_he_v">и (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">что</string>
+    <string name="inflection_he_sh">что, который, кто (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">когда</string>
+    <string name="inflection_he_ksh">когда, в то время как (כשהגעתי)</string>
+    <string name="inflection_he_b_label">в</string>
+    <string name="inflection_he_b">в, на, с помощью (בבית)</string>
+    <string name="inflection_he_k_label">как</string>
+    <string name="inflection_he_k">как, подобно (כילד)</string>
+    <string name="inflection_he_l_label">к</string>
+    <string name="inflection_he_l">к, для (לבית)</string>
+    <string name="inflection_he_m_label">из</string>
+    <string name="inflection_he_m">из, от; чем (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">артикль</string>
+    <string name="inflection_he_h">определённый артикль (הבית)</string>
+</resources>

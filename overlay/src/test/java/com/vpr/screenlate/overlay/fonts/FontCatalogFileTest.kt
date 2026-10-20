@@ -103,6 +103,17 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `hebrew has a sans-serif and a serif, offered for hebrew only`() {
+        val hebrew = fonts.filter { it.subsets == listOf("hebrew") }
+        assertThat(hebrew.map { it.family }).containsExactly("Heebo", "Frank Ruhl Libre")
+        for (font in hebrew) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.HEBREW)
+        }
+        // Latin fonts have no Hebrew.
+        assertThat(fonts.filter { it.isOfferedFor(Language.HEBREW) }).containsExactlyElementsIn(hebrew)
+    }
+
+    @Test
     fun `georgian and armenian are offered no downloadable font, only the system's`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
         assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()
