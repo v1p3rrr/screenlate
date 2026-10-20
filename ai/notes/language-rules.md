@@ -13,7 +13,9 @@ request 69): text read from apps is taken as it is. One-for-one fixes go in `Lan
 which run only from `OcrPage.inLanguage` in `CompositeOcr`; `OverlayController.readAppText` skips them. Lookup
 variants for OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) run only for words
 from OCR, which needs each line's source to reach the lookup (planned in groups 5b and 5c). Where people often type
-the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text.
+the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text. So does the planned
+fallback of group 5b: a Welsh or Scottish Gaelic word without marks that finds no entry also tries the headwords that
+differ from it only by marks (ty finds tŷ, bith finds bìth); Irish words are looked up as written.
 
 ## Paths and test names
 
