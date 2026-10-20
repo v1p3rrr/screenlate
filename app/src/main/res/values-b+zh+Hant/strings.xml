@@ -496,6 +496,7 @@
     <string name="popup_font_script_only_th">僅用於泰文文字</string>
     <string name="popup_font_script_only_km">僅用於高棉文文字</string>
     <string name="popup_font_script_only_ar">僅用於阿拉伯文文字</string>
+    <string name="popup_font_script_only_fa">僅用於波斯文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

@@ -72,7 +72,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -128,6 +128,17 @@ class CatalogFileTest {
         )
         assertThat(khmer.map { it.id }).contains("tesseract-best-khm")
         assertThat(khmer.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+    }
+
+    @Test
+    fun `persian offers five wiktionaries, its transcription and wordfreq's small list, ticked, and no on-device model`() {
+        val persian = catalog!!.entries.filter { it.sourceLanguage == "fa" }
+        assertThat(persian.map { it.id }).containsExactly(
+            "wiktionary-fa-en", "wiktionary-fa-ru", "wiktionary-fa-fr", "wiktionary-fa-pl", "wiktionary-fa-zh",
+            "wiktionary-fa-transcription", "wordfreq-fa",
+        )
+        assertThat(persian.all { it.recommended }).isTrue()
+        assertThat(persian.first { it.id == "wordfreq-fa" }.downloadUrl).endsWith("/small_fa.msgpack.gz")
     }
 
     @Test

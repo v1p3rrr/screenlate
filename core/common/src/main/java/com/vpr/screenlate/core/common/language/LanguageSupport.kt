@@ -388,8 +388,9 @@ enum class SearchResolution { WORD, LETTER }
  *
  * @property everyHeadword headwords carry the marks and lemmas name headwords as written: a headword with definitions
  * is also found without them, and lemmas keep them.
- * @property replacements marks that running text writes as another one (the Hindi candrabindu as anusvara): a word is
- * also found with them replaced, with its [marks] and without them.
+ * @property replacements characters that running text writes as others (the Hindi candrabindu as anusvara, the
+ * Arabic ي of a Persian headword as ی) or leaves out (the Persian zero-width non-joiner, replaced by nothing): a
+ * word is also found with them replaced, with its [marks] and without them.
  * @property furtherReplacements replacements made on top of [replacements] for one more spelling: Arabic headwords are
  * found with final ى and ة written ي and ه, and also with their hamza alefs written as a bare alif.
  * @property lemmasAsWritten lemmas name headwords with their marks and keep them; otherwise they lose them (Arabic
@@ -451,4 +452,5 @@ val Language.support: LanguageSupport
         Language.THAI -> ThaiSupport
         Language.KHMER -> KhmerSupport
         Language.ARABIC -> ArabicSupport
+        Language.PERSIAN -> PersianSupport
     }

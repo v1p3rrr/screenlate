@@ -502,6 +502,7 @@
     <string name="popup_font_script_only_th">Só para texto em tailandês</string>
     <string name="popup_font_script_only_km">Só para texto em khmer</string>
     <string name="popup_font_script_only_ar">Só para texto em árabe</string>
+    <string name="popup_font_script_only_fa">Só para texto em persa</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

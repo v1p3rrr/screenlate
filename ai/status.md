@@ -164,7 +164,21 @@ names in 14 locales, wordfreq, Tesseract `ara`, Noto Naskh Arabic by `local()`, 
 downloadable, flag sa, bubble ض, scan length 24. LK48, POP26, AUD13, ANK17 and OCR29 passed on the emulator after
 three fixes (Tesseract word boxes over earlier words, transcriptions out of the dictionary's order in languages
 without audio regions, the Naskh `local()` names). Overnight question 2 (Arabic homographs through form rows: ذهبت
-shows ذَهَب, gold, before ذَهَبَ, to go) is decided provisionally as Yomitan does. Persian, then Hebrew, follow.
+shows ذَهَب, gold, before ذَهَبَ, to go) was answered by the owner: as Yomitan does, kept.
+
+Persian is done on `languages/fa` (2026-10-20): `PersianSupport` (؟ ends a sentence, abbreviations ص. ج. ر.ک. ق.م.,
+the non-joiner and vowel marks inside words, a separate می/نمی and ها/های/تر/ترین tried joined to their word, OCR
+words in Persian letters, import keys without the non-joiner and with ي ك ى ۀ as ی ک ی ه, Cyrillic Tajik form rows
+dropped, audio with Arabic-letter titles, wordfreq spellings without the non-joiner); the bundle's own processors and
+32 own rules (enclitics, plurals, comparatives, verb prefixes) matching entries without a part of speech, each with a
+name and a description in 14 locales (overnight question 1, answered "names and descriptions"; the generator now
+takes the app's own rules); the Latin reading after the word (`reading-fa.js`); wty fa-en, ru, fr, pl, zh, the
+transcriptions and wordfreq `small_fa`; Vazirmatn; flag ir, bubble پ; cloud recognition only. Coverage: 11,017 of
+wordfreq's 20,000 commonest words are entries as they are, 15,033 with the rules, the word itself first in all
+11,017. LK49, POP27, AUD14, ANK18 and OCR30 passed on the emulator. Found: hoshidicts keeps a headword's JSON escapes
+(`\u200C`) as written, so a dictionary that writes them escaped imports but finds nothing (wty and Yomitan exports
+write the characters; a follow-up, `notes/dictionary-engine.md`). Overnight questions 3 (order of transcriptions) and
+4 (colloquial endings) are decided provisionally. Hebrew follows.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

@@ -412,6 +412,75 @@ class LanguageLookupTest {
         assertThat(engine.lookup("kutub", arabic)).isEmpty()
     }
 
+    @Test
+    fun persianWithoutTheNonJoinerOrWithArabicLettersFindsItsWordsThroughOwnEndingsAndJoinedTries() = runTest {
+        val imported = engine.import(persianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val persian = LookupOptions(language = Language.PERSIAN)
+        suspend fun first(text: String) = engine.lookup(text, persian).first()
+
+        // The non-joiner is dropped in the text and in headwords, so either spelling finds the word.
+        assertThat(first("آنها").term.expression).isEqualTo("آن\u200Cها")
+        assertThat(first("آن\u200Cها").term.expression).isEqualTo("آن\u200Cها")
+        // A headword with the non-joiner and no form row of its spelling without it.
+        assertThat(first("زیستشناسی").term.expression).isEqualTo("زیست\u200Cشناسی")
+        // An ending after the non-joiner, read with the Arabic kaf; the entries give no part of speech.
+        val books = first("کتاب\u200Cها")
+        assertThat(books.term.expression).isEqualTo("کتاب")
+        assertThat(books.matched).isEqualTo("کتاب\u200Cها")
+        val theirBooks = first("كتابهایشان")
+        assertThat(theirBooks.term.expression).isEqualTo("کتاب")
+        assertThat(theirBooks.trace.map { it.name }).containsExactly("-ها", "-یشان")
+        // The popup shows the rules' names and descriptions in the app's language, not the affixes.
+        assertThat(theirBooks.trace.map { it.label }).containsNoneOf("", "-ها", "-یشان")
+        assertThat(theirBooks.trace.map { it.description }).doesNotContain("")
+        assertThat(first("درختان").term.expression).isEqualTo("درخت")
+        assertThat(first("ستارگان").term.expression).isEqualTo("ستاره")
+        assertThat(first("خانۀ").term.expression).isEqualTo("خانه")
+        // A verb form through its form row, with the non-joiner, without it and with the prefix written apart.
+        val want = first("میخواهم")
+        assertThat(want.term.expression).isEqualTo("خواستن")
+        assertThat(want.trace.map { it.name }).containsExactly("first-person singular present indicative")
+        assertThat(first("می\u200Cخواهم").term.expression).isEqualTo("خواستن")
+        val apart = first("می خواهم بروم")
+        assertThat(apart.term.expression).isEqualTo("خواستن")
+        assertThat(apart.matched).isEqualTo("می خواهم")
+        val biggest = first("بزرگ ترین")
+        assertThat(biggest.term.expression).isEqualTo("بزرگ")
+        assertThat(biggest.matched).isEqualTo("بزرگ ترین")
+        // One ending comes before two: خانه‌ای (a house) is خانه before خان through -ی and -ها.
+        assertThat(first("خانه\u200Cای").term.expression).isEqualTo("خانه")
+        // Cyrillic Tajik forms are not keyed.
+        assertThat(engine.lookup("ҳалол", persian)).isEmpty()
+        assertThat(first("حلال").term.expression).isEqualTo("حلال")
+    }
+
+    /**
+     * Rows as Wiktionary's Persian exports write them: no part of speech, Latin readings, headwords with the non-joiner
+     * (one with its spelling without it as a form row), a verb form, a Cyrillic Tajik form.
+     */
+    private fun persianDictionary(): File = zip(
+        "fa.zip",
+        "index.json" to """{"title":"Test Persian","revision":"1","format":3,"sourceLanguage":"fa"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["کتاب","kitāb","n","",0,["book"],1,""],
+              ["آن${ZWNJ}ها","ân-hâ","pron","",0,["they"],2,""],
+              ["آنها","","non-lemma","",0,[["آن${ZWNJ}ها",["alternative"]]],3,""],
+              ["خواستن","xwāstan","v","",0,["to want"],4,""],
+              ["میخواهم","","non-lemma","",0,[["خواستن",["first-person singular present indicative"]]],5,""],
+              ["بزرگ","buzurg","adj","",0,["big"],6,""],
+              ["درخت","daraxt","n","",0,["tree"],7,""],
+              ["ستاره","sitāra","n","",0,["star"],8,""],
+              ["خانه","xāna","n","",0,["house"],9,""],
+              ["خان","xān","n","",0,["khan"],10,""],
+              ["حلال","halâl","adj","",0,["halal"],11,""],
+              ["ҳалол","","non-lemma","",0,[["حلال",["Cyrillic Tajik"]]],12,""],
+              ["زیست${ZWNJ}شناسی","zīst-šināsī","n","",0,["biology"],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /**
      * Rows as Wiktionary's Arabic exports write them: unvowelled headwords with the vowelled spelling as the reading,
      * adjectives without a part of speech, forms naming vowelled lemmas, template names among tags, romanized forms.
@@ -663,5 +732,11 @@ class LanguageLookupTest {
     private companion object {
         /** The table's file name inside a dictionary directory (`HoshidictsEngine`). */
         const val FORM_OF_TABLE = "form_of.bin"
+
+        /**
+         * The zero-width non-joiner, written into raw JSON as the character itself, as Wiktionary's exports hold it:
+         * hoshidicts keeps a headword's JSON escapes (`\u200C`) as written.
+         */
+        const val ZWNJ = "\u200C"
     }
 }

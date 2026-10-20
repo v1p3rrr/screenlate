@@ -236,6 +236,14 @@ class SentenceTest {
     }
 
     @Test
+    fun persianSentencesEndAtTheArabicQuestionMarkNotAtItsCommaOrAPageNumber() {
+        val persian = "کتاب\u200Cها را خواندی؟ بله، در کتابخانه خواندم؛ خیلی خوب بود. نگاه کن ص. ۱۲ «عالی!» گفت."
+        assertThat(extract(persian, "خواندی", Language.PERSIAN).text).isEqualTo("کتاب\u200Cها را خواندی؟")
+        assertThat(extract(persian, "کتابخانه", Language.PERSIAN).text).isEqualTo("بله، در کتابخانه خواندم؛ خیلی خوب بود.")
+        assertThat(extract(persian, "نگاه", Language.PERSIAN).text).isEqualTo("نگاه کن ص. ۱۲ «عالی!» گفت.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

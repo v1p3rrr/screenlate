@@ -42,7 +42,9 @@ const borrowed = {
  * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out; Thai
  * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have; Khmer
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
- * final ة as ه. Processors join the descriptor's capitalization processors, its own list, or make its list.
+ * final ة as ه; Persian text may give Arabic letters for its own, lose its zero-width non-joiners and write a verb
+ * prefix or an ending apart. Processors join the descriptor's capitalization processors, its own list, or make its
+ * list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -53,11 +55,16 @@ const addedPreprocessors = {
     th: ['thaiCharacterOrder', 'thaiMaiYamokSpace'],
     km: ['khmerZeroWidthSpace', 'khmerSubscriptDa'],
     ar: ['arabicTaMarbutaAsHa'],
+    fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
 };
 
-/** Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings. */
+/**
+ * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
+ * Persian endings and verb prefixes.
+ */
 const addedTransforms = {
     bn: 'bengaliTransforms',
+    fa: 'persianTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));

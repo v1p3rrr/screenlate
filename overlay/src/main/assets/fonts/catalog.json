@@ -799,6 +799,33 @@
       "homepage": "https://fonts.google.com/specimen/Amiri"
     },
     {
+      "id": "vazirmatn",
+      "family": "Vazirmatn",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Persian sans-serif by Saber Rastikerdar, with Latin, from thin to black.",
+        "ru": "Персидский шрифт без засечек, автор — Saber Rastikerdar; с латиницей, от тонкого до сверхжирного.",
+        "de": "Persische serifenlose Schrift von Saber Rastikerdar, mit Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente persa sin serifa de Saber Rastikerdar, con latino, de fina a ultranegrita.",
+        "fr": "Police persane sans empattement de Saber Rastikerdar, avec le latin, de maigre à extra-grasse.",
+        "it": "Carattere persiano senza grazie di Saber Rastikerdar, con il latino, da sottile a nero.",
+        "ja": "Saber Rastikerdar によるペルシア語のサンセリフ。ラテン文字付き。極細から極太まで。",
+        "ko": "Saber Rastikerdar가 만든 페르시아어 산세리프로, 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Bezszeryfowy krój perski autorstwa Sabera Rastikerdara, z łacinką, od cienkiego do najgrubszego.",
+        "pt": "Fonte persa sem serifa de Saber Rastikerdar, com latino, de fina a ultranegrito.",
+        "tr": "Saber Rastikerdar’ın Farsça için tırnaksız yazı tipi, Latin harfleriyle; inceden en kalına.",
+        "vi": "Phông chữ Ba Tư không chân của Saber Rastikerdar, kèm chữ Latinh, từ mảnh đến rất đậm.",
+        "zh": "Saber Rastikerdar 设计的波斯文无衬线字体，附拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Saber Rastikerdar 設計的波斯文無襯線字型，附拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/vazirmatn/Vazirmatn%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Vazirmatn"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

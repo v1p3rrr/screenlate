@@ -505,6 +505,7 @@
     <string name="popup_font_script_only_th">Tylko dla tekstu tajskiego</string>
     <string name="popup_font_script_only_km">Tylko dla tekstu khmerskiego</string>
     <string name="popup_font_script_only_ar">Tylko dla tekstu arabskiego</string>
+    <string name="popup_font_script_only_fa">Tylko dla tekstu perskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

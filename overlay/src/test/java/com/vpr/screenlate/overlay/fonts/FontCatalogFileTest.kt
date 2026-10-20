@@ -91,13 +91,15 @@ class FontCatalogFileTest {
     }
 
     @Test
-    fun `arabic has a sans-serif and a naskh, offered by their script and not for latin languages`() {
+    fun `the arabic script has two sans-serifs and a naskh, offered for arabic and persian and not for latin languages`() {
         val arabic = fonts.filter { it.subsets == listOf("arabic") }
-        assertThat(arabic.map { it.family }).containsExactly("Noto Sans Arabic", "Amiri")
+        assertThat(arabic.map { it.family }).containsExactly("Noto Sans Arabic", "Amiri", "Vazirmatn")
+        // Each has the letters of both languages (پ چ ژ گ ک ی, ة ى and both digit sets).
         for (font in arabic) {
-            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.ARABIC)
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.ARABIC, Language.PERSIAN)
         }
         assertThat(fonts.filter { it.isOfferedFor(Language.ARABIC) }).containsExactlyElementsIn(arabic)
+        assertThat(fonts.filter { it.isOfferedFor(Language.PERSIAN) }).containsExactlyElementsIn(arabic)
     }
 
     @Test

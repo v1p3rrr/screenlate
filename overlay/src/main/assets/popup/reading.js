@@ -1,6 +1,7 @@
 /*
  * Readings of headwords drawn by a language's own rules: Chinese pinyin, one syllable per character, the stressed
- * form of Russian words and the vowelled form of Arabic ones. Japanese readings go through YomitanRender.furigana instead.
+ * form of Russian words, the vowelled form of Arabic ones and the Latin reading after Persian ones. Japanese readings
+ * go through YomitanRender.furigana instead.
  *
  *   addLanguage(tag, rules)                 registers a language's rules; each language has them in a script of its
  *                                           own, such as reading-zh.js. rules.syllables(reading) splits a reading into
@@ -8,12 +9,15 @@
  *                                           null for a reading it cannot split; rules.segments(expression, reading)
  *                                           gives [[text, parts | null], ...], one ruby per text with parts;
  *                                           rules.sentenceSegments(text, expression, reading), when a language has
- *                                           it, gives the segments of a word as a sentence spells it (text).
+ *                                           it, gives the segments of a word as a sentence spells it (text);
+ *                                           rules.after(expression, reading), when a language has it, gives the text
+ *                                           shown after the word instead of over it, or null.
  *   segments(lang, expression, reading)     the language's segments, or null for a language without rules.
  *   sentenceSegments(lang, text, expression, reading)
  *                                           the language's segments of a word in a sentence, or null when the
  *                                           language has no such rules.
  *   syllables(lang, reading)                the language's syllables, or null.
+ *   after(lang, expression, reading)        the language's text after the word, or null.
  */
 const HeadwordReading = (() => {
     const languages = new Map();
@@ -40,5 +44,9 @@ const HeadwordReading = (() => {
         return rulesOf(lang)?.sentenceSegments?.(text || '', expression || '', reading || '') ?? null;
     }
 
-    return { addLanguage, segments, sentenceSegments, syllables };
+    function after(lang, expression, reading) {
+        return rulesOf(lang)?.after?.(expression || '', reading || '') || null;
+    }
+
+    return { addLanguage, after, segments, sentenceSegments, syllables };
 })();

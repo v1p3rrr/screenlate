@@ -1744,6 +1744,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-fa",
+      "title": "wordfreq (fa)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq fa"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "fa",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_fa.msgpack.gz",
+      "downloadSize": 147747,
+      "sha256": "bfb503f6b0d6bdddce720ee8154faf1c79d8b0417e6c865643da3b17b7638057",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "corpus-th",
       "title": "Thai National Corpus (th)",
       "template": "tnc",
@@ -12757,6 +12776,124 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ar/wty-ar-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 419354,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-en",
+      "title": "Wiktionary (fa–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fa-en",
+        "kty-fa-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fa",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/en/wty-fa-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 3338272,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-ru",
+      "title": "Wiktionary (fa–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fa-ru",
+        "kty-fa-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fa",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/ru/wty-fa-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 437431,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-fr",
+      "title": "Wiktionary (fa–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fa-fr",
+        "kty-fa-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fa",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/fr/wty-fa-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 125017,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-pl",
+      "title": "Wiktionary (fa–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fa-pl",
+        "kty-fa-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fa",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/pl/wty-fa-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 109486,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-zh",
+      "title": "Wiktionary (fa–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-fa-zh",
+        "kty-fa-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "fa",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/fa/zh/wty-fa-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 248334,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-fa-transcription",
+      "title": "Wiktionary transcription (fa)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-fa-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "fa",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-fa-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/fa/wty-fa-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 566297,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

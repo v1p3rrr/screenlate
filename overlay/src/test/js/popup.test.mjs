@@ -293,6 +293,32 @@ test('a right-to-left language runs its text, headwords and readings that way an
     assert.equal(content.querySelector('[dir]'), null);
 });
 
+test('a persian latin reading follows the word in its own direction and is left out of a copied selection', () => {
+    Popup.setAppearance({ lang: 'fa' });
+    Popup.render(state({
+        source: { text: 'مجازی است', matched: 5 },
+        results: [result('مجازی', 'majâzi'), result('است', '')],
+        rightToLeft: true,
+    }));
+    const [first, second] = content.querySelectorAll('.entry-head');
+    const expression = first.querySelector('.expression');
+    assert.equal(expression.textContent, 'مجازی');
+    assert.equal(expression.dir, 'rtl');
+    assert.equal(expression.querySelector('ruby'), null);
+    const reading = first.querySelector('.reading-after');
+    assert.equal(reading.textContent, 'majâzi');
+    assert.equal(reading.dir, 'ltr');
+    assert.equal(reading.previousElementSibling, expression);
+    // Without a reading nothing follows the word.
+    assert.equal(second.querySelector('.reading-after'), null);
+    const css = readFileSync(new URL('../../main/assets/popup/popup.css', import.meta.url), 'utf8');
+    assert.match(css, /\.copying \.reading-after \{\s*display: none;/);
+    // Arabic draws its vowelled reading in the word's place, with nothing after it.
+    Popup.setAppearance({ lang: 'ar' });
+    Popup.render(state({ source: { text: 'كتاب', matched: 4 }, results: [result('كتاب', 'كِتَاب')], rightToLeft: true }));
+    assert.equal(content.querySelector('.reading-after'), null);
+});
+
 test('chinese character readings are marked with their tones', () => {
     Popup.render({
         theme: 'light',

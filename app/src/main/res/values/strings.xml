@@ -503,6 +503,7 @@
     <string name="popup_font_script_only_th">Only for Thai text</string>
     <string name="popup_font_script_only_km">Only for Khmer text</string>
     <string name="popup_font_script_only_ar">Only for Arabic text</string>
+    <string name="popup_font_script_only_fa">Only for Persian text</string>
     <string name="popup_font_system_zh">Phone\'s Chinese font</string>
     <string name="popup_font_system_ko">Phone\'s Korean font</string>
     <string name="popup_font_script_only_zh">Only for Chinese text</string>

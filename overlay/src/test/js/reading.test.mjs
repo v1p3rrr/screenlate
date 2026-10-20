@@ -110,5 +110,17 @@ test("an arabic reading that only adds vowel marks takes the word's place", () =
 test('an arabic reading with other letters goes over the word, and the rules stay with arabic', () => {
     assert.deepEqual(arabic('اكبر', 'أَكْبَر'), ['اكبر[أَكْبَر]']);
     assert.equal(HeadwordReading.syllables('ar', 'كِتَاب'), null);
-    for (const lang of ['fa', 'ur', 'he', 'en']) assert.deepEqual(arabic('كتاب', 'كِتَاب', lang), [], lang);
+    for (const lang of ['ur', 'he', 'en']) assert.deepEqual(arabic('كتاب', 'كِتَاب', lang), [], lang);
+    // Persian keeps the word as written.
+    assert.deepEqual(arabic('كتاب', 'كِتَاب', 'fa'), ['كتاب']);
+});
+
+test('a persian latin reading stands after the word, which keeps its place', () => {
+    assert.deepEqual(arabic('مجازی', 'majâzi', 'fa'), ['مجازی']);
+    assert.equal(HeadwordReading.after('fa', 'مجازی', 'majâzi'), 'majâzi');
+    assert.equal(HeadwordReading.after('fa', 'مجازی', ''), null);
+    assert.equal(HeadwordReading.after('fa', 'مجازی', 'مجازی'), null);
+    assert.equal(HeadwordReading.syllables('fa', 'majâzi'), null);
+    // Other languages draw their readings over or in the word.
+    for (const lang of ['ar', 'zh', 'ru', 'ur', 'en']) assert.equal(HeadwordReading.after(lang, 'كتاب', 'kitāb'), null, lang);
 });

@@ -399,7 +399,8 @@ const Popup = (() => {
 
         const head = element('div', 'entry-head');
         const expression = element('span', 'expression');
-        const segments = HeadwordReading.segments(result.lang || document.documentElement.lang, term.expression, term.reading);
+        const lang = result.lang || document.documentElement.lang;
+        const segments = HeadwordReading.segments(lang, term.expression, term.reading);
         if (segments || renderer) {
             if (segments) drawSegments(expression, segments);
             else renderer.furigana(expression, term.expression, term.reading, 'kanji-char');
@@ -416,6 +417,12 @@ const Popup = (() => {
         if (category) expression.dataset.pitchCategory = category;
         if (rightToLeft) expression.dir = 'rtl';
         head.append(expression);
+        const after = HeadwordReading.after(lang, term.expression, term.reading);
+        if (after) {
+            const reading = element('span', 'reading-after', after);
+            reading.dir = 'ltr';
+            head.append(reading);
+        }
         const details = entryInfo(result, labels);
         if (details) head.append(details);
         const buttons = actionButtons(result, index);

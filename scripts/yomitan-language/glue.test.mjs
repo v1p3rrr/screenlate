@@ -6,6 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
+import {persianTransforms} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -368,4 +369,94 @@ test('yomitan\'s own arabic cases are found through the bundle', {skip: !process
     const bundle = load('ar');
     const missed = cases.filter(({term, source}) => !bundle.candidates(source, 'ar', 'word').some((c) => c.d === term));
     assert.deepEqual(missed, []);
+});
+
+/**
+ * The candidate the engine shows first for [text]: the longest match, then the fewest processor steps, then the
+ * shortest chain of rules (YomitanSorter's order before frequencies).
+ * @param {string} language
+ * @param {string} text
+ */
+function first(language, text) {
+    const chain = (c) => Math.max(0, ...c.r.map((r) => r.length));
+    return [...candidates(language, text)]
+        .sort((a, b) => [...b.o].length - [...a.o].length || a.s - b.s || chain(a) - chain(b))[0].d;
+}
+
+test('persian endings and verb prefixes are undone and chained; the results match entries without a part of speech', () => {
+    // An enclitic first, then a plural: کتابهایشان (their books) is کتاب through -یشان and -ها.
+    const book = candidates('fa', 'کتاب\u200Cهایشان').find((c) => c.d === 'کتاب');
+    assert.ok(book);
+    assert.ok(book.u);
+    assert.equal(JSON.stringify(book.r), JSON.stringify([['-ها', '-یشان']]));
+    assert.ok(queried('fa', 'درختان').has('درخت'));
+    assert.ok(queried('fa', 'ستارگان').has('ستاره'));
+    assert.ok(queried('fa', 'بزرگترین').has('بزرگ'));
+    assert.ok(queried('fa', 'نمی\u200Cدانم').has('دانم'));
+    assert.ok(queried('fa', 'بروم').has('روم'));
+    // Two letters stay, and three after ب and ن: نان is not cut to ان or ن, nor ام to ا.
+    assert.deepEqual([...queried('fa', 'نان')], ['نان']);
+    assert.deepEqual([...queried('fa', 'ام')], ['ام']);
+    // An enclitic comes off before a plural, not after it.
+    assert.ok(!queried('fa', 'کتابیها').has('کتاب'));
+    // The text itself stays typed.
+    assert.ok(!candidates('fa', 'درختان').find((c) => c.d === 'درختان').u);
+});
+
+test('every persian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_fa.xml'), 'utf8');
+    const rules = Object.entries(persianTransforms.transforms);
+    assert.equal(rules.length, 32);
+    for (const [id, {name, description}] of rules) {
+        // The id (-ها) stays what the engine reports and Anki's {conjugation} shows; the name is what the popup shows.
+        assert.notEqual(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`>${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('persian text drops the zero-width non-joiner and writes arabic letters as persian ones', () => {
+    assert.ok(queried('fa', 'می\u200Cروم').has('میروم'));
+    assert.ok(queried('fa', 'كتاب').has('کتاب'));
+    assert.ok(queried('fa', 'يك').has('یک'));
+    assert.ok(queried('fa', 'مى').has('می'));
+    assert.ok(queried('fa', 'خانۀ').has('خانه'));
+    // The word itself comes first, without the non-joiner and in persian letters.
+    assert.equal(first('fa', 'می\u200Cشود'), 'میشود');
+    assert.equal(first('fa', 'کتاب\u200Cها'), 'کتابها');
+    assert.equal(first('fa', 'خانه\u200Cای'), 'خانهای');
+    assert.equal(first('fa', 'كتاب'), 'کتاب');
+    assert.equal(first('fa', 'است'), 'است');
+});
+
+test('a persian verb prefix or ending written apart is tried joined to its word', () => {
+    assert.ok(queried('fa', 'می خواهم بروم').has('میخواهم'));
+    assert.ok(queried('fa', 'می خواهم بروم').has('خواهم'));
+    assert.ok(queried('fa', 'نمی دانم').has('نمیدانم'));
+    const books = queried('fa', 'کتاب ها را');
+    assert.ok(books.has('کتابها'));
+    assert.ok(books.has('کتاب'));
+    assert.ok(queried('fa', 'کتاب های من').has('کتابهای'));
+    assert.ok(queried('fa', 'بزرگ ترین').has('بزرگ'));
+    // A word ending in می, and a word that only starts like an ending, stay apart.
+    assert.ok(!queried('fa', 'سمی خواهم').has('سمیخواهم'));
+    assert.ok(!queried('fa', 'کتاب هوا').has('کتابهوا'));
+    assert.ok(!queried('fa', 'کتاب ترس').has('کتابترس'));
+});
+
+test('persian rules and processors stay out of other languages, arabic ones out of persian', () => {
+    for (const language of ['ar', 'en', 'tr']) {
+        // Written joined: every language cuts a text at a non-joiner, which would leave کتاب itself.
+        assert.ok(!queried(language, 'کتابهایشان').has('کتاب'), language);
+        assert.ok(!queried(language, 'می خواهم').has('میخواهم'), language);
+        assert.ok(!queried(language, 'كتاب').has('کتاب'), language);
+        // Arabic's dual -ان gives درخت from درختان too; -گان → ه is Persian's own.
+        assert.ok(!queried(language, 'ستارگان').has('ستاره'), language);
+        assert.ok(!queried(language, 'میخواهم').has('خواهم'), language);
+    }
+    assert.ok(!queried('fa', 'والكتاب').has('کتاب'));
+    assert.ok(!queried('fa', 'مدرسة').has('مدرسه'));
+    assert.ok(candidates('fa', 'والكتاب').every((c) => !c.u));
 });

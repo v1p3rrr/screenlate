@@ -8,6 +8,7 @@ import com.vpr.screenlate.core.common.language.GeorgianSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.core.common.language.KhmerSupport
+import com.vpr.screenlate.core.common.language.PersianSupport
 import com.vpr.screenlate.core.common.language.ThaiSupport
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -90,5 +91,14 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Arabic serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in ArabicSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Persian (fa-Arab) finds the same font through the script. */
+    @Test
+    fun findsTheArabicSerifForPersian() {
+        val font = SystemFontFiles.find(PersianSupport, serif = true)
+        assumeTrue("The phone has no Arabic serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in PersianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

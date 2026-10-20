@@ -109,3 +109,42 @@ export const arabicTaMarbutaAsHa = {
     description: 'مدرسة → مدرسه',
     process: (str) => [str, str.replace(/\u0629(?=\s|$)/g, '\u0647')],
 };
+
+/**
+ * Persian text with the Arabic yeh, kaf and alif maqsura (ي ك ى), which Arabic keyboards and fonts give, and the heh
+ * with yeh above ۀ of the ezafe (خانۀ): Persian headwords write ی ک ی and ه. The import keys headwords written with
+ * the Arabic letters under the Persian ones (PersianSupport's `HeadwordMarks`).
+ * @type {import('language').TextProcessor}
+ */
+export const persianLetters = {
+    name: 'Persian letters',
+    description: 'كتاب → کتاب, خانۀ → خانه',
+    process: (str) => [str.replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/ى/g, 'ی').replace(/ۀ/g, 'ه')],
+};
+
+/**
+ * Persian text without the zero-width non-joiner inside words (می‌روم, کتاب‌ها), which recognition loses and
+ * typing often leaves out; the import keys headwords written with it without it as well.
+ * @type {import('language').TextProcessor}
+ */
+export const removePersianZeroWidthNonJoiner = {
+    name: 'Remove zero-width non-joiner',
+    description: 'می\u200Cروم → میروم',
+    process: (str) => [str.replace(/\u200C/g, '')],
+};
+
+/**
+ * A Persian verb prefix (می, نمی) or a plural or comparative ending (ها, های, تر, ترین) written apart from its word,
+ * where headwords write them joined, also tried joined: می خواهم → میخواهم, کتاب ها → کتابها.
+ * @type {import('language').TextProcessor}
+ */
+export const persianJoinedAffixes = {
+    name: 'Persian affixes written apart',
+    description: 'می خواهم → میخواهم, کتاب ها → کتابها',
+    process: (str) => [
+        str,
+        str
+            .replace(/(^|[^\p{L}\p{M}])(ن?می)\s+(?=\p{L})/gu, '$1$2')
+            .replace(/(?<=\p{L})\s+(?=(?:ها|های|تر|ترین)(?![\p{L}\p{M}]))/gu, ''),
+    ],
+};

@@ -113,13 +113,15 @@ function candidates(text, language, searchResolution) {
  * entries give none. The app's Bengali endings (own-transforms.js) are undone once only and leave two characters at
  * least. Yomitan's Georgian rules chain and cut words down to a letter or two (ვადის → ვ), which would find only the
  * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
- * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed.
+ * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian entries give none at all;
+ * the app's Persian rules leave two characters at least.
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
     ['bn', {shortest: 2}],
     ['ka', {shortest: 3}],
     ['ar', {shortest: 2, conditions: ['n']}],
+    ['fa', {shortest: 2}],
 ]);
 
 /**
