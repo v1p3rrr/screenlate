@@ -206,6 +206,15 @@ right-to-left lines that come in neither order put in the order of their boxes, 
 itself) in the right-to-left span. Overnight questions 5 (Modern Israeli transcriptions first) and 6 (form tags beside
 a plain word, שלום "singular construct") are decided provisionally. Group 4d is done; 4e (Kazakh, Kyrgyz) follows.
 
+The owner's answers to overnight questions 3-6 are built on `languages/fa-he-followups` (2026-10-20, from
+`languages/main` while 4e builds there; main merges it): Iranian Persian transcriptions first (🇮🇷, 🇮🇷TE, "Iran…"
+tags), the rest behind "+N"; Hebrew as built; the engine leaves out the tags of a form whose lemma is the headword
+the text is itself, in every language (kuća, שלום; kućama and pointed שְׁלוֹם keep theirs); the spoken Persian
+endings measured on wordfreq's words with hand judgments (numbers in `notes/language-rules.md`, "Owner decisions"):
+-مون, -تون, -شون and the ordinal -مین → -م after a number added, the copula -ه, the object marker -و/-رو, the
+plural -ا and -ین left out. Question 7 (the plural -ا also read as the adverb ending -اً) is decided provisionally:
+left out. The hoshidicts JSON-escape follow-up is a separate task of main's.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch
