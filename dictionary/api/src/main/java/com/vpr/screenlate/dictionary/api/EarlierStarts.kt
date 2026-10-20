@@ -45,5 +45,24 @@ internal suspend fun reachingAimedCharacter(
     return results
 }
 
+/**
+ * [results] for a tap on a later part of a hyphenated word: the words found from the whole word's start that reach the
+ * aimed character at [aimedCharAt] (state-owned) come first, then those from the [parts] starts
+ * (`LanguageSupport.partStarts`) that reach it (owned), each start in turn. Words that stop before the aimed character
+ * (state) are left out, unless no part finds anything.
+ *
+ * @param lookup the results from a UTF-16 index of the lookup text.
+ */
+internal suspend fun withHyphenatedParts(
+    results: List<LookupResult>,
+    aimedCharAt: Int,
+    parts: List<Int>,
+    lookup: suspend (Int) -> List<LookupResult>,
+): List<LookupResult> {
+    val found = parts.flatMap { start -> lookup(start).map { it.copy(start = start) }.filter { it.covers(aimedCharAt) } }
+    if (found.isEmpty()) return results
+    return (results.filter { it.covers(aimedCharAt) } + found).distinctBy { it.term.expression to it.term.reading }
+}
+
 /** Whether the match covers the UTF-16 index [at] of the lookup text. */
 fun LookupResult.covers(at: Int): Boolean = start <= at && start + matched.length > at

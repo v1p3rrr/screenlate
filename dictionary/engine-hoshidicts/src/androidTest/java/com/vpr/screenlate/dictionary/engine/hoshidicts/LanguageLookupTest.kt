@@ -520,6 +520,71 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun kazakhFindsItsWordsThroughEndingsAndWrittenWithTheRussianTwinsOfItsLetters() = runTest {
+        val imported = engine.import(kazakhDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val kazakh = LookupOptions(language = Language.KAZAKH)
+        suspend fun first(text: String) = engine.lookup(text, kazakh).first()
+        suspend fun all(text: String) = engine.lookup(text, kazakh).map { it.term.expression }
+
+        // Three endings on an entry whose part of speech is a tag of its glossary, as Wiktionary's exports give it.
+        val books = first("кітаптарымызда")
+        assertThat(books.term.expression).isEqualTo("кітап")
+        assertThat(books.matched).isEqualTo("кітаптарымызда")
+        assertThat(books.trace.map { it.name }).containsExactly("plural", "possessive 1pl", "locative")
+        // The popup shows the rules' names and descriptions in the app's language.
+        assertThat(books.trace.map { it.label }).doesNotContain("")
+        assertThat(books.trace.map { it.description }).doesNotContain("")
+        val went = first("бармадым")
+        assertThat(went.term.expression).isEqualTo("бару")
+        assertThat(went.trace.map { it.name }).containsExactly("negative", "past", "1sg")
+        // A verb ending takes only the glossaries tagged as a verb: оқу is "to read" and "education".
+        val reads = engine.lookup("оқиды", kazakh).filter { it.term.expression == "оқу" }
+            .flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
+        assertThat(reads).contains("to read")
+        assertThat(reads).doesNotContain("education")
+        assertThat(all("жазды")).containsAtLeast("жаз", "жазу")
+        // Text in the Russian twins finds the Kazakh letters, its own spelling first; a Kazakh letter is exact.
+        assertThat(all("он").first()).isEqualTo("он")
+        assertThat(all("он")).containsExactly("он", "оң", "өң")
+        assertThat(all("оң")).containsExactly("оң")
+        val country = first("Казакстанның")
+        assertThat(country.term.expression).isEqualTo("Қазақстан")
+        assertThat(country.matched).isEqualTo("Казакстанның")
+        assertThat(country.trace.map { it.name }).containsExactly("genitive")
+        // Latin i and h typed for і and һ.
+        assertThat(first("кiтап").term.expression).isEqualTo("кітап")
+        assertThat(first("шаhар").term.expression).isEqualTo("шаһар")
+        // A suffix entry from its hyphen.
+        assertThat(first("-ға дейін").term.expression).isEqualTo("-ға")
+    }
+
+    /**
+     * Rows as Wiktionary's Kazakh exports write them: the part of speech in the glossary's tags, no rules, no
+     * readings; one headword as a noun and a verb, three words that differ only in Kazakh letters, a suffix entry.
+     */
+    private fun kazakhDictionary(): File = zip(
+        "kk.zip",
+        "index.json" to """{"title":"Test Kazakh","revision":"1","format":3,"sourceLanguage":"kk"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["кітап","","n","",0,["book"],1,""],
+              ["оқу","","n","",0,["education"],2,""],
+              ["оқу","","v","",0,["to read"],3,""],
+              ["жаз","","n","",0,["summer"],4,""],
+              ["жазу","","v","",0,["to write"],5,""],
+              ["он","","num","",0,["ten"],6,""],
+              ["оң","","adj","",0,["right"],7,""],
+              ["өң","","n","",0,["complexion"],8,""],
+              ["Қазақстан","","name","",0,["Kazakhstan"],9,""],
+              ["-ға","","suffix","",0,["to (dative)"],10,""],
+              ["шаһар","","n","",0,["city"],11,""],
+              ["бару","","v","",0,["to go"],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

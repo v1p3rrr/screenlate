@@ -262,6 +262,26 @@ interface LanguageSupport {
     fun innerStarts(text: String, from: Int, to: Int): List<Int> = emptyList()
 
     /**
+     * UTF-16 indexes of [text] after [from] up to [to] where the parts of a hyphenated word start, [from] being the
+     * aimed word's start and [to] the aimed character: a tap on a later part shows the whole word when a dictionary has
+     * it, then the tapped part (state-owned tapped on owned shows owned, not state). Empty when no hyphen comes before
+     * the aimed character, and in languages written without spaces.
+     */
+    fun partStarts(text: String, from: Int, to: Int): List<Int> = emptyList()
+
+    /**
+     * [text] with the letters OCR and keyboards lose written as the ones the headwords are keyed with for them
+     * ([HeadwordMarks.replacements]: Kazakh қ as к), when the text as written matched no more than [found] UTF-16
+     * characters, fewer than its first word, and that word writes such a letter; null otherwise. Its results longer
+     * than [found] are shown when they keep the letters the text writes ([keepsWrittenLetters]): "Қазакстан" (қ read
+     * as к) finds Қазақстан, while "оң", found as written, shows only оң.
+     */
+    fun keyedSpelling(text: String, found: Int): String? = null
+
+    /** Whether [headword] has the letter [text] writes wherever [text] writes one that [keyedSpelling] replaces. */
+    fun keepsWrittenLetters(text: String, headword: String): Boolean = true
+
+    /**
      * Of the [lengths] (UTF-16) of the matches found from the start of [text], those shown: every one, unless a
      * segmenter divides the language's words ([SegmentedLanguageSupport]).
      */
@@ -461,4 +481,5 @@ val Language.support: LanguageSupport
         Language.ARABIC -> ArabicSupport
         Language.PERSIAN -> PersianSupport
         Language.HEBREW -> HebrewSupport
+        Language.KAZAKH -> KazakhSupport
     }

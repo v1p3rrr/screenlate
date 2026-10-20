@@ -118,6 +118,30 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         return count
     }
 
+    /**
+     * After each hyphen between word characters (and the Armenian hyphen, the Hebrew maqaf) up to the aimed character;
+     * when the part before it [takesHyphenedEnding], the hyphen's own index comes first.
+     */
+    override fun partStarts(text: String, from: Int, to: Int): List<Int> {
+        val starts = ArrayList<Int>()
+        var part = from
+        for (index in from + 2..minOf(to, text.length - 1)) {
+            val hyphen = text[index - 1]
+            if (hyphen !in PART_HYPHENS || hyphen !in wordConnectors) continue
+            if (!isWordCharacter(text.codePointBefore(index - 1)) || !isWordCharacter(text.codePointAt(index))) continue
+            if (takesHyphenedEnding(text.substring(part, index - 1))) starts += index - 1
+            starts += index
+            part = index
+        }
+        return starts
+    }
+
+    /**
+     * Whether an ending written after [part] with a hyphen is looked up with the hyphen as well, for the dictionaries'
+     * suffix entries: Kazakh and Kyrgyz after digits and abbreviations (1990-ға, АҚШ-қа).
+     */
+    protected open fun takesHyphenedEnding(part: String): Boolean = false
+
     /** Words before the aimed one that the lookup starts at as well; see [earlierStartOffset]. */
     open val earlierWords: Int = 0
 
@@ -288,6 +312,9 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         /** Characters inside one word: don't, rock'n'roll, well-known, and the Armenian hyphen (հայ֊ռուսական). */
         const val WORD_CONNECTORS = "'’-֊"
         const val APOSTROPHES = "'’"
+
+        /** Characters between the parts of a hyphenated word: the hyphen, the Armenian hyphen, the Hebrew maqaf. */
+        const val PART_HYPHENS = "-֊\u05BE"
 
         /** A hyphen, the Unicode hyphen and the soft hyphen, which marks a break inside a word. */
         const val HYPHENS = "-‐\u00AD"

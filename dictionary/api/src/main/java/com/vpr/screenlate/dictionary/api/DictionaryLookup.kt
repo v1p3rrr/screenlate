@@ -48,7 +48,8 @@ class DictionaryLookup @Inject constructor(
      * @param aimedAt UTF-16 index in [text] where the aimed word starts, after the words before it that the language
      *   looks up from as well (`LanguageSupport.earlierStartOffset`); see [fromEarlierStarts].
      * @param aimedCharAt UTF-16 index in [text] of the aimed character, at or after [aimedAt]: when no word found
-     *   covers it, the lookup starts inside the aimed word as well; see [reachingAimedCharacter].
+     *   covers it, the lookup starts inside the aimed word as well; see [reachingAimedCharacter]. After a hyphen in
+     *   the aimed word, the lookup starts at the aimed part too; see [withHyphenatedParts].
      */
     suspend fun lookup(
         text: String,
@@ -88,9 +89,10 @@ class DictionaryLookup @Inject constructor(
 
             suspend fun from(source: String): List<LookupResult> {
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
-                val candidates = LookupVariants.of(source, settings, support).flatMap { variant ->
+                val written = LookupVariants.of(source, settings, support).flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
                 }.mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+                val candidates = written + keyedMatches(source, written, support) { engine.lookup(it, engineOptions) }
                 val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
                 val found = candidates.filter { it.matched.length in lengths }
                 val whole = shown(found, start)
@@ -112,10 +114,16 @@ class DictionaryLookup @Inject constructor(
                 fromEarlierStarts(text, aimedAt, support.wordStarts(text, aimedAt)) { from(text.substring(it)) }.take(limit)
             }
             val inner = support.innerStarts(text, aimedAt, aimedCharAt)
-            val results = if (inner.isEmpty()) {
+            val reaching = if (inner.isEmpty()) {
                 fromWord
             } else {
                 reachingAimedCharacter(fromWord, aimedCharAt, inner) { from(text.substring(it)) }.take(limit)
+            }
+            val parts = support.partStarts(text, aimedAt, aimedCharAt)
+            val results = if (parts.isEmpty()) {
+                reaching
+            } else {
+                withHyphenatedParts(reaching, aimedCharAt, parts) { from(text.substring(it)) }.take(limit)
             }
             val all = if (!extraEntries || !settings.singleKanji) {
                 results
@@ -393,4 +401,25 @@ internal fun LookupResult.inSource(source: String, variant: MappedText): LookupR
     if (variant.text == source) return this
     val length = variant.sourceLength(matched.length.coerceAtMost(variant.text.length))
     return copy(matched = source.substring(0, length), preprocessorSteps = preprocessorSteps + 1)
+}
+
+/**
+ * The results of [source] spelled as the language keys its headwords (`LanguageSupport.keyedSpelling`) when those
+ * found as written ([written]) match less than its first word: the ones that match more than any of them and keep the
+ * letters [source] writes (`LanguageSupport.keepsWrittenLetters`). Kazakh Қазакстан, with қ read as к, finds
+ * Қазақстан beside қаз, the only word found as written.
+ *
+ * @param lookup the engine's results for a text.
+ */
+internal suspend fun keyedMatches(
+    source: String,
+    written: List<LookupResult>,
+    support: LanguageSupport,
+    lookup: suspend (String) -> List<LookupResult>,
+): List<LookupResult> {
+    val longest = written.maxOfOrNull { it.matched.length } ?: 0
+    val spelling = support.keyedSpelling(source, longest) ?: return emptyList()
+    return lookup(spelling).fromVariant(source, MappedText.identity(spelling), support)
+        .mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+        .filter { it.matched.length > longest && support.keepsWrittenLetters(source, it.term.expression) }
 }

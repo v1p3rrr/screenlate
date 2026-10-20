@@ -252,6 +252,16 @@ class SentenceTest {
     }
 
     @Test
+    fun kazakhSentencesKeepTheYearAndOtherAbbreviationsBeforeLowercaseWords() {
+        val kazakh = "Күн жылы. Ол 2007 ж. қазанда кітап, дәптер т.б. заттар алды. Туған жылы – 1991 ж. Кейін көшті. Соңы."
+        assertThat(extract(kazakh, "қазанда", Language.KAZAKH).text)
+            .isEqualTo("Ол 2007 ж. қазанда кітап, дәптер т.б. заттар алды.")
+        assertThat(extract(kazakh, "Кейін", Language.KAZAKH).text).isEqualTo("Кейін көшті.")
+        val quoted = "Ол: «Келемін. Міндетті түрде», – деді. Кетті."
+        assertThat(extract(quoted, "деді", Language.KAZAKH).text).isEqualTo("Ол: «Келемін. Міндетті түрде», – деді.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."
