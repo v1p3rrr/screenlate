@@ -111,11 +111,13 @@ Dictionaries offered for download are not part of the APK; each one carries its 
 attribution, shown in the app under Dictionaries. The frequency dictionaries that the app builds on the device
 (and scripts/frequency on a computer) use the word lists of wordfreq (https://github.com/rspeer/wordfreq) by
 Robyn Speer, data licensed CC BY-SA 4.0, which come from Wikipedia, OpenSubtitles, SUBTLEX, Google Books Ngrams
-and other sources; each built dictionary names them all and is shared under CC BY-SA 4.0.
+and other sources; each built dictionary names them all and is shared under CC BY-SA 4.0. For Thai, which wordfreq
+has no list for, they use the word counts of the Thai National Corpus published by PyThaiNLP
+(https://github.com/PyThaiNLP/pythainlp, pythainlp/corpus/tnc_freq.txt), CC0 1.0.
 
-Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali and Latin, from the
-Google Fonts repository, https://github.com/google/fonts) are not part of the APK either; each is under the SIL Open
-Font License 1.1, shown in the app with its source.
+Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer, Arabic,
+Persian and Latin, from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK either;
+each is under the SIL Open Font License 1.1, shown in the app with its source.
 
 Unicode License V3
 ------------------

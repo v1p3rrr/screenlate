@@ -93,3 +93,34 @@ test('a russian word in a sentence takes the stress only in its dictionary form'
     assert.equal(HeadwordReading.sentenceSegments('zh', '学习', '学习', 'xuéxí'), null);
     assert.equal(HeadwordReading.sentenceSegments('ja', '猫', '猫', 'ねこ'), null);
 });
+
+const arabic = (expression, reading, lang = 'ar') => Array.from(HeadwordReading.segments(lang, expression, reading) ?? [],
+    ([text, parts]) => parts ? `${text}[${parts.map(part => part.text).join('')}]` : text);
+
+test("an arabic reading that only adds vowel marks takes the word's place", () => {
+    assert.deepEqual(arabic('كتاب', 'كِتَاب'), ['كِتَاب']);
+    assert.deepEqual(arabic('أكبر', 'أَكْبَر'), ['أَكْبَر']);
+    // The dagger alef, shadda and tanwin are marks as well; the hamza of أ written as a mark is part of the letter.
+    assert.deepEqual(arabic('كتب', 'كِتٰبٌ'), ['كِتٰبٌ']);
+    assert.deepEqual(arabic('مدرس', 'مُدَرِّس'), ['مُدَرِّس']);
+    assert.deepEqual(arabic('أكل', 'ا\u0654كَلَ'), ['ا\u0654كَلَ']);
+    assert.deepEqual(arabic('كتاب', ''), ['كتاب']);
+});
+
+test('an arabic reading with other letters goes over the word, and the rules stay with arabic', () => {
+    assert.deepEqual(arabic('اكبر', 'أَكْبَر'), ['اكبر[أَكْبَر]']);
+    assert.equal(HeadwordReading.syllables('ar', 'كِتَاب'), null);
+    for (const lang of ['ur', 'he', 'en']) assert.deepEqual(arabic('كتاب', 'كِتَاب', lang), [], lang);
+    // Persian keeps the word as written.
+    assert.deepEqual(arabic('كتاب', 'كِتَاب', 'fa'), ['كتاب']);
+});
+
+test('a persian latin reading stands after the word, which keeps its place', () => {
+    assert.deepEqual(arabic('مجازی', 'majâzi', 'fa'), ['مجازی']);
+    assert.equal(HeadwordReading.after('fa', 'مجازی', 'majâzi'), 'majâzi');
+    assert.equal(HeadwordReading.after('fa', 'مجازی', ''), null);
+    assert.equal(HeadwordReading.after('fa', 'مجازی', 'مجازی'), null);
+    assert.equal(HeadwordReading.syllables('fa', 'majâzi'), null);
+    // Other languages draw their readings over or in the word.
+    for (const lang of ['ar', 'zh', 'ru', 'ur', 'en']) assert.equal(HeadwordReading.after(lang, 'كتاب', 'kitāb'), null, lang);
+});

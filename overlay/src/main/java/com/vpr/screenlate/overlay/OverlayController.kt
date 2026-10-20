@@ -53,6 +53,7 @@ import com.vpr.screenlate.core.ocr.TextPosition
 import com.vpr.screenlate.core.ocr.lens.LensHttpException
 import com.vpr.screenlate.core.ocr.withMissingFrom
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
+import com.vpr.screenlate.dictionary.api.covers
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
@@ -163,6 +164,8 @@ class OverlayController(
         val anchor: Box? = null,
         /** The text the lookup ran on; it starts before [text] where the words before the aimed one were looked up too. */
         val query: String = text,
+        /** UTF-16 index in [query] of the aimed character. */
+        val aimedCharAt: Int = 0,
     )
 
     private val windowManager = service.getSystemService(WindowManager::class.java)
@@ -1196,11 +1199,16 @@ class OverlayController(
         val earlier = word.offset - earliest.offset
         val query = layout.textFrom(earliest, scanLength + earlier)
         val aimedAt = layout.textFrom(earliest, earlier).length
+        val aimedCharAt = layout.textFrom(earliest, aimed.offset - earliest.offset).length
         val previous = lookupJob
         lookupJob = scope.launch {
             previous?.cancelAndJoin()
-            val cached = shownLookup?.takeIf { it.query == query && popup.isShowing }
-            val results = cached?.results ?: lookupResults(query, aimedAt = aimedAt)
+            // Within the word shown the results stay, unless they came from inside it for another character.
+            val cached = shownLookup?.takeIf { view ->
+                view.query == query && popup.isShowing &&
+                    (view.aimedCharAt == aimedCharAt || view.results.firstOrNull()?.covers(aimedCharAt) != false)
+            }
+            val results = cached?.results ?: lookupResults(query, aimedAt = aimedAt, aimedCharAt = aimedCharAt)
             // The first result may be a word that starts before the aimed one.
             val shownAt = results.firstOrNull()?.start ?: aimedAt
             val position = earliest.copy(offset = earliest.offset + query.codePointCount(0, shownAt))
@@ -1230,6 +1238,7 @@ class OverlayController(
                 kanji = kanji,
                 anchor = anchor,
                 query = query,
+                aimedCharAt = aimedCharAt,
             )
             shownLookup = view
             val word = results.firstOrNull()?.term?.let { it.expression to it.reading } ?: kanji?.let { it.character to "" }
@@ -1245,18 +1254,20 @@ class OverlayController(
     /**
      * @param link [text] is a dictionary link's term, looked up whole rather than as text at the aim point.
      * @param aimedAt where the aimed word starts in [text], after the words before it that the language looks up from.
+     * @param aimedCharAt where the aimed character is in [text].
      */
     private suspend fun lookupResults(
         text: String,
         link: Boolean = false,
         primaryReading: String? = null,
         aimedAt: Int = 0,
+        aimedCharAt: Int = aimedAt,
     ): List<LookupResult> = try {
         val started = System.currentTimeMillis()
         val results = if (link) {
             lookup.lookupQuery(text, language, primaryReading)
         } else {
-            lookup.lookup(text, language, primaryReading = primaryReading, aimedAt = aimedAt)
+            lookup.lookup(text, language, primaryReading = primaryReading, aimedAt = aimedAt, aimedCharAt = aimedCharAt)
         }
         results.also {
             Log.d(TAG, "Lookup found ${it.size} entries in ${System.currentTimeMillis() - started} ms")

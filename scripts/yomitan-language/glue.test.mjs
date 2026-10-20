@@ -6,6 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
+import {persianTransforms} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -244,4 +245,218 @@ test('armenian marks and the ligature stay out of other languages', () => {
         assert.ok(!queried(language, 'ինչո՞ւ').has('ինչու'), language);
         assert.ok(!queried(language, 'երեվան').has('երևան'), language);
     }
+});
+
+/**
+ * The texts the engine would query for Thai [text], which it looks up letter by letter.
+ * @param {string} text
+ */
+function queriedThai(text) {
+    return new Set(load('th').candidates(text, 'th', 'letter').map((c) => c.d));
+}
+
+test('thai sara am in two parts and a tone mark before its vowel are tried as headwords write them', () => {
+    // น + nikhahit + mai tho + sara aa, as a recognizer may give น้ำ.
+    assert.ok(queriedThai('น\u0E4D\u0E49\u0E32').has('น้ำ'));
+    assert.ok(queriedThai('ท\u0E4D\u0E32').has('ทำ'));
+    // ก + mai ek + sara ii, typed for กี่.
+    assert.ok(queriedThai('ก\u0E48\u0E35').has('กี่'));
+    assert.ok(queriedThai('สิทธ\u0E4C\u0E34').has('สิทธิ์'));
+    assert.ok(queriedThai('กี่').has('กี่'));
+});
+
+test('thai mai yamok is tried with and without the spaces around it', () => {
+    assert.ok(queriedThai('เด็กๆ').has('เด็ก ๆ'));
+    assert.ok(queriedThai('งูๆปลาๆ').has('งู ๆ ปลา ๆ'));
+    assert.ok(queriedThai('ช้า ๆ').has('ช้าๆ'));
+    assert.ok(queriedThai('ช้า ๆ').has('ช้า ๆ'));
+    // A space after ๆ stays out of the match: the shorter text เด็กๆ is the one that finds เด็ก ๆ.
+    const spaced = load('th').candidates('เด็กๆ ชอบ', 'th', 'letter').filter((c) => c.d === 'เด็ก ๆ');
+    assert.deepEqual([...new Set(spaced.map((c) => c.o))], ['เด็กๆ']);
+    assert.ok(queriedThai('เด็กๆชอบ').has('เด็ก ๆ ชอบ'));
+});
+
+test('thai processors stay out of other languages', () => {
+    for (const language of ['en', 'vi', 'hi']) {
+        assert.ok(!queried(language, 'ท\u0E4D\u0E32').has('ทำ'), language);
+        assert.ok(!queried(language, 'เด็กๆ').has('เด็ก ๆ'), language);
+    }
+});
+
+/**
+ * The texts the engine would query for Khmer [text], which it looks up letter by letter.
+ * @param {string} text
+ */
+function queriedKhmer(text) {
+    return new Set(load('km').candidates(text, 'km', 'letter').map((c) => c.d));
+}
+
+test('khmer zero-width spaces between words are dropped, one that ends the text stays out of the match', () => {
+    assert.ok(queriedKhmer('ខ្ញុំ\u200Bទៅ').has('ខ្ញុំទៅ'));
+    assert.ok(queriedKhmer('សាលា\u200Bរៀន').has('សាលារៀន'));
+    const matches = load('km').candidates('ខ្ញុំ\u200Bទៅ', 'km', 'letter').filter((c) => c.d === 'ខ្ញុំ');
+    assert.deepEqual([...new Set(matches.map((c) => c.o))], ['ខ្ញុំ']);
+});
+
+test('khmer subscript TA is tried as subscript DA', () => {
+    assert.ok(queriedKhmer('ក្តារ').has('ក្ដារ'));
+    assert.ok(queriedKhmer('សួស្តី').has('សួស្ដី'));
+    // Text with DA finds headwords with TA through the keys the import adds, not through the processor.
+    assert.ok(!queriedKhmer('ក្ដារ').has('ក្តារ'));
+});
+
+test('khmer processors stay out of other languages', () => {
+    for (const language of ['en', 'th', 'hi']) {
+        assert.ok(!queried(language, 'ក្តារ').has('ក្ដារ'), language);
+        assert.ok(!queried(language, 'ខ្ញុំ\u200Bទៅ').has('ខ្ញុំទៅ'), language);
+    }
+});
+
+test('arabic prefixes, the article and endings are undone; noun rules match entries without a part of speech', () => {
+    const book = candidates('ar', 'والكتاب').find((c) => c.d === 'كتاب');
+    assert.ok(book);
+    assert.ok(book.u);
+    assert.ok(queried('ar', 'مدرسة').has('مدرس'));
+    // Verb rules stay typed: سيكتبون (they will write) is كتب only as a verb.
+    const write = candidates('ar', 'سيكتبون').filter((c) => c.d === 'كتب');
+    assert.ok(write.length > 0);
+    assert.ok(write.every((c) => !c.u));
+    // Two letters stay before a prefix: وفي finds في, untyped; nothing shorter is untyped or empty.
+    assert.ok(candidates('ar', 'وفي').find((c) => c.d === 'في').u);
+    assert.ok(candidates('ar', 'وب').every((c) => !c.u || [...c.d].length >= 2));
+    assert.ok(!queried('ar', 'فى').has(''));
+    assert.ok(!candidates('ar', 'والكتاب').find((c) => c.d === 'والكتاب').u);
+});
+
+test('a final alif maqsura and taa marbuta are tried as ya and ha; hamza is left to the import keys', () => {
+    assert.ok(queried('ar', 'فى').has('في'));
+    assert.ok(queried('ar', 'مدرسة').has('مدرسه'));
+    assert.ok(queried('ar', 'مستشفى كبير').has('مستشفي كبير'));
+    // A bare alif finds headwords with hamza through the keys the import adds, not through Yomitan's processors.
+    assert.ok(!queried('ar', 'اكبر').has('أكبر'));
+    assert.ok(!queried('ar', 'اسلام').has('إسلام'));
+    assert.ok(queried('ar', 'أكبر').has('أكبر'));
+});
+
+test('arabic rules and processors stay out of other languages', () => {
+    for (const language of ['en', 'ru', 'tr']) {
+        assert.ok(!queried(language, 'فى').has('في'), language);
+        assert.ok(!queried(language, 'مدرسة').has('مدرسه'), language);
+        assert.ok(!queried(language, 'والكتاب').has('كتاب'), language);
+    }
+});
+
+/**
+ * The cases of Yomitan's own Arabic transform test that should be found (`valid`), from a checkout at the bundles'
+ * commit named by the environment variable YOMITAN.
+ */
+function yomitanArabicCases() {
+    const file = path.join(process.env.YOMITAN, 'test/language/arabic-transforms.test.js');
+    const source = fs.readFileSync(file, 'utf8');
+    const cases = [];
+    for (const category of source.split(/\n {4}\{\n {8}category: /).slice(1)) {
+        if (!/^\S[^\n]*\n {8}valid: true,/.test(category)) continue;
+        for (const match of category.matchAll(/\{term: '([^']+)', source: '([^']+)', rule: '([^']+)'/g)) {
+            cases.push({term: match[1], source: match[2]});
+        }
+    }
+    return cases;
+}
+
+test('yomitan\'s own arabic cases are found through the bundle', {skip: !process.env.YOMITAN && 'YOMITAN is not set'}, () => {
+    const cases = yomitanArabicCases();
+    assert.ok(cases.length > 250, `${cases.length} cases`);
+    const bundle = load('ar');
+    const missed = cases.filter(({term, source}) => !bundle.candidates(source, 'ar', 'word').some((c) => c.d === term));
+    assert.deepEqual(missed, []);
+});
+
+/**
+ * The candidate the engine shows first for [text]: the longest match, then the fewest processor steps, then the
+ * shortest chain of rules (YomitanSorter's order before frequencies).
+ * @param {string} language
+ * @param {string} text
+ */
+function first(language, text) {
+    const chain = (c) => Math.max(0, ...c.r.map((r) => r.length));
+    return [...candidates(language, text)]
+        .sort((a, b) => [...b.o].length - [...a.o].length || a.s - b.s || chain(a) - chain(b))[0].d;
+}
+
+test('persian endings and verb prefixes are undone and chained; the results match entries without a part of speech', () => {
+    // An enclitic first, then a plural: کتابهایشان (their books) is کتاب through -یشان and -ها.
+    const book = candidates('fa', 'کتاب\u200Cهایشان').find((c) => c.d === 'کتاب');
+    assert.ok(book);
+    assert.ok(book.u);
+    assert.equal(JSON.stringify(book.r), JSON.stringify([['-ها', '-یشان']]));
+    assert.ok(queried('fa', 'درختان').has('درخت'));
+    assert.ok(queried('fa', 'ستارگان').has('ستاره'));
+    assert.ok(queried('fa', 'بزرگترین').has('بزرگ'));
+    assert.ok(queried('fa', 'نمی\u200Cدانم').has('دانم'));
+    assert.ok(queried('fa', 'بروم').has('روم'));
+    // Two letters stay, and three after ب and ن: نان is not cut to ان or ن, nor ام to ا.
+    assert.deepEqual([...queried('fa', 'نان')], ['نان']);
+    assert.deepEqual([...queried('fa', 'ام')], ['ام']);
+    // An enclitic comes off before a plural, not after it.
+    assert.ok(!queried('fa', 'کتابیها').has('کتاب'));
+    // The text itself stays typed.
+    assert.ok(!candidates('fa', 'درختان').find((c) => c.d === 'درختان').u);
+});
+
+test('every persian rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_fa.xml'), 'utf8');
+    const rules = Object.entries(persianTransforms.transforms);
+    assert.equal(rules.length, 32);
+    for (const [id, {name, description}] of rules) {
+        // The id (-ها) stays what the engine reports and Anki's {conjugation} shows; the name is what the popup shows.
+        assert.notEqual(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`>${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('persian text drops the zero-width non-joiner and writes arabic letters as persian ones', () => {
+    assert.ok(queried('fa', 'می\u200Cروم').has('میروم'));
+    assert.ok(queried('fa', 'كتاب').has('کتاب'));
+    assert.ok(queried('fa', 'يك').has('یک'));
+    assert.ok(queried('fa', 'مى').has('می'));
+    assert.ok(queried('fa', 'خانۀ').has('خانه'));
+    // The word itself comes first, without the non-joiner and in persian letters.
+    assert.equal(first('fa', 'می\u200Cشود'), 'میشود');
+    assert.equal(first('fa', 'کتاب\u200Cها'), 'کتابها');
+    assert.equal(first('fa', 'خانه\u200Cای'), 'خانهای');
+    assert.equal(first('fa', 'كتاب'), 'کتاب');
+    assert.equal(first('fa', 'است'), 'است');
+});
+
+test('a persian verb prefix or ending written apart is tried joined to its word', () => {
+    assert.ok(queried('fa', 'می خواهم بروم').has('میخواهم'));
+    assert.ok(queried('fa', 'می خواهم بروم').has('خواهم'));
+    assert.ok(queried('fa', 'نمی دانم').has('نمیدانم'));
+    const books = queried('fa', 'کتاب ها را');
+    assert.ok(books.has('کتابها'));
+    assert.ok(books.has('کتاب'));
+    assert.ok(queried('fa', 'کتاب های من').has('کتابهای'));
+    assert.ok(queried('fa', 'بزرگ ترین').has('بزرگ'));
+    // A word ending in می, and a word that only starts like an ending, stay apart.
+    assert.ok(!queried('fa', 'سمی خواهم').has('سمیخواهم'));
+    assert.ok(!queried('fa', 'کتاب هوا').has('کتابهوا'));
+    assert.ok(!queried('fa', 'کتاب ترس').has('کتابترس'));
+});
+
+test('persian rules and processors stay out of other languages, arabic ones out of persian', () => {
+    for (const language of ['ar', 'en', 'tr']) {
+        // Written joined: every language cuts a text at a non-joiner, which would leave کتاب itself.
+        assert.ok(!queried(language, 'کتابهایشان').has('کتاب'), language);
+        assert.ok(!queried(language, 'می خواهم').has('میخواهم'), language);
+        assert.ok(!queried(language, 'كتاب').has('کتاب'), language);
+        // Arabic's dual -ان gives درخت from درختان too; -گان → ه is Persian's own.
+        assert.ok(!queried(language, 'ستارگان').has('ستاره'), language);
+        assert.ok(!queried(language, 'میخواهم').has('خواهم'), language);
+    }
+    assert.ok(!queried('fa', 'والكتاب').has('کتاب'));
+    assert.ok(!queried('fa', 'مدرسة').has('مدرسه'));
+    assert.ok(candidates('fa', 'والكتاب').every((c) => !c.u));
 });

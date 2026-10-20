@@ -77,12 +77,43 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Never use `am start -S` or `am force-stop` on the app while testing the overlay: force-stopping removes the accessibility service from the enabled list.
 - Files pushed by adb into `/sdcard/Android/data/<pkg>` are not readable by the app (group `ext_data_rw`); copy through `run-as` into internal storage instead.
 - `adb install` cannot open a host path over 260 characters ("failed to stat"; the scratchpad's Gradle outputs reach it): copy the APK to a short path first.
+- Short /data (2026-10-20, Khmer run): with about 0.39 GB free the 126 MB debug APK fails with
+  `INSTALL_FAILED_INSUFFICIENT_STORAGE`. Install an x86_64-only copy instead (82 MB): copy every zip entry except
+  `lib/arm64-v8a/`, `lib/armeabi-v7a/` and the signature files in `META-INF/` (`*.SF`, `*.RSA`, `*.EC`, `*.MF`) with
+  Python's `zipfile`, keeping each entry's `ZipInfo` (stored entries stay stored), then
+  `zipalign -f -P 16 4 in.apk out.apk` (build-tools; `-P 16` keeps the native libraries page-aligned) and
+  `JAVA_HOME="C:/Program Files/Java/jdk-21" apksigner sign --ks C:/Users/vpr/.android/debug.keystore --ks-pass pass:android --key-pass pass:android --ks-key-alias androiddebugkey out.apk`
+  (a `/c/...` JAVA_HOME or a `~` path fails here). The debug key matches, so `adb install -r` keeps the app data.
+  `-Pandroid.injected.build.abi=x86_64` is no substitute: it writes to `build/intermediates/apk/`, and the app APK
+  comes out test-only with the arm libraries still in it; the test APKs of library modules do shrink with it and
+  install. The owner allows deleting, on the emulator, the dictionaries of languages already checked (2026-10-20;
+  they download again); AnkiDroid and other data stay untouched.
+- A 109 MB test APK (the overlay's, with every ABI) on a /data with about 250 MB free (2026-10-20, Persian run):
+  Gradle's install hung, `system_server` died and came back without its package service ("cmd: Can't find service:
+  package", zygote "stopping", load average about 55), and `adb reboot` timed out; `adb shell reboot -p` rebooted it.
+  Make test APKs x86_64-only too (the same `zipfile` copy: the overlay's goes to 73 MB) and run a class with
+  `am instrument -w -r -e class <class> <test package>/androidx.test.runner.AndroidJUnitRunner`, then uninstall the
+  test package.
+- Low commit memory (2026-10-20: about 2 GB of Windows commit left with the emulator and other sessions running):
+  test executors fail to start ("Could not write standard input to Gradle Test Executor", "The pipe is being closed",
+  "finished with non-zero exit value 1"), which looks like failed tests. Rerun with `--max-workers=2`; do not
+  `gradlew --stop`, as other sessions share the daemons.
 - Gradle's incremental packaging reuses the old APK file: after assets are removed (e.g. `ocrCompareData` pointed at a smaller folder) the APK keeps its old size with unused bytes (168 MB for 74 MB of entries, 2026-10-20). Delete the APK before rebuilding.
 - The OCR comparison test (`experiments:ocr-compare`) without models in its APK, for the emulator's short /data: stream each model into the test package with `adb exec-in "run-as <test pkg> sh -c 'cat > files/tessdata_fast/tessdata/<lang>.traineddata'" < file`; Tesseract wants a data folder with a `tessdata/` subfolder. This needs `OcrCompareTest` to look in `files/<kind>/` before copying from the assets: a local change of group 5b's run (2026-10-20, on `languages/ocr-compare` 7000a05c), not committed there.
 - Overlay gestures with `adb shell input`: a single tap on the floating bubble starts a new scan, which is easier to time than a pull-out. A swipe that ends at the right edge often triggers the system Back gesture and closes the image viewer; start a dock swipe on the bubble itself and end it a few pixels short of the edge. To act while the cloud request is pending: `adb shell svc wifi disable` plus `adb emu network speed gprs` makes it time out after about 16–22 s, and the ML Kit draft arrives after 5–9 s (ML Kit is slow on the emulator; with a fast network the cloud result usually comes first and no draft is shown). Restore with `svc wifi enable` and `network speed full`. More reliable (2026-09-30): a host TCP server that accepts and never answers (`socket.bind(("127.0.0.1", 8899))`, keep the accepted sockets) plus `adb shell settings put global http_proxy 10.0.2.2:8899`; the cloud request hangs until its timeout (about 16-20 s in total) and the ML Kit draft comes after about 6.5 s. The proxy is not subject to `ACCESS_LOCAL_NETWORK`. Revert with `settings put global http_proxy :0`, then `settings delete global http_proxy` (deleting it alone leaves `global_http_proxy_host`/`_port` set and the proxy in force; `dumpsys connectivity | grep -A2 ProxyTracker` shows it). A scan in that state marks the cloud "unavailable" for the rest of that scan only; moving the bubble afterwards just looks up the final text again, so tap the bubble for a fresh scan.
 - Chrome on the emulator shows a first-run screen that implies accepting its terms; do not click through it. Use the debug image viewer as the backdrop.
 - Gestures: `adb shell input swipe x1 y1 x2 y2 ms` produces DOWN/MOVE/UP; a double tap needs `input motionevent DOWN/UP` twice in one `adb shell` call. The docked bubble sits in the gesture-navigation Back zone; it relies on `systemGestureExclusionRects`.
 - `python scripts/text-image.py testdata/ocr/NAME.png "line" ...` renders test images with any text (Noto Sans JP / Yu Gothic); then `debug-device.sh images` and `show NAME.png`. Those fonts lack the Serbian Cyrillic letters (ђ ј љ ћ џ): set `FONT=C:/Windows/Fonts/arial.ttf` for such text.
+- Pillow here has no shaping library, so `text-image.py` draws Thai and Khmer marks unstacked and unordered.
+  `FONT=<file> FALLBACK=<file> SIZE=64 java scripts/TextImage.java testdata/ocr/NAME.png "line" ...` renders them
+  shaped by Java2D. Pull the phone's own font (`adb pull /system/fonts/NotoSansThai-Regular.ttf`), so the image looks
+  as the phone draws the script, and a Latin one (Roboto) for the digits and punctuation the script font lacks.
+  Windows hands Java its arguments in the ANSI code page, which turns Thai and Khmer into question marks: put the
+  lines in a UTF-8 file and pass `@FILE` (each line of the file is a line of the image). A line whose first strong
+  letter is right to left (Arabic, Hebrew) is drawn right to left through `TextLayout`, each run in the font that
+  has its characters and aligned right; for Arabic use the phone's `NotoNaskhArabic-Regular.ttf`.
+- The bubble's aim point on the Pixel 10 Pro emulator is 134 px above the bubble's centre, at the same x: to aim at
+  (x, y), hold the bubble and move it to (x, y + 134) before the UP.
 - The popup WebView is debuggable in debug builds. `ADB="D:/Android/Sdk/platform-tools/adb.exe" node scripts/popup-eval.mjs "<js>"` evaluates JS in it (Node 22+, no packages; pass a Windows-style ADB path, Node does not understand `/d/...`). Useful for clicking links, reading rendered state, checking CSS.
 - `scripts/ui-dump.sh [regex]` prints on-screen texts with bounds (uiautomator) for choosing tap coordinates. A uiautomator dump reconnects Screenlate's accessibility service (logcat "Service stopped" / "Service connected"), which docks the bubble and ends the scan; during overlay tests use screenshots instead.
 - `am start` with `--es open <screen>` to a running `MainActivity` only brings the task forward; the app's own intents add `FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP` (`am start -f 0x14000000`), which recreates the activity so the request is read.

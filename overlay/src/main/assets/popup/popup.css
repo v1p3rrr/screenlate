@@ -523,6 +523,11 @@ a {
     color: var(--muted);
 }
 
+/* A reading after the word (Persian romanization), in the line's text size. */
+.reading-after {
+    color: var(--muted);
+}
+
 .kanji-tags {
     display: flex;
     margin: 2px 0 4px;
@@ -801,9 +806,10 @@ button.frequency {
     display: none;
 }
 
-/* While a selection is copied: without furigana. */
+/* While a selection is copied: without furigana or readings after the word. */
 .copying rt,
-.copying rp {
+.copying rp,
+.copying .reading-after {
     display: none;
 }
 

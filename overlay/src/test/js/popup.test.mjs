@@ -260,6 +260,65 @@ test("russian headwords show the stressed form in the word's place", () => {
     assert.equal(expression.querySelector('ruby'), null);
 });
 
+test('a right-to-left language runs its text, headwords and readings that way and its glossary blocks by their letters', () => {
+    Popup.setAppearance({ lang: 'ar' });
+    const glossary = [{
+        type: 'structured-content',
+        content: [
+            { tag: 'div', content: 'book' },
+            { tag: 'div', data: { content: 'example-sentence-a' }, content: 'هذا كتاب جديد.' },
+        ],
+    }];
+    Popup.render(state({
+        source: { text: 'الكتاب جديد', matched: 6 },
+        results: [{ matched: 'الكتاب', term: { expression: 'كتاب', reading: 'كِتَاب', glossaries: [{ dictionary: 'Dict', content: JSON.stringify(glossary) }] } }],
+        rightToLeft: true,
+    }));
+    assert.equal(page.document.getElementById('source').dir, 'rtl');
+    const expression = content.querySelector('.expression');
+    assert.equal(expression.dir, 'rtl');
+    assert.equal(expression.textContent, 'كِتَاب');
+    const body = content.querySelector('.definition-body');
+    assert.equal(body.dir, 'auto');
+    const blocks = [...body.querySelectorAll('.gloss-sc-div')];
+    assert.equal(blocks.length, 2);
+    assert.ok(blocks.every(block => block.dir === 'auto'));
+    // The dictionary chip, placed into the first block, has a direction of its own, so its name does not set the block's.
+    assert.equal(blocks[0].querySelector('.dictionary-name').dir, 'auto');
+    // A left-to-right language leaves every direction to the page.
+    Popup.setAppearance({ lang: 'ja' });
+    Popup.render(state());
+    assert.equal(page.document.getElementById('source').getAttribute('dir'), null);
+    assert.equal(content.querySelector('.expression').getAttribute('dir'), null);
+    assert.equal(content.querySelector('[dir]'), null);
+});
+
+test('a persian latin reading follows the word in its own direction and is left out of a copied selection', () => {
+    Popup.setAppearance({ lang: 'fa' });
+    Popup.render(state({
+        source: { text: 'مجازی است', matched: 5 },
+        results: [result('مجازی', 'majâzi'), result('است', '')],
+        rightToLeft: true,
+    }));
+    const [first, second] = content.querySelectorAll('.entry-head');
+    const expression = first.querySelector('.expression');
+    assert.equal(expression.textContent, 'مجازی');
+    assert.equal(expression.dir, 'rtl');
+    assert.equal(expression.querySelector('ruby'), null);
+    const reading = first.querySelector('.reading-after');
+    assert.equal(reading.textContent, 'majâzi');
+    assert.equal(reading.dir, 'ltr');
+    assert.equal(reading.previousElementSibling, expression);
+    // Without a reading nothing follows the word.
+    assert.equal(second.querySelector('.reading-after'), null);
+    const css = readFileSync(new URL('../../main/assets/popup/popup.css', import.meta.url), 'utf8');
+    assert.match(css, /\.copying \.reading-after \{\s*display: none;/);
+    // Arabic draws its vowelled reading in the word's place, with nothing after it.
+    Popup.setAppearance({ lang: 'ar' });
+    Popup.render(state({ source: { text: 'كتاب', matched: 4 }, results: [result('كتاب', 'كِتَاب')], rightToLeft: true }));
+    assert.equal(content.querySelector('.reading-after'), null);
+});
+
 test('chinese character readings are marked with their tones', () => {
     Popup.render({
         theme: 'light',
@@ -742,6 +801,12 @@ test('without audio regions the codes label the transcriptions in the dictionary
     Popup.render(state({ results: [transcribed(['/ca/', '/none/'], [['ca'], []])] }));
 
     assert.deepEqual(transcriptionTexts(content.querySelector('.entry-info')), ['CA/ca/', '/none/']);
+
+    // One without a region first stays first: Arabic's standard form before the Egyptian one.
+    Popup.render(state({ results: [transcribed(['/ki.taːb/', '[keˈtæːb]'], [[], ['eg']])] }));
+    const row = content.querySelector('.entry-info');
+    row.querySelector('.pitch-more')?.click();
+    assert.deepEqual(transcriptionTexts(row), ['/ki.taːb/', 'EG[keˈtæːb]']);
 });
 
 test('a long list of transcriptions opens five, then all of them', () => {

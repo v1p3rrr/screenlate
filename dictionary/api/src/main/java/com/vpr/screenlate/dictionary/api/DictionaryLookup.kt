@@ -47,6 +47,8 @@ class DictionaryLookup @Inject constructor(
      * @param extraEntries add the single kanji entries below the results when that setting is on.
      * @param aimedAt UTF-16 index in [text] where the aimed word starts, after the words before it that the language
      *   looks up from as well (`LanguageSupport.earlierStartOffset`); see [fromEarlierStarts].
+     * @param aimedCharAt UTF-16 index in [text] of the aimed character, at or after [aimedAt]: when no word found
+     *   covers it, the lookup starts inside the aimed word as well; see [reachingAimedCharacter].
      */
     suspend fun lookup(
         text: String,
@@ -55,6 +57,7 @@ class DictionaryLookup @Inject constructor(
         primaryReading: String? = null,
         extraEntries: Boolean = true,
         aimedAt: Int = 0,
+        aimedCharAt: Int = aimedAt,
     ): List<LookupResult> {
         if (text.isBlank()) return emptyList()
         val settings = lookupSettings.current(language)
@@ -85,9 +88,11 @@ class DictionaryLookup @Inject constructor(
 
             suspend fun from(source: String): List<LookupResult> {
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
-                val found = LookupVariants.of(source, settings, support).flatMap { variant ->
+                val candidates = LookupVariants.of(source, settings, support).flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
-                }
+                }.mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+                val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
+                val found = candidates.filter { it.matched.length in lengths }
                 val whole = shown(found, start)
                 return support.compoundLinks?.let { links ->
                     compoundParts(source, whole, links) { part ->
@@ -101,10 +106,16 @@ class DictionaryLookup @Inject constructor(
                 }?.map { shown(it, start, part = true) }?.markedAsCompound() ?: whole
             }
 
-            val results = if (aimedAt == 0) {
+            val fromWord = if (aimedAt == 0) {
                 from(text)
             } else {
-                fromEarlierStarts(text, aimedAt) { from(text.substring(it)) }.take(limit)
+                fromEarlierStarts(text, aimedAt, support.wordStarts(text, aimedAt)) { from(text.substring(it)) }.take(limit)
+            }
+            val inner = support.innerStarts(text, aimedAt, aimedCharAt)
+            val results = if (inner.isEmpty()) {
+                fromWord
+            } else {
+                reachingAimedCharacter(fromWord, aimedCharAt, inner) { from(text.substring(it)) }.take(limit)
             }
             val all = if (!extraEntries || !settings.singleKanji) {
                 results

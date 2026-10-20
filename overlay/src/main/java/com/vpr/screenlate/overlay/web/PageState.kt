@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.model.KanjiResult
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.overlay.R
@@ -63,6 +64,7 @@ object PageState {
             installation = installation,
             ocrModels = ocrModels,
             compound = compoundLine(context, results),
+            rightToLeft = language.support.rightToLeft,
         ),
     )
 
@@ -107,6 +109,7 @@ object PageState {
                 kanji = kanji.takeIf { it.entries.isNotEmpty() },
                 message = message.takeIf { kanji.entries.isEmpty() },
                 labels = labels(context) + kanjiLabels(context, language),
+                rightToLeft = language.support.rightToLeft,
             ),
         )
 
@@ -123,7 +126,7 @@ object PageState {
      */
     private fun readingLabels(context: Context, language: Language): Map<String, String> = when (language) {
         Language.JAPANESE, Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN, Language.ITALIAN, Language.PORTUGUESE, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.DUTCH, Language.CZECH, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.VIETNAMESE, Language.RUSSIAN,
-        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN -> mapOf(
+        Language.CROATIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.HINDI, Language.BENGALI, Language.GEORGIAN, Language.ARMENIAN, Language.THAI, Language.KHMER, Language.ARABIC, Language.PERSIAN -> mapOf(
             "onyomi" to context.getString(R.string.overlay_kanji_onyomi),
             "kunyomi" to context.getString(R.string.overlay_kanji_kunyomi),
         )
@@ -169,6 +172,8 @@ object PageState {
         val sentence: String = "",
         /** The line above the entries of a compound's parts; empty for a word with its own entry. */
         val compound: String = "",
+        /** The language is written right to left: the text, headwords and readings run that way in their places. */
+        val rightToLeft: Boolean = false,
     )
 
     /** @property lang the script of [text] where the language has several, as the results' `lang`. */

@@ -1840,6 +1840,36 @@ file. Cells: archive MB, words.
 - `LensProtocol`: `content_language` "iw" is Hebrew, should it ever be read.
 - wordfreq's code license is Apache-2.0 (the group 4b sources line said MIT).
 
+### Outcome on the Arabic branch (2026-10-20)
+
+- Paddle `readingOrder`: the `%` exception was dropped. In an Arabic line's crop, `%` stands apart from its number
+  like the other weak signs at a run's edge (W1–W7 and N1 of the bidirectional algorithm), so "50%" is drawn "%50" and
+  read back as "50%" only when it is split off like ".". Details in `ocr-engines.md`, "Right-to-left lines".
+- Audio redirects: `list=search` returns a redirect's target title, not the redirect itself (checked live on
+  2026-10-20 with `Ar-كتاب.ogg`, which redirects to `Ar-كِتَابٌ.oga`). The marks-tolerant title pattern
+  (`LanguageSupport.recordingMarks`) keeps such a target, so asking for redirects (`redirects=1`) is not needed. The
+  other redirects seen point to other words or to dialect items and are dropped as before.
+- The Commons error answer is a failure now (`CommonsErrorException`, `AudioError.Kind.HTTP_STATUS` with the error
+  code), not a cached miss.
+- `LensProtocol`'s `iw` is left to the Hebrew branch.
+
+### Outcome on the Persian branch (2026-10-20)
+
+- Coverage of the rules, measured on the bundle against wty-fa-en's headwords and form rows: of wordfreq's 20,000
+  commonest Persian words 11,017 are entries as they are and 15,033 with the rules. The word itself comes first in
+  all 11,017 (a longer match, then fewer preprocessor steps, then a shorter chain); 3,902 of them also show entries
+  the rules give after it (است → اس, باید → اید). The colloquial endings would add 93-456 words each (overnight
+  question 4 in the plan).
+- wordfreq `small_fa` builds 29,190 words on the phone (a word with the non-joiner is ranked under both spellings).
+  wty-fa-en imports in 5.1 s (engine 0.9 s) with a form-of table of 105,987 forms.
+- Cloud recognition drops the non-joiner (کتاب‌ها comes back as کتابها) and, in a Vazirmatn image, some full stops
+  after a word in mid-line (آسمان. and ص.), so `{sentence}` then runs on from the line's start. It keeps Persian
+  digits and Latin runs in order.
+- Google's speech engine on the emulator has no Persian voice (`setLanguage` below `LANG_AVAILABLE`): the voice
+  item plays nothing, as in any language without a voice.
+- Lingua Libre has Persian recordings (Q9168) for common words; for کتاب three speakers, two titled as written,
+  and Wiktionary's `Fa-كتاب.ogg` is found through the Arabic letters.
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).

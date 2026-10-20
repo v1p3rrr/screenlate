@@ -38,6 +38,9 @@ keystore.properties
 # wordfreq word lists for frequency dictionary tests (third-party data).
 /testdata/wordfreq/
 
+# Corpus word counts for frequency dictionary tests (third-party data).
+/testdata/corpus/
+
 # Tesseract models downloaded by scripts/ocr-models/tessdata_catalog.py
 /testdata/tessdata/
 

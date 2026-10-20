@@ -1,9 +1,9 @@
 // Regenerates the inflection rule strings of the languages looked up through Yomitan's language code:
 //   node generate-inflections.mjs <yomitan checkout> <iso>...
 // Pass every such language the app has (the Kotlin map is written for exactly these). Writes
-// res/values/inflections_<iso>.xml (rule names and English descriptions, as Yomitan has them) and YomitanInflections.kt
-// in dictionary/engine-hoshidicts, then lists the keys that translations in res/values-*/inflections_<iso>.xml lack or
-// no longer need. Translations are edited by hand.
+// res/values/inflections_<iso>.xml (rule names and English descriptions, as Yomitan has them, or as the app's own rules
+// in own-transforms.js name them) and YomitanInflections.kt in dictionary/engine-hoshidicts, then lists the keys that
+// translations in res/values-*/inflections_<iso>.xml lack or no longer need. Translations are edited by hand.
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -27,18 +27,27 @@ const res = path.join(module, 'src/main/res');
 const kotlin = path.join(module, 'src/main/java/com/vpr/screenlate/dictionary/engine/hoshidicts/YomitanInflections.kt');
 
 /**
- * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping"), by language and rule id.
+ * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping") or by a capitalized
+ * phrase (Arabic "Perfect Tense"), by language and rule id.
  * @type {Record<string, Record<string, string>>}
  */
 const labels = {
     ka: {nounAdjSuffixStripping: 'declension', nounAdjStemCompletion: 'nominative', vowelRestoration: 'dropped vowel'},
+    ar: {
+        ...Object.fromEntries(['ah', 'n', 't', 'at', 'A', 'uw'].map((s) => [`PVSuff-${s}`, 'perfect'])),
+        ...Object.fromEntries(['hw', 'hy', 'hmA', 'hmA-ta', 'hm', 'hn', 'Anta', 'Anti', 'AntmA', 'Antm', 'Antn', 'AnA', 'nHn']
+            .map((p) => [`IVPref-${p}`, 'imperfect'])),
+        'NSuff-wh': 'm. pl. + pos. pron.',
+    },
 };
 
 /**
  * The transforms of [iso], imported from the language's own file: the descriptor list imports every language, and some
  * need libraries a checkout does not have until Yomitan is built. They are taken by the folder, as the bundles take
- * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`).
+ * them by the descriptor's iso: the code they name their language by may differ (Georgian's say `kat`). A language
+ * Yomitan has none for takes the app's own (`own`), whose names are labels for rules named by their affix.
  * @param {string} iso
+ * @returns {Promise<{transforms: [string, {name: string, description?: string}][], own: boolean}>}
  */
 async function transformsOf(iso) {
     const dir = path.join(yomitanRoot, 'ext/js/language', iso);
@@ -47,11 +56,28 @@ async function transformsOf(iso) {
         const exports = await import(pathToFileURL(path.join(dir, file)).href);
         for (const descriptor of Object.values(exports)) {
             if (descriptor?.language && descriptor.transforms) {
-                return Object.entries(descriptor.transforms);
+                return {transforms: Object.entries(descriptor.transforms), own: false};
             }
         }
     }
-    throw new Error(`${iso}: Yomitan has no transforms`);
+    const own = await import(pathToFileURL(path.join(here, 'own-transforms.js')).href);
+    const descriptor = Object.values(own).find((d) => d?.language === iso && d.transforms);
+    if (descriptor) return {transforms: Object.entries(descriptor.transforms), own: true};
+    throw new Error(`${iso}: Yomitan has no transforms, nor does own-transforms.js`);
+}
+
+/** Latin letters for the Arabic-script and Hebrew letters of rule ids (-یشان → yshan), for the strings' names only. */
+const LATIN = {
+    'ا': 'a', 'آ': 'a', 'ب': 'b', 'پ': 'p', 'ت': 't', 'ث': 's', 'ج': 'j', 'چ': 'ch', 'ح': 'h', 'خ': 'kh', 'د': 'd',
+    'ذ': 'z', 'ر': 'r', 'ز': 'z', 'ژ': 'zh', 'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z', 'ع': 'e',
+    'غ': 'gh', 'ف': 'f', 'ق': 'q', 'ک': 'k', 'گ': 'g', 'ل': 'l', 'م': 'm', 'ن': 'n', 'و': 'v', 'ه': 'h', 'ی': 'y',
+    'א': 'a', 'ב': 'b', 'ג': 'g', 'ד': 'd', 'ה': 'h', 'ו': 'v', 'ז': 'z', 'ח': 'kh', 'ט': 't', 'י': 'y', 'כ': 'k',
+    'ך': 'k', 'ל': 'l', 'מ': 'm', 'ם': 'm', 'נ': 'n', 'ן': 'n', 'ס': 's', 'ע': 'e', 'פ': 'p', 'ף': 'f', 'צ': 'ts',
+    'ץ': 'ts', 'ק': 'q', 'ר': 'r', 'ש': 'sh', 'ת': 't',
+};
+
+function romanized(text) {
+    return [...text].map((c) => LATIN[c] ?? c).join('');
 }
 
 /** Whether [text] names affixes: a hyphen at a word's edge (-able, un-, ka-...-an, mag- + rep1). */
@@ -83,21 +109,23 @@ function kotlinString(text) {
 
 const maps = [];
 for (const iso of languages) {
-    const transforms = await transformsOf(iso);
+    const {transforms, own: ownRules} = await transformsOf(iso);
     const keys = new Map();
     const lines = [
         '<?xml version="1.0" encoding="utf-8"?>',
-        `<!-- Inflections of "${iso}": rule names and descriptions from Yomitan's language code (GPL-3.0), commit ${pinned}.`,
+        ownRules ?
+            `<!-- Inflections of "${iso}": names and descriptions of the app's own rules (scripts/yomitan-language/own-transforms.js).` :
+            `<!-- Inflections of "${iso}": rule names and descriptions from Yomitan's language code (GPL-3.0), commit ${pinned}.`,
         '     Generated by scripts/yomitan-language/generate-inflections.mjs; do not edit. -->',
         '<resources>',
     ];
     const expected = new Set();
     const rows = [];
     for (const [id, {name, description}] of transforms) {
-        let slug = `inflection_${iso}_` + (slugOf(id) || slugOf(description ?? '') || 'rule');
+        let slug = `inflection_${iso}_` + (slugOf(id) || slugOf(romanized(id)) || slugOf(description ?? '') || 'rule');
         while ([...keys.values()].includes(slug)) slug += '_';
         keys.set(id, slug);
-        const label = hasLabel(id, name);
+        const label = ownRules ? name !== id : hasLabel(id, name);
         lines.push(`    <!-- ${id.replace(/--/g, '- -')} -->`);
         if (label) {
             // Labels are lowercase like the other rule names; Yomitan capitalizes a few (French "Preterite").
@@ -138,10 +166,10 @@ import androidx.annotation.StringRes
 import com.vpr.screenlate.dictionary.api.model.Transform
 
 /**
- * Localized names and descriptions of the inflection rules of languages looked up through Yomitan's language code, by
- * language code and rule id (what the engine reports). Affixes and names in the language's own script stay as they
- * are; the id stays in [Transform.name] for Anki's \`{conjugation}\`. Generated by
- * scripts/yomitan-language/generate-inflections.mjs.
+ * Localized names and descriptions of the inflection rules of languages looked up through Yomitan's language code
+ * (Yomitan's rules or the app's own), by language code and rule id (what the engine reports). Affixes and names in the
+ * language's own script stay as they are unless the app's own rules name them; the id stays in [Transform.name] for
+ * Anki's \`{conjugation}\`. Generated by scripts/yomitan-language/generate-inflections.mjs.
  */
 internal object YomitanInflections {
     private class Strings(@param:StringRes val label: Int?, @param:StringRes val description: Int?)

@@ -196,6 +196,12 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
                     put("bases", marks.bases)
                     put("every_headword", marks.everyHeadword)
                     put("replacements", buildJsonObject { marks.replacements.forEach { (from, to) -> put(from, to) } })
+                    put(
+                        "further_replacements",
+                        buildJsonObject { marks.furtherReplacements.forEach { (from, to) -> put(from, to) } },
+                    )
+                    put("lemmas_as_written", marks.lemmasAsWritten)
+                    put("forms_in_script", marks.formsInScript)
                 })
             }
         }.toString().encodeToByteArray()

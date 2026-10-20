@@ -1,6 +1,8 @@
 package com.vpr.screenlate.core.ocr.lens
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.ocr.OcrWord
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -101,6 +103,32 @@ class LensProtocolTest {
         val vertical = lines.first { it.text.startsWith("縦書き") }
         assertThat(vertical.vertical).isTrue()
         assertThat(vertical.box.centerX).isGreaterThan(1200f)
+    }
+
+    @Test
+    fun `a Latin run in a right-to-left line comes back left to right`() {
+        fun word(text: String, left: Float, separator: String = " ") =
+            OcrWord(text, separator, Box(left, 0f, left + 10f * text.length, 20f))
+        // "קניתי iPhone 15 Pro, עכשיו" given from right to left by the boxes.
+        val words = listOf(
+            word("קניתי", 300f),
+            word("Pro", 250f),
+            word("15", 220f),
+            word("iPhone", 150f, separator = ""),
+            word(",", 145f),
+            word("עכשיו", 50f, separator = ""),
+        )
+
+        val ordered = LensProtocol.leftToRightRuns(words)
+
+        assertThat(ordered.map { it.text }).containsExactly("קניתי", "iPhone", "15", "Pro", ",", "עכשיו").inOrder()
+        assertThat(ordered.map { it.separator }).containsExactly(" ", " ", " ", "", " ", "").inOrder()
+        assertThat(ordered[1].box.left).isEqualTo(150f)
+        // A line in reading order already, as Lens gives Arabic ones, and numbers alone stay as they are.
+        val arabic = listOf(word("اشتريت", 300f), word("iPhone", 200f), word("15", 270f, separator = ""))
+        assertThat(LensProtocol.leftToRightRuns(arabic).map { it.text }).containsExactly("اشتريت", "iPhone", "15").inOrder()
+        val numbers = listOf(word("عام", 300f), word("2024", 250f), word("2025", 200f, separator = ""))
+        assertThat(LensProtocol.leftToRightRuns(numbers)).isEqualTo(numbers)
     }
 
     @Test

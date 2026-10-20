@@ -124,7 +124,7 @@ object WordfreqDictionary {
     /** The title of the dictionary built for [language], which its catalog entry names as its installed title. */
     fun title(language: String): String = "wordfreq $language"
 
-    private fun write(output: File, index: JsonObject, rows: List<Pair<String, Int>>) {
+    internal fun write(output: File, index: JsonObject, rows: List<Pair<String, Int>>) {
         ZipOutputStream(output.outputStream().buffered()).use { zip ->
             zip.putNextEntry(ZipEntry("index.json"))
             zip.write(Json.encodeToString(JsonObject.serializer(), index).encodeToByteArray())

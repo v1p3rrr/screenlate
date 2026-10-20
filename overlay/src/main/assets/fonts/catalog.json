@@ -579,6 +579,253 @@
       "homepage": "https://fonts.google.com/specimen/Tiro+Bangla"
     },
     {
+      "id": "sarabun",
+      "family": "Sarabun",
+      "language": "th",
+      "description": {
+        "en": "Looped Thai font TH Sarabun New by Suppakit Chalermlarp, used in Thai government documents, with Latin; regular and bold.",
+        "ru": "Тайский шрифт с петлями TH Sarabun New Суппакита Чалермларпа, которым набирают документы правительства Таиланда, с латиницей; обычное и жирное начертания.",
+        "de": "Thailändische Schrift mit Schleifen TH Sarabun New von Suppakit Chalermlarp, in der thailändische Regierungsdokumente gesetzt werden, mit Lateinisch; normal und fett.",
+        "es": "Fuente tailandesa con bucles TH Sarabun New de Suppakit Chalermlarp, la de los documentos del Gobierno de Tailandia, con latino; normal y negrita.",
+        "fr": "Police thaïe à boucles TH Sarabun New de Suppakit Chalermlarp, celle des documents du gouvernement thaïlandais, avec le latin ; normale et grasse.",
+        "it": "Carattere thailandese con occhielli TH Sarabun New di Suppakit Chalermlarp, usato nei documenti del governo thailandese, con il latino; normale e grassetto.",
+        "ja": "Suppakit Chalermlarp によるループ付きのタイ文字フォント TH Sarabun New。タイ政府の公文書に使われ、ラテン文字付き。標準と太字。",
+        "ko": "Suppakit Chalermlarp이 만든 고리 있는 태국 문자 글꼴 TH Sarabun New로, 태국 정부 문서에 쓰이며 라틴 문자도 있습니다. 보통과 굵게.",
+        "pl": "Tajski krój z pętelkami TH Sarabun New autorstwa Suppakita Chalermlarpa, używany w dokumentach rządu Tajlandii, z łacinką; zwykły i pogrubiony.",
+        "pt": "Fonte tailandesa com laços TH Sarabun New de Suppakit Chalermlarp, usada nos documentos do governo tailandês, com latino; normal e negrito.",
+        "tr": "Suppakit Chalermlarp’ın Tayland hükümeti belgelerinde kullanılan ilmekli Tay yazı tipi TH Sarabun New, Latin harfleriyle; normal ve kalın.",
+        "vi": "Phông chữ Thái có vòng TH Sarabun New của Suppakit Chalermlarp, dùng trong văn bản của chính phủ Thái Lan, kèm chữ Latinh; thường và đậm.",
+        "zh": "Suppakit Chalermlarp 设计的带圈头泰文字体 TH Sarabun New，用于泰国政府公文，附拉丁字母；常规和粗体。",
+        "zh-Hant": "Suppakit Chalermlarp 設計的帶圈頭泰文字型 TH Sarabun New，用於泰國政府公文，附拉丁字母；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Sarabun"
+    },
+    {
+      "id": "noto-sans-thai-looped",
+      "family": "Noto Sans Thai Looped",
+      "language": "th",
+      "description": {
+        "en": "Sans-serif by Google in the traditional looped forms of the Thai script, in every weight.",
+        "ru": "Шрифт без засечек Google в традиционной форме тайского письма с петлями, во всех начертаниях.",
+        "de": "Serifenlose Schrift von Google in den traditionellen Formen der Thai-Schrift mit Schleifen, in allen Stärken.",
+        "es": "Fuente sin serifa de Google con las formas tradicionales con bucles de la escritura tailandesa, en todos los grosores.",
+        "fr": "Police sans empattement de Google dans les formes traditionnelles à boucles de l'écriture thaïe, dans toutes les graisses.",
+        "it": "Carattere senza grazie di Google nelle forme tradizionali con occhielli della scrittura thailandese, in tutti i pesi.",
+        "ja": "Google によるサンセリフ。タイ文字の伝統的なループ付きの字形で、すべての太さがある。",
+        "ko": "Google이 만든 산세리프로, 태국 문자의 전통적인 고리 있는 모양이며 모든 굵기가 있습니다.",
+        "pl": "Krój bezszeryfowy Google w tradycyjnych kształtach pisma tajskiego z pętelkami, we wszystkich grubościach.",
+        "pt": "Fonte sem serifa do Google nas formas tradicionais com laços da escrita tailandesa, em todos os pesos.",
+        "tr": "Google’ın Tay yazısının geleneksel ilmekli biçimlerinde tırnaksız yazı tipi, tüm kalınlıklarda.",
+        "vi": "Phông không chân của Google theo dạng chữ Thái truyền thống có vòng, đủ mọi độ đậm.",
+        "zh": "Google 出品的无衬线字体，采用泰文传统的带圈头字形，包含所有粗细。",
+        "zh-Hant": "Google 出品的無襯線字型，採用泰文傳統的帶圈頭字形，包含所有粗細。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansthailooped/NotoSansThaiLooped%5Bwdth,wght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Noto+Sans+Thai+Looped"
+    },
+    {
+      "id": "kanit",
+      "family": "Kanit",
+      "language": "th",
+      "description": {
+        "en": "Loopless Thai sans-serif by Cadson Demak, formal and compact, with Latin; regular and bold.",
+        "ru": "Тайский шрифт без петель и засечек Cadson Demak, строгий и компактный, с латиницей; обычное и жирное начертания.",
+        "de": "Serifenlose thailändische Schrift ohne Schleifen von Cadson Demak, sachlich und kompakt, mit Lateinisch; normal und fett.",
+        "es": "Fuente tailandesa sin bucles ni serifa de Cadson Demak, formal y compacta, con latino; normal y negrita.",
+        "fr": "Police thaïe sans boucles ni empattement de Cadson Demak, sobre et compacte, avec le latin ; normale et grasse.",
+        "it": "Carattere thailandese senza occhielli né grazie di Cadson Demak, formale e compatto, con il latino; normale e grassetto.",
+        "ja": "Cadson Demak によるループなしのタイ文字サンセリフ。端正でコンパクト、ラテン文字付き。標準と太字。",
+        "ko": "Cadson Demak이 만든 고리 없는 태국 문자 산세리프로, 단정하고 조밀하며 라틴 문자도 있습니다. 보통과 굵게.",
+        "pl": "Tajski krój bezszeryfowy bez pętelek autorstwa Cadson Demak, oficjalny i zwarty, z łacinką; zwykły i pogrubiony.",
+        "pt": "Fonte tailandesa sem laços e sem serifa da Cadson Demak, formal e compacta, com latino; normal e negrito.",
+        "tr": "Cadson Demak’ın ilmeksiz, tırnaksız Tay yazı tipi, resmî ve sıkı, Latin harfleriyle; normal ve kalın.",
+        "vi": "Phông chữ Thái không vòng, không chân của Cadson Demak, trang trọng và gọn, kèm chữ Latinh; thường và đậm.",
+        "zh": "Cadson Demak 出品的无圈头泰文无衬线字体，端正紧凑，附拉丁字母；常规和粗体。",
+        "zh-Hant": "Cadson Demak 出品的無圈頭泰文無襯線字型，端正緊湊，附拉丁字母；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kanit/Kanit-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kanit/Kanit-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.4,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Kanit"
+    },
+    {
+      "id": "prompt",
+      "family": "Prompt",
+      "language": "th",
+      "description": {
+        "en": "Loopless Thai sans-serif by Cadson Demak, wide and geometric, with Latin; regular and bold.",
+        "ru": "Тайский шрифт без петель и засечек Cadson Demak, широкий и геометрический, с латиницей; обычное и жирное начертания.",
+        "de": "Serifenlose thailändische Schrift ohne Schleifen von Cadson Demak, breit und geometrisch, mit Lateinisch; normal und fett.",
+        "es": "Fuente tailandesa sin bucles ni serifa de Cadson Demak, ancha y geométrica, con latino; normal y negrita.",
+        "fr": "Police thaïe sans boucles ni empattement de Cadson Demak, large et géométrique, avec le latin ; normale et grasse.",
+        "it": "Carattere thailandese senza occhielli né grazie di Cadson Demak, largo e geometrico, con il latino; normale e grassetto.",
+        "ja": "Cadson Demak によるループなしのタイ文字サンセリフ。幅広で幾何学的、ラテン文字付き。標準と太字。",
+        "ko": "Cadson Demak이 만든 고리 없는 태국 문자 산세리프로, 폭이 넓고 기하학적이며 라틴 문자도 있습니다. 보통과 굵게.",
+        "pl": "Tajski krój bezszeryfowy bez pętelek autorstwa Cadson Demak, szeroki i geometryczny, z łacinką; zwykły i pogrubiony.",
+        "pt": "Fonte tailandesa sem laços e sem serifa da Cadson Demak, larga e geométrica, com latino; normal e negrito.",
+        "tr": "Cadson Demak’ın ilmeksiz, tırnaksız Tay yazı tipi, geniş ve geometrik, Latin harfleriyle; normal ve kalın.",
+        "vi": "Phông chữ Thái không vòng, không chân của Cadson Demak, rộng và hình học, kèm chữ Latinh; thường và đậm.",
+        "zh": "Cadson Demak 出品的无圈头泰文无衬线字体，字面宽、几何感强，附拉丁字母；常规和粗体。",
+        "zh-Hant": "Cadson Demak 出品的無圈頭泰文無襯線字型，字面寬、幾何感強，附拉丁字母；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/prompt/Prompt-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/prompt/Prompt-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.4,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Prompt"
+    },
+    {
+      "id": "kantumruy-pro",
+      "family": "Kantumruy Pro",
+      "language": "km",
+      "description": {
+        "en": "Modern Khmer sans-serif by Tep Sovichet and Wei Huang, with Latin, from thin to bold.",
+        "ru": "Современный кхмерский шрифт без засечек, авторы — Tep Sovichet и Wei Huang; с латиницей, от тонкого до жирного.",
+        "de": "Moderne serifenlose Khmer-Schrift von Tep Sovichet und Wei Huang, mit Lateinisch, von dünn bis fett.",
+        "es": "Fuente jemer moderna sin serifa de Tep Sovichet y Wei Huang, con latino, de fina a negrita.",
+        "fr": "Police khmère moderne sans empattement de Tep Sovichet et Wei Huang, avec le latin, de maigre à grasse.",
+        "it": "Carattere khmer moderno senza grazie di Tep Sovichet e Wei Huang, con il latino, da sottile a grassetto.",
+        "ja": "Tep Sovichet と Wei Huang による現代的なクメール文字のサンセリフ。ラテン文字付き。細字から太字まで。",
+        "ko": "Tep Sovichet과 Wei Huang이 만든 현대적인 크메르 문자 산세리프로, 라틴 문자도 있으며 가는 굵기부터 굵게까지 있습니다.",
+        "pl": "Nowoczesny khmerski krój bezszeryfowy projektu Tep Sovichet i Wei Huang, z łacinką, od cienkiego do pogrubionego.",
+        "pt": "Fonte khmer moderna sem serifa de Tep Sovichet e Wei Huang, com latino, de fina a negrito.",
+        "tr": "Tep Sovichet ve Wei Huang’ın modern, tırnaksız Kmer yazı tipi, Latin harfleriyle; inceden kalına.",
+        "vi": "Phông chữ Khmer không chân hiện đại của Tep Sovichet và Wei Huang, kèm chữ Latinh, từ mảnh đến đậm.",
+        "zh": "Tep Sovichet 和 Wei Huang 设计的现代高棉文无衬线字体，附拉丁字母，从细体到粗体。",
+        "zh-Hant": "Tep Sovichet 和 Wei Huang 設計的現代高棉文無襯線字型，附拉丁字母，從細體到粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kantumruypro/KantumruyPro%5Bwght%5D.ttf", "weight": "100 700"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Kantumruy+Pro"
+    },
+    {
+      "id": "hanuman",
+      "family": "Hanuman",
+      "language": "km",
+      "description": {
+        "en": "Khmer serif by Danh Hong for body text, with Latin, in every weight.",
+        "ru": "Кхмерский шрифт с засечками для основного текста, автор — Danh Hong; с латиницей, во всех начертаниях.",
+        "de": "Khmer-Serifenschrift von Danh Hong für Fließtext, mit Lateinisch, in allen Stärken.",
+        "es": "Fuente jemer con serifa de Danh Hong para texto corrido, con latino, en todos los grosores.",
+        "fr": "Police khmère à empattements de Danh Hong pour le texte courant, avec le latin, dans toutes les graisses.",
+        "it": "Carattere khmer con grazie di Danh Hong per il testo corrente, con il latino, in tutti i pesi.",
+        "ja": "Danh Hong による本文用のクメール文字のセリフ。ラテン文字付き。すべての太さがある。",
+        "ko": "Danh Hong이 만든 본문용 크메르 문자 세리프로, 라틴 문자도 있으며 모든 굵기가 있습니다.",
+        "pl": "Khmerski krój szeryfowy projektu Danh Hong do tekstu głównego, z łacinką, we wszystkich grubościach.",
+        "pt": "Fonte khmer com serifa de Danh Hong para texto corrido, com latino, em todos os pesos.",
+        "tr": "Danh Hong’un metin için tırnaklı Kmer yazı tipi, Latin harfleriyle; tüm kalınlıklarda.",
+        "vi": "Phông chữ Khmer có chân của Danh Hong cho văn bản, kèm chữ Latinh, đủ mọi độ đậm.",
+        "zh": "Danh Hong 设计的正文用高棉文衬线字体，附拉丁字母，包含所有粗细。",
+        "zh-Hant": "Danh Hong 設計的內文用高棉文襯線字型，附拉丁字母，包含所有粗細。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hanuman/Hanuman%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Hanuman"
+    },
+    {
+      "id": "noto-sans-arabic",
+      "family": "Noto Sans Arabic",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Arabic-script sans-serif of Google's Noto family, with Latin, from thin to black.",
+        "ru": "Шрифт без засечек для арабского письма из семейства Noto от Google; с латиницей, от тонкого до сверхжирного.",
+        "de": "Serifenlose Schrift für die arabische Schrift aus Googles Noto-Familie, mit Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente sin serifa para la escritura árabe de la familia Noto de Google, con latino, de fina a ultranegrita.",
+        "fr": "Police sans empattement pour l’écriture arabe de la famille Noto de Google, avec le latin, de maigre à extra-grasse.",
+        "it": "Carattere senza grazie per la scrittura araba della famiglia Noto di Google, con il latino, da sottile a nero.",
+        "ja": "Google の Noto ファミリーによるアラビア文字のサンセリフ。ラテン文字付き。極細から極太まで。",
+        "ko": "Google Noto 계열의 아랍 문자 산세리프로, 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Bezszeryfowy krój pisma arabskiego z rodziny Noto od Google, z łacinką, od cienkiego do najgrubszego.",
+        "pt": "Fonte sem serifa para a escrita árabe da família Noto do Google, com latino, de fina a ultranegrito.",
+        "tr": "Google’ın Noto ailesinden Arap yazısı için tırnaksız yazı tipi, Latin harfleriyle; inceden en kalına.",
+        "vi": "Phông chữ Ả Rập không chân thuộc họ Noto của Google, kèm chữ Latinh, từ mảnh đến rất đậm.",
+        "zh": "Google Noto 系列的阿拉伯文无衬线字体，附拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Google Noto 系列的阿拉伯文無襯線字型，附拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansarabic/NotoSansArabic%5Bwdth,wght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/noto/specimen/Noto+Sans+Arabic"
+    },
+    {
+      "id": "amiri",
+      "family": "Amiri",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Classical Naskh typeface by Khaled Hosny for Arabic book text, with Latin; regular and bold.",
+        "ru": "Классический шрифт насх для арабского книжного текста, автор — Khaled Hosny; с латиницей, обычное и жирное начертания.",
+        "de": "Klassische Naskh-Schrift von Khaled Hosny für arabischen Buchtext, mit Lateinisch; normal und fett.",
+        "es": "Fuente naskh clásica de Khaled Hosny para texto de libros en árabe, con latino; normal y negrita.",
+        "fr": "Police naskh classique de Khaled Hosny pour le texte de livre arabe, avec le latin ; normale et grasse.",
+        "it": "Carattere naskh classico di Khaled Hosny per il testo dei libri in arabo, con il latino; normale e grassetto.",
+        "ja": "Khaled Hosny による、アラビア語の書籍本文向けの古典的なナスフ体。ラテン文字付き。標準と太字。",
+        "ko": "Khaled Hosny가 만든 아랍어 책 본문용 고전 나스흐체로, 라틴 문자도 있으며 보통과 굵게가 있습니다.",
+        "pl": "Klasyczny krój naschi projektu Khaled Hosny do tekstu książkowego po arabsku, z łacinką; zwykły i pogrubiony.",
+        "pt": "Fonte naskh clássica de Khaled Hosny para texto de livros em árabe, com latino; normal e negrito.",
+        "tr": "Khaled Hosny’nin Arapça kitap metni için klasik nesih yazı tipi, Latin harfleriyle; normal ve kalın.",
+        "vi": "Phông chữ Naskh cổ điển của Khaled Hosny cho văn bản sách tiếng Ả Rập, kèm chữ Latinh; thường và đậm.",
+        "zh": "Khaled Hosny 设计的古典纳斯赫体，用于阿拉伯文书籍正文，附拉丁字母；常规和粗体。",
+        "zh-Hant": "Khaled Hosny 設計的古典納斯赫體，用於阿拉伯文書籍內文，附拉丁字母；常規和粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Regular.ttf", "weight": "400"},
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Bold.ttf", "weight": "700"}
+      ],
+      "sizeMb": 0.8,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Amiri"
+    },
+    {
+      "id": "vazirmatn",
+      "family": "Vazirmatn",
+      "subsets": ["arabic"],
+      "description": {
+        "en": "Persian sans-serif by Saber Rastikerdar, with Latin, from thin to black.",
+        "ru": "Персидский шрифт без засечек, автор — Saber Rastikerdar; с латиницей, от тонкого до сверхжирного.",
+        "de": "Persische serifenlose Schrift von Saber Rastikerdar, mit Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente persa sin serifa de Saber Rastikerdar, con latino, de fina a ultranegrita.",
+        "fr": "Police persane sans empattement de Saber Rastikerdar, avec le latin, de maigre à extra-grasse.",
+        "it": "Carattere persiano senza grazie di Saber Rastikerdar, con il latino, da sottile a nero.",
+        "ja": "Saber Rastikerdar によるペルシア語のサンセリフ。ラテン文字付き。極細から極太まで。",
+        "ko": "Saber Rastikerdar가 만든 페르시아어 산세리프로, 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Bezszeryfowy krój perski autorstwa Sabera Rastikerdara, z łacinką, od cienkiego do najgrubszego.",
+        "pt": "Fonte persa sem serifa de Saber Rastikerdar, com latino, de fina a ultranegrito.",
+        "tr": "Saber Rastikerdar’ın Farsça için tırnaksız yazı tipi, Latin harfleriyle; inceden en kalına.",
+        "vi": "Phông chữ Ba Tư không chân của Saber Rastikerdar, kèm chữ Latinh, từ mảnh đến rất đậm.",
+        "zh": "Saber Rastikerdar 设计的波斯文无衬线字体，附拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Saber Rastikerdar 設計的波斯文無襯線字型，附拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/vazirmatn/Vazirmatn%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Vazirmatn"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

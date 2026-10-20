@@ -205,6 +205,45 @@ class SentenceTest {
     }
 
     @Test
+    fun thaiSentencesEndAtASpaceBetweenLettersButNotBesideMaiYamokPaiyannoiOrNumbers() {
+        val thai = "วันนี้อากาศดีมาก ไปเดินเล่นกันไหม เด็ก ๆ ชอบเล่น กรุงเทพฯ เป็นเมืองหลวง ปี 2024 มีฝนมาก"
+        assertThat(extract(thai, "เดิน", Language.THAI).text).isEqualTo("ไปเดินเล่นกันไหม")
+        assertThat(extract(thai, "ชอบ", Language.THAI).text).isEqualTo("เด็ก ๆ ชอบเล่น")
+        assertThat(extract(thai, "เมือง", Language.THAI).text).isEqualTo("กรุงเทพฯ เป็นเมืองหลวง")
+        assertThat(extract(thai, "ฝน", Language.THAI).text).isEqualTo("ปี 2024 มีฝนมาก")
+        // A full stop after Thai letters is an abbreviation's (พ.ศ., the Buddhist era); after Latin letters it ends one.
+        assertThat(extract("พ.ศ. 2567 เขาไปเชียงใหม่", "เขา", Language.THAI).text).isEqualTo("พ.ศ. 2567 เขาไปเชียงใหม่")
+        assertThat(extract("เขาใช้ iOS. เราไปกัน", "เรา", Language.THAI).text).isEqualTo("เราไปกัน")
+    }
+
+    @Test
+    fun khmerSentencesEndAtKhanAndTheSectionEndNotAtASpace() {
+        val khmer = "ខ្ញុំទៅ សាលារៀន។ គាត់ធ្វើការនៅភ្នំពេញ។ តើអ្នកសុខសប្បាយទេ? ក្មេងៗលេងបាល់៕ ចប់"
+        assertThat(extract(khmer, "សាលា", Language.KHMER).text).isEqualTo("ខ្ញុំទៅ សាលារៀន។")
+        assertThat(extract(khmer, "ធ្វើការ", Language.KHMER).text).isEqualTo("គាត់ធ្វើការនៅភ្នំពេញ។")
+        assertThat(extract(khmer, "សុខសប្បាយ", Language.KHMER).text).isEqualTo("តើអ្នកសុខសប្បាយទេ?")
+        assertThat(extract(khmer, "បាល់", Language.KHMER).text).isEqualTo("ក្មេងៗលេងបាល់៕")
+    }
+
+    @Test
+    fun arabicSentencesEndAtTheArabicQuestionMarkNotAtItsCommaOrAnAbbreviation() {
+        val arabic = "هل قرأت الكتاب؟ نعم، قرأته في المكتبة؛ كان جميلا. قال د. أحمد «اقرأ!» ثم خرج."
+        assertThat(extract(arabic, "قرأت", Language.ARABIC).text).isEqualTo("هل قرأت الكتاب؟")
+        assertThat(extract(arabic, "المكتبة", Language.ARABIC).text).isEqualTo("نعم، قرأته في المكتبة؛ كان جميلا.")
+        assertThat(extract(arabic, "أحمد", Language.ARABIC).text).isEqualTo("قال د. أحمد «اقرأ!» ثم خرج.")
+        assertThat(extract("وُلد سنة ٥٠ ق.م. في روما", "روما", Language.ARABIC).text)
+            .isEqualTo("وُلد سنة ٥٠ ق.م. في روما")
+    }
+
+    @Test
+    fun persianSentencesEndAtTheArabicQuestionMarkNotAtItsCommaOrAPageNumber() {
+        val persian = "کتاب\u200Cها را خواندی؟ بله، در کتابخانه خواندم؛ خیلی خوب بود. نگاه کن ص. ۱۲ «عالی!» گفت."
+        assertThat(extract(persian, "خواندی", Language.PERSIAN).text).isEqualTo("کتاب\u200Cها را خواندی؟")
+        assertThat(extract(persian, "کتابخانه", Language.PERSIAN).text).isEqualTo("بله، در کتابخانه خواندم؛ خیلی خوب بود.")
+        assertThat(extract(persian, "نگاه", Language.PERSIAN).text).isEqualTo("نگاه کن ص. ۱۲ «عالی!» گفت.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

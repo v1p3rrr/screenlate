@@ -191,6 +191,10 @@ class FontFilesTest {
         assertThat(describe(widthOnly)?.weightRange).isNull()
         val single = sfnt(listOf("fvar" to fvar(Triple("wght", 400.0, 400.0)), names))
         assertThat(describe(single)?.weightRange).isNull()
+        // An axis short of the regular weight (26-190, Regular at 90) is left out; the OS/2 weight class stands.
+        val short = sfnt(listOf("OS/2" to os2(400), "fvar" to fvar(Triple("wght", 26.0, 190.0)), names))
+        assertThat(describe(short)?.weightRange).isNull()
+        assertThat(describe(short)?.weight).isEqualTo("400")
     }
 
     @Test

@@ -67,8 +67,42 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Vietnamese starts lookups at the syllables before the aimed one`() {
+    fun `only Vietnamese starts lookups at the syllables before the aimed one, Thai and Khmer at the words before it`() {
         assertThat(all.where { it.earlierStartOffset("Tôi là học ") > 0 }).containsExactly(Language.VIETNAMESE)
+        assertThat(all.where { it.earlierStartOffset("ห้อง", "สมุด") > 0 }).containsExactly(Language.THAI)
+        assertThat(all.where { it.earlierStartOffset("ខ្ញុំ", "ទៅ") > 0 }).containsExactly(Language.KHMER)
+        // Persian only at a verb prefix or before an ending written apart; Vietnamese at any syllable.
+        assertThat(all.where { it.earlierStartOffset("می ", "خواهم") > 0 }).containsExactly(Language.VIETNAMESE, Language.PERSIAN)
+        assertThat(all.where { it.earlierStartOffset("کتاب ", "ها") > 0 }).containsExactly(Language.VIETNAMESE, Language.PERSIAN)
+        assertThat(all.where { it.earlierStartOffset("کتاب ", "خوب") > 0 }).containsExactly(Language.VIETNAMESE)
+    }
+
+    @Test
+    fun `only Thai and Khmer find words with a segmenter, keep clusters whole and drop shorter matches inside a word`() {
+        // Spaced languages start words after spaces; Thai and Khmer where the segmenter does (one piece without the
+        // phone's ICU), and only in their own script.
+        assertThat(all.where { it.wordStarts("ห้องสมุด เปิด", "ห้องสมุด เ".length) != listOf(0, "ห้องสมุด ".length) })
+            .containsExactly(Language.THAI, Language.KHMER)
+        assertThat(all.where { it.shownMatchLengths("การตลาด", setOf(1, 7)) != setOf(1, 7) })
+            .containsExactly(Language.THAI, Language.KHMER)
+        assertThat(all.where { it.ocrSpaceGap != null }).containsExactly(Language.THAI, Language.KHMER)
+        // Only they start lookups inside the aimed word when nothing from its start reaches the aim, in their script.
+        assertThat(all.where { it.innerStarts("โรงเรียน", 0, "โรงเรีย".length).isNotEmpty() }).containsExactly(Language.THAI)
+        assertThat(all.where { it.innerStarts("ក្រុងភ្នំពេញ", 0, "ក្រុងភ្នំពេ".length).isNotEmpty() })
+            .containsExactly(Language.KHMER)
+        assertThat(all.where { it.innerStarts("lookup", 0, "look".length).isNotEmpty() }).isEmpty()
+    }
+
+    @Test
+    fun `only Thai ends a sentence at a space between letters`() {
+        assertThat(all.where { it.endsSentence("กิน ข้าว", "กิน".length) }).containsExactly(Language.THAI)
+        assertThat(all.where { it.endsSentence("eat rice", "eat".length) }).isEmpty()
+    }
+
+    @Test
+    fun `only Khmer ends a sentence at khan and the section end`() {
+        assertThat(all.where { it.endsSentence("ទៅ។", "ទៅ".length) }).containsExactly(Language.KHMER)
+        assertThat(all.where { it.endsSentence("ចប់៕", "ចប់".length) }).containsExactly(Language.KHMER)
     }
 
     @Test
@@ -188,7 +222,10 @@ class LanguageRulesIsolationTest {
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
-            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN)
+            .containsExactly(
+                Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN,
+                Language.THAI,
+            )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
 
@@ -213,13 +250,23 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
         assertThat(all.where { it.frequencyWord("τησ") != "τησ" }).containsExactly(Language.GREEK)
+        assertThat(all.where { it.frequencyWord("اين") != "اين" }).containsExactly(Language.PERSIAN)
+        assertThat(all.where { it.frequencySpellings("آن\u200Cها").isNotEmpty() }).containsExactly(Language.PERSIAN)
+        assertThat(all.where { it.recordings("کتاب", "").any { recording -> recording.title == "كتاب" } })
+            .containsExactly(Language.PERSIAN)
         assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.CROATIAN, Language.SERBIAN)
     }
 
     @Test
-    fun `only Greek and Hindi key every headword without its marks, only Hindi replaces marks`() {
-        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK, Language.HINDI)
-        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(Language.HINDI)
+    fun `only Greek, Hindi, Khmer, Arabic and Persian key every headword without its marks, only Arabic two spellings further`() {
+        assertThat(all.where { it.headwordMarks?.everyHeadword == true })
+            .containsExactly(Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
+            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
+        // Arabic lemmas lose their vowel marks although every headword is keyed.
+        assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
+            .containsExactly(Language.ARABIC)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
     }
 
@@ -264,8 +311,30 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian and Armenian consider more characters from the aim than Yomitan's 16 by default`() {
-        assertThat(all.where { it.defaultScanLength != 16 }).containsExactly(Language.GEORGIAN, Language.ARMENIAN)
+    fun `only Georgian, Armenian, Arabic and Persian consider more characters from the aim than Yomitan's 16 by default`() {
+        assertThat(all.where { it.defaultScanLength != 16 })
+            .containsExactly(Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN)
+    }
+
+    @Test
+    fun `only Arabic and Persian run right to left and end a sentence at the arabic question mark, each writes the other's kaf`() {
+        assertThat(all.where { it.rightToLeft }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.endsSentence("هل؟ نعم", "هل".length) }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.endsSentence("كتب، ثم", "كتب".length) }).isEmpty()
+        assertThat(all.where { it.ocrWord("کتاب") != "کتاب" }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.ocrWord("كتاب") != "كتاب" }).containsExactly(Language.PERSIAN)
+        assertThat(periodEnding.where { !it.endsSentence("قال د. أحمد", "قال د".length) }).containsExactly(Language.ARABIC)
+    }
+
+    @Test
+    fun `only Arabic and Persian wrap their anki markers right to left, find recordings with vowel marks and drop forms in other scripts`() {
+        assertThat(all.where { it.rightToLeftMarkers.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        // Persian's reading is a Latin romanization.
+        assertThat(all.where { "reading" in it.rightToLeftMarkers }).containsExactly(Language.ARABIC)
+        assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.headwordMarks?.formsInScript == true }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) && it.language != Language.CROATIAN && it.language != Language.SERBIAN })
+            .isEmpty()
     }
 
     @Test
@@ -285,7 +354,8 @@ class LanguageRulesIsolationTest {
     @Test
     fun `scripts written without spaces shorten the text by letters`() {
         assertThat(all.where { it.searchResolution == SearchResolution.LETTER })
-            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN)
-        assertThat(all.where { it.wordSeparator.isEmpty() }).containsExactly(Language.JAPANESE, Language.CHINESE)
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI, Language.KHMER)
+        assertThat(all.where { it.wordSeparator.isEmpty() })
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI, Language.KHMER)
     }
 }

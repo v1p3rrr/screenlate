@@ -135,6 +135,7 @@
     <string name="anki_tags">Etiquetas (separadas por espaços)</string>
     <string name="anki_fields">Campos</string>
     <string name="anki_fields_hint">Os modelos usam marcadores como {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Use o botão + para inserir um. O primeiro campo é usado para verificar duplicatas.</string>
+    <string name="anki_fields_hint_rtl">Num idioma escrito da direita para a esquerda, “Preencher com os modelos sugeridos” e o botão + colocam a palavra e a frase em &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, para que o cartão as mostre na ordem de leitura. O primeiro campo não recebe isso, porque a verificação de duplicatas compara a sua marcação.</string>
     <string name="anki_insert_marker">Inserir marcador</string>
     <string name="anki_marker_furigana_zh">Pinyin sobre os caracteres</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin como texto: 你[nǐ] 好[hǎo]</string>
@@ -498,6 +499,10 @@
     <string name="popup_font_script_only_bn">Só para texto em bengali</string>
     <string name="popup_font_script_only_ka">Só para texto em georgiano</string>
     <string name="popup_font_script_only_hy">Só para texto em armênio</string>
+    <string name="popup_font_script_only_th">Só para texto em tailandês</string>
+    <string name="popup_font_script_only_km">Só para texto em khmer</string>
+    <string name="popup_font_script_only_ar">Só para texto em árabe</string>
+    <string name="popup_font_script_only_fa">Só para texto em persa</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

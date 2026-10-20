@@ -72,6 +72,39 @@ class TextLayoutTest {
     }
 
     @Test
+    fun `marks above and below their letter take no share of a divided word box`() {
+        // ห้องสมุด: eight code points, six columns; ้ and ุ sit on ห and ม.
+        val line = OcrLine(listOf(word("ห้องสมุด", Box(0f, 0f, 600f, 100f))), Box(0f, 0f, 600f, 100f), vertical = false)
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.box.left }).containsExactly(0f, 0f, 100f, 200f, 300f, 400f, 400f, 500f).inOrder()
+        assertThat(characters.last().box.right).isEqualTo(600f)
+        // Spacing vowels (า) keep their share.
+        val spaced = OcrLine(listOf(word("กา", Box(0f, 0f, 200f, 100f))), Box(0f, 0f, 200f, 100f), vertical = false)
+        assertThat(TextLayout(page(OcrParagraph(listOf(spaced)))).paragraphs.single()[1].box.left).isEqualTo(100f)
+    }
+
+    @Test
+    fun `harakat take no share of a right-to-left word box`() {
+        // كِتَابٌ: seven code points, four letters from the right; the kasra, fatha and dammatan sit on their letters.
+        val line = OcrLine(
+            listOf(word("كِتَابٌ", Box(0f, 0f, 400f, 100f))),
+            Box(0f, 0f, 400f, 100f),
+            vertical = false,
+            rightToLeft = true,
+        )
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.box.right }).containsExactly(400f, 400f, 300f, 300f, 200f, 100f, 100f).inOrder()
+    }
+
+    @Test
+    fun `a khmer consonant below another takes no share either`() {
+        // ខ្ញុំទៅ: ខ ្ ញ ុ ំ ទ ៅ, three columns; ញ is written below ខ after the coeng, ៅ is a spacing vowel.
+        val line = OcrLine(listOf(word("ខ្ញុំទៅ", Box(0f, 0f, 300f, 100f))), Box(0f, 0f, 300f, 100f), vertical = false)
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.box.left }).containsExactly(0f, 0f, 0f, 0f, 0f, 100f, 200f).inOrder()
+    }
+
+    @Test
     fun `hit test finds the character under the point`() {
         val layout = TextLayout(page(horizontal, vertical))
 

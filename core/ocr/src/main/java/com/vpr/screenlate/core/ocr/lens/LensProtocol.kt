@@ -94,8 +94,44 @@ internal object LensProtocol {
         val box = lineBox ?: Box.unionOf(words.map { it.box }) ?: return null
         val text = words.joinToString("") { it.text }
         val vertical = isVerticalLine(box, text)
-        return OcrLine(words, box, vertical, rightToLeft = !vertical && isRightToLeftText(text))
+        val rightToLeft = !vertical && isRightToLeftText(text)
+        return OcrLine(if (rightToLeft) leftToRightRuns(words) else words, box, vertical, rightToLeft)
     }
+
+    /**
+     * The words of a right-to-left line with its left-to-right runs in reading order: Lens gives a Hebrew or Persian
+     * line's words from right to left by their boxes, so a Latin run comes back backwards (קניתי 15 iPhone). A run is
+     * the words in a row without right-to-left letters, not punctuation alone, one of them with a Latin (or other
+     * left-to-right) letter; numbers alone keep the order they have. Separators stay in their places.
+     */
+    internal fun leftToRightRuns(words: List<OcrWord>): List<OcrWord> {
+        val result = words.toMutableList()
+        var start = 0
+        while (start < words.size) {
+            if (!words[start].inLeftToRightRun()) {
+                start++
+                continue
+            }
+            var end = start
+            while (end + 1 < words.size && words[end + 1].inLeftToRightRun()) end++
+            val run = words.subList(start, end + 1)
+            if (run.any { it.text.hasDirection(Character.DIRECTIONALITY_LEFT_TO_RIGHT) }) {
+                run.sortedBy { it.box.left }.forEachIndexed { i, word ->
+                    result[start + i] = word.copy(separator = words[start + i].separator)
+                }
+            }
+            start = end + 1
+        }
+        return result
+    }
+
+    private fun OcrWord.inLeftToRightRun(): Boolean =
+        text.any(Char::isLetterOrDigit) &&
+            !text.hasDirection(Character.DIRECTIONALITY_RIGHT_TO_LEFT) &&
+            !text.hasDirection(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC)
+
+    private fun String.hasDirection(direction: Byte): Boolean =
+        codePoints().anyMatch { Character.getDirectionality(it) == direction }
 
     private fun parseWord(reader: ProtoReader, width: Int, height: Int): OcrWord? {
         var text = ""

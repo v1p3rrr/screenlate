@@ -77,8 +77,8 @@ branch: 5a Latin, 5b Celtic, 5c long suffix chains, 5d Cyrillic, 5e other script
 group 4d's research. Groups 4d (Arabic, Persian, Hebrew) and 4e (Kazakh, Kyrgyz) are researched in sessions of their
 own too. Their branches are merged into `languages/main` by this session when they report. Group 4c (Thai, Khmer, Lao) is researched
 (`notes/languages.md`, "Group 4c research") and its questions 1-8 answered (`plans/2026-10-19-group-4c.md`; question
-9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); the Thai
-and Khmer build waits for the owner's go. Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
+9, a note on weak on-device recognition, is asked later). Lao is deferred, for a while or for good (owner); Thai and
+Khmer are built in the overnight queue (below). Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
 OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
 in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic, Breton) is researched
@@ -99,6 +99,11 @@ the owner (overnight)", marked deferred (the part waits) or decided provisionall
 asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
 root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
 
+Overnight progress (2026-10-20, 03:30): group 4b is done (Georgian and Armenian built, LK42-LK45 passed on the
+emulator, no open questions). The research of 5a-5e is done and merged; each plan file lists its open questions
+under "Questions for the owner (overnight)". Group 4d has its build plan (`plans/2026-10-19-group-4d.md`), 4e its
+plan from the research. Group 4c builds Thai and Khmer now; 4d and 4e follow in turn.
+
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
 passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
@@ -108,6 +113,28 @@ under `kat`, now loaded and matched to untyped entries; decapitalize for Mtavrul
 `languages/hy` (marks inside words, the ligature և, classical spellings, sentences at ։ and the colon); unit, glue,
 page and catalog tests pass, and the emulator checks LK44 and LK45 passed. Both are merged into `languages/main`;
 group 4c (Thai, Khmer) builds next.
+
+Group 4c (th, km; `plans/2026-10-19-group-4c.md`; Lao deferred): Thai is done on `languages/th`. Words come from
+Android's ICU segmenter (earlier starts two ICU words back, shorter matches only at ICU boundaries), sentences end at
+a space between Thai letters, Tesseract `tha` only (the Thai Paddle model waits for the upload), Tesseract clusters
+joined by gap, the app's own text processors for sara am, tone-mark order and the spaces around ๆ, a frequency
+dictionary built from the Thai National Corpus counts, Noto Serif Thai by `local()` and four downloadable fonts.
+LK46 passed on the emulator after one fix (a space after ๆ was taken into the match). Test screens for scripts with
+stacked marks are drawn by `scripts/TextImage.java` (Pillow does not shape them). Overnight questions 10 (a space
+beside any ฯ holds) and 11 (ๆ and a space never end a sentence) are in the plan, implemented as recommended.
+
+Khmer is done on `languages/km` (2026-10-20): the same segmentation with the coeng holding the next consonant, ៗ
+with the word before and zero-width spaces passed over; sentences end at ។ ៕; own text processors for zero-width
+spaces and subscript TA read as DA, TA headwords keyed under DA at import; Tesseract `khm` fast with a space gap of
+0.15 of the line height; Noto Serif Khmer by `local()`, Kantumruy Pro and Hanuman downloadable. LK47 passed on the
+emulator after one fix: ICU joins some phrases into one word (ក្រុងភ្នំពេញ), so the lookup of Thai and Khmer now also
+starts inside the aimed word when nothing found reaches the aimed letter (overnight question 12, provisional).
+The owner answered questions 10-14 on 2026-10-20. 10-12 were measured on text with known boundaries (ORCHID, the
+Asian Language Treebank's Thai and Khmer): the implemented variants had the fewest errors and stay. 14: Commons has
+Lingua Libre and Wiktionary recordings for every language (Khmer 13 and 9), so no source is skipped. 13: sessions may
+delete, on the emulator, the dictionaries of languages already checked. Question 9 is still to be asked. The
+emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
+(`notes/build-environment.md`).
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
@@ -127,6 +154,33 @@ redirect's target dropped) and the glue's transform key, which leaves Georgian w
 the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's Hebrew voice, the ar-en import. The
 implementation plan is in the plan's "Work" (Arabic with the shared pieces, then Persian, then Hebrew); the build
 follows group 4c in the overnight queue.
+
+Arabic is done on `languages/ar` (2026-10-20) with the shared right-to-left pieces: `LanguageSupport.rightToLeft`,
+reading order for Paddle (digits, Latin runs, mirrored brackets), cloud recognition (Latin runs of Hebrew and Persian
+lines by their boxes), app text (paragraph direction) and Tesseract; marks without a share of a word box; the popup's
+`dir` on the source, headwords and glossary blocks, the vowelled headword (`reading-ar.js`); the Anki span in field
+templates; audio titles with vowel marks ranked (word as written, vowelled reading, the rest) and a Commons error
+answer failing the source. Arabic itself: Yomitan's rules with its hamza processors replaced by import keys (hamza
+alefs, final ى and ة), noun rules for untyped entries, form-of cleanup (template names, romanized forms), 50 rule
+names in 14 locales, wordfreq, Tesseract `ara`, Noto Naskh Arabic by `local()`, Noto Sans Arabic and Amiri
+downloadable, flag sa, bubble ض, scan length 24. LK48, POP26, AUD13, ANK17 and OCR29 passed on the emulator after
+three fixes (Tesseract word boxes over earlier words, transcriptions out of the dictionary's order in languages
+without audio regions, the Naskh `local()` names). Overnight question 2 (Arabic homographs through form rows: ذهبت
+shows ذَهَب, gold, before ذَهَبَ, to go) was answered by the owner: as Yomitan does, kept.
+
+Persian is done on `languages/fa` (2026-10-20): `PersianSupport` (؟ ends a sentence, abbreviations ص. ج. ر.ک. ق.م.,
+the non-joiner and vowel marks inside words, a separate می/نمی and ها/های/تر/ترین tried joined to their word, OCR
+words in Persian letters, import keys without the non-joiner and with ي ك ى ۀ as ی ک ی ه, Cyrillic Tajik form rows
+dropped, audio with Arabic-letter titles, wordfreq spellings without the non-joiner); the bundle's own processors and
+32 own rules (enclitics, plurals, comparatives, verb prefixes) matching entries without a part of speech, each with a
+name and a description in 14 locales (overnight question 1, answered "names and descriptions"; the generator now
+takes the app's own rules); the Latin reading after the word (`reading-fa.js`); wty fa-en, ru, fr, pl, zh, the
+transcriptions and wordfreq `small_fa`; Vazirmatn; flag ir, bubble پ; cloud recognition only. Coverage: 11,017 of
+wordfreq's 20,000 commonest words are entries as they are, 15,033 with the rules, the word itself first in all
+11,017. LK49, POP27, AUD14, ANK18 and OCR30 passed on the emulator. Found: hoshidicts keeps a headword's JSON escapes
+(`\u200C`) as written, so a dictionary that writes them escaped imports but finds nothing (wty and Yomitan exports
+write the characters; a follow-up, `notes/dictionary-engine.md`). Overnight questions 3 (order of transcriptions) and
+4 (colloquial endings) are decided provisionally. Hebrew follows.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
