@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.PersianSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.PitchAccent
 import com.vpr.screenlate.dictionary.api.model.PitchGroup
@@ -52,6 +53,26 @@ class TranscriptionsTest {
         // Without a rule of the language, the dictionary's order stays.
         assertThat(Transcriptions.prepare(group("/kalb/", "[ˈkelev]"), "כלב", tags, names).transcriptions)
             .containsExactly("/kalb/", "[ˈkelev]").inOrder()
+    }
+
+    @Test
+    fun `the iranian transcriptions of a persian word go first, the tehrani one after the formal one`() {
+        val tags = tags(
+            Triple("آسان", "/ʔaː.ˈsaːn/", listOf("classic")),
+            Triple("آسان", "[ʔɑː.sɑ́ːn]", listOf("🇦🇫", "formal", "🇦🇫KA")),
+            Triple("آسان", "[ʔɔː.sɔ́ːn]", listOf("Hazaragi")),
+            Triple("آسان", "[ʔɒː.sɒ́ːn]", listOf("🇮🇷", "formal")),
+            Triple("آسان", "[ʔɒː.súːn]", listOf("🇮🇷TE")),
+            Triple("آسان", "[ʔɔ.sɔ́n]", listOf("🇹🇯", "formal")),
+        )
+        val group = group("/ʔaː.ˈsaːn/", "[ʔɑː.sɑ́ːn]", "[ʔɔː.sɔ́ːn]", "[ʔɒː.sɒ́ːn]", "[ʔɒː.súːn]", "[ʔɔ.sɔ́n]")
+
+        val prepared = Transcriptions.prepare(group, "آسان", tags, emptyMap(), PersianSupport::firstTranscription)
+
+        assertThat(prepared.transcriptions).containsExactly(
+            "[ʔɒː.sɒ́ːn]", "[ʔɒː.súːn]", "/ʔaː.ˈsaːn/", "[ʔɑː.sɑ́ːn]", "[ʔɔː.sɔ́ːn]", "[ʔɔ.sɔ́n]",
+        ).inOrder()
+        assertThat(prepared.transcriptionRegions.first()).containsExactly("ir")
     }
 
     @Test

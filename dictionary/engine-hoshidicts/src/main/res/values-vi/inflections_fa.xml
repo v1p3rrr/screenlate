@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">ngôi 2 số nhiều sau nguyên âm: của các bạn (پایتان)</string>
     <string name="inflection_fa_yshan_label">ngôi 3 số nhiều</string>
     <string name="inflection_fa_yshan">ngôi 3 số nhiều sau nguyên âm: của họ (پایشان)</string>
+    <string name="inflection_fa_mvn_label">ngôi 1 số nhiều</string>
+    <string name="inflection_fa_mvn">ngôi 1 số nhiều trong khẩu ngữ: của chúng tôi (کتابمون) hoặc cho chúng tôi (بهمون)</string>
+    <string name="inflection_fa_tvn_label">ngôi 2 số nhiều</string>
+    <string name="inflection_fa_tvn">ngôi 2 số nhiều trong khẩu ngữ: của các bạn (کتابتون) hoặc cho các bạn (بهتون)</string>
+    <string name="inflection_fa_shvn_label">ngôi 3 số nhiều</string>
+    <string name="inflection_fa_shvn">ngôi 3 số nhiều trong khẩu ngữ: của họ (کتابشون) hoặc cho họ (بهشون)</string>
     <string name="inflection_fa_y_label">bất định; ngôi 2 số ít; ezafe</string>
     <string name="inflection_fa_y">dấu hiệu bất định (کتابی), bạn là (خوبی) hoặc ezafe sau nguyên âm (پای)</string>
     <string name="inflection_fa_ay_label">bất định; ngôi 2 số ít</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">so sánh hơn (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">so sánh nhất</string>
     <string name="inflection_fa_tryn">so sánh nhất (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">số thứ tự</string>
+    <string name="inflection_fa_myn">số thứ tự đứng trước danh từ (دومین từ دوم)</string>
     <string name="inflection_fa_my_label">tiếp diễn</string>
     <string name="inflection_fa_my">tiền tố tiếp diễn: hiện tại (می‌روم) và quá khứ tiếp diễn (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">phủ định tiếp diễn</string>

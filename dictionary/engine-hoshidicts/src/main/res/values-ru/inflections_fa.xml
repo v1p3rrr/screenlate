@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">2-е лицо мн. ч. после гласной: ваш (پایتان)</string>
     <string name="inflection_fa_yshan_label">3-е л. мн. ч.</string>
     <string name="inflection_fa_yshan">3-е лицо мн. ч. после гласной: их (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1-е л. мн. ч.</string>
+    <string name="inflection_fa_mvn">1-е лицо мн. ч. в разговорной речи: наш (کتابمون) или нам (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2-е л. мн. ч.</string>
+    <string name="inflection_fa_tvn">2-е лицо мн. ч. в разговорной речи: ваш (کتابتون) или вам (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3-е л. мн. ч.</string>
+    <string name="inflection_fa_shvn">3-е лицо мн. ч. в разговорной речи: их (کتابشون) или им (بهشون)</string>
     <string name="inflection_fa_y_label">неопр.; 2-е л. ед. ч.; изафет</string>
     <string name="inflection_fa_y">показатель неопределённости (کتابی), «ты есть» (خوبی) или изафет после гласной (پای)</string>
     <string name="inflection_fa_ay_label">неопр.; 2-е л. ед. ч.</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">сравнительная степень (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">превосх. степень</string>
     <string name="inflection_fa_tryn">превосходная степень (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">порядковое</string>
+    <string name="inflection_fa_myn">порядковое числительное перед существительным (دومین от دوم)</string>
     <string name="inflection_fa_my_label">длительность</string>
     <string name="inflection_fa_my">приставка длительности: настоящее время (می‌روم) и прошедшее длительное (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">отриц. + длительность</string>

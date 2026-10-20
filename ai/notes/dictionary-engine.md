@@ -203,8 +203,14 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
 - Hebrew prefixes are the bundle's own rules (`own-transforms.js`). The prefixes ש, כש and מ each have a first-step
   rule and a narrower one, and Yomitan tries every rule at the first step whatever its conditions, so they give a
   duplicate candidate there; the engine merges candidates by term and drops duplicate chains, so the popup shows one.
-  A plain word whose letters are a pointed form's (שלום, the construct שְׁלוֹם) is that form's lemma: the form is kept
-  as a one-step chain beside the empty chain of the direct match, and the page shows its tags (as Croatian kuća).
+  A plain word whose letters are a pointed form's (שלום, the construct שְׁלוֹם) is that form's lemma.
+- A form whose lemma is the headword the text is itself adds no chain (owner, 2026-10-20, every language): `visit` in
+  `candidate_lookup.cpp` skips a tagged form-of item when its lemma is the text with its own entry and no rule
+  applied, or a lemma the table also lists with no tags (the step back to itself of a headword keyed without its
+  marks: kuca → kuća). Croatian kuća (its genitive plural too) and Hebrew שלום show no form tags, as the empty chain
+  of the direct match is the only one; Yomitan shows the form's tags. Text that is not the headword keeps them
+  (kućama, pointed שְׁלוֹם), and so does another lemma of the same text (sam: the adjective sam, and biti through
+  "first-person singular present").
 - JSON escapes in headwords (2026-10-20, found with a test dictionary): hoshidicts' parser reads a term's expression
   and reading as `std::string_view` over the raw JSON (`yomitan_parser.hpp` `Term`), so a headword written with an
   escape (`"آن\u200Cها"`, or every non-ASCII letter from Python's `json.dump` with its default

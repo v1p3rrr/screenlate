@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">母音の後の2人称複数：「あなたがたの」 (پایتان)</string>
     <string name="inflection_fa_yshan_label">3人称複数</string>
     <string name="inflection_fa_yshan">母音の後の3人称複数：「彼らの」 (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1人称複数</string>
+    <string name="inflection_fa_mvn">口語の1人称複数：「私たちの」 (کتابمون)、「私たちに」 (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2人称複数</string>
+    <string name="inflection_fa_tvn">口語の2人称複数：「あなたがたの」 (کتابتون)、「あなたがたに」 (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3人称複数</string>
+    <string name="inflection_fa_shvn">口語の3人称複数：「彼らの」 (کتابشون)、「彼らに」 (بهشون)</string>
     <string name="inflection_fa_y_label">不定；2人称単数；エザーフェ</string>
     <string name="inflection_fa_y">不定 (کتابی)、「あなたは〜だ」 (خوبی)、または母音の後のエザーフェ (پای)</string>
     <string name="inflection_fa_ay_label">不定；2人称単数</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">比較級 (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">最上級</string>
     <string name="inflection_fa_tryn">最上級 (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">序数</string>
+    <string name="inflection_fa_myn">名詞の前に置く序数 (دوم から دومین)</string>
     <string name="inflection_fa_my_label">継続</string>
     <string name="inflection_fa_my">継続の接頭辞：現在 (می‌روم) と過去進行 (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">否定継続</string>

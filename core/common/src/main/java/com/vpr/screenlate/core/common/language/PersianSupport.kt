@@ -64,6 +64,14 @@ object PersianSupport : SpacedLanguageSupport() {
     /** Recognizers trained on Arabic text give its yeh, kaf and alif maqsura (ي ك ى) in Persian words. */
     override fun ocrWord(text: String): String = text.replace('ي', 'ی').replace('ك', 'ک').replace('ى', 'ی')
 
+    /**
+     * Wiktionary's transcriptions of a Persian word start with the classical one, then Dari, Hazaragi, Iranian and
+     * Tajik (کتاب: /ki.ˈtaːb/ first); the Iranian ones go first: the formal one flagged 🇮🇷, the Tehrani one
+     * flagged 🇮🇷TE, and the few tagged in words (`Iranian`, `Iran, various regions`).
+     */
+    override fun firstTranscription(tags: List<String>): Boolean =
+        tags.any { it.startsWith(IRAN_FLAG) || it.startsWith("Iran") }
+
     /** The reading is a Latin romanization, which voices would spell out. */
     override fun speechText(term: String, reading: String): String = term
 
@@ -94,6 +102,8 @@ object PersianSupport : SpacedLanguageSupport() {
 }
 
 private const val ZWNJ = "\u200C"
+
+private const val IRAN_FLAG = "\uD83C\uDDEE\uD83C\uDDF7"
 
 /** Arabic letters as Persian text writes them. */
 private val PERSIAN_LETTERS = mapOf("ي" to "ی", "ك" to "ک", "ى" to "ی", "ۀ" to "ه")

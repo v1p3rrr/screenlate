@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">2ª persona plurale dopo una vocale: vostro (پایتان)</string>
     <string name="inflection_fa_yshan_label">3ª pers. pl.</string>
     <string name="inflection_fa_yshan">3ª persona plurale dopo una vocale: loro (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1ª pers. pl.</string>
+    <string name="inflection_fa_mvn">1ª persona plurale, colloquiale: nostro (کتابمون) o a noi (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2ª pers. pl.</string>
+    <string name="inflection_fa_tvn">2ª persona plurale, colloquiale: vostro (کتابتون) o a voi (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3ª pers. pl.</string>
+    <string name="inflection_fa_shvn">3ª persona plurale, colloquiale: loro (کتابشون) o a loro (بهشون)</string>
     <string name="inflection_fa_y_label">indet.; 2ª pers. sing.; ezafe</string>
     <string name="inflection_fa_y">indeterminato (کتابی), sei (خوبی) o l’ezafe dopo una vocale (پای)</string>
     <string name="inflection_fa_ay_label">indet.; 2ª pers. sing.</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">comparativo (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">superlativo</string>
     <string name="inflection_fa_tryn">superlativo (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">ordinale</string>
+    <string name="inflection_fa_myn">ordinale prima del sostantivo (دومین da دوم)</string>
     <string name="inflection_fa_my_label">durativo</string>
     <string name="inflection_fa_my">prefisso durativo: presente (می‌روم) e imperfetto (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">durativo neg.</string>

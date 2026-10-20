@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">元音之后的第二人称复数：“你们的” (پایتان)</string>
     <string name="inflection_fa_yshan_label">第三人称复数</string>
     <string name="inflection_fa_yshan">元音之后的第三人称复数：“他们的” (پایشان)</string>
+    <string name="inflection_fa_mvn_label">第一人称复数</string>
+    <string name="inflection_fa_mvn">口语第一人称复数：“我们的” (کتابمون) 或“给我们” (بهمون)</string>
+    <string name="inflection_fa_tvn_label">第二人称复数</string>
+    <string name="inflection_fa_tvn">口语第二人称复数：“你们的” (کتابتون) 或“给你们” (بهتون)</string>
+    <string name="inflection_fa_shvn_label">第三人称复数</string>
+    <string name="inflection_fa_shvn">口语第三人称复数：“他们的” (کتابشون) 或“给他们” (بهشون)</string>
     <string name="inflection_fa_y_label">不定；第二人称单数；伊扎菲</string>
     <string name="inflection_fa_y">不定 (کتابی)、“你是” (خوبی) 或元音之后的伊扎菲 (پای)</string>
     <string name="inflection_fa_ay_label">不定；第二人称单数</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">比较级 (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">最高级</string>
     <string name="inflection_fa_tryn">最高级 (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">序数词</string>
+    <string name="inflection_fa_myn">用在名词前的序数词 (دوم 的序数词形式 دومین)</string>
     <string name="inflection_fa_my_label">持续</string>
     <string name="inflection_fa_my">持续前缀：现在时 (می‌روم) 和过去进行时 (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">否定持续</string>

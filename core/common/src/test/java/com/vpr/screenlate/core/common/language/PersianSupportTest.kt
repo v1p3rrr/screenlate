@@ -104,6 +104,21 @@ class PersianSupportTest {
     }
 
     @Test
+    fun `iranian transcriptions go first, the classical, dari, hazaragi and tajik ones after them`() {
+        assertThat(support.firstTranscription(listOf("🇮🇷", "formal"))).isTrue()
+        assertThat(support.firstTranscription(listOf("🇮🇷TE"))).isTrue()
+        assertThat(support.firstTranscription(listOf("Iranian", "phonetic"))).isTrue()
+        assertThat(support.firstTranscription(listOf("Iran, various regions"))).isTrue()
+        assertThat(support.firstTranscription(listOf("classic"))).isFalse()
+        assertThat(support.firstTranscription(listOf("🇦🇫", "formal", "🇦🇫KA"))).isFalse()
+        assertThat(support.firstTranscription(listOf("Hazaragi", "🇹🇯", "formal"))).isFalse()
+        assertThat(support.firstTranscription(listOf("dialectal Iranian, especially Mashhad, Yazd, Shiraz"))).isFalse()
+        assertThat(support.firstTranscription(listOf("Some Iranian speakers"))).isFalse()
+        assertThat(support.firstTranscription(emptyList())).isFalse()
+        assertThat(HebrewSupport.firstTranscription(listOf("🇮🇷", "formal"))).isFalse()
+    }
+
+    @Test
     fun `persian runs right to left, shares the arabic fonts and takes 24 characters from the aim`() {
         assertThat(support.rightToLeft).isTrue()
         assertThat(support.ocrScript).isEqualTo(OcrScript.ARABIC)

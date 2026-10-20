@@ -31,6 +31,12 @@
     <string name="inflection_fa_ytan">ünlüden sonra 2. çoğul şahıs: sizin (پایتان)</string>
     <string name="inflection_fa_yshan_label">3. çoğul şahıs</string>
     <string name="inflection_fa_yshan">ünlüden sonra 3. çoğul şahıs: onların (پایشان)</string>
+    <string name="inflection_fa_mvn_label">1. çoğul şahıs</string>
+    <string name="inflection_fa_mvn">konuşma dilinde 1. çoğul şahıs: bizim (کتابمون) veya bize (بهمون)</string>
+    <string name="inflection_fa_tvn_label">2. çoğul şahıs</string>
+    <string name="inflection_fa_tvn">konuşma dilinde 2. çoğul şahıs: sizin (کتابتون) veya size (بهتون)</string>
+    <string name="inflection_fa_shvn_label">3. çoğul şahıs</string>
+    <string name="inflection_fa_shvn">konuşma dilinde 3. çoğul şahıs: onların (کتابشون) veya onlara (بهشون)</string>
     <string name="inflection_fa_y_label">belirsizlik; 2. tekil şahıs; izafet</string>
     <string name="inflection_fa_y">belirsizlik (کتابی), ek fiil -sin (خوبی) veya ünlüden sonra izafet (پای)</string>
     <string name="inflection_fa_ay_label">belirsizlik; 2. tekil şahıs</string>
@@ -57,6 +63,8 @@
     <string name="inflection_fa_tr">karşılaştırma derecesi (بزرگتر)</string>
     <string name="inflection_fa_tryn_label">üstünlük</string>
     <string name="inflection_fa_tryn">üstünlük derecesi (بزرگترین)</string>
+    <string name="inflection_fa_myn_label">sıra sayısı</string>
+    <string name="inflection_fa_myn">isimden önce gelen sıra sayısı (دوم kelimesinden دومین)</string>
     <string name="inflection_fa_my_label">süreklilik</string>
     <string name="inflection_fa_my">süreklilik öneki: şimdiki zaman (می‌روم) ve sürekli geçmiş zaman (می‌رفتم)</string>
     <string name="inflection_fa_nmy_label">olumsuz süreklilik</string>

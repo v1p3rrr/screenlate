@@ -181,11 +181,21 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
         form_of.push_back(std::move(item));
       }
     }
+    // Whether [lemma] is the headword the text is itself: its own entry, which every entry of the text fits, or a
+    // headword the text spells without its marks (kuca for kuća, an entry of the table without tags).
+    auto is_itself = [&](const std::string& lemma) {
+      if (lemma == p.text && has_definitions && p.conditions == 0) return true;
+      return std::any_of(form_of.begin(), form_of.end(),
+                         [&](const FormOf& other) { return other.tags.empty() && other.lemma == lemma; });
+    };
     for (const auto& item : form_of) {
       // A lemma that is the text itself, reached through another text, adds nothing: Yomitan's Ukrainian rules take
-      // книга for the plural of книго, which a dictionary lists as the vocative of книга. A form that is its own lemma
-      // (kuća, genitive plural of kuća) is a chain of one step and stays.
+      // книга for the plural of книго, which a dictionary lists as the vocative of книга.
       if (item.lemma == p.origin && p.text != p.origin) continue;
+      // A form with the letters of the headword the text is itself (kuća, genitive plural of kuća; שלום, the construct
+      // form of שלום) would only add its tags beside that headword, which Yomitan shows and the app leaves out. Text
+      // with the form's own marks (שְׁלוֹם) is not the headword itself and keeps them.
+      if (!item.tags.empty() && is_itself(item.lemma)) continue;
       Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin};
       for (const auto& chain : p.chains) {
         auto extended = chain;

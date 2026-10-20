@@ -158,6 +158,20 @@ class LanguageLookupTest {
         val cyrillic = LookupOptions(language = Language.SERBIAN)
 
         assertThat(engine.lookup("kuca", latin).map { it.term.expression }).contains("kuća")
+        // The headword itself, with or without its marks, shows no tags of a form with its letters (kuća, genitive
+        // plural of kuća); a form with other letters keeps them, and so does the same text as a form of another word.
+        for (text in listOf("kuća", "kuca")) {
+            val house = engine.lookup(text, latin).first { it.term.expression == "kuća" }
+            assertThat(house.trace).isEmpty()
+            assertThat(house.otherTraces).isEmpty()
+        }
+        val houses = engine.lookup("kućama", latin).first()
+        assertThat(houses.term.expression).isEqualTo("kuća")
+        assertThat(houses.trace.map { it.name }).containsExactly("dative plural")
+        val am = engine.lookup("sam", latin)
+        assertThat(am.first { it.term.expression == "sam" }.trace).isEmpty()
+        assertThat(am.first { it.term.expression == "biti" }.trace.map { it.name })
+            .containsExactly("first-person singular present")
         assertThat(engine.lookup("sesir", latin).first().term.expression).isEqualTo("šešir")
         assertThat(engine.lookup("djak", latin).first().term.expression).isEqualTo("đak")
         // A form and its lemma lose their accent marks at import; plain text finds the form in both languages.
@@ -453,11 +467,28 @@ class LanguageLookupTest {
         // Cyrillic Tajik forms are not keyed.
         assertThat(engine.lookup("ҳалол", persian)).isEmpty()
         assertThat(first("حلال").term.expression).isEqualTo("حلال")
+        // The spoken plural possessives: کتابمون (our book), خودشون (themselves).
+        val ourBook = first("کتابمون")
+        assertThat(ourBook.term.expression).isEqualTo("کتاب")
+        assertThat(ourBook.trace.map { it.name }).containsExactly("-مون")
+        assertThat(first("خودشون").term.expression).isEqualTo("خود")
+        // A headword in -تون is itself, not زی through the ending.
+        val olive = first("زیتون")
+        assertThat(olive.term.expression).isEqualTo("زیتون")
+        assertThat(olive.trace).isEmpty()
+        // The ordinal in -مین after a number is its ordinal in -م; an Arabic plural in -ین is not cut.
+        val second = first("دومین")
+        assertThat(second.term.expression).isEqualTo("دوم")
+        assertThat(second.trace.map { it.name }).containsExactly("-مین")
+        assertThat(engine.lookup("مسلمین", persian).map { it.term.expression }).doesNotContain("مسلم")
+        // The spoken copula is left out: خوبه does not find خوب.
+        assertThat(engine.lookup("خوبه", persian).map { it.term.expression }).doesNotContain("خوب")
     }
 
     /**
      * Rows as Wiktionary's Persian exports write them: no part of speech, Latin readings, headwords with the non-joiner
-     * (one with its spelling without it as a form row), a verb form, a Cyrillic Tajik form.
+     * (one with its spelling without it as a form row), a verb form, a Cyrillic Tajik form, a headword in -تون beside
+     * the word it would leave, a number with its ordinal.
      */
     private fun persianDictionary(): File = zip(
         "fa.zip",
@@ -476,7 +507,14 @@ class LanguageLookupTest {
               ["خان","xān","n","",0,["khan"],10,""],
               ["حلال","halâl","adj","",0,["halal"],11,""],
               ["ҳалол","","non-lemma","",0,[["حلال",["Cyrillic Tajik"]]],12,""],
-              ["زیست${ZWNJ}شناسی","zīst-šināsī","n","",0,["biology"],13,""]
+              ["زیست${ZWNJ}شناسی","zīst-šināsī","n","",0,["biology"],13,""],
+              ["خود","xwud","pron","",0,["self"],14,""],
+              ["زیتون","zaytūn","n","",0,["olive"],15,""],
+              ["زی","zī","n","",0,["manner"],16,""],
+              ["دو","dū","num","",0,["two"],17,""],
+              ["دوم","duvvum","adj","",0,["second"],18,""],
+              ["مسلم","muslim","n","",0,["Muslim"],19,""],
+              ["خوب","xūb","adj","",0,["good"],20,""]
             ]
         """.trimIndent().toByteArray(),
     )
@@ -489,6 +527,15 @@ class LanguageLookupTest {
         suspend fun first(text: String) = engine.lookup(text, hebrew).first()
 
         assertThat(first("כלב").term.expression).isEqualTo("כלב")
+        // The headword itself shows no tags of a pointed form with its letters (שְׁלוֹם, the construct form of
+        // שָׁלוֹם); text with the form's points is that form and keeps them.
+        for (text in listOf("כלב", "שלום")) {
+            assertThat(first(text).trace).isEmpty()
+            assertThat(first(text).otherTraces).isEmpty()
+        }
+        val construct = first("שְׁלוֹם")
+        assertThat(construct.term.expression).isEqualTo("שלום")
+        assertThat(construct.trace.map { it.name }).containsExactly("singular construct")
         // Pointed text through the pointed form row and without its points.
         assertThat(first("כֶּלֶב").term.expression).isEqualTo("כלב")
         assertThat(first("הַכֶּלֶב").term.expression).isEqualTo("כלב")
@@ -516,7 +563,8 @@ class LanguageLookupTest {
 
     /**
      * Rows as Wiktionary's Hebrew exports write them: unpointed headwords without a part of speech or a reading,
-     * pointed forms, a form naming its lemma pointed, a construct form with its maqaf, a Phoenician spelling.
+     * pointed forms, a form naming its lemma pointed, a construct form with its maqaf, a construct form with the
+     * letters of its headword (שְׁלוֹם of שלום), a Phoenician spelling.
      */
     private fun hebrewDictionary(): File = zip(
         "he.zip",
@@ -534,7 +582,9 @@ class LanguageLookupTest {
               ["כלבים","","non-lemma","",0,[["כֶּלֶב",["plural indefinite form"]]],9,""],
               ["בֵּית־","","non-lemma","",0,[["בית",["singular construct"]]],10,""],
               ["הגעתי","","non-lemma","",0,[["הגיע",["first-person singular past"]]],11,""],
-              ["𐤊𐤋𐤁","","non-lemma","",0,[["כלב",["Phoenician"]]],12,""]
+              ["𐤊𐤋𐤁","","non-lemma","",0,[["כלב",["Phoenician"]]],12,""],
+              ["שלום","","n masc","",0,["peace","hello"],13,""],
+              ["שְׁלוֹם","","non-lemma","",0,[["שָׁלוֹם",["singular construct"]]],14,""]
             ]
         """.trimIndent().toByteArray(),
     )
@@ -718,7 +768,12 @@ class LanguageLookupTest {
               ["šešir","","","n",0,["hat"],3,""],
               ["đak","","","n",0,["pupil"],4,""],
               ["кућа","","","n",0,["house"],5,""],
-              ["ку̏ће","","non-lemma","n",0,[["ку̏ћа",["genitive singular"]]],6,""]
+              ["ку̏ће","","non-lemma","n",0,[["ку̏ћа",["genitive singular"]]],6,""],
+              ["kuća","","non-lemma","n",0,[["kuća",["genitive plural"]]],7,""],
+              ["kućama","","non-lemma","n",0,[["kuća",["dative plural"]]],8,""],
+              ["sam","","","adj",0,["alone"],9,""],
+              ["sam","","non-lemma","v",0,[["biti",["first-person singular present"]]],10,""],
+              ["biti","","","v",0,["to be"],11,""]
             ]
         """.trimIndent().toByteArray(),
     )

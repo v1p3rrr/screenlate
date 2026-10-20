@@ -403,11 +403,28 @@ test('persian endings and verb prefixes are undone and chained; the results matc
     assert.ok(!candidates('fa', 'درختان').find((c) => c.d === 'درختان').u);
 });
 
+test('the spoken persian plural possessives and the ordinal in -مین after a number are undone, other spoken endings not', () => {
+    assert.ok(queried('fa', 'کتابمون').has('کتاب'));
+    assert.ok(queried('fa', 'بهتون').has('به'));
+    assert.equal(JSON.stringify(candidates('fa', 'خودشون').find((c) => c.d === 'خود').r), JSON.stringify([['-شون']]));
+    // The ordinal in -مین leaves the one in -م that Wiktionary lists, and only after a number: مسلمین and تامین stay.
+    assert.ok(queried('fa', 'دومین').has('دوم'));
+    assert.ok(queried('fa', 'سیزدهمین').has('سیزدهم'));
+    assert.ok(queried('fa', 'دویستمین').has('دویستم'));
+    assert.ok(!queried('fa', 'مسلمین').has('مسلم'));
+    assert.ok(!queried('fa', 'تامین').has('تام'));
+    // The spoken copula, object marker, plural and -ین mislead more often than they help (language-rules.md).
+    assert.ok(!queried('fa', 'خوبه').has('خوب'));
+    assert.ok(!queried('fa', 'اینو').has('این'));
+    assert.ok(!queried('fa', 'دخترا').has('دختر'));
+    assert.ok(!queried('fa', 'دارین').has('دار'));
+});
+
 test('every persian rule has a name and a description of its own, which the app strings are generated from', () => {
     const strings = fs.readFileSync(
         path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_fa.xml'), 'utf8');
     const rules = Object.entries(persianTransforms.transforms);
-    assert.equal(rules.length, 32);
+    assert.equal(rules.length, 36);
     for (const [id, {name, description}] of rules) {
         // The id (-ها) stays what the engine reports and Anki's {conjugation} shows; the name is what the popup shows.
         assert.notEqual(name, id, id);
