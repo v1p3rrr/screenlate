@@ -87,7 +87,7 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   `-Pandroid.injected.build.abi=x86_64` is no substitute: it writes to `build/intermediates/apk/`, and the app APK
   comes out test-only with the arm libraries still in it; the test APKs of library modules do shrink with it and
   install. The owner allows deleting, on the emulator, the dictionaries of languages already checked (2026-10-20;
-  they download again); AnkiDroid and other data stay.
+  they download again); AnkiDroid and other data stay untouched.
 - A 109 MB test APK (the overlay's, with every ABI) on a /data with about 250 MB free (2026-10-20, Persian run):
   Gradle's install hung, `system_server` died and came back without its package service ("cmd: Can't find service:
   package", zygote "stopping", load average about 55), and `adb reboot` timed out; `adb shell reboot -p` rebooted it.

@@ -63,8 +63,8 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   (installs and imports fail). `settings put global sys_storage_threshold_percentage 1` and
   `sys_storage_threshold_max_bytes 104857600` lower it for a run; delete both settings afterwards. Since the Khmer
   run (2026-10-20) about 0.39 GB stays free and a full debug build (126 MB) no longer installs: install an x86_64-only
-  build (`ai/notes/build-environment.md`, "short /data"). Deleting earlier languages' dictionaries to make room needs
-  the owner's OK.
+  build (`ai/notes/build-environment.md`, "short /data"), or delete the dictionaries of languages already checked
+  (owner, 2026-10-20); AnkiDroid and other data stay untouched.
 - Instrumented runs: per module, e.g. `./gradlew :dictionary:engine-hoshidicts:connectedDebugAndroidTest`; a full
   `connectedDebugAndroidTest` uninstalls the debug app at the end, so reinstall afterwards. The app's
   `SearchLanguageTest` and `InstallationPopupTest` need the API 37 WebView and fail on API 30: install the test APK

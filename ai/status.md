@@ -129,10 +129,12 @@ spaces and subscript TA read as DA, TA headwords keyed under DA at import; Tesse
 0.15 of the line height; Noto Serif Khmer by `local()`, Kantumruy Pro and Hanuman downloadable. LK47 passed on the
 emulator after one fix: ICU joins some phrases into one word (ក្រុងភ្នំពេញ), so the lookup of Thai and Khmer now also
 starts inside the aimed word when nothing found reaches the aimed letter (overnight question 12, provisional).
-Questions 13 (the emulator's space) and 14 (Khmer audio order) are in the plan; question 9 is still to be asked.
-The emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
-(`notes/build-environment.md`); deleting earlier languages' dictionaries there waits for the owner (question 13).
-Group 4d builds next.
+The owner answered questions 10-14 on 2026-10-20. 10-12 were measured on text with known boundaries (ORCHID, the
+Asian Language Treebank's Thai and Khmer): the implemented variants had the fewest errors and stay. 14: Commons has
+Lingua Libre and Wiktionary recordings for every language (Khmer 13 and 9), so no source is skipped. 13: sessions may
+delete, on the emulator, the dictionaries of languages already checked. Question 9 is still to be asked. The
+emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
+(`notes/build-environment.md`).
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,

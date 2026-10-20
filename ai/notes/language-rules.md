@@ -106,7 +106,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | vi, th | Chains through a "classifier" form-of entry are dropped, a word reached only through one is left out (wty th-en has 1,900 such rows: ห้อง counts ห้องสมุด and 8 other rooms) | `api/ShownResults.kt:48`, `VietnameseSupport.kt:29`, `ThaiSupport.kt` `ignoredFormTags` | ShownResultsTest | ShownResultsTest (every other language keeps it), Isolation | ok |
 | th | From one start, the longest match always shows; shorter ones only when they end at an ICU word boundary (การตลาด and การ stay, กา goes), none that ends inside a letter cluster (น้ in น้ำ). Checked on the 4,466 Thai example sentences of wty th-en (34,113 ICU words, ICU4J 75.1, every headword matched from every word start): of 90,328 matches 38,693 show; of the dropped ones 30,785 end inside a cluster, 19,900 are prefixes of an ICU word that is a headword itself (which shows), 135 reach into the middle of a later ICU word (ความรู้ in ความรู้สึก), 815 are prefixes of an ICU word that is no headword: 746 of one or two letters, 68 of three or more (35 distinct), mostly pieces of the longer word shown (ประ in ประเทศไทย behind ประเทศ); a few real words are lost (น้ำ in น้ำตาย behind น้ำตา, นาค in นาคราช) and come back when the aim is on the next word | `lang/SegmentedLanguageSupport.kt` `shownMatchLengths`; `api/DictionaryLookup.kt` `from` | ThaiSupportTest `shorter matches…` | Isolation `only Thai finds words with a segmenter…` (the other languages keep every length) | ok |
 | km | The same shorter-match rule as Thai: no match ends inside a cluster (ខ្ in ខ្ញុំ, a consonant before its subscript), shorter ones show where ICU ends a word | `lang/SegmentedLanguageSupport.kt` `shownMatchLengths` | KhmerSupportTest `no match ends inside a cluster…` | Isolation `only Thai and Khmer find words with a segmenter…` | ok |
-| th, km | When no result from the aimed ICU word's start or the earlier starts covers the aimed character, the lookup also starts at each cluster inside the aimed word up to that character; the words of the first start that cover it come first, then the others. ICU joins Khmer phrases into one word (ក្រុងភ្នំពេញ, នៅផ្ទះ, រាល់ថ្ងៃ, ទាំងអស់គ្នា, ឆ្នាំ២០២៤ in ICU4J 66.1 and on the emulator), and a dictionary has their parts: aimed at ពេញ, ភ្នំពេញ (Phnom Penh) shows, then ក្រុង. The overlay keeps the shown results while the aim moves inside the word unless they came from inside it and do not cover the new character | `lang/LanguageSupport.kt` `innerStarts`, `SegmentedLanguageSupport.kt` `innerStarts`; `api/EarlierStarts.kt` `reachingAimedCharacter`, `covers`; `api/DictionaryLookup.kt` `lookup` (`aimedCharAt`); `overlay/OverlayController.kt` `showLookup` | EarlierStartsTest `a word joined by the segmenter…`, KhmerSupportTest `inside a word the lookup may also start…` | Isolation `only Thai and Khmer find words with a segmenter…` (`innerStarts` empty elsewhere), EarlierStartsTest (aimed at ក្រុង, or no inner start covering the character, the results stay as they were) | fixed (provisional, overnight question) |
+| th, km | When no result from the aimed ICU word's start or the earlier starts covers the aimed character, the lookup also starts at each cluster inside the aimed word up to that character; the words of the first start that cover it come first, then the others. ICU joins Khmer phrases into one word (ក្រុងភ្នំពេញ, នៅផ្ទះ, រាល់ថ្ងៃ, ទាំងអស់គ្នា, ឆ្នាំ២០២៤ in ICU4J 66.1 and on the emulator), and a dictionary has their parts: aimed at ពេញ, ភ្នំពេញ (Phnom Penh) shows, then ក្រុង. The overlay keeps the shown results while the aim moves inside the word unless they came from inside it and do not cover the new character | `lang/LanguageSupport.kt` `innerStarts`, `SegmentedLanguageSupport.kt` `innerStarts`; `api/EarlierStarts.kt` `reachingAimedCharacter`, `covers`; `api/DictionaryLookup.kt` `lookup` (`aimedCharAt`); `overlay/OverlayController.kt` `showLookup` | EarlierStartsTest `a word joined by the segmenter…`, KhmerSupportTest `inside a word the lookup may also start…` | Isolation `only Thai and Khmer find words with a segmenter…` (`innerStarts` empty elsewhere), EarlierStartsTest (aimed at ក្រុង, or no inner start covering the character, the results stay as they were) | decided (measured, see Owner decisions) |
 | tl | Chains through a "Baybayin" form-of entry are dropped (basa → ᜊᜐ → basa, Basa), a word reached only through one is left out | `api/ShownResults.kt:48`, `FilipinoSupport.kt` | ShownResultsTest, FilipinoSupportTest | Isolation | ok |
 | id, ms | Chains through a "Jawi" form-of entry are dropped (baca → باچ → baca), a word reached only through one is left out | `api/ShownResults.kt:48`, `IndonesianSupport.kt`, `MalaySupport.kt` | ShownResultsTest, MalaySupportTest | ShownResultsTest (other languages keep it), Isolation | ok |
 | zh | A word found through its Simplified/Traditional spelling shows the spelling read | `api/ShownResults.kt:14`, `ChineseSupport.kt:121` | ShownResultsTest | ShownResultsTest `a spelling tag of another language's dictionary…`, Isolation | ok |
@@ -430,8 +430,9 @@ Found while adding Arabic:
   word can land on its neighbour's share (on the emulator an aim at the left edge of a word gave the word before).
 - Tesseract `khm` drops vowel signs, reads ត as ទ at times and breaks a line where it starts with ្រ or a stacked
   consonant; it joins the lines of a paragraph with nothing, as for Thai.
-- Neither Lingua Libre nor Wiktionary has recordings of common Khmer words: audio comes from the phone's text to
-  speech (Google's Khmer voice spoke ទឹក on the emulator).
+- Commons has few Khmer recordings (13 from Lingua Libre, 9 Wiktionary `Km-` files in October 2026): most words get
+  their audio from the phone's text to speech (Google's Khmer voice spoke ទឹក on the emulator), after two searches
+  that find nothing.
 - Khmer has no frequency dictionary (wordfreq has none and no corpus list was chosen).
 - Arabic homographs reached through form rows whose lemma is written without harakat: ذهبت shows ذَهَب (gold) before
   ذَهَبَ (to go), الكتب shows كَتَبَ (to write) before كِتَاب, whose plural it is.
@@ -453,6 +454,30 @@ Furigana markers outside Japanese (the plan's decision row "Furigana markers"):
 - Russian: the stress goes into the text. `{furigana}` and `{furigana-plain}` give ко́шка; in a sentence only words
   written in their dictionary form get stress marks, since an inflected form may stress another syllable.
   Before: `<ruby>кошка<rt>ко́шка</rt></ruby>`, `кошка[ко́шка]`, and the lemma's stress over an inflected word.
+
+Thai sentence ends and starts inside a word (group 4c plan, questions 10-12; owner: "проверь как адекватнее будет, в
+каком варианте меньше неправильных определений границ предложений"), measured 2026-10-20 with the rule's own code
+(ICU4J 66.1) on text with known boundaries; every current choice had the fewest errors, so none changed:
+
+- Sentences: ORCHID (9,985 paragraphs, sentences joined with a space, 13,140 boundaries) and the Thai side of the
+  Asian Language Treebank (1,888 Wikinews articles, one translated sentence per line, joined with a space, 18,218
+  boundaries). A space after ๆ before a Thai letter is a boundary 202 times and inside a sentence 1,431 times in
+  ORCHID (ALT: 116 and 1,255); a space next to a ฯ outside ฯลฯ 29 and 248 times (ALT: 24 and 228). Wrong cuts plus
+  wrong merges: any ฯ holds and ๆ holds (now) 19,396 (ALT 33,672); only ฯลฯ holds 19,615 (33,876); a space after ๆ
+  ends 20,625 (34,811). Most errors of every variant are spaces inside a sentence, which the decided rule takes for
+  sentence ends.
+- Starts inside a word: every letter of every word of 4,000 Khmer sentences of the Asian Language Treebank (316,124
+  aims; gold words and compounds from its segmentation, wty km-en and km-ru as the dictionary) and of 3,000 ORCHID
+  paragraphs (312,970 aims; its words, wty th-en). The first word shown was the gold word under the aimed letter:
+  inside starts only when nothing covers the letter (now) 78.6% Khmer, 60.0% Thai; never 70.9%, 59.8%; always,
+  their words first, 59.1%, 31.7% (always, their words after the others, shows the same first word as now). The
+  first word covered the aimed letter: 95.1% / 98.5% now, 84.6% / 95.3% never. A gold word was in the dictionary at
+  89.6% of the Khmer aims and 70.3% of the Thai ones.
+
+Audio sources without recordings (question 14; owner: "Если 100% вообще нет, то скипаем для таких"): Commons was
+counted on 2026-10-20 for every language's Lingua Libre item (`LL-Q…`) and Wiktionary prefix: each has recordings in
+both sources; the fewest are Khmer's (13 and 9) and Croatian's own Lingua Libre item (1, besides the 93 of the Serbian
+one it searches as well). So no source is left out, and the order stays.
 
 ## Device checks
 

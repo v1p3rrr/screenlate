@@ -8,8 +8,8 @@ import com.vpr.screenlate.core.common.Language
  * (ខ្ញុំ is one cluster of five code points). Text from apps often carries zero-width spaces between words, which ICU
  * takes as boundaries and the bundle's text processor drops from the looked-up text. Subscript DA ្ដ and TA ្ត look
  * alike and dictionaries write both (ក្ដារ, ក្តារ): the bundle reads ្ត as ្ដ, and the import indexes headwords
- * written with ្ត under ្ដ as well ([headwordMarks]). The repetition mark ៗ repeats the word before it. Neither
- * Lingua Libre nor Wiktionary has recordings of common words.
+ * written with ្ត under ្ដ as well ([headwordMarks]). The repetition mark ៗ repeats the word before it. Lingua Libre
+ * and Wiktionary have a few recordings (13 and 9 on Commons in October 2026), so they stay ahead of the voice.
  */
 open class KhmerRules(segmenter: WordSegmenter = IcuWordSegmenter) : SegmentedLanguageSupport(segmenter) {
     override val language = Language.KHMER
