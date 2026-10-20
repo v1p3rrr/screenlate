@@ -3,7 +3,8 @@
 Usage: python scripts/text-image.py [--vertical] OUT.png "first line" ["second line" ...]
 With --vertical each argument is a column, read top to bottom, columns from right to left.
 Needs Pillow and a Japanese font (Noto Sans JP or Yu Gothic on Windows; set FONT to override, e.g. to
-C:/Windows/Fonts/msjh.ttc for Traditional Chinese).
+C:/Windows/Fonts/msjh.ttc for Traditional Chinese). FALLBACK lists fonts, separated by commas, for the characters
+FONT lacks in horizontal lines: script-only fonts such as Noto Sans Georgian have no digits or Latin punctuation.
 """
 import os
 import sys
@@ -46,11 +47,31 @@ def main() -> None:
             x -= 160
     else:
         font = ImageFont.truetype(font_path, 72)
+        fallbacks = [ImageFont.truetype(p, 72) for p in os.environ.get("FALLBACK", "").split(",") if p]
         y = 600
         for line in lines:
-            draw.text((80, y), line, font=font, fill="black")
+            if fallbacks:
+                draw_with_fallbacks(draw, (80, y), line, [font, *fallbacks])
+            else:
+                draw.text((80, y), line, font=font, fill="black")
             y += 160
     image.save(out)
+
+
+def draw_with_fallbacks(draw: ImageDraw.ImageDraw, at: tuple[int, int], line: str, fonts: list) -> None:
+    """Draws each character in the first of [fonts] that has it, on one baseline."""
+
+    def mask(font, ch):
+        m = font.getmask(ch)
+        return m.size, bytes(m)
+
+    # A missing character renders as the font's .notdef box, as a private-use one does.
+    missing = [mask(f, "\ue000") for f in fonts]
+    x, baseline = at[0], at[1] + 80
+    for ch in line:
+        font = next((f for f, nd in zip(fonts, missing) if ch == " " or mask(f, ch) != nd), fonts[-1])
+        draw.text((x, baseline), ch, font=font, fill="black", anchor="ls")
+        x += draw.textlength(ch, font=font)
 
 
 if __name__ == "__main__":

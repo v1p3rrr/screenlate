@@ -624,6 +624,11 @@ internal object YomitanInflections {
         "el" to mapOf(
             "ξανα-" to Strings(null, null),
         ),
+        "ka" to mapOf(
+            "nounAdjSuffixStripping" to Strings(R.string.inflection_ka_nounadjsuffixstripping_label, R.string.inflection_ka_nounadjsuffixstripping),
+            "nounAdjStemCompletion" to Strings(R.string.inflection_ka_nounadjstemcompletion_label, R.string.inflection_ka_nounadjstemcompletion),
+            "vowelRestoration" to Strings(R.string.inflection_ka_vowelrestoration_label, R.string.inflection_ka_vowelrestoration),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

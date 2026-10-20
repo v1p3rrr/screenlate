@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">格変化</string>
+    <string name="inflection_ka_nounadjsuffixstripping">名詞・形容詞の格語尾や複数語尾</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">主格</string>
+    <string name="inflection_ka_nounadjstemcompletion">子音で終わる名詞・形容詞の語幹に主格語尾 -ი を補ったもの</string>
+    <string name="inflection_ka_vowelrestoration_label">脱落母音</string>
+    <string name="inflection_ka_vowelrestoration">語幹から落ちた母音を補ったもの</string>
+</resources>

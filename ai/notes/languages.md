@@ -1124,6 +1124,9 @@ Cells: archive MB, words.
   about 30 endings cost a lookup per rule per substring, like the group 3 rules; import-time keys (nukta, candrabindu,
   Armenian marks) cost nothing at lookup. An Armenian և variant of the text doubles the candidates per եվ/եւ in a
   substring, rarely more than one or two. To be timed on the emulator with the test screens.
+- Measured (2026-10-20): the ligature processor replaces every եվ/եւ at once, so a text gets one variant, not one per
+  pair. The worst Georgian line found, 24 characters of ისის… (both -ს and -ის apply at every step), gives 24
+  candidates in 4.4 ms in Node; ordinary lines 3-8. Lookups on the emulator took 2-4 ms (`Lookup found … in`).
 
 ### Plain fixes found (no owner decision)
 
@@ -1164,6 +1167,62 @@ Cells: archive MB, words.
 - wordfreq `large_bn` is NFC (27,561 words write য় as য + nukta, none U+09DF), as the headwords are.
 - The bn bundle takes Hindi's descriptor (exampleText replaced) with `composeCharacters` only: candrabindu and
   anusvara are not interchangeable in Bengali spelling.
+
+### Georgian (2026-10-19)
+
+- Yomitan's Georgian rules were dead twice: its descriptor files them under `kat`, while the language is `ka`, so
+  Yomitan's own MultiLanguageTransformer never reaches them; and every condition needs a part of speech, which wty's
+  Georgian entries never give (column 4 blank; the tags column says `n`, `pron sg`, `name`). The glue now takes each
+  language's rules by the descriptor's iso, and `untypedRules` lets the Georgian ones match untyped entries when three
+  letters or more stay (owner, question 11 of the group 4b plan).
+- What the rules add over wty ka-en's headwords and form rows (`tools/ka_rules.py` in the session scratchpad): the
+  form rows already find 76% of the words of Wiktionary's own examples (3,718 words) and 89% of the comparison
+  screens' words. The rules with three letters left find 1.3-3% more words (გაკეთებას → გაკეთება, აკაკის → აკაკი);
+  some words also show a wrong neighbor after the right entry (არის, "is", also shows არი). Without a minimum they
+  cut ვადის down to ვ.
+- The rules chain (n|adj in and out): წიგნს → წიგნ → წიგნი, reached twice (through -გნ and through -ნ); the engine
+  keeps one. Stripping -მა from მა leaves an empty text, which the glue drops (in every language).
+- Mtavruli: Yomitan gives Georgian no text processors; `addedPreprocessors` adds `decapitalize`
+  (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო). Every language with decapitalize lowercases Mtavruli too, which is harmless.
+- Inflection names: Yomitan's names are identifiers (noun-adj-suffix-stripping); `generate-inflections.mjs` gives them
+  English labels (declension, nominative, dropped vowel) and the 13 other locales are translated by hand.
+- OCR: no ML Kit or Paddle model. Tesseract kat over clean + hard screens: fast 22.9%, best 22.8% CER (clean 1.1%
+  both); fast (2.5 MB against 4.5 MB) is the recommended model.
+- Scan length 24 by default (`LanguageSupport.defaultScanLength`), the setting per language as before.
+- No downloadable fonts; the page names Noto Serif Georgian by its local names, the sans falls back by itself.
+- Audio: Wiktionary first (more common words recorded than on Lingua Libre, whose Georgian items are few and partly
+  filed under French).
+- On the emulator (LK44, 2026-10-20): Tesseract kat fast reads a rendered page in about 1 s and reads Mtavruli
+  headings too; Google's speech engine has no Georgian voice, so a word without a recording stays silent. Windows'
+  Sylfaen has no Mtavruli; test images use the phone's Noto Sans Georgian (`text-image.py` `FALLBACK` for digits and
+  punctuation).
+
+### Armenian (2026-10-20)
+
+- Sentences end at the full stop ։ and at the colon OCR and keyboards write for it (Tesseract reads every ։ as `:`),
+  not when a letter or digit follows at once (10:30). The period is the Armenian colon (mijaket) and never ends a
+  sentence, so Armenian needs no abbreviations; the other spaced languages keep the period rules.
+- The emphasis, exclamation and question marks ՛ ՜ ՞ sit on the stressed vowel inside a word (ինչո՞ւ, կարդա՛). They
+  count as word characters (`SpacedLanguageSupport.wordMarks`, with the apostrophe ՚), so a tap after the mark still
+  starts at the word's start; the comma ՝ and ։ do not. The Armenian hyphen ֊ joins words as - does.
+- wty hy-en (17,645 words): the marks appear on form rows only (16,003 rows, 11,161 of them with no unmarked twin,
+  mostly imperatives), never on a lemma, so `headwordMarks` keys the marked forms without them and
+  `everyHeadword` stays false. The text processor `removeArmenianMarks` drops them from the looked-up text.
+- The ligature և is written in 12,576 headwords; texts often write եվ (the reformed spelling's capitals have no
+  ligature: ԵՐԵՎԱՆ) or the classical եւ. `armenianLigatureEv` tries և for both, the text as written kept (Եվրոպա is
+  written with եվ). It doubles the candidates per եվ/եւ in a substring.
+- 3,207 form rows of hy-en read "orthography spelling X" for the classical spelling X of a word (գիւղ → գյուղ); the
+  import keys them as X (`form_headwords`). The label is in hy-en only.
+- Yomitan's Armenian descriptor has capitalization only and no transforms; the app's two processors are added in
+  `build.mjs` (`addedPreprocessors`).
+- OCR: no ML Kit or Paddle model. Tesseract hye over clean + hard screens: fast 28.1%, best 26.9% CER (clean 2.9% and
+  2.0%); fast (3.5 MB against 6.4 MB) is the recommended model, as for Georgian.
+- Scan length 24 by default (5% of the forms longer than 16 characters).
+- No downloadable fonts; the page names Noto Serif Armenian by its local names, the sans falls back by itself.
+- Audio: Wiktionary first (18 of the 20 common words against 6 on Lingua Libre).
+- On the emulator (LK45, 2026-10-20): Tesseract hye fast reads a rendered page in 0.35 s and keeps ՞ where it was;
+  an all-caps word lists the lowercase form row before the capitalized name (ԵՐԵՎԱՆ: երևան of երևալ, then Երևան),
+  as Yomitan ranks fewer text changes first.
 
 ### Questions for the owner
 
@@ -1459,6 +1518,10 @@ Cells: archive MB, words.
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4c.md`.
+
+## Group 5b research (2026-10-19)
+
+Welsh, Irish, Scottish Gaelic and Breton: research, decisions and work in `plans/2026-10-19-group-5b.md`.
 
 ## Group 5a research (2026-10-19)
 

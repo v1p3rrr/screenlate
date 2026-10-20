@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">Deklination</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Kasus- oder Pluralendung eines Substantivs oder Adjektivs</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">Nominativ</string>
+    <string name="inflection_ka_nounadjstemcompletion">Nominativendung -ი, an einen auf Konsonant endenden Stamm eines Substantivs oder Adjektivs angefügt</string>
+    <string name="inflection_ka_vowelrestoration_label">ausgefallener Vokal</string>
+    <string name="inflection_ka_vowelrestoration">Ausgefallener Stammvokal, wiederhergestellt</string>
+</resources>

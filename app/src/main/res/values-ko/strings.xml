@@ -490,6 +490,8 @@
     <string name="popup_font_script_only_el">그리스어 텍스트에만 사용</string>
     <string name="popup_font_script_only_hi">힌디어 텍스트에만 사용</string>
     <string name="popup_font_script_only_bn">벵골어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_ka">조지아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_hy">아르메니아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>
