@@ -327,6 +327,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | N | U InstallingTest, UpdateCheckTest, M | |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
+| DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -410,6 +411,24 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-20, `languages/kk` (PanLex conversions, on `8c869164` with the converter before its commit), Pixel_10_Pro (API 37)
+
+Scope: DIC28. The archives PanLex ky-en, ky-ru and kk-ru built on the PC from the mirror at revision `0422f0e60f39`,
+pushed to Download and imported through Settings → Dictionaries → Import from file; lookups on the search screen
+with the Kyrgyz and the Kazakh profile. Removed afterwards (the dictionaries and the pushed files), as they are not
+catalog entries.
+
+Results: passed, no fixes. First check: DIC28.
+
+- Import: ky-en 486 ms (engine 424 ms), ky-ru 545 ms, kk-ru 435 ms; languages read from the index (ky → en, ky → ru,
+  kk → ru).
+- Kyrgyz: азыр → now / сейчас and же → or / или, либо (no wty entry for either); алды → алды "facial, лицевой" as
+  written, then ал and алуу, each with the PanLex line under its wty definition (алуу: "hold, take, subtraction",
+  "держать, брать, взять, хватать, схватить, вычитание"). Stress marks render (лицево́й).
+- Kazakh: қазір → wty "now, at present" with PanLex "сейчас, ныне, теперь" under it; қабылдады → қабылдау ("past"),
+  PanLex "принятие, принимать".
+- Not reached: боюнча, чейин, кабыл and аркылуу have PanLex expressions but no Russian or English translation.
 
 ### 2026-10-20, `languages/kk` (Kyrgyz, on `61dfb28d` with the Kyrgyz changes before their commit), Pixel_10_Pro (API 37)
 
