@@ -22,7 +22,7 @@ When a language gets a new rule, add its row here, a positive test, and a negati
 | `Sentence.kt` | `core/anki/src/main/java/com/vpr/screenlate/core/anki/note/Sentence.kt` |
 
 Tests: `Isolation` is `LanguageRulesIsolationTest` (core:common), `<Lang>Test` is `<Lang>SupportTest`, `glue` is
-`scripts/yomitan-language/glue.test.mjs` (`node --test scripts/yomitan-language`), `reading.mjs`, `note.mjs`,
+`scripts/yomitan-language/glue.test.mjs` (`node --test scripts/yomitan-language/glue.test.mjs`), `reading.mjs`, `note.mjs`,
 `popup.mjs`, `definition.mjs` are the page tests in `overlay/src/test/js`, `I:` marks an instrumented test.
 
 Status: **ok** (works, both kinds of tests), **fixed** (a bug this review fixed, with a test), **limit** (known, left
