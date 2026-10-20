@@ -121,8 +121,18 @@ joined by gap, the app's own text processors for sara am, tone-mark order and th
 dictionary built from the Thai National Corpus counts, Noto Serif Thai by `local()` and four downloadable fonts.
 LK46 passed on the emulator after one fix (a space after ๆ was taken into the match). Test screens for scripts with
 stacked marks are drawn by `scripts/TextImage.java` (Pillow does not shape them). Overnight questions 10 (a space
-beside any ฯ holds) and 11 (ๆ and a space never end a sentence) are in the plan, implemented as recommended. Khmer
-follows on its own branch. The emulator's `/data` has about 260 MB free.
+beside any ฯ holds) and 11 (ๆ and a space never end a sentence) are in the plan, implemented as recommended.
+
+Khmer is done on `languages/km` (2026-10-20): the same segmentation with the coeng holding the next consonant, ៗ
+with the word before and zero-width spaces passed over; sentences end at ។ ៕; own text processors for zero-width
+spaces and subscript TA read as DA, TA headwords keyed under DA at import; Tesseract `khm` fast with a space gap of
+0.15 of the line height; Noto Serif Khmer by `local()`, Kantumruy Pro and Hanuman downloadable. LK47 passed on the
+emulator after one fix: ICU joins some phrases into one word (ក្រុងភ្នំពេញ), so the lookup of Thai and Khmer now also
+starts inside the aimed word when nothing found reaches the aimed letter (overnight question 12, provisional).
+Questions 13 (the emulator's space) and 14 (Khmer audio order) are in the plan; question 9 is still to be asked.
+The emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
+(`notes/build-environment.md`); deleting earlier languages' dictionaries there waits for the owner (question 13).
+Group 4d builds next.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
