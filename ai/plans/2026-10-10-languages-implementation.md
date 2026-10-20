@@ -164,7 +164,7 @@ Requests 1–19 are in the previous plan. New ones:
 71. (2026-10-20) The app keeps its own log: lines written to a file as they happen instead of read from the
     system log at export time (on the owner's Honor phone the system log gives the app nothing; on a ColorOS phone it
     held only the last 22 seconds). Not started: the owner asked for an analysis first and will say when to build it;
-    its open choices are asked then.
+    its open choices are asked then. It is built on both main and languages/main (owner, 2026-10-21).
 
 ## Decisions
 
@@ -1504,3 +1504,4 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   "n. l." is fixed in OCR text only (`CzechSupport.ocrLines`); Arabic text with the Persian ک ی is matched as ك ي in
   any text (bundle `arabicLetters`); the other rules that reach app text stay, as people type text that way.
 - 2026-10-20: request 71 recorded (own log file; analysis given, build later on the owner's word).
+- 2026-10-21: request 71 (owner): when built, the own log file goes to both main and languages/main.
