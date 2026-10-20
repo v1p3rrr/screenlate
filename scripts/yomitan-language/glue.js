@@ -9,6 +9,13 @@ import {LanguageTransformer} from 'yomitan/language/language-transformer.js';
 const translator = new Translator(/** @type {any} */ (null));
 
 /**
+ * Ids of the rules a language's descriptor marks `hidden` (own-transforms.js), by language: steps between rules that
+ * name no ending (a Turkic verb stem becoming its dictionary form), left out of the chains.
+ * @type {Map<string, Set<string>>}
+ */
+const hiddenRules = new Map();
+
+/**
  * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS). The
  * transforms are taken by the descriptor's code: Georgian's name their language `kat`, under which Yomitan files them
  * and its Georgian lookups never find them.
@@ -21,6 +28,8 @@ function prepare(language) {
         const transformer = new LanguageTransformer();
         transformer.addDescriptor(descriptor);
         translator._multiLanguageTransformer._languageTransformers.set(language, transformer);
+        const hidden = Object.entries(descriptor.transforms).filter(([, t]) => t.hidden).map(([id]) => id);
+        if (hidden.length > 0) { hiddenRules.set(language, new Set(hidden)); }
     }
     for (const {iso, textPreprocessors = [], textPostprocessors = []} of getAllLanguageTextProcessors()) {
         if (iso !== language) { continue; }
@@ -83,28 +92,92 @@ const replacedProcessors = {
 
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
- * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, and
- * whether an entry without a part of speech may match despite the conditions. A rule that strips a whole word
- * (Georgian -მა from მა) leaves an empty text, which is not asked for.
+ * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, whether
+ * an entry without a part of speech may match despite the conditions, and the definition tags one of which a glossary
+ * then needs (`taggedRules`; absent for any). A rule that strips a whole word (Georgian -მა from მა) leaves an empty
+ * text, which is not asked for, and neither are the texts between the steps of marked rules (`isMarkedStep`).
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
  */
 function candidates(text, language, searchResolution) {
     prepare(language);
+    const marked = markedLanguages.has(language);
     const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
         .filter((d) => d.deinflectedText !== '' && isWellFormed(d.originalText) && isWellFormed(d.transformedText) &&
-            isWellFormed(d.deinflectedText));
+            isWellFormed(d.deinflectedText) && !(marked && isMarkedStep(d, language)));
     const verb = englishVerbFlags(language);
-    return list.map((d) => ({
-        o: d.originalText,
-        t: d.transformedText,
-        d: d.deinflectedText,
-        s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
-        c: d.conditions,
-        r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
-        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language),
-    }));
+    const hidden = hiddenRules.get(language);
+    return list.map((d) => {
+        const tags = tagsOf(d, language);
+        return {
+            o: d.originalText,
+            t: d.transformedText,
+            d: d.deinflectedText,
+            s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
+            c: d.conditions,
+            r: d.inflectionRuleChainCandidates.map((x) => (hidden ?
+                x.inflectionRules.filter((rule) => !hidden.has(rule)) :
+                x.inflectionRules)),
+            u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language) || tags.length > 0,
+            ...(tags.length > 0 ? {g: tags} : {}),
+        };
+    });
+}
+
+/**
+ * Languages whose rules (own-transforms.js) end the texts between their steps in a private-use character: the
+ * Turkic verb stem, which only the hidden dictionary form rule makes a word of, and the present tense mark that a
+ * person ending leaves.
+ */
+const markedLanguages = new Set(['kk', 'ky']);
+
+const PRIVATE_USE_FIRST = 0xe000;
+const PRIVATE_USE_LAST = 0xf8ff;
+
+/**
+ * Whether [d] is a step between rules rather than a word: its text carries a marker, or its conditions name no
+ * dictionary form (a text before the question particle or before a past person ending), which no entry matches.
+ * @param {{conditions: number, deinflectedText: string}} d
+ * @param {string} language
+ */
+function isMarkedStep(d, language) {
+    for (let i = 0; i < d.deinflectedText.length; i++) {
+        const unit = d.deinflectedText.charCodeAt(i);
+        if (unit >= PRIVATE_USE_FIRST && unit <= PRIVATE_USE_LAST) { return true; }
+    }
+    if (d.conditions === 0) { return false; }
+    const transformer = translator._multiLanguageTransformer._languageTransformers.get(language);
+    const dictionaryForms = [...(transformer?._partOfSpeechToConditionFlagsMap.values() ?? [])]
+        .reduce((all, flags) => all | flags, 0);
+    return (d.conditions & dictionaryForms) === 0;
+}
+
+/**
+ * Conditions whose texts match only glossaries that carry one of the given part-of-speech tags among their definition
+ * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh and Kyrgyz entries give
+ * no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its endings
+ * (барды → бару) finds the verb's senses only.
+ * @type {Map<string, Record<string, string[]>>}
+ */
+const taggedRules = new Map([
+    ['kk', {v: ['v']}],
+    ['ky', {v: ['v']}],
+]);
+
+/**
+ * The definition tags one of which a glossary of [d] needs (`taggedRules`); empty for any glossary.
+ * @param {{conditions: number}} d
+ * @param {string} language
+ * @returns {string[]}
+ */
+function tagsOf(d, language) {
+    const rules = taggedRules.get(language);
+    if (rules === undefined || d.conditions === 0) { return []; }
+    const flags = translator._multiLanguageTransformer._languageTransformers.get(language)?._conditionTypeToConditionFlagsMap;
+    return [...new Set(Object.entries(rules)
+        .filter(([name]) => (d.conditions & (flags?.get(name) ?? 0)) !== 0)
+        .flatMap(([, tags]) => tags))];
 }
 
 /**
@@ -114,7 +187,9 @@ function candidates(text, language, searchResolution) {
  * least. Yomitan's Georgian rules chain and cut words down to a letter or two (ვადის → ვ), which would find only the
  * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
  * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian and Hebrew entries give
- * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least.
+ * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least. Wiktionary's Kazakh and
+ * Kyrgyz entries give none either: the app's nominal endings (cases, possessives, plurals, the person endings of
+ * predicates) fit any entry, and verbs match by their definition tags (`taggedRules`).
  * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
 const untypedRules = new Map([
@@ -123,6 +198,8 @@ const untypedRules = new Map([
     ['ar', {shortest: 2, conditions: ['n']}],
     ['fa', {shortest: 2}],
     ['he', {shortest: 2}],
+    ['kk', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
+    ['ky', {shortest: 2, conditions: ['n', 'q', 'cs', 'px', 'pl', 'pt', 'cv']}],
 ]);
 
 /**

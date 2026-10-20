@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">복수</string>
+    <string name="inflection_turkic_possessive_1sg_label">나의</string>
+    <string name="inflection_turkic_possessive_2sg_label">너의</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">당신의(존칭)</string>
+    <string name="inflection_turkic_possessive_3rd_label">그·그녀·그들의</string>
+    <string name="inflection_turkic_possessive_1pl_label">우리의</string>
+    <string name="inflection_turkic_genitive_label">속격</string>
+    <string name="inflection_turkic_dative_label">여격</string>
+    <string name="inflection_turkic_accusative_label">대격</string>
+    <string name="inflection_turkic_locative_label">처격</string>
+    <string name="inflection_turkic_ablative_label">탈격</string>
+    <string name="inflection_turkic_instrumental_label">도구격</string>
+    <string name="inflection_turkic_attributive_locative_label">한정 처격</string>
+    <string name="inflection_turkic_attributive_label">한정형</string>
+    <string name="inflection_turkic_equative_label">동등격</string>
+    <string name="inflection_turkic_manner_label">방식</string>
+    <string name="inflection_turkic_1sg_label">1인칭 단수</string>
+    <string name="inflection_turkic_2sg_label">2인칭 단수</string>
+    <string name="inflection_turkic_2sg_polite_label">2인칭 단수 존칭</string>
+    <string name="inflection_turkic_3rd_label">3인칭</string>
+    <string name="inflection_turkic_1pl_label">1인칭 복수</string>
+    <string name="inflection_turkic_2pl_label">2인칭 복수</string>
+    <string name="inflection_turkic_2pl_polite_label">2인칭 복수 존칭</string>
+    <string name="inflection_turkic_past_label">과거</string>
+    <string name="inflection_turkic_present_label">현재</string>
+    <string name="inflection_turkic_conditional_label">조건법</string>
+    <string name="inflection_turkic_past_participle_label">과거 분사</string>
+    <string name="inflection_turkic_habitual_participle_label">습관 분사</string>
+    <string name="inflection_turkic_aorist_label">아오리스트</string>
+    <string name="inflection_turkic_intention_label">의도</string>
+    <string name="inflection_turkic_converb_label">부동사</string>
+    <string name="inflection_turkic_purpose_label">목적</string>
+    <string name="inflection_turkic_until_label">~까지</string>
+    <string name="inflection_turkic_imperative_label">명령형</string>
+    <string name="inflection_turkic_please_label">요청</string>
+    <string name="inflection_turkic_negative_label">부정</string>
+    <string name="inflection_turkic_passive_label">피동</string>
+    <string name="inflection_turkic_reflexive_label">재귀</string>
+    <string name="inflection_turkic_reciprocal_label">상호</string>
+    <string name="inflection_turkic_causative_label">사동</string>
+    <string name="inflection_turkic_question_label">의문</string>
+    <string name="inflection_turkic_possessive_2pl_label">너희의</string>
+</resources>

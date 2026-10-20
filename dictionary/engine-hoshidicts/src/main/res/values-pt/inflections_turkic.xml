@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">plural</string>
+    <string name="inflection_turkic_possessive_1sg_label">meu</string>
+    <string name="inflection_turkic_possessive_2sg_label">teu</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">seu (formal)</string>
+    <string name="inflection_turkic_possessive_3rd_label">dele, dela, deles</string>
+    <string name="inflection_turkic_possessive_1pl_label">nosso</string>
+    <string name="inflection_turkic_genitive_label">genitivo</string>
+    <string name="inflection_turkic_dative_label">dativo</string>
+    <string name="inflection_turkic_accusative_label">acusativo</string>
+    <string name="inflection_turkic_locative_label">locativo</string>
+    <string name="inflection_turkic_ablative_label">ablativo</string>
+    <string name="inflection_turkic_instrumental_label">instrumental</string>
+    <string name="inflection_turkic_attributive_locative_label">locativo atributivo</string>
+    <string name="inflection_turkic_attributive_label">atributivo</string>
+    <string name="inflection_turkic_equative_label">equativo</string>
+    <string name="inflection_turkic_manner_label">modo</string>
+    <string name="inflection_turkic_1sg_label">1.ª pess. sing.</string>
+    <string name="inflection_turkic_2sg_label">2.ª pess. sing.</string>
+    <string name="inflection_turkic_2sg_polite_label">2.ª pess. sing. formal</string>
+    <string name="inflection_turkic_3rd_label">3.ª pessoa</string>
+    <string name="inflection_turkic_1pl_label">1.ª pess. pl.</string>
+    <string name="inflection_turkic_2pl_label">2.ª pess. pl.</string>
+    <string name="inflection_turkic_2pl_polite_label">2.ª pess. pl. formal</string>
+    <string name="inflection_turkic_past_label">passado</string>
+    <string name="inflection_turkic_present_label">presente</string>
+    <string name="inflection_turkic_conditional_label">condicional</string>
+    <string name="inflection_turkic_past_participle_label">particípio passado</string>
+    <string name="inflection_turkic_habitual_participle_label">particípio habitual</string>
+    <string name="inflection_turkic_aorist_label">aoristo</string>
+    <string name="inflection_turkic_intention_label">intenção</string>
+    <string name="inflection_turkic_converb_label">converbo</string>
+    <string name="inflection_turkic_purpose_label">finalidade</string>
+    <string name="inflection_turkic_until_label">até que</string>
+    <string name="inflection_turkic_imperative_label">imperativo</string>
+    <string name="inflection_turkic_please_label">por favor</string>
+    <string name="inflection_turkic_negative_label">negação</string>
+    <string name="inflection_turkic_passive_label">passiva</string>
+    <string name="inflection_turkic_reflexive_label">reflexiva</string>
+    <string name="inflection_turkic_reciprocal_label">recíproca</string>
+    <string name="inflection_turkic_causative_label">causativa</string>
+    <string name="inflection_turkic_question_label">pergunta</string>
+    <string name="inflection_turkic_possessive_2pl_label">vosso</string>
+</resources>

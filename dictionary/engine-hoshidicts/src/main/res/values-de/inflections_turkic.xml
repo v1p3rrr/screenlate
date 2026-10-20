@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">Plural</string>
+    <string name="inflection_turkic_possessive_1sg_label">mein</string>
+    <string name="inflection_turkic_possessive_2sg_label">dein</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">Ihr (höflich)</string>
+    <string name="inflection_turkic_possessive_3rd_label">sein, ihr</string>
+    <string name="inflection_turkic_possessive_1pl_label">unser</string>
+    <string name="inflection_turkic_genitive_label">Genitiv</string>
+    <string name="inflection_turkic_dative_label">Dativ</string>
+    <string name="inflection_turkic_accusative_label">Akkusativ</string>
+    <string name="inflection_turkic_locative_label">Lokativ</string>
+    <string name="inflection_turkic_ablative_label">Ablativ</string>
+    <string name="inflection_turkic_instrumental_label">Instrumental</string>
+    <string name="inflection_turkic_attributive_locative_label">attributiver Lokativ</string>
+    <string name="inflection_turkic_attributive_label">Attributiv</string>
+    <string name="inflection_turkic_equative_label">Äquativ</string>
+    <string name="inflection_turkic_manner_label">Art und Weise</string>
+    <string name="inflection_turkic_1sg_label">1. Pers. Sg.</string>
+    <string name="inflection_turkic_2sg_label">2. Pers. Sg.</string>
+    <string name="inflection_turkic_2sg_polite_label">2. Pers. Sg. höflich</string>
+    <string name="inflection_turkic_3rd_label">3. Person</string>
+    <string name="inflection_turkic_1pl_label">1. Pers. Pl.</string>
+    <string name="inflection_turkic_2pl_label">2. Pers. Pl.</string>
+    <string name="inflection_turkic_2pl_polite_label">2. Pers. Pl. höflich</string>
+    <string name="inflection_turkic_past_label">Vergangenheit</string>
+    <string name="inflection_turkic_present_label">Präsens</string>
+    <string name="inflection_turkic_conditional_label">Konditional</string>
+    <string name="inflection_turkic_past_participle_label">Partizip der Vergangenheit</string>
+    <string name="inflection_turkic_habitual_participle_label">habituelles Partizip</string>
+    <string name="inflection_turkic_aorist_label">Aorist</string>
+    <string name="inflection_turkic_intention_label">Absicht</string>
+    <string name="inflection_turkic_converb_label">Konverb</string>
+    <string name="inflection_turkic_purpose_label">Zweck</string>
+    <string name="inflection_turkic_until_label">bis</string>
+    <string name="inflection_turkic_imperative_label">Imperativ</string>
+    <string name="inflection_turkic_please_label">Bitte</string>
+    <string name="inflection_turkic_negative_label">Verneinung</string>
+    <string name="inflection_turkic_passive_label">Passiv</string>
+    <string name="inflection_turkic_reflexive_label">Reflexiv</string>
+    <string name="inflection_turkic_reciprocal_label">Reziprok</string>
+    <string name="inflection_turkic_causative_label">Kausativ</string>
+    <string name="inflection_turkic_question_label">Frage</string>
+    <string name="inflection_turkic_possessive_2pl_label">euer</string>
+</resources>

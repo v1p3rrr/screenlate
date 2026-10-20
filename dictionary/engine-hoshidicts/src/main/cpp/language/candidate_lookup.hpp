@@ -23,6 +23,7 @@ struct LanguageCandidate {
   uint32_t c = 0;  // condition flags; 0 matches any entry
   std::vector<std::vector<std::string>> r;  // inflection rule chains
   bool u = false;  // an entry without a part of speech matches despite [c]
+  std::vector<std::string> g;  // definition tags one of which a glossary needs; empty for any
 };
 
 std::vector<LanguageCandidate> parse_candidates(const std::string& json);
@@ -43,6 +44,9 @@ struct CandidateResult {
   std::vector<std::vector<std::string>> chains;
   int preprocessor_steps = 0;
   TermResult term;
+  // Whether the headword was reached only through another spelling of it, a form-of entry with no tags (a headword
+  // keyed without its marks or letters at import): it comes after the spellings found as written.
+  bool respelled = false;
 };
 
 // Results for [candidates], best first. [tables] are the form-of tables of the loaded term dictionaries.

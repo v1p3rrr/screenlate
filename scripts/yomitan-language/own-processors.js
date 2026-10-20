@@ -177,3 +177,19 @@ export const hebrewQuotes = {
             .replace(/(?<=[\u05D0-\u05EA])'(?=[\u05D0-\u05EA])/g, '\u05F3'),
     ],
 };
+
+/** Kazakh letters by the Latin letters typed for them: i I h on keyboards without Kazakh letters, ə Ə from Latin layouts. */
+const KAZAKH_BY_LATIN = {'i': 'і', 'I': 'І', 'ə': 'ә', 'Ə': 'Ә', 'h': 'һ'};
+
+/**
+ * Kazakh text with Latin i, I, ə, Ə, h inside a Cyrillic word (кiтап, Iле, шаhар): the Kazakh letters і І ә Ә һ, which
+ * keyboards without them and recognition give that way. A word of Latin letters only stays as it is.
+ * @type {import('language').TextProcessor}
+ */
+export const kazakhLatinLetters = {
+    name: 'Kazakh letters typed in Latin',
+    description: 'кiтап → кітап',
+    process: (str) => [str, str.replace(/[\p{L}\p{M}]+/gu, (word) => (/[\u0400-\u04FF]/.test(word) ?
+        word.replace(/[iIəƏh]/g, (letter) => KAZAKH_BY_LATIN[letter]) :
+        word))],
+};

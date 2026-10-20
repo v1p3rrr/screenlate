@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">çoğul</string>
+    <string name="inflection_turkic_possessive_1sg_label">benim</string>
+    <string name="inflection_turkic_possessive_2sg_label">senin</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">sizin (nezaket)</string>
+    <string name="inflection_turkic_possessive_3rd_label">onun, onların</string>
+    <string name="inflection_turkic_possessive_1pl_label">bizim</string>
+    <string name="inflection_turkic_genitive_label">tamlayan hâli</string>
+    <string name="inflection_turkic_dative_label">yönelme hâli</string>
+    <string name="inflection_turkic_accusative_label">belirtme hâli</string>
+    <string name="inflection_turkic_locative_label">bulunma hâli</string>
+    <string name="inflection_turkic_ablative_label">ayrılma hâli</string>
+    <string name="inflection_turkic_instrumental_label">vasıta hâli</string>
+    <string name="inflection_turkic_attributive_locative_label">bulunma + -ki</string>
+    <string name="inflection_turkic_attributive_label">ilgi sıfatı</string>
+    <string name="inflection_turkic_equative_label">eşitlik hâli</string>
+    <string name="inflection_turkic_manner_label">tarz</string>
+    <string name="inflection_turkic_1sg_label">1. tekil şahıs</string>
+    <string name="inflection_turkic_2sg_label">2. tekil şahıs</string>
+    <string name="inflection_turkic_2sg_polite_label">2. tekil şahıs (nezaket)</string>
+    <string name="inflection_turkic_3rd_label">3. şahıs</string>
+    <string name="inflection_turkic_1pl_label">1. çoğul şahıs</string>
+    <string name="inflection_turkic_2pl_label">2. çoğul şahıs</string>
+    <string name="inflection_turkic_2pl_polite_label">2. çoğul şahıs (nezaket)</string>
+    <string name="inflection_turkic_past_label">geçmiş zaman</string>
+    <string name="inflection_turkic_present_label">şimdiki zaman</string>
+    <string name="inflection_turkic_conditional_label">şart kipi</string>
+    <string name="inflection_turkic_past_participle_label">geçmiş zaman sıfat-fiili</string>
+    <string name="inflection_turkic_habitual_participle_label">geniş zaman sıfat-fiili</string>
+    <string name="inflection_turkic_aorist_label">geniş zaman</string>
+    <string name="inflection_turkic_intention_label">niyet</string>
+    <string name="inflection_turkic_converb_label">zarf-fiil</string>
+    <string name="inflection_turkic_purpose_label">amaç</string>
+    <string name="inflection_turkic_until_label">-e kadar</string>
+    <string name="inflection_turkic_imperative_label">emir kipi</string>
+    <string name="inflection_turkic_please_label">rica</string>
+    <string name="inflection_turkic_negative_label">olumsuzluk</string>
+    <string name="inflection_turkic_passive_label">edilgen</string>
+    <string name="inflection_turkic_reflexive_label">dönüşlü</string>
+    <string name="inflection_turkic_reciprocal_label">işteş</string>
+    <string name="inflection_turkic_causative_label">ettirgen</string>
+    <string name="inflection_turkic_question_label">soru</string>
+    <string name="inflection_turkic_possessive_2pl_label">sizin (çoğul)</string>
+</resources>

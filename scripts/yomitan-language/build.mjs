@@ -27,11 +27,14 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
 /**
  * Languages Yomitan has no descriptor for, built from a related language's descriptor under their own codes: Malay
  * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either; Bengali takes
- * Hindi's descriptor, which has neither, for the app's own processors and endings.
+ * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
+ * (Cyrillic, capitalization only) for the app's own endings.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
     bn: {from: 'hi', iso639_3: 'ben', name: 'Bengali', exampleText: 'পড়ার জন্য'},
+    kk: {from: 'mn', iso639_3: 'kaz', name: 'Kazakh', exampleText: 'оқу'},
+    ky: {from: 'mn', iso639_3: 'kir', name: 'Kyrgyz', exampleText: 'окуу'},
 };
 
 /**
@@ -43,7 +46,8 @@ const borrowed = {
  * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have; Khmer
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
  * final ة as ه; Persian text may give Arabic letters for its own, lose its zero-width non-joiners and write a verb
- * prefix or an ending apart; Hebrew text may carry vowel points and write the geresh and gershayim as ASCII quotes.
+ * prefix or an ending apart; Hebrew text may carry vowel points and write the geresh and gershayim as ASCII quotes;
+ * Kazakh text may give Latin i, h and ə for і, һ and ә.
  * Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -57,16 +61,19 @@ const addedPreprocessors = {
     ar: ['arabicTaMarbutaAsHa'],
     fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
     he: ['removeHebrewPoints', 'hebrewQuotes'],
+    kk: ['kazakhLatinLetters'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
- * Persian endings and verb prefixes, Hebrew prefixes.
+ * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
     fa: 'persianTransforms',
     he: 'hebrewTransforms',
+    kk: 'kazakhTransforms',
+    ky: 'kyrgyzTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));

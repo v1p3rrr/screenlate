@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_turkic.xml. -->
+<resources>
+    <string name="inflection_turkic_plural_label">複数</string>
+    <string name="inflection_turkic_possessive_1sg_label">私の</string>
+    <string name="inflection_turkic_possessive_2sg_label">あなたの</string>
+    <string name="inflection_turkic_possessive_2sg_polite_label">あなたの（丁寧）</string>
+    <string name="inflection_turkic_possessive_3rd_label">彼・彼女・彼らの</string>
+    <string name="inflection_turkic_possessive_1pl_label">私たちの</string>
+    <string name="inflection_turkic_genitive_label">属格</string>
+    <string name="inflection_turkic_dative_label">与格</string>
+    <string name="inflection_turkic_accusative_label">対格</string>
+    <string name="inflection_turkic_locative_label">処格</string>
+    <string name="inflection_turkic_ablative_label">奪格</string>
+    <string name="inflection_turkic_instrumental_label">具格</string>
+    <string name="inflection_turkic_attributive_locative_label">限定処格</string>
+    <string name="inflection_turkic_attributive_label">限定形</string>
+    <string name="inflection_turkic_equative_label">同等格</string>
+    <string name="inflection_turkic_manner_label">様態</string>
+    <string name="inflection_turkic_1sg_label">1人称単数</string>
+    <string name="inflection_turkic_2sg_label">2人称単数</string>
+    <string name="inflection_turkic_2sg_polite_label">2人称単数（丁寧）</string>
+    <string name="inflection_turkic_3rd_label">3人称</string>
+    <string name="inflection_turkic_1pl_label">1人称複数</string>
+    <string name="inflection_turkic_2pl_label">2人称複数</string>
+    <string name="inflection_turkic_2pl_polite_label">2人称複数（丁寧）</string>
+    <string name="inflection_turkic_past_label">過去</string>
+    <string name="inflection_turkic_present_label">現在</string>
+    <string name="inflection_turkic_conditional_label">条件</string>
+    <string name="inflection_turkic_past_participle_label">過去分詞</string>
+    <string name="inflection_turkic_habitual_participle_label">習慣分詞</string>
+    <string name="inflection_turkic_aorist_label">アオリスト</string>
+    <string name="inflection_turkic_intention_label">意図</string>
+    <string name="inflection_turkic_converb_label">副動詞</string>
+    <string name="inflection_turkic_purpose_label">目的</string>
+    <string name="inflection_turkic_until_label">〜まで</string>
+    <string name="inflection_turkic_imperative_label">命令形</string>
+    <string name="inflection_turkic_please_label">依頼</string>
+    <string name="inflection_turkic_negative_label">否定</string>
+    <string name="inflection_turkic_passive_label">受動</string>
+    <string name="inflection_turkic_reflexive_label">再帰</string>
+    <string name="inflection_turkic_reciprocal_label">相互</string>
+    <string name="inflection_turkic_causative_label">使役</string>
+    <string name="inflection_turkic_question_label">疑問</string>
+    <string name="inflection_turkic_possessive_2pl_label">あなたたちの</string>
+</resources>
