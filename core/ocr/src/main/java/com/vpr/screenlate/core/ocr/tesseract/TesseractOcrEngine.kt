@@ -62,7 +62,8 @@ class TesseractOcrEngine @Inject constructor() : ModelOcrEngine {
                             iterator.delete()
                         }
                     }.orEmpty()
-                    tesseractPage(paragraphs, image.width, image.height, language.support.wordSeparator)
+                    val support = language.support
+                    tesseractPage(paragraphs, image.width, image.height, support.wordSeparator, support.ocrSpaceGap)
                 } finally {
                     api.clear()
                     if (input !== image) input.recycle()
@@ -183,17 +184,34 @@ internal class TesseractLine(val box: Box, val words: List<TesseractWord>)
 /**
  * The page of what Tesseract read. Blank words are left out, and so are lines and paragraphs left empty. A word keeps its
  * symbol boxes only when there is one per character, each inside the word. The models offered read horizontal text.
+ *
+ * @param spaceGap with a language whose words Tesseract cuts into clusters (`LanguageSupport.ocrSpaceGap`), the gap in
+ *   line heights from which two words are parted by a space; closer ones are joined, the last of a line gets nothing.
+ *   Null: every word gets [separator].
  */
-internal fun tesseractPage(paragraphs: List<List<TesseractLine>>, width: Int, height: Int, separator: String): OcrPage =
+internal fun tesseractPage(
+    paragraphs: List<List<TesseractLine>>,
+    width: Int,
+    height: Int,
+    separator: String,
+    spaceGap: Float? = null,
+): OcrPage =
     OcrPage(
         width,
         height,
         paragraphs.mapNotNull { lines ->
             lines.mapNotNull { line ->
-                val words = line.words.filter { it.text.isNotBlank() }.map { word ->
+                val read = line.words.filter { it.text.isNotBlank() }
+                val words = read.mapIndexed { index, word ->
                     val count = word.text.codePointCount(0, word.text.length)
                     val symbols = word.symbols.takeIf { boxes -> boxes.size == count && boxes.all { it.isInside(word.box) } }
-                    OcrWord(word.text, separator, word.box, symbols)
+                    val next = read.getOrNull(index + 1)
+                    val after = when {
+                        spaceGap == null -> separator
+                        next != null && next.box.left - word.box.right > spaceGap * line.box.height -> " "
+                        else -> ""
+                    }
+                    OcrWord(word.text, after, word.box, symbols)
                 }
                 if (words.isEmpty()) return@mapNotNull null
                 OcrLine(words, line.box, vertical = false, rightToLeft = isRightToLeftText(words.joinToString("") { it.text }))

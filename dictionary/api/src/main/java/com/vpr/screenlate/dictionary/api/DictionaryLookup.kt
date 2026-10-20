@@ -85,9 +85,11 @@ class DictionaryLookup @Inject constructor(
 
             suspend fun from(source: String): List<LookupResult> {
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
-                val found = LookupVariants.of(source, settings, support).flatMap { variant ->
+                val candidates = LookupVariants.of(source, settings, support).flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
-                }
+                }.mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+                val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
+                val found = candidates.filter { it.matched.length in lengths }
                 val whole = shown(found, start)
                 return support.compoundLinks?.let { links ->
                     compoundParts(source, whole, links) { part ->
@@ -104,7 +106,7 @@ class DictionaryLookup @Inject constructor(
             val results = if (aimedAt == 0) {
                 from(text)
             } else {
-                fromEarlierStarts(text, aimedAt) { from(text.substring(it)) }.take(limit)
+                fromEarlierStarts(text, aimedAt, support.wordStarts(text, aimedAt)) { from(text.substring(it)) }.take(limit)
             }
             val all = if (!extraEntries || !settings.singleKanji) {
                 results

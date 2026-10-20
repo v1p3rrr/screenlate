@@ -502,6 +502,7 @@
     <string name="popup_font_script_only_bn">Только для бенгальского текста</string>
     <string name="popup_font_script_only_ka">Только для грузинского текста</string>
     <string name="popup_font_script_only_hy">Только для армянского текста</string>
+    <string name="popup_font_script_only_th">Только для тайского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

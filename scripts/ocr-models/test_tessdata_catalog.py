@@ -18,6 +18,9 @@ class EntryTest(unittest.TestCase):
         self.assertIn("/tessdata_fast/", entry["downloadUrl"])
         self.assertFalse(catalog.entry("ru", "rus", "best", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("en", "eng", "fast", b"lstm")["recommended"])
+        # Nothing else in the catalog reads Thai on the device; best is no better than fast.
+        self.assertTrue(catalog.entry("th", "tha", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("th", "tha", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

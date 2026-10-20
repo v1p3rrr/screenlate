@@ -80,6 +80,10 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Chrome on the emulator shows a first-run screen that implies accepting its terms; do not click through it. Use the debug image viewer as the backdrop.
 - Gestures: `adb shell input swipe x1 y1 x2 y2 ms` produces DOWN/MOVE/UP; a double tap needs `input motionevent DOWN/UP` twice in one `adb shell` call. The docked bubble sits in the gesture-navigation Back zone; it relies on `systemGestureExclusionRects`.
 - `python scripts/text-image.py testdata/ocr/NAME.png "line" ...` renders test images with any text (Noto Sans JP / Yu Gothic); then `debug-device.sh images` and `show NAME.png`. Those fonts lack the Serbian Cyrillic letters (ђ ј љ ћ џ): set `FONT=C:/Windows/Fonts/arial.ttf` for such text.
+- Pillow here has no shaping library, so `text-image.py` draws Thai and Khmer marks unstacked and unordered.
+  `FONT=<file> FALLBACK=<file> SIZE=64 java scripts/TextImage.java testdata/ocr/NAME.png "line" ...` renders them
+  shaped by Java2D. Pull the phone's own font (`adb pull /system/fonts/NotoSansThai-Regular.ttf`), so the image looks
+  as the phone draws the script, and a Latin one (Roboto) for the digits and punctuation the script font lacks.
 - The popup WebView is debuggable in debug builds. `ADB="D:/Android/Sdk/platform-tools/adb.exe" node scripts/popup-eval.mjs "<js>"` evaluates JS in it (Node 22+, no packages; pass a Windows-style ADB path, Node does not understand `/d/...`). Useful for clicking links, reading rendered state, checking CSS.
 - `scripts/ui-dump.sh [regex]` prints on-screen texts with bounds (uiautomator) for choosing tap coordinates. A uiautomator dump reconnects Screenlate's accessibility service (logcat "Service stopped" / "Service connected"), which docks the bubble and ends the scan; during overlay tests use screenshots instead.
 - `am start` with `--es open <screen>` to a running `MainActivity` only brings the task forward; the app's own intents add `FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP` (`am start -f 0x14000000`), which recreates the activity so the request is read.

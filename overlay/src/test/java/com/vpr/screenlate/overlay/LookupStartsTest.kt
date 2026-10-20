@@ -6,7 +6,9 @@ import com.vpr.screenlate.core.common.language.EnglishSupport
 import com.vpr.screenlate.core.common.language.GermanSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.core.common.language.LanguageSupport
+import com.vpr.screenlate.core.common.language.ThaiRules
 import com.vpr.screenlate.core.common.language.VietnameseSupport
+import com.vpr.screenlate.core.common.language.WordSegmenter
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage
@@ -81,6 +83,31 @@ class LookupStartsTest {
         assertThat(earliestStart(text, word, VietnameseSupport)).isEqualTo(text.at("là"))
         val english = layout(EnglishSupport, "the school kid")
         assertThat(earliestStart(english, english.at("kid"), EnglishSupport)).isEqualTo(english.at("kid"))
+    }
+
+    /** Thai divided into [words], the longest first, as ICU's dictionary would divide it. */
+    private class DictionaryThai(vararg words: String) : ThaiRules(
+        WordSegmenter { text, _ ->
+            val boundaries = mutableListOf(0)
+            var index = 0
+            while (index < text.length) {
+                index += words.filter { text.startsWith(it, index) }.maxOfOrNull { it.length } ?: 1
+                boundaries += index
+            }
+            boundaries.toIntArray()
+        },
+    )
+
+    @Test
+    fun `thai looks up from the segmenter's word under the aim and the two before it`() {
+        val thai = DictionaryThai("ห้อง", "สมุด", "เปิด", "เช้า")
+        val text = layout(thai, "ห้องสมุดเปิดเช้า")
+        // The text after the aim tells which word the aimed letter is in.
+        assertThat(text.wordAt(text.at("สมุด", plus = 2), thai)).isEqualTo("สมุ")
+        assertThat(text.wordAt(text.at("เปิด", plus = 1), thai)).isEqualTo("เป")
+        val word = text.at("เช้า")
+        assertThat(earliestStart(text, word, thai)).isEqualTo(text.at("สมุด"))
+        assertThat(earliestStart(text, text.at("สมุด"), thai)).isEqualTo(text.at("ห้อง"))
     }
 
     @Test

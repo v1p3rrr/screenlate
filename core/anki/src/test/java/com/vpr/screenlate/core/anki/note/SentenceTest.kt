@@ -205,6 +205,18 @@ class SentenceTest {
     }
 
     @Test
+    fun thaiSentencesEndAtASpaceBetweenLettersButNotBesideMaiYamokPaiyannoiOrNumbers() {
+        val thai = "วันนี้อากาศดีมาก ไปเดินเล่นกันไหม เด็ก ๆ ชอบเล่น กรุงเทพฯ เป็นเมืองหลวง ปี 2024 มีฝนมาก"
+        assertThat(extract(thai, "เดิน", Language.THAI).text).isEqualTo("ไปเดินเล่นกันไหม")
+        assertThat(extract(thai, "ชอบ", Language.THAI).text).isEqualTo("เด็ก ๆ ชอบเล่น")
+        assertThat(extract(thai, "เมือง", Language.THAI).text).isEqualTo("กรุงเทพฯ เป็นเมืองหลวง")
+        assertThat(extract(thai, "ฝน", Language.THAI).text).isEqualTo("ปี 2024 มีฝนมาก")
+        // A full stop after Thai letters is an abbreviation's (พ.ศ., the Buddhist era); after Latin letters it ends one.
+        assertThat(extract("พ.ศ. 2567 เขาไปเชียงใหม่", "เขา", Language.THAI).text).isEqualTo("พ.ศ. 2567 เขาไปเชียงใหม่")
+        assertThat(extract("เขาใช้ iOS. เราไปกัน", "เรา", Language.THAI).text).isEqualTo("เราไปกัน")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

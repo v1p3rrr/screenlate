@@ -245,3 +245,39 @@ test('armenian marks and the ligature stay out of other languages', () => {
         assert.ok(!queried(language, 'երեվան').has('երևան'), language);
     }
 });
+
+/**
+ * The texts the engine would query for Thai [text], which it looks up letter by letter.
+ * @param {string} text
+ */
+function queriedThai(text) {
+    return new Set(load('th').candidates(text, 'th', 'letter').map((c) => c.d));
+}
+
+test('thai sara am in two parts and a tone mark before its vowel are tried as headwords write them', () => {
+    // น + nikhahit + mai tho + sara aa, as a recognizer may give น้ำ.
+    assert.ok(queriedThai('น\u0E4D\u0E49\u0E32').has('น้ำ'));
+    assert.ok(queriedThai('ท\u0E4D\u0E32').has('ทำ'));
+    // ก + mai ek + sara ii, typed for กี่.
+    assert.ok(queriedThai('ก\u0E48\u0E35').has('กี่'));
+    assert.ok(queriedThai('สิทธ\u0E4C\u0E34').has('สิทธิ์'));
+    assert.ok(queriedThai('กี่').has('กี่'));
+});
+
+test('thai mai yamok is tried with and without the spaces around it', () => {
+    assert.ok(queriedThai('เด็กๆ').has('เด็ก ๆ'));
+    assert.ok(queriedThai('งูๆปลาๆ').has('งู ๆ ปลา ๆ'));
+    assert.ok(queriedThai('ช้า ๆ').has('ช้าๆ'));
+    assert.ok(queriedThai('ช้า ๆ').has('ช้า ๆ'));
+    // A space after ๆ stays out of the match: the shorter text เด็กๆ is the one that finds เด็ก ๆ.
+    const spaced = load('th').candidates('เด็กๆ ชอบ', 'th', 'letter').filter((c) => c.d === 'เด็ก ๆ');
+    assert.deepEqual([...new Set(spaced.map((c) => c.o))], ['เด็กๆ']);
+    assert.ok(queriedThai('เด็กๆชอบ').has('เด็ก ๆ ชอบ'));
+});
+
+test('thai processors stay out of other languages', () => {
+    for (const language of ['en', 'vi', 'hi']) {
+        assert.ok(!queried(language, 'ท\u0E4D\u0E32').has('ทำ'), language);
+        assert.ok(!queried(language, 'เด็กๆ').has('เด็ก ๆ'), language);
+    }
+});

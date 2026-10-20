@@ -24,14 +24,15 @@ LANGUAGES = {
     "en": "eng", "de": "deu", "fr": "fra", "es": "spa", "it": "ita", "pt": "por",
     "pl": "pol", "tr": "tur", "lv": "lav", "vi": "vie", "ru": "rus", "nl": "nld", "cs": "ces", "id": "ind",
     "ms": "msa", "tl": "fil", "uk": "ukr", "be": "bel", "el": "ell", "hi": "hin", "bn": "ben", "ka": "kat", "hy": "hye",
+    "th": "tha",
     # Serbian's in Cyrillic, which its text is by default.
     "hr": "hrv", "sr": "srp",
 }
 
 # Recommended per language by the rule over the clean and hard screens (ai/notes/ocr-engines.md): the fast models of
-# Georgian and Armenian, as best makes nearly as many errors and nothing else reads them on the device; the other
-# languages are read better by Paddle or ML Kit, and paddle_models.py marks theirs.
-RECOMMENDED = {"ka": "fast", "hy": "fast"}
+# Georgian, Armenian and Thai, as best makes nearly as many errors and nothing else in the catalog reads them on the
+# device; the other languages are read better by Paddle or ML Kit, and paddle_models.py marks theirs.
+RECOMMENDED = {"ka": "fast", "hy": "fast", "th": "fast"}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")

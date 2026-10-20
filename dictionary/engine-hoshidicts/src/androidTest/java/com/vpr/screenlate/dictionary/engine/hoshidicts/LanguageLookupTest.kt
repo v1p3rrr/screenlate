@@ -338,6 +338,45 @@ class LanguageLookupTest {
         assertThat(village.trace.map { it.name }).containsExactly("traditional")
     }
 
+    @Test
+    fun thaiTextInAnotherCharacterOrderAndMaiYamokWithoutSpacesFindTheirWords() = runTest {
+        val imported = engine.import(thaiDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val thai = LookupOptions(language = Language.THAI)
+        suspend fun first(text: String) = engine.lookup(text, thai).first()
+
+        // Letter by letter, the longest word first: Thai has no spaces between words.
+        assertThat(first("ห้องสมุดเปิดเช้า").term.expression).isEqualTo("ห้องสมุด")
+        // Sara am given as nikhahit + sara aa, the tone mark between them.
+        val water = first("น\u0E4D\u0E49\u0E32เย็น")
+        assertThat(water.term.expression).isEqualTo("น้ำ")
+        assertThat(water.matched).isEqualTo("น\u0E4D\u0E49\u0E32")
+        // Mai yamok right after its word, where the headword has a space before it.
+        val children = first("เด็กๆ ชอบเล่น")
+        assertThat(children.term.expression).isEqualTo("เด็ก ๆ")
+        assertThat(children.matched).isEqualTo("เด็กๆ")
+        // The abbreviation with paiyannoi leads to the full name.
+        assertThat(engine.lookup("กรุงเทพฯ", thai).map { it.term.expression }).contains("กรุงเทพมหานคร")
+    }
+
+    /** Rows as Wiktionary's Thai exports write them: a classifier row for each noun it counts. */
+    private fun thaiDictionary(): File = zip(
+        "th.zip",
+        "index.json" to """{"title":"Test Thai","revision":"1","format":3,"sourceLanguage":"th"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["น้ำ","","n","",0,["water"],1,""],
+              ["เด็ก","","n","",0,["child"],2,""],
+              ["เด็ก ๆ","","n","",0,["children"],3,""],
+              ["ห้อง","","n","",0,["room"],4,""],
+              ["ห้องสมุด","","n","",0,["library"],5,""],
+              ["ห้อง","","non-lemma","",0,[["ห้องสมุด",["classifier"]]],6,""],
+              ["กรุงเทพมหานคร","","name","",0,["Bangkok"],7,""],
+              ["กรุงเทพฯ","","non-lemma","",0,[["กรุงเทพมหานคร",["alternative abbreviation"]]],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /** Rows as Wiktionary's Armenian exports write them, the classical spelling after its label. */
     private fun armenianDictionary(): File = zip(
         "hy.zip",

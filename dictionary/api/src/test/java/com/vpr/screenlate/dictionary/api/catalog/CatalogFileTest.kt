@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary
 import com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -68,8 +69,8 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `every source language but Japanese, Belarusian, Georgian and Armenian has a frequency dictionary built from wordfreq`() {
-        val built = catalog!!.entries.filter { it.build != null }
+    fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
+        val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
             .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn")
         for (entry in built) {
@@ -90,6 +91,23 @@ class CatalogFileTest {
         assertThat(english.description(Locale.ENGLISH)).startsWith("wordfreq, English:")
         // Older versions cannot build it, so the format 1 copy leaves it out.
         assertThat(legacy!!.entries.none { it.id == english.id }).isTrue()
+    }
+
+    @Test
+    fun `thai has a frequency dictionary built from the corpus counts of PyThaiNLP`() {
+        val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th")
+        val thai = built.single()
+        assertThat(thai.category).isEqualTo(CatalogCategory.FREQUENCY)
+        assertThat(thai.recommended).isTrue()
+        assertThat(thai.sha256).matches("[0-9a-f]{64}")
+        assertThat(thai.downloadUrl).matches(
+            "https://raw\\.githubusercontent\\.com/PyThaiNLP/pythainlp/[0-9a-f]{40}/pythainlp/corpus/tnc_freq\\.txt",
+        )
+        assertThat(thai.oldTitles).containsExactly(CorpusCountsDictionary.title("th"))
+        assertThat(thai.titles.keys).containsAtLeastElementsIn(locales)
+        assertThat(thai.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (Thai National Corpus)")
+        assertThat(legacy!!.entries.none { it.id == thai.id }).isTrue()
     }
 
     @Test

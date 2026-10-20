@@ -24,7 +24,8 @@ data class TextPosition(val paragraphIndex: Int, val offset: Int)
  * Character-level index over an [OcrPage] used for hit testing and highlighting.
  *
  * Engines report boxes per word; when per-character boxes are missing the word box is split evenly along the
- * reading direction: down a vertical line, leftwards along a right-to-left one. Words and lines inside a paragraph are
+ * reading direction: down a vertical line, leftwards along a right-to-left one. A combining mark written above or
+ * below its letter (Thai ้, ุ) takes no share and gets its letter's box. Words and lines inside a paragraph are
  * joined by each word's separator, which is empty for Japanese, so a phrase broken across lines is still found.
  * Paragraphs are taken in reading order ([ReadingOrder]), so text runs on across a broken line.
  */
@@ -110,7 +111,7 @@ class TextLayout(val page: OcrPage) {
 
     private fun splitWord(word: OcrWord, line: OcrLine): List<Pair<String, Box>> {
         val glyphs = codePoints(word.text)
-        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs.size, line)
+        val boxes = word.characterBoxes?.takeIf { it.size == glyphs.size } ?: splitBox(word.box, glyphs, line)
         val result = glyphs.zip(boxes).toMutableList()
         codePoints(word.separator).forEach { separator ->
             val edge = when {
@@ -123,24 +124,37 @@ class TextLayout(val page: OcrPage) {
         return result
     }
 
-    private fun splitBox(box: Box, count: Int, line: OcrLine): List<Box> {
-        if (count <= 1) return List(count) { box }
-        return List(count) { index ->
+    private fun splitBox(box: Box, glyphs: List<String>, line: OcrLine): List<Box> {
+        if (glyphs.size <= 1) return List(glyphs.size) { box }
+        // Marks after the word's first glyph share the slot of the glyph before them.
+        val slots = IntArray(glyphs.size)
+        var count = 0
+        glyphs.forEachIndexed { index, glyph ->
+            if (index == 0 || !isNonSpacingMark(glyph)) count++
+            slots[index] = count - 1
+        }
+        return List(glyphs.size) { index ->
+            val slot = slots[index]
             when {
                 line.vertical -> {
                     val step = box.height / count
-                    Box(box.left, box.top + step * index, box.right, box.top + step * (index + 1))
+                    Box(box.left, box.top + step * slot, box.right, box.top + step * (slot + 1))
                 }
                 line.rightToLeft -> {
                     val step = box.width / count
-                    Box(box.right - step * (index + 1), box.top, box.right - step * index, box.bottom)
+                    Box(box.right - step * (slot + 1), box.top, box.right - step * slot, box.bottom)
                 }
                 else -> {
                     val step = box.width / count
-                    Box(box.left + step * index, box.top, box.left + step * (index + 1), box.bottom)
+                    Box(box.left + step * slot, box.top, box.left + step * (slot + 1), box.bottom)
                 }
             }
         }
+    }
+
+    private fun isNonSpacingMark(glyph: String): Boolean = when (Character.getType(glyph.codePointAt(0))) {
+        Character.NON_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt() -> true
+        else -> false
     }
 
     private fun codePoints(text: String): List<String> {

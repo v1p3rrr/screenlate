@@ -67,8 +67,24 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Vietnamese starts lookups at the syllables before the aimed one`() {
+    fun `only Vietnamese starts lookups at the syllables before the aimed one, only Thai at the words before it`() {
         assertThat(all.where { it.earlierStartOffset("Tôi là học ") > 0 }).containsExactly(Language.VIETNAMESE)
+        assertThat(all.where { it.earlierStartOffset("ห้อง", "สมุด") > 0 }).containsExactly(Language.THAI)
+    }
+
+    @Test
+    fun `only Thai finds words with a segmenter, keeps clusters whole and drops shorter matches inside a word`() {
+        // Spaced languages start words after spaces; Thai where the segmenter does (one piece without the phone's ICU).
+        assertThat(all.where { it.wordStarts("ห้องสมุด เปิด", "ห้องสมุด เ".length) != listOf(0, "ห้องสมุด ".length) })
+            .containsExactly(Language.THAI)
+        assertThat(all.where { it.shownMatchLengths("การตลาด", setOf(1, 7)) != setOf(1, 7) }).containsExactly(Language.THAI)
+        assertThat(all.where { it.ocrSpaceGap != null }).containsExactly(Language.THAI)
+    }
+
+    @Test
+    fun `only Thai ends a sentence at a space between letters`() {
+        assertThat(all.where { it.endsSentence("กิน ข้าว", "กิน".length) }).containsExactly(Language.THAI)
+        assertThat(all.where { it.endsSentence("eat rice", "eat".length) }).isEmpty()
     }
 
     @Test
@@ -188,7 +204,10 @@ class LanguageRulesIsolationTest {
     @Test
     fun `form-of tags are dropped or respelled only for their language`() {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
-            .containsExactly(Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN)
+            .containsExactly(
+                Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN,
+                Language.THAI,
+            )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
 
@@ -285,7 +304,7 @@ class LanguageRulesIsolationTest {
     @Test
     fun `scripts written without spaces shorten the text by letters`() {
         assertThat(all.where { it.searchResolution == SearchResolution.LETTER })
-            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN)
-        assertThat(all.where { it.wordSeparator.isEmpty() }).containsExactly(Language.JAPANESE, Language.CHINESE)
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI)
+        assertThat(all.where { it.wordSeparator.isEmpty() }).containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI)
     }
 }

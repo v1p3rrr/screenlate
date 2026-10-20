@@ -16,6 +16,13 @@ interface LanguageSupport {
     /** Inserted between recognized words; empty for scripts written without spaces. */
     val wordSeparator: String
 
+    /**
+     * The gap between two words of a line, in line heights, from which on-device recognition that cuts words into
+     * clusters (Tesseract's Thai) parts them with a space; closer ones are joined. Null where words take
+     * [wordSeparator].
+     */
+    val ocrSpaceGap: Float? get() = null
+
     /** On-device recognizer to use. */
     val ocrScript: OcrScript
 
@@ -203,11 +210,34 @@ interface LanguageSupport {
     fun wordStartOffset(before: String, aimed: String): Int
 
     /**
+     * [wordStartOffset] with the text [after] the aimed character as well, which a language divided into words by a
+     * segmenter needs to tell which word the aimed character is in ([SegmentedLanguageSupport]).
+     */
+    fun wordStartOffset(before: String, aimed: String, after: String): Int = wordStartOffset(before, aimed)
+
+    /**
      * How many code points before the aimed word the lookup starts as well, for a language that writes the syllables
      * of a word apart (Vietnamese "học sinh"): a word found from an earlier start that reaches the aimed one comes
      * before the aimed word's own results. [before] is the text before the aimed word; 0 when lookups start only there.
      */
     fun earlierStartOffset(before: String): Int = 0
+
+    /** [earlierStartOffset] with the text [from] the aimed word on as well, which a word segmenter reads too. */
+    fun earlierStartOffset(before: String, from: String): Int = earlierStartOffset(before)
+
+    /**
+     * UTF-16 indexes of [text] before [end] where a lookup that starts at the words before the aimed one
+     * ([earlierStartOffset]) starts as well: at 0 and after each run of spaces, or where a segmenter starts a word.
+     */
+    fun wordStarts(text: String, end: Int): List<Int> = (0 until end).filter { index ->
+        !Character.isSpaceChar(text[index]) && (index == 0 || Character.isSpaceChar(text[index - 1]))
+    }
+
+    /**
+     * Of the [lengths] (UTF-16) of the matches found from the start of [text], those shown: every one, unless a
+     * segmenter divides the language's words ([SegmentedLanguageSupport]).
+     */
+    fun shownMatchLengths(text: String, lengths: Set<Int>): Set<Int> = lengths
 
     /** Other spellings of [text] that are looked up as well; the original is always looked up. */
     fun spellingVariants(text: MappedText): List<MappedText>
@@ -350,7 +380,7 @@ data class HeadwordMarks(
 data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KOREAN }
+enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KOREAN, THAI }
 
 val Language.support: LanguageSupport
     get() = when (this) {
@@ -382,4 +412,5 @@ val Language.support: LanguageSupport
         Language.BENGALI -> BengaliSupport
         Language.GEORGIAN -> GeorgianSupport
         Language.ARMENIAN -> ArmenianSupport
+        Language.THAI -> ThaiSupport
     }

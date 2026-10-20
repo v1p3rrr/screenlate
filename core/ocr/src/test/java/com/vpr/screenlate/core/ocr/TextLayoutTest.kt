@@ -72,6 +72,18 @@ class TextLayoutTest {
     }
 
     @Test
+    fun `marks above and below their letter take no share of a divided word box`() {
+        // ห้องสมุด: eight code points, six columns; ้ and ุ sit on ห and ม.
+        val line = OcrLine(listOf(word("ห้องสมุด", Box(0f, 0f, 600f, 100f))), Box(0f, 0f, 600f, 100f), vertical = false)
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.box.left }).containsExactly(0f, 0f, 100f, 200f, 300f, 400f, 400f, 500f).inOrder()
+        assertThat(characters.last().box.right).isEqualTo(600f)
+        // Spacing vowels (า) keep their share.
+        val spaced = OcrLine(listOf(word("กา", Box(0f, 0f, 200f, 100f))), Box(0f, 0f, 200f, 100f), vertical = false)
+        assertThat(TextLayout(page(OcrParagraph(listOf(spaced)))).paragraphs.single()[1].box.left).isEqualTo(100f)
+    }
+
+    @Test
     fun `hit test finds the character under the point`() {
         val layout = TextLayout(page(horizontal, vertical))
 

@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.VietnameseSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
 import kotlinx.coroutines.runBlocking
@@ -10,7 +11,7 @@ class EarlierStartsTest {
 
     /** The [words] [text] starts with from an index, the longest first, as a lookup by words finds them. */
     private fun found(text: String, aimedAt: Int, vararg words: String): List<Pair<String, Int>> = runBlocking {
-        fromEarlierStarts(text, aimedAt) { start ->
+        fromEarlierStarts(text, aimedAt, VietnameseSupport.wordStarts(text, aimedAt)) { start ->
             words.filter { text.startsWith(it, start) }
                 .sortedByDescending { it.length }
                 .map { LookupResult(matched = it, deinflected = it, term = TermEntry(it, "")) }
@@ -31,8 +32,8 @@ class EarlierStartsTest {
 
     @Test
     fun `words start after runs of spaces`() {
-        assertThat(wordStarts("học  sinh giỏi", 11)).containsExactly(0, 5, 10).inOrder()
-        assertThat(wordStarts(" học", 1)).isEmpty()
-        assertThat(wordStarts("sinh", 0)).isEmpty()
+        assertThat(VietnameseSupport.wordStarts("học  sinh giỏi", 11)).containsExactly(0, 5, 10).inOrder()
+        assertThat(VietnameseSupport.wordStarts(" học", 1)).isEmpty()
+        assertThat(VietnameseSupport.wordStarts("sinh", 0)).isEmpty()
     }
 }

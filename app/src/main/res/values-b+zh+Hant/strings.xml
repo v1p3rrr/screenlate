@@ -492,6 +492,7 @@
     <string name="popup_font_script_only_bn">僅用於孟加拉文文字</string>
     <string name="popup_font_script_only_ka">僅用於喬治亞文文字</string>
     <string name="popup_font_script_only_hy">僅用於亞美尼亞文文字</string>
+    <string name="popup_font_script_only_th">僅用於泰文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

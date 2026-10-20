@@ -30,6 +30,22 @@ class TesseractPageTest {
     }
 
     @Test
+    fun `clusters of a language without spaces join, and a wide gap is a space`() {
+        // ห้อง สมุด read as clusters, a line 100 high: gaps of 20 join, a gap of 50 is a space.
+        val words = listOf(
+            TesseractWord("ห้", box(0, 40, 0, 100), emptyList()),
+            TesseractWord("อง", box(60, 120, 0, 100), emptyList()),
+            TesseractWord("สมุด", box(170, 260, 0, 100), emptyList()),
+        )
+        val line = TesseractLine(box(0, 260, 0, 100), words)
+        val page = tesseractPage(listOf(listOf(line, line)), 300, 200, separator = "", spaceGap = 0.4f)
+        assertThat(page.paragraphs.single().text).isEqualTo("ห้อง สมุด\nห้อง สมุด")
+        assertThat(page.paragraphs.single().lines[0].words.last().separator).isEmpty()
+        // Without a gap rule every word takes the language's separator.
+        assertThat(tesseractPage(listOf(listOf(line)), 300, 200, separator = "").paragraphs.single().text).isEqualTo("ห้องสมุด")
+    }
+
+    @Test
     fun `symbol boxes stay only with one per character inside the word`() {
         val kept = TesseractWord("ab", box(0, 20), listOf(box(0, 10), box(10, 20)))
         val counted = TesseractWord("été", box(30, 60), listOf(box(30, 40), box(40, 50)))

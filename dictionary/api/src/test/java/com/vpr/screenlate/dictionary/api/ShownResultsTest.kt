@@ -165,7 +165,7 @@ class ShownResultsTest {
         assertThat(baca.withoutChainsThrough(Language.MALAY.support.ignoredFormTags))
             .isEqualTo(baca.copy(otherTraces = emptyList()))
         // Other languages keep every form-of result.
-        for (language in Language.entries - Language.VIETNAMESE) {
+        for (language in Language.entries - Language.VIETNAMESE - Language.THAI) {
             assertThat(noun.withoutChainsThrough(language.support.ignoredFormTags)).isSameInstanceAs(noun)
         }
     }

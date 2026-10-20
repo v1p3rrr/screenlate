@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.language.ArmenianSupport
 import com.vpr.screenlate.core.common.language.GeorgianSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
+import com.vpr.screenlate.core.common.language.ThaiSupport
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,5 +61,14 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Armenian serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in ArmenianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Thai ones are declared for `und-Thai`; the sans-serif is the default font, which the page needs no name for. */
+    @Test
+    fun findsTheThaiSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ThaiSupport, serif = true)
+        assumeTrue("The phone has no Thai serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ThaiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

@@ -39,7 +39,8 @@ const borrowed = {
  * app's own (own-processors.js): Belarusian is written with the stress marks and apostrophes Ukrainian is (сям'я,
  * сям’я), and Yomitan gives it capitalization only; Hindi and Bengali text is not always composed as the headwords
  * are, and Hindi writes candrabindu and anusvara for each other; Georgian headings are written in Mtavruli capitals
- * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out.
+ * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out; Thai
+ * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
@@ -47,6 +48,7 @@ const addedPreprocessors = {
     bn: ['composeCharacters'],
     ka: ['decapitalize'],
     hy: ['removeArmenianMarks', 'armenianLigatureEv'],
+    th: ['thaiCharacterOrder', 'thaiMaiYamokSpace'],
 };
 
 /** Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings. */

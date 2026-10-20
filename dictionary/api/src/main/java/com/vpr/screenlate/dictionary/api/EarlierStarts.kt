@@ -8,21 +8,18 @@ import com.vpr.screenlate.dictionary.api.model.LookupResult
  * the aimed word's own results. Each result carries its start ([LookupResult.start]); a word found from two starts
  * is kept at the first.
  *
+ * @param starts the UTF-16 indexes of [text] before [aimedAt] where words start (`LanguageSupport.wordStarts`).
  * @param lookup the results from a UTF-16 index of [text].
  */
 internal suspend fun fromEarlierStarts(
     text: String,
     aimedAt: Int,
+    starts: List<Int>,
     lookup: suspend (Int) -> List<LookupResult>,
 ): List<LookupResult> {
-    val earlier = wordStarts(text, aimedAt).flatMap { start ->
+    val earlier = starts.flatMap { start ->
         lookup(start).filter { it.matched.length > aimedAt - start }.map { it.copy(start = start) }
     }
     val aimed = lookup(aimedAt).map { it.copy(start = aimedAt) }
     return (earlier + aimed).distinctBy { it.term.expression to it.term.reading }
-}
-
-/** Where the words of [text] before [aimedAt] start: at 0 and after each run of spaces. */
-internal fun wordStarts(text: String, aimedAt: Int): List<Int> = (0 until aimedAt).filter { index ->
-    !Character.isSpaceChar(text[index]) && (index == 0 || Character.isSpaceChar(text[index - 1]))
 }

@@ -70,6 +70,17 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `thai has looped and loopless fonts, offered for thai only`() {
+        val thai = fonts.filter { it.language == Language.THAI.code }
+        assertThat(thai.map { it.family }).containsExactly("Sarabun", "Noto Sans Thai Looped", "Kanit", "Prompt")
+        for (font in thai) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.THAI)
+        }
+        // Latin fonts have no Thai.
+        assertThat(fonts.filter { it.isOfferedFor(Language.THAI) }).containsExactlyElementsIn(thai)
+    }
+
+    @Test
     fun `georgian and armenian are offered no downloadable font, only the system's`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
         assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()
