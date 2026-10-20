@@ -90,7 +90,10 @@ class EarlierStartsTest {
         // A suffix entry with its hyphen comes before the ending alone: 1990-ға.
         assertThat(withParts("1990-ға", emptyList(), 5, listOf(4, 5), "-ға", "ға"))
             .containsExactly("-ға" to 4, "ға" to 5).inOrder()
-        // No part finds anything: the results stay as they are.
+        // The part finds nothing: the whole word only (бала-шаға aimed at шағамен, which has no entry).
+        assertThat(withParts("бала-шағамен", listOf("бала-шаға", "бала"), 7, listOf(5), "бала-шаға", "бала"))
+            .containsExactly("бала-шаға" to 0)
+        // Nothing reaches the aim: the results stay as they are.
         assertThat(withParts(text, listOf("state"), aimed, listOf(6), "state")).containsExactly("state" to 0)
     }
 

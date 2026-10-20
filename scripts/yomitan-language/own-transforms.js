@@ -316,6 +316,8 @@ const turkicSlots = {
  * @property {string} language
  * @property {string} vowels the vowels, the Russian twins of the language's own included
  * @property {string} linkingVowels vowels an ending starts with only after a consonant (-ым after кітап, -м after бала)
+ * @property {string} consonants the letters a stem ends in before an ending written with /C (кітап-ты, су-ды, not
+ *   оқы-ды, which is a past tense)
  * @property {string} presentVowels what the present tense mark ends in before its person ending (бара-ды, сөйлей-ді)
  * @property {Record<string, string>} twins the language's own letters as the Russian ones OCR and keyboards give
  * @property {Record<string, string>} hardened a noun stem's last consonant before a vowel, as the dictionary writes it
@@ -332,7 +334,7 @@ const turkicSlots = {
  * @property {string} name
  * @property {string} example
  * @property {Record<string, string>} endings by kind (`turkicSlots`), each a space-separated list; an ending written
- *   with a slash follows only the letters after it (на/ыі: баласына, not бала-на)
+ *   with a slash follows only the letters after it (на/ыі: баласына, not бала-на), with /C only a consonant
  * @property {string[]} [afterNegation] participle endings that follow only the negation (Kazakh бар-ма-с)
  */
 
@@ -386,7 +388,8 @@ function turkicTransforms(grammar) {
         const [ending, after] = item.split('/');
         const first = spelling[0];
         const contracted = grammar.contracted[ending];
-        if (after) return [rule(spelling, slot, `[${[...new Set(spellings(after).join(''))].join('')}]`)];
+        const letters = after === 'C' ? grammar.consonants : after;
+        if (letters) return [rule(spelling, slot, `[${[...new Set(spellings(letters).join(''))].join('')}]`)];
         if (contracted) return contracted.map((vowel) => rule(spelling, slot, consonantClass, (stem) => stem + vowel));
         if (slot === 'presentPerson') return [rule(spelling, slot, `[${grammar.presentVowels}]`)];
         if (slot === 'pastPerson') return [rule(spelling, slot, vowelClass)];
@@ -470,6 +473,8 @@ export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'kk',
     vowels: 'аәеиоөұүыіэюяуё',
     linkingVowels: 'ыі',
+    // у after a vowel is a consonant (су, ау).
+    consonants: 'бвгғджзйкқлмнңпрстуфхһцчшщъь',
     presentVowels: 'аейи',
     twins: {'қ': 'к', 'ғ': 'г', 'ң': 'н', 'ұ': 'у', 'ү': 'у', 'ө': 'о', 'ә': 'а', 'і': 'и', 'һ': 'х'},
     hardened: {'ғ': 'қ', 'г': 'к', 'б': 'п'},
@@ -492,9 +497,9 @@ export const kazakhTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'possessive 2sg polite', name: 'your (polite)', example: 'кітабыңыз', endings: {possessive: 'ыңыз іңіз ңыз ңіз'}},
         {id: 'possessive 3rd', name: 'his, her, their', example: 'кітабы, баласы', endings: {possessive: 'ы і сы сі'}},
         {id: 'possessive 1pl', name: 'our', example: 'кітабымыз', endings: {possessive: 'ымыз іміз мыз міз'}},
-        {id: 'genitive', name: 'genitive', example: 'кітаптың', endings: {case: 'ның нің дың дің тың тің'}},
+        {id: 'genitive', name: 'genitive', example: 'кітаптың', endings: {case: 'ның нің дың/C дің/C тың/C тің/C'}},
         {id: 'dative', name: 'dative', example: 'кітапқа, баласына', endings: {case: 'ға ге қа ке на/ыі не/ыі а/мң е/мң'}},
-        {id: 'accusative', name: 'accusative', example: 'кітапты, баласын', endings: {case: 'ны ні ды ді ты ті н/ыі'}},
+        {id: 'accusative', name: 'accusative', example: 'кітапты, баласын', endings: {case: 'ны ні ды/C ді/C ты/C ті/C н/ыі'}},
         {id: 'locative', name: 'locative', example: 'кітапта, баласында', endings: {case: 'да де та те нда/ыі нде/ыі'}},
         {id: 'ablative', name: 'ablative', example: 'кітаптан, баласынан', endings: {case: 'дан ден тан тен нан нен'}},
         {id: 'instrumental', name: 'instrumental', example: 'кітаппен', endings: {case: 'мен бен пен менен бенен пенен'}},
@@ -536,6 +541,7 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
     language: 'ky',
     vowels: 'аеиоөуүыэюяё',
     linkingVowels: 'ыиуү',
+    consonants: 'бвгджзйклмнңпрстфхцчшщъь',
     presentVowels: 'аеоөй',
     twins: {'ң': 'н', 'ө': 'о', 'ү': 'у'},
     hardened: {'г': 'к', 'б': 'п'},
@@ -563,9 +569,9 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'possessive 3rd', name: 'his, her, their', example: 'китеби, баласы', endings: {possessive: 'ы и у ү сы си су сү'}},
         {id: 'possessive 1pl', name: 'our', example: 'китебибиз', endings: {possessive: 'ыбыз ибиз убуз үбүз быз биз буз бүз'}},
         {id: 'possessive 2pl', name: 'your (pl.)', example: 'китебиңер', endings: {possessive: 'ыңар иңер уңар үңөр ңар ңер ңор ңөр'}},
-        {id: 'genitive', name: 'genitive', example: 'китептин', endings: {case: 'нын нин нун нүн дын дин дун дүн тын тин тун түн'}},
+        {id: 'genitive', name: 'genitive', example: 'китептин', endings: {case: 'нын нин нун нүн дын/C дин/C дун/C дүн/C тын/C тин/C тун/C түн/C'}},
         {id: 'dative', name: 'dative', example: 'китепке, баласына', endings: {case: 'га ге го гө ка ке ко кө на/ыиуү не/ыиуү но/ыиуү нө/ыиуү а/мң е/мң о/мң ө/мң'}},
-        {id: 'accusative', name: 'accusative', example: 'китепти, баласын', endings: {case: 'ны ни ну нү ды ди ду дү ты ти ту тү н/ыиуү'}},
+        {id: 'accusative', name: 'accusative', example: 'китепти, баласын', endings: {case: 'ны ни ну нү ды/C ди/C ду/C дү/C ты/C ти/C ту/C тү/C н/ыиуү'}},
         {id: 'locative', name: 'locative', example: 'китепте, баласында', endings: {case: 'да де до дө та те то тө нда/ыиуү нде/ыиуү ндо/ыиуү ндө/ыиуү'}},
         {id: 'ablative', name: 'ablative', example: 'китептен, баласынан', endings: {case: 'дан ден дон дөн тан тен тон төн нан/ыиуү нен/ыиуү нон/ыиуү нөн/ыиуү'}},
         {id: 'attributive locative', name: 'attributive locative', example: 'үйдөгү', endings: {case: 'дагы деги догу дөгү тагы теги тогу төгү ндагы/ыиуү ндеги/ыиуү ндогу/ыиуү ндөгү/ыиуү'}},

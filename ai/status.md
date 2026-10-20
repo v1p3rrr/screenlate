@@ -215,6 +215,18 @@ endings measured on wordfreq's words with hand judgments (numbers in `notes/lang
 plural -ا and -ین left out. Question 7 (the plural -ا also read as the adverb ending -اً) is decided provisionally:
 left out. The hoshidicts JSON-escape follow-up is a separate task of main's.
 
+Kazakh is done on `languages/kk` (2026-10-20, group 4e, `plans/2026-10-19-group-4e.md`): the app's own Turkic
+ending rules for Kazakh and Kyrgyz (`own-transforms.js`, noun and verb slots, verb endings only on entries tagged
+as verbs, the endings in д and т only after a consonant), headwords keyed with the Kazakh letters as their Russian
+twins ("он" finds он, оң, өң; "оң" only оң; Қазакстан, which keeps some letters and loses others, is looked up
+again keyed), Latin i I ə h read as і І ә һ in any text, the parts of a hyphenated word in every spaced language
+(the first part's words stay out when the whole word covers the aim), endings after digits and abbreviations with
+their hyphen (1990-ға → -ға), Leipzig's news word list built on the phone as the frequency list; six Wiktionary
+pairs, the transcriptions, PaddleOCR's Cyrillic model recommended and Tesseract kaz offered; PT Serif and PT Sans
+among the fonts; flag kz, bubble Қ. LK51, LK52, OCR32, POP29, AUD16, ANK20, DIC26 and LNG15 passed on the
+emulator after two fixes. Overnight question 14 (particles after a hyphen: сондай-ақ shows ақ, not -ақ) is
+deferred. Kyrgyz and the PanLex converter follow on the same branch.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

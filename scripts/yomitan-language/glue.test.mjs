@@ -600,6 +600,12 @@ test('kazakh noun endings come off in the order of the grammar and match entries
     // -на follows a possessive's vowel only: кітап-на is no dative. балана is балаңа typed with н.
     assert.ok(!queried('kk', 'кітапна').has('кітап'));
     assert.deepEqual([...candidatesTo('kk', 'балана', 'бала')[0].r[0]], ['possessive 2sg', 'dative']);
+    // -ды and -дың follow a consonant: оқыды is a past tense, not оқ with -ы and -ды; суды is су's accusative.
+    assert.ok(!queried('kk', 'оқыды').has('оқ'));
+    assert.ok(!queried('kk', 'оқыдың').has('оқ'));
+    assert.deepEqual([...candidatesTo('kk', 'суды', 'су')[0].r[0]], ['accusative']);
+    assert.deepEqual([...candidatesTo('kk', 'кітапты', 'кітап')[0].r[0]], ['accusative']);
+    assert.deepEqual([...candidatesTo('kk', 'жолдың', 'жол')[0].r[0]], ['genitive']);
     // The word as written stays typed.
     assert.ok(!candidates('kk', 'кітап').find((c) => c.d === 'кітап').u);
 });
@@ -652,6 +658,8 @@ test('kyrgyz endings in four-way harmony, the question particle and verb stems t
     assert.deepEqual([...candidatesTo('ky', 'китептерибизде', 'китеп')[0].r[0]], ['plural', 'possessive 1pl', 'locative']);
     assert.ok(queried('ky', 'китеби').has('китеп'));
     assert.ok(queried('ky', 'үйлөрдө').has('үй'));
+    assert.deepEqual([...candidatesTo('ky', 'китепти', 'китеп')[0].r[0]], ['accusative']);
+    assert.ok(!queried('ky', 'окуду').has('ок'));
     const forms = {
         'барасыңбы': ['баруу', ['present', '2sg', 'question']],
         'иштейт': ['иштөө', ['present', '3rd']],
