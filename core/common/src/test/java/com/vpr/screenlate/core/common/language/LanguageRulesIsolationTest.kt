@@ -159,9 +159,11 @@ class LanguageRulesIsolationTest {
             Language.RUSSIAN, Language.BELARUSIAN, Language.CROATIAN, Language.SERBIAN,
         )
         assertThat(periodEnding.where { holds(it, "ở TP. Hồ") }).containsExactly(Language.VIETNAMESE)
-        // Kazakh ж. (year) holds before a lowercase word only.
-        assertThat(periodEnding.where { holds(it, "2007 ж. қазанда") }).containsExactly(Language.KAZAKH)
+        // Kazakh and Kyrgyz ж. (year) holds before a lowercase word only; Kyrgyz writes ж. б. (and so on) spaced.
+        assertThat(periodEnding.where { holds(it, "2007 ж. қазанда") }).containsExactly(Language.KAZAKH, Language.KYRGYZ)
         assertThat(periodEnding.where { holds(it, "1991 ж. Кейін") }).isEmpty()
+        val andSoOn = "алма ж. б. жемиштер"
+        assertThat(periodEnding.where { !it.endsSentence(andSoOn, andSoOn.lastIndexOf(". ")) }).containsExactly(Language.KYRGYZ)
         val example = "π.χ. το"
         assertThat(periodEnding.where { !it.endsSentence(example, example.indexOf(". ")) }).containsExactly(Language.GREEK)
         // Hindi डॉ., whose vowel sign is a mark, and Latin letter names joined by periods; Bengali the same way.
@@ -237,10 +239,12 @@ class LanguageRulesIsolationTest {
             // An apostrophe joins a word without dividing it into parts.
             assertThat(support.partStarts("rock'n'roll", 0, "rock'n'r".length)).isEmpty()
         }
-        // An ending after digits or an abbreviation is looked up with its hyphen in Kazakh only, from a hyphen as well.
+        // An ending after digits or an abbreviation is looked up with its hyphen in Kazakh and Kyrgyz only, from a hyphen
+        // as well.
         assertThat(spaced.where { it.partStarts("1990-ға", 0, "1990-ғ".length) != listOf("1990-".length) })
-            .containsExactly(Language.KAZAKH)
-        assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null }).containsExactly(Language.KAZAKH)
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ)
+        assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ)
         // The maqaf divides Hebrew words only.
         assertThat(spaced.where { it.partStarts("בית\u05BEספר", 0, "בית\u05BEס".length).isNotEmpty() })
             .containsExactly(Language.HEBREW)
@@ -259,7 +263,7 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.ignoredFormTags.isNotEmpty() })
             .containsExactly(
                 Language.VIETNAMESE, Language.INDONESIAN, Language.MALAY, Language.FILIPINO, Language.CROATIAN, Language.SERBIAN,
-                Language.THAI, Language.KAZAKH,
+                Language.THAI, Language.KAZAKH, Language.KYRGYZ,
             )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
     }
@@ -297,19 +301,22 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Greek, Hindi, Khmer, Arabic, Persian and Kazakh key every headword in another spelling, only Arabic two further`() {
-        assertThat(all.where { it.headwordMarks?.everyHeadword == true })
-            .containsExactly(Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH)
+    fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
+        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
+            Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
+        )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
-            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH)
+            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ)
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
         // Arabic lemmas lose their vowel marks although every headword is keyed.
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
             .containsExactly(Language.ARABIC)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
-        // Only Kazakh looks a word up again with its letters keyed when it keeps some of them and loses others.
+        // Only Kazakh and Kyrgyz look a word up again with their letters keyed when it keeps some of them and loses
+        // others, each with its own letters.
         assertThat(all.where { it.keyedSpelling("Қазакстан", 3) != null }).containsExactly(Language.KAZAKH)
-        assertThat(all.where { !it.keepsWrittenLetters("оң", "он") }).containsExactly(Language.KAZAKH)
+        assertThat(all.where { it.keyedSpelling("Үйлорду", 2) != null }).containsExactly(Language.KAZAKH, Language.KYRGYZ)
+        assertThat(all.where { !it.keepsWrittenLetters("оң", "он") }).containsExactly(Language.KAZAKH, Language.KYRGYZ)
     }
 
     @Test
@@ -338,17 +345,22 @@ class LanguageRulesIsolationTest {
     @Test
     fun `look-alikes are fixed only in Cyrillic and Greek text, the Serbian j and the Latin i only where they have a twin`() {
         assertThat(all.where { it.ocrWord("\u043co\u0440e") != "\u043co\u0440e" })
-            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.KAZAKH)
+            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.KAZAKH, Language.KYRGYZ)
         assertThat(all.where { it.ocrWord("j\u043e\u0448") != "j\u043e\u0448" })
             .containsExactly(Language.SERBIAN)
         // A word of one letter has no other one to show its script.
         assertThat(all.where { it.ocrWord("y") != "y" })
-            .containsExactly(Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.KAZAKH)
+            .containsExactly(
+                Language.RUSSIAN, Language.SERBIAN, Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.KAZAKH,
+                Language.KYRGYZ,
+            )
         assertThat(all.where { it.ocrWord("i") != "i" })
             .containsExactly(Language.UKRAINIAN, Language.BELARUSIAN, Language.GREEK, Language.KAZAKH)
         // Kazakh writes Latin h and the schwa as һ and ә.
         assertThat(all.where { it.ocrWord("шаhар") != "шаhар" }).containsExactly(Language.KAZAKH)
         assertThat(all.where { it.ocrWord("\u0259лем") != "\u0259лем" }).containsExactly(Language.KAZAKH)
+        // Kyrgyz writes the barred o as ө.
+        assertThat(all.where { it.ocrWord("к\u0275л") != "к\u0275л" }).containsExactly(Language.KYRGYZ)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)

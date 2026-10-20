@@ -62,7 +62,7 @@ RECOGNIZERS = {
     "paddle-latin": {"source": "latin_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
                      "languages": LATIN},
     "paddle-cyrillic": {"source": "cyrillic_PP-OCRv5_mobile_rec", "template": "paddle-v5",
-                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sr", "kk"]},
+                        "requires": "paddle-detector-v5", "languages": ["ru", "uk", "be", "sr", "kk", "ky"]},
     "paddle-korean": {"source": "korean_PP-OCRv5_mobile_rec", "template": "paddle-v5",
                       "requires": "paddle-detector-v5", "languages": ["ko"]},
     "paddle-el": {"source": "el_PP-OCRv5_mobile_rec", "template": "paddle-v5", "requires": "paddle-detector-v5",
@@ -71,12 +71,14 @@ RECOGNIZERS = {
 
 # The recommendation rule over the clean and hard screens (ai/notes/ocr-engines.md); ko and vi keep ML Kit, and the
 # Latin-script languages not measured (nl, id, ms, tl) recommend none. Belarusian, not measured, takes Ukrainian's.
-# Kazakh: 2.2% of the characters wrong over the clean and hard screens against Tesseract's 22.8-24.0%.
+# Kazakh: 2.2% of the characters wrong over the clean and hard screens against Tesseract's 22.8-24.0%. Kyrgyz, whose
+# letters are a subset of Kazakh's: 0.0% on drawn screens in eleven styles.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
     "ru": "paddle-cyrillic", "cs": "paddle-v6", "uk": "paddle-cyrillic", "be": "paddle-cyrillic", "el": "paddle-el",
     "hr": "paddle-v6", "sr": "paddle-cyrillic", "kk": "paddle-cyrillic",
+    "ky": "paddle-cyrillic",
 }
 
 TEMPLATES = {"paddle-detector-v5", "paddle-detector-v6", "paddle-v6", "paddle-v5"}

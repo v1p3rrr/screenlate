@@ -482,4 +482,5 @@ val Language.support: LanguageSupport
         Language.PERSIAN -> PersianSupport
         Language.HEBREW -> HebrewSupport
         Language.KAZAKH -> KazakhSupport
+        Language.KYRGYZ -> KyrgyzSupport
     }

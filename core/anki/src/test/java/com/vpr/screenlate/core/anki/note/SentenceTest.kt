@@ -262,6 +262,15 @@ class SentenceTest {
     }
 
     @Test
+    fun kyrgyzSentencesKeepTheYearAndTheSpacedAbbreviationsBeforeLowercaseWords() {
+        val kyrgyz = "Күн жылуу. Ал 1991-ж. жайында алма, өрүк ж. б. жемиштерди сатып алды. Проф. Асанов келди. Кийин кетти."
+        assertThat(extract(kyrgyz, "жайында", Language.KYRGYZ).text)
+            .isEqualTo("Ал 1991-ж. жайында алма, өрүк ж. б. жемиштерди сатып алды.")
+        assertThat(extract(kyrgyz, "Асанов", Language.KYRGYZ).text).isEqualTo("Проф. Асанов келди.")
+        assertThat(extract(kyrgyz, "Кийин", Language.KYRGYZ).text).isEqualTo("Кийин кетти.")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

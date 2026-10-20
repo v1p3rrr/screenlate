@@ -509,6 +509,7 @@
     <string name="popup_font_script_only_fa">Только для персидского текста</string>
     <string name="popup_font_script_only_he">Только для текста на иврите</string>
     <string name="popup_font_script_only_kk">Только для казахского текста</string>
+    <string name="popup_font_script_only_ky">Только для киргизского текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

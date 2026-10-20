@@ -145,6 +145,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR30 | A language no on-device model reads (Persian): the setup screen has no recognition section; the Bubble settings list its on-device model as "None", and its dialog says no on-device model reads the language; with Engines "Both", cloud recognition alone reads the screen ("No on-device recognition for fa; cloud only", then "OCR final from LENS"); offline the popup says there is no network connection and on-device recognition does not support the language; Persian digits (۱۲, ۱۴۰۳) and "iPhone 15" keep their order | F | U CatalogFileTest, OcrModelsTest, M | 2026-10-20 |
 | OCR31 | Hebrew recognition: cloud recognition reads the lines in reading order, gives the gershayim and the geresh as ASCII " and ' (ארה"ב finds ארה״ב, וצה"ל finds צבא הגנה לישראל through ו) and the maqaf as a word break (ובית חולים finds בית חולים); a line that mixes a number after ב־, ₪ and "iPhone 15" is put in the order of its word boxes; offline, Tesseract heb fast reads the screen ("OCR final from DEVICE_MODEL", Lens: OfflineException): והבית finds הבית, ארה"ב ארה״ב, ג'ירפה ג׳ירפה, pointed קוֹרֵא קורא; the maqaf comes as a hyphen (ובית-חולים finds בית) and Latin is garbled | F | U LensProtocolTest, M | 2026-10-20 |
 | OCR32 | Kazakh recognition: cloud recognition reads ә, қ, ң, ұ, і and the hyphens (АҚШ-қа, 1990-ға) of `testdata/ocr/kk-lines.png`; offline, PaddleOCR's Cyrillic model reads the screen with the Kazakh letters right ("OCR final from DEVICE_MODEL"), and Tesseract kaz fast, chosen in the Bubble settings, reads көлдің, қаһарман and Қазақстан right | F | U CatalogFileTest, KazakhSupportTest, M | 2026-10-20 |
+| OCR33 | Kyrgyz recognition: cloud recognition reads ң, ө, ү and the hyphens (2007-жылы, 1991-ж.) of `testdata/ocr/ky-lines.png`; offline, PaddleOCR's Cyrillic model reads the screen with the Kyrgyz letters right ("OCR final from DEVICE_MODEL"), and so does Tesseract kir fast, chosen in the Bubble settings | F | U CatalogFileTest, KyrgyzSupportTest, M | 2026-10-20 |
 
 ### LK: lookup
 
@@ -200,8 +201,9 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK48 | Arabic lookups (overlay over `testdata/ocr/ar-lines.png`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoNaskhArabic-Regular.ttf` and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition, then Tesseract ara fast offline): والكبير finds كَبِير (و and the article undone); والمدارس finds مَدْرَسَة through its broken plural; اللغه and العربيه (ه for a final ة) find لُغَة and عَرَبِيَّة; اشتريت finds اِشْتَرَى; كِتَابًا read with its harakat shows كِتَاب first; هل finds هَلْ, نسبة نِسْبَة, قال قَالَ; ذهبت and الكتب show their homographs as recorded under the owner question (ذَهَب before ذَهَبَ); flag sa, bubble ض; the setup ticks wty-ar-en, the transcriptions, wordfreq and Tesseract fast ara; the page's `lang` is ar and its serif face the phone's Noto Naskh Arabic (`local()` by `NotoNaskhArabic` and `Noto Naskh Arabic`); Noto Sans Arabic and Amiri are listed "Only for Arabic text" and a downloaded one loads on the page as "Screenlate Chosen"; Tesseract's highlight covers only the aimed word | F | U ArabicSupportTest, SentenceTest, TextLayoutTest, TesseractPageTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, LanguageRulesIsolationTest, LookupSettingsRepositoryTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK49 | Persian lookups (overlay over `testdata/ocr/fa-lines.png` and, for the spoken endings, `testdata/ocr/fa-spoken.png` ("کتابمون را دیدم.", "خودشون گفتن.", "دومین کتاب و سیزدهمین روز", "هوا خوبه. زیتون"), rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` Vazirmatn and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition): کتاب‌ها (with the zero-width non-joiner) finds کتاب through -ها, then کاتب; خواهم after a separate می finds خواستن with "first person singular present indicative", matched "می خواهم"; ترین after بزرگ, and بزرگ itself, find بزرگ through -ترین, matched "بزرگ ترین"; كتابهایشان with the Arabic kaf finds کتاب through -ها and -یشان; ستارگان finds ستاره (-گان); خانهٔ finds خانه ("singular ezafe"); نمی‌دانم shows the phrase first, then دانستن through نمی-; "نگاه کن" finds نگاه کردن; کتابمون finds کتاب through "1st pl.", خودشون finds خود, دومین finds دوم through "ordinal", and خوبه does not find خوب through an ending; flag ir, bubble پ; the setup ticks wty-fa-en, the transcriptions and wordfreq; the page's `lang` is fa; Noto Sans Arabic, Amiri and Vazirmatn are listed "Only for Persian text", and a downloaded Vazirmatn loads on the page as "Screenlate Chosen" | F | U PersianSupportTest, SentenceTest, CatalogFileTest, FontCatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK50 | Hebrew lookups (overlay over `testdata/ocr/he-lines.png`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansHebrew-Regular.ttf` and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition): והבית finds הבית ("and"), then בית ("the « and"); כשהגעתי finds הגיע ("when « first person singular … past"); לירושלים finds ירושלים ("to"); הכלבים finds כלב ("plural definite masculine"); ושמהבית finds הבית through three prefixes ("from « that « and") and בית only as the dictionary's form הבית; ג'ירפה finds ג׳ירפה; pointed קוֹרֵא finds קורא and קרא; שלום shows the headword without "singular construct", pointed שְׁלוֹם with it; in "קניתי iPhone 15 ב־3,500 ₪ היום." the scan text from קניתי reads "קניתי iPhone 15 .ב־3,500" and from היום only היום; flag il, bubble א; the setup ticks wty-he-en, the transcriptions, wordfreq and Tesseract heb fast; Heebo and Frank Ruhl Libre are listed "Only for Hebrew text", a downloaded Heebo loads on the page as "Screenlate Chosen", and the phone's Noto Serif Hebrew loads as "Screenlate Serif" | F | U HebrewSupportTest, SentenceTest, CatalogFileTest, FontCatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
-| LK51 | Kazakh lookups (overlay over `testdata/ocr/kk-lines.png` and `kk-lines2.png`, the lines in `kk-lines.txt` and `kk-lines2.txt`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` PT Sans and `FALLBACK` the phone's Roboto; cloud recognition): Казакстанның finds Қазақстан ("genitive"); Қазакстан, which keeps Қ and loses қ, finds Қазақстан before қаз; оқыды finds оқу ("past") and not оқ; суды finds су ("accusative"); кітаптарымызда finds кітап ("plural « our « locative"); жаздық finds жаздық, then жазу; қазанда finds қазан ("locative"); он finds он, оң, өн, өң; 1990-ға finds the suffix entry -ға; on the search screen кiтаптар with a Latin i finds кітап, and "оң жақ" finds оң only | F | U KazakhSupportTest, KeyedMatchesTest, SentenceTest, CatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-20 |
+| LK51 | Kazakh lookups (overlay over `testdata/ocr/kk-lines.png` and `kk-lines2.png`, the lines in `kk-lines.txt` and `kk-lines2.txt`, rendered by `scripts/TextImage.java` at `SIZE=64` with PT Sans as `FONT` and `FALLBACK`; cloud recognition): Казакстанның finds Қазақстан ("genitive"); Қазакстан, which keeps Қ and loses қ, finds Қазақстан before қаз; оқыды finds оқу ("past") and not оқ; суды finds су ("accusative"); кітаптарымызда finds кітап ("plural « our « locative"); жаздық finds жаздық, then жазу; қазанда finds қазан ("locative"); он finds он, оң, өн, өң; 1990-ға finds the suffix entry -ға; on the search screen кiтаптар with a Latin i finds кітап, and "оң жақ" finds оң only | F | U KazakhSupportTest, KeyedMatchesTest, SentenceTest, CatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-20 |
 | LK52 | Parts of a hyphenated word (Kazakh, `testdata/ocr/kk-lines2.png`): ас-су aimed at су finds ас-су, then су; бала-шағамен aimed at шағамен finds бала-шаға only (the part finds nothing, and the first part's бала stays out); сондай-ақ aimed at ақ finds ақ (сондай-ақ is no headword) | F | U EarlierStartsTest, KazakhSupportTest, M | 2026-10-20 |
+| LK53 | Kyrgyz lookups (overlay over `testdata/ocr/ky-lines.png`, the lines in `ky-lines.txt`, rendered as for LK51; cloud recognition): 2007-жылы aimed at жылы finds жыл; китепкана finds китепкана; Китептерибизде finds китеп ("plural « our « locative"); барасыңбы finds баруу ("present « 2nd sg. « question"); Кол finds кол, then көл; көл finds көл only; Үйлөрдө finds үй ("locative plural"); Ата-энем aimed at энем finds ата-эне, then эне; иштейт finds иштөө ("present « 3rd person"); алды finds ал and алуу; on the search screen көчодө, which keeps one ө and loses the other, finds көчө | F | U KyrgyzSupportTest, SentenceTest, CatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-20 |
 
 ### POP: the popup
 
@@ -236,6 +238,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP27 | A Persian entry: the Latin reading follows the word in the headword line (کتاب kitāb), grey, at the text size, left to right, and nothing stands over the word; a copied selection leaves the reading out; the rule chain shows the rules' names in the app's language (کتابهایشان: 🧩 pl. « 3rd pl.), and a tap on one opens its description with Persian examples; the Iranian transcription comes first (کتاب [kʰʲe.t̪ʰɒ́ːb̥] with IR), the classical /ki.ˈtaːb/, Dari, Hazaragi and Tajik ones behind "+N" in the dictionary's order | F | P popup.test, reading.test, M | 2026-10-20 |
 | POP28 | A Hebrew entry: the headword and the recognized text run right to left; the rule chain shows the prefixes' names in the app's language (בית from והבית: 🧩 the « and; in Russian артикль « и), and a tap on one opens its description with Hebrew examples ("and (ואני, והבית)", "определённый артикль (הבית)"); the Modern Israeli transcription comes first (כלב /ˈke.lev/), and one written `//a/ [b]/` in the dictionary shows as two | F | P popup.test, U TranscriptionsTest, M | 2026-10-20 |
 | POP29 | A Kazakh entry: the rule chain names the endings in the app's language (кітап from кітаптарымызда: plural « our « locative); the Popup settings' font card lists Literata, Inter, PT Serif and PT Sans with "Only for Kazakh text"; PT Serif, downloaded and chosen, sets the Kazakh text, and the Latin glosses as well, since a Cyrillic language's range includes Latin, as for Russian | F | U FontCatalogFileTest, M | 2026-10-20 |
+| POP30 | A Kyrgyz entry: the rule chain names the endings in the app's language (китеп from китептерибизде: plural « our « locative) and the transcriptions show (/kitep/ [kiˈtep]); the Popup settings' font card lists Literata, Inter, PT Serif and PT Sans with "Only for Kyrgyz text"; PT Serif, chosen, sets the Kyrgyz text with ң ө ү Ң Ө Ү and the Latin glosses | F | U FontCatalogFileTest, M | 2026-10-20 |
 
 ### AUD: audio
 
@@ -257,6 +260,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD14 | Persian audio: holding 🔊 on کتاب lists Lingua Libre's recordings of the word as written, Wiktionary's Fa-كتاب.ogg (found through the Arabic letters), then a Lingua Libre recording titled otherwise, and the text to speech; a recording and Wiktionary's file both play; without a Persian voice (the emulator's Google engine has none) the voice item plays nothing and logs "No text-to-speech voice for fa" | F | U PersianSupportTest, AudioPagesTest, M | 2026-10-20 |
 | AUD15 | Hebrew audio: holding 🔊 on כלב lists Lingua Libre's recording of the word as written, Wiktionary's pointed He-כֶּלֶב.ogg and the text to speech; Wiktionary's file plays, and Google's Hebrew voice (he-il) speaks when chosen | F | U HebrewSupportTest, AudioPagesTest, M | 2026-10-20 |
 | AUD16 | Kazakh audio: holding 🔊 on кітап lists Lingua Libre's recording and the text to speech; the recording plays; with no Kazakh voice on the device the text to speech item says so | F | U KazakhSupportTest, AudioPagesTest, M | 2026-10-20 |
+| AUD17 | Kyrgyz audio: holding 🔊 on китеп lists Lingua Libre's recording, Wiktionary's and the text to speech; the Lingua Libre recording plays | F | U KyrgyzSupportTest, M | 2026-10-20 |
 
 ### ANK: Anki
 
@@ -282,6 +286,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK18 | Persian Anki fields (the note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Reading `{reading}` without a span, as the reading is Latin, and Sentence `<span dir="rtl">{sentence}</span>`; a note added from the popup for "نگاه کن" has Front نگاه کردن, Reading nigāh kardan and the sentence in the span | F | U FieldTemplateTest, SentenceTest, PersianSupportTest, M | 2026-10-20 |
 | ANK19 | Hebrew Anki fields (the note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Front `{expression}`, Reading `<span dir="rtl">{reading}</span>` (the reading is the word itself) and Sentence `<span dir="rtl">{sentence}</span>`; a note added from the popup for הכלבים in "כשהגעתי לירושלים הכלבים נבחו." has Front כלב and Sentence `<span dir="rtl">כשהגעתי לירושלים הכלבים נבחו.</span>` | F | U FieldTemplateTest, SentenceTest, HebrewSupportTest, M | 2026-10-20 |
 | ANK20 | A Kazakh Anki note: added from the popup for қазанда in "Ол 2007 ж. қазанда келді.", it has Front қазан and the whole sentence as Sentence ("ж." before a lowercase word ends nothing) | F | U SentenceTest, KazakhSupportTest, M | 2026-10-20 |
+| ANK21 | A Kyrgyz Anki note: added from the popup for алды in "Ал 1991-ж. жайында өрүк ж. б. алды.", it has Front алуу and the whole sentence as Sentence (1991-ж. and ж. б. before lowercase words end nothing) | F | U SentenceTest, KyrgyzSupportTest, M | 2026-10-20 |
 
 ### TR: sentence translation
 
@@ -321,6 +326,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | N | M | 2026-10-19 (the directory used, no cache directory; the clear-cache resume not run) |
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | N | U InstallingTest, UpdateCheckTest, M | |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
+| DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -342,6 +348,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG13 | Chinese card: "Characters" Simplified or Traditional with its hint, "All words in these characters" off by default; Traditional makes "xuexi" show 學習; the Lookup page has no such block; a backup's General part carries it, only the full reset clears it | F | U SettingsKeysTest, M | 2026-10-15 |
 | LNG14 | Character dictionaries ticked on the download screen: KANJIDIC for Japanese (in each chosen gloss language that has one), CC-CEDICT Hanzi for Chinese, Unihan Hanja for Korean; each can be unticked | F | M | 2026-10-18 |
 | LNG15 | Kazakh setup: the download screen offers Wiktionary in six gloss languages (English, Russian, French, Korean, Polish, Chinese), the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kaz unticked; the flag is Kazakhstan's and the bubble shows Қ | F | U CatalogFileTest, M | 2026-10-20 |
+| LNG16 | Kyrgyz setup: the download screen offers Wiktionary, the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kir fast and accurate unticked; the flag is Kyrgyzstan's and the bubble shows Ң | F | U CatalogFileTest, M | 2026-10-20 |
 
 ### SET: settings, backup, appearance
 
@@ -404,10 +411,47 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 
 Newest first: date, build, scope, results, cases moved from N, findings.
 
+### 2026-10-20, `languages/kk` (Kyrgyz, on `61dfb28d` with the Kyrgyz changes before their commit), Pixel_10_Pro (API 37)
+
+Scope: Kyrgyz (LK53, OCR33, POP30, AUD17, ANK21, DIC27, LNG16) through the download screen, the overlay over a
+rendered image (64 px, PT Sans, `TextImage.java`, `testdata/ocr/ky-lines.png`) in the debug viewer with cloud
+recognition and offline with PaddleOCR and Tesseract, the search screen, the popup page (`popup-eval.mjs`), the
+Popup settings' font card, audio, a note in the emulator's local AnkiDroid collection (never synced); the lookup
+engine's LanguageLookupTest (22/22) from an x86_64-only test APK run with `am instrument`. x86_64-only build
+installed over the app with its data kept.
+
+Results: passed, no fixes. First checks: LK53, OCR33, POP30, AUD17, ANK21, DIC27, LNG16.
+
+- Setup: Kyrgyz ticked wty-ky-en, its transcriptions, the Leipzig list and PaddleOCR (installed already, shared with
+  Kazakh); Tesseract kir fast added for the offline check. The Leipzig archive (19.0 MB) downloaded in 4.7 s and gave
+  100,000 words in 2.8 s (7.9 s in all); wty-ky-en 12.0 s (its download 9.3 s); the transcriptions 1.4 s; Tesseract
+  kir 2.4 s; about 14 s for the whole setup. Flag kg, bubble Ң.
+- Lookups (cloud recognition): 2007-жылы → жыл; китепкана; Китептерибизде → китеп ("plural « our « locative");
+  барасыңбы → баруу ("present « 2nd sg. « question"); Кол → кол, көл; көл → көл; Үйлөрдө → үй ("locative plural");
+  энем → ата-эне, эне; иштейт → иштөө ("present « 3rd person"); алды → ал, алуу. Lookups took 3-30 ms.
+- Түштук (the first ү kept, the second typed у) finds түшүү ("past « 1st pl."), not түштүк "south": the past ending
+  in its twin spelling (-тук for -түк) covers the whole word, and the keyed lookup runs only when the text as written
+  finds less. Overnight question 15 (plan). The keyed lookup itself works: on the search screen көчодө → көчө.
+- алды shows ал "he/she/it" ("accusative") before алуу ("past"): a nominal ending matches any entry, a pronoun too,
+  and ал ranks higher in the Leipzig list; the pronoun's accusative is аны. Overnight question 16 (plan).
+- Offline (Wi-Fi and data off, a tap on the bubble for a new scan): PaddleOCR's draft in 0.5 s and its final scan in
+  2.6 s; Tesseract kir fast's final scan in 1.9 s; every word above found over both. The Kyrgyz model set back to
+  PaddleOCR afterwards.
+- Search screen: көчодө → көчө ("locative singular").
+- Audio: holding 🔊 on китеп lists Lingua Libre's recording, Wiktionary's Ky-китеп.ogg and the text to speech; the
+  recording plays.
+- Anki: the Kyrgyz profile set to the deck "Screenlate Test" and the note type "Screenlate RTL" (Front, Back, Reading,
+  Sentence); the note for алды has Front алуу and Sentence "Ал 1991-ж. жайында өрүк ж. б. алды.".
+- Fonts: the card lists the phone's font, PT Serif (downloaded during the Kazakh run), "Only for Kyrgyz text", and
+  Literata, Inter and PT Sans to download; PT Serif, chosen, sets the Kyrgyz text and the English glosses and draws
+  ң ө ү Ң Ө Ү; set back to the phone's font.
+- Process: the bubble rests where it is released; aims started from its dock position after it had moved were
+  system Back gestures from the right edge and closed the viewer. Each aim now starts on the bubble.
+
 ### 2026-10-20, `languages/kk` (Kazakh, on `c342b75f`, before the fixes' commit), Pixel_10_Pro (API 37)
 
 Scope: Kazakh (LK51, LK52, OCR32, POP29, AUD16, ANK20, DIC26, LNG15) through the download screen, the overlay over
-rendered images (64 px, PT Sans with Roboto, `TextImage.java`, `testdata/ocr/kk-lines.png` and `kk-lines2.png`) in the
+rendered images (64 px, PT Sans, `TextImage.java`, `testdata/ocr/kk-lines.png` and `kk-lines2.png`) in the
 debug viewer with cloud recognition and offline with PaddleOCR and Tesseract, the search screen, the popup page
 (`popup-eval.mjs`), the Popup settings' font card, audio, a note in the emulator's local AnkiDroid collection (never
 synced); the lookup engine's LanguageLookupTest (20/20) from an x86_64-only test APK run with `am instrument`.

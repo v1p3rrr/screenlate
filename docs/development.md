@@ -45,10 +45,11 @@ is CC BY-SA 4.0, and so is the dictionary.
 A language wordfreq has no list for gets one from a corpus' word counts (`"build": "corpus-counts"`, Thai: the Thai
 National Corpus counts that PyThaiNLP publishes, CC0, one `word<TAB>count` line per word). `CorpusCountsDictionary`
 ranks them in the list's order, leaving out tokens without a letter or with a space.
-Kazakh's comes from a Leipzig Corpora Collection archive (`kaz_newscrawl_2016_100K.tar.gz`, CC BY): the builder
-reads the `.tar.gz` as a stream, keeps only the `-words.txt` list (`id<TAB>word<TAB>count`, its place in the archive
-varies), lowercases the words, spells them as the dictionaries do (`LanguageSupport.frequencyWord`: Latin i inside a
-Cyrillic word as і), adds up the counts of tokens that become one word and leaves out tokens that are not words.
+Kazakh's and Kyrgyz's come from Leipzig Corpora Collection archives (`kaz_newscrawl_2016_100K.tar.gz`,
+`kir_newscrawl_2016_100K.tar.gz`, CC BY): the builder reads the `.tar.gz` as a stream, keeps only the `-words.txt`
+list (`id<TAB>word<TAB>count`, its place in the archive varies), lowercases the words, spells them as the dictionaries
+do (`LanguageSupport.frequencyWord`: Latin i inside a Cyrillic word as і in Kazakh), adds up the counts of tokens that
+become one word and leaves out tokens that are not words.
 `python scripts/frequency/corpus_catalog.py` checks the list and writes its entry (templates `tnc` and `leipzig`),
 keeping the downloads in `testdata/corpus/`, where unit tests also build them.
 

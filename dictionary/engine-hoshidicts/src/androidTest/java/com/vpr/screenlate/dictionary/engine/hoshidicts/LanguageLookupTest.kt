@@ -585,6 +585,52 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun kyrgyzFindsItsWordsThroughEndingsInFourWayHarmonyAndWrittenWithTheRussianTwinsOfItsLetters() = runTest {
+        val imported = engine.import(kyrgyzDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val kyrgyz = LookupOptions(language = Language.KYRGYZ)
+        suspend fun first(text: String) = engine.lookup(text, kyrgyz).first()
+        suspend fun all(text: String) = engine.lookup(text, kyrgyz).map { it.term.expression }
+
+        val books = first("китептерибизде")
+        assertThat(books.term.expression).isEqualTo("китеп")
+        assertThat(books.trace.map { it.name }).containsExactly("plural", "possessive 1pl", "locative")
+        assertThat(books.trace.map { it.label }).doesNotContain("")
+        assertThat(books.trace.map { it.description }).doesNotContain("")
+        assertThat(first("үйлөрдө").term.expression).isEqualTo("үй")
+        // The question particle written onto the verb; a verb stem lengthens into the dictionary form.
+        val going = first("барасыңбы")
+        assertThat(going.term.expression).isEqualTo("баруу")
+        assertThat(going.trace.map { it.name }).containsExactly("present", "2sg", "question")
+        val reads = engine.lookup("окуйт", kyrgyz).filter { it.term.expression == "окуу" }
+            .flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
+        assertThat(reads).contains("to read")
+        assertThat(reads).doesNotContain("education")
+        // Text in the Russian twins finds the Kyrgyz letters, its own spelling first; a Kyrgyz letter is exact.
+        assertThat(all("кол")).containsExactly("кол", "көл").inOrder()
+        assertThat(all("көл")).containsExactly("көл")
+        assertThat(first("Куз").term.expression).isEqualTo("күз")
+    }
+
+    /** Rows as Wiktionary's Kyrgyz exports write them: one headword as a noun and a verb, two words that differ in ө. */
+    private fun kyrgyzDictionary(): File = zip(
+        "ky.zip",
+        "index.json" to """{"title":"Test Kyrgyz","revision":"1","format":3,"sourceLanguage":"ky"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["китеп","","n","",0,["book"],1,""],
+              ["үй","","n","",0,["house"],2,""],
+              ["окуу","","n","",0,["education"],3,""],
+              ["окуу","","v","",0,["to read"],4,""],
+              ["баруу","","v","",0,["to go"],5,""],
+              ["кол","","n","",0,["hand"],6,""],
+              ["көл","","n","",0,["lake"],7,""],
+              ["күз","","n","",0,["autumn"],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
