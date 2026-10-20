@@ -23,16 +23,31 @@ class CzechSupportTest {
         assertThat(ends("Vládl Karel IV. Potom")).isTrue()
     }
 
+    private fun ocrLine(vararg words: String) = CzechSupport.ocrLines(listOf(words.toList())).single()
+
     @Test
-    fun `the l of the era read as a capital I still keeps the sentence going`() {
-        val read = "300 př. n. I. a rostlo"
-        assertThat(ends(read, at = read.indexOf("I.") + 1)).isFalse()
-        assertThat(ends("Plán I. Potom")).isTrue()
-        // German pairs no l, so a capital I stays a letter of its own there (before a lowercase word it is a Roman
-        // ordinal).
+    fun `the l of the era that ocr reads as a capital I is written l`() {
+        assertThat(ocrLine("300", "př.", "n.", "I.", "Potom")).containsExactly("300", "př.", "n.", "l.", "Potom").inOrder()
+        // Across a line break, before a comma and in parentheses.
+        assertThat(CzechSupport.ocrLines(listOf(listOf("roku", "300", "n."), listOf("I.,", "kdy"))))
+            .containsExactly(listOf("roku", "300", "n."), listOf("l.,", "kdy")).inOrder()
+        assertThat(ocrLine("(př.", "(n.", "I.)")).containsExactly("(př.", "(n.", "l.)").inOrder()
+        // A capital I elsewhere stays: a Roman numeral, after a word that only ends in n.
+        assertThat(ocrLine("Karel", "I.", "a", "Plán", "I.")).containsExactly("Karel", "I.", "a", "Plán", "I.").inOrder()
+        assertThat(ocrLine("Jan.", "I.", "Ina")).containsExactly("Jan.", "I.", "Ina").inOrder()
+        // The written l keeps the sentence going.
+        val fixed = ocrLine("300", "př.", "n.", "I.", "Potom").joinToString(" ")
+        assertThat(ends(fixed, at = fixed.indexOf("l.") + 1)).isFalse()
+    }
+
+    @Test
+    fun `a capital I written after n in app text is taken as written`() {
+        // A Roman ordinal before a lowercase word, a letter of its own before a capital.
+        val ordinal = "300 př. n. I. a rostlo"
+        assertThat(ends(ordinal, at = ordinal.indexOf("I.") + 1)).isFalse()
         val capital = "300 př. n. I. Potom"
-        assertThat(ends(capital, at = capital.indexOf("I.") + 1)).isFalse()
-        assertThat(GermanSupport.endsSentence(capital, capital.indexOf("I.") + 1)).isTrue()
+        assertThat(ends(capital, at = capital.indexOf("I.") + 1)).isTrue()
+        assertThat(ends("Plán I. Potom")).isTrue()
     }
 
     @Test

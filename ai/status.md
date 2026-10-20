@@ -87,7 +87,8 @@ answered: own initial-mutation rule with the mutation's name and a short list of
 stays mae), Irish and Gaelic elisions as French, regional flags, the Russian Gaelic name, no frequency dictionaries,
 bubble letters Ŵ Á Ò, branches Welsh, Irish, Gaelic; recognition measured on the emulator (ML Kit stays main; ML
 Kit never reads Welsh ŵ ŷ, so the lookup tries ý as ŷ and û as ŵ for OCR words only, which needs the lookup to know
-a word's source, a piece shared with 5c's Hungarian ő ű). Not started: its order is the owner's call. The research
+a word's source, a piece shared with 5c's Hungarian ő ű; Welsh and Gaelic words typed without marks also find the
+marked headwords when they find nothing, in any text). Not started: its order is the owner's call. The research
 downloads (wty files, kaikki's Breton extracts, corpora, Tesseract models) were in the session scratchpad only and are
 removed; the measurement scripts are in the shared session notes (`group-5b-scripts`).
 Group 5c (Finnish, Estonian, Hungarian, Azerbaijani, Uzbek) is researched (`notes/languages.md`, "Group 5c research";

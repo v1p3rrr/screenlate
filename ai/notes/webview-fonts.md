@@ -55,3 +55,10 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
 
 - `scripts/popup-eval.mjs` evaluates JavaScript in the page of a debug build. Glyph comparisons: draw 直 on a canvas (`ctx.lang` set) with each font and hash the alpha channel; equal hashes mean equal forms.
 - Chrome on a fresh emulator asks to accept its terms; use the app's own page instead.
+- Any page in a plain WebView: the OCR harness's test APK (`experiments/ocr-compare`) has `PageActivity`, which opens
+  the URL given with `am start ... -d <url>`; serve a scratch folder with `python -m http.server` and `adb reverse`.
+- Indic fonts for the catalog are checked in the WebView, not only offline (group 5e plan, "Rendering check"). Hind
+  Mysuru shapes ಗೆ right in HarfBuzz 14.6, but WebView 155 draws it as ಗ; Hind Guntur draws the last consonant of
+  every three-consonant cluster as ర everywhere. The offline check that caught the second: shape every consonant with
+  every vowel sign, every C+virama+C and C+virama+C+virama+C, and flag different texts that come out as the same
+  glyphs at the same positions while Noto Sans keeps them apart.

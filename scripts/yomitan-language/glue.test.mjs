@@ -338,11 +338,24 @@ test('a final alif maqsura and taa marbuta are tried as ya and ha; hamza is left
     assert.ok(queried('ar', 'أكبر').has('أكبر'));
 });
 
+test('arabic text with persian kaf and yeh is tried with the arabic letters', () => {
+    assert.ok(queried('ar', 'کتاب').has('كتاب'));
+    assert.ok(queried('ar', 'والکتاب').has('كتاب'));
+    assert.ok(queried('ar', 'فی').has('في'));
+    // A final ی is ي; headwords with ى are keyed under ي at import.
+    assert.ok(queried('ar', 'علی').has('علي'));
+    assert.equal(first('ar', 'کبیر'), 'كبير');
+});
+
 test('arabic rules and processors stay out of other languages', () => {
     for (const language of ['en', 'ru', 'tr']) {
         assert.ok(!queried(language, 'فى').has('في'), language);
         assert.ok(!queried(language, 'مدرسة').has('مدرسه'), language);
         assert.ok(!queried(language, 'والكتاب').has('كتاب'), language);
+    }
+    for (const language of ['fa', 'en', 'ru', 'tr']) {
+        assert.ok(!queried(language, 'کتاب').has('كتاب'), language);
+        assert.ok(!queried(language, 'علی').has('علي'), language);
     }
 });
 
