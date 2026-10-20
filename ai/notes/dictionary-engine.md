@@ -195,6 +195,16 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   non-joiner replaced by nothing, harakat dropped, so آن‌ها is keyed under آنها and كتاب text finds کتاب. The text
   side never holds the non-joiner: the bundle's `removePersianZeroWidthNonJoiner` replaces the text (the candidate
   then has one preprocessor step, which the word itself also gets, so it still ranks first by match length).
+- Hebrew keys (2026-10-20): Wiktionary's Hebrew forms are 82% pointed (כְּלָבִים); `every_headword` keys them under
+  their letters as well (points and cantillation U+0591-05C7 dropped, but not the maqaf, paseq, sof pasuq and nun
+  hafukha), the lemmas form rows name lose their points (`lemmasAsWritten = false`), and form rows with no Hebrew
+  letter (Phoenician 𐤊𐤋𐤁) are dropped (`forms_in_script`). wty-he-en imports in 8.0 s on the emulator (engine
+  1.6 s) with a form-of table of 235,424 forms.
+- Hebrew prefixes are the bundle's own rules (`own-transforms.js`). The prefixes ש, כש and מ each have a first-step
+  rule and a narrower one, and Yomitan tries every rule at the first step whatever its conditions, so they give a
+  duplicate candidate there; the engine merges candidates by term and drops duplicate chains, so the popup shows one.
+  A plain word whose letters are a pointed form's (שלום, the construct שְׁלוֹם) is that form's lemma: the form is kept
+  as a one-step chain beside the empty chain of the direct match, and the page shows its tags (as Croatian kuća).
 - JSON escapes in headwords (2026-10-20, found with a test dictionary): hoshidicts' parser reads a term's expression
   and reading as `std::string_view` over the raw JSON (`yomitan_parser.hpp` `Term`), so a headword written with an
   escape (`"آن\u200Cها"`, or every non-ASCII letter from Python's `json.dump` with its default

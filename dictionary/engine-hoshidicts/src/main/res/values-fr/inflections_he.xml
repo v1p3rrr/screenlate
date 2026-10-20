@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">et</string>
+    <string name="inflection_he_v">et (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">que</string>
+    <string name="inflection_he_sh">que, qui, lequel (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">quand</string>
+    <string name="inflection_he_ksh">quand, lorsque (כשהגעתי)</string>
+    <string name="inflection_he_b_label">dans</string>
+    <string name="inflection_he_b">dans, à, avec (בבית)</string>
+    <string name="inflection_he_k_label">comme</string>
+    <string name="inflection_he_k">comme, en tant que (כילד)</string>
+    <string name="inflection_he_l_label">à</string>
+    <string name="inflection_he_l">à, pour (לבית)</string>
+    <string name="inflection_he_m_label">de</string>
+    <string name="inflection_he_m">de, depuis ; que (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">article</string>
+    <string name="inflection_he_h">article défini (הבית)</string>
+</resources>

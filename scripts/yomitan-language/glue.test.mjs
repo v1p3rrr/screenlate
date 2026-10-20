@@ -6,7 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
-import {persianTransforms} from './own-transforms.js';
+import {hebrewTransforms, persianTransforms} from './own-transforms.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const assets = path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/assets/yomitan-language');
@@ -459,4 +459,77 @@ test('persian rules and processors stay out of other languages, arabic ones out 
     assert.ok(!queried('fa', 'والكتاب').has('کتاب'));
     assert.ok(!queried('fa', 'مدرسة').has('مدرسه'));
     assert.ok(candidates('fa', 'والكتاب').every((c) => !c.u));
+});
+
+test('hebrew prefixes come off in the order of the grammar, three letters at most, and match entries without a part of speech', () => {
+    // ו first, then ה: והבית is בית through ו- and ה-, the last rule first as in every chain.
+    const house = candidates('he', 'והבית').find((c) => c.d === 'בית');
+    assert.ok(house);
+    assert.ok(house.u);
+    assert.equal(JSON.stringify(house.r), JSON.stringify([['ה-', 'ו-']]));
+    assert.ok(queried('he', 'והבית').has('הבית'));
+    assert.ok(queried('he', 'בבית').has('בית'));
+    assert.ok(queried('he', 'ושבבית').has('בית'));
+    assert.ok(queried('he', 'ומהבית').has('בית'));
+    assert.ok(queried('he', 'שמהבית').has('בית'));
+    assert.ok(queried('he', 'כשהגעתי').has('הגעתי'));
+    assert.ok(queried('he', 'וכשהגעתי').has('הגעתי'));
+    assert.ok(queried('he', 'לירושלים').has('ירושלים'));
+    // Three letters at most: ושמהבית loses ו ש מ, not the article as well; וכשהגעתי keeps its ה.
+    assert.ok(queried('he', 'ושמהבית').has('הבית'));
+    assert.ok(!queried('he', 'ושמהבית').has('בית'));
+    assert.ok(!queried('he', 'וכשהגעתי').has('געתי'));
+    // Out of order: ה after ב, ו after ש, ש after מ, two of ב כ ל.
+    assert.ok(!queried('he', 'בהבית').has('בית'));
+    assert.ok(!queried('he', 'שוהבית').has('הבית'));
+    assert.ok(!queried('he', 'משבית').has('בית'));
+    assert.ok(!queried('he', 'לבבית').has('בית'));
+    // A letter and one more character stay: בן, הם and לא are not cut down to a letter.
+    for (const word of ['בן', 'הם', 'לא']) assert.deepEqual([...queried('he', word)], [word], word);
+    // The word itself stays typed and comes first.
+    assert.ok(!candidates('he', 'הבית').find((c) => c.d === 'הבית').u);
+    assert.equal(first('he', 'הבית'), 'הבית');
+    assert.equal(first('he', 'ולכן'), 'ולכן');
+});
+
+test('every hebrew rule has a name and a description of its own, which the app strings are generated from', () => {
+    const strings = fs.readFileSync(
+        path.resolve(here, '../../dictionary/engine-hoshidicts/src/main/res/values/inflections_he.xml'), 'utf8');
+    const rules = Object.entries(hebrewTransforms.transforms);
+    assert.deepEqual(rules.map(([id]) => id), ['ו-', 'ש-', 'כש-', 'ב-', 'כ-', 'ל-', 'מ-', 'ה-']);
+    for (const [id, {name, description}] of rules) {
+        assert.notEqual(name, id, id);
+        assert.ok(description.includes('('), id);
+        assert.ok(strings.includes(`<!-- ${id} -->`), id);
+        assert.ok(strings.includes(`>${name}</string>`) && strings.includes(`>${description}</string>`), id);
+    }
+});
+
+test('hebrew vowel points and cantillation drop, the maqaf stays, ascii quotes between letters read as geresh and gershayim', () => {
+    const dog = queried('he', 'כֶּלֶב');
+    assert.ok(dog.has('כלב'));
+    assert.equal(first('he', 'כֶּלֶב'), 'כֶּלֶב');
+    assert.ok(queried('he', 'בְּבֵית').has('בית'));
+    assert.ok(queried('he', 'בְּרֵאשִׁ֖ית').has('בראשית'));
+    // A shin with its dot as one presentation form.
+    assert.ok(queried('he', '\uFB2Aלום').has('שלום'));
+    assert.ok(queried('he', 'בית־ספר').has('בית־ספר'));
+    assert.ok(!queried('he', 'בית־ספר').has('ביתספר'));
+    assert.ok(queried('he', 'צה"ל').has('צה״ל'));
+    assert.ok(queried('he', "ג'ירפה").has('ג׳ירפה'));
+    assert.ok(queried('he', 'צה״ל').has('צה״ל'));
+    // A quote that is not between two letters stays.
+    assert.ok(!queried('he', 'שלום"').has('שלום״'));
+});
+
+test('hebrew rules and processors stay out of other languages', () => {
+    for (const language of ['ar', 'fa', 'en', 'ru']) {
+        assert.ok(!queried(language, 'והבית').has('בית'), language);
+        assert.ok(!queried(language, 'בבית').has('בית'), language);
+        assert.ok(!queried(language, 'כֶּלֶב').has('כלב'), language);
+        assert.ok(!queried(language, 'צה"ל').has('צה״ל'), language);
+    }
+    assert.ok(!queried('he', 'والكتاب').has('كتاب'));
+    assert.ok(candidates('he', 'والكتاب').every((c) => !c.u));
+    assert.ok(!queried('he', 'کتابها').has('کتاب'));
 });

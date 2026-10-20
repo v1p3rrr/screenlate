@@ -251,6 +251,8 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencySpellings("п'ять").isNotEmpty() }).containsExactly(Language.UKRAINIAN)
         assertThat(all.where { it.frequencyWord("τησ") != "τησ" }).containsExactly(Language.GREEK)
         assertThat(all.where { it.frequencyWord("اين") != "اين" }).containsExactly(Language.PERSIAN)
+        assertThat(all.where { it.frequencyWord("צה\"ל") != "צה\"ל" }).containsExactly(Language.HEBREW)
+        assertThat(all.where { it.firstTranscription(listOf("Modern-Israeli")) }).containsExactly(Language.HEBREW)
         assertThat(all.where { it.frequencySpellings("آن\u200Cها").isNotEmpty() }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.recordings("کتاب", "").any { recording -> recording.title == "كتاب" } })
             .containsExactly(Language.PERSIAN)
@@ -311,14 +313,14 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Georgian, Armenian, Arabic and Persian consider more characters from the aim than Yomitan's 16 by default`() {
+    fun `only Georgian, Armenian, Arabic, Persian and Hebrew consider more characters from the aim than Yomitan's 16 by default`() {
         assertThat(all.where { it.defaultScanLength != 16 })
-            .containsExactly(Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN)
+            .containsExactly(Language.GEORGIAN, Language.ARMENIAN, Language.ARABIC, Language.PERSIAN, Language.HEBREW)
     }
 
     @Test
-    fun `only Arabic and Persian run right to left and end a sentence at the arabic question mark, each writes the other's kaf`() {
-        assertThat(all.where { it.rightToLeft }).containsExactly(Language.ARABIC, Language.PERSIAN)
+    fun `only Arabic, Persian and Hebrew run right to left, Arabic and Persian end a sentence at the arabic question mark`() {
+        assertThat(all.where { it.rightToLeft }).containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
         assertThat(all.where { it.endsSentence("هل؟ نعم", "هل".length) }).containsExactly(Language.ARABIC, Language.PERSIAN)
         assertThat(all.where { it.endsSentence("كتب، ثم", "كتب".length) }).isEmpty()
         assertThat(all.where { it.ocrWord("کتاب") != "کتاب" }).containsExactly(Language.ARABIC)
@@ -327,14 +329,26 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Arabic and Persian wrap their anki markers right to left, find recordings with vowel marks and drop forms in other scripts`() {
-        assertThat(all.where { it.rightToLeftMarkers.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN)
+    fun `only Arabic, Persian and Hebrew wrap their anki markers right to left, find recordings with marks, drop forms in other scripts`() {
+        assertThat(all.where { it.rightToLeftMarkers.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
         // Persian's reading is a Latin romanization.
-        assertThat(all.where { "reading" in it.rightToLeftMarkers }).containsExactly(Language.ARABIC)
-        assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN)
-        assertThat(all.where { it.headwordMarks?.formsInScript == true }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        assertThat(all.where { "reading" in it.rightToLeftMarkers }).containsExactly(Language.ARABIC, Language.HEBREW)
+        assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
+        assertThat(all.where { it.headwordMarks?.formsInScript == true })
+            .containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
         assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) && it.language != Language.CROATIAN && it.language != Language.SERBIAN })
             .isEmpty()
+    }
+
+    @Test
+    fun `only Hebrew joins a word at the maqaf, the gershayim, the geresh and the ascii quote between letters`() {
+        assertThat(spaced.where { it.wordStartOffset("בית־", "ספר") != 0 }).containsExactly(Language.HEBREW)
+        assertThat(spaced.where { it.wordStartOffset("צה״", "ל") != 0 }).containsExactly(Language.HEBREW)
+        assertThat(spaced.where { it.wordStartOffset("ג׳", "ירפה") != 0 }).containsExactly(Language.HEBREW)
+        assertThat(spaced.where { it.wordStartOffset("צה\"", "ל") != 0 }).containsExactly(Language.HEBREW)
+        assertThat(spaced.where { it.wordStartOffset("say\"", "hi") != 0 }).containsExactly(Language.HEBREW)
+        // The apostrophe joins words everywhere.
+        assertThat(spaced.where { it.wordStartOffset("ג'", "ירפה") == 0 }).isEmpty()
     }
 
     @Test

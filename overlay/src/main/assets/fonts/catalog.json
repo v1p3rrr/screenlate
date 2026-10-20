@@ -826,6 +826,60 @@
       "homepage": "https://fonts.google.com/specimen/Vazirmatn"
     },
     {
+      "id": "heebo",
+      "family": "Heebo",
+      "subsets": ["hebrew"],
+      "description": {
+        "en": "Hebrew sans-serif by Oded Ezer, with vowel points and Latin, from thin to black.",
+        "ru": "Шрифт без засечек для иврита, автор — Oded Ezer; с огласовками и латиницей, от тонкого до сверхжирного.",
+        "de": "Hebräische serifenlose Schrift von Oded Ezer, mit Vokalzeichen und Lateinisch, von dünn bis extrafett.",
+        "es": "Fuente hebrea sin serifa de Oded Ezer, con puntos vocálicos y latino, de fina a ultranegrita.",
+        "fr": "Police hébraïque sans empattement d’Oded Ezer, avec les points-voyelles et le latin, de maigre à extra-grasse.",
+        "it": "Carattere ebraico senza grazie di Oded Ezer, con i segni vocalici e il latino, da sottile a nero.",
+        "ja": "Oded Ezer によるヘブライ文字のサンセリフ。母音記号とラテン文字付き。極細から極太まで。",
+        "ko": "Oded Ezer가 만든 히브리 문자 산세리프로, 모음 부호와 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Bezszeryfowy krój hebrajski autorstwa Odeda Ezera, ze znakami samogłoskowymi i łacinką, od cienkiego do najgrubszego.",
+        "pt": "Fonte hebraica sem serifa de Oded Ezer, com sinais vocálicos e latino, de fina a ultranegrito.",
+        "tr": "Oded Ezer’in İbranice için tırnaksız yazı tipi, ünlü işaretleri ve Latin harfleriyle; inceden en kalına.",
+        "vi": "Phông chữ Do Thái không chân của Oded Ezer, kèm dấu nguyên âm và chữ Latinh, từ mảnh đến rất đậm.",
+        "zh": "Oded Ezer 设计的希伯来文无衬线字体，附元音符号和拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Oded Ezer 設計的希伯來文無襯線字型，附母音符號和拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/heebo/Heebo%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Heebo"
+    },
+    {
+      "id": "frank-ruhl-libre",
+      "family": "Frank Ruhl Libre",
+      "subsets": ["hebrew"],
+      "description": {
+        "en": "Hebrew book serif by Yanek Iontef after Rafael Frank’s type of 1908, with vowel points and Latin, from light to black.",
+        "ru": "Книжный шрифт с засечками для иврита, автор — Yanek Iontef, по шрифту Рафаэля Франка 1908 года; с огласовками и латиницей, от светлого до сверхжирного.",
+        "de": "Hebräische Buchschrift mit Serifen von Yanek Iontef nach Rafael Franks Schrift von 1908, mit Vokalzeichen und Lateinisch, von leicht bis extrafett.",
+        "es": "Fuente hebrea con serifa para libros de Yanek Iontef, basada en la letra de Rafael Frank de 1908, con puntos vocálicos y latino, de ligera a ultranegrita.",
+        "fr": "Police hébraïque à empattements pour le livre, de Yanek Iontef d’après le caractère de Rafael Frank de 1908, avec les points-voyelles et le latin, de légère à extra-grasse.",
+        "it": "Carattere ebraico con grazie per libri di Yanek Iontef, dal carattere di Rafael Frank del 1908, con i segni vocalici e il latino, da chiaro a nero.",
+        "ja": "Yanek Iontef による、Rafael Frank の1908年の活字をもとにしたヘブライ文字の書籍向けセリフ。母音記号とラテン文字付き。細字から極太まで。",
+        "ko": "Yanek Iontef가 Rafael Frank의 1908년 활자를 바탕으로 만든 히브리어 책 본문용 세리프로, 모음 부호와 라틴 문자도 있으며 가는 굵기부터 아주 굵게까지 있습니다.",
+        "pl": "Hebrajski krój szeryfowy do tekstu książkowego autorstwa Yaneka Iontefa, według czcionki Rafaela Franka z 1908 roku, ze znakami samogłoskowymi i łacinką, od jasnego do najgrubszego.",
+        "pt": "Fonte hebraica com serifa para livros de Yanek Iontef, a partir do tipo de Rafael Frank de 1908, com sinais vocálicos e latino, de leve a ultranegrito.",
+        "tr": "Yanek Iontef’in Rafael Frank’ın 1908 tarihli harfine dayanan, İbranice kitap metni için tırnaklı yazı tipi; ünlü işaretleri ve Latin harfleriyle, inceden en kalına.",
+        "vi": "Phông chữ Do Thái có chân cho văn bản sách của Yanek Iontef, theo kiểu chữ năm 1908 của Rafael Frank, kèm dấu nguyên âm và chữ Latinh, từ nhạt đến rất đậm.",
+        "zh": "Yanek Iontef 依据 Rafael Frank 1908 年的字体设计的希伯来文书籍衬线字体，附元音符号和拉丁字母，从细体到特粗体。",
+        "zh-Hant": "Yanek Iontef 依據 Rafael Frank 1908 年的字體設計的希伯來文書籍襯線字型，附母音符號和拉丁字母，從細體到特粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/frankruhllibre/FrankRuhlLibre%5Bwght%5D.ttf", "weight": "300 900"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Frank+Ruhl+Libre"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

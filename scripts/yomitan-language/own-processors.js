@@ -148,3 +148,32 @@ export const persianJoinedAffixes = {
             .replace(/(?<=\p{L})\s+(?=(?:ها|های|تر|ترین)(?![\p{L}\p{M}]))/gu, ''),
     ],
 };
+
+/**
+ * Hebrew text with vowel points (niqqud) and cantillation marks, which headwords leave out (כֶּלֶב for כלב); the
+ * import keys Wiktionary's pointed forms under their letters as well (HebrewSupport's `HeadwordMarks`). The maqaf,
+ * paseq, sof pasuq and nun hafukha are punctuation and stay. The text is composed first, which splits a pointed
+ * letter's presentation form (שּׁ U+FB2C) into the letter and its points.
+ * @type {import('language').TextProcessor}
+ */
+export const removeHebrewPoints = {
+    name: 'Remove vowel points',
+    description: 'כֶּלֶב → כלב',
+    process: (str) => [str, str.normalize('NFC').replace(/[\u0591-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C5\u05C7]/g, '')],
+};
+
+/**
+ * Hebrew text with ASCII quotes for the gershayim and the geresh (צה"ל, ג'ירפה), as recognition and keyboards give
+ * them: headwords write ״ and ׳. Only a quote between two Hebrew letters, so the quotes of a quotation stay.
+ * @type {import('language').TextProcessor}
+ */
+export const hebrewQuotes = {
+    name: 'Geresh and gershayim',
+    description: 'צה"ל → צה״ל, ג\'ירפה → ג׳ירפה',
+    process: (str) => [
+        str,
+        str
+            .replace(/(?<=[\u05D0-\u05EA])"(?=[\u05D0-\u05EA])/g, '\u05F4')
+            .replace(/(?<=[\u05D0-\u05EA])'(?=[\u05D0-\u05EA])/g, '\u05F3'),
+    ],
+};

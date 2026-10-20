@@ -497,6 +497,7 @@
     <string name="popup_font_script_only_km">Chỉ cho chữ tiếng Khmer</string>
     <string name="popup_font_script_only_ar">Chỉ cho chữ tiếng Ả Rập</string>
     <string name="popup_font_script_only_fa">Chỉ cho chữ tiếng Ba Tư</string>
+    <string name="popup_font_script_only_he">Chỉ cho chữ tiếng Do Thái</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

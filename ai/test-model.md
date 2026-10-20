@@ -143,6 +143,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR28 | Opening the cloud connection on a touch: with Engines "Both" or cloud, a touch on the bubble (a tap, a pull, a touch on the docked bubble) logs "Lens: connected in … ms" unless the cloud was contacted in the last 30 s; the scan's request waits for it up to 3 s; the first scan after 5 idle minutes gets the cloud result in the usual time, not ~2 s. Nothing opens in Device mode or with app text only; offline the opening fails at once and the scan does not wait for it | F | U PreconnectionTest, CompositeOcrTest, M | 2026-10-19 |
 | OCR29 | App text in a right-to-left language: an Arabic file name in the Files app ("اشتريت iPhone 15 من السوق الكبير يوم الجمعة.txt", pushed to Download and renamed with `adb shell mv`) is read as app text (the source chip), in reading order from the aim ("السوق الكبير يوم الجمعة."), with iPhone 15 kept in its line; اشتريت finds اِشْتَرَى | F | U AccessibilityTextTest, M | 2026-10-20 |
 | OCR30 | A language no on-device model reads (Persian): the setup screen has no recognition section; the Bubble settings list its on-device model as "None", and its dialog says no on-device model reads the language; with Engines "Both", cloud recognition alone reads the screen ("No on-device recognition for fa; cloud only", then "OCR final from LENS"); offline the popup says there is no network connection and on-device recognition does not support the language; Persian digits (۱۲, ۱۴۰۳) and "iPhone 15" keep their order | F | U CatalogFileTest, OcrModelsTest, M | 2026-10-20 |
+| OCR31 | Hebrew recognition: cloud recognition reads the lines in reading order, gives the gershayim and the geresh as ASCII " and ' (ארה"ב finds ארה״ב, וצה"ל finds צבא הגנה לישראל through ו) and the maqaf as a word break (ובית חולים finds בית חולים); a line that mixes a number after ב־, ₪ and "iPhone 15" is put in the order of its word boxes; offline, Tesseract heb fast reads the screen ("OCR final from DEVICE_MODEL", Lens: OfflineException): והבית finds הבית, ארה"ב ארה״ב, ג'ירפה ג׳ירפה, pointed קוֹרֵא קורא; the maqaf comes as a hyphen (ובית-חולים finds בית) and Latin is garbled | F | U LensProtocolTest, M | 2026-10-20 |
 
 ### LK: lookup
 
@@ -197,6 +198,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK47 | Khmer lookups (search screen; overlay over an image rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansKhmer-VF.ttf` and `FALLBACK` the phone's Roboto, the lines given as `@FILE`, a UTF-8 file, since Windows passes Khmer arguments as question marks; cloud recognition, then Tesseract khm fast): សាលារៀន aimed at រៀន shows សាលារៀន (school) first; ក្រុងភ្នំពេញ, which ICU takes as one word, aimed at ពេញ shows ភ្នំពេញ (Phnom Penh) first and ក្រុង after it, aimed back at ក្រុង shows ក្រុង; នៅផ្ទះ aimed at ផ្ទះ shows ផ្ទះ first, រាល់ថ្ងៃ at ថ្ងៃ shows ថ្ងៃ; ក្មេងៗ aimed at ៗ shows ក្មេង; text with zero-width spaces (សាលា + U+200B + រៀន) finds សាលារៀន, and a zero-width space after a word stays out of its highlight; សួស្តី (subscript TA) finds សួស្ដី, ស្ដ្រី (DA) finds ស្ត្រី; no match ends inside a cluster (ខ្ of ខ្ញុំ); the sentence (translation button) ends at ។ and ៕, not at a space; flag kh, bubble ខ; the page's `lang` is km and its serif face the phone's Noto Serif Khmer (`local()`, weights 400 and 700); Kantumruy Pro and Hanuman are listed for Khmer only and load on the page; Tesseract fast is the recommended model and its text keeps the real spaces without adding any inside words; audio for ទឹក from the voice | N | U KhmerSupportTest, EarlierStartsTest, SentenceTest, LookupStartsTest, TextLayoutTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK48 | Arabic lookups (overlay over `testdata/ocr/ar-lines.png`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoNaskhArabic-Regular.ttf` and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition, then Tesseract ara fast offline): والكبير finds كَبِير (و and the article undone); والمدارس finds مَدْرَسَة through its broken plural; اللغه and العربيه (ه for a final ة) find لُغَة and عَرَبِيَّة; اشتريت finds اِشْتَرَى; كِتَابًا read with its harakat shows كِتَاب first; هل finds هَلْ, نسبة نِسْبَة, قال قَالَ; ذهبت and الكتب show their homographs as recorded under the owner question (ذَهَب before ذَهَبَ); flag sa, bubble ض; the setup ticks wty-ar-en, the transcriptions, wordfreq and Tesseract fast ara; the page's `lang` is ar and its serif face the phone's Noto Naskh Arabic (`local()` by `NotoNaskhArabic` and `Noto Naskh Arabic`); Noto Sans Arabic and Amiri are listed "Only for Arabic text" and a downloaded one loads on the page as "Screenlate Chosen"; Tesseract's highlight covers only the aimed word | F | U ArabicSupportTest, SentenceTest, TextLayoutTest, TesseractPageTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, LanguageRulesIsolationTest, LookupSettingsRepositoryTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK49 | Persian lookups (overlay over `testdata/ocr/fa-lines.png`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` Vazirmatn and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition): کتاب‌ها (with the zero-width non-joiner) finds کتاب through -ها, then کاتب; خواهم after a separate می finds خواستن with "first person singular present indicative", matched "می خواهم"; ترین after بزرگ, and بزرگ itself, find بزرگ through -ترین, matched "بزرگ ترین"; كتابهایشان with the Arabic kaf finds کتاب through -ها and -یشان; ستارگان finds ستاره (-گان); خانهٔ finds خانه ("singular ezafe"); نمی‌دانم shows the phrase first, then دانستن through نمی-; "نگاه کن" finds نگاه کردن; flag ir, bubble پ; the setup ticks wty-fa-en, the transcriptions and wordfreq; the page's `lang` is fa; Noto Sans Arabic, Amiri and Vazirmatn are listed "Only for Persian text", and a downloaded Vazirmatn loads on the page as "Screenlate Chosen" | F | U PersianSupportTest, SentenceTest, CatalogFileTest, FontCatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
+| LK50 | Hebrew lookups (overlay over `testdata/ocr/he-lines.png`, rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansHebrew-Regular.ttf` and `FALLBACK` the phone's Roboto, the lines as `@FILE`; cloud recognition): והבית finds הבית ("and"), then בית ("the « and"); כשהגעתי finds הגיע ("when « first person singular … past"); לירושלים finds ירושלים ("to"); הכלבים finds כלב ("plural definite masculine"); ושמהבית finds הבית through three prefixes ("from « that « and") and בית only as the dictionary's form הבית; ג'ירפה finds ג׳ירפה; pointed קוֹרֵא finds קורא and קרא; שלום shows "singular construct" beside the headword (plan question 6); in "קניתי iPhone 15 ב־3,500 ₪ היום." the scan text from קניתי reads "קניתי iPhone 15 .ב־3,500" and from היום only היום; flag il, bubble א; the setup ticks wty-he-en, the transcriptions, wordfreq and Tesseract heb fast; Heebo and Frank Ruhl Libre are listed "Only for Hebrew text", a downloaded Heebo loads on the page as "Screenlate Chosen", and the phone's Noto Serif Hebrew loads as "Screenlate Serif" | F | U HebrewSupportTest, SentenceTest, CatalogFileTest, FontCatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 
 ### POP: the popup
 
@@ -229,6 +231,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP25 | A popup page whose renderer was lost while the popup was hidden (`am crash` on the app's sandboxed renderer: "renderer gone (crashed: true, shown: false)") comes back with the next scan, after the capture: "Captured" as fast as without the crash, the renderer process starts after it, the popup then shows the word | O | M | 2026-10-19 |
 | POP26 | A right-to-left language's popup (Arabic): the recognized text and the headwords run right to left (`dir="rtl"`), with numbers and Latin words in their own order (iPhone 15, (٢٠٢٤)); each glossary block takes the direction of its first letter (`dir="auto"`): English meanings stay left to right, an Arabic example among them runs right to left; the dictionary name's Latin letters do not turn its block; buttons and numbering keep their places; a reading that only adds harakat takes the word's place (كِتَاب, nothing above it); transcriptions keep the dictionary's order (/ki.taːb/ before Egyptian [keˈtæːb]) | F | P popup.test, reading.test, M | 2026-10-20 |
 | POP27 | A Persian entry: the Latin reading follows the word in the headword line (کتاب kitāb), grey, at the text size, left to right, and nothing stands over the word; a copied selection leaves the reading out; the rule chain shows the rules' names in the app's language (کتابهایشان: 🧩 pl. « 3rd pl.), and a tap on one opens its description with Persian examples; transcriptions keep the dictionary's order (/ki.ˈtaːb/, then AF, Hazaragi, IR, TJ) | F | P popup.test, reading.test, M | 2026-10-20 |
+| POP28 | A Hebrew entry: the headword and the recognized text run right to left; the rule chain shows the prefixes' names in the app's language (בית from והבית: 🧩 the « and; in Russian артикль « и), and a tap on one opens its description with Hebrew examples ("and (ואני, והבית)", "определённый артикль (הבית)"); the Modern Israeli transcription comes first (כלב /ˈke.lev/), and one written `//a/ [b]/` in the dictionary shows as two | F | P popup.test, U TranscriptionsTest, M | 2026-10-20 |
 
 ### AUD: audio
 
@@ -248,6 +251,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD12 | The Regions list in the audio settings shows while Wiktionary is among the language's sources or a transcription dictionary of the language is installed, and hides otherwise (English: Wiktionary removed and no wty-en-ipa → hidden; with wty-en-ipa → shown); its hint names recordings and transcriptions | F | U RegionsUsedTest, M | 2026-10-19 |
 | AUD13 | Arabic audio: holding 🔊 on كِتَاب lists Wiktionary's Ar-كِتَابٌ.oga (found through its harakat), Lingua Libre's recordings (Modern Standard Arabic speakers only) and the text to speech; a tap plays a recording of the word as written (Lingua Libre's كتاب) before Wiktionary's vowelled one; Google's Arabic voice speaks when chosen | F | U AudioPagesTest, AudioFinderTest, ArabicSupportTest, M | 2026-10-20 |
 | AUD14 | Persian audio: holding 🔊 on کتاب lists Lingua Libre's recordings of the word as written, Wiktionary's Fa-كتاب.ogg (found through the Arabic letters), then a Lingua Libre recording titled otherwise, and the text to speech; a recording and Wiktionary's file both play; without a Persian voice (the emulator's Google engine has none) the voice item plays nothing and logs "No text-to-speech voice for fa" | F | U PersianSupportTest, AudioPagesTest, M | 2026-10-20 |
+| AUD15 | Hebrew audio: holding 🔊 on כלב lists Lingua Libre's recording of the word as written, Wiktionary's pointed He-כֶּלֶב.ogg and the text to speech; Wiktionary's file plays, and Google's Hebrew voice (he-il) speaks when chosen | F | U HebrewSupportTest, AudioPagesTest, M | 2026-10-20 |
 
 ### ANK: Anki
 
@@ -271,6 +275,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK16 | `{phonetic-transcriptions}` with tags: an English note of "water" with the Wiktionary transcriptions lists each one with its dictionary tags before it in italics ("(General-American) /ˈwɔ.tɚ/"), as Yomitan's marker writes them; a transcription without tags has none; a Japanese note with a pitch dictionary unchanged | N | U TranscriptionsTest, P note.test, M | — |
 | ANK17 | Right-to-left Anki fields (Arabic; a note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Reading `<span dir="rtl">{reading}</span>` and Sentence `<span dir="rtl">{sentence}</span>`, and Front `{expression}` without a span; a note added from the popup for قال in "هل تعرف اللغه العربيه؟ قال د. أحمد: نعم." has Front قال, Reading `<span dir="rtl">قَالَ</span>` and Sentence `<span dir="rtl">قال د. أحمد: نعم.</span>` (the sentence starts after ؟ and keeps د.) | F | U FieldTemplateTest, SentenceTest, ArabicSupportTest, M | 2026-10-20 |
 | ANK18 | Persian Anki fields (the note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Reading `{reading}` without a span, as the reading is Latin, and Sentence `<span dir="rtl">{sentence}</span>`; a note added from the popup for "نگاه کن" has Front نگاه کردن, Reading nigāh kardan and the sentence in the span | F | U FieldTemplateTest, SentenceTest, PersianSupportTest, M | 2026-10-20 |
+| ANK19 | Hebrew Anki fields (the note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Front `{expression}`, Reading `<span dir="rtl">{reading}</span>` (the reading is the word itself) and Sentence `<span dir="rtl">{sentence}</span>`; a note added from the popup for הכלבים in "כשהגעתי לירושלים הכלבים נבחו." has Front כלב and Sentence `<span dir="rtl">כשהגעתי לירושלים הכלבים נבחו.</span>` | F | U FieldTemplateTest, SentenceTest, HebrewSupportTest, M | 2026-10-20 |
 
 ### TR: sentence translation
 
@@ -390,6 +395,48 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-20, `languages/he` (Hebrew, on `ff7f685a`, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Hebrew (LK50, POP28, AUD15, ANK19, OCR31) through the download screen, the overlay over a rendered image
+(64 px, the phone's Noto Sans Hebrew with Roboto, `TextImage.java`, `testdata/ocr/he-lines.png`) in the debug viewer
+with cloud recognition and with Tesseract offline, the popup page (`popup-eval.mjs`) in English and Russian, the Popup
+settings' font card, audio, a note in the emulator's local AnkiDroid collection (never synced); the lookup engine's
+LanguageLookupTest (20/20) and the overlay's SystemFontFilesTest (10/10) instrumented tests, both from x86_64-only test
+APKs run with `am instrument`. x86_64-only builds installed over the app with its data kept; the German and Italian
+transcription dictionaries (248 MB) were deleted first to make room (owner's permission of 2026-10-20).
+
+Results: passed after three fixes. First checks: LK50, POP28, AUD15, ANK19, OCR31 (moved from N to F).
+
+- Setup: Hebrew ticked wty-he-en, its transcriptions, wordfreq he and Tesseract heb fast. wty-he-en took 8.0 s (engine
+  import 1.6 s) with a form-of table of 235,424 forms; wordfreq he 100,000 words in 4.1 s; the transcriptions 59 ms.
+  Flag il, bubble א.
+- Lookups (cloud recognition): והבית → הבית ("and"), then בית ("the « and"); כשהגעתי → הגיע ("when « first person
+  singular … past"); לירושלים → ירושלים ("to"); הכלבים → כלב ("plural definite masculine"); ושמהבית → הבית ("from «
+  that « and"), then בית as the form הבית; ארה"ב → ארה״ב, ארצות הברית; וצה"ל → צבא הגנה לישראל; ג'ירפה → ג׳ירפה;
+  קוֹרֵא → קורא, קרא; שלום → שלום with "singular construct" (plan question 6), then שילם; היום → היום, יום.
+- Fix: cloud recognition gave the line "קניתי iPhone 15 ב־3,500 ₪ היום." as ".ב־ 3,500 ₪ היום iPhone 15 קניתי" (the
+  word boxes right), so the scan text from היום ran into "iPhone 15 קניתי" and from קניתי held only the word; lines out
+  of the order of their boxes are now put in that order (LensProtocolTest), and the scan texts read "היום" and
+  "קניתי iPhone 15 .ב־3,500".
+- Fix: 933 of the Hebrew transcriptions are written `//a/ [b]/` or `//a//`; they showed as one with the extra slashes
+  and are now split (TranscriptionsTest).
+- Fix: Hebrew's `{reading}` is the word itself, Hebrew text, but "Fill in suggested templates" left it without the
+  span; it now gets `<span dir="rtl">{reading}</span>` (FieldTemplateTest, HebrewSupportTest). The note added before
+  the fix (הכלבים) has Front כלב, Reading כלב and Sentence `<span dir="rtl">כשהגעתי לירושלים הכלבים נבחו.</span>`.
+- Cloud recognition: the gershayim and the geresh come as ASCII " and ', the maqaf as a word break (ובית חולים →
+  בית חולים). Offline, Tesseract heb fast read the screen in 1.4 s ("Lens: OfflineException"): והבית → הבית, בית;
+  ארה"ב → ארה״ב; ג'ירפה → ג׳ירפה; קוֹרֵא as קורא; ובית-חולים with a hyphen → בית; צה״ל read as וצהייל; "iPhone"
+  garbled.
+- Rule names: the chain of בית from והבית reads "the « and" in English and "артикль « и" with the app in Russian
+  (`cmd locale set-app-locales`, set back afterwards); a tap opens "and (ואני, והבית)" / "определённый артикль (הבית)".
+- Page: `dir="rtl"` on the headword; the transcriptions of כלב start with /ˈke.lev/.
+- Fonts: the card lists Heebo and Frank Ruhl Libre, "Only for Hebrew text"; Heebo, downloaded and chosen, loads on
+  the page as "Screenlate Chosen" (U+0590-05FF among its ranges); the phone's Noto Serif Hebrew loads as "Screenlate
+  Serif".
+- Audio: holding 🔊 on כלב lists Lingua Libre's recording, Wiktionary's He-כֶּלֶב.ogg and the text to speech; on שלום
+  Lingua Libre's two recordings and the voice. Wiktionary's file played; the voice item used Google's he-il voice.
+- Emulator left with Hebrew active, Heebo chosen, the app in the system language, airplane mode off.
 
 ### 2026-10-20, `languages/fa` (Persian, on `22b22cdf`, before its commit), Pixel_10_Pro (API 37)
 

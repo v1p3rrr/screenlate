@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">và</string>
+    <string name="inflection_he_v">và (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">rằng</string>
+    <string name="inflection_he_sh">rằng, mà, người mà (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">khi</string>
+    <string name="inflection_he_ksh">khi, lúc (כשהגעתי)</string>
+    <string name="inflection_he_b_label">trong</string>
+    <string name="inflection_he_b">trong, ở, bằng (בבית)</string>
+    <string name="inflection_he_k_label">như</string>
+    <string name="inflection_he_k">như, với tư cách (כילד)</string>
+    <string name="inflection_he_l_label">đến</string>
+    <string name="inflection_he_l">đến, cho (לבית)</string>
+    <string name="inflection_he_m_label">từ</string>
+    <string name="inflection_he_m">từ; hơn (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">mạo từ</string>
+    <string name="inflection_he_h">mạo từ xác định (הבית)</string>
+</resources>

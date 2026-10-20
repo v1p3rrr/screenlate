@@ -57,3 +57,27 @@ both Lingua Libre items, Croatian speakers first; Serbian looks for `Sr-` under 
 Libre in Latin letters. A word Serbian spells otherwise (Croatian mlijeko, Serbian млеко) has no Serbian file.
 The Commons regular expression is not anchored: `Sr-вода` also matched `LL-Q7737 (rus)-Tatiana Kerbush-вода.wav`,
 so `AudioPages.wiktionaryFiles` keeps only titles that are a recording of the term as a whole.
+
+Title case (2026-10-20): `intitle:/…/` is case-sensitive, while the plain `intitle:"…"` in front of it is not. Some
+titles capitalize the word (`Cy-Bwyta.ogg`, `LL-Q9314 (gla)-DaoineÈibhinn-Uisge.wav`), so both searches take the
+term's first letter in either case, by the case rules of the language's tag (`[bB]wyta`; Turkish `[iİ]yi`, `[ıI]lık`).
+Only the first letter: a word capitalized throughout is rare in titles. A letter of a script without case, or one
+whose capital is two letters (ß), stays as it is. Checked live: the new searches find both files above, the
+lowercase ones found neither. One builder (`AudioPages.luceneTerm`) also lets every letter carry the language's
+`recordingMarks` (Arabic harakat); the title filters, the Lingua Libre speaker and the rank ignore case.
+
+Longer tags between the language code and the word (2026-10-20, titles `<Prefix>-<3+ letters>-…` on Commons): de
+9,471, nearly all compounds (`De-Corona-Testen.ogg`, `De-NATO-Mitglied.ogg`); fr 7,256: 6,386 `Fr-Paris--word.ogg`
+(two hyphens, see below), 103 `Fr-Normandie-`, the rest compounds and phrases (`Fr-grand-mère.ogg`,
+`Fr-avoir-soif.ogg`); en 575: one speaker's horse names (`En-voristu-…`), spoken articles, a few accents (`En-NYC-`,
+`En-boston-us-`, `En-midwest-`); es 315 (`Es-chile-…` phrases, spoken articles); br 495 (`Br-<place>-<speaker>-
+Wikikomzoù.flac`); pt 6, it 17; cy 4, all place names (`Cy-Ynys-hir.ogg`); gd 4, `Gd-Lewis-` (aon, dhà, dèideag,
+dèideadh). Taking any such tag for a region would play `De-Corona-Testen` for testen and `Fr-grand-mère` for mère, so
+only the longer codes a language lists in `audioRegions` count (`am-lat`, `fr-paris`). A dialect tag can be searched
+as part of the code (`RecordingTitle("gd-Lewis", term)` from `recordings`), at one more search per lookup. The
+measurement stopped at nl when Commons began answering 429; the languages after it were not counted.
+
+French Paris recordings carry two conventions: `Fr-fr-paris-guenon.ogg` (57 files, the code `FrenchSupport` lists)
+and `Fr-Paris--dioxyde.ogg` (7,886 files, two hyphens; many place names, also words such as dioxyde, attovolt). The
+second is not searched yet. Listing it as a code would need the search to take a longer code's case as written
+(`Paris-`): longer codes are matched case-sensitively there, while `wiktionaryFiles` ignores case.

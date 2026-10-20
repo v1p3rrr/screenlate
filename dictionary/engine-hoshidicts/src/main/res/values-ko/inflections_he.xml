@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Korean translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">그리고</string>
+    <string name="inflection_he_v">그리고 (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">관계사</string>
+    <string name="inflection_he_sh">~라는 것, ~하는 것 (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">~할 때</string>
+    <string name="inflection_he_ksh">~할 때, ~하자 (כשהגעתי)</string>
+    <string name="inflection_he_b_label">~에서</string>
+    <string name="inflection_he_b">~에서, ~안에, ~로 (בבית)</string>
+    <string name="inflection_he_k_label">~처럼</string>
+    <string name="inflection_he_k">~처럼, ~로서 (כילד)</string>
+    <string name="inflection_he_l_label">~에게</string>
+    <string name="inflection_he_l">~에게, ~을 위해 (לבית)</string>
+    <string name="inflection_he_m_label">~부터</string>
+    <string name="inflection_he_m">~에서, ~부터; ~보다 (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">정관사</string>
+    <string name="inflection_he_h">정관사 (הבית)</string>
+</resources>
