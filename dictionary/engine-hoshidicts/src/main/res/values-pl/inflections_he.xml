@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polish translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">i</string>
+    <string name="inflection_he_v">i (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">że</string>
+    <string name="inflection_he_sh">że, który, kto (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">kiedy</string>
+    <string name="inflection_he_ksh">kiedy, gdy (כשהגעתי)</string>
+    <string name="inflection_he_b_label">w</string>
+    <string name="inflection_he_b">w, na, za pomocą (בבית)</string>
+    <string name="inflection_he_k_label">jak</string>
+    <string name="inflection_he_k">jak, jako (כילד)</string>
+    <string name="inflection_he_l_label">do</string>
+    <string name="inflection_he_l">do, dla (לבית)</string>
+    <string name="inflection_he_m_label">z</string>
+    <string name="inflection_he_m">z, od; niż (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">rodzajnik</string>
+    <string name="inflection_he_h">rodzajnik określony (הבית)</string>
+</resources>

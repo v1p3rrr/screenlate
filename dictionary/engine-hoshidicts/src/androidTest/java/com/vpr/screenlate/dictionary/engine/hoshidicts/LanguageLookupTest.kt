@@ -481,6 +481,64 @@ class LanguageLookupTest {
         """.trimIndent().toByteArray(),
     )
 
+    @Test
+    fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
+        val imported = engine.import(hebrewDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val hebrew = LookupOptions(language = Language.HEBREW)
+        suspend fun first(text: String) = engine.lookup(text, hebrew).first()
+
+        assertThat(first("כלב").term.expression).isEqualTo("כלב")
+        // Pointed text through the pointed form row and without its points.
+        assertThat(first("כֶּלֶב").term.expression).isEqualTo("כלב")
+        assertThat(first("הַכֶּלֶב").term.expression).isEqualTo("כלב")
+        // Two prefixes, then a form whose lemma is named pointed; the entries give no part of speech.
+        assertThat(first("והכלבים").term.expression).isEqualTo("כלב")
+        val house = first("והבית")
+        assertThat(house.term.expression).isEqualTo("בית")
+        assertThat(house.matched).isEqualTo("והבית")
+        assertThat(house.trace.map { it.name }).containsExactly("ה-", "ו-")
+        // The popup shows the rules' names and descriptions in the app's language, not the prefixes.
+        assertThat(house.trace.map { it.label }).containsNoneOf("", "ה-", "ו-")
+        assertThat(house.trace.map { it.description }).doesNotContain("")
+        assertThat(first("כשהגעתי").term.expression).isEqualTo("הגיע")
+        // Three letters at most: ושמהבית would need ו ש מ and the article.
+        assertThat(engine.lookup("ושמהבית", hebrew).map { it.term.expression }).doesNotContain("בית")
+        // A letter and one more stay: לא is not א.
+        assertThat(engine.lookup("לא", hebrew).map { it.term.expression }).containsExactly("לא")
+        // ASCII quotes stand for the gershayim and the geresh.
+        assertThat(first("צה\"ל").term.expression).isEqualTo("צה״ל")
+        assertThat(first("ג'ירפה").term.expression).isEqualTo("ג׳ירפה")
+        assertThat(first("בית־ספר").term.expression).isEqualTo("בית־ספר")
+        // Forms in no Hebrew letter are not keyed.
+        assertThat(engine.lookup("𐤊𐤋𐤁", hebrew)).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Hebrew exports write them: unpointed headwords without a part of speech or a reading,
+     * pointed forms, a form naming its lemma pointed, a construct form with its maqaf, a Phoenician spelling.
+     */
+    private fun hebrewDictionary(): File = zip(
+        "he.zip",
+        "index.json" to """{"title":"Test Hebrew","revision":"1","format":3,"sourceLanguage":"he"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["כלב","","n masc","",0,["dog"],1,""],
+              ["בית","","n masc","",0,["house"],2,""],
+              ["בית־ספר","","n masc","",0,["school"],3,""],
+              ["צה״ל","","name","",0,["IDF"],4,""],
+              ["ג׳ירפה","","n fem","",0,["giraffe"],5,""],
+              ["לא","","particle","",0,["not"],6,""],
+              ["הגיע","","v","",0,["to arrive"],7,""],
+              ["כֶּלֶב","","non-lemma","",0,[["כלב",["singular indefinite masculine"]]],8,""],
+              ["כלבים","","non-lemma","",0,[["כֶּלֶב",["plural indefinite form"]]],9,""],
+              ["בֵּית־","","non-lemma","",0,[["בית",["singular construct"]]],10,""],
+              ["הגעתי","","non-lemma","",0,[["הגיע",["first-person singular past"]]],11,""],
+              ["𐤊𐤋𐤁","","non-lemma","",0,[["כלב",["Phoenician"]]],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /**
      * Rows as Wiktionary's Arabic exports write them: unvowelled headwords with the vowelled spelling as the reading,
      * adjectives without a part of speech, forms naming vowelled lemmas, template names among tags, romanized forms.

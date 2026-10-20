@@ -715,6 +715,16 @@ internal object YomitanInflections {
             "ب-" to Strings(R.string.inflection_fa_b_label, R.string.inflection_fa_b),
             "ن-" to Strings(R.string.inflection_fa_n_label, R.string.inflection_fa_n),
         ),
+        "he" to mapOf(
+            "ו-" to Strings(R.string.inflection_he_v_label, R.string.inflection_he_v),
+            "ש-" to Strings(R.string.inflection_he_sh_label, R.string.inflection_he_sh),
+            "כש-" to Strings(R.string.inflection_he_ksh_label, R.string.inflection_he_ksh),
+            "ב-" to Strings(R.string.inflection_he_b_label, R.string.inflection_he_b),
+            "כ-" to Strings(R.string.inflection_he_k_label, R.string.inflection_he_k),
+            "ל-" to Strings(R.string.inflection_he_l_label, R.string.inflection_he_l),
+            "מ-" to Strings(R.string.inflection_he_m_label, R.string.inflection_he_m),
+            "ה-" to Strings(R.string.inflection_he_h_label, R.string.inflection_he_h),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

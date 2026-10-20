@@ -245,7 +245,7 @@ class DictionaryLookup @Inject constructor(
     private suspend fun List<LookupResult>.withTranscriptions(support: LanguageSupport): List<LookupResult> {
         if (none { result -> result.term.pitches.any { it.transcriptions.isNotEmpty() } }) return this
         val tags = cachedTranscriptionTags.get(repository.generation) { repository.transcriptionTags() }
-        return map { Transcriptions.prepare(it, tags, support.transcriptionRegionNames) }
+        return map { Transcriptions.prepare(it, tags, support.transcriptionRegionNames, support::firstTranscription) }
     }
 
     /** The lookup settings in effect for [language]. */

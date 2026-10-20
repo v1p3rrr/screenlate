@@ -287,6 +287,22 @@ class FieldTemplateTest {
     }
 
     @Test
+    fun hebrewWordReadingAndSentenceMarkersGetTheSpan() {
+        val lapis = FieldTemplate.guess("Lapis", listOf("Expression", "ExpressionReading", "Sentence", "MainDefinition"), Language.HEBREW)
+
+        assertThat(lapis).containsExactlyEntriesIn(
+            mapOf(
+                "Expression" to "{expression}",
+                "ExpressionReading" to "<span dir=\"rtl\">{reading}</span>",
+                "Sentence" to "<span dir=\"rtl\">{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}</span>",
+                "MainDefinition" to "{glossary-first}",
+            ),
+        )
+        assertThat(FieldTemplate.withMarker("", "expression", Language.HEBREW, firstField = false))
+            .isEqualTo("<span dir=\"rtl\">{expression}</span>")
+    }
+
+    @Test
     fun theSpanKeepsTagsWholeAndLeavesOtherLanguagesAndSetDirectionsAlone() {
         // A tag opened between the markers and closed after them: each marker on its own.
         assertThat(FieldTemplate.rightToLeft("{cloze-prefix}<b>{cloze-body}{cloze-suffix}</b>", Language.ARABIC)).isEqualTo(

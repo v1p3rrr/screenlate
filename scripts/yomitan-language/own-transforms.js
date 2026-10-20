@@ -174,3 +174,62 @@ export const persianTransforms = {
         }]),
     ]),
 };
+
+/**
+ * Hebrew prefixes, written joined to their word, with a name and a description: ו (and), ש and כש (that, when), ב כ ל
+ * (in, as, to), מ (from) and the article ה. They come off in the order the grammar has them: ו first, then ש or כש,
+ * then one of ב כ ל מ, then ה, which never follows ב כ ל (they take its place: בבית for ב + הבית); three letters at
+ * most (ושב, וכש, שמה, ומה). Each rule applies to the word itself and after the prefixes its conditions name, one that
+ * names none to the word itself only. The conditions say what has come off: `w` ו, `s1` ש alone, `s2` ש after ו or
+ * כש, `m` מ, `x` the last prefix the three letters allow. A word starting with ש, כש or מ gets the rest twice at the
+ * first step, the second time under the narrower condition; the engine merges their entries.
+ * @type {[string, string, string, [HebrewCondition[], HebrewCondition][]][]}
+ */
+const hebrewPrefixes = [
+    ['ו', 'and', 'and (ואני, והבית)', [[[], 'w']]],
+    ['ש', 'that', 'that, which, who (שאמר, שבבית)', [[[], 's1'], [['w'], 's2']]],
+    ['כש', 'when', 'when, as (כשהגעתי)', [[[], 's2'], [['w'], 'x']]],
+    ['ב', 'in', 'in, at, with (בבית)', [[['w', 's1', 's2'], 'x']]],
+    ['כ', 'as', 'like, as (כילד)', [[['w', 's1', 's2'], 'x']]],
+    ['ל', 'to', 'to, for (לבית)', [[['w', 's1', 's2'], 'x']]],
+    ['מ', 'from', 'from, than (מירושלים, מהבית)', [[['w', 's1'], 'm'], [['s2'], 'x']]],
+    ['ה', 'the', 'definite article (הבית)', [[['w', 's1', 's2', 'm'], 'x']]],
+];
+
+/** @typedef {'w' | 's1' | 's2' | 'm' | 'x'} HebrewCondition */
+
+/**
+ * A prefix that leaves a Hebrew letter and one more character at least. Wiktionary's Hebrew entries give no part of
+ * speech, so the engine lets the rest match entries without one (glue.js, `untypedRules`).
+ * @param {string} prefix
+ * @param {HebrewCondition[]} conditionsIn
+ * @param {HebrewCondition} conditionOut
+ * @returns {import('language-transformer').Rule<HebrewCondition>}
+ */
+function hebrewPrefix(prefix, conditionsIn, conditionOut) {
+    return {
+        type: 'prefix',
+        isInflected: new RegExp('^' + prefix + '[\u05D0-\u05F2]\\S'),
+        deinflected: '',
+        deinflect: (text) => text.slice(prefix.length),
+        conditionsIn,
+        conditionsOut: [conditionOut],
+    };
+}
+
+/** @type {import('language-transformer').LanguageTransformDescriptor<HebrewCondition>} */
+export const hebrewTransforms = {
+    language: 'he',
+    conditions: {
+        w: {name: 'After ו', isDictionaryForm: false},
+        s1: {name: 'After ש', isDictionaryForm: false},
+        s2: {name: 'After וש or כש', isDictionaryForm: false},
+        m: {name: 'After מ', isDictionaryForm: false},
+        x: {name: 'After the last prefix', isDictionaryForm: false},
+    },
+    transforms: Object.fromEntries(hebrewPrefixes.map(([prefix, name, description, rules]) => [`${prefix}-`, {
+        name,
+        description,
+        rules: rules.map(([conditionsIn, conditionOut]) => hebrewPrefix(prefix, conditionsIn, conditionOut)),
+    }])),
+};

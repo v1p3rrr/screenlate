@@ -81,14 +81,15 @@ own too. Their branches are merged into `languages/main` by this session when th
 Khmer are built in the overnight queue (below). Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
 OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
-in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic, Breton) is researched
-(`notes/languages.md`, "Group 5b research"; `plans/2026-10-19-group-5b.md`): questions 1-4 answered (own
-initial-mutation rule with the mutation's name, Irish and Gaelic elisions as French, regional flags, the Russian
-Gaelic name); questions 5-10 recorded overnight, 5 deferred (wty has no Breton), 6-10 decided provisionally;
-recognition measured on the emulator (ML Kit stays main; ML Kit never reads Welsh ŵ ŷ, Tesseract's Welsh model reads
-all). Not started: its order is the owner's call. Downloaded for it (official sources, session scratchpad only): the
-wty files of cy, ga, gd, kaikki's Breton extracts and the other sources of `notes/references.md` (group 5b), Tesseract
-fast and best models; the Python environment for the PC OCR runs was removed afterwards.
+in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic; Breton researched and dropped) is
+researched (`notes/languages.md`, "Group 5b research"; `plans/2026-10-19-group-5b.md`) and all its questions are
+answered: own initial-mutation rule with the mutation's name and a short list of common words it leaves alone (mae
+stays mae), Irish and Gaelic elisions as French, regional flags, the Russian Gaelic name, no frequency dictionaries,
+bubble letters Ŵ Á Ò, branches Welsh, Irish, Gaelic; recognition measured on the emulator (ML Kit stays main; ML
+Kit never reads Welsh ŵ ŷ, so the lookup tries ý as ŷ and û as ŵ for OCR words only, which needs the lookup to know
+a word's source, a piece shared with 5c's Hungarian ő ű). Not started: its order is the owner's call. The research
+downloads (wty files, kaikki's Breton extracts, corpora, Tesseract models) were in the session scratchpad only and are
+removed; the measurement scripts are in the shared session notes (`group-5b-scripts`).
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
@@ -181,6 +182,19 @@ wordfreq's 20,000 commonest words are entries as they are, 15,033 with the rules
 (`\u200C`) as written, so a dictionary that writes them escaped imports but finds nothing (wty and Yomitan exports
 write the characters; a follow-up, `notes/dictionary-engine.md`). Overnight questions 3 (order of transcriptions) and
 4 (colloquial endings) are decided provisionally. Hebrew follows.
+
+Hebrew is done on `languages/he` (2026-10-20): `HebrewSupport` (vowel points and cantillation dropped in the text and
+in import keys, the geresh, the gershayim, ASCII quotes between letters and the maqaf inside words, „…” quotes in
+sentences, Modern Israeli transcriptions first, pointed recording titles, wordfreq's ASCII quotes as ״ ׳); the
+bundle's own processors and eight prefix rules (ו ש כש ב כ ל מ ה, in the grammar's order, three letters at most)
+matching entries without a part of speech, each with a name and a description in 14 locales; wty he-en, ru, es, ja,
+pl, zh, the transcriptions and wordfreq `large_he`; Tesseract heb (fast recommended, best offered); Heebo and Frank
+Ruhl Libre; flag il, bubble א; scan length 24. Coverage: 10,911 of wordfreq's 20,000 commonest words are entries as
+they are, 17,552 with the rules, the word itself first in all 10,911. LK50, POP28, AUD15, ANK19 and OCR31 passed on
+the emulator after three fixes: transcriptions written `//a/ [b]/` split in two (all languages), cloud recognition's
+right-to-left lines that come in neither order put in the order of their boxes, and Hebrew's `{reading}` (the word
+itself) in the right-to-left span. Overnight questions 5 (Modern Israeli transcriptions first) and 6 (form tags beside
+a plain word, שלום "singular construct") are decided provisionally. Group 4d is done; 4e (Kazakh, Kyrgyz) follows.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

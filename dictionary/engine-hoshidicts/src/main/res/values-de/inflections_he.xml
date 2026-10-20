@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">und</string>
+    <string name="inflection_he_v">und (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">dass</string>
+    <string name="inflection_he_sh">dass; der, die, das (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">als</string>
+    <string name="inflection_he_ksh">als, wenn (כשהגעתי)</string>
+    <string name="inflection_he_b_label">in</string>
+    <string name="inflection_he_b">in, an, mit (בבית)</string>
+    <string name="inflection_he_k_label">wie</string>
+    <string name="inflection_he_k">wie, als (כילד)</string>
+    <string name="inflection_he_l_label">zu</string>
+    <string name="inflection_he_l">zu, für (לבית)</string>
+    <string name="inflection_he_m_label">von</string>
+    <string name="inflection_he_m">von, aus; als (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">Artikel</string>
+    <string name="inflection_he_h">bestimmter Artikel (הבית)</string>
+</resources>

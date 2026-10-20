@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">和</string>
+    <string name="inflection_he_v">和，并且 (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">关系词</string>
+    <string name="inflection_he_sh">引导从句：……的人或物，……这件事 (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">当……时</string>
+    <string name="inflection_he_ksh">当……时，在……的时候 (כשהגעתי)</string>
+    <string name="inflection_he_b_label">在</string>
+    <string name="inflection_he_b">在……里，在，用 (בבית)</string>
+    <string name="inflection_he_k_label">像</string>
+    <string name="inflection_he_k">像，如，作为 (כילד)</string>
+    <string name="inflection_he_l_label">向</string>
+    <string name="inflection_he_l">向，到，为了 (לבית)</string>
+    <string name="inflection_he_m_label">从</string>
+    <string name="inflection_he_m">从，来自；比 (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">定冠词</string>
+    <string name="inflection_he_h">定冠词 (הבית)</string>
+</resources>

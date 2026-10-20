@@ -210,6 +210,12 @@ interface LanguageSupport {
     val pronunciationSample: String? get() = null
 
     /**
+     * Whether a phonetic transcription with [tags] goes before the others of its word, which keep the dictionary's
+     * order: Hebrew's Modern Israeli one before the Biblical and Tiberian ones Wiktionary lists first for some words.
+     */
+    fun firstTranscription(tags: List<String>): Boolean = false
+
+    /**
      * Whether a dictionary word may start at the beginning of [text] (the text from the aim point on), and which
      * matches count; null when there is nothing to look up.
      *
@@ -416,7 +422,8 @@ data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
 enum class OcrScript {
-    LATIN, ARABIC, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KHMER, KOREAN, THAI,
+    LATIN, ARABIC, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, HEBREW, JAPANESE, KHMER, KOREAN,
+    THAI,
 }
 
 val Language.support: LanguageSupport
@@ -453,4 +460,5 @@ val Language.support: LanguageSupport
         Language.KHMER -> KhmerSupport
         Language.ARABIC -> ArabicSupport
         Language.PERSIAN -> PersianSupport
+        Language.HEBREW -> HebrewSupport
     }
