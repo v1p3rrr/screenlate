@@ -1124,6 +1124,9 @@ Cells: archive MB, words.
   about 30 endings cost a lookup per rule per substring, like the group 3 rules; import-time keys (nukta, candrabindu,
   Armenian marks) cost nothing at lookup. An Armenian և variant of the text doubles the candidates per եվ/եւ in a
   substring, rarely more than one or two. To be timed on the emulator with the test screens.
+- Measured (2026-10-20): the ligature processor replaces every եվ/եւ at once, so a text gets one variant, not one per
+  pair. The worst Georgian line found, 24 characters of ისის… (both -ს and -ის apply at every step), gives 24
+  candidates in 4.4 ms in Node; ordinary lines 3-8. Lookups on the emulator took 2-4 ms (`Lookup found … in`).
 
 ### Plain fixes found (no owner decision)
 
