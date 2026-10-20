@@ -2033,7 +2033,10 @@ letters that is a headword.
 - Latin look-alikes in Cyrillic words: the Kazakh news sample has Latin i (U+0069) for і in 10% of its Cyrillic
   words (мүмкiн, үшiн; Leipzig's sample counts 12,616 such tokens against 20,134 written right), the Kyrgyz one 0.2%,
   Kazakh Wikipedia 0.65%; Latin ə for ә is rarer; Kyrgyz Wikipedia has Latin ɵ for ө and a few words typed wholly in
-  Latin look-alikes (Maнac). Roman numerals are sometimes typed with Cyrillic Х and І (ХІІІ ғасыр).
+  Latin look-alikes (Maнac). Roman numerals are sometimes typed with Cyrillic Х and І (ХІІІ ғасыр). By letter, on
+  the Leipzig 100K word lists (tokens of Cyrillic words, 2026-10-20): Kazakh Latin i is 38.7% of all i and і, I
+  43.8%, h 59.9% of h and һ: typing habits; Latin ə Ə 0.06% of ә Ә; Kyrgyz Latin ɵ 0.04% of ө (Ɵ none), Latin i
+  0.26% of и; Latin o 0.7-0.8% of о in both.
 - Plain Russian letters for Kazakh ones are a known kind of user text (KazSAnDRA, the KazNLP normalizer, Kazakh press
   on ң "disappearing"); no published rate.
 - Matching the Kazakh letters to their Russian twins (қ к, ғ г, ң н, ұ ү у, ө о, ә а, і и, һ х): 0.9% of the kk
