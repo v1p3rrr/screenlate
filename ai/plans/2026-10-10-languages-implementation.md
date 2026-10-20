@@ -154,6 +154,9 @@ Requests 1–19 are in the previous plan. New ones:
     alone offered); say that ML Kit is built in for the languages it reads instead of offering a download as the
     default; mark ML Kit as faster where the measurements show it, above all for the draft with Engines on Both
     (plan `2026-10-17-ocr-engines.md`, questions 36-39).
+69. (2026-10-20) Letters fixed by look-alike after recognition are for OCR results only: text the app reads from
+    the screen's apps is taken as it is, in every language and branch, where the text itself is written right; a
+    spelling people often type themselves stays matched in any text (row "Look-alike fixes only after OCR").
 
 ## Decisions
 
@@ -292,6 +295,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Deleting OCR models | A language's active model cannot be deleted, only replaced: another one downloaded and chosen, then the old one can go; all of a language's models go when the language's files are deleted. A model another language also lists can be deleted only when no language uses it as its active model; the dialog says that it goes for those languages too. With an active model it cannot be deleted, and the row says which language uses it. The Paddle detector is not listed on its own: it goes with the last Paddle recognizer (owner, 2026-10-16, questions 32 and 33) |
 | PP-OCRv6 | PP-OCRv6 small is measured beside PP-OCRv5 on the clean and hard screens; where the recommendation rule finds it better, it takes the place of v5's main and Latin recognizers. v5 stays for the scripts v6 lacks (Korean, Cyrillic, Greek, Arabic, Thai, Devanagari) (owner, 2026-10-17, request 64) |
 | Latin look-alikes in Cyrillic text | In a recognized word of a Cyrillic-script language that has Cyrillic letters, Latin letters that look the same (a, c, e, o, p, x, y, A, B, C, E, H, K, M, O, P, T, X) become Cyrillic, whatever the engine. A word made only of such letters stays as read: looking it up as its Cyrillic twin as well was rejected because English words would find Russian ones (TOP as тор, COM as сом) (owner, 2026-10-17, request 65) |
+| Look-alike fixes only after OCR | Every language's fixes of letters that an engine reads as look-alikes (Latin in Cyrillic or Greek words, letters a language never writes) and matching OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) apply to OCR results only (`LanguageSupport.ocrWord`, from `OcrPage.inLanguage`; lookup variants need each line's source); text read from the screen's apps is taken as it is. Where people often type the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text (owner, 2026-10-20, request 69) |
 | OCR model list | A language's models open in a dialog (scrolls when long): ML Kit where it reads the language, then the catalog's models, each with its size, a recommended mark, an ⓘ and Download or Delete. The language rows stand in the Recognition section under the engine choice, below a subheading; with Cloud only or app text only they stay visible but disabled, as the other recognition settings do. Downloading a model only adds it: it becomes the language's model when chosen in the list (owner, 2026-10-17) |
 | Region order display | The audio settings show a language's region order while Wiktionary is among its audio sources or a transcription dictionary of the language is installed; the hint names both uses (recordings and transcriptions) (owner, 2026-10-18, question 28; request 55) |
 | Default OCR engines | Decided by the in-app timing run (emulator, then the phone): Cloud becomes the default for new installs when the device's draft comes less than 0.5 s before the cloud result on the phone, else Both stays. With Cloud by default, turning a language on downloads no on-device model (owner, 2026-10-18, request 68, question 36 of the OCR engines plan) |
@@ -331,15 +335,21 @@ Decided when the first language or group 1 is ready, before it is merged into th
 
 ## Backlog
 
-- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links
-  to, and those we plan to host, and keep them outside the repository (on the owner's computer) in case their
-  sources remove them; served from our hosting once it exists.
+- Own copies of the dictionaries (owner, 2026-10-16, a separate task): download every dictionary the catalog links to,
+  and those we plan to host, and keep them outside the repository (on the owner's computer) in case their sources
+  remove them; served from our hosting once it exists. Done on 2026-10-19 (`notes/dictionary-archive.md`): the
+  catalog's files, the next languages' Wiktionary pairs, the sources we convert with our conversions and the OCR
+  models, 1,083 files (2.4 GiB) checked against their hosts' hashes where published, in a git-ignored folder with its
+  refresh script.
 - Word audio on the phone (request 52), optional: decision row "Audio collections" (the user's own collection
   imported; our packs once hosting exists).
 - Download queue (request 67): built on 2026-10-19, rows "Download queue" and "Waiting tasks card". Jiten fails on
   the phone on mobile data: its host (Hetzner) gives no range support, so every try starts over, and the mobile
   network freezes the connection (`ai/notes/audio-sources.md`). The cards multiplied because the entry points queued a
   download without looking for an unfinished task of the same entry while the stalled one held the single chain.
+- Right-to-left interface languages (owner, 2026-10-19, question 70 of `2026-10-19-group-4d.md`): Arabic, Persian
+  and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
+  build) and group 4's build.
 
 ## Questions for the owner
 
@@ -1032,6 +1042,12 @@ Research of 2026-10-19: `notes/languages.md`, "Group 4c research". Plan, questio
 `2026-10-19-group-4c.md`. Khmer joins Thai now instead of later; Lao is deferred, for a while or for good (owner,
 2026-10-19, question 5 of that plan).
 
+### Group 4d (ar, fa, he; ur in group 5f)
+
+Research of 2026-10-19: `notes/languages.md`, "Group 4d research". Plan, questions (69-86) and progress:
+`2026-10-19-group-4d.md`. Urdu comes later, on its own (question 69 of that plan; block 5f of row "Group 5"); the
+interface stays left to right, right-to-left interface languages are in the backlog (question 70).
+
 ### Group 4e (kk, ky)
 
 Research of 2026-10-19: `notes/languages.md`, "Group 4e research". Plan, questions and progress:
@@ -1459,8 +1475,18 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   dictionary, weak on-device recognition, no recordings or voice); Thai and Khmer are built.
 - 2026-10-19: group 5 added (owner): its languages, six blocks and research of five blocks at once, the sixth after
   group 4d; provisionally after the big release. Rows "Group 5", "Group 5 research", "Group 5 release", Stage F.
+- 2026-10-19: Backlog "Own copies of the dictionaries" done: the private archive with its refresh script outside the
+  repository (`notes/dictionary-archive.md`); the script stays in the archive and newer versions replace files only
+  after their checks, files their source drops are kept (owner).
+- 2026-10-19: group 4d researched (Arabic, Persian, Hebrew; `2026-10-19-group-4d.md`, questions 69-85 answered by
+  the owner); Urdu later, on its own; right-to-left interface languages added to the backlog. The build waits for the
+  owner's go.
 - 2026-10-19: group 4e (Kazakh, Kyrgyz) researched; its plan with the owner's answers is `2026-10-19-group-4e.md`,
   linked from Stage E. Two of its rows reach beyond the group: a tap on a part of a hyphenated word shows the whole
   word when it is a headword, then the tapped part, in every spaced language; Kyrgyz PanLex is ticked next to
   Wiktionary, an exception to "Recommended dictionaries". The line of `notes/languages.md` that kk and ky would get
   the longest matching start is corrected: word resolution never shortens a word.
+- 2026-10-20: request 69 and row "Look-alike fixes only after OCR" (owner): look-alike letter fixes are for OCR
+  results only, never for text read from apps, in every language and branch; the code already works so.
+- 2026-10-20: request 69 refined (owner): the OCR-only rule holds where the text itself is written right; spellings
+  people often type themselves (Uzbek o for oʻ) stay matched in any text.

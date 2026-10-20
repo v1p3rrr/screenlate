@@ -135,6 +135,7 @@
     <string name="anki_tags">Étiquettes (séparées par des espaces)</string>
     <string name="anki_fields">Champs</string>
     <string name="anki_fields_hint">Les modèles utilisent des marqueurs comme {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Le bouton + en insère un. Le premier champ sert à détecter les doublons.</string>
+    <string name="anki_fields_hint_rtl">Pour une langue écrite de droite à gauche, « Remplir avec les modèles suggérés » et le bouton + placent le mot et la phrase dans &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, pour que la carte les affiche dans l’ordre de lecture. Le premier champ n’en reçoit pas, car la détection des doublons compare son balisage.</string>
     <string name="anki_insert_marker">Insérer un marqueur</string>
     <string name="anki_marker_furigana_zh">Pinyin au-dessus des caractères</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin en texte : 你[nǐ] 好[hǎo]</string>
@@ -496,6 +497,13 @@
     <string name="popup_font_script_only_el">Seulement pour le texte grec</string>
     <string name="popup_font_script_only_hi">Seulement pour le texte hindi</string>
     <string name="popup_font_script_only_bn">Seulement pour le texte bengali</string>
+    <string name="popup_font_script_only_ka">Seulement pour le texte géorgien</string>
+    <string name="popup_font_script_only_hy">Seulement pour le texte arménien</string>
+    <string name="popup_font_script_only_th">Seulement pour le texte thaï</string>
+    <string name="popup_font_script_only_km">Seulement pour le texte khmer</string>
+    <string name="popup_font_script_only_ar">Seulement pour le texte arabe</string>
+    <string name="popup_font_script_only_fa">Seulement pour le texte persan</string>
+    <string name="popup_font_script_only_he">Seulement pour le texte hébreu</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

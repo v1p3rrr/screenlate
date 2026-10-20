@@ -174,6 +174,44 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   match a blank-rule entry (English phrasal verbs); `glue.js` `untypedRules` marks every deinflected candidate of the
   listed languages (bn) untyped. Hindi needs nothing: Yomitan has no Hindi rules, so its candidates have no
   conditions. Georgian and Tagalog have Yomitan rules and blank-rule wty entries too, to be checked on their branches.
+- Arabic keys (2026-10-20): wty-ar-en (2026.10.11) has 1,019,643 rows, 992,134 of them form rows and 27,509 with
+  definitions. Its headwords are written without harakat (11 carry some), the reading with them (كتاب, كِتَاب; 27,230
+  readings have marks), while form rows name their lemmas vowelled (مدارس → مَدْرَسَة). `every_headword` keys each
+  headword with `replacements` ({ى→ي, ة→ه}, the spelling running text often uses at a word's end) and with
+  `further_replacements` ({أ إ آ ٱ → ا}) made on top of the first ones, so اكبر finds أكبر while أمام does not find
+  إمام (the text keeps its hamza and is looked up as written). `MarkStripper::keys` adds the headword with the first
+  replacements and with both, without the marks and with them. Lemmas lose their harakat (`lemmas_as_written`
+  false), so مَدْرَسَة leads to the headword مدرسة. Greek keeps its lemmas as written:
+  `HeadwordMarks.lemmasAsWritten` defaults to `everyHeadword`, which used to decide it.
+- Template names among form tags (2026-10-20): 158,443 of wty-ar-en's form rows carry the name of the Wiktionary
+  template that made them (`ar-infl-a`, `ar-infl-an-maksura`) as a tag word next to the grammatical ones.
+  `cleaned_tags` drops every word `xx-infl` or `xx-infl-…` (two or three lowercase letters) and a tag left empty, for
+  every language; no other language's wty export has them in the samples.
+- Forms outside the script (2026-10-20): 795 Arabic form rows are romanizations (ḡarafāt), keyed under Latin text
+  that an Arabic lookup never gives and that a Latin-script dictionary's lookup could hit. `forms_in_script` drops a
+  form row whose headword has none of the `bases` letters (`MarkStripper::drops_form`); Arabic and Persian set it
+  (Persian's Cyrillic Tajik forms, ҳалол → حلال).
+- Persian keys (2026-10-20): `every_headword` with `replacements` {ي→ی, ك→ک, ى→ی, ۀ→ه} and the zero-width
+  non-joiner replaced by nothing, harakat dropped, so آن‌ها is keyed under آنها and كتاب text finds کتاب. The text
+  side never holds the non-joiner: the bundle's `removePersianZeroWidthNonJoiner` replaces the text (the candidate
+  then has one preprocessor step, which the word itself also gets, so it still ranks first by match length).
+- Hebrew keys (2026-10-20): Wiktionary's Hebrew forms are 82% pointed (כְּלָבִים); `every_headword` keys them under
+  their letters as well (points and cantillation U+0591-05C7 dropped, but not the maqaf, paseq, sof pasuq and nun
+  hafukha), the lemmas form rows name lose their points (`lemmasAsWritten = false`), and form rows with no Hebrew
+  letter (Phoenician 𐤊𐤋𐤁) are dropped (`forms_in_script`). wty-he-en imports in 8.0 s on the emulator (engine
+  1.6 s) with a form-of table of 235,424 forms.
+- Hebrew prefixes are the bundle's own rules (`own-transforms.js`). The prefixes ש, כש and מ each have a first-step
+  rule and a narrower one, and Yomitan tries every rule at the first step whatever its conditions, so they give a
+  duplicate candidate there; the engine merges candidates by term and drops duplicate chains, so the popup shows one.
+  A plain word whose letters are a pointed form's (שלום, the construct שְׁלוֹם) is that form's lemma: the form is kept
+  as a one-step chain beside the empty chain of the direct match, and the page shows its tags (as Croatian kuća).
+- JSON escapes in headwords (2026-10-20, found with a test dictionary): hoshidicts' parser reads a term's expression
+  and reading as `std::string_view` over the raw JSON (`yomitan_parser.hpp` `Term`), so a headword written with an
+  escape (`"آن\u200Cها"`, or every non-ASCII letter from Python's `json.dump` with its default
+  `ensure_ascii`) is stored with the backslash and no lookup matches it, while `split_bank` decodes the same field
+  (glaze into `std::string`) for the form-of table. wty and Yomitan's exports write the characters themselves (the
+  app finds wty-fa-en's نمی‌دانم), so no catalog dictionary is affected; a third-party dictionary made that way
+  would import but find nothing. Not fixed: hoshidicts' code; decoding there costs a copy per string at import.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test

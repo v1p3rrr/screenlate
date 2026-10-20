@@ -51,6 +51,44 @@ class RightToLeftTest {
     }
 
     @Test
+    fun `digits of every script keep their order and signs at a number's edge stand apart`() {
+        // "الرصيف 5." is drawn with its stop at the left, "عام ٢٠٢٤" with the year left to right.
+        val stop = page(word(".5", 0f), word("فيصرلا", 30f, separator = ""))
+        assertThat(readingOrder(stop).words().map { it.text }).containsExactly("الرصيف", "5.").inOrder()
+        val year = page(word("٢٠٢٤", 0f), word("ماع", 50f, separator = ""))
+        assertThat(readingOrder(year).words().map { it.text }).containsExactly("عام", "٢٠٢٤").inOrder()
+        val persian = page(word("۱۴۰۳", 0f), word("لاس", 50f, separator = ""))
+        assertThat(readingOrder(persian).words().map { it.text }).containsExactly("سال", "۱۴۰۳").inOrder()
+        // "الوقت: 10:30": the colon after the word stands apart from the time; a decimal one stays inside.
+        val time = page(word("10:30", 0f), word(":تقولا", 60f, separator = ""))
+        assertThat(readingOrder(time).words().map { it.text }).containsExactly("الوقت:", "10:30").inOrder()
+        // "بنسبة -12.5 50%" among Arabic letters: each number left to right, the signs on its other side.
+        val percent = page(word("%50", 0f), word("12.5-", 40f), word("ةبسنب", 100f, separator = ""))
+        assertThat(readingOrder(percent).words().map { it.text }).containsExactly("بنسبة", "-12.5", "50%").inOrder()
+        val thousands = page(word("1,000", 0f), word("ىلع", 60f, separator = ""))
+        assertThat(readingOrder(thousands).words().map { it.text }).containsExactly("على", "1,000").inOrder()
+    }
+
+    @Test
+    fun `brackets and guillemets come back the way they face in the text`() {
+        // "«اقرأ» (ص 12)" drawn right to left: read from the left as "(12 ص) «أرقا»".
+        val read = page(word("(12", 0f), word("ص)", 40f), word("«أرقا»", 70f, separator = ""))
+
+        val words = readingOrder(read).words()
+
+        assertThat(words.map { it.text }).containsExactly("«اقرأ»", "(ص", "12)").inOrder()
+    }
+
+    @Test
+    fun `a Latin run keeps its numbers and inner signs, its edge signs stand apart`() {
+        // "اشتريت iPhone 15, ثم iOS." drawn right to left, the comma and the stop left of their runs.
+        val read = page(word(".iOS", 0f), word("مث", 50f), word(",iPhone", 80f), word("15", 160f), word("تيرتشا", 190f, separator = ""))
+
+        assertThat(readingOrder(read).words().map { it.text })
+            .containsExactly("اشتريت", "iPhone", "15,", "ثم", "iOS.").inOrder()
+    }
+
+    @Test
     fun `a word without one box per character keeps its box`() {
         val read = page(OcrWord("\u0645\u0627\u0644\u0633", "", Box(0f, 0f, 40f, 20f), characterBoxes = null))
 

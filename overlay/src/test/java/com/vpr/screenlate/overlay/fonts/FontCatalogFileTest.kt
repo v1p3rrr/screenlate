@@ -70,6 +70,56 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `thai has looped and loopless fonts, offered for thai only`() {
+        val thai = fonts.filter { it.language == Language.THAI.code }
+        assertThat(thai.map { it.family }).containsExactly("Sarabun", "Noto Sans Thai Looped", "Kanit", "Prompt")
+        for (font in thai) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.THAI)
+        }
+        // Latin fonts have no Thai.
+        assertThat(fonts.filter { it.isOfferedFor(Language.THAI) }).containsExactlyElementsIn(thai)
+    }
+
+    @Test
+    fun `khmer has a sans-serif and a serif, offered for khmer only`() {
+        val khmer = fonts.filter { it.language == Language.KHMER.code }
+        assertThat(khmer.map { it.family }).containsExactly("Kantumruy Pro", "Hanuman")
+        for (font in khmer) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.KHMER)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.KHMER) }).containsExactlyElementsIn(khmer)
+    }
+
+    @Test
+    fun `the arabic script has two sans-serifs and a naskh, offered for arabic and persian and not for latin languages`() {
+        val arabic = fonts.filter { it.subsets == listOf("arabic") }
+        assertThat(arabic.map { it.family }).containsExactly("Noto Sans Arabic", "Amiri", "Vazirmatn")
+        // Each has the letters of both languages (پ چ ژ گ ک ی, ة ى and both digit sets).
+        for (font in arabic) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.ARABIC, Language.PERSIAN)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.ARABIC) }).containsExactlyElementsIn(arabic)
+        assertThat(fonts.filter { it.isOfferedFor(Language.PERSIAN) }).containsExactlyElementsIn(arabic)
+    }
+
+    @Test
+    fun `hebrew has a sans-serif and a serif, offered for hebrew only`() {
+        val hebrew = fonts.filter { it.subsets == listOf("hebrew") }
+        assertThat(hebrew.map { it.family }).containsExactly("Heebo", "Frank Ruhl Libre")
+        for (font in hebrew) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.HEBREW)
+        }
+        // Latin fonts have no Hebrew.
+        assertThat(fonts.filter { it.isOfferedFor(Language.HEBREW) }).containsExactlyElementsIn(hebrew)
+    }
+
+    @Test
+    fun `georgian and armenian are offered no downloadable font, only the system's`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
+        assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()
+    }
+
+    @Test
     fun `latin fonts are offered for every language whose letters they have`() {
         val latin = Language.entries.filter { it.support.fontSubsets == setOf("latin") }
         assertThat(latin).containsAtLeast(Language.ENGLISH, Language.SPANISH, Language.FRENCH, Language.GERMAN)

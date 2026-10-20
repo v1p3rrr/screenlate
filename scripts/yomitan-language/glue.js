@@ -9,13 +9,15 @@ import {LanguageTransformer} from 'yomitan/language/language-transformer.js';
 const translator = new Translator(/** @type {any} */ (null));
 
 /**
- * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS).
+ * Prepares one language only; `Translator.prepare` builds every language's transformer (about 30 MB in QuickJS). The
+ * transforms are taken by the descriptor's code: Georgian's name their language `kat`, under which Yomitan files them
+ * and its Georgian lookups never find them.
  * @param {string} language
  */
 function prepare(language) {
     if (translator._textProcessors.has(language)) { return; }
-    for (const {languageTransforms: descriptor} of getAllLanguageTransformDescriptors()) {
-        if (descriptor.language !== language) { continue; }
+    for (const {iso, languageTransforms: descriptor} of getAllLanguageTransformDescriptors()) {
+        if (iso !== language) { continue; }
         const transformer = new LanguageTransformer();
         transformer.addDescriptor(descriptor);
         translator._multiLanguageTransformer._languageTransformers.set(language, transformer);
@@ -39,10 +41,22 @@ function turkishUpperCase(text) {
  * Text processors that replace Yomitan's by id. Turkish case pairs: without a locale (QuickJS has none) JavaScript
  * lowercases I to i and İ to i with a combining dot, so a Turkish word written in capitals (IŞIK, İSTANBUL) would find
  * no entry. Serbo-Croatian accent marks: Yomitan drops them from Latin vowels and r only, so Cyrillic text written
- * with the marks of readings (ку̏ћа) would find no entry.
+ * with the marks of readings (ку̏ћа) would find no entry. Arabic hamza: Yomitan puts a hamza on the text's first alif
+ * (ألكتاب, كتإبهم) and never after a prefix (الاسلام); the import keys headwords with hamza alefs under a bare alif
+ * instead (ArabicSupport's `HeadwordMarks`), so the two processors give nothing. Arabic alif maqsura: ى is written ي at
+ * the end of every word of the text, not only of its last.
  * @type {Record<string, Record<string, import('language').TextProcessor>>}
  */
 const replacedProcessors = {
+    ar: {
+        addHamzaTop: {name: 'Add Hamza to top of Alif', description: 'keyed at import', process: (str) => [str]},
+        addHamzaBottom: {name: 'Add Hamza to bottom of Alif', description: 'keyed at import', process: (str) => [str]},
+        convertAlifMaqsuraToYaa: {
+            name: 'Convert Alif Maqsura to Yaa',
+            description: 'فى → في',
+            process: (str) => [str, str.replace(/ى(?=\s|$)/g, 'ي')],
+        },
+    },
     tr: {
         decapitalize: {
             name: 'Decapitalize text',
@@ -70,7 +84,8 @@ const replacedProcessors = {
 /**
  * Every text the database should be asked for, as Yomitan's translator builds them before its database lookup:
  * original substring, preprocessed text, deinflected text, preprocessor steps, condition flags, rule chains, and
- * whether an entry without a part of speech may match despite the conditions.
+ * whether an entry without a part of speech may match despite the conditions. A rule that strips a whole word
+ * (Georgian -მა from მა) leaves an empty text, which is not asked for.
  * @param {string} text
  * @param {string} language
  * @param {'letter'|'word'} searchResolution
@@ -78,7 +93,8 @@ const replacedProcessors = {
 function candidates(text, language, searchResolution) {
     prepare(language);
     const list = translator._getAlgorithmDeinflections(text, {language, searchResolution, textReplacements: [null]})
-        .filter((d) => isWellFormed(d.originalText) && isWellFormed(d.transformedText) && isWellFormed(d.deinflectedText));
+        .filter((d) => d.deinflectedText !== '' && isWellFormed(d.originalText) && isWellFormed(d.transformedText) &&
+            isWellFormed(d.deinflectedText));
     const verb = englishVerbFlags(language);
     return list.map((d) => ({
         o: d.originalText,
@@ -87,15 +103,41 @@ function candidates(text, language, searchResolution) {
         s: Math.min(...d.textProcessorRuleChainCandidates.map((chain) => chain.length)),
         c: d.conditions,
         r: d.inflectionRuleChainCandidates.map((x) => x.inflectionRules),
-        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || (untypedRules.has(language) && d.conditions !== 0),
+        u: (verb !== 0 && isUntypedPhrasalVerb(d, verb)) || isUntypedRule(d, language),
     }));
 }
 
 /**
- * Languages whose deinflected texts may match entries without a part of speech: Wiktionary's Bengali entries give
- * none, and the app's endings (own-transforms.js) are undone once only, so they do not chain without conditions.
+ * Languages whose deinflected texts may match entries without a part of speech, with the shortest such text in
+ * characters and, where only some rules may, the conditions their texts end in: Wiktionary's Bengali and Georgian
+ * entries give none. The app's Bengali endings (own-transforms.js) are undone once only and leave two characters at
+ * least. Yomitan's Georgian rules chain and cut words down to a letter or two (ვადის → ვ), which would find only the
+ * letters' entries. Wiktionary's Arabic adjectives and adverbs give none either (والطويلة → طويل), and the noun rules
+ * (prefixes, ـة, plurals, possessives) fit them; verb rules stay typed. Wiktionary's Persian and Hebrew entries give
+ * none at all; the app's Persian rules and Hebrew prefixes leave two characters at least.
+ * @type {Map<string, {shortest: number, conditions?: string[]}>}
  */
-const untypedRules = new Set(['bn']);
+const untypedRules = new Map([
+    ['bn', {shortest: 2}],
+    ['ka', {shortest: 3}],
+    ['ar', {shortest: 2, conditions: ['n']}],
+    ['fa', {shortest: 2}],
+    ['he', {shortest: 2}],
+]);
+
+/**
+ * Whether [d], a deinflected text, may match entries without a part of speech (`untypedRules`).
+ * @param {{conditions: number, deinflectedText: string}} d
+ * @param {string} language
+ */
+function isUntypedRule(d, language) {
+    const rule = untypedRules.get(language);
+    if (rule === undefined || d.conditions === 0 || [...d.deinflectedText].length < rule.shortest) { return false; }
+    if (!rule.conditions) { return true; }
+    const flags = translator._multiLanguageTransformer._languageTransformers.get(language)?._conditionTypeToConditionFlagsMap;
+    const allowed = rule.conditions.reduce((all, name) => all | (flags?.get(name) ?? 0), 0);
+    return (d.conditions & ~allowed) === 0;
+}
 
 /**
  * Adverb particles of English phrasal verbs (`phrasalVerbParticles` of Yomitan's english-transforms.js). Prepositions

@@ -128,7 +128,10 @@ object FontFiles {
         return String(bytes, charset).filterNot { it.isISOControl() }.trim().takeIf { it.isNotEmpty() }
     }
 
-    /** The `wght` axis of an `fvar` table as "min max"; null without one or when it has a single value. */
+    /**
+     * The `wght` axis of an `fvar` table as "min max"; null without one, when it has a single value, or when it does not
+     * reach the regular weight: a request for 400 would clamp to its end (Android 15's Noto Sans Khmer runs 26-190).
+     */
     private fun weightAxis(buffer: ByteBuffer, table: Int): String? {
         val axes = table + u16(buffer, table + 4)
         val count = u16(buffer, table + 8)
@@ -138,7 +141,7 @@ object FontFiles {
             if (tag(buffer, at) != "wght") continue
             val min = (buffer.getInt(at + 4) / FIXED_ONE).roundToInt().coerceIn(1, 1000)
             val max = (buffer.getInt(at + 12) / FIXED_ONE).roundToInt().coerceIn(1, 1000)
-            return if (min < max) "$min $max" else null
+            return if (min < max && min <= NORMAL_WEIGHT && max >= NORMAL_WEIGHT) "$min $max" else null
         }
         return null
     }

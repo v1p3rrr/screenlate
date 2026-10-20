@@ -110,7 +110,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             val size = Character.charCount(codePoint)
             if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size)) break
             val inWord = isWordCharacter(codePoint) ||
-                (codePoint.toChar() in WORD_CONNECTORS && index > size && isWordCharacter(before.codePointBefore(index - size)))
+                (codePoint.toChar() in wordConnectors && index > size && isWordCharacter(before.codePointBefore(index - size)))
             if (!inWord) break
             index -= size
             count++
@@ -255,11 +255,24 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         lowercase(caseLocale) in words || lowercase(Locale.ROOT) in words
 
     /**
-     * Letters, digits and combining marks: the vowel signs of Indic scripts are spacing marks (पढ़ा, বাড়ি), drawn before
-     * their letter at times; the zero-width joiners shape letters inside a word.
+     * Characters that join two words into one when they stand between word characters: the apostrophe and the hyphen
+     * (don't, well-known) and the Armenian hyphen; Hebrew adds the maqaf and the ASCII quote of its abbreviations.
+     */
+    protected open val wordConnectors: String get() = WORD_CONNECTORS
+
+    /**
+     * Punctuation the language writes inside its words: Armenian puts its emphasis, exclamation and question marks on
+     * the stressed vowel (ինչո՞ւ, կարդա՛).
+     */
+    open val wordMarks: String = ""
+
+    /**
+     * Letters, digits, combining marks and [wordMarks]: the vowel signs of Indic scripts are spacing marks (पढ़ा, বাড়ি),
+     * drawn before their letter at times; the zero-width joiners shape letters inside a word.
      */
     private fun isWordCharacter(codePoint: Int): Boolean = Character.isLetterOrDigit(codePoint) ||
-        isMark(Character.getType(codePoint)) || codePoint == ZWNJ || codePoint == ZWJ
+        isMark(Character.getType(codePoint)) || codePoint == ZWNJ || codePoint == ZWJ ||
+        (codePoint < 0x10000 && codePoint.toChar() in wordMarks)
 
     /** A letter or a combining mark: the vowel sign of "डॉ." belongs to the abbreviation. */
     private fun Char.isLetterOrMark(): Boolean = isLetter() || isMark(Character.getType(this))
@@ -275,8 +288,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         const val ZWNJ = 0x200C
         const val ZWJ = 0x200D
 
-        /** Characters inside one word: don't, rock'n'roll, well-known. */
-        const val WORD_CONNECTORS = "'’-"
+        /** Characters inside one word: don't, rock'n'roll, well-known, and the Armenian hyphen (հայ֊ռուսական). */
+        const val WORD_CONNECTORS = "'’-֊"
         const val APOSTROPHES = "'’"
 
         /** A hyphen, the Unicode hyphen and the soft hyphen, which marks a break inside a word. */

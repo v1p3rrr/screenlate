@@ -131,6 +131,7 @@
     <string name="anki_tags">タグ（スペース区切り）</string>
     <string name="anki_fields">フィールド</string>
     <string name="anki_fields_hint">テンプレートでは {expression}、{reading}、{glossary}、{sentence}、{audio}、{screenshot} などのマーカーを使います。＋ボタンで挿入できます。重複チェックには最初のフィールドが使われます。</string>
+    <string name="anki_fields_hint_rtl">右から左に書く言語では、「おすすめのテンプレートを入力」と＋ボタンが単語と文を &lt;span dir=\"rtl\"&gt;…&lt;/span&gt; で囲み、カードで読む順に表示されるようにします。重複チェックはマークアップごと比べるため、最初のフィールドには付けません。</string>
     <string name="anki_insert_marker">マーカーを挿入</string>
     <string name="anki_marker_furigana_zh">漢字の上にピンイン</string>
     <string name="anki_marker_furigana_plain_zh">ピンイン（テキスト）：你[nǐ] 好[hǎo]</string>
@@ -490,6 +491,13 @@
     <string name="popup_font_script_only_el">ギリシャ語の文字だけに使う</string>
     <string name="popup_font_script_only_hi">ヒンディー語の文字だけに使う</string>
     <string name="popup_font_script_only_bn">ベンガル語の文字だけに使う</string>
+    <string name="popup_font_script_only_ka">ジョージア語の文字だけに使う</string>
+    <string name="popup_font_script_only_hy">アルメニア語の文字だけに使う</string>
+    <string name="popup_font_script_only_th">タイ語の文字だけに使う</string>
+    <string name="popup_font_script_only_km">クメール語の文字だけに使う</string>
+    <string name="popup_font_script_only_ar">アラビア語の文字だけに使う</string>
+    <string name="popup_font_script_only_fa">ペルシア語の文字だけに使う</string>
+    <string name="popup_font_script_only_he">ヘブライ語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

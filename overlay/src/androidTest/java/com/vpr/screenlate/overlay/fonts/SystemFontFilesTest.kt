@@ -2,8 +2,15 @@ package com.vpr.screenlate.overlay.fonts
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.ArabicSupport
+import com.vpr.screenlate.core.common.language.ArmenianSupport
+import com.vpr.screenlate.core.common.language.GeorgianSupport
+import com.vpr.screenlate.core.common.language.HebrewSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
+import com.vpr.screenlate.core.common.language.KhmerSupport
+import com.vpr.screenlate.core.common.language.PersianSupport
+import com.vpr.screenlate.core.common.language.ThaiSupport
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,5 +47,68 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Devanagari serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in HindiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Georgian ones are declared for `und-Geor`. */
+    @Test
+    fun findsTheGeorgianSerifThroughItsScript() {
+        val font = SystemFontFiles.find(GeorgianSupport, serif = true)
+        assumeTrue("The phone has no Georgian serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in GeorgianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Armenian ones are declared for `und-Armn`. */
+    @Test
+    fun findsTheArmenianSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ArmenianSupport, serif = true)
+        assumeTrue("The phone has no Armenian serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ArmenianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Thai ones are declared for `und-Thai`; the sans-serif is the default font, which the page needs no name for. */
+    @Test
+    fun findsTheThaiSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ThaiSupport, serif = true)
+        assumeTrue("The phone has no Thai serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ThaiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Khmer ones are declared for `und-Khmr`; the sans-serif is reached by fallback as the Thai one. */
+    @Test
+    fun findsTheKhmerSerifThroughItsScript() {
+        val font = SystemFontFiles.find(KhmerSupport, serif = true)
+        assumeTrue("The phone has no Khmer serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in KhmerSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Noto Naskh Arabic is declared for `und-Arab`; Arabic has no sans-serif of its own on the phone. */
+    @Test
+    fun findsTheArabicSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ArabicSupport, serif = true)
+        assumeTrue("The phone has no Arabic serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ArabicSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Persian (fa-Arab) finds the same font through the script. */
+    @Test
+    fun findsTheArabicSerifForPersian() {
+        val font = SystemFontFiles.find(PersianSupport, serif = true)
+        assumeTrue("The phone has no Arabic serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in PersianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Noto Serif Hebrew is found by its script and named as the page's font face names it. */
+    @Test
+    fun findsTheHebrewSerif() {
+        val font = SystemFontFiles.find(HebrewSupport, serif = true)
+        assumeTrue("The phone has no Hebrew serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in HebrewSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

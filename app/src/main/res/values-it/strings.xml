@@ -135,6 +135,7 @@
     <string name="anki_tags">Etichette (separate da spazi)</string>
     <string name="anki_fields">Campi</string>
     <string name="anki_fields_hint">I modelli usano marcatori come {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Usa il pulsante + per inserirne uno. Il primo campo serve per il controllo dei duplicati.</string>
+    <string name="anki_fields_hint_rtl">Per una lingua scritta da destra a sinistra, «Compila con i modelli suggeriti» e il pulsante + mettono la parola e la frase dentro &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, così la scheda le mostra nell’ordine di lettura. Il primo campo non lo riceve, perché il controllo dei duplicati ne confronta il markup.</string>
     <string name="anki_insert_marker">Inserisci marcatore</string>
     <string name="anki_marker_furigana_zh">Pinyin sopra i caratteri</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin come testo: 你[nǐ] 好[hǎo]</string>
@@ -496,6 +497,13 @@
     <string name="popup_font_script_only_el">Solo per il testo greco</string>
     <string name="popup_font_script_only_hi">Solo per il testo hindi</string>
     <string name="popup_font_script_only_bn">Solo per il testo bengalese</string>
+    <string name="popup_font_script_only_ka">Solo per il testo georgiano</string>
+    <string name="popup_font_script_only_hy">Solo per il testo armeno</string>
+    <string name="popup_font_script_only_th">Solo per il testo thailandese</string>
+    <string name="popup_font_script_only_km">Solo per il testo khmer</string>
+    <string name="popup_font_script_only_ar">Solo per il testo arabo</string>
+    <string name="popup_font_script_only_fa">Solo per il testo persiano</string>
+    <string name="popup_font_script_only_he">Solo per il testo ebraico</string>
     <string name="popup_font_system_zh">Carattere cinese del telefono</string>
     <string name="popup_font_system_ko">Carattere coreano del telefono</string>
     <string name="popup_font_script_only_zh">Solo per il testo cinese</string>

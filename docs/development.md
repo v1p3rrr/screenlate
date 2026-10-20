@@ -42,6 +42,12 @@ dictionary can be built on a computer: `pip install wordfreq`, then
 `python scripts/frequency/wordfreq_dictionary.py <language> <out.zip>` (`--size` changes the number of words). Its data
 is CC BY-SA 4.0, and so is the dictionary.
 
+A language wordfreq has no list for gets one from a corpus' word counts (`"build": "corpus-counts"`, Thai: the Thai
+National Corpus counts that PyThaiNLP publishes, CC0, one `word<TAB>count` line per word). `CorpusCountsDictionary`
+ranks them in the list's order, leaving out tokens without a letter or with a space.
+`python scripts/frequency/corpus_catalog.py` checks the list and writes its entry (template `tnc`), keeping the
+download in `testdata/corpus/`, where a unit test also builds it.
+
 On-device recognition models are catalog entries of the category `OCR_MODEL` with the model's id, engine, version and
 SHA-256. Tesseract's models are the traineddata files of `tessdata_fast` and `tessdata_best` at a pinned commit,
 downloaded unchanged and kept as `tessdata/<code>.traineddata` (the entry's `file`):
@@ -97,8 +103,12 @@ check out Yomitan at the commit in `scripts/yomitan-language/yomitan-commit.txt`
 inflection rule names (`res/values/inflections_<iso>.xml` and `YomitanInflections.kt`) and lists the translations
 that are missing or no longer needed; translations are edited by hand. `glue.js` may replace a language's case
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
-descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian). The bundles and the
-strings are GPL-3.0, like the engine module that holds them.
+descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian); `addedPreprocessors`
+gives a language text processors its descriptor lacks (Georgian decapitalizing, for headings in Mtavruli capitals; the app's own ones in `own-processors.js`, such as Thai sara am, tone mark order and the spaces around ๆ, Khmer zero-width spaces and subscript TA read as DA) and
+`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes). The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`). The glue and
+`generate-inflections.mjs` take a language's rules by its descriptor and folder, whatever code the rules name
+(Georgian's say `kat`), and the generator gives English labels to rule names Yomitan leaves as identifiers (`labels`). The bundles and the strings are GPL-3.0, like the engine module that holds
+them.
 
 ## Tests
 

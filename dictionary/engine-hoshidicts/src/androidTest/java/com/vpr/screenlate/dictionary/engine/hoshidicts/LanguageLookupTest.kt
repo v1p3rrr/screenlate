@@ -299,6 +299,334 @@ class LanguageLookupTest {
         assertThat(engine.lookup("{{{3}}}ে", bengali)).isEmpty()
     }
 
+    @Test
+    fun georgianRulesFindEntriesWithoutPartOfSpeechAndMtavruliHeadingsFindTheOrdinaryLetters() = runTest {
+        val imported = engine.import(georgianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val georgian = LookupOptions(language = Language.GEORGIAN)
+
+        // The dative ending cut and the nominative -ი restored, on an entry without a part of speech.
+        val book = engine.lookup("წიგნს ვკითხულობ", georgian).first()
+        assertThat(book.term.expression).isEqualTo("წიგნი")
+        assertThat(book.matched).isEqualTo("წიგნს")
+        assertThat(book.trace.map { it.name }).containsExactly("nounAdjStemCompletion", "nounAdjSuffixStripping")
+        // Two letters left are too few: მას is not cut down to the entry მა.
+        assertThat(engine.lookup("მას", georgian)).isEmpty()
+        assertThat(engine.lookup("ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ", georgian).first().term.expression).isEqualTo("საქართველო")
+    }
+
+    @Test
+    fun armenianMarksDropTheLigatureIsTriedAndClassicalSpellingsFindTheirWord() = runTest {
+        val imported = engine.import(armenianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val armenian = LookupOptions(language = Language.ARMENIAN)
+        suspend fun first(text: String) = engine.lookup(text, armenian).first()
+
+        // A form written with the emphasis mark, found with and without it.
+        val imperative = first("կարդա")
+        assertThat(imperative.term.expression).isEqualTo("կարդալ")
+        assertThat(imperative.trace.map { it.name }).containsExactly("imperative singular")
+        assertThat(first("կարդա՛").term.expression).isEqualTo("կարդալ")
+        // The question mark on the stressed vowel.
+        val why = first("ինչո՞ւ ես")
+        assertThat(why.term.expression).isEqualTo("ինչու")
+        assertThat(why.matched).isEqualTo("ինչո՞ւ")
+        assertThat(first("ԵՐԵՎԱՆ").term.expression).isEqualTo("Երևան")
+        // "orthography spelling գիւղ" is keyed as գիւղ.
+        val village = first("գիւղ")
+        assertThat(village.term.expression).isEqualTo("գյուղ")
+        assertThat(village.trace.map { it.name }).containsExactly("traditional")
+    }
+
+    @Test
+    fun thaiTextInAnotherCharacterOrderAndMaiYamokWithoutSpacesFindTheirWords() = runTest {
+        val imported = engine.import(thaiDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val thai = LookupOptions(language = Language.THAI)
+        suspend fun first(text: String) = engine.lookup(text, thai).first()
+
+        // Letter by letter, the longest word first: Thai has no spaces between words.
+        assertThat(first("ห้องสมุดเปิดเช้า").term.expression).isEqualTo("ห้องสมุด")
+        // Sara am given as nikhahit + sara aa, the tone mark between them.
+        val water = first("น\u0E4D\u0E49\u0E32เย็น")
+        assertThat(water.term.expression).isEqualTo("น้ำ")
+        assertThat(water.matched).isEqualTo("น\u0E4D\u0E49\u0E32")
+        // Mai yamok right after its word, where the headword has a space before it.
+        val children = first("เด็กๆ ชอบเล่น")
+        assertThat(children.term.expression).isEqualTo("เด็ก ๆ")
+        assertThat(children.matched).isEqualTo("เด็กๆ")
+        // The abbreviation with paiyannoi leads to the full name.
+        assertThat(engine.lookup("กรุงเทพฯ", thai).map { it.term.expression }).contains("กรุงเทพมหานคร")
+    }
+
+    @Test
+    fun khmerSubscriptTaAndDaFindEachOtherAndZeroWidthSpacesAreDropped() = runTest {
+        val imported = engine.import(khmerDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val khmer = LookupOptions(language = Language.KHMER)
+        suspend fun first(text: String) = engine.lookup(text, khmer).first()
+
+        assertThat(first("សាលារៀនធំ").term.expression).isEqualTo("សាលារៀន")
+        // សួស្ដី is written with subscript DA, ស្ត្រី with TA; each is found as typed the other way.
+        assertThat(first("សួស្តី").term.expression).isEqualTo("សួស្ដី")
+        assertThat(first("ស្ដ្រី").term.expression).isEqualTo("ស្ត្រី")
+        assertThat(first("ស្ត្រី").term.expression).isEqualTo("ស្ត្រី")
+        // A zero-width space between words; one that ends the match stays out of it.
+        val school = first("សាលា\u200Bរៀន")
+        assertThat(school.term.expression).isEqualTo("សាលារៀន")
+        assertThat(school.matched).isEqualTo("សាលា\u200Bរៀន")
+        val me = first("ខ្ញុំ\u200Bទៅ")
+        assertThat(me.term.expression).isEqualTo("ខ្ញុំ")
+        assertThat(me.matched).isEqualTo("ខ្ញុំ")
+    }
+
+    @Test
+    fun arabicWithoutHamzaFindsHeadwordsWithItAndFormsAreCleanedAtImport() = runTest {
+        val imported = engine.import(arabicDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val arabic = LookupOptions(language = Language.ARABIC)
+        suspend fun first(text: String) = engine.lookup(text, arabic).first()
+        suspend fun all(text: String) = engine.lookup(text, arabic).map { it.term.expression }
+
+        // Text without hamza, with ي for a final ى and ه for a final ة, finds the headwords written by the norm.
+        assertThat(first("اكبر").term.expression).isEqualTo("أكبر")
+        assertThat(first("اسلام").term.expression).isEqualTo("إسلام")
+        assertThat(first("علي").term.expression).isEqualTo("على")
+        assertThat(first("لغه").term.expression).isEqualTo("لغة")
+        // A bare alif finds either hamza; a word with hamza finds only itself.
+        assertThat(all("امام")).containsAtLeast("أمام", "إمام")
+        assertThat(all("أمام")).doesNotContain("إمام")
+        // Vowel marks and tatweel in the text.
+        assertThat(first("كِتَابٌ").term.expression).isEqualTo("كتاب")
+        assertThat(first("كتـاب").term.expression).isEqualTo("كتاب")
+        // The conjunction and the article cut off an adjective, which gives no part of speech.
+        val big = first("والكبير جدا")
+        assertThat(big.term.expression).isEqualTo("كبير")
+        assertThat(big.matched).isEqualTo("والكبير")
+        // A form naming a vowelled lemma finds the headword, its tags without the template name.
+        val schools = first("مدارس")
+        assertThat(schools.term.expression).isEqualTo("مدرسة")
+        assertThat(schools.trace.map { it.name }).containsExactly("nominative plural broken-form construct diptote")
+        assertThat(all("كتب")).containsAtLeast("كتب", "كتاب")
+        // Romanized forms are dropped.
+        assertThat(engine.lookup("kutub", arabic)).isEmpty()
+    }
+
+    @Test
+    fun persianWithoutTheNonJoinerOrWithArabicLettersFindsItsWordsThroughOwnEndingsAndJoinedTries() = runTest {
+        val imported = engine.import(persianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val persian = LookupOptions(language = Language.PERSIAN)
+        suspend fun first(text: String) = engine.lookup(text, persian).first()
+
+        // The non-joiner is dropped in the text and in headwords, so either spelling finds the word.
+        assertThat(first("آنها").term.expression).isEqualTo("آن\u200Cها")
+        assertThat(first("آن\u200Cها").term.expression).isEqualTo("آن\u200Cها")
+        // A headword with the non-joiner and no form row of its spelling without it.
+        assertThat(first("زیستشناسی").term.expression).isEqualTo("زیست\u200Cشناسی")
+        // An ending after the non-joiner, read with the Arabic kaf; the entries give no part of speech.
+        val books = first("کتاب\u200Cها")
+        assertThat(books.term.expression).isEqualTo("کتاب")
+        assertThat(books.matched).isEqualTo("کتاب\u200Cها")
+        val theirBooks = first("كتابهایشان")
+        assertThat(theirBooks.term.expression).isEqualTo("کتاب")
+        assertThat(theirBooks.trace.map { it.name }).containsExactly("-ها", "-یشان")
+        // The popup shows the rules' names and descriptions in the app's language, not the affixes.
+        assertThat(theirBooks.trace.map { it.label }).containsNoneOf("", "-ها", "-یشان")
+        assertThat(theirBooks.trace.map { it.description }).doesNotContain("")
+        assertThat(first("درختان").term.expression).isEqualTo("درخت")
+        assertThat(first("ستارگان").term.expression).isEqualTo("ستاره")
+        assertThat(first("خانۀ").term.expression).isEqualTo("خانه")
+        // A verb form through its form row, with the non-joiner, without it and with the prefix written apart.
+        val want = first("میخواهم")
+        assertThat(want.term.expression).isEqualTo("خواستن")
+        assertThat(want.trace.map { it.name }).containsExactly("first-person singular present indicative")
+        assertThat(first("می\u200Cخواهم").term.expression).isEqualTo("خواستن")
+        val apart = first("می خواهم بروم")
+        assertThat(apart.term.expression).isEqualTo("خواستن")
+        assertThat(apart.matched).isEqualTo("می خواهم")
+        val biggest = first("بزرگ ترین")
+        assertThat(biggest.term.expression).isEqualTo("بزرگ")
+        assertThat(biggest.matched).isEqualTo("بزرگ ترین")
+        // One ending comes before two: خانه‌ای (a house) is خانه before خان through -ی and -ها.
+        assertThat(first("خانه\u200Cای").term.expression).isEqualTo("خانه")
+        // Cyrillic Tajik forms are not keyed.
+        assertThat(engine.lookup("ҳалол", persian)).isEmpty()
+        assertThat(first("حلال").term.expression).isEqualTo("حلال")
+    }
+
+    /**
+     * Rows as Wiktionary's Persian exports write them: no part of speech, Latin readings, headwords with the non-joiner
+     * (one with its spelling without it as a form row), a verb form, a Cyrillic Tajik form.
+     */
+    private fun persianDictionary(): File = zip(
+        "fa.zip",
+        "index.json" to """{"title":"Test Persian","revision":"1","format":3,"sourceLanguage":"fa"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["کتاب","kitāb","n","",0,["book"],1,""],
+              ["آن${ZWNJ}ها","ân-hâ","pron","",0,["they"],2,""],
+              ["آنها","","non-lemma","",0,[["آن${ZWNJ}ها",["alternative"]]],3,""],
+              ["خواستن","xwāstan","v","",0,["to want"],4,""],
+              ["میخواهم","","non-lemma","",0,[["خواستن",["first-person singular present indicative"]]],5,""],
+              ["بزرگ","buzurg","adj","",0,["big"],6,""],
+              ["درخت","daraxt","n","",0,["tree"],7,""],
+              ["ستاره","sitāra","n","",0,["star"],8,""],
+              ["خانه","xāna","n","",0,["house"],9,""],
+              ["خان","xān","n","",0,["khan"],10,""],
+              ["حلال","halâl","adj","",0,["halal"],11,""],
+              ["ҳалол","","non-lemma","",0,[["حلال",["Cyrillic Tajik"]]],12,""],
+              ["زیست${ZWNJ}شناسی","zīst-šināsī","n","",0,["biology"],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
+    fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
+        val imported = engine.import(hebrewDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val hebrew = LookupOptions(language = Language.HEBREW)
+        suspend fun first(text: String) = engine.lookup(text, hebrew).first()
+
+        assertThat(first("כלב").term.expression).isEqualTo("כלב")
+        // Pointed text through the pointed form row and without its points.
+        assertThat(first("כֶּלֶב").term.expression).isEqualTo("כלב")
+        assertThat(first("הַכֶּלֶב").term.expression).isEqualTo("כלב")
+        // Two prefixes, then a form whose lemma is named pointed; the entries give no part of speech.
+        assertThat(first("והכלבים").term.expression).isEqualTo("כלב")
+        val house = first("והבית")
+        assertThat(house.term.expression).isEqualTo("בית")
+        assertThat(house.matched).isEqualTo("והבית")
+        assertThat(house.trace.map { it.name }).containsExactly("ה-", "ו-")
+        // The popup shows the rules' names and descriptions in the app's language, not the prefixes.
+        assertThat(house.trace.map { it.label }).containsNoneOf("", "ה-", "ו-")
+        assertThat(house.trace.map { it.description }).doesNotContain("")
+        assertThat(first("כשהגעתי").term.expression).isEqualTo("הגיע")
+        // Three letters at most: ושמהבית would need ו ש מ and the article.
+        assertThat(engine.lookup("ושמהבית", hebrew).map { it.term.expression }).doesNotContain("בית")
+        // A letter and one more stay: לא is not א.
+        assertThat(engine.lookup("לא", hebrew).map { it.term.expression }).containsExactly("לא")
+        // ASCII quotes stand for the gershayim and the geresh.
+        assertThat(first("צה\"ל").term.expression).isEqualTo("צה״ל")
+        assertThat(first("ג'ירפה").term.expression).isEqualTo("ג׳ירפה")
+        assertThat(first("בית־ספר").term.expression).isEqualTo("בית־ספר")
+        // Forms in no Hebrew letter are not keyed.
+        assertThat(engine.lookup("𐤊𐤋𐤁", hebrew)).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Hebrew exports write them: unpointed headwords without a part of speech or a reading,
+     * pointed forms, a form naming its lemma pointed, a construct form with its maqaf, a Phoenician spelling.
+     */
+    private fun hebrewDictionary(): File = zip(
+        "he.zip",
+        "index.json" to """{"title":"Test Hebrew","revision":"1","format":3,"sourceLanguage":"he"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["כלב","","n masc","",0,["dog"],1,""],
+              ["בית","","n masc","",0,["house"],2,""],
+              ["בית־ספר","","n masc","",0,["school"],3,""],
+              ["צה״ל","","name","",0,["IDF"],4,""],
+              ["ג׳ירפה","","n fem","",0,["giraffe"],5,""],
+              ["לא","","particle","",0,["not"],6,""],
+              ["הגיע","","v","",0,["to arrive"],7,""],
+              ["כֶּלֶב","","non-lemma","",0,[["כלב",["singular indefinite masculine"]]],8,""],
+              ["כלבים","","non-lemma","",0,[["כֶּלֶב",["plural indefinite form"]]],9,""],
+              ["בֵּית־","","non-lemma","",0,[["בית",["singular construct"]]],10,""],
+              ["הגעתי","","non-lemma","",0,[["הגיע",["first-person singular past"]]],11,""],
+              ["𐤊𐤋𐤁","","non-lemma","",0,[["כלב",["Phoenician"]]],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /**
+     * Rows as Wiktionary's Arabic exports write them: unvowelled headwords with the vowelled spelling as the reading,
+     * adjectives without a part of speech, forms naming vowelled lemmas, template names among tags, romanized forms.
+     */
+    private fun arabicDictionary(): File = zip(
+        "ar.zip",
+        "index.json" to """{"title":"Test Arabic","revision":"1","format":3,"sourceLanguage":"ar"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["كتاب","كِتَاب","n masc","n",0,["book"],1,""],
+              ["كتب","كَتَبَ","v vt","v",0,["to write"],2,""],
+              ["كبير","كَبِير","adj","",0,["big"],3,""],
+              ["أكبر","أَكْبَر","adj","",0,["bigger"],4,""],
+              ["إسلام","إِسْلَام","name","",0,["Islam"],5,""],
+              ["على","عَلَى","prep","",0,["on"],6,""],
+              ["لغة","لُغَة","n fem","n",0,["language"],7,""],
+              ["أمام","أَمَامَ","prep","",0,["in front of"],8,""],
+              ["إمام","إِمَام","n masc","n",0,["imam"],9,""],
+              ["مدرسة","مَدْرَسَة","n fem","n",0,["school"],10,""],
+              ["كتب","كُتُب","non-lemma","n",0,[["كِتَاب",["plural"]]],11,""],
+              ["مدارس","مَدَارِسُ","non-lemma","n",0,[["مَدْرَسَة",["nominative plural broken-form construct ar-infl-a diptote"]]],12,""],
+              ["kutub","","non-lemma","n",0,[["كتاب",["plural"]]],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Rows as Wiktionary's Khmer exports write them, subscript DA in some words and TA in others. */
+    private fun khmerDictionary(): File = zip(
+        "km.zip",
+        "index.json" to """{"title":"Test Khmer","revision":"1","format":3,"sourceLanguage":"km"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["ខ្ញុំ","","pron","",0,["I"],1,""],
+              ["សាលា","","n","",0,["hall"],2,""],
+              ["សាលារៀន","","n","",0,["school"],3,""],
+              ["សួស្ដី","","intj","",0,["hello"],4,""],
+              ["ស្ត្រី","","n","",0,["woman"],5,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Rows as Wiktionary's Thai exports write them: a classifier row for each noun it counts. */
+    private fun thaiDictionary(): File = zip(
+        "th.zip",
+        "index.json" to """{"title":"Test Thai","revision":"1","format":3,"sourceLanguage":"th"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["น้ำ","","n","",0,["water"],1,""],
+              ["เด็ก","","n","",0,["child"],2,""],
+              ["เด็ก ๆ","","n","",0,["children"],3,""],
+              ["ห้อง","","n","",0,["room"],4,""],
+              ["ห้องสมุด","","n","",0,["library"],5,""],
+              ["ห้อง","","non-lemma","",0,[["ห้องสมุด",["classifier"]]],6,""],
+              ["กรุงเทพมหานคร","","name","",0,["Bangkok"],7,""],
+              ["กรุงเทพฯ","","non-lemma","",0,[["กรุงเทพมหานคร",["alternative abbreviation"]]],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Rows as Wiktionary's Armenian exports write them, the classical spelling after its label. */
+    private fun armenianDictionary(): File = zip(
+        "hy.zip",
+        "index.json" to """{"title":"Test Armenian","revision":"1","format":3,"sourceLanguage":"hy"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["կարդալ","","v","",0,["to read"],1,""],
+              ["կարդա՛","","non-lemma","",0,[["կարդալ",["imperative singular"]]],2,""],
+              ["ինչու","","adv","",0,["why"],3,""],
+              ["Երևան","","name","",0,["Yerevan"],4,""],
+              ["գյուղ","","n","",0,["village"],5,""],
+              ["orthography spelling գիւղ","","non-lemma","",0,[["գյուղ",["traditional"]]],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    /** Rows as Wiktionary's Georgian exports write them: no parts of speech. */
+    private fun georgianDictionary(): File = zip(
+        "ka.zip",
+        "index.json" to """{"title":"Test Georgian","revision":"1","format":3,"sourceLanguage":"ka"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["წიგნი","","n","",0,["book"],1,""],
+              ["მა","","n col","",0,["a made-up collective noun"],2,""],
+              ["საქართველო","","name","",0,["Georgia"],3,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     private fun ukrainianDictionary(): File = zip(
         "uk.zip",
         "index.json" to """{"title":"Test Ukrainian","revision":"1","format":3,"sourceLanguage":"uk"}""".toByteArray(),
@@ -462,5 +790,11 @@ class LanguageLookupTest {
     private companion object {
         /** The table's file name inside a dictionary directory (`HoshidictsEngine`). */
         const val FORM_OF_TABLE = "form_of.bin"
+
+        /**
+         * The zero-width non-joiner, written into raw JSON as the character itself, as Wiktionary's exports hold it:
+         * hoshidicts keeps a headword's JSON escapes (`\u200C`) as written.
+         */
+        const val ZWNJ = "\u200C"
     }
 }

@@ -60,10 +60,12 @@ import com.vpr.screenlate.core.anki.AnkiProblem
 import com.vpr.screenlate.core.anki.AnkiStatus
 import com.vpr.screenlate.core.anki.CheckOutcome
 import com.vpr.screenlate.core.anki.message
+import com.vpr.screenlate.core.anki.note.FieldTemplate
 import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.anki.settings.DuplicateScope
 import com.vpr.screenlate.core.anki.settings.OverwriteMode
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.languages.LanguageCard
 import com.vpr.screenlate.languages.furiganaMarkerHints
 import com.vpr.screenlate.settings.SectionResetButton
@@ -339,7 +341,12 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
 
     if (state.fieldNames.isNotEmpty()) {
         SectionCard(title = stringResource(R.string.anki_fields)) {
-            LabelWithInfo(stringResource(R.string.anki_fields_how), stringResource(R.string.anki_fields_hint))
+            val hint = stringResource(R.string.anki_fields_hint)
+            val rightToLeftHint = stringResource(R.string.anki_fields_hint_rtl)
+            LabelWithInfo(
+                stringResource(R.string.anki_fields_how),
+                if (state.language.support.rightToLeft) "$hint\n\n$rightToLeftHint" else hint,
+            )
             OutlinedButton(onClick = viewModel::suggestTemplates, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.anki_suggest_templates), textAlign = TextAlign.Center)
             }
@@ -350,6 +357,9 @@ private fun NoteSettings(state: AnkiScreenState, viewModel: AnkiSettingsViewMode
                     template = settings.fields[field].orEmpty(),
                     markers = state.markers,
                     hints = state.language.furiganaMarkerHints,
+                    addMarker = { text, marker ->
+                        FieldTemplate.withMarker(text, marker, state.language, firstField = field == state.fieldNames.first())
+                    },
                     onChange = { viewModel.setFieldTemplate(field, it) },
                 )
                 if (overwrite) {
@@ -462,13 +472,17 @@ private fun <T> Picker(label: String, value: String?, options: List<T>, name: (T
     }
 }
 
-/** A field's template with a + menu of [markers]; [hints] puts a second line under some of them. */
+/**
+ * A field's template with a + menu of [markers]; [hints] puts a second line under some of them. [addMarker] gives the
+ * template with a picked marker added (in a right-to-left span for such a language's text).
+ */
 @Composable
 internal fun TemplateField(
     field: String,
     template: String,
     markers: List<String>,
     hints: Map<String, Int> = emptyMap(),
+    addMarker: (template: String, marker: String) -> String = { text, marker -> "$text{$marker}" },
     onChange: (String) -> Unit,
 ) {
     var text by remember(field) { mutableStateOf(template) }
@@ -510,7 +524,7 @@ internal fun TemplateField(
                             },
                             onClick = {
                                 menu = false
-                                text += "{$marker}"
+                                text = addMarker(text, marker)
                                 onChange(text)
                             },
                         )

@@ -133,6 +133,7 @@
     <string name="anki_tags">Schlagwörter (durch Leerzeichen getrennt)</string>
     <string name="anki_fields">Felder</string>
     <string name="anki_fields_hint">Vorlagen nutzen Marker wie {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Mit der Schaltfläche + fügst du einen ein. Das erste Feld dient der Duplikatprüfung.</string>
+    <string name="anki_fields_hint_rtl">Bei einer Sprache, die von rechts nach links geschrieben wird, setzen „Vorgeschlagene Vorlagen einsetzen“ und die Schaltfläche + das Wort und den Satz in &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, damit die Karte sie in Leserichtung zeigt. Das erste Feld bekommt das nicht, weil die Duplikatprüfung sein Markup vergleicht.</string>
     <string name="anki_insert_marker">Marker einfügen</string>
     <string name="anki_marker_furigana_zh">Pinyin über den Schriftzeichen</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin als Text: 你[nǐ] 好[hǎo]</string>
@@ -493,6 +494,13 @@
     <string name="popup_font_script_only_el">Nur für griechischen Text</string>
     <string name="popup_font_script_only_hi">Nur für Hindi-Text</string>
     <string name="popup_font_script_only_bn">Nur für bengalischen Text</string>
+    <string name="popup_font_script_only_ka">Nur für georgischen Text</string>
+    <string name="popup_font_script_only_hy">Nur für armenischen Text</string>
+    <string name="popup_font_script_only_th">Nur für thailändischen Text</string>
+    <string name="popup_font_script_only_km">Nur für Khmer-Text</string>
+    <string name="popup_font_script_only_ar">Nur für arabischen Text</string>
+    <string name="popup_font_script_only_fa">Nur für persischen Text</string>
+    <string name="popup_font_script_only_he">Nur für hebräischen Text</string>
     <string name="popup_font_system_zh">Chinesische Schrift des Telefons</string>
     <string name="popup_font_system_ko">Koreanische Schrift des Telefons</string>
     <string name="popup_font_script_only_zh">Nur für chinesischen Text</string>

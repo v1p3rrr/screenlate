@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary
 import com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -68,10 +69,10 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `every source language but Japanese has a frequency dictionary built from wordfreq`() {
-        val built = catalog!!.entries.filter { it.build != null }
+    fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
+        val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -93,6 +94,23 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `thai has a frequency dictionary built from the corpus counts of PyThaiNLP`() {
+        val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th")
+        val thai = built.single()
+        assertThat(thai.category).isEqualTo(CatalogCategory.FREQUENCY)
+        assertThat(thai.recommended).isTrue()
+        assertThat(thai.sha256).matches("[0-9a-f]{64}")
+        assertThat(thai.downloadUrl).matches(
+            "https://raw\\.githubusercontent\\.com/PyThaiNLP/pythainlp/[0-9a-f]{40}/pythainlp/corpus/tnc_freq\\.txt",
+        )
+        assertThat(thai.oldTitles).containsExactly(CorpusCountsDictionary.title("th"))
+        assertThat(thai.titles.keys).containsAtLeastElementsIn(locales)
+        assertThat(thai.displayTitle(Locale.ENGLISH)).isEqualTo("Word frequency (Thai National Corpus)")
+        assertThat(legacy!!.entries.none { it.id == thai.id }).isTrue()
+    }
+
+    @Test
     fun `each language pair has one recommended main dictionary`() {
         val main = catalog!!.entries.filter { it.category == CatalogCategory.MAIN && it.recommended }
         val pairs = main.map { it.sourceLanguage to it.targetLanguage }
@@ -100,6 +118,38 @@ class CatalogFileTest {
         assertThat(main.first { it.sourceLanguage == "ja" && it.targetLanguage == "en" }.id).isEqualTo("jitendex")
         assertThat(pairs).contains("en" to "en")
         assertThat(catalog.mandatory("en")).containsExactly(CatalogCategory.MAIN)
+    }
+
+    @Test
+    fun `khmer offers the english and russian wiktionaries, transcriptions and tesseract fast, ticked, and no frequency`() {
+        val khmer = catalog!!.entries.filter { it.sourceLanguage == "km" }
+        assertThat(khmer.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-km-en", "wiktionary-km-ru", "wiktionary-km-transcription", "tesseract-fast-khm",
+        )
+        assertThat(khmer.map { it.id }).contains("tesseract-best-khm")
+        assertThat(khmer.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+    }
+
+    @Test
+    fun `persian offers five wiktionaries, its transcription and wordfreq's small list, ticked, and no on-device model`() {
+        val persian = catalog!!.entries.filter { it.sourceLanguage == "fa" }
+        assertThat(persian.map { it.id }).containsExactly(
+            "wiktionary-fa-en", "wiktionary-fa-ru", "wiktionary-fa-fr", "wiktionary-fa-pl", "wiktionary-fa-zh",
+            "wiktionary-fa-transcription", "wordfreq-fa",
+        )
+        assertThat(persian.all { it.recommended }).isTrue()
+        assertThat(persian.first { it.id == "wordfreq-fa" }.downloadUrl).endsWith("/small_fa.msgpack.gz")
+    }
+
+    @Test
+    fun `hebrew offers six wiktionaries, its transcription, wordfreq's large list and tesseract fast, ticked, and best`() {
+        val hebrew = catalog!!.entries.filter { it.sourceLanguage == "he" }
+        assertThat(hebrew.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-he-en", "wiktionary-he-ru", "wiktionary-he-es", "wiktionary-he-ja", "wiktionary-he-pl",
+            "wiktionary-he-zh", "wiktionary-he-transcription", "wordfreq-he", "tesseract-fast-heb",
+        )
+        assertThat(hebrew.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-heb")
+        assertThat(hebrew.first { it.id == "wordfreq-he" }.downloadUrl).endsWith("/large_he.msgpack.gz")
     }
 
     @Test

@@ -22,6 +22,7 @@ import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.dictionary.api.DictionaryImportException
 import com.vpr.screenlate.dictionary.api.R
 import com.vpr.screenlate.dictionary.api.catalog.ASSET_URL_PREFIX
+import com.vpr.screenlate.dictionary.api.catalog.BUILD_CORPUS_COUNTS
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
@@ -503,7 +504,11 @@ class DictionaryImportWorker @AssistedInject constructor(
         val archive = storage.newArchiveFile()
         try {
             val started = System.currentTimeMillis()
-            val words = WordfreqDictionary.build(source, entry.sourceLanguage, requireNotNull(entry.version), archive)
+            val version = requireNotNull(entry.version)
+            val words = when (entry.build) {
+                BUILD_CORPUS_COUNTS -> CorpusCountsDictionary.build(source, entry.sourceLanguage, version, archive)
+                else -> WordfreqDictionary.build(source, entry.sourceLanguage, version, archive)
+            }
             Log.i(TAG, "Built ${entry.id}: $words words, ${archive.length() shr 10} KB in ${System.currentTimeMillis() - started} ms")
             currentCoroutineContext().ensureActive()
             setProgress(workDataOf(KEY_NAME to name, KEY_STAGE to STAGE_IMPORT))

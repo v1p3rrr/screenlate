@@ -111,7 +111,7 @@ class AccessibilityText(private val service: AccessibilityService) {
         if (node.isEditable) {
             val bounds = Rect().also(node::getBoundsInScreen)
             val field = Box(bounds.left.toFloat(), bounds.top.toFloat(), bounds.right.toFloat(), bounds.bottom.toFloat())
-            if (startsAtCorner(field, lines.first().characterBoxes!!.first())) {
+            if (startsAtCorner(field, lines.first().words.single().characterBoxes!!.first())) {
                 stats.fieldsAtCorner++
                 return null
             }
@@ -122,7 +122,7 @@ class AccessibilityText(private val service: AccessibilityService) {
             stats.sharedBoxes++
             return null
         }
-        return OcrParagraph(lines.map { OcrLine(listOf(it), it.box, vertical = false) })
+        return OcrParagraph(lines)
     }
 
     private companion object {
@@ -134,47 +134,96 @@ class AccessibilityText(private val service: AccessibilityService) {
 
 /**
  * A node's text as lines, one word each, from its code points and their boxes on screen (null where a character has no
- * visible location). A character without a location ends the line, and so does one that starts left of the previous
- * one or below it. Where a space or line break without a location ends it, the line takes [separator], so the words
- * on both sides of a wrap stay apart in a language written with spaces. A combining mark typed apart (a stress or tone
- * mark: ко́шка, hoà) has an empty box in a text view; it stays with its letter and takes the letter's box.
+ * visible location). A character without a location ends the line, and so does one below the previous one or one that
+ * starts back against the direction of its paragraph, as a wrapped line does. Where a space or line break without a
+ * location ends it, the line takes [separator], so the words on both sides of a wrap stay apart in a language written
+ * with spaces. A combining mark typed apart (a stress or tone mark: ко́шка, hoà; harakat) has an empty box in a text
+ * view; it stays with its letter and takes the letter's box. A paragraph whose first letter of a strong direction is
+ * Arabic or Hebrew gives right-to-left lines, as a text view lays it out.
  */
-internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: String): List<OcrWord> {
-    val lines = mutableListOf<OcrWord>()
+internal fun appTextLines(characters: List<Pair<String, Box?>>, separator: String): List<OcrLine> {
+    val rightToLeft = paragraphDirections(characters.map { it.first })
+    val lines = mutableListOf<OcrLine>()
     var current = mutableListOf<Pair<String, Box>>()
+    var currentRightToLeft = false
     fun endLine(spaced: Boolean) {
         if (current.isEmpty()) return
-        lines += OcrWord(
+        val word = OcrWord(
             text = current.joinToString("") { it.first },
             separator = if (spaced) separator else "",
             box = Box.unionOf(current.map { it.second })!!,
             characterBoxes = current.map { it.second },
         )
+        lines += OcrLine(listOf(word), word.box, vertical = false, rightToLeft = currentRightToLeft)
         current = mutableListOf()
     }
     // Characters without a location since the last visible one, and whether a space or line break was among them.
     var broken = false
     var spaced = false
-    for ((character, box) in characters) {
-        val previous = current.lastOrNull()?.second
+    characters.forEachIndexed { index, (character, box) ->
+        val last = current.lastOrNull()
+        val previous = last?.second
         if (box == null && previous != null && !broken && isCombiningMark(character)) {
             current += character to previous
-            continue
+            return@forEachIndexed
         }
         if (box == null) {
             broken = true
             if (character.isBlank()) spaced = true
-            continue
+            return@forEachIndexed
         }
-        if (broken || previous != null && (box.left < previous.left - previous.width / 2 || box.top >= previous.bottom)) {
+        if (broken || last != null && (box.top >= last.second.bottom || startsBack(character to box, last, rightToLeft[index]))) {
             endLine(spaced)
         }
         broken = false
         spaced = false
+        if (current.isEmpty()) currentRightToLeft = rightToLeft[index]
         current += character to box
     }
     endLine(spaced)
     return lines
+}
+
+/** Per character, whether its paragraph (up to a line break) has an Arabic or Hebrew letter before any Latin one. */
+private fun paragraphDirections(characters: List<String>): BooleanArray {
+    val result = BooleanArray(characters.size)
+    var start = 0
+    while (start < characters.size) {
+        var end = start
+        while (end < characters.size && characters[end] != "\n") end++
+        val rightToLeft = characters.subList(start, end).firstNotNullOfOrNull(::strongDirection) == true
+        for (i in start until minOf(end + 1, characters.size)) result[i] = rightToLeft
+        start = end + 1
+    }
+    return result
+}
+
+/**
+ * Whether [character] lies back against its paragraph's direction by half the previous box's width, as the first one
+ * of a wrapped line does, and is no part of a run in the other direction: a letter of that direction, a digit in a
+ * right-to-left paragraph (where numbers run left to right) or a sign right after one moves that way within a line
+ * (an Arabic word in an English line, iPhone 15 in an Arabic one).
+ */
+private fun startsBack(character: Pair<String, Box>, previous: Pair<String, Box>, rightToLeft: Boolean): Boolean {
+    val (text, box) = character
+    val (previousText, previousBox) = previous
+    val back = if (rightToLeft) {
+        box.right > previousBox.right + previousBox.width / 2
+    } else {
+        box.left < previousBox.left - previousBox.width / 2
+    }
+    if (!back) return false
+    fun otherWay(text: String) =
+        strongDirection(text) == !rightToLeft || rightToLeft && Character.isDigit(text.codePointAt(0))
+    val neutral = strongDirection(text) == null && !Character.isDigit(text.codePointAt(0))
+    return !otherWay(text) && !(neutral && otherWay(previousText))
+}
+
+/** True for an Arabic or Hebrew letter, false for a letter written left to right, null for digits, signs and marks. */
+private fun strongDirection(character: String): Boolean? = when (Character.getDirectionality(character.codePointAt(0))) {
+    Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC -> true
+    Character.DIRECTIONALITY_LEFT_TO_RIGHT -> false
+    else -> null
 }
 
 private fun isCombiningMark(character: String): Boolean = when (Character.getType(character.codePointAt(0))) {

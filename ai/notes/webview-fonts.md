@@ -23,6 +23,17 @@ Findings from the emulator (Android 17, WebView/Chrome), 2026-09-27.
   the serif one by `NotoSerifDevanagari-Regular`, `Noto Serif Devanagari Regular` and `Noto Serif Devanagari`. On the
   Android 17 emulator the first two load and the family name does not; Noto Sans Devanagari loads by its PostScript
   name only.
+- Arabic and Hebrew (2026-10-20, Android 17 emulator, `FontFace(...).load()` in the lookup page): Android's regular
+  Naskh file names itself `NotoNaskhArabic` (PostScript) and `Noto Naskh Arabic` (full name), with no "Regular";
+  both load, and so does `Noto Naskh Arabic UI`. The bold file is `NotoNaskhArabic-Bold` / `Noto Naskh Arabic Bold`.
+  Google Fonts' copy of the same font adds "-Regular" / " Regular", so `ArabicSupport.systemFonts.serif` lists both
+  forms, Android's first. Hebrew: `NotoSansHebrew-Regular`, `Noto Sans Hebrew Regular`, `NotoSerifHebrew-Regular`,
+  `Noto Serif Hebrew Regular` and their `-Bold` / ` Bold` names load; the family names alone do not. Arabic
+  declares no sans face: the default font falls back to the system's Arabic font by itself.
+- Hebrew downloads (Hebrew branch, 2026-10-20): Heebo (sans-serif, 0.1 MB) and Frank Ruhl Libre (serif, 0.2 MB) from
+  Google Fonts' `hebrew` subset. A downloaded Heebo, chosen "only for Hebrew text", is declared as "Screenlate Chosen"
+  with the Hebrew range (U+0590-05FF and the marks U+0307-0308, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F) and loads
+  for שלום; the phone's Noto Serif Hebrew loads as "Screenlate Serif" through its `local()` names.
 - Family names in plain CSS (`font-family: "Noto Sans CJK JP"`) do not reach system fallback fonts; only the families and aliases of `fonts.xml` (sans-serif, serif, monospace, arial, times, courier, …) resolve by name.
 - The system face is declared with the script's `unicode-range`, so Latin and Cyrillic keep Roboto.
 - The chosen installed font is always declared a second time as `"Screenlate Chosen"` (with the script's `unicode-range` when it is "only for Japanese text"), and the page font list names only that alias. Its own family name stays unlimited for custom CSS; naming the family itself in the list would mix in other installed fonts of the same family (an own file "Klee One" next to the downloaded one). A range-limited face loads only for characters in its range, so `document.fonts.load` needs a sample text (`preloadText`, the language's `fontSample`); with the default single space nothing loads.

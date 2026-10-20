@@ -192,6 +192,50 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - `CropEditor` removes its window through a main-thread Handler on coroutine cancellation (`View.post` never runs on
   a view that was not attached); `CropEditorTest` records windows through a `WindowManager` proxy.
 
+## Right-to-left lines (2026-10-20)
+
+Every engine gives words with boxes; `OcrLine.rightToLeft` tells `TextLayout` to share a word's box among its
+characters from the right. Harakat, like Thai marks, take no share (`TextLayout` counts columns, not code points). The
+text of a line is kept in reading (logical) order, which each engine reaches its own way:
+
+- PaddleOCR's Arabic model reads each crop from left to right, so `readingOrder` (`paddle/RightToLeft.kt`) reverses a
+  line's characters back. What stays in its order: runs of Latin letters with digits, spaces and `: * . , / % + - ٫ ٬`
+  among them, and numbers in digits of any script (ASCII, Arabic-Indic ٠–٩, Persian ۰–۹). A crop of an Arabic line
+  shows what the bidirectional algorithm drew, and there a number holds together only through `. , : / ٫ ٬` between
+  two digits (10:30, 12.5). Signs at a run's edge and a number's `% + - *` are weak or neutral, drawn on the run's
+  other side: "الرصيف 5." is read ".5 فيصرلا", "50%" as "%50"; the research's exception for `%` was dropped after
+  checking the algorithm's rules (W1–W7, N1). Brackets and quotes outside Latin runs come back mirrored, as drawn.
+  Words are split again at the spaces.
+- Cloud recognition gives Arabic lines word by word in reading order, but Hebrew and Persian ones word by word from
+  right to left on the screen, which reverses a run of Latin words (`קניתי 15 iPhone` came back with iPhone before
+  15 in the samples of the research). `LensProtocol.leftToRightRuns` sorts each run of words without right-to-left
+  letters by their left edges when one of them has a left-to-right letter; numbers alone keep the order given, and
+  separators stay in their places. The request names Hebrew `he`, which cloud recognition reads; the response's
+  `content_language` (`iw` for Hebrew) is not read.
+- Some Hebrew lines come in neither order (Hebrew branch, emulator, 2026-10-20): "קניתי iPhone 15 ב־3,500 ₪ היום."
+  came as ".ב־ 3,500 ₪ היום iPhone 15 קניתי", the period joined to ב־ in one box spanning both, while the boxes
+  themselves were right. `LensProtocol.inReadingOrder` compares the given order, Latin runs put back, with the order
+  of the boxes' right edges; when they differ it takes the boxes' order and sets the separators from the gaps: a space
+  where two boxes are 0.15 of the line's height apart or more. On that image word gaps were 19-28 px and the gaps
+  before a period or a comma 2-6 px. Lines in order keep Lens's separators.
+- Cloud recognition on Hebrew gives the gershayim and the geresh as ASCII `"` and `'` (צה"ל, ג'ירפה) and the maqaf
+  as a word break (ובית־חולים as ובית חולים, so the lookup finds the phrase בית חולים); the bundle's `hebrewQuotes`
+  and the word connectors handle the quotes.
+- Tesseract `ara` (emulator, `testdata/ocr/ar-lines.png`, 2026-10-20): the result iterator walks a line's words in
+  reading order, right-to-left runs included, and gives a word's symbols in logical order (the rightmost first);
+  `TesseractOcrEngine` marks a line right to left by its text (`isRightToLeftText`). It reads harakat (كِتَابًا).
+  Latin words come out garbled, "50%" as 9650, and a Latin comma stands for ،. The first symbol of a vowelled word
+  sometimes gets a box from the line's start, so the word's box (and the highlight) reached over the words before
+  it: a word box that reaches past the centre of the word before it is cut at that word's edge (`cutAt`), and its
+  symbol boxes are dropped when one falls outside the cut box, so `TextLayout` shares the box instead. A band took
+  about 0.4 s, the cloud's final result about 1.5 s.
+- Tesseract `heb` fast (emulator, `testdata/ocr/he-lines.png`, 2026-10-20, offline): the draft band in about
+  0.4 s, the whole screen in 1.4 s. It read ארה"ב and ג'ירפה with ASCII quotes, the maqaf as a hyphen, pointed
+  words with some points lost or changed (קוֹרֵא as קורא, סֵפֶר as סְפַר), once the gershayim of צה״ל as יי (וצהייל),
+  and "iPhone" garbled; it joins the lines of the image into fewer paragraphs than cloud recognition (2-4 against 6).
+- ML Kit has no Arabic model: `MlKitOcrEngine` maps `OcrScript.ARABIC` to none, and the language offers PaddleOCR,
+  Tesseract and cloud recognition.
+
 ## App text (accessibility tree)
 
 - Known bad character boxes, both left to OCR:
@@ -202,6 +246,12 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
 - A WebView's text (the search screen's result page) did not show up as text nodes at all; OCR covers it.
 - A text view gives a combining mark typed apart (U+0301, U+0300) an empty box; `appTextLines` keeps it with its
   letter in the letter's box instead of dropping it and ending the line there.
+- A paragraph of app text (up to a line break) whose first letter of a strong direction is Arabic or Hebrew gives
+  right-to-left lines (`appTextLines`, `paragraphDirections`), as a text view lays it out. A wrapped line is found
+  where a character starts back against the paragraph's direction by half the previous box's width (to the right in
+  a right-to-left paragraph); a letter of the other direction, a digit in a right-to-left paragraph or a sign right
+  after one does not end the line, so `iPhone 15` inside an Arabic line and an Arabic word in an English one stay
+  in their lines.
 - App text takes precedence over OCR where both have text; unknown apps with other box errors would show a shifted
   highlight or find a neighboring word. That is why "App text first" stays experimental and off by default (owner,
   2026-09-28).

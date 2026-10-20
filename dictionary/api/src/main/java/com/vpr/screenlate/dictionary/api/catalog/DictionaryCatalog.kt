@@ -89,7 +89,8 @@ enum class CatalogCategory {
  * @property version [model]'s version; an installed copy of another version is replaced. For [build], the version of
  *   the data the downloaded file holds.
  * @property build how the app builds the dictionary from the downloaded file instead of importing it as it is:
- *   [BUILD_WORDFREQ] for one of wordfreq's word lists ([com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary]).
+ *   [BUILD_WORDFREQ] for one of wordfreq's word lists ([com.vpr.screenlate.dictionary.api.imports.WordfreqDictionary]),
+ *   [BUILD_CORPUS_COUNTS] for a corpus' word counts ([com.vpr.screenlate.dictionary.api.imports.CorpusCountsDictionary]).
  */
 @Serializable
 data class CatalogEntry(
@@ -206,7 +207,10 @@ const val ASSET_URL_PREFIX = "asset:///"
 /** [CatalogEntry.build] of a frequency dictionary built from a wordfreq word list. */
 const val BUILD_WORDFREQ = "wordfreq"
 
-private val BUILDS = setOf(BUILD_WORDFREQ)
+/** [CatalogEntry.build] of a frequency dictionary built from a corpus' word counts. */
+const val BUILD_CORPUS_COUNTS = "corpus-counts"
+
+private val BUILDS = setOf(BUILD_WORDFREQ, BUILD_CORPUS_COUNTS)
 
 /**
  * Imports measured so far stay below these: term dictionaries take 2-2.5 times their archive, Wiktionary glossaries 3,

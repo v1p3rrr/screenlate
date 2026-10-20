@@ -1,6 +1,8 @@
 package com.vpr.screenlate.core.ocr.lens
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.ocr.OcrWord
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -101,6 +103,64 @@ class LensProtocolTest {
         val vertical = lines.first { it.text.startsWith("縦書き") }
         assertThat(vertical.vertical).isTrue()
         assertThat(vertical.box.centerX).isGreaterThan(1200f)
+    }
+
+    @Test
+    fun `a Latin run in a right-to-left line comes back left to right`() {
+        fun word(text: String, left: Float, separator: String = " ") =
+            OcrWord(text, separator, Box(left, 0f, left + 10f * text.length, 20f))
+        // "קניתי iPhone 15 Pro, עכשיו" given from right to left by the boxes.
+        val words = listOf(
+            word("קניתי", 300f),
+            word("Pro", 250f),
+            word("15", 220f),
+            word("iPhone", 150f, separator = ""),
+            word(",", 145f),
+            word("עכשיו", 50f, separator = ""),
+        )
+
+        val ordered = LensProtocol.leftToRightRuns(words)
+
+        assertThat(ordered.map { it.text }).containsExactly("קניתי", "iPhone", "15", "Pro", ",", "עכשיו").inOrder()
+        assertThat(ordered.map { it.separator }).containsExactly(" ", " ", " ", "", " ", "").inOrder()
+        assertThat(ordered[1].box.left).isEqualTo(150f)
+        // A line in reading order already, as Lens gives Arabic ones, and numbers alone stay as they are.
+        val arabic = listOf(word("اشتريت", 300f), word("iPhone", 200f), word("15", 270f, separator = ""))
+        assertThat(LensProtocol.leftToRightRuns(arabic).map { it.text }).containsExactly("اشتريت", "iPhone", "15").inOrder()
+        val numbers = listOf(word("عام", 300f), word("2024", 250f), word("2025", 200f, separator = ""))
+        assertThat(LensProtocol.leftToRightRuns(numbers)).isEqualTo(numbers)
+    }
+
+    @Test
+    fun `a right-to-left line Lens gives out of order is put in order by its boxes`() {
+        fun word(text: String, left: Float, right: Float, separator: String = " ") =
+            OcrWord(text, separator, Box(left, 0f, right, 80f))
+        // "קניתי iPhone 15 ב־3,500 ₪ היום." as cloud recognition gave it, the period joined to ב־.
+        val words = listOf(
+            word(".ב־", 300f, 740f, separator = ""),
+            word("3,500", 521f, 681f),
+            word("₪", 460f, 500f),
+            word("היום", 314f, 432f),
+            word("iPhone", 758f, 961f),
+            word("15", 990f, 1051f),
+            word("קניתי", 1074f, 1215f, separator = ""),
+        )
+
+        val ordered = LensProtocol.inReadingOrder(words, 80f)
+
+        assertThat(ordered.joinToString("") { it.text + it.separator }).isEqualTo("קניתי iPhone 15 .ב־3,500 ₪ היום")
+        // Lines in reading order keep the separators Lens gives, a Latin run put back left to right.
+        val hebrew = listOf(
+            word("קניתי", 300f, 350f),
+            word("15", 220f, 240f),
+            word("iPhone", 150f, 210f, separator = ""),
+            word(",", 145f, 155f),
+            word("עכשיו", 50f, 100f, separator = ""),
+        )
+        assertThat(LensProtocol.inReadingOrder(hebrew, 80f).joinToString("") { it.text + it.separator })
+            .isEqualTo("קניתי iPhone 15, עכשיו")
+        val arabic = listOf(word("اشتريت", 300f, 360f), word("iPhone", 200f, 260f), word("15", 270f, 290f, separator = ""))
+        assertThat(LensProtocol.inReadingOrder(arabic, 80f)).isEqualTo(LensProtocol.leftToRightRuns(arabic))
     }
 
     @Test

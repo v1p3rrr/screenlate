@@ -11,4 +11,5 @@ dependencies {
     api(libs.kotlinx.coroutines.android)
     api(libs.okhttp)
     implementation(libs.androidx.datastore.preferences)
+    testImplementation(libs.icu4j)
 }

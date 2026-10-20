@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">ve</string>
+    <string name="inflection_he_v">ve (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">ki</string>
+    <string name="inflection_he_sh">ki; -en, -dığı (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">-ince</string>
+    <string name="inflection_he_ksh">-dığında, -ince (כשהגעתי)</string>
+    <string name="inflection_he_b_label">-de</string>
+    <string name="inflection_he_b">-de, -da, ile (בבית)</string>
+    <string name="inflection_he_k_label">gibi</string>
+    <string name="inflection_he_k">gibi, olarak (כילד)</string>
+    <string name="inflection_he_l_label">-e</string>
+    <string name="inflection_he_l">-e, -a, için (לבית)</string>
+    <string name="inflection_he_m_label">-den</string>
+    <string name="inflection_he_m">-den, -dan; -den daha (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">harf-i tarif</string>
+    <string name="inflection_he_h">belirlilik takısı (הבית)</string>
+</resources>

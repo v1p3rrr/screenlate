@@ -24,6 +24,14 @@ struct HeadwordMarks {
   // Marks that running text writes as another one, each as UTF-8 text (the Hindi candrabindu as anusvara): a word is
   // also found with them replaced, with its marks and without them.
   std::map<std::string, std::string> replacements;
+  // Replacements made on top of [replacements] for one more spelling (the Arabic hamza alefs as a bare alif, after
+  // final ى and ة as ي and ه): a word is found with the first ones made and with both.
+  std::map<std::string, std::string> further_replacements;
+  // Whether lemmas name headwords as written, marks included; otherwise they are stored without the marks.
+  bool lemmas_as_written = false;
+  // Whether forms are written in the script of [bases] only: a form-of row without one of their letters is dropped
+  // (the romanized forms of Wiktionary's Arabic exports, ḡarafāt).
+  bool forms_in_script = false;
 };
 
 class MarkStripper {
@@ -39,14 +47,24 @@ class MarkStripper {
 
   bool every_headword() const { return every_headword_; }
 
+  bool lemmas_as_written() const { return lemmas_as_written_; }
+
+  // Whether a form-of row of [text] is left out: forms are in the script of the bases and [text] has none of them.
+  bool drops_form(std::string_view text) const;
+
  private:
-  // [text] with the replacements made; empty when none applies.
-  std::string replaced(std::string_view text) const;
+  using Replacements = std::vector<std::pair<std::string, std::string>>;
+
+  // [text] with [replacements] made; empty when none applies.
+  static std::string replaced(std::string_view text, const Replacements& replacements);
 
   std::vector<int32_t> marks_;
   std::vector<int32_t> bases_;
   bool every_headword_;
-  std::vector<std::pair<std::string, std::string>> replacements_;
+  bool lemmas_as_written_;
+  bool forms_in_script_;
+  Replacements replacements_;
+  Replacements further_replacements_;
 };
 
 struct ArchiveSplit {
@@ -67,8 +85,10 @@ struct ArchiveSplit {
 // unmarked: Wiktionary's Russian forms name почти́ть for почтить). With [HeadwordMarks::every_headword], a headword
 // with definitions is also found without them, as a form of itself with no tags, and lemmas stay as written; the
 // table is then returned even when the archive needs no rewriting ([ArchiveSplit::written] false). The
-// [HeadwordMarks::replacements] give such a form or headword further spellings the same way. A form written with a
-// romanization or note after it, or with two spellings, is keyed by its words; one of an unfilled template by none.
+// [HeadwordMarks::replacements] give such a form or headword further spellings the same way; lemmas lose the marks
+// unless [HeadwordMarks::lemmas_as_written]. A form written with a romanization or note after it, or with two
+// spellings, is keyed by its words; one of an unfilled template by none, and one outside the language's script by none
+// with [HeadwordMarks::forms_in_script]. Inflection template names among a form's tags (ar-infl-a) are dropped.
 ArchiveSplit split_form_of(const std::string& archive, const std::string& output,
                            const std::map<std::string, HeadwordMarks>& marks);
 

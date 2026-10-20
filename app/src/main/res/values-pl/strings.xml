@@ -137,6 +137,7 @@
     <string name="anki_tags">Tagi (oddzielone spacjami)</string>
     <string name="anki_fields">Pola</string>
     <string name="anki_fields_hint">Szablony używają znaczników takich jak {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Przycisk + wstawia znacznik. Pierwsze pole służy do sprawdzania duplikatów.</string>
+    <string name="anki_fields_hint_rtl">W języku pisanym od prawej do lewej „Wypełnij sugerowanymi szablonami” i przycisk + umieszczają słowo i zdanie w &lt;span dir=\"rtl\"&gt;…&lt;/span&gt;, żeby karta pokazała je w kolejności czytania. Pierwsze pole tego nie dostaje, bo sprawdzanie duplikatów porównuje jego znaczniki.</string>
     <string name="anki_insert_marker">Wstaw znacznik</string>
     <string name="anki_marker_furigana_zh">Pinyin nad znakami</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin jako tekst: 你[nǐ] 好[hǎo]</string>
@@ -499,6 +500,13 @@
     <string name="popup_font_script_only_el">Tylko dla tekstu greckiego</string>
     <string name="popup_font_script_only_hi">Tylko dla tekstu w hindi</string>
     <string name="popup_font_script_only_bn">Tylko dla tekstu bengalskiego</string>
+    <string name="popup_font_script_only_ka">Tylko dla tekstu gruzińskiego</string>
+    <string name="popup_font_script_only_hy">Tylko dla tekstu ormiańskiego</string>
+    <string name="popup_font_script_only_th">Tylko dla tekstu tajskiego</string>
+    <string name="popup_font_script_only_km">Tylko dla tekstu khmerskiego</string>
+    <string name="popup_font_script_only_ar">Tylko dla tekstu arabskiego</string>
+    <string name="popup_font_script_only_fa">Tylko dla tekstu perskiego</string>
+    <string name="popup_font_script_only_he">Tylko dla tekstu hebrajskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

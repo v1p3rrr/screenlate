@@ -131,6 +131,7 @@
     <string name="anki_tags">Nhãn (cách nhau bằng dấu cách)</string>
     <string name="anki_fields">Trường</string>
     <string name="anki_fields_hint">Mẫu dùng các mã chèn như {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot}. Dùng nút + để chèn. Trường đầu tiên được dùng để kiểm tra trùng lặp.</string>
+    <string name="anki_fields_hint_rtl">Với ngôn ngữ viết từ phải sang trái, “Điền các mẫu gợi ý” và nút + đặt từ và câu trong &lt;span dir=\"rtl\"&gt;…&lt;/span&gt; để thẻ hiện chúng theo thứ tự đọc. Trường đầu tiên không có phần này, vì việc kiểm tra trùng lặp so sánh cả mã đánh dấu của nó.</string>
     <string name="anki_insert_marker">Chèn mã</string>
     <string name="anki_marker_furigana_zh">Pinyin trên chữ Hán</string>
     <string name="anki_marker_furigana_plain_zh">Pinyin dạng văn bản: 你[nǐ] 好[hǎo]</string>
@@ -490,6 +491,13 @@
     <string name="popup_font_script_only_el">Chỉ cho chữ tiếng Hy Lạp</string>
     <string name="popup_font_script_only_hi">Chỉ cho chữ tiếng Hindi</string>
     <string name="popup_font_script_only_bn">Chỉ cho chữ tiếng Bengal</string>
+    <string name="popup_font_script_only_ka">Chỉ cho chữ tiếng Gruzia</string>
+    <string name="popup_font_script_only_hy">Chỉ cho chữ tiếng Armenia</string>
+    <string name="popup_font_script_only_th">Chỉ cho chữ tiếng Thái</string>
+    <string name="popup_font_script_only_km">Chỉ cho chữ tiếng Khmer</string>
+    <string name="popup_font_script_only_ar">Chỉ cho chữ tiếng Ả Rập</string>
+    <string name="popup_font_script_only_fa">Chỉ cho chữ tiếng Ba Tư</string>
+    <string name="popup_font_script_only_he">Chỉ cho chữ tiếng Do Thái</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

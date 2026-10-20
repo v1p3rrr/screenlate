@@ -18,6 +18,18 @@ class EntryTest(unittest.TestCase):
         self.assertIn("/tessdata_fast/", entry["downloadUrl"])
         self.assertFalse(catalog.entry("ru", "rus", "best", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("en", "eng", "fast", b"lstm")["recommended"])
+        # Nothing else in the catalog reads Thai on the device; best is no better than fast.
+        self.assertTrue(catalog.entry("th", "tha", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("th", "tha", "best", b"lstm")["recommended"])
+        # Khmer as well: best reads it 37.9% wrong against fast's 38.3%.
+        self.assertTrue(catalog.entry("km", "khm", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("km", "khm", "best", b"lstm")["recommended"])
+        # Arabic until Paddle's model is in the catalog: best reads it 5.9% wrong against fast's 5.8%.
+        self.assertTrue(catalog.entry("ar", "ara", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("ar", "ara", "best", b"lstm")["recommended"])
+        # Hebrew: both read clean screens without an error, best hard ones 43.7% wrong against fast's 48.5%.
+        self.assertTrue(catalog.entry("he", "heb", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("he", "heb", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

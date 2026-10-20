@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">变格</string>
+    <string name="inflection_ka_nounadjsuffixstripping">名词或形容词的格词尾或复数词尾</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">主格</string>
+    <string name="inflection_ka_nounadjstemcompletion">为以辅音结尾的名词或形容词词干补回主格词尾 -ი</string>
+    <string name="inflection_ka_vowelrestoration_label">脱落元音</string>
+    <string name="inflection_ka_vowelrestoration">补回词干中脱落的元音</string>
+</resources>

@@ -38,17 +38,35 @@ const borrowed = {
  * Text processors a language takes from another one, by the names the descriptor file imports them under, or the
  * app's own (own-processors.js): Belarusian is written with the stress marks and apostrophes Ukrainian is (сям'я,
  * сям’я), and Yomitan gives it capitalization only; Hindi and Bengali text is not always composed as the headwords
- * are, and Hindi writes candrabindu and anusvara for each other.
+ * are, and Hindi writes candrabindu and anusvara for each other; Georgian headings are written in Mtavruli capitals
+ * (ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ), which Yomitan does not lowercase; Armenian writes marks inside words and its ligature և out; Thai
+ * text may give ำ in two parts or a tone mark before its vowel, and write ๆ without the spaces headwords have; Khmer
+ * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
+ * final ة as ه; Persian text may give Arabic letters for its own, lose its zero-width non-joiners and write a verb
+ * prefix or an ending apart; Hebrew text may carry vowel points and write the geresh and gershayim as ASCII quotes.
+ * Processors join the descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
     be: ['removeUkrainianDiacritics', 'ukrainianApostropheVariants'],
     hi: ['composeCharacters', 'candrabinduAsAnusvara'],
     bn: ['composeCharacters'],
+    ka: ['decapitalize'],
+    hy: ['removeArmenianMarks', 'armenianLigatureEv'],
+    th: ['thaiCharacterOrder', 'thaiMaiYamokSpace'],
+    km: ['khmerZeroWidthSpace', 'khmerSubscriptDa'],
+    ar: ['arabicTaMarbutaAsHa'],
+    fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
+    he: ['removeHebrewPoints', 'hebrewQuotes'],
 };
 
-/** Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings. */
+/**
+ * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
+ * Persian endings and verb prefixes, Hebrew prefixes.
+ */
 const addedTransforms = {
     bn: 'bengaliTransforms',
+    fa: 'persianTransforms',
+    he: 'hebrewTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
@@ -76,10 +94,13 @@ function keepLanguage(source, iso) {
     if (added) {
         const plain = 'textPreprocessors: capitalizationPreprocessors,';
         const example = /(\n {8}exampleText: [^\n]*\n)/;
+        const list = /(\n {8}textPreprocessors: \{\n(?: {12}\w+,\n)+)( {8}\},)/;
         if (block.includes(plain)) {
             block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
         } else if (!block.includes('textPreprocessors') && example.test(block)) {
             block = block.replace(example, `$1        textPreprocessors: {${added.join(', ')}},\n`);
+        } else if (list.test(block)) {
+            block = block.replace(list, `$1${added.map((name) => `            ${name},\n`).join('')}$2`);
         } else {
             throw new Error(`${iso}: Yomitan has more text processors now`);
         }

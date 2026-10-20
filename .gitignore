@@ -26,6 +26,9 @@ keystore.properties
 # Local dictionary collection for import tests (large, third-party).
 /testdata/dictionaries/
 
+# Private archive of the downloaded and converted dictionaries and OCR models (ai/notes/dictionary-archive.md).
+/dictionary-archive/
+
 # Backup of the AnkiDroid collection from the test emulator (personal data).
 /testdata/anki-backup/
 
@@ -34,6 +37,9 @@ keystore.properties
 
 # wordfreq word lists for frequency dictionary tests (third-party data).
 /testdata/wordfreq/
+
+# Corpus word counts for frequency dictionary tests (third-party data).
+/testdata/corpus/
 
 # Tesseract models downloaded by scripts/ocr-models/tessdata_catalog.py
 /testdata/tessdata/

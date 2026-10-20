@@ -94,8 +94,75 @@ internal object LensProtocol {
         val box = lineBox ?: Box.unionOf(words.map { it.box }) ?: return null
         val text = words.joinToString("") { it.text }
         val vertical = isVerticalLine(box, text)
-        return OcrLine(words, box, vertical, rightToLeft = !vertical && isRightToLeftText(text))
+        val rightToLeft = !vertical && isRightToLeftText(text)
+        return OcrLine(if (rightToLeft) inReadingOrder(words, box.height) else words, box, vertical, rightToLeft)
     }
+
+    /**
+     * The words of a right-to-left line with its left-to-right runs in reading order: Lens gives a Hebrew or Persian
+     * line's words from right to left by their boxes, so a Latin run comes back backwards (קניתי 15 iPhone). A run is
+     * the words in a row without right-to-left letters, not punctuation alone, one of them with a Latin (or other
+     * left-to-right) letter; numbers alone keep the order they have. Separators stay in their places.
+     */
+    internal fun leftToRightRuns(words: List<OcrWord>): List<OcrWord> {
+        val result = words.toMutableList()
+        var start = 0
+        while (start < words.size) {
+            if (!words[start].inLeftToRightRun()) {
+                start++
+                continue
+            }
+            var end = start
+            while (end + 1 < words.size && words[end + 1].inLeftToRightRun()) end++
+            val run = words.subList(start, end + 1)
+            if (run.any { it.text.hasDirection(Character.DIRECTIONALITY_LEFT_TO_RIGHT) }) {
+                run.sortedBy { it.box.left }.forEachIndexed { i, word ->
+                    result[start + i] = word.copy(separator = words[start + i].separator)
+                }
+            }
+            start = end + 1
+        }
+        return result
+    }
+
+    /**
+     * The words of a right-to-left line in reading order. Lens gives them from right to left by their boxes, or in
+     * reading order (Arabic), and [leftToRightRuns] turns either into reading order; but some lines that mix in a
+     * number with a prefix and Latin words come in neither (קניתי iPhone 15 ב־3,500 ₪ היום came as ב־ 3,500 ₪ היום
+     * iPhone 15 קניתי). Such a line is put in order by the boxes' right edges instead, and as Lens's separators belong
+     * to its own order, a space goes where the gap between two boxes is at least [SPACE_GAP] of the line's height.
+     */
+    internal fun inReadingOrder(words: List<OcrWord>, lineHeight: Float): List<OcrWord> {
+        val asGiven = leftToRightRuns(words)
+        val byBoxes = leftToRightRuns(words.sortedByDescending { it.box.right })
+        if (byBoxes.map { it.box } == asGiven.map { it.box }) return asGiven
+        return byBoxes.mapIndexed { i, word ->
+            val next = byBoxes.getOrNull(i + 1)
+            val separator = when {
+                next == null -> words.last().separator
+                gap(word.box, next.box) >= lineHeight * SPACE_GAP -> " "
+                else -> ""
+            }
+            word.copy(separator = separator)
+        }
+    }
+
+    /** The horizontal distance between two boxes; negative when they overlap. */
+    private fun gap(a: Box, b: Box): Float = maxOf(a.left, b.left) - minOf(a.right, b.right)
+
+    /**
+     * The smallest gap between two words, as a share of the line's height, that counts as a space: a space is about a
+     * quarter of the line's height, the gap before a period or a comma a tenth or less.
+     */
+    private const val SPACE_GAP = 0.15f
+
+    private fun OcrWord.inLeftToRightRun(): Boolean =
+        text.any(Char::isLetterOrDigit) &&
+            !text.hasDirection(Character.DIRECTIONALITY_RIGHT_TO_LEFT) &&
+            !text.hasDirection(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC)
+
+    private fun String.hasDirection(direction: Byte): Boolean =
+        codePoints().anyMatch { Character.getDirectionality(it) == direction }
 
     private fun parseWord(reader: ProtoReader, width: Int, height: Int): OcrWord? {
         var text = ""
