@@ -53,6 +53,7 @@ object CorpusCountsDictionary {
                 "(https://creativecommons.org/publicdomain/zero/1.0/).",
         ),
         "kk" to leipzig("Kazakh", "kaz_newscrawl_2016_100K"),
+        "ky" to leipzig("Kyrgyz", "kir_newscrawl_2016_100K"),
     )
 
     private fun leipzig(language: String, corpus: String) = Corpus(

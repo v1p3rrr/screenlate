@@ -51,6 +51,7 @@ def leipzig(corpus, language):
 
 
 CORPORA["kk"] = leipzig("kaz_newscrawl_2016_100K", "kk")
+CORPORA["ky"] = leipzig("kir_newscrawl_2016_100K", "ky")
 
 BUILD = "corpus-counts"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

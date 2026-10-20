@@ -225,7 +225,16 @@ their hyphen (1990-ға → -ға), Leipzig's news word list built on the phone 
 pairs, the transcriptions, PaddleOCR's Cyrillic model recommended and Tesseract kaz offered; PT Serif and PT Sans
 among the fonts; flag kz, bubble Қ. LK51, LK52, OCR32, POP29, AUD16, ANK20, DIC26 and LNG15 passed on the
 emulator after two fixes. Overnight question 14 (particles after a hyphen: сондай-ақ shows ақ, not -ақ) is
-deferred. Kyrgyz and the PanLex converter follow on the same branch.
+deferred.
+
+Kyrgyz is done on the same branch (2026-10-20): `KyrgyzSupport` on the shared Turkic base (headwords keyed with ң ө ү
+as н о у, the barred o ɵ read as ө in OCR results only, abbreviations ж. жж. к. кк. б.а. мис. обл. түн. түш. and
+the spaced ж. б. and б. з. ч. ending no sentence before a lowercase word, проф. ending none), the four-way harmony
+endings with the question particle (барасыңбы → баруу), Wiktionary ky-en and ky-ru, the transcription, Leipzig's
+Kyrgyz news list, PaddleOCR recommended and Tesseract kir offered; flag kg, bubble Ң. LK53, OCR33, POP30, AUD17,
+ANK21, DIC27 and LNG16 passed on the emulator with no fixes. Overnight questions 15 (Түштук finds түшүү through a
+twin-spelled ending, and the keyed lookup is not tried) and 16 (алды shows the pronoun ал with a noun ending first)
+are deferred. The PanLex converter follows on the same branch.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

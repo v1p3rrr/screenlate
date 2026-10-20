@@ -1854,6 +1854,25 @@
       "homepage": "https://wortschatz.uni-leipzig.de/en/download"
     },
     {
+      "id": "corpus-ky",
+      "title": "Leipzig Corpora Collection (ky)",
+      "template": "leipzig",
+      "oldTitles": [
+        "Leipzig Corpora Collection (ky)"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ky",
+      "recommended": true,
+      "downloadUrl": "https://downloads.wortschatz-leipzig.de/corpora/kir_newscrawl_2016_100K.tar.gz",
+      "downloadSize": 19940193,
+      "sha256": "145fd1c78a6d22291a5356aea1dbe6d71cc9061704eed018b1272c608303d9bb",
+      "build": "corpus-counts",
+      "version": "2016",
+      "license": "CC BY",
+      "homepage": "https://wortschatz.uni-leipzig.de/en/download"
+    },
+    {
       "id": "cc-cedict",
       "title": "CC-CEDICT",
       "installedTitle": "CC-CEDICT [",
@@ -3145,6 +3164,40 @@
       "engine": "tesseract",
       "file": "tessdata/kaz.traineddata",
       "version": "34cbd9204b1f",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
+      "id": "tesseract-fast-kir",
+      "title": "Tesseract fast (kir)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ky",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/kir.traineddata",
+      "downloadSize": 9928497,
+      "sha256": "9777956300900b528d26932cf80693f95e75143433fb851d567194bcc38a31ae",
+      "model": "tesseract-fast-kir",
+      "engine": "tesseract",
+      "file": "tessdata/kir.traineddata",
+      "version": "977795630090",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-kir",
+      "title": "Tesseract best (kir)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ky",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/kir.traineddata",
+      "downloadSize": 11948344,
+      "sha256": "607cbaa07305217518df0e9c7334239000a8542689baefb3754e0aee15ae6a5c",
+      "model": "tesseract-best-kir",
+      "engine": "tesseract",
+      "file": "tessdata/kir.traineddata",
+      "version": "607cbaa07305",
       "license": "Apache-2.0",
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
@@ -4536,6 +4589,41 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "kk",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-cyrillic-ky",
+      "title": "PaddleOCR cyrillic (ky)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ky",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-cyrillic.zip",
+      "downloadSize": 7344469,
+      "sha256": "e22911ed9991338d24651c81887fa77d18eda89e56efbca5006ea41991f5ebbf",
+      "model": "paddle-cyrillic",
+      "engine": "paddle",
+      "version": "e22911ed9991",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v5-ky",
+      "title": "PaddleOCR detector-v5 (ky)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ky",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -13345,6 +13433,64 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/kk/wty-kk-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 177274,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ky-en",
+      "title": "Wiktionary (ky–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ky-en",
+        "kty-ky-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ky",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ky-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ky/en/wty-ky-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 622622,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ky-ru",
+      "title": "Wiktionary (ky–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ky-ru",
+        "kty-ky-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ky",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ky-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ky/ru/wty-ky-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 300039,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ky-transcription",
+      "title": "Wiktionary transcription (ky)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-ky-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "ky",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ky-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ky/wty-ky-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 36130,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

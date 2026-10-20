@@ -37,9 +37,11 @@ class FontCatalogFileTest {
     }
 
     @Test
-    fun `kazakh takes the cyrillic fonts that have the extended letters`() {
-        assertThat(fonts.filter { it.isOfferedFor(Language.KAZAKH) }.map { it.family })
-            .containsExactly("Literata", "Inter", "PT Serif", "PT Sans")
+    fun `kazakh and kyrgyz take the cyrillic fonts that have the extended letters`() {
+        for (language in listOf(Language.KAZAKH, Language.KYRGYZ)) {
+            assertThat(fonts.filter { it.isOfferedFor(language) }.map { it.family })
+                .containsExactly("Literata", "Inter", "PT Serif", "PT Sans")
+        }
     }
 
     @Test

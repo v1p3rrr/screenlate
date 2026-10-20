@@ -94,9 +94,16 @@ class CatalogFileTest {
     }
 
     @Test
-    fun `thai and kazakh have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
+    fun `thai, kazakh and kyrgyz have frequency dictionaries built from corpus counts, of PyThaiNLP and Leipzig`() {
         val built = catalog!!.entries.filter { it.build == BUILD_CORPUS_COUNTS }
-        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk").inOrder()
+        assertThat(built.map { it.sourceLanguage }).containsExactly("th", "kk", "ky").inOrder()
+        val kyrgyz = built.single { it.sourceLanguage == "ky" }
+        assertThat(kyrgyz.recommended).isTrue()
+        assertThat(kyrgyz.sha256).isEqualTo("145fd1c78a6d22291a5356aea1dbe6d71cc9061704eed018b1272c608303d9bb")
+        assertThat(kyrgyz.downloadUrl)
+            .isEqualTo("https://downloads.wortschatz-leipzig.de/corpora/kir_newscrawl_2016_100K.tar.gz")
+        assertThat(kyrgyz.oldTitles).containsExactly(CorpusCountsDictionary.title("ky"))
+        assertThat(kyrgyz.description(Locale.ENGLISH)).startsWith("Leipzig Corpora Collection, Kyrgyz:")
         val kazakh = built.single { it.sourceLanguage == "kk" }
         assertThat(kazakh.recommended).isTrue()
         assertThat(kazakh.sha256).matches("[0-9a-f]{64}")
@@ -170,6 +177,16 @@ class CatalogFileTest {
         )
         assertThat(kazakh.filterNot { it.recommended }.map { it.id })
             .containsExactly("tesseract-fast-kaz", "tesseract-best-kaz", "paddle-detector-v5-kk")
+    }
+
+    @Test
+    fun `kyrgyz offers two wiktionaries, its transcription, the leipzig counts and paddle, ticked, and tesseract`() {
+        val kyrgyz = catalog!!.entries.filter { it.sourceLanguage == "ky" }
+        assertThat(kyrgyz.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-ky-en", "wiktionary-ky-ru", "wiktionary-ky-transcription", "corpus-ky", "paddle-cyrillic-ky",
+        )
+        assertThat(kyrgyz.filterNot { it.recommended }.map { it.id })
+            .containsExactly("tesseract-fast-kir", "tesseract-best-kir", "paddle-detector-v5-ky")
     }
 
     @Test

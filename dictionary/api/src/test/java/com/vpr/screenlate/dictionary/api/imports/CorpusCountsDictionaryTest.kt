@@ -145,6 +145,33 @@ class CorpusCountsDictionaryTest {
         }
     }
 
+    @Test
+    fun `the kyrgyz dictionary credits the kyrgyz corpus`() {
+        val source = folder.newFile().apply { writeBytes(tarGz("kir/kir-words.txt" to "1\tжана\t9\n2\tкитеп\t3")) }
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "ky", "2016", output)).isEqualTo(2)
+        ZipFile(output).use { zip ->
+            val index = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("index.json")).readBytes().decodeToString()).jsonObject
+            assertThat(index["title"]!!.jsonPrimitive.content).isEqualTo("Leipzig Corpora Collection (ky)")
+            assertThat(index["attribution"]!!.jsonPrimitive.content).contains("Kyrgyz news crawl of 2016 (kir_newscrawl_2016_100K)")
+        }
+    }
+
+    /** The Kyrgyz archive itself, when it was copied into testdata (`scripts/frequency/corpus_catalog.py`). */
+    @Test
+    fun `the kyrgyz archive builds the top 100 000 words`() {
+        val source = File("../../testdata/corpus/kir_newscrawl_2016_100K.tar.gz").takeIf { it.exists() } ?: return
+        val output = folder.newFile()
+
+        assertThat(CorpusCountsDictionary.build(source, "ky", "test", output)).isEqualTo(100_000)
+        ZipFile(output).use { zip ->
+            val bank = Json.parseToJsonElement(zip.getInputStream(zip.getEntry("term_meta_bank_1.json")).readBytes().decodeToString()) as JsonArray
+            val ranks = bank.associate { row -> row.jsonArray.let { it[0].jsonPrimitive.content to it[2].jsonPrimitive.int } }
+            assertThat(ranks["жана"]).isLessThan(10)
+        }
+    }
+
     /** PyThaiNLP's own counts, when they were copied into testdata (`scripts/frequency/corpus_catalog.py`). */
     @Test
     fun `the Thai counts build the top 100 000 words`() {

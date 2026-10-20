@@ -499,6 +499,7 @@
     <string name="popup_font_script_only_fa">僅用於波斯文文字</string>
     <string name="popup_font_script_only_he">僅用於希伯來文文字</string>
     <string name="popup_font_script_only_kk">僅用於哈薩克文文字</string>
+    <string name="popup_font_script_only_ky">僅用於柯爾克孜文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

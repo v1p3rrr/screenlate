@@ -57,6 +57,13 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(entry["oldTitles"], ["Thai National Corpus (th)"])
         self.assertIn(catalog.PYTHAINLP_COMMIT, entry["downloadUrl"])
 
+    def test_the_kyrgyz_entry_is_the_leipzig_archive(self):
+        entry = catalog.entry("ky", catalog.CORPORA["ky"], b"x")
+        self.assertEqual(entry["id"], "corpus-ky")
+        self.assertEqual(entry["oldTitles"], ["Leipzig Corpora Collection (ky)"])
+        self.assertEqual(entry["downloadUrl"],
+                         "https://downloads.wortschatz-leipzig.de/corpora/kir_newscrawl_2016_100K.tar.gz")
+
     def test_the_kazakh_entry_is_the_leipzig_archive(self):
         entry = catalog.entry("kk", catalog.CORPORA["kk"], b"x")
         self.assertEqual(entry["id"], "corpus-kk")
