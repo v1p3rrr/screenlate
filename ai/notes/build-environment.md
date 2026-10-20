@@ -86,8 +86,8 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   (a `/c/...` JAVA_HOME or a `~` path fails here). The debug key matches, so `adb install -r` keeps the app data.
   `-Pandroid.injected.build.abi=x86_64` is no substitute: it writes to `build/intermediates/apk/`, and the app APK
   comes out test-only with the arm libraries still in it; the test APKs of library modules do shrink with it and
-  install. Deleting dictionaries in the emulator's app to make room was refused (they are shared test state): ask
-  the owner first.
+  install. The owner allows deleting, on the emulator, the dictionaries of languages already checked (2026-10-20);
+  AnkiDroid and other data stay untouched.
 - Low commit memory (2026-10-20: about 2 GB of Windows commit left with the emulator and other sessions running):
   test executors fail to start ("Could not write standard input to Gradle Test Executor", "The pipe is being closed",
   "finished with non-zero exit value 1"), which looks like failed tests. Rerun with `--max-workers=2`; do not
