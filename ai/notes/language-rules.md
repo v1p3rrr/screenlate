@@ -12,8 +12,8 @@ Look-alike fixes and look-alike matching are for OCR results only, in every lang
 request 69): text read from apps is taken as it is. One-for-one fixes go in `LanguageSupport.ocrWord` or `ocrLines`,
 which run only from `OcrPage.inLanguage` in `CompositeOcr`; `OverlayController.readAppText` skips them. Lookup
 variants for OCR misreadings that cannot be fixed one for one (Welsh ý as ŷ, Hungarian ö as ő) run only for words
-from OCR, which needs each line's source to reach the lookup (planned in groups 5b and 5c). Spellings that typed
-text uses as well, such as Uzbek o and g for oʻ and gʻ, are not look-alikes and apply to every source.
+from OCR, which needs each line's source to reach the lookup (planned in groups 5b and 5c). Where people often type
+the text itself that way (Uzbek o and g for oʻ and gʻ), the matching applies to any text.
 
 ## Paths and test names
 
