@@ -67,24 +67,38 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Vietnamese starts lookups at the syllables before the aimed one, only Thai at the words before it`() {
+    fun `only Vietnamese starts lookups at the syllables before the aimed one, Thai and Khmer at the words before it`() {
         assertThat(all.where { it.earlierStartOffset("Tôi là học ") > 0 }).containsExactly(Language.VIETNAMESE)
         assertThat(all.where { it.earlierStartOffset("ห้อง", "สมุด") > 0 }).containsExactly(Language.THAI)
+        assertThat(all.where { it.earlierStartOffset("ខ្ញុំ", "ទៅ") > 0 }).containsExactly(Language.KHMER)
     }
 
     @Test
-    fun `only Thai finds words with a segmenter, keeps clusters whole and drops shorter matches inside a word`() {
-        // Spaced languages start words after spaces; Thai where the segmenter does (one piece without the phone's ICU).
+    fun `only Thai and Khmer find words with a segmenter, keep clusters whole and drop shorter matches inside a word`() {
+        // Spaced languages start words after spaces; Thai and Khmer where the segmenter does (one piece without the
+        // phone's ICU), and only in their own script.
         assertThat(all.where { it.wordStarts("ห้องสมุด เปิด", "ห้องสมุด เ".length) != listOf(0, "ห้องสมุด ".length) })
-            .containsExactly(Language.THAI)
-        assertThat(all.where { it.shownMatchLengths("การตลาด", setOf(1, 7)) != setOf(1, 7) }).containsExactly(Language.THAI)
-        assertThat(all.where { it.ocrSpaceGap != null }).containsExactly(Language.THAI)
+            .containsExactly(Language.THAI, Language.KHMER)
+        assertThat(all.where { it.shownMatchLengths("การตลาด", setOf(1, 7)) != setOf(1, 7) })
+            .containsExactly(Language.THAI, Language.KHMER)
+        assertThat(all.where { it.ocrSpaceGap != null }).containsExactly(Language.THAI, Language.KHMER)
+        // Only they start lookups inside the aimed word when nothing from its start reaches the aim, in their script.
+        assertThat(all.where { it.innerStarts("โรงเรียน", 0, "โรงเรีย".length).isNotEmpty() }).containsExactly(Language.THAI)
+        assertThat(all.where { it.innerStarts("ក្រុងភ្នំពេញ", 0, "ក្រុងភ្នំពេ".length).isNotEmpty() })
+            .containsExactly(Language.KHMER)
+        assertThat(all.where { it.innerStarts("lookup", 0, "look".length).isNotEmpty() }).isEmpty()
     }
 
     @Test
     fun `only Thai ends a sentence at a space between letters`() {
         assertThat(all.where { it.endsSentence("กิน ข้าว", "กิน".length) }).containsExactly(Language.THAI)
         assertThat(all.where { it.endsSentence("eat rice", "eat".length) }).isEmpty()
+    }
+
+    @Test
+    fun `only Khmer ends a sentence at khan and the section end`() {
+        assertThat(all.where { it.endsSentence("ទៅ។", "ទៅ".length) }).containsExactly(Language.KHMER)
+        assertThat(all.where { it.endsSentence("ចប់៕", "ចប់".length) }).containsExactly(Language.KHMER)
     }
 
     @Test
@@ -237,8 +251,10 @@ class LanguageRulesIsolationTest {
 
     @Test
     fun `only Greek and Hindi key every headword without its marks, only Hindi replaces marks`() {
-        assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(Language.GREEK, Language.HINDI)
-        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(Language.HINDI)
+        assertThat(all.where { it.headwordMarks?.everyHeadword == true })
+            .containsExactly(Language.GREEK, Language.HINDI, Language.KHMER)
+        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
+            .containsExactly(Language.HINDI, Language.KHMER)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
     }
 
@@ -304,7 +320,8 @@ class LanguageRulesIsolationTest {
     @Test
     fun `scripts written without spaces shorten the text by letters`() {
         assertThat(all.where { it.searchResolution == SearchResolution.LETTER })
-            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI)
-        assertThat(all.where { it.wordSeparator.isEmpty() }).containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI)
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.KOREAN, Language.THAI, Language.KHMER)
+        assertThat(all.where { it.wordSeparator.isEmpty() })
+            .containsExactly(Language.JAPANESE, Language.CHINESE, Language.THAI, Language.KHMER)
     }
 }

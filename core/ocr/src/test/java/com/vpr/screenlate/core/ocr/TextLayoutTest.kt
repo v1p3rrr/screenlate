@@ -84,6 +84,14 @@ class TextLayoutTest {
     }
 
     @Test
+    fun `a khmer consonant below another takes no share either`() {
+        // ខ្ញុំទៅ: ខ ្ ញ ុ ំ ទ ៅ, three columns; ញ is written below ខ after the coeng, ៅ is a spacing vowel.
+        val line = OcrLine(listOf(word("ខ្ញុំទៅ", Box(0f, 0f, 300f, 100f))), Box(0f, 0f, 300f, 100f), vertical = false)
+        val characters = TextLayout(page(OcrParagraph(listOf(line)))).paragraphs.single()
+        assertThat(characters.map { it.box.left }).containsExactly(0f, 0f, 0f, 0f, 0f, 100f, 200f).inOrder()
+    }
+
+    @Test
     fun `hit test finds the character under the point`() {
         val layout = TextLayout(page(horizontal, vertical))
 

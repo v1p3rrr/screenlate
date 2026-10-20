@@ -6,6 +6,7 @@ import com.vpr.screenlate.core.common.language.ArmenianSupport
 import com.vpr.screenlate.core.common.language.GeorgianSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
+import com.vpr.screenlate.core.common.language.KhmerSupport
 import com.vpr.screenlate.core.common.language.ThaiSupport
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -70,5 +71,14 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Thai serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in ThaiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Khmer ones are declared for `und-Khmr`; the sans-serif is reached by fallback as the Thai one. */
+    @Test
+    fun findsTheKhmerSerifThroughItsScript() {
+        val font = SystemFontFiles.find(KhmerSupport, serif = true)
+        assumeTrue("The phone has no Khmer serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in KhmerSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

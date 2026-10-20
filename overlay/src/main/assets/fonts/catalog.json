@@ -690,6 +690,60 @@
       "homepage": "https://fonts.google.com/specimen/Prompt"
     },
     {
+      "id": "kantumruy-pro",
+      "family": "Kantumruy Pro",
+      "language": "km",
+      "description": {
+        "en": "Modern Khmer sans-serif by Tep Sovichet and Wei Huang, with Latin, from thin to bold.",
+        "ru": "Современный кхмерский шрифт без засечек, авторы — Tep Sovichet и Wei Huang; с латиницей, от тонкого до жирного.",
+        "de": "Moderne serifenlose Khmer-Schrift von Tep Sovichet und Wei Huang, mit Lateinisch, von dünn bis fett.",
+        "es": "Fuente jemer moderna sin serifa de Tep Sovichet y Wei Huang, con latino, de fina a negrita.",
+        "fr": "Police khmère moderne sans empattement de Tep Sovichet et Wei Huang, avec le latin, de maigre à grasse.",
+        "it": "Carattere khmer moderno senza grazie di Tep Sovichet e Wei Huang, con il latino, da sottile a grassetto.",
+        "ja": "Tep Sovichet と Wei Huang による現代的なクメール文字のサンセリフ。ラテン文字付き。細字から太字まで。",
+        "ko": "Tep Sovichet과 Wei Huang이 만든 현대적인 크메르 문자 산세리프로, 라틴 문자도 있으며 가는 굵기부터 굵게까지 있습니다.",
+        "pl": "Nowoczesny khmerski krój bezszeryfowy projektu Tep Sovichet i Wei Huang, z łacinką, od cienkiego do pogrubionego.",
+        "pt": "Fonte khmer moderna sem serifa de Tep Sovichet e Wei Huang, com latino, de fina a negrito.",
+        "tr": "Tep Sovichet ve Wei Huang’ın modern, tırnaksız Kmer yazı tipi, Latin harfleriyle; inceden kalına.",
+        "vi": "Phông chữ Khmer không chân hiện đại của Tep Sovichet và Wei Huang, kèm chữ Latinh, từ mảnh đến đậm.",
+        "zh": "Tep Sovichet 和 Wei Huang 设计的现代高棉文无衬线字体，附拉丁字母，从细体到粗体。",
+        "zh-Hant": "Tep Sovichet 和 Wei Huang 設計的現代高棉文無襯線字型，附拉丁字母，從細體到粗體。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/kantumruypro/KantumruyPro%5Bwght%5D.ttf", "weight": "100 700"}
+      ],
+      "sizeMb": 0.2,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Kantumruy+Pro"
+    },
+    {
+      "id": "hanuman",
+      "family": "Hanuman",
+      "language": "km",
+      "description": {
+        "en": "Khmer serif by Danh Hong for body text, with Latin, in every weight.",
+        "ru": "Кхмерский шрифт с засечками для основного текста, автор — Danh Hong; с латиницей, во всех начертаниях.",
+        "de": "Khmer-Serifenschrift von Danh Hong für Fließtext, mit Lateinisch, in allen Stärken.",
+        "es": "Fuente jemer con serifa de Danh Hong para texto corrido, con latino, en todos los grosores.",
+        "fr": "Police khmère à empattements de Danh Hong pour le texte courant, avec le latin, dans toutes les graisses.",
+        "it": "Carattere khmer con grazie di Danh Hong per il testo corrente, con il latino, in tutti i pesi.",
+        "ja": "Danh Hong による本文用のクメール文字のセリフ。ラテン文字付き。すべての太さがある。",
+        "ko": "Danh Hong이 만든 본문용 크메르 문자 세리프로, 라틴 문자도 있으며 모든 굵기가 있습니다.",
+        "pl": "Khmerski krój szeryfowy projektu Danh Hong do tekstu głównego, z łacinką, we wszystkich grubościach.",
+        "pt": "Fonte khmer com serifa de Danh Hong para texto corrido, com latino, em todos os pesos.",
+        "tr": "Danh Hong’un metin için tırnaklı Kmer yazı tipi, Latin harfleriyle; tüm kalınlıklarda.",
+        "vi": "Phông chữ Khmer có chân của Danh Hong cho văn bản, kèm chữ Latinh, đủ mọi độ đậm.",
+        "zh": "Danh Hong 设计的正文用高棉文衬线字体，附拉丁字母，包含所有粗细。",
+        "zh-Hant": "Danh Hong 設計的內文用高棉文襯線字型，附拉丁字母，包含所有粗細。"
+      },
+      "files": [
+        {"url": "https://raw.githubusercontent.com/google/fonts/main/ofl/hanuman/Hanuman%5Bwght%5D.ttf", "weight": "100 900"}
+      ],
+      "sizeMb": 0.1,
+      "license": "SIL OFL 1.1",
+      "homepage": "https://fonts.google.com/specimen/Hanuman"
+    },
+    {
       "id": "literata",
       "family": "Literata",
       "subsets": ["latin", "latin-ext", "vietnamese", "cyrillic", "cyrillic-ext", "greek", "greek-ext"],

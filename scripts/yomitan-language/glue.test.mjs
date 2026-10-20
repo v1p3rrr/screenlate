@@ -281,3 +281,32 @@ test('thai processors stay out of other languages', () => {
         assert.ok(!queried(language, 'เด็กๆ').has('เด็ก ๆ'), language);
     }
 });
+
+/**
+ * The texts the engine would query for Khmer [text], which it looks up letter by letter.
+ * @param {string} text
+ */
+function queriedKhmer(text) {
+    return new Set(load('km').candidates(text, 'km', 'letter').map((c) => c.d));
+}
+
+test('khmer zero-width spaces between words are dropped, one that ends the text stays out of the match', () => {
+    assert.ok(queriedKhmer('ខ្ញុំ\u200Bទៅ').has('ខ្ញុំទៅ'));
+    assert.ok(queriedKhmer('សាលា\u200Bរៀន').has('សាលារៀន'));
+    const matches = load('km').candidates('ខ្ញុំ\u200Bទៅ', 'km', 'letter').filter((c) => c.d === 'ខ្ញុំ');
+    assert.deepEqual([...new Set(matches.map((c) => c.o))], ['ខ្ញុំ']);
+});
+
+test('khmer subscript TA is tried as subscript DA', () => {
+    assert.ok(queriedKhmer('ក្តារ').has('ក្ដារ'));
+    assert.ok(queriedKhmer('សួស្តី').has('សួស្ដី'));
+    // Text with DA finds headwords with TA through the keys the import adds, not through the processor.
+    assert.ok(!queriedKhmer('ក្ដារ').has('ក្តារ'));
+});
+
+test('khmer processors stay out of other languages', () => {
+    for (const language of ['en', 'th', 'hi']) {
+        assert.ok(!queried(language, 'ក្តារ').has('ក្ដារ'), language);
+        assert.ok(!queried(language, 'ខ្ញុំ\u200Bទៅ').has('ខ្ញុំទៅ'), language);
+    }
+});

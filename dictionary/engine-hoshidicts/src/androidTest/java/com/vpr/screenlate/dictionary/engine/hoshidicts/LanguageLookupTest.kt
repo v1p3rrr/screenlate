@@ -359,6 +359,42 @@ class LanguageLookupTest {
         assertThat(engine.lookup("กรุงเทพฯ", thai).map { it.term.expression }).contains("กรุงเทพมหานคร")
     }
 
+    @Test
+    fun khmerSubscriptTaAndDaFindEachOtherAndZeroWidthSpacesAreDropped() = runTest {
+        val imported = engine.import(khmerDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val khmer = LookupOptions(language = Language.KHMER)
+        suspend fun first(text: String) = engine.lookup(text, khmer).first()
+
+        assertThat(first("សាលារៀនធំ").term.expression).isEqualTo("សាលារៀន")
+        // សួស្ដី is written with subscript DA, ស្ត្រី with TA; each is found as typed the other way.
+        assertThat(first("សួស្តី").term.expression).isEqualTo("សួស្ដី")
+        assertThat(first("ស្ដ្រី").term.expression).isEqualTo("ស្ត្រី")
+        assertThat(first("ស្ត្រី").term.expression).isEqualTo("ស្ត្រី")
+        // A zero-width space between words; one that ends the match stays out of it.
+        val school = first("សាលា\u200Bរៀន")
+        assertThat(school.term.expression).isEqualTo("សាលារៀន")
+        assertThat(school.matched).isEqualTo("សាលា\u200Bរៀន")
+        val me = first("ខ្ញុំ\u200Bទៅ")
+        assertThat(me.term.expression).isEqualTo("ខ្ញុំ")
+        assertThat(me.matched).isEqualTo("ខ្ញុំ")
+    }
+
+    /** Rows as Wiktionary's Khmer exports write them, subscript DA in some words and TA in others. */
+    private fun khmerDictionary(): File = zip(
+        "km.zip",
+        "index.json" to """{"title":"Test Khmer","revision":"1","format":3,"sourceLanguage":"km"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["ខ្ញុំ","","pron","",0,["I"],1,""],
+              ["សាលា","","n","",0,["hall"],2,""],
+              ["សាលារៀន","","n","",0,["school"],3,""],
+              ["សួស្ដី","","intj","",0,["hello"],4,""],
+              ["ស្ត្រី","","n","",0,["woman"],5,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /** Rows as Wiktionary's Thai exports write them: a classifier row for each noun it counts. */
     private fun thaiDictionary(): File = zip(
         "th.zip",

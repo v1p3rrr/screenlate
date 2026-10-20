@@ -121,6 +121,16 @@ class CatalogFileTest {
     }
 
     @Test
+    fun `khmer offers the english and russian wiktionaries, transcriptions and tesseract fast, ticked, and no frequency`() {
+        val khmer = catalog!!.entries.filter { it.sourceLanguage == "km" }
+        assertThat(khmer.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-km-en", "wiktionary-km-ru", "wiktionary-km-transcription", "tesseract-fast-khm",
+        )
+        assertThat(khmer.map { it.id }).contains("tesseract-best-khm")
+        assertThat(khmer.none { it.category == CatalogCategory.FREQUENCY }).isTrue()
+    }
+
+    @Test
     fun `korean has KRDICT ticked for its gloss languages and the hanja dictionary from the app`() {
         val korean = catalog!!.entries.filter { it.sourceLanguage == "ko" }
         val krdict = korean.filter { it.template == "krdict" }

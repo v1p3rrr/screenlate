@@ -6,7 +6,9 @@ import java.util.Locale
  * Rules shared by languages written without spaces between words, whose words a dictionary-based segmenter finds
  * (ICU's word break iterator): a space ends a phrase or a sentence, not a word. The lookup starts at the start of the
  * segmenter's word under the aim and at the starts of the [earlierWords] words before it, as Vietnamese does with its
- * syllables, so a word the segmenter cuts into parts (ห้อง|สมุด) is found from any of them. A lookup never starts or
+ * syllables, so a word the segmenter cuts into parts (ห้อง|สมุด) is found from any of them. Where nothing found from
+ * the word's start reaches the aimed character, as in a word the segmenter joined from two that a dictionary has apart
+ * (ក្រុងភ្នំពេញ), the lookup starts inside the word as well ([innerStarts]). A lookup never starts or
  * ends inside a cluster of a letter and its marks, and a match shorter than the longest from its start is shown only
  * where the segmenter ends a word (การ in การตลาด, not กา).
  */
@@ -38,7 +40,7 @@ abstract class SegmentedLanguageSupport(private val segmenter: WordSegmenter) : 
 
     /**
      * Whether a word may start at [index] of [text], a letter or digit that starts a cluster: not at the repetition and
-     * abbreviation marks.
+     * abbreviation marks, which go with the word before them.
      */
     protected open fun mayStartWord(text: String, index: Int): Boolean = true
 
@@ -53,14 +55,18 @@ abstract class SegmentedLanguageSupport(private val segmenter: WordSegmenter) : 
 
     override fun wordStartOffset(before: String, aimed: String): Int = wordStartOffset(before, aimed, "")
 
-    /** The start of the segmenter's word that the aimed character is in, read with the text around it. */
+    /**
+     * The start of the segmenter's word that the aimed character is in, read with the text around it; a repetition mark
+     * the segmenter parts from its word (Khmer កូន|ៗ) belongs to that word.
+     */
     override fun wordStartOffset(before: String, aimed: String, after: String): Int {
         if (aimed.isEmpty()) return 0
         val codePoint = aimed.codePointAt(0)
         if (!Character.isLetterOrDigit(codePoint) && !continuesCluster(codePoint)) return 0
         val text = before + aimed + after
         val at = before.length
-        val start = boundaries(text).lastOrNull { it <= at && isClusterStart(text, it) } ?: return 0
+        val start = boundaries(text).lastOrNull { it <= at && isClusterStart(text, it) && mayStartWord(text, it) }
+            ?: return 0
         return if (startsWord(text, start)) text.codePointCount(start, at) else 0
     }
 
@@ -68,7 +74,7 @@ abstract class SegmentedLanguageSupport(private val segmenter: WordSegmenter) : 
 
     /**
      * The start of the [earlierWords]-th word of the script before the aimed one, or of the furthest one that nothing
-     * but words of the script separates from it; zero-width spaces between them are passed over.
+     * but words of the script separates from it; zero-width spaces and repetition marks between them are passed over.
      */
     override fun earlierStartOffset(before: String, from: String): Int {
         val text = before + from
@@ -88,7 +94,8 @@ abstract class SegmentedLanguageSupport(private val segmenter: WordSegmenter) : 
         val pieces = boundaries(text).filter { it < end && isClusterStart(text, it) }
         val starts = ArrayList<Int>()
         for (start in pieces.asReversed()) {
-            if (text.codePointAt(start) == ZWSP) continue
+            val codePoint = text.codePointAt(start)
+            if (codePoint == ZWSP || (inScript(codePoint) && !mayStartWord(text, start))) continue
             if (!isScriptWord(text, start)) break
             starts += start
         }
@@ -98,6 +105,10 @@ abstract class SegmentedLanguageSupport(private val segmenter: WordSegmenter) : 
     /** Where the segmenter starts words of the script before [end]. */
     override fun wordStarts(text: String, end: Int): List<Int> =
         boundaries(text).filter { it < end && isClusterStart(text, it) && isScriptWord(text, it) }
+
+    /** The clusters of the script after [from] up to the one [to] is in, where a word may start. */
+    override fun innerStarts(text: String, from: Int, to: Int): List<Int> =
+        (from + 1..minOf(to, text.length - 1)).filter { isScriptWord(text, it) }
 
     /**
      * Matches that end inside a cluster are left out; of the others, the longest is shown, and shorter ones where the

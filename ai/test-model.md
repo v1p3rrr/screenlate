@@ -61,7 +61,10 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   (`svc wifi disable`, `svc data disable`).
 - Space: the AVD's /data keeps about 0.3–0.5 GB free with the languages installed, at the system's low-storage line
   (installs and imports fail). `settings put global sys_storage_threshold_percentage 1` and
-  `sys_storage_threshold_max_bytes 104857600` lower it for a run; delete both settings afterwards.
+  `sys_storage_threshold_max_bytes 104857600` lower it for a run; delete both settings afterwards. Since the Khmer
+  run (2026-10-20) about 0.39 GB stays free and a full debug build (126 MB) no longer installs: install an x86_64-only
+  build (`ai/notes/build-environment.md`, "short /data"). Deleting earlier languages' dictionaries to make room needs
+  the owner's OK.
 - Instrumented runs: per module, e.g. `./gradlew :dictionary:engine-hoshidicts:connectedDebugAndroidTest`; a full
   `connectedDebugAndroidTest` uninstalls the debug app at the end, so reinstall afterwards. The app's
   `SearchLanguageTest` and `InstallationPopupTest` need the API 37 WebView and fail on API 30: install the test APK
@@ -189,6 +192,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK44 | Georgian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansGeorgian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf` (Sylfaen has no Mtavruli), Tesseract kat fast, then cloud recognition): წიგნს, წიგნები → წიგნი with the rule chip names (declension, nominative) in English and Russian; მას shows its own entry, not მა; a word longer than 16 letters found whole, the Lookup setting showing 24 for Georgian and 16 for English; ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო; the sentence keeps "ქ." and "წ."; flag ge, bubble ქ; the page's serif face is the phone's Noto Serif Georgian (`local()`), no downloadable font listed for Georgian; Tesseract fast is the recommended model; audio from Wiktionary (წყალი), else the voice | N | U GeorgianSupportTest, SentenceTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK45 | Armenian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansArmenian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf`, Tesseract hye fast, then cloud recognition): ինչո՞ւ → ինչու, also when tapped after ՞; կարդա՛ and կարդա → կարդալ (imperative); գրքեր → գիրք; Երեվան and Երեվանը → Երևան, ԵՐԵՎԱՆ shows Երևան after the verb form երևան; Եվրոպա found as written; the classical գիւղ → գյուղ; the sentence ends at ։ and at a colon, not at the period or at 10:30 (two sentences on one line: OCR makes every line a paragraph here); a word longer than 16 letters found whole, the Lookup setting showing 24 for Armenian; flag am, bubble Հ; the page's serif face is the phone's Noto Serif Armenian (`local()`), no downloadable font listed for Armenian; Tesseract fast is the recommended model; audio from Wiktionary (ջուր), else the voice | N | U ArmenianSupportTest, SentenceTest, LanguageRulesIsolationTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 | LK46 | Thai lookups (search screen; overlay over an image rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansThai-Regular.ttf` and `FALLBACK` the phone's Roboto, as `scripts/text-image.py` does not shape Thai; Tesseract tha fast, then cloud recognition): ห้องสมุด aimed at สมุด shows ห้องสมุด (library) first, then สมุด; โรงเรียน aimed at เรียน shows โรงเรียน first; การตลาด shows การตลาด and การ, not กา; ห้อง shows its own entries without the rooms it is the classifier of; จริงๆ (no space) finds จริง ๆ and the highlight stops at ๆ, นาน ๆ finds นานๆ; น้ำ typed as น + ํ + ้ + า finds น้ำ; กรุงเทพฯ finds กรุงเทพมหานคร; results carry a rank from the Thai National Corpus dictionary; the sentence (translation button) ends at a space between words, not beside ๆ, ฯ or digits, and พ.ศ. holds; flag th, bubble ท; the page's serif face is the phone's Noto Serif Thai (`local()`), and Sarabun, Noto Sans Thai Looped, Kanit and Prompt are listed for Thai and load on the page; Tesseract fast is the recommended model and its text keeps the words of a line together (no spaces between letters); audio for น้ำ from Wiktionary, else the voice | N | U ThaiSupportTest, SentenceTest, LookupStartsTest, TextLayoutTest, TesseractPageTest, CorpusCountsDictionaryTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
+| LK47 | Khmer lookups (search screen; overlay over an image rendered by `scripts/TextImage.java` at `SIZE=64` with `FONT` the phone's `NotoSansKhmer-VF.ttf` and `FALLBACK` the phone's Roboto, the lines given as `@FILE`, a UTF-8 file, since Windows passes Khmer arguments as question marks; cloud recognition, then Tesseract khm fast): សាលារៀន aimed at រៀន shows សាលារៀន (school) first; ក្រុងភ្នំពេញ, which ICU takes as one word, aimed at ពេញ shows ភ្នំពេញ (Phnom Penh) first and ក្រុង after it, aimed back at ក្រុង shows ក្រុង; នៅផ្ទះ aimed at ផ្ទះ shows ផ្ទះ first, រាល់ថ្ងៃ at ថ្ងៃ shows ថ្ងៃ; ក្មេងៗ aimed at ៗ shows ក្មេង; text with zero-width spaces (សាលា + U+200B + រៀន) finds សាលារៀន, and a zero-width space after a word stays out of its highlight; សួស្តី (subscript TA) finds សួស្ដី, ស្ដ្រី (DA) finds ស្ត្រី; no match ends inside a cluster (ខ្ of ខ្ញុំ); the sentence (translation button) ends at ។ and ៕, not at a space; flag kh, bubble ខ; the page's `lang` is km and its serif face the phone's Noto Serif Khmer (`local()`, weights 400 and 700); Kantumruy Pro and Hanuman are listed for Khmer only and load on the page; Tesseract fast is the recommended model and its text keeps the real spaces without adding any inside words; audio for ទឹក from the voice | N | U KhmerSupportTest, EarlierStartsTest, SentenceTest, LookupStartsTest, TextLayoutTest, CatalogFileTest, FontCatalogFileTest, MlKitOcrEngineTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 
 ### POP: the popup
 
@@ -376,6 +380,43 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-20, `languages/km` (Khmer, on `e34d9fbf`, before its commit), Pixel_10_Pro (API 37)
+
+Scope: Khmer (LK47) through the Languages screen, the download screen, the search screen (text action), the overlay
+over a rendered image (64 px, the phone's Noto Sans Khmer with Roboto for digits and punctuation, `TextImage.java`
+with the lines in a UTF-8 file) in the debug viewer with cloud recognition and with Tesseract offline, the sentence
+translation, the Popup settings' font card, the popup page (`popup-eval.mjs`), audio; the lookup engine's (43/43,
+LanguageLookupTest 17/17) and the overlay's (24/24, SystemFontFilesTest 7/7 with the Khmer serif) instrumented tests.
+The 126 MB debug build no longer fit in /data (`INSTALL_FAILED_INSUFFICIENT_STORAGE`); an x86_64-only build (82 MB,
+`ai/notes/build-environment.md`) was installed over it with the app data kept.
+
+Results: passed after one fix. First check: LK47.
+
+- Setup: Khmer offered wty-km-en (0.96 MB, ticked), transcriptions (69 kB, ticked), Tesseract fast (1.4 MB, ticked,
+  main model) and accurate (8.1 MB): 2.5 MB, about 5.0 MB after import. Flag kh, bubble ខ; Khmer is listed last on
+  the Languages screen.
+- Search: សាលារៀន → school; សួស្តី → សួស្ដី (hello) and ស្ដ្រី → ស្ត្រី (woman) across the two subscripts; ក្មេងៗ → ក្មេង
+  (children); សាលា + U+200B + រៀន → សាលារៀន.
+- Overlay, cloud recognition (word boxes, split evenly): សាលារៀន, ក្មេងៗ, សួស្ដី, ស្ត្រី, សប្បាយ, រាជធានី, ភ្លៀង found
+  from any part. First pass: ក្រុងភ្នំពេញ aimed at ពេញ showed only ក្រុង (city), នៅផ្ទះ at ផ្ទះ only នៅ: ICU on the
+  emulator joins these phrases (as ICU4J 66.1 does), and the lookup started at the joined word's start. After the
+  fix: ភ្នំពេញ (Phnom Penh), then ក្រុង; ផ្ទះ, then នៅ; ថ្ងៃ, then រាល់; គ្នា in ទាំងអស់គ្នា; back on ក្រុង → ក្រុង. One aim
+  at the left edge of a word gave the word before (គេ): the edge of its even share. Sentences (translation button):
+  "I go to school every day.", "They are very happy.", "The year 2024 has a lot of rain." (each ended at ។).
+- Overlay offline: Tesseract khm fast alone. Its text ("Copy all recognized text" pasted into the search): the real
+  spaces kept and none added inside words, which confirms the 0.15 gap; vowel signs dropped in places, ត read as ទ,
+  a line split where it starts with ្រ or a stacked consonant; lines 1 and 2 of the paragraph joined with nothing.
+- Fix: the lookup also starts inside the aimed word when nothing found reaches the aimed character (Thai and Khmer;
+  unit tests in EarlierStartsTest and KhmerSupportTest). Rechecked after reinstalling, as above. Thai was not
+  rechecked on the device for this (unit tests only).
+- Page: `lang` km; the "Screenlate Serif" face names Noto Serif Khmer by `local()`, and weights 400 and 700 load.
+- Fonts: the card lists Kantumruy Pro and Hanuman, "Only for Khmer text". Both downloaded; Kantumruy Pro, chosen,
+  loads on the page as "Screenlate Chosen" (100 700) for the Khmer range only. Set back to the phone's font.
+- Audio: ទឹក only from the text to speech, which spoke it with Google's Khmer voice; Lingua Libre and Wiktionary have
+  no recording.
+- Emulator left with Khmer turned on and active, Kantumruy Pro and Hanuman downloaded, airplane mode off; /data
+  388 MB free. Powered off.
 
 ### 2026-10-20, `languages/th` (Thai, on `12b367c4`), Pixel_10_Pro (API 37)
 

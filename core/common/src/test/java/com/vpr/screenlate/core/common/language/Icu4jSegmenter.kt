@@ -19,3 +19,6 @@ object Icu4jSegmenter : WordSegmenter {
 
 /** Thai segmented by [Icu4jSegmenter], as on a phone. */
 object IcuThai : ThaiRules(Icu4jSegmenter)
+
+/** Khmer segmented by [Icu4jSegmenter], as on a phone. */
+object IcuKhmer : KhmerRules(Icu4jSegmenter)

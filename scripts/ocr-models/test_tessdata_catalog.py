@@ -21,6 +21,9 @@ class EntryTest(unittest.TestCase):
         # Nothing else in the catalog reads Thai on the device; best is no better than fast.
         self.assertTrue(catalog.entry("th", "tha", "fast", b"lstm")["recommended"])
         self.assertFalse(catalog.entry("th", "tha", "best", b"lstm")["recommended"])
+        # Khmer as well: best reads it 37.9% wrong against fast's 38.3%.
+        self.assertTrue(catalog.entry("km", "khm", "fast", b"lstm")["recommended"])
+        self.assertFalse(catalog.entry("km", "khm", "best", b"lstm")["recommended"])
 
 
 class ReplaceTest(unittest.TestCase):

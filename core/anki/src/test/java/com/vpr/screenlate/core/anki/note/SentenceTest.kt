@@ -217,6 +217,15 @@ class SentenceTest {
     }
 
     @Test
+    fun khmerSentencesEndAtKhanAndTheSectionEndNotAtASpace() {
+        val khmer = "ខ្ញុំទៅ សាលារៀន។ គាត់ធ្វើការនៅភ្នំពេញ។ តើអ្នកសុខសប្បាយទេ? ក្មេងៗលេងបាល់៕ ចប់"
+        assertThat(extract(khmer, "សាលា", Language.KHMER).text).isEqualTo("ខ្ញុំទៅ សាលារៀន។")
+        assertThat(extract(khmer, "ធ្វើការ", Language.KHMER).text).isEqualTo("គាត់ធ្វើការនៅភ្នំពេញ។")
+        assertThat(extract(khmer, "សុខសប្បាយ", Language.KHMER).text).isEqualTo("តើអ្នកសុខសប្បាយទេ?")
+        assertThat(extract(khmer, "បាល់", Language.KHMER).text).isEqualTo("ក្មេងៗលេងបាល់៕")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

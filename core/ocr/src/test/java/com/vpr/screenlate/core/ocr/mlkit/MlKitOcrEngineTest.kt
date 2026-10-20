@@ -20,7 +20,7 @@ class MlKitOcrEngineTest {
         assertThat(engine.model(OcrScript.DEVANAGARI)).isEqualTo(OcrScript.DEVANAGARI)
         // The Devanagari model reads Bengali as well (0.5% errors on clean screens).
         assertThat(engine.model(OcrScript.BENGALI)).isEqualTo(OcrScript.DEVANAGARI)
-        for (script in listOf(OcrScript.ARMENIAN, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK, OcrScript.THAI)) {
+        for (script in listOf(OcrScript.ARMENIAN, OcrScript.CYRILLIC, OcrScript.GEORGIAN, OcrScript.GREEK, OcrScript.KHMER, OcrScript.THAI)) {
             assertThat(engine.model(script)).isNull()
         }
     }

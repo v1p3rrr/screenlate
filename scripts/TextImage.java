@@ -4,7 +4,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 /**
@@ -13,6 +18,9 @@ import javax.imageio.ImageIO;
  * does not do.
  *
  * <p>Usage: {@code FONT=<font file> [FALLBACK=<font file>] [SIZE=72] java scripts/TextImage.java OUT.png "line" ...}
+ *
+ * <p>An argument {@code @FILE} stands for the lines of a UTF-8 file: the Windows launcher passes arguments through the
+ * ANSI code page, which turns scripts outside it into question marks.
  *
  * <p>Characters FONT lacks (digits and Latin punctuation in script-only fonts such as Noto Sans Thai) are drawn with
  * FALLBACK; a combining mark stays with the run of its letter. Lines start 60 px from the left, the first baseline at
@@ -40,7 +48,7 @@ public class TextImage {
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g.setColor(new Color(0x20, 0x20, 0x20));
         int y = 260;
-        for (String line : Arrays.copyOfRange(args, 1, args.length)) {
+        for (String line : lines(Arrays.copyOfRange(args, 1, args.length))) {
             float x = 60;
             int start = 0;
             while (start < line.length()) {
@@ -60,6 +68,18 @@ public class TextImage {
         }
         g.dispose();
         ImageIO.write(image, "png", new File(args[0]));
+    }
+
+    private static List<String> lines(String[] args) throws Exception {
+        List<String> lines = new ArrayList<>();
+        for (String arg : args) {
+            if (arg.startsWith("@")) {
+                lines.addAll(Files.readAllLines(Path.of(arg.substring(1)), StandardCharsets.UTF_8));
+            } else {
+                lines.add(arg);
+            }
+        }
+        return lines;
     }
 
     /** Whether [codePoint] goes into a run of [font]; marks and spaces stay in the current run ([current]). */

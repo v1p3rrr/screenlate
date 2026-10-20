@@ -2903,6 +2903,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-khm",
+      "title": "Tesseract fast (khm)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "km",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/khm.traineddata",
+      "downloadSize": 1446926,
+      "sha256": "47f110575341b322052f3becbefee61a3ecf1ef549352b5d4d33d28afe30d099",
+      "model": "tesseract-fast-khm",
+      "engine": "tesseract",
+      "file": "tessdata/khm.traineddata",
+      "version": "47f110575341",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-khm",
+      "title": "Tesseract best (khm)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "km",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/khm.traineddata",
+      "downloadSize": 8104332,
+      "sha256": "3d2d975e67a319bf1cd67626b12fdebc1e417a4ebef9c9afee01d9927b512815",
+      "model": "tesseract-best-khm",
+      "engine": "tesseract",
+      "file": "tessdata/khm.traineddata",
+      "version": "3d2d975e67a3",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -12454,6 +12488,64 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/th/wty-th-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 583894,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-km-en",
+      "title": "Wiktionary (km–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-km-en",
+        "kty-km-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "km",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/km/en/wty-km-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 964753,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-km-ru",
+      "title": "Wiktionary (km–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-km-ru",
+        "kty-km-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "km",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/km/ru/wty-km-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 228961,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-km-transcription",
+      "title": "Wiktionary transcription (km)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-km-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "km",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-km-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/km/wty-km-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 69264,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

@@ -75,3 +75,25 @@ export const thaiMaiYamokSpace = {
         str.replace(/ *\u0E46/g, '\u0E46'),
     ],
 };
+
+/**
+ * Khmer text with the zero-width spaces apps put between words, which headwords never have: they are dropped, except
+ * one that ends the text, so a match never takes it in.
+ * @type {import('language').TextProcessor}
+ */
+export const khmerZeroWidthSpace = {
+    name: 'Khmer zero-width space',
+    description: 'ខ្ញុំ + U+200B + ទៅ → ខ្ញុំទៅ',
+    process: (str) => [str, str.replace(/\u200B+(?!$)/g, '')],
+};
+
+/**
+ * Khmer subscript TA ្ត read as subscript DA ្ដ, which looks the same; dictionaries write either, and both in some
+ * words (ក្ដារ, ក្តារ). The import indexes headwords written with ្ត under ្ដ as well.
+ * @type {import('language').TextProcessor}
+ */
+export const khmerSubscriptDa = {
+    name: 'Khmer subscript DA',
+    description: 'ក្តារ → ក្ដារ',
+    process: (str) => [str, str.replace(/\u17D2\u178F/g, '\u17D2\u178A')],
+};

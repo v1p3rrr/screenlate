@@ -23,3 +23,27 @@ internal suspend fun fromEarlierStarts(
     val aimed = lookup(aimedAt).map { it.copy(start = aimedAt) }
     return (earlier + aimed).distinctBy { it.term.expression to it.term.reading }
 }
+
+/**
+ * [results] as they are when one reaches the aimed character at [aimedCharAt]; otherwise the words from the first of
+ * the [inner] starts (`LanguageSupport.innerStarts`) that reach it come first: aimed at ពេញ in ក្រុងភ្នំពេញ, which a
+ * segmenter takes as one word and a dictionary has only as ក្រុង and ភ្នំពេញ, ភ្នំពេញ comes before ក្រុង.
+ *
+ * @param lookup the results from a UTF-16 index of the lookup text.
+ */
+internal suspend fun reachingAimedCharacter(
+    results: List<LookupResult>,
+    aimedCharAt: Int,
+    inner: List<Int>,
+    lookup: suspend (Int) -> List<LookupResult>,
+): List<LookupResult> {
+    if (results.any { it.covers(aimedCharAt) }) return results
+    for (start in inner) {
+        val found = lookup(start).map { it.copy(start = start) }.filter { it.covers(aimedCharAt) }
+        if (found.isNotEmpty()) return (found + results).distinctBy { it.term.expression to it.term.reading }
+    }
+    return results
+}
+
+/** Whether the match covers the UTF-16 index [at] of the lookup text. */
+fun LookupResult.covers(at: Int): Boolean = start <= at && start + matched.length > at

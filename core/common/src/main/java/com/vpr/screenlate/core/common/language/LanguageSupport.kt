@@ -17,9 +17,9 @@ interface LanguageSupport {
     val wordSeparator: String
 
     /**
-     * The gap between two words of a line, in line heights, from which on-device recognition that cuts words into
-     * clusters (Tesseract's Thai) parts them with a space; closer ones are joined. Null where words take
-     * [wordSeparator].
+     * The gap between two words of a line, in line heights, from which on-device recognition parts them with a space
+     * in a language without spaces between words, where its words are clusters (Tesseract's Thai) or phrases (its
+     * Khmer); closer ones are joined. Null where words take [wordSeparator].
      */
     val ocrSpaceGap: Float? get() = null
 
@@ -234,6 +234,14 @@ interface LanguageSupport {
     }
 
     /**
+     * UTF-16 indexes of [text] after [from] up to [to] where a lookup starts as well when nothing found from the aimed
+     * word's start at [from] reaches the aimed character at [to]: inside a word a segmenter joined from words of a
+     * dictionary (Khmer ក្រុងភ្នំពេញ, of which a dictionary may have only ក្រុង and ភ្នំពេញ). Empty where the aimed
+     * word is the whole lookup.
+     */
+    fun innerStarts(text: String, from: Int, to: Int): List<Int> = emptyList()
+
+    /**
      * Of the [lengths] (UTF-16) of the matches found from the start of [text], those shown: every one, unless a
      * segmenter divides the language's words ([SegmentedLanguageSupport]).
      */
@@ -380,7 +388,7 @@ data class HeadwordMarks(
 data class RecordingTitle(val prefix: String, val title: String)
 
 /** On-device OCR models; each one covers a script family. */
-enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KOREAN, THAI }
+enum class OcrScript { LATIN, ARMENIAN, BENGALI, CHINESE, CYRILLIC, DEVANAGARI, GEORGIAN, GREEK, JAPANESE, KHMER, KOREAN, THAI }
 
 val Language.support: LanguageSupport
     get() = when (this) {
@@ -413,4 +421,5 @@ val Language.support: LanguageSupport
         Language.GEORGIAN -> GeorgianSupport
         Language.ARMENIAN -> ArmenianSupport
         Language.THAI -> ThaiSupport
+        Language.KHMER -> KhmerSupport
     }

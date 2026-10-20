@@ -81,6 +81,16 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `khmer has a sans-serif and a serif, offered for khmer only`() {
+        val khmer = fonts.filter { it.language == Language.KHMER.code }
+        assertThat(khmer.map { it.family }).containsExactly("Kantumruy Pro", "Hanuman")
+        for (font in khmer) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.KHMER)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.KHMER) }).containsExactlyElementsIn(khmer)
+    }
+
+    @Test
     fun `georgian and armenian are offered no downloadable font, only the system's`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
         assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()

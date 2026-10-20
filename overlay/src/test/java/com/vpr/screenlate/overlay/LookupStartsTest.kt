@@ -5,6 +5,7 @@ import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.EnglishSupport
 import com.vpr.screenlate.core.common.language.GermanSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
+import com.vpr.screenlate.core.common.language.KhmerRules
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.ThaiRules
 import com.vpr.screenlate.core.common.language.VietnameseSupport
@@ -86,17 +87,10 @@ class LookupStartsTest {
     }
 
     /** Thai divided into [words], the longest first, as ICU's dictionary would divide it. */
-    private class DictionaryThai(vararg words: String) : ThaiRules(
-        WordSegmenter { text, _ ->
-            val boundaries = mutableListOf(0)
-            var index = 0
-            while (index < text.length) {
-                index += words.filter { text.startsWith(it, index) }.maxOfOrNull { it.length } ?: 1
-                boundaries += index
-            }
-            boundaries.toIntArray()
-        },
-    )
+    private class DictionaryThai(vararg words: String) : ThaiRules(dictionarySegmenter(words))
+
+    /** Khmer divided the same way. */
+    private class DictionaryKhmer(vararg words: String) : KhmerRules(dictionarySegmenter(words))
 
     @Test
     fun `thai looks up from the segmenter's word under the aim and the two before it`() {
@@ -111,6 +105,17 @@ class LookupStartsTest {
     }
 
     @Test
+    fun `khmer looks up from the words before the aimed one past zero-width spaces and the repetition mark`() {
+        val khmer = DictionaryKhmer("ខ្ញុំ", "ទៅ", "សាលា", "កូន", "លេង")
+        val spaced = layout(khmer, "ខ្ញុំ\u200Bទៅ\u200Bសាលា")
+        assertThat(earliestStart(spaced, spaced.at("សាលា"), khmer)).isEqualTo(spaced.at("ខ្ញុំ"))
+        val repeated = layout(khmer, "កូនៗលេង")
+        assertThat(earliestStart(repeated, repeated.at("លេង"), khmer)).isEqualTo(repeated.at("កូន"))
+        // Aimed at ៗ, the lookup starts at the word it repeats.
+        assertThat(repeated.wordAt(repeated.at("ៗ"), khmer)).isEqualTo("កូនៗ")
+    }
+
+    @Test
     fun `the second half of a word hyphenated at a line end looks up from the first half as well`() {
         val text = layout(EnglishSupport, "an impor-", "tant thing")
         val aimed = text.at("tant", plus = 2)
@@ -120,4 +125,15 @@ class LookupStartsTest {
         val japanese = layout(JapaneseSupport, "大切-", "です")
         assertThat(earliestStart(japanese, japanese.at("です"), JapaneseSupport)).isEqualTo(japanese.at("です"))
     }
+}
+
+/** Divides text into [words], the longest first, as ICU's dictionary would; anything else one character at a time. */
+private fun dictionarySegmenter(words: Array<out String>) = WordSegmenter { text, _ ->
+    val boundaries = mutableListOf(0)
+    var index = 0
+    while (index < text.length) {
+        index += words.filter { text.startsWith(it, index) }.maxOfOrNull { it.length } ?: 1
+        boundaries += index
+    }
+    boundaries.toIntArray()
 }
