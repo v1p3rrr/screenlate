@@ -81,7 +81,12 @@ own too. Their branches are merged into `languages/main` by this session when th
 and Khmer build waits for the owner's go. Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
 OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
-in the overnight queue below, after 4d.
+in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic, Breton) is researched
+(`notes/languages.md`, "Group 5b research"; `plans/2026-10-19-group-5b.md`): questions 1-4 answered (own
+initial-mutation rule with the mutation's name, Irish and Gaelic elisions as French, regional flags, the Russian
+Gaelic name); questions 5-10 recorded overnight, 5 deferred (wty has no Breton), 6-10 decided provisionally;
+recognition measured on the emulator (ML Kit stays main; ML Kit never reads Welsh ŵ ŷ, Tesseract's Welsh model reads
+all). Not started: its order is the owner's call.
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
