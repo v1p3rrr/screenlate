@@ -1516,6 +1516,11 @@ Cells: archive MB, words.
 
 See `plans/2026-10-19-group-4c.md`.
 
+## Group 5a research (2026-10-19)
+
+Swedish, Norwegian, Danish, Romanian, Latin, Lithuanian, Slovak, Slovenian, Esperanto, Albanian and Swahili (Basque and
+Maltese researched, not built): research, decisions and work in `plans/2026-10-19-group-5a.md`.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
