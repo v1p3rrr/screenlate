@@ -241,7 +241,15 @@ endings with the question particle (барасыңбы → баруу), Wiktiona
 Kyrgyz news list, PaddleOCR recommended and Tesseract kir offered; flag kg, bubble Ң. LK53, OCR33, POP30, AUD17,
 ANK21, DIC27 and LNG16 passed on the emulator with no fixes. Overnight questions 15 (Түштук finds түшүү through a
 twin-spelled ending, and the keyed lookup is not tried) and 16 (алды shows the pronoun ал with a noun ending first)
-are deferred. The PanLex converter follows on the same branch.
+are deferred.
+
+The PanLex converter is done on the same branch (2026-10-20): `scripts/panlex/panlex_yomitan.py` joins two files of
+the CC0 mirror `cointegrated/panlex-meanings` (2024-03-01 dump, pinned revision) on their meaning and writes one
+definition per headword, translations comma-separated by support, at most ten; headwords outside the lowercase
+alphabet, loose groups, lists and other-script translations are left out (kk-ru 16,374 headwords, kk-en 13,835,
+ky-ru 5,729, ky-en 6,357). DIC28 passed on the emulator. The archives are not hosted or in the catalog: hosting and
+the license check (the live site says CC BY-NC-SA 4.0) come first, then the catalog entries with Kyrgyz PanLex ticked
+and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out) are decided provisionally.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

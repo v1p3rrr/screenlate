@@ -201,7 +201,7 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
 | many | Lingoes Vicon dictionaries | ripped from Lingoes |
 | zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
 | many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent. Read again for group 4e (Wayback copy of 2025-11-12): CC BY-NC for the site's data and services, CC BY for "the text corpora offered for download"; the Kazakh and Kyrgyz frequency lists are built from those downloads (owner, 2026-10-19) |
-| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. A Kazakh and Kyrgyz converter is planned (group 4e); the license is checked again before hosting |
+| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e); the license is checked again before hosting |
 
 ## OCR
 
@@ -1973,6 +1973,27 @@ brackets where they matter.
   Leipzig news sample: kk wty 1,287, PanLex 1,052, either 1,405; ky wty 789, PanLex 818, either 1,143.
 - Tatoeba: 4,582 Kazakh and 826 Kyrgyz sentences (CC BY 2.0 FR).
 
+### PanLex conversion (2026-10-20)
+
+- `scripts/panlex/panlex_yomitan.py` reads two mirror files at revision `0422f0e60f39` (columns `id`, `langvar`,
+  `txt`, `txt_degr`, `meaning`, `langvar_uid`; the `-000` varieties are the standard ones; `eng.tsv` has tens of
+  millions of rows, so only the meanings of the kept headwords are read from the target file).
+- Filters, chosen on samples: headwords only in the language's lowercase letters (Kazakh words filed as Kyrgyz,
+  codes, names, time zones and interface strings go); meanings with more than 4 headwords (loose groups: one Russian
+  word for sixteen Kyrgyz ones) or more than 20 translations (the cities of Russia under Оруссия); translations in
+  another script. Capitalized Russian translations stay (currencies, Луна, Библия). Russian stress marks are kept in
+  the shown spelling and ignored when translations are compared.
+- One definition per headword, the translations comma-separated in the order of the number of meanings that give
+  them, at most 10; no tags, so the verb chains reach these entries (алды → алуу "держать, брать").
+- Headwords: kk-ru 16,374 (256 KB), kk-en 13,835 (230 KB), ky-ru 5,729 (107 KB), ky-en 6,357 (108 KB). Of the 2,000
+  most frequent Kyrgyz word forms of the Leipzig news sample, 371 (ru) and 406 (en) are headwords as written.
+- Quality: Kazakh is cleaner than Kyrgyz. Kyrgyz keeps strays (элүүнчү → fortieth, кыргыз → Uzbekistan, ушул →
+  присутствовать) and many software-localization terms; алды as written gives "лицевой". боюнча, чейин, кабыл and
+  аркылуу are PanLex expressions, but none of their meanings has a Russian or English expression, so neither
+  archive has them (the research line above counted expressions, not translations).
+- On the emulator: import 435-545 ms per archive; азыр → now / сейчас, же → или, либо (no wty entry for either);
+  PanLex rows sit under the wty entry of the same headword (қазір, қабылдау).
+
 ### Lookup coverage
 
 Measured on running text (30 Wikipedia articles per language on general topics: kk 54k, ky 24k lowercase tokens;
@@ -2035,7 +2056,9 @@ letters that is a headword.
 - Keyboards: the Windows Kazakh layout puts ә і ң ғ ү ұ қ ө һ on the number row (no digits there); the Windows Kyrgyz
   layout gives ү ң ө with AltGr; AOSP's keyboard gives the letters on a long press of a Russian key (Kazakh а → ә,
   г → ғ, к → қ, н → ң, о → ө, у → ү ұ, ы → і, э → һ; Kyrgyz у → ү, н → ң, о → ө). Without the long press і becomes ы,
-  not и. Gboard's current layouts are not documented.
+  not и. Gboard 18.4 (checked on the emulator, 2026-10-20): its Kazakh (Cyrillic) layout is the Russian ЙЦУКЕН
+  one with the Kazakh letters on long presses: а → ә, г → ғ, к → қ, н → ң, о → ө, у → ұ ү, х → һ, ы → і (и has
+  none), so a word typed without long presses comes out in the Russian twins that the letter keys match.
 - Latin look-alikes in Cyrillic words: the Kazakh news sample has Latin i (U+0069) for і in 10% of its Cyrillic
   words (мүмкiн, үшiн; Leipzig's sample counts 12,616 such tokens against 20,134 written right), the Kyrgyz one 0.2%,
   Kazakh Wikipedia 0.65%; Latin ə for ә is rarer; Kyrgyz Wikipedia has Latin ɵ for ө and a few words typed wholly in
