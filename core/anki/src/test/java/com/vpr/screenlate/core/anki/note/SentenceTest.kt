@@ -226,6 +226,16 @@ class SentenceTest {
     }
 
     @Test
+    fun arabicSentencesEndAtTheArabicQuestionMarkNotAtItsCommaOrAnAbbreviation() {
+        val arabic = "هل قرأت الكتاب؟ نعم، قرأته في المكتبة؛ كان جميلا. قال د. أحمد «اقرأ!» ثم خرج."
+        assertThat(extract(arabic, "قرأت", Language.ARABIC).text).isEqualTo("هل قرأت الكتاب؟")
+        assertThat(extract(arabic, "المكتبة", Language.ARABIC).text).isEqualTo("نعم، قرأته في المكتبة؛ كان جميلا.")
+        assertThat(extract(arabic, "أحمد", Language.ARABIC).text).isEqualTo("قال د. أحمد «اقرأ!» ثم خرج.")
+        assertThat(extract("وُلد سنة ٥٠ ق.م. في روما", "روما", Language.ARABIC).text)
+            .isEqualTo("وُلد سنة ٥٠ ق.م. في روما")
+    }
+
+    @Test
     fun aQuoteTheParagraphDoesNotCloseKeepsTheSentenceShort() {
         // German pairs „ with “; an English-style “ja” leaves a “ without its opening quote.
         val german = "Das ist gut. Er sagte “ja” und ging. Dann kam sie."

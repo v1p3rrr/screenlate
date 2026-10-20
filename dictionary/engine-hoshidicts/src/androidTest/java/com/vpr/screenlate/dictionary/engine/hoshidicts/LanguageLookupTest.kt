@@ -380,6 +380,64 @@ class LanguageLookupTest {
         assertThat(me.matched).isEqualTo("ខ្ញុំ")
     }
 
+    @Test
+    fun arabicWithoutHamzaFindsHeadwordsWithItAndFormsAreCleanedAtImport() = runTest {
+        val imported = engine.import(arabicDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val arabic = LookupOptions(language = Language.ARABIC)
+        suspend fun first(text: String) = engine.lookup(text, arabic).first()
+        suspend fun all(text: String) = engine.lookup(text, arabic).map { it.term.expression }
+
+        // Text without hamza, with ي for a final ى and ه for a final ة, finds the headwords written by the norm.
+        assertThat(first("اكبر").term.expression).isEqualTo("أكبر")
+        assertThat(first("اسلام").term.expression).isEqualTo("إسلام")
+        assertThat(first("علي").term.expression).isEqualTo("على")
+        assertThat(first("لغه").term.expression).isEqualTo("لغة")
+        // A bare alif finds either hamza; a word with hamza finds only itself.
+        assertThat(all("امام")).containsAtLeast("أمام", "إمام")
+        assertThat(all("أمام")).doesNotContain("إمام")
+        // Vowel marks and tatweel in the text.
+        assertThat(first("كِتَابٌ").term.expression).isEqualTo("كتاب")
+        assertThat(first("كتـاب").term.expression).isEqualTo("كتاب")
+        // The conjunction and the article cut off an adjective, which gives no part of speech.
+        val big = first("والكبير جدا")
+        assertThat(big.term.expression).isEqualTo("كبير")
+        assertThat(big.matched).isEqualTo("والكبير")
+        // A form naming a vowelled lemma finds the headword, its tags without the template name.
+        val schools = first("مدارس")
+        assertThat(schools.term.expression).isEqualTo("مدرسة")
+        assertThat(schools.trace.map { it.name }).containsExactly("nominative plural broken-form construct diptote")
+        assertThat(all("كتب")).containsAtLeast("كتب", "كتاب")
+        // Romanized forms are dropped.
+        assertThat(engine.lookup("kutub", arabic)).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Arabic exports write them: unvowelled headwords with the vowelled spelling as the reading,
+     * adjectives without a part of speech, forms naming vowelled lemmas, template names among tags, romanized forms.
+     */
+    private fun arabicDictionary(): File = zip(
+        "ar.zip",
+        "index.json" to """{"title":"Test Arabic","revision":"1","format":3,"sourceLanguage":"ar"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["كتاب","كِتَاب","n masc","n",0,["book"],1,""],
+              ["كتب","كَتَبَ","v vt","v",0,["to write"],2,""],
+              ["كبير","كَبِير","adj","",0,["big"],3,""],
+              ["أكبر","أَكْبَر","adj","",0,["bigger"],4,""],
+              ["إسلام","إِسْلَام","name","",0,["Islam"],5,""],
+              ["على","عَلَى","prep","",0,["on"],6,""],
+              ["لغة","لُغَة","n fem","n",0,["language"],7,""],
+              ["أمام","أَمَامَ","prep","",0,["in front of"],8,""],
+              ["إمام","إِمَام","n masc","n",0,["imam"],9,""],
+              ["مدرسة","مَدْرَسَة","n fem","n",0,["school"],10,""],
+              ["كتب","كُتُب","non-lemma","n",0,[["كِتَاب",["plural"]]],11,""],
+              ["مدارس","مَدَارِسُ","non-lemma","n",0,[["مَدْرَسَة",["nominative plural broken-form construct ar-infl-a diptote"]]],12,""],
+              ["kutub","","non-lemma","n",0,[["كتاب",["plural"]]],13,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
     /** Rows as Wiktionary's Khmer exports write them, subscript DA in some words and TA in others. */
     private fun khmerDictionary(): File = zip(
         "km.zip",

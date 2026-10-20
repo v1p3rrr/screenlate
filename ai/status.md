@@ -153,6 +153,19 @@ the emulator first: the Arabic bundle in QuickJS, `local()` font names, Google's
 implementation plan is in the plan's "Work" (Arabic with the shared pieces, then Persian, then Hebrew); the build
 follows group 4c in the overnight queue.
 
+Arabic is done on `languages/ar` (2026-10-20) with the shared right-to-left pieces: `LanguageSupport.rightToLeft`,
+reading order for Paddle (digits, Latin runs, mirrored brackets), cloud recognition (Latin runs of Hebrew and Persian
+lines by their boxes), app text (paragraph direction) and Tesseract; marks without a share of a word box; the popup's
+`dir` on the source, headwords and glossary blocks, the vowelled headword (`reading-ar.js`); the Anki span in field
+templates; audio titles with vowel marks ranked (word as written, vowelled reading, the rest) and a Commons error
+answer failing the source. Arabic itself: Yomitan's rules with its hamza processors replaced by import keys (hamza
+alefs, final ى and ة), noun rules for untyped entries, form-of cleanup (template names, romanized forms), 50 rule
+names in 14 locales, wordfreq, Tesseract `ara`, Noto Naskh Arabic by `local()`, Noto Sans Arabic and Amiri
+downloadable, flag sa, bubble ض, scan length 24. LK48, POP26, AUD13, ANK17 and OCR29 passed on the emulator after
+three fixes (Tesseract word boxes over earlier words, transcriptions out of the dictionary's order in languages
+without audio regions, the Naskh `local()` names). Overnight question 2 (Arabic homographs through form rows: ذهبت
+shows ذَهَب, gold, before ذَهَبَ, to go) is decided provisionally as Yomitan does. Persian, then Hebrew, follow.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

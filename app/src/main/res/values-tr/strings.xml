@@ -133,6 +133,7 @@
     <string name="anki_tags">Etiketler (boşlukla ayrılmış)</string>
     <string name="anki_fields">Alanlar</string>
     <string name="anki_fields_hint">Şablonlar {expression}, {reading}, {glossary}, {sentence}, {audio}, {screenshot} gibi işaretçiler kullanır. Eklemek için + düğmesini kullanın. Yinelenen kontrolü için ilk alan kullanılır.</string>
+    <string name="anki_fields_hint_rtl">Sağdan sola yazılan bir dilde “Önerilen şablonlarla doldur” ve + düğmesi kelimeyi ve cümleyi &lt;span dir=\"rtl\"&gt;…&lt;/span&gt; içine koyar; böylece kart onları okuma sırasıyla gösterir. Yinelenen kontrolü işaretlemeyi de karşılaştırdığı için ilk alana bu eklenmez.</string>
     <string name="anki_insert_marker">İşaretçi ekle</string>
     <string name="anki_marker_furigana_zh">Karakterlerin üstünde pinyin</string>
     <string name="anki_marker_furigana_plain_zh">Metin olarak pinyin: 你[nǐ] 好[hǎo]</string>
@@ -497,6 +498,7 @@
     <string name="popup_font_script_only_hy">Yalnızca Ermenice metin için</string>
     <string name="popup_font_script_only_th">Yalnızca Tayca metin için</string>
     <string name="popup_font_script_only_km">Yalnızca Kmerce metin için</string>
+    <string name="popup_font_script_only_ar">Yalnızca Arapça metin için</string>
     <string name="popup_font_system_zh">Telefonun Çince yazı tipi</string>
     <string name="popup_font_system_ko">Telefonun Korece yazı tipi</string>
     <string name="popup_font_script_only_zh">Yalnızca Çince metin için</string>

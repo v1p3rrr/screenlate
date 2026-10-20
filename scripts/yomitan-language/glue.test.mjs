@@ -310,3 +310,62 @@ test('khmer processors stay out of other languages', () => {
         assert.ok(!queried(language, 'ខ្ញុំ\u200Bទៅ').has('ខ្ញុំទៅ'), language);
     }
 });
+
+test('arabic prefixes, the article and endings are undone; noun rules match entries without a part of speech', () => {
+    const book = candidates('ar', 'والكتاب').find((c) => c.d === 'كتاب');
+    assert.ok(book);
+    assert.ok(book.u);
+    assert.ok(queried('ar', 'مدرسة').has('مدرس'));
+    // Verb rules stay typed: سيكتبون (they will write) is كتب only as a verb.
+    const write = candidates('ar', 'سيكتبون').filter((c) => c.d === 'كتب');
+    assert.ok(write.length > 0);
+    assert.ok(write.every((c) => !c.u));
+    // Two letters stay before a prefix: وفي finds في, untyped; nothing shorter is untyped or empty.
+    assert.ok(candidates('ar', 'وفي').find((c) => c.d === 'في').u);
+    assert.ok(candidates('ar', 'وب').every((c) => !c.u || [...c.d].length >= 2));
+    assert.ok(!queried('ar', 'فى').has(''));
+    assert.ok(!candidates('ar', 'والكتاب').find((c) => c.d === 'والكتاب').u);
+});
+
+test('a final alif maqsura and taa marbuta are tried as ya and ha; hamza is left to the import keys', () => {
+    assert.ok(queried('ar', 'فى').has('في'));
+    assert.ok(queried('ar', 'مدرسة').has('مدرسه'));
+    assert.ok(queried('ar', 'مستشفى كبير').has('مستشفي كبير'));
+    // A bare alif finds headwords with hamza through the keys the import adds, not through Yomitan's processors.
+    assert.ok(!queried('ar', 'اكبر').has('أكبر'));
+    assert.ok(!queried('ar', 'اسلام').has('إسلام'));
+    assert.ok(queried('ar', 'أكبر').has('أكبر'));
+});
+
+test('arabic rules and processors stay out of other languages', () => {
+    for (const language of ['en', 'ru', 'tr']) {
+        assert.ok(!queried(language, 'فى').has('في'), language);
+        assert.ok(!queried(language, 'مدرسة').has('مدرسه'), language);
+        assert.ok(!queried(language, 'والكتاب').has('كتاب'), language);
+    }
+});
+
+/**
+ * The cases of Yomitan's own Arabic transform test that should be found (`valid`), from a checkout at the bundles'
+ * commit named by the environment variable YOMITAN.
+ */
+function yomitanArabicCases() {
+    const file = path.join(process.env.YOMITAN, 'test/language/arabic-transforms.test.js');
+    const source = fs.readFileSync(file, 'utf8');
+    const cases = [];
+    for (const category of source.split(/\n {4}\{\n {8}category: /).slice(1)) {
+        if (!/^\S[^\n]*\n {8}valid: true,/.test(category)) continue;
+        for (const match of category.matchAll(/\{term: '([^']+)', source: '([^']+)', rule: '([^']+)'/g)) {
+            cases.push({term: match[1], source: match[2]});
+        }
+    }
+    return cases;
+}
+
+test('yomitan\'s own arabic cases are found through the bundle', {skip: !process.env.YOMITAN && 'YOMITAN is not set'}, () => {
+    const cases = yomitanArabicCases();
+    assert.ok(cases.length > 250, `${cases.length} cases`);
+    const bundle = load('ar');
+    const missed = cases.filter(({term, source}) => !bundle.candidates(source, 'ar', 'word').some((c) => c.d === term));
+    assert.deepEqual(missed, []);
+});

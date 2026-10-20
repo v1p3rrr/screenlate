@@ -2,11 +2,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.AttributedString;
+import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +28,8 @@ import javax.imageio.ImageIO;
  *
  * <p>Characters FONT lacks (digits and Latin punctuation in script-only fonts such as Noto Sans Thai) are drawn with
  * FALLBACK; a combining mark stays with the run of its letter. Lines start 60 px from the left, the first baseline at
- * 260 px, one line every 1.9 font sizes.
+ * 260 px, one line every 1.9 font sizes. A line whose first letter of a strong direction is written right to left
+ * (Arabic, Hebrew) is laid out by the bidirectional algorithm and ends 60 px from the right, as a phone shows it.
  */
 public class TextImage {
     private static final int WIDTH = 1280;
@@ -49,20 +54,22 @@ public class TextImage {
         g.setColor(new Color(0x20, 0x20, 0x20));
         int y = 260;
         for (String line : lines(Arrays.copyOfRange(args, 1, args.length))) {
-            float x = 60;
-            int start = 0;
-            while (start < line.length()) {
-                boolean own = drawnWith(font, line.codePointAt(start), true);
-                int end = start + Character.charCount(line.codePointAt(start));
-                while (end < line.length() && drawnWith(font, line.codePointAt(end), own) == own) {
-                    end += Character.charCount(line.codePointAt(end));
+            List<int[]> runs = runs(font, line);
+            if (!line.isEmpty() && new Bidi(line, Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT).baseIsLeftToRight()) {
+                float x = 60;
+                for (int[] run : runs) {
+                    String text = line.substring(run[0], run[1]);
+                    Font runFont = run[2] == 1 ? font : fallback;
+                    g.setFont(runFont);
+                    g.drawString(text, x, y);
+                    x += (float) runFont.getStringBounds(text, g.getFontRenderContext()).getWidth();
                 }
-                String run = line.substring(start, end);
-                Font runFont = own ? font : fallback;
-                g.setFont(runFont);
-                g.drawString(run, x, y);
-                x += (float) runFont.getStringBounds(run, g.getFontRenderContext()).getWidth();
-                start = end;
+            } else if (!line.isEmpty()) {
+                AttributedString text = new AttributedString(line);
+                text.addAttribute(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_RTL);
+                for (int[] run : runs) text.addAttribute(TextAttribute.FONT, run[2] == 1 ? font : fallback, run[0], run[1]);
+                TextLayout layout = new TextLayout(text.getIterator(), g.getFontRenderContext());
+                layout.draw(g, WIDTH - 60 - layout.getAdvance(), y);
             }
             y += Math.round(size * 1.9f);
         }
@@ -80,6 +87,22 @@ public class TextImage {
             }
         }
         return lines;
+    }
+
+    /** The runs of [line] as {start, end, 1 for [font] or 0 for the fallback}. */
+    private static List<int[]> runs(Font font, String line) {
+        List<int[]> runs = new ArrayList<>();
+        int start = 0;
+        while (start < line.length()) {
+            boolean own = drawnWith(font, line.codePointAt(start), true);
+            int end = start + Character.charCount(line.codePointAt(start));
+            while (end < line.length() && drawnWith(font, line.codePointAt(end), own) == own) {
+                end += Character.charCount(line.codePointAt(end));
+            }
+            runs.add(new int[] {start, end, own ? 1 : 0});
+            start = end;
+        }
+        return runs;
     }
 
     /** Whether [codePoint] goes into a run of [font]; marks and spaces stay in the current run ([current]). */

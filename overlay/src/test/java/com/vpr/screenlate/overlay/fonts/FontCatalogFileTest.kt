@@ -91,6 +91,16 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `arabic has a sans-serif and a naskh, offered by their script and not for latin languages`() {
+        val arabic = fonts.filter { it.subsets == listOf("arabic") }
+        assertThat(arabic.map { it.family }).containsExactly("Noto Sans Arabic", "Amiri")
+        for (font in arabic) {
+            assertThat(Language.entries.filter { font.isOfferedFor(it) }).containsExactly(Language.ARABIC)
+        }
+        assertThat(fonts.filter { it.isOfferedFor(Language.ARABIC) }).containsExactlyElementsIn(arabic)
+    }
+
+    @Test
     fun `georgian and armenian are offered no downloadable font, only the system's`() {
         assertThat(fonts.filter { it.isOfferedFor(Language.GEORGIAN) }).isEmpty()
         assertThat(fonts.filter { it.isOfferedFor(Language.ARMENIAN) }).isEmpty()

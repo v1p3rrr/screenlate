@@ -127,8 +127,75 @@ object FieldTemplate {
     fun guess(modelName: String, fieldNames: List<String>, language: Language): Map<String, String> {
         val preset = NoteTypePresets.find(modelName, fieldNames)
         return fieldNames.withIndex().associate { (index, field) ->
-            field to (preset?.get(field.normalizedFieldName()) ?: guessField(field, index, language))
+            val template = preset?.get(field.normalizedFieldName()) ?: guessField(field, index, language)
+            field to if (index == 0) template else rightToLeft(template, language)
         }
+    }
+
+    /**
+     * [template] with the markers of [language]'s right-to-left text (`LanguageSupport.rightToLeftMarkers`) in
+     * `<span dir="rtl">`, so that a card laid out left to right shows an Arabic sentence in order. Markers with only
+     * markup between them share one span (`{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`), unless it would cut a tag
+     * apart; a template that sets a direction already is left as it is. The first field of a note type gets none, as
+     * AnkiDroid's duplicate check compares its markup.
+     */
+    fun rightToLeft(template: String, language: Language): String {
+        val markers = language.support.rightToLeftMarkers
+        if (markers.isEmpty() || DIRECTION.containsMatchIn(template)) return template
+        val found = MARKER.findAll(template).filter { it.groupValues[1] in markers }.toList()
+        if (found.isEmpty()) return template
+        // Runs of such markers with only tags between them.
+        val runs = mutableListOf(mutableListOf(found.first()))
+        for (match in found.drop(1)) {
+            val between = template.substring(runs.last().last().range.last + 1, match.range.first)
+            if (TAGS_ONLY.matches(between)) runs.last() += match else runs += mutableListOf(match)
+        }
+        val ranges = runs.flatMap { run ->
+            val range = run.first().range.first..run.last().range.last
+            if (balanced(template.substring(range.first, range.last + 1))) listOf(range) else run.map { it.range }
+        }
+        val result = StringBuilder(template)
+        for (range in ranges.asReversed()) {
+            result.insert(range.last + 1, "</span>")
+            result.insert(range.first, RIGHT_TO_LEFT_SPAN)
+        }
+        return result.toString()
+    }
+
+    /**
+     * [template] with [marker] added at its end, as the marker picker adds it: a marker of [language]'s right-to-left
+     * text in `<span dir="rtl">`, or into the span the template ends with ([rightToLeft]); none in the first field.
+     */
+    fun withMarker(template: String, marker: String, language: Language, firstField: Boolean): String {
+        val placeholder = "{$marker}"
+        if (firstField || marker !in language.support.rightToLeftMarkers) return template + placeholder
+        val open = template.lastIndexOf(RIGHT_TO_LEFT_SPAN)
+        if (open >= 0 && template.endsWith("</span>") && balanced(template.substring(open + RIGHT_TO_LEFT_SPAN.length, template.length - 7))) {
+            return template.dropLast(7) + placeholder + "</span>"
+        }
+        return "$template$RIGHT_TO_LEFT_SPAN$placeholder</span>"
+    }
+
+    private const val RIGHT_TO_LEFT_SPAN = """<span dir="rtl">"""
+    private val DIRECTION = Regex("""\bdir\s*=""", RegexOption.IGNORE_CASE)
+    private val TAGS_ONLY = Regex("""(?:\s*<[^<>]*>)*\s*""")
+    private val TAG = Regex("""<(/?)([a-zA-Z][a-zA-Z0-9]*)[^<>]*?(/?)>""")
+    private val VOID_TAGS = setOf("br", "img", "hr", "wbr")
+
+    /** Whether every tag [html] opens it also closes, after it. */
+    private fun balanced(html: String): Boolean {
+        val open = ArrayDeque<String>()
+        for (tag in TAG.findAll(html)) {
+            val (closing, name, selfClosing) = tag.destructured
+            val lower = name.lowercase()
+            when {
+                selfClosing.isNotEmpty() || lower in VOID_TAGS -> Unit
+                closing.isEmpty() -> open.addLast(lower)
+                open.lastOrNull() == lower -> open.removeLast()
+                else -> return false
+            }
+        }
+        return open.isEmpty()
     }
 
     /**

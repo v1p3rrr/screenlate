@@ -12,6 +12,7 @@ import java.io.InterruptedIOException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.security.MessageDigest
+import java.text.Normalizer
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -50,6 +51,9 @@ data class AudioClip(val file: File, val url: String, val extension: String)
  *
  * @property url empty for text-to-speech, which has nothing to download.
  * @property name the speaker or file name when the source has one, otherwise empty.
+ * @property rank how close the recording's title is to the word, in a language whose titles may add vowel marks
+ *   (`LanguageSupport.recordingMarks`): 0 the word itself, 1 its vowelled reading, 2 the same letters with other marks.
+ *   Clips of all sources are ordered by it first; elsewhere it is 0.
  */
 data class AudioCandidate(
     val id: String,
@@ -57,6 +61,7 @@ data class AudioCandidate(
     val source: AudioSource,
     val url: String,
     val name: String,
+    val rank: Int = 0,
 ) {
     val isSpeech: Boolean get() = source.type == AudioSourceType.TEXT_TO_SPEECH
 }
@@ -80,7 +85,8 @@ data class AudioSourceFailure(val source: AudioSource, val error: AudioError)
 
 /**
  * Finds word audio in the configured sources. All sources are asked at once, each for at most [sourceTimeoutMs], and
- * the highest one in the list with a clip wins. Answers and downloaded clips are kept for [CACHE_MS].
+ * the highest one in the list with a clip of the lowest [AudioCandidate.rank] wins. Answers and downloaded clips are
+ * kept for [CACHE_MS].
  */
 @Singleton
 class AudioFinder internal constructor(
@@ -123,20 +129,28 @@ class AudioFinder internal constructor(
         val started = clock()
         var position = 0
         val asked = sources.withIndex().filter { it.value.type != AudioSourceType.TEXT_TO_SPEECH }
-        val clip = coroutineScope {
+        val best = coroutineScope {
             val answers = asked.map { (index, source) -> async { firstClip(index, source, term, reading, language, regions) } }
-            answers.firstNotNullOfOrNull { answer ->
-                position++
-                answer.await().onFailure { failed = true }.getOrNull()
-            }.also {
-                // The sources below the one with a clip are not needed; their requests stop.
-                answers.forEach { it.cancel() }
+            var best: Ranked? = null
+            for ((n, answer) in answers.withIndex()) {
+                val ranked = answer.await().onFailure { failed = true }.getOrNull() ?: continue
+                if (best == null || ranked.rank < best.rank) {
+                    best = ranked
+                    position = n + 1
+                }
+                // No lower source has a closer clip.
+                if (best.rank == 0) break
             }
+            // The sources below the one with the clip are not needed; their requests stop.
+            answers.forEach { it.cancel() }
+            best
         }
+        val clip = best?.clip
         val outcome = if (clip != null) "found at source $position of ${asked.size}" else "none in ${asked.size} sources"
         Log.d(TAG, "Audio: $outcome in ${clock() - started} ms")
-        // A network error is worth retrying later; "no audio for this word" is not.
-        if (clip != null || !failed) {
+        // A network error is worth retrying later, also when a failed source might have had a closer clip; "no audio
+        // for this word" is not.
+        if (!failed || best?.rank == 0) {
             synchronized(clipCache) {
                 clipCache.values.removeAll { !it.fresh() }
                 clipCache[key] = Kept(clip, clock())
@@ -157,8 +171,9 @@ class AudioFinder internal constructor(
     }
 
     /**
-     * Everything the sources offer for a term, in priority order, for choosing a clip or testing sources. Lists
-     * are fetched, from all sources at once; clips are downloaded only by [download]. Sources that fail are skipped.
+     * Everything the sources offer for a term, in priority order with clips by [AudioCandidate.rank] first, for
+     * choosing a clip or testing sources. Lists are fetched, from all sources at once; clips are downloaded only by [download]. Sources
+     * that fail are skipped.
      */
     suspend fun candidates(
         term: String,
@@ -170,7 +185,10 @@ class AudioFinder internal constructor(
         val regions = AudioRegion.ordered(profile.regions, language.support.audioRegions)
         val asked = (sources ?: profile.sources).withIndex()
             .map { (index, source) -> async { candidatesOrNull(index, source, term, reading, language, regions) } }
-        asked.flatMap { it.await().orEmpty() }
+        val found = asked.flatMap { it.await().orEmpty() }
+        // Clips by rank, as [find] takes them; text to speech keeps its place.
+        val clips = found.filterNot { it.isSpeech }.sortedBy { it.rank }.iterator()
+        found.map { if (it.isSpeech) it else clips.next() }
     }
 
     /** Downloads a candidate; null when it is missing, a placeholder, or text-to-speech. */
@@ -209,12 +227,14 @@ class AudioFinder internal constructor(
         reading: String,
         language: Language,
         regions: List<AudioRegion>,
-    ): Result<AudioClip?> {
+    ): Result<Ranked?> {
         val deadline = Deadline()
         return attempt(source) {
             val candidates = candidatesOf(index, source, term, reading, language, regions, deadline)
             failures.remove(source)
-            candidates.firstNotNullOfOrNull { downloadChecked(it, term, reading, deadline) }
+            candidates.firstNotNullOfOrNull { candidate ->
+                downloadChecked(candidate, term, reading, deadline)?.let { Ranked(it, candidate.rank) }
+            }
         }
     }
 
@@ -260,7 +280,8 @@ class AudioFinder internal constructor(
         deadline: Deadline,
     ): List<AudioCandidate> {
         fun candidates(found: List<AudioPages.Found>) =
-            found.mapIndexed { n, it -> AudioCandidate("$index:$n", index, source, it.url, it.name) }
+            found.mapIndexed { n, it -> AudioCandidate("$index:$n", index, source, it.url, it.name, it.rank) }
+        val marks = language.support.recordingMarks
         return when (source.type) {
             AudioSourceType.JAPANESE_POD_101 -> {
                 val kana = reading.ifEmpty { term }
@@ -286,21 +307,21 @@ class AudioFinder internal constructor(
                 candidates(AudioPages.jisho(fetch(request(url).build(), deadline), term, reading))
             }
             AudioSourceType.LINGUA_LIBRE -> {
-                val title = language.support.linguaLibreTitle(term)
+                val title = language.support.linguaLibreTitle(term.nfc())
                 val items = language.support.linguaLibreItems
-                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items), deadline)
-                candidates(AudioPages.linguaLibre(files, title, items))
+                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items, marks), deadline)
+                candidates(AudioPages.linguaLibre(files, title, items, marks, reading.nfc()))
             }
             AudioSourceType.WIKTIONARY -> {
                 val files = coroutineScope {
-                    language.support.recordings(term, reading).distinct().map { (prefix, title) ->
+                    language.support.recordings(term.nfc(), reading.nfc()).distinct().map { (prefix, title) ->
                         async {
-                            val found = commonsFiles(AudioPages.wiktionarySearch(title, prefix, regions), deadline)
-                            AudioPages.byRegion(AudioPages.wiktionaryFiles(found, title, prefix, regions), title, prefix, regions)
+                            val found = commonsFiles(AudioPages.wiktionarySearch(title, prefix, regions, marks), deadline)
+                            AudioPages.wiktionary(found, title, reading.nfc(), prefix, regions, marks)
                         }
-                    }.awaitAll().flatten().distinctBy { it.first }
+                    }.awaitAll().flatten().distinctBy { it.name }
                 }
-                candidates(files.map { (title, url) -> AudioPages.Found(url, title.removePrefix("File:")) })
+                candidates(files.sortedBy { it.rank })
             }
             AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))
             AudioSourceType.URL ->
@@ -439,6 +460,9 @@ class AudioFinder internal constructor(
             .replace("{reading}", encode(reading.ifEmpty { term }))
             .replace("{language}", encode(language.dictionaryCode))
 
+    /** Commons stores titles in NFC, which also puts vowel marks in one order. */
+    private fun String.nfc(): String = Normalizer.normalize(this, Normalizer.Form.NFC)
+
     private fun encode(value: String): String = URLEncoder.encode(value, "UTF-8").replace("+", "%20")
 
     private fun sha256(file: File): String = sha256(file.readBytes())
@@ -453,6 +477,9 @@ class AudioFinder internal constructor(
         val term: String,
         val reading: String,
     )
+
+    /** A source's first clip and the [AudioCandidate.rank] of its candidate. */
+    private class Ranked(val clip: AudioClip, val rank: Int)
 
     /** A remembered answer and when it was given. */
     private class Kept<T>(val value: T, val at: Long)

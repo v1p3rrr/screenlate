@@ -56,6 +56,48 @@ class TesseractPageTest {
     }
 
     @Test
+    fun `a word box reaching over the word before it is cut there, and its symbol boxes checked against the cut`() {
+        // والكبير يقرأ كِتَابًا as the Arabic model read it: the kaf of the vowelled word got a box from the line's start.
+        val first = TesseractWord("والكبير", box(1080, 1217), emptyList())
+        val second = TesseractWord("يقرأ", box(979, 1059), emptyList())
+        val vowelled = TesseractWord(
+            "كِتَابًا",
+            box(878, 1217),
+            listOf(box(983, 1217), box(942, 953), box(910, 966), box(926, 937), box(910, 927), box(894, 911), box(878, 902), box(878, 879)),
+        )
+        val line = tesseractPage(listOf(listOf(TesseractLine(box(878, 1217), listOf(first, second, vowelled)))), 1280, 200, " ")
+            .paragraphs.single().lines.single()
+        assertThat(line.words.map { it.box }).containsExactly(box(1080, 1217), box(979, 1059), box(878, 979)).inOrder()
+        assertThat(line.words.last().characterBoxes).isNull()
+        // A left-to-right line the same way, and a word on the unexpected side (a Latin run inside an Arabic line) as read.
+        val ltr = tesseractPage(
+            listOf(listOf(TesseractLine(box(0, 100), listOf(TesseractWord("ab", box(0, 40), emptyList()), TesseractWord("cd", box(20, 90), emptyList()))))),
+            100,
+            10,
+            " ",
+        ).paragraphs.single().lines.single()
+        assertThat(ltr.words.map { it.box }).containsExactly(box(0, 40), box(40, 90)).inOrder()
+        val mixed = tesseractPage(
+            listOf(
+                listOf(
+                    TesseractLine(
+                        box(0, 300),
+                        listOf(
+                            TesseractWord("اشتريت", box(200, 300), emptyList()),
+                            TesseractWord("iPhone", box(0, 120), emptyList()),
+                            TesseractWord("15", box(130, 180), emptyList()),
+                        ),
+                    ),
+                ),
+            ),
+            300,
+            10,
+            " ",
+        ).paragraphs.single().lines.single()
+        assertThat(mixed.words.map { it.box }).containsExactly(box(200, 300), box(0, 120), box(130, 180)).inOrder()
+    }
+
+    @Test
     fun `blank words and the lines and paragraphs they leave empty are dropped`() {
         val page = tesseractPage(
             listOf(

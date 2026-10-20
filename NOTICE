@@ -115,9 +115,9 @@ and other sources; each built dictionary names them all and is shared under CC B
 has no list for, they use the word counts of the Thai National Corpus published by PyThaiNLP
 (https://github.com/PyThaiNLP/pythainlp, pythainlp/corpus/tnc_freq.txt), CC0 1.0.
 
-Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer and Latin,
-from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK either; each is under the
-SIL Open Font License 1.1, shown in the app with its source.
+Fonts offered for download in the Popup settings (Japanese, Chinese, Korean, Hindi, Bengali, Thai, Khmer, Arabic and
+Latin, from the Google Fonts repository, https://github.com/google/fonts) are not part of the APK either; each is under
+the SIL Open Font License 1.1, shown in the app with its source.
 
 Unicode License V3
 ------------------

@@ -27,11 +27,18 @@ const res = path.join(module, 'src/main/res');
 const kotlin = path.join(module, 'src/main/java/com/vpr/screenlate/dictionary/engine/hoshidicts/YomitanInflections.kt');
 
 /**
- * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping"), by language and rule id.
+ * English labels of rules that Yomitan names by an id (Georgian "noun-adj-suffix-stripping") or by a capitalized
+ * phrase (Arabic "Perfect Tense"), by language and rule id.
  * @type {Record<string, Record<string, string>>}
  */
 const labels = {
     ka: {nounAdjSuffixStripping: 'declension', nounAdjStemCompletion: 'nominative', vowelRestoration: 'dropped vowel'},
+    ar: {
+        ...Object.fromEntries(['ah', 'n', 't', 'at', 'A', 'uw'].map((s) => [`PVSuff-${s}`, 'perfect'])),
+        ...Object.fromEntries(['hw', 'hy', 'hmA', 'hmA-ta', 'hm', 'hn', 'Anta', 'Anti', 'AntmA', 'Antm', 'Antn', 'AnA', 'nHn']
+            .map((p) => [`IVPref-${p}`, 'imperfect'])),
+        'NSuff-wh': 'm. pl. + pos. pron.',
+    },
 };
 
 /**

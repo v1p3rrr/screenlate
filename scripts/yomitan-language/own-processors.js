@@ -97,3 +97,15 @@ export const khmerSubscriptDa = {
     description: 'ក្តារ → ក្ដារ',
     process: (str) => [str, str.replace(/\u17D2\u178F/g, '\u17D2\u178A')],
 };
+
+/**
+ * Arabic taa marbuta ة at the end of a word written as ha ه, as running text often does the other way round (لغه for
+ * لغة): the import keys headwords with ة, final ى and hamza alefs under ه, ي and a bare alif as well (ArabicSupport's
+ * `HeadwordMarks`), and text compared with those keys needs ه and ي too (Yomitan gives final ى as ي).
+ * @type {import('language').TextProcessor}
+ */
+export const arabicTaMarbutaAsHa = {
+    name: 'Taa marbuta as ha',
+    description: 'مدرسة → مدرسه',
+    process: (str) => [str, str.replace(/\u0629(?=\s|$)/g, '\u0647')],
+};

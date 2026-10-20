@@ -243,4 +243,63 @@ class FieldTemplateTest {
             ),
         )
     }
+
+    @Test
+    fun arabicTextMarkersGetARightToLeftSpanOutsideTheFirstField() {
+        val lapis = FieldTemplate.guess("Lapis", listOf("Expression", "ExpressionReading", "Sentence", "MainDefinition"), Language.ARABIC)
+
+        assertThat(lapis).containsExactlyEntriesIn(
+            mapOf(
+                "Expression" to "{expression}",
+                "ExpressionReading" to "<span dir=\"rtl\">{reading}</span>",
+                "Sentence" to "<span dir=\"rtl\">{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}</span>",
+                "MainDefinition" to "{glossary-first}",
+            ),
+        )
+        // Senren's group: the span goes inside it, around the markers and the highlight between them.
+        assertThat(FieldTemplate.guess("Senren", listOf("Word", "Sentence"), Language.ARABIC)["Sentence"]).isEqualTo(
+            "<span class=\"group\"><span dir=\"rtl\">{cloze-prefix}<span class=\"highlight\">{cloze-body}</span>" +
+                "{cloze-suffix}</span></span>",
+        )
+        // Guessed fields: the word in a second field gets one, the first field and meanings none.
+        val guessed = FieldTemplate.guess("Custom", listOf("Front", "Word", "Meaning", "Sentence"), Language.ARABIC)
+        assertThat(guessed["Front"]).isEqualTo("{expression}")
+        assertThat(guessed["Word"]).isEqualTo("<span dir=\"rtl\">{expression}</span>")
+        assertThat(guessed["Meaning"]).isEqualTo("{glossary}")
+        assertThat(guessed["Sentence"]).isEqualTo("<span dir=\"rtl\">{sentence}</span>")
+    }
+
+    @Test
+    fun theSpanKeepsTagsWholeAndLeavesOtherLanguagesAndSetDirectionsAlone() {
+        // A tag opened between the markers and closed after them: each marker on its own.
+        assertThat(FieldTemplate.rightToLeft("{cloze-prefix}<b>{cloze-body}{cloze-suffix}</b>", Language.ARABIC)).isEqualTo(
+            "<span dir=\"rtl\">{cloze-prefix}</span><b><span dir=\"rtl\">{cloze-body}</span>" +
+                "<span dir=\"rtl\">{cloze-suffix}</span></b>",
+        )
+        // Text between markers parts them; a line break is markup.
+        assertThat(FieldTemplate.rightToLeft("{expression} – {sentence}", Language.ARABIC))
+            .isEqualTo("<span dir=\"rtl\">{expression}</span> – <span dir=\"rtl\">{sentence}</span>")
+        assertThat(FieldTemplate.rightToLeft("{expression}<br>{sentence}", Language.ARABIC))
+            .isEqualTo("<span dir=\"rtl\">{expression}<br>{sentence}</span>")
+        assertThat(FieldTemplate.rightToLeft("<div dir=\"auto\">{sentence}</div>", Language.ARABIC))
+            .isEqualTo("<div dir=\"auto\">{sentence}</div>")
+        assertThat(FieldTemplate.rightToLeft("{sentence}", Language.ENGLISH)).isEqualTo("{sentence}")
+        assertThat(FieldTemplate.guess("Lapis", listOf("Expression", "Sentence"), Language.JAPANESE)["Sentence"])
+            .isEqualTo("{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}")
+    }
+
+    @Test
+    fun pickedArabicMarkersGoIntoTheSpanTheFieldEndsWith() {
+        fun pick(template: String, vararg markers: String) =
+            markers.fold(template) { text, marker -> FieldTemplate.withMarker(text, marker, Language.ARABIC, firstField = false) }
+
+        assertThat(pick("", "cloze-prefix", "cloze-body", "cloze-suffix"))
+            .isEqualTo("<span dir=\"rtl\">{cloze-prefix}{cloze-body}{cloze-suffix}</span>")
+        assertThat(pick("", "expression", "glossary", "sentence"))
+            .isEqualTo("<span dir=\"rtl\">{expression}</span>{glossary}<span dir=\"rtl\">{sentence}</span>")
+        assertThat(FieldTemplate.withMarker("", "expression", Language.ARABIC, firstField = true)).isEqualTo("{expression}")
+        assertThat(FieldTemplate.withMarker("", "expression", Language.ENGLISH, firstField = false)).isEqualTo("{expression}")
+        // A span the field ends with but did not open.
+        assertThat(pick("<span>a</span>", "sentence")).isEqualTo("<span>a</span><span dir=\"rtl\">{sentence}</span>")
+    }
 }

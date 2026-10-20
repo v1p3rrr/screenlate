@@ -72,7 +72,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
