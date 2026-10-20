@@ -81,7 +81,14 @@ own too. Their branches are merged into `languages/main` by this session when th
 Khmer are built in the overnight queue (below). Group 4e (Kazakh, Kyrgyz) is researched (`notes/languages.md`, "Group 4e
 research") and its questions 1-12 answered (`plans/2026-10-19-group-4e.md`): own ending rules, the Kazakh letters
 OCR loses matched to their Russian twins, Leipzig frequency lists, a PanLex converter for both; it is built fourth
-in the overnight queue below, after 4d.
+in the overnight queue below, after 4d. Group 5b (Welsh, Irish, Scottish Gaelic, Breton) is researched
+(`notes/languages.md`, "Group 5b research"; `plans/2026-10-19-group-5b.md`): questions 1-4 answered (own
+initial-mutation rule with the mutation's name, Irish and Gaelic elisions as French, regional flags, the Russian
+Gaelic name); questions 5-10 recorded overnight, 5 deferred (wty has no Breton), 6-10 decided provisionally;
+recognition measured on the emulator (ML Kit stays main; ML Kit never reads Welsh ŵ ŷ, Tesseract's Welsh model reads
+all). Not started: its order is the owner's call. Downloaded for it (official sources, session scratchpad only): the
+wty files of cy, ga, gd, kaikki's Breton extracts and the other sources of `notes/references.md` (group 5b), Tesseract
+fast and best models; the Python environment for the PC OCR runs was removed afterwards.
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
@@ -91,6 +98,11 @@ sessions of 5a-5e finish their plans without the answers. Open questions go into
 the owner (overnight)", marked deferred (the part waits) or decided provisionally (with what was implemented), to be
 asked when the owner is back. Sessions share the emulator through a lock folder, `.worktrees/emulator.lock` in the
 root checkout (git-ignored). This session checks hourly after the usage limit resets and restarts stopped sessions.
+
+Overnight progress (2026-10-20, 03:30): group 4b is done (Georgian and Armenian built, LK42-LK45 passed on the
+emulator, no open questions). The research of 5a-5e is done and merged; each plan file lists its open questions
+under "Questions for the owner (overnight)". Group 4d has its build plan (`plans/2026-10-19-group-4d.md`), 4e its
+plan from the research. Group 4c builds Thai and Khmer now; 4d and 4e follow in turn.
 
 Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answered; question 10 fell away, as ML
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
