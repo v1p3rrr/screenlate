@@ -1851,7 +1851,7 @@ file. Cells: archive MB, words.
   other redirects seen point to other words or to dialect items and are dropped as before.
 - The Commons error answer is a failure now (`CommonsErrorException`, `AudioError.Kind.HTTP_STATUS` with the error
   code), not a cached miss.
-- `LensProtocol`'s `iw` is left to the Hebrew branch.
+- `LensProtocol`'s `iw` is left to the Hebrew branch (outcome: nothing reads it, see below).
 
 ### Outcome on the Persian branch (2026-10-20)
 
@@ -1870,9 +1870,30 @@ file. Cells: archive MB, words.
 - Lingua Libre has Persian recordings (Q9168) for common words; for کتاب three speakers, two titled as written,
   and Wiktionary's `Fa-كتاب.ogg` is found through the Arabic letters.
 
+### Outcome on the Hebrew branch (2026-10-20)
+
+- Coverage of the prefix rules, measured on the bundle against wty-he-en's headwords and form rows: of wordfreq's
+  20,000 commonest Hebrew words 10,911 are entries as they are and 17,552 with the rules; the word itself comes first
+  in all 10,911; 3,429 also show entries the prefixes give after it (היה → יה, כבר → בר); 6,641 are found only
+  through the rules (שלא → לא). The rules follow the grammar's order (ו, then ש or כש, then ב כ ל or מ, then ה; no ה
+  after ב כ ל), so three letters at most come off: ושמהבית comes down to הבית, which the dictionary lists as a form
+  of בית.
+- Wiktionary lists a Biblical or Tiberian transcription first for 464 of the 8,163 words of wty-he-ipa that have a
+  Modern Israeli one; `HebrewSupport.firstTranscription` puts the Modern Israeli ones first (plan question 5). 933 of
+  its 16,666 transcriptions are written `//a/ [b]/` or `//a//` by the converter (one template giving a phonemic and a
+  phonetic form; also 32 Arabic, 40 Egyptian, 9 Persian, 4 Urdu); `Transcriptions.split` takes them apart.
+- Cloud recognition reads Hebrew when asked with `he`; the response's `content_language` `iw` is not read. It gives
+  the gershayim and the geresh as ASCII quotes and the maqaf as a word break, and once a line with a number after
+  ב־, ₪ and Latin words in neither order (`notes/ocr-engines.md`). Tesseract `heb` fast reads the screen offline.
+- Lingua Libre (Q9288) has recordings for most common words; Wiktionary's He- files are mostly pointed
+  (He-כֶּלֶב.ogg) and are found after a title as written. Google's speech engine on the emulator has a Hebrew voice
+  (he-il) and takes the tag `he`.
+- `{reading}` in Hebrew is the word itself (the dictionaries give no reading), so it gets the right-to-left span in
+  the suggested field templates, as Arabic's vowelled reading does.
+
 ### Questions for the owner
 
-See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).
+See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19; the overnight questions 1-6).
 
 ## Group 4e research (2026-10-19)
 

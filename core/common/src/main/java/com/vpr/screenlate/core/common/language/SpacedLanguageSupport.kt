@@ -110,7 +110,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
             val size = Character.charCount(codePoint)
             if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size)) break
             val inWord = isWordCharacter(codePoint) ||
-                (codePoint.toChar() in WORD_CONNECTORS && index > size && isWordCharacter(before.codePointBefore(index - size)))
+                (codePoint.toChar() in wordConnectors && index > size && isWordCharacter(before.codePointBefore(index - size)))
             if (!inWord) break
             index -= size
             count++
@@ -253,6 +253,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     private fun String.lowercaseIn(words: Set<String>): Boolean =
         lowercase(caseLocale) in words || lowercase(Locale.ROOT) in words
+
+    /**
+     * Characters that join two words into one when they stand between word characters: the apostrophe and the hyphen
+     * (don't, well-known) and the Armenian hyphen; Hebrew adds the maqaf and the ASCII quote of its abbreviations.
+     */
+    protected open val wordConnectors: String get() = WORD_CONNECTORS
 
     /**
      * Punctuation the language writes inside its words: Armenian puts its emphasis, exclamation and question marks on

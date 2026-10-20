@@ -210,8 +210,17 @@ text of a line is kept in reading (logical) order, which each engine reaches its
   right to left on the screen, which reverses a run of Latin words (`קניתי 15 iPhone` came back with iPhone before
   15 in the samples of the research). `LensProtocol.leftToRightRuns` sorts each run of words without right-to-left
   letters by their left edges when one of them has a left-to-right letter; numbers alone keep the order given, and
-  separators stay in their places. Its `content_language` for Hebrew would be `iw` (to be checked on the Hebrew
-  branch).
+  separators stay in their places. The request names Hebrew `he`, which cloud recognition reads; the response's
+  `content_language` (`iw` for Hebrew) is not read.
+- Some Hebrew lines come in neither order (Hebrew branch, emulator, 2026-10-20): "קניתי iPhone 15 ב־3,500 ₪ היום."
+  came as ".ב־ 3,500 ₪ היום iPhone 15 קניתי", the period joined to ב־ in one box spanning both, while the boxes
+  themselves were right. `LensProtocol.inReadingOrder` compares the given order, Latin runs put back, with the order
+  of the boxes' right edges; when they differ it takes the boxes' order and sets the separators from the gaps: a space
+  where two boxes are 0.15 of the line's height apart or more. On that image word gaps were 19-28 px and the gaps
+  before a period or a comma 2-6 px. Lines in order keep Lens's separators.
+- Cloud recognition on Hebrew gives the gershayim and the geresh as ASCII `"` and `'` (צה"ל, ג'ירפה) and the maqaf
+  as a word break (ובית־חולים as ובית חולים, so the lookup finds the phrase בית חולים); the bundle's `hebrewQuotes`
+  and the word connectors handle the quotes.
 - Tesseract `ara` (emulator, `testdata/ocr/ar-lines.png`, 2026-10-20): the result iterator walks a line's words in
   reading order, right-to-left runs included, and gives a word's symbols in logical order (the rightmost first);
   `TesseractOcrEngine` marks a line right to left by its text (`isRightToLeftText`). It reads harakat (كِتَابًا).
@@ -220,6 +229,10 @@ text of a line is kept in reading (logical) order, which each engine reaches its
   it: a word box that reaches past the centre of the word before it is cut at that word's edge (`cutAt`), and its
   symbol boxes are dropped when one falls outside the cut box, so `TextLayout` shares the box instead. A band took
   about 0.4 s, the cloud's final result about 1.5 s.
+- Tesseract `heb` fast (emulator, `testdata/ocr/he-lines.png`, 2026-10-20, offline): the draft band in about
+  0.4 s, the whole screen in 1.4 s. It read ארה"ב and ג'ירפה with ASCII quotes, the maqaf as a hyphen, pointed
+  words with some points lost or changed (קוֹרֵא as קורא, סֵפֶר as סְפַר), once the gershayim of צה״ל as יי (וצהייל),
+  and "iPhone" garbled; it joins the lines of the image into fewer paragraphs than cloud recognition (2-4 against 6).
 - ML Kit has no Arabic model: `MlKitOcrEngine` maps `OcrScript.ARABIC` to none, and the language offers PaddleOCR,
   Tesseract and cloud recognition.
 

@@ -72,7 +72,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -139,6 +139,17 @@ class CatalogFileTest {
         )
         assertThat(persian.all { it.recommended }).isTrue()
         assertThat(persian.first { it.id == "wordfreq-fa" }.downloadUrl).endsWith("/small_fa.msgpack.gz")
+    }
+
+    @Test
+    fun `hebrew offers six wiktionaries, its transcription, wordfreq's large list and tesseract fast, ticked, and best`() {
+        val hebrew = catalog!!.entries.filter { it.sourceLanguage == "he" }
+        assertThat(hebrew.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-he-en", "wiktionary-he-ru", "wiktionary-he-es", "wiktionary-he-ja", "wiktionary-he-pl",
+            "wiktionary-he-zh", "wiktionary-he-transcription", "wordfreq-he", "tesseract-fast-heb",
+        )
+        assertThat(hebrew.filterNot { it.recommended }.map { it.id }).containsExactly("tesseract-best-heb")
+        assertThat(hebrew.first { it.id == "wordfreq-he" }.downloadUrl).endsWith("/large_he.msgpack.gz")
     }
 
     @Test

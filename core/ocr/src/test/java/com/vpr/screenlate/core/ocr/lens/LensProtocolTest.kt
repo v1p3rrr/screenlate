@@ -132,6 +132,38 @@ class LensProtocolTest {
     }
 
     @Test
+    fun `a right-to-left line Lens gives out of order is put in order by its boxes`() {
+        fun word(text: String, left: Float, right: Float, separator: String = " ") =
+            OcrWord(text, separator, Box(left, 0f, right, 80f))
+        // "קניתי iPhone 15 ב־3,500 ₪ היום." as cloud recognition gave it, the period joined to ב־.
+        val words = listOf(
+            word(".ב־", 300f, 740f, separator = ""),
+            word("3,500", 521f, 681f),
+            word("₪", 460f, 500f),
+            word("היום", 314f, 432f),
+            word("iPhone", 758f, 961f),
+            word("15", 990f, 1051f),
+            word("קניתי", 1074f, 1215f, separator = ""),
+        )
+
+        val ordered = LensProtocol.inReadingOrder(words, 80f)
+
+        assertThat(ordered.joinToString("") { it.text + it.separator }).isEqualTo("קניתי iPhone 15 .ב־3,500 ₪ היום")
+        // Lines in reading order keep the separators Lens gives, a Latin run put back left to right.
+        val hebrew = listOf(
+            word("קניתי", 300f, 350f),
+            word("15", 220f, 240f),
+            word("iPhone", 150f, 210f, separator = ""),
+            word(",", 145f, 155f),
+            word("עכשיו", 50f, 100f, separator = ""),
+        )
+        assertThat(LensProtocol.inReadingOrder(hebrew, 80f).joinToString("") { it.text + it.separator })
+            .isEqualTo("קניתי iPhone 15, עכשיו")
+        val arabic = listOf(word("اشتريت", 300f, 360f), word("iPhone", 200f, 260f), word("15", 270f, 290f, separator = ""))
+        assertThat(LensProtocol.inReadingOrder(arabic, 80f)).isEqualTo(LensProtocol.leftToRightRuns(arabic))
+    }
+
+    @Test
     fun `elements without a size are dropped instead of placed at the corner`() {
         fun ProtoWriter.geometry(field: Int, cx: Float, cy: Float, w: Float, h: Float) = message(field) {
             message(1) {

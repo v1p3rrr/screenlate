@@ -105,7 +105,7 @@ that are missing or no longer needed; translations are edited by hand. `glue.js`
 processors where its letter pairs differ from JavaScript's default (Turkish İ/i and I/ı). A language Yomitan has no
 descriptor for is built from a related one's (`borrowed` in `build.mjs`: Malay from Indonesian); `addedPreprocessors`
 gives a language text processors its descriptor lacks (Georgian decapitalizing, for headings in Mtavruli capitals; the app's own ones in `own-processors.js`, such as Thai sara am, tone mark order and the spaces around ๆ, Khmer zero-width spaces and subscript TA read as DA) and
-`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes). The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`). The glue and
+`addedTransforms` the app's own rules (`own-transforms.js`: Bengali noun endings, Persian endings and verb prefixes, Hebrew prefixes). The generator takes a language's own rules when Yomitan has none and writes their names as labels (Persian `-ها` is shown as "pl."); the string names come from the affix in Latin letters (`inflection_fa_ha`). The glue and
 `generate-inflections.mjs` take a language's rules by its descriptor and folder, whatever code the rules name
 (Georgian's say `kat`), and the generator gives English labels to rule names Yomitan leaves as identifiers (`labels`). The bundles and the strings are GPL-3.0, like the engine module that holds
 them.

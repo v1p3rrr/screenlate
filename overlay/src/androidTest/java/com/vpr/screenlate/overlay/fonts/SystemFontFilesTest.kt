@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.ArabicSupport
 import com.vpr.screenlate.core.common.language.ArmenianSupport
 import com.vpr.screenlate.core.common.language.GeorgianSupport
+import com.vpr.screenlate.core.common.language.HebrewSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import com.vpr.screenlate.core.common.language.KhmerSupport
@@ -100,5 +101,14 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Arabic serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in PersianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** Noto Serif Hebrew is found by its script and named as the page's font face names it. */
+    @Test
+    fun findsTheHebrewSerif() {
+        val font = SystemFontFiles.find(HebrewSupport, serif = true)
+        assumeTrue("The phone has no Hebrew serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in HebrewSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

@@ -36,6 +36,25 @@ class TranscriptionsTest {
     }
 
     @Test
+    fun `transcriptions the language puts first go before the others, which keep their order`() {
+        val tags = tags(
+            Triple("כלב", "/kalb/", listOf("reconstructed Biblical")),
+            Triple("כלב", "/ˈkɛlɛv/", listOf("Tiberian")),
+            Triple("כלב", "[ˈkelev]", listOf("Modern-Israeli", "sg")),
+            Triple("כלב", "/kaˈlev/", listOf("Modern-Israeli")),
+        )
+        val modern = { itemTags: List<String> -> "Modern-Israeli" in itemTags }
+
+        val prepared = Transcriptions.prepare(group("/kalb/", "/ˈkɛlɛv/", "[ˈkelev]", "/kaˈlev/"), "כלב", tags, names, modern)
+
+        assertThat(prepared.transcriptions).containsExactly("[ˈkelev]", "/kaˈlev/", "/kalb/", "/ˈkɛlɛv/").inOrder()
+        assertThat(prepared.transcriptionTags.first()).containsExactly("Modern-Israeli", "sg").inOrder()
+        // Without a rule of the language, the dictionary's order stays.
+        assertThat(Transcriptions.prepare(group("/kalb/", "[ˈkelev]"), "כלב", tags, names).transcriptions)
+            .containsExactly("/kalb/", "[ˈkelev]").inOrder()
+    }
+
+    @Test
     fun `ASCII notations and quoted text are dropped`() {
         val tags = tags(
             Triple("water", "/\"wO:t@/", listOf("XS")),
@@ -59,6 +78,16 @@ class TranscriptionsTest {
         assertThat(prepared.transcriptions).containsExactly("/ˈwɔ.tɚ/", "/ˈwɑ.tɚ/", "[a]", "[b]").inOrder()
         assertThat(prepared.transcriptionRegions).isEmpty()
         assertThat(prepared.transcriptionTags).isEmpty()
+    }
+
+    @Test
+    fun `a phonemic and a phonetic form wrapped in one more pair of slashes are two transcriptions`() {
+        val prepared = Transcriptions.prepare(group("//ˈba.jit/ [ˈbɐ.(j)it]/", "//t̪ʰo.ves.suːn//"), "בית", null, names)
+
+        assertThat(prepared.transcriptions).containsExactly("/ˈba.jit/", "[ˈbɐ.(j)it]", "/t̪ʰo.ves.suːn/").inOrder()
+        // A doubled slash around other text stays as written.
+        assertThat(Transcriptions.split("//ˈbaːʔ/ (etimología 1)/")).containsExactly("//ˈbaːʔ/ (etimología 1)/")
+        assertThat(Transcriptions.split("//braːɡ/")).containsExactly("//braːɡ/")
     }
 
     @Test

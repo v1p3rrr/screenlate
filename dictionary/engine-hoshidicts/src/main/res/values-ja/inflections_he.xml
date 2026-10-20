@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">そして</string>
+    <string name="inflection_he_v">そして、〜と (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">関係詞</string>
+    <string name="inflection_he_sh">〜ということ、〜する人・もの (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">〜とき</string>
+    <string name="inflection_he_ksh">〜とき、〜すると (כשהגעתי)</string>
+    <string name="inflection_he_b_label">〜で</string>
+    <string name="inflection_he_b">〜で、〜の中に、〜を使って (בבית)</string>
+    <string name="inflection_he_k_label">〜のように</string>
+    <string name="inflection_he_k">〜のように、〜として (כילד)</string>
+    <string name="inflection_he_l_label">〜へ</string>
+    <string name="inflection_he_l">〜へ、〜のために (לבית)</string>
+    <string name="inflection_he_m_label">〜から</string>
+    <string name="inflection_he_m">〜から；〜より (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">定冠詞</string>
+    <string name="inflection_he_h">定冠詞 (הבית)</string>
+</resources>

@@ -182,6 +182,19 @@ wordfreq's 20,000 commonest words are entries as they are, 15,033 with the rules
 write the characters; a follow-up, `notes/dictionary-engine.md`). Overnight questions 3 (order of transcriptions) and
 4 (colloquial endings) are decided provisionally. Hebrew follows.
 
+Hebrew is done on `languages/he` (2026-10-20): `HebrewSupport` (vowel points and cantillation dropped in the text and
+in import keys, the geresh, the gershayim, ASCII quotes between letters and the maqaf inside words, „…” quotes in
+sentences, Modern Israeli transcriptions first, pointed recording titles, wordfreq's ASCII quotes as ״ ׳); the
+bundle's own processors and eight prefix rules (ו ש כש ב כ ל מ ה, in the grammar's order, three letters at most)
+matching entries without a part of speech, each with a name and a description in 14 locales; wty he-en, ru, es, ja,
+pl, zh, the transcriptions and wordfreq `large_he`; Tesseract heb (fast recommended, best offered); Heebo and Frank
+Ruhl Libre; flag il, bubble א; scan length 24. Coverage: 10,911 of wordfreq's 20,000 commonest words are entries as
+they are, 17,552 with the rules, the word itself first in all 10,911. LK50, POP28, AUD15, ANK19 and OCR31 passed on
+the emulator after three fixes: transcriptions written `//a/ [b]/` split in two (all languages), cloud recognition's
+right-to-left lines that come in neither order put in the order of their boxes, and Hebrew's `{reading}` (the word
+itself) in the right-to-left span. Overnight questions 5 (Modern Israeli transcriptions first) and 6 (form tags beside
+a plain word, שלום "singular construct") are decided provisionally. Group 4d is done; 4e (Kazakh, Kyrgyz) follows.
+
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 
 Resume from the "Progress" section of [plans/2026-10-17-ocr-engines.md](plans/2026-10-17-ocr-engines.md). Branch

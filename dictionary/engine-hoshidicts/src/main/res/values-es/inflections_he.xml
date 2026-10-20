@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_he.xml. -->
+<resources>
+    <string name="inflection_he_v_label">y</string>
+    <string name="inflection_he_v">y (ואני, והבית)</string>
+    <string name="inflection_he_sh_label">que</string>
+    <string name="inflection_he_sh">que, el cual, quien (שאמר, שבבית)</string>
+    <string name="inflection_he_ksh_label">cuando</string>
+    <string name="inflection_he_ksh">cuando, al (כשהגעתי)</string>
+    <string name="inflection_he_b_label">en</string>
+    <string name="inflection_he_b">en, con (בבית)</string>
+    <string name="inflection_he_k_label">como</string>
+    <string name="inflection_he_k">como (כילד)</string>
+    <string name="inflection_he_l_label">a</string>
+    <string name="inflection_he_l">a, para (לבית)</string>
+    <string name="inflection_he_m_label">de</string>
+    <string name="inflection_he_m">de, desde; que (מירושלים, מהבית)</string>
+    <string name="inflection_he_h_label">artículo</string>
+    <string name="inflection_he_h">artículo definido (הבית)</string>
+</resources>
