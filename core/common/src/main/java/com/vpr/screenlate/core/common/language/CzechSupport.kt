@@ -38,4 +38,19 @@ object CzechSupport : SpacedLanguageSupport() {
 
     /** The letters of "př. n. l." and "n. l." (before and in the Common Era). */
     override val pairedLetters = setOf("n", "l")
+
+    /**
+     * OCR reads the sans-serif l of "n. l." as a capital I: "I." right after "n." is written "l.", across a line break
+     * too. Text read from apps is taken as written.
+     */
+    override fun ocrLines(lines: List<List<String>>): List<List<String>> {
+        var previous = ""
+        return super.ocrLines(lines).map { line ->
+            line.map { word ->
+                val era = word.startsWith("I.") && previous.trimStart { !it.isLetter() } == "n."
+                previous = word
+                if (era) "l" + word.drop(1) else word
+            }
+        }
+    }
 }
