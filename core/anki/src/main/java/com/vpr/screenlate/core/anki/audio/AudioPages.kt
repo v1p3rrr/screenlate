@@ -1,6 +1,7 @@
 package com.vpr.screenlate.core.anki.audio
 
 import com.vpr.screenlate.core.common.language.AudioRegion
+import java.util.Locale
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
@@ -63,27 +64,49 @@ internal object AudioPages {
     private fun titleWord(term: String) = "intitle:\"${term.replace("\"", "")}\" "
 
     /**
+     * [term] escaped for a title regular expression, its first letter in either case: titles may capitalize the word
+     * (`Cy-Bwyta.ogg` for bwyta), and the expression is case-sensitive. [locale] gives the cases (Turkish i and İ);
+     * a letter of a script without case stays as it is.
+     */
+    private fun titleTerm(term: String, locale: Locale): String {
+        if (term.isEmpty()) return term
+        val first = term.substring(0, term.offsetByCodePoints(0, 1))
+        val titlecase = first.replaceFirstChar { it.titlecase(locale) }
+        val cases = listOf(first, first.lowercase(locale), first.uppercase(locale), titlecase)
+            .filter { it.codePointCount(0, it.length) == 1 }
+            .distinct()
+        val head = if (cases.size == 1) luceneEscape(first) else cases.joinToString("", "[", "]")
+        return head + luceneEscape(term.substring(first.length))
+    }
+
+    /**
      * Commons file search for Lingua Libre recordings in the languages of [wikidataIds]: `LL-Q5287 (jpn)-Speaker-猫.wav`.
      * The Wikidata item names the language; the code after it varies: Greek recordings carry `ell`, `gre` or `mis`.
      */
-    fun linguaLibreSearch(term: String, wikidataIds: List<String>): String {
+    fun linguaLibreSearch(term: String, wikidataIds: List<String>, locale: Locale = Locale.ROOT): String {
         val item = wikidataIds.singleOrNull() ?: wikidataIds.joinToString("|", "(", ")")
-        return titleWord(term) + """intitle:/LL-$item \([a-z]{3}\)-.*-${luceneEscape(term)}\.wav/"""
+        return titleWord(term) + """intitle:/LL-$item \([a-z]{3}\)-.*-${titleTerm(term, locale)}\.wav/"""
     }
 
     /**
      * Commons file search for Wiktionary recordings: `Ja-猫.ogg`, `ja-us-猫2.oga`, and with a region code of
      * [regions] longer than two letters, `Es-am-lat-agua.ogg`. It also matches inside titles (`…Kerbush-вода.wav` for
-     * sh), which [wiktionaryFiles] leaves out.
+     * sh), which [wiktionaryFiles] leaves out. Other longer tags are not taken for regions: in such titles the tag is
+     * mostly the first part of a compound or a name (`Fr-grand-mère.ogg`, `Cy-Ynys-hir.ogg`), not a region.
      */
-    fun wiktionarySearch(term: String, languageCode: String, regions: List<AudioRegion> = emptyList()): String {
+    fun wiktionarySearch(
+        term: String,
+        languageCode: String,
+        regions: List<AudioRegion> = emptyList(),
+        locale: Locale = Locale.ROOT,
+    ): String {
         val prefix = languageCode.take(1).let { "[${it.uppercase()}${it.lowercase()}]" } + languageCode.drop(1)
         val longCodes = longCodes(regions)
         val region = if (longCodes.isEmpty()) "[a-zA-Z]{2}" else {
             "(${(longCodes.map(::luceneEscape) + "[a-zA-Z]{2}").joinToString("|")})"
         }
         return titleWord(term) +
-            """intitle:/$prefix(-$region)?-${luceneEscape(term)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
+            """intitle:/$prefix(-$region)?-${titleTerm(term, locale)}[0-9]*\.(ogg|oga|opus|wav|mp3|flac)/"""
     }
 
     /** Region codes of more than two letters (`am-lat`), which file titles hold as well as two-letter ones. */
@@ -107,11 +130,11 @@ internal object AudioPages {
         return titles.mapNotNull { title -> urls[title]?.let { title to it } }.toMap()
     }
 
-    /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`). */
+    /** The speaker in a Lingua Libre file title (`File:LL-Q1860 (eng)-Speaker-cat.wav`, `…-Speaker-Cat.wav`). */
     fun linguaLibreSpeaker(title: String, term: String): String {
         val rest = title.substringAfter(")-", "")
         val suffix = "-$term.wav"
-        return if (rest.endsWith(suffix)) rest.dropLast(suffix.length) else rest.substringBeforeLast('-', "")
+        return if (rest.endsWith(suffix, ignoreCase = true)) rest.dropLast(suffix.length) else rest.substringBeforeLast('-', "")
     }
 
     /**

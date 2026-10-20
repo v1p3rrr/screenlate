@@ -12,6 +12,7 @@ import java.io.InterruptedIOException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.security.MessageDigest
+import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -288,14 +289,15 @@ class AudioFinder internal constructor(
             AudioSourceType.LINGUA_LIBRE -> {
                 val title = language.support.linguaLibreTitle(term)
                 val items = language.support.linguaLibreItems
-                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items), deadline)
+                val files = commonsFiles(AudioPages.linguaLibreSearch(title, items, language.caseLocale), deadline)
                 candidates(AudioPages.linguaLibre(files, title, items))
             }
             AudioSourceType.WIKTIONARY -> {
                 val files = coroutineScope {
                     language.support.recordings(term, reading).distinct().map { (prefix, title) ->
                         async {
-                            val found = commonsFiles(AudioPages.wiktionarySearch(title, prefix, regions), deadline)
+                            val search = AudioPages.wiktionarySearch(title, prefix, regions, language.caseLocale)
+                            val found = commonsFiles(search, deadline)
                             AudioPages.byRegion(AudioPages.wiktionaryFiles(found, title, prefix, regions), title, prefix, regions)
                         }
                     }.awaitAll().flatten().distinctBy { it.first }
@@ -493,6 +495,9 @@ class AudioFinder internal constructor(
         internal fun fromListHost(file: HttpUrl, list: HttpUrl): HttpUrl =
             if (file.host !in LOCAL_HOSTS || list.host in LOCAL_HOSTS) file
             else file.newBuilder().scheme(list.scheme).host(list.host).port(list.port).build()
+
+        /** Case rules for a language's file titles: its own (Turkish i and İ). */
+        private val Language.caseLocale: Locale get() = Locale.forLanguageTag(support.languageTag)
 
         private const val TAG = "AudioFinder"
         private const val USER_AGENT = "Screenlate (https://github.com/v1p3rrr/screenlate)"

@@ -16,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.util.Collections
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class AudioFinderTest {
@@ -320,6 +321,32 @@ class AudioFinderTest {
         val candidates = finder.candidates("вода", "", Language.SERBIAN, listOf(AudioSource(AudioSourceType.LINGUA_LIBRE)))
         assertThat(candidates.single().name).isEqualTo("Speaker")
         assertThat(requests.first().url.queryParameter("srsearch")).isEqualTo(AudioPages.linguaLibreSearch("voda", listOf("Q9299")))
+    }
+
+    @Test
+    fun `recordings titled with a capital are found by the case rules of the language`() = runBlocking<Unit> {
+        val wiktionary = "File:Tr-İyi.ogg"
+        val linguaLibre = "File:LL-Q256 (tur)-Konuşmacı-İyi.wav"
+        routes["/w/api.php"] = {
+            val url = requests.last().url
+            if (url.queryParameter("list") == "search") {
+                val title = if ("LL-" in url.queryParameter("srsearch").orEmpty()) linguaLibre else wiktionary
+                text("""{"query": {"search": [{"title": "$title"}]}}""", "application/json")
+            } else {
+                val title = url.queryParameter("titles")
+                text("""{"query": {"pages": {"1": {"title": "$title", "imageinfo": [{"url": "https://upload.example/iyi"}]}}}}""", "application/json")
+            }
+        }
+        val sources = listOf(AudioSource(AudioSourceType.WIKTIONARY))
+        assertThat(finder.candidates("iyi", "", Language.TURKISH, sources).single().url).isEqualTo("https://upload.example/iyi")
+        assertThat(requests.first().url.queryParameter("srsearch"))
+            .isEqualTo(AudioPages.wiktionarySearch("iyi", "tr", locale = Locale.forLanguageTag("tr")))
+        assertThat(requests.first().url.queryParameter("srsearch")).contains("-[iİ]yi[0-9]*")
+
+        requests.clear()
+        val found = finder.candidates("iyi", "", Language.TURKISH, listOf(AudioSource(AudioSourceType.LINGUA_LIBRE)))
+        assertThat(found.single().name).isEqualTo("Konuşmacı")
+        assertThat(requests.first().url.queryParameter("srsearch")).contains("""-[iİ]yi\.wav""")
     }
 
     @Test
