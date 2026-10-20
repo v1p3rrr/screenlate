@@ -26,6 +26,11 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
 - Release builds (R8 via `optimization { enable = true }`) need the keep rules in `app/src/main/keepRules/rules.keep`: ML Kit's `ComponentRegistrar` constructors are found by reflection, and the WebView bridge methods are called from JavaScript. The AnkiDroid API aar brings lint checks for its own code base; modules that have it on the classpath call `disableAnkiDroidLintChecks()` (build-logic `ProjectExtensions.kt`). Lint (`./gradlew lintDebug`) is clean apart from two known warnings.
 - To try a release build without the owner's key: sign `app-release-unsigned.apk` with `~/.android/debug.keystore` (`apksigner sign --ks ... --ks-key-alias androiddebugkey`, passwords `android`). Only one accessibility service should be enabled at a time (`settings put secure enabled_accessibility_services <pkg>/<service>`).
 - The AnkiDroid lint checks still reach `app`: `DirectDateInstantiation` fails `Date()` (use `java.time`, e.g. `LocalDate.now()`).
+- CI (`.github/workflows/ci.yml`) runs on pushes to `main` and on pull requests only, with `assembleDebug
+  testDebugUnitTest lintDebug :build-logic:convention:test`; `languages/main` has none. The local command in AGENTS.md
+  leaves out `lintDebug`, so run it as well before code reaches `main`. Lint errors fail CI: `main` failed from
+  2026-10-15 to 2026-10-20 on `RestrictedApi` (WorkManager's `Result.Retry` and `Data.Builder.put`; compare with
+  `Result.retry()` and use `putAll`). Every push to `main`, ai/ copies included, sends the owner a failure mail then.
 - Compose: `ScreenlateTheme` must compose its content on one path for every mode (only the color scheme and locals change). A separate branch for e-ink mode rebuilt the NavHost and sent the app back to the home screen when the mode was switched.
 - Compose skipping (2026-10-15, the download lag): with strong skipping, a lambda that captures a value of uncertain
   stability is compared by reference, so `onDownload = { ... item ... }` was a new lambda on every progress update and
