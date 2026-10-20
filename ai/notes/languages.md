@@ -1519,6 +1519,12 @@ Cells: archive MB, words.
 
 See `plans/2026-10-19-group-4c.md`.
 
+## Group 6 research (2026-10-20)
+
+Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir and Sanskrit (request 70; Taiwanese Hokkien, Russia's other
+languages and the rest of the long list deferred with reasons): research, proposed blocks 6a-6d, technical choices and
+the deferred questions in `plans/2026-10-20-group-6-research.md`. Not started: the build order is the owner's call.
+
 ## Group 5b research (2026-10-19)
 
 Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decisions and work in

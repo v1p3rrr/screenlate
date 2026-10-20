@@ -101,6 +101,13 @@ text; Uzbek Cyrillic transliterated to Latin; Leipzig frequency lists for Estoni
 accurate for Estonian and Azerbaijani; Google's engine has no Azerbaijani or Uzbek voice). Not started: its order is the
 owner's call. The measurement scripts are in the shared session notes (`group-5c-scripts`).
 
+Group 6 (request 70: Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir, Sanskrit) is researched by an
+autonomous session (`notes/languages.md`, "Group 6 research"; `plans/2026-10-20-group-6-research.md`): four proposed
+blocks (6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar, Bashkir after group 4e; 6d Sanskrit), 26 questions,
+10 deferred (among them Galician's fallback language and enclitic rule, Tatar's missing wty dictionary, Sanskrit
+sandhi and Monier-Williams's license) and 16 decided provisionally, to be asked when the owner is back. Recognition
+was measured on the PC only (Paddle); ML Kit, Tesseract and cloud wait for the emulator. Not started.
+
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
 test-model cases run on the emulator) and merged into `languages/main` before the next starts: 4b (Bengali, Georgian,
