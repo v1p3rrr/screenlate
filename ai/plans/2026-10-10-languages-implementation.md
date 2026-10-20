@@ -157,6 +157,10 @@ Requests 1–19 are in the previous plan. New ones:
 69. (2026-10-20) Letters fixed by look-alike after recognition are for OCR results only: text the app reads from
     the screen's apps is taken as it is, in every language and branch, where the text itself is written right; a
     spelling people often type themselves stays matched in any text (row "Look-alike fixes only after OCR").
+70. (2026-10-20) Group 6 research covers Catalan, Galician, Tatar with Bashkir, Icelandic, Afrikaans and Sanskrit
+    (for Sanskrit, how to split words joined by sandhi and how to read Latin transliteration). Taiwanese Hokkien
+    (Taiwan's Mandarin is covered by Chinese), Russia's other languages (Wiktionary under 5,000 senses each) and the
+    rest of the long candidate list are recorded as deferred, with reasons.
 
 ## Decisions
 
@@ -1490,3 +1494,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   results only, never for text read from apps, in every language and branch; the code already works so.
 - 2026-10-20: request 69 refined (owner): the OCR-only rule holds where the text itself is written right; spellings
   people often type themselves (Uzbek o for oʻ) stay matched in any text.
+- 2026-10-20: request 70 (owner): group 6 research narrowed to ca, gl, tt, ba, is, af and sa; the other candidates
+  are recorded as deferred.
