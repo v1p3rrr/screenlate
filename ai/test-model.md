@@ -417,7 +417,7 @@ Newest first: date, build, scope, results, cases moved from N, findings.
 Scope: DIC28. The archives PanLex ky-en, ky-ru and kk-ru built on the PC from the mirror at revision `0422f0e60f39`,
 pushed to Download and imported through Settings → Dictionaries → Import from file; lookups on the search screen
 with the Kyrgyz and the Kazakh profile. Removed afterwards (the dictionaries and the pushed files), as they are not
-catalog entries.
+catalog entries. Gboard's Kazakh layout on the search field.
 
 Results: passed, no fixes. First check: DIC28.
 
@@ -429,6 +429,9 @@ Results: passed, no fixes. First check: DIC28.
 - Kazakh: қазір → wty "now, at present" with PanLex "сейчас, ныне, теперь" under it; қабылдады → қабылдау ("past"),
   PanLex "принятие, принимать".
 - Not reached: боюнча, чейин, кабыл and аркылуу have PanLex expressions but no Russian or English translation.
+- Gboard 18.4: its Kazakh (Cyrillic) layout, added for the check and removed afterwards, is the Russian layout
+  with ә ғ қ ң ө ұ ү һ і on long presses of а г к н о у х ы; text typed without them is in the Russian twins,
+  which the keyed lookup matches (Қазакстан in the Kazakh run).
 
 ### 2026-10-20, `languages/kk` (Kyrgyz, on `61dfb28d` with the Kyrgyz changes before their commit), Pixel_10_Pro (API 37)
 

@@ -2050,7 +2050,9 @@ letters that is a headword.
 - Keyboards: the Windows Kazakh layout puts ә і ң ғ ү ұ қ ө һ on the number row (no digits there); the Windows Kyrgyz
   layout gives ү ң ө with AltGr; AOSP's keyboard gives the letters on a long press of a Russian key (Kazakh а → ә,
   г → ғ, к → қ, н → ң, о → ө, у → ү ұ, ы → і, э → һ; Kyrgyz у → ү, н → ң, о → ө). Without the long press і becomes ы,
-  not и. Gboard's current layouts are not documented.
+  not и. Gboard 18.4 (checked on the emulator, 2026-10-20): its Kazakh (Cyrillic) layout is the Russian ЙЦУКЕН
+  one with the Kazakh letters on long presses: а → ә, г → ғ, к → қ, н → ң, о → ө, у → ұ ү, х → һ, ы → і (и has
+  none), so a word typed without long presses comes out in the Russian twins that the letter keys match.
 - Latin look-alikes in Cyrillic words: the Kazakh news sample has Latin i (U+0069) for і in 10% of its Cyrillic
   words (мүмкiн, үшiн; Leipzig's sample counts 12,616 such tokens against 20,134 written right), the Kyrgyz one 0.2%,
   Kazakh Wikipedia 0.65%; Latin ə for ә is rarer; Kyrgyz Wikipedia has Latin ɵ for ө and a few words typed wholly in
