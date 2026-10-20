@@ -186,6 +186,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK41 | Compound splits take the fewest and longest parts: Dutch stadsbestuurder shows "Compound: stads + bestuurder" (not stadsbestuur + der); rijbewijsfoto still rijbewijs + foto, German Arbeitsschreibtisch still Arbeit + Schreibtisch | N | U CompoundsTest, M | — |
 | LK42 | Hindi lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit Devanagari): पढता and पढ़ता → पढ़ना with its form tags and a wordfreq rank; हूं → होना through the हूँ entry; लडकियां → लड़की; खाना shows खाना and ख़ाना, ख़ाना only itself; हैँ → हैं; किताब aimed at ता is looked up from कि; the sentence of a word after a danda starts after it and keeps "डॉ." and "ए.पी.जे."; flag in, bubble हि; the page's serif face is the phone's Noto Serif Devanagari (`local()`), and Mukta, Hind and Tiro Devanagari Hindi download and are listed for Hindi only; ML Kit reads the screen on the device; audio from Lingua Libre (पानी), else the voice | E | U HindiSupportTest, SentenceTest, WordfreqDictionaryTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-19 |
 | LK43 | Bengali lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit's Devanagari recognizer): বইটির, বইগুলো (also with ো typed as ে + া) → বই through the endings; ছেলেদের → ছেলে; a form row with a romanization after it (মাসটি) found by its word; the sentence of a word after a danda starts after it and keeps "ড." and "এ.কে."; the language is "Bengali" in the English interface; flag bd, bubble বা; the page's serif face is the phone's Noto Serif Bengali (`local()`), and Hind Siliguri and Tiro Bangla are listed for Bengali only; ML Kit reads the screen on the device; audio from Lingua Libre (বই), else the voice | N | U BengaliSupportTest, SentenceTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
+| LK44 | Georgian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansGeorgian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf` (Sylfaen has no Mtavruli), Tesseract kat fast, then cloud recognition): წიგნს, წიგნები → წიგნი with the rule chip names (declension, nominative) in English and Russian; მას shows its own entry, not მა; a word longer than 16 letters found whole, the Lookup setting showing 24 for Georgian and 16 for English; ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო; the sentence keeps "ქ." and "წ."; flag ge, bubble ქ; the page's serif face is the phone's Noto Serif Georgian (`local()`), no downloadable font listed for Georgian; Tesseract fast is the recommended model; audio from Wiktionary (წყალი), else the voice | N | U GeorgianSupportTest, SentenceTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
+| LK45 | Armenian lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT` the phone's `NotoSansArmenian-VF.ttf` and `FALLBACK=C:/Windows/Fonts/arial.ttf`, Tesseract hye fast, then cloud recognition): ինչո՞ւ → ինչու, also when tapped after ՞; կարդա՛ and կարդա → կարդալ (imperative); գրքեր → գիրք; Երեվան and Երեվանը → Երևան, ԵՐԵՎԱՆ shows Երևան after the verb form երևան; Եվրոպա found as written; the classical գիւղ → գյուղ; the sentence ends at ։ and at a colon, not at the period or at 10:30 (two sentences on one line: OCR makes every line a paragraph here); a word longer than 16 letters found whole, the Lookup setting showing 24 for Armenian; flag am, bubble Հ; the page's serif face is the phone's Noto Serif Armenian (`local()`), no downloadable font listed for Armenian; Tesseract fast is the recommended model; audio from Wiktionary (ջուր), else the voice | N | U ArmenianSupportTest, SentenceTest, LanguageRulesIsolationTest, LookupSettingsRepositoryTest, FontCatalogFileTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-20 |
 
 ### POP: the popup
 
@@ -373,6 +375,51 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-20, `languages/hy` (`60826bc2`, Georgian and Armenian), Pixel_10_Pro (API 37)
+
+Scope: Georgian (LK44) and Armenian (LK45) through the Languages screen, the download screen, the search screen (text
+action), the Lookup and Popup settings, the overlay over rendered images (72 px, the phone's Noto Sans Georgian and
+Noto Sans Armenian with Arial for digits and punctuation) in the debug viewer with cloud recognition and with
+Tesseract offline, the popup page (`popup-eval.mjs`); the lookup engine's (41/41) and the overlay's (22/22)
+instrumented tests.
+
+Results: passed. First checks: LK44, LK45.
+
+- Setup: Georgian offered wty-ka-en (5.5 MB), the transcription dictionary (433 kB) and Tesseract fast (2.5 MB, ticked,
+  main model) and accurate (4.5 MB, unticked): 8.4 MB, about 23 MB after import. Armenian: wty-hy-en (7.5 MB),
+  transcriptions (642 kB), Tesseract fast (3.5 MB, ticked) and accurate (6.4 MB): 12 MB, about 32 MB. Flags ge and am,
+  bubbles ქ and Հ.
+- Georgian search: წიგნს → წიგნი through the form row (dative singular) and through the rules (nominative «
+  declension; in Russian именительный падеж « склонение); წიგნები → წიგნი (nominative plural); მას shows its own
+  entry first, then form rows; ᲡᲐᲥᲐᲠᲗᲕᲔᲚᲝ → საქართველო; ბიომრავალფეროვნება (18 letters) whole. Lookup setting: 24
+  for Georgian, 16 for Spanish.
+- Georgian overlay, cloud recognition: წიგნს, წიგნები, the Mtavruli heading and the long word as in the search; the
+  sentence of თბილისში kept "ქ." and "1991 წ." ("He/She was in the city of Tbilisi in 1991." from Bing).
+  Tesseract kat fast drafted the page in 0.8 s.
+- Georgian overlay offline: Tesseract alone read the page in 1.0 s (⚠ for the failed cloud request); წიგნს → წიგნი,
+  the Mtavruli heading → საქართველო.
+- Armenian search: ինչո՞ւ → ինչու; կարդա՛ → կարդալ (second person singular imperative), կարդա → կարդալ; գրքեր →
+  գիրք; Երեվան → Երևան; ԵՐԵՎԱՆ shows the verb form երևան (of երևալ) first and Երևան second, as Yomitan ranks fewer
+  text changes first; Եվրոպա as written; գիւղ → գյուղ (traditional); եւ → և (its form rows say "alternative
+  alternative" in the data); ճարտարապետություն (17 letters) whole. Lookup setting: 24.
+- Armenian overlay, cloud recognition: aimed at ւ after ՞, the whole Ինչո՞ւ was taken (→ ինչու); Կարդա՛ → կարդալ;
+  Երեվանը → Երևան (its definite form row, through the ligature); գիւղ → գյուղ; the long word whole. Sentences: the
+  one of ասաց went on past the period ("He said, 'Let's go.'"), the one of եկավ past 10:30 ("He arrived in the
+  village at 10:30."), and on lines with two sentences the second started after ։ and after a colon ("He/She then
+  left.", "Then he/she left.").
+- Armenian overlay offline: Tesseract hye fast read the page in 0.35 s; Ինչո՞ւ aimed after ՞ → ինչու.
+- Page: `lang` ka and hy; the "Screenlate Serif" face carries each script's range; `local()` loads Noto Serif
+  Georgian and Noto Serif Armenian (and the sans faces) by PostScript and full name, not by family name. Headword
+  ինչու has no marks (U+056B 0576 0579 0578 0582).
+- Fonts: both cards offer only the phone's font, "Only for Georgian text" and "Only for Armenian text", samples in the
+  script.
+- Audio: წყალი from the first source (Wiktionary) in 4.1 s; წიგნი has no recording and no voice ("No text-to-speech
+  voice for ka"); ջուր from the first source in 2.5 s.
+
+Not checked: Armenian text to speech, a translation of Tesseract's text (offline), Anki notes.
+
+Emulator state since this run: Armenian active and starred, Georgian ready; Wi-Fi and data on; /data had 415 MB free.
 
 ### 2026-10-19, `languages/bn` (Bengali, before its commit), Pixel_10_Pro (API 37)
 
