@@ -86,8 +86,14 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   (a `/c/...` JAVA_HOME or a `~` path fails here). The debug key matches, so `adb install -r` keeps the app data.
   `-Pandroid.injected.build.abi=x86_64` is no substitute: it writes to `build/intermediates/apk/`, and the app APK
   comes out test-only with the arm libraries still in it; the test APKs of library modules do shrink with it and
-  install. The owner allows deleting, on the emulator, the dictionaries of languages already checked (2026-10-20);
-  AnkiDroid and other data stay untouched.
+  install. The owner allows deleting, on the emulator, the dictionaries of languages already checked (2026-10-20;
+  they download again); AnkiDroid and other data stay untouched.
+- A 109 MB test APK (the overlay's, with every ABI) on a /data with about 250 MB free (2026-10-20, Persian run):
+  Gradle's install hung, `system_server` died and came back without its package service ("cmd: Can't find service:
+  package", zygote "stopping", load average about 55), and `adb reboot` timed out; `adb shell reboot -p` rebooted it.
+  Make test APKs x86_64-only too (the same `zipfile` copy: the overlay's goes to 73 MB) and run a class with
+  `am instrument -w -r -e class <class> <test package>/androidx.test.runner.AndroidJUnitRunner`, then uninstall the
+  test package.
 - Low commit memory (2026-10-20: about 2 GB of Windows commit left with the emulator and other sessions running):
   test executors fail to start ("Could not write standard input to Gradle Test Executor", "The pipe is being closed",
   "finished with non-zero exit value 1"), which looks like failed tests. Rerun with `--max-workers=2`; do not

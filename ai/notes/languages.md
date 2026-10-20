@@ -1853,6 +1853,23 @@ file. Cells: archive MB, words.
   code), not a cached miss.
 - `LensProtocol`'s `iw` is left to the Hebrew branch.
 
+### Outcome on the Persian branch (2026-10-20)
+
+- Coverage of the rules, measured on the bundle against wty-fa-en's headwords and form rows: of wordfreq's 20,000
+  commonest Persian words 11,017 are entries as they are and 15,033 with the rules. The word itself comes first in
+  all 11,017 (a longer match, then fewer preprocessor steps, then a shorter chain); 3,902 of them also show entries
+  the rules give after it (است → اس, باید → اید). The colloquial endings would add 93-456 words each (overnight
+  question 4 in the plan).
+- wordfreq `small_fa` builds 29,190 words on the phone (a word with the non-joiner is ranked under both spellings).
+  wty-fa-en imports in 5.1 s (engine 0.9 s) with a form-of table of 105,987 forms.
+- Cloud recognition drops the non-joiner (کتاب‌ها comes back as کتابها) and, in a Vazirmatn image, some full stops
+  after a word in mid-line (آسمان. and ص.), so `{sentence}` then runs on from the line's start. It keeps Persian
+  digits and Latin runs in order.
+- Google's speech engine on the emulator has no Persian voice (`setLanguage` below `LANG_AVAILABLE`): the voice
+  item plays nothing, as in any language without a voice.
+- Lingua Libre has Persian recordings (Q9168) for common words; for کتاب three speakers, two titled as written,
+  and Wiktionary's `Fa-كتاب.ogg` is found through the Arabic letters.
+
 ### Questions for the owner
 
 See `plans/2026-10-19-group-4d.md` (questions 69-86, all answered on 2026-10-19).

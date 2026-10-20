@@ -189,7 +189,19 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   every language; no other language's wty export has them in the samples.
 - Forms outside the script (2026-10-20): 795 Arabic form rows are romanizations (ḡarafāt), keyed under Latin text
   that an Arabic lookup never gives and that a Latin-script dictionary's lookup could hit. `forms_in_script` drops a
-  form row whose headword has none of the `bases` letters (`MarkStripper::drops_form`); only Arabic sets it.
+  form row whose headword has none of the `bases` letters (`MarkStripper::drops_form`); Arabic and Persian set it
+  (Persian's Cyrillic Tajik forms, ҳалол → حلال).
+- Persian keys (2026-10-20): `every_headword` with `replacements` {ي→ی, ك→ک, ى→ی, ۀ→ه} and the zero-width
+  non-joiner replaced by nothing, harakat dropped, so آن‌ها is keyed under آنها and كتاب text finds کتاب. The text
+  side never holds the non-joiner: the bundle's `removePersianZeroWidthNonJoiner` replaces the text (the candidate
+  then has one preprocessor step, which the word itself also gets, so it still ranks first by match length).
+- JSON escapes in headwords (2026-10-20, found with a test dictionary): hoshidicts' parser reads a term's expression
+  and reading as `std::string_view` over the raw JSON (`yomitan_parser.hpp` `Term`), so a headword written with an
+  escape (`"آن\u200Cها"`, or every non-ASCII letter from Python's `json.dump` with its default
+  `ensure_ascii`) is stored with the backslash and no lookup matches it, while `split_bank` decodes the same field
+  (glaze into `std::string`) for the form-of table. wty and Yomitan's exports write the characters themselves (the
+  app finds wty-fa-en's نمی‌دانم), so no catalog dictionary is affected; a third-party dictionary made that way
+  would import but find nothing. Not fixed: hoshidicts' code; decoding there costs a copy per string at import.
 - Languages: most archives name none. `DictionarySample` reads the first 300 rows of the first bank without loading
   it whole; `LanguageGuess` decides by script shares (Latin, Cyrillic or Hangul ≥ 40% of letters is the target language
   even with Japanese examples in the entries; kana under 5% of kana+kanji is Chinese). Measured on the test
