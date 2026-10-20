@@ -490,6 +490,8 @@
     <string name="popup_font_script_only_el">仅用于希腊文文字</string>
     <string name="popup_font_script_only_hi">仅用于印地文文字</string>
     <string name="popup_font_script_only_bn">仅用于孟加拉文文字</string>
+    <string name="popup_font_script_only_ka">仅用于格鲁吉亚文文字</string>
+    <string name="popup_font_script_only_hy">仅用于亚美尼亚文文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>

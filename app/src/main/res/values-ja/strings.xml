@@ -490,6 +490,8 @@
     <string name="popup_font_script_only_el">ギリシャ語の文字だけに使う</string>
     <string name="popup_font_script_only_hi">ヒンディー語の文字だけに使う</string>
     <string name="popup_font_script_only_bn">ベンガル語の文字だけに使う</string>
+    <string name="popup_font_script_only_ka">ジョージア語の文字だけに使う</string>
+    <string name="popup_font_script_only_hy">アルメニア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

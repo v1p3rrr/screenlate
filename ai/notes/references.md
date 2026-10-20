@@ -62,6 +62,35 @@
 | Lingua Libre items | Wikidata Q9309 (cy, `cym`), Q9142 (ga, `gle`), Q9314 (gd, `gla`), Q12107 (br, `bre`) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
 | eSpeak NG Celtic voices | github.com/espeak-ng/espeak-ng `docs/languages.md` | cy, ga, gd; no Breton |
 
+## Language research sources (group 5a: Latin-script languages)
+
+| What | Where | Notes |
+|---|---|---|
+| ESPDIC (Paul Denisowski) | download.freedict.org/dictionaries/epo-eng (FreeDict TEI) | CC BY 3.0; 63,895 entries eo→en; adds 3.5% of Esperanto words over wty |
+| WikDict | download.wikdict.com/dictionaries/tei (dan-rus, nor-rus, swe-rus; edition 2025.11.21) | CC BY-SA 3.0; from Wiktionary translation tables; raises the Russian coverage of Scandinavian languages |
+| Folkets lexikon | folkets-lexikon.csc.kth.se (XDXF) | CC BY-SA 2.5; sv↔en; not used (wty sv-en covers the frequent words) |
+| ReVo | github.com/revuloj/revo-fonto | GPL; Esperanto monolingual with translations; not used |
+| Norsk Ordbank | Språkbanken (nb.no/sprakbanken), Bokmål and Nynorsk word lists | CC BY 4.0 per Språkbanken, "restricted" in CLARIN listings; forms lexicon; not used |
+| Lewis & Short | github.com/PerseusDL/lexica (CC BY-SA 4.0) | Latin→English; no Yomitan build; not used |
+| Sloleks | CLARIN.SI (CC BY-SA 4.0) | Slovenian forms lexicon with accents; not used |
+| Lingua Libre items | Q7913 ron, Q9027 swe, Q9035 dan, Q9043 nor (Q25167 Bokmål, Q25164 Nynorsk), Q8748 sqi, Q143 epo, Q397 lat, Q9058 slk, Q9063 slv, Q9083 lit, Q7838 swa, Q8752 eus, Q9166 mlt | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav` |
+| Microsoft Translator languages | api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation | No Esperanto or Latin; Norwegian is nb |
+| Google TTS languages | support.google.com/accessibility/android (TalkBack languages) | A hint; the engine's own list is `assets/voices-list-dsig.pb` in its APK |
+| circle-flags language flags | github.com/HatScripts/circle-flags `flags/language/eo.svg`, `la.svg` (MIT, 379588b) | Esperanto and Latin flags |
+| Wikipedia articles | sq: Shqipëria, Tirana, Gjuha shqipe, Gjergj Kastrioti Skënderbeu; eo: Esperanto, Ludoviko Lazaro Zamenhof, Parizo, Akvo; la: Roma, Gaius Iulius Caesar, Lingua Latina, Europa; sw: Elimu, Kenya | CC BY-SA; plain-text extracts for lookup coverage; measurements only |
+
+## Language research sources (group 5c: Finnish, Estonian, Hungarian, Azerbaijani, Uzbek)
+
+| What | Where | Notes |
+|---|---|---|
+| UD test sets | github.com/UniversalDependencies: UD_Finnish-TDT, UD_Azerbaijani-TueCL, UD_Uzbek-UT, UD_Uzbek-UzUDT (CC BY-SA 4.0); UD_Estonian-EDT, UD_Hungarian-Szeged (CC BY-NC-SA 3.0) | Gold lemmas for lookup coverage; measurements only, no test words copied from the NC sets |
+| Leipzig Corpora Collection | downloads.wortschatz-leipzig.de/corpora/: `fin_`, `est_`, `hun_`, `aze_`, `uzb_news_2020_10K`; `est_news_2020_100K`, `aze_newscrawl_2013_100K`, `aze_wikipedia_2021_100K`, `uzb_news_2020_30K`, `uzb_wikipedia_2021_100K`, `uzb_newscrawl_2011_100K` (mostly Cyrillic) | Running text for coverage and text counts; frequency candidates for et, az, uz; no 100K news for aze, uzb |
+| FrequencyWords et_50k | github.com/hermitdave/FrequencyWords (lists CC BY-SA 4.0) | Subtitle list, compared for Estonian frequency; not chosen |
+| ML Kit text recognition languages | developers.google.com/ml-kit/vision/text-recognition/v2/languages | fi, et, hu supported; az, uz experimental |
+| PaddleOCR ONNX models | huggingface.co/PaddlePaddle/`<name>`_onnx at the pins of `paddle_models.py` | v5 `latin` lacks ə and ʻ; v6 small has ə; run on the PC with `testdata/ocr/compare/scripts/paddle_ref.py` |
+| Finnish and Hungarian analysers | Omorfi (GPL-3.0), Voikko (GPL-2.0+), Hungarian Hunspell data (GPL/LGPL/MPL) | Not used; the ending rules are written from grammar descriptions |
+| Lingua Libre items | Wikidata Q1412 (fi), Q9072 (et), Q9067 (hu), Q9292 (az), Q9264 (uz) | Commons titles `LL-Q<item> (<iso639-3>)-<speaker>-<word>.wav`; Wiktionary files `Fi-`, `Et-`, `Hu-`, `Az-`, `Uz-` |
+
 ## Language research sources (group 5e: Cantonese, Kannada, Tamil, Telugu, Marathi)
 
 | What | Where | Notes |

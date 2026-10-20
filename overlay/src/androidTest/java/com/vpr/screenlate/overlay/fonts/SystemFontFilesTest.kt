@@ -2,6 +2,8 @@ package com.vpr.screenlate.overlay.fonts
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.ArmenianSupport
+import com.vpr.screenlate.core.common.language.GeorgianSupport
 import com.vpr.screenlate.core.common.language.HindiSupport
 import com.vpr.screenlate.core.common.language.JapaneseSupport
 import org.junit.Assume.assumeTrue
@@ -40,5 +42,23 @@ class SystemFontFilesTest {
         assumeTrue("The phone has no Devanagari serif font", font != null)
         val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
         assertThat(names.any { it in HindiSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Georgian ones are declared for `und-Geor`. */
+    @Test
+    fun findsTheGeorgianSerifThroughItsScript() {
+        val font = SystemFontFiles.find(GeorgianSupport, serif = true)
+        assumeTrue("The phone has no Georgian serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in GeorgianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
+    }
+
+    /** The Armenian ones are declared for `und-Armn`. */
+    @Test
+    fun findsTheArmenianSerifThroughItsScript() {
+        val font = SystemFontFiles.find(ArmenianSupport, serif = true)
+        assumeTrue("The phone has no Armenian serif font", font != null)
+        val names = FontFiles.localNames(font!!.buffer, font.ttcIndex).map { it.lowercase() }
+        assertThat(names.any { it in ArmenianSupport.systemFonts.serif.map(String::lowercase) }).isTrue()
     }
 }

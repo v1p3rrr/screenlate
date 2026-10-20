@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Italian translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">declinazione</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Desinenza di caso o di plurale di un nome o aggettivo</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">nominativo</string>
+    <string name="inflection_ka_nounadjstemcompletion">Desinenza del nominativo -ი restituita a un tema di nome o aggettivo che finisce in consonante</string>
+    <string name="inflection_ka_vowelrestoration_label">vocale caduta</string>
+    <string name="inflection_ka_vowelrestoration">Vocale caduta del tema, ripristinata</string>
+</resources>

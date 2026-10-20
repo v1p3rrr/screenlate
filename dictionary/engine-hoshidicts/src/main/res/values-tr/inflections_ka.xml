@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_ka.xml (GPL-3.0, like the original). -->
+<resources>
+    <string name="inflection_ka_nounadjsuffixstripping_label">çekim</string>
+    <string name="inflection_ka_nounadjsuffixstripping">Bir ismin ya da sıfatın hâl veya çoğul eki</string>
+    <string name="inflection_ka_nounadjstemcompletion_label">yalın hâl</string>
+    <string name="inflection_ka_nounadjstemcompletion">Ünsüzle biten isim ya da sıfat gövdesine geri eklenen yalın hâl eki -ი</string>
+    <string name="inflection_ka_vowelrestoration_label">düşen ünlü</string>
+    <string name="inflection_ka_vowelrestoration">Gövdeden düşen ünlü, geri getirilmiş</string>
+</resources>

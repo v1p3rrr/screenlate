@@ -42,6 +42,12 @@ interface LanguageSupport {
      */
     val searchResolution: SearchResolution
 
+    /**
+     * Characters from the aim point a lookup considers until the setting is changed: Yomitan's 16, more where words run
+     * long.
+     */
+    val defaultScanLength: Int get() = 16
+
     /** Whether lines run from right to left. */
     val rightToLeft: Boolean get() = false
 
@@ -374,4 +380,6 @@ val Language.support: LanguageSupport
         Language.GREEK -> GreekSupport
         Language.HINDI -> HindiSupport
         Language.BENGALI -> BengaliSupport
+        Language.GEORGIAN -> GeorgianSupport
+        Language.ARMENIAN -> ArmenianSupport
     }

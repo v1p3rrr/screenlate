@@ -101,7 +101,11 @@ Group 4b (hi, bn, ka, hy; `plans/2026-10-19-group-4b.md`): questions 1-9 answere
 Kit's Devanagari recognizer reads Bengali (0.5% errors on clean screens). Hindi is done on `languages/hi` (LK42
 passed after one fix). Bengali is done on `languages/bn` (LK43 passed): own noun endings matched to Wiktionary's
 entries without a part of speech, form rows with template leftovers cleaned at import for every language, all bundles
-rebuilt. Both are fast-forwarded into `languages/main`. Next on chained branches: Georgian, then Armenian.
+rebuilt. Both are fast-forwarded into `languages/main`. Georgian is built on `languages/ka` (Yomitan's rules, filed
+under `kat`, now loaded and matched to untyped entries; decapitalize for Mtavruli; scan length 24) and Armenian on
+`languages/hy` (marks inside words, the ligature և, classical spellings, sentences at ։ and the colon); unit, glue,
+page and catalog tests pass, and the emulator checks LK44 and LK45 passed. Both are merged into `languages/main`;
+group 4c (Thai, Khmer) builds next.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
