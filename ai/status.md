@@ -91,15 +91,14 @@ a word's source, a piece shared with 5c's Hungarian ő ű). Not started: its ord
 downloads (wty files, kaikki's Breton extracts, corpora, Tesseract models) were in the session scratchpad only and are
 removed; the measurement scripts are in the shared session notes (`group-5b-scripts`).
 Group 5c (Finnish, Estonian, Hungarian, Azerbaijani, Uzbek) is researched (`notes/languages.md`, "Group 5c research";
-`plans/2026-10-19-group-5c.md`) and its questions 1-11 answered: all five, branches in the order Finnish, Hungarian,
+`plans/2026-10-19-group-5c.md`) and all its questions are answered: all five, branches in the order Finnish, Hungarian,
 Estonian, Azerbaijani, Uzbek; own ending lists for all five; the compound split for Finnish, Estonian and Hungarian; a
-"Word forms" item from the English dictionary when English is not chosen; Hungarian ö ü also matching ő ű for OCR words
-only (the same source piece as Welsh); Uzbek o g matching oʻ gʻ in any text; Uzbek Cyrillic transliterated to Latin;
-Leipzig frequency lists for Estonian, Azerbaijani and Uzbek; scan length 24 for Finnish; bubble letters Ä Õ Ő Ə Oʻ;
-recognition measured on the emulator (ML Kit main; Paddle v6 marked more accurate for Estonian and Azerbaijani; Google's
-engine has no Azerbaijani or Uzbek voice). Question 12, whether cloud recognition counts as OCR for the Hungarian
-matching, is open. Not started: its order is the owner's call. The measurement scripts are in the shared session notes
-(`group-5c-scripts`).
+"Word forms" item from the English dictionary when English is not chosen; Hungarian ö ü also matching ő ű for words from
+any recognition, cloud included, not for app text (the same source piece as Welsh); Uzbek o g matching oʻ gʻ in any
+text; Uzbek Cyrillic transliterated to Latin; Leipzig frequency lists for Estonian, Azerbaijani and Uzbek; scan length
+24 for Finnish; bubble letters Ä Õ Ő Ə Oʻ; recognition measured on the emulator (ML Kit main; Paddle v6 marked more
+accurate for Estonian and Azerbaijani; Google's engine has no Azerbaijani or Uzbek voice). Not started: its order is the
+owner's call. The measurement scripts are in the shared session notes (`group-5c-scripts`).
 
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
