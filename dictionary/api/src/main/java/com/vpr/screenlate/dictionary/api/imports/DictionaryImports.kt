@@ -75,8 +75,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.io.IOException
+import java.util.Base64
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -204,6 +206,15 @@ class DictionaryImports @Inject constructor(
 
     private fun NetworkCapabilities.downloadsCanRun(): Boolean =
         hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
+    /**
+     * Whether the network is gone ([online]) now or within [settleMs]: a download that breaks off as the network goes
+     * may fail a moment before the system notices.
+     */
+    internal suspend fun networkLost(settleMs: Long): Boolean = withTimeoutOrNull(settleMs) { online.first { !it } } != null
+
+    /** Waits up to [timeoutMs] for a network ([online]); returns whether one came. */
+    internal suspend fun awaitNetwork(timeoutMs: Long): Boolean = withTimeoutOrNull(timeoutMs) { online.first { it } } != null
 
     /**
      * Installs bundled dictionaries that are not installed yet; returns the task's id. Cheap when there is nothing to
@@ -431,6 +442,8 @@ class DictionaryImports @Inject constructor(
             }
             val stops = readStops(prefs[STOPPED].orEmpty())
             if (stops.keys.any { it !in unfinished }) prefs[STOPPED] = writeStops(stops.filterKeys { it in unfinished })
+            val ends = prefs[ENDED].orEmpty()
+            if (ends.any { endId(it) !in unfinished }) prefs[ENDED] = unfinishedEnds(ends, unfinished)
             if (prefs[RETRIES] != null) prefs.remove(RETRIES)
             // Dismissed tasks stay out of the list until WorkManager prunes their work.
             val dismissed = prefs[DISMISSED].orEmpty()
@@ -470,6 +483,20 @@ class DictionaryImports @Inject constructor(
     }
 
     /**
+     * Records that the task [id] ended with [output]. WorkManager drops the result of a worker it stops at that moment
+     * and runs the task again: that run ends with the same output ([endOf]) instead of doing the work again. Records of
+     * tasks that have finished meanwhile are dropped.
+     */
+    internal suspend fun recordEnd(id: UUID, output: Data) {
+        val unfinished = workManager.getWorkInfosByTagFlow(TAG).first().filterNot { it.state.isFinished }
+            .mapTo(hashSetOf()) { it.id.toString() }
+        preferences.edit { prefs -> prefs[ENDED] = recordedEnds(prefs[ENDED].orEmpty(), id, output, unfinished) }
+    }
+
+    /** The output the task [id] ended with in a run whose result WorkManager dropped; see [recordEnd]. */
+    internal suspend fun endOf(id: UUID): Data? = endIn(preferences.data.first()[ENDED].orEmpty(), id)
+
+    /**
      * Runs the worker [block] of the task [id] so that [cancel] stops it; returns null when it did. A stop by
      * WorkManager ([cancelAll], the system) still ends the worker as a cancellation.
      */
@@ -488,6 +515,7 @@ class DictionaryImports @Inject constructor(
         preferences.edit {
             it.remove(CANCELLED)
             it.remove(STOPPED)
+            it.remove(ENDED)
             it.remove(RETRIES)
         }
         Log.i(LOG_TAG, "All tasks cancelled in ${System.currentTimeMillis() - started} ms")
@@ -635,6 +663,12 @@ class DictionaryImports @Inject constructor(
          */
         val STOPPED = stringSetPreferencesKey("dictionary_imports_stopped")
 
+        /**
+         * Outputs of tasks that ended, as `id=` and the output's bytes in Base64, kept until their works have finished;
+         * see [recordEnd].
+         */
+        val ENDED = stringSetPreferencesKey("dictionary_imports_ended")
+
         /** Retries of each unfinished download as earlier versions kept them, as `id=count`; removed when found. */
         val RETRIES = stringSetPreferencesKey("dictionary_imports_retries")
 
@@ -657,6 +691,20 @@ class DictionaryImports @Inject constructor(
         }.toMap()
 
         fun writeStops(stops: Map<String, Int>): Set<String> = stops.mapTo(hashSetOf()) { (id, count) -> "$id=$count" }
+
+        /** [ends] ([ENDED]) with the end of the task [id] recorded and those of tasks not [unfinished] dropped. */
+        fun recordedEnds(ends: Set<String>, id: UUID, output: Data, unfinished: Set<String>): Set<String> =
+            unfinishedEnds(ends, unfinished - id.toString()) + "$id=${Base64.getEncoder().encodeToString(output.toByteArray())}"
+
+        /** The entries of [ends] ([ENDED]) of the [unfinished] tasks. */
+        fun unfinishedEnds(ends: Set<String>, unfinished: Set<String>): Set<String> = ends.filterTo(hashSetOf()) { endId(it) in unfinished }
+
+        /** The output [ends] ([ENDED]) holds for the task [id]; null when none, or when it does not parse. */
+        fun endIn(ends: Set<String>, id: UUID): Data? = ends.firstOrNull { endId(it) == id.toString() }?.let { entry ->
+            runCatching { Data.fromByteArray(Base64.getDecoder().decode(entry.substringAfter('='))) }.getOrNull()
+        }
+
+        private fun endId(entry: String): String = entry.substringBefore('=')
     }
 }
 
