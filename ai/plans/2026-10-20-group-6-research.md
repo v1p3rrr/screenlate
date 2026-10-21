@@ -36,14 +36,15 @@ reopened: Toki Pona, Ancient Greek, Old Irish, Manx, Cornish, Hawaiian, Breton a
 
 ## Research (2026-10-20)
 
-Measured by the research session's helpers on the PC (scripts and downloads in the session scratchpad, removed with it;
-nothing written to `testdata/`), looked up on source pages, or estimated where marked. Common sources: Yomitan e7334a9
-(`ext/js/language/`, GPL-3.0, read for facts only); the wty tree on Hugging Face (`daxida/wty-release`, `latest/dict`,
-release 2026.10.11, listed and downloaded 2026-10-20, CC BY-SA 4.0; MB of 10^6 bytes; words counted by `countWords`
-of `scripts/catalog/generate.mjs`, ✗ under 1,500, – no file); wordfreq 912caf6; the Leipzig Corpora Collection
-(downloads CC BY); the tessdata pins of `tessdata_catalog.py`; PaddleOCR v5 and PP-OCRv6 small from
-`testdata/ocr/compare/models` and `models-v6`; circle-flags 379588b; JDK 21 (CLDR). Nothing in this plan was measured
-on a device: the emulator was not used.
+Measured by the research session's helpers on the PC (screens, truth lines, Paddle results and scripts copied on
+2026-10-22 to `testdata/ocr/compare/new/6/`, git-ignored, with a README mapping the folders to these sections; the other
+downloads were in the session scratchpad), looked up on source pages, or estimated where marked. Common sources: Yomitan
+e7334a9 (`ext/js/language/`, GPL-3.0, read for facts only); the wty tree on Hugging Face (`daxida/wty-release`,
+`latest/dict`, release 2026.10.11, listed and downloaded 2026-10-20, CC BY-SA 4.0; MB of 10^6 bytes; words counted by
+`countWords` of `scripts/catalog/generate.mjs`, ✗ under 1,500, – no file); wordfreq 912caf6; the Leipzig Corpora
+Collection (downloads CC BY); the tessdata pins of `tessdata_catalog.py`; PaddleOCR v5 and PP-OCRv6 small from
+`testdata/ocr/compare/models` and `models-v6`; circle-flags 379588b; JDK 21 (CLDR). Nothing in this plan was measured on
+a device: the emulator was not used.
 
 ### Recognition (Latin-script languages)
 
@@ -1169,7 +1170,7 @@ Per block, as group 5a's work list; detailed when the block starts.
   `notes/language-rules.md` with their reading source), catalog and frequency script tests, docs (`docs/usage.md`,
   `docs/architecture.md`), NOTICE (wty, Leipzig, BÍN's credit line, WikDict, FreeDict, PanLex, flags).
 - Test model: new cases after group 5's; emulator checks under the lock: ML Kit, Tesseract and cloud on the PC
-  screens of this research (regenerated: the screens and scripts were in the research scratchpad), the voices list
+  screens of this research (in `testdata/ocr/compare/new/6/`), the voices list
   for af and gl, the Vedic signs in the system Devanagari font, Gboard's Tatar and Bashkir layouts, the lookup time of
   the Sanskrit rules on long lines.
 
@@ -1195,3 +1196,5 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
 - 2026-10-22: question 5's cause corrected (wty drops alt-of senses tagged abbreviation and writes the other alt-of rows
   the wrong way; German, Italian, Portuguese and Spanish are hit too); both issues filed at wty (#399, #400); the owner
   chose to wait for #399 until 2026-11-05 before an own supplement.
+- 2026-10-22: the research screens, truth lines, Paddle results and scripts are in `testdata/ocr/compare/new/6/` (11 MB,
+  git-ignored); the research section and the test model's emulator item say so.
