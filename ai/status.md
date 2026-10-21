@@ -1,5 +1,20 @@
 # Status
 
+## Work in progress (2026-10-22, night): the build chain
+
+The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
+block at a time, each checked and merged into `languages/main` by the coordinating session before the next starts, every
+block verified on the emulator and by tests. Group 4c (question 9's line under the Thai and Khmer Tesseract models, with
+the measurements first) resumed after an API error stopped it at 00:23; then the fixes for questions 67 and 71 (download
+stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
+through `.worktrees/emulator.lock` in the root checkout.
+
+Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
+owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
+`lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug; request 75 (the
+bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the phone: both
+diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):

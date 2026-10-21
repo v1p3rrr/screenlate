@@ -193,6 +193,22 @@ Requests 1–19 are in the previous plan. New ones:
     choices of the agent" were never shown to the owner: the 5c build session presents them before writing code; (e)
     research files outside git: 5b's and 5e's OCR harness patches and group 6's screens are kept in the shared notes;
     (f) choices from the emulator-check reports are questions 67-73, the archive's are 74-76.
+75. (2026-10-22) Holding the docked bubble opens the bubble menu without the items that need a scan; deferred, see
+    Backlog "Bubble menu in the dock".
+76. (2026-10-22, night) Autonomous work while the owner sleeps (owner): the build order of request 72 runs to the end;
+    when a block's session is done, this session checks and merges it and starts the next. Every block is verified in
+    full: unit and page tests, `lintDebug`, the debug build, and every test-model case it adds or touches run on the
+    emulator. Order: group 4c's question 9 with the measurements of request 72 (running), the fixes for questions 67 and
+    71 (a session of their own: code now, emulator checks when the emulator is free), group 4e's follow-ups (questions
+    14 (a) and 15 (b) built, 16 and 18 counted for the owner, the PanLex license rechecked), then 5a, 5b, 5c, 5d, 5e,
+    then group 6. Rules for each build session: start from the current `origin/languages/main` and push only its own
+    branch; follow its block plan and the decision tables; questions go into the block's plan as Open, marked deferred
+    (the part waits) or decided provisionally (with what was built), and are asked in the morning (5c's 17 technical
+    choices among them); the emulator only while holding `.worktrees/emulator.lock` in the root checkout; strings in all
+    14 locales, NOTICE, docs, `notes/language-rules.md` and `notes/languages.md`, test-model cases with the run log;
+    never `am force-stop` or `am start -S` (uninstall directly), no sign-in on the emulator, no `connectedAndroidTest`
+    of the app module, nothing on the owner's phone, no browsing outside the work folders; a report to this session with
+    the branch, commits, results, what is not verified and the open questions.
 
 ## Decisions
 
@@ -386,6 +402,11 @@ Decided when the first language or group 1 is ready, before it is merged into th
 - Right-to-left interface languages (owner, 2026-10-19, question 70 of `2026-10-19-group-4d.md`): Arabic, Persian
   and Hebrew interface translations with mirrored screens, a separate task after group 5's research (and maybe its
   build) and group 4's build.
+- Bubble menu in the dock (owner, 2026-10-22, request 75): holding the docked bubble opens the same menu as holding the
+  floating one: the quick-language flags and opening the app. Items that need a scan (copy the paragraph, copy all, and
+  any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
+  hold timer (`OverlayController.BubbleTouchListener`). Built later with the other deferred features, after the
+  languages, or separately when the owner says.
 
 ## Questions for the owner
 
@@ -663,21 +684,28 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 66. Answered: (b), "Serbian is mostly Cyrillic". ML Kit (built in, Latin) in Serbian's model list: now the Latin
     choice there is PaddleOCR v6 (21 MB) or nothing; ML Kit is listed for Croatian. (a, recommended) list ML Kit for
     Serbian too; (b) leave it out.
-67. Open (2026-10-22): A download that WorkManager stops for a lost network (stop reason 7) at the moment of its third
-    failure is run again by WorkManager later: a task the log called stopped resumed by itself (emulator, 2026-10-19).
-    (a, recommended) Leave it and document it: the download finishes, only the log misleads. (b) Record the stop before
-    the cancellation check, so the stopped task stays stopped.
-68. Open (2026-10-22): On a slow link the second of two parallel downloads gets almost nothing until the first ends. (a,
-    recommended) Leave it. (b) One download at a time on a metered or slow network.
-69. Open (2026-10-22): Opening the connection on a touch still leaves the handshake visible when it takes longer than
-    the time from the touch to the request (1.5 s on the emulator's mobile network). (a, recommended) Leave it and
+67. Answered (2026-10-22): consistent, logical and without bugs (owner). The agent's reading: a download that loses its
+    network at its third failure is waiting for a network, not failed: it shows "Waiting for a network" and resumes, and
+    the log, the card and the task agree; a task the user or the app stopped stays stopped. To fix in the next build
+    session. A download that WorkManager stops for a lost network (stop reason 7) at the moment of its third failure is
+    run again by WorkManager later: a task the log called stopped resumed by itself (emulator, 2026-10-19). (a,
+    recommended) Leave it and document it: the download finishes, only the log misleads. (b) Record the stop before the
+    cancellation check, so the stopped task stays stopped.
+68. Answered (2026-10-22): (a); the first download taking the link is fine (owner). On a slow link the second of two
+    parallel downloads gets almost nothing until the first ends. (a, recommended) Leave it. (b) One download at a time
+    on a metered or slow network.
+69. Open (2026-10-22; the owner asked whether the first diagnostics build has it: both builds the owner got, 2a65358f
+    and 9937cc41, open the connection on a touch and log each opening as `lens_preconnect` and the wait as
+    `preconnect_wait_ms`): Opening the connection on a touch still leaves the handshake visible when it takes longer
+    than the time from the touch to the request (1.5 s on the emulator's mobile network). (a, recommended) Leave it and
     measure on the phone with the diagnostics build. (b) Also open the connection when the bubble leaves the dock or the
     overlay starts.
-70. Open (2026-10-22): The accessibility disclosure does not mention the header-only request that opens the connection
-    on a touch (it carries no screenshot or text). (a, recommended) Leave it. (b) Add a sentence.
-71. Open (2026-10-22): Home's audio-failure card names the first turned-on language whose sources include the failing
-    source: it said Korean for failures in Vietnamese, English and German lookups. (a, recommended) Name the language of
-    the lookup that failed. (b) Leave it.
+70. Answered (2026-10-22): (a). The accessibility disclosure does not mention the header-only request that opens the
+    connection on a touch (it carries no screenshot or text). (a, recommended) Leave it. (b) Add a sentence.
+71. Decided provisionally: (a). A plain bug, fixed under the owner's standing rule while the owner was away
+    (2026-10-22); built with question 67's fix. Home's audio-failure card names the first turned-on language whose
+    sources include the failing source: it said Korean for failures in Vietnamese, English and German lookups. (a,
+    recommended) Name the language of the lookup that failed. (b) Leave it.
 72. Open (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
     paragraph, and the v5 detector splits Russian lines into overlapping boxes (38 paragraphs on the Russian page); (2)
     the download screen shows the download size, while the installed size is larger (Chinese: 42 MB shown, about 69 MB
@@ -1576,3 +1604,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: request 72 says every block measures its engines first; requests 73 (wty issues #399 and #400, waiting
   for #399 until 2026-11-05) and 74 (the completeness check of every session); questions 67-76 from the reports;
   Basque and Maltese marked as not built in row "Group 5" and Stage F (5a question 4).
+- 2026-10-22: questions 67, 68 and 70 answered; question 69 notes that both diagnostics builds open the connection on a
+  touch; request 75 and Backlog "Bubble menu in the dock" (the menu on the docked bubble, deferred).
+- 2026-10-22: request 76 (the night's autonomous build chain and the rules for its sessions); question 71 decided
+  provisionally as a plain bug.
