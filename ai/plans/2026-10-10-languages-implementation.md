@@ -165,6 +165,10 @@ Requests 1–19 are in the previous plan. New ones:
     system log at export time (on the owner's Honor phone the system log gives the app nothing; on a ColorOS phone it
     held only the last 22 seconds). Not started: the owner asked for an analysis first and will say when to build it;
     its open choices are asked then. It is built on both main and languages/main (owner, 2026-10-21).
+72. (2026-10-21) Build order of the researched blocks: Thai and Khmer (group 4c), then group 4e's follow-ups (Kazakh and
+    Kyrgyz, questions 14-18), then group 5's blocks 5a-5e, then group 6's blocks 6a-6d, one session at a time; each
+    block is merged into languages/main before the next starts (owner; placing group 4e's follow-ups right after Thai
+    and Khmer is the agent's reading of "4c, then 5, then 6").
 
 ## Decisions
 
@@ -643,8 +647,9 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
   regularly, at least after every release and before every language branch starts.
 - `languages/<code>`: one branch per language off `languages/main`, merged back once tested thoroughly on the emulator (owner, 2026-10-14; was: when it works
   on the phone); the next language starts from the merged state.
-- `experiment/languages`: reference only; pieces may be reused (QuickJS submodule, `scripts/yomitan-language/`
-  bundles, harness and tools). Deleted with the owner's OK after group 1 is merged.
+- `experiment/languages`: reference only (deleted on 2026-10-21 at d3dcda95bfe613ae3a53a99baf0a704719b8e9cb after its
+  measurement tools and lookup harness moved to `scripts/yomitan-language/`); pieces may be reused (QuickJS submodule,
+  `scripts/yomitan-language/` bundles, harness and tools). Deleted with the owner's OK after group 1 is merged.
 - `ai/` commits (plans, status, notes) are also cherry-picked to `main`, so the plan on `main` is current.
 - Commits push to their branch on `origin`; nothing goes to a release until the big release.
 - Each language branch starts with a short list of its own questions (below, per language), asked before its work
@@ -1505,3 +1510,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   any text (bundle `arabicLetters`); the other rules that reach app text stay, as people type text that way.
 - 2026-10-20: request 71 recorded (own log file; analysis given, build later on the owner's word).
 - 2026-10-21: request 71 (owner): when built, the own log file goes to both main and languages/main.
+- 2026-10-21: request 72 (owner): the build order of the researched blocks, one session at a time.
+  `experiment/languages` deleted after its measurement tools and harness moved to `scripts/yomitan-language/` (owner).

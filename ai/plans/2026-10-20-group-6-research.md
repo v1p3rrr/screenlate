@@ -972,112 +972,120 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 Each is marked deferred (it blocks a part; that part is skipped) or decided provisionally (the plan assumes the
 recommended option; what changing it takes is said).
 
-1. Decided provisionally: (a). Blocks and order. The seven languages differ in what they need (table "Blocks and
-   order"). (a, recommended) Four blocks in the order 6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar,
-   Bashkir (after group 4e); 6d Sanskrit. (b) The same blocks, Sanskrit before the Turkic block. (c) One language at
-   a time by learners: Catalan, Afrikaans, Galician, Icelandic, Sanskrit, Tatar, Bashkir. (d) Only some of them now.
-   Changing it reorders the work list only.
-2. Decided provisionally: (a). Catalan l·l. Today the middle dot ends a word: aimed at the second half of col·lecció
-   the popup shows "lecció" (lesson), for 20% of the words with the dot. People also type l.l, l-l, l•l or ŀl;
-   Paddle dropped the dot once and read it as a hyphen three times in 16 (the other engines are measured later).
-   (a, recommended) The dot joins letters into one word in any text; the typed look-alikes are tried as l·l when the
-   word as written is not found, in any text; a recognized "ll" is also tried as l·l when not found, for OCR words
-   only (col·la and colla are both words, so the exact spelling comes first). (b) The dot and ŀ only. (c) The dot
-   only. Changing it drops lookup variants and their tests.
-3. Deferred. A fallback language for Galician (as Slovak looks up Czech when a word has no Slovak entry). gl-en finds
-   77.1% of the 5,000 most frequent Galician words; with the user's Spanish dictionary 93.4%, with the Portuguese one
-   90.2%, both and gl-pt 96.0%. The official Galician spelling (x, ñ, ll, -ción) is close to Spanish; the extra words
-   are mostly cognates with the same meaning (campaña, comisión, éxito), a few false friends (desa). (a, recommended)
-   Spanish: when a Galician word has no entry, the Spanish dictionaries the user has are searched and their entries
-   marked Spanish; the Spanish dictionaries offered unticked on Galician's download screen. (b) Portuguese (better
-   for the rare Portuguese-like reintegrationist spelling). (c) Both, Spanish first: the fallback becomes a list
-   instead of one language. (d) None. Blocks: Galician's fallback and its catalog entries.
-4. Deferred. Galician pronouns written joined to the verb (fíxose, darlle, facelo, atópase). No dictionary lists most
-   of them; 0.75% of news words are such forms that an own split rule reaches (it strips the pronoun endings, undoes
-   -lo after a dropped -r or -s, drops the stress accent and requires the host to be a verb). About 6% of its hits are
-   wrong (premios → premi, estrea → estre, revela → rever + la), and that only with a guard that leaves words alone
-   when Spanish or Portuguese Wiktionary has them as nouns (crise, debate, lema); Albanian's list was kept at 1.3%
-   wrong. (a) The rule with the guard, shown as a rule result like the other own lists, the measured examples as
-   tests. (b) The rule without the guard (more wrong hits, about 8-10%, estimated). (c) No rule. The owner's
-   threshold decides (for Albanian: keep only if false hits are removed or cut to a few percent). Blocks: the
-   Galician enclitic rule.
-5. Deferred, for (b). Words Wiktionary has but wty drops: Catalan del, al, dels, pel, ben (2.6% of Catalan news
-   words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi. Their pages are form-of templates with
-   two targets. (a, recommended) Report them to wty with the page names and wait (an outward-facing step: the owner
-   files it or allows it). (b) Also ship a small supplement of our own for these few words (our own glosses, a
-   license note). (c) Leave it. Blocks: the supplement.
-6. Decided provisionally: (a). WikDict's Catalan → Russian dictionary (CC BY-SA 3.0). wty ca-ru finds 1,842 of the
-   5,000 most frequent Catalan words, WikDict cat-rus 4,001, both 4,144. (a, recommended) Convert it and list it
+1. Answered (owner, 2026-10-21): (a), each block in its own session. Each session in turn (the emulator is shared)
+   measures on the emulator every engine and model offered for its languages, Paddle included, and checks each rule's
+   hypothesis on data before building it (group 5 measured ML Kit, Tesseract and cloud in one shared emulator run and
+   Paddle on the PC only). Blocks and order. The seven languages differ in what they need (table "Blocks and order").
+   (a, recommended) Four blocks in the order 6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar, Bashkir (after
+   group 4e); 6d Sanskrit. (b) The same blocks, Sanskrit before the Turkic block. (c) One language at a time by
+   learners: Catalan, Afrikaans, Galician, Icelandic, Sanskrit, Tatar, Bashkir. (d) Only some of them now. Changing it
+   reorders the work list only.
+2. Answered (owner, 2026-10-21): (a). Catalan l·l. Today the middle dot ends a word: aimed at the second half of
+   col·lecció the popup shows "lecció" (lesson), for 20% of the words with the dot. People also type l.l, l-l, l•l or
+   ŀl; Paddle dropped the dot once and read it as a hyphen three times in 16 (the other engines are measured later). (a,
+   recommended) The dot joins letters into one word in any text; the typed look-alikes are tried as l·l when the word as
+   written is not found, in any text; a recognized "ll" is also tried as l·l when not found, for OCR words only (col·la
+   and colla are both words, so the exact spelling comes first). (b) The dot and ŀ only. (c) The dot only. Changing it
+   drops lookup variants and their tests.
+3. Answered (owner, 2026-10-21): (a). A fallback language for Galician (as Slovak looks up Czech when a word has no
+   Slovak entry). gl-en finds 77.1% of the 5,000 most frequent Galician words; with the user's Spanish dictionary 93.4%,
+   with the Portuguese one 90.2%, both and gl-pt 96.0%. The official Galician spelling (x, ñ, ll, -ción) is close to
+   Spanish; the extra words are mostly cognates with the same meaning (campaña, comisión, éxito), a few false friends
+   (desa). (a, recommended) Spanish: when a Galician word has no entry, the Spanish dictionaries the user has are
+   searched and their entries marked Spanish; the Spanish dictionaries offered unticked on Galician's download screen.
+   (b) Portuguese (better for the rare Portuguese-like reintegrationist spelling). (c) Both, Spanish first: the fallback
+   becomes a list instead of one language. (d) None. Blocks: Galician's fallback and its catalog entries.
+4. Answered (owner, 2026-10-21): (a) only if a check at implementation shows that the false hits are few and do more
+   good than finding nothing: each wrong hit is counted as harmless when the right word is still shown first, harmful
+   when the rule's guess is the only or the first result; the numbers go to the owner before the rule is kept. Galician
+   pronouns written joined to the verb (fíxose, darlle, facelo, atópase). No dictionary lists most of them; 0.75% of
+   news words are such forms that an own split rule reaches (it strips the pronoun endings, undoes -lo after a dropped
+   -r or -s, drops the stress accent and requires the host to be a verb). About 6% of its hits are wrong (premios →
+   premi, estrea → estre, revela → rever + la), and that only with a guard that leaves words alone when Spanish or
+   Portuguese Wiktionary has them as nouns (crise, debate, lema); Albanian's list was kept at 1.3% wrong. (a) The rule
+   with the guard, shown as a rule result like the other own lists, the measured examples as tests. (b) The rule without
+   the guard (more wrong hits, about 8-10%, estimated). (c) No rule. The owner's threshold decides (for Albanian: keep
+   only if false hits are removed or cut to a few percent). Blocks: the Galician enclitic rule.
+5. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
+   text. Words Wiktionary has but wty drops: Catalan del, al, dels, pel, ben (2.6% of Catalan news words; the popup
+   shows "de", "a" or "be", sheep, instead) and Galician moi. Their pages are form-of templates with two targets. (a,
+   recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files it or allows
+   it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note). (c) Leave it.
+   Blocks: the supplement.
+6. Answered (owner, 2026-10-21): (a). WikDict's Catalan → Russian dictionary (CC BY-SA 3.0). wty ca-ru finds 1,842 of
+   the 5,000 most frequent Catalan words, WikDict cat-rus 4,001, both 4,144. (a, recommended) Convert it and list it
    unticked once hosted, as WikDict sv, da, no → ru (decision "ESPDIC and WikDict"). (b) Not offered. Galician has no
    WikDict pair. Changing it drops one catalog source.
-7. Decided provisionally: (a). Frequency for Galician, Afrikaans, Tatar and Bashkir (wordfreq has none of them;
-   Catalan and Icelandic take wordfreq's lists). (a, recommended) Built on the phone from Leipzig, as Kazakh's:
-   Galician `glg_newscrawl_2016_100K` (26.6 MB), Afrikaans `afr_mixed_2019_100K` (22.0 MB), Tatar
-   `tat_news_2015_100K` (19.6 MB; `tat_web_2018_100K` finds 819 of the top 1,000 against 766 and is the alternative),
-   Bashkir `bak_wikipedia_2021_100K` (19.3 MB; encyclopedic: йыл, район, ауыл). (b) As (a) without Bashkir. (c)
-   None. Changing it removes catalog entries.
-8. Deferred, for the hosting part. Icelandic verb forms. Wiktionary gives Icelandic verbs mostly by their principal
-   parts: kemur, segir, finnst, gæti are not found (248 of the 786 misses among the 5,000 most frequent words). The
-   Icelandic morphology database BÍN (CC BY-SA 4.0 with a required credit line) has them. (a, recommended) A
-   forms-only dictionary built from BÍN (55k forms, about 0.2-0.5 MB, hosted): 84.3% → 89.5% of the top 5,000. (b) An
-   own verb ending list: 38% of the missed verb forms, 3% wrong, no download, strong verbs (kemur, fer) still
-   missed. (c) Both, the list until BÍN is hosted. (d) Neither. The plan assumes (c); (a) alone drops the list.
-9. Decided provisionally: (a). Icelandic typed without þ ð æ ö and the acutes. The written sources show little of it
-   (ad for að is rank 4,156, að rank 4); keys without marks would make 58 keys of the 5,000 most frequent words shared
-   (á/a, að/ad, vel/vél, fór/for/för). (a, recommended) No keys without marks. (b) Keys without marks, after the exact
-   match (thad → það needs th → þ besides). Changing it adds an import key and its tests, as Slovak's.
-10. Deferred. Icelandic letters misread by OCR that are real letters elsewhere: Paddle v5 read Þ as P on every screen
-    (v6 right), v6 read Æ as AE on every screen. P and "ae" also occur in Icelandic words, so no one-for-one fix.
-    (a, recommended) Wait for the emulator run of ML Kit, Tesseract and cloud; if an engine that is offered keeps
-    doing it, try Þ for P and Æ for AE for OCR words only when the word as read is not found. (b) No fallback; mark
-    the engine that does it as less accurate. Blocks: the Icelandic OCR fallback. (Đ → Ð and ž š → ð follow group
-    5a's decision "OCR letter fixes" and are planned.)
-11. Decided provisionally: (a). Afrikaans typed without ê ë î ô û ï. 4.6-18% of the uses of common marked words are
-    typed without them (wereld for wêreld 6.6%, reel for reël 18%); keys without marks share 25 keys of the 5,000 most
-    frequent words (se/sê, voel/voël, hoe/hoë). Emphasis acutes (dít, nóg, ná) are also looked up without them (dié
-    and ná are words of their own, so the exact match comes first). (a, recommended) Keys without marks, the exact
-    match first, as Slovak (decision "Words without their marks"). (b) As written only. Changing it removes an import
-    key.
-12. Decided provisionally: (a). Dutch dictionaries for Afrikaans. English Wiktionary lacks many basic Afrikaans words
-    (om, na, weer, dus, terwyl): af-en + af-ru find 71.1% of the 1,000 most frequent words and 46.6% of the top 5,000.
-    With the user's Dutch dictionary 88.4% and 70.3%, about 4% of the Dutch hits false friends (verken "explore" →
-    varken "pig"); the gain is about that of Slovak → Czech. (a, recommended) When an Afrikaans word has no entry, the
-    Dutch dictionaries the user has are searched as written and their entries marked Dutch; Dutch's dictionaries
-    offered unticked on Afrikaans's download screen. (b) As (a) plus respelling Afrikaans as Dutch (y → ij, sk → sch,
-    -tjie → -tje): about 5 points more, about 12% of those hits wrong. (c) No fallback. Changing (a) to (c) removes
-    the fallback entry for Afrikaans.
-13. Deferred, for the hosting. FreeDict afr-eng (GPL-2.0+, Ergane word lists, 5,129 entries): with af-en and af-ru
-    71.1% → 85.0% of the top 1,000, with Dutch as well 93.1%. (a, recommended) Convert it and list it unticked once
-    hosted, with the GPL source offer as for the FreeDict pairs. (b) Not offered. Blocks: one catalog entry.
-14. Deferred. A Tatar dictionary. wty has no Tatar at all (it has Bashkir); Russian Wiktionary has 11.8k Tatar words,
-    the English one 1.3k Cyrillic words. wty added Kyrgyz a day after a user asked (issue #334). (a, recommended) The
-    owner asks wty to add Tatar (an issue at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en
-    without code of ours; our own converter only if the request is refused. (b) Our own kaikki → Yomitan converter now,
-    hosted, with CC BY-SA attribution. (c) Defer Tatar. Blocks: Tatar's dictionaries (the rest of the Tatar work can
-    be prepared).
-15. Decided provisionally: (a). Tatar and Bashkir letters taken as their Russian twins (Kazakh's rule "он" shows он,
-    оң, өң). Here more dictionary words share a key: Tatar 1.7%, Bashkir 2.2% (Kazakh 0.9%), because harmony pairs
+7. Answered (owner, 2026-10-21): (a). Frequency for Galician, Afrikaans, Tatar and Bashkir (wordfreq has none of them;
+   Catalan and Icelandic take wordfreq's lists). (a, recommended) Built on the phone from Leipzig, as Kazakh's: Galician
+   `glg_newscrawl_2016_100K` (26.6 MB), Afrikaans `afr_mixed_2019_100K` (22.0 MB), Tatar `tat_news_2015_100K` (19.6 MB;
+   `tat_web_2018_100K` finds 819 of the top 1,000 against 766 and is the alternative), Bashkir `bak_wikipedia_2021_100K`
+   (19.3 MB; encyclopedic: йыл, район, ауыл). (b) As (a) without Bashkir. (c) None. Changing it removes catalog entries.
+8. Answered (owner, 2026-10-21): (a); no own verb ending list, Icelandic verb forms are found once the BÍN dictionary is
+   hosted. Icelandic verb forms. Wiktionary gives Icelandic verbs mostly by their principal parts: kemur, segir, finnst,
+   gæti are not found (248 of the 786 misses among the 5,000 most frequent words). The Icelandic morphology database BÍN
+   (CC BY-SA 4.0 with a required credit line) has them. (a, recommended) A forms-only dictionary built from BÍN (55k
+   forms, about 0.2-0.5 MB, hosted): 84.3% → 89.5% of the top 5,000. (b) An own verb ending list: 38% of the missed verb
+   forms, 3% wrong, no download, strong verbs (kemur, fer) still missed. (c) Both, the list until BÍN is hosted. (d)
+   Neither. The plan assumes (c); (a) alone drops the list.
+9. Answered (owner, 2026-10-21): (a). Icelandic typed without þ ð æ ö and the acutes. The written sources show little of
+   it (ad for að is rank 4,156, að rank 4); keys without marks would make 58 keys of the 5,000 most frequent words
+   shared (á/a, að/ad, vel/vél, fór/for/för). (a, recommended) No keys without marks. (b) Keys without marks, after the
+   exact match (thad → það needs th → þ besides). Changing it adds an import key and its tests, as Slovak's.
+10. Deferred (owner, 2026-10-21): asked again with the emulator measurement of ML Kit, Tesseract and cloud. Icelandic
+    letters misread by OCR that are real letters elsewhere: Paddle v5 read Þ as P on every screen (v6 right), v6 read Æ
+    as AE on every screen. P and "ae" also occur in Icelandic words, so no one-for-one fix. (a, recommended) Wait for
+    the emulator run of ML Kit, Tesseract and cloud; if an engine that is offered keeps doing it, try Þ for P and Æ for
+    AE for OCR words only when the word as read is not found. (b) No fallback; mark the engine that does it as less
+    accurate. Blocks: the Icelandic OCR fallback. (Đ → Ð and ž š → ð follow group 5a's decision "OCR letter fixes" and
+    are planned.)
+11. Answered (owner, 2026-10-21): (a). Afrikaans typed without ê ë î ô û ï. 4.6-18% of the uses of common marked words
+    are typed without them (wereld for wêreld 6.6%, reel for reël 18%); keys without marks share 25 keys of the 5,000
+    most frequent words (se/sê, voel/voël, hoe/hoë). Emphasis acutes (dít, nóg, ná) are also looked up without them (dié
+    and ná are words of their own, so the exact match comes first). (a, recommended) Keys without marks, the exact match
+    first, as Slovak (decision "Words without their marks"). (b) As written only. Changing it removes an import key.
+12. Answered (owner, 2026-10-21): (a). Dutch dictionaries for Afrikaans. English Wiktionary lacks many basic Afrikaans
+    words (om, na, weer, dus, terwyl): af-en + af-ru find 71.1% of the 1,000 most frequent words and 46.6% of the top
+    5,000. With the user's Dutch dictionary 88.4% and 70.3%, about 4% of the Dutch hits false friends (verken "explore"
+    → varken "pig"); the gain is about that of Slovak → Czech. (a, recommended) When an Afrikaans word has no entry, the
+    Dutch dictionaries the user has are searched as written and their entries marked Dutch; Dutch's dictionaries offered
+    unticked on Afrikaans's download screen. (b) As (a) plus respelling Afrikaans as Dutch (y → ij, sk → sch, -tjie →
+    -tje): about 5 points more, about 12% of those hits wrong. (c) No fallback. Changing (a) to (c) removes the fallback
+    entry for Afrikaans.
+13. Answered (owner, 2026-10-21): (a). FreeDict afr-eng (GPL-2.0+, Ergane word lists, 5,129 entries): with af-en and
+    af-ru 71.1% → 85.0% of the top 1,000, with Dutch as well 93.1%. (a, recommended) Convert it and list it unticked
+    once hosted, with the GPL source offer as for the FreeDict pairs. (b) Not offered. Blocks: one catalog entry.
+14. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
+    text. A Tatar dictionary. wty has no Tatar at all (it has Bashkir); Russian Wiktionary has 11.8k Tatar words, the
+    English one 1.3k Cyrillic words. wty added Kyrgyz a day after a user asked (issue #334). (a, recommended) The owner
+    asks wty to add Tatar (an issue at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en without
+    code of ours; our own converter only if the request is refused. (b) Our own kaikki → Yomitan converter now, hosted,
+    with CC BY-SA attribution. (c) Defer Tatar. Blocks: Tatar's dictionaries (the rest of the Tatar work can be
+    prepared).
+15. Answered (owner, 2026-10-21): (a). Tatar and Bashkir letters taken as their Russian twins (Kazakh's rule "он" shows
+    он, оң, өң). Here more dictionary words share a key: Tatar 1.7%, Bashkir 2.2% (Kazakh 0.9%), because harmony pairs
     differ only in ә/а, ө/о, ү/у (булу/бүлү, тороу/төрөү). (a, recommended) As Kazakh: every match, the exact spelling
-    first. (b) Only when the word as written finds nothing. (c) Exact letters only. Changing it is a flag in the
-    support class.
-16. Decided provisionally: (a). Ending rules for Tatar and Bashkir. Form rows alone find 70-74% of Tatar and 49-53% of
-    Bashkir running text; group 4e's design with their tables 83-87% and 71-77%, right on 35 and 34 of 40 samples.
-    (a, recommended) Our own rules as for Kazakh. (b) Form rows only. Changing it drops the tables.
-17. Decided provisionally: (a). PanLex for Tatar and Bashkir (the CC0 mirror Kazakh's converter uses): 9.5k Tatar and
-    4.0k Bashkir words with a Russian translation, some wrong; +4-8 points of the top 2,000 words. (a, recommended)
+    first. (b) Only when the word as written finds nothing. (c) Exact letters only. Changing it is a flag in the support
+    class.
+16. Answered (owner, 2026-10-21): (a). Ending rules for Tatar and Bashkir. Form rows alone find 70-74% of Tatar and
+    49-53% of Bashkir running text; group 4e's design with their tables 83-87% and 71-77%, right on 35 and 34 of 40
+    samples. (a, recommended) Our own rules as for Kazakh. (b) Form rows only. Changing it drops the tables.
+17. Answered (owner, 2026-10-21): (a). PanLex for Tatar and Bashkir (the CC0 mirror Kazakh's converter uses): 9.5k Tatar
+    and 4.0k Bashkir words with a Russian translation, some wrong; +4-8 points of the top 2,000 words. (a, recommended)
     Both, into English and Russian, unticked, listed once hosted. (b) Ticked for Bashkir (its dictionaries are small),
     as Kyrgyz. (c) Neither. Changing it is a catalog entry each.
-18. Decided provisionally: (a). Flags (row "Flag country": one default flag per language). (a, recommended) Catalonia
-    for Catalan, Galicia for Galician, Iceland, South Africa for Afrikaans, Tatarstan for Tatar, Bashkortostan for
-    Bashkir, India for Sanskrit. (b) Andorra for Catalan (the only state where Catalan alone is official). (c) Russia
-    for Tatar and Bashkir. (d) Namibia for Afrikaans. (e) No flag for Sanskrit (the code in a circle). Changing one is a
-    drawable and a line.
-19. Decided provisionally: (a). Bubble letters. Taken: Ñ Ç ß È Ã Я Ł Ğ Ư Ā Ĳ Ř ID MS Ng Đ Ћ Ї Ў Ω Қ Ң, group 5's Ș Å
-    Æ Ø Ë Ĉ Ô Ė Ŵ Á Ò Ä Õ Ő Ə Oʻ Ъ Ѓ Ө and the script letters. (a, recommended) Catalan Ŀ, Galician GL, Icelandic Þ,
-    Afrikaans Ê, Tatar Җ, Bashkir Ҡ, Sanskrit सं. (b) Catalan CA, Galician X, Bashkir Ҙ, Sanskrit ॐ. Changing one is a
-    string.
-20. Decided provisionally: (a). Sanskrit in Latin letters. Scholarly editions write IAST (dharmakṣetre), yoga texts
-    write plain ASCII (asana); 15.1% of Sanskrit romanizations share a key with another word when the marks are
+18. Answered (owner, 2026-10-21): (a). Flags (row "Flag country": one default flag per language). (a, recommended)
+    Catalonia for Catalan, Galicia for Galician, Iceland, South Africa for Afrikaans, Tatarstan for Tatar, Bashkortostan
+    for Bashkir, India for Sanskrit. (b) Andorra for Catalan (the only state where Catalan alone is official). (c)
+    Russia for Tatar and Bashkir. (d) Namibia for Afrikaans. (e) No flag for Sanskrit (the code in a circle). Changing
+    one is a drawable and a line.
+19. Answered (owner, 2026-10-21): (a); for Tatar the owner asked for something more interesting, and Җ was kept after
+    the other Tatar letters were compared (Ө and Ң taken, Ә looks like Azerbaijani Ə, Ү and Һ shared with the
+    neighbours). Bubble letters. Taken: Ñ Ç ß È Ã Я Ł Ğ Ư Ā Ĳ Ř ID MS Ng Đ Ћ Ї Ў Ω Қ Ң, group 5's Ș Å Æ Ø Ë Ĉ Ô Ė Ŵ Á Ò
+    Ä Õ Ő Ə Oʻ Ъ Ѓ Ө and the script letters. (a, recommended) Catalan Ŀ, Galician GL, Icelandic Þ, Afrikaans Ê, Tatar Җ,
+    Bashkir Ҡ, Sanskrit सं. (b) Catalan CA, Galician X, Bashkir Ҙ, Sanskrit ॐ. Changing one is a string.
+20. Answered (owner, 2026-10-21): (a). Sanskrit in Latin letters. Scholarly editions write IAST (dharmakṣetre), yoga
+    texts write plain ASCII (asana); 15.1% of Sanskrit romanizations share a key with another word when the marks are
     dropped, and a Latin word without an IAST letter cannot be told from English. Converting IAST to Devanagari
     reproduces 86.7% of the headwords. (a, recommended) None at first: Sanskrit is looked up in Devanagari. (b) Latin
     words with an IAST letter converted to Devanagari before lookup. (c) Also Harvard-Kyoto and ITRANS, as a setting.
@@ -1087,38 +1095,46 @@ recommended option; what changing it takes is said).
     Kit, Tesseract (cat glg isl afr san) and cloud are measured on the emulator on the same screens at implementation,
     then the recommendation rule picks. Blocks: the marks only (ML Kit stays main for the Latin languages and Sanskrit,
     Paddle `cyrillic` for Tatar and Bashkir).
-22. Deferred. Monier-Williams and the other Cologne Sanskrit dictionaries. MW (1899, 194k headwords) covers 93% of the
-    lemmas of a lemmatized Sanskrit corpus, wty 66%. Its license is contradictory: the dictionary files' header says
-    CC BY-NC-SA 3.0 (© 2014 The Sanskrit Library and Thomas Malten), the GitHub repositories say CC BY-SA 4.0; the
-    book itself is in the public domain. (a, recommended) Ask the Cologne maintainers which applies; wty only
-    meanwhile. (b) Convert and host it under the repositories' CC BY-SA 4.0 (about 10-20 MB, estimated). (c) The DCS
-    lemma list instead (CC BY 4.0, 164k short English glosses of unclear provenance). (d) None. Blocks: any Sanskrit
-    dictionary beyond wty.
-23. Deferred. Sanskrit sandhi. Sanskrit joins words in writing: तथा + इति is written तथेति, रामः + अपि रामोऽपि;
-    compounds are one word. 21% of the words of a classical text sit inside a longer written word; today a joined word
-    is found only as written, and only 37-53% of running-text words are found so. (a, recommended) Our own rules
-    (word-end sandhi undone, the avagraha split, noun endings, then the first word with the join undone, shown as
-    "part of the word"): right answers 53% → 78%, about 3-5 days. (b) The longest dictionary start only: 73% right,
-    with wrong short pieces (कपिलो → कपि "monkey"), 1-2 days. (c) The Vidyut segmenter (MIT, Rust) through JNI: about
-    80 MB of data, 2-3 weeks, not better on the first word here. (d) None. A second part: should a tap inside a joined
-    word start at the restored second word (एति → इति), 2-3 days more? Blocks: Sanskrit's lookup beyond the exact
-    word.
-24. Decided provisionally: (a). Vedic accents (marks above and below the letters in Vedic editions; 0.01% of
-    Wikipedia tokens, 60% of wty's form headwords). (a, recommended) Dropped in any text and at import, so accented
-    and plain words match. (b) Kept significant. Changing it removes a `HeadwordMarks` entry and a processor.
-25. Decided provisionally: (a). Sanskrit into Russian. sa-ru (13.1k words) is wty's largest Sanskrit dictionary;
-    Friš's reader vocabulary (7,671 Russian glosses, repository CC BY-SA 4.0, edition Moscow 2015) adds a little
-    (Friš + wty ru 89.9% of the corpus words against 82.8%); Kochergina's dictionary is in copyright. (a, recommended)
-    sa-ru only. (b) Friš converted once its license is confirmed. Changing it adds a converter.
-26. Decided provisionally: (a). Smaller items, one line each: (a, recommended) no Softcatalà English-Catalan
-    conversion (CC BY 4.0, +28 of the top 5,000); no Valencian ending list (parle, cante, tinguera unfound; no
-    Valencian corpus to measure); no Afrikaans ending list (20% wrong); no Tesseract for Bashkir (`kaz` lacks җ ҫ but
-    has the Bashkir letters; it could be offered unticked); Latin Tatar not read (Cyrillic only); Sanskrit silent
-    without a voice (a Hindi voice would read it only approximately). (b) Any of them done; the owner names which.
+22. Answered (owner, 2026-10-21): converted and hosted under the stricter license of the file header (CC BY-NC-SA 3.0),
+    with the non-commercial mark of decision "Risky dictionaries"; the maintainers are not asked. For a Google Play
+    build it moves to self-hosting or is removed (noted in `ai/notes/store-publishing.md`). Monier-Williams and the
+    other Cologne Sanskrit dictionaries. MW (1899, 194k headwords) covers 93% of the lemmas of a lemmatized Sanskrit
+    corpus, wty 66%. Its license is contradictory: the dictionary files' header says CC BY-NC-SA 3.0 (© 2014 The
+    Sanskrit Library and Thomas Malten), the GitHub repositories say CC BY-SA 4.0; the book itself is in the public
+    domain. (a, recommended) Ask the Cologne maintainers which applies; wty only meanwhile. (b) Convert and host it
+    under the repositories' CC BY-SA 4.0 (about 10-20 MB, estimated). (c) The DCS lemma list instead (CC BY 4.0, 164k
+    short English glosses of unclear provenance). (d) None. Blocks: any Sanskrit dictionary beyond wty.
+23. Answered (owner, 2026-10-21): (b), the longest dictionary start, as it is 5 points below (a) for less than half the
+    work. Second part, the agent's choice (owner): yes, after the first-word lookup is built and measured, since a tap
+    on the second word is expected to find that word. Sanskrit sandhi. Sanskrit joins words in writing: तथा + इति is
+    written तथेति, रामः + अपि रामोऽपि; compounds are one word. 21% of the words of a classical text sit inside a longer
+    written word; today a joined word is found only as written, and only 37-53% of running-text words are found so. (a,
+    recommended) Our own rules (word-end sandhi undone, the avagraha split, noun endings, then the first word with the
+    join undone, shown as "part of the word"): right answers 53% → 78%, about 3-5 days. (b) The longest dictionary start
+    only: 73% right, with wrong short pieces (कपिलो → कपि "monkey"), 1-2 days. (c) The Vidyut segmenter (MIT, Rust)
+    through JNI: about 80 MB of data, 2-3 weeks, not better on the first word here. (d) None. A second part: should a
+    tap inside a joined word start at the restored second word (एति → इति), 2-3 days more? Blocks: Sanskrit's lookup
+    beyond the exact word.
+24. Answered (owner, 2026-10-21): (a). Vedic accents (marks above and below the letters in Vedic editions; 0.01% of
+    Wikipedia tokens, 60% of wty's form headwords). (a, recommended) Dropped in any text and at import, so accented and
+    plain words match. (b) Kept significant. Changing it removes a `HeadwordMarks` entry and a processor.
+25. Answered (owner, 2026-10-21): (a). Sanskrit into Russian. sa-ru (13.1k words) is wty's largest Sanskrit dictionary;
+    Friš's reader vocabulary (7,671 Russian glosses, repository CC BY-SA 4.0, edition Moscow 2015) adds a little (Friš +
+    wty ru 89.9% of the corpus words against 82.8%); Kochergina's dictionary is in copyright. (a, recommended) sa-ru
+    only. (b) Friš converted once its license is confirmed. Changing it adds a converter.
+26. Answered (owner, 2026-10-21): (a). Smaller items, one line each: (a, recommended) no Softcatalà English-Catalan
+    conversion (CC BY 4.0, +28 of the top 5,000); no Valencian ending list (parle, cante, tinguera unfound; no Valencian
+    corpus to measure); no Afrikaans ending list (20% wrong); no Tesseract for Bashkir (`kaz` lacks җ ҫ but has the
+    Bashkir letters; it could be offered unticked); Latin Tatar not read (Cyrillic only); Sanskrit silent without a
+    voice (a Hindi voice would read it only approximately). (b) Any of them done; the owner names which.
 
 ## Work
 
 Per block, as group 5a's work list; detailed when the block starts.
+
+- Every block runs in its own session, one after another on the shared emulator (owner, 2026-10-21): before building,
+  the session measures on the emulator every engine and model offered for its languages (ML Kit, Tesseract fast and
+  best, Paddle v5 and v6, cloud) and checks each rule's hypothesis on data; the numbers go into the block's plan.
 
 - Shared: the fallback language (from group 5a's Slovak → Czech, generalized to a list if question 3 chooses (c));
   flags with hyphenated codes; the font letter lists without ŀ Ŀ ŉ and the Literata exclusion for Bashkir; the
@@ -1128,14 +1144,15 @@ Per block, as group 5a's work list; detailed when the block starts.
   the passing pairs, ipa; WikDict cat-rus converted), frequency (`large_ca`; Galician Leipzig), tessdata cat glg,
   Paddle v5 latin and v6, flags es-ct es-ga, quotes and abbreviations, strings in all 14 locales.
 - 6b: bundles (sv and nl borrowed, Ukrainian's apostrophe processor for af), the 'n word start, Icelandic OCR letter
-  fixes, `compoundLinks`, `ordinalPeriod` for is, BÍN converter and the verb list (question 8), keys without marks for
+  fixes, `compoundLinks`, `ordinalPeriod` for is, BÍN converter (question 8; no own verb list), keys without marks for
   Afrikaans, the Dutch fallback, FreeDict afr-eng (question 13), Arabic-script form rows dropped (die → دي),
   frequency (`small_is`; Afrikaans Leipzig), flags is za.
 - 6c: Tatar and Bashkir tables in group 4e's engine (both verb dictionary forms for Tatar), letter keys, legacy Tatar
   letters, OCR-only look-alikes (Bashkir Ç ç → Ҫ ҫ), particle variants, digit-joined forms, abbreviations and quotes,
   `paddle-cyrillic` gains tt and ba, Leipzig sources (Tatar and Bashkir Wikipedia only), PanLex (question 17), the
   Tatar dictionary (question 14), flags ru-ta ru-ba.
-- 6d: the Sanskrit bundle, import cleanup and keys, the sandhi rules (question 23), sentence ends, scan length 24,
+- 6d: the Sanskrit bundle, import cleanup and keys, the longest-start sandhi lookup, then the restored second word
+  (question 23), Monier-Williams converted with its non-commercial mark (question 22), sentence ends, scan length 24,
   tessdata san, `ocrWord` S s 5 → ऽ, the Devanagari font, flag in, strings.
 - Tests per language as group 5a's (the measured examples as positive and negative tests, rows of
   `notes/language-rules.md` with their reading source), catalog and frequency script tests, docs (`docs/usage.md`,
@@ -1158,3 +1175,9 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
 ## Changelog
 
 - 2026-10-20: plan written (request 70 of the languages plan).
+- 2026-10-21: the owner answered the questions: 3 (a); 4 (a) only after a check of its false hits; 5 and 14 (a), the
+  agent files both issues at wty after the owner has seen their text; 8 (a) without the own verb list; 10 deferred to
+  the emulator measurement; 13 (a); 22 hosted under the file header's CC BY-NC-SA 3.0 with the non-commercial mark; 23
+  (b), then the restored second word; the provisional ones as assumed (Җ kept for Tatar after a comparison). Each block
+  runs in its own session, one after another, and measures every engine and model on the emulator before building
+  ("Work"). Questions 10 and 21 wait for that measurement.

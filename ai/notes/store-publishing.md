@@ -11,7 +11,9 @@ Findings of 2026-10-09 (policy pages as of that date). Nothing decided.
   - `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` (high risk; open the battery settings instead);
   - an in-app accessibility disclosure with consent (request 48) and the accessibility declaration with a video;
   - the `specialUse` keep-alive service needs its own declaration;
-  - a privacy policy URL and the Data safety form (screenshots to cloud recognition, text to translators).
+  - a privacy policy URL and the Data safety form (screenshots to cloud recognition, text to translators);
+  - the non-commercial catalog entries (words.hk, the Zaliznyak meta dictionary, Monier-Williams under CC BY-NC-SA 3.0)
+    move to self-hosting or are removed (owner, 2026-10-21; decision "Risky dictionaries").
 - Main risk: the Device and Network Abuse policy bans apps that use a service or API against its terms. The Lens request
   uses Chrome's key on Google's own endpoint; Bing, Edge and gtx are against their terms too. Review rarely inspects
   traffic, but removal can come with any update or complaint, and a terminated account bars new ones.
