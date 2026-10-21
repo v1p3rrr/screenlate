@@ -7,7 +7,9 @@ block at a time, each checked and merged into `languages/main` by the coordinati
 block verified on the emulator and by tests. Group 4c (question 9's line under the Thai and Khmer Tesseract models, with
 the measurements first) resumed after an API error stopped it at 00:23; then the fixes for questions 67 and 71 (download
 stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
-through `.worktrees/emulator.lock` in the root checkout.
+through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merged (`languages/km-answers`, 814490c6;
+build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
+same line in other languages) wait for the morning.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
