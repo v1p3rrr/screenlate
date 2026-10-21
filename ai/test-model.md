@@ -245,7 +245,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | AUD1 | 🔊 plays the clip of the highest source that has one; holding it lists all recordings | F | U AudioFinderTest, M | 2026-10-14 |
-| AUD2 | A failing source → its Test shows the error; home lists it in the audio card | O | U AudioErrorTest, M | 2026-10-14 |
+| AUD2 | A failing source → its Test shows the error; home lists it in the audio card | O | U AudioErrorTest, M | 2026-10-22 |
 | AUD3 | English Wiktionary clips follow the Regions order; a changed order applies to the next selection | O | U AudioFinderTest, M | |
 | AUD4 | A custom URL source on `http://10.0.2.2:<port>` asks for the local network permission (API 37) and plays | O | U LocalNetworkTest, M | |
 | AUD5 | Home's audio card "Audio settings" opens the Anki page at the audio section; "Add audio source" starts as the language's first default kind (English: Lingua Libre) | O | M | 2026-10-14 |
@@ -261,6 +261,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD15 | Hebrew audio: holding 🔊 on כלב lists Lingua Libre's recording of the word as written, Wiktionary's pointed He-כֶּלֶב.ogg and the text to speech; Wiktionary's file plays, and Google's Hebrew voice (he-il) speaks when chosen | F | U HebrewSupportTest, AudioPagesTest, M | 2026-10-20 |
 | AUD16 | Kazakh audio: holding 🔊 on кітап lists Lingua Libre's recording and the text to speech; the recording plays; with no Kazakh voice on the device the text to speech item says so | F | U KazakhSupportTest, AudioPagesTest, M | 2026-10-20 |
 | AUD17 | Kyrgyz audio: holding 🔊 on китеп lists Lingua Libre's recording, Wiktionary's and the text to speech; the Lingua Libre recording plays | F | U KyrgyzSupportTest, M | 2026-10-20 |
+| AUD18 | Several languages turned on share failing sources (Lingua Libre and Wiktionary through a proxy that never answers): a Kyrgyz lookup's 🔊 adds a "Kyrgyz" audio card only, a Hebrew lookup's adds a "Hebrew" card with its own failures, and no other language gets one; "Audio settings" on a card opens that language's audio sources; once the sources answer, a lookup in one language removes only that language's card | O | U CurrentFailuresTest, AudioFinderTest, M | 2026-10-22 |
 
 ### ANK: Anki
 
@@ -303,7 +304,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 |---|---|---|---|---|
 | DIC1 | Import a `.zip` from a file: progress in the card and the notification; Cancel there and in the notification | F | M | 2026-10-14 |
 | DIC2 | Catalog download: the ring (waiting, filling, spinning), its stage line, ✕ inactive in the first second; the import after it; the task is named by its catalog title in the interface language, on its card and on home | F | M | 2026-10-14 |
-| DIC3 | A download that breaks off goes to the end of the queue and retries by itself up to three times (attempt on its card, 30 s, 1 and 2 min apart; the tasks behind it start meanwhile) and continues where it stopped; after that, Resume and Cancel, and the card says the connection was lost (not the technical reason); Cancel deletes the partial file. | F | U ResumableDownloadTest, DictionaryImportsTest, M | 2026-10-19 |
+| DIC3 | A download that breaks off goes to the end of the queue and retries by itself up to three times (attempt on its card, 30 s, 1 and 2 min apart; the tasks behind it start meanwhile) and continues where it stopped; after that, Resume and Cancel, and the card says the connection was lost (not the technical reason); Cancel deletes the partial file. | F | U ResumableDownloadTest, DictionaryImportsTest, M | 2026-10-22 |
 | DIC4 | The app killed during a download (`am kill` in the background) → the download continues by itself, no button; during an import → it restarts | F | M | 2026-10-14 |
 | DIC5 | The app dies twice during an import → not started again, the card says so | O | U DictionaryImportsTest, M | |
 | DIC6 | Order by drag, switches, sort dictionary; the last dictionary with definitions cannot be switched off or deleted | F | M | 2026-10-18 |
@@ -322,12 +323,15 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update; setup and home by unit tests) |
 | DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-19 |
 | DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-19 |
-| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-19 (cards and the network back; the retry and the file import not run) |
+| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-22 (a waiting retry; the file import not run) |
 | DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | N | M | 2026-10-19 (the directory used, no cache directory; the clear-cache resume not run) |
 | DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | N | U InstallingTest, UpdateCheckTest, M | |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20 |
+| DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download …; waits for it"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-22 |
+| DIC30 | The network goes at the moment the last retry breaks off (a proxy `10.0.2.2:8899` that never answers for the break-offs, Wi-Fi and data off just before or just after the third retry's 20 s read timeout): the card keeps "Retrying the download (3 of 3)" with "Waiting for a network", never "download stopped"; with the network back (proxy removed) it finishes. A task that ended (stopped after its last retry, cancelled, failed or installed) never runs again: turning the network off and on starts nothing | F | U DictionaryImportsTest, M | 2026-10-22 |
+| DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-22 (two downloads after a stopped one; Resume by unit test) |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -411,6 +415,50 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `claude/download-audio-fixes-a83144` (on `32987ce2` with the download and audio fixes before their commit), Pixel_10_Pro (API 37)
+
+Scope: a download's network loss as a wait for the network, also at the moment of its last retry, and tasks that
+ended never running again (DIC3, DIC23, DIC29, DIC30); the queue's input merger (DIC31, found during the run); Home's
+audio card per lookup language (AUD2, AUD18). An x86_64-only APK with the storage threshold lowered for the install
+(both settings deleted afterwards). Break-offs came from a host socket that accepts and never answers set as the global
+proxy (`settings put global http_proxy 10.0.2.2:8899`); `adb emu network speed 1500` did not slow the emulator's
+Wi-Fi (14 MB in 5 s).
+
+Results: every case passed after the fix of the input merger below. First checks: DIC29, DIC30, DIC31 (moved to F),
+AUD18 (moved to O). Automated: unit tests 1317, page tests 145, lint passed (no issue in the changed files).
+
+- DIC29: Wi-Fi and data off 3 s into the 14 MB transcription download: WorkManager stopped it with reason 7, logged
+  "waits for a network, then runs again"; the task card "Waiting for a network: Transcription (Wiktionary)", the
+  catalog card "Waiting for a network"; 3.9 MB stayed in `no_backup/dictionary-downloads/`. With the network back
+  after 60 s: run 2, "3812 KB already there", installed. No retry counted.
+- DIC30, stop first: network off 19.5 s into the third retry's read: WorkManager's stop (reason 7) came 0.2 s before
+  the read timeout; the card "Retrying the download (3 of 3)" with "Waiting for a network". With the proxy set, new
+  networks do not pass validation (the probe goes through it), so the task waited; the proxy removed, the network
+  validated and the same task ran again (run 2) and installed.
+- DIC30, failure first: network off 20.4 s into the third retry's read: "the network went away during the download
+  (SocketTimeoutException); waits for it" at the timeout, WorkManager's stop 19 ms later; the card as above; with the
+  network back the task installed. No "download stopped".
+- DIC3: two downloads through the proxy broke off four times each (retries 30 s, 1 min, 2 min apart, the 2 s network
+  check after each timeout), then "download stopped — connection lost" with Cancel and Resume. Neither ran again
+  across two network losses. Cancel removed its card (nothing was downloaded, so no partial file).
+- DIC31: Resume on the "Wiktionary (es–tr)" card downloaded `wty-es-tr-gloss.zip` under the name "Wiktionary glossary
+  (es–tr)": the job was queued after the stopped glossary download in the same chain, and WorkManager's default input
+  merger laid that job's output (URL, archive, name, entry) over the new job's input. Fixed with `OwnInputMerger`;
+  with it, a download queued after the stopped es–tr job (its prerequisite in the WorkManager database) downloaded and
+  installed its own `wty-es-ja-gloss.zip`.
+- AUD2, AUD18: with Kyrgyz and Hebrew on and the proxy set, 🔊 on китеп (Kyrgyz) gave a "Kyrgyz" card with Lingua
+  Libre and Wiktionary; 🔊 on כלב (Hebrew) added a "Hebrew" card; no other language got one (before the fix both would
+  have been listed under Hebrew, the first language with those sources). "Audio settings" on the Kyrgyz card opened
+  the Anki page with Kyrgyz chosen. Without the proxy, 🔊 on китеп played and the Kyrgyz card went; Hebrew's stayed.
+
+Not checked: DIC20-DIC22 and DIC25 (their code did not change); the in-run 30 s wait for the network (WorkManager
+stopped every job first); a WorkManager stop landing after the job's result (covered by unit tests); whether a running
+glossary download's card shows the catalog's localized title (the wrong job above showed the name from its input,
+"Wiktionary glossary (es–tr)"); the phone.
+
+Emulator state since this run: the debug build of this branch; the Spanish dictionaries downloaded for the checks
+deleted again; AnkiDroid not opened; the storage settings and the proxy removed.
 
 ### 2026-10-20, `languages/kk` (PanLex conversions, on `8c869164` with the converter before its commit), Pixel_10_Pro (API 37)
 
