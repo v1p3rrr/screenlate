@@ -179,11 +179,19 @@ wty `latest` (release 2026.10.11, downloaded 2026-10-20); wordfreq 912caf6 (`lar
   vosté → vostè), 84 Balearic. Of 52 typical Valencian words 13 are missing (hui, prompte, isc, vullc, vosatros; the
   first person in -e: parle, cante, pense; the imperfect subjunctive in -era: tinguera, poguera); of 25 Balearic words
   3 (cantam, cantau, deim).
-- Entries wty drops (checked against en.wiktionary raw text; their senses are form-of templates with two targets):
-  Catalan del, al, pel (de/a/per + el; dels and pels exist only as form rows of the missing del and pel), ben
-  ("alternative form of bé"; wty has bé → ben pointing at a missing entry); Galician moi ("apocopic form of moito").
-  del, al, dels, pel, ben are 2.59% of the tokens of `cat_news_2022_100K` (del 1.27%); the prefix scan then shows "de",
-  "a" or "be" (sheep). Galician "empresa" has no Galician section in Wiktionary itself.
+- Entries wty drops (checked against en.wiktionary raw text and wty's code, corrected 2026-10-22): Catalan del, al, pel
+  (de/a/per + el; pels exists only as a form row of the missing pel, dels not at all), ben ("alternative form of bé";
+  wty has bé → ben pointing at a missing entry); Galician moi ("apocopic form of moito"), desta. del, al, dels, pel, ben
+  are 2.59% of the tokens of `cat_news_2022_100K` (del 1.27%); the prefix scan then shows "de", "a" or "be" (sheep).
+  Galician "empresa" has no Galician section in Wiktionary itself.
+- Why (wty 602ffb3, unchanged at 774f3f6, `handle_alt_of_sense` in `src/dict/main/ir/mod.rs`): kaikki gives these pages
+  alt-of senses. A sense with a filtered tag (`abbreviation`, which kaikki puts on contractions and apocopic forms)
+  counts as handled and is deleted without a form row (del, al, pel, moi, desta). Any other alt-of sense is deleted and
+  its row is written the other way round, from the target to the page (bé → ben; gl auga → agua): of the rows tagged
+  alt-of, 994 of 1,066 in ca-en and 391 of 445 in gl-en point at a term with no entry, about 94% in it, pt, de and es as
+  well. The same drop hits languages of groups 1-3: in wordfreq's top 1,000 words German im, zum, zur, vom, beim (2.2%
+  of the tokens), Italian un, del, della, nel (7.5%), Portuguese do, da, na, ao (7.8%), Spanish muy, tu, buen (0.7%);
+  French is not affected. Reported as wty issue #399 (2026-10-22).
 
 #### Other dictionaries
 
@@ -965,7 +973,7 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Audio order | Lingua Libre first for ca, is, af, tt, sa; Wiktionary first for gl and ba; text to speech last. |
 | Voice | Languages without a voice keep the popup's "No text-to-speech voice for this language is installed". |
 | OCR | ML Kit main for ca, gl, is, af and sa (row "ML Kit at setup"); Paddle `cyrillic` for tt and ba (ML Kit has no Cyrillic); the "more accurate" marks after the emulator run (question 21). |
-| Upstream reports | The dropped entries (Catalan del, al, pel, ben; Galician moi) and the missing Tatar language are reported to wty by the owner or with the owner's consent (an outward-facing step; question 14). |
+| Upstream reports | Filed at wty from the owner's account on 2026-10-22: #399 (contractions and apocopic forms dropped, alt-of rows written the wrong way; it hits German, Italian, Portuguese and Spanish too) and #400 (add Tatar). If #399 is not fixed by 2026-11-05, the owner is asked again about an own supplement (question 5). |
 
 ## Questions for the owner (deferred)
 
@@ -1007,11 +1015,14 @@ recommended option; what changing it takes is said).
    the guard (more wrong hits, about 8-10%, estimated). (c) No rule. The owner's threshold decides (for Albanian: keep
    only if false hits are removed or cut to a few percent). Blocks: the Galician enclitic rule.
 5. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
-   text. Words Wiktionary has but wty drops: Catalan del, al, dels, pel, ben (2.6% of Catalan news words; the popup
-   shows "de", "a" or "be", sheep, instead) and Galician moi. Their pages are form-of templates with two targets. (a,
-   recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files it or allows
-   it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note). (c) Leave it.
-   Blocks: the supplement.
+   text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399, with the cause and the
+   wider scope found then ("Catalan and Galician"). The owner then chose (2026-10-22) to wait two weeks: if wty has not
+   fixed it by 2026-11-05, the agent asks about (b) again. Words Wiktionary has but wty drops: Catalan del, al, dels,
+   pel, ben (2.6% of Catalan news words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi. wty's
+   converter drops their alt-of senses (corrected 2026-10-22; this question first said form-of templates with two
+   targets). (a, recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files
+   it or allows it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note).
+   (c) Leave it. Blocks: the supplement.
 6. Answered (owner, 2026-10-21): (a). WikDict's Catalan → Russian dictionary (CC BY-SA 3.0). wty ca-ru finds 1,842 of
    the 5,000 most frequent Catalan words, WikDict cat-rus 4,001, both 4,144. (a, recommended) Convert it and list it
    unticked once hosted, as WikDict sv, da, no → ru (decision "ESPDIC and WikDict"). (b) Not offered. Galician has no
@@ -1056,12 +1067,12 @@ recommended option; what changing it takes is said).
     af-ru 71.1% → 85.0% of the top 1,000, with Dutch as well 93.1%. (a, recommended) Convert it and list it unticked
     once hosted, with the GPL source offer as for the FreeDict pairs. (b) Not offered. Blocks: one catalog entry.
 14. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
-    text. A Tatar dictionary. wty has no Tatar at all (it has Bashkir); Russian Wiktionary has 11.8k Tatar words, the
-    English one 1.3k Cyrillic words. wty added Kyrgyz a day after a user asked (issue #334). (a, recommended) The owner
-    asks wty to add Tatar (an issue at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en without
-    code of ours; our own converter only if the request is refused. (b) Our own kaikki → Yomitan converter now, hosted,
-    with CC BY-SA attribution. (c) Defer Tatar. Blocks: Tatar's dictionaries (the rest of the Tatar work can be
-    prepared).
+    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/400. A Tatar dictionary. wty
+    has no Tatar at all (it has Bashkir); Russian Wiktionary has 11.8k Tatar words, the English one 1.3k Cyrillic words.
+    wty added Kyrgyz a day after a user asked (issue #334). (a, recommended) The owner asks wty to add Tatar (an issue
+    at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en without code of ours; our own converter
+    only if the request is refused. (b) Our own kaikki → Yomitan converter now, hosted, with CC BY-SA attribution. (c)
+    Defer Tatar. Blocks: Tatar's dictionaries (the rest of the Tatar work can be prepared).
 15. Answered (owner, 2026-10-21): (a). Tatar and Bashkir letters taken as their Russian twins (Kazakh's rule "он" shows
     он, оң, өң). Here more dictionary words share a key: Tatar 1.7%, Bashkir 2.2% (Kazakh 0.9%), because harmony pairs
     differ only in ә/а, ө/о, ү/у (булу/бүлү, тороу/төрөү). (a, recommended) As Kazakh: every match, the exact spelling
@@ -1181,3 +1192,6 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
   (b), then the restored second word; the provisional ones as assumed (Җ kept for Tatar after a comparison). Each block
   runs in its own session, one after another, and measures every engine and model on the emulator before building
   ("Work"). Questions 10 and 21 wait for that measurement.
+- 2026-10-22: question 5's cause corrected (wty drops alt-of senses tagged abbreviation and writes the other alt-of rows
+  the wrong way; German, Italian, Portuguese and Spanish are hit too); both issues filed at wty (#399, #400); the owner
+  chose to wait for #399 until 2026-11-05 before an own supplement.

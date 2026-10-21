@@ -111,6 +111,16 @@ questions: `plans/2026-10-09-more-languages.md`.
 - wty main rows of inflected forms look like `["ran","","non-lemma","v",0,[["run",["past"]],…]]`: the glossary holds
   only `[lemma, [tags]]` items. zh→en uses traditional headwords; simplified spellings are form-of rows tagged
   "Simplified-Chinese". Readings are like "nǎo (nao³)".
+- wty drops entries in `handle_alt_of_sense` (`src/dict/main/ir/mod.rs`, release 2026.10.11 at 602ffb3, unchanged at
+  774f3f6; checked 2026-10-22): an alt-of sense with a filtered tag (`abbreviation`, which kaikki puts on contractions
+  and apocopic forms; also misspelling, nonstandard, obsolete and others) counts as handled and is deleted without a
+  form row, so de im, zum, zur, vom, beim; it un, del, della, nel; pt do, da, na, ao; es muy, tu, buen; ca del, al, pel;
+  gl moi have no entry. In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of the Italian, 7.8% of
+  the Portuguese, 0.7% of the Spanish; French is not affected. Any other alt-of sense is deleted too, and its row goes
+  from the target to the page (ca bé → ben, gl auga → agua): about 94% of the rows tagged alt-of point at a term with no
+  entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399; the owner waits until 2026-11-05
+  before an own supplement (languages plan, request 73). To check a release: `ca-en` has no row for del, `de-en` none
+  for im.
 - Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan; converter MIT, data CC BY-SA 3.0 per the CC-CEDICT wiki,
   some third parties say 4.0): terms with pinyin, a Hanzi dictionary (Yomitan's kanji format), Cantonese variants
   with Jyutping (CC-CEDICT Canto, CC-Canto); words.hk for Cantonese. `addTermEntry` stores each term under the
@@ -553,7 +563,7 @@ read from the files), the OCR comparison of `ocr-engines.md` (2026-10-16/17). No
 | nl | capitalization | none |
 | cs | capitalization | none |
 | id | capitalization, `removeAlphabeticDiacritics` (NFD, drops U+0300–U+036F) | none |
-| ms | no descriptor (like kk, ky: form-of rows and the longest start) | none |
+| ms | no descriptor (like kk, ky: form-of rows and the ordinary prefix scan) | none |
 | tl | capitalization, diacritics removal | `tagalogTransforms`: 3 conditions, 60 transforms, 635 rules; one transform has a description, the others are affix names (`-an`, `mag-`, `pag-…-an`) |
 | sh (iso639_3 `hbs`) | capitalization, `removeSerboCroatianAccentMarks` (combining marks after a e i o u r), `addSerboCroatianDiacritics` (c → č/ć, z → ž, s → š, dj → đ in every combination, capped at `MAX_PROCESS_VARIANTS` 4096) | none |
 | uk | capitalization, `removeUkrainianDiacritics` (U+0301), `ukrainianApostropheVariants` (input ' ‘ ’ ʼ \` ´ → ' ’ ʼ); `isTextLookupWorthy`: contains Cyrillic | `ukrainianTransforms`: 6 conditions, 35 transforms, 3,023 rules, all 35 described |
