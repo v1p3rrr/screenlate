@@ -375,6 +375,23 @@ class DictionaryImportsTest {
     }
 
     @Test
+    fun `a task reads its own input, not the output of the task before it in its chain`() {
+        val own = workDataOf(KEY_SOURCE to SOURCE_URL, KEY_URL to "https://example.org/es-tr.zip", KEY_ENTRY_ID to "wiktionary-es-tr")
+        val stoppedBefore = workDataOf(
+            KEY_SOURCE to SOURCE_URL,
+            KEY_URL to "https://example.org/es-tr-gloss.zip",
+            KEY_ENTRY_ID to "wiktionary-es-tr-glossary",
+            KEY_RESUMABLE to true,
+            KEY_DOWNLOAD_STOPPED to true,
+        )
+
+        val input = OwnInputMerger().merge(listOf(own, stoppedBefore, workDataOf(KEY_REQUEUED to true)))
+
+        assertThat(input.keyValueMap).isEqualTo(own.keyValueMap)
+        assertThat(OwnInputMerger().merge(emptyList())).isEqualTo(Data.EMPTY)
+    }
+
+    @Test
     fun `a download WorkManager stopped for the lost network waits for it, not stopped`() {
         val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         // Stopped by WorkManager at its third retry: it is enqueued again, without an output.

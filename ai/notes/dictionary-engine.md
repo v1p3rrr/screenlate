@@ -55,6 +55,11 @@ Hoshi Reader Android `app/src/main/assets/hoshi-web/popup/popup.js` (GPL-3.0): `
   treats such a failure as a wait for the network, not as a break-off, so it never counts a retry or ends the task.
   `getStopReason()` needs API 31 (minSdk is 30); `Result.Success`/`Retry` are restricted API, compare with
   `Result.retry()` instead.
+- WorkManager merges a chained job's input with its prerequisites' outputs (`WorkerWrapper`: `listOf(workSpec.input) +
+  getInputsFromPrerequisites`, and `OverwritingInputMerger` lets the later ones win). Before `OwnInputMerger`, a job
+  queued after a stopped download in the same chain took that download's `url`, `archive`, `name` and `entry_id`: Resume
+  of one stopped card downloaded another stopped entry (seen on 2026-10-22). Jobs queued by older builds keep the
+  default merger.
 - `BundledDictionaries` installs each `assets/dictionaries/*.zip` once, keyed by name and size in DataStore, so a deleted bundled dictionary does not come back. Zip assets are stored uncompressed (`noCompress`), which `openFd` needs.
 - The sort frequency dictionary is the first enabled frequency dictionary (rank-based → ascending, occurrence-based → descending) until phase 4 adds a setting.
 - `DictionaryRepository.generation` changes on every reload, engine load and bundled tag-notes fill. `DictionaryLookup` keeps styles, tag descriptions, frequency modes and "has term dictionaries" per generation (`PerGeneration`), so a scan or a shown word no longer re-reads all CSS through JNI or queries Room; `styles()` returns the same list instance until then, which the overlay uses to skip re-encoding it for the page. A new kind of registry change that affects those values must go through `reloadLocked()` or bump the generation itself.

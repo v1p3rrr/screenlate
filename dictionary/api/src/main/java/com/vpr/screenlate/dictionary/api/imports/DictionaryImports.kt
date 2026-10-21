@@ -590,6 +590,7 @@ class DictionaryImports @Inject constructor(
         val chain = leastLoadedChain(workManager.getWorkInfosByTagFlow(TAG).first(), preferences.data.first()[CANCELLED].orEmpty(), exclude)
         val request = OneTimeWorkRequestBuilder<DictionaryImportWorker>()
             .setInputData(input)
+            .setInputMerger(OwnInputMerger::class.java)
             .addTag(TAG)
             .addTag(NAME_TAG_PREFIX + name)
             .addTag(SOURCE_TAG_PREFIX + source)
