@@ -727,6 +727,15 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     and transcriptions, wordfreq fa and he, tessdata khm and heb, the Thai, Kazakh and Kyrgyz frequency corpora; 65 MiB,
     all with pinned hashes). (a, recommended) Fix the script's future list (so the hi-ky files are not fetched twice)
     and fetch them now. (b) Later, with the next refresh.
+77. Decided provisionally (2026-10-22, the download fix of question 67): a download that breaks off while the network
+    goes counts as waiting for it when the network is gone within 2 s of the failure; if WorkManager does not stop the
+    task then, the run waits 30 s for the network before it ends and runs again later (on the emulator WorkManager
+    always stopped it first). (a, built) Keep 2 s and 30 s. (b) Other values (the owner says which).
+78. Decided provisionally (2026-10-22, the audio card fix of question 71): a failing audio source is listed per lookup
+    language, and a lookup that finds the source working clears its failure only on that language's card. (a, built) Per
+    language: a shared source (Lingua Libre, Wiktionary) that failed in Kyrgyz and Hebrew shows on both cards, and a
+    working Kyrgyz lookup leaves the Hebrew card. (b) A working lookup in any language clears the source's failure on
+    every card.
 
 ## Branches and workflow
 
@@ -1608,3 +1617,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   touch; request 75 and Backlog "Bubble menu in the dock" (the menu on the docked bubble, deferred).
 - 2026-10-22: request 76 (the night's autonomous build chain and the rules for its sessions); question 71 decided
   provisionally as a plain bug.
+- 2026-10-22: questions 67 and 71 built and merged (`claude/download-audio-fixes-a83144`); questions 77 (the network
+  wait's 2 s and 30 s) and 78 (audio failures per language) from that work; the input merger fix (a chained download
+  fetched the stopped one's file) was a plain bug.

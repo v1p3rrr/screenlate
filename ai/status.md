@@ -9,7 +9,13 @@ the measurements first) resumed after an API error stopped it at 00:23; then the
 stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
 through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merged (`languages/km-answers`, 814490c6;
 build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
-same line in other languages) wait for the morning.
+same line in other languages) wait for the morning. The fixes for questions 67 and 71 are merged
+(`claude/download-audio-fixes-a83144`): a download whose network goes waits for it and resumes, a task that ended never
+runs again, Home's audio cards are per lookup language, and a plain bug found on the way is fixed (WorkManager's input
+merger gave a download queued after a stopped one that one's URL; `OwnInputMerger`); DIC29-DIC31 and AUD18 passed on the
+emulator, build, 1,317 unit tests, lint and 145 page tests pass on the merge; questions 77 and 78 come from it. Left by
+that session: `D:/tmp_sl` (84 MB of APK scratch outside the project, for the owner to delete), and its worktree needs
+`git submodule deinit --all -f` before removal.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
