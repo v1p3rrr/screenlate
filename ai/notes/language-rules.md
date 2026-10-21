@@ -251,6 +251,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | th | No ML Kit model, and the Thai Paddle model is not released (it waits for the owner's upload with the others); Tesseract `tha`, the fast model recommended (20.8% CER over clean and hard screens against best's 21.0%, 1.1 MB against 7.6 MB; 0.8% on the clean ones) | `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`, catalog `tesseract-fast-tha`; `ocr/mlkit/MlKitOcrEngine.kt` | MlKitOcrEngineTest (Thai has no model), `test_tessdata_catalog.py` | the same tests | ok |
 | th | Tesseract gives Thai one "word" per letter or cluster; they are joined with no separator, and with a space where the gap exceeds 0.4 of the line height (measured on the th-page screens: spaces 0.28-0.74, gaps inside words up to 0.37), and at a line end with none | `ocr/tesseract/TesseractOcrEngine.kt` `tesseractPage`; `ThaiSupport.kt` `ocrSpaceGap` | TesseractPageTest `thai clusters…` | Isolation (`ocrSpaceGap` null elsewhere), TesseractPageTest (other languages join by their separator) | ok |
 | km | No ML Kit or Paddle model; Tesseract `khm`, the fast model recommended (1.4 MB against best's 8.1 MB; about 9% errors on clean screens, 57% on hard ones). Tesseract reads Khmer phrase by phrase, so a gap wider than 0.15 of the line height is a space (checked on the emulator: the spaces of a rendered paragraph kept, none added inside words). It drops some vowel signs, reads ត as ទ at times, and splits a line where it starts with ្រ or a stacked consonant | `KhmerSupport.kt` `ocrSpaceGap`; `scripts/ocr-models/tessdata_catalog.py` `RECOMMENDED`, catalog `tesseract-fast-khm` | MlKitOcrEngineTest (Khmer has no model), `test_tessdata_catalog.py`, CatalogFileTest `khmer offers the english and russian wiktionaries…` | Isolation (`ocrSpaceGap` only th and km) | limit |
+| th, km | The model lists say under each Tesseract model "Often misreads text on busy screens; cloud recognition is more accurate." (hard screens: Thai 33%, Khmer 57% of the characters; cloud 0-0.2%); Paddle's Thai model and other languages' Tesseract models have no such line | `LanguageSupport.tesseractMisreadsBusyScreens` (`ThaiSupport.kt`, `KhmerSupport.kt`); `app/languages/OcrModels.kt` `misreadsBusyScreens`, `OcrModelsSettings.kt` `OcrModelRow`, `LanguageSetupScreen.kt` `SetupItemRow`; string `ocr_models_busy_screens` | OcrModelsTest `thai and khmer tesseract models say that they misread busy screens`; emulator (LNG17) | Isolation (`tesseractMisreadsBusyScreens` only th and km), OcrModelsTest (Paddle th, Tesseract ru), emulator (Georgian's dialog) | ok |
 | all (th, km, ar) | In an even split of a word's box, a mark drawn above or below its letter (Mn, Me) after the first character shares the letter's slot (ห้องสมุด: 8 characters in 6 slots; the harakat of كِتَابٌ, split from the right edge), and so does a Khmer consonant after the coeng ្, written below the one before it; spacing marks (Mc) keep their own | `ocr/TextLayout.kt` `splitBox` | TextLayoutTest `marks above and below their letter take no share…`, `a khmer consonant below another takes no share either`, `harakat take no share of a right-to-left word box` | TextLayoutTest (text without marks splits evenly) | ok |
 | th | The page names the phone's Noto Serif Thai by `local()` (declared for `und-Thai`), the sans by fallback; Sarabun, Noto Sans Thai Looped (looped), Kanit and Prompt (loopless) download for Thai only | `ThaiSupport.kt` `systemFonts`, `fontSubsets`; `overlay/src/main/assets/fonts/catalog.json` | FontCatalogFileTest `thai has looped and loopless fonts…`, I: SystemFontFilesTest `findsTheThaiSerif…` | FontCatalogFileTest (no Latin font offered for Thai) | ok |
 | km | The page names the phone's Noto Serif Khmer by `local()` (weights 400 and 700 load on the emulator), the sans by fallback (Android 15's Noto Sans Khmer has a `wght` axis of 26-190, declared at 400, see the next row); Kantumruy Pro (sans) and Hanuman (serif) download for Khmer only | `KhmerSupport.kt` `systemFonts`, `fontSubsets`; `overlay/src/main/assets/fonts/catalog.json` | FontCatalogFileTest `khmer has a sans-serif and a serif…`, I: SystemFontFilesTest `findsTheKhmerSerifThroughItsScript` | FontCatalogFileTest (offered for Khmer only) | ok |
@@ -597,7 +598,43 @@ counted on 2026-10-20 for every language's Lingua Libre item (`LL-Q…`) and Wik
 both sources; the fewest are Khmer's (13 and 9) and Croatian's own Lingua Libre item (1, besides the 93 of the Serbian
 one it searches as well). So no source is left out, and the order stays.
 
-Look-alike rules and app text (owner, 2026-10-20, plan request 69): every built language's rule that fixes or matches letters an engine misreads was checked for the text it reads. The one-for-one fixes in `ocrWord` and `ocrLines` were OCR only already. The Czech capital I of "n. I." moved from `endsSentence` to `ocrLines`, as nobody types it. Arabic text with the Persian ک ی is matched in any text, as Persian keyboards and fonts give them and Arabic never writes them. The other rules that reach app text stay for any text, since people type or paste text that way: Japanese NFKC, radicals and respellings, Chinese radicals, Arabic and Persian spellings, Khmer, Thai, Indic, Armenian, Georgian and Greek spellings, stress marks, ё/е, apostrophes, Serbo-Croatian Latin without diacritics, Vietnamese tone-mark placement, Latin diacritics.
+Look-alike rules and app text (owner, 2026-10-20, plan request 69): every built language's rule that fixes or matches letters an engine misreads was checked for the text it reads. The one-for-one fixes in `ocrWord` and `ocrLines` were OCR only already. The Czech capital I of "n. I." moved from `endsSentence` to `ocrLines`, as nobody types it. Arabic text with the Persian ک ی is matched in any text, as Persian keyboards and fonts give them and Arabic never writes them. The other rules that reach app text stay for any text, since people type or paste text that way: Japanese NFKC, radicals and respellings, Chinese radicals, Arabic and Persian spellings, Khmer, Thai, Indic, Armenian, Georgian and Greek spellings, stress marks, ё/е, apostrophes, Serbo-Croatian Latin without diacritics, Vietnamese tone-mark placement, Latin diacritics. The data check of
+2026-10-22 (next section) found one exception: Thai sara am written as ํ + า is a Tesseract misreading that typed
+text almost never has, so its reading belongs to OCR text only (group 4c plan, question 15, open).
+
+## Thai and Khmer rules checked on data
+
+Each Thai and Khmer rule's premise counted on text with known forms on 2026-10-22 (group 4c plan, "Measurements",
+which has the table of numbers): the Thai and Khmer sides of the Asian Language Treebank (ALT: 20,106 lines each, one
+translated Wikinews sentence per line, NICT, CC BY-NC-SA), ORCHID (Thai, from vistec-AI/crfcut), the headwords,
+glosses and examples of wty th-en and km-en, and the output of every engine on the OCR comparison screens. The
+corpora stayed in the session's scratch folder.
+
+- Thai sara am: counted as ํ + า (also with a tone mark between them) against ำ, per source. Typed text has the split
+  form 3 times in 17,774 (ALT) and 0 in 23,934 (ORCHID); Tesseract `tha` gives it for every ำ (fast 6 of 6, best 8
+  of 8, at times ก | ํ | า across its cluster words, so `ocrWord` cannot fix it one for one); Paddle and cloud never.
+- Thai tone mark or thanthakhat before the vowel above: ALT 10 in 68,519, ORCHID 10 in 64,378, wty 0; no engine.
+- Thai ๆ: a space before it 442 times in ALT against 1,448 joined (ORCHID 68 and 3,355); wty headwords 43 of 44
+  spaced. Both forms are common, so the space is tried both ways for any text.
+- Thai period: 16 of the 20,106 ALT lines end with a period after a Thai letter; 1,095 such periods stand inside
+  lines (abbreviations, numbers).
+- Khmer zero-width spaces: 2,730 ALT lines carry 15,276; wty and the engines none.
+- Khmer subscript TA and DA: ALT running text has TA 18,456 times and DA 1,827; 22 phrases are written both ways.
+  Tesseract `khm` wrote DA where the ground truth has TA 4-6 times (truth: TA 64, DA 0).
+- Khmer sentence ends: 16,675 ALT lines end with ។ and 3,355 with a quote; ។ stands inside a line 3,360 times, mostly
+  before a closing quote; ។ល។ (etc.) twice; spaces inside lines 78,934, which end no sentence.
+- Khmer form-of rows: km-en's tags are abstract-noun (2,795), alternative (795) and alt-of (310); no classifier rows.
+- Shorter matches (only those that end at an ICU word boundary): every match from every start of the ALT Khmer
+  sentences, judged against the ALT segmentation with its bracketed compounds (ICU4J 66.1, wty km-en and km-ru
+  headwords, TA read as DA). A match is real when it is a gold word or compound or a dictionary phrase made of whole
+  gold words, otherwise a fragment. The real ones hidden lie under a longer gold word or compound (67%), under a set
+  phrase of whole words (32%: នៅក្នុង, គឺជា, មិនបាន, ធ្វើឲ្យ) or under a wrong longer word (1%, 792: ការ under ការបរ,
+  ខែ under ខែក, ពី under ពីរ). Most often hidden (behind a longer fragment): នៅ, មាន, ការ, ធ្វើ, មិន. ORCHID has
+  no compound units, so its Thai shares count words under compounds as lost.
+- Space gap: the gaps between Tesseract's words on the comparison screens against the ground truth's spaces, per
+  share of the line height (Thai 0.4: 6 of 15 spaces missed and none added on the clean screens; Khmer 0.15: 5 of 19
+  missed and 1 added on the hard ones). An added space breaks a word, a missed one only lengthens the text looked up,
+  so the gap stays where the added ones are fewest.
 
 ## Device checks
 
@@ -605,5 +642,5 @@ Look-alike rules and app text (owner, 2026-10-20, plan request 69): every built 
 ANK12 (`{sentence}` edge cases: ３．１４, LTD. ŞTİ., German text with English quotes), ANK13 (sentence furigana in a
 language looked up by words), ANK14 (furigana markers by language, their hints, Russian stress in the text), LK30
 (a word hyphenated at a line end), ANK12 extended (Plan B., ok., English quotes in German), POP24 (the Turkish chip
-initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali), LK44 (Georgian), LK45 (Armenian), LK46 (Thai), LK47 (Khmer), LK48 (Arabic), LK49 (Persian, with its spoken endings), LK50 (Hebrew), LK51 (Kazakh), LK52 (the parts of a hyphenated word), LK36 and LK50 (no
+initial), LK37 (Ukrainian), LK38 (Belarusian), LK39 (Greek), LK42 (Hindi), LK43 (Bengali), LK44 (Georgian), LK45 (Armenian), LK46 (Thai), LK47 (Khmer), LNG17 (the busy-screen line of Thai and Khmer), LK48 (Arabic), LK49 (Persian, with its spoken endings), LK50 (Hebrew), LK51 (Kazakh), LK52 (the parts of a hyphenated word), LK36 and LK50 (no
 form tags beside a plain word), POP27 (Persian transcription order).

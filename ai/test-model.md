@@ -350,6 +350,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG14 | Character dictionaries ticked on the download screen: KANJIDIC for Japanese (in each chosen gloss language that has one), CC-CEDICT Hanzi for Chinese, Unihan Hanja for Korean; each can be unticked | F | M | 2026-10-18 |
 | LNG15 | Kazakh setup: the download screen offers Wiktionary in six gloss languages (English, Russian, French, Korean, Polish, Chinese), the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kaz unticked; the flag is Kazakhstan's and the bubble shows Қ | F | U CatalogFileTest, M | 2026-10-20 |
 | LNG16 | Kyrgyz setup: the download screen offers Wiktionary, the transcriptions, the Leipzig list and PaddleOCR's Cyrillic model ticked, Tesseract kir fast and accurate unticked; the flag is Kyrgyzstan's and the bubble shows Ң | F | U CatalogFileTest, M | 2026-10-20 |
+| LNG17 | Thai and Khmer: under each Tesseract model, in Bubble → On-device model and on the download screen, "Often misreads text on busy screens; cloud recognition is more accurate."; Georgian's Tesseract models have no such line | O | U OcrModelsTest, LanguageRulesIsolationTest, M | 2026-10-22 |
 
 ### SET: settings, backup, appearance
 
@@ -411,6 +412,26 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `languages/km-answers` (on `69da4bbf` with the busy-screen line before its commit), Pixel_10_Pro (API 37)
+
+Scope: every engine of Thai and Khmer on the OCR comparison screens, with the harness of `languages/ocr-compare`
+(`OcrCompareTest` with the models streamed into its files folder, `ai/notes/build-environment.md`); LNG17. The
+harness needed more of /data than the 0.4 GB left, so `sys_storage_threshold_percentage` (1) and
+`sys_storage_threshold_max_bytes` (100 MB) were lowered for the run and deleted afterwards; the harness was
+uninstalled. The x86_64-only debug build was installed over the app with its data kept.
+
+Results: passed, no fixes. First check: LNG17 (to O).
+
+- Engines: the numbers are in the group 4c plan, "Measurements"; the errors match the run of 2026-10-16/17 within
+  0.2 points. Paddle's Thai model ran on ONNX Runtime (the harness APK has no MNN library).
+- Bubble → On-device model: Thai and Khmer show the line under Tesseract fast (after "Recommended · Installed ·
+  size") and under Tesseract accurate (after the size); Georgian shows none.
+- Download screen: Khmer turned off with its files deleted (owner's permission for checked languages, group 4c
+  question 13) and on again: the line under both Tesseract models, after the title and before the size and license.
+  Downloaded again (2.5 MB), Khmer back to Ready.
+- Emulator left with Kyrgyz active as before, Thai and Khmer turned on (Khmer now listed last), /data 333 MB free.
+  Powered off.
 
 ### 2026-10-20, `languages/kk` (PanLex conversions, on `8c869164` with the converter before its commit), Pixel_10_Pro (API 37)
 

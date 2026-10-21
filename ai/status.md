@@ -7,7 +7,9 @@ block at a time, each checked and merged into `languages/main` by the coordinati
 block verified on the emulator and by tests. Group 4c (question 9's line under the Thai and Khmer Tesseract models, with
 the measurements first) resumed after an API error stopped it at 00:23; then the fixes for questions 67 and 71 (download
 stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
-through `.worktrees/emulator.lock` in the root checkout.
+through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merged (`languages/km-answers`, 814490c6;
+build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
+same line in other languages) wait for the morning.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
@@ -165,9 +167,17 @@ starts inside the aimed word when nothing found reaches the aimed letter (overni
 The owner answered questions 10-14 on 2026-10-20. 10-12 were measured on text with known boundaries (ORCHID, the
 Asian Language Treebank's Thai and Khmer): the implemented variants had the fewest errors and stay. 14: Commons has
 Lingua Libre and Wiktionary recordings for every language (Khmer 13 and 9), so no source is skipped. 13: sessions may
-delete, on the emulator, the dictionaries of languages already checked. Question 9 is still to be asked. The
+delete, on the emulator, the dictionaries of languages already checked. The
 emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
 (`notes/build-environment.md`).
+
+2026-10-22, on `languages/km-answers`: question 9 is built (under the Tesseract models of Thai and Khmer, in the
+model dialog and on the download screen: "Often misreads text on busy screens; cloud recognition is more accurate.",
+all 14 locales; LNG17 passed on the emulator). Every engine of both languages was measured again on the emulator
+(the errors match 2026-10-16/17) and each rule's premise counted on ALT, ORCHID, wty and the engines' output (plan,
+"Measurements"): every rule holds except that Thai ํา is a Tesseract misreading nobody types (question 15: OCR-only
+once groups 5b and 5c bring the word's source to the lookup). Question 16: the same line in the other languages where
+Tesseract is the main on-device model, as Tesseract misreads busy screens in every language.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
