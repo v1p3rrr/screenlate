@@ -168,7 +168,31 @@ Requests 1–19 are in the previous plan. New ones:
 72. (2026-10-21) Build order of the researched blocks: Thai and Khmer (group 4c), then group 4e's follow-ups (Kazakh and
     Kyrgyz, questions 14-18), then group 5's blocks 5a-5e, then group 6's blocks 6a-6d, one session at a time; each
     block is merged into languages/main before the next starts (owner; placing group 4e's follow-ups right after Thai
-    and Khmer is the agent's reading of "4c, then 5, then 6").
+    and Khmer is the agent's reading of "4c, then 5, then 6"). Each block's session first measures every engine and
+    model of its languages on the emulator and checks its rules' hypotheses on data (the owner's instruction for group 6
+    on 2026-10-21, applied to every block by the agent).
+73. (2026-10-22) Upstream reports filed at wty from the owner's account. #399
+    (https://github.com/yomidevs/wiktionary-to-yomitan/issues/399): `handle_alt_of_sense` drops alt-of senses tagged
+    abbreviation, so contractions and apocopic forms have no entry (German im, zum, zur, vom, beim; Italian un, del,
+    della, nel; Portuguese do, da, na, ao; Spanish muy, tu, buen; Catalan del, al, pel; Galician moi), and writes the
+    other alt-of rows the wrong way (bé → ben). In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of
+    the Italian, 7.8% of the Portuguese and 0.7% of the Spanish. #400: add Tatar. The owner waits for #399 until
+    2026-11-05; then the agent checks the latest wty release (ca-en del, de-en im, it-en del) and, if it is not fixed,
+    asks about an own supplement built from kaikki (group 6 plan, question 5).
+74. (2026-10-22) Completeness check of every session that built or researched something (owner). All their commits are
+    in languages/main (5c59894f); no numbered owner question blocks them apart from group 6's 10 and 21 and group 4e's
+    14-18 (follow-ups after Thai and Khmer). `lintDebug` had never been run on the group branches; it passes on
+    languages/main 5c59894f. Left open: (a) emulator checks not run yet, for each block's build or the next full
+    regression: the audit's Czech "l." and Arabic ک ی fix (9ec4c279; two N cases to add to `test-model.md` after group
+    4c's merge), ANK14's Chinese part, LK40, DIC20's setup and Home paths, DIC9's interrupted reset, the "Not checked"
+    list of the 2026-10-18 run, Tesseract best for ara and heb, Paddle's right-to-left reading order (no model yet), the
+    PanLex kk-en import, the 13 locales of group 4e's strings; (b) phone runs: the memory trim, pre-connect timings,
+    page recreation, the draft-lead rule behind question 36 (a), the diagnostics build's export; (c) waiting on hosting
+    or the owner's uploads: PanLex (its license rechecked in group 4e's follow-up: CC BY-NC-SA 4.0 on the live site, CC0
+    on the mirror), ESPDIC, WikDict, MonWN, the Paddle Devanagari and Arabic models; (d) the 5c plan's 17 "technical
+    choices of the agent" were never shown to the owner: the 5c build session presents them before writing code; (e)
+    research files outside git: 5b's and 5e's OCR harness patches and group 6's screens are kept in the shared notes;
+    (f) choices from the emulator-check reports are questions 67-73, the archive's are 74-76.
 
 ## Decisions
 
@@ -327,7 +351,7 @@ Moved from `2026-10-09-more-languages.md` on 2026-10-10 (that table is frozen); 
 | Partial downloads | A download's archive is kept in the app's own storage (`no_backup`), not in the cache the system clears when storage runs low (owner, 2026-10-19) |
 | Waiting for a network | While no network is up, a waiting download's card says "Waiting for a network: …" (ru "Ждёт сеть: …"), a shared waiting card has the line "Waiting for a network" under its title (owner, 2026-10-19); the catalog card's stage and a waiting retry's card (under its retry text) say the same (a plain extension) |
 | Furigana markers | Yomitan's names stay (`{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}`); offered only for Japanese, Chinese and Russian, whose readings go over or into the words (a field that already has them keeps getting them in any language); Chinese and Russian show what they give as a second line in the + menu; Russian puts the stress into the text, in a sentence only on words in their dictionary form (owner, 2026-10-19, the language rules review; `notes/language-rules.md`) |
-| Group 5 | Every living language Yomitan describes that no group has, plus Latin and Esperanto (not Toki Pona, Ancient Greek, Old Irish, Manx, Cornish, Hawaiian), and the large languages Yomitan lacks that have Wiktionary dictionaries (sk, sl, lt, mk, az, uz, ur, ta, te, mr, sw). Six blocks by what the app needs: 5a Latin (ro, sv, da, no, sq, eu, mt, eo, la; sk, sl, lt, sw), 5b Celtic with initial mutations (cy, ga, gd, br), 5c long suffix chains (fi, et, hu; az, uz), 5d Cyrillic (bg, mn; mk), 5e other scripts (yue, kn; ta, te, mr), 5f right to left once group 4d is done (yi, arz, aii; ur). A block's research may move a language to another block (owner, 2026-10-19; the agent placed the languages Yomitan lacks, after the semicolons) |
+| Group 5 | Every living language Yomitan describes that no group has, plus Latin and Esperanto (not Toki Pona, Ancient Greek, Old Irish, Manx, Cornish, Hawaiian), and the large languages Yomitan lacks that have Wiktionary dictionaries (sk, sl, lt, mk, az, uz, ur, ta, te, mr, sw). Six blocks by what the app needs: 5a Latin (ro, sv, da, no, sq, eo, la; sk, sl, lt, sw; eu and mt researched, not built: 5a question 4), 5b Celtic with initial mutations (cy, ga, gd, br), 5c long suffix chains (fi, et, hu; az, uz), 5d Cyrillic (bg, mn; mk), 5e other scripts (yue, kn; ta, te, mr), 5f right to left once group 4d is done (yi, arz, aii; ur). A block's research may move a language to another block (owner, 2026-10-19; the agent placed the languages Yomitan lacks, after the semicolons) |
 | Group 5 research | Each block is researched in its own session, research and the owner's questions first, as for group 4; 5a-5e start at once, 5f after group 4d's research (owner, 2026-10-19) |
 | Group 5 release | Provisionally after the big release, block by block; decided when group 4 is done (owner, 2026-10-19) |
 
@@ -639,6 +663,42 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
 66. Answered: (b), "Serbian is mostly Cyrillic". ML Kit (built in, Latin) in Serbian's model list: now the Latin
     choice there is PaddleOCR v6 (21 MB) or nothing; ML Kit is listed for Croatian. (a, recommended) list ML Kit for
     Serbian too; (b) leave it out.
+67. Open (2026-10-22): A download that WorkManager stops for a lost network (stop reason 7) at the moment of its third
+    failure is run again by WorkManager later: a task the log called stopped resumed by itself (emulator, 2026-10-19).
+    (a, recommended) Leave it and document it: the download finishes, only the log misleads. (b) Record the stop before
+    the cancellation check, so the stopped task stays stopped.
+68. Open (2026-10-22): On a slow link the second of two parallel downloads gets almost nothing until the first ends. (a,
+    recommended) Leave it. (b) One download at a time on a metered or slow network.
+69. Open (2026-10-22): Opening the connection on a touch still leaves the handshake visible when it takes longer than
+    the time from the touch to the request (1.5 s on the emulator's mobile network). (a, recommended) Leave it and
+    measure on the phone with the diagnostics build. (b) Also open the connection when the bubble leaves the dock or the
+    overlay starts.
+70. Open (2026-10-22): The accessibility disclosure does not mention the header-only request that opens the connection
+    on a touch (it carries no screenshot or text). (a, recommended) Leave it. (b) Add a sentence.
+71. Open (2026-10-22): Home's audio-failure card names the first turned-on language whose sources include the failing
+    source: it said Korean for failures in Vietnamese, English and German lookups. (a, recommended) Name the language of
+    the lookup that failed. (b) Leave it.
+72. Open (2026-10-22): Findings of 2026-10-18 with no fix chosen; which to fix: (1) PaddleOCR gives one line per
+    paragraph, and the v5 detector splits Russian lines into overlapping boxes (38 paragraphs on the Russian page); (2)
+    the download screen shows the download size, while the installed size is larger (Chinese: 42 MB shown, about 69 MB
+    installed); (3) upstream data: FreeDict de-ru's very long sense labels, it-ru's "( approfondimento)", OpenRussian's
+    "gapirish", Wiktionary vi-en's "Central" tag; (4) the dictionary button on a duplicate opened an empty AnkiDroid
+    browser (AnkiDroid's side).
+73. Open (2026-10-22): The agent's own values in the four features built on 2026-10-19: PaddleOCR memory trimmed 10 s
+    after the last recognition; the popup page created 150 ms after the capture; the connection opened by a HEAD request
+    on any touch, at most every 30 s, with a 3 s wait; three new log lines; one sentence in docs/usage. (a, recommended)
+    Keep them. (b) Change some (the owner says which).
+74. Open (2026-10-22): The owner's archive keeps copies of the hi, bn, ka, hy, th, ar, kk and ky files under future/,
+    made before they were in the catalog. Once their catalog copies pass the checks: (a, recommended) delete the future/
+    duplicates (about 56 MiB plus 16 tessdata files); (b) keep them, marked as superseded.
+75. Open (2026-10-22): Files of the researched blocks that are not in the catalog yet (5a-5e and group 6: their
+    Wiktionary pairs; 5e's converted Tamil and Telugu Paddle models and tessdata tam, tel, kan, mar, now only in a
+    session scratchpad). (a, recommended) The archive copies them when each block puts them in the catalog (the normal
+    refresh). (b) Pre-copy them all under future/ now. (c) Not at all.
+76. Open (2026-10-22): The archive lacks 25 catalog entries added after 2026-10-19 (the km, fa and he Wiktionary pairs
+    and transcriptions, wordfreq fa and he, tessdata khm and heb, the Thai, Kazakh and Kyrgyz frequency corpora; 65 MiB,
+    all with pinned hashes). (a, recommended) Fix the script's future list (so the hi-ky files are not fetched twice)
+    and fetch them now. (b) Later, with the next refresh.
 
 ## Branches and workflow
 
@@ -1073,8 +1133,9 @@ Rows "Group 5", "Group 5 research", "Group 5 release". Each block keeps its rese
 and progress in a plan file of its own (`2026-10-19-group-5a.md` and so on; question numbers are that file's own),
 so the block sessions do not edit the same files; `notes/languages.md` gets one line pointing to it.
 
-- 5a Latin: Romanian, Swedish, Danish, Norwegian, Albanian, Basque, Maltese, Esperanto, Latin; Slovak, Slovenian,
-  Lithuanian, Swahili. Mostly as group 4a; Swedish and Danish compounds as German and Dutch.
+- 5a Latin: Romanian, Swedish, Danish, Norwegian, Albanian, Esperanto, Latin; Slovak, Slovenian, Lithuanian, Swahili
+  (Basque and Maltese were researched but are not built: 5a question 4). Mostly as group 4a; Swedish and Danish
+  compounds as German and Dutch.
 - 5b Celtic: Welsh, Irish, Scottish Gaelic, Breton. A word's first letter changes with the grammar (Irish bhean from
   bean), so the lookup needs a rule for initial mutations.
 - 5c Long suffix chains: Finnish, Estonian, Hungarian; Azerbaijani, Uzbek. Endings stacked on a stem, compounds in the
@@ -1512,3 +1573,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-21: request 71 (owner): when built, the own log file goes to both main and languages/main.
 - 2026-10-21: request 72 (owner): the build order of the researched blocks, one session at a time.
   `experiment/languages` deleted after its measurement tools and harness moved to `scripts/yomitan-language/` (owner).
+- 2026-10-22: request 72 says every block measures its engines first; requests 73 (wty issues #399 and #400, waiting
+  for #399 until 2026-11-05) and 74 (the completeness check of every session); questions 67-76 from the reports;
+  Basque and Maltese marked as not built in row "Group 5" and Stage F (5a question 4).
