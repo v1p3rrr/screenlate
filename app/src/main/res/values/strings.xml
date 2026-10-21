@@ -784,6 +784,7 @@
     <string name="ocr_models_mlkit_info">Comes with the app; nothing to download. Reads Chinese, Japanese, Korean, Devanagari, Bengali and Latin-script text.</string>
     <string name="ocr_models_recommended">Recommended</string>
     <string name="ocr_models_more_accurate">More accurate</string>
+    <string name="ocr_models_busy_screens">Often misreads text on busy screens; cloud recognition is more accurate.</string>
     <string name="ocr_models_installed_size">Installed · %1$s</string>
     <string name="ocr_models_in_use">Used by: %1$s</string>
     <string name="ocr_models_delete_title">Delete the model?</string>

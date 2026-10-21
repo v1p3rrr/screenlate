@@ -1,10 +1,12 @@
 package com.vpr.screenlate.languages
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.ocr.model.LanguageModel
 import com.vpr.screenlate.core.ocr.model.LanguageModels
 import com.vpr.screenlate.core.ocr.model.OcrModelSpec
 import com.vpr.screenlate.core.ocr.model.OcrModelStore
+import com.vpr.screenlate.core.ocr.tesseract.TesseractOcrEngine
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.imports.ModelInstaller
@@ -50,6 +52,10 @@ internal fun CatalogEntry.modelSpec(): OcrModelSpec =
         sha256 = requireNotNull(sha256),
         file = file,
     )
+
+/** Whether the model lists say under this model that it misreads [language] on busy screens. */
+internal fun CatalogEntry.misreadsBusyScreens(language: Language): Boolean =
+    engine == TesseractOcrEngine.ID && language.support.tesseractMisreadsBusyScreens
 
 /** Whether [store] holds this model entry's version. */
 internal fun CatalogEntry.isInstalledIn(store: OcrModelStore): Boolean {

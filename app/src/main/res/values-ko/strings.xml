@@ -773,6 +773,7 @@
     <string name="ocr_models_mlkit_info">앱에 포함되어 있어 다운로드할 필요가 없습니다. 중국어, 일본어, 한국어, 데바나가리 문자, 벵골 문자와 라틴 문자 텍스트를 인식합니다.</string>
     <string name="ocr_models_recommended">권장</string>
     <string name="ocr_models_more_accurate">더 정확함</string>
+    <string name="ocr_models_busy_screens">복잡한 화면에서는 글자를 자주 잘못 인식합니다. 클라우드 인식이 더 정확합니다.</string>
     <string name="ocr_models_installed_size">설치됨 · %1$s</string>
     <string name="ocr_models_in_use">사용 중: %1$s</string>
     <string name="ocr_models_delete_title">모델을 삭제할까요?</string>

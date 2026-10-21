@@ -238,6 +238,7 @@ private fun CategoryCard(
                 main = model?.let { it == state.mainModel },
                 onMain = { main -> model?.let { onMain(it, main) } },
                 moreAccurate = category.builtIn && item.entry.recommended,
+                busyScreens = item.entry.misreadsBusyScreens(state.language),
             )
         }
         when {
@@ -275,7 +276,8 @@ private fun MlKitRow(main: Boolean, switchable: Boolean, onMain: (Boolean) -> Un
 
 /**
  * [main] is set on a ticked on-device model: whether it is the language's main model, with a switch for it.
- * [moreAccurate] marks a model the comparison found more accurate than ML Kit.
+ * [moreAccurate] marks a model the comparison found more accurate than ML Kit; [busyScreens] says that the model
+ * misreads the language on busy screens.
  */
 @Composable
 private fun SetupItemRow(
@@ -286,6 +288,7 @@ private fun SetupItemRow(
     main: Boolean? = null,
     onMain: (Boolean) -> Unit = {},
     moreAccurate: Boolean = false,
+    busyScreens: Boolean = false,
 ) {
     val entry = item.entry
     val changeable = !item.installed && !radio
@@ -305,6 +308,7 @@ private fun SetupItemRow(
             if (moreAccurate) {
                 Text(stringResource(R.string.ocr_models_more_accurate), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
             }
+            if (busyScreens) Text(stringResource(R.string.ocr_models_busy_screens), style = MaterialTheme.typography.bodySmall)
             val size = if (item.installed) {
                 stringResource(R.string.dictionaries_installed_mark)
             } else {
