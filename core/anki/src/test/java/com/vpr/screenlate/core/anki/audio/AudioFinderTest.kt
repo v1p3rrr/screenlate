@@ -476,6 +476,32 @@ class AudioFinderTest {
     }
 
     @Test
+    fun `a source shared by languages fails for the language of the lookup`() = runBlocking<Unit> {
+        val shared = AudioSource(AudioSourceType.URL, "https://audio.example/word?term={term}")
+        listOf(Language.KOREAN, Language.VIETNAMESE, Language.ENGLISH).forEach { language ->
+            settings.update(language) { it.copy(sources = listOf(shared)) }
+        }
+        routes["/word"] = { MockResponse.Builder().code(503).build() }
+        assertThat(finder.find("nước", "", Language.VIETNAMESE)).isNull()
+        assertThat(finder.find("water", "", Language.ENGLISH)).isNull()
+        assertThat(finder.recentFailures().map { it.language }).containsExactly(Language.VIETNAMESE, Language.ENGLISH)
+        assertThat(finder.recentFailures().map { it.source }.distinct()).containsExactly(shared)
+
+        // A success clears the failure of its own language only.
+        routes["/word"] = { audio() }
+        assertThat(finder.find("water", "", Language.ENGLISH)).isNotNull()
+        assertThat(finder.recentFailures().map { it.language }).containsExactly(Language.VIETNAMESE)
+
+        // A clip chosen from a list fails for the language of the lookup that listed it.
+        val candidate = finder.candidates("nhà", "", Language.VIETNAMESE).single()
+        assertThat(candidate.language).isEqualTo(Language.VIETNAMESE)
+        finder.clearFailures()
+        routes["/word"] = { MockResponse.Builder().code(500).build() }
+        assertThat(finder.download(candidate, "nhà", "")).isNull()
+        assertThat(finder.recentFailures().single().language).isEqualTo(Language.VIETNAMESE)
+    }
+
+    @Test
     fun `text to speech is played but never downloaded`() = runBlocking<Unit> {
         sources(AudioSource(AudioSourceType.TEXT_TO_SPEECH), AudioSource(AudioSourceType.URL, "https://audio.example/w?t={term}"))
         routes["/w"] = { audio() }

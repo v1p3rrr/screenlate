@@ -52,6 +52,7 @@ data class AudioClip(val file: File, val url: String, val extension: String)
  *
  * @property url empty for text-to-speech, which has nothing to download.
  * @property name the speaker or file name when the source has one, otherwise empty.
+ * @property language the language of the lookup that found it.
  * @property rank how close the recording's title is to the word, in a language whose titles may add vowel marks
  *   (`LanguageSupport.recordingMarks`): 0 the word itself, 1 its vowelled reading, 2 the same letters with other marks.
  *   Clips of all sources are ordered by it first; elsewhere it is 0.
@@ -62,6 +63,7 @@ data class AudioCandidate(
     val source: AudioSource,
     val url: String,
     val name: String,
+    val language: Language,
     val rank: Int = 0,
 ) {
     val isSpeech: Boolean get() = source.type == AudioSourceType.TEXT_TO_SPEECH
@@ -81,8 +83,11 @@ sealed interface Pronunciation {
     }
 }
 
-/** A source that failed recently for another reason than having no audio for a word. */
-data class AudioSourceFailure(val source: AudioSource, val error: AudioError)
+/**
+ * A source that failed recently for another reason than having no audio for a word, in a lookup in [language]. A source
+ * several languages share fails for each language on its own.
+ */
+data class AudioSourceFailure(val source: AudioSource, val error: AudioError, val language: Language)
 
 /**
  * Finds word audio in the configured sources. All sources are asked at once, each for at most [sourceTimeoutMs], and
@@ -111,7 +116,7 @@ class AudioFinder internal constructor(
     private val httpClient = client.newBuilder().connectionPool(ConnectionPool(0, 1, TimeUnit.SECONDS)).build()
     private val clipCache = mutableMapOf<ClipKey, Kept<AudioClip?>>()
     private val downloads = ConcurrentHashMap<String, Kept<AudioClip>>()
-    private val failures = ConcurrentHashMap<AudioSource, AudioSourceFailure>()
+    private val failures = ConcurrentHashMap<Pair<AudioSource, Language>, AudioSourceFailure>()
     private val json = Json { ignoreUnknownKeys = true }
 
     /** The first clip of the sources in priority order, for notes; text-to-speech is skipped. */
@@ -196,7 +201,7 @@ class AudioFinder internal constructor(
     suspend fun download(candidate: AudioCandidate, term: String, reading: String): AudioClip? {
         if (candidate.isSpeech) return null
         return withContext(Dispatchers.IO) {
-            attempt(candidate.source) { downloadChecked(candidate, term, reading, Deadline()) }.getOrNull()
+            attempt(candidate.source, candidate.language) { downloadChecked(candidate, term, reading, Deadline()) }.getOrNull()
         }
     }
 
@@ -208,14 +213,17 @@ class AudioFinder internal constructor(
         withContext(Dispatchers.IO) {
             val deadline = Deadline()
             val regions = AudioRegion.ordered(settings.current(language).regions, language.support.audioRegions)
-            attempt(source) {
+            attempt(source, language) {
                 val candidates = candidatesOf(0, source, term, reading, language, regions, deadline)
                 if (source.type != AudioSourceType.URL) candidates
                 else candidates.filter { downloadChecked(it, term, reading, deadline) != null }
-            }.onSuccess { failures.remove(source) }
+            }.onSuccess { failures.remove(source to language) }
         }
 
-    /** Sources that failed since the last [clearFailures], e.g. a local audio server that is not running. */
+    /**
+     * Sources that failed since the last [clearFailures], e.g. a local audio server that is not running, once per
+     * language whose lookups they failed in.
+     */
     fun recentFailures(): List<AudioSourceFailure> = failures.values.toList()
 
     fun clearFailures() = failures.clear()
@@ -230,9 +238,9 @@ class AudioFinder internal constructor(
         regions: List<AudioRegion>,
     ): Result<Ranked?> {
         val deadline = Deadline()
-        return attempt(source) {
+        return attempt(source, language) {
             val candidates = candidatesOf(index, source, term, reading, language, regions, deadline)
-            failures.remove(source)
+            failures.remove(source to language)
             candidates.firstNotNullOfOrNull { candidate ->
                 downloadChecked(candidate, term, reading, deadline)?.let { Ranked(it, candidate.rank) }
             }
@@ -246,29 +254,29 @@ class AudioFinder internal constructor(
         reading: String,
         language: Language,
         regions: List<AudioRegion>,
-    ): List<AudioCandidate>? = attempt(source) { candidatesOf(index, source, term, reading, language, regions, Deadline()) }
-        .onSuccess { failures.remove(source) }
+    ): List<AudioCandidate>? = attempt(source, language) { candidatesOf(index, source, term, reading, language, regions, Deadline()) }
+        .onSuccess { failures.remove(source to language) }
         .getOrNull()
 
     /**
-     * Runs requests of [source] and notes a failure. A request cancelled because its answer is no longer needed fails
-     * too, which is not the source's fault: the cancellation is passed on instead.
+     * Runs requests of [source] for a lookup in [language] and notes a failure. A request cancelled because its answer
+     * is no longer needed fails too, which is not the source's fault: the cancellation is passed on instead.
      */
-    private suspend fun <T> attempt(source: AudioSource, block: suspend () -> T): Result<T> = try {
+    private suspend fun <T> attempt(source: AudioSource, language: Language, block: suspend () -> T): Result<T> = try {
         Result.success(block())
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
         currentCoroutineContext().ensureActive()
-        note(source, e)
+        note(source, language, e)
         Result.failure(e)
     }
 
-    private fun note(source: AudioSource, error: Throwable) {
+    private fun note(source: AudioSource, language: Language, error: Throwable) {
         Log.i(TAG, "Audio source ${source.type} failed", error.redacted())
         // Without a network every source fails; that is not a setup problem.
         if (error is UnknownHostException) return
-        failures[source] = AudioSourceFailure(source, AudioError.of(error))
+        failures[source to language] = AudioSourceFailure(source, AudioError.of(error), language)
     }
 
     private suspend fun candidatesOf(
@@ -281,7 +289,7 @@ class AudioFinder internal constructor(
         deadline: Deadline,
     ): List<AudioCandidate> {
         fun candidates(found: List<AudioPages.Found>) =
-            found.mapIndexed { n, it -> AudioCandidate("$index:$n", index, source, it.url, it.name, it.rank) }
+            found.mapIndexed { n, it -> AudioCandidate("$index:$n", index, source, it.url, it.name, language, it.rank) }
         val marks = language.support.recordingMarks
         return when (source.type) {
             AudioSourceType.JAPANESE_POD_101 -> {
@@ -291,7 +299,7 @@ class AudioFinder internal constructor(
                     append(encode(kana))
                     if (term != kana) append("&kanji=").append(encode(term))
                 }
-                listOf(AudioCandidate("$index:0", index, source, url, ""))
+                listOf(AudioCandidate("$index:0", index, source, url, "", language))
             }
             AudioSourceType.LANGUAGE_POD_101 -> {
                 val form = FormBody.Builder()
@@ -325,9 +333,9 @@ class AudioFinder internal constructor(
                 }
                 candidates(files.sortedBy { it.rank })
             }
-            AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", ""))
+            AudioSourceType.TEXT_TO_SPEECH -> listOf(AudioCandidate("$index:0", index, source, "", "", language))
             AudioSourceType.URL ->
-                listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading, language), ""))
+                listOf(AudioCandidate("$index:0", index, source, expand(source.url, term, reading, language), "", language))
             AudioSourceType.CUSTOM_JSON -> {
                 val listUrl = expand(source.url, term, reading, language).toHttpUrl()
                 val body = fetch(request(listUrl).build(), deadline)
@@ -345,7 +353,7 @@ class AudioFinder internal constructor(
                         url ?: return@mapNotNull null
                         (listUrl.resolve(url)?.let { fromListHost(it, listUrl) }?.toString() ?: url) to name
                     }
-                    .mapIndexed { n, (url, name) -> AudioCandidate("$index:$n", index, source, url, name) }
+                    .mapIndexed { n, (url, name) -> AudioCandidate("$index:$n", index, source, url, name, language) }
             }
         }
     }
