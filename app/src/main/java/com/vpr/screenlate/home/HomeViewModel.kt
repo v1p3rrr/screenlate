@@ -78,20 +78,17 @@ internal fun currentFailures(failures: List<AudioSourceFailure>, sources: List<A
     failures.filter { it.source in sources }.sortedBy { sources.indexOf(it.source) }
 
 /**
- * One card of [currentFailures] per language, [sources] in the order the cards come (the active language first); a
- * source several languages share goes to the first. The cards name their language when [several] are turned on.
+ * One card per language with the [currentFailures] of the lookups in it, [sources] in the order the cards come (the
+ * active language first); a source several languages share is on the card of each language it failed in. The cards
+ * name their language when [several] are turned on.
  */
 internal fun audioFailureCards(
     failures: List<AudioSourceFailure>,
     sources: List<Pair<Language, List<AudioSource>>>,
     several: Boolean,
-): List<HomeProblem.AudioSources> {
-    val taken = mutableSetOf<AudioSource>()
-    return sources.mapNotNull { (language, its) ->
-        val own = currentFailures(failures, its.filter { it !in taken })
-        taken += its
-        own.takeIf { it.isNotEmpty() }?.let { HomeProblem.AudioSources(it, language.takeIf { several }) }
-    }
+): List<HomeProblem.AudioSources> = sources.mapNotNull { (language, its) ->
+    val own = currentFailures(failures.filter { it.language == language }, its)
+    own.takeIf { it.isNotEmpty() }?.let { HomeProblem.AudioSources(it, language.takeIf { several }) }
 }
 
 /** Whether an unfinished task of [tasks] installs dictionaries; a recognition model's download does not. */

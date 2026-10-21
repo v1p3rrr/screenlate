@@ -39,6 +39,11 @@ Audio selection caches include the resolved per-language region order as well as
 from one settings read and pass the same order to the source requests: re-reading it mid-request can cache a clip
 under another order's key. Changing region priority must affect the next selection, even within the one-minute TTL.
 
+`AudioFinder` keeps a source's failures per (source, lookup language): a source that several languages use (a custom
+URL, for example) can fail for one language and work for another, and Home lists a failure under the
+language of the lookup that failed. Each `AudioCandidate` carries its lookup language, so a failed clip download is
+noted for that language too.
+
 Lingua Libre and Wiktionary results for English, Russian, Korean and Chinese, the Mandarin codes and pinyin file
 names, and the compound matches of the Lingua Libre pattern: `languages.md`, "Audio per language".
 
