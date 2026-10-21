@@ -176,4 +176,13 @@ class OcrModelsTest {
             assertThat(ids).containsExactly("sh-en", own)
         }
     }
+
+    @Test
+    fun `thai and khmer tesseract models say that they misread busy screens`() {
+        val tesseract = model("th-fast", "th", "tesseract-fast-tha").copy(engine = "tesseract")
+        assertThat(tesseract.misreadsBusyScreens(Language.THAI)).isTrue()
+        assertThat(tesseract.copy(sourceLanguage = "km").misreadsBusyScreens(Language.KHMER)).isTrue()
+        assertThat(model("th-rec", "th", "thai").misreadsBusyScreens(Language.THAI)).isFalse()
+        assertThat(tesseract.copy(sourceLanguage = "ru").misreadsBusyScreens(Language.RUSSIAN)).isFalse()
+    }
 }

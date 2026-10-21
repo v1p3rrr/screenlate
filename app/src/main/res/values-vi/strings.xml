@@ -773,6 +773,7 @@
     <string name="ocr_models_mlkit_info">Có sẵn trong ứng dụng, không cần tải. Nhận dạng văn bản tiếng Trung, tiếng Nhật, tiếng Hàn, chữ Devanagari, chữ Bengal và chữ Latinh.</string>
     <string name="ocr_models_recommended">Khuyến nghị</string>
     <string name="ocr_models_more_accurate">Chính xác hơn</string>
+    <string name="ocr_models_busy_screens">Thường nhận dạng sai chữ trên màn hình phức tạp; nhận dạng đám mây chính xác hơn.</string>
     <string name="ocr_models_installed_size">Đã cài · %1$s</string>
     <string name="ocr_models_in_use">Đang dùng cho: %1$s</string>
     <string name="ocr_models_delete_title">Xóa mô hình?</string>

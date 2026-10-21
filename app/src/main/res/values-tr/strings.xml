@@ -780,6 +780,7 @@
     <string name="ocr_models_mlkit_info">Uygulamayla gelir, indirme gerekmez. Çince, Japonca, Korece, Devanagari, Bengal ve Latin alfabesiyle yazılmış metni tanır.</string>
     <string name="ocr_models_recommended">Önerilen</string>
     <string name="ocr_models_more_accurate">Daha doğru</string>
+    <string name="ocr_models_busy_screens">Karmaşık ekranlarda metni sık sık yanlış okur; bulut tanıma daha doğrudur.</string>
     <string name="ocr_models_installed_size">Yüklü · %1$s</string>
     <string name="ocr_models_in_use">Kullanan: %1$s</string>
     <string name="ocr_models_delete_title">Model silinsin mi?</string>

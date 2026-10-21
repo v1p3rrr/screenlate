@@ -787,6 +787,7 @@
     <string name="ocr_models_mlkit_info">Vem com o app, nada para baixar. Reconhece texto em chinês, japonês, coreano, em devanágari, na escrita bengali e no alfabeto latino.</string>
     <string name="ocr_models_recommended">Recomendado</string>
     <string name="ocr_models_more_accurate">Mais preciso</string>
+    <string name="ocr_models_busy_screens">Costuma ler errado o texto em telas complexas; o reconhecimento na nuvem é mais preciso.</string>
     <string name="ocr_models_installed_size">Instalado · %1$s</string>
     <string name="ocr_models_in_use">Em uso por: %1$s</string>
     <string name="ocr_models_delete_title">Excluir o modelo?</string>

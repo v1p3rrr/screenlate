@@ -795,6 +795,7 @@
     <string name="ocr_models_mlkit_info">Входит в приложение, скачивать ничего не нужно. Читает китайский, японский, корейский, текст на деванагари, на бенгальском письме и на латинице.</string>
     <string name="ocr_models_recommended">Рекомендуется</string>
     <string name="ocr_models_more_accurate">Точнее</string>
+    <string name="ocr_models_busy_screens">Часто ошибается на сложных экранах; облачное распознавание точнее.</string>
     <string name="ocr_models_installed_size">Установлена · %1$s</string>
     <string name="ocr_models_in_use">Используется: %1$s</string>
     <string name="ocr_models_delete_title">Удалить модель?</string>
