@@ -34,8 +34,9 @@ rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue
 fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
 passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
 service comes back (languages plan, request 78). 5a's device checks are done (no recommendation
-changes); Slovenian runs next; group 4e builds the
-owner's answers to its questions 16 and 18-22. The ColorOS branch is merged into
+changes); Slovenian runs next, and then the chain pauses (owner, to keep the week's usage limit): Esperanto, Albanian,
+Swahili, groups 5b-5e and group 6 run later. Group 4e's answers to its questions 16 and 18-22
+(`languages/kk-answers`) are merged; their four cases passed on the emulator. The ColorOS branch is merged into
 main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
