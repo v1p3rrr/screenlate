@@ -24,7 +24,8 @@ ANK14's Chinese part, LK40, DIC9, DIC20-DIC22, DIC24, DIC25, DIC28 and others pa
 l over any word split of the OCR engines (the audit's fix did not hold on the device; LK54 for Arabic ک ی passed),
 transcription tags of large dictionaries in a mapped file (wty-zh-ipa ran out of memory and installed without tags;
 DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 come from it. Its worktree
-`.worktrees/checks2` needs its submodules deinitialized before removal.
+`.worktrees/checks2` needs its submodules deinitialized before removal. Morning: the owner ruled that a waiting session
+never holds the chain; group 5a's build started at once (request 72).
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
