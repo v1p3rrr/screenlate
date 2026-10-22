@@ -41,6 +41,30 @@ class CzechSupportTest {
     }
 
     @Test
+    fun `the l of the era is written l however the engine splits the words`() {
+        // Cloud recognition gives each period as a word of its own, also across a line break.
+        assertThat(ocrLine("300", "př", ".", "n", ".", "I", ".", "se")).containsExactly("300", "př", ".", "n", ".", "l", ".", "se").inOrder()
+        assertThat(CzechSupport.ocrLines(listOf(listOf("300", "př", ".", "n", "."), listOf("I", ".", "a"))))
+            .containsExactly(listOf("300", "př", ".", "n", "."), listOf("l", ".", "a")).inOrder()
+        // ML Kit may join the era into one word.
+        assertThat(ocrLine("300", "př.", "n.I.", "se")).containsExactly("300", "př.", "n.l.", "se").inOrder()
+        assertThat(ocrLine("př.n.I.")).containsExactly("př.n.l.").inOrder()
+        // A word that only ends in n, a capital I without a period after it, and an I that is not the era's stay.
+        assertThat(ocrLine("Jan", ".", "I", ".", "Ina")).containsExactly("Jan", ".", "I", ".", "Ina").inOrder()
+        assertThat(ocrLine("n.", "Ina")).containsExactly("n.", "Ina").inOrder()
+        assertThat(ocrLine("n.", "II.")).containsExactly("n.", "II.").inOrder()
+        assertThat(ocrLine("n.", "Il.")).containsExactly("n.", "Il.").inOrder()
+    }
+
+    @Test
+    fun `the era written without spaces does not end a sentence`() {
+        val joined = "v roce 300 n.l. vznikl"
+        assertThat(ends(joined, at = joined.indexOf("l.") + 1)).isFalse()
+        val before = "v roce 300 př.n.l. Potom"
+        assertThat(ends(before, at = before.indexOf("l.") + 1)).isFalse()
+    }
+
+    @Test
     fun `a capital I written after n in app text is taken as written`() {
         // A Roman ordinal before a lowercase word, a letter of its own before a capital.
         val ordinal = "300 př. n. I. a rostlo"

@@ -147,6 +147,10 @@ class LanguageRulesIsolationTest {
         // Only Czech OCR text gets the l of "n. l." back from a capital I; app text with the capital is taken as written.
         assertThat(all.where { it.ocrLines(listOf(listOf("n.", "I.", "Potom"))).single()[1] == "l." })
             .containsExactly(Language.CZECH)
+        assertThat(all.where { it.ocrLines(listOf(listOf("n", ".", "I", ".", "Potom"))).single()[2] == "l" })
+            .containsExactly(Language.CZECH)
+        val joined = "v roce 300 n.l. vznikl"
+        assertThat(periodEnding.where { !it.endsSentence(joined, joined.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
         val capital = "v roce 300 n. I. Potom"
         assertThat(periodEnding.where { !it.endsSentence(capital, capital.indexOf("I.") + 1) }).isEmpty()
         // Croatian and Serbian mr. is magistar.

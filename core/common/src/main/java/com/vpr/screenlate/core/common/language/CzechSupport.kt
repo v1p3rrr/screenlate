@@ -27,30 +27,42 @@ object CzechSupport : SpacedLanguageSupport() {
     override val ordinalPeriod = true
 
     /**
-     * "r." and "st." are rok and století ("r. 1990", "19. st."), "s." and "str." strana, "č." číslo. Abbreviations that
-     * are also words ending sentences are left out: nám (náměstí, and "us"), tis (tisíc, and yew), mil (milion, and
-     * of miles).
+     * "r." and "st." are rok and století ("r. 1990", "19. st."), "s." and "str." strana, "č." číslo; "n.l." and "př.n.l."
+     * are the era written without spaces, as OCR also reads it. Abbreviations that are also words ending sentences are
+     * left out: nám (náměstí, and "us"), tis (tisíc, and yew), mil (milion, and of miles).
      */
     override val abbreviations = setOf(
         "např", "tj", "tzv", "tzn", "apod", "atd", "resp", "mj", "aj", "popř", "příp", "cca", "č", "s", "str", "r",
         "st", "ul", "tel", "mudr", "ing", "mgr", "bc", "dr", "doc", "prof", "phdr", "judr", "rndr", "př", "mld",
+        "n.l", "př.n.l",
     )
 
     /** The letters of "př. n. l." and "n. l." (before and in the Common Era). */
     override val pairedLetters = setOf("n", "l")
 
     /**
-     * OCR reads the sans-serif l of "n. l." as a capital I: "I." right after "n." is written "l.", across a line break
-     * too. Text read from apps is taken as written.
+     * OCR reads the sans-serif l of "n. l." as a capital I: an I between "n." and a period is written l, across a line
+     * break too, however the engine splits the words (cloud recognition gives each period as a word of its own, ML Kit
+     * may join "n.I." into one word). Text read from apps is taken as written.
      */
     override fun ocrLines(lines: List<List<String>>): List<List<String>> {
-        var previous = ""
-        return super.ocrLines(lines).map { line ->
-            line.map { word ->
-                val era = word.startsWith("I.") && previous.trimStart { !it.isLetter() } == "n."
-                previous = word
-                if (era) "l" + word.drop(1) else word
-            }
+        val fixed = super.ocrLines(lines).map { it.toMutableList() }
+        val words = fixed.flatMapIndexed { line, texts -> texts.indices.map { line to it } }
+        val text = StringBuilder()
+        val starts = words.mapIndexed { index, (line, word) ->
+            if (index > 0) text.append(' ')
+            text.length.also { text.append(fixed[line][word]) }
         }
+        for (match in ERA_L.findAll(text)) {
+            val at = match.groups[1]!!.range.first
+            val index = starts.indexOfLast { it <= at }
+            val (line, word) = words[index]
+            val offset = at - starts[index]
+            fixed[line][word] = fixed[line][word].replaceRange(offset, offset + 1, "l")
+        }
+        return fixed
     }
+
+    /** The capital I between "n." and a period in the words joined with spaces: "n. I.", "n . I .", "n.I.". */
+    private val ERA_L = Regex("""(?<![\p{L}\p{M}])n ?\. ?(I) ?\.""")
 }
