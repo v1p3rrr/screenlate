@@ -28,10 +28,10 @@ DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 com
 never holds the chain; group 5a's build started at once (request 72).
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
-owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
-`lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug; request 75 (the
-bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the phone: both
-diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
+owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every
+session (request 74, `lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug;
+request 75 (the bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the
+phone: both diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

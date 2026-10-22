@@ -17,7 +17,7 @@ Seven languages, each looked up, read by OCR, voiced and exported as the earlier
 - Afrikaans (af): a small Wiktionary dictionary helped by the user's Dutch dictionaries; the article 'n written with
   seven apostrophes.
 - Tatar (tt) and Bashkir (ba): Kazakh's design of group 4e (own ending rules, letter keys, Paddle `cyrillic`,
-  Leipzig frequency); Tatar has no wty dictionary yet.
+  Leipzig frequency); wty added Tatar in its release 2026.10.22 (tt-ru, tt-en and 11 more gloss languages).
 - Sanskrit (sa): Devanagari as Hindi; words joined by sandhi need rules of their own; Latin transliteration.
 
 ## Scope
@@ -192,7 +192,8 @@ wty `latest` (release 2026.10.11, downloaded 2026-10-20); wordfreq 912caf6 (`lar
   alt-of, 994 of 1,066 in ca-en and 391 of 445 in gl-en point at a term with no entry, about 94% in it, pt, de and es as
   well. The same drop hits languages of groups 1-3: in wordfreq's top 1,000 words German im, zum, zur, vom, beim (2.2%
   of the tokens), Italian un, del, della, nel (7.5%), Portuguese do, da, na, ao (7.8%), Spanish muy, tu, buen (0.7%);
-  French is not affected. Reported as wty issue #399 (2026-10-22).
+  French is not affected. Reported as wty issue #399 (2026-10-22) and fixed in wty's release 2026.10.22 the same day:
+  ca-en has del, al, pel and ben, gl-en moi, de-en im, zum, zur, vom, beim, it-en del, della, nel, un.
 
 #### Other dictionaries
 
@@ -484,6 +485,10 @@ processors and rules (`addedPreprocessors`, `addedTransforms`), as for Kazakh an
 removeRussianDiacritics are not needed (ё only in Russian loans).
 
 #### Dictionaries
+
+Update 2026-10-22: wty added Tatar in its release 2026.10.22 (issue #400): `dict/tt` has 13 gloss languages (de, en,
+fr, ja, ko, ku, nl, pl, pt, ru, tr, vi, zh); `wty-tt-ru.zip` is 1.2 MB, `wty-tt-en.zip` 0.24 MB. The rest of this
+section describes the state before.
 
 Tatar is not in wty at all: no `dict/tt`, and `languages.json` at 602ffb3 lists 157 languages with Bashkir and
 Crimean Tatar but not Tatar; no issue mentions it. Issue #334 (Kyrgyz, 2026-04-04) was answered "Added" the next
@@ -974,7 +979,7 @@ Technical choices of the agent (the owner may object; recorded in the changelog 
 | Audio order | Lingua Libre first for ca, is, af, tt, sa; Wiktionary first for gl and ba; text to speech last. |
 | Voice | Languages without a voice keep the popup's "No text-to-speech voice for this language is installed". |
 | OCR | ML Kit main for ca, gl, is, af and sa (row "ML Kit at setup"); Paddle `cyrillic` for tt and ba (ML Kit has no Cyrillic); the "more accurate" marks after the emulator run (question 21). |
-| Upstream reports | Filed at wty from the owner's account on 2026-10-22: #399 (contractions and apocopic forms dropped, alt-of rows written the wrong way; it hits German, Italian, Portuguese and Spanish too) and #400 (add Tatar). If #399 is not fixed by 2026-11-05, the owner is asked again about an own supplement (question 5). |
+| Upstream reports | Filed at wty from the owner's account on 2026-10-22: #399 (contractions and apocopic forms dropped, alt-of rows written the wrong way; it hits German, Italian, Portuguese and Spanish too) and #400 (add Tatar). Both were done in wty's release 2026.10.22 the same day (contractions checked in ca-en, gl-en, de-en and it-en; `dict/tt` has 13 gloss languages), so no own supplement is needed. |
 
 ## Questions for the owner (deferred)
 
@@ -1018,9 +1023,10 @@ recommended option; what changing it takes is said).
 5. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399, with the cause and the
    wider scope found then ("Catalan and Galician"). The owner then chose (2026-10-22) to wait two weeks: if wty has not
-   fixed it by 2026-11-05, the agent asks about (b) again. Words Wiktionary has but wty drops: Catalan del, al, dels,
-   pel, ben (2.6% of Catalan news words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi. wty's
-   converter drops their alt-of senses (corrected 2026-10-22; this question first said form-of templates with two
+   fixed it by 2026-11-05, the agent asks about (b) again. wty fixed it in its release 2026.10.22 the same day (ca-en
+   has del, al, pel and ben, gl-en moi), so (b) is not needed. Words Wiktionary has but wty drops: Catalan del, al,
+   dels, pel, ben (2.6% of Catalan news words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi.
+   wty's converter drops their alt-of senses (corrected 2026-10-22; this question first said form-of templates with two
    targets). (a, recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files
    it or allows it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note).
    (c) Leave it. Blocks: the supplement.
@@ -1068,7 +1074,8 @@ recommended option; what changing it takes is said).
     af-ru 71.1% → 85.0% of the top 1,000, with Dutch as well 93.1%. (a, recommended) Convert it and list it unticked
     once hosted, with the GPL source offer as for the FreeDict pairs. (b) Not offered. Blocks: one catalog entry.
 14. Answered (owner, 2026-10-21): (a); the agent files the issue from the owner's account after showing the owner its
-    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/400. A Tatar dictionary. wty
+    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/400; wty added Tatar in its
+    release 2026.10.22 the same day (13 gloss languages, tt-ru and tt-en among them). A Tatar dictionary. wty
     has no Tatar at all (it has Bashkir); Russian Wiktionary has 11.8k Tatar words, the English one 1.3k Cyrillic words.
     wty added Kyrgyz a day after a user asked (issue #334). (a, recommended) The owner asks wty to add Tatar (an issue
     at yomidevs/wiktionary-to-yomitan); the catalog then lists tt-ru and tt-en without code of ours; our own converter
@@ -1198,3 +1205,6 @@ the fallback reused); 6c about a session once group 4e's engine exists, plus the
   chose to wait for #399 until 2026-11-05 before an own supplement.
 - 2026-10-22: the research screens, truth lines, Paddle results and scripts are in `testdata/ocr/compare/new/6/` (11 MB,
   git-ignored); the research section and the test model's emulator item say so.
+- 2026-10-22: wty closed both issues with its release 2026.10.22: the contractions are back (checked in ca-en, gl-en,
+  de-en, it-en), so question 5's supplement is not needed; Tatar is in wty (13 gloss languages), so the Tatar block
+  lists wty tt-ru and tt-en with no converter of ours (question 14).
