@@ -105,6 +105,19 @@ class ConverterTest(unittest.TestCase):
         self.assertEqual(tags["n"][1], "partOfSpeech")
         self.assertEqual(tags["fem"][1], "")
 
+    def test_definitions_lose_wikdict_link_markup(self):
+        self.assertEqual(
+            converter.plain("#{finansiell|finansiell}# #{institusjon}# som #{låne|låner}# penger"),
+            "finansiell institusjon som låner penger",
+        )
+        self.assertEqual(converter.plain("betegner at noe #{likne|likner}# på noe, [[minne"),
+                         "betegner at noe likner på noe, minne")
+        self.assertEqual(converter.plain("urteplante, 30&ndash;50&nbsp;cm høy"), "urteplante, 30–50 cm høy")
+
+    def test_definitions_that_are_only_a_broken_template_are_dropped(self):
+        self.assertEqual(converter.plain("}#|utellelig|kat"), "")
+        self.assertEqual(converter.plain("Verb|minner]] om noe"), "")
+
     def test_chinese_headwords_read_as_their_pinyin(self):
         terms = convert(CHINESE)["term_bank_1.json"]
         self.assertEqual(terms[0][:2], ["心憂", "xīnyōu"])
