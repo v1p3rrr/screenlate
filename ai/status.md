@@ -30,7 +30,8 @@ chain (sv, no, da, ro, la, lt on `languages/lt`, checked on the emulator) and gr
 (`languages/kk-followups`) are merged into `languages/main`; build, unit tests, lint, 145 page tests and the glue tests
 pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, not run yet). Every language bundle was
 rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue change; `notes/build-environment.md`).
-5a's wty recheck and Slovak run next. The ColorOS branch is merged into
+5a's wty recheck is merged as well (no behavior change; its device checks wait for the emulator); Slovak
+runs next. The ColorOS branch is merged into
 main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
