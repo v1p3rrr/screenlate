@@ -34,8 +34,9 @@ rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue
 fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
 passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
 service comes back (languages plan, request 78). 5a's device checks are done (no recommendation
-changes); Slovenian runs next; group 4e builds the
-owner's answers to its questions 16 and 18-22. The ColorOS branch is merged into
+changes); Slovenian runs next, and then the chain pauses (owner, to keep the week's usage limit): Esperanto, Albanian,
+Swahili, groups 5b-5e and group 6 run later. Group 4e's answers to its questions 16 and 18-22
+(`languages/kk-answers`) are merged; their four cases passed on the emulator. The ColorOS branch is merged into
 main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
@@ -76,6 +77,21 @@ on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): c
 cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
 one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
 tests pass; device case LK63 passes on the merge `f7161a80`).
+
+Group 4e's answers (`languages/kk-answers` from f2b9cd74, for the coordinating session to merge): the owner's answers
+to questions 16, 18, 19 and 21 built. Kazakh and Kyrgyz noun endings skip the six pronouns whose case forms change
+their stem (алды finds алуу); PanLex keeps capitalized headwords without time zones and interface strings (kk-ru
+18,519 headwords, ky-ru 7,123); a single capital letter with a period before a capitalized word holds the sentence in
+every spaced language (К. Бакиев, A. Smetona; settles group 5a's item on initials); the Kyrgyz verbal noun in -ыш
+(болушу finds болуу), named in all 14 locales; question 22's filter is final, 20 needs nothing. Every language bundle
+rebuilt (only the glue change, and the rule in ky.js). The wider checks asked by the owner (noun endings and the -ыш
+rule on Leipzig's 30,000 top forms, the PanLex recount) are in the group 4e plan, "Measurements"; no plain bug; new
+questions 23-27 (ending consonants, verb forms behind a noun at equal chain length, -сыз "without", the pronouns'
+case forms, PanLex Title Case strings). Build, 1,416 unit tests, lint, 145 page tests, 65 glue tests and the PanLex
+tests pass. On the emulator: Kyrgyz алды finds алуу without ал, бизге finds биз, болушу finds
+болуу and иш only иш; a Kyrgyz note for келди keeps "Президент К. Бакиев Ошко келди."; the rebuilt PanLex ky-ru
+imports and shows "Иран риалы". Not checked on a device: the Kazakh pronoun skip, the Russian label of the -ыш rule,
+the other three PanLex archives.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every

@@ -229,7 +229,9 @@ Requests 1–19 are in the previous plan. New ones:
     data measured on release 2026.10.22 or later (request 77); never `am force-stop` or `am start -S` (uninstall
     directly), no sign-in on the emulator, no `connectedAndroidTest` of the app module, nothing on the owner's phone, no
     browsing outside the work folders; a report to this session with the branch, commits, results, what is not verified
-    and the open questions.
+    and the open questions. Paused (owner, 2026-10-22 evening, to keep the week's usage limit): group 5a stops after
+    Slovenian; Esperanto, Albanian, Swahili, groups 5b-5e and group 6 (27 languages with Slovenian, 26 left after it)
+    run later in a separate run, in the same order.
 77. (2026-10-22) Follow-ups of wty's release 2026.10.22 in a session of their own (owner): the KDoc and notes of the
     other-script filters (`ignoredFormTags` of Malay, Indonesian, Turkic Cyrillic and Serbo-Croatian) describe the new
     direction; counts in `notes/languages.md`, `notes/language-rules.md`, the test model and the merged block plans that
@@ -1723,3 +1725,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: owner decision — the "service is off" notification is posted 3 s after a stop and only if the service
   has not connected again (was: at once at every stop; a `uiautomator dump` gave a banner each time); built together
   with request 78.
+- 2026-10-22: owner decision — the build chain pauses after group 5a's Slovenian, to keep the week's usage limit;
+  Esperanto, Albanian, Swahili, 5b-5e and group 6 run later in a separate run.
