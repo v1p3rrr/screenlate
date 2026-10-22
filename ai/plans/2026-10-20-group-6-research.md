@@ -1024,9 +1024,9 @@ recommended option; what changing it takes is said).
    text. Filed on 2026-10-22 as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399, with the cause and the
    wider scope found then ("Catalan and Galician"). The owner then chose (2026-10-22) to wait two weeks: if wty has not
    fixed it by 2026-11-05, the agent asks about (b) again. wty fixed it in its release 2026.10.22 the same day (ca-en
-   has del, al, pel and ben, gl-en moi), so (b) is not needed. Words Wiktionary has but wty drops: Catalan del, al, dels,
-   pel, ben (2.6% of Catalan news words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi. wty's
-   converter drops their alt-of senses (corrected 2026-10-22; this question first said form-of templates with two
+   has del, al, pel and ben, gl-en moi), so (b) is not needed. Words Wiktionary has but wty drops: Catalan del, al,
+   dels, pel, ben (2.6% of Catalan news words; the popup shows "de", "a" or "be", sheep, instead) and Galician moi.
+   wty's converter drops their alt-of senses (corrected 2026-10-22; this question first said form-of templates with two
    targets). (a, recommended) Report them to wty with the page names and wait (an outward-facing step: the owner files
    it or allows it). (b) Also ship a small supplement of our own for these few words (our own glosses, a license note).
    (c) Leave it. Blocks: the supplement.
