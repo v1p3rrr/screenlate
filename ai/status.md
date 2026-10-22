@@ -25,9 +25,12 @@ Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions bac
 alt-of row (languages plan, requests 73 and 77, question 87: misspelling redirects shown as they are); the follow-up
 session of request 77 waits as a card for the owner. Disk D: ran full (0 bytes; the project itself holds a few tens of
 GB, the rest is outside it): with the owner's leave the build folders of 13 idle worktrees were deleted (17 GB free;
-`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a
-pushed sv, no, da, ro, la and lt as one chain (`languages/lt` holds all), tests pass, emulator cases and the wty recheck
-next. Group 4e's follow-ups are done (`languages/kk-followups`), its wty recheck runs. The ColorOS branch is merged into
+`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a's
+chain (sv, no, da, ro, la, lt on `languages/lt`, checked on the emulator) and group 4e's follow-ups with its wty recheck
+(`languages/kk-followups`) are merged into `languages/main`; build, unit tests, lint, 145 page tests and the glue tests
+pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, not run yet). Every language bundle was
+rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue change; `notes/build-environment.md`).
+5a's wty recheck and Slovak run next. The ColorOS branch is merged into
 main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one

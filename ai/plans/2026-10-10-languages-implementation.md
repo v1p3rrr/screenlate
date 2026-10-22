@@ -234,7 +234,8 @@ Requests 1–19 are in the previous plan. New ones:
     direction; counts in `notes/languages.md`, `notes/language-rules.md`, the test model and the merged block plans that
     came from older releases are recounted or dated; popups of a few words checked on the emulator with the new files
     (it a and del, de im, ca del, ms baca, a Japanese kyūjitai spelling, kk Алматы); the catalog's wty sizes and word
-    counts refreshed once group 5a's branch is merged; the archive's wty files refreshed. Group 5a (sv, no, da, ro, la)
+    counts refreshed once group 5a's branch is merged (merged into `languages/main` on 2026-10-22); the archive's wty
+    files refreshed. Group 5a (sv, no, da, ro, la)
     and group 4e (kk, ky) recheck their own wty data; blocks not started yet measure on the new release.
 
 ## Decisions
@@ -438,6 +439,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   language, so names split (Lithuanian "A. Smetona": in its Leipzig corpus 9,048 such initials stand before a capital
   and 105 at a sentence end). A shared rule of `Sentence.kt` for all Latin and Cyrillic languages, not built yet;
   questions when it is planned.
+- Smaller language bundles (2026-10-22): the rules of `own-transforms.js` reach every bundle that imports from it
+  (Romanian and Latin rules in the Norwegian, Kazakh, Kyrgyz, Bengali, Persian and Hebrew bundles, about 2.4 KB each),
+  because esbuild keeps the rule helpers' calls. `/* @__PURE__ */` on the helpers or one module per language would
+  drop them; nothing breaks meanwhile.
 
 ## Questions for the owner
 
@@ -1697,3 +1702,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   service stop report and the "service is off" notification (regular builds, a banner without sound, at every stop, no
   extra permission request); merged into main and languages/main (owner).
 - 2026-10-22: Backlog item on initials in sentence ends (group 5a's Lithuanian finding).
+- 2026-10-22: groups 4e's follow-ups (`languages/kk-followups`) and 5a's chain (`languages/lt`: sv, no, da, ro, la,
+  lt) merged into `languages/main`; 4e's new device cases renumbered LK61-LK63; Backlog item on smaller language
+  bundles.

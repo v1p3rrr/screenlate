@@ -39,6 +39,16 @@ A cold build takes ~3.5 minutes, incremental builds much less. Configuration cac
   collections in `compose-stability.conf`. Measure with a `SideEffect` counter and `dumpsys gfxinfo` ("Slow UI
   thread"), or the compiler reports (`reportsDestination` in the Compose convention plugin, not kept).
 - `resValues` build feature is off by default in AGP 9; the app label per build type uses a manifest placeholder (`appLabel`).
+- Language bundles (`yomitan-language/<iso>.js`, 2026-10-22): the build needs a Yomitan clone at the commit in
+  `scripts/yomitan-language/yomitan-commit.txt` (a `git clone --filter=blob:none` into the session's scratch folder is
+  enough); `glue.test.mjs` runs its Yomitan cases only with `YOMITAN` set to that clone (a Windows path). Every bundle
+  carries `glue.js`, so after an edit of `glue.js` or `own-transforms.js` rebuild all of them, not only the language
+  edited: `languages/lt` had rebuilt only `ro.js` after its last glue change, and the merge into `languages/main`
+  rebuilt the other 37. Minified names shift whenever shared code changes, so compare a rebuild with the committed
+  files with one- and two-letter identifiers normalized (the coordinating session's check). Each bundle that imports
+  from `own-transforms.js` also carries the other languages' rules there (Romanian and Latin in no, kk, ky, bn, fa,
+  he: about 2.4 KB), since esbuild keeps the rule helpers' calls; marking the module `sideEffects: false` in the
+  resolver does not drop them.
 
 ## Agent tooling gotchas
 
