@@ -28,7 +28,7 @@ GB, the rest is outside it): with the owner's leave the build folders of 13 idle
 `elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a's
 chain (sv, no, da, ro, la, lt on `languages/lt`, checked on the emulator) and group 4e's follow-ups with its wty recheck
 (`languages/kk-followups`) are merged into `languages/main`; build, unit tests, lint, 145 page tests and the glue tests
-pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, not run yet). Every language bundle was
+pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, checked on `f7161a80` the same day). Every language bundle was
 rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue change; `notes/build-environment.md`).
 5a's wty recheck is merged as well (no behavior change; its device checks wait for the emulator); Slovak
 runs next. The ColorOS branch is merged into
@@ -71,7 +71,7 @@ between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, 
 on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): counts redone, nothing in the device
 cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
 one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
-tests pass; device case LK63 waits for the emulator).
+tests pass; device case LK63 passes on the merge `f7161a80`).
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every
