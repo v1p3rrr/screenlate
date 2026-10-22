@@ -64,6 +64,9 @@
     <string name="overlay_keep_alive_channel">服務執行中</string>
     <string name="overlay_keep_alive_title">Screenlate 已就緒</string>
     <string name="overlay_keep_alive_text">在背景保持懸浮球可用</string>
+    <string name="overlay_service_off_channel">服務已關閉</string>
+    <string name="overlay_service_off_title">Screenlate 服務已關閉</string>
+    <string name="overlay_service_off_text">Screenlate 的無障礙服務已被關閉，因此懸浮球消失了。點按即可重新開啟。</string>
     <string name="overlay_translate">翻譯句子</string>
     <string name="overlay_translating">正在翻譯…</string>
     <string name="translation_failed">無法翻譯這個句子。</string>

@@ -24,6 +24,7 @@ Screenlate: pop-up dictionary for Android (Lens OCR, Yomitan dictionaries, AnkiD
    - `dictionary-archive.md` — the owner's private copy of every catalog file, the sources we convert and the OCR models: layout, refresh script, licenses that limit sharing.
    - `languages.md` — what is Japanese-only in the app and in hoshidicts, how Yomitan supports other languages, Wiktionary and other dictionaries with licenses and gloss-language coverage, OCR scripts and model sizes, the QuickJS lookup experiment (en, zh, ru, ko).
    - `language-rules.md` — every language-specific rule (word starts, sentence ends, lookup, engine, page scripts, app text) with its code, positive and negative tests, the bugs fixed and the limits left.
+   - `oem-background-limits.md` — how Android takes an accessibility service off (force-stop, crash, the shortcut), phone makers' background killers (ColorOS), the first report of the bubble disappearing, what to ask users, app-side options.
 3. Human-facing docs: `docs/architecture.md` (modules and data flow), `docs/usage.md` and `docs/development.md` (build, tests, releases); keep them current when behavior changes.
 4. Testing on a device follows `ai/test-model.md`: cases by area with categories (E every regression, F full regression, O once, N new), coverage, emulator setup, non-functional baselines and the run log. New features add their cases there.
 

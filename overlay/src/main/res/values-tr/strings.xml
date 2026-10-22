@@ -64,6 +64,9 @@
     <string name="overlay_keep_alive_channel">Hizmet çalışıyor</string>
     <string name="overlay_keep_alive_title">Screenlate hazır</string>
     <string name="overlay_keep_alive_text">Baloncuk arka planda kullanılabilir kalır</string>
+    <string name="overlay_service_off_channel">Hizmet kapatıldı</string>
+    <string name="overlay_service_off_title">Screenlate hizmeti kapalı</string>
+    <string name="overlay_service_off_text">Screenlate erişilebilirlik hizmeti kapatıldığı için baloncuk kayboldu. Yeniden açmak için dokunun.</string>
     <string name="overlay_translate">Cümleyi çevir</string>
     <string name="overlay_translating">Çevriliyor…</string>
     <string name="translation_failed">Cümle çevrilemedi.</string>

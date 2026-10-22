@@ -64,6 +64,9 @@
     <string name="overlay_keep_alive_channel">Servicio en ejecución</string>
     <string name="overlay_keep_alive_title">Screenlate está listo</string>
     <string name="overlay_keep_alive_text">La burbuja sigue disponible en segundo plano</string>
+    <string name="overlay_service_off_channel">Servicio desactivado</string>
+    <string name="overlay_service_off_title">El servicio de Screenlate está desactivado</string>
+    <string name="overlay_service_off_text">La burbuja ha desaparecido porque se desactivó el servicio de accesibilidad de Screenlate. Toca para volver a activarlo.</string>
     <string name="overlay_translate">Traducir la frase</string>
     <string name="overlay_translating">Traduciendo…</string>
     <string name="translation_failed">No se pudo traducir la frase.</string>

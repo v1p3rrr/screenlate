@@ -64,6 +64,9 @@
     <string name="overlay_keep_alive_channel">Serviço em execução</string>
     <string name="overlay_keep_alive_title">O Screenlate está pronto</string>
     <string name="overlay_keep_alive_text">A bolha continua disponível em segundo plano</string>
+    <string name="overlay_service_off_channel">Serviço desativado</string>
+    <string name="overlay_service_off_title">O serviço do Screenlate está desativado</string>
+    <string name="overlay_service_off_text">A bolha sumiu porque o serviço de acessibilidade do Screenlate foi desativado. Toque para ativá-lo de novo.</string>
     <string name="overlay_translate">Traduzir a frase</string>
     <string name="overlay_translating">Traduzindo…</string>
     <string name="translation_failed">Não foi possível traduzir a frase.</string>

@@ -2,9 +2,9 @@ package com.vpr.screenlate.core.ocr.lens
 
 import android.graphics.Bitmap
 import android.os.SystemClock
-import android.util.Log
 import androidx.core.graphics.scale
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrPage

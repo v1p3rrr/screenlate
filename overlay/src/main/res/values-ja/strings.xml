@@ -64,6 +64,9 @@
     <string name="overlay_keep_alive_channel">サービス実行中</string>
     <string name="overlay_keep_alive_title">Screenlate は待機中です</string>
     <string name="overlay_keep_alive_text">バックグラウンドでバブルを使える状態に保ちます</string>
+    <string name="overlay_service_off_channel">サービス停止</string>
+    <string name="overlay_service_off_title">Screenlate のサービスがオフになりました</string>
+    <string name="overlay_service_off_text">Screenlate のユーザー補助サービスがオフになったため、バブルが消えました。タップしてもう一度オンにしてください。</string>
     <string name="overlay_translate">文を翻訳</string>
     <string name="overlay_translating">翻訳しています…</string>
     <string name="translation_failed">文を翻訳できませんでした。</string>

@@ -12,7 +12,6 @@ import android.os.SystemClock
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -30,6 +29,7 @@ import com.vpr.screenlate.core.anki.note.Sentence
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redactUrl
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -122,6 +122,7 @@ class OverlayController(
     private val pageAppearance: PageAppearance,
     private val anki: AnkiServices,
     private val translation: SentenceTranslation,
+    private val stopDiagnostics: ServiceStopDiagnostics,
     private val scope: CoroutineScope,
 ) {
     /** Anki and audio dependencies, grouped to keep the constructor short. */
@@ -775,6 +776,7 @@ class OverlayController(
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     touching = false
+                    stopDiagnostics.bubbleTouchEnded(SystemClock.elapsedRealtime())
                     // A cancelled touch must not open the menu later.
                     mainHandler.removeCallbacks(hold)
                     val screen = screenAtDown
@@ -841,6 +843,7 @@ class OverlayController(
     }
 
     private fun startScan(flashLines: Boolean) {
+        stopDiagnostics.scanStarted(SystemClock.elapsedRealtime())
         Log.d(TAG, "Scan started (${if (flashLines) "tap" else "pull-out"}, text source ${settings.textSource})")
         // The old popup's word belongs to the old screen; ➕ there would take its sentence from the new scan.
         closePopup()

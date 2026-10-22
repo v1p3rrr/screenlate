@@ -7,10 +7,10 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Build
 import android.os.SystemClock
-import android.util.Log
 import android.view.Display
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
+import com.vpr.screenlate.core.common.log.Log
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellationException

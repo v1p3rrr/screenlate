@@ -1,11 +1,11 @@
 package com.vpr.screenlate.dictionary.api.imports
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import javax.inject.Inject
 import javax.inject.Singleton
