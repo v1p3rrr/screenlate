@@ -104,7 +104,7 @@ class BubbleMenu(private val context: Context, private val windowManager: Window
             width = card.measuredWidth + 2 * shadow
             height = card.measuredHeight + 2 * shadow
         }
-        windowManager.addView(root, params)
+        if (!OverlayWindows.add(windowManager, root, params)) return
         window = root
         ContextCompat.registerReceiver(
             context,

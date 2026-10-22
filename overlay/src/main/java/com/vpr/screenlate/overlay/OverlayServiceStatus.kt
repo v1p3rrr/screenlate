@@ -24,7 +24,12 @@ object OverlayServiceStatus {
      */
     val running: StateFlow<Boolean> = _running.asStateFlow()
 
+    /** How often the service has connected in this process; tells a check after a stop whether it came back since. */
+    internal var connections = 0
+        private set
+
     internal fun setRunning(value: Boolean) {
+        if (value) connections++
         _running.value = value
     }
 

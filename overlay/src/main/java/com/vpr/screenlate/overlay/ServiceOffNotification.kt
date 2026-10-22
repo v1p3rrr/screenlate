@@ -17,23 +17,28 @@ import androidx.core.content.ContextCompat
 
 /**
  * Tells the user that the accessibility service stopped and the bubble is gone; a tap opens the service's settings.
- * Shown at every stop, also one the user made, since the app cannot tell who turned the service off. A banner without
- * sound; cancelled when the service runs again. Without the notification permission it is left out.
+ * Shown a few seconds after a stop the service has not come back from ([StopFollowUp]), also one the user made, since
+ * the app cannot tell who turned the service off. A banner without sound; cancelled when the service runs again.
+ * Without the notification permission it is left out.
  */
 internal object ServiceOffNotification {
     private const val CHANNEL_ID = "service_off"
     private const val NOTIFICATION_ID = 3
 
-    /** False when notifications are not allowed. */
-    @SuppressLint("MissingPermission") // Checked at the top; lint does not follow the check through the version test.
-    fun show(context: Context): Boolean {
+    fun allowed(context: Context): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             return false
         }
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
+
+    /** False when notifications are not allowed. */
+    @SuppressLint("MissingPermission") // Checked by allowed(); lint does not follow the check into another function.
+    fun show(context: Context): Boolean {
+        if (!allowed(context)) return false
         val manager = NotificationManagerCompat.from(context)
-        if (!manager.areNotificationsEnabled()) return false
         val channel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.overlay_service_off_channel),

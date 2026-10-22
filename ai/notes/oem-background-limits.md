@@ -204,6 +204,25 @@ Reading:
 - Force-stops happen as well (08:08), at another moment; they are the separate background-limit problem described in
   the ColorOS section.
 
+### The overlay crash when the service comes back (2026-10-22)
+
+Group 5a's emulator run found a crash: `BadTokenException` in `OverlayController.attachWindows`, called from the
+settings flow, when the service was unbound before the controller had added its windows (languages plan, request 78;
+`notes/overlay-system-ui.md`, "The service's window token"). v0.2.3 has the same code. Whether it plays a part here:
+
+- Not in the user's logs. The 2026-10-22 logs show both scan-time stops as a clean `onDestroy` ("Service stopped")
+  with the same pid going on and no crash line; the first log had no crash section at all. The crash needs a window
+  to be added after the system has taken the token: the overlay's windows in the gap between the service's connect
+  and its first settings (2-6 s on the loaded emulator; not measured on a phone) or while the bubble is hidden (the
+  bubble switch, an app in the hidden list), or the bubble menu or crop editor opening in that moment. At the
+  user's stops the bubble was floating, so its windows were already there.
+- It could add a crash to a stop when ColorOS turns the service off right after it was turned on, or when the user
+  turns it on and off quickly. A crash then kills the process; the service, already off the list, is not restarted.
+  In the app's log it reads "Uncaught exception in thread main" with `BadTokenException` right after the stop
+  report. With the fix (`OverlayWindows.add`) such a stop logs "Window not added, the system is unbinding the
+  service" and the process lives on.
+- So it explains neither the switch going off nor the bubble's return at 48.4 in the recording.
+
 ### Likely causes, ranked
 
 Ranked from the recording alone; the first log (above) argues against 1 and, with a condition, against 2, and adds 2a.
@@ -292,9 +311,12 @@ Built on 2026-10-22 (`claude/competent-rhodes-6bde05`, regular builds, owner's c
 exit reasons at each start (request 71 of the languages plan), the stop report and the notification below. The stop
 report reads, e.g.: `Service stopped; on the enabled list: no; bubble touch ended: 1180 ms ago; scan started: 3400 ms
 ago; window events in the last 10 s:` followed by one line per window that came to the front, opened or closed, system
-packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification shows at every
-stop (the app cannot tell a user's switch from the system's), as a banner without sound, and is cancelled when the
-service connects again; without the notification permission it is only a log line.
+packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification is posted with
+that check, 3 s after a stop, when the service has not connected again since (owner, 2026-10-22: each
+`uiautomator dump` pauses the service for about 1.5 s, and a notification at the stop itself flashed for every dump;
+`StopFollowUp` decides, from a count of connections). It comes for any stop the service does not come back from, the
+user's switch included (the app cannot tell a user's switch from the system's), as a banner without sound, and is
+cancelled when the service connects again; without the notification permission it is only a log line.
 
 Package visibility (Android 11): the app's `<queries>` makes every app with a launcher icon visible, plus the makers'
 security apps listed there; the system's own packages without one (the home screen, system panels, and on ColorOS most
@@ -307,7 +329,9 @@ Emulator check, 2026-10-22: `settings put secure enabled_accessibility_services`
 enabled list: no", the banner, and "3 s after the stop: … running: no"; turning it back on cancels the notification.
 `uiautomator dump` also stops the service: UiAutomation pauses accessibility services, the report says "on the enabled
 list: yes", and the service connects again 1.5 s later. That is the same shape a ColorOS unbind would have, and a
-reason not to run `uiautomator` while checking stops.
+reason not to run `uiautomator` while checking stops. Since the delayed notification (checked the same day,
+test model UPD6 and UPD9): one dump or two in a row post nothing; `settings put` without Screenlate posts it 3.3 s
+after the stop; turning the service on removes it within 0.6 s.
 
 | Fix | What it does | Cost |
 | --- | --- | --- |

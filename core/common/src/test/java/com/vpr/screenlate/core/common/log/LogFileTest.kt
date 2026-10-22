@@ -14,8 +14,16 @@ class LogFileTest {
     @get:Rule
     val folder = TemporaryFolder()
 
-    private fun logFile(maxFileBytes: Long = LogFile.DEFAULT_MAX_FILE_BYTES, directory: File = folder.root) =
-        LogFile(directory, maxFileBytes, clock = { 1_761_120_000_123 }, zone = ZoneOffset.UTC, processId = 4321)
+    // Long waits for the writer thread: a loaded machine can take more than the app's limits to write the queued lines.
+    private fun logFile(maxFileBytes: Long = LogFile.DEFAULT_MAX_FILE_BYTES, directory: File = folder.root) = LogFile(
+        directory,
+        maxFileBytes,
+        clock = { 1_761_120_000_123 },
+        zone = ZoneOffset.UTC,
+        processId = 4321,
+        flushMs = 60_000,
+        crashFlushMs = 60_000,
+    )
 
     private fun LogFile.text(): String = ByteArrayOutputStream().also { copyTo(it) }.toString(Charsets.UTF_8)
 

@@ -71,6 +71,27 @@ which edge swipes the system takes from them. Measured on the emulator (Pixel_10
   call takes long enough on the emulator that a floating bubble's DOWN followed by a MOVE opens the hold menu; drag a
   floating bubble with one `input swipe`.
 
+## The service's window token
+
+- Overlay windows of type `TYPE_ACCESSIBILITY_OVERLAY` are added with the service's window token, which
+  `AccessibilityService.getSystemService(WINDOW_SERVICE)` sets as the window manager's default token on `init`.
+- When the system unbinds the service (the switch, `settings put secure enabled_accessibility_services`, a
+  UiAutomation such as `uiautomator dump` pausing services, a phone maker's component), system_server removes the
+  token and the service's windows at once, then sends `init(null)`, `onUnbind` and `onDestroy`, which reach the main
+  thread later. A window added in between fails with `BadTokenException` ("token android.os.BinderProxy@… is not
+  valid"); after `init(null)` the message names token null. Requests already queued on the main thread (a settings
+  emission, a posted runnable) still run in that gap.
+- `updateViewLayout` and `removeView` on windows the system has removed do not throw.
+- Found on 2026-10-22 (group 5a's Slovak run, languages plan request 78): after a reconnect the first settings
+  emission reached `OverlayController.applySettings` 5-7 s after "Service connected" on the loaded emulator (other
+  reconnects of that run warmed the recognizer, which the first emission starts, 2-3 s after it; not measured
+  further), and the service was unbound in that time (the run stopped it often, by `uiautomator dump` and
+  `settings put`): `attachWindows` crashed the app. `OverlayWindows.add` now catches that exception only, logs "Window not
+  added, the system is unbinding the service" and the overlay adds its windows whole or not at all; the bubble menu
+  and the crop editor do the same. Turning the service on and off with short gaps does not hit the gap on the idle
+  emulator; holding the main thread with jdb at that first `applySettings` while the service is turned off does
+  (test model UPD8 and its run log).
+
 ## Testing
 
 - `scripts/debug-device.sh show <file> default|swipe` opens the debug image viewer with the system bars hidden in the
