@@ -1965,7 +1965,13 @@ brackets where they matter.
   - A lookup of Қазақстан or мен shows a form-of entry ("Arabic … of قازاقستان", "romanization of men") whose
     lemma is in no dictionary, next to the meaning.
   - kk-ru: 1,210 nouns declined; ky-ru: 709 nouns with person forms, 675 declined.
-- Suffix headwords: kk 312 (-ға, -ге, -дың …), ky 178.
+  - Release 2026.10.22 (compared 2026-10-22) turns every sense-level alt-of row around: the rows tagged `Arabic`,
+    `romanization` and `Yañalif` now lead from the other spelling to the Cyrillic word (قازاقستان, Qazaqstan →
+    Қазақстан; kk-en 105, 91 and 4, ky-en 2,202 Arabic-script and 1 Yañalif), and Cyrillic variants to the main
+    entry (ky дүнүйө → дүйнө, туйгак → туяк); no Cyrillic headword carries those tags. The letter equivalents (о → و,
+    tag `Cyrillic`; kk-en 73, ky-en 18) still go from the Cyrillic letter and lead to the Arabic letter's entry.
+    New kk-en rows: -т → -ді (pronunciation-spelling), مېن → مەن (obsolete). kk-ru and ky-ru are unchanged.
+- Suffix headwords: kk 312 (-ға, -ге, -дың …; 313 in release 2026.10.22, -шиш), ky 178.
 - Readings: none.
 
 ### Other dictionaries

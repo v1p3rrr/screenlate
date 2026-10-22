@@ -20,7 +20,10 @@ Leipzig's news found three ending gaps, fixed: Kazakh у takes a linking vowel (
 -нча/-ндай after a possessive, the converb тауып. Questions 16 and 18 counted, not built; new open questions 19
 (initials), 20 (verbs tagged as nouns in wty) and 21 (Kyrgyz -ыш). PanLex's license page changed from CC0 to CC BY-NC-SA 4.0
 between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, unit tests, lint, 145 page tests, glue tests and LK51-LK55, DIC28
-on the emulator pass.
+on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): counts redone, nothing in the device
+cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
+one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
+tests pass; device case LK56 waits for the emulator).
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,

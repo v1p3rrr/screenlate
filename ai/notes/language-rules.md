@@ -150,7 +150,7 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | spaced | Results of a later part of a hyphenated word: the results from the word's start that cover the aimed character first, then each part's covering ones, earlier parts first; the first part's own results (state for owned in state-owned) are dropped unless nothing covers the aimed character, also when the aimed part finds nothing (бала-шағамен aimed at шағамен: бала-шаға only, not бала); a suffix entry with its hyphen before the ending alone (1990-ға: -ға, then ға), and only one that takes the whole part (19-декабрь: no -де; group 4e question 14, provisional) | `api/EarlierStarts.kt` `withHyphenatedParts`; `api/DictionaryLookup.kt`; `overlay/OverlayController.kt` (shown results kept only while `partStarts` stays the same) | EarlierStartsTest `a later part of a hyphenated word shows the whole word, then the part, not the first part` (сондай-ақ: -ақ, then ақ) | EarlierStartsTest (nothing covers the aim: the results stay; 19-декабрь and бас-келген: no suffix shorter than the part); Isolation (no part starts without a hyphen before the aim) | ok |
 | kk | Frequency from the Leipzig Corpora Collection (`kaz_newscrawl_2016_100K.tar.gz`, 18.7 MB, SHA-256 pinned, CC BY): the archive read as a stream (ustar prefix, GNU long names), `-words.txt` wherever it is, tokens of letters with single hyphens or apostrophes only, lowercased with the kk locale, counts of tokens that become one word added up, top 100,000 | `api/imports/CorpusCountsDictionary.kt` (`Format.LEIPZIG`); catalog `corpus-kk` (template `leipzig`); `scripts/frequency/corpus_catalog.py` | CorpusCountsDictionaryTest (`leipzig words…`, `the kazakh dictionary is built…`, the real archive); CatalogFileTest `thai, kazakh and kyrgyz have frequency dictionaries built from corpus counts…`; `test_corpus_catalog.py` `LeipzigCheckTest` | CorpusCountsDictionaryTest (no word list, no counts: refused) | ok |
 | ky | Frequency from the Leipzig Corpora Collection (`kir_newscrawl_2016_100K.tar.gz`, 19.9 MB, SHA-256 145fd1c7…, CC BY), built as Kazakh's, lowercased with the ky locale | catalog `corpus-ky`; `api/imports/CorpusCountsDictionary.kt` | CorpusCountsDictionaryTest `the kyrgyz dictionary credits the kyrgyz corpus`, `the kyrgyz archive builds the top 100 000 words`; `test_corpus_catalog.py` `test_the_kyrgyz_entry_is_the_leipzig_archive` | — | ok |
-| kk, ky | Form rows to another script are dropped: tags `Arabic`, `romanization`, `Yañalif` (wty links Cyrillic headwords to their Arabic-script and Latin spellings) | `lang/TurkicCyrillicSupport.kt` `ignoredFormTags`; `api/ShownResults.kt` | KazakhSupportTest and KyrgyzSupportTest (`ignoredFormTags`) | Isolation (the languages with `ignoredFormTags`) | ok |
+| kk, ky | Form rows between scripts are dropped: tags `Arabic`, `romanization`, `Yañalif` (since wty 2026.10.22 from the Arabic-script or Latin spelling to the Cyrillic word, before from the Cyrillic word to them; group 4e question 22) and `Cyrillic`, `Cyrillic sometimes` (a Cyrillic letter to its Arabic equivalent's entry, а → ا) | `lang/TurkicCyrillicSupport.kt` `ignoredFormTags`; `api/ShownResults.kt` | KazakhSupportTest and KyrgyzSupportTest (`ignoredFormTags`); ShownResultsTest (а → ا) | Isolation (the languages with `ignoredFormTags`) | ok |
 
 ## Engine (`dictionary:engine-hoshidicts`)
 
@@ -429,6 +429,14 @@ Found while checking the Kazakh and Kyrgyz rules on data (2026-10-22, "Kazakh an
 43. The Kazakh converb of a verb in п writes у for it (тап- → тауып, шап- → шауып: 330 occurrences); the converb
     now takes the п back (`уып>п`), so тауып finds табу (glue tests).
 
+Found while rechecking against wty 2026.10.22 (2026-10-22):
+
+44. Kazakh and Kyrgyz one-letter words showed the entry of the Arabic letter they stand for: Wiktionary links each
+    Cyrillic letter to its Arabic equivalent with the tag `Cyrillic` (а → ا, в → ۋ; kk-en 73 rows, ky-en 18, both
+    releases), which the filter for other scripts missed (Kyrgyz а 148 and в 794 occurrences in the 30,000 most
+    frequent forms, Kazakh о 69). `Cyrillic` and `Cyrillic sometimes` joined `ignoredFormTags` (ShownResultsTest;
+    test-model case LK56).
+
 ## Limits left as they are
 
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
@@ -663,12 +671,13 @@ corpora stayed in the session's scratch folder.
 Each Kazakh and Kyrgyz rule's premise counted on 2026-10-22 (group 4e plan, "Measurements", which has the table of
 numbers): Leipzig's news samples (`kaz_newscrawl_2016_100K`, `kir_newscrawl_2016_100K`: 100,000 sentences each,
 1,079,880 and 1,317,643 Cyrillic words; the 10K samples for the hyphens), the headwords and tags of wty kk and ky into
-English and Russian, the app's bundles (`kk.js`, `ky.js`) run on the 30,000 most frequent word forms of each sample
-(981,616 and 1,223,872 occurrences), and the output of every engine on the OCR comparison screens. The corpora stayed
-in the session's scratch folder.
+English and Russian (releases 2026.10.11 and 2026.10.22), the app's bundles (`kk.js`, `ky.js`) run on the 30,000 most
+frequent word forms of each sample (981,616 and 1,223,872 occurrences), and the output of every engine on the OCR
+comparison screens. The corpora stayed in the session's scratch folder.
 
 - Ending rules: of the top forms by occurrence, Kazakh 65.2% are headwords as written, 27.9% are found through the
-  endings, 6.8% by nothing (before the fixes 41-43: 27.1% and 7.6%); Kyrgyz 42.0%, 23.1%, 34.9%. What is left is mostly
+  endings, 6.8% by nothing (before the fixes 41-43: 27.1% and 7.6%; on wty 2026.10.22 65.3% as written: ҚР and ҚФФ
+  became headwords, Венгрия lost its only row); Kyrgyz 42.0%, 23.1%, 34.9% on both releases. What is left is mostly
   missing from the dictionaries: Kazakh пен, бен (and, with), the particles та, те, па, пе, ме written apart, names;
   Kyrgyz менен 16,803, боюнча 7,885, бирок 4,522, тууралуу, чейин, же. Kyrgyz verbal nouns in -ыш with a possessive
   have no rule (болушу 599, калышы, кетиши, билдиришинче: 144 forms, 4,235 occurrences, less келишим "agreement",

@@ -164,6 +164,11 @@ class ShownResultsTest {
             .copy(otherTraces = listOf(listOf(jawi, jawi), listOf(Transform("alt-of"), jawi)))
         assertThat(baca.withoutChainsThrough(Language.MALAY.support.ignoredFormTags))
             .isEqualTo(baca.copy(otherTraces = emptyList()))
+        // A Kyrgyz or Kazakh one-letter word reaches the entry of the Arabic letter it stands for (а → ا).
+        val letter = result("ا", "", "Wiktionary", matched = "а", trace = listOf(Transform("Cyrillic")))
+        assertThat(letter.withoutChainsThrough(Language.KYRGYZ.support.ignoredFormTags)).isNull()
+        val sometimes = letter.copy(trace = listOf(Transform("Cyrillic sometimes")))
+        assertThat(sometimes.withoutChainsThrough(Language.KAZAKH.support.ignoredFormTags)).isNull()
         // Other languages keep every form-of result.
         for (language in Language.entries - Language.VIETNAMESE - Language.THAI) {
             assertThat(noun.withoutChainsThrough(language.support.ignoredFormTags)).isSameInstanceAs(noun)

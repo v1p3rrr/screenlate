@@ -17,11 +17,12 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
     override val quotePairs = mapOf('«' to '»', '„' to '“', '(' to ')', '[' to ']')
 
     /**
-     * Wiktionary links Cyrillic headwords to their spellings in the Arabic script, in a romanization and in the Latin
-     * alphabet of the 1930s, and Cyrillic letters to their Arabic equivalents (о → و): none of them is read in Cyrillic
-     * text.
+     * Form rows between scripts. Spellings in the Arabic script, in a romanization and in the Latin alphabet of the
+     * 1930s lead to the Cyrillic headword (ىله → Іле, Almaty → Алматы); wty's releases before 2026.10.22 led from the
+     * Cyrillic headword to them, and dictionaries built from those still do. Cyrillic letters lead to the entries of
+     * their Arabic equivalents (а → ا, tagged `Cyrillic`), which a one-letter word (Kyrgyz а, в) would show.
      */
-    override val ignoredFormTags = setOf("Arabic", "romanization", "Yañalif")
+    override val ignoredFormTags = setOf("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
 
     /** A hyphen right before a letter starts a lookup as well, for the dictionaries' suffix entries (-ға). */
     override fun lookupStart(text: String, latinAsNative: Boolean): LookupStart? {

@@ -96,7 +96,8 @@ class KazakhSupportTest {
         assertThat(support.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
         assertThat(support.flagCountries).containsExactly("kz")
         assertThat(support.glyph).isEqualTo("Қ")
-        assertThat(support.ignoredFormTags).containsExactly("Arabic", "romanization", "Yañalif")
+        assertThat(support.ignoredFormTags)
+            .containsExactly("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
         for (letter in "әғқңөұүһі") assertThat(support.fontSample.lowercase()).contains(letter.toString())
     }
 }
