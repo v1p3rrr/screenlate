@@ -1,11 +1,10 @@
 package com.vpr.screenlate.core.common.language
 
-import java.util.Locale
-
 /**
  * Rules Kazakh and Kyrgyz share: Turkic languages in Cyrillic whose endings the language bundles take off with the
  * app's own rules (`scripts/yomitan-language/own-transforms.js`). An ending after digits or an abbreviation is
- * written with a hyphen (1990-ға, АҚШ-қа, км-ге), and the dictionaries list such endings with it (-ға).
+ * written with a hyphen (1990-ға, АҚШ-қа, км-ге), and so are some particles (сондай-ақ, келді-ау); the dictionaries
+ * list them with it (-ға, -ақ).
  */
 abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
     final override val ocrScript = OcrScript.CYRILLIC
@@ -32,8 +31,8 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
 
     /**
      * The text with the language's own letters as their Russian twins ([headwordMarks]), when its first word writes
-     * one and the text as written found nothing that long: OCR and keyboards lose some of a word's letters and keep
-     * others (Қазакстан for Қазақстан).
+     * one and is not a word as written: OCR and keyboards lose some of a word's letters and keep others (Қазакстан for
+     * Қазақстан, Түштук for түштүк).
      */
     override fun keyedSpelling(text: String, found: Int): String? {
         val twins = headwordMarks?.replacements ?: return null
@@ -50,14 +49,6 @@ abstract class TurkicCyrillicSupport : SpacedLanguageSupport() {
         }
     }
 
-    /** Digits, abbreviations with two capitals or more (АҚШ, ҚазМҰУ, NATO) and units (км, кг). */
-    override fun takesHyphenedEnding(part: String): Boolean =
-        part.all(Char::isDigit) || part.count(Char::isUpperCase) >= 2 || part.lowercase(Locale.ROOT) in UNITS
-
-    private companion object {
-        val UNITS = setOf(
-            "км", "м", "см", "мм", "кг", "г", "т", "ц", "л", "мл", "га", "млн", "млрд", "трлн", "квт", "мвт", "гвт", "мб",
-            "гб", "тб",
-        )
-    }
+    /** After any part: endings after digits and abbreviations (1990-ға, АҚШ-қа), particles after a word (сондай-ақ). */
+    override fun takesHyphenedEnding(part: String): Boolean = true
 }

@@ -49,20 +49,40 @@ internal suspend fun reachingAimedCharacter(
  * [results] for a tap on a later part of a hyphenated word: the words found from the whole word's start that reach the
  * aimed character at [aimedCharAt] (state-owned) come first, then those from the [parts] starts
  * (`LanguageSupport.partStarts`) that reach it (owned), each start in turn. Words that stop before the aimed character
- * (state) are left out, unless nothing reaches it.
+ * (state) are left out, unless nothing reaches it. A start at a hyphen keeps only the suffix entries that take the
+ * whole part (1990-ға: -ға), not a shorter one at its start (19-декабрь: not -де).
  *
+ * @param text the lookup text, which [parts] index.
  * @param lookup the results from a UTF-16 index of the lookup text.
  */
 internal suspend fun withHyphenatedParts(
+    text: String,
     results: List<LookupResult>,
     aimedCharAt: Int,
     parts: List<Int>,
     lookup: suspend (Int) -> List<LookupResult>,
 ): List<LookupResult> {
-    val found = parts.flatMap { start -> lookup(start).map { it.copy(start = start) }.filter { it.covers(aimedCharAt) } }
+    val found = parts.flatMap { start ->
+        val end = if (Character.isLetterOrDigit(text.codePointAt(start))) start else partEnd(text, start)
+        lookup(start).map { it.copy(start = start) }.filter { it.covers(aimedCharAt) && start + it.matched.length >= end }
+    }
     val whole = results.filter { it.covers(aimedCharAt) }
     if (found.isEmpty()) return whole.ifEmpty { results }
     return (whole + found).distinctBy { it.term.expression to it.term.reading }
+}
+
+/** The end of the part after the hyphen at [hyphen]: its letters, digits and marks. */
+private fun partEnd(text: String, hyphen: Int): Int {
+    var end = hyphen + Character.charCount(text.codePointAt(hyphen))
+    while (end < text.length) {
+        val codePoint = text.codePointAt(end)
+        val type = Character.getType(codePoint)
+        val inPart = Character.isLetterOrDigit(codePoint) ||
+            type == Character.NON_SPACING_MARK.toInt() || type == Character.COMBINING_SPACING_MARK.toInt()
+        if (!inPart) break
+        end += Character.charCount(codePoint)
+    }
+    return end
 }
 
 /** Whether the match covers the UTF-16 index [at] of the lookup text. */

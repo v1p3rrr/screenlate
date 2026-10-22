@@ -277,10 +277,11 @@ interface LanguageSupport {
 
     /**
      * [text] with the letters OCR and keyboards lose written as the ones the headwords are keyed with for them
-     * ([HeadwordMarks.replacements]: Kazakh қ as к), when the text as written matched no more than [found] UTF-16
-     * characters, fewer than its first word, and that word writes such a letter; null otherwise. Its results longer
-     * than [found] are shown when they keep the letters the text writes ([keepsWrittenLetters]): "Қазакстан" (қ read
-     * as к) finds Қазақстан, while "оң", found as written, shows only оң.
+     * ([HeadwordMarks.replacements]: Kazakh қ as к), when no word was found exactly as written in more than [found]
+     * UTF-16 characters, fewer than its first word, and that word writes such a letter; null otherwise. Its results
+     * as long as those found as written or longer are shown after them when they keep the letters the text writes
+     * ([keepsWrittenLetters]): "Қазакстан" (қ read as к) finds Қазақстан, Kyrgyz "Түштук" (found as түшүү through an
+     * ending) finds түштүк too, while "оң", found as written, shows only оң.
      */
     fun keyedSpelling(text: String, found: Int): String? = null
 

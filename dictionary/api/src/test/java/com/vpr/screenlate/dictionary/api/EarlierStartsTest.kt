@@ -70,7 +70,7 @@ class EarlierStartsTest {
         vararg words: String,
     ): List<Pair<String, Int>> = runBlocking {
         val shown = results.map { LookupResult(matched = it, deinflected = it, term = TermEntry(it, "")) }
-        withHyphenatedParts(shown, aimedCharAt, parts) { start ->
+        withHyphenatedParts(text, shown, aimedCharAt, parts) { start ->
             words.filter { text.startsWith(it, start) }
                 .sortedByDescending { it.length }
                 .map { LookupResult(matched = it, deinflected = it, term = TermEntry(it, "")) }
@@ -90,6 +90,17 @@ class EarlierStartsTest {
         // A suffix entry with its hyphen comes before the ending alone: 1990-ға.
         assertThat(withParts("1990-ға", emptyList(), 5, listOf(4, 5), "-ға", "ға"))
             .containsExactly("-ға" to 4, "ға" to 5).inOrder()
+        // A particle after a word: -ақ, then ақ.
+        assertThat(withParts("сондай-ақ", emptyList(), 8, listOf(6, 7), "-ақ", "ақ"))
+            .containsExactly("-ақ" to 6, "ақ" to 7).inOrder()
+        // From the hyphen, only a suffix entry that takes the whole part: not -де in 19-декабрь, nor -ке in бас-келген.
+        assertThat(withParts("19-декабрь", emptyList(), 3, listOf(2, 3), "-де", "декабрь"))
+            .containsExactly("декабрь" to 3)
+        assertThat(withParts("бас-келген", emptyList(), 5, listOf(3, 4), "-ке", "келген"))
+            .containsExactly("келген" to 4)
+        // The part ends at the next hyphen or space: -ақ in "сондай-ақ деді".
+        assertThat(withParts("сондай-ақ деді", emptyList(), 8, listOf(6, 7), "-ақ", "ақ"))
+            .containsExactly("-ақ" to 6, "ақ" to 7).inOrder()
         // The part finds nothing: the whole word only (бала-шаға aimed at шағамен, which has no entry).
         assertThat(withParts("бала-шағамен", listOf("бала-шаға", "бала"), 7, listOf(5), "бала-шаға", "бала"))
             .containsExactly("бала-шаға" to 0)

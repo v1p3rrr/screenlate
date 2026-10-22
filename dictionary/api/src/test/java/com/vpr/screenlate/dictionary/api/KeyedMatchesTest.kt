@@ -3,9 +3,11 @@ package com.vpr.screenlate.dictionary.api
 import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.language.EnglishSupport
 import com.vpr.screenlate.core.common.language.KazakhSupport
+import com.vpr.screenlate.core.common.language.KyrgyzSupport
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.dictionary.api.model.LookupResult
 import com.vpr.screenlate.dictionary.api.model.TermEntry
+import com.vpr.screenlate.dictionary.api.model.Transform
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -15,7 +17,7 @@ class KeyedMatchesTest {
     private val keyed = mapOf(
         "қаз" to listOf("қаз"), "каз" to listOf("қаз"),
         "Казакстан" to listOf("Қазақстан"), "оң" to listOf("оң"), "он" to listOf("он", "оң", "өң"),
-        "онтустик" to listOf("оңтүстік"),
+        "онтустик" to listOf("оңтүстік"), "туштук" to listOf("түштүк", "түшүү"),
     )
 
     /** What a lookup by words finds from the start of a text: each key it starts with, the longest first. */
@@ -34,9 +36,22 @@ class KeyedMatchesTest {
     }
 
     @Test
+    fun `a word found only through an ending also shows the keyed words as long, but no word found already`() {
+        // Kyrgyz Түштук: түшүү through the past ending's twin spelling as written, түштүк through the keys.
+        val past = LookupResult(
+            matched = "Түштук", deinflected = "түшүү", trace = listOf(Transform("past")), term = TermEntry("түшүү", ""),
+        )
+        val keyed = runBlocking { keyedMatches("Түштук", listOf(past), KyrgyzSupport) { engine(it.lowercase()) } }
+        assertThat(keyed.map { it.term.expression to it.matched }).containsExactly("түштүк" to "Түштук")
+        // One more step than the written match, so it sorts after it.
+        assertThat(keyed.single().preprocessorSteps).isGreaterThan(past.preprocessorSteps)
+    }
+
+    @Test
     fun `nothing is added when the word is found as written or writes no kazakh letter`() {
-        // "оң" finds оң as written, so өң, keyed under он as well, does not show.
+        // "оң" finds оң as written, so өң, keyed under он as well, does not show; nor in a longer word.
         assertThat(matches("оң жақ")).isEmpty()
+        assertThat(matches("оңтустік жақта").map { it.first }).doesNotContain("өң")
         assertThat(matches("Казакстан")).isEmpty()
     }
 
