@@ -181,7 +181,12 @@ Requests 1–19 are in the previous plan. New ones:
     other alt-of rows the wrong way (bé → ben). In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of
     the Italian, 7.8% of the Portuguese and 0.7% of the Spanish. #400: add Tatar. The owner waits for #399 until
     2026-11-05; then the agent checks the latest wty release (ca-en del, de-en im, it-en del) and, if it is not fixed,
-    asks about an own supplement built from kaikki (group 6 plan, question 5).
+    asks about an own supplement built from kaikki (group 6 plan, question 5). Both were done in wty's release
+    2026.10.22 the same day (checked: ca-en del, al, pel, ben; gl-en moi; de-en im, zum, zur, vom, beim; it-en del,
+    della, nel, un; `dict/tt` with 13 gloss languages), so the 2026-11-05 check and the supplement are dropped. The
+    catalog's wty entries follow `latest` with no pinned hash, so the app gets the fix with no change; their sizes and
+    word counts are refreshed against that release once group 5a's catalog edits are merged, and the owner's archive
+    takes the new files.
 74. (2026-10-22) Completeness check of every session that built or researched something (owner). All their commits are
     in languages/main (5c59894f); no numbered owner question blocks them apart from group 6's 10 and 21 and group 4e's
     14-18 (follow-ups after Thai and Khmer). `lintDebug` had never been run on the group branches; it passes on
@@ -1654,3 +1659,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   decided provisionally).
 - 2026-10-22: request 72 says a hung or waiting session never holds the chain (owner); group 5a started while group 4e's
   session waits on a browser prompt.
+- 2026-10-22: wty fixed both reports of request 73 in its release 2026.10.22 (the contractions are back, Tatar added);
+  the 2026-11-05 check and the own supplement are dropped.

@@ -118,9 +118,10 @@ questions: `plans/2026-10-09-more-languages.md`.
   gl moi have no entry. In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of the Italian, 7.8% of
   the Portuguese, 0.7% of the Spanish; French is not affected. Any other alt-of sense is deleted too, and its row goes
   from the target to the page (ca bé → ben, gl auga → agua): about 94% of the rows tagged alt-of point at a term with no
-  entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399; the owner waits until 2026-11-05
-  before an own supplement (languages plan, request 73). To check a release: `ca-en` has no row for del, `de-en` none
-  for im.
+  entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399 and fixed in wty's release
+  2026.10.22 (ca-en has del, al, pel and ben, gl-en moi, de-en im, zum, zur, vom, beim, it-en del, della, nel, un). To
+  check a later release for a regression: `ca-en` has a row for del, `de-en` one for im. The same release added Tatar
+  (issue #400, `dict/tt` with 13 gloss languages).
 - Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan; converter MIT, data CC BY-SA 3.0 per the CC-CEDICT wiki,
   some third parties say 4.0): terms with pinyin, a Hanzi dictionary (Yomitan's kanji format), Cantonese variants
   with Jyutping (CC-CEDICT Canto, CC-Canto); words.hk for Cantonese. `addTermEntry` stores each term under the
