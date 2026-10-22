@@ -1,6 +1,6 @@
 package com.vpr.screenlate.dictionary.api.registry
 
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.catalog.DictionaryCatalog
 import com.vpr.screenlate.dictionary.api.catalog.outdatedCopies
 import kotlinx.coroutines.Dispatchers

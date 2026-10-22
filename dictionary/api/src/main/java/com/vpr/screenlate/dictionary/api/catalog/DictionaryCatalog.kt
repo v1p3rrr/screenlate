@@ -1,9 +1,9 @@
 package com.vpr.screenlate.dictionary.api.catalog
 
 import android.content.Context
-import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.languageName
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import com.vpr.screenlate.dictionary.api.registry.updatesItself

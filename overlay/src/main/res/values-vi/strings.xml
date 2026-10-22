@@ -71,6 +71,9 @@
     <string name="overlay_keep_alive_channel">Dịch vụ đang chạy</string>
     <string name="overlay_keep_alive_title">Screenlate đã sẵn sàng</string>
     <string name="overlay_keep_alive_text">Bong bóng vẫn sẵn sàng ở chế độ nền</string>
+    <string name="overlay_service_off_channel">Dịch vụ đã tắt</string>
+    <string name="overlay_service_off_title">Dịch vụ Screenlate đã tắt</string>
+    <string name="overlay_service_off_text">Bong bóng đã biến mất vì dịch vụ hỗ trợ tiếp cận của Screenlate đã bị tắt. Chạm để bật lại.</string>
     <string name="overlay_translate">Dịch câu</string>
     <string name="overlay_translating">Đang dịch…</string>
     <string name="overlay_compound">Từ ghép: %1$s</string>

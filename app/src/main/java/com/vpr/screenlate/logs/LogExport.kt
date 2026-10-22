@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import com.vpr.screenlate.core.common.log.AppLog
+import com.vpr.screenlate.core.common.log.Log
 import java.io.File
 import java.io.IOException
 import java.time.LocalDateTime
@@ -23,14 +25,15 @@ class LogFileProvider : FileProvider()
 data class SavedLog(val uri: Uri, val path: String)
 
 /**
- * The app's own log (Android shows an app only its own log lines) with the app version and device model, as a file
- * for the share sheet or saved to Downloads. Logs never contain recognized text, words or note contents (see
- * `redacted()`).
+ * One text file for the share sheet or Downloads: the app version and device model, the app's own log file
+ * ([AppLogs]), then what logcat still holds for the app (Android shows an app only its own lines; libraries add lines
+ * there that the own log lacks). Logs never contain recognized text, words or note contents (see `redacted()`).
  */
 object LogExport {
     private const val DIRECTORY = "logs"
     private const val MAX_LINES = 20_000
     private const val DOWNLOADS_FOLDER = "Screenlate"
+    private const val TAG = "Screenlate"
 
     suspend fun write(context: Context): File = withContext(Dispatchers.IO) {
         val directory = File(context.cacheDir, DIRECTORY).apply {
@@ -39,13 +42,16 @@ object LogExport {
         }
         val stamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss", Locale.US))
         val file = File(directory, "screenlate-log-$stamp.txt")
-        file.bufferedWriter().use { out ->
-            out.write(header(context))
-            out.write("\n")
+        Log.i(TAG, "Log exported")
+        file.outputStream().buffered().use { out ->
+            out.write(header(context).toByteArray())
+            out.write("\n=== Screenlate log, oldest first ===\n".toByteArray())
+            AppLog.file?.copyTo(out) ?: out.write("(not started)\n".toByteArray())
+            out.write("\n=== System log (logcat) ===\n".toByteArray())
             val process = ProcessBuilder("logcat", "-d", "-v", "threadtime", "-t", MAX_LINES.toString())
                 .redirectErrorStream(true)
                 .start()
-            process.inputStream.bufferedReader().use { input -> input.copyTo(out) }
+            process.inputStream.use { input -> input.copyTo(out) }
             process.waitFor()
         }
         file

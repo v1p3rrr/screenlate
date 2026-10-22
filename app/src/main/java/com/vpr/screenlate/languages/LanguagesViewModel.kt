@@ -1,10 +1,10 @@
 package com.vpr.screenlate.languages
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.common.settings.LanguageProfilesState
 import com.vpr.screenlate.core.ocr.model.OcrModelStore

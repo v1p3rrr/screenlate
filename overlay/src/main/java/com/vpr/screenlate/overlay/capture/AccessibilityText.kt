@@ -5,11 +5,11 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.os.BundleCompat
 import com.vpr.screenlate.core.common.geometry.Box
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage

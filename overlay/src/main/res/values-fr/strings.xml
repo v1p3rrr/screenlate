@@ -71,6 +71,9 @@
     <string name="overlay_keep_alive_channel">Service actif</string>
     <string name="overlay_keep_alive_title">Screenlate est prêt</string>
     <string name="overlay_keep_alive_text">La bulle reste disponible en arrière-plan</string>
+    <string name="overlay_service_off_channel">Service désactivé</string>
+    <string name="overlay_service_off_title">Le service Screenlate est désactivé</string>
+    <string name="overlay_service_off_text">La bulle a disparu, car le service d’accessibilité de Screenlate a été désactivé. Touchez pour le réactiver.</string>
     <string name="overlay_translate">Traduire la phrase</string>
     <string name="overlay_translating">Traduction…</string>
     <string name="overlay_compound">Mot composé : %1$s</string>

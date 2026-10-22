@@ -1,6 +1,7 @@
 package com.vpr.screenlate.yomitan
 
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import com.vpr.screenlate.core.anki.AnkiAvailability
 import com.vpr.screenlate.core.anki.AnkiDroid
 import com.vpr.screenlate.core.anki.AnkiNotes

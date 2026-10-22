@@ -1,6 +1,34 @@
 # Status
 
+## User report (2026-10-20): the bubble disappears on a ColorOS phone
+
+A user of v0.2.3 sent a screen recording: the bubble and popup vanish 2–3 s after most scans and the accessibility
+switch goes off by itself; once it came back by itself. Analysis, ranked causes (a crash during recognition, or a
+force-stop by the phone's background manager), the questions and log steps for the user and the app-side options are in
+`ai/notes/oem-background-limits.md`. The user's first log (Android 16) covers only a fresh process: no crash on record
+and, if saved right after a disappearance, no force-stop either, so ColorOS turning the service off without a force-stop
+is now a candidate too. The 2026-10-22 logs settle the scan-time case: the system unbinds the service ~1.2 s after the
+finger leaves the floating bubble, the process lives on (no crash, no kill); one later stop was a force-stop. Which
+ColorOS component does it is not in the app's log; experiments for the user are in the note. An r/Oppo thread (seen by
+the owner) reports ColorOS 16 builds turning off every downloaded app's service and an update resetting app permissions;
+the user is asked to test with a second app's service on. Web reports (in the note) say ColorOS 16 restricts the
+accessibility services of apps installed outside a store and that its security app's allowlist may help; the user is
+asked about both. Built on `claude/competent-rhodes-6bde05` (owner's choices, regular builds) and merged into `main`
+(687f7029) and `languages/main` on 2026-10-22: the app's own log file (request 71 of the languages plan: 8 MB,
+`noBackupFilesDir/logs`, exported before the logcat part, exit reasons at each start), a stop report in the log and a
+"Screenlate service is off" notification at every stop. Test model UPD4-UPD7, all passed on the emulators on 2026-10-22
+(run log); the check added naming of system packages hidden from the app.
+
 ## Work in progress (2026-10-22, night): the build chain
+
+Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions back, Tatar added) and reverses every
+alt-of row (languages plan, requests 73 and 77, question 87: misspelling redirects shown as they are); the follow-up
+session of request 77 waits as a card for the owner. Disk D: ran full (0 bytes; the project itself holds a few tens of
+GB, the rest is outside it): with the owner's leave the build folders of 13 idle worktrees were deleted (17 GB free;
+`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a
+pushed sv, no, da, ro, la and lt as one chain (`languages/lt` holds all), tests pass, emulator cases and the wty recheck
+next. Group 4e's follow-ups are done (`languages/kk-followups`), its wty recheck runs. The ColorOS branch is merged into
+main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
 block at a time, each checked and merged into `languages/main` by the coordinating session before the next starts, every

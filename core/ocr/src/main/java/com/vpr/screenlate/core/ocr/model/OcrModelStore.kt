@@ -1,7 +1,7 @@
 package com.vpr.screenlate.core.ocr.model
 
 import android.content.Context
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.IOException

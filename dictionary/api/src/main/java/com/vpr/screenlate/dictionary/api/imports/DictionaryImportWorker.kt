@@ -1,5 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.languages.InstalledLanguages
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -8,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker

@@ -4,13 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles

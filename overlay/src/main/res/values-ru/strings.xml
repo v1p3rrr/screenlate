@@ -72,6 +72,9 @@
     <string name="overlay_keep_alive_channel">Служба работает</string>
     <string name="overlay_keep_alive_title">Screenlate готов</string>
     <string name="overlay_keep_alive_text">Плавающая кнопка остаётся доступной в фоне</string>
+    <string name="overlay_service_off_channel">Служба отключена</string>
+    <string name="overlay_service_off_title">Служба Screenlate отключена</string>
+    <string name="overlay_service_off_text">Плавающая кнопка пропала, потому что служба специальных возможностей Screenlate была отключена. Нажмите, чтобы включить её снова.</string>
     <string name="overlay_translate">Перевести предложение</string>
     <string name="overlay_translating">Перевожу…</string>
     <string name="overlay_compound">Составное слово: %1$s</string>

@@ -1,12 +1,12 @@
 package com.vpr.screenlate.dictionary.api
 
-import android.util.Log
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.LanguageSupport
 import com.vpr.screenlate.core.common.language.LookupStart
 import com.vpr.screenlate.core.common.language.MappedText
 import com.vpr.screenlate.core.common.language.SearchResolution
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.model.DictionaryStyle
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes

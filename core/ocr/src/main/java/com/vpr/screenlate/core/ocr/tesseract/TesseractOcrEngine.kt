@@ -3,13 +3,13 @@ package com.vpr.screenlate.core.ocr.tesseract
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
-import android.util.Log
 import com.googlecode.tesseract.android.ResultIterator
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrEngineType
 import com.vpr.screenlate.core.ocr.OcrLine
 import com.vpr.screenlate.core.ocr.OcrPage

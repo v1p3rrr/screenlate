@@ -1,10 +1,10 @@
 package com.vpr.screenlate.dictionary.api.languages
 
 import android.content.Context
-import android.util.Log
 import android.view.textclassifier.TextClassificationManager
 import android.view.textclassifier.TextLanguage
 import com.vpr.screenlate.core.common.languageCode
+import com.vpr.screenlate.core.common.log.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

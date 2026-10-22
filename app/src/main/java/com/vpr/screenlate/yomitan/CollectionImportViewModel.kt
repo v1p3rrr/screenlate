@@ -1,9 +1,9 @@
 package com.vpr.screenlate.yomitan
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.dictionary.api.imports.CollectionDictionary
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports

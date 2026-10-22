@@ -2,7 +2,6 @@ package com.vpr.screenlate.core.ocr.mlkit
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -18,6 +17,7 @@ import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.geometry.Box
 import com.vpr.screenlate.core.common.language.OcrScript
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrEngine
 import com.vpr.screenlate.core.ocr.NoDeviceOcrException
 import com.vpr.screenlate.core.ocr.OcrEngineType

@@ -3,17 +3,19 @@ package com.vpr.screenlate
 import android.app.Application
 import android.content.res.Configuration as ResourcesConfiguration
 import android.content.res.Resources
-import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.vpr.screenlate.core.common.locale.AppLanguage
 import com.vpr.screenlate.core.common.locale.AppLanguageResources
+import com.vpr.screenlate.core.common.log.Log
+import com.vpr.screenlate.core.common.settings.AppSettingsRepository
 import com.vpr.screenlate.core.common.settings.LanguageProfiles
 import com.vpr.screenlate.core.translate.TranslationSettingsRepository
 import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.imports.DictionaryRepair
 import com.vpr.screenlate.dictionary.api.imports.DictionaryReset
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.logs.AppLogs
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -58,6 +60,8 @@ class ScreenlateApplication : Application(), Configuration.Provider {
     }
 
     override fun onCreate() {
+        // Before injection, so that lines logged while the graph is built reach the file too.
+        AppLogs.install(this)
         super.onCreate()
         MainScope().launch(Dispatchers.IO) {
             // Before anything writes the settings: an install without any is a first run.

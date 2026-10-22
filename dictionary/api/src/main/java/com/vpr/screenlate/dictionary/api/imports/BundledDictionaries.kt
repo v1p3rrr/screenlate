@@ -1,7 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
@@ -11,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.decodeIndexText
 import com.vpr.screenlate.dictionary.api.registry.dictionaryKey
 import dagger.hilt.android.qualifiers.ApplicationContext

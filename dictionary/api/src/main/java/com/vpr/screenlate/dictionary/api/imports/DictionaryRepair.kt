@@ -1,6 +1,6 @@
 package com.vpr.screenlate.dictionary.api.imports
 
-import android.util.Log
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import javax.inject.Inject

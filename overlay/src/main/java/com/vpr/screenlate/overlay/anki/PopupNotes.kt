@@ -3,7 +3,6 @@ package com.vpr.screenlate.overlay.anki
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
-import android.util.Log
 import android.widget.Toast
 import com.vpr.screenlate.core.anki.AddResult
 import com.vpr.screenlate.core.anki.AnkiAvailability
@@ -25,6 +24,7 @@ import com.vpr.screenlate.core.anki.settings.DuplicateBehavior
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.AudioRegion
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.DictionaryLookup
 import com.vpr.screenlate.overlay.R
 import com.vpr.screenlate.overlay.capture.SharedScreenshot

@@ -2,8 +2,8 @@ package com.vpr.screenlate.core.ocr.paddle
 
 import android.graphics.Bitmap
 import android.os.SystemClock
-import android.util.Log
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.ocr.OcrPage
 import com.vpr.screenlate.core.ocr.mnn.MnnNetwork
 import com.vpr.screenlate.core.ocr.mnn.MnnTensor

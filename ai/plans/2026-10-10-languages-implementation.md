@@ -163,8 +163,16 @@ Requests 1–19 are in the previous plan. New ones:
     rest of the long candidate list are recorded as deferred, with reasons.
 71. (2026-10-20) The app keeps its own log: lines written to a file as they happen instead of read from the
     system log at export time (on the owner's Honor phone the system log gives the app nothing; on a ColorOS phone it
-    held only the last 22 seconds). Not started: the owner asked for an analysis first and will say when to build it;
-    its open choices are asked then. It is built on both main and languages/main (owner, 2026-10-21).
+    held only the last 22 seconds). It is built on both main and languages/main (owner, 2026-10-21). Built on
+    2026-10-22 on `claude/competent-rhodes-6bde05` (based on main) with the owner's answers: at most 8 MB (two files of
+    4 MB, oldest lines dropped), in `noBackupFilesDir` (removed with the app); the export is one text file with the own
+    log first and the logcat part after it; no button to clear it. Every module logs through `core.common.log.Log`.
+    With it, for the bubble disappearing on a ColorOS phone (`ai/notes/oem-background-limits.md`): exit reasons at each
+    process start; a stop report when the service stops (on the enabled list or not, time since the last bubble touch
+    and scan, recent windows with system package names only); a notification "Screenlate service is off" at every stop,
+    a banner without sound, opening the accessibility settings, cancelled when the service runs again, no extra
+    permission request; all of it in regular builds (owner, 2026-10-22). Merged into main and languages/main on
+    2026-10-22 (owner).
 72. (2026-10-21) Build order of the researched blocks: Thai and Khmer (group 4c), then group 4e's follow-ups (Kazakh and
     Kyrgyz, questions 14-18), then group 5's blocks 5a-5e, then group 6's blocks 6a-6d, one session at a time; each
     block is merged into languages/main before the next starts (owner; placing group 4e's follow-ups right after Thai
@@ -426,6 +434,10 @@ Decided when the first language or group 1 is ready, before it is merged into th
   any added later) are not shown in the dock, since nothing is scanned there. Now only the floating bubble starts the
   hold timer (`OverlayController.BubbleTouchListener`). Built later with the other deferred features, after the
   languages, or separately when the owner says.
+- Initials in sentence ends (group 5a, 2026-10-22): a single capital letter with a period ends a sentence in every
+  language, so names split (Lithuanian "A. Smetona": in its Leipzig corpus 9,048 such initials stand before a capital
+  and 105 at a sentence end). A shared rule of `Sentence.kt` for all Latin and Cyrillic languages, not built yet;
+  questions when it is planned.
 
 ## Questions for the owner
 
@@ -1681,3 +1693,7 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: wty's release 2026.10.22 reverses every alt-of row and adds misspelling and obsolete redirects; question
   87 answered (b), shown as they are; request 77 (the follow-ups, a session of their own); request 76's blocks measure
   on the new release.
+- 2026-10-22: request 71 built with the owner's answers (8 MB, one export file, no clear button) together with the
+  service stop report and the "service is off" notification (regular builds, a banner without sound, at every stop, no
+  extra permission request); merged into main and languages/main (owner).
+- 2026-10-22: Backlog item on initials in sentence ends (group 5a's Lithuanian finding).

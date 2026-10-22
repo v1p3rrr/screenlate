@@ -71,6 +71,9 @@
     <string name="overlay_keep_alive_channel">서비스 실행 중</string>
     <string name="overlay_keep_alive_title">Screenlate 준비됨</string>
     <string name="overlay_keep_alive_text">백그라운드에서 버블을 사용할 수 있도록 유지합니다</string>
+    <string name="overlay_service_off_channel">서비스 꺼짐</string>
+    <string name="overlay_service_off_title">Screenlate 서비스가 꺼졌습니다</string>
+    <string name="overlay_service_off_text">Screenlate 접근성 서비스가 꺼져서 버블이 사라졌습니다. 탭하여 다시 켜세요.</string>
     <string name="overlay_translate">문장 번역</string>
     <string name="overlay_translating">번역 중…</string>
     <string name="overlay_compound">합성어: %1$s</string>

@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.registry
 
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.language.support
+import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.settings.preferenceKey
 import com.vpr.screenlate.dictionary.api.DictionaryEngine
 import com.vpr.screenlate.dictionary.api.DictionarySet
@@ -14,7 +15,6 @@ import com.vpr.screenlate.dictionary.api.imports.TranscriptionTagBanks
 import com.vpr.screenlate.dictionary.api.languages.DictionaryLanguageDetector
 import com.vpr.screenlate.dictionary.api.languages.DictionarySample
 import com.vpr.screenlate.dictionary.api.model.DictionaryTagNotes
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit

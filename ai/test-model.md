@@ -384,6 +384,10 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD1 | About: libraries, notices, installed dictionaries with licenses, "What the service reads and sends", "Report a problem" opens the form (not submitted) | O | M | |
 | UPD2 | Logs: share and save to Downloads; after scans, lookups and a note the log has no recognized text, words, note contents or URLs with terms | E | U RedactionTest, M | 2026-10-18 |
 | UPD3 | Update check and install (release builds only) | O | D | |
+| UPD4 | The export starts with the own log (oldest first: "Process started", the exit reasons of earlier processes, scans, the service's stop report), then the logcat part; lines from before an app restart are still there | F | U LogFileTest, ExitReasonsTest, M | 2026-10-22 |
+| UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | O | U LogFileTest, M | 2026-10-22 (API 30) |
+| UPD6 | Turn the service off in the accessibility settings → a banner "Screenlate service is off" without sound; a tap opens the service's settings (or the list); turning the service on removes the notification; with notifications off, no banner and a log line saying so | F | M | 2026-10-22 |
+| UPD7 | The stop report in the log: "on the enabled list: no" after the switch, the time since the last bubble touch and scan, recent windows with package names of system and phone-maker apps only (hidden ones by name prefix), and a line 3 s later | F | U ServiceStopDiagnosticsTest, M | 2026-10-22 |
 
 ### NF: non-functional
 
@@ -420,6 +424,43 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `claude/competent-rhodes-6bde05` (on `cbdacc03`, then with the package-name and log fixes before their commit), Pixel_10_Pro (API 37), Screenlate_API30_glide (API 30)
+
+Scope: the app's own log file, the service's stop report and the "service is off" notification (UPD4-UPD7). x86_64
+APK on Pixel_10_Pro installed over the data, armeabi-v7a on the API 30 AVD (its image runs ARM through translation;
+the app ships no x86 libraries). The service was turned off with `settings put secure enabled_accessibility_services`.
+
+Results: two bugs in the new code fixed (below), everything else passed. First checks: UPD4, UPD6, UPD7 (moved to
+F), UPD5 (O). Automated: unit tests and overlay lint passed.
+
+- UPD7: the report after the switch reads "on the enabled list: no", the time since the bubble touch and the windows
+  of the last 10 s, and 3 s later "on the enabled list: no, running: no". The launcher read "an app": Android 11 hides
+  the system's packages without a launcher icon from apps, so `getApplicationInfo` fails. Fixed: hidden packages with
+  a system or phone-maker prefix are named (`hasSystemPackagePrefix`); after it the report names
+  `com.google.android.apps.nexuslauncher` and its activity.
+- `uiautomator dump` stops the service too: UiAutomation pauses accessibility services, the report says "on the
+  enabled list: yes", and the service connects again about 1.5 s later. Do not dump the UI while checking stops.
+- UPD6: a heads-up banner without sound, the bubble gone; a tap opens the accessibility list with Screenlate
+  highlighted (the details page needs a permission only system apps hold) and the notification goes away; turning the
+  service on again cancels an unopened one. With POST_NOTIFICATIONS revoked: no notification and the line "No
+  notification about the stop: notifications are off". The refused details page logged a 40-line stack trace into the
+  own log at each tap: now one line.
+- Exit reasons at the next start: after the revoke, "PERMISSION_CHANGE … "permissions revoked""; after the install,
+  PACKAGE_UPDATED; an earlier force-stop reads "USER_REQUESTED (force-stop)". A process with no earlier exits writes
+  no marker file.
+- UPD4: one .txt, the header, "=== Screenlate log, oldest first ===" from "Process started", then "=== System log
+  (logcat) ===" ending with "Log exported". No Japanese characters and no screen text in it after a bubble tap.
+- UPD5 (API 30): `no_backup/logs/screenlate.log` created at the first start; after `adb uninstall`, `run-as` says
+  unknown package and `/data/data`, `/data/user/0` and `/data/user_de/0` have no app folder, while
+  `Download/Screenlate/screenlate-log-….txt` stays.
+
+Not checked: the phone; a stop made by a phone maker's security app.
+
+Emulator state since this run: Pixel_10_Pro keeps its data under this branch's build (0.2.3-cbdacc03 with the fixes)
+instead of `abd00763`, the service on, POST_NOTIFICATIONS granted again; the storage thresholds lowered for the
+install are deleted. Screenlate_API30_glide has this build freshly installed (data cleared by the uninstall, never
+opened), the service off, no files left in Download.
 
 ### 2026-10-22, `languages/checks-2` (on `195fd926` with this branch's fixes before their commit), Pixel_10_Pro (API 37), Screenlate_API30_glide (API 30)
 
