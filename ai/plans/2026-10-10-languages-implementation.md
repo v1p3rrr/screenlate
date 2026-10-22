@@ -437,8 +437,8 @@ Decided when the first language or group 1 is ready, before it is merged into th
   languages, or separately when the owner says.
 - Initials in sentence ends (group 5a, 2026-10-22): a single capital letter with a period ends a sentence in every
   language, so names split (Lithuanian "A. Smetona": in its Leipzig corpus 9,048 such initials stand before a capital
-  and 105 at a sentence end). A shared rule of `Sentence.kt` for all Latin and Cyrillic languages, not built yet;
-  questions when it is planned.
+  and 105 at a sentence end). Decided with group 4e's question 19 (owner, 2026-10-22): an initial before a capitalized
+  word holds the sentence in every spaced language; built by group 4e.
 - Smaller language bundles (2026-10-22): the rules of `own-transforms.js` reach every bundle that imports from it
   (Romanian and Latin rules in the Norwegian, Kazakh, Kyrgyz, Bengali, Persian and Hebrew bundles, about 2.4 KB each),
   because esbuild keeps the rule helpers' calls. `/* @__PURE__ */` on the helpers or one module per language would
@@ -1705,3 +1705,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: groups 4e's follow-ups (`languages/kk-followups`) and 5a's chain (`languages/lt`: sv, no, da, ro, la,
   lt) merged into `languages/main`; 4e's new device cases renumbered LK61-LK63; Backlog item on smaller language
   bundles.
+- 2026-10-22: group 4e's questions 16 and 18-22 answered (owner): the six stem-changing pronouns skipped by noun endings,
+  PanLex capitalized headwords without junk, initials hold the sentence in every spaced language, the verb filter and
+  the other-script filter stay, the Kyrgyz -ыш rule added; built by group 4e.
