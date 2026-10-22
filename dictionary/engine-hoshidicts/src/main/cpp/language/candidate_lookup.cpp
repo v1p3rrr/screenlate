@@ -26,6 +26,7 @@ struct RawCandidate {
   std::vector<std::vector<std::string>> r;
   bool u = false;
   std::vector<std::string> g;
+  bool f = false;
 };
 
 }  // namespace candidate_json
@@ -46,10 +47,12 @@ struct Pending {
   std::string from;
   // The scanned text after the text preprocessors, where the chains start.
   std::string origin;
-  // Definition tags one of which a glossary needs, kept along form-of steps; empty for any.
+  // Definition tags one of which a glossary needs, kept along form-of steps unless [free_lemmas]; empty for any.
   std::vector<std::string> tags;
   // Whether a form-of entry with no tags led here (CandidateResult::respelled).
   bool respelled = false;
+  // Whether the lemmas this text's form-of entries lead to need none of [tags] (LanguageCandidate::f).
+  bool free_lemmas = false;
 };
 
 struct Match {
@@ -154,7 +157,7 @@ std::vector<LanguageCandidate> parse_candidates(const std::string& json) {
   result.reserve(raw.size());
   for (auto& c : raw) {
     result.push_back({std::move(c.o), std::move(c.t), std::move(c.d), c.s, static_cast<uint32_t>(c.c), std::move(c.r), c.u,
-                      std::move(c.g)});
+                      std::move(c.g), c.f});
   }
   return result;
 }
@@ -217,8 +220,8 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       // form of שלום) would only add its tags beside that headword, which Yomitan shows and the app leaves out. Text
       // with the form's own marks (שְׁלוֹם) is not the headword itself and keeps them.
       if (!item.tags.empty() && is_itself(item.lemma)) continue;
-      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin, p.tags,
-                    p.respelled || item.tags.empty()};
+      Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin,
+                    p.free_lemmas ? std::vector<std::string>{} : p.tags, p.respelled || item.tags.empty()};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());
@@ -231,7 +234,8 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
 
   std::vector<Pending> lemmas;
   for (const auto& candidate : candidates) {
-    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t, candidate.g};
+    Pending p{candidate.o, candidate.s, candidate.c, candidate.r, candidate.d, candidate.u, {}, candidate.t, candidate.g,
+              false, candidate.f};
     if (p.chains.empty()) p.chains.emplace_back();
     visit(p, lemmas);
   }

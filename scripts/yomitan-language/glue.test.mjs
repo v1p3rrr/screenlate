@@ -725,6 +725,8 @@ test('norwegian genitive -s matches nouns, names and forms by their definition t
     const [day] = candidatesTo('no', 'dagens', 'dagen');
     assert.ok(day.u);
     assert.deepEqual([...day.g], ['n', 'name', 'non-lemma']);
+    // The lemma a form leads to (dagen, a form of dag) needs the tags too.
+    assert.equal(day.f, undefined);
     assert.deepEqual([...day.r[0]], ['-s']);
     assert.ok(queried('no', 'Norges').has('Norge'));
     assert.ok(queried('no', 'Verdens').has('verden'));
@@ -770,6 +772,8 @@ test('romanian article and agreement endings match nominal words and forms by th
     const [council] = candidatesTo('ro', 'Consiliul', 'consiliu');
     assert.ok(council.u);
     assert.deepEqual([...council.g], ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']);
+    // The lemma a form leads to may be any word: aflat is a form of the verb afla.
+    assert.equal(council.f, true);
     assert.deepEqual([...council.r[0]], ['-ul']);
     for (const [text, lemma] of [
         ['procesul', 'proces'], ['fratele', 'frate'], ['dezvoltarea', 'dezvoltare'], ['comisia', 'comisie'],
@@ -787,6 +791,7 @@ test('romanian article and agreement endings match nominal words and forms by th
     const written = candidates('ro', 'casă').find((c) => c.d === 'casă');
     assert.ok(!written.u);
     assert.equal(written.g, undefined);
+    assert.equal(written.f, undefined);
 });
 
 test('romanian rules and cedilla letters stay out of other languages', () => {
