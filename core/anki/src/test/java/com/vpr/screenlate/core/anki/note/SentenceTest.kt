@@ -116,6 +116,15 @@ class SentenceTest {
     }
 
     @Test
+    fun swedishSentenceKeepsAbbreviationsAndTheQuotesItOpens() {
+        val paragraph = "Det regnade. Hon köpte t.ex. äpplen, bl.a. röda. ”Kom hit nu.” Vi ses kl. 8 i morgon. Hon är ung. Slut."
+        assertThat(extract(paragraph, "äpplen", Language.SWEDISH).text).isEqualTo("Hon köpte t.ex. äpplen, bl.a. röda.")
+        assertThat(extract(paragraph, "hit", Language.SWEDISH).text).isEqualTo("”Kom hit nu.”")
+        assertThat(extract(paragraph, "ses", Language.SWEDISH).text).isEqualTo("Vi ses kl. 8 i morgon.")
+        assertThat(extract(paragraph, "ung", Language.SWEDISH).text).isEqualTo("Hon är ung.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

@@ -45,6 +45,12 @@ class FontCatalogFileTest {
     }
 
     @Test
+    fun `swedish takes every latin font`() {
+        assertThat(fonts.filter { it.isOfferedFor(Language.SWEDISH) }.map { it.family })
+            .containsExactly("Literata", "Inter", "Atkinson Hyperlegible Next", "Lexend", "PT Serif", "PT Sans")
+    }
+
+    @Test
     fun `chinese has fonts for both scripts`() {
         val chinese = fonts.filter { it.language == Language.CHINESE.code }.map { it.family }
         assertThat(chinese).containsExactly("Noto Sans SC", "Noto Serif SC", "Noto Sans TC", "Noto Serif TC", "LXGW WenKai TC")

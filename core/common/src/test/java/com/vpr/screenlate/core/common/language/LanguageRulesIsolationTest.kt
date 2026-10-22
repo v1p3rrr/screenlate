@@ -184,6 +184,12 @@ class LanguageRulesIsolationTest {
         // Georgian ქ. (city) and წ. (year), single letters without a partner.
         assertThat(periodEnding.where { holds(it, "ქ. თბილისი") }).containsExactly(Language.GEORGIAN)
         assertThat(periodEnding.where { holds(it, "1991 წ. დაიწყო") }).containsExactly(Language.GEORGIAN)
+        // Swedish t.ex., and ung. (ungefär), which holds only before a lowercase word or a number.
+        val forExample = "frukt t.ex. äpplen"
+        assertThat(periodEnding.where { !it.endsSentence(forExample, forExample.lastIndexOf('.')) })
+            .containsExactly(Language.SWEDISH)
+        assertThat(periodEnding.where { holds(it, "ung. tre") }).containsExactly(Language.SWEDISH)
+        assertThat(periodEnding.where { holds(it, "ung. Han") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -258,8 +264,8 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German and Dutch split compounds, German puts capitalized parts first`() {
-        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN, Language.DUTCH)
+    fun `only German, Dutch and Swedish split compounds, German puts capitalized parts first`() {
+        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN, Language.DUTCH, Language.SWEDISH)
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
 
@@ -367,6 +373,9 @@ class LanguageRulesIsolationTest {
         // Kyrgyz writes the barred o as ө.
         assertThat(all.where { it.ocrWord("к\u0275л") != "к\u0275л" }).containsExactly(Language.KYRGYZ)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
+        // Swedish writes the a with a hook or a circumflex that ML Kit reads for å as å.
+        assertThat(all.where { it.ocrWord("pả") != "pả" }).containsExactly(Language.SWEDISH)
+        assertThat(all.where { it.ocrWord("gâ") != "gâ" }).containsExactly(Language.SWEDISH)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.

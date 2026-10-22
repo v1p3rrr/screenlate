@@ -631,6 +631,39 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun swedishFindsFormRowsFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+        val imported = engine.import(swedishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val swedish = LookupOptions(language = Language.SWEDISH)
+        suspend fun all(text: String) = engine.lookup(text, swedish).map { it.term.expression }
+
+        val house = engine.lookup("Huset är stort", swedish).first()
+        assertThat(house.term.expression).isEqualTo("hus")
+        assertThat(house.matched).isEqualTo("Huset")
+        assertThat(all("läser")).contains("läsa")
+        // å and ä are letters of their own: a word without the ring or the dots is another word.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).containsExactly("ar")
+        assertThat(all("lasa")).isEmpty()
+    }
+
+    /** Rows as Wiktionary's Swedish exports write them: form rows naming their lemma, two words that differ in å. */
+    private fun swedishDictionary(): File = zip(
+        "sv.zip",
+        "index.json" to """{"title":"Test Swedish","revision":"1","format":3,"sourceLanguage":"sv"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["hus","","","n",0,["house"],1,""],
+              ["huset","","non-lemma","n",0,[["hus",["definite","singular"]]],2,""],
+              ["läsa","","","v",0,["to read"],3,""],
+              ["läser","","non-lemma","v",0,[["läsa",["present"]]],4,""],
+              ["år","","","n",0,["year"],5,""],
+              ["ar","","","n",0,["are (unit of area)"],6,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

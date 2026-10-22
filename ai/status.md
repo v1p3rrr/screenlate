@@ -33,6 +33,11 @@ owner's account, checked again on 2026-11-05 (request 73); the completeness chec
 bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the phone: both
 diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
 
+Group 5a (plan `2026-10-19-group-5a.md`, "Progress" and "Measurements"): built language by language in the plan's
+order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs and tests; its rules checked on Leipzig
+text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
+engine measurements and its emulator cases wait for the emulator lock.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):

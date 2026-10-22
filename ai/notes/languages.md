@@ -1545,6 +1545,22 @@ Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decis
 Swedish, Norwegian, Danish, Romanian, Latin, Lithuanian, Slovak, Slovenian, Esperanto, Albanian and Swahili (Basque and
 Maltese researched, not built): research, decisions and work in `plans/2026-10-19-group-5a.md`.
 
+### Swedish on `languages/sv` (2026-10-22)
+
+- `Language.SWEDISH` (`sv`), `SwedishSupport`: glyph Å, flag se, Latin fonts (`fontSubsets` latin: every catalog Latin
+  font has å ä ö), Wiktionary first for audio (Sv-, 20 of 20 common words; Lingua Libre Q9027 2 of 20), compound links
+  s e u o a, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters` (shared with Danish and Norwegian, which also turn ä into å): ả â Ả Â → å Å,
+  one for one, run only from `OcrPage.inLanguage` (cloud recognition included), never on app text.
+- Bundle: Yomitan's descriptor, capitalization only (`sv.js`, 47 KB); forms come from wty's form rows (331k in sv-en).
+- Catalog: wty sv into en ru de es fr ja ko pl pt tr zh and the transcription, all ticked (sv-it 1,459 words and
+  sv-vi 283 stay under the line); wordfreq `large_sv`; Tesseract `swe` fast and best and Paddle v6 unticked, Paddle v5
+  Latin recommended ("more accurate", ML Kit stays the main model). `paddle_models.py` regenerates the existing
+  archives byte for byte (no SHA change).
+- Quotes: ”…” and »…» open and close with the same character; Swedish keeps the default pairs (“” ( ) [ ]), so a
+  sentence ending inside one loses its opening quote, as straight quotes do (plan row "Sentence text").
+- WikDict swe-rus: converted with `scripts/freedict` and listed once hosting exists (decision "ESPDIC and WikDict").
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

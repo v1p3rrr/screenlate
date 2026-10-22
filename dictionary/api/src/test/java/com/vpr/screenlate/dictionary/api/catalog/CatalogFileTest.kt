@@ -72,7 +72,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -187,6 +187,20 @@ class CatalogFileTest {
         )
         assertThat(kyrgyz.filterNot { it.recommended }.map { it.id })
             .containsExactly("tesseract-fast-kir", "tesseract-best-kir", "paddle-detector-v5-ky")
+    }
+
+    @Test
+    fun `swedish offers eleven wiktionaries, its transcription, wordfreq's large list and paddle latin, ticked, and the other models`() {
+        val swedish = catalog!!.entries.filter { it.sourceLanguage == "sv" }
+        assertThat(swedish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sv-en", "wiktionary-sv-ru", "wiktionary-sv-de", "wiktionary-sv-es", "wiktionary-sv-fr",
+            "wiktionary-sv-ja", "wiktionary-sv-ko", "wiktionary-sv-pl", "wiktionary-sv-pt", "wiktionary-sv-tr",
+            "wiktionary-sv-zh", "wiktionary-sv-transcription", "wordfreq-sv", "paddle-latin-sv",
+        )
+        assertThat(swedish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-swe", "tesseract-best-swe", "paddle-v6-sv", "paddle-detector-v5-sv", "paddle-detector-v6-sv",
+        )
+        assertThat(swedish.first { it.id == "wordfreq-sv" }.downloadUrl).endsWith("/large_sv.msgpack.gz")
     }
 
     @Test

@@ -56,11 +56,19 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl']) {
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv']) {
         // Indonesian, Malay and Tagalog drop every combining mark, as Yomitan's processors for them do.
         if (!['id', 'ms', 'tl'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
     }
+});
+
+test('swedish lowers capitals and keeps the marks of its letters', () => {
+    assert.ok(queried('sv', 'Läsa').has('läsa'));
+    assert.ok(queried('sv', 'ÅR').has('år'));
+    // ä and å are letters of their own: neither is looked up without its mark.
+    assert.ok(!queried('sv', 'läsa').has('lasa'));
+    assert.ok(!queried('sv', 'år').has('ar'));
 });
 
 test('malay takes the indonesian text processors under its own code', () => {
