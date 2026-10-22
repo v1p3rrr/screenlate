@@ -11,14 +11,14 @@ import java.util.zip.ZipFile
  */
 object TranscriptionTagBanks {
 
-    /** The tags found, or null when no transcription has any. */
-    fun read(archive: File): TranscriptionTags? = ZipFile(archive).use { zip ->
+    /** The tags found, to be written into a file; null when no transcription has any. */
+    fun read(archive: File): TranscriptionTags.Builder? = ZipFile(archive).use { zip ->
         val builder = TranscriptionTags.Builder()
         zip.entries().asSequence()
             .filter { BANK.matches(it.name.substringAfterLast('/')) }
             .sortedBy { it.name }
             .forEach { entry -> zip.getInputStream(entry).use { parse(it, builder) } }
-        builder.takeUnless { it.isEmpty }?.build()
+        builder.takeUnless { it.isEmpty }
     }
 
     internal fun parse(input: InputStream, into: TranscriptionTags.Builder) {

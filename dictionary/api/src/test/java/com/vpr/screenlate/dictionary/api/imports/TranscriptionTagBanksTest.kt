@@ -45,7 +45,7 @@ class TranscriptionTagBanksTest {
                 ]""",
                 "term_bank_1.json" to """[["water","water","","",0,["H2O"],1,""]]""",
             ),
-        )!!
+        )!!.build()
 
         assertThat(tags.of("water", "/ˈwɔtɚ/")).containsExactly("General-American", "us", "uk").inOrder()
         assertThat(tags.of("water", "[ˈwɔɾɚ]")).isEmpty()
@@ -72,7 +72,7 @@ class TranscriptionTagBanksTest {
             add("water", "/ˈwɔːtə/", listOf("gb", "au"))
             add("route", "/ɹuːt/", listOf("gb", "au"))
             add("route", "/ɹaʊt/", listOf("x".repeat(500)))
-        }.build()
+        }
         val file = folder.newFile()
 
         tags.write(file)

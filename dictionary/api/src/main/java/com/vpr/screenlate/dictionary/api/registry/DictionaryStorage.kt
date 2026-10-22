@@ -54,8 +54,8 @@ class DictionaryStorage @Inject constructor(@ApplicationContext context: Context
     }
 
     /** Saves the tags of a dictionary's transcriptions into its [directory]; nothing is written for null. */
-    fun writeTranscriptionTags(directory: File, tags: TranscriptionTags?) {
-        if (tags != null) tags.write(File(directory, TRANSCRIPTION_TAGS))
+    fun writeTranscriptionTags(directory: File, tags: TranscriptionTags.Builder?) {
+        tags?.write(File(directory, TRANSCRIPTION_TAGS))
     }
 
     /** The [ReadingIndex] of the dictionary's words; null when its language has none or it was not built. */

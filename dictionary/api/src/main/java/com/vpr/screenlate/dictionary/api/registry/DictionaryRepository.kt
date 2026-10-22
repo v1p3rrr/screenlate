@@ -101,10 +101,8 @@ class DictionaryRepository @Inject constructor(
                 .getOrDefault(emptyMap())
             storage.writeTagNotes(imported.directory, tagNotes)
             if (imported.metadata.pitchCount > 0) {
-                val transcriptionTags = runCatching { TranscriptionTagBanks.read(archive) }
-                    .onFailure { Log.w(TAG, "Reading transcription tags failed", it) }
-                    .getOrNull()
-                storage.writeTranscriptionTags(imported.directory, transcriptionTags)
+                runCatching { storage.writeTranscriptionTags(imported.directory, TranscriptionTagBanks.read(archive)) }
+                    .onFailure { Log.w(TAG, "Reading or writing transcription tags failed", it) }
             }
             val metadata = imported.metadata
             val kind = DictionaryKind.of(metadata)
