@@ -1596,6 +1596,24 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   forms fall to the compound split. WikDict dan-rus is converted (5,878 terms, 5,774 headwords, 135 KB) and listed
   once hosting exists (decision "ESPDIC and WikDict").
 
+### Romanian on `languages/ro` (2026-10-22)
+
+- `Language.ROMANIAN` (`ro`), `RomanianSupport`: glyph Ș, flag ro, Latin fonts with latin-ext, Lingua Libre first for
+  audio (Q7913, 20 of 20 common words; Wiktionary Ro- 2 of 20), no ordinal period, „…”, “…” and «…» paired, the
+  abbreviation lists of `notes/language-rules.md`, a new word after a pronoun or preposition joined with a hyphen
+  (`hyphenElisions`: s-a, într-o).
+- Bundle (`ro.js`, 58 KB): Yomitan's descriptor (capitalization, marks removed), our cedilla processor (ş ţ → ș ț),
+  Ukrainian's apostrophe variants, our article and agreement endings matched by definition tag. The engine drops
+  results reached only through those endings when the text finds results without them
+  (`inflectionRulesOnlyWithoutEntry`).
+- Import: every headword also keyed without ă â î ș ț, and with ş ţ as ș ț (`HeadwordMarks`, `everyHeadword`).
+- Lookup: results under a Cyrillic headword (Moldovan spellings Wiktionary links words to) are left out
+  (`showsHeadword`).
+- Catalog: wty ro into en ru es fr ja pl tr zh and the transcription, all ticked (ro-ko 1,380, ro-pt 1,296, ro-de 463,
+  ro-it 330, ro-vi 247 words stay under the line); wordfreq `small_ro`; Tesseract `ron` fast and best and Paddle v6
+  unticked, Paddle v5 Latin recommended ("more accurate", ML Kit stays the main model).
+- No OCR letter fix: ML Kit drops marks (ț, ș, ă, î), which the keys without marks cover.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

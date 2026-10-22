@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">definido</string>
+    <string name="inflection_ro_ul">artículo definido (procesul de proces, consiliul de consiliu)</string>
+    <string name="inflection_ro_le_label">definido</string>
+    <string name="inflection_ro_le">artículo definido (fratele de frate, textele de texte)</string>
+    <string name="inflection_ro_a_label">definido</string>
+    <string name="inflection_ro_a">artículo definido de sustantivos femeninos (dezvoltarea de dezvoltare, comisia de comisie)</string>
+    <string name="inflection_ro_i_label">definido plural</string>
+    <string name="inflection_ro_i">artículo definido del plural masculino (pomii de pomi)</string>
+    <string name="inflection_ro_ului_label">genitivo definido</string>
+    <string name="inflection_ro_ului">genitivo y dativo con artículo definido (procesului de proces, fratelui de frate)</string>
+    <string name="inflection_ro_ei_label">genitivo definido</string>
+    <string name="inflection_ro_ei">genitivo y dativo de sustantivos femeninos con artículo definido (Moldovei de Moldova, comisiei de comisie)</string>
+    <string name="inflection_ro_ii_label">genitivo definido</string>
+    <string name="inflection_ro_ii">genitivo y dativo de sustantivos femeninos en -e con artículo definido (lumii de lume, dezvoltării de dezvoltare)</string>
+    <string name="inflection_ro_lor_label">genitivo plural definido</string>
+    <string name="inflection_ro_lor">genitivo y dativo plural con artículo definido (caselor de case)</string>
+    <string name="inflection_ro_agreement_label">femenino o plural</string>
+    <string name="inflection_ro_agreement">femenino o plural de un participio o adjetivo (aflată, aflate, aflați de aflat; pusă de pus)</string>
+</resources>

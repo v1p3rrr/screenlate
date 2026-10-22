@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">定形</string>
+    <string name="inflection_ro_ul">定冠詞（proces → procesul、consiliu → consiliul）</string>
+    <string name="inflection_ro_le_label">定形</string>
+    <string name="inflection_ro_le">定冠詞（frate → fratele、texte → textele）</string>
+    <string name="inflection_ro_a_label">定形</string>
+    <string name="inflection_ro_a">女性名詞の定冠詞（dezvoltare → dezvoltarea、comisie → comisia）</string>
+    <string name="inflection_ro_i_label">定形複数</string>
+    <string name="inflection_ro_i">男性複数の定冠詞（pomi → pomii）</string>
+    <string name="inflection_ro_ului_label">定形属格</string>
+    <string name="inflection_ro_ului">定冠詞付きの属格・与格（proces → procesului、frate → fratelui）</string>
+    <string name="inflection_ro_ei_label">定形属格</string>
+    <string name="inflection_ro_ei">女性名詞の定冠詞付き属格・与格（Moldova → Moldovei、comisie → comisiei）</string>
+    <string name="inflection_ro_ii_label">定形属格</string>
+    <string name="inflection_ro_ii">-e で終わる女性名詞の定冠詞付き属格・与格（lume → lumii、dezvoltare → dezvoltării）</string>
+    <string name="inflection_ro_lor_label">定形複数属格</string>
+    <string name="inflection_ro_lor">定冠詞付きの複数属格・与格（case → caselor）</string>
+    <string name="inflection_ro_agreement_label">女性形・複数形</string>
+    <string name="inflection_ro_agreement">分詞・形容詞の女性形または複数形（aflat → aflată、aflate、aflați、pus → pusă）</string>
+</resources>

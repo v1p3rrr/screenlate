@@ -47,7 +47,8 @@ const borrowed = {
  * text carries zero-width spaces between words and writes subscript TA and DA for each other; Arabic text writes a
  * final ة as ه and may give Persian letters for its own; Persian text may give Arabic letters for its own, lose its
  * zero-width non-joiners and write a verb prefix or an ending apart; Hebrew text may carry vowel points and write the
- * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә. Processors join the
+ * geresh and gershayim as ASCII quotes; Kazakh text may give Latin i, h and ə for і, һ and ә; Romanian text may
+ * give ş ţ for ș ț, and writes its rare apostrophes as Ukrainian does (dom'le, dom’le). Processors join the
  * descriptor's capitalization processors, its own list, or make its list.
  */
 const addedPreprocessors = {
@@ -62,11 +63,13 @@ const addedPreprocessors = {
     fa: ['persianLetters', 'removePersianZeroWidthNonJoiner', 'persianJoinedAffixes'],
     he: ['removeHebrewPoints', 'hebrewQuotes'],
     kk: ['kazakhLatinLetters'],
+    ro: ['romanianCommaLetters', 'ukrainianApostropheVariants'],
 };
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
- * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive.
+ * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive, Romanian
+ * article and agreement endings.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -75,6 +78,7 @@ const addedTransforms = {
     kk: 'kazakhTransforms',
     ky: 'kyrgyzTransforms',
     no: 'norwegianTransforms',
+    ro: 'romanianTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));
@@ -102,7 +106,7 @@ function keepLanguage(source, iso) {
     if (added) {
         const plain = 'textPreprocessors: capitalizationPreprocessors,';
         const example = /(\n {8}exampleText: [^\n]*\n)/;
-        const list = /(\n {8}textPreprocessors: \{\n(?: {12}\w+,\n)+)( {8}\},)/;
+        const list = /(\n {8}textPreprocessors: \{\n(?: {12}(?:\.\.\.)?\w+,\n)+)( {8}\},)/;
         if (block.includes(plain)) {
             block = block.replace(plain, `textPreprocessors: {...capitalizationPreprocessors, ${added.join(', ')}},`);
         } else if (!block.includes('textPreprocessors') && example.test(block)) {

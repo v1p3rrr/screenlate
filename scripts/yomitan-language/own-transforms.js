@@ -633,3 +633,91 @@ export const norwegianTransforms = {
         },
     },
 };
+
+/**
+ * @param {string} suffix
+ * @param {string} replacement
+ * @returns {import('language-transformer').SuffixRule<'n'>}
+ */
+function romanianSuffix(suffix, replacement) {
+    return {
+        type: 'suffix',
+        isInflected: new RegExp('.{2}' + suffix + '$'),
+        deinflected: replacement,
+        deinflect: (text) => text.slice(0, -suffix.length) + replacement,
+        conditionsIn: [],
+        conditionsOut: ['n'],
+    };
+}
+
+/**
+ * Romanian article and agreement endings, as the app's own rules. Wiktionary's form rows give most forms (stored
+ * without the letters' marks: numarul for numărul, which Yomitan's removeAlphabeticDiacritics also looks up), but none
+ * of words whose entries have no declension table: consiliul, dezvoltarea, comisiei, aflată (1,086 of the 5,230
+ * words of wordfreq's 30,000 most frequent that find nothing). Each ending is undone once and leaves two letters at
+ * least; the result must be a noun, a name, an adjective, a numeral, a pronoun, a determiner or a form (glue.js,
+ * `taggedRules`), and the engine keeps it only for a text without an entry of its own
+ * (`LanguageSupport.inflectionRulesOnlyWithoutEntry`): beside such entries the rules found wrong words for one word in
+ * seven (militarii → militară beside militar). Endings written with ă, ș or ț have twins without the marks for text
+ * typed without them; the import keys headwords without the marks too (`HeadwordMarks`), so araba finds arabă.
+ * Verb forms are Wiktionary's own (există, știu) and get no rules.
+ * @type {import('language-transformer').LanguageTransformDescriptor<'n'>}
+ */
+export const romanianTransforms = {
+    language: 'ro',
+    conditions: {
+        n: {name: 'Noun or adjective', isDictionaryForm: true},
+    },
+    transforms: {
+        '-ul': {
+            name: 'definite',
+            description: 'definite article (procesul from proces, consiliul from consiliu)',
+            rules: [romanianSuffix('ul', ''), romanianSuffix('ul', 'u')],
+        },
+        '-le': {
+            name: 'definite',
+            description: 'definite article (fratele from frate, textele from texte)',
+            rules: [romanianSuffix('le', '')],
+        },
+        '-a': {
+            name: 'definite',
+            description: 'definite article of feminine nouns (dezvoltarea from dezvoltare, comisia from comisie)',
+            rules: [romanianSuffix('ea', 'e'), romanianSuffix('ia', 'ie')],
+        },
+        '-i': {
+            name: 'definite plural',
+            description: 'definite article of masculine plurals (pomii from pomi)',
+            rules: [romanianSuffix('ii', 'i')],
+        },
+        '-ului': {
+            name: 'definite genitive',
+            description: 'genitive and dative with the definite article (procesului from proces, fratelui from frate)',
+            rules: [romanianSuffix('ului', ''), romanianSuffix('lui', '')],
+        },
+        '-ei': {
+            name: 'definite genitive',
+            description: 'genitive and dative of feminine nouns with the definite article (Moldovei from Moldova, comisiei from comisie)',
+            rules: [romanianSuffix('ei', 'a'), romanianSuffix('ei', 'ă'), romanianSuffix('iei', 'ie')],
+        },
+        '-ii': {
+            name: 'definite genitive',
+            description: 'genitive and dative of feminine nouns in -e with the definite article (lumii from lume, dezvoltării from dezvoltare)',
+            rules: [romanianSuffix('ii', 'e'), romanianSuffix('ării', 'are'), romanianSuffix('arii', 'are')],
+        },
+        '-lor': {
+            name: 'definite genitive plural',
+            description: 'genitive and dative plural with the definite article (caselor from case)',
+            rules: [romanianSuffix('lor', '')],
+        },
+        'agreement': {
+            name: 'feminine or plural',
+            description: 'feminine or plural of a participle or adjective (aflată, aflate, aflați from aflat; pusă from pus)',
+            rules: [
+                romanianSuffix('tă', 't'), romanianSuffix('ta', 't'), romanianSuffix('te', 't'),
+                romanianSuffix('ți', 't'), romanianSuffix('ti', 't'),
+                romanianSuffix('să', 's'), romanianSuffix('sa', 's'), romanianSuffix('se', 's'),
+                romanianSuffix('și', 's'), romanianSuffix('si', 's'),
+            ],
+        },
+    },
+};

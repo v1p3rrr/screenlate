@@ -159,12 +159,15 @@ function isMarkedStep(d, language) {
  * no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its endings
  * (барды → бару) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a genitive reaches nouns,
  * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
+ * Romanian article and agreement endings reach nominal words and forms (consiliul → consiliu, aflată → aflat, a form
+ * of afla), not verbs or adverbs.
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
     ['kk', {v: ['v']}],
     ['ky', {v: ['v']}],
     ['no', {n: ['n', 'name', 'non-lemma']}],
+    ['ro', {n: ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']}],
 ]);
 
 /**

@@ -57,6 +57,12 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     open val elisions: Set<String> = emptySet()
 
     /**
+     * Words written joined to the next one with a hyphen without being part of it (the Romanian pronouns and
+     * prepositions of s-a, l-am, într-o), lowercase: a word aimed after the hyphen is looked up from there.
+     */
+    open val hyphenElisions: Set<String> = emptySet()
+
+    /**
      * Case rules of the language's letters, for matching [abbreviations] and [elisions] written in capitals. The root
      * rules are tried as well, for capitals read without their dots (ŞTI for ŞTİ).
      */
@@ -108,7 +114,8 @@ abstract class SpacedLanguageSupport : LanguageSupport {
         while (index > 0) {
             val codePoint = before.codePointBefore(index)
             val size = Character.charCount(codePoint)
-            if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size)) break
+            if (codePoint.toChar() in APOSTROPHES && isElision(before, index - size, elisions)) break
+            if (codePoint.toChar() == '-' && isElision(before, index - size, hyphenElisions)) break
             val inWord = isWordCharacter(codePoint) ||
                 (codePoint.toChar() in wordConnectors && index > size && isWordCharacter(before.codePointBefore(index - size)))
             if (!inWord) break
@@ -261,15 +268,16 @@ abstract class SpacedLanguageSupport : LanguageSupport {
     }
 
     /**
-     * Whether the word ending at [end], just before an apostrophe, is one of [elisions]. A word after another
-     * apostrophe is part of a longer one (the n of rock'n'roll), not an elided word.
+     * Whether the word ending at [end], just before an apostrophe or a hyphen, is one of [words] ([elisions],
+     * [hyphenElisions]). A word after another apostrophe is part of a longer one (the n of rock'n'roll), not an elided
+     * word.
      */
-    private fun isElision(text: String, end: Int): Boolean {
-        if (elisions.isEmpty()) return false
+    private fun isElision(text: String, end: Int, words: Set<String>): Boolean {
+        if (words.isEmpty()) return false
         var start = end
         while (start > 0 && text[start - 1].isLetterOrMark()) start--
         if (start > 0 && text[start - 1] in APOSTROPHES) return false
-        return text.substring(start, end).lowercaseIn(elisions)
+        return text.substring(start, end).lowercaseIn(words)
     }
 
     private fun String.lowercaseIn(words: Set<String>): Boolean =

@@ -503,6 +503,7 @@
     <string name="popup_font_script_only_sv">Chỉ cho chữ tiếng Thụy Điển</string>
     <string name="popup_font_script_only_no">Chỉ cho chữ tiếng Na Uy</string>
     <string name="popup_font_script_only_da">Chỉ cho chữ tiếng Đan Mạch</string>
+    <string name="popup_font_script_only_ro">Chỉ cho chữ tiếng Romania</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

@@ -141,6 +141,16 @@ class SentenceTest {
     }
 
     @Test
+    fun romanianSentenceKeepsAbbreviationsAndLowQuotesAndEndsAtANumber() {
+        val paragraph = "Ploua. Dl. Popescu a venit la nr. 5, pe str. Lipscani. „Vino aici!” a strigat ea. " +
+            "Cezar a murit în 44 î.Hr. și Roma s-a schimbat. S-a născut în 1999. Apoi a plecat."
+        assertThat(extract(paragraph, "Popescu", Language.ROMANIAN).text).isEqualTo("Dl. Popescu a venit la nr. 5, pe str. Lipscani.")
+        assertThat(extract(paragraph, "strigat", Language.ROMANIAN).text).isEqualTo("„Vino aici!” a strigat ea.")
+        assertThat(extract(paragraph, "Roma", Language.ROMANIAN).text).isEqualTo("Cezar a murit în 44 î.Hr. și Roma s-a schimbat.")
+        assertThat(extract(paragraph, "născut", Language.ROMANIAN).text).isEqualTo("S-a născut în 1999.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

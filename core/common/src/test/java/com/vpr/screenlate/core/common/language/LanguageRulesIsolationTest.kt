@@ -36,6 +36,17 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
+    fun `a pronoun or preposition joined with a hyphen starts a new word only in Romanian`() {
+        assertThat(spaced.where { it.wordStartOffset("s-", "a dus") == 0 }).containsExactly(Language.ROMANIAN)
+        assertThat(spaced.where { it.wordStartOffset("într-", "o zi") == 0 }).containsExactly(Language.ROMANIAN)
+        // A word before a pronoun keeps it in every language, as hyphenated names do.
+        for (support in spaced) {
+            assertThat(support.wordStartOffset("să-", "l")).isEqualTo(3)
+            assertThat(support.wordStartOffset("Baia-", "Mare")).isEqualTo(5)
+        }
+    }
+
+    @Test
     fun `words with an apostrophe of their own stay whole in every language`() {
         for (support in spaced) {
             assertThat(support.wordStartOffset("don'", "t")).isEqualTo(4)
@@ -200,6 +211,13 @@ class LanguageRulesIsolationTest {
         // Danish hhv. (henholdsvis) and stk. (styk), before a name or a number.
         assertThat(periodEnding.where { holds(it, "hhv. Aars") }).containsExactly(Language.DANISH)
         assertThat(periodEnding.where { holds(it, "stk. Tuborg") }).containsExactly(Language.DANISH)
+        // Romanian dl. (domnul), and î.Hr., which holds only before a lowercase word.
+        assertThat(periodEnding.where { holds(it, "Dl. Popescu") }).containsExactly(Language.ROMANIAN)
+        val beforeChrist = "anul 44 î.Hr. a fost"
+        assertThat(periodEnding.where { !it.endsSentence(beforeChrist, beforeChrist.indexOf(". ")) })
+            .containsExactly(Language.ROMANIAN)
+        val beforeCapital = "anul 44 î.Hr. Apoi"
+        assertThat(periodEnding.where { !it.endsSentence(beforeCapital, beforeCapital.indexOf(". ")) }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -288,6 +306,10 @@ class LanguageRulesIsolationTest {
                 Language.THAI, Language.KAZAKH, Language.KYRGYZ,
             )
         assertThat(all.where { it.spellingFormTags.isNotEmpty() }).containsExactly(Language.CHINESE)
+        // Romanian leaves out the Moldovan Cyrillic spellings Wiktionary links its words to.
+        assertThat(all.where { !it.showsHeadword("есте") }).containsExactly(Language.ROMANIAN)
+        assertThat(all.where { !it.showsHeadword("este") }).isEmpty()
+        assertThat(all.where { it.inflectionRulesOnlyWithoutEntry }).containsExactly(Language.ROMANIAN)
     }
 
     @Test
@@ -327,9 +349,11 @@ class LanguageRulesIsolationTest {
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
+            Language.ROMANIAN,
         )
-        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() })
-            .containsExactly(Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ)
+        assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
+            Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
+        )
         assertThat(all.where { it.headwordMarks?.furtherReplacements.orEmpty().isNotEmpty() }).containsExactly(Language.ARABIC)
         // Arabic lemmas lose their vowel marks although every headword is keyed.
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })

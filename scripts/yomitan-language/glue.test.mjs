@@ -56,9 +56,9 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da']) {
-        // Indonesian, Malay and Tagalog drop every combining mark, as Yomitan's processors for them do.
-        if (!['id', 'ms', 'tl'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da', 'ro']) {
+        // Indonesian, Malay, Tagalog and Romanian drop every combining mark, as Yomitan's processors for them do.
+        if (!['id', 'ms', 'tl', 'ro'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
     }
 });
@@ -744,4 +744,45 @@ test('danish lowers capitals and keeps the marks of its letters', () => {
     assert.ok(!queried('da', 'år').has('ar'));
     assert.ok(!queried('da', 'søster').has('soster'));
     assert.ok(!queried('da', 'læse').has('lase'));
+});
+
+test('romanian reads cedilla letters as comma ones and is looked up without the marks of its letters', () => {
+    assert.ok(queried('ro', 'şi').has('și'));
+    assert.ok(queried('ro', 'ŞTIU').has('știu'));
+    assert.ok(queried('ro', 'ţară').has('țară'));
+    // Wiktionary keys Romanian forms without marks (numarul, a form of număr).
+    assert.ok(queried('ro', 'numărul').has('numarul'));
+    assert.ok(queried('ro', 'dom’le').has("dom'le"));
+    for (const language of ['tr', 'en', 'pl', 'de']) assert.ok(!queried(language, 'şi').has('și'), language);
+});
+
+test('romanian article and agreement endings match nominal words and forms by their definition tags', () => {
+    const [council] = candidatesTo('ro', 'Consiliul', 'consiliu');
+    assert.ok(council.u);
+    assert.deepEqual([...council.g], ['n', 'name', 'adj', 'num', 'pron', 'det', 'non-lemma']);
+    assert.deepEqual([...council.r[0]], ['-ul']);
+    for (const [text, lemma] of [
+        ['procesul', 'proces'], ['fratele', 'frate'], ['dezvoltarea', 'dezvoltare'], ['comisia', 'comisie'],
+        ['pomii', 'pomi'], ['procesului', 'proces'], ['fratelui', 'frate'], ['Moldovei', 'Moldova'],
+        ['comisiei', 'comisie'], ['lumii', 'lume'], ['dezvoltării', 'dezvoltare'], ['dezvoltarii', 'dezvoltare'],
+        ['caselor', 'case'], ['aflați', 'aflat'], ['aflate', 'aflat'], ['pusă', 'pus'],
+    ]) {
+        assert.ok(queried('ro', text).has(lemma), `${text} → ${lemma}`);
+    }
+    assert.deepEqual([...candidatesTo('ro', 'aflată', 'aflat')[0].r[0]], ['agreement']);
+    // A stem keeps two letters.
+    assert.ok(!queried('ro', 'ful').has('f'));
+    assert.ok(!queried('ro', 'tei').has('ta'));
+    // The word as written stays typed and untagged.
+    const written = candidates('ro', 'casă').find((c) => c.d === 'casă');
+    assert.ok(!written.u);
+    assert.equal(written.g, undefined);
+});
+
+test('romanian rules and cedilla letters stay out of other languages', () => {
+    for (const language of ['it', 'es', 'fr', 'pt', 'en', 'de', 'no']) {
+        assert.ok(!queried(language, 'consiliul').has('consiliu'), language);
+        assert.ok(!queried(language, 'caselor').has('case'), language);
+        assert.ok(!queried(language, 'aflată').has('aflat'), language);
+    }
 });

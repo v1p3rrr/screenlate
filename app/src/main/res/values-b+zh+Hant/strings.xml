@@ -503,6 +503,7 @@
     <string name="popup_font_script_only_sv">僅用於瑞典文文字</string>
     <string name="popup_font_script_only_no">僅用於挪威文文字</string>
     <string name="popup_font_script_only_da">僅用於丹麥文文字</string>
+    <string name="popup_font_script_only_ro">僅用於羅馬尼亞文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

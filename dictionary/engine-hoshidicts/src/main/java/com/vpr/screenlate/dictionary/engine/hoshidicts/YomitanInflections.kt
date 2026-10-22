@@ -815,6 +815,17 @@ internal object YomitanInflections {
         "no" to mapOf(
             "-s" to Strings(R.string.inflection_no_s_label, R.string.inflection_no_s),
         ),
+        "ro" to mapOf(
+            "-ul" to Strings(R.string.inflection_ro_ul_label, R.string.inflection_ro_ul),
+            "-le" to Strings(R.string.inflection_ro_le_label, R.string.inflection_ro_le),
+            "-a" to Strings(R.string.inflection_ro_a_label, R.string.inflection_ro_a),
+            "-i" to Strings(R.string.inflection_ro_i_label, R.string.inflection_ro_i),
+            "-ului" to Strings(R.string.inflection_ro_ului_label, R.string.inflection_ro_ului),
+            "-ei" to Strings(R.string.inflection_ro_ei_label, R.string.inflection_ro_ei),
+            "-ii" to Strings(R.string.inflection_ro_ii_label, R.string.inflection_ro_ii),
+            "-lor" to Strings(R.string.inflection_ro_lor_label, R.string.inflection_ro_lor),
+            "agreement" to Strings(R.string.inflection_ro_agreement_label, R.string.inflection_ro_agreement),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

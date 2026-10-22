@@ -80,7 +80,7 @@ class DictionaryLookup @Inject constructor(
                 .sort(found, options, prepared.termDictionaries)
                 .let { if (part && support.capitalizedNouns) it.capitalizedFirst() else it }
                 .filter { start !is LookupStart.Whole || it.matched.length == start.length }
-                .mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+                .mapNotNull { it.shownBy(support) }
                 .mergeSameWords(prepared.termDictionaries, support)
                 .let { if (script != null) it.inScript(script, support, prepared.termDictionaries) else it }
                 .take(limit)
@@ -91,7 +91,7 @@ class DictionaryLookup @Inject constructor(
                 val start = support.lookupStart(source, latinAsNative = settings.romaji) ?: return emptyList()
                 val written = LookupVariants.of(source, settings, support).flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
-                }.mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+                }.mapNotNull { it.shownBy(support) }
                 val candidates = written + keyedMatches(source, written, support) { engine.lookup(it, engineOptions) }
                 val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
                 val found = candidates.filter { it.matched.length in lengths }
@@ -420,6 +420,6 @@ internal suspend fun keyedMatches(
     val longest = written.maxOfOrNull { it.matched.length } ?: 0
     val spelling = support.keyedSpelling(source, longest) ?: return emptyList()
     return lookup(spelling).fromVariant(source, MappedText.identity(spelling), support)
-        .mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
+        .mapNotNull { it.shownBy(support) }
         .filter { it.matched.length > longest && support.keepsWrittenLetters(source, it.term.expression) }
 }

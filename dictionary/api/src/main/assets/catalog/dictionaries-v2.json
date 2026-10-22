@@ -1873,6 +1873,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-ro",
+      "title": "wordfreq (ro)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq ro"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "ro",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_ro.msgpack.gz",
+      "downloadSize": 196154,
+      "sha256": "c17fe82952ed209bb45b95c56cb5c7f077ca921a84578c3807d48ddc1dd842e2",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "corpus-th",
       "title": "Thai National Corpus (th)",
       "template": "tnc",
@@ -3361,6 +3380,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-ron",
+      "title": "Tesseract fast (ron)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ron.traineddata",
+      "downloadSize": 2376323,
+      "sha256": "9adfde6b51ba4b97efd10ea37c3070fd3fc2bad7815e81f5c3c198cd96216cc9",
+      "model": "tesseract-fast-ron",
+      "engine": "tesseract",
+      "file": "tessdata/ron.traineddata",
+      "version": "9adfde6b51ba",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-ron",
+      "title": "Tesseract best (ron)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/ron.traineddata",
+      "downloadSize": 9595755,
+      "sha256": "93588d7e59a28fad7920db07767345438ee5eeefa3c5f20541dfb9ad083a6d2e",
+      "model": "tesseract-best-ron",
+      "engine": "tesseract",
+      "file": "tessdata/ron.traineddata",
+      "version": "93588d7e59a2",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -4748,6 +4801,76 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "da",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-ro",
+      "title": "PaddleOCR v6 (ro)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-latin-ro",
+      "title": "PaddleOCR latin (ro)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-latin.zip",
+      "downloadSize": 7314761,
+      "sha256": "e9d8bf4d0654742338c9f156bac19ae1eb259d278e29b72e9ea53fe4e69b9a3f",
+      "model": "paddle-latin",
+      "engine": "paddle",
+      "version": "e9d8bf4d0654",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-ro",
+      "title": "PaddleOCR detector-v6 (ro)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-detector-v5-ro",
+      "title": "PaddleOCR detector-v5 (ro)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "ro",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -14802,6 +14925,184 @@
       "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/da/wty-da-ipa.zip?download=true",
       "resolveLatest": true,
       "downloadSize": 202598,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-en",
+      "title": "Wiktionary (ro–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-en",
+        "kty-ro-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/en/wty-ro-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 12479651,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-ru",
+      "title": "Wiktionary (ro–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-ru",
+        "kty-ro-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/ru/wty-ro-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 599185,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-es",
+      "title": "Wiktionary (ro–es)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-es",
+        "kty-ro-es"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "es",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-es-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/es/wty-ro-es.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 138220,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-fr",
+      "title": "Wiktionary (ro–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-fr",
+        "kty-ro-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/fr/wty-ro-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 953525,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-ja",
+      "title": "Wiktionary (ro–ja)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-ja",
+        "kty-ro-ja"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "ja",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-ja-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/ja/wty-ro-ja.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 161132,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-pl",
+      "title": "Wiktionary (ro–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-pl",
+        "kty-ro-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/pl/wty-ro-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 169325,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-tr",
+      "title": "Wiktionary (ro–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-tr",
+        "kty-ro-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/tr/wty-ro-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 213599,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-zh",
+      "title": "Wiktionary (ro–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-ro-zh",
+        "kty-ro-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "ro",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/ro/zh/wty-ro-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 597718,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-ro-transcription",
+      "title": "Wiktionary transcription (ro)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-ro-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "ro",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-ro-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/ro/wty-ro-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 295500,
       "license": "CC BY-SA 4.0",
       "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }

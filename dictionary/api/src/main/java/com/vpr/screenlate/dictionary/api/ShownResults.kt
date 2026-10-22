@@ -57,6 +57,13 @@ internal fun LookupResult.withoutChainsThrough(tags: Set<String>): LookupResult?
 }
 
 /**
+ * The result as [support] shows it: null for a headword it leaves out ([LanguageSupport.showsHeadword]), else
+ * [withoutChainsThrough] its ignored form tags.
+ */
+internal fun LookupResult.shownBy(support: LanguageSupport): LookupResult? =
+    takeIf { support.showsHeadword(term.expression) }?.withoutChainsThrough(support.ignoredFormTags)
+
+/**
  * Results of the same word (expression and reading, see [LanguageSupport.normalizeReading]) as one entry in the place
  * of the first: a respelled word ([asShown]) meets the dictionaries that list its spelling itself, spellings of the
  * text may find a word twice, and dictionaries space readings differently. Definitions, frequencies and

@@ -122,7 +122,13 @@ class HoshidictsEngine @Inject constructor(@param:ApplicationContext private val
             frequencyDescending = options.frequencyOrder == FrequencyOrder.DESCENDING,
             primaryReading = options.primaryReading?.encodeToByteArray(),
         )
-        json.decodeFromString<List<LookupResult>>(raw.decodeToString()).map { result ->
+        json.decodeFromString<List<LookupResult>>(raw.decodeToString()).let { results ->
+            if (language.support.inflectionRulesOnlyWithoutEntry) {
+                results.withoutRuleOnlyResults(YomitanInflections.names(language.dictionaryCode))
+            } else {
+                results
+            }
+        }.map { result ->
             if (result.trace.isEmpty() && result.otherTraces.isEmpty()) {
                 result
             } else {

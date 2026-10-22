@@ -99,6 +99,10 @@
     "size": 7322012,
     "words": 344315
   },
+  "dict/all/ro/wty-ro-ipa.zip": {
+    "size": 295500,
+    "words": 20008
+  },
   "dict/all/sh/wty-sh-ipa.zip": {
     "size": 667859,
     "words": 51444
@@ -2162,6 +2166,54 @@
   "dict/pt/zh/wty-pt-zh.zip": {
     "size": 1929833,
     "words": 20409
+  },
+  "dict/ro/de/wty-ro-de.zip": {
+    "size": 65068,
+    "words": 463
+  },
+  "dict/ro/es/wty-ro-es.zip": {
+    "size": 138220,
+    "words": 1714
+  },
+  "dict/ro/fr/wty-ro-fr.zip": {
+    "size": 953525,
+    "words": 4937
+  },
+  "dict/ro/it/wty-ro-it.zip": {
+    "size": 22551,
+    "words": 330
+  },
+  "dict/ro/ja/wty-ro-ja.zip": {
+    "size": 161132,
+    "words": 2779
+  },
+  "dict/ro/ko/wty-ro-ko.zip": {
+    "size": 62039,
+    "words": 1380
+  },
+  "dict/ro/pl/wty-ro-pl.zip": {
+    "size": 169325,
+    "words": 3981
+  },
+  "dict/ro/pt/wty-ro-pt.zip": {
+    "size": 64644,
+    "words": 1296
+  },
+  "dict/ro/ru/wty-ro-ru.zip": {
+    "size": 599185,
+    "words": 8326
+  },
+  "dict/ro/tr/wty-ro-tr.zip": {
+    "size": 213599,
+    "words": 10286
+  },
+  "dict/ro/vi/wty-ro-vi.zip": {
+    "size": 28478,
+    "words": 247
+  },
+  "dict/ro/zh/wty-ro-zh.zip": {
+    "size": 597718,
+    "words": 7577
   },
   "dict/ru/de/wty-ru-de-gloss.zip": {
     "size": 831909,

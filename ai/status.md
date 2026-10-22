@@ -40,6 +40,10 @@ engine measurements and its emulator cases wait for the emulator lock. Norwegian
 `languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
 and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well. Danish on
 `languages/da` (from `languages/no`): the same parts, »…« and “…” as its quote pairs; its emulator cases wait too.
+Romanian on `languages/ro` (from `languages/da`): the cedilla processor, keys without marks, a new word after a
+pronoun joined with a hyphen, the app's article and agreement endings applied only where the text has no entry
+(an engine filter), Cyrillic headwords left out; plan questions 16 and 17 decided provisionally; its emulator cases
+wait as well.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

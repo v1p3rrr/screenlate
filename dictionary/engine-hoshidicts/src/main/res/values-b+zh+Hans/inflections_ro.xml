@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">定指形式</string>
+    <string name="inflection_ro_ul">定冠词（proces → procesul、consiliu → consiliul）</string>
+    <string name="inflection_ro_le_label">定指形式</string>
+    <string name="inflection_ro_le">定冠词（frate → fratele、texte → textele）</string>
+    <string name="inflection_ro_a_label">定指形式</string>
+    <string name="inflection_ro_a">阴性名词的定冠词（dezvoltare → dezvoltarea、comisie → comisia）</string>
+    <string name="inflection_ro_i_label">定指复数</string>
+    <string name="inflection_ro_i">阳性复数的定冠词（pomi → pomii）</string>
+    <string name="inflection_ro_ului_label">定指属格</string>
+    <string name="inflection_ro_ului">带定冠词的属格和与格（proces → procesului、frate → fratelui）</string>
+    <string name="inflection_ro_ei_label">定指属格</string>
+    <string name="inflection_ro_ei">阴性名词带定冠词的属格和与格（Moldova → Moldovei、comisie → comisiei）</string>
+    <string name="inflection_ro_ii_label">定指属格</string>
+    <string name="inflection_ro_ii">以 -e 结尾的阴性名词带定冠词的属格和与格（lume → lumii、dezvoltare → dezvoltării）</string>
+    <string name="inflection_ro_lor_label">定指复数属格</string>
+    <string name="inflection_ro_lor">带定冠词的复数属格和与格（case → caselor）</string>
+    <string name="inflection_ro_agreement_label">阴性或复数</string>
+    <string name="inflection_ro_agreement">分词或形容词的阴性或复数形式（aflat → aflată、aflate、aflați；pus → pusă）</string>
+</resources>

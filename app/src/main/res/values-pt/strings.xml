@@ -509,6 +509,7 @@
     <string name="popup_font_script_only_sv">Só para texto em sueco</string>
     <string name="popup_font_script_only_no">Só para texto em norueguês</string>
     <string name="popup_font_script_only_da">Só para texto em dinamarquês</string>
+    <string name="popup_font_script_only_ro">Só para texto em romeno</string>
     <string name="popup_font_system_zh">Fonte chinesa do celular</string>
     <string name="popup_font_system_ko">Fonte coreana do celular</string>
     <string name="popup_font_script_only_zh">Só para texto em chinês</string>

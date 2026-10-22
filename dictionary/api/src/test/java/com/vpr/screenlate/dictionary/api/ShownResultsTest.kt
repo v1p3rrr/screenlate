@@ -145,6 +145,19 @@ class ShownResultsTest {
     }
 
     @Test
+    fun `romanian leaves out moldovan cyrillic headwords and keeps the rest`() {
+        val romanian = Language.ROMANIAN.support
+        val altOf = listOf(Transform("alt-of"))
+        val cyrillic = result("есте", "", "Wiktionary", matched = "este", trace = altOf)
+        assertThat(cyrillic.shownBy(romanian)).isNull()
+        val este = result("este", "", "Wiktionary")
+        assertThat(este.shownBy(romanian)).isSameInstanceAs(este)
+        assertThat(cyrillic.shownBy(Language.RUSSIAN.support)).isSameInstanceAs(cyrillic)
+        val serbian = result("кућа", "", "Wiktionary", matched = "kuća", trace = listOf(Transform("Cyrillic")))
+        assertThat(serbian.shownBy(Language.SERBIAN.support)).isNull()
+    }
+
+    @Test
     fun `chains through an ignored form tag are dropped and a word reached only through them is left out`() {
         val classifier = Transform("classifier")
         val tags = setOf("classifier")

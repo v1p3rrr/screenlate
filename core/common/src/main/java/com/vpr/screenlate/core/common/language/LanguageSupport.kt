@@ -355,6 +355,19 @@ interface LanguageSupport {
     val ignoredFormTags: Set<String> get() = emptySet()
 
     /**
+     * Whether results under [expression], a dictionary's headword, are shown: Wiktionary links some Romanian words to
+     * their Moldovan Cyrillic spellings, which Romanian leaves out.
+     */
+    fun showsHeadword(expression: String): Boolean = true
+
+    /**
+     * Whether a word's results reached through the inflection rules are left out when the same text also finds results
+     * without them: the dictionary lists the forms of most words itself, and the rules are there for the words whose
+     * entries list none (Romanian consiliul → consiliu, where casă has its own entry and is not cas).
+     */
+    val inflectionRulesOnlyWithoutEntry: Boolean get() = false
+
+    /**
      * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
      * import a form is also found without them, and the lemmas forms name are stored without them; or, with
      * [HeadwordMarks.everyHeadword], marks headwords carry (the Greek tonos, the Hindi nukta). Null where words carry
@@ -492,4 +505,5 @@ val Language.support: LanguageSupport
         Language.SWEDISH -> SwedishSupport
         Language.NORWEGIAN -> NorwegianSupport
         Language.DANISH -> DanishSupport
+        Language.ROMANIAN -> RomanianSupport
     }

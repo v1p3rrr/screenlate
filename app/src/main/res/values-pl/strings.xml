@@ -512,6 +512,7 @@
     <string name="popup_font_script_only_sv">Tylko dla tekstu szwedzkiego</string>
     <string name="popup_font_script_only_no">Tylko dla tekstu norweskiego</string>
     <string name="popup_font_script_only_da">Tylko dla tekstu duńskiego</string>
+    <string name="popup_font_script_only_ro">Tylko dla tekstu rumuńskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

@@ -751,6 +751,59 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun romanianFindsWordsWithAndWithoutMarksAndArticleEndingsOnlyWithoutAnEntry() = runTest {
+        val imported = engine.import(romanianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val romanian = LookupOptions(language = Language.ROMANIAN)
+        suspend fun first(text: String) = engine.lookup(text, romanian).first()
+        suspend fun all(text: String) = engine.lookup(text, romanian).map { it.term.expression }
+
+        // consiliul: no form row, the article ending reaches the noun.
+        val council = first("Consiliul")
+        assertThat(council.term.expression).isEqualTo("consiliu")
+        assertThat(council.trace.first().name).isEqualTo("-ul")
+        assertThat(council.trace.first().label).isNotEmpty()
+        assertThat(all("procesul").first()).isEqualTo("proces")
+        // Forms are stored without marks, lemmas keyed without them as well; cedilla letters read as comma ones.
+        assertThat(all("numărul")).contains("număr")
+        assertThat(all("dupa")).containsExactly("după")
+        assertThat(all("şi")).containsExactly("și")
+        assertThat(all("si")).containsExactly("și")
+        assertThat(all("ŢARĂ")).containsExactly("țară")
+        assertThat(all("tara")).containsExactly("țară")
+        // A word with an entry of its own takes no ending's results; one without takes them.
+        assertThat(all("casă")).containsExactly("casă")
+        assertThat(all("casa")).containsExactly("casă")
+        val found = engine.lookup("aflată", romanian).first { it.term.expression == "afla" }
+        assertThat(found.trace.map { it.name }).contains("agreement")
+    }
+
+    /**
+     * Rows as Wiktionary's Romanian exports write them: forms stored without marks, the spelling in the reading; a
+     * participle as a form of its verb; a word that the agreement ending would reach from casă.
+     */
+    private fun romanianDictionary(): File = zip(
+        "ro.zip",
+        "index.json" to """{"title":"Test Romanian","revision":"1","format":3,"sourceLanguage":"ro"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["consiliu","","n neut","",0,["council"],1,""],
+              ["proces","","n neut","",0,["trial"],2,""],
+              ["procesul","","non-lemma","",0,[["proces",["nominative accusative singular definite"]]],3,""],
+              ["număr","","n neut","",0,["number"],4,""],
+              ["numarul","numărul","non-lemma","",0,[["număr",["nominative accusative singular definite"]]],5,""],
+              ["după","","prep acc","",0,["after"],6,""],
+              ["și","","conj","",0,["and"],7,""],
+              ["țară","","n fem","",0,["country"],8,""],
+              ["casă","","n fem","",0,["house"],9,""],
+              ["cas","","adj","",0,["a word the agreement ending reaches from casă"],10,""],
+              ["afla","","v","",0,["to find out"],11,""],
+              ["aflat","","non-lemma","",0,[["afla",["past participle"]]],12,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

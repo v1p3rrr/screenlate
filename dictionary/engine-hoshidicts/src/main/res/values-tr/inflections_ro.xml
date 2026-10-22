@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish translation of values/inflections_ro.xml. -->
+<resources>
+    <string name="inflection_ro_ul_label">belirli</string>
+    <string name="inflection_ro_ul">belirli tanımlık (proces → procesul, consiliu → consiliul)</string>
+    <string name="inflection_ro_le_label">belirli</string>
+    <string name="inflection_ro_le">belirli tanımlık (frate → fratele, texte → textele)</string>
+    <string name="inflection_ro_a_label">belirli</string>
+    <string name="inflection_ro_a">dişil isimlerin belirli tanımlığı (dezvoltare → dezvoltarea, comisie → comisia)</string>
+    <string name="inflection_ro_i_label">belirli çoğul</string>
+    <string name="inflection_ro_i">eril çoğulun belirli tanımlığı (pomi → pomii)</string>
+    <string name="inflection_ro_ului_label">belirli tamlayan</string>
+    <string name="inflection_ro_ului">belirli tanımlıklı tamlayan ve yönelme hâli (proces → procesului, frate → fratelui)</string>
+    <string name="inflection_ro_ei_label">belirli tamlayan</string>
+    <string name="inflection_ro_ei">dişil isimlerin belirli tanımlıklı tamlayan ve yönelme hâli (Moldova → Moldovei, comisie → comisiei)</string>
+    <string name="inflection_ro_ii_label">belirli tamlayan</string>
+    <string name="inflection_ro_ii">-e ile biten dişil isimlerin belirli tanımlıklı tamlayan ve yönelme hâli (lume → lumii, dezvoltare → dezvoltării)</string>
+    <string name="inflection_ro_lor_label">belirli çoğul tamlayan</string>
+    <string name="inflection_ro_lor">belirli tanımlıklı çoğul tamlayan ve yönelme hâli (case → caselor)</string>
+    <string name="inflection_ro_agreement_label">dişil ya da çoğul</string>
+    <string name="inflection_ro_agreement">ortaç ya da sıfatın dişil ya da çoğul biçimi (aflat → aflată, aflate, aflați; pus → pusă)</string>
+</resources>

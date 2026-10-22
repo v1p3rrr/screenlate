@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -220,6 +220,21 @@ class CatalogFileTest {
         )
         assertThat(danish.first { it.id == "wordfreq-da" }.downloadUrl).endsWith("/small_da.msgpack.gz")
         assertThat(danish.first { it.id == "wiktionary-da-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (da–en)")
+    }
+
+    @Test
+    fun `romanian offers eight wiktionaries, its transcription, wordfreq's small list and paddle latin, ticked, and the other models`() {
+        val romanian = catalog!!.entries.filter { it.isFor(Language.ROMANIAN) }
+        assertThat(romanian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-ro-en", "wiktionary-ro-ru", "wiktionary-ro-es", "wiktionary-ro-fr", "wiktionary-ro-ja",
+            "wiktionary-ro-pl", "wiktionary-ro-tr", "wiktionary-ro-zh", "wiktionary-ro-transcription", "wordfreq-ro",
+            "paddle-latin-ro",
+        )
+        assertThat(romanian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-ron", "tesseract-best-ron", "paddle-v6-ro", "paddle-detector-v5-ro", "paddle-detector-v6-ro",
+        )
+        assertThat(romanian.first { it.id == "wordfreq-ro" }.downloadUrl).endsWith("/small_ro.msgpack.gz")
+        assertThat(romanian.first { it.id == "wiktionary-ro-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (ro–en)")
     }
 
     @Test
