@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.edit
 import com.vpr.screenlate.BuildConfig
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.core.common.displayName
+import com.vpr.screenlate.core.common.language.lookupDictionaryCodes
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.core.common.redacted
 import com.vpr.screenlate.core.common.settings.AppSettingsRepository
@@ -154,7 +155,7 @@ class BackupManager @Inject constructor(
     suspend fun files(): BackupFiles = withContext(Dispatchers.IO) {
         val sizes = fonts.sizes()
         val turnedOn = profiles.current().turnedOn
-        val codes = turnedOn.flatMap { listOf(it.code, it.dictionaryCode) }
+        val codes = turnedOn.flatMap { listOf(it.code) + it.lookupDictionaryCodes }
         val installed = dictionaries.getAll().filter { it.sourceLanguage == null || it.sourceLanguage in codes }
         val modelLanguages = modelLanguages()
         BackupFiles(

@@ -94,6 +94,7 @@
     <string name="language_setup_gloss_none">Нет</string>
     <string name="language_setup_none_available">Нет словарей на выбранных языках.</string>
     <string name="language_setup_choose_one">Выберите хотя бы один.</string>
+    <string name="language_setup_fallback">Запасной словарь (%1$s)</string>
     <string name="language_setup_pronunciation_info">Произношение в фонетической транскрипции, например: %1$s</string>
     <string name="language_setup_download">Скачать (%1$s)</string>
     <string name="language_setup_turn_on">Включить</string>
@@ -518,6 +519,7 @@
     <string name="popup_font_script_only_ro">Только для румынского текста</string>
     <string name="popup_font_script_only_la">Только для текста на латыни</string>
     <string name="popup_font_script_only_lt">Только для литовского текста</string>
+    <string name="popup_font_script_only_sk">Только для словацкого текста</string>
     <string name="popup_font_system_zh">Китайский шрифт телефона</string>
     <string name="popup_font_system_ko">Корейский шрифт телефона</string>
     <string name="popup_font_script_only_zh">Только для китайского текста</string>

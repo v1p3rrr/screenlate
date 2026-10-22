@@ -94,6 +94,15 @@ class BackupChoiceTest {
     }
 
     @Test
+    fun `slovak takes the czech dictionaries it falls back to`() {
+        val languages = listOf(BackupFile("sk", "Slovak", 10), BackupFile("ja", "Japanese", 10))
+        val files = listOf(BackupFile("a", "A", 1, "sk"), BackupFile("b", "B", 1, "cs"), BackupFile("c", "C", 1, "ja"))
+        val slovakOnly = BackupChoice(languages = FileChoice(on = true).toggle("ja", languages.map { it.key }))
+        assertThat(slovakOnly.chosenLanguages(languages)).containsExactly("sk", "cs")
+        assertThat(slovakOnly.visible(files, languages).map { it.key }).containsExactly("a", "b").inOrder()
+    }
+
+    @Test
     fun `the first choice has settings and fonts but no dictionaries`() {
         val first = BackupChoiceStore.read(mutablePreferencesOf())
         assertThat(first).isEqualTo(BackupChoice(fonts = FileChoice(on = true), dictionaries = FileChoice(on = false)))

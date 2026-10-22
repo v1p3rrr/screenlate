@@ -15,6 +15,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImportWorker.Companio
 import com.vpr.screenlate.dictionary.api.imports.ImportTask
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
+import com.vpr.screenlate.dictionary.api.registry.isReadBy
 import java.text.Collator
 import java.util.Locale
 import javax.inject.Inject
@@ -36,6 +37,14 @@ internal fun fileCodes(code: String, turnedOn: Collection<Language>): Set<String
         listOfNotNull(entry.code, entry.dictionaryCode.takeIf { it !in read })
     }
 }
+
+/**
+ * The [installed] dictionaries of the files with [codes] ([fileCodes]) that none of the languages [kept] on reads
+ * ([isReadBy]): while Slovak is on, Czech's frequency list and transcriptions but not its definitions, which Slovak's
+ * lookups fall back to.
+ */
+internal fun dictionariesOf(codes: Set<String>, kept: Collection<Language>, installed: List<DictionaryEntity>): List<DictionaryEntity> =
+    installed.filter { dictionary -> dictionary.sourceLanguage in codes && kept.none { dictionary.isReadBy(it) } }
 
 /**
  * The leftover card the models of the language with [code] go under: its dictionaries' while no language reading them
@@ -140,7 +149,8 @@ class LanguageFiles @Inject constructor(
     suspend fun dictionaries(language: Language): List<DictionaryEntity> =
         repository.getAll().filter { it.sourceLanguage == language.dictionaryCode }
 
-    private suspend fun dictionaries(codes: Set<String>): List<DictionaryEntity> = repository.getAll().filter { it.sourceLanguage in codes }
+    private suspend fun dictionaries(codes: Set<String>, kept: Collection<Language>): List<DictionaryEntity> =
+        dictionariesOf(codes, kept, repository.getAll())
 
     /** The installed models only [codes] use among the turned-on languages. */
     private suspend fun models(codes: Set<String>): List<InstalledOcrModel> {
@@ -151,16 +161,20 @@ class LanguageFiles @Inject constructor(
         return store.models.value.filter { it.id in ids }
     }
 
-    /** The codes of [language]'s files ([fileCodes]), as if it were off. */
-    private suspend fun codesOf(language: Language): Set<String> = fileCodes(language.code, profiles.state.first().turnedOn - language)
+    /** The codes of [language]'s files ([fileCodes]), as if it were off, and the languages that stay on. */
+    private suspend fun codesOf(language: Language): Pair<Set<String>, List<Language>> {
+        val kept = profiles.state.first().turnedOn - language
+        return fileCodes(language.code, kept) to kept
+    }
 
     /**
      * The languages not in [turnedOn] that still have files, ordered by name: supported ones first, then codes this
      * version does not support.
      */
     suspend fun leftovers(turnedOn: List<Language>): List<LanguageLeftovers> {
-        val read = turnedOn.mapTo(hashSetOf()) { it.dictionaryCode }
-        val dictionaries = repository.getAll().filter { it.sourceLanguage != null && it.sourceLanguage !in read }
+        val dictionaries = repository.getAll().filter { dictionary ->
+            dictionary.sourceLanguage != null && turnedOn.none { dictionary.isReadBy(it) }
+        }
         val entries = withContext(Dispatchers.IO) { catalog.localCatalog() }.entries
         val sizes = repository.sizes(dictionaries)
         val locale = Locale.getDefault()
@@ -177,30 +191,37 @@ class LanguageFiles @Inject constructor(
 
     /** Whether the language has no files or unfinished downloads that could install them. */
     suspend fun isEmpty(language: Language): Boolean {
-        val codes = codesOf(language)
-        val installed = dictionaries(codes)
+        val (codes, kept) = codesOf(language)
+        val installed = dictionaries(codes, kept)
         if (installed.isNotEmpty() || models(codes).isNotEmpty()) return false
         return downloadsOf(codes, imports.tasks.first(), withContext(Dispatchers.IO) { catalog.localCatalog() }, installed, bundled.language).isEmpty()
     }
 
     /** The bytes the language's files take on disk. */
     suspend fun size(language: Language): Long {
-        val codes = codesOf(language)
-        return repository.sizes(dictionaries(codes)).values.sum() + withContext(Dispatchers.IO) { models(codes).sumOf { it.bytes } }
+        val (codes, kept) = codesOf(language)
+        return repository.sizes(dictionaries(codes, kept)).values.sum() + withContext(Dispatchers.IO) { models(codes).sumOf { it.bytes } }
     }
 
     /** Deletes [language]'s files as the leftover cards' delete does. */
-    suspend fun delete(language: Language) = delete(codesOf(language))
+    suspend fun delete(language: Language) {
+        val (codes, kept) = codesOf(language)
+        delete(codes, kept)
+    }
 
     /** Deletes the files of a leftover card's [code] ([LanguageLeftovers.code]). */
-    suspend fun delete(code: String) = delete(fileCodes(code, profiles.state.first().turnedOn))
+    suspend fun delete(code: String) {
+        val turnedOn = profiles.state.first().turnedOn
+        delete(fileCodes(code, turnedOn), turnedOn)
+    }
 
     /**
-     * Deletes the files with [codes] and cancels their unfinished downloads first, dismissing the stopped ones; a
-     * bundled dictionary is remembered as deleted, as a single delete does.
+     * Deletes the files with [codes], except the dictionaries a [kept] language reads, and cancels their unfinished
+     * downloads first, dismissing the stopped ones; a bundled dictionary is remembered as deleted, as a single delete
+     * does.
      */
-    private suspend fun delete(codes: Set<String>) {
-        val installed = dictionaries(codes)
+    private suspend fun delete(codes: Set<String>, kept: Collection<Language>) {
+        val installed = dictionaries(codes, kept)
         val catalog = withContext(Dispatchers.IO) { catalog.localCatalog() }
         val tasks = imports.tasks.first()
         val downloads = downloadsOf(codes, tasks, catalog, installed, bundled.language)
@@ -208,7 +229,7 @@ class LanguageFiles @Inject constructor(
         // Stopped downloads keep what they got for a resume.
         tasks.filter { it.resumable && it.language in codes }.forEach { imports.dismiss(it.id) }
         // An import may have registered a dictionary just before cancellation; include it in the deletion.
-        val dictionaries = dictionaries(codes)
+        val dictionaries = dictionaries(codes, kept)
         dictionaries.forEach { dictionary ->
             if (dictionary.bundled) bundled.markDeleted(dictionary.title)
             repository.delete(dictionary.id)

@@ -528,6 +528,11 @@ a {
     color: var(--muted);
 }
 
+/* The name of the language whose dictionaries gave the entry (Czech for a Slovak word they lack). */
+.fallback-language {
+    font-size: 0.8em;
+}
+
 .kanji-tags {
     display: flex;
     margin: 2px 0 4px;

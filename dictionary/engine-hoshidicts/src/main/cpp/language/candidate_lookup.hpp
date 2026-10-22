@@ -45,8 +45,8 @@ struct CandidateResult {
   std::vector<std::vector<std::string>> chains;
   int preprocessor_steps = 0;
   TermResult term;
-  // Whether the headword was reached only through another spelling of it, a form-of entry with no tags (a headword
-  // keyed without its marks or letters at import): it comes after the spellings found as written.
+  // Whether the headword was reached only through another spelling, a form-of entry with no tags (a headword keyed
+  // without its marks or letters at import) or a form keyed so: it comes after the spellings found as written.
   bool respelled = false;
 };
 

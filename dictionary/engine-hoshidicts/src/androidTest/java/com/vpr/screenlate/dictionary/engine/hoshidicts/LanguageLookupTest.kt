@@ -894,6 +894,56 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun slovakFindsWordsWrittenWithoutTheirMarksTheExactSpellingFirst() = runTest {
+        val imported = engine.import(slovakDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val slovak = LookupOptions(language = Language.SLOVAK)
+        suspend fun all(text: String) = engine.lookup(text, slovak).map { it.term.expression }
+
+        // Text without the acute, caron, circumflex or diaeresis finds the words with them.
+        assertThat(all("robit")).contains("robiť")
+        assertThat(all("ROBIT")).contains("robiť")
+        assertThat(all("kon")).contains("kôň")
+        assertThat(all("maso")).contains("mäso")
+        assertThat(all("dakujem")).contains("ďakujem")
+        assertThat(all("stlp")).containsExactly("stĺp")
+        // Two words told apart by a mark alone: the exact spelling first, and a marked word finds only itself.
+        assertThat(all("byt")).containsExactly("byt", "byť").inOrder()
+        assertThat(all("byť")).containsExactly("byť")
+        assertThat(all("ma")).containsExactly("ma", "má").inOrder()
+        // The form's lemma is reached from the form typed without marks.
+        assertThat(all("robil")).contains("robiť")
+        // A lemma of the row's form-of item, reached through the same key, comes after the word itself as it does
+        // from the word as written.
+        assertThat(all("robit")).containsExactly("robiť", "urobiť").inOrder()
+        assertThat(all("robiť")).containsExactly("robiť", "urobiť").inOrder()
+    }
+
+    /**
+     * Rows as Wiktionary's Slovak exports write them: words told apart by a mark alone, a form of a marked lemma, a word
+     * with definitions that is also a form of another (robiť, the imperfective of urobiť).
+     */
+    private fun slovakDictionary(): File = zip(
+        "sk.zip",
+        "index.json" to """{"title":"Test Slovak","revision":"1","format":3,"sourceLanguage":"sk"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["robiť","","v","",0,["to do",["urobiť",["imperfective"]]],1,""],
+              ["urobiť","","v","",0,["to do, to make"],11,""],
+              ["robil","","non-lemma","",0,[["robiť",["past masculine singular"]]],2,""],
+              ["kôň","","n masc","",0,["horse"],3,""],
+              ["mäso","","n neut","",0,["meat"],4,""],
+              ["ďakujem","","intj","",0,["thank you"],5,""],
+              ["stĺp","","n masc","",0,["pillar"],6,""],
+              ["byt","","n masc","",0,["flat"],7,""],
+              ["byť","","v","",0,["to be"],8,""],
+              ["ma","","pron","",0,["me"],9,""],
+              ["má","","v","",0,["has"],10,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

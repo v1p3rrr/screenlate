@@ -49,7 +49,7 @@ struct Pending {
   std::string origin;
   // Definition tags one of which a glossary needs, kept along form-of steps unless [free_lemmas]; empty for any.
   std::vector<std::string> tags;
-  // Whether a form-of entry with no tags led here (CandidateResult::respelled).
+  // Whether a form-of entry with no tags or a respelled one led here (CandidateResult::respelled).
   bool respelled = false;
   // Whether the lemmas this text's form-of entries lead to need none of [tags] (LanguageCandidate::f).
   bool free_lemmas = false;
@@ -221,7 +221,8 @@ std::vector<CandidateResult> lookup_candidates(const DictionaryQuery& query, con
       // with the form's own marks (שְׁלוֹם) is not the headword itself and keeps them.
       if (!item.tags.empty() && is_itself(item.lemma)) continue;
       Pending lemma{p.matched, p.steps, 0, {}, item.lemma, false, p.text, p.origin,
-                    p.free_lemmas ? std::vector<std::string>{} : p.tags, p.respelled || item.tags.empty()};
+                    p.free_lemmas ? std::vector<std::string>{} : p.tags,
+                    p.respelled || item.tags.empty() || item.respelled};
       for (const auto& chain : p.chains) {
         auto extended = chain;
         extended.insert(extended.end(), item.tags.begin(), item.tags.end());

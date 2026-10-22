@@ -446,7 +446,8 @@ std::optional<std::string> split_bank(const std::string& content, ArchiveSplit& 
         const std::string_view target = plain_lemma.empty() ? std::string_view(lemma) : std::string_view(plain_lemma);
         const std::vector<std::string> shown = cleaned_tags(tags);
         split.table.add(headword, target, shown, rules);
-        for (const auto& key : form_keys) split.table.add(key, target, shown, rules);
+        // Where every headword is keyed, a key is another spelling of the form, as for the headword itself above.
+        for (const auto& key : form_keys) split.table.add(key, target, shown, rules, every_headword);
       }
     }
     if (definitions.empty()) {

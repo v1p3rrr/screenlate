@@ -99,6 +99,16 @@ test('a compound line stands above the entries of its parts and goes with a word
     assert.equal(content.querySelector('.compound'), null);
 });
 
+test("an entry from the fallback language's dictionaries names that language after the word", () => {
+    const czech = { ...result('v', ''), fallbackLanguage: 'cs' };
+    Popup.render(state({ results: [czech, result('voda', '')], labels: { ...labels, language_cs: 'Czech' } }));
+    const [first, second] = content.querySelectorAll('article.entry');
+    const chip = first.querySelector('.entry-head .fallback-language');
+    assert.equal(chip.textContent, 'Czech');
+    assert.equal(chip.previousElementSibling.className, 'expression');
+    assert.equal(second.querySelector('.fallback-language'), null);
+});
+
 test('the e-ink theme reaches the page root', () => {
     Popup.render(state({ theme: 'eink' }));
     assert.equal(page.document.documentElement.dataset.theme, 'eink');

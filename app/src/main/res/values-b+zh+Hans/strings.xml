@@ -88,6 +88,7 @@
     <string name="language_setup_gloss_none">无</string>
     <string name="language_setup_none_available">所选语言没有词典。</string>
     <string name="language_setup_choose_one">请至少选择一个。</string>
+    <string name="language_setup_fallback">备用词典（%1$s）</string>
     <string name="language_setup_pronunciation_info">以音标表示的读音，例如：%1$s</string>
     <string name="language_setup_download">下载（%1$s）</string>
     <string name="language_setup_turn_on">启用</string>
@@ -508,6 +509,7 @@
     <string name="popup_font_script_only_ro">仅用于罗马尼亚语文字</string>
     <string name="popup_font_script_only_la">仅用于拉丁语文字</string>
     <string name="popup_font_script_only_lt">仅用于立陶宛语文字</string>
+    <string name="popup_font_script_only_sk">仅用于斯洛伐克语文字</string>
     <string name="popup_font_system_zh">手机自带的中文字体</string>
     <string name="popup_font_system_ko">手机自带的韩文字体</string>
     <string name="popup_font_script_only_zh">仅用于中文文字</string>

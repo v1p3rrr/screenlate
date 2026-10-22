@@ -24,6 +24,7 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdate
 import com.vpr.screenlate.dictionary.api.registry.DictionaryUpdates
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.dictionary.api.registry.isReadBy
 import com.vpr.screenlate.languages.LeftoverModel
 import com.vpr.screenlate.languages.ShownLanguage
 import com.vpr.screenlate.languages.leftoverCards
@@ -233,7 +234,7 @@ class DictionariesViewModel @Inject constructor(
             .onStart { emit(cache.last?.let { FileChecks(it.remoteCss, it.withoutFiles, it.sizes, it.otherModels) } ?: FileChecks()) },
     ) { dictionaries, (tasks, online), entries, (sortIds, profileState, shown), checks ->
         val items = catalogItems(entries, dictionaries, tasks)
-        val shownDictionaries = dictionaries.filter { it.isFor(shown) }
+        val shownDictionaries = dictionaries.filter { it.isReadBy(shown) }
         DictionariesState(
             all = dictionaries,
             installed = DictionaryKind.entries.mapNotNull { kind ->
@@ -244,7 +245,7 @@ class DictionariesViewModel @Inject constructor(
             tasks = tasks.filter { !it.finished || it.state == ImportTask.State.FAILED },
             taskNames = tasks.associate { it.id to it.shownName(entries) },
             waitingForNetwork = waitingForNetwork(tasks, online),
-            catalog = groupCatalog(items.filter { !it.entry.isModel && it.entry.isFor(shown) }, shown),
+            catalog = groupCatalog(items.filter { !it.entry.isModel && it.entry.isReadBy(shown) }, shown),
             sortDictionaryId = sortDictionaryId(shownDictionaries.filter { it.id !in checks.withoutFiles }, sortIds[shown]),
             links = dictionaries.associate { dictionary ->
                 dictionary.id to DictionaryLinks.of(dictionary, entries.firstOrNull { it.matches(dictionary) })
@@ -474,11 +475,9 @@ internal fun sortDictionaryId(dictionaries: List<DictionaryEntity>, stored: Long
     return (frequencies.firstOrNull { it.id == stored } ?: frequencies.firstOrNull())?.id
 }
 
-/** Dictionaries with a source language that is not turned on. */
-private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: List<Language>): List<DictionaryEntity> {
-    val read = turnedOn.mapTo(hashSetOf()) { it.dictionaryCode }
-    return dictionaries.filter { it.sourceLanguage != null && it.sourceLanguage !in read }
-}
+/** Dictionaries with a source language that no turned-on language reads ([isReadBy]). */
+private fun ofOtherLanguages(dictionaries: List<DictionaryEntity>, turnedOn: List<Language>): List<DictionaryEntity> =
+    dictionaries.filter { dictionary -> dictionary.sourceLanguage != null && turnedOn.none { dictionary.isReadBy(it) } }
 
 /**
  * Dictionaries with a source language that is not turned on and the [models] left by such languages, by language,

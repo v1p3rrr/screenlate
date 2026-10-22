@@ -150,6 +150,10 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | lt | OCR results: Ü ü é ị become Ū ū ė į, one for one (ML Kit's Latin model read Ū as Ü, ė as é and į as ị, j or i on the test screens; Lithuanian writes none of them: typed text has ü 74, Ü 3, é 205 and ị 2 times in 200,000 sentences, in foreign names, José among them, which OCR turns into Josė); É and Ị stay; app text is taken as written | `lang/LithuanianSupport.kt` `ocrWord`; `lang/OcrLetters.kt` `replaceLetters` (shared with `ScandinavianLetters`); `ocr/OcrModels.kt` `inLanguage` | LithuanianSupportTest `ocr's u with a diaeresis, e with an acute and i with a dot below are lithuanian letters, others stay` | Isolation (`büti`, `upé`, `ịvykis` change only in Lithuanian) | ok |
 | lt | Fonts: Latin with the extended subset and the letters ą č ę ė į š ų ū ž (`fontLetters`), which every catalog Latin font has; the popup switch "Only for Lithuanian text" | `lang/LithuanianSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `lithuanian takes every latin font` | — | ok |
 | lt | Audio: Lingua Libre first (Q9083, 3 of 20 common words), Wiktionary (none of the 20), the voice last | `lang/LithuanianSupport.kt` `defaultAudioSources` | LithuanianSupportTest `lithuanian's own code, name, flag and letters` | — | ok |
+| sk | Sentences: the period of napr., tzv., tzn., t.j., tj., resp., príp., popr., č., s., str., ul., tel., the titles (Ing., Mgr., Bc., PhDr., MUDr., JUDr., RNDr., PaedDr., MVDr., prof., doc., dr., sv., gen., plk., mjr., kpt.), vs., spol., the language labels before a foreign word (angl., lat., nem., maď., rus., fr., gr., slov., čes., tal.) and n.l., pr.n.l. ends nothing; that of r., st., stor., kr. (pred Kr.), atď., pod. (a pod.), hod., min., max., sek., mil., mld., tis., cca., a.s., s.r.o., roč., čl., ods., písm., zb., p., pí., pr. only before a lowercase word or a number; the letters t, j, n, l of t. j., n. l. and pr. n. l. take their period from the one beside them; ordinals take a period (one or two digits always, more digits and Roman numerals before a lowercase word); „…“ and ‚…‘ paired | `lang/SlovakSupport.kt` `abbreviations`, `abbreviationsBeforeLowercase`, `pairedLetters`, `ordinalPeriod`, `quotePairs` | SlovakSupportTest `abbreviations do not end a sentence…`, `letters of a spaced abbreviation hold only beside each other`, `ordinals take a period…`, `quotes open low and close high…`; SentenceTest `slovakSentenceKeepsOrdinalsAndAbbreviationsAndEndsAtAnEraBeforeACapital` | Isolation (`napr. jablká` holds only in Slovak, `Kr. godine` in Croatian, Serbian and Slovak, the era `n. l.` in Czech and Slovak; the ordinal and `pairedLetters` lists) | ok |
+| sk | No OCR letter fix: ML Kit reads ť ď ľ as t d l and Paddle as t' d' l' (group 5a plan, "Measurements"); the keys without marks find the words ML Kit gives, Paddle's apostrophes stay (decision "OCR letter fixes" names no Slovak fix; Paddle is not Slovak's recommended model) | — | — | Isolation (`ocrWord` lists leave Slovak out) | limit |
+| sk | Fonts: Latin with the extended subset and the letters á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž (`fontLetters`), which every catalog Latin font has; the popup switch "Only for Slovak text" | `lang/SlovakSupport.kt` `fontSubsets`, `fontLetters`; `app/.../languages/LanguageStrings.kt` | FontCatalogFileTest `slovak takes every latin font` | — | ok |
+| sk | Audio: Lingua Libre first (Q9058, 19 of 20 common words), Wiktionary (1 of the 20), the voice last | `lang/SlovakSupport.kt` `wikidataId`, `defaultAudioSources` | SlovakSupportTest `slovak's own code, name, flag and letters` | — | ok |
 
 ## Lookup pipeline (`dictionary:api`)
 
@@ -178,6 +182,8 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | ky | Frequency from the Leipzig Corpora Collection (`kir_newscrawl_2016_100K.tar.gz`, 19.9 MB, SHA-256 145fd1c7…, CC BY), built as Kazakh's, lowercased with the ky locale | catalog `corpus-ky`; `api/imports/CorpusCountsDictionary.kt` | CorpusCountsDictionaryTest `the kyrgyz dictionary credits the kyrgyz corpus`, `the kyrgyz archive builds the top 100 000 words`; `test_corpus_catalog.py` `test_the_kyrgyz_entry_is_the_leipzig_archive` | — | ok |
 | kk, ky | Form rows between scripts are dropped: tags `Arabic`, `romanization`, `Yañalif` (since wty 2026.10.22 from the Arabic-script or Latin spelling to the Cyrillic word, before from the Cyrillic word to them; group 4e question 22) and `Cyrillic`, `Cyrillic sometimes` (a Cyrillic letter to its Arabic equivalent's entry, а → ا) | `lang/TurkicCyrillicSupport.kt` `ignoredFormTags`; `api/ShownResults.kt` | KazakhSupportTest and KyrgyzSupportTest (`ignoredFormTags`); ShownResultsTest (а → ا) | Isolation (the languages with `ignoredFormTags`) | ok |
 | ro | Results under a Cyrillic headword are left out: wty ro-en releases before 2026.10.22 link Romanian words to their Moldovan Cyrillic spellings (o → о, este → есте, si → ши) by 217 form-of items tagged `Cyrillic` and `alt-of`, and the `alt-of` chain would survive `ignoredFormTags`; 2026.10.22 links the Cyrillic spelling to the Latin one (кат → cat), so the rule keeps dictionaries installed from older releases clean | `lang/RomanianSupport.kt` `showsHeadword`; `api/ShownResults.kt` `shownBy`; `api/DictionaryLookup.kt` | ShownResultsTest `romanian leaves out moldovan cyrillic headwords and keeps the rest`; RomanianSupportTest `rules only where the text has no entry, cyrillic headwords left out` | ShownResultsTest (Russian keeps есте), Isolation (`showsHeadword` false only in Romanian) | ok |
+| sk (fallback) | Slovak reads the Czech term dictionaries as a fallback (`fallbackLanguage`): wty sk-en finds 52.4% of the lowercase words of Leipzig's Slovak news, cs-en 15.8% more (v, za, už, však, tak). The repository loads the enabled Czech term dictionaries with Slovak's; the lookup keeps the candidates of Slovak's own dictionaries without the Czech glossaries, and only when none is left shows every candidate with `fallbackLanguage = "cs"`, which the popup shows as the language's name after the word (label `language_cs`) | `lang/LanguageSupport.kt` `fallbackLanguage`, `lookupDictionaryCodes`; `api/registry/DictionaryRepository.kt` `load`, `PreparedLookup.fallbackDictionaries`; `api/DictionaryLookup.kt` `preferringOwn`, `withoutDefinitionsOf`; `api/model/LookupModels.kt` `fallbackLanguage`; `overlay/.../web/PageState.kt` `fallbackLabels`; `popup/popup.js` (`.fallback-language`) | FallbackDictionariesTest (all); SlovakSupportTest `words its dictionaries lack are looked up in the czech ones`; popup.mjs `an entry from the fallback language's dictionaries names that language after the word` | FallbackDictionariesTest `a language without a fallback keeps every result as found`, `only slovak falls back, to czech` | ok |
+| sk (fallback) | The Czech term dictionaries count as Slovak's: the Dictionaries screen lists them under Slovak, `LanguageFiles` keeps them while Slovak is on, turning Slovak on enables them, a backup of Slovak takes Czech's dictionaries; the download screen lists Czech's main dictionaries in the chosen gloss languages after Slovak's own, unticked, with the line "Fallback dictionary (Czech)", outside the mandatory check; frequency lists, models and transcriptions stay Czech's | `api/registry/DictionaryEntity.kt` `isReadBy`; `api/catalog/DictionaryCatalog.kt` `isReadBy`; `app/.../dictionaries/DictionariesViewModel.kt`; `app/.../languages/LanguageFiles.kt`, `LanguageSwitch.kt`, `LanguageSetup.kt` (`SetupItem.fallback`), `LanguageSetupScreen.kt`; `app/.../backup/BackupManager.kt`, `BackupChoice.kt` | LanguageSetupTest `slovak lists the czech main dictionaries…`, `a czech dictionary does not satisfy slovak's mandatory category…`; DictionaryLanguagesTest `czech dictionaries with definitions are slovak's while slovak is on…`; OcrModelsTest `czech keeps its dictionaries while slovak…`; BackupChoiceTest `slovak takes the czech dictionaries it falls back to`; CatalogFileTest `slovak also reads czech term dictionaries…` | LanguageSetupTest `languages without a fallback list only their own dictionaries`; CatalogFileTest (Czech reads only its own) | ok |
 
 ## Engine (`dictionary:engine-hoshidicts`)
 
@@ -224,6 +230,9 @@ as it is; see below), **ask** (a behavior choice for the owner).
 | la | Import: the lemma names of forms lose macrons and breves (U+0304 U+0306 on aeiouy: amat names amō, the headword is amo), form headwords are keyed without them as well (6 rows carry them); 63.7% of lemma names resolve as written, 99.7% without the marks | `lang/LatinSupport.kt` `headwordMarks` (no `everyHeadword`, so `lemmasAsWritten` false) | LatinSupportTest `lemma names lose their macrons and breves…`; I: LanguageLookupTest (amat, Romae, Rōmae) | Isolation (Latin in none of the `everyHeadword` and `replacements` lists) | ok |
 | lt | Latvian's descriptor (capitalization only) under Lithuanian's own code (`lit`): no rules, as wty lt-en lists 177k form rows; the marks of the letters are kept by the text side (žmogus, zmogus are two spellings; the keys below join them) | `lt.js` bundle; `build.mjs` `borrowed` | glue `lithuanian takes the latvian capitalization under its own code and keeps the marks of its letters`, `russian stress marks…` (lt keeps them) | glue (other borrowed descriptors) | ok |
 | lt | Import: forms are keyed without the acute, grave and tilde of their stress (U+0301 U+0300 U+0303 on aeiouylmnr: žmogaũs, dienų̃) and without the dot over an accented i (U+0307 after i only: bi̇̀tės; the dot of ė stays); lemma names of forms lose the same marks (vanduõ → vanduo); then every headword is also keyed without the ogonek of ą ę į ų, the dot of ė, the macron of ū and the caron of č š ž (U+0328 U+0307 U+0304 U+030C on aeiucsz), after the stress marks are gone, so text without them finds the words with them, the exact spelling first (ruda, then rūda; kasti, then kąsti); 71.2% of 190,360 lemma names resolve as written, 71.9% without the marks | `lang/LithuanianSupport.kt` `headwordMarks` (`everyHeadword`, `lemmasAsWritten` false, `markBases`, `letterMarks`, `letterBases`); `lang/LanguageSupport.kt` `HeadwordMarks`; `HoshidictsEngine.kt` (JSON); `cpp/language/archive_split.cpp` `MarkStripper` (mark sets with their own bases, the letters' level in `keys`) | LithuanianSupportTest `forms are keyed without stress…`; I: LanguageLookupTest `lithuanianFindsStressedFormsAndWordsWrittenWithoutTheMarksOfTheirLettersTheExactSpellingFirst` | Isolation (`markBases` and `letterMarks` only in Lithuanian; Lithuanian and Arabic store lemma names without marks while keying every headword); every other LanguageLookupTest (one mark set, no letters' level) | ok; LanguageLookupTest passed on the emulator (2026-10-22) |
+| sk | Czech's descriptor (capitalization only) under Slovak's own code (`slk`): Czech's bundle reads text the same way, as Yomitan's Czech descriptor has no rules either; wty sk-en lists 95,424 form headwords | `sk.js` bundle; `build.mjs` `borrowed` | glue `slovak takes the czech capitalization under its own code and keeps the marks of its letters` | glue (other borrowed descriptors) | ok |
+| sk | Import: every headword is also keyed without the acute (U+0301 on aeiouylr), the caron (U+030C on cdlnstz), the circumflex of ô and the diaeresis of ä, so text without them finds the words with them, the exact spelling first (byt, then byť; ma, then má), and a
+form-of item of a keyed word after the word (robit: robiť, then urobiť, its perfective); 459,930 of 484,507 marked words in running text are found through these keys, 24,577 have a bare spelling that is a word | `lang/SlovakSupport.kt` `headwordMarks` (`everyHeadword`, `markBases`) | SlovakSupportTest `every headword is keyed without the marks of its letters`; I: LanguageLookupTest `slovakFindsWordsWrittenWithoutTheirMarksTheExactSpellingFirst` | Isolation (`markBases` in Lithuanian and Slovak, `letterMarks` only in Lithuanian) | ok |
 | zh | Kangxi radicals read as their ideographs (⽇本 → 日本) | `zh.js` bundle | glue, I: ChineseLookupTest | — | ok |
 | th | Sara am given as ํ + า, also with the tone mark between them (น + ํ + ้ + า), tried as ำ; a tone mark or thanthakhat given before the vowel above its letter tried after it (thaiCharacterOrder); ๆ tried with and without the spaces around it (thaiMaiYamokSpace: wty th-en writes 43 of its 44 headwords with ๆ as จริง ๆ, one as นานๆ): the app's own text processors, added to Thai's descriptor, which has none | `th.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `thai sara am…`, `thai mai yamok…`, I: LanguageLookupTest `thaiText…` | glue `thai processors stay out of other languages` | ok |
 | km | Zero-width spaces between words dropped from the looked-up text, one that ends the text kept out of the match (khmerZeroWidthSpace); subscript TA ្ត tried as subscript DA ្ដ, which print alike (khmerSubscriptDa): the app's own text processors, added to Khmer's descriptor, which has none | `km.js` bundle, `scripts/yomitan-language/own-processors.js`, `build.mjs` `addedPreprocessors` | glue `khmer zero-width spaces between words are dropped…`, `khmer subscript TA is tried as subscript DA`, I: LanguageLookupTest `khmerSubscriptTaAndDaFindEachOtherAndZeroWidthSpacesAreDropped` | glue `khmer processors stay out of other languages` | ok |
@@ -490,6 +499,23 @@ Found while rechecking against wty 2026.10.22 (2026-10-22):
     frequent forms, Kazakh о 69). `Cyrillic` and `Cyrillic sometimes` joined `ignoredFormTags` (ShownResultsTest;
     test-model case LK63).
 
+Found while building Slovak (2026-10-22):
+
+46. In a language that keys every headword without its marks, a form-of item of a word with definitions was keyed as a
+    plain form, while the word itself, keyed the same way, counted as respelled and came after it: robit showed urobiť
+    and zrobiť (robiť is their imperfective) before robiť. Form rows keyed so are now respelled too (the form-of
+    table's flag, version 2), so robit shows robiť first, as robiť does (LanguageLookupTest
+    `slovakFindsWordsWrittenWithoutTheirMarksTheExactSpellingFirst`; test-model case LK64). This touches every language
+    with `everyHeadword` (Greek, Romanian, Lithuanian, Arabic, Persian, Hindi, Khmer, Kazakh, Kyrgyz); dictionaries
+    imported before keep the old order until they are imported again.
+
+47. Turning Czech off with its files deleted, or "Delete all" on its card under "Turned off", while Slovak was on
+    deleted the Czech definitions Slovak's lookups fall back to, although the card and the dialog had counted only
+    Czech's frequency list and transcriptions. Czech's language code is its dictionaries' code, so the files' codes
+    took in every Czech dictionary. The deletion now leaves out the dictionaries a language that stays on reads
+    (`LanguageFiles` `dictionariesOf`, OcrModelsTest `czech keeps the definitions slovak falls back to while slovak
+    stays on`; test-model case DIC34).
+
 ## Limits left as they are
 
 - Bengali endings are undone once: ছেলেদেরকে finds ছেলেদের, not ছেলে. Verb forms come only from Wiktionary's form
@@ -624,6 +650,13 @@ Found while rechecking against wty 2026.10.22 (2026-10-22):
   without marks whose bare spelling is another word shows that word first (i before į, ruda before rūda), and some
   foreign words find a Lithuanian one (de → dė, as → aš). OCR text turns é in foreign names into ė (Josė). About 29%
   of lowercase words in running text are not in wty lt-en (tiek, nebuvo, būna).
+
+- Slovak: text written without marks whose bare spelling is not in sk-en finds a marked word through the keys (tu →
+  tú 2,921 times in 200,000 sentences, i → í, u → ú), and that own result keeps the Czech tu (here) out. pri and pred
+  are in neither dictionary (Czech writes při, před). With Slovak's own dictionaries deleted and only Czech ones left,
+  scanning says no dictionary is installed. A backup of Slovak takes Czech's frequency list and models as well
+  (`lookupDictionaryCodes` names the whole code). A spaced "s. r. o." and initials (P. J. Šafárik) end the sentence
+  before a capital, as in Czech. The "n. I." OCR fix stays Czech's.
 
 ## Owner decisions in this review
 
@@ -1009,6 +1042,40 @@ Abbreviations and contractions have entries again (da f.eks., kl.; ro nr., str.;
 sentence rules read text only, so they do not change. Rows the reversal removed were extra results under common words
 (sv gå, t.ex.; nb men → mein; la atque → ac; lt į → i̷); new obsolete rows (la amo → hama) are left as the data gives
 them.
+
+### Slovak (2026-10-22)
+
+Leipzig's Slovak news (2020, 100,000 sentences) and Wikipedia (2021, 100,000 sentences); sk-en, sk-ru and cs-en (wty
+2026.10.22) as the dictionaries.
+
+- wty sk-en: 109,204 rows; 11,815 headwords with definitions (4,080 capitalized), 95,424 form headwords. Marks in
+  headwords: acute 49,726, caron 36,242, diaeresis 782, circumflex 647 (double acute 21, ring 8, grave 2 in foreign
+  words).
+- Coverage of lowercase words: news 1,278,885 words, sk-en 52.4%, sk-ru 2.5% more, the keys without marks 0.48%,
+  cs-en 15.8% more, 28.8% missing; Wikipedia 1,181,569 words: 50.2%, 2.8%, 0.84%, 16.0%, 30.1%. Found only in cs-en:
+  v (40,492 in the news), za, už, však, tak, eur, no, rámci, totiž, nad. Missing everywhere: pri, pred, napr, tzv,
+  koronavírusu, prípadov, uviedol, všetkých.
+- Words with marks: 484,507 of 2,460,454 lowercase words (20%). Written without the marks, 459,930 are found through
+  the keys and 24,577 have a bare spelling that is a word itself, which the exact-first order puts first (ma/má
+  5,039, byt/byť 3,734, mat/mať, dni/dní, pat/päť). Text without marks that only the keys find: tu → tú 2,921, i →
+  í 2,390, u → ú 1,698, stal → stál/šťal 1,230, hlavne → hlavné 799, test → tesť, and → ánd.
+- An apostrophe after d, t, l (a typed ď ť ľ): 181 tokens, all foreign (d'Italia, McDonald's, L'Express); the text
+  has ď 18,828, ť 86,737, ľ 67,651 times. No reason to read d' t' l' as ď ť ľ in typed text.
+- Abbreviations (lowercase / capital / end): napr. 288 / 61 / 746 (6 before a digit); tzv. 228 / 20 / 982; resp. 123
+  / 2 / 263; t. j. 119 / 4 / 7, t.j. 46 / 2 / 3; č. 238 before a digit; p. 54 before a digit, 36 / 86 (initials: P.
+  J. Šafárika) / 1; r. 154 before a digit, 25 / 67 (initials) / 77; stor. 71 / 0 / 24; kr. 59 / 0 / 142; atď. 3 / 0
+  / 98; a pod. 6 / 0 / 140; mil. 37 / 0 / 69; hod. 18 / 0 / 49; sv. 5 / 0 / 400 (the splitter's cuts); p. n. l. 3 /
+  0 / 0; n.l. 1 / 1 / 1. Language labels before the foreign word: angl. 34 / 10, lat. 28 / 10, nem. 0 / 7, maď. 1 / 5.
+  Leipzig's splitter cuts after many abbreviations, so the ends include its cuts.
+- Numbers with a period: one or two digits before a lowercase word 10,237, before a capital 373, ending a sentence
+  1,909; four digits 9 before a lowercase word, none before a capital. Roman numerals: 439 lowercase, 219 capital,
+  304 at an end.
+- A single capital letter with a period (initials): 1,052 before a capital, 364 lowercase, 105 at an end.
+- Quotes: „…“ 4,425, „…” 52, “…” 106, ‚…‘ 23, «…» 2. Paired: „…“ and ‚…‘.
+- Audio: Lingua Libre Q9058 has 19 of 20 common words, Wiktionary 1.
+- Fonts: every catalog Latin font has á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž.
+- The bundle: Yomitan's Czech descriptor has capitalization only, so sk.js (Czech's under Slovak's code) and cs.js
+  read text the same; Slovak needs no rules of its own (sk-en lists 95,424 forms).
 
 ## Device checks
 

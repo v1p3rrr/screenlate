@@ -88,6 +88,7 @@
     <string name="language_setup_gloss_none">なし</string>
     <string name="language_setup_none_available">選んだ言語の辞書はありません。</string>
     <string name="language_setup_choose_one">少なくとも1つ選んでください。</string>
+    <string name="language_setup_fallback">予備の辞書（%1$s）</string>
     <string name="language_setup_pronunciation_info">発音記号による発音。例：%1$s</string>
     <string name="language_setup_download">ダウンロード（%1$s）</string>
     <string name="language_setup_turn_on">オンにする</string>
@@ -508,6 +509,7 @@
     <string name="popup_font_script_only_ro">ルーマニア語の文字だけに使う</string>
     <string name="popup_font_script_only_la">ラテン語の文字だけに使う</string>
     <string name="popup_font_script_only_lt">リトアニア語の文字だけに使う</string>
+    <string name="popup_font_script_only_sk">スロバキア語の文字だけに使う</string>
     <string name="popup_font_system_zh">端末の中国語フォント</string>
     <string name="popup_font_system_ko">端末の韓国語フォント</string>
     <string name="popup_font_script_only_zh">中国語の文字だけに使う</string>

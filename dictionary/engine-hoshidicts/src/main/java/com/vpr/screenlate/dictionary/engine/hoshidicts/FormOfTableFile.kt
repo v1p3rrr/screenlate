@@ -9,7 +9,8 @@ import java.nio.ByteOrder
 /** Checks of the form-of table file (layout in `src/main/cpp/language/form_of_table.hpp`) without loading it. */
 internal object FormOfTableFile {
     private val MAGIC = "SLFO".toByteArray(Charsets.US_ASCII)
-    private const val VERSION = 1
+    // Version 1 has no respelled flag; both are read.
+    private val VERSIONS = setOf(1, 2)
     private const val HEADER_SIZE = 4 + 4 + 4 * 4 + 6 * 8
 
     /**
@@ -24,7 +25,7 @@ internal object FormOfTableFile {
                 if (size < HEADER_SIZE) return false
                 val header = read(input, 0, HEADER_SIZE)
                 val magic = ByteArray(4).also { header.get(it) }
-                if (!magic.contentEquals(MAGIC) || header.getInt() != VERSION) return false
+                if (!magic.contentEquals(MAGIC) || header.getInt() !in VERSIONS) return false
                 header.getInt() // forms
                 header.getInt() // blocks
                 val strings = header.getInt().toLong() and 0xFFFFFFFFL

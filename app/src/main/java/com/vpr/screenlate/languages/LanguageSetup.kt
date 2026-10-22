@@ -1,6 +1,7 @@
 package com.vpr.screenlate.languages
 
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
@@ -10,13 +11,16 @@ import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
  * A catalog entry on the download screen; an [installed] one stays ticked and is not downloaded again. [requires] are
  * the models it reads only together with (the Paddle detector), downloaded with it when missing and not listed. An
  * [ownEdition] is a dictionary of the language's own Wiktionary edition listed although the language is not among the
- * chosen gloss languages; it is not ticked by default.
+ * chosen gloss languages; it is not ticked by default. A [fallback] item is a dictionary of the language its lookups
+ * fall back to (Czech for Slovak, `LanguageSupport.fallbackLanguage`): not ticked by default, and it does not count
+ * for a mandatory category.
  */
 data class SetupItem(
     val entry: CatalogEntry,
     val installed: Boolean,
     val requires: List<SetupItem> = emptyList(),
     val ownEdition: Boolean = false,
+    val fallback: Boolean = false,
 ) {
     /** What ticking it downloads: the entry and the missing models it requires. */
     val downloadBytes: Long get() = entry.downloadBytes + requires.filterNot { it.installed }.sumOf { it.entry.downloadBytes }
@@ -33,14 +37,15 @@ data class SetupCategory(
     val mandatory: Boolean,
     val builtIn: Boolean = false,
 ) {
-    val fixed: Boolean get() = mandatory && !builtIn && items.size == 1
+    val fixed: Boolean get() = mandatory && !builtIn && items.count { !it.fallback } == 1
 
     /**
      * Installed and fixed items always; the others as the user set them ([choices]) or as the catalog recommends,
-     * except beside ML Kit and for an [SetupItem.ownEdition].
+     * except beside ML Kit and for an [SetupItem.ownEdition] or a [SetupItem.fallback].
      */
     fun ticked(item: SetupItem, choices: Map<String, Boolean>): Boolean =
-        item.installed || fixed || (choices[item.entry.id] ?: (item.entry.recommended && !builtIn && !item.ownEdition))
+        item.installed || (fixed && !item.fallback) ||
+            (choices[item.entry.id] ?: (item.entry.recommended && !builtIn && !item.ownEdition && !item.fallback))
 }
 
 /** Archive bytes to download, bytes after import, and the space the downloads need on the way. */
@@ -80,7 +85,9 @@ internal fun glossChoices(
  * (frequency, transcription, the entry's own recognition models). Categories go in their declared order, a mandatory one even when
  * empty; within one, in the order of [glosses], the recommended first. A model counts
  * as installed when [modelInstalled] says so; a model others require is not listed but goes with them
- * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn].
+ * ([SetupItem.requires]). Where [mlKitReads] the language, the model category is [SetupCategory.builtIn]. The main
+ * dictionaries of the language its lookups fall back to, into [glosses], follow the language's own as
+ * [SetupItem.fallback] items.
  */
 internal fun setupCategories(
     catalog: Catalog,
@@ -91,8 +98,11 @@ internal fun setupCategories(
     modelInstalled: (CatalogEntry) -> Boolean = { false },
 ): List<SetupCategory> {
     val code = language.dictionaryCode
+    val fallbackCode = language.support.fallbackLanguage?.dictionaryCode
+    fun fallback(entry: CatalogEntry) = !entry.isFor(language) && entry.sourceLanguage == fallbackCode
     val entries = catalog.entries.filter {
-        it.isFor(language) && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == code)
+        it.isFor(language) && (it.targetLanguage == null || it.targetLanguage in glosses || it.targetLanguage == code) ||
+            (fallback(it) && it.category == CatalogCategory.MAIN && it.isReadBy(language) && it.targetLanguage in glosses)
     }
     val mandatory = catalog.mandatory(language)
     val required = catalog.entries.flatMapTo(hashSetOf()) { it.requires }
@@ -103,16 +113,20 @@ internal fun setupCategories(
     return CatalogCategory.entries.mapNotNull { category ->
         val items = entries.filter { it.category == category && !(it.isModel && it.model in required) }
             .sortedWith(
-                compareBy<CatalogEntry> { entry ->
-                    entry.targetLanguage?.let(glosses::indexOf)?.takeIf { it >= 0 } ?: glosses.size
-                }
+                compareBy<CatalogEntry> { fallback(it) }
+                    .thenBy { entry -> entry.targetLanguage?.let(glosses::indexOf)?.takeIf { it >= 0 } ?: glosses.size }
                     .thenBy { !it.recommended },
             )
             .map { entry ->
                 if (entry.isModel) {
                     SetupItem(entry, modelInstalled(entry), requiredItems(entry))
                 } else {
-                    SetupItem(entry, installed.any(entry::matches), ownEdition = entry.targetLanguage == code && code !in glosses)
+                    SetupItem(
+                        entry,
+                        installed.any(entry::matches),
+                        ownEdition = entry.targetLanguage == code && code !in glosses,
+                        fallback = fallback(entry),
+                    )
                 }
             }
         SetupCategory(category, items, category in mandatory, builtIn = mlKitReads && category == CatalogCategory.OCR_MODEL)
@@ -150,7 +164,9 @@ data class MainModelPick(val model: String?)
 
 /** Mandatory categories without a ticked item; Confirm stays disabled while there are any. */
 internal fun missingChoices(categories: List<SetupCategory>, choices: Map<String, Boolean>): List<CatalogCategory> =
-    categories.filter { category -> category.mandatory && !category.builtIn && category.items.none { category.ticked(it, choices) } }
+    categories.filter { category ->
+        category.mandatory && !category.builtIn && category.items.none { !it.fallback && category.ticked(it, choices) }
+    }
         .map { it.category }
 
 /**

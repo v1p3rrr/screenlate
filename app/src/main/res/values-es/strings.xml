@@ -92,6 +92,7 @@
     <string name="language_setup_gloss_none">Ninguno</string>
     <string name="language_setup_none_available">No hay diccionarios en los idiomas elegidos.</string>
     <string name="language_setup_choose_one">Elige al menos uno.</string>
+    <string name="language_setup_fallback">Diccionario de reserva (%1$s)</string>
     <string name="language_setup_pronunciation_info">Pronunciación en notación fonética, por ejemplo: %1$s</string>
     <string name="language_setup_download">Descargar (%1$s)</string>
     <string name="language_setup_turn_on">Activar</string>
@@ -514,6 +515,7 @@
     <string name="popup_font_script_only_ro">Solo para texto en rumano</string>
     <string name="popup_font_script_only_la">Solo para texto en latín</string>
     <string name="popup_font_script_only_lt">Solo para texto en lituano</string>
+    <string name="popup_font_script_only_sk">Solo para texto en eslovaco</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

@@ -94,6 +94,7 @@
     <string name="language_setup_gloss_none">Brak</string>
     <string name="language_setup_none_available">Brak słowników w wybranych językach.</string>
     <string name="language_setup_choose_one">Wybierz co najmniej jeden.</string>
+    <string name="language_setup_fallback">Słownik zapasowy (%1$s)</string>
     <string name="language_setup_pronunciation_info">Wymowa w zapisie fonetycznym, na przykład: %1$s</string>
     <string name="language_setup_download">Pobierz (%1$s)</string>
     <string name="language_setup_turn_on">Włącz</string>
@@ -517,6 +518,7 @@
     <string name="popup_font_script_only_ro">Tylko dla tekstu rumuńskiego</string>
     <string name="popup_font_script_only_la">Tylko dla tekstu po łacinie</string>
     <string name="popup_font_script_only_lt">Tylko dla tekstu litewskiego</string>
+    <string name="popup_font_script_only_sk">Tylko dla tekstu słowackiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

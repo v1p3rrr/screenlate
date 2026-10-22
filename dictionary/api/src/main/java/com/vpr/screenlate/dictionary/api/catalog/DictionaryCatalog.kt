@@ -2,6 +2,7 @@ package com.vpr.screenlate.dictionary.api.catalog
 
 import android.content.Context
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 import com.vpr.screenlate.core.common.languageName
 import com.vpr.screenlate.core.common.log.Log
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
@@ -130,6 +131,13 @@ data class CatalogEntry(
 
     /** Whether the entry is one of [language]'s: by its own code for a model, by its dictionaries' code otherwise. */
     fun isFor(language: Language): Boolean = sourceLanguage == if (isModel) language.code else language.dictionaryCode
+
+    /**
+     * Whether lookups in [language] read the entry once installed: one of [language]'s ([isFor]), or a dictionary with
+     * definitions for the language its lookups fall back to (`LanguageSupport.fallbackLanguage`, Czech for Slovak).
+     */
+    fun isReadBy(language: Language): Boolean =
+        isFor(language) || (!isModel && kind == DictionaryKind.TERM && language.support.fallbackLanguage?.let(::isFor) == true)
 
     /**
      * A dictionary names its kind; a model its id, engine, version and checksum; a built dictionary a known [build],

@@ -51,6 +51,7 @@ class DictionaryRepository @Inject constructor(
     private var loadedLanguage: Language? = null
     private var sortDictionary: DictionaryEntity? = null
     private var termOrder: List<String> = emptyList()
+    private var fallbackTitles: Set<String> = emptySet()
     private val changes = AtomicInteger()
 
     /**
@@ -350,6 +351,7 @@ class DictionaryRepository @Inject constructor(
                 },
             ),
             termDictionaries = termOrder,
+            fallbackDictionaries = fallbackTitles,
         )
     }
 
@@ -443,11 +445,16 @@ class DictionaryRepository @Inject constructor(
     }
 
     private suspend fun load(language: Language) {
-        val enabled = dao.getAll().filter { usable(it, language) }
+        val all = dao.getAll()
+        val enabled = all.filter { usable(it, language) }
+        // Only definitions (isReadBy): the fallback language's frequencies, transcriptions and characters are not this
+        // language's.
+        val fallback = all.filter { it.enabled && !it.isFor(language) && it.isReadBy(language) && storage.hasFiles(it) }
+        val terms = enabled.filter { it.termCount > 0 } + fallback
         fun List<DictionaryEntity>.directories() = map { storage.directoryOf(it) }
         engine.load(
             DictionarySet(
-                terms = enabled.filter { it.termCount > 0 }.directories(),
+                terms = terms.directories(),
                 frequencies = enabled.filter { it.frequencyCount > 0 }.directories(),
                 pitches = enabled.filter { it.pitchCount > 0 }.directories(),
                 kanji = enabled.filter { it.kanjiCount > 0 }.directories(),
@@ -456,7 +463,8 @@ class DictionaryRepository @Inject constructor(
         val frequencies = enabled.filter { it.frequencyCount > 0 }
         val preferred = preferences.data.first()[sortKey(language)]
         sortDictionary = frequencies.firstOrNull { it.id == preferred } ?: frequencies.firstOrNull()
-        termOrder = enabled.filter { it.termCount > 0 }.map { it.title }
+        termOrder = terms.map { it.title }
+        fallbackTitles = fallback.mapTo(HashSet()) { it.title }
         loadedLanguage = language
         changes.incrementAndGet()
     }
@@ -468,10 +476,13 @@ class DictionaryRepository @Inject constructor(
 
 /**
  * @property termDictionaries titles of the loaded term dictionaries, highest priority first.
+ * @property fallbackDictionaries titles of those among [termDictionaries] that are the fallback language's
+ *   (`LanguageSupport.fallbackLanguage`), loaded after the language's own; see `DictionaryLookup.preferringOwn`.
  */
 data class PreparedLookup(
     val options: LookupOptions,
     val termDictionaries: List<String>,
+    val fallbackDictionaries: Set<String> = emptySet(),
 )
 
 private fun sortKey(language: Language) = longPreferencesKey(language.preferenceKey("sort_dictionary_id"))

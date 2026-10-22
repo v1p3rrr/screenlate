@@ -6,6 +6,8 @@ import com.vpr.screenlate.core.ocr.model.InstalledOcrModel
 import com.vpr.screenlate.dictionary.api.catalog.Catalog
 import com.vpr.screenlate.dictionary.api.catalog.CatalogCategory
 import com.vpr.screenlate.dictionary.api.catalog.CatalogEntry
+import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
+import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
 import java.io.File
 import java.util.Locale
 import org.junit.Test
@@ -135,6 +137,34 @@ class OcrModelsTest {
         assertThat(fileCodes("sh", turnedOn = listOf(serbian))).containsExactly("hr")
         assertThat(fileCodes("ru", turnedOn = listOf(Language.JAPANESE))).containsExactly("ru")
         assertThat(fileCodes("xx", turnedOn = listOf(Language.JAPANESE))).containsExactly("xx")
+    }
+
+    private fun dictionary(id: Long, source: String, kind: DictionaryKind, terms: Long) = DictionaryEntity(
+        id = id, title = "d$id", revision = "1", kind = kind, sourceLanguage = source, targetLanguage = "en",
+        frequencyMode = null, enabled = true, priority = id.toInt(), directory = "d$id", termCount = terms, frequencyCount = 0,
+        pitchCount = 0, kanjiCount = 0, mediaCount = 0, isUpdatable = false, indexUrl = null, downloadUrl = null,
+        author = null, url = null, description = null, attribution = null, bundled = false, importedAt = 0,
+    )
+
+    @Test
+    fun `czech keeps the definitions slovak falls back to while slovak stays on`() {
+        val czechTerms = dictionary(1, "cs", DictionaryKind.TERM, terms = 10)
+        val czechFrequency = dictionary(2, "cs", DictionaryKind.FREQUENCY, terms = 0)
+        val czechTranscriptions = dictionary(3, "cs", DictionaryKind.PITCH, terms = 0)
+        val slovakTerms = dictionary(4, "sk", DictionaryKind.TERM, terms = 10)
+        val installed = listOf(czechTerms, czechFrequency, czechTranscriptions, slovakTerms)
+
+        val slovakOn = listOf(Language.SLOVAK)
+        assertThat(fileCodes("cs", turnedOn = slovakOn)).containsExactly("cs")
+        assertThat(dictionariesOf(fileCodes("cs", slovakOn), slovakOn, installed)).containsExactly(czechFrequency, czechTranscriptions)
+        val japaneseOn = listOf(Language.JAPANESE)
+        assertThat(dictionariesOf(fileCodes("cs", japaneseOn), japaneseOn, installed))
+            .containsExactly(czechTerms, czechFrequency, czechTranscriptions)
+        // Slovak takes only its own: the Czech dictionaries stay with Czech, or with nobody once Czech is off too.
+        val czechOn = listOf(Language.CZECH)
+        assertThat(fileCodes("sk", turnedOn = czechOn)).containsExactly("sk")
+        assertThat(dictionariesOf(fileCodes("sk", czechOn), czechOn, installed)).containsExactly(slovakTerms)
+        assertThat(dictionariesOf(fileCodes("sk", japaneseOn), japaneseOn, installed)).containsExactly(slovakTerms)
     }
 
     @Test

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.lookupDictionaryCodes
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -63,13 +64,13 @@ data class BackupChoice(
     fun offersLanguages(listed: List<BackupFile>): Boolean = listed.size > 1 || listed.any { (it.bytes ?: 0) > 0 }
 
     /**
-     * The codes of the [listed] languages that are taken, with the codes of their dictionaries where these differ (sh
-     * for Croatian and Serbian).
+     * The codes of the [listed] languages that are taken, with the codes of the dictionaries they read where these
+     * differ (sh for Croatian and Serbian, cs for Slovak, which falls back to Czech's).
      */
     fun chosenLanguages(listed: List<BackupFile>): Set<String> {
         val codes = listed.map { it.key }
         val chosen = if (offersLanguages(listed)) languages.chosen(codes) else codes.toSet()
-        return chosen + chosen.mapNotNull { Language.of(it)?.dictionaryCode }
+        return chosen + chosen.flatMap { Language.of(it)?.lookupDictionaryCodes.orEmpty() }
     }
 
     /** Whether a language taken from [listed] has recognition models, which go in or come out with it. */

@@ -30,7 +30,8 @@
  * showTranslation fills; a second tap hides it. The block belongs to the first view: a new word drops it, a pushed
  * view hides it until back returns.
  *
- * Each entry starts with the word, then one row of details (inflection 🧩, the first frequency, pitch accents,
+ * Each entry starts with the word (with the language's name after it when the entry comes from the dictionaries of the
+ * language the lookup falls back to: LookupResult.fallbackLanguage, its name in labels as language_<code>), then one row of details (inflection 🧩, the first frequency, pitch accents,
  * transcriptions) and the buttons. Tapping an inflection step, an accent or a transcription opens the info panel at the bottom of the card, and so does a
  * tag with a description: a dictionary's tag (its tag bank's notes, see setTagNotes) or a structured-content element
  * with a title, such as Jitendex's part-of-speech labels.
@@ -422,6 +423,9 @@ const Popup = (() => {
             const reading = element('span', 'reading-after', after);
             reading.dir = 'ltr';
             head.append(reading);
+        }
+        if (result.fallbackLanguage) {
+            head.append(element('span', 'tag fallback-language', labels[`language_${result.fallbackLanguage}`] || result.fallbackLanguage));
         }
         const details = entryInfo(result, labels);
         if (details) head.append(details);

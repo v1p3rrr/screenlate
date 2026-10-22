@@ -134,7 +134,7 @@ class LanguageRulesIsolationTest {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
-            Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN, Language.DANISH,
+            Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN, Language.DANISH, Language.SLOVAK,
         )
         assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -151,22 +151,24 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "Obst z. B. Äpfel") }).containsExactly(Language.GERMAN)
         assertThat(periodEnding.where { holds(it, "Plan B. Dann") }).isEmpty()
         assertThat(spaced.filter { it.pairedLetters.isNotEmpty() }.map { it.language })
-            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN)
-        // Czech "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number) holds alone.
+            .containsExactly(Language.GERMAN, Language.CZECH, Language.CROATIAN, Language.SERBIAN, Language.LITHUANIAN, Language.SLOVAK)
+        // Czech and Slovak "n. l.": the l takes its period from the n beside it; Italian and Portuguese "n." (number)
+        // holds alone.
         val era = "v roce 300 n. l. vznikl"
-        assertThat(periodEnding.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
+        assertThat(periodEnding.where { !it.endsSentence(era, era.indexOf("l.") + 1) }).containsExactly(Language.CZECH, Language.SLOVAK)
         // Only Czech OCR text gets the l of "n. l." back from a capital I; app text with the capital is taken as written.
         assertThat(all.where { it.ocrLines(listOf(listOf("n.", "I.", "Potom"))).single()[1] == "l." })
             .containsExactly(Language.CZECH)
         assertThat(all.where { it.ocrLines(listOf(listOf("n", ".", "I", ".", "Potom"))).single()[2] == "l" })
             .containsExactly(Language.CZECH)
         val joined = "v roce 300 n.l. vznikl"
-        assertThat(periodEnding.where { !it.endsSentence(joined, joined.indexOf("l.") + 1) }).containsExactly(Language.CZECH)
+        assertThat(periodEnding.where { !it.endsSentence(joined, joined.indexOf("l.") + 1) }).containsExactly(Language.CZECH, Language.SLOVAK)
         val capital = "v roce 300 n. I. Potom"
         assertThat(periodEnding.where { !it.endsSentence(capital, capital.indexOf("I.") + 1) }).isEmpty()
         // Croatian and Serbian mr. is magistar.
         assertThat(periodEnding.where { holds(it, "Mr. Smith") }).containsExactly(Language.ENGLISH, Language.DUTCH, Language.CROATIAN, Language.SERBIAN)
-        assertThat(periodEnding.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+        // Slovak kr. of "pred Kr." holds before a lowercase word too.
+        assertThat(periodEnding.where { holds(it, "Kr. godine") }).containsExactly(Language.CROATIAN, Language.SERBIAN, Language.SLOVAK)
         // Ukrainian т. holds for "т. зв." and "у т. ч.".
         assertThat(periodEnding.where { holds(it, "т. е. так") }).containsExactly(Language.RUSSIAN, Language.UKRAINIAN)
         assertThat(periodEnding.where { holds(it, "у 1991 р. він") }).containsExactly(Language.UKRAINIAN)
@@ -231,6 +233,9 @@ class LanguageRulesIsolationTest {
         assertThat(periodEnding.where { holds(it, "5 tūkst. Vėliau") }).containsExactly(Language.LATVIAN)
         val thatIs = "vaisiai, t. y. obuoliai"
         assertThat(periodEnding.where { !it.endsSentence(thatIs, thatIs.lastIndexOf(". ")) }).containsExactly(Language.LITHUANIAN)
+        // Slovak napr. (napríklad), which Czech writes např.
+        assertThat(periodEnding.where { holds(it, "napr. jablká") }).containsExactly(Language.SLOVAK)
+        assertThat(periodEnding.where { holds(it, "napr. Jablká") }).containsExactly(Language.SLOVAK)
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -367,7 +372,7 @@ class LanguageRulesIsolationTest {
     fun `only Greek, Hindi, Khmer, Arabic, Persian, Kazakh and Kyrgyz key every headword in another spelling, only Arabic two further`() {
         assertThat(all.where { it.headwordMarks?.everyHeadword == true }).containsExactly(
             Language.GREEK, Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ,
-            Language.ROMANIAN, Language.LITHUANIAN,
+            Language.ROMANIAN, Language.LITHUANIAN, Language.SLOVAK,
         )
         assertThat(all.where { it.headwordMarks?.replacements.orEmpty().isNotEmpty() }).containsExactly(
             Language.HINDI, Language.KHMER, Language.ARABIC, Language.PERSIAN, Language.KAZAKH, Language.KYRGYZ, Language.ROMANIAN,
@@ -376,9 +381,10 @@ class LanguageRulesIsolationTest {
         // Arabic lemmas lose their vowel marks and Lithuanian ones their stress although every headword is keyed.
         assertThat(all.where { it.headwordMarks?.let { marks -> marks.lemmasAsWritten != marks.everyHeadword } == true })
             .containsExactly(Language.ARABIC, Language.LITHUANIAN)
-        // Only Lithuanian drops a mark after other letters than the rest (the dot over i, not over e) and keys its
-        // headwords without the marks of its letters too.
-        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
+        // Lithuanian drops a mark after other letters than the rest (the dot over i, not over e), Slovak its caron,
+        // circumflex and diaeresis after their own letters; only Lithuanian keys its headwords without the marks of its
+        // letters on a level of their own.
+        assertThat(all.where { it.headwordMarks?.markBases.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN, Language.SLOVAK)
         assertThat(all.where { it.headwordMarks?.letterMarks.orEmpty().isNotEmpty() }).containsExactly(Language.LITHUANIAN)
         assertThat(all.where { it.frequencySpellings("हूं").isNotEmpty() }).containsExactly(Language.HINDI)
         // Only Kazakh and Kyrgyz look a word up again with their letters keyed when it keeps some of them and loses

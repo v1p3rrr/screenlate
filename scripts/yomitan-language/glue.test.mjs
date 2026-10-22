@@ -58,7 +58,7 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da', 'ro', 'lt']) {
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da', 'ro', 'lt', 'sk']) {
         // Indonesian, Malay, Tagalog and Romanian drop every combining mark, as Yomitan's processors for them do.
         if (!['id', 'ms', 'tl', 'ro'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
@@ -79,6 +79,14 @@ test('lithuanian takes the latvian capitalization under its own code and keeps t
     // Words without the letters' marks are found through keys made at import, not by the bundle.
     assert.ok(!queried('lt', 'žmogus').has('zmogus'));
     assert.ok(!queried('lt', 'zmogus').has('žmogus'));
+});
+
+test('slovak takes the czech capitalization under its own code and keeps the marks of its letters', () => {
+    assert.ok(queried('sk', 'Ďakujem').has('ďakujem'));
+    assert.ok(queried('sk', 'ŽRAŤ').has('žrať'));
+    // Words without the letters' marks are found through keys made at import, not by the bundle.
+    assert.ok(!queried('sk', 'robiť').has('robit'));
+    assert.ok(!queried('sk', 'robit').has('robiť'));
 });
 
 test('malay takes the indonesian text processors under its own code', () => {
