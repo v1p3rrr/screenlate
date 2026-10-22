@@ -11,6 +11,17 @@ through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merg
 build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
 same line in other languages) wait for the morning.
 
+Group 4e's follow-ups (Kazakh, Kyrgyz; `languages/kk-followups` from 11dd9eb8, for the coordinating session to merge):
+every engine measured on the emulator (cloud, PaddleOCR Cyrillic, Tesseract kaz/kir fast and best; numbers in the
+group 4e plan, "Measurements"); question 14 (a) built (later parts of a hyphenated word looked up with the hyphen
+first; a lookup from a hyphen keeps only suffix entries spanning the part) and question 15 (b) built (keyed words
+after the written ones, at lengths nothing matches exactly as written), both guards provisional. The rules checked on
+Leipzig's news found three ending gaps, fixed: Kazakh у takes a linking vowel (болуы, оқуым), -нша/-ндай and Kyrgyz
+-нча/-ндай after a possessive, the converb тауып. Questions 16 and 18 counted, not built; new open questions 19
+(initials), 20 (verbs tagged as nouns in wty) and 21 (Kyrgyz -ыш). PanLex's license page changed from CC0 to CC BY-NC-SA 4.0
+between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, unit tests, lint, 145 page tests, glue tests and LK51-LK55, DIC28
+on the emulator pass.
+
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
 `lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug; request 75 (the
