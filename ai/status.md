@@ -19,6 +19,14 @@ asked about both. Built on `claude/competent-rhodes-6bde05` (owner's choices, re
 "Screenlate service is off" notification at every stop. Test model UPD4-UPD7, all passed on the emulators on 2026-10-22
 (run log); the check added naming of system packages hidden from the app.
 
+The overlay crash when the service comes back (languages plan, request 78; fixed on `claude/jolly-cray-bc8ce9` from
+`main`, for the coordinating session to merge into `main` and `languages/main`): the system takes the service's window
+token at unbind before the service hears of it, and the controller's first settings could arrive in between and add
+the overlay with the dead token (`BadTokenException`). `OverlayWindows.add` catches that exception only and logs it;
+the overlay adds its windows whole or not at all, the bubble menu and crop editor skip theirs. Reproduced and checked
+with jdb on the emulator (UPD8, `OverlayWindowsTest`); build, unit tests, lint and 107 page tests pass on the branch.
+It plays no part in the user's ColorOS logs (no crash there; `notes/oem-background-limits.md`).
+
 ## Work in progress (2026-10-22, night): the build chain
 
 Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions back, Tatar added) and reverses every

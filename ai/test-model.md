@@ -436,6 +436,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | UPD5 | The own log keeps at most two files of 4 MB in `noBackupFilesDir/logs` (`run-as` on a debug build); uninstalling the app removes them, a log saved to `Download/Screenlate/` stays | O | U LogFileTest, M | 2026-10-22 (API 30) |
 | UPD6 | Turn the service off in the accessibility settings → a banner "Screenlate service is off" without sound; a tap opens the service's settings (or the list); turning the service on removes the notification; with notifications off, no banner and a log line saying so | F | M | 2026-10-22 |
 | UPD7 | The stop report in the log: "on the enabled list: no" after the switch, the time since the last bubble touch and scan, recent windows with package names of system and phone-maker apps only (hidden ones by name prefix), and a line 3 s later | F | U ServiceStopDiagnosticsTest, M | 2026-10-22 |
+| UPD8 | The service turned off before the overlay has added its windows: jdb holds the main thread at the first `OverlayController.applySettings` after the service connects (`stop thread at`), the service is turned off with `settings delete secure enabled_accessibility_services`, the thread goes on (steps in the run log of 2026-10-22, `claude/jolly-cray-bc8ce9`) → no crash; the log has "Window not added, the system is unbinding the service" and then the stop report, the process lives on; turned on again, the bubble shows docked and scans. Also: on and off again with gaps of 0.1-3 s, no crash | F | U OverlayWindowsTest, M | 2026-10-22 |
 
 ### NF: non-functional
 
@@ -472,6 +473,32 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `claude/jolly-cray-bc8ce9` (`languages/main` 26b3d602 with the fix cherry-picked, 0.2.3-f02f6e38), Pixel_10_Pro (API 37)
+
+Scope: the overlay crash when the service comes back (languages plan, request 78), UPD8 (first check, moved to F).
+Before: group 4e's build 0.2.3-f2b9cd74 (`languages/kk-answers`), which has the old code.
+
+- Cause, from the app's own log on the emulator: group 5a's two crashes (15:56:30 and 16:03:23) came 5.4 and 6.6 s
+  after "Service connected", in that controller's first `applySettings` from the settings flow, while 5a's
+  `uiautomator dump` runs kept stopping and reconnecting the service. The system had taken the service's window token
+  before the first settings arrived; `attachWindows` added the windows with it.
+- Turning the service on and off with gaps of 0.1-3 s on the idle emulator did not crash either build: the first
+  settings arrive within the gap between the connect and the stop.
+- Deterministic repro (scratch script): `adb forward tcp:8711 jdwp:<pid>`, jdb `-connect
+  com.sun.jdi.SocketAttach:hostname=localhost,port=8711`, `stop thread at
+  com.vpr.screenlate.overlay.OverlayController:372` (the `attachWindows` call in `applySettings`: line 372 on
+  `languages/main`, 328 on `main`), service on; at the hit, `settings delete
+  secure enabled_accessibility_services`, 3 s, `clear` and `resume`. Old build: `BadTokenException: Unable to add
+  window -- token android.os.BinderProxy@… is not valid` at `attachWindows` ← `applySettings`, the process died, the
+  same trace as 5a's. Fixed build: "W OverlayWindows: Window not added, the system is unbinding the service: …", the
+  stop report 20 ms later, the same pid on; turned on again, three overlay windows, the bubble docked, a pull-out scan
+  over `kk-lines.png` ran (cloud final in 2 s). The line is in the app's own log too.
+- Install: the x86_64-only copy (83 MB) needed the storage threshold lowered for the install (settings deleted
+  again).
+
+Left on the emulator: 0.2.3-f02f6e38 (`languages/main` plus the fix) instead of group 4e's f2b9cd74, data kept; the
+service on, the bubble docked, the home screen; the emulator running.
 
 ### 2026-10-22, `languages/sk` (on `7f14c5d5` with the Slovak changes before their commit), Pixel_10_Pro (API 37)
 

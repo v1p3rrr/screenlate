@@ -241,7 +241,10 @@ Requests 1–19 are in the previous plan. New ones:
     app crashed with `BadTokenException` in `OverlayController.attachWindows`, called from `applySettings`, after the
     service was turned off and on through `settings put`. A plain bug, fixed without questions in a session of its own;
     check whether it plays a part in the ColorOS report (`notes/oem-background-limits.md`), where the system turns the
-    service off and on.
+    service off and on. Fixed on `claude/jolly-cray-bc8ce9` (2026-10-22): the system takes the window token at unbind
+    before the service hears of it; windows the system no longer takes are skipped and logged
+    (`OverlayWindows.add`), the overlay is added whole or not at all. Reproduced and checked with jdb (UPD8). No part
+    in the ColorOS logs (no crash there).
 
 ## Decisions
 

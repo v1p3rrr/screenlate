@@ -204,6 +204,25 @@ Reading:
 - Force-stops happen as well (08:08), at another moment; they are the separate background-limit problem described in
   the ColorOS section.
 
+### The overlay crash when the service comes back (2026-10-22)
+
+Group 5a's emulator run found a crash: `BadTokenException` in `OverlayController.attachWindows`, called from the
+settings flow, when the service was unbound before the controller had added its windows (languages plan, request 78;
+`notes/overlay-system-ui.md`, "The service's window token"). v0.2.3 has the same code. Whether it plays a part here:
+
+- Not in the user's logs. The 2026-10-22 logs show both scan-time stops as a clean `onDestroy` ("Service stopped")
+  with the same pid going on and no crash line; the first log had no crash section at all. The crash needs a window
+  to be added after the system has taken the token: the overlay's windows in the gap between the service's connect
+  and its first settings (2-6 s on the loaded emulator; not measured on a phone) or while the bubble is hidden (the
+  bubble switch, an app in the hidden list), or the bubble menu or crop editor opening in that moment. At the
+  user's stops the bubble was floating, so its windows were already there.
+- It could add a crash to a stop when ColorOS turns the service off right after it was turned on, or when the user
+  turns it on and off quickly. A crash then kills the process; the service, already off the list, is not restarted.
+  In the app's log it reads "Uncaught exception in thread main" with `BadTokenException` right after the stop
+  report. With the fix (`OverlayWindows.add`) such a stop logs "Window not added, the system is unbinding the
+  service" and the process lives on.
+- So it explains neither the switch going off nor the bubble's return at 48.4 in the recording.
+
 ### Likely causes, ranked
 
 Ranked from the recording alone; the first log (above) argues against 1 and, with a condition, against 2, and adds 2a.
