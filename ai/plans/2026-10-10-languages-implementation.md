@@ -237,6 +237,11 @@ Requests 1–19 are in the previous plan. New ones:
     counts refreshed once group 5a's branch is merged (merged into `languages/main` on 2026-10-22); the archive's wty
     files refreshed. Group 5a (sv, no, da, ro, la)
     and group 4e (kk, ky) recheck their own wty data; blocks not started yet measure on the new release.
+78. (2026-10-22) Crash when the accessibility service comes back (found by group 5a on the emulator, Slovak run): the
+    app crashed with `BadTokenException` in `OverlayController.attachWindows`, called from `applySettings`, after the
+    service was turned off and on through `settings put`. A plain bug, fixed without questions in a session of its own;
+    check whether it plays a part in the ColorOS report (`notes/oem-background-limits.md`), where the system turns the
+    service off and on.
 
 ## Decisions
 
@@ -1708,3 +1713,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: group 4e's questions 16 and 18-22 answered (owner): the six stem-changing pronouns skipped by noun endings,
   PanLex capitalized headwords without junk, initials hold the sentence in every spaced language, the verb filter and
   the other-script filter stay, the Kyrgyz -ыш rule added; built by group 4e.
+- 2026-10-22: Slovak (`languages/sk`) merged into `languages/main`; group 5a's questions 24-26 answered (owner, all
+  (a) as built); request 78 (the overlay crash when the service comes back).
