@@ -111,6 +111,8 @@ struct LookupDto {
   std::vector<std::vector<TransformDto>> otherTraces;
   TermDto term;
   int preprocessorSteps = 0;
+  // Reached only through a form-of entry without tags: a headword keyed without its marks or letters.
+  bool respelled = false;
 };
 
 struct ImportDto {
@@ -230,6 +232,7 @@ LookupDto to_dto(screenlate_language::CandidateResult&& result) {
   dto.matched = std::move(result.matched);
   dto.deinflected = std::move(result.deinflected);
   dto.preprocessorSteps = result.preprocessor_steps;
+  dto.respelled = result.respelled;
   for (size_t i = 0; i < result.chains.size(); i++) {
     if (i == 0) {
       dto.trace = to_transforms(std::move(result.chains[i]));

@@ -27,6 +27,16 @@ class YomitanSorterTest {
     }
 
     @Test
+    fun spellingsFoundAsWrittenComeBeforeMoreFrequentOnesFoundWithoutTheirMarks() {
+        val written = result("si", frequency = 26)
+        // și, a form-of entry's lemma, is its own deinflected text, as the native lookup reports it.
+        val withMarks = result("și", matched = "si", frequency = 3).copy(deinflected = "și")
+        assertThat(sort(withMarks, written)).containsExactly(withMarks, written).inOrder()
+        assertThat(sort(withMarks.copy(respelled = true), written))
+            .containsExactly(written, withMarks.copy(respelled = true)).inOrder()
+    }
+
+    @Test
     fun rankFrequencyOrdersAscendingAndMissingFrequencyGoesLast() {
         val rare = result("a", frequency = 5000)
         val common = result("b", frequency = 12)

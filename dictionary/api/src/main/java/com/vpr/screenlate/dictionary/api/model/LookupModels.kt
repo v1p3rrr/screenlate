@@ -12,6 +12,9 @@ import kotlinx.serialization.Serializable
  * @property otherTraces further chains of steps that lead to the same term (Yomitan lists every one), the shorter
  * first; only lookups through Yomitan's language code report them.
  * @property preprocessorSteps number of text normalizations applied (kana conversion, width, etc.).
+ * @property respelled whether the term was reached only through a headword keyed without its marks or letters (si
+ *   for și), so that the spellings found as written come first; only lookups through Yomitan's language code
+ *   report it.
  * @property lang BCP 47 tag of the script the entry is shown in, for a language written in several
  *   (`LanguageSupport.scriptTags`); null otherwise.
  * @property start UTF-16 index in the lookup string where [matched] begins: after the start for a lookup that also
@@ -27,6 +30,7 @@ data class LookupResult(
     val otherTraces: List<List<Transform>> = emptyList(),
     val term: TermEntry,
     val preprocessorSteps: Int = 0,
+    val respelled: Boolean = false,
     val lang: String? = null,
     val start: Int = 0,
     val compound: List<String> = emptyList(),
