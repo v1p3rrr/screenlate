@@ -491,4 +491,5 @@ val Language.support: LanguageSupport
         Language.KYRGYZ -> KyrgyzSupport
         Language.SWEDISH -> SwedishSupport
         Language.NORWEGIAN -> NorwegianSupport
+        Language.DANISH -> DanishSupport
     }

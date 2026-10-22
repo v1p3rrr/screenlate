@@ -508,6 +508,7 @@
     <string name="popup_font_script_only_ky">Seulement pour le texte kirghiz</string>
     <string name="popup_font_script_only_sv">Seulement pour le texte suédois</string>
     <string name="popup_font_script_only_no">Seulement pour le texte norvégien</string>
+    <string name="popup_font_script_only_da">Seulement pour le texte danois</string>
     <string name="popup_font_system_zh">Police chinoise du téléphone</string>
     <string name="popup_font_system_ko">Police coréenne du téléphone</string>
     <string name="popup_font_script_only_zh">Seulement pour le texte chinois</string>

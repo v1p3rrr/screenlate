@@ -1581,6 +1581,21 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
 - WikDict nor-rus: converted with `scripts/freedict` (7,708 terms, 7,420 headwords, 404 KB; its index says no) and
   listed once hosting exists (decision "ESPDIC and WikDict").
 
+### Danish on `languages/da` (2026-10-22)
+
+- `Language.DANISH` (`da`), `DanishSupport`: glyph Æ, flag dk, Latin fonts, Lingua Libre first for audio (Q9035, 10
+  of 20 common words; Wiktionary Da- 3 of 20), compound links s and e, ordinals with a period (5. maj), »…« (opened
+  with ») and “…” paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor, capitalization only (`da.js`, 47 KB); forms and genitives come from wty's form rows
+  (116k in da-en).
+- Catalog: wty da into en ru fr ja pl tr zh and the transcription, all ticked (da-pt 1,404 words and the others stay
+  under the line); wordfreq `small_da`; Tesseract `dan` fast and best and Paddle v6 unticked, Paddle v5 Latin
+  recommended ("more accurate", ML Kit stays the main model).
+- da-en is small (24k lemmas): common words such as finale, serie, situation and indeholde are missing, and their
+  forms fall to the compound split. WikDict dan-rus is converted (5,878 terms, 5,774 headwords, 135 KB) and listed
+  once hosting exists (decision "ESPDIC and WikDict").
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

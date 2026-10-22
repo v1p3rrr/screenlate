@@ -502,6 +502,7 @@
     <string name="popup_font_script_only_ky">키르기스어 텍스트에만 사용</string>
     <string name="popup_font_script_only_sv">스웨덴어 텍스트에만 사용</string>
     <string name="popup_font_script_only_no">노르웨이어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_da">덴마크어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

@@ -133,6 +133,14 @@ class SentenceTest {
     }
 
     @Test
+    fun danishSentenceKeepsAbbreviationsOrdinalsAndTheGuillemetsItOpensWithTheRightPointingOne() {
+        val paragraph = "Det regnede. Hun købte f.eks. æbler, bl.a. røde. »Kom her!« råbte hun. Vi ses den 5. maj kl. 8 i morgen. Slut."
+        assertThat(extract(paragraph, "æbler", Language.DANISH).text).isEqualTo("Hun købte f.eks. æbler, bl.a. røde.")
+        assertThat(extract(paragraph, "råbte", Language.DANISH).text).isEqualTo("»Kom her!« råbte hun.")
+        assertThat(extract(paragraph, "ses", Language.DANISH).text).isEqualTo("Vi ses den 5. maj kl. 8 i morgen.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

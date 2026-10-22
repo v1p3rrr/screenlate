@@ -56,7 +56,7 @@ test('russian stress marks drop and yo matches ye only in russian', () => {
     assert.ok(queried('ru', stressed).has('кошка'));
     assert.ok(queried('ru', 'ёж').has('еж'));
     assert.ok(queried('ru', 'еж').has('ёж'));
-    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv']) {
+    for (const language of ['en', 'de', 'pl', 'lv', 'nl', 'cs', 'id', 'ms', 'tl', 'sv', 'no', 'da']) {
         // Indonesian, Malay and Tagalog drop every combining mark, as Yomitan's processors for them do.
         if (!['id', 'ms', 'tl'].includes(language)) assert.ok(!queried(language, stressed).has('кошка'), language);
         assert.ok(!queried(language, 'еж').has('ёж'), language);
@@ -732,7 +732,16 @@ test('norwegian lowers capitals and keeps the marks of its letters, and its geni
     assert.ok(!queried('no', 'år').has('ar'));
     assert.ok(!queried('no', 'søster').has('soster'));
     // English has an -s rule of its own.
-    for (const language of ['sv', 'de', 'nl', 'pl']) {
+    for (const language of ['sv', 'da', 'de', 'nl', 'pl']) {
         assert.ok(!queried(language, 'dagens').has('dagen'), language);
     }
+});
+
+test('danish lowers capitals and keeps the marks of its letters', () => {
+    assert.ok(queried('da', 'Læse').has('læse'));
+    assert.ok(queried('da', 'ÅR').has('år'));
+    // æ, ø and å are letters of their own; Wiktionary lists Danish genitives (dagens) as forms, so no rule adds them.
+    assert.ok(!queried('da', 'år').has('ar'));
+    assert.ok(!queried('da', 'søster').has('soster'));
+    assert.ok(!queried('da', 'læse').has('lase'));
 });

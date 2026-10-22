@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -206,6 +206,20 @@ class CatalogFileTest {
             "tesseract-fast-swe", "tesseract-best-swe", "paddle-v6-sv", "paddle-detector-v5-sv", "paddle-detector-v6-sv",
         )
         assertThat(swedish.first { it.id == "wordfreq-sv" }.downloadUrl).endsWith("/large_sv.msgpack.gz")
+    }
+
+    @Test
+    fun `danish offers seven wiktionaries, its transcription, wordfreq's small list and paddle latin, ticked, and the other models`() {
+        val danish = catalog!!.entries.filter { it.isFor(Language.DANISH) }
+        assertThat(danish.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-da-en", "wiktionary-da-ru", "wiktionary-da-fr", "wiktionary-da-ja", "wiktionary-da-pl",
+            "wiktionary-da-tr", "wiktionary-da-zh", "wiktionary-da-transcription", "wordfreq-da", "paddle-latin-da",
+        )
+        assertThat(danish.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-dan", "tesseract-best-dan", "paddle-v6-da", "paddle-detector-v5-da", "paddle-detector-v6-da",
+        )
+        assertThat(danish.first { it.id == "wordfreq-da" }.downloadUrl).endsWith("/small_da.msgpack.gz")
+        assertThat(danish.first { it.id == "wiktionary-da-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (da–en)")
     }
 
     @Test

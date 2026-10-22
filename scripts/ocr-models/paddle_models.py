@@ -52,7 +52,7 @@ DETECTORS = {
                            "properties": {"threshold": "0.2", "box_threshold": "0.45"}},
 }
 
-LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no"]
+LATIN = ["en", "de", "fr", "es", "it", "pt", "pl", "tr", "lv", "nl", "cs", "id", "ms", "tl", "hr", "sv", "no", "da"]
 
 # Languages each recognizer is offered for: those the OCR comparison measured it on. Serbian, written in both scripts,
 # which no model reads together, has the Cyrillic model and the Latin one measured best on Serbo-Croatian.
@@ -73,13 +73,14 @@ RECOGNIZERS = {
 # Latin-script languages not measured (nl, id, ms, tl) recommend none. Belarusian, not measured, takes Ukrainian's.
 # Kazakh: 2.2% of the characters wrong over the clean and hard screens against Tesseract's 22.8-24.0%. Kyrgyz, whose
 # letters are a subset of Kazakh's: 0.0% on drawn screens in eleven styles. Swedish: the Latin v5 model makes the
-# fewest errors of the on-device models over the clean and hard screens; Norwegian: v6.
+# fewest errors of the on-device models over the clean and hard screens; Norwegian: v6; Danish: v5 and v6 both make
+# none, and v5 is the smaller download.
 RECOMMENDED = {
     "ja": "paddle-v6", "zh": "paddle-v6", "de": "paddle-v6", "fr": "paddle-v6", "it": "paddle-v6", "pl": "paddle-v6",
     "lv": "paddle-v6", "en": "paddle-latin", "es": "paddle-latin", "pt": "paddle-latin", "tr": "paddle-latin",
     "ru": "paddle-cyrillic", "cs": "paddle-v6", "uk": "paddle-cyrillic", "be": "paddle-cyrillic", "el": "paddle-el",
     "hr": "paddle-v6", "sr": "paddle-cyrillic", "kk": "paddle-cyrillic",
-    "ky": "paddle-cyrillic", "sv": "paddle-latin", "no": "paddle-v6",
+    "ky": "paddle-cyrillic", "sv": "paddle-latin", "no": "paddle-v6", "da": "paddle-latin",
 }
 
 TEMPLATES = {"paddle-detector-v5", "paddle-detector-v6", "paddle-v6", "paddle-v5"}

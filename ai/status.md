@@ -38,7 +38,8 @@ order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs a
 text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
 engine measurements and its emulator cases wait for the emulator lock. Norwegian on `languages/no` (from
 `languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
-and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well.
+and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well. Danish on
+`languages/da` (from `languages/no`): the same parts, »…« and “…” as its quote pairs; its emulator cases wait too.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

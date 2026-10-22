@@ -1,6 +1,7 @@
 package com.vpr.screenlate.dictionary.api
 
 import com.google.common.truth.Truth.assertThat
+import com.vpr.screenlate.core.common.language.DanishSupport
 import com.vpr.screenlate.core.common.language.DutchSupport
 import com.vpr.screenlate.core.common.language.NorwegianSupport
 import com.vpr.screenlate.core.common.language.SwedishSupport
@@ -71,6 +72,19 @@ class CompoundsTest {
         assertThat(norwegian("barnehage", "barn", "hage")).containsExactly("barn", "hage").inOrder()
         // u is no Norwegian link.
         assertThat(norwegian("gatukjøkken", "gate", "gat", "kjøkken")).isNull()
+    }
+
+    @Test
+    fun `danish links are s and e`() {
+        fun danish(word: String, vararg words: String) = runBlocking {
+            Compounds.split(word, DanishSupport.compoundLinks!!) { prefixes(words.toSet(), it) }
+                ?.map { word.substring(it.first, it.last + 1) }
+        }
+        assertThat(danish("statsminister", "stat", "minister")).containsExactly("stat", "minister").inOrder()
+        assertThat(danish("skolebørn", "skol", "skole", "børn")).containsExactly("skole", "børn").inOrder()
+        assertThat(danish("sportschef", "sport", "chef")).containsExactly("sport", "chef").inOrder()
+        // o is no Danish link.
+        assertThat(danish("kirkogård", "kirke", "kirk", "gård")).isNull()
     }
 
     @Test

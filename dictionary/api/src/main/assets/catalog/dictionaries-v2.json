@@ -1854,6 +1854,25 @@
       "homepage": "https://github.com/rspeer/wordfreq"
     },
     {
+      "id": "wordfreq-da",
+      "title": "wordfreq (da)",
+      "template": "wordfreq",
+      "oldTitles": [
+        "wordfreq da"
+      ],
+      "kind": "FREQUENCY",
+      "category": "FREQUENCY",
+      "sourceLanguage": "da",
+      "recommended": true,
+      "downloadUrl": "https://raw.githubusercontent.com/rspeer/wordfreq/912caf64b657478d1dff1138efdc078947d54bb1/wordfreq/data/small_da.msgpack.gz",
+      "downloadSize": 130515,
+      "sha256": "80db682ff7bb30e7c8fd3e5dac2b9fe8c12faa206c45438f1a799a048ab10d8b",
+      "build": "wordfreq",
+      "version": "3.2",
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/rspeer/wordfreq"
+    },
+    {
       "id": "corpus-th",
       "title": "Thai National Corpus (th)",
       "template": "tnc",
@@ -3308,6 +3327,40 @@
       "homepage": "https://github.com/tesseract-ocr/tessdata_best"
     },
     {
+      "id": "tesseract-fast-dan",
+      "title": "Tesseract fast (dan)",
+      "template": "tesseract-fast",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/dan.traineddata",
+      "downloadSize": 2580059,
+      "sha256": "acb1fd074487a31d1294fcdfd7d7c673467ffd8aeacb2ccd61ebcbf04eb4e2fa",
+      "model": "tesseract-fast-dan",
+      "engine": "tesseract",
+      "file": "tessdata/dan.traineddata",
+      "version": "acb1fd074487",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_fast"
+    },
+    {
+      "id": "tesseract-best-dan",
+      "title": "Tesseract best (dan)",
+      "template": "tesseract-best",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
+      "recommended": false,
+      "downloadUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/dan.traineddata",
+      "downloadSize": 9758142,
+      "sha256": "28901bf4b58a657b511fddafce4ce245a1f21c5ee075734b479d01ab8d4cb6a5",
+      "model": "tesseract-best-dan",
+      "engine": "tesseract",
+      "file": "tessdata/dan.traineddata",
+      "version": "28901bf4b58a",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/tesseract-ocr/tessdata_best"
+    },
+    {
       "id": "tesseract-fast-hrv",
       "title": "Tesseract fast (hrv)",
       "template": "tesseract-fast",
@@ -4625,6 +4678,76 @@
       "template": "paddle-detector-v5",
       "category": "OCR_MODEL",
       "sourceLanguage": "no",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
+      "downloadSize": 4502663,
+      "sha256": "c2e0b767fa07edca31ead94c6489fb84e77923c0f39ece577db52fc8172e4fcf",
+      "model": "paddle-detector-v5",
+      "engine": "paddle",
+      "version": "c2e0b767fa07",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-v6-da",
+      "title": "PaddleOCR v6 (da)",
+      "template": "paddle-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-v6.zip",
+      "downloadSize": 18446203,
+      "sha256": "a79ef27d6e71e1de59488e4bf87e3bbad73d0e19d63e98c5fcb407adb12db405",
+      "model": "paddle-v6",
+      "engine": "paddle",
+      "version": "a79ef27d6e71",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v6"
+      ]
+    },
+    {
+      "id": "paddle-latin-da",
+      "title": "PaddleOCR latin (da)",
+      "template": "paddle-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
+      "recommended": true,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-latin.zip",
+      "downloadSize": 7314761,
+      "sha256": "e9d8bf4d0654742338c9f156bac19ae1eb259d278e29b72e9ea53fe4e69b9a3f",
+      "model": "paddle-latin",
+      "engine": "paddle",
+      "version": "e9d8bf4d0654",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR",
+      "requires": [
+        "paddle-detector-v5"
+      ]
+    },
+    {
+      "id": "paddle-detector-v6-da",
+      "title": "PaddleOCR detector-v6 (da)",
+      "template": "paddle-detector-v6",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
+      "recommended": false,
+      "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v6.zip",
+      "downloadSize": 7460475,
+      "sha256": "c46ad8ddd9ed2b79130851d32ea55bc8caebe1e44006d04ff6b269dd26f86101",
+      "model": "paddle-detector-v6",
+      "engine": "paddle",
+      "version": "c46ad8ddd9ed",
+      "license": "Apache-2.0",
+      "homepage": "https://github.com/PaddlePaddle/PaddleOCR"
+    },
+    {
+      "id": "paddle-detector-v5-da",
+      "title": "PaddleOCR detector-v5 (da)",
+      "template": "paddle-detector-v5",
+      "category": "OCR_MODEL",
+      "sourceLanguage": "da",
       "recommended": false,
       "downloadUrl": "https://github.com/v1p3rrr/screenlate/releases/download/ocr-models-1/paddle-detector-v5.zip",
       "downloadSize": 4502663,
@@ -14523,6 +14646,164 @@
         "zh": "维基词典，书面挪威语：从各语言版本汇集的单词读音。",
         "zh-Hant": "維基詞典，書面挪威文：從各語言版本彙集的單詞讀音。"
       }
+    },
+    {
+      "id": "wiktionary-da-en",
+      "title": "Wiktionary (da–en)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-en",
+        "kty-da-en"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "en",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-en-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/en/wty-da-en.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 3252296,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-ru",
+      "title": "Wiktionary (da–ru)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-ru",
+        "kty-da-ru"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "ru",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-ru-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/ru/wty-da-ru.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 463854,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-fr",
+      "title": "Wiktionary (da–fr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-fr",
+        "kty-da-fr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "fr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-fr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/fr/wty-da-fr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 339306,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-ja",
+      "title": "Wiktionary (da–ja)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-ja",
+        "kty-da-ja"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "ja",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-ja-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/ja/wty-da-ja.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 141039,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-pl",
+      "title": "Wiktionary (da–pl)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-pl",
+        "kty-da-pl"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "pl",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-pl-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/pl/wty-da-pl.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 862142,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-tr",
+      "title": "Wiktionary (da–tr)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-tr",
+        "kty-da-tr"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "tr",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-tr-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/tr/wty-da-tr.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 399887,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-zh",
+      "title": "Wiktionary (da–zh)",
+      "template": "wiktionary",
+      "oldTitles": [
+        "wty-da-zh",
+        "kty-da-zh"
+      ],
+      "kind": "TERM",
+      "category": "MAIN",
+      "sourceLanguage": "da",
+      "targetLanguage": "zh",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-zh-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/da/zh/wty-da-zh.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 229206,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
+    },
+    {
+      "id": "wiktionary-da-transcription",
+      "title": "Wiktionary transcription (da)",
+      "template": "wiktionary-transcription",
+      "oldTitles": [
+        "wty-da-ipa"
+      ],
+      "kind": "PITCH",
+      "category": "PRONUNCIATION",
+      "sourceLanguage": "da",
+      "recommended": true,
+      "indexUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/index/wty-da-ipa-index.json?download=true",
+      "downloadUrl": "https://huggingface.co/datasets/daxida/wty-release/resolve/main/latest/dict/all/da/wty-da-ipa.zip?download=true",
+      "resolveLatest": true,
+      "downloadSize": 202598,
+      "license": "CC BY-SA 4.0",
+      "homepage": "https://github.com/yomidevs/wiktionary-to-yomitan"
     }
   ]
 }

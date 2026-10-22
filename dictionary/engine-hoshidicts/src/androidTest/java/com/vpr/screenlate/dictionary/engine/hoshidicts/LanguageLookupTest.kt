@@ -714,6 +714,43 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun danishFindsFormRowsAndGenitivesFromCapitalsAndKeepsTheMarksOfItsLetters() = runTest {
+        val imported = engine.import(danishDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val danish = LookupOptions(language = Language.DANISH)
+        suspend fun all(text: String) = engine.lookup(text, danish).map { it.term.expression }
+
+        val house = engine.lookup("Huset er stort", danish).first()
+        assertThat(house.term.expression).isEqualTo("hus")
+        assertThat(house.matched).isEqualTo("Huset")
+        // Wiktionary lists Danish genitives as form rows.
+        assertThat(all("Dagens")).contains("dag")
+        assertThat(all("læser")).contains("læse")
+        // æ, ø and å are letters of their own: a word without them is another word.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).containsExactly("ar")
+        assertThat(all("lase")).isEmpty()
+    }
+
+    /** Rows as Wiktionary's Danish exports write them: form rows naming their lemma, two words that differ in å. */
+    private fun danishDictionary(): File = zip(
+        "da.zip",
+        "index.json" to """{"title":"Test Danish","revision":"1","format":3,"sourceLanguage":"da"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["hus","","n neut","",0,["house"],1,""],
+              ["huset","","non-lemma","",0,[["hus",["nominative singular definite"]]],2,""],
+              ["dag","","n","",0,["day"],3,""],
+              ["dagens","","non-lemma","",0,[["dag",["genitive singular definite"]]],4,""],
+              ["læse","","v","",0,["to read"],5,""],
+              ["læser","","non-lemma","",0,[["læse",["present active"]]],6,""],
+              ["år","","n neut","",0,["year"],7,""],
+              ["ar","","n","",0,["are (unit of area)"],8,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))
