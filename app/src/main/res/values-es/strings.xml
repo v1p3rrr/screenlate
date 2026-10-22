@@ -516,6 +516,7 @@
     <string name="popup_font_script_only_la">Solo para texto en latín</string>
     <string name="popup_font_script_only_lt">Solo para texto en lituano</string>
     <string name="popup_font_script_only_sk">Solo para texto en eslovaco</string>
+    <string name="popup_font_script_only_sl">Solo para texto en esloveno</string>
     <string name="popup_font_system_zh">Fuente china del teléfono</string>
     <string name="popup_font_system_ko">Fuente coreana del teléfono</string>
     <string name="popup_font_script_only_zh">Solo para texto chino</string>

@@ -186,6 +186,19 @@ class SentenceTest {
     }
 
     @Test
+    fun slovenianSentenceKeepsOrdinalsAndAbbreviationsAndEndsAtAnEraBeforeACapital() {
+        val paragraph = "Deževalo je. Prof. dr. Novak se je rodil 5. maja 1950 v Ljubljani. »Pridi sem!« je zaklicala. " +
+            "Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov. Mesto je nastalo v 3. stol. pr. n. št. Potem je propadlo."
+        assertThat(extract(paragraph, "Novak", Language.SLOVENIAN).text)
+            .isEqualTo("Prof. dr. Novak se je rodil 5. maja 1950 v Ljubljani.")
+        assertThat(extract(paragraph, "zaklicala", Language.SLOVENIAN).text).isEqualTo("»Pridi sem!« je zaklicala.")
+        assertThat(extract(paragraph, "jabolka", Language.SLOVENIAN).text)
+            .isEqualTo("Sadje, t. i. jabolka in hruške, je stalo npr. 5 tis. evrov.")
+        assertThat(extract(paragraph, "nastalo", Language.SLOVENIAN).text).isEqualTo("Mesto je nastalo v 3. stol. pr. n. št.")
+        assertThat(extract(paragraph, "propadlo", Language.SLOVENIAN).text).isEqualTo("Potem je propadlo.")
+    }
+
+    @Test
     fun czechSentenceKeepsOrdinalsEraAndAbbreviations() {
         val paragraph = "Pršelo. Dne 5. května 300 př. n. l. vznikl např. tento dům. „Pojď sem.“ řekla. Konec."
         assertThat(extract(paragraph, "vznikl", Language.CZECH).text)

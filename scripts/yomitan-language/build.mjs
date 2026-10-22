@@ -29,7 +29,8 @@ const descriptorsFile = path.join(yomitan, 'language/language-descriptors.js');
  * takes Indonesian's text processors (both write the same alphabet), with no inflection rules of either; Bengali takes
  * Hindi's descriptor, which has neither, for the app's own processors and endings; Kazakh and Kyrgyz take Mongolian's
  * (Cyrillic, capitalization only) for the app's own endings; Lithuanian takes Latvian's (capitalization only), as
- * Wiktionary lists its forms; Slovak takes Czech's (capitalization only), the language its lookups fall back to.
+ * Wiktionary lists its forms; Slovak takes Czech's (capitalization only), the language its lookups fall back to; Slovenian takes Czech's as
+ * well, as Wiktionary lists its forms.
  */
 const borrowed = {
     ms: {from: 'id', iso639_3: 'msa', name: 'Malay'},
@@ -38,6 +39,7 @@ const borrowed = {
     ky: {from: 'mn', iso639_3: 'kir', name: 'Kyrgyz', exampleText: 'окуу'},
     lt: {from: 'lv', iso639_3: 'lit', name: 'Lithuanian', exampleText: 'skaityti'},
     sk: {from: 'cs', iso639_3: 'slk', name: 'Slovak', exampleText: 'čítať'},
+    sl: {from: 'cs', iso639_3: 'slv', name: 'Slovenian', exampleText: 'brati'},
 };
 
 /**

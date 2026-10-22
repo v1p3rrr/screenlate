@@ -33,10 +33,9 @@ rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue
 5a's wty recheck is merged as well (no behavior change). Slovak (`languages/sk`, with the Czech dictionaries as its
 fallback) is merged too: build, unit tests, lint, 146 page tests and 64 glue tests pass on the merge, its eight cases
 passed on the emulator, the owner answered its questions 24-26 as built; its run found an overlay crash when the
-service comes back (languages plan, request 78). 5a's device checks are done (no recommendation
-changes); Slovenian runs next; group 4e builds the
-owner's answers to its questions 16 and 18-22. The ColorOS branch is merged into
-main and languages/main (owner).
+service comes back (languages plan, request 78). 5a's device checks are done (no recommendation changes). Slovenian is
+built on `languages/sl` (below); Esperanto runs next; group 4e builds the owner's answers to its questions 16 and
+18-22. The ColorOS branch is merged into main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
 block at a time, each checked and merged into `languages/main` by the coordinating session before the next starts, every
@@ -110,6 +109,11 @@ abbreviations, paired letters and ordinals from the corpus; Tesseract fast as th
 questions 24-26 decided provisionally. Its emulator cases (LK64, LK65, OCR40, POP37, AUD25, ANK29, DIC34, LNG24)
 passed on 2026-10-22 after two fixes: form rows keyed without marks count as respelled (robit showed urobiť first),
 and deleting Czech's files while Slovak is on keeps the Czech definitions Slovak reads.
+
+Slovenian on `languages/sl` (from `languages/main` at `9736102b`): forms keyed without the tonemic marks of
+Wiktionary's Slovenian forms (the macron added; ł and ə read as l and e) and every headword also without the caron
+(the native letters' key now made after the replacements); abbreviations, paired letters t i, ordinals, »…« and „…“
+from the corpus; PaddleOCR v5 Latin as the more accurate model; plan question 27 (FreeDict slv-eng) deferred.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

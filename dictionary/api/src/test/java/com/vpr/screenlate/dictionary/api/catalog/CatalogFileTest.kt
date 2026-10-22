@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk", "sl")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -277,6 +277,20 @@ class CatalogFileTest {
             "tesseract-best-slk", "paddle-v6-sk", "paddle-latin-sk", "paddle-detector-v5-sk", "paddle-detector-v6-sk",
         )
         assertThat(slovak.first { it.id == "wordfreq-sk" }.downloadUrl).endsWith("/small_sk.msgpack.gz")
+    }
+
+    @Test
+    fun `slovenian offers six wiktionaries, its transcription, wordfreq's small list and paddle latin, ticked, and the other models`() {
+        val slovenian = catalog!!.entries.filter { it.isFor(Language.SLOVENIAN) }
+        assertThat(slovenian.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sl-en", "wiktionary-sl-ru", "wiktionary-sl-fr", "wiktionary-sl-pl", "wiktionary-sl-tr",
+            "wiktionary-sl-zh", "wiktionary-sl-transcription", "wordfreq-sl", "paddle-latin-sl",
+        )
+        assertThat(slovenian.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-fast-slv", "tesseract-best-slv", "paddle-v6-sl", "paddle-detector-v5-sl", "paddle-detector-v6-sl",
+        )
+        assertThat(slovenian.first { it.id == "wordfreq-sl" }.downloadUrl).endsWith("/small_sl.msgpack.gz")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.SLOVENIAN) }).isEqualTo(slovenian)
     }
 
     @Test

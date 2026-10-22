@@ -530,8 +530,13 @@ std::vector<std::string> MarkStripper::keys(std::string_view text) const {
   add_replaced(text);
   if (!plain.empty()) add_replaced(plain);
   add(plain);
-  // Without the letters' marks too, once the others are gone: zmogaus for žmogaũs.
-  if (!letters_.empty()) add(strip(plain.empty() ? text : std::string_view(plain), letters_));
+  // Without the letters' marks too, once the others are gone and the replacements made: zmogaus for žmogaũs, zrl for
+  // Slovenian žȓł.
+  if (!letters_.empty()) {
+    const std::string_view bare = plain.empty() ? text : std::string_view(plain);
+    const std::string swapped = replaced(bare, replacements_);
+    add(strip(swapped.empty() ? bare : std::string_view(swapped), letters_));
+  }
   return out;
 }
 

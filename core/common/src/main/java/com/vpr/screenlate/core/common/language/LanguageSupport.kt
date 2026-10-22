@@ -533,6 +533,7 @@ val Language.support: LanguageSupport
         Language.LATIN -> LatinSupport
         Language.LITHUANIAN -> LithuanianSupport
         Language.SLOVAK -> SlovakSupport
+        Language.SLOVENIAN -> SlovenianSupport
     }
 
 /**

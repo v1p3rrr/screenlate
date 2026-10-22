@@ -944,6 +944,61 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun slovenianFindsTonemicFormsAndWordsWrittenWithoutTheCaronTheExactSpellingFirst() = runTest {
+        val imported = engine.import(slovenianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val slovenian = LookupOptions(language = Language.SLOVENIAN)
+        suspend fun first(text: String) = engine.lookup(text, slovenian).first()
+        suspend fun all(text: String) = engine.lookup(text, slovenian).map { it.term.expression }
+
+        // Forms are stored in the tonemic notation (vôde, dẹ́lał, pə̏s), text has none of it: the marks drop, ł and ə
+        // are read as l and e.
+        assertThat(first("vode").term.expression).isEqualTo("voda")
+        assertThat(first("vôde").term.expression).isEqualTo("voda")
+        assertThat(all("delal")).contains("delati")
+        assertThat(all("delajoč")).contains("delati")
+        assertThat(all("pes")).containsExactly("pes")
+        // Lemma names of forms lose their marks (bíti), the headword has none.
+        assertThat(all("je")).contains("biti")
+        // Text without the caron finds the words with it, after the other marks are gone and ł is read as l.
+        assertThat(all("zena")).contains("žena")
+        assertThat(all("ZENA")).contains("žena")
+        assertThat(all("delajoc")).contains("delati")
+        assertThat(all("zrl")).contains("žreti")
+        assertThat(all("žrl")).contains("žreti")
+        // Two words told apart by the caron alone: the exact spelling first, and a word with it finds only itself.
+        assertThat(all("se")).containsExactly("se", "še").inOrder()
+        assertThat(all("še")).containsExactly("še")
+    }
+
+    /**
+     * Rows as Wiktionary's Slovenian exports write them: forms in the tonemic notation with ł and ə, a lemma name with
+     * an acute, a form with the caron and ł, two words told apart by the caron alone.
+     */
+    private fun slovenianDictionary(): File = zip(
+        "sl.zip",
+        "index.json" to """{"title":"Test Slovenian","revision":"1","format":3,"sourceLanguage":"sl"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["voda","","n fem","",0,["water"],1,""],
+              ["vôde","","non-lemma","",0,[["voda",["genitive singular"]]],2,""],
+              ["delati","","v impf","",0,["to work"],3,""],
+              ["d${"\u1EB9\u0301"}lał","","non-lemma","",0,[["delati",["singular masculine l-participle"]]],4,""],
+              ["delaj${"\u1ECD\u0304"}č","","non-lemma","",0,[["delati",["present participle"]]],5,""],
+              ["pes","","n animate masc","",0,["dog"],6,""],
+              ["p${"\u0259\u030F"}s","","non-lemma","",0,[["pes",["vocative singular"]]],7,""],
+              ["biti","","v","",0,["to be"],8,""],
+              ["je","","non-lemma","",0,[["bíti",["third-person singular present"]]],9,""],
+              ["žena","","n fem","",0,["woman"],10,""],
+              ["žreti","","v impf","",0,["to devour"],11,""],
+              ["žȓł","","non-lemma","",0,[["žreti",["singular masculine l-participle"]]],12,""],
+              ["se","","pron","",0,["oneself"],13,""],
+              ["še","","adv","",0,["still"],14,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

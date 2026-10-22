@@ -49,7 +49,7 @@ class MarkStripper {
   std::string strip(std::string_view text) const;
 
   // The other spellings [text] is found under: without the marks ([strip]), with the replacements, and with both;
-  // then without the letters' marks as well; each once, [text] itself left out.
+  // then without the letters' marks as well, with the replacements made; each once, [text] itself left out.
   std::vector<std::string> keys(std::string_view text) const;
 
   bool every_headword() const { return every_headword_; }
