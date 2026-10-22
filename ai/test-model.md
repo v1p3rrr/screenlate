@@ -219,7 +219,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK60 | Lithuanian lookups (overlay over `testdata/ocr/lt-sample.png`, and the Search screen): žmogaus finds žmogus through its form row žmogaũs; zmogaus and ZMOGUS find žmogus; bites finds bitė; ruda shows ruda first, then rūda; kasti shows kasti, then kąsti; as finds aš; vandens finds vanduo | F | U LithuanianSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
 | LK61 | Kazakh particles after a hyphen and endings checked on data (overlay over `testdata/ocr/kk-lines3.png`, the lines in `kk-lines3.txt`, rendered as for LK51; cloud recognition): сондай-ақ aimed at ақ finds -ақ, then ақ; келді-ау aimed at ау finds -ау first; пікірінше finds пікір ("his, her, their « manner"); болуы finds болу ("his, her, their"); тауып finds табу ("converb") | F | U KazakhSupportTest, EarlierStartsTest, glue.test.mjs, M | 2026-10-22 |
 | LK62 | Kyrgyz keyed results after the written ones and endings checked on data (overlay over `testdata/ocr/ky-lines2.png`, the lines in `ky-lines2.txt`; cloud recognition): Түштук finds түшүү ("past « 1st pl."), then түштүк; 19-декабрь aimed at декабрь finds декабрь and no suffix entry -де; өзүнчө finds өз ("his, her, their « manner") | F | U KeyedMatchesTest, EarlierStartsTest, KyrgyzSupportTest, glue.test.mjs, M | 2026-10-22 |
-| LK63 | One-letter words do not show an Arabic letter (Wiktionary links each Cyrillic letter to its Arabic equivalent, tag `Cyrillic`): on the search screen Kyrgyz а and в, and Kazakh о, find no entry of ا, ۋ or و | N | U KazakhSupportTest, KyrgyzSupportTest, ShownResultsTest, M | — |
+| LK63 | One-letter words do not show an Arabic letter (Wiktionary links each Cyrillic letter to its Arabic equivalent, tag `Cyrillic`): on the search screen Kyrgyz а and в, and Kazakh о, find no entry of ا, ۋ or و | F | U KazakhSupportTest, KyrgyzSupportTest, ShownResultsTest, M | 2026-10-22 |
 
 ### POP: the popup
 
@@ -464,6 +464,24 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `languages/main` (`f7161a80`), Pixel_10_Pro (API 37)
+
+Scope: LK63 on the search screen (`PROCESS_TEXT` sent with `am start`), with the dictionaries installed earlier
+(wty kk-en and ky-en of release 2026.10.11; the letter rows are the same in 2026.10.22). Before the install the same
+words were looked up on the build left there (`7d4b7e52`, without the fix). The x86_64-only copy of the debug build
+was installed over the app with its data kept; /data had 617 MB free and the install was refused for storage, so
+`sys_storage_threshold_percentage` and `sys_storage_threshold_max_bytes` were lowered for the install and deleted
+right after it.
+
+Results: passed, no fixes. First checks: LK63 (moved from N to F).
+
+- Before the fix (`7d4b7e52`): Kyrgyz а showed а, А and then ا ("Cyrillic", the Arabic letter's entry); в showed в,
+  В and ۋ ("Cyrillic"); Kazakh о showed о, О, Ө, then و ("Cyrillic", +2 chains) and ө.
+- After (`f7161a80`): Kyrgyz а shows а and А only, в shows в and В only; Kazakh о shows о, О, Ө and ө, no و.
+- Emulator left as found: Lithuanian active, Hebrew in quick switching, Kazakh and Kyrgyz not (activating a language
+  puts it there only while it is active); the accessibility service was stopped by the system after the boot, as
+  before the run. Powered off.
 
 ### 2026-10-22, `claude/competent-rhodes-6bde05` (on `cbdacc03`, then with the package-name and log fixes before their commit), Pixel_10_Pro (API 37), Screenlate_API30_glide (API 30)
 
