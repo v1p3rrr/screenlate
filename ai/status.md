@@ -15,7 +15,11 @@ runs again, Home's audio cards are per lookup language, and a plain bug found on
 merger gave a download queued after a stopped one that one's URL; `OwnInputMerger`); DIC29-DIC31 and AUD18 passed on the
 emulator, build, 1,317 unit tests, lint and 145 page tests pass on the merge; questions 77 and 78 come from it. Left by
 that session: `D:/tmp_sl` (84 MB of APK scratch outside the project, for the owner to delete), and its worktree needs
-`git submodule deinit --all -f` before removal.
+`git submodule deinit --all -f` before removal. Group 4e's follow-ups (`languages/kk-followups`, uncommitted code for
+questions 14 and 15) have waited since 01:46 for the owner's answer to a built-in browser prompt (web.archive.org, the
+PanLex license recheck); the session cannot be stopped from here, so the blocks wait for the morning (one block at a
+time, request 72). Meanwhile the checks session runs the open emulator checks of request 74 (a) and the download fix's
+unchecked cases on `languages/checks-2`.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
