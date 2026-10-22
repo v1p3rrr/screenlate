@@ -27,6 +27,11 @@ the overlay adds its windows whole or not at all, the bubble menu and crop edito
 with jdb on the emulator (UPD8, `OverlayWindowsTest`); build, unit tests, lint and 107 page tests pass on the branch.
 It plays no part in the user's ColorOS logs (no crash there; `notes/oem-background-limits.md`).
 
+The "Screenlate service is off" notification (owner, 2026-10-22; same branch): posted with the check 3 s after a
+stop, and only when the service has not connected again since (`StopFollowUp`, a count of connections in
+`OverlayServiceStatus`), so `uiautomator dump`, which pauses the service for about 1.5 s, no longer flashes a banner.
+The stop report and the 3 s line stay; with notifications off, a log line. UPD6 changed, UPD9 new.
+
 ## Work in progress (2026-10-22, night): the build chain
 
 Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions back, Tatar added) and reverses every

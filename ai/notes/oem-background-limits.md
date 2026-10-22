@@ -311,9 +311,12 @@ Built on 2026-10-22 (`claude/competent-rhodes-6bde05`, regular builds, owner's c
 exit reasons at each start (request 71 of the languages plan), the stop report and the notification below. The stop
 report reads, e.g.: `Service stopped; on the enabled list: no; bubble touch ended: 1180 ms ago; scan started: 3400 ms
 ago; window events in the last 10 s:` followed by one line per window that came to the front, opened or closed, system
-packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification shows at every
-stop (the app cannot tell a user's switch from the system's), as a banner without sound, and is cancelled when the
-service connects again; without the notification permission it is only a log line.
+packages by name and other apps as "an app"; 3 s later a line checks the list again. The notification is posted with
+that check, 3 s after a stop, when the service has not connected again since (owner, 2026-10-22: each
+`uiautomator dump` pauses the service for about 1.5 s, and a notification at the stop itself flashed for every dump;
+`StopFollowUp` decides, from a count of connections). It comes for any stop the service does not come back from, the
+user's switch included (the app cannot tell a user's switch from the system's), as a banner without sound, and is
+cancelled when the service connects again; without the notification permission it is only a log line.
 
 Package visibility (Android 11): the app's `<queries>` makes every app with a launcher icon visible, plus the makers'
 security apps listed there; the system's own packages without one (the home screen, system panels, and on ColorOS most
