@@ -43,7 +43,11 @@ object RomanianSupport : SpacedLanguageSupport() {
 
     override val inflectionRulesOnlyWithoutEntry = true
 
-    /** Wiktionary links some Romanian words to their Moldovan Cyrillic spellings (este → есте, o → о). */
+    /**
+     * wty releases before 2026.10.22 link some Romanian words to their Moldovan Cyrillic spellings (este → есте, o →
+     * о), and an installed dictionary may still hold them; later releases link the Cyrillic spelling to the Latin one
+     * (кат → cat), which Latin text does not reach.
+     */
     override fun showsHeadword(expression: String): Boolean = expression.none { it in '\u0400'..'\u04FF' }
 
     /**
