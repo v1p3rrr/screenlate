@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">使役态</string>
     <string name="inflection_turkic_question_label">疑问</string>
     <string name="inflection_turkic_possessive_2pl_label">你们的</string>
+    <string name="inflection_turkic_verbal_noun_label">动名词</string>
 </resources>

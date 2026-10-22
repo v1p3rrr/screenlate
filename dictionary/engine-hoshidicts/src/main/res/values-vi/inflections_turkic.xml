@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">sai khiến</string>
     <string name="inflection_turkic_question_label">nghi vấn</string>
     <string name="inflection_turkic_possessive_2pl_label">của các bạn</string>
+    <string name="inflection_turkic_verbal_noun_label">danh động từ</string>
 </resources>

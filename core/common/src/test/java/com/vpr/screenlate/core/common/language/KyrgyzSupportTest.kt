@@ -24,6 +24,17 @@ class KyrgyzSupportTest {
     }
 
     @Test
+    fun `an initial before a capitalized word holds the sentence`() {
+        assertThat(ends("Президент К. Бакиев келди")).isFalse()
+        val two = "А. А. Акаев"
+        assertThat(ends(two, 1)).isFalse()
+        assertThat(ends(two, 4)).isFalse()
+        // A capital letter at the end of a text or before a lowercase word still ends it.
+        assertThat(ends("Бул А.")).isTrue()
+        assertThat(ends("Бул А. жана")).isTrue()
+    }
+
+    @Test
     fun `the barred o read by OCR becomes the kyrgyz letter, the latin i stays`() {
         assertThat(support.ocrWord("к\u0275л")).isEqualTo("көл")
         assertThat(support.ocrWord("\u019Fзгөн")).isEqualTo("Өзгөн")

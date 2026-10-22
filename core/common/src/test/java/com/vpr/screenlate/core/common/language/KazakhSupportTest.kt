@@ -22,6 +22,13 @@ class KazakhSupportTest {
     }
 
     @Test
+    fun `an initial holds the sentence, written apart before a capitalized word or joined to it`() {
+        assertThat(ends("Премьер Қ. Мәсімов")).isFalse()
+        assertThat(ends("Премьер Қ.Мәсімов")).isFalse()
+        assertThat(ends("Бұл Ә. әрпі")).isTrue()
+    }
+
+    @Test
     fun `the closing low quote opens nothing`() {
         assertThat(support.quotePairs['«']).isEqualTo('»')
         assertThat(support.quotePairs['„']).isEqualTo('“')

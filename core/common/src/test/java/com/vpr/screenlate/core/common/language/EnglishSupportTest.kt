@@ -19,6 +19,18 @@ class EnglishSupportTest {
     }
 
     @Test
+    fun `an initial before a capitalized word holds the sentence, a capital letter elsewhere ends it`() {
+        assertThat(ends("by J. Smith", ".")).isFalse()
+        assertThat(ends("J. R. R. Tolkien", ". T")).isFalse()
+        // A sentence that ends in a capital letter runs on before a capital, the smaller error.
+        assertThat(ends("Take vitamin C. Then", ".")).isFalse()
+        assertThat(ends("Take vitamin C.", ".")).isTrue()
+        assertThat(ends("Take vitamin C. then", ".")).isTrue()
+        // A capital on the next line makes no initial.
+        assertThat(ends("Plan B.\nThen", ".")).isTrue()
+    }
+
+    @Test
     fun `other terminators always end it`() {
         assertThat(ends("Mr! Smith", "!")).isTrue()
         assertThat(ends("line\nnext", "\n")).isTrue()

@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">Kausativ</string>
     <string name="inflection_turkic_question_label">Frage</string>
     <string name="inflection_turkic_possessive_2pl_label">euer</string>
+    <string name="inflection_turkic_verbal_noun_label">Verbalsubstantiv</string>
 </resources>

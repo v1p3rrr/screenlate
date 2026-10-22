@@ -802,6 +802,7 @@ internal object YomitanInflections {
             "habitual participle" to Strings(R.string.inflection_turkic_habitual_participle_label, R.string.inflection_ky_habitual_participle),
             "aorist" to Strings(R.string.inflection_turkic_aorist_label, R.string.inflection_ky_aorist),
             "intention" to Strings(R.string.inflection_turkic_intention_label, R.string.inflection_ky_intention),
+            "verbal noun" to Strings(R.string.inflection_turkic_verbal_noun_label, R.string.inflection_ky_verbal_noun),
             "converb" to Strings(R.string.inflection_turkic_converb_label, R.string.inflection_ky_converb),
             "purpose" to Strings(R.string.inflection_turkic_purpose_label, R.string.inflection_ky_purpose),
             "until" to Strings(R.string.inflection_turkic_until_label, R.string.inflection_ky_until),

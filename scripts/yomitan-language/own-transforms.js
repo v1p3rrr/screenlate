@@ -612,6 +612,8 @@ export const kyrgyzTransforms = /* @__PURE__ */ turkicTransforms({
         {id: 'habitual participle', name: 'habitual participle', example: 'баруучу', endings: {verbalNoun: 'чу чү'}},
         {id: 'aorist', name: 'aorist', example: 'барар, барбас', endings: {participle: 'ар ер ор өр р'}, afterNegation: ['с']},
         {id: 'intention', name: 'intention', example: 'бармак', endings: {participle: 'мак мек мок мөк'}},
+        // Takes noun endings as a participle does (болушу, билдиришинче); written as the reciprocal voice is.
+        {id: 'verbal noun', name: 'verbal noun', example: 'болушу, келиши', endings: {participle: 'ыш иш уш үш ш'}},
         {id: 'converb', name: 'converb', example: 'барып, бара', endings: {converb: 'ып ип уп үп п', converbAlone: 'а е о ө й'}},
         {id: 'purpose', name: 'purpose', example: 'баргалы', endings: {converb: 'галы гели голу гөлү калы кели колу көлү'}},
         {id: 'until', name: 'until', example: 'баргыча', endings: {converb: 'гыча гиче гуча гүчө кыча киче куча күчө'}},

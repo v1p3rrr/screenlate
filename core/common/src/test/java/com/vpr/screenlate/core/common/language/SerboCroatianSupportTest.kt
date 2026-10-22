@@ -38,7 +38,7 @@ class SerboCroatianSupportTest {
         assertThat(ends(serbian, cyrillicEra, at = cyrillicEra.indexOf("Хр.") + 2)).isFalse()
         val bce = "u 3. st. p. n. e. vladao"
         for (letter in listOf("p.", "n.", "e.")) assertThat(ends(croatian, bce, at = bce.indexOf(letter) + 1)).isFalse()
-        assertThat(ends(croatian, "Vitamin E. Onda")).isTrue()
+        assertThat(ends(croatian, "Vitamin E. onda")).isTrue()
     }
 
     @Test

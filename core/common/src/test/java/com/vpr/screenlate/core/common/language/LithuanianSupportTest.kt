@@ -36,6 +36,11 @@ class LithuanianSupportTest {
         val thisYear = "š. m. rugsėjo"
         assertThat(ends(thisYear, 1)).isFalse()
         assertThat(ends("Tai raidė y. Vėliau")).isTrue()
+        // A capital letter before a capitalized word is an initial.
+        assertThat(ends("Prezidentas A. Smetona")).isFalse()
+        val twoInitials = "M. K. Čiurlionis"
+        assertThat(ends(twoInitials, 1)).isFalse()
+        assertThat(ends(twoInitials, 4)).isFalse()
     }
 
     @Test

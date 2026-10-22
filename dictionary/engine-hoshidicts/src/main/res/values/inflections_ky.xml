@@ -62,6 +62,8 @@
     <string name="inflection_ky_aorist" translatable="false">-ар -ер -ор -өр -р -с (барар, барбас)</string>
     <!-- intention -->
     <string name="inflection_ky_intention" translatable="false">-мак -мек -мок -мөк (бармак)</string>
+    <!-- verbal noun -->
+    <string name="inflection_ky_verbal_noun" translatable="false">-ыш -иш -уш -үш -ш (болушу, келиши)</string>
     <!-- converb -->
     <string name="inflection_ky_converb" translatable="false">-ып -ип -уп -үп -п -а -е -о -ө -й (барып, бара)</string>
     <!-- purpose -->

@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">kauzatyw</string>
     <string name="inflection_turkic_question_label">pytanie</string>
     <string name="inflection_turkic_possessive_2pl_label">wasz</string>
+    <string name="inflection_turkic_verbal_noun_label">rzeczownik odczasownikowy</string>
 </resources>

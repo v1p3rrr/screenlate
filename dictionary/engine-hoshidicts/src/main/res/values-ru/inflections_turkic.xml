@@ -43,4 +43,5 @@
     <string name="inflection_turkic_causative_label">понудительный залог</string>
     <string name="inflection_turkic_question_label">вопрос</string>
     <string name="inflection_turkic_possessive_2pl_label">ваш</string>
+    <string name="inflection_turkic_verbal_noun_label">имя действия</string>
 </resources>

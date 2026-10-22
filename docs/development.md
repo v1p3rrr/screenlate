@@ -110,7 +110,8 @@ English or German translations, and every form of the declension and conjugation
 files of the PanLex database (the 2024-03-01 snapshot, CC0 1.0, as mirrored in the Hugging Face dataset
 `cointegrated/panlex-meanings` at the revision named in the script) into a Kazakh or Kyrgyz dictionary: one
 definition per headword, its translations comma-separated with the ones most sources give first. Headwords outside
-the language's lowercase alphabet, loose word groups, long lists and translations in another script are left out.
+the language's alphabet, time zones, words with a capital after a lowercase letter (interface strings), loose word
+groups, long lists and translations in another script are left out.
 
 ## Language bundles
 
