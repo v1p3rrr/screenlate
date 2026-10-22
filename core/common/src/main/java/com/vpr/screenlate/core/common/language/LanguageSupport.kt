@@ -490,4 +490,5 @@ val Language.support: LanguageSupport
         Language.KAZAKH -> KazakhSupport
         Language.KYRGYZ -> KyrgyzSupport
         Language.SWEDISH -> SwedishSupport
+        Language.NORWEGIAN -> NorwegianSupport
     }

@@ -22,8 +22,27 @@ const COUNTS = path.join(ROOT, 'scripts/catalog/word-counts.json');
 export const SOURCES = [
   'ja', 'en', 'zh', 'ko', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'pl', 'tr', 'vi', 'lv',
   'nl', 'cs', 'id', 'ms', 'tl', 'sh', 'uk', 'be', 'el', 'hi', 'bn', 'ka', 'hy', 'th', 'km',
-  'ar', 'fa', 'he', 'kk', 'ky', 'sv',
+  'ar', 'fa', 'he', 'kk', 'ky', 'sv', 'no',
 ];
+
+/**
+ * Wiktionary folders a source language reads under other codes, in the order a pair is ticked from: Norwegian (no)
+ * takes Bokmål's (nb), the editions' that code Norwegian as a whole (no, the Russian one among them) and Nynorsk's
+ * (nn). Entries keep the folder's code in their ids and titles and the folder's language name in their descriptions.
+ */
+const FOLDERS = { no: ['nb', 'no', 'nn'] };
+
+/** Folders whose transcription a source language lists, where not all of [FOLDERS]: Norwegian's is Bokmål's. */
+const TRANSCRIPTION_FOLDERS = { no: ['nb'] };
+
+/** The Wiktionary folders of [source]. */
+export function folders(source) {
+  return FOLDERS[source] ?? [source];
+}
+
+function transcriptionFolders(source) {
+  return TRANSCRIPTION_FOLDERS[source] ?? folders(source);
+}
 
 /** Gloss languages: the interface languages that have a Wiktionary edition. */
 export const GLOSSES = ['en', 'ru', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt', 'tr', 'vi', 'zh'];
@@ -59,20 +78,20 @@ export function archives(listing) {
     .map((item) => ({ path: item.path.replace(/^latest\//, ''), size: item.size }));
 }
 
-function mainEntry(source, target, size, recommended) {
-  const name = `wty-${source}-${target}`;
+function mainEntry(folder, target, size, recommended, source = folder) {
+  const name = `wty-${folder}-${target}`;
   return {
-    id: `wiktionary-${source}-${target}`,
-    title: `Wiktionary (${source}–${target})`,
+    id: `wiktionary-${folder}-${target}`,
+    title: `Wiktionary (${folder}–${target})`,
     template: TEMPLATE_MAIN,
-    oldTitles: [name, `kty-${source}-${target}`],
+    oldTitles: [name, `kty-${folder}-${target}`],
     kind: 'TERM',
     category: 'MAIN',
     sourceLanguage: source,
     targetLanguage: target,
     recommended,
     indexUrl: `${RELEASE}/index/${name}-index.json?download=true`,
-    downloadUrl: `${RELEASE}/dict/${source}/${target}/${name}.zip?download=true`,
+    downloadUrl: `${RELEASE}/dict/${folder}/${target}/${name}.zip?download=true`,
     resolveLatest: true,
     downloadSize: size,
     license: LICENSE,
@@ -80,19 +99,19 @@ function mainEntry(source, target, size, recommended) {
   };
 }
 
-function glossaryEntry(source, target, size) {
-  const name = `wty-${source}-${target}-gloss`;
+function glossaryEntry(folder, target, size, source = folder) {
+  const name = `wty-${folder}-${target}-gloss`;
   return {
-    id: `wiktionary-${source}-${target}-glossary`,
-    title: `Wiktionary glossary (${source}–${target})`,
+    id: `wiktionary-${folder}-${target}-glossary`,
+    title: `Wiktionary glossary (${folder}–${target})`,
     template: TEMPLATE_GLOSSARY,
-    oldTitles: [name, `kty-${source}-${target}-gloss`],
+    oldTitles: [name, `kty-${folder}-${target}-gloss`],
     kind: 'TERM',
     category: 'GLOSSARY',
     sourceLanguage: source,
     targetLanguage: target,
     indexUrl: `${RELEASE}/index/${name}-index.json?download=true`,
-    downloadUrl: `${RELEASE}/dict/${source}/${target}/${name}.zip?download=true`,
+    downloadUrl: `${RELEASE}/dict/${folder}/${target}/${name}.zip?download=true`,
     resolveLatest: true,
     downloadSize: size,
     license: LICENSE,
@@ -100,11 +119,11 @@ function glossaryEntry(source, target, size) {
   };
 }
 
-function transcriptionEntry(source, size) {
-  const name = `wty-${source}-ipa`;
+function transcriptionEntry(folder, size, source = folder) {
+  const name = `wty-${folder}-ipa`;
   return {
-    id: `wiktionary-${source}-transcription`,
-    title: `Wiktionary transcription (${source})`,
+    id: `wiktionary-${folder}-transcription`,
+    title: `Wiktionary transcription (${folder})`,
     template: TEMPLATE_TRANSCRIPTION,
     oldTitles: [name],
     kind: 'PITCH',
@@ -112,7 +131,7 @@ function transcriptionEntry(source, size) {
     sourceLanguage: source,
     recommended: !UNTICKED_TRANSCRIPTION.has(source),
     indexUrl: `${RELEASE}/index/${name}-index.json?download=true`,
-    downloadUrl: `${RELEASE}/dict/all/${source}/${name}.zip?download=true`,
+    downloadUrl: `${RELEASE}/dict/all/${folder}/${name}.zip?download=true`,
     resolveLatest: true,
     downloadSize: size,
     license: LICENSE,
@@ -132,9 +151,11 @@ export function targets(source) {
 export function candidates() {
   const paths = [];
   for (const source of SOURCES) {
-    for (const target of targets(source)) paths.push(`dict/${source}/${target}/wty-${source}-${target}.zip`);
-    for (const target of GLOSSES) paths.push(`dict/${source}/${target}/wty-${source}-${target}-gloss.zip`);
-    paths.push(`dict/all/${source}/wty-${source}-ipa.zip`);
+    for (const folder of folders(source)) {
+      for (const target of targets(folder)) paths.push(`dict/${folder}/${target}/wty-${folder}-${target}.zip`);
+      for (const target of GLOSSES) paths.push(`dict/${folder}/${target}/wty-${folder}-${target}-gloss.zip`);
+    }
+    for (const folder of transcriptionFolders(source)) paths.push(`dict/all/${folder}/wty-${folder}-ipa.zip`);
   }
   return paths;
 }
@@ -142,10 +163,11 @@ export function candidates() {
 /**
  * The Wiktionary entries for [files] (tree paths below `dict/`) that hold MIN_WORDS words by [words] (counts by
  * path); an archive of COUNTED_BELOW bytes or more passes uncounted. A main dictionary is recommended unless a
- * hand-written main dictionary of the same pair is, so each pair has one recommended entry, or it is the own edition of
- * a language outside the gloss languages.
+ * hand-written main dictionary of the same pair is, or an earlier folder of its language has the pair (FOLDERS), so
+ * each pair has one recommended entry, or it is the own edition of a language outside the gloss languages. With
+ * [templates], entries of a folder under another language's code name that folder ([byFolder]).
  */
-export function wiktionaryEntries(files, manual, words = new Map()) {
+export function wiktionaryEntries(files, manual, words = new Map(), templates = undefined) {
   const sizes = new Map(files.map((file) => [file.path, file.size]));
   const passes = (file) => sizes.has(file) && (sizes.get(file) >= COUNTED_BELOW || (words.get(file) ?? 0) >= MIN_WORDS);
   const recommendedPairs = new Set(
@@ -154,19 +176,47 @@ export function wiktionaryEntries(files, manual, words = new Map()) {
   );
   const entries = [];
   for (const source of SOURCES) {
-    for (const target of targets(source)) {
-      const file = `dict/${source}/${target}/wty-${source}-${target}.zip`;
-      const recommended = GLOSSES.includes(target) && !recommendedPairs.has(`${source}-${target}`);
-      if (passes(file)) entries.push(mainEntry(source, target, sizes.get(file), recommended));
+    const ticked = new Set();
+    for (const folder of folders(source)) {
+      for (const target of targets(folder)) {
+        const file = `dict/${folder}/${target}/wty-${folder}-${target}.zip`;
+        if (!passes(file)) continue;
+        const recommended = GLOSSES.includes(target) && !recommendedPairs.has(`${source}-${target}`) &&
+          !ticked.has(target);
+        if (recommended) ticked.add(target);
+        entries.push(mainEntry(folder, target, sizes.get(file), recommended, source));
+      }
+      for (const target of GLOSSES) {
+        const file = `dict/${folder}/${target}/wty-${folder}-${target}-gloss.zip`;
+        if (passes(file)) entries.push(glossaryEntry(folder, target, sizes.get(file), source));
+      }
     }
-    for (const target of GLOSSES) {
-      const file = `dict/${source}/${target}/wty-${source}-${target}-gloss.zip`;
-      if (passes(file)) entries.push(glossaryEntry(source, target, sizes.get(file)));
+    for (const folder of transcriptionFolders(source)) {
+      const file = `dict/all/${folder}/wty-${folder}-ipa.zip`;
+      if (passes(file)) entries.push(transcriptionEntry(folder, sizes.get(file), source));
     }
-    const file = `dict/all/${source}/wty-${source}-ipa.zip`;
-    if (passes(file)) entries.push(transcriptionEntry(source, sizes.get(file)));
   }
-  return entries;
+  return templates ? entries.map((entry) => byFolder(entry, templates)) : entries;
+}
+
+/**
+ * [entry] with its folder's code in its titles and its folder's language name in its descriptions where the folder is
+ * not its source language's own (nb–en, "Norwegian Bokmål → English", beside nn–en, "Norwegian Nynorsk → English");
+ * as it is otherwise, for the template's texts.
+ */
+export function byFolder(entry, templates) {
+  const folder = entry.oldTitles[0].split('-')[1];
+  const template = templates[entry.template];
+  if (folder === entry.sourceLanguage || !template) return entry;
+  const name = (locale) => new Intl.DisplayNames([locale], { type: 'language' }).of(folder);
+  const each = (texts, fill) =>
+    Object.fromEntries(Object.entries(texts).map(([locale, text]) => [locale, fill(text, locale)]));
+  return {
+    ...entry,
+    titles: each(template.title, (text) => text.replaceAll('{src}', folder)),
+    description: each(template.description, (text, locale) =>
+      text.replaceAll('{source}', name(locale)).replaceAll('{src}', folder)),
+  };
 }
 
 /** Whether a glossary item has a meaning of its own: anything but a form-of `[lemma, [tags]]`. */
@@ -302,10 +352,11 @@ async function fetchJson(url) {
   return { items: await response.json(), next };
 }
 
-/** Every file below `dict/<source>` and `dict/all/<source>` for the source languages, following the pages. */
+/** Every file below `dict/<folder>` and `dict/all/<folder>` for the source languages' folders, following the pages. */
 async function fetchTree() {
   const listing = [];
-  for (const folder of [...SOURCES, ...SOURCES.map((source) => `all/${source}`)]) {
+  const all = [...SOURCES.flatMap(folders), ...SOURCES.flatMap(transcriptionFolders).map((folder) => `all/${folder}`)];
+  for (const folder of all) {
     let url = `${TREE_API}/${folder}?recursive=true`;
     while (url) {
       const { items, next } = await fetchJson(url);
@@ -336,7 +387,7 @@ async function main() {
 
   const document = JSON.parse(await readFile(CATALOG, 'utf8'));
   const manual = document.dictionaries.filter((e) => !TEMPLATES.has(e.template));
-  const rebuilt = rebuild(document, wiktionaryEntries(files, manual, words));
+  const rebuilt = rebuild(document, wiktionaryEntries(files, manual, words, document.templates));
   await writeFile(CATALOG, json(rebuilt));
   await writeFile(LEGACY, json(legacy(rebuilt)));
   const generated = rebuilt.dictionaries.length - manual.length;

@@ -66,7 +66,7 @@ const addedPreprocessors = {
 
 /**
  * Inflection rules of the app's own (own-transforms.js) for languages Yomitan has none for: Bengali noun endings,
- * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings.
+ * Persian endings and verb prefixes, Hebrew prefixes, Kazakh and Kyrgyz endings, the Norwegian genitive.
  */
 const addedTransforms = {
     bn: 'bengaliTransforms',
@@ -74,6 +74,7 @@ const addedTransforms = {
     he: 'hebrewTransforms',
     kk: 'kazakhTransforms',
     ky: 'kyrgyzTransforms',
+    no: 'norwegianTransforms',
 };
 
 const ownProcessors = Object.keys(await import(new URL('./own-processors.js', import.meta.url).href));

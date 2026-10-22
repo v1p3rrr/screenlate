@@ -157,12 +157,14 @@ function isMarkedStep(d, language) {
  * Conditions whose texts match only glossaries that carry one of the given part-of-speech tags among their definition
  * tags, by language; a glossary without definition tags matches as well. Wiktionary's Kazakh and Kyrgyz entries give
  * no part of speech in their rules and tag each definition instead (v, n, adj), so a verb read through its endings
- * (барды → бару) finds the verb's senses only.
+ * (барды → бару) finds the verb's senses only. Wiktionary's Norwegian entries do the same: a genitive reaches nouns,
+ * names and forms (dagens → dagen, a form of dag), not adverbs or conjunctions (ellers → eller, mens → men "but").
  * @type {Map<string, Record<string, string[]>>}
  */
 const taggedRules = new Map([
     ['kk', {v: ['v']}],
     ['ky', {v: ['v']}],
+    ['no', {n: ['n', 'name', 'non-lemma']}],
 ]);
 
 /**

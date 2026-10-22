@@ -28,6 +28,17 @@ class IndexLanguageTest {
     }
 
     @Test
+    fun `another code of an app language names that language's dictionaries, its own code stays`() {
+        assertThat(indexSourceLanguage("nb")).isEqualTo("no")
+        assertThat(indexSourceLanguage("nn")).isEqualTo("no")
+        assertThat(indexSourceLanguage("fil")).isEqualTo("tl")
+        assertThat(indexSourceLanguage("hr")).isEqualTo("hr")
+        assertThat(indexSourceLanguage("sv")).isEqualTo("sv")
+        assertThat(indexSourceLanguage("xx")).isEqualTo("xx")
+        assertThat(indexSourceLanguage("all")).isNull()
+    }
+
+    @Test
     fun `a target language without a source language is left to detection`() {
         assertThat(indexTargetLanguage("ja", "en")).isEqualTo("en")
         assertThat(indexTargetLanguage(null, "ko")).isNull()

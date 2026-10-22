@@ -36,7 +36,9 @@ diagnostics builds have it), 72-76, and whatever the block sessions add to their
 Group 5a (plan `2026-10-19-group-5a.md`, "Progress" and "Measurements"): built language by language in the plan's
 order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs and tests; its rules checked on Leipzig
 text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
-engine measurements and its emulator cases wait for the emulator lock.
+engine measurements and its emulator cases wait for the emulator lock. Norwegian on `languages/no` (from
+`languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
+and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vietnamese translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">sở hữu cách</string>
+    <string name="inflection_no_s">sở hữu cách (dagens, Norges)</string>
+</resources>

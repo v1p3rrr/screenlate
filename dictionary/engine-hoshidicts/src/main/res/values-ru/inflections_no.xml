@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">родительный падеж</string>
+    <string name="inflection_no_s">родительный падеж (dagens, Norges)</string>
+</resources>

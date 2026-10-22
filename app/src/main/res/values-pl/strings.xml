@@ -510,6 +510,7 @@
     <string name="popup_font_script_only_kk">Tylko dla tekstu kazachskiego</string>
     <string name="popup_font_script_only_ky">Tylko dla tekstu kirgiskiego</string>
     <string name="popup_font_script_only_sv">Tylko dla tekstu szwedzkiego</string>
+    <string name="popup_font_script_only_no">Tylko dla tekstu norweskiego</string>
     <string name="popup_font_system_zh">Chińska czcionka telefonu</string>
     <string name="popup_font_system_ko">Koreańska czcionka telefonu</string>
     <string name="popup_font_script_only_zh">Tylko dla tekstu chińskiego</string>

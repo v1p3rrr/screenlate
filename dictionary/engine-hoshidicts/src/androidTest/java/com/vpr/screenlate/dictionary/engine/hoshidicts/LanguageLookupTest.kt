@@ -664,6 +664,56 @@ class LanguageLookupTest {
     )
 
     @Test
+    fun norwegianFindsGenitivesOfNounsNamesAndFormsByTheirTags() = runTest {
+        val imported = engine.import(norwegianDictionary(), File(root, "out"))
+        engine.load(DictionarySet(terms = listOf(imported.directory)))
+        val norwegian = LookupOptions(language = Language.NORWEGIAN)
+        suspend fun first(text: String) = engine.lookup(text, norwegian).first()
+        suspend fun all(text: String) = engine.lookup(text, norwegian).map { it.term.expression }
+
+        // dagens: the genitive of dagen, a form of dag.
+        val day = first("dagens")
+        assertThat(day.term.expression).isEqualTo("dag")
+        assertThat(day.matched).isEqualTo("dagens")
+        assertThat(day.trace.first().name).isEqualTo("-s")
+        assertThat(day.trace.first().label).isNotEmpty()
+        assertThat(first("Norges").term.expression).isEqualTo("Norge")
+        // A pronoun is no noun: hos does not reach ho ("she").
+        assertThat(all("hos")).containsExactly("hos")
+        // A word's own entry comes first; the genitive reaches the noun's senses only (men "harm", not "but").
+        assertThat(all("mens").first()).isEqualTo("mens")
+        val harm = engine.lookup("mens", norwegian).filter { it.term.expression == "men" }
+            .flatMap { result -> result.term.glossaries.map { it.content } }.joinToString()
+        assertThat(harm).contains("harm")
+        assertThat(harm).doesNotContain("but")
+        // å and ø are letters of their own.
+        assertThat(all("år")).containsExactly("år")
+        assertThat(all("ar")).isEmpty()
+    }
+
+    /**
+     * Rows as Wiktionary's Bokmål exports write them: the part of speech among the definition tags, no rules, forms
+     * naming their lemma; one headword as a noun and a conjunction.
+     */
+    private fun norwegianDictionary(): File = zip(
+        "nb.zip",
+        "index.json" to """{"title":"Test Norwegian","revision":"1","format":3,"sourceLanguage":"nb"}""".toByteArray(),
+        "term_bank_1.json" to """
+            [
+              ["dag","","n masc","",0,["day"],1,""],
+              ["dagen","","non-lemma","",0,[["dag",["singular","definite"]]],2,""],
+              ["Norge","","name","",0,["Norway"],3,""],
+              ["hos","","prep","",0,["at, with"],4,""],
+              ["ho","","pron","",0,["she"],5,""],
+              ["mens","","conj","",0,["while"],6,""],
+              ["men","","n neut","",0,["harm"],7,""],
+              ["men","","conj","",0,["but"],8,""],
+              ["år","","n neut","",0,["year"],9,""]
+            ]
+        """.trimIndent().toByteArray(),
+    )
+
+    @Test
     fun hebrewFindsItsWordsPointedOrNotAndAfterPrefixesInTheOrderOfTheGrammar() = runTest {
         val imported = engine.import(hebrewDictionary(), File(root, "out"))
         engine.load(DictionarySet(terms = listOf(imported.directory)))

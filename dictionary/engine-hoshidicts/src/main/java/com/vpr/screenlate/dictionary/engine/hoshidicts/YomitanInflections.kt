@@ -812,6 +812,9 @@ internal object YomitanInflections {
             "reciprocal" to Strings(R.string.inflection_turkic_reciprocal_label, R.string.inflection_ky_reciprocal),
             "causative" to Strings(R.string.inflection_turkic_causative_label, R.string.inflection_ky_causative),
         ),
+        "no" to mapOf(
+            "-s" to Strings(R.string.inflection_no_s_label, R.string.inflection_no_s),
+        ),
     )
 
     /** Rule ids of [language] (ISO 639-1); empty for a language without rules. */

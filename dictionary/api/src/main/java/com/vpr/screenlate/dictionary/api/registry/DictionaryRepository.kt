@@ -108,7 +108,7 @@ class DictionaryRepository @Inject constructor(
             val kind = DictionaryKind.of(metadata)
             val listed = catalog.firstOrNull { it.kind == kind && it.matches(metadata.indexUrl, metadata.title) }
             val known = replaced(replaces, metadata.title, kind, bundled)
-            val source = listed?.sourceLanguage ?: indexLanguage(metadata.sourceLanguage) ?: known?.sourceLanguage
+            val source = listed?.sourceLanguage ?: indexSourceLanguage(metadata.sourceLanguage) ?: known?.sourceLanguage
             val indexTarget = indexTargetLanguage(metadata.sourceLanguage, metadata.targetLanguage)
             val target = (listed?.targetLanguage ?: indexTarget ?: known?.targetLanguage).takeIf { kind.hasTarget }
             val detected = if (source == null || (target == null && kind.hasTarget)) {
@@ -480,6 +480,13 @@ private const val TAG = "DictionaryRepository"
 
 /** A language code from index.json; `all`, which Wiktionary's merged dictionaries give, names no single language. */
 internal fun indexLanguage(code: String?): String? = code?.takeUnless { it.isBlank() || it == INDEX_ALL }
+
+/**
+ * The dictionaries' language an index's source language names: another code of an app language reads as that
+ * language's (Wiktionary's Bokmål and Nynorsk dictionaries, nb and nn, as Norwegian's no); a language's own code stays.
+ */
+internal fun indexSourceLanguage(code: String?): String? =
+    indexLanguage(code)?.let { Language.of(it)?.takeIf { language -> language.code != it }?.dictionaryCode ?: it }
 
 /**
  * The definitions' language an index names, or null when detection should decide: an index with a target language

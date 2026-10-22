@@ -21,10 +21,10 @@ HOMEPAGE = "https://github.com/rspeer/wordfreq"
 TEMPLATE = "wordfreq"
 
 # The app's source languages except Japanese, which bundles its own frequency dictionary.
-LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv"]
+LANGUAGES = ["en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no"]
 
-# wordfreq's codes where they differ from the app's: Tagalog is its "fil" (Filipino).
-WORDFREQ_CODES = {"tl": "fil"}
+# wordfreq's codes where they differ from the app's: Tagalog is its "fil" (Filipino), Norwegian its Bokmål "nb".
+WORDFREQ_CODES = {"tl": "fil", "no": "nb"}
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CATALOG = os.path.join(ROOT, "dictionary", "api", "src", "main", "assets", "catalog", "dictionaries-v2.json")

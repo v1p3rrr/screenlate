@@ -1561,6 +1561,26 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   sentence ending inside one loses its opening quote, as straight quotes do (plan row "Sentence text").
 - WikDict swe-rus: converted with `scripts/freedict` and listed once hosting exists (decision "ESPDIC and WikDict").
 
+### Norwegian on `languages/no` (2026-10-22)
+
+- `Language.NORWEGIAN` (`no`, written Bokmål; the codes nb and nn read as no), `NorwegianSupport`: glyph Ø, flag no,
+  Latin fonts, Bokmål's nb for translation and the voice, the locales no, nb and nn, Lingua Libre first for audio
+  (Q9043, 19 of 20 common words; Bokmål's item Q25167 asked as well), Wiktionary (No-) second, compound links s and
+  e, ordinals with a period (17. mai), «…» paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor (capitalization) and our genitive -s (`own-transforms.js` `norwegianTransforms`,
+  `no.js`, 56 KB). wty's Norwegian entries leave the rules field empty, so the genitive's result is matched by the
+  entry's definition tags (noun, name or form; glue `taggedRules`), measured in `notes/language-rules.md`, "Group 5a
+  rules checked on data". Forms otherwise come from wty's form rows.
+- Catalog: wty's nb, no and nn folders under Norwegian (`generate.mjs` `FOLDERS`): nb-en, nb-ja, nb-pl, nb-zh, no-ru,
+  no-fr and no-vi ticked (the first folder that has a pair ticks it), no-zh and every nn pair unticked, Bokmål's
+  transcription; titles and descriptions name the folder (nb–en, "Norwegian Bokmål → English"). wordfreq `large_nb`;
+  Tesseract `nor` fast and best and Paddle v5 Latin unticked, Paddle v6 recommended ("more accurate", ML Kit stays
+  the main model).
+- A dictionary whose index names nb or nn is filed under Norwegian (`DictionaryRepository.indexSourceLanguage`).
+- WikDict nor-rus: converted with `scripts/freedict` (7,708 terms, 7,420 headwords, 404 KB; its index says no) and
+  listed once hosting exists (decision "ESPDIC and WikDict").
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

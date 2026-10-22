@@ -24,7 +24,10 @@ translations, characters, on-device recognition model), the source and gloss lan
 the archive size in bytes and, where measured, the size after import. Hand-written entries carry their descriptions in
 all interface languages. Wiktionary entries come from `node scripts/catalog/generate.mjs`, which reads the Hugging Face
 listing of wty-release for the supported source languages and the interface languages as gloss languages, skips
-archives under 0.5 MB, and fills titles and descriptions from the templates in the file. It also writes
+archives under 0.5 MB, and fills titles and descriptions from the templates in the file. A language may read folders
+under other codes (Norwegian: Bokmål's nb, the editions' no and Nynorsk's nn); their entries keep the folder's code in
+the title and its language name in the description, and each gloss language is ticked from the first folder that has
+it. It also writes
 `dictionaries.json`, the format 1 copy with the Japanese entries that older app versions read. `--tree <file>` uses a
 recorded listing, `--record <file>` saves one.
 

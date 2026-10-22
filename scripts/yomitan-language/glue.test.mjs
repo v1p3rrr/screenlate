@@ -710,3 +710,29 @@ test('kazakh and kyrgyz rules stay out of other languages', () => {
     assert.ok(!queried('ky', 'жазғы').has('жаз'));
     assert.ok(!queried('kk', 'барасыңбы').has('барасың'));
 });
+
+test('norwegian genitive -s matches nouns, names and forms by their definition tags', () => {
+    const [day] = candidatesTo('no', 'dagens', 'dagen');
+    assert.ok(day.u);
+    assert.deepEqual([...day.g], ['n', 'name', 'non-lemma']);
+    assert.deepEqual([...day.r[0]], ['-s']);
+    assert.ok(queried('no', 'Norges').has('Norge'));
+    assert.ok(queried('no', 'Verdens').has('verden'));
+    // A word in -s takes no further s; a stem keeps two letters.
+    assert.ok(!queried('no', 'glass').has('glas'));
+    assert.ok(!queried('no', 'ås').has('å'));
+    // The word as written stays typed and untagged.
+    const written = candidates('no', 'dagens').find((c) => c.d === 'dagens');
+    assert.ok(!written.u);
+    assert.equal(written.g, undefined);
+});
+
+test('norwegian lowers capitals and keeps the marks of its letters, and its genitive stays out of other languages', () => {
+    assert.ok(queried('no', 'LESE').has('lese'));
+    assert.ok(!queried('no', 'år').has('ar'));
+    assert.ok(!queried('no', 'søster').has('soster'));
+    // English has an -s rule of its own.
+    for (const language of ['sv', 'de', 'nl', 'pl']) {
+        assert.ok(!queried(language, 'dagens').has('dagen'), language);
+    }
+});

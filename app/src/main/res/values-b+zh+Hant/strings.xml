@@ -501,6 +501,7 @@
     <string name="popup_font_script_only_kk">僅用於哈薩克文文字</string>
     <string name="popup_font_script_only_ky">僅用於吉爾吉斯文文字</string>
     <string name="popup_font_script_only_sv">僅用於瑞典文文字</string>
+    <string name="popup_font_script_only_no">僅用於挪威文文字</string>
     <string name="popup_font_system_zh">手機自帶的中文字型</string>
     <string name="popup_font_system_ko">手機自帶的韓文字型</string>
     <string name="popup_font_script_only_zh">僅用於中文文字</string>

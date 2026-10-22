@@ -123,7 +123,7 @@ class LanguageRulesIsolationTest {
         fun endsAfter(support: LanguageSupport, text: String) = support.endsSentence(text, text.indexOf('.'))
         val ordinals = listOf(
             Language.GERMAN, Language.POLISH, Language.TURKISH, Language.LATVIAN, Language.CZECH,
-            Language.CROATIAN, Language.SERBIAN,
+            Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN,
         )
         assertThat(periodEnding.where { !endsAfter(it, "am 3. Oktober") }).containsExactlyElementsIn(ordinals)
         assertThat(periodEnding.where { !endsAfter(it, "1918. gada") }).containsExactlyElementsIn(ordinals)
@@ -190,6 +190,12 @@ class LanguageRulesIsolationTest {
             .containsExactly(Language.SWEDISH)
         assertThat(periodEnding.where { holds(it, "ung. tre") }).containsExactly(Language.SWEDISH)
         assertThat(periodEnding.where { holds(it, "ung. Han") }).isEmpty()
+        // Norwegian f.eks. (for eksempel) and osv., which holds only before a lowercase word or a number.
+        val eksempel = "byer, f.eks. Oslo"
+        assertThat(periodEnding.where { !it.endsSentence(eksempel, eksempel.lastIndexOf('.')) })
+            .containsExactly(Language.NORWEGIAN)
+        assertThat(periodEnding.where { holds(it, "osv. og") }).containsExactly(Language.SWEDISH, Language.NORWEGIAN)
+        assertThat(periodEnding.where { holds(it, "osv. Han") }).isEmpty()
         // Every spaced language keeps a period followed by a letter or digit inside the sentence.
         assertThat(periodEnding.where { holds(it, "pi is 3.14") }).containsExactlyElementsIn(periodEnding.map { it.language })
     }
@@ -264,8 +270,9 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only German, Dutch and Swedish split compounds, German puts capitalized parts first`() {
-        assertThat(all.where { it.compoundLinks != null }).containsExactly(Language.GERMAN, Language.DUTCH, Language.SWEDISH)
+    fun `only German, Dutch, Swedish and Norwegian split compounds, German puts capitalized parts first`() {
+        assertThat(all.where { it.compoundLinks != null })
+            .containsExactly(Language.GERMAN, Language.DUTCH, Language.SWEDISH, Language.NORWEGIAN)
         assertThat(all.where { it.capitalizedNouns }).containsExactly(Language.GERMAN)
     }
 
@@ -280,21 +287,21 @@ class LanguageRulesIsolationTest {
     }
 
     @Test
-    fun `only Filipino and Bengali have names of their own, only Filipino another voice tag`() {
+    fun `only Filipino and Bengali have names of their own, only Filipino and Norwegian another voice tag`() {
         val systemName = { support: LanguageSupport ->
             Locale.forLanguageTag(support.language.code).getDisplayLanguage(Locale.ENGLISH)
         }
         // Java says Bangla; Wiktionary and the translators say Bengali.
         assertThat(all.where { it.nameIn(Locale.ENGLISH) != systemName(it) }).containsExactly(Language.FILIPINO, Language.BENGALI)
-        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO)
+        assertThat(all.where { it.speechTag != it.language.code }).containsExactly(Language.FILIPINO, Language.NORWEGIAN)
     }
 
     @Test
-    fun `only Croatian and Serbian share their dictionaries and have other recordings and locale codes`() {
+    fun `only Croatian and Serbian share their dictionaries and have other recordings, Norwegian more recording items, these three other locale codes`() {
         assertThat(all.where { it.language.dictionaryCode != it.language.code }).containsExactly(Language.CROATIAN, Language.SERBIAN)
         assertThat(all.where { it.recordings("kuća", "") != listOf(RecordingTitle(it.language.dictionaryCode, "kuća")) })
             .containsExactly(Language.CROATIAN, Language.SERBIAN)
-        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN)
+        assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) }).containsExactly(Language.CROATIAN, Language.NORWEGIAN)
         assertThat(all.where { it.linguaLibreTitle("кућа") != "кућа" }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.translationTag("Kuća je velika.") != null }).containsExactly(Language.SERBIAN)
         assertThat(all.where { it.frequencySpellings("knjiga").isNotEmpty() }).containsExactly(Language.CROATIAN, Language.SERBIAN)
@@ -308,7 +315,8 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.frequencySpellings("آن\u200Cها").isNotEmpty() }).containsExactly(Language.PERSIAN)
         assertThat(all.where { it.recordings("کتاب", "").any { recording -> recording.title == "كتاب" } })
             .containsExactly(Language.PERSIAN)
-        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) }).containsExactly(Language.CROATIAN, Language.SERBIAN)
+        assertThat(all.where { it.localeLanguages != setOf(it.language.dictionaryCode) })
+            .containsExactly(Language.CROATIAN, Language.SERBIAN, Language.NORWEGIAN)
     }
 
     @Test
@@ -373,9 +381,11 @@ class LanguageRulesIsolationTest {
         // Kyrgyz writes the barred o as ө.
         assertThat(all.where { it.ocrWord("к\u0275л") != "к\u0275л" }).containsExactly(Language.KYRGYZ)
         assertThat(all.where { it.ocrWord("TOP") != "TOP" }).isEmpty()
-        // Swedish writes the a with a hook or a circumflex that ML Kit reads for å as å.
-        assertThat(all.where { it.ocrWord("pả") != "pả" }).containsExactly(Language.SWEDISH)
-        assertThat(all.where { it.ocrWord("gâ") != "gâ" }).containsExactly(Language.SWEDISH)
+        // Swedish and Norwegian write the a with a hook or a circumflex that ML Kit reads for å as å; Norwegian, which
+        // has no ä, its ä too.
+        assertThat(all.where { it.ocrWord("pả") != "pả" }).containsExactly(Language.SWEDISH, Language.NORWEGIAN)
+        assertThat(all.where { it.ocrWord("gâ") != "gâ" }).containsExactly(Language.SWEDISH, Language.NORWEGIAN)
+        assertThat(all.where { it.ocrWord("pä") != "pä" }).containsExactly(Language.NORWEGIAN)
         // A Latin T before a Greek omicron.
         assertThat(all.where { it.ocrWord("T\u03bf") != "T\u03bf" }).containsExactly(Language.GREEK)
         // Only Serbian, written in both scripts, decides by the page: a lone y on a page of nothing else stays Latin.
@@ -406,8 +416,9 @@ class LanguageRulesIsolationTest {
         assertThat(all.where { it.recordingMarks.isNotEmpty() }).containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
         assertThat(all.where { it.headwordMarks?.formsInScript == true })
             .containsExactly(Language.ARABIC, Language.PERSIAN, Language.HEBREW)
+        // Norwegian asks Bokmål's item as well.
         assertThat(all.where { it.linguaLibreItems != listOf(it.wikidataId) && it.language != Language.CROATIAN && it.language != Language.SERBIAN })
-            .isEmpty()
+            .containsExactly(Language.NORWEGIAN)
     }
 
     @Test

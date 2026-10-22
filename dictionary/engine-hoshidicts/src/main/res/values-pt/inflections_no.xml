@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese translation of values/inflections_no.xml. -->
+<resources>
+    <string name="inflection_no_s_label">genitivo</string>
+    <string name="inflection_no_s">genitivo (dagens, Norges)</string>
+</resources>
