@@ -736,6 +736,33 @@ Collected while building Croatian and Serbian (2026-10-19), answered the same da
     language: a shared source (Lingua Libre, Wiktionary) that failed in Kyrgyz and Hebrew shows on both cards, and a
     working Kyrgyz lookup leaves the Hebrew card. (b) A working lookup in any language clears the source's failure on
     every card.
+79. Open (2026-10-22, night checks): the PanLex kk-en conversion lists related words among a headword's translations
+    (кітап "book" also gives bookseller, bookshop), as PanLex files them under the same meaning. (a, recommended) Leave
+    it until PanLex is hosted, and look for a filter then (for example translations given by only one source). (b)
+    Filter them in the converter now.
+80. Open (2026-10-22, night checks): after a Czech era (př. n. l.), ML Kit glues the next word to it ("n.l.a" for "n. l.
+    a"), so the word after the era is not looked up on its own. (a, recommended) Split it in Czech OCR lines (recognized
+    text only). (b) Leave it.
+81. Open (2026-10-22, night checks): with the release and the debug build both installed, the text selection menu shows
+    two identical "Look up in Screenlate" items. (a, recommended) Give the debug build its own label ("Look up in
+    Screenlate Dev"). (b) Leave it.
+82. Open (2026-10-22, night checks): the waiting tasks card lists "…, PaddleOCR v6, text detector, …": the comma makes
+    the detector look like a separate item. (a, recommended) Name it "PaddleOCR v6 text detector" in the list. (b) Leave
+    it.
+83. Open (2026-10-22, night checks): Cancel in an import's notification during its last milliseconds (the dictionary
+    being registered) installs the dictionary anyway. (a, recommended) Hide Cancel during that last step. (b) Remove the
+    dictionary again after such a Cancel. (c) Leave it.
+84. Decided provisionally (2026-10-22, night checks): Home's "Download again" card for a damaged or missing dictionary
+    comes back when Home is reopened while that download waits in the queue. A plain bug: the card is hidden while its
+    download is queued or running; to build in the next session that works on downloads.
+85. Open (2026-10-22, night checks): case DIC9 (an interrupted dictionary reset) expects a spinner that cannot be seen:
+    the deletion takes 450 ms and the screen's first frame comes 4 s after the start. (a, recommended) Drop the spinner
+    from the case. (b) Show a spinner while the bundled dictionaries install after the reset.
+86. Open (2026-10-22, night checks): the transcription tags of large dictionaries (Chinese Wiktionary: 4.4 million
+    tagged transcriptions) are now kept in a mapped file with a 39-bit hash per transcription (it ran out of memory
+    before and installed without tags): about 15 pairs of transcriptions share a hash and show each other's tags, and
+    about 8 in a million untagged ones show another's tags. (a, recommended) Accept it. (b) Keep more bits (a larger
+    file than its 36 MB).
 
 ## Branches and workflow
 
@@ -1620,3 +1647,5 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
 - 2026-10-22: questions 67 and 71 built and merged (`claude/download-audio-fixes-a83144`); questions 77 (the network
   wait's 2 s and 30 s) and 78 (audio failures per language) from that work; the input merger fix (a chained download
   fetched the stopped one's file) was a plain bug.
+- 2026-10-22: the night's emulator checks merged (`languages/checks-2`); questions 79-86 from them (84 a plain bug,
+  decided provisionally).

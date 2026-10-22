@@ -19,7 +19,12 @@ that session: `D:/tmp_sl` (84 MB of APK scratch outside the project, for the own
 questions 14 and 15) have waited since 01:46 for the owner's answer to a built-in browser prompt (web.archive.org, the
 PanLex license recheck); the session cannot be stopped from here, so the blocks wait for the morning (one block at a
 time, request 72). Meanwhile the checks session runs the open emulator checks of request 74 (a) and the download fix's
-unchecked cases on `languages/checks-2`.
+unchecked cases on `languages/checks-2`. The open checks are done and merged (`languages/checks-2`, run log 2026-10-22):
+ANK14's Chinese part, LK40, DIC9, DIC20-DIC22, DIC24, DIC25, DIC28 and others passed; fixed on the way: the Czech era's
+l over any word split of the OCR engines (the audit's fix did not hold on the device; LK54 for Arabic ک ی passed),
+transcription tags of large dictionaries in a mapped file (wty-zh-ipa ran out of memory and installed without tags;
+DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 come from it. Its worktree
+`.worktrees/checks2` needs its submodules deinitialized before removal.
 
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
