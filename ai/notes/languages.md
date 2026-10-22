@@ -111,17 +111,23 @@ questions: `plans/2026-10-09-more-languages.md`.
 - wty main rows of inflected forms look like `["ran","","non-lemma","v",0,[["run",["past"]],…]]`: the glossary holds
   only `[lemma, [tags]]` items. zh→en uses traditional headwords; simplified spellings are form-of rows tagged
   "Simplified-Chinese". Readings are like "nǎo (nao³)".
-- wty drops entries in `handle_alt_of_sense` (`src/dict/main/ir/mod.rs`, release 2026.10.11 at 602ffb3, unchanged at
-  774f3f6; checked 2026-10-22): an alt-of sense with a filtered tag (`abbreviation`, which kaikki puts on contractions
-  and apocopic forms; also misspelling, nonstandard, obsolete and others) counts as handled and is deleted without a
-  form row, so de im, zum, zur, vom, beim; it un, del, della, nel; pt do, da, na, ao; es muy, tu, buen; ca del, al, pel;
-  gl moi have no entry. In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of the Italian, 7.8% of
-  the Portuguese, 0.7% of the Spanish; French is not affected. Any other alt-of sense is deleted too, and its row goes
-  from the target to the page (ca bé → ben, gl auga → agua): about 94% of the rows tagged alt-of point at a term with no
-  entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399 and fixed in wty's release
-  2026.10.22 (ca-en has del, al, pel and ben, gl-en moi, de-en im, zum, zur, vom, beim, it-en del, della, nel, un). To
-  check a later release for a regression: `ca-en` has a row for del, `de-en` one for im. The same release added Tatar
-  (issue #400, `dict/tt` with 13 gloss languages).
+- wty's alt-of senses (`handle_alt_of_sense` in `src/dict/main/ir/mod.rs`). Up to release 2026.10.11 an alt-of sense
+  with a filtered tag (`abbreviation`, which kaikki puts on contractions and apocopic forms; also misspelling,
+  nonstandard, obsolete, pronunciation-spelling, misconstruction) was deleted without a form row, so de im, zum, zur,
+  vom, beim; it un, del, della, nel; pt do, da, na, ao; es muy, tu, buen; ca del, al, pel; gl moi had no entry (2.2% of
+  the German tokens of wordfreq's top 1,000 words, 7.5% of the Italian, 7.8% of the Portuguese, 0.7% of the Spanish),
+  and every other alt-of row went from the target to the page (ca bé → ben), so about 94% of them pointed at a term with
+  no entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399; release 2026.10.22 (commit
+  d6fe53feb4) fixed it in every language: an abbreviation sense keeps its glosses and gets no row, every other alt-of
+  sense, misspelling, nonstandard, obsolete and the rest included, gets a row from the page to the target (caritativ →
+  karitativ; ms باچ → baca, where it was baca → باچ). Alt-of rows whose target has an entry, 2026.10.11 → 2026.10.22:
+  ja-en 439 → 2,791, ms-en 63 → 4,917, de-en about 6,850 rows in all, sh-en 58 → 393, kk-en 3 → 197. Words with an own
+  entry now also show a misspelling or obsolete redirect below it (it a → ha, anno → hanno; de ein → einen, wa → wir; ms
+  la → lah; on words with an entry about 100 in de-en, 50 in it-en, 30 in ja-en); the owner keeps them shown (languages
+  plan, question 87). The other-script rows the `ignoredFormTags` filters were written for (Jawi, Arabic, Cyrillic) now
+  lead from the other script to the word, so screen text rarely meets them. To check a later release for a regression:
+  `ca-en` has a row for del, `de-en` one for im. The same release added Tatar (issue #400, `dict/tt` with 13 gloss
+  languages).
 - Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan; converter MIT, data CC BY-SA 3.0 per the CC-CEDICT wiki,
   some third parties say 4.0): terms with pinyin, a Hanzi dictionary (Yomitan's kanji format), Cantonese variants
   with Jyutping (CC-CEDICT Canto, CC-Canto); words.hk for Cantonese. `addTermEntry` stores each term under the
