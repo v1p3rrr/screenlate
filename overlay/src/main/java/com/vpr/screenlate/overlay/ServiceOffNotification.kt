@@ -1,6 +1,7 @@
 package com.vpr.screenlate.overlay
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -24,11 +25,15 @@ internal object ServiceOffNotification {
     private const val NOTIFICATION_ID = 3
 
     /** False when notifications are not allowed. */
+    @SuppressLint("MissingPermission") // Checked at the top; lint does not follow the check through the version test.
     fun show(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
         val manager = NotificationManagerCompat.from(context)
-        val permitted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-        if (!permitted || !manager.areNotificationsEnabled()) return false
+        if (!manager.areNotificationsEnabled()) return false
         val channel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.overlay_service_off_channel),
@@ -54,8 +59,13 @@ internal object ServiceOffNotification {
             .setAutoCancel(true)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .build()
-        manager.notify(NOTIFICATION_ID, notification)
-        return true
+        return try {
+            manager.notify(NOTIFICATION_ID, notification)
+            true
+        } catch (_: SecurityException) {
+            // The permission was revoked between the check and the call.
+            false
+        }
     }
 
     fun cancel(context: Context) {
