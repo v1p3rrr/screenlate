@@ -31,9 +31,9 @@
     <!-- attributive locative -->
     <string name="inflection_ky_attributive_locative" translatable="false">-дагы -деги -догу -дөгү -тагы -теги -тогу -төгү -ндагы -ндеги -ндогу -ндөгү (үйдөгү)</string>
     <!-- equative -->
-    <string name="inflection_ky_equative" translatable="false">-дай -дей -дой -дөй -тай -тей -той -төй (баладай)</string>
+    <string name="inflection_ky_equative" translatable="false">-дай -дей -дой -дөй -тай -тей -той -төй -ндай -ндей -ндой -ндөй (баладай, өзүндөй)</string>
     <!-- manner -->
-    <string name="inflection_ky_manner" translatable="false">-ча -че -чо -чө (кыргызча)</string>
+    <string name="inflection_ky_manner" translatable="false">-ча -че -чо -чө -нча -нче -нчо -нчө (кыргызча, өзүнчө)</string>
     <!-- 1sg -->
     <string name="inflection_ky_1sg" translatable="false">-мын -мин -мун -мүн -м (барамын, бардым)</string>
     <!-- 2sg -->

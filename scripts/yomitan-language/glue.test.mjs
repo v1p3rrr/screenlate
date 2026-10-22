@@ -606,6 +606,15 @@ test('kazakh noun endings come off in the order of the grammar and match entries
     assert.deepEqual([...candidatesTo('kk', 'суды', 'су')[0].r[0]], ['accusative']);
     assert.deepEqual([...candidatesTo('kk', 'кітапты', 'кітап')[0].r[0]], ['accusative']);
     assert.deepEqual([...candidatesTo('kk', 'жолдың', 'жол')[0].r[0]], ['genitive']);
+    // у takes a linking vowel as a consonant does: болуы, оқуым, тауы.
+    assert.deepEqual([...candidatesTo('kk', 'болуы', 'болу')[0].r[0]], ['possessive 3rd']);
+    assert.deepEqual([...candidatesTo('kk', 'оқуым', 'оқу')[0].r[0]], ['possessive 1sg']);
+    assert.deepEqual([...candidatesTo('kk', 'тауы', 'тау')[0].r[0]], ['possessive 3rd']);
+    // -нша and -ндай follow a possessive's vowel, as -нда does: пікірінше, баласындай; not кітап-нша.
+    const chains = (text, lemma) => candidatesTo('kk', text, lemma).flatMap((c) => c.r.map((r) => r.join(' < ')));
+    assert.ok(chains('пікірінше', 'пікір').includes('possessive 3rd < manner'));
+    assert.ok(chains('баласындай', 'бала').includes('possessive 3rd < equative'));
+    assert.ok(!queried('kk', 'кітапнша').has('кітап'));
     // The word as written stays typed.
     assert.ok(!candidates('kk', 'кітап').find((c) => c.d === 'кітап').u);
 });
@@ -623,6 +632,8 @@ test('kazakh verb forms reach the dictionary form and match only definitions tag
         'оқитын': ['оқу', ['habitual participle']],
         'қойды': ['қою', ['past']],
         'тапты': ['табу', ['past']],
+        'тауып': ['табу', ['converb']],
+        'шауып': ['шабу', ['converb']],
     };
     for (const [text, [lemma, chain]] of Object.entries(forms)) {
         assert.ok(isVerbThrough(candidatesTo('kk', text, lemma), chain), text);
@@ -660,6 +671,10 @@ test('kyrgyz endings in four-way harmony, the question particle and verb stems t
     assert.ok(queried('ky', 'үйлөрдө').has('үй'));
     assert.deepEqual([...candidatesTo('ky', 'китепти', 'китеп')[0].r[0]], ['accusative']);
     assert.ok(!queried('ky', 'окуду').has('ок'));
+    // -нча and -ндай follow a possessive's vowel: өзүнчө, өзүндөй.
+    for (const [text, rule] of [['өзүнчө', 'manner'], ['өзүндөй', 'equative']]) {
+        assert.ok(candidatesTo('ky', text, 'өз').some((c) => c.r.some((r) => r.join() === `possessive 3rd,${rule}`)), text);
+    }
     const forms = {
         'барасыңбы': ['баруу', ['present', '2sg', 'question']],
         'иштейт': ['иштөө', ['present', '3rd']],
