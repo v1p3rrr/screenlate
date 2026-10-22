@@ -171,7 +171,8 @@ Requests 1–19 are in the previous plan. New ones:
     process start; a stop report when the service stops (on the enabled list or not, time since the last bubble touch
     and scan, recent windows with system package names only); a notification "Screenlate service is off" at every stop,
     a banner without sound, opening the accessibility settings, cancelled when the service runs again, no extra
-    permission request; all of it in regular builds (owner, 2026-10-22). Merged into main and languages/main on
+    permission request; all of it in regular builds (owner, 2026-10-22). Changed with request 78: the notification is
+    posted 3 s after the stop, only if the service has not connected again (owner, 2026-10-22). Merged into main and languages/main on
     2026-10-22 (owner).
 72. (2026-10-21) Build order of the researched blocks: Thai and Khmer (group 4c), then group 4e's follow-ups (Kazakh and
     Kyrgyz, questions 14-18), then group 5's blocks 5a-5e, then group 6's blocks 6a-6d, one session at a time; each
@@ -241,7 +242,11 @@ Requests 1–19 are in the previous plan. New ones:
     app crashed with `BadTokenException` in `OverlayController.attachWindows`, called from `applySettings`, after the
     service was turned off and on through `settings put`. A plain bug, fixed without questions in a session of its own;
     check whether it plays a part in the ColorOS report (`notes/oem-background-limits.md`), where the system turns the
-    service off and on.
+    service off and on. The same session changes the "service is off" notification (owner, 2026-10-22): it is posted
+    3 s after a stop and only if the service has not connected again by then, instead of at once at every stop. Every
+    `uiautomator dump` pauses accessibility services for about 1.5 s, so each dump gave a banner that vanished a moment
+    later; a short rebind on a phone does the same. A switch turned off and a system unbind without a rebind still
+    get the notification. Merged into main and languages/main after the emulator check.
 
 ## Decisions
 
@@ -1715,3 +1720,6 @@ so the block sessions do not edit the same files; `notes/languages.md` gets one 
   the other-script filter stay, the Kyrgyz -ыш rule added; built by group 4e.
 - 2026-10-22: Slovak (`languages/sk`) merged into `languages/main`; group 5a's questions 24-26 answered (owner, all
   (a) as built); request 78 (the overlay crash when the service comes back).
+- 2026-10-22: owner decision — the "service is off" notification is posted 3 s after a stop and only if the service
+  has not connected again (was: at once at every stop; a `uiautomator dump` gave a banner each time); built together
+  with request 78.
