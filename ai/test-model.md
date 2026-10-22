@@ -41,7 +41,7 @@ A case marked I and M has its logic in the test and keeps a short look on the em
   shut it down with `adb shell reboot -p`.
 - Install: `scripts/debug-device.sh install` (also enables the accessibility service). Test images:
   `scripts/debug-device.sh images`, then `show <file> [default|swipe]` as the backdrop. `scripts/text-image.py` renders
-  new ones. `zh-traditional.png` and `zh-vertical.png` are its output with `FONT=C:/Windows/Fonts/msjh.ttc`: the four
+  new ones; `PITCH=96` puts its lines close enough to read as one paragraph (at the default 160 each line is one). `zh-traditional.png` and `zh-vertical.png` are its output with `FONT=C:/Windows/Fonts/msjh.ttc`: the four
   sentences of `zh-sample.png` in Traditional characters, plus 這個問題沒有關係。 in the first, as columns
   (`--vertical`) in the second.
 - AnkiDroid: the emulator's local collection without an account (never sync, never log in). The owner's deck
@@ -85,7 +85,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | FR3 | Fresh install → the translation button is off, "Translation in Anki notes" on | E | U TranslationSettingsTest, M | 2026-10-18 |
 | FR4 | Upgrade from v0.2.3 with changed settings (bubble size and side, scan length, Anki deck and templates, audio sources, popup font and CSS, theme, hidden apps, dictionary order, switches and sort dictionary) → no first-run question, Japanese on, everything kept | E | M | 2026-10-18 |
 | FR5 | Upgrade from v0.2.3 with the translation button untouched → on; turned off in v0.2.3 → stays off | E | U TranslationSettingsTest, M | 2026-10-18 (turned off) |
-| FR6 | Upgrade from v0.2.3 → the accessibility disclosure is not asked again; deleted bundled dictionaries stay deleted | F | M | 2026-10-18 (disclosure) |
+| FR6 | Upgrade from v0.2.3 → the accessibility disclosure is not asked again; deleted bundled dictionaries stay deleted | F | M | 2026-10-22 |
 | FR7 | A backup made by v0.2.3 (settings, and with dictionaries) restores into the current build: every part listed, settings applied to Japanese, the translation button kept on | E | U BackupFormatTest, M | 2026-10-18 |
 | FR8 | The accessibility disclosure: the first tap on a button that opens the accessibility settings shows it; Agree opens the settings, later taps open them at once; About shows the same text | O | U AccessibilityAgreedTest, M | |
 
@@ -132,7 +132,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR17 | Korean (`ko-mixed.png`): the cloud reads Hangul, hanja (韓國語, 大學校, 歷史) and Latin (TV, PC); the device recognizer reads Hangul and Latin but not hanja (大學校에서 → 푸에서), shown with the "On-device" chip | F | M | 2026-10-15 |
 | OCR18 | Turning on a language with a recommended Paddle model (Russian): the download screen ticks PaddleOCR with the "main" switch, does not list the detector, and the model's size and the total include it; after the download both model directories exist | E | U LanguageSetupTest, M | 2026-10-18 (Turkish, Latvian) |
 | OCR19 | A scan with a Paddle model active: the draft comes from DEVICE_MODEL (log `OCR draft from DEVICE_MODEL`) and the lookup runs on it (Russian, `ru-page-light.png`) | E | M | 2026-10-18 |
-| OCR20 | The on-device model dialog (Bubble settings, On-device model, a language): download PaddleOCR v6 with its detector (size with it), `detector.properties` unpacked; languages without an explicit choice that recommend it switch to it | F | U OcrModelListTest, M | 2026-10-17, 2026-10-18 (a Tesseract download) |
+| OCR20 | The on-device model dialog (Bubble settings, On-device model, a language): download PaddleOCR v6 with its detector (size with it), `detector.properties` unpacked; languages without an explicit choice that recommend it switch to it | F | U OcrModelListTest, M | 2026-10-17, 2026-10-18 (a Tesseract download), 2026-10-22 (v6 in the Chinese setup) |
 | OCR21 | Offline scan with PaddleOCR v6 (Japanese, `ja-page-light.png`, Wi-Fi and data off): the draft and the final page come from the device, Lens fails with OfflineException; words are found | F | M | 2026-10-18 |
 | OCR22 | Turning on a language ML Kit reads (German): the on-device category lists "ML Kit (built in)" first, ticked and locked, with no size; the catalog models are unticked, the recommended one marked "More accurate"; nothing is missing with no model ticked. Ticking PaddleOCR shows the "main" switch on ML Kit and on the model; the model ticked becomes the language's model unless ML Kit stays main. Russian (no ML Kit) still ticks its model (OCR18) | F | U OcrModelsTest, LanguageSetupTest, M | 2026-10-19 (Polish; German was on already) |
 | OCR23 | Deleting a model while a scan uses it (a long Paddle whole-screen pass): the model's directory gets a `.deleted` marker, the scan finishes, then the directory goes; a marked directory left by a killed process goes at the next start | O | U OcrModelStoreTest, M | 2026-10-19 |
@@ -156,7 +156,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK3 | Scan length and entries per lookup apply | O | U QueryScanLengthTest, M | |
 | LK4 | "Kanji of the word" adds the kanji entries below the results | O | M | |
 | LK5 | English: deinflection, form-of entries, phrases, a table cut short; with the wordfreq dictionary "walk" sorts before "walke" | E | I LanguageLookupTest, M | 2026-10-18 (I) |
-| LK6 | Search screen with typed text; "Look up in Screenlate" in a selection menu opens it | E | I ProcessTextTest, M | 2026-10-18 |
+| LK6 | Search screen with typed text; "Look up in Screenlate" in a selection menu opens it | E | I ProcessTextTest, M | 2026-10-22 (a phrase through the selection menu) |
 | LK7 | Search while the language is not ready → status and link; it searches once the dictionary is ready | F | I SearchLanguageTest | 2026-10-14 |
 | LK8 | No enabled dictionary with definitions → the popup and search say so, search offers "Manage dictionaries" | O | M | |
 | LK9 | Chinese search by typed pinyin: "nihao", "ni hao", "ni3hao3", "nǐhǎo" find 你好; "shi" lists 是 时 事 first; "shi4" puts fourth-tone words first; "lv", "nü3" (ü); "xi'an" puts 西安 first; words show in the script chosen on the Languages screen; a dictionary imported again builds its index | F | U ChinesePinyinTest, ReadingIndexTest, ReadingIndexBanksTest, ReadingWordsTest, M | 2026-10-14 |
@@ -190,7 +190,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK28 | Stress and tone marks typed as separate characters (app text of a page with stressed words, such as ru.wiktionary.org's page for кошка in the browser): aiming in ко́шка shows кошка and no entries for ко or к; Vietnamese hoà written with a separate tone mark (U+0300) shows the word, not entries for hoa alone, and "hoà bình" first in "Chúng tôi yêu hoà bình."; the highlight of the stressed word is one box; precomposed text unchanged | F | U ShownResultsTest, LanguageRulesIsolationTest, AccessibilityTextTest, glue.test.mjs, M | 2026-10-19 |
 | LK29 | Words with two apostrophes (French text "du rock’n’roll", `scripts/text-image.py`): aiming at "roll" looks up rock’n’roll from its start, not "roll"; "va-t’en" still starts at "en", "l’eau" at "eau" | F | U FrenchSupportTest, LanguageRulesIsolationTest, M | 2026-10-19 |
 | LK30 | A word hyphenated at a line end (English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py`): aiming at either half shows "important" first and highlights both halves; German "Haus- und Gartenarbeit" aimed at "und" shows "und"; "well-" / "known" shows "well-known"; Japanese text with a line ending in "-" unchanged. Cloud recognition; the built-in recognizer is LK40 | F | U LanguageRulesIsolationTest, LookupVariantsTest, LookupStartsTest, HyphenBreaksTest, M | 2026-10-19 |
-| LK40 | A word hyphenated at a line end with the built-in recognizer (ML Kit as the language's model, English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py`): aiming at either half shows "important" first and highlights both halves with the hyphen; a line ending in "COVID-19-" or a dash of its own unchanged | N | I MlKitLineEndHyphenTest, U HyphenBreaksTest, M | — |
+| LK40 | A word hyphenated at a line end with the built-in recognizer (ML Kit as the language's model, English text with "impor-" ending one line and "tant" starting the next, `scripts/text-image.py` with `PITCH=96`: at the default pitch each line is a paragraph of its own and the halves are looked up apart): aiming at either half shows "important" first and highlights both halves with the hyphen; a line ending in "COVID-19-" or a dash of its own unchanged | F | I MlKitLineEndHyphenTest, U HyphenBreaksTest, M | 2026-10-22 |
 | LK41 | Compound splits take the fewest and longest parts: Dutch stadsbestuurder shows "Compound: stads + bestuurder" (not stadsbestuur + der); rijbewijsfoto still rijbewijs + foto, German Arbeitsschreibtisch still Arbeit + Schreibtisch | N | U CompoundsTest, M | — |
 | LK42 | Hindi lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit Devanagari): पढता and पढ़ता → पढ़ना with its form tags and a wordfreq rank; हूं → होना through the हूँ entry; लडकियां → लड़की; खाना shows खाना and ख़ाना, ख़ाना only itself; हैँ → हैं; किताब aimed at ता is looked up from कि; the sentence of a word after a danda starts after it and keeps "डॉ." and "ए.पी.जे."; flag in, bubble हि; the page's serif face is the phone's Noto Serif Devanagari (`local()`), and Mukta, Hind and Tiro Devanagari Hindi download and are listed for Hindi only; ML Kit reads the screen on the device; audio from Lingua Libre (पानी), else the voice | E | U HindiSupportTest, SentenceTest, WordfreqDictionaryTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, SystemFontFilesTest, M | 2026-10-19 |
 | LK43 | Bengali lookups (search screen; overlay over a `scripts/text-image.py` image rendered with `FONT=C:/Windows/Fonts/Nirmala.ttc`, ML Kit's Devanagari recognizer): বইটির, বইগুলো (also with ো typed as ে + া) → বই through the endings; ছেলেদের → ছেলে; a form row with a romanization after it (মাসটি) found by its word; the sentence of a word after a danda starts after it and keeps "ড." and "এ.কে."; the language is "Bengali" in the English interface; flag bd, bubble বা; the page's serif face is the phone's Noto Serif Bengali (`local()`), and Hind Siliguri and Tiro Bangla are listed for Bengali only; ML Kit reads the screen on the device; audio from Lingua Libre (বই), else the voice | N | U BengaliSupportTest, SentenceTest, FontCatalogFileTest, MlKitOcrEngineTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-19 |
@@ -204,6 +204,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK51 | Kazakh lookups (overlay over `testdata/ocr/kk-lines.png` and `kk-lines2.png`, the lines in `kk-lines.txt` and `kk-lines2.txt`, rendered by `scripts/TextImage.java` at `SIZE=64` with PT Sans as `FONT` and `FALLBACK`; cloud recognition): Казакстанның finds Қазақстан ("genitive"); Қазакстан, which keeps Қ and loses қ, finds Қазақстан before қаз; оқыды finds оқу ("past") and not оқ; суды finds су ("accusative"); кітаптарымызда finds кітап ("plural « our « locative"); жаздық finds жаздық, then жазу; қазанда finds қазан ("locative"); он finds он, оң, өн, өң; 1990-ға finds the suffix entry -ға; on the search screen кiтаптар with a Latin i finds кітап, and "оң жақ" finds оң only | F | U KazakhSupportTest, KeyedMatchesTest, SentenceTest, CatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-20 |
 | LK52 | Parts of a hyphenated word (Kazakh, `testdata/ocr/kk-lines2.png`): ас-су aimed at су finds ас-су, then су; бала-шағамен aimed at шағамен finds бала-шаға only (the part finds nothing, and the first part's бала stays out); сондай-ақ aimed at ақ finds ақ (сондай-ақ is no headword) | F | U EarlierStartsTest, KazakhSupportTest, M | 2026-10-20 |
 | LK53 | Kyrgyz lookups (overlay over `testdata/ocr/ky-lines.png`, the lines in `ky-lines.txt`, rendered as for LK51; cloud recognition): 2007-жылы aimed at жылы finds жыл; китепкана finds китепкана; Китептерибизде finds китеп ("plural « our « locative"); барасыңбы finds баруу ("present « 2nd sg. « question"); Кол finds кол, then көл; көл finds көл only; Үйлөрдө finds үй ("locative plural"); Ата-энем aimed at энем finds ата-эне, then эне; иштейт finds иштөө ("present « 3rd person"); алды finds ал and алуу; on the search screen көчодө, which keeps one ө and loses the other, finds көчө | F | U KyrgyzSupportTest, SentenceTest, CatalogFileTest, LanguageRulesIsolationTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-20 |
+| LK54 | Arabic text written with the Persian kaf and yeh (ک ی), as Persian keyboards and fonts give it (Arabic active; app text, AnkiDroid's note editor): کتاب and والکتاب find كتاب, علی finds علي or على, کبیر finds كبير, as they do written with ك and ي; with Persian active the same words are looked up as written | F | glue.test.mjs, U ArabicSupportTest, M | 2026-10-22 |
 
 ### POP: the popup
 
@@ -280,7 +281,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK10 | Korean note in the emulator's local collection: Basic with `{expression}` and `{glossary}`, 마시다 added to the test deck | O | M | 2026-10-15 |
 | ANK12 | `{sentence}` edge cases (`scripts/text-image.py`, one paragraph each): Japanese "円周率は３．１４です。次の文。" aimed at 円周率 keeps ３．１４ in the sentence; Turkish "ABC LTD. ŞTİ. dün geldi. Sonra gitti." aimed at "geldi" keeps "ABC LTD. ŞTİ." in the sentence; German "Das ist gut. Er sagte “ja” und ging. Dann kam sie." aimed at "ging" gives "Er sagte “ja” und ging.", not the paragraph; German "Wir haben Plan B. Dann gehen wir." aimed at "gehen" gives "Dann gehen wir.", and "Er sagte “Komm.” Dann ging er." aimed at "ging" gives "Dann ging er." with no leading ”; Polish "Jest ok. Idziemy." aimed at "Idziemy" gives "Idziemy." | F | U SentenceTest, JapaneseSupportTest, TurkishSupportTest, GermanSupportTest, PolishSupportTest, M | 2026-10-19 |
 | ANK13 | `{sentence-furigana}` in a language looked up by words (a Russian note type with the field): a word the dictionaries do not know (a name or a typo) gets no reading over a word inside it; known words get theirs; Japanese sentences unchanged | F | U SentenceParserTest, M | 2026-10-19 |
-| ANK14 | Furigana markers by language: the + menu of a field lists `{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}` for Japanese (no second line), Chinese (pinyin hints) and Russian (stress hints), and not for English or Korean; the hint text wraps in the menu. A Russian note: `{furigana}` gives ко́шка with no ruby, `{sentence-furigana}` of "Кошка спит, кошки тоже" stresses Ко́шка and то́же but not кошки. An English profile whose field already has `{furigana}` still fills it | F | U FieldTemplateTest, FuriganaMarkerHintsTest, P, M | 2026-10-19 |
+| ANK14 | Furigana markers by language: the + menu of a field lists `{furigana}`, `{furigana-plain}`, `{sentence-furigana}`, `{sentence-furigana-plain}` for Japanese (no second line), Chinese (pinyin hints) and Russian (stress hints), and not for English or Korean; the hint text wraps in the menu. A Russian note: `{furigana}` gives ко́шка with no ruby, `{sentence-furigana}` of "Кошка спит, кошки тоже" stresses Ко́шка and то́же but not кошки. An English profile whose field already has `{furigana}` still fills it | F | U FieldTemplateTest, FuriganaMarkerHintsTest, P, M | 2026-10-19, 2026-10-22 (Chinese) |
 | ANK15 | `{sentence}` with Roman ordinals (`scripts/text-image.py`, one paragraph each): Czech "Karel IV. byl král. Potom odešel." aimed at "byl" gives "Karel IV. byl král."; "Vládl Karel IV. Potom odešel." aimed at "odešel" gives "Potom odešel."; German "Ludwig XIV. war König." aimed at "König" gives the whole sentence; "Es regierte Ludwig XIV. Dann kam…" ends at "XIV." | N | U CzechSupportTest, GermanSupportTest, LanguageRulesIsolationTest, M | — |
 | ANK16 | `{phonetic-transcriptions}` with tags: an English note of "water" with the Wiktionary transcriptions lists each one with its dictionary tags before it in italics ("(General-American) /ˈwɔ.tɚ/"), as Yomitan's marker writes them; a transcription without tags has none; a Japanese note with a pitch dictionary unchanged | N | U TranscriptionsTest, P note.test, M | — |
 | ANK17 | Right-to-left Anki fields (Arabic; a note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Reading `<span dir="rtl">{reading}</span>` and Sentence `<span dir="rtl">{sentence}</span>`, and Front `{expression}` without a span; a note added from the popup for قال in "هل تعرف اللغه العربيه؟ قال د. أحمد: نعم." has Front قال, Reading `<span dir="rtl">قَالَ</span>` and Sentence `<span dir="rtl">قال د. أحمد: نعم.</span>` (the sentence starts after ؟ and keeps د.) | F | U FieldTemplateTest, SentenceTest, ArabicSupportTest, M | 2026-10-20 |
@@ -288,6 +289,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK19 | Hebrew Anki fields (the note type with Front, Back, Reading and Sentence in the emulator's local collection): "Fill in suggested templates" gives Front `{expression}`, Reading `<span dir="rtl">{reading}</span>` (the reading is the word itself) and Sentence `<span dir="rtl">{sentence}</span>`; a note added from the popup for הכלבים in "כשהגעתי לירושלים הכלבים נבחו." has Front כלב and Sentence `<span dir="rtl">כשהגעתי לירושלים הכלבים נבחו.</span>` | F | U FieldTemplateTest, SentenceTest, HebrewSupportTest, M | 2026-10-20 |
 | ANK20 | A Kazakh Anki note: added from the popup for қазанда in "Ол 2007 ж. қазанда келді.", it has Front қазан and the whole sentence as Sentence ("ж." before a lowercase word ends nothing) | F | U SentenceTest, KazakhSupportTest, M | 2026-10-20 |
 | ANK21 | A Kyrgyz Anki note: added from the popup for алды in "Ал 1991-ж. жайында өрүк ж. б. алды.", it has Front алуу and the whole sentence as Sentence (1991-ж. and ж. б. before lowercase words end nothing) | F | U SentenceTest, KyrgyzSupportTest, M | 2026-10-20 |
+| ANK22 | Czech "n. l." read by OCR (`scripts/text-image.py` with `FONT=C:/Windows/Fonts/arial.ttf`, where l and I look alike, and `PITCH=96` for the line break; cloud recognition, then ML Kit): in "Roku 300 př. n. l. se narodil. Potom odešel." an I read between "n." and a period becomes l however the engine splits the words (cloud recognition gives "n" "." "I" ".", ML Kit "n.I."), also with "n." ending a line, and `{sentence}` of "narodil" is "Roku 300 př. n. l. se narodil."; app text (AnkiDroid's note editor) with a capital I typed, "Roku 300 n. I. Potom odešel.", is taken as written: `{sentence}` of "odešel" is "Potom odešel." | F | U CzechSupportTest, LanguageRulesIsolationTest, M | 2026-10-22 |
 
 ### TR: sentence translation
 
@@ -303,14 +305,14 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ID | Check | Cat | Cov | Checked |
 |---|---|---|---|---|
 | DIC1 | Import a `.zip` from a file: progress in the card and the notification; Cancel there and in the notification | F | M | 2026-10-14 |
-| DIC2 | Catalog download: the ring (waiting, filling, spinning), its stage line, ✕ inactive in the first second; the import after it; the task is named by its catalog title in the interface language, on its card and on home | F | M | 2026-10-14 |
+| DIC2 | Catalog download: the ring (waiting, filling, spinning), its stage line, ✕ inactive in the first second; the import after it; the task is named by its catalog title in the interface language, on its card and on home | F | M | 2026-10-22 |
 | DIC3 | A download that breaks off goes to the end of the queue and retries by itself up to three times (attempt on its card, 30 s, 1 and 2 min apart; the tasks behind it start meanwhile) and continues where it stopped; after that, Resume and Cancel, and the card says the connection was lost (not the technical reason); Cancel deletes the partial file. | F | U ResumableDownloadTest, DictionaryImportsTest, M | 2026-10-22 |
 | DIC4 | The app killed during a download (`am kill` in the background) → the download continues by itself, no button; during an import → it restarts | F | M | 2026-10-14 |
 | DIC5 | The app dies twice during an import → not started again, the card says so | O | U DictionaryImportsTest, M | |
 | DIC6 | Order by drag, switches, sort dictionary; the last dictionary with definitions cannot be switched off or deleted | F | M | 2026-10-18 |
 | DIC7 | Check for updates; an old bundled copy updates from the catalog; "Update" on one keeps the others listed; once every found update has started the list closes and the task cards show them, never "All dictionaries are up to date" while they download | O | U OutdatedCopiesTest, UpdateCheckTest, M | 2026-10-15 |
 | DIC8 | A Yomitan collection export: list, checks, space check, import | O | U CollectionSpaceTest, YomitanBackupJvmTest, I YomitanBackupTest, M | 2026-10-14 (I) |
-| DIC9 | No ⟲ on the Dictionaries screen (removed 2026-10-16, owner); a reset an earlier version left interrupted still finishes at start with the spinner at the top | F | U DictionaryResetTest, M | 2026-10-18 (no ⟲; the interrupted reset not simulated) |
+| DIC9 | No ⟲ on the Dictionaries screen (removed 2026-10-16, owner); a reset an earlier version left interrupted still finishes at start with the spinner at the top | F | U DictionaryResetTest, M | 2026-10-22 (the interrupted reset; its spinner not seen: deleting ends before a cold start's first frame) |
 | DIC10 | A deleted bundled dictionary stays deleted after an app update (`main` only) | F | U BundledDictionariesTest, M | 2026-10-14 |
 | DIC11 | Missing dictionary files → the home card; catalog ones downloaded again, copies an earlier version bundled too (`main`: bundled ones restored from the APK) | O | M | |
 | DIC12 | Dictionary languages shown and changed by hand; a dictionary is used only for its word language | O | U DictionaryLanguagesTest, M | |
@@ -320,18 +322,19 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC16 | With several languages: language chips on the page, "Other languages" links to the Languages screen | F | M | 2026-10-18 (chips) |
 | DIC17 | Chinese wordfreq built on the device ranks Traditional spellings too: 頭髮 shows the rank of 头发 | O | U WordfreqDictionaryTest, M | 2026-10-15 |
 | DIC18 | Korean download screen: KRDICT (ko–en) ticked, Wiktionary not, wordfreq, transcription and Unihan Hanja ("Comes with the app") ticked; the download total leaves the hanja archive out; everything installs and Korean is ready | F | U LanguageSetupTest, CatalogFileTest, M | 2026-10-15 |
-| DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update; setup and home by unit tests) |
-| DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-19 |
-| DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-19 |
-| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-22 (a waiting retry; the file import not run) |
-| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | N | M | 2026-10-19 (the directory used, no cache directory; the clear-cache resume not run) |
-| DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | N | U InstallingTest, UpdateCheckTest, M | |
+| DIC20 | A download started again while it is queued, running or waiting for its retry (catalog card, language setup, home "Download again", Update after "Check for updates") adds no second task; with its stopped card listed, a new download of it continues it and the stopped card goes | F | U DictionaryImportsTest, M | 2026-10-19 (catalog card, Update), 2026-10-22 (setup, home) |
+| DIC21 | Two downloads run at a time, each with its own notification; one finished first while the other imports shows "Waiting" until that import ends; Cancel in either notification cancels only that task | F | M | 2026-10-22 |
+| DIC22 | Two or more waiting tasks share one card "Waiting (N): …"; "Show the list" lists them with a Cancel each, "Hide the list" closes it; "Cancel all" cancels only the waiting ones; a single waiting task and a download waiting for its retry keep their own cards | F | U TaskItemsTest, M | 2026-10-22 |
+| DIC23 | With Wi-Fi and mobile data off, a queued catalog download's card says "Waiting for a network: …" and its catalog card "Waiting for a network"; a shared waiting card has the line under its title; a waiting retry keeps its retry text with the line under it; a file import does not say it; with the network back the cards go back to "Waiting" or start | F | U TaskItemsTest, DictionaryImportsTest, M | 2026-10-22 (a waiting retry, a shared card; the file import not run) |
+| DIC24 | Partial downloads are in `no_backup/dictionary-downloads/`: a stopped download keeps its part after Settings → Storage → Clear cache and resumes from it; the old `cache/dictionary-downloads/` of an older build goes at the next import | F | M | 2026-10-22 |
+| DIC25 | While a language installs (setup just finished), Home shows its install progress and no "no dictionary with definitions" card for the categories being installed; with only a model download left, the bubble card has no "Installing dictionaries…" hint; "Check for updates" names a model update's languages ("Tesseract, fast" · English · size) | F | U InstallingTest, UpdateCheckTest, M | 2026-10-22 |
 | DIC26 | A Leipzig frequency list (Kazakh): the setup downloads `kaz_newscrawl_2016_100K` (18 MB, SHA-256 checked), keeps only its word list, builds 100,000 words on the device and registers "Leipzig Corpora Collection (kk)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
 | DIC27 | A Leipzig frequency list (Kyrgyz): the setup downloads `kir_newscrawl_2016_100K` (19 MB, SHA-256 checked), builds 100,000 words on the device and registers "Leipzig Corpora Collection (ky)"; the entries show its ranks | F | U CorpusCountsDictionaryTest, test_corpus_catalog.py, M | 2026-10-20 |
-| DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20 |
+| DIC28 | PanLex conversions (`scripts/panlex/panlex_yomitan.py`, kk and ky into ru and en) import from a file with their language pair ("PanLex ky-ru": ky → ru); a lookup shows one line of comma-separated translations with Russian stress marks, under the wty entry of the same headword; verb chains reach these untagged entries (алды → алуу) | O | U test_panlex_yomitan.py, M | 2026-10-20, 2026-10-22 (kk-en) |
 | DIC29 | Wi-Fi and mobile data off during a catalog download: its task card says "Waiting for a network: …" and its catalog card "Waiting for a network", the log "stopped by WorkManager (reason 7): waits for a network, then runs again" (or "the network went away during the download …; waits for it"); no retry is counted and no "download stopped" card appears; with the network back the download continues from the bytes already there ("… KB already there") and installs | F | U DictionaryImportsTest, M | 2026-10-22 |
 | DIC30 | The network goes at the moment the last retry breaks off (a proxy `10.0.2.2:8899` that never answers for the break-offs, Wi-Fi and data off just before or just after the third retry's 20 s read timeout): the card keeps "Retrying the download (3 of 3)" with "Waiting for a network", never "download stopped"; with the network back (proxy removed) it finishes. A task that ended (stopped after its last retry, cancelled, failed or installed) never runs again: turning the network off and on starts nothing | F | U DictionaryImportsTest, M | 2026-10-22 |
 | DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-22 (two downloads after a stopped one; Resume by unit test) |
+| DIC32 | A transcription dictionary with millions of tagged transcriptions imports with its tags (Chinese: Transcription (Wiktionary), wty-zh-ipa, 4.4 million): no "Reading or writing transcription tags failed" in the log, `transcription_tags.bin` in its directory, and the `{phonetic-transcriptions}` marker of 中国 gives "(zh_pron, Pinyin, Mandarin) Zhōngguó"; a transcription dictionary imported by an older version (the first file format) still shows its tags (English water) | F | U TranscriptionTagsTest, TranscriptionTagBanksTest, M | 2026-10-22 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -343,7 +346,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG3 | Star rules: at most three quick languages; making a starred one active swaps; making an unstarred one active moves the star | F | U LanguageProfilesTest, M | 2026-10-14 |
 | LNG4 | Flag country: English US by default, the UK from "Flag"; a language with one flag (all but English and Portuguese) has no "Flag" button | O | U FlagsTest, LanguageProfilesTest, M | 2026-10-16 |
 | LNG5 | E-ink on → two-letter codes instead of flags on home, the screen and in the bubble menu; the chosen language chip on the app's pages filled black, the others outlined | F | M | 2026-10-14 |
-| LNG6 | The download screen: definition languages (the menu as wide as its button), categories, recommended ticked, sizes, Confirm disabled with a hint, space line; mobile data over 50 MB asks | F | U LanguageSetupTest, LanguageOptionsTest, M | 2026-10-14 |
+| LNG6 | The download screen: definition languages (the menu as wide as its button), categories, recommended ticked, sizes, Confirm disabled with a hint, space line; mobile data over 50 MB asks | F | U LanguageSetupTest, LanguageOptionsTest, M | 2026-10-22 |
 | LNG7 | A language confirmed before its downloads finish: active at once, home status with progress, scans blocked with the link, search shows status and runs when ready | E | I SearchLanguageTest, InstallationPopupTest, M | 2026-10-18 |
 | LNG8 | Turn off: "Delete its dictionaries and models" ticked, also cancels pending downloads before the first file; unticked keeps them | F | I TurnOffLanguageDialogTest, LanguageSwitchTest, M | 2026-10-18 |
 | LNG9 | Turning a language on again with kept files: on at once, its settings back | F | I LanguageReactivationTest, M | 2026-10-14 |
@@ -392,7 +395,7 @@ the same AVD is a finding. The first run of this model records them in the run l
 | NF1 | Scan timings from the log: capture, band draft, full draft, cloud, final (earlier: band 1.6–2.4 s, full 5 s on the emulator) | E | M | 2026-10-18 |
 | NF2 | Lookup to rendered entry (`popup-eval.mjs`; earlier 30–45 ms, する 100–180 ms) | F | M | 2026-10-14 |
 | NF3 | Dragging the bubble: janky frames and the median frame time against the last run's (`dumpsys gfxinfo` after `reset`, over text and over an empty area), the entry keeps up with the aim | E | M | 2026-10-18 |
-| NF4 | Pulling the bubble out has no move animation (`android.anim.lf` trace) on API 30 and API 37 | E | U BubbleWindowMoverTest, M | 2026-10-18 (API 37) |
+| NF4 | Pulling the bubble out has no move animation (`android.anim.lf` trace) on API 30 and API 37 | E | U BubbleWindowMoverTest, M | 2026-10-18 (API 37), 2026-10-22 (API 30) |
 | NF5 | Screen transitions without a white flash or a visible previous screen (screen recording, dark theme) | F | M | 2026-10-14 |
 | NF6 | Cold start: the splash until the settings are read, then content, no empty frame; `am start -W` TotalTime | F | M | 2026-10-14 |
 | NF7 | Settings pages open with the current values, no defaults shown first; the Dictionaries page's first opening in a process shows a progress indicator in place of the lists, not empty sections (screen recording after a restart) | F | M | 2026-10-14 |
@@ -412,10 +415,86 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 - E-ink device detection and the one-time offer; real vibration; mobile-data prompts with a real SIM.
 - Restricted settings for an app installed from a file; the in-app update from GitHub (release builds).
 - Recognition quality on the owner's apps (manga readers, X, games) and cloud timings on a mobile network.
+- A network voice of the system text-to-speech (the emulator's Google TTS offers local voices only).
 
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `languages/checks-2` (on `195fd926` with this branch's fixes before their commit), Pixel_10_Pro (API 37), Screenlate_API30_glide (API 30)
+
+Scope: the checks earlier runs left open: the audit's Czech and Arabic fix (LK54 and ANK22, new), ANK14's Chinese
+part, LK40, the interrupted dictionary reset (DIC9), DIC20's setup and home paths, DIC20-DIC22, DIC24's resume after
+Clear cache, DIC25; the 2026-10-18 run's open items (a phrase through the selection menu, LNG6 on mobile data, the
+DIC2 ring, FR6 with a deleted bundled dictionary, NF4 on API 30, the v6 download); Tesseract's accurate models for
+Arabic and Hebrew; the PanLex kk-en file (DIC28). An x86_64-only APK; the app's data was backed up with `run-as tar`
+at the start and restored at the end. Network cases used `svc wifi|data` and `adb emu network speed umts`, which
+slows mobile data only (not the Wi-Fi). Model updates came from a catalog written to `files/catalog-v2.json`: the
+app's fetch of the repository's copy gets 404 on `main`, so the written copy stays.
+
+Results: two bugs and a stale text fixed (below), everything else passed. First checks: LK54, ANK22, LK40, DIC24,
+DIC25 (moved to F); new case DIC32 (F). Automated: unit tests, page tests and lint passed.
+
+- LK54 (Arabic active, app text in AnkiDroid's note editor): کتاب finds كتاب, والکتاب finds الكتاب and كتاب, علی
+  finds على and علي, کبیر finds كبير, فی finds في. Persian active: کتاب finds Persian کتاب, علی Persian علی.
+- ANK22: 9ec4c279's fix did not work on the device: cloud recognition gives "n", ".", "I", "." as four words and ML
+  Kit "n.I." as one, and the rule matched word by word. Fixed (`CzechSupport.ocrLines` over the joined words, "n.l"
+  and "př.n.l" abbreviations). After it: cloud recognition gives "Roku 300 př. n. l. se narodil." as the sentence;
+  ML Kit on lines 84 px apart (Arial 64) puts the l back across the line break, but glues "l.a" (the period and the
+  next word); app text "Roku 300 n. I. Potom odešel." keeps the I, and the sentence of odešel is "Potom odešel.".
+  Cloud recognition made each line of that image a paragraph of its own.
+- LK40: with lines 84 px apart, aiming at impor- shows important first and at tant important then tant, both halves
+  highlighted with the hyphen; "COVID-19-" at a line end is not joined (ML Kit breaks the paragraph there), "dash -"
+  stays apart. With text-image.py's 160 px each line was a paragraph: no entries at impor-. `PITCH` added to it.
+- ANK14: the Chinese profile's + menu lists the four markers with pinyin hints ("Pinyin as text: 你[nǐ] 好[hǎo]").
+- LK6: "потому что" selected in AnkiDroid's note editor, "Look up in Screenlate" opens the search screen with the
+  phrase entry потому́ что first. With the release and the debug build installed, the menu has two identical items.
+- FR6: v0.2.3 (`3f2123c`) installed fresh, the disclosure agreed, the bundled dictionaries installed, Kanjium
+  deleted; an upgrade to this build asks nothing, keeps JMdict, Jiten and KANJIDIC, and Kanjium stays deleted.
+- DIC9: with `dictionary_reset_attempts` 2 at start: "not tried again", Home's dialog "Dictionary reset did not
+  finish" and the Dictionaries card. Its text sent the user to the reset button removed on 2026-10-16: fixed in 14
+  languages (delete what is not needed, download what is missing), and the stale sentence left `docs/usage.md`. With
+  1: run 2 deleted 18 dictionaries (1 GB) in 450 ms and finished in 2.4 s; the activity's first frame came 4 s after
+  the launch, so the spinner of the deleting phase cannot be seen on the emulator.
+- DIC2: Jitendex's ring spun with "Downloading", filled with "Downloading · 0%-93%", spun with "Importing", then ✓;
+  ✕ in the first second did nothing; the task card named the catalog title. JMnedict queued behind it showed
+  "Waiting in the queue".
+- LNG6 on mobile data only: the Chinese setup said "Download (100 MB)", then asked "Download over mobile data?".
+- DIC21: two imports with their own notifications; a finished download waited for the other import. Cancel in a
+  notification during a download cancelled that task and deleted its part; a Cancel that arrived in the last
+  milliseconds of a 16 s import came too late (the dictionary installed, then "cancelled by the user" was logged).
+- DIC22: "Waiting (3): CC-CEDICT Hanzi, PaddleOCR v6, text detector, PaddleOCR v6" with "Show the list" and "Cancel
+  all"; the detector's name, which has a comma, reads like a fourth item.
+- DIC20: with the network off, the Serbian setup after the Croatian one queued only its model ("is queued already"
+  three times); Home's "Download again" for a dictionary whose directory was removed queued one task, and a second tap
+  after Home showed the card again logged "is queued already". DIC23: the shared card had "Waiting for a network".
+- DIC24: mobile data off 5 s into a 106 MB download: 41 MB stayed in `no_backup/dictionary-downloads/`; Clear cache in
+  the system settings kept it; with data back the download went on from 40,291 KB and installed. A planted
+  `cache/dictionary-downloads/old.zip` survived an import in the same process and went with the first import after a
+  restart.
+- DIC25: during the Chinese install Home showed the progress and no "no dictionary with definitions" card. With only a
+  model update left (mobile data at umts speed), Home's service card had no "Installing dictionaries…" and Settings
+  showed the dictionary count. "Check for updates" listed "PaddleOCR v6 · Japanese · Chinese · English · Croatian ·
+  Serbian · 18 MB" and "Tesseract, accurate · English · 15 MB".
+- OCR20: PaddleOCR v6 and its detector came with the Chinese setup, loaded, and Chinese warmed up in 372 ms.
+- DIC32: wty-zh-ipa (4.4 million tagged transcriptions) ran out of memory reading its tags ("Reading transcription
+  tags failed", OutOfMemoryError, heap 192 MB): the dictionary installed without them. Fixed with a second file
+  format (a packed long per transcription, sorted chunks merged into the file, mapped by lookups). After it the
+  import wrote a 36 MB file in 62 s with the heap under 80 MB, 中国's marker gives "(zh_pron, Pinyin, Mandarin)
+  Zhōngguó", and English water still shows the tags of its first-format file.
+- DIC28: PanLex kk-en imported in 0.8 s; қабылдады → қабылдау "acceptance, adoption, anteroom, host, hosting,
+  receptionist, accept"; кітап "book, bookseller, bookshop" (PanLex's related words come with the translations).
+- Tesseract accurate: ara 13 MB, a final pass of 4.3 s against fast's 1.5 s, the same words and the same garbled
+  Latin; heb 3.7 MB, 1.9 s, the same quirks as fast (`ai/notes/ocr-engines.md`).
+- NF4 on API 30 (this build installed over 0.2.2 on `Screenlate_API30_glide`): pulling the docked bubble out made 12
+  relayouts with no `android.anim.lf` frames, no `SurfaceAnimationRunner` and no `LocalAnimationAdapter`.
+
+Not checked: a network voice for LK26 (the emulator has local voices only); DIC23's file import; the phone.
+
+Emulator state since this run: Pixel_10_Pro has the data from before the run (31 languages on, Kyrgyz active, Hebrew
+starred, the bubble hidden) under this branch's build instead of `311e285c`; the storage thresholds lowered for the
+installs are deleted. Screenlate_API30_glide has this build in place of 0.2.2, still at its first-run language screen,
+the service off.
 
 ### 2026-10-22, `claude/download-audio-fixes-a83144` (on `32987ce2` with the download and audio fixes before their commit), Pixel_10_Pro (API 37)
 

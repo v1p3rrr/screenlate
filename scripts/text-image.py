@@ -5,6 +5,8 @@ With --vertical each argument is a column, read top to bottom, columns from righ
 Needs Pillow and a Japanese font (Noto Sans JP or Yu Gothic on Windows; set FONT to override, e.g. to
 C:/Windows/Fonts/msjh.ttc for Traditional Chinese). FALLBACK lists fonts, separated by commas, for the characters
 FONT lacks in horizontal lines: script-only fonts such as Noto Sans Georgian have no digits or Latin punctuation.
+PITCH sets the distance between horizontal lines in pixels (default 160). At 160 the recognizers take each line as a
+paragraph of its own; for one paragraph (a word hyphenated across lines) use about 1.3 times the 72 px font, 96.
 """
 import os
 import sys
@@ -19,6 +21,7 @@ FONT_CANDIDATES = [
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
 ]
 VERTICAL_PUNCTUATION = "。、，"
+LINE_PITCH = int(os.environ.get("PITCH", "160"))
 
 
 def main() -> None:
@@ -54,7 +57,7 @@ def main() -> None:
                 draw_with_fallbacks(draw, (80, y), line, [font, *fallbacks])
             else:
                 draw.text((80, y), line, font=font, fill="black")
-            y += 160
+            y += LINE_PITCH
     image.save(out)
 
 
