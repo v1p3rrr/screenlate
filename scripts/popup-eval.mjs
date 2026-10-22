@@ -17,7 +17,9 @@ if (!expression) {
 const pid = execFileSync(adb, ['shell', 'pidof', pkg]).toString().trim();
 execFileSync(adb, ['forward', `tcp:${port}`, `localabstract:webview_devtools_remote_${pid}`]);
 const pages = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-const page = pages.find(p => p.url.includes('popup.html'));
+// The overlay's popup and the Search screen each have a page; the one on screen comes first.
+const visible = p => { try { return JSON.parse(p.description).visible === true; } catch { return false; } };
+const page = pages.filter(p => p.url.includes('popup.html')).sort((a, b) => visible(b) - visible(a))[0];
 if (!page) {
     console.error('Popup page not found:', pages.map(p => p.url));
     process.exit(1);

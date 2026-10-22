@@ -182,6 +182,13 @@ Output check: all 16 archives of the new converter (stored and deflated) have th
   replacement, without its marks (nukta after क–ह) and with both, each distinct and unlike the headword, so a
   candrabindu headword is keyed under anusvara too. Wiktionary's Hindi headwords are NFC: nukta letters decomposed
   (क + ़; U+0958–U+095F are composition exclusions), and the bundle composes the text the same way.
+- Respelled form rows (2026-10-22, Slovak): with `every_headword`, a headword's self key (no tags) marks its
+  result respelled, which sorts after the spellings found as written; the same key of a form-of item in that row
+  (robit for robiť's item urobiť "imperfective") did not, so urobiť came before robiť. The table (version 2) stores a
+  respelled bit in the low bit of each entry's tag set id; `split_bank` sets it for the keys of form rows where every
+  headword is keyed, and `candidate_lookup` treats it as a tag-less item. An entry added both as written and as a key
+  keeps the written one. Version 1 tables are read without the flag (`FormOfTableFile` and `FormOfTable::open` accept
+  both), so dictionaries imported before keep the old order until they are imported again.
 - Form rows with template leftovers (2026-10-19, Bengali): wty writes some form headwords with what its templates
   left, and `split_bank` keyed them under the whole text, which no lookup ever gives. `form_headwords` cleans them:
   a romanization or note after whitespace and `(` or `,` is cut off ("মাসটি (maśṭa (colloquial), maśṭi (formal))",

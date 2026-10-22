@@ -7,8 +7,9 @@
 //           block index, the blocks, the string index, the string data, the tag set index and the tag set data;
 //   blocks: forms sorted by their UTF-8 bytes, 16 per block, each written as varint shared prefix length (0 for the
 //           first form of a block), varint suffix length, suffix bytes, varint entry count, then per entry the varint
-//           ids of the lemma (a string), the tag set and the row's part-of-speech rules (a string); the block index
-//           holds each block's offset;
+//           ids of the lemma (a string), the tag set shifted left by one with the respelled flag in the low bit
+//           (version 2; version 1 has the plain id and no flag) and the row's part-of-speech rules (a string); the
+//           block index holds each block's offset;
 //   strings: index of (count + 1) offsets into the concatenated lemmas and rules;
 //   tag sets: index of (count + 1) offsets into data where each set is varint count, then varint length and bytes
 //           per tag.
@@ -29,11 +30,16 @@ struct FormOf {
   std::vector<std::string> tags;
   // Part-of-speech rules of the form's row (Yomitan `rules`), for the condition filter of deinflections.
   std::string rules;
+  // Whether [form] is another spelling of the row's headword, a key without its marks: robit for the row robiť, whose
+  // lemma urobiť then comes after robiť itself.
+  bool respelled = false;
 };
 
 class FormOfTableBuilder {
  public:
-  void add(std::string_view form, std::string_view lemma, const std::vector<std::string>& tags, std::string_view rules);
+  // An entry seen both as written and as a respelling stays as written.
+  void add(std::string_view form, std::string_view lemma, const std::vector<std::string>& tags, std::string_view rules,
+           bool respelled = false);
 
   bool empty() const { return forms_.empty(); }
 
@@ -50,7 +56,7 @@ class FormOfTableBuilder {
     uint32_t lemma;
     uint32_t tag_set;
     uint32_t rules;
-    bool operator==(const Item&) const = default;
+    bool respelled;
   };
 
   static uint32_t intern(std::unordered_map<std::string, uint32_t>& ids, std::vector<std::string>& values,
@@ -92,6 +98,8 @@ class FormOfTable {
   uint32_t block_count_ = 0;
   uint32_t string_count_ = 0;
   uint32_t tag_set_count_ = 0;
+  // Whether entries carry the respelled flag (version 2).
+  bool flagged_ = false;
   const uint8_t* block_index_ = nullptr;
   const uint8_t* blocks_ = nullptr;
   size_t blocks_size_ = 0;

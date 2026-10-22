@@ -377,6 +377,13 @@ interface LanguageSupport {
     val inflectionRulesOnlyWithoutEntry: Boolean get() = false
 
     /**
+     * The language whose term dictionaries lookups also search where the language's own find no entry for the text:
+     * Wiktionary's Slovak dictionaries lack many common words that Czech writes the same (v, už, však), so Slovak reads
+     * the Czech dictionaries the user has, their entries marked as Czech. Null for the others.
+     */
+    val fallbackLanguage: Language? get() = null
+
+    /**
      * Stress marks that the words of form-of rows in the language's dictionaries carry and running text leaves out: at
      * import a form is also found without them, and the lemmas forms name are stored without them; or, with
      * [HeadwordMarks.everyHeadword], marks headwords carry (the Greek tonos, the Hindi nukta). Null where words carry
@@ -525,4 +532,12 @@ val Language.support: LanguageSupport
         Language.ROMANIAN -> RomanianSupport
         Language.LATIN -> LatinSupport
         Language.LITHUANIAN -> LithuanianSupport
+        Language.SLOVAK -> SlovakSupport
     }
+
+/**
+ * The dictionary codes lookups in this language read: its own ([Language.dictionaryCode]) and its fallback language's
+ * ([LanguageSupport.fallbackLanguage]); Slovak reads sk and cs.
+ */
+val Language.lookupDictionaryCodes: List<String>
+    get() = listOfNotNull(dictionaryCode, support.fallbackLanguage?.dictionaryCode)

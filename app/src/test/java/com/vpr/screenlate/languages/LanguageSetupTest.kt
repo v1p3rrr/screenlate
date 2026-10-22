@@ -76,6 +76,49 @@ class LanguageSetupTest {
         assertThat(main.fixed).isFalse()
     }
 
+    private val slovak = Catalog(
+        listOf(
+            entry("sk-en", "en", CatalogCategory.MAIN, recommended = true, source = "sk"),
+            entry("cs-en", "en", CatalogCategory.MAIN, recommended = true, source = "cs"),
+            entry("cs-ru", "ru", CatalogCategory.MAIN, recommended = true, source = "cs"),
+            entry("cs-de", "de", CatalogCategory.MAIN, recommended = true, source = "cs"),
+            entry("cs-en-glossary", "en", CatalogCategory.GLOSSARY, source = "cs"),
+            entry("cs-freq", null, CatalogCategory.FREQUENCY, kind = DictionaryKind.FREQUENCY, recommended = true, source = "cs"),
+        ),
+    )
+
+    @Test
+    fun `slovak lists the czech main dictionaries into its gloss languages after its own, unticked`() {
+        val categories = setupCategories(slovak, Language.SLOVAK, listOf("ru", "en"), installed = emptyList())
+        assertThat(categories.map { it.category }).containsExactly(CatalogCategory.MAIN)
+        val main = categories.single()
+        assertThat(main.items.map { it.entry.id to it.fallback })
+            .containsExactly("sk-en" to false, "cs-ru" to true, "cs-en" to true).inOrder()
+        // The only Slovak dictionary stays the fixed choice; the Czech ones are ticked only by the user.
+        assertThat(main.fixed).isTrue()
+        assertThat(main.items.filter { main.ticked(it, emptyMap()) }.map { it.entry.id }).containsExactly("sk-en")
+        assertThat(setupDownloads(categories, emptyMap()).map { it.id }).containsExactly("sk-en")
+        assertThat(setupDownloads(categories, mapOf("cs-en" to true)).map { it.id }).containsExactly("sk-en", "cs-en")
+    }
+
+    @Test
+    fun `a czech dictionary does not satisfy slovak's mandatory category, an installed one stays ticked`() {
+        val catalog = Catalog(slovak.entries + entry("sk-ru", "ru", CatalogCategory.MAIN, recommended = true, source = "sk"))
+        val categories = setupCategories(catalog, Language.SLOVAK, listOf("ru", "en"), installed = listOf(installed("cs-ru", source = "cs")))
+        val choices = mapOf("sk-en" to false, "sk-ru" to false, "cs-en" to true)
+        assertThat(missingChoices(categories, choices)).containsExactly(CatalogCategory.MAIN)
+        assertThat(missingChoices(categories, choices + ("sk-ru" to true))).isEmpty()
+        val main = categories.single()
+        assertThat(main.items.single { it.entry.id == "cs-ru" }.let { main.ticked(it, emptyMap()) }).isTrue()
+    }
+
+    @Test
+    fun `languages without a fallback list only their own dictionaries`() {
+        val categories = setupCategories(slovak, Language.CZECH, listOf("ru", "en"), installed = emptyList())
+        assertThat(categories.flatMap { it.items }.none { it.fallback }).isTrue()
+        assertThat(setupCategories(slovak, Language.POLISH, listOf("en"), installed = emptyList()).flatMap { it.items }).isEmpty()
+    }
+
     @Test
     fun `recommended dictionaries are ticked, the user's ticks win, an empty mandatory category is missing`() {
         val categories = setupCategories(catalog, Language.ENGLISH, listOf("ru", "en"), installed = emptyList())

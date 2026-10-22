@@ -152,6 +152,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | OCR37 | Romanian recognition (`testdata/ocr/ro-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`): cloud recognition reads ă â î ș ț (ş ţ found as ș ț); offline, ML Kit's Latin model reads the screen, and a word whose marks it drops (tara, dupa) still finds țară and după; PaddleOCR v5 Latin, marked "more accurate" and chosen in the Bubble settings, reads the screen (every engine may read Dl. as DI.) | F | U RomanianSupportTest, LanguageRulesIsolationTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-22 |
 | OCR38 | Latin recognition (`testdata/ocr/la-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with macrons and æ): cloud recognition reads the screen; offline, ML Kit's Latin model reads it (ō ū ē may come as õ ö ũ ü ễ, which the lookup drops with every mark); PaddleOCR v6, marked "more accurate" and chosen in the Bubble settings, reads the screen (both read the capital I of Iulius as l) | F | U LatinSupportTest, CatalogFileTest, I LanguageLookupTest, M | 2026-10-22 |
 | OCR39 | Lithuanian recognition (`testdata/ocr/lt-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with ą č ę ė į š ų ū ž and Ū): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, an Ū, ė or į it reads as Ü, é or ị is found as the Lithuanian letter, and a word whose marks it drops is found too (Ukis finds ūkis); Tesseract lit fast, marked "more accurate" and chosen in the Bubble settings, reads the screen; app text of a Lithuanian sentence with a foreign é (José, AnkiDroid's note editor) keeps the é | F | U LithuanianSupportTest, CatalogFileTest, M | 2026-10-22 |
+| OCR40 | Slovak recognition (`testdata/ocr/sk-sample.png`, `scripts/text-image.py` with `FONT=C:/Windows/Fonts/segoeui.ttf`, a text with á ä č ď é í ľ ň ó ô š ť ú ý ž): cloud recognition reads the screen; offline, ML Kit's Latin model reads it, and a word whose marks it drops (ť ď ľ read as t d l) is found through the keys without marks (tazke finds ťažké); Tesseract slk fast, marked "more accurate" and chosen in the Bubble settings, reads the screen | F | U SlovakSupportTest, CatalogFileTest, M | 2026-10-22 |
 
 ### LK: lookup
 
@@ -220,6 +221,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK61 | Kazakh particles after a hyphen and endings checked on data (overlay over `testdata/ocr/kk-lines3.png`, the lines in `kk-lines3.txt`, rendered as for LK51; cloud recognition): сондай-ақ aimed at ақ finds -ақ, then ақ; келді-ау aimed at ау finds -ау first; пікірінше finds пікір ("his, her, their « manner"); болуы finds болу ("his, her, their"); тауып finds табу ("converb") | F | U KazakhSupportTest, EarlierStartsTest, glue.test.mjs, M | 2026-10-22 |
 | LK62 | Kyrgyz keyed results after the written ones and endings checked on data (overlay over `testdata/ocr/ky-lines2.png`, the lines in `ky-lines2.txt`; cloud recognition): Түштук finds түшүү ("past « 1st pl."), then түштүк; 19-декабрь aimed at декабрь finds декабрь and no suffix entry -де; өзүнчө finds өз ("his, her, their « manner") | F | U KeyedMatchesTest, EarlierStartsTest, KyrgyzSupportTest, glue.test.mjs, M | 2026-10-22 |
 | LK63 | One-letter words do not show an Arabic letter (Wiktionary links each Cyrillic letter to its Arabic equivalent, tag `Cyrillic`): on the search screen Kyrgyz а and в, and Kazakh о, find no entry of ا, ۋ or و | F | U KazakhSupportTest, KyrgyzSupportTest, ShownResultsTest, M | 2026-10-22 |
+| LK64 | Slovak lookups (overlay over `testdata/ocr/sk-sample.png`, and the Search screen): robit and ROBIT find robiť; byt shows byt first, then byť; kon finds kôň; dakujem finds ďakujem; robil finds robiť through its form row | F | U SlovakSupportTest, glue.test.mjs, I LanguageLookupTest, M | 2026-10-22 |
+| LK65 | Czech as Slovak's fallback (Slovak active with wty sk-en, wty cs-en installed): v and však, which sk-en lacks, show cs-en's entries with "Czech" after the word; voda shows sk-en's entry only, without cs-en's definitions; tu shows Slovak tú (question 26); with Czech active the same words show no tag; without a Czech dictionary v finds nothing | F | U FallbackDictionariesTest, P popup.test.mjs, M | 2026-10-22 |
 
 ### POP: the popup
 
@@ -261,6 +264,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | POP34 | A Romanian entry: the Popup settings' font card lists the Latin fonts with "Only for Romanian text"; one chosen sets ă â î ș ț; the rule chip of consiliul reads "definite" in English and its translation in Russian | F | U FontCatalogFileTest, M | 2026-10-22 |
 | POP35 | A Latin entry: the Popup settings' font card lists Literata, Inter, Lexend, PT Serif and PT Sans, not Atkinson Hyperlegible Next, with "Only for text in Latin"; one chosen sets ā ē ī ō ū; the bubble shows LA and the Languages screen Latin's laurel flag; the rule chip of magisque reads "-que" with its description in English and Russian | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 | POP36 | A Lithuanian entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Lithuanian text"; one chosen sets ą č ę ė į š ų ū ž; the bubble shows Ė and the Languages screen Lithuania's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
+| POP37 | A Slovak entry: the Popup settings' font card lists Literata, Inter, Atkinson Hyperlegible Next, Lexend, PT Serif and PT Sans with "Only for Slovak text"; one chosen sets á ä č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž; the bubble shows Ô and the Languages screen Slovakia's flag | F | U FontCatalogFileTest, FlagsTest, M | 2026-10-22 |
 
 ### AUD: audio
 
@@ -290,6 +294,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | AUD22 | Romanian audio: holding 🔊 on apă lists Lingua Libre's recording first, then Wiktionary's where it has one and the text to speech; the recording plays, and Google's Romanian voice speaks when chosen | F | U RomanianSupportTest, M | 2026-10-22 |
 | AUD23 | Latin audio: Audio settings show Regions with "Classical pronunciation" and "Ecclesiastical pronunciation" while Wiktionary is a source; holding 🔊 on magnus lists Wiktionary's La-cls- recording first; moving the ecclesiastical one up puts La-ecc- recordings first; the phone's voice speaks Latin where it has one | F | U LatinSupportTest, AudioPagesTest, M | 2026-10-22 |
 | AUD24 | Lithuanian audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on vanduo lists Lingua Libre's recording; the phone's voice speaks Lithuanian where it has one | F | U LithuanianSupportTest, M | 2026-10-22 |
+| AUD25 | Slovak audio: Audio settings list Lingua Libre first, Wiktionary, then the phone's voice; holding 🔊 on mäso lists Lingua Libre's recording (Lingua Libre has no voda); the phone's voice speaks Slovak where it has one | F | U SlovakSupportTest, M | 2026-10-22 |
 
 ### ANK: Anki
 
@@ -323,6 +328,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK26 | A Romanian Anki note: added from the popup for Popescu in "Dl. Popescu a venit la nr. 5, pe str. Lipscani." (`testdata/ocr/ro-sample.png`; app text of the same sentence, as OCR reads Dl. as DI.), it has the whole sentence as Sentence (dl., nr. and str. end nothing); for strigat in "„Vino aici!” a strigat ea." the sentence keeps the quotes (cloud recognition gives ” as ", and the sentence then starts at it); for Apoi in "S-a născut în 1999. Apoi a plecat." the sentence is "Apoi a plecat." | F | U SentenceTest, RomanianSupportTest, M | 2026-10-22 |
 | ANK27 | A Latin Anki note: for Cicero in "C. Iulius Caesar et M. Tullius Cicero Romae erant." the sentence is whole (the praenomina end nothing); for Liberi in "Liberi erant sex. Deinde abierunt." the sentence ends at sex.; a.C.n. before a lowercase word ends nothing | F | U SentenceTest, LatinSupportTest, M | 2026-10-22 |
 | ANK28 | A Lithuanian Anki note: for Kazlauskas in "Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje." the sentence is whole; for obuoliai in "Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų." it is whole; "Jis gimė 1990. Vėliau išvyko." ends at 1990. | F | U SentenceTest, LithuanianSupportTest, M | 2026-10-22 |
+| ANK29 | A Slovak Anki note: for Novák in "Prof. Novák sa narodil 5. mája 1950 v Bratislave." the sentence is whole; for jablká in "Ovocie, t. j. jablká a hrušky, stálo napr. 5 tis. eur." it is whole; "Vznikol v 3. stor. pred Kr. Potom zanikol." ends at Kr. | F | U SentenceTest, SlovakSupportTest, M | 2026-10-22 |
 
 ### TR: sentence translation
 
@@ -369,6 +375,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-22 (two downloads after a stopped one; Resume by unit test) |
 | DIC32 | A transcription dictionary with millions of tagged transcriptions imports with its tags (Chinese: Transcription (Wiktionary), wty-zh-ipa, 4.4 million): no "Reading or writing transcription tags failed" in the log, `transcription_tags.bin` in its directory, and the `{phonetic-transcriptions}` marker of 中国 gives "(zh_pron, Pinyin, Mandarin) Zhōngguó"; a transcription dictionary imported by an older version (the first file format) still shows its tags (English water) | F | U TranscriptionTagsTest, TranscriptionTagBanksTest, M | 2026-10-22 |
 | DIC33 | Norwegian dictionaries imported from a file: wty's nn–en archive (its index names nn) and the WikDict no-ru conversion (`scripts/freedict`, its index names no) are both filed under Norwegian, and a Norwegian lookup shows their entries | F | U IndexLanguageTest, test_freedict_yomitan.py, M | 2026-10-22 |
+| DIC34 | Czech dictionaries under Slovak: with Slovak on and Czech off, the Dictionaries screen lists the installed cs-en in Slovak's list (cs → en) and "Turned off" does not list it; turning Czech off with "Delete its dictionaries and models" keeps cs-en while Slovak is on; with both off, cs-en is listed under "Turned off" as Czech's | F | U DictionaryLanguagesTest, OcrModelsTest, M | 2026-10-22 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -398,6 +405,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LNG21 | Romanian setup: the download screen offers Wiktionary into English, Russian, Spanish, French, Japanese, Polish, Turkish and Chinese, the transcription and wordfreq ticked; ML Kit is the main model, PaddleOCR v5 Latin unticked and marked "more accurate", PaddleOCR v6 and Tesseract ron fast and accurate unticked; the flag is Romania's and the bubble shows Ș | F | U CatalogFileTest, M | 2026-10-22 |
 | LNG22 | Latin setup: the download screen offers Wiktionary into English, Russian, German, Spanish, French, Italian, Japanese, Korean, Polish, Portuguese and Chinese and the transcription, ticked, and no frequency dictionary; ML Kit is the main model, PaddleOCR v6 unticked and marked "more accurate", PaddleOCR v5 Latin and Tesseract lat fast and accurate unticked; the flag is Latin's laurel wreath | F | U CatalogFileTest, FlagsTest, M | 2026-10-22 |
 | LNG23 | Lithuanian setup: the download screen offers Wiktionary into English, Russian, German, French, Korean, Polish and Chinese and the transcription, ticked, and wordfreq; ML Kit is the main model, Tesseract lit fast unticked and marked "more accurate" (ticked, it becomes the chosen model), Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Lithuania's | F | U CatalogFileTest, FlagsTest, M | 2026-10-22 |
+| LNG24 | Slovak setup: the download screen offers Wiktionary into English, Russian, French, Polish, Turkish and Chinese and the transcription, ticked, and wordfreq; after Slovak's own main dictionaries the Czech ones in the chosen languages of definitions, unticked, each with "Fallback dictionary (Czech)"; with only a Czech one ticked the button stays disabled; ticking cs-en downloads it with Slovak's; ML Kit is the main model, Tesseract slk fast unticked and marked "more accurate", Tesseract accurate and PaddleOCR v5 Latin and v6 unticked; the flag is Slovakia's | F | U LanguageSetupTest, CatalogFileTest, FlagsTest, M | 2026-10-22 |
 
 ### SET: settings, backup, appearance
 
@@ -464,6 +472,60 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `languages/sk` (on `7f14c5d5` with the Slovak changes before their commit), Pixel_10_Pro (API 37)
+
+Scope: the first checks of Slovak (LNG24, OCR40, LK64, LK65, POP37, AUD25, ANK29, DIC34) through the download
+screen, the overlay over `testdata/ocr/sk-sample.png` and an image of the ANK29 sentences (Segoe UI, both in the
+debug viewer) with cloud recognition, ML Kit, Tesseract slk fast and PaddleOCR v5, the Search screen, the popup page
+(`popup-eval.mjs`), the Languages and Dictionaries screens and Anki notes into the local "Screenlate Test" deck
+({sentence} as Meaning); the engine's instrumented tests. An x86_64-only APK, installed with the storage line lowered
+and restored after.
+
+Results: two bugs fixed, a test word replaced (below); the rest passed with the deviations listed. First checks: all
+8 cases (moved from N to F). Automated: unit tests, page tests (146), glue tests (63, 1 skipped), the catalog and
+converter tests and lint passed; I `LanguageLookupTest` 29 of 29 and the engine's 55 instrumented tests on the
+emulator.
+
+- Fixed: robit showed urobiť and zrobiť before robiť. A form-of item keyed without its marks counted as written,
+  while robiť itself, keyed the same way, counted as respelled. Form rows keyed so are respelled now (the form-of
+  table's version 2; language rules, bug 46). After importing sk-en and sk-ru again: robit shows robiť, urobiť, then
+  zrobiť.
+- Fixed: "Delete all" on the turned-off Czech card while Slovak was on deleted wty-cs-en as well; the card had shown
+  2 dictionaries, 29 MB, and the turn-off dialog 44 MB. Now the dialog says 29 MB and the log "Deleted the files of
+  cs: 2 dictionaries"; wty-cs-en stays (language rules, bug 47).
+- `scripts/popup-eval.mjs` took the hidden overlay popup's page before the Search screen's; it takes the visible one
+  first now.
+- AUD25: Lingua Libre has no Slovak recording of voda (the search is empty); the test word is mäso (TomášPolonec's
+  recording, listed first). voda lists only the phone's voice. Whether the emulator's voice speaks Slovak was not
+  checked.
+- OCR40: cloud recognition and Tesseract slk fast read every word. ML Kit read Robit, tažké, Dieta, Ludia and V without
+  their marks; each is found through the keys (tazke finds ťažký, Dieta dieťa and diéta, Ludia ľudia). PaddleOCR v5
+  (not required) wrote ť and ľ as t' and l': Robit' finds robiť, Diet'a shows Czech dieta ("genitive plural", through
+  diet); Dakujem and Ludia were found. PaddleOCR v6 was not tried.
+- LK64: robit, ROBIT, byt, kon, dakujem and robil as the case says, in the overlay and the Search screen. The first
+  empty results for robil and kon were characters lost while typing; `srch2.sh` (scratch) now checks the field.
+- LK65: v and však show cs-en's entries with "Czech"; voda shows sk-en's and sk-ru's only; tu shows ten (accusative
+  singular feminine, through tú; question 26); ze shows z and že; vsak, typed without marks, finds nothing, as the
+  Czech dictionaries have no keys without marks; with Czech active, v, voda and potom show no tag; with no Czech
+  dictionary installed, v shows "No dictionary entries found".
+- ANK29: the notes of Novák, jablká (jablko), v and potom have "Prof. Novák sa narodil 5. mája 1950 v Bratislave.",
+  "Ovocie, t. j. jablká a hrušky, stálo napr. 5 tis. eur.", "Vznikol v 3. stor. pred Kr." and "Potom zanikol.".
+  vznikol and zanikol are in no installed dictionary; v and potom came from cs-en.
+- DIC34: with Slovak on and Czech off, wty-cs-en is in Slovak's list (cs → en) and Czech's card under "Turned off"
+  shows 2 dictionaries, 29 MB (wordfreq cs, wty-cs-ipa); with both off, Czech's card shows 1 dictionary, 16 MB
+  (cs-en), Slovak's 4 dictionaries, 1 recognition model, 21 MB; turning Slovak on again kept its files and made it
+  active. The turn-off dialog's delete box is ticked by default.
+- The app crashed with `BadTokenException` in `OverlayController.attachWindows` (via `applySettings`) after the
+  accessibility service was turned off and on through `settings put`; not fixed here (a follow-up).
+- An ANR while the emulator's load was at 10 (`adb reboot` cleared it); the emulator process crashed once (exit 139)
+  during DIC34 and was started again.
+
+Left on the emulator: Slovak on and active with wty sk-en, sk-ru, sk-ipa, wordfreq sk and wty cs-en (Czech not turned
+on; wordfreq cs and wty-cs-ipa deleted); Slovak's model Tesseract slk fast, engines Both; PT Serif chosen for Slovak;
+Slovak's Anki settings with deck and note type "Screenlate Test", {sentence} as Meaning, and four Slovak notes in that
+deck; `sk-sample.png` and `sk-anki.png` in the app's `files/testdata`. The storage settings deleted; the engine's
+test APK uninstalled.
 
 ### 2026-10-22, `languages/main` (`f7161a80`), Pixel_10_Pro (API 37)
 

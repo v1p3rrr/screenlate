@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.vpr.screenlate.core.common.Language
+import com.vpr.screenlate.core.common.language.support
 
 /**
  * An imported dictionary as known to the app. The converted data lives in [directory] under the dictionary
@@ -47,6 +48,13 @@ data class DictionaryEntity(
 
 /** Whether the dictionary is for words of [language]; one that does not say its language is used for any. */
 fun DictionaryEntity.isFor(language: Language): Boolean = sourceLanguage == null || sourceLanguage == language.dictionaryCode
+
+/**
+ * Whether lookups in [language] read the dictionary: one for [language] ([isFor]), or one with definitions for the
+ * language its lookups fall back to (`LanguageSupport.fallbackLanguage`, Czech for Slovak).
+ */
+fun DictionaryEntity.isReadBy(language: Language): Boolean =
+    isFor(language) || (termCount > 0 && language.support.fallbackLanguage?.let(::isFor) == true)
 
 /**
  * Whether this is the only enabled dictionary with definitions, among [all], for one of the turned-on [languages] it is

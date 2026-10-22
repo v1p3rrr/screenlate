@@ -98,6 +98,14 @@ Lithuanian on `languages/lt` (from `languages/la`): forms keyed without stress, 
 marks of its letters (one `HeadwordMarks` with per-mark bases and a letters' level, in Kotlin and the native
 import), the OCR letter fix Ü ü é ị → Ū ū ė į, abbreviations and paired letters from the corpus, Tesseract fast as
 the more accurate model; no new plan questions; its emulator cases wait as well.
+Slovak on `languages/sk` (from `languages/main` with Lithuanian merged): every headword also keyed without
+the acute, caron, circumflex and diaeresis; Czech as a fallback language (the first one: Czech's results show,
+named "Czech" after the word, only when Slovak's dictionaries find nothing; Czech's main dictionaries offered
+unticked on Slovak's download screen and counted as Slovak's on the Dictionaries screen, in kept files and backups);
+abbreviations, paired letters and ordinals from the corpus; Tesseract fast as the more accurate model; plan
+questions 24-26 decided provisionally. Its emulator cases (LK64, LK65, OCR40, POP37, AUD25, ANK29, DIC34, LNG24)
+passed on 2026-10-22 after two fixes: form rows keyed without marks count as respelled (robit showed urobiť first),
+and deleting Czech's files while Slovak is on keeps the Czech definitions Slovak reads.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 

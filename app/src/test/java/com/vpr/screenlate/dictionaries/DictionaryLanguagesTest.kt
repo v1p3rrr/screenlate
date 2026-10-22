@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.vpr.screenlate.core.common.Language
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryKind
+import com.vpr.screenlate.dictionary.api.registry.isReadBy
 import com.vpr.screenlate.languages.LeftoverModel
 import java.util.Locale
 import org.junit.After
@@ -19,9 +20,9 @@ class DictionaryLanguagesTest {
     @After
     fun restore() = Locale.setDefault(locale)
 
-    private fun dictionary(id: Long, source: String?) = DictionaryEntity(
+    private fun dictionary(id: Long, source: String?, terms: Long = 1, frequencies: Long = 0) = DictionaryEntity(
         id = id, title = "d$id", revision = "1", kind = DictionaryKind.TERM, sourceLanguage = source, targetLanguage = "en",
-        frequencyMode = null, enabled = true, priority = id.toInt(), directory = "d$id", termCount = 1, frequencyCount = 0,
+        frequencyMode = null, enabled = true, priority = id.toInt(), directory = "d$id", termCount = terms, frequencyCount = frequencies,
         pitchCount = 0, kanjiCount = 0, mediaCount = 0, isUpdatable = false, indexUrl = null, downloadUrl = null,
         author = null, url = null, description = null, attribution = null, bundled = false, importedAt = 0,
     )
@@ -51,6 +52,21 @@ class DictionaryLanguagesTest {
         val unmeasured = otherLanguages(list, listOf(Language.JAPANESE, Language.ENGLISH), sizes = mapOf(2L to 10L))
         assertThat(unmeasured.single().code).isEqualTo("ko")
         assertThat(unmeasured.single().bytes).isNull()
+    }
+
+    @Test
+    fun `czech dictionaries with definitions are slovak's while slovak is on, czech frequencies are another language's`() {
+        val czechTerms = dictionary(1, "cs")
+        val czechFrequencies = dictionary(2, "cs", terms = 0, frequencies = 10)
+        val slovak = dictionary(3, "sk")
+        assertThat(czechTerms.isReadBy(Language.SLOVAK)).isTrue()
+        assertThat(czechFrequencies.isReadBy(Language.SLOVAK)).isFalse()
+        assertThat(slovak.isReadBy(Language.CZECH)).isFalse()
+        assertThat(czechTerms.isReadBy(Language.POLISH)).isFalse()
+
+        val others = otherLanguages(listOf(czechTerms, czechFrequencies, slovak), listOf(Language.SLOVAK), sizes = emptyMap())
+        assertThat(others.single().dictionaries).containsExactly(czechFrequencies)
+        assertThat(otherLanguages(listOf(czechTerms, slovak), listOf(Language.CZECH), sizes = emptyMap()).single().code).isEqualTo("sk")
     }
 
     @Test

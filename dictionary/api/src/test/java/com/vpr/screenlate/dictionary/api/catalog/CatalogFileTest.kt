@@ -73,7 +73,7 @@ class CatalogFileTest {
     fun `every source language but Japanese, Belarusian, Georgian, Armenian and Thai has a frequency dictionary built from wordfreq`() {
         val built = catalog!!.entries.filter { it.build == BUILD_WORDFREQ }
         assertThat(built.map { it.sourceLanguage })
-            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt")
+            .containsExactly("en", "zh", "ko", "es", "fr", "de", "it", "pt", "ru", "pl", "tr", "vi", "lv", "nl", "cs", "id", "ms", "tl", "sh", "uk", "el", "hi", "bn", "ar", "fa", "he", "sv", "no", "da", "ro", "lt", "sk")
         for (entry in built) {
             assertThat(entry.build).isEqualTo(BUILD_WORDFREQ)
             assertThat(entry.category).isEqualTo(CatalogCategory.FREQUENCY)
@@ -264,6 +264,29 @@ class CatalogFileTest {
         )
         assertThat(lithuanian.first { it.id == "wordfreq-lt" }.downloadUrl).endsWith("/small_lt.msgpack.gz")
         assertThat(lithuanian.first { it.id == "wiktionary-lt-en" }.displayTitle(Locale.ENGLISH)).isEqualTo("Wiktionary (lt–en)")
+    }
+
+    @Test
+    fun `slovak offers six wiktionaries, its transcription, wordfreq's small list and tesseract fast, ticked, and the other models`() {
+        val slovak = catalog!!.entries.filter { it.isFor(Language.SLOVAK) }
+        assertThat(slovak.filter { it.recommended }.map { it.id }).containsExactly(
+            "wiktionary-sk-en", "wiktionary-sk-ru", "wiktionary-sk-fr", "wiktionary-sk-pl", "wiktionary-sk-tr",
+            "wiktionary-sk-zh", "wiktionary-sk-transcription", "wordfreq-sk", "tesseract-fast-slk",
+        )
+        assertThat(slovak.filterNot { it.recommended }.map { it.id }).containsExactly(
+            "tesseract-best-slk", "paddle-v6-sk", "paddle-latin-sk", "paddle-detector-v5-sk", "paddle-detector-v6-sk",
+        )
+        assertThat(slovak.first { it.id == "wordfreq-sk" }.downloadUrl).endsWith("/small_sk.msgpack.gz")
+    }
+
+    @Test
+    fun `slovak also reads czech term dictionaries, not czech models, frequencies or transcriptions`() {
+        val czech = catalog!!.entries.filter { it.isReadBy(Language.SLOVAK) && !it.isFor(Language.SLOVAK) }
+        assertThat(czech).isNotEmpty()
+        assertThat(czech.all { it.sourceLanguage == "cs" && it.kind == DictionaryKind.TERM }).isTrue()
+        assertThat(czech.map { it.id }).containsAtLeast("wiktionary-cs-en", "wiktionary-cs-ru")
+        assertThat(czech.map { it.id }).containsNoneOf("wordfreq-cs", "tesseract-fast-ces", "wiktionary-cs-transcription")
+        assertThat(catalog!!.entries.filter { it.isReadBy(Language.CZECH) }).isEqualTo(catalog!!.entries.filter { it.isFor(Language.CZECH) })
     }
 
     @Test

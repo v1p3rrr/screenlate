@@ -88,6 +88,7 @@
     <string name="language_setup_gloss_none">없음</string>
     <string name="language_setup_none_available">선택한 언어의 사전이 없습니다.</string>
     <string name="language_setup_choose_one">하나 이상 선택하세요.</string>
+    <string name="language_setup_fallback">예비 사전(%1$s)</string>
     <string name="language_setup_pronunciation_info">발음 기호로 표기한 발음. 예: %1$s</string>
     <string name="language_setup_download">다운로드 (%1$s)</string>
     <string name="language_setup_turn_on">켜기</string>
@@ -508,6 +509,7 @@
     <string name="popup_font_script_only_ro">루마니아어 텍스트에만 사용</string>
     <string name="popup_font_script_only_la">라틴어 텍스트에만 사용</string>
     <string name="popup_font_script_only_lt">리투아니아어 텍스트에만 사용</string>
+    <string name="popup_font_script_only_sk">슬로바키아어 텍스트에만 사용</string>
     <string name="popup_font_system_zh">휴대폰의 중국어 글꼴</string>
     <string name="popup_font_system_ko">휴대폰의 한국어 글꼴</string>
     <string name="popup_font_script_only_zh">중국어 텍스트에만 사용</string>

@@ -88,6 +88,7 @@
     <string name="language_setup_gloss_none">Không có</string>
     <string name="language_setup_none_available">Không có từ điển nào bằng các ngôn ngữ đã chọn.</string>
     <string name="language_setup_choose_one">Hãy chọn ít nhất một từ điển.</string>
+    <string name="language_setup_fallback">Từ điển dự phòng (%1$s)</string>
     <string name="language_setup_pronunciation_info">Cách phát âm theo ký hiệu phiên âm, ví dụ: %1$s</string>
     <string name="language_setup_download">Tải xuống (%1$s)</string>
     <string name="language_setup_turn_on">Bật</string>
@@ -508,6 +509,7 @@
     <string name="popup_font_script_only_ro">Chỉ cho chữ tiếng Romania</string>
     <string name="popup_font_script_only_la">Chỉ cho chữ tiếng Latinh</string>
     <string name="popup_font_script_only_lt">Chỉ cho chữ tiếng Litva</string>
+    <string name="popup_font_script_only_sk">Chỉ cho chữ tiếng Slovakia</string>
     <string name="popup_font_system_zh">Phông chữ tiếng Trung của điện thoại</string>
     <string name="popup_font_system_ko">Phông chữ tiếng Hàn của điện thoại</string>
     <string name="popup_font_script_only_zh">Chỉ cho chữ tiếng Trung</string>

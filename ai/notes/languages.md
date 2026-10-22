@@ -1654,6 +1654,25 @@ Maltese researched, not built): research, decisions and work in `plans/2026-10-1
   652, vi 490 words stay under the line); wordfreq's small list; Tesseract `lit` fast recommended, best and Paddle v5
   latin and v6 unticked.
 
+### Slovak on `languages/sk` (2026-10-22)
+
+- `Language.SLOVAK` (`sk`), `SlovakSupport`: glyph Ô, Slovakia's flag, every Latin font with latin-ext (they have á ä
+  č ď é í ĺ ľ ň ó ô ŕ š ť ú ý ž), Lingua Libre first for audio (Q9058, 19 of 20 common words), ordinals with a period
+  (5. mája), „…“ and ‚…‘ paired, the abbreviation lists and paired letters (t. j., n. l., pr. n. l.) of
+  `notes/language-rules.md`. No OCR letter fix.
+- Bundle (`sk.js`, 47 KB): Czech's descriptor (capitalization only) under Slovak's code; it reads text as cs.js does.
+- Import: every headword also keyed without the acute, caron, circumflex and diaeresis (`HeadwordMarks.markBases`
+  per mark: the acute on aeiouylr, the caron on cdlnstz, ô, ä), the exact spelling first.
+- Czech as a fallback (`LanguageSupport.fallbackLanguage`, the first language with one): wty sk-en finds about half
+  the words of running text, and cs-en 16% more (v, za, už, však). The enabled Czech term dictionaries load with
+  Slovak's; their results show only when Slovak's own find nothing, marked with the language's name after the word.
+  The Czech main dictionaries are offered on Slovak's download screen (unticked, "Fallback dictionary (Czech)",
+  outside the mandatory check), listed under Slovak on the Dictionaries screen and kept while Slovak is on
+  (`isReadBy`, `lookupDictionaryCodes`).
+- Catalog: wty sk into en ru fr pl tr zh and the transcription, all ticked (sk-ko 1,200, sk-pt 973, sk-de 912, sk-ja
+  616, sk-es 284, sk-it 163, sk-vi 155 words stay under the line); wordfreq's small list; Tesseract `slk` fast
+  recommended (0.6% errors on the test screens against ML Kit's 2.4%), best and Paddle v5 Latin and v6 unticked.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.

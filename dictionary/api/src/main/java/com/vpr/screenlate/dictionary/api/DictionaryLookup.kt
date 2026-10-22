@@ -92,7 +92,9 @@ class DictionaryLookup @Inject constructor(
                 val written = LookupVariants.of(source, settings, support).flatMap { variant ->
                     engine.lookup(variant.text, engineOptions).fromVariant(source, variant, support)
                 }.mapNotNull { it.shownBy(support) }
-                val candidates = written + keyedMatches(source, written, support) { engine.lookup(it, engineOptions) }
+                val candidates = preferringOwn(written, prepared.fallbackDictionaries, support.fallbackLanguage?.code) { found, kept ->
+                    found + keyedMatches(source, found, support) { kept(engine.lookup(it, engineOptions)) }
+                }
                 val lengths = support.shownMatchLengths(source, candidates.mapTo(HashSet()) { it.matched.length })
                 val found = candidates.filter { it.matched.length in lengths }
                 val whole = shown(found, start)
@@ -427,4 +429,38 @@ internal suspend fun keyedMatches(
         .mapNotNull { it.shownBy(support) }
         .filter { it.matched.length >= longest && it.matched.length !in exact }
         .filter { (it.term.expression to it.term.reading) !in found && support.keepsWrittenLetters(source, it.term.expression) }
+}
+
+/**
+ * The candidates of a lookup over a language's dictionaries and its fallback language's ([fallback], their titles):
+ * those with definitions in the language's own dictionaries, without the fallback's definitions, when any has them;
+ * else every candidate, each marked with the fallback language's [code]. Slovak finds voda in its own dictionaries
+ * only, and v, which they lack, in the Czech ones.
+ *
+ * @param written the results found as written, from every loaded dictionary.
+ * @param withKeys [written]'s candidates: the results given with those found through keys, whose engine results the
+ *   second argument keeps to the dictionaries in use.
+ */
+internal suspend fun preferringOwn(
+    written: List<LookupResult>,
+    fallback: Set<String>,
+    code: String?,
+    withKeys: suspend (found: List<LookupResult>, kept: (List<LookupResult>) -> List<LookupResult>) -> List<LookupResult>,
+): List<LookupResult> {
+    val own = withKeys(written.withoutDefinitionsOf(fallback)) { it.withoutDefinitionsOf(fallback) }
+    if (own.isNotEmpty() || fallback.isEmpty() || code == null) return own
+    return withKeys(written) { it }.map { it.copy(fallbackLanguage = code) }
+}
+
+/** The results with definitions in other dictionaries than [dictionaries], without those of [dictionaries]. */
+internal fun List<LookupResult>.withoutDefinitionsOf(dictionaries: Set<String>): List<LookupResult> {
+    if (dictionaries.isEmpty()) return this
+    return mapNotNull { result ->
+        val kept = result.term.glossaries.filter { it.dictionary !in dictionaries }
+        when {
+            kept.isEmpty() -> null
+            kept.size == result.term.glossaries.size -> result
+            else -> result.copy(term = result.term.copy(glossaries = kept))
+        }
+    }
 }

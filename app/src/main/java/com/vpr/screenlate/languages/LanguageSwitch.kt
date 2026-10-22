@@ -12,6 +12,7 @@ import com.vpr.screenlate.dictionary.api.imports.DictionaryImports
 import com.vpr.screenlate.dictionary.api.registry.DictionaryEntity
 import com.vpr.screenlate.dictionary.api.registry.DictionaryRepository
 import com.vpr.screenlate.dictionary.api.registry.isFor
+import com.vpr.screenlate.dictionary.api.registry.isReadBy
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +70,7 @@ class LanguageSwitch @Inject constructor(
         enableDictionaries: Set<Long> = emptySet(),
     ) {
         withContext(NonCancellable) {
-            repository.getAll().filter { !it.enabled && it.id in enableDictionaries && it.isFor(language) }
+            repository.getAll().filter { !it.enabled && it.id in enableDictionaries && it.isReadBy(language) }
                 .forEach { repository.setEnabled(it.id, true) }
             if (firstRun) profiles.finishFirstRun(language) else profiles.turnOn(language)
             if (language == bundled.language) {

@@ -15,7 +15,9 @@ namespace screenlate_language {
 namespace {
 
 constexpr char kMagic[4] = {'S', 'L', 'F', 'O'};
-constexpr uint32_t kVersion = 1;
+constexpr uint32_t kVersion = 2;
+// Tables written before the respelled flag; read without it.
+constexpr uint32_t kVersionWithoutFlag = 1;
 constexpr size_t kBlockSize = 16;
 // Magic, version, four counts and six offsets.
 constexpr size_t kHeaderSize = 4 + 4 + 4 * 4 + 6 * 8;
@@ -97,7 +99,7 @@ uint32_t FormOfTableBuilder::intern(std::unordered_map<std::string, uint32_t>& i
 }
 
 void FormOfTableBuilder::add(std::string_view form, std::string_view lemma, const std::vector<std::string>& tags,
-                             std::string_view rules) {
+                             std::string_view rules, bool respelled) {
   if (form.empty() || lemma.empty()) return;
   std::string joined;
   for (size_t i = 0; i < tags.size(); i++) {
@@ -108,9 +110,16 @@ void FormOfTableBuilder::add(std::string_view form, std::string_view lemma, cons
       intern(string_ids_, strings_, std::string(lemma)),
       intern(tag_set_ids_, tag_sets_, std::move(joined)),
       intern(string_ids_, strings_, std::string(rules)),
+      respelled,
   };
   auto& entries = forms_[std::string(form)];
-  if (std::find(entries.begin(), entries.end(), entry) != entries.end()) return;
+  auto same = std::find_if(entries.begin(), entries.end(), [&](const Item& other) {
+    return other.lemma == entry.lemma && other.tag_set == entry.tag_set && other.rules == entry.rules;
+  });
+  if (same != entries.end()) {
+    same->respelled = same->respelled && respelled;
+    return;
+  }
   entries.push_back(entry);
   entries_++;
 }
@@ -140,7 +149,7 @@ void FormOfTableBuilder::write(const std::filesystem::path& path) const {
     put_varint(blocks, entries.size());
     for (const auto& entry : entries) {
       put_varint(blocks, entry.lemma);
-      put_varint(blocks, entry.tag_set);
+      put_varint(blocks, (static_cast<uint64_t>(entry.tag_set) << 1) | (entry.respelled ? 1 : 0));
       put_varint(blocks, entry.rules);
     }
   }
@@ -230,9 +239,11 @@ std::unique_ptr<FormOfTable> FormOfTable::open(const std::filesystem::path& path
   table->data_ = static_cast<const uint8_t*>(mapped);
   table->size_ = size;
   const uint8_t* data = table->data_;
-  if (std::memcmp(data, kMagic, 4) != 0 || get_u32(data + 4) != kVersion) {
+  const uint32_t version = get_u32(data + 4);
+  if (std::memcmp(data, kMagic, 4) != 0 || (version != kVersion && version != kVersionWithoutFlag)) {
     throw std::runtime_error("damaged form-of table");
   }
+  table->flagged_ = version == kVersion;
   table->form_count_ = get_u32(data + 8);
   table->block_count_ = get_u32(data + 12);
   table->string_count_ = get_u32(data + 16);
@@ -346,8 +357,10 @@ std::vector<FormOf> FormOfTable::find(std::string_view form) const {
       if (!match) continue;
       const std::string_view lemma = string(static_cast<uint32_t>(lemma_id));
       if (lemma.empty()) continue;
+      const bool respelled = flagged_ && (tag_set_id & 1) != 0;
+      if (flagged_) tag_set_id >>= 1;
       result.push_back({std::string(lemma), tag_set(static_cast<uint32_t>(tag_set_id)),
-                        std::string(string(static_cast<uint32_t>(rules_id)))});
+                        std::string(string(static_cast<uint32_t>(rules_id))), respelled});
     }
     if (match || current > form) return result;
   }

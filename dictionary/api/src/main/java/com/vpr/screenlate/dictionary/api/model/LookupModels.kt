@@ -21,6 +21,8 @@ import kotlinx.serialization.Serializable
  *   starts at words before the aimed one (`LanguageSupport.earlierStartOffset`).
  * @property compound for an entry of a compound's part (a compound without an entry of its own), the headwords of the
  *   parts in order; empty otherwise.
+ * @property fallbackLanguage the code of the language whose dictionaries gave the entry because the lookup language's
+ *   own found nothing (cs for Slovak, `LanguageSupport.fallbackLanguage`); null for an entry of the language's own.
  */
 @Serializable
 data class LookupResult(
@@ -34,6 +36,7 @@ data class LookupResult(
     val lang: String? = null,
     val start: Int = 0,
     val compound: List<String> = emptyList(),
+    val fallbackLanguage: String? = null,
 )
 
 /**

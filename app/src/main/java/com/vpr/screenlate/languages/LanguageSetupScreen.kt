@@ -233,7 +233,7 @@ private fun CategoryCard(
             SetupItemRow(
                 item,
                 ticked = category.ticked(item, state.choices),
-                radio = category.fixed,
+                radio = category.fixed && !item.fallback,
                 onTick = { onTick(item, it) },
                 main = model?.let { it == state.mainModel },
                 onMain = { main -> model?.let { onMain(it, main) } },
@@ -305,6 +305,9 @@ private fun SetupItemRow(
         }
         Column(modifier = Modifier.weight(1f).padding(vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(entry.displayTitle(), style = MaterialTheme.typography.bodyLarge)
+            if (item.fallback) {
+                Text(stringResource(R.string.language_setup_fallback, languageName(entry.sourceLanguage)), style = MaterialTheme.typography.bodySmall)
+            }
             if (moreAccurate) {
                 Text(stringResource(R.string.ocr_models_more_accurate), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
             }
