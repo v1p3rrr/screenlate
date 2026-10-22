@@ -55,11 +55,11 @@ class KyrgyzSupportTest {
     }
 
     @Test
-    fun `an ending after digits or an abbreviation is looked up with its hyphen as well`() {
+    fun `an ending or a particle after a hyphen is looked up with its hyphen as well`() {
         assertThat(support.partStarts("2007-жылы", 0, "2007-ж".length)).containsExactly(4, 5).inOrder()
         assertThat(support.partStarts("19-кылымдын", 0, "19-к".length)).containsExactly(2, 3).inOrder()
         assertThat(support.partStarts("СССР-дин", 0, "СССР-д".length)).containsExactly(4, 5).inOrder()
-        assertThat(support.partStarts("ата-эне", 0, "ата-э".length)).containsExactly(4)
+        assertThat(support.partStarts("ата-эне", 0, "ата-э".length)).containsExactly(3, 4).inOrder()
         assertThat(support.lookupStart("-жылы", latinAsNative = false)).isEqualTo(LookupStart.Any)
     }
 
@@ -70,7 +70,8 @@ class KyrgyzSupportTest {
         assertThat(support.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
         assertThat(support.flagCountries).containsExactly("kg")
         assertThat(support.glyph).isEqualTo("Ң")
-        assertThat(support.ignoredFormTags).containsExactly("Arabic", "romanization", "Yañalif")
+        assertThat(support.ignoredFormTags)
+            .containsExactly("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
         for (letter in "ңөү") assertThat(support.fontSample.lowercase()).contains(letter.toString())
     }
 }

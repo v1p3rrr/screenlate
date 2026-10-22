@@ -218,7 +218,7 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
 | many | Lingoes Vicon dictionaries | ripped from Lingoes |
 | zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
 | many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent. Read again for group 4e (Wayback copy of 2025-11-12): CC BY-NC for the site's data and services, CC BY for "the text corpora offered for download"; the Kazakh and Kyrgyz frequency lists are built from those downloads (owner, 2026-10-19) |
-| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e); the license is checked again before hosting |
+| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | CC0 for the 2024-03-01 dump we use: PanLex's license page said CC0 for its snapshots until at least May 2025 and says CC BY-NC-SA 4.0 since (rechecked 2026-10-22, see "PanLex license history"); stay on that dump. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e) |
 
 ## OCR
 
@@ -1972,7 +1972,13 @@ brackets where they matter.
   - A lookup of Қазақстан or мен shows a form-of entry ("Arabic … of قازاقستان", "romanization of men") whose
     lemma is in no dictionary, next to the meaning.
   - kk-ru: 1,210 nouns declined; ky-ru: 709 nouns with person forms, 675 declined.
-- Suffix headwords: kk 312 (-ға, -ге, -дың …), ky 178.
+  - Release 2026.10.22 (compared 2026-10-22) turns every sense-level alt-of row around: the rows tagged `Arabic`,
+    `romanization` and `Yañalif` now lead from the other spelling to the Cyrillic word (قازاقستان, Qazaqstan →
+    Қазақстан; kk-en 105, 91 and 4, ky-en 2,202 Arabic-script and 1 Yañalif), and Cyrillic variants to the main
+    entry (ky дүнүйө → дүйнө, туйгак → туяк); no Cyrillic headword carries those tags. The letter equivalents (о → و,
+    tag `Cyrillic`; kk-en 73, ky-en 18) still go from the Cyrillic letter and lead to the Arabic letter's entry.
+    New kk-en rows: -т → -ді (pronunciation-spelling), مېن → مەن (obsolete). kk-ru and ky-ru are unchanged.
+- Suffix headwords: kk 312 (-ға, -ге, -дың …; 313 in release 2026.10.22, -шиш), ky 178.
 - Readings: none.
 
 ### Other dictionaries
@@ -1981,8 +1987,8 @@ brackets where they matter.
   el-sozduk.kg carry no open license; Yudakhin's Kyrgyz–Russian dictionary (1940, 1965) is under copyright.
 - Apertium (GPL-3.0): bilingual lemma pairs with a part of speech and no definitions: eng-kaz 32,994 entries,
   kaz-rus 29,572, kaz-kir 8,174, eng-kir 474. GPL, so usable only in the GPL modules; not taken.
-- PanLex: the live site says CC BY-NC-SA 4.0 (commercial use only with written permission); a Wayback copy of 2021
-  says the snapshots were CC0. The Hugging Face mirror `cointegrated/panlex-meanings` (CC0, the 2024-03-01 dump)
+- PanLex: the live site says CC BY-NC-SA 4.0 (commercial use only with written permission); older copies of the
+  license page say the snapshots were CC0 (see "PanLex license history" below). The Hugging Face mirror `cointegrated/panlex-meanings` (CC0, the 2024-03-01 dump)
   has `kaz.tsv` (37.5k expressions; 31k in the standard Cyrillic variety) and `kir.tsv` (21.3k; 19.7k). Joined with
   `rus.tsv` on the meaning: 19.3k Kazakh and 8.6k Kyrgyz words get a Russian translation. Quality varies: су →
   вода, мышык → кошка, but ушул → "присутствовать", шаар → лондон among город. It has words wty lacks (Kyrgyz
@@ -2010,6 +2016,20 @@ brackets where they matter.
   archive has them (the research line above counted expressions, not translations).
 - On the emulator: import 435-545 ms per archive; азыр → now / сейчас, же → или, либо (no wty entry for either);
   PanLex rows sit under the wty entry of the same headword (қазір, қабылдау).
+
+### PanLex license history (rechecked 2026-10-22)
+
+- panlex.org/license in the Wayback Machine: the copies of 2025-02-19 and 2025-05-25 release the CSV and JSON
+  snapshots under CC0 1.0 ("even for commercial purposes"), asking to cite Kamholz et al. 2014. The copy of
+  2026-06-12 is the "PanLex Database License": the contents and organization of the database under CC BY-NC-SA 4.0,
+  a fixed attribution text to keep with any shared material, commercial use only with written permission
+  (info@panlex.org). It says nothing about the earlier snapshots. The copy of 2026-03-28 shows the home page; the
+  Wayback listing was offline, so the change lies between 2025-05-25 and 2026-06-12.
+- The mirror `cointegrated/panlex-meanings` (card: cc0-1.0, the `20240301` dump, "as explained in"
+  panlex.org/license) holds a dump released while the page said CC0. CC0 waives the rights for good, so that copy
+  stays CC0; dumps made after the change would be CC BY-NC-SA.
+- So: build only from the pinned 2024-03-01 dump (revision `0422f0e60f39`), never from a newer PanLex download; keep
+  the citation in NOTICE when the archives are hosted, and name the dump date there.
 
 ### Lookup coverage
 

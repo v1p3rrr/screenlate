@@ -55,6 +55,20 @@ DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 com
 `.worktrees/checks2` needs its submodules deinitialized before removal. Morning: the owner ruled that a waiting session
 never holds the chain; group 5a's build started at once (request 72).
 
+Group 4e's follow-ups (Kazakh, Kyrgyz; `languages/kk-followups` from 11dd9eb8, for the coordinating session to merge):
+every engine measured on the emulator (cloud, PaddleOCR Cyrillic, Tesseract kaz/kir fast and best; numbers in the
+group 4e plan, "Measurements"); question 14 (a) built (later parts of a hyphenated word looked up with the hyphen
+first; a lookup from a hyphen keeps only suffix entries spanning the part) and question 15 (b) built (keyed words
+after the written ones, at lengths nothing matches exactly as written), both guards provisional. The rules checked on
+Leipzig's news found three ending gaps, fixed: Kazakh у takes a linking vowel (болуы, оқуым), -нша/-ндай and Kyrgyz
+-нча/-ндай after a possessive, the converb тауып. Questions 16 and 18 counted, not built; new open questions 19
+(initials), 20 (verbs tagged as nouns in wty) and 21 (Kyrgyz -ыш). PanLex's license page changed from CC0 to CC BY-NC-SA 4.0
+between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, unit tests, lint, 145 page tests, glue tests and LK51-LK53, LK61, LK62, DIC28
+on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): counts redone, nothing in the device
+cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
+one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
+tests pass; device case LK63 waits for the emulator).
+
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every
 session (request 74, `lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug;

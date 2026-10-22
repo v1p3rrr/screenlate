@@ -123,7 +123,7 @@ class DictionaryLookup @Inject constructor(
             val results = if (parts.isEmpty()) {
                 reaching
             } else {
-                withHyphenatedParts(reaching, aimedCharAt, parts) { from(text.substring(it)) }.take(limit)
+                withHyphenatedParts(text, reaching, aimedCharAt, parts) { from(text.substring(it)) }.take(limit)
             }
             val all = if (!extraEntries || !settings.singleKanji) {
                 results
@@ -404,10 +404,12 @@ internal fun LookupResult.inSource(source: String, variant: MappedText): LookupR
 }
 
 /**
- * The results of [source] spelled as the language keys its headwords (`LanguageSupport.keyedSpelling`) when those
- * found as written ([written]) match less than its first word: the ones that match more than any of them and keep the
- * letters [source] writes (`LanguageSupport.keepsWrittenLetters`). Kazakh Қазакстан, with қ read as к, finds
- * Қазақстан beside қаз, the only word found as written.
+ * The results of [source] spelled as the language keys its headwords (`LanguageSupport.keyedSpelling`) unless its
+ * first word is found exactly as written: those that match as much as any found as written ([written]) or more, at a
+ * length no word matches exactly as written, keep the letters [source] writes (`LanguageSupport.keepsWrittenLetters`)
+ * and were not found already. Kazakh Қазакстан, with қ read as к, finds Қазақстан beside қаз, the only word found as
+ * written; Kyrgyz Түштук, found as түшүү through an ending, finds түштүк as well, after it, being one more step from
+ * the text; "оң", a word as written, shows only оң.
  *
  * @param lookup the engine's results for a text.
  */
@@ -418,8 +420,11 @@ internal suspend fun keyedMatches(
     lookup: suspend (String) -> List<LookupResult>,
 ): List<LookupResult> {
     val longest = written.maxOfOrNull { it.matched.length } ?: 0
-    val spelling = support.keyedSpelling(source, longest) ?: return emptyList()
+    val exact = written.filter { it.trace.isEmpty() }.mapTo(HashSet()) { it.matched.length }
+    val spelling = support.keyedSpelling(source, exact.maxOrNull() ?: 0) ?: return emptyList()
+    val found = written.mapTo(HashSet()) { it.term.expression to it.term.reading }
     return lookup(spelling).fromVariant(source, MappedText.identity(spelling), support)
         .mapNotNull { it.withoutChainsThrough(support.ignoredFormTags) }
-        .filter { it.matched.length > longest && support.keepsWrittenLetters(source, it.term.expression) }
+        .filter { it.matched.length >= longest && it.matched.length !in exact }
+        .filter { (it.term.expression to it.term.reading) !in found && support.keepsWrittenLetters(source, it.term.expression) }
 }

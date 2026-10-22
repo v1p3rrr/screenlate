@@ -73,15 +73,16 @@ class KazakhSupportTest {
     }
 
     @Test
-    fun `an ending after digits or an abbreviation is looked up with its hyphen as well`() {
+    fun `an ending or a particle after a hyphen is looked up with its hyphen as well`() {
         assertThat(support.partStarts("1990-ға дейін", 0, "1990-ғ".length)).containsExactly(4, 5).inOrder()
         assertThat(support.partStarts("АҚШ-қа", 0, "АҚШ-қ".length)).containsExactly(3, 4).inOrder()
         assertThat(support.partStarts("ҚазМҰУ-да", 0, "ҚазМҰУ-д".length)).containsExactly(6, 7).inOrder()
         assertThat(support.partStarts("км-ге", 0, "км-г".length)).containsExactly(2, 3).inOrder()
         assertThat(support.partStarts("2007-жылы", 0, "2007-ж".length)).containsExactly(4, 5).inOrder()
-        // After a word, only the part: сондай-ақ, Әл-Фараби.
-        assertThat(support.partStarts("сондай-ақ", 0, "сондай-а".length)).containsExactly(7)
-        assertThat(support.partStarts("Әл-Фараби", 0, "Әл-Ф".length)).containsExactly(3)
+        // After a word as well, for the particles: сондай-ақ finds -ақ, then ақ.
+        assertThat(support.partStarts("сондай-ақ", 0, "сондай-а".length)).containsExactly(6, 7).inOrder()
+        assertThat(support.partStarts("келді-ау", 0, "келді-а".length)).containsExactly(5, 6).inOrder()
+        assertThat(support.partStarts("Әл-Фараби", 0, "Әл-Ф".length)).containsExactly(2, 3).inOrder()
         assertThat(support.lookupStart("-ға дейін", latinAsNative = false)).isEqualTo(LookupStart.Any)
         assertThat(support.lookupStart("- ға", latinAsNative = false)).isNull()
         assertThat(support.lookupStart("-", latinAsNative = false)).isNull()
@@ -95,7 +96,8 @@ class KazakhSupportTest {
         assertThat(support.defaultAudioSources.first()).isEqualTo("LINGUA_LIBRE")
         assertThat(support.flagCountries).containsExactly("kz")
         assertThat(support.glyph).isEqualTo("Қ")
-        assertThat(support.ignoredFormTags).containsExactly("Arabic", "romanization", "Yañalif")
+        assertThat(support.ignoredFormTags)
+            .containsExactly("Arabic", "romanization", "Yañalif", "Cyrillic", "Cyrillic sometimes")
         for (letter in "әғқңөұүһі") assertThat(support.fontSample.lowercase()).contains(letter.toString())
     }
 }

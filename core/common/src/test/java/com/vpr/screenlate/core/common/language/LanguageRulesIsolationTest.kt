@@ -230,23 +230,28 @@ class LanguageRulesIsolationTest {
 
     @Test
     fun `a later part of a hyphenated word is looked up in every spaced language`() {
+        // Kazakh and Kyrgyz start at each hyphen before a part as well, for their particles and endings (сондай-ақ).
+        val hyphened = setOf(Language.KAZAKH.support, Language.KYRGYZ.support)
         for (support in spaced) {
-            assertThat(support.partStarts("state-owned firms", 0, "state-o".length)).containsExactly("state-".length)
+            fun starts(vararg parts: String) =
+                parts.flatMap { if (support in hyphened) listOf(it.length - 1, it.length) else listOf(it.length) }
+            assertThat(support.partStarts("state-owned firms", 0, "state-o".length)).isEqualTo(starts("state-"))
             assertThat(support.partStarts("mother-in-law", 0, "mother-in-l".length))
-                .containsExactly("mother-".length, "mother-in-".length).inOrder()
-            assertThat(support.partStarts("հայ֊ռուսական", 0, "հայ֊ռ".length)).containsExactly("հայ֊".length)
+                .isEqualTo(starts("mother-", "mother-in-"))
+            assertThat(support.partStarts("հայ֊ռուսական", 0, "հայ֊ռ".length)).isEqualTo(starts("հայ֊"))
             // Aimed at the first part or at the hyphen, the word is looked up as it is.
             assertThat(support.partStarts("state-owned", 0, "sta".length)).isEmpty()
             assertThat(support.partStarts("state-owned", 0, "state".length)).isEmpty()
             // A dash between words, and the words before the aimed one, are no parts.
             assertThat(support.partStarts("this - that", 0, "this - t".length)).isEmpty()
-            assertThat(support.partStarts("a well-known", 2, "a well-k".length)).containsExactly("a well-".length)
+            assertThat(support.partStarts("a well-known", 2, "a well-k".length)).isEqualTo(starts("a well-"))
             // An apostrophe joins a word without dividing it into parts.
             assertThat(support.partStarts("rock'n'roll", 0, "rock'n'r".length)).isEmpty()
         }
-        // An ending after digits or an abbreviation is looked up with its hyphen in Kazakh and Kyrgyz only, from a hyphen
-        // as well.
+        // An ending or a particle is looked up with its hyphen in Kazakh and Kyrgyz only, from a hyphen as well.
         assertThat(spaced.where { it.partStarts("1990-ға", 0, "1990-ғ".length) != listOf("1990-".length) })
+            .containsExactly(Language.KAZAKH, Language.KYRGYZ)
+        assertThat(spaced.where { it.partStarts("сондай-ақ", 0, "сондай-а".length) != listOf("сондай-".length) })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)
         assertThat(all.where { it.lookupStart("-ға", latinAsNative = false) != null })
             .containsExactly(Language.KAZAKH, Language.KYRGYZ)

@@ -138,7 +138,7 @@ abstract class SpacedLanguageSupport : LanguageSupport {
 
     /**
      * Whether an ending written after [part] with a hyphen is looked up with the hyphen as well, for the dictionaries'
-     * suffix entries: Kazakh and Kyrgyz after digits and abbreviations (1990-ға, АҚШ-қа).
+     * suffix entries: Kazakh and Kyrgyz after any part (1990-ға, АҚШ-қа, сондай-ақ).
      */
     protected open fun takesHyphenedEnding(part: String): Boolean = false
 

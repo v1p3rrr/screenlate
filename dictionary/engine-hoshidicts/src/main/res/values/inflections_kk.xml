@@ -31,9 +31,9 @@
     <!-- attributive -->
     <string name="inflection_kk_attributive" translatable="false">-ғы -гі -қы -кі (жазғы)</string>
     <!-- equative -->
-    <string name="inflection_kk_equative" translatable="false">-дай -дей -тай -тей (баладай)</string>
+    <string name="inflection_kk_equative" translatable="false">-дай -дей -тай -тей -ндай -ндей (баладай, баласындай)</string>
     <!-- manner -->
-    <string name="inflection_kk_manner" translatable="false">-ша -ше (қазақша)</string>
+    <string name="inflection_kk_manner" translatable="false">-ша -ше -нша -нше (қазақша, пікірінше)</string>
     <!-- 1sg -->
     <string name="inflection_kk_1sg" translatable="false">-мын -мін -бын -бін -пын -пін -м (барамын, бардым)</string>
     <!-- 2sg -->
@@ -63,7 +63,7 @@
     <!-- intention -->
     <string name="inflection_kk_intention" translatable="false">-мақ -мек -бақ -бек -пақ -пек (бармақ)</string>
     <!-- converb -->
-    <string name="inflection_kk_converb" translatable="false">-ып -іп -п -а -е -й (барып, бара)</string>
+    <string name="inflection_kk_converb" translatable="false">-ып -іп -п -уып -уіп -а -е -й (барып, тауып, бара)</string>
     <!-- purpose -->
     <string name="inflection_kk_purpose" translatable="false">-ғалы -гелі -қалы -келі (барғалы)</string>
     <!-- until -->
