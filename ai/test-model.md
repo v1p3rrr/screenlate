@@ -220,6 +220,8 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | LK61 | Kazakh particles after a hyphen and endings checked on data (overlay over `testdata/ocr/kk-lines3.png`, the lines in `kk-lines3.txt`, rendered as for LK51; cloud recognition): сондай-ақ aimed at ақ finds -ақ, then ақ; келді-ау aimed at ау finds -ау first; пікірінше finds пікір ("his, her, their « manner"); болуы finds болу ("his, her, their"); тауып finds табу ("converb") | F | U KazakhSupportTest, EarlierStartsTest, glue.test.mjs, M | 2026-10-22 |
 | LK62 | Kyrgyz keyed results after the written ones and endings checked on data (overlay over `testdata/ocr/ky-lines2.png`, the lines in `ky-lines2.txt`; cloud recognition): Түштук finds түшүү ("past « 1st pl."), then түштүк; 19-декабрь aimed at декабрь finds декабрь and no suffix entry -де; өзүнчө finds өз ("his, her, their « manner") | F | U KeyedMatchesTest, EarlierStartsTest, KyrgyzSupportTest, glue.test.mjs, M | 2026-10-22 |
 | LK63 | One-letter words do not show an Arabic letter (Wiktionary links each Cyrillic letter to its Arabic equivalent, tag `Cyrillic`): on the search screen Kyrgyz а and в, and Kazakh о, find no entry of ا, ۋ or و | F | U KazakhSupportTest, KyrgyzSupportTest, ShownResultsTest, M | 2026-10-22 |
+| LK64 | Kazakh and Kyrgyz noun endings skip the pronouns whose case forms change their stem: on the search screen Kyrgyz алды shows алуу ("past") and no ал with the accusative; бизге still finds биз ("dative") | F | U glue `kazakh and kyrgyz noun endings skip the pronouns…`, M | 2026-10-22 |
+| LK65 | The Kyrgyz verbal noun in -ыш: болушу finds болуу ("verbal noun « his, her, their"); иш finds only иш, no verb | F | U glue `kyrgyz verbal nouns in -ыш…`, M | 2026-10-22 |
 
 ### POP: the popup
 
@@ -323,6 +325,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | ANK26 | A Romanian Anki note: added from the popup for Popescu in "Dl. Popescu a venit la nr. 5, pe str. Lipscani." (`testdata/ocr/ro-sample.png`; app text of the same sentence, as OCR reads Dl. as DI.), it has the whole sentence as Sentence (dl., nr. and str. end nothing); for strigat in "„Vino aici!” a strigat ea." the sentence keeps the quotes (cloud recognition gives ” as ", and the sentence then starts at it); for Apoi in "S-a născut în 1999. Apoi a plecat." the sentence is "Apoi a plecat." | F | U SentenceTest, RomanianSupportTest, M | 2026-10-22 |
 | ANK27 | A Latin Anki note: for Cicero in "C. Iulius Caesar et M. Tullius Cicero Romae erant." the sentence is whole (the praenomina end nothing); for Liberi in "Liberi erant sex. Deinde abierunt." the sentence ends at sex.; a.C.n. before a lowercase word ends nothing | F | U SentenceTest, LatinSupportTest, M | 2026-10-22 |
 | ANK28 | A Lithuanian Anki note: for Kazlauskas in "Prof. Kazlauskas 1950 m. rugsėjo 5 d. gimė Vilniuje." the sentence is whole; for obuoliai in "Vaisiai, t. y. obuoliai ir kriaušės, kainavo 5 tūkst. eurų." it is whole; "Jis gimė 1990. Vėliau išvyko." ends at 1990. | F | U SentenceTest, LithuanianSupportTest, M | 2026-10-22 |
+| ANK29 | An initial before a surname holds the sentence: a Kyrgyz note added from the popup for келди in "Президент К. Бакиев Ошко келди." (`scripts/text-image.py`, Segoe UI) has the whole sentence as Sentence | F | U SentenceTest `anInitialBeforeASurnameKeepsTheSentenceInEverySpacedLanguage`, KyrgyzSupportTest, M | 2026-10-22 |
 
 ### TR: sentence translation
 
@@ -369,6 +372,7 @@ Columns: ID, the check (action → expected), category, coverage, the date of th
 | DIC31 | A download queued after a stopped one in the same chain downloads its own entry: two downloads started together while a stopped download is the last task of a chain (the second goes to that chain) each download and install their own archive; Resume on a stopped card continues that card's entry, also with another stopped card listed | F | U DictionaryImportsTest, M | 2026-10-22 (two downloads after a stopped one; Resume by unit test) |
 | DIC32 | A transcription dictionary with millions of tagged transcriptions imports with its tags (Chinese: Transcription (Wiktionary), wty-zh-ipa, 4.4 million): no "Reading or writing transcription tags failed" in the log, `transcription_tags.bin` in its directory, and the `{phonetic-transcriptions}` marker of 中国 gives "(zh_pron, Pinyin, Mandarin) Zhōngguó"; a transcription dictionary imported by an older version (the first file format) still shows its tags (English water) | F | U TranscriptionTagsTest, TranscriptionTagBanksTest, M | 2026-10-22 |
 | DIC33 | Norwegian dictionaries imported from a file: wty's nn–en archive (its index names nn) and the WikDict no-ru conversion (`scripts/freedict`, its index names no) are both filed under Norwegian, and a Norwegian lookup shows their entries | F | U IndexLanguageTest, test_freedict_yomitan.py, M | 2026-10-22 |
+| DIC34 | PanLex keeps capitalized headwords without time zones and interface strings: a PanLex ky-ru built by the converter after 2026-10-22 imports from a file, and "Иран риалы" shows its PanLex line "Иранский риал" | O | U test_panlex_yomitan.py, M | 2026-10-22 |
 | DIC19 | Spanish download screen: Wiktionary (es–en), wordfreq and the transcription dictionary ticked, 38 MB; everything installs and Spanish is ready | F | U LanguageSetupTest, M | 2026-10-16 |
 
 ### LNG: languages
@@ -464,6 +468,32 @@ Checked by the owner on the phone or not at all; listed so that nothing is forgo
 ## Run log
 
 Newest first: date, build, scope, results, cases moved from N, findings.
+
+### 2026-10-22, `languages/kk-answers` (`8d4a08bb`), Pixel_10_Pro (API 37)
+
+Scope: LK64 and LK65 on the search screen (`PROCESS_TEXT` sent with `am start`, Kyrgyz active), ANK29 through the
+overlay over a text image (`scripts/text-image.py`, Segoe UI 72 px) in the debug viewer with cloud recognition, DIC34
+with the PanLex ky-ru archive built on the PC by this branch's converter, pushed to Download and imported through
+Settings → Dictionaries → Import from file. The x86_64-only copy of the debug build of this tree (built before the
+commit, so its name says `f2b9cd74`) was installed over group 5a's build (`7f14c5d5`) with the data kept; the storage
+thresholds were lowered for the install and deleted right after it.
+
+Results: passed, no fixes. First checks: LK64, LK65, ANK29 (moved from N to F), DIC34 (O).
+
+- LK64: алды shows only алуу ("past", wty-ky-en "to take"), no ал; бизге shows биз ("dative").
+- LK65: болушу shows болуу ("verbal noun « his, her, their") first, then бөлүш and бөлүү; иш shows only иш ("work").
+- ANK29: the popup for келди showed келүү ("past", cloud recognition); the note added with ➕ (deck "Screenlate
+  Test", note type "Screenlate RTL") has Front келүү and Sentence "Президент К. Бакиев Ошко келди." (read from a copy
+  of the emulator's local collection). 📖 then opened an empty AnkiDroid browser for the note's `nid:` (AnkiDroid's
+  deck filter, as before). The note stays in the test collection, so a rerun meets a duplicate.
+- DIC34: imported as "PanLex ky-ru" (ky → ru); "Иран риалы" shows the PanLex line "Иранский риал, иранский риал,
+  иранского риала"; Иран shows wty's entry with PanLex's "Ира́н, Пе́рсия" under it.
+- Not checked on the device: the Kazakh pronoun skip (glue tests only), the Russian label "имя действия" (resources
+  and lint only), the rebuilt PanLex kk-ru, kk-en and ky-en archives.
+- Emulator left: Japanese active, Kyrgyz not in quick switching, as found; PanLex ky-ru removed, the pushed archive
+  and the test image deleted. The build left installed is this branch's, not group 5a's `7f14c5d5`. The main screen
+  still flags 5a's missing wty-sk-en, wty-sk-ru and wty-cs-en and Japanese's AnkiDroid note type, as found. Powered
+  off.
 
 ### 2026-10-22, `languages/main` (`f7161a80`), Pixel_10_Pro (API 37)
 
