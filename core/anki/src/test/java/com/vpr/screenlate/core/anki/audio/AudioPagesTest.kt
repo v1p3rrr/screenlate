@@ -281,12 +281,12 @@ class AudioPagesTest {
     @Test
     fun `latin recordings of the classical pronunciation come first, then the ecclesiastical, then the others`() {
         val regions = LatinSupport.audioRegions
-        assertThat(AudioPages.wiktionaryRegion("File:La-cls-aqua.ogg", "aqua", "la", regions)).isEqualTo("cls")
-        assertThat(AudioPages.wiktionaryRegion("File:La-ecc-aqua.ogg", "aqua", "la", regions)).isEqualTo("ecc")
-        assertThat(AudioPages.wiktionarySearch("aqua", "la", regions)).contains("(-(cls|ecc|[a-zA-Z]{2}))?-[aA]qua[0-9]*")
-        val files = listOf("File:La-aqua.ogg", "File:La-ecc-aqua.ogg", "File:La-cls-aqua.ogg").map { it to it }
-        assertThat(AudioPages.byRegion(files, "aqua", "la", regions).map { it.first })
-            .containsExactly("File:La-cls-aqua.ogg", "File:La-ecc-aqua.ogg", "File:La-aqua.ogg")
+        assertThat(AudioPages.wiktionaryRegion("File:La-cls-magnus.ogg", "magnus", "la", regions)).isEqualTo("cls")
+        assertThat(AudioPages.wiktionaryRegion("File:La-ecc-magnus.ogg", "magnus", "la", regions)).isEqualTo("ecc")
+        assertThat(AudioPages.wiktionarySearch("magnus", "la", regions)).contains("(-(cls|ecc|[a-zA-Z]{2}))?-[mM]agnus[0-9]*")
+        val files = listOf("File:La-magnus.ogg", "File:La-ecc-magnus.ogg", "File:La-cls-magnus.ogg").map { it to it }
+        assertThat(AudioPages.byRegion(files, "magnus", "la", regions).map { it.first })
+            .containsExactly("File:La-cls-magnus.ogg", "File:La-ecc-magnus.ogg", "File:La-magnus.ogg")
             .inOrder()
     }
 

@@ -18,7 +18,7 @@ object LatinSupport : SpacedLanguageSupport() {
     override val languageTag = "la"
     override val fontSample = "Gallia est omnis dīvīsa in partēs trēs; vīta brevis, ars longa."
     override val translationSample = "Hodie caelum serenum est. Visne ambulare?"
-    override val audioTestWord = "aqua"
+    override val audioTestWord = "magnus"
     override val pronunciationSample = "aqua → [ˈa.kʷa]"
 
     /** Latin's own flag (the laurel wreath on red), not a country's. */
@@ -36,8 +36,8 @@ object LatinSupport : SpacedLanguageSupport() {
     override val defaultAudioSources = listOf("WIKTIONARY", "LINGUA_LIBRE", "TEXT_TO_SPEECH")
 
     /**
-     * Wiktionary's Latin recordings name the classical or the ecclesiastical pronunciation (`La-cls-aqua.ogg`,
-     * `La-ecc-ave.ogg`), as its transcriptions do; the few that name neither come after them.
+     * Wiktionary's Latin recordings name the classical or the ecclesiastical pronunciation (`La-cls-magnus.ogg`,
+     * `La-ecc-magnus.ogg`), as its transcriptions do; the few that name neither come after them.
      */
     override val audioRegions = listOf(
         AudioRegion(CLASSICAL, setOf(CLASSICAL)),
