@@ -218,7 +218,7 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
 | many | Lingoes Vicon dictionaries | ripped from Lingoes |
 | zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
 | many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent. Read again for group 4e (Wayback copy of 2025-11-12): CC BY-NC for the site's data and services, CC BY for "the text corpora offered for download"; the Kazakh and Kyrgyz frequency lists are built from those downloads (owner, 2026-10-19) |
-| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e); the license is checked again before hosting |
+| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | CC0 for the 2024-03-01 dump we use: PanLex's license page said CC0 for its snapshots until at least May 2025 and says CC BY-NC-SA 4.0 since (rechecked 2026-10-22, see "PanLex license history"); stay on that dump. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e) |
 
 ## OCR
 
@@ -1552,6 +1552,108 @@ Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decis
 Swedish, Norwegian, Danish, Romanian, Latin, Lithuanian, Slovak, Slovenian, Esperanto, Albanian and Swahili (Basque and
 Maltese researched, not built): research, decisions and work in `plans/2026-10-19-group-5a.md`.
 
+### Swedish on `languages/sv` (2026-10-22)
+
+- `Language.SWEDISH` (`sv`), `SwedishSupport`: glyph Å, flag se, Latin fonts (`fontSubsets` latin: every catalog Latin
+  font has å ä ö), Wiktionary first for audio (Sv-, 20 of 20 common words; Lingua Libre Q9027 2 of 20), compound links
+  s e u o a, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters` (shared with Danish and Norwegian, which also turn ä into å): ả â Ả Â → å Å,
+  one for one, run only from `OcrPage.inLanguage` (cloud recognition included), never on app text.
+- Bundle: Yomitan's descriptor, capitalization only (`sv.js`, 47 KB); forms come from wty's form rows (331k in sv-en).
+- Catalog: wty sv into en ru de es fr ja ko pl pt tr zh and the transcription, all ticked (sv-it 1,459 words and
+  sv-vi 283 stay under the line); wordfreq `large_sv`; Tesseract `swe` fast and best and Paddle v6 unticked, Paddle v5
+  Latin recommended ("more accurate", ML Kit stays the main model). `paddle_models.py` regenerates the existing
+  archives byte for byte (no SHA change).
+- Quotes: ”…” and »…» open and close with the same character; Swedish keeps the default pairs (“” ( ) [ ]), so a
+  sentence ending inside one loses its opening quote, as straight quotes do (plan row "Sentence text").
+- WikDict swe-rus: converted with `scripts/freedict` and listed once hosting exists (decision "ESPDIC and WikDict").
+
+### Norwegian on `languages/no` (2026-10-22)
+
+- `Language.NORWEGIAN` (`no`, written Bokmål; the codes nb and nn read as no), `NorwegianSupport`: glyph Ø, flag no,
+  Latin fonts, Bokmål's nb for translation and the voice, the locales no, nb and nn, Lingua Libre first for audio
+  (Q9043, 19 of 20 common words; Bokmål's item Q25167 asked as well), Wiktionary (No-) second, compound links s and
+  e, ordinals with a period (17. mai), «…» paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor (capitalization) and our genitive -s (`own-transforms.js` `norwegianTransforms`,
+  `no.js`, 56 KB). wty's Norwegian entries leave the rules field empty, so the genitive's result is matched by the
+  entry's definition tags (noun, name or form; glue `taggedRules`), measured in `notes/language-rules.md`, "Group 5a
+  rules checked on data". Forms otherwise come from wty's form rows.
+- Catalog: wty's nb, no and nn folders under Norwegian (`generate.mjs` `FOLDERS`): nb-en, nb-ja, nb-pl, nb-zh, no-ru,
+  no-fr and no-vi ticked (the first folder that has a pair ticks it), no-zh and every nn pair unticked, Bokmål's
+  transcription; titles and descriptions name the folder (nb–en, "Norwegian Bokmål → English"). wordfreq `large_nb`;
+  Tesseract `nor` fast and best and Paddle v5 Latin unticked, Paddle v6 recommended ("more accurate", ML Kit stays
+  the main model).
+- A dictionary whose index names nb or nn is filed under Norwegian (`DictionaryRepository.indexSourceLanguage`).
+- WikDict nor-rus: converted with `scripts/freedict` (7,708 terms, 7,420 headwords, 404 KB; its index says no) and
+  listed once hosting exists (decision "ESPDIC and WikDict").
+
+### Danish on `languages/da` (2026-10-22)
+
+- `Language.DANISH` (`da`), `DanishSupport`: glyph Æ, flag dk, Latin fonts, Lingua Libre first for audio (Q9035, 10
+  of 20 common words; Wiktionary Da- 3 of 20), compound links s and e, ordinals with a period (5. maj), »…« (opened
+  with ») and “…” paired, the abbreviation lists of `notes/language-rules.md`.
+- OCR letter fix in `ScandinavianLetters.danishNorwegian`: ả â ä Ả Â Ä → å Å, one for one, OCR results only.
+- Bundle: Yomitan's descriptor, capitalization only (`da.js`, 47 KB); forms and genitives come from wty's form rows
+  (116k in da-en).
+- Catalog: wty da into en ru fr ja pl tr zh and the transcription, all ticked (da-pt 1,404 words and the others stay
+  under the line); wordfreq `small_da`; Tesseract `dan` fast and best and Paddle v6 unticked, Paddle v5 Latin
+  recommended ("more accurate", ML Kit stays the main model).
+- da-en is small (24k lemmas): common words such as finale, serie, situation and indeholde are missing, and their
+  forms fall to the compound split. WikDict dan-rus is converted (5,878 terms, 5,774 headwords, 135 KB) and listed
+  once hosting exists (decision "ESPDIC and WikDict").
+
+### Romanian on `languages/ro` (2026-10-22)
+
+- `Language.ROMANIAN` (`ro`), `RomanianSupport`: glyph Ș, flag ro, Latin fonts with latin-ext, Lingua Libre first for
+  audio (Q7913, 20 of 20 common words; Wiktionary Ro- 2 of 20), no ordinal period, „…”, “…” and «…» paired, the
+  abbreviation lists of `notes/language-rules.md`, a new word after a pronoun or preposition joined with a hyphen
+  (`hyphenElisions`: s-a, într-o).
+- Bundle (`ro.js`, 58 KB): Yomitan's descriptor (capitalization, marks removed), our cedilla processor (ş ţ → ș ț),
+  Ukrainian's apostrophe variants, our article and agreement endings matched by definition tag. The engine drops
+  results reached only through those endings when the text finds results without them
+  (`inflectionRulesOnlyWithoutEntry`).
+- Import: every headword also keyed without ă â î ș ț, and with ş ţ as ș ț (`HeadwordMarks`, `everyHeadword`).
+- Lookup: results under a Cyrillic headword (Moldovan spellings Wiktionary links words to) are left out
+  (`showsHeadword`).
+- Catalog: wty ro into en ru es fr ja pl tr zh and the transcription, all ticked (ro-ko 1,380, ro-pt 1,296, ro-de 463,
+  ro-it 330, ro-vi 247 words stay under the line); wordfreq `small_ro`; Tesseract `ron` fast and best and Paddle v6
+  unticked, Paddle v5 Latin recommended ("more accurate", ML Kit stays the main model).
+- No OCR letter fix: ML Kit drops marks (ț, ș, ă, î), which the keys without marks cover.
+
+### Latin on `languages/la` (2026-10-22)
+
+- `Language.LATIN` (`la`), `LatinSupport`: glyph LA, Latin's own flag (`lang_la`), the Latin fonts with latin-ext
+  that have ā ē ī ō ū æ œ, Wiktionary first for audio, the classical and ecclesiastical pronunciations as audio
+  regions, no ordinal period, “…” and «…» paired, the praenomina held only when capitalized
+  (`capitalizedAbbreviations`), the abbreviation lists of `notes/language-rules.md`.
+- Bundle (`la.js`, 61 KB): Yomitan's descriptor (diacritics removed, æ œ, plural, feminine, neuter and ablative
+  rules), our u-as-v processor, and the enclitics -que, -ne, -ve added to Yomitan's rules (`extendedTransforms`); the
+  engine's entry filter (`inflectionRulesOnlyWithoutEntry`) drops results reached only through rules where the text
+  has an entry (atque).
+- Import: the lemma names of forms lose macrons and breves (`HeadwordMarks` without `everyHeadword`).
+- Catalog: wty la into en ru de es fr it ja ko pl pt zh and the transcription, all ticked (la-tr 1,091 and la-vi 166
+  words stay under the line); no wordfreq list; Paddle v6 recommended, Paddle v5 Latin and Tesseract `lat` fast and
+  best unticked.
+- Fonts across languages: each language with font subsets lists its letters (`fontLetters`) and the catalog lists
+  each subset font's letters (`scripts/fonts/font_letters.py`); a font missing one is not offered. Only Latin
+  (Atkinson, ō) loses a font now; Esperanto will lose Atkinson as well.
+
+### Lithuanian on `languages/lt` (2026-10-22)
+
+- `Language.LITHUANIAN` (`lt`), `LithuanianSupport`: glyph Ė, Lithuania's flag, every Latin font with latin-ext (they
+  have ą č ę ė į š ų ū ž), Lingua Libre first for audio, no ordinal period, „…“ paired, the abbreviation lists and
+  paired letters of `notes/language-rules.md`, the OCR letter fix Ü ü é ị → Ū ū ė į (`OcrLetters.kt`
+  `replaceLetters`, now shared with the Scandinavian fix).
+- Bundle (`lt.js`, 47 KB): Latvian's descriptor (capitalization only) under Lithuanian's code.
+- Import: `HeadwordMarks` gained two fields. `markBases` gives a mark its own base letters (the dot above dropped
+  after i only, in place of the planned replacement i + U+0307 → i), and `letterMarks` with `letterBases` adds a
+  further key without the letters' marks after the stress marks are gone. Lithuanian keys every headword both ways
+  and names the lemmas of forms without stress. The native `MarkStripper` holds a list of mark sets.
+- Catalog: wty lt into en ru de fr ko pl zh and the transcription, all ticked (es 295, it 522, ja 1,329, pt 909, tr
+  652, vi 490 words stay under the line); wordfreq's small list; Tesseract `lit` fast recommended, best and Paddle v5
+  latin and v6 unticked.
+
 ## Group 5d research (2026-10-19)
 
 Bulgarian, Macedonian and Mongolian: research, decisions and work in `plans/2026-10-19-group-5d.md`.
@@ -1972,7 +2074,13 @@ brackets where they matter.
   - A lookup of Қазақстан or мен shows a form-of entry ("Arabic … of قازاقستان", "romanization of men") whose
     lemma is in no dictionary, next to the meaning.
   - kk-ru: 1,210 nouns declined; ky-ru: 709 nouns with person forms, 675 declined.
-- Suffix headwords: kk 312 (-ға, -ге, -дың …), ky 178.
+  - Release 2026.10.22 (compared 2026-10-22) turns every sense-level alt-of row around: the rows tagged `Arabic`,
+    `romanization` and `Yañalif` now lead from the other spelling to the Cyrillic word (قازاقستان, Qazaqstan →
+    Қазақстан; kk-en 105, 91 and 4, ky-en 2,202 Arabic-script and 1 Yañalif), and Cyrillic variants to the main
+    entry (ky дүнүйө → дүйнө, туйгак → туяк); no Cyrillic headword carries those tags. The letter equivalents (о → و,
+    tag `Cyrillic`; kk-en 73, ky-en 18) still go from the Cyrillic letter and lead to the Arabic letter's entry.
+    New kk-en rows: -т → -ді (pronunciation-spelling), مېن → مەن (obsolete). kk-ru and ky-ru are unchanged.
+- Suffix headwords: kk 312 (-ға, -ге, -дың …; 313 in release 2026.10.22, -шиш), ky 178.
 - Readings: none.
 
 ### Other dictionaries
@@ -1981,8 +2089,8 @@ brackets where they matter.
   el-sozduk.kg carry no open license; Yudakhin's Kyrgyz–Russian dictionary (1940, 1965) is under copyright.
 - Apertium (GPL-3.0): bilingual lemma pairs with a part of speech and no definitions: eng-kaz 32,994 entries,
   kaz-rus 29,572, kaz-kir 8,174, eng-kir 474. GPL, so usable only in the GPL modules; not taken.
-- PanLex: the live site says CC BY-NC-SA 4.0 (commercial use only with written permission); a Wayback copy of 2021
-  says the snapshots were CC0. The Hugging Face mirror `cointegrated/panlex-meanings` (CC0, the 2024-03-01 dump)
+- PanLex: the live site says CC BY-NC-SA 4.0 (commercial use only with written permission); older copies of the
+  license page say the snapshots were CC0 (see "PanLex license history" below). The Hugging Face mirror `cointegrated/panlex-meanings` (CC0, the 2024-03-01 dump)
   has `kaz.tsv` (37.5k expressions; 31k in the standard Cyrillic variety) and `kir.tsv` (21.3k; 19.7k). Joined with
   `rus.tsv` on the meaning: 19.3k Kazakh and 8.6k Kyrgyz words get a Russian translation. Quality varies: су →
   вода, мышык → кошка, but ушул → "присутствовать", шаар → лондон among город. It has words wty lacks (Kyrgyz
@@ -2010,6 +2118,20 @@ brackets where they matter.
   archive has them (the research line above counted expressions, not translations).
 - On the emulator: import 435-545 ms per archive; азыр → now / сейчас, же → или, либо (no wty entry for either);
   PanLex rows sit under the wty entry of the same headword (қазір, қабылдау).
+
+### PanLex license history (rechecked 2026-10-22)
+
+- panlex.org/license in the Wayback Machine: the copies of 2025-02-19 and 2025-05-25 release the CSV and JSON
+  snapshots under CC0 1.0 ("even for commercial purposes"), asking to cite Kamholz et al. 2014. The copy of
+  2026-06-12 is the "PanLex Database License": the contents and organization of the database under CC BY-NC-SA 4.0,
+  a fixed attribution text to keep with any shared material, commercial use only with written permission
+  (info@panlex.org). It says nothing about the earlier snapshots. The copy of 2026-03-28 shows the home page; the
+  Wayback listing was offline, so the change lies between 2025-05-25 and 2026-06-12.
+- The mirror `cointegrated/panlex-meanings` (card: cc0-1.0, the `20240301` dump, "as explained in"
+  panlex.org/license) holds a dump released while the page said CC0. CC0 waives the rights for good, so that copy
+  stays CC0; dumps made after the change would be CC BY-NC-SA.
+- So: build only from the pinned 2024-03-01 dump (revision `0422f0e60f39`), never from a newer PanLex download; keep
+  the citation in NOTICE when the archives are hosted, and name the dump date there.
 
 ### Lookup coverage
 

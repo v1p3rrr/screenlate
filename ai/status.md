@@ -25,9 +25,12 @@ Day of 2026-10-22. wty's release 2026.10.22 fixed both reports (contractions bac
 alt-of row (languages plan, requests 73 and 77, question 87: misspelling redirects shown as they are); the follow-up
 session of request 77 waits as a card for the owner. Disk D: ran full (0 bytes; the project itself holds a few tens of
 GB, the rest is outside it): with the owner's leave the build folders of 13 idle worktrees were deleted (17 GB free;
-`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a
-pushed sv, no, da, ro, la and lt as one chain (`languages/lt` holds all), tests pass, emulator cases and the wty recheck
-next. Group 4e's follow-ups are done (`languages/kk-followups`), its wty recheck runs. The ColorOS branch is merged into
+`elegant-carson`'s build kept some files Windows refused to delete); groups 5a and 4e were paused and resumed. Group 5a's
+chain (sv, no, da, ro, la, lt on `languages/lt`, checked on the emulator) and group 4e's follow-ups with its wty recheck
+(`languages/kk-followups`) are merged into `languages/main`; build, unit tests, lint, 145 page tests and the glue tests
+pass on the merge. 4e's new device cases are LK61-LK63 (LK63, one-letter words, not run yet). Every language bundle was
+rebuilt from the merged scripts (5a had rebuilt only `ro.js` after its last glue change; `notes/build-environment.md`).
+5a's wty recheck and Slovak run next. The ColorOS branch is merged into
 main and languages/main (owner).
 
 The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
@@ -55,11 +58,45 @@ DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 com
 `.worktrees/checks2` needs its submodules deinitialized before removal. Morning: the owner ruled that a waiting session
 never holds the chain; group 5a's build started at once (request 72).
 
+Group 4e's follow-ups (Kazakh, Kyrgyz; `languages/kk-followups` from 11dd9eb8, for the coordinating session to merge):
+every engine measured on the emulator (cloud, PaddleOCR Cyrillic, Tesseract kaz/kir fast and best; numbers in the
+group 4e plan, "Measurements"); question 14 (a) built (later parts of a hyphenated word looked up with the hyphen
+first; a lookup from a hyphen keeps only suffix entries spanning the part) and question 15 (b) built (keyed words
+after the written ones, at lengths nothing matches exactly as written), both guards provisional. The rules checked on
+Leipzig's news found three ending gaps, fixed: Kazakh у takes a linking vowel (болуы, оқуым), -нша/-ндай and Kyrgyz
+-нча/-ндай after a possessive, the converb тауып. Questions 16 and 18 counted, not built; new open questions 19
+(initials), 20 (verbs tagged as nouns in wty) and 21 (Kyrgyz -ыш). PanLex's license page changed from CC0 to CC BY-NC-SA 4.0
+between 2025-05 and 2026-06; the 2024 dump the converter uses stays CC0. Build, unit tests, lint, 145 page tests, glue tests and LK51-LK53, LK61, LK62, DIC28
+on the emulator pass. Rechecked against wty 2026.10.22 (alt-of rows reversed): counts redone, nothing in the device
+cases changes; the filter for Arabic-script, romanized and Yañalif rows kept provisionally (open question 22), and
+one-letter words no longer show an Arabic letter's entry (tag `Cyrillic` added; core:common and dictionary:api unit
+tests pass; device case LK63 waits for the emulator).
+
 Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
 owner's account; wty fixed both the same day in its release 2026.10.22 (request 73); the completeness check of every
 session (request 74, `lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug;
 request 75 (the bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the
 phone: both diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
+
+Group 5a (plan `2026-10-19-group-5a.md`, "Progress" and "Measurements"): built language by language in the plan's
+order, one branch each. Swedish on `languages/sv`: code, catalog, bundle, docs and tests; its rules checked on Leipzig
+text (st. moved to the abbreviations that end nothing, osv., m.m. and etc. end a sentence only before a capital); the
+engine measurements and its emulator cases wait for the emulator lock. Norwegian on `languages/no` (from
+`languages/sv`): the same parts plus the genitive -s matched by definition tags and the catalog read from wty's nb, no
+and nn folders (plan questions 14 and 15, decided provisionally); its emulator cases wait as well. Danish on
+`languages/da` (from `languages/no`): the same parts, »…« and “…” as its quote pairs; its emulator cases wait too.
+Romanian on `languages/ro` (from `languages/da`): the cedilla processor, keys without marks, a new word after a
+pronoun joined with a hyphen, the app's article and agreement endings applied only where the text has no entry
+(an engine filter), Cyrillic headwords left out; plan questions 16 and 17 decided provisionally; its emulator cases
+wait as well.
+Latin on `languages/la` (from `languages/ro`): lemma names without macrons, u read as v, the enclitics as rules
+with the same entry filter, praenomina held only when capitalized, the classical and ecclesiastical pronunciations
+as audio regions, Latin's own flag, and a letter check for catalog fonts across languages; plan questions 18-20
+decided provisionally; its emulator cases wait as well.
+Lithuanian on `languages/lt` (from `languages/la`): forms keyed without stress, every headword also without the
+marks of its letters (one `HeadwordMarks` with per-mark bases and a letters' level, in Kotlin and the native
+import), the OCR letter fix Ü ü é ị → Ū ū ė į, abbreviations and paired letters from the corpus, Tesseract fast as
+the more accurate model; no new plan questions; its emulator cases wait as well.
 
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
