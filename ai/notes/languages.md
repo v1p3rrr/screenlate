@@ -111,6 +111,16 @@ questions: `plans/2026-10-09-more-languages.md`.
 - wty main rows of inflected forms look like `["ran","","non-lemma","v",0,[["run",["past"]],…]]`: the glossary holds
   only `[lemma, [tags]]` items. zh→en uses traditional headwords; simplified spellings are form-of rows tagged
   "Simplified-Chinese". Readings are like "nǎo (nao³)".
+- wty drops entries in `handle_alt_of_sense` (`src/dict/main/ir/mod.rs`, release 2026.10.11 at 602ffb3, unchanged at
+  774f3f6; checked 2026-10-22): an alt-of sense with a filtered tag (`abbreviation`, which kaikki puts on contractions
+  and apocopic forms; also misspelling, nonstandard, obsolete and others) counts as handled and is deleted without a
+  form row, so de im, zum, zur, vom, beim; it un, del, della, nel; pt do, da, na, ao; es muy, tu, buen; ca del, al, pel;
+  gl moi have no entry. In wordfreq's top 1,000 words that is 2.2% of the German tokens, 7.5% of the Italian, 7.8% of
+  the Portuguese, 0.7% of the Spanish; French is not affected. Any other alt-of sense is deleted too, and its row goes
+  from the target to the page (ca bé → ben, gl auga → agua): about 94% of the rows tagged alt-of point at a term with no
+  entry. Reported as https://github.com/yomidevs/wiktionary-to-yomitan/issues/399; the owner waits until 2026-11-05
+  before an own supplement (languages plan, request 73). To check a release: `ca-en` has no row for del, `de-en` none
+  for im.
 - Chinese: CC-CEDICT for Yomitan (MarvNC/cc-cedict-yomitan; converter MIT, data CC BY-SA 3.0 per the CC-CEDICT wiki,
   some third parties say 4.0): terms with pinyin, a Hanzi dictionary (Yomitan's kanji format), Cantonese variants
   with Jyutping (CC-CEDICT Canto, CC-Canto); words.hk for Cantonese. `addTermEntry` stores each term under the
@@ -201,7 +211,7 @@ Risky (no license stated, non-commercial, unclear or copyrighted):
 | many | Lingoes Vicon dictionaries | ripped from Lingoes |
 | zh–ru | БКРС (bkrs.info) | crowd-sourced, called free by third parties; no license text found |
 | many | Leipzig frequency lists (leipzig-to-yomitan) | downloads said to be CC BY, but the terms also say CC BY-NC and no commercial use without consent. Read again for group 4e (Wayback copy of 2025-11-12): CC BY-NC for the site's data and services, CC BY for "the text corpora offered for download"; the Kazakh and Kyrgyz frequency lists are built from those downloads (owner, 2026-10-19) |
-| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. A Kazakh and Kyrgyz converter is planned (group 4e); the license is checked again before hosting |
+| kk ky (many) | PanLex (`cointegrated/panlex-meanings` mirror of the 2024-03-01 dump) | the mirror says CC0, as PanLex's snapshot terms of 2021 did; the live site says CC BY-NC-SA 4.0 with written permission for commercial use. `scripts/panlex/panlex_yomitan.py` converts kk and ky into en and ru (group 4e); the license is checked again before hosting |
 
 ## OCR
 
@@ -553,7 +563,7 @@ read from the files), the OCR comparison of `ocr-engines.md` (2026-10-16/17). No
 | nl | capitalization | none |
 | cs | capitalization | none |
 | id | capitalization, `removeAlphabeticDiacritics` (NFD, drops U+0300–U+036F) | none |
-| ms | no descriptor (like kk, ky: form-of rows and the longest start) | none |
+| ms | no descriptor (like kk, ky: form-of rows and the ordinary prefix scan) | none |
 | tl | capitalization, diacritics removal | `tagalogTransforms`: 3 conditions, 60 transforms, 635 rules; one transform has a description, the others are affix names (`-an`, `mag-`, `pag-…-an`) |
 | sh (iso639_3 `hbs`) | capitalization, `removeSerboCroatianAccentMarks` (combining marks after a e i o u r), `addSerboCroatianDiacritics` (c → č/ć, z → ž, s → š, dj → đ in every combination, capped at `MAX_PROCESS_VARIANTS` 4096) | none |
 | uk | capitalization, `removeUkrainianDiacritics` (U+0301), `ukrainianApostropheVariants` (input ' ‘ ’ ʼ \` ´ → ' ’ ʼ); `isTextLookupWorthy`: contains Cyrillic | `ukrainianTransforms`: 6 conditions, 35 transforms, 3,023 rules, all 35 described |
@@ -1519,6 +1529,12 @@ Cells: archive MB, words.
 
 See `plans/2026-10-19-group-4c.md`.
 
+## Group 6 research (2026-10-20)
+
+Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir and Sanskrit (request 70; Taiwanese Hokkien, Russia's other
+languages and the rest of the long list deferred with reasons): research, proposed blocks 6a-6d, technical choices and
+the deferred questions in `plans/2026-10-20-group-6-research.md`. Not started: the build order is the owner's call.
+
 ## Group 5b research (2026-10-19)
 
 Welsh, Irish and Scottish Gaelic (Breton researched, not built): research, decisions and work in
@@ -1967,6 +1983,27 @@ brackets where they matter.
   Leipzig news sample: kk wty 1,287, PanLex 1,052, either 1,405; ky wty 789, PanLex 818, either 1,143.
 - Tatoeba: 4,582 Kazakh and 826 Kyrgyz sentences (CC BY 2.0 FR).
 
+### PanLex conversion (2026-10-20)
+
+- `scripts/panlex/panlex_yomitan.py` reads two mirror files at revision `0422f0e60f39` (columns `id`, `langvar`,
+  `txt`, `txt_degr`, `meaning`, `langvar_uid`; the `-000` varieties are the standard ones; `eng.tsv` has tens of
+  millions of rows, so only the meanings of the kept headwords are read from the target file).
+- Filters, chosen on samples: headwords only in the language's lowercase letters (Kazakh words filed as Kyrgyz,
+  codes, names, time zones and interface strings go); meanings with more than 4 headwords (loose groups: one Russian
+  word for sixteen Kyrgyz ones) or more than 20 translations (the cities of Russia under Оруссия); translations in
+  another script. Capitalized Russian translations stay (currencies, Луна, Библия). Russian stress marks are kept in
+  the shown spelling and ignored when translations are compared.
+- One definition per headword, the translations comma-separated in the order of the number of meanings that give
+  them, at most 10; no tags, so the verb chains reach these entries (алды → алуу "держать, брать").
+- Headwords: kk-ru 16,374 (256 KB), kk-en 13,835 (230 KB), ky-ru 5,729 (107 KB), ky-en 6,357 (108 KB). Of the 2,000
+  most frequent Kyrgyz word forms of the Leipzig news sample, 371 (ru) and 406 (en) are headwords as written.
+- Quality: Kazakh is cleaner than Kyrgyz. Kyrgyz keeps strays (элүүнчү → fortieth, кыргыз → Uzbekistan, ушул →
+  присутствовать) and many software-localization terms; алды as written gives "лицевой". боюнча, чейин, кабыл and
+  аркылуу are PanLex expressions, but none of their meanings has a Russian or English expression, so neither
+  archive has them (the research line above counted expressions, not translations).
+- On the emulator: import 435-545 ms per archive; азыр → now / сейчас, же → или, либо (no wty entry for either);
+  PanLex rows sit under the wty entry of the same headword (қазір, қабылдау).
+
 ### Lookup coverage
 
 Measured on running text (30 Wikipedia articles per language on general topics: kk 54k, ky 24k lowercase tokens;
@@ -2029,7 +2066,9 @@ letters that is a headword.
 - Keyboards: the Windows Kazakh layout puts ә і ң ғ ү ұ қ ө һ on the number row (no digits there); the Windows Kyrgyz
   layout gives ү ң ө with AltGr; AOSP's keyboard gives the letters on a long press of a Russian key (Kazakh а → ә,
   г → ғ, к → қ, н → ң, о → ө, у → ү ұ, ы → і, э → һ; Kyrgyz у → ү, н → ң, о → ө). Without the long press і becomes ы,
-  not и. Gboard's current layouts are not documented.
+  not и. Gboard 18.4 (checked on the emulator, 2026-10-20): its Kazakh (Cyrillic) layout is the Russian ЙЦУКЕН
+  one with the Kazakh letters on long presses: а → ә, г → ғ, к → қ, н → ң, о → ө, у → ұ ү, х → һ, ы → і (и has
+  none), so a word typed without long presses comes out in the Russian twins that the letter keys match.
 - Latin look-alikes in Cyrillic words: the Kazakh news sample has Latin i (U+0069) for і in 10% of its Cyrillic
   words (мүмкiн, үшiн; Leipzig's sample counts 12,616 such tokens against 20,134 written right), the Kyrgyz one 0.2%,
   Kazakh Wikipedia 0.65%; Latin ə for ә is rarer; Kyrgyz Wikipedia has Latin ɵ for ө and a few words typed wholly in

@@ -12,6 +12,39 @@ force-stop is now a candidate too. The 2026-10-22 logs settle the scan-time case
 force-stop. Which ColorOS component does it is not in the app's log; experiments and in-app stop diagnostics are
 proposed in the note. No app change yet.
 
+## Work in progress (2026-10-22, night): the build chain
+
+The night of 2026-10-22 runs on its own (languages plan, request 76): the build order of request 72 to the end, one
+block at a time, each checked and merged into `languages/main` by the coordinating session before the next starts, every
+block verified on the emulator and by tests. Group 4c (question 9's line under the Thai and Khmer Tesseract models, with
+the measurements first) resumed after an API error stopped it at 00:23; then the fixes for questions 67 and 71 (download
+stopped for a lost network, Home's audio-failure card), group 4e's follow-ups, 5a-5e and group 6. The emulator is shared
+through `.worktrees/emulator.lock` in the root checkout. Group 4c's part is merged (`languages/km-answers`, 814490c6;
+build, unit tests, lint and 145 page tests pass on the merge); its questions 15 (Thai ํา from Tesseract) and 16 (the
+same line in other languages) wait for the morning. The fixes for questions 67 and 71 are merged
+(`claude/download-audio-fixes-a83144`): a download whose network goes waits for it and resumes, a task that ended never
+runs again, Home's audio cards are per lookup language, and a plain bug found on the way is fixed (WorkManager's input
+merger gave a download queued after a stopped one that one's URL; `OwnInputMerger`); DIC29-DIC31 and AUD18 passed on the
+emulator, build, 1,317 unit tests, lint and 145 page tests pass on the merge; questions 77 and 78 come from it. Left by
+that session: `D:/tmp_sl` (84 MB of APK scratch outside the project, for the owner to delete), and its worktree needs
+`git submodule deinit --all -f` before removal. Group 4e's follow-ups (`languages/kk-followups`, uncommitted code for
+questions 14 and 15) have waited since 01:46 for the owner's answer to a built-in browser prompt (web.archive.org, the
+PanLex license recheck); the session cannot be stopped from here, so the blocks wait for the morning (one block at a
+time, request 72). Meanwhile the checks session runs the open emulator checks of request 74 (a) and the download fix's
+unchecked cases on `languages/checks-2`. The open checks are done and merged (`languages/checks-2`, run log 2026-10-22):
+ANK14's Chinese part, LK40, DIC9, DIC20-DIC22, DIC24, DIC25, DIC28 and others passed; fixed on the way: the Czech era's
+l over any word split of the OCR engines (the audit's fix did not hold on the device; LK54 for Arabic ک ی passed),
+transcription tags of large dictionaries in a mapped file (wty-zh-ipa ran out of memory and installed without tags;
+DIC32), the interrupted reset's message, five Turkic labels. Questions 79-86 come from it. Its worktree
+`.worktrees/checks2` needs its submodules deinitialized before removal. Morning: the owner ruled that a waiting session
+never holds the chain; group 5a's build started at once (request 72).
+
+Done on 2026-10-22 before the night: wty issues #399 (alt-of senses dropped or reversed) and #400 (Tatar) filed from the
+owner's account, checked again on 2026-11-05 (request 73); the completeness check of every session (request 74,
+`lintDebug` passes on `languages/main`); questions 67, 68 and 70 answered, 71 fixed as a plain bug; request 75 (the
+bubble menu on the docked bubble) in the Backlog. Open for the morning: questions 69 (pre-connect on the phone: both
+diagnostics builds have it), 72-76, and whatever the block sessions add to their plans.
+
 ## Work in progress (2026-10-19): OCR missing parts, the download queue, the checks merged, the diagnostics build
 
 The owner tests the Dev build on the phone. On `languages/ocr-engines` (pushed, up to `34450a0`):
@@ -113,6 +146,13 @@ text; Uzbek Cyrillic transliterated to Latin; Leipzig frequency lists for Estoni
 accurate for Estonian and Azerbaijani; Google's engine has no Azerbaijani or Uzbek voice). Not started: its order is the
 owner's call. The measurement scripts are in the shared session notes (`group-5c-scripts`).
 
+Group 6 (request 70: Catalan, Galician, Icelandic, Afrikaans, Tatar, Bashkir, Sanskrit) is researched by an
+autonomous session (`notes/languages.md`, "Group 6 research"; `plans/2026-10-20-group-6-research.md`): four proposed
+blocks (6a Catalan, Galician; 6b Icelandic, Afrikaans; 6c Tatar, Bashkir after group 4e; 6d Sanskrit), 26 questions,
+10 deferred (among them Galician's fallback language and enclitic rule, Tatar's missing wty dictionary, Sanskrit
+sandhi and Monier-Williams's license) and 16 decided provisionally, to be asked when the owner is back. Recognition
+was measured on the PC only (Paddle); ML Kit, Tesseract and cloud wait for the emulator. Not started.
+
 Overnight plan (owner, 2026-10-19 evening): the sessions work on their own while the owner is away and asks nothing.
 Group 4 is built to the end, one session at a time, each with the full cycle (code, tests, translations, docs, notes,
 test-model cases run on the emulator) and merged into `languages/main` before the next starts: 4b (Bengali, Georgian,
@@ -155,9 +195,17 @@ starts inside the aimed word when nothing found reaches the aimed letter (overni
 The owner answered questions 10-14 on 2026-10-20. 10-12 were measured on text with known boundaries (ORCHID, the
 Asian Language Treebank's Thai and Khmer): the implemented variants had the fewest errors and stay. 14: Commons has
 Lingua Libre and Wiktionary recordings for every language (Khmer 13 and 9), so no source is skipped. 13: sessions may
-delete, on the emulator, the dictionaries of languages already checked. Question 9 is still to be asked. The
+delete, on the emulator, the dictionaries of languages already checked. The
 emulator's `/data` has about 390 MB free: a full debug build no longer installs, an x86_64-only copy does
 (`notes/build-environment.md`).
+
+2026-10-22, on `languages/km-answers`: question 9 is built (under the Tesseract models of Thai and Khmer, in the
+model dialog and on the download screen: "Often misreads text on busy screens; cloud recognition is more accurate.",
+all 14 locales; LNG17 passed on the emulator). Every engine of both languages was measured again on the emulator
+(the errors match 2026-10-16/17) and each rule's premise counted on ALT, ORCHID, wty and the engines' output (plan,
+"Measurements"): every rule holds except that Thai ํา is a Tesseract misreading nobody types (question 15: OCR-only
+once groups 5b and 5c bring the word's source to the lookup). Question 16: the same line in the other languages where
+Tesseract is the main on-device model, as Tesseract misreads busy screens in every language.
 
 Dictionary archive (2026-10-19, Backlog "Own copies of the dictionaries"): done. Every catalog file of
 `languages/main` (`3dfb14c`), the Wiktionary pairs of hi, ka, hy, bn, th, ar, kk, ky that pass the catalog threshold,
@@ -226,6 +274,35 @@ endings measured on wordfreq's words with hand judgments (numbers in `notes/lang
 -مون, -تون, -شون and the ordinal -مین → -م after a number added, the copula -ه, the object marker -و/-رو, the
 plural -ا and -ین left out. Question 7 (the plural -ا also read as the adverb ending -اً) is decided provisionally:
 left out. The hoshidicts JSON-escape follow-up is a separate task of main's.
+
+Kazakh is done on `languages/kk` (2026-10-20, group 4e, `plans/2026-10-19-group-4e.md`): the app's own Turkic
+ending rules for Kazakh and Kyrgyz (`own-transforms.js`, noun and verb slots, verb endings only on entries tagged
+as verbs, the endings in д and т only after a consonant), headwords keyed with the Kazakh letters as their Russian
+twins ("он" finds он, оң, өң; "оң" only оң; Қазакстан, which keeps some letters and loses others, is looked up
+again keyed), Latin i I ə h read as і І ә һ in any text, the parts of a hyphenated word in every spaced language
+(the first part's words stay out when the whole word covers the aim), endings after digits and abbreviations with
+their hyphen (1990-ға → -ға), Leipzig's news word list built on the phone as the frequency list; six Wiktionary
+pairs, the transcriptions, PaddleOCR's Cyrillic model recommended and Tesseract kaz offered; PT Serif and PT Sans
+among the fonts; flag kz, bubble Қ. LK51, LK52, OCR32, POP29, AUD16, ANK20, DIC26 and LNG15 passed on the
+emulator after two fixes. Overnight question 14 (particles after a hyphen: сондай-ақ shows ақ, not -ақ) is
+deferred.
+
+Kyrgyz is done on the same branch (2026-10-20): `KyrgyzSupport` on the shared Turkic base (headwords keyed with ң ө ү
+as н о у, the barred o ɵ read as ө in OCR results only, abbreviations ж. жж. к. кк. б.а. мис. обл. түн. түш. and
+the spaced ж. б. and б. з. ч. ending no sentence before a lowercase word, проф. ending none), the four-way harmony
+endings with the question particle (барасыңбы → баруу), Wiktionary ky-en and ky-ru, the transcription, Leipzig's
+Kyrgyz news list, PaddleOCR recommended and Tesseract kir offered; flag kg, bubble Ң. LK53, OCR33, POP30, AUD17,
+ANK21, DIC27 and LNG16 passed on the emulator with no fixes. Overnight questions 15 (Түштук finds түшүү through a
+twin-spelled ending, and the keyed lookup is not tried) and 16 (алды shows the pronoun ал with a noun ending first)
+are deferred.
+
+The PanLex converter is done on the same branch (2026-10-20): `scripts/panlex/panlex_yomitan.py` joins two files of
+the CC0 mirror `cointegrated/panlex-meanings` (2024-03-01 dump, pinned revision) on their meaning and writes one
+definition per headword, translations comma-separated by support, at most ten; headwords outside the lowercase
+alphabet, loose groups, lists and other-script translations are left out (kk-ru 16,374 headwords, kk-en 13,835,
+ky-ru 5,729, ky-en 6,357). DIC28 passed on the emulator. The archives are not hosted or in the catalog: hosting and
+the license check (the live site says CC BY-NC-SA 4.0) come first, then the catalog entries with Kyrgyz PanLex ticked
+and a NOTICE entry. Overnight questions 17 (entry layout) and 18 (names left out) are decided provisionally.
 
 ## Work in progress (2026-10-17): OCR engines and the owner's build
 

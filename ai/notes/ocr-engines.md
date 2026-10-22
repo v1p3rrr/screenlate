@@ -153,6 +153,10 @@ its band alone takes 1.3–3 s, so in "Both" the cloud result always comes first
   the word (MlKitLineEndHyphenTest, German). Lens keeps the hyphen but gives the word no separator ("impor-tant");
   `withHyphenBreaks` puts the language's separator there. PaddleOCR lines are paragraphs of their own, so its
   halves are looked up apart.
+- Engines split "n. l." (Czech, before the Common Era; Arial, where l and I look alike) differently: cloud recognition
+  gives "n", ".", "I", "." as four words, ML Kit "n.I." as one and glues the next word's start to it ("l.a" in a
+  tight image, 2026-10-22). `CzechSupport.ocrLines` therefore matches the I over the line's words joined with spaces,
+  not word by word.
 - `OcrOptions.deferWholeImage` ("Reduce load on the device"): the band around the aim runs at once, the whole screen
   only when Lens is 3 s late, fails or is unavailable.
 - Threads: the scan flow is collected on the main thread, so every engine moves its own heavy work off it: ML Kit's
@@ -233,6 +237,11 @@ text of a line is kept in reading (logical) order, which each engine reaches its
   0.4 s, the whole screen in 1.4 s. It read ארה"ב and ג'ירפה with ASCII quotes, the maqaf as a hyphen, pointed
   words with some points lost or changed (קוֹרֵא as קורא, סֵפֶר as סְפַר), once the gershayim of צה״ל as יי (וצהייל),
   and "iPhone" garbled; it joins the lines of the image into fewer paragraphs than cloud recognition (2-4 against 6).
+- Tesseract best (the "accurate" models, emulator, the same images, 2026-10-22): `ara` 13 MB, installed in 2.9 s;
+  draft 2.45 s, final 4.3 s, 3 paragraphs; the words found as with fast, Latin still garbled (iPhone as 100008,
+  "50%" as 9650) and "(٢٠٢٤)." jumbled. `heb` 3.7 MB, installed in 1.1 s; draft 0.8 s, final 1.86 s, 4 paragraphs;
+  the words found (ארה״ב, ג׳ירפה, בית, הבית); the same quirks as fast: וצה"יל, iPhone garbled, „ as a plain quote,
+  the maqaf as a hyphen. The accurate models are 2-3 times slower than fast for no better reading of these lines.
 - ML Kit has no Arabic model: `MlKitOcrEngine` maps `OcrScript.ARABIC` to none, and the language offers PaddleOCR,
   Tesseract and cloud recognition.
 
