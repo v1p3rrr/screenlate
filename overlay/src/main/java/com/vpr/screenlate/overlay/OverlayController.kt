@@ -345,13 +345,17 @@ class OverlayController(
         if (needed) scope.launch { ocr.warmUp(language) } else ocr.releaseOnDevice()
     }
 
-    /** Window order from bottom to top: highlight layer, popup, bubble; the bubble must never go under the popup. */
+    /**
+     * Window order from bottom to top: highlight layer, popup, bubble; the bubble must never go under the popup. Adds
+     * none when the system is already unbinding the service ([OverlayWindows.add]); `onDestroy` follows.
+     */
     private fun attachWindows() {
-        windowManager.addView(layerView, layerParams)
-        popup.attach()
         placeDocked()
-        windowManager.addView(bubbleView, bubbleParams)
-        attached = true
+        attached = OverlayWindows.addAll(
+            OverlayWindows.Entry({ OverlayWindows.add(windowManager, layerView, layerParams) }, { windowManager.removeView(layerView) }),
+            OverlayWindows.Entry(popup::attach, popup::detach),
+            OverlayWindows.Entry({ OverlayWindows.add(windowManager, bubbleView, bubbleParams) }, { windowManager.removeView(bubbleView) }),
+        )
     }
 
     private fun detachWindows() {

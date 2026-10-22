@@ -76,7 +76,11 @@ class CropEditor(private val context: Context, private val windowManager: Window
                 )
             }
             session = Session(root, continuation)
-            windowManager.addView(root, OverlayWindows.editorParams())
+            if (!OverlayWindows.add(windowManager, root, OverlayWindows.editorParams())) {
+                // The service is being unbound: as if the user cancelled.
+                continuation.resume(null)
+                return@suspendCancellableCoroutine
+            }
             open = session
             // Cancellation may come from any thread; the window is removed on the main one.
             continuation.invokeOnCancellation { mainHandler.post { session.finish(null) } }

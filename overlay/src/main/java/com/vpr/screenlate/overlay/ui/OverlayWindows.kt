@@ -3,10 +3,43 @@ package com.vpr.screenlate.overlay.ui
 import android.graphics.PixelFormat
 import android.os.Build
 import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
+import com.vpr.screenlate.core.common.log.Log
 
-/** Layout params for our overlay windows. Positions are absolute screen coordinates. */
+/** Layout params for our overlay windows and adding them. Positions are absolute screen coordinates. */
 object OverlayWindows {
+
+    /** A window of a group added by [addAll]: [add] tells whether it was added, [remove] takes it away again. */
+    class Entry(val add: () -> Boolean, val remove: () -> Unit)
+
+    /**
+     * Adds a window; false when the system no longer takes the service's window token. The system drops the token as
+     * soon as it unbinds the service (turned off, or paused while a UiAutomation is connected), and the service learns
+     * of it only later, in `onDestroy`: a window added in between fails with [WindowManager.BadTokenException]. Other
+     * failures are passed on.
+     */
+    fun add(windowManager: WindowManager, view: View, params: LayoutParams): Boolean = try {
+        windowManager.addView(view, params)
+        true
+    } catch (e: WindowManager.BadTokenException) {
+        Log.w(TAG, "Window not added, the system is unbinding the service: ${e.message}")
+        false
+    }
+
+    /**
+     * Adds [windows] in order, the bottom one first. When one cannot be added, removes those added before it, the
+     * newest first, and returns false: the overlay shows whole or not at all.
+     */
+    fun addAll(vararg windows: Entry): Boolean {
+        for ((index, window) in windows.withIndex()) {
+            if (window.add()) continue
+            for (added in index - 1 downTo 0) windows[added].remove()
+            return false
+        }
+        return true
+    }
 
     fun bubbleParams(size: Int): LayoutParams = base(
         LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_NOT_TOUCH_MODAL,
@@ -54,4 +87,6 @@ object OverlayWindows {
         // never updates its window so (BubbleWindowMover); on Android 14 and later no overlay window glides at all.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) setCanPlayMoveAnimation(false)
     }
+
+    private const val TAG = "OverlayWindows"
 }
