@@ -185,8 +185,8 @@ Requests 1–19 are in the previous plan. New ones:
     2026.10.22 the same day (checked: ca-en del, al, pel, ben; gl-en moi; de-en im, zum, zur, vom, beim; it-en del,
     della, nel, un; `dict/tt` with 13 gloss languages), so the 2026-11-05 check and the supplement are dropped. The
     catalog's wty entries follow `latest` with no pinned hash, so the app gets the fix with no change; their sizes and
-    word counts are refreshed against that release once group 5a's catalog edits are merged, and the owner's archive
-    takes the new files.
+    word counts are refreshed against that release once group 5a's catalog edits are merged (group 5a found he-tr now
+    passes the catalog threshold), and the owner's archive takes the new files.
 74. (2026-10-22) Completeness check of every session that built or researched something (owner). All their commits are
     in languages/main (5c59894f); no numbered owner question blocks them apart from group 6's 10 and 21 and group 4e's
     14-18 (follow-ups after Thai and Khmer). `lintDebug` had never been run on the group branches; it passes on
